@@ -1,78 +1,101 @@
 #!/usr/bin/env python3
 """
-Enterprise Knowledge Engine (EKE) — Knowledge Graph
-Contains both declared and inferred knowledge with provenance.
+Enterprise Knowledge Engine — Knowledge Graph
+Canonical semantic output after reasoning
 """
 from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
-from enum import Enum
-from typing import List, Dict, Any, Optional
-from eke.graph import GraphNode, GraphEdge, GraphMetadata
-from eke.ir import Provenance
-
-
-class FindingSeverity(Enum):
-    INFO = "info"
-    WARNING = "warning"
-    ERROR = "error"
+from typing import Dict, List, Optional, Any
+from .knowledge import (
+    Provenance,
+    Finding,
+    FindingSeverity,
+    Metric,
+    Recommendation
+)
 
 
 @dataclass
-class Finding:
+class KnowledgeNodeMetadata:
+    model_name: str
+    generated_at: datetime = field(default_factory=datetime.now)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "model_name": self.model_name,
+            "generated_at": self.generated_at.isoformat()
+        }
+
+
+@dataclass
+class KnowledgeNode:
     id: str
-    rule_id: str
-    rule_version: str
-    severity: FindingSeverity
-    message: str
-    affected_object_ids: List[str] = field(default_factory=list)
-    affected_relationship_ids: List[str] = field(default_factory=list)
-    timestamp: datetime = field(default_factory=datetime.utcnow)
-
-
-@dataclass
-class Metric:
-    name: str
-    value: Any
-    unit: Optional[str] = None
-    description: Optional[str] = None
-
-
-@dataclass
-class KnowledgeNode(GraphNode):
+    type: str
+    attributes: Dict[str, Any] = field(default_factory=dict)
+    metadata: Optional[KnowledgeNodeMetadata] = None
     is_inferred: bool = False
     provenance: Optional[Provenance] = None
 
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "type": self.type,
+            "attributes": self.attributes,
+            "metadata": self.metadata.to_dict() if self.metadata else None,
+            "is_inferred": self.is_inferred,
+            "provenance": self.provenance.to_dict() if self.provenance else None
+        }
+
 
 @dataclass
-class KnowledgeEdge(GraphEdge):
+class KnowledgeEdge:
+    id: str
+    source_id: str
+    target_id: str
+    relationship_type: str
+    attributes: Dict[str, Any] = field(default_factory=dict)
+    metadata: Optional[KnowledgeNodeMetadata] = None
     is_inferred: bool = False
     provenance: Optional[Provenance] = None
 
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "source_id": self.source_id,
+            "target_id": self.target_id,
+            "relationship_type": self.relationship_type,
+            "attributes": self.attributes,
+            "metadata": self.metadata.to_dict() if self.metadata else None,
+            "is_inferred": self.is_inferred,
+            "provenance": self.provenance.to_dict() if self.provenance else None
+        }
+
 
 @dataclass
-class KnowledgeGraphMetadata(GraphMetadata):
-    generated_at: datetime = field(default_factory=datetime.utcnow)
+class KnowledgeGraphMetadata:
+    model_name: str
+    generated_at: datetime = field(default_factory=datetime.now)
     constraint_report_hash: Optional[str] = None
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "model_name": self.model_name,
+            "generated_at": self.generated_at.isoformat(),
+            "constraint_report_hash": self.constraint_report_hash
+        }
 
 
 @dataclass
 class KnowledgeGraph:
+    metadata: KnowledgeGraphMetadata
     declared_nodes: Dict[str, KnowledgeNode] = field(default_factory=dict)
     declared_edges: Dict[str, KnowledgeEdge] = field(default_factory=dict)
     inferred_nodes: Dict[str, KnowledgeNode] = field(default_factory=dict)
     inferred_edges: Dict[str, KnowledgeEdge] = field(default_factory=dict)
     findings: List[Finding] = field(default_factory=list)
     metrics: List[Metric] = field(default_factory=list)
-    metadata: KnowledgeGraphMetadata = field(default_factory=KnowledgeGraphMetadata)
-
-    @property
-    def all_nodes(self) -> Dict[str, KnowledgeNode]:
-        return {**self.declared_nodes, **self.inferred_nodes}
-
-    @property
-    def all_edges(self) -> Dict[str, KnowledgeEdge]:
-        return {**self.declared_edges, **self.inferred_edges}
+    recommendations: List[Recommendation] = field(default_factory=list)
 
     def add_declared_node(self, node: KnowledgeNode):
         self.declared_nodes[node.id] = node
@@ -86,12 +109,6 @@ class KnowledgeGraph:
     def add_inferred_edge(self, edge: KnowledgeEdge):
         self.inferred_edges[edge.id] = edge
 
-    def get_node(self, node_id: str) -> Optional[KnowledgeNode]:
-        return self.all_nodes.get(node_id)
-
-    def get_edge(self, edge_id: str) -> Optional[KnowledgeEdge]:
-        return self.all_edges.get(edge_id)
-
     def add_finding(self, finding: Finding):
         self.findings.append(finding)
 
@@ -99,80 +116,32 @@ class KnowledgeGraph:
         # Remove existing metric with the same name if present
         self.metrics = [m for m in self.metrics if m.name != metric.name]
         self.metrics.append(metric)
+        
+    def add_recommendation(self, recommendation: Recommendation):
+        self.recommendations.append(recommendation)
 
+    @property
+    def all_nodes(self) -> Dict[str, KnowledgeNode]:
+        nodes = {}
+        nodes.update(self.declared_nodes)
+        nodes.update(self.inferred_nodes)
+        return nodes
+
+    @property
+    def all_edges(self) -> Dict[str, KnowledgeEdge]:
+        edges = {}
+        edges.update(self.declared_edges)
+        edges.update(self.inferred_edges)
+        return edges
+        
     def to_dict(self) -> Dict[str, Any]:
-        def node_to_dict(node: KnowledgeNode) -> Dict[str, Any]:
-            return {
-                "id": node.id,
-                "type": node.type,
-                "attributes": node.attributes,
-                "is_inferred": node.is_inferred,
-                "provenance": {
-                    "rule_id": node.provenance.rule_id,
-                    "rule_version": node.provenance.rule_version,
-                    "sources": node.provenance.sources,
-                    "timestamp": node.provenance.timestamp.isoformat(),
-                    "confidence": node.provenance.confidence,
-                    "explanation": node.provenance.explanation
-                } if node.provenance else None
-            }
-
-        def edge_to_dict(edge: KnowledgeEdge) -> Dict[str, Any]:
-            return {
-                "id": edge.id,
-                "source_id": edge.source_id,
-                "target_id": edge.target_id,
-                "relationship_type": edge.relationship_type,
-                "attributes": edge.attributes,
-                "is_inferred": edge.is_inferred,
-                "provenance": {
-                    "rule_id": edge.provenance.rule_id,
-                    "rule_version": edge.provenance.rule_version,
-                    "sources": edge.provenance.sources,
-                    "timestamp": edge.provenance.timestamp.isoformat(),
-                    "confidence": edge.provenance.confidence,
-                    "explanation": edge.provenance.explanation
-                } if edge.provenance else None
-            }
-
         return {
-            "declared_nodes": [node_to_dict(n) for n in self.declared_nodes.values()],
-            "declared_edges": [edge_to_dict(e) for e in self.declared_edges.values()],
-            "inferred_nodes": [node_to_dict(n) for n in self.inferred_nodes.values()],
-            "inferred_edges": [edge_to_dict(e) for e in self.inferred_edges.values()],
-            "findings": [
-                {
-                    "id": f.id,
-                    "rule_id": f.rule_id,
-                    "rule_version": f.rule_version,
-                    "severity": f.severity.value,
-                    "message": f.message,
-                    "affected_object_ids": f.affected_object_ids,
-                    "affected_relationship_ids": f.affected_relationship_ids,
-                    "timestamp": f.timestamp.isoformat()
-                } for f in self.findings
-            ],
-            "metrics": [
-                {
-                    "name": m.name,
-                    "value": m.value,
-                    "unit": m.unit,
-                    "description": m.description
-                } for m in self.metrics
-            ],
-            "metadata": {
-                "model_name": self.metadata.model_name,
-                "created_at": (
-                    self.metadata.created_at 
-                    if isinstance(self.metadata.created_at, str) 
-                    else self.metadata.created_at.isoformat()
-                ),
-                "graph_version": self.metadata.graph_version,
-                "generated_at": (
-                    self.metadata.generated_at 
-                    if isinstance(self.metadata.generated_at, str) 
-                    else self.metadata.generated_at.isoformat()
-                ),
-                "constraint_report_hash": self.metadata.constraint_report_hash
-            }
+            "metadata": self.metadata.to_dict(),
+            "declared_nodes": {k: v.to_dict() for k, v in self.declared_nodes.items()},
+            "declared_edges": {k: v.to_dict() for k, v in self.declared_edges.items()},
+            "inferred_nodes": {k: v.to_dict() for k, v in self.inferred_nodes.items()},
+            "inferred_edges": {k: v.to_dict() for k, v in self.inferred_edges.items()},
+            "findings": [f.to_dict() for f in self.findings],
+            "metrics": [m.to_dict() for m in self.metrics],
+            "recommendations": [r.to_dict() for r in self.recommendations]
         }

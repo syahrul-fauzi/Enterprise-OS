@@ -8,6 +8,9 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from typing import Any, List, Optional, Dict
+from eke.knowledge import Finding, Metric, Recommendation, Evidence, Provenance, FindingCategory, FindingSeverity, MetricCategory
+from eke.knowledge_graph import KnowledgeEdge
+from eke.rules import RuleMetadata
 
 
 class ArtifactKind(Enum):
@@ -17,6 +20,76 @@ class ArtifactKind(Enum):
     REASONING_REPORT = "reasoning_report"
     ENTERPRISE_IR = "enterprise_ir"
     BOUND_MODEL = "bound_model"
+    KNOWLEDGE_PACKAGE = "knowledge_package"
+    REASONING_CATALOG = "reasoning_catalog"
+
+
+@dataclass
+class CatalogEntry:
+    rule_id: str
+    name: str
+    domain: str
+    type: str
+    depends_on: List[str]
+    produces: List[str]
+    description: str = ""
+    version: str = ""
+
+
+@dataclass
+class ReasoningCatalog:
+    """Catalog of all reasoning rules in the system"""
+    rules: List[CatalogEntry] = field(default_factory=list)
+    
+    def to_dict(self) -> Dict[str, Any]:
+        return [
+            {
+                "rule_id": entry.rule_id,
+                "name": entry.name,
+                "domain": entry.domain,
+                "type": entry.type,
+                "depends_on": entry.depends_on,
+                "produces": entry.produces,
+                "description": entry.description,
+                "version": entry.version
+            }
+            for entry in self.rules
+        ]
+
+
+@dataclass
+class KnowledgePackage:
+    """
+    Portable artifact containing pieces of the KnowledgeGraph:
+    inferred relationships, findings, metrics, etc.
+    """
+    inferred_relationships: List[KnowledgeEdge] = field(default_factory=list)
+    findings: List[Finding] = field(default_factory=list)
+    metrics: List[Metric] = field(default_factory=list)
+    recommendations: List[Recommendation] = field(default_factory=list)
+    provenance: Dict[str, Any] = field(default_factory=dict)
+    execution_metadata: Dict[str, Any] = field(default_factory=dict)
+    
+    def to_dict(self) -> Dict[str, Any]:
+        def edge_to_dict(edge: KnowledgeEdge) -> Dict[str, Any]:
+            return {
+                "id": edge.id,
+                "source_id": edge.source_id,
+                "target_id": edge.target_id,
+                "relationship_type": edge.relationship_type,
+                "attributes": edge.attributes,
+                "is_inferred": edge.is_inferred,
+                "provenance": edge.provenance.to_dict() if edge.provenance else None
+            }
+        
+        return {
+            "inferred_relationships": [edge_to_dict(e) for e in self.inferred_relationships],
+            "findings": [f.to_dict() for f in self.findings],
+            "metrics": [m.to_dict() for m in self.metrics],
+            "recommendations": [r.to_dict() for r in self.recommendations],
+            "provenance": self.provenance,
+            "execution_metadata": self.execution_metadata
+        }
 
 
 @dataclass

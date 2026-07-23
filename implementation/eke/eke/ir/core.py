@@ -84,6 +84,10 @@ class EnterpriseIR:
         incoming = self.incoming_relationships(obj, rel_type)
         return [self.get_object(rel.source) for rel in incoming if self.get_object(rel.source)]
 
+    def add_relationship(self, rel: IRRelationship):
+        """Add a relationship to the IR"""
+        self.relationships[rel.id] = rel
+
 
 def build_ir_from_graph(graph: CanonicalGraph) -> EnterpriseIR:
     ir = EnterpriseIR()

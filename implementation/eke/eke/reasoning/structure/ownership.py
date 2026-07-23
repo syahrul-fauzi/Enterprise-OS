@@ -15,8 +15,11 @@ class OwnershipAnalysisRule(AnalysisRule):
     metadata = RuleMetadata(
         id="EKL-R-003",
         name="Ownership Analysis",
-        description="Analyzes ownership of enterprise objects",
-        category="ownership"
+        description="Analyzes ownership of enterprise objects, detecting orphan capabilities, multiple owners, owner overload, and ownership gaps",
+        category="ownership",
+        domain="structure",
+        type="assessment",
+        produces=["findings", "metrics"]
     )
 
     def analyze(self, view: EnterpriseIRView) -> Dict[str, Any]:

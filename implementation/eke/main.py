@@ -1,20 +1,32 @@
 #!/usr/bin/env python3
+import argparse
 from pathlib import Path
 import json
 from eke.passes import CompilerContext, PassPipeline
 from eke.loader_pass import PackageLoaderPass
 from eke.schema_validation_pass import SchemaValidationPass
-from eke.semantic_validation_pass import SemanticValidationPass
-from eke.symbol_resolution_pass import SymbolResolutionPass
-from eke.reference_resolution_pass import ReferenceResolutionPass
-from eke.constraint_engine_pass import ConstraintEnginePass
-from eke.graph_builder import GraphBuilderPass
-from eke.ir_builder_pass import IRBuilderPass
-from eke.reasoning_pass import ReasoningPass
+from eke.profiles import PROFILES, DEFAULT_PROFILE
 from eke.projection_engine import MarkdownDocumentationGenerator
 
 
 def main():
+    # Argument parser for profile selection
+    parser = argparse.ArgumentParser(
+        description="Enterprise Knowledge Engine (EKL) Compiler"
+    )
+    parser.add_argument(
+        "--profile",
+        "-p",
+        type=str,
+        choices=list(PROFILES.keys()),
+        default=DEFAULT_PROFILE.name,
+        help=f"Compiler profile to use (default: {DEFAULT_PROFILE.name})"
+    )
+    args = parser.parse_args()
+    
+    # Get selected profile
+    profile = PROFILES.get(args.profile, DEFAULT_PROFILE)
+    
     repo_root = Path(__file__).parent.parent.parent
     schema_dir = repo_root / "enterprise" / "schema"
     package_dir = repo_root / "enterprise" / "knowledge" / "packages" / "customer-management-v1"
@@ -25,23 +37,25 @@ def main():
 
     context = CompilerContext()
     pipeline = PassPipeline(context)
+    
+    print(f"=== Using compiler profile: {profile.name} ===")
 
-    # Add passes
-    pipeline.add_pass(PackageLoaderPass(package_dir))
-    pipeline.add_pass(SchemaValidationPass(schema_dir))
-    pipeline.add_pass(SemanticValidationPass())
-    pipeline.add_pass(SymbolResolutionPass())
-    pipeline.add_pass(ReferenceResolutionPass())
-    pipeline.add_pass(ConstraintEnginePass())
-    pipeline.add_pass(GraphBuilderPass())
-    pipeline.add_pass(IRBuilderPass())
-    pipeline.add_pass(ReasoningPass())
+    # Add passes from profile, handling PackageLoaderPass and SchemaValidationPass specially
+    for pass_class in profile.passes:
+        if pass_class == PackageLoaderPass:
+            pipeline.add_pass(PackageLoaderPass(package_dir))
+        elif pass_class == SchemaValidationPass:
+            pipeline.add_pass(SchemaValidationPass(schema_dir))
+        else:
+            pipeline.add_pass(pass_class())
 
     # Run pipeline
     if pipeline.run():
-        print("\n=== Running Projections ===")
-        doc_generator = MarkdownDocumentationGenerator(context.enterprise_ir, output_dir)
-        doc_generator.generate()
+        # Only run MarkdownDocumentationGenerator if we have EnterpriseIR (e.g., knowledge profile)
+        if context.enterprise_ir:
+            print("\n=== Running Projections ===")
+            doc_generator = MarkdownDocumentationGenerator(context.enterprise_ir, output_dir)
+            doc_generator.generate()
         
         print("\n=== Saving Artifacts ===")
         # Save all artifacts to JSON files

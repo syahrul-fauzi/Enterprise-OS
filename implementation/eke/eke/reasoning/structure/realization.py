@@ -17,7 +17,10 @@ class CapabilityIndirectSupportRule(InferenceRule):
         id="EKL-R-001",
         name="Capability Indirect Support",
         description="Infers indirectly_supported_by relationships between capabilities and platforms",
-        category="capability"
+        category="capability",
+        domain="structure",
+        type="inference",
+        produces=["relationships"]
     )
 
     def execute(self, view: EnterpriseIRView) -> List[IRRelationship]:

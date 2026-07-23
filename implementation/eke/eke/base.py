@@ -70,6 +70,13 @@ class PassPipeline:
 
     def add_pass(self, compiler_pass: CompilerPass):
         self.passes.append(compiler_pass)
+        
+    def add_from_profile(self, profile):
+        """
+        Adds all passes from a given Profile to this PassPipeline
+        """
+        for pass_class in profile.passes:
+            self.add_pass(pass_class())
 
     def run(self) -> bool:
         for i, compiler_pass in enumerate(self.passes):

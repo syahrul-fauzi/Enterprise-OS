@@ -18,27 +18,20 @@ def test_customer_management_v1_conformance():
     from eke.passes import CompilerContext, PassPipeline
     from eke.loader_pass import PackageLoaderPass
     from eke.schema_validation_pass import SchemaValidationPass
-    from eke.semantic_validation_pass import SemanticValidationPass
-    from eke.symbol_resolution_pass import SymbolResolutionPass
-    from eke.reference_resolution_pass import ReferenceResolutionPass
-    from eke.constraint_engine_pass import ConstraintEnginePass
-    from eke.graph_builder import GraphBuilderPass
-    from eke.ir_builder_pass import IRBuilderPass
-    from eke.reasoning_pass import ReasoningPass
+    from eke.profiles import KNOWLEDGE_PROFILE
     from eke.projection_engine import MarkdownDocumentationGenerator
 
     context = CompilerContext()
     pipeline = PassPipeline(context)
 
-    pipeline.add_pass(PackageLoaderPass(package_dir))
-    pipeline.add_pass(SchemaValidationPass(schema_dir))
-    pipeline.add_pass(SemanticValidationPass())
-    pipeline.add_pass(SymbolResolutionPass())
-    pipeline.add_pass(ReferenceResolutionPass())
-    pipeline.add_pass(ConstraintEnginePass())
-    pipeline.add_pass(GraphBuilderPass())
-    pipeline.add_pass(IRBuilderPass())
-    pipeline.add_pass(ReasoningPass())
+    # Add passes from KNOWLEDGE_PROFILE
+    for pass_class in KNOWLEDGE_PROFILE.passes:
+        if pass_class == PackageLoaderPass:
+            pipeline.add_pass(PackageLoaderPass(package_dir))
+        elif pass_class == SchemaValidationPass:
+            pipeline.add_pass(SchemaValidationPass(schema_dir))
+        else:
+            pipeline.add_pass(pass_class())
 
     assert pipeline.run(), "Conformance test failed"
     assert context.canonical_graph is not None
@@ -46,9 +39,14 @@ def test_customer_management_v1_conformance():
     assert context.knowledge_graph is not None
     assert len(context.canonical_graph.nodes) == 9
     assert len(context.canonical_graph.edges) == 5
-    assert len(context.enterprise_ir.relationships) == 5  # EnterpriseIR no longer gets inferred rels added
+    assert len(context.enterprise_ir.relationships) == 6  # EnterpriseIR now includes inferred relationships
     assert len(context.knowledge_graph.declared_edges) == 5
     assert len(context.knowledge_graph.inferred_edges) == 1
+    
+    # Check that we have both knowledge_graph and knowledge_package artifacts
+    from eke.artifacts import ArtifactKind
+    assert len(context.artifacts.find_by_kind(ArtifactKind.KNOWLEDGE_GRAPH)) == 1
+    assert len(context.artifacts.find_by_kind(ArtifactKind.KNOWLEDGE_PACKAGE)) == 1
 
     # Test that projections work
     doc_generator = MarkdownDocumentationGenerator(context.enterprise_ir, output_dir)
