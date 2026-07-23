@@ -8,6 +8,7 @@ from fitness_functions import (
     check_public_api_only,
     check_no_reverse_dependency,
     check_no_business_logic_in_shared,
+    check_framework_purity,
 )
 from fitness_functions.base import FitnessStatus
 
@@ -19,6 +20,7 @@ def main():
         check_public_api_only,
         check_no_reverse_dependency,
         check_no_business_logic_in_shared,
+        check_framework_purity,
     ]
     overall_passed = True
     total_time = 0.0

@@ -1,112 +1,119 @@
 """
-Enterprise Intelligence Engine — orchestrator connecting compiler output to services.
+Enterprise Intelligence Engine — orchestrates the full intelligence pipeline.
 """
 from __future__ import annotations
 import logging
 from datetime import datetime
-from typing import Optional, List, Dict, Any
-from dataclasses import dataclass, field
+from typing import Optional, List, Dict, Any, Tuple
 
-from eke.artifacts import KnowledgePackage, Artifact, ArtifactKind, ArtifactRegistry
-from eke.knowledge_graph import KnowledgeGraph
-from eis.services.context import ServiceContext
-from eis.services.engine import ServiceEngine, ServiceExecution
-from eis.services.registry import service_registry
-
-
-@dataclass
-class EnterpriseIntelligencePackage:
-    """Composition-based enterprise intelligence package, aggregating artifacts."""
-    knowledge_package: KnowledgePackage
-    service_results: Dict[str, Any] = field(default_factory=dict)
-    generated_artifacts: List[Artifact] = field(default_factory=list)
-    generated_reports: List[Artifact] = field(default_factory=list)
-    generated_dashboards: List[Artifact] = field(default_factory=list)
-    service_execution: Optional[ServiceExecution] = None
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert to dict for serialization."""
-        return {
-            "knowledge_package": self.knowledge_package.to_dict() if hasattr(self.knowledge_package, "to_dict") else str(self.knowledge_package),
-            "service_results": {
-                service_id: {
-                    "findings": [f.to_dict() for f in result.findings] if hasattr(result, "findings") else [],
-                    "metrics": [m.to_dict() for m in result.metrics] if hasattr(result, "metrics") else [],
-                    "recommendations": [r.to_dict() for r in result.recommendations] if hasattr(result, "recommendations") else [],
-                    "events": getattr(result, "events", []),
-                    "execution_metadata": getattr(result, "execution_metadata", {}),
-                    "error": getattr(result, "error", None),
-                }
-                for service_id, result in self.service_results.items()
-            },
-            "generated_artifacts": [a.to_dict() for a in self.generated_artifacts],
-            "generated_reports": [a.to_dict() for a in self.generated_reports],
-            "generated_dashboards": [a.to_dict() for a in self.generated_dashboards],
-            "service_execution": {
-                "duration_ms": getattr(self.service_execution, "duration_ms", 0.0),
-                "errors": getattr(self.service_execution, "errors", []),
-            } if self.service_execution else None,
-        }
+from eke.contracts.knowledge_package import KnowledgePackage
+from eis.contracts.intelligence_package import (
+    EnterpriseIntelligencePackage,
+    IntelligenceManifest
+)
+from eis.internal.base import AnalysisContext
+from eis.internal.evidence import AnalysisEvidence
+from eis.internal.registry.analysis_registry import analysis_registry
+from eis.internal.synthesizers.insight_synthesizer import InsightSynthesizer
+from eis.internal.synthesizers.recommendation_engine import RecommendationEngine
+from eis.internal.synthesizers.decision_builder import DecisionBuilder
+from eis.internal.synthesizers.portfolio_builder import PortfolioBuilder
+from eis.internal.synthesizers.roadmap_builder import RoadmapBuilder
 
 
 class EnterpriseIntelligenceEngine:
-    """Orchestrator connecting compiler to services to produce intelligence package."""
+    """
+    Orchestrates the full Enterprise Intelligence Pipeline:
+    Knowledge Package → Analyzers → Findings → Insight Synthesizer → Insights → Recommendation Engine →
+    Recommendations → Decision Builder → Decision Options → Portfolio Builder → Portfolio Items →
+    Roadmap Builder → Enterprise Intelligence Package
+    """
 
-    def __init__(
-        self,
-        service_engine: Optional[ServiceEngine] = None,
-        configuration: Optional[Dict[str, Any]] = None,
-    ):
-        self.service_engine = service_engine or ServiceEngine(service_registry)
+    def __init__(self, configuration: Optional[Dict[str, Any]] = None):
         self.configuration = configuration or {}
         self.logger = logging.getLogger(__name__)
+
+        # Initialize pipeline components
+        self.insight_synthesizer = InsightSynthesizer()
+        self.recommendation_engine = RecommendationEngine()
+        self.decision_builder = DecisionBuilder()
+        self.portfolio_builder = PortfolioBuilder()
+        self.roadmap_builder = RoadmapBuilder()
 
     def execute(
         self,
         knowledge_package: KnowledgePackage,
-        knowledge_graph: KnowledgeGraph,
-        artifacts: ArtifactRegistry,
-        service_ids: Optional[List[str]] = None,
+        analyzer_ids: Optional[List[str]] = None,
         domains: Optional[List[str]] = None,
-    ) -> EnterpriseIntelligencePackage:
+    ) -> Tuple[EnterpriseIntelligencePackage, AnalysisEvidence]:
         """
-        Execute intelligence pipeline: compiler output → services → intelligence package.
+        Execute the full intelligence pipeline using AnalysisContext.
+        Returns (intelligence_package, analysis_evidence).
+        Deterministic!
         """
-        # Create service context
-        context = ServiceContext(
-            knowledge_graph=knowledge_graph,
+        # Initialize analysis context and evidence
+        started_at = datetime.utcnow()
+        context = AnalysisContext(
             knowledge_package=knowledge_package,
-            artifacts=artifacts,
+            configuration=self.configuration
+        )
+        analysis_evidence = AnalysisEvidence(
             configuration=self.configuration,
-            clock=datetime.now(),
-            logger=self.logger,
+            started_at=started_at
         )
 
-        # Execute services
-        service_execution = self.service_engine.execute(
-            context=context,
-            service_ids=service_ids,
-            domains=domains,
-        )
+        # Step 1: Collect all findings from analyzers
+        findings = []
+        if analyzer_ids:
+            analyzers = [analysis_registry.get(id) for id in analyzer_ids if analysis_registry.get(id)]
+        elif domains:
+            analyzers = []
+            for domain in domains:
+                analyzers.extend(analysis_registry.by_domain(domain))
+        else:
+            analyzers = analysis_registry.all()
 
-        # Create intelligence package by aggregating artifacts
+        analysis_evidence.analyzer_ids = [a.analyzer_id for a in analyzers]
+
+        for analyzer in analyzers:
+            findings.extend(analyzer.analyze(knowledge_package))
+
+        analysis_evidence.finding_ids = [f.finding_id for f in findings]
+
+        # Step 2: Synthesize insights from findings
+        insights = self.insight_synthesizer.synthesize(findings)
+        analysis_evidence.insight_ids = [i.insight_id for i in insights]
+
+        # Step 3: Generate recommendations from insights
+        recommendations = self.recommendation_engine.generate(insights)
+        analysis_evidence.recommendation_ids = [r.recommendation_id for r in recommendations]
+
+        # Step 4: Build decision options from recommendations
+        decision_options = self.decision_builder.build(recommendations)
+
+        # Step 5: Build portfolio items from decision options
+        portfolio_items = self.portfolio_builder.build(decision_options)
+
+        # Step 6: Build roadmap items from portfolio items
+        roadmap_items = self.roadmap_builder.build(portfolio_items)
+
+        # Step 7: Assemble Enterprise Intelligence Package
+        manifest = IntelligenceManifest(
+            package_id=f"{knowledge_package.metadata.package_id}-intelligence",
+            version="1.0.0",
+            findings=findings,
+            insights=insights,
+            recommendations=recommendations,
+            decision_options=decision_options,
+            portfolio_items=portfolio_items,
+            roadmap_items=roadmap_items
+        )
         intelligence_package = EnterpriseIntelligencePackage(
             knowledge_package=knowledge_package,
-            service_execution=service_execution,
+            manifest=manifest
         )
+        intelligence_package.content_hash = intelligence_package.compute_content_hash()
 
-        # Aggregate artifacts from service results
-        for service_id, result in service_execution.results.items():
-            intelligence_package.service_results[service_id] = result
-            intelligence_package.generated_artifacts.extend(result.artifacts)
+        analysis_evidence.completed_at = datetime.utcnow()
+        return intelligence_package, analysis_evidence
 
-            # Categorize artifacts by type (dashboards, reports, etc.)
-            for artifact in result.artifacts:
-                if hasattr(artifact.metadata, "kind"):
-                    kind_value = artifact.metadata.kind.value
-                    if kind_value.endswith("dashboard"):
-                        intelligence_package.generated_dashboards.append(artifact)
-                    elif kind_value.endswith("report"):
-                        intelligence_package.generated_reports.append(artifact)
-
-        return intelligence_package
