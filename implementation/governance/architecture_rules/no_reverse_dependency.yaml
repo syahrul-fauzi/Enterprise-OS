@@ -1,0 +1,39 @@
+rule_id: eos_arch_001
+name: No Reverse Dependency
+description: Dependencies must only flow from lower layers to higher layers
+severity: ERROR
+rule_type: dependency_direction
+constraints:
+  - from:
+      - "mos"
+    forbidden:
+      - "eaeo.internal"
+      - "eis.internal"
+      - "eke.internal"
+      - "ekl.internal"
+  - from:
+      - "ceos"
+    forbidden:
+      - "eaeo.internal"
+      - "eis.internal"
+      - "eke.internal"
+      - "ekl.internal"
+  - from:
+      - "eaeo"
+    forbidden:
+      - "eis.internal"
+      - "eke.internal"
+      - "ekl.internal"
+  - from:
+      - "eis"
+    forbidden:
+      - "eke.internal"
+      - "ekl.internal"
+  - from:
+      - "eke"
+    forbidden:
+      - "ekl.internal"
+  - from:
+      - "workspace"
+    forbidden:
+      - "*.internal"

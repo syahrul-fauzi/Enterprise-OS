@@ -1,0 +1,16 @@
+rule_id: eos_arch_003
+name: No Business Logic in Shared
+description: Shared may not contain domain-specific knowledge or business logic
+severity: ERROR
+rule_type: content_restriction
+constraints:
+  forbidden_domain_topics:
+    - "governance"
+    - "capability"
+    - "risk"
+    - "planning"
+    - "knowledge"
+    - "policy"
+    - "compliance"
+  applies_to:
+    - "shared"

@@ -22,6 +22,12 @@ class ArtifactKind(Enum):
     BOUND_MODEL = "bound_model"
     KNOWLEDGE_PACKAGE = "knowledge_package"
     REASONING_CATALOG = "reasoning_catalog"
+    ENTERPRISE_INTELLIGENCE_PACKAGE = "enterprise_intelligence_package"
+    GOVERNANCE_DASHBOARD = "governance_dashboard"
+    RISK_REGISTER = "risk_register"
+    PLANNING_ROADMAP = "planning_roadmap"
+    LIFECYCLE_DASHBOARD = "lifecycle_dashboard"
+    COMPLIANCE_DASHBOARD = "compliance_dashboard"
 
 
 @dataclass

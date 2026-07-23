@@ -1,0 +1,19 @@
+rule_id: eos_arch_002
+name: Public API Only
+description: External consumers may only import from api/ or contracts/
+severity: ERROR
+rule_type: import_restriction
+constraints:
+  allowed_import_prefixes:
+    - "api"
+    - "contracts"
+    - "shared"
+  forbidden_import_prefixes:
+    - "internal"
+  applies_to:
+    - "ekl"
+    - "eke"
+    - "eis"
+    - "eaeo"
+    - "ceos"
+    - "mos"
