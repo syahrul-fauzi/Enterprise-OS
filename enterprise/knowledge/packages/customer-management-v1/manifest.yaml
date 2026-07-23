@@ -1,0 +1,68 @@
+metadata:
+  id: urn:ekl:package:customer-management:v1
+  name: Customer Management Example Knowledge Package v1
+  version: 1.0.0
+  status: Normative
+  authority: urn:ekl:actor:lead-enterprise-architect
+  owner: urn:ekl:actor:lead-enterprise-architect
+  created_at: 2026-07-23T00:00:00Z
+  updated_at: 2026-07-23T00:00:00Z
+language:
+  requires: ">=1.0.0"
+conformance:
+  minimum_level: 3
+package:
+  id: urn:ekl:package:customer-management:v1
+  name: Customer Management Knowledge Package
+  version: 1.0.0
+  imports:
+    - urn:ekl:library:business-capability
+    - urn:ekl:library:business-service
+    - urn:ekl:library:platform-capability
+    - urn:ekl:library:actor
+    - urn:ekl:library:policy
+    - urn:ekl:library:evidence
+  objects:
+    - id: urn:ekl:business-capability:customer-management
+      type: BusinessCapability
+      location: business-capabilities/customer-management.yaml
+    - id: urn:ekl:business-service:customer-portal
+      type: BusinessService
+      location: business-services/customer-portal.yaml
+    - id: urn:ekl:platform-capability:authentication
+      type: PlatformCapability
+      location: platform-capabilities/authentication.yaml
+    - id: urn:ekl:actor:lead-enterprise-architect
+      type: Actor
+      location: actors/lead-enterprise-architect.yaml
+    - id: urn:ekl:actor:head-customer-operations
+      type: Actor
+      location: actors/head-customer-operations.yaml
+    - id: urn:ekl:actor:head-security
+      type: Actor
+      location: actors/head-security.yaml
+    - id: urn:ekl:policy:data-retention
+      type: Policy
+      location: policies/data-retention.yaml
+    - id: urn:ekl:evidence:iso-9001
+      type: Evidence
+      location: evidence/iso-9001.yaml
+    - id: urn:ekl:evidence:iso-27001
+      type: Evidence
+      location: evidence/iso-27001.yaml
+  relationships:
+    - id: urn:ekl:relationship:customer-management-realizes-customer-portal
+      type: realizes
+      location: relationships/rel-001.yaml
+    - id: urn:ekl:relationship:customer-portal-uses-authentication
+      type: implemented_by
+      location: relationships/rel-002.yaml
+    - id: urn:ekl:relationship:lead-enterprise-architect-governs-customer-management
+      type: governs
+      location: relationships/rel-003.yaml
+    - id: urn:ekl:relationship:head-customer-operations-owns-customer-management
+      type: owns
+      location: relationships/rel-004.yaml
+    - id: urn:ekl:relationship:data-retention-applies-to-customer-management
+      type: applies_to
+      location: relationships/rel-005.yaml

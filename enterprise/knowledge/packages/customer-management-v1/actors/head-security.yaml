@@ -1,0 +1,30 @@
+
+metadata:
+  id: urn:ekl:actor:head-security
+  name: Head of Security
+  version: 1.0.0
+  status: Normative
+  authority: urn:ekl:actor:lead-enterprise-architect
+  owner: urn:ekl:actor:head-security
+  created_at: 2026-07-23T00:00:00Z
+  updated_at: 2026-07-23T00:00:00Z
+language:
+  requires: ">=1.0.0"
+conformance:
+  minimum_level: 3
+semantics:
+  type: Actor
+  ontology: ONT-001
+  grammar: CAP-GRAM-001
+canonical:
+  id: urn:ekl:actor:head-security
+  type: Actor
+  name: Head of Security
+  description: Senior manager responsible for platform security, risk management, and compliance.
+  state: Operational
+  authority: urn:ekl:actor:lead-enterprise-architect
+  owner: urn:ekl:actor:head-security
+  evidence: [urn:ekl:evidence:job-description]
+  constraints: []
+  projections: {}
+  history: []

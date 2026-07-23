@@ -1,0 +1,74 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://enterprise-os.io/schema/artifact.schema.yaml
+title: EKL Artifact Schema
+description: Universal schema for all EKL artifacts
+type: object
+required:
+  - metadata
+  - language
+  - conformance
+properties:
+  metadata:
+    type: object
+    required:
+      - id
+      - name
+      - version
+      - status
+      - authority
+      - owner
+      - created_at
+      - updated_at
+    properties:
+      id:
+        type: string
+        description: Unique artifact identifier
+      name:
+        type: string
+        description: Human-readable artifact name
+      version:
+        type: string
+        pattern: '^\d+\.\d+\.\d+$'
+        description: Semantic version
+      status:
+        type: string
+        enum:
+          - Concept
+          - Draft
+          - Normative
+          - Deprecated
+          - Retired
+      authority:
+        type: string
+        description: Authority entity ID
+      owner:
+        type: string
+        description: Owner entity ID
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+      description:
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+  language:
+    type: object
+    required:
+      - requires
+    properties:
+      requires:
+        type: string
+  conformance:
+    type: object
+    required:
+      - minimum_level
+    properties:
+      minimum_level:
+        type: integer
+        minimum: 0
+        maximum: 5

@@ -1,0 +1,23 @@
+
+metadata:
+  id: urn:ekl:relationship:customer-portal-uses-authentication
+  name: Customer Portal Requires Authentication
+  version: 1.0.0
+  status: Normative
+  authority: urn:ekl:actor:lead-enterprise-architect
+  owner: urn:ekl:actor:head-security
+  created_at: 2026-07-23T00:00:00Z
+  updated_at: 2026-07-23T00:00:00Z
+language:
+  requires: ">=1.0.0"
+conformance:
+  minimum_level: 3
+relationship:
+  id: urn:ekl:relationship:customer-portal-uses-authentication
+  type: implemented_by
+  source: urn:ekl:business-service:customer-portal
+  target: urn:ekl:platform-capability:authentication
+  evidence: [urn:ekl:evidence:iso-27001]
+  constraints: []
+  projections: {}
+  history: []

@@ -1,0 +1,30 @@
+
+metadata:
+  id: urn:ekl:evidence:iso-27001
+  name: ISO 27001 Certification
+  version: 1.0.0
+  status: Normative
+  authority: urn:ekl:actor:lead-enterprise-architect
+  owner: urn:ekl:actor:head-security
+  created_at: 2026-07-23T00:00:00Z
+  updated_at: 2026-07-23T00:00:00Z
+language:
+  requires: ">=1.0.0"
+conformance:
+  minimum_level: 3
+semantics:
+  type: Evidence
+  ontology: ONT-001
+  grammar: CAP-GRAM-001
+canonical:
+  id: urn:ekl:evidence:iso-27001
+  type: Evidence
+  name: ISO 27001 Information Security Certification
+  description: ISO 27001 certification for information security management, validating platform security controls.
+  state: Operational
+  authority: urn:ekl:actor:lead-enterprise-architect
+  owner: urn:ekl:actor:head-security
+  evidence: [urn:ekl:evidence:certificate-2026]
+  constraints: []
+  projections: {}
+  history: []

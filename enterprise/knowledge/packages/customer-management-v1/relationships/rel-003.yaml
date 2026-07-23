@@ -1,0 +1,23 @@
+
+metadata:
+  id: urn:ekl:relationship:lead-enterprise-architect-governs-customer-management
+  name: Customer Management Governed by Data Retention
+  version: 1.0.0
+  status: Normative
+  authority: urn:ekl:actor:lead-enterprise-architect
+  owner: urn:ekl:actor:head-security
+  created_at: 2026-07-23T00:00:00Z
+  updated_at: 2026-07-23T00:00:00Z
+language:
+  requires: ">=1.0.0"
+conformance:
+  minimum_level: 3
+relationship:
+  id: urn:ekl:relationship:lead-enterprise-architect-governs-customer-management
+  type: governs
+  source: urn:ekl:actor:lead-enterprise-architect
+  target: urn:ekl:business-capability:customer-management
+  evidence: [urn:ekl:evidence:legal-review-2026]
+  constraints: []
+  projections: {}
+  history: []

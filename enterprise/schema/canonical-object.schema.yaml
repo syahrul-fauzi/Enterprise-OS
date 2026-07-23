@@ -1,0 +1,138 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://enterprise-os.io/schema/canonical-object.schema.yaml
+title: EKL Canonical Object Schema
+description: Schema for EKL canonical objects
+type: object
+required:
+  - metadata
+  - language
+  - conformance
+  - semantics
+  - canonical
+properties:
+  metadata:
+    $ref: '#/definitions/Metadata'
+  language:
+    $ref: '#/definitions/Language'
+  conformance:
+    $ref: '#/definitions/Conformance'
+  semantics:
+    type: object
+    required:
+      - type
+      - ontology
+      - grammar
+    properties:
+      type:
+        type: string
+      ontology:
+        type: string
+      grammar:
+        type: string
+  canonical:
+    type: object
+    required:
+      - id
+      - type
+      - name
+      - description
+      - state
+      - authority
+      - owner
+      - evidence
+      - constraints
+    properties:
+      id:
+        type: string
+        format: uri
+        description: Canonical URI for the object, e.g., urn:ekl:business-capability:customer-management
+      type:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      state:
+        type: string
+        enum:
+          - Concept
+          - Development
+          - Operational
+          - Deprecated
+          - Retired
+      authority:
+        type: string
+      owner:
+        type: string
+      evidence:
+        type: array
+        items:
+          type: string
+      constraints:
+        type: array
+        items:
+          type: string
+      projections:
+        type: object
+      history:
+        type: array
+definitions:
+  Metadata:
+    type: object
+    required:
+      - id
+      - name
+      - version
+      - status
+      - authority
+      - owner
+      - created_at
+      - updated_at
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      version:
+        type: string
+        pattern: '^\d+\.\d+\.\d+$'
+      status:
+        type: string
+        enum:
+          - Concept
+          - Draft
+          - Normative
+          - Deprecated
+          - Retired
+      authority:
+        type: string
+      owner:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+      description:
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+  Language:
+    type: object
+    required:
+      - requires
+    properties:
+      requires:
+        type: string
+  Conformance:
+    type: object
+    required:
+      - minimum_level
+    properties:
+      minimum_level:
+        type: integer
+        minimum: 0
+        maximum: 5

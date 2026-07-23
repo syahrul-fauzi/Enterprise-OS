@@ -1,0 +1,105 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://enterprise-os.io/schema/relationship.schema.yaml
+title: EKL Relationship Schema
+description: Schema for EKL relationship artifacts
+type: object
+required:
+  - metadata
+  - language
+  - conformance
+  - relationship
+properties:
+  metadata:
+    $ref: '#/definitions/Metadata'
+  language:
+    $ref: '#/definitions/Language'
+  conformance:
+    $ref: '#/definitions/Conformance'
+  relationship:
+    type: object
+    required:
+      - id
+      - type
+      - source
+      - target
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      source:
+        type: string
+      target:
+        type: string
+      evidence:
+        type: array
+        items:
+          type: string
+      constraints:
+        type: array
+        items:
+          type: string
+      projections:
+        type: object
+      history:
+        type: array
+definitions:
+  Metadata:
+    type: object
+    required:
+      - id
+      - name
+      - version
+      - status
+      - authority
+      - owner
+      - created_at
+      - updated_at
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      version:
+        type: string
+        pattern: '^\d+\.\d+\.\d+$'
+      status:
+        type: string
+        enum:
+          - Concept
+          - Draft
+          - Normative
+          - Deprecated
+          - Retired
+      authority:
+        type: string
+      owner:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+      description:
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+  Language:
+    type: object
+    required:
+      - requires
+    properties:
+      requires:
+        type: string
+  Conformance:
+    type: object
+    required:
+      - minimum_level
+    properties:
+      minimum_level:
+        type: integer
+        minimum: 0
+        maximum: 5

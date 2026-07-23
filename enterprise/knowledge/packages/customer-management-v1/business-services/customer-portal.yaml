@@ -1,0 +1,30 @@
+
+metadata:
+  id: urn:ekl:business-service:customer-portal
+  name: Customer Portal Business Service
+  version: 1.0.0
+  status: Normative
+  authority: urn:ekl:actor:lead-enterprise-architect
+  owner: urn:ekl:actor:head-customer-operations
+  created_at: 2026-07-23T00:00:00Z
+  updated_at: 2026-07-23T00:00:00Z
+language:
+  requires: ">=1.0.0"
+conformance:
+  minimum_level: 3
+semantics:
+  type: BusinessService
+  ontology: ONT-001
+  grammar: CAP-GRAM-001
+canonical:
+  id: urn:ekl:business-service:customer-portal
+  type: BusinessService
+  name: Customer Portal
+  description: Web-based self-service portal for customers to manage profiles, view invoices, submit requests, and interact with support.
+  state: Operational
+  authority: urn:ekl:actor:lead-enterprise-architect
+  owner: urn:ekl:actor:head-customer-operations
+  evidence: [urn:ekl:evidence:iso-9001]
+  constraints: [urn:ekl:constraint:gdpr]
+  projections: {}
+  history: []

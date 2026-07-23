@@ -1,0 +1,32 @@
+metadata:
+  id: LIB-ACTOR
+  name: EKL Standard Library — Actor
+  version: 1.0.0
+  status: Normative
+  authority: ACT-LEAD-ENTERPRISE-ARCHITECT
+  owner: ACT-LEAD-ENTERPRISE-ARCHITECT
+  created_at: 2026-07-23T00:00:00Z
+  updated_at: 2026-07-23T00:00:00Z
+  description: >
+    Defines the Actor type for EKL, representing a person, system, or organization that interacts with the enterprise.
+language:
+  requires: ">=1.0.0"
+conformance:
+  minimum_level: 3
+type:
+  id: Actor
+  description: >
+    An entity that performs actions or makes decisions within the enterprise.
+  grammar: CAP-GRAM-001
+  ontology: ONT-001
+  properties:
+    - name: name
+      type: string
+      required: true
+    - name: description
+      type: string
+      required: true
+    - name: state
+      type: enum
+      values: [Concept, Development, Operational, Deprecated, Retired]
+      required: true

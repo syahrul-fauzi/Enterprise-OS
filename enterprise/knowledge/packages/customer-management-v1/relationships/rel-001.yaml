@@ -1,0 +1,23 @@
+
+metadata:
+  id: urn:ekl:relationship:customer-management-realizes-customer-portal
+  name: Customer Management Realizes Customer Portal
+  version: 1.0.0
+  status: Normative
+  authority: urn:ekl:actor:lead-enterprise-architect
+  owner: urn:ekl:actor:head-customer-operations
+  created_at: 2026-07-23T00:00:00Z
+  updated_at: 2026-07-23T00:00:00Z
+language:
+  requires: ">=1.0.0"
+conformance:
+  minimum_level: 3
+relationship:
+  id: urn:ekl:relationship:customer-management-realizes-customer-portal
+  type: realizes
+  source: urn:ekl:business-capability:customer-management
+  target: urn:ekl:business-service:customer-portal
+  evidence: [urn:ekl:evidence:iso-9001]
+  constraints: []
+  projections: {}
+  history: []

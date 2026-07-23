@@ -1,0 +1,131 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://enterprise-os.io/schema/manifest.schema.yaml
+title: EKL Knowledge Package Manifest Schema
+description: Schema for EKL knowledge package manifests
+type: object
+required:
+  - metadata
+  - language
+  - conformance
+  - package
+properties:
+  metadata:
+    $ref: '#/definitions/Metadata'
+  language:
+    $ref: '#/definitions/Language'
+  conformance:
+    $ref: '#/definitions/Conformance'
+  package:
+    type: object
+    required:
+      - id
+      - name
+      - version
+      - imports
+      - objects
+      - relationships
+    properties:
+      id:
+        type: string
+        format: uri
+        description: Canonical URI for the package, e.g., urn:ekl:package:customer-management:v1
+      name:
+        type: string
+      version:
+        type: string
+        pattern: '^\d+\.\d+\.\d+$'
+      imports:
+        type: array
+        items:
+          type: string
+          description: Imported packages or library types, e.g., urn:ekl:library:business-capability
+      objects:
+        type: array
+        items:
+          type: object
+          required:
+            - id
+            - type
+            - location
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+            location:
+              type: string
+      relationships:
+        type: array
+        items:
+          type: object
+          required:
+            - id
+            - type
+            - location
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+            location:
+              type: string
+definitions:
+  Metadata:
+    type: object
+    required:
+      - id
+      - name
+      - version
+      - status
+      - authority
+      - owner
+      - created_at
+      - updated_at
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      version:
+        type: string
+        pattern: '^\d+\.\d+\.\d+$'
+      status:
+        type: string
+        enum:
+          - Concept
+          - Draft
+          - Normative
+          - Deprecated
+          - Retired
+      authority:
+        type: string
+      owner:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+      description:
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+  Language:
+    type: object
+    required:
+      - requires
+    properties:
+      requires:
+        type: string
+  Conformance:
+    type: object
+    required:
+      - minimum_level
+    properties:
+      minimum_level:
+        type: integer
+        minimum: 0
+        maximum: 5

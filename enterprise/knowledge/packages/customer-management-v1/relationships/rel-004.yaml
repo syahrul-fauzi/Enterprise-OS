@@ -1,0 +1,23 @@
+
+metadata:
+  id: urn:ekl:relationship:head-customer-operations-owns-customer-management
+  name: Head Customer Operations Owns Customer Management
+  version: 1.0.0
+  status: Normative
+  authority: urn:ekl:actor:lead-enterprise-architect
+  owner: urn:ekl:actor:head-customer-operations
+  created_at: 2026-07-23T00:00:00Z
+  updated_at: 2026-07-23T00:00:00Z
+language:
+  requires: ">=1.0.0"
+conformance:
+  minimum_level: 3
+relationship:
+  id: urn:ekl:relationship:head-customer-operations-owns-customer-management
+  type: owns
+  source: urn:ekl:actor:head-customer-operations
+  target: urn:ekl:business-capability:customer-management
+  evidence: [urn:ekl:evidence:job-description]
+  constraints: []
+  projections: {}
+  history: []
