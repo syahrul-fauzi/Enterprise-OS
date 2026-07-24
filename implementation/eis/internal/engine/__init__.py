@@ -1,9 +1,3 @@
-"""
-Enterprise Intelligence Engine — orchestrator connecting compiler output to services.
-"""
-from .engine import EnterpriseIntelligenceEngine, EnterpriseIntelligencePackage
+from eis.internal.engine.runtime import EnterpriseIntelligenceRuntime
 
-__all__ = [
-    "EnterpriseIntelligenceEngine",
-    "EnterpriseIntelligencePackage",
-]
+__all__ = ["EnterpriseIntelligenceRuntime"]

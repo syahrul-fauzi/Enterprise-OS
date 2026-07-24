@@ -1,0 +1,15 @@
+id: FRIC-002
+experiment:
+  id: EXP-001-lawyershub
+timestamp: "2026-07-24"
+problem: "Activity model cannot represent responsibility, pending status, or due dates; it only records what happened, not what needs to happen."
+frequency: "recurring"
+impact:
+  severity: "medium"
+  area:
+    - operational_workflow
+    - domain_model
+possible_pattern: "Need dedicated work item entity (Task) for operational tracking."
+response: "Defer platform extraction; implement lightweight Task entity in LawyersHub."
+related_observations:
+  - OBS-003

@@ -1,0 +1,17 @@
+{
+  "name": "enterprise-os",
+  "version": "1.6.0",
+  "description": "Enterprise OS — Evidence-Driven Product Learning Platform (Kernel + Engines)",
+  "private": true,
+  "scripts": {
+    "eos:observe": "python3 implementation/eos/engines/observer/engine.py",
+    "eos:validate": "python3 implementation/eos/engines/validator/engine.py",
+    "eos:status": "python3 implementation/eos/kernel/cli/status-reader.py",
+    "eos:pattern": "python3 implementation/eos/engines/pattern/engine.py",
+    "eos:doctor": "python3 implementation/eos/engines/doctor/engine.py lawyershub",
+    "eos": "python3 implementation/eos/cli/main.py"
+  },
+  "keywords": ["enterprise-os", "evidence-driven", "governance", "kernel", "engines"],
+  "author": "",
+  "license": "MIT"
+}

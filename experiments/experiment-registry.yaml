@@ -1,0 +1,22 @@
+# EOS Experiment Registry
+#
+# This file is the single source of truth for all active, completed, and pending experiments.
+# It allows answering "What are we trying to prove?" without exploring every folder.
+#
+
+experiments:
+  - id: EXP-001
+    name: LawyersHub Capability Evolution Experiment
+    subject: LawyersHub
+    hypothesis: |
+      Evidence-driven extraction produces
+      higher engineering leverage than
+      speculative capability design.
+    current_phase: C.1 - LawyersHub Baseline Execution
+    status: running
+    evidence_count: 3
+    decision_count: 3
+    conclusion: pending
+    start_date: 2026-07-24
+    target_end_date: TBD
+

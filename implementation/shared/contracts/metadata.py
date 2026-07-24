@@ -1,14 +1,9 @@
 # Shared Metadata Contract
-from dataclasses import dataclass, field
+# Re-exporting from engine framework to avoid duplicates
 from datetime import datetime
-from typing import Optional, List, Dict, Any
-
-
-@dataclass
-class EngineMetadata:
-    engine_id: str
-    engine_version: str
-    generated_at: datetime = field(default_factory=datetime.utcnow)
+from typing import Optional, Dict, Any
+from dataclasses import dataclass, field
+from shared.engine.manifest import EngineMetadata
 
 
 @dataclass

@@ -1,0 +1,7 @@
+# Workspace Policy
+version: "1.0"
+
+workspace_rules:
+  - All workspaces must have an eos.yaml constitution
+  - All workspaces must have an evidence directory
+  - All decisions must be documented with evidence

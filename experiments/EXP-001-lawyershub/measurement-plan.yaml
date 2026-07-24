@@ -1,0 +1,123 @@
+# EXP-001 Measurement Plan
+#
+# This file tracks all measurements for the LawyersHub experiment.
+# All metrics should be recorded here as data becomes available.
+#
+
+experiment:
+  id: EXP-001
+  name: LawyersHub Capability Evolution Experiment
+
+---
+
+# Delivery Metrics
+delivery:
+  bootstrap_time:
+    start: "2026-07-24"
+    end: null
+    unit: minutes
+    notes: Time to set up and run LawyersHub from scratch
+  first_vertical_slice_time:
+    start: "2026-07-24"
+    end: null
+    unit: hours
+    notes: Time to build the first complete vertical slice
+  deployment_frequency:
+    value: null
+    notes: Deployments per week
+  change_lead_time:
+    value: null
+    unit: hours
+    notes: Time from commit to production deployment
+  change_failure_rate:
+    value: null
+    notes: Percentage of deployments that cause issues
+  recovery_time:
+    value: null
+    unit: minutes
+    notes: Time to recover from a failure
+
+---
+
+# Quality Metrics
+quality:
+  production_readiness_score:
+    value: null
+    notes: Score from production readiness assessment
+  defect_rate:
+    value: null
+    notes: Number of defects found per 1000 LOC
+  rework_effort:
+    value: null
+    unit: hours
+    notes: Time spent reworking code
+
+---
+
+# Complexity Metrics
+complexity:
+  repository_size:
+    value: null
+    unit: MB
+    notes: Size of the repository
+  number_of_services:
+    value: 1
+    notes: Number of separate services
+  number_of_dependencies:
+    value: null
+    notes: Number of external dependencies
+  custom_components:
+    value: null
+    notes: Number of custom-built components
+  duplicated_logic:
+    value: null
+    unit: lines
+    notes: Number of duplicate lines of code
+  duplicated_dependencies:
+    value: null
+    notes: Number of duplicate dependency declarations
+  shared_patterns:
+    value: null
+    notes: Number of patterns observed across the codebase
+  workspace_coupling:
+    value: null
+    notes: Qualitative or quantitative measure of workspace coupling
+
+---
+
+# Decision Intelligence Metrics
+decision:
+  doctor_runs:
+    value: 0
+    notes: Number of times Doctor engine was run
+  decision_objects:
+    value: 1
+    notes: Number of Decision Objects created
+  accepted_recommendations:
+    value: 0
+    notes: Number of Doctor recommendations accepted
+  invalidated_assumptions:
+    value: 0
+    notes: Number of initial assumptions invalidated
+  rejected_recommendations:
+    value: 0
+  confidence_average:
+    value: null
+    notes: Average confidence of Doctor recommendations (0-1)
+
+---
+
+# Learning Metrics
+learning:
+  validated_patterns:
+    value: 0
+    notes: Number of patterns that were validated
+  invalidated_patterns:
+    value: 0
+    notes: Number of patterns that were invalidated
+  extracted_capabilities:
+    value: 0
+    notes: Number of capabilities that were extracted
+  rejected_extractions:
+    value: 0
+    notes: Number of capability extractions that were rejected

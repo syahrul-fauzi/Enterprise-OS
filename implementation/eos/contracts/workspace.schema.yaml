@@ -1,0 +1,73 @@
+# EOS Workspace Constitution Schema
+version: "1.3"
+type: object
+properties:
+  workspace:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the workspace
+    required:
+      - name
+  lifecycle:
+    type: object
+    properties:
+      phase:
+        type: string
+      status:
+        type: string
+  contracts:
+    type: object
+    properties:
+      evidence:
+        type: string
+        enum: [required, optional]
+      tests:
+        type: string
+        enum: [required, optional]
+      deployment:
+        type: string
+        enum: [required, optional]
+  production:
+    type: object
+    properties:
+      target:
+        type: object
+        properties:
+          readiness:
+            type: number
+  quality:
+    type: object
+    properties:
+      coverage:
+        type: object
+        properties:
+          minimum:
+            type: number
+  technology:
+    type: object
+    properties:
+      backend:
+        type: object
+        properties:
+          language:
+            type: string
+          framework:
+            type: string
+      frontend:
+        type: object
+        properties:
+          language:
+            type: string
+          framework:
+            type: string
+  evidence:
+    type: object
+    properties:
+      enabled:
+        type: boolean
+      directory:
+        type: string
+required:
+  - workspace

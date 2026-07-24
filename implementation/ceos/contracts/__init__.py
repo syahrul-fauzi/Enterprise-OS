@@ -1,7 +1,16 @@
-# CEOS Engine Contracts (Public API)
+"""
+CEOS Contracts: AuthorizationDecision and related classes
+"""
 from ceos.contracts.authorization_decision import (
     AuthorizationDecision,
-    AuthorizationStatus,
+    AuthorizationDecisionMetadata,
+    PolicyEvaluation,
+    DecisionStatus
 )
 
-__all__ = ["AuthorizationDecision", "AuthorizationStatus"]
+__all__ = [
+    "AuthorizationDecision",
+    "AuthorizationDecisionMetadata",
+    "PolicyEvaluation",
+    "DecisionStatus"
+]

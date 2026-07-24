@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Optional, Any
 from shared.engine.context import EngineContext
 from shared.engine.result import EngineResult
-from shared.engine.manifest import EngineManifest
+from shared.engine.manifest import ExecutionManifest, EngineMetadata
 from shared.engine.evidence import BaseEngineEvidence
 
 
@@ -17,6 +17,10 @@ class EngineRuntime(ABC, Generic[InputT, OutputT, EvidenceT]):
     Base Interface for all EOS Engine Runtimes!
     Every engine must implement this interface!
     """
+    @abstractmethod
+    def get_engine_metadata(self) -> EngineMetadata:
+        """Get static metadata about this engine!"""
+        pass
 
     @abstractmethod
     def execute(
@@ -28,5 +32,5 @@ class EngineRuntime(ABC, Generic[InputT, OutputT, EvidenceT]):
         pass
 
     @abstractmethod
-    def replay(self, manifest: EngineManifest, **kwargs: Any) -> EngineResult[OutputT, EvidenceT]:
+    def replay(self, manifest: ExecutionManifest, **kwargs: Any) -> EngineResult[OutputT, EvidenceT]:
         pass

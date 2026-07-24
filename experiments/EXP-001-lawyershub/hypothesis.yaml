@@ -1,0 +1,21 @@
+experiment:
+  id: EXP-001
+  name: LawyersHub Capability Evolution Experiment
+
+hypothesis:
+  statement: >
+    Evidence-driven extraction produces
+    higher engineering leverage than
+    speculative capability design.
+
+success_metrics:
+  - bootstrap_time
+  - duplicate_reduction
+  - capability_reuse
+  - engineering_leverage_ratio
+  - production_readiness
+
+invalidation:
+  - extraction_cost_exceeds_benefit
+  - capability_not_reused
+  - decision_quality_low

@@ -1,0 +1,35 @@
+id: DEC-006
+experiment:
+  id: EXP-001-lawyershub
+timestamp: "2026-07-24"
+decision: "Create lightweight Task entity for Matter operational tracking"
+context:
+  problem: "Activity model cannot represent responsibility or pending work items; lawyers need actionable task tracking."
+  constraint:
+    - Must integrate with existing Matter lifecycle
+    - Must generate audit trail and activity timeline events
+    - Keep complexity low (avoid premature workflow platform)
+evidence:
+  observations:
+    - Lawyers need to track pending actions
+    - Activity timeline is insufficient for work management
+  friction_records:
+    - FRIC-002: Activity model cannot represent responsibility
+alternatives:
+  - option: "Generic activity only"
+    rejected_reason: "Cannot track responsibility or status of pending work items."
+  - option: "Full workflow engine"
+    rejected_reason: "Premature optimization without evidence of workflow complexity."
+  - option: "Lightweight Task entity"
+    selected: true
+selected_option: "Lightweight Task entity with status tracking, assignee, due date"
+expected_outcome:
+  - Better operational visibility of matter work
+  - Clear audit trail of task completion
+  - Sufficiently flexible for future evolution
+outcome:
+  status: "pending"
+  observed_impact: ""
+learning:
+  what_changed: "Added Task entity to track operational work on Matters"
+  future_recommendation: "Validate Task complexity before adding more workflow features or a dedicated workflow engine."

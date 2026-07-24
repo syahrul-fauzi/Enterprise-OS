@@ -12,10 +12,10 @@ class RoadmapItem:
     title: str
     description: str
     source_portfolio_items: List[str]  # List of portfolio item IDs
+    source_analyzer: str
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
     dependencies: List[str] = field(default_factory=list)  # List of roadmap item IDs
-    source_analyzer: str
     generated_at: datetime = field(default_factory=datetime.utcnow)
     metadata: Dict[str, Any] = field(default_factory=dict)
 

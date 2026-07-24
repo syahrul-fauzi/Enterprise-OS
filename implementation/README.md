@@ -30,21 +30,26 @@ All code in `implementation/` is engine-oriented—components that implement the
 
 ### Core Identity
 
-Enterprise OS consists of two distinct worlds that must be strictly separated:
+Enterprise OS consists of four distinct worlds that must be strictly separated:
 
 ```
 Enterprise Knowledge
         │
         ▼
-Reference Engine
+Enterprise Engine Framework
         │
         ▼
-Business Products
+Enterprise Engines
+        │
+        ▼
+Workspace
 ```
 
 This means:
 - `enterprise/` defines **What** the Enterprise is
-- `implementation/` implements **How** the Enterprise is executed
+- `shared/engine/` provides **How engines are executed** (pure framework, no domain logic)
+- `implementation/<engine>/` implements **What each engine does** (domain-specific logic)
+- `workspace/` composes **How capabilities are delivered to users**
 
 ---
 
@@ -65,6 +70,13 @@ This means:
 
               implementation/
           (Reference Engine Platform)
+              ├─ shared/engine/ → Enterprise Engine Framework
+              ├─ ekl/
+              ├─ eke/
+              ├─ eis/
+              ├─ eaeo/
+              ├─ ceos/
+              └─ mos/
 
                        │
                        ▼
@@ -214,7 +226,7 @@ Every component of `implementation/` has a clear, single bounded context:
                   MOS
   ─────────────────────────────────────────────────────────────
       Governance Context (Meta)
-  implementation/governance
+  implementation/architecture
   ─────────────────────────────────────────────────────────────
   Shared Technical Context
   implementation/shared
@@ -233,7 +245,7 @@ Every component of `implementation/` has a clear, single bounded context:
 | Planning             | `implementation/eaeo/`  | Mission planning, capability orchestration, scheduling                          | Enterprise Intelligence Package | Mission Contract |
 | Constitutional       | `implementation/ceos/`  | Policy and constitutional evaluation, authorization decisions                  | Mission Contract           | Authorization Decision                   |
 | Runtime              | `implementation/mos/`   | Mission execution, evidence collection, replay, observation                    | Authorization Decision     | Execution Ledger + Evidence Bundle + Mission Learning |
-| Architecture         | `implementation/governance/` | Meta-context: enforces implementation constitution, fitness functions, architectural rules | Implementation source code | Architecture Diagnostics                 |
+| Architecture         | `implementation/architecture/` | Meta-context: enforces implementation constitution, fitness functions, architectural rules | Implementation source code | Architecture Diagnostics                 |
 | Technical Shared     | `implementation/shared/`| Cross‑cutting technical utilities only (no domain logic)                       | —                          | Serialization, Diagnostics, SDK primitives |
 
 ---
@@ -453,6 +465,13 @@ Shared components are only for cross-engine concerns, never domain logic!
 ```
 implementation/
     shared/
+        engine/         # Enterprise Engine Framework (PURE FRAMEWORK ONLY - NO DOMAIN LOGIC!)
+            context.py
+            runtime.py
+            result.py
+            evidence.py
+            manifest.py
+            diagnostics.py
         contracts/      # Cross-engine protocol/envelope/metadata (NO domain contracts)
         diagnostics/
         serialization/
@@ -463,7 +482,21 @@ implementation/
         storage/
 ```
 
-**Forbidden in `shared/`:**
+**What's in `shared/engine/` (Enterprise Engine Framework):
+- `EngineContext`: Execution context, correlation ID, provenance
+- `EngineRuntime[Input, Output, Evidence]`: Generic runtime interface (type-safe!)
+- `EngineResult[Output, Evidence]`: Base result class
+- `BaseEngineEvidence`: Base class for engine-specific evidence
+- `EngineManifest`: Engine execution manifest
+- `EngineDiagnostic`: Base diagnostic class and engine
+- `EngineDiagnosticEngine`: Diagnostic collection engine
+
+**Forbidden in `shared/engine/` (EOS-ARCH-004 - Framework Purity Rule):**
+- ❌ Imports from any engine-specific packages (eke, eis, eaeo, ceos, mos)
+- ❌ Any domain-specific concepts (KnowledgePackage, Finding, MissionContract, AuthorizationDecision, ExecutionLedger, etc.)
+- ❌ Any logic that belongs to a specific engine's bounded context
+
+**Forbidden in all of `shared/` (in general):**
 - Knowledge
 - Governance
 - Capability
@@ -643,14 +676,16 @@ All projects in `implementation/` must comply with:
 5. **No Product Logic** — no LawyersHub, Services-ID, or IndonesiaLawyersClub specific logic in engines.
 6. **Dependency Direction** — dependencies only flow from specification → engine → SDK → capability/platform, never reverse.
 7. **Evidence First** — every important decision, validation, or transformation must produce auditable artifacts.
-8. **Layer Purity** — every layer may only know the layer below it via defined contracts. The three verb roles are fixed:
+8. **Layer Purity** — every layer may only know the layer below it via defined contracts. The four verb roles are fixed:
    - `enterprise/` → **defines**
-   - `implementation/` → **implements**
+   - `shared/engine/` → **provides mechanisms** (pure framework!)
+   - `implementation/<engine>/` → **implements** domain logic
    - `workspace/` → **composes**
    These roles never change or reverse.
 9. **Engine Independence** — every engine must be independently executable, testable, packageable, and scalable.
 10. **Contract Ownership** — every public contract is explicitly owned by exactly one engine, located in that engine's `contracts/` directory.
 11. **Engine Triad** — every engine MUST have `internal/`, `api/`, and `contracts/` directories.
+12. **EOS-ARCH-004 - Framework Purity Rule** — `shared/engine/` is strictly a **pure infrastructure framework**; it may never contain domain logic or depend on any engine-specific artifacts!
 
 ---
 
@@ -720,7 +755,7 @@ implementation/
 
 EOS is not just an architecture—it is an architecture with **machine-enforceable governance**. The governance system ensures all constitutional rules are followed automatically through fitness functions and architecture rule checks.
 
-The governance system lives in `implementation/governance/`:
+The governance system lives in `implementation/architecture/`:
 ```
 implementation/
     governance/
@@ -740,23 +775,25 @@ implementation/
 #### Running Architecture Checks
 To verify the architecture follows all rules, run:
 ```bash
-cd implementation/governance
+cd implementation/architecture
 python check_architecture.py
 ```
 
 This will execute all fitness functions and return a PASS/FAIL status. These checks should be integrated into CI/CD pipelines to enforce architectural rules on every commit.
 
 #### Architecture Rules
-All architecture rules are defined in `governance/architecture_rules/` using YAML, including:
-1. `eos_arch_001_no_reverse_dependency.yaml`: Dependencies only flow from lower to higher layers
-2. `eos_arch_002_public_api_only.yaml`: External consumers may only import from `api/` or `contracts/`
-3. `eos_arch_003_no_business_logic_in_shared.yaml`: Shared may not contain domain‑specific logic
+All architecture rules are defined and enforced via fitness functions, including:
+1. `eos_arch_001_no_reverse_dependency`: Dependencies only flow from lower to higher layers
+2. `eos_arch_002_public_api_only`: External consumers may only import from `api/` or `contracts/`
+3. `eos_arch_003_no_business_logic_in_shared`: Shared may not contain domain‑specific logic
+4. `eos_arch_004_framework_purity`: `shared/engine/` is strictly a pure framework with no domain logic or engine-specific dependencies
 
 #### Architectural Fitness Functions
 Fitness functions are executable checks that verify compliance with rules:
 - `check_public_api_only`: Ensures no imports from `internal/` outside an engine
 - `check_no_reverse_dependency`: Ensures dependencies flow in correct direction
 - `check_no_business_logic_in_shared`: Ensures shared has no domain logic
+- `check_framework_purity (EOS-ARCH-004)`: Ensures shared/engine/ contains no domain-specific terms or engine imports
 
 ---
 

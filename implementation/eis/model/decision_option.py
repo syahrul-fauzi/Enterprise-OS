@@ -12,10 +12,10 @@ class DecisionOption:
     title: str
     description: str
     source_recommendations: List[str]  # List of recommendation IDs
+    source_analyzer: str
     cost_estimate: Optional[str] = None
     time_estimate: Optional[str] = None
     risk_estimate: Optional[str] = None
-    source_analyzer: str
     generated_at: datetime = field(default_factory=datetime.utcnow)
     metadata: Dict[str, Any] = field(default_factory=dict)
 

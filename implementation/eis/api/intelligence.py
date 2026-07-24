@@ -11,18 +11,21 @@ from eis.api.result import (
 )
 from eis.contracts.intelligence_package import EnterpriseIntelligencePackage
 from eke.contracts.knowledge_package import KnowledgePackage
-from eis.internal.engine.engine import EnterpriseIntelligenceEngine as InternalEngine
+from eis.internal.engine.runtime import EnterpriseIntelligenceRuntime as InternalRuntime
 from eis.internal.diagnostics import AnalysisDiagnostic
 from eis.internal.evidence import AnalysisEvidence
+
+# Import shared engine framework types
+from shared.engine.result import EngineStatus
 
 
 class EnterpriseIntelligenceRuntime:
     """
-    Public facade for EIS Intelligence Runtime (symmetric to EKE!).
-    Single entry point is `analyze()`.
+    Public facade for EIS Intelligence Runtime!
+    Now uses shared Engine Framework!
     """
     def __init__(self):
-        self._engine = InternalEngine()
+        self._engine_runtime = InternalRuntime()
 
     def analyze(
         self,
@@ -31,53 +34,65 @@ class EnterpriseIntelligenceRuntime:
         domains: Optional[List[str]] = None
     ) -> AnalysisResult:
         """
-        Execute full intelligence pipeline: KnowledgePackage → EnterpriseIntelligencePackage.
-        Single public entry point (symmetric to EKE's compile())!
+        Execute full intelligence pipeline: KnowledgePackage → EnterpriseIntelligencePackage!
         """
-        start = time.time()
-        try:
-            # Run internal engine
-            intel_package, analysis_evidence = self._engine.execute(
-                knowledge_package=knowledge_package,
-                analyzer_ids=analyzer_ids,
-                domains=domains
-            )
+        result = self._engine_runtime.execute(
+            knowledge_package,
+            analyzer_ids=analyzer_ids,
+            domains=domains
+        )
 
-            # Calculate metrics
-            metrics = Metrics(
-                duration_seconds=time.time() - start,
-                findings_count=len(intel_package.manifest.findings),
-                insights_count=len(intel_package.manifest.insights),
-                recommendations_count=len(intel_package.manifest.recommendations),
-                decision_options_count=len(intel_package.manifest.decision_options),
-                portfolio_items_count=len(intel_package.manifest.portfolio_items),
-                roadmap_items_count=len(intel_package.manifest.roadmap_items)
-            )
+        # Convert engine framework result to existing API's format
+        old_status = Status.SUCCESS if result.status == EngineStatus.SUCCESS else Status.FAILURE
+        old_diagnostics = [
+            AnalysisDiagnostic(
+                code=d.code,
+                severity=d.severity.value,
+                message=d.message,
+                source=d.source
+            ) for d in result.diagnostics
+        ]
 
-            # Create evidence bundle
-            evidence = EvidenceBundle(
+        # Build metrics based on output artifact
+        findings_count = 0
+        insights_count = 0
+        recommendations_count = 0
+        decision_options_count = 0
+        portfolio_items_count = 0
+        roadmap_items_count = 0
+        if result.output_artifact:
+            findings_count = len(result.output_artifact.manifest.findings)
+            insights_count = len(result.output_artifact.manifest.insights)
+            recommendations_count = len(result.output_artifact.manifest.recommendations)
+            decision_options_count = len(result.output_artifact.manifest.decision_options)
+            portfolio_items_count = len(result.output_artifact.manifest.portfolio_items)
+            roadmap_items_count = len(result.output_artifact.manifest.roadmap_items)
+
+        old_metrics = Metrics(
+            duration_seconds=result.duration_seconds,
+            findings_count=findings_count,
+            insights_count=insights_count,
+            recommendations_count=recommendations_count,
+            decision_options_count=decision_options_count,
+            portfolio_items_count=portfolio_items_count,
+            roadmap_items_count=roadmap_items_count
+        )
+
+        old_evidence = None
+        if result.evidence:
+            old_evidence = EvidenceBundle(
                 evidence_id=str(uuid.uuid4()),
-                analysis_evidence=analysis_evidence
+                analysis_evidence=result.evidence
             )
 
-            # Return AnalysisResult
-            return AnalysisResult(
-                status=Status.SUCCESS,
-                intelligence_package=intel_package,
-                metrics=metrics,
-                evidence=evidence,
-                duration=time.time() - start
-            )
-        except Exception as e:
-            return AnalysisResult(
-                status=Status.FAILURE,
-                diagnostics=[AnalysisDiagnostic(
-                    code="EIS-001",
-                    severity="error",
-                    message=str(e)
-                )],
-                duration=time.time() - start
-            )
+        return AnalysisResult(
+            status=old_status,
+            intelligence_package=result.output_artifact,
+            metrics=old_metrics,
+            evidence=old_evidence,
+            diagnostics=old_diagnostics,
+            duration=result.duration_seconds
+        )
 
     def replay(
         self,
@@ -86,9 +101,8 @@ class EnterpriseIntelligenceRuntime:
     ) -> AnalysisResult:
         """
         Re-execute analysis deterministically from saved evidence!
-        Symmetric to EKE's replay!
         """
-        # Re-use the same analyzer_ids (or domains) from evidence
+        # TODO: Implement replay using the new framework's replay method
         return self.analyze(
             knowledge_package=knowledge_package,
             analyzer_ids=analysis_evidence.analyzer_ids

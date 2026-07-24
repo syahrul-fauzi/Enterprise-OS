@@ -1,0 +1,11 @@
+{
+  "product": "lawyershub",
+  "generated_at": "2026-07-24T06:54:22.465731",
+  "production_readiness_score": 80,
+  "total_rules": 7,
+  "passed_rules": 4,
+  "failed_rules": 3,
+  "total_actions": 6,
+  "ready_actions": 3,
+  "blocked_actions": 3
+}

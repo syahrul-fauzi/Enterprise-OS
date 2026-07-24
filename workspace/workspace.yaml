@@ -1,0 +1,240 @@
+
+workspace:
+
+  name: enterprise-workspace
+
+  version: "1.0"
+
+  description:
+    Enterprise operating workspace for legal technology ecosystem
+
+
+organization:
+
+  domain:
+    - legal-technology
+
+  products:
+    - lawyershub
+    - services-id
+    - indonesialawyersclub
+
+
+
+
+architecture:
+
+  model:
+
+    type:
+      - product-oriented
+      - capability-driven
+
+
+  layers:
+
+    products:
+      path: products/
+
+
+    capabilities:
+      path: capabilities/
+
+
+    platforms:
+      path: platforms/
+
+
+    contracts:
+      path: contracts/
+
+
+    decisions:
+      path: decisions/
+
+
+    infrastructure:
+      path: infrastructure/
+
+
+
+
+technology:
+
+
+  backend:
+
+    supported:
+
+      - python
+      - java
+      - nodejs
+
+
+  frontend:
+
+    supported:
+
+      - react
+      - nextjs
+
+
+  database:
+
+    primary:
+
+      - postgresql
+
+
+  container:
+
+    runtime:
+
+      - docker
+
+
+
+
+environments:
+
+
+  development:
+
+    purpose:
+      local development
+
+
+    resources:
+
+      database:
+        shared: true
+
+
+
+
+  staging:
+
+    purpose:
+      integration validation
+
+
+    resources:
+
+      database:
+        isolated: true
+
+
+
+
+  production:
+
+    purpose:
+      customer facing system
+
+
+    requirements:
+
+      - monitoring
+      - backup
+      - security
+
+
+
+
+resource_sharing:
+
+
+  rules:
+
+
+    contracts:
+
+      shared:
+        true
+
+
+    capabilities:
+
+      reuse_allowed:
+        true
+
+
+    databases:
+
+      cross_product_access:
+        prohibited
+
+
+
+
+collaboration:
+
+
+  workflow:
+
+
+    change_management:
+
+
+      required:
+
+        - decision_record
+        - impact_analysis
+
+
+    development:
+
+
+      branch_strategy:
+
+        - feature
+        - release
+        - main
+
+
+
+
+governance:
+
+
+  extraction:
+
+
+    capability_requires:
+
+
+      - production_usage
+
+      - measurable_value
+
+      - multiple_consumers
+
+
+
+
+  platform_creation:
+
+
+    requires:
+
+
+      - repeated_pattern
+
+      - validated_capability
+
+      - ownership
+
+
+
+
+eos:
+
+
+  enabled:
+
+    decision_tracking: true
+
+    evidence_tracking: true
+
+    experiment_tracking: true
+

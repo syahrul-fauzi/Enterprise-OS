@@ -1,0 +1,25 @@
+# EOS Evidence Validation Rules
+version: "1.0"
+
+rules:
+  - name: "evidence_exists"
+    description: "Evidence file exists and is readable"
+    type: "file"
+    enabled: true
+
+  - name: "timestamp_exists"
+    description: "Evidence has a valid timestamp"
+    type: "content"
+    enabled: true
+    required: true
+
+  - name: "source_traceable"
+    description: "Evidence source is clear and traceable"
+    type: "content"
+    enabled: true
+
+  - name: "markdown_format"
+    description: "Markdown files follow basic format (title at top)"
+    type: "format"
+    extensions: [".md"]
+    enabled: true

@@ -1,0 +1,44 @@
+id: DEC-003
+
+experiment:
+  id: EXP-001-lawyershub
+
+decision:
+  title: "Delivery process for Phase C.1"
+  action: "Use simple trunk-based delivery with no branching"
+
+context:
+  problem:
+    - Need to keep delivery simple
+    - Focus on learning, not complex branching
+  timestamp: 2026-07-24
+
+evidence:
+  observed:
+    - Single developer
+    - No parallel feature streams
+    - Rapid iteration is key
+
+alternatives:
+  - option: git_flow
+    status: rejected
+    reason: "Overly complex for single-person MVP"
+  - option: feature_branching
+    status: rejected
+    reason: "Unnecessary overhead; slows iteration"
+  - option: trunk_based
+    status: selected
+    reason: "Maximizes iteration speed, simple to manage"
+
+expected_outcome:
+  delivery:
+    - Faster time to commit
+    - Simpler deployment process
+    - Less git overhead
+
+hypothesis: "Trunk-based delivery will reduce delivery friction by 20%"
+
+status: pending_validation
+
+learning:
+  notes: "Will track lead time to validate"

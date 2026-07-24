@@ -1,0 +1,123 @@
+product: lawyershub
+generated_at: '2026-07-24T07:02:12.760410'
+total_score: 80
+category_results:
+- name: Architecture
+  weight: 20
+  passed: 1
+  total: 1
+- name: Tests
+  weight: 20
+  passed: 1
+  total: 1
+- name: Evidence
+  weight: 20
+  passed: 1
+  total: 1
+- name: Documentation
+  weight: 20
+  passed: 1
+  total: 1
+- name: Deployment
+  weight: 10
+  passed: 0
+  total: 1
+- name: Monitoring
+  weight: 5
+  passed: 0
+  total: 1
+- name: Backup
+  weight: 5
+  passed: 0
+  total: 1
+decisions:
+- decision:
+    id: DEC-001
+    type: improvement
+    priority: medium
+    impact:
+      delivery: medium
+      architecture: low
+      business: low
+    confidence: 0.9
+    evidence:
+    - PR-DEPLOY-001
+    recommended_action: Create deployment configuration
+    estimated_effort: 2d
+    expected_outcome: Improve production readiness score
+- decision:
+    id: DEC-002
+    type: improvement
+    priority: low
+    impact:
+      delivery: low
+      architecture: low
+      business: low
+    confidence: 0.9
+    evidence:
+    - PR-MONITOR-001
+    recommended_action: Create monitoring configuration
+    estimated_effort: 1d
+    expected_outcome: Improve production readiness score
+- decision:
+    id: DEC-003
+    type: improvement
+    priority: low
+    impact:
+      delivery: low
+      architecture: low
+      business: low
+    confidence: 0.9
+    evidence:
+    - PR-BACKUP-001
+    recommended_action: Create backup configuration
+    estimated_effort: 1d
+    expected_outcome: Improve production readiness score
+- decision:
+    id: DEC-004
+    type: extraction
+    priority: low
+    impact:
+      delivery: low
+      architecture: high
+      business: medium
+    confidence: 0.7
+    evidence:
+    - PAT-001
+    - PAT-002
+    - PAT-003
+    recommended_action: Extract Workspace Creation Flow
+    estimated_effort: 3d
+    expected_outcome: Reduce duplicate implementations and improve capability reuse
+- decision:
+    id: DEC-005
+    type: extraction
+    priority: low
+    impact:
+      delivery: low
+      architecture: high
+      business: medium
+    confidence: 0.7
+    evidence:
+    - PAT-001
+    - PAT-002
+    - PAT-003
+    recommended_action: "Extract Client \u2192 Matter Relationship"
+    estimated_effort: 2d
+    expected_outcome: Reduce duplicate implementations and improve capability reuse
+- decision:
+    id: DEC-006
+    type: extraction
+    priority: low
+    impact:
+      delivery: low
+      architecture: high
+      business: medium
+    confidence: 0.7
+    evidence:
+    - PAT-001
+    - PAT-002
+    - PAT-003
+    recommended_action: Extract Document Attachment Workflow
+    estimated_effort: 2d
+    expected_outcome: Reduce duplicate implementations and improve capability reuse

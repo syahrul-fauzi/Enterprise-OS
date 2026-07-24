@@ -1,0 +1,35 @@
+id: DEC-005
+experiment:
+  id: EXP-001-lawyershub
+timestamp: "2026-07-24"
+decision: "Implement lightweight state machine for Matter Lifecycle"
+context:
+  problem: "Free status mutation creates inconsistent workflows and audit gaps"
+  constraint:
+    - Need controlled matter progression through legal stages
+    - Keep complexity low for early-stage product
+    - Must support audit trail
+evidence:
+  observations:
+    - OBS-002: Activity tracking required domain changes
+    - OBS-001: Vertical slice implementation showed clear workflow patterns
+  friction_records:
+    - FRIC-001: Cross-layer friction for workflow changes
+alternatives:
+  - option: "Simple status field with no validation"
+    rejected_reason: "Prone to inconsistencies, no audit trail"
+  - option: "Enterprise BPM engine"
+    rejected_reason: "Overly complex for current stage, too much overhead"
+  - option: "Event-driven architecture"
+    rejected_reason: "Premature optimization without evidence of need"
+selected_option: "Lightweight state machine with audit trail"
+expected_outcome:
+  - Higher domain consistency
+  - Clear audit history of matter changes
+  - Low implementation complexity
+outcome:
+  status: "pending"
+  observed_impact: ""
+learning:
+  what_changed: "Established matter lifecycle workflow baseline"
+  future_recommendation: "Validate state machine complexity before introducing any workflow platform capabilities"

@@ -1,0 +1,13 @@
+# C.1 Learning Lessons
+lessons:
+  - id: LES-001
+    timestamp: 2026-07-24
+    description: "Modular monolith architecture enables fast initial delivery with clear separation of concerns"
+    evidence:
+      - "Implemented VS-001 in ~1 hour"
+      - "Clear domain/application/infrastructure layers"
+  - id: LES-002
+    timestamp: 2026-07-24
+    description: "Activity timeline should be automatically updated when domain events happen"
+    evidence:
+      - "Added automatic activity creation on matter creation, status update, document creation"

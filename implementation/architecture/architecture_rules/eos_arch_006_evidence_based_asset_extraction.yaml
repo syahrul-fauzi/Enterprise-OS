@@ -1,0 +1,11 @@
+
+id: EOS-ARCH-006
+name: Evidence-Based Asset Extraction
+description: Every reusable asset in EOS must be justified by implementation evidence
+rule: >
+  A new Capability, Package, Experience, or Platform must reference:
+  - originating product(s)
+  - implementation evidence
+  - extraction rationale
+  - expected consumers
+status: ACTIVE

@@ -26,6 +26,7 @@ class PackageMetadata:
     generated_at: datetime = field(default_factory=datetime.utcnow)
     engine_metadata: EngineMetadata = field(default_factory=lambda: EngineMetadata(
         engine_id="eke",
+        engine_name="Enterprise Knowledge Engine",
         engine_version="1.0.0"
     ))
 
@@ -57,11 +58,7 @@ class KnowledgePackage:
                 "name": self.metadata.name,
                 "description": self.metadata.description,
                 "generated_at": self.metadata.generated_at.isoformat(),
-                "engine_metadata": {
-                    "engine_id": self.metadata.engine_metadata.engine_id,
-                    "engine_version": self.metadata.engine_metadata.engine_version,
-                    "generated_at": self.metadata.engine_metadata.generated_at.isoformat()
-                }
+                "engine_metadata": self.metadata.engine_metadata.to_dict()
             },
             "manifest": [
                 {
@@ -88,11 +85,7 @@ class KnowledgePackage:
             name=data["metadata"]["name"],
             description=data["metadata"].get("description"),
             generated_at=datetime.fromisoformat(data["metadata"]["generated_at"]),
-            engine_metadata=EngineMetadata(
-                engine_id=data["metadata"]["engine_metadata"]["engine_id"],
-                engine_version=data["metadata"]["engine_metadata"]["engine_version"],
-                generated_at=datetime.fromisoformat(data["metadata"]["engine_metadata"]["generated_at"])
-            )
+            engine_metadata=EngineMetadata.from_dict(data["metadata"]["engine_metadata"])
         )
         manifest = [
             ArtifactManifest(

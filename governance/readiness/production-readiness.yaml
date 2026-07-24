@@ -1,0 +1,94 @@
+# EOS Production Readiness Rules
+version: "1.1"
+
+categories:
+  - name: "Architecture"
+    weight: 20
+    rules:
+      - id: ARCH-001
+        description: "Has an eos.yaml workspace contract"
+        type: "file_exists"
+        file_path: "eos.yaml"
+        required: true
+        priority: Critical
+        effort: "1h"
+        action_title: "Create eos.yaml workspace contract"
+        action_description: "Define the workspace constitution with lifecycle, contracts, and quality targets"
+
+  - name: "Tests"
+    weight: 20
+    rules:
+      - id: TEST-001
+        description: "Has a tests directory"
+        type: "dir_exists"
+        dir_path: "tests"
+        required: true
+        priority: High
+        effort: "2h"
+        action_title: "Create tests directory"
+        action_description: "Set up the test directory structure"
+
+  - name: "Evidence"
+    weight: 20
+    rules:
+      - id: EVID-001
+        description: "Has evidence directory"
+        type: "dir_exists"
+        dir_path: "evidence"
+        required: true
+        priority: High
+        effort: "1h"
+        action_title: "Create evidence directory"
+        action_description: "Set up the evidence collection directory"
+
+  - name: "Documentation"
+    weight: 20
+    rules:
+      - id: DOC-001
+        description: "Has a README.md"
+        type: "file_exists"
+        file_path: "README.md"
+        required: true
+        priority: Medium
+        effort: "1d"
+        action_title: "Write README.md"
+        action_description: "Document the product purpose, setup, and usage instructions"
+
+  - name: "Deployment"
+    weight: 10
+    rules:
+      - id: DEPLOY-001
+        description: "Has deployment configuration"
+        type: "dir_exists"
+        dir_path: "deployment"
+        required: false
+        priority: Medium
+        effort: "2d"
+        action_title: "Create deployment configuration"
+        action_description: "Set up deployment scripts and infrastructure definitions"
+
+  - name: "Monitoring"
+    weight: 5
+    rules:
+      - id: MONITOR-001
+        description: "Has monitoring config"
+        type: "dir_exists"
+        dir_path: "monitoring"
+        required: false
+        priority: Low
+        effort: "1d"
+        action_title: "Create monitoring configuration"
+        action_description: "Set up observability, metrics, and alerting"
+
+  - name: "Backup"
+    weight: 5
+    rules:
+      - id: BACKUP-001
+        description: "Has backup plan/config"
+        type: "dir_exists"
+        dir_path: "backup"
+        required: false
+        priority: Low
+        effort: "1d"
+        action_title: "Create backup configuration"
+        action_description: "Set up backup procedures and configuration"

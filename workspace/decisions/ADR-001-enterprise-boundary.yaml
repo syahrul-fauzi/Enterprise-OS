@@ -1,0 +1,55 @@
+
+adr:
+  id: ADR-001
+  title: Enterprise Workspace Boundary Definition
+  status: accepted
+  date: 2026-07-24
+  author: Enterprise Architecture Team
+
+  context: |
+    We need to define clear boundaries between:
+    1. Product Layer (business-facing applications)
+    2. Capability Layer (reusable business capabilities)
+    3. Platform Layer (shared infrastructure and tools)
+    4. Contract Layer (shared schemas and APIs)
+    5. Decision Layer (architecture decision records)
+    6. Infrastructure Layer (deployment and runtime)
+
+    This separation is needed to prevent monolithic coupling while enabling reuse across products (LawyersHub, Services-ID, Indonesia Lawyers Club).
+
+  decision: |
+    We will implement the enterprise workspace with the following strict boundaries:
+    - Products may only depend on capabilities and contracts, not directly on other products
+    - Capabilities must expose contracts and may not depend on products
+    - Platforms are built from validated capabilities with multiple consumers
+    - All contracts are versioned and stored in the contracts directory
+    - All decisions are recorded in the decisions directory as ADRs
+    - Infrastructure is shared but product databases are isolated
+
+  alternatives:
+    - option: Single monorepo without layers
+      pros: Simple initial setup
+      cons: Tight coupling, hard to reuse, hard to scale
+    - option: Separate repositories per product
+      pros: Complete isolation
+      cons: Duplication, no shared capability leverage, coordination overhead
+    - option: Layered monorepo (chosen)
+      pros: Clear boundaries, reuse enabled, consistent governance
+      cons: Needs strict discipline to maintain boundaries
+
+  consequences:
+    positive:
+      - Clear separation of concerns
+      - Reusable capabilities across products
+      - Consistent governance
+      - Evidence-driven platform evolution
+    negative:
+      - Requires strict boundary discipline
+      - Initial setup overhead
+      - Need for contract versioning strategy
+
+  evidence:
+    - TOGAF Capability-Based Planning (chap28)
+    - Google Cloud Platform Engineering principles
+    - Prior experience with monolithic vs layered architectures
+

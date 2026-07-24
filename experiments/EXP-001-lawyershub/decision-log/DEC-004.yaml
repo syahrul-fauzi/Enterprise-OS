@@ -1,0 +1,36 @@
+id: DEC-004
+experiment:
+  id: EXP-001-lawyershub
+timestamp: "2026-07-24"
+decision: "Use modular monolith architecture for LawyersHub"
+context:
+  problem: "Need to validate product-market fit quickly while maintaining optionality for future evolution"
+  constraint:
+    - Team size: Small (1-2 engineers)
+    - Time horizon: 30-day MVP validation
+    - Need low operational overhead initially
+evidence:
+  observations:
+    - OBS-001: Vertical slice requires multiple layers (domain, infrastructure, application)
+    - OBS-002: Activity timeline feature required cross-layer changes
+  metrics:
+    - Delivery speed: High priority
+    - Operational complexity: Low priority initially
+  friction_records:
+    - FRIC-001: Cross-layer changes for simple features
+alternatives:
+  - option: "Microservices"
+    rejected_reason: "Too much operational overhead for small team and early stage product"
+  - option: "Serverless"
+    rejected_reason: "Cold start latency issues for legal workflow, less control over architecture"
+selected_option: "Modular monolith"
+expected_outcome:
+  - Lower operational overhead initially
+  - Clear module boundaries for future extraction
+  - Faster MVP delivery speed
+outcome:
+  status: "pending"
+  observed_impact: ""
+learning:
+  what_changed: "Established modular architecture baseline"
+  future_recommendation: "Validate domain boundaries through usage before any extraction decisions"

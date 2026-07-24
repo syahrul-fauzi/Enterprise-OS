@@ -1,0 +1,18 @@
+# Pattern Agent Rules
+version: "1.0"
+
+patterns:
+  - name: "Workspace Creation Flow"
+    keywords: ["workspace", "create", "creation"]
+    description: "Pattern for creating workspaces"
+    min_occurrences: 2
+
+  - name: "Client-Matter Relationship"
+    keywords: ["client", "matter", "relationship"]
+    description: "Pattern for client matter relationship"
+    min_occurrences: 2
+
+  - name: "Document Attachment Workflow"
+    keywords: ["document", "attachment", "upload"]
+    description: "Pattern for document attachments"
+    min_occurrences: 2

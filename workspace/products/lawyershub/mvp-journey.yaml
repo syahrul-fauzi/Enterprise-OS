@@ -1,0 +1,55 @@
+# LawyersHub MVP Journey & Success Criteria
+#
+# Phase C.1 Baseline Definition
+#
+
+## MVP User Journey
+One User Journey → One Business Outcome → One Production Path
+```text
+Lawyer
+  ↓
+Create Client
+  ↓
+Create Legal Matter
+  ↓
+Track Case Activity
+  ↓
+Generate Case Status
+```
+
+## Business Capability Coverage
+TOGAF CBP Grammar (selected subset):
+```
+Legal Practice Management
+    |
+    +-- Client Management
+    |
+    +-- Matter Management
+```
+
+## Success Criteria (Definition of Done C.1)
+
+### Product
+- [ ] User can run full main workflow
+- [ ] Data is persisted correctly
+- [ ] Deployment to local/production succeeds
+- [ ] Production readiness assessment is complete
+
+### EOS
+- [ ] Observer generates observations
+- [ ] Validator produces validation results
+- [ ] Doctor creates decision reports
+- [ ] Decision Objects are recorded
+
+### Experiment
+- [ ] Baseline metrics are populated
+- [ ] Friction points are documented
+- [ ] Assumptions are tracked
+- [ ] Learning is documented
+
+## Forbidden Activities
+- ❌ No new platform capabilities
+- ❌ No reusable module extraction
+- ❌ No generic framework creation
+- ❌ No EOS engine additions
+- ❌ No premature architecture optimization

@@ -1,0 +1,17 @@
+id: OBS-002
+experiment:
+  id: EXP-001-lawyershub
+type: friction
+timestamp: 2026-07-24
+description: "Adding activity tracking required changes across domain, infrastructure, and application layers"
+finding: "To implement activity timeline functionality, the change propagated through 3 layers:
+  1. Domain layer: Added Activity model, MatterStatus enum, updated Matter model
+  2. Infrastructure layer: Added storage methods for activities and status updates
+  3. Application layer: Added API endpoints for updating matter status and managing activities"
+impact:
+  category:
+    - complexity
+    - architecture
+decision_relevance: "Validates modular boundary design; could indicate candidate for application service abstraction or event-driven architecture in future (when evidence from second product exists)"
+linked_friction:
+  - FRIC-001

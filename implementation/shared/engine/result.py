@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Any, Dict, Optional, TypeVar, Generic
 
 from shared.engine.diagnostics import EngineDiagnostic
-from shared.engine.manifest import EngineManifest
+from shared.engine.manifest import ExecutionManifest
 from shared.engine.evidence import BaseEngineEvidence
 
 
@@ -25,7 +25,7 @@ class EngineResult(Generic[OutputT, EvidenceT]):
     Base Result for all engine operations!
     """
     status: EngineStatus
-    manifest: EngineManifest
+    manifest: ExecutionManifest
     output_artifact: Optional[OutputT] = None
     diagnostics: list[EngineDiagnostic] = field(default_factory=list)
     evidence: Optional[EvidenceT] = None

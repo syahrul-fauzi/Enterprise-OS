@@ -1,7 +1,6 @@
 # Enterprise Knowledge Compiler (Public Facade)
 from pathlib import Path
 from typing import Optional
-import time
 
 from eke.api.result import (
     CompileResult,
@@ -12,93 +11,96 @@ from eke.api.result import (
     Diagnostic,
     Metrics
 )
-from eke.contracts.knowledge_package import KnowledgePackage, PackageMetadata, ArtifactManifest
-from shared.serialization.canonical import compute_artifact_hash
+from eke.contracts.knowledge_package import KnowledgePackage
+from eke.internal.engine.runtime import EnterpriseKnowledgeEngineRuntime
+
+# Import shared engine framework types
+from shared.engine.result import EngineStatus
 
 
 class EnterpriseKnowledgeCompiler:
     """
     Public facade for EKE Compiler Kernel (stateless, deterministic)
+    Now uses the shared Engine Framework!
     """
     def __init__(self):
-        pass
+        self.engine_runtime = EnterpriseKnowledgeEngineRuntime()
 
     def compile(self, source_path: str) -> CompileResult:
         """Compile enterprise knowledge source into KnowledgePackage"""
-        start = time.time()
-        try:
-            # TODO: Implement actual compiler pipeline here
-            diagnostics: list[Diagnostic] = []
-            metrics = Metrics(
-                duration_seconds=0.0,
-                artifacts_count=1
-            )
-            result = CompileResult(
-                status=Status.SUCCESS,
-                diagnostics=diagnostics,
-                metrics=metrics,
-                duration=time.time() - start
-            )
-            return result
-        except Exception as e:
-            return CompileResult(
-                status=Status.FAILURE,
-                diagnostics=[Diagnostic(level="error", message=str(e))],
-                duration=time.time() - start
-            )
+        result = self.engine_runtime.execute(Path(source_path))
+
+        # Convert engine framework result to existing CompileResult
+        old_status = Status.SUCCESS if result.status == EngineStatus.SUCCESS else Status.FAILURE
+        old_diagnostics = [
+            Diagnostic(
+                level=d.severity.value,
+                message=d.message,
+                source=d.source
+            ) for d in result.diagnostics
+        ]
+        old_metrics = Metrics(
+            duration_seconds=result.duration_seconds,
+            artifacts_count=1 if result.output_artifact else 0
+        )
+
+        return CompileResult(
+            status=old_status,
+            diagnostics=old_diagnostics,
+            metrics=old_metrics,
+            duration=result.duration_seconds
+        )
 
     def validate(self, source_path: str) -> ValidateResult:
         """Validate enterprise knowledge source"""
-        start = time.time()
+        # TODO: Implement validation using framework
+        start = __import__("time").time()
         try:
             diagnostics: list[Diagnostic] = []
             return ValidateResult(
                 status=Status.SUCCESS,
                 diagnostics=diagnostics,
-                duration=time.time() - start
+                duration=__import__("time").time() - start
             )
         except Exception as e:
             return ValidateResult(
                 status=Status.FAILURE,
                 diagnostics=[Diagnostic(level="error", message=str(e))],
-                duration=time.time() - start
+                duration=__import__("time").time() - start
             )
 
     def build_graph(self, source_path: str) -> GraphResult:
         """Build canonical knowledge graph from source"""
-        start = time.time()
+        # TODO: Implement graph build using framework
+        start = __import__("time").time()
         try:
             return GraphResult(
                 status=Status.SUCCESS,
-                duration=time.time() - start
+                duration=__import__("time").time() - start
             )
         except Exception as e:
             return GraphResult(
                 status=Status.FAILURE,
                 diagnostics=[Diagnostic(level="error", message=str(e))],
-                duration=time.time() - start
+                duration=__import__("time").time() - start
             )
 
     def package(self, source_path: str) -> PackageResult:
         """Package enterprise knowledge into KnowledgePackage"""
-        start = time.time()
-        try:
-            # Create dummy KnowledgePackage for now
-            package_metadata = PackageMetadata(
-                package_id="test-package",
-                version="1.0.0",
-                name="Test Package"
-            )
-            knowledge_package = KnowledgePackage(metadata=package_metadata)
-            knowledge_package.content_hash = knowledge_package.compute_content_hash()
-            return PackageResult(
-                status=Status.SUCCESS,
-                knowledge_package=knowledge_package,
-                duration=time.time() - start
-            )
-        except Exception as e:
-            return PackageResult(
-                status=Status.FAILURE,
-                diagnostics=[Diagnostic(level="error", message=str(e))],
-                duration=time.time() - start
-            )
+        result = self.engine_runtime.execute(Path(source_path))
+
+        old_status = Status.SUCCESS if result.status == EngineStatus.SUCCESS else Status.FAILURE
+        old_diagnostics = [
+            Diagnostic(
+                level=d.severity.value,
+                message=d.message,
+                source=d.source
+            ) for d in result.diagnostics
+        ]
+
+        return PackageResult(
+            status=old_status,
+            knowledge_package=result.output_artifact,
+            diagnostics=old_diagnostics,
+            duration=result.duration_seconds
+        )

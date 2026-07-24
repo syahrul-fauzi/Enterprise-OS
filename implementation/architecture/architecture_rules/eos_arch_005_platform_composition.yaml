@@ -1,0 +1,7 @@
+
+# EOS-ARCH-005: Platform Composition Rule
+rule_id: eos_arch_005
+rule_name: Platform Composition Rule
+description: |
+  Platforms may only depend on Experiences, Capabilities, and public Packages.
+  Platforms must NOT directly import engine internal code or implementation details.

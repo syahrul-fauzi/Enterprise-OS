@@ -1,0 +1,13 @@
+# Evidence Before Extraction Principle
+version: "1.0"
+
+core_statement: >
+  Observation → Repeated Evidence → Validated Pattern → Economic Analysis → Decision → Extraction → Reuse Validation
+
+gates:
+  1: Observation (must have)
+  2: Repeated Evidence (at least two occurrences)
+  3: Validated Pattern (stable, documented)
+  4: Economic Analysis (≥2x ELR estimate)
+  5: Extraction Decision (documented, with evidence)
+  6: Reuse Validation (measure actual impact post-extraction)

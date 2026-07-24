@@ -1,0 +1,12 @@
+id: OBS-001
+experiment:
+  id: EXP-001-lawyershub
+type: implementation
+timestamp: 2026-07-24
+description: "LawyersHub VS-001 vertical slice implemented: Client creation, Matter creation, Matter status tracking, Activity timeline"
+details:
+  - Added MatterStatus enum (open, in_progress, on_hold, closed)
+  - Added Activity model
+  - Updated Matter model with status and updated_at
+  - Added storage methods for activities and status updates
+  - Added API endpoints for updating matter status and managing activities

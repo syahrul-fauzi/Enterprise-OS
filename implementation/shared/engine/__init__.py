@@ -10,7 +10,7 @@ from shared.engine.diagnostics import (
     EngineDiagnosticEngine
 )
 from shared.engine.evidence import BaseEngineEvidence
-from shared.engine.manifest import EngineManifest
+from shared.engine.manifest import EngineMetadata, ExecutionManifest, ExecutionDetails, ArtifactDetails
 from shared.engine.result import EngineResult, EngineStatus
 from shared.engine.runtime import EngineRuntime
 
@@ -20,7 +20,10 @@ __all__ = [
     "EngineDiagnosticSeverity",
     "EngineDiagnosticEngine",
     "BaseEngineEvidence",
-    "EngineManifest",
+    "EngineMetadata",
+    "ExecutionManifest",
+    "ExecutionDetails",
+    "ArtifactDetails",
     "EngineResult",
     "EngineStatus",
     "EngineRuntime"

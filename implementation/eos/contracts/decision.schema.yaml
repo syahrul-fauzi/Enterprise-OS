@@ -1,0 +1,96 @@
+# EOS Decision Object Schema
+version: "1.6.0"
+type: object
+properties:
+  decision_id:
+    type: string
+    pattern: "^DEC-[0-9]+$"
+    description: Unique decision identifier
+  experiment_id:
+    type: string
+    pattern: "^EXP-[0-9]+$"
+    description: Experiment this decision is part of
+
+  context:
+    type: object
+    properties:
+      workspace:
+        type: string
+        description: Workspace name
+      capability:
+        type: string
+        description: Capability being considered
+      problem:
+        type: string
+        description: Problem statement being addressed
+
+  evidence:
+    type: object
+    properties:
+      observations:
+        type: array
+        items:
+          type: string
+      validations:
+        type: array
+        items:
+          type: string
+      metrics:
+        type: object
+        description: Quantitative metrics as evidence
+        additionalProperties: true
+
+  alternatives:
+    type: array
+    items:
+      type: object
+      properties:
+        option:
+          type: string
+        rejected_reason:
+          type: string
+
+  decision:
+    type: object
+    properties:
+      action:
+        type: string
+      confidence:
+        type: number
+        minimum: 0
+        maximum: 1
+
+  expected_outcome:
+    type: object
+    properties:
+      impact:
+        type: object
+        properties:
+          delivery:
+            type: string
+            enum: ["high", "medium", "low"]
+          architecture:
+            type: string
+            enum: ["high", "medium", "low"]
+          business:
+            type: string
+            enum: ["high", "medium", "low"]
+      effort:
+        type: string
+
+  outcome:
+    type: object
+    properties:
+      status:
+        type: string
+        enum: ["pending", "implemented", "rejected"]
+      actual_result:
+        type: string
+
+  learning:
+    type: object
+    properties:
+      pattern_confirmed:
+        type: boolean
+      pattern_rejected:
+        type: boolean

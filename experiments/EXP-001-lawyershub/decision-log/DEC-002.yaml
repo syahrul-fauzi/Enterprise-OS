@@ -1,0 +1,47 @@
+id: DEC-002
+
+experiment:
+  id: EXP-001-lawyershub
+
+decision:
+  title: "Technology stack for LawyersHub MVP"
+  action: "Use Python + FastAPI + SQLite"
+
+context:
+  problem:
+    - Need to deliver an MVP quickly
+    - Need simple persistence
+    - Team has Python experience
+  timestamp: 2026-07-24
+
+evidence:
+  observed:
+    - Small team
+    - Focus on learning, not high scale
+    - Fast development is priority
+
+alternatives:
+  - option: node_express
+    status: rejected
+    reason: "Team has less experience with Node.js for this context"
+  - option: java_spring
+    status: rejected
+    reason: "Too heavy for an MVP; high overhead"
+  - option: python_fastapi_sqlite
+    status: selected
+    reason: "Fast development, good tooling, suitable for MVP scale"
+
+expected_outcome:
+  delivery:
+    - Quick setup time
+    - Fast iteration cycles
+  architecture:
+    - Simple, easy to understand
+    - Easy to refactor later
+
+hypothesis: "Python + FastAPI + SQLite will deliver the MVP 30% faster than heavier alternatives"
+
+status: pending_validation
+
+learning:
+  notes: "Will revisit after Services-ID implementation"

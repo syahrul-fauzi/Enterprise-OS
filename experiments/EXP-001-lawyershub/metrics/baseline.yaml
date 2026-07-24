@@ -1,0 +1,24 @@
+# C.1 Baseline Metrics
+delivery:
+  first_commit: "2026-07-24"
+  first_running_system: "2026-07-24"
+  first_vertical_slice: "2026-07-24"
+  lead_time: null
+  deployment_count: 1
+
+architecture:
+  services: 1
+  modules:
+    - client
+    - matter
+    - activity
+    - identity
+    - shared
+  dependencies: ["fastapi", "uvicorn", "pydantic", "python-multipart"]
+  infrastructure_complexity: low
+
+eos:
+  observations_generated: 1
+  validations_generated: 1
+  decisions_created: 3
+  assumptions_invalidated: 0

@@ -1,0 +1,47 @@
+# EOS Agent Policy
+version: "1.0"
+
+agents:
+  observer:
+    name: "Observer Agent"
+    description: "Collects evidence and creates observations"
+    can:
+      - read_workspace
+      - read_governance
+      - create_observation
+      - update_evidence_registry
+    cannot:
+      - create_asset
+      - promote_pattern
+      - modify_product
+      - modify_governance
+
+  validator:
+    name: "Validator Agent"
+    description: "Validates observations and evidence"
+    can:
+      - read_workspace
+      - read_governance
+      - read_observation
+      - validate_evidence
+      - update_evidence_registry
+    cannot:
+      - create_asset
+      - promote_pattern
+      - modify_product
+      - modify_governance
+
+  pattern:
+    name: "Pattern Agent"
+    description: "Analyzes evidence and detects patterns"
+    can:
+      - read_workspace
+      - read_governance
+      - read_evidence_registry
+      - detect_patterns
+      - create_pattern_candidate
+    cannot:
+      - create_asset
+      - promote_pattern
+      - modify_product
+      - modify_governance

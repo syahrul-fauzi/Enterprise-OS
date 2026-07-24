@@ -1,0 +1,11 @@
+# Production First Principle
+version: "1.0"
+
+core_statement: >
+  Production First. Extraction Second. Evidence Always.
+
+details:
+  - Implement capabilities in production products first
+  - Extract only after evidence of value exists
+  - Never extract speculative capabilities
+  - Prioritize product delivery over platform work

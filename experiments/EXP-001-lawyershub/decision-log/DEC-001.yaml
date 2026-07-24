@@ -1,0 +1,45 @@
+id: DEC-001
+
+experiment:
+  id: EXP-001-lawyershub
+
+decision:
+  title: "Use modular monolith architecture"
+  action: "Adopt modular monolith for LawyersHub"
+
+context:
+  problem:
+    - Need fast MVP delivery
+    - Unknown future capability boundaries
+  timestamp: 2026-07-24
+
+evidence:
+  observed:
+    - Single product implementation
+    - No proven reuse patterns
+    - Need low operational complexity
+    - Team small (1-2 people)
+
+alternatives:
+  - option: microservices
+    status: rejected
+    reason: "Premature distribution complexity; no justification for multiple services at this stage"
+  - option: modular_monolith
+    status: selected
+    reason: "Supports fast validation, clear separation of concerns, and easy future refactoring"
+
+expected_outcome:
+  delivery:
+    - Faster iteration cycles
+    - Simpler deployment process
+  architecture:
+    - Clear module boundaries
+    - Easy to refactor later
+  effort: "Estimated 20% faster delivery compared to microservices"
+
+hypothesis: "Architecture simplicity increases learning speed during validation phase"
+
+status: pending_validation
+
+learning:
+  notes: "Initial decision; will revisit after Services-ID implementation"

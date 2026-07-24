@@ -1,0 +1,17 @@
+hypothesis:
+  id: HYP-001
+  statement: |
+    "EOS can improve delivery quality by transforming
+    implementation changes into explicit observations,
+    validated decisions, and accumulated organizational learning."
+
+  success_signal:
+    - decisions become traceable
+    - assumptions become visible
+    - repeated patterns emerge
+    - architecture choices become evidence-backed
+
+  failure_signal:
+    - EOS produces documentation overhead
+    - recommendations do not influence decisions
+    - evidence does not improve delivery outcome

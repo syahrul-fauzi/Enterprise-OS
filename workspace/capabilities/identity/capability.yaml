@@ -1,0 +1,35 @@
+
+capability:
+
+  name: identity
+
+  purpose:
+    Provide authentication and authorization capability
+    for enterprise products.
+
+
+  consumers:
+
+    - lawyershub
+    - services-id
+    - indonesialawyersclub
+
+
+  maturity:
+
+    level:
+      experimental
+
+
+  lifecycle:
+
+    state:
+      active
+
+
+  evidence_required:
+
+    - production_usage
+    - security_validation
+    - multiple_consumers
+

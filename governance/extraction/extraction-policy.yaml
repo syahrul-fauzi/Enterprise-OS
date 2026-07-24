@@ -1,0 +1,8 @@
+# Extraction Policy
+version: "1.1"
+
+extraction_rules:
+  - Must pass all 6 evidence gates
+  - Must have ≥2x estimated ELR
+  - Must have at least one other potential consumer
+  - No Extraction Without Comparative Evidence (must have evidence from at least two products or implementations before extracting)

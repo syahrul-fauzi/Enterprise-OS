@@ -1,0 +1,11 @@
+experiment: EXP-001
+workspace: LawyersHub
+date: 2026-07-24
+notes: Initial baseline for LawyersHub before any extractions
+metrics:
+  bootstrap_time: null
+  production_readiness: 80
+  duplicate_implementation_rate: null
+  capability_reuse_rate: 0
+  decision_acceptance_rate: null
+  lead_time: null

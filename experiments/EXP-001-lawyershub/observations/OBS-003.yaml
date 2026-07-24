@@ -1,0 +1,17 @@
+id: OBS-003
+experiment:
+  id: EXP-001-lawyershub
+timestamp: "2026-07-24"
+finding: "Matter lifecycle requires operational work tracking; lawyers need pending actions tracked with responsibility."
+evidence:
+  - "Lawyers need to track pending, assignable work items (not just an activity timeline)"
+  - "Activity model cannot represent status, assignee, or due date"
+  - "Activity timeline is insufficient for day-to-day matter work management"
+impact:
+  - "Workflow visibility limitation"
+  - "Cannot track responsibility for pending actions"
+relevance:
+  domain_design: true
+  work_management: true
+learning:
+  initial: "Activity model is insufficient for operational work; need a dedicated Task entity"
