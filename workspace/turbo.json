@@ -1,0 +1,25 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "arch-check": {
+      "inputs": ["$TURBO_DEFAULT$"],
+      "cache": false
+    },
+    "lint": {
+      "dependsOn": ["^lint", "^arch-check"]
+    },
+    "check-types": {
+      "dependsOn": ["^check-types"]
+    },
+    "build": {
+      "dependsOn": ["^build", "^arch-check"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**", "!.next/dev/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

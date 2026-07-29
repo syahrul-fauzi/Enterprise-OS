@@ -1,0 +1,57 @@
+id: DEC-008
+experiment:
+  id: EXP-001-lawyershub
+timestamp: "2026-07-28"
+decision: "Split STATUS.md menjadi 4 dokumen terpisah per change frequency Level 0-3: CONSTITUTION.md, ARCHITECTURE.md, EVIDENCE_JOURNAL.md, ROADMAP.md. STATUS.md direduksi menjadi Control Surface INDEX saja."
+context:
+  problem: "STATUS.md 2961+ line merupakan campuran 4 jenis artefak dengan LIFECYCLE DAN CHANGE FREQUENCY YANG BERBEDA: PASAL (hampir tidak pernah berubah), Architecture rules (per milestone), Evidence entries (append-only per eksperimen), dan Roadmap execution (per hari/minggu). Risiko jangka panjang: setelah Alpha.15-16, dokumen yang sama akan memiliki 2 ritme evolusi ganda yang menyebabkan kebingungan epistemik — Constitution level 0 berubah 1-2/tahun dicampur Execution Journal level 3 yang berubah setiap hari."
+  constraint:
+    - Tidak boleh melanggar PASAL 1 (ΔEvidence reproducible → ΔStatus epistemik)
+    - Perubahan ini BUKAN reorganisasi struktur kode (Frozen Principle #6), tapi perubahan tata kelola dokumen artefak epistemik
+    - Tidak ada konten yang hilang: seluruh isi STATUS.md yang valid harus dipindahkan ke salah satu dari 4 dokumen baru tanpa duplikasi
+    - Cross-reference antar dokumen harus konsisten (link absolute menggunakan format file://)
+    - STATUS.md tidak boleh dihapus, tapi direduksi menjadi entry point / control surface index
+evidence:
+  observations:
+    - STATUS.md saat ini mengandung 4 level konten berbeda: PASAL 1-7 (konstitusi), KPI Groups A-D + Gate Framework (architecture), Alpha.8-12 Certification + FPI Snapshot (evidence), Alpha.13 Step-by-Step Protocol + Frontier Roadmap (execution)
+    - Kalibrasi epistemik user ketiga secara eksplisit mengidentifikasi risiko "mencampur Constitution dengan Execution Journal"
+    - Change Frequency Matrix Level 0-3 disepakati: Level 0 (1-2/tahun) → Level 1 (milestone) → Level 2 (eksperimen) → Level 3 (harian/mingguan)
+  friction_records:
+    - FRIC-EOS-001: Saat mencari PASAL 7 Objective vs Constraint, user harus men-scroll 2000+ line STATUS.md melewati evidence entries Alpha.8 dan roadmap Alpha.13
+    - FRIC-EOS-002: Update FPI snapshot baru akan meng-overwrite bagian dari konstitusi PASAL jika tidak berhati-hati karena keduanya di file yang sama
+  metrics:
+    line_count_before_status_md: 2961
+    line_count_after_four_artifacts_split:
+      constitution_md: ~250
+      architecture_md: ~450
+      evidence_journal_md: ~500
+      roadmap_md: ~550
+      status_md_reduced: ~158
+alternatives:
+  - option: "Opsi A: Tetap single dokumen STATUS.md seperti sekarang"
+    rejected_reason: "Risiko jangka panjang ritme evolusi ganda. Setelah Alpha.15+ file akan melebihi 5000 line. User kalibrasi ketiga secara eksplisit menolak skenario ini."
+  - option: "Opsi B: Split 2 level saja (Konstitusi vs Everything Else)"
+    rejected_reason: "Architecture (Level 1) dan Evidence (Level 2) masih punya change frequency berbeda. Evidence append-only (tidak boleh overwrite) sementara Architecture boleh berubah per milestone. Split 2 level hanya menunda masalah sampai Alpha.14, tidak menyelesaikan."
+  - option: "Opsi C: Split 4 artefak persis sesuai Change Frequency Level 0-3 (Konstitusi / Architecture / Evidence / Roadmap + STATUS jadi INDEX)"
+    selected: true
+selected_option: "Split 4 artefak Level 0-3. CONSTITUTION.md (L0) · ARCHITECTURE.md (L1) · EVIDENCE_JOURNAL.md (L2) · ROADMAP.md (L3). STATUS.md direduksi menjadi Control Surface INDEX + snapshot status terkini + TABEL CROSS-REFERENCE NAVIGASI ke 4 dokumen L0-L3."
+expected_outcome:
+  impact:
+    delivery: "medium"
+    architecture: "high"
+    business: "low"
+  effort: "~6 jam kerja split dokumen + validasi cross-reference + DEC capture"
+  benefits_list:
+    - "Displin epistemik terjaga jangka panjang: masing-masing artefak punya lifecycle dan aturan perubahan sendiri."
+    - "User experience lebih baik: saat mau baca PASAL tidak perlu men-scroll evidence entries atau roadmap."
+    - "Audit lebih mudah: Evidence Journal L2 bersifat append-only, tidak pernah tercampur perubahan PASAL L0."
+    - "Mencegah scope creep: Roadmap (L3) berubah setiap hari, tapi tidak mengotori Constitution (L0)."
+    - "Sesuai prinsip PASAL 6 Three-Layer Evolution Model: 4 artefak ini memisahkan antara Immutable Rules (L0-L1) dan Mutable Execution (L2-L3)."
+outcome:
+  status: "implemented"
+  actual_result: "4 artefak berhasil dibuat: CONSTITUTION.md, ARCHITECTURE.md, EVIDENCE_JOURNAL.md, ROADMAP.md. STATUS.md berhasil direduksi dari 2961 line menjadi ~158 line. Seluruh cross-reference menggunakan format file://. Konten tidak ada yang hilang atau duplikat."
+learning:
+  what_changed: "Pemisahan dokumen berdasarkan change frequency (bukan berdasarkan topik konten) terbukti menjadi model yang lebih sehat untuk enterprise platform epistemik. Penting membedakan antara artefak yang memiliki konsekuensi epistemik berat (Pasal, Architecture rule) vs artefak yang berupa catatan eksekusi harian (Roadmap, weekly report)."
+  pattern_confirmed: true
+  pattern_rejected: false
+  future_recommendation: "Seluruh dokumen epistemik Enterprise OS mulai dari Alpha.13+ harus selalu melewati review change frequency sebelum dibuat: apakah ini termasuk Level 0, 1, 2, atau 3? Jangan pernah membuat dokumen campuran seperti STATUS.md lama lagi. Keputusan ini juga akan mendokumentasikan keputusan meta-konstitusi bahwa Pemisahan Artefak Berdasarkan Change Frequency adalah bagian dari cara kerja Enterprise OS."

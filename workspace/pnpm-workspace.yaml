@@ -1,0 +1,7 @@
+packages:
+  - "apps/*"
+  - "packages/core/*"
+  - "packages/presentation/*"
+  - "packages/composition"
+  - "config/*"
+  - "packages/tooling/*"

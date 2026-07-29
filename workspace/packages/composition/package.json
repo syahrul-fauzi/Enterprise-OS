@@ -1,0 +1,35 @@
+{
+  "name": "@repo/composition",
+  "version": "0.1.0-alpha.6",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./workspace": "./dist/workspace/index.js",
+    "./regions": "./dist/regions/index.js",
+    "./slots": "./dist/slots/index.js",
+    "./layouts": "./dist/layouts/index.js",
+    "./navigation": "./dist/navigation/index.js",
+    "./orchestration": "./dist/orchestration/index.js"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "check-types": "tsc --noEmit",
+    "dev": "tsc --watch",
+    "lint": "eslint src --max-warnings 0"
+  },
+  "dependencies": {
+    "@repo/core-capability-registry": "workspace:*",
+    "@repo/core-kernel": "workspace:*"
+  },
+  "devDependencies": {
+    "@repo/config-eslint": "workspace:*",
+    "@repo/config-typescript": "workspace:*",
+    "@types/node": "^22.20.1",
+    "eslint": "^9.39.1",
+    "tsx": "^4.23.1",
+    "typescript": "5.9.2"
+  }
+}

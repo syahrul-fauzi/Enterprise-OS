@@ -1,0 +1,23 @@
+{
+  "name": "@repo/tooling-arch-tests",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "arch-check": "./src/arch-check.ts"
+  },
+  "scripts": {
+    "arch-check": "node --import tsx ./src/arch-check.ts",
+    "check": "node --import tsx ./src/arch-check.ts",
+    "lint": "eslint src --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@repo/config-eslint": "workspace:*",
+    "@repo/config-typescript": "workspace:*",
+    "@types/node": "^22.15.30",
+    "eslint": "^9.39.1",
+    "tsx": "^4.19.2",
+    "typescript": "5.9.2"
+  }
+}

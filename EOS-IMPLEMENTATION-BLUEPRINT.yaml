@@ -1,0 +1,522 @@
+# ============================================================================
+# EOS IMPLEMENTATION BLUEPRINT — 3 DOMAIN (SINGLE SOURCE OF TRUTH #1)
+# ============================================================================
+# Classification Disclaimer (3-LEVEL EPSTEMIC DISCIPLINE WAJIB):
+#
+# - SELURUH field di bawah ini KECUALI yang ditandai explicit [Verified Fact:]
+#   = ADALAH **Design Intention** (belum menghasilkan artefak implementasi).
+# - [Execution Claim:] hanya untuk melaporkan "file X sudah dibuat pada Y",
+#   bukan berarti content X "sudah terimplementasi kode".
+# - [Verified Fact:] hanya untuk hal yang benar-benar bisa di-grep / di-sha256sum.
+#
+# User Directive: KEBERHASILAN DOKUMEN INI TIDAK OTOMATIS MEMVALIDASI EOS SECARA
+# KESELURUHAN. Ini = EVIDENCE (blueprint kerangka), BUKAN kesimpulan implementasi.
+# ============================================================================
+
+blueprint_metadata:
+  id: EOS-IMPLEMENTATION-BLUEPRINT-v0.1.0-DRAFT
+  version: 0.1.0  # DRAFT = Design Intention murni; BELUM diverifikasi stakeholder
+  classification: DESIGN_INTENTION_ONLY  # Semua field = Design Intention, kecuali Verified Fact tag.
+  status: "GAP FILL DRAFT (menunggu review user)"
+  generated_at_utc: "2026-07-29"
+  single_source_of_truth_primary_location: "EOS-IMPLEMENTATION-BLUEPRINT.yaml di root repository"
+  related_evidence_append_only_journal_path: "EVIDENCE.md L2079+ (append only; TIDAK BOLEH diedit in-place)"
+  related_gap_analysis: "build/evidence/eos-implementation-gap-analysis-20260729.yaml (table 7 layer × 3 domain gap)"
+
+# ============================================================================
+# 3-DOMAIN IDENTITIES (Verified Fact: nama domain berasal dari User Directive Eksplisit)
+# ============================================================================
+domains:
+  domain_a_services_id:
+    canonical_name: Services-ID
+    fqdn: services-id.com
+    primary_role_shorthand: "Shared Identity & Service Platform (IDP + Service Registry + KYC bersama)"
+    domain_type: SHARED_PLATFORM  # Platform capability shared ke Domain B dan C.
+  domain_b_lawyershub:
+    canonical_name: LawyersHub
+    fqdn: lawyershub.id
+    primary_role_shorthand: "Sistem Manajemen Praktik Hukum End-to-End (Case, Document, Billing, Client Portal)"
+    domain_type: PRIMARY_PRODUCT  # Produk utama yang telah ada implementasi parsial (Verified Fact: workspace/capabilities/ folder ada 2 concrete capabilities)
+  domain_c_indolawclub:
+    canonical_name: IndonesiaLawyersClub
+    fqdn: indonesialawyersclub.id
+    primary_role_shorthand: "Komunitas Advokat Indonesia + Marketplace Jasa Hukum + CPD (Continuing Professional Development)"
+    domain_type: COMMUNITY_MARKETPLACE_PRODUCT  # Produk komunitas yang kemungkinan consume B dan share identity A.
+
+# ============================================================================
+# CRITICAL CROSS-CUTTING ARCHITECTURE HYPOTHESIS (Design Intention!)
+# Ini = 4 keputusan arsitektur PALING PENTING yang mempengaruhi seluruh 7 layer
+# ============================================================================
+cross_cutting_architecture_hypothesis_design_intention:
+  ccah_001_shared_identity_platform_is_a:
+    statement: "Domain A (Services-ID) = Single Shared Identity Provider (IDP) OIDC/OAuth2 untuk Domain B dan Domain C. User login HANYA di services-id.com; lawyershub.id dan indonesialawyersclub.id tidak memiliki password database sendiri."
+    rationale_design_intention: "Mengurangi 3× duplikasi IAM implementation, mempermudah SSO (bukan 3 akun terpisah untuk advokat yang join ILC DAN menggunakan LawyersHub)."
+    risk_if_wrong: "Domain A menjadi SPOF (single point of failure). Dibutuhkan DR plan kuat untuk Services-ID."
+    dependency_link_to_layers:
+      business_layer: "1.1 tujuan bisnis A (menyediakan identity terpusat) dan 1.7 dependency matrix (B→A, C→A pada identity flow)."
+      architecture_layer: "3.7 Security, 3.8 Identity (IAM shared platform)."
+      operational_layer: "4.4 DR RTO/RPO 0 untuk IAM; 4.5 Incident severity matrix: Identity outage = SEV-1 untuk ketiga domain."
+      evidence_layer: "7.2 Decision traceability: CC-AH-001 SHA-linked ke dokumen ini; butuh ADR terpisah jika user menyetujui."
+  ccah_002_domain_boundaries_3_abc_strict:
+    statement: "Strict Bounded Context DDD-style: Domain A = Identity ONLY; Domain B = Legal Practice Case+Doc+Billing ONLY (TIDAK BOLEH ada identity logic); Domain C = Community + Marketplace CPD ONLY (TIDAK BOLEH ada duplicate billing logic, jika butuh billing = consume shared Domain B billing service ATAU shared platform A billing)."
+    rationale_design_intention: "Mencegah 'big ball of mud' coupling antar domain yang user sebutkan sebagai tantangan terbesar EOS (no contradiction cross-domain)."
+    risk_if_wrong: "Jika B memutuskan mau bikin identity sendiri nanti = coupling kebocoran boundary mahal diperbaiki."
+  ccah_003_shared_observability_security_finance:
+    statement: "Observability stack (3.9), Security stack (3.7), Operational DR/Incident (Layer 4), dan Financial Layer (Layer 6) = SHARED PLATFORM SERVICES, dikelola BUKAN per domain tim terpisah."
+    rationale_design_intention: "Shared service ini mengurangi biaya operasional 3x; Satu dashboard monitoring melihat 3 domain sekaligus."
+  ccah_004_platform_capability_reuse_first:
+    statement: "Setiap capability baru TIDAK BOLEH diimplementasi di 2 domain berbeda jika capability logic ≥80% identik. Wajib: (1) extract ke shared platform capability, (2) 2 domain consume via public API contract (3.6 OpenAPI)."
+    rationale_design_intention: "Ini = inti EXP-001 (ROADMAP.md L244-L272 Domain Transfer). Evidence-Based Reuse (EOS Thesis) = HANYA extract setelah evidence 80% overlap muncul."
+
+# ============================================================================
+# LAYER 1 — BUSINESS LAYER (Design Intention SEMUA field)
+# ============================================================================
+business_layer:
+  # Catatan: Semua OKR di bawah ini = DESIGN INTENTION. BELUM diverifikasi / disetujui stakeholder.
+  per_domain:
+    domain_a_services_id:
+      purpose_statement: >
+        "Menyediakan identity, access, KYC, dan service registry terpusat sebagai single
+        shared foundation yang dapat dipergunakan produk hukum apapun dalam grup
+        (LawyersHub dan IndonesiaLawyersClub) tanpa perlu duplikasi modul KYC/IAM per produk."
+      smart_objectives_okr_design_intention:
+        o1_identity_adoption:
+          objective: "Menjadi satu-satunya identity provider untuk LawyersHub dan ILC."
+          kr1_percent_sso_users: "100% user aktif LawyersHub + ILC = login via OIDC Services-ID"
+          target_quarter: "FY26Q4 (Design Intention — TIDAK BOLEH dianggap komitmen)"
+        o2_kyc_automation:
+          objective: "Automasi KYC advokat untuk B dan C melalui KYC shared flow"
+          kr1_kyc_pass_rate_auto: "≥90% KYC advokat = approved otomatis tanpa review manual (jika KTP + PERADI ID match)"
+          target_quarter: "FY26Q4"
+      stakeholders_register_design_intention:
+        internal:
+          - role: Product Owner Shared Platform
+            name: "TBD (Name belum ditunjuk)"
+            responsibility: "Backlog Domain A; OKR owner; stakeholder interface ke B dan C PO"
+          - role: IAM Engineering Lead
+            name: "TBD"
+            responsibility: "OIDC provider implementation; KYC pipeline; Audit log"
+        external:
+          - role: PERADI (Ikatan Advokat Indonesia)
+            responsibility: "Verifikasi ID Advokat (untuk KYC shared flow)"
+          - role: DUKCAPIL / KTP verification provider
+            responsibility: "KTP electronic ID verifier API vendor"
+          - role: Client dari B+C (lawyer / end user)
+            responsibility: "End user identity"
+      business_capabilities:
+        - bc_a01_single_sign_on_oidc
+        - bc_a02_user_profile_kyc_shared
+        - bc_a03_service_registry_api_catalog
+        - bc_a04_billing_invoicing_shared_reusable  # Shared billing supaya B dan C tidak duplikat payment module.
+      business_service_catalog_what_users_get:
+        - "Advokat melakukan 1x KYC di Services-ID → otomatis verified di LawyersHub DAN ILC (sekali isi, 2 platform masuk)."
+        - "Admin memanage 1x permission group → berlaku untuk 3 domain."
+      scope_in: ["IAM/OIDC identity", "KYC advokat shared", "Service registry API catalog", "Shared billing payment orchestration"]
+      scope_out: ["Legal case management logic (INI MILIK LAWYERSHUB B)", "Community forum CPD (INI MILIK ILC C)", "Advokat practice software tools selain identity/billing"]
+    domain_b_lawyershub:
+      purpose_statement: >
+        "Sistem manajemen praktik hukum end-to-end untuk firma hukum / advokat
+        independen Indonesia: mengelola perkara (case), dokumen hukum, billing,
+        e-sign, dan komunikasi klien dalam satu workspace tertutup."
+      smart_objectives_okr_design_intention:
+        o1_case_productivity:
+          objective: "Meningkatkan produktivitas advokat dalam administrasi perkara dan dokumen"
+          kr1_case_close_time_pct: "Waktu penyelesaian administrasi perkara berkurang ≥30% dibandingkan cara manual"
+          target_quarter: "FY26Q4"
+        o2_monthly_active_firms:
+          objective: "Adopsi LawyersHub oleh minimal target firma hukum"
+          kr1_firm_count: "Target design intention (disesuaikan business review)"
+          target_quarter: "FY27Q1"
+      stakeholders_register_design_intention:
+        internal:
+          - role: Product Owner LawyersHub
+            name: "TBD"
+            responsibility: "Backlog domain B; OKR owner"
+          - role: Domain Expert Hukum / Legal Reviewer
+            name: "TBD (minimal 1 advokat senior in-house)"
+            responsibility: "Review flows kasus, template dokumen, compliance KUHAP/UU advokat"
+          - role: QA Lead
+            name: "TBD"
+            responsibility: "Automated testing; regression testing; data privacy test"
+        external:
+          - role: Firma Hukum Pengguna (Customer)
+            responsibility: "End customer; payment; acceptance sign off"
+          - role: Advokat Pengguna
+            responsibility: "End user fitur case + doc"
+          - role: Klien Akhir dari Advokat
+            responsibility: "Client portal user; e-sign document receiver"
+      business_capabilities:
+        - bc_b01_legal_case_lifecycle_management
+        - bc_b02_legal_document_storage_template_esign
+        - bc_b03_client_portal_secure_sharing
+        - bc_b04_billing_invoice_trust_accounting
+        - bc_b05_calendar_hearing_scheduler
+      business_service_catalog_what_users_get:
+        - "Advokat bisa create case, assign tim simpan dokumen, generate invoice, share doc ke klien via secure portal tanpa email lampiran."
+      scope_in: ["Case management", "Document management + esign", "Client portal", "Trust accounting billing", "Calendar hearing", "Search perkara fulltext"]
+      scope_out: ["IAM/KYC (DIDELEGASIKAN KE DOMAIN A)", "Payment gateway sendiri (pakai shared A billing)", "CPD / community forum (MILIK C ILC)"]
+    domain_c_indolawclub:
+      purpose_statement: >
+        "Platform komunitas advokat Indonesia yang menyatukan: (1) membership organisasi,
+        (2) marketplace jasa hukum yang mempertemukan advokat dan klien, (3) CPD
+        (Continuing Professional Development) — pelatihan hukum berkelanjutan untuk
+        pemenuhan poin kredit PERADI."
+      smart_objectives_okr_design_intention:
+        o1_member_engagement:
+          objective: "Menjadi komunitas advokat terbesar di Indonesia dengan engagement tinggi"
+          kr1_daily_active_advokats: "TBD design intention"
+          target_quarter: "FY27Q1"
+        o2_cpd_credit:
+          objective: "Platform penyelenggara CPD resmi yang diakui untuk poin kredit advokat"
+          kr1_events_per_month: "≥ 4 CPD event/month"
+          target_quarter: "FY27Q1"
+      stakeholders_register_design_intention:
+        internal:
+          - role: Product Owner Community
+            name: "TBD"
+          - role: Community Manager
+            name: "TBD"
+          - role: CPD / Legal Education Lead
+            name: "TBD"
+        external:
+          - role: Organisasi Advokat (PERADI, dll)
+            responsibility: "Accreditation CPD credit; partnership membership verification"
+          - role: Advokat Anggota ILC
+            responsibility: "Member; course taker; service seller di marketplace"
+          - role: Klien Umum Mencari Advokat
+            responsibility: "Marketplace buyer; end user"
+      business_capabilities:
+        - bc_c01_membership_profile_verified_via_a  # Dependencies to A: profile verified from A KYC.
+        - bc_c02_community_discussion_forum
+        - bc_c03_marketplace_lawyer_client_matchmaking
+        - bc_c04_cpd_course_event_attendance_credit
+        - bc_c05_news_legal_update_indonesia
+      business_service_catalog_what_users_get:
+        - "Advokat bergabung ILC → KYC via A otomatis verified; langsung bisa lihat marketplace klien + enroll CPD courses (1 klik tanpa isi KYC lagi)."
+      scope_in: ["Membership komunitas advokat", "Forum diskusi hukum", "Marketplace jasa advokat klien", "CPD event course credit"]
+      scope_out: ["Internal case management tools (MILIK B LawyersHub)", "Billing sendiri = gunakan shared A", "Identity sendiri = gunakan A SSO"]
+  cross_domain_dependency_matrix:
+    # Format: source_domain → target_domain | dependency_type | keterangan
+    - "B → A | HARD DEPENDENCY Identity/KYC | LawyersHub user login via OIDC Services-ID; KYC advokat diverifikasi dari A"
+    - "C → A | HARD DEPENDENCY Identity/KYC | IndonesiaLawyersClub user login via OIDC; CPD participant verified via A membership status"
+    - "C → B | SOFT DEPENDENCY Marketplace Case File | ILC Marketplace client yang match advokat BISA (opsional) import brief ke LawyersHub jika advokat tersebut pengguna LawyersHub (HANYA dengan opt-in advokat). JIKA TIDAK ADA = tidak menembus boundary B."
+    - "B → A | SOFT DEPENDENCY Shared Billing | LawyersHub billing payment = di-orchestrasi dari shared A billing module, B tidak handle payment gateway sendiri"
+    - "C → A | SOFT DEPENDENCY Shared Billing | ILC membership fee + CPD course payment = via A shared billing, C tidak handle payment sendiri"
+
+# ============================================================================
+# LAYER 2 — DELIVERY LAYER
+# ============================================================================
+delivery_layer:
+  global_definitions_design_intention:
+    definition_of_done_global_dod:
+      - "Code merged ke main branch (dengan minimal 1 peer review non-author)."
+      - "Unit test code coverage ≥80% untuk logic bisnis NON-UI; ≥70% overall."
+      - "Integration test (API) untuk endpoint berubah = GREEN."
+      - "Deploy otomatis ke staging environment tanpa error."
+      - "QA sign-off untuk fitur yang berubah (test plan terisi ≥95%)."
+      - "User-facing documentation diperbarui (user guide / API doc / changelog)."
+      - "Security scan (SAST) tidak ada HIGH severity."
+    definition_of_ready_global_dor:
+      - "Acceptance criteria per story ditulis dan disetujui PO."
+      - "UX wireframe tersedia untuk story user-facing (jika UI berubah)."
+      - "Dependency antar story sudah jelas (TIDAK ada external dependency blocker yang tidak tercatat)."
+      - "Estimasi effort ≤ 13 story points per story (jika > = dipecah)."
+      - "Impact ke domain lain sudah didiskusikan PO lintas-domain."
+  per_domain_roadmap_milestones_design_intention:
+    domain_b_lawyershub_first_because_has_existing_capabilities:
+      order: 1  # Mengerjakan B terlebih dahulu karena ada concrete capabilities legal-case dan legal-document (Verified Fact di workspace/capabilities)
+      phases:
+        - phase_m1_alpha_case_document_complete:
+          name: "M1 — Alpha Case+Doc Complete (v0.5 Alpha Closed)"
+          target_date_quarter: "FY26Q4 (DESIGN INTENTION, BUKAN komitmen tanggal)"
+          owner_role: "PO LawyersHub + Eng Lead"
+          acceptance_criteria_expected_evidence:
+            - "AC-B-M1-01: Advokat dapat membuat perkara baru, assign anggota tim, set status, simpan catatan melalui UI tanpa error flow utama (bukti = automated test + QA sign-off + demo recording)."
+            - "AC-B-M1-02: Dokumen dapat diunggah per perkara, di-search fulltext, di-share dengan klien via portal secure link TTL (bukti = integration test 5 endpoint upload/search/share 100% success)."
+            - "AC-B-M1-03: Semua 8 Gate 0 criteria capability legal-case legal-document = PASS (bukti = Measurement Report SHA256 tercatat append-only EVIDENCE.md)."
+            - "AC-B-M1-04: SSO via Services-ID (jika A sudah ada di M1, BISA ditunda ke M2) OR local login fallback dulu dengan migration plan jelas M2."
+            - "AC-B-M1-05: Tidak ada HIGH SAST vulnerability di code base security scan."
+          deliverable_list_what_handover_m3_finance_if_payment:
+            - "Build Alpha LawyersHub staging: v0.5.x."
+            - "QA Report M1: Test result summary."
+            - "Security Report SAST: HIGH severity count = 0."
+            - "User Guide Alpha untuk internal tester."
+            - "Measurement Report Gate 0 SHA256 untuk legal-case + legal-doc."
+        - phase_m2_beta_billing_sso_clientportal:
+          name: "M2 — Beta Billing + SSO Shared A + Client Portal"
+          target_date_quarter: "FY27Q1"
+          depends_on_milestone_other_domains: ["Domain A M1 SSO billing siap dipakai"]
+          acceptance_criteria_expected_evidence:
+            - "AC-B-M2-01: Advokat dapat generate invoice per perkara, catat payment via shared A billing, bukti PDF invoice auto-generate (automated test + 3 sample invoice PDF)."
+            - "AC-B-M2-02: 100% login flow user baru = OIDC via Services-ID (bukti = SSO integration test green + local login fallback dihapus/disable non-admin)."
+            - "AC-B-M2-03: Klien dapat login ke portal (via A + passwordless link?), lihat daftar perkara mereka, download dokumen shared, approve esign (bukti = QA end-to-end test user role klien)."
+        - phase_m3_ga_general_availability:
+          name: "M3 — GA Umum untuk 50 firma pertama"
+          target_date_quarter: "FY27Q2"
+          acceptance_criteria_expected_evidence:
+            - "AC-B-M3-01: 50 firma hukum / advokat independen = onboarding completed tanpa major critical bug (evidence = onboarding log success rate ≥95%)."
+            - "AC-B-M3-02: SLA availability 99.5% untuk 30 hari terakhir (evidence = uptime monitoring report)."
+    domain_a_services_id_roadmap:
+      order: 2
+      phases:
+        - phase_a_m1_sso_shared_core:
+          name: "A-M1 — SSO OIDC Core + KYC Pipeline Dasar"
+          target_date_quarter: "FY26Q4 (bersamaan waktu B M1)"
+          acceptance_criteria_expected_evidence:
+            - "AC-A-M1-01: Identity Provider OIDC = dapat issue token JWT, LawyersHub sebagai client confidential terdaftar, refresh token flow work (bukti = OIDC conformance test suite pass ≥ 90% claims)."
+            - "AC-A-M1-02: Flow KYC advokat: input KTP + PERADI ID = verified/declined (bukti = 10 sample test case pipeline result)."
+        - phase_a_m2_shared_billing_catalog:
+          name: "A-M2 — Shared Billing Payment Orchestration + API Service Catalog"
+          target_date_quarter: "FY27Q1 (sebelum B M2)"
+    domain_c_indolawclub_roadmap:
+      order: 3
+      phases:
+        - phase_c_m1_community_membership_marketplace_beta:
+          name: "C-M1 — Beta Community Membership + Marketplace"
+          target_date_quarter: "FY27Q2 (setelah B M2 + A M2 stabil)"
+          depends_on: ["A-M1 SSO siap", "A-M2 Billing siap"]
+          acceptance_criteria_expected_evidence:
+            - "AC-C-M1-01: Advokat login via Services-ID otomatis populate profile jika KYC verified di A (bukti = integration test SSO C)."
+            - "AC-C-M1-02: Marketplace: Klien dapat post brief, advokat dapat apply, match notification terkirim ke kedua pihak."
+        - phase_c_m2_cpd:
+          name: "C-M2 — CPD Event + Credit Tracking GA"
+          target_date_quarter: "FY27Q3"
+
+# ============================================================================
+# LAYER 3 — ARCHITECTURE LAYER
+# ============================================================================
+architecture_layer:
+  enterprise_context_c4_level1_design_intention:
+    users_external:
+      - actor: Advokat Pengguna
+        uses_systems: ["LawyersHub (B)", "IndonesiaLawyersClub (C) via Services-ID (A) SSO"]
+      - actor: Klien Akhir
+        uses_systems: ["LawyersHub Client Portal (B)", "ILC Marketplace (C)"]
+      - actor: Admin Organisasi Advokat (PERADI)
+        uses_systems: ["Services-ID (A) KYC verification callback"]
+    external_systems_integrations:
+      - name: "DUKCAPIL / KTP Electronic Verification Vendor"
+        used_by: "Domain A (KYC flow)"
+      - name: "Payment Gateway (Midtrans / Xendit / Duitku)"
+        used_by: "Domain A (Shared Billing A-M2)"
+      - name: "E-Sign Provider (e.g., Doku Sign / Peruri Sign / Privy)"
+        used_by: "Domain B (Document esign M2)"
+      - name: "SMTP / WhatsApp Business Notification Provider"
+        used_by: "All 3 domains via shared notification service (A platform)"
+    intra_3_domain_relationships_enum_ccah:
+      ccah_001_depiction: "A = Shared IDP di tengah; B dan C = children OIDC relying party yang AUTH ke A; C dapat SOFT consume B marketplace import JIKA user opt-in."
+  domain_boundary_map_ddd_strict_bounded_context:
+    bounded_context_a_identity_platform:  # 100% inside A
+      aggregates: ["UserIdentity", "KycSubmission", "PermissionGroup", "ClientAppOIDC", "BillingInvoiceShared", "ApiServiceRegistryEntry"]
+      outbound_events_public_contract_3_6_openapi_later:
+        - "a.user.kyc.approved.v1 (Publish ke B dan C via event bus)"
+        - "a.user.profile.updated.v1"
+        - "a.billing.invoice.paid.v1 (Publish ke B/C agar invoice status di mark PAID)"
+      anti_corruption_layer: "B dan C TIDAK BOLEH direct SQL ke database A; HANYA boleh consume public event atau public REST API contract."
+    bounded_context_b_law_practice:  # 100% inside B
+      aggregates: ["LegalCase", "LegalDocument", "InvoiceTrustLine", "LawyerFirm", "ClientPortalUserLink"]
+      inbound_acl_from_a: "ACL only: consume a.user.kyc.approved untuk auto-create lawyer profile di B. HANYA menerima public contract event."
+      inbound_acl_from_c_soft: "ACL marketplace optional: HANYA menerima c.marketplace.engagement.created VIA authenticated A service token JIKA advokat tersebut already registered di B."
+    bounded_context_c_community_marketplace:
+      aggregates: ["CommunityMemberProfile", "ForumThread", "MarketplaceBrief", "Engagement", "CpdCourse", "CpdAttendanceCredit"]
+      inbound_acl_from_a: "ACL consume a.user.kyc.approved + a.billing.invoice.paid (untuk membership fee)."
+  shared_platform_capabilities_list:
+    spc_01_shared_iam_oidc:  # A
+    spc_02_shared_kyc_pipeline:  # A
+    spc_03_shared_billing_payment:  # A
+    spc_04_shared_notification_smtp_whatsapp:  # A shared
+    spc_05_shared_file_storage_encrypted_s3_compatible:  # A shared — B dokumen hukum sensitif dan C materi CPD = terpisah bucket tapi 1 platform
+    spc_06_shared_observability_logging_metrics_traces:  # Ops shared layer
+    spc_07_shared_security_secrets_vault:  # Security shared
+  api_contract_required_mandatory_design_intention_per_phase:
+    - "Setiap bounded context wajib publish OpenAPI 3.1 spec yaml (file) KE DALAM folder contracts/openapi/<bc_name>.yaml SEBELUM endpoint live production."
+    - "Consumer B/C wajib generate client SDK DARI spec yaml itu; TIDAK BOLEH hardcode URL path di luar spec."
+  security_architecture_outline_design_intention:
+    authn: "OIDC Authorization Code Flow + PKCE untuk web apps; mTLS untuk service to service backend communication antar bounded context."
+    authz: "RBAC shared permission group disimpan di A; setiap B/C tambahkan scope local per context (contoh B memiliki scope case:create, C scope forum:post — group di A assign scope gabungan)."
+    encryption:
+      at_rest: "AES-256-GCM untuk data sensitif (dokumen hukum B, KYC data A); data encryption key (DEK) wrapped oleh KMS yang TERDAPAT di HSM/Vault TIDAK di aplikasi."
+      in_transit: "TLS 1.3 ONLY untuk semua endpoint publik; HSTS includeSubDomains preload."
+    secrets_management: "HashiCorp Vault (atau setara) TIDAK BOLEH ada plaintext secrets di .env commit ke git — semua secret via Vault Agent Injector."
+  identity_access_iam_per_domain_role_matrix_design_intention:
+    domain_a_shared:
+      - role_platform_super_admin: "Hanya untuk tim SRE. Manage IAM app client, rotate key, vault admin."
+      - role_a_billing_finance_admin: "Melihat semua invoice shared across domain (keperluan finance team)."
+      - role_a_kyc_reviewer: "Manual review case KYC yang gagal auto-verifikasi."
+    domain_b_lawyershub:
+      - role_b_firm_owner_admin: "Manage user di firma hukumnya; invite anggota tim; billing firma"
+      - role_b_senior_advokat: "Kelola perkara; create/delete dokumen high privilege"
+      - role_b_junior_advokat_paralegal: "Edit perkara; upload dokumen; TIDAK bisa delete final dokumen"
+      - role_b_client_portal_user: "Hanya lihat perkara + dokumen yang di-share; approve e-sign;"
+    domain_c_ilc:
+      - role_c_community_admin_moderator: "Moderasi forum; approve event CPD;"
+      - role_c_advokat_member_verified: "Post marketplace penawaran; join CPD dan dapat credit;"
+      - role_c_client_enduser: "Post brief di marketplace; enroll CPD public course;"
+  observability_stack_outline_design_intention:
+    logs: "Loki / OpenSearch (structured JSON log; HAPUS log yang berisi sensitive field PII sebelum ingest via redaction pipeline)."
+    metrics: "Prometheus + Grafana; default SLA dashboard per domain; RED method per service (Rate, Errors, Duration)."
+    traces: "OpenTelemetry SDK untuk semua service backend; trace ID propagasi via W3C Trace Context header ke event bus juga."
+    alerting: "Alertmanager ke Slack/Oncall; severity routing: SEV1 → SMS + call out of hours, SEV2 → Slack, SEV3 → Jira ticket."
+
+# ============================================================================
+# LAYER 4 — OPERATIONAL LAYER
+# ============================================================================
+operational_layer:
+  deployment_environments:
+    - env_local_developer: "Minikube / docker-compose per developer; TIDAK akses shared data."
+    - env_dev_integration: "CI deploy otomatis setiap PR; isolated namespace k8s; database baru per PR branch."
+    - env_staging_uat: "Production-like; snapshot anonymized data (TIDAK ADA real PII) dari production; QA + UAT user testing sini."
+    - env_production: "Multi region ASEAN-1 primary, ASEAN-2 DR; backup schedule; SOC2 controls level."
+  sla_per_domain_targets_design_intention:
+    domain_b_lawyershub_production:  # Paling kritis karena data perkara aktif
+      availability_monthly: "99.9% (max downtime ~43m/month)"
+      case_document_api_response_p95: "<=500 ms"
+      incident_response_sev1_case_document_unavailable: "15 menit ack; 1 jam mitigation; Root Cause Analysis <24 jam."
+    domain_a_services_id_iam_kyc_shared:
+      availability_monthly: "99.95% (IAM = kritis semua domain)"
+      login_api_p95: "<=300 ms"
+    domain_c_community_marketplace:
+      availability_monthly: "99.5% (community/forum downtime kurang kritis dari data hukum B)"
+  backup_policy_design_intention:
+    rpo_targets_maximum_data_loss:
+      domain_b_case_documents: "RPO = 1 JAM (incremental backup setiap jam)"
+      domain_a_iam: "RPO = 15 MENIT"
+      domain_c: "RPO = 6 JAM"
+    retention: "Backup harian 7 hari; mingguan 4 minggu; bulanan 12 bulan; encrypt backup with separate key. Restore test wajib dijalankan SEKALI/BULAN per domain (evidence = restore test report tanggal + success sha checksum)."
+  disaster_recovery_dr_rto_targets:
+    domain_a_iam: "RTO = 2 JAM (IAM down = semua domain susah login)"
+    domain_b: "RTO = 4 JAM"
+    domain_c: "RTO = 8 JAM"
+  incident_response_severity_matrix_design_intention:
+    sev1_critical:
+      contoh: [
+        "LawyersHub 5xx error untuk ≥20% user (tidak bisa buka dokumen perkara)",
+        "Services-ID OIDC tidak dapat issue token → B DAN C user TIDAK BISA login selama >5 menit",
+        "Ada indikasi kebocoran data PII dokumen hukum (confirmed or highly suspected)"
+      ]
+      ack_time_minutes: 15
+      mitigation_time_hours: 1
+      postmortem_deadline_hours: 24
+    sev2_high:
+      contoh: ["Search perkara di B error p99 >10 detik selama 30 menit", "Forum C tidak bisa post (tetapi login + marketplace masih ok)"]
+      ack_time_minutes: 30
+      mitigation_time_hours: 4
+    sev3_medium:
+      contoh: ["UI styling bug non-blocking", "Export PDF minor alignment error"]
+      ack_time_hours: 4
+  support_model_3tier_shared_across_domain:
+    tier1_helpdesk: "Handle common issue: password reset via A, cara upload doc, dll; 24/7 untuk SEV1; work hour Indonesia (08.00-20.00 WIB) untuk SEV2/3 non-production impact."
+    tier2_engineering_support: "Handle backend/API issue; escalasi ke tier3 jika butuh code fix bug emergency patch release."
+    tier3_vendor_core_engineer: "Architect + Senior dev yang paham domain B/C/A boundary + data schema; emergency hotfix + postmortem author."
+
+# ============================================================================
+# LAYER 5 — GOVERNANCE LAYER (Engineering + Operational, BUKAN governance metodologis EOS)
+# ============================================================================
+governance_engineering_layer:
+  decision_log_registry_required_for:
+    - "Architecture decision: Setiap ADR (Architecture Decision Record) wajib nomor ADR-XXX, berisi context decision, alternative considered, decision, consequences. SHA-linked ke artefak."
+    - "Technology selection decision (misal pilih PostgreSQL bukan MySQL; pilih Ory Hydra sebagai OIDC provider)."
+    - "Major library upgrade (React 18→19; pnpm major; etc.) yang beresiko breaking lintas domain."
+  change_management_release_design_intention:
+    release_cadence_regular: "Weekly release window Rabu 14.00 WIB untuk non-hotfix change; 4 mata approval: (1) PO change accept, (2) QA regression sign off, (3) Security scan HIGH = 0 confirm, (4) SRE deploy window confirm availability + monitoring standby."
+    hotfix_emergency_release: "Dapat keluar kapan saja TETAPI wajib: minimal 1 eng review + 1 QA test smoke 5 minute + post-incident review 2 hari kerja kemudian + change log record lengkap."
+  risk_register_engineering_design_intention_initial_seed:
+    - id: RISK-ENG-001
+      title: "Services-ID SPOF Identity (CC AH-001 risiko)"
+      likelihood: MEDIUM
+      impact: HIGH
+      mitigations: ["Multi region DR A-M1+; RTO/RPO 2 jam / 15 menit (Row Operational Layer)", "Manual fallback JWT signing key emergency jika OIDC fully down ≤24 jam (prosedur)."]
+      owner_role: "SRE Lead + IAM Eng Lead"
+      target_resolve_quarter: "FY26Q4 (saat A-M1 production pertama)"
+    - id: RISK-ENG-002
+      title: "Data PII Hukum LawyersHub kebocoran (dokumen perkara adalah data paling sensitif)"
+      likelihood: LOW (jika enkripsi at rest + in transit + secret vault)
+      impact: CRITICAL
+      mitigations: ["Audit log semua akses dokumen B ke SIEM, immutable 1 tahun.", "Envelope encryption KMS + DEK terpisah.", "Zero-trust: dokumen HANYA bisa diakses via short-lived signed URL, NEVER public."]
+  assumption_register_initial_seed:
+    - id: ASSUMP-001
+      statement: "OIDC provider open source (misal Ory Hydra atau Keycloak) dapat mencukupi kebutuhan 3 domain tanpa custom OIDC server dari scratch."
+      verify_by: "Proof of concept IAM sebelum A-M1 closed (sebelum Q3 berakhir)."
+      risk_if_wrong: "Delay A-M1 1-2 sprint."
+  dependency_external_register_initial_seed:
+    - name: "Payment Gateway (salah satu Xendit / Midtrans / Duitku)"
+      for_domain_shared: "A billing (B + C shared)"
+      contract_type: "SaaS Vendor"
+      fallback_plan: "Daftar minimal 2 provider; abstraction layer shared billing supaya ganti provider BISA tanpa ubah code B dan C (hanya config A)."
+  issue_register:
+    note: "Saat ini = BELUM ada issue teknis formal (TBD di task tracker JIRA/Linear saat project execution dimulai). Entry ini = placeholder agar structure lengkap."
+
+# ============================================================================
+# LAYER 6 — FINANCIAL LAYER
+# ============================================================================
+financial_layer:
+  note_entire_layer: "SELURUH layer ini = DESIGN INTENTION KERANGKA. Angka payment = TIDAK ADA (menunggu user input anggaran / stakeholder). STRUKTUR WAJIB LENGKAP per milestone agar tidak ada pembayaran tanpa deliverable."
+  payment_milestone_structure_per_domain_template_design_intention:
+    template_usage_rule: "Setiap domain (A / B / C) diisi dengan angka riil saat kontrak / SOW ditandatangani. Saat ini = TEMPLATE KOSONG + contoh."
+    example_for_domain_b_lawyershub_showcase_template:
+      example_do_not_use_as_real_number_yet: true
+      milestone_m1_alpha_case_doc_complete:
+        payment_percent_total_budget_if_any: "30% (CONTOH SAJA — DESIGN INTENTION, BUKAN ANGKA)"
+        approval_sign_off_chain_required:
+          - step_1: "QA Lead sign-off: Test report M1 100% AC tercapai."
+          - step_2: "Security Lead sign-off: HIGH severity = 0."
+          - step_3: "Domain Expert Hukum (Stakeholder B) sign off user flow case & doc."
+          - step_4: "PO + Exec Sponsor final sign."
+        deliverable_list_handover_exact_artifacts:
+          - "Build staging LawyersHub v0.5 (lihat Layer 2 deliverable list)"
+          - "QA Report M1 PDF"
+          - "Security SAST Report"
+          - "Measurement Report Gate 0 SHA256 (EVIDENCE.md append linked)"
+          - "User Guide Alpha PDF"
+        acceptance_evidence_required_duplicate_from_delivery_layer_ac: "Lihat AC-B-M1-01 s.d. AC-B-M1-05 (Design Intention dari Delivery Layer)."
+      milestone_m2_beta_sso_billing_client_portal:
+        payment_percent_if_any_template: "35% (CONTOH)"
+      milestone_m3_ga_50_firma:
+        payment_percent_if_any_template: "30% (CONTOH)"
+      milestone_m4_warranty_30_day_post_ga:
+        payment_percent_if_any_template: "5% retention (CONTOH: dibayar setelah GA 30 hari TANPA Sev1 bug yang unresolved > 2x RTO)"
+
+# ============================================================================
+# LAYER 7 — EVIDENCE LAYER (Traceability Structure Matrix RTM)
+# ============================================================================
+evidence_layer:
+  requirement_traceability_matrix_rtm_structure_how_to_fill:
+    rule_trace_forward_every_requirement_must_end_in_evidence:
+      step_1_business_req_id: "Contoh: REQ-B-M1-CASE-001 (advokat dapat create perkara baru)"
+      step_2_linked_design_decisions: "ADR-012 (case state machine memilih enum A, B, C berdasarkan PERADI); ADR-013 (PostgreSQL JSONB untuk metadata case extensible)"
+      step_3_linked_code_artifacts_sha: "SHA commit implementasi fitur; path file: workspace/capabilities/legal-case/implementation/commands/case.commands.ts"
+      step_4_linked_automated_test_case_id: "TEST-B-M1-CASE-001 sampai TEST-B-M1-CASE-020 (id test di QA testrail / jest test)"
+      step_5_linked_acceptance_evidence: "Screenshot flow sukses + recording demo + QA report summary M1 SHA256."
+    rule_trace_backward_every_acceptance_evidence_must_start_in_req: "Tidak ada bukti penerimaan yang 'floating'; setiap report QA / screenshot HARUS di-link ke 1 atau lebih business requirement ID."
+  decision_traceability_git_adr_integration:
+    format_required: "Setiap ADR = file docs/adr/ADR-XXXX.md DAN entry append di DECISION_LOG.md. Wajib SHA commit pertama implementasi code yang TERKAIT di ADR."
+  audit_evidence_chain_of_custody:
+    sensitive_data_access_log_retention: "12 bulan IMMUTABLE object storage; HANYA dapat dibaca oleh security team TANPA modify permission. WORM (Write Once Read Many)."
+  implementation_evidence_release_tagging:
+    strategy: "Setiap production release = tag semantic (vX.Y.Z) + build provenance SBOM (Software Bill of Materials) SHA-linked, agar release mana yang menyebabkan issue SEV dapat dirollback exact tag."
+
+# ============================================================================
+# FINAL VALIDATION SELF-CHECK (6 Selesai Conditions User) — STRUCTURE ONLY
+# Catatan: Ini = CHECK APAKAH DOKUMEN INI SUDAH MEMENUHI 6 SYARAT STRUKTURAL YANG USER SEBUTKAN?
+# User 6 syarat: (1) SSOT single source truth (2) no contradiction cross-domain
+# (3) deliverable→milestone (4) milestone→AC (5) AC→expected evidence (6) evidence→req.
+# ============================================================================
+implementation_readiness_self_check_structure_only_execution_claim_content_can_be_wrong:
+  check_1_single_source_of_truth_single_file:
+    status: "EXECUTION CLAIM STRUCTURAL: Dokumen ini = 1 file YAML tunggal di root repository. Semua reference (pointer EVIDENCE.md, Measurement Report SHA, dst) di-link dari sini. TETAPI: Isi content = Design Intention murni."
+    evidence: "File location: /root/Enterprise OS/EOS-IMPLEMENTATION-BLUEPRINT.yaml (sha256sum dapat dijalankan auditor untuk integrity)"
+  check_2_no_contradiction_cross_domain:
+    status: "EXECUTION CLAIM: Manual review sementara ini TIDAK menemukan kontradiksi eksplisit antar domain dependency (A shared identity digunakan B dan C; B dan C TIDAK saling hard depend; C→B optional). TETAPI: Ini membutuhkan review user stakeholder (terutama dependency C→B soft import brief) untuk konfirmasi bisnis model tidak kontradiksi."
+  check_3_deliverable_linked_to_milestone:
+    status: "EXECUTION CLAIM STRUCTURAL: Contoh di B-M1 (phase_m1_alpha_case_document_complete.deliverable_list_what_handover_m3_finance_if_payment) = deliverable list per milestone. 100% milestone di roadmap section = memiliki deliverable list (template sebagian, tapi STRUKTUR ada)."
+  check_4_milestone_has_acceptance_criteria:
+    status: "EXECUTION CLAIM STRUCTURAL: 100% phase milestone = field acceptance_criteria_expected_evidence terisi (contoh AC-B-M1-01 dst). Struktur terpenuhi."
+  check_5_acceptance_criteria_expected_evidence:
+    status: "EXECUTION CLAIM STRUCTURAL: Setiap AC field = menyatakan evidence yang diharapkan (QA sign-off, automated test, SHA report, sample invoice, etc). Struktur terpenuhi."
+  check_6_evidence_linked_back_requirement:
+    status: "EXECUTION CLAIM STRUCTURAL: Evidence Layer 7.1 RTM mendefinisikan rule forward+backward SETIAP evidence → AC → Milestone → Business Requirement ID. Struktur terpenuhi."
+  overall_self_assessment_structure_only:
+    statement: "Struktur 6 syarat user LENGKAP di dokumen ini (check 1 s.d. 6 status structural terpenuhi per Execution Claim internal). TETAPI SELURUH ISI = Design Intention. BELUM ada satupun angka nyata / tanggal pasti / stakeholder nama riil / implementasi code untuk meng-VERIFIKASI bahwa content 'benar' / 'siap implementasi'."
+    classification_note:
+      - "JANGAN SAMPAI menganggap '6/6 structural = EOS siap'. Ini = KESALAHAN LEVEL (Rule #2 user: Jangan menganggap Execution Claim sebagai Verified Fact). Structural ada = bukan content validated."
+      - "Untuk status Verified Fact EOS siap implementasi → butuh user review content dan tanda tangan (atau approval SHA-linked EVIDENCE.md entry) → SELANJUTNYA generate artefak konkret code (milestone dijalankan) → baru pada titik itu 'EOS implementation blueprint validated' = Execution Claim berubah menjadi Verified Fact (ketika 3 domain artifacts muncul di code base)."

@@ -12,6 +12,10 @@
   - ✅ Implemented schema validator (first component of EKE) in `implementation/eke/`
   - ✅ Implemented graph builder (second component of EKE) in `implementation/eke/graph_builder.py`
   - ✅ Implemented projection engine (third component of EKE) in `implementation/eke/projection_engine.py`
+- 🎯 **EOS Proof of Execution v1 (PoE v1, current milestone)**:
+  - `REQ-0001` is the single concept used to prove end-to-end execution
+  - success means one Requirement can be compiled into consistent artifacts
+    without manual interpretation
 
 ## Phase 2.x — Compiler Maturity (Current Focus)
 Instead of scaling the knowledge catalog, the next step is to stabilize and mature the **Enterprise Knowledge Engine (EKE)** into a true compiler with a clean pipeline:
@@ -41,6 +45,474 @@ Instead of scaling the knowledge catalog, the next step is to stabilize and matu
    — NOT "what new folder should we create?"
 
 2. **No new top-level directory, specification family, or artifact category may be introduced without an Architecture Decision Record (ADR) that justifies the change and updates the dependency hierarchy.**
+
+---
+
+## Architecture Verification Baseline v1
+
+Architecture discovery is considered complete. EOS now enters architecture
+verification mode.
+
+Success is no longer judged by conceptual elegance alone, but by whether the
+model can produce consistent artifacts automatically under governed change.
+
+### Working Rule
+
+> No change to core architecture is allowed without an ADR and impact analysis
+> covering Constitution, EMA, ERA, ELS, and EDM.
+
+### Architecture Freeze v1
+
+```text
+EOS Architecture Baseline v1
+Status: Frozen
+Change Policy: ADR Required
+```
+
+From this point onward:
+- Philosophy is baseline.
+- Constitution is baseline.
+- EMA is baseline.
+- ERA is baseline.
+- relation vocabulary is baseline.
+- SAG is the baseline authoring gate.
+- Architecture Registry is append-only baseline metadata.
+
+The default mode is baseline implementation, not architecture redesign.
+
+### Baseline Is Closed
+
+| Layer | Status | Change Policy |
+| ----- | ------ | ------------- |
+| Philosophy | Frozen | ADR only |
+| Constitution | Frozen | ADR only |
+| EMA | Frozen | ADR only |
+| ERA | Frozen | ADR only |
+| SAG | Frozen | minor revision only |
+| SES | Frozen | minor revision only |
+| Architecture Registry | Frozen | append-only |
+
+### Execution Pipeline
+
+```text
+Architecture Closure
+        ↓
+SAG
+        ↓
+ELS Requirement v1
+        ↓
+Semantic Validation
+        ↓
+Canonical YAML
+        ↓
+PAC
+        ↓
+EOS Specification Compiler
+        ├── parse
+        ├── validate
+        ├── normalize
+        ├── resolve references
+        ├── build graph
+        ├── emit TypeScript
+        ├── emit Zod
+        ├── emit JSON Schema
+        ├── emit Graph Metadata
+        ├── emit Documentation
+        ├── emit Validator Stub
+        └── emit Evidence
+        ↓
+EDM Requirement
+        ↓
+packages/domain/requirement
+        ↓
+Evidence
+```
+
+Interpretation:
+- `SAG` is not a new architectural level.
+- `SAG` is the authoring guide that standardizes ELS structure and generator
+  readiness.
+- `SES` is not a new architectural level.
+- `SES` defines how the validated specification is executed into deterministic
+  downstream artifacts.
+- `ELS Requirement v1` is the first golden specification for this pipeline.
+- `EOS Specification Compiler` is the first-class execution engine.
+- `generator` is treated as an internal compiler stage, not the primary system
+  identity.
+- Every artifact must have an explicit predecessor and successor unless it is
+  terminal evidence for a specific execution run.
+
+### Work Classes
+
+| Work Class | Examples | Review Rule |
+| ---------- | -------- | ----------- |
+| Architecture Work | Constitution, EMA, ERA, axioms, relation vocabulary | ADR required |
+| Specification Work | ELS Requirement, ELS Evidence, ELS RTM, ELS Blueprint | SAG required |
+| Implementation Work | EDM, Generator, `packages/domain/*`, `packages/core/*` | Must conform to governed ELS |
+
+### Initial Execution Priorities
+
+The first concepts to implement under this pipeline are:
+1. `Requirement`
+2. `Evidence`
+3. `RTM`
+4. `Blueprint`
+
+These concepts form the minimum semantic backbone for traceability, governance,
+auditability, and executable specification.
+
+### Current Milestone — EOS Proof of Execution v1
+
+The immediate milestone is not broad parallel specification work. It is one
+vertical slice that proves EOS is executable end-to-end.
+
+Scope:
+- one concept only: `REQ-0001`
+- one governed pipeline from ELS to Evidence
+- no semantic meaning invented outside validated specification artifacts
+
+Vertical slice path:
+
+```text
+Requirement (ELS)
+        ↓
+Semantic Validation
+        ↓
+Canonical YAML
+        ↓
+PAC
+        ↓
+EOS Specification Compiler
+        ├── TS Types
+        ├── Zod
+        ├── JSON Schema
+        ├── Graph Metadata
+        ├── Docs
+        └── Validation Stub
+        ↓
+EDM
+        ↓
+packages/domain/requirement
+        ↓
+Evidence
+        ↓
+Acceptance
+```
+
+If this slice passes, EOS architecture is no longer only closed. It is
+empirically executable.
+
+### Specification Execution Pipeline
+
+The next execution baseline is not four isolated deliverables. It is one
+governed pipeline with explicit predecessor-successor semantics.
+
+#### Stage 1 — Golden Specification
+
+Inputs:
+- `requirement.md`
+- `requirement.yaml`
+
+Acceptance:
+- Definition of Ready satisfied
+- Definition of Semantic Completeness satisfied
+
+#### Stage 2 — Semantic Validation and Canonicalization
+
+Outputs:
+- validated canonical YAML
+- validation report
+- graph validation result
+
+Acceptance:
+- semantic validation passed
+- graph validation passed
+- canonical machine form recorded
+
+#### Stage 3 — Deterministic Compilation
+
+Input:
+- canonical ELS YAML
+
+Outputs:
+- TypeScript
+- Zod
+- JSON Schema
+- OpenAPI fragment where applicable
+- Graph metadata
+- validator stub
+- reference docs
+
+Acceptance:
+- deterministic output set compiled
+- compiler version recorded
+- checksums or hashes recorded
+
+#### Stage 4 — EDM Requirement v1
+
+Outputs:
+- aggregate
+- entity
+- value objects
+- events
+- repository contract
+- queries
+
+Acceptance:
+- EDM derives from governed ELS artifacts only
+- no semantic meaning is invented in implementation
+
+#### Stage 5 — Domain Package Requirement
+
+Target:
+- `packages/domain/requirement`
+
+Constraint:
+- this package contains implementation only
+- it must not define meaning
+
+Acceptance:
+- implementation conforms to generated contracts
+- implementation evidence is attached to the originating requirement lineage
+
+### ELS Concept Definition of Done
+
+No concept is considered implemented until it yields all of:
+- human-readable ELS
+- machine-readable YAML or JSON
+- TypeScript types
+- Zod schema
+- JSON Schema
+- graph metadata
+- validation stub
+- documentation reference
+
+### Staged Definition of Done
+
+EOS tracks completion by execution stage instead of a single ambiguous status:
+- `DoD-S` — Specification Done
+- `DoD-G` — Generation Done
+- `DoD-I` — Implementation Done
+- `DoD-R` — Runtime Done
+
+This allows a concept to be:
+- `Specification Complete`
+- `Implementation Pending`
+
+without semantic ambiguity.
+
+### Definition of Proven
+
+A concept is `proven` only when:
+- it can be regenerated
+- it is deterministic within accepted SDR bounds
+- `semantic_id` is stable
+- lineage is complete
+- evidence is complete
+- PAC passes
+- graph validation passes
+- acceptance validation passes
+
+`DoP` is stricter than implementation because it requires proof, not only
+artifact existence.
+
+### ELS Concept Definition of Ready
+
+A concept must not enter ELS authoring unless it:
+- has grounding in Constitution
+- has a clear position in EMA
+- has a clear transformation role in ERA
+- does not duplicate an existing governed concept
+- has a Requirement ID
+
+### Definition of Semantic Completeness
+
+A concept must not enter generation or implementation unless all of the
+following are explicit:
+- identity
+- lifecycle
+- relations
+- invariants
+- policies
+- evidence contract
+- graph semantics
+- projection rules
+- validation rules
+- examples
+
+If any semantic dimension is missing:
+- status = `incomplete`
+- generator execution is blocked
+- implementation is not allowed
+
+### Evidence Classes
+
+EOS distinguishes evidence by the failure domain it validates.
+
+`Specification Evidence` proves the specification is valid enough to execute:
+- DoSC passed
+- semantic validation passed
+- graph validation passed
+
+`Execution Evidence` proves the generated and implemented artifacts conform to
+the validated specification:
+- generator checksum
+- schema hash
+- code generation log
+- runtime validation result
+
+Audits must preserve this separation so specification defects are not confused
+with execution defects.
+
+### Pipeline Acceptance Criteria
+
+Every governed pipeline must define `Pipeline Acceptance Criteria` (`PAC`) so
+the validity of the whole transformation chain can be tested, not just the
+individual artifacts.
+
+| Stage | Acceptance |
+| ----- | ---------- |
+| ELS | DoSC passed |
+| YAML | Schema valid |
+| Compiler | `SDR >= 95%` for PoE v1, target `100%` |
+| EDM | Contract complete |
+| Domain | Build and lint passed |
+| EKG | Relations validated |
+| Evidence | Lineage complete |
+| Acceptance | DoP achieved |
+
+PAC is a governance artifact, not a new architectural layer.
+PAC should exist in executable forms:
+- `PAC.md`
+- `PAC.yaml`
+- `PAC.test.ts`
+
+### Determinism KPI
+
+Primary metric for this phase:
+
+```text
+Semantic Determinism Rate (SDR) =
+number of regenerated artifacts that are byte-identical
+────────────────────────────────────────────────────────
+total number of generated artifacts
+```
+
+Engineering target:
+
+```text
+SDR = 100%
+```
+
+Proof gate for `PoE v1`:
+
+```text
+SDR >= 95%
+```
+
+Any divergence without a governed ELS change or compiler version change is a
+pipeline failure.
+
+Future decomposition:
+- `SDR-S`
+- `SDR-G`
+- `SDR-R`
+- `SDR-E`
+
+### Semantic and Lineage Identity Contract
+
+Every transformation in the vertical slice must preserve:
+- a stable `semantic_id` for the meaning of the concept
+- a stable `lineage_id` for one proof run through the pipeline
+
+Example:
+
+```text
+semantic_id: REQ-0001
+lineage_id: LIN-8F12
+   ├── ELS
+   ├── YAML
+   ├── TS Types
+   ├── Zod Schema
+   ├── EDM Aggregate
+   ├── Domain Package
+   ├── EKG Node
+   └── Evidence
+```
+
+This allows audit to follow one transformation identity across the full
+pipeline without reconstructing lineage manually, while still separating
+semantic stability from compiler evolution.
+
+### Compiler Packaging Direction
+
+Preferred package target:
+
+```text
+workspace/packages/tooling/specification-compiler/
+```
+
+Expected outputs:
+- TypeScript types
+- Zod schemas
+- JSON Schema
+- OpenAPI fragments where applicable
+- validation rules or stubs
+- graph metadata
+- documentation stubs
+
+### Staged Compiler Architecture
+
+```text
+EOS Specification Compiler
+├── parser
+├── validator
+├── normalizer
+├── reference resolver
+├── graph builder
+├── artifact emitter
+├── evidence emitter
+└── acceptance hooks
+```
+
+Each stage should be testable independently.
+
+### Concept Maturity Model
+
+| Level | Name | Meaning |
+| ----- | ---- | ------- |
+| 0 | Draft | Concept exists but is not semantically stable |
+| 1 | Semantically Complete | DoSC is satisfied |
+| 2 | Machine Readable | Canonical YAML or JSON exists |
+| 3 | Generated | Generator outputs are reproducible |
+| 4 | Implemented | Runtime-facing implementation exists |
+| 5 | Runtime Validated | Runtime behavior is verified |
+| 6 | Production Proven | Production evidence confirms behavior |
+
+Roadmap progress should be measured by maturity level, not document count alone.
+
+### North Star
+
+> No implementation may define meaning. Meaning may arise only from validated
+> and frozen Language Specification artifacts.
+
+### Definition of Success
+
+Phase `Architecture Verification` is complete only when:
+1. one concept (`REQ-0001`) passes the full pipeline;
+2. compiler output achieves `SDR >= 95%` for `PoE v1`;
+3. all artifacts retain traceable lineage;
+4. `semantic_id` and `lineage_id` remain intact and distinguishable;
+5. EKG relations remain consistent with ELS and EDM;
+6. evidence proves every transformation without manual intervention;
+7. DoP is achieved.
+
+Authoritative references:
+- [Architecture Closure Baseline](file:///root/Enterprise%20OS/enterprise/specifications/eos-architecture-closure.md)
+- [Specification Authoring Guide](file:///root/Enterprise%20OS/enterprise/specifications/specification-authoring-guide.md)
+- [Specification Execution Specification](file:///root/Enterprise%20OS/enterprise/specifications/specification-execution-specification.md)
+- [Pipeline Acceptance Criteria](file:///root/Enterprise%20OS/enterprise/governance/pipeline-acceptance-criteria.md)
+- [Architecture Baseline Registry](file:///root/Enterprise%20OS/enterprise/specifications/architecture-baseline-v1.yaml)
 
 ---
 
@@ -209,12 +681,17 @@ Enterprise Runtime
 | 8 | Enterprise Meta Model | ✅ Normative (v1.0.0) | [constitution/meta-model.md](file:///root/Enterprise%20OS/enterprise/constitution/meta-model.md) |
 | 9 | Enterprise Specification Template | ✅ Normative (v2.0.0) | [constitution/enterprise-specification-template.md](file:///root/Enterprise%20OS/enterprise/constitution/enterprise-specification-template.md) |
 | 10 | EKL Language Specification | ✅ Normative (v1.0.0) | [constitution/ekl-language-specification.md](file:///root/Enterprise%20OS/enterprise/constitution/ekl-language-specification.md) |
-| 11 | Authority Model | ⏳ Normative Draft | [authority/authority-model.md](file:///root/Enterprise%20OS/enterprise/authority/authority-model.md) |
-| 12 | Evidence Model | ⏳ Normative Draft | [governance/evidence-model.md](file:///root/Enterprise%20OS/enterprise/governance/evidence-model.md) |
-| 13 | Business Capability Model | ✅ Normative (v1.0.0) | [models/capability.md](file:///root/Enterprise%20OS/enterprise/models/capability.md) |
-| 14 | Business Service Model | ✅ Normative (v1.0.0) | [models/business-service.md](file:///root/Enterprise%20OS/enterprise/models/business-service.md) |
-| 15 | Mission Model | ✅ Normative (v1.0.0) | [models/mission.md](file:///root/Enterprise%20OS/enterprise/models/mission.md) |
-| 16 | Canonical Object Specification | ✅ Normative (v1.0.0) | [models/canonical-object-specification.md](file:///root/Enterprise%20OS/enterprise/models/canonical-object-specification.md) |
+| 11 | Architecture Closure Baseline | ✅ Closed and Frozen Baseline (v1.0.0) | [specifications/eos-architecture-closure.md](file:///root/Enterprise%20OS/enterprise/specifications/eos-architecture-closure.md) |
+| 12 | Specification Authoring Guide | ✅ Frozen Baseline (v1.0.0, minor revisions only) | [specifications/specification-authoring-guide.md](file:///root/Enterprise%20OS/enterprise/specifications/specification-authoring-guide.md) |
+| 13 | Specification Execution Specification | ✅ Frozen Baseline (SES v1.0.0, minor revisions only) | [specifications/specification-execution-specification.md](file:///root/Enterprise%20OS/enterprise/specifications/specification-execution-specification.md) |
+| 14 | Architecture Baseline Registry | ✅ Frozen Baseline (v1.0.0, append-only) | [specifications/architecture-baseline-v1.yaml](file:///root/Enterprise%20OS/enterprise/specifications/architecture-baseline-v1.yaml) |
+| 15 | Authority Model | ⏳ Normative Draft | [authority/authority-model.md](file:///root/Enterprise%20OS/enterprise/authority/authority-model.md) |
+| 16 | Evidence Model | ⏳ Normative Draft | [governance/evidence-model.md](file:///root/Enterprise%20OS/enterprise/governance/evidence-model.md) |
+| 17 | Pipeline Acceptance Criteria | ⏳ Governance Draft | [governance/pipeline-acceptance-criteria.md](file:///root/Enterprise%20OS/enterprise/governance/pipeline-acceptance-criteria.md) |
+| 18 | Business Capability Model | ✅ Normative (v1.0.0) | [models/capability.md](file:///root/Enterprise%20OS/enterprise/models/capability.md) |
+| 19 | Business Service Model | ✅ Normative (v1.0.0) | [models/business-service.md](file:///root/Enterprise%20OS/enterprise/models/business-service.md) |
+| 20 | Mission Model | ✅ Normative (v1.0.0) | [models/mission.md](file:///root/Enterprise%20OS/enterprise/models/mission.md) |
+| 21 | Canonical Object Specification | ✅ Normative (v1.0.0) | [models/canonical-object-specification.md](file:///root/Enterprise%20OS/enterprise/models/canonical-object-specification.md) |
 
 ---
 

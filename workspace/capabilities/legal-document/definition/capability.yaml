@@ -1,0 +1,7 @@
+id: legal-document
+name: Legal Documents
+version: 0.1.0
+presentation:
+  view: DocumentView
+implementation:
+  entry: implementation/service.ts

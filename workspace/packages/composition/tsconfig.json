@@ -1,0 +1,16 @@
+{
+  "extends": "@repo/config-typescript/react-library.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": false,
+    "esModuleInterop": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["src/**/*.ts"]
+}

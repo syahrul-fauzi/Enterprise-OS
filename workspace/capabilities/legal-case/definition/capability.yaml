@@ -1,0 +1,7 @@
+id: legal-case
+name: Case Management
+version: 0.1.0
+presentation:
+  view: CaseView
+implementation:
+  entry: implementation/service.ts

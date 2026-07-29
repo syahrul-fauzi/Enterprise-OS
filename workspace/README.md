@@ -1,106 +1,58 @@
-# Enterprise OS Workspace — Product Learning Layer
+# Turborepo Tailwind CSS starter
 
-Last Updated: July 24, 2026
+This Turborepo starter is maintained by the Turborepo core team.
 
----
+## Using this example
 
-## Current Status
-```
-Phase C1.2
-       CLOSED ✅
-Phase C1.3
-       IN PROGRESS 🟡
-Sprint C1.3-001
-       STARTED 🚀
+Run the following command:
+
+```sh
+npx create-turbo@latest -e with-tailwind
 ```
 
----
+## What's inside?
 
-## EOS Version: v1.1 — Learning Platform Stage
-This is no longer an Architecture Program, and not yet a Full Enterprise Platform. This is a **Product Learning Platform**!
+This Turborepo includes the following packages/apps:
 
----
+### Apps and Packages
 
-## Core Operating Principle
-> **Products create evidence. Evidence creates assets. Assets accelerate future products!**
->
-> **The platform does not predict what should be reusable. The platform learns what becomes reusable!**
+- `docs`: a [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
+- `web`: another [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
+- `ui`: a stub React component library with [Tailwind CSS](https://tailwindcss.com/) shared by both `web` and `docs` applications
+- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
----
+Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
-## North Star Metric
-All decisions must answer:
+### Building packages/ui
+
+This example is set up to produce compiled styles for `ui` components into the `dist` directory. The component `.tsx` files are consumed by the Next.js apps directly using `transpilePackages` in `next.config.ts`. This was chosen for several reasons:
+
+- Make sharing one `tailwind.config.ts` to apps and packages as easy as possible.
+- Make package compilation simple by only depending on the Next.js Compiler and `tailwindcss`.
+- Ensure Tailwind classes do not overwrite each other. The `ui` package uses a `ui-` prefix for it's classes.
+- Maintain clear package export boundaries.
+
+Another option is to consume `packages/ui` directly from source without building. If using this option, you will need to update the `tailwind.config.ts` in your apps to be aware of your package locations, so it can find all usages of the `tailwindcss` class names for CSS compilation.
+
+For example, in [tailwind.config.ts](packages/tailwind-config/tailwind.config.ts):
+
+```js
+  content: [
+    // app content
+    `src/**/*.{js,ts,jsx,tsx}`,
+    // include packages if not transpiling
+    "../../packages/ui/*.{js,ts,jsx,tsx}",
+  ],
 ```
-Does this make future products:
-- faster?
-- cheaper?
-- less duplicated?
-- easier to maintain?
-```
-If answer is unclear: don't extract!
 
----
+If you choose this strategy, you can remove the `tailwindcss` and `autoprefixer` dependencies from the `ui` package.
 
-## Workspace Contents
-### products/
-The product implementations themselves. They are the **source of implementation truth**!
-- [lawyershub/](./products/lawyershub/): First product, LawyersHub MVP v0.1 (Release Candidate)
+### Utilities
 
-### capabilities/
-Extracted platform assets (NO CONTENTS YET, NO EXTRACTION WITHOUT EVIDENCE)!
+This Turborepo has some additional tools already setup for you:
 
----
-
-## Product Evidence Lifecycle
-```
-Observation
-     ↓
-Candidate
-     ↓
-Validated
-     ↓
-Extract
-     ↓
-Published
-     ↓
-Reused
-```
-**NO SKIPPING STEPS!**
-
----
-
-## Phase C1.3 — Real Usage Baseline
-### Objective
-Turn LawyersHub from "a finished product" to "a platform learning data source"!
-
-### Evidence to Collect
-- Delivery Evidence: Request → Design → Implementation → Deploy
-- Operational Evidence: Production → Usage → Maintenance
-- Platform Learning Evidence: What repeats, what's expensive, what blocks, what's reusable?
-
-### Weekly Review Format
-1. Product Reality
-2. Engineering Reality
-3. Platform Learning
-
-### Exit Gate
-- Product: LawyersHub used by real users, main workflow runs, operational evidence collected
-- Engineering: Delivery baseline, maintenance baseline, duplication baseline available
-- Platform: Candidate extraction list available (NO CAPABILITIES REQUIRED YET)
-
----
-
-## LawyersHub MVP v0.1
-Status: Release Candidate
-Validated Journey: ALL STEPS PASS ✅
-- Anonymous Visitor
-- Authentication
-- Create Workspace
-- Create Client
-- Create Matter
-- Upload Document
-- Review Matter
-- Logout
-Running on: http://localhost:8000
-OpenAPI docs: http://localhost:8000/docs
-For more details: [lawyershub/README.md](./products/lawyershub/README.md)
+- [Tailwind CSS](https://tailwindcss.com/) for styles
+- [TypeScript](https://www.typescriptlang.org/) for static type checking
+- [ESLint](https://eslint.org/) for code linting
+- [Prettier](https://prettier.io) for code formatting

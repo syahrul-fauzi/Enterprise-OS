@@ -1,0 +1,33 @@
+{
+  "name": "@repo/presentation-foundation",
+  "version": "0.1.0-alpha.3b",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./tokens": "./dist/tokens/index.js",
+    "./tokens/colors": "./dist/tokens/colors.js",
+    "./tokens/spacing": "./dist/tokens/spacing.js",
+    "./tokens/radius": "./dist/tokens/radius.js",
+    "./tokens/elevation": "./dist/tokens/elevation.js",
+    "./tokens/semantic": "./dist/tokens/semantic.js",
+    "./typography": "./dist/typography/index.js",
+    "./motion": "./dist/motion/index.js",
+    "./icons": "./dist/icons/index.js",
+    "./themes": "./dist/themes/index.js"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "check-types": "tsc --noEmit",
+    "dev": "tsc --watch",
+    "lint": "eslint src --max-warnings 0"
+  },
+  "devDependencies": {
+    "@repo/config-eslint": "workspace:*",
+    "@repo/config-typescript": "workspace:*",
+    "eslint": "^9.39.1",
+    "typescript": "5.9.2"
+  }
+}

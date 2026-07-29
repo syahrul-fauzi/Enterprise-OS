@@ -1,0 +1,41 @@
+{
+  "name": "@repo/presentation-ui-system",
+  "version": "0.1.0-alpha.4",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    "./styles.css": "./dist/index.css",
+    ".": "./dist/index.js",
+    "./*": "./dist/*.js"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "pnpm run build:styles && pnpm run build:components",
+    "build:styles": "tailwindcss -i ./src/styles.css -o ./dist/index.css",
+    "build:components": "tsc",
+    "check-types": "tsc --noEmit",
+    "dev:styles": "tailwindcss -i ./src/styles.css -o ./dist/index.css --watch",
+    "dev:components": "tsc --watch",
+    "lint": "eslint src --max-warnings 0"
+  },
+  "dependencies": {
+    "@repo/presentation-foundation": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^19"
+  },
+  "devDependencies": {
+    "@repo/config-eslint": "workspace:*",
+    "@repo/config-tailwind": "workspace:*",
+    "@repo/config-typescript": "workspace:*",
+    "@tailwindcss/cli": "^4.1.5",
+    "@types/react": "^19.1.0",
+    "eslint": "^9.39.1",
+    "tailwindcss": "^4.1.5",
+    "typescript": "5.9.2"
+  }
+}

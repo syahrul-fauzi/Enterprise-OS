@@ -1,0 +1,37 @@
+pipeline_id: PAC-REQ-VS1
+proof_id: POE-V1
+semantic_id: REQ-0001
+lineage_id: LIN-REQ-0001
+concept: Requirement
+scope: eos_vertical_slice_v1
+stages:
+  - stage: els
+    acceptance: dosc_passed
+    status: pending
+  - stage: yaml
+    acceptance: schema_valid
+    status: pending
+  - stage: compiler
+    acceptance: sdr_gte_95
+    status: pending
+  - stage: edm
+    acceptance: contract_complete
+    status: pending
+  - stage: domain
+    acceptance: build_and_lint_passed
+    status: pending
+  - stage: evidence
+    acceptance: lineage_complete
+    status: pending
+  - stage: acceptance
+    acceptance: dop_achieved
+    status: pending
+metrics:
+  sdr:
+    target: 100
+    minimum_proof_gate: 95
+artifacts:
+  markdown: /root/Enterprise OS/enterprise/governance/pipeline-acceptance-criteria.md
+  yaml: /root/Enterprise OS/enterprise/governance/pipeline-acceptance-criteria.requirement-v1.yaml
+  test: /root/Enterprise OS/workspace/packages/tooling/arch-tests/src/pac.requirement-v1.test.ts
+overall_acceptance: pending
