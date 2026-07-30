@@ -1,9 +1,9 @@
 # Enterprise OS — Architecture Closure Baseline
 ## Status
-✅ Closed and Frozen Baseline (EOS Architecture Baseline v1.0.0)
+✅ Implementation Baseline v1.0 (Frozen)
 ## Purpose
 Codify the currently agreed EOS architecture as a formally closed and governed
-baseline before ELS, EDM, and generator implementation expand further.
+baseline before ELS, EDM, and compiler implementation expand further.
 ## Authority
 Lead Enterprise Architect
 ## Scope
@@ -26,10 +26,10 @@ Markdown prose with constrained lists, tables, and transformation notation.
 ## Validation Rules
 - Every new architecture document must map to exactly one level in the stack below.
 - Every transformation between levels must use an approved relation from the EOS relation vocabulary.
-- Every architectural view must be traceable to the Canonical Enterprise Representation defined here.
+- Every architectural view must be traceable to the Canonical Semantic Boundary defined here.
 ## Projection Rules
 - This baseline constrains future ELS, EDM, EKG, ERS, and domain package work.
-- This baseline is intended to be projected into implementation plans, generator contracts, and review checklists.
+- This baseline is intended to be projected into implementation plans, compiler contracts, and review checklists.
 - This baseline recognizes SAG as the mandatory authoring control surface for ELS inputs.
 ## Examples
 See the level stack, meta-cycle, and implementation sequence below.
@@ -153,7 +153,7 @@ Implications:
 
 ---
 
-## 4. Canonical Enterprise Representation
+## 4. Canonical Semantic Boundary
 
 ### EOS Knowledge Graph (EKG)
 
@@ -175,6 +175,29 @@ Implications:
 - Coverage dashboards are projections, not the source of truth.
 - Dependency matrices are projections, not the source of truth.
 - Audit and impact views are projections, not the source of truth.
+
+### Canonical Semantic Boundary
+
+The `Canonical Semantic Boundary` is the frozen meaning boundary for governed
+concepts.
+
+For the current baseline it is expressed through:
+- governed ELS specifications;
+- their canonical machine-readable forms;
+- semantic graph projections such as EKG and traceability views.
+
+Implementation may consume this boundary, but it may not redefine it.
+
+### Canonical Implementation Boundary
+
+The `Canonical Implementation Boundary` is the derived implementation contract
+surface generated from the canonical semantic boundary.
+
+For the current baseline it is expressed through:
+- governed EDM artifacts;
+- generated contracts and validators;
+- implementation packages that realize governed contracts without inventing
+  new meaning.
 
 ---
 
@@ -215,7 +238,7 @@ The next implementation sequence is intentionally conservative:
 5. Establish SAG as the authoring contract for all ELS concepts.
 6. Start ELS v1 with `Requirement`, `Evidence`, `RTM`, and `Blueprint`.
 7. Derive EDM v1 from governed ELS artifacts only.
-8. Build generator v1 as a first-class tooling package, targeting `workspace/packages/tooling/specification-generator/`.
+8. Build compiler v1 as a first-class tooling package, targeting `workspace/packages/tooling/specification-compiler/`.
 9. Implement EKG v1 node, edge, and projection semantics.
 10. Implement ERS v1 as runtime state representation.
 11. Implement `packages/domain/*` strictly as behavior over generated contracts and approved domain models.
@@ -228,8 +251,8 @@ Architecture Freeze v1 means the core EOS baseline is now implemented through
 governance rather than redesigned through ad hoc discussion.
 
 ```text
-EOS Architecture Baseline v1
-Status: Frozen
+EOS Implementation Baseline v1
+Status: Implementation Baseline v1.0 (Frozen)
 Change Policy: ADR Required
 ```
 
@@ -294,7 +317,7 @@ Review rule:
 
 Examples:
 - EDM
-- generator
+- compiler
 - `packages/domain/*`
 - `packages/core/*`
 
@@ -307,7 +330,7 @@ Review rule:
 ## 9. Specification Authoring Guide (SAG)
 
 SAG is not a new architectural layer. It is the authoring discipline that keeps
-ELS concepts structurally uniform and generator-ready.
+ELS concepts structurally uniform and compiler-ready.
 
 ```text
 Architecture Closure
@@ -374,7 +397,7 @@ addressable nodes in the architecture evolution graph.
 
 ## 12. Definition of Semantic Completeness (DoSC)
 
-An ELS concept MUST NOT enter generator or implementation phases until its
+An ELS concept MUST NOT enter compiler or implementation phases until its
 semantic definition is complete.
 
 Minimum semantic completeness set:

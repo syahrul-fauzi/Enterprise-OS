@@ -1,0 +1,9 @@
+contract:
+  id: EIR-CONTRACT-V1
+  package: "@repo/core-eir"
+  status: REVIEWED
+  purpose: Canonical instruction envelope for declarative transformation inputs and outputs.
+  constraints:
+    - no_runtime_execution_behavior
+    - lifecycle_must_follow_verified_vocabulary
+    - proof_references_are_metadata_only

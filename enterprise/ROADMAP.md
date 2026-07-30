@@ -16,6 +16,8 @@
   - `REQ-0001` is the single concept used to prove end-to-end execution
   - success means one Requirement can be compiled into consistent artifacts
     without manual interpretation
+  - implementation proceeds as baseline execution gates, not as a new
+    architecture phase
 
 ## Phase 2.x — Compiler Maturity (Current Focus)
 Instead of scaling the knowledge catalog, the next step is to stabilize and mature the **Enterprise Knowledge Engine (EKE)** into a true compiler with a clean pipeline:
@@ -64,8 +66,8 @@ model can produce consistent artifacts automatically under governed change.
 ### Architecture Freeze v1
 
 ```text
-EOS Architecture Baseline v1
-Status: Frozen
+EOS Implementation Baseline v1
+Status: Implementation Baseline v1.0 (Frozen)
 Change Policy: ADR Required
 ```
 
@@ -130,7 +132,7 @@ Evidence
 
 Interpretation:
 - `SAG` is not a new architectural level.
-- `SAG` is the authoring guide that standardizes ELS structure and generator
+- `SAG` is the authoring guide that standardizes ELS structure and compiler
   readiness.
 - `SES` is not a new architectural level.
 - `SES` defines how the validated specification is executed into deterministic
@@ -165,6 +167,12 @@ auditability, and executable specification.
 
 The immediate milestone is not broad parallel specification work. It is one
 vertical slice that proves EOS is executable end-to-end.
+
+Implementation framing:
+- `Sprint 0.0` is not a new architecture phase.
+- `Sprint 0.0` is the first implementation stage of the frozen baseline.
+- its role is to prove individual transformations before orchestration.
+- this preserves the rule: `No orchestration before proof`.
 
 Scope:
 - one concept only: `REQ-0001`
@@ -201,6 +209,188 @@ Acceptance
 
 If this slice passes, EOS architecture is no longer only closed. It is
 empirically executable.
+
+### Baseline Execution Gates
+
+Execution now proceeds through governed implementation gates:
+
+| Gate | Objective | Exit Evidence |
+| ---- | --------- | ------------- |
+| A | Governance Freeze | Constitution, governance rules, ACL, and dependency rules are complete and enforceable |
+| B | Canonical Foundation | `contracts`, `eir`, `predicate-registry`, `transformation-registry`, and `proof-ledger` expose contracts and conformance tests |
+| C | Transformation Proof | `T001`–`T005` are proven independently and each emits a `Proof Object` |
+| D | Orchestration | Transformation Engine orchestrates only already-verified transformations |
+| E | Vertical Slice | `REQ-0001` passes end-to-end and produces a complete `Proof Ledger` |
+
+Gate C is the first implementation milestone because individual proof must
+exist before orchestration is allowed.
+
+These gates are Sprint 0 execution gates. They do not replace the root
+constitutional gate-certification vocabulary used for broader enterprise
+evaluation.
+
+### Transformation Registration Policy
+
+Transformation registration is governed by execution readiness, not by file
+presence alone.
+
+Statuses:
+- `DRAFT`:
+  - specification exists
+  - contract exists
+  - predicates exist
+  - implementation may be absent
+  - execution is forbidden
+- `VERIFIED`:
+  - implementation exists
+  - conformance tests passed
+  - reference tests passed
+  - proof objects recorded
+  - `allowed_for_pipeline = true`
+
+The Transformation Engine must reject any transformation that is not in
+`VERIFIED` status.
+
+Example:
+
+```yaml
+id: T001
+status: VERIFIED
+contract: els-to-eir@1.0.0
+proof:
+  latest: PRF-T001-0007
+compatibility: stable
+allowed_for_pipeline: true
+```
+
+### Registry Responsibilities
+
+The active registries have distinct responsibilities:
+- `Transformation Registry` answers: what may be executed
+- `Predicate Registry` answers: how correctness is proven
+
+Their governed flow is:
+
+```text
+Transformation
+        ↓
+Contract
+        ↓
+Predicates
+        ↓
+Proof
+```
+
+Execution engines must remain domain-agnostic and perform only:
+
+```text
+Load Registry
+        ↓
+Resolve DAG
+        ↓
+Execute VERIFIED Transformations
+        ↓
+Evaluate Predicates
+        ↓
+Emit Proof Objects
+```
+
+### Canonical Conformance Asset
+
+`REQ-0001` is not treated as a convenience example.
+
+It is the canonical conformance asset for `PoE v1`, functioning as the golden
+reference corpus for parser, EIR, CAG, emitter, and engine evolution.
+
+Any governed change in these components must preserve byte-identical outputs
+for the `REQ-0001` baseline unless an approved constitutional change updates
+the baseline itself.
+
+### Baseline Lock Review
+
+Baseline Lock Review is a governance checkpoint, not a design phase.
+
+Exit criteria:
+- Constitution terminology has no conflicting implementation terms.
+- `ROADMAP` uses Gates `A`–`E` as the only Sprint 0 execution roadmap.
+- `SES` uses the same governed pipeline as `ROADMAP`.
+- governance documents position `PAC` as contract and `Proof Runner` as
+  execution artifact.
+- registry semantics for `DRAFT` and `VERIFIED` are consistent.
+- canonical terminology is consistent for `Canonical Semantic Boundary`,
+  `Canonical Implementation Boundary`, `Transformation Registry`,
+  `Predicate Registry`, and `Proof Ledger`.
+- Sprint 0 backlog does not include deliverables outside the ratified
+  baseline.
+
+When this review passes, the affected baseline artifacts are treated as:
+
+```text
+Implementation Baseline v1.0 (Frozen)
+```
+
+Governance consequence:
+- Constitution changes require Constitutional Amendment plus ADR.
+- Canonical model changes require ADR plus migration plan.
+- implementation changes do not require baseline edits while governed
+  contracts remain satisfied.
+
+### Sprint 0 Backlog Freeze
+
+The initial implementation backlog is frozen to five items only:
+
+1. `T001 (ELS → EIR)`
+   - contract
+   - predicate
+   - conformance test
+   - reference test
+   - proof object
+2. `Transformation Registry`
+   - loader
+   - schema
+   - `DRAFT` and `VERIFIED` status
+   - DAG metadata
+3. `Predicate Registry`
+   - `SemanticStable`
+   - `SchemaValid`
+   - `ReferenceComplete`
+4. `Proof Object Factory + Proof Ledger`
+   - hash chain
+   - verifier
+   - immutable append
+5. `REQ-0001` Golden Reference
+   - source
+   - expected EIR
+   - expected CAG when `T002` exists
+   - expected proof
+
+Explicitly excluded from Sprint 0 baseline:
+- Transformation Engine
+- CLI
+- emitters beyond what is strictly required for the frozen backlog
+- CI orchestration
+
+### Registry-Driven Orchestration KPI
+
+Gate D is not considered passed if orchestration logic is hardcoded against
+transformation identifiers.
+
+Failure examples:
+
+```ts
+if (transformation.id === "T001") { /* ... */ }
+```
+
+```ts
+const pipeline = ["T001", "T002", "T003"];
+```
+
+Success condition:
+- the engine loads the Transformation Registry;
+- builds the DAG from governed metadata;
+- executes only `VERIFIED` transformations;
+- evaluates predicates from the Predicate Registry;
+- records proof objects and proof-ledger entries.
 
 ### Specification Execution Pipeline
 
@@ -309,7 +499,8 @@ A concept is `proven` only when:
 - `semantic_id` is stable
 - lineage is complete
 - evidence is complete
-- PAC passes
+- PAC governance contract passes
+- Proof Runner execution passes
 - graph validation passes
 - acceptance validation passes
 
@@ -342,7 +533,7 @@ following are explicit:
 
 If any semantic dimension is missing:
 - status = `incomplete`
-- generator execution is blocked
+- compiler execution is blocked
 - implementation is not allowed
 
 ### Evidence Classes
@@ -356,7 +547,7 @@ EOS distinguishes evidence by the failure domain it validates.
 
 `Execution Evidence` proves the generated and implemented artifacts conform to
 the validated specification:
-- generator checksum
+- compiler checksum
 - schema hash
 - code generation log
 - runtime validation result
@@ -382,10 +573,15 @@ individual artifacts.
 | Acceptance | DoP achieved |
 
 PAC is a governance artifact, not a new architectural layer.
-PAC should exist in executable forms:
+PAC should exist in coordinated forms:
 - `PAC.md`
 - `PAC.yaml`
-- `PAC.test.ts`
+- `PAC.test.ts` as the current Proof Runner surface
+
+`Proof Runner` is the executable layer that loads canonical input, executes
+only `VERIFIED` transformations, evaluates predicates, compares the canonical
+conformance asset, emits proof objects, appends the proof ledger, and returns
+pass or fail.
 
 ### Determinism KPI
 
@@ -505,7 +701,9 @@ Phase `Architecture Verification` is complete only when:
 4. `semantic_id` and `lineage_id` remain intact and distinguishable;
 5. EKG relations remain consistent with ELS and EDM;
 6. evidence proves every transformation without manual intervention;
-7. DoP is achieved.
+7. only `VERIFIED` transformations participate in execution;
+8. proof objects and proof-ledger append evidence are recorded;
+9. DoP is achieved.
 
 Authoritative references:
 - [Architecture Closure Baseline](file:///root/Enterprise%20OS/enterprise/specifications/eos-architecture-closure.md)
@@ -681,13 +879,13 @@ Enterprise Runtime
 | 8 | Enterprise Meta Model | ✅ Normative (v1.0.0) | [constitution/meta-model.md](file:///root/Enterprise%20OS/enterprise/constitution/meta-model.md) |
 | 9 | Enterprise Specification Template | ✅ Normative (v2.0.0) | [constitution/enterprise-specification-template.md](file:///root/Enterprise%20OS/enterprise/constitution/enterprise-specification-template.md) |
 | 10 | EKL Language Specification | ✅ Normative (v1.0.0) | [constitution/ekl-language-specification.md](file:///root/Enterprise%20OS/enterprise/constitution/ekl-language-specification.md) |
-| 11 | Architecture Closure Baseline | ✅ Closed and Frozen Baseline (v1.0.0) | [specifications/eos-architecture-closure.md](file:///root/Enterprise%20OS/enterprise/specifications/eos-architecture-closure.md) |
-| 12 | Specification Authoring Guide | ✅ Frozen Baseline (v1.0.0, minor revisions only) | [specifications/specification-authoring-guide.md](file:///root/Enterprise%20OS/enterprise/specifications/specification-authoring-guide.md) |
-| 13 | Specification Execution Specification | ✅ Frozen Baseline (SES v1.0.0, minor revisions only) | [specifications/specification-execution-specification.md](file:///root/Enterprise%20OS/enterprise/specifications/specification-execution-specification.md) |
-| 14 | Architecture Baseline Registry | ✅ Frozen Baseline (v1.0.0, append-only) | [specifications/architecture-baseline-v1.yaml](file:///root/Enterprise%20OS/enterprise/specifications/architecture-baseline-v1.yaml) |
+| 11 | Architecture Closure Baseline | ✅ Implementation Baseline v1.0 (Frozen) | [specifications/eos-architecture-closure.md](file:///root/Enterprise%20OS/enterprise/specifications/eos-architecture-closure.md) |
+| 12 | Specification Authoring Guide | ✅ Implementation Baseline v1.0 (Frozen) | [specifications/specification-authoring-guide.md](file:///root/Enterprise%20OS/enterprise/specifications/specification-authoring-guide.md) |
+| 13 | Specification Execution Specification | ✅ Implementation Baseline v1.0 (Frozen) | [specifications/specification-execution-specification.md](file:///root/Enterprise%20OS/enterprise/specifications/specification-execution-specification.md) |
+| 14 | Architecture Baseline Registry | ✅ Implementation Baseline v1.0 (Frozen, append-only) | [specifications/architecture-baseline-v1.yaml](file:///root/Enterprise%20OS/enterprise/specifications/architecture-baseline-v1.yaml) |
 | 15 | Authority Model | ⏳ Normative Draft | [authority/authority-model.md](file:///root/Enterprise%20OS/enterprise/authority/authority-model.md) |
 | 16 | Evidence Model | ⏳ Normative Draft | [governance/evidence-model.md](file:///root/Enterprise%20OS/enterprise/governance/evidence-model.md) |
-| 17 | Pipeline Acceptance Criteria | ⏳ Governance Draft | [governance/pipeline-acceptance-criteria.md](file:///root/Enterprise%20OS/enterprise/governance/pipeline-acceptance-criteria.md) |
+| 17 | Pipeline Acceptance Criteria | ✅ Implementation Baseline v1.0 (Frozen Governance Contract) | [governance/pipeline-acceptance-criteria.md](file:///root/Enterprise%20OS/enterprise/governance/pipeline-acceptance-criteria.md) |
 | 18 | Business Capability Model | ✅ Normative (v1.0.0) | [models/capability.md](file:///root/Enterprise%20OS/enterprise/models/capability.md) |
 | 19 | Business Service Model | ✅ Normative (v1.0.0) | [models/business-service.md](file:///root/Enterprise%20OS/enterprise/models/business-service.md) |
 | 20 | Mission Model | ✅ Normative (v1.0.0) | [models/mission.md](file:///root/Enterprise%20OS/enterprise/models/mission.md) |

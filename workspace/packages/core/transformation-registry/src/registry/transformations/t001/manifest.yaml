@@ -1,0 +1,85 @@
+version: "1.0.0"
+kind: TRANSFORMATION_MANIFEST
+status: VERIFIED
+root_of_trust: true
+manifest_kind: CANONICAL_REGISTRY_ENTRY
+ssot_note: THIS_MANIFEST_YAML_IS_SINGLE_SOURCE_OF_TRUTH_FOR_T001_DECLARATION._t001.ts_IS_DERIVED_VIEW_LOADER_ONLY.
+kbe_compliance: 5_ARTIFACTS_VERIFIED
+invariant_architecture_ref:
+  principle_07: IA-07_No_God_Registry
+  principle_08: IA-08_Evolution_Policy_TRANSFORMATION_class
+
+transformation_declaration:
+  transformation_id: T001
+  name_long: ELS to EIR
+  description: >
+    Transforms a canonical EOS Language Specification (ELS) document into
+    an EOS Instruction Record (EIR) suitable for downstream transformation consumption.
+  input_kind: ELS_LANGUAGE_SPEC_DOC
+  output_kind: EIR_INSTRUCTION_RECORD
+  lifecycle: VERIFIED
+  contract_ref: /root/Enterprise OS/workspace/contracts/transformations/t001-els-to-eir.contract.yaml
+  proof_schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema
+  evidence_output_kind: TRANSFORMATION_PROOF
+  evidence_output_id: TRF-PROOF-T001
+  golden_reference_input: /root/Enterprise OS/workspace/examples/vertical-slice/REQ-0001
+  root_of_truth: true
+  standalone_implementation_required: true
+  engine_dependency_forbidden_until_gate_c_verified: true
+  precedence: ROOT
+  predecessor_id: null
+  successor_id: T002
+  failure_strategy: FAIL_FAST
+  rollback_strategy: NO_ROLLBACK_PURE_FUNCTION
+  semver: "1.0.0"
+
+semantic:
+  consumes:
+    - ELS
+  produces:
+    - EIR
+  predicates:
+    - PRED-T001-INPUT-SCHEMA
+    - PRED-T001-OUTPUT-DETERMINISTIC
+    - PRED-T001-CONFORM-EIR
+  successors:
+    - T002
+  predecessors: []
+  compatibility:
+    since: "1.0"
+    until: "2.x"
+  maturity: VERIFIED
+
+compatibility_matrix:
+  requires:
+    minimum_els_version: "1.0.0"
+    minimum_predicate_api: "1.0.0"
+  provides:
+    output_eir_schema_version: "1.0.0"
+
+implementation_binding:
+  implementation_ref: /root/Enterprise OS/workspace/packages/tooling/t001-standalone/src/t001.ts::runT001
+  loader_ts_ref: /root/Enterprise OS/workspace/packages/core/transformation-registry/src/registry/transformations/t001.ts
+  binding_status: DERIVED_VIEW_AVAILABLE_VIA_TS_LOADER
+  loader_strategy: YAML.parse → zod validate → TransformationDeclaration
+
+evidence_chain:
+  kbe_5_artifacts_verified: true
+  deterministic_pass_count: 2
+  proof_id: TRF-PROOF-T001
+  proof_verdict: PASS
+  proof_ledger_hash: sha256:c65f7c2f2e3844c2ed6a20e5bf4f29c168c9bef72447c5b3256764aaba4c550d
+  verification_date: 2026-07-30
+
+evolution_policy:
+  change_allowed: ONLY_if_all_existing_Proof_Objects_for_prior_versions_remain_verifiable
+  breaking_change_protocol:
+    - CREATE new T001v2/ side-by-side directory
+    - PRESERVE T001/ manifest.yaml immutably with original content hash
+    - UPDATE catalog graph:transformations.T001 only for backward-compatible new optional fields
+    - REMOVAL requires DEPRECATED lifecycle set + 2 release cycle grace period
+  direct_edit_prohibited_fields:
+    - transformation_id
+    - lifecycle if VERIFIED or FROZEN
+    - contract_ref
+    - semver MAJOR component for VERIFIED entries

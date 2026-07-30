@@ -1,58 +1,66 @@
-# Turborepo Tailwind CSS starter
+# Enterprise Workspace
 
-This Turborepo starter is maintained by the Turborepo core team.
+This workspace is the implementation surface for EOS Sprint 0.
 
-## Using this example
+## Frozen Structure
 
-Run the following command:
+The workspace root is frozen to:
 
-```sh
-npx create-turbo@latest -e with-tailwind
-```
+- `apps/`
+- `capabilities/`
+- `packages/`
+- `contracts/`
+- `decisions/`
+- `config/`
+- `scripts/`
 
-## What's inside?
+The package boundary is frozen to:
 
-This Turborepo includes the following packages/apps:
+- `packages/core/`
+- `packages/composition/`
+- `packages/presentation/`
+- `packages/tooling/`
 
-### Apps and Packages
+## Current Focus
 
-- `docs`: a [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `web`: another [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `ui`: a stub React component library with [Tailwind CSS](https://tailwindcss.com/) shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+Sprint 0 is not a product expansion phase. Current work is limited to:
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+1. Gate A governance artifacts
+2. Gate B canonical foundation packages
+3. `REQ-0001` golden reference
+4. registry-driven execution prerequisites
+5. deterministic verification and proof production
 
-### Building packages/ui
+## Active Surfaces
 
-This example is set up to produce compiled styles for `ui` components into the `dist` directory. The component `.tsx` files are consumed by the Next.js apps directly using `transpilePackages` in `next.config.ts`. This was chosen for several reasons:
+- `apps/lawyershub/`
+- `apps/docs/`
 
-- Make sharing one `tailwind.config.ts` to apps and packages as easy as possible.
-- Make package compilation simple by only depending on the Next.js Compiler and `tailwindcss`.
-- Ensure Tailwind classes do not overwrite each other. The `ui` package uses a `ui-` prefix for it's classes.
-- Maintain clear package export boundaries.
+## Canonical Capabilities
 
-Another option is to consume `packages/ui` directly from source without building. If using this option, you will need to update the `tailwind.config.ts` in your apps to be aware of your package locations, so it can find all usages of the `tailwindcss` class names for CSS compilation.
+- `capabilities/identity/`
+- `capabilities/legal-case/`
+- `capabilities/legal-document/`
 
-For example, in [tailwind.config.ts](packages/tailwind-config/tailwind.config.ts):
+## Governance Sources
 
-```js
-  content: [
-    // app content
-    `src/**/*.{js,ts,jsx,tsx}`,
-    // include packages if not transpiling
-    "../../packages/ui/*.{js,ts,jsx,tsx}",
-  ],
-```
+- `../governance/BASELINE_LOCK.yaml`
+- `../governance/GOVERNANCE_STATE.yaml`
+- `../governance/IMPLEMENTATION_BASELINE.md`
+- `../governance/ARCHITECTURE_GOVERNANCE.md`
+- `../governance/dependency-rules.yaml`
+- `../governance/package-authority.yaml`
+- `../governance/artifact-lifecycle.yaml`
+- `../governance/implementation-discipline.yaml`
+- `../governance/sprint0-exit-predicates.yaml`
 
-If you choose this strategy, you can remove the `tailwindcss` and `autoprefixer` dependencies from the `ui` package.
+`BASELINE_LOCK.yaml` is the machine-readable constitution state for the
+repository. `GOVERNANCE_STATE.yaml` is the single machine-readable repository
+status that ACL, CI, compiler, tooling, and `pnpm eos status` should read.
 
-### Utilities
+## Explicitly Deferred
 
-This Turborepo has some additional tools already setup for you:
-
-- [Tailwind CSS](https://tailwindcss.com/) for styles
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+- moving `apps/lawyershub` to a different root
+- introducing `products/` as a new runtime root
+- introducing `domain/`, `application/`, `infrastructure/` as new package families
+- designing experience expansion before foundation proof exists

@@ -1,0 +1,9 @@
+contract:
+  id: PREDICATE-REGISTRY-CONTRACT-V1
+  package: "@repo/core-predicate-registry"
+  status: REVIEWED
+  purpose: Canonical predicate declarations for repository, gate, and transformation readiness.
+  constraints:
+    - predicates_are_machine_readable
+    - predicates_do_not_execute_themselves
+    - lifecycle_uses_canonical_status_vocabulary

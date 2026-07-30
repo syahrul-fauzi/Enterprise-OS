@@ -1,0 +1,31 @@
+contract:
+  id: CONTRACT-T002-EIR-TO-CAG-V1
+  name: T002 EIR → CAG Transformation Contract
+  version: "1.0.0"
+  status: DRAFT
+  kind: TRANSFORMATION_CONTRACT
+  transformation_id: T002
+  transformation_catalog_ref: /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml#transformations[1]
+  axiom_kbe_enforced: true
+  precedence_constraint: BLOCKED_UNTIL_T001_VERIFIED
+
+input_spec:
+  kind: EIR_INSTRUCTION_RECORD_PLUS_CONTRACT_REF
+  validation_predicate: PRED-T002-INPUT-EIR-VERIFIED
+
+output_spec:
+  kind: CAG_CAPABILITY_ARTIFACT_GRAPH
+  conform_predicate: PRED-T002-CONFORM-CAG
+  deterministic_predicate: PRED-T002-OUTPUT-DETERMINISTIC
+
+predicate_contract:
+  minimum_required: 3
+  predicate_ids_ordered:
+    - PRED-T002-INPUT-EIR-VERIFIED
+    - PRED-T002-OUTPUT-DETERMINISTIC
+    - PRED-T002-CONFORM-CAG
+
+evidence_output:
+  kind: TRANSFORMATION_PROOF
+  proof_id_pattern: TRF-PROOF-T002
+  proof_ledger_append_required: true

@@ -1,0 +1,90 @@
+id: ADR-000
+name: Sprint 0 Architecture Freeze — SSOT Stack v1.0 Lock, no structural change until T001 produces deterministic Transformation Proof PASS
+status: ACCEPTED
+effective: true
+supersedes: []
+
+date: 2026-07-30
+proposer: eos-enterprise-architect
+approver: eos-enterprise-auditor
+
+context:
+  after_alpha_13: Governance Tuning phase selesai 8/8 PASS
+  prior_repeat_2_focus: FPI Purification for status INCONCLUSIVE
+  architecture_closure: user menyatakan EOS telah mencapai Architecture Closure pada sesi 6a6985559793b74f1b968006
+  sprint_0_goal: evidence production untuk hipotesis H1-H6 via T001 pertama
+  observed_risk: architecture_discussions_and_added_abstractions_become_scope_creep_if_t001_not_produced_soon
+
+decision:
+  architecture_freeze_effective_immediately: true
+  frozen_scope:
+    layer_1_constitution:
+      change_mechanism: CONSTITUTION_AMENDMENT + ADR
+      fast_track: NONE
+    layer_2_baseline_lock:
+      ssot_stack_5_layers: FROZEN (layer numbering, names, kind, mutability, runtime_read_by)
+      change_policy_matrix: ADR_REQUIRED for constitution, GOVERNANCE_PR for governance, STANDARD_PR for implementation
+      gate_order: A then B then C then D then E (no skip without ADR)
+    layer_3_repository_state:
+      root_key: repository_state
+      canonical_file: GOVERNANCE_STATE.yaml
+      consumers: ACL eos_cli CI dashboard ide_plugin ONLY (no new consumers registered without ADR)
+      anti_pattern: NO_INDEPENDENT_STATUS_COMPUTATION — LOCKED
+      explicitly_excluded: repository_proof_object_inline (OUTPUT at build/evidence only)
+    layer_4_canonical_foundation:
+      canonical_package_names: LOCKED at exactly 5 entries: contracts, eir, predicate_registry, transformation_registry, proof_ledger
+      package_structure_pattern: LOCKED at 11-item file list (README.md SPECIFICATION.md package.json tsconfig.json eslint.config.mjs src/index.ts src/types.ts src/interfaces.ts src/schema.ts contracts/ tests/)
+      forbidden_content_classes: LOCKED (no run/execute/compile entrypoints, no react imports, no product UI logic)
+    layer_5_execution_and_proof:
+      opens_at_gate: C
+      execution_pipeline_order_7_steps: LOCKED (load_repository_state → load_transformation_registry → resolve_DAG → evaluate_predicates → execute_VERIFIED_transformations_only → generate_proof → append_proof_ledger)
+      anti_patterns: LOCKED (no hardcoded transformation ID in runtime source, no business knowledge in engine, no hardcoded pipeline steps by name)
+  repository_proof_ontological_position: LOCKED as OUTPUT stored under build/evidence/repository-proof/, NEVER as inline field inside GOVERNANCE_STATE.yaml
+  gate_alignment_locked:
+    gate_a: Governance (baseline_lock + governance_state + acl_policy)
+    gate_b: Canonical Foundation (5 packages declarative)
+    gate_c: First Verified Transformation T001 (ELS→EIR, no generic orchestrator, deterministic proof on Golden REQ-0001)
+    gate_d: Execution Platform (engine + compiler-cli + emitters + CI)
+    gate_e: Proof of Execution v1 (end-to-end deterministic replay)
+  lifecycle_vocabulary_locked:
+    only_5_statuses: DRAFT, REVIEWED, VERIFIED, FROZEN, DEPRECATED
+    aliases_allowed_only_as_internal_mapping_in_artifact_lifecycle_substates: true
+    aliases_forbidden_at_surfaces: registry, gates, cli, acl, proofs
+  definition_of_done_locked: sprint0-definition-of-done.yaml DOD-001..DOD-006 AND aggregation
+
+thaw_criteria:
+  required_event: T001 deterministic PASS
+  specific_requirements:
+    - transformation T001 executed in isolation (no engine dependency)
+    - input: Golden REQ-0001 specification (hash verified unchanged)
+    - output: EIR record hash IDENTICAL across TWO separate runs on identical input
+    - predicate PRED-T001-INPUT-SCHEMA PASS
+    - predicate PRED-T001-OUTPUT-DETERMINISTIC PASS
+    - predicate PRED-T001-CONFORM-EIR PASS
+    - Transformation Proof TRF-PROOF-T001 verdict = PASS with signature recorded
+    - proof ledger append operation verified
+  thaw_permission:
+    after_all_requirements_met: new structural proposals MAY be filed as follow-up ADRs
+    until_then: all structural change proposals REJECTED upfront; implementer focus = T001 only; governance bug fixes allowed if traceable to violation of current freeze (not new abstractions)
+
+consequences:
+  positive:
+    - architecture discussion stop; evidence production accelerates
+    - single source of truth stack now machine-enforceable via ACL + CLI + contracts
+    - clear bottleneck (T001) eliminates scope creep
+    - future architectural changes traceable through ADR (Axiom 13 satisfied)
+  negative:
+    - new abstractions ideated between now and T001 PASS are temporarily parked
+    - any true underlying architecture flaw discovered must be filed as violation + ADR (slight friction intentional to avoid drift)
+  risks:
+    - T001 failure mode exposes gaps → handled by EXPLICIT ADR after FAIL with evidence; freeze not lifted until FAIL evidence recorded
+    - freeze too long → mitigated by strict thaw_criteria (single transform evidence only)
+
+references:
+  - /root/Enterprise OS/CONSTITUTION.md
+  - /root/Enterprise OS/governance/BASELINE_LOCK.yaml (ssot_stack layers 1..5)
+  - /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
+  - /root/Enterprise OS/governance/sprint0-definition-of-done.yaml
+  - /root/Enterprise OS/governance/sprint0-exit-predicates.yaml v2
+  - /root/Enterprise OS/workspace/contracts/repository-proof-output.contract.yaml
+  - /root/Enterprise OS/workspace/contracts/repository-state.contract.yaml

@@ -1,0 +1,184 @@
+version: "1.0.0"
+status: FROZEN
+kind: CONSTITUTION
+layer: META_ARCHITECTURE
+abbreviation: ASP
+ssot_note: ARCHITECTURAL_STABILITY_PRINCIPLES_ARE_THE_META_LAYER_ABOVE_INVARIANT_ARCHITECTURE_BUT_STRICTLY_BELOW_CONSTITUTIONAL_VISION._VISION_(CONSTITUTIONAL-VISION.yaml)_IS_THE_HIGHEST_IDENTITY_OF_EOS._IA_GOVERNS_WHAT_THE_SYSTEM_IS._ASP_GOVERNS_HOW_THE_ARCHITECTURE_ITSELF_MAY_EVOLVE._ASP_MUTATION_REQUIRES_ARCHITECTURE_BOARD_UNANIMOUS_VOTE_PLUS_ADR_AND_MUST_NOT_CONTRADICT_ANY_VISION_STATEMENT._THIS_FILE_HAS_SECOND_HIGHEST_STABILITY_RATING_IN_EOS._IT_DEFINES_EVOLUTION_RULES_OF_THE_RULES.
+governance_ref:
+  vision: /root/Enterprise OS/governance/CONSTITUTIONAL-VISION.yaml
+  governance_state: /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
+  baseline_lock: /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+  invariant_architecture: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
+derived_from:
+  - User_Point_3_ASP_Meta_Principle_Above_IA
+  - User_Point_ASP01_Freeze_Principles_Version_Specs_Replace_Implementations
+  - User_Point_4_Authority_Flows_Downward_Never_Upward
+  - User_Point_5_Authority_Graph_Derivation_Not_Reverse
+  - Evolution_Manifest_Concept_Pattern
+  - User_MP01_Computable_Governance
+
+asp_definition_preamble:
+  statement:
+    "EOS (Knowledge Computing System) — a Constitutional Computing Platform — distinguishes FIVE layers of stability,
+     from most stable to least stable:
+       (0) VISION — Constitutional Vision (THIS_FILE'S PARENT = CONSTITUTIONAL-VISION.yaml): immutable philosophy, survives every technology stack.
+       (1) ASP — Architectural Stability Principles (THIS FILE): govern HOW architecture may evolve. Frozen except by unanimous Architecture Board + ADR. Cannot contradict VISION.
+       (2) IA  — Invariant Architecture: govern WHAT the system is. Frozen except ADR + 2/3 Architecture Board.
+       (3) SPEC — Specifications / Protocols / Contracts: govern HOW components interact. Versioned semver.
+       (4) IMPL — Implementations: replaceable at will, as long as conformance tests PASS.
+     The stability of EOS as a 10-20 year platform depends not on the code but on the immutability of these rules.
+     Changes flow strictly DOWNWARD through authority layers. Never upward.
+     MP-01 Computable Governance: all governance rules SHOULD be compiled into verifiable rules, not remain as prose."
+
+asp_list:
+  - id: ASP-01
+    title: Freeze Principles, Version Specifications, Replace Implementations
+    status: FROZEN
+    text_body: |
+      (a) PRINCIPLES (ASP and IA layers) are FREEZED. They cannot be "deprecated" or "phased out" piecemeal.
+          Any change requires: (1) ADR written; (2) Architecture Board recorded vote; (3) GOVERNANCE_STATE.yaml updated with vote evidence; (4) Old principle preserved side-by-side in deprecated: block with sunset_epoch.
+      (b) SPECIFICATIONS (Semantic Kernel, Knowledge Compiler Pipeline, Compiler Pass Framework, all CONTRACT .yaml files under workspace/contracts and enterprise/specifications) are VERSIONED.
+          They follow SEMVER with explicit compatibility_policy declared per Evolution Domain B (Specification) in EVOLUTION-DOMAINS.yaml.
+          Backward-incompatible change = MAJOR version bump + ADR. No exceptions.
+      (c) IMPLEMENTATIONS (.ts / .tsx / source files under packages/ and apps/) are REPLACEABLE.
+          They may be rewritten, refactored, or removed entirely AT ANY TIME.
+          The ONLY gate for replacement implementation is: ALL conformance tests for the governing protocol MUST PASS.
+          Reference Implementation has NO special status. Any Alternative Implementation passing conformance tests MAY take its place without ADR.
+    rationale:
+      - History shows platforms survive when implementation rotates but rules are stable.
+      - This avoids institutional knowledge loss ("we cannot change that module because nobody knows it").
+      - Conformance Test Suite becomes the real contract; reference implementation becomes a convenience.
+    enforcement:
+      - ACL ARCH-24 verifies authority direction (Implementation never edits ASP/IA directly).
+      - ACL ARCH-17 structural freeze rule protects ASP/IA/YAML spec edits from sprint-level refactors without ADR trace.
+      - ACL ARCH-25 verifies: no implementation artifact marked "canonical" in a way that locks the protocol to a single codebase.
+
+  - id: ASP-02
+    title: Authority Flows Downward. Never Upward.
+    status: FROZEN
+    text_body: |
+      Authority (the power to define meaning, constraints, or validity) propagates STRICTLY downward:
+        ASP  →  IA  →  CONSTITUTION ARTIFACTS  →  SPECIFICATIONS  →  CONTRACTS  →  PROTOCOLS  →  IMPLEMENTATIONS  →  RUNTIME EXECUTION  →  EVIDENCE
+      Reverse authority is FORBIDDEN. Specifically:
+        (a) RUNTIME output or EVIDENCE cannot change a PROTOCOL, CONTRACT, SPECIFICATION, IA, or ASP.
+            Evidence can only INFORM future ADRs; it cannot retroactively "validate" or "invalidate" a contract definition.
+        (b) IMPLEMENTATION bug fixes or "pragmatic" code patches CANNOT redefine protocol semantics silently.
+            If implementation behavior diverges from protocol, the BUG is in the code UNLESS the protocol contract is explicitly forked to a new MAJOR version through the ASP-01(b) process.
+        (c) SPECIFICATION change cannot ALTER ASP or IA. Any specification that contradicts ASP or IA is INVALID on face, MUST be rejected by ACL.
+      A directionally correct example:
+        Semantic Kernel (SPEC) declares relationship PRODUCES → Pass 5 Compatibility Resolution uses it. Correct.
+      Directionally INCORRECT examples (FORBIDDEN):
+        Resolver code hardcodes semantic of PRODUCES edge (authority flows up from impl). Forbidden.
+        Runtime "fixes" a violated contract by emitting a different evidence hash that retroactively passes. Forbidden.
+        Conformance test suite (governed by SPEC) changes definition of pass because reference implementation has bug. Forbidden.
+    rationale:
+      - Upward authority = governance capture by implementation detail = ossification.
+      - Downward-only authority is the mechanical rule preventing ad-hoc drift.
+    enforcement:
+      - ACL ARCH-24 scanner: any implementation .ts file that writes (via fs.write) to ASP/IA/contract yaml paths → violation.
+      - ACL ARCH-04 Arrow of Dependency Authority (complementary rule)
+      - ACL ARCH-18 IA-06 Forbidden Dep Table (complementary)
+
+  - id: ASP-03
+    title: Authority → Derivation → Evidence. Never Evidence → Authority.
+    status: FROZEN
+    text_body: |
+      The derivation order of truth in EOS:
+        AUTHORITY (ASP+IA+SPEC+CONTRACT) defines what a correct execution looks like.
+        DERIVATION (Knowledge Compiler Pipeline Passes 1..9) computes a candidate execution and its decision.
+        EVIDENCE (EPG Merkle DAG) records what happened, compared against authority.
+      EVIDENCE does NOT create authority. Specifically:
+        (a) A Repository Verdict = PASS iff the Evidence matches the expectations derived from Authority.
+            A Verdict is a comparison statement, not a free-standing truth.
+        (b) If 1000 executions all produce a certain evidence pattern, but that pattern contradicts the Contract specification, all 1000 verdicts are INVALID.
+            The fix is: fix implementations or (via proper ASP-01 process ONLY) upgrade the contract MAJOR version.
+            Never: change contract definition by observing evidence pattern.
+        (c) Inference rules (INF-001..INF-004 in Semantic Kernel) are AUTHORITY objects defined in specifications.
+            Evidence of a "happened" relationship pair does NOT retroactively declare an inference rule valid.
+            An inference rule only becomes valid if added through the Specification Evolution Domain B process.
+    rationale:
+      - Blocks "evidence laundering" — where repeated production of a specific result is mistaken for correctness.
+      - Makes EOS auditable: outside auditor can reproduce verdict from authority + snapshot alone, not from historical evidence corpus.
+    enforcement:
+      - Complementary with IA-12 Explainability (every evidence node carries premise_ids pointing back to authority-rule or declared edge).
+      - Complementary with IA-13 Stable IR (authority serialized, versioned, hash-bound, not derived from runtime state).
+
+  - id: ASP-04
+    title: Evolution Domains Are Exhaustive and Disjoint
+    status: FROZEN
+    text_body: |
+      Every artifact in EOS maps to exactly ONE Evolution Domain defined in EVOLUTION-DOMAINS.yaml:
+        (A) CONSTITUTION DOMAIN — VISION, ASP, IA, ADRs, Baseline Lock, Governance State.
+        (B) SPECIFICATION DOMAIN — Semantic Kernel, Pipeline, Pass spec, Constitution IR contract, all Contract .yaml, Protocol definitions.
+        (C) IMPLEMENTATION DOMAIN — Source code, tests (except conformance), CLI implementation, UI components.
+      Disjointness: An artifact cannot simultaneously be in two domains.
+        - A .ts file that "doubles as spec" (e.g. zod schemas inside runtime code as sole contract) is FORBIDDEN.
+          The authoritative contract MUST exist as YAML in Evolution Domain B.
+          The .ts schema is an IMPLEMENTATION helper derived downward from that contract, not canonical.
+      Exhaustive: If an artifact does not explicitly have a evolution_domain field declared in its header (or mapped via global EVOLUTION-DOMAINS.yaml default list), ACL ARCH-24 flags it as UNCLASSIFIED → error.
+    rationale:
+      Without explicit classification, governance is ambiguous and drift occurs.
+    enforcement:
+      - ACL ARCH-24 classification scan on new artifacts.
+
+  - id: MP-01
+    title: Computable Governance
+    kind: META_PRINCIPLE
+    status: FROZEN
+    text_body: |
+      Every governance rule SHALL be representable as machine-readable knowledge and SHOULD be compilable into verifiable conformance rules.
+      Manual governance SHALL be minimized in favor of declarative, reproducible governance artifacts.
+      Specifically:
+        (a) Every IA / ASP / Protocol statement SHOULD be accompanied by a "verification_rule_generator" entry in Constitution IR (the compiled form of constitution) that maps the statement into one or more concrete ARCH-* rules in Constitutional Verifier.
+            Anti-pattern: IA statement without a corresponding generated or hand-written ARCH rule that actually checks it at source level.
+            Target: IA-10 → compiles → ARCH-20 (snapshot boundary + mutable read forbid).
+                    IA-13 → compiles → ARCH-22 (Stable IR existence + version/hash headers).
+                    IA-14 → compiles → ARCH-23 (Pure compiler pass impurity scan).
+                    ASP-02 → compiles → ARCH-24 (upward write forbid + classification).
+                    ASP-03 → compiles → (Evidence never as authority, enforced via PROTO-EPG + Conformance Property Auditable).
+        (b) Evolution Domain type rules SHALL be representable as a TYPE SYSTEM with import/mutation constraints:
+            CONSTITUTION artifacts → TYPE CONSTITUTION: cannot IMPORT IMPLEMENTATION.
+            IMPLEMENTATION artifacts → TYPE IMPL: cannot MUTATE SPECIFICATION.
+            SPECIFICATION → TYPE SPEC: cannot MUTATE CONSTITUTION.
+            Type error = ARCH violation, not human review policy.
+        (c) Protocol governance (lifecycle, compatibility, deprecation windows) SHOULD be generated output of Constitution Compiler + Protocol yaml input, not manually maintained spreadsheets.
+        (d) Conformance reports SHALL be deterministic, hash-able, archived append-only for audit.
+      Rationale: Governance ceases to be "documents reviewed by humans occasionally" and becomes "a knowledge graph compiled and verified continuously".
+      This prevents drift between stated rules and engineering reality.
+    rationale:
+      - Governance as Code in the strongest sense — rules, not only policy, flow from a single declarative source.
+      - Minimizes the class of "the docs say X but the repo actually does Y".
+    enforcement:
+      - Constitutional Verifier (renamed from arch-check) progressively becomes a driver of compiled rules rather than hand-written 25 regex.
+      - Long-term target: 100% of IA/ASP statements have a corresponding verification_rule_generator entry in CONSTITUTION-IR.
+
+asp_change_cost_matrix:
+  - target_layer: VISION
+    bump_level: FOUNDATION_CHARTER_REVISION_ONLY (NO normal engineering/ADR pathway available)
+    epochs_before_sunset_min: ∞
+    compatibility_policy: IDENTITY (no change = still EOS)
+  - target_layer: ASP
+    bump_level: UNANIMOUS_ARCHITECTURE_BOARD + ADR
+    epochs_before_sunset_min: 3
+    compatibility_policy: EPOCH_ONLY
+  - target_layer: IA
+    bump_level: 2/3 ARCHITECTURE_BOARD + ADR
+    epochs_before_sunset_min: 2
+    compatibility_policy: EPOCH_OR_MAJOR
+  - target_layer: SPEC / CONTRACT
+    bump_level: Specification Review + ADR (if MAJOR)
+    epochs_before_sunset_min: 1
+    compatibility_policy: SEMVER per Evolution Domain B
+  - target_layer: IMPL
+    bump_level: Engineering PR approval + conformance tests PASS
+    epochs_before_sunset_min: 0
+    compatibility_policy: BEHAVIORAL — no compat guarantee between implementations; only conformance test result matters
+
+related_artifacts_to_read:
+  - /root/Enterprise OS/governance/CONSTITUTIONAL-VISION.yaml
+  - /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml
+  - /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
+  - /root/Enterprise OS/governance/CONFORMANCE-MODEL.yaml
+  - /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml
+  - /root/Enterprise OS/workspace/contracts/CONSTITUTION-IR.contract.yaml
+  - /root/Enterprise OS/enterprise/specifications/CONSTITUTIONAL-COMPILER.spec.yaml

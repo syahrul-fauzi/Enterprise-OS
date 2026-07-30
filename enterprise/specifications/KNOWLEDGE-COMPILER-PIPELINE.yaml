@@ -1,0 +1,309 @@
+version: "1.0.0"
+status: FROZEN
+kind: CONSTITUTIONAL_COMPILER_CONTRACT
+ssot_note: THIS_YAML_FORMALIZES_EOS_AS_KNOWLEDGE_COMPILER_PIPELINE._EOS_IS_NOT_A_MERE_COLLECTION_OF_COMPONENTS._EOS_IS_A_SEQUENCE_OF_EPISTEMIC_TRANSFORMATIONS_THAT_PROGRESSIVELY_TRANSFORM_KNOWLEDGE_STATE._ANALOGY_WITH_CLASSICAL_COMPILER_STRONG_AND_INTENTIONAL.
+terminology_note: OFFICIAL_ARCHITECTURE_TERMINOLOGY_FROM_THIS_DOCUMENT_ONWARDS_REPLACES_LAYER_TERMINOLOGY_WITH_STATE_TRANSFORMATION_TERMINOLOGY_WHERE_APPROPRIATE.
+governance_ref:
+  invariant_architecture: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
+  semantic_kernel: /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml
+  ia10_snapshot: /root/Enterprise OS/workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml
+  ia05_proof_split: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_05_proof_class_split
+  epg_provenance: /root/Enterprise OS/workspace/contracts/EVIDENCE-PROVENANCE-GRAPH.contract.yaml
+derived_from:
+  - EOS_as_Knowledge_Compiler_Paradigm_User_20260730
+  - From_Layer_Architecture_to_Epistemic_Transformation_Pipeline
+  - Analogy_Classical_Compiler_AST_IR_Optimizer_Machine_Code
+
+system_identity_paradigm:
+  official_name_from_today: Knowledge Computing System (KCS) — Enterprise OS
+  paradigm_description:
+    - EOS bukan kumpulan komponen berinteraksi.
+    - EOS = serangkaian *epistemic transformations* yang memajukan state pengetahuan secara deterministik.
+    - Setiap transformation = pure function yang menerima satu IR dan menghasilkan satu IR baru + optional diagnostics.
+    - Runtime = bukan "komponen", melainkan tahap terakhir interpretasi atas IR terkompilasi (Execution Plan).
+  name_rationale:
+    why_not_platform:
+      - "Platform" menekankan *tempat menjalankan sesuatu* (container/framework paradigm).
+    why_system:
+      - "System" mencakup SELURUH siklus hidup pengetahuan: definisi → build → normalisasi → inference → decision → compilation → execution → verification → audit.
+      - Knowledge Computing System = Sistem Komputasi atas Pengetahuan. Bukan hanya "menjalankan" pengetahuan tetapi mengompilasi, memverifikasi, dan membuktikan.
+
+epistemic_state_pipeline:
+  id: EOS_EPISTEMIC_STATES_V1
+  paradigm_note: >
+    BUKAN layer architecture. INI ADALAH state transformation sequence.
+    Setiap state adalah hasil transformasi state sebelumnya.
+    Tidak ada lompatan state. Tidak ada hidden state.
+    Setiap transisi adalah artefak yang bisa diperiksa.
+  states_ordered:
+    - state: KNOWLEDGE
+      order: 0
+      answers: Apa yang benar, berdasarkan sumber pengetahuan?
+      content:
+        - Constitution
+        - Contracts
+        - Schemas
+        - Policies
+        - Requirements
+        - Business vocabularies
+      mutability: Mengikuti IA-08 Evolution Policies per artifact class.
+      next_transformation:
+        name: Knowledge Build
+        output: KNOWLEDGE_STATE
+
+    - state: KNOWLEDGE_STATE
+      order: 1
+      answers: Apa snapshot deterministik dari seluruh basis pengetahuan?
+      content:
+        - Knowledge Snapshot artifact (KS-YYYY.MM.DD.NNN)
+        - 8-tuple digest (constitution/contract/ontology/registry/graph/policy/schema/compatibility)
+        - Archived content sources
+        - Build provenance record
+      build_status: THIS_IS_A_BUILD_ARTIFACT_NOT_RAW_DATA
+      build_pipeline_analogy:
+        step: Knowledge Sources → Knowledge Build → Knowledge Snapshot
+        tools_needed:
+          - deterministic directory walk
+          - lex-sorted concatenation
+          - SHA-256 digests
+          - self-check verification report
+        enables: incremental compilation, cache, deterministic rebuild, distributed compilation, reproducible builds (like Bazel/Nix but for knowledge)
+      next_transformation:
+        name: Knowledge Build → Normalization Pass (Compiler Pass 1)
+        output: KNOWLEDGE_IR
+
+    - state: SEMANTIC_STATE
+      order: 2
+      answers: Apa makna canonical dari pengetahuan tersebut (setelah inference & compatibility resolved)?
+      content:
+        - Knowledge IR artifact (KIR) — PENURUNAN PERTAMA KALI EXPLISIT
+        - resolved references
+        - normalized constraints
+        - expanded ontology closures
+        - resolved compatibility matrices
+        - inferred edges (INF-001..INF-004 applied)
+        - canonical identifiers (KS-relative)
+      notes:
+        KNOWLEDGE_GRAPH_IS_NOT_IR: >
+          Knowledge Graph adalah representasi fakta (node+edges instances).
+          Planner TIDAK bekerja pada fakta. Planner bekerja pada Knowledge IR yang sudah dinormalisasi.
+          Perbedaan utama:
+            - Knowledge Graph: raw instances, possibly unresolved IDs, no inference closure yet.
+            - Knowledge IR: resolved refs, constraints normalized, ontology expanded transitively, compatibility resolved, inferred edges present, IDs canonical.
+      next_transformation:
+        name: Planner + Candidate Generator
+        output: DECISION_IR
+
+    - state: DECISION_STATE
+      order: 3
+      answers: Apa keputusan yang dipilih, dengan alternatif apa, dan alasan apa?
+      content:
+        - Decision IR artifact (DIR)
+        - candidate graph
+        - cost per candidate (heuristic + deterministic metrics)
+        - score per candidate (weighted sum of constraints satisfaction)
+        - constraints per candidate (hard/soft, passed/failed)
+        - rejected alternatives (with rejection_reasons: string + failed_constraint_ids[])
+        - selected_alternative: 1 single candidate, serialized deterministically
+      critical_note:
+        PLANNER_OUTPUTS_DECISION_IR_NOT_EXECUTION_PLAN: >
+          Ini perubahan penting dari usulan sebelumnya. Planner TIDAK menghasilkan Execution Plan.
+          Planner menghasilkan Decision IR.
+          Execution Plan dihasilkan oleh komponen BARU: **Plan Compiler**.
+          Decision IR adalah format INDEPENDEN TERHADAP RUNTIME.
+          Plan Compiler = yang menyesuaikan Decision IR menjadi runtime-specific plan bytecode.
+      next_transformation:
+        name: Plan Compiler
+        output: EXECUTION_PLAN (Execution State boundary artifact)
+
+    - state: EXECUTION_STATE
+      order: 4
+      answers: Apa yang sedang dieksekusi oleh Knowledge Virtual Machine?
+      content:
+        - Execution Plan — single immutable input to KVM
+        - Knowledge Virtual Machine (KVM) = Runtime (not called "Runtime" semantically anymore; it is KVM)
+        - No access to Contracts, Registry, Predicate, Policy, Ontology, Compatibility, Decisions inside KVM.
+          All those were COMPILED AWAY into the plan.
+        - KVM hanya menginterpretasikan plan bytecode (step sequence + predicate eval invocations against snapshot content).
+      runtime_reframing:
+        KVM_ANALOGY: JVM menerima bytecode, KVM menerima Execution Plan.
+        KVM_DOES_NOT_KNOW:
+          - Requirement
+          - Contract
+          - Predicate (except by reference ID and compiled parameter set)
+          - Policy
+          - Ontology
+          - Compatibility
+          - Decision process (candidates, costs, scores are not in Execution Plan — those live in Decision IR, which is separate)
+        KVM_KNOWS_ONLY:
+          - Step list
+          - Step input artifact snapshot references (hash-based, so immutable)
+          - Step predicate invocations (parameterized, pure calls)
+          - Step ordering constraints
+          - Evidence emission contract (what to record, not why)
+      next_transformation:
+        name: Execution → Evidence Collection
+        output: EVIDENCE_STATE
+
+    - state: EVIDENCE_STATE
+      order: 5
+      answers: Apa bukti bahwa pengetahuan telah dikompilasi dan dieksekusi dengan benar?
+      content:
+        - Evidence Provenance Graph (EPG Merkle DAG) nodes generated per step
+        - Evidence Graph = Debug Symbols of Knowledge Compiler
+        - Execution Proof objects (TRF-PROOF-*)
+        - Validation Proof objects (REGISTRY-PROOF / CATALOG-PROOF / CONTRACT-PROOF)
+        - Final Repository Verdict: single REPO-PROOF with root_hash + snapshot ref
+      evidence_as_debug_symbols_analogy:
+        classical_compiler: >
+          Source → ... → Machine Code (runnable)
+                           + Debug Symbols (explanation of how source → machine code; variable names, line numbers)
+        eos_knowledge_compiler: >
+          Knowledge Sources → ... → Execution Plan (runnable by KVM)
+                                 + Evidence Graph (explanation of how knowledge → plan → execution; provenance steps, predicates evaluated, transformation hashes)
+      final_transformation:
+        name: Evidence Compilation
+        output: Repository Verdict (REPO-PROOF root)
+
+compiler_analogy_strong_explicit:
+  classical_compiler_pipeline:
+    - "Source Code"
+    - "Lex / Parse → AST"
+    - "Semantic Analysis → AST with Types"
+    - "IR Generation → Intermediate Representation"
+    - "Optimization Passes → Optimized IR"
+    - "Code Generation → Machine Code"
+    - "Linking → Executable"
+    - "Output: Machine Code + Debug Symbols"
+  eos_knowledge_compiler_pipeline_analogy:
+    - "Knowledge Sources = Source Code"
+    - "Knowledge Build + Normalization = Lex/Parse/Analysis producing canonical digests = AST"
+    - "Knowledge Snapshot = AST (parsed, type-checked, self-contained)"
+    - "Pass 1..5 (Normalization, Ontology Expansion, Constraint Resolution, Dependency Analysis, Compatibility Resolution) = Semantic Analysis producing Knowledge IR"
+    - "Pass 6 (Planning) = Decision IR generation"
+    - "Pass 7 (Decision Compilation) = Decision IR Canonical Form"
+    - "Pass 8 (Execution Plan Compilation) = Code Generation producing Execution Plan bytecode"
+    - "KVM = CPU executing bytecode (or JVM-like interpreter)"
+    - "Output: Execution Plan (runnable) + Evidence Graph (Debug Symbols)"
+  key_mappings_table:
+    classical_concept: eos_concept
+    source_code: Knowledge Sources (Constitution, Contracts, Registry manifests, ...)
+    lexer_parser: Knowledge Build Engine (snapshot + 8 digests + self-check)
+    ast: Knowledge Snapshot (KS archive + manifest)
+    semantic_analyzer: Passes 1..5 producing Knowledge IR
+    ir: Knowledge IR (KIR)
+    optimizations: N/A yet (future pass that reorders steps / caches hash-equivalent subgraphs)
+    decision_ir: AST of Code Generation input (what to run, in what order, with what alternatives rejected)
+    code_generator: Pass 8 — Plan Compiler, consuming Decision IR → Execution Plan
+    bytecode: Execution Plan
+    vm_cpu_interpreter: Knowledge Virtual Machine (KVM) = Runtime
+    executable: Execution Plan (plus snapshot content accessible via KS ID)
+    debug_symbols: Evidence Provenance Graph (EPG) nodes
+
+knowledge_snapshot_as_build_artifact:
+  status: FORMALLY_RECLASSIFIED
+  was: "data / snapshot record"
+  now: "BUILT ARTIFACT of the Knowledge Build stage"
+  build_pipeline:
+    inputs: Knowledge Sources (filesystem, governed by IA-08 evolution policies)
+    hermetic_inputs_rule:
+      statement: >
+        Knowledge Build HERMETIC: once build invocation starts, it MAY NOT access sources outside declared
+        inputs root. No network. No env var reading for semantic decisions. Only for absolute path resolution (which is normalized anyway).
+      rationale: Enables deterministic distributed / cached rebuilds, Nix/Bazel-style.
+    steps:
+      1. Walk input dirs lex-ordered.
+      2. Filter out non-canonical files per contract.
+      3. Concatenate bytes per digest bucket.
+      4. SHA-256 each bucket. Produce 8-tuple.
+      5. Compute root_hash over tuple (sorted keys).
+      6. Assign KS-YYYY.MM.DD.NNN identifier.
+      7. Produce manifest.yaml with 8 digests + root_hash.
+      8. Produce snapshot.tar.zst archive of inputs.
+      9. Produce verification-report.yaml: re-read archive, recompute digests, assert equality.
+      10. If verification-report PASS: snapshot built successfully. If FAIL: abort build; do NOT emit archive to final location (no partial artifacts).
+  incremental_compilation_future:
+    capability: >
+      Future gate: only rebuild the digest buckets whose source files changed.
+      Downstream passes can skip for unchanged inputs; reuse cached Knowledge IR from prior build via content-hash key.
+    target_gate: Gate E Optimization milestone.
+
+intermediate_representations_required:
+  ir_specification_references:
+    - contract: KNOWLEDGE-IR.contract.yaml  (produced after Passes 1–5)
+    - contract: DECISION-IR.contract.yaml   (produced after Pass 6–7)
+    - contract: EXECUTION-PLAN.contract.yaml (future: produced after Pass 8; existing Execution Plan object in resolver = prototype)
+  ir_stability_guarantee_statement: >
+    Setiap transformasi antar major reasoning stages WAJIB menghasilkan IR yang:
+      1. Eksplisit (file, bukan in-memory-only object)
+      2. Ber-versi (semver ir_format_version)
+      3. Deterministik (same inputs → same bytes → same hash)
+      4. Independen dapat diverifikasi (hash self-consistency check)
+    Ini IA-13 — Stable Intermediate Representations.
+
+compiler_pass_purity_guarantee_statement:
+  statement: >
+    Setiap reasoning pass (8-pass framework) WAJIB bersifat functionally pure terhadap input yang dideklarasikan.
+    Pass BOLEH menghasilkan diagnostics dan metadata tambahan.
+    Pass TIDAK BOLEH:
+      - mutate upstream artifacts (NO in-place edits of snapshot, KIR, DIR files)
+      - bergantung pada undeclared external state (process.env? branch, network reads, global state)
+      - bergantung pada wall clock untuk semantic decisions
+  Ini IA-14 — Pure Compiler Passes.
+
+gate_d_roadmap_reframed_as_compiler_pipeline_deliverables:
+  prioritization_table:
+    - priority: P0
+      deliverable: Knowledge Build & Snapshot Engine
+      role: Membekukan seluruh basis pengetahuan menjadi input deterministik hermetik. Generate KS- archive, manifest, verification report.
+      note: IA-10 post-plan immutability boundary established here for upstream build.
+    - priority: P0
+      deliverable: Knowledge IR (KIR) Canonical Format
+      role: Representasi kanonik hasil normalisasi dan inference awal. Hasil setelah Compiler Passes 1–5.
+      note: IR stability IA-13 applies. Format versioned, cacheable by content hash.
+    - priority: P0
+      deliverable: Compiler Pass Framework (8-pass pipeline skeleton)
+      role: Infrastruktur untuk pass yang murni dan dapat diuji. Pass = pure function input-ir → output-ir + diagnostics. Validation that each pass meets IA-14 purity.
+      note: Core of Gate D. Replace ad-hoc resolver logic with explicit passes.
+    - priority: P1
+      deliverable: Decision IR (DIR) Canonical Format
+      role: Artefak keputusan lengkap beserta alternatif dan alasan. Hasil setelah Passes 6–7 (Planning + Decision Compilation).
+      note: Decouples planner from runtime format. Same DIR → multiple Plan Compilers possible (for different runtime targets, future).
+    - priority: P1
+      deliverable: Plan Compiler
+      role: Mengubah Decision IR menjadi Execution Plan yang independen runtime. Pass 8.
+      note: Planner produces DIR, NOT Execution Plan. Plan Compiler = DIR → Plan.
+    - priority: P1
+      deliverable: Knowledge Virtual Machine (KVM)
+      role: Runtime yang hanya menginterpretasikan Execution Plan bytecode. TIDAK mengetahui contracts/registry/ontology/decisions.
+      note: Minimal VM surface; largest impact on security auditability.
+    - priority: P2
+      deliverable: Evidence Compiler
+      role: Menghasilkan Evidence Graph + Repository Verdict (REPO-PROOF) secara deterministik. Menggabungkan EPG node writes, ledger append, final root hash.
+      note: "Debug symbols stage" of Knowledge Compiler.
+
+paradigm_final_summary_pipeline:
+  id: EOS_KNOWLEDGE_COMPILING_PIPELINE_OFFICIAL
+  states_with_arrows:
+    - "Knowledge Sources"
+    - "↓ Knowledge Build (hermetic, digests 8-tuple)"
+    - "Knowledge Snapshot (KS-... — BUILD ARTIFACT)"
+    - "↓ Compiler Passes 1–5 (Normalization, Ontology Expansion, Constraints, Dependency Analysis, Compatibility Resolution)"
+    - "Knowledge IR (KIR — STABLE IR)"
+    - "↓ Compiler Pass 6 (Planning)"
+    - "Decision State → Decision IR (DIR — STABLE IR with candidates + alternatives + selected)"
+    - "↓ Compiler Pass 7 (Decision Compilation — canonicalize DIR)"
+    - "Decision IR Canonical"
+    - "↓ Compiler Pass 8 (Plan Compiler — produces runtime format)"
+    - "Execution Plan (KVM bytecode analog)"
+    - "↓ Knowledge Virtual Machine (KVM = Runtime interpreter; minimal surface, no knowledge of domain)"
+    - "Execution State → Evidence nodes emitted per step"
+    - "↓ Evidence Compiler (assembles Merkle DAG, appends to Ledger)"
+    - "Evidence Graph + Repository Verdict = final output"
+  closing_statement: >
+    Paradigma ini menyatukan: Knowledge Snapshot, Decision Model, Execution Plan, Evidence DAG, Determinisme,
+    Semantic Kernel, Registry Separation, Invariants IA-10..IA-14 dalam satu Knowledge Compiler Pipeline
+    yang konsisten dan mudah dievolusikan selama 10–20 tahun.
+    Kunci stabilitasnya: IR yang stabil + pass yang murni.
+    IR = SSOT di setiap tahap. Tidak ada hidden state antar-engine.
+    Reproducibility = guaranteed karena setiap stage adalah deterministic pure function dari IR sebelumnya.

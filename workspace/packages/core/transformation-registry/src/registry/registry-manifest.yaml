@@ -1,0 +1,59 @@
+version: "1.0.0"
+kind: REGISTRY_ROOT_INDEX
+status: DRAFT
+ssot_note: REGISTRY_MANIFEST_IS_ROOT_INDEX_ONLY_≤100_LOC_PURE_COMPOSITION._NO_DECLARATIONS._DECLARATIONS_LIVE_IN_PER_ENTRY_manifest.yaml.
+invariant_architecture_ref:
+  principle_07: IA-07_No_God_Registry_God_Registry_Prevented
+  rule_note: transformation-catalog.yaml critical_rules.rule_5_note_compliance
+
+index_version:
+  schema: "1.0"
+  layout: per_transformation_directory_per_predicate_directory_manifest_yaml
+  max_root_index_loc: 100
+
+transformation_index:
+  root: /root/Enterprise OS/workspace/packages/core/transformation-registry/src/registry/transformations/
+  include_pattern: "*/manifest.yaml"
+  verified_entries:
+    - t001
+  draft_entries:
+    - t002
+    - t003
+    - t004
+    - t005
+  loader: /root/Enterprise OS/workspace/packages/core/transformation-registry/src/registry/load-manifest.ts
+
+predicate_index:
+  root: /root/Enterprise OS/workspace/packages/core/predicate-registry/src/registry/predicates/
+  include_pattern: "*/manifest.yaml"
+  verified_entries:
+    - t001
+  draft_entries:
+    - t002
+    - t003
+    - t004
+    - t005
+  loader: /root/Enterprise OS/workspace/packages/core/predicate-registry/src/registry/load-manifest.ts
+
+migration:
+  current_strategy: DUAL_SOURCE_DURING_MIGRATION_WINDOW
+  migration_windows:
+    - stage: GATE_C_DONE
+      status: ACTIVE_NOW
+      behavior: .ts declarations = primary, .yaml manifests = parallel SSOT
+    - stage: GATE_D_BOOTSTRAP
+      status: PENDING
+      behavior: .yaml manifests = SSOT, .ts files = PURE YAML loaders with 0 inline declaration literals
+    - stage: GATE_E_VERIFIED
+      status: PENDING
+      behavior: legacy .ts inline declarations REMOVED, .ts = 100% loader composition
+  god_registry_prevention_rules:
+    - NO_single_registry.ts_with_all_entries
+    - NO_monolithic_index.>200_LOC
+    - NEW_transformation_entry_MUST_use_manifest.yaml_not_.ts_declarations
+    - NEW_predicate_entry_MUST_use_manifest.yaml_not_.ts_declarations
+    - ANY_T006_plus_entry_violates_layout_=_ARCH_18_VIOLATION
+
+capability_index:
+  status: DEFERRED_UNTIL_GATE_E_BEYOND
+  note: capability registry follows same per-entry manifest.yaml pattern.

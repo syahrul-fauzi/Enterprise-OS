@@ -1,0 +1,34 @@
+contract:
+  id: CONTRACT-T005-RUNTIME-TO-REPOPROOF-V1
+  name: T005 Runtime → Repository Proof Transformation Contract
+  version: "1.0.0"
+  status: DRAFT
+  kind: TRANSFORMATION_CONTRACT
+  transformation_id: T005
+  transformation_catalog_ref: /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml#transformations[4]
+  axiom_kbe_enforced: true
+  precedence_constraint: BLOCKED_UNTIL_T004_VERIFIED
+  repository_proof_is_output_not_state: true
+
+input_spec:
+  kind: RUNTIME_MANIFEST_PLUS_4_HASHES
+  required_hash_count: 4
+  validation_predicate: PRED-T005-INPUT-4-HASHES-SET
+
+output_spec:
+  kind: REPOSITORY_PROOF_JSON
+  conform_predicate: PRED-T005-SIGNATURE-VALID-FORMAT
+  deterministic_predicate: PRED-T005-VERDICT-AND-ONLY-IF-T001-T004-PASS
+
+predicate_contract:
+  minimum_required: 3
+  predicate_ids_ordered:
+    - PRED-T005-INPUT-4-HASHES-SET
+    - PRED-T005-SIGNATURE-VALID-FORMAT
+    - PRED-T005-VERDICT-AND-ONLY-IF-T001-T004-PASS
+
+evidence_output:
+  kind: REPOSITORY_PROOF
+  proof_id_pattern: REP-PROOF-<seq>
+  append_only: true
+  output_location: /root/Enterprise OS/build/evidence/repository-proof/

@@ -4,6 +4,16 @@ semantic_id: REQ-0001
 lineage_id: LIN-REQ-0001
 concept: Requirement
 scope: eos_vertical_slice_v1
+proof_runner:
+  surface: /root/Enterprise OS/workspace/packages/tooling/arch-tests/src/pac.requirement-v1.test.ts
+  mode: executable_contract
+  requires_verified_transformations: true
+canonical_conformance_asset:
+  id: REQ-0001
+  golden_reference_root: /root/Enterprise OS/examples/vertical-slice/REQ-0001
+registry_constraints:
+  transformation_status_required: VERIFIED
+  draft_execution_allowed: false
 stages:
   - stage: els
     acceptance: dosc_passed
@@ -34,4 +44,5 @@ artifacts:
   markdown: /root/Enterprise OS/enterprise/governance/pipeline-acceptance-criteria.md
   yaml: /root/Enterprise OS/enterprise/governance/pipeline-acceptance-criteria.requirement-v1.yaml
   test: /root/Enterprise OS/workspace/packages/tooling/arch-tests/src/pac.requirement-v1.test.ts
+proof_ledger: /root/Enterprise OS/examples/vertical-slice/REQ-0001/proof-ledger.json
 overall_acceptance: pending

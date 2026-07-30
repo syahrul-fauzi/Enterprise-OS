@@ -1,0 +1,88 @@
+version: "1.0.0"
+kind: PREDICATE_MANIFEST_GROUP
+status: VERIFIED
+for_transformation_id: T001
+manifest_kind: CANONICAL_REGISTRY_ENTRY
+ssot_note: THIS_MANIFEST_YAML_IS_SINGLE_SOURCE_OF_TRUTH_FOR_T001_PREDICATES._t001.ts_IS_DERIVED_VIEW_LOADER_ONLY.
+kbe_compliance: PREDICATE_DECLARATIONS_SEPARATED_FROM_EVALUATION
+invariant_architecture_ref:
+  principle_06: IA-06_Predicate_↔_Runtime_Context_FORBIDDEN
+  principle_07: IA-07_No_God_Registry
+
+predicate_declarations:
+  - predicate_id: PRED-T001-INPUT-SCHEMA
+    name: T001 Input Conforms to ELS Document Schema
+    description: >
+      Validate that the T001 input YAML document conforms to the canonical
+      ElsDocumentSchema before any transformation is attempted.
+    phase: PRE_EXECUTION
+    transformation_id: T001
+    applies_to: SPECIFIC_TRANSFORMATIONS
+    failure_mode: INPUT_REJECTED
+    severity: BLOCKER
+    schema_ref: "@repo/core-eir/schema#ElsDocumentSchema"
+    order: 1
+    context_agnostic: true
+    runtime_context_forbidden: true
+
+  - predicate_id: PRED-T001-OUTPUT-DETERMINISTIC
+    name: T001 Output is Deterministic (2x run hash equality)
+    description: >
+      Run T001 twice on identical input hash and verify the output SHA256 hash
+      is byte-identical between run 1 and run 2.
+    phase: POST_EXECUTION_VERIFICATION
+    transformation_id: T001
+    applies_to: SPECIFIC_TRANSFORMATIONS
+    failure_mode: TRANSFORMATION_DECLARED_NONDETERMINISTIC
+    severity: BLOCKER
+    order: 2
+    context_agnostic: true
+    runtime_context_forbidden: true
+    determinism_requirements:
+      run_count: 2
+      comparison: byte_identical_SHA256
+      retry_allowed: false
+      non_determinism_consequence: TRANSFORMATION_IMMEDIATELY_BLOCKED_FOR_FURTHER_USE
+
+  - predicate_id: PRED-T001-CONFORM-EIR
+    name: T001 Output Conforms to EIR Record Schema
+    description: >
+      Validate that the T001 output JSON conforms to the canonical
+      EirRecordSchema with all required fields including determinism_context.
+    phase: POST_EXECUTION
+    transformation_id: T001
+    applies_to: SPECIFIC_TRANSFORMATIONS
+    failure_mode: OUTPUT_NONCONFORMANT
+    severity: BLOCKER
+    schema_ref: "@repo/core-eir/schema#EirRecordSchema"
+    order: 3
+    context_agnostic: true
+    runtime_context_forbidden: true
+
+loader_binding:
+  loader_ts_ref: /root/Enterprise OS/workspace/packages/core/predicate-registry/src/registry/predicates/t001.ts
+  loader_strategy: YAML.parse → zod validate → PredicateDeclaration[]
+  binding_status: DERIVED_VIEW_AVAILABLE_VIA_TS_LOADER
+  load_order:
+    - manifest.yaml parsed
+    - each predicate_declarations[] validated against PredicateDeclaration schema
+    - exports as readonly array matching existing t001.ts shape
+
+evidence_chain:
+  all_predicates_pass_count: 3
+  all_predicates_total_count: 3
+  binding_proof_id: TRF-PROOF-T001
+  proof_verdict: PASS
+  verification_date: 2026-07-30
+
+evolution_policy:
+  change_allowed:
+    - NEW optional fields in predicate metadata OK
+    - NEW predicate APPENDED to end of predicate_declarations[] OK with new phase if needed
+    - REMOVAL of predicate requires MAJOR version bump + DEPRECATED lifecycle + preservation in archive
+  direct_edit_prohibited_fields:
+    - predicate_id
+    - phase (would invalidate ordering assumptions in resolver predicate_sort)
+    - order (must remain 1..N sequential)
+    - transformation_id
+  predicate_addition_requirement: WHEN new predicate added for VERIFIED transformation → RE-RUN determinism verification 2x → emit new TRF-PROOF entry (preserve old with old predicate set hash)

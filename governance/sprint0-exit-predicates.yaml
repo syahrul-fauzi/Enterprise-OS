@@ -1,0 +1,147 @@
+version: "2.0.0"
+status: FROZEN
+scope: sprint0
+architecture_freeze: active
+thaw_criteria: T001_DETERMINISTIC_PASS_VIA_GOLDEN_REQ_0001_AND_TRANSFORMATION_PROOF_VERIFIED
+realignment_note: sprint0_exit_predicates_aligned_with_5_layer_ssot_stack_v1
+
+gates:
+  gate_a_governance:
+    objective: repository law is explicit and machine-readable
+    status: VERIFIED
+    primary_artifacts:
+      - governance/BASELINE_LOCK.yaml
+      - governance/GOVERNANCE_STATE.yaml
+    evidence_status: Governance Verified
+    exit_predicates:
+      - baseline lock certificate declared
+      - governance state declared (repository_state root key at layer 3)
+      - ssot stack 5 layers declared frozen in baseline lock
+      - repository proof declared as external output never inline
+      - implementation baseline declared
+      - dependency rules declared
+      - package authority declared
+      - artifact lifecycle declared (5 canonical uppercase vocab)
+      - architecture compliance declared
+      - sprint0 exit predicates declared
+      - governance validation evidence recorded
+      - workspace manifest validation evidence recorded
+      - architecture compliance evidence recorded
+      - baseline lock evidence recorded
+  gate_b_foundation:
+    objective: canonical foundation (5 packages) exist as declarative knowledge without any execution behavior
+    primary_artifacts:
+      - workspace/contracts
+      - workspace/packages/core/eir
+      - workspace/packages/core/predicate-registry
+      - workspace/packages/core/transformation-registry
+      - workspace/packages/core/proof-ledger
+    evidence_status: Conformance Verified
+    declarative_boundary:
+      allowed:
+        - schema
+        - specification
+        - contract
+        - interface
+        - predicate_registry
+        - transformation_registry
+        - proof_metadata
+      forbidden_behavior:
+        - run
+        - execute
+        - compile
+        - runtime execution entrypoints
+      rule: Gate B produces canonical knowledge only. Runtime behavior starts at Gate C after registry declarations exist.
+    structure_pattern_frozen:
+      file_paths:
+        - README.md
+        - SPECIFICATION.md
+        - package.json
+        - tsconfig.json
+        - eslint.config.mjs
+        - src/index.ts
+        - src/types.ts
+        - src/interfaces.ts
+        - src/schema.ts
+        - contracts/
+        - tests/
+    definition_of_ready:
+      - gate_a_status_verified
+      - baseline_lock_active
+      - governance_parseable_by_tooling
+      - no_new_baseline_violations
+      - rule_of_five_preserved
+      - implementation_discipline_active
+    exit_predicates:
+      - contracts source of truth established (6 contracts min)
+      - packages/core/eir specified (schema + types + interfaces + registry + conformance)
+      - packages/core/predicate-registry specified
+      - packages/core/transformation-registry specified (T001 declared DRAFT+)
+      - packages/core/proof-ledger specified (two proof levels distinguished: repository vs transformation)
+      - every foundation package remains declarative and contains schema, interfaces, contracts, registries, and conformance tests
+      - no gate_b package exposes runtime execution entrypoints
+  req_0001_golden_reference:
+    objective: deterministic golden reference for T001 input and expected output
+    exit_predicates:
+      - examples/vertical-slice/REQ-0001 exists
+      - requirement.md exists
+      - requirement.yaml exists
+      - expected outputs declared for eir, cag, proof, and typescript
+      - t001 entry exists in transformation registry (status >= DRAFT)
+  gate_c_first_verified_transformation:
+    objective: T001 (ELS to EIR) produces DETERMINISTIC transformation proof against Golden REQ-0001, WITHOUT any generic orchestrator
+    status: DRAFT
+    primary_artifacts:
+      - workspace/packages/core/transformation-registry (T001 entry VERIFIED)
+      - workspace/packages/core/eir (REQ-0001 golden output EIR record)
+      - workspace/packages/core/proof-ledger (TRF-PROOF-T001 entry with verdict PASS)
+      - workspace/examples/vertical-slice/REQ-0001
+    output_kind: independent_transformation_artifact_before_any_orchestrator
+    exit_predicates:
+      - T001 can be executed in isolation (no engine dependency)
+      - input = Golden REQ-0001 specification + contract_ref
+      - output = EIR record (exact determinism: identical input => identical EIR hash)
+      - predicate PRED-T001-INPUT-SCHEMA PASS
+      - predicate PRED-T001-OUTPUT-DETERMINISTIC PASS
+      - predicate PRED-T001-CONFORM-EIR PASS
+      - Transformation Proof TRF-PROOF-T001 verdict = PASS with signature recorded
+      - run twice on same input produces PROOF HASH IDENTICAL (determinism evidence)
+  gate_d_execution_platform:
+    objective: execution platform is registry-driven (no hardcoded pipeline). Engine loads registry, resolves DAG generically.
+    status: DRAFT
+    primary_artifacts:
+      - workspace/packages/engine/transformation-engine
+      - workspace/packages/tooling/compiler-cli
+      - workspace/packages/engine/emitters
+      - workspace/build/ci/
+    evidence_status: Execution Verified
+    exit_predicates:
+      - transformation engine loads transformation registry (no hardcoded ID list)
+      - DAG resolution is generic (derived from contracts/registry, not hardcoded)
+      - no transformation ID is hardcoded by name inside runtime source code
+      - predicates are evaluated through predicate registry lookup
+      - proof object generation is deterministic (append only proof ledger)
+      - CI pipeline emits repository proof at build/evidence/repository-proof/
+  gate_e_proof_of_execution:
+    objective: end-to-end deterministic execution proof (PoE v1). Re-run full pipeline and verify consistent proof hashes.
+    status: DRAFT
+    primary_artifacts:
+      - workspace/build/evidence/
+      - enterprise/governance/pipeline-acceptance-criteria.md
+      - build/evidence/repository-proof/REP-PROOF-0001.json (final)
+    evidence_status: End-to-End Verified
+    exit_predicates:
+      - REQ-0001 runs end-to-end via execution platform (Gate D)
+      - PAC proof runner produces PASS or explicit non-pass verdict (all predicates enumerated)
+      - proof ledger append operation is verified (audit trail is complete)
+      - CI quality gate includes architecture, type, build, and proof checks
+      - repository proof REP-PROOF-0001 is emitted with signature UNSIGNED or higher
+      - run twice on same commit => identical proof hashes (registry hash identical)
+
+current_priority_order:
+  - gate_a_governance
+  - gate_b_foundation
+  - req_0001_golden_reference
+  - gate_c_first_verified_transformation
+  - gate_d_execution_platform
+  - gate_e_proof_of_execution

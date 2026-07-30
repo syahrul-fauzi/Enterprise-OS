@@ -1,0 +1,103 @@
+version: "1.0.0"
+status: active
+scope: workspace
+
+authorities:
+  apps:
+    path: /root/Enterprise OS/workspace/apps
+    authority: experience_surface
+    allowed_changes:
+      - app_specific_ui
+      - app_route_wiring
+      - capability_surface_integration
+    forbidden_changes:
+      - canonical_contract_definition
+      - core_kernel_semantics
+      - structural_root_relocation
+  capabilities:
+    path: /root/Enterprise OS/workspace/capabilities
+    authority: bounded_capability_implementation
+    allowed_changes:
+      - capability_definition
+      - capability_implementation
+      - capability_composition
+      - capability_experience
+    forbidden_changes:
+      - cross_capability_hidden_coupling
+      - workspace_root_restructuring
+      - engine_hardcoding
+  packages/core:
+    path: /root/Enterprise OS/workspace/packages/core
+    authority: canonical_foundation
+    allowed_changes:
+      - schema
+      - types
+      - interfaces
+      - registry_readers
+      - conformance_tests
+    forbidden_changes:
+      - product_specific_behavior
+      - ui_framework_logic
+      - direct_app_dependencies
+  packages/composition:
+    path: /root/Enterprise OS/workspace/packages/composition
+    authority: composition_descriptor_engine
+    allowed_changes:
+      - workspace_descriptor
+      - layout_region_slot_navigation_contracts
+      - deterministic_composition_logic
+    forbidden_changes:
+      - direct_ui_rendering
+      - capability_business_logic_duplication
+  packages/presentation:
+    path: /root/Enterprise OS/workspace/packages/presentation
+    authority: reusable_presentation_primitives
+    allowed_changes:
+      - tokens
+      - ui_primitives
+      - presentation_types
+    forbidden_changes:
+      - capability_business_terms
+      - runtime_registry_logic
+  packages/tooling:
+    path: /root/Enterprise OS/workspace/packages/tooling
+    authority: local_verification_tooling
+    allowed_changes:
+      - architecture_tests
+      - validation_scripts
+      - developer_quality_checks
+    forbidden_changes:
+      - canonical_business_contracts
+      - runtime_engine_behavior
+  contracts:
+    path: /root/Enterprise OS/workspace/contracts
+    authority: canonical_contract_definitions
+    allowed_changes:
+      - contract_schema
+      - api_contract
+      - event_contract
+      - contract_examples
+    forbidden_changes:
+      - runtime_implementation
+      - ui_logic
+      - build_output_storage
+  decisions:
+    path: /root/Enterprise OS/workspace/decisions
+    authority: architectural_decisions
+    allowed_changes:
+      - adr
+      - impact_analysis
+    forbidden_changes:
+      - source_code
+      - generated_build_outputs
+
+change_classes:
+  no_review:
+    - documentation_typo
+  normal_review:
+    - implementation_change_within_authority
+  adr_required:
+    - structural_evolution
+    - new_root_directory
+    - new_package_family
+    - authority_reassignment

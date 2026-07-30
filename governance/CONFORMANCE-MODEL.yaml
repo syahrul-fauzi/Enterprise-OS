@@ -1,0 +1,124 @@
+version: "1.0.0"
+status: FROZEN
+kind: CONSTITUTION
+layer: CONFORMANCE_META_MODEL
+abbreviation: CONF-M
+ssot_note: EOS_CONFORMANCE_MODEL_PATTERNED_AFTER_POSIX_STANDARD._CONFORMANCE_TEST_SUITE_IS_CANONICAL_TRUTH_NOT_REFERENCE_IMPLEMENTATION._REFERENCE_IMPLEMENTATION_CAN_BE_REMOVED_OR_REPLACED_ENTIRELY_AS_LONG_AS_CONFORMANCE_TESTS_REMAIN_PASSING.
+governance_ref:
+  asp: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
+  evolution_domains: /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml
+  protocol_governance: /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
+derived_from:
+  - User_Point_7_Reference_vs_Alternative_Implementations_POSIX_Pattern
+  - ASP_01(c)_Replaceable_Implementations
+
+conformance_pipeline_posix_pattern:
+  order_sequential:
+    - step: 1
+      name: PROTOCOL DEFINITION
+      artifact_kind: STABLE PROTOCOL CONTRACT (Evolution Domain B)
+      description: YAML contract (under workspace/contracts/ or enterprise/specifications/protocols/) defines semantics, required fields, behavior invariants.
+      example: workspace/contracts/KNOWLEDGE-IR.contract.yaml = contract for KIR protocol
+    - step: 2
+      name: CONFORMANCE TEST SUITE
+      artifact_kind: PROTOCOL CONFORMANCE TESTS (Evolution Domain B — changing a test that RESTRICTS more behavior = MAJOR bump of protocol version; adding a test = MINOR; editorials in assertion messages = PATCH)
+      description: Test cases that check every mandatory rule in the protocol. Test cases are protocol artifacts themselves, NOT implementation-specific.
+      structure_demand:
+        - NO implementation-specific imports inside conformance tests.
+        - Test must interface with the SUT (System Under Test) through PUBLIC PROTOCOL INTERFACES ONLY (not private fields or module-internal APIs).
+        - Input fixtures part of conformance suite; MUST be static files under conformance/fixtures/.
+        - Output hash of fixtures versioned alongside protocol version.
+      parallel_example: POSIX test suite = protocol tests; no test requires running "on Linux only" (tests check POSIX semantics not OS internals).
+    - step: 3
+      name: REFERENCE SPECIFICATION
+      artifact_kind: NARRATIVE SPEC (explanatory document, Evolution Domain B PATCH-level only — cannot change protocol semantics; explanatory only)
+      description: Human-readable prose + examples explaining protocol. Reference spec is NOT canonical contract; canonical is yaml contract at step 1 + conformance suite at step 2.
+      rationale: Reference specs exist for onboarding; canonical truth = test cases + yaml.
+    - step: 4
+      name: REFERENCE IMPLEMENTATION
+      artifact_kind: Implementation (Domain C). Exists purely for bootstrapping.
+      special_properties:
+        - It is the FIRST implementation to pass 100% of conformance tests for that protocol.
+        - It has NO governance priority over other implementations.
+        - It MAY be deleted entirely in future. Conformance suite is the thing that survives.
+        - If reference implementation has bugs, the BUG is in implementation (not in test suite), unless test suite is proven wrong via Domain B MAJOR protocol change process.
+      parallel: Linux was historically the "reference POSIX" but FreeBSD/macOS are POSIX-compliant independently.
+    - step: 5
+      name: ALTERNATIVE IMPLEMENTATIONS
+      artifact_kind: Additional implementations (Domain C), different algorithm / different programming language / different internal architecture.
+      conformance_requirement:
+        - To claim "PROTOCOL X COMPLIANT", an implementation MUST pass 100% of conformance tests (for protocol version exactly matching).
+        - An alternative implementation that passes all tests MAY be used AS drop-in replacement for reference implementation without any ADR.
+        - If alt impl is FASTER but still conforms → encouraged. No governance gate.
+        - If alt impl uses completely different algorithm but passes tests → allowed. EOS doesn't care about algorithm choice; cares about protocol semantics.
+
+conformance_levels:
+  - level: CONFORMANCE_NONE
+    description: Implementation not run against conformance suite or known failures present.
+    allowed_usage: local dev only; cannot ship in Gate D or later.
+  - level: CONFORMANCE_PARTIAL
+    description: Implementation passes ≥80% of conformance tests but not 100%.
+    allowed_usage: DRAFT protocol phases only. Cannot be used in Gate C+ stable execution paths.
+  - level: CONFORMANCE_FULL
+    description: Implementation passes 100% of conformance tests for declared protocol version.
+    required_for:
+      - any runtime execution path used in Gate D official builds
+      - any artifact claiming PROTO-X COMPLIANT in metadata
+  - level: CONFORMANCE_STRICT
+    description: 100% conformance + no warnings in test output + reproduces byte-identical output for every deterministic hash fixture (IA-11 / IA-13 / IA-14 determinism requirements).
+    required_for:
+      - Gate E exit certification
+      - Official Repository Proof emitters
+      - Constitutent components of IA-10 Immutable Snapshot build pipeline
+      - Anything that writes to Ledger
+
+replaceability_rule_reference_impl:
+  statement:
+    Reference Implementation is REPLACEABLE AT ANY TIME with any Alternative Implementation that achieves
+    CONFORMANCE_FULL or higher for the same protocol version. No Architecture Board approval required. Engineering
+    PR approval only. But protocol change to pass test is FORBIDDEN — if alt impl fails a test, fix alt impl,
+    or (only if test is provably contradictory to yaml contract) go through Domain B MAJOR protocol version bump first.
+  anti_pattern:
+    - "We have to keep the old resolver.ts because everything depends on its quirks." → FORBIDDEN. Quirks that are not codified in protocol/conformance tests are ACCIDENTAL, not part of EOS identity. Delete and replace if new impl passes tests.
+    - "Reference impl defines semantics; let's change protocol version to match reference impl bug." → FORBIDDEN direction (ASP-02 upward flow). Fix reference impl, not protocol.
+
+conformance_report_artifact:
+  report_format_required:
+    fields:
+      - protocol_id: PROTO-EDGE-SEMANTICS or etc
+      - protocol_version: semver string
+      - implementation_id: e.g., T001-transform-impl-v1 or resolver-impl-v3
+      - implementation_code_identity: git commit hash of impl (for reproducibility)
+      - conformance_level: NONE / PARTIAL / FULL / STRICT
+      - tests_passed_count: integer
+      - tests_total_count: integer
+      - deterministic_hash_checks_passed: boolean (for CONFORMANCE_STRICT)
+      - conformance_suite_git_commit_hash: (which version of conformance suite was used)
+      - report_generated_at_utc: timestamp; diagnostics only (NOT part of report hash)
+      - report_content_hash: sha256 of all above except timestamp (for audit)
+  storage:
+    - Conformance report for every release build of EOS → stored in governance/conformance-reports/<protocol-id>/<version>/<impl>.json
+    - Reports append-only; previous reports never mutated.
+  gate_requirement:
+    - Gate D exit: 100% of protocols in STABLE status → at least 1 CONFORMANCE_FULL impl each.
+    - Gate E exit: 100% of protocols in STABLE status → at least 1 CONFORMANCE_STRICT impl each.
+
+forbidden_patterns:
+  - id: FORBIDDEN-CONF-01
+    pattern: Conformance test suite imports private modules from reference implementation (e.g., `import { internalFn } from "@repo/impl-x/src/private.ts"`)
+    why: Makes tests implementation-specific; breaks the posix pattern.
+    severity: ERROR
+    alternative: Use only public protocol interfaces / public IR exchange format.
+  - id: FORBIDDEN-CONF-02
+    pattern: Protocol contract yaml has comment "behaves like reference impl resolver.ts line 42" rather than explicit semantic rule.
+    why: Delegates protocol semantics to a specific codebase location (ASP-02 upward).
+    severity: ERROR
+  - id: FORBIDDEN-CONF-03
+    pattern: Implementation adds a "conformance skip" to avoid failing a conformance test without MAJOR protocol process.
+    why: Makes CONFORMANCE_FULL status meaningless.
+    severity: FATAL for release.
+
+enforcement:
+  acl_rule_ids:
+    - ARCH-24 (ASP downward authority — implementation never edits conformance tests to pass itself)
+    - ARCH-25 (Protocol boundary — components interact via protocol interfaces; no private-API exchange between components)

@@ -1,0 +1,31 @@
+contract:
+  id: CONTRACT-T004-TSIR-TO-RUNTIME-V1
+  name: T004 TS IR → Runtime Artifacts Transformation Contract
+  version: "1.0.0"
+  status: DRAFT
+  kind: TRANSFORMATION_CONTRACT
+  transformation_id: T004
+  transformation_catalog_ref: /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml#transformations[3]
+  axiom_kbe_enforced: true
+  precedence_constraint: BLOCKED_UNTIL_T003_VERIFIED
+
+input_spec:
+  kind: TS_IR_PLUS_REGISTRY
+  validation_predicate: PRED-T004-INPUT-TSIR-VERIFIED
+
+output_spec:
+  kind: RUNTIME_ARTIFACTS_DIST
+  conform_predicate: PRED-T004-CONFORM-RUNTIME-SCHEMA
+  deterministic_predicate: PRED-T004-OUTPUT-DETERMINISTIC
+
+predicate_contract:
+  minimum_required: 3
+  predicate_ids_ordered:
+    - PRED-T004-INPUT-TSIR-VERIFIED
+    - PRED-T004-OUTPUT-DETERMINISTIC
+    - PRED-T004-CONFORM-RUNTIME-SCHEMA
+
+evidence_output:
+  kind: TRANSFORMATION_PROOF
+  proof_id_pattern: TRF-PROOF-T004
+  proof_ledger_append_required: true

@@ -1,240 +1,147 @@
 
 workspace:
-
+  id: EOS-WORKSPACE-001
   name: enterprise-workspace
-
-  version: "1.0"
-
-  description:
-    Enterprise operating workspace for legal technology ecosystem
-
+  version: "1.0.0"
+  status: implementation_baseline_frozen
+  description: Enterprise operating workspace for legal technology ecosystem.
+  baseline:
+    id: EOS-IMPLEMENTATION-BASELINE-V1
+    lock_policy: adr_required_for_structural_evolution
+    operating_mode: foundation_first
 
 organization:
-
   domain:
     - legal-technology
-
   products:
-    - lawyershub
-    - services-id
-    - indonesialawyersclub
-
-
-
+    active:
+      - lawyershub
+    planned:
+      - services-id
+      - indonesialawyersclub
 
 architecture:
-
   model:
-
     type:
-      - product-oriented
-      - capability-driven
-
-
-  layers:
-
-    products:
-      path: products/
-
-
+      - capability-first
+      - package-boundary-frozen
+      - evidence-first
+  root_directories:
+    apps:
+      path: apps/
+      status: frozen
     capabilities:
       path: capabilities/
-
-
-    platforms:
-      path: platforms/
-
-
+      status: frozen
+    packages:
+      path: packages/
+      status: frozen
     contracts:
       path: contracts/
-
-
+      status: frozen
     decisions:
       path: decisions/
-
-
-    infrastructure:
-      path: infrastructure/
-
-
-
-
-technology:
-
-
-  backend:
-
-    supported:
-
-      - python
-      - java
-      - nodejs
-
-
-  frontend:
-
-    supported:
-
-      - react
-      - nextjs
-
-
-  database:
-
-    primary:
-
-      - postgresql
-
-
-  container:
-
-    runtime:
-
-      - docker
-
-
-
-
-environments:
-
-
-  development:
-
-    purpose:
-      local development
-
-
-    resources:
-
-      database:
-        shared: true
-
-
-
-
-  staging:
-
-    purpose:
-      integration validation
-
-
-    resources:
-
-      database:
-        isolated: true
-
-
-
-
-  production:
-
-    purpose:
-      customer facing system
-
-
-    requirements:
-
-      - monitoring
-      - backup
-      - security
-
-
-
-
-resource_sharing:
-
-
-  rules:
-
-
-    contracts:
-
-      shared:
-        true
-
-
-    capabilities:
-
-      reuse_allowed:
-        true
-
-
-    databases:
-
-      cross_product_access:
-        prohibited
-
-
-
-
-collaboration:
-
-
-  workflow:
-
-
-    change_management:
-
-
-      required:
-
-        - decision_record
-        - impact_analysis
-
-
-    development:
-
-
-      branch_strategy:
-
-        - feature
-        - release
-        - main
-
-
-
-
-governance:
-
-
-  extraction:
-
-
+      status: frozen
+    config:
+      path: config/
+      status: frozen
+    scripts:
+      path: scripts/
+      status: frozen
+  packages:
+    core:
+      path: packages/core/
+      status: frozen
+      purpose: Canonical kernel and foundation libraries.
+    composition:
+      path: packages/composition/
+      status: frozen
+      purpose: Workspace composition and orchestration descriptors.
+    presentation:
+      path: packages/presentation/
+      status: frozen
+      purpose: Reusable presentation primitives and design system packages.
+    tooling:
+      path: packages/tooling/
+      status: frozen
+      purpose: Local developer tooling and architecture tests.
+  structural_evolution:
+    deferred_until: gate_e_experience_surface
+    prohibited_now:
+      - create_products_directory
+      - move_apps_lawyershub_out_of_apps
+      - introduce_domain_application_infrastructure_root_split
+      - introduce_new_top_level_ontology
+      - design_experience_layer
+      - design_product_composition_layer
+
+capabilities:
+  canonical:
+    - identity
+    - legal-case
+    - legal-document
+  extraction_policy:
     capability_requires:
-
-
       - production_usage
-
       - measurable_value
-
       - multiple_consumers
 
+technology:
+  backend:
+    supported:
+      - nodejs
+      - python
+      - java
+  frontend:
+    supported:
+      - react
+      - nextjs
+  database:
+    primary:
+      - postgresql
+  container:
+    runtime:
+      - docker
 
+resource_sharing:
+  contracts:
+    shared: true
+    mode: canonical_workspace_contracts
+  capabilities:
+    reuse_allowed: true
+    mode: explicit_registry_and_contracts
+  databases:
+    cross_product_access: prohibited
 
+governance:
+  source_of_truth:
+    baseline_lock: ../governance/BASELINE_LOCK.yaml
+    implementation_baseline: ../governance/IMPLEMENTATION_BASELINE.md
+    architecture_governance: ../governance/ARCHITECTURE_GOVERNANCE.md
+    dependency_rules: ../governance/dependency-rules.yaml
+    architecture_compliance: ../governance/architecture-compliance.yaml
+    package_authority: ../governance/package-authority.yaml
+    artifact_lifecycle: ../governance/artifact-lifecycle.yaml
+    implementation_discipline: ../governance/implementation-discipline.yaml
+    sprint0_exit_predicates: ../governance/sprint0-exit-predicates.yaml
+  change_management:
+    required:
+      - decision_record
+      - impact_analysis
+      - evidence_reference_for_architecture_change
 
-  platform_creation:
-
-
-    requires:
-
-
-      - repeated_pattern
-
-      - validated_capability
-
-      - ownership
-
-
-
+execution:
+  current_gate: gate_a_governance
+  current_gate_status: VERIFIED
+  next_gates:
+    - gate_b_foundation
+    - req_0001_golden_reference
+    - gate_c_execution
+    - gate_d_verification
+    - gate_e_experience_surface
 
 eos:
-
-
   enabled:
-
     decision_tracking: true
-
     evidence_tracking: true
-
     experiment_tracking: true
-

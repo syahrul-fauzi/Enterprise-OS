@@ -1,0 +1,148 @@
+version: "1.0.0"
+status: active
+scope: workspace
+baseline: EOS-IMPLEMENTATION-BASELINE-V1
+
+zones:
+  apps:
+    path_globs:
+      - apps/**
+    may_depend_on:
+      - capabilities/**
+      - packages/core/**
+      - packages/composition/**
+      - packages/presentation/**
+      - contracts/**
+      - config/**
+    must_not_depend_on:
+      - decisions/**
+      - scripts/**
+  capabilities:
+    path_globs:
+      - capabilities/**
+    internal_boundaries:
+      definition:
+        may_depend_on: []
+      implementation:
+        may_depend_on:
+          - contracts/**
+          - packages/core/**
+      composition:
+        may_depend_on:
+          - packages/composition/**
+          - packages/core/**
+          - contracts/**
+      experience:
+        may_depend_on:
+          - packages/presentation/**
+          - packages/core/**
+          - capabilities/*/composition/**
+          - capabilities/*/implementation/services/**
+    must_not_depend_on:
+      - apps/**
+      - decisions/**
+      - scripts/**
+  packages_core:
+    path_globs:
+      - packages/core/**
+    may_depend_on:
+      - contracts/**
+      - packages/core/**
+      - config/**
+    must_not_depend_on:
+      - apps/**
+      - capabilities/**
+      - packages/presentation/**
+      - decisions/**
+      - scripts/**
+  packages_composition:
+    path_globs:
+      - packages/composition/**
+    may_depend_on:
+      - packages/core/**
+      - contracts/**
+      - config/**
+    must_not_depend_on:
+      - apps/**
+      - packages/presentation/**
+      - decisions/**
+      - scripts/**
+  packages_presentation:
+    path_globs:
+      - packages/presentation/**
+    may_depend_on:
+      - config/**
+      - packages/presentation/foundation/**
+    must_not_depend_on:
+      - capabilities/**
+      - packages/core/runtime/**
+      - packages/core/capability-registry/**
+      - decisions/**
+      - scripts/**
+  packages_tooling:
+    path_globs:
+      - packages/tooling/**
+    may_depend_on:
+      - config/**
+      - packages/core/**
+      - packages/composition/**
+      - packages/presentation/**
+      - capabilities/**
+      - contracts/**
+    must_not_depend_on:
+      - apps/**
+  contracts:
+    path_globs:
+      - contracts/**
+    may_depend_on: []
+    must_not_depend_on:
+      - apps/**
+      - capabilities/**
+      - packages/**
+      - decisions/**
+      - scripts/**
+
+workspace_package_map:
+  "@repo/core-kernel":
+    zone: packages_core
+  "@repo/core-runtime":
+    zone: packages_core
+  "@repo/core-capability-registry":
+    zone: packages_core
+  "@repo/core-eir":
+    zone: packages_core
+  "@repo/core-predicate-registry":
+    zone: packages_core
+  "@repo/core-transformation-registry":
+    zone: packages_core
+  "@repo/core-proof-ledger":
+    zone: packages_core
+  "@repo/composition":
+    zone: packages_composition
+  "@repo/presentation-foundation":
+    zone: packages_presentation
+  "@repo/presentation-ui-system":
+    zone: packages_presentation
+  "@repo/presentation-types":
+    zone: packages_presentation
+  "@repo/tooling-arch-tests":
+    zone: packages_tooling
+  "@repo/tooling-eos-cli":
+    zone: packages_tooling
+  "@repo/config-eslint":
+    zone: packages_tooling
+  "@repo/config-tailwind":
+    zone: packages_tooling
+  "@repo/config-typescript":
+    zone: packages_tooling
+
+prohibited_structural_dependencies:
+  - from: packages/core/**
+    to: packages/engine/**
+    reason: Gate C not yet open.
+  - from: apps/lawyershub/**
+    to: products/**
+    reason: Product-to-experience migration deferred until Gate E.
+  - from: any
+    to: domain/**|application/**|infrastructure/**
+    reason: Structural evolution is frozen in Sprint 0.

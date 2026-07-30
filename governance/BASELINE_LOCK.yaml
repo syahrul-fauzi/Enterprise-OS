@@ -1,0 +1,279 @@
+baseline:
+  id: EOS-IMPLEMENTATION-BASELINE-V1
+  version: "1.0.0"
+  status: FROZEN
+  certificate_status: VERIFIED
+  state_type: MACHINE_READABLE_CONSTITUTION_STATE
+  readers:
+    - ACL
+    - CI
+    - compiler
+    - tooling
+    - eos_cli
+  repository_state: /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
+  architecture_freeze:
+    effective: true
+    frozen_at: SPRINT_0_START
+    thaw_criteria: T001_DETERMINISTIC_PASS_VIA_GOLDEN_REQ_0001_AND_TRANSFORMATION_PROOF_VERIFIED
+    thaw_requirement: IMPLEMENTATION_EVIDENCE_ONLY_NO_DESIGN_DISCUSSION
+
+ssot_stack:
+  version: "1.0"
+  lock_status: FROZEN
+  layers:
+    - layer: 1
+      name: constitution
+      kind: immutable_normative_foundation
+      mutability: amendment_only_via_constitution_amendment_plus_adr
+      runtime_read_by: ["auditors_humans_only_never_runtime"]
+      canonical_artifacts:
+        - /root/Enterprise OS/CONSTITUTION.md
+        - /root/Enterprise OS/enterprise/decisions/adr/
+      change_mechanism:
+        primary: CONSTITUTION_AMENDMENT
+        secondary: ADR_REQUIRED
+        fast_track: NONE_ALLOWED
+    - layer: 2
+      name: baseline_lock
+      kind: policy_declaration_NOT_current_state
+      mutability: evolves_only_when_baseline_evolves_never_per_build
+      canonical_artifact: /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+      runtime_read_by: ["ACL", "CI_preflight", "eos_cli_bootstrap"]
+      contents_policy:
+        - version_identity
+        - change_policy_matrix
+        - ssot_stack_pointer
+        - gate_definition_of_ready
+        - source_of_truth_register
+      explicitly_excluded:
+        - current_gate_status_computed
+        - per_build_measurements
+        - live_repository_compliance_numbers
+    - layer: 3
+      name: repository_state
+      kind: current_machine_readable_repository_condition
+      mutability: changes_each_commit_or_build_when_evidence_emitted
+      canonical_artifact: /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
+      canonical_root_key: repository_state
+      runtime_read_by: ["ACL", "eos_cli", "CI_pipeline", "dashboard", "ide_plugin"]
+      anti_patterns_enforced:
+        - NO_INDEPENDENT_STATUS_COMPUTATION_BY_CONSUMERS
+        - NO_SHADOW_STATE
+        - NO_LOWERCASE_STATUS_ALIASES
+        - NO_STATUS_VARIATIONS_OUTSIDE_DRAFT_REVIEWED_VERIFIED_FROZEN_DEPRECATED
+      explicitly_excluded:
+        - repository_proof_object_inline_because_proof_is_output_not_state
+    - layer: 4
+      name: canonical_foundation
+      kind: declarative_knowledge_only_no_execution_behavior
+      mutability: content_expansion_allowed_within_declarative_boundary_no_runtime_code
+      canonical_packages:
+        contracts:
+          path: /root/Enterprise OS/workspace/contracts
+          gate: B
+        eir:
+          path: /root/Enterprise OS/workspace/packages/core/eir
+          gate: B
+          package: "@repo/core-eir"
+        predicate_registry:
+          path: /root/Enterprise OS/workspace/packages/core/predicate-registry
+          gate: B
+          package: "@repo/core-predicate-registry"
+        transformation_registry:
+          path: /root/Enterprise OS/workspace/packages/core/transformation-registry
+          gate: B
+          package: "@repo/core-transformation-registry"
+        proof_ledger:
+          path: /root/Enterprise OS/workspace/packages/core/proof-ledger
+          gate: B
+          package: "@repo/core-proof-ledger"
+      package_structure_pattern_frozen:
+        - README.md
+        - SPECIFICATION.md
+        - package.json
+        - tsconfig.json
+        - eslint.config.mjs
+        - src/index.ts
+        - src/types.ts
+        - src/interfaces.ts
+        - src/schema.ts
+        - contracts/
+        - tests/
+      forbidden_content_classes:
+        - run
+        - execute
+        - compile
+        - runtime_execution_entrypoints
+        - product_ui_logic
+        - react_imports
+        - ui_framework_code
+    - layer: 5
+      name: execution_and_proof
+      kind: runtime_execution_built_on_registry_and_contracts_only
+      mutability: implementation_evolution_allowed_only_after_gate_c_opens
+      opens_at_gate: C
+      canonical_packages:
+        transformation_engine:
+          path: /root/Enterprise OS/workspace/packages/engine/transformation-engine
+          gate: D
+        emitters:
+          path: /root/Enterprise OS/workspace/packages/engine/emitters
+          gate: D
+        compiler_cli:
+          path: /root/Enterprise OS/workspace/packages/tooling/compiler-cli
+          gate: D
+      execution_pipeline_frozen_order:
+        - step: 1
+          action: load_repository_state
+          source: GOVERNANCE_STATE.yaml repository_state root key
+        - step: 2
+          action: load_transformation_registry
+          source: transformation-registry TransformationRegistryDocument
+        - step: 3
+          action: resolve_DAG
+          rule: generic_resolve_no_hardcoded_transformation_sequence
+        - step: 4
+          action: evaluate_predicates
+          source: predicate_registry + inputs_hash
+        - step: 5
+          action: execute_VERIFIED_transformations_only
+          rule: unverified_transformations_not_loaded_into_evaluator
+        - step: 6
+          action: generate_proof
+          output_kind: transformation_proof_entry
+        - step: 7
+          action: append_proof_ledger
+          rule: ledger_appends_only_no_mutation_past_entries
+      anti_patterns_enforced:
+        - NO_HARDCODED_TRANSFORMATION_ID_IN_RUNTIME_SOURCE
+        - NO_BUSINESS_KNOWLEDGE_IN_ENGINE
+        - NO_TRANSFORMATION_PIPELINE_HARDCODED_BY_STEP_NAME
+  resolution:
+    higher_layer_must_constrain_lower_layer_never_vice_versa
+    consumers_read_layer_3_only_for_current_status
+    consumers_read_layer_2_only_for_policy_and_change_matrix
+    consumers_must_not_merge_layer_2_and_layer_3_into_one_file
+    repository_proof_is_layer_5_output_stored_externally_never_inline_in_layer_3
+
+architecture:
+  constitution: locked
+  governance: active
+  execution_model: vtc
+  structural_evolution: adr_required
+
+gate:
+  current: A
+  status: VERIFIED
+  verified:
+    - A
+  next_gate: B
+  definition_of_ready_for_gate_b:
+    - gate_a_status_verified
+    - baseline_lock_active
+    - governance_parseable_by_tooling
+    - no_new_baseline_violations
+    - rule_of_five_preserved
+    - implementation_discipline_active
+
+gate_b_readiness:
+  gate_a_status_verified: true
+  baseline_lock_active: true
+  governance_parseable_by_tooling: true
+  no_new_baseline_violations: true
+  rule_of_five_preserved: true
+  implementation_discipline_active: true
+
+source_of_truth:
+  constitution:
+    - /root/Enterprise OS/CONSTITUTION.md
+    - /root/Enterprise OS/enterprise/specifications/architecture-baseline-v1.yaml
+  governance:
+    - /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+    - /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
+    - /root/Enterprise OS/governance/IMPLEMENTATION_BASELINE.md
+    - /root/Enterprise OS/governance/ARCHITECTURE_GOVERNANCE.md
+    - /root/Enterprise OS/governance/dependency-rules.yaml
+    - /root/Enterprise OS/governance/architecture-compliance.yaml
+    - /root/Enterprise OS/governance/package-authority.yaml
+    - /root/Enterprise OS/governance/artifact-lifecycle.yaml
+    - /root/Enterprise OS/governance/implementation-discipline.yaml
+    - /root/Enterprise OS/governance/sprint0-exit-predicates.yaml
+  roadmap:
+    - /root/Enterprise OS/enterprise/ROADMAP.md
+  workspace:
+    - /root/Enterprise OS/workspace/workspace.yaml
+    - /root/Enterprise OS/workspace/README.md
+
+change_policy:
+  constitution: ADR_REQUIRED
+  governance: GOVERNANCE_PR
+  implementation: STANDARD_PR
+
+machine_readable_state:
+  constitution_state: /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+  canonical_repository_state: /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
+  repository_proof_output_location: /root/Enterprise OS/build/evidence/repository-proof/
+  read_contract:
+    entrypoint: BASELINE_LOCK.yaml
+    repository_state_root_key: repository_state
+    repository_proof_is_output_only_at_build_evidence: true
+    repository_proof_must_not_be_inline_in_repository_state_file: true
+    resolution_rule: readers_must_resolve_repository_state_directly_from_repository_state_root_key_no_independent_computation_allowed_all_status_derived_from_that_object
+    output_read_rule: repository_proof_is_verification_output_auditors_and_dashboard_may_read_it_but_runtime_behavior_comes_from_state_not_from_proof
+
+gate_a_evidence:
+  governance_validation:
+    status: PASS
+    objective: seluruh YAML governance valid
+    evidence:
+      method: yaml_parse
+      artifacts:
+        - /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+        - /root/Enterprise OS/governance/dependency-rules.yaml
+        - /root/Enterprise OS/governance/architecture-compliance.yaml
+        - /root/Enterprise OS/governance/package-authority.yaml
+        - /root/Enterprise OS/governance/artifact-lifecycle.yaml
+        - /root/Enterprise OS/governance/implementation-discipline.yaml
+        - /root/Enterprise OS/governance/sprint0-exit-predicates.yaml
+        - /root/Enterprise OS/workspace/workspace.yaml
+  workspace_manifest_validation:
+    status: PASS
+    objective: workspace.yaml sesuai struktur frozen
+    evidence:
+      method: manifest_review
+      artifacts:
+        - /root/Enterprise OS/workspace/workspace.yaml
+        - /root/Enterprise OS/governance/IMPLEMENTATION_BASELINE.md
+  architecture_compliance:
+    status: PASS
+    objective: policy berhasil dimuat tooling
+    evidence:
+      method: policy_resolution
+      artifacts:
+        - /root/Enterprise OS/governance/architecture-compliance.yaml
+        - /root/Enterprise OS/governance/dependency-rules.yaml
+        - /root/Enterprise OS/governance/package-authority.yaml
+        - /root/Enterprise OS/governance/artifact-lifecycle.yaml
+        - /root/Enterprise OS/governance/implementation-discipline.yaml
+        - /root/Enterprise OS/governance/sprint0-exit-predicates.yaml
+  baseline_lock:
+    status: PASS
+    objective: seluruh dokumen menunjuk baseline yang sama
+    evidence:
+      method: cross_reference_review
+      artifacts:
+        - /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+        - /root/Enterprise OS/governance/IMPLEMENTATION_BASELINE.md
+        - /root/Enterprise OS/governance/ARCHITECTURE_GOVERNANCE.md
+        - /root/Enterprise OS/workspace/workspace.yaml
+
+architecture_gate_observation:
+  arch_check:
+    status: NON_BLOCKING_LEGACY_VIOLATIONS_PRESENT
+    command: pnpm arch-check
+    location: /root/Enterprise OS/workspace
+  violation_policy:
+    blocker_class: baseline_violations
+    non_blocker_class: legacy_violations
+    blocker_rule: gate_b_must_stop_on_new_baseline_violation
+    non_blocker_rule: legacy_violations_are_backlog_until_they_conflict_with_constitution_or_governance

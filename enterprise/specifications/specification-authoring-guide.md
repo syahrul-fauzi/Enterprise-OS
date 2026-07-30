@@ -1,6 +1,6 @@
 # Enterprise OS — Specification Authoring Guide
 ## Status
-✅ Frozen Baseline (SAG v1.0.0, minor revisions only)
+✅ Implementation Baseline v1.0 (Frozen)
 ## Purpose
 Define a uniform authoring discipline for EOS Language Specifications so every
 ELS concept is written with the same structure, vocabulary, and formal quality.
@@ -19,7 +19,7 @@ All ELS concept specifications, starting with `Requirement`, `Evidence`,
    vocabulary and relation grammar.
 5. A concept is not considered implemented until it satisfies the Definition of
    Done in this guide.
-6. Generator inputs MUST read canonical YAML or JSON, not free-form markdown.
+6. Compiler inputs MUST read canonical YAML or JSON, not free-form markdown.
 ## Grammar
 Markdown for human-readable specifications plus YAML or JSON for
 machine-readable representation.
@@ -27,14 +27,14 @@ machine-readable representation.
 - SAG standardizes authoring quality; it does not redefine Constitution, EMA,
   ERA, or ELS semantics.
 - SAG must reduce variation in style, identifier shape, and section ordering.
-- SAG must support deterministic generator input.
+- SAG must support deterministic compiler input.
 ## Validation Rules
 - Validate that all required sections exist in every ELS concept.
 - Validate that identifiers, lifecycle states, and relation names conform to
   approved grammars.
 - Validate that examples are explicitly marked non-authoritative.
 ## Projection Rules
-- SAG constrains ELS authoring templates, generator inputs, review checklists,
+- SAG constrains ELS authoring templates, compiler inputs, review checklists,
   and documentation linting.
 ## Out of Scope
 - Domain-specific semantics
@@ -42,7 +42,7 @@ machine-readable representation.
 - UI documentation style
 ## Future Evolution
 - Evolve only through governed evidence from actual specification authoring and
-  generator implementation outcomes.
+  compiler implementation outcomes.
 
 ---
 
@@ -59,7 +59,7 @@ ELS
         ↓
 EDM
         ↓
-Generator
+Compiler
         ↓
 Domain Packages
 ```
@@ -251,7 +251,7 @@ explicitly defined:
 
 If any semantic aspect is absent:
 - concept status remains `incomplete`
-- generator execution is blocked
+- compiler execution is blocked
 - implementation work is not allowed to start
 
 ---
@@ -283,7 +283,7 @@ Each ELS concept should be tracked with an explicit maturity level:
 | 0 | Draft | Concept exists but is not yet semantically stable |
 | 1 | Semantically Complete | DoSC is satisfied |
 | 2 | Machine Readable | Canonical YAML or JSON exists and validates |
-| 3 | Generated | Governed generator outputs are reproducible |
+| 3 | Generated | Governed compiler outputs are reproducible |
 | 4 | Implemented | Runtime-facing implementation exists over generated contracts |
 | 5 | Runtime Validated | Runtime behavior is verified against specification |
 | 6 | Production Proven | Production evidence confirms stable behavior |
@@ -312,14 +312,14 @@ acceptance, release, and execution artifacts.
 
 ---
 
-## 13. Generator Alignment
+## 13. Compiler Alignment
 
-Generator work must not start as ad hoc scripts.
+Compiler work must not start as ad hoc scripts.
 
 Target packaging direction:
 
 ```text
-workspace/packages/tooling/specification-generator/
+workspace/packages/tooling/specification-compiler/
 ```
 
 Minimum expected outputs:
@@ -331,18 +331,18 @@ Minimum expected outputs:
 - Graph metadata
 - Documentation stubs
 
-The generator is a first-class implementation artifact because it is the bridge
+The compiler is a first-class implementation artifact because it is the bridge
 between language and runtime realization.
 
-Recommended generator stages:
+Recommended compiler stages:
 - parser
 - validator
 - semantic checker
-- contract generator
-- schema generator
-- documentation generator
-- graph generator
-- code generator
+- contract emitter
+- schema emitter
+- documentation emitter
+- graph emitter
+- code emitter
 
 This staged design allows independent verification at each transformation step.
 

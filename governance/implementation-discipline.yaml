@@ -1,0 +1,75 @@
+version: "1.0.0"
+status: active
+scope: sprint0
+
+principles:
+  - id: ID-000
+    name: baseline_lock_first
+    rule: Gate B may start only after the baseline lock certificate marks Gate A as VERIFIED.
+  - id: ID-001
+    name: foundation_first
+    rule: Repository changes must strengthen governance, contracts, or canonical foundation before execution expansion.
+  - id: ID-001B
+    name: declarative_foundation_only
+    rule: Gate B artifacts may declare canonical knowledge, but may not introduce runtime execution behavior.
+  - id: ID-002
+    name: registry_driven_only
+    rule: Transformations may not be hardcoded into source-specific conditional branches.
+  - id: ID-003
+    name: no_structural_evolution
+    rule: No new root directory, package family, or architecture layer without ADR.
+  - id: ID-004
+    name: deterministic_outputs
+    rule: Specs, contracts, and proof artifacts must be reproducible from the same inputs.
+  - id: ID-005
+    name: evidence_before_claim
+    rule: Implementation completion claims must cite build, test, or proof evidence.
+
+frozen_actions:
+  - move_apps_lawyershub_out_of_apps
+  - create_products_root
+  - introduce_domain_application_infrastructure_package_families
+  - design_experience_surface_beyond_current_apps
+  - add_new_ontology_family
+  - add_advanced_ai_agent_architecture
+  - build_ui_unrelated_to_req_0001_path
+
+required_for_foundation_packages:
+  files:
+    - README.md
+    - SPECIFICATION.md
+    - schema.ts
+    - types.ts
+    - interfaces.ts
+    - contracts/
+    - tests/
+    - package.json
+  allowed_content:
+    - specification
+    - schema
+    - interfaces
+    - registry_metadata
+    - proof_metadata
+    - validation
+    - conformance_tests
+  forbidden_content:
+    - feature_specific_runtime_branching
+    - hardcoded_transformation_pipeline
+    - runtime_entrypoint_run
+    - runtime_entrypoint_execute
+    - runtime_entrypoint_compile
+    - product_ui_logic
+
+verification_minimum:
+  - arch-check
+  - lint
+  - check-types
+  - build
+
+arch_check_policy:
+  baseline_violations:
+    definition: new violations introduced after baseline lock activation.
+    effect: block_progression_to_gate_b
+  legacy_violations:
+    definition: pre-existing violations observed after baseline lock activation that do not conflict with the frozen governance set.
+    effect: record_as_backlog_do_not_block_gate_b

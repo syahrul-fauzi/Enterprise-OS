@@ -44,3 +44,12 @@ See below
 | Canonical Object Graph (COG) | Canonical graph of enterprise objects |
 | Enterprise Contract | Grammar and boundaries for enterprise component interactions |
 | Repository Projection | Method for projecting Enterprise Models to repo structure |
+| Canonical Semantic Boundary | The frozen meaning boundary of governed concepts, expressed through governed specifications, canonical machine-readable forms, and semantic graph projections. |
+| Canonical Implementation Boundary | The derived implementation contract boundary generated from the canonical semantic boundary, including EDM artifacts, generated contracts, validators, and governed implementation surfaces. |
+| Enterprise Intermediate Representation (EIR) | Deterministic intermediate representation produced from governed language artifacts before downstream implementation projections are emitted. |
+| Canonical Acceptance Graph (CAG) | Canonical graph form used to express governed acceptance and proof relationships between transformations, predicates, artifacts, and outcomes. |
+| Transformation Registry | Governed registry that defines which transformations exist, their metadata, dependencies, compatibility, and whether they are executable. |
+| Predicate Registry | Governed registry that defines how transformation correctness is evaluated through named predicates and their contracts. |
+| Proof Runner | Execution artifact that loads canonical input and verified transformations, evaluates predicates, compares governed references, emits proof objects, and appends the proof ledger. |
+| Proof Ledger | Append-only governed record of proof objects and proof-run lineage for validated transformations and vertical slices. |
+| Registry-Driven Orchestration | Execution discipline in which orchestration behavior is derived from governed registry metadata rather than hardcoded transformation logic. |

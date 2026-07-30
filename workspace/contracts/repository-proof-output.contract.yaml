@@ -1,0 +1,40 @@
+contract:
+  id: REPOSITORY-PROOF-OUTPUT-V1
+  name: repository_proof_is_output_not_state
+  status: VERIFIED
+  purpose: Ontological contract that Repository Proof is a VERIFICATION OUTPUT produced by ACL pipeline. It MUST NOT be embedded inline inside GOVERNANCE_STATE (which is Layer 3 current state). Proof is stored externally under build/evidence/repository-proof/.
+  producer:
+    name: Architecture Compliance Layer (ACL)
+    input:
+      - BASELINE_LOCK.yaml (Layer 2 Policy)
+      - GOVERNANCE_STATE.yaml (Layer 3 State)
+      - dependency manifest (pnpm-lock.yaml)
+      - foundation package registry manifests (4 Gate B packages)
+    output_format: JSON
+    output_pattern:
+      id: REP-PROOF-<seq>
+      baseline_hash: sha256
+      governance_hash: sha256
+      dependency_hash: sha256
+      registry_hash: sha256
+      timestamp: ISO_8601_UTC
+      signature: UNSIGNED | <verifying_authority_sig>
+      verdict: PASS | FAIL | INCONCLUSIVE
+  output_location: /root/Enterprise OS/build/evidence/repository-proof/
+  storage_rule:
+    append_only: true
+    never_mutate_existing: true
+    never_load_back_into_repository_state: true
+  consumers:
+    - auditors
+    - dashboard
+    - release_gate
+  anti_patterns:
+    - copy_repository_proof_content_back_into_governance_state_file
+    - consumers_read_proof_and_then_change_their_behavior (behavior MUST come from repository_state only)
+    - proof_used_as_branch_decision_input
+  ordering_guarantee:
+    baseine_lock_first: true
+    governance_state_second: true
+    acl_validation_third: true
+    repository_proof_emitted_fourth: true

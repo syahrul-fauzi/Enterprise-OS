@@ -1,0 +1,191 @@
+version: "1.0.0"
+status: FROZEN
+kind: CONTRACT
+contract_kind: EXECUTION_REPRODUCIBILITY_CONTRACT
+ssot_note: KNOWLEDGE_SNAPSHOT_IS_SINGLE_SOURCE_OF_TRUTH_FOR_REPRODUCIBILITY._NO_VERSION_PER_ARTIFACT_RECORDED_IN_EXECUTION_CONTEXT._ONLY_SNAPSHOT_ID_RECORDED._ALL_8_DIGESTS_ARE_IMMUTABLE_AFTER_PLAN_BEGINS.
+governance_ref:
+  invariant_architecture_ia10: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_10_immutable_knowledge_snapshot
+  semantic_kernel_planning_semantics: /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#planning_semantics
+derived_from:
+  - Knowledge_Snapshot_Is_More_Fundamental_Than_Registry_Version_Paradigm_User_20260730
+  - IA-10_Immutable_Knowledge_Snapshot_formal_statement
+
+paradigm_statement:
+  registry_version_is_not_enough: >
+    Yang direproduksi bukan hanya registry. Yang direproduksi adalah SELURUH KEADAAN PENGETAHUAN.
+    1 execution = 1 snapshot = 8 tuple digests = 1 immutable identifier (KS-YYYY.MM.DD.NNN)
+  only_snapshot_id_recorded_in_execution: >
+    Execution plan, runtime, validator, dan evidence HANYA mencatat:
+    knowledge_snapshot, execution_plan, runtime_version.
+    Tidak ada versi per-artifact yang dicatat secara terpisah di runtime.
+
+identifier_specification:
+  pattern: KS-\d{4}\.\d{2}\.\d{2}\.\d{3}
+  example: KS-2026.07.30.001
+  components:
+    - KS: literal prefix
+    - YYYY: 4-digit year (UTC creation date)
+    - MM: 2-digit month (01-12)
+    - DD: 2-digit day (01-31)
+    - NNN: 3-digit monotonically-increasing sequence per calendar day (001-999)
+  id_assignment_rule: >
+    Sequence counter increments 001 → 002 → … every time a NEW snapshot is created
+    (even if contents are byte-identical: same content on same day with different creation = different NNN).
+    Content hash MAY match; ID MUST be unique per creation event.
+
+content_tuple_8_digests:
+  digest_algorithm: SHA-256
+  digest_format: hex-encoded lowercase, 64 characters, prefixed with "sha256:"
+  tuple:
+    - field: constitution_digest
+      sources:
+        - /root/Enterprise OS/enterprise/constitution/**
+        - /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+        - /root/Enterprise OS/governance/AXIOMS.md
+      digest_method:
+        - Recursive file walk, lex-ordered by absolute path
+        - For each file: canonical content read (no attribute mutation)
+        - Concatenate all bytes in lex-order
+        - SHA-256 of concatenation = constitution_digest
+      ia_10_scope: Immutable post-planning
+    - field: contract_digest
+      sources:
+        - /root/Enterprise OS/workspace/contracts/**
+      digest_method:
+        - Recursive file walk, lex-ordered
+        - All .contract.yaml + .contract.md + .yaml contracts
+        - SHA-256 of concatenated bytes
+      ia_10_scope: Immutable post-planning
+    - field: ontology_digest
+      sources:
+        - /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#relationship_definitions
+        - /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#ontology_node_kinds
+        - /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#declared_vs_inferred
+        - /root/Enterprise OS/enterprise/constitution/ontology.md
+        - /root/Enterprise OS/enterprise/constitution/vocabulary.md
+      digest_method:
+        - Files sorted by path. Content concat. SHA-256.
+      ia_10_scope: Immutable post-planning
+    - field: registry_digest
+      sources:
+        - /root/Enterprise OS/workspace/packages/core/transformation-registry/src/registry/**/manifest.yaml
+        - /root/Enterprise OS/workspace/packages/core/predicate-registry/src/registry/**/manifest.yaml
+        - /root/Enterprise OS/workspace/packages/core/transformation-registry/src/registry/registry-manifest.yaml
+      digest_method:
+        - ALL manifest.yaml files loaded
+        - Lex-sorted by absolute path
+        - Content concatenation; SHA-256 of total
+      ia_10_scope: Immutable post-planning
+    - field: graph_digest
+      sources:
+        - /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml#graph
+      digest_method:
+        - Serialize graph section to canonical JSON (sorted keys, no comments)
+        - SHA-256 of serialized bytes
+      ia_10_scope: Immutable post-planning
+    - field: policy_digest
+      sources:
+        - /root/Enterprise OS/governance/** (all yaml files)
+        - /root/Enterprise OS/governance/** (all md files that are policies)
+      digest_method:
+        - Recursive walk, all regular files, lex-sorted by path
+        - Content concat, SHA-256
+      ia_10_scope: Immutable post-planning
+    - field: schema_digest
+      sources:
+        - /root/Enterprise OS/enterprise/schema/**
+        - /root/Enterprise OS/workspace/contracts/**/*.schema.yaml
+      digest_method:
+        - Files sorted. Content concat. SHA-256.
+      ia_10_scope: Immutable post-planning
+    - field: compatibility_digest
+      sources:
+        - /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#compatibility_semantics
+        - /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#relationship_definitions.since_until
+      digest_method:
+        - Canonical YAML → JSON of those 2 sections. Sorted keys. SHA-256 bytes.
+      ia_10_scope: Immutable post-planning
+
+overall_snapshot_identity:
+  root_hash:
+    algorithm: SHA-256
+    input_construction: >
+      sorted_keys_json_serialize({
+        constitution_digest, contract_digest, ontology_digest, registry_digest,
+        graph_digest, policy_digest, schema_digest, compatibility_digest
+      })
+    purpose: Quick equality check. Two snapshot IDs with same root_hash can be safely treated as semantically identical for reproducibility.
+  id_vs_root_hash_disclaimer: >
+    snapshot.id = creation-event unique (monotonic counter). snapshot.root_hash = content-unique.
+    Two snapshots with different IDs but identical root_hash = created via 2 different creation events
+    on same or different day, but content is byte-identical. Auditors MAY treat them as equivalent
+    for verification purposes, but MUST archive both separately per append-only provenance rules.
+
+post_planning_immutability_guarantee:
+  affected_layers_scoped_by_ia10:
+    - name: Planner
+      actions: AFTER plan finalized (ExecutionPlan written to memory or disk) → NO live reads of any of 8 digest sources
+    - name: Runtime
+      actions: Runtime read ONLY ExecutionPlan object. Direct registry/constitution/contract/schema reads are FORBIDDEN (already enforced via ARCH-18 + ARCH-19).
+    - name: Validator
+      actions: Validator re-executes deterministically against snapshot ONLY; validator loads snapshot contents VIA snapshot archive extraction, not live filesystem paths.
+    - name: Evidence
+      actions: Proof objects carry snapshot.id (not content digests individually). Proof hash incorporates snapshot.id + 8-digests tuple hash chain for audit trail.
+  prohibited_patterns:
+    - Planning function reads governance YAML via fs.readFileSync from project-root directly AFTER snapshot has been created → violation.
+    - Runtime falls back to fs import of contracts instead of using plan-embedded contract snapshot copy → violation.
+    - Evidence generation takes live env vars (CI=true or not) into proof hash that is not part of snapshot tuple → violation.
+
+execution_context_minimal_record:
+  execution_record_contains:
+    - knowledge_snapshot: KS-YYYY.MM.DD.NNN (string)
+    - execution_plan: PLAN-NNN identifier or hash
+    - runtime_version: semver string, packages/core/runtime/package.json version
+    - input_parameters_hash: SHA-256 of user-provided params (target artifact, desired capability, etc.) — not part of snapshot
+  execution_record_DOES_NOT_contain:
+    - Per-artifact versions (like "contracts-v1.2" or "predicate-registry-v2")
+    - Individual file paths of knowledge sources (those derived from snapshot unpack)
+    - Build-time variables not in snapshot tuple
+
+snapshot_archive:
+  storage_location_prefix: /root/Enterprise OS/build/knowledge-snapshots/
+  archive_format:
+    path_template: build/knowledge-snapshots/KS-YYYY.MM.DD.NNN/
+    contents:
+      - manifest.yaml: 8 digests, root_hash, creation metadata (creation_timestamp_utc, creator)
+      - snapshot.tar.zst: compressed archive of all 8 source trees, preserving relative paths from project root
+      - verification-report.yaml: creation-time self-check output of 8 digests recalculated = matches manifest values
+  immutability: >
+    Archive directories are APPEND-ONLY. NEVER in-place mutation of manifest.yaml or tar.zst contents.
+    If snapshot recreation needed: new NNN = new snapshot. Old preserved for audit.
+
+evolution_policy:
+  change_allowed_in:
+    - New digest fields MAY be added in future (major version bump of this contract v1 → v2)
+    - 8 existing digest fields MUST remain in v2 contract for backward compatibility
+  direct_edit_prohibited:
+    - snapshot identifier pattern
+    - digest_algorithm (SHA-256) — switching algorithm = MAJOR version + ADR required
+    - field count < 8 = breaking = MAJOR version
+  compatibility:
+    - Verifier MUST recognize both v1 (8 digests) and v2 (≥8)
+    - Proofs emitted under KS-... with 8-digest contract MAY be verified against v1 contract ONLY.
+    - Cross-contract-version verification MUST return INCONCLUSIVE, not PASS/FAIL.
+
+verification_method:
+  step_1_extract_archive: >
+    Extract snapshot.tar.zst to temporary build directory (clean room, no access to live project paths).
+  step_2_recompute_8_digests: >
+    From extracted content, recompute all 8 digests using identical canonical method described in
+    content_tuple_8_digests section above.
+  step_3_compare: >
+    Compare 8 recomputed digests to manifest.yaml values.
+    ALL 8 equal = snapshot_integrity = PASS
+    Any 1 mismatch = snapshot_integrity = FAIL
+    Missing any 1 digest = snapshot_integrity = INCONCLUSIVE
+  step_4_proof_verification: >
+    With snapshot integrity PASS, proceed to:
+    - Run Planner against extracted snapshot content → produce plan
+    - Run Runtime/Executor on that plan → produce transformation outputs + proofs
+    - Compare output hashes to hashes stored in Provenance Layer
+    - Equal = Execution Verified PASS

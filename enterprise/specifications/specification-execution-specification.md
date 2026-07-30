@@ -1,6 +1,6 @@
 # Enterprise OS — Specification Execution Specification
 ## Status
-✅ Frozen Baseline (SES v1.0.0, minor revisions only)
+✅ Implementation Baseline v1.0 (Frozen)
 ## Purpose
 Define how a validated specification is compiled into deterministic downstream
 artifacts, implementations, and evidence.
@@ -138,6 +138,13 @@ The contract format may evolve, but these semantic sections are mandatory.
 The next execution milestone is `EOS Vertical Slice v1`, implemented as
 `EOS Proof of Execution v1` (`PoE v1`).
 
+Implementation note:
+- `Sprint 0.0` is not a new architecture phase.
+- it is the first implementation stage of the frozen baseline.
+- its initial focus is `Gate C` transformation proof before orchestration.
+- orchestration is introduced only after independent proof exists.
+- these execution gates do not replace root constitutional certification gates.
+
 Scope:
 - one concept only: `Requirement`
 - full end-to-end traversal of the specification execution pipeline
@@ -254,7 +261,7 @@ Examples:
 Used to prove that execution artifacts conform to the validated specification.
 
 Examples:
-- generator checksum
+- compiler checksum
 - schema hash
 - code generation log
 - runtime validation result
@@ -294,7 +301,8 @@ A concept is `proven` only when all of the following are true:
 - `semantic_id` is stable;
 - lineage is complete;
 - evidence is complete;
-- PAC passes;
+- PAC governance contract passes;
+- Proof Runner execution passes;
 - graph validation passes;
 - acceptance verification passes.
 
@@ -325,10 +333,60 @@ Minimum PAC dimensions for `Requirement` vertical slice:
 | Evidence | Lineage complete |
 
 PAC validates not only artifacts, but also the transformations between them.
-PAC should exist in three executable surfaces:
+PAC should exist in three coordinated surfaces:
 - `PAC.md`
 - `PAC.yaml`
-- `PAC.test.ts`
+- `PAC.test.ts` as the current executable Proof Runner surface
+
+PAC is the governed contract.
+
+`Proof Runner` is the executable layer that:
+- loads canonical input;
+- loads only `VERIFIED` transformations;
+- executes the governed chain;
+- evaluates predicates;
+- compares against the golden reference where applicable;
+- emits proof objects;
+- appends the proof ledger;
+- returns pass or fail.
+
+This distinction keeps contract definition separate from proof execution.
+
+### 10.1 Transformation Registration Status
+
+Transformation registries MUST expose at least two statuses:
+
+- `DRAFT`
+  - specification exists
+  - contract exists
+  - predicates exist
+  - implementation may be absent
+  - transformation is not executable
+- `VERIFIED`
+  - implementation exists
+  - conformance tests passed
+  - reference tests passed
+  - proof objects recorded
+  - transformation is executable
+
+No orchestration may execute a `DRAFT` transformation.
+
+### 10.2 Registry Separation of Responsibility
+
+- `Transformation Registry` defines what may be executed.
+- `Predicate Registry` defines how correctness is evaluated.
+
+The execution engine MUST remain domain-agnostic and operate only on governed
+registry metadata, DAG resolution, transformation execution, predicate
+evaluation, and proof emission.
+
+### 10.3 Canonical Conformance Asset
+
+`REQ-0001` is the canonical conformance asset for `PoE v1`.
+
+It is treated as the golden reference corpus for parser, EIR, CAG, emitter,
+and engine evolution. Any governed change must preserve identical outputs for
+this asset unless the baseline itself changes through governance.
 
 ---
 
@@ -343,7 +401,10 @@ An execution run is acceptable only when:
 6. a stable `lineage_id` is attached to all derived artifacts for that run;
 7. evidence is attached to the originating specification lineage;
 8. PAC is satisfied for the execution run;
-9. DoP is achieved for the governed proof gate.
+9. the Proof Runner records proof objects and proof-ledger append evidence;
+10. only `VERIFIED` transformations participated in execution;
+11. the canonical conformance asset remains within governed SDR bounds;
+12. DoP is achieved for the governed proof gate.
 
 All execution outputs must remain traceable back to:
 - the originating ELS concept
@@ -381,7 +442,9 @@ following are satisfied:
 4. `semantic_id` and `lineage_id` remain distinguishable and intact;
 5. EKG relations remain consistent with ELS and EDM semantics;
 6. evidence proves each transformation without manual intervention;
-7. DoP is achieved.
+7. all orchestrated transformations are `VERIFIED`;
+8. proof objects and proof-ledger entries are recorded;
+9. DoP is achieved.
 
 At that point EOS moves from architectural hypothesis to execution evidence.
 

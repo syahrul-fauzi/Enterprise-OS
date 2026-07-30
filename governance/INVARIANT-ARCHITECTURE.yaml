@@ -1,0 +1,673 @@
+version: "1.0.0"
+status: FROZEN
+kind: CONSTITUTIONAL_CONTRACT
+ssot_note: THIS_YAML_IS_SINGLE_SOURCE_OF_TRUTH_FOR_ARCHITECTURE_INVARIANTS_ACL_MUST_ENFORCE
+governance_ref:
+  constitution_lock: /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+  axioms: /root/Enterprise OS/governance/AXIOMS.md
+  arch_compliance: /root/Enterprise OS/governance/architecture-compliance.yaml
+  dependency_rules: /root/Enterprise OS/governance/dependency-rules.yaml
+derived_from:
+  - EOS_Hierarchy_of_Truth_via_transformation_catalog
+  - ADR-000_Sprint0_Architecture_Freeze
+  - ADR-001_Knowledge_Before_Execution_KBE
+  - ADR-002_Layered_Architecture_Invariants_Risk_Mitigation
+  - Knowledge_Centric_Execution_Platform_Emergent_Model_20260730
+
+invariant_design_principle:
+  permanent_statement: >
+    Runtime executes what the Knowledge Layer defines;
+    it never defines knowledge itself.
+  epistemological_status: CONSTITUTIONAL_META_PRINCIPLE
+  enforcement_scope: ALL_PACKAGES_ALL_GATES_ALL_SPRINTS
+
+principle_01_ontological_triad:
+  id: IA-01
+  name: Knowledge × Registry × Runtime — Clean Ontological Separation
+  rationale: >
+    Ketiga lapisan ini menjawab pertanyaan ontologis yang berbeda.
+    Mencampurnya menciptakan epistemological drift di mana pengetahuan
+    "ditemukan" di runtime bukannya didefinisikan di Knowledge Layer.
+  layers:
+    KNOWLEDGE:
+      answers: Apa yang benar? (What is true?)
+      scope:
+        - Constitution
+        - Ontology
+        - Vocabulary
+        - Contracts
+        - Schemas
+        - Business Knowledge (Capability, Actor, Policy, Service, Evidence)
+        - Specifications
+      allowed_artifact_formats:
+        - .yaml (canonical declaration — SSOT)
+        - .md (documentation — derived view only)
+        - .schema.yaml (JSON/YAML Schema)
+      forbidden_dependencies:
+        - registry source code (.ts)
+        - runtime source code (.ts)
+        - engine implementations
+        - scheduler logic
+      storage_locations:
+        - /root/Enterprise OS/enterprise/constitution/
+        - /root/Enterprise OS/enterprise/knowledge/
+        - /root/Enterprise OS/enterprise/schema/
+        - /root/Enterprise OS/enterprise/library/
+        - /root/Enterprise OS/workspace/contracts/
+      ownership: Enterprise Architect + Domain Steward (human review required for changes)
+      acl_check_required: true
+    REGISTRY:
+      answers: Apa yang tersedia? (What is available?)
+      scope:
+        - Transformation Registry
+        - Predicate Registry
+        - Capability Registry
+        - Proof Registry (future)
+      ontology_rule: Registry TIDAK menciptakan knowledge. Registry HANYA mengindeks knowledge.
+      declaration_pattern:
+        - manifest.yaml per entry (NOT .ts declarations)
+        - root index.yaml = composition only (≤100 LOC logic)
+      allowed_operations:
+        - semantic indexing (consumes / produces / predicates / successors)
+        - lifecycle tracking (DRAFT → VERIFIED → FROZEN)
+        - dependency graph edges (predecessor / successor / compatibility)
+      forbidden_operations:
+        - business logic execution
+        - transformation implementation
+        - predicate evaluation logic
+      storage_locations:
+        - /root/Enterprise OS/workspace/packages/core/transformation-registry/src/registry/
+        - /root/Enterprise OS/workspace/packages/core/predicate-registry/src/registry/
+      ownership: Platform Engineer (YAML manifests) + automated validation (ACL)
+      acl_check_required: true
+    RUNTIME:
+      answers: Apa yang sedang dieksekusi? (What is being executed?)
+      scope:
+        - Engine
+        - Resolver
+        - Executor (future explicit package)
+        - Orchestrator
+        - CLI
+        - Scheduler (future)
+      ontology_rule: Runtime TIDAK BOLEH mengandung knowledge.
+      knowledge_access_rule: >
+        Runtime ONLY accesses knowledge via:
+        1. Registry lookup → contract_ref path string
+        2. Filesystem read of canonical YAML at that path
+        3. Schema validation against that YAML
+        Runtime MUST NOT import, embed, or hardcode contract/schema values.
+      allowed_operations:
+        - load registry entries
+        - resolve execution plan via Resolver
+        - execute plan via Executor
+        - collect results
+        - emit proof
+        - append to ledger
+      forbidden_operations:
+        - define new transformation contracts inline
+        - hardcode predicate rules as switch/case
+        - store compatibility matrix as TypeScript object literal
+      storage_locations:
+        - /root/Enterprise OS/workspace/packages/core/runtime/
+        - /root/Enterprise OS/workspace/packages/tooling/eos-cli/
+      ownership: Platform Engineer — subject to ARCH-18 invariant checks
+      acl_check_required: true
+  data_flow_unidirectional:
+    order: [KNOWLEDGE, REGISTRY, RUNTIME, EVIDENCE]
+    reverse_flow_allowed: false
+    reverse_flow_exception:
+      - proof_ledger_append (Evidence writes back to append-only store, NOT to Knowledge)
+      - repository_proof_output (Evidence output, never consumed as input state)
+    acl_enforcement_id: ARCH-18-ONT-TRIAD
+
+principle_02_semantic_registry_graph:
+  id: IA-02
+  name: Registry = Semantic Graph Index, Bukan Flat Dictionary
+  rationale: >
+    Saat registry skala ke 50+ transformasi, linear list dengan predecessor/successor
+    tidak cukup. Perlu semantic edges untuk dependency resolution, compatibility
+    checking, dan DAG planning yang tidak memerlukan inference di resolver.
+  semantic_fields_required_per_entry:
+    - id
+    - semantic.consumes[] (input artifact kinds)
+    - semantic.produces[] (output artifact kinds)
+    - semantic.predicates[] (ordered predicate IDs)
+    - semantic.successors[] (directed edge to downstream transformations)
+    - semantic.predecessors[] (directed edge to upstream transformations)
+    - semantic.compatibility: { since, until }
+    - semantic.maturity (DRAFT / VERIFIED / FROZEN / DEPRECATED)
+  graph_model:
+    node_kind: TRANSFORMATION
+    edge_kinds:
+      - PREDECESSOR (must PASS before this may run)
+      - SUCCESSOR (this may trigger after PASS)
+      - CONSUMES (input artifact)
+      - PRODUCES (output artifact)
+      - REQUIRES_PREDICATE (verification step)
+      - COMPATIBLE_WITH (version range)
+  resolver_rule: Resolver MEMBACA graph edges. Resolver TIDAK menghitung edges dari heuristik.
+  storage_location: /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml#graph
+  acl_check_required: true
+
+principle_03_resolver_executor_split:
+  id: IA-03
+  name: Registry Resolver = Layer Tersendiri dari Executor
+  rationale: >
+    DAG construction adalah pure function dari registry state + catalog graph.
+    Execution adalah side-effectful step (IO, hashing, proof emission).
+    Memisahkan keduanya memastikan:
+    - Resolver testable tanpa filesystem write
+    - Executor testable dengan fixture plan
+    - Resolver logic reusable di CLI, Web, CI
+  layer_contract:
+    RESOLVER:
+      responsibilities:
+        - load registry metadata (catalog + .manifest.yaml)
+        - resolve inter-transformation dependencies
+        - verify prerequisite predicates presence
+        - verify predecessor lifecycle ≥ VERIFIED if blocked_until_predecessor_verified
+        - produce deterministic ExecutionPlan object
+      output: ResolverResolutionBundle[] (existing) → ExecutionPlan (future)
+      purity: PURE_FUNCTION — no writes, no network, no non-determinism
+      implementation: /root/Enterprise OS/workspace/packages/core/registry-resolver/
+      forbidden_concerns:
+        - calling transformation implementation functions
+        - writing evidence files
+        - appending to ledger
+        - retry loop control flow
+    EXECUTOR:
+      responsibilities:
+        - menerima ExecutionPlan sebagai input TUNGGAL
+        - menjalankan step sesuai plan
+        - mengumpulkan output hash + predicate results
+        - menghasilkan proof object
+        - append proof ke ledger via proof-ledger package
+      input_contract: ExecutionPlan (resolver output = executor input — no direct catalog read)
+      purity: EFFECTFUL (IO writes allowed), but DETERMINISTIC for identical plan + identical inputs
+      implementation: TBD_Gate_D_Bootstrap — NOT YET a separate package
+      forbidden_concerns:
+        - computing DAG edges
+        - deciding which transformations are blocked
+        - inferring compatibility matrix
+  acl_check_required: true
+
+principle_04_canonical_graph_catalog:
+  id: IA-04
+  name: Transformation Catalog = Canonical Graph, Bukan Daftar Linear
+  rationale: >
+    Linear predecessor_id / successor_id cukup untuk T001–T005 linear chain.
+    Tapi tidak scalable ke fan-in (T006 butuh T002 + T004) atau fan-out
+    (T002 feeds T003 + T007). Canonical Graph explicit di catalog = single read model
+    untuk resolver, tidak ada inference logic.
+  explicit_graph_section_required:
+    path: transformation-catalog.yaml → graph:
+    structure:
+      transformations:
+        <T_ID>:
+          outputs: [EIR, CAG, ...]
+          successors: [T_ID...]
+          predecessors: [T_ID...]
+      artifact_kinds:
+        <KIND_ID>:
+          produced_by: [T_ID...]
+          consumed_by: [T_ID...]
+  resolver_obligation: >
+    Resolver MUST read graph.transformations.<id> for edges.
+    Fallback to legacy predecessor_id/successor_id ONLY during migration window.
+    After Gate D unlocks: legacy fields are DEPRECATED, graph: section = SSOT.
+  acl_check_required: true
+
+principle_05_proof_class_split:
+  id: IA-05
+  name: Bukti Terbagi Dua Kelas: Execution Proof × Validation Proof
+  rationale: >
+    Saat Gate D berjalan, akan ada kebingungan antara "transformasi berhasil dijalankan"
+    vs "repository / registry memenuhi governance". Keduanya punya lifecycle,
+    storage location, dan verification strategy yang berbeda.
+  proof_classes:
+    EXECUTION_PROOF:
+      semantic: Membuktikan bahwa suatu Transformation (atau pipeline) BERHASIL dijalankan.
+      birth_moment: Setelah runtime / executor selesai jalan.
+      id_patterns:
+        - TRF-PROOF-T<NNN> (single transformation, level 1)
+        - EXEC-PROOF-REQ<NNNN> (full pipeline, level 2)
+      storage_location_prefix: /root/Enterprise OS/build/evidence/transformation-proofs/
+      schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts#TransformationProofEntrySchema
+      verification: Re-run deterministik + hash equality.
+      lifetime: Append-only ke ledger. NEVER mutate old proofs.
+    VALIDATION_PROOF:
+      semantic: Membuktikan bahwa suatu artefak (atau sekumpulan artefak) MEMENUHI governance.
+      birth_moment: Setelah validation pass — TANPA memerlukan runtime execution.
+      id_patterns:
+        - REPO-PROOF-<seq> (repository-level validation, level 3)
+        - REGISTRY-PROOF (registry semantic consistency + lifecycle rules)
+        - CATALOG-PROOF (catalog completeness per KBE 5-artifact rule)
+        - CONTRACT-PROOF (contract schema conformance + backward compatibility)
+      storage_location_prefix: /root/Enterprise OS/build/evidence/validation-proofs/
+      schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts#RepositoryProofEntrySchema (extend for REGISTRY/CATALOG/CONTRACT kinds)
+      verification: ACL validation run + schema validation.
+      lifetime: May be regenerated when governance changes. Previous version preserved for audit.
+  prohibition: EXECUTION_PROOF TIDAK BOLEH digunakan sebagai validation substitute. VALIDATION_PROOF TIDAK BOLEH mengklaim execution occurred.
+  acl_check_required: true
+
+principle_06_machine_enforced_invariant_table:
+  id: IA-06
+  name: Invariant Dependency Table — Machine-Enforced oleh ACL
+  rationale: >
+    Aturan dependency level "Constitution tidak boleh depend ke Runtime"
+    adalah aturan epistemologis setara hukum fisika. Tidak boleh ada interpretasi.
+    ACL HARUS gagal immediate jika ada PR yang melanggar tabel ini.
+  enforcement_acl_rule_id: ARCH-18-INV-TABLE
+  forbidden_dependency_table:
+    - artifact: Constitution
+      artifact_path_globs:
+        - enterprise/constitution/**
+      forbidden_dependency_kinds:
+        - Runtime source imports
+        - Engine source imports
+        - CLI implementation code
+        - Scheduler logic
+      reason: Constitution = axiomatic layer. MUST be runtime-agnostic.
+    - artifact: Schema
+      artifact_path_globs:
+        - enterprise/schema/**
+        - workspace/contracts/**
+      forbidden_dependency_kinds:
+        - Engine source
+        - Executor implementation
+        - Runtime IO code
+      reason: Schema = structural contract. MUST not know about execution strategy.
+    - artifact: Contract
+      artifact_path_globs:
+        - workspace/contracts/**
+      forbidden_dependency_kinds:
+        - Executor functions
+        - Orchestrator control flow utilities
+        - CLI state management
+      reason: Contract = input/output promise. Execution details = Runtime concern.
+    - artifact: Registry
+      artifact_path_globs:
+        - workspace/packages/core/*-registry/src/registry/**
+      forbidden_dependency_kinds:
+        - Scheduler source
+        - Runtime state (.ts files that mutate globalThis/global state)
+      reason: Registry = immutable index. Must not depend on scheduling mechanics.
+    - artifact: Predicate
+      artifact_path_globs:
+        - workspace/packages/core/predicate-registry/src/registry/predicates/**
+      forbidden_dependency_kinds:
+        - Runtime Context (request-scoped state objects)
+        - Environment-dependent conditionals (process.env branching inside predicate declaration)
+      reason: Predicate = truth-function declaration. Must be context-agnostic pure.
+    - artifact: Transformation
+      artifact_path_globs:
+        - workspace/packages/core/transformation-registry/src/registry/transformations/**
+      forbidden_dependency_kinds:
+        - Orchestrator (top-level pipeline coordinator)
+        - Scheduler loop
+        - Engine hardcoded switch-case
+      reason: Transformation = pure function descriptor. Pipeline = Runtime concern.
+    - artifact: Proof
+      artifact_path_globs:
+        - build/evidence/**/*.json
+        - build/evidence/**/*.yaml
+      forbidden_dependency_kinds:
+        - Engine mutable state reads
+        - Engine field access for verification
+      reason: Proof = immutable evidence. Verification MUST re-compute, NOT read engine state.
+    - artifact: Ledger
+      artifact_path_globs:
+        - build/evidence/proof-ledger/**
+      forbidden_dependency_kinds:
+        - Mutable Storage API (PUT / DELETE / PATCH operations)
+        - Rewrite / re-order logic
+      reason: Ledger = append-only audit chain. Only APPEND via proof-ledger package allowed.
+  acl_check_required: true
+
+principle_07_no_god_registry:
+  id: IA-07
+  name: No God Registry — Per-Entry Manifest + Root Index Only
+  rationale: >
+    Satu file registry.ts berisi 200 transformations = merge conflict bomb
+    + ownership ambiguity + review unscalable. Pattern manifest.yaml per entry
+    memastikan: ownership per transformasi jelas, merge conflict minimal,
+    review scope = 1 file per PR (kecuali root index yang ≤100 LOC).
+  layout_pattern:
+    registry_root:
+      - registry/
+        - transformations/
+          - t001/
+            - manifest.yaml  (canonical declaration, KBE-compliant SSOT)
+          - t002/
+            - manifest.yaml
+        - predicates/
+          - t001/
+            - manifest.yaml
+          - t002/
+            - manifest.yaml
+        - registry-manifest.yaml  (root index, pure composition, ≤100 LOC)
+  composition_rule:
+    registry-manifest.yaml = HANYA daftar include path + version metadata.
+    NO inline declarations. NO logic beyond listing manifests.
+  migration_note: >
+    Existing .ts declaration files (t001.ts, t002.ts di registry/) adalah MIGRASI PENDING.
+    Target state (Gate D): .ts files = YAML loaders ONLY.
+    Declaration content = 100% in .manifest.yaml.
+  acl_check_required: true
+
+principle_08_evolution_policy_per_artifact_class:
+  id: IA-08
+  name: Evolution Policy Eksplisit per Artifact Class
+  rationale: >
+    Tanpa aturan evolusi eksplisit, suatu "minor fix" bisa merusak rantai bukti.
+    Contoh: mengubah contract T001 tanpa major version = TRF-PROOF-T001 lama
+    tidak lagi verifiable terhadap contract baru.
+  policies:
+    CONSTITUTION:
+      path_globs: [enterprise/constitution/**, governance/BASELINE_LOCK.yaml]
+      change_allowed: ONLY via ADR (Architecture Decision Record)
+      direct_edit_prohibited: true
+      review_required: Enterprise Architect sign-off + 1 peer
+      acl_rule: Constitution edits require linked ADR reference in commit message.
+    GOVERNANCE:
+      path_globs: [governance/**]
+      change_allowed: Backward compatible additions. Removals require ADR.
+      direct_edit_prohibited: false
+      review_required: Platform Steward
+    CONTRACT:
+      path_globs: [workspace/contracts/**]
+      change_allowed:
+        - IF backward compatible (new optional fields, new outputs): patch version OK
+        - IF breaking (removed required field, changed type): MAJOR version bump required
+      direct_edit_prohibited: false
+      review_required: Domain Steward + Platform Steward
+      integrity_rule: Existing proof IDs must remain verifiable against OLD contract version stored in snapshot dir.
+    TRANSFORMATION:
+      path_globs: [workspace/packages/core/transformation-registry/**, enterprise/execution/transformation-catalog.yaml#transformations]
+      change_allowed: ONLY if all existing Proof Objects for prior versions remain verifiable.
+      direct_edit_prohibited: false
+      review_required: Platform Engineer + QA (determinism re-run)
+      integrity_rule: When transformation logic changes semver, OLD implementation MUST be preserved side-by-side.
+    REGISTRY:
+      path_globs: [workspace/packages/core/*-registry/src/registry/**]
+      change_allowed:
+        - ENTRIES MAY BE ADDED freely (new DRAFT entries)
+        - ENTRIES WITH lifecycle=VERIFIED MUST NOT BE DELETED
+        - ENTRIES MAY BE DEPRECATED (lifecycle DEPRECATED) but NEVER removed
+      direct_edit_prohibited: false
+      review_required: Platform Engineer
+      integrity_rule: Registry index is append-only in effect. Deletion of VERIFIED entry = ACL hard FAIL.
+    TRANSFORMATION_CATALOG:
+      path_globs: [enterprise/execution/transformation-catalog.yaml]
+      change_allowed: Entries may be added. Existing VERIFIED entries MUST NOT have semantic contract fields removed.
+      direct_edit_prohibited: false
+      review_required: Enterprise Architect
+    LEDGER:
+      path_globs: [build/evidence/proof-ledger/**]
+      change_allowed: APPEND ONLY. NO rewrite. NO in-place mutation. NO re-order.
+      direct_edit_prohibited: true
+      review_required: Automated SHA-256 chain verification by proof-ledger package
+      migration_rule: If ledger migration needed: rename OLD → proof-ledger-archive/{seq}/, NEW genesis = OLD.last_entry_hash
+    PROOF_OBJECTS:
+      path_globs: [build/evidence/**/*.json]
+      change_allowed: Write once. NEVER regenerate with mutated identity (same proof_id, different content = hash chain break).
+      direct_edit_prohibited: true
+      review_required: Automated hash verification
+  acl_check_required: true
+
+principle_09_knowledge_not_in_runtime:
+  id: IA-09
+  name: Setelah Gate C: Roadmap = "Kurangi Pengetahuan di Runtime", Bukan "Tambah Fitur"
+  rationale: >
+    God Class Engine adalah anti-pattern yang menghancurkan EOS epistemology.
+    Setiap commit post-Gate-C harus diaudit: "apakah pengetahuan ini seharusnya
+    berada di Knowledge/Registry layer?" Jika ya, runtime tidak boleh menyimpannya.
+  audit_question_for_every_runtime_commit: >
+    Pengetahuan ini seharusnya berada di Knowledge Layer atau Registry?
+    Jika jawabannya "ya", MOVE — jangan simpan di Runtime.
+  knowledge_types_must_not_be_in_runtime:
+    - Capability ID whitelists (hardcoded string arrays = ["legal-case", "legal-document"])
+    - Compatibility matrix literals (Record<T_ID, {minVersion}>)
+    - Contract field validators (zod schema duplicates of YAML schema)
+    - Lifecycle promotion rules (if status === "VERIFIED" → allow logic inline)
+    - Predicate phase ordering (PRE_EXECUTION = 1 constant duplicate)
+  remediation_pattern:
+    found_in_runtime_knowledge_type → MOVE to enterprise/knowledge/ manifest.yaml OR *-registry manifest.yaml → Runtime loads via registry lookup
+  acl_heuristic:
+    rule: IF a source file in packages/core/runtime/ or packages/tooling/eos-cli/
+    AND contains string literal matching T\d{3} OR "PRED-\d" OR capability-ID-like-kebab-case outside of registry function parameter, THEN it is a candidate violation for manual review.
+  acl_check_required: true
+  implementation_target: Gate_D_Bootstrap — before engine writes first code.
+
+principle_10_immutable_knowledge_snapshot:
+  id: IA-10
+  name: Immutable Knowledge Snapshot — Root of Reproducibility
+  rationale: >
+    Registry Version saja tidak cukup. Yang harus direproduksi bukan hanya registry,
+    tetapi SELURUH keadaan pengetahuan. Ketika planning dimulai, semua input knowledge
+    (Constitution, Contracts, Ontology, Schemas, Registry, Graph, Policies, Compatibility)
+    HARUS di-hash menjadi satu immutable tuple: Knowledge Snapshot. ID-nya = KS-YYYY.MM.DD.NNN.
+    Setelah planning dimulai, TIDAK ADA mutable knowledge artifact yang boleh memengaruhi
+    planning, execution, validation, atau evidence.
+  formal_statement: >
+    Every execution SHALL reference exactly one immutable Knowledge Snapshot.
+    Planning, execution, validation, and evidence generation MUST operate exclusively against that snapshot.
+    No mutable knowledge artifact SHALL influence an execution after planning has begun.
+  scope:
+    - Planner
+    - Runtime
+    - Validator
+    - Evidence
+  snapshot_identifier_pattern: KS-\d{4}\.\d{2}\.\d{2}\.\d{3}
+  snapshot_content_tuple:
+    - constitution_digest: SHA-256 of enterprise/constitution/**
+    - contract_digest: SHA-256 of workspace/contracts/** + enterprise contracts
+    - ontology_digest: SHA-256 of semantic kernel: relationships + node kinds + vocab
+    - registry_digest: SHA-256 of all *-registry manifest.yaml files loaded
+    - graph_digest: SHA-256 of transformation-catalog graph section
+    - policy_digest: SHA-256 of governance/** policies.yaml + .md
+    - schema_digest: SHA-256 of enterprise/schema/**
+    - compatibility_digest: SHA-256 of semantic compatibility rules + semver policy
+  post_planning_prohibited_interactions:
+    description: Setelah object ExecutionPlan dibuat, NO mutable knowledge source may be read.
+    prohibited_actions:
+      - Planning Runtime Validator Evidence: read-live filesystem path dari constitution/ / contracts/ / governance/
+      - Planning Runtime Validator Evidence: lakukan reload manifest.yaml dari registry
+      - Execution: override contract_ref untuk point ke file version baru di tengah pipeline
+  reproducibility_guarantee: >
+    Given identical Knowledge Snapshot ID + identical Semantic Kernel version + identical user input parameters:
+    Planning ALWAYS produces byte-identical Execution Plan.
+    Execution ALWAYS produces byte-identical output artifacts (2x run hash equal, predicates all pass).
+    Evidence ALWAYS produces byte-identical Proof + Ledger append record (signature scheme deterministic).
+  acl_check_required: true
+  enforcement_acl_rule_id: ARCH-20
+
+principle_11_semantic_determinism:
+  id: IA-11
+  name: Semantic Determinism — Makna Pengetahuan Juga Harus Deterministik
+  rationale: >
+    Knowledge Before Execution mengunci bahwa behavior didefinisikan SEBELUM eksekusi.
+    Tetapi itu tidak cukup: MAKNA dari pengetahuan itu sendiri harus deterministik.
+    Jika reasoner (Semantic Kernel inference rules) dapat menghasilkan edges yang berbeda
+    pada input yang sama — maka seluruh sistem reproducibility hancur di level epistemik.
+  formal_statement: >
+    Every semantic conclusion SHALL be reproducible from the same Knowledge Snapshot and Semantic Kernel.
+  consequences:
+    - Inference rules TIDAK BOLEH bergantung pada state eksternal (network, time, env vars, global mutable).
+    - Reasoner HARUS bersifat deterministik: inputs identical → output edges identical, 100% of the time.
+    - Graph yang sama + Semantic Kernel version yang sama SELALU menghasilkan execution plan yang sama (dengan konfigurasi planner yang sama).
+    - Evidence DAPAT direproduksi tanpa ambiguity. Dua auditor independen yang memulai dari Knowledge Snapshot ID yang sama HARUS sampai pada set Proof Objects + hash identik.
+  determinism_scope:
+    DECLARED_RELATIONSHIPS:
+      - 100% deterministic by construction (data in YAML manifests; not computed)
+    INFERRED_RELATIONSHIPS:
+      - WAJIB deterministic (reasoner produces identical conclusion set from identical premises)
+      - Setiap inferred edge WAJIB membawa `rule_id` + `premise_edge_ids[]` sebagai provenance sehingga reproducible tanpa menjalankan entire reasoner
+    PLANNER_OUTPUT:
+      - ExecutionPlan.steps[] ordering WAJIB deterministic topological sort (tie-break via transformation_id lex order)
+      - ExecutionPlan.evidence.required WAJIB deterministic flag derived from snapshot, NOT from env
+    EVIDENCE_HASH:
+      - Setiap Proof Object hash WAJIB deterministic: deterministic canonical JSON serialization (key order, no whitespace variant)
+  anti_patterns:
+    - Reasoner menggunakan Date.now() / Math.random() / process.env / fetch() untuk decision branch
+    - Planner menghasilkan ordering berbeda karena object property iteration order V8 vs Node vs Browser
+    - Registry manifest load time berubah karena caching policy non-deterministic → sort order berbeda
+  acl_check_required: true
+  enforcement_acl_rule_id: ARCH-21
+
+principle_12_explainability_and_justification:
+  id: IA-12
+  name: Explainable Reasoning and Traceable Justification
+  rationale: >
+    Tanpa IA-12, reasoner dan planner menjadi "kotak hitam" yang menghasilkan output tanpa bukti
+    langkah demi langkah. IA-12 memastikan SETIAP keputusan dan inferensi dapat ditelusuri
+    kembali ke premises asal dengan jalur yang jelas.
+  formal_statement: >
+    Every semantic inference and planning decision SHALL have a machine-readable,
+    inspectable provenance chain linking it to the exact premises and rules used.
+    "Trust by explanation" instead of "trust by authority".
+  scope:
+    - Declared edge instances → provenance: registry manifest path + line ref
+    - Inferred edges → provenance: inference rule_id (INF-xxx) + premise_edge_ids[]
+    - Decision candidates → provenance: candidate_generator_id + parameter_set
+    - Rejected alternatives → provenance: rejection_reason string + failed_constraint_ids[]
+    - Execution steps → provenance: which DIR.selected_alternative chain, with step ids
+  acl_check_required: true
+  notes: IA-12 was an emergent invariant from prior discussion; formalized here to make the 11 invariants explicit.
+
+principle_13_stable_intermediate_representations:
+  id: IA-13
+  name: Stable Intermediate Representations — IR Versi dan Deterministik Antar Major Stage
+  rationale: >
+    Tanpa IR eksplisit, ada hidden state di antara reasoning engines. Pipeline tidak dapat
+    diresume dari titik tengah, reproducibility bergantung pada menjalankan seluruh pipeline dari awal,
+    dan debugging menjadi sulit. IA-13 memaksa: setiap major reasoning stage HARUS menghasilkan
+    IR yang jelas, versioned, deterministic, dan dapat ditukar antar engine sebagai artifact bukan internal state.
+  formal_statement: >
+    Every transformation between major reasoning stages SHALL produce an explicit, versioned,
+    deterministic Intermediate Representation (IR). Engines MUST exchange IR artifacts rather
+    than internal runtime state.
+  scope_required_irs:
+    - KNOWLEDGE_IR (KIR): Setelah Pass 1–5 (Normalization → Ontology Expansion → Constraint Resolution → Dependency Analysis → Compatibility Resolution)
+    - DECISION_IR (DIR): Setelah Pass 6–7 (Planning + Decision Compilation)
+    - EXECUTION_PLAN_IR: Setelah Pass 8 (Plan Compilation) — boundary artifact untuk KVM
+    - EVIDENCE_GRAPH_IR (EPG): Setelah Evidence Compiler — Merkle DAG dengan provenance nodes
+  ir_properties_required_per_ir:
+    - explicit: disimpan sebagai file (atau canonical serialization yang dapat di-hash), TIDAK BOLEH hanya ada di in-memory object graph.
+    - versioned: field `ir_format_version` dengan semver string. Backward-compat = minor. Breaking = major.
+    - deterministic: identik input → identik byte → identik hash (canonical serialization enforced, sorted keys)
+    - self_describing: field header yang mendeskripsikan upstream snapshot id + daftar pass yang menghasilkan IR ini.
+    - independently_verifiable: setiap IR file WAJIB menyertakan `ir_content_hash` yang dihitung pada emit time; verifier dapat recompute dan membandingkan.
+  consequence_guarantees:
+    - resumeable_pipeline: Jika build gagal di Pass 8 developer dapat resume from cached DIR without re-running 1–7.
+    - reproducibility: Snapshot ID → KIR hash → DIR hash → Plan hash → Evidence hash. Semua rantai dapat diikuti byte-for-byte.
+    - debugging: IR snapshot = "time capsule" dari state pada titik tertentu.
+    - engine_swap: Ganti Planner engine? Cukup pastikan input KIR = sama dan expected output DIR format = sama. Tidak ada tight coupling.
+  acl_check_required: true
+  enforcement_acl_rule_id: ARCH-22
+
+principle_14_pure_compiler_passes:
+  id: IA-14
+  name: Pure Compiler Passes — No Upstream Mutation, No Undeclared State
+  rationale: >
+    IA-10 (Immutable Snapshot) menjamin knowledge state tidak berubah setelah planning dimulai.
+    IA-11 menjamin semantic determinism.
+    IA-14 memperkuat keduanya dengan menjamin: SETIAP pass secara individual BUKAN impurity.
+    Pass hanya memproduksi output IR + diagnostics dari input IR yang dideklarasikan.
+    Tidak ada side effect. Tidak ada mutable shared state. Tidak ada env-dependent semantic branches.
+  formal_statement: >
+    Each reasoning pass SHALL be functionally pure with respect to its declared inputs.
+    A pass MAY produce diagnostics and metadata, but SHALL NOT mutate upstream artifacts
+    or depend on undeclared external state.
+  per_pass_properties_required:
+    - declared_inputs: daftar eksplisit artifact classes / paths yang dibaca (misal: "ONLY snapshot + Semantic Kernel relationships").
+    - declared_outputs: daftar eksplisit IR classes yang dihasilkan + diagnostics.
+    - no_upstream_mutation: PASS NEVER menulis ke upstream artifact. PASS NEVER memanggil fs.writeFileSync ke snapshot archive, atau merubah kontrak/registry secara in-place.
+    - no_undeclared_external_state: PASS TIDAK BOLEH bergantung pada:
+        * environment vars untuk semantic decision branches
+        * wall-clock time (Date.now() / new Date()) untuk non-diagnostic purposes
+        * network IO (fetch, http, etc.)
+        * global singletons / globalThis mutable state
+        * process pid / rng / non-deterministic V8 property iteration
+  diagnostics_vs_semantics_separation:
+    rule: >
+      PASS boleh emit timestamp HANYA di field `diagnostics[]` metadata informational.
+      PASS TIDAK BOLEH menggunakan timestamp apapun di dalam perhitungan yang mempengaruhi
+      output IR (hanya untuk info audit tidak untuk hash determinism).
+  pass_failure_model:
+    statement: >
+      A pure pass either returns output_ir: IR + diagnostics: Diagnostic[], OR throws a validation error
+      dengan pesan yang jelas mengapa input tidak valid.
+      PASS NEVER "returns best effort corrupted IR", dan PASS NEVER silently swallows error kemudian mengembalikan
+      IR parsial tanpa tanda invalid.
+  verification_strategy:
+    - Unit test: input fixture IR → expected output IR golden hash. Determinism 2x run equal.
+    - Unit test: upstream artifact exists before pass, untouched (stat.mtime + content hash) after pass.
+    - Lint-like ACL scan (ARCH-23) for impurity patterns in pass source files.
+  acl_check_required: true
+  enforcement_acl_rule_id: ARCH-23
+
+eos_6_tier_architecture_reference:
+  canonical_definition_path: /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#architecture_layers_6_tier
+  layer_names_ordered:
+    - KNOWLEDGE_LAYER
+    - SEMANTIC_KERNEL
+    - REGISTRY_LAYER
+    - PLANNING_LAYER
+    - EXECUTION_LAYER
+    - PROVENANCE_LAYER
+  paradigm_evolution_statement: >
+    EOS telah berevolusi dari "registry-driven architecture" menjadi:
+    knowledge-defined, semantics-governed, plan-driven, evidence-backed execution platform.
+
+eos_knowledge_compiler_pipeline_reference:
+  canonical_definition_path: /root/Enterprise OS/enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
+  epistemic_states_ordered:
+    - KNOWLEDGE
+    - KNOWLEDGE_STATE (Knowledge Snapshot, BUILD ARTIFACT)
+    - SEMANTIC_STATE (Knowledge IR, KIR)
+    - DECISION_STATE (Decision IR, DIR)
+    - EXECUTION_STATE (Execution Plan + KVM)
+    - EVIDENCE_STATE (Evidence Graph + Repository Verdict)
+  official_system_name:
+    short_form: Knowledge Computing System (KCS)
+    long_form: Knowledge Computing System — Enterprise OS
+  paradigm_evolution_statement_final: >
+    EOS adalah Knowledge Compiler Pipeline.
+    Bukan sekadar kumpulan komponen yang saling berinteraksi.
+    EOS = serangkaian epistemic transformations yang memajukan state pengetahuan:
+    Knowledge Sources → Knowledge Build → Knowledge Snapshot → Knowledge IR → Decision IR → Execution Plan → KVM Execution → Evidence Graph → Repository Verdict.
+    Setiap stage pure function dari stage sebelumnya.
+    Setiap batas stage melalui IR stabil (IA-13) dan pass murni (IA-14).
+    Reproducibility dijamin pada setiap level.
+
+acl_implementation_mapping:
+  ARCH-18-ONT-TRIAD: principle_01_ontological_triad
+  ARCH-18-INV-TABLE: principle_06_machine_enforced_invariant_table
+  ARCH-20-IA10-SNAPSHOT: principle_10_immutable_knowledge_snapshot
+  ARCH-21-IA11-SEM-DET: principle_11_semantic_determinism
+  ARCH-22-IA13-STABLE-IR: principle_13_stable_intermediate_representations
+  ARCH-23-IA14-PURE-PASS: principle_14_pure_compiler_passes
+  status: IMPLEMENTATION_REQUIRED_IN_ARCH_CHECK_TS
+
+certification_impact:
+  gate_c:
+    affected: false
+    note: T001 sudah PASS. Invariants baru ini memperkuat foundation, tidak mengubah bukti yang ada.
+  gate_d:
+    affected: true
+    note: Gate D Bootstrap WAJIB memenuhi IA-01..IA-14. Deliverables reframed sebagai COMPILER PIPELINE, bukan components. Pass framework + KIR+DIR IR artifacts P0.
+  gate_e:
+    affected: true
+    note: End-to-end deterministic proof WAJIB menunjukkan: KIR hash → DIR hash → Plan hash → Evidence hash chain reproducible. Pass purity unit tests required.
+    note_epistemic: E-Exit Certification = Proof of Full Knowledge Compiler Determinism.
+
+technical_debt_note:
+  - Existing registry declarations in .ts files (IA-07) = TECHNICAL DEBT with migration target: Gate D bootstrap.
+  - Missing Validation Proof schema (REGISTRY-PROOF / CATALOG-PROOF) = TECHNICAL DEBT with target: Gate B extension post IA-05 stabilization.
+  - Missing explicit graph: section in catalog (IA-04) = TECHNICAL DEBT mitigated by legacy predecessor_id fallback, target full migration: Gate C post-processing step.
+  - Resolver consumes only legacy predecessor_id — belum consume graph.transformations edges[] = TECHNICAL DEBT target: Gate D bootstrap Planning Layer explicit.
+  - Knowledge Snapshot emitter tool belum ada = TECHNICAL DEBT target: Gate D P0 deliverable.
+  - Evidence Provenance Graph belum menggantikan linear proof chain = TECHNICAL DEBT target: Gate E exit.
+  - KIR + DIR explicit format emitters + pass framework classes not yet written = TECHNICAL DEBT target: Gate D P0.
+  - Plan Compiler (DIR → Plan) tidak terpisah dari Planner = TECHNICAL DEBT target: Gate D P1 refactor of resolver/planner logic.

@@ -1,0 +1,271 @@
+version: "1.0.0"
+status: FROZEN
+kind: CONTRACT
+contract_kind: INTERMEDIATE_REPRESENTATION_CONTRACT
+ir_id: CONSTITUTION_IR
+ir_format_version: "1.0.0"
+ir_abbreviation: CONSTIT-IR
+evolution_domain: DOMAIN-B-SPECIFICATION
+ssot_note: CONSTITUTION_IR_IS_THE_COMPILED_FORM_OF_THE_EOS_CONSTITUTION._INPUT_SOURCE_FILES = CONSTITUTIONAL-VISION.yaml + ARCHITECTURAL-STABILITY-PRINCIPLES.yaml (ASP+MP01) + INVARIANT-ARCHITECTURE.yaml (IA-01..14) + EVOLUTION-DOMAINS.yaml + PROTOCOL-GOVERNANCE.yaml. OUTPUT of Constitutional Compiler. This is the Stable IR that all future verifiers / protocol rule generators / compatibility matrix generators consume so they do NOT parse the constitution prose directly. This is IA-13 Stable IR equivalent for the Constitutional layer.
+governance_ref:
+  vision: /root/Enterprise OS/governance/CONSTITUTIONAL-VISION.yaml
+  asp_mp01: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#MP-01
+  ia13: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_13_stable_intermediate_representations
+  ia14: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
+  protocol_governance: /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
+derived_from:
+  - User_Point_Constitution_IR_From_Vision_ASP_IA
+  - User_Point_Architecture_Rules_Generated_Not_Manual
+  - User_Point_Constitutional_Verifier_Instead_of_Arch_Check
+  - User_Point_Authority_Flow_DAG_Official
+
+constitution_source_inputs:
+  ordered:
+    - /root/Enterprise OS/governance/CONSTITUTIONAL-VISION.yaml
+    - /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
+    - /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
+    - /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml
+    - /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
+    - /root/Enterprise OS/governance/CONFORMANCE-MODEL.yaml
+    - /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml
+  compile_purity:
+    statement: "Constitutional Compiler (pass 1-5 below) is a pure function of these inputs only. No env vars, no network, no timestamps in hashable fields. MP-01 Computable Governance."
+  compilation_hash_anchor:
+    merkle_root_of_sorted_hash_inputs: >
+      ir_content_hash input list = sorted list of (each source file path + SHA-256 of canonical YAML content).
+      Constitutional Compiler SHALL produce byte-identical CONSTIT-IR for identical content inputs (version bumps without semantic change may be PATCH only).
+
+constitution_ir_sections_required:
+  header:
+    mandatory: true
+    fields:
+      - field: ir_format_version
+        type: semver
+      - field: ir_content_hash
+        type: sha256
+      - field: constitution_sources_sha256_merkle_root
+        type: sha256
+      - field: constitutional_compiler_version
+        type: semver
+      - field: vision_version
+        type: literal "1.0.0" (Vision is immutable; changes to vision would NOT be compiled but trigger FOUNDATION charter rewrite)
+      - field: produced_at_utc
+        note: DIAGNOSTICS ONLY, EXCLUDED from ir_content_hash.
+      - field: passes_applied
+        type: array; values: ["CC-PASS-1-DOMAIN-TYPING","CC-PASS-2-AUTHORITY-DAG","CC-PASS-3-BOUNDARY-RULES","CC-PASS-4-VERIFICATION-RULE-GEN","CC-PASS-5-COMPAT-MATRIX-GEN"]
+
+  type_system_section:
+    mandatory: true
+    ir_field: evolution_domain_types
+    description: "Evolution Domains as TYPE SYSTEM (per user point 6). Not policy strings — machine-checkable type error on import/mutation mismatch."
+    types:
+      - type_name: CONSTITUTION
+        type_members:
+          - CONSTITUTIONAL-VISION
+          - ASP
+          - IA
+          - BASELINE_LOCK
+          - GOVERNANCE_STATE_ARCHETYPE
+          - ADR_ACCEPTED
+        type_rules:
+          - cannot_import_type: IMPLEMENTATION
+          - cannot_import_type: SPECIFICATION (Constitution is ABOVE specs; Constitution only references specs via compile outputs, not direct import)
+          - cannot_mutate: true (always immutable)
+      - type_name: SPECIFICATION
+        type_members:
+          - SEMANTIC_KERNEL
+          - KNOWLEDGE_COMPILER_PIPELINE
+          - COMPILER_PASSES_SPEC
+          - PROTOCOL_YAMLS
+          - CONTRACT_YAMLS
+        type_rules:
+          - cannot_import_type: CONSTITUTION (specs can only CONSUME constitution via COMPILED Constitution IR, not raw constitution yamls)
+          - cannot_mutate_type: CONSTITUTION
+          - cannot_import_type: IMPLEMENTATION_PRIVATE
+      - type_name: PROTOCOL
+        sub_type_of: SPECIFICATION
+        type_members: [PROTO_KIR_EXCHANGE, PROTO_DIR_EXCHANGE, PROTO_SNAPSHOT_BUILD, PROTO_EPG_VERIFY, PROTO_RUNTIME_EXEC_PLAN]
+        type_rules:
+          - can_import_type: [SPECIFICATION]
+          - can_be_imported_by: IMPLEMENTATION
+      - type_name: IMPLEMENTATION
+        type_members: [RUNTIME_TS, COMPOSITION_TS, UI_TSX, CLI_TS, PREDICATE_LOADER_TS]
+        type_rules:
+          - cannot_mutate_type: SPECIFICATION
+          - cannot_mutate_type: CONSTITUTION
+          - can_import_type: [PROTOCOL, SPECIFICATION_PUBLIC]
+          - cannot_import_type: CONSTITUTION_RAW (no .ts imports constitution yaml directly for decisions; may only read compiled CONSTIT-IR or go through verifier)
+
+  authority_graph_section:
+    mandatory: true
+    ir_field: authority_graph_dag
+    dag_edge_format: { from, to, edge_kind, authority_proof_ref }
+    edges_required:
+      - from: CONSTITUTIONAL_VISION
+        to: ASP
+        edge_kind: VISION_CONSTRAINS_PRINCIPLES
+        authority_proof_ref: CONSTITUTIONAL-VISION.yaml#authority_dag_edges_foundation
+      - from: ASP
+        to: IA
+        edge_kind: ASP_CONSTRAINS_INVARIANTS
+        authority_proof_ref: ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
+      - from: IA
+        to: SPECIFICATION_ALL
+        edge_kind: INVARIANTS_CONSTRAIN_SPECS
+        authority_proof_ref: IA-01..IA-14
+      - from: SPECIFICATION_ALL
+        to: PROTOCOL_ALL
+        edge_kind: SPECS_DEFINE_PROTOCOLS
+        authority_proof_ref: PROTOCOL-GOVERNANCE.yaml
+      - from: PROTOCOL_ALL
+        to: IMPLEMENTATION_ALL
+        edge_kind: PROTOCOLS_CONSTRAIN_IMPLEMENTATIONS
+        authority_proof_ref: PROTOCOL-GOVERNANCE.yaml#required_protocol_inventory
+      - from: IMPLEMENTATION_ALL
+        to: EVIDENCE_LAYER
+        edge_kind: EXECUTION_PRODUCES_EVIDENCE
+        authority_proof_ref: CONSTITUTIONAL-VISION.yaml#VISION-02
+    cycle_check_enforcement:
+      statement: "Edges form a strict DAG with total order V→C→S→P→I→E. Constitutional Compiler SHALL compute a topological sort of every authority edge; any cycle = compilation error, and Constitution IR SHALL NOT be emitted until cycle removed."
+      algorithm: Kahn's algorithm with deterministic tie-break by node id lex order.
+
+  boundary_rules_section:
+    mandatory: true
+    ir_field: boundary_rules
+    description: Compiled form of IA-01 Ontological Triad + IA-09 Knowledge Not In Runtime + ASP-02 No Upward.
+    rules_list_mandatory:
+      - rule_id: BR-IA01-TRIAD
+        rule_statement: "Three ontological zones Knowledge × Registry × Runtime — each answer different question. Zone cross-reads only through explicit IRs (KIR / DIR / EPG)."
+        enforcement_ref: "ARCH-18 checks IA-06 forbidden dep table (8 pairs)."
+      - rule_id: BR-IA09-NO-KNOWLEDGE-RUNTIME
+        rule_statement: "Runtime code does NOT embed knowledge strings, transformation hardcoded ids, contract literal predicates."
+        enforcement_ref: "ARCH-19 regex scanner + whitelisted loader contexts."
+      - rule_id: BR-IA10-SNAPSHOT-BOUNDARY
+        rule_statement: "Planner+Runtime+Validator+Evidence each operate on exactly one KS- snapshot id. No mutable enterprise/knowledge dir reads POST plan."
+        enforcement_ref: "ARCH-20 path scanner + execution plan snapshot field check."
+      - rule_id: BR-ASP02-NO-UPWARD-WRITE
+        rule_statement: "No .ts in packages/core/runtime|execution|resolver|proof-ledger|composition|apps|capabilities writes governance/spec YAML paths."
+        enforcement_ref: "ARCH-24 write/delete/append upstream pattern scanner."
+      - rule_id: BR-PROTO-BOUNDARY-EXCHANGE
+        rule_statement: "Cross-component exchange objects that are Execution/Plan/Compiler type MUST carry ir_format_version + ir_content_hash or plan_hash versioned protocol fields."
+        enforcement_ref: "ARCH-25 ad-hoc interface scanner."
+
+  stability_levels_section:
+    mandatory: true
+    ir_field: stability_levels
+    per_type:
+      CONSTITUTION: { change_cost: EXTREME, deprecation: NEVER, epoch_needed_for_change: true }
+      ASP: { change_cost: EXTREME, deprecation: EPOCH_ONLY, minimum_epoch_overlap: 3 }
+      IA: { change_cost: EXTREME_HIGH, deprecation: EPOCH_OR_MAJOR, minimum_epoch_overlap: 2 }
+      SPECIFICATION: { change_cost: HIGH, deprecation: 2-major-releases, semver_policy: SEMVER_2_0 }
+      PROTOCOL: { change_cost: HIGH, deprecation: 2-major-releases, semver_policy: SEMVER_2_0 }
+      IMPLEMENTATION: { change_cost: LOW, deprecation: AT_WILL, only_conformance_binding: true }
+
+  compatibility_policies_section:
+    mandatory: true
+    ir_field: compatibility_policies
+    entries:
+      - target: CONSTITUTION
+        rule: Identity (compatibility is ontological; either still EOS or different platform).
+      - target: SPEC/PROTOCOL
+        rule: SEMVER 2.0 (MAJOR=backward incompat, MINOR=new optional fields, PATCH=editorial only). No exceptions.
+      - target: IMPLEMENTATION
+        rule: Behavioral (compat across impl versions undefined; only protocol conformance binds).
+    deprecation_windows:
+      - spec_protocol_major_overlap_required: "≥ 2 MAJOR releases of successor before predecessor sunset."
+      - implementation_overlap: "None; replacement allowed at any time provided conformance."
+
+  proof_requirements_section:
+    mandatory: true
+    ir_field: proof_requirements
+    per_class:
+      - artifact_class: CONSTITUTION change
+        proof_required: Foundation Charter revision + epoch migration plan.
+      - artifact_class: ASP change
+        proof_required: ADR + Architecture Board unanimous vote record + GOVERNANCE_STATE updated.
+      - artifact_class: IA change
+        proof_required: ADR + 2/3 Architecture Board recorded vote + 1 IA conflict resolution audit.
+      - artifact_class: SPEC MAJOR
+        proof_required: ADR ref + Specification Review sign-off record (3 reviewers minimum, 1 Board minimum).
+      - artifact_class: SPEC MINOR
+        proof_required: Specification Review (2 reviewers).
+      - artifact_class: IMPL
+        proof_required: PR review record + conformance test 100% PASS + report_content_hash included in release log.
+
+  verification_rule_generators_section:
+    mandatory: true
+    ir_field: verification_rule_generators
+    description: "MP-01 Computable Governance. Each IA/ASP statement maps to ARCH-* enforcement IDs. This section IS the declaration that ACL is not a disconnected artifact but compiled governance rules."
+    generators_mandatory_list:
+      - id: VGEN-IA10
+        source_statement_ref: IA-10 Immutable Knowledge Snapshot
+        outputs_arch_rule_ids: [ARCH-20]
+        compiled_check_parameters:
+          - mutable_reads_forbidden_paths: ["enterprise/constitution","enterprise/schema","workspace/contracts","governance/"]
+          - post_planning_src_dirs: ["packages/core/runtime/src","packages/core/registry-resolver/src","packages/core/proof-ledger/src","packages/composition"]
+          - snapshot_attachment_field_name: knowledge_snapshot
+      - id: VGEN-IA11
+        source_statement_ref: IA-11 Semantic Determinism
+        outputs_arch_rule_ids: [ARCH-21]
+        compiled_check_parameters:
+          - non_det_signatures: ["Math.random","Date.now","new Date()","fetch","axios","process.env(??)? ?=? branch"]
+          - deterministic_tiebreak_signatures: [".localeCompare(","Object.keys().sort()",".sort((a,b)=>a.localeCompare(b))"]
+      - id: VGEN-IA13
+        source_statement_ref: IA-13 Stable Intermediate Representations
+        outputs_arch_rule_ids: [ARCH-22]
+        compiled_check_parameters:
+          required_ir_contract_paths:
+            [
+              "workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml",
+              "workspace/contracts/KNOWLEDGE-IR.contract.yaml",
+              "workspace/contracts/DECISION-IR.contract.yaml",
+              "workspace/contracts/EVIDENCE-PROVENANCE-GRAPH.contract.yaml",
+            ]
+          required_protocol_version_fields: [ir_format_version, plan_format_version, format_version]
+          required_protocol_hash_fields: [ir_content_hash, plan_hash, content_hash, plan.id.*sha256]
+      - id: VGEN-IA14
+        source_statement_ref: IA-14 Pure Compiler Passes
+        outputs_arch_rule_ids: [ARCH-23]
+        compiled_check_parameters:
+          upstream_forbid_write_paths:
+            [
+              "governance/","enterprise/constitution","enterprise/schema","enterprise/execution","enterprise/specifications/SEMANTIC-KERNEL.yaml","workspace/contracts/",
+            ]
+      - id: VGEN-ASP02+04
+        source_statement_ref: ASP-02 Downward + ASP-04 Domains
+        outputs_arch_rule_ids: [ARCH-24]
+        compiled_check_parameters:
+          meta_files_required:
+            [
+              "governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml",
+              "governance/EVOLUTION-DOMAINS.yaml",
+              "governance/PROTOCOL-GOVERNANCE.yaml",
+              "governance/CONFORMANCE-MODEL.yaml",
+            ]
+          evolution_domain_glob_mapping_path: "governance/EVOLUTION-DOMAINS.yaml#domain_artifact_full_mapping"
+      - id: VGEN-PROTO-BOUNDARY
+        source_statement_ref: Protocol Governance (all)
+        outputs_arch_rule_ids: [ARCH-25]
+        compiled_check_parameters:
+          conformance_impl_private_import_forbid: true
+          ad_hoc_type_version_hash_headers_require: true
+
+ir_content_hash_calculation:
+  hash_algorithm: SHA-256
+  included_sections_sorted_keys:
+    - header (minus produced_at_utc)
+    - evolution_domain_types (types, rules sorted)
+    - authority_graph_dag (edges sorted from→to)
+    - boundary_rules (sorted by rule_id)
+    - stability_levels
+    - compatibility_policies
+    - proof_requirements
+    - verification_rule_generators (sorted by id)
+  excluded:
+    - produced_at_utc (diagnostic only)
+  canonical_json_rules: keys sorted, no whitespace, arrays preserved order.
+
+enforcement:
+  statements:
+    - "No future Constitutional Verifier (ARCH-*) release may read ASP/IA prose directly as the ONLY source of rules. It SHALL read CONSTIT-IR contract, and optionally validate that CONSTIT-IR itself was correctly compiled from raw sources (self-check)."
+    - "Protocol rule generators and compatibility matrix generators SHALL consume CONSTIT-IR as their only authoritative input. This minimizes governance drift."

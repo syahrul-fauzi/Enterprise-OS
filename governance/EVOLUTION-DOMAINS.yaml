@@ -1,0 +1,182 @@
+version: "1.0.0"
+status: FROZEN
+kind: CONSTITUTION
+layer: META_GOVERNANCE
+abbreviation: EVO-D
+ssot_note: THREE_EXHAUSTIVE_DISJOINT_EVOLUTION_DOMAINS_FOR_EOS._EVERY_ARTIFACT_MAPS_TO_EXACTLY_ONE_DOMAIN_PER_ASP_04._MACHINE_ENFORCED_VIA_ACL_ARCH_24._CHANGE_COST_APPROVAL_COMPATIBILITY_AUDIT_ARE_ALL_METADATA_FIELDS_THAT_CAN_BE_AUDITED.
+governance_ref:
+  architectural_stability_principles: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
+  invariant_architecture: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
+  governance_state: /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
+derived_from:
+  - User_Point_2_Three_Gravity_Zones_As_Evolution_Domains
+  - User_Point_Evolution_Manifest_Metadata_Per_Artifact
+  - ASP_04_Disjoint_Exhaustive_Domain_Requirement
+
+evolution_domains_definition:
+  metadata_fields_common:
+    - change_cost: [EXTREME, HIGH, LOW]
+    - approval_authority: [ARCHITECTURE_BOARD_UNANIMOUS, ARCHITECTURE_BOARD_2_3, SPECIFICATION_REVIEW, ENGINEERING_PR]
+    - compatibility_policy: [EPOCH, EPOCH_OR_MAJOR, SEMVER_2_0, BEHAVIORAL]
+    - audit_level: [MANDATORY, MANDATORY_ON_MAJOR, EVIDENCE_ONLY]
+    - replacement_allowed: [true, false]
+    - direct_edit_prohibited: [true, false] — a change requires the formal approval pathway; cannot simply commit yaml edit.
+    - deprecation_policy: [epoch-only, 2-major-releases, 1-major-release, at-will]
+
+  domains:
+    - id: DOMAIN-A-CONSTITUTION
+      name: Constitution Evolution Domain
+      change_cost: EXTREME
+      approval_authority:
+        - ASP changes: ARCHITECTURE_BOARD_UNANIMOUS + ADR
+        - IA changes: ARCHITECTURE_BOARD_2_3 + ADR
+      compatibility_policy: EPOCH (no MAJOR/MINOR/PATCH semver — change = NEW_EPOCH identifier, old epoch preserved in archive)
+      audit_level: MANDATORY on every change
+      replacement_allowed: false  — Constitution artifacts cannot be "replaced"; they can only be succeeded by new epoch side-by-side.
+      direct_edit_prohibited: true
+      deprecation_policy: epoch-only. Artifact preserved immutable forever in archive; successor new-epoch artifact lives alongside.
+      rationale:
+        Constitution = identity of EOS. If it changes, it is a different EOS (new epoch, not new version).
+        Historical epochs preserved in governance/epochs/<epoch-id>/… so verification chains always reproducible against original constitution.
+      included_artifacts:
+        - governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml (ASP, ASP-01..04)
+        - governance/INVARIANT-ARCHITECTURE.yaml (IA, IA-01..14)
+        - governance/BASELINE_LOCK.yaml
+        - governance/GOVERNANCE_STATE.yaml status structure definitions (NOT value fields, which can transition per engineering)
+        - governance/dependency-rules.yaml
+        - governance/package-authority.yaml
+        - governance/architecture-compliance.yaml
+        - decisions/ADR-*.md (ADRs, once ACCEPTED, are immutable — supersede via new ADR never mutate old one)
+
+    - id: DOMAIN-B-SPECIFICATION
+      name: Specification Evolution Domain
+      change_cost: HIGH
+      approval_authority:
+        - MAJOR spec change: SPECIFICATION_REVIEW (≥3 reviewers, at least 1 Architecture Board member) + ADR reference
+        - MINOR spec change: SPECIFICATION_REVIEW (≥2 reviewers)
+        - PATCH spec change: ENGINEERING_PR (no ADR)
+      compatibility_policy: SEMVER_2_0 — strict:
+        MAJOR = backward incompatible.
+        MINOR = new optional fields; backward compatible for consumer.
+        PATCH = editorial/corrections only; no semantic change.
+      audit_level: MANDATORY on MAJOR changes; MANDATORY_ON_MAJOR otherwise.
+      replacement_allowed: true — specification artifacts may be replaced by new specification (e.g., new protocol supersedes old). Replacement requires: new protocol id, deprecation notice, 2-major-releases overlap window.
+      direct_edit_prohibited: true on fields that are semantic headers/contract schema.
+      deprecation_policy: 2-major-releases. MAJOR vN deprecated when vN+2 is released; removed on vN+3.
+      rationale:
+        Specifications = HOW components interact (Protocols). They define protocol boundaries but not the code that implements them.
+        They should be more stable than implementations, less stable than constitution.
+      included_artifacts:
+        - enterprise/specifications/SEMANTIC-KERNEL.yaml
+        - enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
+        - enterprise/specifications/COMPILER-PASSES.spec.yaml
+        - governance/PROTOCOL-GOVERNANCE.yaml
+        - governance/CONFORMANCE-MODEL.yaml
+        - governance/artifact-lifecycle.yaml
+        - workspace/contracts/*.contract.yaml (all contracts, including snapshot, kir, dir, epg, future contracts)
+        - workspace/packages/**/registry/registry-manifest.yaml (root index contracts)
+        - enterprise/execution/transformation-catalog.yaml (as protocol catalog, not implementation)
+        - workspace/contracts/PROTOCOL-*.yaml (future protocols)
+
+    - id: DOMAIN-C-IMPLEMENTATION
+      name: Implementation Evolution Domain
+      change_cost: LOW
+      approval_authority: ENGINEERING_PR (standard code review). No ADR needed for refactors; no architecture board needed UNLESS the change implies MAJOR change to upstream spec (which must then be processed via Domain B separately FIRST before the implementation change can land).
+      compatibility_policy: BEHAVIORAL — no compatibility between two implementation code revisions is assumed; ONLY binding compatibility is conformance test PASS of the GOVERNING PROTOCOL for that implementation.
+      audit_level: EVIDENCE_ONLY — evidence = conformance tests PASS; no protocol governance audit on implementation edit itself.
+      replacement_allowed: true. An implementation may be deleted entirely and rewritten, OR replaced by a completely different codebase / algorithm / language implementation, PROVIDED: all conformance tests for the governing protocols PASS. Reference Implementation status confers no extra privileges.
+      direct_edit_prohibited: false. (Standard engineering allowed.)
+      deprecation_policy: at-will.
+      rationale:
+        Implementation = how work is done, not what work means.
+        EOS identity is preserved as long as implementation replacement preserves conformance.
+      included_artifacts:
+        - workspace/packages/**/*.ts  (except .contract.yaml and manifests)
+        - workspace/packages/**/*.tsx (React/Presentation components)
+        - apps/**/*.ts, apps/**/*.tsx
+        - capabilities/**/* (capability implementation)
+        - src/*.ts (top-level runtime source files)
+        - test files excluding CONFORMANCE tests (which are part of Domain B protocol artifacts)
+
+artifact_default_manifest_prototype:
+  # Per-artifact header template (recommended format for new artifacts; enforced via ACL ARCH-24 if missing)
+  metadata_evolution_manifest_prototype:
+    artifact:
+      id: <ARTIFACT_ID>
+    authority:
+      canonical: <true | false>
+      evolution_domain: <DOMAIN-A-CONSTITUTION | DOMAIN-B-SPECIFICATION | DOMAIN-C-IMPLEMENTATION>
+      owner_team: <team identifier, default eos-core>
+    stability:
+      status: <DRAFT | STABLE | DEPRECATED | FROZEN>
+      epoch: (optional, only for Domain A)
+      version: semver (mandatory for B) or commit hash (for C)
+    compatibility:
+      policy: <EPOCH | SEMVER_2_0 | BEHAVIORAL>
+      governing_protocol_id: (for C) protocol id this implementation satisfies
+    governance:
+      approval: <list of authorities per domain>
+      review_policy: mandatory | mandatory_on_major | evidence_only
+      direct_edit_prohibited: <true/false>
+    conformance:
+      required: true/false (for B, always true)
+      conformance_suite_ref: path/to/conformance/suite (for implementations)
+    replacement:
+      allowed: true/false
+      successor_protocol_ref: (for deprecated protocols in B)
+    deprecation:
+      policy: epoch-only | 2-major-releases | 1-major-release | at-will
+      sunset_at_version: (for deprecated specs in B)
+
+domain_artifact_full_mapping:
+  # Auto-mapped by ACL ARCH-24 for files matching globs; explicit mapping here for deterministic reference.
+  - glob_pattern: "governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml"
+    evolution_domain: DOMAIN-A-CONSTITUTION
+    direct_edit_prohibited: true
+    change_cost: EXTREME
+  - glob_pattern: "governance/INVARIANT-ARCHITECTURE.yaml"
+    evolution_domain: DOMAIN-A-CONSTITUTION
+    direct_edit_prohibited: true
+    change_cost: EXTREME
+  - glob_pattern: "governance/BASELINE_LOCK.yaml"
+    evolution_domain: DOMAIN-A-CONSTITUTION
+    direct_edit_prohibited: true
+    change_cost: EXTREME
+  - glob_pattern: "governance/EVOLUTION-DOMAINS.yaml"
+    evolution_domain: DOMAIN-A-CONSTITUTION
+    direct_edit_prohibited: true
+    change_cost: EXTREME
+  - glob_pattern: "governance/PROTOCOL-GOVERNANCE.yaml"
+    evolution_domain: DOMAIN-B-SPECIFICATION
+    direct_edit_prohibited: true
+    change_cost: HIGH
+  - glob_pattern: "governance/CONFORMANCE-MODEL.yaml"
+    evolution_domain: DOMAIN-B-SPECIFICATION
+    direct_edit_prohibited: true
+    change_cost: HIGH
+  - glob_pattern: "enterprise/specifications/*.yaml"
+    evolution_domain: DOMAIN-B-SPECIFICATION
+    direct_edit_prohibited: true
+    change_cost: HIGH
+  - glob_pattern: "workspace/contracts/*.contract.yaml"
+    evolution_domain: DOMAIN-B-SPECIFICATION
+    direct_edit_prohibited: true
+    change_cost: HIGH
+  - glob_pattern: "workspace/packages/*/*/registry/**/manifest.yaml"
+    evolution_domain: DOMAIN-B-SPECIFICATION
+    direct_edit_prohibited: true
+    change_cost: HIGH
+  - glob_pattern: "workspace/packages/**/*.ts"
+    evolution_domain: DOMAIN-C-IMPLEMENTATION
+    direct_edit_prohibited: false
+    change_cost: LOW
+  - glob_pattern: "workspace/packages/**/*.tsx"
+    evolution_domain: DOMAIN-C-IMPLEMENTATION
+    direct_edit_prohibited: false
+    change_cost: LOW
+
+enforcement:
+  acl_rule_ids:
+    - ARCH-24: "classifies every new artifact, checks that changes to Domain A/B artifacts carry required approval evidence in commit metadata."
+    - ARCH-17: "prevents Sprint 0 architectural refactors of constitution/spec without ADR."
+    - ARCH-04: "Arrow of Dependency Authority — complements ASP-02 downward flow."

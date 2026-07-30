@@ -1,0 +1,137 @@
+version: "1.0.0"
+status: FROZEN
+contract_id: SPRINT-0-DEFINITION-OF-DONE
+contract_ref: contracts/sprint0-definition-of-done.contract.yaml
+
+scope: SPRINT_0_ONLY
+measured_after: any_commit_after_eos_implementation_baseline_v1_freeze
+
+criteria:
+  - id: DOD-001
+    name: gate_a_governance_verified
+    objective: Gate A Governance is VERIFIED
+    kind: gate_status_check
+    measure_source: GOVERNANCE_STATE.yaml
+    measure_path: repository_state.gates.A
+    expected_value: VERIFIED
+    verdict: PASS if equals else FAIL
+
+  - id: DOD-002
+    name: gate_b_canonical_foundation_verified
+    objective: Gate B Canonical Foundation packages (5) declared and conformant
+    kind: gate_status_check_plus_conformance
+    measure_source:
+      primary: GOVERNANCE_STATE.yaml repository_state.gates.B
+      secondary:
+        - packages/core/eir/tests/conformance.ts parse PASS
+        - packages/core/predicate-registry/tests/conformance.ts parse PASS
+        - packages/core/transformation-registry/tests/conformance.ts parse PASS
+        - packages/core/proof-ledger/tests/conformance.ts parse PASS
+        - workspace/contracts/ contains at minimum 5 contract files
+    expected_values:
+      gate_status: VERIFIED
+      conformance_tests: parse_success
+      contracts_count: ">= 5"
+    verdict: PASS if ALL true else FAIL
+
+  - id: DOD-003
+    name: t001_els_to_eir_transformation_proof_valid
+    objective: T001 produces deterministic Transformation Proof (TRF-PROOF-T001) with verdict PASS against Golden REQ-0001
+    kind: deterministic_proof_check
+    transformation_catalog_ref: enterprise/execution/TRANSFORMATION_CATALOG.md#T001
+    registry_ref: packages/core/transformation-registry/tests/conformance.ts transformationT001Fixture
+    contract_ref: contracts/transformations/t001-els-to-eir.contract.yaml (path target created by B-01)
+    measure_source:
+      input: examples/vertical-slice/REQ-0001 (unchanged hash)
+      transformation: T001 ELS → EIR (standalone B-01 first, then may be compared with engine output later at DOD-004)
+      proof_output: TRF-PROOF-T001 stored inside proof-ledger or build/evidence/transformation-proofs/
+    measures:
+      run_twice_same_input: true
+      output_hash_identical_between_runs: true
+      predicate_pass_all:
+        - PRED-T001-INPUT-SCHEMA
+        - PRED-T001-OUTPUT-DETERMINISTIC
+        - PRED-T001-CONFORM-EIR
+      proof_verdict: PASS
+    verdict: PASS if ALL true else FAIL; INCONCLUSIVE if any predicate unresolved
+
+  - id: DOD-004
+    name: transformation_engine_registry_driven_no_hardcoded_pipeline
+    objective: Engine resolves DAG from transformation registry, NO hardcoded T001..T005 by ID in source
+    kind: source_audit_plus_behavioral_check
+    transformation_catalog_ref: enterprise/execution/TRANSFORMATION_CATALOG.md (entire 5 entry table; engine consumes ALL entries generically)
+    registry_ref: packages/core/transformation-registry/tests/conformance.ts transformationRegistryDocumentFixture (5 entries: T001-T005)
+    forbidden_patterns_in_engine_source:
+      - literal_regex: '"T001"|T002|T003|T004|T005' (in packages/engine and packages/tooling/compiler-cli)
+      - literal_regex: 'hardcoded|order:\s*\[T' (in packages/engine)
+    required_behaviors:
+      - engine boot sequence step 1 = load repository_state
+      - engine boot sequence step 2 = load transformation registry
+      - engine boot sequence step 3 = DAG resolve generically (no hardcoded name list)
+      - engine boot sequence step 4 = evaluate predicates via predicate registry lookup
+      - engine boot sequence step 5 = execute ONLY_VERIFIED_lifecycle transformations
+      - engine boot sequence step 6 = generate transformation proof
+      - engine boot sequence step 7 = append proof ledger (append-only)
+    output_assertions:
+      - T001 output hash when executed via ENGINE == T001 output hash from STANDALONE B-01 (delta 0)
+    verdict: PASS if all true else FAIL
+
+  - id: DOD-005
+    name: repository_proof_emitted_for_baseline_and_governance_verified
+    objective: Repository emits Repository Proof JSON stating baseline and governance verified
+    kind: output_artifact_check
+    measure_source: build/evidence/repository-proof/REP-PROOF-0001.json (or latest seq)
+    required_fields:
+      proof_id: regex ^REP-PROOF-\\d+$
+      baseline_hash: sha256 string (len == 71 prefix sha256: + 64 hex)
+      governance_hash: sha256 string
+      dependency_hash: sha256 string
+      registry_hash: sha256 string
+      timestamp: ISO_8601_UTC pattern
+      signature: (UNSIGNED permitted for v1)
+      verdict: PASS
+    verdict: PASS if fields valid and verdict PASS else FAIL; INCONCLUSIVE if file absent
+
+  - id: DOD-006
+    name: end_to_end_pipeline_deterministic_replay_consistent_proof
+    objective: entire pipeline run twice on same commit => identical output hashes
+    kind: deterministic_replay
+    procedure:
+      - step: 1
+        action: clean state (remove build/evidence/)
+        action_extra: run full Sprint 0 pipeline
+        capture_hashes:
+          repository_proof_hash: sha256(json output)
+          transformation_proof_t001_hash: sha256(TRF-PROOF-T001)
+          registry_hash: sha256(registry manifests concatenation)
+      - step: 2
+        action: clean state again
+        action_extra: run same pipeline again same commit
+        capture_same_hashes: true
+    verification:
+      repository_proof_hash_r1_equals_r2: true
+      transformation_proof_t001_hash_r1_equals_r2: true
+      registry_hash_r1_equals_r2: true
+    verdict: PASS if three-way equal else FAIL
+
+aggregation:
+  rule: ALL DOD-001 .. DOD-006 MUST PASS (AND)
+  result_sprint0_done: true if all pass
+  non_pass_states:
+    INCONCLUSIVE allowed: true
+    implication: if any INCONCLUSIVE => Sprint 0 status = IN_PROGRESS not COMPLETE
+    FAIL: any FAIL => Sprint 0 status = FAILED
+
+audit_evidence_requirements:
+  every_criterion_must_have:
+    - artifact_references (file paths)
+    - hashes of inputs
+    - hashes of outputs
+    - execution timestamp
+    - authority signature (may be UNSIGNED for developer workstation runs)
+
+thresholds:
+  sprint0_exit_blocking: PASS on 6/6
+  sprint0_exit_allowed_next_focus_t001_first:
+    - T001 is THE bottleneck
+    - do not expand governance or architecture until DOD-003 deterministic PASS verified twice

@@ -1,0 +1,401 @@
+version: "1.0.0"
+status: FROZEN
+kind: CONSTITUTIONAL_SEMANTIC_CONTRACT
+ssot_note: THIS_YAML_IS_SINGLE_SOURCE_OF_TRUTH_FOR_EOS_SEMANTICS._REGISTRY_AND_RUNTIME_MUST_NOT_REDEFINE_SEMANTICS._REGISTRY_ONLY_DECLARES_EDGE_INSTANCES._SEMANTICS_OF_EACH_EDGE_KIND_IS_DEFINED_HERE_AND_ONLY_HERE.
+governance_ref:
+  constitution_lock: /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+  invariant_architecture: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
+  axioms: /root/Enterprise OS/governance/AXIOMS.md
+derived_from:
+  - Knowledge_Defined_Semantics_Governed_Execution_Paradigm_20260730
+  - Semantic_Kernel_Is_Abstraction_That_Was_Missing
+  - EOS_Ontology_and_Vocabulary_From_enterprise_constitution
+
+paradigm_statement:
+  semantic_kernel_role: >
+    Semantic Kernel menjawab: "Apa arti pengetahuan tersebut?"
+    Knowledge Domain = "Apa yang diketahui?"
+    Semantic Kernel = "Apa arti pengetahuan tersebut?"
+    Registry = "Apa saja instans yang tersedia?"
+  anti_patterns:
+    - REGISTRY_MUST_NOT_DEFINE_MEANING_OF_EDGES
+    - RUNTIME_MUST_NOT_HARDCODE_SEMANTIC_ASSUMPTIONS_AS_STRING_LITERAL_RULES
+    - CATALOG_EDGES_ARE_INSTANCES_NOT_TYPE_DEFINITIONS
+  boundary_rule: >
+    Ketika aturan semantic berubah (misal CONSUMES sekarang menjadi transitive),
+    HANYA file ini yang berubah. Registry entries TIDAK PERLU dimigrasi.
+    Tooling hanya perlu reload Semantic Kernel.
+
+architecture_layers_6_tier:
+  id: EOS_6_TIER_KNOWLEDGE_DEFINED_STACK
+  provenance: Paradigma_architecture_conceptual_user_20260730
+  flow_direction_unidirectional: true
+  reverse_flow_allowed: ONLY_APPEND_TO_PROVENANCE_VIA_EVIDENCE
+  layers:
+    - tier: 1
+      name: KNOWLEDGE_LAYER
+      answers: Apa yang diketahui?
+      contents:
+        - Constitution
+        - Contracts
+        - Schemas
+        - Policies
+        - Requirements
+      representative_paths:
+        - /root/Enterprise OS/enterprise/constitution/
+        - /root/Enterprise OS/workspace/contracts/
+        - /root/Enterprise OS/enterprise/schema/
+    - tier: 2
+      name: SEMANTIC_KERNEL
+      answers: Apa arti pengetahuan tersebut?
+      contents:
+        - Ontology (node kinds)
+        - Vocabulary (canonical identifiers)
+        - Relationship Definitions (edge kinds + semantics)
+        - Artifact Kinds taxonomy
+        - Compatibility Semantics
+        - Inference Rules (Declared → Inferred relationships)
+        - Planning Semantics
+        - Evidence Semantics
+      representative_paths:
+        - /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml (THIS FILE ALIASED)
+        - /root/Enterprise OS/enterprise/constitution/ontology.md
+        - /root/Enterprise OS/enterprise/constitution/vocabulary.md
+      stability_rating: EXTREME — changes require ADR + major version
+    - tier: 3
+      name: REGISTRY_LAYER
+      answers: Apa saja instans yang tersedia?
+      contents:
+        - Transformation Registry instances
+        - Predicate Registry instances
+        - Capability Registry instances
+        - Connector Registry instances (future)
+        - Workflow Registry instances (future)
+        - Policy Instance bindings
+      ontological_rule: Registry = PASSIVE declarative data.
+      semantic_rule: Registry only DECLARES edge instances via edges[]. Semantics of edge kind = DEFINED HERE IN SEMANTIC KERNEL.
+      representative_paths:
+        - /root/Enterprise OS/workspace/packages/core/transformation-registry/src/registry/
+        - /root/Enterprise OS/workspace/packages/core/predicate-registry/src/registry/
+    - tier: 4
+      name: PLANNING_LAYER
+      answers: Bagaimana pengetahuan yang tersedia diatur menjadi eksekusi?
+      contents:
+        - Reasoner (Declared Relationships → Inferred Relationships)
+        - Dependency Builder
+        - Execution Planner
+        - Capability Matcher
+        - Resolver Façade
+      boundary_artifact: EXECUTION_PLAN — single read model for Runtime
+      output: ExecutionPlan object
+      runtime_exposure_rule: >
+        Runtime TIDAK BOLEH membaca Registry / Contract / Predicate / Compatibility / Ontology DIRECTLY.
+        Runtime HANYA membaca ExecutionPlan — single input object from Planning Layer.
+      representative_paths:
+        - /root/Enterprise OS/workspace/packages/core/registry-resolver/
+        - FUTURE /root/Enterprise OS/workspace/packages/core/planner/
+    - tier: 5
+      name: EXECUTION_LAYER
+      answers: Apa yang sedang dieksekusi?
+      contents:
+        - Runtime
+        - Workers (future parallelism)
+        - Executor (explicit package, future)
+        - CLI
+        - Scheduler (future)
+      input_contract: ExecutionPlan (from Planning)
+      forbidden_internal_knowledge:
+        - Contract definitions
+        - Registry lookups
+        - Predicate declarations
+        - Compatibility matrices
+        - Ontology / vocab
+      representative_paths:
+        - /root/Enterprise OS/workspace/packages/core/runtime/
+        - /root/Enterprise OS/workspace/packages/tooling/eos-cli/
+    - tier: 6
+      name: PROVENANCE_LAYER
+      answers: Bagaimana bukti terbentuk dan bisa diaudit?
+      contents:
+        - Evidence Provenance Graph (EPG) — Merkle DAG
+        - Proof Ledger append-only
+        - Repository Proof
+        - Audit logs
+        - Verification reports
+      representative_paths:
+        - /root/Enterprise OS/build/evidence/proof-ledger/
+        - /root/Enterprise OS/build/evidence/
+      immutability_rule: Append ONLY. No rewrite. No re-order. No in-place mutation.
+
+ontology_node_kinds:
+  TRANSFORMATION:
+    canonical_id_pattern: T\d{3}
+    description: >
+      Pure function descriptor yang mengkonsumsi artifact dan menghasilkan artifact lain.
+      Transformation TIDAK BOLEH mengandung state.
+    semantic_roles:
+      - source_of: PRODUCES
+      - target_of: CONSUMES
+      - sequence_member_of: PREDECESSOR / SUCCESSOR
+      - requires_predicate: REQUIRES_PREDICATE
+  ARTIFACT:
+    canonical_id_pattern: <UPPER_SNAKE_CASE>
+    description: Setiap input / output object dalam EOS. Contoh: ELS_LANGUAGE_SPEC_DOC, EIR_INSTRUCTION_RECORD.
+    semantic_roles:
+      - target_of: CONSUMES / PRODUCES / VALIDATES
+      - produced_by: inverse of PRODUCES
+      - consumed_by: inverse of CONSUMES
+  PREDICATE:
+    canonical_id_pattern: PRED-[A-Z0-9-]+
+    description: Truth function (boolean) yang mengevaluasi apakah suatu artifact memenuhi syarat.
+    semantic_roles:
+      - target_of: REQUIRES_PREDICATE
+      - phase_binding: PRE_EXECUTION / POST_EXECUTION_VERIFICATION / POST_EXECUTION
+  REQUIREMENT:
+    canonical_id_pattern: REQ-\d{4}
+    description: Business / governance requirement yang harus dipenuhi oleh capability / contract / output.
+    semantic_roles:
+      - target_of: VALIDATES (via Artifact → Requirement chain)
+  CAPABILITY:
+    canonical_id_pattern: kebab-case
+    description: Self-contained unit of business value.
+    semantic_roles:
+      - component_of: COMPOSITION relationships
+  CONTRACT:
+    canonical_id_pattern: kebab-case with .contract.yaml suffix
+    description: Input/output promise yang ditegakkan oleh schema + predicate evaluation.
+  PROOF:
+    canonical_id_pattern: (TRF|EXEC|REP|REG|CAT|CONTRACT)-PROOF-.*
+    description: Immutable evidence object emitted after validation / execution.
+  EXECUTION_PLAN:
+    canonical_id_pattern: PLAN-\d{3}
+    description: Boundary artifact between Planning and Execution. Immutable for duration of 1 run.
+  KNOWLEDGE_SNAPSHOT:
+    canonical_id_pattern: KS-\d{4}\.\d{2}\.\d{2}\.\d{3}
+    description: Immutable hash tuple of entire knowledge state at a point in time. Root of reproducibility.
+
+artifact_kinds_taxonomy:
+  INPUT_ARTIFACT:
+    description: Disediakan dari luar pipeline. Tidak pernah dihasilkan oleh transformation internal EOS.
+    produced_by: [] (external)
+    planning_phase: validation
+  INTERMEDIATE_ARTIFACT:
+    description: Dihasilkan oleh suatu transformation dan dikonsumsi oleh downstream transformation.
+    produced_by: internal transformations
+    planning_phase: dependency_analysis
+  OUTPUT_ARTIFACT:
+    description: Keluaran terminal pipeline. Biasanya Proof object atau Repository Validation.
+    consumed_by: [] (external auditors / users)
+    planning_phase: evidence_emission
+
+relationship_definitions:
+  CONSUMES:
+    direction: source_transformation → target_artifact
+    creates_dependency: true
+    planning_phase: dependency_analysis
+    evidence_required: true
+    transitive: false
+    inverse: CONSUMED_BY
+    semantic_explanation: >
+      Transformation DECLARES via edge instance CONSUMES bahwa artifact target
+      WAJIB tersedia (dan memiliki hash + version sesuai Semantic Kernel compatibility rules)
+      sebelum transformation boleh dieksekusi.
+      Absence of required consumed artifacts = FAIL_FAST precondition violation.
+  PRODUCES:
+    direction: source_transformation → target_artifact
+    creates_dependency: false (dengan sendirinya; tapi inverse edge untuk downstream transformation menciptakan dependency)
+    planning_phase: dependency_analysis
+    evidence_required: true
+    transitive: false
+    inverse: PRODUCED_BY
+    semantic_explanation: >
+      Transformation DECLARES via edge instance PRODUCES bahwa artifact target
+      AKAN dihasilkan dengan version dan hash deterministik.
+      Output artifact WAJIB diverifikasi post-execution: hash match, schema conformance.
+  PREDECESSOR:
+    direction: target_transformation → prerequisite_source_transformation
+    creates_dependency: true
+    planning_phase: topological_order
+    evidence_required: true
+    transitive: true
+    inverse: SUCCESSOR
+    semantic_explanation: >
+      Transformation Y tidak boleh dijalankan sebelum transformation X (predecessor) mencapai lifecycle ≥ VERIFIED
+      DAN TRF-PROOF-X verdict = PASS.
+      Karena transitive: PREDECESSOR(X,Y) ∧ PREDECESSOR(Y,Z) ⇒ PREDECESSOR(X,Z) sebagai inferred edge.
+  SUCCESSOR:
+    direction: source_transformation → downstream_target_transformation
+    creates_dependency: false (hanya informational; PREDECESSOR lah yang mengunci)
+    planning_phase: topological_order
+    evidence_required: false
+    transitive: true
+    inverse: PREDECESSOR
+  REQUIRES_PREDICATE:
+    direction: source_transformation → target_predicate
+    creates_dependency: true
+    planning_phase: predicate_ordering
+    evidence_required: true
+    transitive: false
+    inverse: PREDICATE_REQUIRED_BY
+    semantic_explanation: >
+      Transformation X membutuhkan Predicate P untuk dijalankan pada phase PREDICATE.phase.
+      Order: PRE_EXECUTION → POST_EXECUTION_VERIFICATION → POST_EXECUTION.
+      Fail of ANY predicate with severity BLOCKER = transformation immediately halted.
+  VALIDATES:
+    direction: source_artifact → target_requirement
+    creates_dependency: false
+    planning_phase: traceability
+    evidence_required: true
+    transitive: false
+    inverse: VALIDATED_BY
+    semantic_explanation: >
+      Artifact A (hasil dari transformation chain) membuktikan bahwa Requirement R
+      terpenuhi (dengan tingkat kepatuhan sesuai policy Evidence Semantics).
+  CONTRIBUTES_TO:
+    kind: INFERRED_RELATIONSHIP — MAY_NOT_BE_DECLARED_IN_REGISTRY
+    direction: source_transformation → target_requirement
+    inference_rule: TRANSFORMATION PRODUCES Artifact AND Artifact VALIDATES Requirement ⇒ TRANSFORMATION CONTRIBUTES_TO Requirement
+    creates_dependency: false
+    planning_phase: traceability_reporting
+    evidence_required: true
+    transitive: false
+    provenance_note: >
+      Ini adalah contoh inferensi utama. Pengguna dapat membongkar provenance dan melihat:
+      CONTRIBUTES_TO inferred, dengan proof step-by-step: PRODUCES + VALIDATES chain.
+  DEPENDS_ON:
+    kind: DECLARED_IN_REGISTRY_VIA_CATALOG_COMPATIBILITY
+    direction: source_artifact_kind → target_artifact_kind_version_range
+    creates_dependency: true
+    planning_phase: compatibility_resolution
+    evidence_required: true
+    transitive: false
+    inverse: DEPENDED_UPON_BY
+  COMPATIBLE_WITH:
+    direction: source_transformation_semver → target_artifact_kind_version_range
+    creates_dependency: false
+    planning_phase: compatibility_resolution
+    evidence_required: false
+    transitive: false
+
+inference_rules_registered:
+  - rule_id: INF-001
+    name: Transformation Contributes To Requirement via Output Validation
+    premises:
+      - T PRODUCES A
+      - A VALIDATES R
+    conclusion: T CONTRIBUTES_TO R
+    provenance_kind: INFERRED
+    determinism: DETERMINISTIC
+  - rule_id: INF-002
+    name: Predecessor Transitivity
+    premises:
+      - Y PREDECESSOR X
+      - Z PREDECESSOR Y
+    conclusion: Z PREDECESSOR X  (inferred transitive closure; for display/trace only)
+    provenance_kind: INFERRED
+    determinism: DETERMINISTIC
+  - rule_id: INF-003
+    name: Required Input Coverage
+    premises:
+      - T CONSUMES artifact_set S
+      - Downstream PRODUCES coverage set = C
+    conclusion: Planning memeriksa S ⊆ C sebelum T masuk execution queue.
+    provenance_kind: INFERRED
+    determinism: DETERMINISTIC
+  - rule_id: INF-004
+    name: Predicate Ordering By Phase
+    premises:
+      - T REQUIRES_PREDICATE P1 (phase=PRE_EXECUTION)
+      - T REQUIRES_PREDICATE P2 (phase=POST_EXECUTION_VERIFICATION)
+      - T REQUIRES_PREDICATE P3 (phase=POST_EXECUTION)
+    conclusion: execution order evaluator = P1 → execute T → P2 → P3
+    provenance_kind: INFERRED
+    determinism: DETERMINISTIC
+
+declared_vs_inferred:
+  DECLARED_RELATIONSHIPS:
+    source: Registry layer (instance declarations in manifests / catalog edges[])
+    edge_patterns:
+      - CONSUMES instances
+      - PRODUCES instances
+      - PREDECESSOR instances
+      - SUCCESSOR instances
+      - REQUIRES_PREDICATE instances
+      - VALIDATES instances
+      - DEPENDS_ON instances
+      - COMPATIBLE_WITH instances
+    storage: YAML manifests + transformation-catalog graph edges
+    mutability: Governed by IA-08 Evolution Policies per artifact class
+  INFERRED_RELATIONSHIPS:
+    source: Semantic Kernel inference rules engine (Reasoner in Planning Layer)
+    edge_patterns:
+      - CONTRIBUTES_TO (via INF-001)
+      - TRANSITIVE_PREDECESSOR (via INF-002)
+      - PLAN_READY flags (via INF-003)
+      - PREDICATE_EVAL_ORDER (via INF-004)
+    storage: Emitted at planning time inside ExecutionPlan
+    provenance_traceability_requirement: >
+      Setiap INFERRED edge WAJIB disertai dengan provenance chain:
+      rule_id, premise_edge_ids, conclusion_edge_id.
+      Pengguna audit bisa "membongkar" mengapa suatu edge ada tanpa keharusan percaya pada reasoner sebagai black box.
+
+compatibility_semantics:
+  semver_rules:
+    MAJOR_X:
+      changes: breaking contract fields, removed required predicate, new predecessor block
+      consequence: NEW transformation_id (or major bump) required, OLD manifest preserved immutable
+    MINOR_Y:
+      changes: new optional output fields, new predicate appends (non-blocking)
+      consequence: backward compatible; OLD proofs still verifiable against OLD snapshot
+    PATCH_Z:
+      changes: documentation-only, comment fixes, cosmetic metadata (non-semantic)
+      consequence: patch OK; snapshot hash changes but knowledge semantics unchanged (per IA-11)
+  since_until_interpretation:
+    since: "Earliest transformation semver this semantic statement applies to."
+    until: "Latest transformation semver this semantic statement applies to. Use 2.x for: 2.* compatible, 3.0 breaking requires new semantic block."
+
+evidence_semantics:
+  required_flag_rules:
+    CONSUMES: evidence_required = true
+    PRODUCES: evidence_required = true
+    PREDECESSOR: evidence_required = true
+    REQUIRES_PREDICATE: evidence_required = true
+    VALIDATES: evidence_required = true
+    CONTRIBUTES_TO: evidence_required = true
+  proof_chaining_rule:
+    Execution Proofs TIDAK BOLEH bercampur dengan Validation Proofs (IA-05).
+    EVIDENCE PROVENANCE GRAPH adalah layer terpisah yang memetakan:
+      Declared edges (from registry) → Inferred edges (from reasoner) → Execution results → Proof objects → Ledger append
+  audit_requirement:
+    Setiap leaf node Proof Object WAJIB merujuk kembali ke:
+      knowledge_snapshot_id (yang memungkinkan reproducibility penuh)
+      + execution_plan_id
+      + runtime_version
+
+planning_semantics:
+  execution_plan_immutability:
+    after_planning_begins: NO_MUTABLE_KNOWLEDGE
+    rule_reference: IA-10_Immutable_Knowledge_Snapshot
+  planner_input_contract:
+    - Knowledge Snapshot (8-tuple digest)
+    - Semantic Kernel version + hash
+    - Registry instance manifests
+    - User parameters (which artifact / requirement target is desired)
+  planner_output_contract:
+    - ExecutionPlan.id = PLAN-NNN
+    - ExecutionPlan.snapshot = KS-....
+    - ExecutionPlan.steps[] = ordered transformations + predicate eval orderings
+    - ExecutionPlan.evidence.required = boolean
+  runtime_input_contract:
+    - ONLY ExecutionPlan object
+    - NO access to Registry / Contracts / Predicates / Ontology directly
+
+stability_policy:
+  semantic_kernel_break_change_protocol:
+    - Open ADR referencing the affected relationship_definition / inference_rule
+    - Major version bump from x.y → (x+1).0
+    - Preserve old Semantic Kernel side-by-side as SEMANTIC-KERNEL-v{major}.yaml for audit
+    - Update Knowledge Snapshot format if digest field changes
+  minor_change_protocol:
+    - New optional relationship or new inference rule that does not change existing edges OK as minor
+    - Update this file; OLD proofs still valid against OLD kernel version referenced in their knowledge_snapshot

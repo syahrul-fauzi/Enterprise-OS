@@ -1,0 +1,11 @@
+contract:
+  id: PROOF-LEDGER-CONTRACT-V1
+  package: "@repo/core-proof-ledger"
+  status: REVIEWED
+  purpose: Canonical ledger for two distinct proof levels: repository proof (baseline conformance) and transformation proof (contract conformance).
+  constraints:
+    - no_runtime_execution_behavior
+    - two_proof_levels_must_be_distinguished_and_not_conflated
+    - repository_proof_validates_baseline_conformance_only
+    - transformation_proof_validates_single_contract_only
+    - lifecycle_must_follow_verified_vocabulary

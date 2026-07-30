@@ -1,0 +1,22 @@
+contract:
+  id: SPRINT-0-DOD-V1
+  name: sprint_0_definition_of_done
+  status: VERIFIED
+  purpose: Machine-readable contract that defines DONE condition for Sprint 0 as a simple AND of 6 measurable criteria. No additional criteria permitted without ADR.
+  file: /root/Enterprise OS/governance/sprint0-definition-of-done.yaml
+  verifier:
+    name: eos_auditor_role
+    method:
+      - load sprint0-definition-of-done.yaml
+      - evaluate each DOD-001..DOD-006 independently
+      - aggregation: ALL 6 PASS => Sprint 0 DONE
+  allowed_readers:
+    - ACL
+    - release_gate
+    - auditor
+    - dashboard
+  anti_patterns:
+    - adding_new_criteria_without_adr
+    - using_subjective_terms_like_good_enough
+    - skipping_any_dod_criterion_because_other_five_pass
+  exit_note: Once Sprint 0 declared DONE, next ADR is required to alter SSOT stack layer numbering or add new canonical foundation packages.

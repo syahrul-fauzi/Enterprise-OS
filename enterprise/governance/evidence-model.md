@@ -8,7 +8,7 @@ and runtime behavior in Enterprise OS.
 ## Authority
 Lead Enterprise Architect
 ## Scope
-All phases; applies to specification validation, generator execution,
+All phases; applies to specification validation, compiler execution,
 implementation verification, and runtime observation artifacts.
 ## Normative Rules
 1. Every Evidence MUST validate exactly one explicit claim, result, or measured
@@ -29,7 +29,7 @@ Markdown prose plus machine-readable evidence records in YAML or JSON.
 - No Evidence without an explicit claim or result statement.
 - No Evidence without source attribution.
 - No accepted Evidence without `semantic_id`.
-- No Execution Evidence without a generator or runtime lineage reference.
+- No Execution Evidence without a compiler or runtime lineage reference.
 - No accepted Evidence without `lineage_id`.
 - No Specification Evidence may be used as a substitute for execution
   conformance proof.
@@ -62,7 +62,7 @@ Evidence is the audit boundary of EOS, but it is not only an endpoint.
 
 In the specification execution phase, evidence proves:
 - the specification is valid enough to execute;
-- the generator executed deterministically;
+- the compiler executed deterministically;
 - the implementation conforms to generated contracts;
 - runtime behavior can be traced back to the originating specification.
 
@@ -94,7 +94,7 @@ Used to prove that generated artifacts, implementations, or runtime behavior
 conform to the validated specification.
 
 Typical examples:
-- generator checksum
+- compiler checksum
 - schema hash
 - code generation log
 - implementation verification result
@@ -118,7 +118,7 @@ Every evidence record MUST include at minimum:
 - subject requirement or specification identifier
 - claim or measured outcome
 - source artifact or source system
-- generator version where applicable
+- compiler version where applicable
 - checksum, hash, or immutable reference where integrity matters
 - timestamp
 - verification status
@@ -175,7 +175,7 @@ EOS uses staged completion semantics.
 | Stage | Meaning | Required Evidence Class | Typical Proof |
 |------|---------|-------------------------|---------------|
 | `DoD-S` | Specification Done | Specification Evidence | DoSC pass, semantic validation pass |
-| `DoD-G` | Generation Done | Execution Evidence | generator checksum, artifact hashes |
+| `DoD-G` | Generation Done | Execution Evidence | compiler checksum, artifact hashes |
 | `DoD-I` | Implementation Done | Execution Evidence | conformance test pass, contract verification |
 | `DoD-R` | Runtime Done | Execution Evidence | runtime validation, observed production behavior |
 

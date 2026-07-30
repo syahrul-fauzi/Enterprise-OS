@@ -1,0 +1,547 @@
+catalog:
+  id: EOS-TRANSFORMATION-CATALOG-V1
+  name: EOS Execution Transformation Catalog
+  version: "1.0.0"
+  status: FROZEN
+  kind: CANONICAL_ARTIFACT
+  ssot_note: THIS_YAML_IS_SINGLE_SOURCE_OF_TRUTH_MARKDOWN_IS_DERIVED_VIEW
+  governance_ref:
+    baseline_lock: /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+    axioms: /root/Enterprise OS/governance/AXIOMS.md
+    architecture_freeeze_adr: /root/Enterprise OS/enterprise/decisions/adr/ADR-000-sprint0-architecture-freeze.yaml
+  hierarchy_of_truth:
+    order:
+      - CONSTITUTION
+      - GOVERNANCE
+      - CANONICAL_ARTIFACTS
+      - TRANSFORMATION_CATALOG
+      - TRANSFORMATIONS
+      - TRANSFORMATION_ENGINE
+      - PROOF_OBJECTS
+      - PROOF_LEDGER
+    engine_position_notice: Engine_is_near_bottom_consumer_not_top_creator
+    implementation_paradigm_shift:
+      old_top_down: ["Engine", "Compiler", "Transformation", "Registry"]
+      new_bottom_up: ["Registry", "Transformation", "Proof", "Engine"]
+  kbe_enforced: true
+  kbe_requirement:
+    knowledge_artifacts_required_before_execution:
+      - contract
+      - schema
+      - predicate
+      - registry_entry
+      - golden_reference
+  proof_hierarchy:
+    levels:
+      - level: 1
+        kind: TRANSFORMATION_PROOF
+        proves: Satu transformasi memenuhi kontraknya
+        example_id_pattern: TRF-PROOF-T<NNN>
+        output_location: /root/Enterprise OS/build/evidence/transformation-proofs/
+      - level: 2
+        kind: EXECUTION_PROOF
+        proves: Satu pipeline berjalan deterministik
+        example_id_pattern: EXEC-PROOF-REQ<NNNN>
+        output_location: /root/Enterprise OS/build/evidence/execution-proofs/
+      - level: 3
+        kind: REPOSITORY_PROOF
+        proves: Seluruh repository mematuhi baseline
+        example_id_pattern: REP-PROOF-<seq>
+        output_location: /root/Enterprise OS/build/evidence/repository-proof/
+    dependency_order: TRANSFORMATION_PROOF → EXECUTION_PROOF → REPOSITORY_PROOF
+  gate_structure:
+    gate_c:
+      id: C
+      name: VERIFIED_TRANSFORMATION
+      scope: T001_ONLY_NO_ENGINE
+      required_chain:
+        - T001
+        - GOLDEN_REFERENCE
+        - PREDICATE_EVALUATION
+        - TRANSFORMATION_PROOF
+        - PROOF_LEDGER_APPEND
+      explicitly_excluded:
+        - TRANSFORMATION_ENGINE
+        - CLI
+        - SCHEDULER
+      unlocks:
+        - T002_may_enter_implementation
+        - Gate_D_engine_may_begin_bootstrap_only_load_registry_no_business_logic
+    gate_d:
+      id: D
+      name: VERIFIED_EXECUTION
+      scope: ENGINE_ORCHESTRATES_ONLY_PROVEN_TRANSFORMATIONS
+      required_chain:
+        - TRANSFORMATION_ENGINE
+        - CLI
+        - PROOF_RUNNER
+        - CI_PIPELINE
+        - REPOSITORY_PROOF_EMISSION
+      engine_philosophy: Engine_only_orchestrates_already_proven_things_does_not_prove_transformations
+  root_of_trust:
+    t001_significance: EXECUTABLE_ARCHITECTURE_PROOF_FIRST
+    t001_failure_consequence:
+      registry_unproven: true
+      predicate_unproven: true
+      proof_unproven: true
+      ledger_unproven: true
+      engine_no_foundation: true
+      all_subsequent_gates_automatic_hold: true
+    t001_success_validates_chain:
+      - CONTRACT
+      - PREDICATE
+      - REGISTRY
+      - TRANSFORMATION
+      - PROOF
+      - LEDGER
+  no_discussion_zone_sprint0:
+    rationale: Fokus = T001_as_executable_theorem_first
+    deferred_until_after_t001_pass:
+      - STRUKTUR_MONOREPO
+      - PACKAGE_BOUNDARY_DEBATES
+      - EXPERIENCE_SURFACE_DESIGN
+      - PRODUCT_COMPOSITION
+      - DDD_VS_CLEAN_ARCHITECTURE_PHILOSOPHY
+      - PACKAGE_NAMING_OPINIONS
+      - NEW_ONTOLOGY_FAMILIES
+      - LARGE_SCALE_REFACTOR
+    sprint0_commit_must_strengthen_chain: CONTRACT → REGISTRY → TRANSFORMATION → PROOF → LEDGER
+    work_not_strengthening_chain = DEFERRED_UNTIL_AFTER_SPRINT_0
+
+transformations:
+  - id: T001
+    name_long: ELS to EIR
+    description: Transforms a canonical EOS Language Specification (ELS) document into an EOS Instruction Record (EIR) suitable for downstream transformation consumption.
+    input_kind: ELS_LANGUAGE_SPEC_DOC
+    output_kind: EIR_INSTRUCTION_RECORD
+    lifecycle: VERIFIED
+    contract_ref: /root/Enterprise OS/workspace/contracts/transformations/t001-els-to-eir.contract.yaml
+    predicate_refs:
+      - PRED-T001-INPUT-SCHEMA
+      - PRED-T001-OUTPUT-DETERMINISTIC
+      - PRED-T001-CONFORM-EIR
+    implementation_ref: /root/Enterprise OS/workspace/packages/tooling/t001-standalone/src/t001.ts::runT001
+    proof_schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema
+    evidence_output_kind: TRANSFORMATION_PROOF
+    evidence_output_id: TRF-PROOF-T001
+    golden_reference_input: /root/Enterprise OS/workspace/examples/vertical-slice/REQ-0001
+    root_of_truth: true
+    standalone_implementation_required: true
+    engine_dependency_forbidden_until_gate_c_verified: true
+    precedence: ROOT
+    predecessor_id: null
+    successor_id: T002
+    failure_strategy: FAIL_FAST
+    rollback_strategy: NO_ROLLBACK_PURE_FUNCTION
+    semver: "1.0.0"
+    compatibility_matrix:
+      requires: { minimum_els_version: "1.0.0", minimum_predicate_api: "1.0.0" }
+      provides: { output_eir_schema_version: "1.0.0" }
+
+  - id: T002
+    name_long: EIR to CAG
+    description: Transforms a verified EOS Instruction Record (EIR) + contract reference into a Capability Artifact Graph (CAG) snapshot.
+    input_kind: EIR_INSTRUCTION_RECORD_PLUS_CONTRACT_REF
+    output_kind: CAG_CAPABILITY_ARTIFACT_GRAPH
+    lifecycle: DRAFT
+    contract_ref: /root/Enterprise OS/workspace/contracts/transformations/t002-eir-to-cag.contract.yaml
+    predicate_refs:
+      - PRED-T002-INPUT-EIR-VERIFIED
+      - PRED-T002-OUTPUT-DETERMINISTIC
+      - PRED-T002-CONFORM-CAG
+    implementation_ref: /root/Enterprise OS/workspace/packages/tooling/t002-standalone/src/t002.ts::runT002
+    proof_schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema
+    evidence_output_kind: TRANSFORMATION_PROOF
+    evidence_output_id: TRF-PROOF-T002
+    golden_reference_input: /root/Enterprise OS/workspace/examples/vertical-slice/REQ-0001
+    precedence: AFTER_T001_PASS
+    blocked_until_t001_verified: true
+    predecessor_id: T001
+    successor_id: T003
+    failure_strategy: FAIL_FAST
+    rollback_strategy: DELETE_OUTPUT_ARTIFACTS
+    semver: "0.1.0-DRAFT"
+    compatibility_matrix:
+      requires: { minimum_eir_version: "1.0.0", minimum_predicate_api: "1.0.0" }
+      provides: { output_cag_schema_version: "1.0.0-DRAFT" }
+
+  - id: T003
+    name_long: CAG to TS IR
+    description: Transforms a verified Capability Artifact Graph (CAG) snapshot into TypeScript Intermediate Representation (TS IR).
+    input_kind: CAG_SNAPSHOT
+    output_kind: TS_IR_TYPESCRIPT_INTERMEDIATE_REPRESENTATION
+    lifecycle: DRAFT
+    contract_ref: /root/Enterprise OS/workspace/contracts/transformations/t003-cag-to-tsir.contract.yaml
+    predicate_refs:
+      - PRED-T003-INPUT-CAG-VERIFIED
+      - PRED-T003-NO-HARDCODED-CAPABILITY-ID
+      - PRED-T003-OUTPUT-DETERMINISTIC
+    implementation_ref: /root/Enterprise OS/workspace/packages/tooling/t003-standalone/src/t003.ts::runT003
+    proof_schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema
+    evidence_output_kind: TRANSFORMATION_PROOF
+    evidence_output_id: TRF-PROOF-T003
+    golden_reference_input: /root/Enterprise OS/workspace/examples/vertical-slice/REQ-0001
+    precedence: AFTER_T002_PASS
+    blocked_until_t002_verified: true
+    predecessor_id: T002
+    successor_id: T004
+    failure_strategy: FAIL_FAST
+    rollback_strategy: DELETE_OUTPUT_ARTIFACTS
+    semver: "0.1.0-DRAFT"
+    compatibility_matrix:
+      requires: { minimum_cag_version: "1.0.0-DRAFT", minimum_predicate_api: "1.0.0" }
+      provides: { output_tsir_schema_version: "1.0.0-DRAFT" }
+
+  - id: T004
+    name_long: TS IR to Runtime Artifacts
+    description: Transforms TS IR + Registry into distributable Runtime Artifacts (packages/dist/*.js + d.ts + manifests).
+    input_kind: TS_IR_PLUS_REGISTRY
+    output_kind: RUNTIME_ARTIFACTS_DIST
+    lifecycle: DRAFT
+    contract_ref: /root/Enterprise OS/workspace/contracts/transformations/t004-tsir-to-runtime.contract.yaml
+    predicate_refs:
+      - PRED-T004-INPUT-TSIR-VERIFIED
+      - PRED-T004-OUTPUT-DETERMINISTIC
+      - PRED-T004-CONFORM-RUNTIME-SCHEMA
+    implementation_ref: /root/Enterprise OS/workspace/packages/tooling/t004-standalone/src/t004.ts::runT004
+    proof_schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema
+    evidence_output_kind: TRANSFORMATION_PROOF
+    evidence_output_id: TRF-PROOF-T004
+    golden_reference_input: /root/Enterprise OS/workspace/examples/vertical-slice/REQ-0001
+    precedence: AFTER_T003_PASS
+    blocked_until_t003_verified: true
+    predecessor_id: T003
+    successor_id: T005
+    failure_strategy: RETRY_N
+    retry_config: { max_attempts: 3, backoff: deterministic_none_pure_function_is_deterministic }
+    rollback_strategy: DELETE_OUTPUT_ARTIFACTS
+    semver: "0.1.0-DRAFT"
+    compatibility_matrix:
+      requires: { minimum_tsir_version: "1.0.0-DRAFT", minimum_predicate_api: "1.0.0" }
+      provides: { output_runtime_manifest_version: "1.0.0-DRAFT" }
+
+  - id: T005
+    name_long: Runtime Output to Repository Proof
+    description: Consumes Runtime manifest + T001..T004 hashes and emits Repository Proof JSON with verdict PASS or FAIL.
+    input_kind: RUNTIME_MANIFEST_PLUS_4_HASHES
+    output_kind: REPOSITORY_PROOF_JSON
+    lifecycle: DRAFT
+    contract_ref: /root/Enterprise OS/workspace/contracts/transformations/t005-runtime-to-repo-proof.contract.yaml
+    predicate_refs:
+      - PRED-T005-INPUT-4-HASHES-SET
+      - PRED-T005-SIGNATURE-VALID-FORMAT
+      - PRED-T005-VERDICT-AND-ONLY-IF-T001-T004-PASS
+    implementation_ref: /root/Enterprise OS/workspace/packages/tooling/t005-standalone/src/t005.ts::runT005
+    proof_schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::RepositoryProofEntrySchema
+    evidence_output_kind: REPOSITORY_PROOF
+    evidence_output_id_pattern: REP-PROOF-<seq>
+    precedence: AFTER_T004_PASS
+    blocked_until_t004_verified: true
+    predecessor_id: T004
+    successor_id: null
+    failure_strategy: EMIT_INCONCLUSIVE_PROOF
+    rollback_strategy: EMIT_ROLLBACK_PROOF_ENTRY
+    semver: "0.1.0-DRAFT"
+    compatibility_matrix:
+      requires: { minimum_runtime_manifest_version: "1.0.0-DRAFT", minimum_predicate_api: "1.0.0" }
+      provides: { repository_proof_schema_version: "1.0.0" }
+    repository_proof_append_only: true
+
+graph:
+  id: EOS-TRANSFORMATION-GRAPH-V2
+  kind: CANONICAL_GRAPH_SSOT
+  provenance: IA-02_Semantic_Registry_Graph_+_IA-04_Canonical_Graph_Catalog_+_SEMANTIC-KERNEL.yaml_principle_2
+  semantic_kernel_reference: /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#relationship_definitions
+  resolver_obligation: >
+    Resolver MUST read graph.transformations.<id>.edges[] for edge instances.
+    MEANING of each edge.relation (CONSUMES, PRODUCES, PREDECESSOR, SUCCESSOR, REQUIRES_PREDICATE, VALIDATES)
+    is DEFINED EXCLUSIVELY in Semantic Kernel relationship_definitions. Registry/Catalog = instance data ONLY.
+    Resolver MUST NOT have hardcoded switch-case per edge kind beyond loading from Semantic Kernel definitions.
+  migration_note: >
+    During migration window (until Gate D exit), fields semantic:, predecessor_id, successor_id in legacy
+    transformations: section ARE DERIVED PROJECTIONS of graph.transformations + edges[].
+    SSOT = graph.transformations.<id> + Semantic Kernel relationship_definitions ONLY.
+  transformations:
+    T001:
+      node_kind: TRANSFORMATION
+      outputs:
+        - EIR_INSTRUCTION_RECORD
+      successors:
+        - T002
+      predecessors: []
+      metadata:
+        maturity: VERIFIED
+        compatibility:
+          since: "1.0"
+          until: "2.x"
+      edges:
+        - relation: CONSUMES
+          target: ELS_LANGUAGE_SPEC_DOC
+        - relation: PRODUCES
+          target: EIR_INSTRUCTION_RECORD
+          produced_version: "1.0.0"
+        - relation: REQUIRES_PREDICATE
+          target: PRED-T001-INPUT-SCHEMA
+          phase: PRE_EXECUTION
+        - relation: REQUIRES_PREDICATE
+          target: PRED-T001-OUTPUT-DETERMINISTIC
+          phase: POST_EXECUTION_VERIFICATION
+        - relation: REQUIRES_PREDICATE
+          target: PRED-T001-CONFORM-EIR
+          phase: POST_EXECUTION
+        - relation: SUCCESSOR
+          target: T002
+          trigger_condition: T001.lifecycle = VERIFIED AND TRF-PROOF-T001.verdict = PASS
+    T002:
+      node_kind: TRANSFORMATION
+      outputs:
+        - CAG_CAPABILITY_ARTIFACT_GRAPH
+      successors:
+        - T003
+      predecessors:
+        - T001
+      metadata:
+        maturity: DRAFT
+        compatibility:
+          since: "0.1"
+          until: "1.x"
+        blocked_until_predecessor_verified: true
+      edges:
+        - relation: CONSUMES
+          target: EIR_INSTRUCTION_RECORD
+          requires_min_version: "1.0.0"
+        - relation: CONSUMES
+          target: CONTRACT_REF
+        - relation: PRODUCES
+          target: CAG_CAPABILITY_ARTIFACT_GRAPH
+          produced_version: "1.0.0-DRAFT"
+        - relation: REQUIRES_PREDICATE
+          target: PRED-T002-INPUT-EIR-VERIFIED
+          phase: PRE_EXECUTION
+        - relation: REQUIRES_PREDICATE
+          target: PRED-T002-OUTPUT-DETERMINISTIC
+          phase: POST_EXECUTION_VERIFICATION
+        - relation: REQUIRES_PREDICATE
+          target: PRED-T002-CONFORM-CAG
+          phase: POST_EXECUTION
+        - relation: PREDECESSOR
+          target: T001
+          requires_lifecycle: VERIFIED
+          requires_truth_object: TRF-PROOF-T001 verdict = PASS
+        - relation: SUCCESSOR
+          target: T003
+          trigger_condition: T002.lifecycle = VERIFIED AND TRF-PROOF-T002.verdict = PASS
+    T003:
+      node_kind: TRANSFORMATION
+      outputs:
+        - TS_IR_TYPESCRIPT_INTERMEDIATE_REPRESENTATION
+      successors:
+        - T004
+      predecessors:
+        - T002
+      metadata:
+        maturity: DRAFT
+        compatibility:
+          since: "0.1"
+          until: "1.x"
+        blocked_until_predecessor_verified: true
+      edges:
+        - relation: CONSUMES
+          target: CAG_CAPABILITY_ARTIFACT_GRAPH
+          requires_min_version: "1.0.0-DRAFT"
+        - relation: PRODUCES
+          target: TS_IR_TYPESCRIPT_INTERMEDIATE_REPRESENTATION
+          produced_version: "1.0.0-DRAFT"
+        - relation: REQUIRES_PREDICATE
+          target: PRED-T003-INPUT-CAG-VERIFIED
+          phase: PRE_EXECUTION
+        - relation: REQUIRES_PREDICATE
+          target: PRED-T003-NO-HARDCODED-CAPABILITY-ID
+          phase: PRE_EXECUTION
+        - relation: REQUIRES_PREDICATE
+          target: PRED-T003-OUTPUT-DETERMINISTIC
+          phase: POST_EXECUTION_VERIFICATION
+        - relation: PREDECESSOR
+          target: T002
+          requires_lifecycle: VERIFIED
+          requires_truth_object: TRF-PROOF-T002 verdict = PASS
+        - relation: SUCCESSOR
+          target: T004
+          trigger_condition: T003.lifecycle = VERIFIED AND TRF-PROOF-T003.verdict = PASS
+    T004:
+      node_kind: TRANSFORMATION
+      outputs:
+        - RUNTIME_ARTIFACTS_DIST
+      successors:
+        - T005
+      predecessors:
+        - T003
+      metadata:
+        maturity: DRAFT
+        compatibility:
+          since: "0.1"
+          until: "1.x"
+        blocked_until_predecessor_verified: true
+      edges:
+        - relation: CONSUMES
+          target: TS_IR_TYPESCRIPT_INTERMEDIATE_REPRESENTATION
+          requires_min_version: "1.0.0-DRAFT"
+        - relation: CONSUMES
+          target: REGISTRY_SNAPSHOT
+        - relation: PRODUCES
+          target: RUNTIME_ARTIFACTS_DIST
+          produced_version: "1.0.0-DRAFT"
+        - relation: REQUIRES_PREDICATE
+          target: PRED-T004-INPUT-TSIR-VERIFIED
+          phase: PRE_EXECUTION
+        - relation: REQUIRES_PREDICATE
+          target: PRED-T004-OUTPUT-DETERMINISTIC
+          phase: POST_EXECUTION_VERIFICATION
+        - relation: REQUIRES_PREDICATE
+          target: PRED-T004-CONFORM-RUNTIME-SCHEMA
+          phase: POST_EXECUTION
+        - relation: PREDECESSOR
+          target: T003
+          requires_lifecycle: VERIFIED
+          requires_truth_object: TRF-PROOF-T003 verdict = PASS
+        - relation: SUCCESSOR
+          target: T005
+          trigger_condition: T004.lifecycle = VERIFIED AND TRF-PROOF-T004.verdict = PASS
+    T005:
+      node_kind: TRANSFORMATION
+      outputs:
+        - REPOSITORY_PROOF_JSON
+      successors: []
+      predecessors:
+        - T004
+      metadata:
+        maturity: DRAFT
+        compatibility:
+          since: "0.1"
+          until: "1.x"
+        blocked_until_predecessor_verified: true
+      edges:
+        - relation: CONSUMES
+          target: RUNTIME_MANIFEST
+        - relation: CONSUMES
+          target: T001_OUTPUT_HASH
+        - relation: CONSUMES
+          target: T002_OUTPUT_HASH
+        - relation: CONSUMES
+          target: T003_OUTPUT_HASH
+        - relation: CONSUMES
+          target: T004_OUTPUT_HASH
+        - relation: PRODUCES
+          target: REPOSITORY_PROOF_JSON
+          produced_version: "1.0.0"
+        - relation: REQUIRES_PREDICATE
+          target: PRED-T005-INPUT-4-HASHES-SET
+          phase: PRE_EXECUTION
+        - relation: REQUIRES_PREDICATE
+          target: PRED-T005-SIGNATURE-VALID-FORMAT
+          phase: PRE_EXECUTION
+        - relation: REQUIRES_PREDICATE
+          target: PRED-T005-VERDICT-AND-ONLY-IF-T001-T004-PASS
+          phase: POST_EXECUTION_VERIFICATION
+        - relation: PREDECESSOR
+          target: T004
+          requires_lifecycle: VERIFIED
+          requires_truth_object: TRF-PROOF-T004 verdict = PASS
+  artifact_kinds:
+    ELS_LANGUAGE_SPEC_DOC:
+      produced_by: []
+      consumed_by:
+        - T001
+      kind: INPUT_ARTIFACT
+    EIR_INSTRUCTION_RECORD:
+      produced_by:
+        - T001
+      consumed_by:
+        - T002
+      kind: INTERMEDIATE_ARTIFACT
+    CAG_CAPABILITY_ARTIFACT_GRAPH:
+      produced_by:
+        - T002
+      consumed_by:
+        - T003
+      kind: INTERMEDIATE_ARTIFACT
+    TS_IR_TYPESCRIPT_INTERMEDIATE_REPRESENTATION:
+      produced_by:
+        - T003
+      consumed_by:
+        - T004
+      kind: INTERMEDIATE_ARTIFACT
+    RUNTIME_ARTIFACTS_DIST:
+      produced_by:
+        - T004
+      consumed_by:
+        - T005
+      kind: INTERMEDIATE_ARTIFACT
+    REPOSITORY_PROOF_JSON:
+      produced_by:
+        - T005
+      consumed_by: []
+      kind: OUTPUT_ARTIFACT
+    CONTRACT_REF:
+      produced_by: []
+      consumed_by:
+        - T002
+      kind: INPUT_ARTIFACT
+    REGISTRY_SNAPSHOT:
+      produced_by: []
+      consumed_by:
+        - T004
+      kind: INPUT_ARTIFACT
+
+gating:
+  gate_b_requirement:
+    katalog_entries_complete: 5
+    contracts_defined_min_draft: true
+    predicates_registered_min_draft: true
+  gate_c:
+    unlock_condition: T001_DETERMINISTIC_PASS_2X_RUN
+    unlock_artifacts:
+      transformation_proof: TRF-PROOF-T001 verdict = PASS
+      deterministic_verified: 2x run output hash IDENTICAL
+      ledger_append_verified: true
+  gate_d:
+    unlock_condition: GATE_C_VERIFIED
+    engine_constraint: Engine_may_load_registry_MUST_NOT_infer_or_define_business_logic
+  gate_e:
+    unlock_condition: T005_PASS_END_TO_END_2X_RUN
+    sprint0_exit: true
+
+critical_rules:
+  NO_ORCHESTRATION_BEFORE_PROOF: true
+  rule_1_note: General orchestration ONLY loads TRANSFORMATION REGISTRY entries with lifecycle ≥ VERIFIED AND TRF-PROOF verdict = PASS. T001 MUST be proven standalone first.
+  NO_ENGINE_SOURCE_OF_TRUTH: true
+  rule_2_note: Engine MUST NEVER hardcode transformations as switch(id) case "T001". Engine ALWAYS calls via registry lookup.
+  NO_SKIP: true
+  rule_3_note: T002 shall not run before T001 PASS. T003 before T002 PASS. And so on. T005 = FINAL_CHAIN.
+  REGISTRY_FIRST_PRODUCT: true
+  rule_4_note: Implementation roadmap derived from this catalog. Every PR claiming capability must cite: Catalog entry + Contract_ref + Predicate_refs + Evidence output.
+  ADR_002_RISK_MITIGATION_1_GOD_REGISTRY_PREVENTED: true
+  rule_5_note: >
+    Registry source layout per-Transformation / per-Predicate single-purpose files ONLY.
+    @repo/core-transformation-registry/src/index.ts = pure composition (≤100 LOC), NO declarations.
+    Declarations live in: registry/transformations/t<NNN>.ts (max 200 LOC each), registry/predicates/t<NNN>.ts (max 200 LOC each).
+    BEFORE adding T006..T150 declarations MUST continue this layout.
+  ADR_002_RISK_MITIGATION_2_LEDGER_APPEND_ONLY_IMMUTABLE: true
+  rule_6_note: >
+    Proof Ledger = audit-grade immutable append-only.
+    Dedup key = proof_id. IF duplicate proof_id → NO-OP, return ledger unchanged.
+    FORBIDDEN: DELETE any entry, REPLACE entries[i] in-place, ALTER previous_entry_hash / entry_hash of prior entries.
+    If ledger migration required: rename OLD dir proof-ledger → proof-ledger-archive/{sequence}/, NEW genesis = OLD.last_entry_hash.
+    Proof objects themselves = immutable emissions, NEVER regenerated with mutated identity.
+  ADR_002_RISK_MITIGATION_3_GOLDEN_REFERENCE_MATRIX_EXPANSION: true
+  rule_7_note: >
+    REQ-0001 = ROOT of TRUST fixture only.
+    Future determinism coverage MUST include: REQ-0002 (multi aggregate Requirement + Capability + Policy) BEFORE T002 KBE gate opens;
+    REQ-0010 (scale fixture 10+ instructions) before Sprint 0 exit.
+    Golden content changes = MUST bump version 1.0.0→2.0.0 and create NEW file side-by-side; FROZEN old files preserved with original hash.
+  ADR_002_RISK_MITIGATION_4_CATALOG_AS_PACKAGE_MANAGER_ENFORCED: true
+  rule_8_note: >
+    Transformation Catalog YAML = second most important file after Constitution.
+    Each T entry MUST have ALL of: id, contract_ref, predicate_refs[], implementation_ref, proof_schema_ref, predecessor_id, successor_id,
+    failure_strategy, rollback_strategy, semver, compatibility_matrix.requires/provides.
+    Tooling reads YAML NOT hardcoded fallbacks. CLI `eos catalog show T003` MUST render compatibility matrix directly from YAML.

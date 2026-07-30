@@ -1,0 +1,131 @@
+version: "1.0.0"
+status: active
+scope: sprint0
+
+compliance_objective:
+  repository_must_know:
+    - authority_boundary
+    - legal_dependency_direction
+    - artifact_lifecycle_state
+    - gate_exit_predicates
+
+required_artifacts:
+  - /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+  - /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
+  - /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
+  - /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
+  - /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml
+  - /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
+  - /root/Enterprise OS/governance/CONFORMANCE-MODEL.yaml
+  - /root/Enterprise OS/governance/IMPLEMENTATION_BASELINE.md
+  - /root/Enterprise OS/governance/ARCHITECTURE_GOVERNANCE.md
+  - /root/Enterprise OS/governance/dependency-rules.yaml
+  - /root/Enterprise OS/governance/package-authority.yaml
+  - /root/Enterprise OS/governance/artifact-lifecycle.yaml
+  - /root/Enterprise OS/governance/implementation-discipline.yaml
+  - /root/Enterprise OS/governance/sprint0-exit-predicates.yaml
+  - /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml
+  - /root/Enterprise OS/enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
+  - /root/Enterprise OS/enterprise/specifications/COMPILER-PASSES.spec.yaml
+  - /root/Enterprise OS/workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml
+  - /root/Enterprise OS/workspace/contracts/KNOWLEDGE-IR.contract.yaml
+  - /root/Enterprise OS/workspace/contracts/DECISION-IR.contract.yaml
+  - /root/Enterprise OS/workspace/contracts/EVIDENCE-PROVENANCE-GRAPH.contract.yaml
+  - /root/Enterprise OS/workspace/workspace.yaml
+
+checks:
+  - id: ACL-001
+    name: Frozen root directories
+    type: structure
+    target:
+      - apps
+      - capabilities
+      - packages
+      - contracts
+      - decisions
+      - config
+      - scripts
+    pass_condition: workspace root contains only approved implementation directories plus standard tool files.
+  - id: ACL-002
+    name: Package boundary authority declared
+    type: metadata
+    target:
+      - packages/core
+      - packages/composition
+      - packages/presentation
+      - packages/tooling
+    pass_condition: every package family has declared authority and allowed change class.
+  - id: ACL-003
+    name: Dependency law declared
+    type: policy
+    target:
+      - governance/dependency-rules.yaml
+    pass_condition: dependency direction and prohibited dependencies are machine-readable.
+  - id: ACL-004
+    name: Artifact lifecycle declared
+    type: policy
+    target:
+      - governance/artifact-lifecycle.yaml
+    pass_condition: contract, spec, evidence, decision, and build outputs each have states and promotion rules.
+  - id: ACL-005
+    name: Sprint 0 exit predicates declared
+    type: policy
+    target:
+      - governance/sprint0-exit-predicates.yaml
+    pass_condition: Gate A to Gate E each has objective completion criteria.
+  - id: ACL-006
+    name: Baseline lock certificate declared
+    type: policy
+    target:
+      - governance/BASELINE_LOCK.yaml
+    pass_condition: baseline lock certificate exists, points to the same frozen baseline, and marks Gate A as VERIFIED.
+  - id: ACL-007
+    name: Governance state declared
+    type: policy
+    target:
+      - governance/GOVERNANCE_STATE.yaml
+    pass_condition: governance state exists, exposes current gate, repository compliance, evidence states, and predicate readiness for the next gate.
+
+gate_a_exit_review:
+  status: VERIFIED
+  required_evidence:
+    - Governance Validation
+    - Workspace Manifest Validation
+    - Architecture Compliance
+    - Baseline Lock
+  evidence_rules:
+    Governance Validation:
+      pass_condition: all governance YAML parses successfully.
+    Workspace Manifest Validation:
+      pass_condition: workspace manifest matches frozen root and package boundaries.
+    Architecture Compliance:
+      pass_condition: compliance policies can be resolved from governance source of truth.
+    Baseline Lock:
+      pass_condition: baseline certificate, workspace manifest, and governance docs reference the same implementation baseline.
+
+gate_lifecycle:
+  statuses:
+    - DRAFT
+    - REVIEWED
+    - VERIFIED
+    - FROZEN
+    - DEPRECATED
+
+verdict_model:
+  states:
+    - PASS
+    - FAIL
+    - INCONCLUSIVE
+  evidence_rule: no compliance claim is complete without artifact reference.
+
+enforcement_mode:
+  current: declarative
+  deferred_runtime_enforcement_until: gate_c_execution
+
+violation_classification:
+  baseline_violations:
+    definition: violations introduced after the baseline lock that conflict with frozen boundaries, governance rules, or constitutional constraints.
+    treatment: blocking_for_gate_b_and_above
+  legacy_violations:
+    definition: pre-existing violations observed during architecture checks that do not contradict the new frozen baseline or governance set.
+    treatment: record_as_backlog_remediation_non_blocking

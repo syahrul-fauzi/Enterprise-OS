@@ -1,0 +1,142 @@
+contract:
+  id: SPRINT-0-BACKLOG-V1
+  name: sprint0_execution_backlog_evidence_only
+  status: VERIFIED
+  freeze_aligned_with: ADR-000-sprint0-architecture-freeze
+  purpose: Defines the EXACT work items allowed next. Work on Sprint 0 is STRICTLY limited to items on this list producing EVIDENCE, not new governance or architecture abstractions.
+
+  allowed_pr_categories:
+    bug_fix_governance: true
+    implement_t001_standalone: true
+    add_new_evidence: true
+    refactor_structure_large: false
+    new_architecture_concept: false
+    change_ontology: false
+    governance_document_creation: false  # governance telah LOCKED per ADR-000
+
+  priority_order:
+    - B-01
+    - B-02
+    - B-03
+    - B-04
+    - B-05
+    - B-06
+
+  backlog:
+    - id: B-01
+      title: Implementasi T001 (ELS → EIR) secara STANDALONE tanpa engine.
+      owner_role: implementer
+      depends_on:
+        - contracts/transformations/t001-els-to-eir.contract.yaml EXISTS
+        - examples/vertical-slice/REQ-0001/requirement.yaml EXISTS
+      produces_evidence:
+        kind: deterministic_execution
+        inputs_hash: sha256(requirement.yaml + t001 contract)
+        outputs_hash: sha256(EIR output JSON)
+        run_twice_same_output: TRUE_REQUIRED
+        assertion: identical_inputs_identical_outputs_hashes_within_delta_0
+      verifier_command: tbd (T001 makefile or pnpm script at packages/examples/)
+      gating: required_before_B_02_AND_required_before_Gate_D_engine_start
+      freeze_exception: no_exception_allowed_work_on_this_1st
+
+    - id: B-02
+      title: Predicate Evaluator untuk 3 predicates T001 (INPUT-SCHEMA, OUTPUT-DETERMINISTIC, CONFORM-EIR).
+      owner_role: implementer
+      depends_on: [B-01 produces deterministic EIR output]
+      produces_evidence:
+        kind: per_predicate_verdict
+        each_predicate: PASS_FAIL_INCONCLUSIVE_ONLY
+        minimum_all: ALL_3_INCONCLUSIVE_ACCEPTABLE_FOR_DRAFT_BUT_PASS_REQUIRED_FOR_Gate_C_VERIFIED
+        append_pcol_to_predicate_registry_as_evidence: true
+      verifier_command: pnpm --filter @repo/core-predicate-registry tests
+      gating: B_01_must_be_deterministic_PASS_first
+      freeze_exception: no_new_predicates_outside_T001_permitted
+
+    - id: B-03
+      title: Proof Object Generator menghasilkan TRF-PROOF-T001.json (verdict PASS or FAIL or INCONCLUSIVE, never empty).
+      owner_role: implementer
+      depends_on: [B-02 outputs ALL 3 predicate verdicts]
+      produces_evidence:
+        kind: transformation_proof
+        stored_at:
+          - build/evidence/transformation-proofs/TRF-PROOF-T001.json
+          - proof_ledger entry appended (append only)
+        required_schema_fields:
+          - proof_id
+          - proof_level = transformation
+          - proof_status
+          - verdict
+          - transformation_id = T001
+          - input_hash
+          - output_hash
+          - contract_hash
+          - timestamp
+          - signature (UNSIGNED permitted for v1)
+          - predicate_results (3 entries)
+        deterministic_replay: identical input at B-01 → identical proof output hash
+      verifier_command: pnpm --filter @repo/core-proof-ledger tests
+      gating: B_01_PASS_and_B_02_3x_PASS_required_before_any_Gate_C_VERIFIED_claim
+
+    - id: B-04
+      title: Lengkapi Golden Reference REQ-0001 beserta expected/ artefak.
+      owner_role: implementer + auditor
+      depends_on: [B-01 outputs EIR]
+      produces_evidence:
+        kind: deterministic_expected_reference
+        files_required_at_examples_vertical_slice_REQ_0001:
+          - requirement.md (human-readable, immutable now)
+          - requirement.yaml (machine input, B-01 reads this)
+          - expected/
+              expected/els-input.hash (sha256 of requirement.yaml)
+              expected/eir-output.json (EXACT expected output, from B-01 run 1 verified)
+              expected/eir-output.hash (sha256 of expected/eir-output.json)
+              expected/predicate-verdicts.json (3 entries, PASS for all when C verified)
+              expected/trf-proof.hash (sha256 of TRF-PROOF-T001 PASS version)
+      assertion: for_all_runs_after: actual_hash == expected_hash
+      freeze_exception: no_scope_creep_expected_files_only_5_listed
+      gating: B_04_READY_before_B_05_verify
+
+    - id: B-05
+      title: Proof Ledger append operation untuk entry TRF-PROOF-T001 + verify ledger integrity.
+      owner_role: implementer
+      depends_on: [B-03 produces valid TRF-PROOF-T001, B-04 expected/ ready]
+      produces_evidence:
+        kind: ledger_append_verified
+        ledger_entries_count_before: N (from proof-ledger fixture)
+        ledger_entries_count_after: N+1
+        old_entries_unchanged: hash_chain_verified (append_only_no_mutation)
+        ledger_document_can_be_serialized_deterministically: true
+      verifier_command: pnpm --filter @repo/core-proof-ledger tests
+      gating: last_before_Gate_C_VERIFIED_claim_is_B_05
+
+    - id: B-06
+      title: Gate D (Execution Platform) — Transformation Orchestrator FULLY registry-driven, NO hardcoded T001..T005 by ID.
+      owner_role: implementer
+      depends_on: [B-01+B_02+B_03+B_04+B_05 all produce evidence PASS for T001]
+      forbidden_literals_in_engine_source:
+        - forbidden_regex_1: '"T001"|"T002"|"T003"|"T004"|"T005"'
+        - forbidden_regex_2: /hardcoded|order:\s*\[T/
+      produces_evidence:
+        kind: registry_driven_execution
+        engine_load_call_order:
+          1. load repository_state
+          2. load transformation registry
+          3. resolve DAG generically (derived from contracts, NO name)
+          4. evaluate predicates through predicate registry lookup
+          5. execute ONLY_VERIFIED_lifecycle transformations
+          6. generate proof
+          7. append proof ledger
+        execution_test_case: load T001 only (T002..T005 skipped as DRAFT/INCONCLUSIVE)
+        identical_output_as_standalone: T001 outputs IDENTICAL hash when run via engine vs run via B-01 standalone
+      freeze_exception: ORCHESTRATOR_BEGINNING_ONLY_AFTER_T001_STANDALONE_DETERMINISTIC (NO early scheduling)
+      gating: FINAL_ITEM_before_DOD-004_engine_claim
+
+  governance_items_forbidden_after_this_contract:
+    - new SSOT layer beyond 5
+    - new canonical foundation package beyond 5
+    - new lifecycle status beyond DRAFT REVIEWED VERIFIED FROZEN DEPRECATED
+    - repository proof moved from build/evidence/ back to inline in GOVERNANCE_STATE
+    - reordering gates A→B→C→D→E
+    - changing Definition of Done 6 AND criterion without ADR
+
+  audit_note: setiap commit berikutnya, reviewer WAJIB memetakan perubahan ke 1 dari 6 B-xx. Jika tidak ada mapping, PR ditolak (merujuk ADR-000 thaw_criteria tidak terpenuhi).

@@ -1,0 +1,138 @@
+id: ADR-001
+name: Sprint 0 Implementation Axioms — Engine-as-Executor + Knowledge-Before-Execution (KBE) canonical lock
+status: ACCEPTED
+effective: true
+supersedes: []
+
+date: 2026-07-30
+proposer: eos-enterprise-architect
+approver: eos-enterprise-auditor
+
+context:
+  architecture_closure_achieved: session 6a6985559793b74f1b968006
+  adr_000_already_active: ADR-000 Sprint 0 Architecture Freeze is effective
+  current_gate: A VERIFIED, B REVIEWED
+  bottleneck_identified: T001 as Root of Trust for entire implementation chain
+  user_explicit_request: User locked the Engine-as-Executor axiom and KBE principle as non-negotiable implementation rules
+  risk_if_not_formalized: Scope creep through engine-first mindset, hardcoded transformation logic, violation of Contract-First principle
+
+decision:
+  two_new_implementation_axioms_locked_effective_immediately:
+    - id: AXIOM-IMP-001
+      name: Engine is Executor, Not Knowledge Creator
+      canonical_statement: Engine tidak pernah menjadi tempat lahirnya pengetahuan. Engine hanya menjadi executor dari pengetahuan yang telah dibekukan dalam artefak canonical.
+      governance_location: /root/Enterprise OS/governance/AXIOMS.md#axiom-imp-001-engine-is-executor-not-knowledge-creator
+      anti_patterns_enforced:
+        - NO_HARDCODED_TRANSFORMATION_SWITCH_IN_ENGINE_SOURCE
+        - NO_BUSINESS_PREDICATE_LOGIC_IN_ENGINE_PACKAGES
+        - NO_TRANSFORMATION_PIPELINE_SEQUENCE_HARDCODED_BY_NAME
+    - id: AXIOM-IMP-002
+      name: Knowledge Before Execution (KBE)
+      canonical_statement: Tidak ada executable behavior yang boleh dibuat sebelum canonical knowledge yang mendefinisikannya tersedia.
+      governance_location: /root/Enterprise OS/governance/AXIOMS.md#axiom-imp-002-knowledge-before-execution-kbe
+      five_required_knowledge_artifacts_before_implementation:
+        - CONTRACT (YAML in contracts/ directory)
+        - SCHEMA (TypeScript types + Zod/JSON schema in canonical package)
+        - PREDICATE (minimum 3 registered in predicate-registry)
+        - REGISTRY_ENTRY (transformation-registry declaration with lifecycle >= DRAFT)
+        - GOLDEN_REFERENCE (input artifact with stable identity + hash)
+      enforcement: Implementation code written without all 5 artifacts = ACL AUTOMATIC REJECT
+
+  transformation_catalog_elevated_to_canonical_artifact:
+    old_form: markdown_only_DESCRIPTIVE
+    new_form: YAML_canonical_SSOT + markdown_derived_view
+    ssot_file: /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml
+    derived_view_file: /root/Enterprise OS/enterprise/execution/TRANSFORMATION_CATALOG.md
+    rule: All tooling reads YAML. Humans may read Markdown. No tooling reads Markdown for decision-making.
+
+  hierarchy_of_truth_formalized:
+    top_to_bottom:
+      - CONSTITUTION
+      - GOVERNANCE
+      - CANONICAL_ARTIFACTS
+      - TRANSFORMATION_CATALOG
+      - TRANSFORMATIONS
+      - TRANSFORMATION_ENGINE
+      - PROOF_OBJECTS
+      - PROOF_LEDGER
+    critical_observation: Engine near bottom, not near top. This is the paradigm shift.
+    old_paradigm_top_down: [Engine, Compiler, Transformation, Registry]
+    new_paradigm_bottom_up: [Registry, Transformation, Proof, Engine]
+
+  three_level_proof_hierarchy_established:
+    - level: 1
+      kind: TRANSFORMATION_PROOF
+      proves: Satu transformasi memenuhi kontraknya
+      id_pattern: TRF-PROOF-T<NNN>
+    - level: 2
+      kind: EXECUTION_PROOF
+      proves: Satu pipeline berjalan deterministik
+      id_pattern: EXEC-PROOF-REQ<NNNN>
+    - level: 3
+      kind: REPOSITORY_PROOF
+      proves: Seluruh repository mematuhi baseline
+      id_pattern: REP-PROOF-<seq>
+    dependency_chain: TRANSFORMATION_PROOF → EXECUTION_PROOF → REPOSITORY_PROOF
+
+  gate_c_and_gate_d_refined:
+    gate_c_verified_transformation:
+      scope: T001_ONLY
+      chain: [T001, GOLDEN_REFERENCE, PREDICATE_EVALUATION, TRANSFORMATION_PROOF, PROOF_LEDGER_APPEND]
+      explicitly_excluded: [TRANSFORMATION_ENGINE, CLI, SCHEDULER]
+    gate_d_verified_execution:
+      scope: ENGINE_ORCHESTRATES_ONLY_ALREADY_PROVEN
+      chain: [TRANSFORMATION_ENGINE, CLI, PROOF_RUNNER, CI, REPOSITORY_PROOF]
+      engine_role: Engine mengorkestrasi sesuatu yang SUDAH TERBUKTI. Engine BUKAN membuktikan transformasi.
+
+  t001_root_of_truth_elevated:
+    new_classification: EXECUTABLE_ARCHITECTURE_PROOF_FIRST
+    failure_chain:
+      registry_unproven: true
+      predicate_unproven: true
+      proof_unproven: true
+      ledger_unproven: true
+      engine_no_foundation: true
+      all_subsequent_gates_hold: true
+    success_chain_validated: [CONTRACT, PREDICATE, REGISTRY, TRANSFORMATION, PROOF, LEDGER]
+
+  no_discussion_zone_declared_until_after_t001_pass:
+    toplevel_list:
+      - MONOREPO_STRUCTURE
+      - PACKAGE_BOUNDARY
+      - EXPERIENCE_SURFACE
+      - PRODUCT_COMPOSITION
+      - DDD_VS_CLEAN_ARCHITECTURE_DEBATE
+      - PACKAGE_NAMING_OPINIONS
+      - NEW_ONTOLOGY_FAMILIES
+      - LARGE_REFACTOR
+    sprint0_commit_litmus_test:
+      question_1: Apakah ini diperlukan agar T001 berhasil menghasilkan Transformation Proof?
+      question_2: Apakah ini diperlukan agar Repository menghasilkan Repository Proof?
+      rule_if_both_no: DEFER_UNTIL_AFTER_SPRINT_0
+
+consequences:
+  positive:
+    - Engine responsibility crystal clear = no architecture drift from engine-first mistakes
+    - KBE enforces Contract-First in practice, not just as a slogan
+    - Transformation Catalog as SSOT = deterministic tooling behavior, no markdown parsing drift
+    - Gate C/D split eliminates premature engine development (the old biggest antipattern)
+    - No-discussion-zone eliminates scope creep; all effort concentrates on T001 Root of Trust
+    - 3-level proof hierarchy = clean separation of concerns, no mixed-evidence reports
+  negative:
+    - Temporary friction: any legitimate implementation idea needs 5 knowledge artifacts first
+    - Engine development blocked at pure-loader phase until T001 PASS (intentional constraint)
+  risks:
+    - KBE 5-artifact enforcement too slow if contract authoring is manual → mitigated by future SAG-guided generator, but Sprint 0 T001 is manually authored to establish the golden pattern
+
+thaw_criteria:
+  partial_thaw_after: T001 deterministic PASS 2x run + TRF-PROOF-T001 verdict PASS + proof ledger append verified
+  full_discussion_thaw_after: Sprint 0 declared DONE (all DOD-001..DOD-006 PASS)
+  until_then: All no-discussion-zone items are parked; filed as future ADR candidates if persistent idea
+
+references:
+  - /root/Enterprise OS/governance/AXIOMS.md (AXIOM-IMP-001 + AXIOM-IMP-002)
+  - /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml (canonical SSOT)
+  - /root/Enterprise OS/enterprise/execution/TRANSFORMATION_CATALOG.md (derived view only)
+  - /root/Enterprise OS/enterprise/decisions/adr/ADR-000-sprint0-architecture-freeze.yaml
+  - /root/Enterprise OS/governance/sprint0-definition-of-done.yaml (DOD-003 T001 proof)
+  - /root/Enterprise OS/governance/BASELINE_LOCK.yaml (SSOT Stack Layer 4 + 5)

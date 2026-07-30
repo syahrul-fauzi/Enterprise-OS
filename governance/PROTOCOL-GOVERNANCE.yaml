@@ -1,0 +1,170 @@
+version: "1.0.0"
+status: FROZEN
+kind: CONSTITUTION
+layer: PROTOCOL_GOVERNANCE
+abbreviation: PROTO-GOV
+ssot_note: PROTOCOL_GOVERNED_ARCHITECTURE_PARADIGM._PROTOCOL_DEFINES_BOUNDARY_COMPAT_VERSION_GOVERNANCE_NOT_JUST_COMMUNICATION._EVERY_IMPLEMENTATION_COMMUNICATES_ONLY_VIA_PROTOCOL._PROTOCOL_LIFECYCLE_DETERMINISTIC_VERSIONED_AUDITABLE.
+governance_ref:
+  asp: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
+  evolution_domains: /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml
+  invariant_architecture: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
+derived_from:
+  - User_Point_6_Protocol_Governed_Architecture_Not_Merely_Oriented
+  - User_Point_Evolution_Manifest_Metadata_Pattern
+
+authority_graph_derivation_order:
+  # Arah panah = may derive. Reverse forbidden (ASP-02, ASP-03).
+  order:
+    - step: 1
+      artifact_class: Constitution (ASP / IA / Baseline Lock)
+      derives_authority_from: NONE (foundational)
+    - step: 2
+      artifact_class: Requirements (per ADR / per EOS charter)
+      derives_authority_from: Constitution
+    - step: 3
+      artifact_class: Intent Declaration (artifacts describe goal, e.g. sprint0-exit-predicates.yaml)
+      derives_authority_from: Requirements
+    - step: 4
+      artifact_class: Policies (artifact-lifecycle.yaml, implementation-discipline.yaml)
+      derives_authority_from: Intent + Constitution
+    - step: 5
+      artifact_class: Contracts (workspace/contracts/*.contract.yaml)
+      derives_authority_from: Policies + Intent
+      canonical_fields: [id, version, contract_kind, header, sections_required, ir_content_hash_calculation]
+    - step: 6
+      artifact_class: Protocols
+      derives_authority_from: Contracts
+      definition:
+        A Protocol is a specification of INTERACTION between two components.
+        Protocol = boundary contract + compatibility contract + versioning contract + governance object.
+        Protocol examples in EOS today:
+          - Semantic Kernel edge semantics (CONSUMES / PRODUCES / CONTRIBUTES_TO rules) = Edge Interpretation Protocol
+          - Knowledge IR serialization + content hash = KIR Exchange Protocol
+          - Decision IR candidate/score/selected semantics = Planning Output Protocol
+          - Execution Plan bytecode format + KVM interpreter semantics = Execution Runtime Protocol
+          - Evidence Provenance Graph node format + Merkle hash chain = Evidence Verification Protocol
+    - step: 7
+      artifact_class: Execution Plan
+      derives_authority_from: Protocols (Execution Runtime Protocol) + Decision IR
+      rationale: No Execution Plan ever has authority higher than the Protocol that compiled it.
+    - step: 8
+      artifact_class: Execution Evidence
+      derives_authority_from: Execution Runtime Protocol inputs.
+      rationale: Evidence is RESULT of authority; never SOURCE. (ASP-03.)
+  diagram_formal:
+    - "Constitution → Requirements → Intent → Policies → Contracts → Protocols → Execution Plan → Evidence"
+
+protocol_is_multi_faceted:
+  facets:
+    - facet: BOUNDARY CONTRACT
+      definition: Protocol menentukan apa yang boleh masuk / keluar dari sebuah komponen.
+      example: KIR exchange protocol = Planner ONLY accepts KIR object (NOT snapshot) as input
+    - facet: COMPATIBILITY CONTRACT
+      definition: Protocol menentukan aturan kompatibilitas (SEMVER/EPOCH) antar versi
+    - facet: VERSIONING OBJECT
+      definition: Protocol carries version; every protocol MAJOR bump tracked in PROTOCOL-LIFECYCLE.md
+    - facet: GOVERNANCE OBJECT
+      definition: Protocol specifies approval authority required for MAJOR/MINOR/PATCH
+  anti_pattern:
+    statement:
+      "Protocol IS NOT:
+         - a TypeScript interface defined inside a runtime package (canonical authority would be in wrong domain)
+         - an 'API' defined in OpenAPI without version/compat lifecycle
+         - any ad-hoc RPC shape between two modules without a .yaml contract under Evolution Domain B"
+
+protocol_lifecycle:
+  stages_strict_order:
+    - stage: PROPOSAL
+      description: Protocol idea proposed via ADR or via PROPOSAL-*.yaml stub under governance/protocol-proposals/
+      review_required: 1 architecture-board sponsor minimum
+      compatibility_policy: NO COMPAT GUARANTEE (proposal may be withdrawn any time)
+    - stage: DRAFT_v0.x
+      description: First written YAML spec under enterprise/specifications/protocols/PROTO-*.yaml
+      fields_required: [id, name, version=0.x, status=DRAFT, governing_contract_ref, domain_b_authority_owner]
+      review_required: Specification Review 2 reviewers minimum
+      compatibility_policy: Backward incompatible changes allowed WITHOUT MAJOR bump (draft is unstable).
+    - stage: STABLE_v1.0
+      description: First stable version. Contract schema frozen; conformance test suite linked.
+      entry_conditions:
+        - conformance test suite defined (≥1 test per mandatory clause)
+        - ≥1 Reference Implementation passing conformance tests
+        - Specification Review passed + at least 1 Architecture Board sign-off
+      compatibility_policy: SEMVER strict (Domain B default) from this point.
+      deprecation_window: 2-major-releases minimum overlap.
+    - stage: DEPRECATED_v(x).y.z
+      description: Protocol superseded by successor_protocol_id
+      requirements:
+        - successor_protocol_ref MUST be STABLE already
+        - overlap window MUST be ≥ 2 MAJOR releases of successor
+        - implementations MUST emit warnings (log / diagnostics) when using deprecated
+    - stage: SUNSET
+      description: Protocol removed from active code paths; preserved in archive only for evidence verification chain.
+      sunset_archive_policy: governance/protocol-archive/<PROTO-ID>/<version>/
+
+  deprecation_policy_default:
+    per_evolution_domain_b:
+      policy: 2-major-releases
+      rule: "If PROTO-X current stable = v2.0 and successor PROTO-Xv3 stable = v3.0 is released, then PROTO-Xv2 sunset no earlier than v5.0 (2 major after successor v3). Not removed at v3 or v4."
+
+protocol_versioning_rule:
+  semver_application_domain_b:
+    MAJOR:
+      triggers:
+        - Removal / renaming of mandatory field
+        - New mandatory field without default
+        - Removal of edge kind in semantic protocol
+        - Change of hash algorithm / canonical serialization for any Stable IR
+        - Incompatible change to Execution Plan opcode format
+      requirement: ADR + Specification Review + architecture board sign-off
+    MINOR:
+      triggers:
+        - New optional field with default value
+        - New optional edge kind (unused yet)
+        - Additional conformance tests that do not invalidate existing implementations
+      requirement: Specification Review 2 reviewers
+    PATCH:
+      triggers:
+        - Editorial / comment changes in spec yaml (no semantic change)
+        - Typo fixes that don't change canonical schema
+        - Re-ordering of examples / non-semantic blocks
+      requirement: Engineering PR, no additional review required (but MUST not change semantic hash of contract body)
+
+required_protocol_inventory:
+  protocols_existing_to_be_formalized:
+    - id: PROTO-EDGE-SEMANTICS
+      name: Registry Edge Interpretation Protocol
+      version: 0.1.0-DRAFT
+      description: Meaning of edges relation field (CONSUMES, PRODUCES, etc) defined in Semantic Kernel relationship_definitions
+      authority_reference: SEMANTIC-KERNEL.yaml#relationship_definitions
+    - id: PROTO-KIR-EXCHANGE
+      name: Knowledge IR Exchange Protocol
+      version: 1.0.0-STABLE (since contract frozen)
+      description: Canonical KIR sections + ir_content_hash calculation
+      authority_reference: workspace/contracts/KNOWLEDGE-IR.contract.yaml
+    - id: PROTO-DIR-EXCHANGE
+      name: Decision IR Exchange Protocol
+      version: 1.0.0-STABLE
+      authority_reference: workspace/contracts/DECISION-IR.contract.yaml
+    - id: PROTO-KNOWLEDGE-SNAPSHOT
+      name: Knowledge Snapshot Build & Identity Protocol
+      version: 1.0.0-STABLE
+      authority_reference: workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml
+    - id: PROTO-EPG-VERIFICATION
+      name: Evidence Provenance Graph Verification Protocol
+      version: 1.0.0-STABLE
+      authority_reference: workspace/contracts/EVIDENCE-PROVENANCE-GRAPH.contract.yaml
+    - id: PROTO-RUNTIME-EXEC-PLAN
+      name: Execution Plan & KVM Runtime Protocol
+      version: 0.1.0-DRAFT (future implementation; contract pending writing in Gate D P1)
+      description: Execution Plan step opcodes, KVM interpreter semantics, plan_hash chain to DIR
+      authority_reference: future workspace/contracts/EXECUTION-PLAN.contract.yaml
+  new_protocols_future:
+    - id: PROTO-CONFORMANCE-REPORTING
+      version: 0.0.1-PROPOSAL
+      description: Reporting format for conformance suite pass/fail result hash.
+
+enforcement:
+  acl_rule_ids:
+    - ARCH-24: enforces downward direction only; implementations cannot write/modify protocol yaml spec directly.
+    - ARCH-25: enforces protocol boundary conformance at code level — no cross-component bypass via non-protocol typed exchange.
+    - ARCH-17: Sprint 0 structural freeze protects protocol specs during boot.

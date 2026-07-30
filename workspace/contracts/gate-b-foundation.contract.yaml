@@ -1,0 +1,55 @@
+contract:
+  id: GATE-B-FOUNDATION-V1
+  gate: B
+  name: canonical_foundation_contract
+  status: REVIEWED
+  purpose: Kontrak bahwa 5 paket foundation Gate B memenuhi Definition of Done sebagai declarative canonical knowledge (tanpa runtime behavior).
+  scope:
+    - contracts/ (workspace canonical contracts)
+    - packages/core/eir
+    - packages/core/predicate-registry
+    - packages/core/transformation-registry
+    - packages/core/proof-ledger
+  definition_of_done_per_package:
+    required_files:
+      - README.md
+      - SPECIFICATION.md
+      - package.json
+      - tsconfig.json
+      - eslint.config.mjs
+      - src/index.ts
+      - src/types.ts
+      - src/interfaces.ts
+      - src/schema.ts
+      - contracts/*.contract.yaml
+      - tests/conformance.ts
+    allowed_content_classes:
+      - specification
+      - schema
+      - types
+      - interfaces
+      - registry_metadata
+      - proof_metadata
+      - conformance_tests
+    forbidden_content_classes:
+      - feature_specific_runtime_branching
+      - hardcoded_transformation_pipeline
+      - runtime_entrypoint_run
+      - runtime_entrypoint_execute
+      - runtime_entrypoint_compile
+      - product_ui_logic
+      - react_imports
+      - ui_framework_code
+  lifecycle_vocabulary_requirement:
+    must_use_only:
+      - DRAFT
+      - REVIEWED
+      - VERIFIED
+      - FROZEN
+      - DEPRECATED
+  exit_predicates:
+    - every_foundation_package_has_all_required_files
+    - every_foundation_package_uses_canonical_lifecycle_vocabulary
+    - no_foundation_package_exposes_runtime_entrypoints
+    - no_foundation_package_imports_react_or_presentation_layers
+    - conformance_tests_parse_successfully

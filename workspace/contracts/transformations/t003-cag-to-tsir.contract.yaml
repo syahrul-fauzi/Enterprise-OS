@@ -1,0 +1,31 @@
+contract:
+  id: CONTRACT-T003-CAG-TO-TSIR-V1
+  name: T003 CAG → TS IR Transformation Contract
+  version: "1.0.0"
+  status: DRAFT
+  kind: TRANSFORMATION_CONTRACT
+  transformation_id: T003
+  transformation_catalog_ref: /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml#transformations[2]
+  axiom_kbe_enforced: true
+  precedence_constraint: BLOCKED_UNTIL_T002_VERIFIED
+
+input_spec:
+  kind: CAG_SNAPSHOT
+  validation_predicate: PRED-T003-INPUT-CAG-VERIFIED
+
+output_spec:
+  kind: TS_IR_TYPESCRIPT_INTERMEDIATE_REPRESENTATION
+  conform_predicate: PRED-T003-TBD
+  deterministic_predicate: PRED-T003-OUTPUT-DETERMINISTIC
+
+predicate_contract:
+  minimum_required: 3
+  predicate_ids_ordered:
+    - PRED-T003-INPUT-CAG-VERIFIED
+    - PRED-T003-NO-HARDCODED-CAPABILITY-ID
+    - PRED-T003-OUTPUT-DETERMINISTIC
+
+evidence_output:
+  kind: TRANSFORMATION_PROOF
+  proof_id_pattern: TRF-PROOF-T003
+  proof_ledger_append_required: true

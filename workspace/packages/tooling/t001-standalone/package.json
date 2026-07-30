@@ -1,0 +1,32 @@
+{
+  "name": "@repo/tooling-t001-standalone",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "t001-standalone": "./src/t001.ts"
+  },
+  "license": "MIT",
+  "scripts": {
+    "t001": "node --import tsx ./src/t001.ts",
+    "t001:prove": "node --import tsx ./src/t001-prove.ts",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src --max-warnings 0"
+  },
+  "dependencies": {
+    "@repo/core-eir": "workspace:*",
+    "@repo/core-predicate-registry": "workspace:*",
+    "@repo/core-transformation-registry": "workspace:*",
+    "@repo/core-proof-ledger": "workspace:*",
+    "yaml": "^2.7.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@repo/config-eslint": "workspace:*",
+    "@repo/config-typescript": "workspace:*",
+    "@types/node": "^22.15.30",
+    "eslint": "^9.39.1",
+    "tsx": "^4.19.2",
+    "typescript": "5.9.2"
+  }
+}

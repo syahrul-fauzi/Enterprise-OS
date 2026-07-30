@@ -1,0 +1,129 @@
+id: REG-RESOLVER-V001
+status: DRAFT
+contract_kind: CANONICAL_RESOLVER_CONTRACT
+kind: EOS_CONTRACT
+version: "1.0.0"
+title: "Registry Resolver Contract: resolve(TransformationId) → Full Resolution Bundle"
+author: EOS Architecture
+created_at: "2026-07-30"
+promotion_notes:
+  - lifecycle: DRAFT
+  - next_promotion_requirement: Registry Resolver conformance tests PASS with resolve(T001..T005) returning exact bundles per catalog
+
+specification_language: "EOS Contract v1.0"
+governance_refs:
+  constitution: /root/Enterprise OS/constitution/CONSTITUTION.md
+  baseline_lock: /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+  axioms: [AXIOM-IMP-001, AXIOM-IMP-002, AXIOM-IMP-003, AXIOM-IMP-004, AXIOM-IMP-005, AXIOM-IMP-006, AXIOM-IMP-007]
+  adr:
+    - /root/Enterprise OS/enterprise/decisions/adr/ADR-001-implementation-axioms-kbe-engine-executor.yaml
+    - /root/Enterprise OS/enterprise/decisions/adr/ADR-002-layered-architecture-invariants-risk-mitigation.yaml
+
+contract_rationale: >
+  Registry Resolver adalah "jembatan" antara Transformation Catalog (SSOT YAML) dan seluruh
+  downstream consumer (Engine, CLI, Proof Runner, CI). Resolver memastikan NO consumer membaca
+  YAML secara langsung dengan ad-hoc parsing. Setiap consumer MENGIMPORT resolver dan memanggil
+  resolve(Tid). Ini menjamin: single parse logic, consistent semantics, catalog field schema valid.
+  Dan menjamin engine (Gate D) HANYA memanggil resolve() — engine tidak mengetahui struktur YAML.
+
+scope:
+  applies_to:
+    - @repo/core-registry-resolver
+    - @repo/engine-transformation-engine (consumer ONLY, NO direct catalog read)
+    - @repo/tooling-eos-cli (consumer ONLY, NO direct catalog read)
+    - @repo/tooling-proof-runner (consumer ONLY)
+  explicitly_excluded:
+    - transformation standalone implementations (runT<NNN>)
+    - predicate evaluator tooling
+
+interface_spec:
+  function_name: resolve
+  signatures:
+    - "resolve(id: TransformationId): ResolverResolutionBundle"
+    - "resolveAll(): readonly ResolverResolutionBundle[]"
+    - "resolveRootOfTrust(): ResolverResolutionBundle"
+    - "isBlocked(id: TransformationId): { blocked: boolean; reason?: string }"
+  exported_from: "@repo/core-registry-resolver"
+  forbidden_imports_for_resolver:
+    - packages/engine/* (AXIOM-IMP-004 Registry ⊘ Engine)
+    - packages/tooling/*-cli (AXIOM-IMP-004)
+    - any scheduler / cron / queue library (AXIOM-IMP-006 Transformation ⊘ Scheduler applies here: resolver is decl consumer not scheduler-aware)
+  resolver_reads_from:
+    - enterprise/execution/transformation-catalog.yaml (PRIMARY SSOT)
+    - @repo/core-transformation-registry (declarations exported identity)
+    - @repo/core-predicate-registry (predicate identity declarations, NO evaluators)
+    - @repo/core-proof-ledger (schema refs, NO ledger state read at resolve time)
+  resolver_must_not_write:
+    - NO file writes
+    - NO process mutation
+    - NO environment reads (resolver = pure function of catalog & registry declarations)
+
+input_spec:
+  transformation_id:
+    type: "TransformationId (literal union 'T001' | 'T002' | 'T003' | 'T004' | 'T005')"
+    required: true
+    schema_ref: "@repo/core-transformation-registry/types.ts::TransformationId"
+
+output_spec:
+  ResolverResolutionBundle:
+    transformation_id: TransformationId
+    name_long: string
+    lifecycle: TransformationStatus
+    contract: { ref_path: string; contract_kind: string; }
+    predicates_ordered: "readonly PredicateDeclaration[] — ORDERED same as catalog.predicate_refs (same phase+order+severity as registry)"
+    implementation_ref: string (path to runT<NNN> pure function with ::function suffix)
+    proof:
+      proof_id_pattern: string
+      proof_level: ProofLevel
+      proof_schema_zod_ref_path: string (e.g. @repo/core-proof-ledger/src/schema.ts::TransformationProofEntrySchema)
+      required_predicate_count: number (MUST match predicates_ordered.length)
+    dag:
+      predecessor_id: TransformationId | null
+      successor_id: TransformationId | null
+      precedence: TransformationPrecedence (ROOT / AFTER_T<NNN>_PASS)
+      blocked: boolean
+      blocked_reason_if_true: string | null
+    strategy:
+      failure_strategy: FAIL_FAST | RETRY_N | FALLBACK_SUCCESSOR_SKIP | EMIT_INCONCLUSIVE_PROOF
+      rollback_strategy: NO_ROLLBACK_PURE_FUNCTION | DELETE_OUTPUT_ARTIFACTS | EMIT_ROLLBACK_PROOF_ENTRY
+      retry_config_if_retry_n: { max_attempts: number; backoff: string; } | null
+    semver: string
+    compatibility_matrix:
+      requires: Record<string, string> (from catalog.requires)
+      provides: Record<string, string> (from catalog.provides)
+    golden_reference_input_dir: string
+
+predicate_ordered:
+  total_required_for_resolver_consistency: "At least 3 predicates must be returned per transformation (per AXIOM-IMP-002 KBE)"
+  order_rule: "ORDER predicate array by the predicate_refs ORDER declared in transformation-catalog.yaml / transformation registry index"
+  phase_order_enforcement: "Array sort invariant: PRE_EXECUTION items before POST_EXECUTION_VERIFICATION items before POST_EXECUTION items"
+
+verdict_rules:
+  resolve(Tid) THROWS if:
+    - Tid not in TRANSFORMATIONS literal union (unknown transformation id)
+    - catalog entry for Tid MISSING any of: contract_ref, implementation_ref, proof_schema_ref, predecessor_id, successor_id, failure_strategy, rollback_strategy, semver, compatibility_matrix
+    - predicate count per transformation < 3 (KBE violation)
+    - predecessor_id declared in catalog BUT predecessor_status < VERIFIED AND blocked_until_predecessor_verified = true → bundle.dag.blocked = true, bundle.dag.blocked_reason set, NO throw
+  resolve() RETURNS bundle (non-throw) if:
+    - resolution complete, blocked flag set with reason as needed (caller decides fail-fast)
+
+evidence_output:
+  kind: CONFORMANCE_RESULTS
+  location: "/root/Enterprise OS/workspace/packages/core/registry-resolver/tests/conformance.ts"
+  required_assertions:
+    - resolve('T001').proof.proof_level = TRANSFORMATION_PROOF
+    - resolve('T001').predicates_ordered.length = 3
+    - resolve('T001').dag.predecessor_id = null
+    - resolve('T001').dag.successor_id = 'T002'
+    - resolve('T002').dag.predecessor_id = 'T001'
+    - resolve('T002').dag.successor_id = 'T003'
+    - isBlocked('T002').blocked = true (since T002 status still DRAFT at Sprint 0)
+    - resolveRootOfTrust().transformation_id = 'T001'
+    - resolveAll().length = 5 (exact TRANSFORMATION_COUNT_SPRINT0_REQUIRED)
+    - resolveAll()[0].predicates_ordered[0].phase = 'PRE_EXECUTION' (phase order invariant)
+
+anti_patterns_enforced:
+  - RESOLVER_MUST_NOT_EMIT_PROOF: Resolver returns schema REF path, never loads proof ledger state
+  - RESOLVER_MUST_NOT_CALL_TRANSFORMATION: Resolver returns implementation PATH, never imports/run runT<NNN>
+  - RESOLVER_MUST_NOT_READ_LEDGER_STATE: No fs read to build/evidence at resolve time
+  - RESOLVER_MUST_NOT_HAVE_ENGINE_IMPORTS: Violation of AXIOM-IMP-004 = automatic reject

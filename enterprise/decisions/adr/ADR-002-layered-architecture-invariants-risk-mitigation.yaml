@@ -1,0 +1,142 @@
+id: ADR-002
+status: FROZEN
+effective_from: "2026-07-30"
+title: "Layered Architecture Dependency Direction Invariants + God Registry Mitigation + Append-Only Ledger Immutable Guarantee + Golden Reference Expansion Matrix + Transformation Catalog as Package Manager"
+decision_summary: >
+  Validasi Gate C T001 berhasil membuktikan hipotesis EOS bahwa Knowledge mendahului Execution.
+  Berdasarkan bukti tersebut, 5 invariant permanen (AXIOM-IMP-003 s/d -007) dikunci untuk menjaga
+  dependency graph tetap DAG. Empat risiko drift (God Registry, Ledger rewrite, Golden singular,
+  Catalog flat) diidentifikasi dan mitigasinya diperinci. Registry Resolver ditetapkan sebagai
+  prioritas sebelum Engine, karena Engine = orkestrator consumer of resolver, bukan sebaliknya.
+context:
+  - user_observation_1: Registry-first paradigm berhasil dibuktikan. Executable = consumer, bukan source of truth.
+  - user_observation_2: Engine berhasil diturunkan menjadi Executor (stateless lebih mudah diverifikasi).
+  - user_observation_3: Proof ontologically bukan bagian dari State. Proof = hasil observasi State.
+  - user_observation_4: Gate C SEBELUM Engine dependency graph (Knowledge → Transformation → Proof → Engine) validasi sukses.
+  - prior_art: AXIOM-IMP-001 (Engine as Executor) + AXIOM-IMP-002 (KBE 5 artifacts).
+decisions:
+  decision_1_5_invariants_locked:
+    axiom_refs: ["AXIOM-IMP-003", "AXIOM-IMP-004", "AXIOM-IMP-005", "AXIOM-IMP-006", "AXIOM-IMP-007"]
+    invariant_dag: true
+    consequence_any_cycle_anywhere: "AUTOMATIC REJECT by architecture conformance check (pnpm arch-check exit_code != 0)"
+  decision_2_god_registry_mitigation:
+    risk: "At T001..T150 scale, single index.ts = 2500+ LOC god registry = coupling + merge conflict magnet"
+    mitigation_strategy: "Per-Transformation / Per-Predicate single-purpose files, registry index = pure composition only"
+    enforced_structure:
+      transformation_registry:
+        root: "workspace/packages/core/transformation-registry/src/"
+        layout:
+          - "registry/transformations/t001.ts     ← TRANSFORMATION_T001 declaration ONLY"
+          - "registry/transformations/t002.ts     ← TRANSFORMATION_T002 declaration ONLY"
+          - "registry/transformations/t003.ts"
+          - "registry/transformations/t004.ts"
+          - "registry/transformations/t005.ts"
+        composite:
+          - "src/index.ts                         ← export { TRANSFORMATION_T001, TRANSFORMATIONS_ARRAY } via spread composition; NO declarations"
+        per_file_max_loc_recommendation: 200
+      predicate_registry:
+        root: "workspace/packages/core/predicate-registry/src/"
+        layout:
+          - "registry/predicates/t001.ts         ← T001_PREDICATES array ONLY (3 predicates)"
+        composite:
+          - "src/index.ts                         ← export composition ONLY"
+    lint_rule_planned: "Per-transformation file MUST NOT import/declare any other transformation. ESLint custom rule Sprint 0 end."
+  decision_3_ledger_append_only_immutable:
+    risk: "Rewrite / delete ledger entries destroys audit value and corrupts hash chain integrity"
+    enforced_primitives:
+      dedup_key: "proof_id (transformation TRF-PROOF-T<NNN>, execution EXEC-PROOF-*, repository REP-PROOF-*)"
+      dedup_policy: "IF entry with proof_id EXISTS in ledger.entries → NO-OP (idempotent append, return ledger unchanged)"
+      forbidden_operations:
+        - "DELETE any entry from ledger.entries array"
+        - "REPLACE ledger.entries[i] with a modified object AFTER append"
+        - "ALTER previous_entry_hash or entry_hash of any previous entry"
+    ledger_regeneration_policy: >
+      If canonical rebuild is required (hash algorithm migration), NEW ledger starts with
+      genesis_hash = old.last_entry_hash to preserve audit trail continuity.
+      OLD ledger directory is RENAMED to proof-ledger-archive/{archive_sequence}/ and preserved.
+      Proof objects themselves are NEVER regenerated; they remain immutable emissions.
+  decision_4_golden_reference_matrix:
+    risk: "Satu REQ-0001 = insufficient determinism coverage (edge cases, multiple aggregate roots)"
+    goldens_root: "workspace/examples/"
+    matrix:
+      - id: REQ-0001
+        role: "ROOT OF TRUST fixture. Single aggregate = Requirement. 3 compliance rules, 5 instructions."
+        current_status: FROZEN
+      - id: REQ-0002
+        role: "Multi-aggregate (Requirement + Capability + Policy) fixture. Determinism cross-aggregate identity propagation test."
+        implementation_target: GATE_D_BEFORE_T002_KBE
+        blocked_until: T002_CONTRACT_VERIFIED
+      - id: REQ-0010
+        role: "Scale fixture: 10 instruction_specification / 20 capability_deps / 50 traceability anchors. Output size regression test."
+        implementation_target: POST_SPRINT0
+    golden_hash_rule: "Goldens are FROZEN artifacts. Any content change MUST increment version (1.0.0 → 2.0.0) and create NEW file side-by-side with old."
+  decision_5_transformation_catalog_as_package_manager_of_eos:
+    status: "Most important YAML after Constitution"
+    enriched_per_transformation_schema_required:
+      - id
+      - contract_ref
+      - predicate_refs (ordered array)
+      - implementation_ref (path to standalone runT<NNN> pure function)
+      - proof_schema_ref
+      - successor_id (optional, linear chain)
+      - predecessor_id (optional, blocked_until_predecessor_verified)
+      - failure_strategy  (enum: FAIL_FAST | RETRY_N | FALLBACK_SUCCESSOR_SKIP | EMIT_INCONCLUSIVE_PROOF)
+      - rollback_strategy (enum: NO_ROLLBACK_PURE_FUNCTION | DELETE_OUTPUT_ARTIFACTS | EMIT_ROLLBACK_PROOF_ENTRY)
+      - semver
+      - compatibility_matrix:
+          requires: { minimum_eir_version, minimum_predicate_api }
+          provides: { output_schema_version }
+    tooling_consumer_plan:
+      Registry Resolver (next Sprint): reads EVERY field above
+      Engine (Gate D): does NOT re-read YAML directly — reads ONLY resolver output
+      CLI: human display of compatibility matrix via `eos catalog show T003`
+  decision_6_registry_resolver_before_engine:
+    priority: "Gate D Work Item #1 — BEFORE Transformation Engine implementation starts"
+    resolver_contract_signature:
+      name: resolve
+      input: "TransformationId (literal 'T001' | 'T002' | ... | 'T005')"
+      output:
+        contract: { path, parsed_yaml_ref }
+        predicates: "ordered array of PredicateDeclaration (imported from predicate-registry by id)"
+        implementation_ref: "path to the standalone runT<NNN>() pure function source"
+        expected_proof: { proof_level, proof_schema_zod_ref, required_predicate_count }
+        successor: "TransformationId | null"
+        predecessor: "TransformationId | null"
+        blocked: "boolean (if predecessor blocked_until_verified && predecessor.status < VERIFIED)"
+    engine_simplification: >
+      With stable resolver, Engine = 4-line for-loop over DAG: resolve → execute → verify → emit.
+      Engine business logic LOC count target: ≤ 100 LOC core orchestrator.
+      All remaining logic = delegated to canonical packages.
+consequences:
+  positive:
+    - "EOS dependency graph provably DAG (cycles eliminated at axiom level)"
+    - "Registry scales horizontally from T005 to T150 without structural rewrite (mitigation locked day-0)"
+    - "Ledger becomes auditable legal artifact (append-only, rewrite impossible)"
+    - "Determinism validation becomes statistical (N golden references, not singular anecdote)"
+    - "Transformation Catalog = single point of integration, like npm package.json for transformations"
+    - "Engine complexity ceiling bounded: resolver exists → engine is a DAG walker, not a knowledge container"
+  negative:
+    - "Upfront file layout refactor required today (decision 2) before T002 added"
+    - "More small files; contributor must follow directory convention"
+    - "Golden expansion requires additional fixture authoring effort before T002 conformance"
+    - "Registry Resolver KBE 5 artifacts must be produced BEFORE resolver executable code"
+  risks_accepted:
+    - "YAML Catalog complexity grows with 9 extra fields per transformation → tooling lint MUST validate, not human review alone"
+validation_method:
+  invariant_003_007: "arch-check DAG scan + ESLint import boundary rules per package (forbidden-imports config)"
+  god_registry_mitigation: "wc -l src/index.ts must remain < 100 LOC composition only; declarations ≤ 200 LOC per per-T file"
+  ledger_immutable: "After first append, grep for any fs.writeFileSync calls that pass previous entries path; shell test harness at CI"
+  golden_matrix: "conformance counter ≥ 3 golden files by Gate D close; schema hash check per golden == frozen documented digest"
+  catalog_as_pm: "Registry Resolver conformance test: resolve(T003) MUST return all 9 enriched fields from YAML without fallback hardcoded defaults"
+  resolver_before_engine: "@repo/engine-transformation-engine package.json MUST have @repo/core-registry-resolver in dependencies; MUST NOT depend directly on @repo/core-transformation-registry"
+related_references:
+  - governance/AXIOMS.md#AXIOM-IMP-001..AXIOM-IMP-007
+  - enterprise/execution/transformation-catalog.yaml (SSOT — ADR-002 decision_5 fields must be present in YAML by close of business today)
+  - workspace/packages/core/transformation-registry/src/
+  - workspace/packages/core/predicate-registry/src/
+  - workspace/packages/core-registry-resolver/ (to be created, KBE applies)
+no_discussion_zone_reinforced:
+  - "Monorepo structure: fixed by BASELINE_LOCK / constitution → no debate until REP-PROOF-V1 EMITTED"
+  - "Package boundary / naming: 11-file frozen package template → invariant"
+  - "DDD vs Clean Architecture debate: CLOSED. EOS = Knowledge OS, layered DAG per AXIOM-IMP-003..007"
+  - "Experience Surface / Product Composition: POST Sprint 0 only"

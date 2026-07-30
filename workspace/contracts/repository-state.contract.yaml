@@ -1,0 +1,39 @@
+contract:
+  id: REPOSITORY-STATE-CONTRACT-V1
+  name: canonical_repository_state_read_contract
+  status: VERIFIED
+  purpose: Menetapkan single source of truth untuk seluruh konsumen tooling (ACL, CLI, CI, Compiler, Dashboard). Semua tool HARUS membaca root key repository_state dari file ini — tidak boleh menghitung status independen.
+  file: /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
+  root_key: repository_state
+  sibling_key: repository_proof
+  consumers:
+    - ACL
+    - eos_cli
+    - CI_pipeline
+    - compiler
+    - dashboard
+    - arch_check
+  repository_state_schema:
+    constitution: locked | unlocked
+    governance: DRAFT | REVIEWED | VERIFIED | FROZEN | DEPRECATED
+    gates:
+      A: status
+      B: status
+      C: status
+      D: status
+      E: status
+    proof:
+      baseline_hash: hash | PENDING_EMISSION
+      governance_hash: hash | PENDING_EMISSION
+      dependency_hash: hash | PENDING_EMISSION
+      registry_hash: hash | PENDING_GATE_B
+    readiness:
+      gate_b: boolean
+      gate_c: boolean
+      gate_d: boolean
+      gate_e: boolean
+  anti_patterns:
+    - computing_gate_status_from_source_without_reading_this_file
+    - using_lowercase_status_aliases
+    - adding_new_gates_without_updating_repository_state_schema
+    - shadowing_gate_status_with_local_calculation

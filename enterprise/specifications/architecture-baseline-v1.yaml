@@ -1,16 +1,22 @@
 baseline:
   id: ARCH-BASELINE-001
-  name: EOS Architecture Baseline v1
-  status: closed_frozen
+  name: EOS Implementation Baseline v1
+  status: implementation_baseline_frozen
   version: 1.0.0
   change_policy: adr_required
   operating_phase: architecture_verification
+  baseline_class: implementation
+  lock_review: passed
   description: >
     Governed baseline for EOS core architecture after the discovery phase and
     during the architecture verification phase where validated specifications
     drive deterministic implementation artifacts and produce audit-ready
     execution evidence.
   registry_policy: append_only
+  governance_consequences:
+    constitution_changes: constitutional_amendment_and_adr_required
+    canonical_model_changes: adr_and_migration_plan_required
+    implementation_changes: baseline_update_not_required_if_contracts_hold
   artifacts:
     - id: ARCH-PHILOSOPHY-001
       name: EOS Philosophy

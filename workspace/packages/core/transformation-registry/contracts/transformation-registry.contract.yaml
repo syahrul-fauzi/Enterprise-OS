@@ -1,0 +1,11 @@
+contract:
+  id: TRANSFORMATION-REGISTRY-CONTRACT-V1
+  package: "@repo/core-transformation-registry"
+  status: REVIEWED
+  purpose: Canonical declarative registry of all transformations (T001–T005+) known to EOS. Gate B boundary: only declaration, no runtime execution.
+  constraints:
+    - no_runtime_execution_behavior
+    - no_transformation_logic_implementation
+    - all_transformations_must_have_contract_ref
+    - all_transformations_must_declare_determinism_class
+    - lifecycle_must_follow_verified_vocabulary

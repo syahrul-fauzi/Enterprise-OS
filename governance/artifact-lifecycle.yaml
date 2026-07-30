@@ -1,0 +1,145 @@
+version: "2.0.0"
+status: FROZEN
+scope: workspace
+lifecycle_vocabulary_lock: SPRINT_0_BASELINE
+canonical_lifecycle:
+  statuses:
+    - DRAFT
+    - REVIEWED
+    - VERIFIED
+    - FROZEN
+    - DEPRECATED
+  transition_rule: linear_promotion_only_no_skip_no_rollback_without_adr
+  application_scope:
+    - registry_entries
+    - canonical_artifacts
+    - governance_gates
+    - architecture_state
+    - transformations
+    - contracts
+    - predicates
+    - proofs
+
+artifact_types:
+  contract:
+    canonical_location: /root/Enterprise OS/workspace/contracts
+    canonical_lifecycle: VERIFIED
+    internal_substates:
+      - draft
+      - canonical
+      - superseded
+    substate_to_canonical_map:
+      draft: DRAFT
+      canonical: VERIFIED
+      superseded: DEPRECATED
+    promotion_rule: must be machine-readable and reference owning capability or package authority.
+  specification:
+    canonical_location: /root/Enterprise OS/enterprise/specifications
+    canonical_lifecycle: FROZEN
+    internal_substates:
+      - draft
+      - frozen
+      - superseded
+    substate_to_canonical_map:
+      draft: DRAFT
+      frozen: FROZEN
+      superseded: DEPRECATED
+    promotion_rule: must align with constitution and baseline references.
+  decision:
+    canonical_location:
+      - /root/Enterprise OS/workspace/decisions
+      - /root/Enterprise OS/enterprise/decisions/adr
+    canonical_lifecycle: VERIFIED
+    internal_substates:
+      - proposed
+      - accepted
+      - superseded
+    substate_to_canonical_map:
+      proposed: DRAFT
+      accepted: VERIFIED
+      superseded: DEPRECATED
+    promotion_rule: structural changes require accepted ADR.
+  foundation_package:
+    canonical_location: /root/Enterprise OS/workspace/packages/core
+    canonical_lifecycle: REVIEWED
+    internal_substates:
+      - scaffolded
+      - specified
+      - conformant
+      - verified
+    substate_to_canonical_map:
+      scaffolded: DRAFT
+      specified: REVIEWED
+      conformant: VERIFIED
+      verified: FROZEN
+    promotion_rule: schema, interfaces, tests, and contracts must exist before verified.
+  execution_engine:
+    canonical_location:
+      - /root/Enterprise OS/workspace/packages/engine
+      - /root/Enterprise OS/workspace/packages/tooling
+    canonical_lifecycle: DRAFT
+    internal_substates:
+      - deferred
+      - implemented
+      - verified
+    substate_to_canonical_map:
+      deferred: DRAFT
+      implemented: REVIEWED
+      verified: VERIFIED
+    promotion_rule: cannot leave deferred before Gate C is open.
+  build_output:
+    canonical_location:
+      - /root/Enterprise OS/workspace/**/dist
+      - /root/Enterprise OS/workspace/**/.next
+      - /root/Enterprise OS/build/evidence
+    canonical_lifecycle: VERIFIED
+    internal_substates:
+      - generated
+      - verified
+      - obsolete
+    substate_to_canonical_map:
+      generated: DRAFT
+      verified: VERIFIED
+      obsolete: DEPRECATED
+    promotion_rule: build output is never canonical source of truth.
+  proof_artifact:
+    canonical_location:
+      - /root/Enterprise OS/build/evidence
+      - /root/Enterprise OS/evidence
+    canonical_lifecycle: VERIFIED
+    internal_substates:
+      - generated
+      - measured
+      - certified
+    substate_to_canonical_map:
+      generated: DRAFT
+      measured: REVIEWED
+      certified: VERIFIED
+    promotion_rule: requires reproducible execution evidence.
+
+lifecycle_rules:
+  - artifact: contract
+    must_not_skip_internal:
+      - canonical
+    must_not_skip_canonical:
+      - VERIFIED
+  - artifact: foundation_package
+    must_not_skip_internal:
+      - specified
+      - conformant
+    must_not_skip_canonical:
+      - REVIEWED
+      - VERIFIED
+  - artifact: execution_engine
+    gate_guard: gate_c_execution
+  - artifact: proof_artifact
+    gate_guard: gate_d_verification
+
+vocabulary_enforcement:
+  rule: only_canonical_lifecycle_statuses_may_appear_in_registry_gates_cli_and_proofs
+  exception: internal_substates_are_allowed_for_workflow_discussion_only_never_as_source_of_truth
+  enforcement_point:
+    - ACL
+    - eos_cli
+    - predicate_registry_validator
+    - proof_ledger_validator

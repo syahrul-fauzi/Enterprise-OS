@@ -1,0 +1,122 @@
+contract:
+  id: CONTRACT-T001-ELS-TO-EIR-V1
+  name: T001 ELS → EIR Transformation Contract
+  version: "1.0.0"
+  status: DRAFT
+  kind: TRANSFORMATION_CONTRACT
+  transformation_id: T001
+  transformation_catalog_ref: /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml#transformations[0]
+  axiom_kbe_enforced: true
+  kbe_artifact_identity:
+    contract_exists: true
+    schema_package: "@repo/core-eir"
+    predicate_count_required: 3
+    registry_entry_required: true
+    golden_reference_required: true
+
+input_spec:
+  kind: ELS_LANGUAGE_SPEC_DOCUMENT
+  schema_ref: /root/Enterprise OS/workspace/packages/core/eir/src/schema.ts#ElsDocument
+  format: YAML
+  required_fields:
+    - specification.id
+    - specification.name
+    - specification.version
+    - specification.kind
+    - specification.status
+    - specification.language_spec_version
+    - requirements
+  golden_reference:
+    location: /root/Enterprise OS/workspace/examples/vertical-slice/REQ-0001
+    stable_identity: REQ-0001
+    hash_algorithm: sha256
+    notice: Input hash MUST be identical across all runs for deterministic proof
+  validation_predicate: PRED-T001-INPUT-SCHEMA
+
+output_spec:
+  kind: EIR_INSTRUCTION_RECORD
+  schema_ref: /root/Enterprise OS/workspace/packages/core/eir/src/schema.ts#EirRecord
+  format: JSON
+  required_fields:
+    - eir_id
+    - transformation_id
+    - source_els_id
+    - source_els_version
+    - source_els_hash
+    - instruction_set
+    - capability_refs
+    - emitted_at
+    - deterministic_nonce
+  conform_predicate: PRED-T001-CONFORM-EIR
+  deterministic_predicate: PRED-T001-OUTPUT-DETERMINISTIC
+  determinism_requirement:
+    identical_input_hash: MUST_produce_identical_output_hash
+    proof_procedure: run_twice_compare_sha256_of_output
+
+predicate_contract:
+  minimum_required: 3
+  all_must_pass_for_verdict_pass: true
+  individual_failure_causes_overall_fail: true
+  predicate_ids_ordered:
+    - id: PRED-T001-INPUT-SCHEMA
+      phase: PRE_EXECUTION
+      purpose: Validate input conforms to ELS schema
+      failure_mode: INPUT_REJECTED
+    - id: PRED-T001-OUTPUT-DETERMINISTIC
+      phase: POST_EXECUTION_VERIFICATION
+      purpose: Prove output hash identical across 2 runs on identical input
+      failure_mode: TRANSFORMATION_DECLARED_NONDETERMINISTIC
+    - id: PRED-T001-CONFORM-EIR
+      phase: POST_EXECUTION
+      purpose: Validate output conforms to EIR record schema
+      failure_mode: OUTPUT_NONCONFORMANT
+
+verdict_rules:
+  pass_only_when: ALL_THREE_predicates_PASS
+  partial_pass_not_allowed: true
+  inconclusive_allowed: true
+  inconclusive_conditions:
+    - ANY_predicate_status_UNRESOLVED
+    - golden_reference_hash_mismatch_detected
+    - determinism_runs_not_performed
+
+evidence_output:
+  kind: TRANSFORMATION_PROOF
+  proof_id_pattern: TRF-PROOF-T001
+  storage_location: /root/Enterprise OS/build/evidence/transformation-proofs/
+  proof_ledger_append_required: true
+  proof_ledger_entry_must_include:
+    - proof_id
+    - transformation_id
+    - verdict
+    - predicate_results
+    - input_hash
+    - output_hash
+    - determinism_r1_hash
+    - determinism_r2_hash
+    - emitted_at
+    - authority_signature
+
+lifecycle:
+  current: DRAFT
+  promotion_rules:
+    to_REVIEWED:
+      - contract_fields_complete
+      - predicate_refs_exist_in_registry
+      - golden_reference_file_present
+    to_VERIFIED:
+      - T001_standalone_2x_run_PASS
+      - TRF-PROOF-T001_verdict_PASS
+      - proof_ledger_append_confirmed
+    to_FROZEN:
+      - T001_verified_via_standalone_AND_engine_results_match
+      - no_modifications_until_next_baseline
+    to_DEPRECATED:
+      - superseded_by_new_transformation_version
+      - all_downstream_transformations_migrated_to_new_id
+
+anti_patterns_enforced:
+  NO_HARDCODED_CAPABILITY_IDS_IN_IMPLEMENTATION: true
+  NO_RANDOMNESS_OR_TIMESTAMP_AS_PRIMARY_IDENTITY: true
+  ALL_IDENTITIES_DERIVED_FROM_CANONICAL_INPUT_HASH: true
+  NO_ENGINE_RUNTIME_DEPENDENCY_FOR_STANDALONE_PROOF: true

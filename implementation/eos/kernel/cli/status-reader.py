@@ -1,119 +1,150 @@
 #!/usr/bin/env python3
-import yaml
 import os
-from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Tuple
 
-CONFIG_PATH = "/root/Enterprise OS/eos.config.yaml"
-STATE_PATH = "/root/Enterprise OS/implementation/eos/kernel/state/eos-state.yaml"
+import yaml
+
+BASELINE_LOCK_PATH = "/root/Enterprise OS/governance/BASELINE_LOCK.yaml"
 
 
-def load_config() -> Dict[str, Any]:
-    if not os.path.exists(CONFIG_PATH):
-        raise FileNotFoundError(f"Config file not found at {CONFIG_PATH}")
-    with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+def load_yaml(path: str) -> Dict[str, Any]:
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"State file not found at {path}")
+    with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
-def load_state() -> Dict[str, Any]:
-    if not os.path.exists(STATE_PATH):
-        raise FileNotFoundError(f"State file not found at {STATE_PATH}")
-    with open(STATE_PATH, "r", encoding="utf-8") as f:
-        return yaml.safe_load(f)
+def load_repository_state() -> Tuple[Dict[str, Any], Dict[str, Any], str]:
+    baseline_lock = load_yaml(BASELINE_LOCK_PATH)
+    governance_state_path = (
+        baseline_lock.get("baseline", {}).get("repository_state")
+        or baseline_lock.get("machine_readable_state", {}).get("governance_state")
+    )
+    if not governance_state_path:
+        raise KeyError("BASELINE_LOCK.yaml does not declare repository_state")
+    governance_state = load_yaml(governance_state_path)
+    return baseline_lock, governance_state, governance_state_path
 
 
-def save_state(state: Dict[str, Any]) -> None:
-    state["last_updated"] = datetime.now().isoformat()
-    with open(STATE_PATH, "w", encoding="utf-8") as f:
-        yaml.safe_dump(state, f, default_flow_style=False, sort_keys=False)
+def format_evidence_states(evidence: Dict[str, Any]) -> str:
+    ordered = ["governance", "foundation", "execution", "verification"]
+    return ", ".join(f"{key}={evidence.get(key, 'UNKNOWN')}" for key in ordered)
 
 
-def print_state_summary(state: Dict[str, Any]) -> None:
-    print("\n" + "=" * 50)
-    print("           EOS CONTROL TOWER")
-    print("=" * 50)
-    print(f"\nVersion: {state['version']}")
-    print(f"Phase: {state['phase']}")
-    print(f"Sub-phase: {state['sub_phase']}")
-    print(f"Next phase: {state['next_phase']}")
-
-    print("\n--- Architecture ---")
-    print(f"Status: {state['architecture']['status']}")
-
-    print("\n--- Governance ---")
-    print(f"Status: {state['governance']['status']}")
-    print(f"Contract: {state['governance']['contract']}")
-
-    print("\n--- Product ---")
-    print(f"Primary: {state['product']['primary']}")
-    print(f"Primary status: {state['product']['primary_status']}")
-
-    print("\n--- Evidence Loop ---")
-    print(f"Status: {state['evidence_loop']['status']}")
-    print(f"Completed sessions: {', '.join(state['evidence_loop']['sessions']['completed'])}")
-
-    print("\n--- Patterns ---")
-    print(f"Discovered: {state['patterns']['discovered']}")
-    print(f"Validated: {state['patterns']['validated']}")
-    print(f"Candidates: {state['patterns']['candidates']}")
-
-    print("\n--- Assets ---")
-    print(f"Validated: {state['assets']['validated']}")
-    print(f"Reused: {state['assets']['reused']}")
-
-    print("\n--- Control Plane ---")
-    print(f"Observer: {state['control_plane']['sensors']['observer']['status']}")
-    print(f"Validator: {state['control_plane']['validators']['evidence_validator']['status']}")
-    print(f"Pattern detection: {state['control_plane']['intelligence']['pattern_detection']['status']}")
-    print(f"Doctor Engine: {state['control_plane']['delivery']['delivery_agent']['status']}")
-    print(f"Extraction: {state['control_plane']['extraction']['status']}")
-
-    print("\n--- Control Tower Health ---")
-    print(f"Architecture: {state['control_tower']['health']['architecture']}%")
-    print(f"Delivery: {state['control_tower']['health']['delivery']}%")
-    print(f"Evidence: {state['control_tower']['health']['evidence']}%")
-    print(f"Asset confidence: {state['control_tower']['health']['asset_confidence']}%")
-
-    print("\n" + "=" * 50 + "\n")
+def format_scalar(value: Any) -> str:
+    if isinstance(value, bool):
+        return str(value).lower()
+    return str(value)
 
 
-def update_observer_status(status: str) -> None:
-    state = load_state()
-    state["control_plane"]["sensors"]["observer"]["status"] = status
-    save_state(state)
-    print(f"✅ Observer status updated to: {status}")
+def print_state_summary(
+    baseline_lock: Dict[str, Any],
+    governance_state: Dict[str, Any],
+    governance_state_path: str,
+) -> None:
+    baseline = baseline_lock.get("baseline", {})
+    current_gate = governance_state.get("current_gate", {})
+    next_gate = governance_state.get("next_gate", {})
+    repository = governance_state.get("repository", {})
+    compliance_report = repository.get("architecture_compliance_report", {})
+    predicate = governance_state.get("predicates", {}).get("ready_gate_b", {})
+    evidence = governance_state.get("evidence", {})
+    lifecycle = governance_state.get("lifecycle", {}).get("allowed_statuses", [])
+    canonical_repository_state = governance_state.get("repository_state", {})
+    repository_proof = governance_state.get("repository_proof", {})
 
+    print("\n" + "=" * 64)
+    print("EOS GOVERNANCE STATUS")
+    print("=" * 64)
 
-def update_validator_status(status: str) -> None:
-    state = load_state()
-    state["control_plane"]["validators"]["evidence_validator"]["status"] = status
-    save_state(state)
-    print(f"✅ Validator status updated to: {status}")
+    print("\nState Contract")
+    print(f"Baseline lock: {BASELINE_LOCK_PATH}")
+    print(f"Repository state: {governance_state_path}")
+    print(f"Baseline version: {baseline.get('version', 'UNKNOWN')}")
+    print(f"Baseline status: {baseline.get('status', 'UNKNOWN')}")
+    print(
+        f"Certificate status: {baseline.get('certificate_status', 'UNKNOWN')}"
+    )
+
+    print("\nCurrent Gate")
+    print(f"Gate: {current_gate.get('id', 'UNKNOWN')}")
+    print(f"Name: {current_gate.get('name', 'UNKNOWN')}")
+    print(f"Status: {current_gate.get('status', 'UNKNOWN')}")
+    print(
+        f"Next gate: {next_gate.get('id', 'UNKNOWN')} "
+        f"({next_gate.get('name', 'UNKNOWN')})"
+    )
+
+    print("\nRepository")
+    print(
+        "Status: "
+        f"{repository.get('status', repository.get('compliance', 'UNKNOWN'))}"
+    )
+    print(f"Compliance: {repository.get('compliance', 'UNKNOWN')}")
+    print(
+        f"Baseline violations: "
+        f"{repository.get('baseline_violations', 'UNKNOWN')}"
+    )
+    print(f"Legacy violations: {repository.get('legacy_violations', 'UNKNOWN')}")
+    print(
+        "Architecture compliance report: "
+        f"{compliance_report.get('status', 'UNKNOWN')}"
+    )
+
+    print("\nEvidence")
+    print(format_evidence_states(evidence))
+
+    print("\nGate B Predicate")
+    print(f"Expression: {predicate.get('expression', 'UNKNOWN')}")
+    print(f"Result: {format_scalar(predicate.get('result', 'UNKNOWN'))}")
+
+    if canonical_repository_state:
+        print("\nCanonical Repository State")
+        print(
+            "Governance: "
+            f"{canonical_repository_state.get('governance', 'UNKNOWN')}"
+        )
+        print(
+            "Readiness: "
+            f"gate_b={format_scalar(canonical_repository_state.get('readiness', {}).get('gate_b', 'UNKNOWN'))}, "
+            f"gate_c={format_scalar(canonical_repository_state.get('readiness', {}).get('gate_c', 'UNKNOWN'))}, "
+            f"gate_d={format_scalar(canonical_repository_state.get('readiness', {}).get('gate_d', 'UNKNOWN'))}, "
+            f"gate_e={format_scalar(canonical_repository_state.get('readiness', {}).get('gate_e', 'UNKNOWN'))}"
+        )
+
+    if repository_proof:
+        print("\nRepository Proof")
+        print(f"Proof id: {repository_proof.get('proof_id', 'UNKNOWN')}")
+        print(
+            f"Status: {repository_proof.get('proof_status', 'UNKNOWN')}"
+        )
+        print(
+            f"Registry hash: {repository_proof.get('registry_hash', 'UNKNOWN')}"
+        )
+
+    print("\nLifecycle")
+    print(" -> ".join(lifecycle) if lifecycle else "UNKNOWN")
+
+    print("\n" + "=" * 64 + "\n")
 
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description="EOS Status Reader")
-    parser.add_argument("action", nargs="?", default="show",
-                        choices=["show", "update-observer", "update-validator"],
-                        help="Action to perform (show, update-observer, update-validator)")
-    parser.add_argument("--status", type=str,
-                        help="Status to set (for update actions)")
+    parser = argparse.ArgumentParser(description="EOS governance status reader")
+    parser.add_argument(
+        "action",
+        nargs="?",
+        default="show",
+        choices=["show", "status"],
+        help="Action to perform (show or status)",
+    )
     args = parser.parse_args()
 
-    if args.action == "show":
-        state = load_state()
-        print_state_summary(state)
-    elif args.action == "update-observer":
-        if not args.status:
-            print("❌ Please provide --status")
-            return
-        update_observer_status(args.status)
-    elif args.action == "update-validator":
-        if not args.status:
-            print("❌ Please provide --status")
-            return
-        update_validator_status(args.status)
+    if args.action in {"show", "status"}:
+        baseline_lock, governance_state, governance_state_path = (
+            load_repository_state()
+        )
+        print_state_summary(baseline_lock, governance_state, governance_state_path)
 
 
 if __name__ == "__main__":

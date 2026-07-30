@@ -1,0 +1,236 @@
+version: "1.0.0"
+status: FROZEN
+kind: CONTRACT
+contract_kind: PROVENANCE_AUDIT_CONTRACT
+ssot_note: EVIDENCE_PROVENANCE_GRAPH_EPG_IS_SINGLE_SOURCE_OF_TRUTH_FOR_AUDIT._LINEAR_EVIDENCE_CHAIN_IS_DEPRECATED._REPLACED_BY_MERKLE_DAG_WITH_MULTIPARENT_NODES._EVERY_NODE_CARRIES_KNOWLEDGE_SNAPSHOT_ID.
+governance_ref:
+  invariant_architecture_ia05_proof_class_split: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_05_proof_class_split
+  invariant_architecture_ia10_immutable_snapshot: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_10_immutable_knowledge_snapshot
+  invariant_architecture_ia11_semantic_determinism: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_11_semantic_determinism
+  knowledge_snapshot_contract: /root/Enterprise OS/workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml
+derived_from:
+  - Evidence_DAG_Not_Evidence_Chain_Paradigm_User_20260730
+  - Evidence_Provenance_Graph_with_Merkle_hashing_user_point_6
+
+paradigm_statement:
+  linear_chain_deprecated: >
+    Bukti tidak lagi berupa rantai linear 1-parent.
+    Bukti sekarang adalah Merkle DAG: setiap node boleh punya multiple parent hashes.
+    Ini mewakili realitas bahwa Evidence dapat dihasilkan dari banyak predecessor
+    (contoh: Contract = hasil gabungan dari banyak Requirement yang VALIDATES-nya).
+  graph_name: Evidence Provenance Graph (EPG)
+  merkle_hashing: EPG uses Merkle hashing for all nodes. hash of node = SHA-256 over canonical content of node.
+  provenance_distinction: >
+    Pengguna dapat membedakan:
+    - Declared Edges: berasal dari Semantic Kernel + Registry
+    - Inferred Edges: berasal dari Reasoner (rule_id + premise_edge_ids terlampir)
+    - Execution Edges: berasal dari Runtime execution
+    Semua 3 edge types co-exist in EPG dengan provenance tag yang jelas.
+
+node_specification:
+  base_node_fields:
+    - field: id
+      type: string, canonical identifier
+      patterns:
+        - REQ-\d{4}
+        - CAP-[A-Za-z0-9-]+
+        - <contract_name>.contract
+        - PRED-[A-Z0-9-]+
+        - T\d{3}
+        - EXEC-\d{3}
+        - (TRF|EXEC|REPO|REGISTRY|CATALOG|CONTRACT)-PROOF-.*
+    - field: kind
+      type: enum
+      allowed:
+        - REQUIREMENT
+        - CAPABILITY
+        - CONTRACT
+        - PREDICATE
+        - TRANSFORMATION
+        - ARTIFACT
+        - EXECUTION
+        - EXECUTION_PROOF
+        - VALIDATION_PROOF
+        - REGISTRY_ENTRY
+        - KNOWLEDGE_SNAPSHOT_ROOT
+        - EXECUTION_PLAN
+        - EVIDENCE (generic leaf)
+    - field: hash
+      type: string, format: "sha256:<hex-64>"
+      construction: >
+        SHA-256 over canonical JSON serialization of node:
+        { id, kind, content_hash_or_payload_ref, parent_hashes[], metadata,
+          knowledge_snapshot, runtime_version, semantic_kernel_version,
+          edge_provenance_tag }
+        Sorted keys, no whitespace variant, stable stringification.
+    - field: parent_hashes
+      type: array of "sha256:<hex-64>" strings
+      semantics: DAG edge — node hashes of direct parents (multi-parent allowed, NOT a tree)
+      cardinality: 0..N
+      note: Leaf nodes have parent_hashes.length = 0. Root aggregate nodes (repository proof) typically highest cardinality.
+    - field: timestamp
+      type: ISO 8601 UTC string
+      example: "2026-07-30T12:45:03Z"
+      determinism_note: For verification reproducibility, timestamp is informational.
+        Verification MUST NOT use timestamp in deterministic_hash calc of proof object itself; used only for audit chronological view.
+    - field: signature
+      type: optional string, cryptographic signature over node.hash
+      purpose: >
+        Human auditor attests they witnessed this execution. For non-production / build-time
+        deterministic verification, signature may be empty (unsigned) and verification passes
+        purely via content-hash chain re-derivation.
+    - field: knowledge_snapshot
+      type: string, KS-YYYY.MM.DD.NNN
+      contract_ref: /root/Enterprise OS/workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml#identifier_specification
+      presence: MANDATORY for all nodes where kind ∈ { TRANSFORMATION, EXECUTION, EXECUTION_PROOF, VALIDATION_PROOF, EXECUTION_PLAN, EVIDENCE }
+      rationale: Enforces IA-10. One execution = exactly one immutable snapshot.
+    - field: runtime_version
+      type: semver string
+      presence: REQUIRED if kind == EXECUTION or kind == EXECUTION_PROOF
+      example: "0.1.0"
+      source: packages/core/runtime/package.json version
+    - field: semantic_kernel_version
+      type: semver string (of Semantic Kernel contract)
+      presence: RECOMMENDED for EXECUTION_PLAN, EXECUTION_PROOF, VALIDATION_PROOF
+      rationale: IA-11 traceability. "Same Semantic Kernel version" = semantic conclusions reproducible.
+    - field: edge_provenance_tag
+      type: enum
+      allowed:
+        - DECLARED  (from Registry manifests + graph edges)
+        - INFERRED  (from Semantic Kernel inference rules — must also attach inference_provenance)
+        - EXECUTION (from Runtime execution result)
+      presence: RECOMMENDED on nodes that represent an "edge conclusion" not a raw artifact.
+    - field: inference_provenance
+      type: optional object
+      presence: MANDATORY if edge_provenance_tag == INFERRED
+      subfields:
+        - rule_id: INF-001, INF-002, ... (registered in semantic kernel)
+        - premise_edge_ids: [sha256:..., sha256:...] — list of parent premise edge node hashes
+        - conclusion_reason: natural language description snapshot of why conclusion applied
+      rationale: Provenance clarity — user can unpack an inferred edge and not trust reasoner as black box.
+
+canonical_examples_of_multi_parent:
+  - label: Contract validated by many Requirements
+    diagram_representation:
+      - "Requirement A ─────┐"
+      - "                   │"
+      - "Requirement B ─────┤"
+      - "                   ▼"
+      - "              Contract (parent_hashes = [hash(A), hash(B), ...])"
+    kind: CONTRACT
+    parent_count_example: 2+
+  - label: Repository Proof is root of entire execution
+    kind: VALIDATION_PROOF (repo-level)
+    parent_count_example: 4 (4 output hashes from T001-T004) + 4 execution results + knowledge snapshot
+  - label: Transformation T002
+    kind: TRANSFORMATION
+    parent_count_example: ≥ 2 (PREDECESSOR T001 execution hash + consumed artifact EIR hash + contract ref hash)
+
+hash_chaining_and_merkle:
+  merkle_dag_definition:
+    Each node.hash is computed from its own canonical content PLUS the recursively-verified parent_hashes.
+    This makes: "any parent node modified → all descendant hashes invalidate automatically."
+  canonical_serialization_for_hash:
+    algorithm: JSON.stringify with object keys sorted lexicographically, no whitespace, deterministic UTF-8 bytes
+    fields_included_in_hash:
+      - id
+      - kind
+      - content_ref_or_payload_hash
+      - parent_hashes (sorted array — determinism)
+      - metadata (for example: produced_version, predicate_order_index, input_version_bounds)
+      - knowledge_snapshot
+      - runtime_version (if present)
+      - semantic_kernel_version (if present)
+      - edge_provenance_tag (if present)
+      - inference_provenance (if present — sorted keys inside)
+    fields_EXCLUDED_from_hash_determinism:
+      - timestamp (informational only; NOT for integrity)
+      - signature (derived from hash, not input)
+  repository_proof_root:
+    role: A Repository Proof entry (REPO-PROOF-XXXX) shall reference (via parent_hashes[]):
+      - ONE knowledge_snapshot_root hash (KS-...)
+      - ONE execution_plan_root hash (PLAN-NNN)
+      - ONE of each TRANSFORMATION output proof hash (TRF-PROOF-T001..T005)
+      - ZERO or more VALIDATION_PROOF hashes (REGISTRY-PROOF, CATALOG-PROOF, CONTRACT-PROOF if computed)
+    this_ensures: "Audit dengan memverifikasi REPO-PROOF hash root = otomatis menjalar memverifikasi seluruh graph."
+
+repository_proof_minimality_principle:
+  statement:
+    Repository Proof tidak perlu menyimpan SELURUH graph content inline.
+    Cukup simpan:
+      1. root_hash (Merkle root of EPG as represented by the REPO-PROOF EPG node)
+      2. knowledge_snapshot_id (KS-...)
+      3. references (by hash) of direct parent proof nodes + snapshot + plan
+    Dari situ auditor bisa:
+      a. Unpack snapshot archive → rebuild Semantic Kernel + Registry graph
+      b. Re-run Planner → produce Execution Plan
+      c. Re-run Runtime deterministically → produce TRF-PROOFs
+      d. Recompute EPG node hashes, recompute root
+      e. root_hash matches stored = audit PASS
+  storage_size_goal: Repository Proof file size ≤ 10KB typical. All heavy derivation work is on-demand via verified tools.
+
+append_only_and_mutation:
+  ledger_integration:
+    Each EPG node emitted as execution / validation result is appended to the append-only proof ledger.
+    Ledger entry = minimal: { node_id, node_hash, appended_at, signature_optional }.
+    Full node content = stored in build/evidence/provenance-graph/nodes/.
+  prohibition:
+    - NO in-place edit of a node file once hash is recorded. Modification = NEW node with NEW id + NEW hash; old preserved.
+    - NO delete of a node. Auditors must be able to verify old claims.
+    - NO re-order of parent_hashes[] semantically. For determinism, canonical array MUST be sorted before hash calc.
+
+determinism_and_ia11_compliance:
+  ia11_mapping:
+    inference_rules_produce_deterministic_edges:
+      statement: "Same Semantic Kernel version + same Knowledge Snapshot content → inferred edges byte-identical every run."
+      implementation_guidance: Reasoner output SHALL be serialized as canonical JSON and hash-verified in tests.
+    graph_to_execution_plan_is_deterministic:
+      statement: "Same graph + Semantic Kernel version + same planner version + same target_artifact param → steps[] byte-identical."
+      tie_breaking: topological sort using transformation_id lexical order when DAG-order alone is ambiguous.
+    evidence_reproduction:
+      statement: "Two independent auditors starting from the SAME KS- snapshot ID produce EPG with identical node.hashes for nodes where kind ∈ { EXECUTION_PROOF, VALIDATION_PROOF, EVIDENCE }."
+  canonical_node_hash_test:
+    description:
+      Unit test SHALL exist: given fixed EPG node fixture content → hash always equals expected golden string.
+      Prevents serialization drift (JSON.stringify key order, whitespace variant) from breaking reproducibility chain.
+
+ia10_snapshot_coupling:
+  rule:
+    Every EXECUTION, EXECUTION_PROOF, VALIDATION_PROOF, TRANSFORMATION, EXECUTION_PLAN node MUST have
+    knowledge_snapshot field set to a single KS- identifier for entire run.
+  violation_examples:
+    - ExecutionPlan node has no knowledge_snapshot field = INVALID.
+    - T002 execution proof references KS-2026.07.30.003 while T001 references KS-2026.07.30.002 in same pipeline = INVALID (cross-snapshot pipeline not allowed in one run).
+  one_pipeline_one_snapshot:
+    Semantic rule: Within 1 pipeline execution, ALL nodes reference the SAME snapshot ID.
+    This gives: auditor reproduces by loading 1 archive only, not N.
+
+evolution_policy:
+  change_allowed:
+    - New kind enum values APPENDED = backward compatible.
+    - New optional node fields APPENDED = backward compatible (old nodes still valid).
+  direct_edit_prohibited_in:
+    - hash algorithm (SHA-256 → SHA-3 = MAJOR contract version v1 → v2 + ADR)
+    - mandatory node field removal
+    - Removal of knowledge_snapshot mandatory rule
+  backward_compat_verification:
+    Verifier MUST:
+      - Read kind == EXECUTION_PROOF and detect EPG v1 node.
+      - Still accept legacy linear-chain proof objects (from pre-v1 migration) as audit evidence.
+      - Flag them as LEGACY_PROVENANCE in verification report, INCONCLUSIVE for strict EPG-v1 verification.
+    Cross-contract-version verification must never return PASS without explicitly noting LEGACY.
+
+verification_audit_procedure:
+  entrypoint: Auditor given repository_proof_id (REPO-PROOF-XXXX) + stored node file + stored snapshot archive.
+  steps:
+    1. Unpack snapshot archive and verify 8-digest integrity against manifest.
+    2. Rebuild registry + semantic kernel from archived snapshot content.
+    3. Deserialize target repository proof EPG node.
+    4. Walk parent_hashes[] breadth-first, resolve each stored node, verify each node.hash recomputes identically.
+    5. For each DECLARED edge: cross-check that registry manifest + catalog graph edges indeed declare that relation instance.
+    6. For each INFERRED edge: re-run Semantic Kernel inference on premises and confirm same rule produces same conclusion.
+    7. For each EXECUTION edge: re-execute deterministic 2x run and confirm output hash matches stored artifact hash.
+    8. Recompute REPO-PROOF node hash.
+    9. Matches stored = Audit PASS. Any mismatch = FAIL. Missing required node = INCONCLUSIVE.
+  certification_gate_e_requirement:
+    Full Audit steps 1–9 SHALL be the official proof of Gate E Exit Determinism Certification.

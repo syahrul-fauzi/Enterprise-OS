@@ -1,0 +1,133 @@
+version: "1.0.0"
+status: FROZEN
+kind: CONSTITUTION
+layer: FOUNDATIONAL_VISION
+abbreviation: VISION
+ssot_note: THIS_FILE_IS_THE_HIGHEST_AND_MOST_STABLE_ARTIFACT_IN_ALL_OF_EOS._IT_SITS_STRICTLY_ABOVE_ASP._VISION_STATEMENTS_ARE_IMMUTABLE_BEYOND_THE_LIFETIME_OF_ANY_SINGLE_TECHNOLOGY_STACK_—_THEY_ARE_THE_IDENTITY_OF_EOS_NOT_THE_ENGINEERING_OF_IT._ANY_CHANGE_TO_VISION_WOULD_BE_A_NEW_EOS_FOUNDATION_NOT_A_VERSION_BUMP._REQUIRES_FOUNDATION_CHARTER_REVISION_PLUS_EPOCH_SHIFT_OF_EVERY_ARTIFACT_IN_THE_SYSTEM.
+derived_from:
+  - User_Point_Layer_Above_ASP_Vision
+  - User_Point_Three_Vision_Statements_Philosophy
+
+vision_immutability_statement:
+  core_statement: |
+    Vision (THIS FILE) exists at a layer above all ASP, IA, specifications, protocols, and code.
+    Technology stacks, programming languages, compilers, runtime environments, and operating systems will be replaced many times over the 10–20 year lifetime of EOS.
+    The three statements below are the ONLY things that survive every technology change.
+    Every other artifact in EOS exists to serve these statements; none of them may contradict them.
+  change_impossibility_note:
+    Vision statements are not versionable in a normal semver or epoch sense.
+    If any vision statement is replaced, the result is not EOS vN+1 — it is a different platform.
+    Consequently: No MAJOR bump, no ADR process, no Architecture Board vote can ALTER a vision statement.
+    Only a full Foundation Charter revision (outside EOS engineering scope) can amend this file.
+
+vision_statements:
+  - id: VISION-01
+    text: "Knowledge precedes execution."
+    philosophical_meaning: |
+      No action in EOS may be taken unless knowledge sufficient to justify it has been:
+      (1) explicitly declared,
+      (2) versioned,
+      (3) bound to a concrete Knowledge Snapshot (immutable build artifact),
+      (4) compiled through the Knowledge Compiler Pipeline passes 1..8 into a deterministic Execution Plan.
+      Runtime never "invents" knowledge as a side-effect of execution.
+      If the knowledge does not exist beforehand, the execution SHALL NOT PROCEED.
+    architectural_consequences:
+      - IA-09 (Knowledge Not In Runtime) is the direct structural enforcement of VISION-01.
+      - IA-10 (Immutable Knowledge Snapshot) — planner+runtime+validator+evidence all bind to EXACTLY 1 snapshot = concrete form of "knowledge precedes".
+      - Knowledge Compiler Pipeline Passes 1..5 compute semantic state BEFORE Pass 6 planning or Pass 8 execution plan emission.
+    anti_patterns_forbidden:
+      - Runtime hardcodes T\d{3} transformation IDs or capability strings.
+      - Planner reads snapshot files directly rather than KIR (Pass 5 output) — because that means knowledge assembly "happens inside planning" instead of preceding it.
+
+  - id: VISION-02
+    text: "Evidence precedes trust."
+    philosophical_meaning: |
+      No claim of correctness in EOS MAY BE ACCEPTED unless accompanied by verifiable evidence produced
+      deterministically from the execution, and that evidence chains cryptographically back to:
+      (1) the governing authority (Constitution / Protocols),
+      (2) the concrete knowledge snapshot,
+      (3) the deterministic decision IR that produced the plan.
+      Trust is not social ("the team says it works").
+      Trust is computational ("anyone can re-run the compiler + verifier and obtain the same verdict").
+    architectural_consequences:
+      - EPG Merkle DAG (Evidence Provenance Graph) with ir_content_hash + parent_hashes[] multi-parent = direct cryptographical chain.
+      - IA-12 Explainability (every evidence node carries premise_ids and rule_id for inference edges).
+      - Repository Proof = minimality (root_hash + snapshot ref, no inline heavy graph) — auditors reconstruct from Snapshot Archive.
+      - IA-13 Stable IR + IA-14 Pure Passes make evidence reproducible (not dependent on runtime mood at emission time).
+    anti_patterns_forbidden:
+      - "Trust our process" style verdicts without evidence hash chain.
+      - PASS verdict that skips conformance because "engineers know what they're doing".
+      - Linear chain proofs (deprecated) because multi-parent aggregation is the minimal form needed for Contract × 5 Requirements evidence.
+
+  - id: VISION-03
+    text: "Authority flows downward only."
+    philosophical_meaning: |
+      Definition power (what is correct, what is compatible, what counts as PASS) flows
+      STRICTLY down a single DAG:
+        Vision → Constitution → Protocols → Implementations → Execution → Evidence.
+      Nothing lower on the DAG may retroactively define correctness for something above it.
+      Evidence cannot change protocols.
+      Implementation bugs cannot become protocol features.
+      Runtime empiric observations cannot amend the constitution.
+      Authority derivation is a DAG edge: every artifact has exactly one canonical "derived_from" chain upward.
+    architectural_consequences:
+      - ASP-02 (Authority downward, never upward) = structural restatement.
+      - ASP-03 (Authority → Derivation → Evidence, never reverse) = direct consequence.
+      - ARCH-24 in Constitutional Verifier: scans for write/delete of upstream governance yaml by downstream impl → violation.
+      - Conformance Model FORBIDDEN-CONF-02 (no "behaves like resolver.ts line 42" comment in protocol yaml — cannot delegate semantics to implementation).
+    anti_patterns_forbidden:
+      - Upstream yaml spec changed because reference implementation has a bug (fix implementation, not protocol; OR via MAJOR change through Domain B pathway ONLY).
+      - "Conformance tests modified to match implementation output" without corresponding protocol MAJOR bump + ADR.
+      - Evidence graph nodes referenced as "authoritative" for contract definition (evidence is RESULT, not SOURCE).
+
+authority_dag_edges_foundation:
+  # Highest level edges; all other edges are downward transitive closures.
+  # Formalizes Authority Flow Dependency Graph concept from user.
+  edges:
+    - from: CONSTITUTIONAL_VISION
+      to: CONSTITUTION_ASP_ARCHITECTURAL_STABILITY_PRINCIPLES
+      edge_kind: "VISION_CONSTRAINS_PRINCIPLES"
+      authority_proof: "ASP and IA cannot contradict VISION-01/02/03."
+    - from: CONSTITUTION_ASP_ARCHITECTURAL_STABILITY_PRINCIPLES
+      to: CONSTITUTION_IA_INVARIANT_ARCHITECTURE
+      edge_kind: "ASP_CONSTRAINS_INVARIANTS"
+      authority_proof: "Invariants (IA) are structural implementations of ASP."
+    - from: CONSTITUTION_IA_INVARIANT_ARCHITECTURE
+      to: SPECIFICATION_LAYER_ALL
+      edge_kind: "INVARIANTS_CONSTRAIN_SPECS"
+      authority_proof: "Specifications (Semantic Kernel, Pipeline, Contracts) must comply with every IA."
+    - from: SPECIFICATION_LAYER_ALL
+      to: PROTOCOL_LAYER_ALL
+      edge_kind: "SPECS_CONSTRAIN_PROTOCOLS"
+      authority_proof: "Protocols implement specifications; no protocol can contradict spec."
+    - from: PROTOCOL_LAYER_ALL
+      to: IMPLEMENTATION_LAYER_ALL
+      edge_kind: "PROTOCOLS_CONSTRAIN_IMPLEMENTATIONS"
+      authority_proof: "Implementation must pass conformance for its protocols."
+    - from: IMPLEMENTATION_LAYER_ALL
+      to: EVIDENCE_LAYER
+      edge_kind: "EXECUTION_PRODUCES_EVIDENCE"
+      authority_proof: "Evidence is the RESULT, never a source of authority."
+  no_cycles_proof:
+    statement: All edges are strictly ordered by layer VISION → C → S → P → I → E. No edge of form I→P, I→S, E→I, P→C, etc. DAG cycle check enforced by ARCH-24+ARCH-25.
+
+identity_through_technology_change:
+  examples:
+    - scenario: "In year 2035, EOS is rewritten from TypeScript to a new language X. All .ts files deleted. Protocols rewritten as X-language structs. Knowledge compiler rewritten."
+      question: "Is it still EOS?"
+      answer_criteria:
+        - VISION-01/02/03 preserved word-for-word in the new system's highest artifact.
+        - Authority Flow DAG still VISION→C→S→P→I→E, no reverse edges.
+        - Same constitutional stability philosophy (ASP-01 freezes principles, versions specs, replaces impls) is enforced.
+        - New implementation must still pass a conformance suite for the Constitutional IR (Constitution IR compat semantics preserved across the rewrite).
+      answer_if_all_yes: "YES, this is EOS, even though every code file changed. EOS identity is in the vision + constitutional philosophy, not the code."
+      answer_if_any_no: "NO. It is a different platform that may be inspired by EOS but is not EOS."
+
+related_artifacts_ordered_by_stability:
+  # MOST STABLE (TOP) → LEAST STABLE (BOTTOM), as per new layer stack requested by user.
+  - /root/Enterprise OS/governance/CONSTITUTIONAL-VISION.yaml
+  - /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml (ASP)
+  - /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml (IA)
+  - /root/Enterprise OS/enterprise/specifications/*
+  - /root/Enterprise OS/workspace/contracts/* (Protocol contracts)
+  - /root/Enterprise OS/workspace/packages/**/*.ts Implementation

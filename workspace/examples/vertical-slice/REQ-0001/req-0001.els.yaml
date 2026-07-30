@@ -1,0 +1,85 @@
+specification:
+  id: REQ-0001
+  name: Requirement Root Aggregate Canonical Representation
+  version: "1.0.0"
+  kind: ELS_LANGUAGE_SPECIFICATION
+  status: FROZEN
+  language_spec_version: "1.0"
+  golden_reference: true
+  root_of_trust_for: T001 transformation proof
+  identity_note: THIS_DOCUMENT_HAS_STABLE_HASH.ANY_MODIFICATION_REQUIRES_NEW_VERSION.
+
+specification_metadata:
+  author: eos-enterprise-architect
+  created: 2026-07-30
+  governance_class: canonical_frozen
+  change_policy: new_version_only_no_mutation
+  hash_algorithm: sha256
+  audit_note: Input hash of this document MUST be captured before and after every T001 run.
+
+ontology:
+  root_aggregate: Requirement
+  axiom_4_applied: Requirement identity as root aggregate anchor
+  domain: EOS_Core_Kernel
+
+requirement_identity:
+  requirement_id: REQ-0001
+  stable_external_id: REQ-0001
+  id_policy: requirement_is_root_aggregate_identity_never_changes
+  derived_identity_chain:
+    - requirement_id → els_document_hash
+    - els_document_hash → eir_source_hash
+    - eir_source_hash → instruction_set_hash
+    - instruction_set_hash → capability_ref_hash
+
+business_statement:
+  title: EOS Requirement as Root Aggregate
+  description: >
+    Every capability, service, and runtime artifact in EOS MUST trace its identity
+    back to a Requirement. Requirement is the Root Aggregate in the EOS domain model.
+    No architectural element may exist without a traceable path to a Requirement.
+  origin: Axiom 4 of EOS baseline (Requirement identity as root aggregate anchor)
+  compliance: All Layers 4-8 MUST enforce this constraint through contracts and predicates.
+
+capability_refs:
+  - capability_id: CAP-REQ-TRACKING
+    capability_name: Requirement Tracking
+    purpose: Track requirement identity and traceability
+  - capability_id: CAP-RTM-GENERATION
+    capability_name: RTM Graph Generation
+    purpose: Generate Requirements Traceability Matrix as operational graph
+
+instruction_specification:
+  kind: REQUIREMENT_DECLARATION_INSTRUCTIONS
+  instruction_count: 5
+  instruction_summary:
+    - DECLARE_REQUIREMENT_IDENTITY
+    - DECLARE_BUSINESS_STATEMENT
+    - DECLARE_COMPLIANCE_RULES
+    - DECLARE_CAPABILITY_DEPS
+    - DECLARE_TRACEABILITY_ANCHORS
+
+compliance_rules:
+  - rule: NO_CAPABILITY_WITHOUT_REQUIREMENT_REF
+    severity: BLOCKER
+    enforcement: predicate_evaluation
+  - rule: NO_EIR_WITHOUT_SOURCE_ELS_HASH
+    severity: BLOCKER
+    enforcement: predicate_evaluation
+  - rule: NO_PROOF_WITHOUT_INPUT_IDENTITY_TRACE
+    severity: BLOCKER
+    enforcement: proof_ledger_validation
+
+traceability:
+  anchors:
+    - anchor: requirement_id
+      propagates_to: eir_record.source_els_id
+    - anchor: specification.version
+      propagates_to: eir_record.source_els_version
+    - anchor: specification hash
+      propagates_to: eir_record.source_els_hash
+
+validation:
+  self_describing_identity: true
+  hash_self_reference_allowed: false
+  external_hash_computation_required: true

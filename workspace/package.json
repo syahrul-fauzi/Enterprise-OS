@@ -9,6 +9,8 @@
     "arch-check": "turbo run arch-check",
     "arch-test": "turbo run arch-check",
     "gate": "turbo run arch-check lint check-types build",
+    "status": "node --import tsx ./packages/tooling/eos-cli/src/index.ts status",
+    "eos": "node --import tsx ./packages/tooling/eos-cli/src/index.ts",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {

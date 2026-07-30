@@ -1,0 +1,234 @@
+version: "1.0.0"
+status: FROZEN
+kind: SPECIFICATION
+spec_kind: COMPILER_PASS_FRAMEWORK
+ssot_note: THIS_SPEC_DEFINES_THE_8_PASS_FRAMEWORK_FOR_THE_EOS_KNOWLEDGE_COMPILER._EVERY_REASONING_STEP_IS_A_PURE_PASS_THAT_CONSUMES_ONE_INPUT_IR_AND_PRODUCES_ONE_OUTPUT_IR_PLUS_DIAGNOSTICS._IA_14_PURITY_APPLIES_TO_ALL_8_PASSES._INDIVIDUAL_PASSES_ARE_DETERMINISTICALLY_TESTABLE.
+governance_ref:
+  ia13_stable_ir: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_13_stable_intermediate_representations
+  ia14_pure_passes: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
+  ia10_snapshot_boundary: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_10_immutable_knowledge_snapshot
+  pipeline_contract: /root/Enterprise OS/enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
+  knowledge_ir_contract: /root/Enterprise OS/workspace/contracts/KNOWLEDGE-IR.contract.yaml
+  decision_ir_contract: /root/Enterprise OS/workspace/contracts/DECISION-IR.contract.yaml
+derived_from:
+  - Reasoning_Layer_Split_Into_Compiler_Passes_User_Point_8
+
+pass_framework_definition:
+  core_concept:
+    - EOS Knowledge Compiler = 8 ordered pure passes + (optional) future Evidence Compiler pass
+    - Each pass conforms to: input_IR → output_IR + diagnostics[] + error | validation_error
+    - No shared state. No upstream mutation. No undeclared external reads.
+    - Passes communicate ONLY via IR artifacts (IA-13) — they do NOT call each other with internal objects
+  pass_interface_spec:
+    type_declaration:
+      typescript_style:
+        - >
+          interface CompilerPass<InputIR, OutputIR> {
+            readonly pass_id: PASS_IDENTIFIER
+            readonly declared_inputs: ReadonlyArray<string>  // artifact class names read
+            readonly declared_outputs: ReadonlyArray<string> // artifact class names written
+            readonly pure: true
+            run(input: InputIR, ctx: PassContext): { output: OutputIR; diagnostics: Diagnostic[] } | ValidationError
+          }
+        - PassContext is empty {} for semantic ops — NO access to fs, env, clock, globals via ctx. Optional only for future deterministic_seed for scheduler extensions (but default seed must be 0).
+  pass_ordering_is_total:
+    statement: Pass numbering total order 1..8. In this spec version, there is NO parallelism (future versions may schedule pass subgroups as parallel after formal dependency graph is proven). Parallelism NOT allowed until then.
+  pass_purity_properties_required:
+    per_pass:
+      - declared_inputs and declared_outputs are MACHINE-CHECKABLE; ACL ARCH-23 scans pass source for undeclared reads.
+      - No fs.writeFileSync to paths in declared_inputs (may only write to output artifacts under new path: output IR filename, separate diagnostic log path).
+      - No process.env conditional branch for decisions. (Diagnostic log may include env only for debug messages, and not for semantic branches.)
+      - No wall clock Date.new()/now() used inside deterministic output calculation. (Timestamped allowed ONLY in diagnostics array entries.)
+      - No network IO. No global mutable state. No global singleton writes.
+
+pass_list:
+  - pass_number: 1
+    pass_id: PASS-1-NORMALIZATION
+    name: Normalization Pass
+    input: Knowledge Snapshot (KS id → archive extract + manifest)
+    input_format: Raw snapshot files + registry YAML manifests + catalog graph
+    declared_inputs: [KnowledgeSnapshot, RegistryManifests, CatalogGraph, SemanticKernelRelationships]
+    declared_outputs: [NormalizedRegistryGraph]
+    output: Intermediate normalized graph (precursor to Knowledge IR; not stable yet — IR stability begins after Pass 5)
+    responsibilities:
+      - Lex-sort manifest entries deterministically
+      - Canonicalize all identifiers (strip whitespace, enforce regex patterns)
+      - Resolve alias references to canonical references (first stage only)
+      - Produce normalized graph instances with unique IDs
+      - Emit normalization warnings for deprecated identifier forms
+    deterministic_ordering:
+      statement: Pass 1 outputs always sorted deterministically by canonical id
+      tie_break: localeCompare (a.localeCompare(b)) for string keys; numeric order for numeric step keys
+
+  - pass_number: 2
+    pass_id: PASS-2-ONTOLOGY-EXPANSION
+    name: Ontology Expansion Pass
+    input: Output of Pass 1 (Normalized Registry Graph)
+    declared_inputs: [NormalizedRegistryGraph, SemanticKernelOntologyClosureRules]
+    declared_outputs: [ExpandedOntologyGraph]
+    output_contains: Transitive closures of PREDECESSOR / SUCCESSOR / CONSUMES / PRODUCES according to semantic kernel definitions.
+    responsibilities:
+      - Apply INF-002 Predecessor Transitivity (to closure)
+      - Apply transitivity rules per edge kind
+      - Record each new edge as INFERRED (not DECLARED) with inference_provenance (rule_id, premise_edge_ids) per IA-12.
+    purity_notes: No snapshot read beyond Pass 1 input. No env dependency.
+
+  - pass_number: 3
+    pass_id: PASS-3-CONSTRAINT-RESOLUTION
+    name: Constraint Resolution Pass
+    input: Output of Pass 2 (Expanded Ontology Graph)
+    declared_inputs: [ExpandedOntologyGraph, NormalizedConstraintSources]
+    declared_outputs: [ResolvedConstraints]
+    output_format: constraints array in canonical form (HARD | SOFT, params sorted keys, violated_if predicate expressions only)
+    responsibilities:
+      - Collect all constraints from contracts + predicates + policies
+      - Normalize them into the single canonical schema
+      - Assign deterministic unique constraint IDs (C-HARD-0001, C-SOFT-0042 etc.)
+      - Deduplicate constraints (same subject+predicate+params = same constraint, collapse duplicates into one)
+      - Order constraints lex by id for determinism
+    purity_notes: Strictly structural pass — no evaluation of truth of constraints (that's runtime predicate job), only formatting / dedup.
+
+  - pass_number: 4
+    pass_id: PASS-4-DEPENDENCY-ANALYSIS
+    name: Dependency Analysis Pass
+    input: Output of Pass 3 + Expanded Graph
+    declared_inputs: [ExpandedOntologyGraph, ResolvedConstraints]
+    declared_outputs: [DependencyGraph]
+    outputs:
+      - what artifact consumes which predecessor artifact
+      - what transformation blocked_until_predecessor_verified flag resolves to (factored out into explicit edge block status)
+      - dependency order per transformation topological sort stage (preliminary; refined at Pass 6 Planner after considering cost)
+    responsibilities:
+      - Close CONSUMES/PRODUCES pairs: "does downstream T have its required inputs present in graph?"
+      - Record dependency_edges
+      - Produce in-degree map per transformation for later topological sort in Pass 6
+      - Mark explicit "dependency analysis ready" flag per transformation (pruning criterion for Pass 6 candidate feasibility)
+    determinism: in-degree tie-break via transformation_id lex order.
+
+  - pass_number: 5
+    pass_id: PASS-5-COMPATIBILITY-RESOLUTION
+    name: Compatibility Resolution Pass
+    input: Output of Pass 4 + compatibility semantics
+    declared_inputs: [DependencyGraph, SemanticKernelCompatibilityRules, ProducedArtifactVersions]
+    declared_outputs: [CompatibilityMatrix, ResolvedCompatibilityFlags]
+    output: boolean compatible = true|false per (CONSUMES edge, artifact version produced) pair per IA-02.
+    responsibilities:
+      - Evaluate since ≤ transformation.version ≤ until range per Semantic Kernel compatibility_semantics rules
+      - Evaluate requires_min_version against produced_version for consumed artifacts
+      - Produce per-consumed-edge compatible flag
+      - Record resolution_rule (e.g., "T002 consumed EIR min=1.0.0, T001 produced EIR version 1.0.0 → compatible true by min_version equality rule")
+    stability: After Pass 5 → produces final Knowledge IR (STABLE IR begins here).
+
+  - pass_number: 6
+    pass_id: PASS-6-PLANNING
+    name: Planning Pass
+    input: Knowledge IR (stable output of Passes 1–5 combined KIR contract)
+    declared_inputs: [KnowledgeIR, PlannerConfig]
+    declared_outputs: [PlannerCandidates, PartialDecisionIR]
+    outputs_preview: Decision IR precursor — candidate_graph costs scores generated; selected alternative not finalized (compilation + canonical ordering in Pass 7).
+    responsibilities:
+      - Iterate candidate generation over valid execution DAGs (those where dependencies satisfied; constraints feasible = hard all pass)
+      - Evaluate each candidate: compute cost components, compute score components, collect per-candidate constraint satisfaction list
+      - Shortlist best candidates (score desc, cost asc, candidate_id asc)
+      - Produce rejected_alternatives entries for all non-shortlisted or non-feasible candidates (rejection reasons populated)
+    anti_pattern: Planner NEVER produces ExecutionPlan object. ONLY Decision IR precursor objects.
+    determinism_notes: Candidate enumeration order MUST be deterministic; no randomness. Tie-break tuple (score desc, cost asc, candidate_id asc).
+
+  - pass_number: 7
+    pass_id: PASS-7-DECISION-COMPILATION
+    name: Decision Compilation Pass
+    input: PartialDecisionIR (Pass 6 output)
+    declared_inputs: [PartialDecisionIR]
+    declared_outputs: [DecisionIR]
+    output: Final Decision IR contract (DIR) — versioned, stable, canonicallized per DIR contract.
+    responsibilities:
+      - Assemble final DIR from partial planner outputs
+      - Ensure all required sections present (enforce DIR contract schema)
+      - Sort candidates lex by candidate_id in candidate_graph section for deterministic output
+      - Sort rejected_alternatives lex by candidate_id
+      - Recompute header.ir_content_hash over included sections
+      - Write DIR.json (or .yaml canonical) artifact
+      - Validate against DIR.contract.yaml schema (self-check)
+    final_step_note: Final pass that produces DECISION_IR (STABLE SECOND IR).
+
+  - pass_number: 8
+    pass_id: PASS-8-EXECUTION-PLAN-COMPILATION
+    name: Plan Compiler Pass
+    input: Decision IR (DIR)
+    declared_inputs: [DecisionIR]
+    declared_outputs: [ExecutionPlan, ExecutionPlanMetadata]
+    output: Execution Plan — boundary artifact for KVM interpreter
+    critical_rule:
+      statement: >
+        Plan Compiler NEVER reads Snapshot, Registry, Contracts, or KIR directly.
+        ALL info needed to build Plan is in DIR.selected_alternative + DIR.constraints + DIR.header.planner_config + DIR.input_knowledge_snapshot_id.
+      rationale: Enforces strict decoupling. Planner = runtime-agnostic; Plan Compiler = runtime-specific translator.
+    responsibilities:
+      - Map DIR.selected_alternative.execution_steps_serialized → runtime Plan.steps[] (with opcodes, predicate eval ordering)
+      - Copy plan.knowledge_snapshot from dir.input_knowledge_snapshot_id
+      - Copy plan.decision_ir_hash from DIR.header.ir_content_hash (for traceability back)
+      - Assign plan_id PLAN-000 style
+      - Canonicalize + hash for plan byte-identical reproducibility
+    future_extension: Multiple Plan Compilers (for different KVM targets) — all consume same DIR produce format-specific plan.
+
+  - pass_number: 9
+    pass_id: PASS-9-EVIDENCE-COMPILATION
+    name: Evidence Compiler Pass (P2 Priority)
+    status: P2_FUTURE_GATE_D
+    note: This pass is conceptually defined per user point 9 "Evidence = Debug Symbols + Execution Plan". Implementation scheduled as P2 per Gate D roadmap.
+    input: Execution Result Stream + Execution Plan + DIR + KIR + Snapshot
+    declared_inputs: [ExecutionArtifacts, ExecutionPlan, DecisionIR, KnowledgeIR]
+    declared_outputs: [EvidenceProvenanceGraphNodes, RepositoryVerdict]
+    responsibilities:
+      - Collect evidence from each KVM step: transformation output hash, predicate results, etc.
+      - Assemble EPG (Evidence Provenance Graph) Merkle DAG nodes per EPG contract
+      - Multi-parent DAG construction (not linear chain)
+      - Write each node file with: id, kind, hash, parent_hashes[], timestamp, signature optional, knowledge_snapshot, runtime_version
+      - Construct final REPO-PROOF with root_hash + snapshot ref
+      - Append to Ledger via proof-ledger package (APPEND ONLY)
+    diagnostic_rule:
+      Evidence as Debug Symbols parallel:
+      - Execution Plan = Machine Code
+      - Evidence Graph nodes = Debug Symbols (explain how the plan maps to knowledge provenance)
+
+pipeline_input_output_contract_summary:
+  Knowledge Snapshot → Passes 1..5 → Knowledge IR (KIR) → Pass 6 → PartialDecisionIR → Pass 7 → Decision IR (DIR) → Pass 8 → Execution Plan → KVM (Execution State) → Pass 9 → Evidence + Repository Verdict
+
+determinism_and_ia14_conformance:
+  rule_id_matrix:
+    PASS-1: [ARCH-23 for env+clock+network checks]
+    PASS-2: [ARCH-23 for transitive closure algo determinism]
+    PASS-3: [ARCH-23 dedup order determinism]
+    PASS-4: [ARCH-23 topological tie-break determinism]
+    PASS-5: [ARCH-23 compatibility boolean determinism]
+    PASS-6: [ARCH-23 planner enumeration order + tie-break tuple determinism]
+    PASS-7: [ARCH-23 section sort order determinism]
+    PASS-8: [ARCH-23 opcode assignment order determinism]
+    PASS-9: [ARCH-23 node write order determinism]
+  unit_test_contract_for_each_pass:
+    - input: fixture IR file
+    - run pass ONCE → output_1 bytes
+    - run pass AGAIN on identical input → output_2 bytes
+    - ASSERT output_1 hash == output_2 hash (2-run determinism)
+    - ASSERT input artifact untouched (fs.stat mtime + content hash)
+    - ASSERT all declared_inputs match what pass reads (via sandbox filesystem trace)
+
+evolution_policy:
+  new_passes:
+    - NEW passes MAY BE INSERTED between existing passes ONLY if they are pure, conform to IA-14, and their output = well-defined (possibly temporary) IR for which input/output contract exists.
+    - Numbering: insert using PASS-2a, PASS-5b style — DO NOT renumber existing passes (which would invalidate references in tests).
+  pass_removal:
+    - Existing pass contract removal requires MAJOR bump of COMPILER-PASSES.spec.yaml and ADR.
+    - If pass function consolidated: keep pass number stub (as no-op with contract reference preserved); do not re-number.
+
+gate_d_p0_milestone:
+  deliverables:
+    - Pass 1-5 framework with interfaces defined (run methods typed as in spec)
+    - Pass 1-5 unit tests with fixtures (2-run determinism verified)
+    - First stable Knowledge IR (1.0.0) produced by Pass 5 end-to-end from snapshot fixture
+    - Pass 6-7 interfaces + at least 1 prototype deterministic planner for T001..T005 chain
+    - Pass 7 produces first valid DECISION-IR v1.0.0 for T001 pipeline
+  acceptance_criteria:
+    - ACL ARCH-22 + ARCH-23 PASS for Pass framework code.
+    - Unit tests for each 2x run determinism PASS.
+    - IR content hash chain reproducible.

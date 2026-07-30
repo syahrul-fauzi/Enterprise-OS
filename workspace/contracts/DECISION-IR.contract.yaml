@@ -1,0 +1,233 @@
+version: "1.0.0"
+status: FROZEN
+kind: CONTRACT
+contract_kind: INTERMEDIATE_REPRESENTATION_CONTRACT
+ir_id: DECISION_IR_DIR
+ir_format_version: "1.0.0"
+ir_abbreviation: DIR
+ssot_note: DECISION_IR_IS_SECOND_STABLE_IR_OF_KNOWLEDGE_COMPILER_PIPELINE._PRODUCED_BY_PASSES_6_AND_7._OUTPUT_OF_PLANNER_IS_DECISION_IR_NOT_EXECUTION_PLAN._EXECUTION_PLAN_IS_COMPILED_FROM_DECISION_IR_BY_PLAN_COMPILER_PASS_8._THIS_DECOUPLES_PLANNING_LOGIC_FROM_RUNTIME_FORMAT_AS_REQUIRED_BY_USER_POINT_5.
+governance_ref:
+  ia_13_stable_ir: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_13_stable_intermediate_representations
+  ia_14_pure_passes: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
+  ia_12_explainability: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_12_explainability_and_justification
+  knowledge_ir_contract: /root/Enterprise OS/workspace/contracts/KNOWLEDGE-IR.contract.yaml
+  pipeline_contract: /root/Enterprise OS/enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
+derived_from:
+  - Decision_Model_Changed_To_Decision_IR_User_Point_4
+  - Planner_Produces_DIR_Not_Execution_Plan_User_Point_5
+  - Decision_State_DIR_Contents_With_Candidates_Cost_Score_Constraints_Rejected_Selected
+
+ir_production_and_consumption:
+  upstream_input: Knowledge IR (KIR, ir_format_version 1.x)
+  upstream_input_source: Produced by Passes 1..5
+  producer_passes:
+    - Pass 6 Planning — generate candidate space + evaluate each
+    - Pass 7 Decision Compilation — canonicalize DIR, sort candidates, ensure deterministic selected_alternative
+  downstream_consumer:
+    - Pass 8 Plan Compiler — produces Execution Plan (boundary artifact for KVM)
+  strict_decoupling:
+    planner_must_not_know_runtime_format: >
+      Planner (Pass 6) NEVER produces Execution Plan.
+      Planner ONLY outputs Decision IR (candidates, costs, scores, selected alternative).
+      Plan Compiler (Pass 8) = yang men-translate DIR ke Execution Plan (sesuai target KVM format).
+      Ini membuat Planner dapat berjalan tanpa mengetahui runtime bytecode format.
+      Multiple Plan Compilers dapat dibangun (future: target different KVM variants, preview mode, dry-run mode).
+
+dir_sections_required:
+  header_section:
+    mandatory: true
+    fields:
+      - field: ir_format_version
+        type: semver
+      - field: ir_content_hash
+        type: "sha256:<hex>"
+        rule: Self-consistency check; verifier recomputes and compares per IA-13.
+      - field: input_knowledge_ir_id
+        type: "sha256:<hex>"
+        rule: DIR references upstream KIR via its content hash (NOT filename; content hash = immutable).
+      - field: input_knowledge_snapshot_id
+        type: string KS- pattern
+        rule: Full traceability back to build artifact.
+      - field: passes_applied
+        type: array
+        example: [PASS-6-PLANNING, PASS-7-DECISION-COMPILATION]
+      - field: planner_config
+        type: object
+        fields:
+          target_artifact_id: (the artifact we want to produce — top-level driver of planning problem)
+          required_capability_ids: (optional) capability constraint set
+          planning_hyperparameters: deterministic values for tie-breaking weight, cost weights, etc.
+        rule: >
+          planner_config TIDAK BOLEH bergantung pada process.env.
+          Semua hyperparameters harus merupakan bagian dari input config explicit.
+      - field: produced_at_utc
+        type: ISO 8601 timestamp; diagnostics only, EXCLUDED from ir_content_hash.
+
+  candidate_graph_section:
+    mandatory: true
+    ir_field: candidate_graph
+    description: >
+      The full space of candidate execution DAGs explored (or representative set + explanation for candidates pruned early — recorded under rejected).
+      Each candidate = satu cara mencapai target_artifact_id (given snapshot + knowledge ir).
+    structure_per_candidate:
+      - field: candidate_id
+        type: string pattern CAND-\d{5}
+        description: Unique per DIR. Deterministically assigned during Pass 6 in exploration order.
+      - field: transformation_steps
+        type: array
+        each_step: { step_index, transformation_id, input_bindings: [{artifact_id, source_candidate_step_id_or_external}], predicate_eval_order: [{predicate_id, phase: PRE|POST|VERIFY}] }
+        rule: step_index 0-based ordered deterministic
+      - field: graph_structure_hash
+        type: sha256 of transformation_steps canonical serialization (tie-breaker; identical steps have identical graph hash)
+      - field: predecessor_closure
+        type: array of PREDECESSOR edges expanded transitively; for traceability audit
+
+  cost_section:
+    mandatory: true
+    ir_field: costs
+    description: >
+      Cost per candidate (deterministic, computed from planner_config weights).
+      Cost BUKAN judgment kualitatif.
+      Cost = weighted sum of quantitative metrics.
+    per_candidate_cost_entries:
+      - field: candidate_id
+        reference: candidate_graph.candidate_id
+      - field: cost_components
+        type: object
+        subfields:
+          transformation_count_weighted
+          total_predicate_count_weighted
+          blocked_step_count_weighted (candidates requiring wait for predecessor counted higher)
+          evidence_overhead_weighted (number of extra evidence nodes emitted)
+      - field: total_cost
+        type: number (float64, serialized to 64-bit format with deterministic string representation; e.g. 0.00 NOT 0)
+      - field: cost_calculation_trace
+        type: array of string, formula per component
+        rule: IA-12 explainability — user should be able to recompute total_cost manually and match.
+
+  score_section:
+    mandatory: true
+    ir_field: scores
+    per_candidate_scores:
+      - field: candidate_id
+      - field: constraint_satisfaction
+        subfields:
+          hard_constraints_passed_count
+          hard_constraints_total_count
+          hard_constraints_pass_ratio (1.0 = all pass; < 1.0 = candidate is infeasible)
+          soft_constraints_passed_count
+          soft_constraints_total_count
+          soft_constraints_score (0..1 weighted)
+      - field: compatibility_score
+        per_pass_compat: 0..1 ratio of compatibility entries marked compatible
+      - field: overall_score
+        type: number, 0..1
+        1.0 = best feasible candidate
+        rule: overall_score calculation weighted = f(soft_constraints, compatibility, cost_inverted)
+      - field: score_calculation_trace
+        type: array of strings; formula per component for IA-12 audit.
+
+  constraints_section:
+    mandatory: true
+    ir_field: constraints
+    description: Semua hard + soft constraints yang diuji per candidate (subset dari normalized KIR constraints yang relevan dengan planning target).
+    per_constraint_entry:
+      - constraint_id
+      - kind: HARD|SOFT
+      - subject: (which candidate step or artifact it applies to)
+      - predicate_ref
+      - satisfied_by_candidates: { CAND-00001: true, CAND-00002: false, ... }
+      - violated_message_template
+
+  rejected_alternatives_section:
+    mandatory: true
+    ir_field: rejected_alternatives
+    description: >
+      IA-12 explainability.
+      Kenapa alternative candidate TIDAK dipilih? TIDAK BOLEH disembunyikan hanya dengan "selected = CAND-00042".
+      Setiap rejected candidate WAJIB ada penjelasan yang TERUKUR (dalam constraints / cost / infeasibility).
+    per_rejected_candidate:
+      - candidate_id
+      - rejection_reason_code: enum [INFEASIBLE_HARD_CONSTRAINT, TOO_COSTLY, LOWER_SCORE, BLOCKED_BY_PREDECESSOR_UNAVAILABLE, INCOMPATIBLE_VERSION]
+      - rejection_reason_human: string
+      - failed_constraint_ids: (array of constraint ids that violated; empty if rejected for cost/score only)
+      - cost_vs_selected_delta: (how much costlier than selected; 0 if infeasible)
+      - score_vs_selected_delta: (how much lower score than selected)
+    determinism: sorted by candidate_id lex order; NOT by rejection rank (to avoid non-determinism from JS sort unstable)
+
+  selected_alternative_section:
+    mandatory: true
+    ir_field: selected_alternative
+    description: EXACTLY 1 candidate selected per DIR. Tie-breaking MUST be deterministic.
+    fields:
+      - candidate_id
+      - selection_reason_summary: "Best score among feasible candidates, cost-minimal on tie"
+      - tie_break_applied: boolean
+      - tie_break_rule: "Ordered tuple: score desc, cost asc, candidate_id asc (lex)"
+      - overall_score: copied from scores for that candidate
+      - total_cost: copied from costs
+      - feasibility: boolean (hard_constraints_pass_ratio == 1.0)
+      - execution_steps_serialized: deterministic serialization used by Plan Compiler Pass 8
+    determinism_guarantee:
+      statement: >
+        Given KIR identik + planner_config identik → Pass 6 dan Pass 7 produce selected_alternative identik.
+        Exact candidate_id dan seluruh cost/score/delta deterministik.
+      verification: Unit test double-run → golden hash comparison.
+
+  diagnostics_section:
+    mandatory: true
+    ir_field: diagnostics
+    format: { level: INFO|WARN, pass_id, code, message, context_candidate_id?, timestamp_utc? }
+    timestamps_only_in_diagnostics: true
+
+ir_content_hash_calculation:
+  hash_algorithm: SHA-256
+  included_sections_sorted_keys:
+    - candidate_graph (sorted candidates by candidate_id)
+    - costs
+    - scores
+    - constraints
+    - rejected_alternatives (sorted by candidate_id)
+    - selected_alternative
+    - header (ir_format_version, input_knowledge_ir_id, input_knowledge_snapshot_id, passes_applied, planner_config)
+  excluded_sections:
+    - produced_at_utc (diagnostic only)
+    - diagnostics entries (messages + timestamps)
+  canonical_json_rules: keys sorted, no whitespace, arrays preserved order where meaningful.
+
+boundary_with_execution_plan:
+  dir_is_not_execution_plan:
+    statement: >
+      Decision IR = format independent runtime.
+      Execution Plan = format KVM interpreter specific (Pass 8 compiled).
+    fields_DIRECTIONAL_MAPPING:
+      DIR.selected_alternative.execution_steps_serialized → Pass 8 Compiles To → ExecutionPlan.steps[]
+      DIR.constraints.satisfied_by_candidates[selected] → Pass 8 emits → Plan.predicate_eval_rules[]
+      DIR.planner_config.target_artifact_id → Pass 8 → Plan.target_artifact_id
+      DIR.input_knowledge_snapshot_id → Pass 8 → Plan.knowledge_snapshot (KS-)
+    plan_compiler_cannot_modify_decision:
+      statement: >
+        Pass 8 (Plan Compiler) TIDAK BOLEH mengubah selected_alternative, rejected_alternatives, costs, scores.
+        Pass 8 HANYA men-translate selected DIR ke runtime format + inject fields yang KVM-butuhkan (step opcodes, immediate values, etc).
+      anti_patterns:
+        - Pass 8 re-scores candidates using different weight → forbidden.
+        - Pass 8 drops rejected alternative info from included Plan metadata → allowed, as long as DIR hash preserved in Plan.decision_ir_hash field for traceability.
+
+verification_status:
+  contract_kind: EXPLICIT_VERSIONED_DETERMINISTIC_IR (IA-13).
+  pass_purity: IA-14 applies to Passes 6 & 7.
+  reproducibility_claim:
+    statement: Given identical KIR input hash + identical planner_config object → Passes 6–7 produce byte-identical DIR content hash.
+    verification_method: Unit test golden hashes.
+    target_gate: Gate D P0.
+
+evolution_policy:
+  backward_compat: >
+    New optional fields → minor version.
+    Removal of required fields or change of semantic of candidate_id assignment → MAJOR 1.x → 2.0 + ADR.
+  plan_compiler_multiple_targets_future: >
+    In future, 1 DIR → multiple Plan Compilers (e.g., Plan Compiler A = KVM bytecode; Plan Compiler B = visualisation IR; Plan Compiler C = audit-report text).
+    This is enabled because DIR decouples decision from runtime format.
+  preservation:
+    When a new DIR is produced for same KS, old DIR preserved side-by-side (archive decision-irs/KS-.../DIR-v1.0-0001.json and so on).
+    No overwriting old DIR with same snapshot but new dir config — different dir_id = different build artifact.

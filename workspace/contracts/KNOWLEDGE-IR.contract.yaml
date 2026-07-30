@@ -1,0 +1,188 @@
+version: "1.0.0"
+status: FROZEN
+kind: CONTRACT
+contract_kind: INTERMEDIATE_REPRESENTATION_CONTRACT
+ir_id: KNOWLEDGE_IR_KIR
+ir_format_version: "1.0.0"
+ir_abbreviation: KIR
+ssot_note: KNOWLEDGE_IR_IS_FIRST_STABLE_IR_OF_KNOWLEDGE_COMPILER_PIPELINE._PRODUCED_AFTER_COMPILER_PASSES_1_TO_5._INPUT_TO_PLANNER_PASS_6._PLANNER_DOES_NOT_CONSUME_RAW_KNOWLEDGE_GRAPH_OR_SNAPSHOT_ARCHIVE_DIRECTLY._IT_CONSUMES_KIR_ONLY._THIS_ENFORCES_IA_13_IR_STABILITY.
+governance_ref:
+  ia_13_stable_ir: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_13_stable_intermediate_representations
+  ia_14_pure_passes: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
+  ia_10_snapshot: /root/Enterprise OS/workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml
+  pipeline_contract: /root/Enterprise OS/enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
+derived_from:
+  - Knowledge_Graph_Is_Not_IR_User_Point_3
+  - Analogy_Normalization_Pass_Produces_Canonical_IR
+  - Semantic_State_Contents_Knowledge_IR
+
+ir_production_pipeline:
+  upstream_input: Knowledge Snapshot (KS- identifier)
+  upstream_input_format: archive + manifest.yaml of 8 digests
+  producer_passes:
+    - Pass 1 Normalization (lex-sort, identifier canonicalization)
+    - Pass 2 Ontology Expansion (transitive closures applied per semantic kernel rules)
+    - Pass 3 Constraint Resolution (resolve hard/soft constraints against vocabulary)
+    - Pass 4 Dependency Analysis (CONSUMES/PRODUCES edge closure; what depends on what)
+    - Pass 5 Compatibility Resolution (since/until matrices resolved to boolean per edge)
+  downstream_consumer: Pass 6 Planner → produces Decision IR (DIR)
+  one_pipeline_stage_cannot_jump:
+    statement: Planner (Pass 6) ONLY reads KIR + Planner config (params). Planner NEVER reads snapshot files directly. This enforces boundary.
+
+kir_sections_required:
+  header_section:
+    mandatory: true
+    fields:
+      - field: ir_format_version
+        type: semver
+        example: "1.0.0"
+        rule: Changes to schema require minor or major bump per semantic versioning.
+      - field: ir_content_hash
+        type: "sha256:<hex>"
+        rule: Self-consistency check; verifier can recompute and compare.
+      - field: knowledge_snapshot_id
+        type: string (KS- pattern)
+        rule: Links KIR to upstream immutable build input. 1 KIR = exactly 1 snapshot input.
+      - field: semantic_kernel_version
+        type: semver (of SEMANTIC-KERNEL.yaml contract)
+        rule: KIR reproducible given same KS ID + same Semantic Kernel version → produces byte-identical KIR (Passes 1–5 deterministic).
+      - field: passes_applied
+        type: array of pass_ids
+        example: [PASS-1-NORMALIZATION, PASS-2-ONTOLOGY-EXPANSION, PASS-3-CONSTRAINT-RESOLUTION, PASS-4-DEPENDENCY-ANALYSIS, PASS-5-COMPATIBILITY-RESOLUTION]
+        rule: Mandatory; explains which passes produced this KIR. Used for audit.
+      - field: produced_at_utc
+        type: ISO 8601 timestamp
+        rule: Informational diagnostics only, NOT included in ir_content_hash computation.
+
+  resolved_references_section:
+    mandatory: true
+    ir_field: resolved_references
+    description: >
+      Semantic Kernel node kinds and edge kinds are DEFINED. Registry manifests and catalog graph edges
+      are DECLARED as instance references. In this section, every reference is RESOLVED:
+        - relative paths → absolute canonical paths
+        - alias node IDs → canonical IDs (e.g. "CAP-*" resolved to full Capability canonical URIs)
+        - references that failed to resolve are recorded as errors in diagnostics (NOT left as dangling strings)
+    type: object of { reference_string: resolved_canonical_entry }
+    each_entry_fields:
+      - original_reference: string input
+      - canonical_id: string
+      - resolution_trace: string of which pass + rule performed resolution
+      - exists_verified: boolean
+    purpose: Konsumen KIR (Planner) TIDAK PERLU melakukan resolusi reference lagi. Semuanya sudah resolved.
+
+  normalized_constraints_section:
+    mandatory: true
+    ir_field: normalized_constraints
+    description: >
+      Constraints from contracts, predicates, and policies are normalized into a single constraint format:
+        { id, kind: HARD|SOFT, subject_kind, predicate_ref, params, error_message, violated_if: <canonical predicate expression> }
+      Tidak ada duplikat. Urutan deterministik (lex id).
+    type: array of normalized constraint objects
+    canonical_format_rules:
+      - kind = HARD or SOFT (exhaustive enum; NO additional categories)
+      - params: sorted keys, no env-dependent branches
+      - violated_if: expressed ONLY using predicate refs (not inline logic)
+    purpose: Planner tidak perlu mem-parsing setiap source constraint individually. Cukup consume normalized array.
+
+  expanded_ontology_section:
+    mandatory: true
+    ir_field: expanded_ontology
+    description: >
+      Transitive closure dari semua Ontology relationship yang didefinisikan di Semantic Kernel.
+      Contoh: PREDECESSOR didefinisikan transitive → (Y pred X, Z pred Y) ⇒ Z pred X inferred dan DICATAT di sini sebagai expanded transitive edge.
+      Konsumen KIR TIDAK perlu menghitung transitive closure. Semua closure sudah dihitung di Pass 2.
+    structure:
+      nodes: list of canonical node objects (id, kind, metadata_ref)
+      declared_edges: list from registry/catalog (instance-level, provenance: DECLARED)
+      inferred_edges: list of edges added via INF-xxx rules (provenance: INFERRED + inference_provenance: {rule_id, premise_edge_ids[]} per IA-12 explainability)
+      transitive_closures: flag per edge kind whether closure was applied
+    purpose: Konsumen KIR (Planner) cukup melihat edges — tidak perlu mengimplementasikan inference rules.
+
+  resolved_compatibility_section:
+    mandatory: true
+    ir_field: resolved_compatibility
+    description: >
+      Compatibility semantics (since/until matrix per Semantic Kernel compatibility_semantics)
+      SUDAH DIRESOLUSI menjadi boolean per edge instance + transformation pair.
+      Contoh: (CONSUMES edge T002 → EIR) requires_min_version "1.0.0"; EIR produced by T001.version = "1.0.0" ⇒ compatible = true.
+    structure:
+      per_transformation_entries:
+        transformation_id: T001..T005
+        consumed_compatibilities: list of { edge_id, artifact, required_version, provided_version, compatible: boolean, resolution_rule }
+        produced_compatibilities: list of { edge_id, artifact, produced_version, compatibility_range, compatible_with_downstream_min: boolean }
+    purpose: Tidak perlu komputasi compatibility di dalam Planner (Pass 6). Semua boolean sudah ada.
+
+  inferred_edges_section:
+    mandatory: true
+    ir_field: inferred_edges (also mirrored in expanded_ontology for convenience)
+    explicit_rule_based_list:
+      - Each entry: { id, source_kind, source_id, relation, target_kind, target_id, inference_provenance: { rule_id (INF-001..004), premise_edge_ids[] } }
+      - Includes CONTRIBUTES_TO edges via INF-001 between each transformation and the requirements they eventually validate via output.
+    purpose: IA-12 explainability — user can see exactly why each inferred edge exists without running reasoner themselves.
+
+  canonical_identifiers_section:
+    mandatory: true
+    ir_field: canonical_identifiers
+    description: >
+      Semantic Kernel Vocabulary dan Canonical ID patterns sudah DITERAPKAN di sini untuk setiap node dan edge.
+      Semua entry:
+        - transformation IDs: strict T\d{3}
+        - predicate IDs: strict PRED-[A-Z0-9-]+
+        - artifact IDs: strict UPPER_SNAKE_CASE per Semantic Kernel ARTIFACT taxonomy
+        - node IDs = unik secara global dalam snapshot
+    duplicates_not_allowed: true
+    sort_order: lex-order by id deterministically (critical for stable hash).
+
+  diagnostics_section:
+    mandatory: true
+    ir_field: diagnostics
+    description: >
+      Pass 1–5 emit informational + warning messages di sini.
+      Format: { level: INFO|WARN, pass_id, code, message, context_path?, timestamp_utc? }.
+    rule: timestamp is diagnostics-only. Timestamps NOT included in ir_content_hash calc per IA-14 separation rule.
+
+ir_content_hash_calculation:
+  hash_algorithm: SHA-256
+  canonical_serialization:
+    format: JSON
+    rules:
+      - All object keys sorted lexicographically.
+      - All arrays in deterministic order: either declared order (where order semantically meaningful) or lex-sorted by object id.
+      - No whitespace. No trailing commas. UTF-8 bytes only.
+  sections_included_in_hash:
+    - resolved_references
+    - normalized_constraints
+    - expanded_ontology (both declared + inferred edges, minus any timestamps)
+    - resolved_compatibility
+    - canonical_identifiers
+    - header fields (ir_format_version, knowledge_snapshot_id, semantic_kernel_version, passes_applied)
+  sections_EXCLUDED_from_hash:
+    - produced_at_utc (diagnostic informational only)
+    - diagnostics (timestamps + non-semantic informational messages)
+  verifier_implementation:
+    step_1: Canonical serialize included sections using rules above.
+    step_2: Compute SHA-256 hex lowercase.
+    step_3: Assert equals header.ir_content_hash.
+    step_4: If not equal → KIR INVALID.
+
+verification_status:
+  contract_kind: EXPLICIT_VERSIONED_DETERMINISTIC_IR as required by IA-13.
+  pass_purity_contract: IA-14 applies to Passes 1–5 that emit KIR — each pass is pure, no external state, no upstream mutation.
+  reproducibility_claim:
+    statement: Given identical inputs (same KS ID snapshot content + same Semantic Kernel contract version) → Passes 1–5 produce byte-identical KIR.
+    verification_method: Unit test with golden hash fixtures.
+    target_gate: Gate D P0 certification.
+
+evolution_policy:
+  change_allowed:
+    - New optional fields added at end of sections → minor version bump (e.g. 1.0 → 1.1)
+    - New sections appended → minor bump if old consumers ignore unknown fields
+  direct_edit_prohibited_in:
+    - ir_format_version major = breaking changes (1.x → 2.0 requires ADR)
+    - Required field removal
+    - hash algorithm change (SHA-256 → other)
+  backward_compatibility:
+    rule: Newer KIR consumers SHALL be able to read older KIR format via version switcher.
+    Older KIR producers (e.g., prototype of Pass framework) SHALL remain reproducible to regenerate old KIR for verification chain.
+    Cross-major verification always returns INCONCLUSIVE unless explictly bridged via migration contract.
