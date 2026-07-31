@@ -1,0 +1,28 @@
+version: "1.0.0"
+kind: EXPECTED_EVALUATIONS
+status: REFERENCE_IMMUTABLE
+expected_evaluations:
+  GATE-C-DOC-PROPOSE:
+    evaluation_result: PASS
+    ia20_constitutional_validity: true
+    truth_table_row_matched: P1
+    independence_test_required: true
+    invariance_test_required: true
+  GATE-C-DOC-APPROVE:
+    evaluation_result: PASS
+    ia20_constitutional_validity: true
+    truth_table_row_matched: P1
+    independence_test_required: true
+    invariance_test_required: true
+  GATE-C-DOC-ARCHIVE:
+    evaluation_result: PASS
+    ia20_constitutional_validity: true
+    truth_table_row_matched: P1
+    independence_test_required: true
+    invariance_test_required: true
+  GATE-C-DOC-RETRIEVE:
+    evaluation_result: PASS
+    ia20_constitutional_validity: true
+    truth_table_row_matched: P1
+    independence_test_required: true
+    invariance_test_required: true

@@ -1,0 +1,22 @@
+version: "1.0.0"
+oracle_manifest_id: GATE-C-ORACLE-MANIFEST-001
+status: FROZEN
+oracle:
+  oracle_id: GATE-C-ORACLE-001
+  oracle_spec_ref: specification/oracle/oracle.yaml
+  calibration_certificate_ref: specification/calibration/oracle-certificate.yaml
+  implementation: LANGUAGE_AGNOSTIC_NORMATIVE_RELATION
+  evaluation_algorithm: MODULAR_PREDICATE_REPLAY_PLUS_IA20_CONJUNCTION
+  deterministic: true
+  pure_function: true
+  reads_global_state: false
+  mutates_inputs: false
+  emits_new_evidence: false
+  runtime_dependent: false
+  output_kind: CONSTITUTIONAL_EVALUATION_ARTIFACT
+  implementation_hash: PENDING_RUNTIME_SPECIFIC_BINDING
+
+notes: >
+  This manifest captures the reproducible identity of the Oracle as an evaluator relation. Concrete
+  implementations in TypeScript, Python, Rust, Go, or Java MUST preserve this manifest's semantics even
+  when implementation hashes differ by runtime.

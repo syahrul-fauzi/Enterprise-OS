@@ -1,0 +1,52 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:eos:science:gate-c:schema:instrument-certificate:v1"
+title: EOS Gate C Instrument Certificate Schema
+description: >
+  Machine-readable contract for calibrated scientific instruments used by Gate C. A certificate
+  records that an Oracle, Witness apparatus, or Dataset has passed Gate C0 calibration and is
+  allowed to participate in later theory experiments.
+type: object
+additionalProperties: false
+required:
+  - version
+  - certificate_id
+  - status
+  - instrument_type
+  - instrument_ref
+  - calibration_gate
+  - evidence_class
+  - calibration_result
+  - checks
+  - certified_until
+properties:
+  version:
+    type: string
+    pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+  certificate_id:
+    type: string
+    pattern: "^SC-[A-Z]+-[0-9]{3}$"
+  status:
+    type: string
+    enum: [PROPOSED, CALIBRATED, RETIRED]
+  instrument_type:
+    type: string
+    enum: [ORACLE, WITNESS, DATASET]
+  instrument_ref:
+    type: string
+  calibration_gate:
+    const: GATE-C0
+  evidence_class:
+    const: CLASS_I_CALIBRATION
+  calibration_result:
+    type: string
+    enum: [PASS, FAIL, INCONCLUSIVE]
+  checks:
+    type: object
+    minProperties: 1
+    additionalProperties:
+      type: string
+      enum: [PASS, FAIL, INCONCLUSIVE, NOT_APPLICABLE]
+  certified_until:
+    type: string
+  notes:
+    type: string

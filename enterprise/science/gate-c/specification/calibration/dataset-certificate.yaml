@@ -1,0 +1,18 @@
+version: "1.0.0"
+certificate_id: SC-DATASET-001
+status: CALIBRATED
+instrument_type: DATASET
+instrument_ref: specification/dataset/reference-dataset.yaml
+calibration_gate: GATE-C0
+evidence_class: CLASS_I_CALIBRATION
+calibration_result: PASS
+checks:
+  truth_table_complete: PASS
+  independence_complete: PASS
+  counterfactual_complete: PASS
+  minimality_complete: PASS
+  certified: PASS
+certified_until: EPOCH-1
+notes: >
+  Dataset calibration certifies that the Gate C reference dataset is suitable as a stable
+  measurement corpus for calibration, falsification, and later conformance replay.

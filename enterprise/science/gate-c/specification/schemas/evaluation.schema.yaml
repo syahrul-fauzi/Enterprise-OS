@@ -1,0 +1,71 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:eos:science:gate-c:schema:evaluation:v1"
+title: EOS Constitutional Evaluation Schema
+description: >
+  Evaluation is the factual output of the Oracle. It records predicate results, truth-table mapping,
+  and scientific disposition. Governance may later derive a verdict from this evaluation, but the
+  evaluation itself is not a governance decision.
+type: object
+additionalProperties: false
+required:
+  - evaluation_id
+  - for_experiment_subject_id
+  - evaluated_by_oracle
+  - truth_table_row_matched
+  - pred_vector
+  - ia20_constitutional_validity
+  - evaluation_result
+  - witness_composite_id
+  - independence_test_passed
+  - invariance_test_passed
+properties:
+  evaluation_id:
+    type: string
+    pattern: "^evaluation-[0-9a-z-]+$"
+  for_experiment_subject_id:
+    type: string
+    pattern: "^GATE-C-[A-Z0-9-]+$"
+  evaluated_by_oracle:
+    type: string
+    pattern: "^GATE-C-ORACLE-[A-Z0-9-]+$"
+  truth_table_row_matched:
+    type: string
+    enum: [P1, N1, N2, N3, N4, N5, N6, N7, GAP_UNMATCHED, INCONCLUSIVE_NOT_EVALUATED]
+  pred_vector:
+    type: object
+    additionalProperties: false
+    required: [pred_a_legitimate, pred_b_meaning_preserved, pred_c_provable]
+    properties:
+      pred_a_legitimate:
+        oneOf:
+          - type: boolean
+          - const: INCONCLUSIVE
+      pred_b_meaning_preserved:
+        oneOf:
+          - type: boolean
+          - const: INCONCLUSIVE
+      pred_c_provable:
+        oneOf:
+          - type: boolean
+          - const: INCONCLUSIVE
+  ia20_constitutional_validity:
+    oneOf:
+      - type: boolean
+      - const: INCONCLUSIVE
+  evaluation_result:
+    type: string
+    enum: [PASS, FAIL, INCONCLUSIVE, GAP, EXPERIMENT_CORRUPTED]
+  witness_composite_id:
+    type: string
+    pattern: "^CP-[0-9]+-[0-9a-f]{8}-[0-9a-f]{8}-[0-9a-f]{8}$"
+  independence_test_passed:
+    type: boolean
+  invariance_test_passed:
+    type: boolean
+  fungibility_test_passed:
+    oneOf:
+      - type: boolean
+      - type: "null"
+  run_id: { type: string }
+  timestamp_utc: { type: string, format: date-time }
+  notes: { type: string }

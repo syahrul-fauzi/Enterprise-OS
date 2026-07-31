@@ -1,0 +1,18 @@
+version: "1.0.0"
+certificate_id: SC-ORACLE-001
+status: CALIBRATED
+instrument_type: ORACLE
+instrument_ref: specification/oracle/oracle.yaml
+calibration_gate: GATE-C0
+evidence_class: CLASS_I_CALIBRATION
+calibration_result: PASS
+checks:
+  deterministic: PASS
+  repeatable: PASS
+  reproducible: PASS
+  pure_function: PASS
+  runtime_independent: PASS
+certified_until: EPOCH-1
+notes: >
+  Oracle calibration certifies the evaluator relation as a stable measurement apparatus for Gate C1
+  and later conformance runs until Epoch-1, unless an instrument defect is discovered.

@@ -1,0 +1,178 @@
+version: "1.0.0"
+status: FROZEN
+kind: SPECIFICATION
+layer: PROTOCOL_COMPILATION_PIPELINE
+abbreviation: PROTO-COMP
+evolution_domain: DOMAIN-B-SPECIFICATION
+ssot_note: PROTOCOL_COMPILATION_IS_THE_SUB_PIPELINE_OF_CONST-COMP_PASS_5_THAT_COMPILES_PROTOCOL_DECLARATIONS_INTO_COMPATIBILITY_MATRICES_ALLOWED_UPGRADE_PATHS_MIGRATION_RULES_AND_DEPRECATION_WINDOWS._IT_IMPLEMENTS_USER_POINT_5_(PROTOCOL_GOVERNANCE_JUGA_DAPAT_DIKOMPILASI)_AND_MP-01(C)._NO_MANUALLY_WRITTEN_COMPAT_MATRIX_SHOULD_EXIST_IN_LONG_TERM;_ALL_ARE_GENERATED_ARTIFACTS.
+governance_ref:
+  proto_governance: /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
+  mp01_c: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#MP-01/proto-gov-generated
+  cc_pass5: /root/Enterprise OS/enterprise/specifications/CONSTITUTIONAL-COMPILER.spec.yaml#five_compiler_passes[CC-PASS-5-COMPAT-MATRIX-GEN]
+  ia08_evolution_policy: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_08_evolution_policy_per_artifact_class
+  evolution_domains_b: /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml#evolution_domains_definition/domains/DOMAIN-B-SPECIFICATION
+derived_from:
+  - User_Point_5_Protocol_Governance_Compiled
+  - User_Point_MP01_Computable_Governance_C_Protocol_Governance_Generated
+
+compiler_overview:
+  name: Protocol Compiler (PROTO-COMP) — sub-engine of CONST-COMP Pass 5
+  inputs: PROTOCOL-GOVERNANCE.yaml (lifecycle, versioning rules) + all PROTOCOL-*.yaml / *.contract.yaml files (Domain B protocol artifacts)
+  outputs: Generated artifacts under build/governance/generated-compat/
+  core_principle: >
+    Compatibility matrices, upgrade paths, migration rules, and deprecation windows
+    are derived knowledge. They MUST be computed from the protocol declarations;
+    they MUST NOT be manually maintained prose or spreadsheets.
+
+input_protocol_schema_required:
+  every_protocol_yaml_must_have_header:
+    mandatory_fields:
+      - id: string (PROTO-EDGE-SEMANTICS, PROTO-KIR-EXCHANGE, etc.)
+      - version: semver (MAJOR.MINOR.PATCH)
+      - status: enum [PROPOSAL, DRAFT_v0.x, STABLE_v1.0+, DEPRECATED, SUNSET]
+      - governing_contract_ref: path (YAML contract)
+      - domain_b_authority_owner: string (team or individual)
+    optional_fields:
+      - successor_protocol_id: string (when status = DEPRECATED)
+      - successor_stable_since_version: semver (when status = DEPRECATED)
+      - semver_exception_note: (if compatibility requires a special rule)
+      - breaking_change_adr_ref: (for each MAJOR version bump, ADR reference)
+
+  versioned_semver_triggers_canonical:
+    MAJOR_bump_triggers:
+      - removal_or_renaming_of_mandatory_field
+      - new_mandatory_field_without_default
+      - removal_of_edge_kind_in_semantic_protocol
+      - change_of_hash_algorithm_or_canonical_serialization_for_Stable_IR
+      - incompatible_change_to_Execution_Plan_opcode_format
+    MINOR_bump_triggers:
+      - new_optional_field_with_default
+      - new_optional_edge_kind
+      - additional_conformance_tests_not_invalidating_existing_implementations
+    PATCH_bump_triggers:
+      - editorial_comment_changes
+      - typo_fixes
+      - reordering_of_example_blocks
+  (note: these are compiled from PROTOCOL-GOVERNANCE.yaml#protocol_versioning_rule)
+
+five_generated_artifact_classes:
+
+  # ──────────────── 1. Compatibility Matrix ────────────────
+  - artifact_id: COMPAT-MATRIX
+    artifact_kind: generated_knowledge
+    output_path_template: build/governance/generated-compat/COMPAT-MATRIX-<PROTO-ID>.yaml
+    generation_algorithm:
+      algorithm_id: GEN-COMPAT-MATRIX-v1
+      matrix_structure:
+        versions: array of versions sorted ascending
+        compat_matrix: 2D map [from_version][to_version] → status
+      status_enumeration:
+        COMPATIBLE_FULLY: "Identical behavior; consumer written for from_version will work against to_version without any change, recompile OK."
+        COMPATIBLE_WITH_DEPRECATION: "Works, but deprecated API paths are used; emit deprecation diagnostics. Consumer SHOULD migrate to successor API within overlap window."
+        INCOMPATIBLE_REQUIRES_MAJOR: "Breaking change. Consumer source code changes required. Marked explicitly to prevent silent upgrade accidents."
+        INCOMPATIBLE_SKIP_FORBIDDEN: "Direct upgrade from N → N+2 skips a DEPRECATED intermediary. Must go N → N+1 → N+2 for migration step. (Only if overlap enforced.)"
+      population_rules:
+        - same_version: "Always COMPATIBLE_FULLY (identity)."
+        - patch_delta_same_major_minor: "PATCH within same MAJOR.MINOR → COMPATIBLE_FULLY. (Editorials only.)"
+        - minor_delta_same_major: "Within same MAJOR, vN.MINOR+? vs vN.MINOR → COMPATIBLE_FULLY_or_WITH_DEPRECATION depending on deprecated_flag field presence for MINOR additions."
+        - major_delta: "Different MAJOR → INCOMPATIBLE_REQUIRES_MAJOR unless explicit backward_compat_bridge entry in protocol yaml."
+        - deprecation_skip_check: "If protocol status = DEPRECATED for intermediary version, and consumer tries to skip it → INCOMPATIBLE_SKIP_FORBIDDEN with remediation_snippet pointing at migration file."
+    example_cell:
+      PROTO-KIR-EXCHANGE:
+        v1.0.0_to_v1.1.0: COMPATIBLE_WITH_DEPRECATION  (because v1.1.0 added a new optional field with deprecation of an old name alias)
+        v1.0.0_to_v2.0.0: INCOMPATIBLE_REQUIRES_MAJOR  (hash algorithm changed; breaking.)
+
+  # ──────────────── 2. Allowed Upgrade Paths (DAG) ────────────────
+  - artifact_id: UPGRADE-PATHS
+    artifact_kind: generated_knowledge (directed graph)
+    output_path_template: build/governance/generated-compat/UPGRADE-PATHS-<PROTO-ID>.yaml
+    generation_algorithm:
+      algorithm_id: GEN-UPGRADE-PATHS-v1
+      graph_structure:
+        nodes: protocol versions
+        edges: allowed_upgrade_paths[] = { from_version, to_version, status = COMPATIBLE_FULLY_or_WITH_DEPRECATION_only_never_INCOMPATIBLE, estimated_risk_level = LOW/MEDIUM/HIGH }
+      construction:
+        - rule: "An edge vA → vB exists in UPGRADE-PATHS iff compat_matrix[vA][vB] != INCOMPATIBLE_* (neither REQUIRES_MAJOR nor SKIP_FORBIDDEN)."
+        - rule: "For MAJOR version transitions where a backward_compat_bridge exists, the edge exists with status = COMPATIBLE_WITH_DEPRECATION and HIGH risk."
+      topological_invariant: "UPGRADE-PATHS DAG has no cycles. Edge direction always from lower to higher lexical version sort."
+    consumer_usage:
+      CI_release_pipeline: "CI release automation SHALL consult UPGRADE-PATHS before promoting a protocol-dependent component. If target edge does NOT exist → block release; require human ADR sign-off for explicit MAJOR migration."
+
+  # ──────────────── 3. Migration Rules (per incompatibility) ────────────────
+  - artifact_id: MIGRATION-RULES
+    artifact_kind: executable_migration_descriptor (used by migration tools)
+    output_path_template: build/governance/generated-compat/MIGRATION-<PROTO-ID>-<vOLD>-<vNEW>.yaml
+    generation_algorithm:
+      algorithm_id: GEN-MIGRATION-v1
+      generation_trigger: "Produced for every (vOLD, vNEW) pair where compat_matrix = INCOMPATIBLE_REQUIRES_MAJOR."
+      fields:
+        - protocol_id
+        - from_version
+        - to_version
+        - adr_reference (required per MAJOR bump)
+        - field_translation_rules[] = [path_in_old, path_in_new, transform, required_default_if_removed]
+        - deprecated_field_list[] = [field_path, deprecated_since_version, removal_version]
+        - new_mandatory_field_defaults[] = [field_path, default_value_provider]
+        - ir_translation_plan (if protocol governs a Stable IR): step-by-step structural transform
+      source_of_field_rules: "Extracted from (a) the semver_exception_note in protocol YAML headers; (b) the ADR document referenced in breaking_change_adr_ref; (c) the YAML schema diff between versions."
+    consumer_usage:
+      auto_migration_tool: "eos-migrate-protocol CLI consumes MIGRATION-RULES yaml and emits a patch for consumer code / data where possible (best-effort automatic; manual remainder flagged in report)."
+
+  # ──────────────── 4. Deprecation Windows ────────────────
+  - artifact_id: DEPRECATION-WINDOW
+    artifact_kind: lifecycle_knowledge
+    output_path_template: build/governance/generated-compat/DEPRECATION-WINDOW-<PROTO-ID>.yaml
+    generation_algorithm:
+      algorithm_id: GEN-DEPRECATION-v1
+      source_fields:
+        - PROTOCOL-GOVERNANCE.yaml#protocol_lifecycle/stages[DEPRECATED & SUNSET] + deprecation_policy_default/2-major-releases
+        - PROTOCOL-GOVERNANCE.yaml#deprecation_policy_default/per_evolution_domain_b rule
+        - Per-protocol successor_protocol_id + successor_stable_since_version
+      computed_fields_ordered:
+        - deprecated_version
+        - successor_protocol_id_if_applicable
+        - successor_stable_version
+        - overlap_minimum_releases: "2 per Domain B default unless per-protocol override"
+        - sunset_release_version_formula: "successor MAJOR version + overlap value. Example: successor v3.0 + overlap 2 → old version sunset no earlier than v5.0."
+        - consumer_warning_log_level_schedule: "WARN during the FIRST HALF of overlap window; ERROR during the SECOND HALF near sunset."
+        - producer_soft_error_directive_text: "Protocol producer SHALL emit a soft-error diagnostic when producing deprecated-format output during the second half of the overlap window."
+    consumer_usage:
+      implementation_logs: "Implementation components SHALL load DEPRECATION-WINDOW yaml and emit appropriate WARN/ERROR log level when emitting deprecated protocol artifacts."
+
+  # ──────────────── 5. Version Timeline & Roadmap ────────────────
+  - artifact_id: VERSION-TIMELINE
+    artifact_kind: lifecycle_knowledge (informational, deterministic)
+    output_path_template: build/governance/generated-compat/VERSION-TIMELINE-<PROTO-ID>.yaml
+    generation_algorithm:
+      algorithm_id: GEN-TIMELINE-v1
+      fields:
+        - protocol_id
+        - versions[] = [{version, release_epoch, status, notes}]
+        - support_lanes[] = [{version_range, support_level = ACTIVE / EXTENDED / SUNSET}]
+      semantics: >
+        Generated directly from protocol version history. Used by the release dashboard only.
+        Not used for semantic decisions (COMPAT-MATRIX is canonical for that.)
+
+integrity_and_determinism:
+  determinism: "Identical input protocol yaml set → identical output artifacts. 2x PROTO-COMP run hash-equal per file."
+  provenance_chain:
+    - field: generated_by
+      value: PROTO-COMP-v1
+    - field: input_protocol_hash
+      meaning: "SHA-256 Merkle of all input protocol YAML files."
+    - field: parent_constit_ir_hash
+      meaning: "The CONSTIT-IR content hash that triggered Pass 5 compilation."
+  anti_pattern: "Never manually edit a file under build/governance/generated-compat/. Manual edits → checksum mismatch detected by CONST-VERIF Stage 3 → REPO_VIOLATION."
+
+activation_schedule:
+  Phase_0_Sprint_0:
+    - PROTO-COMP runs manually (developer script)
+    - Generated files checked into build/ for audit.
+  Phase_1_Gate_D:
+    - PROTO-COMP runs in CI for every PR that touches a protocol yaml
+    - Hash mismatch between CI-generated and checked-in generated files → CI fail
+    - Manual compat prose documents in governance/** are frozen (read-only) with pointer to generated
+  Phase_2_Gate_E:
+    - 100% of protocol governance consumption uses generated files
+    - PROTOCOL-GOVERNANCE.yaml human section (the prose) becomes explanatory only;
+      machine-readable fields = canonical source.

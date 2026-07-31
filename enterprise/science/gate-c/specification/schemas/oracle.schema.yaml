@@ -1,0 +1,141 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:eos:science:gate-c:schema:oracle:v1"
+title: EOS Gate C Oracle Schema
+description: >
+  Machine-readable contract for the normative evaluator relation that consumes immutable
+  specification plus immutable witness bundles and emits constitutional evaluations.
+type: object
+additionalProperties: false
+required:
+  - version
+  - oracle_id
+  - status
+  - kind
+  - role
+  - formal_signature
+  - purity
+  - specification_inputs
+  - execution_inputs
+  - predicate_evaluators
+  - constitutional_evaluator
+  - evaluation_pipeline
+  - outputs
+  - invariants
+properties:
+  version:
+    type: string
+    pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+  oracle_id:
+    type: string
+    pattern: "^GATE-C-ORACLE-[A-Z0-9-]+$"
+  status:
+    type: string
+    enum: [FROZEN, PROPOSED, RETIRED]
+  kind:
+    const: NORMATIVE_EVALUATOR_RELATION
+  role:
+    const: EVALUATOR_ONLY
+  formal_signature:
+    type: object
+    additionalProperties: false
+    required: [notation, domain, codomain]
+    properties:
+      notation: { type: string }
+      domain:
+        type: object
+        additionalProperties: false
+        required: [specification, witness]
+        properties:
+          specification: { type: string }
+          witness: { type: string }
+      codomain:
+        type: object
+        additionalProperties: false
+        required: [evaluation]
+        properties:
+          evaluation: { type: string }
+  purity:
+    type: object
+    additionalProperties: false
+    required:
+      [pure_function, deterministic, reads_global_state, mutates_inputs, emits_new_evidence, runtime_dependent]
+    properties:
+      pure_function: { const: true }
+      deterministic: { const: true }
+      reads_global_state: { const: false }
+      mutates_inputs: { const: false }
+      emits_new_evidence: { const: false }
+      runtime_dependent: { const: false }
+  specification_inputs:
+    type: object
+    additionalProperties: false
+    required:
+      [hypothesis_ref, protocol_ref, truth_table_ref, expected_predicates_ref, expected_evaluations_ref]
+    properties:
+      hypothesis_ref: { type: string }
+      protocol_ref: { type: string }
+      truth_table_ref: { type: string }
+      expected_predicates_ref: { type: string }
+      expected_evaluations_ref: { type: string }
+      witness_bundle_contract_ref: { type: string }
+      reproducibility_manifest_ref: { type: string }
+      witness_integrity_ref: { type: string }
+      oracle_manifest_ref: { type: string }
+      schema_refs:
+        type: array
+        items: { type: string }
+  execution_inputs:
+    type: object
+    additionalProperties: false
+    required: [witness_bundle_ref, run_manifest_ref]
+    properties:
+      witness_bundle_ref: { type: string }
+      run_manifest_ref: { type: string }
+      actual_observation_ref: { type: string }
+  predicate_evaluators:
+    type: object
+    additionalProperties: false
+    required: [pred_a_evaluator, pred_b_evaluator, pred_c_evaluator]
+    properties:
+      pred_a_evaluator:
+        $ref: "#/$defs/predicateEvaluator"
+      pred_b_evaluator:
+        $ref: "#/$defs/predicateEvaluator"
+      pred_c_evaluator:
+        $ref: "#/$defs/predicateEvaluator"
+  constitutional_evaluator:
+    type: object
+    additionalProperties: false
+    required: [evaluator_id, expression, truth_table_ref]
+    properties:
+      evaluator_id: { type: string }
+      expression: { type: string }
+      truth_table_ref: { type: string }
+  evaluation_pipeline:
+    type: array
+    minItems: 3
+    items: { type: string }
+  outputs:
+    type: object
+    additionalProperties: false
+    required: [evaluation_ref, comparison_mode]
+    properties:
+      evaluation_ref: { type: string }
+      comparison_mode:
+        type: string
+        enum: [TRUTH_TABLE_AND_EXPECTED_CONTRACTS]
+  invariants:
+    type: array
+    minItems: 3
+    items: { type: string }
+$defs:
+  predicateEvaluator:
+    type: object
+    additionalProperties: false
+    required: [evaluator_id, target_predicate, method]
+    properties:
+      evaluator_id: { type: string }
+      target_predicate:
+        type: string
+        enum: [LEGITIMATE_PRED_A, MEANING_PRESERVED_PRED_B, PROVABLE_PRED_C]
+      method: { type: string }

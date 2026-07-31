@@ -1,0 +1,197 @@
+version: "1.0.0"
+status: FROZEN
+kind: SPECIFICATION
+layer: CONSTITUTIONAL_VERIFIER_PIPELINE
+abbreviation: CONST-VERIF
+evolution_domain: DOMAIN-B-SPECIFICATION
+ssot_note: CONSTITUTIONAL_VERIFIER_IS_THE_NEW_NAME_FOR_THE_OLD_ARCH-CHECK_TOOL._IT_VERIFIES_THAT_IMPLEMENTATION_CONFORMS_TO_CONSTITUTION._IT_DOES_NOT_KNOW_RULES_INTELLECTUALLY;_IT_EXECUTES_COMPILED_RULES_FROM_CONSTIT-IR_GENERATED_BY_CONST-COMP._PIPELINE_IS_PURE_(NO_UPSTREAM_MUTATION)_AND_DETERMINISTIC_(2X_RUN_HASH_EQUAL)._THIS_IS_THE_OPERATIONALIZATION_OF_USER_POINT_4_(ARCH-CHECK_→_CONSTITUTIONAL-VERIFIER)_AND_USER_POINT_7_(AUTHORITY_FLOW_AS_DAG_CHECK).
+governance_ref:
+  mp01: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#MP-01
+  constit_compiler: /root/Enterprise OS/enterprise/specifications/CONSTITUTIONAL-COMPILER.spec.yaml
+  constit_ir: /root/Enterprise OS/workspace/contracts/CONSTITUTION-IR.contract.yaml
+  arch_manifest: /root/Enterprise OS/governance/ARCH-RULE-GENERATION.manifest.yaml
+  authority_dag_schema: /root/Enterprise OS/enterprise/schema/AUTHORITY-DAG.schema.yaml
+derived_from:
+  - User_Point_Constitutional_Verifier_Renamed_From_Arch_Check
+  - User_Point_Authority_Flow_DAG_Check
+  - User_Point_Evolution_Domain_Type_System_As_Type_Error
+
+pipeline_overview:
+  name: Constitutional Verifier (CONST-VERIF)
+  renamed_from: arch-check (legacy name valid for shell alias only; canonical CLI name = eos-verif-constitution)
+  paradigm: Rule-execution engine. Verifier contains ZERO hardcoded governance knowledge.
+  all_rules_are_input_statement: >
+    The Verifier itself is a generic scan driver. All governance semantics are fed to it as input:
+    (a) CONSTIT-IR object (type system, DAG edges, boundary rules, verification generator params)
+    (b) Generated ARCH-*.generated.yaml rule files from CONST-COMP Pass 4
+    (c) CONFORMANCE-PROPERTIES six-dimensional property measurement definitions
+    If you delete all input governance, the verifier becomes a no-op program. This is the litmus test of MP-01.
+
+verifier_five_stage_pipeline:
+
+  # ─────────────────────── Stage 0 ───────────────────────
+  - stage_id: CV-STAGE-0
+    stage_name: Input Preparation & Self-Check
+    input_artifacts:
+      - build/governance/constit-ir/CONSTIT-IR-*.yaml  (Constitution IR produced by CONST-COMP)
+      - build/governance/generated-arch-rules/ARCH-*.generated.yaml  (Pass 4 output)
+      - governance/ARCH-RULE-GENERATION.manifest.yaml  (catalog integrity check)
+    stage_operations:
+      - operation_id: CV-OP-001
+        name: Load CONSTIT-IR & validate its ir_content_hash against constitution_sources_sha256_merkle_root (self-check that the compiled IR itself was correctly produced)
+        pass_criteria: hash validation PASS
+      - operation_id: CV-OP-002
+        name: Load ARCH-MAN catalog and check integrity constraint ARCH-MAN-INTEGRITY-001 (every GENERATED rule has a generated file)
+        pass_criteria: no missing generated files
+      - operation_id: CV-OP-003
+        name: Enumerate repository artifacts (scan all .yaml/.ts/.tsx paths)
+        output: artifact_inventory = [{path, kind, headers_loaded}]
+    output:
+      - validated_constit_ir: CONSTIT-IR object (hash-verified)
+      - loaded_rule_set: ARCH rule array
+      - artifact_inventory: enumerated files with headers
+
+  # ─────────────────────── Stage 1 ───────────────────────
+  - stage_id: CV-STAGE-1
+    stage_name: Evolution Domain Type Checking (per user point 6)
+    consumes: validated_constit_ir.evolution_domain_types, artifact_inventory
+    description: >
+      Treats artifact kinds as TYPES. Runs the TYPE SYSTEM defined in CONSTIT-IR.type_system_section.
+      Produces TYPE_ERROR for violations. This is not "policy review by human" — this is compile-time type checking of governance.
+    checks:
+      - check_id: CV-TYPE-01
+        kind: IMPORT_TYPE_FORBIDDEN
+        rule: "For each artifact A of TYPE X that declares imports of artifact B of TYPE Y: if cannot_import_type: [Y] is in X's type_rules → TYPE_ERROR."
+        example: IMPLEMENTATION artifact .ts file does raw import of CONSTITUTION yaml → TYPE_ERROR.
+      - check_id: CV-TYPE-02
+        kind: MUTATION_TYPE_FORBIDDEN
+        rule: "For each artifact A of TYPE X that writes/mutates artifact B of TYPE Y: if cannot_mutate_type: [Y] is in X's type_rules → TYPE_ERROR."
+        example: IMPLEMENTATION .ts calls fs.writeFileSync on SPECIFICATION .contract.yaml → TYPE_ERROR.
+      - check_id: CV-TYPE-03
+        kind: UNCLASSIFIED_ARTIFACT
+        rule: "Every scanned artifact MUST resolve to exactly one TYPE via CONSTIT-IR type_members or domain glob mapping. No match → TYPE_ERROR (unclassified)."
+        severity: FATAL for Domain A/B; WARN for Domain C implementation unknowns.
+    output:
+      - type_error_report[]: [{artifact_path, artifact_type, violating_import_or_mutate, target_type, rule_ref, const_ir_section_ref}]
+
+  # ─────────────────────── Stage 2 ───────────────────────
+  - stage_id: CV-STAGE-2
+    stage_name: Authority DAG Validation (per user point 7)
+    consumes: validated_constit_ir.authority_graph_dag, artifact_inventory
+    description: >
+      Verifies that all derivation edges in the actual codebase respect the direction of the authority DAG.
+      Produces DAG_EDGE_VIOLATION for any reverse-directional derivation link.
+      Rule: edge direction = authority direction. Any edge that points opposite topological order is invalid.
+    checks:
+      - check_id: CV-DAG-01
+        kind: REVERSE_EDGE
+        rule: "For each declared or detected edge artifact_A → derives_or_defines → artifact_B: if topological_index(B) < topological_index(A) → REVERSE_EDGE. (Because B is higher authority than A.)"
+        example: "PROTOCOL YAML contract references IMPLEMENTATION source code line as 'authoritative semantics' → reverse edge (Protocol should be above impl)."
+      - check_id: CV-DAG-02
+        kind: CYCLE_DETECTED
+        rule: "Re-run Kahn's algorithm on the actual artifact derivation links. Any cycle → FATAL."
+      - check_id: CV-DAG-03
+        kind: DANGLING_DERIVATION
+        rule: "Every artifact's derived_from: list must resolve to existing artifacts within the DAG. Broken refs → error."
+    output:
+      - dag_violation_report[]: [{edge_from, edge_to, edge_kind, violation, topological_from_idx, topological_to_idx, authority_proof_ref}]
+      - actual_dag_topological_order[]: (for visualization export)
+
+  # ─────────────────────── Stage 3 ───────────────────────
+  - stage_id: CV-STAGE-3
+    stage_name: Boundary & ACL Rule Execution
+    consumes: loaded_rule_set, validated_constit_ir.boundary_rules, artifact_inventory
+    description: >
+      Executes the concrete parameter-driven scans from the generated ARCH rule files.
+      Each ARCH rule is a scan directive. Verifier interprets them generically (regex/glob/dep/import patterns).
+      No governance intelligence lives in this stage driver itself.
+    checks_generic_drivers:
+      - driver: REGEX_SCAN
+        input_params: [target_paths, forbidden_patterns, context_whitelist]
+        produces: pattern_matches[] with context lines
+        rules: ARCH-19, ARCH-21, ARCH-23
+      - driver: DEPENDENCY_GRAPH_ENFORCEMENT
+        input_params: [forbidden_dep_table]
+        produces: dep_violations[]
+        rules: ARCH-18-INV-TABLE
+      - driver: WRITE_SCOPE_CHECK
+        input_params: [upstream_paths, downstream_src_paths, forbid_patterns]
+        produces: upstream_write_violations[]
+        rules: ARCH-20, ARCH-24
+      - driver: CONTRACT_HEADER_CHECK
+        input_params: [required_ir_contract_paths, required_protocol_version_fields, required_protocol_hash_fields]
+        produces: missing_header_fields[]
+        rules: ARCH-22
+      - driver: PROTOCOL_BOUNDARY_CHECK
+        input_params: [conformance_impl_private_import_forbid, ad_hoc_type_version_hash_headers_require, canonical_sufficiency_delegation_forbid]
+        produces: boundary_violations[]
+        rules: ARCH-25, ARCH-18-ONT-TRIAD
+    output:
+      - boundary_violation_report[]: [{arch_rule_id, artifact_path, pattern_hit_or_dep, severity, remediation_ref}]
+
+  # ─────────────────────── Stage 4 ───────────────────────
+  - stage_id: CV-STAGE-4
+    stage_name: Conformance Property Measurement
+    consumes: type_error_report, dag_violation_report, boundary_violation_report, + CONFORMANCE-PROPERTIES measurement algorithm definitions
+    description: >
+      Aggregates results into the six-dimensional Conformance Property vector per artifact.
+      Implements the MEASURE-* algorithms from CONFORMANCE-PROPERTIES.yaml:
+      MEASURE-DET, MEASURE-COMPAT, MEASURE-REPRO (partial — full repro requires 3rd-party env), MEASURE-AUDIT, MEASURE-EXP, MEASURE-CAN.
+    measurement_mapping:
+      Deterministic:  fed by ARCH-21 (non-det primitives) + IR header hash checks + 2x run if test fixtures present
+      Compatible:  fed by ARCH-25 protocol boundary + ARCH-24 domain SEMVER checks
+      Reproducible:  fed by ARCH-20 snapshot boundary + ARCH-22 IR stability + ARCH-23 pass purity
+      Auditable:  fed by CV-DAG (provenance chain completeness) + CV-TYPE (no dangling)
+      Explainable:  fed by CONST-IR authority_proof_ref presence on 100% of edges + explanations in DIR where applicable
+      Canonical:  fed by ARCH-19 (no embedded knowledge) + ARCH-25 (no code delegation) + VGEN-PROTO canonical checks
+    output:
+      - per_artifact_property_vectors[] (1 vector per artifact, 6 properties each)
+      - overall_conformance_vector (aggregated for the entire repository)
+      - measurement_details[]: per-property, per-artifact evidence hash + diagnostics
+
+  # ─────────────────────── Stage 5 ───────────────────────
+  - stage_id: CV-STAGE-5
+    stage_name: Conformance Report Emission
+    input: all four stage reports
+    output_artifacts:
+      - path: build/governance/verifier-reports/CONST-VERIF-REPORT-<timestamp-hash8>.yaml
+        format: Canonical YAML with report_content_hash
+        fields: [verifier_version, constit_ir_hash, stages_results_summary, type_errors, dag_violations, boundary_violations, property_vectors, overall_verdict]
+      - path: build/governance/verifier-reports/CONST-VERIF-VECTORS-<hash8>.yaml
+        format: One Conformance Property vector per artifact (per CONFORMANCE-PROPERTIES.yaml vector schema)
+      - path: build/governance/verifier-reports/graphs/AUTHORITY-DAG-ACTUAL-<hash8>.dot
+        format: GraphViz DOT file for visualization of the actual authority DAG + reverse edges highlighted in red
+      - path: build/governance/verifier-reports/summaries/CONST-VERIF-GATE-<gate-id>.yaml
+        format: Per-gate PASS/WARN/FAIL verdict against certification requirements
+    overall_verdict_logic:
+      inherited_from: CONFORMANCE-PROPERTIES.yaml overall_verdict_logic applied to repository-level aggregate vector
+      gate_strictness_tiers:
+        Gate_C: "Deterministic = PASS_or_WARN; Compatible = PASS; Reproducible = WARN_ok; Auditable = PASS_or_WARN; Explainable = INCONCLUSIVE_ok_during_sprint; Canonical = PASS"
+        Gate_D: "As per CONFORMANCE-PROPERTIES gate_required_for list (all strict except Explainable WARN ok)"
+        Gate_E: "STRICTLY_PASS on all 6. No WARN accepted except where explicitly grandfathered."
+
+pipeline_determinism_and_purity:
+  determinism: "Identical codebase snapshot + identical CONSTIT-IR hash → identical report_content_hash."
+  run_verification_2x: "CI SHALL run CONST-VERIF twice in a row and compare report_content_hash. Mismatch → CI failure."
+  purity: "CONST-VERIF SHALL NOT write to any path outside build/governance/verifier-reports/. No upstream governance / spec / constitution mutation."
+  no_env_branch_in_semantics: "CONST-VERIF config path MAY come from env, but NO scan rule parameters may change based on env."
+
+cli_integration:
+  command: eos-verif-constitution
+  subcommands:
+    - verify:  (full pipeline 0-5)
+    - type-check:  (Stage 1 only)
+    - dag-check:  (Stage 2 only)
+    - rule-check:  (Stage 3 only)
+    - measure-props:  (Stage 4 + vectors output only)
+    - generate-dot:  (Stage 2 + DOT export only)
+  shell_alias_compat: "arch-check remains a symlink to eos-verif-constitution during Phase 0/1 with deprecation log to stderr. Phase 2: alias removed."
+
+transition_plan:
+  current_implementation:
+    description: legacy arch-check.ts has hand-written regex + 7 ACL checks.
+    incremental_activation:
+      - Sprint_0_Gate_C: CONST-VERIF Stage 3 only for ARCH-18..ARCH-25 in parallel with legacy arch-check. Any disagreement → human review.
+      - Gate_D_entry: Stage 1 (type check) + Stage 3 both active. Legacy arch-check ACL-001..007 still on.
+      - Gate_D_exit: Stage 2 (DAG) + Stage 4 (properties) active. Legacy ACL-001..007 in warning mode only.
+      - Gate_E: Stage 0-5 all active in strict mode; legacy arch-check retired; all rules GENERATED through CONST-COMP Pass 4.

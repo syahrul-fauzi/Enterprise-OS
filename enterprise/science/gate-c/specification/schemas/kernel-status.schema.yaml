@@ -1,0 +1,41 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:eos:science:gate-c:schema:kernel-status:v1"
+title: EOS Kernel Epistemic Status Schema
+description: >
+  Machine-readable contract for the epistemic status of the Constitution, Science, and
+  Implementation kernels after Gate C0 calibration.
+type: object
+additionalProperties: false
+required:
+  - version
+  - status_manifest_id
+  - constitution_kernel
+  - science_kernel
+  - implementation_kernel
+properties:
+  version:
+    type: string
+    pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+  status_manifest_id:
+    type: string
+    pattern: "^KERNEL-STATUS-[0-9]{3}$"
+  constitution_kernel:
+    $ref: "#/$defs/kernelStatus"
+  science_kernel:
+    $ref: "#/$defs/kernelStatus"
+  implementation_kernel:
+    $ref: "#/$defs/kernelStatus"
+  notes:
+    type: string
+$defs:
+  kernelStatus:
+    type: object
+    additionalProperties: false
+    required: [status, may_change, change_condition]
+    properties:
+      status:
+        type: string
+      may_change:
+        type: boolean
+      change_condition:
+        type: string

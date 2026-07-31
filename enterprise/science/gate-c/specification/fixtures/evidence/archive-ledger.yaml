@@ -1,0 +1,11 @@
+version: "1.0.0"
+kind: FIXTURE_EVIDENCE_ARCHIVE_LEDGER
+fixture_id: FIX-EVI-ARC-LED
+status: IMMUTABLE_FIXTURE
+evidence_items:
+  - id: EVI-ARC-LED-001
+    type: archive_hash_chain_entry
+    description: "Archive proof hash chain atomically appended to evidence ledger"
+    data:
+      atomically_appended: true
+      ledger_corruption_detected: false

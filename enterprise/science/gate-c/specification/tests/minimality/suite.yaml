@@ -1,0 +1,15 @@
+version: "1.0.0"
+suite_id: GATE-C-MINIMALITY-SUITE-001
+status: ACTIVE
+scientific_claim: >
+  Candidate constitutional predicates D1..Dn must be rejected if they are derivable from the
+  existing predicate basis A, B, and C. Only irreducible candidates may justify CC-001 expansion.
+
+candidate_refs:
+  - specification/candidate-predicate/D1.yaml
+  - specification/candidate-predicate/D2.yaml
+  - specification/candidate-predicate/D3.yaml
+
+acceptance:
+  derivable_candidate_action: REJECT_AS_REDUNDANT
+  non_derivable_candidate_action: ESCALATE_FOR_CC001_REVIEW

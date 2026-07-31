@@ -1,0 +1,69 @@
+version: "1.0.0"
+status: EXPERIMENT_SUBJECT
+experiment_subject_id: GATE-C-DOC-APPROVE
+domain: document
+operation: approve
+operation_label: ApproveDocument
+schema_ref: specification/schemas/experiment.schema.yaml
+illustrative_source: specification/hypothesis.yaml empirical_content_gate_c domain guinea pig Approve_document row
+
+predicate_anchor_map:
+  pred_a_legitimate:
+    expected_value: true
+    rationale: >
+      Approval SHALL have a legitimate authority via delegation chain from contract.
+      Requirement DocReq then Policy DocPol retention approver roles then Contract DocCon approver assignment and delegation rules.
+      Delegation chain delegates contract approver role. Approver role contract SHALL have delegation.
+      Cycle NOT introduced by approval. Root resolves through governance to constitution.
+    authority_path_expected: Requirement then Policy then Contract then Delegation approver then Approver identity then Epoch then Constitution
+  pred_b_meaning_preserved:
+    expected_value: true
+    rationale: >
+      The semantics of APPROVE SHALL be preserved across all surfaces contract definition policy enumerates allowed approval states and the actual ApproveDocument output.
+      Approval meaning preserved across surfaces identity of approve normative semantics are identically defined.
+      Canonical Identity of the underlying proposal document same identity preserved as the original proposal approved document doc id unchanged semantic equivalence TRUE.
+    canonical_identity_expected: sha256 proposal draft 001 canonical id unchanged from proposal phase
+  pred_c_provable:
+    expected_value: true
+    rationale: >
+      Evidence MUST include signature of approver audit trail before after status verdict record.
+      Sufficient constructive entailment of postconditions approval recorded under approver status changes PROPOSED to APPROVED signature audit plus verdict entries all present.
+
+input_fixtures:
+  documents:
+    - specification/fixtures/documents/proposal-draft-001.yaml
+    - specification/fixtures/documents/approval-metadata-001.yaml
+  policies:
+    - specification/fixtures/policies/document-policy-001.yaml
+  contracts:
+    - specification/fixtures/contracts/document-contract.yaml
+  evidence:
+    - specification/fixtures/evidence/approval-signatures.yaml
+    - specification/fixtures/evidence/approval-audit.yaml
+
+transformation_contract:
+  id: TC-DOC-APPROVE
+  name: Document Approval Transformation Contract
+  reference: LEX-0000H
+  preconditions:
+    - P1 document in status PROPOSED canonical identity proposal draft 001
+    - P2 approver possesses valid delegation delegates edge for DocCon approver role
+    - P3 no prior APPROVED version at identical epoch already exists supersede rules in force
+  postconditions:
+    - Q1 document status PROPOSED becomes APPROVED
+    - Q2 approver identity plus delegation reference recorded attached to approval metadata document
+    - Q3 approval signature plus audit trail atomically appended ledger atomicity no partial
+  invariants:
+    - I1 CanonicalIdentity proposal draft 001 EQUIVALENT CanonicalIdentity approved 001. Approval cannot mutate the document normative identity semantics.
+
+expected_truth_table_row_match: P1
+expected_constitutional_validity: true
+expected_predicates_ref: specification/expected/predicates/document-predicates.yaml#expected_predicates.GATE-C-DOC-APPROVE
+oracle_spec_ref: specification/oracle/oracle.yaml
+expected_evaluation_ref: specification/expected/evaluations/document-evaluations.yaml#expected_evaluations.GATE-C-DOC-APPROVE
+test_suite_refs:
+  - specification/tests/positive/suite.yaml
+  - specification/tests/independence/suite.yaml
+
+notes: >
+  This experiment is the canonical positive ALL PASS guinea pig case for approval matching row P1 in the truth table.

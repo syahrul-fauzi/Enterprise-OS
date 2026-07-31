@@ -1,0 +1,16 @@
+version: "1.0.0"
+suite_id: GATE-C-METAMORPHIC-SUITE-001
+status: PLANNED
+scientific_claim: >
+  Changing strategy or runtime while preserving the same transformation contract and immutable
+  dataset must not change the predicate vector or verdict.
+
+metamorphic_relations:
+  - relation_id: MR-001
+    source: same_dataset_same_contract_strategy_a
+    followup: same_dataset_same_contract_strategy_b
+    invariant: identical_predicate_vector_and_verdict
+  - relation_id: MR-002
+    source: runtime_typescript
+    followup: runtime_python
+    invariant: identical_truth_table_row_and_disposition

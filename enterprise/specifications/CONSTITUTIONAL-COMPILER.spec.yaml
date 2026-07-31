@@ -1,0 +1,302 @@
+version: "2.0.0"
+status: DRAFT
+kind: SPECIFICATION
+layer: CONSTITUTIONAL_TRANSFORMATION_SPECIFICATION
+abbreviation: CONST-XFORM
+evolution_domain: DOMAIN-B-SPECIFICATION
+ssot_note: CONSTITUTIONAL_TRANSFORMATION_ENGINE_IS_THE_PURE_TRANSFORMATION_PIPELINE_THAT_COMPILES_DECLARATIVE_CONSTITUTION_ARTIFACTS_INTO_MACHINE-READABLE_VERIFIABLE_RULES._OPERATIONALIZATION_OF_MP-01_COMPUTABLE_GOVERNANCE._IT_CONSUMES_RAW_CONSTITUTION_YAMLS_AND_EMITS_CONSTITUTION_IR_(STABLE_CANONICAL_REPRESENTATION_OF_GOVERNANCE)_PLUS_GENERATED_ACL_RULES_PLUS_COMPATIBILITY_MATRICES_PLUS_PROTOCOL_MIGRATION_RULES._EVERY_TRANSFORMATION_IS_FUNCTIONALLY_PURE_(IA-14)_AND_OUTPUT_IS_DETERMINISTIC_(IA-11).
+governance_ref:
+  vision: /root/Enterprise OS/governance/CONSTITUTIONAL-VISION.yaml
+  mp01: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#MP-01
+  ia13_stable_canonical_representations: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#IA-13-STABLE-CANONICAL-REPRESENTATIONS
+  ia14_pure_transformations: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
+  ia17_authority_preservation: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#IA-17-AUTHORITY-PRESERVATION
+  tf1_terminology_freeze: /root/Enterprise OS/governance/TERMINOLOGY-FREEZE-TF1.yaml
+  constitution_ir_contract: /root/Enterprise OS/workspace/contracts/CONSTITUTION-IR.contract.yaml
+derived_from:
+  - User_Point_Constitutional_Compiler_Pipeline
+  - User_Point_Governance_Rules_Generated_Not_Manual
+  - User_Point_MP01_Computable_Governance
+  - TF-1_Authority_Pipeline_5_Stage_Model
+  - TF-1_Constitutional_Knowledge_Computing_System_Naming
+  - IA-13_Stable_Canonical_Representation_Pattern
+  - IA-14_Pure_Transformation_Pattern
+  - IA-17_Authority_Preservation_Meta_Invariant
+
+transformation_engine_overview:
+  name: "Constitutional Transformation Engine (CONST-XFORM, legacy alias Constitutional Compiler CONST-COMP)"
+  paradigm: Pure multi-stage transformation. Implementation MAY be compiler, rule engine, SAT solver, AI planner, constraint solver, graph optimizer, streaming, distributed — implementation is not normatively constrained.
+  input_language: EOS Constitution Declaration Language (ECDL) = YAML-based declaration of VISION + ASP + IA + EVO-DOMAINS + PROTO-GOV + CONF-MODEL + CONF-PROP.
+  output_language: Constitution IR (CONSTIT-IR) = Stable Canonical Representation of governance, plus generated ARCH-* ACL rules, plus compatibility matrices, plus protocol migration plan.
+  authority_pipeline_stage: INTERPRETATION → DECISION boundary (CONST-XFORM itself is an Interpretation-stage transformation that materializes canonical rules; it does NOT create new authority).
+  determinism_statement: >
+    Identical input source files → identical output byte-for-byte. 2x transformation run hash-equal.
+  purity_statement: >
+    No transformation reads environment variables, network, timestamps, or undeclared inputs.
+    No transformation writes to input source paths. All outputs land under build/governance/ or workspace/contracts/ only.
+  deprecated_aliases:
+    - Constitutional Compiler (CONST-COMP)
+    - Compiler Pass (per step)
+    - Compilation (the overall run)
+
+input_manifest_required:
+  section: constitution_compiler_inputs
+  mandatory_ordered_list:
+    - id: INPUT-01
+      path: /root/Enterprise OS/governance/CONSTITUTIONAL-VISION.yaml
+      kind: FOUNDATIONAL_VISION
+      change_propagation: Input change → new EPOCH required (not version bump)
+    - id: INPUT-02
+      path: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
+      kind: META_PRINCIPLES_ASP
+      change_propagation: ASP change → ADR + unanimous board → EPOCH bump → full CONST-COMP recompile
+    - id: INPUT-03
+      path: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
+      kind: ARCHITECTURAL_INVARIANTS_IA
+      change_propagation: IA change → ADR + 2/3 board → major CONSTIT-IR format version if breaks downstream consumer
+    - id: INPUT-04
+      path: /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml
+      kind: DOMAIN_CLASSIFICATION
+      change_propagation: Domain change → SEMVER major for CONSTIT-IR (type system change)
+    - id: INPUT-05
+      path: /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
+      kind: PROTOCOL_GOVERNANCE
+      change_propagation: Proto-gov change → SEMVER minor for CONSTIT-IR; triggers Protocol Compilation sub-pipeline
+    - id: INPUT-06
+      path: /root/Enterprise OS/governance/CONFORMANCE-MODEL.yaml
+      kind: CONFORMANCE_LEVEL_MODEL
+      change_propagation: Conf-model change → SEMVER minor for CONSTIT-IR
+    - id: INPUT-07
+      path: /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml
+      kind: CONFORMANCE_PROPERTY_MODEL
+      change_propagation: Conf-prop change → new property = SEMVER minor; property status semantics = SEMVER major
+  input_merkle_construction:
+    rule: Sort inputs by id (INPUT-01..07), hash each content with SHA-256, compute Merkle root.
+    field_name: constitution_sources_sha256_merkle_root
+    output_inclusion: MUST be present in CONSTIT-IR header.
+
+five_compiler_passes:
+  deprecated_aliases:
+    - Compiler Passes
+    - five_compiler_passes
+  normative_note: "Post-TF-1 these are Transformation Contracts. Each transformation: Input Canonical Representation → Output Canonical Representation. Implementation choice (compiler vs rule engine vs SAT solver vs AI planner vs constraint solver vs graph optimizer vs incremental vs streaming vs distributed) is explicitly NOT constrained, provided the transformation contract output is deterministic."
+  transformation_contracts:
+    - contract_id: CC-XFORM-1-DOMAIN-TYPING
+      legacy_pass_id: CC-PASS-1-DOMAIN-TYPING
+      contract_name: Domain Typing & Artifact Classification Transformation Contract
+      ir_section_target: type_system_section (evolution_domain_types)
+      input_artifacts: [INPUT-04, INPUT-02 (ASP-04), INPUT-03 (IA-06 Forbidden Dep Table)]
+      purity_class: IA-14 Pure — declared inputs only.
+      contract_description: |
+        Reads Evolution Domain declarations (A/B/C) and IA-06 forbidden dependency table.
+        Emits a TYPE SYSTEM in CONSTIT-IR where every artifact kind has:
+        (a) artifact_type_name ∈ {CONSTITUTION, SPECIFICATION, PROTOCOL, IMPLEMENTATION, EVIDENCE}
+        (b) type_rules: cannot_import_type[], cannot_mutate_type[], can_import_type[]
+        (c) type_members: concrete artifact class list
+      output_contract_fields:
+        - evolution_domain_types.types[].type_name
+        - evolution_domain_types.types[].type_rules[]
+        - evolution_domain_types.types[].type_members[]
+      contract_invariant: "Every artifact kind maps to exactly ONE type. No overlaps. No unclassified."
+      type_error_definition:
+        error_class: TYPE_ERROR_ARTIFACT_IMPORT
+        trigger: "Artifact of TYPE X imports an artifact of TYPE Y where cannot_import_type: Y is in X's ruleset."
+        severity: FATAL (blocks downstream passes)
+        example: "IMPLEMENTATION type artifact imports CONSTITUTION raw yaml directly → TYPE_ERROR."
+      test_fixture_golden:
+        path: enterprise/specifications/fixtures/cc-pass1-domain-type-golden.yaml
+        target_hash: TBD_implemented_at_gate_d
+
+    - contract_id: CC-XFORM-2-AUTHORITY-DAG
+      legacy_pass_id: CC-PASS-2-AUTHORITY-DAG
+      contract_name: Authority DAG Construction & Cycle Check Transformation Contract
+      ir_section_target: authority_graph_section (authority_graph_dag)
+      input_artifacts: [INPUT-01 (VISION authority_dag_edges_foundation), INPUT-02 (ASP-02+03), INPUT-05 (PROTO-GOV derivation order)]
+      purity_class: IA-14 Pure.
+      contract_description: |
+        Collects every authority edge declaration (from VISION→ASP, ASP→IA, IA→SPEC, SPEC→PROTO, PROTO→IMPL, IMPL→EVIDENCE)
+        plus protocol-level derivation order edges from PROTOCOL-GOVERNANCE.
+        Emits a formal Directed Acyclic Graph (DAG) in CONSTIT-IR with:
+        (a) nodes = artifact layers
+        (b) edges = from→to with edge_kind + authority_proof_ref
+        (c) topological sort order
+        Runs Kahn's algorithm for cycle detection; any cycle = compilation FATAL.
+      output_contract_fields:
+        - authority_graph_dag.edges[] (from, to, edge_kind, authority_proof_ref)
+        - authority_graph_dag.topological_order[] (sorted nodes)
+        - authority_graph_dag.cycle_check (algorithm, status, cycle_nodes if any)
+      contract_invariant: "No cycles. Total order VISION → CONSTITUTION → SPEC → PROTOCOL → IMPLEMENTATION → EVIDENCE."
+      test_fixture_golden:
+        path: enterprise/specifications/fixtures/cc-pass2-authority-dag-golden.yaml
+        target_hash: TBD
+
+    - contract_id: CC-XFORM-3-BOUNDARY-RULES
+      legacy_pass_id: CC-PASS-3-BOUNDARY-RULES
+      contract_name: Boundary Rule Compilation Transformation Contract
+      ir_section_target: boundary_rules_section (boundary_rules)
+      input_artifacts: [INPUT-03 (IA-01 Triad, IA-09 Knowledge-Not-In-Runtime, IA-10 Snapshot Boundary), INPUT-02 (ASP-02 No Upward)]
+      purity_class: IA-14 Pure.
+      contract_description: |
+        Compiles IA-level structural rules into concrete, scannable boundary rule entries in CONSTIT-IR.
+        Each entry carries: rule_id, rule_statement, enforcement_ref (pointer to generated ACL rule).
+        The Constitutional Verifier consumes boundary_rules directly without re-parsing IA prose.
+      output_contract_fields:
+        - boundary_rules[].rule_id
+        - boundary_rules[].rule_statement
+        - boundary_rules[].enforcement_ref
+        - boundary_rules[].scope_paths[] (generated path globs for verifier)
+      contract_invariant: "Every IA statement that carries acl_check_required: true → exactly one boundary_rules entry."
+      test_fixture_golden:
+        path: enterprise/specifications/fixtures/cc-pass3-boundary-rules-golden.yaml
+        target_hash: TBD
+
+    - contract_id: CC-XFORM-4-VERIFICATION-RULE-GEN
+      legacy_pass_id: CC-PASS-4-VERIFICATION-RULE-GEN
+      contract_name: ACL Rule Generator (ARCH-* as Generated Artifacts) Transformation Contract
+      ir_section_target: verification_rule_generators_section (verification_rule_generators)
+      output_artifact_generated: build/governance/generated-arch-rules/ARCH-*.generated.yaml
+      input_artifacts: [INPUT-03 (IA-10..IA-14 with enforcement_acl_rule_id fields), INPUT-02 (ASP-02, ASP-04), INPUT-05 (PROTO-GOV)]
+      purity_class: IA-14 Pure.
+      contract_description: |
+        THE CRUX OF MP-01 COMPUTABLE GOVERNANCE.
+        This pass DOES NOT output hand-written ARCH-* rule regex.
+        Instead, for each (IA | ASP) statement that has an enforcement_acl_rule_id, it EMITS:
+        (1) A verification_rule_generators entry in CONSTIT-IR declaring the mapping source_statement → arch_rule_ids + compiled_check_parameters.
+        (2) A machine-readable ARCH-*.generated.yaml file under build/governance/generated-arch-rules/ containing the compiled scan directives.
+        Hand-written ARCH-* files (legacy architecture-compliance.yaml checks ACL-001..007) are retained during transition
+        but all new rules MUST be generated through this pass; hand-writing new ARCH-* beyond transition is FORBIDDEN by MP-01(a).
+      output_contract_fields:
+        - verification_rule_generators[].id
+        - verification_rule_generators[].source_statement_ref
+        - verification_rule_generators[].outputs_arch_rule_ids[]
+        - verification_rule_generators[].compiled_check_parameters
+      generated_artifact_layout:
+        - path: build/governance/generated-arch-rules/
+          pattern: ARCH-<NNN>-<rule-slug>.generated.yaml
+          fields_per_file: [arch_rule_id, source_constit_ref, scan_type, check_parameters, expected_violation_class, remediation_snippet_ref]
+          integrity_note: >
+            Generated files carry ir_content_hash_of_parent_constit_ir field.
+            Any regeneration with same input produces byte-identical output.
+      contract_invariant: "Every ARCH-* id referenced in verification_rule_generators has a corresponding .generated.yaml artifact after compile."
+      test_fixture_golden:
+        path: enterprise/specifications/fixtures/cc-pass4-verification-gen-golden.yaml
+        target_hash: TBD
+
+    - contract_id: CC-XFORM-5-COMPAT-MATRIX-GEN
+      legacy_pass_id: CC-PASS-5-COMPAT-MATRIX-GEN
+      contract_name: Protocol Compatibility Matrix & Migration Rule Generator Transformation Contract
+      ir_section_target: compatibility_policies_section (compatibility_policies) + stability_levels_section (stability_levels)
+      output_artifact_generated: build/governance/generated-compat/COMPAT-MATRIX-<PROTO-ID>.yaml + MIGRATION-<PROTO-ID>-vA-vB.yaml + DEPRECATION-WINDOW-<PROTO-ID>.yaml
+      input_artifacts: [INPUT-05 (PROTO-GOV: lifecycle, versioning, deprecation policy), INPUT-04 (Domain B SEMVER policy), INPUT-03 (IA-08 evolution policy)]
+      purity_class: IA-14 Pure.
+      contract_description: |
+        Given all protocol version declarations (from PROTOCOL-GOVERNANCE inventory + PROTOCOL-*.yaml files):
+        (a) Emits compatibility_matrix per PROTO-ID = every valid (from_version → to_version) pair with result ∈ {COMPATIBLE_FULLY, COMPATIBLE_WITH_DEPRECATION, INCOMPATIBLE_REQUIRES_MAJOR}.
+        (b) Emits allowed_upgrade_paths = directed edges for safe upgrade sequences (skip versions forbidden if N to N+2 skips a DEPRECATED intermediate).
+        (c) Emits migration_rules per incompatible pair = which contract fields change, how to translate old→new IR.
+        (d) Emits deprecation_windows = per deprecated PROTO-ID version, with sunset_epoch, minimum overlap releases, warning emission directives.
+        This Transformation Contract IS the "Protocol Governance juga dapat dikompilasi" principle made operational.
+      output_contract_fields:
+        - compatibility_policies.entries[]
+        - compatibility_policies.deprecation_windows[]
+        - stability_levels.per_type
+      generated_artifact_layout:
+        - id: COMPATIBILITY_MATRIX
+          output_path_template: build/governance/generated-compat/COMPAT-MATRIX-<PROTO-ID>.yaml
+          output_fields_ordered:
+            - protocol_id
+            - versions_array_sorted_ascending
+            - compat_matrix_two_dimensional: from_version → to_version → status
+            - valid_upgrade_paths_directed_edges
+        - id: MIGRATION_RULES
+          output_path_template: build/governance/generated-compat/MIGRATION-<PROTO-ID>-<vOLD>-<vNEW>.yaml
+          output_fields_ordered:
+            - protocol_id
+            - from_version
+            - to_version
+            - field_translation_rules_array
+            - deprecated_field_list
+            - new_mandatory_field_defaults
+        - id: DEPRECATION_WINDOW
+          output_path_template: build/governance/generated-compat/DEPRECATION-WINDOW-<PROTO-ID>.yaml
+          output_fields_ordered:
+            - protocol_id
+            - deprecated_version
+            - successor_stable_version
+            - overlap_minimum_releases
+            - sunset_release_version
+            - consumer_warning_log_level_schedule
+            - producer_soft_error_directive
+      contract_invariant: "Every protocol version pair (vN, vM) has exactly one matrix cell status; upgrade DAG has no cycles."
+      test_fixture_golden:
+        path: enterprise/specifications/fixtures/cc-pass5-compat-matrix-golden.yaml
+        target_hash: TBD
+
+output_constit_ir_structure_anchor:
+  contract_ref: /root/Enterprise OS/workspace/contracts/CONSTITUTION-IR.contract.yaml
+  emit_path: build/governance/constit-ir/CONSTIT-IR-<version>-<merkle8>.yaml
+  emit_side_artifacts:
+    - build/governance/generated-arch-rules/ARCH-*.generated.yaml  (from Pass 4)
+    - build/governance/generated-compat/*.yaml                      (from Pass 5)
+  all_artifacts_canonical_hash:
+    algorithm: SHA-256
+    provenance_chain_statement:
+      description: "Every generated file carries a parent hash pointing back to the CONSTIT-IR that produced it, and CONSTIT-IR carries the merkle root of its source inputs. This creates a bidirectional provenance chain."
+      chain_direction: "Inputs <-> CONSTIT-IR <-> Generated Rules"
+      field_name_on_generated: source_constit_ir_hash
+      field_name_on_constit_ir: constitution_sources_sha256_merkle_root
+
+compilation_failure_model:
+  per_pass_handling:
+    rule: "Each pass either: (a) returns output_ir_section + diagnostics[] PASS; or (b) throws compilation_error with pass_id, error_code, source_ref, message, suggestion."
+  FATAL_error_classes:
+    - CC-ERR-CYCLE (Pass 2 cycle detected)
+    - CC-ERR-TYPE-UNCLASSIFIED (Pass 1 artifact has no domain)
+    - CC-ERR-NO-GENERATOR (Pass 4 an IA statement claims ARCH id but has no compiled_check_parameters)
+    - CC-ERR-MATRIX-AMBIGUOUS (Pass 5 version pair has 2+ conflicting statuses)
+  WARN_error_classes:
+    - CC-WARN-LEGACY-RULE (a reference to a hand-written ARCH rule still exists; transitional only)
+    - CC-WARN-NO-FIXTURE (a pass lacks a golden test fixture for its test)
+  partial_compilation_forbidden:
+    statement: "Constitutional Compiler SHALL NOT emit a partial CONSTIT-IR if ANY pass has FATAL error. All-or-nothing emission. This prevents governance drift from half-compiled rules."
+
+enforcement_and_downstream_consumers:
+  consumers_ordered:
+    - consumer: Constitutional Verifier (formerly arch-check)
+      consumes:
+        - CONSTIT-IR type_system_section → type import/mutation checks
+        - CONSTIT-IR authority_graph_dag → direction checks
+        - CONSTIT-IR boundary_rules → structural scans
+        - build/governance/generated-arch-rules/ARCH-*.generated.yaml → concrete regex/parameter scans
+      pipeline_ref: /root/Enterprise OS/enterprise/specifications/CONSTITUTIONAL-VERIFIER.pipeline.yaml
+    - consumer: Protocol Compiler
+      consumes:
+        - CONSTIT-IR compatibility_policies + generated-compat/*.yaml
+      pipeline_ref: /root/Enterprise OS/enterprise/specifications/PROTOCOL-COMPILATION.spec.yaml
+    - consumer: Conformance Verifier
+      consumes:
+        - CONFORMANCE-PROPERTIES.yaml (six properties)
+        - CONSTIT-IR proof_requirements section
+    - consumer: Release Gate Automation
+      consumes:
+        - stability_levels (change_cost matrix)
+        - proof_requirements (per-change gate evidence required)
+
+transition_plan_legacy_to_generated:
+  phase_0_current:
+    status: active until Gate D exit
+    description: >
+      architecture-compliance.yaml ACL-001..007 still written by hand.
+      New ARCH-18..ARCH-25 have both: hand-written intent AND generated output from Pass 4.
+      Dual source of truth during transition only.
+  phase_1_lock:
+    trigger: Gate D exit certification
+    description: >
+      NO new hand-written ARCH rules accepted.
+      All governance additions MUST go through: Constitution Declaration → CONST-COMP compile → generated .yaml.
+      Hand-written ACL-001..007 are migrated to verification_rule_generators entries one by one.
+  phase_2_pure:
+    trigger: Gate E exit certification
+    description: >
+      100% of ACL rules are generated artifacts.
+      architecture-compliance.yaml is frozen (archival status only) with a redirect pointer to CONST-COMP.

@@ -1,0 +1,67 @@
+version: "1.0.0"
+status: EXPERIMENT_SUBJECT
+experiment_subject_id: GATE-C-DOC-RETRIEVE
+domain: document
+operation: retrieve
+operation_label: RetrieveDocument
+schema_ref: specification/schemas/experiment.schema.yaml
+illustrative_source: specification/hypothesis.yaml empirical_content_gate_c domain guinea pig Retrieve_document row
+
+predicate_anchor_map:
+  pred_a_legitimate:
+    expected_value: true
+    rationale: >
+      Retrieve operation authorized by valid access control requestor possesses valid delegation authorization and document status permits retrieval APPROVED or ARCHIVED with retrieve allowed policy equals True per Policy.
+      Authority chain from access policy retrieve roles to contract access control section to policy to requirement to constitution epoch.
+      No cycle. Root resolved.
+    authority_path_expected: Access Policy allowed role then Contract access control section then Policy then Requirement then Epoch then Constitution
+  pred_b_meaning_preserved:
+    expected_value: true
+    rationale: >
+      Semantic equivalence between canonical stored document fixtures documents source input and document received by requester after retrieval operation output.
+      Even through transformations across serialization boundaries yaml to json to network transport to memory object the retrieve operation MUST deliver semantically equivalent content per MeaningPreserved predicate.
+      Byte representation may differ example json vs yaml but Canonical Identity of the document MUST be identical between input and returned output.
+    canonical_identity_expected: sha256 retrieved document 001 canonical id matches stored identity
+  pred_c_provable:
+    expected_value: true
+    rationale: >
+      Evidence MUST include access authorization decision trace authz pass fail retrieval evidence log timestamp requestor identity doc id bytes transferred or hash chain access evidence permanently logged to audit trail per Policy.
+      Sufficient to constructively entail retrieval was performed for identity by requester at timestamp.
+
+input_fixtures:
+  documents:
+    - specification/fixtures/documents/approved-document-001.yaml
+  policies:
+    - specification/fixtures/policies/document-policy-001.yaml contains access control roles per DocPol
+  contracts:
+    - specification/fixtures/contracts/document-contract.yaml access control contract sections
+  evidence:
+    - specification/fixtures/evidence/retrieve-access-proof.yaml
+    - specification/fixtures/evidence/retrieve-audit.yaml
+
+transformation_contract:
+  id: TC-DOC-RETRIEVE
+  name: Document Retrieve Transformation Contract
+  reference: LEX-0000H
+  preconditions:
+    - P1 document exists in retrievable status APPROVED or ARCHIVED with retrieve allowed
+    - P2 requestor authorized allowed role per Access Policy check OK
+    - P3 no legal hold forbidding retrieve on this document for requestor id if any
+  postconditions:
+    - Q1 document content delivered SemanticEquivalence to CanonicalIdentity doc 001 equals TRUE
+    - Q2 access authorization decision recorded authorized equals true role matched
+    - Q3 retrieval evidence log atomically recorded in audit ledger timestamp requestor id doc id hash of content
+  invariants:
+    - I1 MeaningPreserved retrieve transformation SemanticEquivalence union inputs union outputs equals TRUE
+
+expected_truth_table_row_match: P1
+expected_constitutional_validity: true
+expected_predicates_ref: specification/expected/predicates/document-predicates.yaml#expected_predicates.GATE-C-DOC-RETRIEVE
+oracle_spec_ref: specification/oracle/oracle.yaml
+expected_evaluation_ref: specification/expected/evaluations/document-evaluations.yaml#expected_evaluations.GATE-C-DOC-RETRIEVE
+test_suite_refs:
+  - specification/tests/positive/suite.yaml
+  - specification/tests/independence/suite.yaml
+
+notes: >
+  RetrieveDocument positive case matching truth table row P1. Exercises the non trivial Pred B scenario representations may change but semantic meaning MUST equivalent.

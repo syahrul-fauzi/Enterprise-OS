@@ -1,0 +1,17 @@
+version: "1.0.0"
+status_manifest_id: KERNEL-STATUS-001
+constitution_kernel:
+  status: FROZEN_CANDIDATE
+  may_change: false
+  change_condition: THEORY_FALSIFICATION_ONLY
+science_kernel:
+  status: CALIBRATED_AND_FROZEN
+  may_change: false
+  change_condition: INSTRUMENT_DEFECT_ONLY
+implementation_kernel:
+  status: EVOLUTIONARY
+  may_change: true
+  change_condition: MUST_REMAIN_EXPERIMENTALLY_CONFORMANT
+notes: >
+  This manifest freezes the epistemic role of each kernel after Gate C0. Implementation may evolve,
+  but it may not contaminate the calibrated science kernel nor the frozen constitutional candidate.

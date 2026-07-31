@@ -1,0 +1,24 @@
+version: "1.0.0"
+suite_id: GATE-C-NEGATIVE-SUITE-001
+status: PLANNED
+scientific_claim: >
+  Negative experiments SHALL exercise every failing row of the constitutional truth table so the
+  theory is tested against falsification attempts rather than only positive corroboration.
+
+required_truth_table_rows:
+  - N1
+  - N2
+  - N3
+  - N4
+  - N5
+  - N6
+  - N7
+
+coverage_status:
+  N1: GAP
+  N2: GAP
+  N3: GAP
+  N4: GAP
+  N5: GAP
+  N6: GAP
+  N7: GAP

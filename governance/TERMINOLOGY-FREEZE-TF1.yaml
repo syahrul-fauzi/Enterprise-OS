@@ -1,0 +1,826 @@
+version: "1.0.0"
+status: DRAFT
+kind: Governance Freeze Artifact
+layer: Foundation (Level 0 — per DEC-008 change frequency matrix)
+abbreviation: TF-1
+evolution_domain: DOMAIN-A-GOVERNANCE
+ssot_note: Single Source of Truth for Sprint-0 end-of-phase terminology. Supersedes any prior term definitions from earlier discussion. Changes after activation require ADR + epoch boundary (per IA-17 and ASP-01 stability).
+
+governance_ref:
+  cc001: governance/CC-001-CONSTITUTIONAL-CHARTER.md
+  vision: governance/CONSTITUTIONAL-VISION.yaml
+  asp: governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
+  mp01: governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#MP-01
+  ia: governance/INVARIANT-ARCHITECTURE.yaml
+  ia17: governance/INVARIANT-ARCHITECTURE.yaml#IA-17-CONSTITUTION-PRESERVATION
+  ia20: governance/INVARIANT-ARCHITECTURE.yaml#IA-20-CONSTITUTIONAL-VALIDITY
+  ia13: governance/INVARIANT-ARCHITECTURE.yaml#IA-13
+  evolution_policy: governance/INVARIANT-ARCHITECTURE.yaml#IA-08-EVOLUTION-POLICY
+  protocol_governance: governance/PROTOCOL-GOVERNANCE.yaml
+  conformance_model: governance/CONFORMANCE-MODEL.yaml
+  evolution_domains: governance/EVOLUTION-DOMAINS.yaml
+  arch_rule_manifest: governance/ARCH-RULE-GENERATION.manifest.yaml
+  constitution_ir: workspace/contracts/CONSTITUTION-IR.contract.yaml
+  artifact_schema: enterprise/schema/artifact.schema.yaml
+  axioms_status: governance/AXIOMS.md (DERIVED reference implementation of CC-001 predicates — NOT independently constitutional)
+
+derived_from:
+  - id: SPRINT-0-CONSOLIDATION
+    summary: Consolidated terminology discussion Sprint-0 — Constitution → Knowledge → Protocols → Implementations → Execution → Evidence; Authority-Oriented replacing Architecture-framework framing.
+  - id: USER-PROPOSAL-AUTHORITY-PIPELINE
+    summary: Authority → Interpretation → Decision → Execution → Evidence pipeline; each stage only reduces, never creates authority.
+  - id: USER-PROPOSAL-CANONICAL-REP
+    summary: "Intermediate Representation (IR) is technology-coupled; replace with Canonical Representation (transport-agnostic). Pass → Transformation; Runtime → Execution System; Add Verdict layer."
+  - id: USER-PROPOSAL-EOS-RENAMING
+    summary: EOS = Constitutional Knowledge Computing System, not Knowledge Computing Platform (platform = implementation; system = authority model).
+  - id: USER-PROPOSAL-IA17
+    summary: IA-17 Authority Preservation meta-invariant covering planner, compiler, optimizer, AI planner, cache, incremental build, distributed execution.
+  - id: USER-PROPOSAL-VERDICT-LAYER
+    summary: Evidence → Assessment → Justification → Verdict; Verdict is governance-facing (Repository PASS / Certification VALID) while Assessment is technical.
+
+activation_schedule:
+  activation_gate: GATE-D-FIRST-CERTIFIED-TRANSFORMATION
+  activation_condition:
+    - "TF-1 content approved by architecture board quorum"
+    - "IA-17 merged into INVARIANT-ARCHITECTURE.yaml"
+    - "All canonical EOS spec and contract files carry TF-1 terminology"
+  transition_windows:
+    - legacy_ir_term_allowed_until: GATE-E (repository-wide deprecated alias)
+    - legacy_compiler_pass_allowed_until: GATE-E (deprecated synonym)
+    - legacy_runtime_allowed_until: GATE-E
+  enforcement:
+    post_activation_rule: "Any EOS artifact (contract, spec, schema, code comment) introduced post-TF-1 that uses a deprecated primary term without explicit deprecated_alias tag SHALL trigger ARCH-35-TERM-DEPRECATION conformance WARNING at Gate-D and ERROR at Gate-E."
+
+terminology_freeze_preamble:
+  statement: >
+    The EOS vocabulary below SHALL be treated as normative from Gate-D forward. Consistent terminology is
+    an architectural invariant itself (per IA-17 derivations: meaning must not drift between representations
+    simply because words do). LLVM, POSIX, Git, TCP/IP demonstrate that vocab stability is almost as
+    foundational as protocol stability for multi-decade systems.
+
+  scope:
+    - "All governance YAML, specifications, schemas, contracts, ADRs, RFCs, and code comments released under EOS."
+    - "Protocol header fields and artifact metadata fields carrying term names (e.g. ir_format_version → rep_format_version)."
+
+  deprecation_policy:
+    - "Legacy terms listed below remain valid as deprecated_alias for tooling compatibility until Gate-E."
+    - "Deprecation WARNING at Gate-D; ERROR at Gate-E for primary-term mismatch."
+    - "Term addition/rename after TF-1 REQUIRES: ADR + Architecture Board quorum + new TF-* artifact + epoch bump per ASP-01."
+
+authority_pipeline_declaration:
+  status: RENAMED_AND_EXPANDED — see constitutional_validity_pipeline below
+  note: >
+    Former "EOS Authority Pipeline" renamed and expanded. The 5-stage order is retained as engineering
+    reference, but the constitutional invariant is now predicate-based (IA-17 Constitution Preservation
+    + IA-20 Constitutional Validity), not merely authority-monotonic.
+
+constitutional_validity_pipeline_declaration:
+  name: EOS Constitutional Validity Pipeline (normative — expanded from former Authority Pipeline)
+  constitutional_anchor: IA-17 Constitution Preservation + IA-20 Constitutional Validity
+  normative_order:
+    - stage: AUTHORITY
+      canonical_source_types: [CC-001 Constitutional Charter, Constitutional Vision, ASP, Invariant Architecture, Constitution IR]
+      authority_level: 0
+      predicate_boundary: "PRED_A (Legitimate) resolved here. AuthorityRel frozen relation set is the SSOT."
+      rule: "No downstream stage may produce semantics that contradict this stage. AuthorityRel relation set = FUNDAMENTAL (NOT graph data structure)."
+      example_artifacts: [CC-001 frozen predicates, VISION-01, ASP-01, IA-17/IA-20, CONSTIT-IR merkle_root]
+    - stage: INTERPRETATION
+      canonical_source_types: [Requirements, Intent, Policy, Ontology, Schema, Contracts]
+      authority_level: 1
+      predicate_boundary: "PRED_B (MeaningPreserved) resolved here. CanonicalIdentity (fundamental) + SemanticRel (frozen) = SSOT."
+      rule: "Interpretation MAY only refine authority stage, NEVER add new policy. Canonical Identity is FUNDAMENTAL (NOT Canonical Form concretization)."
+      example_artifacts: [REQ-ELS, Intent-Model, POLICY-*, ONT-*, contract.yaml with CanonicalIdentity refs]
+    - stage: DECISION
+      canonical_source_types: [Decision CanonicalIdentity, Planner Output, Candidate Selection]
+      authority_level: 2
+      predicate_boundary: "PRED_B maintained: Decision CanonicalIdentity semantically equivalent to Interpretation closure."
+      rule: "All decisions MUST be traceable to Interpretation-stage inputs via SemanticRel homomorphism proof. TransformationContract (Pre/Post/Invariants) = FUNDAMENTAL."
+      example_artifacts: [Decision CanonicalIdentity, planner decision_id, selection_witness, TransformationContract refs]
+    - stage: EXECUTION
+      canonical_source_types: [Execution CanonicalIdentity, Execution System, Workers, Orchestration]
+      authority_level: 3
+      predicate_boundary: "PRED_C (Provable) established here. Evidence(t,T) ⊢ Postconditions(T) with NO evidential gap."
+      rule: "Execution SHALL produce outputs that strictly implement Decision stage inputs; no speculative authority. Transformation Strategy = FUNGIBLE (Planner/SAT/Rule/LLM/Streaming/Distributed ALL equivalent constitutionally)."
+      example_artifacts: [Execution CanonicalIdentity, execution_plan_identity_hash, worker witness_C, Evidence(t,T) corpus]
+    - stage: EVIDENCE
+      canonical_source_types: [Evidence, Assessment, Justification, Verdict, Ledger]
+      authority_level: 4
+      predicate_boundary: "ALL THREE witnesses collected. ConstitutionalProof(T) = ⟨w_A, w_B, w_C⟩ COMPLETE ⇔ ConstitutionallyValid(T) = TRUE ⇔ Verdict PASS."
+      rule: "Evidence is downstream of all and cannot create new authority; it only proves or falsifies. Witness form is FUNGIBLE; justification power = NORMATIVE."
+      example_artifacts: [ConstitutionalProof composite ID, witness_A/B/C artifacts, ASSESSMENT, JUSTIFICATION, VERDICT, LEDGER-ENTRY atomic append]
+  invariants:
+    constitutional_validity_preserved: "Every stage transition X→Y: if a transformation T operates at the boundary, then ConstitutionallyValid(T) must hold. Authority/Meaning/Provability are ALL preserved."
+    predicate_evaluation_order: "Legitimate (PRED_A) BEFORE MeaningPreserved (PRED_B) BEFORE Provable (PRED_C). Verdict only AFTER IA-20=TRUE."
+    constitutional_chain_resolves: "Every artifact's constitutional_chain MUST resolve: (PRED_A) AuthorityRel→AUTHORITY root, (PRED_B) SemanticEquivalence→CanonicalIdentity, (PRED_C) Evidence⊢Postconditions. Loops/dangling/equivocation = FATAL."
+
+constitutional_predicate_model_preamble:
+  statement: >
+    TF-1 terminology is organized under the EOS CONSTITUTIONAL PREDICATE MODEL (frozen in CC-001
+    for one-decade horizon 2026–2036). The irreducible constitutional core = THREE FALSIFIABLE
+    BOOLEAN PREDICATES and their conjunction:
+
+      Predicate A :  Legitimate(x)            — artifact has valid AuthorityRel chain?
+      Predicate B :  MeaningPreserved(T)      — transformation preserved CanonicalIdentity equivalence?
+      Predicate C :  Provable(T)              — Evidence(t,T) constructively entails Postconditions(T)?
+
+      Meta-Predicate:  ConstitutionallyValid(T)  ⇔  Legitimate(T) ∧ MeaningPreserved(T) ∧ Provable(T)
+
+    FUNDAMENTAL (FROZEN) things are:
+      AuthorityRel relation set,
+      SemanticRel relation set,
+      CanonicalIdentity (abstract logical identity),
+      TransformationContract = ⟨Inputs, Outputs, Preconditions, Postconditions, Invariants⟩.
+
+    EVERYTHING ELSE is a DERIVED engineering materialization and MAY be replaced entirely by
+    future epochs, provided the truth values of Legitimate / MeaningPreserved / Provable remain
+    invariant on identical inputs. In particular:
+      • Authority Graph = ONE materialization of AuthorityRel. (Not fundamental.)
+      • Knowledge Graph = ONE materialization of SemanticRel. (Not fundamental.)
+      • Canonical Form = ONE concretization of CanonicalIdentity. (Not fundamental.)
+      • Constitutional Proof = ⟨w_A,w_B,w_C⟩ derived WITNESS tuple of predicate evaluations. (Not constitutional.)
+      • Three Fundamental Laws, Four Constitutional Axioms = DERIVED engineering corollaries.
+        They are pedagogically useful but NOT the irreducible frozen core.
+
+eos_system_renaming:
+  previous_term: Knowledge Computing Platform
+  normative_term: Constitutional Knowledge Computing System
+  rationale: >
+    "Platform" implies technology substrate and mutable product surface. "System" implies invariant authority
+    model (Constitution → Knowledge → Protocols → Implementations → Execution → Evidence) plus deterministic
+    governance. The EOS authority model is what is preserved across decades; implementation technologies are
+    interchangeable.
+
+core_vocabulary_normative:
+  - term_id: TERM-CONSTITUTION
+    normative_term: Constitution
+    deprecated_aliases: []
+    definition: "Normative root of all EOS authority: Vision + ASP + Invariants + Authority Rules, compiled into Constitution IR (which is itself Authority stage)."
+    scope: Foundational
+    authoritative_ref: VISION-01 + ASP-01 + IA-01..IA-17
+
+  - term_id: TERM-AUTHORITY-PIPELINE
+    normative_term: "Constitutional Validity Pipeline (formerly: Authority Pipeline)"
+    deprecated_aliases: [Authority Pipeline]
+    definition: >
+      The five-stage, predicate-boundary flow AUTHORITY → INTERPRETATION → DECISION → EXECUTION → EVIDENCE.
+      Each stage resolves exactly one predicate boundary: AUTHORITY=PRED_A; INTERPRETATION=PRED_B;
+      DECISION=PRED_B maintained; EXECUTION=PRED_C; EVIDENCE=witness tuple collected, IA-20 verdict evaluated.
+      No stage invents new authority, drifts meaning, or emits PASS without constructive entailment.
+    scope: Foundational
+    authoritative_ref: IA-17-CONSTITUTION-PRESERVATION + IA-20-CONSTITUTIONAL-VALIDITY
+
+  - term_id: TERM-AUTHORITY-ORIENTED-ARCH
+    normative_term: Authority-Oriented Architecture (AOA)
+    deprecated_aliases: [Protocol-Oriented Architecture]
+    definition: >
+      The organizing principle of EOS: what is frozen is the authority graph, not a particular representation or
+      transport protocol. Protocols are one form of boundary; authority is the invariant. Two implementations with
+      different protocols are still EOS-compatible if they respect the same authority graph.
+    scope: Paradigm
+
+  - term_id: TERM-KNOWLEDGE-LAYER
+    normative_term: Knowledge Layer
+    deprecated_aliases: [Knowledge Zone, Semantic Layer (partial alias only)]
+    definition: "EOS layer containing Requirements, Intent, Policies, Contracts, Ontology, Schemas (Interpretation stage)."
+    scope: Layer
+    authoritative_ref: TF-1 §authority_pipeline_declaration stage INTERPRETATION
+
+  - term_id: TERM-CANONICAL-REPRESENTATION
+    normative_term: Canonical Representation
+    deprecated_aliases: [Intermediate Representation, IR]
+    definition: >
+      DEPRECATED — Former normative term. Superseded by Canonical Form (TERM-CANONICAL-FORM).
+      Historical definition: A transport- and implementation-agnostic encoding of an EOS artifact.
+      Replaced because Canonical Form additionally asserts independence from serialization, transport,
+      storage, AND execution technology (identity same across YAML/JSON/Binary/ProtoBuf/DB/Memory/Graph/EventStream).
+    scope: Layer (Legacy / Deprecated)
+    status: DEPRECATED
+    replacement: TERM-CANONICAL-FORM
+    authoritative_ref: "IA-13 Stable Canonical Forms (revised anchor IA-13-STABLE-CANONICAL-FORMS)"
+    semantic_change_note: "Former aliases KIR / DIR / EIR now subsumed under Knowledge-Form / Decision-Form / Evidence-Form. See TERM-CANONICAL-FORM for normative definition."
+
+  - term_id: TERM-CANONICAL-FORM
+    normative_term: Canonical Form
+    deprecated_aliases:
+      - Canonical Representation (deprecated)
+      - Intermediate Representation (deprecated)
+      - IR (deprecated)
+    definition: >
+      The sole logical identity of an EOS artifact's normative meaning (Law II / Axiom B domain).
+      Canonical Form SHALL be independent of serialization, transport, storage, and execution technology.
+      YAML, JSON, Binary, ProtoBuf, Database record, Memory Object, Graph node, Event Stream — all MAY
+      realize the SAME Canonical Form provided round-trip determinism preserves identity hash across
+      every concretization. Canonical Form = what something means normatively, NOT how it happens to be
+      stored or transmitted today.
+    scope: Law II — Meaning (Axiom B)
+    authoritative_ref: IA-13 Stable Canonical Forms (anchor IA-13-STABLE-CANONICAL-FORMS)
+    axiom: B
+    semantic_change: SEM-005-CANONICAL-FORM
+
+  - term_id: TERM-KNOWLEDGE-REP
+    normative_term: Knowledge Form (K-FORM)
+    deprecated_aliases: [Knowledge Representation, K-REP, Knowledge IR, KIR]
+    definition: "Canonical Form of the Interpretation stage; normalized, deterministic snapshot of knowledge available to planner. Former aliases K-REP/KIR are retained for backward compatibility."
+    scope: Law II — Meaning (Canonical Form)
+    authoritative_ref: IA-13 Stable Canonical Forms (scope_required_canonical_forms K-FORM)
+
+  - term_id: TERM-DECISION-REP
+    normative_term: Decision Form (D-FORM)
+    deprecated_aliases: [Decision Representation, D-REP, Decision IR, DIR]
+    definition: "Canonical Form of planner output: candidate selection + trace + constraint satisfaction proof. Former aliases D-REP/DIR retained for backcompat."
+    scope: Law II — Meaning (Canonical Form)
+    authoritative_ref: IA-13 Stable Canonical Forms (scope_required_canonical_forms D-FORM)
+
+  - term_id: TERM-EXECUTION-REP
+    normative_term: Execution Form (X-FORM)
+    deprecated_aliases: [Execution Representation, X-REP, Execution IR, Execution Plan IR, Plan IR]
+    definition: "Canonical Form of the plan of execution that an Execution System consumes; scheduler/worker independent. Former aliases X-REP retained for backcompat."
+    scope: Law II — Meaning (Canonical Form)
+    authoritative_ref: IA-13 Stable Canonical Forms (scope_required_canonical_forms X-FORM)
+
+  - term_id: TERM-EVIDENCE-REP
+    normative_term: Evidence Form (V-FORM)
+    deprecated_aliases: [Evidence Representation, V-REP, Evidence Provenance Graph (partial alias), EPG, Evidence IR]
+    definition: "Canonical Form of provenance chain + measurements; parent of Assessment, Justification and Verdict. Former aliases V-REP/EPG retained as deprecated."
+    scope: Law II — Meaning (Canonical Form)
+    authoritative_ref: IA-13 Stable Canonical Forms (scope_required_canonical_forms V-FORM)
+
+  - term_id: TERM-PROTOCOL
+    normative_term: Protocol
+    deprecated_aliases: []
+    definition: "Boundary contract that governs exchange between two authority stages or two implementations; media for authority transport, not authority itself."
+    scope: Boundary
+    authoritative_ref: TF-1 scope note "Protocols are media, authority is invariant."
+
+  - term_id: TERM-TRANSFORMATION
+    normative_term: Transformation
+    deprecated_aliases: [Compiler Pass, Pass, Compiler Stage]
+    definition: >
+      Any deterministic function: Input Canonical Form → Output Canonical Form, paired with a separation of
+      Transformation Semantics (frozen normative contract) and Transformation Strategy (interchangeable
+      implementation). Implementation technology is NOT prescribed: may be single-pass compiler, two-pass,
+      rule engine, SAT solver, LLM, constraint solver, graph optimizer, incremental build, streaming, distributed.
+    scope: Law III — Realization (Axiom C)
+
+  - term_id: TERM-TRANSFORMATION-CONTRACT
+    normative_term: Transformation Contract
+    deprecated_aliases: [Compiler Contract, Pass Spec, Compiler Pass Contract]
+    definition: >
+      Constitution-defined (CONSTIT-IR) machine-readable codification of Transformation Semantics for exactly
+      one transformation. Declares ONLY: input Canonical Form(s), output Canonical Form(s), preconditions,
+      postconditions, invariants, determinism requirements, purity class (per IA-14), proof obligations,
+      and traceability rules. It does NOT prescribe an internal implementation strategy (that is Strategy).
+    scope: Law III — Realization (Normative Contract)
+    authoritative_ref: IA-16 Semantics/Strategy separation + CONSTITUTIONAL-COMPILER.spec.yaml
+
+  - term_id: TERM-TRANSFORMATION-SEMANTICS
+    normative_term: Transformation Semantics
+    deprecated_aliases: []
+    definition: >
+      Frozen normative contract portion of a transformation. Defines ONLY: Inputs, Outputs, Preconditions,
+      Postconditions, Invariants. Technology-agnostic and implementation-oblivious. Analogous to
+      SQL Standard (defines SELECT/JOIN/WHERE semantics ONLY), not a specific optimizer.
+      Paired 1-to-many with Transformation Strategy artifacts.
+    scope: Law III — Realization (Semantics, frozen)
+    authoritative_ref: IA-16 Semantics × Strategy separation
+    axiom: C
+
+  - term_id: TERM-TRANSFORMATION-STRATEGY
+    normative_term: Transformation Strategy
+    deprecated_aliases: [Transformation Implementation (overlapping alias — prefer Strategy)]
+    definition: >
+      Interchangeable implementation of a Transformation Semantics contract. Kinds include: PLANNER, SAT_SOLVER,
+      RULE_ENGINE, LLM, COMPILER, STREAMING, DISTRIBUTED_OPTIMIZER, HYBRID. Many Strategies may implement the
+      SAME Transformation Semantics (analogy: PostgreSQL optimizer, MySQL optimizer, DuckDB all implement SQL Standard).
+      Two strategies S1, S2 implementing the same Semantics SHALL be interchangeable (both produce conforming outputs).
+    scope: Law III — Realization (Strategy, interchangeable)
+    authoritative_ref: IA-16 Semantics × Strategy separation
+    axiom: C
+
+  - term_id: TERM-EXECUTION-SYSTEM
+    normative_term: Execution System
+    deprecated_aliases: [Runtime, Execution Runtime, EOS Runtime]
+    definition: >
+      Any system that consumes an Execution Canonical Form (X-FORM) and produces outputs + evidence.
+      Includes: local runtime, Kubernetes, workflow engine, Temporal, distributed scheduler, LLM agent swarm,
+      robot, simulator. "Runtime" is deprecated because EOS execution model is not limited to traditional
+      process-level runtime (it is one Strategy kind within Axiom C).
+    scope: Law III — Realization (Execution Strategy)
+
+  - term_id: TERM-EVIDENCE
+    normative_term: Evidence
+    deprecated_aliases: []
+    definition: "First technical product of Execution System run: raw cryptographic or deterministic proof bytes, digests, hashes, measurements. Emitted ONLY after Constitutional Proof (IA-18) receives PASS on all three sub-proofs."
+    scope: Law III — Realization (Evidence Layer, Level 0)
+    authoritative_ref: IA-18 Constitutional Proof
+
+  - term_id: TERM-ASSESSMENT
+    normative_term: Assessment
+    deprecated_aliases: []
+    definition: "Technical evaluation of Evidence against a specific conformance property vector. Machine-facing / technical. Produces a per-property PASS/FAIL/INCONCLUSIVE matrix."
+    scope: Law III — Realization (Evidence Layer, Level 1)
+    authoritative_ref: IA-18 Constitutional Proof downstream artifacts
+
+  - term_id: TERM-JUSTIFICATION
+    normative_term: Justification
+    deprecated_aliases: []
+    definition: "Structured + human-readable narrative explaining Assessment, including authority_proof_refs, semantic_proof_refs, correctness_proof_refs up through Constitutional Proof composite to Constitution."
+    scope: Law III — Realization (Evidence Layer, Level 2)
+    authoritative_ref: IA-12 Explainability + IA-18 Constitutional Proof
+
+  - term_id: TERM-VERDICT
+    normative_term: Verdict
+    deprecated_aliases: [Conformance Verdict (legacy informal)]
+    definition: >
+      Governance-facing artifact derived from Justification + Assessment + Constitutional Proof composite ID.
+      Normative answer consumed by humans, boards, registries, and certification gates.
+      Examples: Repository Status = PASS; Repository Certification = VALID; Gate-D = PROVISIONAL_PASS; Gate-E = PRODUCTION_READY.
+      A Verdict PASS SHALL reference a Constitutional Proof with ALL THREE sub-proofs = PASS.
+    scope: Law III — Realization (Evidence Layer, Level 3)
+    authoritative_ref: Axiom D + IA-18 Constitutional Proof
+
+  - term_id: TERM-CANONICAL-FORM
+    normative_term: Canonical Form
+    deprecated_aliases:
+      - Canonical Representation (deprecated)
+      - Intermediate Representation (deprecated)
+      - IR (deprecated)
+    definition: >
+      DERIVED CONCRETIZATION of CanonicalIdentity (TERM-CANONICAL-IDENTITY) for a specific engineering
+      medium. Canonical Form realizes CanonicalIdentity in YAML, JSON, Binary, ProtoBuf, DB record,
+      Memory Object, Graph Node, or Event Stream — but NONE of these is fundamental. The FROZEN
+      FUNDAMENTAL is CanonicalIdentity (abstract logical identity). Two artifacts with DIFFERENT Canonical
+      Forms may still have IDENTICAL CanonicalIdentity — provided SemanticEquivalence holds. Subclasses:
+      K-FORM (Knowledge), D-FORM (Decision), X-FORM (Execution), V-FORM (Evidence) are all medium-specific
+      concretizations of the SAME abstract CanonicalIdentity.
+    scope: Predicate B — DERIVED concretization (NOT fundamental)
+    authoritative_ref: IA-13 Stable Canonical Forms (ARCH-22 anchor STABLE-CANONICAL-FORMS) + SEM-005 TF-1
+    fundamental_root: TERM-CANONICAL-IDENTITY (CanonicalIdentity = FUNDAMENTAL; CanonicalForm = DERIVED)
+    concretization_examples: [K-FORM, D-FORM, X-FORM, V-FORM, YAML, JSON, Binary, ProtoBuf, Database, MemoryObject, GraphNode, EventStream]
+    semantic_change: SEM-005-CANONICAL-FORM (now marked DERIVED of CanonicalIdentity)
+
+  - term_id: TERM-KNOWLEDGE-REP
+    normative_term: Knowledge Form (K-FORM)
+    deprecated_aliases: [Knowledge Representation, K-REP, Knowledge IR, KIR]
+    definition: "Canonical Form concretization of CanonicalIdentity for Interpretation stage; normalized, deterministic knowledge snapshot available to planner."
+    scope: Predicate B — DERIVED concretization of CanonicalIdentity
+    authoritative_ref: IA-13 scope_required_canonical_forms K-FORM
+    derivation_chain: "CanonicalIdentity (FUNDAMENTAL) → Canonical Form (DERIVED) → K-FORM (concretization for Interpretation stage)"
+
+  - term_id: TERM-DECISION-REP
+    normative_term: Decision Form (D-FORM)
+    deprecated_aliases: [Decision Representation, D-REP, Decision IR, DIR]
+    definition: "Canonical Form concretization of CanonicalIdentity for planner output: candidate selection + trace + constraint satisfaction proof."
+    scope: Predicate B — DERIVED concretization of CanonicalIdentity
+    authoritative_ref: IA-13 scope_required_canonical_forms D-FORM
+    derivation_chain: "CanonicalIdentity (FUNDAMENTAL) → Canonical Form (DERIVED) → D-FORM (concretization for Decision stage)"
+
+  - term_id: TERM-EXECUTION-REP
+    normative_term: Execution Form (X-FORM)
+    deprecated_aliases: [Execution Representation, X-REP, Execution IR, Execution Plan IR, Plan IR]
+    definition: "Canonical Form concretization of CanonicalIdentity for plan of execution that an Execution System consumes."
+    scope: Predicate B — DERIVED concretization of CanonicalIdentity
+    authoritative_ref: IA-13 scope_required_canonical_forms X-FORM
+    derivation_chain: "CanonicalIdentity (FUNDAMENTAL) → Canonical Form (DERIVED) → X-FORM (concretization for Execution stage)"
+
+  - term_id: TERM-EVIDENCE-REP
+    normative_term: Evidence Form (V-FORM)
+    deprecated_aliases: [Evidence Representation, V-REP, Evidence Provenance Graph (partial alias), EPG, Evidence IR]
+    definition: "Canonical Form concretization of CanonicalIdentity for provenance chain + measurements; parent of Assessment, Justification, Verdict."
+    scope: Predicate B + Predicate C — DERIVED concretization of CanonicalIdentity
+    authoritative_ref: IA-13 scope_required_canonical_forms V-FORM
+    derivation_chain: "CanonicalIdentity (FUNDAMENTAL) → Canonical Form (DERIVED) → V-FORM (concretization for Evidence stage)"
+
+  - term_id: TERM-CONSTITUTIONAL-PROOF
+    normative_term: Constitutional Proof (Witness Tuple)
+    deprecated_aliases: [Proof (ambiguous), Constitutional Trace, Constitutional Proof — Three Sub-Proofs (former framing: now witness tuple)]
+    definition: >
+      EXPLICITLY DERIVED (NOT constitutional). ConstitutionalProof(T) is the WITNESS TUPLE that
+      materializes a TRUE evaluation of ConstitutionallyValid(T) into machine-auditable artifacts:
+
+        ConstitutionalProof(T) = ⟨ witness_Legitimate(T), witness_MeaningPreserved(T), witness_Provable(T) ⟩
+
+      Completeness: ConstitutionalProof(T) is COMPLETE  ⇔  ConstitutionallyValid(T).
+      Witness FORM is NOT prescribed: a witness MAY be a DAG walk cert, semantic equivalence proof,
+      conformance test report, LLM audit trail, hash chain, or human approval document. Only the
+      witness's JUSTIFICATION POWER (does it, on replay, cause the predicate to evaluate TRUE on T?)
+      is normative. Representation = fungible engineering.
+    scope: DERIVED Auditable Artifact (materializes IA-20 result into Ledger-appendable form)
+    authoritative_ref: CC-001 §6 ConstitutionalProof witness tuple definition + IA-18 Constitutional Proof
+    witness_spec:
+      witness_A: "justifies Legitimate(T)=TRUE — Predicate A"
+      witness_B: "justifies MeaningPreserved(T)=TRUE — Predicate B"
+      witness_C: "justifies Provable(T)=TRUE — Predicate C"
+    composite_id_scheme: "CP-<unix_millis>-<w_A_id_8hex>-<w_B_id_8hex>-<w_C_id_8hex>"
+    ledge_atomic_append: "Composite ID + all three witness IDs appended ATOMICALLY; partial append = LEDGER_CORRUPTION (IA-17 violation)"
+
+  - term_id: TERM-THREE-CONSTITUTIONAL-PREDICATES
+    normative_term: Three Constitutional Predicates (Legitimate × MeaningPreserved × Provable)
+    deprecated_aliases: [Three Fundamental Laws (pedagogical DERIVED alias), Four Constitutional Axioms (engineering DERIVED alias)]
+    definition: >
+      IRREDUCIBLE CONSTITUTIONAL CORE of EOS, frozen in CC-001 for a one-decade horizon (2026–2036).
+      Three scientifically falsifiable Boolean predicates + their conjunction meta-predicate:
+
+        Predicate A :  Legitimate(x)            ← AuthorityRel frozen relation set
+        Predicate B :  MeaningPreserved(T)      ← CanonicalIdentity fundamental + SemanticRel frozen
+        Predicate C :  Provable(T)              ← Evidence(t,T) ⊢ Postconditions(T)
+
+        Meta-Predicate: ConstitutionallyValid(T)  ⇔  Legitimate(T) ∧ MeaningPreserved(T) ∧ Provable(T)
+
+      EVERY other EOS concept — Three Laws, Four Axioms, Dual Graphs, Canonical Form, Constitutional Proof,
+      Transformation Semantics/Strategy, Planner, Runtime, Ledger, Conformance — is STRICTLY DERIVED from
+      these four (3 predicates + 1 conjunction). None is independently constitutional.
+    scope: IRREDUCIBLE CONSTITUTIONAL FROZEN CORE (10-year horizon, CC-001)
+    authoritative_ref: CC-001 §2 Constitutional Predicate Model + CC-001 §6 Constitutional Validity
+    cross_ref_predicates: [TERM-PRED-A-LEGITIMATE, TERM-PRED-B-MEANINGPRESERVED, TERM-PRED-C-PROVABLE, TERM-CONSTITUTIONAL-VALIDITY]
+    epistemological_status: "FALSIFIABLE_HYPOTHESIS (per Baseline v1.4 PASAL 8 — CC-001 states: 3 predicates are jointly sufficient and individually necessary. Gate C/Gate D/Gate E evidence either CORROBORATES or FALSIFIES this.)"
+
+  - term_id: TERM-PRED-A-LEGITIMATE
+    normative_term: Predicate A — Legitimate(x)
+    deprecated_aliases: [Law I — Authority (pedagogical derived), Axiom A — Authority (engineering derived)]
+    definition: >
+      Legitimate : Artifact → Boolean. Answers: "Why is this artifact valid?".
+      Formal: Legitimate(x) ⇔ (AuthorityRoot(x) exists) AND (AuthorityPath(x) ⊆ AuthorityRel) AND (NoAuthorityCycle(x)).
+      AuthorityRel = { Authorizes, Delegates, Supersedes, Approves, DerivesAuthorityFrom, Ratifies, Amends, EpochBinds }
+      is the FROZEN FUNDAMENTAL. Authority Graph = ONE materialization; MAY be RDF, Neo4j, Git DAG, SQL, YAML, binary index.
+    scope: Constitutional Predicate (FUNDAMENTAL frozen per CC-001 §3)
+    authoritative_ref: CC-001 §3 Predicate A — Legitimate(x)
+    fundamental_frozen_concepts: [AuthorityRel RELATION SET (NOT graph data structure)]
+    derived_concepts: [Authority Graph (materialization), Authority Pipeline (engineering ordering), Axiom A, Law I]
+
+  - term_id: TERM-PRED-B-MEANINGPRESERVED
+    normative_term: Predicate B — MeaningPreserved(T)
+    deprecated_aliases: [Law II — Meaning (pedagogical derived), Axiom B — Meaning (engineering derived)]
+    definition: >
+      MeaningPreserved : Transformation → Boolean. Answers: "Did the normative meaning survive transformation T?".
+      Formal: MeaningPreserved(T) ⇔ (∀i∈Inputs,∀o∈Outputs: CanonicalIdentity well-defined) AND SemanticEquivalence(⊔Inputs, ⊔Outputs)=TRUE.
+      CanonicalIdentity (abstract logical identity) is FUNDAMENTAL. SemanticRel = { DependsOn, Implements, Extends, Contains,
+      References, EquivalentTo, Specializes, Refines, Uses } is FROZEN FUNDAMENTAL.
+      Canonical Form (YAML/JSON/ProtoBuf/binary) = ONE concretization of CanonicalIdentity; NOT fundamental.
+      TransformationContract = ⟨Inputs,Outputs,Preconditions,Postconditions,Invariants⟩ = FUNDAMENTAL frozen structure.
+    scope: Constitutional Predicate (FUNDAMENTAL frozen per CC-001 §4)
+    authoritative_ref: CC-001 §4 Predicate B — MeaningPreserved(T)
+    fundamental_frozen_concepts: [CanonicalIdentity (abstract logical identity, NOT CanonicalForm concretization), SemanticRel RELATION SET (NOT graph data structure), TransformationContract (Pre/Post/Invariants, NOT algorithm/strategy)]
+    derived_concepts: [Canonical Form K/D/X/V-FORM (concretizations), Knowledge Graph (materialization), Semantic Kernel (reasoner), Axiom B, Law II]
+
+  - term_id: TERM-PRED-C-PROVABLE
+    normative_term: Predicate C — Provable(T)
+    deprecated_aliases: [Law III — Realization (pedagogical derived, partial), Axiom C Realization + Axiom D Proof (engineering derived, combined)]
+    definition: >
+      Provable : Transformation → Boolean. Answers: "If this transformation emits PASS, can we PROVE it from evidence?".
+      Formal: Provable(T) ⇔ (∀ executions t of T reaching verdict: Evidence(t,T) ⊢ Postconditions(T)) AND (no evidential gap allowing ¬Postconditions while PASS is emitted).
+      Note: "Proof" as artifact = ONE possible witness of Provable(T); Provable(T) is a PROPERTY of the transformation,
+      not the artifact. Strategy (Planner, SAT Solver, Rule Engine, LLM, Compiler, Streaming, Distributed Optimizer) is FUNGIBLE.
+    scope: Constitutional Predicate (FUNDAMENTAL frozen per CC-001 §5)
+    authoritative_ref: CC-001 §5 Predicate C — Provable(T)
+    fundamental_frozen_concepts: [Evidence-entailment property (⊢), Evidential gap exclusion, TransformationContract.Postconditions]
+    derived_concepts: [Constitutional Proof (witness tuple ⟨w_A,w_B,w_C⟩), Evidence → Assessment → Justification → Verdict pipeline, Execution System variants, Axiom C + Axiom D combined]
+
+  - term_id: TERM-CONSTITUTIONAL-VALIDITY
+    normative_term: Constitutional Validity (IA-20 Meta-Predicate)
+    deprecated_aliases: [Constitutional Pass, Constitutional PASS (informal)]
+    definition: >
+      ConstitutionallyValid(T) ⇔ Legitimate(T) ∧ MeaningPreserved(T) ∧ Provable(T).
+      IA-20 codifies this as the SOLE evaluation criterion for every architectural transformation,
+      every runtime verdict, and every epochal revision. No validation result is EOS-compliant unless it
+      is reducible to this conjunction. Six-Tier Architecture = engineering reference layout; Constitutional
+      Validity = the ACTUAL constitutional invariant enforced across every tier.
+    scope: Meta-Predicate (Conjunction of Predicates A ∧ B ∧ C)
+    authoritative_ref: CC-001 §6 Constitutional Validity Meta-Predicate + IA-20 Constitutional Validity
+
+  - term_id: TERM-AUTHORITYREL
+    normative_term: AuthorityRel Relation Set
+    deprecated_aliases: [Authority Graph (partial — graph = ONE materialization of AuthorityRel)]
+    definition: >
+      FUNDAMENTAL FROZEN normative relation set for Predicate A (Legitimate).
+      AuthorityRel = { Authorizes, Delegates, Supersedes, Approves, DerivesAuthorityFrom, Ratifies, Amends, EpochBinds }.
+      Every edge in EVERY materialization of authority (RDF, Neo4j, Git DAG, SQL, YAML, binary index, human-signed doc)
+      MUST be an instance of this relation set. The relation set itself cannot be changed without CC-001 Charter Revision.
+      The Graph data structure is a fungible engineering choice.
+    scope: Predicate A — FROZEN FUNDAMENTAL (NOT data structure)
+    authoritative_ref: CC-001 §3 Predicate A formal statement
+
+  - term_id: TERM-SEMANTICREL
+    normative_term: SemanticRel Relation Set
+    deprecated_aliases: [Knowledge Graph (partial — graph = ONE materialization of SemanticRel)]
+    definition: >
+      FUNDAMENTAL FROZEN normative relation set for Predicate B (MeaningPreserved).
+      SemanticRel = { DependsOn, Implements, Extends, Contains, References, EquivalentTo, Specializes, Refines, Uses }.
+      Every semantic edge in EVERY materialization of meaning (Knowledge Graph nodes, Canonical Form refs,
+      ontology hierarchy, schema inheritance, contract dependencies) MUST be an instance of this set.
+      The relation set frozen; the Graph data structure is fungible.
+    scope: Predicate B — FROZEN FUNDAMENTAL (NOT data structure)
+    authoritative_ref: CC-001 §4 Predicate B formal statement
+
+  - term_id: TERM-CANONICAL-IDENTITY
+    normative_term: Canonical Identity
+    deprecated_aliases: [Canonical Form (partial — Canonical Form = ONE concretization of CanonicalIdentity)]
+    definition: >
+      FUNDAMENTAL ABSTRACT logical identity of an artifact's normative meaning, completely independent
+      of ANY serialization, transport, storage, or execution medium. Two artifacts that differ in every byte
+      (YAML vs JSON vs ProtoBuf vs Binary vs DB row vs Memory Object vs Graph node vs Event Stream) still
+      possess IDENTICAL CanonicalIdentity if and only if SemanticEquivalence(⊔input_ids, ⊔output_ids) = TRUE.
+      Canonical Form (K/D/X/V-FORM etc.) = ONE concretization that realizes CanonicalIdentity for a specific
+      engineering medium. CanonicalIdentity is the FROZEN FUNDAMENTAL; Forms are fungible.
+    scope: Predicate B — FROZEN FUNDAMENTAL (NOT concretization)
+    authoritative_ref: CC-001 §4 Predicate B — CanonicalIdentity definition + SemanticEquivalence property
+    concretizations_are_derived: [Canonical Form K-FORM D-FORM X-FORM V-FORM, YAML JSON Binary ProtoBuf DB Memory Graph EventStream — ALL derived]
+
+  - term_id: TERM-TRANSFORMATION-CONTRACT
+    normative_term: Transformation Contract
+    deprecated_aliases: [Transformation Semantics (near-synonym — Contract is the machine-readable codification of Semantics)]
+    definition: >
+      FUNDAMENTAL minimal normative structure of a transformation T (CC-001 §4):
+        TransformationContract(T) = ⟨ InputSignatures, OutputSignatures, Preconditions, Postconditions, Invariants ⟩
+      The Contract SHALL contain NO algorithm, NO programming language, NO scheduler, NO cost model.
+      All of those are Transformation STRATEGY — fungible engineering (Planner, SAT, RuleEngine, LLM, Compiler,
+      Streaming, Distributed Optimizer, etc.). Contract = the frozen SQL Standard; Strategy = the fungible Query Optimizer.
+    scope: Predicate B + Predicate C — FROZEN FUNDAMENTAL contract structure
+    authoritative_ref: CC-001 §4 TransformationContract definition + IA-16 Semantics/Strategy separation (SQL ↔ Optimizer pattern)
+
+  - term_id: TERM-THREE-LAWS
+    normative_term: Three Fundamental Laws (EOS Constitutional Theory)
+    deprecated_aliases: [Six-Tier Constitutional Model (former theory — now Reference Architecture only)]
+    definition: >
+      DERIVED PEDAGOGICAL FRAMEWORK, NOT irreducible constitutional core. Three Laws are a useful human-readable
+      restatement of the Three Constitutional Predicates for communication and teaching:
+        Law I — Authority       ≡  Predicate A Legitimate(x) domain
+        Law II — Meaning        ≡  Predicate B MeaningPreserved(T) domain
+        Law III — Realization   ≡  Predicate C Provable(T) domain + engineering strategy side
+      The irreducible FROZEN core is the 3 predicates + conjunction in CC-001, NOT the Three Laws. Law/Laws
+      terminology remains ACTIVE for pedagogical use but explicitly DERIVED.
+    scope: Constitutional Theory (PEDAGOGICAL DERIVED — above ASP/IA but NOT frozen core)
+    authoritative_ref: "AXIOMS.md §Constitutional-Theory-Three-Laws (stamped: DERIVED from CC-001 predicates)"
+    derivation_chain: "Three Constitutional Predicates (TERM-THREE-CONSTITUTIONAL-PREDICATES) → Three Laws (human-readable framing)"
+    epistemological_status: PEDAGOGICAL_DERIVED — NOT independently falsifiable; inherits falsifiability from predicates.
+
+  - term_id: TERM-FOUR-AXIOMS
+    normative_term: Four Constitutional Axioms (A, B, C, D)
+    deprecated_aliases: []
+    definition: >
+      DERIVED ENGINEERING OPERATIONAL COROLLARIES, NOT irreducible frozen core. Four Axioms are a practical
+      engineering restatement of the Three Constitutional Predicates plus a derived Verdict bridge:
+        Axiom A — Authority       ≡  Predicate A Legitimate(x) engineering operational form
+        Axiom B — Meaning         ≡  Predicate B MeaningPreserved(T) engineering operational form
+        Axiom C — Realization     ≡  Predicates B+C transformation side (Semantics×Strategy)
+        Axiom D — Proof           ≡  Predicate C Provable(T) + Verdict-dependency derivation
+      The irreducible FROZEN core is the 3 predicates + conjunction in CC-001. Four Axioms remain ACTIVE for
+      engineering reference (IA-01..IA-19 trace back to Axioms A/B/C/D) but are explicitly DERIVED, not core.
+    scope: Engineering Operational (DERIVED — actively used in IA mapping, but NOT frozen core)
+    authoritative_ref: "AXIOMS.md §Four-Constitutional-Axioms-Frozen-Core (stamped: DERIVED operational corollaries of CC-001 predicates)"
+    derivation_chain: "Three Constitutional Predicates → Four Axioms Operational Corollaries → IA-01..IA-20 structural invariants"
+    epistemological_status: ENGINEERING_DERIVED — actively used but changeable (without CC-001 revision) via normal ADR + epoch process if predicates are preserved.
+
+  - term_id: TERM-IA17
+    normative_term: IA-17 Constitution Preservation
+    deprecated_aliases: [IA-17 Authority Preservation (former name — now the PRED_A sub-component only)]
+    definition: >
+      CONSTITUTIONAL META-INVARIANT covering ALL THREE predicates, expanded from former "IA-17 Authority Preservation".
+      Formal statement: Every architectural transformation SHALL preserve constitutional validity.
+      ConstitutionallyValid(T) ⇔ Legitimate(T) ∧ MeaningPreserved(T) ∧ Provable(T).
+      Covers: planner, compiler, optimizer, AI planner, cache, incremental build, distributed execution —
+      ALL must preserve ALL three predicates, not only authority. A transformation that is byte-deterministic
+      but MeaningPreserved=FALSE (semantic drift) or Provable=FALSE (insufficient evidence) = IA-17 violation.
+      Former "Authority Preservation" scope retained as PRED_A sub-component of the expanded invariant.
+    scope: Meta-Invariant (IA-17 = Predicates A∧B∧C structural embodiment)
+    authoritative_ref: INVARIANT-ARCHITECTURE.yaml#IA-17-CONSTITUTION-PRESERVATION + CC-001 §6 (direct restatement)
+
+  - term_id: TERM-LEDGER
+    normative_term: Evidence Ledger
+    deprecated_aliases: [Ledger (ambiguous)]
+    definition: "Append-only, hash-chained store of Evidence → Assessment → Justification → Verdict entries. Atomic append target for ConstitutionalProof(T) witness tuple IDs: composite CP-id + w_A_id + w_B_id + w_C_id."
+    scope: Predicate C / Evidence Layer (Infrastructure — DERIVED engineering mechanism)
+    derivation_chain: "Predicate C Provable(T) → ConstitutionalProof witness tuple → Ledger atomic append storage"
+
+constitutional_law_declaration:
+  status: PEDAGOGICAL_REFERENCE_ONLY (NO_LONGER_FROZEN_CORE)
+  preamble: >
+    Three Fundamental Laws and Four Constitutional Axioms are RETAINED for
+    PEDAGOGICAL and ENGINEERING REFERENCE use, but are EXPLICITLY NOT the
+    frozen irreducible core. The ACTUAL frozen core is the Three Constitutional
+    Predicates + Constitutional Validity conjunction (frozen in CC-001).
+    Laws/Axioms are a human-readable framing DERIVED from those predicates.
+    This aligns EOS with the scientific paradigm: predicates with truth-values
+    are falsifiable; "laws" and "axioms" are pedagogical framing.
+  three_laws_derivation_from_predicates:
+    LAW_I_AUTHORITY:
+      derived_from: "Predicate A — Legitimate(x)"
+      covers_terms:
+        - TERM-CONSTITUTION
+        - TERM-AUTHORITYREL
+        - TERM-AUTHORITY-GRAPH (DERIVED materialization)
+        - TERM-IA17 (PRED_A sub-component)
+      pedagogical_note: "Law I = Predicate A domain re-stated for human communication. NOT additional constraint."
+    LAW_II_MEANING:
+      derived_from: "Predicate B — MeaningPreserved(T)"
+      covers_terms:
+        - TERM-CANONICAL-IDENTITY (FUNDAMENTAL)
+        - TERM-SEMANTICREL
+        - TERM-TRANSFORMATION-CONTRACT (FUNDAMENTAL)
+        - TERM-CANONICAL-FORM (DERIVED concretization)
+        - TERM-KNOWLEDGE-GRAPH (DERIVED materialization)
+      pedagogical_note: "Law II = Predicate B domain re-stated for human communication. NOT additional constraint."
+    LAW_III_REALIZATION:
+      derived_from: "Predicate C — Provable(T) + Strategy/Semantics separation pattern"
+      covers_terms:
+        - TERM-TRANSFORMATION
+        - TERM-TRANSFORMATION-SEMANTICS (FUNDAMENTAL frozen)
+        - TERM-TRANSFORMATION-STRATEGY (FUNGIBLE implementation)
+        - TERM-EXECUTION-SYSTEM (fungible materialization)
+        - TERM-CONSTITUTIONAL-PROOF (DERIVED witness tuple)
+        - TERM-EVIDENCE / TERM-ASSESSMENT / TERM-JUSTIFICATION / TERM-VERDICT
+        - TERM-LEDGER (DERIVED storage)
+      pedagogical_note: "Law III = Predicate C + TransformationContract framed as 'realization'. NOT additional constraint."
+  four_axioms_derivation_from_predicates:
+    AXIOM_A_AUTHORITY: "≡ Predicate A — engineering operational form"
+    AXIOM_B_MEANING: "≡ Predicate B — engineering operational form"
+    AXIOM_C_REALIZATION: "≡ Predicates B+C combined at transformation boundary"
+    AXIOM_D_PROOF: "≡ Predicate C + Verdict-dependency chain (derived infrastructure)"
+
+dual_primary_relations_terminology:
+  status: FUNDAMENTAL_NORMATIVE (RELATION_SETS_ARE_FROZEN — GRAPHS_ARE_DERIVED)
+  preamble: >
+    FROZEN FUNDAMENTALS are the RELATION SETS (AuthorityRel / SemanticRel).
+    The "Dual Primary Graphs" are ONE engineering materialization of those
+    relation sets. Future epochs MAY replace both graphs entirely with
+    different data structures (RDF, SQL, binary index, Git DAG, etc.)
+    provided the relation instances evaluate to identical truth values
+    under Legitimate(x) / MeaningPreserved(T) predicates.
+  authority_relation_set:
+    term_id: TERM-AUTHORITYREL
+    normative_term: AuthorityRel Relation Set
+    fundamental_frozen: "YES — CC-001 §3 — CANNOT be changed without CC-001 Charter Revision"
+    graph_materialization: "TERM-AUTHORITY-GRAPH = ONE possible materialization"
+  semantic_relation_set:
+    term_id: TERM-SEMANTICREL
+    normative_term: SemanticRel Relation Set
+    fundamental_frozen: "YES — CC-001 §4 — CANNOT be changed without CC-001 Charter Revision"
+    graph_materialization: "TERM-KNOWLEDGE-GRAPH = ONE possible materialization"
+  dual_graphs_reference_only:
+    status: RETAINED_AS_ENGINEERING_VIEW (NOT_FUNDAMENTAL)
+    authority_graph:
+      term_id: TERM-AUTHORITY-GRAPH
+      definition: "ENGINEERING materialization of AuthorityRel. Nodes = artifacts/actors. Edges = AuthorityRel instances. Graph data structure = fungible choice; NOT frozen. IA-15 separation (AuthorityRel / SemanticRel disjoint) REMAINS frozen as a structural corollary of Predicate A vs Predicate B independence."
+    knowledge_graph:
+      term_id: TERM-KNOWLEDGE-GRAPH
+      definition: "ENGINEERING materialization of SemanticRel. Nodes = semantic objects. Edges = SemanticRel instances. Graph data structure = fungible choice; NOT frozen. IA-15 disjointness REMAINS frozen as predicate separation corollary."
+
+normative_semantic_changes_inventory:
+  - change_id: SEM-001-IA13-RENAME
+    previous_invariant: IA-13 Stable Intermediate Representations
+    normative_invariant: IA-13 Stable Canonical Representations
+    deprecated_alias_mapping: "IR → Representation / Canonical Representation / Rep. Concrete aliases: KIR→K-REP; DIR→D-REP; EXEC-IR→X-REP; EPG→subsumed under V-REP evidence-provenance subgraph."
+    backwards_compatible: true
+    superseded_by: SEM-005-CANONICAL-FORM
+    note: "SEM-001 now intermediate step. SEM-005 is the normative rename to Canonical Form with full independence assertion."
+    gate_cutover: "TF-1 activation → Gate-D deprecation warning, Gate-E enforced"
+  - change_id: SEM-002-IA14-RENAME
+    previous_invariant: IA-14 Pure Compiler Passes
+    normative_invariant: IA-14 Pure Transformations
+    deprecated_alias_mapping: "Compiler Pass → Transformation. Pass purity class retained under Transformation purity class."
+    backwards_compatible: true
+  - change_id: SEM-003-RUNTIME
+    previous_term: Runtime
+    normative_term: Execution System
+    deprecated_alias_mapping: "runtime package name preserved for Sprint-0; architectural documentation MUST use Execution System as primary term."
+    backwards_compatible: true
+  - change_id: SEM-004-EVIDENCE-VERDICT
+    previous_layers: Evidence → Assessment → Justification (3 layers)
+    normative_layers: Evidence → Assessment → Justification → Verdict (4 layers)
+    deprecated_alias_mapping: "Repository PASS/FAIL = Verdict, not Assessment."
+    backwards_compatible: false
+    cutover: "Gate-D mandatory. All certification gates read Verdict, not Assessment directly."
+  - change_id: SEM-005-CANONICAL-FORM
+    previous_term: Canonical Representation
+    normative_term: Canonical Form
+    deprecated_alias_mapping: "Canonical Representation, Intermediate Representation, IR, KIR, DIR, EIR → deprecated aliases of Canonical Form subclasses (K-FORM, D-FORM, X-FORM, V-FORM). Full mapping in enterprise/constitution/lexicon.yaml."
+    backwards_compatible: true
+    rationale: "Canonical Form asserts additional invariant: independence from serialization, transport, storage, AND execution technology. Former 'Representation' only asserted transport+implementation agnosticism; now asserted also storage format and execution runtime."
+    authoritative_ref: IA-13 revised anchor IA-13-STABLE-CANONICAL-FORMS + Axiom B
+    gate_cutover: "Gate C interim: deprecated_alias tags required. Gate D full terminology use. Gate E legacy terms error-level rejection."
+  - change_id: SEM-006-SEMANTICS-STRATEGY
+    previous_monolith: Transformation (semantics + strategy in one artifact)
+    normative_split: "Transformation Semantics × Transformation Strategy — two separate artifacts per transformation"
+    deprecated_alias_mapping: "Transformation Contract codifies Semantics; transformation implementation code is one Strategy."
+    backwards_compatible: false
+    cutover: "Gate D P2. Every T002..T005 MUST have explicit TS-xxx Semantics artifact + STRAT-xxx Strategy artifact."
+    authoritative_ref: IA-16 Transformation Semantics × Strategy Separation + Axiom C
+  - change_id: SEM-007-CONSTITUTIONAL-PROOF-THREE-SUB
+    previous_concept: "Proof = single trace or hash chain (monolithic)"
+    normative_definition: "Constitutional Proof = 3 Sub-Proofs: (1) Authority Preservation, (2) Semantic Preservation, (3) Transformation Correctness. Composite ID = CP-<auth>-<sem>-<corr>."
+    backwards_compatible: false
+    cutover: "Gate D full. Every transformation run emits all 3 sub-proofs + composite ID. Gate C monolithic proofs accepted as Correctness-sub-only with Authority+Semantic sub-proofs waived retroactively for T001."
+    authoritative_ref: IA-18 Constitutional Proof + Axiom D
+  - change_id: SEM-008-DUAL-PRIMARY-GRAPHS
+    previous_model: "Single Canonical Object Graph mixing authority and semantic edges"
+    normative_model: "Two strictly separated graphs: Authority Graph (Law I/Axiom A) × Knowledge Graph (Law II/Axiom B). Edge sets pairwise disjoint."
+    backwards_compatible: false
+    cutover: "Gate D P1. All edge declarations MUST declare graph_class. Mixed-class edges = Gate-D Declined."
+    authoritative_ref: IA-15 Dual Primary Graphs + Axioms A & B
+
+ia17_constitution_preservation_covering_cases:
+  - case_id: PLANNER
+    covers_predicates: [PRED_A, PRED_B, PRED_C]
+    covered_by: IA-17 — Planner SHALL preserve Legitimate (no invented candidate semantics), MeaningPreserved (Decision CanonicalIdentity ≡ Interpretation closure), AND Provable (preference rationale evidence sufficient).
+  - case_id: COMPILER
+    covers_predicates: [PRED_A, PRED_B, PRED_C]
+    covered_by: IA-17 — Compiler SHALL preserve authority_monotonicity, CanonicalIdentity equivalence, AND emit evidence ⊢ Postconditions(TransformationContract).
+  - case_id: OPTIMIZER
+    covers_predicates: [PRED_A, PRED_B, PRED_C]
+    covered_by: IA-17 — Reordering SHALL NOT cross authority_level boundaries; Semantic Determinism maintained; optimization PASS requires correctness evidence.
+  - case_id: AI_PLANNER
+    covers_predicates: [PRED_A, PRED_B, PRED_C]
+    covered_by: IA-17 — Each decision traceable via AuthorityRel edges; proposal CanonicalIdentity well-defined semantically; every candidate carries provenance sufficient for re-verification.
+  - case_id: CACHE
+    covers_predicates: [PRED_A, PRED_B, PRED_C]
+    covered_by: IA-17 — Key derived only from CanonicalIdentity inputs (no stale AuthorityRel paths); semantic_equivalence re-checked on hit; cache hit/miss evidence preserved.
+  - case_id: INCREMENTAL_BUILD
+    covers_predicates: [PRED_A, PRED_B, PRED_C]
+    covered_by: IA-17 — Invalidations cascade on AuthorityRel changes, SemanticRel changes, AND Postcondition-relevant evidence changes. All three predicates.
+  - case_id: DISTRIBUTED_EXECUTION
+    covers_predicates: [PRED_A, PRED_B, PRED_C]
+    covered_by: IA-17 — No authority_gain across splits; combined output CanonicalIdentity ≡ single-run; combined evidence sufficient to reconstruct Postconditions(whole-run).
+
+normative_semantic_changes_predicate_model:
+  - change_id: SEM-009-PREDICATE-MODEL
+    status: NORMATIVE_ACTIVATED_SPRINT0
+    previous_model: "Three Laws + Four Axioms as irreducible frozen core (earlier EOS drafts pre-CC-001)"
+    normative_model: "Three Constitutional Predicates (Legitimate ∧ MeaningPreserved ∧ Provable) + Constitutional Validity = frozen irreducible core in CC-001"
+    backwards_compatible: true
+    derivation_proof: "Every law/axiom is a strict re-statement of predicate domain; NO new constraint introduced. Laws/Axioms are now PEDAGOGICAL_DERIVED subset, not core."
+    migration_schedule:
+      gate_c: "NO breaking impact. Existing T001 PASS proof: witness_C = existing proof; witness_A/witness_B waived with explicit GATEC-CP-WAIVER."
+      gate_d: "Full predicate-model enforcement. Every T002..T005 emits ⟨w_A, w_B, w_C⟩ witness tuple. Laws/Axioms may be cited in documentation but MUST be cross-referenced to predicate ID."
+      gate_e: "Repository Certification = IA-20 PASS = Predicate-model evaluation. Laws/Axioms = documentation appendix, not normative gate input."
+    authoritative_ref: CC-001 Constitutional Charter + IA-20 Constitutional Validity + AXIOMS.md (DERIVED stamp)
+    rationale: "Predicates have well-defined truth values and are falsifiable. Laws/Axioms are pedagogical framing without independent falsification semantics. Scientific rigor requires predicates as core."
+  - change_id: SEM-010-CONSTITUTION-PRESERVATION
+    status: NORMATIVE_ACTIVATED_SPRINT0
+    previous_invariant: "IA-17 Authority Preservation (PRED_A only). Semantic preservation covered under separate IA-11/IA-13; correctness under IA-14/IA-18."
+    normative_invariant: "IA-17 Constitution Preservation (PRED_A ∧ PRED_B ∧ PRED_C combined). ONE meta-invariant covers all three predicates for every transformation."
+    backwards_compatible: false
+    migration_schedule:
+      gate_c: "No structural impact. Invariant strengthening logical consequence of CC-001 predicate model."
+      gate_d: "All IA-17 checks = ARCH-36-CONSTITUTION-GAIN (supersedes legacy ARCH-36-AUTHORITY-GAIN). PRED_A/PRED_B/PRED_C all enforced."
+      gate_e: "Repository-wide IA-17 pass means ZERO violations across all three predicates on ANY transformation."
+    authoritative_ref: IA-17 Constitution Preservation anchor + ARCH-36-CONSTITUTION-GAIN enforcement
+    rationale: "A single meta-invariant for all three predicates avoids distributed-check errors where PRED_A passes but PRED_B silently drifts. CC-001 §6 demands one conjunction evaluation."
+
+arch_rule_generated_mapping:
+  new_rules_introduced:
+    - arch_rule_id: ARCH-35-TERM-DEPRECATION
+      generation: GENERATED
+      vgen_id: VGEN-TF1-TERM-DEPRECATION
+      source_statement_ref: TF-1 activation_schedule enforcement
+      violation_class: TERMINOLOGY_MISMATCH
+      enforcement_tier: "WARNING @ Gate-D, ERROR @ Gate-E"
+    - arch_rule_id: ARCH-36-CONSTITUTION-GAIN
+      generation: GENERATED
+      vgen_id: VGEN-IA17-CONSTITUTION-GAIN
+      supersedes: ARCH-36-AUTHORITY-GAIN (legacy — now PRED_A sub-check of this rule)
+      source_statement_ref: IA-17 (Constitution Preservation) + IA-20 (Constitutional Validity) + SEM-009 + SEM-010
+      violation_class: |
+        PRED_A_LEGITIMATE_BREACH | PRED_B_MEANING_BREACH | PRED_C_PROVABLE_BREACH |
+        AUTHORITY_GAIN_TYPE_ERROR | SEMANTIC_DRIFT_ERROR | EVIDENTIAL_GAP
+      enforcement_tier: "FATAL at all gates — ANY single predicate breach = IA-17 FAIL = Verdict FAIL"
+    - arch_rule_id: ARCH-37-IA15-DUAL-RELATIONS
+      generation: GENERATED
+      vgen_id: VGEN-IA15-DUAL-RELATION-SETS
+      supersedes: ARCH-37-IA15-DUAL-GRAPHS (renamed to reflect relation sets = fundamental, graphs = derived)
+      source_statement_ref: IA-15 (AuthorityRel ∩ SemanticRel = ∅ disjointness) + TERM-AUTHORITYREL + TERM-SEMANTICREL
+      violation_class: RELATION_CLASS_MIXTURE | AUTHORITYREL_DAG_CYCLE | RELATION_SET_INTERSECTION_NONEMPTY
+      enforcement_tier: "WARNING @ Gate-C, ERROR @ Gate-D, FATAL @ Gate-E"
+    - arch_rule_id: ARCH-38-IA16-SEMANTICS-STRATEGY
+      generation: GENERATED
+      vgen_id: VGEN-IA16-SEM-STRAT-SEPARATION
+      source_statement_ref: IA-16 + SEM-006 + TERM-TRANSFORMATION-CONTRACT
+      violation_class: CONTRACT_CONTAINS_STRATEGY_DETAIL | STRATEGY_WITHOUT_CONTRACT_REF | CONTRACT_FORBIDDEN_PATTERN_FOUND
+      enforcement_tier: "WARNING @ Gate-C, ERROR @ Gate-D"
+    - arch_rule_id: ARCH-39-IA18-WITNESS-TUPLE
+      generation: GENERATED
+      vgen_id: VGEN-IA18-CONSTITUTIONALPROOF-WITNESS-3TUPLE
+      supersedes: ARCH-39-IA18-CONSTITUTIONAL-PROOF (renamed to reflect witness-tuple not sub-proof model)
+      source_statement_ref: IA-18 (Witness Tuple ⟨w_A,w_B,w_C⟩) + CC-001 §6 + SEM-009
+      violation_class: MISSING_WITNESS | WITNESS_COMPOSITE_ORDER_VIOLATION | WITNESS_C_INSUFFICIENT_WITHOUT_AB
+      enforcement_tier: "WAIVED partial for T001 (witness_C only, GATEC-CP-WAIVER for w_A/w_B Gate-C), ERROR @ Gate-D, FATAL @ Gate-E"
+    - arch_rule_id: ARCH-40-IA19-LEXICON-GOVERNANCE
+      generation: GENERATED
+      vgen_id: VGEN-IA19-LEXICON-REGISTRY
+      source_statement_ref: IA-19 Constitutional Lexicon Registry + enterprise/constitution/lexicon.yaml
+      violation_class: UNREGISTERED_TERM | DEPRECATED_TERM_WITHOUT_WAIVER | TERM_STATUS_MISMATCH
+      enforcement_tier: "WARNING @ Gate-C, ERROR @ Gate-D"
+    - arch_rule_id: ARCH-41-IA20-CONSTITUTIONAL-VALIDITY
+      generation: GENERATED
+      vgen_id: VGEN-IA20-SOLE-EVALUATION-CRITERION
+      source_statement_ref: IA-20 Constitutional Validity (sole meta-invariant evaluation criterion) + CC-001 §6
+      violation_class: VALIDATION_NOT_REDUCIBLE_TO_PREDICATE_CONJUNCTION | MISSING_PREDICATE_WITNESS_FOR_GATE | IA20_VERDICT_MISMATCH_ARCHIVED_RESULT
+      enforcement_tier: "Gate-C WARNING (witness_A/witness_B waiver OK), Gate-D ERROR, Gate-E FATAL — every gate result must be reducible to Legitimate∧MeaningPreserved∧Provable"
+
+enforcement:
+  statements:
+    - "Predicates First: From TF-1 activation forward, EVERY EOS validation result MUST be reducible to ConstitutionallyValid(T) = Legitimate(T) ∧ MeaningPreserved(T) ∧ Provable(T). Non-reducible schemas = IA-20 rejected."
+    - "Witness Completeness: Every Verdict PASS SHALL reference a ConstitutionalProof composite ID whose ⟨w_A, w_B, w_C⟩ witness tuple is COMPLETE (all three justifications present) at Gate-D onwards. Gate-C allows w_A/w_B waivers only."
+    - "Relation Sets Frozen: AuthorityRel and SemanticRel are FUNDAMENTAL. Every edge in every implementation (graph or otherwise) MUST be an instance of one of these sets. The relation sets themselves cannot be extended without CC-001 Charter Revision."
+    - "CanonicalIdentity is Fundamental: Every semantic equality comparison MUST use CanonicalIdentity via SemanticEquivalence. Byte-level equality of Canonical Form concretizations is NEVER a substitute."
+    - "Normative Terminology: All EOS artifacts SHALL use TF-1 core_vocabulary_normative terms. Canonical Form ≠ CanonicalIdentity. Authority Graph ≠ AuthorityRel. Constitutional Proof ≠ Provable(T). Use correct terms per the predicate model."
+    - "All artifact authority.derived_from_chain entries MUST resolve to a TF-1 AUTHORITY-stage canonical source (PRED_A), CanonicalIdentity well-defined (PRED_B), AND Evidence(t,T) ⊢ Postconditions (PRED_C) BEFORE a VERDICT of PASS can be emitted. IA-20 is the ONLY gate."

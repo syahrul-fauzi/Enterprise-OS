@@ -1,0 +1,116 @@
+version: "1.0.0"
+manifest_id: GATE-C-REPRO-MANIFEST-001
+status: FROZEN
+gate: GATE-C
+
+experiment:
+  id: GATE-C
+  protocol_version: "1.0.0"
+  hypothesis_version: "1.0.0"
+
+specification_release:
+  release_id: GATE-C-SPEC-ALPHA-001
+  freeze_state: PARTIAL_FREEZE
+
+environment:
+  implementation: LANGUAGE_AGNOSTIC_SPECIFICATION
+  runtime: LANGUAGE_AGNOSTIC
+  platform: PORTABLE_REFERENCE_DATASET
+
+reference_dataset:
+  dataset_version: "1.0.0"
+  manifest_ref: specification/dataset/reference-dataset.yaml
+  archive_target: gate-c-reference-v1.zip
+  certification_level: LEVEL_1_REFERENCE
+
+oracle:
+  oracle_id: GATE-C-ORACLE-001
+  oracle_ref: specification/oracle/oracle.yaml
+  oracle_version: "1.0.0"
+  oracle_manifest_ref: specification/oracle/oracle-manifest.yaml
+  oracle_hash: PENDING_REFERENCE_DATASET_FREEZE
+
+truth_table:
+  truth_table_ref: specification/truth-table.yaml
+  truth_table_version: "1.0.0"
+  truth_table_hash: PENDING_REFERENCE_DATASET_FREEZE
+
+protocol:
+  protocol_ref: specification/protocol.yaml
+  protocol_version: "1.0.0"
+  protocol_hash: PENDING_REFERENCE_DATASET_FREEZE
+
+calibration:
+  calibration_report_ref: specification/calibration/calibration-report.yaml
+  oracle_certificate_ref: specification/calibration/oracle-certificate.yaml
+  witness_certificate_ref: specification/calibration/witness-certificate.yaml
+  dataset_certificate_ref: specification/calibration/dataset-certificate.yaml
+  kernel_status_ref: specification/manifests/kernel-status.yaml
+
+expected_contracts:
+  predicates_ref: specification/expected/predicates/document-predicates.yaml
+  evaluations_ref: specification/expected/evaluations/document-evaluations.yaml
+  expected_hash: PENDING_REFERENCE_DATASET_FREEZE
+
+schema_bundle:
+  schema_hash: PENDING_REFERENCE_DATASET_FREEZE
+  schema_refs:
+    - specification/schemas/calibration-report.schema.yaml
+    - specification/schemas/experiment.schema.yaml
+    - specification/schemas/evaluation.schema.yaml
+    - specification/schemas/instrument-certificate.schema.yaml
+    - specification/schemas/kernel-status.schema.yaml
+    - specification/schemas/oracle.schema.yaml
+    - specification/schemas/reproducibility-manifest.schema.yaml
+    - specification/schemas/run-manifest.schema.yaml
+    - specification/schemas/verdict.schema.yaml
+    - specification/schemas/witness-integrity.schema.yaml
+    - specification/schemas/witness.schema.yaml
+
+artifacts:
+  specification_hash: PENDING_REFERENCE_DATASET_FREEZE
+  fixture_hash: PENDING_REFERENCE_DATASET_FREEZE
+  oracle_hash: PENDING_REFERENCE_DATASET_FREEZE
+  schema_hash: PENDING_REFERENCE_DATASET_FREEZE
+
+execution:
+  started_at: SPECIFICATION_FREEZE_NOT_APPLICABLE
+  completed_at: SPECIFICATION_FREEZE_NOT_APPLICABLE
+  seed: NONE
+
+specification:
+  hypothesis: specification/hypothesis.yaml
+  protocol: specification/protocol.yaml
+  truth_table: specification/truth-table.yaml
+  schemas:
+    - specification/schemas/calibration-report.schema.yaml
+    - specification/schemas/experiment.schema.yaml
+    - specification/schemas/evaluation.schema.yaml
+    - specification/schemas/instrument-certificate.schema.yaml
+    - specification/schemas/kernel-status.schema.yaml
+    - specification/schemas/oracle.schema.yaml
+    - specification/schemas/reproducibility-manifest.schema.yaml
+    - specification/schemas/run-manifest.schema.yaml
+    - specification/schemas/verdict.schema.yaml
+    - specification/schemas/witness-integrity.schema.yaml
+    - specification/schemas/witness.schema.yaml
+  expected:
+    predicates: specification/expected/predicates/document-predicates.yaml
+    evaluations: specification/expected/evaluations/document-evaluations.yaml
+  signatures:
+    calibration_report: specification/calibration/calibration-report.yaml
+    dataset_certificate: specification/calibration/dataset-certificate.yaml
+    oracle_certificate: specification/calibration/oracle-certificate.yaml
+    oracle_manifest: specification/oracle/oracle-manifest.yaml
+    witness_certificate: specification/calibration/witness-certificate.yaml
+    witness_integrity: specification/witness-integrity.yaml
+    witness_bundle_layout: specification/manifests/witness-bundle-layout.yaml
+
+integrity:
+  manifest_hash: PENDING_REFERENCE_DATASET_FREEZE
+
+notes: >
+  This manifest is the immutable laboratory notebook for Gate C specification reproducibility. It binds the
+  experiment definition, oracle identity, reference dataset level, schema bundle, and integrity anchors into
+  one portable contract. Execution runs MUST reference this manifest rather than duplicating specification
+  identity inline.

@@ -1,0 +1,34 @@
+version: "1.0.0"
+status: FROZEN
+kind: WITNESS_BUNDLE_LAYOUT_CONTRACT
+witness_bundle_contract_id: GATE-C-WITNESS-BUNDLE-001
+scope: execution/runs/run-<NNN>/actual/witness/
+purpose: >
+  Defines the required execution-side layout and composite identification rules for witness bundles.
+  This contract does not define witness truth; it only defines how execution outputs are organized so the
+  Oracle can evaluate them deterministically.
+
+composite_id_scheme:
+  id_format: "CP-<unix_millis>-<w_A_id_8hex>-<w_B_id_8hex>-<w_C_id_8hex>"
+  generated_from:
+    - witness_A_id
+    - witness_B_id
+    - witness_C_id
+  atomicity_rule: >
+    The composite identifier and all three witness references MUST be written atomically within the same run.
+    Partial write = EXPERIMENT_CORRUPTED.
+
+required_layout:
+  authority_dir: execution/runs/run-<NNN>/actual/witness/authority/
+  meaning_dir: execution/runs/run-<NNN>/actual/witness/meaning/
+  proof_dir: execution/runs/run-<NNN>/actual/witness/proof/
+
+required_bundle_members:
+  - pred_a_legitimate
+  - pred_b_meaning_preserved
+  - pred_c_provable
+
+invariants:
+  - Witnesses SHALL be execution outputs, never expected artifacts.
+  - Witness form is fungible; witness location and replayability are normative.
+  - Oracle evaluation MUST consume the run-local bundle, not any predeclared witness.

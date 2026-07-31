@@ -1,0 +1,156 @@
+version: "1.0.0"
+status: PROPOSED
+kind: SCIENTIFIC_PROTOCOL
+protocol_id: GATE-C-PROTOCOL-01
+parent_hypothesis: GATE-C (hypothesis.yaml)
+specification_execution_boundary: >
+  specification/ defines immutable scientific inputs. execution/runs/run-<NNN>/ defines mutable
+  run-local observations, witnesses, evaluations, optional governance verdicts, logs, metrics, and reports.
+reusability_note: This protocol SHALL REMAIN UNCHANGED across Gate C → Gate D → Gate E → future epochs as long as CC-001 frozen predicate model is SSOT. Only experimental subjects (experiments/) vary.
+
+gate_structure:
+  gate_c0:
+    name: SCIENTIFIC_INSTRUMENT_CALIBRATION
+    theory_under_test: NONE
+    object_under_test:
+      - ORACLE
+      - WITNESS
+      - MANIFEST
+      - DATASET
+      - PROTOCOL
+    primary_artifact: specification/calibration/calibration-report.yaml
+    evidence_class: CLASS_I_CALIBRATION
+  gate_c1:
+    name: CONSTITUTIONAL_FALSIFICATION_EXPERIMENT
+    theory_under_test: CC-001
+    object_under_test:
+      - REFERENCE_WORKFLOW
+    precondition: Gate C1 MUST NOT execute unless calibration-report.yaml states overall.calibrated = true.
+    evidence_class: CLASS_II_EXPERIMENTAL
+  gate_e:
+    name: CROSS_RUNTIME_CONFORMANCE
+    theory_under_test: NONE
+    object_under_test:
+      - IMPLEMENTATION_SET
+    evidence_class: CLASS_III_CERTIFICATION
+
+evidence_classes:
+  CLASS_I_CALIBRATION: Calibration evidence for Oracle, Witness, Manifest, Dataset, and Protocol. Not valid as CC-001 corroboration evidence.
+  CLASS_II_EXPERIMENTAL: Scientific evidence gathered while testing CC-001 using calibrated instruments.
+  CLASS_III_CERTIFICATION: Conformance and cross-runtime certification evidence derived from replay against certified datasets.
+
+science_kernel_freeze_rule: >
+  Gate C0 is the final point at which the Science Kernel may be changed. After Gate C0 passes, the
+  Oracle, Witness contracts, Reproducibility Manifest, Dataset calibration, and Protocol SHALL be
+  treated as frozen measurement apparatus unless an instrument defect is demonstrated.
+kernel_epistemic_status_ref: specification/manifests/kernel-status.yaml
+
+calibration:
+  calibration_report_ref: specification/calibration/calibration-report.yaml
+  oracle_certificate_ref: specification/calibration/oracle-certificate.yaml
+  witness_certificate_ref: specification/calibration/witness-certificate.yaml
+  dataset_certificate_ref: specification/calibration/dataset-certificate.yaml
+  gate_c1_blocker: overall.calibrated = false
+  note: Calibration evidence SHALL remain epistemically separate from theory evidence.
+
+execution:
+  scope: GATE-C1_ONLY_AFTER_C0_PASS
+  phases:
+    - id: PHASE-01-PREPARE
+      name: Prepare Fixtures and Subjects
+      actions:
+        - "Load all fixtures (fixtures/documents/*.yaml, fixtures/policies/*.yaml, fixtures/contracts/*.yaml) as immutable data inputs."
+        - "Validate every experiment subject (experiments/**/*.yaml) against schemas/experiment.schema.yaml; FAIL FAST if any invalid."
+        - "Load specification/manifests/reproducibility-manifest.yaml and verify referenced immutable artifact set is internally complete."
+        - "Load specification/calibration/calibration-report.yaml and verify overall.calibrated = true before any Gate C1 execution begins."
+        - "Resolve canonical identity (LEX-0000G) of every input fixture; emit canonical_identity_sha256 for each."
+      invariant: "No transformation of fixture data during prepare phase; fixtures are SSOT data only."
+      predicate_boundary: "No predicate evaluation occurs here. PREPARE only ensures inputs satisfy preconditions for later predicate evaluation."
+
+    - id: PHASE-02-EXECUTE
+      name: Execute Each Experiment Subject
+      actions:
+        - "For every subject file experiments/<domain>/<op>.yaml: invoke the Transformation Strategy implementation corresponding to subject.operation (any Strategy permitted: Planner/LLM/Compiler/RuleEngine/Streaming/Distributed/Hybrid — Strategy fungibility per LEX-0000H × LEX-0041)."
+        - "Execution MUST NOT pass or fail the subject itself; it MUST only produce raw observations + candidate evidence."
+      constraint: "Strategy identity MUST be recorded but MUST NOT influence predicate evaluation result (fungibility requirement)."
+      predicate_boundary: "Strategy execution only produces candidate evidence; Predicate Provable not yet evaluated."
+
+    - id: PHASE-03-COLLECT
+      name: Collect Raw Evidence and Candidate Witnesses
+      actions:
+        - "For each executed experiment, emit three independent candidate witness artifacts:"
+        - "  witness_A (execution/runs/run-<NNN>/actual/witness/authority/): Justification that AuthorityRel closure holds over inputs+outputs of T."
+        - "  witness_B (execution/runs/run-<NNN>/actual/witness/meaning/): Justification that CanonicalIdentity(⊔inputs) = CanonicalIdentity(⊔outputs) and SemanticRel equivalence holds."
+        - "  witness_C (execution/runs/run-<NNN>/actual/witness/proof/): Justification that Evidence(t,T) constructively ⊢ Postconditions(T) for every execution t observed."
+        - "Append the three witness references ATOMICALLY within the current run; partial append = EXPERIMENT_CORRUPTION (IA-17 FAIL)."
+      witness_form_note: "Witness FORM is deliberately unconstrained (fungible: YAML/JWT/Merkle/GitHash/Signature/RDF/SQL/Prolog_trace — all valid). Only JUSTIFICATION POWER is normative per LEX-0050/LEX-0051/LEX-0052/LEX-0053."
+      predicate_boundary: "Witnesses collected but independence not yet tested."
+
+    - id: PHASE-04-EVALUATE
+      name: Evaluate Predicates and Constitutional Validity
+      actions:
+        - "Invoke the Oracle defined in oracle/oracle.yaml as evaluator-only over immutable specification inputs plus the current run's actual witness bundle."
+        - "Predicate A Legitimate(T): Evaluate LEX-0000A formal: AuthorityRoot exists ∧ AuthorityPath ⊆ AuthorityRel ∧ NoCycle. Use witness_A as JUSTIFICATION, not as oracle. Verifier MUST replay witness_A and arrive at same Boolean evaluation independently."
+        - "Predicate B MeaningPreserved(T): Evaluate LEX-0000B formal: CanonicalIdentity well-defined ∧ SemanticEquivalence(⊔inputs, ⊔outputs)=TRUE. Use witness_B. Verifier MUST independently confirm semantic equivalence."
+        - "Predicate C Provable(T): Evaluate LEX-0000C formal: ∀ t exec-of-T : Evidence(t,T) ⊢ Postconditions(T). Use witness_C. Verifier MUST independently check constructive entailment; no ex falso PASS allowed."
+        - "Constitutional Validity: IA-20(T) = Legitimate(T) ∧ MeaningPreserved(T) ∧ Provable(T). If ANY predicate = FALSE → IA-20(T)=FALSE."
+        - "Independence Test (REQUIRED): For each experiment, verify that removing ANY single witness (witness_A or witness_B or witness_C) ALONE changes evaluation from PASS → INCONCLUSIVE. If evaluation still PASS after removing a witness, independence FAILED → experiment INVALID."
+        - "Fungibility Test (RECOMMENDED Gate C; MANDATORY Gate D): Run ≥2 different Strategy implementations (e.g., Planner vs LLM) of identical Transformation Contract on identical fixtures. Confirm predicate evaluations IDENTICAL; if differ, fungibility FAILED."
+      truth_table_check: "Every evaluation emitted SHALL correspond to exactly one row in truth-table.yaml (8 possible rows; no 9th evaluation allowed)."
+
+    - id: PHASE-05-REPORT
+      name: Produce Scientific Report
+      actions:
+        - "Write execution/runs/run-<NNN>/report.yaml containing: run_id, date, predicate vector per subject, IA-20 evaluation per subject, truth-table row match status, independence test result, fungibility test result (if performed), witness_ids composite CP-<ms>-<wA8>-<wB8>-<wC8>."
+        - "Write execution/runs/run-<NNN>/metrics/ summary artifacts: aggregate counts of PASS/FAIL/INCONCLUSIVE per predicate, per truth-table row, per experimental domain."
+        - "Copy all raw evidence, logs, and emitted witness files into execution/runs/run-<NNN>/actual/, execution/runs/run-<NNN>/logs/, and execution/runs/run-<NNN>/metrics/ for reproducibility."
+        - "Write execution/runs/run-<NNN>/run-manifest.yaml with exact references to specification versions, oracle identity, strategy identities, and reproducibility manifest."
+        - "Write final determination: H0 REJECTED ⇔ ∀ rows of truth-table covered and NO falsification_condition from hypothesis.yaml H0 holds. H0 NOT REJECTED otherwise (INCONCLUSIVE if insufficient coverage)."
+      reproducibility_requirement: "Reports SHALL contain enough information for an independent verifier to re-run phases 1-4 on the same fixtures and arrive at identical IA-20 evaluations for every experiment."
+
+acceptance:
+  positive_cases:
+    rule: all_pass
+    definition: "Every experiment subject with truth-table.expected = TRUE (P1 row) SHALL EMIT IA-20 = TRUE. ZERO false negatives."
+  negative_cases:
+    rule: all_fail
+    definition: "Every experiment subject with truth-table.expected = FALSE (N1..N7 rows) SHALL EMIT IA-20 = FALSE. ZERO false positives."
+  truth_table:
+    rule: complete
+    definition: "ALL 8 rows (2³) of PRED_A × PRED_B × PRED_C SHALL be exercised by ≥1 experiment across the full experimental run. No truth-table row may be GAP."
+  independence:
+    rule: demonstrated
+    definition: "For every experiment with IA-20 PASS, perform the witness independence test (drop w_A/w_B/w_C singly). Each drop MUST force evaluation INCONCLUSIVE, not PASS."
+  invariance:
+    rule: demonstrated
+    definition: "IA-17 Constitution Preservation SHALL hold across ENTIRE pipeline. No authority gain, no meaning drift, no PASS without constructive entailment — checked as part of ARCH-36-CONSTITUTION-GAIN ACL rule against every experiment output artifact."
+  reproducibility:
+    rule: rerun_identical
+    definition: "Re-run of PREPARE→EXECUTE→COLLECT→EVALUATE on identical fixtures by different operator/toolchain SHALL produce identical predicate vectors + IA-20 evaluations for every experiment. Witness FORMS may differ (fungible); evaluations MUST match."
+
+evaluation_disposition:
+  PASS: "All predicates true; truth-table row matches; independence test passes; invariance passes."
+  FAIL: "≥1 predicate false OR truth-table row mismatch OR independence violated OR invariance violated."
+  INCONCLUSIVE: "≥1 predicate UNABLE TO BE EVALUATED (missing evidence, missing fixture, missing witness, ambiguous semantic equivalence). No PASS emitted on INCONCLUSIVE."
+  GAP: "Truth-table row not covered by any experiment. Protocol not yet complete until coverage is 8/8."
+
+exit_criteria:
+  gate_c0:
+    oracle: PASS
+    witness: PASS
+    dataset: PASS
+    overall: CALIBRATED_TRUE
+  gate_c1:
+    empirical_corroboration: PASS
+    interpretation: No falsification observed for CC-001 within the defined experimental space.
+  gate_e:
+    conformance: PASS
+    interpretation: Cross-runtime implementations replay the certified dataset and corroborate consistently.
+
+terminology_alignment:
+  authority_ref: LEX-0000A Predicate A Legitimate(x) + LEX-0000E AuthorityRel
+  meaning_ref: LEX-0000B Predicate B MeaningPreserved(T) + LEX-0000F SemanticRel + LEX-0000G Canonical Identity
+  proof_ref: LEX-0000C Predicate C Provable(T) + LEX-0000H Transformation Contract
+  validity_ref: LEX-0000D Constitutional Validity (IA-20)
+  witness_ref: LEX-0050 Constitutional Proof witness tuple ⟨w_A,w_B,w_C⟩
+  constitution_preservation_ref: LEX-0000I Constitution Preservation (IA-17)

@@ -1,0 +1,907 @@
+version: "1.0.0"
+status: ACTIVE
+kind: CONSTITUTIONAL_LEXICON_REGISTRY
+abbreviation: LEX
+registry_path: /root/Enterprise OS/enterprise/constitution/lexicon.yaml
+ssot_note: SINGLE SOURCE OF TRUTH for all canonical EOS terminology. Every EOS artifact that introduces or uses a term that appears in EOS governance, canonical forms, contracts, or architectural invariants MUST have its canonical entry here. Tooling SHALL use this registry at Constitutional Verifier CV-STAGE-5 (LEX_SCAN) to reject unregistered terms, warn on deprecated aliases, and perform automatic term migration across epochs. Canonical terms are themselves CONSTITUTIONAL ARTIFACTS subject to PASAL 8 GB > GC filter and Evolution Domain A governance.
+authoritative_ref:
+  - IA-19 Constitutional Lexicon Registry (INVARIANT-ARCHITECTURE.yaml)
+  - SEM-005 + SEM-006 + SEM-007 + SEM-008 (TERMINOLOGY-FREEZE-TF1.yaml)
+  - Axiom A (Authority): Lexicon terms derive authority from this registry.
+  - Axiom B (Meaning): Canonical terms are the meaning-vocabulary of EOS Canonical Forms.
+lifecycle_model:
+  states: [PROPOSED, ACTIVE, DEPRECATED, RETIRED, REJECTED]
+  transitions:
+    PROPOSED:  [ACTIVE, REJECTED]
+    ACTIVE:    [DEPRECATED]
+    DEPRECATED: [RETIRED]
+    RETIRED:   []
+    REJECTED:  []
+  retention_policy:
+    DEPRECATED: "retained indefinitely with alias field pointing to replacement; tooling emits WARNING."
+    RETIRED:    "entry retained with historical status=RETIRED; tooling emits ERROR if used as primary term."
+
+canonical_terms:
+
+  # ============================================================
+  # FUNDAMENTAL CONSTITUTIONAL PREDICATE MODEL (CC-001 FROZEN CORE)
+  # Irreducible core. Falsifiable Boolean predicates. One-decade horizon 2026–2036.
+  # ============================================================
+
+  - term_id: LEX-0000
+    canonical_term: Constitutional Predicate Model
+    definition: >
+      THE IRREDUCIBLE FROZEN CORE of EOS (CC-001, one-decade horizon 2026–2036).
+      NOT laws, NOT axioms — THREE FALSIFIABLE BOOLEAN PREDICATES + conjunction meta-predicate.
+      Every architectural transformation SHALL be evaluated solely through:
+        Predicate A: Legitimate(x)       — artifact authority chain is valid?
+        Predicate B: MeaningPreserved(T) — semantic equivalence across T holds?
+        Predicate C: Provable(T)         — evidence ⊢ postconditions of T?
+      Constitutional Validity = Legitimate(T) ∧ MeaningPreserved(T) ∧ Provable(T).
+      CC-001 §9 SCIENTIFIC METHOD: This model is a FALSIFIABLE HYPOTHESIS.
+      Gate C/D/E evidence either CORROBORATES (all PASS reducible to ∧{A,B,C}) or FALSIFIES it.
+      ALL other EOS concepts (Laws, Axioms, Graphs, Canonical Form, Proof, Planner, Runtime, Ledger)
+      are STRICTLY DERIVED engineering mechanisms — NOT independently constitutional.
+    authority_source: CC-001-CONSTITUTIONAL-CHARTER.md (FROZEN_FOR_ONE_DECADE_HORIZON) §2 Predicate Model + §6 Constitutional Validity + §9 Scientific Method
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Three Constitutional Predicates (EOS Frozen Core)
+      - Predicate Core (EOS)
+      - CC-001 Irreducible Core
+    epistemological_status: FALSIFIABLE_CONSTITUTIONAL_HYPOTHESIS
+    frozen_scope: [Predicate A, Predicate B, Predicate C, Constitutional Validity Conjunction]
+    derived_concepts: [Three Fundamental Laws, Four Constitutional Axioms, Authority Graph, Knowledge Graph, Canonical Form, Constitutional Proof, All IA-xx Invariants]
+
+  - term_id: LEX-0000A
+    canonical_term: Predicate A — Legitimate(x)
+    definition: >
+      CONSTITUTIONAL PREDICATE A (CC-001 §3). Boolean function: Artifact → {TRUE, FALSE}.
+      Answers: "Apakah artefak x memiliki rantai legitimasi yang sah?" (Does x have a valid authority chain?).
+      Formal: Legitimate(x) ⇔ AuthorityRoot(x) exists ∧ AuthorityPath(x) ⊆ AuthorityRel ∧ NoCycle(AuthorityPath(x)).
+      AuthorityRel = {Authorizes, Delegates, Supersedes, Approves, DerivesAuthorityFrom, Ratifies, Amends, EpochBinds}
+      — this FROZEN relation set is fundamental; Authority Graph is ONE derived materialization.
+    authority_source: CC-001 §3 Predicate A + TERM-PRED-A-LEGITIMATE (TF1) + AuthorityRel frozen relation set
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Legitimate(x) (EOS Predicate A)
+      - Predikat A — Sah(x) (Bahasa Indonesia)
+    epistemological_status: FUNDAMENTAL_CONSTITUTIONAL_PREDICATE
+    frozen_relation_set: AuthorityRel
+    formal_signature: "Legitimate : Artifact → Boolean"
+
+  - term_id: LEX-0000B
+    canonical_term: Predicate B — MeaningPreserved(T)
+    definition: >
+      CONSTITUTIONAL PREDICATE B (CC-001 §4). Boolean function: Transformation → {TRUE, FALSE}.
+      Answers: "Apakah ekuivalensi makna terjaga lintas transformasi T?" (Is semantic equivalence preserved across T?).
+      Formal: MeaningPreserved(T) ⇔ CanonicalIdentity well-defined on inputs(T)/outputs(T) ∧
+              SemanticEquivalence(⊔inputs(T), ⊔outputs(T)) = TRUE.
+      What is tested: CANONICAL IDENTITY (abstract logical identity) + SEMANTIC EQUIVALENCE,
+      NOT representation (YAML/JSON/Proto/etc). SemanticRel = {DependsOn, Implements, Extends, Contains,
+      References, EquivalentTo, Specializes, Refines, Uses} FROZEN relation set is fundamental;
+      Knowledge Graph is ONE derived materialization.
+    authority_source: CC-001 §4 Predicate B + TERM-PRED-B-MEANINGPRESERVED (TF1) + CanonicalIdentity + SemanticRel
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - MeaningPreserved(T) (EOS Predicate B)
+      - Predikat B — MaknaTerjaga(T) (Bahasa Indonesia)
+    epistemological_status: FUNDAMENTAL_CONSTITUTIONAL_PREDICATE
+    frozen_relation_set: SemanticRel
+    formal_signature: "MeaningPreserved : Transformation → Boolean"
+    fundamental_concepts: [Canonical Identity, Semantic Equivalence, Transformation Contract]
+
+  - term_id: LEX-0000C
+    canonical_term: Predicate C — Provable(T)
+    definition: >
+      CONSTITUTIONAL PREDICATE C (CC-001 §5). Boolean function: Transformation → {TRUE, FALSE}.
+      Answers: "Apakah bukti cukup untuk membuktikan postcondition T?" (Is evidence sufficient to entail T's postconditions?).
+      STRONGER than "Proof": Proof is an artifact; Provable is a PROPERTY of the transformation.
+      Formal: Provable(T) ⇔ ∀ t ∈ executions(T) : Evidence(t,T) ⊢ Postconditions(T) ∧
+              ¬∃ evidential gap allowing ¬Postconditions(T) while Verdict PASS is emitted.
+      Example: Execution → Evidence → Assessment → Verdict flow is NOT automatically Provable=TRUE
+      if Evidence is insufficient to constructively entail Postconditions.
+    authority_source: CC-001 §5 Predicate C + TERM-PRED-C-PROVABLE (TF1)
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Provable(T) (EOS Predicate C)
+      - Predikat C — DapatDibuktikan(T) (Bahasa Indonesia)
+    epistemological_status: FUNDAMENTAL_CONSTITUTIONAL_PREDICATE
+    formal_signature: "Provable : Transformation → Boolean"
+    formal_requirement: "Constructive entailment Evidence ⊢ Postconditions; no ex falso PASS."
+
+  - term_id: LEX-0000D
+    canonical_term: Constitutional Validity
+    definition: >
+      SOLE EVALUATION CRITERION (IA-20 Constitutional Validity meta-invariant).
+      ConstitutionallyValid(T) ⇔ Legitimate(T) ∧ MeaningPreserved(T) ∧ Provable(T).
+      ONE meta-predicate that SUBSUMES ALL other IA-xx invariants (IA-01..IA-19 are derived engineering
+      mechanisms for making IA-20 computable). Gate Certification PASS ⇔ IA-20 verdict = TRUE.
+      Verdict PASS SHALL NEVER be emitted unless ConstitutionallyValid(T)=TRUE.
+    authority_source: CC-001 §6 Constitutional Validity + IA-20-CONSTITUTIONAL-VALIDITY (INVARIANT-ARCHITECTURE.yaml)
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - ConstitutionallyValid(T)
+      - IA-20 Sole Evaluation Criterion
+      - Validitas Konstitusional (Bahasa Indonesia)
+    epistemological_status: SOLE_META_INVARIANT
+    formal_definition: "ConstitutionallyValid : Transformation → Boolean; ConstitutionallyValid(T) = Legitimate(T) ∧ MeaningPreserved(T) ∧ Provable(T)"
+    gate_certification_rule: "ConstitutionalPass(T) ⇔ IA-20(T) = TRUE"
+
+  - term_id: LEX-0000E
+    canonical_term: AuthorityRel Relation Set
+    definition: >
+      FUNDAMENTAL (not Authority Graph). FROZEN normative relation set for Predicate A (Legitimate).
+      AuthorityRel = {Authorizes, Delegates, Supersedes, Approves, DerivesAuthorityFrom, Ratifies, Amends, EpochBinds}.
+      These RELATIONS are frozen; the data structure used to materialize them (Authority Graph, RDF,
+      Neo4j, Git DAG, SQL, YAML, Binary Index, Prolog facts) is a DERIVED implementation choice —
+      interchangeable without constitutional consequence, provided Legitimate(x) verdict is preserved.
+      IA-15 "Dual Graphs" = DERIVED engineering reference implementation, NOT fundamental.
+    authority_source: CC-001 §3 Predicate A AuthorityRel frozen + TERM-AUTHORITYREL (TF1)
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Authority Relations (EOS Frozen Set)
+      - OtoritasRel Himpunan Relasi (Bahasa Indonesia)
+    epistemological_status: FUNDAMENTAL_FROZEN_RELATION_SET
+    frozen_relations: [Authorizes, Delegates, Supersedes, Approves, DerivesAuthorityFrom, Ratifies, Amends, EpochBinds]
+    derived_materializations: [Authority Graph, RDF store, Neo4j model, SQL closure table, Git DAG, Prolog facts]
+
+  - term_id: LEX-0000F
+    canonical_term: SemanticRel Relation Set
+    definition: >
+      FUNDAMENTAL (not Knowledge Graph). FROZEN normative relation set for Predicate B (MeaningPreserved).
+      SemanticRel = {DependsOn, Implements, Extends, Contains, References, EquivalentTo, Specializes, Refines, Uses}.
+      These RELATIONS are frozen; the data structure used to materialize them (Knowledge Graph, RDF,
+      Neo4j, SQL, OWL ontology, JSON-LD, Prolog facts) is a DERIVED implementation choice —
+      interchangeable without constitutional consequence, provided MeaningPreserved(T) verdict is preserved.
+    authority_source: CC-001 §4 Predicate B SemanticRel frozen + TERM-SEMANTICREL (TF1)
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Semantic Relations (EOS Frozen Set)
+      - SemantikRel Himpunan Relasi (Bahasa Indonesia)
+    epistemological_status: FUNDAMENTAL_FROZEN_RELATION_SET
+    frozen_relations: [DependsOn, Implements, Extends, Contains, References, EquivalentTo, Specializes, Refines, Uses]
+    derived_materializations: [Knowledge Graph, RDF store, OWL ontology, SQL closure table, JSON-LD, Prolog facts]
+
+  - term_id: LEX-0000G
+    canonical_term: Canonical Identity
+    definition: >
+      FUNDAMENTAL (not Canonical Form). Abstract logical identity of an EOS artifact's normative meaning.
+      Canonical Identity REMAINS IDENTICAL across YAML → JSON → Proto → Binary → SQL record →
+      memory object → graph node → event stream concretizations. Canonical Form (LEX-0030) is ONE
+      DERIVED CONCRETIZATION of Canonical Identity. Predicate B MeaningPreserved tests Canonical Identity
+      equivalence, NOT representational byte-equality. Analogy: ISBN = Canonical Identity of a book;
+      hardcover/paperback/pdf = Canonical Forms (concretizations).
+    authority_source: CC-001 §4 Predicate B Canonical Identity + TERM-CANONICAL-IDENTITY (TF1)
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Identitas Kanonik (Bahasa Indonesia)
+      - Canonical Logical Identity
+    epistemological_status: FUNDAMENTAL_ABSTRACT_IDENTITY
+    predicate_binding: "Predicate B MeaningPreserved(T) requires CanonicalIdentity to be well-defined on all inputs and outputs of T"
+    derived_concretizations: [Canonical Form, YAML, JSON, Binary, ProtoBuf, Database record, Memory object, Graph node, Event stream]
+
+  - term_id: LEX-0000H
+    canonical_term: Transformation Contract
+    definition: >
+      FUNDAMENTAL (not Transformation Semantics). Frozen normative contract tuple for a transformation.
+      TransformationContract = ⟨InputSigs, OutputSigs, Preconditions, Postconditions, Invariants⟩.
+      CONTAINS NO algorithm, NO scheduler, NO optimizer details, NO strategy — JUST the declarative
+      input/output/pre/post/invariant contract. Pattern analogous to: SQL Standard = Transformation Contract
+      (frozen), Query Optimizer = Transformation Strategy (fungible: PostgreSQL/MySQL/DuckDB/etc).
+      Transformation Semantics (LEX-0040) is a DERIVED machine-readable codification of this contract.
+    authority_source: CC-001 §4 Predicate B Transformation Contract + TERM-TRANSFORMATION-CONTRACT (TF1)
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Kontrak Transformasi (Bahasa Indonesia)
+      - Semantic Contract (EOS)
+    epistemological_status: FUNDAMENTAL_DECLARATIVE_CONTRACT
+    formal_tuple: "TransformationContract = ⟨InputSigs, OutputSigs, Preconditions, Postconditions, Invariants⟩"
+    sql_optimizer_analogy: "Transformation Contract (SQL Standard, frozen) × Transformation Strategy (Optimizer, fungible)"
+    derived_codifications: [Transformation Semantics]
+
+  - term_id: LEX-0000I
+    canonical_term: Constitution Preservation (IA-17)
+    definition: >
+      IA-17 META-INVARIANT (expanded from former "Authority Preservation" = PRED_A only).
+      Constitution Preservation ⇔ EVERY transformation through Planner/Compiler/Optimizer/AI_Planner/
+      Cache/Incremental/Distributed_Execution SHALL preserve ALL THREE constitutional predicates:
+      (a) ¬ introduce new authoritative semantics [¬Legitimate breach — PRED_A]
+      (b) ¬ alter normative meaning via CanonicalIdentity drift [¬MeaningPreserved breach — PRED_B]
+      (c) ¬ emit PASS without Evidence ⊢ Postconditions [¬Provable breach — PRED_C]
+      Former "IA-17 Authority Preservation" is now a SUB-COMPONENT (PRED_A leg only).
+    authority_source: IA-17-CONSTITUTION-PRESERVATION (INVARIANT-ARCHITECTURE.yaml §principle_17) + TERM-IA17 (TF1)
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - IA-17 Constitution Preservation
+      - Pelestarian Konstitusi IA-17 (Bahasa Indonesia)
+      - IA-17 Authority Preservation (deprecated former name — now PRED_A sub-component only)
+    epistemological_status: DERIVED_ENGINEERING_META_INVARIANT
+    deprecated_aliases: ["IA-17 Authority Preservation (former name — PRED_A sub-component only)"]
+    predicate_breakdown:
+      PRED_A: "No new authority introduced (Legitimate chain preserved)"
+      PRED_B: "No CanonicalIdentity drift (MeaningPreserved equivalence holds)"
+      PRED_C: "No PASS without constructive entailment (Provable witness exists)"
+    covering_cases: [PLANNER, COMPILER, OPTIMIZER, AI_PLANNER, CACHE, INCREMENTAL, DISTRIBUTED_EXECUTION]
+
+  # ============================================================
+  # THREE FUNDAMENTAL LAWS (LAW I / LAW II / LAW III)
+  # DERIVED PEDAGOGICAL FRAMEWORK — NOT constitutional core.
+  # Derived from Three Constitutional Predicates (LEX-0000).
+  # ============================================================
+
+  - term_id: LEX-0001
+    canonical_term: Three Fundamental Laws
+    definition: >
+      DERIVED PEDAGOGICAL FRAMEWORK — NOT the irreducible constitutional core.
+      Human-framed re-statement of the Three Constitutional Predicates (LEX-0000) for didactic clarity.
+      Law I = Predicate A (Legitimate) domain re-framed as "Authority Law".
+      Law II = Predicate B (MeaningPreserved) domain re-framed as "Meaning Law".
+      Law III = Predicate C (Provable) + conjunction re-framed as "Realization Law".
+      Six-Tier Constitutional Model remains valid as Engineering Reference Architecture (layout),
+      NOT as constitutional theory. Derivation: 3 Predicates → 3 Laws (human framing).
+    authority_source: AXIOMS.md §Constitutional-Theory-Three-Laws (DERIVED reference) + TERM-THREE-LAWS (TF1 status=PEDAGOGICAL_DERIVED)
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Three Laws (EOS)
+      - EOS Hukum Dasar (Bahasa Indonesia)
+      - Six-Tier Model (deprecated — retained as reference architecture only)
+    epistemological_status: PEDAGOGICAL_DERIVED_NOT_INDEPENDENTLY_FALSIFIABLE
+    derivation_chain: "Three Constitutional Predicates (LEX-0000 FROZEN CORE) → Three Fundamental Laws (human-framed didactic restatement, no additional constraints)"
+    predicate_mapping:
+      Law_I_Authority: "= Predicate A Legitimate(x) domain, re-framed for human readability"
+      Law_II_Meaning: "= Predicate B MeaningPreserved(T) domain, re-framed for human readability"
+      Law_III_Realization: "= Predicate C Provable(T) + IA-20 Constitutional Validity conjunction, re-framed as 'Realization'"
+
+  - term_id: LEX-0002
+    canonical_term: Law I — Authority
+    definition: >
+      DERIVED PEDAGOGICAL COROLLARY of Predicate A Legitimate(x) (LEX-0000A).
+      Human framing: "Mengapa artefak ini sah?" (Why is this artifact valid?).
+      Law I adds NO normative constraint beyond Predicate A + AuthorityRel (LEX-0000E).
+      Authority Graph = ONE derived materialization of AuthorityRel relations.
+      Scope: Constitution, Normative Law, Operational Law, Authority Graph, Approval, Delegation, Epoch, Lexicon.
+    authority_source: AXIOMS.md Law I + TERM-THREE-LAWS (TF1) Law_I_Authority mapping
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Hukum I Otoritas (Bahasa Indonesia)
+      - Authority Law (EOS)
+    epistemological_status: PEDAGOGICAL_DERIVED_COROLLARY
+    derivation_chain: "Predicate A Legitimate(x) (LEX-0000A FUNDAMENTAL) + AuthorityRel (LEX-0000E FROZEN) → Law I Authority (human framing)"
+    predicate_subsumes: LEX-0000A
+
+  - term_id: LEX-0003
+    canonical_term: Law II — Meaning
+    definition: >
+      DERIVED PEDAGOGICAL COROLLARY of Predicate B MeaningPreserved(T) (LEX-0000B).
+      Human framing: "Apa makna normatif artefak ini?" (What is its normative meaning?).
+      Law II adds NO normative constraint beyond Predicate B + Canonical Identity (LEX-0000G) +
+      SemanticRel (LEX-0000F) + Transformation Contract (LEX-0000H).
+      Knowledge Graph = ONE derived materialization of SemanticRel; Canonical Form = ONE derived concretization.
+    authority_source: AXIOMS.md Law II + TERM-THREE-LAWS (TF1) Law_II_Meaning mapping
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Hukum II Makna (Bahasa Indonesia)
+      - Meaning Law (EOS)
+    epistemological_status: PEDAGOGICAL_DERIVED_COROLLARY
+    derivation_chain: "Predicate B MeaningPreserved(T) (LEX-0000B FUNDAMENTAL) + CanonicalIdentity (LEX-0000G) + SemanticRel (LEX-0000F) → Law II Meaning (human framing)"
+    predicate_subsumes: LEX-0000B
+
+  - term_id: LEX-0004
+    canonical_term: Law III — Realization
+    definition: >
+      DERIVED PEDAGOGICAL COROLLARY of Predicate C Provable(T) (LEX-0000C) + Constitutional Validity conjunction
+      (LEX-0000D IA-20). Human framing: "Bagaimana makna diwujudkan menjadi tindakan yang dapat dibuktikan?"
+      (How is meaning realized into provable action?). Law III adds NO constraint beyond the three
+      predicates + their conjunction. Semantics × Strategy = application of Transformation Contract × Strategy pattern.
+    authority_source: AXIOMS.md Law III + TERM-THREE-LAWS (TF1) Law_III_Realization mapping
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Hukum III Realisasi (Bahasa Indonesia)
+      - Realization Law (EOS)
+    epistemological_status: PEDAGOGICAL_DERIVED_COROLLARY
+    derivation_chain: "Predicate C Provable(T) (LEX-0000C FUNDAMENTAL) + Constitutional Validity (LEX-0000D) → Law III Realization (human framing)"
+    predicate_subsumes: [LEX-0000C, LEX-0000D]
+
+  # ============================================================
+  # FOUR CONSTITUTIONAL AXIOMS (A / B / C / D)
+  # DERIVED ENGINEERING OPERATIONAL COROLLARIES — NOT frozen core.
+  # Derived from Three Constitutional Predicates (LEX-0000).
+  # ============================================================
+
+  - term_id: LEX-0010
+    canonical_term: Four Constitutional Axioms
+    definition: >
+      DERIVED ENGINEERING OPERATIONAL COROLLARIES — NOT the frozen constitutional core.
+      Engineering-level restatement of the Three Constitutional Predicates (LEX-0000) + IA-20
+      as four action-oriented corollaries for engineers. Axiom A = Pred A operationalization.
+      Axiom B = Pred B operationalization. Axiom C = (Pred A ∧ Pred B) strategy separation operationalization.
+      Axiom D = (Pred A ∧ Pred B ∧ Pred C) = IA-20 operationalization.
+      Derivation chain: 3 Predicates → Four Axioms (engineering corollaries) → IA-01..IA-20 invariants.
+    authority_source: AXIOMS.md (Superseded-By CC-001; operational derived reference) + TERM-FOUR-AXIOMS (TF1 status=ENGINEERING_DERIVED)
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Aksioma Konstitusional Empat (Bahasa Indonesia)
+      - EOS Frozen Core (A,B,C,D) [historical nomenclature — NO LONGER frozen core; use CC-001 Predicates]
+    epistemological_status: ENGINEERING_DERIVED_OPERATIONAL_COROLLARIES
+    derivation_chain: "Three Constitutional Predicates (LEX-0000 FROZEN CORE) → Four Constitutional Axioms (engineering operational corollaries for implementation guidance) → IA-01..IA-20 invariants (concrete computable checks)"
+
+  - term_id: LEX-0011
+    canonical_term: Axiom A — Authority
+    definition: >
+      DERIVED ENGINEERING COROLLARY of Predicate A Legitimate(x) (LEX-0000A).
+      Operational engineering restatement: "All legitimacy MUST originate from a traceable constitutional authority chain."
+      Adds NO new normative power beyond Predicate A + AuthorityRel. Concrete engineering implication:
+      every valid artifact SHALL resolve via AuthorityRel closure to the Constitutional Root; cycles = FATAL.
+    authority_source: AXIOMS.md Axiom A formal_statement block (derived reference)
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Aksioma A Otoritas (Bahasa Indonesia)
+    epistemological_status: ENGINEERING_DERIVED_COROLLARY
+    derivation_chain: "Predicate A Legitimate(x) (LEX-0000A FUNDAMENTAL) → Axiom A Authority (engineering restatement with concrete artifact implications)"
+    derived_invariants: [IA-15 Dual Relations, IA-17 Constitution Preservation PRED_A leg, Constitutional Proof witness A]
+
+  - term_id: LEX-0012
+    canonical_term: Axiom B — Meaning
+    definition: >
+      DERIVED ENGINEERING COROLLARY of Predicate B MeaningPreserved(T) (LEX-0000B).
+      Operational engineering restatement: "Normative meaning MUST be expressed in a Canonical Form that is
+      independent of representation and execution technology." Historical frame used Canonical Form;
+      CORRECT fundamental unit is Canonical Identity (LEX-0000G), with Canonical Form as ONE concretization.
+    authority_source: AXIOMS.md Axiom B formal_statement block (derived reference)
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Aksioma B Makna (Bahasa Indonesia)
+    epistemological_status: ENGINEERING_DERIVED_COROLLARY
+    derivation_chain: "Predicate B MeaningPreserved(T) (LEX-0000B FUNDAMENTAL) + Canonical Identity (LEX-0000G) → Axiom B Meaning (engineering restatement; note: historically phrased as Canonical Form — treat as concretization)"
+    derived_invariants: [IA-13 Stable Canonical Forms, IA-15 Dual Relations SemanticRel leg, Constitutional Proof witness B]
+
+  - term_id: LEX-0013
+    canonical_term: Axiom C — Realization
+    definition: >
+      DERIVED ENGINEERING COROLLARY of (Predicate A ∧ Predicate B) + Transformation Contract × Strategy pattern.
+      Operational engineering restatement: "Every transformation MUST preserve authority AND meaning regardless of
+      its implementation strategy." Concrete implication: Transformation Contract (LEX-0000H Pre/Post/Invariants)
+      is frozen; Transformation Strategy (Planner/LLM/Compiler/Streaming/Distributed) is interchangeable.
+      Analogy: SQL Standard frozen × Query Optimizer fungible.
+    authority_source: AXIOMS.md Axiom C formal_statement block (derived reference)
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Aksioma C Realisasi (Bahasa Indonesia)
+    epistemological_status: ENGINEERING_DERIVED_COROLLARY
+    derivation_chain: "(Predicate A Legitimate (LEX-0000A) ∧ Predicate B MeaningPreserved (LEX-0000B)) + Transformation Contract (LEX-0000H) × Strategy pattern → Axiom C Realization (engineering restatement)"
+    derived_invariants: [IA-14 Pure Transformations, IA-16 Semantics × Strategy, Constitutional Proof witness C execution leg]
+
+  - term_id: LEX-0014
+    canonical_term: Axiom D — Proof
+    definition: >
+      DERIVED ENGINEERING COROLLARY of Constitutional Validity conjunction (LEX-0000D IA-20 = A ∧ B ∧ C).
+      Operational engineering restatement: "Every Verdict MUST be provable via a Constitutional Proof that
+      connects the result back to its authority origin." Historically framed as "3 sub-proofs";
+      CORRECT framing: 3-witness tuple ⟨w_A, w_B, w_C⟩ justifying each predicate TRUE.
+      ConstitutionalProof(T) COMPLETE ⇔ ConstitutionallyValid(T) = TRUE.
+    authority_source: AXIOMS.md Axiom D formal_statement block (derived reference)
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Aksioma D Pembuktian (Bahasa Indonesia)
+    epistemological_status: ENGINEERING_DERIVED_COROLLARY
+    derivation_chain: "Constitutional Validity (LEX-0000D IA-20 = Legitimate ∧ MeaningPreserved ∧ Provable) → Axiom D Proof (engineering restatement as verdict-to-authority-chain requirement)"
+    derived_invariants: [IA-18 Constitutional Proof 3-witness tuple, Ledger atomic append, Verdict dependency chain]
+
+  # ============================================================
+  # DUAL PRIMARY GRAPHS (Authority Graph vs Knowledge Graph)
+  # DERIVED MATERIALIZATIONS — NOT FUNDAMENTAL.
+  # Graphs = ONE representation of FROZEN RELATION SETS (AuthorityRel / SemanticRel).
+  # ============================================================
+
+  - term_id: LEX-0020
+    canonical_term: Authority Graph
+    definition: >
+      DERIVED MATERIALIZATION — NOT a fundamental concept.
+      ONE concrete graph-class representation of the FROZEN AuthorityRel relation set (LEX-0000E).
+      graph_class=authority_graph; pairwise disjoint edge_kinds from Knowledge Graph (IA-15 check).
+      Answers: Why is this artifact valid? Nodes = authority-bearing artifacts.
+      Edges = AuthorityRel materialized as graph edges (Authorizes, Delegates, Supersedes, Approves,
+      DerivesAuthorityFrom, Ratifies, Amends, EpochBinds). STRICT DAG (no cycles = FATAL).
+      Other materializations of AuthorityRel (RDF, Neo4j, Git DAG, SQL closure table, Prolog facts)
+      are VALID and interchangeable, provided Legitimate(x) (LEX-0000A) verdict is preserved.
+    authority_source: IA-15 Dual Primary Relations (renamed from Dual Graphs) + authority-model.md + edge-taxonomy.md §1 + LEX-0000E AuthorityRel.
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Otoritas Graf (Bahasa Indonesia)
+      - Validation Graph (deprecated informal alias)
+    epistemological_status: DERIVED_MATERIALIZATION_OF_FUNDAMENTAL_RELATION_SET
+    derivation_chain: "AuthorityRel FROZEN relation set (LEX-0000E FUNDAMENTAL) → Authority Graph (ONE graph data structure materialization; interchangeable)"
+    relation_set_root: LEX-0000E
+    cross_ref_axiom: [A]
+    graph_class: authority_graph
+    alternative_materializations: [RDF store, Neo4j model, SQL closure table, Git DAG, Binary Index, Prolog facts, YAML explicit list]
+
+  - term_id: LEX-0021
+    canonical_term: Knowledge Graph
+    definition: >
+      DERIVED MATERIALIZATION — NOT a fundamental concept.
+      ONE concrete graph-class representation of the FROZEN SemanticRel relation set (LEX-0000F).
+      graph_class=knowledge_graph; pairwise disjoint edge_kinds from Authority Graph (IA-15 check).
+      Answers: What does this artifact mean semantically? Nodes = meaning-bearing EOS artifacts
+      (Canonical Forms concretizing Canonical Identity, Requirements, Policies, Ontologies, Terms, Contracts).
+      Edges = SemanticRel materialized as graph edges (DependsOn, Implements, Extends, Contains,
+      References, EquivalentTo, Specializes, Refines, Uses). DAG for non-symmetric;
+      symmetric 2-cycle allowed ONLY for EquivalentTo.
+      Other materializations of SemanticRel (RDF, OWL ontology, JSON-LD, Prolog facts, SQL)
+      are VALID and interchangeable, provided MeaningPreserved(T) (LEX-0000B) verdict is preserved.
+    authority_source: IA-15 Dual Primary Relations + edge-taxonomy.md §2 + LEX-0000F SemanticRel.
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Graf Pengetahuan (Bahasa Indonesia)
+      - Canonical Object Graph (partial deprecated alias — now split into Dual Relations)
+    epistemological_status: DERIVED_MATERIALIZATION_OF_FUNDAMENTAL_RELATION_SET
+    derivation_chain: "SemanticRel FROZEN relation set (LEX-0000F FUNDAMENTAL) → Knowledge Graph (ONE graph data structure materialization; interchangeable)"
+    relation_set_root: LEX-0000F
+    cross_ref_axiom: [B]
+    graph_class: knowledge_graph
+    alternative_materializations: [RDF store, OWL ontology, JSON-LD, SQL closure table, Prolog facts, Description Logic TBox]
+
+  # ============================================================
+  # CANONICAL FORM — DERIVED CONCRETIZATION OF CANONICAL IDENTITY
+  # ============================================================
+
+  - term_id: LEX-0030
+    canonical_term: Canonical Form
+    definition: >
+      DERIVED CONCRETIZATION — NOT a fundamental concept.
+      ONE concrete serialization-level concretization of FUNDAMENTAL Canonical Identity (LEX-0000G).
+      Historical framing: previously claimed as "sole logical identity"; CORRECT fundamental identity unit is
+      Canonical Identity (abstract logical ISBN-like identifier). Canonical Form is ONE physical form.
+      Canonical Form SHALL be independent of serialization, transport, storage, AND execution technology.
+      Multiple Canonical Forms (YAML / JSON / Binary / ProtoBuf / DB record / Memory Object / Graph Node / Event Stream)
+      ALL MAY realize the SAME Canonical Identity (identical abstract identity hash),
+      provided 8-way round-trip determinism is preserved per LEX-0000G derived_concretizations list.
+      Subclasses: K-FORM (Knowledge), D-FORM (Decision), X-FORM (Execution), V-FORM (Evidence).
+    authority_source: IA-13 Stable Canonical Forms (ARCH-22 anchor STABLE-CANONICAL-FORMS) + SEM-005 TF-1 + LEX-0000G Canonical Identity FUNDAMENTAL.
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Canonical Representation (deprecated — LEX-0031)
+      - Intermediate Representation (deprecated — LEX-0032)
+      - IR (acronym deprecated)
+      - Bentuk Kanonik (Bahasa Indonesia)
+    epistemological_status: DERIVED_CONCRETIZATION_OF_FUNDAMENTAL_ABSTRACT_IDENTITY
+    derivation_chain: "Canonical Identity (LEX-0000G FUNDAMENTAL abstract logical identity) → Canonical Form (ONE concretization; many forms share one identity)"
+    fundamental_identity_root: LEX-0000G
+    cross_ref_axiom: [B]
+    concretizations: [YAML, JSON, Binary, ProtoBuf, Database, MemoryObject, GraphNode, EventStream]
+    subclasses: [K-FORM, D-FORM, X-FORM, V-FORM]
+
+  - term_id: LEX-0031
+    canonical_term: Canonical Representation (DEPRECATED)
+    definition: >
+      DEPRECATED legacy term. Former normative: "A transport- and implementation-agnostic encoding
+      of an EOS artifact." Superseded by Canonical Form (LEX-0030), which additionally asserts
+      full independence from serialization, storage, and execution technology, not merely transport.
+      Retained here for historical term-migration path (SEM-005).
+    authority_source: Former IA-13 Stable Canonical Representations (superseded) + SEM-001 + SEM-005.
+    epoch: Sprint0
+    status: DEPRECATED
+    replacement: LEX-0030 (Canonical Form)
+    aliases:
+      - Stable Representation (informal legacy)
+    cross_ref_axiom: [B]
+    migration_schedule:
+      warning_gate: Gate-C (pre-migration window)
+      enforced_error_gate: Gate-D
+      fatal_gate: Gate-E
+
+  - term_id: LEX-0032
+    canonical_term: Intermediate Representation (DEPRECATED)
+    definition: >
+      DOUBLE-DEPRECATED. Superseded first by Canonical Representation (LEX-0031, now also DEPRECATED),
+      then by Canonical Form (LEX-0030). Retained solely for automatic old-doc tooling migration scan.
+      Use in new artifacts = Gate-D ERROR (TERMINOLOGY_MISMATCH).
+    authority_source: Former Baseline v1.4 terminology (pre TF-1).
+    epoch: PreSprint0
+    status: DEPRECATED
+    replacement: LEX-0030 (Canonical Form)
+    aliases:
+      - IR (acronym deprecated)
+    cross_ref_axiom: [B]
+    migration_schedule:
+      warning_gate: Gate-C
+      enforced_error_gate: Gate-D
+      fatal_gate: Gate-E
+
+  # ============================================================
+  # TRANSFORMATION CONTRACT × STRATEGY (SEM-006 IA-16)
+  # FUNDAMENTAL = Transformation Contract (LEX-0000H)
+  # DERIVED = Transformation Semantics (machine-readable codification)
+  # ============================================================
+
+  - term_id: LEX-0040
+    canonical_term: Transformation Semantics
+    definition: >
+      DERIVED MACHINE-READABLE CODIFICATION — NOT fundamental.
+      Concrete syntax / schema codification of the FUNDAMENTAL Transformation Contract (LEX-0000H).
+      Transformation Contract = ⟨InputSigs, OutputSigs, Preconditions, Postconditions, Invariants⟩
+      (pure declarative tuple, no algorithm, no strategy). Transformation Semantics = one machine-readable
+      format (e.g. YAML schema, OpenAPI contract, Protobuf service + assertions) that ENCODES this tuple.
+      Technology-agnostic and implementation-oblivious. Analogous to: SQL Standard document = Transformation
+      Contract; SQL BNF grammar + ISO/IEC 9075 machine spec = Transformation Semantics codification.
+      Strategy (Planner/LLM/Compiler/etc) implements CONTRACT, not merely the codified Semantics schema.
+      Paired 1-to-many with Transformation Strategy artifacts.
+    authority_source: IA-16 Semantics × Strategy separation + SEM-006 + LEX-0000H Transformation Contract FUNDAMENTAL.
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Semantika Transformasi (Bahasa Indonesia)
+      - Transformation Contract Codification (exact framing)
+    epistemological_status: DERIVED_CODIFICATION_OF_FUNDAMENTAL_CONTRACT
+    derivation_chain: "Transformation Contract (LEX-0000H FUNDAMENTAL declarative ⟨In/Out/Pre/Post/Invariants⟩) → Transformation Semantics (one machine-readable schema/syntax codification; interchangeable codifications allowed)"
+    fundamental_contract_root: LEX-0000H
+    cross_ref_axiom: [C]
+    forbidden_patterns: [algorithm, programming_language, scheduler, optimizer_details, cost_model]
+    paired_with: LEX-0041 Transformation Strategy
+
+  - term_id: LEX-0041
+    canonical_term: Transformation Strategy
+    definition: >
+      FUNGIBLE IMPLEMENTATION — paired with FUNDAMENTAL Transformation Contract (LEX-0000H).
+      Interchangeable execution of a Transformation Contract (via its Transformation Semantics codification).
+      Strategy kinds enum: PLANNER, SAT_SOLVER, RULE_ENGINE, LLM, COMPILER, STREAMING, DISTRIBUTED_OPTIMIZER, HYBRID.
+      Many Strategies MAY implement identical Transformation Contract.
+      Analogy: SQL Standard (Contract frozen) × PostgreSQL/MySQL/DuckDB Optimizers (Strategies fungible).
+      Interchangeability invariant: for any two strategies S1, S2 implementing Contract C,
+      both SHALL produce outputs that satisfy MeaningPreserved(C) AND Provable(C).
+    authority_source: IA-16 Semantics × Strategy separation + SEM-006 + LEX-0000H.
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Strategi Transformasi (Bahasa Indonesia)
+      - Transformation Implementation (informal overlapping alias)
+    epistemological_status: FUNGIBLE_STRATEGY_NOT_NORMATIVE
+    derivation_chain: "Transformation Contract (LEX-0000H FUNDAMENTAL frozen) → Strategy (any implementation that satisfies contract; replaceable without constitutional consequence)"
+    cross_ref_axiom: [C]
+    strategy_kinds: [PLANNER, SAT_SOLVER, RULE_ENGINE, LLM, COMPILER, STREAMING, DISTRIBUTED_OPTIMIZER, HYBRID]
+    paired_with: LEX-0000H (fundamental contract) via LEX-0040 (codification)
+
+  # ============================================================
+  # CONSTITUTIONAL PROOF (IA-18)
+  # DERIVED WITNESS TUPLE ⟨w_A, w_B, w_C⟩ — NOT constitutional concept.
+  # Constitutional-level concepts = ONLY 3 Predicates + IA-20 Conjunction.
+  # ============================================================
+
+  - term_id: LEX-0050
+    canonical_term: Constitutional Proof
+    definition: >
+      DERIVED AUDITABLE ARTIFACT — NOT a constitutional-level concept.
+      Constitutional Proof is the 3-WITNESS TUPLE that COLLECTS EVIDENCE JUSTIFYING each predicate TRUE:
+        ConstitutionalProof(T) = ⟨witness_Legitimate(T), witness_MeaningPreserved(T), witness_Provable(T)⟩
+      ConstitutionalProof(T) COMPLETE ⇔ ConstitutionallyValid(T) = IA-20(T) = TRUE.
+      WITNESS FORM is NOT PRESCRIBED (fungible: YAML doc, JWT token, Merkle proof, Git commit hash chain,
+      cryptographic signature bundle, RDF named graph, SQL table row — all valid).
+      Only JUSTIFICATION POWER is normative: each w_X MUST be sufficient for a verifier to conclude Predicate_X=TRUE.
+      A composite ID (format: CP-<unix_millis>-<w_A_id_8hex>-<w_B_id_8hex>-<w_C_id_8hex>) chains the witnesses.
+      Composite ID + all 3 witness references appended ATOMICALLY to the Evidence Ledger;
+      partial append = LEDGER_CORRUPTION (IA-17 FAIL).
+      Downstream dependency order: ConstitutionalProof(T) COMPLETE → emit Evidence → Assessment → Justification → Verdict PASS.
+    authority_source: IA-18 Constitutional Proof + CC-001 §6 Constitutional Validity + TERM-CONSTITUTIONAL-PROOF (TF1 witness tuple).
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Bukti Konstitusional (Bahasa Indonesia)
+      - Constitutional Witness Tuple (exact framing)
+      - Constitutional Trace (deprecated informal)
+      - Proof (ambiguous standalone — ALWAYS use Constitutional Proof prefix in EOS governance artifacts)
+    epistemological_status: DERIVED_AUDITABLE_ARTIFACT_NOT_CONSTITUTIONAL
+    derivation_chain: "(Legitimate(T)=TRUE ∧ MeaningPreserved(T)=TRUE ∧ Provable(T)=TRUE) [constitutional] → ConstitutionalProof(T) = ⟨w_A,w_B,w_C⟩ [derived witness tuple]; WITNESS FORM not normative; only JUSTIFICATION POWER normative."
+    explicit_note: "Constitutional Proof is EXPLICITLY DERIVED. The ONLY constitutional-level concepts are: Predicate A (Legitimate), Predicate B (MeaningPreserved), Predicate C (Provable), and their conjunction ConstitutionallyValid(T) [IA-20]."
+    cross_ref_axiom: [A, B, C, D]
+    composite_id_scheme: "CP-<unix_millis>-<w_A_id_8hex>-<w_B_id_8hex>-<w_C_id_8hex>"
+    witness_tuple: [LEX-0051, LEX-0052, LEX-0053]
+    completeness_condition: "ConstitutionalProof(T) COMPLETE ⇔ ConstitutionallyValid(T) = TRUE ⇔ IA-20(T)=TRUE"
+    aggregation_logic:
+      PASS: "w_A=JUSTIFIES_Legitimate ∧ w_B=JUSTIFIES_MeaningPreserved ∧ w_C=JUSTIFIES_Provable"
+      FAIL: "∃ witness fails to justify its predicate OR predicate itself evaluates FALSE"
+      INCOMPLETE: "∃ witness missing (not yet collected) — NOT a verdict; pre-CP state"
+
+  - term_id: LEX-0051
+    canonical_term: Witness A — Justifies Legitimate(x)=TRUE
+    definition: >
+      WITNESS COMPONENT A (first element of ConstitutionalProof tuple).
+      JUSTIFIES: Predicate A Legitimate(inputs_of_T ∪ outputs_of_T) = TRUE.
+      Verifies via AuthorityRel (LEX-0000E) closure: AuthorityRoot(x) exists ∧ AuthorityPath(x) valid ∧ NoCycle.
+      Justification power requirements: any verifier can independently, deterministically replay the authority
+      chain walk and arrive at the same Legitimate verdict. Witness FORM is NOT prescribed: examples include
+      Authority Graph edge-path digest, AuthorityRel SQL closure table row, signed delegation chain document,
+      Git DAG commit ancestry, Prolog Legitimate(x) derivation trace, cryptographic signature chain.
+      FAIL = ConstitutionalProof INCOMPLETE = no Verdict PASS possible.
+      IA-17 PRED_A leg (Constitution Preservation) — no new authority introduced.
+    authority_source: LEX-0000A Predicate A Legitimate(x) + LEX-0000E AuthorityRel + IA-17-CONSTITUTION-PRESERVATION PRED_A + IA-18.
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Saksi A — Sah (Bahasa Indonesia)
+      - witness_Legitimate(T) (formal tuple position 1)
+      - Sub-Proof 1 Authority Preservation (deprecated legacy framing; retained for migration)
+      - AP (acronym OK when prefixed CP context)
+    epistemological_status: DERIVED_WITNESS_COMPONENT_FOR_PREDICATE_A
+    deprecated_legacy_alias: "Sub-Proof 1 — Authority Preservation (legacy: now a witness justifying Predicate A Legitimate=TRUE, not an independent sub-proof with its own normative power)"
+    predicate_justifies: LEX-0000A
+    cross_ref_axiom: [A]
+    witness_form_not_prescribed_examples: [AuthorityGraph edge-path, SQL closure table rows, signed delegation document, Git DAG ancestry, Prolog derivation trace, signature chain, RDF named graph]
+
+  - term_id: LEX-0052
+    canonical_term: Witness B — Justifies MeaningPreserved(T)=TRUE
+    definition: >
+      WITNESS COMPONENT B (second element of ConstitutionalProof tuple).
+      JUSTIFIES: Predicate B MeaningPreserved(T) = TRUE.
+      Verifies via CanonicalIdentity (LEX-0000G) well-definedness on inputs(T)/outputs(T) and
+      SemanticEquivalence(⊔inputs(T), ⊔outputs(T))=TRUE (SemanticRel LEX-0000F).
+      Justification power: independent verifier can replay semantic equivalence check and confirm
+      no invention, no weakening, no identity drift. Witness FORM not prescribed: examples include
+      Canonical Identity hash equality across forms, SemanticRel refines/equivalent_to closure,
+      round-trip determinism proof across 8 concretizations, OWL sameAs+subClassOf entailment proof,
+      JSON/YAML/Proto semantic equivalence diff report with zero normative divergence.
+      IA-17 PRED_B leg (Constitution Preservation) — no CanonicalIdentity drift.
+    authority_source: LEX-0000B Predicate B MeaningPreserved(T) + LEX-0000G CanonicalIdentity + LEX-0000F SemanticRel + IA-17-CONSTITUTION-PRESERVATION PRED_B + IA-18.
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Saksi B — Makna Terjaga (Bahasa Indonesia)
+      - witness_MeaningPreserved(T) (formal tuple position 2)
+      - Sub-Proof 2 Semantic Preservation (deprecated legacy framing; retained for migration)
+      - SP (acronym OK when prefixed CP context)
+    epistemological_status: DERIVED_WITNESS_COMPONENT_FOR_PREDICATE_B
+    deprecated_legacy_alias: "Sub-Proof 2 — Semantic Preservation (legacy: now a witness justifying Predicate B MeaningPreserved=TRUE, not an independent sub-proof with its own normative power)"
+    predicate_justifies: LEX-0000B
+    cross_ref_axiom: [B]
+    witness_form_not_prescribed_examples: [CanonicalIdentity hash equality, SemanticRel closure proof, 8-way round-trip determinism, OWL entailment proof, semantic equivalence diff zero-divergence report]
+
+  - term_id: LEX-0053
+    canonical_term: Witness C — Justifies Provable(T)=TRUE
+    definition: >
+      WITNESS COMPONENT C (third element of ConstitutionalProof tuple).
+      JUSTIFIES: Predicate C Provable(T) = TRUE.
+      Verifies constructive entailment: ∀ t ∈ executions(T) : Evidence(t,T) ⊢ Postconditions(T)
+      AND ¬∃ evidential gap allowing ¬Postconditions(T) while Verdict PASS is emitted.
+      Justification power: independent verifier can inspect Evidence(t,T) and constructively derive
+      Postconditions(T) via verifiable inference rules without any leap of faith.
+      Witness FORM not prescribed: examples include SAT solver UNSAT core for ¬Post, program proof in Lean/Agda/Coq,
+      exhaustive property-based test report with zero failures, cryptographic accumulator of
+      all execution measurements, formal Hoare-logic {Pre} Program {Post} derivation, LLM-as-judge verdict
+      with reproducible prompt+evidence hash chain.
+      IA-17 PRED_C leg (Constitution Preservation) — no PASS without constructive entailment.
+    authority_source: LEX-0000C Predicate C Provable(T) + LEX-0000H TransformationContract Postconditions + IA-17-CONSTITUTION-PRESERVATION PRED_C + IA-18.
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Saksi C — Dapat Dibuktikan (Bahasa Indonesia)
+      - witness_Provable(T) (formal tuple position 3)
+      - Sub-Proof 3 Transformation Correctness (deprecated legacy framing; retained for migration)
+      - TC (acronym OK when prefixed CP context)
+      - Correctness Proof (ambiguous legacy)
+    epistemological_status: DERIVED_WITNESS_COMPONENT_FOR_PREDICATE_C
+    deprecated_legacy_alias: "Sub-Proof 3 — Transformation Correctness (legacy: now a witness justifying Predicate C Provable=TRUE, not an independent sub-proof with its own normative power)"
+    predicate_justifies: LEX-0000C
+    cross_ref_axiom: [C]
+    witness_form_not_prescribed_examples: [SAT_UNSAT_core, Lean/Coq proof term, PBT report, cryptographic accumulator, Hoare logic derivation, reproducible LLM judge chain]
+
+  # ============================================================
+  # EXECUTION / EVIDENCE TIER (Law III downstream)
+  # ============================================================
+
+  - term_id: LEX-0060
+    canonical_term: Execution System
+    definition: >
+      Any system that consumes an Execution Canonical Form (X-FORM) and produces outputs + evidence.
+      Examples include: local runtime, Kubernetes, workflow engine, Temporal, distributed scheduler,
+      LLM agent swarm, robot, simulator. Former term "Runtime" is DEPRECATED (see LEX-0061) because
+      EOS execution model is NOT limited to traditional process-level runtime; it is one Strategy kind
+      within Axiom C.
+    authority_source: SEM-003 (TF-1) + TERM-EXECUTION-SYSTEM.
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Runtime (deprecated — LEX-0061)
+      - Sistem Eksekusi (Bahasa Indonesia)
+    cross_ref_axiom: [C]
+
+  - term_id: LEX-0061
+    canonical_term: Runtime (DEPRECATED)
+    definition: >
+      DEPRECATED legacy term. Replaced by Execution System (LEX-0060). Retained for back-compat
+      package-name references and tooling migration scan. "Runtime" falsely implies traditional
+      OS-process-level execution, whereas EOS model admits LLM agent swarms, distributed schedulers,
+      robots, simulators as first-class Execution Systems.
+    authority_source: Former Baseline v1.4 Runtime terminology + SEM-003.
+    epoch: PreSprint0
+    status: DEPRECATED
+    replacement: LEX-0060 (Execution System)
+    aliases:
+      - Execution Runtime (deprecated)
+      - EOS Runtime (deprecated)
+    cross_ref_axiom: [C]
+    migration_schedule:
+      warning_gate: Gate-C
+      enforced_error_gate: Gate-D
+      fatal_gate: Gate-E
+
+  - term_id: LEX-0062
+    canonical_term: Evidence
+    definition: >
+      First technical product of an Execution System run: raw cryptographic or deterministic proof
+      bytes, digests, hashes, measurements. EMITTED ONLY after Constitutional Proof (LEX-0050) receives
+      PASS on all three sub-proofs. Evidence Layer Level 0 (per Law III downstream ordering: CP PASS →
+      Evidence → Assessment → Justification → Verdict). Append-only hash-chained storage in Ledger.
+    authority_source: IA-18 Constitutional Proof downstream artifacts + TERM-EVIDENCE.
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Bukti Teknis (Bahasa Indonesia, partial)
+    cross_ref_axiom: [D]
+    evidence_level: 0
+
+  - term_id: LEX-0063
+    canonical_term: Assessment
+    definition: >
+      Evidence Level 1 (Law III). Technical evaluation of Evidence against a specific conformance
+      property vector. Machine-facing / technical. Produces per-property PASS/FAIL/INCONCLUSIVE matrix.
+      Requires Constitutional Proof composite reference (LEX-0050 CP-ID) to be considered authoritative.
+    authority_source: TERM-ASSESSMENT.
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Asesmen (Bahasa Indonesia)
+    cross_ref_axiom: [D]
+    evidence_level: 1
+
+  - term_id: LEX-0064
+    canonical_term: Justification
+    definition: >
+      Evidence Level 2 (Law III). Structured + human-readable narrative explaining Assessment,
+      including explicit authority_proof_refs (LEX-0051), semantic_proof_refs (LEX-0052),
+      correctness_proof_refs (LEX-0053) upward through Constitutional Proof composite to Constitution
+      (Law I / Axiom A root). IA-12 Explainability minimum required.
+    authority_source: IA-12 Explainability + TERM-JUSTIFICATION.
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Justifikasi (Bahasa Indonesia)
+    cross_ref_axiom: [A, D]
+    evidence_level: 2
+
+  - term_id: LEX-0065
+    canonical_term: Verdict
+    definition: >
+      Evidence Level 3 (Law III, Axiom D). Governance-facing artifact derived from:
+      Justification + Assessment + Constitutional Proof Composite ID.
+      Normative answer consumed by humans, boards, registries, and EOS certification gates.
+      Examples: Repository Status = PASS; Repository Certification = VALID; Gate-D = PROVISIONAL_PASS;
+      Gate-E = PRODUCTION_READY. CRITICAL invariant: A Verdict PASS SHALL reference a Constitutional
+      Proof (LEX-0050) whose ALL THREE sub-proofs = PASS. No exceptions.
+    authority_source: Axiom D + IA-18 + TERM-VERDICT.
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Putusan (Bahasa Indonesia)
+      - Conformance Verdict (legacy informal overlapping)
+    cross_ref_axiom: [D]
+    evidence_level: 3
+
+  # ============================================================
+  # EVIDENCE-DRIVEN DECISION INFRASTRUCTURE — IDENTITY
+  # ============================================================
+
+  - term_id: LEX-0070
+    canonical_term: Evidence-Driven Decision Infrastructure
+    definition: >
+      EOS SCIENTIFIC IDENTITY (Baseline v1.4 PRESERVED). Core declaration: Enterprise OS IS an
+      evidence-driven decision infrastructure. This identity SHALL NOT change across any technology
+      migration, language rewrite, or paradigm shift for as long as platform retains EOS identity.
+      All constitutional additions (Constitutional, Three Laws, Four Axioms) are MECHANISMS enabling
+      this identity to be realized consistently — they DO NOT replace this identity.
+    authority_source: Baseline v1.4 identity lock + CONSTITUTION.md IDENTITAS section statement.
+    epoch: Baseline-v1.4
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - EDI (acronym informal, reserved)
+      - Infrastruktur Keputusan Berbasis Bukti (Bahasa Indonesia)
+    cross_ref_axiom: [D]  # evidence = Axiom D domain
+    identity_note: SCIENTIFIC — preserved unchanged across all constitutional evolutions.
+
+  - term_id: LEX-0071
+    canonical_term: Constitutional Evidence-Driven Decision Infrastructure
+    definition: >
+      EOS CONSTITUTIONAL IDENTITY ENHANCEMENT (Sprint 0). Preserves Baseline v1.4 identity (LEX-0070)
+      verbatim as scientific identity; adds "Constitutional" prefix solely to clarify the normative
+      governance mechanism enabling that scientific identity to be realized consistently. Full statement:
+      "Enterprise OS is a Constitutional Evidence-Driven Decision Infrastructure. Its constitutional
+      model governs authority, preserves meaning through canonical forms and transformation semantics,
+      and establishes constitutional proofs that connect every production verdict back to its
+      authoritative origin." The enhancement is NOT identity change (no PASAL 1 weight required)
+      because the scientific core (LEX-0070) is preserved verbatim.
+    authority_source: CONSTITUTION.md IDENTITAS EOS KONSTITUSIONAL + AXIOMS.md Identity Statement.
+    epoch: Sprint0
+    status: ACTIVE
+    replacement: "—"
+    aliases:
+      - Constitutional EDI (informal)
+    cross_ref_axiom: [A, B, C, D]
+    identity_note: GOVERNANCE ENHANCEMENT — preserves scientific identity unchanged (LEX-0070)
+
+tooling:
+  lex_scan_stage: CV-STAGE-5
+  driver: TERM_SCAN
+  rules:
+    - id: LEX-REJECT-UNREGISTERED
+      description: "Any normative artifact referencing a term NOT listed in canonical_terms with status≠REJECTED is flagged."
+      violation_class: UNREGISTERED_TERM
+      enforcement_tier: ERROR_GATE_D
+    - id: LEX-DEPRECATED-WARN
+      description: "Terms with status=DEPRECATED used as primary term trigger WARNING + auto-migration suggestion pointing to replacement."
+      violation_class: DEPRECATED_TERM_USE
+      enforcement_tier: WARNING_GATE_C / ERROR_GATE_D
+    - id: LEX-STATUS-MISMATCH
+      description: "Artifact references a term using an alias that contradicts its current lifecycle status (e.g. an ACTIVE term referenced via its DEPRECATED replacement in a new governance yaml)."
+      violation_class: TERM_STATUS_MISMATCH
+      enforcement_tier: ERROR_GATE_D
+  automatic_migration_support:
+    SEM-005-path:
+      - Canonical Representation → Canonical Form (LEX-0030)
+      - Canonical Representation IR suffix → -FORM suffix (K-REP → K-FORM, etc.)
+      - Intermediate Representation → Canonical Form (LEX-0030)
+    SEM-003-path:
+      - Runtime → Execution System (LEX-0060)

@@ -1,0 +1,58 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:eos:science:gate-c:schema:witness-integrity:v1"
+title: EOS Witness Integrity Specification Schema
+description: >
+  Machine-readable contract for the immutable integrity rules that govern witness locking and
+  chain-of-custody across execution and Oracle consumption.
+type: object
+additionalProperties: false
+required:
+  - version
+  - status
+  - integrity_spec_id
+  - schema_ref
+  - purpose
+  - immutability
+  - chain_of_custody
+  - integrity_requirements
+properties:
+  version:
+    type: string
+    pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+  status:
+    type: string
+    enum: [PROPOSED, FROZEN, RETIRED]
+  integrity_spec_id:
+    type: string
+    pattern: "^GATE-C-WITNESS-INTEGRITY-[0-9]{3}$"
+  schema_ref:
+    type: string
+  purpose:
+    type: string
+  immutability:
+    type: object
+    additionalProperties: false
+    required:
+      [witness_shall_be_immutable_after_observation, lock_required_before_oracle_consumption, post_lock_mutation_forbidden, lock_event_must_be_recorded]
+    properties:
+      witness_shall_be_immutable_after_observation: { const: true }
+      lock_required_before_oracle_consumption: { const: true }
+      post_lock_mutation_forbidden: { const: true }
+      lock_event_must_be_recorded: { const: true }
+  chain_of_custody:
+    type: object
+    additionalProperties: false
+    required: [required_states, state_order_is_strict, custody_gap_forbidden, state_transition_evidence_required]
+    properties:
+      required_states:
+        type: array
+        items:
+          type: string
+          enum: [OBSERVED, STORED, VERIFIED, CONSUMED_BY_ORACLE]
+      state_order_is_strict: { const: true }
+      custody_gap_forbidden: { const: true }
+      state_transition_evidence_required: { const: true }
+  integrity_requirements:
+    type: array
+    minItems: 1
+    items: { type: string }

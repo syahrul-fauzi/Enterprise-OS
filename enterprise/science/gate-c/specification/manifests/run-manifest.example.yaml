@@ -1,0 +1,25 @@
+version: "1.0.0"
+run_id: run-001
+gate: GATE-C
+gate_stage: GATE-C1
+evidence_class: CLASS_II_EXPERIMENTAL
+execution_timestamp_utc: "2026-07-31T00:00:00Z"
+operator_id: example-operator
+strategy_ids:
+  - planner-v1
+oracle_id: GATE-C-ORACLE-001
+dataset_version: "1.0.0"
+truth_table_version: "1.0.0"
+protocol_version: "1.0.0"
+reproducibility_manifest_ref: specification/manifests/reproducibility-manifest.yaml
+measurement_apparatus:
+  calibration_report_ref: specification/calibration/calibration-report.yaml
+  oracle_certificate_ref: specification/calibration/oracle-certificate.yaml
+  witness_certificate_ref: specification/calibration/witness-certificate.yaml
+  dataset_certificate_ref: specification/calibration/dataset-certificate.yaml
+output_layout:
+  actual_dir: execution/runs/run-001/actual
+  witness_dir: execution/runs/run-001/actual/witness
+  logs_dir: execution/runs/run-001/logs
+  metrics_dir: execution/runs/run-001/metrics
+  report_ref: execution/runs/run-001/report.yaml

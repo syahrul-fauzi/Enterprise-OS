@@ -1,0 +1,10 @@
+version: "1.0.0"
+candidate_id: D2
+status: UNDER_TEST
+candidate_name: EvidencePresent
+statement: >
+  Mere existence of evidence should be elevated into a separate constitutional predicate.
+derivability_hypothesis: DERIVABLE_FROM_PRED_C
+rationale: >
+  Provable(T) already requires evidence that constructively entails postconditions, so evidence
+  presence alone may not add irreducible explanatory power.

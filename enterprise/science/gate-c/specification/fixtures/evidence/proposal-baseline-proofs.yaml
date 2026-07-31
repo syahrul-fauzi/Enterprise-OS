@@ -1,0 +1,15 @@
+version: "1.0.0"
+kind: FIXTURE_EVIDENCE_BASELINE_PROPOSAL
+fixture_id: FIX-EVI-PRO-BASELINE
+status: IMMUTABLE_FIXTURE
+evidence_items:
+  - id: EVI-PRO-001
+    type: proposal_audit_trail
+    description: "Initial proposal receipt log entry"
+    data:
+      recorded_status: PROPOSED
+  - id: EVI-PRO-002
+    type: proposer_auth_context
+    description: "Authenticated proposer identity context (role-document-proposer-001)"
+    data:
+      role_attested: role-document-proposer-001

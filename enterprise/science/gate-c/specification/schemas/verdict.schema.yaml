@@ -1,0 +1,34 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:eos:science:gate-c:schema:verdict:v1"
+title: EOS Governance Verdict Schema
+description: >
+  Verdict is a governance artifact derived from an Oracle evaluation. It is intentionally separated
+  from the factual evaluation output so EOS can distinguish scientific findings from governance action.
+type: object
+additionalProperties: false
+required:
+  - verdict_id
+  - for_experiment_subject_id
+  - derived_from_evaluation_ref
+  - governance_disposition
+  - governing_authority_ref
+properties:
+  verdict_id:
+    type: string
+    pattern: "^verdict-[0-9a-z-]+$"
+  for_experiment_subject_id:
+    type: string
+    pattern: "^GATE-C-[A-Z0-9-]+$"
+  derived_from_evaluation_ref:
+    type: string
+    description: "Reference to the immutable Oracle evaluation artifact."
+  governance_disposition:
+    type: string
+    enum: [REPOSITORY_CERTIFIED, GATE_C_FAILED, GATE_C_INCONCLUSIVE, REGRESSION_REVIEW_REQUIRED]
+  governing_authority_ref:
+    type: string
+    description: "Authority chain used to ratify the governance decision."
+  rationale: { type: string }
+  run_id: { type: string }
+  timestamp_utc: { type: string, format: date-time }
+  notes: { type: string }

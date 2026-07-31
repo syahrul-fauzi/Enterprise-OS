@@ -1,0 +1,19 @@
+version: "1.0.0"
+suite_id: GATE-C-POSITIVE-SUITE-001
+status: ACTIVE
+scientific_claim: >
+  Positive reference experiments that are expected to satisfy Predicate A, Predicate B, and
+  Predicate C simultaneously and therefore map to truth-table row P1.
+
+covered_truth_table_rows:
+  - P1
+
+experiment_subject_refs:
+  - specification/experiments/document/propose.yaml
+  - specification/experiments/document/approve.yaml
+  - specification/experiments/document/archive.yaml
+  - specification/experiments/document/retrieve.yaml
+
+acceptance:
+  expected_disposition: PASS
+  expected_constitutional_validity: true

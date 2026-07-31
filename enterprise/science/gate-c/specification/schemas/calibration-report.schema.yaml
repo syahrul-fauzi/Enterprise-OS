@@ -1,0 +1,76 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:eos:science:gate-c:schema:calibration-report:v1"
+title: EOS Gate C Calibration Report Schema
+description: >
+  Machine-readable contract for the Gate C0 Scientific Instrument Calibration report. The report
+  certifies the measurement apparatus before any Gate C1 falsification experiment is allowed.
+type: object
+additionalProperties: false
+required:
+  - version
+  - calibration_report_id
+  - status
+  - gate_stage
+  - theory_under_test
+  - object_under_test
+  - evidence_class
+  - oracle
+  - witness
+  - dataset
+  - manifest
+  - protocol
+  - overall
+properties:
+  version:
+    type: string
+    pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+  calibration_report_id:
+    type: string
+    pattern: "^GATE-C0-CALIBRATION-REPORT-[0-9]{3}$"
+  status:
+    type: string
+    enum: [PROPOSED, FROZEN, RETIRED]
+  gate_stage:
+    const: GATE-C0
+  theory_under_test:
+    const: NONE
+  object_under_test:
+    type: array
+    minItems: 1
+    items:
+      type: string
+      enum: [ORACLE, WITNESS, MANIFEST, DATASET, PROTOCOL]
+  evidence_class:
+    const: CLASS_I_CALIBRATION
+  oracle:
+    $ref: "#/$defs/checkSection"
+  witness:
+    $ref: "#/$defs/checkSection"
+  dataset:
+    $ref: "#/$defs/checkSection"
+  manifest:
+    $ref: "#/$defs/checkSection"
+  protocol:
+    $ref: "#/$defs/checkSection"
+  overall:
+    type: object
+    additionalProperties: false
+    required: [calibrated, calibration_result, certified_until, blocks_gate_c1_when_false]
+    properties:
+      calibrated:
+        type: boolean
+      calibration_result:
+        type: string
+        enum: [PASS, FAIL, INCONCLUSIVE]
+      certified_until:
+        type: string
+      blocks_gate_c1_when_false:
+        const: true
+  notes:
+    type: string
+$defs:
+  checkSection:
+    type: object
+    additionalProperties:
+      type: string
+      enum: [PASS, FAIL, INCONCLUSIVE, NOT_APPLICABLE]

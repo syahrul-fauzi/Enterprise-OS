@@ -1,0 +1,51 @@
+version: "1.0.0"
+status: PROPOSED
+dataset_id: GATE-C-REFERENCE-DATASET-001
+kind: PORTABLE_REFERENCE_DATASET
+certification_level: LEVEL_1_REFERENCE
+calibration_certificate_ref: specification/calibration/dataset-certificate.yaml
+portability_goal: >
+  The same immutable dataset SHALL be executable by TypeScript, Rust, Go, Java, and Python
+  implementations without changing dataset contents.
+
+canonical_archive:
+  archive_name: gate-c-reference-v1.zip
+  freeze_status: PENDING_FREEZE
+  content_policy: fixtures_only_plus_spec_refs
+
+dataset_contents:
+  fixtures:
+    - specification/fixtures/documents/proposal-draft-001.yaml
+    - specification/fixtures/documents/approval-metadata-001.yaml
+    - specification/fixtures/documents/approved-document-001.yaml
+    - specification/fixtures/policies/document-policy-001.yaml
+    - specification/fixtures/contracts/document-contract.yaml
+    - specification/fixtures/evidence/proposal-baseline-proofs.yaml
+    - specification/fixtures/evidence/approval-signatures.yaml
+    - specification/fixtures/evidence/approval-audit.yaml
+    - specification/fixtures/evidence/retrieve-access-proof.yaml
+    - specification/fixtures/evidence/retrieve-audit.yaml
+    - specification/fixtures/evidence/archive-ledger.yaml
+    - specification/fixtures/evidence/archive-retention-check.yaml
+  specification_refs:
+    - specification/hypothesis.yaml
+    - specification/protocol.yaml
+    - specification/truth-table.yaml
+    - specification/oracle/oracle.yaml
+    - specification/expected/predicates/document-predicates.yaml
+    - specification/expected/evaluations/document-evaluations.yaml
+
+certification_levels:
+  LEVEL_0_DEVELOPER: Local development dataset for fast iteration; not sufficient for certification evidence.
+  LEVEL_1_REFERENCE: Canonical reference dataset used for reproducibility and baseline conformance.
+  LEVEL_2_CERTIFICATION: Frozen certification dataset used to issue governance-grade certification evidence.
+  LEVEL_3_REGRESSION: Regression preservation dataset used to detect post-freeze drift across releases.
+
+determinism_requirements:
+  - Dataset bytes MUST be identical across runtimes.
+  - Runtime adapters MAY transform data in memory but MUST NOT mutate dataset contents.
+  - Oracle evaluations MUST remain identical for identical dataset plus witness inputs.
+
+notes: >
+  This dataset manifest defines the portable reference corpus for Gate C. Archive hashing and final freeze
+  metadata will be completed when the first frozen reference dataset is published.

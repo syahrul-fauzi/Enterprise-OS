@@ -1,0 +1,107 @@
+version: "1.0.0"
+status: PROPOSED
+kind: SCIENTIFIC_HYPOTHESIS_PACKAGE
+experiment_id: GATE-C
+frozen_theory_reference: CC-001
+scientific_method_identity_horizon: "2026-2036 (aligned with CC-001 frozen predicate model)"
+authoritative_refs:
+  theory:
+    - file:///root/Enterprise%20OS/governance/CC-001-CONSTITUTIONAL-CHARTER.md
+  predicates:
+    - LEX-0000A (Predicate A — Legitimate(x))
+    - LEX-0000B (Predicate B — MeaningPreserved(T))
+    - LEX-0000C (Predicate C — Provable(T))
+  conjunction:
+    - LEX-0000D (Constitutional Validity = IA-20)
+  frozen_relation_sets:
+    - LEX-0000E AuthorityRel
+    - LEX-0000F SemanticRel
+  frozen_fundamental_concepts:
+    - LEX-0000G Canonical Identity
+    - LEX-0000H Transformation Contract
+
+theory_under_test:
+  id: CC-001-CONSTITUTIONAL-PREDICATE-MODEL
+  name: Constitutional Predicate Theory
+  epoch: Sprint0
+  scope: IRREDUCIBLE CONSTITUTIONAL FROZEN CORE (10-year horizon)
+  statement: >
+    Every architectural transformation T in EOS SHALL be evaluated SOLELY through three falsifiable
+    Boolean predicates. Constitutional Validity = conjunction of the three.
+  predicate_signature: >
+    ConstitutionallyValid : Transformation → Boolean
+    where:
+      ConstitutionallyValid(T) ⇔ Legitimate(T) ∧ MeaningPreserved(T) ∧ Provable(T)
+
+null_hypothesis:
+  id: H0
+  statement: >
+    CC-001 Constitutional Predicate Model does NOT possess predictive or explanatory power beyond
+    alternative architectural decision evaluation models. Specifically: there exists at least one EOS transformation T whose
+    PASS/FAIL classification by contemporary architectural judgment cannot be FULLY accounted for by the conjunction
+    Legitimate(T) ∧ MeaningPreserved(T) ∧ Provable(T), requiring additional independent factors outside the three predicates.
+  falsification_condition: >
+    Any transformation T observed where:
+      (a) contemporary architectural judgment rates T VALID, but Legitimate(T)∧MeaningPreserved(T)∧Provable(T) = FALSE (predictive undergeneration: false negative), OR
+      (b) contemporary architectural judgment rates T INVALID, but Legitimate(T)∧MeaningPreserved(T)∧Provable(T) = TRUE (predictive overgeneration: false positive).
+  statistical_target:
+    initial_sample_size: "Gate C Document Management 4 operations times 8 truth table rows equals 32 evaluations minimum"
+    corroboration_threshold: "H0 rejected for CC-001 only if NO falsification condition holds across the entire run"
+
+working_hypothesis:
+  id: H1
+  statement: >
+    ConstitutionalValidity(T) is FULLY DETERMINED by — and jointly reduced without residue — by the three predicates:
+      Legitimate(T)  — AuthorityRel closure satisfiable (no new authority, no cycle, resolves to root)
+      AND
+      MeaningPreserved(T) — CanonicalIdentity well-defined on inputs(T)/outputs(T); SemanticEquivalence holds
+      AND
+      Provable(T)        — Evidence(t,T) constructively ⊢ Postconditions(T) for every execution t of T
+    NO additional architectural judgment factors are normatively required beyond these three.
+  prediction:
+    positive:
+      constitutional_validity: true
+      sufficient_for: >
+        Every transformation T that satisfies ALL THREE predicates SHALL EMIT Constitutional PASS
+        for all transformations:
+          Legitimate(T)=TRUE ∧ MeaningPreserved(T)=TRUE ∧ Provable(T)=TRUE  →  IA-20(T)=TRUE
+    negative:
+      constitutional_validity: false
+      sufficient_for: >
+        Any transformation T that FAILS AT LEAST ONE predicate SHALL EMIT Constitutional FAIL:
+          Legitimate(T)=FALSE ∨ MeaningPreserved(T)=FALSE ∨ Provable(T)=FALSE  →  IA-20(T)=FALSE
+  scope_note: >
+    NO mention of Document, Protocol, Graph, YAML, Planner, Runtime, or Ledger is needed for the hypothesis.
+    ALL are DERIVED engineering mechanisms. This hypothesis is INDEPENDENT of implementation substrate.
+
+empirical_content_gate_c:
+  domain_guinea_pig: Document Management Operations (Propose, Approve, Archive, Retrieve)
+  rationale: >
+    Document Management is selected as the Gate C first experimental domain because it
+      exercises ALL THREE predicates non-trivially on each operation (per illustrative table:
+        Propose  — Req→Policy→Contract authority (Pred A); CanonicalIdentity document identity (Pred B); proposal audit trail (Pred C)
+        Approve  — Delegation chain validity (Pred A); Approval meaning preserved across surface (Pred B); Signature+audit+proof trail (Pred C)
+        Archive  — Retention policy applicability (Pred A); Document identity stable (Pred B); Archive ledger proof (Pred C)
+        Retrieve — Authorization chain (Pred A); Semantically equivalent document received (Pred B); Access evidence logged (Pred C)
+  protocol_reference: protocol.yaml
+  truth_table_reference: truth-table.yaml
+  experiment_subjects_reference: experiments/ directory
+  expected_witnesses_reference: expected/ directory
+
+reusability_across_gates:
+  gate_d: >
+    Add experimental subjects (procurement/, identity/, service/ to experiments/.
+    hypothesis.yaml UNCHANGED. protocol.yaml UNCHANGED. truth-table.yaml UNCHANGED.
+  gate_e: >
+    End-to-end pipeline experiment (all subjects, all 8 truth-table rows, all predicates across entire pipeline).
+    hypothesis.yaml UNCHANGED — only corroboration/falsification evidence changes.
+  epoch_bound: >
+    For any future epoch, as long as CC-001 frozen predicate model remains unchanged:
+      hypothesis.yaml = SSOT of theory under test
+      protocol.yaml   = SSOT of evaluation procedure
+      ONLY experimental subjects (experiments/) and fixtures change.
+
+scientific_method_reference: >
+  Baseline v1.4 PASAL 8 (GB >> GC filter: hypotheses proposed, evidence sought,
+  contradictions surface as FALSIFIED vs CORROBORATED status PASS/FAIL/INCONCLUSIVE
+  with evidence trace)

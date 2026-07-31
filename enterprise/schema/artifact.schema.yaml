@@ -1,13 +1,23 @@
 $schema: https://json-schema.org/draft/2020-12/schema
 $id: https://enterprise-os.io/schema/artifact.schema.yaml
-title: EKL Artifact Schema
-description: Universal schema for all EKL artifacts
+title: EOS Canonical Artifact Schema (Type System Enhanced v2)
+description: >
+  Universal schema for all EOS artifacts.
+  ENHANCED in v2 per Constitutional Computing paradigm:
+  (a) Every artifact carries a TYPE field (artifact_type) drawn from the Evolution Domain Type System.
+  (b) Type rules are enforced via CONST-VERIF Stage 1 TYPE_ERROR checking — this is NOT policy, this is a type system.
+  (c) Authority flow back-reference (derived_from_chain) required so CV-STAGE-2 can validate the DAG.
+  (d) Conformance property vector pointer links the artifact to its measurements.
+
 type: object
 required:
   - metadata
-  - language
+  - artifact_type
+  - authority
   - conformance
 properties:
+
+  # ─────────────────────── Metadata (identity only) ───────────────────────
   metadata:
     type: object
     required:
@@ -15,47 +25,150 @@ properties:
       - name
       - version
       - status
-      - authority
-      - owner
       - created_at
       - updated_at
     properties:
       id:
         type: string
-        description: Unique artifact identifier
+        pattern: '^[A-Z0-9-]{3,64}$'
+        description: "Stable identifier. e.g., PROTO-KIR-EXCHANGE, T001, IA-10, ACL-001"
       name:
         type: string
-        description: Human-readable artifact name
       version:
         type: string
         pattern: '^\d+\.\d+\.\d+$'
-        description: Semantic version
+        description: "Semantic version. Domain A (Constitution) uses EPOCH not semver."
+      epoch:
+        type: string
+        description: "For Domain A (Constitution) artifacts only: epoch identifier. Overrides semver for stability classification."
       status:
         type: string
         enum:
           - Concept
           - Draft
+          - Proposal
+          - Verified
           - Normative
+          - Stable
+          - Frozen
           - Deprecated
+          - Sunset
           - Retired
-      authority:
-        type: string
-        description: Authority entity ID
-      owner:
-        type: string
-        description: Owner entity ID
-      created_at:
-        type: string
-        format: date-time
-      updated_at:
-        type: string
-        format: date-time
       description:
         type: string
       tags:
         type: array
         items:
           type: string
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+      owner:
+        type: string
+    additionalProperties: false
+
+  # ─────────────────────── Artifact Type System ───────────────────────
+  artifact_type:
+    type: object
+    description: >
+      Evolution Domain classification AS A TYPE.
+      CONST-VERIF Stage 1 uses this for TYPE_ERROR checking.
+      This is the implementation of user point 6 (Evolution Domains sebagai Type System).
+    required:
+      - type_name
+      - evolution_domain
+    properties:
+      type_name:
+        type: string
+        enum:
+          - CONSTITUTIONAL_VISION
+          - CONSTITUTION_PRINCIPLE
+          - CONSTITUTION_INVARIANT
+          - CONSTITUTION_POLICY
+          - SPECIFICATION
+          - PROTOCOL
+          - CONTRACT
+          - TRANSFORMATION_MANIFEST
+          - PREDICATE_MANIFEST
+          - DECISION_IR
+          - KNOWLEDGE_IR
+          - EXECUTION_PLAN
+          - IMPLEMENTATION_MODULE
+          - IMPLEMENTATION_TOOLING
+          - EVIDENCE_PROOF
+          - EVIDENCE_LEDGER
+          - CONFORMANCE_REPORT
+          - GENERATED_ARTIFACT
+        description: >
+          Artifact TYPES drawn from the Evolution Domain Type System
+          (see CONSTIT-IR.type_system_section).
+          The canonical list is CONSTIT-IR. Any type not listed above is unknown.
+          If an artifact has no mapping → type error (CV-TYPE-03 UNCLASSIFIED_ARTIFACT).
+      evolution_domain:
+        type: string
+        enum: [DOMAIN-A-CONSTITUTION, DOMAIN-B-SPECIFICATION, DOMAIN-C-IMPLEMENTATION, DERIVED-EVIDENCE]
+        description: "Disjoint per ASP-04. Every type has exactly one domain. Cross-domain overlaps forbidden."
+      sub_kind:
+        type: string
+        description: "Optional refinement within a type. E.g., within CONTRACT: IR_CONTRACT, PROTO_CONTRACT, GATE_CONTRACT"
+      mutation_allowed_artifact_types:
+        type: array
+        items:
+          type: string
+        description: >
+          Which type_names THIS artifact MAY write/mutate. Used by CV-TYPE-02.
+          If omitted, the default from CONSTIT-IR type rules is used.
+          (Typically left empty — defaults are authoritative.)
+    additionalProperties: false
+
+  # ─────────────────────── Authority & Derivation (for DAG check) ───────────────────────
+  authority:
+    type: object
+    description: >
+      Authority graph metadata. Feeds into the Authority DAG (CV-STAGE-2).
+      Every artifact must declare where its authority comes from.
+      An artifact without authority chain = CV-DAG-03 DANGLING_DERIVATION error.
+    required:
+      - derived_from_chain
+    properties:
+      canonical:
+        type: boolean
+        description: "Is this artifact the canonical SSOT for this concept? True for YAML; false for derived views like .md docs or generated .ts."
+        default: true
+      owner_team:
+        type: string
+        default: eos-core
+      derived_from_chain:
+        type: array
+        description: >
+          Linearized chain of authority for this artifact.
+          Order = ascending authority (closest artifact FIRST → foundation LAST).
+          Used by CV-STAGE-2 to validate the authority DAG and by MEASURE-AUDIT for provenance chain completeness.
+        items:
+          type: object
+          required: [artifact_id, artifact_type, path_ref, authority_proof_ref]
+          properties:
+            artifact_id:
+              type: string
+            artifact_type:
+              type: string
+              description: "type_name from parent artifact's artifact_type.type_name"
+            path_ref:
+              type: string
+              description: "Filesystem path of the parent artifact."
+            authority_proof_ref:
+              type: string
+              description: "Concrete reference explaining the derivation: e.g., CONSTITUTIONAL-VISION.yaml#VISION-01 or IA-10/formal_statement."
+      direct_edit_prohibited:
+        type: boolean
+        description: "If true, modification requires ADR / vote evidence (per ASP-01). Scanned by ARCH-24."
+        default: false
+    additionalProperties: false
+
+  # ─────────────────────── Language / Canonical Format ───────────────────────
   language:
     type: object
     required:
@@ -63,8 +176,21 @@ properties:
     properties:
       requires:
         type: string
+        enum: [YAML_CANONICAL, TYPESCRIPT_RUNTIME, JSON_SCHEMA, PROSE_MARKDOWN_ONLY, DOT_GRAPHVIZ]
+        description: >
+          Canonical representation format. YAML_CANONICAL = authoritative declaration (Domain A/B).
+          TYPESCRIPT_RUNTIME = implementation helper only, never canonical (Domain C).
+      canonical_yaml_version:
+        type: string
+        pattern: '^\d+\.\d+\.\d+$'
+    additionalProperties: false
+
+  # ─────────────────────── Conformance Properties Link ───────────────────────
   conformance:
     type: object
+    description: >
+      Links this artifact to its 6-dimensional Conformance Property vector.
+      Plus certification gate status.
     required:
       - minimum_level
     properties:
@@ -72,3 +198,39 @@ properties:
         type: integer
         minimum: 0
         maximum: 5
+        description: "Legacy gate level. Deprecated in favor of property_vector_ref below."
+      property_vector_ref:
+        type: string
+        description: >
+          Path to the CONF-VECTOR-<artifact>-<version>-<hash8>.yaml file
+          that contains the 6-property conformance measurement.
+          Produced by CONST-VERIF Stage 4.
+          If absent → artifact is DRAFT or properties not yet measured.
+      conformance_suite_ref:
+        type: string
+        description: "For Domain B/C artifacts: path to their conformance test suite fixtures."
+      overall_verdict_latest:
+        type: string
+        enum: [PASS, WARN, FAIL, INCONCLUSIVE, UNMEASURED]
+        description: "Cached latest overall verdict. Canonical truth is in the property_vector_ref YAML, not this field."
+    additionalProperties: false
+
+  # ─────────────────────── Stability & Compatibility Meta ───────────────────────
+  stability:
+    type: object
+    description: "Optional; if not present, defaults are derived from CONSTIT-IR.stability_levels by artifact_type."
+    properties:
+      frozen:
+        type: boolean
+      compatibility_policy:
+        type: string
+        enum: [IDENTITY, EPOCH_ONLY, EPOCH_OR_MAJOR, SEMVER_2_0, BEHAVIORAL]
+      deprecation_policy:
+        type: string
+        enum: [epoch-only, 2-major-releases, 1-major-release, at-will]
+      successor_ref:
+        type: string
+        description: "When status = Deprecated, pointer to successor artifact id + version."
+    additionalProperties: false
+
+additionalProperties: false

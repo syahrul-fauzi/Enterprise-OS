@@ -13,11 +13,21 @@ governance_ref:
   ia13: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_13_stable_intermediate_representations
   ia14: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
   protocol_governance: /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
+  conformance_properties: /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml
+  arch_rule_manifest: /root/Enterprise OS/governance/ARCH-RULE-GENERATION.manifest.yaml
+  constitutional_compiler_spec: /root/Enterprise OS/enterprise/specifications/CONSTITUTIONAL-COMPILER.spec.yaml
+  constitutional_verifier_pipeline: /root/Enterprise OS/enterprise/specifications/CONSTITUTIONAL-VERIFIER.pipeline.yaml
+  protocol_compilation_spec: /root/Enterprise OS/enterprise/specifications/PROTOCOL-COMPILATION.spec.yaml
+  authority_dag_schema: /root/Enterprise OS/enterprise/schema/AUTHORITY-DAG.schema.yaml
+  artifact_schema: /root/Enterprise OS/enterprise/schema/artifact.schema.yaml
 derived_from:
   - User_Point_Constitution_IR_From_Vision_ASP_IA
   - User_Point_Architecture_Rules_Generated_Not_Manual
   - User_Point_Constitutional_Verifier_Instead_of_Arch_Check
   - User_Point_Authority_Flow_DAG_Official
+  - User_Point_Protocol_Governance_Compiled_Not_Manual
+  - User_Point_Evolution_Domains_As_Type_System_Not_Policy
+  - User_Point_Conformance_Properties_Not_Binary_Pass_Fail
 
 constitution_source_inputs:
   ordered:
@@ -52,53 +62,271 @@ constitution_ir_sections_required:
       - field: produced_at_utc
         note: DIAGNOSTICS ONLY, EXCLUDED from ir_content_hash.
       - field: passes_applied
-        type: array; values: ["CC-PASS-1-DOMAIN-TYPING","CC-PASS-2-AUTHORITY-DAG","CC-PASS-3-BOUNDARY-RULES","CC-PASS-4-VERIFICATION-RULE-GEN","CC-PASS-5-COMPAT-MATRIX-GEN"]
+        type: array
+        values:
+          - CC-PASS-1-DOMAIN-TYPING
+          - CC-PASS-2-AUTHORITY-DAG
+          - CC-PASS-3-BOUNDARY-RULES
+          - CC-PASS-4-VERIFICATION-RULE-GEN
+          - CC-PASS-5-COMPAT-MATRIX-GEN
 
   type_system_section:
     mandatory: true
     ir_field: evolution_domain_types
-    description: "Evolution Domains as TYPE SYSTEM (per user point 6). Not policy strings — machine-checkable type error on import/mutation mismatch."
+    description: "Evolution Domains as TYPE SYSTEM (per user point 6), elevated to Authority-Oriented Architecture (per TF-1). Not policy strings — machine-checkable type error on import/mutation mismatch. Canonical enumeration = artifact.schema.yaml#artifact_type.type_name (now 19 types, 4 domains, 4 Evidence sub-layers). Any import/mutation violation → TYPE_ERROR (not policy review). Authority Pipeline: AUTHORITY→INTERPRETATION→DECISION→EXECUTION→EVIDENCE stages embedded via authority_stage_index 0..4 inside every type definition."
+    type_system_contract_anchor: /root/Enterprise OS/enterprise/schema/artifact.schema.yaml#artifact_type
+    terminology_freeze_ref: governance/TERMINOLOGY-FREEZE-TF1.yaml
+    ia17_authority_preservation_ref: governance/INVARIANT-ARCHITECTURE.yaml#IA-17-AUTHORITY-PRESERVATION
+    enforcement_in_verifier: CONST-VERIF Stage 1 (CV-TYPE-01 import, CV-TYPE-02 mutate, CV-TYPE-03 unclassified) + CV-STAGE-2 AUTHORITY_GAIN_TYPE_ERROR scan
     types:
-      - type_name: CONSTITUTION
-        type_members:
-          - CONSTITUTIONAL-VISION
-          - ASP
-          - IA
-          - BASELINE_LOCK
-          - GOVERNANCE_STATE_ARCHETYPE
-          - ADR_ACCEPTED
+      - type_name: CONSTITUTIONAL_VISION
+        evolution_domain: DOMAIN-A-CONSTITUTION
+        authority_level_index: 0
+        authority_stage: AUTHORITY
+        deprecated_aliases: []
         type_rules:
-          - cannot_import_type: IMPLEMENTATION
-          - cannot_import_type: SPECIFICATION (Constitution is ABOVE specs; Constitution only references specs via compile outputs, not direct import)
-          - cannot_mutate: true (always immutable)
+          - cannot_import_type: [SPECIFICATION, PROTOCOL, CONTRACT, TRANSFORMATION_MANIFEST, PREDICATE_MANIFEST, DECISION_REPRESENTATION, KNOWLEDGE_REPRESENTATION, EXECUTION_REPRESENTATION, IMPLEMENTATION_MODULE, IMPLEMENTATION_TOOLING, EVIDENCE_PROOF, EVIDENCE_LEDGER, CONFORMANCE_REPORT, VERDICT, GENERATED_ARTIFACT]
+          - cannot_mutate: true
+          - can_be_imported_by: [CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+      - type_name: CONSTITUTION_PRINCIPLE
+        evolution_domain: DOMAIN-A-CONSTITUTION
+        authority_level_index: 1
+        authority_stage: AUTHORITY
+        deprecated_aliases: []
+        type_rules:
+          - can_import_type: [CONSTITUTIONAL_VISION]
+          - cannot_import_type: [PROTOCOL, CONTRACT, TRANSFORMATION_MANIFEST, PREDICATE_MANIFEST, DECISION_REPRESENTATION, KNOWLEDGE_REPRESENTATION, EXECUTION_REPRESENTATION, IMPLEMENTATION_MODULE, IMPLEMENTATION_TOOLING, EVIDENCE_PROOF, EVIDENCE_LEDGER, CONFORMANCE_REPORT, VERDICT, GENERATED_ARTIFACT]
+          - cannot_mutate: true
+          - can_be_imported_by: [CONSTITUTION_INVARIANT, CONSTITUTION_POLICY, SPECIFICATION]
+      - type_name: CONSTITUTION_INVARIANT
+        evolution_domain: DOMAIN-A-CONSTITUTION
+        authority_level_index: 2
+        authority_stage: AUTHORITY
+        deprecated_aliases: []
+        type_rules:
+          - can_import_type: [CONSTITUTIONAL_VISION, CONSTITUTION_PRINCIPLE]
+          - cannot_import_type: [CONTRACT, TRANSFORMATION_MANIFEST, PREDICATE_MANIFEST, DECISION_REPRESENTATION, KNOWLEDGE_REPRESENTATION, EXECUTION_REPRESENTATION, IMPLEMENTATION_MODULE, IMPLEMENTATION_TOOLING, EVIDENCE_PROOF, EVIDENCE_LEDGER, CONFORMANCE_REPORT, VERDICT, GENERATED_ARTIFACT]
+          - cannot_mutate: true
+          - can_be_imported_by: [CONSTITUTION_POLICY, SPECIFICATION, PROTOCOL, CONTRACT]
+      - type_name: CONSTITUTION_POLICY
+        evolution_domain: DOMAIN-A-CONSTITUTION
+        authority_level_index: 3
+        authority_stage: AUTHORITY
+        deprecated_aliases: []
+        type_rules:
+          - can_import_type: [CONSTITUTIONAL_VISION, CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT]
+          - cannot_mutate: true
+          - can_be_imported_by: [SPECIFICATION, PROTOCOL, CONTRACT]
       - type_name: SPECIFICATION
-        type_members:
-          - SEMANTIC_KERNEL
-          - KNOWLEDGE_COMPILER_PIPELINE
-          - COMPILER_PASSES_SPEC
-          - PROTOCOL_YAMLS
-          - CONTRACT_YAMLS
+        evolution_domain: DOMAIN-B-SPECIFICATION
+        authority_level_index: 4
+        authority_stage: INTERPRETATION
+        sub_types: [PROTOCOL, CONTRACT]
+        deprecated_aliases: []
         type_rules:
-          - cannot_import_type: CONSTITUTION (specs can only CONSUME constitution via COMPILED Constitution IR, not raw constitution yamls)
-          - cannot_mutate_type: CONSTITUTION
-          - cannot_import_type: IMPLEMENTATION_PRIVATE
+          - can_import_type: [CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - cannot_import_type:
+              forbidden_target: CONSTITUTIONAL_VISION
+              rationale: "Spec consumes VISION indirectly through compiled CONSTIT-IR only; never raw VISION yaml."
+          - cannot_mutate_type: [CONSTITUTIONAL_VISION, CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - cannot_import_type_2: [IMPLEMENTATION_MODULE, IMPLEMENTATION_TOOLING, EVIDENCE_PROOF, EVIDENCE_LEDGER, CONFORMANCE_REPORT, VERDICT, GENERATED_ARTIFACT]
+          - can_be_imported_by: [PROTOCOL, CONTRACT, TRANSFORMATION_MANIFEST, PREDICATE_MANIFEST, DECISION_REPRESENTATION, KNOWLEDGE_REPRESENTATION, IMPLEMENTATION_MODULE, IMPLEMENTATION_TOOLING]
       - type_name: PROTOCOL
         sub_type_of: SPECIFICATION
-        type_members: [PROTO_KIR_EXCHANGE, PROTO_DIR_EXCHANGE, PROTO_SNAPSHOT_BUILD, PROTO_EPG_VERIFY, PROTO_RUNTIME_EXEC_PLAN]
+        evolution_domain: DOMAIN-B-SPECIFICATION
+        authority_level_index: 5
+        authority_stage: INTERPRETATION
+        deprecated_aliases: []
         type_rules:
-          - can_import_type: [SPECIFICATION]
-          - can_be_imported_by: IMPLEMENTATION
-      - type_name: IMPLEMENTATION
-        type_members: [RUNTIME_TS, COMPOSITION_TS, UI_TSX, CLI_TS, PREDICATE_LOADER_TS]
+          - can_import_type: [SPECIFICATION, CONTRACT, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - cannot_mutate_type: [SPECIFICATION, CONSTITUTIONAL_VISION, CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - can_be_imported_by: [CONTRACT, TRANSFORMATION_MANIFEST, PREDICATE_MANIFEST, DECISION_REPRESENTATION, KNOWLEDGE_REPRESENTATION, EXECUTION_REPRESENTATION, IMPLEMENTATION_MODULE, IMPLEMENTATION_TOOLING]
+      - type_name: CONTRACT
+        sub_type_of: SPECIFICATION
+        evolution_domain: DOMAIN-B-SPECIFICATION
+        authority_level_index: 6
+        authority_stage: INTERPRETATION
+        deprecated_aliases: []
         type_rules:
-          - cannot_mutate_type: SPECIFICATION
-          - cannot_mutate_type: CONSTITUTION
-          - can_import_type: [PROTOCOL, SPECIFICATION_PUBLIC]
-          - cannot_import_type: CONSTITUTION_RAW (no .ts imports constitution yaml directly for decisions; may only read compiled CONSTIT-IR or go through verifier)
+          - can_import_type: [SPECIFICATION, PROTOCOL, CONSTITUTION_INVARIANT]
+          - cannot_mutate_type: [SPECIFICATION, PROTOCOL, CONSTITUTIONAL_VISION, CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - can_be_imported_by: [TRANSFORMATION_MANIFEST, PREDICATE_MANIFEST, DECISION_REPRESENTATION, KNOWLEDGE_REPRESENTATION, EXECUTION_REPRESENTATION, IMPLEMENTATION_MODULE, IMPLEMENTATION_TOOLING]
+      - type_name: TRANSFORMATION_MANIFEST
+        evolution_domain: DOMAIN-B-SPECIFICATION
+        authority_level_index: 7
+        authority_stage: INTERPRETATION
+        deprecated_aliases: [Compiler Pass Contract, Pass Manifest]
+        type_rules:
+          - can_import_type: [SPECIFICATION, PROTOCOL, CONTRACT]
+          - cannot_mutate_type: [SPECIFICATION, PROTOCOL, CONTRACT, CONSTITUTIONAL_VISION, CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - can_be_imported_by: [EXECUTION_REPRESENTATION, IMPLEMENTATION_MODULE]
+      - type_name: PREDICATE_MANIFEST
+        evolution_domain: DOMAIN-B-SPECIFICATION
+        authority_level_index: 8
+        authority_stage: INTERPRETATION
+        deprecated_aliases: []
+        type_rules:
+          - can_import_type: [SPECIFICATION, PROTOCOL, CONTRACT]
+          - cannot_mutate_type: [SPECIFICATION, PROTOCOL, CONTRACT, CONSTITUTIONAL_VISION, CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - can_be_imported_by: [EXECUTION_REPRESENTATION, IMPLEMENTATION_MODULE]
+      - type_name: KNOWLEDGE_REPRESENTATION
+        evolution_domain: DOMAIN-B-SPECIFICATION
+        authority_level_index: 9
+        authority_stage: INTERPRETATION
+        stable_canonical: true
+        canonical_id: K-REP
+        deprecated_aliases: [KNOWLEDGE_IR, KIR]
+        type_rules:
+          - can_import_type: [SPECIFICATION, PROTOCOL, CONTRACT, TRANSFORMATION_MANIFEST, PREDICATE_MANIFEST]
+          - cannot_mutate_type: [SPECIFICATION, PROTOCOL, CONTRACT, CONSTITUTIONAL_VISION, CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - can_be_imported_by: [DECISION_REPRESENTATION, EXECUTION_REPRESENTATION, IMPLEMENTATION_MODULE]
+      - type_name: DECISION_REPRESENTATION
+        evolution_domain: DOMAIN-B-SPECIFICATION
+        authority_level_index: 10
+        authority_stage: DECISION
+        stable_canonical: true
+        canonical_id: D-REP
+        deprecated_aliases: [DECISION_IR, DIR]
+        type_rules:
+          - can_import_type: [SPECIFICATION, PROTOCOL, CONTRACT, TRANSFORMATION_MANIFEST, PREDICATE_MANIFEST, KNOWLEDGE_REPRESENTATION]
+          - cannot_mutate_type: [SPECIFICATION, PROTOCOL, CONTRACT, TRANSFORMATION_MANIFEST, PREDICATE_MANIFEST, KNOWLEDGE_REPRESENTATION, CONSTITUTIONAL_VISION, CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - can_be_imported_by: [EXECUTION_REPRESENTATION, IMPLEMENTATION_MODULE, CONFORMANCE_REPORT]
+      - type_name: EXECUTION_REPRESENTATION
+        evolution_domain: DOMAIN-B-SPECIFICATION
+        authority_level_index: 11
+        authority_stage: EXECUTION
+        stable_canonical: true
+        canonical_id: X-REP
+        deprecated_aliases: [EXECUTION_PLAN, EXEC-PLAN, Plan IR, Execution IR]
+        type_rules:
+          - can_import_type: [PROTOCOL, CONTRACT, TRANSFORMATION_MANIFEST, PREDICATE_MANIFEST, DECISION_REPRESENTATION, KNOWLEDGE_REPRESENTATION]
+          - cannot_mutate_type: [DECISION_REPRESENTATION, KNOWLEDGE_REPRESENTATION, SPECIFICATION, PROTOCOL, CONTRACT, CONSTITUTIONAL_VISION, CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - can_be_imported_by: [IMPLEMENTATION_MODULE, EVIDENCE_PROOF]
+      - type_name: IMPLEMENTATION_MODULE
+        evolution_domain: DOMAIN-C-IMPLEMENTATION
+        authority_level_index: 12
+        authority_stage: EXECUTION
+        deprecated_aliases: [Runtime Module (partial)]
+        type_rules:
+          - can_import_type: [SPECIFICATION, PROTOCOL, CONTRACT, TRANSFORMATION_MANIFEST, PREDICATE_MANIFEST, DECISION_REPRESENTATION, KNOWLEDGE_REPRESENTATION, EXECUTION_REPRESENTATION, IMPLEMENTATION_TOOLING]
+          - cannot_mutate_type: [SPECIFICATION, PROTOCOL, CONTRACT, TRANSFORMATION_MANIFEST, PREDICATE_MANIFEST, DECISION_REPRESENTATION, KNOWLEDGE_REPRESENTATION, EXECUTION_REPRESENTATION, CONSTITUTIONAL_VISION, CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - cannot_import_type:
+              - CONSTITUTIONAL_VISION
+              - CONSTITUTION_PRINCIPLE
+              - CONSTITUTION_INVARIANT
+              - CONSTITUTION_POLICY
+            rationale: "Implementation must NOT do raw imports of constitution YAML. Governance semantics must come from compiled CONSTIT-IR or through the verifier engine only."
+          - can_be_imported_by: [IMPLEMENTATION_TOOLING, EVIDENCE_PROOF, CONFORMANCE_REPORT]
+      - type_name: IMPLEMENTATION_TOOLING
+        evolution_domain: DOMAIN-C-IMPLEMENTATION
+        authority_level_index: 13
+        authority_stage: EXECUTION
+        deprecated_aliases: []
+        type_rules:
+          - can_import_type: [SPECIFICATION, PROTOCOL, CONTRACT, IMPLEMENTATION_MODULE, EXECUTION_REPRESENTATION, GENERATED_ARTIFACT]
+          - cannot_mutate_type: [SPECIFICATION, PROTOCOL, CONTRACT, CONSTITUTIONAL_VISION, CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - can_be_imported_by: [CONFORMANCE_REPORT, GENERATED_ARTIFACT]
+      - type_name: EVIDENCE_PROOF
+        evolution_domain: DERIVED-EVIDENCE
+        authority_level_index: 14
+        authority_stage: EVIDENCE
+        evidence_layer: Level_0_Raw_Evidence
+        stable_canonical: true
+        canonical_id: V-REP-LEVEL-0
+        deprecated_aliases: [Evidence IR, EPG (partially)]
+        type_rules:
+          - can_import_type: [EXECUTION_REPRESENTATION, IMPLEMENTATION_MODULE]
+          - cannot_mutate:
+              value: true
+              rationale: "Append-only proof object. Mutation invalidates the cryptographic evidence chain."
+          - cannot_mutate_type: [EXECUTION_REPRESENTATION, IMPLEMENTATION_MODULE, SPECIFICATION, PROTOCOL, CONTRACT, CONSTITUTIONAL_VISION, CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - cannot_import_type:
+              - CONSTITUTION_VISION
+              - CONSTITUTION_PRINCIPLE
+              - CONSTITUTION_INVARIANT
+              - CONSTITUTION_POLICY
+              - SPECIFICATION
+              - PROTOCOL
+              - CONTRACT
+            rationale: "Evidence cannot read governance directly. Provenance chain is established only via EXECUTION_REPRESENTATION metadata, not direct import."
+          - can_be_imported_by: [EVIDENCE_ASSESSMENT, EVIDENCE_LEDGER, CONFORMANCE_REPORT]
+      - type_name: EVIDENCE_ASSESSMENT
+        evolution_domain: DERIVED-EVIDENCE
+        authority_level_index: 15
+        authority_stage: EVIDENCE
+        evidence_layer: Level_1_Assessment
+        deprecated_aliases: []
+        type_rules:
+          - can_import_type: [EVIDENCE_PROOF]
+          - cannot_mutate:
+              value: true
+              rationale: "Technical assessment of raw evidence; mutating invalidates conformance measurement chain."
+          - can_be_imported_by: [EVIDENCE_JUSTIFICATION, EVIDENCE_LEDGER, CONFORMANCE_REPORT]
+      - type_name: EVIDENCE_JUSTIFICATION
+        evolution_domain: DERIVED-EVIDENCE
+        authority_level_index: 16
+        authority_stage: EVIDENCE
+        evidence_layer: Level_2_Justification
+        deprecated_aliases: [Justification (narrative only)]
+        type_rules:
+          - can_import_type: [EVIDENCE_PROOF, EVIDENCE_ASSESSMENT]
+          - cannot_mutate:
+              value: true
+              rationale: "Append-only structured + narrative. Must reference authority sources explicitly."
+          - can_be_imported_by: [VERDICT, EVIDENCE_LEDGER, CONFORMANCE_REPORT]
+      - type_name: VERDICT
+        evolution_domain: DERIVED-EVIDENCE
+        authority_level_index: 17
+        authority_stage: EVIDENCE
+        evidence_layer: Level_3_Verdict
+        deprecated_aliases: []
+        type_rules:
+          - can_import_type: [EVIDENCE_ASSESSMENT, EVIDENCE_JUSTIFICATION, EVIDENCE_LEDGER, CONFORMANCE_REPORT]
+          - cannot_mutate:
+              value: true
+              rationale: "Verdict is governance-facing normative output. Once emitted, alteration requires ADR + board record."
+          - cannot_mutate_type: [EVIDENCE_PROOF, EVIDENCE_ASSESSMENT, EVIDENCE_JUSTIFICATION, IMPLEMENTATION_MODULE, DECISION_REPRESENTATION, SPECIFICATION, PROTOCOL, CONTRACT, CONSTITUTIONAL_VISION, CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - can_be_imported_by: [EVIDENCE_LEDGER, REPOSITORY_CERTIFICATION (future)]
+      - type_name: EVIDENCE_LEDGER
+        evolution_domain: DERIVED-EVIDENCE
+        authority_level_index: 18
+        authority_stage: EVIDENCE
+        evidence_layer: Level_Infrastructure
+        deprecated_aliases: [Ledger (ambiguous)]
+        type_rules:
+          - can_import_type: [EVIDENCE_PROOF, EVIDENCE_ASSESSMENT, EVIDENCE_JUSTIFICATION, VERDICT, CONFORMANCE_REPORT]
+          - cannot_mutate:
+              value: true
+              rationale: "Append-only ledger. Only APPEND operation allowed through proof-ledger package API. Rewrite or delete = hash chain break."
+          - can_be_imported_by: [CONFORMANCE_REPORT, VERDICT]
+      - type_name: CONFORMANCE_REPORT
+        evolution_domain: DERIVED-EVIDENCE
+        authority_level_index: 19
+        authority_stage: EVIDENCE
+        evidence_layer: Level_Assessment_Summary
+        deprecated_aliases: []
+        type_rules:
+          - can_import_type: [EVIDENCE_PROOF, EVIDENCE_LEDGER, EVIDENCE_ASSESSMENT, EVIDENCE_JUSTIFICATION, IMPLEMENTATION_MODULE, DECISION_REPRESENTATION]
+          - cannot_mutate_type: [EVIDENCE_PROOF, EVIDENCE_LEDGER, EVIDENCE_ASSESSMENT, EVIDENCE_JUSTIFICATION, IMPLEMENTATION_MODULE, DECISION_REPRESENTATION, SPECIFICATION, PROTOCOL, CONTRACT, CONSTITUTIONAL_VISION, CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - can_be_imported_by: [VERDICT]
+      - type_name: GENERATED_ARTIFACT
+        evolution_domain: DERIVED-EVIDENCE
+        authority_level_index: 20
+        authority_stage: EVIDENCE
+        deprecated_aliases: []
+        type_rules:
+          - can_import_type: [IMPLEMENTATION_TOOLING]
+            rationale: "Only tooling produces generated artifacts. Never hand-written. Violation = ARCH-MAN-INTEGRITY-001."
+          - cannot_mutate_type: [SPECIFICATION, PROTOCOL, CONTRACT, CONSTITUTION_VISION, CONSTITUTION_PRINCIPLE, CONSTITUTION_INVARIANT, CONSTITUTION_POLICY]
+          - parent_input_hash_required:
+              value: true
+              rationale: "Every generated file must carry parent CONSTIT-IR hash for provenance. See ARCH-MAN-INTEGRITY-001."
 
   authority_graph_section:
     mandatory: true
     ir_field: authority_graph_dag
+    schema_ref: /root/Enterprise OS/enterprise/schema/AUTHORITY-DAG.schema.yaml
+    verifier_stage_ref: CV-STAGE-2
     dag_edge_format: { from, to, edge_kind, authority_proof_ref }
     edges_required:
       - from: CONSTITUTIONAL_VISION
@@ -197,22 +425,41 @@ constitution_ir_sections_required:
     ir_field: verification_rule_generators
     description: "MP-01 Computable Governance. Each IA/ASP statement maps to ARCH-* enforcement IDs. This section IS the declaration that ACL is not a disconnected artifact but compiled governance rules."
     generators_mandatory_list:
+      - id: VGEN-IA01-TRIAD
+        source_statement_ref: IA-01 Ontological Triad
+        outputs_arch_rule_ids: [ARCH-18-ONT-TRIAD]
+        compiled_check_parameters:
+          triad_zones: [Knowledge Zone, Registry Zone, Runtime Zone]
+          zone_to_zone_forbidden: ["Knowledge → Runtime", "Registry → Knowledge rewrite", "Runtime → Knowledge write"]
+          ir_border_check_required: ["KIR border", "DIR border", "EPG border"]
+      - id: VGEN-IA06-TABLE
+        source_statement_ref: IA-06 Cross-Layer Dependency Table (8 forbidden pairs)
+        outputs_arch_rule_ids: [ARCH-18-INV-TABLE]
+        compiled_check_parameters:
+          forbidden_dependency_pairs_count: 8
+          forbidden_pairs_table_ref: INVARIANT-ARCHITECTURE.yaml#IA-06_cross_layer_forbidden_dependencies
+      - id: VGEN-IA09-RUNTIME
+        source_statement_ref: IA-09 Knowledge Not In Runtime
+        outputs_arch_rule_ids: [ARCH-19]
+        compiled_check_parameters:
+          forbidden_src_patterns_in_runtime_ts: ["contract string literal", "predicate id literal hardcoded", "transformation manifest id embedded"]
+          whitelist_loader_contexts: ["registry-resolver package (declarative import only)", "predicate-registry package"]
       - id: VGEN-IA10
         source_statement_ref: IA-10 Immutable Knowledge Snapshot
-        outputs_arch_rule_ids: [ARCH-20]
+        outputs_arch_rule_ids: [ARCH-20-IA10-SNAPSHOT]
         compiled_check_parameters:
           - mutable_reads_forbidden_paths: ["enterprise/constitution","enterprise/schema","workspace/contracts","governance/"]
           - post_planning_src_dirs: ["packages/core/runtime/src","packages/core/registry-resolver/src","packages/core/proof-ledger/src","packages/composition"]
           - snapshot_attachment_field_name: knowledge_snapshot
       - id: VGEN-IA11
         source_statement_ref: IA-11 Semantic Determinism
-        outputs_arch_rule_ids: [ARCH-21]
+        outputs_arch_rule_ids: [ARCH-21-IA11-SEM-DET]
         compiled_check_parameters:
           - non_det_signatures: ["Math.random","Date.now","new Date()","fetch","axios","process.env(??)? ?=? branch"]
           - deterministic_tiebreak_signatures: [".localeCompare(","Object.keys().sort()",".sort((a,b)=>a.localeCompare(b))"]
       - id: VGEN-IA13
         source_statement_ref: IA-13 Stable Intermediate Representations
-        outputs_arch_rule_ids: [ARCH-22]
+        outputs_arch_rule_ids: [ARCH-22-IA13-STABLE-IR]
         compiled_check_parameters:
           required_ir_contract_paths:
             [
@@ -225,7 +472,7 @@ constitution_ir_sections_required:
           required_protocol_hash_fields: [ir_content_hash, plan_hash, content_hash, plan.id.*sha256]
       - id: VGEN-IA14
         source_statement_ref: IA-14 Pure Compiler Passes
-        outputs_arch_rule_ids: [ARCH-23]
+        outputs_arch_rule_ids: [ARCH-23-IA14-PURE-PASS]
         compiled_check_parameters:
           upstream_forbid_write_paths:
             [
@@ -249,6 +496,38 @@ constitution_ir_sections_required:
         compiled_check_parameters:
           conformance_impl_private_import_forbid: true
           ad_hoc_type_version_hash_headers_require: true
+      - id: VGEN-CONF-PROP
+        source_statement_ref: CONFORMANCE-PROPERTIES.yaml (6-dimensional Deterministic/Compatible/Reproducible/Auditable/Explainable/Canonical)
+        outputs_arch_rule_ids: [ARCH-29-CONF-PROP-MEASURE]
+        compiled_check_parameters:
+          measurement_algorithms: [MEASURE-DET-v1, MEASURE-COMPAT-v1, MEASURE-REPRO-v1, MEASURE-AUDIT-v1, MEASURE-EXP-v1, MEASURE-CAN-v1]
+          conformance_contract_ref: /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml
+          vector_schema_ref: /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml#conformance_property_vector_schema
+      - id: VGEN-TYPE-SYSTEM
+        source_statement_ref: Evolution Domains as Type System (artifact.schema.yaml#artifact_type + CONSTIT-IR.type_system_section)
+        outputs_arch_rule_ids: [ARCH-26-TYPE-IMPORT, ARCH-27-TYPE-MUTATE, ARCH-28-TYPE-UNCLASSIFIED]
+        compiled_check_parameters:
+          cv_stage1_checks: [CV-TYPE-01, CV-TYPE-02, CV-TYPE-03]
+          type_system_anchor: /root/Enterprise OS/enterprise/schema/artifact.schema.yaml#artifact_type
+          type_enumeration_count: 18
+          domain_count: 4
+      - id: VGEN-AUTH-DAG
+        source_statement_ref: Authority Flow as DAG (AUTHORITY-DAG.schema.yaml + VISION-03 authority flows downward only)
+        outputs_arch_rule_ids: [ARCH-30-DAG-REVERSE, ARCH-31-DAG-CYCLE, ARCH-32-DAG-DANGLING]
+        compiled_check_parameters:
+          cv_stage2_checks: [CV-DAG-01, CV-DAG-02, CV-DAG-03]
+          dag_schema_ref: /root/Enterprise OS/enterprise/schema/AUTHORITY-DAG.schema.yaml
+          cycle_algorithm: KAHNS_TOPOLOGICAL_TIEBREAK_AUTH_LEVEL_THEN_LEX
+          edge_direction_rule: "topological_index(from) < topological_index(to) → forward else reverse-invalid"
+      - id: VGEN-PROTO-COMP
+        source_statement_ref: PROTOCOL-COMPILATION.spec.yaml (Protocol Governance compiled into matrices, paths, migrations, deprecation)
+        outputs_arch_rule_ids: [ARCH-33-COMPAT-MATRIX, ARCH-34-UPGRADE-PATH]
+        compiled_check_parameters:
+          matrix_generation: GEN-COMPAT-MATRIX-v1
+          upgrade_generation: GEN-UPGRADE-PATHS-v1
+          migration_generation: GEN-MIGRATION-v1
+          deprecation_generation: GEN-DEPRECATION-v1
+          output_path_root: build/governance/generated-compat/
 
 ir_content_hash_calculation:
   hash_algorithm: SHA-256

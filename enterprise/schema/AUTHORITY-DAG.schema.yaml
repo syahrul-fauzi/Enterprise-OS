@@ -1,0 +1,203 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://enterprise-os.io/schema/AUTHORITY-DAG.schema.yaml
+title: EOS Authority Flow DAG Schema
+description: >
+  Formal schema for the Authority Flow Directed Acyclic Graph per user point 7 (Authority Flow jadi Dependency Graph).
+  Rule: edge direction = authority direction. Every edge that points the opposite way of topological order
+  is automatically invalid (CONST-VERIF Stage 2 CV-DAG-01).
+
+  This schema is consumed by:
+  (1) CONSTITUTIONAL-VISION.yaml#authority_dag_edges_foundation (foundational edges, VISION→C→S→P→I→E)
+  (2) CONST-COMP CC-PASS-2-AUTHORITY-DAG (construction + cycle check)
+  (3) CONST-VERIF CV-STAGE-2 (validation against actual artifact derivation links)
+
+type: object
+required:
+  - dag_id
+  - dag_version
+  - node_registry
+  - edges
+  - topological_order
+  - cycle_check
+additionalProperties: false
+
+properties:
+  dag_id:
+    type: string
+    pattern: '^AUTHORITY-DAG-(EOS|ARTIFACT)-[A-Z0-9-]+$'
+    description: "e.g., AUTHORITY-DAG-EOS-FOUNDATION for VISION→C→S→P→I→E, AUTHORITY-DAG-ARTIFACT-<repo-snapshot> for actual per-artifact graph."
+
+  dag_version:
+    type: string
+    pattern: '^\d+\.\d+\.\d+$'
+    description: "Semver of the DAG schema. Breaking changes to the graph model → MAJOR."
+
+  generation_context:
+    type: object
+    properties:
+      source_manifest_ref:
+        type: string
+        description: "Path to the source YAML / manifest that seeded this DAG."
+      constit_ir_hash:
+        type: string
+        pattern: '^sha256:[a-f0-9]{64}$'
+        description: "If produced by CONST-COMP, the hash of the CONSTIT-IR that produced this DAG."
+      produced_at_utc:
+        type: string
+        format: date-time
+        description: "Diagnostic only; excluded from graph integrity hash."
+    additionalProperties: false
+
+  node_registry:
+    type: array
+    description: "All nodes in the authority graph. Each node = an artifact or a canonical aggregate layer."
+    items:
+      type: object
+      required: [node_id, node_kind, evolution_domain, authority_level_index]
+      additionalProperties: false
+      properties:
+        node_id:
+          type: string
+          description: "Stable unique id for this node. e.g., CONSTITUTIONAL-VISION, PROTO-KIR-EXCHANGE-v1_0_0, packages-core-runtime-src-resolver-ts"
+          pattern: '^[A-Za-z0-9_-]+$'
+        node_kind:
+          type: string
+          enum:
+            - FOUNDATIONAL_LAYER
+            - CONSTITUTION_PRINCIPLE
+            - CONSTITUTION_INVARIANT
+            - SPECIFICATION
+            - PROTOCOL
+            - CONTRACT
+            - IMPLEMENTATION_MODULE
+            - EXECUTION_PLAN
+            - EVIDENCE_NODE
+            - LEDGER_ENTRY
+        evolution_domain:
+          type: string
+          enum: [DOMAIN-A-CONSTITUTION, DOMAIN-B-SPECIFICATION, DOMAIN-C-IMPLEMENTATION, DERIVED-EVIDENCE]
+        authority_level_index:
+          type: integer
+          minimum: 0
+          maximum: 10
+          description: >
+            Canonical authority level for ordering. Smaller = higher authority.
+            Foundation assigns: VISION = 0, ASP = 1, IA = 2, SPEC = 3, PROTOCOL = 4, CONTRACT = 5, IMPL = 6, EXEC_PLAN = 7, EVIDENCE = 8.
+            This is the total order used by the topological sort tie-break.
+        artifact_path_ref:
+          type: string
+          description: "If node represents a concrete artifact, the filesystem path to it."
+        description:
+          type: string
+
+  edges:
+    type: array
+    description: >
+      Directed edges of authority. Rule: edge from NODE_A → NODE_B means NODE_A constrains / governs / derives into NODE_B.
+      If topological_index(NODE_A) > topological_index(NODE_B) → the edge is reverse-authority → invalid.
+    items:
+      type: object
+      required: [from, to, edge_kind, authority_proof_ref]
+      additionalProperties: false
+      properties:
+        from:
+          type: string
+          description: "Source node_id. Authority originates here (higher-or-equal authority level)."
+        to:
+          type: string
+          description: "Target node_id. Receiver of authority."
+        edge_kind:
+          type: string
+          enum:
+            - VISION_CONSTRAINS_PRINCIPLES
+            - ASP_CONSTRAINS_INVARIANTS
+            - INVARIANTS_CONSTRAIN_SPECS
+            - SPECS_DEFINE_PROTOCOLS
+            - SPECS_CONSTRAIN_CONTRACTS
+            - CONTRACTS_DEFINE_PROTOCOLS
+            - PROTOCOLS_CONSTRAIN_IMPLEMENTATIONS
+            - IMPLEMENTATION_PRODUCES_EXECUTION_PLAN
+            - EXECUTION_PRODUCES_EVIDENCE
+            - EVIDENCE_APPENDS_TO_LEDGER
+            - IMPLEMENTATION_IMPORTS_SPEC
+            - IMPLEMENTATION_READS_CONTRACT
+            - DERIVATION_PROVENANCE
+            - INFERENCE_RULE
+        authority_proof_ref:
+          type: string
+          description: >
+            Path or URL to the authoritative artifact that JUSTIFIES this edge.
+            Used by CV-STAGE-2 (MEASURE-AUDIT) to verify that the graph is fully auditable.
+            Examples:
+              - CONSTITUTIONAL-VISION.yaml#authority_dag_edges_foundation/edges/0
+              - INVARIANT-ARCHITECTURE.yaml#IA-06/forbidden_dependency_table[3]
+              - workspace/contracts/KNOWLEDGE-IR.contract.yaml#schema
+        edge_metadata:
+          type: object
+          additionalProperties: true
+          description: "Custom fields per edge kind. E.g., for DERIVATION_PROVENANCE edge: premise_ids[], rule_id, inference_score."
+
+  topological_order:
+    type: array
+    items:
+      type: string
+    description: >
+      Deterministic topological order of node_ids computed by Kahn's algorithm with tie-break = authority_level_index ascending, then node_id lexical ascending.
+      CV-STAGE-2 recomputes this from edges and validates against this field. Mismatch → integrity error.
+
+  cycle_check:
+    type: object
+    required: [algorithm, cycle_free, cycle_nodes_if_any]
+    additionalProperties: false
+    properties:
+      algorithm:
+        type: string
+        const: "KAHNS_TOPOLOGICAL_TIEBREAK_AUTH_LEVEL_THEN_LEX"
+      cycle_free:
+        type: boolean
+        description: "true = valid DAG. false = cycles detected (invalid governance)."
+      cycle_nodes_if_any:
+        type: array
+        items:
+          type: string
+        description: "If cycle_free=false, the nodes in a cycle (debug only)."
+
+  dag_integrity_hash:
+    type: string
+    pattern: '^sha256:[a-f0-9]{64}$'
+    description: >
+      SHA-256 of canonicalized: node_registry (sorted by authority_level_index then node_id) + edges (sorted by from→to).
+      Excludes: generation_context.produced_at_utc.
+      Used by CONST-VERIF CV-DAG provenance chain verification.
+
+  validation_rules:
+    type: object
+    description: "Applied by CONST-VERIF CV-STAGE-2."
+    properties:
+      AUTHORITY_DIRECTION:
+        rule: "For every edge (from→to): topological_order_index[from] < topological_order_index[to]  (from must come before to in the sort → authority flows forward, never back)."
+        violation_class: REVERSE_EDGE
+        severity: FATAL
+      NO_CYCLES:
+        rule: "cycle_check.cycle_free MUST be true."
+        violation_class: CYCLE_DETECTED
+        severity: FATAL
+      PROOF_CHAIN_COMPLETE:
+        rule: "For every edge, authority_proof_ref MUST resolve to a CONSTIT-IR section or Snapshot manifest entry that is machine-readable."
+        violation_class: DANGLING_PROOF
+        severity: WARN (for SPEC), FATAL (for CONSTITUTION / PROTOCOL / EVIDENCE)
+    additionalProperties: false
+
+examples:
+  - description: "Minimal foundation graph fragment"
+    dag_id: AUTHORITY-DAG-EOS-FOUNDATION
+    dag_version: "1.0.0"
+    node_registry:
+      - {node_id: VISION, node_kind: FOUNDATIONAL_LAYER, evolution_domain: DOMAIN-A-CONSTITUTION, authority_level_index: 0}
+      - {node_id: ASP, node_kind: CONSTITUTION_PRINCIPLE, evolution_domain: DOMAIN-A-CONSTITUTION, authority_level_index: 1}
+      - {node_id: IA, node_kind: CONSTITUTION_INVARIANT, evolution_domain: DOMAIN-A-CONSTITUTION, authority_level_index: 2}
+    edges:
+      - {from: VISION, to: ASP, edge_kind: VISION_CONSTRAINS_PRINCIPLES, authority_proof_ref: CONSTITUTIONAL-VISION.yaml#authority_dag_edges_foundation/edges/0}
+      - {from: ASP, to: IA, edge_kind: ASP_CONSTRAINS_INVARIANTS, authority_proof_ref: ARCHITECTURAL-STABILITY-PRINCIPLES.yaml}
+    topological_order: [VISION, ASP, IA]
+    cycle_check: {algorithm: KAHNS_TOPOLOGICAL_TIEBREAK_AUTH_LEVEL_THEN_LEX, cycle_free: true, cycle_nodes_if_any: []}

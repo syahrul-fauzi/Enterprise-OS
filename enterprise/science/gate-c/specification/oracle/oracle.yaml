@@ -1,0 +1,91 @@
+version: "1.0.0"
+status: FROZEN
+oracle_id: GATE-C-ORACLE-001
+schema_ref: specification/schemas/oracle.schema.yaml
+kind: NORMATIVE_EVALUATOR_RELATION
+role: EVALUATOR_ONLY
+purpose: >
+  Oracle is the normative evaluator relation that determines whether observed witnesses satisfy the
+  experiment specification. It is not an execution engine, not a strategy runtime, and not a
+  governance authority.
+
+formal_signature:
+  notation: "O(S,W) -> Evaluation"
+  domain:
+    specification: IMMUTABLE_SPECIFICATION_SET
+    witness: IMMUTABLE_OBSERVED_WITNESS_BUNDLE
+  codomain:
+    evaluation: CONSTITUTIONAL_EVALUATION_ARTIFACT
+
+purity:
+  pure_function: true
+  deterministic: true
+  reads_global_state: false
+  mutates_inputs: false
+  emits_new_evidence: false
+  runtime_dependent: false
+
+specification_inputs:
+  hypothesis_ref: specification/hypothesis.yaml
+  protocol_ref: specification/protocol.yaml
+  truth_table_ref: specification/truth-table.yaml
+  expected_predicates_ref: specification/expected/predicates/document-predicates.yaml
+  expected_evaluations_ref: specification/expected/evaluations/document-evaluations.yaml
+  witness_bundle_contract_ref: specification/manifests/witness-bundle-layout.yaml
+  reproducibility_manifest_ref: specification/manifests/reproducibility-manifest.yaml
+  witness_integrity_ref: specification/witness-integrity.yaml
+  oracle_manifest_ref: specification/oracle/oracle-manifest.yaml
+  schema_refs:
+    - specification/schemas/witness.schema.yaml
+    - specification/schemas/evaluation.schema.yaml
+    - specification/schemas/witness-integrity.schema.yaml
+    - specification/schemas/run-manifest.schema.yaml
+    - specification/schemas/reproducibility-manifest.schema.yaml
+
+execution_inputs:
+  witness_bundle_ref: execution/runs/run-<NNN>/actual/witness/
+  run_manifest_ref: execution/runs/run-<NNN>/run-manifest.yaml
+  actual_observation_ref: execution/runs/run-<NNN>/actual/observations/
+
+predicate_evaluators:
+  pred_a_evaluator:
+    evaluator_id: GATE-C-ORACLE-PRED-A-001
+    target_predicate: LEGITIMATE_PRED_A
+    method: REPLAY_AUTHORITY_RELATION_AND_NO_CYCLE_CHECK
+  pred_b_evaluator:
+    evaluator_id: GATE-C-ORACLE-PRED-B-001
+    target_predicate: MEANING_PRESERVED_PRED_B
+    method: REPLAY_CANONICAL_IDENTITY_AND_SEMANTIC_EQUIVALENCE
+  pred_c_evaluator:
+    evaluator_id: GATE-C-ORACLE-PRED-C-001
+    target_predicate: PROVABLE_PRED_C
+    method: REPLAY_CONSTRUCTIVE_ENTAILMENT_OF_POSTCONDITIONS
+
+constitutional_evaluator:
+  evaluator_id: GATE-C-ORACLE-IA20-001
+  expression: "LEGITIMATE_PRED_A and MEANING_PRESERVED_PRED_B and PROVABLE_PRED_C"
+  truth_table_ref: specification/truth-table.yaml
+
+evaluation_pipeline:
+  - Validate witness artifacts and run manifest against schemas.
+  - Validate specification reproducibility manifest, witness integrity contract, and witness bundle contract before consuming run outputs.
+  - Enforce witness immutability and chain-of-custody completeness before predicate replay.
+  - Replay Predicate A from authority witness without trusting witness claims as self-proving.
+  - Replay Predicate B from meaning witness and compare against truth-table semantics.
+  - Replay Predicate C from proof witness and verify constructive entailment of postconditions.
+  - Map the resulting predicate vector to one row in truth-table.yaml.
+  - Compare the mapped row and IA-20 evaluation against expected predicate and expected evaluation contracts.
+  - Emit evaluation artifact only after all comparisons complete.
+
+outputs:
+  evaluation_ref: execution/runs/run-<NNN>/evaluations/<experiment-subject-id>.yaml
+  comparison_mode: TRUTH_TABLE_AND_EXPECTED_CONTRACTS
+
+invariants:
+  - Oracle MUST remain evaluator-only: no witness generation, no fixture mutation, no protocol mutation.
+  - Oracle MUST behave as a pure function over immutable specification and immutable witness inputs.
+  - Oracle MUST treat truth-table.yaml as executable specification, not prose documentation.
+  - Oracle MUST produce identical evaluations across runtimes for identical run inputs.
+  - Oracle MUST report INCONCLUSIVE rather than PASS when witness evidence is missing or ambiguous.
+  - Oracle MUST NOT emit governance verdicts; governance may derive verdicts only after evaluation artifacts exist.
+  - Oracle MUST NOT depend on external mutable state beyond the supplied specification and witness inputs.

@@ -26,6 +26,49 @@ Lihat Level-Matrix berikut untuk lifecycle artefak yang berbeda:
 
 ---
 
+## IDENTITAS EOS KONSTITUSIONAL (PRESERVASI BASELINE v1.4 + KONSEKWENSI SPIRINT 0)
+
+> **Scientific Identity EOS (Baseline v1.4 — DIPERTAHANKAN):**
+> Enterprise OS is an evidence-driven decision infrastructure.
+
+> **Constitutional Identity Enhancement (Sprint 0 — tidak mengubah identitas ilmiah, hanya menjelaskan mekanisme normatifnya):**
+> Enterprise OS is a Constitutional Evidence-Driven Decision Infrastructure.
+> Its constitutional model governs authority, preserves meaning through canonical forms and transformation semantics,
+> and establishes constitutional proofs that connect every production verdict back to its authoritative origin.
+
+Perubahan identitas di atas **BUKAN** perubahan PASAL (tidak membutuhkan bobot PASAL 1), karena:
+- Kata kunci **evidence-driven decision infrastructure** (Baseline v1.4) tetap menjadi identitas utama;
+- Kata **Constitutional** hanya menjelaskan *mekanisme tata kelola* yang memungkinkan identitas ilmiah tersebut diwujudkan secara konsisten lintas generasi teknologi.
+
+### Teori Konstitusional: Tiga Hukum Fundamental (bukan 6 Lapisan sebagai Teori)
+
+Evolusi Sprint 0 menghasilkan reduksi akhir: **enam lapisan (Constitution→Authority→Knowledge→Transformation→Execution→Evidence)** tetap berlaku sebagai **Reference Architecture** (tata letak engineering), tetapi *teori konstitusional* — fondasi ontologis yang benar-benar bebas teknologi dan dibekukan untuk satu dekade — direduksi menjadi TIGA HUKUM FUNDAMENTAL yang independen secara ontologis:
+
+| Hukum | Pertanyaan yang Dijawab | Cakupan Konsep | Aksioma Realisasi |
+|-------|------------------------|----------------|-------------------|
+| **Hukum I — Authority** | *"Mengapa artefak ini sah?"* | Constitution, Normative Law, Operational Law, Authority Graph (DAG ketat), Approval, Delegation, Epoch, Lexicon | Axiom A |
+| **Hukum II — Meaning** | *"Apa makna normatif artefak ini?"* | Requirements, Intent, Policies, Contracts, Ontology, Canonical Form, Knowledge Graph, Vocabulary | Axiom B |
+| **Hukum III — Realization** | *"Bagaimana makna diwujudkan menjadi tindakan yang dapat dibuktikan?"* | Transformation Semantics × Strategy, Planning, Validation, Execution, Constitutional Proof (3 sub-proof), Evidence, Assessment, Verdict | Axiom C, Axiom D |
+
+Order invariant: **Hukum I → Hukum II → Hukum III** (Authority mendahului Meaning, keduanya mendahului Realization).
+**Pemisahan Dual Primary Graphs:** Authority Graph (Hukum I) dan Knowledge Graph (Hukum II) adalah dua graph primer TERSEPARAH dengan set edge pairwise disjoint. Edge yang menjawab "mengapa sah" → Authority Graph. Edge yang menjawab "hubungan semantik apa" → Knowledge Graph.
+
+### Empat Aksioma Konstitusional (A/B/C/D) — Inti yang Dibekukan 2026–2036
+
+SELURUH konsep EOS lain (Authority Graph, Knowledge Graph, Canonical Form, Protocol, Transformation Semantics, Planner, Runtime, Evidence, Assessment, Justification, Verdict, Conformance Model, dsb.) DAPAT DITURUNKAN sebagai konsekuensi dari **empat aksioma berikut** yang dibekukan (frozen) untuk cakrawala satu dekade:
+
+| Aksioma | Pernyataan Formal | Invarian yang Diwujudkan |
+|---------|-------------------|--------------------------|
+| **Axiom A — Authority** | Semua legitimasi harus berasal dari rantai otoritas konstitusional yang dapat ditelusuri. | IA-15 Authority Graph (DAG strict), IA-17 Authority Preservation, Constitutional Proof Sub-Proof 1 |
+| **Axiom B — Meaning** | Makna normatif harus dinyatakan dalam Canonical Form yang independen dari representasi dan teknologi. | IA-13 Stable Canonical Forms (8 media concretization = identity sama), IA-15 Knowledge Graph, Constitutional Proof Sub-Proof 2 |
+| **Axiom C — Realization** | Semua transformasi harus mempertahankan authority dan meaning, terlepas dari strategi implementasinya. | IA-14 Pure Transformations, IA-16 Semantics × Strategy separation (SQL Standard ↔ Optimizer pattern), Constitutional Proof Sub-Proof 3 |
+| **Axiom D — Proof** | Setiap verdict harus dapat dibuktikan melalui Constitutional Proof yang menghubungkan hasil kembali ke sumber otoritasnya. | IA-18 Constitutional Proof = komposisi ∧3 sub-proofs, Ledger atomic append, downstream Evidence→Verdict dependency |
+
+**Pernyataan PASAL 8 Compliance (Penyederhanaan Bukan Pembengkakan):**
+Empat aksioma di atas BUKAN penambahan kompleksitas baru. Ini adalah *REDUKSI* dari 15+ konsep yang sebelumnya muncul sebagai fundamental independen (Authority, Knowledge, Transformation, Execution, Evidence, IR, Canonical Rep, Compiler Pass, Runtime, dll.) menjadi 4 aksioma yang menurunkan semuanya. GB >> GC: total onboarding cost engineer baru menurun (memahami 4 aksioma → memahami seluruh EOS), sementara reuse dan konsistensi keputusan implementasi meningkat tajam.
+
+---
+
 ## ⚠️ FAILURE MODE WAJIB DIHINDARI: META-ARCHITECTURE DRIFT
 
 (Kalibrasi Keempat — Peringatan Resmi Konstitusional.)
@@ -256,6 +299,10 @@ semakin KECIL laju perubahan yang diizinkan per satuan waktu.
 
 Urutan Stabilitas (paling stabil → paling volatil):
 ```
+Constitutional Ontological Foundation
+  ├─ Three Fundamental Laws (Authority, Meaning, Realization)
+  └─ Four Constitutional Axioms (A, B, C, D — frozen 2026–2036)
+    ↑ change-rate ≈ 0 / abad — hanya berubah jika platform identity berubah
 Foundation (Kernel, Core Contracts, Schema Registry)
     ↑ change-rate ≤ 0.05 / bulan — hampir tidak pernah berubah
 Capability (Domain Logic, Ports, Commands, Queries, Repositories)
@@ -277,6 +324,7 @@ DILARANG: Capability → Composition          [reverse dependency]
 DILARANG: Composition → Experience          [reverse dependency]
 DILARANG: Experience → Product              [reverse dependency]
 DILARANG: Capability → Experience / Product  [coupling violation — PASAL 5]
+DILARANG: SELURUH lapisan engineering (Foundation–Product) DAPAT MERUJUK TAPI TIDAK BOLEH MUTASI artefak Three Laws atau Four Constitutional Axioms
 ```
 
 Konsekuensi: Jika ada bukti EDCR (Experience-Driven Change Rate) > 30%

@@ -1,0 +1,11 @@
+version: "1.0.0"
+kind: FIXTURE_EVIDENCE_RETRIEVE_ACCESS_PROOF
+fixture_id: FIX-EVI-RET-ACCESS
+status: IMMUTABLE_FIXTURE
+evidence_items:
+  - id: EVI-RET-AUTHZ-001
+    type: authorization_decision_trace
+    description: "Access authorization decision trace"
+    data:
+      authorized: true
+      role_matched: role-document-reader-001

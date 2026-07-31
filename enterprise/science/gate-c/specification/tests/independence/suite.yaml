@@ -1,0 +1,17 @@
+version: "1.0.0"
+suite_id: GATE-C-INDEPENDENCE-SUITE-001
+status: ACTIVE
+scientific_claim: >
+  Each witness in the constitutional witness tuple is individually necessary. Removing any one
+  witness from a passing experiment must prevent PASS from being emitted.
+
+mutation_operator: DROP_SINGLE_WITNESS
+
+required_mutations:
+  - drop_pred_a_witness
+  - drop_pred_b_witness
+  - drop_pred_c_witness
+
+expected_result:
+  disposition_after_mutation: INCONCLUSIVE
+  pass_forbidden: true

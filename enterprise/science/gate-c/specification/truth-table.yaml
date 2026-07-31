@@ -1,0 +1,103 @@
+version: "1.0.0"
+status: FROZEN_FOR_PREDICATE_MODEL
+kind: TRUTH_TABLE_FOR_CONSTITUTIONAL_VALIDITY
+truth_table_id: GATE-C-TRUTH-TABLE-01
+predicate_dimensions: 3
+total_rows: 8
+formula_reference: "ConstitutionallyValid(T) ⇔ Legitimate(T) ∧ MeaningPreserved(T) ∧ Provable(T) — CC-001 §6 + LEX-0000D + IA-20"
+terminology_refs:
+  pred_a: LEX-0000A Predicate A — Legitimate(x)
+  pred_b: LEX-0000B Predicate B — MeaningPreserved(T)
+  pred_c: LEX-0000C Predicate C — Provable(T)
+  meta_predicate: LEX-0000D Constitutional Validity (IA-20)
+protocol_requirements_reference: protocol.yaml acceptance.truth_table.rule=complete
+note_why_8_rows: >
+  The 3 constitutional predicates are Boolean and are claimed (per working_hypothesis H1) to be jointly
+  sufficient AND individually necessary for Constitutional Validity. Hence the full 2³=8 Cartesian truth
+  table is the reference; every experiment evaluation must match one of the rows below exactly. No "9th row"
+  is permitted by the theory; any evaluation that cannot be mapped to a row below is either:
+    (a) INCONCLUSIVE — insufficient evidence to evaluate one or more predicates, OR
+    (b) FALSIFICATION — the theory H1 is refuted.
+
+rows:
+  - id: P1
+    label: POSITIVE-ALL-PASS
+    pred_a__legitimate: true
+    pred_b__meaning_preserved: true
+    pred_c__provable: true
+    expected__constitutionally_valid: true
+    truth_function: "T ∧ T ∧ T = T"
+    description: "All three predicates TRUE → Constitutional Validity TRUE. This is the ONLY row where Constitutional PASS can be emitted."
+    example_experimental_domain: "Document Propose/Approve/Archive/Retrieve — when all authority chains, semantic equivalence, and constructive entailment evidence are sound."
+
+  - id: N1
+    label: NEGATIVE-L-AUTHORITY-BROKEN
+    pred_a__legitimate: false
+    pred_b__meaning_preserved: true
+    pred_c__provable: true
+    expected__constitutionally_valid: false
+    truth_function: "F ∧ T ∧ T = F"
+    description: "Authority chain INVALID (e.g. unapproved delegation, cycle, fails to resolve to root) → FAIL regardless of meaning/proof perfection."
+    example_experimental_domain: "ApproveDocument by someone without delegation authority, even if document content meaning 100% preserved and signature evidence technically correct."
+
+  - id: N2
+    label: NEGATIVE-L-MEANING-DRIFT
+    pred_a__legitimate: true
+    pred_b__meaning_preserved: false
+    pred_c__provable: true
+    expected__constitutionally_valid: false
+    truth_function: "T ∧ F ∧ T = F"
+    description: "Meaning NOT preserved (CanonicalIdentity drifted, semantic invention or weakening) → FAIL regardless of authority correctness and proof strength."
+    example_experimental_domain: "ApproveDocument where approval was 'approve-as-is' but surface changed approval semantics to 'approve-with-amendments' — authority valid, signatures valid, but normative meaning drifted."
+
+  - id: N3
+    label: NEGATIVE-L-MEANING-AUTHORITY
+    pred_a__legitimate: false
+    pred_b__meaning_preserved: false
+    pred_c__provable: true
+    expected__constitutionally_valid: false
+    truth_function: "F ∧ F ∧ T = F"
+    description: "Both authority and meaning invalid; proof alone insufficient."
+    example_experimental_domain: "ArchiveDocument initiated by unauthorized actor (¬A) AND retention policy document itself had semantic drift vs canonical (¬B) BUT evidence technically ledgered (C)."
+
+  - id: N4
+    label: NEGATIVE-L-PROOF-GAP
+    pred_a__legitimate: true
+    pred_b__meaning_preserved: true
+    pred_c__provable: false
+    expected__constitutionally_valid: false
+    truth_function: "T ∧ T ∧ F = F"
+    description: "Authority valid, meaning preserved BUT evidential gap — no constructive entailment from Evidence to Postconditions. PASS cannot be emitted."
+    example_experimental_domain: "RetrieveDocument by authorized user (A OK), doc received identical (B OK), but access log was corrupted → no evidence to constructively prove retrieval actually occurred (¬C)."
+
+  - id: N5
+    label: NEGATIVE-L-PROOF-AUTHORITY
+    pred_a__legitimate: false
+    pred_b__meaning_preserved: true
+    pred_c__provable: false
+    expected__constitutionally_valid: false
+    truth_function: "F ∧ T ∧ F = F"
+    description: "Authority invalid AND proof gap."
+
+  - id: N6
+    label: NEGATIVE-L-PROOF-MEANING
+    pred_a__legitimate: true
+    pred_b__meaning_preserved: false
+    pred_c__provable: false
+    expected__constitutionally_valid: false
+    truth_function: "T ∧ F ∧ F = F"
+    description: "Meaning drifted AND proof gap."
+
+  - id: N7
+    label: NEGATIVE-ALL-FAIL
+    pred_a__legitimate: false
+    pred_b__meaning_preserved: false
+    pred_c__provable: false
+    expected__constitutionally_valid: false
+    truth_function: "F ∧ F ∧ F = F"
+    description: "All three predicates FALSE → Constitutional FAIL."
+
+acceptance_requirement_from_protocol: >
+  acceptance.truth_table.rule = complete.
+  AT LEAST one experiment subject MUST exercise each row P1..N7.
+  A run that only exercises P1 (positive case) without N1..N7 (negative falsification attempts) does NOT constitute corroboration of H1; it is an INCOMPLETE experimental run (per protocol.yaml evaluation_disposition GAP).

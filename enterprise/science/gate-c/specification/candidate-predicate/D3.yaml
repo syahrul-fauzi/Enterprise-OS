@@ -1,0 +1,11 @@
+version: "1.0.0"
+candidate_id: D3
+status: UNDER_TEST
+candidate_name: CrossRuntimeInvariant
+statement: >
+  Constitutional validity should remain invariant across independently implemented runtimes for the
+  same dataset, contract, and oracle inputs.
+derivability_hypothesis: NOT_YET_PROVEN_DERIVABLE
+rationale: >
+  This candidate may be an operational consequence of A, B, and C rather than a new constitutional
+  predicate. The minimality suite exists to test that claim formally instead of assuming it.

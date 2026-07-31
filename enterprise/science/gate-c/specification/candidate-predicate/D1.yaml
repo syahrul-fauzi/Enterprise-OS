@@ -1,0 +1,10 @@
+version: "1.0.0"
+candidate_id: D1
+status: UNDER_TEST
+candidate_name: AuthorityDocumented
+statement: >
+  Every valid transformation should carry explicit authority documentation as a separate predicate.
+derivability_hypothesis: DERIVABLE_FROM_PRED_A
+rationale: >
+  If authority closure can already be established for Legitimate(T), separate authority documentation
+  may be redundant rather than constitutive.

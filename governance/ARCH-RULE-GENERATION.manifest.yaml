@@ -1,0 +1,502 @@
+version: "1.0.0"
+status: FROZEN
+kind: MANIFEST
+layer: ARCHITECTURAL_COMPLIANCE_RULE_CATALOG
+abbreviation: ARCH-MAN
+evolution_domain: DOMAIN-B-SPECIFICATION
+ssot_note: THIS_MANIFEST_IS_THE_SINGLE_TRUTH_FOR_THE_MAPPING_BETWEEN_CONSTITUTION_STATEMENTS_(IA/ASP)_AND_THEIR_GENERATED_ACL_RULES_(ARCH-*)._IT_IMPLEMENTS_MP-01(A):_EVERY_IA_STATEMENT_WITH_ENFORCEMENT_ACL_RULE_ID_MUST_HAVE_A_CORRESPONDING_GENERATED_ARTIFACT._THIS_MANIFEST_ITSELF_IS_INPUT_TO_CC-PASS-4-VERIFICATION-RULE-GEN_OF_THE_CONSTITUTIONAL_COMPILER._NO_NEW_ARCH-RULE_MAY_EXIST_WITHOUT_A_ENTRY_IN_THIS_MANIFEST_DECLARING_WHICH_CONSTITUTION_SOURCE_PRODUCES_IT.
+governance_ref:
+  mp01_a: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#MP-01
+  cc_pass4: /root/Enterprise OS/enterprise/specifications/CONSTITUTIONAL-COMPILER.spec.yaml#five_compiler_passes[CC-PASS-4-VERIFICATION-RULE-GEN]
+  ia: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
+  asp: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
+derived_from:
+  - User_Point_Governance_Rules_Generated_Not_Manual
+  - User_MP01_Computable_Governance_A
+  - IA-06_Forbidden_Dependency_Table
+  - IA-10_14_Invariants_With_ACL_IDs
+
+manifest_preamble:
+  statement: |
+    Each ARCH-* compliance rule in EOS is declared here with:
+      - source: which IA or ASP statement produced it
+      - generation: whether MANUAL (legacy transitional) or GENERATED (from CONST-COMP Pass 4)
+      - parameters: compiled scan parameters that Constitutional Verifier consumes
+      - generated_path: for GENERATED rules, the output path under build/governance/generated-arch-rules/
+      - violation_class: what type of governance failure it catches
+      - remediation_snippet_ref: pointer to documentation explaining how to fix
+    The goal per MP-01: 100% GENERATED at Phase 2 (Gate E exit).
+    During Phase 0 (current), MANUAL rules exist for legacy ACL-001..007. All rules ARCH-18 onwards are GENERATED or in dual-source transition.
+
+generation_status_legend:
+  - id: MANUAL_LEGACY
+    description: "Written by hand in architecture-compliance.yaml. No compiler pass produces it. PHASE 0 only. Sunset target Phase 2."
+  - id: DUAL_SOURCE_TRANSITION
+    description: "Both hand-written intent AND generated .yaml exist. Generated is canonical. Hand-writing = migration reference only. Phase 0-1."
+  - id: GENERATED
+    description: "Generated artifact ONLY. No hand-written source-of-truth. Phase 1+ target. Phase 2 mandatory for new rules."
+
+rule_catalog:
+
+  # ───────────────── Legacy Manual Rules (ACL-001..007) ─────────────────
+
+  - arch_rule_id: ACL-001
+    short_name: Frozen root directories
+    source_statement_ref: ASP-01 + Sprint 0 Baseline Lock
+    source_file_ref: /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+    generation: MANUAL_LEGACY
+    scan_type: STRUCTURE_DIRECTORY_ENUMERATION
+    check_parameters:
+      allowed_root_dirs: [apps, capabilities, packages, contracts, decisions, config, scripts, governance, enterprise, build, implementation, experiments, workspace, workspace-legacy]
+      forbidden_new_root_globs: ["!(apps|capabilities|packages|contracts|decisions|config|scripts|governance|enterprise|build|implementation|experiments|workspace|workspace-legacy)"]
+    violation_class: BASELINE_VIOLATION
+    remediation_snippet_ref: /root/Enterprise OS/governance/BASELINE_LOCK.yaml#remediation_add_root_dir
+    sunset_plan: Phase 1 migration to a new GENERATED rule ARCH-26 via new IA statement for repository structural constitution.
+
+  - arch_rule_id: ACL-002
+    short_name: Package boundary authority declared
+    source_statement_ref: ASP-01 + EVO-DOMAINS + package-authority.yaml
+    source_file_ref: /root/Enterprise OS/governance/package-authority.yaml
+    generation: MANUAL_LEGACY
+    scan_type: METADATA_PRESENCE
+    check_parameters:
+      package_families_required: [core, composition, presentation, tooling]
+      authority_field_required_per_package: [owner_team, allowed_change_class]
+    violation_class: BASELINE_VIOLATION
+    remediation_snippet_ref: /root/Enterprise OS/governance/package-authority.yaml
+    sunset_plan: Phase 1 → ARCH-27 (from Domain Type System)
+
+  - arch_rule_id: ACL-003
+    short_name: Dependency law declared
+    source_statement_ref: IA-06 Forbidden Dep Table
+    source_file_ref: /root/Enterprise OS/governance/dependency-rules.yaml
+    generation: MANUAL_LEGACY
+    scan_type: POLICY_YAML_LOADABLE
+    check_parameters:
+      loadable_keys: [dependency_direction, prohibited_dependencies]
+    violation_class: BASELINE_VIOLATION
+    sunset_plan: Phase 1 → absorbed by ARCH-18-INV-TABLE (already GENERATED)
+
+  - arch_rule_id: ACL-004
+    short_name: Artifact lifecycle declared
+    source_statement_ref: PROTO-GOV + IA-08
+    source_file_ref: /root/Enterprise OS/governance/artifact-lifecycle.yaml
+    generation: MANUAL_LEGACY
+    scan_type: POLICY_YAML_LOADABLE
+    check_parameters:
+      lifecycle_states_required: [CONTRACT, SPEC, EVIDENCE, DECISION, BUILD_OUTPUT]
+      promotion_rules_required_per_state: [from_states, required_evidence, gate_required]
+    violation_class: BASELINE_VIOLATION
+    sunset_plan: Phase 1 → absorbed into Protocol Compilation generated rules.
+
+  - arch_rule_id: ACL-005
+    short_name: Sprint 0 exit predicates declared
+    source_statement_ref: Sprint 0 charter
+    source_file_ref: /root/Enterprise OS/governance/sprint0-exit-predicates.yaml
+    generation: MANUAL_LEGACY
+    scan_type: POLICY_YAML_LOADABLE
+    check_parameters:
+      gates_required: [Gate_A, Gate_B, Gate_C, Gate_D, Gate_E]
+    violation_class: BASELINE_VIOLATION
+    sunset_plan: After Sprint 0 completion — this rule retires with the sprint.
+
+  - arch_rule_id: ACL-006
+    short_name: Baseline lock certificate declared
+    source_statement_ref: Baseline Lock ADR-000
+    source_file_ref: /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+    generation: MANUAL_LEGACY
+    scan_type: POLICY_YAML_LOADABLE
+    check_parameters:
+      certificate_fields_required: [locked_at_utc, gate_a_status, baseline_hash, governance_docs_ref]
+    violation_class: BASELINE_VIOLATION
+    sunset_plan: After Sprint 0 Gate A — becomes always-satisfied historical artifact.
+
+  - arch_rule_id: ACL-007
+    short_name: Governance state declared
+    source_statement_ref: Governance State model
+    source_file_ref: /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
+    generation: MANUAL_LEGACY
+    scan_type: POLICY_YAML_LOADABLE
+    check_parameters:
+      top_level_keys_required: [current_gate, repository_compliance, evidence_states, predicate_readiness_next_gate]
+    violation_class: BASELINE_VIOLATION
+    sunset_plan: Phase 1 → ARCH-28 (Governance State Schema Conformance) generated from IA-08.
+
+  # ───────────────── Generated Rules (ARCH-18..ARCH-25) ─────────────────
+
+  - arch_rule_id: ARCH-18-ONT-TRIAD
+    short_name: Ontological Triad enforcement (Knowledge × Registry × Runtime)
+    source_statement_ref: IA-01 Ontological Triad
+    source_file_ref: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_01_ontological_triad
+    generation: DUAL_SOURCE_TRANSITION
+    generated_path: build/governance/generated-arch-rules/ARCH-18-ONT-TRIAD.generated.yaml
+    scan_type: CROSS_LAYER_DEPENDENCY_SCAN
+    compiled_check_parameters:
+      zone_separation:
+        KNOWLEDGE_zone_paths: ["enterprise/constitution/**", "enterprise/knowledge/**", "enterprise/schema/**", "enterprise/library/**", "workspace/contracts/**"]
+        REGISTRY_zone_paths: ["workspace/packages/core/*-registry/src/registry/**"]
+        RUNTIME_zone_paths: ["workspace/packages/core/runtime/**", "workspace/packages/tooling/eos-cli/**"]
+      forbidden_cross_zone_imports:
+        KNOWLEDGE_imports_RUNTIME: true
+        KNOWLEDGE_imports_REGISTRY_IMPL: true
+        REGISTRY_imports_RUNTIME_STATE: true
+    vgen_id: VGEN-IA01-TRIAD
+    violation_class: ONTOLOGICAL_DRIFT
+    remediation_snippet_ref: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_01_ontological_triad/remediation_pattern
+
+  - arch_rule_id: ARCH-18-INV-TABLE
+    short_name: Invariant Dependency Table (8 forbidden dep pairs)
+    source_statement_ref: IA-06 Forbidden Dependency Table
+    source_file_ref: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_06_machine_enforced_invariant_table
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-18-INV-TABLE.generated.yaml
+    scan_type: DEPENDENCY_GRAPH_ENFORCEMENT
+    compiled_check_parameters:
+      forbidden_dep_table_ref: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_06_machine_enforced_invariant_table/forbidden_dependency_table
+    vgen_id: VGEN-IA06-TABLE
+    violation_class: EPISTEMIC_DEPENDENCY_REVERSAL
+    remediation_snippet_ref: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_06_machine_enforced_invariant_table/acl_enforcement
+
+  - arch_rule_id: ARCH-19
+    short_name: Knowledge Not Embedded in Runtime Literal Scan
+    source_statement_ref: IA-09 Knowledge Not In Runtime
+    source_file_ref: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_09_knowledge_not_in_runtime
+    generation: DUAL_SOURCE_TRANSITION
+    generated_path: build/governance/generated-arch-rules/ARCH-19.generated.yaml
+    scan_type: REGEX_PATTERN_SCAN
+    compiled_check_parameters:
+      target_paths: ["packages/core/runtime/**/*.ts", "packages/tooling/eos-cli/**/*.ts", "packages/composition/**/*.ts", "apps/**/*.ts"]
+      forbidden_patterns:
+        - T\d{3}(?![\w-])  (transformation ids outside registry loader context)
+        - PRED-\d{2,}       (predicate ids outside predicate loader)
+        - capability:[\"']?[a-z]+-[a-z]+[\"']?  (capability kebab-case ids)
+      context_whitelist:
+        - file paths containing "registry/src/*-loader" (registry loader context allowed)
+        - string is inside a contract_ref path string (pointing at YAML — acceptable)
+    vgen_id: VGEN-IA09-RUNTIME
+    violation_class: KNOWLEDGE_EMBEDDED_AT_RUNTIME
+    remediation_snippet_ref: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_09_knowledge_not_in_runtime/remediation_pattern
+
+  - arch_rule_id: ARCH-20-IA10-SNAPSHOT
+    short_name: Immutable Knowledge Snapshot Boundary Enforcement
+    source_statement_ref: IA-10 Immutable Knowledge Snapshot
+    source_file_ref: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_10_immutable_knowledge_snapshot
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-20-IA10-SNAPSHOT.generated.yaml
+    scan_type: MUTABLE_READ_SCAN + EXEC_PLAN_SNAPSHOT_FIELD_CHECK
+    compiled_check_parameters:
+      mutable_reads_forbidden_paths:
+        - "enterprise/constitution/**"
+        - "enterprise/schema/**"
+        - "workspace/contracts/**"
+        - "governance/**"
+      post_planning_src_dirs:
+        - "packages/core/runtime/src"
+        - "packages/core/registry-resolver/src"
+        - "packages/core/proof-ledger/src"
+        - "packages/composition/**"
+      snapshot_attachment_field_name: knowledge_snapshot
+      check_exec_plan: "Every ExecutionPlan object MUST carry non-empty knowledge_snapshot.id matching KS-\\d{4}\\.\\d{2}\\.\\d{2}\\.\\d{3}"
+    vgen_id: VGEN-IA10
+    violation_class: SNAPSHOT_BOUNDARY_VIOLATION
+    remediation_snippet_ref: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_10_immutable_knowledge_snapshot/post_planning_prohibited_interactions
+
+  - arch_rule_id: ARCH-21-IA11-SEM-DET
+    short_name: Semantic Determinism — No Non-Deterministic Primitives in Semantic Paths
+    source_statement_ref: IA-11 Semantic Determinism
+    source_file_ref: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_11_semantic_determinism
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-21-IA11-SEM-DET.generated.yaml
+    scan_type: NON_DETERMINISTIC_PRIMITIVE_SCAN
+    compiled_check_parameters:
+      non_det_signatures:
+        - "Math.random"
+        - "Date.now"
+        - "new Date()"
+        - "fetch("
+        - "axios"
+        - process.env_conditional_branch: true  (process.env used in if/else for semantic decision)
+      allowed_contexts:
+        - diagnostics_only_block (diagnostics[] or console.log timestamp — not semantic branch)
+      deterministic_tiebreak_signatures:
+        - ".localeCompare("
+        - "Object.keys().sort()"
+        - ".sort((a,b)=>a.localeCompare(b))"
+      semantic_path_globs:
+        - "packages/core/registry-resolver/**/*.ts"
+        - "packages/core/*/src/passes/**/*.ts"
+        - "packages/core/runtime/**/*[!test].ts"
+    vgen_id: VGEN-IA11
+    violation_class: SEMANTIC_NONDETERMINISM
+    remediation_snippet_ref: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_11_semantic_determinism/anti_patterns
+
+  - arch_rule_id: ARCH-22-IA13-STABLE-IR
+    short_name: Stable Intermediate Representations — Format + Version + Hash
+    source_statement_ref: IA-13 Stable Intermediate Representations
+    source_file_ref: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_13_stable_intermediate_representations
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-22-IA13-STABLE-IR.generated.yaml
+    scan_type: IR_CONTRACT_HEADER_SCAN
+    compiled_check_parameters:
+      required_ir_contract_paths:
+        - "workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml"
+        - "workspace/contracts/KNOWLEDGE-IR.contract.yaml"
+        - "workspace/contracts/DECISION-IR.contract.yaml"
+        - "workspace/contracts/EVIDENCE-PROVENANCE-GRAPH.contract.yaml"
+        - "workspace/contracts/CONSTITUTION-IR.contract.yaml"
+      required_protocol_version_fields: [ir_format_version, plan_format_version, format_version]
+      required_protocol_hash_fields: [ir_content_hash, plan_hash, content_hash]
+      emitter_source_scan: "All pass emitters that produce IR files MUST set both required version + hash fields before write."
+    vgen_id: VGEN-IA13
+    violation_class: IR_INSTABILITY
+    remediation_snippet_ref: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_13_stable_intermediate_representations/ir_properties_required_per_ir
+
+  - arch_rule_id: ARCH-23-IA14-PURE-PASS
+    short_name: Pure Compiler Pass — No Upstream Mutation / No Undeclared State
+    source_statement_ref: IA-14 Pure Compiler Passes
+    source_file_ref: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-23-IA14-PURE-PASS.generated.yaml
+    scan_type: IMPURITY_PATTERN_SCAN + UPSTREAM_WRITE_SCAN
+    compiled_check_parameters:
+      pass_source_glob: "packages/**/*/src/passes/**/*.pass.ts"
+      upstream_forbid_write_paths:
+        - "governance/**"
+        - "enterprise/constitution/**"
+        - "enterprise/schema/**"
+        - "enterprise/execution/**"
+        - "enterprise/specifications/SEMANTIC-KERNEL.yaml"
+        - "workspace/contracts/**"
+      undeclared_external_state_signatures:
+        - process.env_branch_in_semantic_code
+        - new Date in non-diagnostics
+        - Math.random
+        - fetch/axios
+        - globalThis mutable write
+    vgen_id: VGEN-IA14
+    violation_class: COMPILER_PASS_IMPURITY
+    remediation_snippet_ref: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes/per_pass_properties_required
+
+  - arch_rule_id: ARCH-24
+    short_name: Downward Authority Only + Evolution Domain Classification
+    source_statement_ref: ASP-02 (Downward) + ASP-04 (Disjoint Domains)
+    source_file_ref:
+      - /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#ASP-02
+      - /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#ASP-04
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-24.generated.yaml
+    scan_type: UPSTREAM_WRITE_SCAN + DOMAIN_CLASSIFICATION_SCAN
+    compiled_check_parameters:
+      forbid_write_by_impl_of_upstream:
+        upstream_paths: ["governance/**", "enterprise/specifications/**", "workspace/contracts/**"]
+        downstream_src_paths: ["packages/core/runtime/**", "packages/core/*/src/passes/**", "packages/tooling/**", "packages/composition/**", "apps/**", "capabilities/**"]
+      forbid_patterns:
+        - fs.writeFileSync(upstream_path)
+        - fs.appendFileSync(upstream_path)
+        - fs.unlinkSync(upstream_path)
+        - any DELETE/PUT/PATCH to REST endpoints managing upstream yaml
+      domain_classification:
+        glob_mapping_ref: /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml#domain_artifact_full_mapping
+        unclassified_error: "Any new .yaml / .ts / .tsx file MUST have either (a) explicit evolution_domain header or (b) match a glob in domain_artifact_full_mapping."
+      direct_edit_prohibit_check: "For Domain A/B artifacts with direct_edit_prohibited=true: any edit MUST include ADR reference in commit message, else fail."
+    vgen_id: VGEN-ASP02+04
+    violation_class: AUTHORITY_REVERSAL / UNCLASSIFIED_ARTIFACT
+    remediation_snippet_ref: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#ASP-02/enforcement
+
+  - arch_rule_id: ARCH-25
+    short_name: Protocol Boundary + Conformance + Private Import Forbid
+    source_statement_ref: Protocol Governance (all)
+    source_file_ref: /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-25.generated.yaml
+    scan_type: PROTOCOL_BOUNDARY_SCAN
+    compiled_check_parameters:
+      conformance_impl_private_import_forbid: true
+      forbidden_import_targets:
+        - from CONFORMANCE test files into IMPLEMENTATION private modules (e.g., "../impl/src/internal.ts")
+        - rule: conformance test files may ONLY import public protocol interface modules
+      ad_hoc_type_version_hash_headers_require:
+        - rule: "Cross-component typed exchange objects (typed as Plan / IR / Evidence) MUST carry ir_format_version + ir_content_hash (or plan_hash equivalent)."
+        - target_globs: ["packages/**/src/protocols/**/*.ts", "workspace/contracts/*.ts"]
+      canonical_sufficiency_delegation_forbid:
+        - rule: "No protocol YAML may reference implementation source code lines for semantics (e.g., 'matches impl/file.ts:42')."
+        - target_globs: ["enterprise/specifications/protocols/*.yaml", "workspace/contracts/*.contract.yaml"]
+    vgen_id: VGEN-PROTO-BOUNDARY
+    violation_class: PROTOCOL_EROSION
+    remediation_snippet_ref: /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml#protocol_is_multi_faceted
+
+  # ───────────────── Type System Rules (from Evolution Domain Type System) ─────────────────
+
+  - arch_rule_id: ARCH-26-TYPE-IMPORT
+    short_name: Type System — Forbidden Import Type Check
+    source_statement_ref: Evolution Domains as Type System (artifact.schema.yaml#artifact_type + CONSTIT-IR.type_system_section)
+    source_file_ref:
+      - /root/Enterprise OS/enterprise/schema/artifact.schema.yaml#artifact_type
+      - /root/Enterprise OS/workspace/contracts/CONSTITUTION-IR.contract.yaml#type_system_section
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-26-TYPE-IMPORT.generated.yaml
+    scan_type: TYPE_IMPORT_GRAPH_CHECK
+    compiled_check_parameters:
+      type_system_anchor: artifact.schema.yaml#artifact_type.type_name enum (18 types)
+      cannot_import_type_rules_ref: CONSTIT-IR.type_system_section.types[].type_rules[cannot_import_type]
+      cv_check_id: CV-TYPE-01
+      severity_for_unallowed_import: FATAL
+    vgen_id: VGEN-TYPE-SYSTEM
+    violation_class: TYPE_ERROR_IMPORT_FORBIDDEN
+    remediation_snippet_ref: /root/Enterprise OS/enterprise/schema/artifact.schema.yaml#artifact_type/type_rules
+
+  - arch_rule_id: ARCH-27-TYPE-MUTATE
+    short_name: Type System — Forbidden Mutation Type Check
+    source_statement_ref: Evolution Domains as Type System (cannot_mutate_type rules + direct_edit_prohibited)
+    source_file_ref:
+      - /root/Enterprise OS/enterprise/schema/artifact.schema.yaml#artifact_type
+      - /root/Enterprise OS/workspace/contracts/CONSTITUTION-IR.contract.yaml#type_system_section
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-27-TYPE-MUTATE.generated.yaml
+    scan_type: TYPE_MUTATION_WRITE_SCAN
+    compiled_check_parameters:
+      cannot_mutate_type_rules_ref: CONSTIT-IR.type_system_section.types[].type_rules[cannot_mutate_type]
+      cv_check_id: CV-TYPE-02
+      upstream_write_paths: ["governance/**", "enterprise/specifications/**", "workspace/contracts/**"]
+      downstream_src_paths: ["packages/**/*.ts", "apps/**/*.ts", "capabilities/**/*.ts"]
+    vgen_id: VGEN-TYPE-SYSTEM
+    violation_class: TYPE_ERROR_MUTATION_FORBIDDEN
+    remediation_snippet_ref: /root/Enterprise OS/enterprise/schema/artifact.schema.yaml#artifact_type/type_rules
+
+  - arch_rule_id: ARCH-28-TYPE-UNCLASSIFIED
+    short_name: Type System — Unclassified Artifact Check
+    source_statement_ref: ASP-04 Disjoint Exhaustive Domains + artifact.schema.yaml#artifact_type (every artifact must have a type)
+    source_file_ref:
+      - /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#ASP-04
+      - /root/Enterprise OS/enterprise/schema/artifact.schema.yaml
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-28-TYPE-UNCLASSIFIED.generated.yaml
+    scan_type: ARTIFACT_CLASSIFICATION_ENUMERATION
+    compiled_check_parameters:
+      cv_check_id: CV-TYPE-03
+      fallback_glob_mapping_ref: /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml#domain_artifact_full_mapping
+      required_header_fields: [artifact_type.type_name, artifact_type.evolution_domain]
+      severity_domain_a_b_missing: FATAL
+      severity_domain_c_missing: WARN
+    vgen_id: VGEN-TYPE-SYSTEM
+    violation_class: TYPE_ERROR_UNCLASSIFIED_ARTIFACT
+    remediation_snippet_ref: /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml#artifact_default_manifest_prototype
+
+  # ───────────────── Conformance Properties Rules ─────────────────
+
+  - arch_rule_id: ARCH-29-CONF-PROP-MEASURE
+    short_name: Six-Dimensional Conformance Property Measurement
+    source_statement_ref: CONFORMANCE-PROPERTIES.yaml (Deterministic / Compatible / Reproducible / Auditable / Explainable / Canonical)
+    source_file_ref: /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-29-CONF-PROP-MEASURE.generated.yaml
+    scan_type: AGGREGATE_MEASUREMENT_DRIVER (not a single regex; aggregates Stage 1-3 into property vectors)
+    compiled_check_parameters:
+      measurement_algorithms: [MEASURE-DET-v1, MEASURE-COMPAT-v1, MEASURE-REPRO-v1, MEASURE-AUDIT-v1, MEASURE-EXP-v1, MEASURE-CAN-v1]
+      vector_schema_ref: /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml#conformance_property_vector_schema
+      overall_verdict_logic_ref: /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml#overall_verdict_logic
+    vgen_id: VGEN-CONF-PROP
+    violation_class: CONFORMANCE_PROPERTY_FAIL
+    remediation_snippet_ref: /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml#overall_verdict_logic
+
+  # ───────────────── Authority DAG Rules ─────────────────
+
+  - arch_rule_id: ARCH-30-DAG-REVERSE
+    short_name: Authority DAG — Reverse Edge Detection
+    source_statement_ref: Authority Flow DAG Direction Rule (edge direction = authority direction; reverse = invalid)
+    source_file_ref: /root/Enterprise OS/enterprise/schema/AUTHORITY-DAG.schema.yaml#validation_rules/AUTHORITY_DIRECTION
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-30-DAG-REVERSE.generated.yaml
+    scan_type: DAG_EDGE_DIRECTION_CHECK
+    compiled_check_parameters:
+      cv_check_id: CV-DAG-01
+      topological_invariant: "topological_order_index(from) < topological_order_index(to)"
+      violation: "Any edge where source appears AFTER target in topological sort = REVERSE EDGE = FATAL"
+      dag_schema_ref: /root/Enterprise OS/enterprise/schema/AUTHORITY-DAG.schema.yaml
+    vgen_id: VGEN-AUTH-DAG
+    violation_class: DAG_REVERSE_EDGE_VIOLATION
+    remediation_snippet_ref: VISION-03 (Authority flows downward only) → fix derivation direction
+
+  - arch_rule_id: ARCH-31-DAG-CYCLE
+    short_name: Authority DAG — Cycle Detection
+    source_statement_ref: AUTHORITY-DAG.schema.yaml#validation_rules/NO_CYCLES
+    source_file_ref: /root/Enterprise OS/enterprise/schema/AUTHORITY-DAG.schema.yaml#cycle_check
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-31-DAG-CYCLE.generated.yaml
+    scan_type: DAG_CYCLE_DETECTION
+    compiled_check_parameters:
+      cv_check_id: CV-DAG-02
+      algorithm: KAHNS_TOPOLOGICAL_TIEBREAK_AUTH_LEVEL_THEN_LEX
+      severity: FATAL
+    vgen_id: VGEN-AUTH-DAG
+    violation_class: DAG_CYCLE_VIOLATION
+    remediation_snippet_ref: /root/Enterprise OS/enterprise/schema/AUTHORITY-DAG.schema.yaml#cycle_check
+
+  - arch_rule_id: ARCH-32-DAG-DANGLING
+    short_name: Authority DAG — Dangling Derivation Reference
+    source_statement_ref: AUTHORITY-DAG.schema.yaml#validation_rules/PROOF_CHAIN_COMPLETE
+    source_file_ref: /root/Enterprise OS/enterprise/schema/AUTHORITY-DAG.schema.yaml#validation_rules/PROOF_CHAIN_COMPLETE
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-32-DAG-DANGLING.generated.yaml
+    scan_type: DAG_PROVENANCE_CHAIN_RESOLUTION
+    compiled_check_parameters:
+      cv_check_id: CV-DAG-03
+      rule: "Each edge authority_proof_ref must resolve to a CONSTIT-IR section ref, a VISION/ASP/IA section ref, or a Snapshot manifest entry"
+      severity_spec: WARN
+      severity_constitution: FATAL
+      severity_protocol: FATAL
+      severity_evidence: FATAL
+    vgen_id: VGEN-AUTH-DAG
+    violation_class: DAG_DANGLING_PROOF_REF
+    remediation_snippet_ref: artifact.schema.yaml#authority.derived_from_chain
+
+  # ───────────────── Protocol Compilation Rules ─────────────────
+
+  - arch_rule_id: ARCH-33-COMPAT-MATRIX
+    short_name: Protocol Compilation — Compatibility Matrix Presence & Consistency
+    source_statement_ref: PROTOCOL-COMPILATION.spec.yaml Compat Matrix (COMPAT-MATRIX output class)
+    source_file_ref: /root/Enterprise OS/enterprise/specifications/PROTOCOL-COMPILATION.spec.yaml#five_generated_artifact_classes[0]
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-33-COMPAT-MATRIX.generated.yaml
+    scan_type: PROTOCOL_COMPILATION_OUTPUT_VERIFY
+    compiled_check_parameters:
+      matrix_generation_algo: GEN-COMPAT-MATRIX-v1
+      status_enumeration_size: 4  (COMPATIBLE_FULLY, COMPATIBLE_WITH_DEPRECATION, INCOMPATIBLE_REQUIRES_MAJOR, INCOMPATIBLE_SKIP_FORBIDDEN)
+      require_every_version_pair_has_cell: true
+      cell_status_matches_semver_triggers: true  (MAJOR diff = INCOMPATIBLE_* unless bridge declared)
+    vgen_id: VGEN-PROTO-COMP
+    violation_class: COMPATIBILITY_MATRIX_MISMATCH
+    remediation_snippet_ref: /root/Enterprise OS/enterprise/specifications/PROTOCOL-COMPILATION.spec.yaml#generation_algorithm/GEN-COMPAT-MATRIX-v1
+
+  - arch_rule_id: ARCH-34-UPGRADE-PATH
+    short_name: Protocol Compilation — Upgrade Path & Deprecation Window Enforcement
+    source_statement_ref: PROTOCOL-COMPILATION.spec.yaml (UPGRADE-PATHS + DEPRECATION-WINDOW output classes)
+    source_file_ref: /root/Enterprise OS/enterprise/specifications/PROTOCOL-COMPILATION.spec.yaml#five_generated_artifact_classes[1,4]
+    generation: GENERATED
+    generated_path: build/governance/generated-arch-rules/ARCH-34-UPGRADE-PATH.generated.yaml
+    scan_type: PROTOCOL_UPGRADE_SAFETY_CHECK
+    compiled_check_parameters:
+      upgrade_paths_algo: GEN-UPGRADE-PATHS-v1
+      deprecation_algo: GEN-DEPRECATION-v1
+      default_overlap_releases_required: 2  (per Domain B default policy)
+      forbid_skip_deprecated_intermediary: true
+    vgen_id: VGEN-PROTO-COMP
+    violation_class: UPGRADE_PATH_UNSAFE
+    remediation_snippet_ref: /root/Enterprise OS/enterprise/specifications/PROTOCOL-COMPILATION.spec.yaml#activation_schedule/Phase_1_Gate_D
+
+catalog_metrics:
+  total_rules: 25
+  manual_legacy_count: 7  (ACL-001..007)
+  dual_source_transition_count: 2 (ARCH-18-ONT-TRIAD, ARCH-19)
+  generated_count: 16  (ARCH-18-INV-TABLE, ARCH-20..34)
+  mp01_phase0_generated_ratio_including_dual: 72.0%
+  mp01_phase1_target: 88% (only 3 ACL legacy remain)
+  mp01_phase2_target: 100% (all rules GENERATED; no MANUAL_LEGACY or DUAL_SOURCE remaining)
+
+integrity_constraint:
+  constraint_id: ARCH-MAN-INTEGRITY-001
+  statement: >
+    For every rule with generation = GENERATED or DUAL_SOURCE_TRANSITION, the generated_path file MUST exist
+    with ir_content_hash_of_parent_constit_ir field pointing to a valid CONSTIT-IR after a CONST-COMP build.
+    Any MISSING generated file for a GENERATED-classified rule → ARCH-MAN validation FAIL.
+  enforcement: Pre-gate check before Gate D exit.

@@ -1,0 +1,18 @@
+version: "1.0.0"
+kind: FIXTURE_EVIDENCE_APPROVAL_SIGNATURES
+fixture_id: FIX-EVI-APP-SIG
+status: IMMUTABLE_FIXTURE
+evidence_items:
+  - id: EVI-APP-SIG-001
+    type: approver_signature_bundle
+    description: "Approver signature fingerprint bundle"
+    data:
+      signature_verified: true
+      signer_role: role-document-approver-001
+  - id: EVI-APP-AUD-001
+    type: approval_audit_trail_entry
+    description: "Before/after status atomically recorded"
+    data:
+      status_before: PROPOSED
+      status_after: APPROVED
+      atomic: true

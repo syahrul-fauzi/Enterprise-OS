@@ -1,0 +1,71 @@
+version: "1.0.0"
+status: EXPERIMENT_SUBJECT
+experiment_subject_id: GATE-C-DOC-PROPOSE
+domain: document
+operation: propose
+operation_label: ProposeDocument
+schema_ref: specification/schemas/experiment.schema.yaml
+illustrative_source: specification/hypothesis.yaml empirical_content_gate_c domain guinea pig Propose_document row
+
+predicate_anchor_map:
+  pred_a_legitimate:
+    expected_value: true
+    rationale: >
+      Authority originates from a well-formed Document Requirement then Document Policy then Document Contract AuthorityRel chain.
+      Requirement DocReq-001 proposes after requirement approved.
+      Policy DocPol-001 retention and classification policy derives authority from requirement via AuthorityRel ratifies.
+      Contract DocCon-001 formal operational contract for proposal workflow derives authority from policy via AuthorityRel approves.
+      No authority cycle detected. Root resolves to constitution vision then ASP then IA then governance reference implementation.
+    authority_path_expected: Requirement then Policy then Contract then Epoch Sprint0 then Constitution
+  pred_b_meaning_preserved:
+    expected_value: true
+    rationale: >
+      Canonical Identity of the proposed document fixture doc fixtures documents proposal draft 001 SHALL remain identical before and after proposal operation.
+      Proposal only attaches metadata proposer timestamp proposal_status proposer_signature_fingerprint but does not mutate normative content meaning.
+      Title body classification retention_period unchanged. Semantic Equivalence equals TRUE.
+    canonical_identity_expected: sha256 proposal draft 001 canonical id
+  pred_c_provable:
+    expected_value: true
+    rationale: >
+      Evidence of proposal plus audit trail entries SHALL exist in fixtures evidence sufficient to constructively entail postconditions below.
+      Postconditions that must be entailed by evidence are proposal recorded status, proposer identity attested, timestamp recorded monotonic increasing.
+
+input_fixtures:
+  documents:
+    - specification/fixtures/documents/proposal-draft-001.yaml
+  policies:
+    - specification/fixtures/policies/document-policy-001.yaml
+  contracts:
+    - specification/fixtures/contracts/document-contract.yaml
+  evidence:
+    - specification/fixtures/evidence/proposal-baseline-proofs.yaml
+
+transformation_contract:
+  id: TC-DOC-PROPOSE
+  name: Document Proposal Transformation Contract
+  reference: LEX-0000H
+  preconditions:
+    - P1 draft document present and well formed
+    - P2 proposer has authority to propose under policy zero zero one
+    - P3 no prior PROPOSED version with identical canonical identity already in PROPOSED status
+  postconditions:
+    - Q1 proposal recorded with status PROPOSED
+    - Q2 proposer identity recorded with proposal draft proposer identity recorded
+    - Q3 proposal plus proposer plus proposal audit trail recorded
+  invariants:
+    - I1 CanonicalIdentity proposal draft zero zero one SHALL NOT BE ALTERED by proposal operation
+
+expected_truth_table_row_match: P1
+expected_constitutional_validity: true
+expected_predicates_ref: specification/expected/predicates/document-predicates.yaml#expected_predicates.GATE-C-DOC-PROPOSE
+oracle_spec_ref: specification/oracle/oracle.yaml
+expected_evaluation_ref: specification/expected/evaluations/document-evaluations.yaml#expected_evaluations.GATE-C-DOC-PROPOSE
+test_suite_refs:
+  - specification/tests/positive/suite.yaml
+  - specification/tests/independence/suite.yaml
+
+notes: >
+  This experiment subject is the guinea pig positive case designed to exercise the POSITIVE ALL PASS row of the truth table.
+  No normative claims in the document domain experimental subject.
+  No hardcoded outcomes; the execution strategy is fungible per planner LLM compiler and any other fungible strategies.
+  Only the expected output predicate vector MUST produce identical evaluations after replay runs.

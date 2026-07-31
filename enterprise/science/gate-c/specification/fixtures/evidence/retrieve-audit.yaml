@@ -1,0 +1,13 @@
+version: "1.0.0"
+kind: FIXTURE_EVIDENCE_RETRIEVE_AUDIT
+fixture_id: FIX-EVI-RET-AUD
+status: IMMUTABLE_FIXTURE
+evidence_items:
+  - id: EVI-RET-AUD-001
+    type: retrieval_evidence_log
+    description: "Retrieval evidence log"
+    data:
+      timestamp_recorded: true
+      requestor_id_recorded: true
+      doc_id_recorded: true
+      content_hash_chain_recorded: true

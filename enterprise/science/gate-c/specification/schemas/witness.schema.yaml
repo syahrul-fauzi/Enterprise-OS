@@ -1,0 +1,51 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:eos:science:gate-c:schema:witness:v1"
+title: EOS Witness Schema (Constitutional Proof witness tuple components)
+description: >
+  Each witness justifies ONE Constitutional Predicate = TRUE.
+  Witness FORM is intentionally NOT PRESCRIBED beyond the minimal fields listed here
+  (the FORM is fungible: YAML, JWT, Merkle proof, Git hash chain, cryptographic signature bundle, RDF named graph,
+  Prolog derivation trace — ALL valid per LEX-0050 Constitutional Proof witness tuple semantics).
+  ONLY JUSTIFICATION POWER is normative.
+type: object
+additionalProperties: true
+required:
+  - witness_id
+  - witness_for_predicate
+  - justifying_experiment_subject_id
+  - justification_power_statement
+  - produced_during_phase
+  - produced_by_strategy_kind
+properties:
+  witness_id:
+    type: string
+    pattern: "^wit-[ABC]-[0-9a-zA-Z_-]+$"
+    description: "Witness prefix encodes predicate: wit-A (Legitimate), wit-B (MeaningPreserved), wit-C (Provable)."
+  witness_for_predicate:
+    type: string
+    enum: [LEGITIMATE_PRED_A, MEANING_PRESERVED_PRED_B, PROVABLE_PRED_C]
+  justifying_experiment_subject_id:
+    type: string
+    description: "Back-reference to the experiment subject whose predicate this witness justifies."
+    pattern: "^GATE-C-[A-Z0-9-]+$"
+  justification_power_statement:
+    type: string
+    description: >
+      Human/machine-readable statement of WHAT is justified. MUST enable an independent verifier to replay
+      the predicate evaluation and arrive at the same Boolean result.
+      Examples:
+        - "AuthorityRel closure from output fixtures to root via approves/delegates/derives_authority_from edges; no cycle found."
+        - "CanonicalIdentity(inputs) = CanonicalIdentity(outputs); semantic diff 0 normative divergence."
+        - "Evidence(t,T) constructively entails Postconditions(T) via rules R1..Rn; no evidential gap."
+  produced_during_phase:
+    type: string
+    enum: [PHASE-02-EXECUTE, PHASE-03-COLLECT, PHASE-04-EVALUATE]
+  produced_by_strategy_kind:
+    type: string
+    enum: [PLANNER, SAT_SOLVER, RULE_ENGINE, LLM, COMPILER, STREAMING, DISTRIBUTED_OPTIMIZER, HYBRID, MANUAL_HUMAN_REVIEW]
+    description: "Recorded but NOT normative for evaluation result — strategy fungibility requirement."
+  chain_info:
+    type: object
+    additionalProperties: true
+    description: "Optional crypto/chain/commit-hash links; not normative."
+  notes: { type: string }

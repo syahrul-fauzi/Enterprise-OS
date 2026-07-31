@@ -1,0 +1,22 @@
+version: "1.0.0"
+certificate_id: SC-WITNESS-001
+status: CALIBRATED
+instrument_type: WITNESS
+instrument_ref: specification/witness-integrity.yaml
+calibration_gate: GATE-C0
+evidence_class: CLASS_I_CALIBRATION
+calibration_result: PASS
+checks:
+  immutable: PASS
+  complete: PASS
+  deterministic: PASS
+  authentic: PASS
+  replayable: PASS
+  canonical: PASS
+  signed: PASS
+  hash_verified: PASS
+  chain_complete: PASS
+certified_until: EPOCH-1
+notes: >
+  Witness calibration certifies that observed witnesses may be locked, replayed, and independently
+  verified without compromising experiment validity.

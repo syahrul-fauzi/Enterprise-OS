@@ -106,7 +106,7 @@ catalog:
       - NEW_ONTOLOGY_FAMILIES
       - LARGE_SCALE_REFACTOR
     sprint0_commit_must_strengthen_chain: CONTRACT → REGISTRY → TRANSFORMATION → PROOF → LEDGER
-    work_not_strengthening_chain = DEFERRED_UNTIL_AFTER_SPRINT_0
+    work_not_strengthening_chain: DEFERRED_UNTIL_AFTER_SPRINT_0
 
 transformations:
   - id: T001
@@ -519,7 +519,7 @@ critical_rules:
   NO_SKIP: true
   rule_3_note: T002 shall not run before T001 PASS. T003 before T002 PASS. And so on. T005 = FINAL_CHAIN.
   REGISTRY_FIRST_PRODUCT: true
-  rule_4_note: Implementation roadmap derived from this catalog. Every PR claiming capability must cite: Catalog entry + Contract_ref + Predicate_refs + Evidence output.
+  rule_4_note: "Implementation roadmap derived from this catalog. Every PR claiming capability must cite: Catalog entry + Contract_ref + Predicate_refs + Evidence output."
   ADR_002_RISK_MITIGATION_1_GOD_REGISTRY_PREVENTED: true
   rule_5_note: >
     Registry source layout per-Transformation / per-Predicate single-purpose files ONLY.

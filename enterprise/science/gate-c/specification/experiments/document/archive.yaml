@@ -1,0 +1,68 @@
+version: "1.0.0"
+status: EXPERIMENT_SUBJECT
+experiment_subject_id: GATE-C-DOC-ARCHIVE
+domain: document
+operation: archive
+operation_label: ArchiveDocument
+schema_ref: specification/schemas/experiment.schema.yaml
+illustrative_source: specification/hypothesis.yaml empirical_content_gate_c domain guinea pig Archive_document row
+
+predicate_anchor_map:
+  pred_a_legitimate:
+    expected_value: true
+    rationale: >
+      Archive SHALL be authorized by the retention policy applied to the document.
+      Retention policy DocPol retention section explicitly authorizes ArchiveDocument after retention period elapsed or archive trigger event.
+      Authority chain from requirement to policy retention rule to contract archive operations through archive to epoch binding.
+      No cycle. Root resolves through constitution epoch binding.
+    authority_path_expected: Requirement then Policy retention rule then Contract archive operations then Archive then Epoch Sprint0 then Constitution
+  pred_b_meaning_preserved:
+    expected_value: true
+    rationale: >
+      The identity of the document CanonicalIdentity of the archived document must remain unchanged.
+      Archived document status ARCHIVED changes but the normative identity of the document body and metadata unchanged.
+      Status is administrative metadata. CanonicalIdentity refers to the immutable document content identity.
+      Status change does not constitute CanonicalIdentity drift semantic equivalence preserved.
+    canonical_identity_expected: sha256 approved document 001 canonical id same as pre archive identity only status label changes
+  pred_c_provable:
+    expected_value: true
+    rationale: >
+      Evidence ledger archive proof entries SHALL be sufficient to constructively entail that archival was completed and retained retention rules triggered audit trail shows before status APPROVED to after status ARCHIVED archive proof hash chain all postconditions constructively provable without evidential gap.
+
+input_fixtures:
+  documents:
+    - specification/fixtures/documents/approved-document-001.yaml
+  policies:
+    - specification/fixtures/policies/document-policy-001.yaml contains retention rules
+  contracts:
+    - specification/fixtures/contracts/document-contract.yaml
+  evidence:
+    - specification/fixtures/evidence/archive-retention-check.yaml
+    - specification/fixtures/evidence/archive-ledger.yaml
+
+transformation_contract:
+  id: TC-DOC-ARCHIVE
+  name: Document Archive Transformation Contract
+  reference: LEX-0000H
+  preconditions:
+    - P1 document in status APPROVED
+    - P2 retention policy trigger condition satisfied time elapsed or event triggered per policy retention
+    - P3 no legal hold or other superseding policy forbids archive
+  postconditions:
+    - Q1 document status APPROVED becomes ARCHIVED
+    - Q2 archive proof hash chain entry appended atomically to evidence ledger
+    - Q3 retention trigger recorded reason retention time elapsed or event triggered
+  invariants:
+    - I1 CanonicalIdentity doc 001 invariant under status change transformation
+
+expected_truth_table_row_match: P1
+expected_constitutional_validity: true
+expected_predicates_ref: specification/expected/predicates/document-predicates.yaml#expected_predicates.GATE-C-DOC-ARCHIVE
+oracle_spec_ref: specification/oracle/oracle.yaml
+expected_evaluation_ref: specification/expected/evaluations/document-evaluations.yaml#expected_evaluations.GATE-C-DOC-ARCHIVE
+test_suite_refs:
+  - specification/tests/positive/suite.yaml
+  - specification/tests/independence/suite.yaml
+
+notes: >
+  Archival guinea pig positive case matching table row P1. Identity semantics preserved despite status change administrative metadata field.

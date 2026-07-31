@@ -21,6 +21,95 @@ invariant_design_principle:
   epistemological_status: CONSTITUTIONAL_META_PRINCIPLE
   enforcement_scope: ALL_PACKAGES_ALL_GATES_ALL_SPRINTS
 
+constitutional_predicate_model:
+  status: CONSTITUTIONAL_FOUNDATION_CORE
+  epistemological_status: FROZEN_FOR_ONE_DECADE_HORIZON
+  charter_cross_ref: governance/CC-001-CONSTITUTIONAL-CHARTER.md
+  predicate_axiom_cross_ref: governance/AXIOMS.md
+  preamble: >
+    The 6-tier reference architecture (Constitution → Authority → Knowledge →
+    Transformation → Execution → Evidence) remains valid as a Reference
+    Architecture (engineering layout view). Constitutionally, however, EOS rests
+    on THREE FALSIFIABLE BOOLEAN PREDICATES and one conjunction meta-predicate,
+    as frozen in CC-001 Constitutional Charter:
+      Predicate A — Legitimate(x)       (AuthorityRel is FUNDAMENTAL)
+      Predicate B — MeaningPreserved(T) (CanonicalIdentity / SemanticRel are FUNDAMENTAL)
+      Predicate C — Provable(T)         (Evidence ⊢ Postconditions is FUNDAMENTAL)
+    Graphs (Authority Graph / Knowledge Graph), Canonical Form concretizations,
+    Planner/Compiler/LLM strategies, and YAML/JSON/Binary serializations are all
+    engineering MATERIALIZATIONS. They are NOT constitutional. Future epochs MAY
+    replace any of them entirely — provided truth values of Legitimate /
+    MeaningPreserved / Provable remain invariant on the same inputs.
+  predicates:
+    - predicate_id: PRED_A_LEGITIMATE
+      name: Predicate A — Legitimate(x)
+      answers_question: "Mengapa artefak ini sah? (Authority chain valid?)"
+      signature: "Legitimate : Artifact → Boolean"
+      charter_section: CC-001 §3
+      formal_statement_reference: Legitimate(x) ⇔ AuthorityRoot(x) ∃ ∧ AuthorityPath(x) ⊆ AuthorityRel ∧ NoCycle(x)
+      scope_includes:
+        - Authority relation set AuthorityRel = { Authorizes, Delegates, Supersedes, Approves, DerivesAuthorityFrom, Ratifies, Amends, EpochBinds }
+        - Approval / Delegation / Epoch governance
+        - Constitutional Lexicon Registry (terminology governance)
+      frozen_fundamental: AuthorityRel RELATION SET — NOT "Authority Graph" data structure
+      derived_invariants:
+        - IA-17 Constitution Preservation (Legitimate(T) sub-component)
+        - IA-15 Dual Relations (AuthorityRel disjoint from SemanticRel)
+        - ASP-02, ASP-03
+    - predicate_id: PRED_B_MEANING_PRESERVED
+      name: Predicate B — MeaningPreserved(T)
+      answers_question: "Apakah makna normatif artefak bertahan lintas transformasi?"
+      signature: "MeaningPreserved : Transformation → Boolean"
+      charter_section: CC-001 §4
+      formal_statement_reference: MeaningPreserved(T) ⇔ (∀i,o well-defined CanonicalIdentity) ∧ SemanticEquivalence(⊔Inputs CanonicalIdentity, ⊔Outputs CanonicalIdentity)
+      scope_includes:
+        - Canonical Identity (FUNDAMENTAL abstract logical identity)
+        - Transformation Contract = ⟨Inputs, Outputs, Preconditions, Postconditions, Invariants⟩
+        - Semantic relation set SemanticRel = { DependsOn, Implements, Extends, Contains, References, EquivalentTo, Specializes, Refines, Uses }
+        - Requirements / Policies / Contracts / Vocabulary
+      frozen_fundamental: CanonicalIdentity equivalence + SemanticRel RELATION SET — NOT "Canonical Form" concretization, NOT "Knowledge Graph" data structure
+      derived_invariants:
+        - IA-13 Stable Canonical Forms (concretization-side of CanonicalIdentity)
+        - IA-15 Dual Relations (SemanticRel half)
+        - IA-11 Semantic Determinism
+        - IA-16 Contract / Strategy separation (SQL ↔ Optimizer pattern)
+    - predicate_id: PRED_C_PROVABLE
+      name: Predicate C — Provable(T)
+      answers_question: "Jika verdict PASS, apakah buktinya cukup? (Evidence ⊢ Postconditions?)"
+      signature: "Provable : Transformation → Boolean"
+      charter_section: CC-001 §5
+      formal_statement_reference: Provable(T) ⇔ (∀t exec-of-T, Evidence(t,T) ⊢ Postconditions(T)) ∧ (no evidential gap allowing ¬Postconditions while PASS emitted)
+      scope_includes:
+        - Transformation Strategy interchangeability (fungible implementation)
+        - Execution / Evidence / Assessment / Justification / Verdict pipeline
+        - ConstitutionalProof witness tuple (DERIVED: ⟨witness_A, witness_B, witness_C⟩)
+      frozen_fundamental: Evidence-entailment property — NOT "Proof" artifact form, NOT pipeline stages
+      derived_invariants:
+        - IA-14 Pure Transformations
+        - IA-18 Constitutional Proof (3-witness composite derived from 3-predicate conjunction)
+        - IA-12 Explainability and Justification
+        - IA-10 Immutable Knowledge Snapshot
+  constitutional_validity_meta_predicate:
+    id: ConstitutionallyValid
+    signature: "ConstitutionallyValid(T) ⇔ Legitimate(T) ∧ MeaningPreserved(T) ∧ Provable(T)"
+    charter_section: CC-001 §6
+    meta_invariant_note: IA-20 Constitutional Validity codifies this as the sole evaluation criterion for every transformation / verdict / epochal revision.
+    constitutional_proof_derived: >
+      ConstitutionalProof(T) = ⟨witness_Legitimate(T), witness_MeaningPreserved(T), witness_Provable(T)⟩
+      ConstitutionalProof(T) COMPLETE ⇔ ConstitutionallyValid(T).
+      ConstitutionalProof is EXPLICITLY DERIVED, NOT constitutional.
+  ordering_invariant: >
+    Legitimate(x) MUST be resolved for all inputs BEFORE MeaningPreserved(T) is evaluated.
+    MeaningPreserved(T) MUST hold BEFORE Provable(T) is evaluated.
+    Final verdict emission ONLY AFTER ConstitutionallyValid(T) = TRUE.
+    Implementation ordering corresponds to the old "6-tier" layout, but the layout is not
+    itself constitutional.
+  six_tier_reference_architecture_status:
+    retained: true
+    role: REFERENCE_ARCHITECTURE_ONLY
+    constitutional_role: derived_view_NOT_foundation
+    note: Six tiers remain useful as engineering reference layout but are NOT the constitutional predicate model.
+
 principle_01_ontological_triad:
   id: IA-01
   name: Knowledge × Registry × Runtime — Clean Ontological Separation
@@ -200,7 +289,7 @@ principle_04_canonical_graph_catalog:
     (T002 feeds T003 + T007). Canonical Graph explicit di catalog = single read model
     untuk resolver, tidak ada inference logic.
   explicit_graph_section_required:
-    path: transformation-catalog.yaml → graph:
+    path: "transformation-catalog.yaml → graph"
     structure:
       transformations:
         <T_ID>:
@@ -219,7 +308,7 @@ principle_04_canonical_graph_catalog:
 
 principle_05_proof_class_split:
   id: IA-05
-  name: Bukti Terbagi Dua Kelas: Execution Proof × Validation Proof
+  name: "Bukti Terbagi Dua Kelas: Execution Proof × Validation Proof"
   rationale: >
     Saat Gate D berjalan, akan ada kebingungan antara "transformasi berhasil dijalankan"
     vs "repository / registry memenuhi governance". Keduanya punya lifecycle,
@@ -407,7 +496,7 @@ principle_08_evolution_policy_per_artifact_class:
       change_allowed: APPEND ONLY. NO rewrite. NO in-place mutation. NO re-order.
       direct_edit_prohibited: true
       review_required: Automated SHA-256 chain verification by proof-ledger package
-      migration_rule: If ledger migration needed: rename OLD → proof-ledger-archive/{seq}/, NEW genesis = OLD.last_entry_hash
+      migration_rule: "If ledger migration needed: rename OLD → proof-ledger-archive/{seq}/, NEW genesis = OLD.last_entry_hash"
     PROOF_OBJECTS:
       path_globs: [build/evidence/**/*.json]
       change_allowed: Write once. NEVER regenerate with mutated identity (same proof_id, different content = hash chain break).
@@ -417,7 +506,7 @@ principle_08_evolution_policy_per_artifact_class:
 
 principle_09_knowledge_not_in_runtime:
   id: IA-09
-  name: Setelah Gate C: Roadmap = "Kurangi Pengetahuan di Runtime", Bukan "Tambah Fitur"
+  name: "Setelah Gate C: Roadmap = Kurangi Pengetahuan di Runtime, Bukan Tambah Fitur"
   rationale: >
     God Class Engine adalah anti-pattern yang menghancurkan EOS epistemology.
     Setiap commit post-Gate-C harus diaudit: "apakah pengetahuan ini seharusnya
@@ -434,8 +523,10 @@ principle_09_knowledge_not_in_runtime:
   remediation_pattern:
     found_in_runtime_knowledge_type → MOVE to enterprise/knowledge/ manifest.yaml OR *-registry manifest.yaml → Runtime loads via registry lookup
   acl_heuristic:
-    rule: IF a source file in packages/core/runtime/ or packages/tooling/eos-cli/
-    AND contains string literal matching T\d{3} OR "PRED-\d" OR capability-ID-like-kebab-case outside of registry function parameter, THEN it is a candidate violation for manual review.
+    rule: >
+      IF a source file in packages/core/runtime/ or packages/tooling/eos-cli/
+      AND contains string literal matching T\d{3} OR "PRED-\d" OR capability-ID-like-kebab-case outside of registry function parameter,
+      THEN it is a candidate violation for manual review.
   acl_check_required: true
   implementation_target: Gate_D_Bootstrap — before engine writes first code.
 
@@ -462,7 +553,7 @@ principle_10_immutable_knowledge_snapshot:
   snapshot_content_tuple:
     - constitution_digest: SHA-256 of enterprise/constitution/**
     - contract_digest: SHA-256 of workspace/contracts/** + enterprise contracts
-    - ontology_digest: SHA-256 of semantic kernel: relationships + node kinds + vocab
+    - ontology_digest: "SHA-256 of semantic kernel: relationships + node kinds + vocab"
     - registry_digest: SHA-256 of all *-registry manifest.yaml files loaded
     - graph_digest: SHA-256 of transformation-catalog graph section
     - policy_digest: SHA-256 of governance/** policies.yaml + .md
@@ -535,77 +626,660 @@ principle_12_explainability_and_justification:
   acl_check_required: true
   notes: IA-12 was an emergent invariant from prior discussion; formalized here to make the 11 invariants explicit.
 
-principle_13_stable_intermediate_representations:
+principle_13_stable_canonical_forms:
   id: IA-13
-  name: Stable Intermediate Representations — IR Versi dan Deterministik Antar Major Stage
+  name: Stable Canonical Forms — Makna Independen dari Serialization, Transport, Storage, Execution Technology
+  anchor: IA-13-STABLE-CANONICAL-FORMS
   rationale: >
-    Tanpa IR eksplisit, ada hidden state di antara reasoning engines. Pipeline tidak dapat
-    diresume dari titik tengah, reproducibility bergantung pada menjalankan seluruh pipeline dari awal,
-    dan debugging menjadi sulit. IA-13 memaksa: setiap major reasoning stage HARUS menghasilkan
-    IR yang jelas, versioned, deterministic, dan dapat ditukar antar engine sebagai artifact bukan internal state.
+    Makna (meaning), representasi fisik (serialization), dan transport (encoding) selama ini
+    tercampur dalam istilah Intermediate Representation / Canonical Representation. IA-13
+    diperkuat menjadi bentuk Axiom B: EOS membekukan Canonical Form, BUKAN cara ia dikompilasi,
+    disimpan, atau dikirim. Engine berkomunikasi melalui Canonical Form yang versioned +
+    deterministic + independently verifiable. Canonical Form adalah identity logis tunggal.
+    YAML, JSON, Binary, ProtoBuf, Database, Memory Object, Graph, Event Stream — SEMUA adalah
+    perwujudan dari Canonical Form YANG SAMA, selama round-trip deterministik terjaga. Ini
+    memisahkan: Meaning (Law II) ← Canonical Form (identity) ← Serialization/Transport
+    (implementation detail).
   formal_statement: >
-    Every transformation between major reasoning stages SHALL produce an explicit, versioned,
-    deterministic Intermediate Representation (IR). Engines MUST exchange IR artifacts rather
-    than internal runtime state.
-  scope_required_irs:
-    - KNOWLEDGE_IR (KIR): Setelah Pass 1–5 (Normalization → Ontology Expansion → Constraint Resolution → Dependency Analysis → Compatibility Resolution)
-    - DECISION_IR (DIR): Setelah Pass 6–7 (Planning + Decision Compilation)
-    - EXECUTION_PLAN_IR: Setelah Pass 8 (Plan Compilation) — boundary artifact untuk KVM
-    - EVIDENCE_GRAPH_IR (EPG): Setelah Evidence Compiler — Merkle DAG dengan provenance nodes
-  ir_properties_required_per_ir:
-    - explicit: disimpan sebagai file (atau canonical serialization yang dapat di-hash), TIDAK BOLEH hanya ada di in-memory object graph.
-    - versioned: field `ir_format_version` dengan semver string. Backward-compat = minor. Breaking = major.
-    - deterministic: identik input → identik byte → identik hash (canonical serialization enforced, sorted keys)
-    - self_describing: field header yang mendeskripsikan upstream snapshot id + daftar pass yang menghasilkan IR ini.
-    - independently_verifiable: setiap IR file WAJIB menyertakan `ir_content_hash` yang dihitung pada emit time; verifier dapat recompute dan membandingkan.
+    Every EOS artifact stage SHALL possess exactly one normative Canonical Form.
+    Canonical Form SHALL be independent of serialization, transport, storage, and execution technology.
+    YAML, JSON, Binary, ProtoBuf, Database record, Memory Object, Graph node, Event Stream —
+    all MAY realize the SAME Canonical Form. The Meaning (Law II), its Canonical Form identity,
+    and any concrete serialization/transport encoding SHALL remain strictly separable concerns.
+    Any downstream component MAY encode that Canonical Form into any transport format
+    provided round-trip determinism is preserved back to the normative form identity.
+  deprecated_aliases:
+    - Stable Canonical Representations
+    - Stable Intermediate Representations
+    - Canonical Representation
+    - Intermediate Representation
+    - IR
+  scope_required_canonical_forms:
+    - form_id: KNOWLEDGE-FORM
+      abbreviation: K-FORM
+      normative_term: Knowledge Canonical Form
+      deprecated_aliases: [KNOWLEDGE-REP, KNOWLEDGE_IR, Knowledge IR, KIR, K-REP]
+      produced_after: "Knowledge interpretation stage (historically: Passes 1-5 of knowledge builder pipeline)."
+      authority_stage: INTERPRETATION
+    - form_id: DECISION-FORM
+      abbreviation: D-FORM
+      normative_term: Decision Canonical Form
+      deprecated_aliases: [DECISION-REP, DECISION_IR, Decision IR, DIR, D-REP]
+      produced_after: "Planning + Decision stage (historically Passes 6-7)."
+      authority_stage: DECISION
+    - form_id: EXECUTION-FORM
+      abbreviation: X-FORM
+      normative_term: Execution Canonical Form
+      deprecated_aliases: [EXECUTION-REP, EXECUTION_PLAN_IR, Execution Plan IR, Plan IR, X-REP]
+      produced_after: "Plan compilation stage (historically Pass 8). Boundary for Execution System."
+      authority_stage: EXECUTION
+    - form_id: EVIDENCE-FORM
+      abbreviation: V-FORM
+      normative_term: Evidence Canonical Form
+      deprecated_aliases: [EVIDENCE-REP, EVIDENCE_GRAPH_IR (EPG), Evidence Provenance Graph, Evidence IR, V-REP]
+      produced_after: "Evidence compilation / Ledger append."
+      authority_stage: EVIDENCE
+  canonical_form_properties_required:
+    - identity_independent_of_serialization: Canonical Form identity is the SAME across all concretizations (YAML, JSON, binary, graph, db, memory). Two artifacts with different serialization but identical Canonical Form are semantically identical.
+    - explicit: disimpan sebagai normative artifact (atau bentuk canonical serialization yang dapat di-hash). TIDAK BOLEH hanya ada di in-memory object graph.
+    - versioned: field `form_format_version` (SemVer string). Backward-compat = minor. Breaking = major.
+    - deterministic: identik Canonical Form → identik identity-hash → identik logical equality (canonical serialization sorted keys for any given concretization).
+    - self_describing: field header mendeskripsikan upstream source id + daftar transformations yang menghasilkan Canonical Form ini.
+    - independently_verifiable: setiap Canonical Form WAJIB menyertakan `form_content_hash` yang dihitung pada emit time; verifier dapat recompute hash dari concretization manapun dan mendapatkan hash identity YANG SAMA.
+    - transport_storage_execution_agnostic: serialization/transport/storage/execution format choice NOT normatively constrained; only round-trip determinism back to identity is.
   consequence_guarantees:
-    - resumeable_pipeline: Jika build gagal di Pass 8 developer dapat resume from cached DIR without re-running 1–7.
-    - reproducibility: Snapshot ID → KIR hash → DIR hash → Plan hash → Evidence hash. Semua rantai dapat diikuti byte-for-byte.
-    - debugging: IR snapshot = "time capsule" dari state pada titik tertentu.
-    - engine_swap: Ganti Planner engine? Cukup pastikan input KIR = sama dan expected output DIR format = sama. Tidak ada tight coupling.
+    - technology_freedom: Replace YAML dengan ProtoBuf? Tambah vector index projection? Semua legal — Canonical Form identity tetap sama. Tidak ada coupling ke media representasi.
+    - resumeable_pipeline: Jika build gagal di titik manapun, developer dapat resume dari cached Canonical Form tanpa re-run upstream.
+    - reproducibility: Interpretation → Decision → Execution → Evidence hash chain dapat diikuti byte-for-byte melalui form identity hashes.
+    - debugging: Canonical Form snapshot = time capsule of state at an authority stage boundary, reproducible dari concretization manapun.
+    - engine_swap: Ganti Planner engine? cukup pastikan input K-FORM = sama dan expected output D-FORM identity = sama. Tidak ada tight coupling ke compiler technology.
+  verification_strategy:
+    - Cross-format round-trip test: form(YAML) → encode JSON → decode → recanonicalize YAML; compare SHA-256 form identity byte-identical. Repeat for binary, graph, db concretizations.
+    - Schema validation: Setiap Canonical Form punya schema + Zod validator for every concretization.
+    - Schema drift test: golden fixture hash comparison; drift = test FAIL.
+    - Reproducibility: 2x generate dari input sama → form identity hash sama di semua concretization.
   acl_check_required: true
-  enforcement_acl_rule_id: ARCH-22
+  enforcement_acl_rule_id: ARCH-22-IA13-STABLE-CANONICAL-FORMS
+  axiom_realization: Axiom B — Meaning
+  tf1_cross_ref: governance/TERMINOLOGY-FREEZE-TF1.yaml#TERM-CANONICAL-FORM
 
 principle_14_pure_compiler_passes:
   id: IA-14
-  name: Pure Compiler Passes — No Upstream Mutation, No Undeclared State
+  name: Pure Transformations — No Upstream Mutation, No Undeclared State
   rationale: >
     IA-10 (Immutable Snapshot) menjamin knowledge state tidak berubah setelah planning dimulai.
     IA-11 menjamin semantic determinism.
-    IA-14 memperkuat keduanya dengan menjamin: SETIAP pass secara individual BUKAN impurity.
-    Pass hanya memproduksi output IR + diagnostics dari input IR yang dideklarasikan.
-    Tidak ada side effect. Tidak ada mutable shared state. Tidak ada env-dependent semantic branches.
+    IA-14 memperkuat keduanya dengan menjamin: SETIAP transformation secara individual BUKAN impurity.
+    Transformation hanya memproduksi output canonical representation + diagnostics dari input
+    canonical representation yang dideklarasikan. Tidak ada side effect. Tidak ada mutable shared
+    state. Tidak ada env-dependent semantic branches.
   formal_statement: >
-    Each reasoning pass SHALL be functionally pure with respect to its declared inputs.
-    A pass MAY produce diagnostics and metadata, but SHALL NOT mutate upstream artifacts
+    Each reasoning transformation SHALL be functionally pure with respect to its declared inputs.
+    A transformation MAY produce diagnostics and metadata, but SHALL NOT mutate upstream artifacts
     or depend on undeclared external state.
-  per_pass_properties_required:
-    - declared_inputs: daftar eksplisit artifact classes / paths yang dibaca (misal: "ONLY snapshot + Semantic Kernel relationships").
-    - declared_outputs: daftar eksplisit IR classes yang dihasilkan + diagnostics.
-    - no_upstream_mutation: PASS NEVER menulis ke upstream artifact. PASS NEVER memanggil fs.writeFileSync ke snapshot archive, atau merubah kontrak/registry secara in-place.
-    - no_undeclared_external_state: PASS TIDAK BOLEH bergantung pada:
-        * environment vars untuk semantic decision branches
-        * wall-clock time (Date.now() / new Date()) untuk non-diagnostic purposes
-        * network IO (fetch, http, etc.)
-        * global singletons / globalThis mutable state
-        * process pid / rng / non-deterministic V8 property iteration
+  per_transformation_properties_required:
+    - declared_inputs: 'daftar eksplisit artifact classes / paths yang dibaca (misal: "ONLY snapshot + Semantic Kernel relationships").'
+    - declared_outputs: "daftar eksplisit canonical representation classes yang dihasilkan + diagnostics."
+    - no_upstream_mutation: "Transformation NEVER menulis ke upstream artifact. NEVER memanggil fs.writeFileSync ke snapshot archive, atau merubah kontrak/registry secara in-place."
+    - no_undeclared_external_state: |
+        Transformation TIDAK BOLEH bergantung pada:
+          * environment vars untuk semantic decision branches
+          * wall-clock time (Date.now() / new Date()) untuk non-diagnostic purposes
+          * network IO (fetch, http, etc.)
+          * global singletons / globalThis mutable state
+          * process pid / rng / non-deterministic V8 property iteration
   diagnostics_vs_semantics_separation:
     rule: >
-      PASS boleh emit timestamp HANYA di field `diagnostics[]` metadata informational.
-      PASS TIDAK BOLEH menggunakan timestamp apapun di dalam perhitungan yang mempengaruhi
-      output IR (hanya untuk info audit tidak untuk hash determinism).
-  pass_failure_model:
+      Transformation boleh emit timestamp HANYA di field `diagnostics[]` metadata informational.
+      Transformation TIDAK BOLEH menggunakan timestamp apapun di dalam perhitungan yang mempengaruhi
+      output canonical representation (hanya untuk info audit tidak untuk hash determinism).
+  transformation_failure_model:
     statement: >
-      A pure pass either returns output_ir: IR + diagnostics: Diagnostic[], OR throws a validation error
-      dengan pesan yang jelas mengapa input tidak valid.
-      PASS NEVER "returns best effort corrupted IR", dan PASS NEVER silently swallows error kemudian mengembalikan
-      IR parsial tanpa tanda invalid.
+      A pure transformation either returns output_representation: Canonical Representation +
+      diagnostics: Diagnostic[], OR throws a validation error dengan pesan yang jelas mengapa input
+      tidak valid. Transformation NEVER "returns best effort corrupted representation", dan NEVER
+      silently swallows error kemudian mengembalikan representasi parsial tanpa tanda invalid.
+  deprecated_aliases:
+    - Pure Compiler Passes
+    - Compiler Pass
+    - Pass
   verification_strategy:
-    - Unit test: input fixture IR → expected output IR golden hash. Determinism 2x run equal.
-    - Unit test: upstream artifact exists before pass, untouched (stat.mtime + content hash) after pass.
-    - Lint-like ACL scan (ARCH-23) for impurity patterns in pass source files.
+    - Unit test: input fixture representation → expected output representation golden hash. Determinism 2x run equal.
+    - Unit test: upstream artifact exists before transformation, untouched (stat.mtime + content hash) after transformation.
+    - Lint-like ACL scan (ARCH-23) for impurity patterns in transformation source files.
   acl_check_required: true
-  enforcement_acl_rule_id: ARCH-23
+  enforcement_acl_rule_id: ARCH-23-IA14-PURE-PASS
+  tf1_cross_ref: governance/TERMINOLOGY-FREEZE-TF1.yaml#TERM-TRANSFORMATION
+
+principle_15_dual_primary_graphs:
+  id: IA-15
+  name: Dual Primary Graphs — Authority Graph × Knowledge Graph Strictly Separated
+  anchor: IA-15-DUAL-PRIMARY-GRAPHS
+  axiom_realization: Axiom A (Authority Graph) + Axiom B (Knowledge Graph)
+  rationale: >
+    Sebelumnya edge taxonomy tercampur: edge "approves" dan edge "depends_on" berada dalam
+    satu graph yang sama. Padahal keduanya menjawab pertanyaan FUNDAMENTAL yang berbeda dan
+    berasal dari HUKUM yang berbeda. IA-15 menetapkan EOS memiliki DUA graph primer yang
+    benar-benar terpisah: Authority Graph (Law I, Axiom A) menjawab "Why is this artifact
+    valid?"; Knowledge Graph (Law II, Axiom B) menjawab "What does this artifact mean?".
+    Keduanya TIDAK BOLEH bercampur. Jika sebuah edge menjawab "mengapa sah" → Authority
+    Graph. Jika menjawab "apa hubungannya secara semantik" → Knowledge Graph. Ini adalah
+    pemisahan ontologis yang bersih antara legitimasi dan makna.
+  formal_statement: >
+    EOS SHALL maintain TWO strictly separate primary graphs:
+      (a) AUTHORITY GRAPH — Law I / Axiom A domain. Node = artifacts and actors.
+          Edges = legitimacy relations. Answers "Why is this artifact valid?".
+      (b) KNOWLEDGE GRAPH — Law II / Axiom B domain. Node = semantic objects.
+          Edges = meaning relations. Answers "What does this artifact mean?".
+    No edge class SHALL appear in both graphs. Mixing authority edges into the semantic
+    graph, or vice versa, is an IA-15 violation. The Constitutional Verifier MUST validate
+    edge classification on every graph write operation.
+  authority_graph_spec:
+    node_kinds: [ConstitutionArtifact, GovernanceArtifact, SpecificationArtifact, Contract, RegistryEntry, DecisionRecord, HumanActor]
+    edge_kinds:
+      - approves
+      - supersedes
+      - delegates
+      - authorizes
+      - derives_authority_from
+      - amends
+      - attests
+      - epoch_bounds
+    graph_property: STRICTLY_DIRECTED_ACYCLIC_GRAPH
+    cycle_detection_rule: "Any cycle in Authority Graph = FATAL IA-15 + IA-17 violation. Constitutional Verifier CV-STAGE-2 MUST detect and REJECT."
+    authority_level_monotonicity: "Edge FROM node X TO node Y implies authority_level(X) > authority_level(Y) or authority_level(X) == authority_level(Y) for same-stage peer review. Backward edges (lower authority → higher authority) are FORBIDDEN."
+  knowledge_graph_spec:
+    node_kinds: [Requirement, Intent, Policy, ContractTerm, OntologyClass, CanonicalForm, VocabularyTerm, Capability, Actor, BusinessService]
+    edge_kinds:
+      - depends_on
+      - implements
+      - extends
+      - contains
+      - references
+      - equivalent_to
+      - specializes
+      - refines
+      - aggregates
+    graph_property: DIRECTED_GRAPH (cycles ALLOWED only for equivalent_to symmetric closure; otherwise MUST be DAG for all other edge kinds)
+    semantic_preservation_rule: "A transformation that maps Knowledge Graph G_in to G_out SHALL have an edge-by-edge semantic_preservation_proof that no meaning is added or removed, unless explicitly declared in the Transformation Semantics contract."
+  separation_invariants:
+    - disjoint_edge_kinds: "The sets AuthorityGraph.edge_kinds and KnowledgeGraph.edge_kinds are pairwise disjoint. No element appears in both."
+    - disjoint_semantics: "An edge whose primary answer is 'why valid?' MUST NOT be stored or inferred inside the Knowledge Graph. An edge whose primary answer is 'what means?' MUST NOT be stored or inferred inside the Authority Graph."
+    - cross_graph_reference_only: "An Authority Graph node MAY carry a reference (via URI / artifact_id) to a Knowledge Graph node that expresses its semantic content. But the reference itself is NOT an authority edge, and the graph structures remain separate."
+  verification_strategy:
+    - Constitutional Verifier CV-STAGE-4 scans every edge declaration and validates graph_class assignment (AUTHORITY vs KNOWLEDGE).
+    - Cross-edge-kind scan: union of the two edge_kinds sets MUST equal the declaration set; intersection MUST be empty.
+    - Cycle detection algorithm (Tarjan's) runs on Authority Graph; any SCC of size > 1 = FAIL.
+  acl_check_required: true
+  enforcement_acl_rule_id: ARCH-37-IA15-DUAL-GRAPHS
+  gate_impact:
+    gate_c: "Low — Current catalog edges are semantic; no authority graph yet. IA-15 establishes target state."
+    gate_d: "MEDIUM — All T002..T005 contracts must declare graph_class per edge. Mixed-class edges = Gate-D Declined."
+    gate_e: "HIGH — Repository Certification must show dual graph separation holds across all artifacts."
+
+principle_16_transformation_semantics_strategy:
+  id: IA-16
+  name: Transformation Semantics × Transformation Strategy — Separasi Wajib Seperti SQL ↔ Optimizer
+  anchor: IA-16-SEMANTICS-STRATEGY-SEPARATION
+  axiom_realization: Axiom C — Realization
+  rationale: >
+    Selama ini "Transformation" adalah konsep campuran: ia mendefinisikan INPUT/OUTPUT
+    (apa yang harus dihasilkan) TETAPI juga mendefinisikan CARA (planner, rule engine, LLM,
+    dst). IA-16 memisahkan keduanya seperti pemisahan SQL Standard vs Query Optimizer,
+    atau POSIX vs Kernel Implementation. Semantics = yang beku. Strategy = yang dapat
+    berubah total. Pemisahan ini membuat EOS tahan terhadap perubahan teknologi: AI
+    planner, SAT solver, streaming, distributed optimizer — semuanya adalah Strategy
+    berbeda yang menjalankan Semantics yang SAMA.
+  formal_statement: >
+    Every EOS transformation SHALL be separable into two independently-versioned artifacts:
+      (a) TRANSFORMATION SEMANTICS — frozen normative contract. Defines ONLY:
+          Inputs, Outputs, Preconditions, Postconditions, Invariants.
+          Semantics SHALL be technology-agnostic and implementation-oblivious.
+      (b) TRANSFORMATION STRATEGY — interchangeable implementation. Defines HOW:
+          Planner, SAT Solver, Rule Engine, LLM, Compiler, Streaming, Distributed Optimizer.
+          Strategy MAY be replaced entirely without changing Semantics version.
+    The relationship IS: Semantics 1 → * Strategy (one normative contract, many strategies allowed).
+    A Strategy instance MUST produce output conforming to the Semantics contract for all inputs
+    within the declared precondition domain.
+  transformation_semantics_spec:
+    fields_required:
+      - id: canonical transformation_semantics_id (e.g. TS-ELS-TO-EIR-v1)
+      - inputs: ordered list of (canonical_form_id, cardinality, preconditions)
+      - outputs: ordered list of (canonical_form_id, cardinality, postconditions)
+      - invariants: list of (invariant_id, formal_statement) that MUST hold across every strategy
+      - semantic_preservation_claims: boolean flags for {authority, meaning}
+      - conformance_class: reference to CONFORMANCE-PROPERTIES.yaml required vector
+    forbidden_in_semantics:
+      - Any reference to a specific algorithm, data structure, or programming language
+      - Any reference to planner, rule engine, LLM, compiler, or scheduler type
+      - Any performance, latency, or resource constraint (these are Strategy concerns)
+      - Any hardcoded transformation sequence or step ordering
+    versioning_policy:
+      - Breaking change to inputs/outputs/preconditions/postconditions → MAJOR version bump
+      - New optional field added → MINOR version bump
+      - Correction of documented bug in semantics (not strategy) → PATCH only if no conforming strategy breaks
+  transformation_strategy_spec:
+    fields_required:
+      - id: canonical strategy_id (e.g. STRAT-ELS-TO-EIR-VANILLA-COMPILER-v1)
+      - implements_semantics: reference to transformation_semantics_id + version range
+      - strategy_kind: enum { PLANNER, SAT_SOLVER, RULE_ENGINE, LLM, COMPILER, STREAMING, DISTRIBUTED_OPTIMIZER, HYBRID, OTHER }
+      - correctness_proof_approach: { FORMAL, TEST_SUITE, GOLDEN_FIXTURES, PROBABILISTIC, INFORMAL }
+      - determinism_class: { STRONG_DETERMINISTIC, WEAK_DETERMINISTIC, NON_DETERMINISTIC_BUT_AUDITABLE }
+      - required_runtime_capabilities: list of capability tokens (e.g. "FILESYSTEM_READ", "LLM_API_ENDPOINT")
+    interchangeability_property: >
+      Two strategies S1 and S2 that implement the SAME Semantics contract SHALL be
+      interchangeable: for every input in the precondition domain, S1(input) and S2(input)
+      MUST produce outputs meeting the Semantics postconditions (they may differ internally,
+      and even differ in output structuring if the Semantics allows multiple valid outputs,
+      but both must pass conformance).
+  separasi_pattern_examples:
+    standard_example:
+      analogy: "SQL Standard ↔ Query Optimizer"
+      semantics: "ISO/IEC 9075 SQL:2023 — defines SELECT/JOIN/WHERE semantics ONLY"
+      strategy_examples: ["PostgreSQL optimizer", "MySQL optimizer", "ClickHouse query planner", "DuckDB"]
+    eos_example:
+      semantics: "TS-REQ-TO-KNOWLEDGE-FORM-v1 — defines how Requirement YAML becomes Knowledge Canonical Form"
+      strategy_examples:
+        - "STRAT-R2KF-RULE-ENGINE-v1 — rule-based compiler"
+        - "STRAT-R2KF-LLM-v2 — LLM-augmented transformation with audit trail"
+        - "STRAT-R2KF-SAT-v3 — SAT solver for constraint satisfaction"
+  verification_strategy:
+    - Strategy interchangeability test: run S1(input) and S2(input) for N fixtures; both MUST produce conforming outputs.
+    - Semantics purity check: ACL scan (ARCH-38) of transformation_semantics.yaml files for FORBIDDEN_IN_SEMANTICS patterns.
+    - Semantics-to-Strategy wiring: verify strategy.implements_semantics references valid + active Semantics version.
+  acl_check_required: true
+  enforcement_acl_rule_id: ARCH-38-IA16-SEMANTICS-STRATEGY
+  gate_impact:
+    gate_c: "Low — Existing T001 has implicit semantics; no structural change required for PASS preservation."
+    gate_d: "HIGH — Every transformation T002..T005 MUST have explicit Semantics artifact + at least one Strategy artifact."
+    gate_e: "CRITICAL — Repository Certification must show: every Semantics has ≥2 Strategy implementations (conformance coverage)."
+
+principle_17_constitution_preservation:
+  id: IA-17
+  name: Constitution Preservation — Meta-Invariant covering Legitimate ∧ MeaningPreserved ∧ Provable
+  anchor: IA-17-CONSTITUTION-PRESERVATION
+  axiom_realization: Constitutional Predicates A ∧ B ∧ C (Legitimate + MeaningPreserved + Provable) — frozen in CC-001 §3–§5
+  predicate_derivation: Direct structural invariant form of the Constitutional Validity meta-predicate (ConstitutionallyValid ⇔ PRED_A ∧ PRED_B ∧ PRED_C). Former name "IA-17 Authority Preservation" is now the PRED_A sub-component only.
+  rationale: >
+    Penyempurnaan tingkat META di atas seluruh IA-xx invariant. SELURUH tahap EOS
+    (planner, compiler, optimizer, AI planner, cache, incremental build, distributed execution)
+    tunduk pada SATU aturan konstitusional yang sama: every transformation SHALL preserve
+    constitutional validity. Artinya, tidak hanya otoritas (Legitimate/PRED_A) yang dijaga,
+    tetapi juga makna normatif (MeaningPreserved/PRED_B) dan kebuktian (Provable/PRED_C).
+    Sebuah transformation bisa byte-deterministik TETAPI jika maknanya drift (PRED_B=FALSE)
+    atau evidence tidak cukup untuk membuktikan postcondition (PRED_C=FALSE) → tetap
+    IA-17 violation. Inilah SATU invariant meta yang menggantikan kebutuhan akan "Authority
+    Preservation", "Semantic Preservation", dan "Correctness Preservation" sebagai invariant
+    terpisah.
+  epistemological_status: CONSTITUTIONAL_META_INVARIANT (from CC-001 §6 Constitutional Validity)
+  formal_statement: >
+    Every architectural transformation SHALL preserve constitutional validity.
+
+    ConstitutionallyValid(T)  ⇔  Legitimate(T)  ∧  MeaningPreserved(T)  ∧  Provable(T)
+
+    Transformations MAY derive, refine, optimize, or materialize knowledge, but SHALL NEVER:
+      (a) introduce new authoritative semantics not rooted in canonical sources   [= ¬Legitimate breach],
+      (b) alter normative meaning via Canonical Identity drift                    [= ¬MeaningPreserved breach],
+      (c) emit a PASS verdict without a sufficient evidence corpus entailing Postconditions(T)  [= ¬Provable breach].
+  covering_cases:
+    PLANNER: >
+      Planner MAY select among candidates but SHALL NOT:
+        (a) invent candidate semantics not present in Interpretation-stage CanonicalIdentity inputs [PRED_A],
+        (b) produce a Decision Form whose CanonicalIdentity semantic_equivalence to input K-FORM = FALSE [PRED_B],
+        (c) select PASS without sufficient evidence of preference rationale [PRED_C].
+    COMPILER: >
+      Compiler MAY optimize but MUST preserve:
+        (a) observable authority semantics of input CanonicalIdentity [PRED_A],
+        (b) semantic_equivalence of output CanonicalIdentity to input [PRED_B],
+        (c) emitted evidence ⊢ Postconditions(TransformationContract) [PRED_C].
+    OPTIMIZER: >
+      Optimizer MAY reorder / parallelize, but SHALL NOT:
+        (a) reorder across authority-level boundaries (authority monotonicity preserved) [PRED_A],
+        (b) produce decision divergence on identical inputs (Semantic Determinism) [PRED_B],
+        (c) declare optimization PASS without transformation-correctness evidence [PRED_C].
+    AI_PLANNER: >
+      AI Planner MAY propose candidates, but SHALL ensure:
+        (a) each decision traceable to canonical Interpretation AuthorityRel edges; non-deterministic generation path is NOT by itself authority [PRED_A],
+        (b) proposal CanonicalIdentity is well-defined and semantically closed under input [PRED_B],
+        (c) every candidate carries provenance evidence (rule_id + premise_ids) sufficient for re-verification [PRED_C].
+    CACHE: >
+      Cache hits MUST verify:
+        (a) cache.key derivation from CanonicalIdentity inputs, NEVER from stale AuthorityRel paths [PRED_A],
+        (b) cached CanonicalIdentity semantic_equivalence check against current input (not just byte hash) [PRED_B],
+        (c) cache evidence (hit miss derivation) preserved in ledger for audit [PRED_C].
+    INCREMENTAL_BUILD: >
+      Invalidation MUST cascade when ANY upstream CanonicalIdentity field changes that is:
+        (a) AuthorityRel-relevant (authority change) [PRED_A],
+        (b) SemanticRel-relevant (meaning change) [PRED_B],
+        (c) EvidencePostcondition-relevant (provability change) [PRED_C].
+    DISTRIBUTED_EXECUTION: >
+      Scheduler split, partial result combine, retries MUST produce:
+        (a) no authority_gain (distributed parts never have higher authority_level than whole) [PRED_A],
+        (b) combined output CanonicalIdentity = deterministic merge = same as single-run X-FORM identity [PRED_B],
+        (c) combine evidence sufficient to reconstruct Postconditions(whole-run contract) [PRED_C].
+  constitutional_validity_pipeline:
+    name: EOS Constitutional Validity Pipeline (formerly "Authority Pipeline" — expanded)
+    stages_ordered:
+      - AUTHORITY
+      - INTERPRETATION
+      - DECISION
+      - EXECUTION
+      - EVIDENCE
+    predicate_boundary_per_stage:
+      AUTHORITY:     "PRED_A resolved. All downstream stages inherit authority_level ≤ AUTHORITY stage."
+      INTERPRETATION: "PRED_B resolved. CanonicalIdentity(i) well-defined for every input artifact i."
+      DECISION:       "PRED_B maintained. Decision CanonicalIdentity semantically equivalent to Interpretation closure."
+      EXECUTION:      "PRED_C established. Execution emits Evidence(t,T) ⊢ Postconditions(T)."
+      EVIDENCE:       "All three witnesses collected. ConstitutionallyValid(T) ⇔ TRUE ↔ Verdict PASS emitted."
+    authority_level_index_map:
+      AUTHORITY: 0
+      INTERPRETATION: 1
+      DECISION: 2
+      EXECUTION: 3
+      EVIDENCE: 4
+    invariant_each_step: "Every stage transition X→Y SHALL have authority_level_index(Y) ≥ authority_level_index(X). Strict equality ONLY allowed for intra-stage peer review."
+    constitutional_integrity_rule: >
+      Every artifact's constitutional_chain MUST resolve:
+        (PRED_A) via AuthorityRel to an AUTHORITY-stage canonical root,
+        (PRED_B) via SemanticEquivalence to a well-defined CanonicalIdentity,
+        (PRED_C) via Evidence(t,T) ⊢ Postconditions(T) with no evidential gap.
+      Loops, self-loops, dangling references = FATAL IA-17 violation.
+  verification_strategy:
+    - Constitutional Verifier CV-STAGE-2 (DAG direction) validates authority_level_index monotonicity on AuthorityRel edges [PRED_A sub-check].
+    - CV-STAGE-1 (Type System) rejects AUTHORITY_GAIN_TYPE_ERROR + SEMANTIC_DRIFT_ERROR + EVIDENTIAL_GAP_ERROR [all three predicates].
+    - ARCH-36-CONSTITUTION-GAIN (formerly ARCH-36-AUTHORITY-GAIN, expanded) performs structural scan of every transformation output for PRED_A/PRED_B/PRED_C violations.
+    - Witness tuple ⟨witness_A, witness_B, witness_C⟩ is atomically appended to Ledger; re-verification of IA-17 PASS = re-verification of all three witnesses.
+  acl_check_required: true
+  enforcement_acl_rule_id: ARCH-36-CONSTITUTION-GAIN (supersedes legacy ARCH-36-AUTHORITY-GAIN)
+  tf1_cross_ref: governance/TERMINOLOGY-FREEZE-TF1.yaml#TERM-IA17
+  gate_impact:
+    gate_c: "Low — T001 output sudah downstream of Interpretation. Existing T001 PASS Proof Object retroactively classified as witness_C (Provable sub-witness); witness_A and witness_B waived with explicit GATEC-CP-WAIVER notation for Sprint-0 only."
+    gate_d: "CRITICAL — All Gate-D deliverables MUST emit complete ⟨witness_A, witness_B, witness_C⟩ tuple. Missing ANY witness = Gate-D Declined."
+    gate_e: "FATAL — Repository Certification WAJIB menunjukkan: IA-17 = PASS on EVERY transformation in certification scope (no PRED_A/PRED_B/PRED_C breach on ANY artifact)."
+
+principle_18_constitutional_proof:
+  id: IA-18
+  name: "Constitutional Proof — DERIVED Witness Tuple ⟨witness_Legitimate, witness_MeaningPreserved, witness_Provable⟩"
+  anchor: IA-18-CONSTITUTIONAL-PROOF
+  axiom_realization: CC-001 §6 Constitutional Validity (witness materialization of Predicates A ∧ B ∧ C)
+  predicate_derivation: >
+    Constitutional Proof is EXPLICITLY DERIVED, NOT constitutional. The three predicates
+    Legitimate / MeaningPreserved / Provable and their conjunction ConstitutionallyValid
+    are the ONLY constitutional-level concepts. IA-18 materializes that conjunction into
+    a machine-auditable witness tuple that can be stored in the Ledger, replayed, and
+    independently verified.
+  rationale: >
+    Konsep "Constitutional Proof" sebelumnya di-frame sebagai "tiga sub-proof" yang setara
+    statusnya dengan predikat. Kini direduksi menjadi: Constitutional Proof adalah BUKAN
+    konsep utama. Ia adalah WITNESS TUPLE — artefak audit yang materialisasi evaluasi
+    tiga predikat konstitusional. Perbedaan filosofisnya mendalam:
+
+    BEFORE: "Constitutional Proof adalah 3 sub-bukti yang harus PASS (Authority + Semantic + Correctness)."
+    AFTER:  "ConstitutionalProof(T) = ⟨w_A, w_B, w_C⟩ where w_A justifies Legitimate(T),
+            w_B justifies MeaningPreserved(T), w_C justifies Provable(T).
+            ConstitutionalProof(T) is COMPLETE  ⇔  ConstitutionallyValid(T)."
+
+    Ini sesuai dengan paradigma ilmu pengetahuan: "kita tidak membuktikan 'hukum', kita
+    mengevaluasi predikat dan merekam witness-nya". Witness adalah artefak yang
+    dapat dipertukarkan lintas epoch dan teknologi — selama ketiga predikat bernilai
+    sama, bentuk witness boleh berubah total.
+  formal_statement: >
+    ConstitutionalProof is a DERIVED witness tuple, NOT a constitutional concept.
+
+    ConstitutionalProof(T)  =  ⟨  witness_Legitimate(T),
+                                   witness_MeaningPreserved(T),
+                                   witness_Provable(T)       ⟩
+
+    where each witness is any artifact that JUSTIFIES a TRUE evaluation of the
+    corresponding predicate, per:
+
+      witness_Legitimate(T)         justifies  Legitimate(T)         = TRUE
+      witness_MeaningPreserved(T)   justifies  MeaningPreserved(T)   = TRUE
+      witness_Provable(T)           justifies  Provable(T)           = TRUE
+
+    Completeness property (from CC-001 §6):
+      ConstitutionalProof(T) is COMPLETE   ⇔   ConstitutionallyValid(T)
+
+    Witness FORM is NOT prescribed. A witness MAY be: a DAG walk certificate, a
+    semantic equivalence proof object, a conformance test report, an LLM-generated
+    audit trail, a cryptographic hash chain, or a human-signed approval document.
+    Only the witness's JUSTIFICATION POWER (does it, on replay, cause the predicate
+    to evaluate TRUE on T?) is normative. The representation = fungible engineering.
+  three_witness_spec:
+    witness_A_legitimate:
+      name: Witness A — Legitimate(x) Justification
+      predicate_reference: CC-001 §3 Legitimate(x)
+      justifies: "Legitimate(T) = TRUE — artifact T has valid AuthorityRel chain from canonical root with no cycles."
+      normative_relation_set: "AuthorityRel = { Authorizes, Delegates, Supersedes, Approves, DerivesAuthorityFrom, Ratifies, Amends, EpochBinds } (FROZEN per CC-001 §3)"
+      evidence_elements_required:
+        - authority_root_resolution: every artifact's authority_chain resolves to an AUTHORITY-stage canonical root via AuthorityRel edges only
+        - no_authority_cycle: Tarjan SCC or equivalent algorithm confirms AuthorityRel closure = strict DAG (no SCC of size > 1)
+        - authority_level_monotonicity: across every AuthorityRel edge, authority_level_index(target) ≥ authority_level_index(source)
+        - epoch_binding_validity: artifact's declared_epoch is within the EpochBinds relation range authorized by Constitution
+      representation_examples:
+        - "Authority Graph walk certificate (Neo4j / RDF / SQL query result)"
+        - "Git DAG merkle-proof of derives_authority_from chain"
+        - "Cryptographic signature chain from Constitution root → artifact"
+        - "YAML manifest of authority chain with hash references + manual Architecture Board signatures"
+      fail_mode: LEGITIMATE_WITNESS_WEAK or AUTHORITY_GAIN_TYPE_ERROR or AUTHORITY_DANGLING_REFERENCE or AUTHORITY_DAG_CYCLE
+    witness_B_meaning_preserved:
+      name: Witness B — MeaningPreserved(T) Justification
+      predicate_reference: CC-001 §4 MeaningPreserved(T)
+      justifies: "MeaningPreserved(T) = TRUE — T's output CanonicalIdentity set is semantically equivalent to T's input CanonicalIdentity set under SemanticRel closure."
+      normative_concepts:
+        - "CanonicalIdentity (FUNDAMENTAL abstract logical identity, per CC-001 §4 — NOT CanonicalForm)"
+        - "SemanticRel = { DependsOn, Implements, Extends, Contains, References, EquivalentTo, Specializes, Refines, Uses } (FROZEN per CC-001 §4)"
+        - "TransformationContract(T) = ⟨Inputs, Outputs, Preconditions, Postconditions, Invariants⟩"
+      evidence_elements_required:
+        - canonical_identity_well_defined: every artifact i ∈ Inputs(T) ∪ Outputs(T) has a well-defined CanonicalIdentity with deterministic identity-hash
+        - semantic_equivalence_proof: SemanticEquivalence(⊔{CanonicalIdentity(i) | i ∈ Inputs(T)}, ⊔{CanonicalIdentity(o) | o ∈ Outputs(T)}) = TRUE — proven via SemanticRel homomorphism check
+        - vocabulary_lexical_closure: every CanonicalIdentity term in Outputs(T) is registered in Constitutional Lexicon Registry (IA-19) with status ≥ ACTIVE
+        - semantic_determinism_certificate: 2x replay of T on identical inputs produces identical CanonicalIdentity output set (IA-11 Semantic Determinism verified)
+      representation_examples:
+        - "Canonical Form identity hash chain K-FORM → D-FORM → X-FORM → V-FORM with round-trip proof"
+        - "Knowledge Graph homomorphism proof (edges_in ⊑ edges_out modulo explicit extension declarations in contract)"
+        - "Semantic Kernel inference trace with rule_id + premise_ids per edge"
+        - "LLM-generated semantic diff report with ground-truth reference alignment"
+      fail_mode: MEANING_WITNESS_WEAK or SEMANTIC_DRIFT_ERROR or CANONICAL_IDENTITY_MISMATCH or UNREGISTERED_TERM
+    witness_C_provable:
+      name: Witness C — Provable(T) Justification
+      predicate_reference: CC-001 §5 Provable(T)
+      justifies: "Provable(T) = TRUE — for every execution instance t of T reaching verdict stage, Evidence(t,T) syntactically entails Postconditions(T), and there is no evidential gap allowing ¬Postconditions(T) coexisting with a PASS verdict emission."
+      normative_concepts:
+        - "Evidence(t, T) = runtime evidence corpus for execution instance t of T"
+        - "Postconditions(T) = extracted from TransformationContract(T) (NOT from strategy)"
+        - "Evidence ⊢ Postconditions = syntactic entailment or constructive check; NOT probabilistic belief"
+      evidence_elements_required:
+        - postcondition_entailment: for each postcondition P ∈ Postconditions(T), Evidence(t,T) contains a witness (test result, hash match, conformance bit) that constructively establishes P=TRUE
+        - no_evidential_gap_scan: exhaustive check that for every postcondition P, there is NO possible world in which ¬P holds but all evidence bits are identical (i.e., evidence is complete for the postcondition domain)
+        - precondition_domain_check: inputs satisfied Preconditions(T) domain; run was within declared scope (not extrapolation)
+        - strategy_correctness_evidence: Transformation Strategy (fungible) executed its declared correctness approach (FORMAL / TEST_SUITE / GOLDEN_FIXTURES / PROBABILISTIC / INFORMAL) and the result is archived
+      representation_examples:
+        - "Golden fixture hash match (output_sha256 == expected_sha256) for every declared output"
+        - "Zod schema validation + Predicate registry evaluation of every PRED-* on output artifacts"
+        - "Formal proof object from SAT/SMT solver encoding of Postconditions(T)"
+        - "Coverage report showing 100% of postcondition assertions touched at runtime"
+      fail_mode: PROVABLE_WITNESS_WEAK or TRANSFORMATION_POSTCONDITION_FAIL or INVARIANT_BREACH or EVIDENTIAL_GAP
+  witness_composition_order:
+    invariant: >
+      Witnesses are conceptually ORDERED but independently justifiable:
+        (1) Legitimate witness (w_A) is required first — a transformation with no authority cannot meaningfully produce semantic or correctness evidence.
+        (2) MeaningPreserved witness (w_B) is required second — a semantically-drifted transformation is invalid regardless of execution correctness.
+        (3) Provable witness (w_C) is required third — a legitimate+meaningful transformation is still useless without evidence that it actually worked.
+
+      Independence property is PRESERVED: w_C can be PASS while w_A FAIL (example: implementation correct, executed by unauthorized agent) → overall ConstitutionallyValid(T) = FALSE per IA-20.
+    aggregation_logic: "ConstitutionalProof(T) COMPLETE ⇔ (w_A=JUSTIFIES_PRED_A) ∧ (w_B=JUSTIFIES_PRED_B) ∧ (w_C=JUSTIFIES_PRED_C). If ANY witness is absent/insufficient → tuple is INCOMPLETE → ConstitutionallyValid(T) = FALSE (or INCONCLUSIVE if audit ongoing)."
+  ledger_atomicity:
+    append_model: "ConstitutionalProof(T) composite ID + three witness IDs are appended ATOMICALLY to the Evidence Ledger. Partial append (e.g. w_C appended without w_A) = LEDGER_CORRUPTION → IA-17 Constitution Preservation FAIL."
+    composite_id_scheme: "CP-<unix_millis>-<w_A_id_8hex>-<w_B_id_8hex>-<w_C_id_8hex>"
+    re_verification: "An auditor takes composite ID from Ledger, loads all three witnesses from evidence store, re-runs Constitutional Verifier CV-STAGE-0→6, and confirms IA-20(T) = same verdict as the archived result."
+  downstream_artifacts_dependency:
+    execution_evidence: "Hanya dihasilkan JIKA ConstitutionalProof(T) is COMPLETE (w_A ∧ w_B ∧ w_C all justify). Evidence carries reference ke composite ID + tiga witness IDs."
+    assessment: "Menerima ExecutionEvidence + ConstitutionalProof composite ID + TransformationContract(T) sebagai input. Machine-evaluates per-property PASS/FAIL/INCONCLUSIVE matrix."
+    justification: "Structured narrative that LISTS the three witnesses, cites their authority sources (AuthorityRel edges / SemanticRel homomorphisms / Postcondition entailment steps), and explains IA-20 verdict."
+    verdict: "Verdict PASS hanya dapat diemit JIKA: ConstitutionalProof(T) COMPLETE ∧ Assessment matrix all PASS ∧ Justification narrative is lexically closed. No exceptions."
+  verification_strategy:
+    - Witness independence test: remove any one of {w_A, w_B, w_C} → ConstitutionalVerifier MUST return INCOMPLETE → Verdict PASS emission MUST be prevented by ACL.
+    - Witness fungibility test: replace one representation of w_A (e.g. Neo4j DAG cert) with another equivalent w_A (e.g. Git merkle proof) → ConstitutionalVerifier MUST reach identical IA-20 verdict on same T.
+    - Replay determinism: auditor re-running CV-STAGE-0→6 on archived witnesses MUST produce byte-identical IA-20 verdict 100% of the time.
+  acl_check_required: true
+  enforcement_acl_rule_id: ARCH-39-IA18-CONSTITUTIONAL-PROOF
+  gate_impact:
+    gate_c: "Low — Existing T001 PASS Proof Object retroactively classified as witness_C (Provable justification). witness_A and witness_B WAIVED with explicit GATEC-CP-WAIVER notation for Sprint-0 only. T001 ConstitutionalProof(T001) recorded as INCOMPLETE-but-PROVISIONAL for Gate C purposes."
+    gate_d: "CRITICAL — Every transformation T002..T005 run MUST emit COMPLETE ⟨w_A, w_B, w_C⟩ tuple. Absent witness or weak justification = ConstitutionalProof INCOMPLETE = Gate-D Declined. No gate waivers allowed."
+    gate_e: "FATAL — Repository Certification = For every transformation T in scope: ConstitutionalProof(T) COMPLETE ∧ Auditor re-verification matches archive result. 100% coverage required; zero exceptions."
+
+principle_19_constitutional_lexicon:
+  id: IA-19
+  name: Constitutional Lexicon Registry — Terminologi adalah Artefak Konstitusional, Bukan Sekadar Dokumentasi
+  anchor: IA-19-CONSTITUTIONAL-LEXICON
+  axiom_realization: Law I (Authority governs terminology) + Axiom B (Meaning requires canonical vocabulary)
+  rationale: >
+    Sebelumnya terminologi EOS didefinisikan di TERMINOLOGY-FREEZE-TF1.yaml sebagai
+    dokumentasi normatif. IA-19 meningkatkan statusnya: setiap istilah EOS adalah ARTEFAK
+    KONSTITUSIONAL yang tunduk pada Law I Authority. Sebuah istilah yang tidak terdaftar di
+    Constitutional Lexicon adalah istilah TIDAK RESMI dan tooling DAPAT menolaknya.
+    Lexicon juga mengatur deprecation: sebuah istilah lama (mis. "Canonical Representation")
+    BISA digantikan oleh yang baru (mis. "Canonical Form") dengan migration path yang jelas
+    (aliases, replacement, epoch), sehingga lintas-epoch kompatibilitas dapat dijaga secara
+    otomatis oleh tooling. Ini menjadikan TERMINOLOGI bagian dari governance, bukan sekadar
+    dokumentasi.
+  formal_statement: >
+    Every canonical EOS term SHALL be registered in the Constitutional Lexicon Registry.
+    Each Lexicon entry SHALL have: Canonical Term, Definition, Authority Source, Epoch,
+    Status, Replacement (if superseded), and Aliases (including deprecated aliases).
+    A term NOT present in the Lexicon with status ≥ PROPOSED SHALL be treated as
+    NON-CANONICAL by all EOS tooling. Deprecation and replacement SHALL be governed by
+    Lexicon entries, not ad-hoc documentation notes.
+  lexicon_entry_schema_required:
+    fields:
+      canonical_term: "string (unique primary key — normative term)"
+      definition: "string (formal normative definition)"
+      authority_source: "reference to artifact that authorizes this term (e.g. VISION-01, ASP-01, Axiom B, PASAL 8)"
+      epoch: "string — epoch identifier when term was introduced"
+      status: "enum { PROPOSED, ACTIVE, DEPRECATED, RETIRED, REJECTED }"
+      replacement: "string | null — canonical_term of replacement if status ∈ {DEPRECATED, RETIRED}"
+      aliases: "list of string — including deprecated_aliases and former canonical names; ALL are recognized by tooling but tooling emits deprecation WARNING for deprecated ones"
+      first_appeared_in: "reference to artifact + version where term first appeared canonically"
+      cross_ref_ia: "IA-id | null — IA invariant that governs this term if any"
+      cross_ref_axiom: "A/B/C/D | null — which constitutional axiom this term primarily serves"
+  lexicon_governance_lifecycle:
+    proposal: "New term proposed via Lexicon PR → status = PROPOSED. Requires Platform Steward review."
+    activation: "Term activated by Architecture Board vote + epoch boundary marker → status = ACTIVE."
+    deprecation: "When term superseded: old term status → DEPRECATED, new term status → ACTIVE, both entries carry cross-reference in replacement/aliases fields."
+    retirement: "After 2 full epochs of deprecation → status = RETIRED. Alias still recognized but tooling emits ERROR (not WARNING) at Gate-E."
+    rejection: "Term found invalid or redundant → status = REJECTED. Recorded in Lexicon for audit trail but never used."
+  tooling_capabilities_enabled_by_lexicon:
+    term_rejection: "Constitutional Verifier CV-STAGE-5 driver LEX_SCAN rejects artifacts containing NON-CANONICAL terms without explicit deprecated_alias annotation."
+    automatic_migration: "Code modernizer script reads Lexicon replacement field and performs rename: CanonicalRepresentation → CanonicalForm di seluruh codebase, preserving deprecated_alias tags for backcompat windows."
+    cross_epoch_compatibility: "Documentation generator reads Lexicon aliases and generates 'Deprecated since epoch X — use Y instead' notices automatically."
+    terminology_consistency: "ACL scan ensures that contract YAML fields + schema fields + code comments use only Canonical Term or registered Alias."
+  example_entries:
+    - entry: "Canonical Form"
+      status: ACTIVE
+      replacement: "—"
+      aliases: ["Canonical Representation (deprecated)", "Intermediate Representation (deprecated)", "IR (deprecated)"]
+      authority_source: "Axiom B — Meaning"
+      note: "Former canonical term 'Canonical Representation' superseded per Law-Oriented simplification. All four deprecated aliases recognized until Gate-E."
+    - entry: "Transformation Semantics"
+      status: ACTIVE
+      replacement: "—"
+      aliases: []
+      authority_source: "Axiom C — Realization, IA-16"
+      note: "Normative input/output/precondition/postcondition/invariant contract for a transformation."
+    - entry: "Transformation Strategy"
+      status: ACTIVE
+      replacement: "—"
+      aliases: ["Transformation Implementation (overlapping alias — prefer Transformation Strategy when referring to interchangeable realizations)"]
+      authority_source: "Axiom C — Realization, IA-16"
+  verification_strategy:
+    - LEX_SCAN (CV-STAGE-5): runs over all YAML/MD/TS artifacts, checks that every EOS domain term is in Lexicon (status ≥ PROPOSED).
+    - Deprecation enforcement: term with status DEPRECATED triggers ARCH-40 WARNING at Gate-D, ERROR at Gate-E (unless LEGACY waiver in artifact metadata).
+    - Lexicon completeness: at any gate certification, the set of terms used in certified artifacts MUST have 100% coverage in Lexicon.
+  acl_check_required: true
+  enforcement_acl_rule_id: ARCH-40-IA19-LEXICON-GOVERNANCE
+  canonical_registry_path: /root/Enterprise OS/enterprise/constitution/lexicon.yaml
+  gate_impact:
+    gate_c: "Low — TF1 is normative for Sprint 0; Lexicon registry added as parallel authoritative source. Backward compat preserved."
+    gate_d: "MEDIUM — All Gate-D contracts/specs MUST use only Lexicon-registered terms with status ≥ ACTIVE. LEX_SCAN non-canonical = Gate-D Declined."
+    gate_e: "HIGH — Repository Certification requires LEX_SCAN 100% pass across all governance + specification artifacts."
+
+principle_20_constitutional_validity:
+  id: IA-20
+  name: Constitutional Validity — Sole Evaluation Criterion for Every Transformation / Verdict / Epochal Revision
+  anchor: IA-20-CONSTITUTIONAL-VALIDITY
+  axiom_realization: CC-001 §6 Constitutional Validity Meta-Predicate (conjunction of Predicates A ∧ B ∧ C)
+  predicate_derivation: IA-20 IS the structural embodiment of ConstitutionallyValid(T) ⇔ Legitimate(T) ∧ MeaningPreserved(T) ∧ Provable(T). This is the ONE meta-invariant that subsumes all others. Every IA-xx invariant (IA-01..IA-19) is a derived engineering mechanism whose ultimate purpose is to enable IA-20 to evaluate TRUE.
+  rationale: >
+    EOS tidak lagi dievaluasi melalui daftar panjang "invariants terpisah" atau "conformance property list"
+    yang dapat diinterpretasi berbeda-beda. Hanya ada SATU kriteria evaluasi: Constitutional Validity,
+    didefinisikan sebagai konjungsi tiga predikat Boolean. Ini membuat seluruh sistem verifikasi EOS
+    menjadi reducible to one well-defined boolean function — and therefore mathematically falsifiable.
+    Setiap certification gate (Gate C, Gate D, Gate E, dan seluruh gate masa depan) HARUS mengevaluasi
+    IA-20 pada setiap artefak yang diclaim valid. Jika IA-20 = FALSE, artefak tersebut REJECT. Tidak
+    ada "almost PASS", tidak ada "spirit of the rule", tidak ada interpretasi.
+  epistemological_status: SOLE_META_INVARIANT (conjunction of CC-001 frozen predicates)
+  formal_statement: >
+    For every architectural transformation T, runtime verdict V, and epochal revision R:
+
+      ConstitutionalPass(T)  ⇔  IA-20(T)  =  Legitimate(T) ∧ MeaningPreserved(T) ∧ Provable(T)
+      ConstitutionalPass(V)  ⇔  IA-20(V)  with V = Verdict(T)  ⇔  ConstitutionalPass(T)
+      ConstitutionalPass(R)  ⇔  IA-20(R)  across every boundary artifact affected by R.
+
+    Any evaluation result that is not reducible to the above conjunction is by definition
+    not an EOS-compliant validation and SHALL be rejected by Constitutional Verifier.
+  gate_certification_embodiment:
+    gate_c:
+      required_witnesses: "⟨witness_C⟩ mandatory for T001; ⟨witness_A, witness_B⟩ accepted with explicit GATEC-CP-WAIVER (Sprint-0 migration window only)."
+      evaluation_logic: "IA-20 PASS ↔ (witness_A=PASS ∨ WAIVER) ∧ (witness_B=PASS ∨ WAIVER) ∧ (witness_C=PASS). No waiver for witness_C; Provable non-negotiable."
+    gate_d:
+      required_witnesses: "⟨witness_A, witness_B, witness_C⟩ complete tuple MANDATORY for every transformation T002..T005."
+      evaluation_logic: "IA-20 PASS ↔ (all three witnesses = PASS). Missing witness = Gate-D Declined. INCONCLUSIVE on any witness = Gate-D PROVISIONAL_PASS with remediation plan."
+    gate_e:
+      required_witnesses: "⟨witness_A, witness_B, witness_C⟩ for EVERY transformation in certification scope, plus cross-transformation consistency witness."
+      evaluation_logic: "IA-20 PASS ↔ (∀ transformation T in scope : ConstitutionallyValid(T)) ∧ (no authority_gain across inter-transformation boundaries) ∧ (CanonicalIdentity chain preserved end-to-end)."
+    epochal_revision:
+      required_witnesses: "Full IA-20 re-verification of every artifact affected by epoch boundary. Historical evidence for unchanged artifacts MAY be re-used (reproducibility re-check = SHA-256 identity match)."
+      evaluation_logic: "IA-20 is the formal PASAL 8 filter: if GB (gain benefit) ≫ GC (gain cost) → IA-20(R) = PASS. If not → revision rejected back to Domain-A for redesign."
+  evaluation_ordering_invariant:
+    statement: >
+      Legitimate(T) MUST be resolved for all inputs BEFORE MeaningPreserved(T) is evaluated.
+      MeaningPreserved(T) MUST hold BEFORE Provable(T) is evaluated.
+      Final verdict emission ONLY AFTER ConstitutionallyValid(T) = TRUE.
+    implementation_note: "Corresponds to the old '6-tier' layout as engineering reference, but the layout itself is NOT constitutional. Only the predicate evaluation ordering is."
+  derived_invariants:
+    note: "ALL IA-01 through IA-19 are DERIVED engineering mechanisms that exist SOLELY to make IA-20 evaluation computable and automatable. None of them is independently constitutional."
+    mapping:
+      IA-01 Ontological Triad: "Enables Legitimate (layer roles) + MeaningPreserved (knowledge independence from runtime)."
+      IA-02 Semantic Registry Graph: "Enables MeaningPreserved (semantic edges explicit) + Provable (predicate requirements declarative)."
+      IA-03 Resolver/Executor Split: "Enables Provable (pure plan vs effectful execution separated for deterministic witness replay)."
+      IA-04 Canonical Graph Catalog: "Enables MeaningPreserved + Provable (graph is SSOT, no inference drift between components)."
+      IA-05 Execution Proof × Validation Proof: "Enables Provable (two witness categories for different claim kinds)."
+      IA-06 Invariant Dependency Table: "Enables Legitimate (forbidden dependencies prevent authority-creating imports)."
+      IA-07 No God Registry: "Enables Legitimate (ownership model prevents unauthorized authority concentration)."
+      IA-08 Evolution Policy: "Enables Legitimate (change governance preserves authority chain) + MeaningPreserved (backward compat for CanonicalIdentity)."
+      IA-09 Knowledge Not in Runtime: "Enables MeaningPreserved (engine = executor, not knowledge creator — direct KBE axiom)."
+      IA-10 Immutable Snapshot: "Enables Provable (snapshot = reproducibility anchor for witness re-verification)."
+      IA-11 Semantic Determinism: "Enables MeaningPreserved (same inputs → same semantic conclusions → same CanonicalIdentity)."
+      IA-12 Explainability: "Enables Provable (every decision step has inspectable provenance for the witness)."
+      IA-13 Stable Canonical Forms: "Enables MeaningPreserved (CanonicalIdentity concretizations = round-trip deterministic)."
+      IA-14 Pure Transformations: "Enables MeaningPreserved + Provable (pure function = no side effects = deterministic witnesses)."
+      IA-15 Dual Primary Graphs: "Enables Legitimate (AuthorityRel) + MeaningPreserved (SemanticRel) — strict separation prevents ontological mixing."
+      IA-16 Semantics × Strategy: "Enables MeaningPreserved (contract frozen) + Provable (strategy interchangeable but witness uniform)."
+      IA-17 Constitution Preservation: "Direct structural invariant form of ConstitutionallyValid(T) = ∧{A,B,C}."
+      IA-18 Constitutional Proof: "Witness tuple ⟨w_A, w_B, w_C⟩ that materializes IA-20 into auditable artifacts."
+      IA-19 Lexicon Registry: "Enables MeaningPreserved (term identity = CanonicalIdentity for vocabulary)."
+  verification_strategy:
+    - "Constitutional Verifier CV-STAGE-0 (top-level): reduces every validation request to IA-20 evaluation form. If validation cannot be expressed as ∧{Legitimate, MeaningPreserved, Provable} → validation schema is INVALID and rejected."
+    - "CV-STAGE-0 verifies witness tuple completeness for the target gate. If witnesses for any required predicate are absent → early REJECT with explicit missing_predicate_witness code."
+    - "For Gate D+: IA-20 re-verification via independent double-check: first check = CV pipeline; second check = standalone witness replayer. Both MUST agree on IA-20 verdict."
+  acl_check_required: true
+  enforcement_acl_rule_id: ARCH-41-IA20-CONSTITUTIONAL-VALIDITY
+  cross_ref_cc001: governance/CC-001-CONSTITUTIONAL-CHARTER.md#constitutional-validity-meta-predicate
+  gate_impact:
+    gate_c: "Low — IA-20 was implicitly enforced by T001 conformance checks. Now explicit. GATEC-CP-WAIVER for PRED_A/PRED_B witnesses documented."
+    gate_d: "CRITICAL — Every Gate-D validation MUST present its result as an IA-20 evaluation form with three explicit predicate witnesses. Non-compliant result format = Gate-D Declined."
+    gate_e: "FATAL — Repository Certification = IA-20 PASS for entire scope. Certification Report MUST include: (1) per-transformation IA-20 breakdown, (2) aggregate IA-20 verdict, (3) reproducibility hash chain."
 
 eos_6_tier_architecture_reference:
   canonical_definition_path: /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#architecture_layers_6_tier
@@ -636,9 +1310,10 @@ eos_knowledge_compiler_pipeline_reference:
     EOS adalah Knowledge Compiler Pipeline.
     Bukan sekadar kumpulan komponen yang saling berinteraksi.
     EOS = serangkaian epistemic transformations yang memajukan state pengetahuan:
-    Knowledge Sources → Knowledge Build → Knowledge Snapshot → Knowledge IR → Decision IR → Execution Plan → KVM Execution → Evidence Graph → Repository Verdict.
+    Knowledge Sources → Knowledge Build → Knowledge Snapshot → Knowledge Form → Decision Form → Execution Plan → KVM Execution → Evidence Form → Repository Verdict.
     Setiap stage pure function dari stage sebelumnya.
-    Setiap batas stage melalui IR stabil (IA-13) dan pass murni (IA-14).
+    Setiap batas stage melalui Canonical Form stabil (IA-13) dan transformation murni (IA-14).
+    Constitutional Proof (IA-18) membuktikan setiap stage mematuhi Axioms A, B, C.
     Reproducibility dijamin pada setiap level.
 
 acl_implementation_mapping:
@@ -646,28 +1321,42 @@ acl_implementation_mapping:
   ARCH-18-INV-TABLE: principle_06_machine_enforced_invariant_table
   ARCH-20-IA10-SNAPSHOT: principle_10_immutable_knowledge_snapshot
   ARCH-21-IA11-SEM-DET: principle_11_semantic_determinism
-  ARCH-22-IA13-STABLE-IR: principle_13_stable_intermediate_representations
+  ARCH-22-IA13-STABLE-CANONICAL-FORMS: principle_13_stable_canonical_forms
   ARCH-23-IA14-PURE-PASS: principle_14_pure_compiler_passes
+  ARCH-36-CONSTITUTION-GAIN: principle_17_constitution_preservation
+  ARCH-37-IA15-DUAL-GRAPHS: principle_15_dual_primary_graphs
+  ARCH-38-IA16-SEMANTICS-STRATEGY: principle_16_transformation_semantics_strategy
+  ARCH-39-IA18-CONSTITUTIONAL-PROOF: principle_18_constitutional_proof
+  ARCH-40-IA19-LEXICON-GOVERNANCE: principle_19_constitutional_lexicon
+  ARCH-41-IA20-CONSTITUTIONAL-VALIDITY: principle_20_constitutional_validity
   status: IMPLEMENTATION_REQUIRED_IN_ARCH_CHECK_TS
+  legacy_aliases:
+    ARCH-36-AUTHORITY-GAIN: "superseded by ARCH-36-CONSTITUTION-GAIN — ARCH-36-AUTHORITY-GAIN now = PRED_A sub-check only"
 
 certification_impact:
   gate_c:
     affected: false
-    note: T001 sudah PASS. Invariants baru ini memperkuat foundation, tidak mengubah bukti yang ada.
+    note: T001 sudah PASS. Invariants baru ini memperkuat foundation, tidak mengubah bukti yang ada. Tiga Constitutional Predicates (Legitimate ∧ MeaningPreserved ∧ Provable) = inti konstitusional yang dibekukan dalam CC-001; Three Laws dan Four Axioms = DERIVED engineering corollaries. Konsisten dengan bukti T001 yang sudah diverifikasi.
   gate_d:
     affected: true
-    note: Gate D Bootstrap WAJIB memenuhi IA-01..IA-14. Deliverables reframed sebagai COMPILER PIPELINE, bukan components. Pass framework + KIR+DIR IR artifacts P0.
+    note: >
+      Gate D Bootstrap WAJIB memenuhi IA-01..IA-20. Deliverables reframed sebagai Constitutional Validity Pipeline (bukan components): Semantics artifacts + Strategy artifacts + Dual Relation (AuthorityRel/SemanticRel) edge classification + ⟨witness_A, witness_B, witness_C⟩ tuple emission. Canonical Identity (bukan Canonical Form, bukan Canonical Representation) menjadi SSOT semua perbandingan semantik. IA-20 adalah SATU gerbang evaluasi TUNGGAL.
   gate_e:
     affected: true
-    note: End-to-end deterministic proof WAJIB menunjukkan: KIR hash → DIR hash → Plan hash → Evidence hash chain reproducible. Pass purity unit tests required.
-    note_epistemic: E-Exit Certification = Proof of Full Knowledge Compiler Determinism.
+    note: >
+      End-to-end deterministic proof WAJIB menunjukkan: CanonicalIdentity chain Knowledge → Decision → Execution → Evidence + ConstitutionalProof(T) COMPLETE tuple ⟨w_A, w_B, w_C⟩ + AuthorityRel/SemanticRel disjointness maintained. E-Exit Certification = IA-20 PASS for entire certification scope, with auditor re-verification matching archive.
+    note_epistemic: "E-Exit Certification = ConstitutionalValidity(Pipeline) = Legitimate(Pipeline) ∧ MeaningPreserved(Pipeline) ∧ Provable(Pipeline). = ∀ T in Pipeline : ConstitutionallyValid(T). = IA-20 PASS. CC-001 predicate model = falsifiable constitutional hypothesis; Gate E evidence = first empirical corroboration batch."
 
 technical_debt_note:
-  - Existing registry declarations in .ts files (IA-07) = TECHNICAL DEBT with migration target: Gate D bootstrap.
-  - Missing Validation Proof schema (REGISTRY-PROOF / CATALOG-PROOF) = TECHNICAL DEBT with target: Gate B extension post IA-05 stabilization.
-  - Missing explicit graph: section in catalog (IA-04) = TECHNICAL DEBT mitigated by legacy predecessor_id fallback, target full migration: Gate C post-processing step.
-  - Resolver consumes only legacy predecessor_id — belum consume graph.transformations edges[] = TECHNICAL DEBT target: Gate D bootstrap Planning Layer explicit.
-  - Knowledge Snapshot emitter tool belum ada = TECHNICAL DEBT target: Gate D P0 deliverable.
-  - Evidence Provenance Graph belum menggantikan linear proof chain = TECHNICAL DEBT target: Gate E exit.
-  - KIR + DIR explicit format emitters + pass framework classes not yet written = TECHNICAL DEBT target: Gate D P0.
-  - Plan Compiler (DIR → Plan) tidak terpisah dari Planner = TECHNICAL DEBT target: Gate D P1 refactor of resolver/planner logic.
+  - 'Existing registry declarations in .ts files (IA-07) = TECHNICAL DEBT with migration target: Gate D bootstrap.'
+  - 'Missing Validation Proof schema (REGISTRY-PROOF / CATALOG-PROOF) = TECHNICAL DEBT with target: Gate B extension post IA-05 stabilization.'
+  - 'Missing explicit graph: section in catalog (IA-04) = TECHNICAL DEBT mitigated by legacy predecessor_id fallback, target full migration: Gate C post-processing step.'
+  - 'Resolver consumes only legacy predecessor_id — belum consume graph.transformations edges[] = TECHNICAL DEBT target: Gate D bootstrap Planning Layer explicit.'
+  - 'Knowledge Snapshot emitter tool belum ada = TECHNICAL DEBT target: Gate D P0 deliverable.'
+  - 'Evidence Provenance Graph belum menggantikan linear proof chain = TECHNICAL DEBT target: Gate E exit.'
+  - 'K-FORM + D-FORM explicit format emitters + transformation framework classes not yet written = TECHNICAL DEBT target: Gate D P0.'
+  - 'Plan Compiler (D-FORM → X-FORM) tidak terpisah dari Planner = TECHNICAL DEBT target: Gate D P1 refactor of resolver/planner logic.'
+  - 'Dual Graph separation (IA-15): existing edge taxonomy mixes authority + semantic edges = TECHNICAL DEBT target: Gate D P1. Migration: classify every edge declaration into graph_class ∈ {AUTHORITY, KNOWLEDGE} and enforce disjointness.'
+  - 'Transformation Semantics/Strategy split (IA-16): current transformations are monolithic (semantics + strategy in one file) = TECHNICAL DEBT target: Gate D P2. Migration: split each Txxx into TS-xxx semantics artifact + STRAT-xxx strategy artifact.'
+  - 'Canonical Form rename (IA-13): legacy codebase still uses Canonical Representation / KIR / DIR terminology = TECHNICAL DEBT target: Gate C interim fix (deprecated_alias tags), Gate E full cutover. Lexicon registry (IA-19) provides the authoritative migration map.'
+  - 'Constitutional Proof three-sub-proof emission (IA-18): current Proof Objects contain only Transformation Correctness evidence = TECHNICAL DEBT target: Gate D P0. Authority + Semantic sub-proofs must be emitted for every transformation run.'

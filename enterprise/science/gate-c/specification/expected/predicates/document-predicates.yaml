@@ -1,0 +1,41 @@
+version: "1.0.0"
+kind: EXPECTED_PREDICATE_VALUES_FOR_GATE_C_DOCUMENT_EXPERIMENTS
+status: REFERENCE_IMMUTABLE_EXPECTED_RESULTS
+description: >
+  EXPECTED predicate vectors (Legitimate, MeaningPreserved, Provable) and Constitutional Validity
+  for each Gate C document management experiment subject.
+  These EXPECTED values act as the scientific null reference. An actual experiment run produces
+  ACTUAL values. ACTUAL must match EXPECTED per protocol.yaml acceptance positive/negative rules.
+  Any mismatch → FALSIFICATION attempt of working_hypothesis H1 (or experiment INVALID).
+
+expected_predicates:
+  GATE-C-DOC-PROPOSE:
+    pred_a_legitimate: true
+    pred_b_meaning_preserved: true
+    pred_c_provable: true
+    constitutionally_valid: true
+    truth_table_row_reference: P1
+  GATE-C-DOC-APPROVE:
+    pred_a_legitimate: true
+    pred_b_meaning_preserved: true
+    pred_c_provable: true
+    constitutionally_valid: true
+    truth_table_row_reference: P1
+  GATE-C-DOC-ARCHIVE:
+    pred_a_legitimate: true
+    pred_b_meaning_preserved: true
+    pred_c_provable: true
+    constitutionally_valid: true
+    truth_table_row_reference: P1
+  GATE-C-DOC-RETRIEVE:
+    pred_a_legitimate: true
+    pred_b_meaning_preserved: true
+    pred_c_provable: true
+    constitutionally_valid: true
+    truth_table_row_reference: P1
+
+note: >
+  Gate C initial run only exercises the POSITIVE-ALL-PASS row P1.
+  To satisfy acceptance.truth_table.rule = complete, future negative experiments MUST be added to
+  experiments/ that deliberately break each of the three predicates (authority broken, meaning drift, proof gap)
+  and the conjunctions (two predicates broken, all three broken) to cover N1..N7 rows.

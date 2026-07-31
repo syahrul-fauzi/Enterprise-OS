@@ -1,0 +1,75 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:eos:science:gate-c:schema:run-manifest:v1"
+title: EOS Gate C Run Manifest Schema
+description: >
+  Machine-readable contract for each mutable execution run under execution/runs/run-<NNN>/run-manifest.yaml.
+type: object
+additionalProperties: false
+required:
+  - version
+  - run_id
+  - gate
+  - gate_stage
+  - evidence_class
+  - execution_timestamp_utc
+  - oracle_id
+  - dataset_version
+  - truth_table_version
+  - protocol_version
+  - reproducibility_manifest_ref
+  - measurement_apparatus
+  - output_layout
+properties:
+  version:
+    type: string
+    pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+  run_id:
+    type: string
+    pattern: "^run-[0-9]{3,}$"
+  gate:
+    const: GATE-C
+  gate_stage:
+    type: string
+    enum: [GATE-C0, GATE-C1]
+  evidence_class:
+    type: string
+    enum: [CLASS_I_CALIBRATION, CLASS_II_EXPERIMENTAL, CLASS_III_CERTIFICATION]
+  execution_timestamp_utc:
+    type: string
+    format: date-time
+  operator_id:
+    type: string
+  strategy_ids:
+    type: array
+    items: { type: string }
+  oracle_id:
+    type: string
+    pattern: "^GATE-C-ORACLE-[A-Z0-9-]+$"
+  dataset_version:
+    type: string
+  truth_table_version:
+    type: string
+  protocol_version:
+    type: string
+  reproducibility_manifest_ref:
+    type: string
+  measurement_apparatus:
+    type: object
+    additionalProperties: false
+    required:
+      [calibration_report_ref, oracle_certificate_ref, witness_certificate_ref, dataset_certificate_ref]
+    properties:
+      calibration_report_ref: { type: string }
+      oracle_certificate_ref: { type: string }
+      witness_certificate_ref: { type: string }
+      dataset_certificate_ref: { type: string }
+  output_layout:
+    type: object
+    additionalProperties: false
+    required: [actual_dir, witness_dir, logs_dir, metrics_dir, report_ref]
+    properties:
+      actual_dir: { type: string }
+      witness_dir: { type: string }
+      logs_dir: { type: string }
+      metrics_dir: { type: string }
+      report_ref: { type: string }

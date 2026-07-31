@@ -1,0 +1,54 @@
+version: "1.0.0"
+calibration_report_id: GATE-C0-CALIBRATION-REPORT-001
+status: FROZEN
+gate_stage: GATE-C0
+theory_under_test: NONE
+object_under_test:
+  - ORACLE
+  - WITNESS
+  - MANIFEST
+  - DATASET
+  - PROTOCOL
+evidence_class: CLASS_I_CALIBRATION
+
+oracle:
+  deterministic: PASS
+  repeatable: PASS
+  reproducible: PASS
+  certificate_ref: specification/calibration/oracle-certificate.yaml
+
+witness:
+  immutable: PASS
+  canonical: PASS
+  reproducible: PASS
+  signed: PASS
+  hash_verified: PASS
+  chain_complete: PASS
+  certificate_ref: specification/calibration/witness-certificate.yaml
+
+dataset:
+  truth_table_complete: PASS
+  independence_complete: PASS
+  counterfactual_complete: PASS
+  minimality_complete: PASS
+  certificate_ref: specification/calibration/dataset-certificate.yaml
+
+manifest:
+  complete_conditions_captured: PASS
+  integrity_hash_present: PASS
+  specification_locked: PASS
+
+protocol:
+  calibration_exit_criteria_defined: PASS
+  c1_precondition_defined: PASS
+  evidence_class_separation_defined: PASS
+
+overall:
+  calibrated: true
+  calibration_result: PASS
+  certified_until: EPOCH-1
+  blocks_gate_c1_when_false: true
+
+notes: >
+  Calibration evidence proves the measurement apparatus, not CC-001. Gate C1 scientific evidence
+  SHALL remain epistemically separate from this report.

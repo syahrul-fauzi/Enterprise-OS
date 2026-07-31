@@ -1,0 +1,31 @@
+version: "1.0.0"
+status: FROZEN
+integrity_spec_id: GATE-C-WITNESS-INTEGRITY-001
+schema_ref: specification/schemas/witness-integrity.schema.yaml
+purpose: >
+  Defines the immutability and chain-of-custody requirements for every witness observed during
+  execution before Oracle evaluation may occur.
+
+immutability:
+  witness_shall_be_immutable_after_observation: true
+  lock_required_before_oracle_consumption: true
+  post_lock_mutation_forbidden: true
+  lock_event_must_be_recorded: true
+
+chain_of_custody:
+  required_states:
+    - OBSERVED
+    - STORED
+    - VERIFIED
+    - CONSUMED_BY_ORACLE
+  state_order_is_strict: true
+  custody_gap_forbidden: true
+  state_transition_evidence_required: true
+
+integrity_requirements:
+  - Every witness SHALL carry an integrity hash captured at lock time.
+  - Every witness SHALL record the timestamp at which it became immutable.
+  - Every witness SHALL record the actor or process responsible for each custody transition.
+  - Every witness SHALL record the storage location or storage reference used after observation.
+  - Oracle SHALL reject any witness lacking complete chain-of-custody evidence.
+  - Oracle SHALL reject any witness whose stored hash differs from its locked hash.

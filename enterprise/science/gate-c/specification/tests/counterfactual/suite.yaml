@@ -1,0 +1,16 @@
+version: "1.0.0"
+suite_id: GATE-C-COUNTERFACTUAL-SUITE-001
+status: PLANNED
+scientific_claim: >
+  Controlled evidence changes must produce the predicate flips predicted by CC-001. If a predicted
+  flip does not occur, the theory or the experiment design must be revised.
+
+counterfactual_cases:
+  - case_id: CF-001-PROOF-EVIDENCE-ADDITION
+    base_condition: pred_c_provable = false
+    intervention: add_missing_constructive_evidence_only
+    expected_delta:
+      pred_a_legitimate: unchanged
+      pred_b_meaning_preserved: unchanged
+      pred_c_provable: false_to_true
+    purpose: Tests whether proof incompleteness is repaired by evidence completion alone.
