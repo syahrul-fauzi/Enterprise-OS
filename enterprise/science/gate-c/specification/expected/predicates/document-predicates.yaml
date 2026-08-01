@@ -15,6 +15,48 @@ expected_predicates:
     pred_c_provable: true
     constitutionally_valid: true
     truth_table_row_reference: P1
+  GATE-C-DOC-PROPOSE-N1:
+    pred_a_legitimate: false
+    pred_b_meaning_preserved: true
+    pred_c_provable: true
+    constitutionally_valid: false
+    truth_table_row_reference: N1
+  GATE-C-DOC-PROPOSE-N2:
+    pred_a_legitimate: true
+    pred_b_meaning_preserved: false
+    pred_c_provable: true
+    constitutionally_valid: false
+    truth_table_row_reference: N2
+  GATE-C-DOC-PROPOSE-N3:
+    pred_a_legitimate: false
+    pred_b_meaning_preserved: false
+    pred_c_provable: true
+    constitutionally_valid: false
+    truth_table_row_reference: N3
+  GATE-C-DOC-PROPOSE-N4:
+    pred_a_legitimate: true
+    pred_b_meaning_preserved: true
+    pred_c_provable: false
+    constitutionally_valid: false
+    truth_table_row_reference: N4
+  GATE-C-DOC-PROPOSE-N5:
+    pred_a_legitimate: false
+    pred_b_meaning_preserved: true
+    pred_c_provable: false
+    constitutionally_valid: false
+    truth_table_row_reference: N5
+  GATE-C-DOC-PROPOSE-N6:
+    pred_a_legitimate: true
+    pred_b_meaning_preserved: false
+    pred_c_provable: false
+    constitutionally_valid: false
+    truth_table_row_reference: N6
+  GATE-C-DOC-PROPOSE-N7:
+    pred_a_legitimate: false
+    pred_b_meaning_preserved: false
+    pred_c_provable: false
+    constitutionally_valid: false
+    truth_table_row_reference: N7
   GATE-C-DOC-APPROVE:
     pred_a_legitimate: true
     pred_b_meaning_preserved: true

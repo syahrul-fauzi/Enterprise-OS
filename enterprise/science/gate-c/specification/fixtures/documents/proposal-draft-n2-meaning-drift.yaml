@@ -1,0 +1,24 @@
+version: "1.0.0"
+kind: FIXTURE_DOCUMENT_PROPOSAL_DRAFT_N2_MEANING_DRIFT
+fixture_id: FIX-DOC-DRAFT-N2
+status: EXPERIMENTAL_FIXTURE_NEGATIVE_CONTROL_N2
+note: >
+  Negative control N2 (meaning drift): Document fixture normative content fields (title, body, classification)
+  are the same as positive P1, so INPUT semantic hash equals P1 input hash.
+  The PROPOSAL OPERATION however DELIBERATELY INTRODUCES MEANING DRIFT in the output by altering
+  classification internal → confidential AND appending an extra field to body that is part of the semantic projection.
+  This semantic drift is isolated exactly to Predicate B (canonical_identity_preserved = FALSE).
+  Authority: Contract N2 uses policy_ref DocPol-001 CORRECT (A=TRUE).
+  Proof: Evidence fixture uses baseline proposal-baseline-proofs.yaml with status PROPOSED, role attested (C=TRUE).
+document:
+  canonical_id_placeholder: sha256:proposal-draft-001-canonical-id
+  title: "Sprint0 Document: Document Management Operational Proposal"
+  classification: internal
+  retention_period_days: 3650
+  proposer_identity_ref: role-document-proposer-001
+  body: |
+    This document proposes the initial operational procedure for Document Management domain of EOS during Gate C guinea-pig evaluation.
+    It is a reference proposal fixture. No normative authority is claimed by the fixture itself; authority evaluation occurs via Predicate A in the experiment context.
+  metadata:
+    created_for_experiment: GATE-C-DOC-PROPOSE-N2
+    epoch_bound: Sprint0

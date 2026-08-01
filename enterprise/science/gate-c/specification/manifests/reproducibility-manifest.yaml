@@ -1,59 +1,53 @@
-version: "1.0.0"
+version: 1.0.0
 manifest_id: GATE-C-REPRO-MANIFEST-001
 status: FROZEN
 gate: GATE-C
-
 experiment:
   id: GATE-C
-  protocol_version: "1.0.0"
-  hypothesis_version: "1.0.0"
-
+  protocol_version: 1.0.0
+  hypothesis_version: 1.0.0
 specification_release:
   release_id: GATE-C-SPEC-ALPHA-001
-  freeze_state: PARTIAL_FREEZE
-
+  freeze_state: FULL_FREEZE
 environment:
   implementation: LANGUAGE_AGNOSTIC_SPECIFICATION
   runtime: LANGUAGE_AGNOSTIC
   platform: PORTABLE_REFERENCE_DATASET
-
 reference_dataset:
-  dataset_version: "1.0.0"
+  dataset_version: 1.0.0
   manifest_ref: specification/dataset/reference-dataset.yaml
   archive_target: gate-c-reference-v1.zip
   certification_level: LEVEL_1_REFERENCE
-
 oracle:
   oracle_id: GATE-C-ORACLE-001
   oracle_ref: specification/oracle/oracle.yaml
-  oracle_version: "1.0.0"
+  oracle_version: 1.0.0
   oracle_manifest_ref: specification/oracle/oracle-manifest.yaml
-  oracle_hash: PENDING_REFERENCE_DATASET_FREEZE
-
+  oracle_hash: sha256:23f7222737926069afca4f4cc93988f60b513c0ebe0c4ea5b198df53f0eb715b
 truth_table:
   truth_table_ref: specification/truth-table.yaml
-  truth_table_version: "1.0.0"
-  truth_table_hash: PENDING_REFERENCE_DATASET_FREEZE
-
+  truth_table_version: 1.0.0
+  truth_table_hash: sha256:a5b9344eb2e488656f068b18443aefcbe94102e38d182325a6afc47a88bbe5ff
 protocol:
   protocol_ref: specification/protocol.yaml
-  protocol_version: "1.0.0"
-  protocol_hash: PENDING_REFERENCE_DATASET_FREEZE
-
+  protocol_version: 1.0.0
+  protocol_hash: sha256:22993617d2cc522a0a42b3151faa7dfbdf54486dddeab50609bb67adf5c8e75b
 calibration:
+  calibration_report_id: GATE-C0-CALIBRATION-REPORT-001
   calibration_report_ref: specification/calibration/calibration-report.yaml
+  oracle_certificate_id: SC-ORACLE-001
   oracle_certificate_ref: specification/calibration/oracle-certificate.yaml
+  witness_certificate_id: SC-WITNESS-001
   witness_certificate_ref: specification/calibration/witness-certificate.yaml
+  dataset_certificate_id: SC-DATASET-001
   dataset_certificate_ref: specification/calibration/dataset-certificate.yaml
   kernel_status_ref: specification/manifests/kernel-status.yaml
-
 expected_contracts:
   predicates_ref: specification/expected/predicates/document-predicates.yaml
   evaluations_ref: specification/expected/evaluations/document-evaluations.yaml
-  expected_hash: PENDING_REFERENCE_DATASET_FREEZE
-
+  expected_hash: sha256:b2bbb4d16673f982996cf252e99ed87050780f43a147b79d0e0354fcb0128d53
 schema_bundle:
-  schema_hash: PENDING_REFERENCE_DATASET_FREEZE
+  schema_hash: sha256:f0c5822c90a7d2a92058b309fd80210c134c15669d192ff0319f64de8e483a61
   schema_refs:
     - specification/schemas/calibration-report.schema.yaml
     - specification/schemas/experiment.schema.yaml
@@ -66,18 +60,15 @@ schema_bundle:
     - specification/schemas/verdict.schema.yaml
     - specification/schemas/witness-integrity.schema.yaml
     - specification/schemas/witness.schema.yaml
-
 artifacts:
-  specification_hash: PENDING_REFERENCE_DATASET_FREEZE
-  fixture_hash: PENDING_REFERENCE_DATASET_FREEZE
-  oracle_hash: PENDING_REFERENCE_DATASET_FREEZE
-  schema_hash: PENDING_REFERENCE_DATASET_FREEZE
-
+  specification_hash: sha256:c1df093c8998dbc8fefdf720bdaff2f6fa7c047d45f98914c9e793067332b7da
+  fixture_hash: sha256:f88c22ab52c42d41b5ddaafbf530720695f1d8f0103802dab16dd2fadcfe2b16
+  oracle_hash: sha256:23f7222737926069afca4f4cc93988f60b513c0ebe0c4ea5b198df53f0eb715b
+  schema_hash: sha256:f0c5822c90a7d2a92058b309fd80210c134c15669d192ff0319f64de8e483a61
 execution:
   started_at: SPECIFICATION_FREEZE_NOT_APPLICABLE
   completed_at: SPECIFICATION_FREEZE_NOT_APPLICABLE
   seed: NONE
-
 specification:
   hypothesis: specification/hypothesis.yaml
   protocol: specification/protocol.yaml
@@ -105,12 +96,8 @@ specification:
     witness_certificate: specification/calibration/witness-certificate.yaml
     witness_integrity: specification/witness-integrity.yaml
     witness_bundle_layout: specification/manifests/witness-bundle-layout.yaml
-
 integrity:
-  manifest_hash: PENDING_REFERENCE_DATASET_FREEZE
-
-notes: >
-  This manifest is the immutable laboratory notebook for Gate C specification reproducibility. It binds the
-  experiment definition, oracle identity, reference dataset level, schema bundle, and integrity anchors into
-  one portable contract. Execution runs MUST reference this manifest rather than duplicating specification
-  identity inline.
+  manifest_hash: sha256:f8b447ba75ea22746af161368dce3a01bc3188a64122e4eea6a5da0e65d0b791
+  hash_basis: sha256(canonical_json(reproducibility_manifest_excluding_integrity.manifest_hash))
+notes: |
+  This manifest is the immutable laboratory notebook for Gate C specification reproducibility. It binds the experiment definition, oracle identity, reference dataset level, schema bundle, and integrity anchors into one portable contract. Execution runs MUST reference this manifest rather than duplicating specification identity inline. After Gate C0 PASS, the Science Kernel is calibrated and frozen; any later change to Oracle, Witness, Manifest, Dataset, or Protocol invalidates comparability unless handled as an instrument defect and re-calibration event.

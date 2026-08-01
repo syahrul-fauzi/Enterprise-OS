@@ -8,6 +8,13 @@ expected_evaluations:
     truth_table_row_matched: P1
     independence_test_required: true
     invariance_test_required: true
+  GATE-C-DOC-PROPOSE-N1:
+    evaluation_result: FAIL
+    ia20_constitutional_validity: false
+    truth_table_row_matched: N1
+    independence_test_required: true
+    invariance_test_required: true
+    diagnostic_predicate_failure_required: pred_a_legitimate
   GATE-C-DOC-APPROVE:
     evaluation_result: PASS
     ia20_constitutional_validity: true

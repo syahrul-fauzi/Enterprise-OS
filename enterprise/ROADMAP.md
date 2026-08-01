@@ -538,22 +538,28 @@ If any semantic dimension is missing:
 
 ### Evidence Classes
 
-EOS distinguishes evidence by the failure domain it validates.
+EOS distinguishes evidence by epistemic role.
 
-`Specification Evidence` proves the specification is valid enough to execute:
-- DoSC passed
-- semantic validation passed
-- graph validation passed
+`Calibration Evidence` proves the measurement apparatus is fit to measure:
+- oracle calibration
+- witness certification
+- dataset certification
+- manifest and protocol calibration checks
 
-`Execution Evidence` proves the generated and implemented artifacts conform to
-the validated specification:
-- compiler checksum
-- schema hash
-- code generation log
-- runtime validation result
+`Experimental Evidence` proves or falsifies the theory under calibrated
+conditions:
+- falsification run result
+- counterfactual result
+- metamorphic invariance result
 
-Audits must preserve this separation so specification defects are not confused
-with execution defects.
+`Certification Evidence` proves implementations conform when replaying the
+certified dataset:
+- cross-runtime replay result
+- conformance certificate
+- certification verdict package
+
+Audits must preserve this separation so instrument defects, theory outcomes,
+and implementation failures are not confused.
 
 ### Pipeline Acceptance Criteria
 

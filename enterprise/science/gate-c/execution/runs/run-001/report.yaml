@@ -1,0 +1,32 @@
+version: 1.0.0
+run_id: run-001
+genesis_evidence: EXISTS
+verification_spine:
+  - step: VERIFY
+    status: PASS
+  - step: FREEZE_BUNDLE
+    status: PASS
+  - step: HASH
+    status: PASS
+  - step: WIRE_MEASUREMENT_APPARATUS
+    status: PASS
+  - step: RUN-001
+    status: PASS
+  - step: CAPTURE_WITNESS
+    status: PASS
+  - step: GENERATE_MANIFEST
+    status: PASS
+  - step: WRITE_PROOF_LEDGER
+    status: PASS
+  - step: CLEAN_ENV_REPLAY
+    status: PASS
+  - step: IDENTICAL_EVIDENCE
+    status: PASS
+definition_of_done:
+  execution: true
+  apparatus_identity: true
+  integrity: true
+  replay: true
+  convergence: true
+  clean_environment: true
+remaining_blocker: Gate C1 empirical coverage remains limited to positive row P1; N1..N7 still absent.

@@ -17,6 +17,7 @@ required:
   - truth_table_version
   - protocol_version
   - reproducibility_manifest_ref
+  - subjects
   - measurement_apparatus
   - output_layout
 properties:
@@ -53,16 +54,89 @@ properties:
     type: string
   reproducibility_manifest_ref:
     type: string
+  subjects:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        [experiment_subject_id, subject_ref, operation, expected_predicates_ref, expected_evaluation_ref]
+      properties:
+        experiment_subject_id: { type: string }
+        subject_ref: { type: string }
+        operation: { type: string }
+        expected_predicates_ref: { type: string }
+        expected_evaluation_ref: { type: string }
   measurement_apparatus:
     type: object
     additionalProperties: false
     required:
-      [calibration_report_ref, oracle_certificate_ref, witness_certificate_ref, dataset_certificate_ref]
+      [calibration_report_id, calibration_report_ref, oracle_certificate_id, oracle_certificate_ref, witness_certificate_id, witness_certificate_ref, dataset_certificate_id, dataset_certificate_ref, kernel_status_ref, oracle, witness, dataset, science_kernel]
     properties:
+      calibration_report_id:
+        type: string
+        pattern: "^GATE-C0-CALIBRATION-REPORT-[0-9]{3}$"
       calibration_report_ref: { type: string }
+      oracle_certificate_id:
+        type: string
+        pattern: "^SC-ORACLE-[0-9]{3}$"
       oracle_certificate_ref: { type: string }
+      witness_certificate_id:
+        type: string
+        pattern: "^SC-WITNESS-[0-9]{3}$"
       witness_certificate_ref: { type: string }
+      dataset_certificate_id:
+        type: string
+        pattern: "^SC-DATASET-[0-9]{3}$"
       dataset_certificate_ref: { type: string }
+      kernel_status_ref: { type: string }
+      oracle:
+        type: object
+        additionalProperties: false
+        required: [certificate_id, certificate_ref, artifact_hash, instrument_ref, instrument_hash]
+        properties:
+          certificate_id:
+            type: string
+            pattern: "^SC-ORACLE-[0-9]{3}$"
+          certificate_ref: { type: string }
+          artifact_hash: { type: string }
+          instrument_ref: { type: string }
+          instrument_hash: { type: string }
+      witness:
+        type: object
+        additionalProperties: false
+        required: [certificate_id, certificate_ref, artifact_hash, instrument_ref, instrument_hash]
+        properties:
+          certificate_id:
+            type: string
+            pattern: "^SC-WITNESS-[0-9]{3}$"
+          certificate_ref: { type: string }
+          artifact_hash: { type: string }
+          instrument_ref: { type: string }
+          instrument_hash: { type: string }
+      dataset:
+        type: object
+        additionalProperties: false
+        required: [certificate_id, certificate_ref, artifact_hash, instrument_ref, instrument_hash]
+        properties:
+          certificate_id:
+            type: string
+            pattern: "^SC-DATASET-[0-9]{3}$"
+          certificate_ref: { type: string }
+          artifact_hash: { type: string }
+          instrument_ref: { type: string }
+          instrument_hash: { type: string }
+      science_kernel:
+        type: object
+        additionalProperties: false
+        required: [bundle_id, bundle_ref, bundle_hash]
+        properties:
+          bundle_id:
+            type: string
+            pattern: "^SC-KERNEL-[0-9]{3}$"
+          bundle_ref: { type: string }
+          bundle_hash: { type: string }
   output_layout:
     type: object
     additionalProperties: false

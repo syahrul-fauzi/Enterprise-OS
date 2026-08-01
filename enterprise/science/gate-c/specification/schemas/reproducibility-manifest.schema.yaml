@@ -104,11 +104,23 @@ properties:
     type: object
     additionalProperties: false
     required:
-      [calibration_report_ref, oracle_certificate_ref, witness_certificate_ref, dataset_certificate_ref, kernel_status_ref]
+      [calibration_report_id, calibration_report_ref, oracle_certificate_id, oracle_certificate_ref, witness_certificate_id, witness_certificate_ref, dataset_certificate_id, dataset_certificate_ref, kernel_status_ref]
     properties:
+      calibration_report_id:
+        type: string
+        pattern: "^GATE-C0-CALIBRATION-REPORT-[0-9]{3}$"
       calibration_report_ref: { type: string }
+      oracle_certificate_id:
+        type: string
+        pattern: "^SC-ORACLE-[0-9]{3}$"
       oracle_certificate_ref: { type: string }
+      witness_certificate_id:
+        type: string
+        pattern: "^SC-WITNESS-[0-9]{3}$"
       witness_certificate_ref: { type: string }
+      dataset_certificate_id:
+        type: string
+        pattern: "^SC-DATASET-[0-9]{3}$"
       dataset_certificate_ref: { type: string }
       kernel_status_ref: { type: string }
   expected_contracts:
@@ -181,8 +193,9 @@ properties:
   integrity:
     type: object
     additionalProperties: false
-    required: [manifest_hash]
+    required: [hash_basis, manifest_hash]
     properties:
+      hash_basis: { type: string }
       manifest_hash: { type: string }
   notes:
     type: string

@@ -1,0 +1,45 @@
+version: "1.0.0"
+kind: FIXTURE_CONTRACT_DOCUMENT_MANAGEMENT_N1_AUTHORITY_BROKEN
+fixture_id: FIX-CON-DOC-N1
+status: EXPERIMENTAL_FIXTURE_NEGATIVE_CONTROL
+note: >
+  Negative control N1: deliberately breaks policy_chain_matches_contract authority condition.
+  All other fields identical to DocCon-001 to isolate Predicate A failure only.
+  This fixture MUST NOT be used for positive cases.
+contract:
+  contract_id: DocCon-001
+  name: Document Management Workflow Contract
+  derives_authority_from_policy_ref: DocPol-INVALID
+  epoch: Sprint0
+  operations:
+    ProposeDocument:
+      preconditions:
+        - "draft document present and well-formed"
+        - "proposer has role role-document-proposer-001"
+      postconditions:
+        - "document status set to PROPOSED"
+        - "proposer identity recorded"
+    ApproveDocument:
+      preconditions:
+        - "document status = PROPOSED"
+        - "approver possesses valid delegation for role role-document-approver-001"
+      postconditions:
+        - "document status set to APPROVED"
+        - "approver identity + delegation reference recorded"
+        - "approval signature + audit trail atomically recorded"
+    ArchiveDocument:
+      preconditions:
+        - "document status = APPROVED"
+        - "retention_policy trigger condition satisfied"
+        - "no legal_hold in effect"
+      postconditions:
+        - "document status set to ARCHIVED"
+        - "archive proof hash chain entry appended to evidence ledger"
+    RetrieveDocument:
+      preconditions:
+        - "document status = APPROVED or (status = ARCHIVED AND retrieve_allowed_after_archive = True)"
+        - "requestor possesses an allowed role per access_control policy"
+      postconditions:
+        - "document content delivered semantically equivalent to stored canonical identity"
+        - "authorization decision recorded"
+        - "retrieval audit log recorded"

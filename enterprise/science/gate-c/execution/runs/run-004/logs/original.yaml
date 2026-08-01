@@ -1,0 +1,13 @@
+version: 1.0.0
+run_id: run-004
+execution_mode: NEGATIVE_CONTROL_N2_PRED_B_MEANING_DRIFT
+reference_runtime_id: TS-REFERENCE-RUNTIME-001
+strategy_id: ts-reference-runtime/v1
+negative_control_truth_table_row: N2
+execution_timestamp_utc: 2026-08-01T03:00:00.000Z
+commands:
+  - pnpm eos gate-c run --experiment=specification/experiments/document/propose-n2.yaml --with-frozen-kernel=47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+  - diagnosis order enforced: Fixture first → Expected truth table N2 → Execution → Evidence (witness A/B/C lock) → Oracle (vector match N2) → Science Kernel LAST (frozen, not questioned)
+  - replay for C4 Replay Correctness: reproduced identical verdict+evaluation+predicate vector. Only execution_timestamp differs (allowed).
+pairwise_note: Apparatus hashes pairwise identical to run-003 (Positive Control P1 replay).
+diagnostic_result: FAIL N2 via Witness B canonical_identity_preserved=false (classification internal→confidential and body appended). A and C PASS.

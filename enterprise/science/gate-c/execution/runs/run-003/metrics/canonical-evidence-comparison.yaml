@@ -1,0 +1,40 @@
+version: 1.0.0
+run_id: run-003
+science_kernel_bundle_id: SC-KERNEL-001
+science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+original_vs_replay_pair:
+  original:
+    source: run-001
+    kernel_used: b0ade11a9a53e7ae5ff0a4d772cbb7add753b0b84d7dd9f9f5ffae33f9a38916 (original pre-freeze)
+    verdict: PASS
+  replay:
+    source: run-003
+    kernel_used: 47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782 (POST-FREEZE kernel = same as run-002 N1)
+    verdict: PASS
+comparison:
+  same_verdict: true
+  same_truth_table_row: P1 = P1
+  same_predicate_vector: true
+  same_canonical_witness_fields: true
+  converged: true
+  note: >
+    Upgrading from pre-freeze kernel bundle (b0ade11) to frozen bundle (47c758) is a structural
+    measurement-apparatus upgrade. Since the Positive Control verdict and witness did NOT change,
+    the apparatus upgrade is judged stable and safe. This justifies using the frozen kernel (47c758)
+    as the single baseline for ALL future controls, including negative control N1 comparison.
+ignored_runtime_metadata:
+  - execution_timestamp_utc
+  - locked_at
+  - log timestamps
+  - temporary replay directory
+pairwise_with_run_002_negative_control_n1:
+  oracle_certificates_identical: true
+  witness_certificates_identical: true
+  dataset_certificates_identical: true
+  science_kernel_bundle_hash_identical: true
+  calibration_report_ref_identical: true
+  summary: >
+    POSITIVE CONTROL (run-003 P1 replay) and NEGATIVE CONTROL (run-002 N1) share EXACTLY the same
+    measurement apparatus identity and certificates. They differ ONLY in fixture content
+    (propose.yaml vs propose-n1.yaml + document-contract-n1.yaml vs document-contract.yaml).
+    This satisfies the Negative Control Exit Criterion C3 MEASUREMENT CORRECTNESS for N1.

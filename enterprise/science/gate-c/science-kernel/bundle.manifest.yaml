@@ -1,0 +1,283 @@
+version: 1.0.0
+bundle_id: SC-KERNEL-001
+bundle_version: 1
+status: FROZEN
+canonicalization:
+  artifact_hash_algorithm: sha256
+  artifact_hash_basis: raw_file_bytes
+  manifest_hash_algorithm: sha256
+  manifest_hash_basis: sha256(canonical_json(bundle_manifest_excluding_bundle_sha256))
+  path_basis: paths_relative_to_enterprise/science/gate-c_or_repository_root_for_external_refs
+science_kernel_status:
+  status_ref: specification/manifests/kernel-status.yaml
+  calibration_report_ref: specification/calibration/calibration-report.yaml
+  reproducibility_manifest_ref: specification/manifests/reproducibility-manifest.yaml
+measurement_apparatus:
+  oracle:
+    certificate_id: SC-ORACLE-001
+    certificate_ref: specification/calibration/oracle-certificate.yaml
+    certificate_hash: sha256:cd39a4024c8f84a6d117890f1298f1690dc6f47f2734b090f63e35d5455efcda
+    instrument_ref: specification/oracle/oracle.yaml
+    instrument_hash: sha256:b92cfef11330bee312b23d0d5409703e61729bacc96d7c8fba41da7cdac1157f
+  witness:
+    certificate_id: SC-WITNESS-001
+    certificate_ref: specification/calibration/witness-certificate.yaml
+    certificate_hash: sha256:674ea467df0ed0e219e143e780a24610cbf26d0ff61798659cf6d72a12dc7d34
+    instrument_ref: specification/witness-integrity.yaml
+    instrument_hash: sha256:fbaa8738223d97884669d2b6fbdfc2e00015b40c5489712754bb4efd0e755a9f
+  dataset:
+    certificate_id: SC-DATASET-001
+    certificate_ref: specification/calibration/dataset-certificate.yaml
+    certificate_hash: sha256:577d034f086a5fcf3fb9f1c5a4a8d4e9b12573c45b98973ce5af4bfedab373d9
+    instrument_ref: specification/dataset/reference-dataset.yaml
+    instrument_hash: sha256:2184fa695220d5d9306b66c61074a88692c73e57e9448bfea32321003ab85fbb
+evidence_pointers:
+  calibration_report_id: GATE-C0-CALIBRATION-REPORT-001
+  calibration_report_ref: specification/calibration/calibration-report.yaml
+  calibration_report_hash: sha256:9ad7fc3c16087f21fdcdaf662c2b9c0b322b66a5e3e882c028e4667f8c25f287
+  reproducibility_manifest_ref: specification/manifests/reproducibility-manifest.yaml
+  reproducibility_manifest_hash: sha256:f8b447ba75ea22746af161368dce3a01bc3188a64122e4eea6a5da0e65d0b791
+  evidence_model_ref: enterprise/governance/evidence-model.md
+  evidence_model_hash: sha256:628429648ef12b0c1e53cf19de77859f3c414134b9729472fdc4e31105a3a83a
+hashes:
+  protocol_hash: sha256:22993617d2cc522a0a42b3151faa7dfbdf54486dddeab50609bb67adf5c8e75b
+  truth_table_hash: sha256:a5b9344eb2e488656f068b18443aefcbe94102e38d182325a6afc47a88bbe5ff
+  expected_hash: sha256:b2bbb4d16673f982996cf252e99ed87050780f43a147b79d0e0354fcb0128d53
+  schema_hash: sha256:f0c5822c90a7d2a92058b309fd80210c134c15669d192ff0319f64de8e483a61
+  fixture_hash: sha256:f88c22ab52c42d41b5ddaafbf530720695f1d8f0103802dab16dd2fadcfe2b16
+  oracle_hash: sha256:23f7222737926069afca4f4cc93988f60b513c0ebe0c4ea5b198df53f0eb715b
+  specification_hash: sha256:bb9f878d746d236fd56beb1c6561df84bd17254b5ec888f42fc67f2b69b8f481
+artifacts:
+  - path: enterprise/governance/evidence-model.md
+    sha256: sha256:628429648ef12b0c1e53cf19de77859f3c414134b9729472fdc4e31105a3a83a
+    bytes: 7977
+    category: bundle_support
+  - path: specification/calibration/calibration-report.yaml
+    sha256: sha256:9ad7fc3c16087f21fdcdaf662c2b9c0b322b66a5e3e882c028e4667f8c25f287
+    bytes: 1297
+    category: calibration
+  - path: specification/calibration/dataset-certificate.yaml
+    sha256: sha256:577d034f086a5fcf3fb9f1c5a4a8d4e9b12573c45b98973ce5af4bfedab373d9
+    bytes: 592
+    category: calibration
+  - path: specification/calibration/oracle-certificate.yaml
+    sha256: sha256:cd39a4024c8f84a6d117890f1298f1690dc6f47f2734b090f63e35d5455efcda
+    bytes: 567
+    category: calibration
+  - path: specification/calibration/witness-certificate.yaml
+    sha256: sha256:674ea467df0ed0e219e143e780a24610cbf26d0ff61798659cf6d72a12dc7d34
+    bytes: 598
+    category: calibration
+  - path: specification/candidate-predicate/D1.yaml
+    sha256: sha256:0dc83a92b9d2d69aa13fddf17976aa5468fb9db9826ed9a04ce9ce4dfa2c7153
+    bytes: 409
+    category: bundle_support
+  - path: specification/candidate-predicate/D2.yaml
+    sha256: sha256:0efb068b5211e42269b1d2737366ee70c8c55cc99602bd62a5f6d875b1f94dab
+    bytes: 404
+    category: bundle_support
+  - path: specification/candidate-predicate/D3.yaml
+    sha256: sha256:0fc992eaf77c99636f7f9c4bddacfa64d340af87e70e6fd4dd342ade96b8c0b4
+    bytes: 504
+    category: bundle_support
+  - path: specification/dataset/reference-dataset.yaml
+    sha256: sha256:2184fa695220d5d9306b66c61074a88692c73e57e9448bfea32321003ab85fbb
+    bytes: 2520
+    category: dataset
+  - path: specification/expected/evaluations/document-evaluations.yaml
+    sha256: sha256:abc7e337ea060002ce6b73cefc7264f3b29e4cdaa7a2ca285999e5e380ccee1a
+    bytes: 1125
+    category: expected
+  - path: specification/expected/predicates/document-predicates.yaml
+    sha256: sha256:cac047bfdc7133b6fdaef01e62ec58a2aba38b94241a58fe668379315fac3cfc
+    bytes: 1873
+    category: expected
+  - path: specification/expected/README.md
+    sha256: sha256:e76412e2dc9271a5aad1f3ae9f657a2873a77419faac68a1c69818870389fba1
+    bytes: 515
+    category: expected
+  - path: specification/experiments/document/approve.yaml
+    sha256: sha256:5d1d2d60af7bc13d0a9dbac3d3f3f4c3bf4517f1f3262ea695d31b9c691d9853
+    bytes: 3809
+    category: experiment
+  - path: specification/experiments/document/archive.yaml
+    sha256: sha256:29413acecdeccc02b8fb66cfbb1d9356711d396a2923c3618879e207e6f96762
+    bytes: 3703
+    category: experiment
+  - path: specification/experiments/document/propose-n1.yaml
+    sha256: sha256:96e8cfde6bd81d780ba55fafc1adf51d28fa00fca3334805f8b2bfba05bba1b5
+    bytes: 3674
+    category: experiment
+  - path: specification/experiments/document/propose.yaml
+    sha256: sha256:387dd92afade43be68a4ae1bf8ee2d84139f4d1fd401289e5628b32876f066db
+    bytes: 3911
+    category: experiment
+  - path: specification/experiments/document/retrieve.yaml
+    sha256: sha256:e69abaec9829e2d273ed0723e69d14948883ee61fe3c167ca7ed317c84e1dc94
+    bytes: 3998
+    category: experiment
+  - path: specification/fixtures/contracts/document-contract-n1.yaml
+    sha256: sha256:eccb3570afe636ef4cdbe73103294e6a23ca09b37bc8d3a986dc887d7c453b07
+    bytes: 1896
+    category: fixture
+  - path: specification/fixtures/contracts/document-contract.yaml
+    sha256: sha256:bae20b825782cedf957649133e0d03ea42c24190439051c93f801e7f3a055de7
+    bytes: 1619
+    category: fixture
+  - path: specification/fixtures/documents/approval-metadata-001.yaml
+    sha256: sha256:e3d4a55924d07fe8b8c825c67a17c7a2926593ab0e98acaffc8712728ee583ea
+    bytes: 477
+    category: fixture
+  - path: specification/fixtures/documents/approved-document-001.yaml
+    sha256: sha256:dba7d09a6a594264bca225a12556da3e47f006e34d7e970922f03ff2b80c09c4
+    bytes: 728
+    category: fixture
+  - path: specification/fixtures/documents/proposal-draft-001.yaml
+    sha256: sha256:412b187195feb41ce1249ee8484a9743ece6ff0bad267cb1d83309cd1f428994
+    bytes: 1060
+    category: fixture
+  - path: specification/fixtures/evidence/approval-audit.yaml
+    sha256: sha256:da4b15ff0b1e559627b9809dfab6438a75b0a65625de537a8fc8fa981fae0906
+    bytes: 384
+    category: fixture
+  - path: specification/fixtures/evidence/approval-signatures.yaml
+    sha256: sha256:5dc390878cc45fb96179af0558d69922f2c7aaf8e421ef65006f591beb128e89
+    bytes: 542
+    category: fixture
+  - path: specification/fixtures/evidence/archive-ledger.yaml
+    sha256: sha256:83d0636a3a06c5e75bf52901b62a63fc5c6c12d9c11c92004b86da81ffe9dfd7
+    bytes: 349
+    category: fixture
+  - path: specification/fixtures/evidence/archive-retention-check.yaml
+    sha256: sha256:b83e84d2b841b6ed5c0d4a12ab65edc3c68eae84ce7dc04bf68f0e1413ef7b82
+    bytes: 485
+    category: fixture
+  - path: specification/fixtures/evidence/proposal-baseline-proofs.yaml
+    sha256: sha256:a1d41566bf23cff1f7918cce48a764fc6f0bfdb0027763e280b6910c746ad0a2
+    bytes: 478
+    category: fixture
+  - path: specification/fixtures/evidence/proposal-n4-proof-gap-evidence.yaml
+    sha256: sha256:ce9dcfd724ad9847db8bfb10088367debc37116a8c07534dd83ff487ee3430bd
+    bytes: 987
+    category: fixture
+  - path: specification/fixtures/evidence/retrieve-access-proof.yaml
+    sha256: sha256:9c08f3b5ebdb20449420aed9048c3e3dac6bd622a01d6a40e6f17703d0d4af62
+    bytes: 333
+    category: fixture
+  - path: specification/fixtures/evidence/retrieve-audit.yaml
+    sha256: sha256:e72ee4af785a640ce59460e5a0bc785fb0480db6491107ac642732331b178ebd
+    bytes: 367
+    category: fixture
+  - path: specification/fixtures/policies/document-policy-001.yaml
+    sha256: sha256:6c51d8e797f568c02e99b089686436b902e9d5b14ffe99e15545f0f9d4d26a2c
+    bytes: 917
+    category: fixture
+  - path: specification/hypothesis.yaml
+    sha256: sha256:0da757ecded387f0394df1cb025d7335593a9d0417cd71c0112af7eeacf9bbdb
+    bytes: 5865
+    category: theory
+  - path: specification/manifests/kernel-status.yaml
+    sha256: sha256:3bfdfb5c50ac37819b19a2613c77c7b7a923714c9505f3312b7c7af21c224441
+    bytes: 998
+    category: manifest
+  - path: specification/manifests/reproducibility-manifest.yaml
+    sha256: sha256:03c2035a49c7fccd9343a3ca2fd48ebb7aa5eb64c23d814e0c2a60b5465e2b42
+    bytes: 5417
+    category: manifest
+  - path: specification/manifests/run-manifest.example.yaml
+    sha256: sha256:fe5760e24f878d28e0764e0776e47ead4173e001940d64a08bdba8472572cc17
+    bytes: 2628
+    category: manifest
+  - path: specification/manifests/witness-bundle-layout.yaml
+    sha256: sha256:9d7af6cdced1e3a903f961754f02601971d660481b0a25b7c2b49d90c3831745
+    bytes: 1332
+    category: manifest
+  - path: specification/oracle/oracle-manifest.yaml
+    sha256: sha256:19e85f39c404ab08527b6b19a7024a0e20c3486e9ae54d596e5852caf951999e
+    bytes: 896
+    category: oracle
+  - path: specification/oracle/oracle.yaml
+    sha256: sha256:b92cfef11330bee312b23d0d5409703e61729bacc96d7c8fba41da7cdac1157f
+    bytes: 4352
+    category: oracle
+  - path: specification/protocol.yaml
+    sha256: sha256:22993617d2cc522a0a42b3151faa7dfbdf54486dddeab50609bb67adf5c8e75b
+    bytes: 12326
+    category: protocol
+  - path: specification/schemas/calibration-report.schema.yaml
+    sha256: sha256:77dfdf4a8e7a2fa6dc4ca960b4765b0ab94ce703e413ba2bfeca005c1b080e11
+    bytes: 1898
+    category: schema
+  - path: specification/schemas/evaluation.schema.yaml
+    sha256: sha256:f27e86da9c4685402a9b8d010c8246c0b6014a1d47c56284cd849eeed624c916
+    bytes: 2128
+    category: schema
+  - path: specification/schemas/experiment.schema.yaml
+    sha256: sha256:e22448214c993ef65b2cf06848b65ac8ba7f77c5a28ad1be6faeb9832bd54352
+    bytes: 3666
+    category: schema
+  - path: specification/schemas/instrument-certificate.schema.yaml
+    sha256: sha256:bb439922564cd947e9d8e6cd396eb28671bc8650783634397ae9fd14d2b30a87
+    bytes: 1356
+    category: schema
+  - path: specification/schemas/kernel-status.schema.yaml
+    sha256: sha256:d0de5ee29447b7c1b48a97f602ed9470721c8d7ab6c27b44f7f4a47928858e62
+    bytes: 1074
+    category: schema
+  - path: specification/schemas/oracle.schema.yaml
+    sha256: sha256:b751435f699d7a1c48959ccb4e29354f9d66561ea9774a40aebc91e7d854da86
+    bytes: 4224
+    category: schema
+  - path: specification/schemas/reproducibility-manifest.schema.yaml
+    sha256: sha256:a9187d4606864a50650fd76d794b7c5b643ec3bc8db42051621e9b11dad8d9ba
+    bytes: 6391
+    category: schema
+  - path: specification/schemas/run-manifest.schema.yaml
+    sha256: sha256:77075fb1527e67c891b21464d112a503a78dc5c7fac959622f52739e5346a545
+    bytes: 4801
+    category: schema
+  - path: specification/schemas/verdict.schema.yaml
+    sha256: sha256:f46585bfc1a2eb3e69a2e21b08e75f169dc0b206c00dc5664aa0149c1191f6f4
+    bytes: 1220
+    category: schema
+  - path: specification/schemas/witness-integrity.schema.yaml
+    sha256: sha256:06599ec4ba2ca12bf9464b9092e47cf288613c2bf86823f2d9a51f067c2ba92b
+    bytes: 1877
+    category: schema
+  - path: specification/schemas/witness.schema.yaml
+    sha256: sha256:96615cef705dbcf5236e71651030b7e5418caa3dbb1080a5dab08ce0fec4be61
+    bytes: 2468
+    category: schema
+  - path: specification/tests/counterfactual/suite.yaml
+    sha256: sha256:c9b304e829833a2a8fc7db038e9f39f02e28d6fc425f4c4c06f2169e6c86e20e
+    bytes: 662
+    category: test
+  - path: specification/tests/independence/suite.yaml
+    sha256: sha256:ae7fb92f4ed326fb6761ab434e46d5bbf0598be3bfb7158a9bd1f3827bcfcab6
+    bytes: 478
+    category: test
+  - path: specification/tests/metamorphic/suite.yaml
+    sha256: sha256:19e90e44021847e92ddd4ccce47098467efc6f4b5189e425053994e0961ef7c5
+    bytes: 591
+    category: test
+  - path: specification/tests/minimality/suite.yaml
+    sha256: sha256:c3f1e57efe7a36b17d7affde1bb626e321e33a2211225f10f17c25484ffba4e6
+    bytes: 559
+    category: test
+  - path: specification/tests/negative/suite.yaml
+    sha256: sha256:d0916a88b294bd0f38bd3230bdacfc89481151255facd78f27636ab30320c374
+    bytes: 442
+    category: test
+  - path: specification/tests/positive/suite.yaml
+    sha256: sha256:64a02d957c0f4fad5cfb26172cb5bc8b1e9367f642208cbec9da9dbfa9e4932a
+    bytes: 602
+    category: test
+  - path: specification/truth-table.yaml
+    sha256: sha256:a5b9344eb2e488656f068b18443aefcbe94102e38d182325a6afc47a88bbe5ff
+    bytes: 5249
+    category: theory
+  - path: specification/witness-integrity.yaml
+    sha256: sha256:fbaa8738223d97884669d2b6fbdfc2e00015b40c5489712754bb4efd0e755a9f
+    bytes: 1221
+    category: witness
+bundle_sha256: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782

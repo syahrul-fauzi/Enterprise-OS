@@ -1,5 +1,5 @@
 version: "1.0.0"
-status: PROPOSED
+status: FROZEN
 kind: SCIENTIFIC_PROTOCOL
 protocol_id: GATE-C-PROTOCOL-01
 parent_hypothesis: GATE-C (hypothesis.yaml)
@@ -47,11 +47,15 @@ kernel_epistemic_status_ref: specification/manifests/kernel-status.yaml
 
 calibration:
   calibration_report_ref: specification/calibration/calibration-report.yaml
+  calibration_report_id: GATE-C0-CALIBRATION-REPORT-001
   oracle_certificate_ref: specification/calibration/oracle-certificate.yaml
+  oracle_certificate_id: SC-ORACLE-001
   witness_certificate_ref: specification/calibration/witness-certificate.yaml
+  witness_certificate_id: SC-WITNESS-001
   dataset_certificate_ref: specification/calibration/dataset-certificate.yaml
+  dataset_certificate_id: SC-DATASET-001
   gate_c1_blocker: overall.calibrated = false
-  note: Calibration evidence SHALL remain epistemically separate from theory evidence.
+  note: Calibration evidence SHALL remain epistemically separate from theory evidence. Every Gate C1 and Gate E run SHALL declare the exact calibration and certificate identities used as its measurement apparatus.
 
 execution:
   scope: GATE-C1_ONLY_AFTER_C0_PASS
@@ -63,6 +67,7 @@ execution:
         - "Validate every experiment subject (experiments/**/*.yaml) against schemas/experiment.schema.yaml; FAIL FAST if any invalid."
         - "Load specification/manifests/reproducibility-manifest.yaml and verify referenced immutable artifact set is internally complete."
         - "Load specification/calibration/calibration-report.yaml and verify overall.calibrated = true before any Gate C1 execution begins."
+        - "Load Oracle, Witness, and Dataset calibration certificates and record their certificate IDs as the declared measurement apparatus for the run."
         - "Resolve canonical identity (LEX-0000G) of every input fixture; emit canonical_identity_sha256 for each."
       invariant: "No transformation of fixture data during prepare phase; fixtures are SSOT data only."
       predicate_boundary: "No predicate evaluation occurs here. PREPARE only ensures inputs satisfy preconditions for later predicate evaluation."
@@ -101,10 +106,10 @@ execution:
     - id: PHASE-05-REPORT
       name: Produce Scientific Report
       actions:
-        - "Write execution/runs/run-<NNN>/report.yaml containing: run_id, date, predicate vector per subject, IA-20 evaluation per subject, truth-table row match status, independence test result, fungibility test result (if performed), witness_ids composite CP-<ms>-<wA8>-<wB8>-<wC8>."
+        - "Write execution/runs/run-<NNN>/report.yaml containing: run_id, date, evidence_class, measurement_apparatus.calibration_report_id, measurement_apparatus.oracle_certificate_id, measurement_apparatus.witness_certificate_id, measurement_apparatus.dataset_certificate_id, predicate vector per subject, IA-20 evaluation per subject, truth-table row match status, independence test result, fungibility test result (if performed), witness_ids composite CP-<ms>-<wA8>-<wB8>-<wC8>."
         - "Write execution/runs/run-<NNN>/metrics/ summary artifacts: aggregate counts of PASS/FAIL/INCONCLUSIVE per predicate, per truth-table row, per experimental domain."
-        - "Copy all raw evidence, logs, and emitted witness files into execution/runs/run-<NNN>/actual/, execution/runs/run-<NNN>/logs/, and execution/runs/run-<NNN>/metrics/ for reproducibility."
-        - "Write execution/runs/run-<NNN>/run-manifest.yaml with exact references to specification versions, oracle identity, strategy identities, and reproducibility manifest."
+        - "Copy all raw evidence, logs, and emitted witness files into execution/runs/run-<NNN>/actual/, execution/runs/run-<NNN>/logs/, and execution/runs/run-<NNN>/metrics/ for reproducibility while preserving evidence_class separation."
+        - "Write execution/runs/run-<NNN>/run-manifest.yaml with exact references to specification versions, oracle identity, strategy identities, reproducibility manifest, kernel epistemic status, and the certificate identities used to measure the run."
         - "Write final determination: H0 REJECTED ⇔ ∀ rows of truth-table covered and NO falsification_condition from hypothesis.yaml H0 holds. H0 NOT REJECTED otherwise (INCONCLUSIVE if insufficient coverage)."
       reproducibility_requirement: "Reports SHALL contain enough information for an independent verifier to re-run phases 1-4 on the same fixtures and arrive at identical IA-20 evaluations for every experiment."
 

@@ -13,15 +13,15 @@ implementation verification, and runtime observation artifacts.
 ## Normative Rules
 1. Every Evidence MUST validate exactly one explicit claim, result, or measured
    outcome.
-2. Every Evidence MUST be classified as either `Specification Evidence` or
-   `Execution Evidence`.
+2. Every Evidence MUST declare exactly one epistemic class:
+   `Calibration Evidence`, `Experimental Evidence`, or `Certification Evidence`.
 3. Every Evidence MUST carry the stable `semantic_id` of the governed concept.
 4. Every Evidence MUST be traceable to its source, producing system, and
    originating specification lineage.
 5. Every Evidence MUST carry the shared `lineage_id` for its governed execution
    flow.
-6. Evidence MUST preserve the distinction between specification defects and
-   execution defects.
+6. Evidence MUST preserve the distinction between calibration defects, theory
+   experiment results, and implementation conformance results.
 7. Every Evidence MUST have a defined lifecycle and verification status.
 ## Grammar
 Markdown prose plus machine-readable evidence records in YAML or JSON.
@@ -29,13 +29,14 @@ Markdown prose plus machine-readable evidence records in YAML or JSON.
 - No Evidence without an explicit claim or result statement.
 - No Evidence without source attribution.
 - No accepted Evidence without `semantic_id`.
-- No Execution Evidence without a compiler or runtime lineage reference.
+- No Experimental or Certification Evidence without a compiler, runtime, or
+  replay lineage reference.
 - No accepted Evidence without `lineage_id`.
-- No Specification Evidence may be used as a substitute for execution
-  conformance proof.
+- No Calibration Evidence may be used as a substitute for Experimental
+  corroboration or Certification proof.
 ## Validation Rules
-- Validate that every evidence record declares its class, subject, source, and
-  verification status.
+- Validate that every evidence record declares its epistemic class, subject,
+  source, and verification status.
 - Validate that every evidence record carries the governing `semantic_id`.
 - Validate that every evidence record carries the governing `lineage_id`.
 - Validate that every evidence record references a governed requirement or
@@ -72,39 +73,54 @@ This keeps EOS measurable rather than claim-based.
 
 ## 2. Evidence Classes
 
-EOS recognizes two primary evidence classes.
+EOS recognizes three primary epistemic evidence classes.
 
-### Specification Evidence
+### Calibration Evidence
 
-Used to prove that a specification is valid and complete enough to enter the
-execution pipeline.
-
-Typical examples:
-- Definition of Semantic Completeness passed
-- semantic validation passed
-- graph validation passed
-- canonical YAML normalization completed
-
-Failure meaning:
-- the specification itself is incomplete, inconsistent, or not executable.
-
-### Execution Evidence
-
-Used to prove that generated artifacts, implementations, or runtime behavior
-conform to the validated specification.
+Used to prove that the measurement apparatus is valid and complete enough to
+enter theory-testing and certification pipelines.
 
 Typical examples:
-- compiler checksum
-- schema hash
-- code generation log
-- implementation verification result
-- runtime validation result
+- oracle calibration report
+- witness integrity certificate
+- dataset certification report
+- manifest and protocol calibration checks
 
 Failure meaning:
-- the specification may be valid, but generation, implementation, or runtime
-  conformance has failed.
+- the instrument itself is incomplete, unstable, or not fit to measure the
+  theory.
 
-This separation is mandatory so audits can isolate root cause precisely.
+### Experimental Evidence
+
+Used to prove or falsify the theory under test using calibrated instruments.
+
+Typical examples:
+- positive and negative falsification runs
+- counterfactual experiment results
+- metamorphic invariance results
+- witness-backed IA-20 evaluations
+
+Failure meaning:
+- the theory may be falsified, underdetermined, or insufficiently corroborated
+  in the defined experimental space.
+
+### Certification Evidence
+
+Used to prove that implementations and runtimes conform when replaying
+certified datasets under a frozen theory and calibrated science kernel.
+
+Typical examples:
+- cross-runtime replay results
+- conformance certificates
+- certification verdict packages
+- implementation comparison reports
+
+Failure meaning:
+- the theory and apparatus may still be valid, but one or more implementations
+  fail to conform consistently.
+
+This separation is mandatory so audits can isolate whether a defect sits in the
+apparatus, the theory experiment, or the implementation.
 
 ---
 
@@ -114,7 +130,7 @@ Every evidence record MUST include at minimum:
 - evidence identifier
 - semantic_id
 - lineage_id
-- evidence class
+- epistemic evidence class
 - subject requirement or specification identifier
 - claim or measured outcome
 - source artifact or source system
@@ -170,14 +186,15 @@ Lifecycle rules:
 
 ## 5. Stage-to-Evidence Mapping
 
-EOS uses staged completion semantics.
+EOS uses staged completion semantics. Evidence class and completion stage are
+orthogonal and MUST both be declared.
 
 | Stage | Meaning | Required Evidence Class | Typical Proof |
 |------|---------|-------------------------|---------------|
-| `DoD-S` | Specification Done | Specification Evidence | DoSC pass, semantic validation pass |
-| `DoD-G` | Generation Done | Execution Evidence | compiler checksum, artifact hashes |
-| `DoD-I` | Implementation Done | Execution Evidence | conformance test pass, contract verification |
-| `DoD-R` | Runtime Done | Execution Evidence | runtime validation, observed production behavior |
+| `DoD-S` | Specification Done | Calibration Evidence | oracle and witness calibration pass |
+| `DoD-G` | Generation Done | Experimental Evidence | falsification run, counterfactual result |
+| `DoD-I` | Implementation Done | Certification Evidence | cross-runtime conformance pass |
+| `DoD-R` | Runtime Done | Certification Evidence | runtime validation, observed replay consistency |
 
 This model allows a requirement to be semantically complete while still pending
 generation, implementation, or runtime validation.
@@ -188,7 +205,7 @@ generation, implementation, or runtime validation.
 
 An evidence record is acceptable only when:
 1. its claim is explicit;
-2. its class is declared correctly;
+2. its epistemic class is declared correctly;
 3. its source and lineage are traceable;
 4. integrity metadata is recorded where relevant;
 5. its verification method is reproducible;
@@ -205,23 +222,25 @@ If any acceptance condition fails, the evidence status remains `captured` or
 evidence_id: EVD-REQ-001
 semantic_id: REQ-0001
 lineage_id: LIN-REQ-001
-class: execution_evidence
-stage: DoD-G
+class: certification_evidence
+stage: DoD-I
 subject_requirement_id: REQ-001
 specification_id: ELS-REQUIREMENT-V1
-claim: generator_output_matches_validated_canonical_yaml
+claim: cross_runtime_replay_matches_calibrated_reference_dataset
 source:
-  type: generator_run
+  type: certification_run
   generator_version: 1.2.0
-  artifact: requirement.schema.json
+  artifact: run-manifest.yaml
 integrity:
   canonical_yaml_sha256: abc123
   artifact_sha256: def456
 verification:
-  method: deterministic_regeneration_check
+  method: reproducible_cross_runtime_replay
   status: passed
 timestamp: 2026-07-29T00:00:00Z
 ```
 
 The representation may evolve, but class, lineage, and verification semantics
-must remain stable.
+must remain stable. The older `Specification` versus `Execution` distinction
+remains useful as an origin plane, but the governing evidence class is now
+Calibration, Experimental, or Certification.

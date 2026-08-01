@@ -245,29 +245,39 @@ Future extensions may split SDR into:
 
 ## 7. Evidence Classes
 
-SES recognizes two execution evidence classes.
+SES recognizes three epistemic evidence classes.
 
-### Specification Evidence
+### Calibration Evidence
 
-Used to prove that a specification is valid and complete enough to execute.
-
-Examples:
-- DoSC passed
-- semantic validation passed
-- graph validation passed
-
-### Execution Evidence
-
-Used to prove that execution artifacts conform to the validated specification.
+Used to prove that the measurement apparatus is fit to measure the governed
+theory.
 
 Examples:
-- compiler checksum
-- schema hash
-- code generation log
-- runtime validation result
+- oracle calibration pass
+- witness certificate pass
+- dataset certification pass
+
+### Experimental Evidence
+
+Used to prove or falsify the theory under calibrated conditions.
+
+Examples:
+- positive falsification run
+- negative falsification run
+- counterfactual and metamorphic results
+
+### Certification Evidence
+
+Used to prove that implementations conform when replaying the certified
+dataset.
+
+Examples:
+- cross-runtime replay pass
+- conformance certification result
+- certification bundle integrity result
 
 These evidence classes must remain distinguishable so audits can separate
-specification defects from execution defects.
+instrument defects, theory outcomes, and implementation defects.
 
 ---
 

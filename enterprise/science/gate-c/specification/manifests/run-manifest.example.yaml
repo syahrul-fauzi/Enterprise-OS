@@ -12,11 +12,44 @@ dataset_version: "1.0.0"
 truth_table_version: "1.0.0"
 protocol_version: "1.0.0"
 reproducibility_manifest_ref: specification/manifests/reproducibility-manifest.yaml
+subjects:
+  - experiment_subject_id: GATE-C-DOC-PROPOSE
+    subject_ref: specification/experiments/document/propose.yaml
+    operation: propose
+    expected_predicates_ref: specification/expected/predicates/document-predicates.yaml#expected_predicates.GATE-C-DOC-PROPOSE
+    expected_evaluation_ref: specification/expected/evaluations/document-evaluations.yaml#expected_evaluations.GATE-C-DOC-PROPOSE
 measurement_apparatus:
+  calibration_report_id: GATE-C0-CALIBRATION-REPORT-001
   calibration_report_ref: specification/calibration/calibration-report.yaml
+  oracle_certificate_id: SC-ORACLE-001
   oracle_certificate_ref: specification/calibration/oracle-certificate.yaml
+  witness_certificate_id: SC-WITNESS-001
   witness_certificate_ref: specification/calibration/witness-certificate.yaml
+  dataset_certificate_id: SC-DATASET-001
   dataset_certificate_ref: specification/calibration/dataset-certificate.yaml
+  kernel_status_ref: specification/manifests/kernel-status.yaml
+  oracle:
+    certificate_id: SC-ORACLE-001
+    certificate_ref: specification/calibration/oracle-certificate.yaml
+    artifact_hash: sha256:example-oracle-certificate
+    instrument_ref: specification/oracle/oracle.yaml
+    instrument_hash: sha256:example-oracle-instrument
+  witness:
+    certificate_id: SC-WITNESS-001
+    certificate_ref: specification/calibration/witness-certificate.yaml
+    artifact_hash: sha256:example-witness-certificate
+    instrument_ref: specification/witness-integrity.yaml
+    instrument_hash: sha256:example-witness-instrument
+  dataset:
+    certificate_id: SC-DATASET-001
+    certificate_ref: specification/calibration/dataset-certificate.yaml
+    artifact_hash: sha256:example-dataset-certificate
+    instrument_ref: specification/dataset/reference-dataset.yaml
+    instrument_hash: sha256:example-dataset-instrument
+  science_kernel:
+    bundle_id: SC-KERNEL-001
+    bundle_ref: science-kernel/bundle.manifest.yaml
+    bundle_hash: sha256:example-science-kernel-bundle
 output_layout:
   actual_dir: execution/runs/run-001/actual
   witness_dir: execution/runs/run-001/actual/witness

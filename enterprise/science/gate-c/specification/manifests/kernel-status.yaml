@@ -1,4 +1,4 @@
-version: "1.0.0"
+version: 1.0.0
 status_manifest_id: KERNEL-STATUS-001
 constitution_kernel:
   status: FROZEN_CANDIDATE
@@ -8,10 +8,16 @@ science_kernel:
   status: CALIBRATED_AND_FROZEN
   may_change: false
   change_condition: INSTRUMENT_DEFECT_ONLY
+  evidence:
+    calibration_report_id: GATE-C0-CALIBRATION-REPORT-001
+    calibration_report_ref: specification/calibration/calibration-report.yaml
+    reproducibility_manifest_ref: specification/manifests/reproducibility-manifest.yaml
+    bundle_id: SC-KERNEL-001
+    bundle_manifest_ref: science-kernel/bundle.manifest.yaml
+    evidence_model_ref: enterprise/governance/evidence-model.md
 implementation_kernel:
   status: EVOLUTIONARY
   may_change: true
   change_condition: MUST_REMAIN_EXPERIMENTALLY_CONFORMANT
-notes: >
-  This manifest freezes the epistemic role of each kernel after Gate C0. Implementation may evolve,
-  but it may not contaminate the calibrated science kernel nor the frozen constitutional candidate.
+notes: |
+  This manifest freezes the epistemic role of each kernel after Gate C0. Implementation may evolve, but it may not contaminate the calibrated science kernel nor the frozen constitutional candidate.

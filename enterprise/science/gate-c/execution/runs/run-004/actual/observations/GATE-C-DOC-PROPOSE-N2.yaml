@@ -1,0 +1,27 @@
+version: 1.0.0
+observation_id: run-004-original-observation-001
+subject_id: GATE-C-DOC-PROPOSE-N2
+transformation_contract_id: TC-DOC-PROPOSE-N2
+strategy_id: ts-reference-runtime/v1
+execution_mode: ORIGINAL
+input_fixture_hashes:
+  document: sha256:fa3b72c4e9d13a245571406476e619f1dd2770e1a02fb6311c6d4a2a60f10eb8
+  policy: sha256:6c51d8e797f568c02e99b089686436b902e9d5b14ffe99e15545f0f9d4d26a2c
+  contract: sha256:8a90d1f3c7e2b4a695048dcbe7c1a9327f84e0b5d1a9726c4081f2763be5941d
+  evidence: sha256:a1d41566bf23cff1f7918cce48a764fc6f0bfdb0027763e280b6910c746ad0a2
+transformation_output:
+  title: "Sprint0 Document: Document Management Operational Proposal"
+  classification: confidential
+  retention_period_days: 3650
+  proposer_identity_ref: role-document-proposer-001
+  body: |
+    This document proposes the initial operational procedure for Document Management domain of EOS during Gate C guinea-pig evaluation.
+    It is a reference proposal fixture. No normative authority is claimed by the fixture itself; authority evaluation occurs via Predicate A in the experiment context. approved-with-non-normative-addendum
+  metadata:
+    created_for_experiment: GATE-C-DOC-PROPOSE-N2
+    epoch_bound: Sprint0
+    recorded_status: PROPOSED
+    proposal_recorded_by: TS-REFERENCE-RUNTIME-001
+    proposal_evidence_ids:
+      - EVI-PRO-001
+      - EVI-PRO-002

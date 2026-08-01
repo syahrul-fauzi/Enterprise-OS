@@ -1,0 +1,298 @@
+version: "1.1.0"
+matrix_id: GATE-C1-COVERAGE-MATRIX-01
+kind: OPERATIONAL_COVERAGE_TRACKER
+status: ACTIVE
+protocol_ref: specification/protocol.yaml
+truth_table_ref: specification/truth-table.yaml
+scientific_phase_ordering:
+  epistemological_basis: Gate C1 is a SCIENTIFIC EXPERIMENT falsifying CC-001. Coverage is measured AGAINST HYPOTHESIS FALSIFICATION, not against test case count.
+  phase_order_mandatory:
+    - PHASE_1: POSITIVE_CONTROL_ESTABLISHMENT
+    - PHASE_2: NEGATIVE_CONTROL_CALIBRATION
+    - PHASE_3: TRUTH_TABLE_COVERAGE_EXPANSION
+    - PHASE_4: FALSIFICATION_ANALYSIS
+  phase_current: PHASE_2
+  phase_notes: >
+    PHASE_1 completed at run-001. PHASE_2 (at least one Negative Control per predicate) in progress at N1.
+    PHASE_3 requires 8/8 truth-table rows. PHASE_4 requires independence + minimality + counterfactual suites green.
+control_terminology_note: >
+  Terminology is SCIENTIFIC CONTROL terminology.
+  "Positive Test" → "POSITIVE CONTROL" (establishes PASS baseline for calibrated apparatus).
+  "Negative Test" → "NEGATIVE CONTROL" (systematically falsifies each predicate by individually and jointly setting each to FALSE with all else held constant).
+  Controls are designed to exercise the FULL 2^3=8 row Cartesian truth table of Constitutional Validity, one row per control.
+diagnostic_order_of_diagnosis_IF_A_TEST_FAILS:
+  mandatory_order:
+    - STEP_1_FIXTURE: "Is fixture content actually producing the scenario we are trying to test? (expected truth table row, expected witness pattern, expected contract) — MOST LIKELY ROOT CAUSE."
+    - STEP_2_EXPECTED_TRUTH_TABLE: "Is the expected predicate vector for this row consistent with truth-table.yaml + hypothesis H1?"
+    - STEP_3_EXECUTION: "Did the reference runtime produce the witness for this control without crashes, hangs, or skipped stages?"
+    - STEP_4_EVIDENCE: "Is the evidence artifact complete? Are canonical hashes computed on the proper exclusion basis? Is chain-of-custody populated?"
+    - STEP_5_ORACLE: "Is the oracle actually applying the correct predicate evaluator REPLAY_AUTHORITY_RELATION / REPLAY_CANONICAL_IDENTITY / REPLAY_CONSTRUCTIVE_ENTAILMENT for this scenario?"
+    - STEP_6_SCIENCE_KERNEL: "Is the Science Kernel bundle definition itself defective? ONLY QUESTION IF STEPS 1..5 ALL EXONERATED."
+  forbidden_reverse_order: >
+    Changing Oracle or Kernel before Fixture/Expected/Execution/Evidence is EXPLICITLY FORBIDDEN and invalidates the entire experiment run under the isolation axiom.
+negative_control_exit_criteria:
+  n_required_for_phase_2_complete: 1
+  criteria_for_every_negative_control:
+    - C1_FUNCTIONAL_CORRECTNESS: "Expected verdict FAIL ∧ Actual verdict FAIL (must match at the verdict level; no false positive emission)."
+    - C2_DIAGNOSTIC_CORRECTNESS: "Witness explicitly names which constitutional predicate failed. NOT a runtime crash, a syntax error, or an out-of-memory condition. Diagnostic predicate identifier MUST be in {pred_a_legitimate, pred_b_meaning_preserved, pred_c_provable} and MUST match the expected_diagnostic_predicate_failure for this control."
+    - C3_MEASUREMENT_CORRECTNESS: "Negative Control uses IDENTICAL measurement apparatus certificates, identical oracle_id, identical witness_certificate_id, identical dataset_certificate_id, and identical science_kernel_bundle_sha256 as the Positive Control replay run used for comparison (same epoch, no instrument drift)."
+    - C4_REPLAY_CORRECTNESS: "Replay of the same input fixture with the same kernel produces same verdict, same diagnostic predicate vector, and identical canonical evidence hash (byte-for-byte evidence for the witness canonical fields). Minor: Execution timestamp different OK; structural witness hash must match."
+    - C5_ISOLATION_CORRECTNESS: "During the complete Negative Control experiment lifecycle (fixture authoring → last replay write): ZERO changes to the following files/categories: oracle.yaml, witness-integrity.yaml, manifest schemas, predicate evaluator definitions, science-kernel/bundle.manifest.yaml and bundle.sha256. IF any change recorded in git or hash diff, the experiment is INVALID and the control MUST be re-run after reverting instruments to baseline."
+positive_control_replay_for_n1_comparison: "run-003 (future replay of P1 with same kernel as N1) — establishes the identical-measurement-apparatus pair that N1 is compared against for C3 Measurement Correctness."
+document_management_as_guinea_pig:
+  note_why_document_management: >
+    Document Management operations are the first experimental domain used to falsify CC-001. They are NOT treated as a product feature being tested; they are the guinea pig domain for the predicate model.
+  predicate_evaluation_matrix_example:
+    ProposeDocument:
+      legitimate: true
+      meaning_preserved: true
+      provable: true
+      constitutionally_valid: PASS
+      evidence_note: "Authority: Requirement → Policy → Contract chain valid; Meaning: Canonical Identity proposal preserved; Proof: Proposal evidence + audit trail emitted with constructive entailment."
+    ApproveDocument:
+      legitimate: true
+      meaning_preserved: true
+      provable: true
+      constitutionally_valid: PASS
+      evidence_note: "Authority: Approval delegation chain satisfies AuthorityRel; Meaning: Approve-as-is semantics preserved across surfaces; Proof: Signature + audit + verdict ledger available for constructive entailment."
+    ArchiveDocument:
+      legitimate: true
+      meaning_preserved: true
+      provable: true
+      constitutionally_valid: PASS
+      evidence_note: "Authority: Retention policy authorization valid; Meaning: Document identity invariant under status change; Proof: Archive ledger record written and retention hash linked."
+    RetrieveDocument:
+      legitimate: true
+      meaning_preserved: true
+      provable: true
+      constitutionally_valid: PASS
+      evidence_note: "Authority: Authorization resolved; Meaning: Retrieved bitwise-identical to canonical evidence identity; Proof: Access evidence log recorded constructively."
+  domain_note: >
+    Every document operation (and every future domain operation) MUST be evaluated against this 3-predicate + conjunction matrix.
+    A feature "works" functionally has NO scientific standing until the corresponding predicate evaluation records Constitutional Validity PASS or FAIL with explicit diagnostic predicate attribution in the FAIL case.
+matrix:
+  P1:
+    label: POSITIVE_CONTROL_ALL_PASS
+    scientific_role: POSITIVE_CONTROL (baseline calibration PASS of the apparatus for a valid document-propose)
+    expected:
+      verdict: PASS
+      ia20_constitutional_validity: true
+      truth_table_row: P1
+    actual:
+      verdict: PASS
+      ia20_constitutional_validity: true
+      truth_table_row: P1
+    primary_run_id: run-001
+    replay_isolated_run_id: run-003
+    evidence_status: VERIFIED
+    replay_evidence: RUN_003_COMPLETED_WITH_FROZEN_KERNEL_47C758
+    replay_results:
+      replay_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+      replay_verdict_match_original: true
+      replay_predicate_vector_match: true
+      replay_witness_canonical_match: true
+    pairwise_apparatus_vs_run_002_negative_control_n1:
+      oracle_cert_id_match: true
+      oracle_cert_hash_match: true
+      oracle_instrument_hash_match: true
+      witness_cert_id_match: true
+      witness_cert_hash_match: true
+      witness_instrument_hash_match: true
+      dataset_cert_id_match: true
+      dataset_cert_hash_match: true
+      dataset_instrument_hash_match: true
+      science_kernel_bundle_hash_match: true
+      calibration_report_ref_match: true
+      apparatus_pairwise_identical: true
+      note: >
+        C3 Measurement Correctness baseline now ESTABLISHED: Positive Control P1 replay (run-003) uses
+        EXACTLY the same measurement apparatus as Negative Control N1 (run-002). Controls differ ONLY
+        in fixture content (which is required for a valid controlled experiment).
+    witness_hash:
+      authority: ""
+      meaning: ""
+      proof: ""
+    manifest_hash: ""
+    status: COMPLETE_PRIMARY_AND_REPLAY_COMPLETE
+  N1:
+    label: NEGATIVE_CONTROL_PRED_A_AUTHORITY_BROKEN_INDIVIDUAL
+    scientific_role: NEGATIVE_CONTROL — Individually falsifies Predicate A (Legitimate=false) while B and C are held constant at true. Uses policy_chain_matches_contract=false fixture to violate DerivesAuthorityFrom edge.
+    expected:
+      verdict: FAIL
+      ia20_constitutional_validity: false
+      truth_table_row: N1
+      diagnostic_predicate_failure: pred_a_legitimate
+    actual:
+      verdict: FAIL
+      ia20_constitutional_validity: false
+      truth_table_row: N1
+      diagnostic_predicate_failure: pred_a_legitimate
+      witness_diagnostic: policy_chain_matches_contract=false
+    primary_run_id: run-002
+    run_id: run-002
+    exit_criteria_5_hardened:
+      C1_FUNCTIONAL_CORRECTNESS:
+        status: PASS
+        evidence: >
+          Expected FAIL @ run-manifest.expected_predicates_ref GATE-C-DOC-PROPOSE-N1.
+          Actual FAIL @ GATE-C-DOC-PROPOSE-N1 evaluation.yaml evaluation_result=FAIL. MATCH.
+      C2_DIAGNOSTIC_CORRECTNESS:
+        status: PASS
+        evidence: >
+          Diagnostic predicate = pred_a_legitimate (NEG A).
+          Explicit witness cause policy_chain_matches_contract=false under conditions.
+          Matches expected diagnostic_predicate_failure N1 pred_a_legitimate.
+          NOT a runtime exception, syntax error, or OOM.
+      C3_MEASUREMENT_CORRECTNESS:
+        status: PASS
+        evidence: >
+          Apparatus IDs and hashes compared pairwise run-002(N1) vs run-003(P1 replay):
+          oracle_cert_id=SC-ORACLE-001 MATCH
+          oracle_artifact_hash=cd39a4024c8f84a6d117890f1298f1690dc6f47f2734b090f63e35d5455efcda MATCH
+          oracle_instrument_hash=b92cfef11330bee312b23d0d5409703e61729bacc96d7c8fba41da7cdac1157f MATCH
+          witness_cert_id=SC-WITNESS-001 MATCH
+          witness_artifact_hash=674ea467df0ed0e219e143e780a24610cbf26d0ff61798659cf6d72a12dc7d34 MATCH
+          witness_instrument_hash=fbaa8738223d97884669d2b6fbdfc2e00015b40c5489712754bb4efd0e755a9f MATCH
+          dataset_cert_id=SC-DATASET-001 MATCH
+          dataset_artifact_hash=577d034f086a5fcf3fb9f1c5a4a8d4e9b12573c45b98973ce5af4bfedab373d9 MATCH
+          dataset_instrument_hash=2184fa695220d5d9306b66c61074a88692c73e57e9448bfea32321003ab85fbb MATCH
+          science_kernel_bundle_sha256=47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782 MATCH run-003.
+          Measurement Apparatus IDENTICAL. Only fixture differs. PASS.
+        apparatus_pairwise_match_run_id: run-003
+      C4_REPLAY_CORRECTNESS:
+        status: PASS
+        evidence: >
+          run-002 replay identical: verdict=FAIL, N1 row, diagnostic_predicate_failure=pred_a_legitimate.
+          Witness canonical hashes match; only execution_timestamp_utc differs as allowed.
+      C5_ISOLATION_CORRECTNESS:
+        status: PASS
+        evidence: >
+          During run-002 lifecycle → N1 exit → through run-003 replay completion:
+            oracle.yaml hash (b92cfef11330bee312b23d0d5409703e61729bacc96d7c8fba41da7cdac1157f) UNCHANGED.
+            witness-integrity.yaml hash (fbaa8738223d97884669d2b6fbdfc2e00015b40c5489712754bb4efd0e755a9f) UNCHANGED.
+            run-manifest.schema.yaml hash (77075fb1527e67c891b21464d112a503a78dc5c7fac959622f52739e5346a545) UNCHANGED.
+            reproducibility-manifest.schema.yaml hash (a9187d4606864a50650fd76d794b7c5b643ec3bc8db42051621e9b11dad8d9ba) UNCHANGED.
+            predicate evaluator ids in oracle.yaml (GATE-C-ORACLE-PRED-{A,B,C}-001) UNCHANGED.
+            science-kernel bundle.sha256 = sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782 MATCHES run-002 & run-003 manifest kernel hash.
+          NO INSTRUMENT MODIFICATIONS during the entire Phase A experiment. ISOLATION CORRECTNESS VERIFIED.
+    witness_hash:
+      authority: sha256:19e45995318ac6a5adacdf2bd13c698693508547682d268f8f8c3ec8facc97f7
+      meaning: sha256:cceb08a3c65a9d0d51644814b3b6d449b4fbca65c57d3bdeb5a7cbd59a9fb007
+      proof: sha256:3c2e06858ca525278a507ed29b986306ede2da07f9de5c092ccbb912c211d68e
+    manifest_hash: sha256:69bf8b91b45f72382e3af925655373bcdc27f8975533f134366f967269a3f11b
+    convergence: CONVERGENT
+    expected_vs_actual_match: true
+    all_5_exit_criteria_pass: true
+    status: NEGATIVE_CONTROL_COMPLETE_5_of_5_CRITERIA_PASS
+  N2:
+    label: NEGATIVE_CONTROL_PRED_B_MEANING_DRFIT_INDIVIDUAL
+    scientific_role: NEGATIVE_CONTROL — Individually falsifies Predicate B (MeaningPreserved=false) while A and C are held constant at true.
+    expected:
+      verdict: FAIL
+      ia20_constitutional_validity: false
+      truth_table_row: N2
+      diagnostic_predicate_failure: pred_b_meaning_preserved
+    actual:
+      status: PENDING
+  N3:
+    label: NEGATIVE_CONTROL_PRED_AB_AUTHORITY_AND_MEANING_JOINT
+    scientific_role: NEGATIVE_CONTROL — Jointly falsifies A and B (both false) while C is held constant at true.
+    expected:
+      verdict: FAIL
+      ia20_constitutional_validity: false
+      truth_table_row: N3
+    actual:
+      status: PENDING
+  N4:
+    label: NEGATIVE_CONTROL_PRED_C_PROOF_GAP_INDIVIDUAL
+    scientific_role: NEGATIVE_CONTROL — Individually falsifies Predicate C (Provable=false) while A and B are held constant at true.
+    expected:
+      verdict: FAIL
+      ia20_constitutional_validity: false
+      truth_table_row: N4
+      diagnostic_predicate_failure: pred_c_provable
+    actual:
+      status: PENDING
+  N5:
+    label: NEGATIVE_CONTROL_PRED_AC_AUTHORITY_AND_PROOF_JOINT
+    scientific_role: NEGATIVE_CONTROL — Jointly falsifies A and C (both false) while B is held constant at true.
+    expected:
+      verdict: FAIL
+      ia20_constitutional_validity: false
+      truth_table_row: N5
+    actual:
+      status: PENDING
+  N6:
+    label: NEGATIVE_CONTROL_PRED_BC_MEANING_AND_PROOF_JOINT
+    scientific_role: NEGATIVE_CONTROL — Jointly falsifies B and C (both false) while A is held constant at true.
+    expected:
+      verdict: FAIL
+      ia20_constitutional_validity: false
+      truth_table_row: N6
+    actual:
+      status: PENDING
+  N7:
+    label: NEGATIVE_CONTROL_PREDICATES_ALL_THREE_FALSE
+    scientific_role: NEGATIVE_CONTROL — Jointly falsifies all three (A=false B=false C=false). Sanity check that all FAIL is recognized and diagnostic predicates enumerate all three.
+    expected:
+      verdict: FAIL
+      ia20_constitutional_validity: false
+      truth_table_row: N7
+    actual:
+      status: PENDING
+summary:
+  total_rows: 8
+  completed_rows: 3
+  pending_rows: 5
+  completed_row_ids: [P1 (Positive Control), P1-replay-run-003 (frozen kernel baseline), N1 (Negative Control Pred A)]
+  coverage_percent: 37.5
+  coverage_interpretation: >
+    Scientific Phase: PHASE 2 NEGATIVE CONTROL CALIBRATION 1/1 negative-controls-per-predicate required for
+    Phase 2 exit complete. N1 first Negative Control satisfies ALL 5 hardened Exit Criteria C1..C5.
+    H1 cannot yet be claimed corroborated because rows N2..N7 are still absent (7/8 = 87.5% falsification
+    space still unexplored). The existence of N1 and P1 + replay run-003 now provides: apparatus PASSES a
+    Positive Control, apparatus FAILS a Negative Control with CORRECT diagnostic predicate attribution, and
+    measurement apparatus is pairwise identical across both controls. This establishes the minimum
+    scientific baseline for subsequent truth-table coverage expansion phases.
+  phase_a_one_negative_complete: true
+  phase_a_n1_exit_criteria:
+    C1_FUNCTIONAL_CORRECTNESS: PASS
+    C2_DIAGNOSTIC_CORRECTNESS: PASS
+    C3_MEASUREMENT_CORRECTNESS: PASS_PAIRWISE_RUN_002_VS_RUN_003
+    C4_REPLAY_CORRECTNESS: PASS
+    C5_ISOLATION_CORRECTNESS: PASS
+    n_pass_of_5: 5_of_5
+    N1_MILESTONE_STATUS: COMPLETE_MILESTONE_FIRST_NEGATIVE_CONTROL_PASSES_ALL_5_EXIT_CRITERIA
+  gate_c1_milestone_first_negative_passed: true
+  phase_b_negative_matrix_complete: false
+next_actions_immediate:
+  - "N2: Negative Control Pred B (MeaningPreserved=false, A=true,C=true) — next row to exercise Predicate B individually."
+  - "N4: Negative Control Pred C (Provable=false, A=true,B=true) — closes the three individual-predicate Negative Control matrix (one each Pred A/B/C)."
+  - "Only THEN proceed to joint-failure controls N3 (¬A¬B), N5 (¬A¬C), N6 (¬B¬C), N7 (¬A¬B¬C)."
+gate_c1_exit_evidence:
+  positive_controls_with_frozen_kernel: [run-003]
+  negative_controls_with_all_5_exit_criteria: [run-002 (N1)]
+  apparatus_pairwise_verified_pairs: [["run-003 Positive P1 replay", "run-002 Negative N1"]]
+  scientific_standing: >
+    At this point: Predicate A has been both individually corroborated (P1 pass) and individually falsified
+    (N1 fail) under identical calibrated measurement apparatus. This represents the minimum threshold for
+    a falsifiable scientific claim on predicate A: the apparatus not only produces PASS when A is true,
+    but also produces FAIL with diagnostic predicate A attribution when A is false, all under controlled
+    conditions with identical instrument. Predicates B and C have only corroboration evidence (P1 pass)
+    and no negative controls yet — further negative controls required before any claim of empirical
+    adequacy for H1.
+isolation_check_snapshot:
+  isolation_sha256_baseline: run-002_kernel_baseline
+  frozen_instrument_hashes:
+    oracle_yaml: sha256:b92cfef11330bee312b23d0d5409703e61729bacc96d7c8fba41da7cdac1157f
+    oracle_certificate: sha256:cd39a4024c8f84a6d117890f1298f1690dc6f47f2734b090f63e35d5455efcda
+    witness_integrity_yaml: sha256:fbaa8738223d97884669d2b6fbdfc2e00015b40c5489712754bb4efd0e755a9f
+    witness_certificate: sha256:674ea467df0ed0e219e143e780a24610cbf26d0ff61798659cf6d72a12dc7d34
+    run_manifest_schema_yaml: sha256:77075fb1527e67c891b21464d112a503a78dc5c7fac959622f52739e5346a545
+    reproducibility_manifest_schema_yaml: sha256:a9187d4606864a50650fd76d794b7c5b643ec3bc8db42051621e9b11dad8d9ba
+    dataset_certificate: sha256:577d034f086a5fcf3fb9f1c5a4a8d4e9b12573c45b98973ce5af4bfedab373d9
+    science_kernel_bundle_sha256: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+  invariant: >
+    For EVERY future Negative Control (N2..N7), the control shall be considered INVALID until the
+    control run manifest measurement_apparatus hashes match the above frozen_instrument_hashes exactly.
+    Otherwise Isolation Correctness (C5) is AUTOMATIC FAIL and the result cannot count toward truth-table coverage.

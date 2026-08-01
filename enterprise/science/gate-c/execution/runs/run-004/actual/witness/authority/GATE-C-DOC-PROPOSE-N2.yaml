@@ -1,0 +1,35 @@
+authority_chain:
+  - node_id: DocReq-001
+    relation: ROOT_REQUIREMENT
+  - node_id: DocPol-001
+    relation: DERIVES_AUTHORITY_FROM_REQUIREMENT
+  - node_id: DocCon-001
+    relation: DERIVES_AUTHORITY_FROM_POLICY
+conditions:
+  contract_operation_present: true
+  policy_chain_matches_contract: true
+  proposer_role_allowed: true
+cycle_detected: false
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:fbc4e5dd8352b6d011e2146e059c8669a4be350ac4b0a9deb605c8c99a668774
+  locked_at: 2026-08-01T03:00:00.000Z
+operation: propose
+result: PASS
+role_attested: role-document-proposer-001
+subject_id: GATE-C-DOC-PROPOSE-N2
+version: 1.0.0
+witness_id: run-004-witness-a
+witness_type: AUTHORITY
+note: >
+  N2 Predicate A = PASS (authority chain identical to P1 positive control).
+  policy_chain_matches_contract = TRUE. DocCon-001 uses DocPol-001 reference identical to P1.

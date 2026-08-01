@@ -1,0 +1,25 @@
+version: "1.0.0"
+kind: FIXTURE_EVIDENCE_PROPOSAL_N4_PROOF_GAP
+fixture_id: FIX-EVI-PRO-N4
+status: EXPERIMENTAL_FIXTURE_NEGATIVE_CONTROL_N4
+note: >
+  Negative control N4 (proof gap): EVI-PRO-N4-001 recorded_status = DRAFT (not PROPOSED) so
+  constructive entailment postcondition q1 (status recorded PROPOSED) is FALSE.
+  Evidence still has 2 items and role_attested matches doc proposer identity (q2, q3 TRUE)
+  so failure mode is isolated to exactly Predicate C proof gap only.
+evidence_items:
+  - id: EVI-PRO-N4-001
+    evidence_type: DOCUMENT_PROPOSAL_STATUS
+    data_source: AUDIT_TRAIL_LEDGER
+    attestation_strength: STRONG
+    data:
+      recorded_status: DRAFT
+      document_canonical_identity_ref: DocCanon-001-Proposal-001
+  - id: EVI-PRO-N4-002
+    evidence_type: PROPOSER_ROLE_ATTESTED
+    data_source: ACCESS_CONTROL_LOG
+    attestation_strength: STRONG
+    data:
+      role_attested: role-document-proposer-001
+      delegation_verified: true
+      audit_ref: AUD-DOC-002

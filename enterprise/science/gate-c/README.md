@@ -14,6 +14,14 @@ Gate C now also makes a kernel boundary explicit:
 2. **Science Kernel** defines how the theory is objectively tested.
 3. **Implementation Kernel** realizes experiments across runtimes.
 
+Gate C also now splits its scientific lifecycle into two epistemically distinct gates:
+
+1. **Gate C0** calibrates the measurement apparatus.
+2. **Gate C1** tests CC-001 using the calibrated apparatus.
+
+That ordering is mandatory. Gate C0 does not test the theory. It certifies that the Oracle, Witness,
+Manifest, Dataset, and Protocol are fit to measure the theory without contaminating later results.
+
 Within `science/`, Gate C now makes a second separation explicit:
 
 1. **Specification** is immutable.
@@ -96,6 +104,25 @@ enterprise/science/gate-c/
 
 No witness belongs inside `expected/`. Witnesses are observations produced by execution, not reference truth.
 
+## Gate Structure
+
+```text
+Gate C0
+Scientific Instrument Calibration
+  theory under test: NONE
+  object under test: Oracle, Witness, Manifest, Dataset, Protocol
+  output: calibration-report.yaml + instrument certificates
+
+Gate C1
+Constitutional Falsification Experiment
+  theory under test: CC-001
+  object under test: Reference Workflow
+  precondition: overall.calibrated = true
+```
+
+This is the last point at which the Science Kernel may change. Once Gate C0 passes, the measurement
+apparatus is calibrated and frozen until Epoch-1 unless an instrument defect is demonstrated.
+
 ## Oracle Model
 
 Gate C now treats the Oracle as a first-class scientific component:
@@ -150,39 +177,65 @@ Specification-side reproducibility now consists of:
 Execution-side reproducibility consists of:
 
 - immutable references to spec versions,
+- calibration report identity and certificate identities for the measurement apparatus,
 - run-local actual outputs,
 - copied logs and metrics,
 - enough metadata for an external implementation to replay the run.
 
+Each Gate C1 run therefore states not only the Oracle version, but the exact calibration identity used to
+measure the run, for example `SC-ORACLE-001`.
+
+## Evidence Classes
+
+Gate C uses three epistemic evidence classes:
+
+1. `CLASS_I_CALIBRATION` proves the measurement apparatus is fit for use.
+2. `CLASS_II_EXPERIMENTAL` records theory-testing evidence gathered under calibrated conditions.
+3. `CLASS_III_CERTIFICATION` records conformance and cross-runtime certification results.
+
+Calibration evidence is never reused as corroboration evidence for CC-001. It only proves the apparatus.
+
 ## Scientific Test Suites
 
-Gate C test taxonomy is now separated by scientific claim, not by implementation convenience:
+Gate C test taxonomy is now separated by scientific claim, not by implementation convenience.
+Terminology uses scientific CONTROL terminology (not "Test") to reflect Gate C's epistemological role:
 
-1. `positive/` verifies the single `P1` pass row.
-2. `negative/` tracks coverage for `N1..N7`.
-3. `independence/` proves each witness is individually necessary.
-4. `metamorphic/` checks evaluation invariance under strategy or runtime substitutions.
-5. `counterfactual/` tests whether predicted predicate flips occur after controlled evidence changes.
-6. `minimality/` tests whether new constitutional predicates are reducible to `A,B,C`.
+1. `positive/` = **Positive Control** suite — establishes the PASS baseline. Verifies the single `P1` pass row under calibrated conditions.
+2. `negative/` = **Negative Control** suite — falsification suite. Exercising coverage for each `N1..N7` truth table negative rows against H1 (all individually necessary and jointly sufficient).
+3. `independence/` = **Independence Controls** — proves each witness is individually necessary (remove witness_A alone; PASS must become INCONCLUSIVE).
+4. `metamorphic/` = **Metamorphic Controls** — checks evaluation invariance under strategy or runtime substitutions (Strategy fungibility test of Predicate B).
+5. `counterfactual/` = **Counterfactual Controls** — tests whether predicted predicate flips occur after controlled evidence changes (prediction vs retrodiction check of H1).
+6. `minimality/` = **Minimality Controls** — tests whether new constitutional predicates are reducible to `A,B,C` or whether H1 is under-specified.
 
-This makes independence and minimality first-class scientific claims rather than afterthought checks.
+### Scientific Phase Ordering (Mandatory)
+
+Phase 1. **Positive Control Establishment** (P1 PASS with calibrated apparatus) → completed at run-001.  
+Phase 2. **Negative Control Calibration** (≥1 negative control per predicate, 5 hardened Exit Criteria each) → N1 in progress.  
+Phase 3. **Truth Table Coverage Expansion** (all 8/8 rows P1..N7 exercised).  
+Phase 4. **Falsification Analysis** (independence + minimality + counterfactual suites green = corroboration claim; any 9th row, any failure in controls = FALSIFICATION).
+
+This ordering ensures each successive phase has its measurement apparatus validated before scientific results are claimed.
+
 
 ## Current Status
 
 ### Completed
 
 - Specification and execution are explicitly separated in the package model.
+- Gate C0 is defined as Scientific Instrument Calibration and Gate C1 as the Constitutional Falsification Experiment.
 - Oracle is defined as an evaluator-only artifact.
 - Oracle, Evaluation, and Verdict are explicitly separated.
+- Science Kernel freeze after Gate C0 is explicitly modeled.
 - Truth table is treated as executable specification.
 - Mutable execution output is isolated under `execution/runs/`.
+- Calibration evidence, experimental evidence, and certification evidence are explicitly separated.
 - Test suite families are explicitly modeled for future expansion.
 - Minimality and reference dataset have dedicated specification locations.
 
 ### Remaining High-Priority Work
 
 1. Complete negative reference experiments to achieve full `8/8` truth-table coverage.
-2. Freeze the portable reference dataset archive and populate final hashes.
+2. Materialize final frozen hashes for the already calibrated specification bundle and portable dataset archive.
 3. Implement at least one concrete run under `execution/runs/run-001/`.
 4. Add multi-runtime conformance runners so the same dataset can be replayed by TypeScript, Python, Rust, Go, and Java implementations.
 5. Use counterfactual and minimality results as formal evidence for Epoch-1 constitution freeze readiness.
@@ -192,8 +245,9 @@ This makes independence and minimality first-class scientific claims rather than
 Gate C becomes an actual scientific conformance framework when all four are true:
 
 1. `Specification` and `Execution` are structurally separated.
-2. Oracle is formal and evaluator-only.
-3. Reproducibility metadata is machine-readable.
-4. The reference dataset is portable across runtimes.
+2. Gate C0 calibration certificates and kernel epistemic status are frozen and referenced by every run.
+3. Oracle is formal and evaluator-only.
+4. Reproducibility metadata is machine-readable.
+5. The reference dataset is portable across runtimes.
 
 That is the point where Gate C stops being an internal experiment package and becomes a reusable scientific certification substrate for EOS.

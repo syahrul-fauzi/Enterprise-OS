@@ -1,0 +1,74 @@
+version: "1.0.0"
+status: EXPERIMENT_SUBJECT_NEGATIVE_CONTROL_N4
+experiment_subject_id: GATE-C-DOC-PROPOSE-N4
+domain: document
+operation: propose
+operation_label: ProposeDocumentN4ProofGap
+schema_ref: specification/schemas/experiment.schema.yaml
+illustrative_source: specification/hypothesis.yaml falsification_coverage Gate C1 N4 row predicate_C_only_FALSE
+
+predicate_anchor_map:
+  pred_a_legitimate:
+    expected_value: true
+    rationale: >
+      Authority chain WELL-FORMED identical to positive P1 case: Contract fixture N4 uses
+      derives_authority_from_policy_ref = DocPol-001 matches policy fixture.
+      Proposer role allowed, contract operation present. TRUE for A.
+    authority_path_expected: Requirement then Policy then Contract → VALID (matches P1)
+  pred_b_meaning_preserved:
+    expected_value: true
+    rationale: >
+      Canonical Identity identical to positive P1 case. Document fixture content fields byte-identical with P1
+      proposal draft. Contract N4 does NOT introduce any semantic modification.
+      Semantic projection input hash equals semantic projection output hash. TRUE for B.
+    canonical_identity_expected: identical to P1 semantic_input_hash 78fb6ccd same document fixture
+  pred_c_provable:
+    expected_value: false
+    rationale: >
+      Evidence fixture uses proposal-n4-proof-gap-evidence.yaml where EVI-PRO-N4-001 recorded_status=DRAFT
+      (NOT PROPOSED). Therefore postcondition q1 (proposal recorded with status PROPOSED) cannot be
+      constructively entailed from evidence. Postconditions q2 (identity) and q3 (audit trail reference)
+      are still TRUE, but conjunction of all 3 constructive entailment postconditions = FALSE because q1 FALSE.
+      Hence Predicate C Provable = FALSE, isolated to exactly C.
+
+input_fixtures:
+  documents:
+    - specification/fixtures/documents/proposal-draft-001.yaml
+  policies:
+    - specification/fixtures/policies/document-policy-001.yaml
+  contracts:
+    - specification/fixtures/contracts/document-contract-n4.yaml
+  evidence:
+    - specification/fixtures/evidence/proposal-n4-proof-gap-evidence.yaml
+
+transformation_contract:
+  id: TC-DOC-PROPOSE-N4
+  name: Document Proposal Negative Control N4 Proof Gap
+  reference: LEX-0000H
+  preconditions:
+    - P1 draft document present and well formed
+    - P2 proposer has authority role matching fixture; policy chain reference VALID (DocPol-001 matches policy)
+    - P3 no prior PROPOSED version with identical canonical identity already in PROPOSED status
+  postconditions:
+    - Q1 proposal recorded with status PROPOSED (SAME as P1)
+    - Q2 proposer identity recorded with proposal draft proposer identity recorded
+    - Q3 proposal plus proposer plus proposal audit trail recorded
+  invariants:
+    - I1 CanonicalIdentity proposal draft zero zero one SHALL NOT BE ALTERED by proposal operation
+
+expected_truth_table_row_match: N4
+expected_constitutional_validity: false
+expected_predicates_ref: specification/expected/predicates/document-predicates.yaml#expected_predicates.GATE-C-DOC-PROPOSE-N4
+oracle_spec_ref: specification/oracle/oracle.yaml
+expected_evaluation_ref: specification/expected/evaluations/document-evaluations.yaml#expected_evaluations.GATE-C-DOC-PROPOSE-N4
+test_suite_refs:
+  - specification/tests/negative/suite.yaml
+  - specification/tests/independence/suite.yaml
+
+notes: >
+  Negative control N4: exercises truth table row N4 (A ∧ B ∧ ¬C).
+  Instrument is FROZEN; only the experimental fixture set differs from positive P1 case.
+  Failure MUST be diagnosed specifically via proof witness constructive_entailment_complete=FALSE
+  with explicit q1_status_recorded=FALSE caused by evidence EVI-PRO-N4-001 recorded_status=DRAFT (not PROPOSED).
+  If failure occurs via Pred A or Pred B, the negative control is not diagnostically valid
+  and must be corrected before C1 coverage can be claimed.

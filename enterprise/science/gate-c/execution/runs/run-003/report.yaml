@@ -1,0 +1,43 @@
+version: 1.0.0
+run_id: run-003
+genesis_evidence: EXISTS (run-001)
+execution_mode: POSITIVE_CONTROL_REPLAY_WITH_FROZEN_KERNEL_47C758
+replay_of_run_id: run-001
+replay_goal: Upgrade run-001 baseline to use the frozen 47c758 kernel so C3 Measurement Correctness can be directly proven vs run-002.
+verification_spine:
+  - step: VERIFY_RUN_001_EXISTS
+    status: PASS
+  - step: LOAD_FROZEN_KERNEL_47C758
+    status: PASS
+  - step: VERIFY_APPARATUS_HASHES_MATCH_RUN_002
+    status: PASS
+    note: >
+      Pairwise identical: oracle_cert=SC-ORACLE-001, witness_cert=SC-WITNESS-001,
+      dataset_cert=SC-DATASET-001, kernel_sha256=47c7582d..., oracle_instr_hash=b92cfef1...,
+      witness_instr_hash=fbaa8738..., dataset_instr_hash=2184fa69...
+  - step: WIRE_MEASUREMENT_APPARATUS
+    status: PASS
+  - step: POSITIVE_CONTROL_REPLAY_RUN_003
+    status: PASS
+  - step: CAPTURE_WITNESS
+    status: PASS
+  - step: COMPARE_VERDICT_EVAL_WITH_RUN_001
+    status: PASS
+    note: VERDICT PASS matches original; all predicates identical P1=(A=T∧B=T∧C=T)
+  - step: GENERATE_MANIFEST
+    status: PASS
+  - step: WRITE_PROOF_LEDGER
+    status: PASS
+  - step: VERIFY_PAIRWISE_MEASUREMENT_APPARATUS_RUN_003_VS_RUN_002
+    status: PASS
+  - step: N1_C3_MEASUREMENT_CORRECTNESS_NOW_SATISFIED
+    status: PASS
+definition_of_done:
+  execution: true
+  apparatus_identity: true
+  integrity: true
+  replay: true
+  convergence: true
+  clean_environment: true
+  c3_pairwise_measurement_identical_to_negative_control: true
+remaining_blocker: Gate C1 still requires N2..N7 Negative Controls for full 8/8 truth table coverage. N1 now complete 5/5 Exit Criteria.
