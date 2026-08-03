@@ -83,12 +83,10 @@ export class CapabilityRegistryProducer implements IndependentEvidenceProducer {
       }) | null = null;
       try {
         if (fs.existsSync(distPath)) {
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
           const mod = _require(distPath);
           StaticRegistryCtor = mod.StaticRegistry;
         } else {
           const srcIndex = join(regRoot, "src", "index.ts");
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
           const mod = _require(srcIndex);
           StaticRegistryCtor = mod.StaticRegistry;
         }

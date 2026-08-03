@@ -42,65 +42,6 @@ export const ALPHA8_INDEPENDENT_PRODUCERS: ReadonlyArray<IndependentEvidenceProd
     runtimeProbe,
   ]);
 
-function minimalExperimentDefinitionFor(producer: IndependentEvidenceProducer): Omit<ExperimentDefinition, "provenanceVersion" | "id"> {
-  if (producer.experimentDefinition) return producer.experimentDefinition;
-  return Object.freeze({
-    experimentKey: producer.experimentId,
-    title: `${producer.producerName} — ${producer.producerId}`,
-    objective: `Independent Evidence Producer execution target: ${producer.targetArtifactPath}. Mechanism: ${producer.producerName} (${producer.producerId}). Derivation: ${producer.derivation}.`,
-    protocolSteps: Object.freeze([
-      `Instantiate producer: ${producer.producerId}`,
-      `Call produce(ctx) on ProducerContext {repoRoot, generatedAt, runner, commonSources}.`,
-      `Validate pkg.exitCode === 0 untuk status PASS.`,
-      `Compute SHA-256 EvidenceIdentity via canonicalEvidenceBundle (schemaVersion 2.0).`,
-    ]),
-    assertions: Object.freeze([
-      `${producer.producerId}: produce(ctx) menghasilkan EvidencePackage valid schemaVersion 2.0.`,
-      `${producer.producerId}: pkg.exitCode === 0.`,
-      `${producer.producerId}: identity recomputation consistent SHA-256.`,
-    ]),
-    expectedArtifact: producer.targetArtifactPath,
-    ownerMilestone: "alpha.8",
-    definedAt: "2026-07-25T00:00:00.000Z",
-    definedBy: "eos-certification:alpha-9-provenance-chain-builder",
-    version: "1.0.0",
-    supersedes: Object.freeze([]),
-    changeNotes: Object.freeze([]),
-  });
-}
-
-function injectProvenanceChainIfMissing(
-  pkg: EvidencePackage,
-  producer: IndependentEvidenceProducer,
-  ctx: ProducerContext,
-): EvidencePackage {
-  if (pkg.provenance) return pkg;
-  const def = minimalExperimentDefinitionFor(producer);
-  const input: BuildProvenanceChainInput = {
-    definition: def,
-    executionMeta: {
-      executedAt: ctx.generatedAt,
-      executorIdentity: ctx.executorIdentity ?? (typeof process !== "undefined" ? `pid=${process.pid}:${producer.producerId}` : producer.producerId),
-      gitCommit: pkg.gitCommit ?? ctx.gitCommit ?? "0000000000000000000000000000000000000000",
-      workingTreeDirtyCount: ctx.workingTreeDirtyCount ?? 0,
-      runner: {
-        os: ctx.runner.os ?? "unknown",
-        arch: ctx.runner.arch ?? "unknown",
-        runtime: ctx.runner.runtime ?? "unknown",
-        runtimeVersion: ctx.runner.runtimeVersion ?? "unknown",
-      },
-      exitCode: pkg.exitCode ?? 0,
-    },
-    observations: pkg.rawObservations.map((content, i) => ({
-      content,
-      observedAt: ctx.generatedAt,
-      sourceChannel: producer.producerId,
-    })),
-  };
-  const result = buildProvenanceChainSync(input);
-  return Object.freeze({ ...pkg, provenance: result.provenanceField });
-}
-
 export const BASELINE_V1_MINIMAL_DEFINITIONS: Readonly<Record<string, Omit<ExperimentDefinition, "provenanceVersion" | "id">>> = Object.freeze({
   "filesystem-audit-v1": Object.freeze({
     experimentKey: "EXP-A8-FS-RUNTIME-MANIFEST",
@@ -356,7 +297,7 @@ function injectProvenanceChain(
       exitCode: pkg.exitCode ?? 0,
       assertionCount,
     },
-    observations: pkg.rawObservations.map((content, index0) => ({
+    observations: pkg.rawObservations.map((content) => ({
       content,
       observedAt: ctx.generatedAt,
       sourceChannel: producer.producerId,
@@ -792,7 +733,6 @@ export function buildAlpha8AggregatePkgs(
     __provenanceChain: aggregateChain.chain,
   });
 
-  corr.aggregateInjectedObservationIds;
   return Object.freeze({
     PKG_A8_AGGREGATE_RUNTIME_BOUNDARY: aggregate,
     [INTERNAL_AGGREGATE_EXTENDED_KEY]: aggregateExtended,

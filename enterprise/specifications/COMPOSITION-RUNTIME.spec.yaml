@@ -1,0 +1,105 @@
+specification:
+  id: EOS-COMPOSITION-RUNTIME-001
+  name: composition_runtime_specification
+  status: DRAFT
+  version: 2.0.0
+  purpose: Define EOS as a layered composition platform driven by specialized composers instead of one monolithic composition runtime.
+
+references:
+  governance_domain: enterprise/specifications/GOVERNANCE-DOMAIN.spec.yaml
+  domain_planning: enterprise/specifications/DOMAIN-PLANNING.spec.yaml
+  experience_composition: enterprise/specifications/EXPERIENCE-COMPOSITION.spec.yaml
+  product_composition: enterprise/specifications/PRODUCT-COMPOSITION.spec.yaml
+  deployment_composition: enterprise/specifications/DEPLOYMENT-COMPOSITION.spec.yaml
+  experience_platform: enterprise/specifications/EXPERIENCE-PLATFORM.spec.yaml
+  roadmap: enterprise/execution/ROADMAP.yaml
+
+composition_runtime:
+  domain_pattern:
+    - Planner
+    - Composer
+    - Runtime
+  engines:
+    - name: Capability Composer
+      input: capability.yaml
+      output: Capability Graph
+      used_by:
+        - workflow_runtime
+        - orchestration_runtime
+        - dependency_graph
+    - name: Experience Composer
+      input: experience.yaml
+      output: Experience Graph
+      graph_contains:
+        - navigation
+        - permissions
+        - capability_bindings
+        - surface_bindings
+        - interaction_flow
+    - name: Product Composer
+      input: product.yaml
+      output: Product Graph
+      graph_contains:
+        - branding
+        - licensing
+        - deployment_profile
+        - enabled_experiences
+        - feature_flags
+    - name: Deployment Composer
+      input: deployment.yaml
+      output: Deployment Graph
+      graph_contains:
+        - kubernetes
+        - docker
+        - terraform
+        - cloud
+        - edge
+        - local
+
+runtime_stack:
+  - Execution Runtime
+  - Workflow Runtime
+  - Orchestration Runtime
+  - Capability Runtime
+  - Experience Runtime
+  - Product Runtime
+  - Deployment Runtime
+
+domain_stack:
+  current:
+    - Governance Domain
+    - Product Domain
+    - Experience Domain
+    - Capability Domain
+  future:
+    - Governance Domain
+    - Deployment Domain
+    - Product Domain
+    - Experience Domain
+    - Capability Domain
+
+runtime_dependency_direction:
+  - Deployment Runtime -> Product Runtime
+  - Product Runtime -> Experience Runtime
+  - Experience Runtime -> Capability Runtime
+
+planner_stack:
+  - Governance Planner
+  - Deployment Planner
+  - Product Planner
+  - Experience Planner
+  - Capability Planner
+
+rules:
+  - composition_runtime_must_be_split_into_specialized_composers
+  - each_domain_should_define_planner_before_composer_and_runtime
+  - all_composers_must_comply_with_governance_domain_outputs
+  - product_runtime_must_not_bypass_experience_runtime
+  - deployment_runtime_must_not_bypass_product_runtime
+  - experience_runtime_must_not_duplicate_capability_logic
+  - deployment_descriptor_must_remain_distinct_from_product_descriptor
+
+lifecycle_note:
+  phase_7_scope: Experience Platform only
+  phase_8_scope: Product Platform
+  phase_9_plus_scope: Deployment Domain and Deployment Runtime may be introduced after Product Platform stabilizes

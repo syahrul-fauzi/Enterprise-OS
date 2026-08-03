@@ -1,0 +1,9 @@
+version: 1.0.0
+run_id: run-010
+execution_mode: ORIGINAL
+reference_runtime_id: TS-REFERENCE-RUNTIME-001
+strategy_id: ts-reference-runtime/v1
+execution_timestamp_utc: 2026-08-01T05:52:55.819Z
+commands:
+  - pnpm eos gate-c genesis-evidence
+  - original execution materialization

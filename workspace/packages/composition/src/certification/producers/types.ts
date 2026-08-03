@@ -3,12 +3,11 @@ import type {
   EvidenceDerivationKind,
   ExperimentDefinition,
 } from "../types";
-import { EVIDENCE_SCHEMA_VERSION, PROVENANCE_PROTOCOL_VERSION } from "../types";
+import { EVIDENCE_SCHEMA_VERSION } from "../types";
 import {
   buildProvenanceChainSync,
   type ProvenanceChainResult,
   type BuildProvenanceChainInput,
-  type FullProvenanceChain,
 } from "../evidence";
 
 export interface ProducerContext {

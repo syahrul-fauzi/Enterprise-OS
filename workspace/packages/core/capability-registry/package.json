@@ -5,8 +5,12 @@
   "files": [
     "dist"
   ],
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "license": "MIT",
   "scripts": {
@@ -17,6 +21,7 @@
   },
   "dependencies": {
     "@repo/core-kernel": "workspace:*",
+    "yaml": "^2.9.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {

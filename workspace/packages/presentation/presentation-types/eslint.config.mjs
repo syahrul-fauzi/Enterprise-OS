@@ -1,7 +1,7 @@
-import baseConfig from "@repo/config-eslint";
+import { config } from "@repo/config-eslint/base";
 
 export default [
-  ...baseConfig,
+  ...config,
   {
     languageOptions: {
       parserOptions: { project: true, tsconfigRootDir: import.meta.dirname },

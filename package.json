@@ -9,7 +9,7 @@
     "eos:status": "python3 implementation/eos/kernel/cli/status-reader.py",
     "eos:pattern": "python3 implementation/eos/engines/pattern/engine.py",
     "eos:doctor": "python3 implementation/eos/engines/doctor/engine.py lawyershub",
-    "eos": "python3 implementation/eos/cli/main.py"
+    "eos": "pnpm --dir ./workspace eos"
   },
   "keywords": ["enterprise-os", "evidence-driven", "governance", "kernel", "engines"],
   "author": "",

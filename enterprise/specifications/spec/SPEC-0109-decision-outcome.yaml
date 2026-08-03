@@ -1,0 +1,21 @@
+spec_id: "SPEC-0109"
+title: "Decision Outcome"
+status: "Draft"
+owner: "Lead Enterprise Architect"
+governed_by:
+  - "RFC-0001"
+  - "RFC-0010"
+kind: "enum_contract"
+version: "0.1.0"
+source_bindings:
+  runtime_contracts:
+    - "workspace/packages/tooling/eos-cli/src/runtime-contracts/models/shared.ts"
+  conformance:
+    - "enterprise/specifications/conformance/CONF-0010-decision-object-model-conformance.md"
+schema:
+  type: "string"
+  enum:
+    - "ALLOW"
+    - "WARN"
+    - "BLOCK"
+    - "REVIEW_REQUIRED"

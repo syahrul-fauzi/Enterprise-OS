@@ -58,7 +58,6 @@ export class RuntimeBenchmarkProducer implements IndependentEvidenceProducer {
       ];
       for (const [kind, spec] of candidates) {
         try {
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
           const mod = _require(spec) as Record<string, unknown>;
           const runtimeCtor = (mod["Runtime"] ?? mod["default"]) as unknown;
           if (typeof runtimeCtor === "function") {

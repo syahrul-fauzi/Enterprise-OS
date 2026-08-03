@@ -1,0 +1,28 @@
+canonical_identity_preserved: true
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:f5e4fb5cad9a585e16bf773b55b64e89ade79b3f22ebdc4cb95a870d58a5b2d3
+  locked_at: 2026-08-01T04:36:04.679Z
+operation: propose
+result: PASS
+semantic_input_hash: sha256:78fb6ccd3f4a9e24055e7838eef4437542441f68e4342120d8e05aeb67e088bc
+semantic_output_hash: sha256:78fb6ccd3f4a9e24055e7838eef4437542441f68e4342120d8e05aeb67e088bc
+semantic_projection_fields:
+  - body
+  - classification
+  - proposer_identity_ref
+  - retention_period_days
+  - title
+subject_id: GATE-C-DOC-PROPOSE-N4
+version: 1.0.0
+witness_id: run-007-witness-b
+witness_type: MEANING

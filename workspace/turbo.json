@@ -1,6 +1,7 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
+  "globalEnv": ["EOS_CONSTITUTION_ATTESTATION_PROFILE"],
   "tasks": {
     "arch-check": {
       "inputs": ["$TURBO_DEFAULT$"],

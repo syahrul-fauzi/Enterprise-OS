@@ -13,8 +13,8 @@ integrity:
     - actor: GATE-C-ORACLE-001
       state: CONSUMED_BY_ORACLE
   hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
-  lock_hash: sha256:966f6bc137e30e27aac6a33f863808586a2a547665481eb3a31c412d500a159d
-  locked_at: 2026-08-01T01:00:00.077Z
+  lock_hash: sha256:9fc7be829d3fc679ac3e2043dd1e4c458a97cd64b18b6ae4be25786896d5f338
+  locked_at: 2026-08-02T01:39:28.588Z
 operation: propose
 postconditions:
   q1_status_recorded: true

@@ -1,0 +1,55 @@
+specification:
+  id: EOS-DEPLOY-COMPOSE-001
+  name: deployment_composition_specification
+  status: DRAFT
+  version: 1.0.0
+  purpose: Define `deployment.yaml` as the single source of truth for Deployment Domain composition.
+
+references:
+  roadmap: enterprise/execution/ROADMAP.yaml
+  product_composition: enterprise/specifications/PRODUCT-COMPOSITION.spec.yaml
+  composition_runtime: enterprise/specifications/COMPOSITION-RUNTIME.spec.yaml
+  deployment_contract: workspace/contracts/deployment.contract.yaml
+
+source_of_truth:
+  artifact: deployment.yaml
+  domain: Deployment Domain
+  output: Deployment Contract
+
+deployment_yaml_schema:
+  deployment:
+    id: string
+    name: string
+    version: semver
+    product: product_ref
+    target: string
+    topology: string | optional
+    infrastructure:
+      platform: string
+      profile: string | optional
+    packaging:
+      artifact_kind: string
+      rollout_strategy: string | optional
+    constraints:
+      security: array | optional
+      compliance: array | optional
+
+example:
+  deployment:
+    id: lawyershub-enterprise-aws
+    name: LawyersHub Enterprise AWS
+    version: 1.0.0
+    product: lawyershub-enterprise
+    target: aws
+    infrastructure:
+      platform: kubernetes
+      profile: enterprise
+    packaging:
+      artifact_kind: helm
+      rollout_strategy: blue-green
+
+invariants:
+  - deployment_yaml_is_single_source_of_truth
+  - deployment_selects_product_not_raw_experience_or_capability
+  - deployment_may_vary_target_without_mutating_product_definition
+  - deployment_domain_is_introduced_after_product_platform_stabilizes

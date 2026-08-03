@@ -1,0 +1,38 @@
+contract:
+  id: DEPLOYMENT-CONTRACT-V1
+  name: canonical_deployment_composition_contract
+  status: DRAFT
+  purpose: Define the canonical composition contract for Deployment Domain artifacts.
+  composition_artifact: deployment.yaml
+  output: Deployment Contract
+  consumers:
+    - deployment_composer
+    - packaging_pipeline
+    - infrastructure_provisioner
+    - rollout_manager
+  schema:
+    identity:
+      id: string
+      name: string
+      version: semver
+    composition:
+      product: string
+      target: string
+      topology: optional
+    packaging:
+      artifact_kind: string
+      rollout_strategy: string | optional
+    infrastructure:
+      platform: string
+      profile: string | optional
+    constraints:
+      security: array | optional
+      compliance: array | optional
+  invariants:
+    - deployment_must_select_product_not_raw_capability
+    - deployment_must_declare_target_environment
+    - deployment_must_keep_environment_concerns_inside_deployment_domain
+  anti_patterns:
+    - binding_capabilities_directly_in_deployment
+    - embedding_product_branding_into_deployment_descriptor
+    - using_deployment_descriptor_to_override_business_logic

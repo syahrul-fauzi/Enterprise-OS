@@ -1,0 +1,7 @@
+id: requirement-management
+name: Requirement Management
+version: 0.1.0
+presentation:
+  view: RequirementView
+implementation:
+  entry: implementation/service.ts

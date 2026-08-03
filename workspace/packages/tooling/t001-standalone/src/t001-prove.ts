@@ -5,7 +5,6 @@ import { hostname } from "node:os";
 import {
   runT001,
   sha256,
-  sha256hex,
   canonicalJson,
   readElsDocument,
 } from "./t001.js";
@@ -151,7 +150,7 @@ const appendProofToLedger = (
   proof: TransformationProofEntry,
   proofJson: string,
 ): ProofLedgerDocument => {
-  if (ledger.entries.some(e => (e as any).proof_id === proof.proof_id)) {
+  if (ledger.entries.some((entry) => entry.proof_id === proof.proof_id)) {
     return ledger;
   }
   const entryHash = sha256(proofJson);

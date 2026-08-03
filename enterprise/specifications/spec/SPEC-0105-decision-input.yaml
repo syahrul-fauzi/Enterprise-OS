@@ -1,0 +1,57 @@
+spec_id: "SPEC-0105"
+title: "Decision Input"
+status: "Draft"
+owner: "Lead Enterprise Architect"
+governed_by:
+  - "RFC-0001"
+  - "RFC-0010"
+kind: "contract_object"
+version: "0.1.0"
+source_bindings:
+  runtime_contracts:
+    - "workspace/packages/tooling/eos-cli/src/runtime-contracts/models/decision.ts"
+  conformance:
+    - "enterprise/specifications/conformance/CONF-0010-decision-object-model-conformance.md"
+schema:
+  type: "object"
+  additionalProperties: false
+  required:
+    - "decision_scope"
+    - "graph_digest"
+    - "evaluator_outputs"
+    - "policy_version"
+    - "trigger"
+    - "finding_refs"
+    - "evidence_refs"
+    - "assumptions"
+    - "decision_owner"
+    - "requested_at"
+  properties:
+    decision_scope:
+      type: "object"
+      required:
+        - "scope_id"
+        - "scope_kind"
+    graph_digest:
+      type: "string"
+    evaluator_outputs:
+      items:
+        ref: "SPEC-0102"
+    policy_version:
+      type: "string"
+    trigger:
+      ref: "DecisionTriggerSchema"
+    finding_refs:
+      items:
+        ref: "ArtifactReferenceSchema"
+    evidence_refs:
+      items:
+        ref: "ArtifactReferenceSchema"
+    assumptions:
+      items:
+        ref: "DecisionAssumptionSchema"
+    decision_owner:
+      ref: "DecisionOwnerSchema"
+    requested_at:
+      type: "string"
+      format: "timestamp"

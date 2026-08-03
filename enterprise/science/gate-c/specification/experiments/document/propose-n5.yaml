@@ -1,0 +1,67 @@
+version: "1.0.0"
+status: EXPERIMENT_SUBJECT_NEGATIVE_CONTROL_N5
+experiment_subject_id: GATE-C-DOC-PROPOSE-N5
+domain: document
+operation: propose
+operation_label: ProposeDocumentN5AuthorityBrokenAndProofGap
+schema_ref: specification/schemas/experiment.schema.yaml
+illustrative_source: specification/hypothesis.yaml falsification_coverage Gate C1 N5 row predicate_A_and_C_FALSE
+
+predicate_anchor_map:
+  pred_a_legitimate:
+    expected_value: false
+    rationale: >
+      Authority chain DELIBERATELY BROKEN via contract fixture derives_authority_from_policy_ref = DocPol-INVALID
+      which does not match policy fixture DocPol-001. Condition policy_chain_matches_contract = FALSE.
+    authority_path_expected: Requirement then Policy then Contract → CHAIN BROKEN at policy resolution
+  pred_b_meaning_preserved:
+    expected_value: true
+    rationale: >
+      Canonical Identity identical to positive P1 case. Document fixture content fields byte-identical with P1
+      proposal draft. Contract does NOT introduce any semantic modification. TRUE for B.
+    canonical_identity_expected: identical to P1 semantic_input_hash 78fb6ccd same document fixture
+  pred_c_provable:
+    expected_value: false
+    rationale: >
+      Evidence fixture uses proposal-n4-proof-gap-evidence.yaml where EVI-PRO-N4-001 recorded_status=DRAFT
+      (NOT PROPOSED). Therefore postcondition q1 cannot be constructively entailed from evidence.
+      FALSE for C.
+
+input_fixtures:
+  documents:
+    - specification/fixtures/documents/proposal-draft-001.yaml
+  policies:
+    - specification/fixtures/policies/document-policy-001.yaml
+  contracts:
+    - specification/fixtures/contracts/document-contract-n1.yaml
+  evidence:
+    - specification/fixtures/evidence/proposal-n4-proof-gap-evidence.yaml
+
+transformation_contract:
+  id: TC-DOC-PROPOSE-N5
+  name: Document Proposal Negative Control N5 Authority Broken and Proof Gap
+  reference: LEX-0000H
+  preconditions:
+    - P1 draft document present and well formed
+    - P2 proposer has authority role matching fixture BUT policy chain reference INVALID in contract fixture
+    - P3 no prior PROPOSED version with identical canonical identity already in PROPOSED status
+  postconditions:
+    - Q1 proposal recorded with status PROPOSED (SAME as P1)
+    - Q2 proposer identity recorded with proposal draft proposer identity recorded
+    - Q3 proposal plus proposer plus proposal audit trail recorded
+  invariants:
+    - I1 CanonicalIdentity proposal draft zero zero one SHALL NOT BE ALTERED by proposal operation
+
+expected_truth_table_row_match: N5
+expected_constitutional_validity: false
+expected_predicates_ref: specification/expected/predicates/document-predicates.yaml#expected_predicates.GATE-C-DOC-PROPOSE-N5
+oracle_spec_ref: specification/oracle/oracle.yaml
+expected_evaluation_ref: specification/expected/evaluations/document-evaluations.yaml#expected_evaluations.GATE-C-DOC-PROPOSE-N5
+test_suite_refs:
+  - specification/tests/negative/suite.yaml
+  - specification/tests/independence/suite.yaml
+
+notes: >
+  Negative control N5: exercises truth table row N5 (¬A ∧ B ∧ ¬C).
+  Instrument is FROZEN; only the experimental fixture set differs from positive P1 case.
+  Failure MUST be diagnosed specifically via authority chain AND proof witness.

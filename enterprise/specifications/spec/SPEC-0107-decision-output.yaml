@@ -1,0 +1,102 @@
+spec_id: "SPEC-0107"
+title: "Decision Output"
+status: "Draft"
+owner: "Lead Enterprise Architect"
+governed_by:
+  - "RFC-0001"
+  - "RFC-0010"
+kind: "contract_object"
+version: "0.1.0"
+source_bindings:
+  runtime_contracts:
+    - "workspace/packages/tooling/eos-cli/src/runtime-contracts/models/decision.ts"
+    - "workspace/packages/tooling/eos-cli/src/runtime-contracts/models/ledger.ts"
+  conformance:
+    - "enterprise/specifications/conformance/CONF-0010-decision-object-model-conformance.md"
+schema:
+  type: "object"
+  additionalProperties: false
+  required:
+    - "decision_id"
+    - "decision_type"
+    - "decision"
+    - "status"
+    - "trigger"
+    - "finding_refs"
+    - "evidence_refs"
+    - "assumptions"
+    - "recommendation"
+    - "alternatives"
+    - "selected_option"
+    - "expected_outcome"
+    - "owner"
+    - "confidence"
+    - "reason_codes"
+    - "reasons"
+    - "required_actions"
+    - "affected_nodes"
+    - "source_evaluation_ids"
+    - "graph_digest"
+    - "policy_version"
+    - "created_at"
+  properties:
+    decision_id:
+      type: "string"
+    decision_type:
+      type: "string"
+    decision:
+      ref: "SPEC-0109"
+    status:
+      ref: "DecisionLifecycleStatusSchema"
+    trigger:
+      ref: "DecisionTriggerSchema"
+    finding_refs:
+      items:
+        ref: "ArtifactReferenceSchema"
+    evidence_refs:
+      items:
+        ref: "ArtifactReferenceSchema"
+    assumptions:
+      items:
+        ref: "DecisionAssumptionSchema"
+    recommendation:
+      ref: "SPEC-0106"
+    alternatives:
+      items:
+        ref: "DecisionAlternativeSchema"
+    selected_option:
+      type: "string"
+    expected_outcome:
+      ref: "DecisionExpectedOutcomeSchema"
+    owner:
+      ref: "DecisionOwnerSchema"
+    confidence:
+      ref: "SPEC-0108"
+    reason_codes:
+      items:
+        type: "string"
+    reasons:
+      items:
+        ref: "DecisionReasonSchema"
+    required_actions:
+      items:
+        ref: "DecisionActionSchema"
+    affected_nodes:
+      items:
+        type: "string"
+    source_evaluation_ids:
+      items:
+        type: "string"
+    graph_digest:
+      type: "string"
+    policy_version:
+      type: "string"
+    created_at:
+      type: "string"
+      format: "timestamp"
+    outcome_tracking_ref:
+      type: "string"
+      nullable: true
+    learning_ref:
+      type: "string"
+      nullable: true

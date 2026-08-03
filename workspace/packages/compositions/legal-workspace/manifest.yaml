@@ -1,0 +1,17 @@
+id: legal-workspace
+extends:
+  - workspace-standard
+patterns:
+  - approval-pattern
+  - discovery-pattern
+  - execution-pattern
+  - monitoring-pattern
+capabilities:
+  - workflow
+  - knowledge
+  - ai
+  - document
+surfaces:
+  - dashboard
+  - inbox
+  - explorer

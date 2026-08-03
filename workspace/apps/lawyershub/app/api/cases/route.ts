@@ -1,32 +1,33 @@
 import { NextResponse } from "next/server";
 import {
   createCase,
-  searchCases,
-  type CreateCaseInput,
-} from "../../../../capabilities/legal-case/implementation/commands/case.commands";
-import { caseQueries } from "../../../../capabilities/legal-case/implementation/queries/case.queries";
+} from "../../../../../capabilities/legal-case/implementation/commands/case.commands";
+import { searchCases } from "../../../../../capabilities/legal-case/implementation/queries/case.queries";
+import type {
+  CasePriority,
+  CaseStatus,
+  CreateCaseInput,
+} from "../../../../../capabilities/legal-case/implementation/contracts";
 import { z } from "zod";
 
 const CreateCaseBodySchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
-  priority: z.enum(["low", "medium", "high", "urgent"]).optional(),
+  priority: z.enum(["low", "medium", "high", "critical"]).optional(),
 });
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
+  const limit = searchParams.get("limit");
+  const offset = searchParams.get("offset");
   const input = {
     query: searchParams.get("q") ?? "",
-    status: (searchParams.get("status") as string | undefined) ?? "all",
-    priority: (searchParams.get("priority") as string | undefined) ?? "all",
-    limit: searchParams.get("limit")
-      ? parseInt(searchParams.get("limit")!)
-      : undefined,
-    offset: searchParams.get("offset")
-      ? parseInt(searchParams.get("offset")!)
-      : undefined,
+    status: (searchParams.get("status") as CaseStatus | "all" | undefined) ?? "all",
+    priority: (searchParams.get("priority") as CasePriority | "all" | undefined) ?? "all",
+    limit: limit ? parseInt(limit, 10) : undefined,
+    offset: offset ? parseInt(offset, 10) : undefined,
   };
-  const result = caseQueries["case.search"].execute(input);
+  const result = searchCases.execute(input);
   return NextResponse.json(result);
 }
 

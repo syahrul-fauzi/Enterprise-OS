@@ -1,0 +1,28 @@
+id: trust-framework
+name: Trust Framework
+version: 0.1.0
+manifest_version: 1.0.0
+exports:
+  - TrustFrameworkProvider
+  - TrustFrameworkCatalog
+  - TrustFramework
+  - TrustVerificationProfile
+  - TrustSignatureProvider
+  - TrustSignatureProviderSPI
+depends_on:
+  - core-runtime
+allowed_dependencies:
+  - core-runtime
+forbidden_dependencies:
+  - api-platform
+  - governance-evidence
+  - governance-read-model
+consumed_by:
+  - governance-evidence
+stability: stable
+contracts:
+  provides:
+    - name: TrustFrameworkProvider
+      version: 1.0.0
+implementation:
+  entry: implementation/service.ts

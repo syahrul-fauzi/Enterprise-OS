@@ -1,0 +1,35 @@
+id: api-platform
+name: API Platform
+version: 0.1.0
+manifest_version: 1.0.0
+exports:
+  - ApiPlatformDescriptor
+  - ApiPlatformQueryInput
+  - ApiPlatformQueryOutput
+depends_on:
+  - requirement-management
+  - requirements-traceability-matrix
+  - evidence-registry
+  - workflow-engine
+  - governance-read-model
+  - governance-evidence
+allowed_dependencies:
+  - evidence-registry
+  - governance-evidence
+  - governance-read-model
+  - requirement-management
+  - requirements-traceability-matrix
+  - workflow-engine
+forbidden_dependencies:
+  - core-runtime
+  - trust-framework
+consumed_by: []
+stability: stable
+contracts:
+  requires:
+    - name: GovernanceReadModelProvider
+      range: ">=1 <2"
+    - name: GovernanceEvidenceProvider
+      range: ">=1 <2"
+implementation:
+  entry: implementation/service.ts

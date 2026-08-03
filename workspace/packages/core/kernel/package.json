@@ -5,8 +5,12 @@
   "files": [
     "dist"
   ],
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "license": "MIT",
   "scripts": {
@@ -21,6 +25,7 @@
   "devDependencies": {
     "@repo/config-eslint": "workspace:*",
     "@repo/config-typescript": "workspace:*",
+    "@types/node": "^22.15.30",
     "eslint": "^9.39.1",
     "typescript": "5.9.2"
   }

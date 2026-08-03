@@ -9,8 +9,10 @@
     "arch-check": "turbo run arch-check",
     "arch-test": "turbo run arch-check",
     "gate": "turbo run arch-check lint check-types build",
+    "governance:gate": "pnpm check-types && pnpm eos verify-foundation && pnpm eos verify-capability-registry && pnpm eos gate-c refresh-status",
     "status": "node --import tsx ./packages/tooling/eos-cli/src/index.ts status",
     "eos": "node --import tsx ./packages/tooling/eos-cli/src/index.ts",
+    "verify:genesis-baseline": "pnpm eos gate-c verify-genesis-baseline",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {

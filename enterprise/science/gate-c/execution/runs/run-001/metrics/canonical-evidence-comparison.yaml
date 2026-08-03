@@ -1,25 +1,29 @@
 version: 1.0.0
 run_id: run-001
 science_kernel_bundle_id: SC-KERNEL-001
-science_kernel_bundle_hash: sha256:b0ade11a9a53e7ae5ff0a4d772cbb7add753b0b84d7dd9f9f5ffae33f9a38916
+science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
 original:
   verdict: PASS
-  canonical_evidence_hash: sha256:06cd6b84fefa24f6f5a04855049c644366157b0753e720671a4e76f1d6d411ce
+  canonical_evidence_hash: sha256:4d20e540dc2d7d9a05959977ea10091647e12ed22353476a4a72b7fb9c567b1f
+  canonical_witness_digest: sha256:13b9e476e801cb70de6ac74d53c5b4404ec9b75dfe980eed8739e4c6c07ac04e
+  canonical_run_manifest_hash: sha256:8a7d4193552a138d5677c4a05dc5aeb88770b7b6ee24b585afac9c5874501fe3
   witness_artifact_hashes:
-    authority: sha256:7402cef91aeaf6bb3813f795002c30cba2a723d7f4d8ad40496cd23e90bcdcd5
-    meaning: sha256:3dc8074315d966416ba754dbffa7f5509d2d427f8c30a38ea2cd657d3c08e73b
-    proof: sha256:35f8dc444f1b6937a415562a3cbe3cabf3236e37cf2594044dc5fcaea3561884
+    authority: sha256:af880b61504125692e15af37b767ef7d40acb35e0471a5e246491c2f8b47c65b
+    meaning: sha256:22bab4b9d93da2ebd89924b7bdf7e8e2edff78d6d7a83eb932f6490d5394cda5
+    proof: sha256:22d99f39f9bf5396d724188959a375d98abe6a60c0345f22f9135fd49d69f28d
   canonical_witness_hashes:
     authority: sha256:6ea92b4322f990e1927ecb63fb3814a58521b88c20c106002d798336c5943291
     meaning: sha256:5fc583a300a66f0120458f71272cb854e003ec55773512da9f5825df9b5cf803
     proof: sha256:cfaab2149cc7fc59b555bd624f4d3b3620dd1d757b8385c1be4e33a818836e78
 replay:
   verdict: PASS
-  canonical_evidence_hash: sha256:06cd6b84fefa24f6f5a04855049c644366157b0753e720671a4e76f1d6d411ce
+  canonical_evidence_hash: sha256:4d20e540dc2d7d9a05959977ea10091647e12ed22353476a4a72b7fb9c567b1f
+  canonical_witness_digest: sha256:13b9e476e801cb70de6ac74d53c5b4404ec9b75dfe980eed8739e4c6c07ac04e
+  canonical_run_manifest_hash: sha256:8a7d4193552a138d5677c4a05dc5aeb88770b7b6ee24b585afac9c5874501fe3
   witness_artifact_hashes:
-    authority: sha256:f8ad4436194c6e077832eed935ef0f8c98eadc70081c3ec2ef8e07b0bf34fc0d
-    meaning: sha256:8d5741e3c8eda72f6549e85849dd1ea714bdb58fb2afd8f7efac63c2e83a5312
-    proof: sha256:8b73e3d36af8f1556906f4d27acee0de9a028ff986c67e0834a561497f2a3388
+    authority: sha256:283a29fdfd1d6d1ee4d3d67571e87e7b566b21ded89ae7a8c971e93254a437a5
+    meaning: sha256:860a1175a7872d5d6dd108607440f58d71bdd4035f1debfd50759ac792b699f3
+    proof: sha256:1b2402b975b0aaa9834f28ac2319815e33b2c86ad0d14f584b1b30982323a0e9
   canonical_witness_hashes:
     authority: sha256:6ea92b4322f990e1927ecb63fb3814a58521b88c20c106002d798336c5943291
     meaning: sha256:5fc583a300a66f0120458f71272cb854e003ec55773512da9f5825df9b5cf803
@@ -28,6 +32,7 @@ comparison:
   same_verdict: true
   same_canonical_evidence: true
   same_canonical_witness_hashes: true
+  same_canonical_run_manifest: true
   converged: true
 ignored_runtime_metadata:
   - execution_timestamp_utc

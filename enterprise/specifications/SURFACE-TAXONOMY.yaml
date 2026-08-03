@@ -1,0 +1,47 @@
+version: "1.0"
+status: DRAFT
+taxonomy: EOS_SURFACE_TAXONOMY
+purpose: Canonical list of supported interaction surfaces for the Experience Domain.
+
+surfaces:
+  - id: workspace
+    class: human_interactive
+    deployment_target: web_workspace
+  - id: portal
+    class: human_interactive
+    deployment_target: web_portal
+  - id: dashboard
+    class: human_interactive
+    deployment_target: analytics_console
+  - id: mobile
+    class: human_interactive
+    deployment_target: mobile_application
+  - id: cli
+    class: operator_interactive
+    deployment_target: command_line_interface
+  - id: rest_api
+    class: machine_interface
+    deployment_target: http_rest
+  - id: graphql_api
+    class: machine_interface
+    deployment_target: graphql_endpoint
+  - id: mcp_server
+    class: machine_interface
+    deployment_target: model_context_protocol_server
+  - id: ai_agent
+    class: machine_interface
+    deployment_target: agent_runtime
+  - id: automation
+    class: machine_interface
+    deployment_target: workflow_or_scheduler
+  - id: batch_worker
+    class: machine_interface
+    deployment_target: async_worker
+  - id: event_consumer
+    class: machine_interface
+    deployment_target: event_driven_runtime
+
+rules:
+  - every experience MUST declare one or more surfaces from this taxonomy
+  - new surfaces MUST be added to this taxonomy before use in experience descriptors
+  - surface selection MUST NOT alter capability business logic

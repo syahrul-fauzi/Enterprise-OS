@@ -15,6 +15,48 @@ expected_evaluations:
     independence_test_required: true
     invariance_test_required: true
     diagnostic_predicate_failure_required: pred_a_legitimate
+  GATE-C-DOC-PROPOSE-N2:
+    evaluation_result: FAIL
+    ia20_constitutional_validity: false
+    truth_table_row_matched: N2
+    independence_test_required: true
+    invariance_test_required: true
+    diagnostic_predicate_failure_required: pred_b_meaning_preserved
+  GATE-C-DOC-PROPOSE-N3:
+    evaluation_result: FAIL
+    ia20_constitutional_validity: false
+    truth_table_row_matched: N3
+    independence_test_required: true
+    invariance_test_required: true
+    diagnostic_predicate_failure_required: pred_a_legitimate_and_pred_b_meaning_preserved
+  GATE-C-DOC-PROPOSE-N4:
+    evaluation_result: FAIL
+    ia20_constitutional_validity: false
+    truth_table_row_matched: N4
+    independence_test_required: true
+    invariance_test_required: true
+    diagnostic_predicate_failure_required: pred_c_provable
+  GATE-C-DOC-PROPOSE-N5:
+    evaluation_result: FAIL
+    ia20_constitutional_validity: false
+    truth_table_row_matched: N5
+    independence_test_required: true
+    invariance_test_required: true
+    diagnostic_predicate_failure_required: pred_a_legitimate_and_pred_c_provable
+  GATE-C-DOC-PROPOSE-N6:
+    evaluation_result: FAIL
+    ia20_constitutional_validity: false
+    truth_table_row_matched: N6
+    independence_test_required: true
+    invariance_test_required: true
+    diagnostic_predicate_failure_required: pred_b_meaning_preserved_and_pred_c_provable
+  GATE-C-DOC-PROPOSE-N7:
+    evaluation_result: FAIL
+    ia20_constitutional_validity: false
+    truth_table_row_matched: N7
+    independence_test_required: true
+    invariance_test_required: true
+    diagnostic_predicate_failure_required: pred_a_legitimate_and_pred_b_meaning_preserved_and_pred_c_provable
   GATE-C-DOC-APPROVE:
     evaluation_result: PASS
     ia20_constitutional_validity: true

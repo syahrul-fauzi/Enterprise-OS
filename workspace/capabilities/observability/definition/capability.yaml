@@ -1,0 +1,5 @@
+id: observability
+name: Observability
+version: 0.1.0
+implementation:
+  entry: implementation/service.ts

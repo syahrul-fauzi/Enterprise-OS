@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { caseQueries } from "../../../../../capabilities/legal-case/implementation/queries/case.queries";
+import { getCase } from "../../../../../../capabilities/legal-case/implementation/queries/case.queries";
 import {
+  CaseId,
   assignLawyer,
   closeCase,
-} from "../../../../../capabilities/legal-case/implementation/commands/case.commands";
+} from "../../../../../../capabilities/legal-case/implementation/service";
 import { z } from "zod";
 
 type Params = Promise<{ id: string }>;
@@ -14,7 +15,7 @@ const AssignLawyerBodySchema = z.object({
 
 export async function GET(_request: Request, segment: { params: Params }) {
   const { id } = await segment.params;
-  const result = caseQueries["case.get"].execute({ id });
+  const result = getCase.execute({ id: CaseId(id) });
   if (result === undefined) {
     return NextResponse.json(
       { error: "not_found", id },
@@ -35,7 +36,7 @@ export async function PATCH(request: Request, segment: { params: Params }) {
     );
   }
   try {
-    const result = assignLawyer.execute({ id, lawyerId: parsed.data.lawyerId });
+    const result = assignLawyer.execute({ id: CaseId(id), lawyerId: parsed.data.lawyerId });
     return NextResponse.json(result);
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
@@ -58,7 +59,7 @@ export async function PATCH(request: Request, segment: { params: Params }) {
 export async function DELETE(_request: Request, segment: { params: Params }) {
   const { id } = await segment.params;
   try {
-    const result = closeCase.execute({ id });
+    const result = closeCase.execute({ id: CaseId(id) });
     return NextResponse.json(result);
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);

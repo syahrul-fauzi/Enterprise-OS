@@ -2,7 +2,6 @@ import type {
   AuthoritySignature,
   HashChainLink,
   PredicateResultSummary,
-  ProofLevel,
   ProofVerdict,
 } from "./types.js";
 

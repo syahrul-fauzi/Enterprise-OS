@@ -1,8 +1,24 @@
 import React from "react";
-import type { RuntimeMountResult } from "@repo/core-runtime";
+
+interface WorkspaceMountError {
+  readonly capabilityId: string;
+  readonly error: Error;
+}
+
+interface WorkspaceMountedCapability {
+  readonly capabilityId: string;
+  readonly Component: React.ComponentType<object>;
+  readonly status?: string;
+  readonly graphNodeId?: string;
+}
+
+interface WorkspaceMountResult {
+  readonly mounted: readonly WorkspaceMountedCapability[];
+  readonly errors: readonly WorkspaceMountError[];
+}
 
 export interface WorkspaceProps {
-  readonly mountResult: RuntimeMountResult;
+  readonly mountResult: WorkspaceMountResult;
 }
 
 export function Workspace({ mountResult }: WorkspaceProps) {

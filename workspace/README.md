@@ -41,6 +41,16 @@ Sprint 0 is not a product expansion phase. Current work is limited to:
 - `capabilities/identity/`
 - `capabilities/legal-case/`
 - `capabilities/legal-document/`
+- `capabilities/requirement-management/`
+- `capabilities/requirements-traceability-matrix/`
+- `capabilities/evidence-registry/`
+- `capabilities/workflow-engine/`
+- `capabilities/api-platform/`
+- `capabilities/agent-orchestration/`
+- `capabilities/observability/`
+- `capabilities/security-hardening/`
+- `capabilities/connector-ecosystem/`
+- `capabilities/knowledge-graph/`
 
 ## Governance Sources
 

@@ -1,0 +1,398 @@
+version: 1.0.0
+status: ACTIVE
+generated_at_utc: 2026-08-01T14:58:46.929Z
+source_registry_ref: enterprise/execution/CAPABILITY-REGISTRY.yaml
+source_registry_hash: sha256:f5b5ac694c271df9231c6a8c928d74e4e86504e1447d4e3116cff3b1631ac2f9
+mission:
+  target: EOS Production Ready
+  phase: Delivery
+execution:
+  default_agent_state: RUNNING
+  auto_continue: true
+  stop_on_hard_blocker_only: true
+graph:
+  total_capabilities: 12
+  ready_count: 0
+  active_count: 0
+  blocked_count: 0
+  done_count: 12
+next_actionable_capability:
+  capability_id: null
+  name: null
+  priority: null
+  rationale: No READY capability available. Resolve blockers or expand backlog.
+active_capabilities: []
+ready_capabilities: []
+blocked_capabilities: []
+completed_capabilities:
+  - EOS-001
+  - EOS-002
+  - EOS-003
+  - EOS-004
+  - EOS-012
+  - EOS-005
+  - EOS-006
+  - EOS-007
+  - EOS-008
+  - EOS-009
+  - EOS-010
+  - EOS-011
+dependency_warnings:
+  missing_dependencies: []
+  missing_unlock_targets: []
+capabilities:
+  EOS-001:
+    name: Requirement Management
+    priority: P0
+    rawStatus: DONE
+    effectiveStatus: DONE
+    owner: EOS Agent
+    dependsOn: []
+    unlocks:
+      - EOS-002
+      - EOS-003
+    outcome: Canonical requirement capture, status tracking, and workspace-level
+      management capability exists and is testable.
+    definitionOfDone:
+      - feature_complete
+      - api_complete
+      - ui_complete
+      - tests_pass
+      - docs_minimum
+    completedDefinitionOfDone:
+      - feature_complete
+      - api_complete
+      - ui_complete
+      - tests_pass
+      - docs_minimum
+    definitionOfDoneCompletedCount: 5
+    definitionOfDoneTotalCount: 5
+    progressPercent: 100
+    dependenciesSatisfied: true
+    blockedBy: []
+    readyForExecution: false
+    nextTransition: UNLOCK_NEXT
+  EOS-002:
+    name: Requirements Traceability Matrix
+    priority: P0
+    rawStatus: DONE
+    effectiveStatus: DONE
+    owner: EOS Agent
+    dependsOn:
+      - EOS-001
+    unlocks:
+      - EOS-004
+    outcome: RTM links requirements to delivery artifacts, verification outputs, and
+      evidence.
+    definitionOfDone:
+      - traceability_model_complete
+      - api_complete
+      - tests_pass
+      - docs_minimum
+    completedDefinitionOfDone:
+      - traceability_model_complete
+      - api_complete
+      - tests_pass
+      - docs_minimum
+    definitionOfDoneCompletedCount: 4
+    definitionOfDoneTotalCount: 4
+    progressPercent: 100
+    dependenciesSatisfied: true
+    blockedBy: []
+    readyForExecution: false
+    nextTransition: UNLOCK_NEXT
+  EOS-003:
+    name: Evidence Registry
+    priority: P0
+    rawStatus: DONE
+    effectiveStatus: DONE
+    owner: EOS Agent
+    dependsOn:
+      - EOS-001
+    unlocks:
+      - EOS-004
+    outcome: Evidence registration, indexing, and retrieval capability exists as a
+      first-class product surface.
+    definitionOfDone:
+      - registry_model_complete
+      - api_complete
+      - tests_pass
+      - docs_minimum
+    completedDefinitionOfDone:
+      - registry_model_complete
+      - api_complete
+      - tests_pass
+      - docs_minimum
+    definitionOfDoneCompletedCount: 4
+    definitionOfDoneTotalCount: 4
+    progressPercent: 100
+    dependenciesSatisfied: true
+    blockedBy: []
+    readyForExecution: false
+    nextTransition: UNLOCK_NEXT
+  EOS-004:
+    name: Workflow Engine
+    priority: P0
+    rawStatus: DONE
+    effectiveStatus: DONE
+    owner: EOS Agent
+    dependsOn:
+      - EOS-002
+      - EOS-003
+    unlocks:
+      - EOS-005
+      - EOS-006
+      - EOS-007
+    outcome: Workflow definition and execution engine can run core EOS flows
+      deterministically.
+    definitionOfDone:
+      - execution_engine_complete
+      - workflow_api_complete
+      - tests_pass
+      - docs_minimum
+    completedDefinitionOfDone:
+      - execution_engine_complete
+      - workflow_api_complete
+      - tests_pass
+      - docs_minimum
+    definitionOfDoneCompletedCount: 4
+    definitionOfDoneTotalCount: 4
+    progressPercent: 100
+    dependenciesSatisfied: true
+    blockedBy: []
+    readyForExecution: false
+    nextTransition: UNLOCK_NEXT
+  EOS-005:
+    name: API Platform
+    priority: P1
+    rawStatus: DONE
+    effectiveStatus: DONE
+    owner: EOS Agent
+    dependsOn:
+      - EOS-004
+    unlocks:
+      - EOS-012
+    outcome: Stable platform APIs expose core EOS capabilities for internal and
+      external consumption.
+    definitionOfDone:
+      - api_surface_complete
+      - auth_integrated
+      - integration_tests_pass
+      - docs_minimum
+    completedDefinitionOfDone:
+      - api_surface_complete
+      - auth_integrated
+      - integration_tests_pass
+      - docs_minimum
+    definitionOfDoneCompletedCount: 4
+    definitionOfDoneTotalCount: 4
+    progressPercent: 100
+    dependenciesSatisfied: true
+    blockedBy: []
+    readyForExecution: false
+    nextTransition: UNLOCK_NEXT
+  EOS-006:
+    name: Enterprise UI
+    priority: P1
+    rawStatus: DONE
+    effectiveStatus: DONE
+    owner: EOS Agent
+    dependsOn:
+      - EOS-004
+    unlocks:
+      - EOS-012
+    outcome: Production-facing UI exists for core EOS operational capabilities.
+    definitionOfDone:
+      - ui_complete
+      - integration_complete
+      - tests_pass
+      - docs_minimum
+    completedDefinitionOfDone:
+      - ui_complete
+      - integration_complete
+      - tests_pass
+      - docs_minimum
+    definitionOfDoneCompletedCount: 4
+    definitionOfDoneTotalCount: 4
+    progressPercent: 100
+    dependenciesSatisfied: true
+    blockedBy: []
+    readyForExecution: false
+    nextTransition: UNLOCK_NEXT
+  EOS-007:
+    name: Agent Orchestration
+    priority: P1
+    rawStatus: DONE
+    effectiveStatus: DONE
+    owner: EOS Agent
+    dependsOn:
+      - EOS-004
+    unlocks:
+      - EOS-008
+      - EOS-009
+      - EOS-012
+    outcome: Multi-agent coordination and execution flow operate through a canonical
+      orchestration layer.
+    definitionOfDone:
+      - orchestration_runtime_complete
+      - workflow_integration_complete
+      - tests_pass
+      - docs_minimum
+    completedDefinitionOfDone:
+      - orchestration_runtime_complete
+      - workflow_integration_complete
+      - tests_pass
+      - docs_minimum
+    definitionOfDoneCompletedCount: 4
+    definitionOfDoneTotalCount: 4
+    progressPercent: 100
+    dependenciesSatisfied: true
+    blockedBy: []
+    readyForExecution: false
+    nextTransition: UNLOCK_NEXT
+  EOS-008:
+    name: Observability
+    priority: P1
+    rawStatus: DONE
+    effectiveStatus: DONE
+    owner: EOS Agent
+    dependsOn:
+      - EOS-007
+    unlocks:
+      - EOS-012
+    outcome: Metrics, logs, traces, and diagnostics exist for production support.
+    definitionOfDone:
+      - logs_complete
+      - metrics_complete
+      - traces_complete
+      - tests_pass
+    completedDefinitionOfDone:
+      - logs_complete
+      - metrics_complete
+      - traces_complete
+      - tests_pass
+    definitionOfDoneCompletedCount: 4
+    definitionOfDoneTotalCount: 4
+    progressPercent: 100
+    dependenciesSatisfied: true
+    blockedBy: []
+    readyForExecution: false
+    nextTransition: UNLOCK_NEXT
+  EOS-009:
+    name: Security Hardening
+    priority: P1
+    rawStatus: DONE
+    effectiveStatus: DONE
+    owner: EOS Agent
+    dependsOn:
+      - EOS-007
+    unlocks:
+      - EOS-012
+    outcome: Authentication, authorization, secrets handling, and core controls are
+      production-ready.
+    definitionOfDone:
+      - authz_complete
+      - secret_management_complete
+      - security_tests_pass
+      - docs_minimum
+    completedDefinitionOfDone:
+      - authz_complete
+      - secret_management_complete
+      - security_tests_pass
+      - docs_minimum
+    definitionOfDoneCompletedCount: 4
+    definitionOfDoneTotalCount: 4
+    progressPercent: 100
+    dependenciesSatisfied: true
+    blockedBy: []
+    readyForExecution: false
+    nextTransition: UNLOCK_NEXT
+  EOS-010:
+    name: Connector Ecosystem
+    priority: P2
+    rawStatus: DONE
+    effectiveStatus: DONE
+    owner: EOS Agent
+    dependsOn:
+      - EOS-005
+    unlocks:
+      - EOS-012
+    outcome: External connectors integrate EOS with surrounding enterprise systems.
+    definitionOfDone:
+      - connector_runtime_complete
+      - first_connectors_complete
+      - integration_tests_pass
+      - docs_minimum
+    completedDefinitionOfDone:
+      - connector_runtime_complete
+      - first_connectors_complete
+      - integration_tests_pass
+      - docs_minimum
+    definitionOfDoneCompletedCount: 4
+    definitionOfDoneTotalCount: 4
+    progressPercent: 100
+    dependenciesSatisfied: true
+    blockedBy: []
+    readyForExecution: false
+    nextTransition: UNLOCK_NEXT
+  EOS-011:
+    name: Knowledge Graph
+    priority: P2
+    rawStatus: DONE
+    effectiveStatus: DONE
+    owner: EOS Agent
+    dependsOn:
+      - EOS-002
+      - EOS-003
+    unlocks:
+      - EOS-012
+    outcome: Relationships among requirements, evidence, workflows, and decisions
+      are queryable as a graph.
+    definitionOfDone:
+      - graph_model_complete
+      - query_api_complete
+      - tests_pass
+      - docs_minimum
+    completedDefinitionOfDone:
+      - graph_model_complete
+      - query_api_complete
+      - tests_pass
+      - docs_minimum
+    definitionOfDoneCompletedCount: 4
+    definitionOfDoneTotalCount: 4
+    progressPercent: 100
+    dependenciesSatisfied: true
+    blockedBy: []
+    readyForExecution: false
+    nextTransition: UNLOCK_NEXT
+  EOS-012:
+    name: Release Candidate v1
+    priority: P0
+    rawStatus: DONE
+    effectiveStatus: DONE
+    owner: EOS Agent
+    dependsOn:
+      - EOS-005
+      - EOS-006
+      - EOS-008
+      - EOS-009
+    unlocks: []
+    outcome: EOS reaches release-candidate quality with a production-ready core
+      capability set.
+    definitionOfDone:
+      - core_capabilities_production_ready
+      - regression_green
+      - release_artifacts_complete
+      - rollout_checklist_complete
+    completedDefinitionOfDone:
+      - core_capabilities_production_ready
+      - regression_green
+      - release_artifacts_complete
+      - rollout_checklist_complete
+    definitionOfDoneCompletedCount: 4
+    definitionOfDoneTotalCount: 4
+    progressPercent: 100
+    dependenciesSatisfied: true
+    blockedBy: []
+    readyForExecution: false
+    nextTransition: UNLOCK_NEXT

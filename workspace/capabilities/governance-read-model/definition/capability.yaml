@@ -1,0 +1,29 @@
+id: governance-read-model
+name: Governance Read Model
+version: 0.1.0
+manifest_version: 1.0.0
+exports:
+  - GovernanceReadModelProvider
+  - GovernanceReadModelCatalog
+  - GovernanceSummaryView
+  - GovernanceClaimsView
+  - GovernanceHealthView
+  - GovernanceDashboardView
+depends_on:
+  - governance-evidence
+  - core-runtime
+allowed_dependencies:
+  - core-runtime
+  - governance-evidence
+forbidden_dependencies:
+  - api-platform
+  - trust-framework
+consumed_by:
+  - api-platform
+stability: stable
+contracts:
+  provides:
+    - name: GovernanceReadModelProvider
+      version: 1.0.0
+implementation:
+  entry: implementation/service.ts

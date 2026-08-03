@@ -7,9 +7,13 @@
   "files": [
     "dist"
   ],
+  "types": "./dist/index.d.ts",
   "exports": {
     "./styles.css": "./dist/index.css",
-    ".": "./dist/index.js",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
     "./*": "./dist/*.js"
   },
   "license": "MIT",

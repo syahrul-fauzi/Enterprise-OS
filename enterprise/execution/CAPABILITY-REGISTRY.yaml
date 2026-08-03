@@ -1,0 +1,280 @@
+version: "1.0"
+status: ACTIVE
+ssot: CAPABILITY_REGISTRY
+mission:
+  target: EOS Production Ready
+  phase: Delivery
+execution:
+  default_agent_state: RUNNING
+  auto_continue: true
+  stop_on_hard_blocker_only: true
+state_machine:
+  states:
+    - TODO
+    - READY
+    - READY_FOR_IMPLEMENTATION
+    - IMPLEMENTING
+    - TESTING
+    - INTEGRATING
+    - DONE
+  auto_transition_after_done: UNLOCK_NEXT
+capabilities:
+  EOS-001:
+    name: Requirement Management
+    priority: P0
+    status: DONE
+    owner: EOS Agent
+    depends_on: []
+    unlocks:
+      - EOS-002
+      - EOS-003
+    definition_of_done:
+      - feature_complete
+      - api_complete
+      - ui_complete
+      - tests_pass
+      - docs_minimum
+    completed_definition_of_done:
+      - feature_complete
+      - api_complete
+      - ui_complete
+      - tests_pass
+      - docs_minimum
+    outcome: Canonical requirement capture, status tracking, and workspace-level
+      management capability exists and is testable.
+  EOS-002:
+    name: Requirements Traceability Matrix
+    priority: P0
+    status: DONE
+    owner: EOS Agent
+    depends_on:
+      - EOS-001
+    unlocks:
+      - EOS-004
+    definition_of_done:
+      - traceability_model_complete
+      - api_complete
+      - tests_pass
+      - docs_minimum
+    completed_definition_of_done:
+      - traceability_model_complete
+      - api_complete
+      - tests_pass
+      - docs_minimum
+    outcome: RTM links requirements to delivery artifacts, verification outputs, and
+      evidence.
+  EOS-003:
+    name: Evidence Registry
+    priority: P0
+    status: DONE
+    owner: EOS Agent
+    depends_on:
+      - EOS-001
+    unlocks:
+      - EOS-004
+    definition_of_done:
+      - registry_model_complete
+      - api_complete
+      - tests_pass
+      - docs_minimum
+    completed_definition_of_done:
+      - registry_model_complete
+      - api_complete
+      - tests_pass
+      - docs_minimum
+    outcome: Evidence registration, indexing, and retrieval capability exists as a
+      first-class product surface.
+  EOS-004:
+    name: Workflow Engine
+    priority: P0
+    status: DONE
+    owner: EOS Agent
+    depends_on:
+      - EOS-002
+      - EOS-003
+    unlocks:
+      - EOS-005
+      - EOS-006
+      - EOS-007
+    definition_of_done:
+      - execution_engine_complete
+      - workflow_api_complete
+      - tests_pass
+      - docs_minimum
+    completed_definition_of_done:
+      - execution_engine_complete
+      - workflow_api_complete
+      - tests_pass
+      - docs_minimum
+    outcome: Workflow definition and execution engine can run core EOS flows
+      deterministically.
+  EOS-005:
+    name: API Platform
+    priority: P1
+    status: DONE
+    owner: EOS Agent
+    depends_on:
+      - EOS-004
+    unlocks:
+      - EOS-012
+    definition_of_done:
+      - api_surface_complete
+      - auth_integrated
+      - integration_tests_pass
+      - docs_minimum
+    completed_definition_of_done:
+      - api_surface_complete
+      - auth_integrated
+      - integration_tests_pass
+      - docs_minimum
+    outcome: Stable platform APIs expose core EOS capabilities for internal and
+      external consumption.
+  EOS-006:
+    name: Enterprise UI
+    priority: P1
+    status: DONE
+    owner: EOS Agent
+    depends_on:
+      - EOS-004
+    unlocks:
+      - EOS-012
+    definition_of_done:
+      - ui_complete
+      - integration_complete
+      - tests_pass
+      - docs_minimum
+    completed_definition_of_done:
+      - ui_complete
+      - integration_complete
+      - tests_pass
+      - docs_minimum
+    outcome: Production-facing UI exists for core EOS operational capabilities.
+  EOS-007:
+    name: Agent Orchestration
+    priority: P1
+    status: DONE
+    owner: EOS Agent
+    depends_on:
+      - EOS-004
+    unlocks:
+      - EOS-008
+      - EOS-009
+      - EOS-012
+    definition_of_done:
+      - orchestration_runtime_complete
+      - workflow_integration_complete
+      - tests_pass
+      - docs_minimum
+    completed_definition_of_done:
+      - orchestration_runtime_complete
+      - workflow_integration_complete
+      - tests_pass
+      - docs_minimum
+    outcome: Multi-agent coordination and execution flow operate through a canonical
+      orchestration layer.
+  EOS-008:
+    name: Observability
+    priority: P1
+    status: DONE
+    owner: EOS Agent
+    depends_on:
+      - EOS-007
+    unlocks:
+      - EOS-012
+    definition_of_done:
+      - logs_complete
+      - metrics_complete
+      - traces_complete
+      - tests_pass
+    completed_definition_of_done:
+      - logs_complete
+      - metrics_complete
+      - traces_complete
+      - tests_pass
+    outcome: Metrics, logs, traces, and diagnostics exist for production support.
+  EOS-009:
+    name: Security Hardening
+    priority: P1
+    status: DONE
+    owner: EOS Agent
+    depends_on:
+      - EOS-007
+    unlocks:
+      - EOS-012
+    definition_of_done:
+      - authz_complete
+      - secret_management_complete
+      - security_tests_pass
+      - docs_minimum
+    completed_definition_of_done:
+      - authz_complete
+      - secret_management_complete
+      - security_tests_pass
+      - docs_minimum
+    outcome: Authentication, authorization, secrets handling, and core controls are
+      production-ready.
+  EOS-010:
+    name: Connector Ecosystem
+    priority: P2
+    status: DONE
+    owner: EOS Agent
+    depends_on:
+      - EOS-005
+    unlocks:
+      - EOS-012
+    definition_of_done:
+      - connector_runtime_complete
+      - first_connectors_complete
+      - integration_tests_pass
+      - docs_minimum
+    completed_definition_of_done:
+      - connector_runtime_complete
+      - first_connectors_complete
+      - integration_tests_pass
+      - docs_minimum
+    outcome: External connectors integrate EOS with surrounding enterprise systems.
+  EOS-011:
+    name: Knowledge Graph
+    priority: P2
+    status: DONE
+    owner: EOS Agent
+    depends_on:
+      - EOS-002
+      - EOS-003
+    unlocks:
+      - EOS-012
+    definition_of_done:
+      - graph_model_complete
+      - query_api_complete
+      - tests_pass
+      - docs_minimum
+    completed_definition_of_done:
+      - graph_model_complete
+      - query_api_complete
+      - tests_pass
+      - docs_minimum
+    outcome: Relationships among requirements, evidence, workflows, and decisions
+      are queryable as a graph.
+  EOS-012:
+    name: Release Candidate v1
+    priority: P0
+    status: DONE
+    owner: EOS Agent
+    depends_on:
+      - EOS-005
+      - EOS-006
+      - EOS-008
+      - EOS-009
+    unlocks: []
+    definition_of_done:
+      - core_capabilities_production_ready
+      - regression_green
+      - release_artifacts_complete
+      - rollout_checklist_complete
+    completed_definition_of_done:
+      - core_capabilities_production_ready
+      - regression_green
+      - release_artifacts_complete
+      - rollout_checklist_complete
+    outcome: EOS reaches release-candidate quality with a production-ready core
+      capability set.

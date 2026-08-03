@@ -57,6 +57,13 @@ enterprise/science/gate-c/
 │   │   └── minimality/
 │   └── candidate-predicate/               # Minimality candidates D1..Dn
 └── execution/                             # Mutable run history only
+    ├── acceptance-contract.yaml           # Frozen acceptance invariant contract
+    ├── acceptance-decisions.yaml          # Append-only acceptance decision log
+    ├── acceptance/
+    │   └── run-<NNN>/
+    │       └── GATE-C-ACCEPT-DECISION-*.yaml
+    ├── gate-c-status.yaml                 # SSOT operational read model / projection
+    ├── coverage-matrix.yaml               # Detailed Gate C1 coverage projection
     ├── README.md
     └── runs/
         └── run-<NNN>/
@@ -151,6 +158,17 @@ This preserves the distinction between:
 3. factual evaluation,
 4. governance decision.
 
+## Governance Evidence
+
+Gate C now separates governance evidence into three layers:
+
+1. `acceptance-decisions.yaml` = append-only decision log
+2. `acceptance/run-<NNN>/GATE-C-ACCEPT-DECISION-*.yaml` = immutable acceptance evidence per decision
+3. `gate-c-status.yaml` = disposable projection regenerated from historical evidence
+
+Acceptance evidence is written once per decision id and is never updated in place. If an acceptance state changes,
+the system emits a new decision and a new acceptance artifact instead of overwriting the old one.
+
 ## Truth Table as Executable Specification
 
 `truth-table.yaml` is normative executable specification, not prose documentation.
@@ -210,7 +228,7 @@ Terminology uses scientific CONTROL terminology (not "Test") to reflect Gate C's
 ### Scientific Phase Ordering (Mandatory)
 
 Phase 1. **Positive Control Establishment** (P1 PASS with calibrated apparatus) → completed at run-001.  
-Phase 2. **Negative Control Calibration** (≥1 negative control per predicate, 5 hardened Exit Criteria each) → N1 in progress.  
+Phase 2. **Negative Control Calibration** (≥1 negative control per predicate, 5 hardened Exit Criteria each) → N1 complete; N2 and N4 are the next individual-predicate controls required before joint-failure rows.
 Phase 3. **Truth Table Coverage Expansion** (all 8/8 rows P1..N7 exercised).  
 Phase 4. **Falsification Analysis** (independence + minimality + counterfactual suites green = corroboration claim; any 9th row, any failure in controls = FALSIFICATION).
 

@@ -1,0 +1,178 @@
+specification:
+  id: EOS-EXP-PLATFORM-001
+  name: experience_platform_specification
+  status: DRAFT
+  version: 1.0.0
+  purpose: Define the formal architecture for composing EOS capabilities into reusable interaction surfaces.
+
+references:
+  governance_domain: enterprise/specifications/GOVERNANCE-DOMAIN.spec.yaml
+  three_domain_architecture: enterprise/governance/EOS-THREE-DOMAIN-ARCHITECTURE.md
+  roadmap: enterprise/execution/ROADMAP.yaml
+  qualification_gate: enterprise/execution/PRODUCTION-QUALIFICATION-GATE.yaml
+  experience_composition: enterprise/specifications/EXPERIENCE-COMPOSITION.spec.yaml
+  product_composition: enterprise/specifications/PRODUCT-COMPOSITION.spec.yaml
+  deployment_composition: enterprise/specifications/DEPLOYMENT-COMPOSITION.spec.yaml
+  composition_runtime: enterprise/specifications/COMPOSITION-RUNTIME.spec.yaml
+  experience_contract: workspace/contracts/experience.contract.yaml
+  product_contract: workspace/contracts/product.contract.yaml
+  surface_taxonomy: enterprise/specifications/SURFACE-TAXONOMY.yaml
+
+phase_7_deliverables:
+  - EOS Experience Architecture
+  - Experience Composition Specification
+  - Experience Contract
+  - Surface Taxonomy
+  - Experience Runtime
+  - Interaction Model
+  - Routing and Navigation Model
+  - Capability Binding Rules
+
+experience_domain:
+  objective: Compose capability contracts into reusable surfaces without duplicating business logic.
+  composition_artifact: experience.yaml
+  output: Experience Contract
+  internal_composition_hierarchy:
+    - ui_primitive
+    - business_primitive
+    - capability_binding
+    - experience_module
+    - experience_surface
+  rule: Experience Module is an internal reusable composition unit, not a new public domain.
+
+primitives:
+  classes:
+    ui_primitives:
+      - button
+      - input
+      - table
+      - dialog
+      - panel
+      - badge
+      - avatar
+      - tabs
+      - grid
+    business_primitives:
+      - identifier
+      - money
+      - address
+      - person
+      - organization
+      - time-range
+      - approval-status
+      - lifecycle
+      - attachment
+      - comment
+  rules:
+    - ui_primitives_must_not_embed_business_meaning
+    - business_primitives_must_not_embed_presentation_logic
+
+experience_modules:
+  purpose: Capture reusable experience patterns that sit between capability bindings and full experience surfaces.
+  pattern_budget:
+    target_range: 10-15
+    rule: new_patterns_require_reuse_justification_and_should_normally_be_zero_for_mature_phases
+  examples:
+    - approval-pattern
+    - review-pattern
+    - explorer-pattern
+    - workspace-pattern
+    - monitoring-pattern
+    - discovery-pattern
+    - planning-pattern
+    - execution-pattern
+  rules:
+    - modules_must_compose_capabilities_without_duplicating_business_logic
+    - modules_must_be_reusable_across_multiple_surfaces_and_products
+    - modules_must_prefer_atomic_primitives_over_product_specific_ui_trees
+    - modules_must_be_treated_as_patterns_not_package_boundaries
+  multi_surface_examples:
+    explorer-pattern:
+      - table-explorer
+      - tree-explorer
+      - graph-explorer
+      - map-explorer
+    approval-pattern:
+      - approval-table
+      - approval-kanban
+      - approval-timeline
+      - approval-inbox
+
+experience_surfaces:
+  purpose: Compose multiple experience modules into a usable surface such as workspace, portal, dashboard, or console.
+  examples:
+    - workspace
+    - dashboard
+    - approval-experience
+    - knowledge-explorer
+    - monitoring
+  rules:
+    - surfaces_must_be_built_from_modules_and_primitives
+    - surfaces_must_not_become_product_specific_frameworks
+    - surfaces_must_remain_reusable_across_products_when_possible
+    - surfaces_must_render_patterns_in_surface_specific_forms_without_changing_business_logic
+
+experience_runtime:
+  responsibilities:
+    - resolve experience descriptors
+    - resolve primitives_and_modules_into_surfaces
+    - bind capabilities to surfaces
+    - enforce routing_and_navigation
+    - enforce permission_and_interaction_model
+    - project capability outputs into surface contracts
+  inputs:
+    - capability_contracts
+    - experience_descriptor
+    - actor_context
+    - policy_context
+    - feature_flags
+    - runtime_topology
+  outputs:
+    - experience_contract
+    - surface_configuration
+    - navigation_tree
+    - interaction_bindings
+
+interaction_model:
+  principles:
+    - command_query_separation_at_surface_boundary
+    - explicit_permissions_before_interaction_binding
+    - channel_specific_interactions_without_business_logic_duplication
+    - deterministic_capability_binding
+  interaction_types:
+    - workspace
+    - portal
+    - dashboard
+    - cli
+    - rest_api
+    - graphql_api
+    - mcp_server
+    - ai_agent
+    - automation
+    - batch_worker
+    - event_consumer
+
+routing_and_navigation_model:
+  rules:
+    - every experience MUST declare primary surface
+    - every navigable surface MUST declare routing tree or command map
+    - navigation MUST bind to experience-level intents, not raw product concerns
+    - routing MUST resolve through capability binding rules
+
+capability_binding_rules:
+  rules:
+    - experience selects capabilities by contract, not by product-specific implementation
+    - one capability MAY bind to multiple surfaces
+    - one capability MAY participate in multiple experience modules
+    - one experience module MAY be reused by multiple surfaces
+    - one experience pattern MAY render through multiple surface variants
+    - one experience MAY compose multiple capabilities
+    - product MUST select experiences, not raw capabilities
+    - business rules remain inside capability domain
+
+non_goals:
+  - implementing_product_branding_in_experience_runtime
+  - moving_business_logic_out_of_capability_domain
+  - coupling_experience_descriptors_to_single_product
+  - turning_experience_domain_into_giant_ui_framework
+  - embedding_capability_logic_inside_product_code

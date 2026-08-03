@@ -1,35 +1,29 @@
 
+id: identity
+name: Identity
+version: 1.0.0
+owner: identity-domain
+status: ACTIVE
+introduced: "2026-08-02"
+provides:
+  - authentication
+  - authorization
+  - session
+purpose: Provide identity capability for enterprise products, including authentication, authorization, and session management.
+
 capability:
-
   name: identity
-
-  purpose:
-    Provide authentication and authorization capability
-    for enterprise products.
-
-
+  owner: identity-domain
+  purpose: Provide identity capability for enterprise products, including authentication, authorization, and session management.
   consumers:
-
     - lawyershub
     - services-id
-    - indonesialawyersclub
-
-
+    - ilc
   maturity:
-
-    level:
-      experimental
-
-
+    level: core
   lifecycle:
-
-    state:
-      active
-
-
+    state: active
   evidence_required:
-
     - production_usage
     - security_validation
     - multiple_consumers
-

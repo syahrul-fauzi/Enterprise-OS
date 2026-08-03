@@ -1,0 +1,99 @@
+version: "1.0"
+status: ACTIVE
+purpose: Operational governance gates for reuse, specification reduction, and architecture decision budgets.
+
+rule_of_three:
+  statement: Each domain should expose at most three core public artifacts.
+  artifacts:
+    - ssot
+    - composer
+    - runtime
+
+governance_as_automation:
+  quality_gate:
+    clr: ">= 0.75"
+    experience_reuse: ">= 0.70"
+    capability_reuse: ">= 0.80"
+    new_patterns: "<= 0"
+  behavior:
+    warn_on_threshold_breach: true
+    block_on_severe_reuse_regression: true
+
+evidence_convergence:
+  statement: All operational evidence producers MUST converge on Canonical Evidence Grammar before EOS can claim production-grade auditability.
+  targets:
+    canonical_evidence_coverage: "100%"
+    runtime_evidence_compliance: "100%"
+    gate_c_evidence_compliance: "100%"
+    build_evidence_compliance: "100%"
+    policy_evidence_compliance: "100%"
+    doctor_evidence_compliance: "100%"
+    decision_evidence_compliance: "100%"
+    artifact_graph_completeness: ">= 0.99"
+    orphan_evidence: "= 0"
+    broken_traceability_links: "= 0"
+  validity_windows_hours:
+    default: 168
+    specification-conformance-evidence: 720
+    decision-outcome-evidence: 720
+    decision-impact-evidence: 720
+  behavior:
+    warn_on_partial_convergence: true
+    block_on_orphan_evidence: true
+    block_on_broken_traceability: true
+    block_on_noncanonical_production_certification: true
+    warn_on_expired_evidence: true
+
+decision_quality:
+  statement: EOS MUST prove that evidence is converted into traceable, reproducible, and outcome-aware decisions before claiming decision infrastructure maturity.
+  targets:
+    decision_traceability_coverage: "100%"
+    decision_outcome_coverage: "100%"
+    decision_learning_closure: ">= 0.95"
+    decision_reproducibility: "100%"
+    decision_reversibility: "100%"
+    decision_impact_graph_completeness: ">= 0.99"
+    engineering_leverage_measurement_coverage: "100%"
+  behavior:
+    warn_on_missing_decision_learning: true
+    block_on_untraceable_decisions: true
+    block_on_unreplayable_decisions: true
+    block_on_unowned_material_decisions: true
+
+implementation_proof_gate:
+  statement: No new public concept is accepted unless backed by a concrete implementation artifact.
+  requirements:
+    pattern:
+      - at_least_one_reusable_pattern_implementation
+    composition_asset:
+      - at_least_one_reusable_package_style_asset
+    planner:
+      - at_least_one_executable_pipeline_step
+    runtime:
+      - at_least_one_executable_runtime_entry
+
+composition_as_code:
+  packaging_model: package
+  package_convention: workspace/packages/compositions/<composition-id>
+  required_files:
+    - workspace.ts
+    - manifest.yaml
+    - metadata.yaml
+  rule: Composition assets must be versioned, testable, and publishable like software artifacts.
+
+architecture_decision_budget:
+  phase_7:
+    public_concepts_max: 2
+    governance_artifacts_max: 5
+    runtimes_max: 1
+    domains_max: 0
+  phase_8:
+    public_concepts_max: 2
+    governance_artifacts_max: 5
+    runtimes_max: 1
+    domains_max: 0
+  phase_9:
+    public_concepts_max: 2
+    governance_artifacts_max: 5
+    runtimes_max: 1
+    domains_max: 0

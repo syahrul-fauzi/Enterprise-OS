@@ -1,0 +1,18 @@
+spec_id: "SPEC-0108"
+title: "Decision Confidence"
+status: "Draft"
+owner: "Lead Enterprise Architect"
+governed_by:
+  - "RFC-0001"
+  - "RFC-0010"
+kind: "scalar_contract"
+version: "0.1.0"
+source_bindings:
+  runtime_contracts:
+    - "workspace/packages/tooling/eos-cli/src/runtime-contracts/models/shared.ts"
+  conformance:
+    - "enterprise/specifications/conformance/CONF-0010-decision-object-model-conformance.md"
+schema:
+  type: "number"
+  minimum: 0
+  maximum: 1

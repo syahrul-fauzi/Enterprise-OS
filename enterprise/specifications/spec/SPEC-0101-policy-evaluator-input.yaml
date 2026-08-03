@@ -1,0 +1,29 @@
+spec_id: "SPEC-0101"
+title: "Policy Evaluator Input"
+status: "Draft"
+owner: "Lead Enterprise Architect"
+governed_by:
+  - "RFC-0001"
+  - "RFC-0003"
+kind: "contract_object"
+version: "0.1.0"
+source_bindings:
+  runtime_contracts:
+    - "workspace/packages/tooling/eos-cli/src/runtime-contracts/models/evaluation.ts"
+  conformance:
+    - "enterprise/specifications/conformance/CONF-0003-evaluator-spi-conformance.md"
+schema:
+  type: "object"
+  additionalProperties: false
+  required:
+    - "graph_snapshot"
+    - "requested_at"
+  properties:
+    graph_snapshot:
+      ref: "EnterpriseControlGraphSnapshotSchema"
+    scope:
+      ref: "FactReferenceSchema"
+      nullable: true
+    requested_at:
+      type: "string"
+      format: "timestamp"

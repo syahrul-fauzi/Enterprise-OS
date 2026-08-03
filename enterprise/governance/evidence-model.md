@@ -180,7 +180,13 @@ Lifecycle rules:
   accepted by the relevant gate.
 - Evidence becomes `superseded` when a newer governed evidence record replaces
   it for the same claim.
+- Evidence becomes `expired` when its governed validity window is exceeded,
+  even if provenance is still intact.
 - Evidence becomes `rejected` when validation fails or provenance is broken.
+
+Evidence validity windows SHOULD be defined by operational governance policy so
+runtime freshness decisions remain governance-driven rather than hardcoded in
+implementation logic.
 
 ---
 

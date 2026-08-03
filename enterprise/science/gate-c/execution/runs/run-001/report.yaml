@@ -1,5 +1,10 @@
 version: 1.0.0
 run_id: run-001
+control_type: POSITIVE_CONTROL
+truth_table_row: P1
+expected_verdict: PASS
+actual_verdict: PASS
+replay_verdict: PASS
 genesis_evidence: EXISTS
 verification_spine:
   - step: VERIFY
@@ -10,7 +15,7 @@ verification_spine:
     status: PASS
   - step: WIRE_MEASUREMENT_APPARATUS
     status: PASS
-  - step: RUN-001
+  - step: EXECUTE_CONTROL
     status: PASS
   - step: CAPTURE_WITNESS
     status: PASS
@@ -20,6 +25,8 @@ verification_spine:
     status: PASS
   - step: CLEAN_ENV_REPLAY
     status: PASS
+  - step: IDENTICAL_MANIFEST
+    status: PASS
   - step: IDENTICAL_EVIDENCE
     status: PASS
 definition_of_done:
@@ -27,6 +34,9 @@ definition_of_done:
   apparatus_identity: true
   integrity: true
   replay: true
+  witness_digest: true
+  manifest_digest: true
+  evidence_digest: true
   convergence: true
   clean_environment: true
-remaining_blocker: Gate C1 empirical coverage remains limited to positive row P1; N1..N7 still absent.
+remaining_blocker: NONE

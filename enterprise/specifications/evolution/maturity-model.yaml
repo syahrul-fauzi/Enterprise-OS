@@ -1,0 +1,42 @@
+model_id: "specification-maturity-model"
+schema_version: "1.0.0"
+scope: "enterprise-specification-governance"
+families:
+  specification:
+    description: >
+      Canonical maturity state machine for RFC, CONF, SPEC, and related
+      specification-governed artifacts. Runtime MUST read this model instead of
+      hardcoding lifecycle order.
+    initial_status: "Draft"
+    terminal_statuses:
+      - "Deprecated"
+    policy_floors:
+      implementation_allowed_minimum: "Accepted"
+      conformance_baseline_minimum: "Conformant"
+      verification_evidence_minimum: "Verified"
+      stable_release_minimum: "Stable"
+    statuses:
+      - status: "Draft"
+        order: 10
+        description: "Early design, unstable semantics"
+      - status: "Proposed"
+        order: 20
+        description: "Reviewed specification candidate"
+      - status: "Accepted"
+        order: 30
+        description: "Official contract baseline"
+      - status: "Implemented"
+        order: 40
+        description: "Backed by implementation evidence"
+      - status: "Conformant"
+        order: 50
+        description: "Backed by mandatory conformance evidence"
+      - status: "Verified"
+        order: 60
+        description: "Backed by verification evidence in live governance flow"
+      - status: "Stable"
+        order: 70
+        description: "Verified across release cycles without open drift"
+      - status: "Deprecated"
+        order: 80
+        description: "Superseded by a newer specification or contract"

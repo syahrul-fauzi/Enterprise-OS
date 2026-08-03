@@ -6,7 +6,6 @@ import {
   TRANSFORMATIONS,
   TRANSFORMATION_COUNT_SPRINT0_REQUIRED,
   getTransformationById as regGetT,
-  getRootOfTrustTransformation as regGetRoot,
   TRANSFORMATION_REGISTRY_DOCUMENT,
   type TransformationId,
 } from "@repo/core-transformation-registry";
@@ -14,7 +13,6 @@ import {
   ALL_PREDICATES,
   PREDICATE_COUNT_T001_REQUIRED,
   getPredicateById as regGetP,
-  type PredicateRegistryDocument,
 } from "@repo/core-predicate-registry";
 import type { TransformationDeclaration } from "@repo/core-transformation-registry";
 import type { PredicateDeclaration } from "@repo/core-predicate-registry";
@@ -87,7 +85,7 @@ const _loadCatalogOnce = (): CatalogRoot => {
   try {
     const raw = readFileSync(CATALOG_PATH, "utf8");
     return YAML.parse(raw) as CatalogRoot;
-  } catch (e) {
+  } catch {
     return { transformations: [] };
   }
 };
@@ -97,14 +95,16 @@ const CATALOG_BY_ID: ReadonlyMap<string, CatalogTransformationEntry> = new Map(
   (CATALOG.transformations ?? []).map((e) => [e.id, e]),
 );
 
-const PROOF_SCHEMA_MAP: Readonly<Record<string, string>> = {
-  TRANSFORMATION_PROOF:
-    "/root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema",
+const DEFAULT_PROOF_SCHEMA =
+  "/root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema";
+
+const PROOF_SCHEMA_MAP = {
+  TRANSFORMATION_PROOF: DEFAULT_PROOF_SCHEMA,
   EXECUTION_PROOF:
     "/root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::ExecutionProofEntrySchema",
   REPOSITORY_PROOF:
     "/root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::RepositoryProofEntrySchema",
-};
+} as const;
 
 const PREDICATE_ORDER: Readonly<Record<string, number>> = {
   PRE_EXECUTION: 1,
@@ -150,7 +150,9 @@ const _buildProof = (
   if (outKind === "REPOSITORY_PROOF") catProofLevel = "REPOSITORY_PROOF";
   else if (outKind === "EXECUTION_PROOF") catProofLevel = "EXECUTION_PROOF";
   const schemaRef =
-    cat?.proof_schema_ref ?? PROOF_SCHEMA_MAP[catProofLevel] ?? PROOF_SCHEMA_MAP.TRANSFORMATION_PROOF;
+    cat?.proof_schema_ref ??
+    PROOF_SCHEMA_MAP[catProofLevel] ??
+    PROOF_SCHEMA_MAP.TRANSFORMATION_PROOF;
   const pattern =
     cat?.evidence_output_id_pattern ??
     cat?.evidence_output_id ??
@@ -163,7 +165,7 @@ const _buildProof = (
   return {
     proof_id_pattern: pattern,
     proof_level: catProofLevel,
-    proof_schema_zod_ref_path: schemaRef,
+    proof_schema_zod_ref_path: schemaRef ?? DEFAULT_PROOF_SCHEMA,
     required_predicate_count: required_count,
   };
 };
@@ -296,7 +298,7 @@ export const RESOLVER_REGISTRY_DOCUMENT = {
   count: _ALL_BUNDLES_CACHE.length,
 };
 
-export const resolve = (id: TRANSFORMATION_ID): ResolverResolutionBundle => {
+export const resolve = (id: TransformationId): ResolverResolutionBundle => {
   const found = _ALL_BUNDLES_CACHE.find((b) => b.transformation_id === id);
   if (!found) {
     throw new Error(
@@ -311,7 +313,7 @@ export const resolveAll = (): readonly ResolverResolutionBundle[] => _ALL_BUNDLE
 export const resolveRootOfTrust = (): ResolverResolutionBundle =>
   resolve(ROOT_OF_TRUST_TRANSFORMATION_ID);
 
-export const isBlocked = (id: TRANSFORMATION_ID): BlockedStatus => {
+export const isBlocked = (id: TransformationId): BlockedStatus => {
   const b = resolve(id);
   return b.dag.blocked
     ? { blocked: true, reason: b.dag.blocked_reason_if_true ?? "blocked per catalog rule" }

@@ -1,0 +1,628 @@
+version: 1.0.0
+status_projection_id: GATE-C-STATUS-001
+kind: OPERATIONAL_READ_MODEL
+status: ACTIVE
+projection_basis_hash: sha256:6467b085e8cc7c016fa246b0ece857de8424c5eeb8b289dfceab6e3cab8fd9df
+source_artifacts:
+  coverage_matrix_ref: execution/coverage-matrix.yaml
+  coverage_matrix_hash: sha256:1f74c4b0363d720ff699b7a2aac2fc63b32d0d29cae7749f6afaa91af56676e6
+  proof_ledger_ref: execution/proof-ledger.yaml
+  proof_ledger_hash: sha256:bfc3437ff65a631f12338a520f4f3690ec1f1eb1edfaea4b94d4e43ab533f23e
+  acceptance_contract_ref: execution/acceptance-contract.yaml
+  acceptance_contract_hash: sha256:82ff1a602b09b2ff917b31540b033ed7d5910eb707352aa06078d929cfdffc4b
+  acceptance_decisions_ref: execution/acceptance-decisions.yaml
+  acceptance_decisions_hash: sha256:b7fdd7fd3d2a6b1ab1d19741c191a3ab43be6808af5358aafaadb3171d484266
+  acceptance_reports_dir_ref: execution/acceptance
+  acceptance_evidence_file_count: 20
+  acceptance_evidence_inventory_hash: sha256:07d16441a31f8241663031671b9749e2b76fc54b4b1406908671d5b85438b4d0
+  constitution_summary_ref: workspace/foundation/evidence/verification/constitution-summary.json
+  constitution_summary_hash: sha256:1441a828c9bfcaba2dfbabfa5161b15d6af6e77376c7800c79193a5743553a4d
+  capability_dependency_constitution_ref: workspace/foundation/evidence/verification/capability-dependency-constitution.json
+  capability_dependency_constitution_hash: sha256:b6b6a7abf34fa36b3d9b7b4bc657595a54990e54a231abb817ddbcd85f93406f
+  contract_version_registry_ref: workspace/foundation/evidence/verification/contract-version-registry.json
+  contract_version_registry_hash: sha256:896358dcbddc78ad3ba9c76a25e949db854ccd174303baeb18ddc457f69c74c4
+  contract_version_evolution_ref: workspace/foundation/evidence/verification/contract-version-evolution.json
+  contract_version_evolution_hash: sha256:0c231e16c3979136e52aa6e6739ea8dffc153faaed3eeac95fd37cc1be86c1ec
+  governance_session_ref: workspace/foundation/evidence/verification/governance-session.json
+  governance_session_hash: sha256:f6ddc0a883cfce137c0939f946fcedf24d8c4e5d91625a6b7b6b23e69ecd40cb
+  trust_framework_ref: workspace/foundation/evidence/verification/trust-framework.json
+  trust_framework_hash: sha256:7d921629f85279ff9f1fbd3e390185e23dce2d24e3769b04e5c0376858527508
+  trust_framework_verification_ref: workspace/foundation/evidence/verification/trust-framework-verification.json
+  trust_framework_verification_hash: sha256:3921549950c63d0bfcbff5d1856cefa19248f198abddbe5330816f8f883f47a8
+  specification_conformance_ref: workspace/foundation/evidence/verification/specification-conformance-report.json
+  specification_conformance_hash: sha256:892e380a2e997a8ade741342c230fff6b6c3e21ad752b942d1e4172d5d4da6ff
+  specification_artifact_graph_ref: workspace/foundation/evidence/verification/specification-artifact-graph.json
+  specification_artifact_graph_hash: sha256:70962a249a1986f39172ca4cc594fb85bb26fffbabb62a9f20170e6086acadc9
+  specification_vocabulary_audit_ref: workspace/foundation/evidence/verification/specification-vocabulary-audit.json
+  specification_vocabulary_audit_hash: sha256:b2879a384de35287cc3303db469ea336c3ebd8a8e8b51ff975b9709cd7600e59
+  n2_run_ref: execution/runs/run-004
+  n4_run_ref: execution/runs/run-007
+  append_only_proof_ledger_enforced: true
+  proof_ledger_entry_count: 20
+  last_entry_hash: sha256:16bc622e86cab111953caa6bd95b34e185e0ade153bcaa5f7f849ee30cfcb971
+operational_rule:
+  evidence_immutability: HISTORICAL_EXECUTION_EVIDENCE_IMMUTABLE
+  projection_mutability: READ_MODELS_AND_STATUS_AGGREGATIONS_MUTABLE
+  rule: Never modify historical execution evidence. If operational interpretation changes, create or regenerate read models instead of mutating immutable evidence.
+governance_capabilities:
+  acceptance_evidence_immutability:
+    status: ENFORCED
+    storage_model: DECISION_SCOPED_APPEND_ONLY_ACCEPTANCE_REPORTS
+    note: Acceptance reports are written once per acceptance decision id and cannot be overwritten in place.
+  projection_regeneration:
+    status: DETERMINISTIC_REBUILD_CAPABLE
+    basis_hash: sha256:6467b085e8cc7c016fa246b0ece857de8424c5eeb8b289dfceab6e3cab8fd9df
+    note: Projection content is derived only from historical evidence, acceptance evidence, decision log, and proof ledger snapshot hashes.
+  platform_governance_snapshot:
+    status: HEALTHY
+    note: Gate C operational read model now carries repository-level governance evidence so scientific ratification can be interpreted alongside platform constitution, dependency law, and contract law status.
+acceptance_authority:
+  contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+  authority_artifact: execution/proof-ledger.yaml
+  invariant: Accepted(run) = Execution AND Verification AND Ledger
+  note: Run directories prove execution history. Proof Ledger proves accepted evidence corpus membership.
+state_machine:
+  lifecycle_vocabulary:
+    - PENDING
+    - EXECUTED
+    - VERIFIED
+    - LEDGERED
+    - ACCEPTED
+  note: Current projection emits PENDING, VERIFIED, and ACCEPTED based on observable evidence and ledger state.
+phase:
+  current: PHASE_3
+  phase_a_status: SUCCESS
+  gate_c1_framework_status: NEGATIVE_CONTROL_FRAMEWORK_OPERATIONAL
+science_kernel:
+  status: CALIBRATED_AND_FROZEN
+  bundle_sha256: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+baseline:
+  genesis_evidence_run_id: run-001
+  frozen_positive_control_replay_run_id: run-003
+  first_negative_control_run_id: run-002
+governance_platform:
+  constitution:
+    status: PASS
+    law_profile: enterprise
+    evidence_ref: workspace/foundation/evidence/verification/constitution-summary.json
+  dependency_graph:
+    status: PASS
+    dependency_cycles: 0
+    boundary_violations: 0
+    dependency_policy_violations: 0
+    evidence_ref: workspace/foundation/evidence/verification/capability-dependency-constitution.json
+  contract_governance:
+    status: PASS
+    evolution_status: PASS
+    ready_contracts: 3
+    ambiguous_provider_bindings: 0
+    unbounded_consumer_requirements: 0
+    evidence_ref: workspace/foundation/evidence/verification/contract-version-registry.json
+    evolution_ref: workspace/foundation/evidence/verification/contract-version-evolution.json
+  provenance:
+    status: COMPLETED
+    verification_status: PASS
+    session_id: governance-session:760bfc51dbebcd86
+    execution_scope: verify-foundation
+    read_model_count: 5
+    evidence_ref: workspace/foundation/evidence/verification/governance-session.json
+    verification_ref: workspace/foundation/evidence/verification/governance-session-verification.json
+  verification_run:
+    status: PASS
+    run_id: verification-run:807e815abb9f7df4
+    readiness_status: PASS
+    evidence_ref: workspace/foundation/evidence/verification/verification-run.json
+    verification_ref: workspace/foundation/evidence/verification/verification-run-verification.json
+  governance_catalog:
+    status: PASS
+    report_type_count: 8
+    evidence_ref: workspace/foundation/evidence/verification/governance-catalog.json
+    verification_ref: workspace/foundation/evidence/verification/governance-catalog-verification.json
+  capability_governance:
+    status: PASS
+    compatibility_status: PASS
+    compatibility_score: 100
+    unknown_dependency_class_count: 0
+    contract_drift_count: 0
+    migration_required_count: 0
+    evidence_ref: workspace/foundation/evidence/verification/capability-governance-index.json
+    verification_ref: workspace/foundation/evidence/verification/capability-governance-verification.json
+  capability_graph:
+    status: PASS
+    governance_health_status: WARN
+    health_domains:
+      structural:
+        status: WARN
+        cycle_count: 0
+        unknown_dependency_count: 0
+        unstable_dependency_count: 8
+        orphan_capability_count: 3
+      architectural:
+        status: PASS
+        forbidden_dependency_count: 0
+        layering_violation_count: 0
+        abstraction_leak_count: 0
+      governance:
+        status: WARN
+        ownership_gap_count: 16
+      evolution:
+        status: PASS
+        migration_debt_count: 0
+      evidence:
+        status: WARN
+        capability_without_evidence_count: 6
+        stale_evidence_count: 1
+        unverifiable_capability_count: 3
+    dependency_edge_count: 11
+    circular_dependency_count: 0
+    forbidden_dependency_count: 0
+    layering_violation_count: 0
+    abstraction_leak_count: 0
+    unknown_dependency_count: 0
+    unstable_dependency_count: 8
+    orphan_capability_count: 3
+    ownership_gap_count: 16
+    migration_debt_count: 0
+    capability_without_evidence_count: 6
+    stale_evidence_count: 1
+    unverifiable_capability_count: 3
+    warn_capability_count: 3
+    fail_capability_count: 0
+    evidence_ref: workspace/foundation/evidence/verification/capability-graph.json
+    verification_ref: workspace/foundation/evidence/verification/capability-graph-verification.json
+  enterprise_control_graph:
+    status: PASS
+    node_count: 67
+    edge_count: 124
+    disconnected_node_count: 0
+    evidence_ref: workspace/foundation/evidence/verification/enterprise-control-graph.json
+    verification_ref: workspace/foundation/evidence/verification/enterprise-control-graph-verification.json
+  architecture_fitness:
+    status: PASS
+    violated_metric_count: 0
+    evidence_ref: workspace/foundation/evidence/verification/architecture-fitness.json
+  read_model_selective_execution:
+    status: APPLIED
+    execution_mode: METADATA_ONLY_REBIND
+    delta_scope_status: METADATA_ONLY
+    reused_node_count: 4
+    rematerialized_node_count: 1
+    evidence_ref: workspace/foundation/evidence/verification/governance-read-model-selective-execution.json
+  trust_framework:
+    status: PASS
+    framework_count: 4
+    frameworks_with_full_spi_coverage: 4
+    attestation_lifecycle_status: PASS
+    attestation_terminal_event_readiness_status: PASS
+    attestation_terminal_event_count: 0
+    attestation_terminal_materialization_status: PASS
+    attestation_terminal_materialized_sample_count: 3
+    signature_provider_activation_status: PASS
+    signature_provider_adapter_count: 6
+    signature_materialization_status: PASS
+    signature_materialized_attestation_count: 8
+    signature_provider_spi: TrustSignatureProviderSPI
+    evidence_ref: workspace/foundation/evidence/verification/trust-framework.json
+    verification_ref: workspace/foundation/evidence/verification/trust-framework-verification.json
+    attestation_lifecycle_ref: workspace/foundation/evidence/verification/attestation-lifecycle-verification.json
+    attestation_lifecycle_materialization_ref: workspace/foundation/evidence/verification/attestation-lifecycle-materialization.json
+    signature_provider_registry_ref: workspace/foundation/evidence/verification/trust-signature-provider-registry.json
+    signature_provider_verification_ref: workspace/foundation/evidence/verification/trust-signature-provider-verification.json
+    signature_materialization_ref: workspace/foundation/evidence/verification/trust-signature-materialization.json
+  specification_system:
+    status: PASS
+    conformance_status: PASS
+    vocabulary_status: PASS
+    registry_artifact_count: 43
+    registry_edge_count: 92
+    rfc_count: 7
+    conf_count: 7
+    spec_count: 4
+    conformance_warning_count: 0
+    conformance_failure_count: 0
+    vocabulary_term_count: 10
+    vocabulary_duplicate_count: 0
+    conformance_ref: workspace/foundation/evidence/verification/specification-conformance-report.json
+    artifact_graph_ref: workspace/foundation/evidence/verification/specification-artifact-graph.json
+    vocabulary_audit_ref: workspace/foundation/evidence/verification/specification-vocabulary-audit.json
+coverage:
+  metric_definitions:
+    truth_table_row_completion_percent: Counts unique truth-table rows P1..N7 with completed actual verdicts.
+    operational_completion_percent: Operational internal projection metric from coverage-matrix. Currently counts P1, frozen positive-control replay baseline, and N1 milestone as completed units.
+  truth_table_rows_completed:
+    - P1
+    - N1
+    - N2
+    - N3
+    - N4
+    - N5
+    - N6
+    - N7
+  truth_table_rows_total: 8
+  truth_table_row_completion_percent: 100
+  operational_completed_units: 8
+  operational_total_units: 8
+  operational_completion_percent: 100
+  controls:
+    P1:
+      lifecycle_state: ACCEPTED
+      operational_status: PASS
+      expected_verdict: PASS
+      truth_table_row: P1
+      scientific_role: POSITIVE_CONTROL (baseline calibration PASS of the apparatus for a valid document-propose)
+      primary_run_id: run-001
+      replay_run_id: run-003
+      actual_verdict: PASS
+    N1:
+      lifecycle_state: ACCEPTED
+      operational_status: PASS
+      expected_verdict: FAIL
+      truth_table_row: N1
+      scientific_role: NEGATIVE_CONTROL — Individually falsifies Predicate A (Legitimate=false) while B and C are held constant at true. Uses policy_chain_matches_contract=false fixture to violate DerivesAuthorityFrom edge.
+      primary_run_id: run-002
+      run_id: run-002
+      actual_verdict: FAIL
+      expected_diagnostic_predicate_failure: pred_a_legitimate
+      actual_diagnostic_predicate_failure: pred_a_legitimate
+      convergence: CONVERGENT
+    N2:
+      lifecycle_state: VERIFIED
+      operational_status: VERIFIED
+      expected_verdict: FAIL
+      truth_table_row: N2
+      scientific_role: NEGATIVE_CONTROL — Individually falsifies Predicate B (MeaningPreserved=false) while A and C are held constant at true.
+      primary_run_id: run-004
+      run_id: run-004
+      actual_verdict: FAIL
+      actual_diagnostic_predicate_failure: pred_b_meaning_preserved
+      expected_diagnostic_predicate_failure: pred_b_meaning_preserved
+    N3:
+      lifecycle_state: VERIFIED
+      operational_status: VERIFIED
+      expected_verdict: FAIL
+      truth_table_row: N3
+      scientific_role: NEGATIVE_CONTROL — Jointly falsifies A and B (both false) while C is held constant at true.
+      primary_run_id: run-008
+      run_id: run-008
+      actual_verdict: FAIL
+      actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_b_meaning_preserved
+      expected_diagnostic_predicate_failure: pred_a_legitimate_and_pred_b_meaning_preserved
+    N4:
+      lifecycle_state: VERIFIED
+      operational_status: VERIFIED
+      expected_verdict: FAIL
+      truth_table_row: N4
+      scientific_role: NEGATIVE_CONTROL — Individually falsifies Predicate C (Provable=false) while A and B are held constant at true.
+      primary_run_id: run-005
+      run_id: run-005
+      actual_verdict: FAIL
+      actual_diagnostic_predicate_failure: pred_c_provable
+      expected_diagnostic_predicate_failure: pred_c_provable
+    N5:
+      lifecycle_state: VERIFIED
+      operational_status: VERIFIED
+      expected_verdict: FAIL
+      truth_table_row: N5
+      scientific_role: NEGATIVE_CONTROL — Jointly falsifies A and C (both false) while B is held constant at true.
+      primary_run_id: run-009
+      run_id: run-009
+      actual_verdict: FAIL
+      actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_c_provable
+      expected_diagnostic_predicate_failure: pred_a_legitimate_and_pred_c_provable
+    N6:
+      lifecycle_state: VERIFIED
+      operational_status: VERIFIED
+      expected_verdict: FAIL
+      truth_table_row: N6
+      scientific_role: NEGATIVE_CONTROL — Jointly falsifies B and C (both false) while A is held constant at true.
+      primary_run_id: run-010
+      run_id: run-010
+      actual_verdict: FAIL
+      actual_diagnostic_predicate_failure: pred_b_meaning_preserved_and_pred_c_provable
+      expected_diagnostic_predicate_failure: pred_b_meaning_preserved_and_pred_c_provable
+    N7:
+      lifecycle_state: VERIFIED
+      operational_status: VERIFIED
+      expected_verdict: FAIL
+      truth_table_row: N7
+      scientific_role: NEGATIVE_CONTROL — Jointly falsifies all three (A=false B=false C=false). Sanity check that all FAIL is recognized and diagnostic predicates enumerate all three.
+      primary_run_id: run-011
+      run_id: run-011
+      actual_verdict: FAIL
+      actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_b_meaning_preserved_and_pred_c_provable
+      expected_diagnostic_predicate_failure: pred_a_legitimate_and_pred_b_meaning_preserved_and_pred_c_provable
+  verification_audits:
+    n2:
+      run_id: run-004
+      truth_table_row: N2
+      status: EXECUTED_NOT_ACCEPTED
+      executed: true
+      acceptance_complete: false
+      lifecycle_state: VERIFIED
+      actual_verdict: FAIL
+      actual_diagnostic_predicate_failure: pred_b_meaning_preserved
+      invariant_results:
+        evidence_exists: true
+        replay_pass: true
+        witness_valid: true
+        manifest_valid: true
+        no_instrument_drift: true
+        expected_verdict_achieved: true
+        expected_predicate_achieved: true
+        canonical_convergence: true
+        ledger_appended: true
+      checklist:
+        fixture_canonical: true
+        truth_table_mapping: true
+        transformation_deterministic: true
+        oracle_diagnosis_sesuai_spesifikasi: true
+        verdict_fail: true
+        witness_valid: true
+        manifest_valid: true
+        proof_ledger_bertambah: true
+        replay_pass_reproducibility: true
+        canonical_evidence_convergence: true
+        science_kernel_unchanged: true
+        run_001_unchanged: false
+      blocking_conditions:
+        - run_001_unchanged
+    n3:
+      run_id: run-008
+      truth_table_row: N3
+      status: EXECUTED_NOT_ACCEPTED
+      executed: true
+      acceptance_complete: false
+      lifecycle_state: VERIFIED
+      actual_verdict: FAIL
+      actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_b_meaning_preserved
+      invariant_results:
+        evidence_exists: true
+        replay_pass: true
+        witness_valid: true
+        manifest_valid: true
+        no_instrument_drift: true
+        expected_verdict_achieved: true
+        expected_predicate_achieved: true
+        canonical_convergence: true
+        ledger_appended: true
+      checklist:
+        fixture_canonical: true
+        truth_table_mapping: true
+        transformation_deterministic: true
+        oracle_diagnosis_sesuai_spesifikasi: true
+        verdict_fail: true
+        witness_valid: true
+        manifest_valid: true
+        proof_ledger_bertambah: true
+        replay_pass_reproducibility: true
+        canonical_evidence_convergence: true
+        science_kernel_unchanged: true
+        run_001_unchanged: false
+      blocking_conditions:
+        - run_001_unchanged
+    n4:
+      run_id: run-007
+      truth_table_row: N4
+      status: EXECUTED_NOT_ACCEPTED
+      executed: true
+      acceptance_complete: false
+      lifecycle_state: VERIFIED
+      actual_verdict: FAIL
+      actual_diagnostic_predicate_failure: pred_c_provable
+      invariant_results:
+        evidence_exists: true
+        replay_pass: true
+        witness_valid: true
+        manifest_valid: true
+        no_instrument_drift: true
+        expected_verdict_achieved: true
+        expected_predicate_achieved: true
+        canonical_convergence: true
+        ledger_appended: true
+      checklist:
+        fixture_canonical: true
+        truth_table_mapping: true
+        transformation_deterministic: true
+        oracle_diagnosis_sesuai_spesifikasi: true
+        verdict_fail: true
+        witness_valid: true
+        manifest_valid: true
+        proof_ledger_bertambah: true
+        replay_pass_reproducibility: true
+        canonical_evidence_convergence: true
+        science_kernel_unchanged: true
+        run_001_unchanged: false
+      blocking_conditions:
+        - run_001_unchanged
+    n5:
+      run_id: run-009
+      truth_table_row: N5
+      status: EXECUTED_NOT_ACCEPTED
+      executed: true
+      acceptance_complete: false
+      lifecycle_state: VERIFIED
+      actual_verdict: FAIL
+      actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_c_provable
+      invariant_results:
+        evidence_exists: true
+        replay_pass: true
+        witness_valid: true
+        manifest_valid: true
+        no_instrument_drift: true
+        expected_verdict_achieved: true
+        expected_predicate_achieved: true
+        canonical_convergence: true
+        ledger_appended: true
+      checklist:
+        fixture_canonical: true
+        truth_table_mapping: true
+        transformation_deterministic: true
+        oracle_diagnosis_sesuai_spesifikasi: true
+        verdict_fail: true
+        witness_valid: true
+        manifest_valid: true
+        proof_ledger_bertambah: true
+        replay_pass_reproducibility: true
+        canonical_evidence_convergence: true
+        science_kernel_unchanged: true
+        run_001_unchanged: false
+      blocking_conditions:
+        - run_001_unchanged
+    n6:
+      run_id: run-010
+      truth_table_row: N6
+      status: EXECUTED_NOT_ACCEPTED
+      executed: true
+      acceptance_complete: false
+      lifecycle_state: VERIFIED
+      actual_verdict: FAIL
+      actual_diagnostic_predicate_failure: pred_b_meaning_preserved_and_pred_c_provable
+      invariant_results:
+        evidence_exists: true
+        replay_pass: true
+        witness_valid: true
+        manifest_valid: true
+        no_instrument_drift: true
+        expected_verdict_achieved: true
+        expected_predicate_achieved: true
+        canonical_convergence: true
+        ledger_appended: true
+      checklist:
+        fixture_canonical: true
+        truth_table_mapping: true
+        transformation_deterministic: true
+        oracle_diagnosis_sesuai_spesifikasi: true
+        verdict_fail: true
+        witness_valid: true
+        manifest_valid: true
+        proof_ledger_bertambah: true
+        replay_pass_reproducibility: true
+        canonical_evidence_convergence: true
+        science_kernel_unchanged: true
+        run_001_unchanged: false
+      blocking_conditions:
+        - run_001_unchanged
+    n7:
+      run_id: run-011
+      truth_table_row: N7
+      status: EXECUTED_NOT_ACCEPTED
+      executed: true
+      acceptance_complete: false
+      lifecycle_state: VERIFIED
+      actual_verdict: FAIL
+      actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_b_meaning_preserved_and_pred_c_provable
+      invariant_results:
+        evidence_exists: true
+        replay_pass: true
+        witness_valid: true
+        manifest_valid: true
+        no_instrument_drift: true
+        expected_verdict_achieved: true
+        expected_predicate_achieved: true
+        canonical_convergence: true
+        ledger_appended: true
+      checklist:
+        fixture_canonical: true
+        truth_table_mapping: true
+        transformation_deterministic: true
+        oracle_diagnosis_sesuai_spesifikasi: true
+        verdict_fail: true
+        witness_valid: true
+        manifest_valid: true
+        proof_ledger_bertambah: true
+        replay_pass_reproducibility: true
+        canonical_evidence_convergence: true
+        science_kernel_unchanged: true
+        run_001_unchanged: false
+      blocking_conditions:
+        - run_001_unchanged
+  verification_metrics:
+    diagnostic_accuracy:
+      formula: Correct Diagnostic Verdict / Executed Negative-Control Scenarios With Diagnostic Expectation
+      numerator: 7
+      denominator: 7
+      value: 1
+      note: Counts N1 together with all executed negative controls whose diagnostic predicate attribution matches specification.
+    apparatus_stability:
+      formula: Convergent Replays / Total Frozen-Apparatus Replay Evaluations
+      numerator: 8
+      denominator: 8
+      value: 1
+      note: Counts replay and convergence evidence under the frozen apparatus across P1 baseline and executed negative controls.
+    instrument_drift:
+      formula: Instrument Changes / Executed Frozen-Apparatus Experiments
+      numerator: 0
+      denominator: 8
+      value: 0
+      note: Counts observed drift against the frozen isolation snapshot across the P1 baseline and executed negative controls.
+    acceptance_integrity:
+      formula: Accepted Evidence / Acceptance Attempts
+      numerator: 6
+      denominator: 8
+      value: 0.75
+      status: ACTIVE
+      note: Counts append-only acceptance decisions recorded under the frozen acceptance contract.
+overall:
+  gate_c1_status: TECHNICALLY_COMPLETE_GOVERNANCE_RATIFICATION_PENDING
+  currently_supported_claim: Gate C1 evidence complete; governance ratification pending.
+  constitutional_status: PASS
+  dependency_constitution_status: PASS
+  contract_registry_status: PASS
+  contract_version_evolution_status: PASS
+  governance_session_status: COMPLETED
+  governance_session_verification_status: PASS
+  verification_run_status: PASS
+  governance_catalog_status: PASS
+  capability_governance_status: PASS
+  capability_governance_compatibility_status: PASS
+  capability_graph_status: PASS
+  capability_graph_governance_health_status: WARN
+  capability_graph_structural_health_status: WARN
+  capability_graph_architectural_health_status: PASS
+  capability_graph_governance_domain_status: WARN
+  capability_graph_evolution_health_status: PASS
+  capability_graph_evidence_health_status: WARN
+  capability_graph_cycle_count: 0
+  capability_graph_orphan_capability_count: 3
+  capability_graph_forbidden_dependency_count: 0
+  capability_graph_layering_violation_count: 0
+  capability_graph_abstraction_leak_count: 0
+  capability_graph_unstable_dependency_count: 8
+  capability_graph_unknown_dependency_count: 0
+  capability_graph_ownership_gap_count: 16
+  capability_graph_migration_debt_count: 0
+  capability_graph_capability_without_evidence_count: 6
+  capability_graph_stale_evidence_count: 1
+  capability_graph_unverifiable_capability_count: 3
+  enterprise_control_graph_status: PASS
+  architecture_fitness_status: PASS
+  governance_incremental_materialization_status: PASS
+  governance_incremental_delta_mode: SESSION_DELTA
+  governance_incremental_delta_scope_status: METADATA_ONLY
+  governance_read_model_selective_execution_status: APPLIED
+  governance_read_model_selective_execution_mode: METADATA_ONLY_REBIND
+  governance_read_model_selective_execution_delta_scope_status: METADATA_ONLY
+  trust_framework_status: PASS
+  attestation_lifecycle_status: PASS
+  attestation_lifecycle_materialization_status: PASS
+  trust_signature_provider_status: PASS
+  trust_signature_materialization_status: PASS
+  specification_system_status: PASS
+  specification_conformance_status: PASS
+  specification_vocabulary_status: PASS
+  specification_registry_artifact_count: 43
+  specification_registry_edge_count: 92
+  specification_rfc_count: 7
+  specification_conf_count: 7
+  specification_spec_count: 4
+  specification_conformance_warning_count: 0
+  specification_conformance_failure_count: 0
+  specification_vocabulary_term_count: 10
+  specification_vocabulary_duplicate_count: 0
+  unsupported_claims:
+    - Gate C1 complete
+    - CC-001 corroborated
+    - CC-001 proven
+next_actions:
+  - "P2: Conduct constitutional review over the ratified Gate C1 evidence corpus."
+  - Maintain Gate C architecture freeze unless constitutional review finds reproducible defect evidence.

@@ -1,28 +1,74 @@
+## LawyersHub Delivery Surface
+
+LawyersHub is the active EOS product surface for delivery-phase capability work.
+
+Current capabilities:
+
+- `legal-case`
+- `legal-document`
+- `requirement-management`
+- `requirements-traceability-matrix` (API delivery surface)
+- `evidence-registry` (API delivery surface)
+- `workflow-engine` (API delivery surface)
+- `api-platform` (authenticated gateway surface)
+- `agent-orchestration` (dispatch runtime surface)
+- `observability` (logs, metrics, traces surface)
+- `security-hardening` (authz and secret enforcement)
+- `connector-ecosystem` (export and sync runtime surface)
+- `knowledge-graph` (graph query surface)
+
+Current API routes:
+
+- `GET/POST /api/cases`
+- `GET/PATCH/DELETE /api/cases/:id`
+- `GET/POST /api/requirements`
+- `GET/PATCH /api/requirements/:id`
+- `GET /api/rtm`
+- `GET /api/rtm/:id`
+- `GET /api/evidence`
+- `GET /api/evidence/:id`
+- `GET /api/connectors`
+- `GET /api/connectors/:id`
+- `POST /api/connectors/:id/sync`
+- `GET /api/graph`
+- `GET /api/graph/:id`
+- `GET /api/workflows`
+- `GET /api/workflows/:id`
+- `POST /api/workflows/:id/execute`
+- `GET /api/orchestration`
+- `GET /api/orchestration/:id`
+- `POST /api/orchestration/:id/dispatch`
+- `GET /api/observability/logs`
+- `GET /api/observability/metrics`
+- `GET /api/observability/traces`
+- `GET /api/platform`
+- `POST /api/platform/query`
+
+Current UI routes:
+
+- `GET /`
+- `GET /platform`
+
+Authenticated API Platform header:
+
+- `x-eos-api-key: eos-dev-key`
+
+Security environment variables:
+
+- `EOS_API_KEY`
+- `EOS_API_KEY_SCOPES`
+- `EOS_STRICT_AUTH`
+
 ## Getting Started
 
-First, run the development server:
+Run the development server:
 
 ```bash
 yarn dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001) with your browser to see the result.
+Open [http://localhost:3001](http://localhost:3001) with your browser to use the current workspace runtime.
 
 You can start editing the page by modifying `src/app/page.tsx`. The page auto-updates as you edit the file.
 
-To create [API routes](https://nextjs.org/docs/app/building-your-application/routing/router-handlers) add an `api/` directory to the `app/` directory with a `route.ts` file. For individual endpoints, create a subfolder in the `api` directory, like `api/hello/route.ts` would map to [http://localhost:3001/api/hello](http://localhost:3001/api/hello).
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn/foundations/about-nextjs) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_source=github.com&utm_medium=referral&utm_campaign=turborepo-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The workspace manifest lives in `workspace.manifest.ts` and is the canonical app-level registry adapter for mounted capabilities.

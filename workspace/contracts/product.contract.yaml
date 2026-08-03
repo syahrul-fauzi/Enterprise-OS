@@ -1,0 +1,41 @@
+contract:
+  id: PRODUCT-CONTRACT-V1
+  name: canonical_product_composition_contract
+  status: DRAFT
+  purpose: Define the canonical composition contract for Product Domain artifacts.
+  composition_artifact: product.yaml
+  output: Deployable Product
+  consumers:
+    - product_composer
+    - deployment_pipeline
+    - licensing_service
+    - release_governance
+  schema:
+    identity:
+      id: string
+      name: string
+      version: semver
+    composition:
+      experiences: array
+      enabled_surfaces: array
+    branding:
+      product_name: string
+      theme: optional
+    licensing:
+      tier: string
+      policy_refs: array | optional
+    packaging:
+      deployable_units: array
+      artifact_profile: string
+    deployment_profile:
+      environment_targets: array
+      rollout_strategy: string
+      feature_flags: array | optional
+  invariants:
+    - product_must_select_experiences_not_raw_capabilities
+    - product_must_declare_deployment_profile
+    - product_must_keep_branding_and_licensing_inside_product_domain
+  anti_patterns:
+    - direct_capability_binding_from_product
+    - duplicating_experience_navigation_inside_product_descriptor
+    - embedding_surface_runtime_logic_into_product_definition

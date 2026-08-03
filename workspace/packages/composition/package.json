@@ -4,8 +4,12 @@
   "files": [
     "dist"
   ],
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
     "./workspace": "./dist/workspace/index.js",
     "./regions": "./dist/regions/index.js",
     "./slots": "./dist/slots/index.js",

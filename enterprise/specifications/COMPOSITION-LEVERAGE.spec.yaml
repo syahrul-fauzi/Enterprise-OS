@@ -1,0 +1,35 @@
+specification:
+  id: EOS-CLR-001
+  name: composition_leverage_specification
+  status: DRAFT
+  version: 1.0.0
+  purpose: Define measurable leverage metrics that prove EOS compositions are reusing the platform instead of rebuilding it.
+
+references:
+  layered_architecture: enterprise/governance/EOS-THREE-DOMAIN-ARCHITECTURE.md
+  roadmap: enterprise/execution/ROADMAP.yaml
+  governance_domain: enterprise/specifications/GOVERNANCE-DOMAIN.spec.yaml
+  product_composition: enterprise/specifications/PRODUCT-COMPOSITION.spec.yaml
+  experience_platform: enterprise/specifications/EXPERIENCE-PLATFORM.spec.yaml
+
+metrics:
+  composition_leverage_ratio:
+    formula: reused_capabilities / new_capabilities
+    interpretation:
+      high: product is leveraging EOS effectively
+      low: product is creating too much new capability and underusing the platform
+    target:
+      mature_product_minimum: 0.80
+  experience_module_reuse_ratio:
+    formula: reused_experience_modules / total_experience_modules
+    target:
+      minimum: 0.70
+  surface_reuse_ratio:
+    formula: reused_surfaces / total_surfaces
+    target:
+      minimum: 0.60
+
+governance_rules:
+  - leverage_metrics_must_be_reviewed_for_new_product_compositions
+  - low_clr_should_trigger_architectural_review
+  - reuse_should_be_preferred_before_new_capability_or_surface_creation

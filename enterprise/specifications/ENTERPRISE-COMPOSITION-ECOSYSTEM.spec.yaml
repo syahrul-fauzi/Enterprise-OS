@@ -1,0 +1,56 @@
+specification:
+  id: EOS-ECO-001
+  name: enterprise_composition_ecosystem_specification
+  status: DRAFT
+  version: 1.0.0
+  purpose: Define the ecosystem model that extends EOS from a composition platform into a governed enterprise composition ecosystem.
+  constraint: Enterprise Composition Ecosystem is architectural vision and governed portfolio framing, not a separate domain or runtime layer.
+
+references:
+  roadmap: enterprise/execution/ROADMAP.yaml
+  enterprise_control_plane: enterprise/specifications/ENTERPRISE-CONTROL-PLANE.spec.yaml
+  governance_domain: enterprise/specifications/GOVERNANCE-DOMAIN.spec.yaml
+  governance_portfolio: enterprise/specifications/GOVERNANCE-PORTFOLIO.yaml
+  product_portfolio: enterprise/specifications/PRODUCT-PORTFOLIO.yaml
+
+ecosystem:
+  identity: Enterprise Composition Ecosystem
+  statement: EOS governs reusable catalogs of capabilities, experiences, products, deployment profiles, and policy packs through the Enterprise Control Plane.
+  catalogs:
+    - name: Capability Marketplace
+      assets:
+        - reusable_capability_library
+        - domain_capability_packs
+    - name: Experience Marketplace
+      assets:
+        - workspace_experience
+        - admin_console_experience
+        - crm_experience
+        - marketplace_experience
+        - legal_practice_experience
+        - community_experience
+        - media_experience
+    - name: Product Marketplace
+      assets:
+        - industry_product_blueprints
+        - reusable_product_templates
+    - name: Deployment Profile Catalog
+      assets:
+        - saas
+        - on_premise
+        - sovereign_cloud
+        - hybrid
+        - air_gapped
+    - name: Governance Policy Catalog
+      assets:
+        - iso_27001
+        - soc_2
+        - pdp_indonesia
+        - gdpr
+        - hipaa
+
+rules:
+  - ecosystem_assets_must_be_governed_through_portfolio_controls
+  - new_products_should_prefer_existing_catalog_assets_before_new_asset_creation
+  - ecp_must_resolve_catalog_dependencies_before_promotion
+  - ecosystem_framing_must_not_expand_public_domain_model_beyond_five_domains

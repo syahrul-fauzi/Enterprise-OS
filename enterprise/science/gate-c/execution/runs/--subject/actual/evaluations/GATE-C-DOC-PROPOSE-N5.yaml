@@ -1,0 +1,13 @@
+version: 1.0.0
+subject_id: GATE-C-DOC-PROPOSE-N5
+oracle_id: GATE-C-ORACLE-001
+predicates:
+  pred_a_legitimate: false
+  pred_b_meaning_preserved: true
+  pred_c_provable: false
+ia20_constitutional_validity: false
+truth_table_row_matched: N5
+expected_vector_match: true
+expected_evaluation_match: true
+independence_test_result: PASS
+evaluation_result: FAIL

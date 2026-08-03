@@ -120,5 +120,148 @@ entries:
     verdict: PASS
     hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
     entry_hash: sha256:dfd6d77e67abe77a11556e0bb2ce87b4fb2722120fadecffb468b515a188600c
-count: 9
-last_entry_hash: sha256:dfd6d77e67abe77a11556e0bb2ce87b4fb2722120fadecffb468b515a188600c
+  - entry_id: GATE-C1-ACCEPT-010
+    run_id: run-004
+    subject_id: GATE-C-DOC-PROPOSE-N2
+    manifest_ref: execution/runs/run-004/run-manifest.yaml
+    report_ref: execution/runs/run-004/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:894f4394b3a10d03b931c98c6ba94f6fb92e8191c37d8c78300993b134665581
+    replay_canonical_evidence_hash: sha256:894f4394b3a10d03b931c98c6ba94f6fb92e8191c37d8c78300993b134665581
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:3d517892ca365ee458cdaf3b0120fc01730ef9674f4cd1477fe96539f54e89e0
+  - entry_id: GATE-C1-N-011
+    run_id: run-005
+    subject_id: GATE-C-DOC-PROPOSE-N4
+    manifest_ref: execution/runs/run-005/run-manifest.yaml
+    report_ref: execution/runs/run-005/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:38c397c7feb52187e1108cdb8dd3db0d064b4bbd13e7c9801ef84114ab5c48a7
+    original_canonical_evidence_hash: sha256:9e97fad161cca56b5c8461ee04aaf46659fff042d99e34e336aff128fe6e4da8
+    replay_canonical_evidence_hash: sha256:9e97fad161cca56b5c8461ee04aaf46659fff042d99e34e336aff128fe6e4da8
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:80d451f3bac46a23ccf0c985ff2621b726df7d543e94b786480ed7a2057e37cd
+  - entry_id: GATE-C1-ACCEPT-012
+    run_id: run-007
+    subject_id: GATE-C-DOC-PROPOSE-N4
+    manifest_ref: execution/runs/run-007/run-manifest.yaml
+    report_ref: execution/runs/run-007/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:c9f663f43d275281bf9e82401b0a66d6f7034ad79f1590f8561b6d311929411b
+    replay_canonical_evidence_hash: sha256:c9f663f43d275281bf9e82401b0a66d6f7034ad79f1590f8561b6d311929411b
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:197eddc3f51c70e238ddbe0279eb9e53178d4325d5c1a2d79add442ec1cc9b45
+  - entry_id: GATE-C1-ACCEPT-013
+    run_id: run-008
+    subject_id: GATE-C-DOC-PROPOSE-N3
+    manifest_ref: execution/runs/run-008/run-manifest.yaml
+    report_ref: execution/runs/run-008/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:eb9698fcaa41172c78021f3ac6cf3d987ba2d636b9d249ba478bb72f4f6a73a4
+    replay_canonical_evidence_hash: sha256:eb9698fcaa41172c78021f3ac6cf3d987ba2d636b9d249ba478bb72f4f6a73a4
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:b59d74d60d21fdcf5726ac7d2e4bda8aa3de89da84f1302d669ce94d380e199f
+  - entry_id: GATE-C1-ACCEPT-014
+    run_id: run-009
+    subject_id: GATE-C-DOC-PROPOSE-N5
+    manifest_ref: execution/runs/run-009/run-manifest.yaml
+    report_ref: execution/runs/run-009/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:c35f029a744d706412bc87d4599732e6e2688c15f081ed6c86339bfaece0d3e0
+    replay_canonical_evidence_hash: sha256:c35f029a744d706412bc87d4599732e6e2688c15f081ed6c86339bfaece0d3e0
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:5a0a9ded8f1309d772b86b42505112db2c8f54b152344359f496cd6b4cbc428b
+  - entry_id: GATE-C1-ACCEPT-015
+    run_id: run-010
+    subject_id: GATE-C-DOC-PROPOSE-N6
+    manifest_ref: execution/runs/run-010/run-manifest.yaml
+    report_ref: execution/runs/run-010/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:7caf6e734990a2b8132b2c226b97680cef7437d1161630972191f4723207f125
+    replay_canonical_evidence_hash: sha256:7caf6e734990a2b8132b2c226b97680cef7437d1161630972191f4723207f125
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:ae9b11cfe28f937db2155d4b8ba8227956a5621914faae720726ab655e354b9f
+  - entry_id: GATE-C1-ACCEPT-016
+    run_id: run-011
+    subject_id: GATE-C-DOC-PROPOSE-N7
+    manifest_ref: execution/runs/run-011/run-manifest.yaml
+    report_ref: execution/runs/run-011/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:df1d4d495351cac753f56735a57957b4e18aa3702f1b58b2f55536bc273956a0
+    replay_canonical_evidence_hash: sha256:df1d4d495351cac753f56735a57957b4e18aa3702f1b58b2f55536bc273956a0
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:430b5a4998440321fe5d39a32102c159614427494cb3441115c1eb10296eb0f7
+  - entry_id: GATE-C-GENESIS-017
+    run_id: run-001
+    subject_id: GATE-C-DOC-PROPOSE
+    manifest_ref: execution/runs/run-001/run-manifest.yaml
+    report_ref: execution/runs/run-001/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:4d20e540dc2d7d9a05959977ea10091647e12ed22353476a4a72b7fb9c567b1f
+    replay_canonical_evidence_hash: sha256:4d20e540dc2d7d9a05959977ea10091647e12ed22353476a4a72b7fb9c567b1f
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:35492c918f8db8ccdb72299377768ffea3984e82be8a51390f979fb2393e7de7
+  - entry_id: GATE-C-GENESIS-018
+    run_id: run-001
+    subject_id: GATE-C-DOC-PROPOSE
+    manifest_ref: execution/runs/run-001/run-manifest.yaml
+    report_ref: execution/runs/run-001/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:4d20e540dc2d7d9a05959977ea10091647e12ed22353476a4a72b7fb9c567b1f
+    replay_canonical_evidence_hash: sha256:4d20e540dc2d7d9a05959977ea10091647e12ed22353476a4a72b7fb9c567b1f
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:387a8e8b0e493bbe1d3434b910f2e8514dfe8789ccbb073b3a65a362f06abf01
+  - entry_id: GATE-C-GENESIS-019
+    run_id: run-001
+    subject_id: GATE-C-DOC-PROPOSE
+    manifest_ref: execution/runs/run-001/run-manifest.yaml
+    report_ref: execution/runs/run-001/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:4d20e540dc2d7d9a05959977ea10091647e12ed22353476a4a72b7fb9c567b1f
+    replay_canonical_evidence_hash: sha256:4d20e540dc2d7d9a05959977ea10091647e12ed22353476a4a72b7fb9c567b1f
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:88699cf3f5948913922a0c6dcd9f9af2c562a4ea80f402de6730edacacae850e
+  - entry_id: GATE-C-GENESIS-020
+    run_id: run-001
+    subject_id: GATE-C-DOC-PROPOSE
+    manifest_ref: execution/runs/run-001/run-manifest.yaml
+    report_ref: execution/runs/run-001/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:4d20e540dc2d7d9a05959977ea10091647e12ed22353476a4a72b7fb9c567b1f
+    replay_canonical_evidence_hash: sha256:4d20e540dc2d7d9a05959977ea10091647e12ed22353476a4a72b7fb9c567b1f
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:16bc622e86cab111953caa6bd95b34e185e0ade153bcaa5f7f849ee30cfcb971
+count: 20
+last_entry_hash: sha256:16bc622e86cab111953caa6bd95b34e185e0ade153bcaa5f7f849ee30cfcb971

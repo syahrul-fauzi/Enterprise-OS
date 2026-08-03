@@ -1,4 +1,4 @@
-import { documentRoutes } from "../experience/routes";
+import { documentExperienceRoutes } from "../experience/routes";
 
 export interface DocumentCompositionRouteDescriptor {
   readonly id: string;
@@ -11,7 +11,7 @@ export interface DocumentCompositionRouteDescriptor {
 
 export const documentCompositionRoutes: readonly DocumentCompositionRouteDescriptor[] = (() => {
   const out: DocumentCompositionRouteDescriptor[] = [];
-  for (const [id, pathEntry] of Object.entries(documentRoutes.paths)) {
+  for (const [id, pathEntry] of Object.entries(documentExperienceRoutes.paths)) {
     if (pathEntry === null || pathEntry === undefined) continue;
     if (typeof pathEntry === "string") {
       out.push({

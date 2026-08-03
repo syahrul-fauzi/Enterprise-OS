@@ -1,0 +1,121 @@
+version: "1.0"
+status: ACTIVE
+gate_id: EOS-PQG-001
+gate_name: Production Qualification Gate
+phase: "Phase 6"
+objective: EOS v1.0 may be labeled Production Ready only after all operational qualification controls are proven.
+
+qualification_targets:
+  capability_completeness: PASS
+  contract_compatibility: PASS
+  regression_suite: PASS
+  performance_benchmark: PASS
+  load_and_stress_test: PASS
+  chaos_engineering: PASS
+  security_audit: PASS
+  sbom_and_supply_chain: PASS
+  backup_and_restore_validation: PASS
+  rollback_validation: PASS
+  observability_coverage: PASS
+  slo_and_alerting: PASS
+  operational_runbooks: PASS
+  release_governance: PASS
+
+workstreams:
+  WS-01:
+    name: Performance and Scalability
+    status: READY
+    targets:
+      - baseline_benchmark
+      - load_testing
+      - stress_testing
+      - soak_testing
+      - capacity_planning
+      - performance_budget
+    deliverables:
+      - benchmark_report
+      - performance_dashboard
+      - sla_validation
+
+  WS-02:
+    name: Reliability and Resilience
+    status: READY
+    targets:
+      - retry_strategy
+      - timeout_policy
+      - circuit_breaker
+      - bulkhead_isolation
+      - graceful_degradation
+      - idempotency
+      - chaos_testing
+    deliverables:
+      - resilience_report
+      - chaos_scenarios
+      - failure_matrix
+
+  WS-03:
+    name: Release Governance
+    status: READY
+    targets:
+      - semantic_versioning
+      - release_pipeline
+      - artifact_signing
+      - sbom
+      - changelog_automation
+      - rollback_automation
+      - canary_deployment
+      - blue_green_deployment
+    deliverables:
+      - release_handbook
+      - deployment_playbook
+
+  WS-04:
+    name: Security Hardening
+    status: READY
+    targets:
+      - sast
+      - dast
+      - dependency_scanning
+      - secret_scanning
+      - supply_chain_verification
+      - container_hardening
+      - cis_benchmark
+      - threat_model_review
+    deliverables:
+      - security_assessment
+      - risk_register
+      - remediation_backlog
+
+  WS-05:
+    name: Observability Excellence
+    status: READY
+    targets:
+      - opentelemetry
+      - distributed_tracing
+      - prometheus_metrics
+      - grafana_dashboards
+      - alert_rules
+      - slo
+      - error_budget
+      - runbooks
+    deliverables:
+      - operations_dashboard
+      - alert_catalog
+      - operational_playbooks
+
+  WS-06:
+    name: Disaster Recovery
+    status: READY
+    targets:
+      - backup_automation
+      - restore_validation
+      - recovery_drills
+      - rpo_validation
+      - rto_validation
+      - failover_testing
+    deliverables:
+      - dr_report
+      - recovery_procedures
+
+promotion_rule:
+  eos_v1_0_production_ready: all qualification_targets MUST equal PASS

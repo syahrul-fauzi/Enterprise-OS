@@ -22,10 +22,11 @@ export * from "./resolver";
 export type * from "./resolver";
 export * from "./compose";
 export type * from "./compose";
+export * from "./execution-graph";
+export type * from "./execution-graph";
 export * from "./arch15-determinism";
 export type * from "./arch15-determinism";
 export * from "./arch16-boundary";
 export type * from "./arch16-boundary";
 export * from "./certification";
 export type * from "./certification";
-

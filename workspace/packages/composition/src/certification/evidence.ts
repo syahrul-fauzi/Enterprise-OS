@@ -1012,7 +1012,7 @@ export function buildEmptyProvenanceGraph(): CertificationProvenanceGraph {
 }
 
 function edgeSha(raw: Record<string, unknown>): ProvenanceEdgeIdType {
-  return ProvenanceEdgeIdBrand(sha256HexSyncOrThrow(canonicalSerialize(raw as any) as unknown as string));
+  return ProvenanceEdgeIdBrand(sha256HexSyncOrThrow(canonicalSerialize(raw) as unknown as string));
 }
 
 export type PerObservationOutcomeAssigner = (
@@ -2066,5 +2066,4 @@ export function enrichGraphWithAlpha11EmpiricalReplication(
     claimConsensusIndex: baseGraph.claimConsensusIndex,
   });
 }
-
 

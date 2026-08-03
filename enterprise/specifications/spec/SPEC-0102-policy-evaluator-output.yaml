@@ -1,0 +1,59 @@
+spec_id: "SPEC-0102"
+title: "Policy Evaluator Output"
+status: "Draft"
+owner: "Lead Enterprise Architect"
+governed_by:
+  - "RFC-0001"
+  - "RFC-0003"
+kind: "contract_object"
+version: "0.1.0"
+source_bindings:
+  runtime_contracts:
+    - "workspace/packages/tooling/eos-cli/src/runtime-contracts/models/evaluation.ts"
+  conformance:
+    - "enterprise/specifications/conformance/CONF-0003-evaluator-spi-conformance.md"
+schema:
+  type: "object"
+  additionalProperties: false
+  required:
+    - "evaluation_id"
+    - "evaluator_id"
+    - "evaluator_domain"
+    - "evaluator_version"
+    - "graph_reference"
+    - "evaluation_status"
+    - "policy_results"
+    - "findings"
+    - "produced_at"
+  properties:
+    evaluation_id:
+      type: "string"
+    evaluator_id:
+      type: "string"
+    evaluator_domain:
+      type: "string"
+    evaluator_version:
+      type: "string"
+    graph_reference:
+      ref: "EnterpriseControlGraphReferenceSchema"
+    evaluation_status:
+      enum:
+        - "PASS"
+        - "WARN"
+        - "FAIL"
+        - "NOT_APPLICABLE"
+    evaluated_scope:
+      ref: "FactReferenceSchema"
+      nullable: true
+    policy_results:
+      items:
+        ref: "SPEC-0103"
+    findings:
+      items:
+        ref: "PolicyEvaluationFindingSchema"
+    required_actions:
+      items:
+        type: "string"
+    produced_at:
+      type: "string"
+      format: "timestamp"

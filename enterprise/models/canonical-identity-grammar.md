@@ -1,15 +1,19 @@
 
-# Enterprise OS — Canonical Identity Grammar
+# Enterprise OS — URN Binding Profile For EKL Models
 ## Status
-✅ Normative (v1.0.0)
+Reference profile (v1.0.0)
 ## Purpose
-Define the canonical grammar for unique, stable identifiers for all EKL entities, packages, and artifacts.
+Bind model-layer URN examples to the canonical vocabulary already governed by
+`enterprise/constitution/lexicon.yaml` and `RFC-0001`. This document is a
+consumer profile and MUST NOT be treated as an independent source of language
+truth.
 ## Authority
 Lead Enterprise Architect
 ## Scope
-All phases; applies to every canonical object, package, and EKL artifact.
+Model-layer examples for EKL entities, packages, and artifacts.
 ## Normative Rules
-All canonical identifiers MUST conform to the grammar defined below.
+All URN examples in this profile MUST remain aligned with the constitutional
+language anchors above.
 ## Grammar
 URN format as specified below.
 ## Constraints
@@ -26,8 +30,9 @@ See below.
 (coming soon)
 ---
 
-## 1. Canonical Identifier Grammar
-All EKL entities use URN-based identifiers for global uniqueness and stability.
+## 1. URN Profile
+All EKL entities use URN-based identifiers for global uniqueness and stability,
+as defined by the constitutional vocabulary and the specification meta-model.
 
 ### 1.1 Generic URN Pattern
 ```

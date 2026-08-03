@@ -1,0 +1,32 @@
+authority_chain:
+  - node_id: DocReq-001
+    relation: ROOT_REQUIREMENT
+  - node_id: DocPol-001
+    relation: DERIVES_AUTHORITY_FROM_REQUIREMENT
+  - node_id: DocCon-001
+    relation: DERIVES_AUTHORITY_FROM_POLICY
+conditions:
+  contract_operation_present: true
+  policy_chain_matches_contract: false
+  proposer_role_allowed: true
+cycle_detected: false
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:5ae1460923e3b1e7ac80ce0337ce38e2291ecae69e5a0ae53c3e9d3d77dc1179
+  locked_at: 2026-08-01T05:53:03.832Z
+operation: propose
+result: FAIL
+role_attested: role-document-proposer-001
+subject_id: GATE-C-DOC-PROPOSE-N7
+version: 1.0.0
+witness_id: run-011-witness-a
+witness_type: AUTHORITY

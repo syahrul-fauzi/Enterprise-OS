@@ -14,8 +14,6 @@ import type {
   EvidenceDerivationKind,
   ThreatToValidity,
   CertificationSnapshotId,
-  GraphTopologyId,
-  RelationId,
 } from "./types";
 import {
   EVIDENCE_LAYER_DEFINITION,
@@ -1939,7 +1937,7 @@ export function runCertificationSelfTest(input: {
 
   const provenanceDiverseExecutions: string[] = [];
   const exdToExeMap: Record<string, string[]> = {};
-  for (const [pkgKey, ident] of Object.entries(evidencePackages)) {
+  for (const ident of Object.values(evidencePackages)) {
     const prov = ident.pkg.provenance;
     if (!prov) continue;
     const defKey = String(prov.experimentDefinitionId);

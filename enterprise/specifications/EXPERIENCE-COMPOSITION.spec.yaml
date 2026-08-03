@@ -1,0 +1,66 @@
+specification:
+  id: EOS-EXP-COMPOSE-001
+  name: experience_composition_specification
+  status: DRAFT
+  version: 1.0.0
+  purpose: Define `experience.yaml` as the single source of truth for Experience Domain composition.
+
+references:
+  three_domain_architecture: enterprise/governance/EOS-THREE-DOMAIN-ARCHITECTURE.md
+  experience_platform: enterprise/specifications/EXPERIENCE-PLATFORM.spec.yaml
+  surface_taxonomy: enterprise/specifications/SURFACE-TAXONOMY.yaml
+  experience_contract: workspace/contracts/experience.contract.yaml
+
+source_of_truth:
+  artifact: experience.yaml
+  domain: Experience Domain
+  output: Experience Contract
+
+experience_yaml_schema:
+  experience:
+    id: string
+    name: string
+    version: semver
+    surface: taxonomy_ref
+    capabilities:
+      - capability_contract_ref
+    navigation:
+      - intent_or_route
+    permissions:
+      - role_or_policy_ref
+    layout:
+      optional: true
+    interaction_model:
+      optional: true
+
+example:
+  experience:
+    id: lawyer-workspace
+    name: Lawyer Workspace
+    version: 1.0.0
+    surface: workspace
+    capabilities:
+      - case-management
+      - evidence
+      - workflow
+      - orchestration
+    navigation:
+      - dashboard
+      - cases
+      - evidence
+    permissions:
+      - lawyer
+
+resolution_pipeline:
+  - load_experience_yaml
+  - validate_surface_taxonomy_membership
+  - resolve_capability_contracts
+  - build_navigation_and_layout_model
+  - bind_permissions_and_interaction_rules
+  - emit_experience_contract
+
+invariants:
+  - experience_yaml_is_single_source_of_truth
+  - experience_selects_capabilities_by_contract
+  - experience_does_not_embed_product_concerns
+  - experience_does_not_duplicate_capability_business_logic

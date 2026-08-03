@@ -1,0 +1,105 @@
+version: "1.0"
+status: DRAFT
+portfolio: EOS_PRODUCT_LAYER
+purpose: Formalize the initial Product Layer portfolio built on shared Capability and Experience foundations.
+governed_by: enterprise/specifications/GOVERNANCE-PORTFOLIO.yaml
+
+products:
+  - id: services-id
+    status: PLANNED
+    domain: services-id.com
+    target: public_b2c
+    role: front_door_ecosystem
+    key_experiences:
+      - public-intake
+      - ai-assistant-public
+      - legal-request
+      - marketplace
+    shared_capabilities:
+      - requirement-management
+      - knowledge-graph
+      - authentication
+
+  - id: lawyershub
+    status: ACTIVE
+    domain: lawyershub.id
+    target: professional_b2b
+    role: operational_workspace
+    key_experiences:
+      - lawyer-workspace
+      - case-management
+      - evidence-management
+      - workflow-operations
+      - ai-copilot
+      - drafting
+      - document-review
+      - collaboration
+    shared_capabilities:
+      - requirement-management
+      - evidence-registry
+      - knowledge-graph
+      - authentication
+
+  - id: ilc
+    status: PLANNED
+    domain: indonesialawyersclub.id
+    target: organization_and_community
+    role: trust_governance_community
+    key_experiences:
+      - membership
+      - lawyer-verification
+      - directory
+      - reputation
+      - referral-and-routing
+      - certification
+      - community
+      - governance
+    shared_capabilities:
+      - requirement-management
+      - knowledge-graph
+      - authentication
+      - evidence-registry
+
+shared_assets:
+  shared_experiences:
+    - workspace-experience:
+        used_by:
+          - services-id
+          - lawyershub
+          - ilc
+    - approval-experience:
+        used_by:
+          - services-id
+          - lawyershub
+          - ilc
+  experience_library:
+    - Workspace Experience
+    - Approval Experience
+    - Search Experience
+    - Detail View Experience
+    - Timeline Experience
+    - Admin Console Experience
+    - CRM Experience
+    - Marketplace Experience
+    - Legal Practice Experience
+    - Community Experience
+    - Media Experience
+  shared_capabilities:
+    - requirement-management
+    - knowledge-graph
+    - authentication
+  partially_shared_capabilities:
+    - evidence-registry:
+        used_by:
+          - lawyershub
+          - ilc
+  product_specific_experiences:
+    - marketplace:
+        primary_product: services-id
+    - community:
+        primary_product: ilc
+    - lawyer-workspace:
+        primary_product: lawyershub
+
+architecture_rule:
+  statement: Experiences are reusable assets across products; products compose experiences, not duplicate capability logic.

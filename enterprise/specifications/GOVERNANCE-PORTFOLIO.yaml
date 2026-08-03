@@ -1,0 +1,73 @@
+version: "1.0"
+status: DRAFT
+portfolio: EOS_GOVERNANCE_PORTFOLIO
+purpose: Govern product, experience, and capability libraries as reusable portfolio assets under EOS.
+
+governance_portfolio:
+  products:
+    - services-id.com
+    - lawyershub.id
+    - indonesialawyersclub.id
+  experience_library:
+    - Public Service Experience
+    - Lawyer Workspace Experience
+    - Community Experience
+    - Admin Experience
+  capability_library:
+    - Requirement
+    - Evidence
+    - Workflow
+    - Knowledge Graph
+    - Connector
+    - AI
+  deployment_profiles:
+    - SaaS
+    - Enterprise
+    - Government
+    - Air-Gapped
+  ecosystem_catalogs:
+    capability_marketplace:
+      - Requirement
+      - Evidence
+      - Workflow
+      - Knowledge Graph
+      - Connector
+      - AI
+    experience_marketplace:
+      - Workspace Experience
+      - Approval Experience
+      - Search Experience
+      - Detail View Experience
+      - Timeline Experience
+      - Admin Console Experience
+      - CRM Experience
+      - Marketplace Experience
+      - Legal Practice Experience
+      - Community Experience
+      - Media Experience
+    product_marketplace:
+      - services-id.com
+      - lawyershub.id
+      - indonesialawyersclub.id
+      - AuditHub
+      - FinanceHub
+      - HealthHub
+    governance_policy_catalog:
+      - ISO 27001
+      - SOC 2
+      - PDP Indonesia
+      - GDPR
+      - HIPAA
+
+rules:
+  - products_must_be_governed_as_portfolio_members
+  - experiences_must_be_managed_as_reusable_assets
+  - capabilities_must_be_managed_as_shared_foundation_assets
+  - new_products_should_prefer_existing_experiences_before_new_experience_creation
+  - ecosystem_catalogs_must_be_managed_as_governed_portfolio_assets
+  - reusable_atomic_components_should_be_preferred_before_large_product_specific_surfaces
+
+future_candidates:
+  - AuditHub
+  - FinanceHub
+  - HealthHub

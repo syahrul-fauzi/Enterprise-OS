@@ -8,10 +8,13 @@ import type { WorkspaceGraph } from "../graph/types";
 import type { NormalizedWorkspace } from "../normalizer/types";
 import type { ResolverCapabilityEntry } from "../resolver/types";
 import type { CompositionPlan } from "../plan/types";
+import type { ExecutionGraphReport } from "@repo/core-capability-registry";
+import { buildCapabilityEntriesFromExecutionGraph } from "../execution-graph";
 
 export interface ComposeInput extends DescriptorSource {
   readonly resolver?: Partial<Pick<ResolverContext, "actor" | "features" | "slotOverrides" | "requestId">> & {
     readonly capabilityEntries?: Readonly<Record<string, ResolverCapabilityEntry>>;
+    readonly executionGraph?: ExecutionGraphReport;
   };
 }
 
@@ -34,9 +37,13 @@ export interface ComposeResult {
 
 function makeDefaultCtx(input: ComposeInput): ResolverContext {
   const resolver = input.resolver;
-  const entries: Readonly<Record<string, ResolverCapabilityEntry>> = resolver?.capabilityEntries ?? Object.fromEntries(
-    input.workspace.permissions?.requireCapabilities?.map((id) => [id, { id, available: true }] as const) ?? [],
-  );
+  const entries: Readonly<Record<string, ResolverCapabilityEntry>> =
+    resolver?.executionGraph
+      ? buildCapabilityEntriesFromExecutionGraph(resolver.executionGraph)
+      : resolver?.capabilityEntries ?? Object.fromEntries(
+          input.workspace.permissions?.requireCapabilities?.map((id) => [id, { id, available: true }] as const) ??
+            [],
+        );
   const listFn = (ids?: readonly string[]) => {
     const idsArr = ids ?? Object.keys(entries);
     return idsArr.map((id) => entries[id] ?? { id, available: false, reason: `not in entries: ${id}` });

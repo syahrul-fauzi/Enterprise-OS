@@ -1,0 +1,49 @@
+specification:
+  id: EOS-DOMAIN-PLANNING-001
+  name: domain_planning_specification
+  status: DRAFT
+  version: 1.0.0
+  purpose: Define the planning layer that precedes composition and runtime across EOS domains.
+
+references:
+  layered_architecture: enterprise/governance/EOS-THREE-DOMAIN-ARCHITECTURE.md
+  composition_runtime: enterprise/specifications/COMPOSITION-RUNTIME.spec.yaml
+  enterprise_control_plane: enterprise/specifications/ENTERPRISE-CONTROL-PLANE.spec.yaml
+  roadmap: enterprise/execution/ROADMAP.yaml
+
+domain_pattern:
+  sequence:
+    - Planner
+    - Composer
+    - Runtime
+  statement: Planning chooses and optimizes the composition set, Composition builds the graph and artifacts, Runtime executes the validated result.
+
+domain_planners:
+  - domain: Governance
+    planner: Governance Planner
+    ssot: governance.yaml
+  - domain: Deployment
+    planner: Deployment Planner
+    ssot: deployment.yaml
+  - domain: Product
+    planner: Product Planner
+    ssot: product.yaml
+  - domain: Experience
+    planner: Experience Planner
+    ssot: experience.yaml
+  - domain: Capability
+    planner: Capability Planner
+    ssot: capability.yaml
+
+planner_responsibilities:
+  - dependency_selection
+  - optimization
+  - compatibility_checking
+  - conflict_resolution
+  - cost_estimation
+  - topology_planning
+
+invariants:
+  - planner_must_not_execute_runtime_logic
+  - composer_must_not_replace_planning_responsibilities
+  - runtime_must_execute_only_validated_composition_outputs

@@ -113,9 +113,7 @@ export class CompilerCompareProducer implements IndependentEvidenceProducer {
       assertions.push("CMP-2: Compose stage ABI cross-path: graph via buildGraph(normalize→plan→graph) matches graph via single buildGraph(input)");
       const normA = normalizeWorkspace(srcCasted);
       const plan = buildCompositionPlan(normA as unknown as Parameters<typeof buildCompositionPlan>[0]);
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const direct = buildGraph(srcCasted);
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { buildGraphFromPlan, buildGraphFromNormalized } = _require("@repo/composition") as typeof import("@repo/composition");
       const fromPlan = buildGraphFromPlan(plan as unknown as Parameters<typeof buildGraphFromPlan>[0]);
       const fromNorm = buildGraphFromNormalized(normA as unknown as Parameters<typeof buildGraphFromNormalized>[0]);

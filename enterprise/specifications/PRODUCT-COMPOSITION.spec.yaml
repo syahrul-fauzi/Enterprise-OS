@@ -1,0 +1,136 @@
+specification:
+  id: EOS-PROD-COMPOSE-001
+  name: product_composition_specification
+  status: DRAFT
+  version: 1.0.0
+  purpose: Define `product.yaml` as the single source of truth for Product Domain composition.
+
+references:
+  three_domain_architecture: enterprise/governance/EOS-THREE-DOMAIN-ARCHITECTURE.md
+  product_contract: workspace/contracts/product.contract.yaml
+  experience_composition: enterprise/specifications/EXPERIENCE-COMPOSITION.spec.yaml
+  product_portfolio: enterprise/specifications/PRODUCT-PORTFOLIO.yaml
+
+product_portfolio_examples:
+  - id: services-id
+    domain: services-id.com
+    target: public_b2c
+    role: front_door_ecosystem
+    example_experiences:
+      - public-intake
+      - ai-assistant-public
+      - legal-request
+      - marketplace
+  - id: lawyershub
+    domain: lawyershub.id
+    target: professional_b2b
+    role: operational_workspace
+    example_experiences:
+      - lawyer-workspace
+      - evidence-management
+      - workflow-operations
+      - ai-copilot
+  - id: ilc
+    domain: indonesialawyersclub.id
+    target: organization_and_community
+    role: trust_and_governance_layer
+    example_experiences:
+      - membership
+      - lawyer-verification
+      - directory
+      - referral-and-routing
+
+source_of_truth:
+  artifact: product.yaml
+  domain: Product Domain
+  output: Deployable Product
+
+product_yaml_schema:
+  product_definition:
+    id: string
+    name: string
+    version: semver
+    compositions:
+      - composition_ref | optional
+    experiences:
+      - experience_ref
+    branding:
+      theme: string | optional
+    licensing:
+      tier: string | optional
+  product_instance:
+    id: string
+    product: product_definition_ref
+    tenant: string | optional
+    branding_overrides: object | optional
+    policy_overrides: object | optional
+    integration_overrides: object | optional
+    deployment:
+      profile: string
+      rollout_strategy: string | optional
+
+example:
+  product_definition:
+    id: lawyershub
+    name: LawyersHub
+    version: 1.0.0
+    compositions:
+      - legal-workspace
+    experiences:
+      - lawyer-workspace
+      - client-portal
+      - public-api
+    branding:
+      theme: lawyershub
+    licensing:
+      tier: enterprise
+  product_instance:
+    id: lawyershub-law-firm-a
+    product: lawyershub
+    tenant: law-firm-a
+    deployment:
+      profile: enterprise
+
+resolution_pipeline:
+  - load_product_yaml
+  - resolve_reusable_compositions
+  - validate_experience_references
+  - resolve_branding_and_licensing
+  - resolve_product_instance_overrides
+  - resolve_deployment_profile
+  - emit_deployable_product_instance
+
+composition_assets:
+  purpose: Treat composition as a reusable artifact rather than only a runtime action.
+  packaging_model: package
+  package_convention: workspace/packages/compositions/<composition-id>
+  required_files:
+    - workspace.ts
+    - manifest.yaml
+    - metadata.yaml
+  implementation_proof:
+    example_package: workspace/packages/compositions/legal-workspace
+    validator: workspace/packages/composition/src/scripts/validate-composition-package.ts
+  capabilities:
+    - inherit
+    - extend
+    - override
+  example:
+    composition:
+      id: legal-workspace
+      base: workspace-experience
+      extends:
+        - approval-pattern
+        - detail-view
+      overrides:
+        navigation: legal
+        permissions: lawyer-centric
+
+invariants:
+  - product_yaml_is_single_source_of_truth
+  - product_selects_experiences_not_raw_capabilities
+  - product_does_not_embed_capability_logic
+  - product_may_depend_on_experience_only
+  - experiences_must_be_reusable_across_multiple_products
+  - deployment_must_target_product_instance_not_only_product_definition
+  - composition_assets_must_be_reusable_across_products_when_possible

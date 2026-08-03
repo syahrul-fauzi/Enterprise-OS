@@ -1,0 +1,18 @@
+spec_id: "SPEC-XXXX"
+title: "<Title>"
+status: "Draft"
+owner: "Lead Enterprise Architect"
+governed_by:
+  - "RFC-XXXX"
+kind: "contract_object"
+version: "0.1.0"
+source_bindings:
+  runtime_contracts:
+    - "<runtime contract surface>"
+  conformance:
+    - "<CONF surface>"
+schema:
+  type: "object"
+  additionalProperties: false
+  required: []
+  properties: {}

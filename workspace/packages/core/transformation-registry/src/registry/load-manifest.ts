@@ -81,16 +81,13 @@ export function loadTransformationManifest(
       evidence_output_kind: m.evidence_output_kind,
       evidence_output_id: m.evidence_output_id,
       golden_reference_input: m.golden_reference_input,
-      root_of_truth: m.root_of_truth ?? false,
+      root_of_trust: m.root_of_truth ?? false,
       standalone_implementation_required: m.standalone_implementation_required ?? false,
       engine_dependency_forbidden_until_gate_c_verified:
         m.engine_dependency_forbidden_until_gate_c_verified ?? false,
       precedence: m.precedence,
-      predecessor_id: m.predecessor_id ?? null,
-      successor_id: m.successor_id ?? null,
-      failure_strategy: m.failure_strategy,
-      rollback_strategy: m.rollback_strategy,
-      semver: m.semver,
+      blocked_until_predecessor_verified: m.predecessor_id !== null && m.predecessor_id !== undefined,
+      predecessor_id: m.predecessor_id ?? undefined,
     } as TransformationDeclaration;
   } catch (err) {
     return { loadError: `YAML parse error manifest ${id}: ${(err as Error).message}` };

@@ -61,6 +61,10 @@ const GovernanceStateSchema = z.object({
 
 type RepositoryState = z.infer<typeof RepositoryStateSchema>;
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function loadRepositoryState(): RepositoryState | { readonly loadError: string } {
   if (!existsSync(GOVERNANCE_STATE_PATH)) {
     return {
@@ -86,14 +90,6 @@ function loadRepositoryState(): RepositoryState | { readonly loadError: string }
     };
   }
 }
-
-const GATE_LABELS: Record<string, string> = {
-  A: "Governance",
-  B: "Canonical Foundation",
-  C: "Execution",
-  D: "Verification",
-  E: "Experience Surface",
-};
 
 type Severity = "error" | "warning";
 
@@ -1078,7 +1074,7 @@ const ARCH_17: Rule = {
   title: "Sprint 0 Architecture Freeze (ADR-000) — NO structural/abstraction changes until T001 deterministic PASS emitted",
   description: "ADR-000 LOCKED. Seluruh struktur SSOT Stack 5-layer, vocabulary 5 lifecycle status, Gate C/D alignment (C=T001, D=Engine), repository proof = output external, serta package structure 11-item pattern TIDAK BOLEH berubah sampai Transformation Proof TRF-PROOF-T001 verdict = PASS dengan determinism terverifikasi 2x run identical input.",
   severity: "error",
-  check: (_ctx) => {
+  check: () => {
     const violations: Violation[] = [];
     const BASELINE_LOCK_PATH = resolve(EOS_ROOT, "governance", "BASELINE_LOCK.yaml");
     const ADR0_PATH = resolve(
@@ -1298,7 +1294,6 @@ const ARCH_19: Rule = {
     const violations: Violation[] = [];
 
     const TRANSFORM_ID_RE = /["']T\d{3}["']/g;
-    const PRED_ID_RE = /["']PRED-[A-Z0-9-]+["']/g;
     const CAP_KEBAB_RE = /["']([a-z]+-[a-z-]+)["']/g;
     const CAPABILITY_BLACKLIST = new Set([
       "legal-case",
@@ -1476,6 +1471,9 @@ const ARCH_20: Rule = {
         const snapshotViaPlan = /\bplan\s*\.\s*knowledge_snapshot\b/.test(f.content);
         if (!snapshotIdInOutput && !snapshotViaPlan) {
           const first = execPlans[0];
+          if (!first) {
+            continue;
+          }
           const line = f.content.slice(0, first.index ?? 0).split("\n").length;
           violations.push({
             ruleId: "ARCH-20",
@@ -1571,12 +1569,21 @@ const ARCH_21: Rule = {
         const start = Math.max(0, (m.index ?? 0) - 180);
         const end = Math.min(f.content.length, (m.index ?? 0) + 600);
         const ctx = f.content.slice(start, end);
-        const sorted = /Object\s*\.\s*keys\s*\(\s*\2\s*\)\s*\.\s*sort\s*\(/.test(ctx) ||
+        const iteratedObject = m[2];
+        const sortedByObjectKeys =
+          typeof iteratedObject === "string" &&
+          new RegExp(
+            `Object\\s*\\.\\s*keys\\s*\\(\\s*${escapeRegExp(iteratedObject)}\\s*\\)\\s*\\.\\s*sort\\s*\\(`,
+          ).test(ctx);
+        const sorted = sortedByObjectKeys ||
           /\.sort\s*\(\s*[a-z]\s*,\s*[a-z]\s*=>\s*[a-z]\s*\.\s*localeCompare\s*\(\s*[a-z]\s*\)/.test(ctx);
         return !sorted;
       });
       if (matchesWithSort.length > 0) {
         const first = matchesWithSort[0];
+        if (!first) {
+          continue;
+        }
         const line = f.content.slice(0, first.index ?? 0).split("\n").length;
         violations.push({
           ruleId: "ARCH-21",
@@ -1605,6 +1612,9 @@ const ARCH_21: Rule = {
         );
         if (!(hasExplicitTieBreak && hasSortFn) && !hasExplicitTieBreak) {
           const first = topoMatches[0];
+          if (!first) {
+            continue;
+          }
           const line = f.content.slice(0, first.index ?? 0).split("\n").length;
           violations.push({
             ruleId: "ARCH-21",

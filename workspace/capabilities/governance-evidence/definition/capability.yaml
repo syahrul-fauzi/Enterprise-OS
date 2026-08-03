@@ -1,0 +1,31 @@
+id: governance-evidence
+name: Governance Evidence
+version: 0.1.0
+manifest_version: 1.0.0
+exports:
+  - GovernanceEvidenceProvider
+  - GovernanceEvidenceArtifactCatalog
+  - GovernanceEvidenceArtifactKind
+  - GovernanceSession
+depends_on:
+  - trust-framework
+  - core-runtime
+allowed_dependencies:
+  - core-runtime
+  - trust-framework
+forbidden_dependencies:
+  - api-platform
+  - governance-read-model
+consumed_by:
+  - api-platform
+  - governance-read-model
+stability: stable
+contracts:
+  requires:
+    - name: TrustFrameworkProvider
+      range: ">=1 <2"
+  provides:
+    - name: GovernanceEvidenceProvider
+      version: 1.0.0
+implementation:
+  entry: implementation/service.ts

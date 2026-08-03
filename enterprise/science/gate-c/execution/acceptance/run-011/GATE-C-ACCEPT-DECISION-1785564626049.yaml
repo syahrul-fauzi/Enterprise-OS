@@ -1,0 +1,64 @@
+version: 1.0.0
+run_id: run-011
+acceptance_decision_id: GATE-C-ACCEPT-DECISION-1785564626049
+subject_id: GATE-C-DOC-PROPOSE-N7
+truth_table_row: N7
+accepted_by: eos-cli
+acceptance_time_utc: 2026-08-01T06:10:26.049Z
+contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+contract_ref: execution/acceptance-contract.yaml
+decision: ALREADY_ACCEPTED
+accepted: true
+run_refs:
+  manifest_ref: execution/runs/run-011/run-manifest.yaml
+  report_ref: execution/runs/run-011/report.yaml
+  comparison_ref: execution/runs/run-011/metrics/canonical-evidence-comparison.yaml
+criteria:
+  invariant_results:
+    canonical_convergence: true
+    evidence_exists: true
+    expected_predicate_achieved: true
+    expected_verdict_achieved: true
+    ledger_appended: true
+    manifest_valid: true
+    no_instrument_drift: true
+    replay_pass: true
+    witness_valid: true
+  checklist:
+    canonical_evidence_convergence: true
+    fixture_canonical: true
+    manifest_valid: true
+    oracle_diagnosis_sesuai_spesifikasi: true
+    proof_ledger_bertambah: true
+    replay_pass_reproducibility: true
+    run_001_unchanged: true
+    science_kernel_unchanged: true
+    transformation_deterministic: true
+    truth_table_mapping: true
+    verdict_fail: true
+    witness_valid: true
+  blocking_conditions: []
+replay:
+  same_verdict: true
+  same_canonical_evidence: true
+  same_canonical_witness_hashes: true
+  converged: true
+proof_ledger:
+  ref: execution/proof-ledger.yaml
+  entry_count_before: 16
+  entry_count_after: 16
+  last_entry_hash_before: sha256:430b5a4998440321fe5d39a32102c159614427494cb3441115c1eb10296eb0f7
+  last_entry_hash_after: sha256:430b5a4998440321fe5d39a32102c159614427494cb3441115c1eb10296eb0f7
+  appended_in_this_attempt: false
+  proof_ledger_entry_id: GATE-C1-ACCEPT-016
+acceptance_decision_log:
+  ref: execution/acceptance-decisions.yaml
+  entry_count_before: 15
+  entry_count_after: 16
+  last_decision_hash_before: sha256:f88ff3f8e5c6960fb6f5cd8a94a4997416b5e96d7fe5e5ef694bd0181170fb59
+  last_decision_hash_after: sha256:183b98afe38566667bffa18d6513238dece0e69ecd380df780746813a9af3115
+  decision_id: GATE-C-ACCEPT-DECISION-1785564626049
+  decision_entry_hash: sha256:183b98afe38566667bffa18d6513238dece0e69ecd380df780746813a9af3115
+integrity:
+  hash_basis: sha256(canonical_json(acceptance_report_excluding_integrity.report_hash))
+  report_hash: sha256:6cb7fad2169b9ad2b44e80e3951f8df15a62b8c907804b69758345fb3cb8949b

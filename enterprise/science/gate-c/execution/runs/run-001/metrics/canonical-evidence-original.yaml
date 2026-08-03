@@ -6,7 +6,7 @@ strategy_id: ts-reference-runtime/v1
 oracle_id: GATE-C-ORACLE-001
 science_kernel:
   bundle_id: SC-KERNEL-001
-  bundle_hash: sha256:b0ade11a9a53e7ae5ff0a4d772cbb7add753b0b84d7dd9f9f5ffae33f9a38916
+  bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
 measurement_apparatus:
   oracle:
     certificate_id: SC-ORACLE-001

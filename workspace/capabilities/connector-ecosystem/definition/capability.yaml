@@ -1,0 +1,5 @@
+id: connector-ecosystem
+name: Connector Ecosystem
+version: 0.1.0
+implementation:
+  entry: implementation/service.ts

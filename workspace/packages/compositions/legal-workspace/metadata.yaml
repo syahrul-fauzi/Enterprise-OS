@@ -1,0 +1,8 @@
+name: Legal Workspace
+version: 0.1.0
+owner: eos-platform
+reuse_targets:
+  - lawyershub
+  - services-id
+  - ilc
+description: Reusable legal-focused workspace composition asset built from shared experience patterns and shared capabilities.

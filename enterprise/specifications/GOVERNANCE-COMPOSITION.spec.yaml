@@ -1,0 +1,52 @@
+specification:
+  id: EOS-GOV-COMPOSE-001
+  name: governance_composition_specification
+  status: DRAFT
+  version: 1.0.0
+  purpose: Define `governance.yaml` as the single source of truth for Governance Domain composition.
+
+references:
+  layered_architecture: enterprise/governance/EOS-THREE-DOMAIN-ARCHITECTURE.md
+  governance_domain: enterprise/specifications/GOVERNANCE-DOMAIN.spec.yaml
+  qualification_gate: enterprise/execution/PRODUCTION-QUALIFICATION-GATE.yaml
+  roadmap: enterprise/execution/ROADMAP.yaml
+
+source_of_truth:
+  artifact: governance.yaml
+  domain: Governance Domain
+  output: Governance Contract
+
+governance_yaml_schema:
+  governance:
+    id: string
+    name: string
+    version: semver
+    constitutional_rules:
+      - rule_ref
+    policy_sets:
+      - policy_ref
+    qualification_gates:
+      - gate_ref
+    promotion_rules:
+      - rule_ref
+    release_approval:
+      - approval_flow_ref
+    portfolio:
+      products: array | optional
+      experiences: array | optional
+      capabilities: array | optional
+
+runtime_model:
+  composer: Governance Composer
+  runtime: Governance Runtime
+  responsibilities:
+    - resolve_constitutional_rules
+    - resolve_policy_sets
+    - enforce_qualification_and_promotion
+    - govern_portfolio_membership
+    - publish_governance_contract
+
+invariants:
+  - governance_yaml_is_single_source_of_truth
+  - governance_runtime_must_not_embed_business_logic
+  - governance_outputs_must_control_lower_domain_promotion

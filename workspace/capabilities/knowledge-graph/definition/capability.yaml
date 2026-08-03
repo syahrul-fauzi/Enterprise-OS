@@ -1,0 +1,5 @@
+id: knowledge-graph
+name: Knowledge Graph
+version: 0.1.0
+implementation:
+  entry: implementation/service.ts

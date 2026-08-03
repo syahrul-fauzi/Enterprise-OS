@@ -1,6 +1,11 @@
 version: 1.0.0
 run_id: run-002
-genesis_evidence: EXISTS
+genesis_evidence: EXISTS (run-001)
+execution_mode: NEGATIVE_CONTROL_N1_PRED_A_AUTHORITY_BROKEN
+negative_control_truth_table_row: N1
+replay_goal: >
+  Execute N1 Negative Control (A=F, B=T, C=T) using frozen apparatus, then verify replay convergence and
+  pairwise measurement identity against Positive Control replay run-003.
 verification_spine:
   - step: VERIFY
     status: PASS
@@ -10,23 +15,57 @@ verification_spine:
     status: PASS
   - step: WIRE_MEASUREMENT_APPARATUS
     status: PASS
-  - step: RUN-001
+  - step: NEGATIVE_CONTROL_RUN_002_N1
     status: FAIL
+    expected_status_for_negative_control: FAIL
+    note: >
+      Expected verdict FAIL for N1 truth table row. Actual verdict FAIL. Functional correctness OK.
   - step: CAPTURE_WITNESS
     status: PASS
+  - step: VERIFY_DIAGNOSTIC_CORRECTNESS_N1
+    status: PASS
+    note: >
+      Diagnostic predicate = pred_a_legitimate EXACT match expected N1 diagnostic.
+      Witness explicitly records policy_chain_matches_contract=false.
+      NOT a runtime exception, syntax error, or out-of-memory condition.
   - step: GENERATE_MANIFEST
     status: PASS
   - step: WRITE_PROOF_LEDGER
     status: PASS
   - step: CLEAN_ENV_REPLAY
-    status: FAIL
+    status: PASS
+    note: >
+      Replay preserved the same FAIL verdict, the same N1 truth-table match, and the same diagnostic
+      predicate attribution. Only allowed runtime metadata changed.
   - step: IDENTICAL_EVIDENCE
     status: PASS
+  - step: VERIFY_PAIRWISE_MEASUREMENT_APPARATUS_RUN_002_VS_RUN_003
+    status: PASS
+    note: >
+      Pairwise identical vs Positive Control replay run-003:
+      oracle_cert=SC-ORACLE-001, witness_cert=SC-WITNESS-001, dataset_cert=SC-DATASET-001,
+      kernel_sha256=47c7582d, oracle_instr_hash=b92cfef1, witness_instr_hash=fbaa8738,
+      dataset_instr_hash=2184fa69.
+  - step: N1_C5_ISOLATION_CORRECTNESS_SATISFIED
+    status: PASS
+    note: >
+      Oracle.yaml, witness-integrity.yaml, manifest schemas, predicate evaluator definitions,
+      and science-kernel bundle.sha256 remained unchanged across the N1 lifecycle.
 definition_of_done:
-  execution: false
+  execution: true
   apparatus_identity: true
   integrity: true
-  replay: false
+  replay: true
   convergence: true
   clean_environment: true
-remaining_blocker: Gate C1 empirical coverage remains limited to positive row P1; N1..N7 still absent.
+  diagnostic_correctness: true
+  c3_pairwise_measurement_identical_to_positive_control: true
+  c5_isolation_instrument_unchanged: true
+remaining_blocker: Gate C1 requires N2, N4, then N3, N5, N6, N7 Negative Controls for full 8/8 truth table coverage.
+N1_negative_control_exit_criteria_check:
+  C1_FUNCTIONAL_CORRECTNESS: PASS
+  C2_DIAGNOSTIC_CORRECTNESS: PASS
+  C3_MEASUREMENT_CORRECTNESS: PASS
+  C4_REPLAY_CORRECTNESS: PASS
+  C5_ISOLATION_CORRECTNESS: PASS
+  n_pass_of_5: 5_of_5

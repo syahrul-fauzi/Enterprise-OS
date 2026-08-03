@@ -3,7 +3,7 @@ run_id: run-001
 gate: GATE-C
 gate_stage: GATE-C1
 evidence_class: CLASS_II_EXPERIMENTAL
-execution_timestamp_utc: 2026-08-01T01:00:00.077Z
+execution_timestamp_utc: 2026-08-02T01:39:28.588Z
 operator_id: eos-cli
 strategy_ids:
   - ts-reference-runtime/v1
@@ -49,7 +49,7 @@ measurement_apparatus:
   science_kernel:
     bundle_id: SC-KERNEL-001
     bundle_ref: science-kernel/bundle.manifest.yaml
-    bundle_hash: sha256:b0ade11a9a53e7ae5ff0a4d772cbb7add753b0b84d7dd9f9f5ffae33f9a38916
+    bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
 output_layout:
   actual_dir: execution/runs/run-001/actual
   witness_dir: execution/runs/run-001/actual/witness

@@ -21,8 +21,8 @@ integrity:
     - actor: GATE-C-ORACLE-001
       state: CONSUMED_BY_ORACLE
   hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
-  lock_hash: sha256:fbc4e5dd8352b6d011e2146e059c8669a4be350ac4b0a9deb605c8c99a668774
-  locked_at: 2026-08-01T01:00:00.077Z
+  lock_hash: sha256:de5f1f36bf7687e6b2c077a6a189064055bdb0e7a1463e2530cf35f2bae68016
+  locked_at: 2026-08-02T01:39:28.588Z
 operation: propose
 result: PASS
 role_attested: role-document-proposer-001

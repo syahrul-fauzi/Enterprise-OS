@@ -1,0 +1,52 @@
+version: 1.0.0
+run_id: run-008
+acceptance_decision_id: GATE-C-ACCEPT-DECISION-1785561650241
+subject_id: GATE-C-DOC-PROPOSE-N3
+truth_table_row: N3
+accepted_by: eos-cli
+acceptance_time_utc: 2026-08-01T05:20:50.241Z
+contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+contract_ref: execution/acceptance-contract.yaml
+decision: ALREADY_ACCEPTED
+accepted: true
+run_refs:
+  manifest_ref: execution/runs/run-008/run-manifest.yaml
+  report_ref: execution/runs/run-008/report.yaml
+  comparison_ref: execution/runs/run-008/metrics/canonical-evidence-comparison.yaml
+criteria:
+  invariant_results:
+    ledger_appended: true
+  checklist:
+    1. Specification: PASS
+    2. Execution: PASS
+    3. Replay: PASS
+    4. Acceptance Evaluation: PENDING
+    5. Proof Ledger: UPDATED
+    6. Projection: PENDING
+    7. Claim Boundary: PENDING
+    proof_ledger_bertambah: true
+  blocking_conditions: []
+replay:
+  same_verdict: true
+  same_canonical_evidence: true
+  same_canonical_witness_hashes: true
+  converged: true
+proof_ledger:
+  ref: execution/proof-ledger.yaml
+  entry_count_before: 13
+  entry_count_after: 13
+  last_entry_hash_before: sha256:b59d74d60d21fdcf5726ac7d2e4bda8aa3de89da84f1302d669ce94d380e199f
+  last_entry_hash_after: sha256:b59d74d60d21fdcf5726ac7d2e4bda8aa3de89da84f1302d669ce94d380e199f
+  appended_in_this_attempt: false
+  proof_ledger_entry_id: GATE-C1-ACCEPT-013
+acceptance_decision_log:
+  ref: execution/acceptance-decisions.yaml
+  entry_count_before: 7
+  entry_count_after: 8
+  last_decision_hash_before: sha256:9fc60626750bb8be836d31da61c3599afd7d7dcd5aac4a23f8e070d3ccc3c87e
+  last_decision_hash_after: sha256:ed9ad9c7576d9ac2ff258ab40d1031386677fe057dd92ce3b866c93f9b6b230d
+  decision_id: GATE-C-ACCEPT-DECISION-1785561650241
+  decision_entry_hash: sha256:ed9ad9c7576d9ac2ff258ab40d1031386677fe057dd92ce3b866c93f9b6b230d
+integrity:
+  hash_basis: sha256(canonical_json(acceptance_report_excluding_integrity.report_hash))
+  report_hash: sha256:0e57a89041b8927115b2d2564521cab2b4cd3fde8b437d2e02dd9bd8cf56ece2

@@ -1,0 +1,505 @@
+version: "2.0"
+status: ACTIVE
+program: EOS
+platform_identity: Enterprise Composition Platform
+ecosystem_identity: Enterprise Composition Ecosystem
+current_domain: platform_qualification
+current_phase: "Phase 6"
+current_phase_name: Production Hardening
+mode: autonomous_execution
+ssot:
+  delivery: enterprise/execution/CAPABILITY-REGISTRY.yaml
+  qualification: enterprise/execution/PRODUCTION-QUALIFICATION-GATE.yaml
+  quality_gates: enterprise/execution/QUALITY-GATES.yaml
+  governance_portfolio: enterprise/specifications/GOVERNANCE-PORTFOLIO.yaml
+  enterprise_control_plane: enterprise/specifications/ENTERPRISE-CONTROL-PLANE.spec.yaml
+  domain_planning: enterprise/specifications/DOMAIN-PLANNING.spec.yaml
+  composition_ecosystem: enterprise/specifications/ENTERPRISE-COMPOSITION-ECOSYSTEM.spec.yaml
+
+architecture_baseline:
+  status: FROZEN
+  maturity: ARCHITECTURE_COMPLETE
+  statement: EOS specification system is architecture-complete; the next material gain comes from adoption of the frozen grammar, not expansion of specification families.
+  frozen_chain:
+    - ADR
+    - RFC
+    - SPEC
+    - CONF
+    - Typed Projection
+    - Canonical Evidence
+    - Gate C
+  artifact_families:
+    architecture_artifacts:
+      - ADR
+      - RFC
+      - SPEC
+      - CONF
+    operational_artifacts:
+      - Projection
+      - Evidence
+      - Decision
+  operating_rules:
+    - No new specification family is introduced unless a reproducible governance gap cannot be closed through adoption of the frozen baseline.
+    - Canonical Evidence Grammar is treated as governance grammar and first-class artifact family, not as runtime helper output.
+    - Registry evolution should prefer relation completeness, evidence traceability, and producer migration over ontology growth.
+
+program_structure:
+  public_model:
+    domains:
+      - Governance
+      - Deployment
+      - Product
+      - Experience
+      - Capability
+    atomic_hierarchy:
+      - UI Primitive
+      - Business Primitive
+      - Capability
+      - Experience Module
+      - Experience Surface
+      - Product Definition
+      - Product Instance
+      - Deployment
+    lifecycle:
+      - SSOT
+      - Planner
+      - Composer
+      - Runtime
+    notes:
+      - Enterprise Composition Platform is architecture identity, not a separate layer
+      - Enterprise Composition Ecosystem is ecosystem vision, not a separate runtime
+  platform_layers:
+    - name: Governance Layer
+      description: constitutional rules, qualification, promotion, and compliance across all lower layers
+      status: ACTIVE
+    - name: Capability Layer
+      description: what EOS can do
+      status: COMPLETE
+    - name: Experience Surface Layer
+      description: how capabilities are consumed through channels
+      status: PLANNED
+    - name: Product Layer
+      description: what is packaged, deployed, and marketed
+      status: PLANNED
+    - name: Deployment Layer
+      description: how products are packaged and run on target environments
+      status: PLANNED_FUTURE
+  normalized_lifecycle:
+    - SSOT
+    - Planner
+    - Composer
+    - Runtime
+    - Deployment
+  admission_rule:
+    statement: Every new artifact must reduce implementation complexity, improve reuse, simplify composition, or reduce maintenance burden.
+  reduction_priorities:
+    - specification_reduction
+    - composition_as_code
+    - governance_as_automation
+    - architecture_decision_budget
+  leverage_metrics:
+    composition_leverage_ratio:
+      formula: reused_capabilities / new_capabilities
+      target_mature_product: ">= 0.80 capability reuse ratio"
+    experience_module_reuse_ratio:
+      target: ">= 0.70"
+    surface_reuse_ratio:
+      target: ">= 0.60"
+  architecture_decision_budget:
+    source: enterprise/execution/QUALITY-GATES.yaml
+
+  capability_delivery:
+    phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+      - "Phase 5"
+    status: COMPLETE
+    completed_by:
+      - EOS-001
+      - EOS-002
+      - EOS-003
+      - EOS-004
+      - EOS-005
+      - EOS-006
+      - EOS-007
+      - EOS-008
+      - EOS-009
+      - EOS-010
+      - EOS-011
+      - EOS-012
+    success_criteria:
+      - capability_complete
+      - api_available
+      - tests_pass
+      - build_green
+
+  platform_qualification:
+    phase: "Phase 6"
+    status: ACTIVE
+    objective: Prove EOS can operate reliably, securely, and measurably in production conditions.
+    success_criteria:
+      - latency_validated
+      - throughput_validated
+      - mttr_improved
+      - deployment_reliability_validated
+      - rollback_success_validated
+      - recovery_time_validated
+      - observability_coverage_validated
+      - security_posture_validated
+      - operational_readiness_validated
+    workstreams:
+      - id: WS-01
+        name: Performance and Scalability
+        status: READY
+      - id: WS-02
+        name: Reliability and Resilience
+        status: READY
+      - id: WS-03
+        name: Release Governance
+        status: READY
+      - id: WS-04
+        name: Security Hardening
+        status: READY
+      - id: WS-05
+        name: Observability Excellence
+        status: READY
+      - id: WS-06
+        name: Disaster Recovery
+        status: READY
+
+  operational_convergence:
+    phase: "Phase D"
+    name: Evidence Convergence
+    status: ACTIVE
+    type: CROSS_CUTTING_PROGRAM
+    objective: Converge all operational evidence producers to the Canonical Evidence Grammar so evidence becomes queryable, auditable, and comparable independent of producer.
+    baseline_dependency:
+      - architecture_baseline
+      - platform_qualification
+    adoption_policy:
+      - Freeze the specification baseline and expand adoption across runtime, Gate C, build, policy, doctor, and decision evidence producers.
+      - Prefer migration of existing producers to Canonical Evidence Grammar over creation of new specification families.
+      - Every migrated evidence surface MUST preserve subject linkage, projection linkage, digest determinism, signature envelope, lineage, producer identity, contract reference, and verification reference.
+    producer_migrations:
+      - producer: Gate C
+        status: PLANNED
+        target: Canonical Evidence Grammar
+      - producer: Runtime
+        status: PLANNED
+        target: Canonical Evidence Grammar
+      - producer: Build
+        status: PLANNED
+        target: Canonical Evidence Grammar
+      - producer: Policy
+        status: PLANNED
+        target: Canonical Evidence Grammar
+      - producer: Doctor
+        status: PLANNED
+        target: Canonical Evidence Grammar
+      - producer: Decision
+        status: PLANNED
+        target: Canonical Evidence Grammar
+    workstreams:
+      - id: EC-01
+        name: Evidence Inventory and Traceability Closure
+        status: READY
+        outcome: Every evidence producer, projection, subject, and registry linkage is inventoried and queryable through one canonical trace model.
+      - id: EC-02
+        name: Gate C Canonicalization
+        status: READY
+        outcome: Gate C emits and consumes Canonical Evidence Grammar without parallel legacy evidence formats.
+      - id: EC-03
+        name: Runtime and Build Producer Migration
+        status: READY
+        outcome: Runtime and build pipelines emit canonical evidence envelopes with deterministic digest and lineage.
+      - id: EC-04
+        name: Policy, Doctor, and Decision Migration
+        status: READY
+        outcome: Governance decision surfaces and diagnostic producers emit the same canonical grammar as execution surfaces.
+      - id: EC-05
+        name: Evidence Graph Integrity
+        status: READY
+        outcome: Orphan evidence and broken traceability links are reduced to zero while artifact graph completeness approaches full closure.
+    success_criteria:
+      - canonical_evidence_coverage_100
+      - runtime_evidence_compliance_100
+      - gate_c_evidence_compliance_100
+      - build_evidence_compliance_100
+      - policy_evidence_compliance_100
+      - doctor_evidence_compliance_100
+      - decision_evidence_compliance_100
+      - artifact_graph_completeness_gte_99
+      - orphan_evidence_zero
+      - broken_traceability_links_zero
+    kpis:
+      canonical_evidence_coverage:
+        target: "100%"
+        unit: percent_of_evidence_producers_using_canonical_grammar
+      runtime_evidence_compliance:
+        target: "100%"
+        unit: percent_of_runtime_evidence_conforming_to_canonical_grammar
+      gate_c_evidence_compliance:
+        target: "100%"
+        unit: percent_of_gate_c_evidence_conforming_to_canonical_grammar
+      build_evidence_compliance:
+        target: "100%"
+        unit: percent_of_build_evidence_conforming_to_canonical_grammar
+      policy_evidence_compliance:
+        target: "100%"
+        unit: percent_of_policy_evidence_conforming_to_canonical_grammar
+      doctor_evidence_compliance:
+        target: "100%"
+        unit: percent_of_doctor_evidence_conforming_to_canonical_grammar
+      decision_evidence_compliance:
+        target: "100%"
+        unit: percent_of_decision_evidence_conforming_to_canonical_grammar
+      artifact_graph_completeness:
+        target: ">=99%"
+        unit: percent_of_evidence_nodes_with_complete_relation_closure
+      orphan_evidence:
+        target: "0"
+        unit: count
+      broken_traceability_links:
+        target: "0"
+        unit: count
+
+  decision_quality:
+    phase: "Phase E"
+    name: Decision Intelligence
+    status: ACTIVE
+    type: CROSS_CUTTING_PROGRAM
+    objective: Elevate EOS from evidence-producing governance runtime to decision-governing runtime by making outcomes, impact, learning, and reuse the primary measures of decision value.
+    baseline_dependency:
+      - architecture_baseline
+      - operational_convergence
+    architectural_position:
+      statement: EOS optimizes engineering decisions, so the next leverage frontier is not more governance artifacts but a measurable decision loop from evidence to outcome to learning to reusable knowledge.
+      existing_foundation:
+        - RFC-0004 Decision Engine Specification
+        - RFC-0005 Decision Ledger Specification
+        - CONTRACT-decision-model
+        - CONTRACT-ledger-model
+      identified_gap:
+        - Current implementation is strong on decision traceability and coverage, but still weak on outcome correctness, time savings, confidence growth, and reuse economics.
+        - Decision infrastructure is not complete until EOS can show which decisions succeeded, failed, reversed, accelerated delivery, reduced risk, and yielded reusable learning.
+      strategic_shift:
+        - Governance grammar is treated as frozen baseline and no longer the dominant source of architectural value.
+        - Outcome metrics are treated as primary KPIs, while coverage metrics remain supporting instrumentation.
+        - Evidence is expected to evolve from stored artifact into organizational memory that informs policy, decisions, and automation.
+    target_operating_chain:
+      - Evidence
+      - Decision Ledger
+      - Outcome Tracking
+      - Impact Measurement
+      - Learning
+      - Knowledge Reuse
+      - Automation
+    supporting_chain:
+      - Finding
+      - Assessment
+      - Recommendation
+      - Decision
+      - Decision Outcome
+    workstreams:
+      - id: DQ-01
+        name: Decision Object Model
+        status: COMPLETED
+        outcome: Canonical decision grammar defines decision identity, trigger, evidence linkage, assumptions, alternatives, selected option, confidence, expected outcome, owner, and lifecycle state.
+      - id: DQ-02
+        name: Decision Ledger Runtime
+        status: COMPLETED
+        outcome: Ledger entries preserve full decision traceability, reproducibility, auditability, and reversibility semantics beyond append-only storage.
+      - id: DQ-03
+        name: Decision Outcome Tracking
+        status: COMPLETED
+        outcome: Every material decision can be linked to observed outcome, realized metrics, and post-decision learning.
+      - id: DQ-04
+        name: Decision Impact Graph
+        status: COMPLETED
+        outcome: Capability graph evolves from dependency-only view into decision impact graph linking decisions, changed capabilities, emitted evidence, and leverage deltas.
+      - id: DQ-05
+        name: Engineering Leverage Measurement
+        status: COMPLETED
+        outcome: EOS measures whether decisions improved engineering leverage rather than only whether artifacts exist.
+      - id: DQ-06
+        name: Evidence Health v2
+        status: COMPLETED
+        outcome: Evidence quality evolves from missing-stale-unverifiable counts into richer diagnostics including orphaned, superseded, inconsistent, expired, unsigned, tampered, and partial evidence states.
+      - id: DQ-07
+        name: Decision Outcome Effectiveness
+        status: ACTIVE
+        outcome: EOS measures whether decisions achieved expected outcomes, how often they failed, how often they were reversed, and how long outcome closure took.
+      - id: DQ-08
+        name: Learning Engine
+        status: ACTIVE
+        outcome: Captured learning becomes structured operational memory that can validate hypotheses, drive follow-up action, and improve future decisions.
+      - id: DQ-09
+        name: Decision Reuse and Knowledge Analytics
+        status: ACTIVE
+        outcome: EOS measures whether knowledge produced by prior decisions is reused by later decisions, capabilities, and automation flows.
+    priorities:
+      - Decision Outcome Tracking
+      - Learning Engine
+      - Decision Impact Graph
+      - Decision Outcome Effectiveness
+      - Decision Reuse and Knowledge Analytics
+      - Decision Object Model
+      - Decision Ledger Runtime
+      - Engineering Leverage Measurement
+      - Evidence Health v2
+    success_criteria:
+      - decision_object_model_materialized
+      - decision_ledger_runtime_traceable
+      - decision_outcome_tracking_active
+      - decision_impact_graph_materialized
+      - leverage_measurement_operational
+      - evidence_health_v2_materialized
+      - decision_effectiveness_measured
+      - learning_engine_active
+      - knowledge_reuse_analytics_active
+    kpis:
+      decision_success_rate:
+        target: ">=80%"
+        unit: percent_of_evaluated_decisions_with_achieved_outcome
+      false_decision_rate:
+        target: "<=10%"
+        unit: percent_of_evaluated_decisions_with_missed_outcome
+      decision_reversal_rate:
+        target: "<=15%"
+        unit: percent_of_decision_entries_that_supersede_prior_decisions
+      decision_effectiveness:
+        target: ">=0.75"
+        unit: weighted_outcome_score_where_achieved_counts_1_and_partial_counts_0.5
+      mean_time_to_outcome:
+        target: decreasing_trend
+        unit: milliseconds_from_decision_time_to_materialized_outcome
+      learning_velocity:
+        target: decreasing_trend
+        unit: milliseconds_from_materialized_outcome_to_captured_learning
+      decision_confidence_growth:
+        target: increasing_trend
+        unit: average_confidence_delta_across_decision_supersession_chain
+      evidence_utilization_rate:
+        target: increasing_trend
+        unit: percent_of_decisions_grounded_in_materialized_evidence_used_in_outcome_evaluation
+      knowledge_reuse_rate:
+        target: increasing_trend
+        unit: percent_of_new_decisions_reusing_prior_learning_patterns_or_follow_up_actions
+      engineering_hours_saved:
+        target: increasing_trend
+        unit: estimated_engineering_hours_avoided_through_reused_decision_knowledge
+      decision_traceability_coverage:
+        target: "100%"
+        unit: percent_of_decisions_with_linked_evidence_findings_and_owner
+      decision_outcome_coverage:
+        target: "100%"
+        unit: percent_of_material_decisions_with_observed_outcome_tracking
+      decision_learning_closure:
+        target: ">=95%"
+        unit: percent_of_closed_decisions_with_learning_record
+      decision_reproducibility:
+        target: "100%"
+        unit: percent_of_decisions_replayable_from_ledger_and_inputs
+      decision_reversibility:
+        target: "100%"
+        unit: percent_of_reversible_decisions_with_supersession_or_rollback_path
+      engineering_leverage_measurement_coverage:
+        target: "100%"
+        unit: percent_of_decision_programs_with_leverage_measurement
+      decision_impact_graph_completeness:
+        target: ">=99%"
+        unit: percent_of_decisions_with_impact_links_to_capabilities_evidence_and_outcomes
+
+future_domain:
+  planned_phases:
+    - id: phase-7
+      name: Experience Platform
+      status: PLANNED
+      objective: Compose capabilities into reusable interaction surfaces without duplicating business logic.
+      first_deliverables:
+        - EOS Experience Architecture
+        - Experience Composition Specification
+        - Product Composition Specification
+        - Experience Contract
+        - Surface Taxonomy
+        - Composition Runtime
+        - Experience Runtime
+        - Interaction Model
+        - Routing and Navigation Model
+        - Capability Binding Rules
+      focus:
+        - web_workspace
+        - mobile
+        - cli
+        - rest_api
+        - graphql
+        - mcp_server
+        - ai_agent
+        - batch_worker
+        - external_integration
+      architectural_need:
+        - experience_composition_engine
+        - experience_descriptors
+        - surface_specific_composers
+        - reusable_experience_modules
+        - atomic_primitives
+        - pattern_based_modules
+    - id: phase-8
+      name: Product Platform
+      status: PLANNED
+      objective: Compose experiences into deployable, branded, licensed products.
+      example_products:
+        - services-id.com
+        - lawyershub.id
+        - indonesialawyersclub.id
+      focus:
+        - product_composer
+        - product_definition
+        - product_instance
+        - reusable_composition_assets
+        - branding
+        - packaging
+        - licensing
+        - deployment_profiles
+    - id: phase-9
+      name: Control Plane
+      status: PLANNED
+      objective: Implement the Enterprise Control Plane as cross-domain orchestrator for all EOS platforms.
+      charter:
+        - read_governance_deployment_product_experience_capability_ssot
+        - coordinate_planners_before_composition
+        - execute_all_composers_in_dependency_order
+        - validate_constitutional_rules
+        - build_cross_domain_dependency_graph
+        - enforce_qualification_gate
+        - manage_promotion_across_environments
+        - coordinate_cross_domain_observability_and_lifecycle
+        - capability_lifecycle_manager
+        - execution_manager
+        - policy_engine
+        - tenant_manager
+        - configuration_and_feature_flag_service
+        - registry_and_dependency_manager
+        - health_and_topology_service
+        - release_and_rollout_manager
+        - audit_and_governance_center
+        - ssot_registry
+        - dependency_graph_engine
+        - policy_and_constitution_engine
+        - composition_engine
+        - qualification_engine
+        - promotion_and_release_engine
+        - observability_and_audit_engine
+      future_extension:
+        - deployment_domain
+        - deployment_composer
+        - deployment_runtime
+        - deployment_governance
+        - enterprise_planner
+      architecture_role:
+        - enterprise_control_plane
+        - cross_domain_orchestrator
+        - not_a_sixth_domain
+        - extensible_kernel

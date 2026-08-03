@@ -135,7 +135,6 @@ export class AbiCompilerDiffProducer implements IndependentEvidenceProducer {
     // ABI-2: Coba akses random 3 top-level export via require() vs TypeChecker
     // Tidak menggunakan compiled declaration emit — cukup require(src-like via tsx yang sudah jalan) vs checker cocok nama
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const dynamic = _require("../../index.ts") as Record<string, unknown>;
       const dynKeys = Object.keys(dynamic).sort();
       observations.push(`ABI-2 dynamic require() export key count = ${dynKeys.length}`);

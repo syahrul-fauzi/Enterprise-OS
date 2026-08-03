@@ -1,0 +1,50 @@
+contract:
+  id: EXPERIENCE-CONTRACT-V1
+  name: canonical_experience_composition_contract
+  status: DRAFT
+  purpose: Define the canonical composition contract for Experience Domain artifacts.
+  composition_artifact: experience.yaml
+  output: Experience Contract
+  consumers:
+    - experience_runtime
+    - surface_composers
+    - routing_layer
+    - permission_layer
+    - product_composer
+  schema:
+    identity:
+      id: string
+      name: string
+      version: semver
+    composition:
+      uses_capabilities: array
+      surfaces: array
+      primary_surface: string
+    navigation:
+      routes_or_commands: array
+      primary_entrypoint: string
+    layout:
+      regions: array | optional
+      navigation_model: string | optional
+    permissions:
+      required_roles: array
+      required_capabilities: array
+      policy_refs: array | optional
+    interaction_model:
+      intents: array
+      bindings: array
+    surface_contracts:
+      api: optional
+      cli: optional
+      workspace: optional
+      agent: optional
+      automation: optional
+  invariants:
+    - experience_must_select_capabilities_by_contract
+    - experience_must_not_duplicate_business_logic
+    - experience_must_declare_surface_membership
+    - experience_must_define_routing_or_command_entrypoints
+  anti_patterns:
+    - embedding_product_branding_in_experience_descriptor
+    - importing_product_specific_packaging_concerns
+    - reimplementing_capability_policies_in_surface_code

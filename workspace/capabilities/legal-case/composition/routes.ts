@@ -1,4 +1,4 @@
-import { caseRoutes } from "../experience/routes";
+import { caseExperienceRoutes } from "../experience/routes";
 
 export interface CaseCompositionRouteDescriptor {
   readonly id: string;
@@ -11,7 +11,7 @@ export interface CaseCompositionRouteDescriptor {
 
 export const caseCompositionRoutes: readonly CaseCompositionRouteDescriptor[] = (() => {
   const out: CaseCompositionRouteDescriptor[] = [];
-  for (const [id, pathEntry] of Object.entries(caseRoutes.paths)) {
+  for (const [id, pathEntry] of Object.entries(caseExperienceRoutes.paths)) {
     if (pathEntry === null || pathEntry === undefined) continue;
     if (typeof pathEntry === "string") {
       out.push({

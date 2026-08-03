@@ -1,0 +1,28 @@
+spec_id: "SPEC-0106"
+title: "Decision Recommendation"
+status: "Draft"
+owner: "Lead Enterprise Architect"
+governed_by:
+  - "RFC-0001"
+  - "RFC-0010"
+kind: "contract_object"
+version: "0.1.0"
+source_bindings:
+  runtime_contracts:
+    - "workspace/packages/tooling/eos-cli/src/runtime-contracts/models/decision.ts"
+  conformance:
+    - "enterprise/specifications/conformance/CONF-0010-decision-object-model-conformance.md"
+schema:
+  type: "object"
+  additionalProperties: false
+  required:
+    - "recommendation_id"
+    - "recommendation_type"
+    - "summary"
+  properties:
+    recommendation_id:
+      type: "string"
+    recommendation_type:
+      type: "string"
+    summary:
+      type: "string"

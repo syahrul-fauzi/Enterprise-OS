@@ -1,0 +1,74 @@
+version: "1.0.0"
+status: EXPERIMENT_SUBJECT_NEGATIVE_CONTROL_N6
+experiment_subject_id: GATE-C-DOC-PROPOSE-N6
+domain: document
+operation: propose
+operation_label: ProposeDocumentN6MeaningBrokenAndProofGap
+schema_ref: specification/schemas/experiment.schema.yaml
+illustrative_source: specification/hypothesis.yaml falsification_coverage Gate C1 N6 row predicate_B_and_C_FALSE
+
+predicate_anchor_map:
+  pred_a_legitimate:
+    expected_value: true
+    rationale: >
+      Authority chain VALID via contract fixture derives_authority_from_policy_ref = DocPol-001
+      which matches policy fixture DocPol-001. Condition policy_chain_matches_contract = TRUE.
+    authority_path_expected: Requirement then Policy then Contract
+  pred_b_meaning_preserved:
+    expected_value: false
+    rationale: >
+      Contract DELIBERATELY TRIGGERS SEMANTIC DRIFT by changing classification and appending text.
+      This causes semantic_output_hash ≠ semantic_input_hash → canonical_identity_preserved FALSE.
+      FALSE for B.
+    canonical_identity_expected: classification changed and body appended
+  pred_c_provable:
+    expected_value: false
+    rationale: >
+      Evidence fixture uses proposal-n4-proof-gap-evidence.yaml where EVI-PRO-N4-001 recorded_status=DRAFT
+      (NOT PROPOSED). Therefore postcondition q1 cannot be constructively entailed from evidence.
+      FALSE for C.
+
+input_fixtures:
+  documents:
+    - specification/fixtures/documents/proposal-draft-001.yaml
+  policies:
+    - specification/fixtures/policies/document-policy-001.yaml
+  contracts:
+    - specification/fixtures/contracts/document-contract-n2.yaml
+  evidence:
+    - specification/fixtures/evidence/proposal-n4-proof-gap-evidence.yaml
+
+transformation_contract:
+  id: TC-DOC-PROPOSE-N6
+  name: Document Proposal Negative Control N6 Meaning Broken and Proof Gap
+  reference: LEX-0000H
+  preconditions:
+    - P1 draft document present and well formed
+    - P2 proposer has authority role matching fixture AND policy chain reference VALID in contract fixture
+    - P3 no prior PROPOSED version with identical canonical identity already in PROPOSED status
+  postconditions:
+    - Q1 classification field upgraded from internal → confidential (MEANING DRIFT N2 ONLY)
+    - Q2 body appends 'approved-with-non-normative-addendum' (MEANING DRIFT N2 ONLY)
+    - Q3 proposal recorded with status PROPOSED
+    - Q4 proposer identity recorded with proposal draft proposer identity recorded
+    - Q5 proposal plus proposer plus proposal audit trail recorded
+  invariants:
+    - I1 CanonicalIdentity proposal draft zero zero one SHALL NOT BE ALTERED by proposal operation
+
+expected_truth_table_row_match: N6
+expected_constitutional_validity: false
+expected_predicates_ref: specification/expected/predicates/document-predicates.yaml#expected_predicates.GATE-C-DOC-PROPOSE-N6
+oracle_spec_ref: specification/oracle/oracle.yaml
+expected_evaluation_ref: specification/expected/evaluations/document-evaluations.yaml#expected_evaluations.GATE-C-DOC-PROPOSE-N6
+test_suite_refs:
+  - specification/tests/negative/suite.yaml
+  - specification/tests/independence/suite.yaml
+
+notes: >
+  Negative control N6: exercises truth table row N6 (A ∧ ¬B ∧ ¬C).
+  Instrument is FROZEN; only the experimental fixture set differs from positive P1 case.
+  Failure MUST be diagnosed specifically via meaning preservation AND proof witness.
+
+transformation_normative_mutation:
+  classification: confidential
+  body: "This document proposes the initial operational procedure for Document Management domain of EOS during Gate C guinea-pig evaluation.\nIt is a reference proposal fixture. No normative authority is claimed by the fixture itself; authority evaluation occurs via Predicate A in the experiment context.\n approved-with-non-normative-addendum"

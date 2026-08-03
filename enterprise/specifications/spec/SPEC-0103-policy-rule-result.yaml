@@ -1,0 +1,35 @@
+spec_id: "SPEC-0103"
+title: "Policy Rule Result"
+status: "Draft"
+owner: "Lead Enterprise Architect"
+governed_by:
+  - "RFC-0001"
+  - "RFC-0003"
+kind: "contract_object"
+version: "0.1.0"
+source_bindings:
+  runtime_contracts:
+    - "workspace/packages/tooling/eos-cli/src/runtime-contracts/models/evaluation.ts"
+  conformance:
+    - "enterprise/specifications/conformance/CONF-0003-evaluator-spi-conformance.md"
+schema:
+  type: "object"
+  additionalProperties: false
+  required:
+    - "policy_id"
+    - "rule_id"
+    - "status"
+  properties:
+    policy_id:
+      type: "string"
+    rule_id:
+      type: "string"
+    status:
+      enum:
+        - "PASS"
+        - "WARN"
+        - "FAIL"
+        - "NOT_APPLICABLE"
+    reason_codes:
+      items:
+        type: "string"
