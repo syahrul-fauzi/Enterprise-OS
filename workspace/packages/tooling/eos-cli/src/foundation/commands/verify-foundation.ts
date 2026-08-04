@@ -101,6 +101,8 @@ import {
   writeTextArtifact,
 } from "../../governance-runtime.js";
 import { persistProjectionArtifact } from "../../projection/runtime/index.js";
+import { materializeKnowledgeProjectionArtifacts } from "../../knowledge/registry/index.js";
+import { materializeLearningRecordedEvents } from "../../learning/runtime/intelligence-runtime.js";
 import { EOS_ROOT } from "../../state.js";
 
 const WORKSPACE_ROOT = resolve(EOS_ROOT, "workspace");
@@ -507,6 +509,14 @@ export async function runVerifyFoundationCommand(): Promise<number> {
       registry: trustSignatureProviderRegistry,
     });
   const gateCAcceptanceClosedLoop = loadGateCAcceptanceClosedLoopArtifacts();
+  const knowledgeProjection = materializeKnowledgeProjectionArtifacts({
+    generatedAtUtc: sessionStartedAtUtc,
+    learningEvents: materializeLearningRecordedEvents({
+      ledgerEntries: gateCAcceptanceClosedLoop.ledgerEntries,
+      outcomeRecords: gateCAcceptanceClosedLoop.outcomeRecords,
+      learningRecords: gateCAcceptanceClosedLoop.learningRecords,
+    }),
+  });
   const foundationProducerRegistryExecutions =
     await executeFoundationProducerRegistry({
       specification: {
@@ -520,6 +530,7 @@ export async function runVerifyFoundationCommand(): Promise<number> {
         outcomeRecords: gateCAcceptanceClosedLoop.outcomeRecords,
         learningRecords: gateCAcceptanceClosedLoop.learningRecords,
         impactGraphs: gateCAcceptanceClosedLoop.impactGraphs,
+        knowledgeRegistryEntries: knowledgeProjection.registry.entries,
         reportRef:
           "workspace/foundation/evidence/verification/decision-quality-report.json",
       },
@@ -925,7 +936,7 @@ export async function runVerifyFoundationCommand(): Promise<number> {
   );
   writeJsonArtifact(
     evidenceFiles.knowledgeRegistry,
-    learningProducerExecution.materialized.knowledgeRegistry,
+    knowledgeProjection.registry,
   );
   writeJsonArtifact(
     evidenceFiles.evidenceProducerConvergence,
