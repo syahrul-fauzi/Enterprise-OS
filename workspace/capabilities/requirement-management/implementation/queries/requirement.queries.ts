@@ -6,7 +6,7 @@ import {
   type SearchRequirementsInput,
   type SearchRequirementsOutput,
 } from "../contracts";
-import { RequirementRepositoryInMemory } from "../repository";
+import { RequirementRepositoryCurrent } from "../repository";
 
 type GetRequirementQuery = CapabilityQuery<GetRequirementInput, GetRequirementOutput>;
 type SearchRequirementsQuery = CapabilityQuery<
@@ -19,7 +19,7 @@ export const getRequirement: GetRequirementQuery = {
   name: "requirement.get",
   version: "0.1.0",
   execute(input) {
-    return RequirementRepositoryInMemory.byId(input.id);
+    return RequirementRepositoryCurrent.byId(input.id);
   },
 };
 
@@ -28,7 +28,7 @@ export const searchRequirements: SearchRequirementsQuery = {
   name: "requirement.search",
   version: "0.1.0",
   execute(input) {
-    const all = RequirementRepositoryInMemory.list();
+    const all = RequirementRepositoryCurrent.list();
     const q = (input.query ?? "").trim().toLowerCase();
     let filtered: readonly RequirementAggregate[] = all;
 

@@ -47,3 +47,12 @@ https://{$ILC_DOMAIN} {
 	tls {$CADDY_TLS}
 	import eos_web_proxy ilc
 }
+
+http://staging.indonesialawyersclub.id {
+        import http_redirect
+}
+
+https://staging.indonesialawyersclub.id {
+        tls {$CADDY_TLS}
+        import eos_web_proxy ilc
+}

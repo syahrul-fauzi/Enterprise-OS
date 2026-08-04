@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { RequirementId } from "../../../../../../capabilities/requirement-management/implementation/service";
 import { requirementService } from "../../../../../../capabilities/requirement-management/implementation/services/requirement.service";
+import { workflowEngineService } from "../../../../../../capabilities/workflow-engine/implementation/service";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import {
   createWorkspaceContextHeaders,
@@ -132,6 +133,33 @@ export async function PATCH(request: Request, segment: { params: Params }) {
 
   try {
     const body = parsed.data;
+    if (body.action === "verify") {
+      const readiness = workflowEngineService.executeWorkflow({
+        workflowId: "requirement-delivery-readiness",
+        requirementId: id,
+        limit: 20,
+      });
+
+      if (!readiness.output.readyForWorkflow) {
+        return NextResponse.json(
+          {
+            error: "invalid_state",
+            id,
+            detail:
+              "Verification requires evidence-backed delivery readiness. Attach a delivery evidence artifact first.",
+            workflow: readiness,
+          },
+          {
+            status: 409,
+            headers: applyProductContextHeaders({
+              headers: createWorkspaceContextHeaders({ session, trace }),
+              productContext,
+            }),
+          },
+        );
+      }
+    }
+
     const result =
       body.action === "approve"
         ? requirementService.approveRequirement({ id: requirementId })

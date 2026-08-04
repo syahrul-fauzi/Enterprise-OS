@@ -1,5 +1,6 @@
 import { RequirementId, type RequirementAggregate } from "../../../requirement-management/implementation/contracts";
 import { requirementService } from "../../../requirement-management/implementation/service";
+import { evidenceRegistryService } from "../../../evidence-registry/implementation/service";
 import type {
   GetTraceabilityRowInput,
   GetTraceabilityRowOutput,
@@ -60,6 +61,30 @@ function toLink(
   };
 }
 
+function buildRuntimeEvidenceLinks(
+  requirement: RequirementAggregate,
+): readonly RequirementTraceabilityLink[] {
+  return evidenceRegistryService
+    .searchEvidenceRegistry({
+      requirementRef: requirement.id,
+      limit: 50,
+      offset: 0,
+    })
+    .items.map((record) => ({
+      id: `runtime-evidence:${record.id}`,
+      title: record.name,
+      description: "Runtime delivery evidence artifact linked from the evidence registry.",
+      kind: "evidence" as const,
+      reference: record.path,
+      referenceKind: "repo_path" as const,
+      requirementIds: [requirement.id],
+      linkedCapabilityIds: [...requirement.linkedCapabilityIds],
+      verification: "pending" as const,
+      externalRequirementRefs: [...record.requirementRefs],
+      matchedBy: ["requirement_id"] as const,
+    }));
+}
+
 function buildCoverage(
   requirement: RequirementAggregate,
   links: readonly RequirementTraceabilityLink[],
@@ -103,7 +128,8 @@ function buildRow(
 ): RequirementTraceabilityRow | undefined {
   const links = TraceabilityArtifactRepositoryInMemory.list()
     .map((artifact) => toLink(artifact, requirement))
-    .filter((link): link is RequirementTraceabilityLink => link !== undefined);
+    .filter((link): link is RequirementTraceabilityLink => link !== undefined)
+    .concat(buildRuntimeEvidenceLinks(requirement));
 
   const filteredLinks =
     artifactKind === undefined || artifactKind === "all"

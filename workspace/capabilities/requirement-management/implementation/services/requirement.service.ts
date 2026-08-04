@@ -26,11 +26,11 @@ import {
   verifyRequirement,
 } from "../commands";
 import { getRequirement, searchRequirements } from "../queries";
-import { RequirementRepositoryInMemory } from "../repository";
+import { RequirementRepositoryCurrent } from "../repository";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 
 export class RequirementService {
-  readonly repositories = { Requirement: RequirementRepositoryInMemory } as const;
+  readonly repositories = { Requirement: RequirementRepositoryCurrent } as const;
 
   createRequirement(input: CreateRequirementInput): CreateRequirementOutput {
     const result = createRequirement.execute(input) as CreateRequirementOutput;
@@ -144,7 +144,7 @@ export class RequirementService {
   }
 
   listRequirements(): readonly RequirementAggregate[] {
-    return RequirementRepositoryInMemory.list();
+    return RequirementRepositoryCurrent.list();
   }
 }
 

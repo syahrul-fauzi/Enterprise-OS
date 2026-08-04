@@ -8,10 +8,14 @@ services:
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
+      EOS_REQUIREMENT_STORAGE_PATH: /data/requirements/requirements.json
+      EOS_EVIDENCE_STORAGE_ROOT: /data/evidence
       EOS_RUNTIME_INVOCATION_EVIDENCE_PATH: /app/portfolios/evidence/verification/enterprise/runtime-invocations-staging.jsonl
     restart: unless-stopped
     expose:
       - "3000"
+    volumes:
+      - web_state:/data
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000/api/health"]
       interval: 15s
@@ -40,5 +44,6 @@ services:
       - caddy_config:/config
 
 volumes:
+  web_state:
   caddy_data:
   caddy_config:

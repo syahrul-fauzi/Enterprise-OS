@@ -1,4 +1,6 @@
 export {
+  RequirementRepositoryCurrent,
+  RequirementRepositoryFileBacked,
   RequirementRepositoryInMemory,
   newRequirementId,
   defaultRequirementPriority,

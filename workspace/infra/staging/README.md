@@ -17,7 +17,7 @@ Current product hosts:
 
 - `services-id.com`
 - `lawyershub.id`
-- `staging.indonesialawyersclub.id`
+- `indonesialawyersclub.id`
 
 ## Purpose
 
@@ -82,14 +82,14 @@ Each hostname must resolve to the VPS public IP:
 
 - `services-id.com`
 - `lawyershub.id`
-- `staging.indonesialawyersclub.id`
+- `indonesialawyersclub.id`
 
 Simple check:
 
 ```bash
 getent hosts services-id.com
 getent hosts lawyershub.id
-getent hosts staging.indonesialawyersclub.id
+getent hosts indonesialawyersclub.id
 ```
 
 ## Public Staging Setup
@@ -121,6 +121,7 @@ CADDY_TLS=ops@your-domain.tld
 SERVICES_ID_DOMAIN=services-id.com
 LAWYERSHUB_DOMAIN=lawyershub.id
 ILC_DOMAIN=staging.indonesialawyersclub.id
+ILC_DOMAIN=indonesialawyersclub.id
 STAGING_REQUIRE_PUBLIC_TLS=1
 STAGING_TLS_INSECURE=0
 STAGING_ACCEPTANCE_PRODUCT_ID=lawyershub
@@ -198,3 +199,5 @@ DNS
 - the rail is intentionally shared today; do not split runtimes unless product
   reality proves the need
 - product identity belongs in `products/*`, not in the runtime topology
+- `staging.indonesialawyersclub.id` is now a deprecated legacy reference; use
+  `indonesialawyersclub.id` as the canonical public ILC surface

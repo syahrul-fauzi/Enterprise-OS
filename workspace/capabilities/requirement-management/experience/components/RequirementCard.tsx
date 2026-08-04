@@ -53,13 +53,26 @@ export type RequirementAction =
 export interface RequirementCardProps {
   readonly item: RequirementAggregate;
   readonly onAction?: (id: string, action: RequirementAction) => void | Promise<void>;
+  readonly onEdit?: (item: RequirementAggregate) => void;
   readonly busy?: boolean;
+  readonly copy?: {
+    readonly verificationLabel: string;
+    readonly ownerLabel: string;
+    readonly successLabel: string;
+    readonly referenceLabel: string;
+    readonly readyLabel: string;
+    readonly statusLabels: Partial<Record<string, string>>;
+    readonly actionLabels: Partial<Record<string, string>>;
+    readonly showCapabilityIds: boolean;
+  };
 }
 
 export function RequirementCard({
   item,
   onAction,
+  onEdit,
   busy = false,
+  copy,
 }: RequirementCardProps) {
   const status = STATUS_LABEL[item.status];
   const nextAction: RequirementAction | null =
@@ -74,7 +87,8 @@ export function RequirementCard({
             : null;
 
   const actionLabel =
-    nextAction === "approve"
+    copy?.actionLabels[nextAction ?? ""] ??
+    (nextAction === "approve"
       ? "Approve"
       : nextAction === "start_delivery"
         ? "Start Delivery"
@@ -82,7 +96,8 @@ export function RequirementCard({
           ? "Mark Implemented"
           : nextAction === "verify"
             ? "Verify"
-            : null;
+            : null);
+  const statusLabel = copy?.statusLabels[item.status] ?? status.label;
 
   return (
     <Card
@@ -99,7 +114,7 @@ export function RequirementCard({
           <span
             className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border shrink-0 ${status.style}`}
           >
-            {status.label}
+            {statusLabel}
           </span>
         </div>
       }
@@ -116,16 +131,17 @@ export function RequirementCard({
             Priority: {PRIORITY_LABEL[item.priority]}
           </span>
           <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1">
-            Verification: {VERIFICATION_LABEL[item.verificationStatus]}
+            {copy?.verificationLabel ?? "Verification"}:{" "}
+            {VERIFICATION_LABEL[item.verificationStatus]}
           </span>
           {item.owner && (
             <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1">
-              Owner: {item.owner}
+              {copy?.ownerLabel ?? "Owner"}: {item.owner}
             </span>
           )}
         </div>
 
-        {item.linkedCapabilityIds.length > 0 && (
+        {copy?.showCapabilityIds !== false && item.linkedCapabilityIds.length > 0 && (
           <div className="space-y-1">
             <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
               Linked Capabilities
@@ -146,7 +162,7 @@ export function RequirementCard({
         {item.acceptanceCriteria.length > 0 && (
           <div className="space-y-1">
             <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
-              Acceptance Criteria
+              {copy?.successLabel ?? "Acceptance Criteria"}
             </div>
             <ul className="list-disc space-y-1 pl-5 text-sm text-slate-600">
               {item.acceptanceCriteria.map((criterion) => (
@@ -157,21 +173,35 @@ export function RequirementCard({
         )}
 
         <div className="flex items-center justify-between border-t border-slate-100 pt-2">
-          <span className="text-[10px] font-mono text-slate-400">{item.id}</span>
-          {nextAction && onAction ? (
-            <button
-              className="rounded-xl bg-slate-950 px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50"
-              disabled={busy}
-              onClick={() => void onAction(item.id, nextAction)}
-              type="button"
-            >
-              {busy ? "Working..." : actionLabel}
-            </button>
-          ) : (
-            <span className="text-[11px] text-slate-400">
-              {item.status === "verified" ? "Ready to present" : "No action"}
-            </span>
-          )}
+          <span className="text-[10px] font-mono text-slate-400">
+            {copy?.referenceLabel ?? "Reference"}: {item.id}
+          </span>
+          <div className="flex items-center gap-2">
+            {onEdit ? (
+              <button
+                className="rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 disabled:opacity-50"
+                disabled={busy}
+                onClick={() => onEdit(item)}
+                type="button"
+              >
+                Edit
+              </button>
+            ) : null}
+            {nextAction && onAction ? (
+              <button
+                className="rounded-xl bg-slate-950 px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50"
+                disabled={busy}
+                onClick={() => void onAction(item.id, nextAction)}
+                type="button"
+              >
+                {busy ? "Working..." : actionLabel}
+              </button>
+            ) : (
+              <span className="text-[11px] text-slate-400">
+                {item.status === "verified" ? copy?.readyLabel ?? "Ready to present" : "No action"}
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </Card>

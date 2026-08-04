@@ -19,7 +19,7 @@ import {
   defaultRequirementStatus,
   defaultRequirementVerificationStatus,
   newRequirementId,
-  RequirementRepositoryInMemory,
+  RequirementRepositoryCurrent,
 } from "../repository";
 
 type CreateRequirementCommand = CapabilityCommand<
@@ -79,7 +79,7 @@ export const createRequirement: CreateRequirementCommand = {
       createdAt: now,
       updatedAt: now,
     };
-    RequirementRepositoryInMemory.save(entity);
+    RequirementRepositoryCurrent.save(entity);
     return {
       id: entity.id,
       status: entity.status,
@@ -94,7 +94,7 @@ export const updateRequirement: UpdateRequirementCommand = {
   name: "requirement.update",
   version: "0.1.0",
   execute(input) {
-    const current = RequirementRepositoryInMemory.byId(input.id);
+    const current = RequirementRepositoryCurrent.byId(input.id);
     if (current === undefined) {
       throw new Error(`[requirement.update] Requirement not found: ${input.id}`);
     }
@@ -119,7 +119,7 @@ export const updateRequirement: UpdateRequirementCommand = {
           }
         : {}),
     };
-    const saved = RequirementRepositoryInMemory.save(next);
+    const saved = RequirementRepositoryCurrent.save(next);
     return { id: saved.id, status: saved.status, updatedAt: saved.updatedAt };
   },
 };
@@ -129,7 +129,7 @@ export const approveRequirement: ApproveRequirementCommand = {
   name: "requirement.approve",
   version: "0.1.0",
   execute(input) {
-    const current = RequirementRepositoryInMemory.byId(input.id);
+    const current = RequirementRepositoryCurrent.byId(input.id);
     if (current === undefined) {
       throw new Error(`[requirement.approve] Requirement not found: ${input.id}`);
     }
@@ -145,7 +145,7 @@ export const approveRequirement: ApproveRequirementCommand = {
       verificationStatus: "not_ready",
       approvedAt,
     };
-    RequirementRepositoryInMemory.save(next);
+    RequirementRepositoryCurrent.save(next);
     return { id: next.id, status: "approved", approvedAt };
   },
 };
@@ -155,7 +155,7 @@ export const startRequirementDelivery: StartRequirementDeliveryCommand = {
   name: "requirement.startDelivery",
   version: "0.1.0",
   execute(input) {
-    const current = RequirementRepositoryInMemory.byId(input.id);
+    const current = RequirementRepositoryCurrent.byId(input.id);
     if (current === undefined) {
       throw new Error(`[requirement.startDelivery] Requirement not found: ${input.id}`);
     }
@@ -169,7 +169,7 @@ export const startRequirementDelivery: StartRequirementDeliveryCommand = {
       status: "in_delivery",
       verificationStatus: "pending",
     };
-    RequirementRepositoryInMemory.save(next);
+    RequirementRepositoryCurrent.save(next);
     return { id: next.id, status: "in_delivery" };
   },
 };
@@ -179,7 +179,7 @@ export const markRequirementImplemented: MarkRequirementImplementedCommand = {
   name: "requirement.markImplemented",
   version: "0.1.0",
   execute(input) {
-    const current = RequirementRepositoryInMemory.byId(input.id);
+    const current = RequirementRepositoryCurrent.byId(input.id);
     if (current === undefined) {
       throw new Error(`[requirement.markImplemented] Requirement not found: ${input.id}`);
     }
@@ -195,7 +195,7 @@ export const markRequirementImplemented: MarkRequirementImplementedCommand = {
       verificationStatus: "pending",
       implementedAt,
     };
-    RequirementRepositoryInMemory.save(next);
+    RequirementRepositoryCurrent.save(next);
     return { id: next.id, status: "implemented", implementedAt };
   },
 };
@@ -205,7 +205,7 @@ export const verifyRequirement: VerifyRequirementCommand = {
   name: "requirement.verify",
   version: "0.1.0",
   execute(input) {
-    const current = RequirementRepositoryInMemory.byId(input.id);
+    const current = RequirementRepositoryCurrent.byId(input.id);
     if (current === undefined) {
       throw new Error(`[requirement.verify] Requirement not found: ${input.id}`);
     }
@@ -221,7 +221,7 @@ export const verifyRequirement: VerifyRequirementCommand = {
       verificationStatus: "passed",
       verifiedAt,
     };
-    RequirementRepositoryInMemory.save(next);
+    RequirementRepositoryCurrent.save(next);
     return {
       id: next.id,
       status: "verified",

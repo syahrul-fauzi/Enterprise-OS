@@ -1,31 +1,40 @@
 {
-  "generatedAt": "2026-08-04T08:50:06.680Z",
+  "generatedAt": "2026-08-04T16:20:34.123Z",
   "timeoutMs": 10000,
   "summary": {
-    "canonicalCurrentBuildCount": 0,
-    "oldSurfaceCount": 1,
-    "unreachableCount": 2
+    "canonicalCurrentBuildCount": 2,
+    "oldSurfaceCount": 0,
+    "unreachableCount": 1
   },
   "results": [
     {
       "productId": "services-id",
       "host": "services-id.com",
-      "classification": "unreachable",
-      "error": "Timeout after 10000ms"
-    },
-    {
-      "productId": "lawyershub",
-      "host": "lawyershub.id",
-      "classification": "eos_runtime_old_surface",
+      "classification": "canonical_current_build",
       "checks": {
         "rootStatus": 200,
         "requirementsStatus": 200,
         "sessionStatus": 200,
         "sessionLooksLikeEos": true,
-        "hasCurrentRoot": false,
-        "hasCurrentRequirements": false,
-        "hasCurrentMetadata": false,
-        "hasLegacySurface": true
+        "hasCurrentRoot": true,
+        "hasCurrentRequirements": true,
+        "hasCurrentMetadata": true,
+        "hasLegacySurface": false
+      }
+    },
+    {
+      "productId": "lawyershub",
+      "host": "lawyershub.id",
+      "classification": "canonical_current_build",
+      "checks": {
+        "rootStatus": 200,
+        "requirementsStatus": 200,
+        "sessionStatus": 200,
+        "sessionLooksLikeEos": true,
+        "hasCurrentRoot": true,
+        "hasCurrentRequirements": true,
+        "hasCurrentMetadata": true,
+        "hasLegacySurface": false
       }
     },
     {

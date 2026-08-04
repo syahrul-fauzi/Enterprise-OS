@@ -148,7 +148,7 @@ function executeRequirementDeliveryReadiness(
   steps.push({
     stepId: "collect-linked-evidence",
     kind: "evidence.search",
-    status: evidenceMatches.length > 0 ? "passed" : "skipped",
+    status: evidenceMatches.length > 0 ? "passed" : "failed",
     summary:
       evidenceMatches.length > 0
         ? `Collected ${evidenceMatches.length} evidence records.`
@@ -161,9 +161,11 @@ function executeRequirementDeliveryReadiness(
   });
 
   const readyForWorkflow =
-    requirement.verificationStatus === "passed" &&
     traceability.coverage.complete &&
-    evidenceMatches.length > 0;
+    evidenceMatches.length > 0 &&
+    (requirement.status === "in_delivery" ||
+      requirement.status === "implemented" ||
+      requirement.status === "verified");
 
   return {
     workflowId: input.workflowId,

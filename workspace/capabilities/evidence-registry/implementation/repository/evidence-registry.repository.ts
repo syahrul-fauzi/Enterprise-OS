@@ -1,6 +1,5 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import type {
   EvidenceRecord,
   EvidenceRecordDetail,
@@ -13,20 +12,40 @@ const SCAN_ROOTS = [
   "enterprise/science/gate-c/execution",
   "enterprise/science/gate-c/specification/fixtures/evidence",
   "workspace/examples/vertical-slice/REQ-0001",
+  "examples/vertical-slice/REQ-0001",
+  "products",
 ] as const;
 
-const REPO_ROOT = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "../../../../../",
-);
-const SCAN_ROOT_PATHS = SCAN_ROOTS.map((scanRoot) => path.join(REPO_ROOT, scanRoot));
+function resolveExternalEvidenceRoot(): string | undefined {
+  const raw = process.env.EOS_EVIDENCE_STORAGE_ROOT?.trim();
+  return raw && raw.length > 0 ? raw : undefined;
+}
 
 function resolveRepoRoot(): string {
-  const marker = path.join(REPO_ROOT, "enterprise", "execution", "CAPABILITY-REGISTRY.yaml");
-  if (!fs.existsSync(marker)) {
-    throw new Error("Unable to resolve repository root for evidence registry.");
+  const candidates = [
+    "/app",
+    process.cwd(),
+    path.resolve(process.cwd(), ".."),
+    path.resolve(process.cwd(), "../.."),
+    "/root/Enterprise-OS/workspace",
+  ];
+
+  for (const candidate of Array.from(new Set(candidates))) {
+    const hasWorkspaceShape =
+      fs.existsSync(path.join(candidate, "capabilities")) &&
+      fs.existsSync(path.join(candidate, "products")) &&
+      fs.existsSync(path.join(candidate, "package.json"));
+
+    const hasLegacyMarker = fs.existsSync(
+      path.join(candidate, "enterprise", "execution", "CAPABILITY-REGISTRY.yaml"),
+    );
+
+    if (hasWorkspaceShape || hasLegacyMarker) {
+      return candidate;
+    }
   }
-  return REPO_ROOT;
+
+  throw new Error("Unable to resolve repository root for evidence registry.");
 }
 
 function walkFiles(directoryPath: string): string[] {
@@ -54,11 +73,15 @@ function shouldInclude(relativePath: string): boolean {
     relativePath.includes("/acceptance/") ||
     relativePath.includes("/metrics/canonical-evidence-") ||
     relativePath.endsWith(".els.yaml") ||
-    relativePath.endsWith(".eir.json")
+    relativePath.endsWith(".eir.json") ||
+    (relativePath.includes("/evidence/delivery/") && relativePath.endsWith(".json"))
   );
 }
 
 function detectKind(relativePath: string): EvidenceRecordKind {
+  if (relativePath.includes("/evidence/delivery/")) {
+    return "record";
+  }
   if (relativePath.endsWith("proof-ledger.yaml")) {
     return "ledger";
   }
@@ -87,7 +110,9 @@ function detectKind(relativePath: string): EvidenceRecordKind {
 }
 
 function detectScope(relativePath: string): EvidenceRecordScope {
-  return relativePath.startsWith("workspace/examples/") ? "requirement" : "science";
+  return relativePath.startsWith("workspace/examples/") || relativePath.startsWith("products/")
+    ? "requirement"
+    : "science";
 }
 
 function extractRunId(relativePath: string): string | undefined {
@@ -127,8 +152,7 @@ function buildTags(
   return [...tags];
 }
 
-function buildRecord(repoRoot: string, absolutePath: string): EvidenceRecord {
-  const relativePath = path.relative(repoRoot, absolutePath).split(path.sep).join("/");
+function buildRecord(relativePath: string, absolutePath: string): EvidenceRecord {
   const stat = fs.statSync(absolutePath);
   const kind = detectKind(relativePath);
   const scope = detectScope(relativePath);
@@ -149,8 +173,7 @@ function buildRecord(repoRoot: string, absolutePath: string): EvidenceRecord {
   };
 }
 
-function buildRecordDetail(repoRoot: string, record: EvidenceRecord): EvidenceRecordDetail {
-  const absolutePath = path.join(/* turbopackIgnore: true */ repoRoot, record.path);
+function buildRecordDetail(absolutePath: string, record: EvidenceRecord): EvidenceRecordDetail {
   const content = fs.readFileSync(absolutePath, "utf8");
   const preview = content.slice(0, 400);
   const lineCount = content === "" ? 0 : content.split(/\r?\n/).length;
@@ -164,16 +187,39 @@ function buildRecordDetail(repoRoot: string, record: EvidenceRecord): EvidenceRe
 
 interface ScannedRecord {
   readonly absolutePath: string;
+  readonly relativePath: string;
   readonly record: EvidenceRecord;
 }
 
 function scanRecords(repoRoot: string): readonly ScannedRecord[] {
-  return SCAN_ROOT_PATHS.flatMap((scanRootPath) => walkFiles(scanRootPath))
-    .filter((absolutePath) => shouldInclude(path.relative(repoRoot, absolutePath).split(path.sep).join("/")))
-    .sort((left, right) => left.localeCompare(right))
-    .map((absolutePath) => ({
-      absolutePath,
-      record: buildRecord(repoRoot, absolutePath),
+  const scanRootPaths = SCAN_ROOTS.map((scanRoot) => path.join(repoRoot, scanRoot));
+  const repoRecords = scanRootPaths.flatMap((scanRootPath) => walkFiles(scanRootPath)).map((absolutePath) => {
+    const relativePath = path.relative(repoRoot, absolutePath).split(path.sep).join("/");
+    return { absolutePath, relativePath };
+  });
+
+  const externalEvidenceRoot = resolveExternalEvidenceRoot();
+  const externalRecords =
+    externalEvidenceRoot && path.resolve(externalEvidenceRoot) !== path.resolve(repoRoot)
+      ? walkFiles(externalEvidenceRoot).map((absolutePath) => ({
+          absolutePath,
+          relativePath: path.relative(externalEvidenceRoot, absolutePath).split(path.sep).join("/"),
+        }))
+      : [];
+
+  const deduplicated = new Map<string, { absolutePath: string; relativePath: string }>();
+  for (const entry of [...repoRecords, ...externalRecords]) {
+    if (shouldInclude(entry.relativePath)) {
+      deduplicated.set(entry.relativePath, entry);
+    }
+  }
+
+  return Array.from(deduplicated.values())
+    .sort((left, right) => left.relativePath.localeCompare(right.relativePath))
+    .map((entry) => ({
+      absolutePath: entry.absolutePath,
+      relativePath: entry.relativePath,
+      record: buildRecord(entry.relativePath, entry.absolutePath),
     }));
 }
 
@@ -191,6 +237,6 @@ export const EvidenceRegistryRepositoryFileSystem: EvidenceRegistryRepository = 
   byId(id) {
     const repoRoot = resolveRepoRoot();
     const match = scanRecords(repoRoot).find((entry) => entry.record.id === id);
-    return match === undefined ? undefined : buildRecordDetail(repoRoot, match.record);
+    return match === undefined ? undefined : buildRecordDetail(match.absolutePath, match.record);
   },
 } as const;

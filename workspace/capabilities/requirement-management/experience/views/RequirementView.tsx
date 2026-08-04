@@ -1,10 +1,24 @@
 "use client";
 
 import React from "react";
-import { RequirementWorkspace } from "../workspaces/RequirementWorkspace";
+import {
+  RequirementWorkspace,
+  type RequirementCardCopy,
+  type RequirementWorkspaceCopy,
+} from "../workspaces/RequirementWorkspace";
 
-export function RequirementView() {
-  return <RequirementWorkspace />;
+export interface RequirementViewProps {
+  readonly productId?: string;
+  readonly copy?: RequirementWorkspaceCopy;
+  readonly cardCopy?: RequirementCardCopy;
+}
+
+export function RequirementView({
+  productId,
+  copy,
+  cardCopy,
+}: RequirementViewProps) {
+  return <RequirementWorkspace cardCopy={cardCopy} copy={copy} productId={productId} />;
 }
 
 export default RequirementView;

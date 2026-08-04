@@ -7,8 +7,8 @@ test("apps/web health API reports runtime health and product context", async () 
     new Request("http://localhost/api/health", {
       headers: {
         "x-eos-product-id": "ilc",
-        "x-eos-product-domain": "staging.indonesialawyersclub.id",
-        "x-forwarded-host": "staging.indonesialawyersclub.id",
+        "x-eos-product-domain": "indonesialawyersclub.id",
+        "x-forwarded-host": "indonesialawyersclub.id",
       },
     }),
   );
@@ -17,7 +17,7 @@ test("apps/web health API reports runtime health and product context", async () 
   assert.equal(response.headers.get("x-eos-product-id"), "ilc");
   assert.equal(
     response.headers.get("x-eos-product-domain"),
-    "staging.indonesialawyersclub.id",
+    "indonesialawyersclub.id",
   );
 
   const payload = await response.json();
@@ -26,6 +26,6 @@ test("apps/web health API reports runtime health and product context", async () 
   assert.equal(payload.product.productId, "ilc");
   assert.equal(
     payload.product.productDomain,
-    "staging.indonesialawyersclub.id",
+    "indonesialawyersclub.id",
   );
 });

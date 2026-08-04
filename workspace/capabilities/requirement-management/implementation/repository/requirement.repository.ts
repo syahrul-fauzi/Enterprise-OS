@@ -1,3 +1,5 @@
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
 import {
   RequirementAggregate,
   RequirementId,
@@ -75,6 +77,25 @@ const seed = (): RequirementAggregate[] => {
 
 type Store = Map<string, RequirementAggregate>;
 
+interface RequirementRecord {
+  readonly id: string;
+  readonly title: string;
+  readonly summary?: string;
+  readonly description?: string;
+  readonly status: RequirementStatus;
+  readonly priority: RequirementPriority;
+  readonly owner?: string;
+  readonly source?: string;
+  readonly linkedCapabilityIds: readonly string[];
+  readonly acceptanceCriteria: readonly string[];
+  readonly verificationStatus: RequirementVerificationStatus;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+  readonly approvedAt?: string;
+  readonly implementedAt?: string;
+  readonly verifiedAt?: string;
+}
+
 function hydrate(): Store {
   const store = new Map<string, RequirementAggregate>();
   for (const item of seed()) {
@@ -84,6 +105,36 @@ function hydrate(): Store {
 }
 
 const STORE: Store = hydrate();
+
+function resolveRequirementStoragePath(): string | undefined {
+  const raw = process.env.EOS_REQUIREMENT_STORAGE_PATH?.trim();
+  return raw && raw.length > 0 ? raw : undefined;
+}
+
+function readFileStore(path: string): Store {
+  if (!existsSync(path)) {
+    return hydrate();
+  }
+
+  const raw = readFileSync(path, "utf8").trim();
+  if (raw.length === 0) {
+    return hydrate();
+  }
+
+  const parsed = JSON.parse(raw) as RequirementRecord[];
+  const store = new Map<string, RequirementAggregate>();
+  for (const item of parsed) {
+    const entity = fromRecord(item);
+    store.set(entity.id, entity);
+  }
+  return store;
+}
+
+function writeFileStore(path: string, store: Store): void {
+  mkdirSync(dirname(path), { recursive: true });
+  const payload = Array.from(store.values()).map(toRecord);
+  writeFileSync(path, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+}
 
 function clone(entity: RequirementAggregate): RequirementAggregate {
   return {
@@ -97,6 +148,56 @@ function clone(entity: RequirementAggregate): RequirementAggregate {
       ? { implementedAt: new Date(entity.implementedAt) }
       : {}),
     ...(entity.verifiedAt !== undefined ? { verifiedAt: new Date(entity.verifiedAt) } : {}),
+  };
+}
+
+function toRecord(entity: RequirementAggregate): RequirementRecord {
+  return {
+    id: entity.id,
+    title: entity.title,
+    ...(entity.summary !== undefined ? { summary: entity.summary } : {}),
+    ...(entity.description !== undefined ? { description: entity.description } : {}),
+    status: entity.status,
+    priority: entity.priority,
+    ...(entity.owner !== undefined ? { owner: entity.owner } : {}),
+    ...(entity.source !== undefined ? { source: entity.source } : {}),
+    linkedCapabilityIds: [...entity.linkedCapabilityIds],
+    acceptanceCriteria: [...entity.acceptanceCriteria],
+    verificationStatus: entity.verificationStatus,
+    createdAt: entity.createdAt.toISOString(),
+    updatedAt: entity.updatedAt.toISOString(),
+    ...(entity.approvedAt !== undefined
+      ? { approvedAt: entity.approvedAt.toISOString() }
+      : {}),
+    ...(entity.implementedAt !== undefined
+      ? { implementedAt: entity.implementedAt.toISOString() }
+      : {}),
+    ...(entity.verifiedAt !== undefined
+      ? { verifiedAt: entity.verifiedAt.toISOString() }
+      : {}),
+  };
+}
+
+function fromRecord(record: RequirementRecord): RequirementAggregate {
+  return {
+    id: RequirementId(record.id),
+    title: record.title,
+    ...(record.summary !== undefined ? { summary: record.summary } : {}),
+    ...(record.description !== undefined ? { description: record.description } : {}),
+    status: record.status,
+    priority: record.priority,
+    ...(record.owner !== undefined ? { owner: record.owner } : {}),
+    ...(record.source !== undefined ? { source: record.source } : {}),
+    linkedCapabilityIds: [...record.linkedCapabilityIds],
+    acceptanceCriteria: [...record.acceptanceCriteria],
+    verificationStatus: record.verificationStatus,
+    createdAt: new Date(record.createdAt),
+    updatedAt: new Date(record.updatedAt),
+    ...(record.approvedAt !== undefined ? { approvedAt: new Date(record.approvedAt) } : {}),
+    ...(record.implementedAt !== undefined
+      ? { implementedAt: new Date(record.implementedAt) }
+      : {}),
+    ...(record.verifiedAt !== undefined ? { verifiedAt: new Date(record.verifiedAt) } : {}),
   };
 }
 
@@ -125,11 +226,64 @@ export const RequirementRepositoryInMemory: RequirementRepository = {
   },
 } as const;
 
+export const RequirementRepositoryFileBacked: RequirementRepository = {
+  kind: "repository",
+  entityName: "Requirement",
+  byId(id) {
+    const path = resolveRequirementStoragePath();
+    if (!path) {
+      return RequirementRepositoryInMemory.byId(id);
+    }
+    const raw = readFileStore(path).get(id);
+    return raw !== undefined ? clone(raw) : undefined;
+  },
+  list() {
+    const path = resolveRequirementStoragePath();
+    if (!path) {
+      return RequirementRepositoryInMemory.list();
+    }
+    return Array.from(readFileStore(path).values()).map(clone);
+  },
+  save(entity) {
+    const path = resolveRequirementStoragePath();
+    if (!path) {
+      return RequirementRepositoryInMemory.save(entity);
+    }
+    const store = readFileStore(path);
+    const updated: RequirementAggregate = {
+      ...clone(entity),
+      linkedCapabilityIds: [...entity.linkedCapabilityIds],
+      acceptanceCriteria: [...entity.acceptanceCriteria],
+      updatedAt: new Date(),
+    };
+    store.set(updated.id, updated);
+    writeFileStore(path, store);
+    return clone(updated);
+  },
+  remove(id) {
+    const path = resolveRequirementStoragePath();
+    if (!path) {
+      return RequirementRepositoryInMemory.remove(id);
+    }
+    const store = readFileStore(path);
+    const removed = store.delete(id);
+    writeFileStore(path, store);
+    return removed;
+  },
+} as const;
+
+export const RequirementRepositoryCurrent: RequirementRepository =
+  resolveRequirementStoragePath() !== undefined
+    ? RequirementRepositoryFileBacked
+    : RequirementRepositoryInMemory;
+
 export const newRequirementId = (() => {
-  let seq = 100;
   return (): RequirementId => {
-    seq += 1;
-    return RequirementId(`req-${String(seq).padStart(3, "0")}`);
+    const highest = RequirementRepositoryCurrent.list()
+      .map((item) => /^req-(\d+)$/.exec(item.id)?.[1])
+      .map((value) => (value ? Number.parseInt(value, 10) : 0))
+      .reduce((max, current) => Math.max(max, current), 100);
+    return RequirementId(`req-${String(highest + 1).padStart(3, "0")}`);
   };
 })();
 

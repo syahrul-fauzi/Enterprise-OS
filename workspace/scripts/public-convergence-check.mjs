@@ -18,7 +18,7 @@ const domains = [
     productId:
       process.env.ILC_PRODUCT_ID?.trim() || "ilc",
     host:
-      process.env.ILC_DOMAIN?.trim() || "staging.indonesialawyersclub.id",
+      process.env.ILC_DOMAIN?.trim() || "indonesialawyersclub.id",
   },
 ];
 
@@ -35,8 +35,8 @@ mkdirSync(resolve(reportPath, ".."), { recursive: true });
 
 const currentMarkers = {
   root: [
-    "Turn incoming requests into clear, delivery-ready requirements.",
-    "Try Requirement Workspace",
+    "Product Preview",
+    "Requirement Preview",
   ],
   requirements: [
     "Requirement Workspace",
