@@ -1,0 +1,83 @@
+{
+  "session_id": "governance-session:e53ffa9a0a13fb8a",
+  "session_digest": "e53ffa9a0a13fb8a349a132ab0d9c9d216961eaa4f6da3790b10aa2f6a09740d",
+  "session_status": "COMPLETED",
+  "execution_scope": "verify-foundation",
+  "started_at_utc": "2026-08-03T15:33:49.810Z",
+  "completed_at_utc": "2026-08-03T15:33:51.260Z",
+  "constitution": {
+    "constitution_version": "1.0.0",
+    "law_profile": "enterprise",
+    "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+    "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138"
+  },
+  "trust_context": {
+    "attestation_profile": "local_signed",
+    "attestation_policy_id": "attestation-policy:local-signed",
+    "attestation_policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
+    "trust_framework": {
+      "framework_id": "trust-framework:local-development-signed",
+      "framework_digest": "73d60d52b46666306bbf5dae4766df3bbf0024797f1a68c31c41c0dce284dbf0",
+      "verification_profile_id": "verification-profile:local-development-signed",
+      "signature_provider_spi": "DECLARED",
+      "framework_boundary": "Trust framework reference links governance provenance and attestation policy to a trust-domain aggregate without embedding signer implementation details into certificates."
+    }
+  },
+  "inputs": {
+    "constitution_report_digest": "6136301cc804b532527524d7c64d0c2f80c194443dbf96aea5414a47a911443b",
+    "constitutional_fingerprint": {
+      "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
+      "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
+      "projection_api_version": "1.0.0",
+      "constitution_version": "1.0.0"
+    }
+  },
+  "law_results": {
+    "count": 8,
+    "digest": "33761b443425fcdd498cbad9f4bac92061a88957c199a3db3a252397e462b5cc"
+  },
+  "evidence_packages": {
+    "count": 8,
+    "digest": "240fdfeb7889f823d2f25dff0ab6ba1a14e57eb7cdadf6d8fe22e78a1be8f2ca"
+  },
+  "certificates": {
+    "count": 8,
+    "digest": "72324085b8427a36411931f8021e7af05ffc73554857d01968c07f4fa6c9c531"
+  },
+  "attestations": {
+    "event_count": 16,
+    "digest": "d038c75a7d1ab07c3d8a773337a32e53c581b9d2943c4324d0cd6b6b0b97cdc2",
+    "event_types": [
+      "AttestationCreated",
+      "AttestationVerified"
+    ],
+    "supported_event_types": [
+      "AttestationCreated",
+      "AttestationVerified",
+      "AttestationExpired",
+      "AttestationRevoked",
+      "AttestationSuperseded"
+    ],
+    "terminal_event_count": 0
+  },
+  "reports": {
+    "claims_digest": "433336daf73bb99397367671d897c66e87dde59ff3861c2d31ec5ace795c8012",
+    "summary_digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf",
+    "proof_bundle_id": "constitution-proof-bundle:142bf7c335452488",
+    "proof_bundle_digest": "142bf7c3354524880d357ff07f6a7b355993dac88343c55c27a754afc4e08f29"
+  },
+  "session_boundary": "Governance session is the provenance aggregate for a single governance verification execution. Read models are projected from the stable session provenance and then attached as session outputs without changing the session identity.",
+  "session_projection_digest": "a3f5dda1914fd48d439498adbeec23e7eac50cf2a2c157ced91f943cb772d13d",
+  "read_models": {
+    "summary_view_id": "governance-view:summary:b527cc9c4663ae76",
+    "summary_view_digest": "b527cc9c4663ae76b138f69602f63816740f56f27ac683331f045e16dd7064fc",
+    "claims_view_id": "governance-view:claims:9029fe0923dc665d",
+    "claims_view_digest": "9029fe0923dc665d12b1327f4d2ee80cae20955c577af25d654e0e6e80f9d03a",
+    "health_view_id": "governance-view:health:2b2c83b90f7edcd4",
+    "health_view_digest": "2b2c83b90f7edcd49fd0ceab4fc2951c5a08cc75cadfa909ec790cf1156f3c6b",
+    "dashboard_view_id": "governance-view:dashboard:32544d086861bd76",
+    "dashboard_view_digest": "32544d086861bd76af25c765ec0c31bb434b5e00e9138344f0eb8bcab43c4135",
+    "metrics_id": "governance-read-model-metrics:69476f45fc706882",
+    "metrics_digest": "69476f45fc70688237a9ed094ab9cd2d7801f2f09f710d3b4461f8fd89a4f3a1"
+  }
+}

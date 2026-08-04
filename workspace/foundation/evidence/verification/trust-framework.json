@@ -1,0 +1,297 @@
+{
+  "catalog_id": "trust-framework-catalog:c14c47d3657aea1c",
+  "catalog_digest": "c14c47d3657aea1c84adb14a81e48c800761381a81f4c0b72ca52526fd23ac26",
+  "frameworks": [
+    {
+      "framework_id": "trust-framework:local-development-signed",
+      "status": "DECLARED",
+      "attestation_profile": "local_signed",
+      "policies": [
+        {
+          "policy_id": "attestation-policy:local-signed",
+          "policy_scope": "local_development"
+        }
+      ],
+      "roots": [
+        "root:local-development"
+      ],
+      "trust_stores": [
+        "trust-store:local-development"
+      ],
+      "keysets": [
+        "keyset:local-development-signers"
+      ],
+      "verification_profiles": [
+        {
+          "verification_profile_id": "verification-profile:local-development-signed",
+          "attestation_profile": "local_signed",
+          "policy_scope": "local_development",
+          "verification_mode": "DECLARED",
+          "verification_profile_digest": "0c792037f6d48f47b15781021b3d16b6f4b64ab3c2f023ef8b59b41374fcc737"
+        }
+      ],
+      "algorithms": [
+        "LOCAL_DIGEST_V1"
+      ],
+      "signature_providers": [
+        {
+          "provider_id": "signature-provider:local",
+          "provider_kind": "Local",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:kms",
+          "provider_kind": "KMS",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:hsm",
+          "provider_kind": "HSM",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:sigstore",
+          "provider_kind": "Sigstore",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:cosign",
+          "provider_kind": "Cosign",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:remote",
+          "provider_kind": "Remote",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        }
+      ],
+      "framework_digest": "73d60d52b46666306bbf5dae4766df3bbf0024797f1a68c31c41c0dce284dbf0",
+      "framework_boundary": "Trust framework is the trust-domain aggregate that owns attestation policies, roots, trust stores, keysets, verification profiles, algorithms, and signature-provider SPI contracts independently from constitution and certificate identity."
+    },
+    {
+      "framework_id": "trust-framework:local-development",
+      "status": "DECLARED",
+      "attestation_profile": "local_unsigned",
+      "policies": [
+        {
+          "policy_id": "attestation-policy:local-unsigned",
+          "policy_scope": "local_development"
+        }
+      ],
+      "roots": [
+        "root:local-development"
+      ],
+      "trust_stores": [
+        "trust-store:local-development"
+      ],
+      "keysets": [
+        "keyset:local-development"
+      ],
+      "verification_profiles": [
+        {
+          "verification_profile_id": "verification-profile:local-development",
+          "attestation_profile": "local_unsigned",
+          "policy_scope": "local_development",
+          "verification_mode": "DECLARED",
+          "verification_profile_digest": "9406bf7af695d0f4be9e2fc5c011c64297a5d2cb02b758aad62e522758e87efb"
+        }
+      ],
+      "algorithms": [
+        "UNSIGNED"
+      ],
+      "signature_providers": [
+        {
+          "provider_id": "signature-provider:local",
+          "provider_kind": "Local",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:kms",
+          "provider_kind": "KMS",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:hsm",
+          "provider_kind": "HSM",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:sigstore",
+          "provider_kind": "Sigstore",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:cosign",
+          "provider_kind": "Cosign",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:remote",
+          "provider_kind": "Remote",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        }
+      ],
+      "framework_digest": "446e5f8f54abe39a6ec2f7a551f46a3195fdb16179b858815f649887eb0f7682",
+      "framework_boundary": "Trust framework is the trust-domain aggregate that owns attestation policies, roots, trust stores, keysets, verification profiles, algorithms, and signature-provider SPI contracts independently from constitution and certificate identity."
+    },
+    {
+      "framework_id": "trust-framework:production",
+      "status": "DECLARED",
+      "attestation_profile": "production_pending_signature",
+      "policies": [
+        {
+          "policy_id": "attestation-policy:production-pending-signature",
+          "policy_scope": "production"
+        }
+      ],
+      "roots": [
+        "root:production-pending"
+      ],
+      "trust_stores": [
+        "trust-store:production"
+      ],
+      "keysets": [
+        "keyset:production-signers"
+      ],
+      "verification_profiles": [
+        {
+          "verification_profile_id": "verification-profile:production",
+          "attestation_profile": "production_pending_signature",
+          "policy_scope": "production",
+          "verification_mode": "DECLARED",
+          "verification_profile_digest": "64b642f788c40d55ea1c5c261e982e7b3c7dff4f2cca9d53803623e149c789d4"
+        }
+      ],
+      "algorithms": [
+        "RS256",
+        "ES256"
+      ],
+      "signature_providers": [
+        {
+          "provider_id": "signature-provider:local",
+          "provider_kind": "Local",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:kms",
+          "provider_kind": "KMS",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:hsm",
+          "provider_kind": "HSM",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:sigstore",
+          "provider_kind": "Sigstore",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:cosign",
+          "provider_kind": "Cosign",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:remote",
+          "provider_kind": "Remote",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        }
+      ],
+      "framework_digest": "2954ddf830c5180b473d1310e12828405767bf48b667f4b8029c3a85bd85bfca",
+      "framework_boundary": "Trust framework is the trust-domain aggregate that owns attestation policies, roots, trust stores, keysets, verification profiles, algorithms, and signature-provider SPI contracts independently from constitution and certificate identity."
+    },
+    {
+      "framework_id": "trust-framework:federated",
+      "status": "DECLARED",
+      "attestation_profile": "cross_org_pending_signature",
+      "policies": [
+        {
+          "policy_id": "attestation-policy:cross-org-pending-signature",
+          "policy_scope": "federated"
+        }
+      ],
+      "roots": [
+        "root:federated-pending"
+      ],
+      "trust_stores": [
+        "trust-store:federated"
+      ],
+      "keysets": [
+        "keyset:federated-signers"
+      ],
+      "verification_profiles": [
+        {
+          "verification_profile_id": "verification-profile:federated",
+          "attestation_profile": "cross_org_pending_signature",
+          "policy_scope": "federated",
+          "verification_mode": "DECLARED",
+          "verification_profile_digest": "0b65ace63846216b5308a14920f6ee3b000184f1de556fd413df2eed1e3d4758"
+        }
+      ],
+      "algorithms": [
+        "Sigstore",
+        "DSSE"
+      ],
+      "signature_providers": [
+        {
+          "provider_id": "signature-provider:local",
+          "provider_kind": "Local",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:kms",
+          "provider_kind": "KMS",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:hsm",
+          "provider_kind": "HSM",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:sigstore",
+          "provider_kind": "Sigstore",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:cosign",
+          "provider_kind": "Cosign",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        },
+        {
+          "provider_id": "signature-provider:remote",
+          "provider_kind": "Remote",
+          "provider_status": "DECLARED",
+          "spi_contract": "TrustSignatureProviderSPI"
+        }
+      ],
+      "framework_digest": "baf9070d77c451d8d3bd77bfeba7f4a898b2b1efea65c15b6ed6794c59d13b35",
+      "framework_boundary": "Trust framework is the trust-domain aggregate that owns attestation policies, roots, trust stores, keysets, verification profiles, algorithms, and signature-provider SPI contracts independently from constitution and certificate identity."
+    }
+  ],
+  "claim_boundary": "Trust framework catalog declares the trust-domain contract surface before cryptographic adapters are activated. It provides stable identities for policies, roots, verification profiles, and signature-provider SPI selection."
+}

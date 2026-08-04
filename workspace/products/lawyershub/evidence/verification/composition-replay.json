@@ -1,0 +1,13 @@
+{
+  "product": "lawyershub",
+  "plan_instance_id": "pi:9249964e7236032f",
+  "plan_id": "plan::lawyershub.workspace.default::11dd818f",
+  "plan_digest": "11dd818f",
+  "composition": "legal-workspace",
+  "validator": "packages/composition/src/scripts/validate-composition-package.ts",
+  "command": "pnpm --dir /root/Enterprise-OS/workspace exec node --import tsx packages/composition/src/scripts/validate-composition-package.ts packages/compositions/legal-workspace",
+  "status": "PASS",
+  "verification_scope": "composition_package_validation",
+  "claim_boundary": "This artifact verifies package-style composition replay for the current product, not full multi-product compose-and-run parity.",
+  "output": "{\n  \"status\": \"ok\",\n  \"packageDir\": \"/root/Enterprise-OS/workspace/packages/compositions/legal-workspace\",\n  \"files\": [\n    \"manifest.yaml\",\n    \"metadata.yaml\",\n    \"workspace.ts\"\n  ]\n}"
+}

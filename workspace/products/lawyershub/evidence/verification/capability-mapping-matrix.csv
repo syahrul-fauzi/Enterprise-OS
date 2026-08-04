@@ -1,0 +1,4 @@
+Feature,Capability,Module,Primitive
+Requirements Workspace,requirement-management,explorer-pattern,"table,panel,identifier,lifecycle"
+Case Workspace,legal-case,execution-pattern,"table,panel,identifier,time-range,person"
+Document Workspace,legal-document,discovery-pattern,"table,panel,attachment,lifecycle,identifier"

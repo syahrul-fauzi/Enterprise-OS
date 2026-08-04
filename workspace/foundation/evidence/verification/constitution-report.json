@@ -1,0 +1,3311 @@
+{
+  "constitution_version": "1.0.0",
+  "law_profile": "enterprise",
+  "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+  "constitutional_fingerprint": {
+    "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
+    "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
+    "projection_api_version": "1.0.0",
+    "constitution_version": "1.0.0"
+  },
+  "executed_laws": [
+    {
+      "law_id": "GraphPurityLaw",
+      "description": "Observed graph topology must be projected only from execution chain facts, and declared topology must remain registry-derived.",
+      "predicate": {
+        "predicate_id": "graph.observed_topology.chain_projected_only",
+        "description": "Observed topology is valid only when every observed edge is projected from execution-chain facts and every declared edge remains registry-derived.",
+        "blocking": true
+      },
+      "proof": {
+        "proof_id": "proof:GraphPurityLaw:bd11e1f09cd3ac49",
+        "status": "PASS",
+        "report_key": "graph_purity_certificate",
+        "report_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be"
+      },
+      "blocking_status": "PASS"
+    },
+    {
+      "law_id": "DigestLaw",
+      "description": "Projection digest must remain content-addressed and match canonical projection content.",
+      "predicate": {
+        "predicate_id": "projection.digest.content_addressed",
+        "description": "Projection identity is valid only when projection_digest matches the canonical projection content for every evaluated projection.",
+        "blocking": true
+      },
+      "proof": {
+        "proof_id": "proof:DigestLaw:c1f2db4fe87e77a0",
+        "status": "PASS",
+        "report_key": "projection_digest_certificates",
+        "report_digest": "c1f2db4fe87e77a0dd1637b0f408cfa06b0a803cbf4768163a313b5cc86300f8"
+      },
+      "blocking_status": "PASS"
+    },
+    {
+      "law_id": "SerializerTransparencyLaw",
+      "description": "Serializer round-trip must preserve projection digest and domain identity.",
+      "predicate": {
+        "predicate_id": "projection.serializer.roundtrip_identity_preserved",
+        "description": "Projection serialization is transparent only when round-trip conversion preserves digest and domain identity for every evaluated projection.",
+        "blocking": true
+      },
+      "proof": {
+        "proof_id": "proof:SerializerTransparencyLaw:de7536afa31ef643",
+        "status": "PASS",
+        "report_key": "serializer_transparency_certificates",
+        "report_digest": "de7536afa31ef6438f24f6415e78195c86308173c2a6065d415004241d97452f"
+      },
+      "blocking_status": "PASS"
+    },
+    {
+      "law_id": "StorageTransparencyLaw",
+      "description": "Projection identity must remain unchanged across equivalent storage representations and locations.",
+      "predicate": {
+        "predicate_id": "projection.storage.identity_preserved",
+        "description": "Projection storage is transparent only when equivalent storage representations preserve projection identity across locations.",
+        "blocking": true
+      },
+      "proof": {
+        "proof_id": "proof:StorageTransparencyLaw:5cf2587a8837e541",
+        "status": "PASS",
+        "report_key": "storage_transparency_certificates",
+        "report_digest": "5cf2587a8837e54104c9fbae173ebe191a827625b4239c6414d295de619848ad"
+      },
+      "blocking_status": "PASS"
+    },
+    {
+      "law_id": "ReplayLaw",
+      "description": "Replay evidence must pass and remain causally aligned with the materialized ExecutionPlanProjection.",
+      "predicate": {
+        "predicate_id": "replay.evidence.causally_aligned",
+        "description": "Replay proof is valid only when replay evidence passes and remains causally aligned with the materialized execution plan.",
+        "blocking": true
+      },
+      "proof": {
+        "proof_id": "proof:ReplayLaw:5d5eaf103097d903",
+        "status": "PASS",
+        "report_key": "replay_certificates",
+        "report_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404"
+      },
+      "blocking_status": "PASS"
+    },
+    {
+      "law_id": "ProjectionDeterminismLaw",
+      "description": "Projection digest must remain repeatable across recomputation, serializer round-trip, key-order variation, and generated_at mutation.",
+      "predicate": {
+        "predicate_id": "projection.digest.repeatable",
+        "description": "Projection determinism holds only when projection digests remain repeatable across canonical recomputation and representation-preserving mutations.",
+        "blocking": true
+      },
+      "proof": {
+        "proof_id": "proof:ProjectionDeterminismLaw:65d5461548f10c16",
+        "status": "PASS",
+        "report_key": "projection_determinism_certificates",
+        "report_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+      },
+      "blocking_status": "PASS"
+    },
+    {
+      "law_id": "DependencyBoundaryLaw",
+      "description": "Governed modules must respect constitutional dependency boundaries and repeatable repository discovery.",
+      "predicate": {
+        "predicate_id": "dependency.boundary.constitution_respected",
+        "description": "Dependency constitution holds only when governed modules respect boundary laws and discovery remains repeatable.",
+        "blocking": true
+      },
+      "proof": {
+        "proof_id": "proof:DependencyBoundaryLaw:9f911c51856d5705",
+        "status": "PASS",
+        "report_key": "dependency_constitution",
+        "report_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b"
+      },
+      "blocking_status": "PASS"
+    },
+    {
+      "law_id": "DeterminismLaw",
+      "description": "Constitution proof digest must remain identical across repeated evaluations for the same canonical input.",
+      "predicate": {
+        "predicate_id": "constitution.proof.digest_repeatable",
+        "description": "Constitution proof is deterministic only when repeated evaluations of the same canonical input produce the same proof digest.",
+        "blocking": true
+      },
+      "proof": {
+        "proof_id": "proof:DeterminismLaw:b580883548757075",
+        "status": "PASS",
+        "report_key": "proof_determinism_certificate",
+        "report_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904"
+      },
+      "blocking_status": "PASS"
+    }
+  ],
+  "law_proofs": [
+    {
+      "law_id": "GraphPurityLaw",
+      "predicate_id": "graph.observed_topology.chain_projected_only",
+      "proof_id": "proof:GraphPurityLaw:bd11e1f09cd3ac49",
+      "status": "PASS",
+      "report_key": "graph_purity_certificate",
+      "report_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
+      "blocking_status": "PASS"
+    },
+    {
+      "law_id": "DigestLaw",
+      "predicate_id": "projection.digest.content_addressed",
+      "proof_id": "proof:DigestLaw:c1f2db4fe87e77a0",
+      "status": "PASS",
+      "report_key": "projection_digest_certificates",
+      "report_digest": "c1f2db4fe87e77a0dd1637b0f408cfa06b0a803cbf4768163a313b5cc86300f8",
+      "blocking_status": "PASS"
+    },
+    {
+      "law_id": "SerializerTransparencyLaw",
+      "predicate_id": "projection.serializer.roundtrip_identity_preserved",
+      "proof_id": "proof:SerializerTransparencyLaw:de7536afa31ef643",
+      "status": "PASS",
+      "report_key": "serializer_transparency_certificates",
+      "report_digest": "de7536afa31ef6438f24f6415e78195c86308173c2a6065d415004241d97452f",
+      "blocking_status": "PASS"
+    },
+    {
+      "law_id": "StorageTransparencyLaw",
+      "predicate_id": "projection.storage.identity_preserved",
+      "proof_id": "proof:StorageTransparencyLaw:5cf2587a8837e541",
+      "status": "PASS",
+      "report_key": "storage_transparency_certificates",
+      "report_digest": "5cf2587a8837e54104c9fbae173ebe191a827625b4239c6414d295de619848ad",
+      "blocking_status": "PASS"
+    },
+    {
+      "law_id": "ReplayLaw",
+      "predicate_id": "replay.evidence.causally_aligned",
+      "proof_id": "proof:ReplayLaw:5d5eaf103097d903",
+      "status": "PASS",
+      "report_key": "replay_certificates",
+      "report_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
+      "blocking_status": "PASS"
+    },
+    {
+      "law_id": "ProjectionDeterminismLaw",
+      "predicate_id": "projection.digest.repeatable",
+      "proof_id": "proof:ProjectionDeterminismLaw:65d5461548f10c16",
+      "status": "PASS",
+      "report_key": "projection_determinism_certificates",
+      "report_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766",
+      "blocking_status": "PASS"
+    },
+    {
+      "law_id": "DependencyBoundaryLaw",
+      "predicate_id": "dependency.boundary.constitution_respected",
+      "proof_id": "proof:DependencyBoundaryLaw:9f911c51856d5705",
+      "status": "PASS",
+      "report_key": "dependency_constitution",
+      "report_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
+      "blocking_status": "PASS"
+    },
+    {
+      "law_id": "DeterminismLaw",
+      "predicate_id": "constitution.proof.digest_repeatable",
+      "proof_id": "proof:DeterminismLaw:b580883548757075",
+      "status": "PASS",
+      "report_key": "proof_determinism_certificate",
+      "report_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
+      "blocking_status": "PASS"
+    }
+  ],
+  "graph_purity_certificate": {
+    "certificate_id": "graph-purity:e715f434615c931e",
+    "status": "PASS",
+    "violation_count": 0,
+    "observed_edge_count": 348,
+    "chain_projected_edge_count": 348,
+    "forbidden_observed_sources": [],
+    "violations": [],
+    "checks": [
+      {
+        "rule_id": "graph.observed_edges.chain_only",
+        "status": "PASS",
+        "detail": "Every observed edge declares execution_chain as source_kind."
+      },
+      {
+        "rule_id": "graph.observed_edges.present_in_chain_projection",
+        "status": "PASS",
+        "detail": "Every observed graph edge exists in ExecutionChain.projected_edges."
+      },
+      {
+        "rule_id": "graph.chain_projection.materialized",
+        "status": "PASS",
+        "detail": "Every ExecutionChain.projected_edge is materialized in the observed graph."
+      },
+      {
+        "rule_id": "graph.declared_edges.registry_only",
+        "status": "PASS",
+        "detail": "Every declared edge originates from registry or planner signature."
+      },
+      {
+        "rule_id": "graph.constitutional_digest.deterministic",
+        "status": "PASS",
+        "detail": "Constitutional digest matches declared graph digest + execution chain digest."
+      },
+      {
+        "rule_id": "projection.serializer_independent",
+        "status": "PASS",
+        "detail": "Projection domain object does not depend on serializer metadata."
+      }
+    ]
+  },
+  "projection_digest_certificates": [
+    {
+      "scope": "foundation.execution_graph",
+      "status": "PASS",
+      "storage_locator": "foundation.execution_graph:execution-graph.json",
+      "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
+      "projection_type": "ExecutionGraphProjection",
+      "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
+      "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "artifact_registry",
+          "source_ref": "artifact_registry:artifacts",
+          "source_digest": "65440aab9cb4061c2fbd12f010d49dde08342fa0290cb766fc6b349bbf762428"
+        },
+        {
+          "source_type": "execution_evidence",
+          "source_ref": "artifact_registry:execution_evidence",
+          "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "artifact_registry:execution_chains",
+          "source_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16"
+        },
+        {
+          "source_type": "planner_signature",
+          "source_ref": "artifact_registry:planner_signatures",
+          "source_digest": "67c1fd991d43ed16682f0b8be01d7abefab93fc4b58d63275a35fd186582ab1d"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.type_matches_expected",
+          "status": "PASS",
+          "detail": "Projection type matches the constitutional storage contract."
+        },
+        {
+          "rule_id": "projection.digest_matches_content",
+          "status": "PASS",
+          "detail": "Projection digest matches the canonical digest recomputed from projection content."
+        }
+      ]
+    },
+    {
+      "scope": "foundation.topology_drift",
+      "status": "PASS",
+      "storage_locator": "foundation.topology_drift:topology-drift.json",
+      "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
+      "projection_type": "TopologyDriftProjection",
+      "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
+      "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "execution_chain",
+          "source_ref": "services-id",
+          "source_digest": "UNVERIFIED"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "lawyershub",
+          "source_digest": "faa311186e56c5ca2504dc8d48b400bba7d238c1b87fcba56d0ceec5d9bae0d7"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "ilc",
+          "source_digest": "UNVERIFIED"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.type_matches_expected",
+          "status": "PASS",
+          "detail": "Projection type matches the constitutional storage contract."
+        },
+        {
+          "rule_id": "projection.digest_matches_content",
+          "status": "PASS",
+          "detail": "Projection digest matches the canonical digest recomputed from projection content."
+        }
+      ]
+    },
+    {
+      "scope": "foundation.architecture_trend",
+      "status": "PASS",
+      "storage_locator": "foundation.architecture_trend:architecture-trend.json",
+      "replica_storage_locator": "replica://foundation.architecture_trend:architecture-trend.json",
+      "projection_type": "TrendProjection",
+      "projection_id": "TrendProjection:6d4f182c851f5db9",
+      "projection_digest": "6d4f182c851f5db915525ad745ad09a14f0160526345df38ea528f3b1ce9a073",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "foundation_metrics",
+          "source_ref": "epoch-047",
+          "source_digest": "ff3ff25019cfca8c16028842a59fbb2b7e505f8578ab704168126fb047986e5c"
+        },
+        {
+          "source_type": "foundation_metrics",
+          "source_ref": "epoch-046",
+          "source_digest": "236469f669106caeea2c1541ca17e0bc39de71478dcdc403c683078471427bc5"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.type_matches_expected",
+          "status": "PASS",
+          "detail": "Projection type matches the constitutional storage contract."
+        },
+        {
+          "rule_id": "projection.digest_matches_content",
+          "status": "PASS",
+          "detail": "Projection digest matches the canonical digest recomputed from projection content."
+        }
+      ]
+    },
+    {
+      "scope": "product.lawyershub.execution_plan",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.execution_plan:execution-plan.json",
+      "replica_storage_locator": "replica://product.lawyershub.execution_plan:execution-plan.json",
+      "projection_type": "ExecutionPlanProjection",
+      "projection_id": "ExecutionPlanProjection:185205ff77a90521",
+      "projection_digest": "185205ff77a9052145fdeefb6acd634db13a75bf05f0055d94b93caaddd4df35",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "planner_descriptor",
+          "source_ref": "/root/Enterprise-OS/workspace/apps/lawyershub/composition.descriptor.ts",
+          "source_digest": "9b924f26d3ce8dea84ad9be95ea56e6dff70c915ae5692fcc1cb09937ab35da2"
+        },
+        {
+          "source_type": "workspace_manifest",
+          "source_ref": "/root/Enterprise-OS/workspace/apps/lawyershub/workspace.manifest.ts",
+          "source_digest": "f528233c13703e87a877224e69fbebce275d14369ad5505a59d49134eab97fdc"
+        },
+        {
+          "source_type": "execution_graph",
+          "source_ref": "/root/Enterprise-OS/workspace/foundation/evidence/verification/execution-graph.json",
+          "source_digest": "53024d174046369dc557bf9ea7f7df5c44093e4d1788f45f5c90b2c7184ab5d7"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.type_matches_expected",
+          "status": "PASS",
+          "detail": "Projection type matches the constitutional storage contract."
+        },
+        {
+          "rule_id": "projection.digest_matches_content",
+          "status": "PASS",
+          "detail": "Projection digest matches the canonical digest recomputed from projection content."
+        }
+      ]
+    },
+    {
+      "scope": "product.lawyershub.execution_chain",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.execution_chain:execution-chain.json",
+      "replica_storage_locator": "replica://product.lawyershub.execution_chain:execution-chain.json",
+      "projection_type": "ExecutionChainProjection",
+      "projection_id": "ExecutionChainProjection:faa311186e56c5ca",
+      "projection_digest": "faa311186e56c5ca2504dc8d48b400bba7d238c1b87fcba56d0ceec5d9bae0d7",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "runtime_invocation_evidence",
+          "source_ref": "runtime-invocations:lawyershub",
+          "source_digest": "3db968679b6cc4ca00328ab1188fda005a040446ee4326f1cbe7d1dce1b5dc5a"
+        },
+        {
+          "source_type": "execution_plan",
+          "source_ref": "plan::lawyershub.workspace.default::11dd818f",
+          "source_digest": "11dd818f"
+        },
+        {
+          "source_type": "plan_instance",
+          "source_ref": "pi:9249964e7236032f",
+          "source_digest": "9249964e7236032f6c0a4197400f19106f0b605c69cd091e10f53cdbc9693eb9"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.type_matches_expected",
+          "status": "PASS",
+          "detail": "Projection type matches the constitutional storage contract."
+        },
+        {
+          "rule_id": "projection.digest_matches_content",
+          "status": "PASS",
+          "detail": "Projection digest matches the canonical digest recomputed from projection content."
+        }
+      ]
+    },
+    {
+      "scope": "product.lawyershub.execution_timeline",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.execution_timeline:execution-timeline.json",
+      "replica_storage_locator": "replica://product.lawyershub.execution_timeline:execution-timeline.json",
+      "projection_type": "ExecutionTimelineProjection",
+      "projection_id": "ExecutionTimelineProjection:e562e6c41b34d0ca",
+      "projection_digest": "e562e6c41b34d0ca9d04d03b943b4d703e5c1eab502fce6e5299cc965e9794e9",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "execution_plan",
+          "source_ref": "plan::lawyershub.workspace.default::11dd818f",
+          "source_digest": "11dd818f"
+        },
+        {
+          "source_type": "plan_instance",
+          "source_ref": "pi:9249964e7236032f",
+          "source_digest": "9249964e7236032f6c0a4197400f19106f0b605c69cd091e10f53cdbc9693eb9"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "lawyershub:pi:9249964e7236032f",
+          "source_digest": "faa311186e56c5ca2504dc8d48b400bba7d238c1b87fcba56d0ceec5d9bae0d7"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.type_matches_expected",
+          "status": "PASS",
+          "detail": "Projection type matches the constitutional storage contract."
+        },
+        {
+          "rule_id": "projection.digest_matches_content",
+          "status": "PASS",
+          "detail": "Projection digest matches the canonical digest recomputed from projection content."
+        }
+      ]
+    }
+  ],
+  "serializer_transparency_certificates": [
+    {
+      "scope": "foundation.execution_graph",
+      "status": "PASS",
+      "storage_locator": "foundation.execution_graph:execution-graph.json",
+      "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
+      "projection_type": "ExecutionGraphProjection",
+      "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
+      "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "artifact_registry",
+          "source_ref": "artifact_registry:artifacts",
+          "source_digest": "65440aab9cb4061c2fbd12f010d49dde08342fa0290cb766fc6b349bbf762428"
+        },
+        {
+          "source_type": "execution_evidence",
+          "source_ref": "artifact_registry:execution_evidence",
+          "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "artifact_registry:execution_chains",
+          "source_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16"
+        },
+        {
+          "source_type": "planner_signature",
+          "source_ref": "artifact_registry:planner_signatures",
+          "source_digest": "67c1fd991d43ed16682f0b8be01d7abefab93fc4b58d63275a35fd186582ab1d"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.serializer_roundtrip.digest_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves projection digest."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.identity_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves the projection domain object."
+        }
+      ]
+    },
+    {
+      "scope": "foundation.topology_drift",
+      "status": "PASS",
+      "storage_locator": "foundation.topology_drift:topology-drift.json",
+      "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
+      "projection_type": "TopologyDriftProjection",
+      "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
+      "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "execution_chain",
+          "source_ref": "services-id",
+          "source_digest": "UNVERIFIED"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "lawyershub",
+          "source_digest": "faa311186e56c5ca2504dc8d48b400bba7d238c1b87fcba56d0ceec5d9bae0d7"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "ilc",
+          "source_digest": "UNVERIFIED"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.serializer_roundtrip.digest_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves projection digest."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.identity_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves the projection domain object."
+        }
+      ]
+    },
+    {
+      "scope": "foundation.architecture_trend",
+      "status": "PASS",
+      "storage_locator": "foundation.architecture_trend:architecture-trend.json",
+      "replica_storage_locator": "replica://foundation.architecture_trend:architecture-trend.json",
+      "projection_type": "TrendProjection",
+      "projection_id": "TrendProjection:6d4f182c851f5db9",
+      "projection_digest": "6d4f182c851f5db915525ad745ad09a14f0160526345df38ea528f3b1ce9a073",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "foundation_metrics",
+          "source_ref": "epoch-047",
+          "source_digest": "ff3ff25019cfca8c16028842a59fbb2b7e505f8578ab704168126fb047986e5c"
+        },
+        {
+          "source_type": "foundation_metrics",
+          "source_ref": "epoch-046",
+          "source_digest": "236469f669106caeea2c1541ca17e0bc39de71478dcdc403c683078471427bc5"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.serializer_roundtrip.digest_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves projection digest."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.identity_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves the projection domain object."
+        }
+      ]
+    },
+    {
+      "scope": "product.lawyershub.execution_plan",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.execution_plan:execution-plan.json",
+      "replica_storage_locator": "replica://product.lawyershub.execution_plan:execution-plan.json",
+      "projection_type": "ExecutionPlanProjection",
+      "projection_id": "ExecutionPlanProjection:185205ff77a90521",
+      "projection_digest": "185205ff77a9052145fdeefb6acd634db13a75bf05f0055d94b93caaddd4df35",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "planner_descriptor",
+          "source_ref": "/root/Enterprise-OS/workspace/apps/lawyershub/composition.descriptor.ts",
+          "source_digest": "9b924f26d3ce8dea84ad9be95ea56e6dff70c915ae5692fcc1cb09937ab35da2"
+        },
+        {
+          "source_type": "workspace_manifest",
+          "source_ref": "/root/Enterprise-OS/workspace/apps/lawyershub/workspace.manifest.ts",
+          "source_digest": "f528233c13703e87a877224e69fbebce275d14369ad5505a59d49134eab97fdc"
+        },
+        {
+          "source_type": "execution_graph",
+          "source_ref": "/root/Enterprise-OS/workspace/foundation/evidence/verification/execution-graph.json",
+          "source_digest": "53024d174046369dc557bf9ea7f7df5c44093e4d1788f45f5c90b2c7184ab5d7"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.serializer_roundtrip.digest_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves projection digest."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.identity_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves the projection domain object."
+        }
+      ]
+    },
+    {
+      "scope": "product.lawyershub.execution_chain",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.execution_chain:execution-chain.json",
+      "replica_storage_locator": "replica://product.lawyershub.execution_chain:execution-chain.json",
+      "projection_type": "ExecutionChainProjection",
+      "projection_id": "ExecutionChainProjection:faa311186e56c5ca",
+      "projection_digest": "faa311186e56c5ca2504dc8d48b400bba7d238c1b87fcba56d0ceec5d9bae0d7",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "runtime_invocation_evidence",
+          "source_ref": "runtime-invocations:lawyershub",
+          "source_digest": "3db968679b6cc4ca00328ab1188fda005a040446ee4326f1cbe7d1dce1b5dc5a"
+        },
+        {
+          "source_type": "execution_plan",
+          "source_ref": "plan::lawyershub.workspace.default::11dd818f",
+          "source_digest": "11dd818f"
+        },
+        {
+          "source_type": "plan_instance",
+          "source_ref": "pi:9249964e7236032f",
+          "source_digest": "9249964e7236032f6c0a4197400f19106f0b605c69cd091e10f53cdbc9693eb9"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.serializer_roundtrip.digest_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves projection digest."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.identity_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves the projection domain object."
+        }
+      ]
+    },
+    {
+      "scope": "product.lawyershub.execution_timeline",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.execution_timeline:execution-timeline.json",
+      "replica_storage_locator": "replica://product.lawyershub.execution_timeline:execution-timeline.json",
+      "projection_type": "ExecutionTimelineProjection",
+      "projection_id": "ExecutionTimelineProjection:e562e6c41b34d0ca",
+      "projection_digest": "e562e6c41b34d0ca9d04d03b943b4d703e5c1eab502fce6e5299cc965e9794e9",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "execution_plan",
+          "source_ref": "plan::lawyershub.workspace.default::11dd818f",
+          "source_digest": "11dd818f"
+        },
+        {
+          "source_type": "plan_instance",
+          "source_ref": "pi:9249964e7236032f",
+          "source_digest": "9249964e7236032f6c0a4197400f19106f0b605c69cd091e10f53cdbc9693eb9"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "lawyershub:pi:9249964e7236032f",
+          "source_digest": "faa311186e56c5ca2504dc8d48b400bba7d238c1b87fcba56d0ceec5d9bae0d7"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.serializer_roundtrip.digest_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves projection digest."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.identity_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves the projection domain object."
+        }
+      ]
+    }
+  ],
+  "storage_transparency_certificates": [
+    {
+      "scope": "foundation.execution_graph",
+      "status": "PASS",
+      "storage_locator": "foundation.execution_graph:execution-graph.json",
+      "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
+      "projection_type": "ExecutionGraphProjection",
+      "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
+      "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "artifact_registry",
+          "source_ref": "artifact_registry:artifacts",
+          "source_digest": "65440aab9cb4061c2fbd12f010d49dde08342fa0290cb766fc6b349bbf762428"
+        },
+        {
+          "source_type": "execution_evidence",
+          "source_ref": "artifact_registry:execution_evidence",
+          "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "artifact_registry:execution_chains",
+          "source_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16"
+        },
+        {
+          "source_type": "planner_signature",
+          "source_ref": "artifact_registry:planner_signatures",
+          "source_digest": "67c1fd991d43ed16682f0b8be01d7abefab93fc4b58d63275a35fd186582ab1d"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.storage_path_independent",
+          "status": "PASS",
+          "detail": "Projection identity is unchanged when reloaded from a different storage location."
+        }
+      ]
+    },
+    {
+      "scope": "foundation.topology_drift",
+      "status": "PASS",
+      "storage_locator": "foundation.topology_drift:topology-drift.json",
+      "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
+      "projection_type": "TopologyDriftProjection",
+      "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
+      "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "execution_chain",
+          "source_ref": "services-id",
+          "source_digest": "UNVERIFIED"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "lawyershub",
+          "source_digest": "faa311186e56c5ca2504dc8d48b400bba7d238c1b87fcba56d0ceec5d9bae0d7"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "ilc",
+          "source_digest": "UNVERIFIED"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.storage_path_independent",
+          "status": "PASS",
+          "detail": "Projection identity is unchanged when reloaded from a different storage location."
+        }
+      ]
+    },
+    {
+      "scope": "foundation.architecture_trend",
+      "status": "PASS",
+      "storage_locator": "foundation.architecture_trend:architecture-trend.json",
+      "replica_storage_locator": "replica://foundation.architecture_trend:architecture-trend.json",
+      "projection_type": "TrendProjection",
+      "projection_id": "TrendProjection:6d4f182c851f5db9",
+      "projection_digest": "6d4f182c851f5db915525ad745ad09a14f0160526345df38ea528f3b1ce9a073",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "foundation_metrics",
+          "source_ref": "epoch-047",
+          "source_digest": "ff3ff25019cfca8c16028842a59fbb2b7e505f8578ab704168126fb047986e5c"
+        },
+        {
+          "source_type": "foundation_metrics",
+          "source_ref": "epoch-046",
+          "source_digest": "236469f669106caeea2c1541ca17e0bc39de71478dcdc403c683078471427bc5"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.storage_path_independent",
+          "status": "PASS",
+          "detail": "Projection identity is unchanged when reloaded from a different storage location."
+        }
+      ]
+    },
+    {
+      "scope": "product.lawyershub.execution_plan",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.execution_plan:execution-plan.json",
+      "replica_storage_locator": "replica://product.lawyershub.execution_plan:execution-plan.json",
+      "projection_type": "ExecutionPlanProjection",
+      "projection_id": "ExecutionPlanProjection:185205ff77a90521",
+      "projection_digest": "185205ff77a9052145fdeefb6acd634db13a75bf05f0055d94b93caaddd4df35",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "planner_descriptor",
+          "source_ref": "/root/Enterprise-OS/workspace/apps/lawyershub/composition.descriptor.ts",
+          "source_digest": "9b924f26d3ce8dea84ad9be95ea56e6dff70c915ae5692fcc1cb09937ab35da2"
+        },
+        {
+          "source_type": "workspace_manifest",
+          "source_ref": "/root/Enterprise-OS/workspace/apps/lawyershub/workspace.manifest.ts",
+          "source_digest": "f528233c13703e87a877224e69fbebce275d14369ad5505a59d49134eab97fdc"
+        },
+        {
+          "source_type": "execution_graph",
+          "source_ref": "/root/Enterprise-OS/workspace/foundation/evidence/verification/execution-graph.json",
+          "source_digest": "53024d174046369dc557bf9ea7f7df5c44093e4d1788f45f5c90b2c7184ab5d7"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.storage_path_independent",
+          "status": "PASS",
+          "detail": "Projection identity is unchanged when reloaded from a different storage location."
+        }
+      ]
+    },
+    {
+      "scope": "product.lawyershub.execution_chain",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.execution_chain:execution-chain.json",
+      "replica_storage_locator": "replica://product.lawyershub.execution_chain:execution-chain.json",
+      "projection_type": "ExecutionChainProjection",
+      "projection_id": "ExecutionChainProjection:faa311186e56c5ca",
+      "projection_digest": "faa311186e56c5ca2504dc8d48b400bba7d238c1b87fcba56d0ceec5d9bae0d7",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "runtime_invocation_evidence",
+          "source_ref": "runtime-invocations:lawyershub",
+          "source_digest": "3db968679b6cc4ca00328ab1188fda005a040446ee4326f1cbe7d1dce1b5dc5a"
+        },
+        {
+          "source_type": "execution_plan",
+          "source_ref": "plan::lawyershub.workspace.default::11dd818f",
+          "source_digest": "11dd818f"
+        },
+        {
+          "source_type": "plan_instance",
+          "source_ref": "pi:9249964e7236032f",
+          "source_digest": "9249964e7236032f6c0a4197400f19106f0b605c69cd091e10f53cdbc9693eb9"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.storage_path_independent",
+          "status": "PASS",
+          "detail": "Projection identity is unchanged when reloaded from a different storage location."
+        }
+      ]
+    },
+    {
+      "scope": "product.lawyershub.execution_timeline",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.execution_timeline:execution-timeline.json",
+      "replica_storage_locator": "replica://product.lawyershub.execution_timeline:execution-timeline.json",
+      "projection_type": "ExecutionTimelineProjection",
+      "projection_id": "ExecutionTimelineProjection:e562e6c41b34d0ca",
+      "projection_digest": "e562e6c41b34d0ca9d04d03b943b4d703e5c1eab502fce6e5299cc965e9794e9",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "execution_plan",
+          "source_ref": "plan::lawyershub.workspace.default::11dd818f",
+          "source_digest": "11dd818f"
+        },
+        {
+          "source_type": "plan_instance",
+          "source_ref": "pi:9249964e7236032f",
+          "source_digest": "9249964e7236032f6c0a4197400f19106f0b605c69cd091e10f53cdbc9693eb9"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "lawyershub:pi:9249964e7236032f",
+          "source_digest": "faa311186e56c5ca2504dc8d48b400bba7d238c1b87fcba56d0ceec5d9bae0d7"
+        }
+      ],
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.storage_path_independent",
+          "status": "PASS",
+          "detail": "Projection identity is unchanged when reloaded from a different storage location."
+        }
+      ]
+    }
+  ],
+  "replay_certificates": [
+    {
+      "scope": "product.lawyershub.composition_replay",
+      "product_id": "lawyershub",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.composition_replay:composition-replay.json",
+      "plan_id": "plan::lawyershub.workspace.default::11dd818f",
+      "plan_digest": "11dd818f",
+      "plan_instance_id": "pi:9249964e7236032f",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "replay.status.pass",
+          "status": "PASS",
+          "detail": "Replay artifact reports PASS status."
+        },
+        {
+          "rule_id": "replay.scope.composition_package_validation",
+          "status": "PASS",
+          "detail": "Replay artifact uses the expected verification scope."
+        },
+        {
+          "rule_id": "replay.plan_identity.matches_execution_plan",
+          "status": "PASS",
+          "detail": "Replay artifact plan identity matches ExecutionPlanProjection."
+        },
+        {
+          "rule_id": "replay.output.present",
+          "status": "PASS",
+          "detail": "Replay artifact captures validator output."
+        }
+      ]
+    }
+  ],
+  "projection_determinism_certificates": [
+    {
+      "scope": "foundation.execution_graph",
+      "status": "PASS",
+      "storage_locator": "foundation.execution_graph:execution-graph.json",
+      "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
+      "projection_type": "ExecutionGraphProjection",
+      "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
+      "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+      "proof_digest": "a9dc99ef96077397a634ce24c37a4bcea0199e5732b7eb8ddec90b4acd7f260e",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.determinism.repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical across repeated recomputation for the same evidence."
+        },
+        {
+          "rule_id": "projection.determinism.roundtrip_repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical after serializer round-trip recomputation."
+        },
+        {
+          "rule_id": "projection.determinism.key_order_independent",
+          "status": "PASS",
+          "detail": "Projection digest is independent of JSON key ordering."
+        },
+        {
+          "rule_id": "projection.determinism.generated_at_independent",
+          "status": "PASS",
+          "detail": "Projection digest is independent of generated_at_utc."
+        },
+        {
+          "rule_id": "projection.determinism.replica_repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical across replica storage representations."
+        }
+      ]
+    },
+    {
+      "scope": "foundation.topology_drift",
+      "status": "PASS",
+      "storage_locator": "foundation.topology_drift:topology-drift.json",
+      "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
+      "projection_type": "TopologyDriftProjection",
+      "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
+      "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+      "proof_digest": "28f72eb9d7faef82635e31926dadbbfc8197889ec9d973e99d74c380b0aa1427",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.determinism.repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical across repeated recomputation for the same evidence."
+        },
+        {
+          "rule_id": "projection.determinism.roundtrip_repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical after serializer round-trip recomputation."
+        },
+        {
+          "rule_id": "projection.determinism.key_order_independent",
+          "status": "PASS",
+          "detail": "Projection digest is independent of JSON key ordering."
+        },
+        {
+          "rule_id": "projection.determinism.generated_at_independent",
+          "status": "PASS",
+          "detail": "Projection digest is independent of generated_at_utc."
+        },
+        {
+          "rule_id": "projection.determinism.replica_repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical across replica storage representations."
+        }
+      ]
+    },
+    {
+      "scope": "foundation.architecture_trend",
+      "status": "PASS",
+      "storage_locator": "foundation.architecture_trend:architecture-trend.json",
+      "replica_storage_locator": "replica://foundation.architecture_trend:architecture-trend.json",
+      "projection_type": "TrendProjection",
+      "projection_id": "TrendProjection:6d4f182c851f5db9",
+      "projection_digest": "6d4f182c851f5db915525ad745ad09a14f0160526345df38ea528f3b1ce9a073",
+      "proof_digest": "871eabf9b215de33d9cb3446ad9c58fef7de6bcf29f8af622719ecf885172af8",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.determinism.repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical across repeated recomputation for the same evidence."
+        },
+        {
+          "rule_id": "projection.determinism.roundtrip_repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical after serializer round-trip recomputation."
+        },
+        {
+          "rule_id": "projection.determinism.key_order_independent",
+          "status": "PASS",
+          "detail": "Projection digest is independent of JSON key ordering."
+        },
+        {
+          "rule_id": "projection.determinism.generated_at_independent",
+          "status": "PASS",
+          "detail": "Projection digest is independent of generated_at_utc."
+        },
+        {
+          "rule_id": "projection.determinism.replica_repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical across replica storage representations."
+        }
+      ]
+    },
+    {
+      "scope": "product.lawyershub.execution_plan",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.execution_plan:execution-plan.json",
+      "replica_storage_locator": "replica://product.lawyershub.execution_plan:execution-plan.json",
+      "projection_type": "ExecutionPlanProjection",
+      "projection_id": "ExecutionPlanProjection:185205ff77a90521",
+      "projection_digest": "185205ff77a9052145fdeefb6acd634db13a75bf05f0055d94b93caaddd4df35",
+      "proof_digest": "eec1ac0cfb54a4e03858bcbf521cac662e6cf90b275e75208682a1dc15def8a0",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.determinism.repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical across repeated recomputation for the same evidence."
+        },
+        {
+          "rule_id": "projection.determinism.roundtrip_repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical after serializer round-trip recomputation."
+        },
+        {
+          "rule_id": "projection.determinism.key_order_independent",
+          "status": "PASS",
+          "detail": "Projection digest is independent of JSON key ordering."
+        },
+        {
+          "rule_id": "projection.determinism.generated_at_independent",
+          "status": "PASS",
+          "detail": "Projection digest is independent of generated_at_utc."
+        },
+        {
+          "rule_id": "projection.determinism.replica_repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical across replica storage representations."
+        }
+      ]
+    },
+    {
+      "scope": "product.lawyershub.execution_chain",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.execution_chain:execution-chain.json",
+      "replica_storage_locator": "replica://product.lawyershub.execution_chain:execution-chain.json",
+      "projection_type": "ExecutionChainProjection",
+      "projection_id": "ExecutionChainProjection:faa311186e56c5ca",
+      "projection_digest": "faa311186e56c5ca2504dc8d48b400bba7d238c1b87fcba56d0ceec5d9bae0d7",
+      "proof_digest": "9bc48f73cdb69b5d48647ea077284e6a6612660f3292e1de5293a65c730c031d",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.determinism.repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical across repeated recomputation for the same evidence."
+        },
+        {
+          "rule_id": "projection.determinism.roundtrip_repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical after serializer round-trip recomputation."
+        },
+        {
+          "rule_id": "projection.determinism.key_order_independent",
+          "status": "PASS",
+          "detail": "Projection digest is independent of JSON key ordering."
+        },
+        {
+          "rule_id": "projection.determinism.generated_at_independent",
+          "status": "PASS",
+          "detail": "Projection digest is independent of generated_at_utc."
+        },
+        {
+          "rule_id": "projection.determinism.replica_repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical across replica storage representations."
+        }
+      ]
+    },
+    {
+      "scope": "product.lawyershub.execution_timeline",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.execution_timeline:execution-timeline.json",
+      "replica_storage_locator": "replica://product.lawyershub.execution_timeline:execution-timeline.json",
+      "projection_type": "ExecutionTimelineProjection",
+      "projection_id": "ExecutionTimelineProjection:e562e6c41b34d0ca",
+      "projection_digest": "e562e6c41b34d0ca9d04d03b943b4d703e5c1eab502fce6e5299cc965e9794e9",
+      "proof_digest": "aa3cc5fff0d7a9265b57952c3364c810c10fdccc8ceb8633f31a237f0cf606c9",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.determinism.repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical across repeated recomputation for the same evidence."
+        },
+        {
+          "rule_id": "projection.determinism.roundtrip_repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical after serializer round-trip recomputation."
+        },
+        {
+          "rule_id": "projection.determinism.key_order_independent",
+          "status": "PASS",
+          "detail": "Projection digest is independent of JSON key ordering."
+        },
+        {
+          "rule_id": "projection.determinism.generated_at_independent",
+          "status": "PASS",
+          "detail": "Projection digest is independent of generated_at_utc."
+        },
+        {
+          "rule_id": "projection.determinism.replica_repeatable",
+          "status": "PASS",
+          "detail": "Projection digest is identical across replica storage representations."
+        }
+      ]
+    }
+  ],
+  "dependency_constitution": {
+    "status": "PASS",
+    "legal_dependency_chain": [
+      "Evidence",
+      "Projection Builder",
+      "Projection",
+      "Serializer",
+      "Storage"
+    ],
+    "illegal_dependencies": [
+      "Serializer -> Projection",
+      "Storage -> Projection",
+      "Execution Graph -> Execution Chain"
+    ],
+    "laws": [
+      {
+        "rule_id": "dependency.constitution_engine.no_tooling_dependency",
+        "description": "Constitution engine must not depend on tooling adapters or projection infrastructure."
+      },
+      {
+        "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
+        "description": "Command adapters must not import the constitution engine directly; they must go through tooling support."
+      },
+      {
+        "rule_id": "dependency.tooling_support.no_local_constitution_law",
+        "description": "Tooling support modules must not implement a local constitution engine."
+      },
+      {
+        "rule_id": "dependency.composition_surface.no_constitution_or_command_dependency",
+        "description": "Composition surfaces must not depend on constitution internals or command adapters."
+      },
+      {
+        "rule_id": "dependency.runtime_surface.no_constitution_or_command_dependency",
+        "description": "Runtime surfaces must not depend on constitution internals or command adapters."
+      },
+      {
+        "rule_id": "dependency.registry_surface.no_constitution_or_command_dependency",
+        "description": "Registry surfaces must not depend on constitution internals or command adapters."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "description": "Repository package surfaces must not depend on constitution internals or command adapters."
+      },
+      {
+        "rule_id": "dependency.projection_domain.no_serializer_import",
+        "description": "Projection domain must not import serializer or storage concerns."
+      },
+      {
+        "rule_id": "dependency.projection_builder.no_storage_import",
+        "description": "Projection builders must not import storage concerns."
+      },
+      {
+        "rule_id": "dependency.projection_api.no_constitution_engine_import",
+        "description": "Projection API surfaces must not depend on the constitution engine."
+      },
+      {
+        "rule_id": "dependency.serializer.no_storage_import",
+        "description": "Serializer must not import storage concerns."
+      },
+      {
+        "rule_id": "dependency.storage_catalog.no_serializer_import",
+        "description": "Storage catalog must not import serializer concerns."
+      }
+    ],
+    "graph": {
+      "governed_module_count": 82,
+      "import_edge_count": 121,
+      "module_kind_counts": {
+        "command_adapter": 9,
+        "composition_surface": 10,
+        "constitution_engine": 2,
+        "projection_api": 1,
+        "projection_builder": 2,
+        "projection_domain": 1,
+        "registry_surface": 1,
+        "repo_surface": 47,
+        "runtime_surface": 1,
+        "serializer": 1,
+        "storage_catalog": 2,
+        "tooling_support": 5
+      },
+      "discovery_digest": "2344e02cc01a170c86c8f80e07858cecb3cc9c1c0f7f6054bb1a6d701a87dc9d",
+      "discovery_module_count": 82,
+      "modules": [
+        {
+          "module_id": "tooling-eos-cli:commands/capability-registry",
+          "module_kind": "command_adapter",
+          "import_count": 4,
+          "governed_dependency_count": 2
+        },
+        {
+          "module_id": "tooling-eos-cli:commands/execution",
+          "module_kind": "command_adapter",
+          "import_count": 6,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "tooling-eos-cli:commands/gate-c",
+          "module_kind": "command_adapter",
+          "import_count": 1,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "tooling-eos-cli:commands/query",
+          "module_kind": "command_adapter",
+          "import_count": 1,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "tooling-eos-cli:commands/status",
+          "module_kind": "command_adapter",
+          "import_count": 1,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "tooling-eos-cli:commands/verify-constitution",
+          "module_kind": "command_adapter",
+          "import_count": 14,
+          "governed_dependency_count": 4
+        },
+        {
+          "module_id": "tooling-eos-cli:commands/verify-foundation",
+          "module_kind": "command_adapter",
+          "import_count": 1,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "tooling-eos-cli:commands/verify-portfolio",
+          "module_kind": "command_adapter",
+          "import_count": 6,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "tooling-eos-cli:commands/verify-product",
+          "module_kind": "command_adapter",
+          "import_count": 15,
+          "governed_dependency_count": 4
+        },
+        {
+          "module_id": "composition:compose",
+          "module_kind": "composition_surface",
+          "import_count": 10,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "composition:graph",
+          "module_kind": "composition_surface",
+          "import_count": 2,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "composition:index",
+          "module_kind": "composition_surface",
+          "import_count": 16,
+          "governed_dependency_count": 9
+        },
+        {
+          "module_id": "composition:layouts",
+          "module_kind": "composition_surface",
+          "import_count": 1,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "composition:navigation",
+          "module_kind": "composition_surface",
+          "import_count": 1,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "composition:orchestration",
+          "module_kind": "composition_surface",
+          "import_count": 6,
+          "governed_dependency_count": 6
+        },
+        {
+          "module_id": "composition:plan",
+          "module_kind": "composition_surface",
+          "import_count": 2,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "composition:regions",
+          "module_kind": "composition_surface",
+          "import_count": 1,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "composition:slots",
+          "module_kind": "composition_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "composition:workspace",
+          "module_kind": "composition_surface",
+          "import_count": 5,
+          "governed_dependency_count": 5
+        },
+        {
+          "module_id": "core-constitution:engine",
+          "module_kind": "constitution_engine",
+          "import_count": 3,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "core-constitution:index",
+          "module_kind": "constitution_engine",
+          "import_count": 4,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "tooling-eos-cli:projections",
+          "module_kind": "projection_api",
+          "import_count": 1,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "tooling-eos-cli:projection-builders",
+          "module_kind": "projection_builder",
+          "import_count": 1,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "tooling-eos-cli:projection-factories",
+          "module_kind": "projection_builder",
+          "import_count": 1,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "tooling-eos-cli:projection-domain",
+          "module_kind": "projection_domain",
+          "import_count": 1,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "core-capability-registry:index",
+          "module_kind": "registry_surface",
+          "import_count": 3,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "core-eir:index",
+          "module_kind": "repo_surface",
+          "import_count": 3,
+          "governed_dependency_count": 3
+        },
+        {
+          "module_id": "core-eir:interfaces",
+          "module_kind": "repo_surface",
+          "import_count": 1,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "core-eir:schema",
+          "module_kind": "repo_surface",
+          "import_count": 2,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "core-eir:types",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "core-kernel:index",
+          "module_kind": "repo_surface",
+          "import_count": 3,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "core-predicate-registry:index",
+          "module_kind": "repo_surface",
+          "import_count": 4,
+          "governed_dependency_count": 3
+        },
+        {
+          "module_id": "core-predicate-registry:interfaces",
+          "module_kind": "repo_surface",
+          "import_count": 1,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "core-predicate-registry:schema",
+          "module_kind": "repo_surface",
+          "import_count": 2,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "core-predicate-registry:types",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "core-proof-ledger:index",
+          "module_kind": "repo_surface",
+          "import_count": 3,
+          "governed_dependency_count": 3
+        },
+        {
+          "module_id": "core-proof-ledger:interfaces",
+          "module_kind": "repo_surface",
+          "import_count": 1,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "core-proof-ledger:schema",
+          "module_kind": "repo_surface",
+          "import_count": 2,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "core-proof-ledger:types",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "core-registry-resolver:index",
+          "module_kind": "repo_surface",
+          "import_count": 9,
+          "governed_dependency_count": 5
+        },
+        {
+          "module_id": "core-registry-resolver:interfaces",
+          "module_kind": "repo_surface",
+          "import_count": 2,
+          "governed_dependency_count": 2
+        },
+        {
+          "module_id": "core-registry-resolver:schema",
+          "module_kind": "repo_surface",
+          "import_count": 4,
+          "governed_dependency_count": 3
+        },
+        {
+          "module_id": "core-registry-resolver:types",
+          "module_kind": "repo_surface",
+          "import_count": 3,
+          "governed_dependency_count": 3
+        },
+        {
+          "module_id": "core-transformation-registry:index",
+          "module_kind": "repo_surface",
+          "import_count": 8,
+          "governed_dependency_count": 3
+        },
+        {
+          "module_id": "core-transformation-registry:interfaces",
+          "module_kind": "repo_surface",
+          "import_count": 1,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "core-transformation-registry:schema",
+          "module_kind": "repo_surface",
+          "import_count": 2,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "core-transformation-registry:types",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "presentation-foundation:icons",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "presentation-foundation:index",
+          "module_kind": "repo_surface",
+          "import_count": 5,
+          "governed_dependency_count": 5
+        },
+        {
+          "module_id": "presentation-foundation:motion",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "presentation-foundation:themes",
+          "module_kind": "repo_surface",
+          "import_count": 9,
+          "governed_dependency_count": 9
+        },
+        {
+          "module_id": "presentation-foundation:tokens",
+          "module_kind": "repo_surface",
+          "import_count": 5,
+          "governed_dependency_count": 5
+        },
+        {
+          "module_id": "presentation-foundation:tokens/colors",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "presentation-foundation:tokens/elevation",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "presentation-foundation:tokens/radius",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "presentation-foundation:tokens/semantic",
+          "module_kind": "repo_surface",
+          "import_count": 3,
+          "governed_dependency_count": 3
+        },
+        {
+          "module_id": "presentation-foundation:tokens/spacing",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "presentation-foundation:typography",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "presentation-types:index",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "presentation-ui-system:atoms",
+          "module_kind": "repo_surface",
+          "import_count": 3,
+          "governed_dependency_count": 3
+        },
+        {
+          "module_id": "presentation-ui-system:atoms/card",
+          "module_kind": "repo_surface",
+          "import_count": 2,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "presentation-ui-system:atoms/gradient",
+          "module_kind": "repo_surface",
+          "import_count": 2,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "presentation-ui-system:atoms/turborepo-logo",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "presentation-ui-system:card",
+          "module_kind": "repo_surface",
+          "import_count": 1,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "presentation-ui-system:foundation",
+          "module_kind": "repo_surface",
+          "import_count": 1,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "presentation-ui-system:gradient",
+          "module_kind": "repo_surface",
+          "import_count": 1,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "presentation-ui-system:index",
+          "module_kind": "repo_surface",
+          "import_count": 6,
+          "governed_dependency_count": 6
+        },
+        {
+          "module_id": "presentation-ui-system:layouts",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "presentation-ui-system:molecules",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "presentation-ui-system:organisms",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "presentation-ui-system:patterns",
+          "module_kind": "repo_surface",
+          "import_count": 0,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "presentation-ui-system:turborepo-logo",
+          "module_kind": "repo_surface",
+          "import_count": 1,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "presentation-ui-system:workspace",
+          "module_kind": "repo_surface",
+          "import_count": 1,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "core-runtime:index",
+          "module_kind": "runtime_surface",
+          "import_count": 4,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "tooling-eos-cli:projection-serialization",
+          "module_kind": "serializer",
+          "import_count": 1,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "tooling-eos-cli:projection-storage",
+          "module_kind": "storage_catalog",
+          "import_count": 1,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "tooling-eos-cli:storage-catalog",
+          "module_kind": "storage_catalog",
+          "import_count": 2,
+          "governed_dependency_count": 1
+        },
+        {
+          "module_id": "tooling-eos-cli:constitution-support",
+          "module_kind": "tooling_support",
+          "import_count": 1,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "tooling-eos-cli:index",
+          "module_kind": "tooling_support",
+          "import_count": 9,
+          "governed_dependency_count": 7
+        },
+        {
+          "module_id": "tooling-eos-cli:schema",
+          "module_kind": "tooling_support",
+          "import_count": 1,
+          "governed_dependency_count": 0
+        },
+        {
+          "module_id": "tooling-eos-cli:scripts/materialize-product-plan",
+          "module_kind": "tooling_support",
+          "import_count": 6,
+          "governed_dependency_count": 2
+        },
+        {
+          "module_id": "tooling-eos-cli:state",
+          "module_kind": "tooling_support",
+          "import_count": 5,
+          "governed_dependency_count": 1
+        }
+      ],
+      "edges": [
+        {
+          "from": "composition:compose",
+          "to": "core-capability-registry:index",
+          "from_kind": "composition_surface",
+          "to_kind": "registry_surface"
+        },
+        {
+          "from": "composition:index",
+          "to": "composition:compose",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:index",
+          "to": "composition:graph",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:index",
+          "to": "composition:layouts",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:index",
+          "to": "composition:navigation",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:index",
+          "to": "composition:orchestration",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:index",
+          "to": "composition:plan",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:index",
+          "to": "composition:regions",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:index",
+          "to": "composition:slots",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:index",
+          "to": "composition:workspace",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:layouts",
+          "to": "composition:regions",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:navigation",
+          "to": "composition:slots",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:orchestration",
+          "to": "composition:navigation",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:orchestration",
+          "to": "composition:regions",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:orchestration",
+          "to": "composition:slots",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:orchestration",
+          "to": "composition:workspace",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:orchestration",
+          "to": "core-capability-registry:index",
+          "from_kind": "composition_surface",
+          "to_kind": "registry_surface"
+        },
+        {
+          "from": "composition:orchestration",
+          "to": "core-kernel:index",
+          "from_kind": "composition_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "composition:regions",
+          "to": "composition:slots",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:workspace",
+          "to": "composition:layouts",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:workspace",
+          "to": "composition:navigation",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:workspace",
+          "to": "composition:regions",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:workspace",
+          "to": "composition:slots",
+          "from_kind": "composition_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "composition:workspace",
+          "to": "core-kernel:index",
+          "from_kind": "composition_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-constitution:engine",
+          "to": "core-kernel:index",
+          "from_kind": "constitution_engine",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-constitution:index",
+          "to": "core-constitution:engine",
+          "from_kind": "constitution_engine",
+          "to_kind": "constitution_engine"
+        },
+        {
+          "from": "core-eir:index",
+          "to": "core-eir:interfaces",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-eir:index",
+          "to": "core-eir:schema",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-eir:index",
+          "to": "core-eir:types",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-eir:interfaces",
+          "to": "core-eir:types",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-eir:schema",
+          "to": "core-eir:types",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-predicate-registry:index",
+          "to": "core-predicate-registry:interfaces",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-predicate-registry:index",
+          "to": "core-predicate-registry:schema",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-predicate-registry:index",
+          "to": "core-predicate-registry:types",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-predicate-registry:interfaces",
+          "to": "core-predicate-registry:types",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-predicate-registry:schema",
+          "to": "core-predicate-registry:types",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-proof-ledger:index",
+          "to": "core-proof-ledger:interfaces",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-proof-ledger:index",
+          "to": "core-proof-ledger:schema",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-proof-ledger:index",
+          "to": "core-proof-ledger:types",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-proof-ledger:interfaces",
+          "to": "core-proof-ledger:types",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-proof-ledger:schema",
+          "to": "core-proof-ledger:types",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-registry-resolver:index",
+          "to": "core-predicate-registry:index",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-registry-resolver:index",
+          "to": "core-registry-resolver:interfaces",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-registry-resolver:index",
+          "to": "core-registry-resolver:schema",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-registry-resolver:index",
+          "to": "core-registry-resolver:types",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-registry-resolver:index",
+          "to": "core-transformation-registry:index",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-registry-resolver:interfaces",
+          "to": "core-registry-resolver:types",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-registry-resolver:interfaces",
+          "to": "core-transformation-registry:index",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-registry-resolver:schema",
+          "to": "core-predicate-registry:index",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-registry-resolver:schema",
+          "to": "core-registry-resolver:types",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-registry-resolver:schema",
+          "to": "core-transformation-registry:index",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-registry-resolver:types",
+          "to": "core-predicate-registry:index",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-registry-resolver:types",
+          "to": "core-proof-ledger:index",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-registry-resolver:types",
+          "to": "core-transformation-registry:index",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-runtime:index",
+          "to": "composition:index",
+          "from_kind": "runtime_surface",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "core-transformation-registry:index",
+          "to": "core-transformation-registry:interfaces",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-transformation-registry:index",
+          "to": "core-transformation-registry:schema",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-transformation-registry:index",
+          "to": "core-transformation-registry:types",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-transformation-registry:interfaces",
+          "to": "core-transformation-registry:types",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "core-transformation-registry:schema",
+          "to": "core-transformation-registry:types",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:index",
+          "to": "presentation-foundation:icons",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:index",
+          "to": "presentation-foundation:motion",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:index",
+          "to": "presentation-foundation:themes",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:index",
+          "to": "presentation-foundation:tokens",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:index",
+          "to": "presentation-foundation:typography",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:themes",
+          "to": "presentation-foundation:icons",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:themes",
+          "to": "presentation-foundation:motion",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:themes",
+          "to": "presentation-foundation:tokens",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:themes",
+          "to": "presentation-foundation:tokens/colors",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:themes",
+          "to": "presentation-foundation:tokens/elevation",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:themes",
+          "to": "presentation-foundation:tokens/radius",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:themes",
+          "to": "presentation-foundation:tokens/semantic",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:themes",
+          "to": "presentation-foundation:tokens/spacing",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:themes",
+          "to": "presentation-foundation:typography",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:tokens",
+          "to": "presentation-foundation:tokens/colors",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:tokens",
+          "to": "presentation-foundation:tokens/elevation",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:tokens",
+          "to": "presentation-foundation:tokens/radius",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:tokens",
+          "to": "presentation-foundation:tokens/semantic",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:tokens",
+          "to": "presentation-foundation:tokens/spacing",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:tokens/semantic",
+          "to": "presentation-foundation:tokens/colors",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:tokens/semantic",
+          "to": "presentation-foundation:tokens/elevation",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-foundation:tokens/semantic",
+          "to": "presentation-foundation:tokens/radius",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-ui-system:atoms",
+          "to": "presentation-ui-system:atoms/card",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-ui-system:atoms",
+          "to": "presentation-ui-system:atoms/gradient",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-ui-system:atoms",
+          "to": "presentation-ui-system:atoms/turborepo-logo",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-ui-system:atoms/card",
+          "to": "presentation-ui-system:foundation",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-ui-system:atoms/gradient",
+          "to": "presentation-ui-system:foundation",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-ui-system:card",
+          "to": "presentation-ui-system:atoms/card",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-ui-system:foundation",
+          "to": "presentation-foundation:index",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-ui-system:gradient",
+          "to": "presentation-ui-system:atoms/gradient",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-ui-system:index",
+          "to": "presentation-ui-system:atoms",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-ui-system:index",
+          "to": "presentation-ui-system:layouts",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-ui-system:index",
+          "to": "presentation-ui-system:molecules",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-ui-system:index",
+          "to": "presentation-ui-system:organisms",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-ui-system:index",
+          "to": "presentation-ui-system:patterns",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-ui-system:index",
+          "to": "presentation-ui-system:workspace",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "presentation-ui-system:turborepo-logo",
+          "to": "presentation-ui-system:atoms/turborepo-logo",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
+          "from": "tooling-eos-cli:commands/capability-registry",
+          "to": "core-capability-registry:index",
+          "from_kind": "command_adapter",
+          "to_kind": "registry_surface"
+        },
+        {
+          "from": "tooling-eos-cli:commands/capability-registry",
+          "to": "tooling-eos-cli:state",
+          "from_kind": "command_adapter",
+          "to_kind": "tooling_support"
+        },
+        {
+          "from": "tooling-eos-cli:commands/execution",
+          "to": "tooling-eos-cli:state",
+          "from_kind": "command_adapter",
+          "to_kind": "tooling_support"
+        },
+        {
+          "from": "tooling-eos-cli:commands/status",
+          "to": "tooling-eos-cli:state",
+          "from_kind": "command_adapter",
+          "to_kind": "tooling_support"
+        },
+        {
+          "from": "tooling-eos-cli:commands/verify-constitution",
+          "to": "core-capability-registry:index",
+          "from_kind": "command_adapter",
+          "to_kind": "registry_surface"
+        },
+        {
+          "from": "tooling-eos-cli:commands/verify-constitution",
+          "to": "tooling-eos-cli:constitution-support",
+          "from_kind": "command_adapter",
+          "to_kind": "tooling_support"
+        },
+        {
+          "from": "tooling-eos-cli:commands/verify-constitution",
+          "to": "tooling-eos-cli:projections",
+          "from_kind": "command_adapter",
+          "to_kind": "projection_api"
+        },
+        {
+          "from": "tooling-eos-cli:commands/verify-constitution",
+          "to": "tooling-eos-cli:state",
+          "from_kind": "command_adapter",
+          "to_kind": "tooling_support"
+        },
+        {
+          "from": "tooling-eos-cli:commands/verify-portfolio",
+          "to": "tooling-eos-cli:state",
+          "from_kind": "command_adapter",
+          "to_kind": "tooling_support"
+        },
+        {
+          "from": "tooling-eos-cli:commands/verify-product",
+          "to": "tooling-eos-cli:constitution-support",
+          "from_kind": "command_adapter",
+          "to_kind": "tooling_support"
+        },
+        {
+          "from": "tooling-eos-cli:commands/verify-product",
+          "to": "tooling-eos-cli:projection-builders",
+          "from_kind": "command_adapter",
+          "to_kind": "projection_builder"
+        },
+        {
+          "from": "tooling-eos-cli:commands/verify-product",
+          "to": "tooling-eos-cli:projections",
+          "from_kind": "command_adapter",
+          "to_kind": "projection_api"
+        },
+        {
+          "from": "tooling-eos-cli:commands/verify-product",
+          "to": "tooling-eos-cli:state",
+          "from_kind": "command_adapter",
+          "to_kind": "tooling_support"
+        },
+        {
+          "from": "tooling-eos-cli:index",
+          "to": "tooling-eos-cli:commands/capability-registry",
+          "from_kind": "tooling_support",
+          "to_kind": "command_adapter"
+        },
+        {
+          "from": "tooling-eos-cli:index",
+          "to": "tooling-eos-cli:commands/execution",
+          "from_kind": "tooling_support",
+          "to_kind": "command_adapter"
+        },
+        {
+          "from": "tooling-eos-cli:index",
+          "to": "tooling-eos-cli:commands/query",
+          "from_kind": "tooling_support",
+          "to_kind": "command_adapter"
+        },
+        {
+          "from": "tooling-eos-cli:index",
+          "to": "tooling-eos-cli:commands/status",
+          "from_kind": "tooling_support",
+          "to_kind": "command_adapter"
+        },
+        {
+          "from": "tooling-eos-cli:index",
+          "to": "tooling-eos-cli:commands/verify-constitution",
+          "from_kind": "tooling_support",
+          "to_kind": "command_adapter"
+        },
+        {
+          "from": "tooling-eos-cli:index",
+          "to": "tooling-eos-cli:commands/verify-portfolio",
+          "from_kind": "tooling_support",
+          "to_kind": "command_adapter"
+        },
+        {
+          "from": "tooling-eos-cli:index",
+          "to": "tooling-eos-cli:commands/verify-product",
+          "from_kind": "tooling_support",
+          "to_kind": "command_adapter"
+        },
+        {
+          "from": "tooling-eos-cli:scripts/materialize-product-plan",
+          "to": "composition:index",
+          "from_kind": "tooling_support",
+          "to_kind": "composition_surface"
+        },
+        {
+          "from": "tooling-eos-cli:scripts/materialize-product-plan",
+          "to": "core-capability-registry:index",
+          "from_kind": "tooling_support",
+          "to_kind": "registry_surface"
+        },
+        {
+          "from": "tooling-eos-cli:state",
+          "to": "tooling-eos-cli:schema",
+          "from_kind": "tooling_support",
+          "to_kind": "tooling_support"
+        },
+        {
+          "from": "tooling-eos-cli:storage-catalog",
+          "to": "tooling-eos-cli:projection-domain",
+          "from_kind": "storage_catalog",
+          "to_kind": "projection_domain"
+        }
+      ]
+    },
+    "violations": [],
+    "checks": [
+      {
+        "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:commands/capability-registry respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:commands/execution respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:commands/gate-c respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:commands/query respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:commands/status respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:commands/verify-constitution respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:commands/verify-foundation respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:commands/verify-portfolio respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:commands/verify-product respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.composition_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "composition:compose respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.composition_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "composition:graph respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.composition_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "composition:index respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.composition_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "composition:layouts respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.composition_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "composition:navigation respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.composition_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "composition:orchestration respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.composition_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "composition:plan respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.composition_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "composition:regions respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.composition_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "composition:slots respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.composition_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "composition:workspace respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.constitution_engine.no_tooling_dependency",
+        "status": "PASS",
+        "detail": "core-constitution:engine respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.constitution_engine.no_tooling_dependency",
+        "status": "PASS",
+        "detail": "core-constitution:index respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.projection_api.no_constitution_engine_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:projections respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.projection_builder.no_storage_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:projection-builders respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.projection_builder.no_storage_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:projection-factories respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.projection_domain.no_serializer_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:projection-domain respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.registry_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-capability-registry:index respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-eir:index respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-eir:interfaces respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-eir:schema respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-eir:types respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-kernel:index respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-predicate-registry:index respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-predicate-registry:interfaces respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-predicate-registry:schema respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-predicate-registry:types respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-proof-ledger:index respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-proof-ledger:interfaces respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-proof-ledger:schema respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-proof-ledger:types respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-registry-resolver:index respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-registry-resolver:interfaces respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-registry-resolver:schema respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-registry-resolver:types respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-transformation-registry:index respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-transformation-registry:interfaces respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-transformation-registry:schema respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-transformation-registry:types respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-foundation:icons respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-foundation:index respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-foundation:motion respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-foundation:themes respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-foundation:tokens respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-foundation:tokens/colors respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-foundation:tokens/elevation respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-foundation:tokens/radius respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-foundation:tokens/semantic respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-foundation:tokens/spacing respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-foundation:typography respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-types:index respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-ui-system:atoms respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-ui-system:atoms/card respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-ui-system:atoms/gradient respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-ui-system:atoms/turborepo-logo respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-ui-system:card respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-ui-system:foundation respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-ui-system:gradient respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-ui-system:index respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-ui-system:layouts respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-ui-system:molecules respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-ui-system:organisms respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-ui-system:patterns respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-ui-system:turborepo-logo respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "presentation-ui-system:workspace respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.runtime_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
+        "detail": "core-runtime:index respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.serializer.no_storage_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:projection-serialization respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.storage_catalog.no_serializer_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:projection-storage respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.storage_catalog.no_serializer_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:storage-catalog respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.tooling_support.no_local_constitution_law",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:constitution-support respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.tooling_support.no_local_constitution_law",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:index respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.tooling_support.no_local_constitution_law",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:schema respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.tooling_support.no_local_constitution_law",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:scripts/materialize-product-plan respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.tooling_support.no_local_constitution_law",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:state respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.discovery.repeatable",
+        "status": "PASS",
+        "detail": "Governed module discovery is repeatable for identical repository input."
+      }
+    ]
+  },
+  "proof_determinism_certificate": {
+    "certificate_id": "constitution-proof:62b75a464d1ba05b",
+    "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+    "status": "PASS",
+    "violations": [],
+    "checks": [
+      {
+        "rule_id": "proof.digest.repeatable",
+        "status": "PASS",
+        "detail": "Constitution proof digest is identical across repeated evaluations for the same input."
+      },
+      {
+        "rule_id": "proof.environment_independent",
+        "status": "PASS",
+        "detail": "Constitution proof is derived from canonicalized domain inputs and logical storage locators only; it excludes generated_at, physical filesystem paths, and temporary storage paths."
+      }
+    ]
+  },
+  "projection_certificates": [
+    {
+      "scope": "foundation.execution_graph",
+      "status": "PASS",
+      "storage_locator": "foundation.execution_graph:execution-graph.json",
+      "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
+      "projection_type": "ExecutionGraphProjection",
+      "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
+      "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "artifact_registry",
+          "source_ref": "artifact_registry:artifacts",
+          "source_digest": "65440aab9cb4061c2fbd12f010d49dde08342fa0290cb766fc6b349bbf762428"
+        },
+        {
+          "source_type": "execution_evidence",
+          "source_ref": "artifact_registry:execution_evidence",
+          "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "artifact_registry:execution_chains",
+          "source_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16"
+        },
+        {
+          "source_type": "planner_signature",
+          "source_ref": "artifact_registry:planner_signatures",
+          "source_digest": "67c1fd991d43ed16682f0b8be01d7abefab93fc4b58d63275a35fd186582ab1d"
+        }
+      ],
+      "constitutional_claims": {
+        "deterministic": true,
+        "immutable": true,
+        "chain_only_operational_edges": true,
+        "registry_only_declared_edges": true
+      },
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.type_matches_expected",
+          "status": "PASS",
+          "detail": "Projection type matches the constitutional storage contract."
+        },
+        {
+          "rule_id": "projection.digest_matches_content",
+          "status": "PASS",
+          "detail": "Projection digest matches the canonical digest recomputed from projection content."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.digest_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves projection digest."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.identity_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves the projection domain object."
+        },
+        {
+          "rule_id": "projection.storage_path_independent",
+          "status": "PASS",
+          "detail": "Projection identity is unchanged when reloaded from a different storage location."
+        }
+      ]
+    },
+    {
+      "scope": "foundation.topology_drift",
+      "status": "PASS",
+      "storage_locator": "foundation.topology_drift:topology-drift.json",
+      "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
+      "projection_type": "TopologyDriftProjection",
+      "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
+      "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "execution_chain",
+          "source_ref": "services-id",
+          "source_digest": "UNVERIFIED"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "lawyershub",
+          "source_digest": "faa311186e56c5ca2504dc8d48b400bba7d238c1b87fcba56d0ceec5d9bae0d7"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "ilc",
+          "source_digest": "UNVERIFIED"
+        }
+      ],
+      "constitutional_claims": null,
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.type_matches_expected",
+          "status": "PASS",
+          "detail": "Projection type matches the constitutional storage contract."
+        },
+        {
+          "rule_id": "projection.digest_matches_content",
+          "status": "PASS",
+          "detail": "Projection digest matches the canonical digest recomputed from projection content."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.digest_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves projection digest."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.identity_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves the projection domain object."
+        },
+        {
+          "rule_id": "projection.storage_path_independent",
+          "status": "PASS",
+          "detail": "Projection identity is unchanged when reloaded from a different storage location."
+        }
+      ]
+    },
+    {
+      "scope": "foundation.architecture_trend",
+      "status": "PASS",
+      "storage_locator": "foundation.architecture_trend:architecture-trend.json",
+      "replica_storage_locator": "replica://foundation.architecture_trend:architecture-trend.json",
+      "projection_type": "TrendProjection",
+      "projection_id": "TrendProjection:6d4f182c851f5db9",
+      "projection_digest": "6d4f182c851f5db915525ad745ad09a14f0160526345df38ea528f3b1ce9a073",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "foundation_metrics",
+          "source_ref": "epoch-047",
+          "source_digest": "ff3ff25019cfca8c16028842a59fbb2b7e505f8578ab704168126fb047986e5c"
+        },
+        {
+          "source_type": "foundation_metrics",
+          "source_ref": "epoch-046",
+          "source_digest": "236469f669106caeea2c1541ca17e0bc39de71478dcdc403c683078471427bc5"
+        }
+      ],
+      "constitutional_claims": null,
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.type_matches_expected",
+          "status": "PASS",
+          "detail": "Projection type matches the constitutional storage contract."
+        },
+        {
+          "rule_id": "projection.digest_matches_content",
+          "status": "PASS",
+          "detail": "Projection digest matches the canonical digest recomputed from projection content."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.digest_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves projection digest."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.identity_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves the projection domain object."
+        },
+        {
+          "rule_id": "projection.storage_path_independent",
+          "status": "PASS",
+          "detail": "Projection identity is unchanged when reloaded from a different storage location."
+        }
+      ]
+    },
+    {
+      "scope": "product.lawyershub.execution_plan",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.execution_plan:execution-plan.json",
+      "replica_storage_locator": "replica://product.lawyershub.execution_plan:execution-plan.json",
+      "projection_type": "ExecutionPlanProjection",
+      "projection_id": "ExecutionPlanProjection:185205ff77a90521",
+      "projection_digest": "185205ff77a9052145fdeefb6acd634db13a75bf05f0055d94b93caaddd4df35",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "planner_descriptor",
+          "source_ref": "/root/Enterprise-OS/workspace/apps/lawyershub/composition.descriptor.ts",
+          "source_digest": "9b924f26d3ce8dea84ad9be95ea56e6dff70c915ae5692fcc1cb09937ab35da2"
+        },
+        {
+          "source_type": "workspace_manifest",
+          "source_ref": "/root/Enterprise-OS/workspace/apps/lawyershub/workspace.manifest.ts",
+          "source_digest": "f528233c13703e87a877224e69fbebce275d14369ad5505a59d49134eab97fdc"
+        },
+        {
+          "source_type": "execution_graph",
+          "source_ref": "/root/Enterprise-OS/workspace/foundation/evidence/verification/execution-graph.json",
+          "source_digest": "53024d174046369dc557bf9ea7f7df5c44093e4d1788f45f5c90b2c7184ab5d7"
+        }
+      ],
+      "constitutional_claims": null,
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.type_matches_expected",
+          "status": "PASS",
+          "detail": "Projection type matches the constitutional storage contract."
+        },
+        {
+          "rule_id": "projection.digest_matches_content",
+          "status": "PASS",
+          "detail": "Projection digest matches the canonical digest recomputed from projection content."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.digest_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves projection digest."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.identity_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves the projection domain object."
+        },
+        {
+          "rule_id": "projection.storage_path_independent",
+          "status": "PASS",
+          "detail": "Projection identity is unchanged when reloaded from a different storage location."
+        }
+      ]
+    },
+    {
+      "scope": "product.lawyershub.execution_chain",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.execution_chain:execution-chain.json",
+      "replica_storage_locator": "replica://product.lawyershub.execution_chain:execution-chain.json",
+      "projection_type": "ExecutionChainProjection",
+      "projection_id": "ExecutionChainProjection:faa311186e56c5ca",
+      "projection_digest": "faa311186e56c5ca2504dc8d48b400bba7d238c1b87fcba56d0ceec5d9bae0d7",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "runtime_invocation_evidence",
+          "source_ref": "runtime-invocations:lawyershub",
+          "source_digest": "3db968679b6cc4ca00328ab1188fda005a040446ee4326f1cbe7d1dce1b5dc5a"
+        },
+        {
+          "source_type": "execution_plan",
+          "source_ref": "plan::lawyershub.workspace.default::11dd818f",
+          "source_digest": "11dd818f"
+        },
+        {
+          "source_type": "plan_instance",
+          "source_ref": "pi:9249964e7236032f",
+          "source_digest": "9249964e7236032f6c0a4197400f19106f0b605c69cd091e10f53cdbc9693eb9"
+        }
+      ],
+      "constitutional_claims": null,
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.type_matches_expected",
+          "status": "PASS",
+          "detail": "Projection type matches the constitutional storage contract."
+        },
+        {
+          "rule_id": "projection.digest_matches_content",
+          "status": "PASS",
+          "detail": "Projection digest matches the canonical digest recomputed from projection content."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.digest_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves projection digest."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.identity_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves the projection domain object."
+        },
+        {
+          "rule_id": "projection.storage_path_independent",
+          "status": "PASS",
+          "detail": "Projection identity is unchanged when reloaded from a different storage location."
+        }
+      ]
+    },
+    {
+      "scope": "product.lawyershub.execution_timeline",
+      "status": "PASS",
+      "storage_locator": "product.lawyershub.execution_timeline:execution-timeline.json",
+      "replica_storage_locator": "replica://product.lawyershub.execution_timeline:execution-timeline.json",
+      "projection_type": "ExecutionTimelineProjection",
+      "projection_id": "ExecutionTimelineProjection:e562e6c41b34d0ca",
+      "projection_digest": "e562e6c41b34d0ca9d04d03b943b4d703e5c1eab502fce6e5299cc965e9794e9",
+      "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+      "generated_from": [
+        {
+          "source_type": "execution_plan",
+          "source_ref": "plan::lawyershub.workspace.default::11dd818f",
+          "source_digest": "11dd818f"
+        },
+        {
+          "source_type": "plan_instance",
+          "source_ref": "pi:9249964e7236032f",
+          "source_digest": "9249964e7236032f6c0a4197400f19106f0b605c69cd091e10f53cdbc9693eb9"
+        },
+        {
+          "source_type": "execution_chain",
+          "source_ref": "lawyershub:pi:9249964e7236032f",
+          "source_digest": "faa311186e56c5ca2504dc8d48b400bba7d238c1b87fcba56d0ceec5d9bae0d7"
+        }
+      ],
+      "constitutional_claims": null,
+      "violations": [],
+      "checks": [
+        {
+          "rule_id": "projection.type_matches_expected",
+          "status": "PASS",
+          "detail": "Projection type matches the constitutional storage contract."
+        },
+        {
+          "rule_id": "projection.digest_matches_content",
+          "status": "PASS",
+          "detail": "Projection digest matches the canonical digest recomputed from projection content."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.digest_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves projection digest."
+        },
+        {
+          "rule_id": "projection.serializer_roundtrip.identity_preserved",
+          "status": "PASS",
+          "detail": "Serializer round-trip preserves the projection domain object."
+        },
+        {
+          "rule_id": "projection.storage_path_independent",
+          "status": "PASS",
+          "detail": "Projection identity is unchanged when reloaded from a different storage location."
+        }
+      ]
+    }
+  ],
+  "claim_boundary": "Constitution report verifies graph purity, constitutional fingerprinting, projection serialization invariants, dependency-boundary laws, and proof determinism over the current execution graph projection set. It proves constitutional compliance for operational adjacency and projection integrity, not feature-level behavior.",
+  "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138"
+}

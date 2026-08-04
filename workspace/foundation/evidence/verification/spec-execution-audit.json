@@ -1,0 +1,332 @@
+{
+  "summary": {
+    "total_specs": 23,
+    "executable_ssot": 4,
+    "documentation_only": 19
+  },
+  "specs": [
+    {
+      "spec": "enterprise/specifications/COMPILER-PASSES.spec.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/COMPOSITION-LEVERAGE.spec.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/COMPOSITION-RUNTIME.spec.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/CONSTITUTIONAL-COMPILER.spec.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/CONSTITUTIONAL-VERIFIER.pipeline.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/DEPLOYMENT-COMPOSITION.spec.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/DOMAIN-PLANNING.spec.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/ENTERPRISE-COMPOSITION-ECOSYSTEM.spec.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/ENTERPRISE-CONTROL-PLANE.spec.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/EXPERIENCE-COMPOSITION.spec.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/EXPERIENCE-PLATFORM.spec.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/GOVERNANCE-COMPOSITION.spec.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/GOVERNANCE-DOMAIN.spec.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/GOVERNANCE-PORTFOLIO.yaml",
+      "executable_ssot": true,
+      "classification": "EXECUTABLE_SSOT",
+      "consumer_command": "pnpm eos verify-foundation",
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": true,
+        "evidence": true
+      },
+      "evidence_artifact": "workspace/foundation/evidence/verification/spec-execution-audit.json"
+    },
+    {
+      "spec": "enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/PRODUCT-COMPOSITION.spec.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/PRODUCT-PORTFOLIO.yaml",
+      "executable_ssot": true,
+      "classification": "EXECUTABLE_SSOT",
+      "consumer_command": "pnpm eos verify-foundation",
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": true,
+        "evidence": true
+      },
+      "evidence_artifact": "workspace/foundation/evidence/verification/foundation-report.json"
+    },
+    {
+      "spec": "enterprise/specifications/PROTOCOL-COMPILATION.spec.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/SEMANTIC-KERNEL.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/SURFACE-TAXONOMY.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/architecture-baseline-v1.yaml",
+      "executable_ssot": false,
+      "classification": "DOCUMENTATION_ONLY",
+      "consumer_command": null,
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": false,
+        "evidence": false
+      },
+      "evidence_artifact": null
+    },
+    {
+      "spec": "enterprise/specifications/specification-registry.yaml",
+      "executable_ssot": true,
+      "classification": "EXECUTABLE_SSOT",
+      "consumer_command": "pnpm eos verify-foundation",
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": true,
+        "evidence": true
+      },
+      "evidence_artifact": "workspace/foundation/evidence/verification/specification-conformance-evidence.json"
+    },
+    {
+      "spec": "enterprise/execution/QUALITY-GATES.yaml",
+      "executable_ssot": true,
+      "classification": "EXECUTABLE_SSOT",
+      "consumer_command": "pnpm eos verify-foundation",
+      "stage_chain": {
+        "planner": false,
+        "composer": false,
+        "runtime": false,
+        "verification": true,
+        "evidence": true
+      },
+      "evidence_artifact": "workspace/foundation/evidence/verification/guardrail-report.json"
+    }
+  ],
+  "rule": "If a specification is not consumed by planner, composer, runtime, or verification, it must not be presented as executable architecture."
+}

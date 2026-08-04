@@ -1,0 +1,113 @@
+{
+  "report_version": "1.0.0",
+  "report_digest": "17fbfd6065abfc670e912c05f598491e01b29f14b1d5c860451f2ff2eaae12ed",
+  "summary": {
+    "framework_count": 4,
+    "attestation_profile_count": 4,
+    "policy_count": 4,
+    "root_count": 4,
+    "trust_store_count": 4,
+    "keyset_count": 4,
+    "verification_profile_count": 4,
+    "signature_provider_count": 24,
+    "frameworks_with_complete_topology": 4,
+    "frameworks_with_verification_profile": 4,
+    "frameworks_with_full_spi_coverage": 4,
+    "overall_status": "PASS"
+  },
+  "frameworks": [
+    {
+      "framework_id": "trust-framework:local-development-signed",
+      "attestation_profile": "local_signed",
+      "topology_status": "PASS",
+      "verification_profile_status": "PASS",
+      "spi_coverage_status": "PASS",
+      "policy_count": 1,
+      "root_count": 1,
+      "trust_store_count": 1,
+      "keyset_count": 1,
+      "verification_profile_count": 1,
+      "signature_provider_count": 6,
+      "provider_kinds_present": [
+        "Cosign",
+        "HSM",
+        "KMS",
+        "Local",
+        "Remote",
+        "Sigstore"
+      ],
+      "missing_provider_kinds": [],
+      "status": "PASS"
+    },
+    {
+      "framework_id": "trust-framework:local-development",
+      "attestation_profile": "local_unsigned",
+      "topology_status": "PASS",
+      "verification_profile_status": "PASS",
+      "spi_coverage_status": "PASS",
+      "policy_count": 1,
+      "root_count": 1,
+      "trust_store_count": 1,
+      "keyset_count": 1,
+      "verification_profile_count": 1,
+      "signature_provider_count": 6,
+      "provider_kinds_present": [
+        "Cosign",
+        "HSM",
+        "KMS",
+        "Local",
+        "Remote",
+        "Sigstore"
+      ],
+      "missing_provider_kinds": [],
+      "status": "PASS"
+    },
+    {
+      "framework_id": "trust-framework:production",
+      "attestation_profile": "production_pending_signature",
+      "topology_status": "PASS",
+      "verification_profile_status": "PASS",
+      "spi_coverage_status": "PASS",
+      "policy_count": 1,
+      "root_count": 1,
+      "trust_store_count": 1,
+      "keyset_count": 1,
+      "verification_profile_count": 1,
+      "signature_provider_count": 6,
+      "provider_kinds_present": [
+        "Cosign",
+        "HSM",
+        "KMS",
+        "Local",
+        "Remote",
+        "Sigstore"
+      ],
+      "missing_provider_kinds": [],
+      "status": "PASS"
+    },
+    {
+      "framework_id": "trust-framework:federated",
+      "attestation_profile": "cross_org_pending_signature",
+      "topology_status": "PASS",
+      "verification_profile_status": "PASS",
+      "spi_coverage_status": "PASS",
+      "policy_count": 1,
+      "root_count": 1,
+      "trust_store_count": 1,
+      "keyset_count": 1,
+      "verification_profile_count": 1,
+      "signature_provider_count": 6,
+      "provider_kinds_present": [
+        "Cosign",
+        "HSM",
+        "KMS",
+        "Local",
+        "Remote",
+        "Sigstore"
+      ],
+      "missing_provider_kinds": [],
+      "status": "PASS"
+    }
+  ],
+  "claim_boundary": "Trust framework verification proves that each declared trust framework carries a minimally complete trust topology and full signature-provider SPI coverage before cryptographic adapters are activated. This measures trust-platform maturity without embedding signer implementations into governance evidence."
+}

@@ -1,0 +1,306 @@
+{
+  "artifact_id": "foundation-report-evidence:7aa83248c522135e",
+  "artifact_type": "foundation-report-evidence",
+  "schema_version": "1.0.0",
+  "generated_at_utc": "2026-08-03T15:33:51.640Z",
+  "subject": {
+    "subject_ref": "workspace/foundation/evidence/verification/foundation-report.json",
+    "subject_type": "foundation-verification",
+    "subject_digest": "ee7d97558c97c34470c0b77f84b87e68da47d5171bb836174cbd0a5498ba6343"
+  },
+  "projection": {
+    "projection_ref": "workspace/foundation/evidence/verification/foundation-report-projection.json",
+    "projection_id": "FoundationReportProjection:c6427415600f4184",
+    "projection_type": "FoundationReportProjection",
+    "projection_digest": "c6427415600f4184096372bdadde2a829efd5139454008dbb38045fbc22df89c"
+  },
+  "summary": {
+    "foundation_status": "UNVERIFIED_BASELINE",
+    "health_status": "BLOCKED",
+    "verified_products": 0,
+    "observed_capabilities": 13,
+    "decision_quality_status": "PARTIAL",
+    "learning_intelligence_status": "PARTIAL",
+    "closed_loop_hypothesis_status": "PASS",
+    "evidence_convergence_status": "WARN"
+  },
+  "findings": [
+    "Foundation status is UNVERIFIED_BASELINE.",
+    "Decision quality status is PARTIAL.",
+    "Learning intelligence status is PARTIAL.",
+    "Evidence convergence status is WARN."
+  ],
+  "evidence": {
+    "verification_result": {
+      "command_status": "PASS",
+      "foundation_status": "UNVERIFIED_BASELINE",
+      "health_status": "BLOCKED"
+    },
+    "foundation_metrics": {
+      "foundation_status": "UNVERIFIED_BASELINE",
+      "declared_products": 3,
+      "active_products": 1,
+      "implemented_products": 1,
+      "verified_products": 0,
+      "implemented_active_products": 1,
+      "verified_active_products": 0,
+      "active_portfolio_coverage_ratio": 0,
+      "active_portfolio_coverage_percentage": 0,
+      "implementation_coverage_ratio": 0.3333,
+      "implementation_coverage_percentage": 33.3,
+      "portfolio_coverage_ratio": 0,
+      "portfolio_coverage_percentage": 0,
+      "declared_shared_capabilities": [
+        "authentication",
+        "evidence-registry",
+        "knowledge-graph",
+        "requirement-management"
+      ],
+      "active_product_ids": [
+        "lawyershub"
+      ],
+      "implemented_product_ids": [
+        "lawyershub"
+      ],
+      "verified_product_ids": [],
+      "implemented_active_product_ids": [
+        "lawyershub"
+      ],
+      "verified_active_product_ids": [],
+      "missing_product_implementation": [
+        "services-id",
+        "ilc"
+      ],
+      "pending_product_verification": [
+        "lawyershub"
+      ],
+      "missing_active_product_implementation": [],
+      "pending_active_product_verification": [
+        "lawyershub"
+      ],
+      "missing_product_verification": [
+        "services-id",
+        "lawyershub",
+        "ilc"
+      ],
+      "claim_boundary": "Foundation verification uses ACTIVE products as the execution baseline and still reports declared portfolio backlog separately. A declared PLANNED product without a workspace manifest is roadmap scope, while an ACTIVE product without evidence is a verification gap."
+    },
+    "execution_evidence_summary": {
+      "total_capabilities": 16,
+      "declared_capabilities": 3,
+      "observed_capabilities": 13,
+      "verified_capabilities": 13,
+      "reproducible_capabilities": 8
+    },
+    "decision_quality": {
+      "status": "PARTIAL",
+      "decision_count": 23,
+      "decision_traceability_coverage": 1,
+      "decision_outcome_coverage": 1,
+      "decision_learning_closure": 1.0952380952380953,
+      "decision_reproducibility": 1,
+      "decision_reversibility": 1,
+      "decision_impact_graph_completeness": 1,
+      "engineering_leverage_measurement_coverage": 0,
+      "decision_effectiveness": 0.8571,
+      "decision_success_rate": 0.7143,
+      "false_decision_rate": 0,
+      "decision_reversal_rate": 0.9565,
+      "evidence_utilization_rate": 1,
+      "knowledge_reuse_rate": 0.4091,
+      "evidence_strength_index": 1,
+      "outcome_improvement_rate": 0.4444,
+      "mean_time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "decision_confidence_index": 0.9783,
+      "decision_confidence_growth": 0,
+      "knowledge_weighted_quality_index": 0.1779,
+      "report_ref": "workspace/foundation/evidence/verification/decision-quality-report.json"
+    },
+    "learning_intelligence": {
+      "status": "PARTIAL",
+      "decision_count": 23,
+      "outcome_count": 23,
+      "outcome_registry_coverage": 1,
+      "decision_quality_index": 0.1779,
+      "learning_velocity_ms": 421846.625,
+      "knowledge_gain_units": 39,
+      "knowledge_gain": 1.6957,
+      "knowledge_object_count": 9,
+      "operationalized_knowledge_count": 9,
+      "knowledge_availability_rate": 1,
+      "knowledge_reuse_rate": 0.3913,
+      "reused_knowledge_object_count": 6,
+      "improved_knowledge_object_count": 2,
+      "knowledge_lineage_count": 9,
+      "knowledge_lineage_preview": [
+        {
+          "knowledge_id": "knowledge:30fd3dec86d769a4",
+          "knowledge_key": "knowledge-key:bd73d427916ceb94",
+          "evolution_stage": "IMPROVED",
+          "source_learning_count": 4,
+          "reuse_count": 4,
+          "improved_outcome_count": 3,
+          "source_learning_ids": [
+            "decision-learning-gate-c-acceptance:e4d7eb821549f4aa",
+            "decision-learning-gate-c-acceptance:9372300c12082315",
+            "decision-learning-gate-c-acceptance:229dda074bc3ac5b",
+            "decision-learning-gate-c-acceptance:94098861278de1c6"
+          ],
+          "reused_by_decision_entry_ids": [
+            "decision-entry-gate-c-acceptance:0efff3ac64f2f606",
+            "decision-entry-gate-c-acceptance:560d27d4f27c41f4",
+            "decision-entry-gate-c-acceptance:318edcdab70d8c49",
+            "decision-entry-gate-c-acceptance:ba853bccaf44d3a1"
+          ]
+        },
+        {
+          "knowledge_id": "knowledge:303dcdb243410f76",
+          "knowledge_key": "knowledge-key:f631537605a94365",
+          "evolution_stage": "IMPROVED",
+          "source_learning_count": 1,
+          "reuse_count": 1,
+          "improved_outcome_count": 1,
+          "source_learning_ids": [
+            "decision-learning-gate-c-acceptance:6ca4700a64e15453"
+          ],
+          "reused_by_decision_entry_ids": [
+            "decision-entry-gate-c-acceptance:e7a2f10dbea3c24a"
+          ]
+        },
+        {
+          "knowledge_id": "knowledge:b393fba7c6e53e95",
+          "knowledge_key": "knowledge-key:6cf9c100ad81dff6",
+          "evolution_stage": "REUSED",
+          "source_learning_count": 3,
+          "reuse_count": 1,
+          "improved_outcome_count": 0,
+          "source_learning_ids": [
+            "decision-learning-gate-c-acceptance:f52c81fb5bf2b435",
+            "decision-learning-gate-c-acceptance:f2c7473865477496",
+            "decision-learning-gate-c-acceptance:9224b5c9ccda85b0"
+          ],
+          "reused_by_decision_entry_ids": [
+            "decision-entry-gate-c-acceptance:2dfc47af1d3a8683"
+          ]
+        },
+        {
+          "knowledge_id": "knowledge:9a1309ecf584e3f4",
+          "knowledge_key": "knowledge-key:ae416ad88ecec5a2",
+          "evolution_stage": "REUSED",
+          "source_learning_count": 3,
+          "reuse_count": 1,
+          "improved_outcome_count": 0,
+          "source_learning_ids": [
+            "decision-learning-gate-c-acceptance:f8957bdb86a16916",
+            "decision-learning-gate-c-acceptance:93bf9ffaaf5a26d6",
+            "decision-learning-gate-c-acceptance:7556db60aa2cc378"
+          ],
+          "reused_by_decision_entry_ids": [
+            "decision-entry-gate-c-acceptance:f9e259c89fac05b3"
+          ]
+        },
+        {
+          "knowledge_id": "knowledge:cd55bcdbb43f42fe",
+          "knowledge_key": "knowledge-key:88a18dea5332811f",
+          "evolution_stage": "REUSED",
+          "source_learning_count": 2,
+          "reuse_count": 1,
+          "improved_outcome_count": 0,
+          "source_learning_ids": [
+            "decision-learning-gate-c-acceptance:a59ad53b9570757b",
+            "decision-learning-gate-c-acceptance:2ba781ed6252f5c4"
+          ],
+          "reused_by_decision_entry_ids": [
+            "decision-entry-gate-c-acceptance:80f2bca33232992d"
+          ]
+        }
+      ],
+      "knowledge_used_rate": 0.4091,
+      "evidence_strength_index": 1,
+      "outcome_improvement_rate": 0.4444,
+      "decision_confidence_index": 0.9783,
+      "recommendation_effectiveness_rate": 0,
+      "decision_pattern_change_rate": 0.4,
+      "recommendation_acceptance_rate": 0.3333,
+      "behavior_change_rate": 0.4,
+      "engineering_leverage_ratio": null,
+      "repeated_mistake_count": 13,
+      "future_decision_improvement_rate": 0.5,
+      "report_ref": "workspace/foundation/evidence/verification/learning-intelligence-report.json",
+      "learning_registry_ref": "workspace/foundation/evidence/verification/learning-registry.json",
+      "knowledge_registry_ref": "workspace/foundation/evidence/verification/knowledge-registry.json"
+    },
+    "closed_loop_hypothesis": {
+      "statement": "Evidence -> Decision -> Outcome -> Learning -> Knowledge -> Better Decision -> Better Outcome",
+      "status": "PASS",
+      "stages": {
+        "evidence": {
+          "status": "PASS",
+          "metric_name": "evidence_strength_index",
+          "metric": 1,
+          "evidence_ref": "workspace/foundation/evidence/verification/decision-quality-report.json"
+        },
+        "decision": {
+          "status": "PASS",
+          "metric_name": "decision_count",
+          "metric": 23,
+          "evidence_ref": "workspace/foundation/evidence/verification/decision-quality-report.json"
+        },
+        "outcome": {
+          "status": "PASS",
+          "metric_name": "decision_outcome_coverage",
+          "metric": 1,
+          "evidence_ref": "workspace/foundation/evidence/verification/decision-quality-report.json"
+        },
+        "learning": {
+          "status": "PASS",
+          "metric_name": "decision_learning_closure",
+          "metric": 1.0952380952380953,
+          "evidence_ref": "workspace/foundation/evidence/verification/learning-intelligence-report.json"
+        },
+        "knowledge": {
+          "status": "PASS",
+          "metric_name": "knowledge_availability_rate",
+          "metric": 1,
+          "evidence_ref": "workspace/foundation/evidence/verification/knowledge-registry.json"
+        },
+        "better_decision": {
+          "status": "PASS",
+          "metric_name": "knowledge_weighted_quality_index",
+          "metric": 0.1779,
+          "evidence_ref": "workspace/foundation/evidence/verification/decision-quality-report.json"
+        },
+        "better_outcome": {
+          "status": "PASS",
+          "metric_name": "outcome_improvement_rate",
+          "metric": 0.4444,
+          "evidence_ref": "workspace/foundation/evidence/verification/learning-intelligence-report.json"
+        }
+      },
+      "claim_boundary": "Closed-loop hypothesis status is derived only from the materialized decision-quality and learning-intelligence projections produced during this foundation verification run."
+    },
+    "evidence_convergence": {
+      "status": "WARN",
+      "producer_count": 6,
+      "canonical_schema_versions": [
+        "1.0.0"
+      ],
+      "artifact_type_count": 6,
+      "subject_type_count": 5,
+      "target_producer_count": 9,
+      "registered_target_producer_count": 6,
+      "target_coverage_ratio": 0.6667,
+      "report_ref": "workspace/foundation/evidence/verification/evidence-producer-convergence-report.json"
+    },
+    "projection_payload_ref": "workspace/foundation/evidence/verification/foundation-report-projection.json"
+  },
+  "digest": "7aa83248c522135e498541cf222a7e79a68d585f5b1ac4f9ec2b6ac848394097",
+  "signature": {
+    "status": "UNSIGNED",
+    "key_id": null,
+    "value": null,
+    "reason": "Cryptographic signing is not materialized yet. Canonical digest is the active integrity anchor."
+  },
+  "claim_boundary": "Foundation report evidence claims only the materialized repository-level foundation verification status, capability execution summary, decision quality readout, and evidence convergence snapshot captured at generation time."
+}

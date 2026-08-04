@@ -1,0 +1,67 @@
+{
+  "view_id": "governance-view:claims:9029fe0923dc665d",
+  "view_digest": "9029fe0923dc665d12b1327f4d2ee80cae20955c577af25d654e0e6e80f9d03a",
+  "view_kind": "claims",
+  "source_session_id": "governance-session:e53ffa9a0a13fb8a",
+  "source_session_digest": "e53ffa9a0a13fb8a349a132ab0d9c9d216961eaa4f6da3790b10aa2f6a09740d",
+  "source_session_lineage_digest": "4cb86da3e09791f433eddf60956af3eff7e905a726b6a52b09531e1172a34064",
+  "source_claims_digest": "433336daf73bb99397367671d897c66e87dde59ff3861c2d31ec5ace795c8012",
+  "status": "PASS",
+  "claim_count": 8,
+  "violated_law_count": 0,
+  "laws_passed": 8,
+  "laws_failed": 0,
+  "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+  "proof_strength": "proof-centric",
+  "claims": [
+    {
+      "id": "certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5",
+      "title": "Observed graph topology must be projected only from execution chain facts, and declared topology must remain registry-derived.",
+      "status": "PASS",
+      "digest": "4b757aa63f4d57a592acff5436c49235301a409a1a62babce578bfd25cfe47c4"
+    },
+    {
+      "id": "certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc",
+      "title": "Projection digest must remain content-addressed and match canonical projection content.",
+      "status": "PASS",
+      "digest": "1e45b26a3e9a87cc7a0681e2fb11453a6b8f3e003c93b9b6aca3e2a37c8b3c0b"
+    },
+    {
+      "id": "certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d",
+      "title": "Serializer round-trip must preserve projection digest and domain identity.",
+      "status": "PASS",
+      "digest": "8d6fead981547f3dfde63cdb7db4f810a9a3883e02b05f106e7f3b58305b0d62"
+    },
+    {
+      "id": "certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a",
+      "title": "Projection identity must remain unchanged across equivalent storage representations and locations.",
+      "status": "PASS",
+      "digest": "a2738fe21229452ad4cb97594d31cdf767643ab4c8b980a9a674631efd093e61"
+    },
+    {
+      "id": "certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7",
+      "title": "Replay evidence must pass and remain causally aligned with the materialized ExecutionPlanProjection.",
+      "status": "PASS",
+      "digest": "2754ec95cb96cfb7ffe990678b840091dec82c4bfc116e40787d5ed2adcfab66"
+    },
+    {
+      "id": "certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502",
+      "title": "Projection digest must remain repeatable across recomputation, serializer round-trip, key-order variation, and generated_at mutation.",
+      "status": "PASS",
+      "digest": "206c11421fece50230116d481c57144d88edbab5357893dded9b70fb8e722b08"
+    },
+    {
+      "id": "certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e",
+      "title": "Governed modules must respect constitutional dependency boundaries and repeatable repository discovery.",
+      "status": "PASS",
+      "digest": "612ec33aa4d56e7e8638b1b25de52639cdc95a18784277c4c18f86afa2bf4ea4"
+    },
+    {
+      "id": "certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20",
+      "title": "Constitution proof digest must remain identical across repeated evaluations for the same canonical input.",
+      "status": "PASS",
+      "digest": "dea9721568839c208fccf9a316977a65ab7c7326ca8547d02a9c19408e2b0df1"
+    }
+  ],
+  "view_boundary": "Governance claims view is the application-facing projection of digest-addressed constitutional claims. It remains safe for reporting and dashboard consumers."
+}

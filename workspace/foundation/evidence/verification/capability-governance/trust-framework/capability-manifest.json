@@ -1,0 +1,24 @@
+{
+  "capability_id": "trust-framework",
+  "manifest_ref": "workspace/capabilities/trust-framework/definition/capability.yaml",
+  "manifest_version": "1.0.0",
+  "capability_version": "0.1.0",
+  "stability": "stable",
+  "lifecycle_stage": "experimental",
+  "governance_status": "VALID",
+  "owner": null,
+  "owner_requirement_status": "OPTIONAL",
+  "runtime_ref": "workspace/capabilities/trust-framework/implementation/service.ts",
+  "planner_ref": null,
+  "composer_ref": null,
+  "verification_ref": null,
+  "declared_exports": [
+    "TrustFramework",
+    "TrustFrameworkCatalog",
+    "TrustFrameworkProvider",
+    "TrustSignatureProvider",
+    "TrustSignatureProviderSPI",
+    "TrustVerificationProfile"
+  ],
+  "artifact_boundary": "Capability manifest projection freezes the capability identity, ownership, lifecycle, and implementation entrypoints as governance-readable evidence without changing the canonical capability manifest."
+}

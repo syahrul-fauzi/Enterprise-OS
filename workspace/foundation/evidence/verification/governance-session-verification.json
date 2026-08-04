@@ -1,0 +1,51 @@
+{
+  "report_version": "1.0.0",
+  "report_digest": "c4e6eab5ed584840fd6bbb65615397f3475178d2ae712f3b34c315c2c9e41d26",
+  "summary": {
+    "provenance_completeness_status": "PASS",
+    "evidence_chain_status": "PASS",
+    "report_lineage_status": "PASS",
+    "read_model_projection_status": "PASS",
+    "attestation_event_stream_status": "PASS",
+    "attestation_lifecycle_readiness_status": "PASS",
+    "overall_status": "PASS"
+  },
+  "session": {
+    "session_id": "governance-session:e53ffa9a0a13fb8a",
+    "session_status": "COMPLETED",
+    "execution_scope": "verify-foundation",
+    "session_digest": "e53ffa9a0a13fb8a349a132ab0d9c9d216961eaa4f6da3790b10aa2f6a09740d",
+    "session_projection_digest": "a3f5dda1914fd48d439498adbeec23e7eac50cf2a2c157ced91f943cb772d13d",
+    "law_result_count": 8,
+    "evidence_package_count": 8,
+    "certificate_count": 8,
+    "attestation_event_count": 16,
+    "read_model_count": 5,
+    "attestation_event_types": [
+      "AttestationCreated",
+      "AttestationVerified"
+    ],
+    "supported_attestation_event_types": [
+      "AttestationCreated",
+      "AttestationVerified",
+      "AttestationExpired",
+      "AttestationRevoked",
+      "AttestationSuperseded"
+    ],
+    "attestation_terminal_event_count": 0
+  },
+  "completeness": {
+    "started_at_present": true,
+    "completed_at_present": true,
+    "constitution_present": true,
+    "trust_context_present": true,
+    "inputs_present": true,
+    "law_results_present": true,
+    "evidence_packages_present": true,
+    "certificates_present": true,
+    "attestations_present": true,
+    "reports_present": true,
+    "read_models_present": true
+  },
+  "claim_boundary": "Governance session verification proves that the provenance aggregate is complete enough to serve as the lifecycle single source of truth for governance execution. It validates the presence of constitutional inputs, trust context, evidence-chain digests, report lineage, attestation events, and projected read-model outputs without changing the underlying domain model."
+}

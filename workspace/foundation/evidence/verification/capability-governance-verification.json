@@ -1,0 +1,21 @@
+{
+  "report_version": "1.0.0",
+  "report_digest": "1bfb6d0e0a4464f991798c030b9b66a8e054cfc5e90351b240b9a7fad9f5411c",
+  "summary": {
+    "manifest_projection_status": "PASS",
+    "dependency_projection_status": "PASS",
+    "dependency_class_policy_status": "PASS",
+    "contract_projection_status": "PASS",
+    "compatibility_governance_status": "PASS",
+    "compatibility_score": 100,
+    "system_dependency_count": 3,
+    "unknown_dependency_class_count": 0,
+    "unresolved_dependency_count": 0,
+    "unresolved_contract_requirement_count": 0,
+    "contract_drift_count": 0,
+    "migration_required_count": 0,
+    "overall_status": "PASS"
+  },
+  "capability_count": 16,
+  "claim_boundary": "Capability governance verification proves that each capability has a projected manifest, dependency surface, version surface, and contract surface that can be audited without architectural guesswork."
+}

@@ -1,0 +1,43 @@
+{
+  "capability_id": "api-platform",
+  "provided_contract_versions": [],
+  "required_contract_ranges": [
+    {
+      "contract_name": "GovernanceEvidenceProvider",
+      "range": ">=1 <2",
+      "compatible_providers": [
+        {
+          "capability_id": "governance-evidence",
+          "version": "1.0.0"
+        }
+      ],
+      "provider_resolution_status": "DETERMINISTIC",
+      "range_policy_status": "PINNED_MAJOR",
+      "status": "PASS"
+    },
+    {
+      "contract_name": "GovernanceReadModelProvider",
+      "range": ">=1 <2",
+      "compatible_providers": [
+        {
+          "capability_id": "governance-read-model",
+          "version": "1.0.0"
+        }
+      ],
+      "provider_resolution_status": "DETERMINISTIC",
+      "range_policy_status": "PINNED_MAJOR",
+      "status": "PASS"
+    }
+  ],
+  "compatibility": {
+    "total_required_contract_count": 2,
+    "compatible_required_contract_count": 2,
+    "unresolved_required_contract_count": 0,
+    "ambiguous_required_contract_count": 0,
+    "unbounded_required_contract_count": 0,
+    "compatibility_status": "PASS",
+    "contract_drift_status": "NONE",
+    "migration_required": false
+  },
+  "artifact_boundary": "Capability contracts projection freezes the provided and required contract surface together with resolved provider compatibility so capability evolution remains auditable and deterministic."
+}

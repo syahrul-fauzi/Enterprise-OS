@@ -1,0 +1,22 @@
+{
+  "report_version": "1.0.0",
+  "report_digest": "9ccd7a757c8ce05c6122d88898f4207ee6b6ddfd17f6a16f2fdb4d43aeeb9c74",
+  "summary": {
+    "category_completeness_status": "PASS",
+    "duplicate_type_status": "PASS",
+    "read_model_contract_status": "PASS",
+    "report_vocabulary_status": "PASS",
+    "overall_status": "PASS"
+  },
+  "catalog": {
+    "evidence_type_count": 3,
+    "law_type_count": 8,
+    "package_type_count": 2,
+    "certificate_type_count": 2,
+    "policy_type_count": 4,
+    "read_model_type_count": 5,
+    "report_type_count": 8,
+    "duplicate_type_ids": []
+  },
+  "claim_boundary": "Governance catalog verification proves that canonical governance vocabulary is present, unique, and complete enough to prevent semantic drift across reports, read models, policies, and evidence packaging."
+}

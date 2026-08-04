@@ -1,0 +1,1054 @@
+{
+  "graph_id": "enterprise-specification-artifact-graph",
+  "generated_at": "2026-08-03T15:33:51.449Z",
+  "registry_ref": "enterprise/specifications/specification-registry.yaml",
+  "summary": {
+    "artifact_count": 50,
+    "edge_count": 125
+  },
+  "artifacts": [
+    {
+      "artifact_id": "ADR-0009",
+      "artifact_type": "ADR",
+      "title": "Enterprise Control Graph Decision Artifacts",
+      "status": "Accepted",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/decisions/adr/ADR-0009-enterprise-control-graph-decision-artifacts.md",
+      "depends_on": [],
+      "implements": [],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "ADR-0010",
+      "artifact_type": "ADR",
+      "title": "Closed-loop Decision Architecture",
+      "status": "Accepted",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/decisions/adr/ADR-0010-closed-loop-decision-architecture.md",
+      "depends_on": [],
+      "implements": [],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "ADR-0011",
+      "artifact_type": "ADR",
+      "title": "Platform Consolidation Runtime Layering",
+      "status": "Accepted",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/decisions/adr/ADR-0011-platform-consolidation-runtime-layering.md",
+      "depends_on": [],
+      "implements": [],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "ADR-0012",
+      "artifact_type": "ADR",
+      "title": "Control Plane Dependency Inversion",
+      "status": "Accepted",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/decisions/adr/ADR-0012-control-plane-dependency-inversion.md",
+      "depends_on": [],
+      "implements": [],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "RFC-0001",
+      "artifact_type": "RFC",
+      "title": "Specification Meta-Model",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md",
+      "depends_on": [
+        "ADR-0009",
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-runtime-contracts-models"
+      ],
+      "verified_by": [
+        "CONF-0001"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json",
+        "workspace/foundation/evidence/verification/specification-vocabulary-audit.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "RFC-0002",
+      "artifact_type": "RFC",
+      "title": "Enterprise Graph Navigation API",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/rfc/RFC-0002-enterprise-graph-navigation-api.md",
+      "depends_on": [
+        "ADR-0009",
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012",
+        "RFC-0001"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-control-graph-reader-spi"
+      ],
+      "verified_by": [
+        "CONF-0002"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "RFC-0003",
+      "artifact_type": "RFC",
+      "title": "Evaluator SPI",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/rfc/RFC-0003-evaluator-spi.md",
+      "depends_on": [
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012",
+        "RFC-0001",
+        "RFC-0002"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-evaluator-plugin",
+        "CONTRACT-evaluator-registry-spi"
+      ],
+      "verified_by": [
+        "CONF-0003"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "RFC-0004",
+      "artifact_type": "RFC",
+      "title": "Decision Engine Specification",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/rfc/RFC-0004-decision-engine-specification.md",
+      "depends_on": [
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012",
+        "RFC-0001",
+        "RFC-0003"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-decision-model",
+        "CONTRACT-policy-engine-spi"
+      ],
+      "verified_by": [
+        "CONF-0004"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "RFC-0005",
+      "artifact_type": "RFC",
+      "title": "Decision Ledger Specification",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/rfc/RFC-0005-decision-ledger-specification.md",
+      "depends_on": [
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012",
+        "RFC-0001",
+        "RFC-0004"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-decision-writer-spi",
+        "CONTRACT-ledger-model",
+        "CONTRACT-ledger-reader-spi"
+      ],
+      "verified_by": [
+        "CONF-0005"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "RFC-0006",
+      "artifact_type": "RFC",
+      "title": "Automation Runtime SPI",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/rfc/RFC-0006-automation-runtime-spi.md",
+      "depends_on": [
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012",
+        "RFC-0001",
+        "RFC-0005"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-automation-model",
+        "CONTRACT-automation-runtime-spi"
+      ],
+      "verified_by": [
+        "CONF-0006"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "RFC-0007",
+      "artifact_type": "RFC",
+      "title": "Evidence Artifact Model",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/rfc/RFC-0007-evidence-artifact-model.md",
+      "depends_on": [
+        "ADR-0009",
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012",
+        "RFC-0001"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-canonical-evidence-artifact"
+      ],
+      "verified_by": [
+        "CONF-0007"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "RFC-0010",
+      "artifact_type": "RFC",
+      "title": "Decision Object Model",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/rfc/RFC-0010-decision-object-model.md",
+      "depends_on": [
+        "ADR-0009",
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012",
+        "RFC-0001",
+        "RFC-0004",
+        "RFC-0005"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-decision-model",
+        "CONTRACT-ledger-model"
+      ],
+      "verified_by": [
+        "CONF-0010"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONF-0001",
+      "artifact_type": "CONF",
+      "title": "Specification Meta-Model Conformance",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/conformance/CONF-0001-specification-meta-model-conformance.md",
+      "depends_on": [
+        "RFC-0001"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "TEST-runtime-contracts"
+      ],
+      "verified_by": [],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json",
+        "workspace/foundation/evidence/verification/specification-vocabulary-audit.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONF-0002",
+      "artifact_type": "CONF",
+      "title": "Enterprise Graph Navigation Conformance",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/conformance/CONF-0002-enterprise-graph-navigation-conformance.md",
+      "depends_on": [
+        "RFC-0002"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "TEST-enterprise-query-runtime"
+      ],
+      "verified_by": [],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONF-0003",
+      "artifact_type": "CONF",
+      "title": "Evaluator SPI Conformance",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/conformance/CONF-0003-evaluator-spi-conformance.md",
+      "depends_on": [
+        "RFC-0003",
+        "SPEC-0101",
+        "SPEC-0102",
+        "SPEC-0103",
+        "SPEC-0104"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "TEST-runtime-contracts"
+      ],
+      "verified_by": [],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONF-0004",
+      "artifact_type": "CONF",
+      "title": "Decision Engine Conformance",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/conformance/CONF-0004-decision-engine-conformance.md",
+      "depends_on": [
+        "RFC-0004"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "TEST-runtime-contracts"
+      ],
+      "verified_by": [],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONF-0005",
+      "artifact_type": "CONF",
+      "title": "Decision Ledger Conformance",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/conformance/CONF-0005-decision-ledger-conformance.md",
+      "depends_on": [
+        "RFC-0005"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "TEST-runtime-contracts"
+      ],
+      "verified_by": [],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONF-0006",
+      "artifact_type": "CONF",
+      "title": "Automation Runtime Conformance",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/conformance/CONF-0006-automation-runtime-conformance.md",
+      "depends_on": [
+        "RFC-0006"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "TEST-runtime-contracts"
+      ],
+      "verified_by": [],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONF-0007",
+      "artifact_type": "CONF",
+      "title": "Evidence Artifact Model Conformance",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/conformance/CONF-0007-evidence-artifact-model-conformance.md",
+      "depends_on": [
+        "RFC-0007"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "TEST-canonical-evidence-artifact"
+      ],
+      "verified_by": [],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONF-0010",
+      "artifact_type": "CONF",
+      "title": "Decision Object Model Conformance",
+      "status": "Conformant",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/conformance/CONF-0010-decision-object-model-conformance.md",
+      "depends_on": [
+        "RFC-0010",
+        "SPEC-0105",
+        "SPEC-0106",
+        "SPEC-0107",
+        "SPEC-0108",
+        "SPEC-0109"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "TEST-runtime-contracts"
+      ],
+      "verified_by": [],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "SPEC-0101",
+      "artifact_type": "SPEC",
+      "title": "Policy Evaluator Input",
+      "status": "Implemented",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/spec/SPEC-0101-policy-evaluator-input.yaml",
+      "depends_on": [
+        "RFC-0001",
+        "RFC-0003"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-evaluation-model"
+      ],
+      "verified_by": [
+        "CONF-0003"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "SPEC-0102",
+      "artifact_type": "SPEC",
+      "title": "Policy Evaluator Output",
+      "status": "Implemented",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/spec/SPEC-0102-policy-evaluator-output.yaml",
+      "depends_on": [
+        "RFC-0001",
+        "RFC-0003"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-evaluation-model"
+      ],
+      "verified_by": [
+        "CONF-0003"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "SPEC-0103",
+      "artifact_type": "SPEC",
+      "title": "Policy Rule Result",
+      "status": "Implemented",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/spec/SPEC-0103-policy-rule-result.yaml",
+      "depends_on": [
+        "RFC-0001",
+        "RFC-0003"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-evaluation-model"
+      ],
+      "verified_by": [
+        "CONF-0003"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "SPEC-0104",
+      "artifact_type": "SPEC",
+      "title": "Fact Reference",
+      "status": "Implemented",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/spec/SPEC-0104-fact-reference.yaml",
+      "depends_on": [
+        "RFC-0001",
+        "RFC-0003"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-shared-model"
+      ],
+      "verified_by": [
+        "CONF-0003"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "SPEC-0105",
+      "artifact_type": "SPEC",
+      "title": "Decision Input",
+      "status": "Implemented",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/spec/SPEC-0105-decision-input.yaml",
+      "depends_on": [
+        "RFC-0001",
+        "RFC-0010"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-decision-model"
+      ],
+      "verified_by": [
+        "CONF-0010"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "SPEC-0106",
+      "artifact_type": "SPEC",
+      "title": "Decision Recommendation",
+      "status": "Implemented",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/spec/SPEC-0106-decision-recommendation.yaml",
+      "depends_on": [
+        "RFC-0001",
+        "RFC-0010"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-decision-model"
+      ],
+      "verified_by": [
+        "CONF-0010"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "SPEC-0107",
+      "artifact_type": "SPEC",
+      "title": "Decision Output",
+      "status": "Implemented",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/spec/SPEC-0107-decision-output.yaml",
+      "depends_on": [
+        "RFC-0001",
+        "RFC-0010"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-decision-model"
+      ],
+      "verified_by": [
+        "CONF-0010"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "SPEC-0108",
+      "artifact_type": "SPEC",
+      "title": "Decision Confidence",
+      "status": "Implemented",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/spec/SPEC-0108-decision-confidence.yaml",
+      "depends_on": [
+        "RFC-0001",
+        "RFC-0010"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-shared-model"
+      ],
+      "verified_by": [
+        "CONF-0010"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "SPEC-0109",
+      "artifact_type": "SPEC",
+      "title": "Decision Outcome",
+      "status": "Implemented",
+      "owner": "Lead Enterprise Architect",
+      "source_ref": "enterprise/specifications/spec/SPEC-0109-decision-outcome.yaml",
+      "depends_on": [
+        "RFC-0001",
+        "RFC-0010"
+      ],
+      "implements": [],
+      "implemented_by": [
+        "CONTRACT-shared-model"
+      ],
+      "verified_by": [
+        "CONF-0010"
+      ],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+        "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+        "workspace/foundation/evidence/verification/specification-conformance-report.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONTRACT-runtime-contracts-models",
+      "artifact_type": "CONTRACT_SURFACE",
+      "title": "Runtime Contract Models",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/src/runtime-contracts/models",
+      "depends_on": [],
+      "implements": [
+        "RFC-0001"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONTRACT-control-graph-reader-spi",
+      "artifact_type": "CONTRACT_SURFACE",
+      "title": "Control Graph Reader SPI",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/src/runtime-contracts/spi/control-graph-reader.ts",
+      "depends_on": [],
+      "implements": [
+        "RFC-0002"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONTRACT-evaluation-model",
+      "artifact_type": "CONTRACT_SURFACE",
+      "title": "Evaluation Model",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/src/runtime-contracts/models/evaluation.ts",
+      "depends_on": [],
+      "implements": [
+        "SPEC-0101",
+        "SPEC-0102",
+        "SPEC-0103"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONTRACT-evaluator-plugin",
+      "artifact_type": "CONTRACT_SURFACE",
+      "title": "Evaluator Plugin Contract",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/src/runtime-contracts/plugins/evaluator-plugin.ts",
+      "depends_on": [],
+      "implements": [
+        "RFC-0003"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONTRACT-evaluator-registry-spi",
+      "artifact_type": "CONTRACT_SURFACE",
+      "title": "Evaluator Registry SPI",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/src/runtime-contracts/spi/evaluator-registry.ts",
+      "depends_on": [],
+      "implements": [
+        "RFC-0003"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONTRACT-decision-model",
+      "artifact_type": "CONTRACT_SURFACE",
+      "title": "Decision Model",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/src/runtime-contracts/models/decision.ts",
+      "depends_on": [],
+      "implements": [
+        "RFC-0004",
+        "RFC-0010",
+        "SPEC-0105",
+        "SPEC-0106",
+        "SPEC-0107"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONTRACT-policy-engine-spi",
+      "artifact_type": "CONTRACT_SURFACE",
+      "title": "Policy Engine SPI",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/src/runtime-contracts/spi/policy-engine.ts",
+      "depends_on": [],
+      "implements": [
+        "RFC-0004"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONTRACT-ledger-model",
+      "artifact_type": "CONTRACT_SURFACE",
+      "title": "Ledger Model",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/src/runtime-contracts/models/ledger.ts",
+      "depends_on": [],
+      "implements": [
+        "RFC-0005",
+        "RFC-0010"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONTRACT-decision-writer-spi",
+      "artifact_type": "CONTRACT_SURFACE",
+      "title": "Decision Writer SPI",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/src/runtime-contracts/spi/decision-writer.ts",
+      "depends_on": [],
+      "implements": [
+        "RFC-0005"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONTRACT-ledger-reader-spi",
+      "artifact_type": "CONTRACT_SURFACE",
+      "title": "Ledger Reader SPI",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/src/runtime-contracts/spi/ledger-reader.ts",
+      "depends_on": [],
+      "implements": [
+        "RFC-0005"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONTRACT-automation-model",
+      "artifact_type": "CONTRACT_SURFACE",
+      "title": "Automation Model",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/src/runtime-contracts/models/automation.ts",
+      "depends_on": [],
+      "implements": [
+        "RFC-0006"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONTRACT-automation-runtime-spi",
+      "artifact_type": "CONTRACT_SURFACE",
+      "title": "Automation Runtime SPI Contract",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/src/runtime-contracts/spi/automation-runtime.ts",
+      "depends_on": [],
+      "implements": [
+        "RFC-0006"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONTRACT-shared-model",
+      "artifact_type": "CONTRACT_SURFACE",
+      "title": "Shared Runtime Contract Model",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/src/runtime-contracts/models/shared.ts",
+      "depends_on": [],
+      "implements": [
+        "SPEC-0104",
+        "SPEC-0108",
+        "SPEC-0109"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "CONTRACT-canonical-evidence-artifact",
+      "artifact_type": "CONTRACT_SURFACE",
+      "title": "Canonical Evidence Artifact Runtime",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/src/evidence-artifact-runtime.ts",
+      "depends_on": [],
+      "implements": [
+        "RFC-0007"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "TEST-runtime-contracts",
+      "artifact_type": "TEST_SURFACE",
+      "title": "Runtime Contracts Test Suite",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts",
+      "depends_on": [],
+      "implements": [
+        "CONF-0001",
+        "CONF-0003",
+        "CONF-0004",
+        "CONF-0005",
+        "CONF-0006",
+        "CONF-0010"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "TEST-enterprise-query-runtime",
+      "artifact_type": "TEST_SURFACE",
+      "title": "Enterprise Query Runtime Test Suite",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/tests/enterprise-query-runtime.test.ts",
+      "depends_on": [],
+      "implements": [
+        "CONF-0002"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "TEST-canonical-evidence-artifact",
+      "artifact_type": "TEST_SURFACE",
+      "title": "Canonical Evidence Artifact Test Suite",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/packages/tooling/eos-cli/tests/evidence-artifact-runtime.test.ts",
+      "depends_on": [],
+      "implements": [
+        "CONF-0007"
+      ],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "PROJ-specification-conformance-projection",
+      "artifact_type": "PROJ",
+      "title": "Specification Conformance Projection",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+      "depends_on": [],
+      "implements": [],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [
+        "workspace/foundation/evidence/verification/specification-conformance-evidence.json"
+      ],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "EVIDENCE-specification-conformance-report",
+      "artifact_type": "EVIDENCE_ARTIFACT",
+      "title": "Legacy Specification Conformance Report",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/foundation/evidence/verification/specification-conformance-report.json",
+      "depends_on": [],
+      "implements": [],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "EVIDENCE-specification-conformance-evidence",
+      "artifact_type": "EVIDENCE_ARTIFACT",
+      "title": "Specification Conformance Evidence",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+      "depends_on": [],
+      "implements": [],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    },
+    {
+      "artifact_id": "EVIDENCE-specification-vocabulary-audit",
+      "artifact_type": "EVIDENCE_ARTIFACT",
+      "title": "Specification Vocabulary Audit",
+      "status": null,
+      "owner": null,
+      "source_ref": "workspace/foundation/evidence/verification/specification-vocabulary-audit.json",
+      "depends_on": [],
+      "implements": [],
+      "implemented_by": [],
+      "verified_by": [],
+      "evidence": [],
+      "supersedes": []
+    }
+  ]
+}

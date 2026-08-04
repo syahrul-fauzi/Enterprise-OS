@@ -1,0 +1,71 @@
+{
+  "report_version": "1.0.0",
+  "report_digest": "529943b779bf0227381c89768604d763e590210b1863d4a5873bc2eef663dc2b",
+  "execution_scope": "verify-foundation",
+  "planner_status": "APPLIED",
+  "delta_basis": {
+    "basis_version": "1.0.0",
+    "previous_source_session_digest": "5639e50cdeb8eca6b40ff39254a380e2f79270f662bf7abdba5bf4f8974934ce",
+    "previous_source_session_lineage_digest": "2b5c19540dc83f0b2fc900f2c9c16f46b3c905a6cfe9b4a9c8c6089a12e6c503",
+    "source_session_digest_changed": true,
+    "source_session_lineage_changed": true,
+    "delta_scope_status": "MATERIALIZATION_REQUIRED"
+  },
+  "summary": {
+    "reusable_node_count": 4,
+    "reused_node_count": 0,
+    "rematerialized_node_count": 5,
+    "execution_mode": "FULL_REMATERIALIZATION",
+    "reused_nodes": [],
+    "rematerialized_nodes": [
+      "summary_view",
+      "claims_view",
+      "health_view",
+      "dashboard_view",
+      "read_model_metrics"
+    ]
+  },
+  "decisions": [
+    {
+      "node_id": "summary_view",
+      "action": "REMATERIALIZE",
+      "lineage_digest": "63656f001711ca457c385417d9f55ee18775c174d817d81c04bfceb0ed0d31bb",
+      "previous_output_digest": "867104301617d89050562c1280f0a5fbb81f1627c6f5e82e0626af1a34be7678",
+      "current_output_digest": "b527cc9c4663ae76b138f69602f63816740f56f27ac683331f045e16dd7064fc",
+      "reason": "Summary view lineage changed or prior projection is unavailable, so the view is rematerialized."
+    },
+    {
+      "node_id": "claims_view",
+      "action": "REMATERIALIZE",
+      "lineage_digest": "84535bd106e1476f2b095291f0ed559409afac4f3f3de1fd53bb63daaff4ade1",
+      "previous_output_digest": "e671555d9f8c85df25e945d2b37ed88ee7ce82d70ab4173865a38cbae80a5201",
+      "current_output_digest": "9029fe0923dc665d12b1327f4d2ee80cae20955c577af25d654e0e6e80f9d03a",
+      "reason": "Claims view lineage changed or prior projection is unavailable, so the view is rematerialized."
+    },
+    {
+      "node_id": "health_view",
+      "action": "REMATERIALIZE",
+      "lineage_digest": "04d8de8694ecafc1c6e76e0b72fd4e82d88870e09ee0e5fe4cdb6b4aab1243ea",
+      "previous_output_digest": "c098eb44c81f7da1760a043dc1773c0bb259f727e29a75183494d36a805e5ba8",
+      "current_output_digest": "2b2c83b90f7edcd49fd0ceab4fc2951c5a08cc75cadfa909ec790cf1156f3c6b",
+      "reason": "Health view lineage changed or prior projection is unavailable, so the view is rematerialized."
+    },
+    {
+      "node_id": "dashboard_view",
+      "action": "REMATERIALIZE",
+      "lineage_digest": "12bad5de068ee71ceeb537c3126413a64d89fe95fa9a26e581d90ba70ca73fac",
+      "previous_output_digest": "4aa3d6e6e7761a652233adb20969993e4c848ef25860ee36da81b2837b54653d",
+      "current_output_digest": "32544d086861bd76af25c765ec0c31bb434b5e00e9138344f0eb8bcab43c4135",
+      "reason": "Dashboard view lineage changed or prior projection is unavailable, so the view is rematerialized."
+    },
+    {
+      "node_id": "read_model_metrics",
+      "action": "REMATERIALIZE",
+      "lineage_digest": "fd9b21fba4a57fe5f03f917f951b571eba3f047264dbbcf563bffcc7513e3664",
+      "previous_output_digest": "a79ed3a7be3908fc34948e657912b0f8322e6b574a3847c84eb2b15cc70ff0d4",
+      "current_output_digest": "69476f45fc70688237a9ed094ab9cd2d7801f2f09f710d3b4461f8fd89a4f3a1",
+      "reason": "Read-model metrics remain freshly materialized so timing and freshness evidence stay execution-accurate."
+    }
+  ],
+  "claim_boundary": "Read-model selective execution reuses semantic projections when the session lineage and source digests are unchanged, then rebinds them to the current session execution. It now makes metadata-only session deltas explicit so downstream schedulers can skip semantic rematerialization while keeping operational metrics fresh and truthful."
+}

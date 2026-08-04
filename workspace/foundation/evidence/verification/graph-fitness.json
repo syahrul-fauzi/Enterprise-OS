@@ -1,0 +1,15 @@
+{
+  "fitness_status": "PARTIAL",
+  "connectivity_ratio": 0.9884,
+  "execution_reachability_ratio": 0.8125,
+  "orphan_nodes": 2,
+  "dead_nodes": 3,
+  "dependency_cycles": 0,
+  "duplicate_capability_candidates": 0,
+  "planner_coverage_ratio": 1,
+  "runtime_coverage_ratio": 0.8125,
+  "verification_coverage_ratio": 0.8125,
+  "replay_stability_ratio": 1,
+  "core_delta_status": "UNVERIFIED",
+  "claim_boundary": "Graph fitness is computed from the shared Execution Graph view. Core delta remains unverified until substrate-diff evidence is materialized."
+}

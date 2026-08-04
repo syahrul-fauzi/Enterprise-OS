@@ -1,0 +1,273 @@
+{
+  "report_id": "specification-vocabulary-audit",
+  "generated_at": "2026-08-03T15:33:51.541Z",
+  "summary": {
+    "term_count": 10,
+    "pass_count": 10,
+    "warn_count": 0,
+    "fail_count": 0,
+    "duplicated_definition_count": 0,
+    "drift_status": "PASS"
+  },
+  "entries": [
+    {
+      "term": "Canonical Identity",
+      "anchor_paths": [
+        "enterprise/constitution/lexicon.yaml",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md"
+      ],
+      "anchor_surfaces": [
+        "enterprise/constitution/lexicon.yaml#L180"
+      ],
+      "definition_surfaces": [
+        "enterprise/constitution/lexicon.yaml#L180"
+      ],
+      "definition_surface_count_by_layer": {
+        "constitution": 1,
+        "models": 0,
+        "schema": 0,
+        "specifications": 0
+      },
+      "unauthorized_definition_surfaces": [],
+      "drift_status": "PASS",
+      "findings": []
+    },
+    {
+      "term": "Identity",
+      "anchor_paths": [
+        "enterprise/constitution/lexicon.yaml",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md"
+      ],
+      "anchor_surfaces": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L144"
+      ],
+      "definition_surfaces": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L144"
+      ],
+      "definition_surface_count_by_layer": {
+        "constitution": 0,
+        "models": 0,
+        "schema": 0,
+        "specifications": 1
+      },
+      "unauthorized_definition_surfaces": [],
+      "drift_status": "PASS",
+      "findings": []
+    },
+    {
+      "term": "Reference",
+      "anchor_paths": [
+        "enterprise/constitution/meta-model.md",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md"
+      ],
+      "anchor_surfaces": [
+        "enterprise/constitution/meta-model.md#L113",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L145",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L175",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L296"
+      ],
+      "definition_surfaces": [
+        "enterprise/constitution/meta-model.md#L113",
+        "enterprise/specifications/conformance/CONF-0001-specification-meta-model-conformance.md#L61",
+        "enterprise/specifications/conformance/CONF-0002-enterprise-graph-navigation-conformance.md#L58",
+        "enterprise/specifications/conformance/CONF-0003-evaluator-spi-conformance.md#L71",
+        "enterprise/specifications/conformance/CONF-0004-decision-engine-conformance.md#L60",
+        "enterprise/specifications/conformance/CONF-0005-decision-ledger-conformance.md#L61",
+        "enterprise/specifications/conformance/CONF-0006-automation-runtime-conformance.md#L60",
+        "enterprise/specifications/conformance/CONF-0007-evidence-artifact-model-conformance.md#L67",
+        "enterprise/specifications/conformance/CONF-0010-decision-object-model-conformance.md#L94",
+        "enterprise/specifications/conformance/CONF-TEMPLATE.md#L52",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L145",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L175",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L296",
+        "enterprise/specifications/rfc/RFC-0002-enterprise-graph-navigation-api.md#L129",
+        "enterprise/specifications/rfc/RFC-0003-evaluator-spi.md#L139",
+        "enterprise/specifications/rfc/RFC-0004-decision-engine-specification.md#L130",
+        "enterprise/specifications/rfc/RFC-0005-decision-ledger-specification.md#L129",
+        "enterprise/specifications/rfc/RFC-0006-automation-runtime-spi.md#L133",
+        "enterprise/specifications/rfc/RFC-0007-evidence-artifact-model.md#L135",
+        "enterprise/specifications/rfc/RFC-0010-decision-object-model.md#L159",
+        "enterprise/specifications/rfc/RFC-TEMPLATE.md#L84"
+      ],
+      "definition_surface_count_by_layer": {
+        "constitution": 1,
+        "models": 0,
+        "schema": 0,
+        "specifications": 20
+      },
+      "unauthorized_definition_surfaces": [],
+      "drift_status": "PASS",
+      "findings": []
+    },
+    {
+      "term": "Digest",
+      "anchor_paths": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md"
+      ],
+      "anchor_surfaces": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L146"
+      ],
+      "definition_surfaces": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L146"
+      ],
+      "definition_surface_count_by_layer": {
+        "constitution": 0,
+        "models": 0,
+        "schema": 0,
+        "specifications": 1
+      },
+      "unauthorized_definition_surfaces": [],
+      "drift_status": "PASS",
+      "findings": []
+    },
+    {
+      "term": "Snapshot",
+      "anchor_paths": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md"
+      ],
+      "anchor_surfaces": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L147"
+      ],
+      "definition_surfaces": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L147"
+      ],
+      "definition_surface_count_by_layer": {
+        "constitution": 0,
+        "models": 0,
+        "schema": 0,
+        "specifications": 1
+      },
+      "unauthorized_definition_surfaces": [],
+      "drift_status": "PASS",
+      "findings": []
+    },
+    {
+      "term": "Artifact",
+      "anchor_paths": [
+        "enterprise/constitution/meta-model.md",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md"
+      ],
+      "anchor_surfaces": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L151",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L190",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L191",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L210"
+      ],
+      "definition_surfaces": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L151",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L190",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L191",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L210"
+      ],
+      "definition_surface_count_by_layer": {
+        "constitution": 0,
+        "models": 0,
+        "schema": 0,
+        "specifications": 4
+      },
+      "unauthorized_definition_surfaces": [],
+      "drift_status": "PASS",
+      "findings": []
+    },
+    {
+      "term": "Evidence",
+      "anchor_paths": [
+        "enterprise/constitution/lexicon.yaml",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md"
+      ],
+      "anchor_surfaces": [
+        "enterprise/constitution/lexicon.yaml#L778",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L152"
+      ],
+      "definition_surfaces": [
+        "enterprise/constitution/lexicon.yaml#L778",
+        "enterprise/specifications/conformance/CONF-0001-specification-meta-model-conformance.md#L46",
+        "enterprise/specifications/conformance/CONF-0002-enterprise-graph-navigation-conformance.md#L43",
+        "enterprise/specifications/conformance/CONF-0003-evaluator-spi-conformance.md#L54",
+        "enterprise/specifications/conformance/CONF-0004-decision-engine-conformance.md#L45",
+        "enterprise/specifications/conformance/CONF-0005-decision-ledger-conformance.md#L46",
+        "enterprise/specifications/conformance/CONF-0006-automation-runtime-conformance.md#L45",
+        "enterprise/specifications/conformance/CONF-0007-evidence-artifact-model-conformance.md#L51",
+        "enterprise/specifications/conformance/CONF-0010-decision-object-model-conformance.md#L74",
+        "enterprise/specifications/conformance/CONF-TEMPLATE.md#L40",
+        "enterprise/specifications/conformance/CONFORMANCE-GOVERNANCE.md#L71",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L152",
+        "enterprise/specifications/specification-execution-specification.md#L343"
+      ],
+      "definition_surface_count_by_layer": {
+        "constitution": 1,
+        "models": 0,
+        "schema": 0,
+        "specifications": 12
+      },
+      "unauthorized_definition_surfaces": [],
+      "drift_status": "PASS",
+      "findings": []
+    },
+    {
+      "term": "Evaluation",
+      "anchor_paths": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md"
+      ],
+      "anchor_surfaces": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L153"
+      ],
+      "definition_surfaces": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L153"
+      ],
+      "definition_surface_count_by_layer": {
+        "constitution": 0,
+        "models": 0,
+        "schema": 0,
+        "specifications": 1
+      },
+      "unauthorized_definition_surfaces": [],
+      "drift_status": "PASS",
+      "findings": []
+    },
+    {
+      "term": "Decision",
+      "anchor_paths": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md"
+      ],
+      "anchor_surfaces": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L154",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L217"
+      ],
+      "definition_surfaces": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L154",
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L217"
+      ],
+      "definition_surface_count_by_layer": {
+        "constitution": 0,
+        "models": 0,
+        "schema": 0,
+        "specifications": 2
+      },
+      "unauthorized_definition_surfaces": [],
+      "drift_status": "PASS",
+      "findings": []
+    },
+    {
+      "term": "Action",
+      "anchor_paths": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md"
+      ],
+      "anchor_surfaces": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L155"
+      ],
+      "definition_surfaces": [
+        "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md#L155"
+      ],
+      "definition_surface_count_by_layer": {
+        "constitution": 0,
+        "models": 0,
+        "schema": 0,
+        "specifications": 1
+      },
+      "unauthorized_definition_surfaces": [],
+      "drift_status": "PASS",
+      "findings": []
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+{
+  "registry_version": "1.1.0",
+  "registry_digest": "1a7526f62ca3be837d2f70480e8be2fd289e9f10179c6645350dab01d517d7c8",
+  "summary": {
+    "total_contracts": 3,
+    "provider_bindings": 3,
+    "consumer_requirements": 3,
+    "satisfied_requirements": 3,
+    "unsatisfied_requirements": 0,
+    "multi_major_contracts": 0,
+    "pinned_consumer_requirements": 3,
+    "unbounded_consumer_requirements": 0,
+    "ambiguous_provider_bindings": 0,
+    "stable_contracts_with_multi_major": 0,
+    "overall_status": "PASS"
+  },
+  "contracts": [
+    {
+      "contract_name": "GovernanceEvidenceProvider",
+      "provider_count": 1,
+      "consumer_count": 1,
+      "declared_versions": [
+        "1.0.0"
+      ],
+      "declared_major_versions": [
+        1
+      ],
+      "stable_provider_count": 1,
+      "pinned_consumer_count": 1,
+      "unbounded_consumer_count": 0,
+      "ambiguous_consumer_count": 0,
+      "providers": [
+        {
+          "capability_id": "governance-evidence",
+          "version": "1.0.0",
+          "manifest_ref": "workspace/capabilities/governance-evidence/definition/capability.yaml",
+          "stability": "stable"
+        }
+      ],
+      "consumers": [
+        {
+          "capability_id": "api-platform",
+          "range": ">=1 <2",
+          "declared_dependency_ids": [
+            "evidence-registry",
+            "governance-evidence",
+            "governance-read-model",
+            "requirement-management",
+            "requirements-traceability-matrix",
+            "workflow-engine"
+          ],
+          "compatible_providers": [
+            {
+              "capability_id": "governance-evidence",
+              "version": "1.0.0"
+            }
+          ],
+          "compatible_provider_count": 1,
+          "provider_resolution_status": "DETERMINISTIC",
+          "range_policy_status": "PINNED_MAJOR",
+          "range_policy_detail": "Range \">=1 <2\" is pinned to major 1 with upper bound <2.",
+          "status": "PASS"
+        }
+      ],
+      "overall_status": "PASS"
+    },
+    {
+      "contract_name": "GovernanceReadModelProvider",
+      "provider_count": 1,
+      "consumer_count": 1,
+      "declared_versions": [
+        "1.0.0"
+      ],
+      "declared_major_versions": [
+        1
+      ],
+      "stable_provider_count": 1,
+      "pinned_consumer_count": 1,
+      "unbounded_consumer_count": 0,
+      "ambiguous_consumer_count": 0,
+      "providers": [
+        {
+          "capability_id": "governance-read-model",
+          "version": "1.0.0",
+          "manifest_ref": "workspace/capabilities/governance-read-model/definition/capability.yaml",
+          "stability": "stable"
+        }
+      ],
+      "consumers": [
+        {
+          "capability_id": "api-platform",
+          "range": ">=1 <2",
+          "declared_dependency_ids": [
+            "evidence-registry",
+            "governance-evidence",
+            "governance-read-model",
+            "requirement-management",
+            "requirements-traceability-matrix",
+            "workflow-engine"
+          ],
+          "compatible_providers": [
+            {
+              "capability_id": "governance-read-model",
+              "version": "1.0.0"
+            }
+          ],
+          "compatible_provider_count": 1,
+          "provider_resolution_status": "DETERMINISTIC",
+          "range_policy_status": "PINNED_MAJOR",
+          "range_policy_detail": "Range \">=1 <2\" is pinned to major 1 with upper bound <2.",
+          "status": "PASS"
+        }
+      ],
+      "overall_status": "PASS"
+    },
+    {
+      "contract_name": "TrustFrameworkProvider",
+      "provider_count": 1,
+      "consumer_count": 1,
+      "declared_versions": [
+        "1.0.0"
+      ],
+      "declared_major_versions": [
+        1
+      ],
+      "stable_provider_count": 1,
+      "pinned_consumer_count": 1,
+      "unbounded_consumer_count": 0,
+      "ambiguous_consumer_count": 0,
+      "providers": [
+        {
+          "capability_id": "trust-framework",
+          "version": "1.0.0",
+          "manifest_ref": "workspace/capabilities/trust-framework/definition/capability.yaml",
+          "stability": "stable"
+        }
+      ],
+      "consumers": [
+        {
+          "capability_id": "governance-evidence",
+          "range": ">=1 <2",
+          "declared_dependency_ids": [
+            "core-runtime",
+            "trust-framework"
+          ],
+          "compatible_providers": [
+            {
+              "capability_id": "trust-framework",
+              "version": "1.0.0"
+            }
+          ],
+          "compatible_provider_count": 1,
+          "provider_resolution_status": "DETERMINISTIC",
+          "range_policy_status": "PINNED_MAJOR",
+          "range_policy_detail": "Range \">=1 <2\" is pinned to major 1 with upper bound <2.",
+          "status": "PASS"
+        }
+      ],
+      "overall_status": "PASS"
+    }
+  ],
+  "claim_boundary": "Contract Version Registry is the audit projection of capability contract providers, consumer version ranges, and compatibility resolved through declared capability dependencies. It also classifies whether consumer ranges are major-pinned or open-ended and whether provider resolution remains deterministic as contracts evolve."
+}

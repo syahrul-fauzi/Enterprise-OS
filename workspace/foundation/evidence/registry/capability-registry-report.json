@@ -1,0 +1,845 @@
+{
+  "summary": {
+    "total_capabilities": 16,
+    "with_owner": 1,
+    "owner_missing": 15,
+    "invalid_capabilities": 3,
+    "duplicate_candidates": 0,
+    "lifecycle_counts": {
+      "experimental": 12,
+      "reusable": 1,
+      "core": 3
+    },
+    "declared_products": 3
+  },
+  "capabilities": [
+    {
+      "id": "agent-orchestration",
+      "name": "Agent Orchestration",
+      "provided_capabilities": [],
+      "manifest_version": "1.0.0",
+      "version": "0.1.0",
+      "owner": "unassigned",
+      "status": "ACTIVE",
+      "stability": "experimental",
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
+      "owner_requirement_status": "OPTIONAL",
+      "introduced": null,
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/agent-orchestration/definition/capability.yaml",
+      "runtime_ref": "workspace/capabilities/agent-orchestration/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": null,
+      "verification_ref": "workspace/capabilities/agent-orchestration/tests",
+      "declared_exports": [],
+      "declared_dependencies": [],
+      "dependency_policy": {
+        "allowed_dependencies": [],
+        "forbidden_dependencies": []
+      },
+      "consumers": [],
+      "declared_consumers": [],
+      "provided_contract_versions": [],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [],
+      "product_reach_ratio": 0,
+      "reachable_from_products": [
+        "lawyershub"
+      ],
+      "reachability_status": "REACHABLE",
+      "implementation_files": 7,
+      "test_files": 1,
+      "owner_missing": true,
+      "discovery_signature": [
+        "agent",
+        "orchestration"
+      ]
+    },
+    {
+      "id": "api-platform",
+      "name": "API Platform",
+      "provided_capabilities": [],
+      "manifest_version": "1.0.0",
+      "version": "0.1.0",
+      "owner": "unassigned",
+      "status": "ACTIVE",
+      "stability": "stable",
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
+      "owner_requirement_status": "OPTIONAL",
+      "introduced": null,
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/api-platform/definition/capability.yaml",
+      "runtime_ref": "workspace/capabilities/api-platform/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": null,
+      "verification_ref": "workspace/capabilities/api-platform/tests",
+      "declared_exports": [
+        "ApiPlatformDescriptor",
+        "ApiPlatformQueryInput",
+        "ApiPlatformQueryOutput"
+      ],
+      "declared_dependencies": [
+        "evidence-registry",
+        "governance-evidence",
+        "governance-read-model",
+        "requirement-management",
+        "requirements-traceability-matrix",
+        "workflow-engine"
+      ],
+      "dependency_policy": {
+        "allowed_dependencies": [
+          "evidence-registry",
+          "governance-evidence",
+          "governance-read-model",
+          "requirement-management",
+          "requirements-traceability-matrix",
+          "workflow-engine"
+        ],
+        "forbidden_dependencies": [
+          "core-runtime",
+          "trust-framework"
+        ]
+      },
+      "consumers": [],
+      "declared_consumers": [],
+      "provided_contract_versions": [],
+      "required_contract_ranges": [
+        {
+          "name": "GovernanceEvidenceProvider",
+          "range": ">=1 <2"
+        },
+        {
+          "name": "GovernanceReadModelProvider",
+          "range": ">=1 <2"
+        }
+      ],
+      "empirically_verified_products": [],
+      "product_reach_ratio": 0,
+      "reachable_from_products": [
+        "lawyershub"
+      ],
+      "reachability_status": "REACHABLE",
+      "implementation_files": 8,
+      "test_files": 1,
+      "owner_missing": true,
+      "discovery_signature": [
+        "api",
+        "platform"
+      ]
+    },
+    {
+      "id": "connector-ecosystem",
+      "name": "Connector Ecosystem",
+      "provided_capabilities": [],
+      "manifest_version": "1.0.0",
+      "version": "0.1.0",
+      "owner": "unassigned",
+      "status": "ACTIVE",
+      "stability": "experimental",
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
+      "owner_requirement_status": "OPTIONAL",
+      "introduced": null,
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/connector-ecosystem/definition/capability.yaml",
+      "runtime_ref": "workspace/capabilities/connector-ecosystem/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": null,
+      "verification_ref": "workspace/capabilities/connector-ecosystem/tests",
+      "declared_exports": [],
+      "declared_dependencies": [],
+      "dependency_policy": {
+        "allowed_dependencies": [],
+        "forbidden_dependencies": []
+      },
+      "consumers": [],
+      "declared_consumers": [],
+      "provided_contract_versions": [],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [],
+      "product_reach_ratio": 0,
+      "reachable_from_products": [
+        "lawyershub"
+      ],
+      "reachability_status": "REACHABLE",
+      "implementation_files": 5,
+      "test_files": 1,
+      "owner_missing": true,
+      "discovery_signature": [
+        "connector",
+        "ecosystem"
+      ]
+    },
+    {
+      "id": "evidence-registry",
+      "name": "Evidence Registry",
+      "provided_capabilities": [],
+      "manifest_version": "1.0.0",
+      "version": "0.1.0",
+      "owner": "unassigned",
+      "status": "ACTIVE",
+      "stability": "experimental",
+      "lifecycle_stage": "reusable",
+      "governance_status": "INVALID",
+      "owner_requirement_status": "REQUIRED_MISSING",
+      "introduced": null,
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/evidence-registry/definition/capability.yaml",
+      "runtime_ref": "workspace/capabilities/evidence-registry/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": null,
+      "verification_ref": "workspace/capabilities/evidence-registry/tests",
+      "declared_exports": [],
+      "declared_dependencies": [],
+      "dependency_policy": {
+        "allowed_dependencies": [],
+        "forbidden_dependencies": []
+      },
+      "consumers": [
+        "ilc",
+        "lawyershub"
+      ],
+      "declared_consumers": [],
+      "provided_contract_versions": [],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [
+        "lawyershub"
+      ],
+      "product_reach_ratio": 0.6667,
+      "reachable_from_products": [
+        "lawyershub"
+      ],
+      "reachability_status": "REACHABLE",
+      "implementation_files": 9,
+      "test_files": 1,
+      "owner_missing": true,
+      "discovery_signature": [
+        "evidence",
+        "registry"
+      ]
+    },
+    {
+      "id": "governance-evidence",
+      "name": "Governance Evidence",
+      "provided_capabilities": [],
+      "manifest_version": "1.0.0",
+      "version": "0.1.0",
+      "owner": "unassigned",
+      "status": "ACTIVE",
+      "stability": "stable",
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
+      "owner_requirement_status": "OPTIONAL",
+      "introduced": null,
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/governance-evidence/definition/capability.yaml",
+      "runtime_ref": "workspace/capabilities/governance-evidence/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": null,
+      "verification_ref": null,
+      "declared_exports": [
+        "GovernanceEvidenceArtifactCatalog",
+        "GovernanceEvidenceArtifactKind",
+        "GovernanceEvidenceProvider",
+        "GovernanceSession"
+      ],
+      "declared_dependencies": [
+        "core-runtime",
+        "trust-framework"
+      ],
+      "dependency_policy": {
+        "allowed_dependencies": [
+          "core-runtime",
+          "trust-framework"
+        ],
+        "forbidden_dependencies": [
+          "api-platform",
+          "governance-read-model"
+        ]
+      },
+      "consumers": [],
+      "declared_consumers": [
+        "api-platform",
+        "governance-read-model"
+      ],
+      "provided_contract_versions": [
+        {
+          "name": "GovernanceEvidenceProvider",
+          "version": "1.0.0"
+        }
+      ],
+      "required_contract_ranges": [
+        {
+          "name": "TrustFrameworkProvider",
+          "range": ">=1 <2"
+        }
+      ],
+      "empirically_verified_products": [],
+      "product_reach_ratio": 0,
+      "reachable_from_products": [],
+      "reachability_status": "UNREACHABLE",
+      "implementation_files": 5,
+      "test_files": 0,
+      "owner_missing": true,
+      "discovery_signature": [
+        "evidence",
+        "governance"
+      ]
+    },
+    {
+      "id": "governance-read-model",
+      "name": "Governance Read Model",
+      "provided_capabilities": [],
+      "manifest_version": "1.0.0",
+      "version": "0.1.0",
+      "owner": "unassigned",
+      "status": "ACTIVE",
+      "stability": "stable",
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
+      "owner_requirement_status": "OPTIONAL",
+      "introduced": null,
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/governance-read-model/definition/capability.yaml",
+      "runtime_ref": "workspace/capabilities/governance-read-model/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": null,
+      "verification_ref": null,
+      "declared_exports": [
+        "GovernanceClaimsView",
+        "GovernanceDashboardView",
+        "GovernanceHealthView",
+        "GovernanceReadModelCatalog",
+        "GovernanceReadModelProvider",
+        "GovernanceSummaryView"
+      ],
+      "declared_dependencies": [
+        "core-runtime",
+        "governance-evidence"
+      ],
+      "dependency_policy": {
+        "allowed_dependencies": [
+          "core-runtime",
+          "governance-evidence"
+        ],
+        "forbidden_dependencies": [
+          "api-platform",
+          "trust-framework"
+        ]
+      },
+      "consumers": [],
+      "declared_consumers": [
+        "api-platform"
+      ],
+      "provided_contract_versions": [
+        {
+          "name": "GovernanceReadModelProvider",
+          "version": "1.0.0"
+        }
+      ],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [],
+      "product_reach_ratio": 0,
+      "reachable_from_products": [],
+      "reachability_status": "UNREACHABLE",
+      "implementation_files": 5,
+      "test_files": 0,
+      "owner_missing": true,
+      "discovery_signature": [
+        "governance",
+        "model",
+        "read"
+      ]
+    },
+    {
+      "id": "identity",
+      "name": "Identity",
+      "provided_capabilities": [
+        "authentication",
+        "authorization",
+        "session"
+      ],
+      "manifest_version": "1.0.0",
+      "version": "1.0.0",
+      "owner": "identity-domain",
+      "status": "ACTIVE",
+      "stability": "experimental",
+      "lifecycle_stage": "core",
+      "governance_status": "VALID",
+      "owner_requirement_status": "REQUIRED_PRESENT",
+      "introduced": "2026-08-02",
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/identity/capability.yaml",
+      "runtime_ref": null,
+      "planner_ref": null,
+      "composer_ref": null,
+      "verification_ref": null,
+      "declared_exports": [],
+      "declared_dependencies": [],
+      "dependency_policy": {
+        "allowed_dependencies": [],
+        "forbidden_dependencies": []
+      },
+      "consumers": [
+        "ilc",
+        "lawyershub",
+        "services-id"
+      ],
+      "declared_consumers": [],
+      "provided_contract_versions": [],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [
+        "lawyershub"
+      ],
+      "product_reach_ratio": 1,
+      "reachable_from_products": [],
+      "reachability_status": "REACHABLE",
+      "implementation_files": 0,
+      "test_files": 0,
+      "owner_missing": false,
+      "discovery_signature": [
+        "and",
+        "authentication",
+        "authorization",
+        "enterprise",
+        "for",
+        "identity",
+        "including",
+        "management",
+        "product",
+        "provide",
+        "session"
+      ]
+    },
+    {
+      "id": "knowledge-graph",
+      "name": "Knowledge Graph",
+      "provided_capabilities": [],
+      "manifest_version": "1.0.0",
+      "version": "0.1.0",
+      "owner": "unassigned",
+      "status": "ACTIVE",
+      "stability": "experimental",
+      "lifecycle_stage": "core",
+      "governance_status": "INVALID",
+      "owner_requirement_status": "REQUIRED_MISSING",
+      "introduced": null,
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/knowledge-graph/definition/capability.yaml",
+      "runtime_ref": "workspace/capabilities/knowledge-graph/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": null,
+      "verification_ref": "workspace/capabilities/knowledge-graph/tests",
+      "declared_exports": [],
+      "declared_dependencies": [],
+      "dependency_policy": {
+        "allowed_dependencies": [],
+        "forbidden_dependencies": []
+      },
+      "consumers": [
+        "ilc",
+        "lawyershub",
+        "services-id"
+      ],
+      "declared_consumers": [],
+      "provided_contract_versions": [],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [
+        "lawyershub"
+      ],
+      "product_reach_ratio": 1,
+      "reachable_from_products": [
+        "lawyershub"
+      ],
+      "reachability_status": "REACHABLE",
+      "implementation_files": 5,
+      "test_files": 1,
+      "owner_missing": true,
+      "discovery_signature": [
+        "graph",
+        "knowledge"
+      ]
+    },
+    {
+      "id": "legal-case",
+      "name": "Case Management",
+      "provided_capabilities": [],
+      "manifest_version": "1.0.0",
+      "version": "0.1.0",
+      "owner": "unassigned",
+      "status": "ACTIVE",
+      "stability": "experimental",
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
+      "owner_requirement_status": "OPTIONAL",
+      "introduced": null,
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/legal-case/definition/capability.yaml",
+      "runtime_ref": "workspace/capabilities/legal-case/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": "workspace/capabilities/legal-case/composition",
+      "verification_ref": null,
+      "declared_exports": [],
+      "declared_dependencies": [],
+      "dependency_policy": {
+        "allowed_dependencies": [],
+        "forbidden_dependencies": []
+      },
+      "consumers": [
+        "lawyershub"
+      ],
+      "declared_consumers": [],
+      "provided_contract_versions": [],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [
+        "lawyershub"
+      ],
+      "product_reach_ratio": 0.3333,
+      "reachable_from_products": [
+        "lawyershub"
+      ],
+      "reachability_status": "REACHABLE",
+      "implementation_files": 11,
+      "test_files": 0,
+      "owner_missing": true,
+      "discovery_signature": [
+        "case",
+        "legal",
+        "management"
+      ]
+    },
+    {
+      "id": "legal-document",
+      "name": "Legal Documents",
+      "provided_capabilities": [],
+      "manifest_version": "1.0.0",
+      "version": "0.1.0",
+      "owner": "unassigned",
+      "status": "ACTIVE",
+      "stability": "experimental",
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
+      "owner_requirement_status": "OPTIONAL",
+      "introduced": null,
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/legal-document/definition/capability.yaml",
+      "runtime_ref": "workspace/capabilities/legal-document/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": "workspace/capabilities/legal-document/composition",
+      "verification_ref": null,
+      "declared_exports": [],
+      "declared_dependencies": [],
+      "dependency_policy": {
+        "allowed_dependencies": [],
+        "forbidden_dependencies": []
+      },
+      "consumers": [
+        "lawyershub"
+      ],
+      "declared_consumers": [],
+      "provided_contract_versions": [],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [
+        "lawyershub"
+      ],
+      "product_reach_ratio": 0.3333,
+      "reachable_from_products": [],
+      "reachability_status": "REACHABLE",
+      "implementation_files": 11,
+      "test_files": 0,
+      "owner_missing": true,
+      "discovery_signature": [
+        "document",
+        "legal"
+      ]
+    },
+    {
+      "id": "observability",
+      "name": "Observability",
+      "provided_capabilities": [],
+      "manifest_version": "1.0.0",
+      "version": "0.1.0",
+      "owner": "unassigned",
+      "status": "ACTIVE",
+      "stability": "experimental",
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
+      "owner_requirement_status": "OPTIONAL",
+      "introduced": null,
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/observability/definition/capability.yaml",
+      "runtime_ref": "workspace/capabilities/observability/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": null,
+      "verification_ref": "workspace/capabilities/observability/tests",
+      "declared_exports": [],
+      "declared_dependencies": [],
+      "dependency_policy": {
+        "allowed_dependencies": [],
+        "forbidden_dependencies": []
+      },
+      "consumers": [],
+      "declared_consumers": [],
+      "provided_contract_versions": [],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [],
+      "product_reach_ratio": 0,
+      "reachable_from_products": [
+        "lawyershub"
+      ],
+      "reachability_status": "REACHABLE",
+      "implementation_files": 5,
+      "test_files": 1,
+      "owner_missing": true,
+      "discovery_signature": [
+        "observability"
+      ]
+    },
+    {
+      "id": "requirement-management",
+      "name": "Requirement Management",
+      "provided_capabilities": [],
+      "manifest_version": "1.0.0",
+      "version": "0.1.0",
+      "owner": "unassigned",
+      "status": "ACTIVE",
+      "stability": "experimental",
+      "lifecycle_stage": "core",
+      "governance_status": "INVALID",
+      "owner_requirement_status": "REQUIRED_MISSING",
+      "introduced": null,
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/requirement-management/definition/capability.yaml",
+      "runtime_ref": "workspace/capabilities/requirement-management/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": "workspace/capabilities/requirement-management/composition",
+      "verification_ref": "workspace/capabilities/requirement-management/tests",
+      "declared_exports": [],
+      "declared_dependencies": [],
+      "dependency_policy": {
+        "allowed_dependencies": [],
+        "forbidden_dependencies": []
+      },
+      "consumers": [
+        "ilc",
+        "lawyershub",
+        "services-id"
+      ],
+      "declared_consumers": [],
+      "provided_contract_versions": [],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [
+        "lawyershub"
+      ],
+      "product_reach_ratio": 1,
+      "reachable_from_products": [
+        "lawyershub"
+      ],
+      "reachability_status": "REACHABLE",
+      "implementation_files": 11,
+      "test_files": 1,
+      "owner_missing": true,
+      "discovery_signature": [
+        "management",
+        "requirement"
+      ]
+    },
+    {
+      "id": "requirements-traceability-matrix",
+      "name": "Requirements Traceability Matrix",
+      "provided_capabilities": [],
+      "manifest_version": "1.0.0",
+      "version": "0.1.0",
+      "owner": "unassigned",
+      "status": "ACTIVE",
+      "stability": "experimental",
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
+      "owner_requirement_status": "OPTIONAL",
+      "introduced": null,
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/requirements-traceability-matrix/definition/capability.yaml",
+      "runtime_ref": "workspace/capabilities/requirements-traceability-matrix/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": null,
+      "verification_ref": "workspace/capabilities/requirements-traceability-matrix/tests",
+      "declared_exports": [],
+      "declared_dependencies": [],
+      "dependency_policy": {
+        "allowed_dependencies": [],
+        "forbidden_dependencies": []
+      },
+      "consumers": [],
+      "declared_consumers": [],
+      "provided_contract_versions": [],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [],
+      "product_reach_ratio": 0,
+      "reachable_from_products": [
+        "lawyershub"
+      ],
+      "reachability_status": "REACHABLE",
+      "implementation_files": 9,
+      "test_files": 1,
+      "owner_missing": true,
+      "discovery_signature": [
+        "matrix",
+        "requirement",
+        "traceability"
+      ]
+    },
+    {
+      "id": "security-hardening",
+      "name": "Security Hardening",
+      "provided_capabilities": [],
+      "manifest_version": "1.0.0",
+      "version": "0.1.0",
+      "owner": "unassigned",
+      "status": "ACTIVE",
+      "stability": "experimental",
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
+      "owner_requirement_status": "OPTIONAL",
+      "introduced": null,
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/security-hardening/definition/capability.yaml",
+      "runtime_ref": "workspace/capabilities/security-hardening/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": null,
+      "verification_ref": "workspace/capabilities/security-hardening/tests",
+      "declared_exports": [],
+      "declared_dependencies": [],
+      "dependency_policy": {
+        "allowed_dependencies": [],
+        "forbidden_dependencies": []
+      },
+      "consumers": [],
+      "declared_consumers": [],
+      "provided_contract_versions": [],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [],
+      "product_reach_ratio": 0,
+      "reachable_from_products": [
+        "lawyershub"
+      ],
+      "reachability_status": "REACHABLE",
+      "implementation_files": 5,
+      "test_files": 1,
+      "owner_missing": true,
+      "discovery_signature": [
+        "hardening",
+        "security"
+      ]
+    },
+    {
+      "id": "trust-framework",
+      "name": "Trust Framework",
+      "provided_capabilities": [],
+      "manifest_version": "1.0.0",
+      "version": "0.1.0",
+      "owner": "unassigned",
+      "status": "ACTIVE",
+      "stability": "stable",
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
+      "owner_requirement_status": "OPTIONAL",
+      "introduced": null,
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/trust-framework/definition/capability.yaml",
+      "runtime_ref": "workspace/capabilities/trust-framework/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": null,
+      "verification_ref": null,
+      "declared_exports": [
+        "TrustFramework",
+        "TrustFrameworkCatalog",
+        "TrustFrameworkProvider",
+        "TrustSignatureProvider",
+        "TrustSignatureProviderSPI",
+        "TrustVerificationProfile"
+      ],
+      "declared_dependencies": [
+        "core-runtime"
+      ],
+      "dependency_policy": {
+        "allowed_dependencies": [
+          "core-runtime"
+        ],
+        "forbidden_dependencies": [
+          "api-platform",
+          "governance-evidence",
+          "governance-read-model"
+        ]
+      },
+      "consumers": [],
+      "declared_consumers": [
+        "governance-evidence"
+      ],
+      "provided_contract_versions": [
+        {
+          "name": "TrustFrameworkProvider",
+          "version": "1.0.0"
+        }
+      ],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [],
+      "product_reach_ratio": 0,
+      "reachable_from_products": [],
+      "reachability_status": "UNREACHABLE",
+      "implementation_files": 5,
+      "test_files": 0,
+      "owner_missing": true,
+      "discovery_signature": [
+        "framework",
+        "trust"
+      ]
+    },
+    {
+      "id": "workflow-engine",
+      "name": "Workflow Engine",
+      "provided_capabilities": [],
+      "manifest_version": "1.0.0",
+      "version": "0.1.0",
+      "owner": "unassigned",
+      "status": "ACTIVE",
+      "stability": "experimental",
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
+      "owner_requirement_status": "OPTIONAL",
+      "introduced": null,
+      "deprecated": null,
+      "manifest_ref": "workspace/capabilities/workflow-engine/definition/capability.yaml",
+      "runtime_ref": "workspace/capabilities/workflow-engine/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": null,
+      "verification_ref": "workspace/capabilities/workflow-engine/tests",
+      "declared_exports": [],
+      "declared_dependencies": [],
+      "dependency_policy": {
+        "allowed_dependencies": [],
+        "forbidden_dependencies": []
+      },
+      "consumers": [],
+      "declared_consumers": [],
+      "provided_contract_versions": [],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [],
+      "product_reach_ratio": 0,
+      "reachable_from_products": [
+        "lawyershub"
+      ],
+      "reachability_status": "REACHABLE",
+      "implementation_files": 7,
+      "test_files": 1,
+      "owner_missing": true,
+      "discovery_signature": [
+        "engine",
+        "workflow"
+      ]
+    }
+  ],
+  "duplicate_candidates": [],
+  "rule": "Everything is discovered before it is composed, and everything is composed before it is created."
+}

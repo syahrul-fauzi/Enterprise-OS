@@ -1,0 +1,255 @@
+{
+  "nodes": [
+    {
+      "id": "product:services-id",
+      "type": "product",
+      "label": "services-id",
+      "manifest_ref": null,
+      "governance_status": "INVALID"
+    },
+    {
+      "id": "product:lawyershub",
+      "type": "product",
+      "label": "lawyershub",
+      "manifest_ref": "workspace/apps/lawyershub/workspace.manifest.ts",
+      "governance_status": "UNVERIFIED"
+    },
+    {
+      "id": "product:ilc",
+      "type": "product",
+      "label": "ilc",
+      "manifest_ref": null,
+      "governance_status": "INVALID"
+    },
+    {
+      "id": "capability:agent-orchestration",
+      "type": "capability",
+      "label": "Agent Orchestration",
+      "manifest_ref": "workspace/capabilities/agent-orchestration/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
+      "id": "capability:api-platform",
+      "type": "capability",
+      "label": "API Platform",
+      "manifest_ref": "workspace/capabilities/api-platform/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
+      "id": "capability:connector-ecosystem",
+      "type": "capability",
+      "label": "Connector Ecosystem",
+      "manifest_ref": "workspace/capabilities/connector-ecosystem/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
+      "id": "capability:evidence-registry",
+      "type": "capability",
+      "label": "Evidence Registry",
+      "manifest_ref": "workspace/capabilities/evidence-registry/definition/capability.yaml",
+      "governance_status": "INVALID"
+    },
+    {
+      "id": "capability:governance-evidence",
+      "type": "capability",
+      "label": "Governance Evidence",
+      "manifest_ref": "workspace/capabilities/governance-evidence/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
+      "id": "capability:governance-read-model",
+      "type": "capability",
+      "label": "Governance Read Model",
+      "manifest_ref": "workspace/capabilities/governance-read-model/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
+      "id": "capability:identity",
+      "type": "capability",
+      "label": "Identity",
+      "manifest_ref": "workspace/capabilities/identity/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
+      "id": "capability:knowledge-graph",
+      "type": "capability",
+      "label": "Knowledge Graph",
+      "manifest_ref": "workspace/capabilities/knowledge-graph/definition/capability.yaml",
+      "governance_status": "INVALID"
+    },
+    {
+      "id": "capability:legal-case",
+      "type": "capability",
+      "label": "Case Management",
+      "manifest_ref": "workspace/capabilities/legal-case/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
+      "id": "capability:legal-document",
+      "type": "capability",
+      "label": "Legal Documents",
+      "manifest_ref": "workspace/capabilities/legal-document/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
+      "id": "capability:observability",
+      "type": "capability",
+      "label": "Observability",
+      "manifest_ref": "workspace/capabilities/observability/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
+      "id": "capability:requirement-management",
+      "type": "capability",
+      "label": "Requirement Management",
+      "manifest_ref": "workspace/capabilities/requirement-management/definition/capability.yaml",
+      "governance_status": "INVALID"
+    },
+    {
+      "id": "capability:requirements-traceability-matrix",
+      "type": "capability",
+      "label": "Requirements Traceability Matrix",
+      "manifest_ref": "workspace/capabilities/requirements-traceability-matrix/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
+      "id": "capability:security-hardening",
+      "type": "capability",
+      "label": "Security Hardening",
+      "manifest_ref": "workspace/capabilities/security-hardening/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
+      "id": "capability:trust-framework",
+      "type": "capability",
+      "label": "Trust Framework",
+      "manifest_ref": "workspace/capabilities/trust-framework/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
+      "id": "capability:workflow-engine",
+      "type": "capability",
+      "label": "Workflow Engine",
+      "manifest_ref": "workspace/capabilities/workflow-engine/definition/capability.yaml",
+      "governance_status": "VALID"
+    }
+  ],
+  "edges": [
+    {
+      "from": "product:lawyershub",
+      "to": "capability:legal-case",
+      "relation": "uses"
+    },
+    {
+      "from": "product:lawyershub",
+      "to": "capability:legal-document",
+      "relation": "uses"
+    },
+    {
+      "from": "product:lawyershub",
+      "to": "capability:requirement-management",
+      "relation": "uses"
+    },
+    {
+      "from": "product:services-id",
+      "to": "capability:requirement-management",
+      "relation": "declares"
+    },
+    {
+      "from": "product:services-id",
+      "to": "capability:knowledge-graph",
+      "relation": "declares"
+    },
+    {
+      "from": "product:services-id",
+      "to": "capability:identity",
+      "relation": "declares"
+    },
+    {
+      "from": "product:lawyershub",
+      "to": "capability:requirement-management",
+      "relation": "declares"
+    },
+    {
+      "from": "product:lawyershub",
+      "to": "capability:evidence-registry",
+      "relation": "declares"
+    },
+    {
+      "from": "product:lawyershub",
+      "to": "capability:knowledge-graph",
+      "relation": "declares"
+    },
+    {
+      "from": "product:lawyershub",
+      "to": "capability:identity",
+      "relation": "declares"
+    },
+    {
+      "from": "product:ilc",
+      "to": "capability:requirement-management",
+      "relation": "declares"
+    },
+    {
+      "from": "product:ilc",
+      "to": "capability:knowledge-graph",
+      "relation": "declares"
+    },
+    {
+      "from": "product:ilc",
+      "to": "capability:identity",
+      "relation": "declares"
+    },
+    {
+      "from": "product:ilc",
+      "to": "capability:evidence-registry",
+      "relation": "declares"
+    },
+    {
+      "from": "capability:api-platform",
+      "to": "capability:evidence-registry",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:api-platform",
+      "to": "capability:governance-evidence",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:api-platform",
+      "to": "capability:governance-read-model",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:api-platform",
+      "to": "capability:requirement-management",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:api-platform",
+      "to": "capability:requirements-traceability-matrix",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:api-platform",
+      "to": "capability:workflow-engine",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:governance-evidence",
+      "to": "capability:trust-framework",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:governance-read-model",
+      "to": "capability:governance-evidence",
+      "relation": "depends_on"
+    }
+  ],
+  "summary": {
+    "node_count": 19,
+    "edge_count": 22,
+    "product_nodes": 3,
+    "capability_nodes": 16
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "policy_version": "1.0.0",
+  "policy_name": "CapabilityGovernanceDebtBudget",
+  "summary": {
+    "overall_status": "PASS",
+    "owner_missing": {
+      "observed": 15,
+      "maximum_allowed": 15,
+      "status": "PASS",
+      "enforcement_mode": "NO_REGRESSION",
+      "rationale": "Owner coverage debt is tolerated only up to the current stabilization baseline. New regressions must not increase ownerless capabilities while the platform hardens."
+    },
+    "invalid_capabilities": {
+      "observed": 3,
+      "maximum_allowed": 3,
+      "status": "PASS",
+      "enforcement_mode": "NO_REGRESSION",
+      "rationale": "Invalid capability debt is frozen at the current stabilization baseline. Repository changes may reduce it, but must not increase it."
+    },
+    "duplicate_candidates": {
+      "observed": 0,
+      "maximum_allowed": 0,
+      "status": "PASS",
+      "enforcement_mode": "ENFORCED_ZERO",
+      "rationale": "Capability duplication introduces immediate architectural ambiguity, so duplicate candidates remain a strict zero-tolerance gate."
+    }
+  },
+  "claim_boundary": "Capability governance debt budget freezes non-architectural cleanup debt at an explicit stabilization baseline while dependency law and contract law continue to fail hard. This supports platform maturity without forcing horizontal refactors during governance hardening."
+}

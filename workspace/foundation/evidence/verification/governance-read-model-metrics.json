@@ -1,0 +1,55 @@
+{
+  "metrics_id": "governance-read-model-metrics:69476f45fc706882",
+  "metrics_digest": "69476f45fc70688237a9ed094ab9cd2d7801f2f09f710d3b4461f8fd89a4f3a1",
+  "capability_id": "governance-read-model",
+  "source_session_id": "governance-session:e53ffa9a0a13fb8a",
+  "source_session_digest": "e53ffa9a0a13fb8a349a132ab0d9c9d216961eaa4f6da3790b10aa2f6a09740d",
+  "source_session_lineage_digest": "4cb86da3e09791f433eddf60956af3eff7e905a726b6a52b09531e1172a34064",
+  "generated_at_utc": "2026-08-03T15:33:51.265Z",
+  "source_generated_at_utc": "2026-08-03T15:33:51.257Z",
+  "source_digest": "1d95987c0a1af858deea823b277482acdfe1f60f18707866ca41f104639c3d34",
+  "generation_digest": "649dcdd45eb214926c26de2969f936441f5cbe589ce4d20bcaa00ddab57731aa",
+  "freshness_ms": 8,
+  "materialization_latency_ms": 1,
+  "generation_duration_ms": 1,
+  "consumer_count": 1,
+  "read_models": [
+    {
+      "view_kind": "summary",
+      "source_digest": "0853ed963c202813450ebf247435d74dcd360fffd2dd0710f4ec3c6efec85c2a",
+      "generation_digest": "b527cc9c4663ae76b138f69602f63816740f56f27ac683331f045e16dd7064fc",
+      "materialization_latency_ms": 1,
+      "generation_duration_ms": 1,
+      "freshness_ms": 8,
+      "consumer_count": 1
+    },
+    {
+      "view_kind": "claims",
+      "source_digest": "5ff9b83981462379bccc4dc9549eb1bbba546252e4f8cedda8714fcc74dcfbf0",
+      "generation_digest": "9029fe0923dc665d12b1327f4d2ee80cae20955c577af25d654e0e6e80f9d03a",
+      "materialization_latency_ms": 1,
+      "generation_duration_ms": 1,
+      "freshness_ms": 8,
+      "consumer_count": 1
+    },
+    {
+      "view_kind": "health",
+      "source_digest": "befa1b02884dce8635d285b9a54d3374c595fb3a8f4ab3baa28e6836e7d58b80",
+      "generation_digest": "2b2c83b90f7edcd49fd0ceab4fc2951c5a08cc75cadfa909ec790cf1156f3c6b",
+      "materialization_latency_ms": 1,
+      "generation_duration_ms": 1,
+      "freshness_ms": 8,
+      "consumer_count": 1
+    },
+    {
+      "view_kind": "dashboard",
+      "source_digest": "0853ed963c202813450ebf247435d74dcd360fffd2dd0710f4ec3c6efec85c2a",
+      "generation_digest": "32544d086861bd76af25c765ec0c31bb434b5e00e9138344f0eb8bcab43c4135",
+      "materialization_latency_ms": 1,
+      "generation_duration_ms": 1,
+      "freshness_ms": 8,
+      "consumer_count": 1
+    }
+  ],
+  "claim_boundary": "Governance read model metrics capture materialization freshness, generation timing, source digests, output digests, and consumer exposure for the governance-read-model capability. They evaluate projection quality without inspecting governance evidence internals."
+}

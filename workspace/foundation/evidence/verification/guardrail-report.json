@@ -1,0 +1,65 @@
+{
+  "thresholds": {
+    "clr": ">= 0.75",
+    "experience_reuse": ">= 0.70",
+    "capability_reuse": ">= 0.80",
+    "new_patterns": "<= 0"
+  },
+  "product_results": [
+    {
+      "product_id": "services-id",
+      "capability_reuse": {
+        "actual": null,
+        "threshold": ">= 0.80",
+        "status": "UNVERIFIED"
+      },
+      "experience_reuse": {
+        "actual": null,
+        "threshold": ">= 0.70",
+        "status": "UNVERIFIED"
+      },
+      "clr": {
+        "actual": null,
+        "threshold": ">= 0.75",
+        "status": "UNVERIFIED"
+      }
+    },
+    {
+      "product_id": "lawyershub",
+      "capability_reuse": {
+        "actual": 1,
+        "threshold": ">= 0.80",
+        "status": "PASS"
+      },
+      "experience_reuse": {
+        "actual": 1,
+        "threshold": ">= 0.70",
+        "status": "PASS"
+      },
+      "clr": {
+        "actual": "FULL_REUSE",
+        "threshold": ">= 0.75",
+        "status": "PASS"
+      }
+    },
+    {
+      "product_id": "ilc",
+      "capability_reuse": {
+        "actual": null,
+        "threshold": ">= 0.80",
+        "status": "UNVERIFIED"
+      },
+      "experience_reuse": {
+        "actual": null,
+        "threshold": ">= 0.70",
+        "status": "UNVERIFIED"
+      },
+      "clr": {
+        "actual": null,
+        "threshold": ">= 0.75",
+        "status": "UNVERIFIED"
+      }
+    }
+  ],
+  "claim_boundary": "Guardrail evaluation only applies to products with generated empirical evidence. Missing products remain UNVERIFIED."
+}

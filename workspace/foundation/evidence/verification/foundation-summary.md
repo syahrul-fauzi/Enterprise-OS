@@ -1,0 +1,168 @@
+# Foundation Verification Summary
+
+- foundation status: UNVERIFIED_BASELINE
+- active products: 1
+- implemented active products: 1/1
+- verified active products: 0/1
+- active portfolio coverage: 0%
+- declared products: 3
+- implemented products: 1/3
+- implementation coverage: 33.3%
+- verified products: 0/3
+- portfolio coverage: 0%
+- registry health: BLOCKED
+- graph integrity: PARTIAL
+- owner coverage ratio: 0.0625
+- reachability ratio: 0.8125
+- orphan artifacts: 4
+- dead capabilities: 3
+- orphan active_waiting_composition: 4
+- orphan planned: 0
+- orphan retired: 0
+- fitness status: REGRESSED
+- declared capabilities: 3
+- observed capabilities: 13
+- verified capabilities: 13
+- reproducible capabilities: 8
+- execution chain invocations: 83
+- execution chains: 32
+- unique chain digests: 32
+- chains with requirement: 5
+- chains with workflow: 4
+- chains with evidence: 1
+- reproducible chains: 13
+- stable chains: 13
+- products with execution plan: 1/3
+- execution plan coverage ratio: 0.3333
+- topology drift status: DRIFT
+- aligned products: 0
+- drifted products: 1
+- undeclared observed edges: 12
+- unobserved declared edges: 2
+- unmodeled observed requirements: 5
+- unmodeled observed workflows: 6
+- unmodeled observed plans: 3
+- architecture trend: REGRESSING
+- latest epoch: epoch-047
+- total epochs: 47
+- governance read model freshness ms: 8
+- governance read model generation duration ms: 1
+- governance read model consumer count: 1
+- incremental materialization status: PARTIAL
+- incremental changed nodes: 14
+- incremental impacted nodes: 14
+- incremental reusable nodes: 2
+- selective reused nodes: 0
+- selective rematerialized nodes: 3
+- read-model reused nodes: 0
+- read-model rematerialized nodes: 5
+- capability operational observed: 13
+- capability operational verified: 13
+- capability operational reproducible: 8
+- capability operational invocations: 83
+- capability certification status: PASS
+- certified capabilities: 4
+- partial capabilities: 12
+- failed capabilities: 0
+- performance-evaluated capabilities: 4
+- graph fitness: PARTIAL
+- graph connectivity ratio: 0.9884
+- planner coverage ratio: 1
+- runtime coverage ratio: 0.8125
+- verification coverage ratio: 0.8125
+- replay stability ratio: 1
+- specification system status: PASS
+- specification registry artifacts: 50
+- specification registry edges: 125
+- specification RFC count: 8
+- specification CONF count: 8
+- specification SPEC count: 9
+- specification conformance status: PASS
+- specification conformance warnings: 0
+- specification conformance failures: 0
+- specification vocabulary status: PASS
+- specification vocabulary terms: 10
+- specification vocabulary duplicates: 0
+- executable specs: 4/23
+- documentation-only specs: 19
+- missing active product implementation: none
+- pending active product verification: lawyershub
+- missing product implementation: services-id, ilc
+- pending implemented product verification: lawyershub
+- missing product verification: services-id, lawyershub, ilc
+
+## Evidence
+- workspace/foundation/evidence/verification/artifact-registry.json
+- workspace/foundation/evidence/verification/capability-dependency-constitution.json
+- workspace/foundation/evidence/verification/capability-certification.json
+- workspace/foundation/evidence/verification/capability-operational-metrics.json
+- workspace/foundation/evidence/verification/capability-governance-index.json
+- workspace/foundation/evidence/verification/capability-governance-verification.json
+- workspace/foundation/evidence/verification/capability-governance
+- workspace/foundation/evidence/verification/capability-graph.json
+- workspace/foundation/evidence/verification/capability-graph.yaml
+- workspace/foundation/evidence/verification/capability-graph-verification.json
+- workspace/foundation/evidence/verification/enterprise-control-graph.json
+- workspace/foundation/evidence/verification/enterprise-control-graph-verification.json
+- workspace/foundation/evidence/verification/contract-version-registry.json
+- workspace/foundation/evidence/verification/contract-version-evolution.json
+- workspace/foundation/evidence/verification/architecture-trend.json
+- workspace/foundation/evidence/verification/governance-summary-view.json
+- workspace/foundation/evidence/verification/governance-claims-view.json
+- workspace/foundation/evidence/verification/governance-health-view.json
+- workspace/foundation/evidence/verification/governance-dashboard-view.json
+- workspace/foundation/evidence/verification/governance-read-model-metrics.json
+- workspace/foundation/evidence/verification/governance-incremental-materialization.json
+- workspace/foundation/evidence/verification/governance-incremental-materialization-verification.json
+- workspace/foundation/evidence/verification/governance-selective-execution.json
+- workspace/foundation/evidence/verification/governance-read-model-selective-execution.json
+- workspace/foundation/evidence/verification/governance-session.json
+- workspace/foundation/evidence/verification/governance-session-verification.json
+- workspace/foundation/evidence/verification/verification-run.json
+- workspace/foundation/evidence/verification/verification-run-verification.json
+- workspace/foundation/evidence/verification/governance-catalog.json
+- workspace/foundation/evidence/verification/governance-catalog-verification.json
+- workspace/foundation/evidence/verification/trust-framework.json
+- workspace/foundation/evidence/verification/trust-framework-verification.json
+- workspace/foundation/evidence/verification/attestation-lifecycle-verification.json
+- workspace/foundation/evidence/verification/attestation-lifecycle-materialization.json
+- workspace/foundation/evidence/verification/trust-signature-provider-registry.json
+- workspace/foundation/evidence/verification/trust-signature-provider-verification.json
+- workspace/foundation/evidence/verification/trust-signature-materialization.json
+- workspace/foundation/evidence/verification/constitution-attestation-policy.json
+- workspace/foundation/evidence/verification/constitution-law-results.json
+- workspace/foundation/evidence/verification/constitution-evidence-packages.json
+- workspace/foundation/evidence/verification/constitution-certificates.json
+- workspace/foundation/evidence/verification/constitution-attestations.json
+- workspace/foundation/evidence/verification/constitution-claims.json
+- workspace/foundation/evidence/verification/constitution-summary.json
+- workspace/foundation/evidence/verification/constitution-proof-bundle.json
+- workspace/foundation/evidence/verification/execution-chain-summary.json
+- workspace/foundation/evidence/verification/execution-evidence.json
+- workspace/foundation/evidence/verification/execution-plan-summary.json
+- workspace/foundation/evidence/verification/execution-graph.json
+- workspace/foundation/evidence/verification/foundation-report.json
+- workspace/foundation/evidence/verification/foundation-report-projection.json
+- workspace/foundation/evidence/verification/foundation-report-evidence.json
+- workspace/foundation/evidence/verification/evolution-delta.json
+- workspace/foundation/evidence/verification/fitness-report.json
+- workspace/foundation/evidence/verification/graph-fitness.json
+- workspace/foundation/evidence/verification/architecture-fitness.json
+- workspace/foundation/evidence/verification/constitution-report.json
+- workspace/foundation/evidence/verification/guardrail-report.json
+- workspace/foundation/evidence/verification/granular-clr-matrix.json
+- workspace/foundation/evidence/verification/artifact-graph.json
+- workspace/foundation/evidence/verification/graph-health.json
+- workspace/foundation/evidence/verification/spec-execution-audit.json
+- workspace/foundation/evidence/verification/decision-quality-report.json
+- workspace/foundation/evidence/verification/learning-intelligence-report.json
+- workspace/foundation/evidence/verification/learning-registry.json
+- workspace/foundation/evidence/verification/knowledge-registry.json
+- workspace/foundation/evidence/verification/evidence-producer-convergence-report.json
+- workspace/foundation/evidence/verification/specification-conformance-report.json
+- workspace/foundation/evidence/verification/specification-conformance-projection.json
+- workspace/foundation/evidence/verification/specification-conformance-evidence.json
+- workspace/foundation/evidence/verification/specification-artifact-graph.json
+- workspace/foundation/evidence/verification/specification-vocabulary-audit.json
+- workspace/foundation/evidence/verification/topology-drift.json
+- workspace/foundation/evidence/verification/foundation-summary.md

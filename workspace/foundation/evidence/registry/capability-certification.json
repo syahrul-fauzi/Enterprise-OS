@@ -1,0 +1,431 @@
+{
+  "certification_version": "1.0.0",
+  "certification_digest": "5cd139064a7712384d0d51dceda991501b31cd0853c7b5234eb3eea0d19c3f1d",
+  "summary": {
+    "total_capabilities": 16,
+    "certified_capabilities": 0,
+    "partial_capabilities": 16,
+    "failed_capabilities": 0,
+    "performance_evaluated_capabilities": 0,
+    "overall_status": "PASS"
+  },
+  "capabilities": [
+    {
+      "capability_id": "agent-orchestration",
+      "manifest_ref": "workspace/capabilities/agent-orchestration/definition/capability.yaml",
+      "stability": "experimental",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"agent-orchestration\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"agent-orchestration\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"agent-orchestration\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"agent-orchestration\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"agent-orchestration\"."
+      }
+    },
+    {
+      "capability_id": "api-platform",
+      "manifest_ref": "workspace/capabilities/api-platform/definition/capability.yaml",
+      "stability": "stable",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"api-platform\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"api-platform\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"api-platform\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "PASS",
+        "detail": "All required contract ranges for \"api-platform\" are satisfied by declared dependencies."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"api-platform\"."
+      }
+    },
+    {
+      "capability_id": "connector-ecosystem",
+      "manifest_ref": "workspace/capabilities/connector-ecosystem/definition/capability.yaml",
+      "stability": "experimental",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"connector-ecosystem\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"connector-ecosystem\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"connector-ecosystem\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"connector-ecosystem\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"connector-ecosystem\"."
+      }
+    },
+    {
+      "capability_id": "evidence-registry",
+      "manifest_ref": "workspace/capabilities/evidence-registry/definition/capability.yaml",
+      "stability": "experimental",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"evidence-registry\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"evidence-registry\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"evidence-registry\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"evidence-registry\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"evidence-registry\"."
+      }
+    },
+    {
+      "capability_id": "governance-evidence",
+      "manifest_ref": "workspace/capabilities/governance-evidence/definition/capability.yaml",
+      "stability": "stable",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"governance-evidence\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"governance-evidence\"."
+      },
+      "provider_valid": {
+        "status": "PASS",
+        "detail": "All provided contracts for \"governance-evidence\" are registered and versioned."
+      },
+      "compatibility_valid": {
+        "status": "PASS",
+        "detail": "All required contract ranges for \"governance-evidence\" are satisfied by declared dependencies."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"governance-evidence\"."
+      }
+    },
+    {
+      "capability_id": "governance-read-model",
+      "manifest_ref": "workspace/capabilities/governance-read-model/definition/capability.yaml",
+      "stability": "stable",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"governance-read-model\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"governance-read-model\"."
+      },
+      "provider_valid": {
+        "status": "PASS",
+        "detail": "All provided contracts for \"governance-read-model\" are registered and versioned."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"governance-read-model\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"governance-read-model\"."
+      }
+    },
+    {
+      "capability_id": "identity",
+      "manifest_ref": "workspace/capabilities/identity/capability.yaml",
+      "stability": "experimental",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"identity\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"identity\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"identity\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"identity\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"identity\"."
+      }
+    },
+    {
+      "capability_id": "knowledge-graph",
+      "manifest_ref": "workspace/capabilities/knowledge-graph/definition/capability.yaml",
+      "stability": "experimental",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"knowledge-graph\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"knowledge-graph\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"knowledge-graph\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"knowledge-graph\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"knowledge-graph\"."
+      }
+    },
+    {
+      "capability_id": "legal-case",
+      "manifest_ref": "workspace/capabilities/legal-case/definition/capability.yaml",
+      "stability": "experimental",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"legal-case\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"legal-case\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"legal-case\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"legal-case\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"legal-case\"."
+      }
+    },
+    {
+      "capability_id": "legal-document",
+      "manifest_ref": "workspace/capabilities/legal-document/definition/capability.yaml",
+      "stability": "experimental",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"legal-document\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"legal-document\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"legal-document\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"legal-document\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"legal-document\"."
+      }
+    },
+    {
+      "capability_id": "observability",
+      "manifest_ref": "workspace/capabilities/observability/definition/capability.yaml",
+      "stability": "experimental",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"observability\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"observability\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"observability\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"observability\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"observability\"."
+      }
+    },
+    {
+      "capability_id": "requirement-management",
+      "manifest_ref": "workspace/capabilities/requirement-management/definition/capability.yaml",
+      "stability": "experimental",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"requirement-management\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"requirement-management\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"requirement-management\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"requirement-management\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"requirement-management\"."
+      }
+    },
+    {
+      "capability_id": "requirements-traceability-matrix",
+      "manifest_ref": "workspace/capabilities/requirements-traceability-matrix/definition/capability.yaml",
+      "stability": "experimental",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"requirements-traceability-matrix\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"requirements-traceability-matrix\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"requirements-traceability-matrix\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"requirements-traceability-matrix\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"requirements-traceability-matrix\"."
+      }
+    },
+    {
+      "capability_id": "security-hardening",
+      "manifest_ref": "workspace/capabilities/security-hardening/definition/capability.yaml",
+      "stability": "experimental",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"security-hardening\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"security-hardening\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"security-hardening\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"security-hardening\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"security-hardening\"."
+      }
+    },
+    {
+      "capability_id": "trust-framework",
+      "manifest_ref": "workspace/capabilities/trust-framework/definition/capability.yaml",
+      "stability": "stable",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"trust-framework\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"trust-framework\"."
+      },
+      "provider_valid": {
+        "status": "PASS",
+        "detail": "All provided contracts for \"trust-framework\" are registered and versioned."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"trust-framework\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"trust-framework\"."
+      }
+    },
+    {
+      "capability_id": "workflow-engine",
+      "manifest_ref": "workspace/capabilities/workflow-engine/definition/capability.yaml",
+      "stability": "experimental",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"workflow-engine\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"workflow-engine\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"workflow-engine\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"workflow-engine\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"workflow-engine\"."
+      }
+    }
+  ],
+  "claim_boundary": "Capability Certification composes manifest validity, dependency constitution, contract registry compatibility, and available performance evidence into a per-capability certification status. Capabilities without performance evidence remain partial rather than implicitly certified."
+}

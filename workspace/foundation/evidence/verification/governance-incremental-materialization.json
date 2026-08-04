@@ -1,0 +1,720 @@
+{
+  "report_version": "1.0.0",
+  "report_digest": "a8855a3c3cf6bc041177704dd3ae594fff9e8c553a8ae1eaa5fde5d00e470959",
+  "execution_scope": "verify-foundation",
+  "session_id": "governance-session:e53ffa9a0a13fb8a",
+  "session_digest": "e53ffa9a0a13fb8a349a132ab0d9c9d216961eaa4f6da3790b10aa2f6a09740d",
+  "session_projection_digest": "a3f5dda1914fd48d439498adbeec23e7eac50cf2a2c157ced91f943cb772d13d",
+  "previous_report_digest": "a57b99fee5e586d6bf958221be5aec3999e5320473a72c8ac68490991eb20cd0",
+  "invalidation_lineage_status": "EXPLICIT",
+  "selective_execution_status": "APPLIED",
+  "delta_basis": {
+    "basis_version": "1.0.0",
+    "previous_session_digest": "5639e50cdeb8eca6b40ff39254a380e2f79270f662bf7abdba5bf4f8974934ce",
+    "previous_session_projection_digest": "515aa5202933fa8d2a5cfd79ebe83fd03f41fd953ebc6a89206eb658447d20a5",
+    "session_digest_changed": true,
+    "session_projection_digest_changed": true,
+    "delta_mode": "SESSION_DELTA",
+    "delta_scope_status": "MATERIALIZATION_REQUIRED",
+    "full_rebuild_required": true
+  },
+  "summary": {
+    "node_count": 16,
+    "edge_count": 42,
+    "changed_node_count": 14,
+    "impacted_node_count": 14,
+    "reusable_node_count": 2,
+    "session_digest_changed": true,
+    "session_projection_digest_changed": true,
+    "delta_mode": "SESSION_DELTA",
+    "delta_scope_status": "MATERIALIZATION_REQUIRED",
+    "directly_changed_nodes": [
+      "claims",
+      "claims_view",
+      "dashboard_view",
+      "evidence_packages",
+      "governance_session",
+      "health_view",
+      "law_attestations",
+      "law_certificates",
+      "law_results",
+      "proof_bundle",
+      "read_model_metrics",
+      "session_provenance",
+      "summary",
+      "summary_view"
+    ],
+    "impacted_nodes": [
+      "claims",
+      "claims_view",
+      "dashboard_view",
+      "evidence_packages",
+      "governance_session",
+      "health_view",
+      "law_attestations",
+      "law_certificates",
+      "law_results",
+      "proof_bundle",
+      "read_model_metrics",
+      "session_provenance",
+      "summary",
+      "summary_view"
+    ],
+    "incremental_readiness_status": "PARTIAL"
+  },
+  "edges": [
+    {
+      "from": "trust_framework_catalog",
+      "to": "attestation_policy",
+      "propagation_reason": "Trust framework catalog selection determines the available attestation policy boundary."
+    },
+    {
+      "from": "attestation_policy",
+      "to": "law_attestations",
+      "propagation_reason": "Attestation policy changes invalidate emitted trust events for certificates."
+    },
+    {
+      "from": "law_results",
+      "to": "evidence_packages",
+      "propagation_reason": "Evidence packages are frozen aggregates of law-result identity and proof fragments."
+    },
+    {
+      "from": "law_results",
+      "to": "claims",
+      "propagation_reason": "Claims materialization summarizes law-result outcomes."
+    },
+    {
+      "from": "evidence_packages",
+      "to": "law_certificates",
+      "propagation_reason": "Certificates are issued from immutable evidence package digests."
+    },
+    {
+      "from": "law_certificates",
+      "to": "law_attestations",
+      "propagation_reason": "Attestation events are emitted for certificate identities."
+    },
+    {
+      "from": "claims",
+      "to": "summary",
+      "propagation_reason": "Constitution summary is derived from claims aggregate status."
+    },
+    {
+      "from": "law_results",
+      "to": "proof_bundle",
+      "propagation_reason": "Proof bundle snapshots law-result outputs."
+    },
+    {
+      "from": "evidence_packages",
+      "to": "proof_bundle",
+      "propagation_reason": "Proof bundle snapshots evidence package outputs."
+    },
+    {
+      "from": "law_certificates",
+      "to": "proof_bundle",
+      "propagation_reason": "Proof bundle snapshots certificate outputs."
+    },
+    {
+      "from": "law_attestations",
+      "to": "proof_bundle",
+      "propagation_reason": "Proof bundle snapshots attestation event outputs."
+    },
+    {
+      "from": "claims",
+      "to": "proof_bundle",
+      "propagation_reason": "Proof bundle snapshots claims output."
+    },
+    {
+      "from": "summary",
+      "to": "proof_bundle",
+      "propagation_reason": "Proof bundle snapshots constitution summary output."
+    },
+    {
+      "from": "trust_framework_catalog",
+      "to": "session_provenance",
+      "propagation_reason": "Session provenance binds the active trust framework context."
+    },
+    {
+      "from": "attestation_policy",
+      "to": "session_provenance",
+      "propagation_reason": "Session provenance binds attestation policy identity and digest."
+    },
+    {
+      "from": "law_results",
+      "to": "session_provenance",
+      "propagation_reason": "Session provenance records law-result digest."
+    },
+    {
+      "from": "evidence_packages",
+      "to": "session_provenance",
+      "propagation_reason": "Session provenance records evidence package digest."
+    },
+    {
+      "from": "law_certificates",
+      "to": "session_provenance",
+      "propagation_reason": "Session provenance records certificate digest."
+    },
+    {
+      "from": "law_attestations",
+      "to": "session_provenance",
+      "propagation_reason": "Session provenance records attestation event digest."
+    },
+    {
+      "from": "claims",
+      "to": "session_provenance",
+      "propagation_reason": "Session provenance records claims digest."
+    },
+    {
+      "from": "summary",
+      "to": "session_provenance",
+      "propagation_reason": "Session provenance records summary digest."
+    },
+    {
+      "from": "proof_bundle",
+      "to": "session_provenance",
+      "propagation_reason": "Session provenance records proof bundle identity."
+    },
+    {
+      "from": "session_provenance",
+      "to": "summary_view",
+      "propagation_reason": "Summary view is projected from stable session provenance."
+    },
+    {
+      "from": "claims",
+      "to": "summary_view",
+      "propagation_reason": "Summary view carries claims digest lineage."
+    },
+    {
+      "from": "summary",
+      "to": "summary_view",
+      "propagation_reason": "Summary view carries summary digest lineage."
+    },
+    {
+      "from": "session_provenance",
+      "to": "claims_view",
+      "propagation_reason": "Claims view is projected from stable session provenance."
+    },
+    {
+      "from": "claims",
+      "to": "claims_view",
+      "propagation_reason": "Claims view carries claims digest lineage."
+    },
+    {
+      "from": "session_provenance",
+      "to": "health_view",
+      "propagation_reason": "Health view is projected from stable session provenance."
+    },
+    {
+      "from": "summary",
+      "to": "health_view",
+      "propagation_reason": "Health view carries summary digest lineage."
+    },
+    {
+      "from": "session_provenance",
+      "to": "dashboard_view",
+      "propagation_reason": "Dashboard view is projected from stable session provenance."
+    },
+    {
+      "from": "claims",
+      "to": "dashboard_view",
+      "propagation_reason": "Dashboard view carries claims digest lineage."
+    },
+    {
+      "from": "summary",
+      "to": "dashboard_view",
+      "propagation_reason": "Dashboard view carries summary digest lineage."
+    },
+    {
+      "from": "summary_view",
+      "to": "read_model_metrics",
+      "propagation_reason": "Read-model metrics capture the summary view generation digest."
+    },
+    {
+      "from": "claims_view",
+      "to": "read_model_metrics",
+      "propagation_reason": "Read-model metrics capture the claims view generation digest."
+    },
+    {
+      "from": "health_view",
+      "to": "read_model_metrics",
+      "propagation_reason": "Read-model metrics capture the health view generation digest."
+    },
+    {
+      "from": "dashboard_view",
+      "to": "read_model_metrics",
+      "propagation_reason": "Read-model metrics capture the dashboard view generation digest."
+    },
+    {
+      "from": "session_provenance",
+      "to": "governance_session",
+      "propagation_reason": "Governance session final artifact attaches read-model outputs to provenance."
+    },
+    {
+      "from": "summary_view",
+      "to": "governance_session",
+      "propagation_reason": "Governance session records summary view identity."
+    },
+    {
+      "from": "claims_view",
+      "to": "governance_session",
+      "propagation_reason": "Governance session records claims view identity."
+    },
+    {
+      "from": "health_view",
+      "to": "governance_session",
+      "propagation_reason": "Governance session records health view identity."
+    },
+    {
+      "from": "dashboard_view",
+      "to": "governance_session",
+      "propagation_reason": "Governance session records dashboard view identity."
+    },
+    {
+      "from": "read_model_metrics",
+      "to": "governance_session",
+      "propagation_reason": "Governance session records read-model metrics identity."
+    }
+  ],
+  "nodes": [
+    {
+      "node_id": "trust_framework_catalog",
+      "artifact_kind": "trust",
+      "output_digest": "c14c47d3657aea1c84adb14a81e48c800761381a81f4c0b72ca52526fd23ac26",
+      "source_digests": [],
+      "rematerialization_reason": "Trust framework changes invalidate downstream attestation policy, session provenance, and every trust-derived read model.",
+      "invalidation_digest": "1d850ebb8d9cdc3acf28e2dc5a0ead2d7c073c4d0094c39a2b582da6048ebf1b",
+      "directly_invalidates": [
+        "attestation_policy",
+        "session_provenance"
+      ],
+      "changed_since_previous": false,
+      "impacted_by_changes": false,
+      "incremental_eligible": true
+    },
+    {
+      "node_id": "attestation_policy",
+      "artifact_kind": "policy",
+      "output_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
+      "source_digests": [
+        {
+          "source_id": "trust_framework_catalog",
+          "digest": "c14c47d3657aea1c84adb14a81e48c800761381a81f4c0b72ca52526fd23ac26"
+        }
+      ],
+      "rematerialization_reason": "Attestation policy must be regenerated when the selected trust framework boundary changes.",
+      "invalidation_digest": "c9c1b934dddcab5d2750164397e62b81014fd4b20936b3e4a42656c39fa3f489",
+      "directly_invalidates": [
+        "law_attestations",
+        "session_provenance"
+      ],
+      "changed_since_previous": false,
+      "impacted_by_changes": false,
+      "incremental_eligible": true
+    },
+    {
+      "node_id": "law_results",
+      "artifact_kind": "evidence",
+      "output_digest": "33761b443425fcdd498cbad9f4bac92061a88957c199a3db3a252397e462b5cc",
+      "source_digests": [
+        {
+          "source_id": "constitution_report",
+          "digest": "6136301cc804b532527524d7c64d0c2f80c194443dbf96aea5414a47a911443b"
+        }
+      ],
+      "rematerialization_reason": "Law results change when constitutional evidence or law evaluation inputs change.",
+      "invalidation_digest": "7dda23551db31285d21fa0b4eb2ced273a09d757e33233edc0ee55c53f2222de",
+      "directly_invalidates": [
+        "claims",
+        "evidence_packages",
+        "proof_bundle",
+        "session_provenance"
+      ],
+      "changed_since_previous": true,
+      "impacted_by_changes": true,
+      "incremental_eligible": true
+    },
+    {
+      "node_id": "evidence_packages",
+      "artifact_kind": "evidence",
+      "output_digest": "240fdfeb7889f823d2f25dff0ab6ba1a14e57eb7cdadf6d8fe22e78a1be8f2ca",
+      "source_digests": [
+        {
+          "source_id": "law_results",
+          "digest": "33761b443425fcdd498cbad9f4bac92061a88957c199a3db3a252397e462b5cc"
+        },
+        {
+          "source_id": "proof_fragments",
+          "digest": "6b09cf451e062f6421558631d39e171bb1bf2bc683f8fa8a413773adcafcc8bf"
+        }
+      ],
+      "rematerialization_reason": "Evidence packages are invalidated by law-result or proof-fragment changes.",
+      "invalidation_digest": "dc521b16e83cafafc6577561246ec38884159b0ae61fcfd0bdc6e2b52b71f503",
+      "directly_invalidates": [
+        "law_certificates",
+        "proof_bundle",
+        "session_provenance"
+      ],
+      "changed_since_previous": true,
+      "impacted_by_changes": true,
+      "incremental_eligible": true
+    },
+    {
+      "node_id": "law_certificates",
+      "artifact_kind": "evidence",
+      "output_digest": "72324085b8427a36411931f8021e7af05ffc73554857d01968c07f4fa6c9c531",
+      "source_digests": [
+        {
+          "source_id": "evidence_packages",
+          "digest": "240fdfeb7889f823d2f25dff0ab6ba1a14e57eb7cdadf6d8fe22e78a1be8f2ca"
+        }
+      ],
+      "rematerialization_reason": "Certificates are reissued only when immutable evidence package digests change.",
+      "invalidation_digest": "a0bbce26775c77edde224e127ef3d789d0791c24b4104d5d8fbd046e28893b26",
+      "directly_invalidates": [
+        "law_attestations",
+        "proof_bundle",
+        "session_provenance"
+      ],
+      "changed_since_previous": true,
+      "impacted_by_changes": true,
+      "incremental_eligible": true
+    },
+    {
+      "node_id": "law_attestations",
+      "artifact_kind": "trust_event_stream",
+      "output_digest": "d038c75a7d1ab07c3d8a773337a32e53c581b9d2943c4324d0cd6b6b0b97cdc2",
+      "source_digests": [
+        {
+          "source_id": "law_certificates",
+          "digest": "72324085b8427a36411931f8021e7af05ffc73554857d01968c07f4fa6c9c531"
+        },
+        {
+          "source_id": "attestation_policy",
+          "digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92"
+        }
+      ],
+      "rematerialization_reason": "Attestation event stream is invalidated by certificate or trust-policy changes.",
+      "invalidation_digest": "e9836f194e9187c3a58535aa6ebf09d6489249fa9bcb76a6a807cf2c354375e2",
+      "directly_invalidates": [
+        "proof_bundle",
+        "session_provenance"
+      ],
+      "changed_since_previous": true,
+      "impacted_by_changes": true,
+      "incremental_eligible": true
+    },
+    {
+      "node_id": "claims",
+      "artifact_kind": "report",
+      "output_digest": "433336daf73bb99397367671d897c66e87dde59ff3861c2d31ec5ace795c8012",
+      "source_digests": [
+        {
+          "source_id": "law_results",
+          "digest": "33761b443425fcdd498cbad9f4bac92061a88957c199a3db3a252397e462b5cc"
+        }
+      ],
+      "rematerialization_reason": "Claims are recomputed when law-result outcomes change.",
+      "invalidation_digest": "116f80edf369b725e1a1f04a8e8e647309c64316e44c214e3191088c0115a26e",
+      "directly_invalidates": [
+        "claims_view",
+        "dashboard_view",
+        "proof_bundle",
+        "session_provenance",
+        "summary",
+        "summary_view"
+      ],
+      "changed_since_previous": true,
+      "impacted_by_changes": true,
+      "incremental_eligible": true
+    },
+    {
+      "node_id": "summary",
+      "artifact_kind": "report",
+      "output_digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf",
+      "source_digests": [
+        {
+          "source_id": "claims",
+          "digest": "433336daf73bb99397367671d897c66e87dde59ff3861c2d31ec5ace795c8012"
+        }
+      ],
+      "rematerialization_reason": "Summary is a downstream projection of claims status.",
+      "invalidation_digest": "f78596962afe937a866526a91cbd726ff7de267c8cc9326530d10adf31850c8b",
+      "directly_invalidates": [
+        "dashboard_view",
+        "health_view",
+        "proof_bundle",
+        "session_provenance",
+        "summary_view"
+      ],
+      "changed_since_previous": true,
+      "impacted_by_changes": true,
+      "incremental_eligible": true
+    },
+    {
+      "node_id": "proof_bundle",
+      "artifact_kind": "report",
+      "output_digest": "142bf7c3354524880d357ff07f6a7b355993dac88343c55c27a754afc4e08f29",
+      "source_digests": [
+        {
+          "source_id": "law_results",
+          "digest": "33761b443425fcdd498cbad9f4bac92061a88957c199a3db3a252397e462b5cc"
+        },
+        {
+          "source_id": "evidence_packages",
+          "digest": "240fdfeb7889f823d2f25dff0ab6ba1a14e57eb7cdadf6d8fe22e78a1be8f2ca"
+        },
+        {
+          "source_id": "law_certificates",
+          "digest": "72324085b8427a36411931f8021e7af05ffc73554857d01968c07f4fa6c9c531"
+        },
+        {
+          "source_id": "law_attestations",
+          "digest": "d038c75a7d1ab07c3d8a773337a32e53c581b9d2943c4324d0cd6b6b0b97cdc2"
+        },
+        {
+          "source_id": "claims",
+          "digest": "433336daf73bb99397367671d897c66e87dde59ff3861c2d31ec5ace795c8012"
+        },
+        {
+          "source_id": "summary",
+          "digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf"
+        }
+      ],
+      "rematerialization_reason": "Proof bundle snapshots the full governance evidence chain and must move with any upstream digest change.",
+      "invalidation_digest": "e3a1d804204e08d6b77b67f5b5933d635359ee489c40ceea46194d1084687d1d",
+      "directly_invalidates": [
+        "session_provenance"
+      ],
+      "changed_since_previous": true,
+      "impacted_by_changes": true,
+      "incremental_eligible": true
+    },
+    {
+      "node_id": "session_provenance",
+      "artifact_kind": "session",
+      "output_digest": "e53ffa9a0a13fb8a349a132ab0d9c9d216961eaa4f6da3790b10aa2f6a09740d",
+      "source_digests": [
+        {
+          "source_id": "trust_framework_catalog",
+          "digest": "c14c47d3657aea1c84adb14a81e48c800761381a81f4c0b72ca52526fd23ac26"
+        },
+        {
+          "source_id": "attestation_policy",
+          "digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92"
+        },
+        {
+          "source_id": "law_results",
+          "digest": "33761b443425fcdd498cbad9f4bac92061a88957c199a3db3a252397e462b5cc"
+        },
+        {
+          "source_id": "evidence_packages",
+          "digest": "240fdfeb7889f823d2f25dff0ab6ba1a14e57eb7cdadf6d8fe22e78a1be8f2ca"
+        },
+        {
+          "source_id": "law_certificates",
+          "digest": "72324085b8427a36411931f8021e7af05ffc73554857d01968c07f4fa6c9c531"
+        },
+        {
+          "source_id": "law_attestations",
+          "digest": "d038c75a7d1ab07c3d8a773337a32e53c581b9d2943c4324d0cd6b6b0b97cdc2"
+        },
+        {
+          "source_id": "claims",
+          "digest": "433336daf73bb99397367671d897c66e87dde59ff3861c2d31ec5ace795c8012"
+        },
+        {
+          "source_id": "summary",
+          "digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf"
+        },
+        {
+          "source_id": "proof_bundle",
+          "digest": "142bf7c3354524880d357ff07f6a7b355993dac88343c55c27a754afc4e08f29"
+        }
+      ],
+      "rematerialization_reason": "Session provenance is the stable lifecycle aggregate that binds evidence, trust, and report digests.",
+      "invalidation_digest": "03e973627f42697b09933b400db279f3941cf2703f9b166fbd514d4d578b07f5",
+      "directly_invalidates": [
+        "claims_view",
+        "dashboard_view",
+        "governance_session",
+        "health_view",
+        "summary_view"
+      ],
+      "changed_since_previous": true,
+      "impacted_by_changes": true,
+      "incremental_eligible": true
+    },
+    {
+      "node_id": "summary_view",
+      "artifact_kind": "read_model",
+      "output_digest": "b527cc9c4663ae76b138f69602f63816740f56f27ac683331f045e16dd7064fc",
+      "source_digests": [
+        {
+          "source_id": "session_provenance_lineage",
+          "digest": "12c00416f5a122ec50e89e84d79bc1083175b533bc96d8ae9b4c2b777fa80657"
+        },
+        {
+          "source_id": "claims",
+          "digest": "433336daf73bb99397367671d897c66e87dde59ff3861c2d31ec5ace795c8012"
+        },
+        {
+          "source_id": "summary",
+          "digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf"
+        }
+      ],
+      "rematerialization_reason": "Summary view is invalidated only by session provenance, claims, or summary digest changes.",
+      "invalidation_digest": "603d0793082b2c623b94eedddce38ba416bdb2b101a44ac21cac821c4f245475",
+      "directly_invalidates": [
+        "governance_session",
+        "read_model_metrics"
+      ],
+      "changed_since_previous": true,
+      "impacted_by_changes": true,
+      "incremental_eligible": true
+    },
+    {
+      "node_id": "claims_view",
+      "artifact_kind": "read_model",
+      "output_digest": "9029fe0923dc665d12b1327f4d2ee80cae20955c577af25d654e0e6e80f9d03a",
+      "source_digests": [
+        {
+          "source_id": "session_provenance_lineage",
+          "digest": "12c00416f5a122ec50e89e84d79bc1083175b533bc96d8ae9b4c2b777fa80657"
+        },
+        {
+          "source_id": "claims",
+          "digest": "433336daf73bb99397367671d897c66e87dde59ff3861c2d31ec5ace795c8012"
+        }
+      ],
+      "rematerialization_reason": "Claims view is invalidated by session provenance or claims digest changes.",
+      "invalidation_digest": "cbb925dd075ee55fcb6f513ee67d76210643c09421e3741a7023a866a7da229b",
+      "directly_invalidates": [
+        "governance_session",
+        "read_model_metrics"
+      ],
+      "changed_since_previous": true,
+      "impacted_by_changes": true,
+      "incremental_eligible": true
+    },
+    {
+      "node_id": "health_view",
+      "artifact_kind": "read_model",
+      "output_digest": "2b2c83b90f7edcd49fd0ceab4fc2951c5a08cc75cadfa909ec790cf1156f3c6b",
+      "source_digests": [
+        {
+          "source_id": "session_provenance_lineage",
+          "digest": "12c00416f5a122ec50e89e84d79bc1083175b533bc96d8ae9b4c2b777fa80657"
+        },
+        {
+          "source_id": "summary",
+          "digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf"
+        }
+      ],
+      "rematerialization_reason": "Health view is invalidated by session provenance or summary digest changes.",
+      "invalidation_digest": "a78f7cf4b736cfe1cddf53cd751814a61b4071de79c62f50ae881f9f210de13a",
+      "directly_invalidates": [
+        "governance_session",
+        "read_model_metrics"
+      ],
+      "changed_since_previous": true,
+      "impacted_by_changes": true,
+      "incremental_eligible": true
+    },
+    {
+      "node_id": "dashboard_view",
+      "artifact_kind": "read_model",
+      "output_digest": "32544d086861bd76af25c765ec0c31bb434b5e00e9138344f0eb8bcab43c4135",
+      "source_digests": [
+        {
+          "source_id": "session_provenance_lineage",
+          "digest": "12c00416f5a122ec50e89e84d79bc1083175b533bc96d8ae9b4c2b777fa80657"
+        },
+        {
+          "source_id": "claims",
+          "digest": "433336daf73bb99397367671d897c66e87dde59ff3861c2d31ec5ace795c8012"
+        },
+        {
+          "source_id": "summary",
+          "digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf"
+        }
+      ],
+      "rematerialization_reason": "Dashboard view is invalidated by session provenance, claims, or summary digest changes.",
+      "invalidation_digest": "fa61efa0ac3d55ff9cc5adf7f5ac4d32db8196b1b3339a02c698e32545da6760",
+      "directly_invalidates": [
+        "governance_session",
+        "read_model_metrics"
+      ],
+      "changed_since_previous": true,
+      "impacted_by_changes": true,
+      "incremental_eligible": true
+    },
+    {
+      "node_id": "read_model_metrics",
+      "artifact_kind": "metrics",
+      "output_digest": "69476f45fc70688237a9ed094ab9cd2d7801f2f09f710d3b4461f8fd89a4f3a1",
+      "source_digests": [
+        {
+          "source_id": "summary_view_lineage",
+          "digest": "6417ecad59082d058c8389cb3a8e978455c4a16d98fc4212d93faaa963bd3e21"
+        },
+        {
+          "source_id": "claims_view_lineage",
+          "digest": "841517f776833dbce31264cb13c7d6e2b998ed2d047f10e47a32c6e51c9f83ec"
+        },
+        {
+          "source_id": "health_view_lineage",
+          "digest": "f0672b4ffbe9cc18d046d7a04c791c0bfeb8d3161018f9dd5386b8586a76a1fb"
+        },
+        {
+          "source_id": "dashboard_view_lineage",
+          "digest": "6417ecad59082d058c8389cb3a8e978455c4a16d98fc4212d93faaa963bd3e21"
+        }
+      ],
+      "rematerialization_reason": "Read-model metrics move when any projected governance view changes.",
+      "invalidation_digest": "0196c63cca213b14a2d2485395d5c97fd4becdde467086bd7c747d5f724f2936",
+      "directly_invalidates": [
+        "governance_session"
+      ],
+      "changed_since_previous": true,
+      "impacted_by_changes": true,
+      "incremental_eligible": true
+    },
+    {
+      "node_id": "governance_session",
+      "artifact_kind": "session",
+      "output_digest": "a3f5dda1914fd48d439498adbeec23e7eac50cf2a2c157ced91f943cb772d13d",
+      "source_digests": [
+        {
+          "source_id": "session_provenance_lineage",
+          "digest": "12c00416f5a122ec50e89e84d79bc1083175b533bc96d8ae9b4c2b777fa80657"
+        },
+        {
+          "source_id": "summary_view_lineage",
+          "digest": "6417ecad59082d058c8389cb3a8e978455c4a16d98fc4212d93faaa963bd3e21"
+        },
+        {
+          "source_id": "claims_view_lineage",
+          "digest": "841517f776833dbce31264cb13c7d6e2b998ed2d047f10e47a32c6e51c9f83ec"
+        },
+        {
+          "source_id": "health_view_lineage",
+          "digest": "f0672b4ffbe9cc18d046d7a04c791c0bfeb8d3161018f9dd5386b8586a76a1fb"
+        },
+        {
+          "source_id": "dashboard_view_lineage",
+          "digest": "6417ecad59082d058c8389cb3a8e978455c4a16d98fc4212d93faaa963bd3e21"
+        },
+        {
+          "source_id": "read_model_metrics_lineage",
+          "digest": "33d65bec48fafeebc0fec7627fe1b67af542b184821d8165950b3f0d8a3803b1"
+        }
+      ],
+      "rematerialization_reason": "Governance session final projection changes only when provenance or attached read-model outputs change.",
+      "invalidation_digest": "8895d1acb540b9bff3c9b9680cee9e0c25e6e045ecef0b292df16f0e96ebbaee",
+      "directly_invalidates": [],
+      "changed_since_previous": true,
+      "impacted_by_changes": true,
+      "incremental_eligible": true
+    }
+  ],
+  "claim_boundary": "Incremental materialization evidence makes the governance invalidation graph explicit by binding artifact digests to downstream materialization stages. It proves whether the current run is a session-level delta, projection-level delta, or no-op relative to the previous baseline so selective execution can be governed by session and projection digests instead of full regeneration by default."
+}

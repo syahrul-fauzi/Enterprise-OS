@@ -1,0 +1,80 @@
+{
+  "report_version": "1.0.0",
+  "report_digest": "d103d4d2d8fe51942e8c38b34fdf3a57219d91d2839bfac7184609dc0598d4c8",
+  "summary": {
+    "adapter_count": 6,
+    "provider_coverage_status": "PASS",
+    "spi_binding_status": "PASS",
+    "operation_surface_status": "PASS",
+    "overall_status": "PASS"
+  },
+  "adapters": [
+    {
+      "adapter_id": "trust-signature-adapter:cosign",
+      "provider_id": "signature-provider:cosign",
+      "provider_kind": "Cosign",
+      "spi_contract": "TrustSignatureProviderSPI",
+      "activation_mode": "federated_remote",
+      "implementation_status": "ADAPTER_READY",
+      "sign_operation_status": "DECLARED",
+      "verify_operation_status": "DECLARED",
+      "adapter_boundary": "Signature provider adapters are activation surfaces for trust SPI binding. They keep signer implementation choices outside governance evidence and certificate identity while preserving a stable provider selection contract."
+    },
+    {
+      "adapter_id": "trust-signature-adapter:hsm",
+      "provider_id": "signature-provider:hsm",
+      "provider_kind": "HSM",
+      "spi_contract": "TrustSignatureProviderSPI",
+      "activation_mode": "external_control_plane",
+      "implementation_status": "ADAPTER_READY",
+      "sign_operation_status": "DECLARED",
+      "verify_operation_status": "DECLARED",
+      "adapter_boundary": "Signature provider adapters are activation surfaces for trust SPI binding. They keep signer implementation choices outside governance evidence and certificate identity while preserving a stable provider selection contract."
+    },
+    {
+      "adapter_id": "trust-signature-adapter:kms",
+      "provider_id": "signature-provider:kms",
+      "provider_kind": "KMS",
+      "spi_contract": "TrustSignatureProviderSPI",
+      "activation_mode": "external_control_plane",
+      "implementation_status": "ADAPTER_READY",
+      "sign_operation_status": "DECLARED",
+      "verify_operation_status": "DECLARED",
+      "adapter_boundary": "Signature provider adapters are activation surfaces for trust SPI binding. They keep signer implementation choices outside governance evidence and certificate identity while preserving a stable provider selection contract."
+    },
+    {
+      "adapter_id": "trust-signature-adapter:local",
+      "provider_id": "signature-provider:local",
+      "provider_kind": "Local",
+      "spi_contract": "TrustSignatureProviderSPI",
+      "activation_mode": "in_process_runtime",
+      "implementation_status": "ADAPTER_READY",
+      "sign_operation_status": "DECLARED",
+      "verify_operation_status": "DECLARED",
+      "adapter_boundary": "Signature provider adapters are activation surfaces for trust SPI binding. They keep signer implementation choices outside governance evidence and certificate identity while preserving a stable provider selection contract."
+    },
+    {
+      "adapter_id": "trust-signature-adapter:remote",
+      "provider_id": "signature-provider:remote",
+      "provider_kind": "Remote",
+      "spi_contract": "TrustSignatureProviderSPI",
+      "activation_mode": "federated_remote",
+      "implementation_status": "ADAPTER_READY",
+      "sign_operation_status": "DECLARED",
+      "verify_operation_status": "DECLARED",
+      "adapter_boundary": "Signature provider adapters are activation surfaces for trust SPI binding. They keep signer implementation choices outside governance evidence and certificate identity while preserving a stable provider selection contract."
+    },
+    {
+      "adapter_id": "trust-signature-adapter:sigstore",
+      "provider_id": "signature-provider:sigstore",
+      "provider_kind": "Sigstore",
+      "spi_contract": "TrustSignatureProviderSPI",
+      "activation_mode": "federated_remote",
+      "implementation_status": "ADAPTER_READY",
+      "sign_operation_status": "DECLARED",
+      "verify_operation_status": "DECLARED",
+      "adapter_boundary": "Signature provider adapters are activation surfaces for trust SPI binding. They keep signer implementation choices outside governance evidence and certificate identity while preserving a stable provider selection contract."
+    }
+  ],
+  "claim_boundary": "Trust signature provider verification proves that the trust framework has a complete adapter activation surface for every declared provider kind. It does not claim cryptographic signing is active yet; it proves the SPI binding path is explicit, covered, and ready for controlled activation."
+}

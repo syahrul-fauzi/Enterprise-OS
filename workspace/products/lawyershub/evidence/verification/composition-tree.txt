@@ -1,0 +1,34 @@
+lawyershub
+├── composition: legal-workspace
+│   ├── extends: workspace-standard
+│   ├── pattern: approval-pattern
+│   ├── pattern: discovery-pattern
+│   ├── pattern: execution-pattern
+│   ├── pattern: monitoring-pattern
+│   ├── surface: dashboard
+│   ├── surface: inbox
+│   ├── surface: explorer
+└── features
+│   ├── Requirements Workspace
+│   │   ├── capability: requirement-management
+│   │   ├── module: explorer-pattern
+│   │   └── primitive: table
+│   │   └── primitive: panel
+│   │   └── primitive: identifier
+│   │   └── primitive: lifecycle
+│   ├── Case Workspace
+│   │   ├── capability: legal-case
+│   │   ├── module: execution-pattern
+│   │   └── primitive: table
+│   │   └── primitive: panel
+│   │   └── primitive: identifier
+│   │   └── primitive: time-range
+│   │   └── primitive: person
+    ├── Document Workspace
+    │   ├── capability: legal-document
+    │   ├── module: discovery-pattern
+    │   └── primitive: table
+    │   └── primitive: panel
+    │   └── primitive: attachment
+    │   └── primitive: lifecycle
+    │   └── primitive: identifier

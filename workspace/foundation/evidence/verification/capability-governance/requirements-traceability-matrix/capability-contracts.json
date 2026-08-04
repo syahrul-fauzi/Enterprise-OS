@@ -1,0 +1,16 @@
+{
+  "capability_id": "requirements-traceability-matrix",
+  "provided_contract_versions": [],
+  "required_contract_ranges": [],
+  "compatibility": {
+    "total_required_contract_count": 0,
+    "compatible_required_contract_count": 0,
+    "unresolved_required_contract_count": 0,
+    "ambiguous_required_contract_count": 0,
+    "unbounded_required_contract_count": 0,
+    "compatibility_status": "PASS",
+    "contract_drift_status": "NONE",
+    "migration_required": false
+  },
+  "artifact_boundary": "Capability contracts projection freezes the provided and required contract surface together with resolved provider compatibility so capability evolution remains auditable and deterministic."
+}

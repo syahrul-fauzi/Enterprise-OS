@@ -1,0 +1,10 @@
+{
+  "capability_id": "governance-evidence",
+  "manifest_version": "1.0.0",
+  "capability_version": "0.1.0",
+  "stability": "stable",
+  "lifecycle_stage": "experimental",
+  "introduced": null,
+  "deprecated": null,
+  "artifact_boundary": "Capability version projection freezes manifest-level and runtime-level version surfaces used for safe compatibility and lifecycle governance."
+}

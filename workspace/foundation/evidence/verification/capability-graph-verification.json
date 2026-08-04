@@ -1,0 +1,70 @@
+{
+  "report_version": "1.0.0",
+  "report_digest": "0ac97010ef346b535491b297b9df9632ea820f97589b2bb306653bd408ca98b6",
+  "summary": {
+    "graph_projection_status": "PASS",
+    "cycle_status": "PASS",
+    "forbidden_dependency_status": "PASS",
+    "unknown_dependency_status": "PASS",
+    "unstable_dependency_status": "FAIL",
+    "health_status": "PASS",
+    "governance_health_status": "WARN"
+  },
+  "health_domains": {
+    "structural_health": {
+      "status": "WARN",
+      "observation_status": "PARTIAL",
+      "circular_dependency_count": 0,
+      "unstable_dependency_count": 8,
+      "unknown_dependency_count": 0,
+      "orphan_capability_count": 3
+    },
+    "architectural_health": {
+      "status": "PASS",
+      "observation_status": "MATERIALIZED",
+      "forbidden_dependency_count": 0,
+      "layering_violation_count": 0,
+      "abstraction_leak_count": 0
+    },
+    "governance_health": {
+      "status": "WARN",
+      "observation_status": "PARTIAL",
+      "ownership_gap_count": 16,
+      "authority_conflict_count": null,
+      "capability_ambiguity_count": null
+    },
+    "evolution_health": {
+      "status": "PASS",
+      "observation_status": "PARTIAL",
+      "deprecated_capability_count": 0,
+      "migration_debt_count": 0,
+      "superseded_capability_count": null
+    },
+    "evidence_health": {
+      "status": "WARN",
+      "observation_status": "PARTIAL",
+      "capability_without_evidence_count": 6,
+      "stale_evidence_count": 1,
+      "unverifiable_capability_count": 3,
+      "orphaned_evidence_count": 0,
+      "inconsistent_evidence_count": 0,
+      "unsigned_evidence_count": 0,
+      "tampered_evidence_count": 0,
+      "partial_evidence_count": 10,
+      "superseded_evidence_count": 0,
+      "expired_evidence_count": 0
+    }
+  },
+  "metrics": {
+    "capability_count": 16,
+    "dependency_edge_count": 11,
+    "circular_dependency_count": 0,
+    "forbidden_dependency_count": 0,
+    "unknown_dependency_count": 0,
+    "unstable_dependency_count": 8,
+    "pass_capability_count": 13,
+    "warn_capability_count": 3,
+    "fail_capability_count": 0
+  },
+  "claim_boundary": "Capability graph verification proves that the projected dependency graph is explicit and can be audited for cycles, forbidden edges, unknown dependencies, and unstable coupling before capability evolution is trusted."
+}

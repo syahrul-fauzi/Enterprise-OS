@@ -1,0 +1,24 @@
+capability_id: governance-read-model
+manifest_ref: workspace/capabilities/governance-read-model/definition/capability.yaml
+manifest_version: 1.0.0
+capability_version: 0.1.0
+stability: stable
+lifecycle_stage: experimental
+governance_status: VALID
+owner: null
+owner_requirement_status: OPTIONAL
+runtime_ref: workspace/capabilities/governance-read-model/implementation/service.ts
+planner_ref: null
+composer_ref: null
+verification_ref: null
+declared_exports:
+  - GovernanceClaimsView
+  - GovernanceDashboardView
+  - GovernanceHealthView
+  - GovernanceReadModelCatalog
+  - GovernanceReadModelProvider
+  - GovernanceSummaryView
+artifact_boundary: Capability manifest projection freezes the capability
+  identity, ownership, lifecycle, and implementation entrypoints as
+  governance-readable evidence without changing the canonical capability
+  manifest.

@@ -1,0 +1,611 @@
+{
+  "registry_version": "1.0.0",
+  "generated_at_utc": "2026-08-03T15:33:51.567Z",
+  "summary": {
+    "learning_record_count": 23,
+    "captured_learning_count": 21,
+    "applied_learning_count": 0,
+    "knowledge_candidate_count": 9,
+    "reused_learning_count": 9,
+    "decision_pattern_change_count": 8
+  },
+  "entries": [
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:f8957bdb86a16916",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:4de2d332f32be45d",
+      "outcome_tracking_id": "decision-outcome:04ced52cc386484c",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T04:12:40.443Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N2 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:f9e259c89fac05b3",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:ae416ad88ecec5a2",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:88a5be87e9ed9287",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:f9e259c89fac05b3",
+      "outcome_tracking_id": "decision-outcome:6b3371e0ce753ba1",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T04:31:19.388Z",
+      "lessons": [
+        "Acceptance remained blocked until proof ledger bertambah was resolved.",
+        "Acceptance remained blocked until science kernel unchanged was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:proof-ledger-bertambah",
+        "gate-c-action:science-kernel-unchanged"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:7aa74259cab42622",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:1f18575a1e841ceb",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:e4d7eb821549f4aa",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:7aa74259cab42622",
+      "outcome_tracking_id": "decision-outcome:b994ee3702aefa97",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T04:36:18.424Z",
+      "lessons": [
+        "Acceptance remained blocked until proof ledger bertambah was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:proof-ledger-bertambah"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": false,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:0efff3ac64f2f606",
+      "future_decision_improved": true,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:bd73d427916ceb94",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:6aba29fbdbfda871",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:0efff3ac64f2f606",
+      "outcome_tracking_id": "decision-outcome:56d0ad248263c6e9",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T04:37:36.699Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N4 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:82fcb0c3723b8d1c",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:050ab95e3ae6d400",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:5bf89752066e1371",
+      "outcome_tracking_id": "decision-outcome:f939833b3b88514b",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T04:53:36.546Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N4 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:82fcb0c3723b8d1c",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:e4be5be060b3bb84",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:4462807dba4aaff6",
+      "outcome_tracking_id": "decision-outcome:f0b1a6f5c9acb14f",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T04:59:35.971Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N4 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:82fcb0c3723b8d1c",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:1efd236e9e650124",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:1fff7a00d428ce45",
+      "outcome_tracking_id": "decision-outcome:cf7d5a90ba399d36",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "OPEN",
+      "created_at_utc": "2026-08-01T05:20:09.778Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N3 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": null,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:090c66c81b3da723",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": null
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:d0556f44b34c1dc9",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:2317429287ef5ba1",
+      "outcome_tracking_id": "decision-outcome:ebaccd2397410f6c",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "OPEN",
+      "created_at_utc": "2026-08-01T05:20:50.241Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N3 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": null,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:090c66c81b3da723",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": null
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:9372300c12082315",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:d24ef09aed98d6cd",
+      "outcome_tracking_id": "decision-outcome:012ece6655ce9714",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T05:40:43.872Z",
+      "lessons": [
+        "Acceptance remained blocked until proof ledger bertambah was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:proof-ledger-bertambah"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": false,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:560d27d4f27c41f4",
+      "future_decision_improved": true,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:bd73d427916ceb94",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:f52c81fb5bf2b435",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:560d27d4f27c41f4",
+      "outcome_tracking_id": "decision-outcome:5e18c7e862d542ce",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T05:47:43.122Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N5 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:2dfc47af1d3a8683",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:6cf9c100ad81dff6",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:229dda074bc3ac5b",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:2dfc47af1d3a8683",
+      "outcome_tracking_id": "decision-outcome:51b6114c10c01037",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T05:53:44.424Z",
+      "lessons": [
+        "Acceptance remained blocked until proof ledger bertambah was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:proof-ledger-bertambah"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:318edcdab70d8c49",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:bd73d427916ceb94",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:94098861278de1c6",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:318edcdab70d8c49",
+      "outcome_tracking_id": "decision-outcome:03c5819ccdb308c4",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T05:53:46.453Z",
+      "lessons": [
+        "Acceptance remained blocked until proof ledger bertambah was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:proof-ledger-bertambah"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": false,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:ba853bccaf44d3a1",
+      "future_decision_improved": true,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:bd73d427916ceb94",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:1a4ed54affd04399",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:ba853bccaf44d3a1",
+      "outcome_tracking_id": "decision-outcome:cc15d9ac9cf79a35",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T06:10:24.574Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N3 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:090c66c81b3da723",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:f2c7473865477496",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:6f584c452a0d44f6",
+      "outcome_tracking_id": "decision-outcome:98bc1f51c45b032b",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T06:10:25.154Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N5 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:6cf9c100ad81dff6",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:08fa0640b32e6eb5",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:bc886689da85d6c6",
+      "outcome_tracking_id": "decision-outcome:be0cf3d8b18fe194",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T06:10:25.592Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N6 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:a20f760ff46cd97a",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:a59ad53b9570757b",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:aa9cd3acbb1056cd",
+      "outcome_tracking_id": "decision-outcome:88e9978b0c601f73",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T06:10:26.049Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N7 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:80f2bca33232992d",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:88a18dea5332811f",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:6ca4700a64e15453",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:80f2bca33232992d",
+      "outcome_tracking_id": "decision-outcome:e412529de6df942d",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T06:11:45.884Z",
+      "lessons": [
+        "Acceptance remained blocked until oracle diagnosis sesuai spesifikasi was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:oracle-diagnosis-sesuai-spesifikasi"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": false,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:e7a2f10dbea3c24a",
+      "future_decision_improved": true,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:f631537605a94365",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:1b8d400467a3f5ce",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:e7a2f10dbea3c24a",
+      "outcome_tracking_id": "decision-outcome:03081212108136d2",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T06:12:05.893Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N3 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:090c66c81b3da723",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:9224b5c9ccda85b0",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:46e636dda886f8ba",
+      "outcome_tracking_id": "decision-outcome:496038b6774b4f21",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T06:12:54.362Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N5 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:6cf9c100ad81dff6",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:93e2a9881665deb7",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:6f7673c375616e48",
+      "outcome_tracking_id": "decision-outcome:4fe55d7677e6bf49",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T06:12:54.944Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N6 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:a20f760ff46cd97a",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:2ba781ed6252f5c4",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:5b7e9cd9be5a8815",
+      "outcome_tracking_id": "decision-outcome:857aea7da4f04d05",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T06:12:55.430Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N7 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:88a18dea5332811f",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:93bf9ffaaf5a26d6",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:bfc9f0318ab5b4e8",
+      "outcome_tracking_id": "decision-outcome:2503cb59e9aef2b7",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T06:17:21.076Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N2 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:ae416ad88ecec5a2",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:7556db60aa2cc378",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:be4ba35f9099f7a2",
+      "outcome_tracking_id": "decision-outcome:fbda7bb200f75937",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-08-01T06:18:14.110Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N2 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": null,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:ae416ad88ecec5a2",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": null
+    }
+  ],
+  "claim_boundary": "Learning registry materializes captured learning records exactly as observed from decision-linked outcome and learning artifacts. It does not claim generalized knowledge beyond the grouped lessons, actions, and hypotheses captured in the underlying learning records."
+}

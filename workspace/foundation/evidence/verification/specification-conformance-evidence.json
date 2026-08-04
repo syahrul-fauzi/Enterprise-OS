@@ -1,0 +1,59 @@
+{
+  "artifact_id": "specification-conformance-evidence:b356258a332a3e37",
+  "artifact_type": "specification-conformance-evidence",
+  "schema_version": "1.0.0",
+  "generated_at_utc": "2026-08-03T15:33:51.656Z",
+  "subject": {
+    "subject_ref": "enterprise/specifications/specification-registry.yaml",
+    "subject_type": "specification-registry",
+    "subject_digest": "dbd1f1205298a8da1fcfb4c0b51f21902f8a836561ee31f89c8e4c4e71dfe81b"
+  },
+  "projection": {
+    "projection_ref": "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+    "projection_id": "SpecificationConformanceProjection:2df7326a03f70a61",
+    "projection_type": "SpecificationConformanceProjection",
+    "projection_digest": "2df7326a03f70a61c4f6025212fafa96c0eb798a6b4daa6c83250437d351a024"
+  },
+  "summary": {
+    "status": "PASS",
+    "rfc_count": 8,
+    "conf_count": 8,
+    "clause_count": 29,
+    "clause_pass_count": 29,
+    "clause_warn_count": 0,
+    "clause_fail_count": 0,
+    "pass_count": 16,
+    "warn_count": 0,
+    "fail_count": 0,
+    "average_coverage_percent": 100
+  },
+  "findings": [],
+  "evidence": {
+    "coverage": {
+      "rfc": {
+        "total": 8,
+        "passing": 8
+      },
+      "conf": {
+        "total": 8,
+        "passing": 8
+      },
+      "clause": {
+        "total": 29,
+        "passing": 29,
+        "warning": 0,
+        "failing": 0
+      }
+    },
+    "projection_payload_ref": "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+    "report_ref": "workspace/foundation/evidence/verification/specification-conformance-report.json"
+  },
+  "digest": "b356258a332a3e37e192739e7cb7a2e669934cc95956a9a36873d774eed0ecfc",
+  "signature": {
+    "status": "UNSIGNED",
+    "key_id": null,
+    "value": null,
+    "reason": "Cryptographic signing is not materialized yet. Canonical digest is the active integrity anchor."
+  },
+  "claim_boundary": "Projection presents evaluable conformance results. Evidence freezes the projection as an auditable canonical artifact."
+}

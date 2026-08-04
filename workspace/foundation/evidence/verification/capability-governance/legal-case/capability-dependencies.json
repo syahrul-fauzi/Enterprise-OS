@@ -1,0 +1,27 @@
+{
+  "capability_id": "legal-case",
+  "declared_dependencies": [],
+  "system_dependencies": [],
+  "dependency_classification": {
+    "policy_version": "1.0.0",
+    "entries": []
+  },
+  "unresolved_dependencies": [],
+  "dependency_policy": {
+    "allowed_dependencies": [],
+    "forbidden_dependencies": []
+  },
+  "declared_consumers": [],
+  "consumers": [
+    "lawyershub"
+  ],
+  "empirically_verified_products": [
+    "lawyershub"
+  ],
+  "product_reach_ratio": 0.3333,
+  "reachable_from_products": [
+    "lawyershub"
+  ],
+  "reachability_status": "REACHABLE",
+  "artifact_boundary": "Capability dependency projection freezes dependency intent, consumer relationships, and product reachability so capability evolution can be audited without reading raw manifests directly."
+}

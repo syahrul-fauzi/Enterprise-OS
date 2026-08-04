@@ -1,0 +1,14 @@
+{
+  "total_invocations": 83,
+  "total_chains": 32,
+  "unique_chain_digests": 32,
+  "chains_with_requirement": 5,
+  "chains_with_workflow": 4,
+  "chains_with_evidence": 1,
+  "reproducible_chains": 13,
+  "stable_chains": 13,
+  "chain_projection_digests": [
+    "faa311186e56c5ca2504dc8d48b400bba7d238c1b87fcba56d0ceec5d9bae0d7"
+  ],
+  "chain_projection_digest": "3fc68bb4491b9b7025f27029dbd680b269a63c13ab9423daf8ee2a660c5a12f7"
+}

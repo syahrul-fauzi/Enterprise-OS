@@ -1,0 +1,16 @@
+{
+  "report_version": "1.0.0",
+  "report_digest": "e91ac41047e227a2999a90c15d38e56dcbfe0f93046c17de5522ae6cfeb8717d",
+  "attestation_profile": "local_signed",
+  "summary": {
+    "activation_status": "ACTIVE",
+    "attestation_count": 16,
+    "verified_attestation_count": 8,
+    "signed_verified_attestation_count": 8,
+    "verification_pass_count": 8,
+    "signature_materialization_status": "PASS",
+    "signature_verification_status": "PASS",
+    "overall_status": "PASS"
+  },
+  "claim_boundary": "Trust signature materialization proves that the active trust signing profile is not merely declared. It verifies that signed attestation events actually carry signature references and that the Local signer can deterministically re-verify those references from the attestation payload digest."
+}

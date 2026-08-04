@@ -1,0 +1,56 @@
+{
+  "registry_health": "BLOCKED",
+  "artifact_coverage_ratio": 0.8947,
+  "owner_coverage_ratio": 0.0625,
+  "reachability_ratio": 0.8125,
+  "graph_integrity_status": "PARTIAL",
+  "dependency_cycles": 0,
+  "dangling_references": [],
+  "orphan_artifacts": [
+    "capability:agent-orchestration",
+    "capability:connector-ecosystem",
+    "capability:observability",
+    "capability:security-hardening"
+  ],
+  "orphan_capability_classification": [
+    {
+      "capability_id": "agent-orchestration",
+      "classification": "ACTIVE_WAITING_COMPOSITION",
+      "reason": "Capability is referenced by product runtime/tests (lawyershub) but not yet declared in composition graph."
+    },
+    {
+      "capability_id": "connector-ecosystem",
+      "classification": "ACTIVE_WAITING_COMPOSITION",
+      "reason": "Capability is referenced by product runtime/tests (lawyershub) but not yet declared in composition graph."
+    },
+    {
+      "capability_id": "observability",
+      "classification": "ACTIVE_WAITING_COMPOSITION",
+      "reason": "Capability is referenced by product runtime/tests (lawyershub) but not yet declared in composition graph."
+    },
+    {
+      "capability_id": "security-hardening",
+      "classification": "ACTIVE_WAITING_COMPOSITION",
+      "reason": "Capability is referenced by product runtime/tests (lawyershub) but not yet declared in composition graph."
+    }
+  ],
+  "dead_capabilities": [
+    "governance-evidence",
+    "governance-read-model",
+    "trust-framework"
+  ],
+  "unused_capabilities": [
+    "agent-orchestration",
+    "api-platform",
+    "connector-ecosystem",
+    "observability",
+    "security-hardening"
+  ],
+  "unreachable_capabilities": [
+    "governance-evidence",
+    "governance-read-model",
+    "trust-framework"
+  ],
+  "duplicate_signatures": [],
+  "claim_boundary": "Graph health currently covers product and capability manifests, including declared capability dependency edges, plus direct runtime/test reachability from product code. Workflow, policy, integration, and surface artifacts are not yet ingested as first-class nodes."
+}

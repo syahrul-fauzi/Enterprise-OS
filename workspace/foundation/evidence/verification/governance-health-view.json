@@ -1,0 +1,17 @@
+{
+  "view_id": "governance-view:health:2b2c83b90f7edcd4",
+  "view_digest": "2b2c83b90f7edcd49fd0ceab4fc2951c5a08cc75cadfa909ec790cf1156f3c6b",
+  "view_kind": "health",
+  "source_session_id": "governance-session:e53ffa9a0a13fb8a",
+  "source_session_digest": "e53ffa9a0a13fb8a349a132ab0d9c9d216961eaa4f6da3790b10aa2f6a09740d",
+  "source_session_lineage_digest": "4cb86da3e09791f433eddf60956af3eff7e905a726b6a52b09531e1172a34064",
+  "source_summary_digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf",
+  "health_status": "HEALTHY",
+  "governance_status": "PASS",
+  "proof_strength": "proof-centric",
+  "claim_count": 8,
+  "violated_law_count": 0,
+  "laws_failed": 0,
+  "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+  "view_boundary": "Governance health view is a derived application health projection from governance summary view. It intentionally collapses governance state into health semantics for clients."
+}

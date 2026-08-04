@@ -1,0 +1,74 @@
+{
+  "registry_version": "1.0.0",
+  "registry_id": "trust-signature-provider-registry:cdac8091add2ec57",
+  "registry_digest": "cdac8091add2ec57f99cf4d41172cbca3648d4a2a408e1f9a13ccd449b04ede0",
+  "adapters": [
+    {
+      "adapter_id": "trust-signature-adapter:cosign",
+      "provider_id": "signature-provider:cosign",
+      "provider_kind": "Cosign",
+      "spi_contract": "TrustSignatureProviderSPI",
+      "activation_mode": "federated_remote",
+      "implementation_status": "ADAPTER_READY",
+      "sign_operation_status": "DECLARED",
+      "verify_operation_status": "DECLARED",
+      "adapter_boundary": "Signature provider adapters are activation surfaces for trust SPI binding. They keep signer implementation choices outside governance evidence and certificate identity while preserving a stable provider selection contract."
+    },
+    {
+      "adapter_id": "trust-signature-adapter:hsm",
+      "provider_id": "signature-provider:hsm",
+      "provider_kind": "HSM",
+      "spi_contract": "TrustSignatureProviderSPI",
+      "activation_mode": "external_control_plane",
+      "implementation_status": "ADAPTER_READY",
+      "sign_operation_status": "DECLARED",
+      "verify_operation_status": "DECLARED",
+      "adapter_boundary": "Signature provider adapters are activation surfaces for trust SPI binding. They keep signer implementation choices outside governance evidence and certificate identity while preserving a stable provider selection contract."
+    },
+    {
+      "adapter_id": "trust-signature-adapter:kms",
+      "provider_id": "signature-provider:kms",
+      "provider_kind": "KMS",
+      "spi_contract": "TrustSignatureProviderSPI",
+      "activation_mode": "external_control_plane",
+      "implementation_status": "ADAPTER_READY",
+      "sign_operation_status": "DECLARED",
+      "verify_operation_status": "DECLARED",
+      "adapter_boundary": "Signature provider adapters are activation surfaces for trust SPI binding. They keep signer implementation choices outside governance evidence and certificate identity while preserving a stable provider selection contract."
+    },
+    {
+      "adapter_id": "trust-signature-adapter:local",
+      "provider_id": "signature-provider:local",
+      "provider_kind": "Local",
+      "spi_contract": "TrustSignatureProviderSPI",
+      "activation_mode": "in_process_runtime",
+      "implementation_status": "ADAPTER_READY",
+      "sign_operation_status": "DECLARED",
+      "verify_operation_status": "DECLARED",
+      "adapter_boundary": "Signature provider adapters are activation surfaces for trust SPI binding. They keep signer implementation choices outside governance evidence and certificate identity while preserving a stable provider selection contract."
+    },
+    {
+      "adapter_id": "trust-signature-adapter:remote",
+      "provider_id": "signature-provider:remote",
+      "provider_kind": "Remote",
+      "spi_contract": "TrustSignatureProviderSPI",
+      "activation_mode": "federated_remote",
+      "implementation_status": "ADAPTER_READY",
+      "sign_operation_status": "DECLARED",
+      "verify_operation_status": "DECLARED",
+      "adapter_boundary": "Signature provider adapters are activation surfaces for trust SPI binding. They keep signer implementation choices outside governance evidence and certificate identity while preserving a stable provider selection contract."
+    },
+    {
+      "adapter_id": "trust-signature-adapter:sigstore",
+      "provider_id": "signature-provider:sigstore",
+      "provider_kind": "Sigstore",
+      "spi_contract": "TrustSignatureProviderSPI",
+      "activation_mode": "federated_remote",
+      "implementation_status": "ADAPTER_READY",
+      "sign_operation_status": "DECLARED",
+      "verify_operation_status": "DECLARED",
+      "adapter_boundary": "Signature provider adapters are activation surfaces for trust SPI binding. They keep signer implementation choices outside governance evidence and certificate identity while preserving a stable provider selection contract."
+    }
+  ],
+  "claim_boundary": "Trust signature provider registry declares the adapter activation surface behind TrustSignatureProviderSPI. It proves that each provider kind exposed by the trust framework has a stable adapter identity and activation mode before cryptographic signing is enabled."
+}

@@ -1,0 +1,19 @@
+{
+  "view_id": "governance-view:summary:b527cc9c4663ae76",
+  "view_digest": "b527cc9c4663ae76b138f69602f63816740f56f27ac683331f045e16dd7064fc",
+  "view_kind": "summary",
+  "source_session_id": "governance-session:e53ffa9a0a13fb8a",
+  "source_session_digest": "e53ffa9a0a13fb8a349a132ab0d9c9d216961eaa4f6da3790b10aa2f6a09740d",
+  "source_session_lineage_digest": "4cb86da3e09791f433eddf60956af3eff7e905a726b6a52b09531e1172a34064",
+  "source_claims_digest": "433336daf73bb99397367671d897c66e87dde59ff3861c2d31ec5ace795c8012",
+  "source_summary_digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf",
+  "status": "PASS",
+  "claim_count": 8,
+  "violated_law_count": 0,
+  "laws_passed": 8,
+  "laws_failed": 0,
+  "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+  "law_profile": "enterprise",
+  "proof_strength": "proof-centric",
+  "view_boundary": "Governance summary view is the application read model for governance status. It is projected from presentation-safe governance artifacts and does not expose proof fragments or law-result payloads."
+}

@@ -1,0 +1,52 @@
+{
+  "query": "legal document",
+  "query_tokens": [
+    "document",
+    "legal"
+  ],
+  "status": "REUSE_AVAILABLE",
+  "top_candidate": {
+    "id": "legal-document",
+    "name": "Legal Documents",
+    "lifecycle_stage": "experimental",
+    "governance_status": "VALID",
+    "consumers": [
+      "lawyershub"
+    ],
+    "empirically_verified_products": [
+      "lawyershub"
+    ],
+    "similarity": 1
+  },
+  "candidates": [
+    {
+      "id": "legal-document",
+      "name": "Legal Documents",
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
+      "consumers": [
+        "lawyershub"
+      ],
+      "empirically_verified_products": [
+        "lawyershub"
+      ],
+      "similarity": 1
+    },
+    {
+      "id": "legal-case",
+      "name": "Case Management",
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
+      "consumers": [
+        "lawyershub"
+      ],
+      "empirically_verified_products": [
+        "lawyershub"
+      ],
+      "similarity": 0.25
+    }
+  ],
+  "rule": "Everything is discovered before it is composed, and everything is composed before it is created.",
+  "graph_source": "foundation_snapshot",
+  "graph_source_path": "/root/Enterprise-OS/workspace/foundation/evidence/verification/execution-graph.json"
+}

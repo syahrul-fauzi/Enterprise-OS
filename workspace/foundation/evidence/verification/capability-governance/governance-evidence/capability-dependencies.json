@@ -1,0 +1,58 @@
+{
+  "capability_id": "governance-evidence",
+  "declared_dependencies": [
+    {
+      "capability_id": "trust-framework",
+      "version": "0.1.0",
+      "manifest_ref": "workspace/capabilities/trust-framework/definition/capability.yaml",
+      "governance_status": "VALID",
+      "stability": "stable",
+      "lifecycle_stage": "experimental"
+    }
+  ],
+  "system_dependencies": [
+    {
+      "dependency_id": "core-runtime",
+      "dependency_kind": "system_runtime",
+      "rationale": "Shared runtime instrumentation is treated as infrastructure/system dependency rather than bounded-context capability dependency."
+    }
+  ],
+  "dependency_classification": {
+    "policy_version": "1.0.0",
+    "entries": [
+      {
+        "dependency_id": "core-runtime",
+        "dependency_class": "system_runtime",
+        "resolution_status": "SYSTEM_DEPENDENCY",
+        "rationale": "Shared runtime instrumentation is treated as infrastructure/system dependency rather than bounded-context capability dependency."
+      },
+      {
+        "dependency_id": "trust-framework",
+        "dependency_class": "bounded_context_capability",
+        "resolution_status": "RESOLVED_CAPABILITY",
+        "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
+      }
+    ]
+  },
+  "unresolved_dependencies": [],
+  "dependency_policy": {
+    "allowed_dependencies": [
+      "core-runtime",
+      "trust-framework"
+    ],
+    "forbidden_dependencies": [
+      "api-platform",
+      "governance-read-model"
+    ]
+  },
+  "declared_consumers": [
+    "api-platform",
+    "governance-read-model"
+  ],
+  "consumers": [],
+  "empirically_verified_products": [],
+  "product_reach_ratio": 0,
+  "reachable_from_products": [],
+  "reachability_status": "UNREACHABLE",
+  "artifact_boundary": "Capability dependency projection freezes dependency intent, consumer relationships, and product reachability so capability evolution can be audited without reading raw manifests directly."
+}

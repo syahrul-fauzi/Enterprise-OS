@@ -1,0 +1,17 @@
+{
+  "capability_id": "agent-orchestration",
+  "manifest_ref": "workspace/capabilities/agent-orchestration/definition/capability.yaml",
+  "manifest_version": "1.0.0",
+  "capability_version": "0.1.0",
+  "stability": "experimental",
+  "lifecycle_stage": "experimental",
+  "governance_status": "VALID",
+  "owner": null,
+  "owner_requirement_status": "OPTIONAL",
+  "runtime_ref": "workspace/capabilities/agent-orchestration/implementation/service.ts",
+  "planner_ref": null,
+  "composer_ref": null,
+  "verification_ref": "workspace/capabilities/agent-orchestration/tests",
+  "declared_exports": [],
+  "artifact_boundary": "Capability manifest projection freezes the capability identity, ownership, lifecycle, and implementation entrypoints as governance-readable evidence without changing the canonical capability manifest."
+}

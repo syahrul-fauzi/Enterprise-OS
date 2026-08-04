@@ -1,0 +1,124 @@
+{
+  "report_version": "1.0.0",
+  "report_digest": "14f5341e767b6d84fe35b83b02051614ec1886ede3f208d5aa47990346cc4efc",
+  "summary": {
+    "lifecycle_vocabulary_status": "PASS",
+    "append_only_status": "PASS",
+    "transition_integrity_status": "PASS",
+    "terminal_event_readiness_status": "PASS",
+    "overall_status": "PASS"
+  },
+  "stream": {
+    "attestation_count": 8,
+    "event_count": 16,
+    "observed_event_types": [
+      "AttestationCreated",
+      "AttestationVerified"
+    ],
+    "supported_event_types": [
+      "AttestationCreated",
+      "AttestationVerified",
+      "AttestationExpired",
+      "AttestationRevoked",
+      "AttestationSuperseded"
+    ],
+    "missing_supported_event_types": [],
+    "attestation_with_created_count": 8,
+    "attestation_with_verified_count": 8,
+    "attestation_with_terminal_event_count": 0,
+    "append_only_sequence_violations": 0,
+    "duplicate_event_index_violations": 0,
+    "transition_integrity_violations": 0
+  },
+  "attestations": [
+    {
+      "attestation_reference": "attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5",
+      "event_count": 2,
+      "event_types": [
+        "AttestationCreated",
+        "AttestationVerified"
+      ],
+      "terminal_event_type": null,
+      "append_only_status": "PASS",
+      "transition_integrity_status": "PASS"
+    },
+    {
+      "attestation_reference": "attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044",
+      "event_count": 2,
+      "event_types": [
+        "AttestationCreated",
+        "AttestationVerified"
+      ],
+      "terminal_event_type": null,
+      "append_only_status": "PASS",
+      "transition_integrity_status": "PASS"
+    },
+    {
+      "attestation_reference": "attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77",
+      "event_count": 2,
+      "event_types": [
+        "AttestationCreated",
+        "AttestationVerified"
+      ],
+      "terminal_event_type": null,
+      "append_only_status": "PASS",
+      "transition_integrity_status": "PASS"
+    },
+    {
+      "attestation_reference": "attestation:certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5:3be5a32144ba1a2a",
+      "event_count": 2,
+      "event_types": [
+        "AttestationCreated",
+        "AttestationVerified"
+      ],
+      "terminal_event_type": null,
+      "append_only_status": "PASS",
+      "transition_integrity_status": "PASS"
+    },
+    {
+      "attestation_reference": "attestation:certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502:fe089695d27d21f9",
+      "event_count": 2,
+      "event_types": [
+        "AttestationCreated",
+        "AttestationVerified"
+      ],
+      "terminal_event_type": null,
+      "append_only_status": "PASS",
+      "transition_integrity_status": "PASS"
+    },
+    {
+      "attestation_reference": "attestation:certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7:4061cf5e5aee66ac",
+      "event_count": 2,
+      "event_types": [
+        "AttestationCreated",
+        "AttestationVerified"
+      ],
+      "terminal_event_type": null,
+      "append_only_status": "PASS",
+      "transition_integrity_status": "PASS"
+    },
+    {
+      "attestation_reference": "attestation:certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d:2d4a26cf3e509103",
+      "event_count": 2,
+      "event_types": [
+        "AttestationCreated",
+        "AttestationVerified"
+      ],
+      "terminal_event_type": null,
+      "append_only_status": "PASS",
+      "transition_integrity_status": "PASS"
+    },
+    {
+      "attestation_reference": "attestation:certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a:17b8b2a26e0f9257",
+      "event_count": 2,
+      "event_types": [
+        "AttestationCreated",
+        "AttestationVerified"
+      ],
+      "terminal_event_type": null,
+      "append_only_status": "PASS",
+      "transition_integrity_status": "PASS"
+    }
+  ],
+  "claim_boundary": "Attestation lifecycle verification proves that trust attestations are governed as an append-only event stream with stable lifecycle vocabulary and ordered transitions. It hardens provenance and trust operations without changing certificate identity or the core governance domain model."
+}

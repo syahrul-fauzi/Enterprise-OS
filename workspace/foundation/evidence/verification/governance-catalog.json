@@ -1,0 +1,257 @@
+{
+  "catalog_version": "1.0.0",
+  "catalog_id": "governance-catalog:e65c6cd24ada31f4",
+  "catalog_digest": "e65c6cd24ada31f40a2b3f9d272e7e27dd33650cb3890db7f7a2dc41069d7320",
+  "evidence_types": [
+    {
+      "type_id": "evidence-type:law-result-evidence-artifact",
+      "type_kind": "evidence_type",
+      "canonical_name": "LawResultEvidenceArtifact",
+      "digest": "6668378d2186afa6dd726fcea0eab93a7379f1f4395dd6d2e2b0732264e120f8",
+      "semantic_boundary": "Evidence artifacts are the raw constitutional proof payloads consumed by LawResult without changing certificate or trust identity."
+    },
+    {
+      "type_id": "evidence-type:constitution-proof-fragment",
+      "type_kind": "evidence_type",
+      "canonical_name": "ConstitutionProofFragment",
+      "digest": "08f8039ef6503bb1956beb1320a72ed467d5a6f6135159fcca2d50e15cd88407",
+      "semantic_boundary": "Proof fragments are immutable evidence inputs that contribute to constitutional evaluation and evidence-package assembly."
+    },
+    {
+      "type_id": "evidence-type:governance-session-provenance",
+      "type_kind": "evidence_type",
+      "canonical_name": "GovernanceSessionProvenance",
+      "digest": "6179a4e137c8c6bd362f69a6894d79446d115f22a132db3bddf6bcfe75f344dd",
+      "semantic_boundary": "Governance session provenance is the replayable evidence anchor that binds trust, law results, evidence packages, certificates, reports, and projected read models."
+    }
+  ],
+  "law_types": [
+    {
+      "type_id": "law-type:GraphPurityLaw",
+      "type_kind": "law_type",
+      "canonical_name": "GraphPurityLaw",
+      "digest": "a732390532cd8ceca876f23db7f3a188071cd2635b7cc3fed81cf18bd239d9fc",
+      "semantic_boundary": "Law types define the canonical governance evaluation vocabulary used by law results, evidence packages, certificates, and reports."
+    },
+    {
+      "type_id": "law-type:DigestLaw",
+      "type_kind": "law_type",
+      "canonical_name": "DigestLaw",
+      "digest": "80225c0308eb2d3a88f41c2f6d9486788054ba6b42712190738732b7e06fb8d5",
+      "semantic_boundary": "Law types define the canonical governance evaluation vocabulary used by law results, evidence packages, certificates, and reports."
+    },
+    {
+      "type_id": "law-type:SerializerTransparencyLaw",
+      "type_kind": "law_type",
+      "canonical_name": "SerializerTransparencyLaw",
+      "digest": "132c76b4ec5d9026a16448cc6ccad3e643871978dcfa8618a85016969b56096f",
+      "semantic_boundary": "Law types define the canonical governance evaluation vocabulary used by law results, evidence packages, certificates, and reports."
+    },
+    {
+      "type_id": "law-type:StorageTransparencyLaw",
+      "type_kind": "law_type",
+      "canonical_name": "StorageTransparencyLaw",
+      "digest": "176dfb3b4420fa4e8a33949b491d6ea689eea7fb8032572e322329028c0147a5",
+      "semantic_boundary": "Law types define the canonical governance evaluation vocabulary used by law results, evidence packages, certificates, and reports."
+    },
+    {
+      "type_id": "law-type:ReplayLaw",
+      "type_kind": "law_type",
+      "canonical_name": "ReplayLaw",
+      "digest": "f0d1aa3e1278cb24b684eb0cec4789b87c02f9166a872254126664a66ef1a6e1",
+      "semantic_boundary": "Law types define the canonical governance evaluation vocabulary used by law results, evidence packages, certificates, and reports."
+    },
+    {
+      "type_id": "law-type:ProjectionDeterminismLaw",
+      "type_kind": "law_type",
+      "canonical_name": "ProjectionDeterminismLaw",
+      "digest": "aa7cbf91ed1df0acce42b99ed86b5a4a7b2fe32e38d2ebd8d38c1c965655de56",
+      "semantic_boundary": "Law types define the canonical governance evaluation vocabulary used by law results, evidence packages, certificates, and reports."
+    },
+    {
+      "type_id": "law-type:DependencyBoundaryLaw",
+      "type_kind": "law_type",
+      "canonical_name": "DependencyBoundaryLaw",
+      "digest": "b5256bbe0c1c41ba8ffdc7c0cec21dc1a81e68e0005eedf923f96f73de46738c",
+      "semantic_boundary": "Law types define the canonical governance evaluation vocabulary used by law results, evidence packages, certificates, and reports."
+    },
+    {
+      "type_id": "law-type:DeterminismLaw",
+      "type_kind": "law_type",
+      "canonical_name": "DeterminismLaw",
+      "digest": "62b07f4ca5880160bd73c00410530c438fd335071976b68d90913a9aa84823cb",
+      "semantic_boundary": "Law types define the canonical governance evaluation vocabulary used by law results, evidence packages, certificates, and reports."
+    }
+  ],
+  "package_types": [
+    {
+      "type_id": "package-type:single_law_evaluation",
+      "type_kind": "package_type",
+      "canonical_name": "single_law_evaluation",
+      "digest": "78ee4d311a3dca27fe71cc53aaf081962a393b1b924fd8a5c6aa02acdb2e0cd3",
+      "semantic_boundary": "Evidence package types preserve the canonical materialization boundary for immutable governance evidence bundles."
+    },
+    {
+      "type_id": "package-type:constitution-proof-bundle",
+      "type_kind": "package_type",
+      "canonical_name": "ConstitutionProofBundle",
+      "digest": "5a584cbf5bf1e6ebce99d8f0247f281ff36e30d67bea117d530ed29318025d93",
+      "semantic_boundary": "Proof bundle is the governed package type for replayable constitutional reporting and downstream provenance linkage."
+    }
+  ],
+  "certificate_types": [
+    {
+      "type_id": "certificate-type:constitution-law-certificate",
+      "type_kind": "certificate_type",
+      "canonical_name": "ConstitutionLawCertificate",
+      "digest": "c1b4954496650b090031e30992e8a96d7debfd05345b76a634e78b5faf0e7235",
+      "semantic_boundary": "Constitution law certificates are immutable certificate outputs issued from evidence packages before attestation and session projection."
+    },
+    {
+      "type_id": "certificate-type:attestation-policy",
+      "type_kind": "certificate_type",
+      "canonical_name": "attestation-policy:local-signed",
+      "digest": "86b87166eaf4d8fe61d72972532130dced8cfe2b82ccd5c3e016385587ff9bc3",
+      "semantic_boundary": "Attestation policy is cataloged as the trust-boundary certificate policy reference consumed by governance provenance."
+    }
+  ],
+  "policy_types": [
+    {
+      "type_id": "policy-type:attestation-policy:local-signed",
+      "type_kind": "policy_type",
+      "canonical_name": "local_signed",
+      "digest": "459c49f59d31970f868ba66f3e980321dad067af128a252faa26e3ad71d80fd8",
+      "semantic_boundary": "Policy types keep trust-boundary naming stable across attestation profiles, trust frameworks, and provenance."
+    },
+    {
+      "type_id": "policy-type:attestation-policy:local-unsigned",
+      "type_kind": "policy_type",
+      "canonical_name": "local_development",
+      "digest": "de197600abca8bb39b5206afef7051235b9c170d6788b55af4d3d983df913b68",
+      "semantic_boundary": "Trust framework policies are cataloged so governance can consume stable policy identities without embedding trust internals."
+    },
+    {
+      "type_id": "policy-type:attestation-policy:production-pending-signature",
+      "type_kind": "policy_type",
+      "canonical_name": "production",
+      "digest": "b0fe092b96e31a9c16e08f11c0bf69c1ab041d675facca466197b3a788d42124",
+      "semantic_boundary": "Trust framework policies are cataloged so governance can consume stable policy identities without embedding trust internals."
+    },
+    {
+      "type_id": "policy-type:attestation-policy:cross-org-pending-signature",
+      "type_kind": "policy_type",
+      "canonical_name": "federated",
+      "digest": "f5ac96d18d14a06dba2b32030ba73651bb8ec26511f14a5dc1a7e2b95d6962dc",
+      "semantic_boundary": "Trust framework policies are cataloged so governance can consume stable policy identities without embedding trust internals."
+    }
+  ],
+  "read_model_types": [
+    {
+      "type_id": "read-model-type:summary",
+      "type_kind": "read_model_type",
+      "canonical_name": "GovernanceSummaryView",
+      "digest": "77ecf0e688d55a933ce47fe71df3214e05a140fb24bb893e73026fbd2c3361f6",
+      "semantic_boundary": "Summary view is the governed read-model contract for constitutional status and proof-strength consumption."
+    },
+    {
+      "type_id": "read-model-type:claims",
+      "type_kind": "read_model_type",
+      "canonical_name": "GovernanceClaimsView",
+      "digest": "b5bea0eb33e90213f221cf0bedf4ea848b6362a510039e834a89e70b557ca444",
+      "semantic_boundary": "Claims view is the governed read-model contract for constitutional claims and violations consumption."
+    },
+    {
+      "type_id": "read-model-type:health",
+      "type_kind": "read_model_type",
+      "canonical_name": "GovernanceHealthView",
+      "digest": "ea4a47aa0c85a22f7480bbbf859b62212bb38959bcb01e53bec55d58d9eb6094",
+      "semantic_boundary": "Health view is the governed read-model contract for platform and governance operational status."
+    },
+    {
+      "type_id": "read-model-type:dashboard",
+      "type_kind": "read_model_type",
+      "canonical_name": "GovernanceDashboardView",
+      "digest": "ceb2ce05d2d7668f596ff18afa72e21a0067d01a88a83961e8b86a5de2049b0b",
+      "semantic_boundary": "Dashboard view is the governed read-model contract for executive governance consumption."
+    },
+    {
+      "type_id": "read-model-type:metrics",
+      "type_kind": "read_model_type",
+      "canonical_name": "GovernanceReadModelMetrics",
+      "digest": "9dac42b9d112365913adac04d4323280ffb13a4db720b7250dceda7fddf6f754",
+      "semantic_boundary": "Read-model metrics are the governed observability contract for materialization freshness, latency, and generation lineage."
+    }
+  ],
+  "report_types": [
+    {
+      "type_id": "report-type:constitution-summary",
+      "type_kind": "report_type",
+      "canonical_name": "ConstitutionSummary",
+      "digest": "58fd1d9f153f999c2c7c645b62790dea1c93070c41266f533e99e8f538f8ec40",
+      "semantic_boundary": "Constitution summary is the canonical report type for top-level governance pass/fail interpretation."
+    },
+    {
+      "type_id": "report-type:constitution-claims",
+      "type_kind": "report_type",
+      "canonical_name": "ConstitutionClaims",
+      "digest": "dec6e3d0ca7bc95ede35ace967b3b560582c4e5b41aa33b950d8b03d25a55dac",
+      "semantic_boundary": "Constitution claims is the canonical report type for individual governance claim outcomes."
+    },
+    {
+      "type_id": "report-type:constitution-proof-bundle",
+      "type_kind": "report_type",
+      "canonical_name": "ConstitutionProofBundle",
+      "digest": "2cc08b63b6b8d7c94bc873bf2ecbe9feb5759aeb83b1997f1639213c6d71fe94",
+      "semantic_boundary": "Constitution proof bundle is the canonical replayable report package for constitutional governance."
+    },
+    {
+      "type_id": "report-type:governance-session",
+      "type_kind": "report_type",
+      "canonical_name": "GovernanceSession",
+      "digest": "cf39fde7804c61b32483de36e33c4a1fe7b4467bc07e36738e030d0d4698e23b",
+      "semantic_boundary": "Governance session is the canonical provenance report type for execution-wide lifecycle identity."
+    },
+    {
+      "type_id": "report-type:governance-session-verification",
+      "type_kind": "report_type",
+      "canonical_name": "GovernanceSessionVerificationReport",
+      "digest": "1d2acdc2c71babe254b7e2a98449253e47850583bcbf6f2ed9c0de27a5f9400c",
+      "semantic_boundary": "Governance session verification is the canonical report type for validating provenance completeness and lifecycle readiness."
+    },
+    {
+      "type_id": "report-type:verification-run",
+      "type_kind": "report_type",
+      "canonical_name": "VerificationRun",
+      "digest": "1360685bb74b8ab857792f962ec9515289da59cbbc6bab8f11a442f4f0d95070",
+      "semantic_boundary": "Verification run is the canonical operational report type for one governance verification execution above GovernanceSession provenance."
+    },
+    {
+      "type_id": "report-type:verification-run-verification",
+      "type_kind": "report_type",
+      "canonical_name": "VerificationRunVerificationReport",
+      "digest": "be020017923447ccee73882afc3ede41b60d262ea287d247d9a88010b826659a",
+      "semantic_boundary": "Verification run verification is the canonical report type for validating orchestration completeness, readiness, and GovernanceSession binding."
+    },
+    {
+      "type_id": "report-type:trust-framework-catalog",
+      "type_kind": "report_type",
+      "canonical_name": "trust-framework-catalog:c14c47d3657aea1c",
+      "digest": "b04d1a8058d063a57bff7a1143e6cda183366cd62e1239990fdd7792caddf34e",
+      "semantic_boundary": "Trust framework catalog is the canonical report type for trust-domain policy and provider vocabulary."
+    }
+  ],
+  "supporting_digests": {
+    "law_results_digest": "33761b443425fcdd498cbad9f4bac92061a88957c199a3db3a252397e462b5cc",
+    "evidence_packages_digest": "240fdfeb7889f823d2f25dff0ab6ba1a14e57eb7cdadf6d8fe22e78a1be8f2ca",
+    "law_certificates_digest": "72324085b8427a36411931f8021e7af05ffc73554857d01968c07f4fa6c9c531",
+    "law_proofs_digest": "a98d08f7a4ec1e3cdfb86bb5b5950a773c2035fda4e9e7f5b37a2ce97319ba06",
+    "claims_digest": "433336daf73bb99397367671d897c66e87dde59ff3861c2d31ec5ace795c8012",
+    "constitution_summary_digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf",
+    "proof_bundle_digest": "142bf7c3354524880d357ff07f6a7b355993dac88343c55c27a754afc4e08f29",
+    "governance_session_digest": "e53ffa9a0a13fb8a349a132ab0d9c9d216961eaa4f6da3790b10aa2f6a09740d",
+    "governance_session_verification_digest": "c4e6eab5ed584840fd6bbb65615397f3475178d2ae712f3b34c315c2c9e41d26",
+    "verification_run_digest": "fa880343af99fce45be4ce7e2d732f18e1f378619aeef74f98ba136244ff9071",
+    "verification_run_verification_digest": "46e0459d3616735a90d81dc7aa52730c80e697878eee41f1d7fb6e8e401bb239"
+  },
+  "claim_boundary": "Governance catalog is the semantic registry for core governance vocabulary. It freezes canonical type identities for laws, evidence packages, certificates, policies, read models, and reports so the platform can evolve without naming drift."
+}

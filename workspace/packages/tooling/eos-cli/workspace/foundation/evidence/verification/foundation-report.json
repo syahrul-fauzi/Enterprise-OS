@@ -1,0 +1,18 @@
+{
+  "verification_result": {
+    "foundation_status": "PARTIAL_BASELINE",
+    "health_status": "PARTIAL"
+  },
+  "foundation_metrics": {
+    "verified_products": 2
+  },
+  "execution_evidence_summary": {
+    "observed_capabilities": 7
+  },
+  "decision_quality": {
+    "status": "PARTIAL"
+  },
+  "evidence_convergence": {
+    "status": "PASS"
+  }
+}

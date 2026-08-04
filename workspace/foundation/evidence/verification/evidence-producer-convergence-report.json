@@ -1,0 +1,144 @@
+{
+  "report_version": "1.0.0",
+  "status": "WARN",
+  "summary": {
+    "producer_count": 6,
+    "canonical_schema_versions": [
+      "1.0.0"
+    ],
+    "artifact_type_count": 6,
+    "subject_type_count": 5,
+    "producers_with_default_projection_ref": 5,
+    "target_producer_count": 9,
+    "registered_target_producer_count": 6,
+    "target_coverage_ratio": 0.6667
+  },
+  "producers": [
+    {
+      "producer_id": "foundation-report-producer",
+      "artifact_type": "foundation-report-evidence",
+      "subject_type": "foundation-verification",
+      "schema_version": "1.0.0",
+      "default_projection_ref": "workspace/foundation/evidence/verification/foundation-report-projection.json",
+      "canonical_envelope": {
+        "subject": true,
+        "projection": true,
+        "digest": true,
+        "signature": true,
+        "generated_at_utc": true,
+        "summary": true,
+        "findings": true,
+        "evidence": true,
+        "claim_boundary": true
+      }
+    },
+    {
+      "producer_id": "gate-c-status-producer",
+      "artifact_type": "gate-c-status-evidence",
+      "subject_type": "gate-c-status",
+      "schema_version": "1.0.0",
+      "default_projection_ref": "workspace/foundation/evidence/verification/gate-c-status-projection.json",
+      "canonical_envelope": {
+        "subject": true,
+        "projection": true,
+        "digest": true,
+        "signature": true,
+        "generated_at_utc": true,
+        "summary": true,
+        "findings": true,
+        "evidence": true,
+        "claim_boundary": true
+      }
+    },
+    {
+      "producer_id": "specification-conformance-producer",
+      "artifact_type": "specification-conformance-evidence",
+      "subject_type": "specification-registry",
+      "schema_version": "1.0.0",
+      "default_projection_ref": "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+      "canonical_envelope": {
+        "subject": true,
+        "projection": true,
+        "digest": true,
+        "signature": true,
+        "generated_at_utc": true,
+        "summary": true,
+        "findings": true,
+        "evidence": true,
+        "claim_boundary": true
+      }
+    },
+    {
+      "producer_id": "decision-outcome-producer",
+      "artifact_type": "decision-outcome-evidence",
+      "subject_type": "decision_ledger_entry",
+      "schema_version": "1.0.0",
+      "default_projection_ref": "workspace/foundation/evidence/verification/decision-outcome-projection.json",
+      "canonical_envelope": {
+        "subject": true,
+        "projection": true,
+        "digest": true,
+        "signature": true,
+        "generated_at_utc": true,
+        "summary": true,
+        "findings": true,
+        "evidence": true,
+        "claim_boundary": true
+      }
+    },
+    {
+      "producer_id": "decision-impact-producer",
+      "artifact_type": "decision-impact-evidence",
+      "subject_type": "decision_ledger_entry",
+      "schema_version": "1.0.0",
+      "default_projection_ref": "workspace/foundation/evidence/verification/decision-impact-projection.json",
+      "canonical_envelope": {
+        "subject": true,
+        "projection": true,
+        "digest": true,
+        "signature": true,
+        "generated_at_utc": true,
+        "summary": true,
+        "findings": true,
+        "evidence": true,
+        "claim_boundary": true
+      }
+    },
+    {
+      "producer_id": "product-runtime-producer",
+      "artifact_type": "product-runtime-verification-evidence",
+      "subject_type": "product",
+      "schema_version": "1.0.0",
+      "default_projection_ref": null,
+      "canonical_envelope": {
+        "subject": true,
+        "projection": true,
+        "digest": true,
+        "signature": true,
+        "generated_at_utc": true,
+        "summary": true,
+        "findings": true,
+        "evidence": true,
+        "claim_boundary": true
+      }
+    }
+  ],
+  "missing_target_producers": [
+    {
+      "producer_id": "doctor-producer",
+      "producer_class": "doctor",
+      "description": "Doctor diagnostics evidence."
+    },
+    {
+      "producer_id": "policy-producer",
+      "producer_class": "policy",
+      "description": "Policy evaluation evidence."
+    },
+    {
+      "producer_id": "build-producer",
+      "producer_class": "build",
+      "description": "Build verification evidence."
+    }
+  ],
+  "claim_boundary": "Producer report verifies convergence only for registered canonical evidence producers materialized through the shared producer runtime. It does not certify unregistered legacy evidence surfaces."
+}

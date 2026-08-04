@@ -1,0 +1,52 @@
+{
+  "methodology": {
+    "module_reuse_formula": "number_of_features_using_module",
+    "primitive_reuse_formula": "number_of_features_using_primitive",
+    "evidence_basis": "capability-mapping-matrix.csv",
+    "claim_boundary": "Single-product observation only. Cross-product leverage requires additional verified products."
+  },
+  "module_reuse": [
+    {
+      "module": "discovery-pattern",
+      "reuse_count": 1
+    },
+    {
+      "module": "execution-pattern",
+      "reuse_count": 1
+    },
+    {
+      "module": "explorer-pattern",
+      "reuse_count": 1
+    }
+  ],
+  "primitive_reuse": [
+    {
+      "primitive": "identifier",
+      "reuse_count": 3
+    },
+    {
+      "primitive": "panel",
+      "reuse_count": 3
+    },
+    {
+      "primitive": "table",
+      "reuse_count": 3
+    },
+    {
+      "primitive": "lifecycle",
+      "reuse_count": 2
+    },
+    {
+      "primitive": "attachment",
+      "reuse_count": 1
+    },
+    {
+      "primitive": "person",
+      "reuse_count": 1
+    },
+    {
+      "primitive": "time-range",
+      "reuse_count": 1
+    }
+  ]
+}

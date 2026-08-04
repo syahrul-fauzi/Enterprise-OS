@@ -1,0 +1,21 @@
+{
+  "capability_id": "api-platform",
+  "manifest_ref": "workspace/capabilities/api-platform/definition/capability.yaml",
+  "manifest_version": "1.0.0",
+  "capability_version": "0.1.0",
+  "stability": "stable",
+  "lifecycle_stage": "experimental",
+  "governance_status": "VALID",
+  "owner": null,
+  "owner_requirement_status": "OPTIONAL",
+  "runtime_ref": "workspace/capabilities/api-platform/implementation/service.ts",
+  "planner_ref": null,
+  "composer_ref": null,
+  "verification_ref": "workspace/capabilities/api-platform/tests",
+  "declared_exports": [
+    "ApiPlatformDescriptor",
+    "ApiPlatformQueryInput",
+    "ApiPlatformQueryOutput"
+  ],
+  "artifact_boundary": "Capability manifest projection freezes the capability identity, ownership, lifecycle, and implementation entrypoints as governance-readable evidence without changing the canonical capability manifest."
+}

@@ -1,0 +1,22 @@
+{
+  "report_version": "1.0.0",
+  "report_digest": "67924e778a5e72e310d2ee38164b239a8bc32a5e0ee03fec6843ff42718b6f5c",
+  "summary": {
+    "node_projection_status": "PASS",
+    "dependency_binding_status": "PASS",
+    "evidence_chain_status": "PASS",
+    "session_projection_status": "PASS",
+    "disconnected_node_status": "PASS",
+    "overall_status": "PASS"
+  },
+  "metrics": {
+    "node_count": 67,
+    "edge_count": 124,
+    "disconnected_node_count": 0,
+    "capability_count": 16,
+    "evidence_node_count": 40,
+    "read_model_count": 5,
+    "dependency_edge_count": 11
+  },
+  "claim_boundary": "Enterprise control graph verification checks that capability dependencies, evidence-chain lineage, session-projected read models, and Gate C control-plane status remain traversable as one explicit control graph."
+}

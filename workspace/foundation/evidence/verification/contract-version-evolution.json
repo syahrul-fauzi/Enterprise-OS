@@ -1,0 +1,52 @@
+{
+  "report_version": "1.0.0",
+  "report_digest": "0c5b1912b2695d9d696bd485d8b89ed1513d812fb9f40dd277562142c2bdb265",
+  "summary": {
+    "deterministic_resolution_status": "PASS",
+    "consumer_pinning_status": "PASS",
+    "parallel_major_evolution_readiness_status": "PASS",
+    "overall_status": "PASS",
+    "total_contracts": 3,
+    "ready_contracts": 3,
+    "blocked_contracts": 0
+  },
+  "contracts": [
+    {
+      "contract_name": "GovernanceEvidenceProvider",
+      "provider_count": 1,
+      "consumer_count": 1,
+      "deterministic_resolution_status": "PASS",
+      "consumer_pinning_status": "PASS",
+      "parallel_major_evolution_readiness_status": "PASS",
+      "major_versions_declared": [
+        1
+      ],
+      "blocked_reasons": []
+    },
+    {
+      "contract_name": "GovernanceReadModelProvider",
+      "provider_count": 1,
+      "consumer_count": 1,
+      "deterministic_resolution_status": "PASS",
+      "consumer_pinning_status": "PASS",
+      "parallel_major_evolution_readiness_status": "PASS",
+      "major_versions_declared": [
+        1
+      ],
+      "blocked_reasons": []
+    },
+    {
+      "contract_name": "TrustFrameworkProvider",
+      "provider_count": 1,
+      "consumer_count": 1,
+      "deterministic_resolution_status": "PASS",
+      "consumer_pinning_status": "PASS",
+      "parallel_major_evolution_readiness_status": "PASS",
+      "major_versions_declared": [
+        1
+      ],
+      "blocked_reasons": []
+    }
+  ],
+  "claim_boundary": "Contract version evolution verification proves that declared contract consumers are major-pinned and provider resolution remains deterministic, so the repository can introduce future provider major versions without silently rebinding consumers. It operationalizes contract versioning as an upgrade-safety control rather than a passive registry snapshot."
+}

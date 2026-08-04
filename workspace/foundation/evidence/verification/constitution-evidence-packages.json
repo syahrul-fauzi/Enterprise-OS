@@ -1,0 +1,330 @@
+[
+  {
+    "package_id": "evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2",
+    "package_digest": "9c7f79bd37e6cfe230998b3dafa0d9c1d050b5c5324fc2e0da8cc6e06b8abb2e",
+    "package_scope": "single_law_evaluation",
+    "law_ids": [
+      "GraphPurityLaw"
+    ],
+    "result_ids": [
+      "law-result:GraphPurityLaw:a8302dc6e3220e27"
+    ],
+    "result_digests": [
+      "a8302dc6e3220e276d35477c2a08bde42440e7e62e0d808be6c34db8e8ebfd88"
+    ],
+    "proof_ids": [
+      "proof:GraphPurityLaw:bd11e1f09cd3ac49"
+    ],
+    "proof_digests": [
+      "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be"
+    ],
+    "artifact_keys": [
+      "graph_purity_certificate"
+    ],
+    "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+    "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+    "constitutional_fingerprint": {
+      "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
+      "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
+      "projection_api_version": "1.0.0",
+      "constitution_version": "1.0.0"
+    },
+    "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+    "proof_fragments": {
+      "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
+      "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
+      "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
+      "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+      "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
+      "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+    },
+    "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
+  },
+  {
+    "package_id": "evidence-package:DigestLaw:ac8a8ceea6c59f23",
+    "package_digest": "ac8a8ceea6c59f238567535b87223418b3955cfb8056e5a4e74940a611c34ba0",
+    "package_scope": "single_law_evaluation",
+    "law_ids": [
+      "DigestLaw"
+    ],
+    "result_ids": [
+      "law-result:DigestLaw:856a2e9d776740be"
+    ],
+    "result_digests": [
+      "856a2e9d776740be9a6eb7ba9cc57ff0b9bc66bba4cfc12ecef6cb4b6f3bac4d"
+    ],
+    "proof_ids": [
+      "proof:DigestLaw:c1f2db4fe87e77a0"
+    ],
+    "proof_digests": [
+      "c1f2db4fe87e77a0dd1637b0f408cfa06b0a803cbf4768163a313b5cc86300f8"
+    ],
+    "artifact_keys": [
+      "projection_digest_certificates"
+    ],
+    "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+    "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+    "constitutional_fingerprint": {
+      "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
+      "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
+      "projection_api_version": "1.0.0",
+      "constitution_version": "1.0.0"
+    },
+    "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+    "proof_fragments": {
+      "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
+      "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
+      "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
+      "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+      "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
+      "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+    },
+    "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
+  },
+  {
+    "package_id": "evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9",
+    "package_digest": "bb9407ec0b72d5b96518adae3680769b0f5c794b600577781ebf1e5a368296db",
+    "package_scope": "single_law_evaluation",
+    "law_ids": [
+      "SerializerTransparencyLaw"
+    ],
+    "result_ids": [
+      "law-result:SerializerTransparencyLaw:498345ef80d3b4aa"
+    ],
+    "result_digests": [
+      "498345ef80d3b4aa91be28fcc598e28dd73a873ce0ca2355619d3904e7247ea7"
+    ],
+    "proof_ids": [
+      "proof:SerializerTransparencyLaw:de7536afa31ef643"
+    ],
+    "proof_digests": [
+      "de7536afa31ef6438f24f6415e78195c86308173c2a6065d415004241d97452f"
+    ],
+    "artifact_keys": [
+      "serializer_transparency_certificates"
+    ],
+    "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+    "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+    "constitutional_fingerprint": {
+      "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
+      "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
+      "projection_api_version": "1.0.0",
+      "constitution_version": "1.0.0"
+    },
+    "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+    "proof_fragments": {
+      "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
+      "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
+      "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
+      "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+      "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
+      "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+    },
+    "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
+  },
+  {
+    "package_id": "evidence-package:StorageTransparencyLaw:310ababbc08ba39d",
+    "package_digest": "310ababbc08ba39d3e28a6c47fe897355fef1b384396266fba661e977845de60",
+    "package_scope": "single_law_evaluation",
+    "law_ids": [
+      "StorageTransparencyLaw"
+    ],
+    "result_ids": [
+      "law-result:StorageTransparencyLaw:77adc443f1022307"
+    ],
+    "result_digests": [
+      "77adc443f1022307e8398f4bf15abe8f2d37dba4ca86dd8ab0cab71cf331b421"
+    ],
+    "proof_ids": [
+      "proof:StorageTransparencyLaw:5cf2587a8837e541"
+    ],
+    "proof_digests": [
+      "5cf2587a8837e54104c9fbae173ebe191a827625b4239c6414d295de619848ad"
+    ],
+    "artifact_keys": [
+      "storage_transparency_certificates"
+    ],
+    "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+    "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+    "constitutional_fingerprint": {
+      "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
+      "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
+      "projection_api_version": "1.0.0",
+      "constitution_version": "1.0.0"
+    },
+    "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+    "proof_fragments": {
+      "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
+      "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
+      "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
+      "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+      "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
+      "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+    },
+    "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
+  },
+  {
+    "package_id": "evidence-package:ReplayLaw:aa89d74bbc2e58cd",
+    "package_digest": "aa89d74bbc2e58cd0e1457423a5db9d37f5cc9471b6ec2b0dc9b050e7a88162b",
+    "package_scope": "single_law_evaluation",
+    "law_ids": [
+      "ReplayLaw"
+    ],
+    "result_ids": [
+      "law-result:ReplayLaw:29f7eb8d0d071c20"
+    ],
+    "result_digests": [
+      "29f7eb8d0d071c2082a665e47d3f4c497be3385eec71fcbd39dfc8e24432681a"
+    ],
+    "proof_ids": [
+      "proof:ReplayLaw:5d5eaf103097d903"
+    ],
+    "proof_digests": [
+      "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404"
+    ],
+    "artifact_keys": [
+      "replay_certificates"
+    ],
+    "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+    "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+    "constitutional_fingerprint": {
+      "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
+      "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
+      "projection_api_version": "1.0.0",
+      "constitution_version": "1.0.0"
+    },
+    "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+    "proof_fragments": {
+      "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
+      "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
+      "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
+      "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+      "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
+      "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+    },
+    "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
+  },
+  {
+    "package_id": "evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb",
+    "package_digest": "14cf3a19b0e46beb7477219131c26f3fe5e5becee90758db9e0dd5e738fd6c13",
+    "package_scope": "single_law_evaluation",
+    "law_ids": [
+      "ProjectionDeterminismLaw"
+    ],
+    "result_ids": [
+      "law-result:ProjectionDeterminismLaw:26b6ea228e0f1c7b"
+    ],
+    "result_digests": [
+      "26b6ea228e0f1c7bba59e2464ca7855f400e79883407747dd99af7c39fcefd48"
+    ],
+    "proof_ids": [
+      "proof:ProjectionDeterminismLaw:65d5461548f10c16"
+    ],
+    "proof_digests": [
+      "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+    ],
+    "artifact_keys": [
+      "projection_determinism_certificates"
+    ],
+    "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+    "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+    "constitutional_fingerprint": {
+      "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
+      "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
+      "projection_api_version": "1.0.0",
+      "constitution_version": "1.0.0"
+    },
+    "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+    "proof_fragments": {
+      "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
+      "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
+      "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
+      "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+      "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
+      "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+    },
+    "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
+  },
+  {
+    "package_id": "evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf",
+    "package_digest": "6641dcc833bf5aafc4299d1ead630944c374c283326b43108fd5a3519ddea890",
+    "package_scope": "single_law_evaluation",
+    "law_ids": [
+      "DependencyBoundaryLaw"
+    ],
+    "result_ids": [
+      "law-result:DependencyBoundaryLaw:7f28bbb810e14946"
+    ],
+    "result_digests": [
+      "7f28bbb810e149465f7c9131c3d586a5186e64eeb06bcca5f23361cd3e4d65a5"
+    ],
+    "proof_ids": [
+      "proof:DependencyBoundaryLaw:9f911c51856d5705"
+    ],
+    "proof_digests": [
+      "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b"
+    ],
+    "artifact_keys": [
+      "dependency_constitution"
+    ],
+    "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+    "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+    "constitutional_fingerprint": {
+      "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
+      "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
+      "projection_api_version": "1.0.0",
+      "constitution_version": "1.0.0"
+    },
+    "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+    "proof_fragments": {
+      "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
+      "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
+      "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
+      "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+      "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
+      "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+    },
+    "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
+  },
+  {
+    "package_id": "evidence-package:DeterminismLaw:88df227d2d3a7f40",
+    "package_digest": "88df227d2d3a7f40fb809cb99242e92e19a66424e3520330b62cea834bc432b9",
+    "package_scope": "single_law_evaluation",
+    "law_ids": [
+      "DeterminismLaw"
+    ],
+    "result_ids": [
+      "law-result:DeterminismLaw:9666c3df260c7731"
+    ],
+    "result_digests": [
+      "9666c3df260c77313bbe0b4b28c26d5b8ef2da90b267e4985cf2439f2b397f41"
+    ],
+    "proof_ids": [
+      "proof:DeterminismLaw:b580883548757075"
+    ],
+    "proof_digests": [
+      "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904"
+    ],
+    "artifact_keys": [
+      "proof_determinism_certificate"
+    ],
+    "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+    "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+    "constitutional_fingerprint": {
+      "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
+      "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
+      "projection_api_version": "1.0.0",
+      "constitution_version": "1.0.0"
+    },
+    "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+    "proof_fragments": {
+      "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
+      "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
+      "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
+      "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+      "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
+      "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+    },
+    "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
+  }
+]

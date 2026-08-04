@@ -1,0 +1,196 @@
+{
+  "metrics_version": "1.0.0",
+  "metrics_digest": "40cb6ddb8724836282733e1c3bdebfc7879bdba30c4b0cdc35eacf521beae4b6",
+  "summary": {
+    "total_capabilities": 16,
+    "observed_capabilities": 13,
+    "verified_capabilities": 13,
+    "reproducible_capabilities": 8,
+    "total_invocations": 83
+  },
+  "capabilities": [
+    {
+      "capability_id": "agent-orchestration",
+      "execution_status": "REPRODUCIBLE",
+      "invocation_count": 7,
+      "success_count": 7,
+      "failure_count": 0,
+      "reproducible_operation_count": 7,
+      "observed_products": [
+        "lawyershub"
+      ],
+      "metrics_digest": "1db630b2961be93c8f581bcfa51ff8b939dfbca3062f3fee16df69aa91cf6703"
+    },
+    {
+      "capability_id": "api-platform",
+      "execution_status": "REPRODUCIBLE",
+      "invocation_count": 4,
+      "success_count": 4,
+      "failure_count": 0,
+      "reproducible_operation_count": 4,
+      "observed_products": [
+        "lawyershub"
+      ],
+      "metrics_digest": "719b7beefab99d2a4f5351dbb6cc9f2cfc32fad1225b3cce71e4f03a1dc27d74"
+    },
+    {
+      "capability_id": "connector-ecosystem",
+      "execution_status": "VERIFIED",
+      "invocation_count": 2,
+      "success_count": 2,
+      "failure_count": 0,
+      "reproducible_operation_count": 0,
+      "observed_products": [
+        "lawyershub"
+      ],
+      "metrics_digest": "82a0a1fe93f7b30c52b86860b7744184c912b720bb3cd4d792918fdb9a583c5f"
+    },
+    {
+      "capability_id": "evidence-registry",
+      "execution_status": "REPRODUCIBLE",
+      "invocation_count": 10,
+      "success_count": 10,
+      "failure_count": 0,
+      "reproducible_operation_count": 10,
+      "observed_products": [
+        "lawyershub"
+      ],
+      "metrics_digest": "876e275f5d97ab70aa83c42d1c51c722b3358946e3da2983e06b0da3337b2b4a"
+    },
+    {
+      "capability_id": "governance-evidence",
+      "execution_status": "VERIFIED",
+      "invocation_count": 8,
+      "success_count": 8,
+      "failure_count": 0,
+      "reproducible_operation_count": 0,
+      "observed_products": [],
+      "metrics_digest": "d56a6c82bf4d6945e4a6a00fd80b5ad6f9941e06a9d4d823d192f6be3cf56ada"
+    },
+    {
+      "capability_id": "governance-read-model",
+      "execution_status": "VERIFIED",
+      "invocation_count": 2,
+      "success_count": 2,
+      "failure_count": 0,
+      "reproducible_operation_count": 0,
+      "observed_products": [],
+      "metrics_digest": "90b84bd930462410e1f9730a25318f60e7a0cca65dd417ea68e19f795e68af54"
+    },
+    {
+      "capability_id": "identity",
+      "execution_status": "DECLARED",
+      "invocation_count": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "reproducible_operation_count": 0,
+      "observed_products": [],
+      "metrics_digest": "3528707794fc804e1ee0d0ec9822bc2c56338d8b9dd971e0e0b9970cd0a6e44b"
+    },
+    {
+      "capability_id": "knowledge-graph",
+      "execution_status": "REPRODUCIBLE",
+      "invocation_count": 3,
+      "success_count": 3,
+      "failure_count": 0,
+      "reproducible_operation_count": 3,
+      "observed_products": [
+        "lawyershub"
+      ],
+      "metrics_digest": "3f67445ca02a100db9f011c4e7c9cc34dceb0445abd2b12c85832724fe9cf120"
+    },
+    {
+      "capability_id": "legal-case",
+      "execution_status": "DECLARED",
+      "invocation_count": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "reproducible_operation_count": 0,
+      "observed_products": [
+        "lawyershub"
+      ],
+      "metrics_digest": "db98369d6e77426e61fc5567d5e57972429f378fd804afe195d55a8251e1ea82"
+    },
+    {
+      "capability_id": "legal-document",
+      "execution_status": "DECLARED",
+      "invocation_count": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "reproducible_operation_count": 0,
+      "observed_products": [],
+      "metrics_digest": "a07a4d6b9cb73d8546a8faebb3a22bcd713622319a03f160f9de6e218fd8ab68"
+    },
+    {
+      "capability_id": "observability",
+      "execution_status": "VERIFIED",
+      "invocation_count": 3,
+      "success_count": 3,
+      "failure_count": 0,
+      "reproducible_operation_count": 0,
+      "observed_products": [
+        "lawyershub"
+      ],
+      "metrics_digest": "0958ccb9b466a0e14d8956c750fbf568ab8124555ad7cb65b8829d751cb8c858"
+    },
+    {
+      "capability_id": "requirement-management",
+      "execution_status": "REPRODUCIBLE",
+      "invocation_count": 11,
+      "success_count": 11,
+      "failure_count": 0,
+      "reproducible_operation_count": 11,
+      "observed_products": [
+        "lawyershub"
+      ],
+      "metrics_digest": "d9fe15dd27a341be09f696bfc533777f1daddfd95e3d440804a2985258fe39bc"
+    },
+    {
+      "capability_id": "requirements-traceability-matrix",
+      "execution_status": "REPRODUCIBLE",
+      "invocation_count": 5,
+      "success_count": 5,
+      "failure_count": 0,
+      "reproducible_operation_count": 5,
+      "observed_products": [
+        "lawyershub"
+      ],
+      "metrics_digest": "b58300c60ea0a1a054fae6a591f47aec0ee5970c803fb8209308c48830a89eb2"
+    },
+    {
+      "capability_id": "security-hardening",
+      "execution_status": "REPRODUCIBLE",
+      "invocation_count": 19,
+      "success_count": 19,
+      "failure_count": 0,
+      "reproducible_operation_count": 19,
+      "observed_products": [
+        "lawyershub"
+      ],
+      "metrics_digest": "4f37ecbdda0b79a65c445bcaa8e184bdaadeca1648698658a2cd855513298cb7"
+    },
+    {
+      "capability_id": "trust-framework",
+      "execution_status": "VERIFIED",
+      "invocation_count": 1,
+      "success_count": 1,
+      "failure_count": 0,
+      "reproducible_operation_count": 0,
+      "observed_products": [],
+      "metrics_digest": "6057a3984a4d32a73b14f661b1de47dc7c53428745183ec184cb91e9b58b9184"
+    },
+    {
+      "capability_id": "workflow-engine",
+      "execution_status": "REPRODUCIBLE",
+      "invocation_count": 8,
+      "success_count": 8,
+      "failure_count": 0,
+      "reproducible_operation_count": 8,
+      "observed_products": [
+        "lawyershub"
+      ],
+      "metrics_digest": "a5460e6be56657d2d204bafee08d632e65aff9e4f50a695cb7b7de4c5e483623"
+    }
+  ],
+  "claim_boundary": "Capability operational metrics summarize runtime invocation evidence observed during verified product execution. They provide operational certification input without changing capability contracts or artifact ownership boundaries."
+}

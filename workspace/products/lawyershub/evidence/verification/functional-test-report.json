@@ -1,0 +1,64 @@
+{
+  "product": "lawyershub",
+  "status": "PASS",
+  "reporter": "tap",
+  "summary": {
+    "total": 9,
+    "pass": 9,
+    "fail": 0,
+    "skipped": 0,
+    "todo": 0,
+    "cancelled": 0
+  },
+  "test_cases": [
+    {
+      "id": "TC-001",
+      "name": "agent orchestration API lists available plans",
+      "status": "PASS"
+    },
+    {
+      "id": "TC-002",
+      "name": "agent orchestration API dispatches a plan",
+      "status": "PASS"
+    },
+    {
+      "id": "TC-003",
+      "name": "connectors API lists registered connectors",
+      "status": "PASS"
+    },
+    {
+      "id": "TC-004",
+      "name": "connectors API executes connector sync",
+      "status": "PASS"
+    },
+    {
+      "id": "TC-005",
+      "name": "enterprise UI platform console renders core operational sections",
+      "status": "PASS"
+    },
+    {
+      "id": "TC-006",
+      "name": "governance evidence API exposes auditor-facing evidence artifacts",
+      "status": "PASS"
+    },
+    {
+      "id": "TC-007",
+      "name": "graph API exposes knowledge graph snapshot",
+      "status": "PASS"
+    },
+    {
+      "id": "TC-008",
+      "name": "graph API resolves workflow node detail",
+      "status": "PASS"
+    },
+    {
+      "id": "TC-009",
+      "name": "observability API exposes logs, metrics, and traces",
+      "status": "PASS"
+    }
+  ],
+  "plan_instance_id": "pi:9249964e7236032f",
+  "plan_id": "plan::lawyershub.workspace.default::11dd818f",
+  "plan_digest": "11dd818f",
+  "command": "pnpm --dir /root/Enterprise-OS/workspace exec node --import tsx --test --test-reporter tap <test-files>"
+}

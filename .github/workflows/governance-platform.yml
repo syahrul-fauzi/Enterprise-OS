@@ -1,0 +1,63 @@
+name: Governance Platform
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/governance-platform.yml"
+      - "enterprise/**"
+      - "workspace/capabilities/**"
+      - "workspace/packages/core/capability-registry/**"
+      - "workspace/packages/tooling/eos-cli/**"
+      - "workspace/package.json"
+      - "workspace/pnpm-lock.yaml"
+      - "workspace/turbo.json"
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - ".github/workflows/governance-platform.yml"
+      - "enterprise/**"
+      - "workspace/capabilities/**"
+      - "workspace/packages/core/capability-registry/**"
+      - "workspace/packages/tooling/eos-cli/**"
+      - "workspace/package.json"
+      - "workspace/pnpm-lock.yaml"
+      - "workspace/turbo.json"
+
+jobs:
+  governance-platform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.19.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: workspace/pnpm-lock.yaml
+
+      - name: Install workspace dependencies
+        working-directory: workspace
+        run: pnpm install --frozen-lockfile
+
+      - name: Run governance platform gate
+        working-directory: workspace
+        run: pnpm governance:gate
+
+      - name: Upload governance verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: governance-verification-evidence
+          path: |
+            workspace/foundation/evidence/verification/**
+            workspace/foundation/evidence/registry/**
+            enterprise/science/gate-c/execution/gate-c-status.yaml

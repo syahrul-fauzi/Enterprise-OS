@@ -1,0 +1,25 @@
+{
+  "policy_id": "attestation-policy:local-signed",
+  "profile": "local_signed",
+  "trust_framework": {
+    "framework_id": "trust-framework:local-development-signed",
+    "framework_digest": "73d60d52b46666306bbf5dae4766df3bbf0024797f1a68c31c41c0dce284dbf0",
+    "verification_profile_id": "verification-profile:local-development-signed",
+    "signature_provider_spi": "DECLARED",
+    "framework_boundary": "Trust framework reference links governance provenance and attestation policy to a trust-domain aggregate without embedding signer implementation details into certificates."
+  },
+  "issuer": {
+    "issuer_id": "LOCAL_SIGNER_ACTIVE",
+    "display_name": "Local Signed Runtime"
+  },
+  "trust_chain": "LOCAL_TRUST_WITH_ACTIVE_SIGNER",
+  "signature": {
+    "status": "SIGNED",
+    "scheme": "LOCAL_DIGEST_V1",
+    "value": "MATERIALIZED_PER_ATTESTATION",
+    "key_id": "local-development-key",
+    "reason": "Local trust signing is active for workstation and CI verification. Signature references are materialized per attestation event through the Local trust adapter."
+  },
+  "policy_boundary": "Local signed attestation is the baseline trust posture for development verification once the Local signer adapter is activated.",
+  "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92"
+}

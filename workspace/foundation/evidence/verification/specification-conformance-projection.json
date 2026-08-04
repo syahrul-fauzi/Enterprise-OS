@@ -1,0 +1,1131 @@
+{
+  "projection_id": "SpecificationConformanceProjection:2df7326a03f70a61",
+  "projection_type": "SpecificationConformanceProjection",
+  "schema_version": "1.0.0",
+  "projection_digest": "2df7326a03f70a61c4f6025212fafa96c0eb798a6b4daa6c83250437d351a024",
+  "generated_from": [
+    {
+      "source_type": "specification_registry",
+      "source_ref": "enterprise/specifications/specification-registry.yaml",
+      "source_digest": "dbd1f1205298a8da1fcfb4c0b51f21902f8a836561ee31f89c8e4c4e71dfe81b"
+    }
+  ],
+  "generated_at_utc": "2026-08-03T15:33:51.434Z",
+  "report_id": "specification-conformance-report",
+  "generated_at": "2026-08-03T15:33:51.434Z",
+  "registry_ref": "enterprise/specifications/specification-registry.yaml",
+  "summary": {
+    "rfc_count": 8,
+    "conf_count": 8,
+    "clause_count": 29,
+    "clause_pass_count": 29,
+    "clause_warn_count": 0,
+    "clause_fail_count": 0,
+    "pass_count": 16,
+    "warn_count": 0,
+    "fail_count": 0,
+    "average_coverage_percent": 100
+  },
+  "rfc_entries": [
+    {
+      "rfc_id": "RFC-0001",
+      "title": "Specification Meta-Model",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/rfc/RFC-0001-specification-meta-model.md",
+      "conformance_ref": "enterprise/specifications/conformance/CONF-0001-specification-meta-model-conformance.md",
+      "linked_conf_ids": [
+        "CONF-0001"
+      ],
+      "constitutional_dependencies": [
+        "ADR-0009",
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012"
+      ],
+      "downstream_dependencies": [
+        "RFC-0002",
+        "RFC-0003",
+        "RFC-0004",
+        "RFC-0005",
+        "RFC-0006",
+        "RFC-0007",
+        "RFC-0010"
+      ],
+      "required_sections": {
+        "declared_count": 17,
+        "existing_count": 17,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "conformance_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "implemented_surfaces": {
+        "declared_count": 4,
+        "existing_count": 4,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "verification_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "findings": []
+    },
+    {
+      "rfc_id": "RFC-0002",
+      "title": "Enterprise Graph Navigation API",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/rfc/RFC-0002-enterprise-graph-navigation-api.md",
+      "conformance_ref": "enterprise/specifications/conformance/CONF-0002-enterprise-graph-navigation-conformance.md",
+      "linked_conf_ids": [
+        "CONF-0002"
+      ],
+      "constitutional_dependencies": [
+        "ADR-0009",
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012"
+      ],
+      "downstream_dependencies": [
+        "RFC-0003"
+      ],
+      "required_sections": {
+        "declared_count": 17,
+        "existing_count": 17,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "conformance_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "implemented_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "verification_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "findings": []
+    },
+    {
+      "rfc_id": "RFC-0003",
+      "title": "Evaluator SPI",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/rfc/RFC-0003-evaluator-spi.md",
+      "conformance_ref": "enterprise/specifications/conformance/CONF-0003-evaluator-spi-conformance.md",
+      "linked_conf_ids": [
+        "CONF-0003"
+      ],
+      "constitutional_dependencies": [
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012"
+      ],
+      "downstream_dependencies": [
+        "RFC-0004"
+      ],
+      "required_sections": {
+        "declared_count": 17,
+        "existing_count": 17,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "conformance_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "implemented_surfaces": {
+        "declared_count": 4,
+        "existing_count": 4,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "verification_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "findings": []
+    },
+    {
+      "rfc_id": "RFC-0004",
+      "title": "Decision Engine Specification",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/rfc/RFC-0004-decision-engine-specification.md",
+      "conformance_ref": "enterprise/specifications/conformance/CONF-0004-decision-engine-conformance.md",
+      "linked_conf_ids": [
+        "CONF-0004"
+      ],
+      "constitutional_dependencies": [
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012"
+      ],
+      "downstream_dependencies": [
+        "RFC-0005",
+        "RFC-0010"
+      ],
+      "required_sections": {
+        "declared_count": 17,
+        "existing_count": 17,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "conformance_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "implemented_surfaces": {
+        "declared_count": 2,
+        "existing_count": 2,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "verification_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "findings": []
+    },
+    {
+      "rfc_id": "RFC-0005",
+      "title": "Decision Ledger Specification",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/rfc/RFC-0005-decision-ledger-specification.md",
+      "conformance_ref": "enterprise/specifications/conformance/CONF-0005-decision-ledger-conformance.md",
+      "linked_conf_ids": [
+        "CONF-0005"
+      ],
+      "constitutional_dependencies": [
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012"
+      ],
+      "downstream_dependencies": [
+        "RFC-0006",
+        "RFC-0010"
+      ],
+      "required_sections": {
+        "declared_count": 17,
+        "existing_count": 17,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "conformance_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "implemented_surfaces": {
+        "declared_count": 3,
+        "existing_count": 3,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "verification_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "findings": []
+    },
+    {
+      "rfc_id": "RFC-0006",
+      "title": "Automation Runtime SPI",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/rfc/RFC-0006-automation-runtime-spi.md",
+      "conformance_ref": "enterprise/specifications/conformance/CONF-0006-automation-runtime-conformance.md",
+      "linked_conf_ids": [
+        "CONF-0006"
+      ],
+      "constitutional_dependencies": [
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012"
+      ],
+      "downstream_dependencies": [],
+      "required_sections": {
+        "declared_count": 17,
+        "existing_count": 17,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "conformance_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "implemented_surfaces": {
+        "declared_count": 2,
+        "existing_count": 2,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "verification_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "findings": []
+    },
+    {
+      "rfc_id": "RFC-0007",
+      "title": "Evidence Artifact Model",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/rfc/RFC-0007-evidence-artifact-model.md",
+      "conformance_ref": "enterprise/specifications/conformance/CONF-0007-evidence-artifact-model-conformance.md",
+      "linked_conf_ids": [
+        "CONF-0007"
+      ],
+      "constitutional_dependencies": [
+        "ADR-0009",
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012"
+      ],
+      "downstream_dependencies": [],
+      "required_sections": {
+        "declared_count": 17,
+        "existing_count": 17,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "conformance_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "implemented_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "verification_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "findings": []
+    },
+    {
+      "rfc_id": "RFC-0010",
+      "title": "Decision Object Model",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/rfc/RFC-0010-decision-object-model.md",
+      "conformance_ref": "enterprise/specifications/conformance/CONF-0010-decision-object-model-conformance.md",
+      "linked_conf_ids": [
+        "CONF-0010"
+      ],
+      "constitutional_dependencies": [
+        "ADR-0009",
+        "ADR-0010",
+        "ADR-0011",
+        "ADR-0012"
+      ],
+      "downstream_dependencies": [],
+      "required_sections": {
+        "declared_count": 17,
+        "existing_count": 17,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "conformance_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "implemented_surfaces": {
+        "declared_count": 3,
+        "existing_count": 3,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "verification_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "findings": []
+    }
+  ],
+  "conf_entries": [
+    {
+      "conf_id": "CONF-0001",
+      "title": "Specification Meta-Model Conformance",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/conformance/CONF-0001-specification-meta-model-conformance.md",
+      "proves": [
+        "RFC-0001"
+      ],
+      "required_sections": {
+        "declared_count": 12,
+        "existing_count": 12,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "proven_specifications": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "test_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "evidence_surfaces": {
+        "declared_count": 4,
+        "existing_count": 4,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "clause_summary": {
+        "clause_count": 3,
+        "pass_count": 3,
+        "warn_count": 0,
+        "fail_count": 0
+      },
+      "clauses": [
+        {
+          "clause_id": "CONF-0001-1",
+          "statement": "Runtime contract models MUST use canonical identity and reference language from RFC-0001.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/foundation/evidence/verification/specification-vocabulary-audit.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0001-2",
+          "statement": "Implementations MUST NOT use filesystem path as canonical identity.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/foundation/evidence/verification/specification-vocabulary-audit.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0001-3",
+          "statement": "Compatibility semantics MUST remain attached to relationships, not identity.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/foundation/evidence/verification/specification-vocabulary-audit.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        }
+      ],
+      "findings": []
+    },
+    {
+      "conf_id": "CONF-0002",
+      "title": "Enterprise Graph Navigation Conformance",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/conformance/CONF-0002-enterprise-graph-navigation-conformance.md",
+      "proves": [
+        "RFC-0002"
+      ],
+      "required_sections": {
+        "declared_count": 12,
+        "existing_count": 12,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "proven_specifications": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "test_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "evidence_surfaces": {
+        "declared_count": 3,
+        "existing_count": 3,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "clause_summary": {
+        "clause_count": 3,
+        "pass_count": 3,
+        "warn_count": 0,
+        "fail_count": 0
+      },
+      "clauses": [
+        {
+          "clause_id": "CONF-0002-1",
+          "statement": "Graph navigation MUST operate on canonical references, not storage paths.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/enterprise-query-runtime.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0002-2",
+          "statement": "Query traversal MUST remain deterministic for the same snapshot.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/enterprise-query-runtime.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0002-3",
+          "statement": "Implementations MUST NOT redefine traversal semantics outside the shared graph API boundary.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/enterprise-query-runtime.test.ts"
+          ]
+        }
+      ],
+      "findings": []
+    },
+    {
+      "conf_id": "CONF-0003",
+      "title": "Evaluator SPI Conformance",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/conformance/CONF-0003-evaluator-spi-conformance.md",
+      "proves": [
+        "RFC-0003"
+      ],
+      "required_sections": {
+        "declared_count": 12,
+        "existing_count": 12,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "proven_specifications": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "test_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "evidence_surfaces": {
+        "declared_count": 3,
+        "existing_count": 3,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "clause_summary": {
+        "clause_count": 4,
+        "pass_count": 4,
+        "warn_count": 0,
+        "fail_count": 0
+      },
+      "clauses": [
+        {
+          "clause_id": "CONF-0003-1",
+          "statement": "Evaluators MUST emit evaluations, not decisions.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0003-2",
+          "statement": "Evaluators MUST be discoverable through the shared registry contract.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0003-3",
+          "statement": "Evaluator implementations MUST NOT import other evaluator implementations directly.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0003-4",
+          "statement": "Runtime contract payloads MUST remain aligned with `SPEC-0101`, `SPEC-0102`, `SPEC-0103`, and `SPEC-0104`.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        }
+      ],
+      "findings": []
+    },
+    {
+      "conf_id": "CONF-0004",
+      "title": "Decision Engine Conformance",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/conformance/CONF-0004-decision-engine-conformance.md",
+      "proves": [
+        "RFC-0004"
+      ],
+      "required_sections": {
+        "declared_count": 12,
+        "existing_count": 12,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "proven_specifications": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "test_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "evidence_surfaces": {
+        "declared_count": 3,
+        "existing_count": 3,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "clause_summary": {
+        "clause_count": 3,
+        "pass_count": 3,
+        "warn_count": 0,
+        "fail_count": 0
+      },
+      "clauses": [
+        {
+          "clause_id": "CONF-0004-1",
+          "statement": "Decision engine implementations MUST remain domain-agnostic.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0004-2",
+          "statement": "Decision engine implementations MUST consume evaluator outputs through contracts.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0004-3",
+          "statement": "Decision engine implementations MUST NOT directly import runtime implementations they orchestrate.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        }
+      ],
+      "findings": []
+    },
+    {
+      "conf_id": "CONF-0005",
+      "title": "Decision Ledger Conformance",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/conformance/CONF-0005-decision-ledger-conformance.md",
+      "proves": [
+        "RFC-0005"
+      ],
+      "required_sections": {
+        "declared_count": 12,
+        "existing_count": 12,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "proven_specifications": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "test_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "evidence_surfaces": {
+        "declared_count": 3,
+        "existing_count": 3,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "clause_summary": {
+        "clause_count": 3,
+        "pass_count": 3,
+        "warn_count": 0,
+        "fail_count": 0
+      },
+      "clauses": [
+        {
+          "clause_id": "CONF-0005-1",
+          "statement": "Decision ledger surfaces MUST remain append-only.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0005-2",
+          "statement": "Decision references MUST be sufficient for replay and verification.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0005-3",
+          "statement": "Ledger implementations MUST NOT overwrite historical entries in place.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        }
+      ],
+      "findings": []
+    },
+    {
+      "conf_id": "CONF-0006",
+      "title": "Automation Runtime Conformance",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/conformance/CONF-0006-automation-runtime-conformance.md",
+      "proves": [
+        "RFC-0006"
+      ],
+      "required_sections": {
+        "declared_count": 12,
+        "existing_count": 12,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "proven_specifications": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "test_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "evidence_surfaces": {
+        "declared_count": 3,
+        "existing_count": 3,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "clause_summary": {
+        "clause_count": 3,
+        "pass_count": 3,
+        "warn_count": 0,
+        "fail_count": 0
+      },
+      "clauses": [
+        {
+          "clause_id": "CONF-0006-1",
+          "statement": "Automation MUST consume decision references, not graph facts or embedded evaluator payloads.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0006-2",
+          "statement": "Automation MUST verify decision linkage before execution.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0006-3",
+          "statement": "Automation implementations MUST remain downstream consumers of ledger materialization.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        }
+      ],
+      "findings": []
+    },
+    {
+      "conf_id": "CONF-0007",
+      "title": "Evidence Artifact Model Conformance",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/conformance/CONF-0007-evidence-artifact-model-conformance.md",
+      "proves": [
+        "RFC-0007"
+      ],
+      "required_sections": {
+        "declared_count": 12,
+        "existing_count": 12,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "proven_specifications": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "test_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "evidence_surfaces": {
+        "declared_count": 3,
+        "existing_count": 3,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "clause_summary": {
+        "clause_count": 4,
+        "pass_count": 4,
+        "warn_count": 0,
+        "fail_count": 0
+      },
+      "clauses": [
+        {
+          "clause_id": "CONF-0007-1",
+          "statement": "Canonical evidence artifacts MUST materialize the governed envelope fields defined by RFC-0007.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/evidence-artifact-runtime.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0007-2",
+          "statement": "Canonical evidence artifacts MUST bind to subject and projection lineage through explicit references and digests.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/evidence-artifact-runtime.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0007-3",
+          "statement": "Canonical evidence artifacts MUST preserve deterministic digest identity across repeated materialization and persistence.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/evidence-artifact-runtime.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0007-4",
+          "statement": "Unsigned canonical evidence artifacts MUST declare an explicit machine-readable signature placeholder and reason.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/evidence-artifact-runtime.test.ts"
+          ]
+        }
+      ],
+      "findings": []
+    },
+    {
+      "conf_id": "CONF-0010",
+      "title": "Decision Object Model Conformance",
+      "maturity_status": "Conformant",
+      "conformance_status": "PASS",
+      "coverage_percent": 100,
+      "source_ref": "enterprise/specifications/conformance/CONF-0010-decision-object-model-conformance.md",
+      "proves": [
+        "RFC-0010"
+      ],
+      "required_sections": {
+        "declared_count": 12,
+        "existing_count": 12,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "proven_specifications": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "test_surfaces": {
+        "declared_count": 1,
+        "existing_count": 1,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "evidence_surfaces": {
+        "declared_count": 3,
+        "existing_count": 3,
+        "missing_paths": [],
+        "status": "PASS"
+      },
+      "clause_summary": {
+        "clause_count": 6,
+        "pass_count": 6,
+        "warn_count": 0,
+        "fail_count": 0
+      },
+      "clauses": [
+        {
+          "clause_id": "CONF-0010-1",
+          "statement": "Decision input contracts MUST preserve trigger, evidence linkage, findings, assumptions, and accountable owner.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0010-2",
+          "statement": "Decision output contracts MUST preserve recommendation, alternatives, selected option, expected outcome, and reason surfaces.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0010-3",
+          "statement": "Decision ledger contracts MUST preserve replayable decision snapshots without in-place overwrite.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0010-4",
+          "statement": "Decision contracts MUST remain aligned with `SPEC-0105..SPEC-0109`.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0010-5",
+          "statement": "Verification MUST confirm decision contracts expose traceability, reproducibility, auditability, and reversibility surfaces.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        },
+        {
+          "clause_id": "CONF-0010-6",
+          "statement": "Outcome tracking MUST preserve observed metrics, outcome classification, and learning linkage without hidden runtime state.",
+          "status": "PASS",
+          "evaluation_mode": "structural_projection",
+          "reason": "Clause result is derived from current CONF surface coverage, linked test surfaces, materialized evidence surfaces, and governed maturity floors. Clause-specific predicate evaluators are not materialized yet.",
+          "evidence_refs": [
+            "workspace/foundation/evidence/verification/specification-conformance-evidence.json",
+            "workspace/foundation/evidence/verification/specification-conformance-projection.json",
+            "workspace/foundation/evidence/verification/specification-conformance-report.json",
+            "workspace/packages/tooling/eos-cli/tests/runtime-contracts.test.ts"
+          ]
+        }
+      ],
+      "findings": []
+    }
+  ]
+}

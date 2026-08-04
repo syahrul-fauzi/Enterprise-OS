@@ -1,0 +1,68 @@
+{
+  "run_version": "1.0.0",
+  "run_id": "verification-run:fa880343af99fce4",
+  "run_digest": "fa880343af99fce45be4ce7e2d732f18e1f378619aeef74f98ba136244ff9071",
+  "run_status": "COMPLETED",
+  "run_scope": "verify-foundation",
+  "started_at_utc": "2026-08-03T15:33:49.810Z",
+  "completed_at_utc": "2026-08-03T15:33:51.260Z",
+  "governance_session": {
+    "session_id": "governance-session:e53ffa9a0a13fb8a",
+    "session_digest": "e53ffa9a0a13fb8a349a132ab0d9c9d216961eaa4f6da3790b10aa2f6a09740d",
+    "session_lineage_digest": "4cb86da3e09791f433eddf60956af3eff7e905a726b6a52b09531e1172a34064",
+    "session_projection_digest": "a3f5dda1914fd48d439498adbeec23e7eac50cf2a2c157ced91f943cb772d13d",
+    "verification_status": "PASS"
+  },
+  "evidence_chain": {
+    "law_result_count": 8,
+    "law_result_digest": "33761b443425fcdd498cbad9f4bac92061a88957c199a3db3a252397e462b5cc",
+    "evidence_package_count": 8,
+    "evidence_package_digest": "240fdfeb7889f823d2f25dff0ab6ba1a14e57eb7cdadf6d8fe22e78a1be8f2ca",
+    "certificate_count": 8,
+    "certificate_digest": "72324085b8427a36411931f8021e7af05ffc73554857d01968c07f4fa6c9c531",
+    "attestation_event_count": 16,
+    "attestation_event_digest": "d038c75a7d1ab07c3d8a773337a32e53c581b9d2943c4324d0cd6b6b0b97cdc2"
+  },
+  "outputs": {
+    "read_model_count": 5,
+    "summary_view_id": "governance-view:summary:b527cc9c4663ae76",
+    "summary_view_digest": "b527cc9c4663ae76b138f69602f63816740f56f27ac683331f045e16dd7064fc",
+    "claims_view_id": "governance-view:claims:9029fe0923dc665d",
+    "claims_view_digest": "9029fe0923dc665d12b1327f4d2ee80cae20955c577af25d654e0e6e80f9d03a",
+    "health_view_id": "governance-view:health:2b2c83b90f7edcd4",
+    "health_view_digest": "2b2c83b90f7edcd49fd0ceab4fc2951c5a08cc75cadfa909ec790cf1156f3c6b",
+    "dashboard_view_id": "governance-view:dashboard:32544d086861bd76",
+    "dashboard_view_digest": "32544d086861bd76af25c765ec0c31bb434b5e00e9138344f0eb8bcab43c4135",
+    "metrics_id": "governance-read-model-metrics:69476f45fc706882",
+    "metrics_digest": "69476f45fc70688237a9ed094ab9cd2d7801f2f09f710d3b4461f8fd89a4f3a1",
+    "report_count": 9,
+    "claims_digest": "433336daf73bb99397367671d897c66e87dde59ff3861c2d31ec5ace795c8012",
+    "summary_digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf",
+    "proof_bundle_id": "constitution-proof-bundle:142bf7c335452488",
+    "proof_bundle_digest": "142bf7c3354524880d357ff07f6a7b355993dac88343c55c27a754afc4e08f29"
+  },
+  "readiness": {
+    "governance_session_status": "PASS",
+    "contract_version_evolution_status": "PASS",
+    "capability_governance_status": "PASS",
+    "architecture_fitness_status": "PASS",
+    "incremental_materialization_status": "PASS",
+    "trust_framework_status": "PASS",
+    "attestation_lifecycle_status": "PASS",
+    "trust_signature_provider_status": "PASS",
+    "trust_signature_materialization_status": "PASS",
+    "overall_status": "PASS"
+  },
+  "control_plane": {
+    "capability_governance_projection_digest": "f63bc9c3d6c474f2c8500b0dc3d335f84e1527ff5179fd3d0ed166214e90f4ac",
+    "capability_governance_verification_digest": "1bfb6d0e0a4464f991798c030b9b66a8e054cfc5e90351b240b9a7fad9f5411c",
+    "architecture_fitness_digest": "7a182107a2b8b90f79d0d5932f736d2e105845840d6d24cd05a4328c6a65f7a9",
+    "contract_version_evolution_digest": "0c5b1912b2695d9d696bd485d8b89ed1513d812fb9f40dd277562142c2bdb265",
+    "trust_framework_verification_digest": "17fbfd6065abfc670e912c05f598491e01b29f14b1d5c860451f2ff2eaae12ed",
+    "attestation_lifecycle_verification_digest": "14f5341e767b6d84fe35b83b02051614ec1886ede3f208d5aa47990346cc4efc",
+    "trust_signature_provider_verification_digest": "d103d4d2d8fe51942e8c38b34fdf3a57219d91d2839bfac7184609dc0598d4c8",
+    "trust_signature_materialization_digest": "e91ac41047e227a2999a90c15d38e56dcbfe0f93046c17de5522ae6cfeb8717d",
+    "incremental_materialization_verification_digest": "d7ed7b82095a2097cbfbb90410eac80a8855b81db9b403459e61317e9a445970"
+  },
+  "run_boundary": "Verification run is the orchestration aggregate for one governance verification execution. It binds GovernanceSession provenance, evidence-chain outputs, read-model outputs, and platform readiness controls into a single operational identity without changing the frozen governance domain model."
+}

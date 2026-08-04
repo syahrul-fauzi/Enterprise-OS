@@ -1,0 +1,97 @@
+{
+  "projection_id": "ExecutionPlanProjection:185205ff77a90521",
+  "projection_type": "ExecutionPlanProjection",
+  "schema_version": "1.0.0",
+  "projection_digest": "185205ff77a9052145fdeefb6acd634db13a75bf05f0055d94b93caaddd4df35",
+  "generated_from": [
+    {
+      "source_type": "planner_descriptor",
+      "source_ref": "/root/Enterprise-OS/workspace/apps/lawyershub/composition.descriptor.ts",
+      "source_digest": "9b924f26d3ce8dea84ad9be95ea56e6dff70c915ae5692fcc1cb09937ab35da2"
+    },
+    {
+      "source_type": "workspace_manifest",
+      "source_ref": "/root/Enterprise-OS/workspace/apps/lawyershub/workspace.manifest.ts",
+      "source_digest": "f528233c13703e87a877224e69fbebce275d14369ad5505a59d49134eab97fdc"
+    },
+    {
+      "source_type": "execution_graph",
+      "source_ref": "/root/Enterprise-OS/workspace/foundation/evidence/verification/execution-graph.json",
+      "source_digest": "53024d174046369dc557bf9ea7f7df5c44093e4d1788f45f5c90b2c7184ab5d7"
+    }
+  ],
+  "generated_at_utc": "2026-08-02T12:04:51.616Z",
+  "plan_version": "1.0.0",
+  "product_id": "lawyershub",
+  "planner_descriptor_ref": "/root/Enterprise-OS/workspace/apps/lawyershub/composition.descriptor.ts",
+  "workspace_manifest_ref": "/root/Enterprise-OS/workspace/apps/lawyershub/workspace.manifest.ts",
+  "workspace_id": "lawyershub.workspace.default",
+  "normalized_workspace_id": "lawyershub.workspace.default",
+  "plan_id": "plan::lawyershub.workspace.default::11dd818f",
+  "plan_digest": "11dd818f",
+  "plan_canonical_json_digest": "185205ff77a9052145fdeefb6acd634db13a75bf05f0055d94b93caaddd4df35",
+  "graph_id": "ws|lawyershub.workspace.default",
+  "graph_digest": "4582e307",
+  "projection_source": "execution_graph",
+  "execution_graph_digest": "53024d174046369dc557bf9ea7f7df5c44093e4d1788f45f5c90b2c7184ab5d7",
+  "execution_graph_version": "1.0.0",
+  "capability_order": [
+    "legal-case",
+    "legal-document",
+    "requirement-management"
+  ],
+  "dependency_order": [
+    "legal-case",
+    "legal-document",
+    "requirement-management"
+  ],
+  "constraints": {
+    "require_capabilities": [
+      "legal-case",
+      "legal-document",
+      "requirement-management"
+    ],
+    "require_roles": [],
+    "missing_required_slots": [],
+    "fatal_issues": [],
+    "warnings": [],
+    "fallbacks_needed": [
+      {
+        "type": "slot-default-missing",
+        "reference_id": "slot::nav",
+        "capability_id": null,
+        "slot_id": "slot::nav"
+      },
+      {
+        "type": "slot-default-missing",
+        "reference_id": "slot::toolbar",
+        "capability_id": null,
+        "slot_id": "slot::toolbar"
+      }
+    ]
+  },
+  "expected_evidence": [
+    "composition-replay.json",
+    "functional-test-report.json",
+    "runtime-invocation-report.json",
+    "execution-chain.json",
+    "execution-timeline.json",
+    "verification-summary.md"
+  ],
+  "expected_replay": {
+    "command": "pnpm --dir /root/Enterprise-OS/workspace exec node --import tsx packages/composition/src/scripts/validate-composition-package.ts packages/compositions/legal-workspace",
+    "expected_status": "PASS"
+  },
+  "claim_boundary": "Execution Plan is a deterministic product-level planning artifact materialized from a planner-safe composition descriptor via compose(). It captures planner output, expected evidence, and replay expectations for the verified product run; it is not a runtime trace.",
+  "plan_instance": {
+    "plan_instance_version": "1.0.0",
+    "plan_instance_id": "pi:9249964e7236032f",
+    "plan_instance_digest": "9249964e7236032f6c0a4197400f19106f0b605c69cd091e10f53cdbc9693eb9",
+    "product_id": "lawyershub",
+    "plan_id": "plan::lawyershub.workspace.default::11dd818f",
+    "plan_digest": "11dd818f",
+    "execution_scope": "verify-product",
+    "issued_at_utc": "2026-08-02T12:04:51.644Z",
+    "claim_boundary": "Plan Instance is the run-scoped causal identity that binds a deterministic Execution Plan to the specific verified execution attempt that produced runtime invocations, replay evidence, and verification artifacts."
+  }
+}

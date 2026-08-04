@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "claim_count": 8,
+  "violated_law_count": 0,
+  "laws_passed": 8,
+  "laws_failed": 0,
+  "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+  "law_profile": "enterprise",
+  "proof_strength": "proof-centric",
+  "summary_boundary": "Constitution summary is the presentation-safe governance read model for reporting and dashboards. It intentionally omits per-law proof payloads and individual claim entries."
+}

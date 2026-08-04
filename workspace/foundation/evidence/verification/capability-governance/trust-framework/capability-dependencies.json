@@ -1,0 +1,42 @@
+{
+  "capability_id": "trust-framework",
+  "declared_dependencies": [],
+  "system_dependencies": [
+    {
+      "dependency_id": "core-runtime",
+      "dependency_kind": "system_runtime",
+      "rationale": "Shared runtime instrumentation is treated as infrastructure/system dependency rather than bounded-context capability dependency."
+    }
+  ],
+  "dependency_classification": {
+    "policy_version": "1.0.0",
+    "entries": [
+      {
+        "dependency_id": "core-runtime",
+        "dependency_class": "system_runtime",
+        "resolution_status": "SYSTEM_DEPENDENCY",
+        "rationale": "Shared runtime instrumentation is treated as infrastructure/system dependency rather than bounded-context capability dependency."
+      }
+    ]
+  },
+  "unresolved_dependencies": [],
+  "dependency_policy": {
+    "allowed_dependencies": [
+      "core-runtime"
+    ],
+    "forbidden_dependencies": [
+      "api-platform",
+      "governance-evidence",
+      "governance-read-model"
+    ]
+  },
+  "declared_consumers": [
+    "governance-evidence"
+  ],
+  "consumers": [],
+  "empirically_verified_products": [],
+  "product_reach_ratio": 0,
+  "reachable_from_products": [],
+  "reachability_status": "UNREACHABLE",
+  "artifact_boundary": "Capability dependency projection freezes dependency intent, consumer relationships, and product reachability so capability evolution can be audited without reading raw manifests directly."
+}

@@ -1,0 +1,477 @@
+graph_version: 1.0.0
+graph_digest: 96790cf5d92507dbd3efe5d9dfc39dc257e9561ff4e7fbd132d114713e6293cd
+summary:
+  capability_count: 16
+  dependency_edge_count: 11
+  resolved_dependency_count: 8
+  system_dependency_count: 3
+  unknown_dependency_count: 0
+  forbidden_dependency_count: 0
+  unstable_dependency_count: 8
+  circular_dependency_count: 0
+  pass_capability_count: 13
+  warn_capability_count: 3
+  fail_capability_count: 0
+  health_status: PASS
+  governance_health_status: WARN
+health_domains:
+  structural_health:
+    status: WARN
+    observation_status: PARTIAL
+    circular_dependency_count: 0
+    unstable_dependency_count: 8
+    unknown_dependency_count: 0
+    orphan_capability_count: 3
+  architectural_health:
+    status: PASS
+    observation_status: MATERIALIZED
+    forbidden_dependency_count: 0
+    layering_violation_count: 0
+    abstraction_leak_count: 0
+  governance_health:
+    status: WARN
+    observation_status: PARTIAL
+    ownership_gap_count: 16
+    authority_conflict_count: null
+    capability_ambiguity_count: null
+  evolution_health:
+    status: PASS
+    observation_status: PARTIAL
+    deprecated_capability_count: 0
+    migration_debt_count: 0
+    superseded_capability_count: null
+  evidence_health:
+    status: WARN
+    observation_status: PARTIAL
+    capability_without_evidence_count: 6
+    stale_evidence_count: 1
+    unverifiable_capability_count: 3
+    orphaned_evidence_count: 0
+    inconsistent_evidence_count: 0
+    unsigned_evidence_count: 0
+    tampered_evidence_count: 0
+    partial_evidence_count: 10
+    superseded_evidence_count: 0
+    expired_evidence_count: 0
+capabilities:
+  - capability_id: agent-orchestration
+    capability_version: 0.1.0
+    stability: experimental
+    lifecycle_stage: experimental
+    governance_status: VALID
+    depends_on: []
+    consumed_by: []
+  - capability_id: api-platform
+    capability_version: 0.1.0
+    stability: stable
+    lifecycle_stage: experimental
+    governance_status: VALID
+    depends_on:
+      - dependency_id: evidence-registry
+        dependency_class: bounded_context_capability
+        resolution_status: RESOLVED_CAPABILITY
+        forbidden_dependency: false
+        dependency_stability: experimental
+        dependency_lifecycle_stage: reusable
+        dependency_health: REVIEW_REQUIRED
+        rationale: Dependency resolves to a governed capability boundary declared in the
+          repository registry.
+      - dependency_id: governance-evidence
+        dependency_class: bounded_context_capability
+        resolution_status: RESOLVED_CAPABILITY
+        forbidden_dependency: false
+        dependency_stability: stable
+        dependency_lifecycle_stage: experimental
+        dependency_health: REVIEW_REQUIRED
+        rationale: Dependency resolves to a governed capability boundary declared in the
+          repository registry.
+      - dependency_id: governance-read-model
+        dependency_class: bounded_context_capability
+        resolution_status: RESOLVED_CAPABILITY
+        forbidden_dependency: false
+        dependency_stability: stable
+        dependency_lifecycle_stage: experimental
+        dependency_health: REVIEW_REQUIRED
+        rationale: Dependency resolves to a governed capability boundary declared in the
+          repository registry.
+      - dependency_id: requirement-management
+        dependency_class: bounded_context_capability
+        resolution_status: RESOLVED_CAPABILITY
+        forbidden_dependency: false
+        dependency_stability: experimental
+        dependency_lifecycle_stage: core
+        dependency_health: REVIEW_REQUIRED
+        rationale: Dependency resolves to a governed capability boundary declared in the
+          repository registry.
+      - dependency_id: requirements-traceability-matrix
+        dependency_class: bounded_context_capability
+        resolution_status: RESOLVED_CAPABILITY
+        forbidden_dependency: false
+        dependency_stability: experimental
+        dependency_lifecycle_stage: experimental
+        dependency_health: REVIEW_REQUIRED
+        rationale: Dependency resolves to a governed capability boundary declared in the
+          repository registry.
+      - dependency_id: workflow-engine
+        dependency_class: bounded_context_capability
+        resolution_status: RESOLVED_CAPABILITY
+        forbidden_dependency: false
+        dependency_stability: experimental
+        dependency_lifecycle_stage: experimental
+        dependency_health: REVIEW_REQUIRED
+        rationale: Dependency resolves to a governed capability boundary declared in the
+          repository registry.
+    consumed_by: []
+  - capability_id: connector-ecosystem
+    capability_version: 0.1.0
+    stability: experimental
+    lifecycle_stage: experimental
+    governance_status: VALID
+    depends_on: []
+    consumed_by: []
+  - capability_id: evidence-registry
+    capability_version: 0.1.0
+    stability: experimental
+    lifecycle_stage: reusable
+    governance_status: INVALID
+    depends_on: []
+    consumed_by:
+      - ilc
+      - lawyershub
+  - capability_id: governance-evidence
+    capability_version: 0.1.0
+    stability: stable
+    lifecycle_stage: experimental
+    governance_status: VALID
+    depends_on:
+      - dependency_id: core-runtime
+        dependency_class: system_runtime
+        resolution_status: SYSTEM_DEPENDENCY
+        forbidden_dependency: false
+        dependency_stability: null
+        dependency_lifecycle_stage: null
+        dependency_health: SYSTEM_RUNTIME
+        rationale: Shared runtime instrumentation is treated as infrastructure/system
+          dependency rather than bounded-context capability dependency.
+      - dependency_id: trust-framework
+        dependency_class: bounded_context_capability
+        resolution_status: RESOLVED_CAPABILITY
+        forbidden_dependency: false
+        dependency_stability: stable
+        dependency_lifecycle_stage: experimental
+        dependency_health: REVIEW_REQUIRED
+        rationale: Dependency resolves to a governed capability boundary declared in the
+          repository registry.
+    consumed_by: []
+  - capability_id: governance-read-model
+    capability_version: 0.1.0
+    stability: stable
+    lifecycle_stage: experimental
+    governance_status: VALID
+    depends_on:
+      - dependency_id: core-runtime
+        dependency_class: system_runtime
+        resolution_status: SYSTEM_DEPENDENCY
+        forbidden_dependency: false
+        dependency_stability: null
+        dependency_lifecycle_stage: null
+        dependency_health: SYSTEM_RUNTIME
+        rationale: Shared runtime instrumentation is treated as infrastructure/system
+          dependency rather than bounded-context capability dependency.
+      - dependency_id: governance-evidence
+        dependency_class: bounded_context_capability
+        resolution_status: RESOLVED_CAPABILITY
+        forbidden_dependency: false
+        dependency_stability: stable
+        dependency_lifecycle_stage: experimental
+        dependency_health: REVIEW_REQUIRED
+        rationale: Dependency resolves to a governed capability boundary declared in the
+          repository registry.
+    consumed_by: []
+  - capability_id: identity
+    capability_version: 1.0.0
+    stability: experimental
+    lifecycle_stage: core
+    governance_status: VALID
+    depends_on: []
+    consumed_by:
+      - ilc
+      - lawyershub
+      - services-id
+  - capability_id: knowledge-graph
+    capability_version: 0.1.0
+    stability: experimental
+    lifecycle_stage: core
+    governance_status: INVALID
+    depends_on: []
+    consumed_by:
+      - ilc
+      - lawyershub
+      - services-id
+  - capability_id: legal-case
+    capability_version: 0.1.0
+    stability: experimental
+    lifecycle_stage: experimental
+    governance_status: VALID
+    depends_on: []
+    consumed_by:
+      - lawyershub
+  - capability_id: legal-document
+    capability_version: 0.1.0
+    stability: experimental
+    lifecycle_stage: experimental
+    governance_status: VALID
+    depends_on: []
+    consumed_by:
+      - lawyershub
+  - capability_id: observability
+    capability_version: 0.1.0
+    stability: experimental
+    lifecycle_stage: experimental
+    governance_status: VALID
+    depends_on: []
+    consumed_by: []
+  - capability_id: requirement-management
+    capability_version: 0.1.0
+    stability: experimental
+    lifecycle_stage: core
+    governance_status: INVALID
+    depends_on: []
+    consumed_by:
+      - ilc
+      - lawyershub
+      - services-id
+  - capability_id: requirements-traceability-matrix
+    capability_version: 0.1.0
+    stability: experimental
+    lifecycle_stage: experimental
+    governance_status: VALID
+    depends_on: []
+    consumed_by: []
+  - capability_id: security-hardening
+    capability_version: 0.1.0
+    stability: experimental
+    lifecycle_stage: experimental
+    governance_status: VALID
+    depends_on: []
+    consumed_by: []
+  - capability_id: trust-framework
+    capability_version: 0.1.0
+    stability: stable
+    lifecycle_stage: experimental
+    governance_status: VALID
+    depends_on:
+      - dependency_id: core-runtime
+        dependency_class: system_runtime
+        resolution_status: SYSTEM_DEPENDENCY
+        forbidden_dependency: false
+        dependency_stability: null
+        dependency_lifecycle_stage: null
+        dependency_health: SYSTEM_RUNTIME
+        rationale: Shared runtime instrumentation is treated as infrastructure/system
+          dependency rather than bounded-context capability dependency.
+    consumed_by: []
+  - capability_id: workflow-engine
+    capability_version: 0.1.0
+    stability: experimental
+    lifecycle_stage: experimental
+    governance_status: VALID
+    depends_on: []
+    consumed_by: []
+capability_health:
+  - capability_id: agent-orchestration
+    declared_dependency_count: 0
+    resolved_dependency_count: 0
+    system_dependency_count: 0
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 0
+    circular_dependency_count: 0
+    health_status: PASS
+    health_rationale:
+      - All declared dependencies are resolved with no cycles, forbidden edges,
+        or unknown external drift.
+  - capability_id: api-platform
+    declared_dependency_count: 6
+    resolved_dependency_count: 6
+    system_dependency_count: 0
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 6
+    circular_dependency_count: 0
+    health_status: WARN
+    health_rationale:
+      - Detected 6 dependency edge(s) targeting capability contracts that are
+        not yet stable and active.
+  - capability_id: connector-ecosystem
+    declared_dependency_count: 0
+    resolved_dependency_count: 0
+    system_dependency_count: 0
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 0
+    circular_dependency_count: 0
+    health_status: PASS
+    health_rationale:
+      - All declared dependencies are resolved with no cycles, forbidden edges,
+        or unknown external drift.
+  - capability_id: evidence-registry
+    declared_dependency_count: 0
+    resolved_dependency_count: 0
+    system_dependency_count: 0
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 0
+    circular_dependency_count: 0
+    health_status: PASS
+    health_rationale:
+      - All declared dependencies are resolved with no cycles, forbidden edges,
+        or unknown external drift.
+  - capability_id: governance-evidence
+    declared_dependency_count: 2
+    resolved_dependency_count: 2
+    system_dependency_count: 1
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 1
+    circular_dependency_count: 0
+    health_status: WARN
+    health_rationale:
+      - Detected 1 dependency edge(s) targeting capability contracts that are
+        not yet stable and active.
+  - capability_id: governance-read-model
+    declared_dependency_count: 2
+    resolved_dependency_count: 2
+    system_dependency_count: 1
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 1
+    circular_dependency_count: 0
+    health_status: WARN
+    health_rationale:
+      - Detected 1 dependency edge(s) targeting capability contracts that are
+        not yet stable and active.
+  - capability_id: identity
+    declared_dependency_count: 0
+    resolved_dependency_count: 0
+    system_dependency_count: 0
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 0
+    circular_dependency_count: 0
+    health_status: PASS
+    health_rationale:
+      - All declared dependencies are resolved with no cycles, forbidden edges,
+        or unknown external drift.
+  - capability_id: knowledge-graph
+    declared_dependency_count: 0
+    resolved_dependency_count: 0
+    system_dependency_count: 0
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 0
+    circular_dependency_count: 0
+    health_status: PASS
+    health_rationale:
+      - All declared dependencies are resolved with no cycles, forbidden edges,
+        or unknown external drift.
+  - capability_id: legal-case
+    declared_dependency_count: 0
+    resolved_dependency_count: 0
+    system_dependency_count: 0
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 0
+    circular_dependency_count: 0
+    health_status: PASS
+    health_rationale:
+      - All declared dependencies are resolved with no cycles, forbidden edges,
+        or unknown external drift.
+  - capability_id: legal-document
+    declared_dependency_count: 0
+    resolved_dependency_count: 0
+    system_dependency_count: 0
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 0
+    circular_dependency_count: 0
+    health_status: PASS
+    health_rationale:
+      - All declared dependencies are resolved with no cycles, forbidden edges,
+        or unknown external drift.
+  - capability_id: observability
+    declared_dependency_count: 0
+    resolved_dependency_count: 0
+    system_dependency_count: 0
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 0
+    circular_dependency_count: 0
+    health_status: PASS
+    health_rationale:
+      - All declared dependencies are resolved with no cycles, forbidden edges,
+        or unknown external drift.
+  - capability_id: requirement-management
+    declared_dependency_count: 0
+    resolved_dependency_count: 0
+    system_dependency_count: 0
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 0
+    circular_dependency_count: 0
+    health_status: PASS
+    health_rationale:
+      - All declared dependencies are resolved with no cycles, forbidden edges,
+        or unknown external drift.
+  - capability_id: requirements-traceability-matrix
+    declared_dependency_count: 0
+    resolved_dependency_count: 0
+    system_dependency_count: 0
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 0
+    circular_dependency_count: 0
+    health_status: PASS
+    health_rationale:
+      - All declared dependencies are resolved with no cycles, forbidden edges,
+        or unknown external drift.
+  - capability_id: security-hardening
+    declared_dependency_count: 0
+    resolved_dependency_count: 0
+    system_dependency_count: 0
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 0
+    circular_dependency_count: 0
+    health_status: PASS
+    health_rationale:
+      - All declared dependencies are resolved with no cycles, forbidden edges,
+        or unknown external drift.
+  - capability_id: trust-framework
+    declared_dependency_count: 1
+    resolved_dependency_count: 1
+    system_dependency_count: 1
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 0
+    circular_dependency_count: 0
+    health_status: PASS
+    health_rationale:
+      - All declared dependencies are resolved with no cycles, forbidden edges,
+        or unknown external drift.
+  - capability_id: workflow-engine
+    declared_dependency_count: 0
+    resolved_dependency_count: 0
+    system_dependency_count: 0
+    unknown_dependency_count: 0
+    forbidden_dependency_count: 0
+    unstable_dependency_count: 0
+    circular_dependency_count: 0
+    health_status: PASS
+    health_rationale:
+      - All declared dependencies are resolved with no cycles, forbidden edges,
+        or unknown external drift.
+cycles: []
+claim_boundary: Capability graph projection turns manifest-level dependency
+  intent into a governed graph artifact so cycles, forbidden edges, and unstable
+  coupling can be audited without reading raw repository manifests.

@@ -1,0 +1,788 @@
+{
+  "product_id": "lawyershub",
+  "plan_instance_id": "pi:9249964e7236032f",
+  "plan_id": "plan::lawyershub.workspace.default::11dd818f",
+  "plan_digest": "11dd818f",
+  "summary": {
+    "total_invocations": 83,
+    "observed_capabilities": 13,
+    "verified_capabilities": 13,
+    "reproducible_capabilities": 8
+  },
+  "capabilities": [
+    {
+      "capability_id": "agent-orchestration",
+      "status": "REPRODUCIBLE",
+      "invocation_count": 7,
+      "success_count": 7,
+      "failure_count": 0,
+      "operation_count": 3,
+      "reproducible_operation_count": 2,
+      "operations": [
+        {
+          "operation_id": "dispatch",
+          "input_digest": "3ba9fc7f039895ff789a70f0ada737beeaf464705da8b20db5e0bcb6ac7516bd",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "d1e2757779c32525c2ed0ac92dbcbb12cafc8e9ff465ac5bbfa53f8826eec5c4"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "AgentOrchestrationService.dispatch"
+          ]
+        },
+        {
+          "operation_id": "dispatch",
+          "input_digest": "ec297decdeb21b1bcb62fda0f93ffb28dd24ddea3b8ed10f1e6ccbe700395f0e",
+          "invocation_count": 2,
+          "success_count": 2,
+          "failure_count": 0,
+          "result_digests": [
+            "58ac9419dbc849cf5c4a03a65b5b02eb81e0c47b0bd0eccafe346dbfdc1f8fdb"
+          ],
+          "reproducible": true,
+          "source_refs": [
+            "AgentOrchestrationService.dispatch"
+          ]
+        },
+        {
+          "operation_id": "list-plans",
+          "input_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "invocation_count": 4,
+          "success_count": 4,
+          "failure_count": 0,
+          "result_digests": [
+            "7c9afc24898276c4166d81b5e7e5519f6a18be90948538e77fd13e88f412a18d"
+          ],
+          "reproducible": true,
+          "source_refs": [
+            "AgentOrchestrationService.listPlans"
+          ]
+        }
+      ]
+    },
+    {
+      "capability_id": "api-platform",
+      "status": "REPRODUCIBLE",
+      "invocation_count": 4,
+      "success_count": 4,
+      "failure_count": 0,
+      "operation_count": 1,
+      "reproducible_operation_count": 1,
+      "operations": [
+        {
+          "operation_id": "get-descriptor",
+          "input_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "invocation_count": 4,
+          "success_count": 4,
+          "failure_count": 0,
+          "result_digests": [
+            "a203d3e9b800c6e8beaace5be546a919d498a3d1be3fb37377b47467c19cec1f"
+          ],
+          "reproducible": true,
+          "source_refs": [
+            "ApiPlatformService.getDescriptor"
+          ]
+        }
+      ]
+    },
+    {
+      "capability_id": "connector-ecosystem",
+      "status": "VERIFIED",
+      "invocation_count": 2,
+      "success_count": 2,
+      "failure_count": 0,
+      "operation_count": 2,
+      "reproducible_operation_count": 0,
+      "operations": [
+        {
+          "operation_id": "list-connectors",
+          "input_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "495726dde1e1a99ee0a23299f0f57720cb03df37cbc1c28f443cca1e9a1a2d74"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "ConnectorEcosystemService.listConnectors"
+          ]
+        },
+        {
+          "operation_id": "sync",
+          "input_digest": "1bfcf06a43f42f920166c45b5b7efc25f6da8c3c68dcee2559cf2f83adf75f83",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "d43791a20646660c47904ceb2c6d28200b7a55b54e03938e4ce6535a57c95afe"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "ConnectorEcosystemService.sync"
+          ]
+        }
+      ]
+    },
+    {
+      "capability_id": "evidence-registry",
+      "status": "REPRODUCIBLE",
+      "invocation_count": 10,
+      "success_count": 10,
+      "failure_count": 0,
+      "operation_count": 7,
+      "reproducible_operation_count": 2,
+      "operations": [
+        {
+          "operation_id": "search-evidence-registry",
+          "input_digest": "0310398e5e13f34668cc5865599937eab24541613d9c4462eac7b44428e781b9",
+          "invocation_count": 2,
+          "success_count": 2,
+          "failure_count": 0,
+          "result_digests": [
+            "801949d3eb11f21e1bcaa9f2673da9face66fd5c3804efd19687166c605ba742"
+          ],
+          "reproducible": true,
+          "source_refs": [
+            "EvidenceRegistryService.searchEvidenceRegistry"
+          ]
+        },
+        {
+          "operation_id": "search-evidence-registry",
+          "input_digest": "1178a9ba8a5332b5c29680d2c6e3060cbb6a96493601bf30e1f05e9d1bbe68a5",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "962728a6b77393eca2037a9af4764a4475ae4ee9087915c13d7f3ab51189a100"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "EvidenceRegistryService.searchEvidenceRegistry"
+          ]
+        },
+        {
+          "operation_id": "search-evidence-registry",
+          "input_digest": "38734a2bdd6877711bb49dcf9fd3ea8ce9025dd0a2eeffef1c9b1bfb3049fb25",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "0fd9b06197142d77592c1b35f02cb44b553784f3628f6e4289b4be9c626091d0"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "EvidenceRegistryService.searchEvidenceRegistry"
+          ]
+        },
+        {
+          "operation_id": "search-evidence-registry",
+          "input_digest": "6cfad4c45c68e5d0140f8fa7cef6c798175d1e69bc6bc9c4258f34b3c9861de5",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "d4f463d53155eb106ad3da7cbe80979eb9ae99bcc91bea7530273b128064d4ed"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "EvidenceRegistryService.searchEvidenceRegistry"
+          ]
+        },
+        {
+          "operation_id": "search-evidence-registry",
+          "input_digest": "6db54f4cc6c3788a15c21876f6d33d4b54a3897529776aa3e3b94e1c6c8ad227",
+          "invocation_count": 3,
+          "success_count": 3,
+          "failure_count": 0,
+          "result_digests": [
+            "13bea2bc2e5eb6eb69f0ed07e37e5446a433715d19c20fa19a2c97dab23d446f"
+          ],
+          "reproducible": true,
+          "source_refs": [
+            "EvidenceRegistryService.searchEvidenceRegistry"
+          ]
+        },
+        {
+          "operation_id": "search-evidence-registry",
+          "input_digest": "9926cc2f68f04dcb6f027abfb0ab3efe870eca7ceb46660ad1968fc597c54fa1",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "13bea2bc2e5eb6eb69f0ed07e37e5446a433715d19c20fa19a2c97dab23d446f"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "EvidenceRegistryService.searchEvidenceRegistry"
+          ]
+        },
+        {
+          "operation_id": "search-evidence-registry",
+          "input_digest": "e6d1492245299056683a99790f43cb5812420a030944854cbc7857c35ba40049",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "6077e7d3febf5fb5f7c8ec81ed5d75947be97f98d73e3709988b678cfca7c48f"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "EvidenceRegistryService.searchEvidenceRegistry"
+          ]
+        }
+      ]
+    },
+    {
+      "capability_id": "governance-evidence",
+      "status": "VERIFIED",
+      "invocation_count": 8,
+      "success_count": 8,
+      "failure_count": 0,
+      "operation_count": 8,
+      "reproducible_operation_count": 0,
+      "operations": [
+        {
+          "operation_id": "get-attestation-policy",
+          "input_digest": "2497b8f28b45195cda1d54d9710247cca132b3faa8ddac86852988a807641995",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "d153135738f16dc71f5bcffa3e5b4ce0d2765f59a0052b61aa40a79473523967"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "GovernanceEvidenceService.getAttestationPolicy"
+          ]
+        },
+        {
+          "operation_id": "get-attestations",
+          "input_digest": "6f362f3a471b23b0f43c4901beb30ef6283c6dd02812e5cf136f868077b52165",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "8196078b9054626ec45d65c3b95532dd4df21f6480db7c02a356b8a7416635a2"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "GovernanceEvidenceService.getAttestations"
+          ]
+        },
+        {
+          "operation_id": "get-audit-report",
+          "input_digest": "78c06ada6527c8a49adc35e1490a09453dd898c611dd9c6e2de8328fa8504f63",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "f8876eb7bdd6a36aa3bb092ee1221f3872c752201789226a2e83a1676795a2da"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "GovernanceEvidenceService.getAuditReport"
+          ]
+        },
+        {
+          "operation_id": "get-certificates",
+          "input_digest": "7a5daefa3bc68fd945bb9ca831208315c20f4d49b9fd2ffcf1f63e5ed10fe722",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "fb0f70fea94e454be50d167903e9dd3daf4d09b39e1de52493b83e42d12d9575"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "GovernanceEvidenceService.getCertificates"
+          ]
+        },
+        {
+          "operation_id": "get-evidence-packages",
+          "input_digest": "6c1686006467063abe0436f34ad225d908801222efdbaff36c68845f0ad6a293",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "24467aebfae0b83bc5477735428d810611d036bebe87b2b614e246306f38593c"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "GovernanceEvidenceService.getEvidencePackages"
+          ]
+        },
+        {
+          "operation_id": "get-governance-session",
+          "input_digest": "3c640dc221ab5f76b3368684e36679f4619a1cfcef87835d77f900f4fc0e958a",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "3b3ed4bce604a3b2b3cd6c2cd9421d1b72f104ed42b87d87bd929e65a32cc0b4"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "GovernanceEvidenceService.getGovernanceSession"
+          ]
+        },
+        {
+          "operation_id": "get-law-results",
+          "input_digest": "831aba82674e4da00555fd5649138cf21fbb79741e2ee12fc0eff7f519ada149",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "e5d1750f705db6bb59ce95326c1c88557360e8ed7db6dcdb3cab0aa2a688f7f4"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "GovernanceEvidenceService.getLawResults"
+          ]
+        },
+        {
+          "operation_id": "get-proof-bundle",
+          "input_digest": "fc904ee1fed80e21a42d115c2431e121a5cb74b816a202455d4c83f27f30aedd",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "2b3a4414b082005c52540a82bfb632abdfb9175a6afa2ff9cec378b150419334"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "GovernanceEvidenceService.getProofBundle"
+          ]
+        }
+      ]
+    },
+    {
+      "capability_id": "governance-read-model",
+      "status": "VERIFIED",
+      "invocation_count": 2,
+      "success_count": 2,
+      "failure_count": 0,
+      "operation_count": 2,
+      "reproducible_operation_count": 0,
+      "operations": [
+        {
+          "operation_id": "materialize-dashboard",
+          "input_digest": "dd03f1ba5b89971e2ba046ad1bbd783d5bd93d7bcd342fd9225b62408f9d0136",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "11039dccdd6822325f6e99f41e257d947b574cfdbfd3a230b69f7566fa2e9d2b"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "GovernanceReadModelService.materializeDashboard"
+          ]
+        },
+        {
+          "operation_id": "materialize-summary",
+          "input_digest": "b5b732f0bd46e4cd193e1ed347692a1e8a50027592184fd2953a2c1abe5730d1",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "0a0adb1d7668f652967c86a83b016392aa474616c8edaa8807e18896631a1398"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "GovernanceReadModelService.materializeSummary"
+          ]
+        }
+      ]
+    },
+    {
+      "capability_id": "knowledge-graph",
+      "status": "REPRODUCIBLE",
+      "invocation_count": 3,
+      "success_count": 3,
+      "failure_count": 0,
+      "operation_count": 2,
+      "reproducible_operation_count": 1,
+      "operations": [
+        {
+          "operation_id": "get-node",
+          "input_digest": "ea203730dc2b8aba26247b4c554c1876d9ae0e26bebfe4118e84eec3637a1d16",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "94130d71939a1b9c2ab0253653fad2faddd5366bb3df4086bc932e6f82628a14"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "KnowledgeGraphService.getNode"
+          ]
+        },
+        {
+          "operation_id": "get-snapshot",
+          "input_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "invocation_count": 2,
+          "success_count": 2,
+          "failure_count": 0,
+          "result_digests": [
+            "fca2103cbcbe940bb34afae147ff206cc0a8b556a51d625c2c99adc86c199929"
+          ],
+          "reproducible": true,
+          "source_refs": [
+            "KnowledgeGraphService.getSnapshot"
+          ]
+        }
+      ]
+    },
+    {
+      "capability_id": "observability",
+      "status": "VERIFIED",
+      "invocation_count": 3,
+      "success_count": 3,
+      "failure_count": 0,
+      "operation_count": 3,
+      "reproducible_operation_count": 0,
+      "operations": [
+        {
+          "operation_id": "get-logs",
+          "input_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "4ab26c1436ef7f51fdb0f420598101e76eb2d6430ee2736f7af58e654e097e36"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "ObservabilityService.getLogs"
+          ]
+        },
+        {
+          "operation_id": "get-metrics",
+          "input_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "7e1f7b3acf0d897eccf1f5eb47c81e3cd1c1cfb72ede226ca8c8e9489371dfd2"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "ObservabilityService.getMetrics"
+          ]
+        },
+        {
+          "operation_id": "get-traces",
+          "input_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "01e13da810d345f9670a48aa4c3545f399ec70160f33b70e4010379d13abb38b"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "ObservabilityService.getTraces"
+          ]
+        }
+      ]
+    },
+    {
+      "capability_id": "requirement-management",
+      "status": "REPRODUCIBLE",
+      "invocation_count": 11,
+      "success_count": 11,
+      "failure_count": 0,
+      "operation_count": 4,
+      "reproducible_operation_count": 2,
+      "operations": [
+        {
+          "operation_id": "get-requirement",
+          "input_digest": "089b9e06df2aebfa98a686f39197ed8d912e070683594024e5e2a963caa38723",
+          "invocation_count": 6,
+          "success_count": 6,
+          "failure_count": 0,
+          "result_digests": [
+            "e380c3252812bba0636d10af480016bfdbec9977da48928ae6339cbdabc642c9"
+          ],
+          "reproducible": true,
+          "source_refs": [
+            "RequirementService.getRequirement"
+          ]
+        },
+        {
+          "operation_id": "search-requirements",
+          "input_digest": "0310398e5e13f34668cc5865599937eab24541613d9c4462eac7b44428e781b9",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "aced487a38c8aad3cb82eae2d67eb5b6833f2aaab7cdeab43be90393c286b324"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "RequirementService.searchRequirements"
+          ]
+        },
+        {
+          "operation_id": "search-requirements",
+          "input_digest": "79cca47b16046efc521110b1af7825c6ea1893f0513b5314c7d4cc8cc4bed0fb",
+          "invocation_count": 3,
+          "success_count": 3,
+          "failure_count": 0,
+          "result_digests": [
+            "aced487a38c8aad3cb82eae2d67eb5b6833f2aaab7cdeab43be90393c286b324"
+          ],
+          "reproducible": true,
+          "source_refs": [
+            "RequirementService.searchRequirements"
+          ]
+        },
+        {
+          "operation_id": "search-requirements",
+          "input_digest": "989f4edccf4f1e659d2ac7f56027b4f1b84995d4e5dee6d1ce5963e947efba68",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "aced487a38c8aad3cb82eae2d67eb5b6833f2aaab7cdeab43be90393c286b324"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "RequirementService.searchRequirements"
+          ]
+        }
+      ]
+    },
+    {
+      "capability_id": "requirements-traceability-matrix",
+      "status": "REPRODUCIBLE",
+      "invocation_count": 5,
+      "success_count": 5,
+      "failure_count": 0,
+      "operation_count": 2,
+      "reproducible_operation_count": 2,
+      "operations": [
+        {
+          "operation_id": "get-traceability-row",
+          "input_digest": "ad3f58f4a332aaa6607f11534727c8325638cd7fee21837cda62a9961a248356",
+          "invocation_count": 3,
+          "success_count": 3,
+          "failure_count": 0,
+          "result_digests": [
+            "001fca0127c8896ebef9a65fa30d9d22f299a162617d0f4bf6ae24a2b2fe2808"
+          ],
+          "reproducible": true,
+          "source_refs": [
+            "RequirementsTraceabilityMatrixService.getTraceabilityRow"
+          ]
+        },
+        {
+          "operation_id": "search-traceability-matrix",
+          "input_digest": "660633bc4e1e1bc36a054b7048360c9ffd7933adc5f8ea2a2d5b733050639494",
+          "invocation_count": 2,
+          "success_count": 2,
+          "failure_count": 0,
+          "result_digests": [
+            "9f587568e33ab88eed13da743ada64e220d82bf5ed10a20e1e19635030cc91bc"
+          ],
+          "reproducible": true,
+          "source_refs": [
+            "RequirementsTraceabilityMatrixService.searchTraceabilityMatrix"
+          ]
+        }
+      ]
+    },
+    {
+      "capability_id": "security-hardening",
+      "status": "REPRODUCIBLE",
+      "invocation_count": 19,
+      "success_count": 19,
+      "failure_count": 0,
+      "operation_count": 7,
+      "reproducible_operation_count": 3,
+      "operations": [
+        {
+          "operation_id": "authorize",
+          "input_digest": "05e8294813712e5939a303ec8a3826c3aa5ed08896eedbf62be92adbda167762",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "6efed011e01715db752179347084da81073d3aad68ff663a1e1bc2576f0fecc4"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "SecurityHardeningService.authorize"
+          ]
+        },
+        {
+          "operation_id": "authorize",
+          "input_digest": "0edb53ebb364e9833c99f25bcfac248739700ab2857d1c06d3bd3df8292cc868",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "be848d533c71b6215a20263c78b56147dccd4b446f5feb9428042abbf3c46363"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "SecurityHardeningService.authorize"
+          ]
+        },
+        {
+          "operation_id": "authorize",
+          "input_digest": "5afb6ced7c75d668b1a11a971f63f756fe3e33bc2485fa788894798f3c5dee84",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "570471bdfb127d6cc440c2c191c546a965d00d7ba78e6319c27ce71e288bc370"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "SecurityHardeningService.authorize"
+          ]
+        },
+        {
+          "operation_id": "authorize",
+          "input_digest": "67c5a8ce138e895a2755b3ccc4d3298e814d9464479356cb4a0cabc63294e89b",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "1603116f3f69a920517060407dd9a63541674a558b85c0e265beddca396dcf87"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "SecurityHardeningService.authorize"
+          ]
+        },
+        {
+          "operation_id": "authorize",
+          "input_digest": "8ac92b8944d35504f8f926b8dae03857043f654f75d9f1781e82ae69cb633f3b",
+          "invocation_count": 10,
+          "success_count": 10,
+          "failure_count": 0,
+          "result_digests": [
+            "6b0fba761b9654a5687e3ca225a525510eb2b9875a40bbb87826dbe89a5cd8cd"
+          ],
+          "reproducible": true,
+          "source_refs": [
+            "SecurityHardeningService.authorize"
+          ]
+        },
+        {
+          "operation_id": "authorize",
+          "input_digest": "8ee1c146eb4893ca62276517eefc393befbe3a8fe4b8ff5a32dbc05cc1dec1de",
+          "invocation_count": 2,
+          "success_count": 2,
+          "failure_count": 0,
+          "result_digests": [
+            "85c9a263d77de0131589ee16f9a76ab1574011e26974e5a61e49d117b1e06ea8"
+          ],
+          "reproducible": true,
+          "source_refs": [
+            "SecurityHardeningService.authorize"
+          ]
+        },
+        {
+          "operation_id": "authorize",
+          "input_digest": "c9a6ccd3219a1ae10534806325d25a8907c279931b1669bc640c9ce66eef5177",
+          "invocation_count": 3,
+          "success_count": 3,
+          "failure_count": 0,
+          "result_digests": [
+            "bb3ad5f5ea5e2c5e060b68381f5f7ba55af527adfba38f386442ce0046530b5f"
+          ],
+          "reproducible": true,
+          "source_refs": [
+            "SecurityHardeningService.authorize"
+          ]
+        }
+      ]
+    },
+    {
+      "capability_id": "trust-framework",
+      "status": "VERIFIED",
+      "invocation_count": 1,
+      "success_count": 1,
+      "failure_count": 0,
+      "operation_count": 1,
+      "reproducible_operation_count": 0,
+      "operations": [
+        {
+          "operation_id": "get-framework",
+          "input_digest": "e4bf87769199e03b11a71d738ca0406eb29b464f838a50a4206d24dadef381ce",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "237fb5994272914e199f068f8b4dd3d3fb1cf815903fd8035499c13ca724f8a8"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "TrustFrameworkService.getFramework"
+          ]
+        }
+      ]
+    },
+    {
+      "capability_id": "workflow-engine",
+      "status": "REPRODUCIBLE",
+      "invocation_count": 8,
+      "success_count": 8,
+      "failure_count": 0,
+      "operation_count": 3,
+      "reproducible_operation_count": 2,
+      "operations": [
+        {
+          "operation_id": "execute-workflow",
+          "input_digest": "32fbb48bdb053926441ea86d3bd7ee1836445e7494086aae3b3e531cde23645b",
+          "invocation_count": 1,
+          "success_count": 1,
+          "failure_count": 0,
+          "result_digests": [
+            "0aa5a6fe154ab47f0f6a11846b19c40dd6c0e12e89d76190ca8c7642e254747b"
+          ],
+          "reproducible": false,
+          "source_refs": [
+            "WorkflowEngineService.executeWorkflow"
+          ]
+        },
+        {
+          "operation_id": "execute-workflow",
+          "input_digest": "6ffb7b92b07f9c9910f127a14063a385fd2aab940979bcbb10e1dbf3c30ceeb6",
+          "invocation_count": 3,
+          "success_count": 3,
+          "failure_count": 0,
+          "result_digests": [
+            "08cb1ff01563fea4b895b73666bf3179cf59403c918dbf3d632fe9d2d381cd1d"
+          ],
+          "reproducible": true,
+          "source_refs": [
+            "WorkflowEngineService.executeWorkflow"
+          ]
+        },
+        {
+          "operation_id": "list-workflow-definitions",
+          "input_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "invocation_count": 4,
+          "success_count": 4,
+          "failure_count": 0,
+          "result_digests": [
+            "82d3c117855b0eaa26408b684294270fd20440cc02d4c05ab0b6e9ab13fd64fc"
+          ],
+          "reproducible": true,
+          "source_refs": [
+            "WorkflowEngineService.listWorkflowDefinitions"
+          ]
+        }
+      ]
+    }
+  ],
+  "claim_boundary": "Runtime invocation evidence is captured from actual capability service execution during product verification tests. REPRODUCIBLE currently requires stable repeated result digests inside the observed run plus PASS composition replay; cross-environment replay is not yet materialized per capability."
+}

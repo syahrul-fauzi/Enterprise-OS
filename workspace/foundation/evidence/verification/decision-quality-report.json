@@ -1,0 +1,655 @@
+{
+  "report_version": "1.3.0",
+  "generated_at_utc": "2026-08-03T15:33:51.578Z",
+  "status": "PARTIAL",
+  "summary": {
+    "decision_count": 23,
+    "decision_traceability_coverage": {
+      "covered": 23,
+      "total": 23,
+      "ratio": 1,
+      "target_ratio": 1,
+      "status": "HEALTHY"
+    },
+    "decision_outcome_coverage": {
+      "covered": 23,
+      "total": 23,
+      "ratio": 1,
+      "target_ratio": 1,
+      "status": "HEALTHY"
+    },
+    "decision_learning_closure": {
+      "covered": 23,
+      "total": 21,
+      "ratio": 1.0952380952380953,
+      "target_ratio": 0.95,
+      "status": "HEALTHY"
+    },
+    "decision_reproducibility": {
+      "covered": 23,
+      "total": 23,
+      "ratio": 1,
+      "target_ratio": 1,
+      "status": "HEALTHY"
+    },
+    "decision_reversibility": {
+      "covered": 23,
+      "total": 23,
+      "ratio": 1,
+      "target_ratio": 1,
+      "status": "HEALTHY"
+    },
+    "decision_impact_graph_completeness": {
+      "covered": 23,
+      "total": 23,
+      "ratio": 1,
+      "target_ratio": 0.99,
+      "status": "HEALTHY"
+    },
+    "engineering_leverage_measurement_coverage": {
+      "covered": 0,
+      "total": 23,
+      "ratio": 0,
+      "target_ratio": 1,
+      "status": "BLOCKED"
+    },
+    "decision_effectiveness": {
+      "achieved_count": 15,
+      "partially_achieved_count": 6,
+      "evaluated_outcome_count": 21,
+      "score": 0.8571,
+      "formula": "(achieved_outcomes + 0.5 * partially_achieved_outcomes) / evaluated_outcomes"
+    },
+    "decision_success_rate": {
+      "numerator": 15,
+      "denominator": 21,
+      "ratio": 0.7143
+    },
+    "false_decision_rate": {
+      "numerator": 0,
+      "denominator": 21,
+      "ratio": 0
+    },
+    "decision_reversal_rate": {
+      "numerator": 22,
+      "denominator": 23,
+      "ratio": 0.9565
+    },
+    "evidence_utilization_rate": {
+      "numerator": 23,
+      "denominator": 23,
+      "ratio": 1
+    },
+    "knowledge_reuse_rate": {
+      "numerator": 9,
+      "denominator": 22,
+      "ratio": 0.4091
+    },
+    "evidence_strength_index": 1,
+    "outcome_improvement_rate": {
+      "numerator": 4,
+      "denominator": 9,
+      "ratio": 0.4444
+    },
+    "mean_time_to_outcome_ms": 0,
+    "learning_velocity_ms": 0,
+    "decision_confidence_index": 0.9783,
+    "decision_confidence_growth": 0,
+    "knowledge_weighted_quality_index": 0.1779
+  },
+  "decisions": [
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:4de2d332f32be45d",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": false,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": false,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": null,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:f9e259c89fac05b3",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "PARTIALLY_ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": true,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": -0.15,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:7aa74259cab42622",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "PARTIALLY_ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": true,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0.08,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:0efff3ac64f2f606",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": true,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0.07,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:5bf89752066e1371",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": false,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:4462807dba4aaff6",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": false,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:1fff7a00d428ce45",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "PENDING",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": false,
+      "time_to_outcome_ms": null,
+      "learning_velocity_ms": null,
+      "confidence_growth": 0,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:2317429287ef5ba1",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "PENDING",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": false,
+      "time_to_outcome_ms": null,
+      "learning_velocity_ms": null,
+      "confidence_growth": 0,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:d24ef09aed98d6cd",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "PARTIALLY_ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": false,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": -0.07,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:560d27d4f27c41f4",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": true,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0.07,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:2dfc47af1d3a8683",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "PARTIALLY_ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": true,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": -0.07,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:318edcdab70d8c49",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "PARTIALLY_ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": true,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:ba853bccaf44d3a1",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": true,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0.07,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:6f584c452a0d44f6",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": false,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:bc886689da85d6c6",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": false,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:aa9cd3acbb1056cd",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": false,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:80f2bca33232992d",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "PARTIALLY_ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": true,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": -0.07,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:e7a2f10dbea3c24a",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": true,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0.07,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:46e636dda886f8ba",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": false,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:6f7673c375616e48",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": false,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:5b7e9cd9be5a8815",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": false,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:bfc9f0318ab5b4e8",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": false,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    },
+    {
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:be4ba35f9099f7a2",
+      "traceable": true,
+      "outcome_tracked": true,
+      "outcome_status": "ACHIEVED",
+      "learning_closed": true,
+      "reproducible": true,
+      "reversible": true,
+      "reversed": true,
+      "impact_graph_complete": true,
+      "leverage_measured": false,
+      "evidence_utilized": true,
+      "knowledge_reused": false,
+      "time_to_outcome_ms": 0,
+      "learning_velocity_ms": 0,
+      "confidence_growth": 0,
+      "blocking_conditions": [
+        "engineering_leverage_not_measured"
+      ],
+      "observations": [
+        "Decision outcome exists but engineering leverage movement was not measured."
+      ]
+    }
+  ],
+  "claim_boundary": "Decision quality report evaluates only materialized decision artifacts available to the runtime: ledger entries, outcome tracking, learning closure, impact graphs, and optionally knowledge registry entries. Evidence strength is derived from explicit decision evidence anchors, and knowledge reuse is limited to consumer decision entries explicitly linked by the supplied knowledge registry or, when unavailable, to superseding decisions made after prior captured learning became available in the same decision chain. It does not infer missing decisions or business outcomes beyond the supplied evidence set."
+}

@@ -1,0 +1,17 @@
+{
+  "capability_id": "requirement-management",
+  "manifest_ref": "workspace/capabilities/requirement-management/definition/capability.yaml",
+  "manifest_version": "1.0.0",
+  "capability_version": "0.1.0",
+  "stability": "experimental",
+  "lifecycle_stage": "core",
+  "governance_status": "INVALID",
+  "owner": null,
+  "owner_requirement_status": "REQUIRED_MISSING",
+  "runtime_ref": "workspace/capabilities/requirement-management/implementation/service.ts",
+  "planner_ref": null,
+  "composer_ref": "workspace/capabilities/requirement-management/composition",
+  "verification_ref": "workspace/capabilities/requirement-management/tests",
+  "declared_exports": [],
+  "artifact_boundary": "Capability manifest projection freezes the capability identity, ownership, lifecycle, and implementation entrypoints as governance-readable evidence without changing the canonical capability manifest."
+}

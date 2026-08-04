@@ -1,0 +1,609 @@
+{
+  "registry_version": "1.0.0",
+  "generated_at_utc": "2026-08-03T15:33:51.567Z",
+  "summary": {
+    "knowledge_object_count": 9,
+    "operationalized_knowledge_count": 9,
+    "knowledge_availability_rate": 1,
+    "reusable_knowledge_count": 9,
+    "reused_knowledge_object_count": 6,
+    "improved_knowledge_object_count": 2,
+    "total_source_learning_count": 23,
+    "total_reuse_count": 9,
+    "total_improved_outcome_count": 4
+  },
+  "entries": [
+    {
+      "knowledge_id": "knowledge:fdf51ff9d249b71d",
+      "knowledge_key": "knowledge-key:090c66c81b3da723",
+      "decision_type": "gate-c-acceptance-decision",
+      "knowledge_status": "OPERATIONALIZED",
+      "source_learning_ids": [
+        "decision-learning-gate-c-acceptance:1efd236e9e650124",
+        "decision-learning-gate-c-acceptance:d0556f44b34c1dc9",
+        "decision-learning-gate-c-acceptance:1a4ed54affd04399",
+        "decision-learning-gate-c-acceptance:1b8d400467a3f5ce"
+      ],
+      "source_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:1fff7a00d428ce45",
+        "decision-entry-gate-c-acceptance:2317429287ef5ba1",
+        "decision-entry-gate-c-acceptance:ba853bccaf44d3a1",
+        "decision-entry-gate-c-acceptance:e7a2f10dbea3c24a"
+      ],
+      "supporting_outcome_tracking_ids": [
+        "decision-outcome:cf7d5a90ba399d36",
+        "decision-outcome:ebaccd2397410f6c",
+        "decision-outcome:cc15d9ac9cf79a35",
+        "decision-outcome:03081212108136d2"
+      ],
+      "lessons": [
+        "Frozen acceptance contract converged for N3 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "first_captured_at_utc": "2026-08-01T05:20:09.778Z",
+      "last_captured_at_utc": "2026-08-01T06:12:05.893Z",
+      "source_learning_count": 4,
+      "reuse_count": 0,
+      "reused_by_decision_entry_ids": [],
+      "decision_pattern_change_count": 0,
+      "improved_outcome_count": 0,
+      "evidence_ref_count": 24,
+      "capability_ref_count": 12
+    },
+    {
+      "knowledge_id": "knowledge:46e4ccf0356f94b5",
+      "knowledge_key": "knowledge-key:1f18575a1e841ceb",
+      "decision_type": "gate-c-acceptance-decision",
+      "knowledge_status": "OPERATIONALIZED",
+      "source_learning_ids": [
+        "decision-learning-gate-c-acceptance:88a5be87e9ed9287"
+      ],
+      "source_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:f9e259c89fac05b3"
+      ],
+      "supporting_outcome_tracking_ids": [
+        "decision-outcome:6b3371e0ce753ba1"
+      ],
+      "lessons": [
+        "Acceptance remained blocked until proof ledger bertambah was resolved.",
+        "Acceptance remained blocked until science kernel unchanged was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:proof-ledger-bertambah",
+        "gate-c-action:science-kernel-unchanged"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "first_captured_at_utc": "2026-08-01T04:31:19.388Z",
+      "last_captured_at_utc": "2026-08-01T04:31:19.388Z",
+      "source_learning_count": 1,
+      "reuse_count": 1,
+      "reused_by_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:7aa74259cab42622"
+      ],
+      "decision_pattern_change_count": 1,
+      "improved_outcome_count": 0,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3
+    },
+    {
+      "knowledge_id": "knowledge:b393fba7c6e53e95",
+      "knowledge_key": "knowledge-key:6cf9c100ad81dff6",
+      "decision_type": "gate-c-acceptance-decision",
+      "knowledge_status": "OPERATIONALIZED",
+      "source_learning_ids": [
+        "decision-learning-gate-c-acceptance:f52c81fb5bf2b435",
+        "decision-learning-gate-c-acceptance:f2c7473865477496",
+        "decision-learning-gate-c-acceptance:9224b5c9ccda85b0"
+      ],
+      "source_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:560d27d4f27c41f4",
+        "decision-entry-gate-c-acceptance:6f584c452a0d44f6",
+        "decision-entry-gate-c-acceptance:46e636dda886f8ba"
+      ],
+      "supporting_outcome_tracking_ids": [
+        "decision-outcome:5e18c7e862d542ce",
+        "decision-outcome:98bc1f51c45b032b",
+        "decision-outcome:496038b6774b4f21"
+      ],
+      "lessons": [
+        "Frozen acceptance contract converged for N5 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "first_captured_at_utc": "2026-08-01T05:47:43.122Z",
+      "last_captured_at_utc": "2026-08-01T06:12:54.362Z",
+      "source_learning_count": 3,
+      "reuse_count": 1,
+      "reused_by_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:2dfc47af1d3a8683"
+      ],
+      "decision_pattern_change_count": 1,
+      "improved_outcome_count": 0,
+      "evidence_ref_count": 18,
+      "capability_ref_count": 9
+    },
+    {
+      "knowledge_id": "knowledge:19dde1c68e9cd8c7",
+      "knowledge_key": "knowledge-key:82fcb0c3723b8d1c",
+      "decision_type": "gate-c-acceptance-decision",
+      "knowledge_status": "OPERATIONALIZED",
+      "source_learning_ids": [
+        "decision-learning-gate-c-acceptance:6aba29fbdbfda871",
+        "decision-learning-gate-c-acceptance:050ab95e3ae6d400",
+        "decision-learning-gate-c-acceptance:e4be5be060b3bb84"
+      ],
+      "source_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:0efff3ac64f2f606",
+        "decision-entry-gate-c-acceptance:5bf89752066e1371",
+        "decision-entry-gate-c-acceptance:4462807dba4aaff6"
+      ],
+      "supporting_outcome_tracking_ids": [
+        "decision-outcome:56d0ad248263c6e9",
+        "decision-outcome:f939833b3b88514b",
+        "decision-outcome:f0b1a6f5c9acb14f"
+      ],
+      "lessons": [
+        "Frozen acceptance contract converged for N4 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "first_captured_at_utc": "2026-08-01T04:37:36.699Z",
+      "last_captured_at_utc": "2026-08-01T04:59:35.971Z",
+      "source_learning_count": 3,
+      "reuse_count": 0,
+      "reused_by_decision_entry_ids": [],
+      "decision_pattern_change_count": 0,
+      "improved_outcome_count": 0,
+      "evidence_ref_count": 18,
+      "capability_ref_count": 9
+    },
+    {
+      "knowledge_id": "knowledge:cd55bcdbb43f42fe",
+      "knowledge_key": "knowledge-key:88a18dea5332811f",
+      "decision_type": "gate-c-acceptance-decision",
+      "knowledge_status": "OPERATIONALIZED",
+      "source_learning_ids": [
+        "decision-learning-gate-c-acceptance:a59ad53b9570757b",
+        "decision-learning-gate-c-acceptance:2ba781ed6252f5c4"
+      ],
+      "source_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:aa9cd3acbb1056cd",
+        "decision-entry-gate-c-acceptance:5b7e9cd9be5a8815"
+      ],
+      "supporting_outcome_tracking_ids": [
+        "decision-outcome:88e9978b0c601f73",
+        "decision-outcome:857aea7da4f04d05"
+      ],
+      "lessons": [
+        "Frozen acceptance contract converged for N7 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "first_captured_at_utc": "2026-08-01T06:10:26.049Z",
+      "last_captured_at_utc": "2026-08-01T06:12:55.430Z",
+      "source_learning_count": 2,
+      "reuse_count": 1,
+      "reused_by_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:80f2bca33232992d"
+      ],
+      "decision_pattern_change_count": 1,
+      "improved_outcome_count": 0,
+      "evidence_ref_count": 12,
+      "capability_ref_count": 6
+    },
+    {
+      "knowledge_id": "knowledge:dd640da5a84598c3",
+      "knowledge_key": "knowledge-key:a20f760ff46cd97a",
+      "decision_type": "gate-c-acceptance-decision",
+      "knowledge_status": "OPERATIONALIZED",
+      "source_learning_ids": [
+        "decision-learning-gate-c-acceptance:08fa0640b32e6eb5",
+        "decision-learning-gate-c-acceptance:93e2a9881665deb7"
+      ],
+      "source_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:bc886689da85d6c6",
+        "decision-entry-gate-c-acceptance:6f7673c375616e48"
+      ],
+      "supporting_outcome_tracking_ids": [
+        "decision-outcome:be0cf3d8b18fe194",
+        "decision-outcome:4fe55d7677e6bf49"
+      ],
+      "lessons": [
+        "Frozen acceptance contract converged for N6 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "first_captured_at_utc": "2026-08-01T06:10:25.592Z",
+      "last_captured_at_utc": "2026-08-01T06:12:54.944Z",
+      "source_learning_count": 2,
+      "reuse_count": 0,
+      "reused_by_decision_entry_ids": [],
+      "decision_pattern_change_count": 0,
+      "improved_outcome_count": 0,
+      "evidence_ref_count": 12,
+      "capability_ref_count": 6
+    },
+    {
+      "knowledge_id": "knowledge:9a1309ecf584e3f4",
+      "knowledge_key": "knowledge-key:ae416ad88ecec5a2",
+      "decision_type": "gate-c-acceptance-decision",
+      "knowledge_status": "OPERATIONALIZED",
+      "source_learning_ids": [
+        "decision-learning-gate-c-acceptance:f8957bdb86a16916",
+        "decision-learning-gate-c-acceptance:93bf9ffaaf5a26d6",
+        "decision-learning-gate-c-acceptance:7556db60aa2cc378"
+      ],
+      "source_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:4de2d332f32be45d",
+        "decision-entry-gate-c-acceptance:bfc9f0318ab5b4e8",
+        "decision-entry-gate-c-acceptance:be4ba35f9099f7a2"
+      ],
+      "supporting_outcome_tracking_ids": [
+        "decision-outcome:04ced52cc386484c",
+        "decision-outcome:2503cb59e9aef2b7",
+        "decision-outcome:fbda7bb200f75937"
+      ],
+      "lessons": [
+        "Frozen acceptance contract converged for N2 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "first_captured_at_utc": "2026-08-01T04:12:40.443Z",
+      "last_captured_at_utc": "2026-08-01T06:18:14.110Z",
+      "source_learning_count": 3,
+      "reuse_count": 1,
+      "reused_by_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:f9e259c89fac05b3"
+      ],
+      "decision_pattern_change_count": 1,
+      "improved_outcome_count": 0,
+      "evidence_ref_count": 18,
+      "capability_ref_count": 9
+    },
+    {
+      "knowledge_id": "knowledge:30fd3dec86d769a4",
+      "knowledge_key": "knowledge-key:bd73d427916ceb94",
+      "decision_type": "gate-c-acceptance-decision",
+      "knowledge_status": "OPERATIONALIZED",
+      "source_learning_ids": [
+        "decision-learning-gate-c-acceptance:e4d7eb821549f4aa",
+        "decision-learning-gate-c-acceptance:9372300c12082315",
+        "decision-learning-gate-c-acceptance:229dda074bc3ac5b",
+        "decision-learning-gate-c-acceptance:94098861278de1c6"
+      ],
+      "source_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:7aa74259cab42622",
+        "decision-entry-gate-c-acceptance:d24ef09aed98d6cd",
+        "decision-entry-gate-c-acceptance:2dfc47af1d3a8683",
+        "decision-entry-gate-c-acceptance:318edcdab70d8c49"
+      ],
+      "supporting_outcome_tracking_ids": [
+        "decision-outcome:b994ee3702aefa97",
+        "decision-outcome:012ece6655ce9714",
+        "decision-outcome:51b6114c10c01037",
+        "decision-outcome:03c5819ccdb308c4"
+      ],
+      "lessons": [
+        "Acceptance remained blocked until proof ledger bertambah was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:proof-ledger-bertambah"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "first_captured_at_utc": "2026-08-01T04:36:18.424Z",
+      "last_captured_at_utc": "2026-08-01T05:53:46.453Z",
+      "source_learning_count": 4,
+      "reuse_count": 4,
+      "reused_by_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:0efff3ac64f2f606",
+        "decision-entry-gate-c-acceptance:560d27d4f27c41f4",
+        "decision-entry-gate-c-acceptance:318edcdab70d8c49",
+        "decision-entry-gate-c-acceptance:ba853bccaf44d3a1"
+      ],
+      "decision_pattern_change_count": 3,
+      "improved_outcome_count": 3,
+      "evidence_ref_count": 24,
+      "capability_ref_count": 12
+    },
+    {
+      "knowledge_id": "knowledge:303dcdb243410f76",
+      "knowledge_key": "knowledge-key:f631537605a94365",
+      "decision_type": "gate-c-acceptance-decision",
+      "knowledge_status": "OPERATIONALIZED",
+      "source_learning_ids": [
+        "decision-learning-gate-c-acceptance:6ca4700a64e15453"
+      ],
+      "source_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:80f2bca33232992d"
+      ],
+      "supporting_outcome_tracking_ids": [
+        "decision-outcome:e412529de6df942d"
+      ],
+      "lessons": [
+        "Acceptance remained blocked until oracle diagnosis sesuai spesifikasi was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:oracle-diagnosis-sesuai-spesifikasi"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "first_captured_at_utc": "2026-08-01T06:11:45.884Z",
+      "last_captured_at_utc": "2026-08-01T06:11:45.884Z",
+      "source_learning_count": 1,
+      "reuse_count": 1,
+      "reused_by_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:e7a2f10dbea3c24a"
+      ],
+      "decision_pattern_change_count": 1,
+      "improved_outcome_count": 1,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3
+    }
+  ],
+  "evolution": {
+    "lineage_entry_count": 9,
+    "reused_knowledge_object_count": 6,
+    "improved_knowledge_object_count": 2,
+    "entries": [
+      {
+        "knowledge_id": "knowledge:fdf51ff9d249b71d",
+        "knowledge_key": "knowledge-key:090c66c81b3da723",
+        "evolution_stage": "AVAILABLE",
+        "source_learning_ids": [
+          "decision-learning-gate-c-acceptance:1efd236e9e650124",
+          "decision-learning-gate-c-acceptance:d0556f44b34c1dc9",
+          "decision-learning-gate-c-acceptance:1a4ed54affd04399",
+          "decision-learning-gate-c-acceptance:1b8d400467a3f5ce"
+        ],
+        "source_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:1fff7a00d428ce45",
+          "decision-entry-gate-c-acceptance:2317429287ef5ba1",
+          "decision-entry-gate-c-acceptance:ba853bccaf44d3a1",
+          "decision-entry-gate-c-acceptance:e7a2f10dbea3c24a"
+        ],
+        "reused_by_decision_entry_ids": [],
+        "supporting_outcome_tracking_ids": [
+          "decision-outcome:cf7d5a90ba399d36",
+          "decision-outcome:ebaccd2397410f6c",
+          "decision-outcome:cc15d9ac9cf79a35",
+          "decision-outcome:03081212108136d2"
+        ],
+        "first_captured_at_utc": "2026-08-01T05:20:09.778Z",
+        "last_captured_at_utc": "2026-08-01T06:12:05.893Z",
+        "source_learning_count": 4,
+        "reuse_count": 0,
+        "improved_outcome_count": 0
+      },
+      {
+        "knowledge_id": "knowledge:46e4ccf0356f94b5",
+        "knowledge_key": "knowledge-key:1f18575a1e841ceb",
+        "evolution_stage": "REUSED",
+        "source_learning_ids": [
+          "decision-learning-gate-c-acceptance:88a5be87e9ed9287"
+        ],
+        "source_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:f9e259c89fac05b3"
+        ],
+        "reused_by_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:7aa74259cab42622"
+        ],
+        "supporting_outcome_tracking_ids": [
+          "decision-outcome:6b3371e0ce753ba1"
+        ],
+        "first_captured_at_utc": "2026-08-01T04:31:19.388Z",
+        "last_captured_at_utc": "2026-08-01T04:31:19.388Z",
+        "source_learning_count": 1,
+        "reuse_count": 1,
+        "improved_outcome_count": 0
+      },
+      {
+        "knowledge_id": "knowledge:b393fba7c6e53e95",
+        "knowledge_key": "knowledge-key:6cf9c100ad81dff6",
+        "evolution_stage": "REUSED",
+        "source_learning_ids": [
+          "decision-learning-gate-c-acceptance:f52c81fb5bf2b435",
+          "decision-learning-gate-c-acceptance:f2c7473865477496",
+          "decision-learning-gate-c-acceptance:9224b5c9ccda85b0"
+        ],
+        "source_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:560d27d4f27c41f4",
+          "decision-entry-gate-c-acceptance:6f584c452a0d44f6",
+          "decision-entry-gate-c-acceptance:46e636dda886f8ba"
+        ],
+        "reused_by_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:2dfc47af1d3a8683"
+        ],
+        "supporting_outcome_tracking_ids": [
+          "decision-outcome:5e18c7e862d542ce",
+          "decision-outcome:98bc1f51c45b032b",
+          "decision-outcome:496038b6774b4f21"
+        ],
+        "first_captured_at_utc": "2026-08-01T05:47:43.122Z",
+        "last_captured_at_utc": "2026-08-01T06:12:54.362Z",
+        "source_learning_count": 3,
+        "reuse_count": 1,
+        "improved_outcome_count": 0
+      },
+      {
+        "knowledge_id": "knowledge:19dde1c68e9cd8c7",
+        "knowledge_key": "knowledge-key:82fcb0c3723b8d1c",
+        "evolution_stage": "AVAILABLE",
+        "source_learning_ids": [
+          "decision-learning-gate-c-acceptance:6aba29fbdbfda871",
+          "decision-learning-gate-c-acceptance:050ab95e3ae6d400",
+          "decision-learning-gate-c-acceptance:e4be5be060b3bb84"
+        ],
+        "source_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:0efff3ac64f2f606",
+          "decision-entry-gate-c-acceptance:5bf89752066e1371",
+          "decision-entry-gate-c-acceptance:4462807dba4aaff6"
+        ],
+        "reused_by_decision_entry_ids": [],
+        "supporting_outcome_tracking_ids": [
+          "decision-outcome:56d0ad248263c6e9",
+          "decision-outcome:f939833b3b88514b",
+          "decision-outcome:f0b1a6f5c9acb14f"
+        ],
+        "first_captured_at_utc": "2026-08-01T04:37:36.699Z",
+        "last_captured_at_utc": "2026-08-01T04:59:35.971Z",
+        "source_learning_count": 3,
+        "reuse_count": 0,
+        "improved_outcome_count": 0
+      },
+      {
+        "knowledge_id": "knowledge:cd55bcdbb43f42fe",
+        "knowledge_key": "knowledge-key:88a18dea5332811f",
+        "evolution_stage": "REUSED",
+        "source_learning_ids": [
+          "decision-learning-gate-c-acceptance:a59ad53b9570757b",
+          "decision-learning-gate-c-acceptance:2ba781ed6252f5c4"
+        ],
+        "source_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:aa9cd3acbb1056cd",
+          "decision-entry-gate-c-acceptance:5b7e9cd9be5a8815"
+        ],
+        "reused_by_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:80f2bca33232992d"
+        ],
+        "supporting_outcome_tracking_ids": [
+          "decision-outcome:88e9978b0c601f73",
+          "decision-outcome:857aea7da4f04d05"
+        ],
+        "first_captured_at_utc": "2026-08-01T06:10:26.049Z",
+        "last_captured_at_utc": "2026-08-01T06:12:55.430Z",
+        "source_learning_count": 2,
+        "reuse_count": 1,
+        "improved_outcome_count": 0
+      },
+      {
+        "knowledge_id": "knowledge:dd640da5a84598c3",
+        "knowledge_key": "knowledge-key:a20f760ff46cd97a",
+        "evolution_stage": "AVAILABLE",
+        "source_learning_ids": [
+          "decision-learning-gate-c-acceptance:08fa0640b32e6eb5",
+          "decision-learning-gate-c-acceptance:93e2a9881665deb7"
+        ],
+        "source_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:bc886689da85d6c6",
+          "decision-entry-gate-c-acceptance:6f7673c375616e48"
+        ],
+        "reused_by_decision_entry_ids": [],
+        "supporting_outcome_tracking_ids": [
+          "decision-outcome:be0cf3d8b18fe194",
+          "decision-outcome:4fe55d7677e6bf49"
+        ],
+        "first_captured_at_utc": "2026-08-01T06:10:25.592Z",
+        "last_captured_at_utc": "2026-08-01T06:12:54.944Z",
+        "source_learning_count": 2,
+        "reuse_count": 0,
+        "improved_outcome_count": 0
+      },
+      {
+        "knowledge_id": "knowledge:9a1309ecf584e3f4",
+        "knowledge_key": "knowledge-key:ae416ad88ecec5a2",
+        "evolution_stage": "REUSED",
+        "source_learning_ids": [
+          "decision-learning-gate-c-acceptance:f8957bdb86a16916",
+          "decision-learning-gate-c-acceptance:93bf9ffaaf5a26d6",
+          "decision-learning-gate-c-acceptance:7556db60aa2cc378"
+        ],
+        "source_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:4de2d332f32be45d",
+          "decision-entry-gate-c-acceptance:bfc9f0318ab5b4e8",
+          "decision-entry-gate-c-acceptance:be4ba35f9099f7a2"
+        ],
+        "reused_by_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:f9e259c89fac05b3"
+        ],
+        "supporting_outcome_tracking_ids": [
+          "decision-outcome:04ced52cc386484c",
+          "decision-outcome:2503cb59e9aef2b7",
+          "decision-outcome:fbda7bb200f75937"
+        ],
+        "first_captured_at_utc": "2026-08-01T04:12:40.443Z",
+        "last_captured_at_utc": "2026-08-01T06:18:14.110Z",
+        "source_learning_count": 3,
+        "reuse_count": 1,
+        "improved_outcome_count": 0
+      },
+      {
+        "knowledge_id": "knowledge:30fd3dec86d769a4",
+        "knowledge_key": "knowledge-key:bd73d427916ceb94",
+        "evolution_stage": "IMPROVED",
+        "source_learning_ids": [
+          "decision-learning-gate-c-acceptance:e4d7eb821549f4aa",
+          "decision-learning-gate-c-acceptance:9372300c12082315",
+          "decision-learning-gate-c-acceptance:229dda074bc3ac5b",
+          "decision-learning-gate-c-acceptance:94098861278de1c6"
+        ],
+        "source_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:7aa74259cab42622",
+          "decision-entry-gate-c-acceptance:d24ef09aed98d6cd",
+          "decision-entry-gate-c-acceptance:2dfc47af1d3a8683",
+          "decision-entry-gate-c-acceptance:318edcdab70d8c49"
+        ],
+        "reused_by_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:0efff3ac64f2f606",
+          "decision-entry-gate-c-acceptance:560d27d4f27c41f4",
+          "decision-entry-gate-c-acceptance:318edcdab70d8c49",
+          "decision-entry-gate-c-acceptance:ba853bccaf44d3a1"
+        ],
+        "supporting_outcome_tracking_ids": [
+          "decision-outcome:b994ee3702aefa97",
+          "decision-outcome:012ece6655ce9714",
+          "decision-outcome:51b6114c10c01037",
+          "decision-outcome:03c5819ccdb308c4"
+        ],
+        "first_captured_at_utc": "2026-08-01T04:36:18.424Z",
+        "last_captured_at_utc": "2026-08-01T05:53:46.453Z",
+        "source_learning_count": 4,
+        "reuse_count": 4,
+        "improved_outcome_count": 3
+      },
+      {
+        "knowledge_id": "knowledge:303dcdb243410f76",
+        "knowledge_key": "knowledge-key:f631537605a94365",
+        "evolution_stage": "IMPROVED",
+        "source_learning_ids": [
+          "decision-learning-gate-c-acceptance:6ca4700a64e15453"
+        ],
+        "source_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:80f2bca33232992d"
+        ],
+        "reused_by_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:e7a2f10dbea3c24a"
+        ],
+        "supporting_outcome_tracking_ids": [
+          "decision-outcome:e412529de6df942d"
+        ],
+        "first_captured_at_utc": "2026-08-01T06:11:45.884Z",
+        "last_captured_at_utc": "2026-08-01T06:11:45.884Z",
+        "source_learning_count": 1,
+        "reuse_count": 1,
+        "improved_outcome_count": 1
+      }
+    ]
+  },
+  "claim_boundary": "Knowledge registry groups compatible learning events into reusable knowledge objects using normalized decision type, lessons, and follow-up actions. It claims only generalized and deduplicated knowledge patterns demonstrably supported by the underlying learning events."
+}

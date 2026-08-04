@@ -1,0 +1,22 @@
+{
+  "capability_id": "governance-evidence",
+  "manifest_ref": "workspace/capabilities/governance-evidence/definition/capability.yaml",
+  "manifest_version": "1.0.0",
+  "capability_version": "0.1.0",
+  "stability": "stable",
+  "lifecycle_stage": "experimental",
+  "governance_status": "VALID",
+  "owner": null,
+  "owner_requirement_status": "OPTIONAL",
+  "runtime_ref": "workspace/capabilities/governance-evidence/implementation/service.ts",
+  "planner_ref": null,
+  "composer_ref": null,
+  "verification_ref": null,
+  "declared_exports": [
+    "GovernanceEvidenceArtifactCatalog",
+    "GovernanceEvidenceArtifactKind",
+    "GovernanceEvidenceProvider",
+    "GovernanceSession"
+  ],
+  "artifact_boundary": "Capability manifest projection freezes the capability identity, ownership, lifecycle, and implementation entrypoints as governance-readable evidence without changing the canonical capability manifest."
+}

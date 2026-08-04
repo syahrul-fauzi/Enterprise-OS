@@ -1,0 +1,128 @@
+{
+  "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
+  "projection_type": "TopologyDriftProjection",
+  "schema_version": "1.0.0",
+  "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+  "generated_from": [
+    {
+      "source_type": "execution_chain",
+      "source_ref": "services-id",
+      "source_digest": "UNVERIFIED"
+    },
+    {
+      "source_type": "execution_chain",
+      "source_ref": "lawyershub",
+      "source_digest": "faa311186e56c5ca2504dc8d48b400bba7d238c1b87fcba56d0ceec5d9bae0d7"
+    },
+    {
+      "source_type": "execution_chain",
+      "source_ref": "ilc",
+      "source_digest": "UNVERIFIED"
+    }
+  ],
+  "generated_at_utc": "2026-08-03T15:33:49.942Z",
+  "drift_status": "DRIFT",
+  "summary": {
+    "total_products": 3,
+    "aligned_products": 0,
+    "drifted_products": 1,
+    "undeclared_observed_edges": 12,
+    "unobserved_declared_edges": 2,
+    "unmodeled_observed_requirements": 5,
+    "unmodeled_observed_workflows": 6,
+    "unmodeled_observed_plans": 3,
+    "canonical_topology_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21"
+  },
+  "products": [
+    {
+      "product_id": "services-id",
+      "declared_capabilities": [],
+      "observed_capabilities": [],
+      "aligned_capabilities": [],
+      "undeclared_observed_capabilities": [],
+      "unobserved_declared_capabilities": [],
+      "observed_requirement_node_ids": [],
+      "observed_workflow_node_ids": [],
+      "observed_plan_node_ids": [],
+      "drift_status": "UNVERIFIED"
+    },
+    {
+      "product_id": "lawyershub",
+      "declared_capabilities": [
+        "legal-case",
+        "legal-document",
+        "requirement-management"
+      ],
+      "observed_capabilities": [
+        "agent-orchestration",
+        "api-platform",
+        "connector-ecosystem",
+        "evidence-registry",
+        "governance-evidence",
+        "governance-read-model",
+        "knowledge-graph",
+        "observability",
+        "requirement-management",
+        "requirements-traceability-matrix",
+        "security-hardening",
+        "trust-framework",
+        "workflow-engine"
+      ],
+      "aligned_capabilities": [
+        "requirement-management"
+      ],
+      "undeclared_observed_capabilities": [
+        "agent-orchestration",
+        "api-platform",
+        "connector-ecosystem",
+        "evidence-registry",
+        "governance-evidence",
+        "governance-read-model",
+        "knowledge-graph",
+        "observability",
+        "requirements-traceability-matrix",
+        "security-hardening",
+        "trust-framework",
+        "workflow-engine"
+      ],
+      "unobserved_declared_capabilities": [
+        "legal-case",
+        "legal-document"
+      ],
+      "observed_requirement_node_ids": [
+        "REQ:REQ-0001",
+        "REQ:req-001",
+        "REQ:req-002",
+        "REQ:req-003",
+        "REQ:workflow:requirement-delivery-readiness"
+      ],
+      "observed_workflow_node_ids": [
+        "WF:collect-linked-evidence",
+        "WF:collect-run-evidence",
+        "WF:evidence-run-review",
+        "WF:load-requirement",
+        "WF:requirement-delivery-readiness",
+        "WF:resolve-traceability"
+      ],
+      "observed_plan_node_ids": [
+        "PLAN:orchestrate-evidence-review",
+        "PLAN:orchestrate-requirement-delivery",
+        "PLAN:plan::lawyershub.workspace.default::11dd818f"
+      ],
+      "drift_status": "DRIFT"
+    },
+    {
+      "product_id": "ilc",
+      "declared_capabilities": [],
+      "observed_capabilities": [],
+      "aligned_capabilities": [],
+      "undeclared_observed_capabilities": [],
+      "unobserved_declared_capabilities": [],
+      "observed_requirement_node_ids": [],
+      "observed_workflow_node_ids": [],
+      "observed_plan_node_ids": [],
+      "drift_status": "UNVERIFIED"
+    }
+  ],
+  "claim_boundary": "Topology drift currently compares declared product-to-capability topology against observed capability execution chains. Requirement, workflow, and plan nodes are reported as unmodeled observed topology until they become first-class declared contracts in the registry."
+}
