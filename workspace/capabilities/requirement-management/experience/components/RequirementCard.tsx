@@ -89,11 +89,11 @@ export function RequirementCard({
       title={
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h3 className="font-semibold text-gray-800 leading-snug">
+            <h3 className="font-semibold leading-snug text-slate-900">
               {item.title}
             </h3>
             {item.summary && (
-              <p className="text-sm text-gray-500 mt-1">{item.summary}</p>
+              <p className="mt-1 text-sm text-slate-600">{item.summary}</p>
             )}
           </div>
           <span
@@ -106,20 +106,20 @@ export function RequirementCard({
     >
       <div className="space-y-3">
         {item.description && (
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm leading-relaxed text-slate-600">
             {item.description}
           </p>
         )}
 
-        <div className="flex flex-wrap gap-2 text-[11px] text-gray-600">
-          <span className="px-2 py-1 rounded border border-gray-200 bg-gray-50">
+        <div className="flex flex-wrap gap-2 text-[11px] text-slate-600">
+          <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1">
             Priority: {PRIORITY_LABEL[item.priority]}
           </span>
-          <span className="px-2 py-1 rounded border border-gray-200 bg-gray-50">
+          <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1">
             Verification: {VERIFICATION_LABEL[item.verificationStatus]}
           </span>
           {item.owner && (
-            <span className="px-2 py-1 rounded border border-gray-200 bg-gray-50">
+            <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1">
               Owner: {item.owner}
             </span>
           )}
@@ -127,13 +127,13 @@ export function RequirementCard({
 
         {item.linkedCapabilityIds.length > 0 && (
           <div className="space-y-1">
-            <div className="text-[11px] font-medium uppercase tracking-wider text-gray-500">
+            <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
               Linked Capabilities
             </div>
             <div className="flex flex-wrap gap-1">
               {item.linkedCapabilityIds.map((capabilityId) => (
                 <span
-                  className="text-[11px] font-mono px-2 py-1 rounded border border-gray-200"
+                  className="rounded-lg border border-slate-200 px-2 py-1 text-[11px] font-mono"
                   key={capabilityId}
                 >
                   {capabilityId}
@@ -145,10 +145,10 @@ export function RequirementCard({
 
         {item.acceptanceCriteria.length > 0 && (
           <div className="space-y-1">
-            <div className="text-[11px] font-medium uppercase tracking-wider text-gray-500">
+            <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
               Acceptance Criteria
             </div>
-            <ul className="text-sm text-gray-600 list-disc pl-5 space-y-1">
+            <ul className="list-disc space-y-1 pl-5 text-sm text-slate-600">
               {item.acceptanceCriteria.map((criterion) => (
                 <li key={criterion}>{criterion}</li>
               ))}
@@ -156,11 +156,11 @@ export function RequirementCard({
           </div>
         )}
 
-        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-          <span className="text-[10px] font-mono text-gray-400">{item.id}</span>
+        <div className="flex items-center justify-between border-t border-slate-100 pt-2">
+          <span className="text-[10px] font-mono text-slate-400">{item.id}</span>
           {nextAction && onAction ? (
             <button
-              className="text-xs px-3 py-1.5 rounded bg-gray-900 text-white disabled:opacity-50"
+              className="rounded-xl bg-slate-950 px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50"
               disabled={busy}
               onClick={() => void onAction(item.id, nextAction)}
               type="button"
@@ -168,8 +168,8 @@ export function RequirementCard({
               {busy ? "Working..." : actionLabel}
             </button>
           ) : (
-            <span className="text-[11px] text-gray-400">
-              {item.status === "verified" ? "Delivery complete" : "No action"}
+            <span className="text-[11px] text-slate-400">
+              {item.status === "verified" ? "Ready to present" : "No action"}
             </span>
           )}
         </div>

@@ -11,6 +11,7 @@ import type {
 } from "../contracts";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import { governanceReadGatewayService } from "./governance-read-gateway.service";
+import { requirementDeliveryGatewayService } from "./requirement-delivery-gateway.service";
 
 const ENDPOINTS: readonly ApiPlatformEndpoint[] = Object.freeze([
   {
@@ -25,7 +26,7 @@ const ENDPOINTS: readonly ApiPlatformEndpoint[] = Object.freeze([
     id: "platform-query",
     method: "POST",
     path: "/api/platform/query",
-    resource: "requirements",
+    resource: "delivery",
     operation: "search",
     authRequired: true,
   },
@@ -323,6 +324,34 @@ export class ApiPlatformService {
                             ),
                           },
                         )
+                      : input.resource === "delivery" &&
+                          input.operation === "search"
+                        ? requirementDeliveryGatewayService.search({
+                            requirementId:
+                              typeof params.requirementId === "string"
+                                ? params.requirementId
+                                : undefined,
+                            linkedCapabilityId:
+                              typeof params.linkedCapabilityId === "string"
+                                ? params.linkedCapabilityId
+                                : undefined,
+                            coverage:
+                              typeof params.coverage === "string"
+                                ? (params.coverage as never)
+                                : undefined,
+                            verificationStatus:
+                              typeof params.verificationStatus === "string"
+                                ? (params.verificationStatus as never)
+                                : undefined,
+                            limit:
+                              typeof params.limit === "number"
+                                ? params.limit
+                                : undefined,
+                            offset:
+                              typeof params.offset === "number"
+                                ? params.offset
+                                : undefined,
+                          })
                       : input.resource === "evidence" &&
                           input.operation === "search"
                         ? evidenceRegistryService.searchEvidenceRegistry({

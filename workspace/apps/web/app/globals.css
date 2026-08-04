@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@import "@repo/config-tailwind";
+
+body {
+  background: rgb(249 250 251);
+}

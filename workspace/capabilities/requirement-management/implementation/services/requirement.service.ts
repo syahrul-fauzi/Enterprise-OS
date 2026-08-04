@@ -33,31 +33,85 @@ export class RequirementService {
   readonly repositories = { Requirement: RequirementRepositoryInMemory } as const;
 
   createRequirement(input: CreateRequirementInput): CreateRequirementOutput {
-    return createRequirement.execute(input) as CreateRequirementOutput;
+    const result = createRequirement.execute(input) as CreateRequirementOutput;
+    recordRuntimeInvocation({
+      capabilityId: "requirement-management",
+      operationId: "create-requirement",
+      sourceRef: "RequirementService.createRequirement",
+      success: true,
+      input,
+      result,
+    });
+    return result;
   }
 
   updateRequirement(input: UpdateRequirementInput): UpdateRequirementOutput {
-    return updateRequirement.execute(input) as UpdateRequirementOutput;
+    const result = updateRequirement.execute(input) as UpdateRequirementOutput;
+    recordRuntimeInvocation({
+      capabilityId: "requirement-management",
+      operationId: "update-requirement",
+      sourceRef: "RequirementService.updateRequirement",
+      success: true,
+      input,
+      result,
+    });
+    return result;
   }
 
   approveRequirement(input: ApproveRequirementInput): ApproveRequirementOutput {
-    return approveRequirement.execute(input) as ApproveRequirementOutput;
+    const result = approveRequirement.execute(input) as ApproveRequirementOutput;
+    recordRuntimeInvocation({
+      capabilityId: "requirement-management",
+      operationId: "approve-requirement",
+      sourceRef: "RequirementService.approveRequirement",
+      success: true,
+      input,
+      result,
+    });
+    return result;
   }
 
   startRequirementDelivery(
     input: StartRequirementDeliveryInput,
   ): StartRequirementDeliveryOutput {
-    return startRequirementDelivery.execute(input) as StartRequirementDeliveryOutput;
+    const result = startRequirementDelivery.execute(input) as StartRequirementDeliveryOutput;
+    recordRuntimeInvocation({
+      capabilityId: "requirement-management",
+      operationId: "start-requirement-delivery",
+      sourceRef: "RequirementService.startRequirementDelivery",
+      success: true,
+      input,
+      result,
+    });
+    return result;
   }
 
   markRequirementImplemented(
     input: MarkRequirementImplementedInput,
   ): MarkRequirementImplementedOutput {
-    return markRequirementImplemented.execute(input) as MarkRequirementImplementedOutput;
+    const result = markRequirementImplemented.execute(input) as MarkRequirementImplementedOutput;
+    recordRuntimeInvocation({
+      capabilityId: "requirement-management",
+      operationId: "mark-requirement-implemented",
+      sourceRef: "RequirementService.markRequirementImplemented",
+      success: true,
+      input,
+      result,
+    });
+    return result;
   }
 
   verifyRequirement(input: VerifyRequirementInput): VerifyRequirementOutput {
-    return verifyRequirement.execute(input) as VerifyRequirementOutput;
+    const result = verifyRequirement.execute(input) as VerifyRequirementOutput;
+    recordRuntimeInvocation({
+      capabilityId: "requirement-management",
+      operationId: "verify-requirement",
+      sourceRef: "RequirementService.verifyRequirement",
+      success: true,
+      input,
+      result,
+    });
+    return result;
   }
 
   getRequirement(input: GetRequirementInput): GetRequirementOutput {

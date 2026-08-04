@@ -24,6 +24,7 @@ import {
 import { runVerifyFoundationCommand } from "./foundation/commands/verify-foundation.js";
 import { runVerifyConstitutionCommand } from "./commands/verify-constitution.js";
 import { runVerifyPortfolioCommand } from "./commands/verify-portfolio.js";
+import { runVerifyProductBindingCommand } from "./commands/verify-product-binding.js";
 import { runVerifyProductCommand } from "./commands/verify-product.js";
 import { runEnterpriseQueryCommand } from "./commands/query.js";
 
@@ -151,6 +152,7 @@ async function main(): Promise<number> {
           "  pnpm eos gate-c verify-genesis-baseline    Replay immutable run-001 tanpa memutasi baseline",
           "  pnpm eos gate-c run-case <run-id> <subject-rel-path>    Jalankan case C1 tanpa auto-accept",
           "  pnpm eos verify-product <product-id>    Hasilkan evidence verifikasi empiris untuk produk nyata",
+          "  pnpm eos verify-product-binding <product-id>    Verifikasi jalur product binding ke experience surface",
           "  pnpm eos verify-portfolio <portfolio-id>    Hasilkan evidence verifikasi tingkat portofolio",
           "  pnpm eos verify-capability-registry    Bangun registry capability dengan lifecycle dan reuse evidence",
           "  pnpm eos discover-capability <query>    Cari reuse di registry sebelum membuat capability baru",
@@ -178,6 +180,17 @@ async function main(): Promise<number> {
         return 1;
       }
       return runVerifyProductCommand(productId);
+    }
+    case "verify-product-binding": {
+      const productId = args[1];
+      if (!productId) {
+        process.stderr.write(
+          "Usage: pnpm eos verify-product-binding <product-id>\n" +
+            "Example: pnpm eos verify-product-binding services-id\n",
+        );
+        return 1;
+      }
+      return runVerifyProductBindingCommand(productId);
     }
     case "verify-portfolio": {
       const portfolioId = args[1];

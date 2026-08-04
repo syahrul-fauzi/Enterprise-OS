@@ -1,12 +1,12 @@
-## LawyersHub Delivery Surface
+## LawyersHub Experience Surface
 
-LawyersHub is the active EOS product surface for delivery-phase capability work.
+`apps/lawyershub` is a legacy product-coupled host retained while non-Requirement
+surfaces and APIs are inventoried and migrated.
 
 Current capabilities:
 
 - `legal-case`
 - `legal-document`
-- `requirement-management`
 - `requirements-traceability-matrix` (API delivery surface)
 - `evidence-registry` (API delivery surface)
 - `workflow-engine` (API delivery surface)
@@ -21,8 +21,6 @@ Current API routes:
 
 - `GET/POST /api/cases`
 - `GET/PATCH/DELETE /api/cases/:id`
-- `GET/POST /api/requirements`
-- `GET/PATCH /api/requirements/:id`
 - `GET /api/rtm`
 - `GET /api/rtm/:id`
 - `GET /api/evidence`
@@ -48,6 +46,13 @@ Current UI routes:
 
 - `GET /`
 - `GET /platform`
+- `GET /cases`
+- `GET /documents`
+
+Migrated to canonical surface:
+
+- Requirement UI/runtime now lives in `apps/web`
+- Product binding proof resolves `services-id` and `ilc` to `apps/web`
 
 Authenticated API Platform header:
 

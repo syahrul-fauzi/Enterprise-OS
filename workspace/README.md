@@ -33,8 +33,19 @@ Sprint 0 is not a product expansion phase. Current work is limited to:
 
 ## Active Surfaces
 
-- `apps/lawyershub/`
-- `apps/docs/`
+- `apps/web/` - canonical Professional Workspace experience surface
+- `apps/docs/` - documentation experience surface
+
+## Legacy Surfaces
+
+- `apps/lawyershub/` - retained legacy product-coupled host pending migration of
+  remaining API and platform behavior to canonical experience surfaces
+
+## Proven Canonical Path
+
+- `products/*` - product semantics, binding, and evidence
+- `apps/web/` - canonical Requirement experience surface and runtime
+- `capabilities/requirement-management/` - shared Requirement capability
 
 ## Canonical Capabilities
 

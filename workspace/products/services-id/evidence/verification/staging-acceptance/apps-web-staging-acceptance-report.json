@@ -1,0 +1,66 @@
+{
+  "baseUrl": "http://127.0.0.1:3001",
+  "generatedAt": "2026-08-04T06:54:37.230Z",
+  "checks": [
+    {
+      "name": "open-workspace",
+      "status": "pass",
+      "detail": "Workspace root returned 200 and rendered surface."
+    },
+    {
+      "name": "workspace-context",
+      "status": "pass",
+      "detail": "Session endpoint returned authenticated context.",
+      "actorId": "operator.web",
+      "tenantId": "tenant.default",
+      "workspaceId": "professional-workspace.default",
+      "requestId": "b153ceae-c76e-4240-bbd9-3a0e1b8a34e0"
+    },
+    {
+      "name": "open-requirement",
+      "status": "pass",
+      "detail": "Requirement page returned 200 and rendered the experience."
+    },
+    {
+      "name": "create-requirement",
+      "status": "pass",
+      "detail": "Requirement create returned persisted result.",
+      "requirementId": "req-101",
+      "tenantId": "tenant.default",
+      "requestId": "6c28513c-3633-42b0-b300-8cf58a8e4595"
+    },
+    {
+      "name": "read-requirement",
+      "status": "pass",
+      "detail": "Requirement detail round-trip is consistent.",
+      "requirementId": "req-101",
+      "tenantId": "tenant.default",
+      "workspaceId": "professional-workspace.default"
+    },
+    {
+      "name": "update-requirement",
+      "status": "pass",
+      "detail": "Requirement state changed through workflow action.",
+      "requirementId": "req-101",
+      "workflowStatus": "approved"
+    },
+    {
+      "name": "refresh-reentry",
+      "status": "pass",
+      "detail": "Requirement remained visible after re-entry and search.",
+      "requirementId": "req-101",
+      "matched": 1
+    },
+    {
+      "name": "error-path",
+      "status": "pass",
+      "detail": "Controlled validation failure is exposed correctly."
+    },
+    {
+      "name": "audit-evidence",
+      "status": "warning",
+      "detail": "Runtime invocation evidence capture depends on EOS_RUNTIME_INVOCATION_EVIDENCE_PATH in staging.",
+      "evidencePath": null
+    }
+  ]
+}

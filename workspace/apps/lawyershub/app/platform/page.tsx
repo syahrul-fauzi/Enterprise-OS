@@ -2,8 +2,6 @@ import React from "react";
 import Link from "next/link";
 import { apiPlatformService } from "../../../../capabilities/api-platform/implementation/services/api-platform.service";
 import { evidenceRegistryService } from "../../../../capabilities/evidence-registry/implementation/services/evidence-registry.service";
-import { requirementService } from "../../../../capabilities/requirement-management/implementation/services/requirement.service";
-import { requirementsTraceabilityMatrixService } from "../../../../capabilities/requirements-traceability-matrix/implementation/services/traceability.service";
 import { workflowEngineService } from "../../../../capabilities/workflow-engine/implementation/services/workflow-engine.service";
 
 function SummaryCard(props: {
@@ -24,10 +22,30 @@ function SummaryCard(props: {
 
 export default function PlatformPage() {
   const descriptor = apiPlatformService.getDescriptor();
-  const requirements = requirementService.searchRequirements({ limit: 20, offset: 0 });
-  const traceability = requirementsTraceabilityMatrixService.searchTraceabilityMatrix({
-    coverage: "all",
-  });
+  const delivery = apiPlatformService.executeQuery({
+    resource: "delivery",
+    operation: "search",
+    params: {
+      coverage: "all",
+      limit: 20,
+      offset: 0,
+    },
+  }).result as {
+    items: Array<{
+      requirementId: string;
+      title: string;
+      status: string;
+      verificationStatus: string;
+      traceability: { complete: boolean; gaps: readonly string[] };
+      evidence: { matchedCount: number; latestUpdatedAt: string | null };
+    }>;
+    matched: number;
+    summary: {
+      completeCount: number;
+      verifiedCount: number;
+      evidenceBackedCount: number;
+    };
+  };
   const evidence = evidenceRegistryService.searchEvidenceRegistry({ limit: 12, offset: 0 });
   const workflows = workflowEngineService.listWorkflowDefinitions();
 
@@ -65,14 +83,14 @@ export default function PlatformPage() {
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
           <SummaryCard
-            label="Requirements"
-            value={requirements.matched}
-            detail={`${requirements.items.filter((item) => item.status === "verified").length} verified`}
+            label="Delivery Slice"
+            value={delivery.matched}
+            detail={`${delivery.summary.verifiedCount} verified`}
           />
           <SummaryCard
             label="RTM Rows"
-            value={traceability.total}
-            detail={`${traceability.summary.completeCount} complete`}
+            value={delivery.matched}
+            detail={`${delivery.summary.completeCount} complete`}
           />
           <SummaryCard
             label="Evidence Records"
@@ -165,32 +183,51 @@ export default function PlatformPage() {
 
         <section className="grid gap-6 xl:grid-cols-2">
           <article className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-gray-900">Requirements Snapshot</h2>
+            <h2 className="text-lg font-semibold text-gray-900">Delivery Readiness</h2>
             <p className="mt-1 text-sm text-gray-500">
-              Current delivery requirements and their verification posture.
+              Unified requirement, traceability, and evidence posture from the API Platform gateway.
             </p>
             <div className="mt-4 space-y-3">
-              {requirements.items.map((requirement) => (
+              {delivery.items.map((item) => (
                 <div
                   className="rounded-lg border border-gray-200 p-4"
-                  key={requirement.id}
+                  key={item.requirementId}
                 >
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <div className="font-semibold text-gray-900">{requirement.title}</div>
+                      <div className="font-semibold text-gray-900">{item.title}</div>
                       <div className="mt-1 text-xs text-gray-500">
-                        {requirement.id} · {requirement.owner ?? "Unassigned"}
+                        {item.requirementId} · {item.evidence.matchedCount} evidence records
                       </div>
                     </div>
                     <div className="flex gap-2 text-xs">
                       <span className="rounded-full bg-gray-100 px-2 py-1 text-gray-700">
-                        {requirement.status}
+                        {item.status}
                       </span>
                       <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-700">
-                        {requirement.verificationStatus}
+                        {item.verificationStatus}
                       </span>
                     </div>
                   </div>
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                    <span
+                      className={
+                        item.traceability.complete
+                          ? "rounded-full bg-indigo-50 px-2 py-1 text-indigo-700"
+                          : "rounded-full bg-amber-50 px-2 py-1 text-amber-700"
+                      }
+                    >
+                      {item.traceability.complete ? "traceability complete" : "traceability gaps"}
+                    </span>
+                    <span className="rounded-full bg-gray-100 px-2 py-1 text-gray-700">
+                      latest evidence {item.evidence.latestUpdatedAt ?? "n/a"}
+                    </span>
+                  </div>
+                  {!item.traceability.complete ? (
+                    <div className="mt-3 text-xs text-amber-700">
+                      Gaps: {item.traceability.gaps.join(", ")}
+                    </div>
+                  ) : null}
                 </div>
               ))}
             </div>

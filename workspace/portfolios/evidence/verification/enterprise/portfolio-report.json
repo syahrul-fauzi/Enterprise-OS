@@ -1,57 +1,64 @@
 {
+  "verification_result": {
+    "command_status": "PASS",
+    "portfolio_status": "HEALTHY_PORTFOLIO"
+  },
   "portfolio_id": "enterprise",
-  "status": "PARTIAL_PORTFOLIO",
+  "status": "HEALTHY_PORTFOLIO",
   "selected_products": [
     "services-id",
     "lawyershub",
     "ilc"
   ],
   "products_verified": [
-    "lawyershub"
-  ],
-  "products_missing_verification": [
     "services-id",
+    "lawyershub",
     "ilc"
   ],
-  "shared_capabilities": [],
-  "capability_overlap_ratio": 0,
+  "products_missing_verification": [],
+  "shared_capabilities": [
+    "requirement-management"
+  ],
+  "capability_overlap_ratio": 0.3333,
   "products": [
     {
       "product_id": "services-id",
-      "app_manifest_exists": false,
-      "evidence_complete": false,
-      "capabilities": [],
-      "functional_tests_passed": 0,
-      "functional_tests_total": 0,
-      "capability_reuse_ratio": null,
-      "experience_reuse_ratio": null,
-      "clr": null
+      "app_manifest_exists": true,
+      "evidence_complete": true,
+      "capabilities": [
+        "requirement-management"
+      ],
+      "functional_tests_passed": 4,
+      "functional_tests_total": 4,
+      "capability_reuse_ratio": 1,
+      "experience_reuse_ratio": 1,
+      "clr": "FULL_REUSE"
     },
     {
       "product_id": "lawyershub",
       "app_manifest_exists": true,
       "evidence_complete": true,
       "capabilities": [
-        "legal-case",
-        "legal-document",
         "requirement-management"
       ],
-      "functional_tests_passed": 8,
-      "functional_tests_total": 8,
+      "functional_tests_passed": 9,
+      "functional_tests_total": 9,
       "capability_reuse_ratio": 1,
       "experience_reuse_ratio": 1,
       "clr": "FULL_REUSE"
     },
     {
       "product_id": "ilc",
-      "app_manifest_exists": false,
-      "evidence_complete": false,
-      "capabilities": [],
-      "functional_tests_passed": 0,
-      "functional_tests_total": 0,
-      "capability_reuse_ratio": null,
-      "experience_reuse_ratio": null,
-      "clr": null
+      "app_manifest_exists": true,
+      "evidence_complete": true,
+      "capabilities": [
+        "requirement-management"
+      ],
+      "functional_tests_passed": 4,
+      "functional_tests_total": 4,
+      "capability_reuse_ratio": 1,
+      "experience_reuse_ratio": 1,
+      "clr": "FULL_REUSE"
     }
   ],
   "claim_boundary": "Portfolio verification depends on product-level empirical evidence. Missing manifests or reports keep the portfolio partial."

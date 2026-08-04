@@ -1,0 +1,11 @@
+version: "1.0"
+status: PROOF
+product:
+  id: lawyershub
+  display_name: LawyersHub
+experience:
+  surface: web
+  route: /requirements
+capabilities:
+  - requirement-management
+claim_boundary: Product-local proof binding for the LawyersHub identity onto the canonical apps/web professional experience surface.

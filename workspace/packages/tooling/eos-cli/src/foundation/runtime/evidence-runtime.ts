@@ -15,6 +15,7 @@ import {
   listRequiredProductProjectionFiles,
   resolveProjectionStorageLocation,
 } from "../../projection/index.js";
+import { resolveProductWorkspaceManifestPath } from "../../product-binding-runtime.js";
 import {
   readYamlArtifact,
   uniqueStrings,
@@ -1235,10 +1236,10 @@ export function buildFoundationProductEvidence(input: {
 }): FoundationProductEvidence {
   const requiredEvidence =
     input.requiredProductEvidence ?? REQUIRED_PRODUCT_EVIDENCE;
-  const manifestPath = resolve(
-    input.workspaceRoot,
-    `apps/${input.productId}/workspace.manifest.ts`,
-  );
+  const manifestPath = resolveProductWorkspaceManifestPath({
+    workspaceRoot: input.workspaceRoot,
+    productId: input.productId,
+  });
   const evidenceDir = resolve(
     input.workspaceRoot,
     `products/${input.productId}/evidence/verification`,

@@ -1,6 +1,6 @@
 # Portfolio Verification Summary: enterprise
 
-- status: PARTIAL_PORTFOLIO
+- status: HEALTHY_PORTFOLIO
 - selected products: services-id, lawyershub, ilc
 
 ## Evidence

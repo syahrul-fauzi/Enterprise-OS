@@ -1,0 +1,69 @@
+{
+  "baseUrl": "https://127.0.0.1:8448",
+  "generatedAt": "2026-08-04T08:09:42.271Z",
+  "checks": [
+    {
+      "name": "open-workspace",
+      "status": "pass",
+      "detail": "Workspace root returned 200 and rendered surface."
+    },
+    {
+      "name": "workspace-context",
+      "status": "pass",
+      "detail": "Session endpoint returned authenticated context.",
+      "actorId": "operator.web",
+      "tenantId": "tenant.default",
+      "workspaceId": "professional-workspace.default",
+      "requestId": "e7f5539d-acfb-4a3e-bcea-14a6a87d15b7",
+      "productId": "lawyershub"
+    },
+    {
+      "name": "open-requirement",
+      "status": "pass",
+      "detail": "Requirement page returned 200 and rendered the experience."
+    },
+    {
+      "name": "create-requirement",
+      "status": "pass",
+      "detail": "Requirement create returned persisted result.",
+      "requirementId": "req-101",
+      "tenantId": "tenant.default",
+      "requestId": "6b8378ef-71b3-4bdf-9e27-e8e10431ac46",
+      "productId": "lawyershub"
+    },
+    {
+      "name": "read-requirement",
+      "status": "pass",
+      "detail": "Requirement detail round-trip is consistent.",
+      "requirementId": "req-101",
+      "tenantId": "tenant.default",
+      "workspaceId": "professional-workspace.default",
+      "productId": "lawyershub"
+    },
+    {
+      "name": "update-requirement",
+      "status": "pass",
+      "detail": "Requirement state changed through workflow action.",
+      "requirementId": "req-101",
+      "workflowStatus": "approved"
+    },
+    {
+      "name": "refresh-reentry",
+      "status": "pass",
+      "detail": "Requirement remained visible after re-entry and search.",
+      "requirementId": "req-101",
+      "matched": 1
+    },
+    {
+      "name": "error-path",
+      "status": "pass",
+      "detail": "Controlled validation failure is exposed correctly."
+    },
+    {
+      "name": "audit-evidence",
+      "status": "warning",
+      "detail": "Runtime invocation evidence capture depends on EOS_RUNTIME_INVOCATION_EVIDENCE_PATH in staging.",
+      "evidencePath": null
+    }
+  ]
+}

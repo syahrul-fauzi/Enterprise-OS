@@ -1,0 +1,36 @@
+{
+  "extends": "@repo/config-typescript/nextjs.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@repo/core-kernel": ["../../packages/core/kernel/dist/index"],
+      "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*"],
+      "@repo/core-runtime": ["../../packages/core/runtime/dist/index"],
+      "@repo/core-runtime/*": ["../../packages/core/runtime/dist/*"],
+      "@repo/composition": ["../../packages/composition/dist/index"],
+      "@repo/composition/*": ["../../packages/composition/dist/*"],
+      "@repo/core-capability-registry": ["../../packages/core/capability-registry/dist/index"],
+      "@repo/core-capability-registry/*": ["../../packages/core/capability-registry/dist/*"],
+      "@repo/presentation-ui-system": ["../../packages/presentation/ui-system/dist/index"],
+      "@repo/presentation-ui-system/*": ["../../packages/presentation/ui-system/dist/*"],
+      "@repo/presentation-types": ["../../packages/presentation/presentation-types/dist/index"],
+      "@repo/presentation-types/*": ["../../packages/presentation/presentation-types/dist/*"],
+      "@repo/presentation-foundation": ["../../packages/presentation/foundation/dist/index"],
+      "@repo/presentation-foundation/*": ["../../packages/presentation/foundation/dist/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "next-env.d.ts",
+    "next.config.ts"
+  ],
+  "exclude": ["node_modules"]
+}

@@ -13,6 +13,7 @@ import {
   type ProductEvidence,
   type ProductPortfolio,
 } from "../portfolio-verification-runtime.js";
+import { resolveProductWorkspaceManifestPath } from "../product-binding-runtime.js";
 import { EOS_ROOT } from "../state.js";
 import { tryReadWorkspaceCapabilities } from "../workspace-capability-runtime.js";
 
@@ -38,7 +39,10 @@ function normalizeRatio(value: number | null | undefined): number | null {
 }
 
 function buildProductEvidence(productId: string): ProductEvidence {
-  const manifestPath = resolve(WORKSPACE_ROOT, `apps/${productId}/workspace.manifest.ts`);
+  const manifestPath = resolveProductWorkspaceManifestPath({
+    workspaceRoot: WORKSPACE_ROOT,
+    productId,
+  });
   const evidenceDir = resolve(WORKSPACE_ROOT, `products/${productId}/evidence/verification`);
   const clrPath = resolve(evidenceDir, "clr-report.json");
   const testsPath = resolve(evidenceDir, "functional-test-report.json");

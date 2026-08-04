@@ -1,0 +1,11 @@
+version: "1.0"
+status: PROOF
+product:
+  id: ilc
+  display_name: Indonesia Lawyers Club
+experience:
+  surface: web
+  route: /requirements
+capabilities:
+  - requirement-management
+claim_boundary: Product-local proof binding for the ILC identity onto the canonical apps/web professional experience surface.

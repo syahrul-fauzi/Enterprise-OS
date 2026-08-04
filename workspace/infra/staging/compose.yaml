@@ -1,0 +1,44 @@
+services:
+  web:
+    container_name: eos-staging-web
+    build:
+      context: ../..
+      dockerfile: apps/web/Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+      EOS_RUNTIME_INVOCATION_EVIDENCE_PATH: /app/portfolios/evidence/verification/enterprise/runtime-invocations-staging.jsonl
+    restart: unless-stopped
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  caddy:
+    container_name: eos-staging-caddy
+    image: caddy:2.10.2-alpine
+    depends_on:
+      web:
+        condition: service_healthy
+    restart: unless-stopped
+    ports:
+      - "${STAGING_HTTP_PORT:-80}:80"
+      - "${STAGING_HTTPS_PORT:-443}:443"
+    environment:
+      CADDY_TLS: ${CADDY_TLS}
+      SERVICES_ID_DOMAIN: ${SERVICES_ID_DOMAIN}
+      LAWYERSHUB_DOMAIN: ${LAWYERSHUB_DOMAIN}
+      ILC_DOMAIN: ${ILC_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

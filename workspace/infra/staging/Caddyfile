@@ -1,0 +1,49 @@
+(security_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "geolocation=(self), microphone=(), camera=()"
+	}
+}
+
+(http_redirect) {
+	redir https://{host}{uri} 308
+}
+
+(eos_web_proxy) {
+	import security_headers
+
+	reverse_proxy web:3000 {
+		header_up X-EOS-Product-Id {args[0]}
+		header_up X-EOS-Product-Domain {host}
+	}
+}
+
+http://{$SERVICES_ID_DOMAIN} {
+	import http_redirect
+}
+
+https://{$SERVICES_ID_DOMAIN} {
+	tls {$CADDY_TLS}
+	import eos_web_proxy services-id
+}
+
+http://{$LAWYERSHUB_DOMAIN} {
+	import http_redirect
+}
+
+https://{$LAWYERSHUB_DOMAIN} {
+	tls {$CADDY_TLS}
+	import eos_web_proxy lawyershub
+}
+
+http://{$ILC_DOMAIN} {
+	import http_redirect
+}
+
+https://{$ILC_DOMAIN} {
+	tls {$CADDY_TLS}
+	import eos_web_proxy ilc
+}

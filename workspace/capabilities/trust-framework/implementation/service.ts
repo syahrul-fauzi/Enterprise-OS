@@ -3,11 +3,12 @@ export type {
   TrustFrameworkCatalog,
   TrustFrameworkProvider,
   TrustSignatureProviderSPI,
-  TrustSignatureProviderSPI,
   TrustSignatureReference,
   TrustSignatureProvider,
   TrustVerificationResult,
   TrustVerificationProfile,
+} from "./contracts";
+
 export {
   LocalTrustSignatureProviderService,
   TrustFrameworkService,

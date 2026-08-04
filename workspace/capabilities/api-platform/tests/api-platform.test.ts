@@ -190,6 +190,33 @@ test("api platform service executes stable cross-capability queries", () => {
     typeof (governanceHealth.result as { health_status: string }).health_status,
     "string",
   );
+
+  const delivery = apiPlatformService.executeQuery({
+    resource: "delivery",
+    operation: "search",
+    params: { coverage: "all", verificationStatus: "passed" },
+  });
+  const deliveryResult = delivery.result as {
+    matched: number;
+    items: Array<{
+      requirementId: string;
+      verificationStatus: string;
+      evidence: { matchedCount: number };
+      traceability: { complete: boolean };
+    }>;
+    summary: { evidenceBackedCount: number };
+  };
+  assert.ok(deliveryResult.matched >= 1);
+  assert.ok(deliveryResult.items.some((item) => item.requirementId === "req-003"));
+  assert.ok(
+    deliveryResult.items.every((item) => item.verificationStatus === "passed"),
+  );
+  assert.ok(
+    deliveryResult.items.some(
+      (item) => item.evidence.matchedCount > 0 && item.traceability.complete,
+    ),
+  );
+  assert.ok(deliveryResult.summary.evidenceBackedCount >= 1);
 });
 
 test("api platform query route executes authenticated workflow query", async () => {
@@ -209,6 +236,30 @@ test("api platform query route executes authenticated workflow query", async () 
   const payload = await response.json();
   assert.equal(payload.resource, "evidence");
   assert.ok(payload.result.matched >= 1);
+});
+
+test("api platform query route executes delivery slice query", async () => {
+  const response = await postPlatformQuery(
+    new Request("http://localhost/api/platform/query", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        resource: "delivery",
+        operation: "search",
+        params: { verificationStatus: "passed", coverage: "all" },
+      }),
+    }),
+  );
+
+  assert.equal(response.status, 200);
+  const payload = await response.json();
+  assert.equal(payload.resource, "delivery");
+  assert.ok(payload.result.matched >= 1);
+  assert.ok(
+    payload.result.items.some(
+      (item: { requirementId: string }) => item.requirementId === "req-003",
+    ),
+  );
 });
 
 test("governance summary route exposes read-model summary view", async () => {
@@ -381,7 +432,7 @@ test("constitution attestation-policy route exposes trust posture policy", async
   assert.equal(typeof payload.policy_id, "string");
   assert.equal(typeof payload.policy_digest, "string");
   assert.equal(typeof payload.profile, "string");
-  assert.equal(payload.signature?.status, "UNSIGNED");
+  assert.equal(payload.signature?.status, "SIGNED");
 });
 
 test("constitution certificates route exposes immutable certificate identities", async () => {

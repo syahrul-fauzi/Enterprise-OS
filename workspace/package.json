@@ -12,6 +12,10 @@
     "governance:gate": "pnpm check-types && pnpm eos verify-foundation && pnpm eos verify-capability-registry && pnpm eos gate-c refresh-status",
     "status": "node --import tsx ./packages/tooling/eos-cli/src/index.ts status",
     "eos": "node --import tsx ./packages/tooling/eos-cli/src/index.ts",
+    "staging:up": "bash ./scripts/staging-up.sh",
+    "staging:down": "bash ./scripts/staging-down.sh",
+    "staging:check": "bash ./scripts/staging-check.sh",
+    "staging:convergence": "node ./scripts/public-convergence-check.mjs",
     "verify:genesis-baseline": "pnpm eos gate-c verify-genesis-baseline",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

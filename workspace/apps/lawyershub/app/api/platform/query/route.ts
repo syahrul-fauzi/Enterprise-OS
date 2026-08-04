@@ -19,6 +19,22 @@ const ApiPlatformQuerySchema = z.union([
     }),
   }),
   z.object({
+    resource: z.literal("delivery"),
+    operation: z.literal("search"),
+    params: z
+      .object({
+        requirementId: z.string().optional(),
+        linkedCapabilityId: z.string().optional(),
+        coverage: z.enum(["all", "complete", "gaps"]).optional(),
+        verificationStatus: z
+          .enum(["all", "not_ready", "pending", "passed", "failed"])
+          .optional(),
+        limit: z.number().int().nonnegative().optional(),
+        offset: z.number().int().nonnegative().optional(),
+      })
+      .optional(),
+  }),
+  z.object({
     resource: z.enum(["requirements", "rtm", "evidence", "workflows"]),
     operation: z.enum(["search", "get", "execute", "list"]),
     params: z.record(z.string(), z.unknown()).optional(),

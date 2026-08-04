@@ -2,6 +2,7 @@ export type ApiPlatformResource =
   | "requirements"
   | "rtm"
   | "evidence"
+  | "delivery"
   | "workflows"
   | "constitution"
   | "governance";
