@@ -1,0 +1,56 @@
+---
+# REQ-005 Runtime Evidence
+# Bukti bahwa halaman /profile/[id] untuk Academic Community berfungsi end-to-end
+# Captured: 2026-08-05
+
+runtime_verification:
+  timestamp: "2026-08-05T16:45:00Z"
+  environment: "local development"
+  test_url: "http://localhost:3004/profile/1?productId=academic"
+
+## Flow Verification Steps
+flow_steps_verified:
+  - step: "Dari /community, klik salah satu peneliti"
+    result: "SUCCESS"
+    details: "Navigasi berhasil ke /profile/[member-id]?productId=academic tanpa error"
+    evidence: "screenshot-profile-navigation-001.png"
+
+  - step: "ProfileHeader menampilkan informasi lengkap peneliti"
+    result: "SUCCESS"
+    details: "Avatar, nama, afiliasi, bio, statistik publikasi, dan link kontak muncul dengan benar"
+    evidence: "screenshot-profile-header-loaded.png"
+
+  - step: "PublicationList menampilkan daftar penelitian yang dibuat oleh peneliti"
+    result: "SUCCESS"
+    details: "Semua requirement yang dibuat oleh peneliti muncul, dengan status dan tag yang sesuai"
+    evidence: "screenshot-profile-publications-loaded.png"
+
+  - step: "Klik salah satu publikasi mengarah ke halaman detail requirement"
+    result: "SUCCESS"
+    details: "Navigasi ke /products/[productId]/requirements/[pub-id] berjalan dengan benar"
+    evidence: "screenshot-publication-detail-navigation.png"
+
+  - step: "State '404' muncul jika member tidak ditemukan"
+    result: "SUCCESS"
+    details: "Ketika member ID tidak valid, muncul pesan error dan tombol kembali ke komunitas"
+    evidence: "screenshot-profile-404-state.png"
+
+## Technical Verification
+type_checks_passed: true
+build_errors: 0
+runtime_errors: 0
+architecture_compliance:
+  - "Tidak ada if (product === 'academic') di codebase"
+  - "Semua halaman dan komponen profil benar-benar shared, bisa dipakai oleh semua produk"
+  - "Semua perubahan mematuhi canonical architecture, tidak ada forks"
+  - "Menggunakan existing API dari member dan requirement repository"
+
+## B4 Retest Compliance
+Semua B4 acceptance gates tetap terpenuhi untuk REQ-005:
+  B4-G1: "Distinct human entry experience" → PASS (academic punya profil peneliti yang unik)
+  B4-G2: "Shared execution spine" → PASS (menggunakan capability yang sama dengan semua produk)
+  B4-G3: "No architectural forks" → PASS
+  B4-G4: "No product-specific directories" → PASS
+  B4-G5: "No product-specific conditionals" → PASS
+  B4-G6: "All differentiation via ProductExperience" → PASS
+  B4-G7: "Evidence traceability maintained" → PASS

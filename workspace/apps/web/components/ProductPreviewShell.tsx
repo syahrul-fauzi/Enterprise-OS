@@ -43,6 +43,92 @@ export function ProductPreviewShell({
         ? experience.requirementsSecondaryCtaLabel
         : experience.deliverySecondaryCtaLabel;
 
+  // Render affordance yang berbeda berdasarkan discoveryMode canonical
+  const renderDiscoveryAffordance = () => {
+    switch (experience.discoveryMode) {
+      case "search":
+        // Search/discovery mode: services-id - tampilkan search bar sebagai primary affordance
+        return (
+          <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6">
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-4">Cari Layanan</div>
+            <div className="flex gap-3">
+              <input 
+                type="text" 
+                placeholder="Cari kebutuhan layanan yang Anda butuhkan..."
+                className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <button className="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-medium text-white hover:bg-indigo-500">
+                Cari
+              </button>
+            </div>
+            <div className="mt-4 flex gap-2 flex-wrap">
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">Cloud Services</span>
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">IT Support</span>
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">Infrastructure</span>
+            </div>
+          </div>
+        );
+      case "role":
+        // Role/professional mode: lawyershub - tampilkan professional dashboard summary
+        return (
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            <div className="rounded-3xl border border-slate-200 bg-blue-50 p-6">
+              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">Kasus Aktif</div>
+              <div className="mt-2 text-3xl font-bold text-blue-900">12</div>
+              <p className="mt-1 text-sm text-blue-700">Legal matters in progress</p>
+            </div>
+            <div className="rounded-3xl border border-slate-200 bg-green-50 p-6">
+              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-green-600">Selesai Bulan Ini</div>
+              <div className="mt-2 text-3xl font-bold text-green-900">8</div>
+              <p className="mt-1 text-sm text-green-700">Cases successfully resolved</p>
+            </div>
+            <div className="rounded-3xl border border-slate-200 bg-purple-50 p-6">
+              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-purple-600">Menunggu Review</div>
+              <div className="mt-2 text-3xl font-bold text-purple-900">3</div>
+              <p className="mt-1 text-sm text-purple-700">Pending client approval</p>
+            </div>
+          </div>
+        );
+      case "topic":
+        // Topic/knowledge mode: ilc - tampilkan knowledge browsing grid
+        return (
+          <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6">
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-4">Jelajahi Topik</div>
+            <div className="grid gap-4 md:grid-cols-4">
+              {["Constitutional Law", "International Trade", "Human Rights", "Digital Law"].map((topic) => (
+                <Link 
+                  key={topic}
+                  href={`#${topic.toLowerCase().replace(/\s+/g, '-')}`}
+                  className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center hover:bg-slate-100 transition"
+                >
+                  <span className="text-sm font-medium text-slate-800">{topic}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        );
+      case "community":
+        // Community/contribution mode: academic - tampilkan community research feed
+        return (
+          <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6">
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-4">Penelitian Terbaru dari Komunitas</div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+                <div className="text-sm font-semibold text-emerald-900">AI Ethics in Academic Research</div>
+                <p className="mt-1 text-xs text-emerald-700">Oxford University • 2 hours ago</p>
+              </div>
+              <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+                <div className="text-sm font-semibold text-blue-900">Climate Change Policy Analysis</div>
+                <p className="mt-1 text-xs text-blue-700">Stanford University • 5 hours ago</p>
+              </div>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -171,6 +257,9 @@ export function ProductPreviewShell({
               {experience.entryAnswer}
             </p>
           </section>
+
+          {/* Render discovery affordance yang berbeda berdasarkan canonical discoveryMode */}
+          {renderDiscoveryAffordance()}
 
           <section className="grid gap-4 lg:grid-cols-3">
             {experience.landingSections.map((section) => (

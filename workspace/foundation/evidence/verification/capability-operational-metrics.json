@@ -1,6 +1,6 @@
 {
   "metrics_version": "1.0.0",
-  "metrics_digest": "40cb6ddb8724836282733e1c3bdebfc7879bdba30c4b0cdc35eacf521beae4b6",
+  "metrics_digest": "3306cacbc25965ab4a0a3a5a2a933c114cd360ce33a6a55ab1aaa53d725622b5",
   "summary": {
     "total_capabilities": 16,
     "observed_capabilities": 13,
@@ -118,8 +118,10 @@
       "success_count": 0,
       "failure_count": 0,
       "reproducible_operation_count": 0,
-      "observed_products": [],
-      "metrics_digest": "a07a4d6b9cb73d8546a8faebb3a22bcd713622319a03f160f9de6e218fd8ab68"
+      "observed_products": [
+        "lawyershub"
+      ],
+      "metrics_digest": "f46d6914bb767d03cb58dcf1bf5e6045338b33538e5b14548a0c29692c06729e"
     },
     {
       "capability_id": "observability",

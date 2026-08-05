@@ -1,11 +1,25 @@
 {
-  "status": "INSUFFICIENT_EVIDENCE",
-  "reason": "At least two product manifests are required to measure evolution delta across products.",
-  "observed_products": [
-    "lawyershub"
+  "status": "PARTIAL",
+  "baseline_product": "services-id",
+  "deltas": [
+    {
+      "product_id": "lawyershub",
+      "capability_new": 0,
+      "capability_shared": 1,
+      "core_delta": "UNVERIFIED",
+      "experience_module_delta": "UNVERIFIED",
+      "policy_delta": "UNVERIFIED",
+      "theme_delta": "UNVERIFIED"
+    },
+    {
+      "product_id": "ilc",
+      "capability_new": 0,
+      "capability_shared": 1,
+      "core_delta": "UNVERIFIED",
+      "experience_module_delta": "UNVERIFIED",
+      "policy_delta": "UNVERIFIED",
+      "theme_delta": "UNVERIFIED"
+    }
   ],
-  "missing_products": [
-    "services-id",
-    "ilc"
-  ]
+  "claim_boundary": "Only manifest-level capability delta is measured. Core/package/policy/theme delta still requires dedicated diff verification."
 }

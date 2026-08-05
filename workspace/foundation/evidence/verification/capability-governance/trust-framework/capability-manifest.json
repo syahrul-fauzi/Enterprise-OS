@@ -11,7 +11,7 @@
   "runtime_ref": "workspace/capabilities/trust-framework/implementation/service.ts",
   "planner_ref": null,
   "composer_ref": null,
-  "verification_ref": null,
+  "verification_ref": "workspace/capabilities/trust-framework/tests",
   "declared_exports": [
     "TrustFramework",
     "TrustFrameworkCatalog",

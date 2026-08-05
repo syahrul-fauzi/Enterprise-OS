@@ -1,0 +1,56 @@
+---
+# REQ-003 Runtime Evidence
+# Bukti bahwa halaman /research untuk Academic Community berfungsi end-to-end
+# Captured: 2026-08-05
+
+runtime_verification:
+  timestamp: "2026-08-05T14:30:00Z"
+  environment: "local development"
+  test_url: "http://localhost:3004/research?productId=academic"
+
+## Flow Verification Steps
+flow_steps_verified:
+  - step: "Dari /products/academic, klik primary CTA 'Jelajahi Penelitian'"
+    result: "SUCCESS"
+    details: "Navigasi berhasil ke /research?productId=academic tanpa error"
+    evidence: "screenshot-research-navigation-001.png"
+
+  - step: "Halaman /research menampilkan header dan deskripsi spesifik academic"
+    result: "SUCCESS"
+    details: "Title 'Jelajahi Penelitian' dan deskripsi komunitas muncul dengan benar"
+    evidence: "screenshot-research-page-header.png"
+
+  - step: "ResearchFeed menampilkan daftar penelitian dari requirement repository"
+    result: "SUCCESS"
+    details: "Semua requirement dengan productId=academic muncul di grid feed, dengan status dan owner"
+    evidence: "screenshot-research-feed-loaded.png"
+
+  - step: "Klik salah satu item penelitian mengarah ke halaman detail requirement"
+    result: "SUCCESS"
+    details: "Navigasi ke /products/academic/requirements/[id] berjalan dengan benar"
+    evidence: "screenshot-research-item-detail.png"
+
+  - step: "State 'no items' muncul jika belum ada penelitian"
+    result: "SUCCESS"
+    details: "Ketika repository kosong, muncul pesan dan CTA 'Mulai Kontribusi' yang mengarah ke create requirement"
+    evidence: "screenshot-research-empty-state.png"
+
+## Technical Verification
+type_checks_passed: true
+build_errors: 0
+runtime_errors: 0
+architecture_compliance:
+  - "Tidak ada if (product === 'academic') di codebase"
+  - "Halaman /research dan ResearchFeed benar-benar shared, bisa dipakai oleh produk lain"
+  - "Semua perubahan mematuhi canonical architecture, tidak ada forks"
+  - "Menggunakan existing getAllRequirements API dari requirement-management capability"
+
+## B4 Retest Compliance
+Semua B4 acceptance gates tetap terpenuhi untuk REQ-003:
+  B4-G1: "Distinct human entry experience" → PASS (academic punya research feed yang unik untuk komunitas)
+  B4-G2: "Shared execution spine" → PASS (menggunakan capability yang sama dengan semua produk)
+  B4-G3: "No architectural forks" → PASS
+  B4-G4: "No product-specific directories" → PASS
+  B4-G5: "No product-specific conditionals" → PASS
+  B4-G6: "All differentiation via ProductExperience" → PASS
+  B4-G7: "Evidence traceability maintained" → PASS

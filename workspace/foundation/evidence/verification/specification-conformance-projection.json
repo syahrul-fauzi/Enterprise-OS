@@ -1,8 +1,8 @@
 {
-  "projection_id": "SpecificationConformanceProjection:2df7326a03f70a61",
+  "projection_id": "SpecificationConformanceProjection:fbd2cd31fdec83be",
   "projection_type": "SpecificationConformanceProjection",
   "schema_version": "1.0.0",
-  "projection_digest": "2df7326a03f70a61c4f6025212fafa96c0eb798a6b4daa6c83250437d351a024",
+  "projection_digest": "fbd2cd31fdec83be950e9e5a4bef3f7566a20016bfeffa0f448491fda2f99380",
   "generated_from": [
     {
       "source_type": "specification_registry",
@@ -10,9 +10,9 @@
       "source_digest": "dbd1f1205298a8da1fcfb4c0b51f21902f8a836561ee31f89c8e4c4e71dfe81b"
     }
   ],
-  "generated_at_utc": "2026-08-03T15:33:51.434Z",
+  "generated_at_utc": "2026-08-05T04:29:08.243Z",
   "report_id": "specification-conformance-report",
-  "generated_at": "2026-08-03T15:33:51.434Z",
+  "generated_at": "2026-08-05T04:29:08.243Z",
   "registry_ref": "enterprise/specifications/specification-registry.yaml",
   "summary": {
     "rfc_count": 8,

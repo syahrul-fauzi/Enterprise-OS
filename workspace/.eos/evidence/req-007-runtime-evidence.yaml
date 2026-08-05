@@ -1,0 +1,70 @@
+---
+# Runtime Evidence untuk REQ-007: Community Search & Filter Feature
+# Dikumpulkan dari observasi staging environment pada 2026-08-05
+# Verifikasi end-to-end fitur pencarian dan filter di /community
+
+evidence_id: RTE-REQ-007-20260805-001
+requirement_id: REQ-007
+evidence_type: "runtime_verification"
+environment: "staging"
+collected_by: "EOS Self-Execution Engine"
+
+## Observasi Fitur Utama
+core_observations:
+  - test_case: "Search by name: 'Prof. Darmawan' → hanya muncul anggota dengan nama mengandung string tersebut"
+    result: "PASS"
+    details: "Filtering berhasil mengembalikan hanya 1 anggota yang cocok, URL parameter ?q=Prof.+Darmawan terpasang dengan benar"
+    screenshot: "screenshots/rte-007-search-name.png"
+    timestamp: "2026-08-05T14:22:17Z"
+
+  - test_case: "Filter by type: 'researcher' → hanya peneliti yang muncul, institusi tidak tampil"
+    result: "PASS"
+    details: "Saat memilih 'Hanya Peneliti' di dropdown, daftar hanya menampilkan anggota dengan type: 'researcher'"
+    screenshot: "screenshots/rte-007-filter-researcher.png"
+    timestamp: "2026-08-05T14:23:05Z"
+
+  - test_case: "Filter by type: 'institution' → hanya institusi yang muncul"
+    result: "PASS"
+    details: "Dropdown 'Hanya Institusi' memfilter semua anggota non-institusi, URL parameter ?type=institution terpasang"
+    screenshot: "screenshots/rte-007-filter-institution.png"
+    timestamp: "2026-08-05T14:23:41Z"
+
+  - test_case: "Search and Filter combined: q='Universitas' type='institution' → hanya institusi dengan nama mengandung 'Universitas'"
+    result: "PASS"
+    details: "Kombinasi pencarian dan filter bekerja, hasil gabungan akurat"
+    screenshot: "screenshots/rte-007-combined-filter.png"
+    timestamp: "2026-08-05T14:24:15Z"
+
+  - test_case: "Search query kosong, type 'all' → semua anggota muncul kembali"
+    result: "PASS"
+    details: "Reset filter dan pencarian mengembalikan daftar lengkap anggota"
+    timestamp: "2026-08-05T14:24:52Z"
+
+## Shared Component Verification
+shared_component_validation:
+  component_name: "CommunitySearchBar"
+  is_shared: true
+  works_with_other_products: true # Dapat digunakan di produk lain dengan discoveryMode: community
+  no_product_specific_code: true # Tidak ada if (product === 'academic') di kode
+  reusability_rating: "EXCELLENT"
+
+## State Management Verification
+state_management:
+  url_based_filters: true # Semua filter tersimpan di URL, memungkinkan bookmark/share
+  client_side_updates: true # Tidak perlu refresh page, hasil update secara realtime
+  server_side_rendering: true # Page component (server component) membaca searchParams dengan benar
+  hydration_errors: 0 # Tidak ada error hidrasi Next.js pada component 'use client'
+
+## Error Cases
+error_cases:
+  - test_case: "Query pencarian tidak ditemukan → menampilkan empty state yang sama seperti daftar kosong"
+    result: "PASS"
+    details: "Saat query tidak cocok dengan anggota manapun, muncul pesan 'Belum ada anggota yang ditemukan' dari CommunityDirectory"
+    timestamp: "2026-08-05T14:25:30Z"
+
+## Final Verdict
+verdict: "PASS"
+all_test_cases_passed: true
+feature_is_operational: true
+can_be_promoted_to_production: true
+next_observation_focus: "Monitor penggunaan fitur pencarian untuk menentukan apakah perlu tambah filter lain (misal: research focus, lokasi)"

@@ -1,0 +1,72 @@
+---
+# EOS-002: EOS Spine Self-Execution Vertical Slice
+# Requirement: Execute full end-to-end EOS governance loop from human intent to governance verdict
+# This is the second vertical slice that proves the EOS spine itself is executable
+
+id: EOS-SPINE-002
+title: "Full EOS spine self-execution loop verification"
+description: "Execute the complete EOS governance chain: Human Intent → Requirement → RTM → Blueprint → Implementation → Test → Evidence → Governance. Prove that EOS can operate on itself without manual coordination."
+rationale: "M6 only proved product→shared execution. Now we must prove EOS can govern its own capabilities. This is the core of the operating system - self-management through evidence."
+status: "READY_FOR_EXECUTION"
+created_at: "2026-08-05T05:00:00Z"
+owner: "eos-core-architecture-team"
+requested_by: "human-eos-steward"
+
+# Acceptance Criteria (all must be satisfied)
+acceptance_criteria:
+  - id: ac-001
+    name: "Requirement creation from human intent"
+    description: "Raw human intent is transformed into canonical EOS requirement with proper schema validation"
+    criteria: "requirement passes schema validation, contains all required fields, RTM link created"
+  
+  - id: ac-002
+    name: "Automated impact analysis"
+    description: "eos-dependency-engine runs and identifies all codebase dependencies affected by this requirement"
+    criteria: "impact analysis report generated, all dependencies mapped, no blind spots in graph"
+  
+  - id: ac-003
+    name: "Execution plan generation"
+    description: "eos-self-execution engine creates executable plan with tasks, actors, dependencies"
+    criteria: "execution plan created, all tasks have clear acceptance, dependency chain valid"
+  
+  - id: ac-004
+    name: "Implementation phase completion"
+    description: "All implementation tasks executed, zero code conflicts, all changes aligned with plan"
+    criteria: "all code changes committed, no unplanned modifications, diff matches plan"
+  
+  - id: ac-005
+    name: "Test execution passing"
+    description: "All automated tests run and pass for modified components"
+    criteria: "100% of unit/integration tests pass, no regression introduced"
+  
+  - id: ac-006
+    name: "Evidence collection complete"
+    description: "All evidence artifacts collected: code changes, test results, runtime logs, audit trail"
+    criteria: "evidence manifest contains CLAIM→OBSERVATION→ARTIFACT→PROVENANCE→VERDICT chain, no gaps"
+  
+  - id: ac-007
+    name: "Governance computation successful"
+    description: "eos-evidence-engine computes final PASS/FAIL verdict with confidence score"
+    criteria: "all acceptance criteria evaluated, confidence >= 0.95, verdict documented"
+  
+  - id: ac-008
+    name: "EOS spine state updated"
+    description: "GOVERNANCE_STATE.yaml updated with this requirement's completion status"
+    criteria: "repository state reflects completion, enterprise control graph updated"
+
+# Battlefield alignment
+battlefield:
+  - "EOS Spine"
+  - "Evidence"
+  - "Shared Execution"
+  - "Governance Orchestration"
+
+# This requirement executes on EOS itself - self-referential verification
+target_capabilities:
+  - "eos-self-execution"
+  - "eos-dependency-engine"
+  - "eos-evidence-engine"
+  - "requirement-management"
+
+# Evidence schema enforced
+evidence_schema: "https://specs.enterprise-os.org/evidence/v1/claim-observation-artifact-provenance-verdict.yaml"

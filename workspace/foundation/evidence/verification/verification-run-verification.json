@@ -1,6 +1,6 @@
 {
   "report_version": "1.0.0",
-  "report_digest": "46e0459d3616735a90d81dc7aa52730c80e697878eee41f1d7fb6e8e401bb239",
+  "report_digest": "bec2405f61e4bd952e1170fa4015da6082b81ac65d8ba8d3ca12921731bf281c",
   "summary": {
     "chronology_status": "PASS",
     "session_binding_status": "PASS",
@@ -9,10 +9,10 @@
     "overall_status": "PASS"
   },
   "run": {
-    "run_id": "verification-run:fa880343af99fce4",
+    "run_id": "verification-run:e3fa3bedd684618d",
     "run_scope": "verify-foundation",
     "run_status": "COMPLETED",
-    "governance_session_id": "governance-session:e53ffa9a0a13fb8a",
+    "governance_session_id": "governance-session:a8b570e4c753419a",
     "read_model_count": 5,
     "report_count": 9,
     "readiness_status": "PASS"

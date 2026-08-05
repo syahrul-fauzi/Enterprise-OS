@@ -1,7 +1,7 @@
 [
   {
-    "result_id": "law-result:GraphPurityLaw:a8302dc6e3220e27",
-    "result_digest": "a8302dc6e3220e276d35477c2a08bde42440e7e62e0d808be6c34db8e8ebfd88",
+    "result_id": "law-result:GraphPurityLaw:867449463d78b4ba",
+    "result_digest": "867449463d78b4ba1dd6e16db74ee0fd4704c34b8554893cd5120f56db34a411",
     "law": {
       "law_id": "GraphPurityLaw",
       "description": "Observed graph topology must be projected only from execution chain facts, and declared topology must remain registry-derived."
@@ -14,7 +14,7 @@
     "inputs": {
       "constitution_version": "1.0.0",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -84,8 +84,8 @@
     "result_boundary": "Law result is the domain evaluation artifact for a single constitutional law. It captures inputs, evidence, observations, and evaluation outcome without making certificate or trust assertions."
   },
   {
-    "result_id": "law-result:DigestLaw:856a2e9d776740be",
-    "result_digest": "856a2e9d776740be9a6eb7ba9cc57ff0b9bc66bba4cfc12ecef6cb4b6f3bac4d",
+    "result_id": "law-result:DigestLaw:4de7a2706988f1aa",
+    "result_digest": "4de7a2706988f1aaa8c5e9de52fec9f7f8be7aba5acc5ce1049cdb7f2b828bd9",
     "law": {
       "law_id": "DigestLaw",
       "description": "Projection digest must remain content-addressed and match canonical projection content."
@@ -98,7 +98,7 @@
     "inputs": {
       "constitution_version": "1.0.0",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -109,8 +109,8 @@
     "evaluation": {
       "status": "PASS",
       "blocking_status": "PASS",
-      "proof_id": "proof:DigestLaw:c1f2db4fe87e77a0",
-      "proof_digest": "c1f2db4fe87e77a0dd1637b0f408cfa06b0a803cbf4768163a313b5cc86300f8",
+      "proof_id": "proof:DigestLaw:d0eac0e7a442ed40",
+      "proof_digest": "d0eac0e7a442ed403187de96e61f1e05e306ec264a67d7a65771601c6fb75093",
       "artifact_key": "projection_digest_certificates",
       "deterministic": null,
       "replayable": null,
@@ -130,8 +130,8 @@
           "storage_locator": "foundation.execution_graph:execution-graph.json",
           "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
           "projection_type": "ExecutionGraphProjection",
-          "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
-          "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+          "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
+          "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
           "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
           "generated_from": [
             {
@@ -142,7 +142,7 @@
             {
               "source_type": "execution_evidence",
               "source_ref": "artifact_registry:execution_evidence",
-              "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+              "source_digest": "9447f14ebb00121902fd9919c1eada6a752f37cd6016acb5f3b09249fa69c45f"
             },
             {
               "source_type": "execution_chain",
@@ -175,8 +175,8 @@
           "storage_locator": "foundation.topology_drift:topology-drift.json",
           "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
           "projection_type": "TopologyDriftProjection",
-          "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
-          "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+          "projection_id": "TopologyDriftProjection:9264733347c84038",
+          "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
           "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
           "generated_from": [
             {
@@ -369,8 +369,8 @@
     "result_boundary": "Law result is the domain evaluation artifact for a single constitutional law. It captures inputs, evidence, observations, and evaluation outcome without making certificate or trust assertions."
   },
   {
-    "result_id": "law-result:SerializerTransparencyLaw:498345ef80d3b4aa",
-    "result_digest": "498345ef80d3b4aa91be28fcc598e28dd73a873ce0ca2355619d3904e7247ea7",
+    "result_id": "law-result:SerializerTransparencyLaw:4cd7b9e5bad05add",
+    "result_digest": "4cd7b9e5bad05add8e80b7b91ca6ef063b4bcffac0a882461efada258bc910e9",
     "law": {
       "law_id": "SerializerTransparencyLaw",
       "description": "Serializer round-trip must preserve projection digest and domain identity."
@@ -383,7 +383,7 @@
     "inputs": {
       "constitution_version": "1.0.0",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -394,8 +394,8 @@
     "evaluation": {
       "status": "PASS",
       "blocking_status": "PASS",
-      "proof_id": "proof:SerializerTransparencyLaw:de7536afa31ef643",
-      "proof_digest": "de7536afa31ef6438f24f6415e78195c86308173c2a6065d415004241d97452f",
+      "proof_id": "proof:SerializerTransparencyLaw:dc09dd12634c518e",
+      "proof_digest": "dc09dd12634c518eadb501b93e24e87d5dcb097d267628a25c1437b6c85211bc",
       "artifact_key": "serializer_transparency_certificates",
       "deterministic": null,
       "replayable": null,
@@ -415,8 +415,8 @@
           "storage_locator": "foundation.execution_graph:execution-graph.json",
           "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
           "projection_type": "ExecutionGraphProjection",
-          "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
-          "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+          "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
+          "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
           "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
           "generated_from": [
             {
@@ -427,7 +427,7 @@
             {
               "source_type": "execution_evidence",
               "source_ref": "artifact_registry:execution_evidence",
-              "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+              "source_digest": "9447f14ebb00121902fd9919c1eada6a752f37cd6016acb5f3b09249fa69c45f"
             },
             {
               "source_type": "execution_chain",
@@ -460,8 +460,8 @@
           "storage_locator": "foundation.topology_drift:topology-drift.json",
           "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
           "projection_type": "TopologyDriftProjection",
-          "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
-          "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+          "projection_id": "TopologyDriftProjection:9264733347c84038",
+          "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
           "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
           "generated_from": [
             {
@@ -654,8 +654,8 @@
     "result_boundary": "Law result is the domain evaluation artifact for a single constitutional law. It captures inputs, evidence, observations, and evaluation outcome without making certificate or trust assertions."
   },
   {
-    "result_id": "law-result:StorageTransparencyLaw:77adc443f1022307",
-    "result_digest": "77adc443f1022307e8398f4bf15abe8f2d37dba4ca86dd8ab0cab71cf331b421",
+    "result_id": "law-result:StorageTransparencyLaw:63e7ddf86697b97a",
+    "result_digest": "63e7ddf86697b97a34a6d6b12fa8c9ec6017a6d41e73c8215923fa9fb96c6eec",
     "law": {
       "law_id": "StorageTransparencyLaw",
       "description": "Projection identity must remain unchanged across equivalent storage representations and locations."
@@ -668,7 +668,7 @@
     "inputs": {
       "constitution_version": "1.0.0",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -679,8 +679,8 @@
     "evaluation": {
       "status": "PASS",
       "blocking_status": "PASS",
-      "proof_id": "proof:StorageTransparencyLaw:5cf2587a8837e541",
-      "proof_digest": "5cf2587a8837e54104c9fbae173ebe191a827625b4239c6414d295de619848ad",
+      "proof_id": "proof:StorageTransparencyLaw:c3874e79b9e2fa67",
+      "proof_digest": "c3874e79b9e2fa6723d54f42a0b889e9b319610b3bef03042d1b43ec07e54b43",
       "artifact_key": "storage_transparency_certificates",
       "deterministic": null,
       "replayable": null,
@@ -700,8 +700,8 @@
           "storage_locator": "foundation.execution_graph:execution-graph.json",
           "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
           "projection_type": "ExecutionGraphProjection",
-          "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
-          "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+          "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
+          "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
           "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
           "generated_from": [
             {
@@ -712,7 +712,7 @@
             {
               "source_type": "execution_evidence",
               "source_ref": "artifact_registry:execution_evidence",
-              "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+              "source_digest": "9447f14ebb00121902fd9919c1eada6a752f37cd6016acb5f3b09249fa69c45f"
             },
             {
               "source_type": "execution_chain",
@@ -740,8 +740,8 @@
           "storage_locator": "foundation.topology_drift:topology-drift.json",
           "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
           "projection_type": "TopologyDriftProjection",
-          "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
-          "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+          "projection_id": "TopologyDriftProjection:9264733347c84038",
+          "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
           "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
           "generated_from": [
             {
@@ -909,8 +909,8 @@
     "result_boundary": "Law result is the domain evaluation artifact for a single constitutional law. It captures inputs, evidence, observations, and evaluation outcome without making certificate or trust assertions."
   },
   {
-    "result_id": "law-result:ReplayLaw:29f7eb8d0d071c20",
-    "result_digest": "29f7eb8d0d071c2082a665e47d3f4c497be3385eec71fcbd39dfc8e24432681a",
+    "result_id": "law-result:ReplayLaw:0a264c6acf11690d",
+    "result_digest": "0a264c6acf11690d137d0cc0929573050b6f62c35dba17b85d06029f4465d63f",
     "law": {
       "law_id": "ReplayLaw",
       "description": "Replay evidence must pass and remain causally aligned with the materialized ExecutionPlanProjection."
@@ -923,7 +923,7 @@
     "inputs": {
       "constitution_version": "1.0.0",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -987,8 +987,8 @@
     "result_boundary": "Law result is the domain evaluation artifact for a single constitutional law. It captures inputs, evidence, observations, and evaluation outcome without making certificate or trust assertions."
   },
   {
-    "result_id": "law-result:ProjectionDeterminismLaw:26b6ea228e0f1c7b",
-    "result_digest": "26b6ea228e0f1c7bba59e2464ca7855f400e79883407747dd99af7c39fcefd48",
+    "result_id": "law-result:ProjectionDeterminismLaw:d387f4ba60da846e",
+    "result_digest": "d387f4ba60da846e905e52f395ca5f6f057c98fc2ba5b90a0e00a0def3102f76",
     "law": {
       "law_id": "ProjectionDeterminismLaw",
       "description": "Projection digest must remain repeatable across recomputation, serializer round-trip, key-order variation, and generated_at mutation."
@@ -1001,7 +1001,7 @@
     "inputs": {
       "constitution_version": "1.0.0",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -1012,8 +1012,8 @@
     "evaluation": {
       "status": "PASS",
       "blocking_status": "PASS",
-      "proof_id": "proof:ProjectionDeterminismLaw:65d5461548f10c16",
-      "proof_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766",
+      "proof_id": "proof:ProjectionDeterminismLaw:618c6b89434df00a",
+      "proof_digest": "618c6b89434df00a55c235094299160bdd2ba80b30a62494f5382dd2c6e52dd0",
       "artifact_key": "projection_determinism_certificates",
       "deterministic": null,
       "replayable": null,
@@ -1033,9 +1033,9 @@
           "storage_locator": "foundation.execution_graph:execution-graph.json",
           "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
           "projection_type": "ExecutionGraphProjection",
-          "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
-          "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
-          "proof_digest": "a9dc99ef96077397a634ce24c37a4bcea0199e5732b7eb8ddec90b4acd7f260e",
+          "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
+          "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
+          "proof_digest": "838c75bd171a22c25b0a046730574c9b5d99bedb884897c6eeef0dee03b1e710",
           "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
           "violations": [],
           "checks": [
@@ -1072,9 +1072,9 @@
           "storage_locator": "foundation.topology_drift:topology-drift.json",
           "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
           "projection_type": "TopologyDriftProjection",
-          "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
-          "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
-          "proof_digest": "28f72eb9d7faef82635e31926dadbbfc8197889ec9d973e99d74c380b0aa1427",
+          "projection_id": "TopologyDriftProjection:9264733347c84038",
+          "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
+          "proof_digest": "5214cab124f9234cde316b5e26b1d87d2d86843637735b5a0e383f001b5e542d",
           "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
           "violations": [],
           "checks": [
@@ -1266,8 +1266,8 @@
     "result_boundary": "Law result is the domain evaluation artifact for a single constitutional law. It captures inputs, evidence, observations, and evaluation outcome without making certificate or trust assertions."
   },
   {
-    "result_id": "law-result:DependencyBoundaryLaw:7f28bbb810e14946",
-    "result_digest": "7f28bbb810e149465f7c9131c3d586a5186e64eeb06bcca5f23361cd3e4d65a5",
+    "result_id": "law-result:DependencyBoundaryLaw:4be7e1acf60c0981",
+    "result_digest": "4be7e1acf60c0981271cf4146a909b4e45147e790156e281ddfee271055fdd10",
     "law": {
       "law_id": "DependencyBoundaryLaw",
       "description": "Governed modules must respect constitutional dependency boundaries and repeatable repository discovery."
@@ -1280,7 +1280,7 @@
     "inputs": {
       "constitution_version": "1.0.0",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -1291,15 +1291,15 @@
     "evaluation": {
       "status": "PASS",
       "blocking_status": "PASS",
-      "proof_id": "proof:DependencyBoundaryLaw:9f911c51856d5705",
-      "proof_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
+      "proof_id": "proof:DependencyBoundaryLaw:501eb4e42c3560c8",
+      "proof_digest": "501eb4e42c3560c8ae2e99e6ef13bf11a04319b92d352d85e2417593fa98e9c2",
       "artifact_key": "dependency_constitution",
       "deterministic": null,
       "replayable": null,
       "duration_ms": null,
       "observations": {
         "artifact_kind": "record",
-        "check_count": 83,
+        "check_count": 85,
         "violation_count": 0
       },
       "reason": "DependencyBoundaryLaw satisfied its predicate for the evaluated evidence set."
@@ -1370,24 +1370,24 @@
           }
         ],
         "graph": {
-          "governed_module_count": 82,
-          "import_edge_count": 121,
+          "governed_module_count": 84,
+          "import_edge_count": 124,
           "module_kind_counts": {
-            "command_adapter": 9,
+            "command_adapter": 10,
             "composition_surface": 10,
             "constitution_engine": 2,
             "projection_api": 1,
             "projection_builder": 2,
             "projection_domain": 1,
             "registry_surface": 1,
-            "repo_surface": 47,
+            "repo_surface": 48,
             "runtime_surface": 1,
             "serializer": 1,
             "storage_catalog": 2,
             "tooling_support": 5
           },
-          "discovery_digest": "2344e02cc01a170c86c8f80e07858cecb3cc9c1c0f7f6054bb1a6d701a87dc9d",
-          "discovery_module_count": 82,
+          "discovery_digest": "7b843d5612bf4623ab73338f0772c8e8296df7f9a32dbd5e85eadeeb3fc45eba",
+          "discovery_module_count": 84,
           "modules": [
             {
               "module_id": "tooling-eos-cli:commands/capability-registry",
@@ -1434,7 +1434,7 @@
             {
               "module_id": "tooling-eos-cli:commands/verify-portfolio",
               "module_kind": "command_adapter",
-              "import_count": 6,
+              "import_count": 8,
               "governed_dependency_count": 1
             },
             {
@@ -1442,6 +1442,12 @@
               "module_kind": "command_adapter",
               "import_count": 15,
               "governed_dependency_count": 4
+            },
+            {
+              "module_id": "tooling-eos-cli:commands/verify-product-binding",
+              "module_kind": "command_adapter",
+              "import_count": 8,
+              "governed_dependency_count": 1
             },
             {
               "module_id": "composition:compose",
@@ -1672,6 +1678,12 @@
               "governed_dependency_count": 0
             },
             {
+              "module_id": "presentation-experience:index",
+              "module_kind": "repo_surface",
+              "import_count": 5,
+              "governed_dependency_count": 1
+            },
+            {
               "module_id": "presentation-foundation:icons",
               "module_kind": "repo_surface",
               "import_count": 0,
@@ -1860,8 +1872,8 @@
             {
               "module_id": "tooling-eos-cli:index",
               "module_kind": "tooling_support",
-              "import_count": 9,
-              "governed_dependency_count": 7
+              "import_count": 10,
+              "governed_dependency_count": 8
             },
             {
               "module_id": "tooling-eos-cli:schema",
@@ -2244,6 +2256,12 @@
               "to_kind": "repo_surface"
             },
             {
+              "from": "presentation-experience:index",
+              "to": "presentation-types:index",
+              "from_kind": "repo_surface",
+              "to_kind": "repo_surface"
+            },
+            {
               "from": "presentation-foundation:index",
               "to": "presentation-foundation:icons",
               "from_kind": "repo_surface",
@@ -2544,6 +2562,12 @@
               "to_kind": "tooling_support"
             },
             {
+              "from": "tooling-eos-cli:commands/verify-product-binding",
+              "to": "tooling-eos-cli:state",
+              "from_kind": "command_adapter",
+              "to_kind": "tooling_support"
+            },
+            {
               "from": "tooling-eos-cli:index",
               "to": "tooling-eos-cli:commands/capability-registry",
               "from_kind": "tooling_support",
@@ -2582,6 +2606,12 @@
             {
               "from": "tooling-eos-cli:index",
               "to": "tooling-eos-cli:commands/verify-product",
+              "from_kind": "tooling_support",
+              "to_kind": "command_adapter"
+            },
+            {
+              "from": "tooling-eos-cli:index",
+              "to": "tooling-eos-cli:commands/verify-product-binding",
               "from_kind": "tooling_support",
               "to_kind": "command_adapter"
             },
@@ -2657,6 +2687,11 @@
             "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
             "status": "PASS",
             "detail": "tooling-eos-cli:commands/verify-product respects the constitutional dependency boundary."
+          },
+          {
+            "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
+            "status": "PASS",
+            "detail": "tooling-eos-cli:commands/verify-product-binding respects the constitutional dependency boundary."
           },
           {
             "rule_id": "dependency.composition_surface.no_constitution_or_command_dependency",
@@ -2851,6 +2886,11 @@
           {
             "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
             "status": "PASS",
+            "detail": "presentation-experience:index respects the constitutional dependency boundary."
+          },
+          {
+            "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+            "status": "PASS",
             "detail": "presentation-foundation:icons respects the constitutional dependency boundary."
           },
           {
@@ -3034,8 +3074,8 @@
     "result_boundary": "Law result is the domain evaluation artifact for a single constitutional law. It captures inputs, evidence, observations, and evaluation outcome without making certificate or trust assertions."
   },
   {
-    "result_id": "law-result:DeterminismLaw:9666c3df260c7731",
-    "result_digest": "9666c3df260c77313bbe0b4b28c26d5b8ef2da90b267e4985cf2439f2b397f41",
+    "result_id": "law-result:DeterminismLaw:52a2c74e3b3e159c",
+    "result_digest": "52a2c74e3b3e159c9986eaf4209d0310234568be7216d3168bd249ce3f1f9ea1",
     "law": {
       "law_id": "DeterminismLaw",
       "description": "Constitution proof digest must remain identical across repeated evaluations for the same canonical input."
@@ -3048,7 +3088,7 @@
     "inputs": {
       "constitution_version": "1.0.0",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -3059,8 +3099,8 @@
     "evaluation": {
       "status": "PASS",
       "blocking_status": "PASS",
-      "proof_id": "proof:DeterminismLaw:b580883548757075",
-      "proof_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
+      "proof_id": "proof:DeterminismLaw:3960a8837e5a055d",
+      "proof_digest": "3960a8837e5a055d69616cb8e6c76eca04c9051c8c3abdee0ee24704b99929c1",
       "artifact_key": "proof_determinism_certificate",
       "deterministic": true,
       "replayable": null,
@@ -3074,8 +3114,8 @@
     },
     "evidence": {
       "artifact": {
-        "certificate_id": "constitution-proof:62b75a464d1ba05b",
-        "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+        "certificate_id": "constitution-proof:6ce25627f1345ea5",
+        "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
         "status": "PASS",
         "violations": [],
         "checks": [

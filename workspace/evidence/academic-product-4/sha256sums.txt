@@ -1,0 +1,3 @@
+5252e89269b499fbd88ced0f4401c553c447b55299f9f8a45e0d166cae372960 workspace/infra/staging/Caddyfile
+baf7cfef3faa1a264d37146ba2c7420eafacdb539410bd73d37d001025d58276 workspace/infra/staging/.env
+ab24f77e0a8a01d088aec6fa353b5051e37c169895bd7d143184eddc2d24c438 workspace/evidence/academic-product-4/caddy-logs.txt

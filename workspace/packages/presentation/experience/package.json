@@ -1,0 +1,25 @@
+{
+  "name": "@repo/presentation-experience",
+  "version": "0.1.0",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "check-types": "tsc --noEmit",
+    "dev": "tsc --watch",
+    "lint": "eslint src --max-warnings 0"
+  },
+  "dependencies": {
+    "@repo/presentation-types": "workspace:*"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.1",
+    "typescript": "5.9.2"
+  }
+}

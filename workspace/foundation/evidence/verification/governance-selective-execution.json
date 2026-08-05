@@ -1,43 +1,43 @@
 {
   "report_version": "1.0.0",
-  "report_digest": "0004e10293513bea998e9603013f86d56683dd0dae3e34adcbbb4f6432e68c06",
+  "report_digest": "17efb933863d9356e7a12d815a8a7aa0e00c6bb7373e0685cc3d85786f0eaf87",
   "execution_scope": "verify-foundation",
   "planner_status": "APPLIED",
   "summary": {
     "reusable_node_count": 3,
-    "reused_node_count": 0,
-    "rematerialized_node_count": 3,
-    "reused_nodes": [],
-    "rematerialized_nodes": [
+    "reused_node_count": 3,
+    "rematerialized_node_count": 0,
+    "reused_nodes": [
       "claims",
       "summary",
       "proof_bundle"
-    ]
+    ],
+    "rematerialized_nodes": []
   },
   "decisions": [
     {
       "node_id": "claims",
-      "action": "REMATERIALIZE",
-      "lineage_digest": "1e243845757e0c92a4eb47120bb3cde84417829998b90b18458accd17193701c",
-      "previous_output_digest": "5f804e8aceec7e6da9b2563fc21be5e9ab72b2633fd4ea2e7535f1a498b6bd6b",
-      "current_output_digest": "433336daf73bb99397367671d897c66e87dde59ff3861c2d31ec5ace795c8012",
-      "reason": "Claims lineage changed or prior proof bundle is unavailable, so claims are rematerialized."
+      "action": "REUSE",
+      "lineage_digest": "40bcb283497645d1936c7d66649c0622ca9bd37590a8db967f1864d3a7d5da9a",
+      "previous_output_digest": "b54a66476fbf88e4207c392f70689bd9dbe15237d78e5ed262345f8ef9778c5f",
+      "current_output_digest": "b54a66476fbf88e4207c392f70689bd9dbe15237d78e5ed262345f8ef9778c5f",
+      "reason": "Claims lineage is unchanged, so previous claims artifact is reused."
     },
     {
       "node_id": "summary",
-      "action": "REMATERIALIZE",
-      "lineage_digest": "6079554d41749702df4ee2b05c082ab32096686695d25c52912da767e4ad02e1",
+      "action": "REUSE",
+      "lineage_digest": "b67c59fb71c119d98f5bf57161a43fa6f163d7c22421f14ff6d10f30ba971cb4",
       "previous_output_digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf",
       "current_output_digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf",
-      "reason": "Summary lineage changed or reusable claims were not available, so summary is rematerialized."
+      "reason": "Summary lineage is unchanged, so previous summary artifact is reused."
     },
     {
       "node_id": "proof_bundle",
-      "action": "REMATERIALIZE",
-      "lineage_digest": "2b63903aef69164ff741270c4ead20ea3fc5c23b6a6c19143d3e5a4bb13fa5ed",
-      "previous_output_digest": "20c16cb68931b527308bc4a43a6963ee7b3bcc7d96fd9440008b745a7fc2f42d",
-      "current_output_digest": "142bf7c3354524880d357ff07f6a7b355993dac88343c55c27a754afc4e08f29",
-      "reason": "Proof-bundle lineage changed or prior bundle is unavailable, so proof bundle is rematerialized."
+      "action": "REUSE",
+      "lineage_digest": "02060c39e15dcf4ad50a5e5bed2e246866b8d991a50f4028efcb1a9d22c1bdab",
+      "previous_output_digest": "2f9cdceb221891184a7488a49b8cfc5bb34c807acb5b339b5ad9ddff5320a42e",
+      "current_output_digest": "2f9cdceb221891184a7488a49b8cfc5bb34c807acb5b339b5ad9ddff5320a42e",
+      "reason": "Proof-bundle lineage is unchanged, so previous bundle is reused."
     }
   ],
   "claim_boundary": "Selective execution applies incremental governance reuse only where lineage is explicit and replay-safe. In this phase it is limited to claims, summary, and proof-bundle artifacts while provenance, certificates, attestations, and read-model session binding remain freshly evaluated."

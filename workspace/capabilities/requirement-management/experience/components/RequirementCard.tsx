@@ -52,6 +52,7 @@ export type RequirementAction =
 
 export interface RequirementCardProps {
   readonly item: RequirementAggregate;
+  readonly productId: string;
   readonly onAction?: (id: string, action: RequirementAction) => void | Promise<void>;
   readonly onEdit?: (item: RequirementAggregate) => void;
   readonly busy?: boolean;
@@ -69,6 +70,7 @@ export interface RequirementCardProps {
 
 export function RequirementCard({
   item,
+  productId,
   onAction,
   onEdit,
   busy = false,
@@ -172,6 +174,21 @@ export function RequirementCard({
           </div>
         )}
 
+        {item.status === "verified" && (
+          <div className="border-t border-slate-100 pt-3 mt-3">
+            <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500 mb-2">
+              Proof & Traceability
+            </div>
+            <div className="space-y-2">
+              <a
+                href={`/products/${productId}/requirements/${item.id}`}
+                className="inline-flex items-center gap-1 text-xs text-emerald-700 hover:text-emerald-900"
+              >
+                View Proof Panel →
+              </a>
+            </div>
+          </div>
+        )}
         <div className="flex items-center justify-between border-t border-slate-100 pt-2">
           <span className="text-[10px] font-mono text-slate-400">
             {copy?.referenceLabel ?? "Reference"}: {item.id}

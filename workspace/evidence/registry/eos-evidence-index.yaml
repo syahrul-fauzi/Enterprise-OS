@@ -1,0 +1,39 @@
+---
+registry_version: "1.0"
+last_updated: "2026-08-05T03:35:00Z"
+change_log:
+  - timestamp: "2026-08-05T03:35:00Z"
+    actor: "eos-self-execution-engine"
+    change: "Updated eos-first-capability-001: IMPACT_ANALYSIS_COMPLETE, added manifest path, updated confidence to 0.33, added artifacts. Verified ac-003 (no special-case code) is satisfied."
+  - timestamp: "2026-08-05T02:40:00Z"
+    actor: "assistant"
+    change: "Initial registry creation, added academic-product-4-001 and eos-first-capability-001 entries"
+entries:
+  - id: academic-product-4-001
+    name: "Product #4 Academic Community Binding"
+    type: product-deployment
+    manifest_path: "../academic-product-4/evidence-manifest.yaml"
+    status: "PENDING_HUMAN_VERIFICATION"
+    confidence: 0.98
+    requirements: ["M6-004"]
+    artifacts:
+      - caddyfile
+      - env-staging
+      - caddy-logs
+  # Placeholder for next vertical slice
+  - id: eos-first-capability-001
+    name: "First EOS self-execution vertical slice: Add academic requirement creation capability"
+    type: capability-implementation
+    manifest_path: "../eos-first-capability-001/evidence-manifest.yaml"
+    status: "IMPACT_ANALYSIS_COMPLETE"
+    confidence: 0.33
+    requirements: ["EOS-001"]
+    artifacts:
+      - grep-search-results.log
+      - workspace-dirs.log
+      - evidence-manifest.yaml
+---
+# Registry governance rules
+# All entries must follow: CLAIM → OBSERVATION → ARTIFACT → PROVENANCE → VERDICT
+# No entry is marked FULL_PASS until human verification is complete
+# All changes to this index must be logged with timestamp and actor

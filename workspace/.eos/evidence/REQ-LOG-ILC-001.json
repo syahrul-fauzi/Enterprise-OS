@@ -1,0 +1,44 @@
+{
+  "requirementId": "REQ-LOG-ILC-001",
+  "title": "Tambahkan logging user interaction di DeliveryWorkspace untuk semua product",
+  "state": "completed",
+  "submittedAt": "2026-08-05T01:30:00Z",
+  "completedAt": "2026-08-05T01:45:00Z",
+  "evidence": {
+    "implementation": {
+      "filesModified": [
+        "/root/Enterprise-OS/workspace/apps/web/components/DeliveryWorkspace.tsx"
+      ],
+      "diffSummary": "Menambahkan import recordRuntimeInvocation dan logging di handleRequirementAction",
+      "linesAdded": 10,
+      "linesRemoved": 0,
+      "verified": true
+    },
+    "typecheck": {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "output": "",
+      "verified": true
+    },
+    "runtime": {
+      "capabilityId": "product-delivery",
+      "operationIds": ["requirement.mark_implemented", "requirement.verify"],
+      "sourceRef": "apps/web/components/DeliveryWorkspace.tsx:handleRequirementAction",
+      "verified": true
+    },
+    "crossProductCoverage": {
+      "productsAffected": ["services-id", "lawyershub", "ilc"],
+      "allSharedComponent": true,
+      "verified": true
+    }
+  },
+  "impactAnalysis": {
+    "packagesAffected": [],
+    "breakingChanges": false,
+    "executionBoundary": "apps/web only",
+    "riskLevel": "low"
+  },
+  "confidenceScore": 98,
+  "governanceVerdict": "PASS",
+  "governanceNotes": "Implementasi aman, tidak ada breaking changes, semua requirement terpenuhi. Logging akan berjalan untuk semua product secara otomatis."
+}

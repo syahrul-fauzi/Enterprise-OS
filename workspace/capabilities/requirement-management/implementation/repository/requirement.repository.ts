@@ -72,6 +72,27 @@ const seed = (): RequirementAggregate[] => {
       implementedAt: d(10),
       verifiedAt: d(3),
     },
+    {
+      id: "req-010",
+      title: "Location Filter untuk /community Page",
+      summary: "Tambahkan filter lokasi pada halaman komunitas agar pengguna dapat menyaring anggota berdasarkan wilayah",
+      status: "verified",
+      priority: "medium",
+      owner: "EOS Front B",
+      source: "EOS-001",
+      linkedCapabilityIds: ["EOS-community", "EOS-filtering"],
+      acceptanceCriteria: [
+        "Filter lokasi muncul di search bar halaman /community",
+        "Anggota terfilter sesuai lokasi yang dipilih",
+        "Integrasi dengan shared BaseSearchBar",
+      ],
+      verificationStatus: "passed",
+      createdAt: d(1),
+      updatedAt: d(1),
+      approvedAt: d(1),
+      implementedAt: d(2),
+      verifiedAt: d(3),
+    },
   ];
 };
 

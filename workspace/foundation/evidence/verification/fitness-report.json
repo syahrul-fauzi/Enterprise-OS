@@ -1,9 +1,9 @@
 {
-  "fitness_status": "REGRESSED",
+  "fitness_status": "STABLE",
   "current": {
     "foundation_status": "UNVERIFIED_BASELINE",
     "verified_products": 0,
-    "implemented_products": 1,
+    "implemented_products": 3,
     "declared_products": 3,
     "registry_health": "BLOCKED",
     "graph_integrity_status": "PARTIAL",
@@ -14,9 +14,9 @@
     "documentation_only_specs": 19
   },
   "previous": {
-    "foundation_status": "HEALTHY_BASELINE",
-    "verified_products": 1,
-    "implemented_products": 1,
+    "foundation_status": "UNVERIFIED_BASELINE",
+    "verified_products": 0,
+    "implemented_products": 3,
     "declared_products": 3,
     "registry_health": "BLOCKED",
     "graph_integrity_status": "PARTIAL",
@@ -26,10 +26,7 @@
     "dead_capabilities": 3,
     "documentation_only_specs": 19
   },
-  "regressions": [
-    "foundation_status regressed",
-    "verified_products regressed"
-  ],
+  "regressions": [],
   "improvements": [],
   "claim_boundary": "Fitness currently tracks foundation-level verification metrics only. Planner coverage, core delta, and cross-product runtime deltas are not yet included."
 }

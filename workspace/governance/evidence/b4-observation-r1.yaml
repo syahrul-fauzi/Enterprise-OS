@@ -1,0 +1,66 @@
+b4_observation_session:
+  session_id: B4-OBS-R1-20260805
+  status: COMPLETE
+  review_method: black-box, no briefing
+  reviewer_id: R1
+  raw_observations:
+    - product: services-id
+      reviewer: R1
+      briefing: none
+      five_second_response: "Ini sepertinya platform manajemen proyek atau task management, ada tombol 'New Requirement' gede di tengah. Seolah-olah tempat buat buat list pekerjaan atau permintaan layanan."
+      first_action:
+        target: "Tombol biru besar 'New Requirement'"
+        action: "Klik langsung setelah 3 detik melihat halaman"
+      expectation_before_action: "Pengin coba bikin task baru, kira-kira akan keluar form buat isi judul dan deskripsi permintaan."
+      actual_result: "Muncul modal form buat isi title, description, priority persis seperti yang dikira."
+      expectation_alignment: "PASS"
+      first_confusion: "Tidak ada yang bingung di awal, tapi heran kenapa hanya ada menu 'Requirements' di sidebar — tidak ada menu lain seperti Projects atau Team."
+      distinctness_observation: ""
+
+    - product: lawyershub
+      reviewer: R1
+      briefing: none
+      five_second_response: "Warnanya merah, masih mirip yang tadi tapi nama di pojok kiri LawyersHub. Sepertinya platform khusus buat lawyer buat ngelacak kasus atau pekerjaan hukum."
+      first_action:
+        target: "Sama seperti yang pertama, klik 'New Requirement' yang masih ada di tengah."
+        action: "Klik tombol biru 'New Requirement' (hanya beda warna background utama)."
+      expectation_before_action: "Pikirnya akan keluar form yang sama buat catat kasus hukum baru, karena tampilannya hampir sama."
+      actual_result: "Form yang muncul persis sama, cuma header masih LawyersHub."
+      expectation_alignment: "PASS"
+      first_confusion: "Kok formnya sama persis? Saya kira bakal ada field khusus untuk nomor kasus atau klien. Masih bingung bedanya sama yang pertama selain warnanya."
+      distinctness_observation: "Hampir sama, cuma warna merah dan nama LawyersHub. Fitur utama sama."
+
+    - product: ilc
+      reviewer: R1
+      briefing: none
+      five_second_response: "Warna hijau tua, nama ILC. Masih platform yang sama kayaknya, mungkin cabang lain dari yang LawyersHub tadi? Masih ada tombol New Requirement yang sama."
+      first_action:
+        target: "Tombol 'View all requirements' di bawah tombol utama, karena sudah bosan klik New Requirement."
+        action: "Klik link untuk melihat list yang sudah ada."
+      expectation_before_action: "Mau lihat apakah list isinya berbeda dari dua platform sebelumnya, apakah ada konten yang spesifik ILC."
+      actual_result: "List requirements masih kosong, sama seperti dua platform sebelumnya. Tidak ada konten apapun."
+      expectation_alignment: "UNCLEAR"
+      first_confusion: "Kenapa semuanya kosong? Apa memang platform ini baru dibuat? Tidak ada beda sama sekali selain nama dan warna."
+      distinctness_observation: "Sama persis, cuma warna dan nama berubah. Tidak ada perbedaan fitur atau konten yang noticeable."
+
+    - product: academic
+      reviewer: R1
+      briefing: none
+      five_second_response: "Warna hijau muda, nama Academic Community. Masih struktur yang sama persis — tombol New Requirement, sidebar cuma Requirements. Sepertinya ini cuma skin lain dari platform yang sama."
+      first_action:
+        target: "Tidak klik apapun, langsung komentar sebelum action."
+        action: "Tidak ada yang mau diklik karena semua sudah terlihat sama, tidak ada yang baru."
+      expectation_before_action: "Sudah tau formnya akan sama persis, tidak ada yang berbeda."
+      actual_result: "Tidak mencoba klik, karena yakin hasilnya akan sama dengan tiga yang pertama."
+      expectation_alignment: "N/A"
+      first_confusion: "Kenapa empat website ini dibuat terpisah kalau semuanya sama? Cuma ganti tema warna saja, tidak ada perbedaan fungsi."
+      distinctness_observation: "100% sama. Hanya branding (nama + warna) yang berbeda, semua elemen UI dan fitur identik."
+
+synthesis_initial:
+  b4_g1_5s_recognition: "Hanya Services.ID yang teridentifikasi sebagai platform task/general; 3 produk lainnya hanya teridentifikasi berdasarkan nama branding, tidak dari konteks UI/UX"
+  b4_g2_first_action: "Semua produk menghasilkan first action yang identik (klik New Requirement) — tidak ada natural affordance yang berbeda"
+  b4_g3_expectation_alignment: "Hanya Services.ID yang PASS; sisanya FAIL/UNCLEAR karena tidak ada perbedaan fungsional"
+  b4_g4_distinctness: "FAIL. Tidak ada perbedaan natural yang muncul selain nama dan warna"
+  b4_g5_invisibility: "FAIL. Reviewer langsung sadar setelah produk ke-2 bahwa semua memakai shared execution engine"
+  constraint_found: "product runtime context does not sufficiently shape human entry experience — hanya branding yang berubah, tidak ada diferensiasi UI/UX yang membedakan konteks produk"
+  next_step: "Engineering cycle untuk meningkatkan diferensiasi entry experience berdasarkan product context sebelum B4 dapat dilanjutkan"

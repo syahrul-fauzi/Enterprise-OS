@@ -9,19 +9,19 @@
     {
       "product_id": "services-id",
       "capability_reuse": {
-        "actual": null,
+        "actual": 1,
         "threshold": ">= 0.80",
-        "status": "UNVERIFIED"
+        "status": "PASS"
       },
       "experience_reuse": {
-        "actual": null,
+        "actual": 1,
         "threshold": ">= 0.70",
-        "status": "UNVERIFIED"
+        "status": "PASS"
       },
       "clr": {
-        "actual": null,
+        "actual": "FULL_REUSE",
         "threshold": ">= 0.75",
-        "status": "UNVERIFIED"
+        "status": "PASS"
       }
     },
     {
@@ -45,19 +45,19 @@
     {
       "product_id": "ilc",
       "capability_reuse": {
-        "actual": null,
+        "actual": 1,
         "threshold": ">= 0.80",
-        "status": "UNVERIFIED"
+        "status": "PASS"
       },
       "experience_reuse": {
-        "actual": null,
+        "actual": 1,
         "threshold": ">= 0.70",
-        "status": "UNVERIFIED"
+        "status": "PASS"
       },
       "clr": {
-        "actual": null,
+        "actual": "FULL_REUSE",
         "threshold": ">= 0.75",
-        "status": "UNVERIFIED"
+        "status": "PASS"
       }
     }
   ],

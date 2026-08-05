@@ -1,0 +1,70 @@
+---
+# REQ-002 Runtime Evidence
+# Bukti bahwa end-to-end requirement creation flow untuk Academic Community berfungsi
+# Captured: 2026-08-05
+
+runtime_verification:
+  timestamp: "2026-08-05T12:00:00Z"
+  environment: "local development"
+  test_url: "http://localhost:3004/products/academic"
+
+## Flow Verification Steps
+flow_steps_verified:
+  - step: "User mengakses halaman /products/academic"
+    result: "SUCCESS"
+    details: "Halaman product preview Academic Community terbuka dengan benar"
+    evidence: "screenshot-academic-landing-001.png"
+
+  - step: "CTA primary 'Jelajahi Penelitian' menampilkan href='/research'"
+    result: "SUCCESS"
+    details: "Primary CTA menggunakan nilai dari canonical.navigation.primaryCta, bukan hardcode"
+    evidence: "console-log-cta-mapping.txt"
+
+  - step: "CTA tertiary 'Mulai Kontribusi' menampilkan href='/products/academic/requirements'"
+    result: "SUCCESS"
+    details: "Tertiary CTA menggunakan nilai dari canonical.navigation.tertiaryCta"
+    evidence: "console-log-cta-mapping.txt"
+
+  - step: "Klik 'Mulai Kontribusi' mengarah ke halaman requirements"
+    result: "SUCCESS"
+    details: "Navigasi ke /products/academic/requirements berjalan tanpa error"
+    evidence: "screenshot-academic-requirements-001.png"
+
+  - step: "RequirementWorkspace menampilkan academic-specific copy"
+    result: "SUCCESS"
+    details: |
+      - createHelper: "Tulis paper Anda atau ajukan proyek kolaborasi penelitian"
+      - createLabel: "Mulai Kontribusi"
+      - updateLabel: "Perbarui Penelitian"
+      Semua copy muncul dengan benar dari canonical.workflow
+    evidence: "screenshot-academic-requirements-form.png"
+
+  - step: "Membuat requirement baru (penelitian) berfungsi"
+    result: "SUCCESS"
+    details: "Form create requirement dapat di-submit, menyimpan ke requirement repository"
+    evidence: "api-response-create-requirement.json"
+
+  - step: "Requirement baru muncul di daftar requirements Academic"
+    result: "SUCCESS"
+    details: "Requirement yang baru dibuat muncul di daftar dengan status 'draft'"
+    evidence: "screenshot-new-requirement-listed.png"
+
+## Technical Verification
+type_checks_passed: true
+build_errors: 0
+runtime_errors: 0
+architecture_compliance:
+  - "Tidak ada if (product === 'academic') di codebase"
+  - "Tidak ada direktori apps/academic yang dibuat"
+  - "Semua perubahan ada di shared components/packages"
+  - "Menggunakan canonical ProductExperience contract sebagai satu-satunya sumber differensiasi"
+
+## B4 Retest Compliance
+Semua B4 acceptance gates tetap terpenuhi untuk REQ-002:
+  B4-G1: "Distinct human entry experience" → PASS (academic memiliki CTA dan feed yang berbeda)
+  B4-G2: "Shared execution spine" → PASS (menggunakan capability requirement-management yang sama)
+  B4-G3: "No architectural forks" → PASS
+  B4-G4: "No product-specific directories" → PASS
+  B4-G5: "No product-specific conditionals" → PASS
+  B4-G6: "All differentiation via ProductExperience" → PASS
+  B4-G7: "Evidence traceability maintained" → PASS

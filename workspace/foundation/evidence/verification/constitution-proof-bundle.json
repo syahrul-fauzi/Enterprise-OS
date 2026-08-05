@@ -1,6 +1,6 @@
 {
-  "bundle_id": "constitution-proof-bundle:142bf7c335452488",
-  "bundle_digest": "142bf7c3354524880d357ff07f6a7b355993dac88343c55c27a754afc4e08f29",
+  "bundle_id": "constitution-proof-bundle:2f9cdceb22189118",
+  "bundle_digest": "2f9cdceb221891184a7488a49b8cfc5bb34c807acb5b339b5ad9ddff5320a42e",
   "constitution_version": "1.0.0",
   "law_profile": "enterprise",
   "attestation_profile": "local_signed",
@@ -30,19 +30,19 @@
     "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92"
   },
   "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-  "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+  "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
   "constitutional_fingerprint": {
     "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
     "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
     "projection_api_version": "1.0.0",
     "constitution_version": "1.0.0"
   },
-  "claims_digest": "433336daf73bb99397367671d897c66e87dde59ff3861c2d31ec5ace795c8012",
-  "law_results_digest": "33761b443425fcdd498cbad9f4bac92061a88957c199a3db3a252397e462b5cc",
-  "evidence_packages_digest": "240fdfeb7889f823d2f25dff0ab6ba1a14e57eb7cdadf6d8fe22e78a1be8f2ca",
-  "law_certificates_digest": "72324085b8427a36411931f8021e7af05ffc73554857d01968c07f4fa6c9c531",
-  "law_attestations_digest": "d038c75a7d1ab07c3d8a773337a32e53c581b9d2943c4324d0cd6b6b0b97cdc2",
-  "proof_fragments_digest": "6b09cf451e062f6421558631d39e171bb1bf2bc683f8fa8a413773adcafcc8bf",
+  "claims_digest": "b54a66476fbf88e4207c392f70689bd9dbe15237d78e5ed262345f8ef9778c5f",
+  "law_results_digest": "b4af5462cc01133d767945fcee9b5b159979b3fd282869dfed4dec351759eccf",
+  "evidence_packages_digest": "a1ddc5ef2b676b5348c6d988bb0d7bb8b2256e49a84cea99b3528a42d6aa9712",
+  "law_certificates_digest": "27f214ab3eca9caff87ed1e02bec70cd95044987beaf4c2c78a4e9a870069621",
+  "law_attestations_digest": "33bdd059f7f858850fa8771ece85c5a38012f962c4cfc81c3d532267b2c55295",
+  "proof_fragments_digest": "4d59c01848e24a0ffb13524367b9624793a5ef617040a9009ece94ca9d533c29",
   "summary": {
     "status": "PASS",
     "claim_count": 8,
@@ -64,60 +64,60 @@
     "proof_strength": "proof-centric",
     "claims": [
       {
-        "id": "certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5",
+        "id": "certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e",
         "title": "Observed graph topology must be projected only from execution chain facts, and declared topology must remain registry-derived.",
         "status": "PASS",
-        "digest": "4b757aa63f4d57a592acff5436c49235301a409a1a62babce578bfd25cfe47c4"
+        "digest": "892b4bd787c9a34e4255e0499a1e316a5673ea196f2e07904d495ffe452010d8"
       },
       {
-        "id": "certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc",
+        "id": "certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586",
         "title": "Projection digest must remain content-addressed and match canonical projection content.",
         "status": "PASS",
-        "digest": "1e45b26a3e9a87cc7a0681e2fb11453a6b8f3e003c93b9b6aca3e2a37c8b3c0b"
+        "digest": "fc8222cbc07e5586781929060ac7c36ba3c0949b6a7aab4fb6015adb33961939"
       },
       {
-        "id": "certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d",
+        "id": "certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624",
         "title": "Serializer round-trip must preserve projection digest and domain identity.",
         "status": "PASS",
-        "digest": "8d6fead981547f3dfde63cdb7db4f810a9a3883e02b05f106e7f3b58305b0d62"
+        "digest": "2f36eda62af1b62421d64ed3e0d5798adb7fcf6b34d5552bdda538e066cefe20"
       },
       {
-        "id": "certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a",
+        "id": "certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f",
         "title": "Projection identity must remain unchanged across equivalent storage representations and locations.",
         "status": "PASS",
-        "digest": "a2738fe21229452ad4cb97594d31cdf767643ab4c8b980a9a674631efd093e61"
+        "digest": "015fab2c1eac4a2f9bdf2776c6bbdb5e9a5820dd4d1945ba19d6cf9dd7cb2a82"
       },
       {
-        "id": "certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7",
+        "id": "certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c",
         "title": "Replay evidence must pass and remain causally aligned with the materialized ExecutionPlanProjection.",
         "status": "PASS",
-        "digest": "2754ec95cb96cfb7ffe990678b840091dec82c4bfc116e40787d5ed2adcfab66"
+        "digest": "af258545ddd3aa6c8998ed5218e46982d947c5add8fb928e9a167039ae7cbc53"
       },
       {
-        "id": "certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502",
+        "id": "certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040",
         "title": "Projection digest must remain repeatable across recomputation, serializer round-trip, key-order variation, and generated_at mutation.",
         "status": "PASS",
-        "digest": "206c11421fece50230116d481c57144d88edbab5357893dded9b70fb8e722b08"
+        "digest": "857f96b781fda040c6472af17909897d2af422a0aeebd3d57e094e204a63a3bd"
       },
       {
-        "id": "certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e",
+        "id": "certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed",
         "title": "Governed modules must respect constitutional dependency boundaries and repeatable repository discovery.",
         "status": "PASS",
-        "digest": "612ec33aa4d56e7e8638b1b25de52639cdc95a18784277c4c18f86afa2bf4ea4"
+        "digest": "b15f46f49b87c1ededc689509180f792540293b3561c0866b763ba362817fa56"
       },
       {
-        "id": "certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20",
+        "id": "certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab",
         "title": "Constitution proof digest must remain identical across repeated evaluations for the same canonical input.",
         "status": "PASS",
-        "digest": "dea9721568839c208fccf9a316977a65ab7c7326ca8547d02a9c19408e2b0df1"
+        "digest": "f58dce05167f1cabee2474187fb04271f321488a27557c4b71e1604da8569164"
       }
     ],
     "claim_boundary": "Constitution claims are the presentation-safe summary of constitutional proof. They intentionally collapse detailed law evidence into digest-addressed pass/fail claims for reporting and dashboard consumption."
   },
   "law_results": [
     {
-      "result_id": "law-result:GraphPurityLaw:a8302dc6e3220e27",
-      "result_digest": "a8302dc6e3220e276d35477c2a08bde42440e7e62e0d808be6c34db8e8ebfd88",
+      "result_id": "law-result:GraphPurityLaw:867449463d78b4ba",
+      "result_digest": "867449463d78b4ba1dd6e16db74ee0fd4704c34b8554893cd5120f56db34a411",
       "law": {
         "law_id": "GraphPurityLaw",
         "description": "Observed graph topology must be projected only from execution chain facts, and declared topology must remain registry-derived."
@@ -130,7 +130,7 @@
       "inputs": {
         "constitution_version": "1.0.0",
         "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-        "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+        "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
         "constitutional_fingerprint": {
           "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
           "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -200,8 +200,8 @@
       "result_boundary": "Law result is the domain evaluation artifact for a single constitutional law. It captures inputs, evidence, observations, and evaluation outcome without making certificate or trust assertions."
     },
     {
-      "result_id": "law-result:DigestLaw:856a2e9d776740be",
-      "result_digest": "856a2e9d776740be9a6eb7ba9cc57ff0b9bc66bba4cfc12ecef6cb4b6f3bac4d",
+      "result_id": "law-result:DigestLaw:4de7a2706988f1aa",
+      "result_digest": "4de7a2706988f1aaa8c5e9de52fec9f7f8be7aba5acc5ce1049cdb7f2b828bd9",
       "law": {
         "law_id": "DigestLaw",
         "description": "Projection digest must remain content-addressed and match canonical projection content."
@@ -214,7 +214,7 @@
       "inputs": {
         "constitution_version": "1.0.0",
         "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-        "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+        "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
         "constitutional_fingerprint": {
           "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
           "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -225,8 +225,8 @@
       "evaluation": {
         "status": "PASS",
         "blocking_status": "PASS",
-        "proof_id": "proof:DigestLaw:c1f2db4fe87e77a0",
-        "proof_digest": "c1f2db4fe87e77a0dd1637b0f408cfa06b0a803cbf4768163a313b5cc86300f8",
+        "proof_id": "proof:DigestLaw:d0eac0e7a442ed40",
+        "proof_digest": "d0eac0e7a442ed403187de96e61f1e05e306ec264a67d7a65771601c6fb75093",
         "artifact_key": "projection_digest_certificates",
         "deterministic": null,
         "replayable": null,
@@ -246,8 +246,8 @@
             "storage_locator": "foundation.execution_graph:execution-graph.json",
             "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
             "projection_type": "ExecutionGraphProjection",
-            "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
-            "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+            "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
+            "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
             "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
             "generated_from": [
               {
@@ -258,7 +258,7 @@
               {
                 "source_type": "execution_evidence",
                 "source_ref": "artifact_registry:execution_evidence",
-                "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+                "source_digest": "9447f14ebb00121902fd9919c1eada6a752f37cd6016acb5f3b09249fa69c45f"
               },
               {
                 "source_type": "execution_chain",
@@ -291,8 +291,8 @@
             "storage_locator": "foundation.topology_drift:topology-drift.json",
             "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
             "projection_type": "TopologyDriftProjection",
-            "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
-            "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+            "projection_id": "TopologyDriftProjection:9264733347c84038",
+            "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
             "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
             "generated_from": [
               {
@@ -485,8 +485,8 @@
       "result_boundary": "Law result is the domain evaluation artifact for a single constitutional law. It captures inputs, evidence, observations, and evaluation outcome without making certificate or trust assertions."
     },
     {
-      "result_id": "law-result:SerializerTransparencyLaw:498345ef80d3b4aa",
-      "result_digest": "498345ef80d3b4aa91be28fcc598e28dd73a873ce0ca2355619d3904e7247ea7",
+      "result_id": "law-result:SerializerTransparencyLaw:4cd7b9e5bad05add",
+      "result_digest": "4cd7b9e5bad05add8e80b7b91ca6ef063b4bcffac0a882461efada258bc910e9",
       "law": {
         "law_id": "SerializerTransparencyLaw",
         "description": "Serializer round-trip must preserve projection digest and domain identity."
@@ -499,7 +499,7 @@
       "inputs": {
         "constitution_version": "1.0.0",
         "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-        "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+        "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
         "constitutional_fingerprint": {
           "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
           "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -510,8 +510,8 @@
       "evaluation": {
         "status": "PASS",
         "blocking_status": "PASS",
-        "proof_id": "proof:SerializerTransparencyLaw:de7536afa31ef643",
-        "proof_digest": "de7536afa31ef6438f24f6415e78195c86308173c2a6065d415004241d97452f",
+        "proof_id": "proof:SerializerTransparencyLaw:dc09dd12634c518e",
+        "proof_digest": "dc09dd12634c518eadb501b93e24e87d5dcb097d267628a25c1437b6c85211bc",
         "artifact_key": "serializer_transparency_certificates",
         "deterministic": null,
         "replayable": null,
@@ -531,8 +531,8 @@
             "storage_locator": "foundation.execution_graph:execution-graph.json",
             "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
             "projection_type": "ExecutionGraphProjection",
-            "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
-            "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+            "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
+            "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
             "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
             "generated_from": [
               {
@@ -543,7 +543,7 @@
               {
                 "source_type": "execution_evidence",
                 "source_ref": "artifact_registry:execution_evidence",
-                "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+                "source_digest": "9447f14ebb00121902fd9919c1eada6a752f37cd6016acb5f3b09249fa69c45f"
               },
               {
                 "source_type": "execution_chain",
@@ -576,8 +576,8 @@
             "storage_locator": "foundation.topology_drift:topology-drift.json",
             "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
             "projection_type": "TopologyDriftProjection",
-            "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
-            "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+            "projection_id": "TopologyDriftProjection:9264733347c84038",
+            "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
             "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
             "generated_from": [
               {
@@ -770,8 +770,8 @@
       "result_boundary": "Law result is the domain evaluation artifact for a single constitutional law. It captures inputs, evidence, observations, and evaluation outcome without making certificate or trust assertions."
     },
     {
-      "result_id": "law-result:StorageTransparencyLaw:77adc443f1022307",
-      "result_digest": "77adc443f1022307e8398f4bf15abe8f2d37dba4ca86dd8ab0cab71cf331b421",
+      "result_id": "law-result:StorageTransparencyLaw:63e7ddf86697b97a",
+      "result_digest": "63e7ddf86697b97a34a6d6b12fa8c9ec6017a6d41e73c8215923fa9fb96c6eec",
       "law": {
         "law_id": "StorageTransparencyLaw",
         "description": "Projection identity must remain unchanged across equivalent storage representations and locations."
@@ -784,7 +784,7 @@
       "inputs": {
         "constitution_version": "1.0.0",
         "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-        "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+        "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
         "constitutional_fingerprint": {
           "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
           "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -795,8 +795,8 @@
       "evaluation": {
         "status": "PASS",
         "blocking_status": "PASS",
-        "proof_id": "proof:StorageTransparencyLaw:5cf2587a8837e541",
-        "proof_digest": "5cf2587a8837e54104c9fbae173ebe191a827625b4239c6414d295de619848ad",
+        "proof_id": "proof:StorageTransparencyLaw:c3874e79b9e2fa67",
+        "proof_digest": "c3874e79b9e2fa6723d54f42a0b889e9b319610b3bef03042d1b43ec07e54b43",
         "artifact_key": "storage_transparency_certificates",
         "deterministic": null,
         "replayable": null,
@@ -816,8 +816,8 @@
             "storage_locator": "foundation.execution_graph:execution-graph.json",
             "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
             "projection_type": "ExecutionGraphProjection",
-            "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
-            "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+            "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
+            "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
             "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
             "generated_from": [
               {
@@ -828,7 +828,7 @@
               {
                 "source_type": "execution_evidence",
                 "source_ref": "artifact_registry:execution_evidence",
-                "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+                "source_digest": "9447f14ebb00121902fd9919c1eada6a752f37cd6016acb5f3b09249fa69c45f"
               },
               {
                 "source_type": "execution_chain",
@@ -856,8 +856,8 @@
             "storage_locator": "foundation.topology_drift:topology-drift.json",
             "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
             "projection_type": "TopologyDriftProjection",
-            "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
-            "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+            "projection_id": "TopologyDriftProjection:9264733347c84038",
+            "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
             "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
             "generated_from": [
               {
@@ -1025,8 +1025,8 @@
       "result_boundary": "Law result is the domain evaluation artifact for a single constitutional law. It captures inputs, evidence, observations, and evaluation outcome without making certificate or trust assertions."
     },
     {
-      "result_id": "law-result:ReplayLaw:29f7eb8d0d071c20",
-      "result_digest": "29f7eb8d0d071c2082a665e47d3f4c497be3385eec71fcbd39dfc8e24432681a",
+      "result_id": "law-result:ReplayLaw:0a264c6acf11690d",
+      "result_digest": "0a264c6acf11690d137d0cc0929573050b6f62c35dba17b85d06029f4465d63f",
       "law": {
         "law_id": "ReplayLaw",
         "description": "Replay evidence must pass and remain causally aligned with the materialized ExecutionPlanProjection."
@@ -1039,7 +1039,7 @@
       "inputs": {
         "constitution_version": "1.0.0",
         "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-        "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+        "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
         "constitutional_fingerprint": {
           "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
           "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -1103,8 +1103,8 @@
       "result_boundary": "Law result is the domain evaluation artifact for a single constitutional law. It captures inputs, evidence, observations, and evaluation outcome without making certificate or trust assertions."
     },
     {
-      "result_id": "law-result:ProjectionDeterminismLaw:26b6ea228e0f1c7b",
-      "result_digest": "26b6ea228e0f1c7bba59e2464ca7855f400e79883407747dd99af7c39fcefd48",
+      "result_id": "law-result:ProjectionDeterminismLaw:d387f4ba60da846e",
+      "result_digest": "d387f4ba60da846e905e52f395ca5f6f057c98fc2ba5b90a0e00a0def3102f76",
       "law": {
         "law_id": "ProjectionDeterminismLaw",
         "description": "Projection digest must remain repeatable across recomputation, serializer round-trip, key-order variation, and generated_at mutation."
@@ -1117,7 +1117,7 @@
       "inputs": {
         "constitution_version": "1.0.0",
         "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-        "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+        "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
         "constitutional_fingerprint": {
           "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
           "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -1128,8 +1128,8 @@
       "evaluation": {
         "status": "PASS",
         "blocking_status": "PASS",
-        "proof_id": "proof:ProjectionDeterminismLaw:65d5461548f10c16",
-        "proof_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766",
+        "proof_id": "proof:ProjectionDeterminismLaw:618c6b89434df00a",
+        "proof_digest": "618c6b89434df00a55c235094299160bdd2ba80b30a62494f5382dd2c6e52dd0",
         "artifact_key": "projection_determinism_certificates",
         "deterministic": null,
         "replayable": null,
@@ -1149,9 +1149,9 @@
             "storage_locator": "foundation.execution_graph:execution-graph.json",
             "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
             "projection_type": "ExecutionGraphProjection",
-            "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
-            "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
-            "proof_digest": "a9dc99ef96077397a634ce24c37a4bcea0199e5732b7eb8ddec90b4acd7f260e",
+            "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
+            "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
+            "proof_digest": "838c75bd171a22c25b0a046730574c9b5d99bedb884897c6eeef0dee03b1e710",
             "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
             "violations": [],
             "checks": [
@@ -1188,9 +1188,9 @@
             "storage_locator": "foundation.topology_drift:topology-drift.json",
             "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
             "projection_type": "TopologyDriftProjection",
-            "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
-            "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
-            "proof_digest": "28f72eb9d7faef82635e31926dadbbfc8197889ec9d973e99d74c380b0aa1427",
+            "projection_id": "TopologyDriftProjection:9264733347c84038",
+            "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
+            "proof_digest": "5214cab124f9234cde316b5e26b1d87d2d86843637735b5a0e383f001b5e542d",
             "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
             "violations": [],
             "checks": [
@@ -1382,8 +1382,8 @@
       "result_boundary": "Law result is the domain evaluation artifact for a single constitutional law. It captures inputs, evidence, observations, and evaluation outcome without making certificate or trust assertions."
     },
     {
-      "result_id": "law-result:DependencyBoundaryLaw:7f28bbb810e14946",
-      "result_digest": "7f28bbb810e149465f7c9131c3d586a5186e64eeb06bcca5f23361cd3e4d65a5",
+      "result_id": "law-result:DependencyBoundaryLaw:4be7e1acf60c0981",
+      "result_digest": "4be7e1acf60c0981271cf4146a909b4e45147e790156e281ddfee271055fdd10",
       "law": {
         "law_id": "DependencyBoundaryLaw",
         "description": "Governed modules must respect constitutional dependency boundaries and repeatable repository discovery."
@@ -1396,7 +1396,7 @@
       "inputs": {
         "constitution_version": "1.0.0",
         "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-        "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+        "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
         "constitutional_fingerprint": {
           "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
           "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -1407,15 +1407,15 @@
       "evaluation": {
         "status": "PASS",
         "blocking_status": "PASS",
-        "proof_id": "proof:DependencyBoundaryLaw:9f911c51856d5705",
-        "proof_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
+        "proof_id": "proof:DependencyBoundaryLaw:501eb4e42c3560c8",
+        "proof_digest": "501eb4e42c3560c8ae2e99e6ef13bf11a04319b92d352d85e2417593fa98e9c2",
         "artifact_key": "dependency_constitution",
         "deterministic": null,
         "replayable": null,
         "duration_ms": null,
         "observations": {
           "artifact_kind": "record",
-          "check_count": 83,
+          "check_count": 85,
           "violation_count": 0
         },
         "reason": "DependencyBoundaryLaw satisfied its predicate for the evaluated evidence set."
@@ -1486,24 +1486,24 @@
             }
           ],
           "graph": {
-            "governed_module_count": 82,
-            "import_edge_count": 121,
+            "governed_module_count": 84,
+            "import_edge_count": 124,
             "module_kind_counts": {
-              "command_adapter": 9,
+              "command_adapter": 10,
               "composition_surface": 10,
               "constitution_engine": 2,
               "projection_api": 1,
               "projection_builder": 2,
               "projection_domain": 1,
               "registry_surface": 1,
-              "repo_surface": 47,
+              "repo_surface": 48,
               "runtime_surface": 1,
               "serializer": 1,
               "storage_catalog": 2,
               "tooling_support": 5
             },
-            "discovery_digest": "2344e02cc01a170c86c8f80e07858cecb3cc9c1c0f7f6054bb1a6d701a87dc9d",
-            "discovery_module_count": 82,
+            "discovery_digest": "7b843d5612bf4623ab73338f0772c8e8296df7f9a32dbd5e85eadeeb3fc45eba",
+            "discovery_module_count": 84,
             "modules": [
               {
                 "module_id": "tooling-eos-cli:commands/capability-registry",
@@ -1550,7 +1550,7 @@
               {
                 "module_id": "tooling-eos-cli:commands/verify-portfolio",
                 "module_kind": "command_adapter",
-                "import_count": 6,
+                "import_count": 8,
                 "governed_dependency_count": 1
               },
               {
@@ -1558,6 +1558,12 @@
                 "module_kind": "command_adapter",
                 "import_count": 15,
                 "governed_dependency_count": 4
+              },
+              {
+                "module_id": "tooling-eos-cli:commands/verify-product-binding",
+                "module_kind": "command_adapter",
+                "import_count": 8,
+                "governed_dependency_count": 1
               },
               {
                 "module_id": "composition:compose",
@@ -1788,6 +1794,12 @@
                 "governed_dependency_count": 0
               },
               {
+                "module_id": "presentation-experience:index",
+                "module_kind": "repo_surface",
+                "import_count": 5,
+                "governed_dependency_count": 1
+              },
+              {
                 "module_id": "presentation-foundation:icons",
                 "module_kind": "repo_surface",
                 "import_count": 0,
@@ -1976,8 +1988,8 @@
               {
                 "module_id": "tooling-eos-cli:index",
                 "module_kind": "tooling_support",
-                "import_count": 9,
-                "governed_dependency_count": 7
+                "import_count": 10,
+                "governed_dependency_count": 8
               },
               {
                 "module_id": "tooling-eos-cli:schema",
@@ -2360,6 +2372,12 @@
                 "to_kind": "repo_surface"
               },
               {
+                "from": "presentation-experience:index",
+                "to": "presentation-types:index",
+                "from_kind": "repo_surface",
+                "to_kind": "repo_surface"
+              },
+              {
                 "from": "presentation-foundation:index",
                 "to": "presentation-foundation:icons",
                 "from_kind": "repo_surface",
@@ -2660,6 +2678,12 @@
                 "to_kind": "tooling_support"
               },
               {
+                "from": "tooling-eos-cli:commands/verify-product-binding",
+                "to": "tooling-eos-cli:state",
+                "from_kind": "command_adapter",
+                "to_kind": "tooling_support"
+              },
+              {
                 "from": "tooling-eos-cli:index",
                 "to": "tooling-eos-cli:commands/capability-registry",
                 "from_kind": "tooling_support",
@@ -2698,6 +2722,12 @@
               {
                 "from": "tooling-eos-cli:index",
                 "to": "tooling-eos-cli:commands/verify-product",
+                "from_kind": "tooling_support",
+                "to_kind": "command_adapter"
+              },
+              {
+                "from": "tooling-eos-cli:index",
+                "to": "tooling-eos-cli:commands/verify-product-binding",
                 "from_kind": "tooling_support",
                 "to_kind": "command_adapter"
               },
@@ -2773,6 +2803,11 @@
               "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
               "status": "PASS",
               "detail": "tooling-eos-cli:commands/verify-product respects the constitutional dependency boundary."
+            },
+            {
+              "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
+              "status": "PASS",
+              "detail": "tooling-eos-cli:commands/verify-product-binding respects the constitutional dependency boundary."
             },
             {
               "rule_id": "dependency.composition_surface.no_constitution_or_command_dependency",
@@ -2967,6 +3002,11 @@
             {
               "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
               "status": "PASS",
+              "detail": "presentation-experience:index respects the constitutional dependency boundary."
+            },
+            {
+              "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+              "status": "PASS",
               "detail": "presentation-foundation:icons respects the constitutional dependency boundary."
             },
             {
@@ -3150,8 +3190,8 @@
       "result_boundary": "Law result is the domain evaluation artifact for a single constitutional law. It captures inputs, evidence, observations, and evaluation outcome without making certificate or trust assertions."
     },
     {
-      "result_id": "law-result:DeterminismLaw:9666c3df260c7731",
-      "result_digest": "9666c3df260c77313bbe0b4b28c26d5b8ef2da90b267e4985cf2439f2b397f41",
+      "result_id": "law-result:DeterminismLaw:52a2c74e3b3e159c",
+      "result_digest": "52a2c74e3b3e159c9986eaf4209d0310234568be7216d3168bd249ce3f1f9ea1",
       "law": {
         "law_id": "DeterminismLaw",
         "description": "Constitution proof digest must remain identical across repeated evaluations for the same canonical input."
@@ -3164,7 +3204,7 @@
       "inputs": {
         "constitution_version": "1.0.0",
         "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-        "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+        "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
         "constitutional_fingerprint": {
           "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
           "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -3175,8 +3215,8 @@
       "evaluation": {
         "status": "PASS",
         "blocking_status": "PASS",
-        "proof_id": "proof:DeterminismLaw:b580883548757075",
-        "proof_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
+        "proof_id": "proof:DeterminismLaw:3960a8837e5a055d",
+        "proof_digest": "3960a8837e5a055d69616cb8e6c76eca04c9051c8c3abdee0ee24704b99929c1",
         "artifact_key": "proof_determinism_certificate",
         "deterministic": true,
         "replayable": null,
@@ -3190,8 +3230,8 @@
       },
       "evidence": {
         "artifact": {
-          "certificate_id": "constitution-proof:62b75a464d1ba05b",
-          "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+          "certificate_id": "constitution-proof:6ce25627f1345ea5",
+          "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
           "status": "PASS",
           "violations": [],
           "checks": [
@@ -3213,17 +3253,17 @@
   ],
   "evidence_packages": [
     {
-      "package_id": "evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2",
-      "package_digest": "9c7f79bd37e6cfe230998b3dafa0d9c1d050b5c5324fc2e0da8cc6e06b8abb2e",
+      "package_id": "evidence-package:GraphPurityLaw:dbc9648dbaee113e",
+      "package_digest": "dbc9648dbaee113e62fef42b19782faace9a6258eb5b29bfec055a6dcf4324b4",
       "package_scope": "single_law_evaluation",
       "law_ids": [
         "GraphPurityLaw"
       ],
       "result_ids": [
-        "law-result:GraphPurityLaw:a8302dc6e3220e27"
+        "law-result:GraphPurityLaw:867449463d78b4ba"
       ],
       "result_digests": [
-        "a8302dc6e3220e276d35477c2a08bde42440e7e62e0d808be6c34db8e8ebfd88"
+        "867449463d78b4ba1dd6e16db74ee0fd4704c34b8554893cd5120f56db34a411"
       ],
       "proof_ids": [
         "proof:GraphPurityLaw:bd11e1f09cd3ac49"
@@ -3235,159 +3275,159 @@
         "graph_purity_certificate"
       ],
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
         "projection_api_version": "1.0.0",
         "constitution_version": "1.0.0"
       },
-      "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+      "proof_fragments_digest": "e6b27b8cda788bade4e0de49c30ac2a5cb170de0f8e8648c593c871f10c78891",
       "proof_fragments": {
         "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
-        "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
-        "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
-        "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+        "proof_determinism_certificate_digest": "3960a8837e5a055d69616cb8e6c76eca04c9051c8c3abdee0ee24704b99929c1",
+        "dependency_constitution_digest": "501eb4e42c3560c8ae2e99e6ef13bf11a04319b92d352d85e2417593fa98e9c2",
+        "projection_certificates_digest": "21bc175a18baf4484b662ce41f6e61f922a441d3e0a964190de9846169eb9c23",
         "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
-        "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+        "projection_determinism_certificates_digest": "618c6b89434df00a55c235094299160bdd2ba80b30a62494f5382dd2c6e52dd0"
       },
       "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
     },
     {
-      "package_id": "evidence-package:DigestLaw:ac8a8ceea6c59f23",
-      "package_digest": "ac8a8ceea6c59f238567535b87223418b3955cfb8056e5a4e74940a611c34ba0",
+      "package_id": "evidence-package:DigestLaw:618da4a2ebca4ba3",
+      "package_digest": "618da4a2ebca4ba3f058f2093e1e016cbc9dcf6d5e12788cf1cd82dedc4811a7",
       "package_scope": "single_law_evaluation",
       "law_ids": [
         "DigestLaw"
       ],
       "result_ids": [
-        "law-result:DigestLaw:856a2e9d776740be"
+        "law-result:DigestLaw:4de7a2706988f1aa"
       ],
       "result_digests": [
-        "856a2e9d776740be9a6eb7ba9cc57ff0b9bc66bba4cfc12ecef6cb4b6f3bac4d"
+        "4de7a2706988f1aaa8c5e9de52fec9f7f8be7aba5acc5ce1049cdb7f2b828bd9"
       ],
       "proof_ids": [
-        "proof:DigestLaw:c1f2db4fe87e77a0"
+        "proof:DigestLaw:d0eac0e7a442ed40"
       ],
       "proof_digests": [
-        "c1f2db4fe87e77a0dd1637b0f408cfa06b0a803cbf4768163a313b5cc86300f8"
+        "d0eac0e7a442ed403187de96e61f1e05e306ec264a67d7a65771601c6fb75093"
       ],
       "artifact_keys": [
         "projection_digest_certificates"
       ],
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
         "projection_api_version": "1.0.0",
         "constitution_version": "1.0.0"
       },
-      "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+      "proof_fragments_digest": "e6b27b8cda788bade4e0de49c30ac2a5cb170de0f8e8648c593c871f10c78891",
       "proof_fragments": {
         "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
-        "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
-        "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
-        "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+        "proof_determinism_certificate_digest": "3960a8837e5a055d69616cb8e6c76eca04c9051c8c3abdee0ee24704b99929c1",
+        "dependency_constitution_digest": "501eb4e42c3560c8ae2e99e6ef13bf11a04319b92d352d85e2417593fa98e9c2",
+        "projection_certificates_digest": "21bc175a18baf4484b662ce41f6e61f922a441d3e0a964190de9846169eb9c23",
         "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
-        "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+        "projection_determinism_certificates_digest": "618c6b89434df00a55c235094299160bdd2ba80b30a62494f5382dd2c6e52dd0"
       },
       "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
     },
     {
-      "package_id": "evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9",
-      "package_digest": "bb9407ec0b72d5b96518adae3680769b0f5c794b600577781ebf1e5a368296db",
+      "package_id": "evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812",
+      "package_digest": "2cf9a7f52545f812009c432ee5227493e90d1d24bbead30de006629d634b1884",
       "package_scope": "single_law_evaluation",
       "law_ids": [
         "SerializerTransparencyLaw"
       ],
       "result_ids": [
-        "law-result:SerializerTransparencyLaw:498345ef80d3b4aa"
+        "law-result:SerializerTransparencyLaw:4cd7b9e5bad05add"
       ],
       "result_digests": [
-        "498345ef80d3b4aa91be28fcc598e28dd73a873ce0ca2355619d3904e7247ea7"
+        "4cd7b9e5bad05add8e80b7b91ca6ef063b4bcffac0a882461efada258bc910e9"
       ],
       "proof_ids": [
-        "proof:SerializerTransparencyLaw:de7536afa31ef643"
+        "proof:SerializerTransparencyLaw:dc09dd12634c518e"
       ],
       "proof_digests": [
-        "de7536afa31ef6438f24f6415e78195c86308173c2a6065d415004241d97452f"
+        "dc09dd12634c518eadb501b93e24e87d5dcb097d267628a25c1437b6c85211bc"
       ],
       "artifact_keys": [
         "serializer_transparency_certificates"
       ],
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
         "projection_api_version": "1.0.0",
         "constitution_version": "1.0.0"
       },
-      "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+      "proof_fragments_digest": "e6b27b8cda788bade4e0de49c30ac2a5cb170de0f8e8648c593c871f10c78891",
       "proof_fragments": {
         "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
-        "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
-        "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
-        "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+        "proof_determinism_certificate_digest": "3960a8837e5a055d69616cb8e6c76eca04c9051c8c3abdee0ee24704b99929c1",
+        "dependency_constitution_digest": "501eb4e42c3560c8ae2e99e6ef13bf11a04319b92d352d85e2417593fa98e9c2",
+        "projection_certificates_digest": "21bc175a18baf4484b662ce41f6e61f922a441d3e0a964190de9846169eb9c23",
         "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
-        "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+        "projection_determinism_certificates_digest": "618c6b89434df00a55c235094299160bdd2ba80b30a62494f5382dd2c6e52dd0"
       },
       "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
     },
     {
-      "package_id": "evidence-package:StorageTransparencyLaw:310ababbc08ba39d",
-      "package_digest": "310ababbc08ba39d3e28a6c47fe897355fef1b384396266fba661e977845de60",
+      "package_id": "evidence-package:StorageTransparencyLaw:f5229ce87ac555c2",
+      "package_digest": "f5229ce87ac555c2e4cb2d57e7b2c8b1746a9289a496c6312409362a45b9a018",
       "package_scope": "single_law_evaluation",
       "law_ids": [
         "StorageTransparencyLaw"
       ],
       "result_ids": [
-        "law-result:StorageTransparencyLaw:77adc443f1022307"
+        "law-result:StorageTransparencyLaw:63e7ddf86697b97a"
       ],
       "result_digests": [
-        "77adc443f1022307e8398f4bf15abe8f2d37dba4ca86dd8ab0cab71cf331b421"
+        "63e7ddf86697b97a34a6d6b12fa8c9ec6017a6d41e73c8215923fa9fb96c6eec"
       ],
       "proof_ids": [
-        "proof:StorageTransparencyLaw:5cf2587a8837e541"
+        "proof:StorageTransparencyLaw:c3874e79b9e2fa67"
       ],
       "proof_digests": [
-        "5cf2587a8837e54104c9fbae173ebe191a827625b4239c6414d295de619848ad"
+        "c3874e79b9e2fa6723d54f42a0b889e9b319610b3bef03042d1b43ec07e54b43"
       ],
       "artifact_keys": [
         "storage_transparency_certificates"
       ],
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
         "projection_api_version": "1.0.0",
         "constitution_version": "1.0.0"
       },
-      "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+      "proof_fragments_digest": "e6b27b8cda788bade4e0de49c30ac2a5cb170de0f8e8648c593c871f10c78891",
       "proof_fragments": {
         "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
-        "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
-        "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
-        "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+        "proof_determinism_certificate_digest": "3960a8837e5a055d69616cb8e6c76eca04c9051c8c3abdee0ee24704b99929c1",
+        "dependency_constitution_digest": "501eb4e42c3560c8ae2e99e6ef13bf11a04319b92d352d85e2417593fa98e9c2",
+        "projection_certificates_digest": "21bc175a18baf4484b662ce41f6e61f922a441d3e0a964190de9846169eb9c23",
         "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
-        "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+        "projection_determinism_certificates_digest": "618c6b89434df00a55c235094299160bdd2ba80b30a62494f5382dd2c6e52dd0"
       },
       "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
     },
     {
-      "package_id": "evidence-package:ReplayLaw:aa89d74bbc2e58cd",
-      "package_digest": "aa89d74bbc2e58cd0e1457423a5db9d37f5cc9471b6ec2b0dc9b050e7a88162b",
+      "package_id": "evidence-package:ReplayLaw:30f99611b3ace20f",
+      "package_digest": "30f99611b3ace20ff07a55fa39e2ba947855343ecd74e0081c909342183fd9fd",
       "package_scope": "single_law_evaluation",
       "law_ids": [
         "ReplayLaw"
       ],
       "result_ids": [
-        "law-result:ReplayLaw:29f7eb8d0d071c20"
+        "law-result:ReplayLaw:0a264c6acf11690d"
       ],
       "result_digests": [
-        "29f7eb8d0d071c2082a665e47d3f4c497be3385eec71fcbd39dfc8e24432681a"
+        "0a264c6acf11690d137d0cc0929573050b6f62c35dba17b85d06029f4465d63f"
       ],
       "proof_ids": [
         "proof:ReplayLaw:5d5eaf103097d903"
@@ -3399,220 +3439,220 @@
         "replay_certificates"
       ],
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
         "projection_api_version": "1.0.0",
         "constitution_version": "1.0.0"
       },
-      "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+      "proof_fragments_digest": "e6b27b8cda788bade4e0de49c30ac2a5cb170de0f8e8648c593c871f10c78891",
       "proof_fragments": {
         "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
-        "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
-        "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
-        "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+        "proof_determinism_certificate_digest": "3960a8837e5a055d69616cb8e6c76eca04c9051c8c3abdee0ee24704b99929c1",
+        "dependency_constitution_digest": "501eb4e42c3560c8ae2e99e6ef13bf11a04319b92d352d85e2417593fa98e9c2",
+        "projection_certificates_digest": "21bc175a18baf4484b662ce41f6e61f922a441d3e0a964190de9846169eb9c23",
         "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
-        "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+        "projection_determinism_certificates_digest": "618c6b89434df00a55c235094299160bdd2ba80b30a62494f5382dd2c6e52dd0"
       },
       "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
     },
     {
-      "package_id": "evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb",
-      "package_digest": "14cf3a19b0e46beb7477219131c26f3fe5e5becee90758db9e0dd5e738fd6c13",
+      "package_id": "evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5",
+      "package_digest": "f581710cd8863ac52da8e368af6cdd75b218501b23921eb7dd16d4724a25ba5e",
       "package_scope": "single_law_evaluation",
       "law_ids": [
         "ProjectionDeterminismLaw"
       ],
       "result_ids": [
-        "law-result:ProjectionDeterminismLaw:26b6ea228e0f1c7b"
+        "law-result:ProjectionDeterminismLaw:d387f4ba60da846e"
       ],
       "result_digests": [
-        "26b6ea228e0f1c7bba59e2464ca7855f400e79883407747dd99af7c39fcefd48"
+        "d387f4ba60da846e905e52f395ca5f6f057c98fc2ba5b90a0e00a0def3102f76"
       ],
       "proof_ids": [
-        "proof:ProjectionDeterminismLaw:65d5461548f10c16"
+        "proof:ProjectionDeterminismLaw:618c6b89434df00a"
       ],
       "proof_digests": [
-        "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+        "618c6b89434df00a55c235094299160bdd2ba80b30a62494f5382dd2c6e52dd0"
       ],
       "artifact_keys": [
         "projection_determinism_certificates"
       ],
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
         "projection_api_version": "1.0.0",
         "constitution_version": "1.0.0"
       },
-      "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+      "proof_fragments_digest": "e6b27b8cda788bade4e0de49c30ac2a5cb170de0f8e8648c593c871f10c78891",
       "proof_fragments": {
         "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
-        "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
-        "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
-        "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+        "proof_determinism_certificate_digest": "3960a8837e5a055d69616cb8e6c76eca04c9051c8c3abdee0ee24704b99929c1",
+        "dependency_constitution_digest": "501eb4e42c3560c8ae2e99e6ef13bf11a04319b92d352d85e2417593fa98e9c2",
+        "projection_certificates_digest": "21bc175a18baf4484b662ce41f6e61f922a441d3e0a964190de9846169eb9c23",
         "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
-        "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+        "projection_determinism_certificates_digest": "618c6b89434df00a55c235094299160bdd2ba80b30a62494f5382dd2c6e52dd0"
       },
       "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
     },
     {
-      "package_id": "evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf",
-      "package_digest": "6641dcc833bf5aafc4299d1ead630944c374c283326b43108fd5a3519ddea890",
+      "package_id": "evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61",
+      "package_digest": "9ee9f91cb96b4c61d25889b916b3b97590a2373a4c052d827ba1c6064bee8f11",
       "package_scope": "single_law_evaluation",
       "law_ids": [
         "DependencyBoundaryLaw"
       ],
       "result_ids": [
-        "law-result:DependencyBoundaryLaw:7f28bbb810e14946"
+        "law-result:DependencyBoundaryLaw:4be7e1acf60c0981"
       ],
       "result_digests": [
-        "7f28bbb810e149465f7c9131c3d586a5186e64eeb06bcca5f23361cd3e4d65a5"
+        "4be7e1acf60c0981271cf4146a909b4e45147e790156e281ddfee271055fdd10"
       ],
       "proof_ids": [
-        "proof:DependencyBoundaryLaw:9f911c51856d5705"
+        "proof:DependencyBoundaryLaw:501eb4e42c3560c8"
       ],
       "proof_digests": [
-        "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b"
+        "501eb4e42c3560c8ae2e99e6ef13bf11a04319b92d352d85e2417593fa98e9c2"
       ],
       "artifact_keys": [
         "dependency_constitution"
       ],
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
         "projection_api_version": "1.0.0",
         "constitution_version": "1.0.0"
       },
-      "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+      "proof_fragments_digest": "e6b27b8cda788bade4e0de49c30ac2a5cb170de0f8e8648c593c871f10c78891",
       "proof_fragments": {
         "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
-        "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
-        "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
-        "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+        "proof_determinism_certificate_digest": "3960a8837e5a055d69616cb8e6c76eca04c9051c8c3abdee0ee24704b99929c1",
+        "dependency_constitution_digest": "501eb4e42c3560c8ae2e99e6ef13bf11a04319b92d352d85e2417593fa98e9c2",
+        "projection_certificates_digest": "21bc175a18baf4484b662ce41f6e61f922a441d3e0a964190de9846169eb9c23",
         "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
-        "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+        "projection_determinism_certificates_digest": "618c6b89434df00a55c235094299160bdd2ba80b30a62494f5382dd2c6e52dd0"
       },
       "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
     },
     {
-      "package_id": "evidence-package:DeterminismLaw:88df227d2d3a7f40",
-      "package_digest": "88df227d2d3a7f40fb809cb99242e92e19a66424e3520330b62cea834bc432b9",
+      "package_id": "evidence-package:DeterminismLaw:2037e0e5f9003abd",
+      "package_digest": "2037e0e5f9003abd20ea19b88f0d96e85d342fb99e19f149b22ca108c6c4a404",
       "package_scope": "single_law_evaluation",
       "law_ids": [
         "DeterminismLaw"
       ],
       "result_ids": [
-        "law-result:DeterminismLaw:9666c3df260c7731"
+        "law-result:DeterminismLaw:52a2c74e3b3e159c"
       ],
       "result_digests": [
-        "9666c3df260c77313bbe0b4b28c26d5b8ef2da90b267e4985cf2439f2b397f41"
+        "52a2c74e3b3e159c9986eaf4209d0310234568be7216d3168bd249ce3f1f9ea1"
       ],
       "proof_ids": [
-        "proof:DeterminismLaw:b580883548757075"
+        "proof:DeterminismLaw:3960a8837e5a055d"
       ],
       "proof_digests": [
-        "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904"
+        "3960a8837e5a055d69616cb8e6c76eca04c9051c8c3abdee0ee24704b99929c1"
       ],
       "artifact_keys": [
         "proof_determinism_certificate"
       ],
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "constitutional_fingerprint": {
         "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
         "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
         "projection_api_version": "1.0.0",
         "constitution_version": "1.0.0"
       },
-      "proof_fragments_digest": "160151018eb145bddad115a25c9ed75ea52c1e126a0f34791dddd4642723ef4a",
+      "proof_fragments_digest": "e6b27b8cda788bade4e0de49c30ac2a5cb170de0f8e8648c593c871f10c78891",
       "proof_fragments": {
         "graph_purity_certificate_digest": "bd11e1f09cd3ac49a922a2a1fa061abfe38edcb0ffb0f83c445820e980b428be",
-        "proof_determinism_certificate_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
-        "dependency_constitution_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
-        "projection_certificates_digest": "70f088a889b837b384879daa633bb9ba1980d263ae267f445997762a45142a0f",
+        "proof_determinism_certificate_digest": "3960a8837e5a055d69616cb8e6c76eca04c9051c8c3abdee0ee24704b99929c1",
+        "dependency_constitution_digest": "501eb4e42c3560c8ae2e99e6ef13bf11a04319b92d352d85e2417593fa98e9c2",
+        "projection_certificates_digest": "21bc175a18baf4484b662ce41f6e61f922a441d3e0a964190de9846169eb9c23",
         "replay_certificates_digest": "5d5eaf103097d903089d36afffe74a52321b821d0bbfea39937e81d001601404",
-        "projection_determinism_certificates_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+        "projection_determinism_certificates_digest": "618c6b89434df00a55c235094299160bdd2ba80b30a62494f5382dd2c6e52dd0"
       },
       "package_boundary": "Evidence package is the immutable aggregate of law-result identity and supporting governance proof fragments. Certificate issuance depends only on this frozen package, not on the internal structure or cardinality of law results."
     }
   ],
   "law_certificates": [
     {
-      "certificate_id": "certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5",
-      "certificate_digest": "4b757aa63f4d57a592acff5436c49235301a409a1a62babce578bfd25cfe47c4",
-      "package_id": "evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2",
-      "package_digest": "9c7f79bd37e6cfe230998b3dafa0d9c1d050b5c5324fc2e0da8cc6e06b8abb2e",
+      "certificate_id": "certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e",
+      "certificate_digest": "892b4bd787c9a34e4255e0499a1e316a5673ea196f2e07904d495ffe452010d8",
+      "package_id": "evidence-package:GraphPurityLaw:dbc9648dbaee113e",
+      "package_digest": "dbc9648dbaee113e62fef42b19782faace9a6258eb5b29bfec055a6dcf4324b4",
       "issued_at_utc": null,
       "certificate_boundary": "Certificate is the immutable identity reference to a frozen evidence-package digest. It does not embed evaluation evidence or trust metadata."
     },
     {
-      "certificate_id": "certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc",
-      "certificate_digest": "1e45b26a3e9a87cc7a0681e2fb11453a6b8f3e003c93b9b6aca3e2a37c8b3c0b",
-      "package_id": "evidence-package:DigestLaw:ac8a8ceea6c59f23",
-      "package_digest": "ac8a8ceea6c59f238567535b87223418b3955cfb8056e5a4e74940a611c34ba0",
+      "certificate_id": "certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586",
+      "certificate_digest": "fc8222cbc07e5586781929060ac7c36ba3c0949b6a7aab4fb6015adb33961939",
+      "package_id": "evidence-package:DigestLaw:618da4a2ebca4ba3",
+      "package_digest": "618da4a2ebca4ba3f058f2093e1e016cbc9dcf6d5e12788cf1cd82dedc4811a7",
       "issued_at_utc": null,
       "certificate_boundary": "Certificate is the immutable identity reference to a frozen evidence-package digest. It does not embed evaluation evidence or trust metadata."
     },
     {
-      "certificate_id": "certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d",
-      "certificate_digest": "8d6fead981547f3dfde63cdb7db4f810a9a3883e02b05f106e7f3b58305b0d62",
-      "package_id": "evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9",
-      "package_digest": "bb9407ec0b72d5b96518adae3680769b0f5c794b600577781ebf1e5a368296db",
+      "certificate_id": "certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624",
+      "certificate_digest": "2f36eda62af1b62421d64ed3e0d5798adb7fcf6b34d5552bdda538e066cefe20",
+      "package_id": "evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812",
+      "package_digest": "2cf9a7f52545f812009c432ee5227493e90d1d24bbead30de006629d634b1884",
       "issued_at_utc": null,
       "certificate_boundary": "Certificate is the immutable identity reference to a frozen evidence-package digest. It does not embed evaluation evidence or trust metadata."
     },
     {
-      "certificate_id": "certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a",
-      "certificate_digest": "a2738fe21229452ad4cb97594d31cdf767643ab4c8b980a9a674631efd093e61",
-      "package_id": "evidence-package:StorageTransparencyLaw:310ababbc08ba39d",
-      "package_digest": "310ababbc08ba39d3e28a6c47fe897355fef1b384396266fba661e977845de60",
+      "certificate_id": "certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f",
+      "certificate_digest": "015fab2c1eac4a2f9bdf2776c6bbdb5e9a5820dd4d1945ba19d6cf9dd7cb2a82",
+      "package_id": "evidence-package:StorageTransparencyLaw:f5229ce87ac555c2",
+      "package_digest": "f5229ce87ac555c2e4cb2d57e7b2c8b1746a9289a496c6312409362a45b9a018",
       "issued_at_utc": null,
       "certificate_boundary": "Certificate is the immutable identity reference to a frozen evidence-package digest. It does not embed evaluation evidence or trust metadata."
     },
     {
-      "certificate_id": "certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7",
-      "certificate_digest": "2754ec95cb96cfb7ffe990678b840091dec82c4bfc116e40787d5ed2adcfab66",
-      "package_id": "evidence-package:ReplayLaw:aa89d74bbc2e58cd",
-      "package_digest": "aa89d74bbc2e58cd0e1457423a5db9d37f5cc9471b6ec2b0dc9b050e7a88162b",
+      "certificate_id": "certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c",
+      "certificate_digest": "af258545ddd3aa6c8998ed5218e46982d947c5add8fb928e9a167039ae7cbc53",
+      "package_id": "evidence-package:ReplayLaw:30f99611b3ace20f",
+      "package_digest": "30f99611b3ace20ff07a55fa39e2ba947855343ecd74e0081c909342183fd9fd",
       "issued_at_utc": null,
       "certificate_boundary": "Certificate is the immutable identity reference to a frozen evidence-package digest. It does not embed evaluation evidence or trust metadata."
     },
     {
-      "certificate_id": "certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502",
-      "certificate_digest": "206c11421fece50230116d481c57144d88edbab5357893dded9b70fb8e722b08",
-      "package_id": "evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb",
-      "package_digest": "14cf3a19b0e46beb7477219131c26f3fe5e5becee90758db9e0dd5e738fd6c13",
+      "certificate_id": "certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040",
+      "certificate_digest": "857f96b781fda040c6472af17909897d2af422a0aeebd3d57e094e204a63a3bd",
+      "package_id": "evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5",
+      "package_digest": "f581710cd8863ac52da8e368af6cdd75b218501b23921eb7dd16d4724a25ba5e",
       "issued_at_utc": null,
       "certificate_boundary": "Certificate is the immutable identity reference to a frozen evidence-package digest. It does not embed evaluation evidence or trust metadata."
     },
     {
-      "certificate_id": "certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e",
-      "certificate_digest": "612ec33aa4d56e7e8638b1b25de52639cdc95a18784277c4c18f86afa2bf4ea4",
-      "package_id": "evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf",
-      "package_digest": "6641dcc833bf5aafc4299d1ead630944c374c283326b43108fd5a3519ddea890",
+      "certificate_id": "certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed",
+      "certificate_digest": "b15f46f49b87c1ededc689509180f792540293b3561c0866b763ba362817fa56",
+      "package_id": "evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61",
+      "package_digest": "9ee9f91cb96b4c61d25889b916b3b97590a2373a4c052d827ba1c6064bee8f11",
       "issued_at_utc": null,
       "certificate_boundary": "Certificate is the immutable identity reference to a frozen evidence-package digest. It does not embed evaluation evidence or trust metadata."
     },
     {
-      "certificate_id": "certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20",
-      "certificate_digest": "dea9721568839c208fccf9a316977a65ab7c7326ca8547d02a9c19408e2b0df1",
-      "package_id": "evidence-package:DeterminismLaw:88df227d2d3a7f40",
-      "package_digest": "88df227d2d3a7f40fb809cb99242e92e19a66424e3520330b62cea834bc432b9",
+      "certificate_id": "certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab",
+      "certificate_digest": "f58dce05167f1cabee2474187fb04271f321488a27557c4b71e1604da8569164",
+      "package_id": "evidence-package:DeterminismLaw:2037e0e5f9003abd",
+      "package_digest": "2037e0e5f9003abd20ea19b88f0d96e85d342fb99e19f149b22ca108c6c4a404",
       "issued_at_utc": null,
       "certificate_boundary": "Certificate is the immutable identity reference to a frozen evidence-package digest. It does not embed evaluation evidence or trust metadata."
     }
   ],
   "law_attestations": [
     {
-      "attestation_id": "attestation:certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5:3be5a32144ba1a2a",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5:3be5a32144ba1a2a:d01ee9305cde73e2",
-      "event_digest": "d01ee9305cde73e2c79ef3fea3281d1da5bdba7f20b616e29af3477d9aeebb40",
-      "attestation_reference": "attestation:certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5:3be5a32144ba1a2a",
+      "attestation_id": "attestation:certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e:b02345b131e5b8be",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e:b02345b131e5b8be:de524155a033965b",
+      "event_digest": "de524155a033965b4fc1a2ffd742b6f61527dc4e22366ce4b6495cdf573af101",
+      "attestation_reference": "attestation:certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e:b02345b131e5b8be",
       "event_type": "AttestationCreated",
       "event_index": 0,
       "occurred_at_utc": null,
@@ -3622,15 +3662,15 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5",
-      "certificate_digest": "4b757aa63f4d57a592acff5436c49235301a409a1a62babce578bfd25cfe47c4",
+      "certificate_id": "certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e",
+      "certificate_digest": "892b4bd787c9a34e4255e0499a1e316a5673ea196f2e07904d495ffe452010d8",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Created records establish the attestation identity without mutating the immutable certificate."
     },
     {
-      "attestation_id": "attestation:certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5:3be5a32144ba1a2a",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5:3be5a32144ba1a2a:448b0b6e314acfb1",
-      "event_digest": "448b0b6e314acfb150802d280c4d6642dc3a2605da9d4a35b6fa7d4ad0a85ba3",
-      "attestation_reference": "attestation:certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5:3be5a32144ba1a2a",
+      "attestation_id": "attestation:certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e:b02345b131e5b8be",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e:b02345b131e5b8be:e09bb0c551a3b802",
+      "event_digest": "e09bb0c551a3b80245ef95418c5d4e9b5502d09648bb456353f2adc7ee18dc2a",
+      "attestation_reference": "attestation:certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e:b02345b131e5b8be",
       "event_type": "AttestationVerified",
       "event_index": 1,
       "attestation_status": "VERIFIED",
@@ -3638,17 +3678,17 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5",
-      "certificate_digest": "4b757aa63f4d57a592acff5436c49235301a409a1a62babce578bfd25cfe47c4",
+      "certificate_id": "certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e",
+      "certificate_digest": "892b4bd787c9a34e4255e0499a1e316a5673ea196f2e07904d495ffe452010d8",
       "occurred_at_utc": null,
-      "signature_reference": "trust-signature:local:5b48c71447a493ac",
+      "signature_reference": "trust-signature:local:6bc3b2ebf90068cf",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Verified records confirm the attestation was validated within the current governance verification boundary without embedding cryptographic signer implementation details into the certificate."
     },
     {
-      "attestation_id": "attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77:83f6297b228460c6",
-      "event_digest": "83f6297b228460c6e4ea191e355aa76b756d565ee977936b1a90f313deddef54",
-      "attestation_reference": "attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77",
+      "attestation_id": "attestation:certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586:952a959a8c036a1b",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586:952a959a8c036a1b:97a022f519a99428",
+      "event_digest": "97a022f519a99428058ab9e5321780a53e72cfa66f196b586b5b1c1ee929d77f",
+      "attestation_reference": "attestation:certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586:952a959a8c036a1b",
       "event_type": "AttestationCreated",
       "event_index": 0,
       "occurred_at_utc": null,
@@ -3658,15 +3698,15 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc",
-      "certificate_digest": "1e45b26a3e9a87cc7a0681e2fb11453a6b8f3e003c93b9b6aca3e2a37c8b3c0b",
+      "certificate_id": "certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586",
+      "certificate_digest": "fc8222cbc07e5586781929060ac7c36ba3c0949b6a7aab4fb6015adb33961939",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Created records establish the attestation identity without mutating the immutable certificate."
     },
     {
-      "attestation_id": "attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77:1a79a454d3fdd447",
-      "event_digest": "1a79a454d3fdd447dfa33e07a2dc6348d21523d7d02ceb72a8fbacee7497a406",
-      "attestation_reference": "attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77",
+      "attestation_id": "attestation:certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586:952a959a8c036a1b",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586:952a959a8c036a1b:e29747608339180c",
+      "event_digest": "e29747608339180cfa1300b2cb846e82a9f18d083b7e89e04e617afec1b0fe66",
+      "attestation_reference": "attestation:certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586:952a959a8c036a1b",
       "event_type": "AttestationVerified",
       "event_index": 1,
       "attestation_status": "VERIFIED",
@@ -3674,17 +3714,17 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc",
-      "certificate_digest": "1e45b26a3e9a87cc7a0681e2fb11453a6b8f3e003c93b9b6aca3e2a37c8b3c0b",
+      "certificate_id": "certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586",
+      "certificate_digest": "fc8222cbc07e5586781929060ac7c36ba3c0949b6a7aab4fb6015adb33961939",
       "occurred_at_utc": null,
-      "signature_reference": "trust-signature:local:0941d7bd2b65556d",
+      "signature_reference": "trust-signature:local:534460483fc67011",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Verified records confirm the attestation was validated within the current governance verification boundary without embedding cryptographic signer implementation details into the certificate."
     },
     {
-      "attestation_id": "attestation:certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d:2d4a26cf3e509103",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d:2d4a26cf3e509103:7c592ebf938a224a",
-      "event_digest": "7c592ebf938a224ac6df6100630498a6b46050429c70da958b7ba5c865bc1fa1",
-      "attestation_reference": "attestation:certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d:2d4a26cf3e509103",
+      "attestation_id": "attestation:certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624:c0120738efe95d06",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624:c0120738efe95d06:9061f4da8c670bd2",
+      "event_digest": "9061f4da8c670bd2ddf103009bba6a7db1a7ebbdf68f0fae3ae1d75fa8a82543",
+      "attestation_reference": "attestation:certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624:c0120738efe95d06",
       "event_type": "AttestationCreated",
       "event_index": 0,
       "occurred_at_utc": null,
@@ -3694,15 +3734,15 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d",
-      "certificate_digest": "8d6fead981547f3dfde63cdb7db4f810a9a3883e02b05f106e7f3b58305b0d62",
+      "certificate_id": "certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624",
+      "certificate_digest": "2f36eda62af1b62421d64ed3e0d5798adb7fcf6b34d5552bdda538e066cefe20",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Created records establish the attestation identity without mutating the immutable certificate."
     },
     {
-      "attestation_id": "attestation:certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d:2d4a26cf3e509103",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d:2d4a26cf3e509103:0fcaa699313efef2",
-      "event_digest": "0fcaa699313efef2f4cbe9feeb2e89adb9b465d70bfa7c26e4cf74f2a57b550c",
-      "attestation_reference": "attestation:certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d:2d4a26cf3e509103",
+      "attestation_id": "attestation:certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624:c0120738efe95d06",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624:c0120738efe95d06:e5fdab311669cba9",
+      "event_digest": "e5fdab311669cba9a2b8af7f1a96f4ab3bd6e6ffa5a12186c3a730834bdf924e",
+      "attestation_reference": "attestation:certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624:c0120738efe95d06",
       "event_type": "AttestationVerified",
       "event_index": 1,
       "attestation_status": "VERIFIED",
@@ -3710,17 +3750,17 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d",
-      "certificate_digest": "8d6fead981547f3dfde63cdb7db4f810a9a3883e02b05f106e7f3b58305b0d62",
+      "certificate_id": "certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624",
+      "certificate_digest": "2f36eda62af1b62421d64ed3e0d5798adb7fcf6b34d5552bdda538e066cefe20",
       "occurred_at_utc": null,
-      "signature_reference": "trust-signature:local:307dec0eea9548eb",
+      "signature_reference": "trust-signature:local:31ffad2dd1ecc10f",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Verified records confirm the attestation was validated within the current governance verification boundary without embedding cryptographic signer implementation details into the certificate."
     },
     {
-      "attestation_id": "attestation:certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a:17b8b2a26e0f9257",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a:17b8b2a26e0f9257:7961924df7fcd034",
-      "event_digest": "7961924df7fcd034de5d3b97946fd049c67f8b78a467a038a194c92e242d850e",
-      "attestation_reference": "attestation:certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a:17b8b2a26e0f9257",
+      "attestation_id": "attestation:certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f:1d9af61e97dbba1a",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f:1d9af61e97dbba1a:60a2bf2fc2e8bd9d",
+      "event_digest": "60a2bf2fc2e8bd9d4349650fd22e31c7c3f84160696ac9682a83242d03b33efa",
+      "attestation_reference": "attestation:certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f:1d9af61e97dbba1a",
       "event_type": "AttestationCreated",
       "event_index": 0,
       "occurred_at_utc": null,
@@ -3730,15 +3770,15 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a",
-      "certificate_digest": "a2738fe21229452ad4cb97594d31cdf767643ab4c8b980a9a674631efd093e61",
+      "certificate_id": "certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f",
+      "certificate_digest": "015fab2c1eac4a2f9bdf2776c6bbdb5e9a5820dd4d1945ba19d6cf9dd7cb2a82",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Created records establish the attestation identity without mutating the immutable certificate."
     },
     {
-      "attestation_id": "attestation:certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a:17b8b2a26e0f9257",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a:17b8b2a26e0f9257:b417c3d847b7228e",
-      "event_digest": "b417c3d847b7228e0c29d1b37525eaa90c5345061bc106f8b73bdb84fb8de136",
-      "attestation_reference": "attestation:certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a:17b8b2a26e0f9257",
+      "attestation_id": "attestation:certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f:1d9af61e97dbba1a",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f:1d9af61e97dbba1a:a5841a2996eea242",
+      "event_digest": "a5841a2996eea24213335eb10d2441d317125301010d6bc2538de66b34450e8e",
+      "attestation_reference": "attestation:certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f:1d9af61e97dbba1a",
       "event_type": "AttestationVerified",
       "event_index": 1,
       "attestation_status": "VERIFIED",
@@ -3746,17 +3786,17 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a",
-      "certificate_digest": "a2738fe21229452ad4cb97594d31cdf767643ab4c8b980a9a674631efd093e61",
+      "certificate_id": "certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f",
+      "certificate_digest": "015fab2c1eac4a2f9bdf2776c6bbdb5e9a5820dd4d1945ba19d6cf9dd7cb2a82",
       "occurred_at_utc": null,
-      "signature_reference": "trust-signature:local:db1205bf8ea4c20c",
+      "signature_reference": "trust-signature:local:68f855ee23a93520",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Verified records confirm the attestation was validated within the current governance verification boundary without embedding cryptographic signer implementation details into the certificate."
     },
     {
-      "attestation_id": "attestation:certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7:4061cf5e5aee66ac",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7:4061cf5e5aee66ac:5114e1d21d588b7e",
-      "event_digest": "5114e1d21d588b7ec1f43df0f4d0d1bcaf9eb513e102f21ae9d03f3b6cc70efd",
-      "attestation_reference": "attestation:certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7:4061cf5e5aee66ac",
+      "attestation_id": "attestation:certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c:70f3ab35db783e0b",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c:70f3ab35db783e0b:1d34fab58c0217c9",
+      "event_digest": "1d34fab58c0217c970ffef579a66933b29b9dab79added3235b47a534dc9f0a7",
+      "attestation_reference": "attestation:certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c:70f3ab35db783e0b",
       "event_type": "AttestationCreated",
       "event_index": 0,
       "occurred_at_utc": null,
@@ -3766,15 +3806,15 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7",
-      "certificate_digest": "2754ec95cb96cfb7ffe990678b840091dec82c4bfc116e40787d5ed2adcfab66",
+      "certificate_id": "certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c",
+      "certificate_digest": "af258545ddd3aa6c8998ed5218e46982d947c5add8fb928e9a167039ae7cbc53",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Created records establish the attestation identity without mutating the immutable certificate."
     },
     {
-      "attestation_id": "attestation:certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7:4061cf5e5aee66ac",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7:4061cf5e5aee66ac:4edd521c299eb69e",
-      "event_digest": "4edd521c299eb69e51eeac4e8d8805fd9c452e46e3ddd4bdfef355456f56cf3d",
-      "attestation_reference": "attestation:certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7:4061cf5e5aee66ac",
+      "attestation_id": "attestation:certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c:70f3ab35db783e0b",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c:70f3ab35db783e0b:8896b0ecb228f805",
+      "event_digest": "8896b0ecb228f805c12c5ecb620d9dd566b58f345ea3098eb4916a2ca8fdea2f",
+      "attestation_reference": "attestation:certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c:70f3ab35db783e0b",
       "event_type": "AttestationVerified",
       "event_index": 1,
       "attestation_status": "VERIFIED",
@@ -3782,17 +3822,17 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7",
-      "certificate_digest": "2754ec95cb96cfb7ffe990678b840091dec82c4bfc116e40787d5ed2adcfab66",
+      "certificate_id": "certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c",
+      "certificate_digest": "af258545ddd3aa6c8998ed5218e46982d947c5add8fb928e9a167039ae7cbc53",
       "occurred_at_utc": null,
-      "signature_reference": "trust-signature:local:069ecf2e99145868",
+      "signature_reference": "trust-signature:local:11c14ebf8c4abcda",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Verified records confirm the attestation was validated within the current governance verification boundary without embedding cryptographic signer implementation details into the certificate."
     },
     {
-      "attestation_id": "attestation:certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502:fe089695d27d21f9",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502:fe089695d27d21f9:0fcdd1ba412a0ebb",
-      "event_digest": "0fcdd1ba412a0ebbe810a39e5e5a790c0edfb23a1d6b2f4733b2dd996ccb8050",
-      "attestation_reference": "attestation:certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502:fe089695d27d21f9",
+      "attestation_id": "attestation:certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040:f1ab2576e9c82466",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040:f1ab2576e9c82466:bc608d37c70cc012",
+      "event_digest": "bc608d37c70cc0123c28187c96a254f682dfeb9f583e73c4ea6e47823365346a",
+      "attestation_reference": "attestation:certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040:f1ab2576e9c82466",
       "event_type": "AttestationCreated",
       "event_index": 0,
       "occurred_at_utc": null,
@@ -3802,15 +3842,15 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502",
-      "certificate_digest": "206c11421fece50230116d481c57144d88edbab5357893dded9b70fb8e722b08",
+      "certificate_id": "certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040",
+      "certificate_digest": "857f96b781fda040c6472af17909897d2af422a0aeebd3d57e094e204a63a3bd",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Created records establish the attestation identity without mutating the immutable certificate."
     },
     {
-      "attestation_id": "attestation:certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502:fe089695d27d21f9",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502:fe089695d27d21f9:93df7f44b89f2ff8",
-      "event_digest": "93df7f44b89f2ff859cb1e2294a08a3e8e5b240bc4a89437ef9affce22626ac9",
-      "attestation_reference": "attestation:certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502:fe089695d27d21f9",
+      "attestation_id": "attestation:certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040:f1ab2576e9c82466",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040:f1ab2576e9c82466:44182af4e2235cf8",
+      "event_digest": "44182af4e2235cf83c408495a35b4ed3a0dab692c9e2a7c3b0fd39c75d3f6ab4",
+      "attestation_reference": "attestation:certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040:f1ab2576e9c82466",
       "event_type": "AttestationVerified",
       "event_index": 1,
       "attestation_status": "VERIFIED",
@@ -3818,17 +3858,17 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502",
-      "certificate_digest": "206c11421fece50230116d481c57144d88edbab5357893dded9b70fb8e722b08",
+      "certificate_id": "certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040",
+      "certificate_digest": "857f96b781fda040c6472af17909897d2af422a0aeebd3d57e094e204a63a3bd",
       "occurred_at_utc": null,
-      "signature_reference": "trust-signature:local:8235cd178212bcba",
+      "signature_reference": "trust-signature:local:ace7c07913b75ff3",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Verified records confirm the attestation was validated within the current governance verification boundary without embedding cryptographic signer implementation details into the certificate."
     },
     {
-      "attestation_id": "attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5:337ea2e400818e7a",
-      "event_digest": "337ea2e400818e7a3da560ecae2eb0ac91f811bee85d1b558232047b76849c64",
-      "attestation_reference": "attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5",
+      "attestation_id": "attestation:certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed:1136f5a2cef06ecd",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed:1136f5a2cef06ecd:cc260a2a4d286f52",
+      "event_digest": "cc260a2a4d286f523899ae75278590cbd892d2edc478f83fde31f5f3475ca7f9",
+      "attestation_reference": "attestation:certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed:1136f5a2cef06ecd",
       "event_type": "AttestationCreated",
       "event_index": 0,
       "occurred_at_utc": null,
@@ -3838,15 +3878,15 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e",
-      "certificate_digest": "612ec33aa4d56e7e8638b1b25de52639cdc95a18784277c4c18f86afa2bf4ea4",
+      "certificate_id": "certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed",
+      "certificate_digest": "b15f46f49b87c1ededc689509180f792540293b3561c0866b763ba362817fa56",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Created records establish the attestation identity without mutating the immutable certificate."
     },
     {
-      "attestation_id": "attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5:18a08300807c1b5c",
-      "event_digest": "18a08300807c1b5c5f62bf8c152f8309bba944636bc525c134bc74a33bfa39de",
-      "attestation_reference": "attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5",
+      "attestation_id": "attestation:certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed:1136f5a2cef06ecd",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed:1136f5a2cef06ecd:f26a7ee56b143816",
+      "event_digest": "f26a7ee56b1438162d8070edf06fd85d5bfac6e0c80e80d3281139bb1b1bc63b",
+      "attestation_reference": "attestation:certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed:1136f5a2cef06ecd",
       "event_type": "AttestationVerified",
       "event_index": 1,
       "attestation_status": "VERIFIED",
@@ -3854,17 +3894,17 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e",
-      "certificate_digest": "612ec33aa4d56e7e8638b1b25de52639cdc95a18784277c4c18f86afa2bf4ea4",
+      "certificate_id": "certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed",
+      "certificate_digest": "b15f46f49b87c1ededc689509180f792540293b3561c0866b763ba362817fa56",
       "occurred_at_utc": null,
-      "signature_reference": "trust-signature:local:c0932db079de02bf",
+      "signature_reference": "trust-signature:local:3eab48cf13310a96",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Verified records confirm the attestation was validated within the current governance verification boundary without embedding cryptographic signer implementation details into the certificate."
     },
     {
-      "attestation_id": "attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044:02ec066df7d87eb6",
-      "event_digest": "02ec066df7d87eb6e137b6948a5557a9fdc3d11fd38b0dad2f1755bc4991a7b5",
-      "attestation_reference": "attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044",
+      "attestation_id": "attestation:certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab:604fb2e480a95781",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab:604fb2e480a95781:3da409768880e6fc",
+      "event_digest": "3da409768880e6fc43570a5d1b4a5d3c98cf3b10599672a59d79ab2243b2194c",
+      "attestation_reference": "attestation:certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab:604fb2e480a95781",
       "event_type": "AttestationCreated",
       "event_index": 0,
       "occurred_at_utc": null,
@@ -3874,15 +3914,15 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20",
-      "certificate_digest": "dea9721568839c208fccf9a316977a65ab7c7326ca8547d02a9c19408e2b0df1",
+      "certificate_id": "certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab",
+      "certificate_digest": "f58dce05167f1cabee2474187fb04271f321488a27557c4b71e1604da8569164",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Created records establish the attestation identity without mutating the immutable certificate."
     },
     {
-      "attestation_id": "attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044",
-      "event_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044:52d862ff2b40e263",
-      "event_digest": "52d862ff2b40e263e88f0e23215dcea85619f05ea3e1d820f8edeb347b6ab372",
-      "attestation_reference": "attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044",
+      "attestation_id": "attestation:certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab:604fb2e480a95781",
+      "event_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab:604fb2e480a95781:4d6198cfaf832e4b",
+      "event_digest": "4d6198cfaf832e4bc8123e7f0d7d1d467425580ef0fe32a9242874c1903ed9bd",
+      "attestation_reference": "attestation:certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab:604fb2e480a95781",
       "event_type": "AttestationVerified",
       "event_index": 1,
       "attestation_status": "VERIFIED",
@@ -3890,10 +3930,10 @@
       "policy_digest": "498b15b8d899c791e1cbba1807dfb7e39a6681f0413804ab67ae50afc49e4f92",
       "trust_framework_id": "trust-framework:local-development-signed",
       "verification_profile_id": "verification-profile:local-development-signed",
-      "certificate_id": "certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20",
-      "certificate_digest": "dea9721568839c208fccf9a316977a65ab7c7326ca8547d02a9c19408e2b0df1",
+      "certificate_id": "certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab",
+      "certificate_digest": "f58dce05167f1cabee2474187fb04271f321488a27557c4b71e1604da8569164",
       "occurred_at_utc": null,
-      "signature_reference": "trust-signature:local:3a7fe079c52dea6c",
+      "signature_reference": "trust-signature:local:755ef3def39f9903",
       "event_boundary": "Attestation events form an append-only trust history for a certificate. Verified records confirm the attestation was validated within the current governance verification boundary without embedding cryptographic signer implementation details into the certificate."
     }
   ],
@@ -3923,10 +3963,10 @@
         "blocking": true
       },
       "proof": {
-        "proof_id": "proof:DigestLaw:c1f2db4fe87e77a0",
+        "proof_id": "proof:DigestLaw:d0eac0e7a442ed40",
         "status": "PASS",
         "report_key": "projection_digest_certificates",
-        "report_digest": "c1f2db4fe87e77a0dd1637b0f408cfa06b0a803cbf4768163a313b5cc86300f8"
+        "report_digest": "d0eac0e7a442ed403187de96e61f1e05e306ec264a67d7a65771601c6fb75093"
       },
       "blocking_status": "PASS"
     },
@@ -3939,10 +3979,10 @@
         "blocking": true
       },
       "proof": {
-        "proof_id": "proof:SerializerTransparencyLaw:de7536afa31ef643",
+        "proof_id": "proof:SerializerTransparencyLaw:dc09dd12634c518e",
         "status": "PASS",
         "report_key": "serializer_transparency_certificates",
-        "report_digest": "de7536afa31ef6438f24f6415e78195c86308173c2a6065d415004241d97452f"
+        "report_digest": "dc09dd12634c518eadb501b93e24e87d5dcb097d267628a25c1437b6c85211bc"
       },
       "blocking_status": "PASS"
     },
@@ -3955,10 +3995,10 @@
         "blocking": true
       },
       "proof": {
-        "proof_id": "proof:StorageTransparencyLaw:5cf2587a8837e541",
+        "proof_id": "proof:StorageTransparencyLaw:c3874e79b9e2fa67",
         "status": "PASS",
         "report_key": "storage_transparency_certificates",
-        "report_digest": "5cf2587a8837e54104c9fbae173ebe191a827625b4239c6414d295de619848ad"
+        "report_digest": "c3874e79b9e2fa6723d54f42a0b889e9b319610b3bef03042d1b43ec07e54b43"
       },
       "blocking_status": "PASS"
     },
@@ -3987,10 +4027,10 @@
         "blocking": true
       },
       "proof": {
-        "proof_id": "proof:ProjectionDeterminismLaw:65d5461548f10c16",
+        "proof_id": "proof:ProjectionDeterminismLaw:618c6b89434df00a",
         "status": "PASS",
         "report_key": "projection_determinism_certificates",
-        "report_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+        "report_digest": "618c6b89434df00a55c235094299160bdd2ba80b30a62494f5382dd2c6e52dd0"
       },
       "blocking_status": "PASS"
     },
@@ -4003,10 +4043,10 @@
         "blocking": true
       },
       "proof": {
-        "proof_id": "proof:DependencyBoundaryLaw:9f911c51856d5705",
+        "proof_id": "proof:DependencyBoundaryLaw:501eb4e42c3560c8",
         "status": "PASS",
         "report_key": "dependency_constitution",
-        "report_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b"
+        "report_digest": "501eb4e42c3560c8ae2e99e6ef13bf11a04319b92d352d85e2417593fa98e9c2"
       },
       "blocking_status": "PASS"
     },
@@ -4019,10 +4059,10 @@
         "blocking": true
       },
       "proof": {
-        "proof_id": "proof:DeterminismLaw:b580883548757075",
+        "proof_id": "proof:DeterminismLaw:3960a8837e5a055d",
         "status": "PASS",
         "report_key": "proof_determinism_certificate",
-        "report_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904"
+        "report_digest": "3960a8837e5a055d69616cb8e6c76eca04c9051c8c3abdee0ee24704b99929c1"
       },
       "blocking_status": "PASS"
     }
@@ -4040,28 +4080,28 @@
     {
       "law_id": "DigestLaw",
       "predicate_id": "projection.digest.content_addressed",
-      "proof_id": "proof:DigestLaw:c1f2db4fe87e77a0",
+      "proof_id": "proof:DigestLaw:d0eac0e7a442ed40",
       "status": "PASS",
       "report_key": "projection_digest_certificates",
-      "report_digest": "c1f2db4fe87e77a0dd1637b0f408cfa06b0a803cbf4768163a313b5cc86300f8",
+      "report_digest": "d0eac0e7a442ed403187de96e61f1e05e306ec264a67d7a65771601c6fb75093",
       "blocking_status": "PASS"
     },
     {
       "law_id": "SerializerTransparencyLaw",
       "predicate_id": "projection.serializer.roundtrip_identity_preserved",
-      "proof_id": "proof:SerializerTransparencyLaw:de7536afa31ef643",
+      "proof_id": "proof:SerializerTransparencyLaw:dc09dd12634c518e",
       "status": "PASS",
       "report_key": "serializer_transparency_certificates",
-      "report_digest": "de7536afa31ef6438f24f6415e78195c86308173c2a6065d415004241d97452f",
+      "report_digest": "dc09dd12634c518eadb501b93e24e87d5dcb097d267628a25c1437b6c85211bc",
       "blocking_status": "PASS"
     },
     {
       "law_id": "StorageTransparencyLaw",
       "predicate_id": "projection.storage.identity_preserved",
-      "proof_id": "proof:StorageTransparencyLaw:5cf2587a8837e541",
+      "proof_id": "proof:StorageTransparencyLaw:c3874e79b9e2fa67",
       "status": "PASS",
       "report_key": "storage_transparency_certificates",
-      "report_digest": "5cf2587a8837e54104c9fbae173ebe191a827625b4239c6414d295de619848ad",
+      "report_digest": "c3874e79b9e2fa6723d54f42a0b889e9b319610b3bef03042d1b43ec07e54b43",
       "blocking_status": "PASS"
     },
     {
@@ -4076,28 +4116,28 @@
     {
       "law_id": "ProjectionDeterminismLaw",
       "predicate_id": "projection.digest.repeatable",
-      "proof_id": "proof:ProjectionDeterminismLaw:65d5461548f10c16",
+      "proof_id": "proof:ProjectionDeterminismLaw:618c6b89434df00a",
       "status": "PASS",
       "report_key": "projection_determinism_certificates",
-      "report_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766",
+      "report_digest": "618c6b89434df00a55c235094299160bdd2ba80b30a62494f5382dd2c6e52dd0",
       "blocking_status": "PASS"
     },
     {
       "law_id": "DependencyBoundaryLaw",
       "predicate_id": "dependency.boundary.constitution_respected",
-      "proof_id": "proof:DependencyBoundaryLaw:9f911c51856d5705",
+      "proof_id": "proof:DependencyBoundaryLaw:501eb4e42c3560c8",
       "status": "PASS",
       "report_key": "dependency_constitution",
-      "report_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
+      "report_digest": "501eb4e42c3560c8ae2e99e6ef13bf11a04319b92d352d85e2417593fa98e9c2",
       "blocking_status": "PASS"
     },
     {
       "law_id": "DeterminismLaw",
       "predicate_id": "constitution.proof.digest_repeatable",
-      "proof_id": "proof:DeterminismLaw:b580883548757075",
+      "proof_id": "proof:DeterminismLaw:3960a8837e5a055d",
       "status": "PASS",
       "report_key": "proof_determinism_certificate",
-      "report_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
+      "report_digest": "3960a8837e5a055d69616cb8e6c76eca04c9051c8c3abdee0ee24704b99929c1",
       "blocking_status": "PASS"
     }
   ],
@@ -4144,8 +4184,8 @@
       ]
     },
     "proof_determinism_certificate": {
-      "certificate_id": "constitution-proof:62b75a464d1ba05b",
-      "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+      "certificate_id": "constitution-proof:6ce25627f1345ea5",
+      "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
       "status": "PASS",
       "violations": [],
       "checks": [
@@ -4226,24 +4266,24 @@
         }
       ],
       "graph": {
-        "governed_module_count": 82,
-        "import_edge_count": 121,
+        "governed_module_count": 84,
+        "import_edge_count": 124,
         "module_kind_counts": {
-          "command_adapter": 9,
+          "command_adapter": 10,
           "composition_surface": 10,
           "constitution_engine": 2,
           "projection_api": 1,
           "projection_builder": 2,
           "projection_domain": 1,
           "registry_surface": 1,
-          "repo_surface": 47,
+          "repo_surface": 48,
           "runtime_surface": 1,
           "serializer": 1,
           "storage_catalog": 2,
           "tooling_support": 5
         },
-        "discovery_digest": "2344e02cc01a170c86c8f80e07858cecb3cc9c1c0f7f6054bb1a6d701a87dc9d",
-        "discovery_module_count": 82,
+        "discovery_digest": "7b843d5612bf4623ab73338f0772c8e8296df7f9a32dbd5e85eadeeb3fc45eba",
+        "discovery_module_count": 84,
         "modules": [
           {
             "module_id": "tooling-eos-cli:commands/capability-registry",
@@ -4290,7 +4330,7 @@
           {
             "module_id": "tooling-eos-cli:commands/verify-portfolio",
             "module_kind": "command_adapter",
-            "import_count": 6,
+            "import_count": 8,
             "governed_dependency_count": 1
           },
           {
@@ -4298,6 +4338,12 @@
             "module_kind": "command_adapter",
             "import_count": 15,
             "governed_dependency_count": 4
+          },
+          {
+            "module_id": "tooling-eos-cli:commands/verify-product-binding",
+            "module_kind": "command_adapter",
+            "import_count": 8,
+            "governed_dependency_count": 1
           },
           {
             "module_id": "composition:compose",
@@ -4528,6 +4574,12 @@
             "governed_dependency_count": 0
           },
           {
+            "module_id": "presentation-experience:index",
+            "module_kind": "repo_surface",
+            "import_count": 5,
+            "governed_dependency_count": 1
+          },
+          {
             "module_id": "presentation-foundation:icons",
             "module_kind": "repo_surface",
             "import_count": 0,
@@ -4716,8 +4768,8 @@
           {
             "module_id": "tooling-eos-cli:index",
             "module_kind": "tooling_support",
-            "import_count": 9,
-            "governed_dependency_count": 7
+            "import_count": 10,
+            "governed_dependency_count": 8
           },
           {
             "module_id": "tooling-eos-cli:schema",
@@ -5100,6 +5152,12 @@
             "to_kind": "repo_surface"
           },
           {
+            "from": "presentation-experience:index",
+            "to": "presentation-types:index",
+            "from_kind": "repo_surface",
+            "to_kind": "repo_surface"
+          },
+          {
             "from": "presentation-foundation:index",
             "to": "presentation-foundation:icons",
             "from_kind": "repo_surface",
@@ -5400,6 +5458,12 @@
             "to_kind": "tooling_support"
           },
           {
+            "from": "tooling-eos-cli:commands/verify-product-binding",
+            "to": "tooling-eos-cli:state",
+            "from_kind": "command_adapter",
+            "to_kind": "tooling_support"
+          },
+          {
             "from": "tooling-eos-cli:index",
             "to": "tooling-eos-cli:commands/capability-registry",
             "from_kind": "tooling_support",
@@ -5438,6 +5502,12 @@
           {
             "from": "tooling-eos-cli:index",
             "to": "tooling-eos-cli:commands/verify-product",
+            "from_kind": "tooling_support",
+            "to_kind": "command_adapter"
+          },
+          {
+            "from": "tooling-eos-cli:index",
+            "to": "tooling-eos-cli:commands/verify-product-binding",
             "from_kind": "tooling_support",
             "to_kind": "command_adapter"
           },
@@ -5513,6 +5583,11 @@
           "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
           "status": "PASS",
           "detail": "tooling-eos-cli:commands/verify-product respects the constitutional dependency boundary."
+        },
+        {
+          "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
+          "status": "PASS",
+          "detail": "tooling-eos-cli:commands/verify-product-binding respects the constitutional dependency boundary."
         },
         {
           "rule_id": "dependency.composition_surface.no_constitution_or_command_dependency",
@@ -5707,6 +5782,11 @@
         {
           "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
           "status": "PASS",
+          "detail": "presentation-experience:index respects the constitutional dependency boundary."
+        },
+        {
+          "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+          "status": "PASS",
           "detail": "presentation-foundation:icons respects the constitutional dependency boundary."
         },
         {
@@ -5893,8 +5973,8 @@
         "storage_locator": "foundation.execution_graph:execution-graph.json",
         "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
         "projection_type": "ExecutionGraphProjection",
-        "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
-        "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+        "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
+        "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
         "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
         "generated_from": [
           {
@@ -5905,7 +5985,7 @@
           {
             "source_type": "execution_evidence",
             "source_ref": "artifact_registry:execution_evidence",
-            "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+            "source_digest": "9447f14ebb00121902fd9919c1eada6a752f37cd6016acb5f3b09249fa69c45f"
           },
           {
             "source_type": "execution_chain",
@@ -5959,8 +6039,8 @@
         "storage_locator": "foundation.topology_drift:topology-drift.json",
         "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
         "projection_type": "TopologyDriftProjection",
-        "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
-        "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+        "projection_id": "TopologyDriftProjection:9264733347c84038",
+        "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
         "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
         "generated_from": [
           {
@@ -6271,9 +6351,9 @@
         "storage_locator": "foundation.execution_graph:execution-graph.json",
         "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
         "projection_type": "ExecutionGraphProjection",
-        "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
-        "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
-        "proof_digest": "a9dc99ef96077397a634ce24c37a4bcea0199e5732b7eb8ddec90b4acd7f260e",
+        "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
+        "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
+        "proof_digest": "838c75bd171a22c25b0a046730574c9b5d99bedb884897c6eeef0dee03b1e710",
         "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
         "violations": [],
         "checks": [
@@ -6310,9 +6390,9 @@
         "storage_locator": "foundation.topology_drift:topology-drift.json",
         "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
         "projection_type": "TopologyDriftProjection",
-        "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
-        "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
-        "proof_digest": "28f72eb9d7faef82635e31926dadbbfc8197889ec9d973e99d74c380b0aa1427",
+        "projection_id": "TopologyDriftProjection:9264733347c84038",
+        "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
+        "proof_digest": "5214cab124f9234cde316b5e26b1d87d2d86843637735b5a0e383f001b5e542d",
         "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
         "violations": [],
         "checks": [

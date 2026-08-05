@@ -66,3 +66,26 @@ test("product requirement preview route reuses the shared requirement capability
   assert.ok(html.includes("responsible professional"));
   assert.ok(html.includes("Requirements"));
 });
+
+test("academic preview route renders the Academic Community product context", async () => {
+  const html = renderToStaticMarkup(
+    await ProductPreviewPage({
+      params: Promise.resolve({ productId: "academic" }),
+    }),
+  );
+
+  assert.ok(html.includes("Academic Community"));
+  assert.ok(html.includes("academic"));
+  assert.ok(html.includes("/products/academic/requirements"));
+});
+
+test("academic requirement preview route reuses the shared requirement capability", async () => {
+  const html = renderToStaticMarkup(
+    await ProductRequirementPreviewPage({
+      params: Promise.resolve({ productId: "academic" }),
+    }),
+  );
+
+  assert.ok(html.includes("Academic Community"));
+  assert.ok(html.includes("Requirements"));
+});

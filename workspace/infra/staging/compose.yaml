@@ -12,8 +12,8 @@ services:
       EOS_EVIDENCE_STORAGE_ROOT: /data/evidence
       EOS_RUNTIME_INVOCATION_EVIDENCE_PATH: /app/portfolios/evidence/verification/enterprise/runtime-invocations-staging.jsonl
     restart: unless-stopped
-    expose:
-      - "3000"
+    ports:
+      - "3001:3000"
     volumes:
       - web_state:/data
     healthcheck:

@@ -6,8 +6,8 @@
 - verified active products: 0/1
 - active portfolio coverage: 0%
 - declared products: 3
-- implemented products: 1/3
-- implementation coverage: 33.3%
+- implemented products: 3/3
+- implementation coverage: 100%
 - verified products: 0/3
 - portfolio coverage: 0%
 - registry health: BLOCKED
@@ -19,7 +19,7 @@
 - orphan active_waiting_composition: 4
 - orphan planned: 0
 - orphan retired: 0
-- fitness status: REGRESSED
+- fitness status: STABLE
 - declared capabilities: 3
 - observed capabilities: 13
 - verified capabilities: 13
@@ -36,26 +36,26 @@
 - execution plan coverage ratio: 0.3333
 - topology drift status: DRIFT
 - aligned products: 0
-- drifted products: 1
+- drifted products: 3
 - undeclared observed edges: 12
-- unobserved declared edges: 2
+- unobserved declared edges: 4
 - unmodeled observed requirements: 5
 - unmodeled observed workflows: 6
 - unmodeled observed plans: 3
 - architecture trend: REGRESSING
 - latest epoch: epoch-047
 - total epochs: 47
-- governance read model freshness ms: 8
+- governance read model freshness ms: 7
 - governance read model generation duration ms: 1
 - governance read model consumer count: 1
 - incremental materialization status: PARTIAL
-- incremental changed nodes: 14
-- incremental impacted nodes: 14
-- incremental reusable nodes: 2
-- selective reused nodes: 0
-- selective rematerialized nodes: 3
-- read-model reused nodes: 0
-- read-model rematerialized nodes: 5
+- incremental changed nodes: 0
+- incremental impacted nodes: 0
+- incremental reusable nodes: 16
+- selective reused nodes: 3
+- selective rematerialized nodes: 0
+- read-model reused nodes: 4
+- read-model rematerialized nodes: 1
 - capability operational observed: 13
 - capability operational verified: 13
 - capability operational reproducible: 8
@@ -87,8 +87,8 @@
 - documentation-only specs: 19
 - missing active product implementation: none
 - pending active product verification: lawyershub
-- missing product implementation: services-id, ilc
-- pending implemented product verification: lawyershub
+- missing product implementation: none
+- pending implemented product verification: services-id, lawyershub, ilc
 - missing product verification: services-id, lawyershub, ilc
 
 ## Evidence

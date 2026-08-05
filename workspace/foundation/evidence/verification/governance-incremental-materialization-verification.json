@@ -1,6 +1,6 @@
 {
   "report_version": "1.0.0",
-  "report_digest": "d7ed7b82095a2097cbfbb90410eac80a8855b81db9b403459e61317e9a445970",
+  "report_digest": "717dcaf8a38a446f17d2e8ac2a423dc96cf4d44dfc88644c337dd7d2445563cc",
   "summary": {
     "invalidation_graph_status": "PASS",
     "selective_execution_status": "PASS",
@@ -10,51 +10,21 @@
     "overall_status": "PASS"
   },
   "execution_scope": "verify-foundation",
-  "session_id": "governance-session:e53ffa9a0a13fb8a",
+  "session_id": "governance-session:a8b570e4c753419a",
   "baseline": {
-    "report_digest": "a8855a3c3cf6bc041177704dd3ae594fff9e8c553a8ae1eaa5fde5d00e470959",
-    "previous_report_digest": "a57b99fee5e586d6bf958221be5aec3999e5320473a72c8ac68490991eb20cd0",
+    "report_digest": "54b452f55d4d7df331882a191dba0311214b4bc46854725224a70f586521134e",
+    "previous_report_digest": "fdb113a10d635b6bc79d4e7057d7e499f53a14c8c4232e7d08210469503425be",
     "node_count": 16,
     "edge_count": 42,
-    "changed_node_count": 14,
-    "impacted_node_count": 14,
-    "reusable_node_count": 2,
+    "changed_node_count": 0,
+    "impacted_node_count": 0,
+    "reusable_node_count": 16,
     "session_digest_changed": true,
     "session_projection_digest_changed": true,
     "delta_mode": "SESSION_DELTA",
-    "delta_scope_status": "MATERIALIZATION_REQUIRED",
-    "directly_changed_nodes": [
-      "claims",
-      "claims_view",
-      "dashboard_view",
-      "evidence_packages",
-      "governance_session",
-      "health_view",
-      "law_attestations",
-      "law_certificates",
-      "law_results",
-      "proof_bundle",
-      "read_model_metrics",
-      "session_provenance",
-      "summary",
-      "summary_view"
-    ],
-    "impacted_nodes": [
-      "claims",
-      "claims_view",
-      "dashboard_view",
-      "evidence_packages",
-      "governance_session",
-      "health_view",
-      "law_attestations",
-      "law_certificates",
-      "law_results",
-      "proof_bundle",
-      "read_model_metrics",
-      "session_provenance",
-      "summary",
-      "summary_view"
-    ]
+    "delta_scope_status": "METADATA_ONLY",
+    "directly_changed_nodes": [],
+    "impacted_nodes": []
   },
   "claim_boundary": "Incremental materialization verification turns the invalidation graph into an operational governance control. It proves that the graph is explicit, selective execution is applied, digest-based delta basis is coherent, reuse remains observable, and impacted nodes consistently include all directly changed nodes before the report is trusted by repository governance."
 }

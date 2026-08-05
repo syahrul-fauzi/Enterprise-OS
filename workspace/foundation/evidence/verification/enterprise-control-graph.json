@@ -1,7 +1,7 @@
 {
   "graph_version": "1.0.0",
-  "graph_id": "enterprise-control-graph:12eefe3cfaa31e3a",
-  "graph_digest": "12eefe3cfaa31e3a0bbc942521cc16a8e1c25a360c2d9539c7ede8bb1c8cfa70",
+  "graph_id": "enterprise-control-graph:a4f0a9314828a043",
+  "graph_digest": "a4f0a9314828a043a968262aab0c538624c904a9b837f329b2758526029a1ca8",
   "summary": {
     "node_count": 67,
     "edge_count": 124,
@@ -14,194 +14,194 @@
   },
   "nodes": [
     {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5:18a08300807c1b5c",
-      "node_kind": "attestation",
-      "display_name": "AttestationVerified",
-      "digest": "18a08300807c1b5c5f62bf8c152f8309bba944636bc525c134bc74a33bfa39de",
-      "status": "VERIFIED",
-      "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5",
-        "certificate_id": "certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e",
-        "policy_id": "attestation-policy:local-signed"
-      }
-    },
-    {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5:337ea2e400818e7a",
+      "node_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed:1136f5a2cef06ecd:cc260a2a4d286f52",
       "node_kind": "attestation",
       "display_name": "AttestationCreated",
-      "digest": "337ea2e400818e7a3da560ecae2eb0ac91f811bee85d1b558232047b76849c64",
+      "digest": "cc260a2a4d286f523899ae75278590cbd892d2edc478f83fde31f5f3475ca7f9",
       "status": "ACTIVE",
       "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5",
-        "certificate_id": "certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e",
+        "attestation_id": "attestation:certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed:1136f5a2cef06ecd",
+        "certificate_id": "certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed",
         "policy_id": "attestation-policy:local-signed"
       }
     },
     {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044:02ec066df7d87eb6",
-      "node_kind": "attestation",
-      "display_name": "AttestationCreated",
-      "digest": "02ec066df7d87eb6e137b6948a5557a9fdc3d11fd38b0dad2f1755bc4991a7b5",
-      "status": "ACTIVE",
-      "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044",
-        "certificate_id": "certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20",
-        "policy_id": "attestation-policy:local-signed"
-      }
-    },
-    {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044:52d862ff2b40e263",
+      "node_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed:1136f5a2cef06ecd:f26a7ee56b143816",
       "node_kind": "attestation",
       "display_name": "AttestationVerified",
-      "digest": "52d862ff2b40e263e88f0e23215dcea85619f05ea3e1d820f8edeb347b6ab372",
+      "digest": "f26a7ee56b1438162d8070edf06fd85d5bfac6e0c80e80d3281139bb1b1bc63b",
       "status": "VERIFIED",
       "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044",
-        "certificate_id": "certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20",
+        "attestation_id": "attestation:certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed:1136f5a2cef06ecd",
+        "certificate_id": "certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed",
         "policy_id": "attestation-policy:local-signed"
       }
     },
     {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77:1a79a454d3fdd447",
-      "node_kind": "attestation",
-      "display_name": "AttestationVerified",
-      "digest": "1a79a454d3fdd447dfa33e07a2dc6348d21523d7d02ceb72a8fbacee7497a406",
-      "status": "VERIFIED",
-      "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77",
-        "certificate_id": "certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc",
-        "policy_id": "attestation-policy:local-signed"
-      }
-    },
-    {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77:83f6297b228460c6",
+      "node_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab:604fb2e480a95781:3da409768880e6fc",
       "node_kind": "attestation",
       "display_name": "AttestationCreated",
-      "digest": "83f6297b228460c6e4ea191e355aa76b756d565ee977936b1a90f313deddef54",
+      "digest": "3da409768880e6fc43570a5d1b4a5d3c98cf3b10599672a59d79ab2243b2194c",
       "status": "ACTIVE",
       "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77",
-        "certificate_id": "certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc",
+        "attestation_id": "attestation:certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab:604fb2e480a95781",
+        "certificate_id": "certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab",
         "policy_id": "attestation-policy:local-signed"
       }
     },
     {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5:3be5a32144ba1a2a:448b0b6e314acfb1",
+      "node_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab:604fb2e480a95781:4d6198cfaf832e4b",
       "node_kind": "attestation",
       "display_name": "AttestationVerified",
-      "digest": "448b0b6e314acfb150802d280c4d6642dc3a2605da9d4a35b6fa7d4ad0a85ba3",
+      "digest": "4d6198cfaf832e4bc8123e7f0d7d1d467425580ef0fe32a9242874c1903ed9bd",
       "status": "VERIFIED",
       "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5:3be5a32144ba1a2a",
-        "certificate_id": "certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5",
+        "attestation_id": "attestation:certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab:604fb2e480a95781",
+        "certificate_id": "certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab",
         "policy_id": "attestation-policy:local-signed"
       }
     },
     {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5:3be5a32144ba1a2a:d01ee9305cde73e2",
+      "node_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586:952a959a8c036a1b:97a022f519a99428",
       "node_kind": "attestation",
       "display_name": "AttestationCreated",
-      "digest": "d01ee9305cde73e2c79ef3fea3281d1da5bdba7f20b616e29af3477d9aeebb40",
+      "digest": "97a022f519a99428058ab9e5321780a53e72cfa66f196b586b5b1c1ee929d77f",
       "status": "ACTIVE",
       "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5:3be5a32144ba1a2a",
-        "certificate_id": "certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5",
+        "attestation_id": "attestation:certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586:952a959a8c036a1b",
+        "certificate_id": "certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586",
         "policy_id": "attestation-policy:local-signed"
       }
     },
     {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502:fe089695d27d21f9:0fcdd1ba412a0ebb",
-      "node_kind": "attestation",
-      "display_name": "AttestationCreated",
-      "digest": "0fcdd1ba412a0ebbe810a39e5e5a790c0edfb23a1d6b2f4733b2dd996ccb8050",
-      "status": "ACTIVE",
-      "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502:fe089695d27d21f9",
-        "certificate_id": "certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502",
-        "policy_id": "attestation-policy:local-signed"
-      }
-    },
-    {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502:fe089695d27d21f9:93df7f44b89f2ff8",
+      "node_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586:952a959a8c036a1b:e29747608339180c",
       "node_kind": "attestation",
       "display_name": "AttestationVerified",
-      "digest": "93df7f44b89f2ff859cb1e2294a08a3e8e5b240bc4a89437ef9affce22626ac9",
+      "digest": "e29747608339180cfa1300b2cb846e82a9f18d083b7e89e04e617afec1b0fe66",
       "status": "VERIFIED",
       "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502:fe089695d27d21f9",
-        "certificate_id": "certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502",
+        "attestation_id": "attestation:certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586:952a959a8c036a1b",
+        "certificate_id": "certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586",
         "policy_id": "attestation-policy:local-signed"
       }
     },
     {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7:4061cf5e5aee66ac:4edd521c299eb69e",
-      "node_kind": "attestation",
-      "display_name": "AttestationVerified",
-      "digest": "4edd521c299eb69e51eeac4e8d8805fd9c452e46e3ddd4bdfef355456f56cf3d",
-      "status": "VERIFIED",
-      "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7:4061cf5e5aee66ac",
-        "certificate_id": "certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7",
-        "policy_id": "attestation-policy:local-signed"
-      }
-    },
-    {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7:4061cf5e5aee66ac:5114e1d21d588b7e",
+      "node_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e:b02345b131e5b8be:de524155a033965b",
       "node_kind": "attestation",
       "display_name": "AttestationCreated",
-      "digest": "5114e1d21d588b7ec1f43df0f4d0d1bcaf9eb513e102f21ae9d03f3b6cc70efd",
+      "digest": "de524155a033965b4fc1a2ffd742b6f61527dc4e22366ce4b6495cdf573af101",
       "status": "ACTIVE",
       "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7:4061cf5e5aee66ac",
-        "certificate_id": "certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7",
+        "attestation_id": "attestation:certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e:b02345b131e5b8be",
+        "certificate_id": "certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e",
         "policy_id": "attestation-policy:local-signed"
       }
     },
     {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d:2d4a26cf3e509103:0fcaa699313efef2",
+      "node_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e:b02345b131e5b8be:e09bb0c551a3b802",
       "node_kind": "attestation",
       "display_name": "AttestationVerified",
-      "digest": "0fcaa699313efef2f4cbe9feeb2e89adb9b465d70bfa7c26e4cf74f2a57b550c",
+      "digest": "e09bb0c551a3b80245ef95418c5d4e9b5502d09648bb456353f2adc7ee18dc2a",
       "status": "VERIFIED",
       "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d:2d4a26cf3e509103",
-        "certificate_id": "certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d",
+        "attestation_id": "attestation:certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e:b02345b131e5b8be",
+        "certificate_id": "certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e",
         "policy_id": "attestation-policy:local-signed"
       }
     },
     {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d:2d4a26cf3e509103:7c592ebf938a224a",
-      "node_kind": "attestation",
-      "display_name": "AttestationCreated",
-      "digest": "7c592ebf938a224ac6df6100630498a6b46050429c70da958b7ba5c865bc1fa1",
-      "status": "ACTIVE",
-      "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d:2d4a26cf3e509103",
-        "certificate_id": "certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d",
-        "policy_id": "attestation-policy:local-signed"
-      }
-    },
-    {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a:17b8b2a26e0f9257:7961924df7fcd034",
-      "node_kind": "attestation",
-      "display_name": "AttestationCreated",
-      "digest": "7961924df7fcd034de5d3b97946fd049c67f8b78a467a038a194c92e242d850e",
-      "status": "ACTIVE",
-      "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a:17b8b2a26e0f9257",
-        "certificate_id": "certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a",
-        "policy_id": "attestation-policy:local-signed"
-      }
-    },
-    {
-      "node_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a:17b8b2a26e0f9257:b417c3d847b7228e",
+      "node_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040:f1ab2576e9c82466:44182af4e2235cf8",
       "node_kind": "attestation",
       "display_name": "AttestationVerified",
-      "digest": "b417c3d847b7228e0c29d1b37525eaa90c5345061bc106f8b73bdb84fb8de136",
+      "digest": "44182af4e2235cf83c408495a35b4ed3a0dab692c9e2a7c3b0fd39c75d3f6ab4",
       "status": "VERIFIED",
       "attributes": {
-        "attestation_id": "attestation:certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a:17b8b2a26e0f9257",
-        "certificate_id": "certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a",
+        "attestation_id": "attestation:certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040:f1ab2576e9c82466",
+        "certificate_id": "certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040",
+        "policy_id": "attestation-policy:local-signed"
+      }
+    },
+    {
+      "node_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040:f1ab2576e9c82466:bc608d37c70cc012",
+      "node_kind": "attestation",
+      "display_name": "AttestationCreated",
+      "digest": "bc608d37c70cc0123c28187c96a254f682dfeb9f583e73c4ea6e47823365346a",
+      "status": "ACTIVE",
+      "attributes": {
+        "attestation_id": "attestation:certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040:f1ab2576e9c82466",
+        "certificate_id": "certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040",
+        "policy_id": "attestation-policy:local-signed"
+      }
+    },
+    {
+      "node_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c:70f3ab35db783e0b:1d34fab58c0217c9",
+      "node_kind": "attestation",
+      "display_name": "AttestationCreated",
+      "digest": "1d34fab58c0217c970ffef579a66933b29b9dab79added3235b47a534dc9f0a7",
+      "status": "ACTIVE",
+      "attributes": {
+        "attestation_id": "attestation:certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c:70f3ab35db783e0b",
+        "certificate_id": "certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c",
+        "policy_id": "attestation-policy:local-signed"
+      }
+    },
+    {
+      "node_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c:70f3ab35db783e0b:8896b0ecb228f805",
+      "node_kind": "attestation",
+      "display_name": "AttestationVerified",
+      "digest": "8896b0ecb228f805c12c5ecb620d9dd566b58f345ea3098eb4916a2ca8fdea2f",
+      "status": "VERIFIED",
+      "attributes": {
+        "attestation_id": "attestation:certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c:70f3ab35db783e0b",
+        "certificate_id": "certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c",
+        "policy_id": "attestation-policy:local-signed"
+      }
+    },
+    {
+      "node_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624:c0120738efe95d06:9061f4da8c670bd2",
+      "node_kind": "attestation",
+      "display_name": "AttestationCreated",
+      "digest": "9061f4da8c670bd2ddf103009bba6a7db1a7ebbdf68f0fae3ae1d75fa8a82543",
+      "status": "ACTIVE",
+      "attributes": {
+        "attestation_id": "attestation:certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624:c0120738efe95d06",
+        "certificate_id": "certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624",
+        "policy_id": "attestation-policy:local-signed"
+      }
+    },
+    {
+      "node_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624:c0120738efe95d06:e5fdab311669cba9",
+      "node_kind": "attestation",
+      "display_name": "AttestationVerified",
+      "digest": "e5fdab311669cba9a2b8af7f1a96f4ab3bd6e6ffa5a12186c3a730834bdf924e",
+      "status": "VERIFIED",
+      "attributes": {
+        "attestation_id": "attestation:certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624:c0120738efe95d06",
+        "certificate_id": "certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624",
+        "policy_id": "attestation-policy:local-signed"
+      }
+    },
+    {
+      "node_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f:1d9af61e97dbba1a:60a2bf2fc2e8bd9d",
+      "node_kind": "attestation",
+      "display_name": "AttestationCreated",
+      "digest": "60a2bf2fc2e8bd9d4349650fd22e31c7c3f84160696ac9682a83242d03b33efa",
+      "status": "ACTIVE",
+      "attributes": {
+        "attestation_id": "attestation:certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f:1d9af61e97dbba1a",
+        "certificate_id": "certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f",
+        "policy_id": "attestation-policy:local-signed"
+      }
+    },
+    {
+      "node_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f:1d9af61e97dbba1a:a5841a2996eea242",
+      "node_kind": "attestation",
+      "display_name": "AttestationVerified",
+      "digest": "a5841a2996eea24213335eb10d2441d317125301010d6bc2538de66b34450e8e",
+      "status": "VERIFIED",
+      "attributes": {
+        "attestation_id": "attestation:certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f:1d9af61e97dbba1a",
+        "certificate_id": "certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f",
         "policy_id": "attestation-policy:local-signed"
       }
     },
@@ -462,83 +462,83 @@
       }
     },
     {
-      "node_id": "certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e",
+      "node_id": "certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed",
       "node_kind": "certificate",
-      "display_name": "certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e",
-      "digest": "612ec33aa4d56e7e8638b1b25de52639cdc95a18784277c4c18f86afa2bf4ea4",
+      "display_name": "certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed",
+      "digest": "b15f46f49b87c1ededc689509180f792540293b3561c0866b763ba362817fa56",
       "status": "ISSUED",
       "attributes": {
-        "package_id": "evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf"
+        "package_id": "evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61"
       }
     },
     {
-      "node_id": "certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20",
+      "node_id": "certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab",
       "node_kind": "certificate",
-      "display_name": "certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20",
-      "digest": "dea9721568839c208fccf9a316977a65ab7c7326ca8547d02a9c19408e2b0df1",
+      "display_name": "certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab",
+      "digest": "f58dce05167f1cabee2474187fb04271f321488a27557c4b71e1604da8569164",
       "status": "ISSUED",
       "attributes": {
-        "package_id": "evidence-package:DeterminismLaw:88df227d2d3a7f40"
+        "package_id": "evidence-package:DeterminismLaw:2037e0e5f9003abd"
       }
     },
     {
-      "node_id": "certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc",
+      "node_id": "certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586",
       "node_kind": "certificate",
-      "display_name": "certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc",
-      "digest": "1e45b26a3e9a87cc7a0681e2fb11453a6b8f3e003c93b9b6aca3e2a37c8b3c0b",
+      "display_name": "certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586",
+      "digest": "fc8222cbc07e5586781929060ac7c36ba3c0949b6a7aab4fb6015adb33961939",
       "status": "ISSUED",
       "attributes": {
-        "package_id": "evidence-package:DigestLaw:ac8a8ceea6c59f23"
+        "package_id": "evidence-package:DigestLaw:618da4a2ebca4ba3"
       }
     },
     {
-      "node_id": "certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5",
+      "node_id": "certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e",
       "node_kind": "certificate",
-      "display_name": "certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5",
-      "digest": "4b757aa63f4d57a592acff5436c49235301a409a1a62babce578bfd25cfe47c4",
+      "display_name": "certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e",
+      "digest": "892b4bd787c9a34e4255e0499a1e316a5673ea196f2e07904d495ffe452010d8",
       "status": "ISSUED",
       "attributes": {
-        "package_id": "evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2"
+        "package_id": "evidence-package:GraphPurityLaw:dbc9648dbaee113e"
       }
     },
     {
-      "node_id": "certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502",
+      "node_id": "certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040",
       "node_kind": "certificate",
-      "display_name": "certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502",
-      "digest": "206c11421fece50230116d481c57144d88edbab5357893dded9b70fb8e722b08",
+      "display_name": "certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040",
+      "digest": "857f96b781fda040c6472af17909897d2af422a0aeebd3d57e094e204a63a3bd",
       "status": "ISSUED",
       "attributes": {
-        "package_id": "evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb"
+        "package_id": "evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5"
       }
     },
     {
-      "node_id": "certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7",
+      "node_id": "certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c",
       "node_kind": "certificate",
-      "display_name": "certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7",
-      "digest": "2754ec95cb96cfb7ffe990678b840091dec82c4bfc116e40787d5ed2adcfab66",
+      "display_name": "certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c",
+      "digest": "af258545ddd3aa6c8998ed5218e46982d947c5add8fb928e9a167039ae7cbc53",
       "status": "ISSUED",
       "attributes": {
-        "package_id": "evidence-package:ReplayLaw:aa89d74bbc2e58cd"
+        "package_id": "evidence-package:ReplayLaw:30f99611b3ace20f"
       }
     },
     {
-      "node_id": "certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d",
+      "node_id": "certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624",
       "node_kind": "certificate",
-      "display_name": "certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d",
-      "digest": "8d6fead981547f3dfde63cdb7db4f810a9a3883e02b05f106e7f3b58305b0d62",
+      "display_name": "certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624",
+      "digest": "2f36eda62af1b62421d64ed3e0d5798adb7fcf6b34d5552bdda538e066cefe20",
       "status": "ISSUED",
       "attributes": {
-        "package_id": "evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9"
+        "package_id": "evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812"
       }
     },
     {
-      "node_id": "certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a",
+      "node_id": "certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f",
       "node_kind": "certificate",
-      "display_name": "certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a",
-      "digest": "a2738fe21229452ad4cb97594d31cdf767643ab4c8b980a9a674631efd093e61",
+      "display_name": "certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f",
+      "digest": "015fab2c1eac4a2f9bdf2776c6bbdb5e9a5820dd4d1945ba19d6cf9dd7cb2a82",
       "status": "ISSUED",
       "attributes": {
-        "package_id": "evidence-package:StorageTransparencyLaw:310ababbc08ba39d"
+        "package_id": "evidence-package:StorageTransparencyLaw:f5229ce87ac555c2"
       }
     },
     {
@@ -553,10 +553,10 @@
       }
     },
     {
-      "node_id": "control-surface:capability-graph:96790cf5d92507db",
+      "node_id": "control-surface:capability-graph:86f2c0c85c677a5a",
       "node_kind": "control_surface",
       "display_name": "Capability Graph",
-      "digest": "96790cf5d92507dbd3efe5d9dfc39dc257e9561ff4e7fbd132d114713e6293cd",
+      "digest": "86f2c0c85c677a5aee008bc3ffdc0187a305ed1b26df1b69ac9bf1ac453a8703",
       "status": "WARN",
       "attributes": {
         "dependency_edge_count": 11,
@@ -565,24 +565,24 @@
       }
     },
     {
-      "node_id": "control-surface:gate-c:governance-session:e53ffa9a0a13fb8a",
+      "node_id": "control-surface:gate-c:governance-session:a8b570e4c753419a",
       "node_kind": "control_surface",
       "display_name": "Gate C Snapshot",
-      "digest": "8860c9fa6e331a3f27d81c1a65732bfd3ad6849362e3a0d0972bb88784587091",
+      "digest": "a4af3e75301190927153bca05e71986d74858fafde43eeb0185a7d1e1d45388f",
       "status": "WARN",
       "attributes": {
         "contributor_count": 4,
         "warn_contributor_count": 1,
         "fail_contributor_count": 0,
-        "governance_session_id": "governance-session:e53ffa9a0a13fb8a",
-        "verification_run_id": "verification-run:fa880343af99fce4"
+        "governance_session_id": "governance-session:a8b570e4c753419a",
+        "verification_run_id": "verification-run:e3fa3bedd684618d"
       }
     },
     {
-      "node_id": "evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf",
+      "node_id": "evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61",
       "node_kind": "evidence_package",
-      "display_name": "evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf",
-      "digest": "6641dcc833bf5aafc4299d1ead630944c374c283326b43108fd5a3519ddea890",
+      "display_name": "evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61",
+      "digest": "9ee9f91cb96b4c61d25889b916b3b97590a2373a4c052d827ba1c6064bee8f11",
       "status": "MATERIALIZED",
       "attributes": {
         "package_scope": "single_law_evaluation",
@@ -592,10 +592,10 @@
       }
     },
     {
-      "node_id": "evidence-package:DeterminismLaw:88df227d2d3a7f40",
+      "node_id": "evidence-package:DeterminismLaw:2037e0e5f9003abd",
       "node_kind": "evidence_package",
-      "display_name": "evidence-package:DeterminismLaw:88df227d2d3a7f40",
-      "digest": "88df227d2d3a7f40fb809cb99242e92e19a66424e3520330b62cea834bc432b9",
+      "display_name": "evidence-package:DeterminismLaw:2037e0e5f9003abd",
+      "digest": "2037e0e5f9003abd20ea19b88f0d96e85d342fb99e19f149b22ca108c6c4a404",
       "status": "MATERIALIZED",
       "attributes": {
         "package_scope": "single_law_evaluation",
@@ -605,10 +605,10 @@
       }
     },
     {
-      "node_id": "evidence-package:DigestLaw:ac8a8ceea6c59f23",
+      "node_id": "evidence-package:DigestLaw:618da4a2ebca4ba3",
       "node_kind": "evidence_package",
-      "display_name": "evidence-package:DigestLaw:ac8a8ceea6c59f23",
-      "digest": "ac8a8ceea6c59f238567535b87223418b3955cfb8056e5a4e74940a611c34ba0",
+      "display_name": "evidence-package:DigestLaw:618da4a2ebca4ba3",
+      "digest": "618da4a2ebca4ba3f058f2093e1e016cbc9dcf6d5e12788cf1cd82dedc4811a7",
       "status": "MATERIALIZED",
       "attributes": {
         "package_scope": "single_law_evaluation",
@@ -618,10 +618,10 @@
       }
     },
     {
-      "node_id": "evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2",
+      "node_id": "evidence-package:GraphPurityLaw:dbc9648dbaee113e",
       "node_kind": "evidence_package",
-      "display_name": "evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2",
-      "digest": "9c7f79bd37e6cfe230998b3dafa0d9c1d050b5c5324fc2e0da8cc6e06b8abb2e",
+      "display_name": "evidence-package:GraphPurityLaw:dbc9648dbaee113e",
+      "digest": "dbc9648dbaee113e62fef42b19782faace9a6258eb5b29bfec055a6dcf4324b4",
       "status": "MATERIALIZED",
       "attributes": {
         "package_scope": "single_law_evaluation",
@@ -631,10 +631,10 @@
       }
     },
     {
-      "node_id": "evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb",
+      "node_id": "evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5",
       "node_kind": "evidence_package",
-      "display_name": "evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb",
-      "digest": "14cf3a19b0e46beb7477219131c26f3fe5e5becee90758db9e0dd5e738fd6c13",
+      "display_name": "evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5",
+      "digest": "f581710cd8863ac52da8e368af6cdd75b218501b23921eb7dd16d4724a25ba5e",
       "status": "MATERIALIZED",
       "attributes": {
         "package_scope": "single_law_evaluation",
@@ -644,10 +644,10 @@
       }
     },
     {
-      "node_id": "evidence-package:ReplayLaw:aa89d74bbc2e58cd",
+      "node_id": "evidence-package:ReplayLaw:30f99611b3ace20f",
       "node_kind": "evidence_package",
-      "display_name": "evidence-package:ReplayLaw:aa89d74bbc2e58cd",
-      "digest": "aa89d74bbc2e58cd0e1457423a5db9d37f5cc9471b6ec2b0dc9b050e7a88162b",
+      "display_name": "evidence-package:ReplayLaw:30f99611b3ace20f",
+      "digest": "30f99611b3ace20ff07a55fa39e2ba947855343ecd74e0081c909342183fd9fd",
       "status": "MATERIALIZED",
       "attributes": {
         "package_scope": "single_law_evaluation",
@@ -657,10 +657,10 @@
       }
     },
     {
-      "node_id": "evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9",
+      "node_id": "evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812",
       "node_kind": "evidence_package",
-      "display_name": "evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9",
-      "digest": "bb9407ec0b72d5b96518adae3680769b0f5c794b600577781ebf1e5a368296db",
+      "display_name": "evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812",
+      "digest": "2cf9a7f52545f812009c432ee5227493e90d1d24bbead30de006629d634b1884",
       "status": "MATERIALIZED",
       "attributes": {
         "package_scope": "single_law_evaluation",
@@ -670,10 +670,10 @@
       }
     },
     {
-      "node_id": "evidence-package:StorageTransparencyLaw:310ababbc08ba39d",
+      "node_id": "evidence-package:StorageTransparencyLaw:f5229ce87ac555c2",
       "node_kind": "evidence_package",
-      "display_name": "evidence-package:StorageTransparencyLaw:310ababbc08ba39d",
-      "digest": "310ababbc08ba39d3e28a6c47fe897355fef1b384396266fba661e977845de60",
+      "display_name": "evidence-package:StorageTransparencyLaw:f5229ce87ac555c2",
+      "digest": "f5229ce87ac555c2e4cb2d57e7b2c8b1746a9289a496c6312409362a45b9a018",
       "status": "MATERIALIZED",
       "attributes": {
         "package_scope": "single_law_evaluation",
@@ -683,104 +683,104 @@
       }
     },
     {
-      "node_id": "governance-read-model-metrics:69476f45fc706882",
+      "node_id": "governance-read-model-metrics:b9c3ea2becf0cc06",
       "node_kind": "read_model",
       "display_name": "GovernanceReadModelMetrics",
-      "digest": "69476f45fc70688237a9ed094ab9cd2d7801f2f09f710d3b4461f8fd89a4f3a1",
+      "digest": "b9c3ea2becf0cc064f82989bc611956c7d6ebb2e906d582e9c4f97644e8af30b",
       "status": "MATERIALIZED",
       "attributes": {
         "view_kind": "metrics"
       }
     },
     {
-      "node_id": "governance-session:e53ffa9a0a13fb8a",
+      "node_id": "governance-session:a8b570e4c753419a",
       "node_kind": "governance_session",
       "display_name": "Governance Session",
-      "digest": "e53ffa9a0a13fb8a349a132ab0d9c9d216961eaa4f6da3790b10aa2f6a09740d",
+      "digest": "a8b570e4c753419a6e324c50abd093353a83e76f924b0634d275e4ebb60198ef",
       "status": "COMPLETED",
       "attributes": {
         "execution_scope": "verify-foundation",
-        "session_projection_digest": "a3f5dda1914fd48d439498adbeec23e7eac50cf2a2c157ced91f943cb772d13d"
+        "session_projection_digest": "75aa53f0c0028af7b203fc158ebfe53a79b49e3184fd840d310390465429b94d"
       }
     },
     {
-      "node_id": "governance-view:claims:9029fe0923dc665d",
+      "node_id": "governance-view:claims:2ffabc8b18da7a95",
       "node_kind": "read_model",
       "display_name": "GovernanceClaimsView",
-      "digest": "9029fe0923dc665d12b1327f4d2ee80cae20955c577af25d654e0e6e80f9d03a",
+      "digest": "2ffabc8b18da7a958cc1b2f7c6cbed5bb05959c58d75747b5304544981165c9f",
       "status": "PASS",
       "attributes": {
         "view_kind": "claims"
       }
     },
     {
-      "node_id": "governance-view:dashboard:32544d086861bd76",
+      "node_id": "governance-view:dashboard:6b10083300237f77",
       "node_kind": "read_model",
       "display_name": "GovernanceDashboardView",
-      "digest": "32544d086861bd76af25c765ec0c31bb434b5e00e9138344f0eb8bcab43c4135",
+      "digest": "6b10083300237f77202f497ce2a9fe638e023460ee5c380a022c76c79d057383",
       "status": "PASS",
       "attributes": {
         "view_kind": "dashboard"
       }
     },
     {
-      "node_id": "governance-view:health:2b2c83b90f7edcd4",
+      "node_id": "governance-view:health:8f022484e2cba657",
       "node_kind": "read_model",
       "display_name": "GovernanceHealthView",
-      "digest": "2b2c83b90f7edcd49fd0ceab4fc2951c5a08cc75cadfa909ec790cf1156f3c6b",
+      "digest": "8f022484e2cba6572aa6d9567204a9c5ea54554433bec1a44eaa650d7299b0a3",
       "status": "HEALTHY",
       "attributes": {
         "view_kind": "health"
       }
     },
     {
-      "node_id": "governance-view:summary:b527cc9c4663ae76",
+      "node_id": "governance-view:summary:f127c130ae2f9c9f",
       "node_kind": "read_model",
       "display_name": "GovernanceSummaryView",
-      "digest": "b527cc9c4663ae76b138f69602f63816740f56f27ac683331f045e16dd7064fc",
+      "digest": "f127c130ae2f9c9ff99c25dbb1cdd30961ec12059625b72ce1b1414add4d9d86",
       "status": "PASS",
       "attributes": {
         "view_kind": "summary"
       }
     },
     {
-      "node_id": "law-result:DependencyBoundaryLaw:7f28bbb810e14946",
+      "node_id": "law-result:DependencyBoundaryLaw:4be7e1acf60c0981",
       "node_kind": "law_result",
       "display_name": "DependencyBoundaryLaw",
-      "digest": "7f28bbb810e149465f7c9131c3d586a5186e64eeb06bcca5f23361cd3e4d65a5",
+      "digest": "4be7e1acf60c0981271cf4146a909b4e45147e790156e281ddfee271055fdd10",
       "status": "PASS",
       "attributes": {
         "predicate_id": "dependency.boundary.constitution_respected",
-        "proof_id": "proof:DependencyBoundaryLaw:9f911c51856d5705"
+        "proof_id": "proof:DependencyBoundaryLaw:501eb4e42c3560c8"
       }
     },
     {
-      "node_id": "law-result:DeterminismLaw:9666c3df260c7731",
+      "node_id": "law-result:DeterminismLaw:52a2c74e3b3e159c",
       "node_kind": "law_result",
       "display_name": "DeterminismLaw",
-      "digest": "9666c3df260c77313bbe0b4b28c26d5b8ef2da90b267e4985cf2439f2b397f41",
+      "digest": "52a2c74e3b3e159c9986eaf4209d0310234568be7216d3168bd249ce3f1f9ea1",
       "status": "PASS",
       "attributes": {
         "predicate_id": "constitution.proof.digest_repeatable",
-        "proof_id": "proof:DeterminismLaw:b580883548757075"
+        "proof_id": "proof:DeterminismLaw:3960a8837e5a055d"
       }
     },
     {
-      "node_id": "law-result:DigestLaw:856a2e9d776740be",
+      "node_id": "law-result:DigestLaw:4de7a2706988f1aa",
       "node_kind": "law_result",
       "display_name": "DigestLaw",
-      "digest": "856a2e9d776740be9a6eb7ba9cc57ff0b9bc66bba4cfc12ecef6cb4b6f3bac4d",
+      "digest": "4de7a2706988f1aaa8c5e9de52fec9f7f8be7aba5acc5ce1049cdb7f2b828bd9",
       "status": "PASS",
       "attributes": {
         "predicate_id": "projection.digest.content_addressed",
-        "proof_id": "proof:DigestLaw:c1f2db4fe87e77a0"
+        "proof_id": "proof:DigestLaw:d0eac0e7a442ed40"
       }
     },
     {
-      "node_id": "law-result:GraphPurityLaw:a8302dc6e3220e27",
+      "node_id": "law-result:GraphPurityLaw:867449463d78b4ba",
       "node_kind": "law_result",
       "display_name": "GraphPurityLaw",
-      "digest": "a8302dc6e3220e276d35477c2a08bde42440e7e62e0d808be6c34db8e8ebfd88",
+      "digest": "867449463d78b4ba1dd6e16db74ee0fd4704c34b8554893cd5120f56db34a411",
       "status": "PASS",
       "attributes": {
         "predicate_id": "graph.observed_topology.chain_projected_only",
@@ -788,21 +788,21 @@
       }
     },
     {
-      "node_id": "law-result:ProjectionDeterminismLaw:26b6ea228e0f1c7b",
+      "node_id": "law-result:ProjectionDeterminismLaw:d387f4ba60da846e",
       "node_kind": "law_result",
       "display_name": "ProjectionDeterminismLaw",
-      "digest": "26b6ea228e0f1c7bba59e2464ca7855f400e79883407747dd99af7c39fcefd48",
+      "digest": "d387f4ba60da846e905e52f395ca5f6f057c98fc2ba5b90a0e00a0def3102f76",
       "status": "PASS",
       "attributes": {
         "predicate_id": "projection.digest.repeatable",
-        "proof_id": "proof:ProjectionDeterminismLaw:65d5461548f10c16"
+        "proof_id": "proof:ProjectionDeterminismLaw:618c6b89434df00a"
       }
     },
     {
-      "node_id": "law-result:ReplayLaw:29f7eb8d0d071c20",
+      "node_id": "law-result:ReplayLaw:0a264c6acf11690d",
       "node_kind": "law_result",
       "display_name": "ReplayLaw",
-      "digest": "29f7eb8d0d071c2082a665e47d3f4c497be3385eec71fcbd39dfc8e24432681a",
+      "digest": "0a264c6acf11690d137d0cc0929573050b6f62c35dba17b85d06029f4465d63f",
       "status": "PASS",
       "attributes": {
         "predicate_id": "replay.evidence.causally_aligned",
@@ -810,25 +810,25 @@
       }
     },
     {
-      "node_id": "law-result:SerializerTransparencyLaw:498345ef80d3b4aa",
+      "node_id": "law-result:SerializerTransparencyLaw:4cd7b9e5bad05add",
       "node_kind": "law_result",
       "display_name": "SerializerTransparencyLaw",
-      "digest": "498345ef80d3b4aa91be28fcc598e28dd73a873ce0ca2355619d3904e7247ea7",
+      "digest": "4cd7b9e5bad05add8e80b7b91ca6ef063b4bcffac0a882461efada258bc910e9",
       "status": "PASS",
       "attributes": {
         "predicate_id": "projection.serializer.roundtrip_identity_preserved",
-        "proof_id": "proof:SerializerTransparencyLaw:de7536afa31ef643"
+        "proof_id": "proof:SerializerTransparencyLaw:dc09dd12634c518e"
       }
     },
     {
-      "node_id": "law-result:StorageTransparencyLaw:77adc443f1022307",
+      "node_id": "law-result:StorageTransparencyLaw:63e7ddf86697b97a",
       "node_kind": "law_result",
       "display_name": "StorageTransparencyLaw",
-      "digest": "77adc443f1022307e8398f4bf15abe8f2d37dba4ca86dd8ab0cab71cf331b421",
+      "digest": "63e7ddf86697b97a34a6d6b12fa8c9ec6017a6d41e73c8215923fa9fb96c6eec",
       "status": "PASS",
       "attributes": {
         "predicate_id": "projection.storage.identity_preserved",
-        "proof_id": "proof:StorageTransparencyLaw:5cf2587a8837e541"
+        "proof_id": "proof:StorageTransparencyLaw:c3874e79b9e2fa67"
       }
     },
     {
@@ -843,65 +843,86 @@
       }
     },
     {
-      "node_id": "verification-run:fa880343af99fce4",
+      "node_id": "verification-run:e3fa3bedd684618d",
       "node_kind": "verification_run",
       "display_name": "Verification Run",
-      "digest": "fa880343af99fce45be4ce7e2d732f18e1f378619aeef74f98ba136244ff9071",
+      "digest": "e3fa3bedd684618d9d3c64b810568120dece10c5d96ac0dd8568a35641ce967b",
       "status": "PASS",
       "attributes": {
         "run_scope": "verify-foundation",
-        "governance_session_id": "governance-session:e53ffa9a0a13fb8a"
+        "governance_session_id": "governance-session:a8b570e4c753419a"
       }
     }
   ],
   "edges": [
     {
-      "edge_id": "control-edge:002cbfacf3d93baf",
-      "edge_kind": "ASSESSES",
-      "from_node_id": "verification-run:fa880343af99fce4",
-      "to_node_id": "law-result:StorageTransparencyLaw:77adc443f1022307",
-      "rationale": "Verification run materializes law-result evidence as part of the governed constitutional evaluation chain."
+      "edge_id": "control-edge:00a829b0cdc2b6df",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:governance-evidence",
+      "to_node_id": "certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f",
+      "rationale": "Governance evidence capability owns certificate issuance outputs without mutating trust boundaries."
     },
     {
-      "edge_id": "control-edge:0de6dafc6bfaef41",
-      "edge_kind": "CERTIFIED_AS",
-      "from_node_id": "evidence-package:DeterminismLaw:88df227d2d3a7f40",
-      "to_node_id": "certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20",
-      "rationale": "Certificates are issued from immutable evidence-package boundaries."
+      "edge_id": "control-edge:0105a15807ed8726",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:governance-read-model",
+      "to_node_id": "governance-read-model-metrics:b9c3ea2becf0cc06",
+      "rationale": "Governance read-model capability owns read-model projection materialization from session provenance."
     },
     {
-      "edge_id": "control-edge:0f39936fa3606424",
+      "edge_id": "control-edge:03bc34b1724cf7d0",
       "edge_kind": "MATERIALIZES",
       "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502:fe089695d27d21f9:93df7f44b89f2ff8",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c:70f3ab35db783e0b:8896b0ecb228f805",
       "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
     },
     {
-      "edge_id": "control-edge:102cb197b4884110",
-      "edge_kind": "CERTIFIED_AS",
-      "from_node_id": "evidence-package:DigestLaw:ac8a8ceea6c59f23",
-      "to_node_id": "certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc",
-      "rationale": "Certificates are issued from immutable evidence-package boundaries."
-    },
-    {
-      "edge_id": "control-edge:1112446d13ac853a",
-      "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d:2d4a26cf3e509103:0fcaa699313efef2",
-      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
-    },
-    {
-      "edge_id": "control-edge:14eecb82c798bec9",
-      "edge_kind": "CERTIFIED_AS",
-      "from_node_id": "evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf",
-      "to_node_id": "certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e",
-      "rationale": "Certificates are issued from immutable evidence-package boundaries."
-    },
-    {
-      "edge_id": "control-edge:15c9705662287842",
+      "edge_id": "control-edge:040271aab0b5937a",
       "edge_kind": "MATERIALIZES",
       "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5:18a08300807c1b5c",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624:c0120738efe95d06:e5fdab311669cba9",
+      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:0628eae8e882443c",
+      "edge_kind": "PROJECTS_TO",
+      "from_node_id": "governance-session:a8b570e4c753419a",
+      "to_node_id": "governance-view:health:8f022484e2cba657",
+      "rationale": "Governance session is the stable provenance source for all governed read-model projections."
+    },
+    {
+      "edge_id": "control-edge:082381b5420d179b",
+      "edge_kind": "PROJECTS_TO",
+      "from_node_id": "control-surface:capability-governance:f63bc9c3d6c474f2",
+      "to_node_id": "control-surface:gate-c:governance-session:a8b570e4c753419a",
+      "rationale": "Gate C snapshot projects governed capability compliance signals into the enterprise control surface."
+    },
+    {
+      "edge_id": "control-edge:084bdd0901ceb649",
+      "edge_kind": "PACKAGED_IN",
+      "from_node_id": "law-result:DependencyBoundaryLaw:4be7e1acf60c0981",
+      "to_node_id": "evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61",
+      "rationale": "Evidence packages preserve immutable packaging lineage for law-result outputs."
+    },
+    {
+      "edge_id": "control-edge:085f5fcdb4898ab3",
+      "edge_kind": "ASSESSES",
+      "from_node_id": "verification-run:e3fa3bedd684618d",
+      "to_node_id": "law-result:ProjectionDeterminismLaw:d387f4ba60da846e",
+      "rationale": "Verification run materializes law-result evidence as part of the governed constitutional evaluation chain."
+    },
+    {
+      "edge_id": "control-edge:132a469d625ee950",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:trust-framework",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab:604fb2e480a95781:3da409768880e6fc",
+      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:14c1748fce38be09",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:trust-framework",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624:c0120738efe95d06:9061f4da8c670bd2",
       "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
     },
     {
@@ -912,25 +933,25 @@
       "rationale": "Capability is declared in the governed capability control-plane projection."
     },
     {
-      "edge_id": "control-edge:19cf6684be1acec6",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-evidence",
-      "to_node_id": "certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a",
-      "rationale": "Governance evidence capability owns certificate issuance outputs without mutating trust boundaries."
+      "edge_id": "control-edge:18018976be89b405",
+      "edge_kind": "PROJECTS_TO",
+      "from_node_id": "governance-session:a8b570e4c753419a",
+      "to_node_id": "governance-view:claims:2ffabc8b18da7a95",
+      "rationale": "Governance session is the stable provenance source for all governed read-model projections."
     },
     {
-      "edge_id": "control-edge:1a9d99a928d5874d",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77:83f6297b228460c6",
-      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+      "edge_id": "control-edge:18a3db70332345fb",
+      "edge_kind": "ATTESTED_BY",
+      "from_node_id": "certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586:952a959a8c036a1b:97a022f519a99428",
+      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
     },
     {
-      "edge_id": "control-edge:1f8b507d7336b058",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-evidence",
-      "to_node_id": "evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2",
-      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
+      "edge_id": "control-edge:1fb699f4d25c8086",
+      "edge_kind": "PROJECTS_TO",
+      "from_node_id": "verification-run:e3fa3bedd684618d",
+      "to_node_id": "control-surface:gate-c:governance-session:a8b570e4c753419a",
+      "rationale": "Gate C snapshot reflects the active verification-run posture behind the governed control plane."
     },
     {
       "edge_id": "control-edge:2123bbdc001ed6fc",
@@ -940,18 +961,25 @@
       "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
     },
     {
-      "edge_id": "control-edge:25a12631b4e3a054",
+      "edge_id": "control-edge:247991d08d77f3d1",
       "edge_kind": "MATERIALIZES",
       "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a:17b8b2a26e0f9257:b417c3d847b7228e",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab:604fb2e480a95781:4d6198cfaf832e4b",
       "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
     },
     {
-      "edge_id": "control-edge:27e2725ed549757e",
-      "edge_kind": "ASSESSES",
-      "from_node_id": "verification-run:fa880343af99fce4",
-      "to_node_id": "law-result:DeterminismLaw:9666c3df260c7731",
-      "rationale": "Verification run materializes law-result evidence as part of the governed constitutional evaluation chain."
+      "edge_id": "control-edge:24896c8c4a776041",
+      "edge_kind": "ATTESTED_BY",
+      "from_node_id": "certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624:c0120738efe95d06:9061f4da8c670bd2",
+      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:25c7f83c2711b27f",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:governance-evidence",
+      "to_node_id": "law-result:DeterminismLaw:52a2c74e3b3e159c",
+      "rationale": "Governance evidence capability owns law-result materialization in the frozen governance evidence chain."
     },
     {
       "edge_id": "control-edge:29921c4d6c00c959",
@@ -961,32 +989,39 @@
       "rationale": "Capability is declared in the governed capability control-plane projection."
     },
     {
-      "edge_id": "control-edge:2a0e4302ba527832",
+      "edge_id": "control-edge:2ac3ff9d97f800e0",
+      "edge_kind": "PACKAGED_IN",
+      "from_node_id": "law-result:DigestLaw:4de7a2706988f1aa",
+      "to_node_id": "evidence-package:DigestLaw:618da4a2ebca4ba3",
+      "rationale": "Evidence packages preserve immutable packaging lineage for law-result outputs."
+    },
+    {
+      "edge_id": "control-edge:2b915bb389485db0",
+      "edge_kind": "ATTESTED_BY",
+      "from_node_id": "certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c:70f3ab35db783e0b:1d34fab58c0217c9",
+      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:2c21f52288dfd52c",
       "edge_kind": "MATERIALIZES",
       "from_node_id": "capability:governance-evidence",
-      "to_node_id": "certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502",
-      "rationale": "Governance evidence capability owns certificate issuance outputs without mutating trust boundaries."
+      "to_node_id": "evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5",
+      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
     },
     {
-      "edge_id": "control-edge:2b9b417e817577e2",
+      "edge_id": "control-edge:2db75d891d40e00d",
       "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044:02ec066df7d87eb6",
+      "from_node_id": "certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab:604fb2e480a95781:4d6198cfaf832e4b",
       "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
     },
     {
-      "edge_id": "control-edge:34248f92ee29c74e",
-      "edge_kind": "PROJECTS_TO",
-      "from_node_id": "verification-run:fa880343af99fce4",
-      "to_node_id": "control-surface:gate-c:governance-session:e53ffa9a0a13fb8a",
-      "rationale": "Gate C snapshot reflects the active verification-run posture behind the governed control plane."
-    },
-    {
-      "edge_id": "control-edge:35329239f31f0e97",
-      "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5:337ea2e400818e7a",
-      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
+      "edge_id": "control-edge:34210555f6d2127b",
+      "edge_kind": "ASSESSES",
+      "from_node_id": "verification-run:e3fa3bedd684618d",
+      "to_node_id": "law-result:DigestLaw:4de7a2706988f1aa",
+      "rationale": "Verification run materializes law-result evidence as part of the governed constitutional evaluation chain."
     },
     {
       "edge_id": "control-edge:3b24a583e29741c0",
@@ -996,11 +1031,46 @@
       "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
     },
     {
-      "edge_id": "control-edge:455259e822b4c7d7",
+      "edge_id": "control-edge:3d75f1d293e6411e",
+      "edge_kind": "PACKAGED_IN",
+      "from_node_id": "law-result:SerializerTransparencyLaw:4cd7b9e5bad05add",
+      "to_node_id": "evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812",
+      "rationale": "Evidence packages preserve immutable packaging lineage for law-result outputs."
+    },
+    {
+      "edge_id": "control-edge:41ead08d814f9af2",
       "edge_kind": "MATERIALIZES",
       "from_node_id": "capability:governance-evidence",
-      "to_node_id": "law-result:SerializerTransparencyLaw:498345ef80d3b4aa",
-      "rationale": "Governance evidence capability owns law-result materialization in the frozen governance evidence chain."
+      "to_node_id": "evidence-package:DigestLaw:618da4a2ebca4ba3",
+      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
+    },
+    {
+      "edge_id": "control-edge:4321b2178d6a59cd",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:governance-evidence",
+      "to_node_id": "certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624",
+      "rationale": "Governance evidence capability owns certificate issuance outputs without mutating trust boundaries."
+    },
+    {
+      "edge_id": "control-edge:44ba4e745b0205ec",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:governance-evidence",
+      "to_node_id": "evidence-package:DeterminismLaw:2037e0e5f9003abd",
+      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
+    },
+    {
+      "edge_id": "control-edge:486ca5e4a815be9c",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:governance-read-model",
+      "to_node_id": "governance-view:claims:2ffabc8b18da7a95",
+      "rationale": "Governance read-model capability owns read-model projection materialization from session provenance."
+    },
+    {
+      "edge_id": "control-edge:492d060565b95f1d",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:governance-evidence",
+      "to_node_id": "evidence-package:StorageTransparencyLaw:f5229ce87ac555c2",
+      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
     },
     {
       "edge_id": "control-edge:4cdc29300c785030",
@@ -1010,39 +1080,11 @@
       "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
     },
     {
-      "edge_id": "control-edge:4d6047147c2559dd",
-      "edge_kind": "PACKAGED_IN",
-      "from_node_id": "law-result:ProjectionDeterminismLaw:26b6ea228e0f1c7b",
-      "to_node_id": "evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb",
-      "rationale": "Evidence packages preserve immutable packaging lineage for law-result outputs."
-    },
-    {
-      "edge_id": "control-edge:4ede0ff2c062219e",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-read-model",
-      "to_node_id": "governance-read-model-metrics:69476f45fc706882",
-      "rationale": "Governance read-model capability owns read-model projection materialization from session provenance."
-    },
-    {
-      "edge_id": "control-edge:4fbd580776d07e69",
-      "edge_kind": "ASSESSES",
-      "from_node_id": "verification-run:fa880343af99fce4",
-      "to_node_id": "law-result:SerializerTransparencyLaw:498345ef80d3b4aa",
-      "rationale": "Verification run materializes law-result evidence as part of the governed constitutional evaluation chain."
-    },
-    {
-      "edge_id": "control-edge:4fc562bf77e34235",
+      "edge_id": "control-edge:517d8064659456e4",
       "edge_kind": "MATERIALIZES",
       "from_node_id": "capability:governance-evidence",
-      "to_node_id": "certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e",
+      "to_node_id": "certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab",
       "rationale": "Governance evidence capability owns certificate issuance outputs without mutating trust boundaries."
-    },
-    {
-      "edge_id": "control-edge:4ffbcb53fb87cf37",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-evidence",
-      "to_node_id": "evidence-package:StorageTransparencyLaw:310ababbc08ba39d",
-      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
     },
     {
       "edge_id": "control-edge:519693a12ca52f11",
@@ -1052,53 +1094,60 @@
       "rationale": "Capability is declared in the governed capability control-plane projection."
     },
     {
-      "edge_id": "control-edge:52796d5f6a24f688",
+      "edge_id": "control-edge:52f796d52cb33f0b",
       "edge_kind": "CERTIFIED_AS",
-      "from_node_id": "evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9",
-      "to_node_id": "certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d",
+      "from_node_id": "evidence-package:GraphPurityLaw:dbc9648dbaee113e",
+      "to_node_id": "certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e",
       "rationale": "Certificates are issued from immutable evidence-package boundaries."
     },
     {
-      "edge_id": "control-edge:536b9b8c504b173b",
-      "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77:83f6297b228460c6",
-      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
-    },
-    {
-      "edge_id": "control-edge:5600ac1c92079d4c",
-      "edge_kind": "CERTIFIED_AS",
-      "from_node_id": "evidence-package:ReplayLaw:aa89d74bbc2e58cd",
-      "to_node_id": "certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7",
-      "rationale": "Certificates are issued from immutable evidence-package boundaries."
-    },
-    {
-      "edge_id": "control-edge:56d9001ddab80652",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-read-model",
-      "to_node_id": "governance-view:dashboard:32544d086861bd76",
-      "rationale": "Governance read-model capability owns read-model projection materialization from session provenance."
-    },
-    {
-      "edge_id": "control-edge:57c76cf9217b4735",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-evidence",
-      "to_node_id": "law-result:ReplayLaw:29f7eb8d0d071c20",
-      "rationale": "Governance evidence capability owns law-result materialization in the frozen governance evidence chain."
-    },
-    {
-      "edge_id": "control-edge:5c93e8c172919036",
+      "edge_id": "control-edge:5337e051ec974237",
       "edge_kind": "MATERIALIZES",
       "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77:1a79a454d3fdd447",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e:b02345b131e5b8be:e09bb0c551a3b802",
       "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
     },
     {
-      "edge_id": "control-edge:5d413a507d718fc3",
+      "edge_id": "control-edge:57c2de748f60c496",
       "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7:4061cf5e5aee66ac:5114e1d21d588b7e",
+      "from_node_id": "certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e:b02345b131e5b8be:de524155a033965b",
       "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:57fca84acee60203",
+      "edge_kind": "ATTESTED_BY",
+      "from_node_id": "certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab:604fb2e480a95781:3da409768880e6fc",
+      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:58f859cdb44e5bb1",
+      "edge_kind": "ATTESTED_BY",
+      "from_node_id": "certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c:70f3ab35db783e0b:8896b0ecb228f805",
+      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:59c11e56f1397629",
+      "edge_kind": "PROJECTS_TO",
+      "from_node_id": "governance-session:a8b570e4c753419a",
+      "to_node_id": "governance-view:dashboard:6b10083300237f77",
+      "rationale": "Governance session is the stable provenance source for all governed read-model projections."
+    },
+    {
+      "edge_id": "control-edge:5cf053598e6f53e5",
+      "edge_kind": "PACKAGED_IN",
+      "from_node_id": "law-result:ReplayLaw:0a264c6acf11690d",
+      "to_node_id": "evidence-package:ReplayLaw:30f99611b3ace20f",
+      "rationale": "Evidence packages preserve immutable packaging lineage for law-result outputs."
+    },
+    {
+      "edge_id": "control-edge:5d4766d917680264",
+      "edge_kind": "VERIFIED_IN",
+      "from_node_id": "control-surface:capability-governance:f63bc9c3d6c474f2",
+      "to_node_id": "verification-run:e3fa3bedd684618d",
+      "rationale": "Capability governance is evaluated as part of the current verification run control plane."
     },
     {
       "edge_id": "control-edge:5dbe470436b54770",
@@ -1108,11 +1157,18 @@
       "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
     },
     {
-      "edge_id": "control-edge:6100cac13cee9371",
-      "edge_kind": "PROJECTS_TO",
-      "from_node_id": "control-surface:capability-graph:96790cf5d92507db",
-      "to_node_id": "control-surface:gate-c:governance-session:e53ffa9a0a13fb8a",
-      "rationale": "Gate C snapshot projects capability dependency health and drift signals into one auditable status surface."
+      "edge_id": "control-edge:5ff751b66fb02916",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:trust-framework",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040:f1ab2576e9c82466:44182af4e2235cf8",
+      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:6132a05cf9c1a4ee",
+      "edge_kind": "PACKAGED_IN",
+      "from_node_id": "law-result:ProjectionDeterminismLaw:d387f4ba60da846e",
+      "to_node_id": "evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5",
+      "rationale": "Evidence packages preserve immutable packaging lineage for law-result outputs."
     },
     {
       "edge_id": "control-edge:617d7e5ee49c4152",
@@ -1122,25 +1178,11 @@
       "rationale": "Capability is declared in the governed capability control-plane projection."
     },
     {
-      "edge_id": "control-edge:63fbc50932f0a767",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-evidence",
-      "to_node_id": "law-result:DeterminismLaw:9666c3df260c7731",
-      "rationale": "Governance evidence capability owns law-result materialization in the frozen governance evidence chain."
-    },
-    {
-      "edge_id": "control-edge:65154390935e2418",
-      "edge_kind": "PACKAGED_IN",
-      "from_node_id": "law-result:ReplayLaw:29f7eb8d0d071c20",
-      "to_node_id": "evidence-package:ReplayLaw:aa89d74bbc2e58cd",
-      "rationale": "Evidence packages preserve immutable packaging lineage for law-result outputs."
-    },
-    {
-      "edge_id": "control-edge:69e6e3ec9f2b3821",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-evidence",
-      "to_node_id": "law-result:GraphPurityLaw:a8302dc6e3220e27",
-      "rationale": "Governance evidence capability owns law-result materialization in the frozen governance evidence chain."
+      "edge_id": "control-edge:637f9c2a69a684db",
+      "edge_kind": "PROJECTS_TO",
+      "from_node_id": "control-surface:capability-graph:86f2c0c85c677a5a",
+      "to_node_id": "control-surface:gate-c:governance-session:a8b570e4c753419a",
+      "rationale": "Gate C snapshot projects capability dependency health and drift signals into one auditable status surface."
     },
     {
       "edge_id": "control-edge:6a14639cc8d4f2df",
@@ -1150,60 +1192,46 @@
       "rationale": "Capability is declared in the governed capability control-plane projection."
     },
     {
-      "edge_id": "control-edge:6cd86b319fefdb05",
+      "edge_id": "control-edge:6be72d68ae06986f",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:trust-framework",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040:f1ab2576e9c82466:bc608d37c70cc012",
+      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:6c20dcd46bba4abe",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:trust-framework",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed:1136f5a2cef06ecd:f26a7ee56b143816",
+      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:6c910b9f19fdab29",
+      "edge_kind": "PROJECTS_TO",
+      "from_node_id": "governance-session:a8b570e4c753419a",
+      "to_node_id": "governance-view:summary:f127c130ae2f9c9f",
+      "rationale": "Governance session is the stable provenance source for all governed read-model projections."
+    },
+    {
+      "edge_id": "control-edge:6cb4afd43d8fb4a7",
+      "edge_kind": "CERTIFIED_AS",
+      "from_node_id": "evidence-package:StorageTransparencyLaw:f5229ce87ac555c2",
+      "to_node_id": "certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f",
+      "rationale": "Certificates are issued from immutable evidence-package boundaries."
+    },
+    {
+      "edge_id": "control-edge:6cfc2be57466fafe",
       "edge_kind": "MATERIALIZES",
       "from_node_id": "capability:governance-evidence",
-      "to_node_id": "law-result:StorageTransparencyLaw:77adc443f1022307",
+      "to_node_id": "law-result:ProjectionDeterminismLaw:d387f4ba60da846e",
       "rationale": "Governance evidence capability owns law-result materialization in the frozen governance evidence chain."
     },
     {
-      "edge_id": "control-edge:6f4c575a51fbd0d0",
-      "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77:1a79a454d3fdd447",
-      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
-    },
-    {
-      "edge_id": "control-edge:70c3cf8c42fcd188",
+      "edge_id": "control-edge:7526b82a1521fe0e",
       "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7:4061cf5e5aee66ac:5114e1d21d588b7e",
-      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
-    },
-    {
-      "edge_id": "control-edge:71285813d07be88a",
-      "edge_kind": "PROJECTS_TO",
-      "from_node_id": "governance-session:e53ffa9a0a13fb8a",
-      "to_node_id": "governance-view:summary:b527cc9c4663ae76",
-      "rationale": "Governance session is the stable provenance source for all governed read-model projections."
-    },
-    {
-      "edge_id": "control-edge:7244c79a7e7bfebe",
-      "edge_kind": "PROJECTS_TO",
-      "from_node_id": "governance-session:e53ffa9a0a13fb8a",
-      "to_node_id": "governance-view:claims:9029fe0923dc665d",
-      "rationale": "Governance session is the stable provenance source for all governed read-model projections."
-    },
-    {
-      "edge_id": "control-edge:730a8bbb106f7130",
-      "edge_kind": "ASSESSES",
-      "from_node_id": "verification-run:fa880343af99fce4",
-      "to_node_id": "law-result:DependencyBoundaryLaw:7f28bbb810e14946",
-      "rationale": "Verification run materializes law-result evidence as part of the governed constitutional evaluation chain."
-    },
-    {
-      "edge_id": "control-edge:74826edfc29637dc",
-      "edge_kind": "ASSESSES",
-      "from_node_id": "verification-run:fa880343af99fce4",
-      "to_node_id": "law-result:DigestLaw:856a2e9d776740be",
-      "rationale": "Verification run materializes law-result evidence as part of the governed constitutional evaluation chain."
-    },
-    {
-      "edge_id": "control-edge:77461dcef7a54235",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7:4061cf5e5aee66ac:4edd521c299eb69e",
-      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+      "from_node_id": "capability:governance-evidence",
+      "to_node_id": "certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040",
+      "rationale": "Governance evidence capability owns certificate issuance outputs without mutating trust boundaries."
     },
     {
       "edge_id": "control-edge:778d29b70514e312",
@@ -1213,53 +1241,53 @@
       "rationale": "Capability is declared in the governed capability control-plane projection."
     },
     {
-      "edge_id": "control-edge:780cb75be22ff9f5",
-      "edge_kind": "ASSESSES",
-      "from_node_id": "verification-run:fa880343af99fce4",
-      "to_node_id": "law-result:ReplayLaw:29f7eb8d0d071c20",
-      "rationale": "Verification run materializes law-result evidence as part of the governed constitutional evaluation chain."
+      "edge_id": "control-edge:79cbd3646292838b",
+      "edge_kind": "BINDS_SESSION",
+      "from_node_id": "verification-run:e3fa3bedd684618d",
+      "to_node_id": "governance-session:a8b570e4c753419a",
+      "rationale": "Verification run binds orchestration identity to the governance session provenance root."
     },
     {
-      "edge_id": "control-edge:7a5b86b6502ea593",
-      "edge_kind": "PROJECTS_TO",
-      "from_node_id": "governance-session:e53ffa9a0a13fb8a",
-      "to_node_id": "governance-view:health:2b2c83b90f7edcd4",
-      "rationale": "Governance session is the stable provenance source for all governed read-model projections."
+      "edge_id": "control-edge:7adbc6d51c18d4a5",
+      "edge_kind": "CERTIFIED_AS",
+      "from_node_id": "evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5",
+      "to_node_id": "certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040",
+      "rationale": "Certificates are issued from immutable evidence-package boundaries."
     },
     {
-      "edge_id": "control-edge:7f3f3012c8a1ed7d",
+      "edge_id": "control-edge:7af68609cd58188c",
+      "edge_kind": "ATTESTED_BY",
+      "from_node_id": "certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e:b02345b131e5b8be:e09bb0c551a3b802",
+      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:7c1bc6412502abeb",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:governance-read-model",
+      "to_node_id": "governance-view:health:8f022484e2cba657",
+      "rationale": "Governance read-model capability owns read-model projection materialization from session provenance."
+    },
+    {
+      "edge_id": "control-edge:7daed98b84cd23b9",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:trust-framework",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586:952a959a8c036a1b:97a022f519a99428",
+      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:84205abbe566c09b",
       "edge_kind": "MATERIALIZES",
       "from_node_id": "capability:governance-evidence",
-      "to_node_id": "evidence-package:ReplayLaw:aa89d74bbc2e58cd",
-      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
+      "to_node_id": "certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed",
+      "rationale": "Governance evidence capability owns certificate issuance outputs without mutating trust boundaries."
     },
     {
-      "edge_id": "control-edge:7fac0fb3958da813",
-      "edge_kind": "PROJECTS_TO",
-      "from_node_id": "governance-session:e53ffa9a0a13fb8a",
-      "to_node_id": "governance-view:dashboard:32544d086861bd76",
-      "rationale": "Governance session is the stable provenance source for all governed read-model projections."
-    },
-    {
-      "edge_id": "control-edge:802e0b91f5e9a711",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502:fe089695d27d21f9:0fcdd1ba412a0ebb",
-      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
-    },
-    {
-      "edge_id": "control-edge:826fddffc10ba861",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5:3be5a32144ba1a2a:d01ee9305cde73e2",
-      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
-    },
-    {
-      "edge_id": "control-edge:843bdc6a7282389b",
-      "edge_kind": "PROJECTS_TO",
-      "from_node_id": "governance-session:e53ffa9a0a13fb8a",
-      "to_node_id": "control-surface:gate-c:governance-session:e53ffa9a0a13fb8a",
-      "rationale": "Gate C snapshot stays bound to the provenance session that anchors enterprise governance lineage."
+      "edge_id": "control-edge:8427ba138352d641",
+      "edge_kind": "ATTESTED_BY",
+      "from_node_id": "certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed:1136f5a2cef06ecd:f26a7ee56b143816",
+      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
     },
     {
       "edge_id": "control-edge:876f5f53643ba13b",
@@ -1269,18 +1297,32 @@
       "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
     },
     {
-      "edge_id": "control-edge:8ad7ce181b6cdb02",
+      "edge_id": "control-edge:8c6b1cb90822eccc",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:trust-framework",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f:1d9af61e97dbba1a:60a2bf2fc2e8bd9d",
+      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:8cc0d727b3e0d564",
       "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5:18a08300807c1b5c",
+      "from_node_id": "certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed:1136f5a2cef06ecd:cc260a2a4d286f52",
       "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
     },
     {
-      "edge_id": "control-edge:909fe67efae8e31b",
+      "edge_id": "control-edge:8d7b2fb3ff91bf2f",
       "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d:2d4a26cf3e509103:0fcaa699313efef2",
-      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+      "from_node_id": "capability:governance-evidence",
+      "to_node_id": "evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61",
+      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
+    },
+    {
+      "edge_id": "control-edge:90d08afe647c00be",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:governance-read-model",
+      "to_node_id": "governance-view:dashboard:6b10083300237f77",
+      "rationale": "Governance read-model capability owns read-model projection materialization from session provenance."
     },
     {
       "edge_id": "control-edge:914f706394916af0",
@@ -1290,25 +1332,46 @@
       "rationale": "Shared runtime instrumentation is treated as infrastructure/system dependency rather than bounded-context capability dependency."
     },
     {
-      "edge_id": "control-edge:93e1d175f4a97b55",
-      "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a:17b8b2a26e0f9257:b417c3d847b7228e",
-      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
+      "edge_id": "control-edge:9216b252858a2bc7",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:governance-evidence",
+      "to_node_id": "law-result:StorageTransparencyLaw:63e7ddf86697b97a",
+      "rationale": "Governance evidence capability owns law-result materialization in the frozen governance evidence chain."
     },
     {
-      "edge_id": "control-edge:947033bfa4f17e5f",
-      "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a:17b8b2a26e0f9257:7961924df7fcd034",
-      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
+      "edge_id": "control-edge:92dc2d6c1068a00e",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:governance-evidence",
+      "to_node_id": "law-result:GraphPurityLaw:867449463d78b4ba",
+      "rationale": "Governance evidence capability owns law-result materialization in the frozen governance evidence chain."
     },
     {
-      "edge_id": "control-edge:97b565b26255d0cd",
-      "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5:3be5a32144ba1a2a:448b0b6e314acfb1",
-      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
+      "edge_id": "control-edge:93028c2741f3810c",
+      "edge_kind": "ASSESSES",
+      "from_node_id": "verification-run:e3fa3bedd684618d",
+      "to_node_id": "law-result:DeterminismLaw:52a2c74e3b3e159c",
+      "rationale": "Verification run materializes law-result evidence as part of the governed constitutional evaluation chain."
+    },
+    {
+      "edge_id": "control-edge:95dfa51c01462aff",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:trust-framework",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed:1136f5a2cef06ecd:cc260a2a4d286f52",
+      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:9977ed29627c4e75",
+      "edge_kind": "CERTIFIED_AS",
+      "from_node_id": "evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812",
+      "to_node_id": "certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624",
+      "rationale": "Certificates are issued from immutable evidence-package boundaries."
+    },
+    {
+      "edge_id": "control-edge:9c591f51c22d718a",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:trust-framework",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c:70f3ab35db783e0b:1d34fab58c0217c9",
+      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
     },
     {
       "edge_id": "control-edge:9e7a4a63e41aa072",
@@ -1318,60 +1381,46 @@
       "rationale": "Shared runtime instrumentation is treated as infrastructure/system dependency rather than bounded-context capability dependency."
     },
     {
-      "edge_id": "control-edge:a05346b8937f2867",
-      "edge_kind": "CERTIFIED_AS",
-      "from_node_id": "evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2",
-      "to_node_id": "certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5",
-      "rationale": "Certificates are issued from immutable evidence-package boundaries."
-    },
-    {
-      "edge_id": "control-edge:a0f92acc51c88d5b",
-      "edge_kind": "CERTIFIED_AS",
-      "from_node_id": "evidence-package:StorageTransparencyLaw:310ababbc08ba39d",
-      "to_node_id": "certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a",
-      "rationale": "Certificates are issued from immutable evidence-package boundaries."
-    },
-    {
-      "edge_id": "control-edge:a182cadb48f6844c",
-      "edge_kind": "PACKAGED_IN",
-      "from_node_id": "law-result:StorageTransparencyLaw:77adc443f1022307",
-      "to_node_id": "evidence-package:StorageTransparencyLaw:310ababbc08ba39d",
-      "rationale": "Evidence packages preserve immutable packaging lineage for law-result outputs."
-    },
-    {
-      "edge_id": "control-edge:a191529954a26693",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-evidence",
-      "to_node_id": "certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7",
-      "rationale": "Governance evidence capability owns certificate issuance outputs without mutating trust boundaries."
-    },
-    {
-      "edge_id": "control-edge:a436ec21d305e05e",
+      "edge_id": "control-edge:a022474100f1cf48",
       "edge_kind": "ASSESSES",
-      "from_node_id": "verification-run:fa880343af99fce4",
-      "to_node_id": "law-result:ProjectionDeterminismLaw:26b6ea228e0f1c7b",
+      "from_node_id": "verification-run:e3fa3bedd684618d",
+      "to_node_id": "law-result:GraphPurityLaw:867449463d78b4ba",
       "rationale": "Verification run materializes law-result evidence as part of the governed constitutional evaluation chain."
     },
     {
-      "edge_id": "control-edge:a56185f3fdb93829",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d:2d4a26cf3e509103:7c592ebf938a224a",
-      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+      "edge_id": "control-edge:a1aa1b7bfb0917a4",
+      "edge_kind": "ASSESSES",
+      "from_node_id": "verification-run:e3fa3bedd684618d",
+      "to_node_id": "law-result:StorageTransparencyLaw:63e7ddf86697b97a",
+      "rationale": "Verification run materializes law-result evidence as part of the governed constitutional evaluation chain."
     },
     {
-      "edge_id": "control-edge:a63868084b5cdbfa",
+      "edge_id": "control-edge:a26c5061dfe45516",
       "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5:3be5a32144ba1a2a:448b0b6e314acfb1",
-      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+      "from_node_id": "capability:governance-evidence",
+      "to_node_id": "law-result:DependencyBoundaryLaw:4be7e1acf60c0981",
+      "rationale": "Governance evidence capability owns law-result materialization in the frozen governance evidence chain."
     },
     {
-      "edge_id": "control-edge:a731dd20acd4dcb3",
+      "edge_id": "control-edge:a569ba7350181a49",
+      "edge_kind": "PROJECTS_TO",
+      "from_node_id": "governance-session:a8b570e4c753419a",
+      "to_node_id": "governance-read-model-metrics:b9c3ea2becf0cc06",
+      "rationale": "Governance session is the stable provenance source for all governed read-model projections."
+    },
+    {
+      "edge_id": "control-edge:a750516f0643275b",
       "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-read-model",
-      "to_node_id": "governance-view:summary:b527cc9c4663ae76",
-      "rationale": "Governance read-model capability owns read-model projection materialization from session provenance."
+      "from_node_id": "capability:governance-evidence",
+      "to_node_id": "evidence-package:ReplayLaw:30f99611b3ace20f",
+      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
+    },
+    {
+      "edge_id": "control-edge:a792364faea4ae3d",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:governance-evidence",
+      "to_node_id": "law-result:SerializerTransparencyLaw:4cd7b9e5bad05add",
+      "rationale": "Governance evidence capability owns law-result materialization in the frozen governance evidence chain."
     },
     {
       "edge_id": "control-edge:a83d056a6e35514d",
@@ -1379,13 +1428,6 @@
       "from_node_id": "capability:agent-orchestration",
       "to_node_id": "control-surface:capability-governance:f63bc9c3d6c474f2",
       "rationale": "Capability is declared in the governed capability control-plane projection."
-    },
-    {
-      "edge_id": "control-edge:a852b2d130f08d95",
-      "edge_kind": "PROJECTS_TO",
-      "from_node_id": "control-surface:capability-governance:f63bc9c3d6c474f2",
-      "to_node_id": "control-surface:capability-graph:96790cf5d92507db",
-      "rationale": "Capability governance is the audited source projection for the capability dependency graph."
     },
     {
       "edge_id": "control-edge:a857c3c8edfefbc9",
@@ -1402,46 +1444,25 @@
       "rationale": "Capability is declared in the governed capability control-plane projection."
     },
     {
-      "edge_id": "control-edge:a9f90b6982675846",
-      "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502:fe089695d27d21f9:0fcdd1ba412a0ebb",
-      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
-    },
-    {
-      "edge_id": "control-edge:ac579cbf03a8d5c6",
-      "edge_kind": "PACKAGED_IN",
-      "from_node_id": "law-result:SerializerTransparencyLaw:498345ef80d3b4aa",
-      "to_node_id": "evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9",
-      "rationale": "Evidence packages preserve immutable packaging lineage for law-result outputs."
-    },
-    {
-      "edge_id": "control-edge:ad101ac5a0137d64",
-      "edge_kind": "PACKAGED_IN",
-      "from_node_id": "law-result:GraphPurityLaw:a8302dc6e3220e27",
-      "to_node_id": "evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2",
-      "rationale": "Evidence packages preserve immutable packaging lineage for law-result outputs."
-    },
-    {
-      "edge_id": "control-edge:b2216e8d41fa7ebf",
+      "edge_id": "control-edge:adde1ab070511fd5",
       "edge_kind": "MATERIALIZES",
       "from_node_id": "capability:governance-evidence",
-      "to_node_id": "certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d",
+      "to_node_id": "certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c",
       "rationale": "Governance evidence capability owns certificate issuance outputs without mutating trust boundaries."
     },
     {
-      "edge_id": "control-edge:b2f8df652e0e45e3",
+      "edge_id": "control-edge:b0ac3e7a7dfd87eb",
       "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044:52d862ff2b40e263",
+      "from_node_id": "certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040:f1ab2576e9c82466:44182af4e2235cf8",
       "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
     },
     {
-      "edge_id": "control-edge:b2fbec2c06388a01",
+      "edge_id": "control-edge:b0dea12e5162363a",
       "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044:02ec066df7d87eb6",
-      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+      "from_node_id": "capability:governance-evidence",
+      "to_node_id": "certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586",
+      "rationale": "Governance evidence capability owns certificate issuance outputs without mutating trust boundaries."
     },
     {
       "edge_id": "control-edge:b4601c98e8f894e8",
@@ -1451,74 +1472,18 @@
       "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
     },
     {
-      "edge_id": "control-edge:b517797bd225b9b3",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-evidence",
-      "to_node_id": "law-result:DigestLaw:856a2e9d776740be",
-      "rationale": "Governance evidence capability owns law-result materialization in the frozen governance evidence chain."
-    },
-    {
-      "edge_id": "control-edge:b7d31f48384f76dc",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-evidence",
-      "to_node_id": "evidence-package:DeterminismLaw:88df227d2d3a7f40",
-      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
-    },
-    {
-      "edge_id": "control-edge:bba807ba70663a0d",
-      "edge_kind": "PROJECTS_TO",
-      "from_node_id": "control-surface:capability-governance:f63bc9c3d6c474f2",
-      "to_node_id": "control-surface:gate-c:governance-session:e53ffa9a0a13fb8a",
-      "rationale": "Gate C snapshot projects governed capability compliance signals into the enterprise control surface."
-    },
-    {
-      "edge_id": "control-edge:bd2893132fe10f75",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044:52d862ff2b40e263",
-      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
-    },
-    {
-      "edge_id": "control-edge:bda591a867015e97",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-evidence",
-      "to_node_id": "evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf",
-      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
-    },
-    {
-      "edge_id": "control-edge:c0c462b1319cd042",
-      "edge_kind": "PACKAGED_IN",
-      "from_node_id": "law-result:DeterminismLaw:9666c3df260c7731",
-      "to_node_id": "evidence-package:DeterminismLaw:88df227d2d3a7f40",
-      "rationale": "Evidence packages preserve immutable packaging lineage for law-result outputs."
-    },
-    {
-      "edge_id": "control-edge:c2af2ea49a9c0da1",
-      "edge_kind": "ASSESSES",
-      "from_node_id": "verification-run:fa880343af99fce4",
-      "to_node_id": "law-result:GraphPurityLaw:a8302dc6e3220e27",
-      "rationale": "Verification run materializes law-result evidence as part of the governed constitutional evaluation chain."
-    },
-    {
-      "edge_id": "control-edge:c356811d0a930672",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5:337ea2e400818e7a",
-      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
-    },
-    {
-      "edge_id": "control-edge:c3b8dd72e682d868",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-evidence",
-      "to_node_id": "law-result:DependencyBoundaryLaw:7f28bbb810e14946",
-      "rationale": "Governance evidence capability owns law-result materialization in the frozen governance evidence chain."
-    },
-    {
-      "edge_id": "control-edge:c5190d3e0ca5b126",
+      "edge_id": "control-edge:bb433c130f29120a",
       "edge_kind": "CERTIFIED_AS",
-      "from_node_id": "evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb",
-      "to_node_id": "certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502",
+      "from_node_id": "evidence-package:DeterminismLaw:2037e0e5f9003abd",
+      "to_node_id": "certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab",
       "rationale": "Certificates are issued from immutable evidence-package boundaries."
+    },
+    {
+      "edge_id": "control-edge:c461de4fecf110a7",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:governance-read-model",
+      "to_node_id": "governance-view:summary:f127c130ae2f9c9f",
+      "rationale": "Governance read-model capability owns read-model projection materialization from session provenance."
     },
     {
       "edge_id": "control-edge:c608b6d8e3d030a0",
@@ -1528,32 +1493,53 @@
       "rationale": "Capability is declared in the governed capability control-plane projection."
     },
     {
-      "edge_id": "control-edge:cb2eb67e88c37299",
+      "edge_id": "control-edge:c7c5d354c8037e10",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:governance-evidence",
+      "to_node_id": "evidence-package:GraphPurityLaw:dbc9648dbaee113e",
+      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
+    },
+    {
+      "edge_id": "control-edge:c83a12fc7ac36bc9",
       "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5:3be5a32144ba1a2a:d01ee9305cde73e2",
+      "from_node_id": "certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624:c0120738efe95d06:e5fdab311669cba9",
       "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
     },
     {
-      "edge_id": "control-edge:cb9e93bea4a44bfb",
+      "edge_id": "control-edge:c91cb3524e8309a9",
       "edge_kind": "PACKAGED_IN",
-      "from_node_id": "law-result:DependencyBoundaryLaw:7f28bbb810e14946",
-      "to_node_id": "evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf",
+      "from_node_id": "law-result:GraphPurityLaw:867449463d78b4ba",
+      "to_node_id": "evidence-package:GraphPurityLaw:dbc9648dbaee113e",
       "rationale": "Evidence packages preserve immutable packaging lineage for law-result outputs."
     },
     {
-      "edge_id": "control-edge:cc036f6d3ed41325",
-      "edge_kind": "BINDS_SESSION",
-      "from_node_id": "verification-run:fa880343af99fce4",
-      "to_node_id": "governance-session:e53ffa9a0a13fb8a",
-      "rationale": "Verification run binds orchestration identity to the governance session provenance root."
+      "edge_id": "control-edge:ca92c3be48c5a3e4",
+      "edge_kind": "ASSESSES",
+      "from_node_id": "verification-run:e3fa3bedd684618d",
+      "to_node_id": "law-result:ReplayLaw:0a264c6acf11690d",
+      "rationale": "Verification run materializes law-result evidence as part of the governed constitutional evaluation chain."
     },
     {
-      "edge_id": "control-edge:ce77cdd9b9584cf6",
+      "edge_id": "control-edge:ccae5b387f0e4ac2",
+      "edge_kind": "ASSESSES",
+      "from_node_id": "verification-run:e3fa3bedd684618d",
+      "to_node_id": "law-result:DependencyBoundaryLaw:4be7e1acf60c0981",
+      "rationale": "Verification run materializes law-result evidence as part of the governed constitutional evaluation chain."
+    },
+    {
+      "edge_id": "control-edge:d0ffe6dacab781df",
+      "edge_kind": "PROJECTS_TO",
+      "from_node_id": "governance-session:a8b570e4c753419a",
+      "to_node_id": "control-surface:gate-c:governance-session:a8b570e4c753419a",
+      "rationale": "Gate C snapshot stays bound to the provenance session that anchors enterprise governance lineage."
+    },
+    {
+      "edge_id": "control-edge:d13489e4c5be90a0",
       "edge_kind": "MATERIALIZES",
       "from_node_id": "capability:governance-evidence",
-      "to_node_id": "law-result:ProjectionDeterminismLaw:26b6ea228e0f1c7b",
-      "rationale": "Governance evidence capability owns law-result materialization in the frozen governance evidence chain."
+      "to_node_id": "evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812",
+      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
     },
     {
       "edge_id": "control-edge:d193bc6a5cb144f6",
@@ -1563,25 +1549,46 @@
       "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
     },
     {
-      "edge_id": "control-edge:d42bbbb2cce90b5c",
+      "edge_id": "control-edge:d32d2146a0d91f7f",
       "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-evidence",
-      "to_node_id": "evidence-package:DigestLaw:ac8a8ceea6c59f23",
-      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
+      "from_node_id": "capability:trust-framework",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e:b02345b131e5b8be:de524155a033965b",
+      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
     },
     {
-      "edge_id": "control-edge:d6a89be8ba575e96",
+      "edge_id": "control-edge:d3c3ad6f48230e56",
+      "edge_kind": "CERTIFIED_AS",
+      "from_node_id": "evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61",
+      "to_node_id": "certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed",
+      "rationale": "Certificates are issued from immutable evidence-package boundaries."
+    },
+    {
+      "edge_id": "control-edge:d53a4e221d4e4ebd",
+      "edge_kind": "ATTESTED_BY",
+      "from_node_id": "certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f:1d9af61e97dbba1a:60a2bf2fc2e8bd9d",
+      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:d727f01a1b9c1513",
       "edge_kind": "PACKAGED_IN",
-      "from_node_id": "law-result:DigestLaw:856a2e9d776740be",
-      "to_node_id": "evidence-package:DigestLaw:ac8a8ceea6c59f23",
+      "from_node_id": "law-result:DeterminismLaw:52a2c74e3b3e159c",
+      "to_node_id": "evidence-package:DeterminismLaw:2037e0e5f9003abd",
       "rationale": "Evidence packages preserve immutable packaging lineage for law-result outputs."
     },
     {
-      "edge_id": "control-edge:d76acc3e62d152b4",
+      "edge_id": "control-edge:d74936088d787da5",
+      "edge_kind": "PACKAGED_IN",
+      "from_node_id": "law-result:StorageTransparencyLaw:63e7ddf86697b97a",
+      "to_node_id": "evidence-package:StorageTransparencyLaw:f5229ce87ac555c2",
+      "rationale": "Evidence packages preserve immutable packaging lineage for law-result outputs."
+    },
+    {
+      "edge_id": "control-edge:d7ab54cbd0e5aaae",
       "edge_kind": "MATERIALIZES",
       "from_node_id": "capability:governance-evidence",
-      "to_node_id": "certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5",
-      "rationale": "Governance evidence capability owns certificate issuance outputs without mutating trust boundaries."
+      "to_node_id": "law-result:ReplayLaw:0a264c6acf11690d",
+      "rationale": "Governance evidence capability owns law-result materialization in the frozen governance evidence chain."
     },
     {
       "edge_id": "control-edge:d9172d3ebaa954ca",
@@ -1605,13 +1612,6 @@
       "rationale": "Capability is declared in the governed capability control-plane projection."
     },
     {
-      "edge_id": "control-edge:dde9bbad90a09185",
-      "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502:fe089695d27d21f9:93df7f44b89f2ff8",
-      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
-    },
-    {
       "edge_id": "control-edge:df69cd51fa1297fd",
       "edge_kind": "CATALOGED_IN",
       "from_node_id": "capability:requirements-traceability-matrix",
@@ -1619,11 +1619,11 @@
       "rationale": "Capability is declared in the governed capability control-plane projection."
     },
     {
-      "edge_id": "control-edge:e07fd325cedc6739",
-      "edge_kind": "PROJECTS_TO",
-      "from_node_id": "governance-session:e53ffa9a0a13fb8a",
-      "to_node_id": "governance-read-model-metrics:69476f45fc706882",
-      "rationale": "Governance session is the stable provenance source for all governed read-model projections."
+      "edge_id": "control-edge:dfffcc2c600b42a8",
+      "edge_kind": "ASSESSES",
+      "from_node_id": "verification-run:e3fa3bedd684618d",
+      "to_node_id": "law-result:SerializerTransparencyLaw:4cd7b9e5bad05add",
+      "rationale": "Verification run materializes law-result evidence as part of the governed constitutional evaluation chain."
     },
     {
       "edge_id": "control-edge:e14fe1efe0d1ec60",
@@ -1640,18 +1640,11 @@
       "rationale": "Shared runtime instrumentation is treated as infrastructure/system dependency rather than bounded-context capability dependency."
     },
     {
-      "edge_id": "control-edge:e21d9e8ac83a6e4c",
+      "edge_id": "control-edge:e4639e55725b373c",
       "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7:4061cf5e5aee66ac:4edd521c299eb69e",
+      "from_node_id": "certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f:1d9af61e97dbba1a:a5841a2996eea242",
       "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
-    },
-    {
-      "edge_id": "control-edge:e4e61475bda01b6b",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-read-model",
-      "to_node_id": "governance-view:health:2b2c83b90f7edcd4",
-      "rationale": "Governance read-model capability owns read-model projection materialization from session provenance."
     },
     {
       "edge_id": "control-edge:e53ae7be346ac616",
@@ -1661,18 +1654,11 @@
       "rationale": "Capability is declared in the governed capability control-plane projection."
     },
     {
-      "edge_id": "control-edge:e565b0d1766e2693",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-evidence",
-      "to_node_id": "certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc",
-      "rationale": "Governance evidence capability owns certificate issuance outputs without mutating trust boundaries."
-    },
-    {
-      "edge_id": "control-edge:e8a02e8f10511749",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-evidence",
-      "to_node_id": "evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9",
-      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
+      "edge_id": "control-edge:e74bd147aa5cd739",
+      "edge_kind": "ATTESTED_BY",
+      "from_node_id": "certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040:f1ab2576e9c82466:bc608d37c70cc012",
+      "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
     },
     {
       "edge_id": "control-edge:eb4798771530c708",
@@ -1682,46 +1668,60 @@
       "rationale": "Capability is declared in the governed capability control-plane projection."
     },
     {
-      "edge_id": "control-edge:ebbc55e2844ae32a",
+      "edge_id": "control-edge:eb714dd7a73778c3",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:trust-framework",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586:952a959a8c036a1b:e29747608339180c",
+      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:ec5a3e8e32fc8b1c",
       "edge_kind": "MATERIALIZES",
       "from_node_id": "capability:governance-evidence",
-      "to_node_id": "certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20",
-      "rationale": "Governance evidence capability owns certificate issuance outputs without mutating trust boundaries."
+      "to_node_id": "law-result:DigestLaw:4de7a2706988f1aa",
+      "rationale": "Governance evidence capability owns law-result materialization in the frozen governance evidence chain."
     },
     {
-      "edge_id": "control-edge:efc6f2ce89ece895",
-      "edge_kind": "VERIFIED_IN",
+      "edge_id": "control-edge:efce8908c1031c68",
+      "edge_kind": "CERTIFIED_AS",
+      "from_node_id": "evidence-package:DigestLaw:618da4a2ebca4ba3",
+      "to_node_id": "certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586",
+      "rationale": "Certificates are issued from immutable evidence-package boundaries."
+    },
+    {
+      "edge_id": "control-edge:f22882dd516d963e",
+      "edge_kind": "PROJECTS_TO",
       "from_node_id": "control-surface:capability-governance:f63bc9c3d6c474f2",
-      "to_node_id": "verification-run:fa880343af99fce4",
-      "rationale": "Capability governance is evaluated as part of the current verification run control plane."
+      "to_node_id": "control-surface:capability-graph:86f2c0c85c677a5a",
+      "rationale": "Capability governance is the audited source projection for the capability dependency graph."
     },
     {
-      "edge_id": "control-edge:efe8a56d6ca0a7c5",
+      "edge_id": "control-edge:f49e39322dc6ddc6",
+      "edge_kind": "MATERIALIZES",
+      "from_node_id": "capability:trust-framework",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f:1d9af61e97dbba1a:a5841a2996eea242",
+      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+    },
+    {
+      "edge_id": "control-edge:f4b41fe1f8a0b2fc",
       "edge_kind": "ATTESTED_BY",
-      "from_node_id": "certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d:2d4a26cf3e509103:7c592ebf938a224a",
+      "from_node_id": "certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586",
+      "to_node_id": "attestation-event:attestation:certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586:952a959a8c036a1b:e29747608339180c",
       "rationale": "Attestation events preserve append-only trust lifecycle records for certificate assertions."
     },
     {
-      "edge_id": "control-edge:f0a8349b6fca4d60",
+      "edge_id": "control-edge:f868ec6cd35ed289",
       "edge_kind": "MATERIALIZES",
       "from_node_id": "capability:governance-evidence",
-      "to_node_id": "evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb",
-      "rationale": "Governance evidence capability owns immutable evidence-package materialization."
+      "to_node_id": "certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e",
+      "rationale": "Governance evidence capability owns certificate issuance outputs without mutating trust boundaries."
     },
     {
-      "edge_id": "control-edge:f384a361472cf003",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:governance-read-model",
-      "to_node_id": "governance-view:claims:9029fe0923dc665d",
-      "rationale": "Governance read-model capability owns read-model projection materialization from session provenance."
-    },
-    {
-      "edge_id": "control-edge:f51ff8358ecefcad",
-      "edge_kind": "MATERIALIZES",
-      "from_node_id": "capability:trust-framework",
-      "to_node_id": "attestation-event:attestation:certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a:17b8b2a26e0f9257:7961924df7fcd034",
-      "rationale": "Trust framework capability owns attestation lifecycle materialization for certificate assertions."
+      "edge_id": "control-edge:f9aad54f711ac055",
+      "edge_kind": "CERTIFIED_AS",
+      "from_node_id": "evidence-package:ReplayLaw:30f99611b3ace20f",
+      "to_node_id": "certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c",
+      "rationale": "Certificates are issued from immutable evidence-package boundaries."
     }
   ],
   "claim_boundary": "Enterprise control graph makes capability dependency, evidence-chain lineage, session projection, and verification orchestration relationships explicit so enterprise queries can traverse governed control-plane state deterministically without changing the frozen domain model."

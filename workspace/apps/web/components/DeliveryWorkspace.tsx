@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
+import { recordRuntimeInvocation } from "@repo/core-runtime";
 import type { ProductDeliveryCopy } from "../lib/product-experience";
+import ExecutionChainPanel from "./ExecutionChainPanel";
 
 type RequirementStatus =
   | "draft"
@@ -70,6 +72,34 @@ interface DeliveryEvidenceCreateResponse {
   readonly digest: string;
 }
 
+interface VerificationDecisionPayload {
+  readonly predicateVersion: string;
+  readonly verdict: "passed" | "failed";
+  readonly lifecycleEligible: boolean;
+  readonly decisionFingerprint: string;
+  readonly evidenceSetHash: string;
+  readonly registryProjection: {
+    readonly traceabilityComplete: boolean;
+    readonly artifactCount: number;
+    readonly evidenceMatchedCount: number;
+    readonly gaps: readonly string[];
+  };
+}
+
+interface VerificationProofPayload {
+  readonly proofId: string;
+  readonly predicateId: string;
+  readonly predicateVersion: string;
+  readonly decision: "passed" | "failed";
+  readonly proofDigest: string;
+  readonly decisionFingerprint: string;
+  readonly evaluatedAt: string;
+  readonly provenance: {
+    readonly evidencePaths: readonly string[];
+    readonly evidenceIds: readonly string[];
+  };
+}
+
 function statusTone(status: string): string {
   switch (status) {
     case "verified":
@@ -110,6 +140,25 @@ async function readDelivery(requirementId: string): Promise<DeliveryPayload> {
   return (await response.json()) as DeliveryPayload;
 }
 
+async function readRequirementRuntime<T>(path: string): Promise<T> {
+  const response = await fetch(path, { cache: "no-store" });
+
+  if (response.status === 401) {
+    await fetch("/api/session", { cache: "no-store" });
+    const retry = await fetch(path, { cache: "no-store" });
+    if (!retry.ok) {
+      throw new Error(`Failed to load runtime proof (${retry.status})`);
+    }
+    return (await retry.json()) as T;
+  }
+
+  if (!response.ok) {
+    throw new Error(`Failed to load runtime proof (${response.status})`);
+  }
+
+  return (await response.json()) as T;
+}
+
 export function DeliveryWorkspace({
   productId,
   displayName,
@@ -121,19 +170,57 @@ export function DeliveryWorkspace({
   const [loading, setLoading] = useState(true);
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [latestArtifactPath, setLatestArtifactPath] = useState<string | null>(null);
+  const [verification, setVerification] = useState<VerificationDecisionPayload | null>(null);
+  const [proof, setProof] = useState<VerificationProofPayload | null>(null);
+  const [chainError, setChainError] = useState<string | null>(null);
 
   const refresh = useMemo(
     () => async () => {
       if (!requirementId) {
         setLoading(false);
         setPayload(null);
+        setVerification(null);
+        setProof(null);
+        setChainError(null);
         return;
       }
 
       setLoading(true);
       setError(null);
+      setChainError(null);
+      setVerification(null);
+      setProof(null);
       try {
-        setPayload(await readDelivery(requirementId));
+        const deliveryPayload = await readDelivery(requirementId);
+        setPayload(deliveryPayload);
+
+        const [verificationResult, proofResult] = await Promise.allSettled([
+          readRequirementRuntime<VerificationDecisionPayload>(
+            `/api/requirements/${encodeURIComponent(requirementId)}/verification`,
+          ),
+          readRequirementRuntime<VerificationProofPayload>(
+            `/api/requirements/${encodeURIComponent(requirementId)}/proof`,
+          ),
+        ]);
+
+        if (verificationResult.status === "fulfilled") {
+          setVerification(verificationResult.value);
+        } else {
+          setVerification(null);
+        }
+
+        if (proofResult.status === "fulfilled") {
+          setProof(proofResult.value);
+        } else {
+          setProof(null);
+        }
+
+        if (
+          verificationResult.status === "rejected" ||
+          proofResult.status === "rejected"
+        ) {
+          setChainError("Verification proof is not fully available yet. Refresh after the next runtime update.");
+        }
       } catch (raw) {
         setError(raw instanceof Error ? raw.message : String(raw));
       } finally {
@@ -148,6 +235,15 @@ export function DeliveryWorkspace({
   }, [refresh]);
 
   async function handleRequirementAction(action: "mark_implemented" | "verify") {
+    // Record user interaction untuk EOS runtime tracking
+    recordRuntimeInvocation({
+      capabilityId: "product-delivery",
+      operationId: `requirement.${action}`,
+      sourceRef: "apps/web/components/DeliveryWorkspace.tsx:handleRequirementAction",
+      success: true,
+      input: { productId, requirementId, action },
+      result: { timestamp: new Date().toISOString() }
+    });
     if (!payload) {
       return;
     }
@@ -302,6 +398,14 @@ export function DeliveryWorkspace({
               </div>
             </div>
           </section>
+
+          <ExecutionChainPanel
+            error={chainError}
+            loading={loading}
+            payload={payload}
+            proof={proof}
+            verification={verification}
+          />
 
           <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
             <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">

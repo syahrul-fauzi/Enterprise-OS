@@ -1,0 +1,11 @@
+version: "1.0"
+status: PROOF
+product:
+  id: academic
+  display_name: Academic Community
+experience:
+  surface: web
+  route: /requirements
+capabilities:
+  - requirement-management
+claim_boundary: Product-local proof binding for the Academic identity onto the canonical apps/web professional experience surface.

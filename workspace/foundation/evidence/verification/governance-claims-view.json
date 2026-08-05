@@ -1,11 +1,11 @@
 {
-  "view_id": "governance-view:claims:9029fe0923dc665d",
-  "view_digest": "9029fe0923dc665d12b1327f4d2ee80cae20955c577af25d654e0e6e80f9d03a",
+  "view_id": "governance-view:claims:2ffabc8b18da7a95",
+  "view_digest": "2ffabc8b18da7a958cc1b2f7c6cbed5bb05959c58d75747b5304544981165c9f",
   "view_kind": "claims",
-  "source_session_id": "governance-session:e53ffa9a0a13fb8a",
-  "source_session_digest": "e53ffa9a0a13fb8a349a132ab0d9c9d216961eaa4f6da3790b10aa2f6a09740d",
-  "source_session_lineage_digest": "4cb86da3e09791f433eddf60956af3eff7e905a726b6a52b09531e1172a34064",
-  "source_claims_digest": "433336daf73bb99397367671d897c66e87dde59ff3861c2d31ec5ace795c8012",
+  "source_session_id": "governance-session:a8b570e4c753419a",
+  "source_session_digest": "a8b570e4c753419a6e324c50abd093353a83e76f924b0634d275e4ebb60198ef",
+  "source_session_lineage_digest": "d57bcd995675feb1faab68c7362c20a9a4d826d5c994d8b0e7bdbbc9f207f5d9",
+  "source_claims_digest": "b54a66476fbf88e4207c392f70689bd9dbe15237d78e5ed262345f8ef9778c5f",
   "status": "PASS",
   "claim_count": 8,
   "violated_law_count": 0,
@@ -15,52 +15,52 @@
   "proof_strength": "proof-centric",
   "claims": [
     {
-      "id": "certificate:evidence-package:GraphPurityLaw:9c7f79bd37e6cfe2:4b757aa63f4d57a5",
+      "id": "certificate:evidence-package:GraphPurityLaw:dbc9648dbaee113e:892b4bd787c9a34e",
       "title": "Observed graph topology must be projected only from execution chain facts, and declared topology must remain registry-derived.",
       "status": "PASS",
-      "digest": "4b757aa63f4d57a592acff5436c49235301a409a1a62babce578bfd25cfe47c4"
+      "digest": "892b4bd787c9a34e4255e0499a1e316a5673ea196f2e07904d495ffe452010d8"
     },
     {
-      "id": "certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc",
+      "id": "certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586",
       "title": "Projection digest must remain content-addressed and match canonical projection content.",
       "status": "PASS",
-      "digest": "1e45b26a3e9a87cc7a0681e2fb11453a6b8f3e003c93b9b6aca3e2a37c8b3c0b"
+      "digest": "fc8222cbc07e5586781929060ac7c36ba3c0949b6a7aab4fb6015adb33961939"
     },
     {
-      "id": "certificate:evidence-package:SerializerTransparencyLaw:bb9407ec0b72d5b9:8d6fead981547f3d",
+      "id": "certificate:evidence-package:SerializerTransparencyLaw:2cf9a7f52545f812:2f36eda62af1b624",
       "title": "Serializer round-trip must preserve projection digest and domain identity.",
       "status": "PASS",
-      "digest": "8d6fead981547f3dfde63cdb7db4f810a9a3883e02b05f106e7f3b58305b0d62"
+      "digest": "2f36eda62af1b62421d64ed3e0d5798adb7fcf6b34d5552bdda538e066cefe20"
     },
     {
-      "id": "certificate:evidence-package:StorageTransparencyLaw:310ababbc08ba39d:a2738fe21229452a",
+      "id": "certificate:evidence-package:StorageTransparencyLaw:f5229ce87ac555c2:015fab2c1eac4a2f",
       "title": "Projection identity must remain unchanged across equivalent storage representations and locations.",
       "status": "PASS",
-      "digest": "a2738fe21229452ad4cb97594d31cdf767643ab4c8b980a9a674631efd093e61"
+      "digest": "015fab2c1eac4a2f9bdf2776c6bbdb5e9a5820dd4d1945ba19d6cf9dd7cb2a82"
     },
     {
-      "id": "certificate:evidence-package:ReplayLaw:aa89d74bbc2e58cd:2754ec95cb96cfb7",
+      "id": "certificate:evidence-package:ReplayLaw:30f99611b3ace20f:af258545ddd3aa6c",
       "title": "Replay evidence must pass and remain causally aligned with the materialized ExecutionPlanProjection.",
       "status": "PASS",
-      "digest": "2754ec95cb96cfb7ffe990678b840091dec82c4bfc116e40787d5ed2adcfab66"
+      "digest": "af258545ddd3aa6c8998ed5218e46982d947c5add8fb928e9a167039ae7cbc53"
     },
     {
-      "id": "certificate:evidence-package:ProjectionDeterminismLaw:14cf3a19b0e46beb:206c11421fece502",
+      "id": "certificate:evidence-package:ProjectionDeterminismLaw:f581710cd8863ac5:857f96b781fda040",
       "title": "Projection digest must remain repeatable across recomputation, serializer round-trip, key-order variation, and generated_at mutation.",
       "status": "PASS",
-      "digest": "206c11421fece50230116d481c57144d88edbab5357893dded9b70fb8e722b08"
+      "digest": "857f96b781fda040c6472af17909897d2af422a0aeebd3d57e094e204a63a3bd"
     },
     {
-      "id": "certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e",
+      "id": "certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed",
       "title": "Governed modules must respect constitutional dependency boundaries and repeatable repository discovery.",
       "status": "PASS",
-      "digest": "612ec33aa4d56e7e8638b1b25de52639cdc95a18784277c4c18f86afa2bf4ea4"
+      "digest": "b15f46f49b87c1ededc689509180f792540293b3561c0866b763ba362817fa56"
     },
     {
-      "id": "certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20",
+      "id": "certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab",
       "title": "Constitution proof digest must remain identical across repeated evaluations for the same canonical input.",
       "status": "PASS",
-      "digest": "dea9721568839c208fccf9a316977a65ab7c7326ca8547d02a9c19408e2b0df1"
+      "digest": "f58dce05167f1cabee2474187fb04271f321488a27557c4b71e1604da8569164"
     }
   ],
   "view_boundary": "Governance claims view is the application-facing projection of digest-addressed constitutional claims. It remains safe for reporting and dashboard consumers."

@@ -13,6 +13,102 @@
 // pada capability experience layer (legal-case / legal-document experience routes).
 // ============================================================
 
+// ==============================
+// Product Experience Canonical Contracts
+// ==============================
+// Kontrak standar untuk semua produk yang menggunakan presentation engine.
+// Memastikan semua produk mengikuti struktur yang sama sambil tetap memungkinkan
+// perbedaan pada nilai-nilai yang spesifik untuk setiap produk.
+
+export interface ProductIdentity {
+  readonly productId: string;
+  readonly name: string;
+  readonly description: string;
+  readonly category: string;
+}
+
+export interface ProductAudience {
+  readonly primary: string;
+  readonly secondary?: readonly string[];
+  readonly description: string;
+}
+
+export interface ProductPositioning {
+  readonly valueTitle: string;
+  readonly valueDescription: string;
+}
+
+export interface ProductNavigation {
+  readonly primaryCta: {
+    readonly label: string;
+    readonly href: string;
+  };
+  readonly secondaryCta: {
+    readonly label: string;
+    readonly href: string;
+  };
+  readonly tertiaryCta?: {
+    readonly label: string;
+    readonly href: string;
+  };
+}
+
+export interface ProductNarrative {
+  readonly summary: string;
+  readonly journey: readonly string[]; // Langkah-langkah pengalaman pengguna
+}
+
+export interface ProductTrustSignal {
+  readonly title: string;
+  readonly description: string;
+  readonly bullets: readonly string[];
+}
+
+export interface ProductJourneyStep {
+  readonly id: string;
+  readonly label: string;
+  readonly description: string;
+}
+
+export interface ProductTheme {
+  readonly primaryColor?: string;
+  readonly accentColor?: string;
+  readonly brandName?: string;
+}
+
+export interface ProductEntry {
+  readonly primaryIntent: string;
+  readonly primaryActionLabel: string;
+  readonly discoveryMode: 'search' | 'role' | 'topic' | 'community';
+  readonly audienceChoices?: readonly { label: string; value: string; description: string }[];
+  readonly searchPlaceholder?: string;
+  readonly categories?: readonly string[];
+  readonly topics?: readonly { id: string; label: string; description: string }[];
+}
+
+export interface ProductExperience {
+  readonly identity: ProductIdentity;
+  readonly audience: ProductAudience;
+  readonly positioning: ProductPositioning;
+  readonly narrative: ProductNarrative;
+  readonly navigation: ProductNavigation;
+  readonly trustSignals: ProductTrustSignal;
+  readonly journeys: readonly ProductJourneyStep[];
+  readonly theme: ProductTheme;
+  readonly entry: ProductEntry;
+  readonly workflow: {
+    readonly requirementTitle: string;
+    readonly requirementSummary: string;
+    readonly createHelper: string;
+    readonly updateHelper: string;
+    readonly createLabel: string;
+    readonly updateLabel: string;
+  };
+}
+
+// ==============================
+// Legacy Presentation Types
+// ==============================
 export interface PresentationRoutes {
   readonly default?: string;
   readonly paths?: Readonly<Record<string, string>>;

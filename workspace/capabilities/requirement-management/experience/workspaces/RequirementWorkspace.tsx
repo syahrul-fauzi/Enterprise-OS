@@ -545,6 +545,7 @@ export function RequirementWorkspace({
                 copy={cardCopy}
                 item={item}
                 key={item.id}
+                productId={productId ?? "default-product"}
                 onAction={handleAction}
                 onEdit={handleEdit}
               />

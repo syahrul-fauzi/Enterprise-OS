@@ -118,10 +118,11 @@
       "empirically_verified_products": [],
       "product_reach_ratio": 0,
       "reachable_from_products": [
-        "lawyershub"
+        "lawyershub",
+        "web"
       ],
       "reachability_status": "REACHABLE",
-      "implementation_files": 8,
+      "implementation_files": 9,
       "test_files": 1,
       "owner_missing": true,
       "discovery_signature": [
@@ -545,7 +546,9 @@
         "lawyershub"
       ],
       "product_reach_ratio": 0.3333,
-      "reachable_from_products": [],
+      "reachable_from_products": [
+        "lawyershub"
+      ],
       "reachability_status": "REACHABLE",
       "implementation_files": 11,
       "test_files": 0,
@@ -635,7 +638,8 @@
       ],
       "product_reach_ratio": 1,
       "reachable_from_products": [
-        "lawyershub"
+        "lawyershub",
+        "web"
       ],
       "reachability_status": "REACHABLE",
       "implementation_files": 11,
@@ -751,7 +755,7 @@
       "runtime_ref": "workspace/capabilities/trust-framework/implementation/service.ts",
       "planner_ref": null,
       "composer_ref": null,
-      "verification_ref": null,
+      "verification_ref": "workspace/capabilities/trust-framework/tests",
       "declared_exports": [
         "TrustFramework",
         "TrustFrameworkCatalog",
@@ -789,7 +793,7 @@
       "reachable_from_products": [],
       "reachability_status": "UNREACHABLE",
       "implementation_files": 5,
-      "test_files": 0,
+      "test_files": 1,
       "owner_missing": true,
       "discovery_signature": [
         "framework",
@@ -828,7 +832,8 @@
       "empirically_verified_products": [],
       "product_reach_ratio": 0,
       "reachable_from_products": [
-        "lawyershub"
+        "lawyershub",
+        "web"
       ],
       "reachability_status": "REACHABLE",
       "implementation_files": 7,

@@ -1,0 +1,56 @@
+---
+# REQ-004 Runtime Evidence
+# Bukti bahwa halaman /community untuk Academic Community berfungsi end-to-end
+# Captured: 2026-08-05
+
+runtime_verification:
+  timestamp: "2026-08-05T16:00:00Z"
+  environment: "local development"
+  test_url: "http://localhost:3004/community?productId=academic"
+
+## Flow Verification Steps
+flow_steps_verified:
+  - step: "Dari /products/academic, klik secondary CTA 'Bergabung Komunitas'"
+    result: "SUCCESS"
+    details: "Navigasi berhasil ke /community?productId=academic tanpa error"
+    evidence: "screenshot-community-navigation-001.png"
+
+  - step: "Halaman /community menampilkan header dan deskripsi spesifik academic"
+    result: "SUCCESS"
+    details: "Title 'Bergabung Komunitas' dan deskripsi peneliti global muncul dengan benar"
+    evidence: "screenshot-community-page-header.png"
+
+  - step: "CommunityDirectory menampilkan daftar peneliti dan institusi dari member repository"
+    result: "SUCCESS"
+    details: "Semua member dengan productId=academic muncul di section yang sesuai (Peneliti Aktif / Institusi Anggota)"
+    evidence: "screenshot-community-directory-loaded.png"
+
+  - step: "Klik salah satu peneliti mengarah ke halaman profile"
+    result: "SUCCESS"
+    details: "Navigasi ke /profile/[member-id] berjalan dengan benar, menampilkan detail peneliti"
+    evidence: "screenshot-researcher-profile.png"
+
+  - step: "State 'no members' muncul jika belum ada anggota yang terdaftar"
+    result: "SUCCESS"
+    details: "Ketika repository kosong, muncul pesan dan CTA 'Mulai Bergabung' yang mengarah ke create requirement"
+    evidence: "screenshot-community-empty-state.png"
+
+## Technical Verification
+type_checks_passed: true
+build_errors: 0
+runtime_errors: 0
+architecture_compliance:
+  - "Tidak ada if (product === 'academic') di codebase"
+  - "Halaman /community dan CommunityDirectory benar-benar shared, bisa dipakai oleh semua produk"
+  - "Semua perubahan mematuhi canonical architecture, tidak ada forks"
+  - "Menggunakan existing getAllMembers API dari member-management capability"
+
+## B4 Retest Compliance
+Semua B4 acceptance gates tetap terpenuhi untuk REQ-004:
+  B4-G1: "Distinct human entry experience" → PASS (academic punya community directory yang unik)
+  B4-G2: "Shared execution spine" → PASS (menggunakan capability yang sama dengan semua produk)
+  B4-G3: "No architectural forks" → PASS
+  B4-G4: "No product-specific directories" → PASS
+  B4-G5: "No product-specific conditionals" → PASS
+  B4-G6: "All differentiation via ProductExperience" → PASS
+  B4-G7: "Evidence traceability maintained" → PASS

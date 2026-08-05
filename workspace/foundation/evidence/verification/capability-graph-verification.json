@@ -1,6 +1,6 @@
 {
   "report_version": "1.0.0",
-  "report_digest": "0ac97010ef346b535491b297b9df9632ea820f97589b2bb306653bd408ca98b6",
+  "report_digest": "40ffce543f8db2cf915cdc82e4d1acccb2ebc5974e733cbbfaa3e693d074ec10",
   "summary": {
     "graph_projection_status": "PASS",
     "cycle_status": "PASS",
@@ -43,14 +43,14 @@
     "evidence_health": {
       "status": "WARN",
       "observation_status": "PARTIAL",
-      "capability_without_evidence_count": 6,
+      "capability_without_evidence_count": 5,
       "stale_evidence_count": 1,
-      "unverifiable_capability_count": 3,
+      "unverifiable_capability_count": 2,
       "orphaned_evidence_count": 0,
       "inconsistent_evidence_count": 0,
       "unsigned_evidence_count": 0,
       "tampered_evidence_count": 0,
-      "partial_evidence_count": 10,
+      "partial_evidence_count": 11,
       "superseded_evidence_count": 0,
       "expired_evidence_count": 0
     }

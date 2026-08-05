@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="#047857">
+  <polygon points="50,15 85,40 85,85 15,85 15,40" fill="#047857"/>
+  <polygon points="50,25 75,45 75,75 25,75 25,45" fill="white"/>
+  <text x="50" y="65" text-anchor="middle" fill="#047857" font-size="14">ACAD</text>
+</svg>

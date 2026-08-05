@@ -1,69 +1,7 @@
 {
   "baseUrl": "https://lawyershub.id",
-  "generatedAt": "2026-08-04T16:12:16.890Z",
-  "checks": [
-    {
-      "name": "open-workspace",
-      "status": "pass",
-      "detail": "Workspace root returned 200 and rendered surface."
-    },
-    {
-      "name": "workspace-context",
-      "status": "pass",
-      "detail": "Session endpoint returned authenticated context.",
-      "actorId": "operator.web",
-      "tenantId": "tenant.default",
-      "workspaceId": "professional-workspace.default",
-      "requestId": "27d6a25f-a2b3-4e72-8782-85f6ae0f35a0",
-      "productId": "lawyershub"
-    },
-    {
-      "name": "open-requirement",
-      "status": "pass",
-      "detail": "Requirement page returned 200 and rendered the experience."
-    },
-    {
-      "name": "create-requirement",
-      "status": "pass",
-      "detail": "Requirement create returned persisted result.",
-      "requirementId": "req-107",
-      "tenantId": "tenant.default",
-      "requestId": "c09c8895-dad1-47df-8c33-d4cc02e3bb0d",
-      "productId": "lawyershub"
-    },
-    {
-      "name": "read-requirement",
-      "status": "pass",
-      "detail": "Requirement detail round-trip is consistent.",
-      "requirementId": "req-107",
-      "tenantId": "tenant.default",
-      "workspaceId": "professional-workspace.default",
-      "productId": "lawyershub"
-    },
-    {
-      "name": "update-requirement",
-      "status": "pass",
-      "detail": "Requirement state changed through workflow action.",
-      "requirementId": "req-107",
-      "workflowStatus": "approved"
-    },
-    {
-      "name": "refresh-reentry",
-      "status": "pass",
-      "detail": "Requirement remained visible after re-entry and search.",
-      "requirementId": "req-107",
-      "matched": 3
-    },
-    {
-      "name": "error-path",
-      "status": "pass",
-      "detail": "Controlled validation failure is exposed correctly."
-    },
-    {
-      "name": "audit-evidence",
-      "status": "warning",
-      "detail": "Runtime invocation evidence capture depends on EOS_RUNTIME_INVOCATION_EVIDENCE_PATH in staging.",
-      "evidencePath": null
-    }
-  ]
+  "generatedAt": "2026-08-05T02:09:36.647Z",
+  "status": "failed",
+  "error": "unable to get local issuer certificate",
+  "checks": []
 }

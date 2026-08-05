@@ -1,0 +1,31 @@
+import { BaseSearchBar } from './BaseSearchBar';
+
+interface ResearchSearchBarProps {
+  initialQuery: string;
+  initialStatus: string;
+  productId: string;
+}
+
+// Wrapper konfigurasi untuk halaman /research
+// Menggunakan BaseSearchBar sebagai shared logic component (REFACTOR REQ-009)
+export function ResearchSearchBar({ initialQuery, initialStatus, productId }: ResearchSearchBarProps) {
+  // Filter options spesifik untuk research page
+  const researchFilterOptions = [
+    { value: 'all', label: 'Semua Status' },
+    { value: 'open', label: 'Penelitian Dibuka' },
+    { value: 'in-progress', label: 'Sedang Berjalan' },
+    { value: 'completed', label: 'Selesai' }
+  ];
+
+  return (
+    <BaseSearchBar
+      placeholder="Cari judul penelitian, deskripsi, atau penulis..."
+      initialQuery={initialQuery}
+      filterOptions={researchFilterOptions}
+      initialFilterValue={initialStatus}
+      filterParamName="status"
+      basePath="/research"
+      productId={productId}
+    />
+  );
+}

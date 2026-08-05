@@ -1,0 +1,63 @@
+{
+  "requirement_id": "REQ-010",
+  "requirement_title": "Tambahkan filter lokasi di halaman /community untuk mencari anggota berdasarkan negara/kota",
+  "evidence_collection": [
+    {
+      "evidence_type": "implementation",
+      "file_path": "apps/web/app/community/page.tsx",
+      "changes": [
+        "Menambahkan filterLocation variable untuk menangkap parameter query location",
+        "Memperbarui logika filteredMembers untuk menyertakan pengecekan lokasi anggota",
+        "Meneruskan initialLocation ke CommunitySearchBar component"
+      ],
+      "verified": true,
+      "timestamp": "2026-08-05T14:30:00Z"
+    },
+    {
+      "evidence_type": "implementation",
+      "file_path": "apps/web/components/CommunitySearchBar.tsx",
+      "changes": [
+        "Menambahkan initialLocation prop ke interface CommunitySearchBarProps",
+        "Menggunakan dukungan multiple filters dari BaseSearchBar (shared component)",
+        "Menambahkan filter lokasi dengan opsi: Indonesia, Singapura, Malaysia, Australia, Amerika Serikat"
+      ],
+      "verified": true,
+      "timestamp": "2026-08-05T14:30:00Z"
+    },
+    {
+      "evidence_type": "compatibility",
+      "file_path": "apps/web/components/CommunityDirectory.tsx",
+      "validation": "Field member.location sudah digunakan secara konsisten untuk menampilkan lokasi institusi",
+      "fallback_behavior": "Mempunyai fallback ke 'Global Institution' jika lokasi tidak tersedia",
+      "verified": true,
+      "timestamp": "2026-08-05T14:30:00Z"
+    },
+    {
+      "evidence_type": "architecture",
+      "validation": "Menggunakan komponen bersama BaseSearchBar tanpa membuat kode khusus produk",
+      "compliance": [
+        "Tidak ada fork arsitektur",
+        "Mempertahankan shared canonical architecture",
+        "URL-based state management yang konsisten dengan filter lain"
+      ],
+      "verified": true,
+      "timestamp": "2026-08-05T14:30:00Z"
+    }
+  ],
+  "verification": {
+    "status": "PASS",
+    "confidence_score": 1.0,
+    "summary": "REQ-010 berhasil diimplementasikan sebagai slice tipis yang menggunakan komponen yang sudah ada. Filter lokasi berfungsi dengan baik dan terintegrasi dengan ekosistem community page yang sudah ada.",
+    "traceability": {
+      "requirement": "REQ-010",
+      "implementation_files": [
+        "apps/web/app/community/page.tsx",
+        "apps/web/components/CommunitySearchBar.tsx"
+      ],
+      "shared_components_used": [
+        "BaseSearchBar (dynamic filter support)"
+      ],
+      "vertical_slice_complete": true
+    }
+  }
+}

@@ -16,7 +16,8 @@
       "@repo/presentation-types": ["../../packages/presentation/presentation-types/dist/index"],
       "@repo/presentation-types/*": ["../../packages/presentation/presentation-types/dist/*"],
       "@repo/presentation-foundation": ["../../packages/presentation/foundation/dist/index"],
-      "@repo/presentation-foundation/*": ["../../packages/presentation/foundation/dist/*"]
+      "@repo/presentation-foundation/*": ["../../packages/presentation/foundation/dist/*"],
+      "@products/*": ["../../products/*"]
     },
     "plugins": [
       {

@@ -8,14 +8,14 @@
     "foundation_status": "UNVERIFIED_BASELINE",
     "declared_products": 3,
     "active_products": 1,
-    "implemented_products": 1,
+    "implemented_products": 3,
     "verified_products": 0,
     "implemented_active_products": 1,
     "verified_active_products": 0,
     "active_portfolio_coverage_ratio": 0,
     "active_portfolio_coverage_percentage": 0,
-    "implementation_coverage_ratio": 0.3333,
-    "implementation_coverage_percentage": 33.3,
+    "implementation_coverage_ratio": 1,
+    "implementation_coverage_percentage": 100,
     "portfolio_coverage_ratio": 0,
     "portfolio_coverage_percentage": 0,
     "declared_shared_capabilities": [
@@ -28,19 +28,20 @@
       "lawyershub"
     ],
     "implemented_product_ids": [
-      "lawyershub"
+      "services-id",
+      "lawyershub",
+      "ilc"
     ],
     "verified_product_ids": [],
     "implemented_active_product_ids": [
       "lawyershub"
     ],
     "verified_active_product_ids": [],
-    "missing_product_implementation": [
-      "services-id",
-      "ilc"
-    ],
+    "missing_product_implementation": [],
     "pending_product_verification": [
-      "lawyershub"
+      "services-id",
+      "lawyershub",
+      "ilc"
     ],
     "missing_active_product_implementation": [],
     "pending_active_product_verification": [
@@ -81,10 +82,10 @@
     "chain_projection_digest": "3fc68bb4491b9b7025f27029dbd680b269a63c13ab9423daf8ee2a660c5a12f7"
   },
   "topology_drift": {
-    "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
+    "projection_id": "TopologyDriftProjection:9264733347c84038",
     "projection_type": "TopologyDriftProjection",
     "schema_version": "1.0.0",
-    "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+    "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
     "generated_from": [
       {
         "source_type": "execution_chain",
@@ -102,31 +103,35 @@
         "source_digest": "UNVERIFIED"
       }
     ],
-    "generated_at_utc": "2026-08-03T15:33:49.942Z",
+    "generated_at_utc": "2026-08-05T04:29:06.737Z",
     "drift_status": "DRIFT",
     "summary": {
       "total_products": 3,
       "aligned_products": 0,
-      "drifted_products": 1,
+      "drifted_products": 3,
       "undeclared_observed_edges": 12,
-      "unobserved_declared_edges": 2,
+      "unobserved_declared_edges": 4,
       "unmodeled_observed_requirements": 5,
       "unmodeled_observed_workflows": 6,
       "unmodeled_observed_plans": 3,
-      "canonical_topology_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21"
+      "canonical_topology_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d"
     },
     "products": [
       {
         "product_id": "services-id",
-        "declared_capabilities": [],
+        "declared_capabilities": [
+          "requirement-management"
+        ],
         "observed_capabilities": [],
         "aligned_capabilities": [],
         "undeclared_observed_capabilities": [],
-        "unobserved_declared_capabilities": [],
+        "unobserved_declared_capabilities": [
+          "requirement-management"
+        ],
         "observed_requirement_node_ids": [],
         "observed_workflow_node_ids": [],
         "observed_plan_node_ids": [],
-        "drift_status": "UNVERIFIED"
+        "drift_status": "DRIFT"
       },
       {
         "product_id": "lawyershub",
@@ -195,15 +200,19 @@
       },
       {
         "product_id": "ilc",
-        "declared_capabilities": [],
+        "declared_capabilities": [
+          "requirement-management"
+        ],
         "observed_capabilities": [],
         "aligned_capabilities": [],
         "undeclared_observed_capabilities": [],
-        "unobserved_declared_capabilities": [],
+        "unobserved_declared_capabilities": [
+          "requirement-management"
+        ],
         "observed_requirement_node_ids": [],
         "observed_workflow_node_ids": [],
         "observed_plan_node_ids": [],
-        "drift_status": "UNVERIFIED"
+        "drift_status": "DRIFT"
       }
     ],
     "claim_boundary": "Topology drift currently compares declared product-to-capability topology against observed capability execution chains. Requirement, workflow, and plan nodes are reported as unmodeled observed topology until they become first-class declared contracts in the registry."
@@ -225,78 +234,49 @@
     "summary_boundary": "Constitution summary is the presentation-safe governance read model for reporting and dashboards. It intentionally omits per-law proof payloads and individual claim entries."
   },
   "governance_read_model_metrics": {
-    "freshness_ms": 8,
+    "freshness_ms": 7,
     "generation_duration_ms": 1,
     "consumer_count": 1,
-    "generation_digest": "649dcdd45eb214926c26de2969f936441f5cbe589ce4d20bcaa00ddab57731aa",
-    "source_digest": "1d95987c0a1af858deea823b277482acdfe1f60f18707866ca41f104639c3d34"
+    "generation_digest": "553d442b1d3a9395c4b20940874a27b243e8d9b273fc470b2f52e7e7bc17f530",
+    "source_digest": "cad87112bd6a28530339124ef9b7f0d1ee3e0a36fe2f74739d92765399998c88"
   },
   "governance_incremental_materialization": {
     "node_count": 16,
     "edge_count": 42,
-    "changed_node_count": 14,
-    "impacted_node_count": 14,
-    "reusable_node_count": 2,
+    "changed_node_count": 0,
+    "impacted_node_count": 0,
+    "reusable_node_count": 16,
     "session_digest_changed": true,
     "session_projection_digest_changed": true,
     "delta_mode": "SESSION_DELTA",
-    "delta_scope_status": "MATERIALIZATION_REQUIRED",
-    "directly_changed_nodes": [
-      "claims",
-      "claims_view",
-      "dashboard_view",
-      "evidence_packages",
-      "governance_session",
-      "health_view",
-      "law_attestations",
-      "law_certificates",
-      "law_results",
-      "proof_bundle",
-      "read_model_metrics",
-      "session_provenance",
-      "summary",
-      "summary_view"
-    ],
-    "impacted_nodes": [
-      "claims",
-      "claims_view",
-      "dashboard_view",
-      "evidence_packages",
-      "governance_session",
-      "health_view",
-      "law_attestations",
-      "law_certificates",
-      "law_results",
-      "proof_bundle",
-      "read_model_metrics",
-      "session_provenance",
-      "summary",
-      "summary_view"
-    ],
+    "delta_scope_status": "METADATA_ONLY",
+    "directly_changed_nodes": [],
+    "impacted_nodes": [],
     "incremental_readiness_status": "PARTIAL"
   },
   "governance_selective_execution": {
     "reusable_node_count": 3,
-    "reused_node_count": 0,
-    "rematerialized_node_count": 3,
-    "reused_nodes": [],
-    "rematerialized_nodes": [
+    "reused_node_count": 3,
+    "rematerialized_node_count": 0,
+    "reused_nodes": [
       "claims",
       "summary",
       "proof_bundle"
-    ]
+    ],
+    "rematerialized_nodes": []
   },
   "governance_read_model_selective_execution": {
     "reusable_node_count": 4,
-    "reused_node_count": 0,
-    "rematerialized_node_count": 5,
-    "execution_mode": "FULL_REMATERIALIZATION",
-    "reused_nodes": [],
-    "rematerialized_nodes": [
+    "reused_node_count": 4,
+    "rematerialized_node_count": 1,
+    "execution_mode": "METADATA_ONLY_REBIND",
+    "reused_nodes": [
       "summary_view",
       "claims_view",
       "health_view",
-      "dashboard_view",
+      "dashboard_view"
+    ],
+    "rematerialized_nodes": [
       "read_model_metrics"
     ]
   },
@@ -382,9 +362,9 @@
     "gate-c": {
       "producer_id": "gate-c",
       "producer_class": "gate",
-      "status": "UNVERIFIED",
-      "health": "WARN",
-      "coverage_ratio": 0,
+      "status": "PASS",
+      "health": "PASS",
+      "coverage_ratio": 1,
       "subject": {
         "subject_ref": "enterprise/science/gate-c/execution/gate-c-status.yaml",
         "subject_type": "gate-c-status"
@@ -403,24 +383,24 @@
       "runtime",
       "specification"
     ],
-    "average_coverage_ratio": 0.9167
+    "average_coverage_ratio": 1.0833
   },
   "health": {
     "status": "WARN",
-    "pass_count": 2,
-    "warn_count": 2,
+    "pass_count": 3,
+    "warn_count": 1,
     "fail_count": 0,
     "partial_count": 2
   },
   "coverage": {
-    "average_ratio": 0.9167,
+    "average_ratio": 1.0833,
     "by_producer": {
       "specification": 2.5,
       "capability": 1,
       "decision": 1,
       "learning": 1,
       "runtime": 0,
-      "gate-c": 0
+      "gate-c": 1
     }
   },
   "evidence": {
@@ -755,7 +735,7 @@
   },
   "execution_graph": {
     "constitutional_version": "1.0.0",
-    "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+    "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
     "proof_determinism_status": "PASS",
     "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
     "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
@@ -768,7 +748,7 @@
     },
     "graph_version": "1.0.0",
     "projection_version": "1.0.0",
-    "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+    "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
     "generated_from": [
       {
         "source_type": "artifact_registry",
@@ -778,7 +758,7 @@
       {
         "source_type": "execution_evidence",
         "source_ref": "artifact_registry:execution_evidence",
-        "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+        "source_digest": "9447f14ebb00121902fd9919c1eada6a752f37cd6016acb5f3b09249fa69c45f"
       },
       {
         "source_type": "execution_chain",
@@ -791,7 +771,7 @@
         "source_digest": "67c1fd991d43ed16682f0b8be01d7abefab93fc4b58d63275a35fd186582ab1d"
       }
     ],
-    "generated_at_utc": "2026-08-03T15:33:49.967Z",
+    "generated_at_utc": "2026-08-05T04:29:06.764Z",
     "total_nodes": 173,
     "total_edges": 381,
     "declared_edges": 33,
@@ -822,11 +802,9 @@
   "products": [
     {
       "product_id": "services-id",
-      "app_manifest_exists": false,
+      "app_manifest_exists": true,
       "evidence_complete": false,
       "missing_evidence": [
-        "functional-test-report.json",
-        "clr-report.json",
         "capability-mapping-matrix.csv",
         "composition-tree.txt",
         "composition-replay.json",
@@ -839,7 +817,9 @@
         "product-verification-projection.json",
         "verification-summary.md"
       ],
-      "capabilities": [],
+      "capabilities": [
+        "requirement-management"
+      ],
       "mapped_capabilities": [],
       "verification_summary_exists": false,
       "composition_replay_status": "MISSING",
@@ -849,11 +829,11 @@
       "execution_timeline_summary": null,
       "execution_chains": [],
       "execution_plan_summary": null,
-      "functional_tests_passed": 0,
-      "functional_tests_total": 0,
-      "capability_reuse_ratio": null,
-      "experience_reuse_ratio": null,
-      "clr": null
+      "functional_tests_passed": 4,
+      "functional_tests_total": 4,
+      "capability_reuse_ratio": 1,
+      "experience_reuse_ratio": 1,
+      "clr": "FULL_REUSE"
     },
     {
       "product_id": "lawyershub",
@@ -863,8 +843,6 @@
         "product-verification-projection.json"
       ],
       "capabilities": [
-        "legal-case",
-        "legal-document",
         "requirement-management"
       ],
       "mapped_capabilities": [
@@ -8283,11 +8261,9 @@
     },
     {
       "product_id": "ilc",
-      "app_manifest_exists": false,
+      "app_manifest_exists": true,
       "evidence_complete": false,
       "missing_evidence": [
-        "functional-test-report.json",
-        "clr-report.json",
         "capability-mapping-matrix.csv",
         "composition-tree.txt",
         "composition-replay.json",
@@ -8300,7 +8276,9 @@
         "product-verification-projection.json",
         "verification-summary.md"
       ],
-      "capabilities": [],
+      "capabilities": [
+        "requirement-management"
+      ],
       "mapped_capabilities": [],
       "verification_summary_exists": false,
       "composition_replay_status": "MISSING",
@@ -8310,11 +8288,11 @@
       "execution_timeline_summary": null,
       "execution_chains": [],
       "execution_plan_summary": null,
-      "functional_tests_passed": 0,
-      "functional_tests_total": 0,
-      "capability_reuse_ratio": null,
-      "experience_reuse_ratio": null,
-      "clr": null
+      "functional_tests_passed": 4,
+      "functional_tests_total": 4,
+      "capability_reuse_ratio": 1,
+      "experience_reuse_ratio": 1,
+      "clr": "FULL_REUSE"
     }
   ],
   "product_portfolio_source": "enterprise/specifications/PRODUCT-PORTFOLIO.yaml",

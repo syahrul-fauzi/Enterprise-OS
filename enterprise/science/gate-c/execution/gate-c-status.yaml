@@ -2,7 +2,7 @@ version: 1.0.0
 status_projection_id: GATE-C-STATUS-001
 kind: OPERATIONAL_READ_MODEL
 status: ACTIVE
-projection_basis_hash: sha256:6467b085e8cc7c016fa246b0ece857de8424c5eeb8b289dfceab6e3cab8fd9df
+projection_basis_hash: sha256:c91a4f784b86d300570d6b084775ec59eef90ed485db6f9d284ae34423b4966d
 source_artifacts:
   coverage_matrix_ref: execution/coverage-matrix.yaml
   coverage_matrix_hash: sha256:1f74c4b0363d720ff699b7a2aac2fc63b32d0d29cae7749f6afaa91af56676e6
@@ -14,7 +14,7 @@ source_artifacts:
   acceptance_decisions_hash: sha256:b7fdd7fd3d2a6b1ab1d19741c191a3ab43be6808af5358aafaadb3171d484266
   acceptance_reports_dir_ref: execution/acceptance
   acceptance_evidence_file_count: 20
-  acceptance_evidence_inventory_hash: sha256:07d16441a31f8241663031671b9749e2b76fc54b4b1406908671d5b85438b4d0
+  acceptance_evidence_inventory_hash: sha256:d8c2f5cd36cc9e82c3586b7b9582a80ce31841f72d919bbbeb44da06de3580b1
   constitution_summary_ref: workspace/foundation/evidence/verification/constitution-summary.json
   constitution_summary_hash: sha256:1441a828c9bfcaba2dfbabfa5161b15d6af6e77376c7800c79193a5743553a4d
   capability_dependency_constitution_ref: workspace/foundation/evidence/verification/capability-dependency-constitution.json
@@ -24,17 +24,19 @@ source_artifacts:
   contract_version_evolution_ref: workspace/foundation/evidence/verification/contract-version-evolution.json
   contract_version_evolution_hash: sha256:0c231e16c3979136e52aa6e6739ea8dffc153faaed3eeac95fd37cc1be86c1ec
   governance_session_ref: workspace/foundation/evidence/verification/governance-session.json
-  governance_session_hash: sha256:f6ddc0a883cfce137c0939f946fcedf24d8c4e5d91625a6b7b6b23e69ecd40cb
+  governance_session_hash: sha256:399307e98e7031937732b352852e86f50ef73bdb088a4b18dda66d3ef666e29d
   trust_framework_ref: workspace/foundation/evidence/verification/trust-framework.json
   trust_framework_hash: sha256:7d921629f85279ff9f1fbd3e390185e23dce2d24e3769b04e5c0376858527508
   trust_framework_verification_ref: workspace/foundation/evidence/verification/trust-framework-verification.json
   trust_framework_verification_hash: sha256:3921549950c63d0bfcbff5d1856cefa19248f198abddbe5330816f8f883f47a8
   specification_conformance_ref: workspace/foundation/evidence/verification/specification-conformance-report.json
-  specification_conformance_hash: sha256:892e380a2e997a8ade741342c230fff6b6c3e21ad752b942d1e4172d5d4da6ff
+  specification_conformance_hash: sha256:3377ca2ec05b7f1d6a32d5f51d13c6f91992c7323dd635703ee3acae5cdc0800
   specification_artifact_graph_ref: workspace/foundation/evidence/verification/specification-artifact-graph.json
-  specification_artifact_graph_hash: sha256:70962a249a1986f39172ca4cc594fb85bb26fffbabb62a9f20170e6086acadc9
+  specification_artifact_graph_hash: sha256:c4251d42439ef6e870d7025c4eded7b1b00534c11f845601ce8997bfea19e84d
   specification_vocabulary_audit_ref: workspace/foundation/evidence/verification/specification-vocabulary-audit.json
-  specification_vocabulary_audit_hash: sha256:b2879a384de35287cc3303db469ea336c3ebd8a8e8b51ff975b9709cd7600e59
+  specification_vocabulary_audit_hash: sha256:1c334de07d468f0bd68a043f2b2f90a73731805502fef0e176ce085e1ce83125
+  learning_intelligence_ref: workspace/foundation/evidence/verification/learning-intelligence-report.json
+  learning_intelligence_hash: sha256:bbe326640ce843e538b19d543d3639267dca0f0197ac47a646ba936b04ea5d12
   n2_run_ref: execution/runs/run-004
   n4_run_ref: execution/runs/run-007
   append_only_proof_ledger_enforced: true
@@ -51,7 +53,7 @@ governance_capabilities:
     note: Acceptance reports are written once per acceptance decision id and cannot be overwritten in place.
   projection_regeneration:
     status: DETERMINISTIC_REBUILD_CAPABLE
-    basis_hash: sha256:6467b085e8cc7c016fa246b0ece857de8424c5eeb8b289dfceab6e3cab8fd9df
+    basis_hash: sha256:c91a4f784b86d300570d6b084775ec59eef90ed485db6f9d284ae34423b4966d
     note: Projection content is derived only from historical evidence, acceptance evidence, decision log, and proof ledger snapshot hashes.
   platform_governance_snapshot:
     status: HEALTHY
@@ -102,14 +104,14 @@ governance_platform:
   provenance:
     status: COMPLETED
     verification_status: PASS
-    session_id: governance-session:760bfc51dbebcd86
+    session_id: governance-session:a8b570e4c753419a
     execution_scope: verify-foundation
     read_model_count: 5
     evidence_ref: workspace/foundation/evidence/verification/governance-session.json
     verification_ref: workspace/foundation/evidence/verification/governance-session-verification.json
   verification_run:
     status: PASS
-    run_id: verification-run:807e815abb9f7df4
+    run_id: verification-run:e3fa3bedd684618d
     readiness_status: PASS
     evidence_ref: workspace/foundation/evidence/verification/verification-run.json
     verification_ref: workspace/foundation/evidence/verification/verification-run-verification.json
@@ -150,9 +152,16 @@ governance_platform:
         migration_debt_count: 0
       evidence:
         status: WARN
-        capability_without_evidence_count: 6
+        capability_without_evidence_count: 5
         stale_evidence_count: 1
-        unverifiable_capability_count: 3
+        unverifiable_capability_count: 2
+        orphaned_evidence_count: 0
+        inconsistent_evidence_count: 0
+        unsigned_evidence_count: 0
+        tampered_evidence_count: 0
+        partial_evidence_count: 11
+        superseded_evidence_count: 0
+        expired_evidence_count: 0
     dependency_edge_count: 11
     circular_dependency_count: 0
     forbidden_dependency_count: 0
@@ -163,9 +172,16 @@ governance_platform:
     orphan_capability_count: 3
     ownership_gap_count: 16
     migration_debt_count: 0
-    capability_without_evidence_count: 6
+    capability_without_evidence_count: 5
     stale_evidence_count: 1
-    unverifiable_capability_count: 3
+    unverifiable_capability_count: 2
+    orphaned_evidence_count: 0
+    inconsistent_evidence_count: 0
+    unsigned_evidence_count: 0
+    tampered_evidence_count: 0
+    partial_evidence_count: 11
+    superseded_evidence_count: 0
+    expired_evidence_count: 0
     warn_capability_count: 3
     fail_capability_count: 0
     evidence_ref: workspace/foundation/evidence/verification/capability-graph.json
@@ -213,11 +229,11 @@ governance_platform:
     status: PASS
     conformance_status: PASS
     vocabulary_status: PASS
-    registry_artifact_count: 43
-    registry_edge_count: 92
-    rfc_count: 7
-    conf_count: 7
-    spec_count: 4
+    registry_artifact_count: 50
+    registry_edge_count: 125
+    rfc_count: 8
+    conf_count: 8
+    spec_count: 9
     conformance_warning_count: 0
     conformance_failure_count: 0
     vocabulary_term_count: 10
@@ -225,6 +241,166 @@ governance_platform:
     conformance_ref: workspace/foundation/evidence/verification/specification-conformance-report.json
     artifact_graph_ref: workspace/foundation/evidence/verification/specification-artifact-graph.json
     vocabulary_audit_ref: workspace/foundation/evidence/verification/specification-vocabulary-audit.json
+  decision_quality:
+    status: PARTIAL
+    decision_count: 23
+    decision_traceability_coverage: 1
+    decision_outcome_coverage: 1
+    decision_learning_closure: 1.0952380952380953
+    decision_reproducibility: 1
+    decision_reversibility: 1
+    decision_impact_graph_completeness: 1
+    engineering_leverage_measurement_coverage: 0
+    decision_effectiveness: 0.8571
+    decision_success_rate: 0.7143
+    false_decision_rate: 0
+    decision_reversal_rate: 0.9565
+    evidence_utilization_rate: 1
+    knowledge_reuse_rate: 0.4091
+    evidence_strength_index: 1
+    outcome_improvement_rate: 0.4444
+    decision_confidence_index: 0.9783
+    knowledge_weighted_quality_index: 0.1779
+    mean_time_to_outcome_ms: 0
+    learning_velocity_ms: 0
+    decision_confidence_growth: 0
+    report_ref: workspace/foundation/evidence/verification/decision-quality-report.json
+  learning_intelligence:
+    status: PARTIAL
+    decision_count: 23
+    outcome_count: 23
+    outcome_registry_coverage: 1
+    decision_quality_index: 0.1779
+    learning_velocity_ms: 421846.625
+    knowledge_gain_units: 39
+    knowledge_gain: 1.6957
+    knowledge_object_count: 9
+    operationalized_knowledge_count: 9
+    knowledge_availability_rate: 1
+    knowledge_reuse_rate: 0.3913
+    reused_knowledge_object_count: 6
+    improved_knowledge_object_count: 2
+    knowledge_lineage_count: 9
+    knowledge_lineage_preview: &a1
+      - knowledge_id: knowledge:30fd3dec86d769a4
+        knowledge_key: knowledge-key:bd73d427916ceb94
+        evolution_stage: IMPROVED
+        source_learning_count: 4
+        reuse_count: 4
+        improved_outcome_count: 3
+        source_learning_ids:
+          - decision-learning-gate-c-acceptance:e4d7eb821549f4aa
+          - decision-learning-gate-c-acceptance:9372300c12082315
+          - decision-learning-gate-c-acceptance:229dda074bc3ac5b
+          - decision-learning-gate-c-acceptance:94098861278de1c6
+        reused_by_decision_entry_ids:
+          - decision-entry-gate-c-acceptance:0efff3ac64f2f606
+          - decision-entry-gate-c-acceptance:560d27d4f27c41f4
+          - decision-entry-gate-c-acceptance:318edcdab70d8c49
+          - decision-entry-gate-c-acceptance:ba853bccaf44d3a1
+      - knowledge_id: knowledge:303dcdb243410f76
+        knowledge_key: knowledge-key:f631537605a94365
+        evolution_stage: IMPROVED
+        source_learning_count: 1
+        reuse_count: 1
+        improved_outcome_count: 1
+        source_learning_ids:
+          - decision-learning-gate-c-acceptance:6ca4700a64e15453
+        reused_by_decision_entry_ids:
+          - decision-entry-gate-c-acceptance:e7a2f10dbea3c24a
+      - knowledge_id: knowledge:b393fba7c6e53e95
+        knowledge_key: knowledge-key:6cf9c100ad81dff6
+        evolution_stage: REUSED
+        source_learning_count: 3
+        reuse_count: 1
+        improved_outcome_count: 0
+        source_learning_ids:
+          - decision-learning-gate-c-acceptance:f52c81fb5bf2b435
+          - decision-learning-gate-c-acceptance:f2c7473865477496
+          - decision-learning-gate-c-acceptance:9224b5c9ccda85b0
+        reused_by_decision_entry_ids:
+          - decision-entry-gate-c-acceptance:2dfc47af1d3a8683
+      - knowledge_id: knowledge:9a1309ecf584e3f4
+        knowledge_key: knowledge-key:ae416ad88ecec5a2
+        evolution_stage: REUSED
+        source_learning_count: 3
+        reuse_count: 1
+        improved_outcome_count: 0
+        source_learning_ids:
+          - decision-learning-gate-c-acceptance:f8957bdb86a16916
+          - decision-learning-gate-c-acceptance:93bf9ffaaf5a26d6
+          - decision-learning-gate-c-acceptance:7556db60aa2cc378
+        reused_by_decision_entry_ids:
+          - decision-entry-gate-c-acceptance:f9e259c89fac05b3
+      - knowledge_id: knowledge:cd55bcdbb43f42fe
+        knowledge_key: knowledge-key:88a18dea5332811f
+        evolution_stage: REUSED
+        source_learning_count: 2
+        reuse_count: 1
+        improved_outcome_count: 0
+        source_learning_ids:
+          - decision-learning-gate-c-acceptance:a59ad53b9570757b
+          - decision-learning-gate-c-acceptance:2ba781ed6252f5c4
+        reused_by_decision_entry_ids:
+          - decision-entry-gate-c-acceptance:80f2bca33232992d
+    recommendation_effectiveness_rate: 0
+    decision_pattern_change_rate: 0.4
+    recommendation_acceptance_rate: 0.3333
+    behavior_change_rate: 0.4
+    engineering_leverage_ratio: null
+    repeated_mistake_count: 13
+    future_decision_improvement_rate: 0.5
+    report_ref: workspace/foundation/evidence/verification/learning-intelligence-report.json
+  closed_loop_hypothesis:
+    statement: Evidence -> Decision -> Outcome -> Learning -> Knowledge -> Better Decision -> Better Outcome
+    status: PASS
+    stages:
+      evidence:
+        status: PASS
+        metric_name: evidence_strength_index
+        metric: 1
+        evidence_ref: workspace/foundation/evidence/verification/decision-quality-report.json
+      decision:
+        status: PASS
+        metric_name: decision_count
+        metric: 23
+        evidence_ref: workspace/foundation/evidence/verification/decision-quality-report.json
+      outcome:
+        status: PASS
+        metric_name: decision_outcome_coverage
+        metric: 1
+        evidence_ref: workspace/foundation/evidence/verification/decision-quality-report.json
+      learning:
+        status: PASS
+        metric_name: decision_learning_closure
+        metric: 1.0952380952380953
+        evidence_ref: workspace/foundation/evidence/verification/learning-intelligence-report.json
+      knowledge:
+        status: PASS
+        metric_name: knowledge_availability_rate
+        metric: 1
+        evidence_ref: workspace/foundation/evidence/verification/learning-intelligence-report.json
+      better_decision:
+        status: PASS
+        metric_name: knowledge_weighted_quality_index
+        metric: 0.1779
+        evidence_ref: workspace/foundation/evidence/verification/decision-quality-report.json
+      better_outcome:
+        status: PASS
+        metric_name: outcome_improvement_rate
+        metric: 0.4444
+        evidence_ref: workspace/foundation/evidence/verification/learning-intelligence-report.json
+    evidence_basis:
+      decision_quality_ref: workspace/foundation/evidence/verification/decision-quality-report.json
+      learning_intelligence_ref: workspace/foundation/evidence/verification/learning-intelligence-report.json
+    claim_boundary: Closed-loop hypothesis status is derived only from materialized decision quality and learning intelligence evidence already present in Foundation verification. It does not infer unobserved decisions, outcomes, or knowledge reuse outside the supplied evidence corpus.
+  evidence_convergence:
+    status: UNVERIFIED
+    producer_count: null
+    target_producer_count: null
+    registered_target_producer_count: null
+    target_coverage_ratio: null
+    report_ref: workspace/foundation/evidence/verification/evidence-producer-convergence-report.json
 coverage:
   metric_definitions:
     truth_table_row_completion_percent: Counts unique truth-table rows P1..N7 with completed actual verdicts.
@@ -266,8 +442,8 @@ coverage:
       actual_diagnostic_predicate_failure: pred_a_legitimate
       convergence: CONVERGENT
     N2:
-      lifecycle_state: VERIFIED
-      operational_status: VERIFIED
+      lifecycle_state: ACCEPTED
+      operational_status: PASS
       expected_verdict: FAIL
       truth_table_row: N2
       scientific_role: NEGATIVE_CONTROL — Individually falsifies Predicate B (MeaningPreserved=false) while A and C are held constant at true.
@@ -277,8 +453,8 @@ coverage:
       actual_diagnostic_predicate_failure: pred_b_meaning_preserved
       expected_diagnostic_predicate_failure: pred_b_meaning_preserved
     N3:
-      lifecycle_state: VERIFIED
-      operational_status: VERIFIED
+      lifecycle_state: ACCEPTED
+      operational_status: PASS
       expected_verdict: FAIL
       truth_table_row: N3
       scientific_role: NEGATIVE_CONTROL — Jointly falsifies A and B (both false) while C is held constant at true.
@@ -288,8 +464,8 @@ coverage:
       actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_b_meaning_preserved
       expected_diagnostic_predicate_failure: pred_a_legitimate_and_pred_b_meaning_preserved
     N4:
-      lifecycle_state: VERIFIED
-      operational_status: VERIFIED
+      lifecycle_state: ACCEPTED
+      operational_status: PASS
       expected_verdict: FAIL
       truth_table_row: N4
       scientific_role: NEGATIVE_CONTROL — Individually falsifies Predicate C (Provable=false) while A and B are held constant at true.
@@ -299,8 +475,8 @@ coverage:
       actual_diagnostic_predicate_failure: pred_c_provable
       expected_diagnostic_predicate_failure: pred_c_provable
     N5:
-      lifecycle_state: VERIFIED
-      operational_status: VERIFIED
+      lifecycle_state: ACCEPTED
+      operational_status: PASS
       expected_verdict: FAIL
       truth_table_row: N5
       scientific_role: NEGATIVE_CONTROL — Jointly falsifies A and C (both false) while B is held constant at true.
@@ -310,8 +486,8 @@ coverage:
       actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_c_provable
       expected_diagnostic_predicate_failure: pred_a_legitimate_and_pred_c_provable
     N6:
-      lifecycle_state: VERIFIED
-      operational_status: VERIFIED
+      lifecycle_state: ACCEPTED
+      operational_status: PASS
       expected_verdict: FAIL
       truth_table_row: N6
       scientific_role: NEGATIVE_CONTROL — Jointly falsifies B and C (both false) while A is held constant at true.
@@ -321,8 +497,8 @@ coverage:
       actual_diagnostic_predicate_failure: pred_b_meaning_preserved_and_pred_c_provable
       expected_diagnostic_predicate_failure: pred_b_meaning_preserved_and_pred_c_provable
     N7:
-      lifecycle_state: VERIFIED
-      operational_status: VERIFIED
+      lifecycle_state: ACCEPTED
+      operational_status: PASS
       expected_verdict: FAIL
       truth_table_row: N7
       scientific_role: NEGATIVE_CONTROL — Jointly falsifies all three (A=false B=false C=false). Sanity check that all FAIL is recognized and diagnostic predicates enumerate all three.
@@ -335,10 +511,10 @@ coverage:
     n2:
       run_id: run-004
       truth_table_row: N2
-      status: EXECUTED_NOT_ACCEPTED
+      status: ACCEPTED_COMPLETE
       executed: true
-      acceptance_complete: false
-      lifecycle_state: VERIFIED
+      acceptance_complete: true
+      lifecycle_state: ACCEPTED
       actual_verdict: FAIL
       actual_diagnostic_predicate_failure: pred_b_meaning_preserved
       invariant_results:
@@ -363,16 +539,15 @@ coverage:
         replay_pass_reproducibility: true
         canonical_evidence_convergence: true
         science_kernel_unchanged: true
-        run_001_unchanged: false
-      blocking_conditions:
-        - run_001_unchanged
+        run_001_unchanged: true
+      blocking_conditions: []
     n3:
       run_id: run-008
       truth_table_row: N3
-      status: EXECUTED_NOT_ACCEPTED
+      status: ACCEPTED_COMPLETE
       executed: true
-      acceptance_complete: false
-      lifecycle_state: VERIFIED
+      acceptance_complete: true
+      lifecycle_state: ACCEPTED
       actual_verdict: FAIL
       actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_b_meaning_preserved
       invariant_results:
@@ -397,16 +572,15 @@ coverage:
         replay_pass_reproducibility: true
         canonical_evidence_convergence: true
         science_kernel_unchanged: true
-        run_001_unchanged: false
-      blocking_conditions:
-        - run_001_unchanged
+        run_001_unchanged: true
+      blocking_conditions: []
     n4:
       run_id: run-007
       truth_table_row: N4
-      status: EXECUTED_NOT_ACCEPTED
+      status: ACCEPTED_COMPLETE
       executed: true
-      acceptance_complete: false
-      lifecycle_state: VERIFIED
+      acceptance_complete: true
+      lifecycle_state: ACCEPTED
       actual_verdict: FAIL
       actual_diagnostic_predicate_failure: pred_c_provable
       invariant_results:
@@ -431,16 +605,15 @@ coverage:
         replay_pass_reproducibility: true
         canonical_evidence_convergence: true
         science_kernel_unchanged: true
-        run_001_unchanged: false
-      blocking_conditions:
-        - run_001_unchanged
+        run_001_unchanged: true
+      blocking_conditions: []
     n5:
       run_id: run-009
       truth_table_row: N5
-      status: EXECUTED_NOT_ACCEPTED
+      status: ACCEPTED_COMPLETE
       executed: true
-      acceptance_complete: false
-      lifecycle_state: VERIFIED
+      acceptance_complete: true
+      lifecycle_state: ACCEPTED
       actual_verdict: FAIL
       actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_c_provable
       invariant_results:
@@ -465,16 +638,15 @@ coverage:
         replay_pass_reproducibility: true
         canonical_evidence_convergence: true
         science_kernel_unchanged: true
-        run_001_unchanged: false
-      blocking_conditions:
-        - run_001_unchanged
+        run_001_unchanged: true
+      blocking_conditions: []
     n6:
       run_id: run-010
       truth_table_row: N6
-      status: EXECUTED_NOT_ACCEPTED
+      status: ACCEPTED_COMPLETE
       executed: true
-      acceptance_complete: false
-      lifecycle_state: VERIFIED
+      acceptance_complete: true
+      lifecycle_state: ACCEPTED
       actual_verdict: FAIL
       actual_diagnostic_predicate_failure: pred_b_meaning_preserved_and_pred_c_provable
       invariant_results:
@@ -499,16 +671,15 @@ coverage:
         replay_pass_reproducibility: true
         canonical_evidence_convergence: true
         science_kernel_unchanged: true
-        run_001_unchanged: false
-      blocking_conditions:
-        - run_001_unchanged
+        run_001_unchanged: true
+      blocking_conditions: []
     n7:
       run_id: run-011
       truth_table_row: N7
-      status: EXECUTED_NOT_ACCEPTED
+      status: ACCEPTED_COMPLETE
       executed: true
-      acceptance_complete: false
-      lifecycle_state: VERIFIED
+      acceptance_complete: true
+      lifecycle_state: ACCEPTED
       actual_verdict: FAIL
       actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_b_meaning_preserved_and_pred_c_provable
       invariant_results:
@@ -533,9 +704,8 @@ coverage:
         replay_pass_reproducibility: true
         canonical_evidence_convergence: true
         science_kernel_unchanged: true
-        run_001_unchanged: false
-      blocking_conditions:
-        - run_001_unchanged
+        run_001_unchanged: true
+      blocking_conditions: []
   verification_metrics:
     diagnostic_accuracy:
       formula: Correct Diagnostic Verdict / Executed Negative-Control Scenarios With Diagnostic Expectation
@@ -563,8 +733,8 @@ coverage:
       status: ACTIVE
       note: Counts append-only acceptance decisions recorded under the frozen acceptance contract.
 overall:
-  gate_c1_status: TECHNICALLY_COMPLETE_GOVERNANCE_RATIFICATION_PENDING
-  currently_supported_claim: Gate C1 evidence complete; governance ratification pending.
+  gate_c1_status: RATIFIABLE
+  currently_supported_claim: Gate C1 ratifiable; evidence corpus complete and governance invariants pass.
   constitutional_status: PASS
   dependency_constitution_status: PASS
   contract_registry_status: PASS
@@ -591,9 +761,16 @@ overall:
   capability_graph_unknown_dependency_count: 0
   capability_graph_ownership_gap_count: 16
   capability_graph_migration_debt_count: 0
-  capability_graph_capability_without_evidence_count: 6
+  capability_graph_capability_without_evidence_count: 5
   capability_graph_stale_evidence_count: 1
-  capability_graph_unverifiable_capability_count: 3
+  capability_graph_unverifiable_capability_count: 2
+  capability_graph_orphaned_evidence_count: 0
+  capability_graph_inconsistent_evidence_count: 0
+  capability_graph_unsigned_evidence_count: 0
+  capability_graph_tampered_evidence_count: 0
+  capability_graph_partial_evidence_count: 11
+  capability_graph_superseded_evidence_count: 0
+  capability_graph_expired_evidence_count: 0
   enterprise_control_graph_status: PASS
   architecture_fitness_status: PASS
   governance_incremental_materialization_status: PASS
@@ -610,15 +787,108 @@ overall:
   specification_system_status: PASS
   specification_conformance_status: PASS
   specification_vocabulary_status: PASS
-  specification_registry_artifact_count: 43
-  specification_registry_edge_count: 92
-  specification_rfc_count: 7
-  specification_conf_count: 7
-  specification_spec_count: 4
+  specification_registry_artifact_count: 50
+  specification_registry_edge_count: 125
+  specification_rfc_count: 8
+  specification_conf_count: 8
+  specification_spec_count: 9
   specification_conformance_warning_count: 0
   specification_conformance_failure_count: 0
   specification_vocabulary_term_count: 10
   specification_vocabulary_duplicate_count: 0
+  decision_quality_status: PARTIAL
+  decision_quality_decision_count: 23
+  decision_quality_traceability_coverage: 1
+  decision_quality_outcome_coverage: 1
+  decision_quality_learning_closure: 1.0952380952380953
+  decision_quality_reproducibility: 1
+  decision_quality_reversibility: 1
+  decision_quality_impact_graph_completeness: 1
+  decision_quality_engineering_leverage_measurement_coverage: 0
+  decision_quality_effectiveness: 0.8571
+  decision_quality_success_rate: 0.7143
+  decision_quality_false_decision_rate: 0
+  decision_quality_reversal_rate: 0.9565
+  decision_quality_evidence_utilization_rate: 1
+  decision_quality_knowledge_reuse_rate: 0.4091
+  decision_quality_evidence_strength_index: 1
+  decision_quality_outcome_improvement_rate: 0.4444
+  decision_quality_decision_confidence_index: 0.9783
+  decision_quality_knowledge_weighted_quality_index: 0.1779
+  decision_quality_mean_time_to_outcome_ms: 0
+  decision_quality_learning_velocity_ms: 0
+  decision_quality_confidence_growth: 0
+  learning_intelligence_status: PARTIAL
+  learning_intelligence_decision_count: 23
+  learning_intelligence_outcome_count: 23
+  learning_intelligence_outcome_registry_coverage: 1
+  learning_intelligence_decision_quality_index: 0.1779
+  learning_intelligence_learning_velocity_ms: 421846.625
+  learning_intelligence_knowledge_gain_units: 39
+  learning_intelligence_knowledge_gain: 1.6957
+  learning_intelligence_knowledge_object_count: 9
+  learning_intelligence_operationalized_knowledge_count: 9
+  learning_intelligence_knowledge_availability_rate: 1
+  learning_intelligence_knowledge_reuse_rate: 0.3913
+  learning_intelligence_reused_knowledge_object_count: 6
+  learning_intelligence_improved_knowledge_object_count: 2
+  learning_intelligence_knowledge_lineage_count: 9
+  learning_intelligence_knowledge_lineage_preview: *a1
+  learning_intelligence_recommendation_effectiveness_rate: 0
+  learning_intelligence_decision_pattern_change_rate: 0.4
+  learning_intelligence_recommendation_acceptance_rate: 0.3333
+  learning_intelligence_behavior_change_rate: 0.4
+  learning_intelligence_engineering_leverage_ratio: null
+  learning_intelligence_repeated_mistake_count: 13
+  learning_intelligence_future_decision_improvement_rate: 0.5
+  closed_loop_hypothesis:
+    statement: Evidence -> Decision -> Outcome -> Learning -> Knowledge -> Better Decision -> Better Outcome
+    status: PASS
+    stages:
+      evidence:
+        status: PASS
+        metric_name: evidence_strength_index
+        metric: 1
+        evidence_ref: workspace/foundation/evidence/verification/decision-quality-report.json
+      decision:
+        status: PASS
+        metric_name: decision_count
+        metric: 23
+        evidence_ref: workspace/foundation/evidence/verification/decision-quality-report.json
+      outcome:
+        status: PASS
+        metric_name: decision_outcome_coverage
+        metric: 1
+        evidence_ref: workspace/foundation/evidence/verification/decision-quality-report.json
+      learning:
+        status: PASS
+        metric_name: decision_learning_closure
+        metric: 1.0952380952380953
+        evidence_ref: workspace/foundation/evidence/verification/learning-intelligence-report.json
+      knowledge:
+        status: PASS
+        metric_name: knowledge_availability_rate
+        metric: 1
+        evidence_ref: workspace/foundation/evidence/verification/learning-intelligence-report.json
+      better_decision:
+        status: PASS
+        metric_name: knowledge_weighted_quality_index
+        metric: 0.1779
+        evidence_ref: workspace/foundation/evidence/verification/decision-quality-report.json
+      better_outcome:
+        status: PASS
+        metric_name: outcome_improvement_rate
+        metric: 0.4444
+        evidence_ref: workspace/foundation/evidence/verification/learning-intelligence-report.json
+    evidence_basis:
+      decision_quality_ref: workspace/foundation/evidence/verification/decision-quality-report.json
+      learning_intelligence_ref: workspace/foundation/evidence/verification/learning-intelligence-report.json
+    claim_boundary: Closed-loop hypothesis status is derived only from materialized decision quality and learning intelligence evidence already present in Foundation verification. It does not infer unobserved decisions, outcomes, or knowledge reuse outside the supplied evidence corpus.
+  evidence_convergence_status: UNVERIFIED
+  evidence_producer_count: null
+  evidence_target_producer_count: null
+  evidence_registered_target_producer_count: null
+  evidence_target_coverage_ratio: null
   unsupported_claims:
     - Gate C1 complete
     - CC-001 corroborated

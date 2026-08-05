@@ -16,7 +16,8 @@
   "empirically_verified_products": [],
   "product_reach_ratio": 0,
   "reachable_from_products": [
-    "lawyershub"
+    "lawyershub",
+    "web"
   ],
   "reachability_status": "REACHABLE",
   "artifact_boundary": "Capability dependency projection freezes dependency intent, consumer relationships, and product reachability so capability evolution can be audited without reading raw manifests directly."

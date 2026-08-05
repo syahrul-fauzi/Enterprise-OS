@@ -1,0 +1,110 @@
+---
+# B1 Governance Integrity Battlefield Execution Plan
+# Battlefield: B1 - Governance Integrity
+# Purpose: Execute adversarial test to verify governance computation integrity
+plan_version: "1.0.0"
+capability_id: "EOS-B1-001"
+capability_name: "Governance Integrity Adversarial Test"
+status: "completed"
+created_timestamp: "2026-08-05T06:00:00Z"
+completed_timestamp: "2026-08-05T06:15:00Z"
+
+# Requirement traceability
+requirement_ref: "/root/Enterprise-OS/workspace/evidence/registry/requirements/eos-b1-requirement-001.yaml"
+rtm_links:
+  - requirement_id: "REQ-B1-001"
+    plan_task_id: "task-b1-s001"
+    verification_status: "VERIFIED"
+
+# Acceptance criteria (battlefield gates)
+acceptance_criteria:
+  - id: ac-b1-001
+    name: "Governance reads actual evidence"
+    criteria: "Engine must detect changes to evidence files and recompute state"
+  - id: ac-b1-002
+    name: "Invalid evidence changes verdict"
+    criteria: "Tampered evidence must result in FAIL/INVALID verdict, not PASS"
+  - id: ac-b1-003
+    name: "GOVERNANCE_STATE follows computation"
+    criteria: "State file never leads; always updates after evidence changes"
+  - id: ac-b1-004
+    name: "Restored evidence restores PASS"
+    criteria: "After restoring valid evidence, all states return to VERIFIED/PASS"
+
+# Execution tasks
+tasks:
+  # Task B1-s001: Precondition validation
+  - id: task-b1-s001
+    name: "Precondition validation"
+    description: "Verify initial state is valid before adversarial testing"
+    actor: "test-agent"
+    status: "completed"
+    completed_timestamp: "2026-08-05T06:00:00Z"
+    findings:
+      - "EOS-SPINE-002 is fully VERIFIED with 8/8 criteria"
+      - "All M6 boundaries are frozen and untouched"
+      - "Engineering freeze maintained on all proven boundaries"
+      - "ac-b1-001 prerequisite satisfied"
+    dependencies: []
+    acceptance_criterion: ac-b1-001
+
+  # Task B1-s002: Evidence tamper test
+  - id: task-b1-s002
+    name: "Evidence tamper execution"
+    description: "Deliberately tamper with material evidence to test detection"
+    actor: "test-agent"
+    status: "completed"
+    completed_timestamp: "2026-08-05T06:05:00Z"
+    findings:
+      - "Modified ac-005 evidence in EOS-SPINE-002 from VERIFIED to INVALID"
+      - "Changed test results from PASS to FAIL in evidence manifest"
+      - "No code changes to governance engine or M6 boundaries"
+      - "Tamper executed successfully without side effects"
+    dependencies: ["task-b1-s001"]
+    acceptance_criterion: ac-b1-002
+
+  # Task B1-s003: Governance computation on tampered evidence
+  - id: task-b1-s003
+    name: "Governance computation on invalid evidence"
+    description: "Run eos-evidence-engine to compute verdict on tampered evidence"
+    actor: "governance-agent"
+    status: "completed"
+    completed_timestamp: "2026-08-05T06:08:00Z"
+    findings:
+      - "Executed pnpm eos verify-foundation on tampered evidence"
+      - "Foundation status correctly became UNVERIFIED_BASELINE"
+      - "Architecture trend correctly marked as REGRESSING"
+      - "GOVERNANCE_STATE.yaml updated automatically to reflect invalid state"
+      - "Engine DID NOT PASS invalid evidence - detection works"
+      - "ac-b1-002 and ac-b1-003 satisfied"
+    dependencies: ["task-b1-s002"]
+    acceptance_criterion: ac-b1-003
+    engines_invoked: ["eos-evidence-engine"]
+
+  # Task B1-s004: Evidence restoration and re-verification
+  - id: task-b1-s004
+    name: "Evidence restoration and final verification"
+    description: "Restore valid evidence and verify system returns to PASS"
+    actor: "test-agent"
+    status: "completed"
+    completed_timestamp: "2026-08-05T06:15:00Z"
+    findings:
+      - "Restored original EOS-SPINE-002 evidence-manifest.yaml"
+      - "Deleted temporary backup file"
+      - "Re-ran governance computation: pnpm eos verify-foundation"
+      - "Refreshed execution graph: pnpm eos execution refresh-status"
+      - "All states returned to original VERIFIED/PASS values"
+      - "ac-b1-004 satisfied: all gates pass after restoration"
+      - "ALL B1 acceptance criteria fully satisfied"
+    dependencies: ["task-b1-s003"]
+    acceptance_criterion: ac-b1-004
+    engines_invoked: ["eos-evidence-engine"]
+
+# Critical guardrails
+guardrails:
+  - "NO code changes to M6 proven boundaries (product-entry layer)"
+  - "NO modifications to governance engine source code"
+  - "Only evidence files modified for testing purposes"
+  - "All changes restored to original state after test"
+  - "Engineering freeze maintained on all proven boundaries"
+  - "Battlefield priority: Governance Integrity > all other workstreams"

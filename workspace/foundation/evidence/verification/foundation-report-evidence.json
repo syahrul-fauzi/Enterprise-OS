@@ -1,18 +1,18 @@
 {
-  "artifact_id": "foundation-report-evidence:7aa83248c522135e",
+  "artifact_id": "foundation-report-evidence:0abd9f9cb135a97f",
   "artifact_type": "foundation-report-evidence",
   "schema_version": "1.0.0",
-  "generated_at_utc": "2026-08-03T15:33:51.640Z",
+  "generated_at_utc": "2026-08-05T04:29:08.429Z",
   "subject": {
     "subject_ref": "workspace/foundation/evidence/verification/foundation-report.json",
     "subject_type": "foundation-verification",
-    "subject_digest": "ee7d97558c97c34470c0b77f84b87e68da47d5171bb836174cbd0a5498ba6343"
+    "subject_digest": "589eea91153091d65e8e923e4dd60c5fe8f0e6acc00885e61fcf10732fe4075c"
   },
   "projection": {
     "projection_ref": "workspace/foundation/evidence/verification/foundation-report-projection.json",
-    "projection_id": "FoundationReportProjection:c6427415600f4184",
+    "projection_id": "FoundationReportProjection:7f713d31c4dde43a",
     "projection_type": "FoundationReportProjection",
-    "projection_digest": "c6427415600f4184096372bdadde2a829efd5139454008dbb38045fbc22df89c"
+    "projection_digest": "7f713d31c4dde43a7a90f6d1c2ab7c7145164845626b1fd00a8e8fc1344ad037"
   },
   "summary": {
     "foundation_status": "UNVERIFIED_BASELINE",
@@ -40,14 +40,14 @@
       "foundation_status": "UNVERIFIED_BASELINE",
       "declared_products": 3,
       "active_products": 1,
-      "implemented_products": 1,
+      "implemented_products": 3,
       "verified_products": 0,
       "implemented_active_products": 1,
       "verified_active_products": 0,
       "active_portfolio_coverage_ratio": 0,
       "active_portfolio_coverage_percentage": 0,
-      "implementation_coverage_ratio": 0.3333,
-      "implementation_coverage_percentage": 33.3,
+      "implementation_coverage_ratio": 1,
+      "implementation_coverage_percentage": 100,
       "portfolio_coverage_ratio": 0,
       "portfolio_coverage_percentage": 0,
       "declared_shared_capabilities": [
@@ -60,19 +60,20 @@
         "lawyershub"
       ],
       "implemented_product_ids": [
-        "lawyershub"
+        "services-id",
+        "lawyershub",
+        "ilc"
       ],
       "verified_product_ids": [],
       "implemented_active_product_ids": [
         "lawyershub"
       ],
       "verified_active_product_ids": [],
-      "missing_product_implementation": [
-        "services-id",
-        "ilc"
-      ],
+      "missing_product_implementation": [],
       "pending_product_verification": [
-        "lawyershub"
+        "services-id",
+        "lawyershub",
+        "ilc"
       ],
       "missing_active_product_implementation": [],
       "pending_active_product_verification": [
@@ -295,7 +296,7 @@
     },
     "projection_payload_ref": "workspace/foundation/evidence/verification/foundation-report-projection.json"
   },
-  "digest": "7aa83248c522135e498541cf222a7e79a68d585f5b1ac4f9ec2b6ac848394097",
+  "digest": "0abd9f9cb135a97fea4cfc1c08cb5b1ed7cbcd4977fd6aa7eb3b150afef2b173",
   "signature": {
     "status": "UNSIGNED",
     "key_id": null,

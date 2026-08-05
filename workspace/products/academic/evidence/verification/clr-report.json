@@ -1,0 +1,39 @@
+{
+  "methodology": {
+    "capability_reuse_ratio_formula": "reused_capabilities / total_product_capabilities",
+    "clr_formula": "reused_capabilities / new_product_specific_capabilities",
+    "experience_module_reuse_ratio_formula": "reused_modules / total_modules_observed_in_mapping_matrix",
+    "surface_reuse_ratio_formula": "reused_surfaces / total_surfaces_declared_in_composition",
+    "evidence_basis": [
+      "apps/<product>/workspace.manifest.ts",
+      "packages/compositions/<composition>/manifest.yaml",
+      "capability-mapping-matrix.csv"
+    ]
+  },
+  "capability_reuse": {
+    "reused": 1,
+    "total": 1,
+    "created_new": 0,
+    "reuse_ratio": 1,
+    "reuse_percentage": 100,
+    "clr": "FULL_REUSE",
+    "composition_manifest_capabilities": [
+      "requirement-management"
+    ],
+    "workspace_capabilities": [
+      "requirement-management"
+    ]
+  },
+  "experience_module_reuse": {
+    "reused": 1,
+    "total": 1,
+    "reuse_ratio": 1,
+    "reuse_percentage": 100
+  },
+  "surface_reuse": {
+    "reused": 1,
+    "total": 1,
+    "reuse_ratio": 1,
+    "reuse_percentage": 100
+  }
+}

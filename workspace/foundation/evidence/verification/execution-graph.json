@@ -1,5 +1,5 @@
 {
-  "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
+  "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
   "projection_type": "ExecutionGraphProjection",
   "schema_version": "1.0.0",
   "constitutional_version": "1.0.0",
@@ -14,7 +14,7 @@
   },
   "graph_version": "1.0.0",
   "projection_version": "1.0.0",
-  "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+  "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
   "generated_from": [
     {
       "source_type": "artifact_registry",
@@ -24,7 +24,7 @@
     {
       "source_type": "execution_evidence",
       "source_ref": "artifact_registry:execution_evidence",
-      "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+      "source_digest": "9447f14ebb00121902fd9919c1eada6a752f37cd6016acb5f3b09249fa69c45f"
     },
     {
       "source_type": "execution_chain",
@@ -37,7 +37,7 @@
       "source_digest": "67c1fd991d43ed16682f0b8be01d7abefab93fc4b58d63275a35fd186582ab1d"
     }
   ],
-  "generated_at_utc": "2026-08-03T15:33:49.967Z",
+  "generated_at_utc": "2026-08-05T04:29:06.764Z",
   "nodes": [
     {
       "id": "CAP:agent-orchestration",

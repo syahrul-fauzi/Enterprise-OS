@@ -1,8 +1,8 @@
 {
-  "artifact_id": "specification-conformance-evidence:b356258a332a3e37",
+  "artifact_id": "specification-conformance-evidence:8a2663b84f1b9f98",
   "artifact_type": "specification-conformance-evidence",
   "schema_version": "1.0.0",
-  "generated_at_utc": "2026-08-03T15:33:51.656Z",
+  "generated_at_utc": "2026-08-05T04:29:08.443Z",
   "subject": {
     "subject_ref": "enterprise/specifications/specification-registry.yaml",
     "subject_type": "specification-registry",
@@ -10,9 +10,9 @@
   },
   "projection": {
     "projection_ref": "workspace/foundation/evidence/verification/specification-conformance-projection.json",
-    "projection_id": "SpecificationConformanceProjection:2df7326a03f70a61",
+    "projection_id": "SpecificationConformanceProjection:fbd2cd31fdec83be",
     "projection_type": "SpecificationConformanceProjection",
-    "projection_digest": "2df7326a03f70a61c4f6025212fafa96c0eb798a6b4daa6c83250437d351a024"
+    "projection_digest": "fbd2cd31fdec83be950e9e5a4bef3f7566a20016bfeffa0f448491fda2f99380"
   },
   "summary": {
     "status": "PASS",
@@ -48,7 +48,7 @@
     "projection_payload_ref": "workspace/foundation/evidence/verification/specification-conformance-projection.json",
     "report_ref": "workspace/foundation/evidence/verification/specification-conformance-report.json"
   },
-  "digest": "b356258a332a3e37e192739e7cb7a2e669934cc95956a9a36873d774eed0ecfc",
+  "digest": "8a2663b84f1b9f98ccf87cd5a99d7caccb250a6ecea33fdaba7efb1dc4e14a7e",
   "signature": {
     "status": "UNSIGNED",
     "key_id": null,

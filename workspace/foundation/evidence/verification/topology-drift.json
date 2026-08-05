@@ -1,8 +1,8 @@
 {
-  "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
+  "projection_id": "TopologyDriftProjection:9264733347c84038",
   "projection_type": "TopologyDriftProjection",
   "schema_version": "1.0.0",
-  "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+  "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
   "generated_from": [
     {
       "source_type": "execution_chain",
@@ -20,31 +20,35 @@
       "source_digest": "UNVERIFIED"
     }
   ],
-  "generated_at_utc": "2026-08-03T15:33:49.942Z",
+  "generated_at_utc": "2026-08-05T04:29:06.737Z",
   "drift_status": "DRIFT",
   "summary": {
     "total_products": 3,
     "aligned_products": 0,
-    "drifted_products": 1,
+    "drifted_products": 3,
     "undeclared_observed_edges": 12,
-    "unobserved_declared_edges": 2,
+    "unobserved_declared_edges": 4,
     "unmodeled_observed_requirements": 5,
     "unmodeled_observed_workflows": 6,
     "unmodeled_observed_plans": 3,
-    "canonical_topology_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21"
+    "canonical_topology_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d"
   },
   "products": [
     {
       "product_id": "services-id",
-      "declared_capabilities": [],
+      "declared_capabilities": [
+        "requirement-management"
+      ],
       "observed_capabilities": [],
       "aligned_capabilities": [],
       "undeclared_observed_capabilities": [],
-      "unobserved_declared_capabilities": [],
+      "unobserved_declared_capabilities": [
+        "requirement-management"
+      ],
       "observed_requirement_node_ids": [],
       "observed_workflow_node_ids": [],
       "observed_plan_node_ids": [],
-      "drift_status": "UNVERIFIED"
+      "drift_status": "DRIFT"
     },
     {
       "product_id": "lawyershub",
@@ -113,15 +117,19 @@
     },
     {
       "product_id": "ilc",
-      "declared_capabilities": [],
+      "declared_capabilities": [
+        "requirement-management"
+      ],
       "observed_capabilities": [],
       "aligned_capabilities": [],
       "undeclared_observed_capabilities": [],
-      "unobserved_declared_capabilities": [],
+      "unobserved_declared_capabilities": [
+        "requirement-management"
+      ],
       "observed_requirement_node_ids": [],
       "observed_workflow_node_ids": [],
       "observed_plan_node_ids": [],
-      "drift_status": "UNVERIFIED"
+      "drift_status": "DRIFT"
     }
   ],
   "claim_boundary": "Topology drift currently compares declared product-to-capability topology against observed capability execution chains. Requirement, workflow, and plan nodes are reported as unmodeled observed topology until they become first-class declared contracts in the registry."

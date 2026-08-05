@@ -1,0 +1,48 @@
+---
+requirement_id: EOS-001
+name: "Academic product requirement creation capability"
+description: "Enable academic community product to create and track requirements using the same shared capability layer as existing products (no if product === academic special cases)"
+human_intent: "Izinkan pengguna di academic.local membuat dan mengelola requirement seperti yang bisa dilakukan di lawyershub.id, tanpa menambahkan kode khusus untuk product academic di capability layer."
+timestamp: "2026-08-05T02:45:00Z"
+requester: "operator.web"
+rtm:
+  traces_to:
+    - capability: requirement-management
+    - product: academic
+    - shared_component: apps/web/app/requirements/page.tsx
+acceptance_criteria:
+  - id: ac-001
+    description: "Academic product users can access /requirements page without 404"
+    type: runtime
+  - id: ac-002
+    description: "Create requirement button works and saves to same database as other products"
+    type: runtime
+  - id: ac-003
+    description: "No code added with `if product === 'academic'` in any capability file"
+    type: static-analysis
+  - id: ac-004
+    description: "All existing products (lawyershub, services-id, ilc) still have working requirement creation"
+    type: regression
+  - id: ac-005
+    description: "Evidence collected for all ACs, manifest updated, governance predicate passes"
+    type: governance
+ownership:
+  primary_owner: "infrastructure.team"
+  product_owner: "academic.product"
+dependencies:
+  - requirement_management_capability: "v1.0"
+  - academic_product_binding: "completed" # M6-004
+  - database_migrations: "none required"
+impact_analysis:
+  files_may_change:
+    - "apps/web/app/providers/ProductProvider.tsx"
+    - "apps/web/lib/requirements/api.ts"
+    - "apps/web/middleware.ts"
+  no_breaking_changes_to:
+    - "infra/staging/Caddyfile"
+    - "packages/capabilities/requirements/*"
+    - "packages/database/schema/requirements.sql"
+status: "ready_for_execution"
+---
+# This requirement starts the first full EOS self-execution loop
+# Flow: REQUIREMENT → IMPACT ANALYSIS → EXECUTION PLAN → AGENT EXECUTION → VERIFICATION → EVIDENCE → GOVERNANCE

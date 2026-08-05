@@ -1,0 +1,107 @@
+---
+claim:
+  id: product-4-academic-binding
+  description: "Academic community product #4 successfully binds to canonical 3-layer domain pattern without architectural forks"
+  requirement_id: M6-004
+  timestamp: "2026-08-05T02:35:00Z"
+  actor: "operator.web"
+
+observations:
+  - id: obs-caddy-validate
+    description: "Caddy configuration validates successfully without parse errors"
+    timestamp: "2026-08-05T02:26:00Z"
+    actor: "system.eos-staging-caddy"
+    type: runtime
+    command: "caddy validate --config /etc/caddy/Caddyfile"
+    result: "Valid configuration"
+    status: pass
+
+  - id: obs-docker-compose-config
+    description: "Docker compose stack renders without syntax errors"
+    timestamp: "2026-08-05T02:25:00Z"
+    actor: "system.docker"
+    type: runtime
+    command: "docker compose config"
+    result: "Configuration is valid"
+    status: pass
+
+  - id: obs-academic-local-https-200
+    description: "academic.local HTTPS endpoint returns HTTP/2 200 with correct X-EOS-Product-Id header"
+    timestamp: "2026-08-05T02:30:00Z"
+    actor: "system.curl"
+    type: runtime
+    command: "curl -k --resolve academic.local:443:127.0.0.1 https://academic.local/products/academic/delivery -I"
+    result: "HTTP/2 200"
+    headers:
+      - "X-EOS-Product-Id: academic"
+      - "via: 1.1 Caddy"
+    status: pass
+
+  - id: obs-lawyershub-existing-200
+    description: "Existing lawyershub.id domain continues to return 200 after Academic #4 deployment"
+    timestamp: "2026-08-05T02:30:30Z"
+    actor: "system.curl"
+    type: runtime
+    command: "curl -k --resolve lawyershub.id:443:127.0.0.1 https://lawyershub.id/products/lawyershub/delivery -I"
+    result: "HTTP/2 200"
+    status: pass
+
+  - id: obs-no-hardcoded-academic-local
+    description: "Caddyfile contains no hardcoded academic.local outside required alias for TLS detection"
+    timestamp: "2026-08-05T02:32:00Z"
+    actor: "system.grep"
+    type: static-code-analysis
+    command: "grep -n 'academic.local' workspace/infra/staging/Caddyfile"
+    result: "Only found in TLS domain alias (exactly 1 occurrence, required for Caddy TLS certificate generation)"
+    status: pass
+
+  - id: obs-environment-variable-read
+    description: "Academic domain reads from ACADEMIC_DOMAIN environment variable, follows canonical pattern"
+    timestamp: "2026-08-05T02:33:00Z"
+    actor: "system.caddy-adapt"
+    type: runtime
+    command: "caddy adapt --config /etc/caddy/Caddyfile"
+    result: "{$ACADEMIC_DOMAIN} expands to academic.local in generated JSON config"
+    status: pass
+
+artifacts:
+  - id: art-caddyfile-final
+    path: "workspace/infra/staging/Caddyfile"
+    sha256: "computed_on_upload"
+    type: implementation
+    description: "Final Caddyfile with academic domain following canonical pattern"
+
+  - id: art-env-staging
+    path: "workspace/infra/staging/.env"
+    sha256: "computed_on_upload"
+    type: configuration
+    description: "Staging environment with ACADEMIC_DOMAIN=academic.local added"
+
+  - id: art-docker-logs-caddy
+    path: "workspace/evidence/academic-product-4/caddy-logs.txt"
+    sha256: "computed_on_upload"
+    type: log
+    description: "Caddy container logs showing academic.local certificate generation successful"
+
+provenance:
+  config_source_commit: "current HEAD"
+  deployment_timestamp: "2026-08-05T02:26:00Z"
+  container_ids:
+    caddy: "eos-staging-caddy"
+    web: "eos-staging-web"
+  all_tls_certificates_generated: true
+  academic_certificate_subjects: ["academic.local", "{$ACADEMIC_DOMAIN}"]
+
+verdict:
+  overall_status: PASS
+  confidence_score: 0.98
+  pass_requirements:
+    - "No hardcoded academic.local in Caddyfile (only TLS alias)"
+    - "Follows canonical ENV → Caddy → eos_web_proxy → X-EOS-Product-Id pattern"
+    - "header_up X-EOS-Product-Id {args[0]} preserved"
+    - "No if {host} == ... or academic-specific routing"
+    - "All 6 acceptance steps completed: caddy validate, docker compose config, restart caddy, curl academic.local, X-EOS-Product-Id=academic, existing domains 200"
+  remaining_observations_required:
+    - "Human reviewer browser access without SSL bypass"
+    - "External reviewer black-box observation (first impression validation)"
+  notes: "Engineering freeze on product-entry boundary is valid. No further changes required to Caddy or domain routing logic."

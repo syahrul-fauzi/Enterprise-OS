@@ -1,6 +1,6 @@
 {
   "report_version": "1.0.0",
-  "report_digest": "c4e6eab5ed584840fd6bbb65615397f3475178d2ae712f3b34c315c2c9e41d26",
+  "report_digest": "faeb3086bcad80875b438aa98b6bed6ac59c86fc1b1cf004015238c0848d4871",
   "summary": {
     "provenance_completeness_status": "PASS",
     "evidence_chain_status": "PASS",
@@ -11,11 +11,11 @@
     "overall_status": "PASS"
   },
   "session": {
-    "session_id": "governance-session:e53ffa9a0a13fb8a",
+    "session_id": "governance-session:a8b570e4c753419a",
     "session_status": "COMPLETED",
     "execution_scope": "verify-foundation",
-    "session_digest": "e53ffa9a0a13fb8a349a132ab0d9c9d216961eaa4f6da3790b10aa2f6a09740d",
-    "session_projection_digest": "a3f5dda1914fd48d439498adbeec23e7eac50cf2a2c157ced91f943cb772d13d",
+    "session_digest": "a8b570e4c753419a6e324c50abd093353a83e76f924b0634d275e4ebb60198ef",
+    "session_projection_digest": "75aa53f0c0028af7b203fc158ebfe53a79b49e3184fd840d310390465429b94d",
     "law_result_count": 8,
     "evidence_package_count": 8,
     "certificate_count": 8,

@@ -1,6 +1,6 @@
 {
   "certification_version": "1.0.0",
-  "certification_digest": "905ac39f2a991f0e3f45e8f9019b0bd00382e83877f4a749f62b7c2f7a1b31fb",
+  "certification_digest": "e7abfde8550c584eb5340bd6b85358c214fd78ec2b7e4cce52116d5b3c08a1f4",
   "summary": {
     "total_capabilities": 16,
     "certified_capabilities": 4,
@@ -163,7 +163,7 @@
       },
       "performance_valid": {
         "status": "PASS",
-        "detail": "Materialization evidence recorded for \"governance-read-model\" with freshness=8ms duration=1ms consumers=1."
+        "detail": "Materialization evidence recorded for \"governance-read-model\" with freshness=7ms duration=1ms consumers=1."
       }
     },
     {

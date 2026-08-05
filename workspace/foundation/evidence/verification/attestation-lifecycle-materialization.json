@@ -1,6 +1,6 @@
 {
   "report_version": "1.0.0",
-  "report_digest": "8e9979374a0c11df89c58a9da2f01d64c3e43adeeff6509164400a1fd7f75b62",
+  "report_digest": "a0c8dd7fccc1dfe37d7f058d8fc0de3b6af8bc95f84434d92f0607e44438b2be",
   "summary": {
     "eligible_attestation_count": 8,
     "terminal_transition_sample_count": 3,
@@ -11,33 +11,33 @@
   "samples": [
     {
       "transition_type": "AttestationExpired",
-      "attestation_reference": "attestation:certificate:evidence-package:DependencyBoundaryLaw:6641dcc833bf5aaf:612ec33aa4d56e7e:e94e4596dd7b8fc5",
+      "attestation_reference": "attestation:certificate:evidence-package:DependencyBoundaryLaw:9ee9f91cb96b4c61:b15f46f49b87c1ed:1136f5a2cef06ecd",
       "prior_event_count": 2,
       "materialized_event_index": 2,
       "materialized_attestation_status": "EXPIRED",
       "signature_reference": null,
       "transition_integrity_status": "PASS",
-      "event_digest": "8163ff1926575ff1dcffe25dcccd1523db0a9b934d93489199346878a1d7fe4a"
+      "event_digest": "d5cb3cc092d368420e31bd198c4bb44bdca90c7317edd212024760235420cc2f"
     },
     {
       "transition_type": "AttestationRevoked",
-      "attestation_reference": "attestation:certificate:evidence-package:DeterminismLaw:88df227d2d3a7f40:dea9721568839c20:70688f98ee101044",
+      "attestation_reference": "attestation:certificate:evidence-package:DeterminismLaw:2037e0e5f9003abd:f58dce05167f1cab:604fb2e480a95781",
       "prior_event_count": 2,
       "materialized_event_index": 2,
       "materialized_attestation_status": "REVOKED",
       "signature_reference": null,
       "transition_integrity_status": "PASS",
-      "event_digest": "4acf76fc35b95a972ca3c92e603dbfb56be1150fb55bf295a95964fdba904d3f"
+      "event_digest": "080568cf1791e8b7dcd691b2c64ffa395072909ac277688523358509ef2f060c"
     },
     {
       "transition_type": "AttestationSuperseded",
-      "attestation_reference": "attestation:certificate:evidence-package:DigestLaw:ac8a8ceea6c59f23:1e45b26a3e9a87cc:e96604a06cd18e77",
+      "attestation_reference": "attestation:certificate:evidence-package:DigestLaw:618da4a2ebca4ba3:fc8222cbc07e5586:952a959a8c036a1b",
       "prior_event_count": 2,
       "materialized_event_index": 2,
       "materialized_attestation_status": "SUPERSEDED",
       "signature_reference": null,
       "transition_integrity_status": "PASS",
-      "event_digest": "105076642f5b857d6329858d373aa862e52af3f18f18ed92b76cd4293a232716"
+      "event_digest": "c6e2b589767b169c8253ea89e0459fdba179907b519b5fc66675477143d80741"
     }
   ],
   "claim_boundary": "Attestation lifecycle materialization proves that terminal trust events can be materialized deterministically from an existing verified attestation stream. It operationalizes Expired, Revoked, and Superseded transitions without refactoring the governance core model."

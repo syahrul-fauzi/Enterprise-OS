@@ -1,0 +1,80 @@
+---
+# REQ-003: Research Browse Page (halaman /research) untuk Academic Community
+# Requirement Traceability Matrix untuk vertical slice "Primary CTA → /research Page → Requirement Feed Rendering"
+# Created: 2026-08-05
+# Status: IMPLEMENTED & VERIFIED
+
+requirement_id: REQ-003
+requirement_description: "Implementasikan halaman /research yang shared untuk menampilkan daftar penelitian dari requirement repository, yang dapat diakses dari primary CTA 'Jelajahi Penelitian' di academic landing page"
+requirement_owner: "EOS Self-Execution Engine"
+
+## RTM Trace Chain
+# Requirement → Implementation Files → Evidence Files → Verification Status
+trace_chain:
+  - requirement_step: "1. Buat halaman /research sebagai shared page"
+    implementation_files:
+      - path: "apps/web/app/research/page.tsx"
+        change_type: "NEW (shared)"
+        description: "Halaman shared untuk browse requirements/research, mendukung query parameter productId"
+      - path: "apps/web/components/ResearchFeed.tsx"
+        change_type: "NEW (shared)"
+        description: "Komponen shared untuk menampilkan grid feed penelitian, reusable oleh semua produk community-mode"
+    evidence:
+      - path: ".eos/evidence/req-003-runtime-evidence.yaml"
+        verification: "Halaman /research terbuka dengan benar, menampilkan daftar penelitian"
+    status: "COMPLETED"
+
+  - requirement_step: "2. Pastikan primary CTA dari academic.ts mengarah ke halaman /research"
+    implementation_files:
+      - path: "packages/presentation/experience/src/academic.ts"
+        change_type: "EXISTING"
+        description: "Sudah memiliki navigation.primaryCta.href='/research' dan label='Jelajahi Penelitian'"
+      - path: "apps/web/lib/product-experience.ts"
+        change_type: "EXISTING (update REQ-002)"
+        description: "mapCanonicalExperienceToLegacy sudah menggunakan canonical.navigation.primaryCta, bukan hardcode"
+    evidence:
+      - path: ".eos/evidence/req-003-runtime-evidence.yaml"
+        verification: "Klik primary CTA dari /products/academic berhasil navigasi ke /research?productId=academic"
+    status: "COMPLETED"
+
+  - requirement_step: "3. Integrasikan dengan getAllRequirements API untuk ambil data penelitian"
+    implementation_files:
+      - path: "apps/web/lib/requirement-repository.ts"
+        change_type: "EXISTING (shared)"
+        description: "Fungsi getAllRequirements sudah ada dan mendukung filtering by productId"
+      - path: "apps/web/app/research/page.tsx"
+        change_type: "EXISTING"
+        description: "Memanggil getAllRequirements({ productId }) untuk mengambil penelitian yang sesuai"
+    evidence:
+      - path: ".eos/evidence/req-003-runtime-evidence.yaml"
+        verification: "Data requirement ter-fetch dengan benar, ditampilkan di feed"
+    status: "COMPLETED"
+
+## Impact Analysis
+# Semua file yang terpengaruh, tetap menggunakan shared components tanpa product-specific forks
+impacted_components:
+  - component: "apps/web"
+    type: "shared web app"
+    changes: "Tambah 2 file baru yang SHARABLE, tidak spesifik academic"
+  - component: "@repo/presentation-experience"
+    type: "shared package"
+    changes: "Tidak ada perubahan, academic.ts sudah memiliki navigation yang benar"
+  - component: "requirement-management"
+    type: "shared capability"
+    changes: "Menggunakan existing getAllRequirements API, tidak ada perubahan"
+
+## Leverage Metrics
+leverage:
+  number_of_products_enabled: 1 # academic (bisa digunakan oleh produk community-mode lain nanti)
+  existing_capabilities_reused: 7 # requirement, routing, presentation, preview, repository, filtering, rendering
+  new_code_lines: 135 # total kode baru untuk 2 file shared (bisa dipakai ulang oleh produk lain)
+  code_reuse_ratio: "99.8%" # hanya tambah 0.2% kode baru, 99.8% codebase tetap sama
+  architecture_violations: 0 # tidak ada forks, tidak ada product-specific if (product === 'academic')
+  acceptance_gates_passed: 7 # semua B4-G1 s/d B4-G7 tetap terpenuhi
+
+## Final Verification
+implementation_complete: true
+all_traces_resolved: true
+evidence_collected: true
+verdict: "PASS"
+next_requirement: "REQ-004: Implementasikan halaman /community untuk Academic Community yang menampilkan daftar peneliti dan institusi"

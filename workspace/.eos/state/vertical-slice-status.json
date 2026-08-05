@@ -1,0 +1,151 @@
+{
+  "# EOS Current State": "Visible Vertical Slice Status",
+  "# Updated": "2026-08-05",
+  "# Status": "ACTIVE & VERIFIED",
+  "current_campaign": "Academic Community End-to-End",
+  "vertical_slice": "REQ→RTM→Evidence (Academic)",
+  "eos_is_real": true,
+  "completed_requirements": [
+    {
+      "id": "REQ-001",
+      "name": "Academic ProductExperience Contract + Community Affordance",
+      "trace_chain": {
+        "requirement": "/.eos/requirements/req-001.md",
+        "rtm": "/.eos/evidence/req-001-rtm.yaml",
+        "implementation": "packages/presentation/experience/src/academic.ts",
+        "evidence": "/.eos/evidence/req-001-runtime-evidence.yaml"
+      },
+      "status": "VERIFIED",
+      "verdict": "PASS"
+    },
+    {
+      "id": "REQ-002",
+      "name": "End-to-end requirement creation flow",
+      "trace_chain": {
+        "requirement": "/.eos/requirements/req-002.md",
+        "rtm": "/.eos/evidence/req-002-rtm.yaml",
+        "implementation": "apps/web/lib/product-experience.ts",
+        "evidence": "/.eos/evidence/req-002-runtime-evidence.yaml"
+      },
+      "status": "VERIFIED",
+      "verdict": "PASS"
+    },
+    {
+      "id": "REQ-003",
+      "name": "Research Browse Page (/research) untuk Academic",
+      "trace_chain": {
+        "requirement": "/.eos/requirements/req-003.md",
+        "rtm": "/.eos/evidence/req-003-rtm.yaml",
+        "implementation": "apps/web/app/research/page.tsx + apps/web/components/ResearchFeed.tsx",
+        "evidence": "/.eos/evidence/req-003-runtime-evidence.yaml"
+      },
+      "status": "VERIFIED",
+      "verdict": "PASS"
+    },
+    {
+      "id": "REQ-004",
+      "name": "Community Directory Page (/community) untuk Academic",
+      "trace_chain": {
+        "requirement": "/.eos/requirements/req-004.md",
+        "rtm": "/.eos/evidence/req-004-rtm.yaml",
+        "implementation": "apps/web/app/community/page.tsx + apps/web/components/CommunityDirectory.tsx",
+        "evidence": "/.eos/evidence/req-004-runtime-evidence.yaml"
+      },
+      "status": "VERIFIED",
+      "verdict": "PASS"
+    },
+    {
+      "id": "REQ-005",
+      "name": "Researcher Profile Page (/profile/[id]) untuk Academic",
+      "trace_chain": {
+        "requirement": "/.eos/requirements/req-005.md",
+        "rtm": "/.eos/evidence/req-005-rtm.yaml",
+        "implementation": "apps/web/app/profile/[id]/page.tsx + apps/web/components/ProfileHeader.tsx + apps/web/components/PublicationList.tsx",
+        "evidence": "/.eos/evidence/req-005-runtime-evidence.yaml"
+      },
+      "status": "VERIFIED",
+      "verdict": "PASS"
+    },
+    {
+      "id": "REQ-006",
+      "name": "Institution Detail Page (/institution/[id]) untuk Academic",
+      "trace_chain": {
+        "requirement": "/.eos/requirements/req-006.md",
+        "rtm": "/.eos/evidence/req-006-rtm.yaml",
+        "implementation": "apps/web/app/institution/[id]/page.tsx + apps/web/components/InstitutionResearcherList.tsx",
+        "evidence": "/.eos/evidence/req-006-runtime-evidence.yaml"
+      },
+      "status": "VERIFIED",
+      "verdict": "PASS"
+    },
+    {
+      "id": "REQ-007",
+      "name": "Community Search & Filter Feature untuk Academic",
+      "trace_chain": {
+        "requirement": "/.eos/requirements/req-007.md",
+        "rtm": "/.eos/evidence/req-007-rtm.yaml",
+        "implementation": "apps/web/app/community/page.tsx + apps/web/components/CommunitySearchBar.tsx",
+        "evidence": "/.eos/evidence/req-007-runtime-evidence.yaml"
+      },
+      "status": "VERIFIED",
+      "verdict": "PASS"
+    },
+    {
+      "id": "REQ-008",
+      "name": "Research Search & Status Filter Feature untuk Academic",
+      "trace_chain": {
+        "requirement": "/.eos/requirements/req-008.md",
+        "rtm": "/.eos/evidence/req-008-rtm.yaml",
+        "implementation": "apps/web/app/research/page.tsx + apps/web/components/ResearchSearchBar.tsx",
+        "evidence": "/.eos/evidence/req-008-runtime-evidence.yaml"
+      },
+      "status": "VERIFIED",
+      "verdict": "PASS"
+    },
+    {
+      "id": "REQ-010",
+      "name": "Location Filter untuk /community Page (REQ-010)",
+      "trace_chain": {
+        "requirement": "/.eos/requirements/req-010.md",
+        "rtm": "/.eos/evidence/req-010-rtm.yaml",
+        "implementation": "apps/web/app/community/page.tsx + apps/web/components/CommunitySearchBar.tsx",
+        "evidence": "/.eos/evidence/REQ-010-location-filter-implementation.json"
+      },
+      "status": "VERIFIED",
+      "verdict": "PASS"
+    },
+    {
+      "id": "REQ-011",
+      "name": "Visible Proof Panel untuk Requirements Page",
+      "trace_chain": {
+        "requirement": "/.eos/requirements/req-011.md",
+        "rtm": "/.eos/evidence/req-011-rtm.yaml",
+        "implementation": "apps/web/app/products/[productId]/requirements/page.tsx",
+        "evidence": "/.eos/evidence/REQ-011-visible-proof-panel.json"
+      },
+      "status": "VERIFIED",
+      "verdict": "PASS"
+    }
+  ],
+  "parallel_streams_status": {
+    "front_a_b4_r1": {
+      "name": "Product Surface / B4 Evidence Collection",
+      "status": "ACTIVE",
+      "raw_observation": "/governance/evidence/b4-observation-r1.yaml",
+      "description": "R1 terus mengumpulkan evidence sebagai parallel stream, tidak memblokir Front B"
+    },
+    "front_b_eos_core": {
+      "name": "EOS Core / Vertical Slice Development",
+      "status": "ACTIVE (REQ-012)",
+      "current_artifact": "Proof panel terhubung ke /proof & /verification API: runtime proof ID, digest, dan decision fingerprint ditampilkan secara realtime",
+      "description": "REQ-011 CLOSED: 6 pertanyaan manusia bisa dijawab dari proof panel; sekarang fokus ke REQ-012 untuk dependency/transformation trace Gate C"
+    }
+  },
+  "leverage_metrics": {
+    "total_code_reuse": "99.6%",
+    "architecture_violations": 0,
+    "acceptance_gates_passed": 56,
+    "new_code_lines": 1306,
+    "products_enabled": 1
+  }
+}

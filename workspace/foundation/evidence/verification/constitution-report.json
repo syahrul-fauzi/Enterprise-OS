@@ -34,10 +34,10 @@
         "blocking": true
       },
       "proof": {
-        "proof_id": "proof:DigestLaw:c1f2db4fe87e77a0",
+        "proof_id": "proof:DigestLaw:d0eac0e7a442ed40",
         "status": "PASS",
         "report_key": "projection_digest_certificates",
-        "report_digest": "c1f2db4fe87e77a0dd1637b0f408cfa06b0a803cbf4768163a313b5cc86300f8"
+        "report_digest": "d0eac0e7a442ed403187de96e61f1e05e306ec264a67d7a65771601c6fb75093"
       },
       "blocking_status": "PASS"
     },
@@ -50,10 +50,10 @@
         "blocking": true
       },
       "proof": {
-        "proof_id": "proof:SerializerTransparencyLaw:de7536afa31ef643",
+        "proof_id": "proof:SerializerTransparencyLaw:dc09dd12634c518e",
         "status": "PASS",
         "report_key": "serializer_transparency_certificates",
-        "report_digest": "de7536afa31ef6438f24f6415e78195c86308173c2a6065d415004241d97452f"
+        "report_digest": "dc09dd12634c518eadb501b93e24e87d5dcb097d267628a25c1437b6c85211bc"
       },
       "blocking_status": "PASS"
     },
@@ -66,10 +66,10 @@
         "blocking": true
       },
       "proof": {
-        "proof_id": "proof:StorageTransparencyLaw:5cf2587a8837e541",
+        "proof_id": "proof:StorageTransparencyLaw:c3874e79b9e2fa67",
         "status": "PASS",
         "report_key": "storage_transparency_certificates",
-        "report_digest": "5cf2587a8837e54104c9fbae173ebe191a827625b4239c6414d295de619848ad"
+        "report_digest": "c3874e79b9e2fa6723d54f42a0b889e9b319610b3bef03042d1b43ec07e54b43"
       },
       "blocking_status": "PASS"
     },
@@ -98,10 +98,10 @@
         "blocking": true
       },
       "proof": {
-        "proof_id": "proof:ProjectionDeterminismLaw:65d5461548f10c16",
+        "proof_id": "proof:ProjectionDeterminismLaw:618c6b89434df00a",
         "status": "PASS",
         "report_key": "projection_determinism_certificates",
-        "report_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766"
+        "report_digest": "618c6b89434df00a55c235094299160bdd2ba80b30a62494f5382dd2c6e52dd0"
       },
       "blocking_status": "PASS"
     },
@@ -114,10 +114,10 @@
         "blocking": true
       },
       "proof": {
-        "proof_id": "proof:DependencyBoundaryLaw:9f911c51856d5705",
+        "proof_id": "proof:DependencyBoundaryLaw:501eb4e42c3560c8",
         "status": "PASS",
         "report_key": "dependency_constitution",
-        "report_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b"
+        "report_digest": "501eb4e42c3560c8ae2e99e6ef13bf11a04319b92d352d85e2417593fa98e9c2"
       },
       "blocking_status": "PASS"
     },
@@ -130,10 +130,10 @@
         "blocking": true
       },
       "proof": {
-        "proof_id": "proof:DeterminismLaw:b580883548757075",
+        "proof_id": "proof:DeterminismLaw:3960a8837e5a055d",
         "status": "PASS",
         "report_key": "proof_determinism_certificate",
-        "report_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904"
+        "report_digest": "3960a8837e5a055d69616cb8e6c76eca04c9051c8c3abdee0ee24704b99929c1"
       },
       "blocking_status": "PASS"
     }
@@ -151,28 +151,28 @@
     {
       "law_id": "DigestLaw",
       "predicate_id": "projection.digest.content_addressed",
-      "proof_id": "proof:DigestLaw:c1f2db4fe87e77a0",
+      "proof_id": "proof:DigestLaw:d0eac0e7a442ed40",
       "status": "PASS",
       "report_key": "projection_digest_certificates",
-      "report_digest": "c1f2db4fe87e77a0dd1637b0f408cfa06b0a803cbf4768163a313b5cc86300f8",
+      "report_digest": "d0eac0e7a442ed403187de96e61f1e05e306ec264a67d7a65771601c6fb75093",
       "blocking_status": "PASS"
     },
     {
       "law_id": "SerializerTransparencyLaw",
       "predicate_id": "projection.serializer.roundtrip_identity_preserved",
-      "proof_id": "proof:SerializerTransparencyLaw:de7536afa31ef643",
+      "proof_id": "proof:SerializerTransparencyLaw:dc09dd12634c518e",
       "status": "PASS",
       "report_key": "serializer_transparency_certificates",
-      "report_digest": "de7536afa31ef6438f24f6415e78195c86308173c2a6065d415004241d97452f",
+      "report_digest": "dc09dd12634c518eadb501b93e24e87d5dcb097d267628a25c1437b6c85211bc",
       "blocking_status": "PASS"
     },
     {
       "law_id": "StorageTransparencyLaw",
       "predicate_id": "projection.storage.identity_preserved",
-      "proof_id": "proof:StorageTransparencyLaw:5cf2587a8837e541",
+      "proof_id": "proof:StorageTransparencyLaw:c3874e79b9e2fa67",
       "status": "PASS",
       "report_key": "storage_transparency_certificates",
-      "report_digest": "5cf2587a8837e54104c9fbae173ebe191a827625b4239c6414d295de619848ad",
+      "report_digest": "c3874e79b9e2fa6723d54f42a0b889e9b319610b3bef03042d1b43ec07e54b43",
       "blocking_status": "PASS"
     },
     {
@@ -187,28 +187,28 @@
     {
       "law_id": "ProjectionDeterminismLaw",
       "predicate_id": "projection.digest.repeatable",
-      "proof_id": "proof:ProjectionDeterminismLaw:65d5461548f10c16",
+      "proof_id": "proof:ProjectionDeterminismLaw:618c6b89434df00a",
       "status": "PASS",
       "report_key": "projection_determinism_certificates",
-      "report_digest": "65d5461548f10c160de7ca475a5843f795bfff562f7cacc38c1ed97446ef9766",
+      "report_digest": "618c6b89434df00a55c235094299160bdd2ba80b30a62494f5382dd2c6e52dd0",
       "blocking_status": "PASS"
     },
     {
       "law_id": "DependencyBoundaryLaw",
       "predicate_id": "dependency.boundary.constitution_respected",
-      "proof_id": "proof:DependencyBoundaryLaw:9f911c51856d5705",
+      "proof_id": "proof:DependencyBoundaryLaw:501eb4e42c3560c8",
       "status": "PASS",
       "report_key": "dependency_constitution",
-      "report_digest": "9f911c51856d57059014c9959e7eba45a6a9d9a09cfa50f767b5f61fa659b89b",
+      "report_digest": "501eb4e42c3560c8ae2e99e6ef13bf11a04319b92d352d85e2417593fa98e9c2",
       "blocking_status": "PASS"
     },
     {
       "law_id": "DeterminismLaw",
       "predicate_id": "constitution.proof.digest_repeatable",
-      "proof_id": "proof:DeterminismLaw:b580883548757075",
+      "proof_id": "proof:DeterminismLaw:3960a8837e5a055d",
       "status": "PASS",
       "report_key": "proof_determinism_certificate",
-      "report_digest": "b580883548757075d76c0e73bf52dfc06ca8811c87a135492545da1efa5e9904",
+      "report_digest": "3960a8837e5a055d69616cb8e6c76eca04c9051c8c3abdee0ee24704b99929c1",
       "blocking_status": "PASS"
     }
   ],
@@ -260,8 +260,8 @@
       "storage_locator": "foundation.execution_graph:execution-graph.json",
       "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
       "projection_type": "ExecutionGraphProjection",
-      "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
-      "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+      "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
+      "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
       "generated_from": [
         {
@@ -272,7 +272,7 @@
         {
           "source_type": "execution_evidence",
           "source_ref": "artifact_registry:execution_evidence",
-          "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+          "source_digest": "9447f14ebb00121902fd9919c1eada6a752f37cd6016acb5f3b09249fa69c45f"
         },
         {
           "source_type": "execution_chain",
@@ -305,8 +305,8 @@
       "storage_locator": "foundation.topology_drift:topology-drift.json",
       "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
       "projection_type": "TopologyDriftProjection",
-      "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
-      "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+      "projection_id": "TopologyDriftProjection:9264733347c84038",
+      "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
       "generated_from": [
         {
@@ -502,8 +502,8 @@
       "storage_locator": "foundation.execution_graph:execution-graph.json",
       "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
       "projection_type": "ExecutionGraphProjection",
-      "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
-      "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+      "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
+      "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
       "generated_from": [
         {
@@ -514,7 +514,7 @@
         {
           "source_type": "execution_evidence",
           "source_ref": "artifact_registry:execution_evidence",
-          "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+          "source_digest": "9447f14ebb00121902fd9919c1eada6a752f37cd6016acb5f3b09249fa69c45f"
         },
         {
           "source_type": "execution_chain",
@@ -547,8 +547,8 @@
       "storage_locator": "foundation.topology_drift:topology-drift.json",
       "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
       "projection_type": "TopologyDriftProjection",
-      "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
-      "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+      "projection_id": "TopologyDriftProjection:9264733347c84038",
+      "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
       "generated_from": [
         {
@@ -744,8 +744,8 @@
       "storage_locator": "foundation.execution_graph:execution-graph.json",
       "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
       "projection_type": "ExecutionGraphProjection",
-      "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
-      "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+      "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
+      "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
       "generated_from": [
         {
@@ -756,7 +756,7 @@
         {
           "source_type": "execution_evidence",
           "source_ref": "artifact_registry:execution_evidence",
-          "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+          "source_digest": "9447f14ebb00121902fd9919c1eada6a752f37cd6016acb5f3b09249fa69c45f"
         },
         {
           "source_type": "execution_chain",
@@ -784,8 +784,8 @@
       "storage_locator": "foundation.topology_drift:topology-drift.json",
       "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
       "projection_type": "TopologyDriftProjection",
-      "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
-      "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+      "projection_id": "TopologyDriftProjection:9264733347c84038",
+      "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
       "generated_from": [
         {
@@ -991,9 +991,9 @@
       "storage_locator": "foundation.execution_graph:execution-graph.json",
       "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
       "projection_type": "ExecutionGraphProjection",
-      "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
-      "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
-      "proof_digest": "a9dc99ef96077397a634ce24c37a4bcea0199e5732b7eb8ddec90b4acd7f260e",
+      "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
+      "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
+      "proof_digest": "838c75bd171a22c25b0a046730574c9b5d99bedb884897c6eeef0dee03b1e710",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
       "violations": [],
       "checks": [
@@ -1030,9 +1030,9 @@
       "storage_locator": "foundation.topology_drift:topology-drift.json",
       "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
       "projection_type": "TopologyDriftProjection",
-      "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
-      "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
-      "proof_digest": "28f72eb9d7faef82635e31926dadbbfc8197889ec9d973e99d74c380b0aa1427",
+      "projection_id": "TopologyDriftProjection:9264733347c84038",
+      "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
+      "proof_digest": "5214cab124f9234cde316b5e26b1d87d2d86843637735b5a0e383f001b5e542d",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
       "violations": [],
       "checks": [
@@ -1285,24 +1285,24 @@
       }
     ],
     "graph": {
-      "governed_module_count": 82,
-      "import_edge_count": 121,
+      "governed_module_count": 84,
+      "import_edge_count": 124,
       "module_kind_counts": {
-        "command_adapter": 9,
+        "command_adapter": 10,
         "composition_surface": 10,
         "constitution_engine": 2,
         "projection_api": 1,
         "projection_builder": 2,
         "projection_domain": 1,
         "registry_surface": 1,
-        "repo_surface": 47,
+        "repo_surface": 48,
         "runtime_surface": 1,
         "serializer": 1,
         "storage_catalog": 2,
         "tooling_support": 5
       },
-      "discovery_digest": "2344e02cc01a170c86c8f80e07858cecb3cc9c1c0f7f6054bb1a6d701a87dc9d",
-      "discovery_module_count": 82,
+      "discovery_digest": "7b843d5612bf4623ab73338f0772c8e8296df7f9a32dbd5e85eadeeb3fc45eba",
+      "discovery_module_count": 84,
       "modules": [
         {
           "module_id": "tooling-eos-cli:commands/capability-registry",
@@ -1349,7 +1349,7 @@
         {
           "module_id": "tooling-eos-cli:commands/verify-portfolio",
           "module_kind": "command_adapter",
-          "import_count": 6,
+          "import_count": 8,
           "governed_dependency_count": 1
         },
         {
@@ -1357,6 +1357,12 @@
           "module_kind": "command_adapter",
           "import_count": 15,
           "governed_dependency_count": 4
+        },
+        {
+          "module_id": "tooling-eos-cli:commands/verify-product-binding",
+          "module_kind": "command_adapter",
+          "import_count": 8,
+          "governed_dependency_count": 1
         },
         {
           "module_id": "composition:compose",
@@ -1587,6 +1593,12 @@
           "governed_dependency_count": 0
         },
         {
+          "module_id": "presentation-experience:index",
+          "module_kind": "repo_surface",
+          "import_count": 5,
+          "governed_dependency_count": 1
+        },
+        {
           "module_id": "presentation-foundation:icons",
           "module_kind": "repo_surface",
           "import_count": 0,
@@ -1775,8 +1787,8 @@
         {
           "module_id": "tooling-eos-cli:index",
           "module_kind": "tooling_support",
-          "import_count": 9,
-          "governed_dependency_count": 7
+          "import_count": 10,
+          "governed_dependency_count": 8
         },
         {
           "module_id": "tooling-eos-cli:schema",
@@ -2159,6 +2171,12 @@
           "to_kind": "repo_surface"
         },
         {
+          "from": "presentation-experience:index",
+          "to": "presentation-types:index",
+          "from_kind": "repo_surface",
+          "to_kind": "repo_surface"
+        },
+        {
           "from": "presentation-foundation:index",
           "to": "presentation-foundation:icons",
           "from_kind": "repo_surface",
@@ -2459,6 +2477,12 @@
           "to_kind": "tooling_support"
         },
         {
+          "from": "tooling-eos-cli:commands/verify-product-binding",
+          "to": "tooling-eos-cli:state",
+          "from_kind": "command_adapter",
+          "to_kind": "tooling_support"
+        },
+        {
           "from": "tooling-eos-cli:index",
           "to": "tooling-eos-cli:commands/capability-registry",
           "from_kind": "tooling_support",
@@ -2497,6 +2521,12 @@
         {
           "from": "tooling-eos-cli:index",
           "to": "tooling-eos-cli:commands/verify-product",
+          "from_kind": "tooling_support",
+          "to_kind": "command_adapter"
+        },
+        {
+          "from": "tooling-eos-cli:index",
+          "to": "tooling-eos-cli:commands/verify-product-binding",
           "from_kind": "tooling_support",
           "to_kind": "command_adapter"
         },
@@ -2572,6 +2602,11 @@
         "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
         "status": "PASS",
         "detail": "tooling-eos-cli:commands/verify-product respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.command_adapter.no_direct_constitution_engine_import",
+        "status": "PASS",
+        "detail": "tooling-eos-cli:commands/verify-product-binding respects the constitutional dependency boundary."
       },
       {
         "rule_id": "dependency.composition_surface.no_constitution_or_command_dependency",
@@ -2766,6 +2801,11 @@
       {
         "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
         "status": "PASS",
+        "detail": "presentation-experience:index respects the constitutional dependency boundary."
+      },
+      {
+        "rule_id": "dependency.repo_surface.no_constitution_or_command_dependency",
+        "status": "PASS",
         "detail": "presentation-foundation:icons respects the constitutional dependency boundary."
       },
       {
@@ -2946,8 +2986,8 @@
     ]
   },
   "proof_determinism_certificate": {
-    "certificate_id": "constitution-proof:62b75a464d1ba05b",
-    "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138",
+    "certificate_id": "constitution-proof:6ce25627f1345ea5",
+    "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
     "status": "PASS",
     "violations": [],
     "checks": [
@@ -2970,8 +3010,8 @@
       "storage_locator": "foundation.execution_graph:execution-graph.json",
       "replica_storage_locator": "replica://foundation.execution_graph:execution-graph.json",
       "projection_type": "ExecutionGraphProjection",
-      "projection_id": "ExecutionGraphProjection:44f060c61c81275b",
-      "projection_digest": "44f060c61c81275b27393e56f29b2eab9178a7ef20c3f24e6af336aca6346691",
+      "projection_id": "ExecutionGraphProjection:481a23525d81f8de",
+      "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
       "generated_from": [
         {
@@ -2982,7 +3022,7 @@
         {
           "source_type": "execution_evidence",
           "source_ref": "artifact_registry:execution_evidence",
-          "source_digest": "75682e77d3e56e2916b1dc5fc3832c43f0497de07e47e83495a55bfae65ea161"
+          "source_digest": "9447f14ebb00121902fd9919c1eada6a752f37cd6016acb5f3b09249fa69c45f"
         },
         {
           "source_type": "execution_chain",
@@ -3036,8 +3076,8 @@
       "storage_locator": "foundation.topology_drift:topology-drift.json",
       "replica_storage_locator": "replica://foundation.topology_drift:topology-drift.json",
       "projection_type": "TopologyDriftProjection",
-      "projection_id": "TopologyDriftProjection:538cdf2812d4fb15",
-      "projection_digest": "538cdf2812d4fb1581ffaa6b75b3ba396b60c425348246f12d6e187830ab6c21",
+      "projection_id": "TopologyDriftProjection:9264733347c84038",
+      "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
       "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
       "generated_from": [
         {
@@ -3307,5 +3347,5 @@
     }
   ],
   "claim_boundary": "Constitution report verifies graph purity, constitutional fingerprinting, projection serialization invariants, dependency-boundary laws, and proof determinism over the current execution graph projection set. It proves constitutional compliance for operational adjacency and projection integrity, not feature-level behavior.",
-  "proof_digest": "62b75a464d1ba05b841c5d99d58ac51c0d8c2da1a8338830bd7a3a48a1f04138"
+  "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856"
 }

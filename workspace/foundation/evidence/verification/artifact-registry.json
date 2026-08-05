@@ -869,7 +869,8 @@
       "empirically_verified_products": [],
       "product_reach_ratio": 0,
       "reachable_from_products": [
-        "lawyershub"
+        "lawyershub",
+        "web"
       ],
       "reachability_status": "REACHABLE",
       "runtime_ref": "workspace/capabilities/api-platform/implementation/service.ts",
@@ -4182,9 +4183,7 @@
         "provided_capabilities": [],
         "lifecycle_stage": "experimental",
         "governance_status": "VALID",
-        "declared_products": [
-          "lawyershub"
-        ],
+        "declared_products": [],
         "mapped_products": [
           "lawyershub"
         ],
@@ -4195,7 +4194,7 @@
           "lawyershub"
         ],
         "execution_reachability": {
-          "product": true,
+          "product": false,
           "composition": true,
           "runtime": true,
           "observed": false,
@@ -4214,7 +4213,7 @@
         "per_product": [
           {
             "product_id": "lawyershub",
-            "declared_in_product": true,
+            "declared_in_product": false,
             "composition_mapped": true,
             "runtime_referenced": true,
             "verification_evidence": false,
@@ -4262,7 +4261,9 @@
         "lawyershub"
       ],
       "product_reach_ratio": 0.3333,
-      "reachable_from_products": [],
+      "reachable_from_products": [
+        "lawyershub"
+      ],
       "reachability_status": "REACHABLE",
       "runtime_ref": "workspace/capabilities/legal-document/implementation/service.ts",
       "planner_ref": null,
@@ -4278,20 +4279,20 @@
         "provided_capabilities": [],
         "lifecycle_stage": "experimental",
         "governance_status": "VALID",
-        "declared_products": [
-          "lawyershub"
-        ],
+        "declared_products": [],
         "mapped_products": [
           "lawyershub"
         ],
-        "runtime_products": [],
+        "runtime_products": [
+          "lawyershub"
+        ],
         "empirically_verified_products": [
           "lawyershub"
         ],
         "execution_reachability": {
-          "product": true,
+          "product": false,
           "composition": true,
-          "runtime": false,
+          "runtime": true,
           "observed": false,
           "verified": false,
           "reproducible": false,
@@ -4308,9 +4309,9 @@
         "per_product": [
           {
             "product_id": "lawyershub",
-            "declared_in_product": true,
+            "declared_in_product": false,
             "composition_mapped": true,
-            "runtime_referenced": false,
+            "runtime_referenced": true,
             "verification_evidence": false,
             "functional_tests_passed": false,
             "replay_verified": true,
@@ -4826,7 +4827,8 @@
       ],
       "product_reach_ratio": 1,
       "reachable_from_products": [
-        "lawyershub"
+        "lawyershub",
+        "web"
       ],
       "reachability_status": "REACHABLE",
       "runtime_ref": "workspace/capabilities/requirement-management/implementation/service.ts",
@@ -4844,7 +4846,9 @@
         "lifecycle_stage": "core",
         "governance_status": "INVALID",
         "declared_products": [
-          "lawyershub"
+          "services-id",
+          "lawyershub",
+          "ilc"
         ],
         "mapped_products": [
           "lawyershub"
@@ -4875,6 +4879,23 @@
         },
         "stewardship_gap": "NONE",
         "per_product": [
+          {
+            "product_id": "services-id",
+            "declared_in_product": true,
+            "composition_mapped": false,
+            "runtime_referenced": false,
+            "verification_evidence": false,
+            "functional_tests_passed": false,
+            "replay_verified": false,
+            "runtime_invocation_count": 0,
+            "runtime_observed": false,
+            "runtime_verified": false,
+            "runtime_reproducible": false,
+            "execution_chain_digests": [],
+            "stable_chain_ids": [],
+            "execution_chains": [],
+            "execution_status": "DECLARED"
+          },
           {
             "product_id": "lawyershub",
             "declared_in_product": true,
@@ -5411,6 +5432,23 @@
               }
             ],
             "execution_status": "REPRODUCIBLE"
+          },
+          {
+            "product_id": "ilc",
+            "declared_in_product": true,
+            "composition_mapped": false,
+            "runtime_referenced": false,
+            "verification_evidence": false,
+            "functional_tests_passed": false,
+            "replay_verified": false,
+            "runtime_invocation_count": 0,
+            "runtime_observed": false,
+            "runtime_verified": false,
+            "runtime_reproducible": false,
+            "execution_chain_digests": [],
+            "stable_chain_ids": [],
+            "execution_chains": [],
+            "execution_status": "DECLARED"
           }
         ],
         "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
@@ -7348,7 +7386,7 @@
       "runtime_ref": "workspace/capabilities/trust-framework/implementation/service.ts",
       "planner_ref": null,
       "composer_ref": null,
-      "verification_ref": null,
+      "verification_ref": "workspace/capabilities/trust-framework/tests",
       "discovery_signature": [
         "framework",
         "trust"
@@ -7565,7 +7603,8 @@
       "empirically_verified_products": [],
       "product_reach_ratio": 0,
       "reachable_from_products": [
-        "lawyershub"
+        "lawyershub",
+        "web"
       ],
       "reachability_status": "REACHABLE",
       "runtime_ref": "workspace/capabilities/workflow-engine/implementation/service.ts",

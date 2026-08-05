@@ -1,0 +1,49 @@
+---
+# B1 Governance Integrity Requirement
+# Battlefield: B1 - Governance Integrity
+requirement_id: "REQ-B1-001"
+requirement_version: "1.0.0"
+status: "VERIFIED"
+created_timestamp: "2026-08-05T06:00:00Z"
+completed_timestamp: "2026-08-05T06:15:00Z"
+requestor: "human-stakeholder"
+business_justification: "Verify that EOS governance cannot be gamed by manipulating state files; evidence must always be the source of truth for verdicts."
+
+# Requirement details
+title: "Governance integrity adversarial test"
+description: "Execute adversarial test to prove that governance verdicts are computed from evidence, not just manually maintained state. EOS must reject invalid/tampered evidence and only PASS valid evidence."
+
+# Battlefield alignment
+battlefield: "B1 - Governance Integrity"
+priority: "CRITICAL"
+dependencies:
+  - requirement_id: "EOS-SPINE-002"
+    path: "/root/Enterprise-OS/workspace/evidence/registry/requirements/eos-spine-requirement-002.yaml"
+    status: "VERIFIED"
+
+# Acceptance criteria (same as battlefield gates)
+acceptance_criteria:
+  - id: ac-b1-001
+    name: "Governance reads actual evidence"
+    criteria: "Engine must detect changes to evidence files and recompute state automatically"
+  - id: ac-b1-002
+    name: "Invalid evidence changes verdict"
+    criteria: "Tampered evidence must result in FAIL/INVALID verdict, never PASS"
+  - id: ac-b1-003
+    name: "GOVERNANCE_STATE follows computation"
+    criteria: "State file never leads; always updates after evidence changes"
+  - id: ac-b1-004
+    name: "Restored evidence restores PASS"
+    criteria: "After restoring valid evidence, all states return to VERIFIED/PASS"
+
+# RTM (Requirements Traceability Matrix) links
+rtm:
+  - execution_plan_ref: "/root/Enterprise-OS/workspace/evidence/eos-b1-governance-integrity/execution-plan.yaml"
+    evidence_manifest_ref: "/root/Enterprise-OS/workspace/evidence/eos-b1-governance-integrity/evidence-manifest.yaml"
+    capability_id: "EOS-B1-001"
+    status: "VERIFIED"
+
+# Guardrails
+engineering_freeze_compliant: true
+m6_boundaries_respected: true
+no_cross_boundary_changes: true
