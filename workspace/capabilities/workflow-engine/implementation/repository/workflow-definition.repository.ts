@@ -29,6 +29,35 @@ const DEFINITIONS: readonly WorkflowDefinition[] = Object.freeze([
     ],
   },
   {
+    id: "prepare_release",
+    name: "Prepare Release - Release Readiness Assessment",
+    description:
+      "Determines whether a release is operationally ready based on requirement traceability, evidence coverage, and verification status across all requirements in the release.",
+    requiredInputs: ["releaseId"],
+    steps: [
+      {
+        id: "check-requirements",
+        kind: "requirement.get",
+        description: "Load all requirements associated with the release.",
+      },
+      {
+        id: "check-traceability",
+        kind: "traceability.get",
+        description: "Check traceability completeness across all release requirements.",
+      },
+      {
+        id: "check-evidence",
+        kind: "evidence.search",
+        description: "Verify evidence coverage for all release requirements.",
+      },
+      {
+        id: "determine-readiness",
+        kind: "verification.assess",
+        description: "Calculate overall release readiness and identify blockers.",
+      },
+    ],
+  },
+  {
     id: "evidence-run-review",
     name: "Evidence Run Review",
     description:
@@ -39,6 +68,30 @@ const DEFINITIONS: readonly WorkflowDefinition[] = Object.freeze([
         id: "collect-run-evidence",
         kind: "evidence.search",
         description: "Search Evidence Registry by run identifier.",
+      },
+    ],
+  },
+  {
+    id: "ai-investigate-requirement",
+    name: "AI Requirement Investigation",
+    description:
+      "AI-powered analysis of a requirement with unknown verification status to resolve ambiguity and generate structured investigation results.",
+    requiredInputs: ["requirementId"],
+    steps: [
+      {
+        id: "ai-investigate",
+        kind: "ai.analyze",
+        description: "Perform AI analysis on the ambiguous requirement.",
+      },
+      {
+        id: "validate-investigation",
+        kind: "result.validate",
+        description: "Validate AI investigation results against minimum confidence threshold.",
+      },
+      {
+        id: "update-requirement-state",
+        kind: "requirement.update",
+        description: "Update the requirement's verification status based on investigation results.",
       },
     ],
   },

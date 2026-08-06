@@ -11,12 +11,18 @@ export type RequirementVerificationStatus =
   | "not_ready"
   | "pending"
   | "passed"
-  | "failed";
+  | "failed"
+  | "unknown";
 
 export type RequirementId = string & { readonly __requirementId: unique symbol };
 
 export function RequirementId(value: string): RequirementId {
   return value as RequirementId;
+}
+
+export interface RequirementDependency {
+  readonly requirementId: string;
+  readonly relationType: "enables" | "supports" | "depends-on" | "derived-from";
 }
 
 export interface RequirementAggregate {
@@ -31,6 +37,7 @@ export interface RequirementAggregate {
   readonly linkedCapabilityIds: readonly string[];
   readonly acceptanceCriteria: readonly string[];
   readonly verificationStatus: RequirementVerificationStatus;
+  readonly dependsOn: readonly RequirementDependency[];
   readonly createdAt: Readonly<Date>;
   readonly updatedAt: Readonly<Date>;
   readonly approvedAt?: Readonly<Date>;
@@ -137,6 +144,20 @@ export interface SearchRequirementsOutput {
   readonly matched: number;
   readonly offset: number;
   readonly limit: number;
+}
+
+export interface AssessVerificationInput {
+  readonly releaseId: string;
+}
+
+export interface AssessVerificationOutput {
+  readonly totalRequirements: number;
+  readonly verifiedRequirements: number;
+  readonly unknownRequirements: number;
+  readonly blockedRequirements: number;
+  readonly isVerified: boolean;
+  readonly hasUnknown: boolean;
+  readonly unknownRequirementIds: readonly RequirementId[];
 }
 
 export interface RequirementRepository {

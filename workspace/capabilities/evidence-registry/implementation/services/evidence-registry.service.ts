@@ -1,4 +1,9 @@
+import {
+  requirementService,
+} from "../../../requirement-management/implementation/service";
 import type {
+  AssessEvidenceInput,
+  AssessEvidenceOutput,
   GetEvidenceRecordInput,
   GetEvidenceRecordOutput,
   SearchEvidenceRegistryInput,
@@ -42,6 +47,55 @@ export class EvidenceRegistryService {
         summary: result.summary,
       },
     });
+    return result;
+  }
+
+  assessEvidence(input: AssessEvidenceInput): AssessEvidenceOutput {
+    const requirements = requirementService.getRequirementsByRelease(input.releaseId);
+    const evidencePaths: string[] = [];
+    let totalEvidence = 0;
+    let coveredRequirements = 0;
+
+    for (const req of requirements) {
+      const reqEvidence = evidenceRegistryQueries["evidence.search"].execute({
+        requirementRef: req.id,
+        limit: 100,
+      });
+
+      if (reqEvidence.matched > 0) {
+        coveredRequirements++;
+        totalEvidence += reqEvidence.matched;
+        for (const item of reqEvidence.items) {
+          if (!evidencePaths.includes(item.path)) {
+            evidencePaths.push(item.path);
+          }
+        }
+      }
+    }
+
+    const allCovered = coveredRequirements === requirements.length;
+    const complete = allCovered && totalEvidence > 0;
+
+    const result: AssessEvidenceOutput = {
+      totalEvidence,
+      complete,
+      evidencePaths,
+    };
+
+    recordRuntimeInvocation({
+      capabilityId: "evidence-registry",
+      operationId: "assess-evidence",
+      sourceRef: "EvidenceRegistryService.assessEvidence",
+      success: true,
+      input,
+      result: {
+        totalEvidence,
+        complete,
+        coveredRequirements,
+        requirementCount: requirements.length,
+      },
+    });
+
     return result;
   }
 }

@@ -7,6 +7,7 @@ import {
   type RequirementPriority,
   type RequirementStatus,
   type RequirementVerificationStatus,
+  type RequirementDependency,
 } from "../contracts";
 
 const seed = (): RequirementAggregate[] => {
@@ -30,6 +31,7 @@ const seed = (): RequirementAggregate[] => {
         "Requirement keeps linked capability IDs",
       ],
       verificationStatus: "pending",
+      dependsOn: [],
       createdAt: d(9),
       updatedAt: d(1),
       approvedAt: d(8),
@@ -48,6 +50,7 @@ const seed = (): RequirementAggregate[] => {
         "Implemented requirements can be verified",
       ],
       verificationStatus: "not_ready",
+      dependsOn: [],
       createdAt: d(13),
       updatedAt: d(5),
       approvedAt: d(5),
@@ -66,6 +69,7 @@ const seed = (): RequirementAggregate[] => {
         "Verification status is queryable",
       ],
       verificationStatus: "passed",
+      dependsOn: [],
       createdAt: d(20),
       updatedAt: d(3),
       approvedAt: d(18),
@@ -73,7 +77,30 @@ const seed = (): RequirementAggregate[] => {
       verifiedAt: d(3),
     },
     {
-      id: "req-010",
+      id: RequirementId("req-009"),
+      title: "BaseSearchBar Shared Component Refactor",
+      summary: "Refactor komponen search bar menjadi BaseSearchBar yang reusable untuk menghilangkan duplikasi kode",
+      description: "Membuat komponen BaseSearchBar shared yang dapat digunakan oleh semua halaman search (Community, Research) dengan dukungan filter dinamis.",
+      status: "verified",
+      priority: "high",
+      owner: "EOS Front B",
+      source: "EOS-001",
+      linkedCapabilityIds: ["EOS-ui-components", "EOS-shared-libs"],
+      acceptanceCriteria: [
+        "BaseSearchBar mendukung multiple filter dinamis",
+        "Dapat digunakan oleh CommunitySearchBar dan ResearchSearchBar",
+        "Menghilangkan duplikasi logika routing antar search bar",
+      ],
+      verificationStatus: "passed",
+      dependsOn: [],
+      createdAt: d(3),
+      updatedAt: d(2),
+      approvedAt: d(3),
+      implementedAt: d(2),
+      verifiedAt: d(1),
+    },
+    {
+      id: RequirementId("req-010"),
       title: "Location Filter untuk /community Page",
       summary: "Tambahkan filter lokasi pada halaman komunitas agar pengguna dapat menyaring anggota berdasarkan wilayah",
       status: "verified",
@@ -87,11 +114,89 @@ const seed = (): RequirementAggregate[] => {
         "Integrasi dengan shared BaseSearchBar",
       ],
       verificationStatus: "passed",
+      dependsOn: [
+        { requirementId: "req-009", relationType: "enables" }
+      ],
       createdAt: d(1),
       updatedAt: d(1),
       approvedAt: d(1),
       implementedAt: d(2),
       verifiedAt: d(3),
+    },
+    {
+      id: RequirementId("req-011"),
+      title: "Visible Proof Panel untuk Requirements Page",
+      summary: "Tampilkan traceability dan proof status requirement secara end-to-end agar manusia dapat melihat bukti verifikasi",
+      description:
+        "EOS harus mampu menjawab 6 pertanyaan manusia untuk setiap requirement: apa yang diminta, di mana ditrace, implementasinya apa, evidence-nya apa, verdict-nya apa, dan apakah benar-benar proven.",
+      status: "verified",
+      priority: "critical",
+      owner: "EOS Front B — EOS CORE",
+      source: "EOS-001",
+      linkedCapabilityIds: ["EOS-requirement-management", "EOS-evidence-registry", "EOS-governance-verification"],
+      acceptanceCriteria: [
+        "Proof panel menjawab 6 pertanyaan manusia",
+        "Semua verified requirement bisa dipilih via selector",
+        "Fallback ke static data jika runtime API unavailable",
+        "Tidak ada refactor REQ-010, tidak ada abstraction baru, tidak ada dashboard besar",
+      ],
+      verificationStatus: "passed",
+      dependsOn: [
+        { requirementId: "req-010", relationType: "supports" }
+      ],
+      createdAt: d(0),
+      updatedAt: d(0),
+      approvedAt: d(0),
+      implementedAt: d(0),
+      verifiedAt: d(0),
+    },
+    {
+      id: RequirementId("req-042"),
+      title: "REQ-0042: Ambiguous verification state requirement",
+      summary: "Test requirement with unknown verification status to trigger AI investigation",
+      description: "Requirement created specifically to test the AI-on-demand path for ambiguous UNKNOWN verification status",
+      status: "implemented",
+      priority: "medium",
+      owner: "EOS QA Team",
+      source: "EOS-003",
+      linkedCapabilityIds: ["EOS-workflow-engine", "EOS-evidence-engine"],
+      acceptanceCriteria: [
+        "Unknown verification status triggers AI investigation",
+        "AI performs root cause analysis on ambiguous requirement",
+        "Workflow logs AI invocation for audit purposes"
+      ],
+      verificationStatus: "unknown",
+      dependsOn: [],
+      createdAt: d(1),
+      updatedAt: d(0),
+      approvedAt: d(1),
+      implementedAt: d(0),
+    },
+    {
+      id: RequirementId("req-012"),
+      title: "Causal Trace untuk Requirement Dependencies",
+      summary: "Tampilkan hubungan sebab-akibat antar requirement sehingga manusia dapat memahami mengapa sebuah requirement ada",
+      description:
+        "EOS harus mampu menunjukkan hubungan causal antar requirement yang sudah terbukti, dimulai dari REQ-009 yang meng-enable REQ-010. Setiap node dalam trace harus memiliki evidence reference yang nyata.",
+      status: "in_delivery",
+      priority: "critical",
+      owner: "EOS Front B — EOS CORE",
+      source: "EOS-001",
+      linkedCapabilityIds: ["EOS-requirement-management", "EOS-causal-trace", "EOS-governance-intelligence"],
+      acceptanceCriteria: [
+        "Ada relasi eksplisit REQ-009 → REQ-010 dengan semantics 'enables'",
+        "Trace dapat ditelusuri dua arah (dari child ke parent dan sebaliknya)",
+        "Setiap requirement tetap terhubung ke RTM, Implementation, Evidence, Verdict",
+        "REQ-012 memiliki proof untuk dirinya sendiri sama seperti REQ-011",
+        "Tidak ada graph database, tidak ada library visualisasi, gunakan artefak yang sudah ada",
+      ],
+      verificationStatus: "pending",
+      dependsOn: [
+        { requirementId: "req-011", relationType: "supports" }
+      ],
+      createdAt: d(0),
+      updatedAt: d(0),
+      approvedAt: d(0),
     },
   ];
 };
@@ -110,6 +215,7 @@ interface RequirementRecord {
   readonly linkedCapabilityIds: readonly string[];
   readonly acceptanceCriteria: readonly string[];
   readonly verificationStatus: RequirementVerificationStatus;
+  readonly dependsOn?: readonly RequirementDependency[];
   readonly createdAt: string;
   readonly updatedAt: string;
   readonly approvedAt?: string;
@@ -162,6 +268,7 @@ function clone(entity: RequirementAggregate): RequirementAggregate {
     ...entity,
     linkedCapabilityIds: [...entity.linkedCapabilityIds],
     acceptanceCriteria: [...entity.acceptanceCriteria],
+    dependsOn: [...entity.dependsOn],
     createdAt: new Date(entity.createdAt),
     updatedAt: new Date(entity.updatedAt),
     ...(entity.approvedAt !== undefined ? { approvedAt: new Date(entity.approvedAt) } : {}),
@@ -185,6 +292,7 @@ function toRecord(entity: RequirementAggregate): RequirementRecord {
     linkedCapabilityIds: [...entity.linkedCapabilityIds],
     acceptanceCriteria: [...entity.acceptanceCriteria],
     verificationStatus: entity.verificationStatus,
+    dependsOn: entity.dependsOn.map((d) => ({ ...d })),
     createdAt: entity.createdAt.toISOString(),
     updatedAt: entity.updatedAt.toISOString(),
     ...(entity.approvedAt !== undefined
@@ -212,6 +320,7 @@ function fromRecord(record: RequirementRecord): RequirementAggregate {
     linkedCapabilityIds: [...record.linkedCapabilityIds],
     acceptanceCriteria: [...record.acceptanceCriteria],
     verificationStatus: record.verificationStatus,
+    dependsOn: (record.dependsOn ?? []).map((d) => ({ ...d })),
     createdAt: new Date(record.createdAt),
     updatedAt: new Date(record.updatedAt),
     ...(record.approvedAt !== undefined ? { approvedAt: new Date(record.approvedAt) } : {}),

@@ -91,6 +91,7 @@ const VERIFICATION_OPTIONS: readonly VerificationFilter[] = [
   "pending",
   "passed",
   "failed",
+  "unknown",
 ] as const;
 
 const DEFAULT_LINKED_CAPABILITIES = "EOS-001";

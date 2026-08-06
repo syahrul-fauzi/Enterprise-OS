@@ -42,6 +42,7 @@ const VERIFICATION_LABEL: Record<RequirementVerificationStatus, string> = {
   pending: "Pending",
   passed: "Passed",
   failed: "Failed",
+  unknown: "Unknown",
 };
 
 export type RequirementAction =
@@ -181,10 +182,10 @@ export function RequirementCard({
             </div>
             <div className="space-y-2">
               <a
-                href={`/products/${productId}/requirements/${item.id}`}
+                href={`/requirements/${item.id}`}
                 className="inline-flex items-center gap-1 text-xs text-emerald-700 hover:text-emerald-900"
               >
-                View Proof Panel →
+                View Proof →
               </a>
             </div>
           </div>

@@ -7,7 +7,7 @@ import RequirementProofPanel from "../../../../../../components/RequirementProof
 interface ProductRequirementDetailPageProps {
   readonly params: Promise<{
     readonly productId: string;
-    readonly id: string;
+    readonly requirementId: string;
   }>;
 }
 
@@ -21,7 +21,7 @@ export default async function ProductRequirementDetailPage(
     <main className="min-h-screen bg-slate-50 px-6 py-10">
       <div className="mx-auto max-w-7xl space-y-6">
         <ProductPreviewShell binding={binding} mode="requirements" />
-        <RequirementProofPanel productId={params.productId} requirementId={params.id} />
+        <RequirementProofPanel productId={params.productId} requirementId={params.requirementId} />
       </div>
     </main>
   );

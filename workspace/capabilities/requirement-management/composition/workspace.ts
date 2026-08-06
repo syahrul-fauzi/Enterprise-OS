@@ -71,6 +71,13 @@ export const requirementWorkspace: RequirementWorkspaceDescriptor = {
       order: 10,
     },
     {
+      id: "nav-release-readiness",
+      label: "Release Readiness",
+      route: "/requirements/release-readiness",
+      regionRole: "sidebar",
+      order: 15,
+    },
+    {
       id: "nav-requirement-create",
       label: "Create Requirement",
       route: "/requirements/create",

@@ -5,7 +5,8 @@ export type RequirementRouteId =
   | "list"
   | "detail"
   | "create"
-  | "workspace";
+  | "workspace"
+  | "release-readiness";
 
 export interface RequirementRouteDefinition {
   readonly id: RequirementRouteId;
@@ -50,6 +51,13 @@ export const requirementRoutes: Readonly<
     id: "workspace",
     path: "/workspace/requirements",
     view: "RequirementView",
+    requiresAuth: true,
+  },
+  "release-readiness": {
+    id: "release-readiness",
+    path: "/requirements/release-readiness",
+    view: "ReleaseReadinessWorkspace",
+    label: "Release Readiness",
     requiresAuth: true,
   },
 } as const;

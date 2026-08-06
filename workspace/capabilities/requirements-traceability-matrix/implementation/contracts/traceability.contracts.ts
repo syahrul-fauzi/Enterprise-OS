@@ -94,3 +94,20 @@ export interface GetTraceabilityRowInput {
 }
 
 export type GetTraceabilityRowOutput = RequirementTraceabilityRow | undefined;
+
+export interface AssessTraceabilityInput {
+  readonly releaseId: string;
+}
+
+export interface TraceabilityGap {
+  readonly requirementId: RequirementId;
+  readonly missing: readonly TraceabilityArtifactKind[];
+}
+
+export interface AssessTraceabilityOutput {
+  readonly complete: boolean;
+  readonly gaps: readonly TraceabilityGap[];
+  readonly gapCount: number;
+  readonly requirementCount: number;
+  readonly artifactCount: number;
+}

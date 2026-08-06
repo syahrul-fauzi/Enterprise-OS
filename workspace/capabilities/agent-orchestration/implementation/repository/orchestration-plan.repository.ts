@@ -36,6 +36,22 @@ const PLANS: readonly OrchestrationPlan[] = Object.freeze([
       },
     ],
   },
+  {
+    id: "investigate-ambiguous-requirement",
+    name: "Investigate Ambiguous Requirement (AI-on-Demand)",
+    description:
+      "AI-powered investigation of requirements with unknown verification status to resolve ambiguity and determine true readiness.",
+    status: "ready",
+    workItems: [
+      {
+        id: "requirement-investigation",
+        workflowId: "ai-investigate-requirement",
+        agentRole: "ai-investigation-agent",
+        description: "Perform deep root cause analysis on requirement with unknown verification status.",
+        defaultInputs: {},
+      },
+    ],
+  },
 ]);
 
 export const OrchestrationPlanRepositoryInMemory: OrchestrationPlanRepository = {

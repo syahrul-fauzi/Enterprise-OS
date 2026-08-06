@@ -103,6 +103,18 @@
       "verdict": "PASS"
     },
     {
+      "id": "REQ-009",
+      "name": "BaseSearchBar Refactor untuk menghilangkan duplikasi kode",
+      "trace_chain": {
+        "requirement": "/.eos/requirements/req-009.md",
+        "rtm": "/.eos/evidence/req-009-rtm.yaml",
+        "implementation": "apps/web/components/BaseSearchBar.tsx",
+        "evidence": "/.eos/evidence/req-009-runtime-evidence.yaml"
+      },
+      "status": "VERIFIED",
+      "verdict": "PASS"
+    },
+    {
       "id": "REQ-010",
       "name": "Location Filter untuk /community Page (REQ-010)",
       "trace_chain": {

@@ -3,7 +3,8 @@ export type WorkflowExecutionStatus = "passed" | "failed" | "skipped";
 export type WorkflowStepKind =
   | "requirement.get"
   | "traceability.get"
-  | "evidence.search";
+  | "evidence.search"
+  | "verification.assess";
 
 export interface WorkflowStepDefinition {
   readonly id: string;
@@ -30,6 +31,7 @@ export interface WorkflowExecutionInput {
   readonly workflowId: string;
   readonly requirementId?: string;
   readonly runId?: string;
+  readonly releaseId?: string;
   readonly limit?: number;
 }
 

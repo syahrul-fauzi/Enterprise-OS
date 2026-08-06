@@ -76,6 +76,7 @@ export const createRequirement: CreateRequirementCommand = {
       linkedCapabilityIds: [...(input.linkedCapabilityIds ?? [])],
       acceptanceCriteria: [...(input.acceptanceCriteria ?? [])].map((item) => item.trim()).filter(Boolean),
       verificationStatus: defaultRequirementVerificationStatus,
+      dependsOn: [],
       createdAt: now,
       updatedAt: now,
     };

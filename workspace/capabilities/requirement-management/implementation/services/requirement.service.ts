@@ -1,6 +1,8 @@
 import {
   type ApproveRequirementInput,
   type ApproveRequirementOutput,
+  type AssessVerificationInput,
+  type AssessVerificationOutput,
   type CreateRequirementInput,
   type CreateRequirementOutput,
   type GetRequirementInput,
@@ -145,6 +147,48 @@ export class RequirementService {
 
   listRequirements(): readonly RequirementAggregate[] {
     return RequirementRepositoryCurrent.list();
+  }
+
+  getRequirementsByRelease(releaseId: string): readonly RequirementAggregate[] {
+    // This is a placeholder. In a real implementation, this would filter requirements by releaseId.
+    return this.listRequirements();
+  }
+
+  assessVerification(input: AssessVerificationInput): AssessVerificationOutput {
+    // In a real implementation, this would filter by input.releaseId
+    const requirements = this.listRequirements();
+    const totalRequirements = requirements.length;
+    const verifiedRequirements = requirements.filter(
+      (r) => r.verificationStatus === "passed",
+    ).length;
+    const unknownRequirements = requirements.filter(
+      (r) => r.verificationStatus === "unknown",
+    );
+    const blockedRequirements = requirements.filter(
+      (r) =>
+        r.verificationStatus !== "passed" && r.verificationStatus !== "unknown",
+    ).length;
+
+    const result: AssessVerificationOutput = {
+      totalRequirements,
+      verifiedRequirements,
+      unknownRequirements: unknownRequirements.length,
+      blockedRequirements,
+      isVerified: blockedRequirements === 0 && unknownRequirements.length === 0,
+      hasUnknown: unknownRequirements.length > 0,
+      unknownRequirementIds: unknownRequirements.map((r) => r.id),
+    };
+
+    recordRuntimeInvocation({
+      capabilityId: "requirement-management",
+      operationId: "assess-verification",
+      sourceRef: "RequirementService.assessVerification",
+      success: true,
+      input,
+      result,
+    });
+
+    return result;
   }
 }
 

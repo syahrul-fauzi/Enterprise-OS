@@ -66,3 +66,13 @@ export interface GetEvidenceRecordInput {
 }
 
 export type GetEvidenceRecordOutput = EvidenceRecordDetail | undefined;
+
+export interface AssessEvidenceInput {
+  readonly releaseId: string;
+}
+
+export interface AssessEvidenceOutput {
+  readonly totalEvidence: number;
+  readonly complete: boolean;
+  readonly evidencePaths: readonly string[];
+}

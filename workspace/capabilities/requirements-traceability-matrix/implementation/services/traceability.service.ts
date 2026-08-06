@@ -1,12 +1,16 @@
 import type {
+  AssessTraceabilityInput,
+  AssessTraceabilityOutput,
   GetTraceabilityRowInput,
   GetTraceabilityRowOutput,
   SearchTraceabilityMatrixInput,
   SearchTraceabilityMatrixOutput,
+  TraceabilityGap,
 } from "../contracts";
 import { traceabilityQueries } from "../queries";
 import { TraceabilityArtifactRepositoryInMemory } from "../repository";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
+import { requirementService } from "../../../requirement-management/implementation/service";
 
 export class RequirementsTraceabilityMatrixService {
   readonly repositories = {
@@ -43,6 +47,53 @@ export class RequirementsTraceabilityMatrixService {
       },
     });
     return result;
+  }
+
+  assess(input: AssessTraceabilityInput): AssessTraceabilityOutput {
+    const requirements = requirementService.getRequirementsByRelease(input.releaseId);
+    const gaps: TraceabilityGap[] = [];
+    let artifactCount = 0;
+
+    for (const req of requirements) {
+      const row = traceabilityQueries["traceability.get"].execute({ requirementId: req.id });
+      if (row) {
+        artifactCount += row.matchedArtifacts.length;
+        if (!row.coverage.complete) {
+          gaps.push({
+            requirementId: req.id,
+            missing: row.coverage.gaps as any,
+          });
+        }
+      } else {
+        gaps.push({
+          requirementId: req.id,
+          missing: ["capability", "api", "test", "evidence"],
+        });
+      }
+    }
+
+    const assessment = {
+      complete: gaps.length === 0,
+      gaps,
+      gapCount: gaps.length,
+      requirementCount: requirements.length,
+      artifactCount,
+    };
+
+    recordRuntimeInvocation({
+      capabilityId: "requirements-traceability-matrix",
+      operationId: "assess-traceability",
+      sourceRef: "RequirementsTraceabilityMatrixService.assess",
+      success: true,
+      input,
+      result: {
+        complete: assessment.complete,
+        gapCount: assessment.gapCount,
+        requirementCount: assessment.requirementCount,
+      },
+    });
+
+    return assessment;
   }
 }
 
