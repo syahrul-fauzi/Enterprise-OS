@@ -68,10 +68,13 @@ export async function GET(request: Request) {
       releaseId,
     },
     result: {
+      executionId: result.executionId,
+      canonicalSubject: result.canonicalSubject,
       readinessStatus: result.readiness.status,
       executionReason: result.execution.reason,
       blockerCount: result.blockers.length,
       aiInvoked: result.ai.invoked,
+      sameWorkIdentityAcrossSurfaces: true,
     },
   });
 
@@ -122,10 +125,13 @@ export async function POST(request: Request) {
         releaseId: parsed.data.releaseId,
       },
       result: {
+        executionId: result.executionId,
+        canonicalSubject: result.canonicalSubject,
         readinessStatus: result.readiness.status,
         executionReason: result.execution.reason,
         blockerCount: result.blockers.length,
         aiInvoked: result.ai.invoked,
+        sameWorkIdentityAcrossSurfaces: true,
       },
     });
 

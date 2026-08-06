@@ -29,35 +29,6 @@ const DEFINITIONS: readonly WorkflowDefinition[] = Object.freeze([
     ],
   },
   {
-    id: "prepare_release",
-    name: "Prepare Release - Release Readiness Assessment",
-    description:
-      "Determines whether a release is operationally ready based on requirement traceability, evidence coverage, and verification status across all requirements in the release.",
-    requiredInputs: ["releaseId"],
-    steps: [
-      {
-        id: "check-requirements",
-        kind: "requirement.get",
-        description: "Load all requirements associated with the release.",
-      },
-      {
-        id: "check-traceability",
-        kind: "traceability.get",
-        description: "Check traceability completeness across all release requirements.",
-      },
-      {
-        id: "check-evidence",
-        kind: "evidence.search",
-        description: "Verify evidence coverage for all release requirements.",
-      },
-      {
-        id: "determine-readiness",
-        kind: "verification.assess",
-        description: "Calculate overall release readiness and identify blockers.",
-      },
-    ],
-  },
-  {
     id: "evidence-run-review",
     name: "Evidence Run Review",
     description:

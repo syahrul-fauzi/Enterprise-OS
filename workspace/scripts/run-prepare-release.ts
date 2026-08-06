@@ -11,7 +11,16 @@ console.log(`\nInput: releaseId="${releaseId}" limit=${limit}\n`);
 
 const result = prepareReleaseProcedure({ releaseId, limit });
 
+console.log("🔑 Execution Identity (Canonical Work Identity):");
+console.log(`   executionId      : ${result.executionId}`);
+console.log(`   procedure        : ${result.procedure}`);
+console.log(`   canonicalSubject : ${result.canonicalSubject}`);
+console.log(`   ⚠️  Same releaseId = same executionId across Workspace/Chat/CLI\n`);
+
 const summary = {
+  executionId: result.executionId,
+  procedure: result.procedure,
+  canonicalSubject: result.canonicalSubject,
   procedureId: result.procedureId,
   releaseId: result.releaseId,
   executionStatus: result.execution.status,

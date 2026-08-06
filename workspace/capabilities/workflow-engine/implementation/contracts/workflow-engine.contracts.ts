@@ -1,10 +1,20 @@
 export type WorkflowExecutionStatus = "passed" | "failed" | "skipped";
+export type WorkflowStepStatus = WorkflowExecutionStatus | "requires_human";
 
 export type WorkflowStepKind =
+  | "input.validate"
   | "requirement.get"
+  | "requirement.assess"
+  | "requirement.update"
   | "traceability.get"
+  | "traceability.assess"
   | "evidence.search"
-  | "verification.assess";
+  | "evidence.assess"
+  | "verification.assess"
+  | "ai.analyze"
+  | "ai.investigate"
+  | "posture.assess"
+  | "result.validate";
 
 export interface WorkflowStepDefinition {
   readonly id: string;
@@ -38,7 +48,7 @@ export interface WorkflowExecutionInput {
 export interface WorkflowStepResult {
   readonly stepId: string;
   readonly kind: WorkflowStepKind;
-  readonly status: WorkflowExecutionStatus;
+  readonly status: WorkflowStepStatus;
   readonly summary: string;
   readonly output?: Readonly<Record<string, unknown>>;
 }

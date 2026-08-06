@@ -78,10 +78,14 @@ interface ChatMessage {
   readonly content: string;
   readonly structured?: PrepareReleaseOutput | undefined;
   readonly procedureId?: string | undefined;
+  readonly executionId?: string | undefined;
+  readonly canonicalSubject?: string | undefined;
 }
 
 function buildAssistantResponse(result: PrepareReleaseOutput): ChatMessage {
   const { readiness, requirements, traceability, evidence, blockers, ai } = result;
+
+  const identityLine = `🆔 **Work Identity**: \`${result.executionId}\` (canonical subject: \`${result.canonicalSubject}\`)`;
 
   let opening = "";
   switch (readiness.status) {
@@ -92,13 +96,14 @@ function buildAssistantResponse(result: PrepareReleaseOutput): ChatMessage {
       opening = `🚫 Release **${result.releaseId}** is **BLOCKED**. There are ${blockers.length} blocker(s) that must be resolved before proceeding.`;
       break;
     case "pending_ai_investigation":
-      opening = `⏸ Release **${result.releaseId}** is **PENDING AI INVESTIGATION**. I found ${ai.ambiguousRequirements.length} ambiguous requirement(s) with UNKNOWN verification status and dispatched AI to investigate.`;
+      opening = `⏸ Release **${result.releaseId}** is **PENDING AI INVESTIGATION**. I found ${ai.ambiguousRequirements.length} ambiguous requirement(s) with UNKNOWN verification status and triggered AI investigation (waiting for results — no AI dispatched in this run).`;
       break;
     default:
       opening = `Assessment complete for release **${result.releaseId}**.`;
   }
 
   const summaryLines: string[] = [];
+  summaryLines.push(identityLine);
   summaryLines.push(
     `📋 **Requirements**: ${requirements.verified}/${requirements.total} verified · ${requirements.blocked} blocked · ${requirements.unknown} unknown`,
   );
@@ -119,19 +124,22 @@ function buildAssistantResponse(result: PrepareReleaseOutput): ChatMessage {
 
   let aiSection = "";
   if (ai.invoked) {
-    aiSection = `\n\n🤖 **AI-on-demand activated**\n`;
+    aiSection = `\n\n🤖 **AI-on-demand triggered**\n`;
     aiSection += `Plan: \`${ai.planId}\`\n`;
+    aiSection += `Invocation status: \`${ai.invocationStatus}\`\n`;
     aiSection += `Ambiguous requirements: ${ai.ambiguousRequirements.join(", ") || "—"}\n`;
-    aiSection += `Happy path LLM usage: **none required** — deterministic checks run first, AI only when verification state is UNKNOWN.`;
+    aiSection += `Deterministic checks run first. AI is only triggered on UNKNOWN verification state (not dispatched synchronously — awaiting AI or human resolution).`;
   }
 
-  const footer = `\n\n💡 _Want to inspect detailed state and blocking items? Open the **Release Readiness Workspace** to view full procedure traceability, evidence paths, and SOP execution steps._`;
+  const footer = `\n\n💡 _Want to inspect detailed state and blocking items? Open the **Release Readiness Workspace** to view full procedure traceability, evidence paths, and SOP execution steps. Click Workspace to verify same work identity._`;
 
   return {
     role: "assistant",
     content: `${opening}\n\n${summaryLines.join("\n")}${blockerSection}${aiSection}${footer}`,
     structured: result,
     procedureId: result.procedureId,
+    executionId: result.executionId,
+    canonicalSubject: result.canonicalSubject,
   };
 }
 
@@ -218,11 +226,14 @@ export async function POST(request: Request) {
       },
       result: {
         releaseId,
+        executionId: result.executionId,
+        canonicalSubject: result.canonicalSubject,
         readinessStatus: result.readiness.status,
         executionReason: result.execution.reason,
         blockerCount: result.blockers.length,
         aiInvoked: result.ai.invoked,
         sharedProcedureUsed: true,
+        sameWorkIdentityAcrossSurfaces: true,
       },
     });
 

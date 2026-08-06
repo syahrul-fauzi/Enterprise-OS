@@ -1,3 +1,5 @@
+import type { ExecutionId, CanonicalSubjectKey } from "../contracts";
+
 export type PrepareReleaseReadinessStatus = "ready" | "blocked" | "pending_ai_investigation";
 
 export type PrepareReleaseExecutionStatus = "passed" | "failed";
@@ -44,7 +46,10 @@ export interface PrepareReleaseInput {
 }
 
 export interface PrepareReleaseOutput {
+  readonly executionId: ExecutionId;
+  readonly procedure: "prepare_release";
   readonly procedureId: "prepare_release";
+  readonly canonicalSubject: CanonicalSubjectKey;
   readonly releaseId: string;
   readonly execution: {
     readonly status: PrepareReleaseExecutionStatus;

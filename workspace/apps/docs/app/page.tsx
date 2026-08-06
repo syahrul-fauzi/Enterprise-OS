@@ -1,114 +1,322 @@
-import Image from "next/image";
-import { Card, Gradient, TurborepoLogo } from "@repo/presentation-ui-system";
+import Link from "next/link";
+import { EOS_KNOWLEDGE_MODEL, STATUS, type StatusValue, type StatusDimension } from "./_lib/eos-knowledge-model";
+import { StatusBadge } from "./_components/status-badge";
+import { Section, SectionCard, LabeledRow } from "./_components/section";
+import { PageHeader } from "./_components/navigation";
 
-const LINKS = [
+const QS = EOS_KNOWLEDGE_MODEL.sevenQuestions;
+const ANSWER_FOR = [
   {
-    title: "Docs",
-    href: "https://turborepo.dev/docs",
-    description: "Find in-depth information about Turborepo features and API.",
+    q: QS[0]!.q,
+    a: EOS_KNOWLEDGE_MODEL.identity.whatIsEos,
+    jumpTo: "/architecture",
+    jumpLabel: "Lihat Architecture →",
   },
   {
-    title: "Learn",
-    href: "https://turborepo.dev/docs/handbook",
-    description: "Learn more about monorepos with our handbook.",
+    q: QS[1]!.q,
+    a: EOS_KNOWLEDGE_MODEL.architecture.boundaryRule,
+    jumpTo: "/architecture",
+    jumpLabel: "Lihat Layered Model →",
   },
   {
-    title: "Templates",
-    href: "https://turborepo.dev/docs/getting-started/from-example",
-    description: "Choose from over 15 examples and deploy with a single click.",
+    q: QS[2]!.q,
+    a: `Yang terbukti berjalan: ${EOS_KNOWLEDGE_MODEL.capabilities.provenWork.map((c) => c.name).join(", ")}. Capability registry memiliki ${EOS_KNOWLEDGE_MODEL.capabilities.certificationSummary.totalCapabilities} item, status PARTIAL (performance evidence belum ada).`,
+    jumpTo: "/capabilities",
+    jumpLabel: "Lihat Capabilities →",
   },
   {
-    title: "Deploy",
-    href: "https://vercel.com/new",
-    description:
-      "Instantly deploy your Turborepo to a shareable URL with Vercel.",
+    q: QS[3]!.q,
+    a: `Procedure aktif: ${EOS_KNOWLEDGE_MODEL.procedures.active.map((p) => `${p.name} (${p.status})`).join(", ")}. Ini procedure orkestrasi murni — zero domain logic, semua assess() delegasikan ke Capability.`,
+    jumpTo: "/procedures",
+    jumpLabel: "Lihat Contract Procedure →",
   },
-];
+  {
+    q: QS[4]!.q,
+    a: `Dua surface aktif: WORK (apps/web, ${STATUS.PROVEN}) untuk eksekusi pekerjaan, dan KNOW (apps/docs, ${STATUS.IMPLEMENTING}) untuk memahami keadaan sistem. Setiap surface memiliki routes yang terdaftar di halaman Surfaces.`,
+    jumpTo: "/surfaces",
+    jumpLabel: "Lihat Routes Surfaces →",
+  },
+  {
+    q: QS[5]!.q,
+    a: `${EOS_KNOWLEDGE_MODEL.evidence.provenRequirements.length} requirements (REQ-001 s/d REQ-008) untuk Academic Community vertical slice = 100% terverifikasi. Functional test: ${EOS_KNOWLEDGE_MODEL.evidence.academicVerification.functionalTests}. Capability reuse ratio = ${EOS_KNOWLEDGE_MODEL.evidence.academicVerification.capabilityReuseRatio}.`,
+    jumpTo: "/evidence",
+    jumpLabel: "Lihat Evidence Registry →",
+  },
+  {
+    q: QS[6]!.q,
+    a: `${EOS_KNOWLEDGE_MODEL.evidence.frontierPending.length} frontier belum terbukti: Execution Identity (shared state Workspace & Chat), Durable Evidence (procedure output auto-register ke registry), Continuation/Resume (restart procedure dari WAIT_FOR_AI_OR_HUMAN). Gate dependency di halaman Gates.`,
+    jumpTo: "/gates",
+    jumpLabel: "Lihat Gates Dependency →",
+  },
+] as const;
 
-export default function Page() {
+export default function OverviewPage() {
+  const id = EOS_KNOWLEDGE_MODEL.identity;
+  const st = EOS_KNOWLEDGE_MODEL.state;
+
   return (
-    <main className="flex flex-col items-center justify-between min-h-screen p-24">
-      <div className="z-10 items-center justify-between w-full max-w-5xl font-mono text-sm lg:flex">
-        <p className="fixed top-0 left-0 flex justify-center w-full px-4 pt-8 pb-6 border backdrop-blur-2xl border-neutral-800 from-inherit lg:static lg:w-auto lg:rounded-xl lg:p-4">
-          examples/with-tailwind -&nbsp;
-          <code className="font-mono font-bold">docs</code>
+    <div>
+      <PageHeader
+        kicker="EOS · KNOW · V1"
+        title="Enterprise Operating System — Self-Description Surface"
+        subtitle={id.mission}
+      />
+
+      {/* K1 — KNOW → WORK BRIDGE — FIRST THING AFTER HERO */}
+      <Section
+        eyebrow="Transition · Understand → Do"
+        title="UNDERSTAND EOS → WORK WITH EOS"
+        className="border-sky-900/30 bg-sky-950/10"
+      >
+        <p className="text-sm text-neutral-400 mb-5 italic max-w-2xl">
+          Anda berada di KNOW (tempat memahami). Setelah memahami, pindah ke WORK (tempat melakukan)
+          untuk menjalankan procedure secara nyata. Dua sisi yang konsisten — satu sistem.
         </p>
-        <div className="fixed bottom-0 left-0 flex items-end justify-center w-full h-48 lg:static lg:h-auto lg:w-auto">
-          <a
-            className="flex gap-2 p-8 pointer-events-none place-items-center lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-turbo&utm_medium=basic&utm_campaign=create-turbo"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            By{" "}
-            <Image
-              alt="Vercel Logo"
-              className="dark:invert"
-              height={24}
-              priority
-              src="/vercel.svg"
-              width={100}
-            />
-          </a>
+        <div className="grid md:grid-cols-2 gap-4">
+          <SectionCard className="border-neutral-800">
+            <p className="text-xs font-mono uppercase tracking-wider text-sky-400 mb-2">
+              ① MEMAHAMI · KNOW · ANDA DISINI
+            </p>
+            <h3 className="text-lg font-semibold text-white mb-2">KNOW Surface (Self-Description)</h3>
+            <p className="text-sm text-neutral-300 leading-relaxed">
+              Melihat apa yang terbukti, apa yang belum terbukti, dan hubungan antara Capability ↔ Procedure ↔ Evidence ↔ Gate.
+              Tanpa membaca source code, Anda bisa memahami keadaan EOS secara utuh.
+            </p>
+            <div className="mt-4">
+              <StatusBadge status={STATUS.IMPLEMENTING} />
+              <p className="text-xs text-neutral-500 mt-2">
+                Validation Stage: Controlled Correction Pass. Human Black-Box #3 pending.
+              </p>
+            </div>
+          </SectionCard>
+
+          <SectionCard className="border-emerald-900/40 bg-emerald-950/5">
+            <p className="text-xs font-mono uppercase tracking-wider text-emerald-400 mb-2">
+              ② MELAKUKAN · WORK · GO
+            </p>
+            <h3 className="text-lg font-semibold text-white mb-2">WORK Surface — Release Readiness</h3>
+            <p className="text-sm text-neutral-300 leading-relaxed">
+              Menjalankan procedure <code className="text-emerald-400">prepare_release</code>.
+              Workspace (terstruktur) + Chat (conversational), dua cara mengendalikan procedure YANG SAMA —
+              shared I/O shape, same execution contract.
+            </p>
+            <div className="mt-4">
+              <a
+                href={id.workBridgeUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-block px-5 py-2.5 rounded-md text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition-colors shadow-md shadow-emerald-900/30"
+              >
+                → BUKA WORK SURFACE
+              </a>
+              <p className="text-xs text-neutral-500 mt-3">
+                Recomended: /readiness?surface=split → Workspace + Chat berdampingan.
+              </p>
+            </div>
+          </SectionCard>
         </div>
-      </div>
+      </Section>
 
-      <div className="relative flex place-items-center ">
-        <div className="font-sans w-auto pb-16 pt-[48px] md:pb-24 lg:pb-32 md:pt-16 lg:pt-20 flex justify-between gap-8 items-center flex-col relative z-0">
-          <div className="z-50 flex items-center justify-center w-full">
-            <div className="absolute min-w-[614px] min-h-[614px]">
-              <Image
-                alt="Turborepo"
-                height={614}
-                src="circles.svg"
-                width={614}
-              />
-            </div>
-            <div className="absolute z-50 flex items-center justify-center w-64 h-64">
-              <Gradient
-                className="opacity-90 w-[120px] h-[120px]"
-                conic
-                small
-              />
-            </div>
+      {/* K5 — TERMINOLOGY CLARITY — 6 Istilah Utama */}
+      <Section eyebrow="Glossary" title="6 Istilah EOS — bahasa yang sama tanpa jargon internal">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {id.terminology.map((t: Record<string,string>) => (
+            <SectionCard key={t.term} className="border-neutral-800">
+              <p className="text-sky-300 font-mono font-bold mb-1">{t.term}</p>
+              <p className="text-sm text-neutral-300 leading-relaxed">{t.definition}</p>
+            </SectionCard>
+          ))}
+        </div>
+      </Section>
 
-            <div className="flex justify-center items-center z-50">
-              <TurborepoLogo />
-            </div>
-          </div>
-          <Gradient
-            className="top-[-500px] opacity-[0.15] w-[1000px] h-[1000px]"
-            conic
+      {/* IDENTITY RINGKAS */}
+      <Section eyebrow="Identity" title="Siapa EOS ini, dalam 5 baris">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <LabeledRow label="Nama" value={id.name} />
+          <LabeledRow label="Versi" value={id.version} />
+          <LabeledRow label="Last Updated" value={id.lastUpdated} />
+          <LabeledRow
+            label="Dua sisi"
+            value={
+              <div className="flex flex-wrap items-center gap-2">
+                <StatusBadge status={STATUS.PROVEN} /> WORK
+                <StatusBadge status={STATUS.IMPLEMENTING} /> KNOW · THIS
+              </div>
+            }
           />
-          <div className="z-50 flex flex-col items-center justify-center gap-5 px-6 text-center lg:gap-6">
-            <svg
-              className="w-[160px] md:w-[200px] fill-black dark:fill-white"
-              viewBox="0 0 506 50"
-              width={200}
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <title>Turborepo logo</title>
-              <path d="M53.7187 12.0038V1.05332H0.945312V12.0038H20.8673V48.4175H33.7968V12.0038H53.7187Z" />
-              <path d="M83.5362 49.1431C99.764 49.1431 108.67 40.8972 108.67 27.3081V1.05332H95.7401V26.0547C95.7401 33.6409 91.7821 37.9287 83.5362 37.9287C75.2904 37.9287 71.3324 33.6409 71.3324 26.0547V1.05332H58.4029V27.3081C58.4029 40.8972 67.3084 49.1431 83.5362 49.1431Z" />
-              <path d="M128.462 32.7174H141.325L151.484 48.4175H166.327L154.848 31.3321C161.313 29.0232 165.271 23.8778 165.271 16.8853C165.271 6.72646 157.685 1.05332 146.141 1.05332H115.532V48.4175H128.462V32.7174ZM128.462 22.4925V11.8719H145.481C150.033 11.8719 152.54 13.8509 152.54 17.2152C152.54 20.3816 150.033 22.4925 145.481 22.4925H128.462Z" />
-              <path d="M171.287 48.4175H205.128C215.683 48.4175 221.752 43.404 221.752 35.0262C221.752 29.419 218.189 25.593 213.967 23.8778C216.87 22.4925 220.432 19.1942 220.432 13.9828C220.432 5.60502 214.495 1.05332 204.006 1.05332H171.287V48.4175ZM183.689 19.59V11.542H202.687C206.249 11.542 208.228 12.9273 208.228 15.566C208.228 18.2047 206.249 19.59 202.687 19.59H183.689ZM183.689 29.2871H203.875C207.371 29.2871 209.284 31.0022 209.284 33.5749C209.284 36.1476 207.371 37.8628 203.875 37.8628H183.689V29.2871Z" />
-              <path d="M253.364 0.261719C236.806 0.261719 224.866 10.6185 224.866 24.7354C224.866 38.8523 236.806 49.2091 253.364 49.2091C269.922 49.2091 281.796 38.8523 281.796 24.7354C281.796 10.6185 269.922 0.261719 253.364 0.261719ZM253.364 11.4761C262.072 11.4761 268.602 16.6215 268.602 24.7354C268.602 32.8493 262.072 37.9947 253.364 37.9947C244.656 37.9947 238.126 32.8493 238.126 24.7354C238.126 16.6215 244.656 11.4761 253.364 11.4761Z" />
-              <path d="M300.429 32.7174H313.292L323.451 48.4175H338.294L326.815 31.3321C333.28 29.0232 337.238 23.8778 337.238 16.8853C337.238 6.72646 329.652 1.05332 318.108 1.05332H287.499V48.4175H300.429V32.7174ZM300.429 22.4925V11.8719H317.448C322 11.8719 324.507 13.8509 324.507 17.2152C324.507 20.3816 322 22.4925 317.448 22.4925H300.429Z" />
-              <path d="M343.254 1.05332V48.4175H389.299V37.467H355.92V29.7489H385.539V19.0622H355.92V12.0038H389.299V1.05332H343.254Z" />
-              <path d="M408.46 33.3111H425.677C437.221 33.3111 444.807 27.7699 444.807 17.2152C444.807 6.59453 437.221 1.05332 425.677 1.05332H395.53V48.4175H408.46V33.3111ZM408.46 22.5585V11.8719H424.951C429.569 11.8719 432.076 13.8509 432.076 17.2152C432.076 20.5135 429.569 22.5585 424.951 22.5585H408.46Z" />
-              <path d="M476.899 0.261719C460.341 0.261719 448.401 10.6185 448.401 24.7354C448.401 38.8523 460.341 49.2091 476.899 49.2091C493.456 49.2091 505.33 38.8523 505.33 24.7354C505.33 10.6185 493.456 0.261719 476.899 0.261719ZM476.899 11.4761C485.606 11.4761 492.137 16.6215 492.137 24.7354C492.137 32.8493 485.606 37.9947 476.899 37.9947C468.191 37.9947 461.66 32.8493 461.66 24.7354C461.66 16.6215 468.191 11.4761 476.899 11.4761Z" />
-            </svg>
-          </div>
         </div>
-      </div>
+        <div className="mt-5">
+          <StatusBadge status={st.activeGate as StatusValue} />
+          <p className="text-xs text-neutral-500 mt-2">
+            Next gate: {st.nextGate}
+          </p>
+        </div>
+      </Section>
 
-      <div className="grid mb-32 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        {LINKS.map(({ title, href, description }) => (
-          <Card href={href} key={title} title={title}>
-            {description}
-          </Card>
-        ))}
+      {/* 7 CORE QUESTIONS — THE HEART OF KNOW */}
+      <Section
+        eyebrow="Pertanyaan Inti · The 7"
+        title="Tanpa membaca source code, manusia bisa menjawab ini semua"
+        className="bg-gradient-to-br from-neutral-900/80 via-blue-950/10 to-purple-950/10 border-neutral-800"
+      >
+        <p className="text-sm text-neutral-400 mb-6 italic">
+          Apabila satu pertanyaan tidak terjawab oleh surface ini, maka KNOW gagal.
+        </p>
+        <div className="grid md:grid-cols-2 gap-4">
+          {ANSWER_FOR.map((x, i) => {
+            const isLast = i === ANSWER_FOR.length - 1;
+            return (
+              <SectionCard
+                key={x.q}
+                className={`${isLast ? "md:col-span-2" : ""}`}
+              >
+                <p className="text-amber-300 font-semibold mb-2 text-sm sm:text-base">
+                  {x.q}
+                </p>
+                <p className="text-sm text-neutral-300 mb-3 leading-relaxed">
+                  {x.a}
+                </p>
+                <Link
+                  href={x.jumpTo}
+                  className="text-xs font-mono text-sky-400 hover:text-sky-300"
+                >
+                  {x.jumpLabel}
+                </Link>
+              </SectionCard>
+            );
+          })}
+        </div>
+      </Section>
+
+      {/* QUICK STATUS CARDS */}
+      <Section eyebrow="Snapshot" title="Sekarang, di detik ini">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <SectionCard className="border-emerald-900/50">
+            <p className="text-xs font-mono text-neutral-500 mb-1">
+              Fokus Saat Ini · Human-Facing
+            </p>
+            <p className="text-emerald-300 font-semibold">Validation Stage 1 · KNOW Acceptance</p>
+            <p className="text-[11px] text-neutral-500 mt-1">
+              Internal: <span className="font-mono">{st.currentMode}</span>
+            </p>
+            <p className="text-xs text-neutral-500 mt-1">scope: {st.scope}</p>
+          </SectionCard>
+          <SectionCard className="border-sky-900/50">
+            <p className="text-xs font-mono text-neutral-500 mb-1">
+              Requirements Proven
+            </p>
+            <p className="text-2xl font-bold text-sky-300">
+              {EOS_KNOWLEDGE_MODEL.evidence.provenRequirements.length}
+            </p>
+            <p className="text-xs text-neutral-500 mt-1">Academic Community</p>
+          </SectionCard>
+          <SectionCard className="border-amber-900/50">
+            <p className="text-xs font-mono text-neutral-500 mb-1">
+              Registry Capabilities
+            </p>
+            <p className="text-2xl font-bold text-amber-300">
+              {EOS_KNOWLEDGE_MODEL.capabilities.certificationSummary.totalCapabilities}
+            </p>
+            <p className="text-xs text-neutral-500 mt-1">
+              100% PARTIAL — 0 FULLY CERTIFIED
+            </p>
+          </SectionCard>
+          <SectionCard className="border-red-900/50">
+            <p className="text-xs font-mono text-neutral-500 mb-1">
+              Frontier Not Proven
+            </p>
+            <p className="text-2xl font-bold text-red-300">
+              {EOS_KNOWLEDGE_MODEL.evidence.frontierPending.length}
+            </p>
+            <p className="text-xs text-neutral-500 mt-1">
+              {EOS_KNOWLEDGE_MODEL.gates.gates.filter((g) => g.status === STATUS.LOCKED).length} gates terkunci
+            </p>
+          </SectionCard>
+        </div>
+      </Section>
+
+      {/* 8 ROUTES MAP — DASHBOARD KE ROUTE LAIN */}
+      <Section eyebrow="Know Routes" title="8 pintu masuk surface ini">
+        <p className="text-xs text-neutral-500 mb-4 italic">
+          Status badge: IMPLEMENTED = route ada dan return HTTP 200. PROVEN = seluruh KNOW sudah lulus human validation gate.
+        </p>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <LinkRouteCard href="/" label="Overview" status={STATUS.IMPLEMENTED} desc="7 pertanyaan inti, identity, snapshot" />
+          <LinkRouteCard href="/architecture" label="Architecture" status={STATUS.IMPLEMENTED} desc="WORK/KNOW boundary, layered model, principles" />
+          <LinkRouteCard href="/capabilities" label="Capabilities" status={STATUS.IMPLEMENTED} desc="16 registry item, proven work, locked areas" />
+          <LinkRouteCard href="/procedures" label="Procedures" status={STATUS.IMPLEMENTED} desc="prepare_release contract + delegation steps" />
+          <LinkRouteCard href="/surfaces" label="Surfaces" status={STATUS.IMPLEMENTED} desc="WORK routes + KNOW routes dengan actual paths" />
+          <LinkRouteCard href="/state" label="State" status={STATUS.IMPLEMENTED} desc="Procedure lifecycle machine + terminal states" />
+          <LinkRouteCard href="/evidence" label="Evidence" status={STATUS.IMPLEMENTED} desc="REQ-001..008 proven + frontier pending" />
+          <LinkRouteCard href="/gates" label="Gates" status={STATUS.IMPLEMENTED} desc="Dependency order — tidak bisa diskip" />
+        </div>
+      </Section>
+
+      {/* K3 — STATUS VOCABULARY CLARITY — 4 DIMENSIONS, NOT 9 FLAT BADGES */}
+      <Section eyebrow="Status Semantics" title="4 Dimensi Status — Pisahkan Epistemic State. Badge = claim tentang dimensi mana">
+        <p className="text-xs text-neutral-500 mb-5 italic">
+          ⚠️ PROVEN ≠ STABLE ≠ IMPLEMENTED ≠ UNVERIFIED. Mereka beda dimensi. Satu Capability bisa STABLE (maturity) + PARTIAL (validation) + UNVERIFIED (performance proof) SECARA BERSAMAAN.
+        </p>
+        <div className="space-y-5">
+          {(["Implementation", "Validation", "Maturity", "Proof"] as const).map((dim: StatusDimension) => {
+            const meta = EOS_KNOWLEDGE_MODEL.statusDimensionLabels[dim];
+            const items = EOS_KNOWLEDGE_MODEL.statusVocabulary.filter((s) => s.dimension === dim);
+            return (
+              <div key={dim} className="space-y-2">
+                <div className="pb-2 border-b border-neutral-800">
+                  <p className="text-xs font-mono uppercase tracking-wider text-sky-400 mb-1">
+                    {meta.label}
+                  </p>
+                  <p className="text-sm text-neutral-400">{meta.explanation}</p>
+                </div>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {items.map((s) => (
+                    <SectionCard key={String(s.term)} className="border-neutral-800">
+                      <div className="mb-2"><StatusBadge status={s.term as StatusValue} /></div>
+                      <p className="text-sm font-medium text-neutral-200 mb-1">{s.meaning}</p>
+                      <p className="text-xs text-neutral-500">Contoh penggunaan: {s.typicalUse}</p>
+                    </SectionCard>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Section>
+
+      <footer className="mt-16 pt-6 border-t border-neutral-800 text-center">
+        <p className="text-xs text-neutral-500">
+          EOS_KNOWLEDGE_MODEL is Object.freeze() · canonical state cannot be
+          mutated at runtime · evidence sources = registry files, not claims
+        </p>
+      </footer>
+    </div>
+  );
+}
+
+function LinkRouteCard({
+  href,
+  label,
+  status,
+  desc,
+}: {
+  href: string;
+  label: string;
+  status: StatusValue;
+  desc: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="block p-4 rounded-lg border border-neutral-800 bg-neutral-900/40 hover:border-neutral-700 hover:bg-neutral-800/40 transition-colors group"
+    >
+      <div className="flex items-center justify-between mb-2">
+        <span className="font-semibold text-white group-hover:text-sky-300">
+          /{label.toLowerCase()}
+        </span>
+        <StatusBadge status={status} />
       </div>
-    </main>
+      <p className="text-xs text-neutral-400">{desc}</p>
+    </Link>
   );
 }

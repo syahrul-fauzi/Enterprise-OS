@@ -22,10 +22,28 @@ class EngineContext:
     - metrics: dict for runtime metrics
     """
     execution_id: str = field(default_factory=lambda: str(uuid.uuid4()))
-    correlation_id: Optional[str] = None
+    correlation_id: str = field(default_factory=lambda: str(uuid.uuid4()))
     engine_version: str = "1.0.0"
     configuration: Dict[str, Any] = field(default_factory=dict)
     diagnostics: EngineDiagnosticEngine = field(default_factory=EngineDiagnosticEngine)
     started_at: datetime = field(default_factory=datetime.utcnow)
     provenance: Dict[str, Any] = field(default_factory=dict)
     metrics: Dict[str, Any] = field(default_factory=dict)
+    
+    @classmethod
+    def from_parent(cls, parent_context: "EngineContext") -> "EngineContext":
+        """
+        Create a new EngineContext that inherits the parent's correlation_id.
+        This ensures cross-engine execution traceability for the entire chain.
+        """
+        return cls(
+            execution_id=str(uuid.uuid4()),  # New execution gets unique ID
+            correlation_id=parent_context.correlation_id,  # Inherit parent's correlation chain
+            engine_version=parent_context.engine_version,
+            configuration=parent_context.configuration.copy(),
+            provenance={
+                **parent_context.provenance,
+                "parent_execution_id": parent_context.execution_id,
+                "inheritance_timestamp": datetime.utcnow().isoformat()
+            }
+        )

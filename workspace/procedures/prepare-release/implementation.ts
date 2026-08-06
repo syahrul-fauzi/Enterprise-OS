@@ -8,6 +8,12 @@ import {
   evidenceRegistryService,
 } from "../../capabilities/evidence-registry/implementation/services";
 import type { AssessEvidenceOutput } from "../../capabilities/evidence-registry/implementation/contracts";
+import {
+  buildExecutionIdentityV1,
+} from "../contracts";
+import {
+  appendAttributionRecord,
+} from "../attribution/implementation";
 import type {
   PrepareReleaseInput,
   PrepareReleaseOutput,
@@ -85,12 +91,21 @@ function buildBlockers(
 export function prepareReleaseProcedure(
   input: PrepareReleaseInput,
 ): PrepareReleaseOutput {
+  const PROCEDURE_NAME = "prepare_release";
+  const CANONICAL_SUBJECT_PREFIX = "release";
+  const effectiveReleaseId = input.releaseId ?? "(unknown)";
+  const canonicalSubject = `${CANONICAL_SUBJECT_PREFIX}/${effectiveReleaseId}`;
+  const identity = buildExecutionIdentityV1(PROCEDURE_NAME, canonicalSubject);
+
   const steps: PrepareReleaseProcedureStep[] = [];
 
   if (!input.releaseId) {
-    return {
+    const result: PrepareReleaseOutput = {
+      executionId: identity.executionId,
+      procedure: identity.procedure as "prepare_release",
       procedureId: "prepare_release",
-      releaseId: "(unknown)",
+      canonicalSubject: identity.canonicalSubject,
+      releaseId: effectiveReleaseId,
       execution: {
         status: "failed",
         reason: "invalid_input",
@@ -118,6 +133,15 @@ export function prepareReleaseProcedure(
       ],
       generatedAt: new Date().toISOString(),
     };
+    appendAttributionRecord({
+      executionId: result.executionId,
+      procedure: PROCEDURE_NAME,
+      canonicalSubject: result.canonicalSubject,
+      input,
+      output: result,
+      evaluatedAt: result.generatedAt,
+    });
+    return result;
   }
 
   // ────────────────────────────────────────────────────────────
@@ -245,8 +269,11 @@ export function prepareReleaseProcedure(
     },
   });
 
-  return {
+  const result: PrepareReleaseOutput = {
+    executionId: identity.executionId,
+    procedure: identity.procedure as "prepare_release",
     procedureId: "prepare_release",
+    canonicalSubject: identity.canonicalSubject,
     releaseId: input.releaseId,
     execution: {
       status: "passed",
@@ -268,6 +295,15 @@ export function prepareReleaseProcedure(
     steps,
     generatedAt: new Date().toISOString(),
   };
+  appendAttributionRecord({
+    executionId: result.executionId,
+    procedure: PROCEDURE_NAME,
+    canonicalSubject: result.canonicalSubject,
+    input,
+    output: result,
+    evaluatedAt: result.generatedAt,
+  });
+  return result;
 }
 
 export { type PrepareReleaseInput, type PrepareReleaseOutput } from "./contracts";

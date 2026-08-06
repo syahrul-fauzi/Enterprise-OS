@@ -59,7 +59,8 @@ class EnterpriseArchitectureOrchestrationRuntime(
         Execute EAEO: transform EnterpriseIntelligencePackage into MissionContract
         """
         start_time = datetime.utcnow()
-        engine_ctx = context or EngineContext()
+        # Use from_parent() if context is provided to inherit correlation_id chain
+        engine_ctx = EngineContext.from_parent(context) if context else EngineContext()
         diagnostics: list[EngineDiagnostic] = []
 
         try:

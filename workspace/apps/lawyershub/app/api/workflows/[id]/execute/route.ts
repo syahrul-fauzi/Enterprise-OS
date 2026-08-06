@@ -7,6 +7,7 @@ type Params = Promise<{ id: string }>;
 const ExecuteWorkflowBodySchema = z.object({
   requirementId: z.string().optional(),
   runId: z.string().optional(),
+  releaseId: z.string().optional(),
   limit: z.number().int().min(1).max(500).optional(),
 });
 
