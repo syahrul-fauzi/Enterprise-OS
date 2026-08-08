@@ -1,5 +1,35 @@
 id: knowledge-graph
 name: Knowledge Graph
 version: 0.1.0
+owner: knowledge-domain
+status: ACTIVE
+introduced: "2026-07-08"
+provides:
+  - graph-storage
+  - entity-relation
+  - knowledge-query
+purpose: Persist and query the EOS knowledge graph that maps relationships between all entities (requirements, cases, documents, capabilities).
+manifest_version: 1.0.0
+exports:
+  - KnowledgeGraphProvider
 implementation:
   entry: implementation/service.ts
+depends_on:
+  - core-runtime
+  - evidence-registry
+capability:
+  name: knowledge-graph
+  owner: knowledge-domain
+  purpose: Persist and query the EOS knowledge graph that maps relationships between all entities.
+  consumers:
+    - requirements-traceability-matrix
+    - requirement-management
+    - governance-read-model
+  maturity:
+    level: infrastructure
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - cross_domain_adoption
+stability: stable

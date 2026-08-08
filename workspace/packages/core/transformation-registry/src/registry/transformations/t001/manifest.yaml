@@ -18,11 +18,11 @@ transformation_declaration:
   input_kind: ELS_LANGUAGE_SPEC_DOC
   output_kind: EIR_INSTRUCTION_RECORD
   lifecycle: VERIFIED
-  contract_ref: /root/Enterprise OS/workspace/contracts/transformations/t001-els-to-eir.contract.yaml
-  proof_schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema
+  contract_ref: /root/Enterprise-OS/workspace/contracts/transformations/t001-els-to-eir.contract.yaml
+  proof_schema_ref: /root/Enterprise-OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema
   evidence_output_kind: TRANSFORMATION_PROOF
   evidence_output_id: TRF-PROOF-T001
-  golden_reference_input: /root/Enterprise OS/workspace/examples/vertical-slice/REQ-0001
+  golden_reference_input: /root/Enterprise-OS/workspace/examples/vertical-slice/REQ-0001
   root_of_truth: true
   standalone_implementation_required: true
   engine_dependency_forbidden_until_gate_c_verified: true
@@ -58,8 +58,8 @@ compatibility_matrix:
     output_eir_schema_version: "1.0.0"
 
 implementation_binding:
-  implementation_ref: /root/Enterprise OS/workspace/packages/tooling/t001-standalone/src/t001.ts::runT001
-  loader_ts_ref: /root/Enterprise OS/workspace/packages/core/transformation-registry/src/registry/transformations/t001.ts
+  implementation_ref: /root/Enterprise-OS/workspace/packages/tooling/t001-standalone/src/t001.ts::runT001
+  loader_ts_ref: /root/Enterprise-OS/workspace/packages/core/transformation-registry/src/registry/transformations/t001.ts
   binding_status: DERIVED_VIEW_AVAILABLE_VIA_TS_LOADER
   loader_strategy: YAML.parse → zod validate → TransformationDeclaration
 

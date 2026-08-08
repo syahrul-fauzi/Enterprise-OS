@@ -56,7 +56,7 @@ export const createRequirement: CreateRequirementCommand = {
   kind: "command",
   name: "requirement.create",
   version: "0.1.0",
-  execute(input) {
+  execute(input: CreateRequirementInput) {
     const title = input.title.trim();
     if (title.length === 0) {
       throw new Error("[requirement.create] Requirement title cannot be empty");
@@ -94,7 +94,7 @@ export const updateRequirement: UpdateRequirementCommand = {
   kind: "command",
   name: "requirement.update",
   version: "0.1.0",
-  execute(input) {
+  execute(input: UpdateRequirementInput) {
     const current = RequirementRepositoryCurrent.byId(input.id);
     if (current === undefined) {
       throw new Error(`[requirement.update] Requirement not found: ${input.id}`);
@@ -129,7 +129,7 @@ export const approveRequirement: ApproveRequirementCommand = {
   kind: "command",
   name: "requirement.approve",
   version: "0.1.0",
-  execute(input) {
+  execute(input: ApproveRequirementInput) {
     const current = RequirementRepositoryCurrent.byId(input.id);
     if (current === undefined) {
       throw new Error(`[requirement.approve] Requirement not found: ${input.id}`);
@@ -155,7 +155,7 @@ export const startRequirementDelivery: StartRequirementDeliveryCommand = {
   kind: "command",
   name: "requirement.startDelivery",
   version: "0.1.0",
-  execute(input) {
+  execute(input: StartRequirementDeliveryInput) {
     const current = RequirementRepositoryCurrent.byId(input.id);
     if (current === undefined) {
       throw new Error(`[requirement.startDelivery] Requirement not found: ${input.id}`);
@@ -179,7 +179,7 @@ export const markRequirementImplemented: MarkRequirementImplementedCommand = {
   kind: "command",
   name: "requirement.markImplemented",
   version: "0.1.0",
-  execute(input) {
+  execute(input: MarkRequirementImplementedInput) {
     const current = RequirementRepositoryCurrent.byId(input.id);
     if (current === undefined) {
       throw new Error(`[requirement.markImplemented] Requirement not found: ${input.id}`);
@@ -205,7 +205,7 @@ export const verifyRequirement: VerifyRequirementCommand = {
   kind: "command",
   name: "requirement.verify",
   version: "0.1.0",
-  execute(input) {
+  execute(input: VerifyRequirementInput) {
     const current = RequirementRepositoryCurrent.byId(input.id);
     if (current === undefined) {
       throw new Error(`[requirement.verify] Requirement not found: ${input.id}`);

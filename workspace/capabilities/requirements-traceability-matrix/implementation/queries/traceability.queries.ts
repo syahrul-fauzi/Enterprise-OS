@@ -211,7 +211,17 @@ export const searchTraceabilityMatrix = {
           : input.coverage === "gaps"
             ? !row.coverage.complete
             : true,
-      );
+      )
+      .filter((row) => {
+        if (input.evidenceId === undefined) return true;
+        // Support both:
+        // 1. Raw EvidenceRecord ID from EvidenceRegistry (e.g., "evid-001")
+        // 2. Generated runtime-evidence:id format (e.g., "runtime-evidence:evid-001")
+        return row.matchedArtifacts.some(artifact => {
+          const artifactCleanId = artifact.id.replace("runtime-evidence:", "");
+          return artifactCleanId === input.evidenceId || artifact.id === input.evidenceId;
+        });
+      });
 
     return {
       items: rows,

@@ -7,10 +7,10 @@ ir_format_version: "1.0.0"
 ir_abbreviation: KIR
 ssot_note: KNOWLEDGE_IR_IS_FIRST_STABLE_IR_OF_KNOWLEDGE_COMPILER_PIPELINE._PRODUCED_AFTER_COMPILER_PASSES_1_TO_5._INPUT_TO_PLANNER_PASS_6._PLANNER_DOES_NOT_CONSUME_RAW_KNOWLEDGE_GRAPH_OR_SNAPSHOT_ARCHIVE_DIRECTLY._IT_CONSUMES_KIR_ONLY._THIS_ENFORCES_IA_13_IR_STABILITY.
 governance_ref:
-  ia_13_stable_ir: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_13_stable_intermediate_representations
-  ia_14_pure_passes: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
-  ia_10_snapshot: /root/Enterprise OS/workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml
-  pipeline_contract: /root/Enterprise OS/enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
+  ia_13_stable_ir: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_13_stable_intermediate_representations
+  ia_14_pure_passes: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
+  ia_10_snapshot: /root/Enterprise-OS/workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml
+  pipeline_contract: /root/Enterprise-OS/enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
 derived_from:
   - Knowledge_Graph_Is_Not_IR_User_Point_3
   - Analogy_Normalization_Pass_Produces_Canonical_IR

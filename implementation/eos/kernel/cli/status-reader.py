@@ -4,7 +4,7 @@ from typing import Any, Dict, Tuple
 
 import yaml
 
-BASELINE_LOCK_PATH = "/root/Enterprise OS/governance/BASELINE_LOCK.yaml"
+BASELINE_LOCK_PATH = "/root/Enterprise-OS/governance/BASELINE_LOCK.yaml"
 
 
 def load_yaml(path: str) -> Dict[str, Any]:

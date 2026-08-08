@@ -1,5 +1,37 @@
 id: security-hardening
 name: Security Hardening
 version: 0.1.0
+owner: security-domain
+status: ACTIVE
+introduced: "2026-07-02"
+provides:
+  - access-control
+  - threat-protection
+  - compliance-enforcement
+purpose: Enforce security policies, access controls, and compliance across the entire EOS platform.
+manifest_version: 1.0.0
+exports:
+  - SecurityHardeningProvider
 implementation:
   entry: implementation/service.ts
+depends_on:
+  - identity
+  - trust-framework
+  - core-runtime
+capability:
+  name: security-hardening
+  owner: security-domain
+  purpose: Enforce security policies, access controls, and compliance across the entire EOS platform.
+  consumers:
+    - connector-ecosystem
+    - legal-case
+    - legal-document
+    - all products
+  maturity:
+    level: infrastructure
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - security_validation
+stability: stable

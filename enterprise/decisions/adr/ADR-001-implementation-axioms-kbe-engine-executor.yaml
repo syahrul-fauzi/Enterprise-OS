@@ -21,7 +21,7 @@ decision:
     - id: AXIOM-IMP-001
       name: Engine is Executor, Not Knowledge Creator
       canonical_statement: Engine tidak pernah menjadi tempat lahirnya pengetahuan. Engine hanya menjadi executor dari pengetahuan yang telah dibekukan dalam artefak canonical.
-      governance_location: /root/Enterprise OS/governance/AXIOMS.md#axiom-imp-001-engine-is-executor-not-knowledge-creator
+      governance_location: /root/Enterprise-OS/governance/AXIOMS.md#axiom-imp-001-engine-is-executor-not-knowledge-creator
       anti_patterns_enforced:
         - NO_HARDCODED_TRANSFORMATION_SWITCH_IN_ENGINE_SOURCE
         - NO_BUSINESS_PREDICATE_LOGIC_IN_ENGINE_PACKAGES
@@ -29,7 +29,7 @@ decision:
     - id: AXIOM-IMP-002
       name: Knowledge Before Execution (KBE)
       canonical_statement: Tidak ada executable behavior yang boleh dibuat sebelum canonical knowledge yang mendefinisikannya tersedia.
-      governance_location: /root/Enterprise OS/governance/AXIOMS.md#axiom-imp-002-knowledge-before-execution-kbe
+      governance_location: /root/Enterprise-OS/governance/AXIOMS.md#axiom-imp-002-knowledge-before-execution-kbe
       five_required_knowledge_artifacts_before_implementation:
         - CONTRACT (YAML in contracts/ directory)
         - SCHEMA (TypeScript types + Zod/JSON schema in canonical package)
@@ -41,8 +41,8 @@ decision:
   transformation_catalog_elevated_to_canonical_artifact:
     old_form: markdown_only_DESCRIPTIVE
     new_form: YAML_canonical_SSOT + markdown_derived_view
-    ssot_file: /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml
-    derived_view_file: /root/Enterprise OS/enterprise/execution/TRANSFORMATION_CATALOG.md
+    ssot_file: /root/Enterprise-OS/enterprise/execution/transformation-catalog.yaml
+    derived_view_file: /root/Enterprise-OS/enterprise/execution/TRANSFORMATION_CATALOG.md
     rule: All tooling reads YAML. Humans may read Markdown. No tooling reads Markdown for decision-making.
 
   hierarchy_of_truth_formalized:
@@ -130,9 +130,9 @@ thaw_criteria:
   until_then: All no-discussion-zone items are parked; filed as future ADR candidates if persistent idea
 
 references:
-  - /root/Enterprise OS/governance/AXIOMS.md (AXIOM-IMP-001 + AXIOM-IMP-002)
-  - /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml (canonical SSOT)
-  - /root/Enterprise OS/enterprise/execution/TRANSFORMATION_CATALOG.md (derived view only)
-  - /root/Enterprise OS/enterprise/decisions/adr/ADR-000-sprint0-architecture-freeze.yaml
-  - /root/Enterprise OS/governance/sprint0-definition-of-done.yaml (DOD-003 T001 proof)
-  - /root/Enterprise OS/governance/BASELINE_LOCK.yaml (SSOT Stack Layer 4 + 5)
+  - /root/Enterprise-OS/governance/AXIOMS.md (AXIOM-IMP-001 + AXIOM-IMP-002)
+  - /root/Enterprise-OS/enterprise/execution/transformation-catalog.yaml (canonical SSOT)
+  - /root/Enterprise-OS/enterprise/execution/TRANSFORMATION_CATALOG.md (derived view only)
+  - /root/Enterprise-OS/enterprise/decisions/adr/ADR-000-sprint0-architecture-freeze.yaml
+  - /root/Enterprise-OS/governance/sprint0-definition-of-done.yaml (DOD-003 T001 proof)
+  - /root/Enterprise-OS/governance/BASELINE_LOCK.yaml (SSOT Stack Layer 4 + 5)

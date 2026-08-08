@@ -60,7 +60,7 @@ predicate_declarations:
     runtime_context_forbidden: true
 
 loader_binding:
-  loader_ts_ref: /root/Enterprise OS/workspace/packages/core/predicate-registry/src/registry/predicates/t001.ts
+  loader_ts_ref: /root/Enterprise-OS/workspace/packages/core/predicate-registry/src/registry/predicates/t001.ts
   loader_strategy: YAML.parse → zod validate → PredicateDeclaration[]
   binding_status: DERIVED_VIEW_AVAILABLE_VIA_TS_LOADER
   load_order:

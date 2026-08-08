@@ -4,8 +4,8 @@ import yaml
 from datetime import datetime
 from typing import Dict, Any, List, Optional
 
-CONFIG_PATH = "/root/Enterprise OS/eos.config.yaml"
-REGISTRY_PATH = "/root/Enterprise OS/implementation/eos/kernel/registry/evidence-registry.yaml"
+CONFIG_PATH = "/root/Enterprise-OS/eos.config.yaml"
+REGISTRY_PATH = "/root/Enterprise-OS/implementation/eos/kernel/registry/evidence-registry.yaml"
 
 
 def load_config() -> Dict[str, Any]:

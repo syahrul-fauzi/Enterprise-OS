@@ -6,11 +6,11 @@ abbreviation: PROTO-COMP
 evolution_domain: DOMAIN-B-SPECIFICATION
 ssot_note: PROTOCOL_COMPILATION_IS_THE_SUB_PIPELINE_OF_CONST-COMP_PASS_5_THAT_COMPILES_PROTOCOL_DECLARATIONS_INTO_COMPATIBILITY_MATRICES_ALLOWED_UPGRADE_PATHS_MIGRATION_RULES_AND_DEPRECATION_WINDOWS._IT_IMPLEMENTS_USER_POINT_5_(PROTOCOL_GOVERNANCE_JUGA_DAPAT_DIKOMPILASI)_AND_MP-01(C)._NO_MANUALLY_WRITTEN_COMPAT_MATRIX_SHOULD_EXIST_IN_LONG_TERM;_ALL_ARE_GENERATED_ARTIFACTS.
 governance_ref:
-  proto_governance: /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
-  mp01_c: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#MP-01/proto-gov-generated
-  cc_pass5: /root/Enterprise OS/enterprise/specifications/CONSTITUTIONAL-COMPILER.spec.yaml#five_compiler_passes[CC-PASS-5-COMPAT-MATRIX-GEN]
-  ia08_evolution_policy: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_08_evolution_policy_per_artifact_class
-  evolution_domains_b: /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml#evolution_domains_definition/domains/DOMAIN-B-SPECIFICATION
+  proto_governance: /root/Enterprise-OS/governance/PROTOCOL-GOVERNANCE.yaml
+  mp01_c: /root/Enterprise-OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#MP-01/proto-gov-generated
+  cc_pass5: /root/Enterprise-OS/enterprise/specifications/CONSTITUTIONAL-COMPILER.spec.yaml#five_compiler_passes[CC-PASS-5-COMPAT-MATRIX-GEN]
+  ia08_evolution_policy: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_08_evolution_policy_per_artifact_class
+  evolution_domains_b: /root/Enterprise-OS/governance/EVOLUTION-DOMAINS.yaml#evolution_domains_definition/domains/DOMAIN-B-SPECIFICATION
 derived_from:
   - User_Point_5_Protocol_Governance_Compiled
   - User_Point_MP01_Computable_Governance_C_Protocol_Governance_Generated

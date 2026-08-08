@@ -3,7 +3,7 @@
 Change Frequency Level: **Level 1 (Architecture)**
 Expected Change Rate: setiap milestone besar (Alpha.*, Beta.*, Release) — 1–6 bulan per change cycle.
 Change Mechanism: Hanya diubah SETELAH PASAL 6 terpenuhi: L1 (Evidence) + L2 (Interpretation confidence) menunjukkan kebutuhan konkrit. Bukan karena desain terlihat lebih elegan.
-Cross-Reference: [CONSTITUTION.md](file:///root/Enterprise%20OS/CONSTITUTION.md) · [STATUS.md](file:///root/Enterprise%20OS/STATUS.md) · [EVIDENCE.md](file:///root/Enterprise%20OS/EVIDENCE.md) · [ROADMAP.md](file:///root/Enterprise%20OS/ROADMAP.md) (Rule of Five Dokumen Inti #2)
+Cross-Reference: [CONSTITUTION.md](file:///root/Enterprise-OS/CONSTITUTION.md) · [STATUS.md](file:///root/Enterprise-OS/STATUS.md) · [EVIDENCE.md](file:///root/Enterprise-OS/EVIDENCE.md) · [ROADMAP.md](file:///root/Enterprise-OS/ROADMAP.md) (Rule of Five Dokumen Inti #2)
 
 ---
 

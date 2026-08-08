@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "delivery-execution-evidence",
+  "generated_at_utc": "2026-08-07T04:08:20.208Z",
+  "product": {
+    "product_id": "lawyershub",
+    "product_domain": "lawyershub.enterprise-os.com",
+    "request_host": "localhost:3004"
+  },
+  "requirement": {
+    "requirement_id": "req-003",
+    "requirement_ref": "REQ-003",
+    "title": "Verified requirements unlock downstream traceability work",
+    "summary": "Requirement verification should prepare the system for RTM and evidence registry.",
+    "owner": "QA Agent",
+    "status": "verified",
+    "verification_status": "passed",
+    "priority": "medium",
+    "linked_capability_ids": [
+      "EOS-002",
+      "EOS-003"
+    ],
+    "acceptance_criteria": [
+      "Verified requirements expose stable IDs",
+      "Verification status is queryable"
+    ]
+  },
+  "delivery_context": {
+    "workflow_status": "passed",
+    "ready_for_workflow": true,
+    "evidence_count_before_attach": 3,
+    "traceability_gap_count": 0,
+    "traceability_complete": true,
+    "traceability_gaps": [],
+    "traceability_artifact_count": 9,
+    "verification_artifact_count": 2
+  },
+  "operator": {
+    "actor_id": "operator.web",
+    "actor_label": "EOS Workspace Operator",
+    "tenant_id": "tenant.default",
+    "workspace_id": "professional-workspace.default"
+  },
+  "claim_boundary": "Delivery execution evidence claims only the observed public runtime delivery context captured for this requirement at generation time.",
+  "artifact_id": "delivery-execution-evidence:req-003:929e53a7c513d33f",
+  "digest": "929e53a7c513d33f1e02090a1f24abf76e7274c605d5f0073be525d07bfe4d5f"
+}

@@ -5,7 +5,7 @@ Superseded-By: CC-001-CONSTITUTIONAL-CHARTER (authoritative source)
 
 This file is the *operational reference implementation* of the
 constitutional predicates defined in **CC-001**. The **normative frozen
-source** is [CC-001-CONSTITUTIONAL-CHARTER.md](file:///root/Enterprise%20OS/governance/CC-001-CONSTITUTIONAL-CHARTER.md). This file maps CC-001 into
+source** is [CC-001-CONSTITUTIONAL-CHARTER.md](file:///root/Enterprise-OS/vernance/CC-001-CONSTITUTIONAL-CHARTER.md). This file maps CC-001 into
 derived engineering invariants, existing architecture artifacts, and
 the canonical reference to the Baseline v1.4 identity.
 

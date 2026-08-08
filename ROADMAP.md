@@ -3,14 +3,14 @@
 Change Frequency Level: **Level 3 (Execution)**
 Expected Change Rate: setiap hari / per minggu — setiap iterasi kerja, update cadence, atau koreksi rencana kerja.
 Change Mechanism: Diubah secara iteratif normal. Tidak membutuhkan Keputusan Arsitektural Besar. Update hanya membutuhkan evidence linkage ke perubahan yang direncanakan.
-Cross-Reference: [CONSTITUTION.md](file:///root/Enterprise%20OS/CONSTITUTION.md) · [ARCHITECTURE.md](file:///root/Enterprise%20OS/ARCHITECTURE.md) · [EVIDENCE.md](file:///root/Enterprise%20OS/EVIDENCE.md) · [STATUS.md](file:///root/Enterprise%20OS/STATUS.md) (Rule of Five Dokumen Inti #4)
+Cross-Reference: [CONSTITUTION.md](file:///root/Enterprise-OS/CONSTITUTION.md) · [ARCHITECTURE.md](file:///root/Enterprise-OS/ARCHITECTURE.md) · [EVIDENCE.md](file:///root/Enterprise-OS/EVIDENCE.md) · [STATUS.md](file:///root/Enterprise-OS/STATUS.md) (Rule of Five Dokumen Inti #4)
 
 ---
 
 ## ⚠️ EPISTEMIC CAVEAT (SELALU DI BAGIAN ATAS)
 
 **SELURUH ISI DALAM DOKUMEN INI ADALAH RENCANA KERJA, BUKAN BUKTI.**
-Lihat [CONSTITUTION.md PASAL 1](file:///root/Enterprise%20OS/CONSTITUTION.md#L28-L51):
+Lihat [CONSTITUTION.md PASAL 1](file:///root/Enterprise-OS/CONSTITUTION.md#L28-L51):
 - Roadmap (Level 3) ≠ Evidence (Level 2). Roadmap yang tertulis BELUM menjadi bukti apapun.
 - Klaim epistemik hanya boleh meningkat melalui bukti empiris (ΔEvidence reproducible → ΔStatus), bukan karena roadmap yang ditulis dengan baik.
 - Seluruh target di bawah ini = HIPAOTESIS OPERASIONAL yang masih harus dibuktikan melalui eksekusi.
@@ -25,7 +25,7 @@ Lihat [CONSTITUTION.md PASAL 1](file:///root/Enterprise%20OS/CONSTITUTION.md#L28
 
 ⚠️ **PERUBAHAN URUTAN KRITIS KALIBRASI 10 (User Directive):** Urutan B1-B2-B3-B4 Kalibrasi 9 DIPERBAHARUI. Replikasi capability kedua sekarang URUTAN #2, SEBELUM Frontier-D #3. Ini sesuai metodologi sains: generalisasi apparatus ukur pada capability kedua DULU sebelum mengundang auditor luar. Mengurangi biaya (auditor tidak perlu diundang jika framework measurement gagal di capability kedua) dan mengurangi risiko N=1 overfit.
 
-Cross-reference lengkap definisi formal: [EVIDENCE.md Kalibrasi 9 Table 4 Bottleneck](file:///root/Enterprise%20OS/EVIDENCE.md#L744-L764) · [EVIDENCE.md Kalibrasi 10 Table Urutan Prioritas Baru](file:///root/Enterprise%20OS/EVIDENCE.md#L956-L965) · [Kalibrasi 10 Pre-Registration Contract H1-H6 5-Komponen Ilmiah](file:///root/Enterprise%20OS/EVIDENCE.md#L854-L983)
+Cross-reference lengkap definisi formal: [EVIDENCE.md Kalibrasi 9 Table 4 Bottleneck](file:///root/Enterprise-OS/EVIDENCE.md#L744-L764) · [EVIDENCE.md Kalibrasi 10 Table Urutan Prioritas Baru](file:///root/Enterprise-OS/EVIDENCE.md#L956-L965) · [Kalibrasi 10 Pre-Registration Contract H1-H6 5-Komponen Ilmiah](file:///root/Enterprise-OS/EVIDENCE.md#L854-L983)
 
 ---
 
@@ -64,7 +64,7 @@ Cross-reference lengkap definisi formal: [EVIDENCE.md Kalibrasi 9 Table 4 Bottle
 | RO5 | Durasi (menit) engineer BARU ulang Alpha.13 TANPA BANTUAN LISAN | Instruksi HANYA via dokumentasi repo — NO CHAT/MEETING | ⬜ TIDAK |
 | RO6 | Success Rate (%) engineer BARU menghasilkan report SHA-IDENTIK dengan canonical | SHA256 report engineer vs SHA256 report asli Alpha.13 step 4 | ⬜ TIDAK |
 
-Cross-reference lengkap definisi formal RO1-RO6: [EVIDENCE.md Bagian 4 RO1-RO6 Table](file:///root/Enterprise%20OS/EVIDENCE.md#L767-L781)
+Cross-reference lengkap definisi formal RO1-RO6: [EVIDENCE.md Bagian 4 RO1-RO6 Table](file:///root/Enterprise-OS/EVIDENCE.md#L767-L781)
 
 ---
 
@@ -81,7 +81,7 @@ Cross-reference lengkap definisi formal RO1-RO6: [EVIDENCE.md Bagian 4 RO1-RO6 T
 | H5 | Pemisahan Obs/Meas/Int/Dec secara MEKANIS benar-benar mengurangi confirmation bias dan narrative rewriting. | ≥2 eksperimen: inter-rater reliability 3 engineer interpretation: agreement lebih tinggi + % post-hoc revisi turun ≥30% |
 | H6 | Rule of Five + PASAL 8.A Natural Shrinkage benar-benar MENGURANGI cognitive load engineer baru onboarding. | ≥3 engineer baru: waktu jawab 10 pertanyaan ≥25% lebih cepat + akurasi ≥85% dibanding industry average EA framework |
 
-Cross-reference lengkap H1-H6 definisi formal + justification: [EVIDENCE.md Bagian 2 Tabel H1-H6](file:///root/Enterprise%20OS/EVIDENCE.md#L727-L741)
+Cross-reference lengkap H1-H6 definisi formal + justification: [EVIDENCE.md Bagian 2 Tabel H1-H6](file:///root/Enterprise-OS/EVIDENCE.md#L727-L741)
 
 ---
 
@@ -105,7 +105,7 @@ Cross-reference lengkap H1-H6 definisi formal + justification: [EVIDENCE.md Bagi
 | **FREEZE ≠ VALIDASI DESAIN** | 🔴 **WAJIB DIHORMATI — DILARANG MENCAMPUR ADUKAN** | ✅ **BISA:** "Freeze = anti-perubahan-prematur (anti p-HACKING / HARKing) sesuai Registered Reports Stage 1 → Stage 2 boundary." ❌ **DILARANG KERAS:** Semua klaim implisit / eksplisit "freeze bukti protokol BENAR / VALID / TERUJI / OPTIMAL / PASTI JALAN". Freeze = mekanisme anti-bias, BUKAN pengakuan substansial. Validitas = HANYA setelah B1+B2+B3 data ADA. |
 | **Perubahan Metodologi Masa Depan = RR-PROTOCOL-REVISION** | 🧊 **Format SHA-linked 4 Field Wajib SAJA** | ❌ **BUKAN** = "Kalibrasi 12" (nama kalibrasi = tahap SEBELUM data, sudah ditutup B1+B2+B3 exit criteria). ✅ **HANYA FORMAT:** `EJ-RR-PROTOCOL-REVISION-YYYYMMDD-NNN` tipe `protocol_revision`. **4 FIELD WAJIB** (Nature Registered Reports: Deviasi protokol WAJIB dijelaskan eksplisit + dibenarkan): (1) **deviasi_reason** = alasan SHA-verifiable, BUKAN opini; (2) **evidence_sha** = SHA256 artefak bukti; (3) **scope_affected** = EXHAUSTIF tabel mana berubah (TIDAK BOLEH diam-diam scope creep); (4) **risk_of_change** = LOW/MEDIUM/HIGH + mitigasi anti-Type-I-error. |
 
-> **Source of Truth definisi formal + Table Status Proyek 6 Area User-Verified:** [EVIDENCE.md EJ-FREEZE-EPISTEMIC-VALIDATION-20260728-001](file:///root/Enterprise%20OS/EVIDENCE.md#L1184-L1268)
+> **Source of Truth definisi formal + Table Status Proyek 6 Area User-Verified:** [EVIDENCE.md EJ-FREEZE-EPISTEMIC-VALIDATION-20260728-001](file:///root/Enterprise-OS/EVIDENCE.md#L1184-L1268)
 
 ---
 
@@ -118,7 +118,7 @@ Cross-reference lengkap H1-H6 definisi formal + justification: [EVIDENCE.md Bagi
 > >
 > > *"EOS kini tampaknya memiliki spesifikasi eksperimen yang jauh lebih lengkap sehingga manfaat yang diklaim dapat diuji secara sistematis, bukan hanya didiskusikan."*
 
-**Link bukti formal directive source APPEND-ONLY:** [EVIDENCE.md EJ-DIRECTIVE-FREEZE-20260728-001](file:///root/Enterprise%20OS/EVIDENCE.md#L1121-L1180)
+**Link bukti formal directive source APPEND-ONLY:** [EVIDENCE.md EJ-DIRECTIVE-FREEZE-20260728-001](file:///root/Enterprise-OS/EVIDENCE.md#L1121-L1180)
 
 ---
 
@@ -155,7 +155,7 @@ Urutan Prioritas Global (Kalibrasi 10 User Directive):
 
 ## 🧪 H1-H6 HYPOTHESIS STATUS TRACKER (INDEX VISIBILITAS EKSEKUSI)
 
-⚠️ **Source of Truth = [EVIDENCE.md Kalibrasi 11 Table Utama](file:///root/Enterprise%20OS/EVIDENCE.md#L1080-L1089).** Tabel di bawah ini = VISIBILITAS untuk tim eksekusi agar tahu data apa yang kurang. Update status TIDAK di sini (APPEND-ONLY Evidence Rule).
+⚠️ **Source of Truth = [EVIDENCE.md Kalibrasi 11 Table Utama](file:///root/Enterprise-OS/EVIDENCE.md#L1080-L1089).** Tabel di bawah ini = VISIBILITAS untuk tim eksekusi agar tahu data apa yang kurang. Update status TIDAK di sini (APPEND-ONLY Evidence Rule).
 
 ⚠️ **TERMINOLOGY LOCK:** HANYA 5 state label = NOT TESTED / RUNNING / PROVISIONAL PASS / STRONG CONFIRMED / REJECTED. Kata "terbukti" HANYA BOLEH setelah STRONG CONFIRMED (DILARANG KERAS selain itu).
 
@@ -168,7 +168,7 @@ Urutan Prioritas Global (Kalibrasi 10 User Directive):
 | **H5** | **RUNNING** | 2 | Group A (Alpha.13 base+repeat1 Invarian 2 ON) data sensitivity lengkap count 2. Butuh Group B (Alpha.14 cap kedua DENGAN Invarian 2 SENGAJA DINONAKTIFKAN) → 2 kelompok counter-balanced data ada → IRR Kappa N≥3 raters. | Step 1 (REPEAT-2 OK) + Step 2 (Alpha.14 Group B) |
 | **H6** | NOT TESTED | 2 | B1 + B2 Step 2 selesai (minimal 2 capability × 2 surface × minimal 2 contoh report DEC) → onboarding quiz N≥3 engineer BARU (tidak pernah ikut desain EOS). | Step 3 (Parallel B3 bisa jalan bersama) |
 
-Full Definisi Metadata + Update APPEND-ONLY Rules: [EVIDENCE.md Kalibrasi 11 Bagian 3](file:///root/Enterprise%20OS/EVIDENCE.md#L1065-L1100). Full Tabel Distinction Min Operational Sample vs Scientific Confidence: [EVIDENCE.md Kalibrasi 11 Bagian 1](file:///root/Enterprise%20OS/EVIDENCE.md#L1028-L1039). Full 5 State Terminology Rule: [EVIDENCE.md Kalibrasi 11 Bagian 2](file:///root/Enterprise%20OS/EVIDENCE.md#L1043-L1062). Update count/status terbaru via Entry APPEND Batch #1: EJ-H1-H6-STATUS-20260729-001 dan Batch #2: EJ-H1-H6-STATUS-20260729-002 di EVIDENCE.md.
+Full Definisi Metadata + Update APPEND-ONLY Rules: [EVIDENCE.md Kalibrasi 11 Bagian 3](file:///root/Enterprise-OS/EVIDENCE.md#L1065-L1100). Full Tabel Distinction Min Operational Sample vs Scientific Confidence: [EVIDENCE.md Kalibrasi 11 Bagian 1](file:///root/Enterprise-OS/EVIDENCE.md#L1028-L1039). Full 5 State Terminology Rule: [EVIDENCE.md Kalibrasi 11 Bagian 2](file:///root/Enterprise-OS/EVIDENCE.md#L1043-L1062). Update count/status terbaru via Entry APPEND Batch #1: EJ-H1-H6-STATUS-20260729-001 dan Batch #2: EJ-H1-H6-STATUS-20260729-002 di EVIDENCE.md.
 
 ---
 
@@ -186,7 +186,7 @@ Full Definisi Metadata + Update APPEND-ONLY Rules: [EVIDENCE.md Kalibrasi 11 Bag
 > 1. ✅ Invarian 1 — Single Source of Truth SHA match (hash deterministik).
 > 2. ✅ Invarian 2 — Vocab interpretasi 17 kata TIDAK ada di Section 3 Observation dan Section 4 Measurement (dapat dicegah dengan `grep`).
 > 3. ✅ Invarian 3 — Jika verdict = INCONCLUSIVE, 4 field wajib (trigger_pass, trigger_fail, evidence_missing, next_experiment) TERISI 100% LENGKAP, TIDAK BOLEH ada parkir permanen.
-> 4. ✅ **Invarian Epistemik Baru (Pola 3-Bagian):** Section 5 Interpretation WAJIB memiliki 3 sub-section: `### Verified Facts` (hanya SHA + hasil script literal 0 interpretasi), `### Execution Claims` (semua kalimat interpretasi DIAWALI prefix `[Execution Claim]`), dan `### Open Questions` (cross-reference ke trigger_to_pass Invarian 3). Source: [EJ-GUARDRAIL-EPISTEMIC-20260729-001 Guardrail #1](file:///root/Enterprise%20OS/EVIDENCE.md#L1813-L1831). ⚠️ FREEZE COMPLIANCE: ini = SUB-SECTION di DALAM BAGIAN 5 SAJA, BUKAN perubahan struktur identity 6 Bagian (nama BAGIAN 1-6 TETAP IDENTIK).
+> 4. ✅ **Invarian Epistemik Baru (Pola 3-Bagian):** Section 5 Interpretation WAJIB memiliki 3 sub-section: `### Verified Facts` (hanya SHA + hasil script literal 0 interpretasi), `### Execution Claims` (semua kalimat interpretasi DIAWALI prefix `[Execution Claim]`), dan `### Open Questions` (cross-reference ke trigger_to_pass Invarian 3). Source: [EJ-GUARDRAIL-EPISTEMIC-20260729-001 Guardrail #1](file:///root/Enterprise-OS/EVIDENCE.md#L1813-L1831). ⚠️ FREEZE COMPLIANCE: ini = SUB-SECTION di DALAM BAGIAN 5 SAJA, BUKAN perubahan struktur identity 6 Bagian (nama BAGIAN 1-6 TETAP IDENTIK).
 
 **Regression Wajib SEBELUM measurement REPEAT-2:**
 - SHA folder `capabilities/legal-case/implementation/` IDENTIK byte-for-byte (0 bytes divergence allowed, sudah 0×3 berturut → WAJIB tetap 0).
@@ -243,9 +243,9 @@ ELR v2.0 = Value Generated / Extraction + Maintenance Cost
 
 ## Experiment Registry (EXP-001 Domain Transfer)
 
-Experiment Registry resmi: [experiment-registry.yaml](file:///root/Enterprise%20OS/experiments/experiment-registry.yaml)
+Experiment Registry resmi: [experiment-registry.yaml](file:///root/Enterprise-OS/experiments/experiment-registry.yaml)
 
-Details EXP-001: [experiments/EXP-001-lawyershub/](file:///root/Enterprise%20OS/experiments/EXP-001-lawyershub/)
+Details EXP-001: [experiments/EXP-001-lawyershub/](file:///root/Enterprise-OS/experiments/EXP-001-lawyershub/)
 
 ### Core Hypothesis (Hipotesis Ilmiah EXP-001)
 > Evidence-driven extraction produces higher engineering leverage than speculative capability design.
@@ -336,7 +336,7 @@ Frontier ini TIDAK BOLEH dilewati. Pengerjaan minimal menyelesaikan 3 dari 5 tes
 
 Tanggal eksekusi laporan: actual runtime execution (Konstitusi Pasal 2 Caveat Auditor berlaku — ini adalah self-certified execution report, BUKAN audit independen).
 
-**File Test Suite:** [selftest.alpha12-falsification.ts](file:///root/Enterprise%20OS/workspace/packages/composition/selftest.alpha12-falsification.ts)
+**File Test Suite:** [selftest.alpha12-falsification.ts](file:///root/Enterprise-OS/workspace/packages/composition/selftest.alpha12-falsification.ts)
 
 Perintah reproduksi:
 ```bash
@@ -492,18 +492,18 @@ Sebelum menambah consumer BARU, perbaiki kontrak kernel agar Gate 0 G0.6 + G0.7 
 
 Perubahan ini TIDAK mengubah file di capability folder (legal-case), hanya mengubah foundation layer contract.
 
-0.1 **File:** [types.ts](file:///root/Enterprise%20OS/workspace/packages/core/kernel/src/types.ts)
+0.1 **File:** [types.ts](file:///root/Enterprise-OS/workspace/packages/core/kernel/src/types.ts)
     - Ubah: `readonly experience: CapabilityExperienceDescriptor;`
     - Jadi: `readonly experience?: CapabilityExperienceDescriptor;`
     - Alasan: Kontrak harus mengijinkan capability PURE tanpa experience field sama sekali.
 
-0.2 **File:** [schemas.ts](file:///root/Enterprise%20OS/workspace/packages/core/kernel/src/schemas.ts)
+0.2 **File:** [schemas.ts](file:///root/Enterprise-OS/workspace/packages/core/kernel/src/schemas.ts)
     - Ubah `CapabilityManifestSchema.experience`:
       Saat ini: `experience: z.object({ component: z.string().min(1,...) })`
       Jadi: `experience: z.object({ component: z.string().min(1,...) }).optional()`
     - Alasan: Manifest harus menerima capability pure-domain tanpa experience component.
 
-0.3 **File:** [registry.ts](file:///root/Enterprise%20OS/workspace/packages/core/capability-registry/src/registry.ts)
+0.3 **File:** [registry.ts](file:///root/Enterprise-OS/workspace/packages/core/capability-registry/src/registry.ts)
     - Ubah logic pada method `validate()` (baris sekitar 60-71):
       Saat ini: ERROR jika experience tidak ada / view bukan function.
       Jadi: HANYA validasi JIKA experience TERSEDIA. Jika experience undefined → SKIP, tidak error.
@@ -1073,11 +1073,11 @@ decision:
 
 1. **COLD TRACEABILITY = Versi Strict D4+D5 (Sesudah Ada Report SHA256):**
    Definisi user PALING BERNILAI Frontier-D: Auditor independen menerima HANYA 6 artefak (Repository, Measurement Report, Decision Object, STATUS, CONSTITUTION, ARCHITECTURE) → SEMUA KOMUNIKASI DIHENTIKAN TOTAL (tidak boleh bertanya/meeting/tambahan penjelasan). Jika auditor menghasilkan Gate Verdict + Decision next_action YANG SAMA PERSIS dengan Decision Object asli → PASAL 6.A BERHASIL mencapai cold-traceability. Jika gagal → masih ada **tacit knowledge** (pengetahuan implisit) yang BELUM dipindahkan ke artefak formal.
-   Source & detail definisi: [EVIDENCE.md EJ-CONST-CALIB-20260728-E "Cold Traceability Definition"](file:///root/Enterprise%20OS/EVIDENCE.md#L598-L630).
+   Source & detail definisi: [EVIDENCE.md EJ-CONST-CALIB-20260728-E "Cold Traceability Definition"](file:///root/Enterprise-OS/EVIDENCE.md#L598-L630).
 
 2. **TSR (Traceability Success Rate) = DEFERRED METRIC HYPOTHESIS (PERINTAH USER: TIDAK DITERAPKAN SEKARANG):**
    TSR = (jumlah auditor independen berhasil cold-trace identical verdict) / (total auditor independen suatu batch). TSR MENGUKUR KUALITAS ARTEFAK (bukan kualitas desain, berbeda dengan Gate PASS). **Syarat adopsi aturan (3 syarat WAJIB, BELUM TERCAPAI):** (1) ≥ 4 auditor fisik berbeda menjalankan ≥ 2 batch report berbeda; (2) TSR lolos filter PASAL 8 GC/GB (decision/risk/reuse manfaat > biaya audit/compute/maintain); (3) Jika TSR tidak pernah ubah PROCEED/REFACTOR/REPEAT 3 siklus → otomatis sunset R3 PASAL 6.B. Status saat ini = **HYPOTHESIS DEFERRED, BUKAN aturan aktif.**
-   Source & full definisi deferred condition: [EVIDENCE.md EJ-CONST-CALIB-20260728-E "TSR Deferred Hypothesis"](file:///root/Enterprise%20OS/EVIDENCE.md#L634-L657).
+   Source & full definisi deferred condition: [EVIDENCE.md EJ-CONST-CALIB-20260728-E "TSR Deferred Hypothesis"](file:///root/Enterprise-OS/EVIDENCE.md#L634-L657).
 
 ---
 
@@ -1234,7 +1234,7 @@ Published
 Reused
 ```
 
-Cross-reference: [ARCHITECTURE.md Extraction Guardrails 6-Step](file:///root/Enterprise%20OS/ARCHITECTURE.md#L410-L427) (formal gate criteria sebelum Extract diizinkan).
+Cross-reference: [ARCHITECTURE.md Extraction Guardrails 6-Step](file:///root/Enterprise-OS/ARCHITECTURE.md#L410-L427) (formal gate criteria sebelum Extract diizinkan).
 
 ---
 

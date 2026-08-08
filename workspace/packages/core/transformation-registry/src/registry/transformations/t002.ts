@@ -9,7 +9,7 @@ export const TRANSFORMATION_T002: TransformationDeclaration = {
   output_kind: "CAG_CAPABILITY_ARTIFACT_GRAPH",
   lifecycle: "DRAFT",
   contract_ref:
-    "/root/Enterprise OS/workspace/contracts/transformations/t002-eir-to-cag.contract.yaml",
+    "/root/Enterprise-OS/workspace/contracts/transformations/t002-eir-to-cag.contract.yaml",
   predicate_refs: [
     { predicate_id: "PRED-T002-INPUT-EIR-VERIFIED", phase: "PRE_EXECUTION" },
     {

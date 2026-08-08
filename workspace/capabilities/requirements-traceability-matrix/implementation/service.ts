@@ -15,5 +15,6 @@ export type {
   TraceabilityReferenceKind,
 } from "./contracts";
 export * from "./services";
+export { requirementsTraceabilityMatrixService } from "./services/traceability.service";
 export * from "./queries";
 export * from "./repository";

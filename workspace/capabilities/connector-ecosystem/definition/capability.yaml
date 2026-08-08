@@ -1,5 +1,37 @@
 id: connector-ecosystem
 name: Connector Ecosystem
 version: 0.1.0
+owner: integration-domain
+status: ACTIVE
+introduced: "2026-07-12"
+provides:
+  - external-connector
+  - api-integration
+  - third-party-bridge
+purpose: Manage ecosystem of external connectors and integrations for connecting EOS to external systems.
+manifest_version: 1.0.0
+exports:
+  - ConnectorEcosystemProvider
 implementation:
   entry: implementation/service.ts
+depends_on:
+  - api-platform
+  - core-runtime
+  - security-hardening
+capability:
+  name: connector-ecosystem
+  owner: integration-domain
+  purpose: Manage ecosystem of external connectors and integrations for connecting EOS to external systems.
+  consumers:
+    - legal-case
+    - legal-document
+    - workflow-engine
+  maturity:
+    level: core
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - connector-security
+    - cross_product_uniformity
+stability: stable

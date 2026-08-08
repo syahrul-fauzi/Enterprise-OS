@@ -1,0 +1,17 @@
+HTTP/1.1 200 OK
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+content-type: application/json
+x-eos-actor-id: operator.web
+x-eos-intent: delivery.post
+x-eos-product-domain: lawyershub.enterprise-os.com
+x-eos-product-id: lawyershub
+x-eos-request-host: localhost:3004
+x-eos-request-id: 260661a3-6a27-4750-a001-8c01d2419617
+x-eos-tenant-id: tenant.default
+x-eos-trace-id: 260661a3-6a27-4750-a001-8c01d2419617
+x-eos-workspace-id: professional-workspace.default
+Date: Fri, 07 Aug 2026 04:08:20 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+

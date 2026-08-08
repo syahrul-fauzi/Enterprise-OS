@@ -29,7 +29,7 @@ export const TRANSFORMATION_REGISTRY_ID = "TRANSFORMATION-REGISTRY-V1";
 export const TRANSFORMATION_REGISTRY_VERSION = "1.0.0";
 export const TRANSFORMATION_REGISTRY_STATUS = "VERIFIED";
 export const CATALOG_CANONICAL_REF =
-  "/root/Enterprise OS/enterprise/execution/transformation-catalog.yaml";
+  "/root/Enterprise-OS/enterprise/execution/transformation-catalog.yaml";
 
 export const TRANSFORMATIONS: readonly TransformationDeclaration[] = [
   TRANSFORMATION_T001,

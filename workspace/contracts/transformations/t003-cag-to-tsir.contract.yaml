@@ -5,7 +5,7 @@ contract:
   status: DRAFT
   kind: TRANSFORMATION_CONTRACT
   transformation_id: T003
-  transformation_catalog_ref: /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml#transformations[2]
+  transformation_catalog_ref: /root/Enterprise-OS/enterprise/execution/transformation-catalog.yaml#transformations[2]
   axiom_kbe_enforced: true
   precedence_constraint: BLOCKED_UNTIL_T002_VERIFIED
 

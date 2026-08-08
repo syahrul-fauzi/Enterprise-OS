@@ -72,6 +72,7 @@ export interface SearchTraceabilityMatrixInput {
   readonly linkedCapabilityId?: string;
   readonly artifactKind?: TraceabilityArtifactKind | "all";
   readonly coverage?: "all" | "complete" | "gaps";
+  readonly evidenceId?: string;
 }
 
 export interface TraceabilityMatrixSummary {
@@ -110,4 +111,14 @@ export interface AssessTraceabilityOutput {
   readonly gapCount: number;
   readonly requirementCount: number;
   readonly artifactCount: number;
+}
+
+export interface RuntimeInvocation<TInput = Record<string, unknown>, TResult = Record<string, unknown>> {
+  readonly capability_id: string;
+  readonly operation_id: string;
+  readonly sourceRef: string;
+  readonly success: boolean;
+  readonly input: Readonly<TInput>;
+  readonly result: Readonly<TResult>;
+  readonly timestamp?: string;
 }

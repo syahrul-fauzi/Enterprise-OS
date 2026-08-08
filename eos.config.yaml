@@ -3,12 +3,12 @@ version: "1.2.0"
 
 # Base paths
 base_path: "/root/Enterprise OS"
-workspace_path: "/root/Enterprise OS/workspace"
-products_path: "/root/Enterprise OS/workspace/products"
-governance_path: "/root/Enterprise OS/governance"
-kernel_path: "/root/Enterprise OS/implementation/eos/kernel"
-engines_path: "/root/Enterprise OS/implementation/eos/engines"
-evidence_base: "/root/Enterprise OS/workspace/products/{product}/evidence"
+workspace_path: "/root/Enterprise-OS/workspace"
+products_path: "/root/Enterprise-OS/workspace/products"
+governance_path: "/root/Enterprise-OS/governance"
+kernel_path: "/root/Enterprise-OS/implementation/eos/kernel"
+engines_path: "/root/Enterprise-OS/implementation/eos/engines"
+evidence_base: "/root/Enterprise-OS/workspace/products/{product}/evidence"
 
 # Active product
 primary_product: "lawyershub"

@@ -3,10 +3,10 @@ status: FROZEN
 kind: CONSTITUTIONAL_CONTRACT
 ssot_note: THIS_YAML_IS_SINGLE_SOURCE_OF_TRUTH_FOR_ARCHITECTURE_INVARIANTS_ACL_MUST_ENFORCE
 governance_ref:
-  constitution_lock: /root/Enterprise OS/governance/BASELINE_LOCK.yaml
-  axioms: /root/Enterprise OS/governance/AXIOMS.md
-  arch_compliance: /root/Enterprise OS/governance/architecture-compliance.yaml
-  dependency_rules: /root/Enterprise OS/governance/dependency-rules.yaml
+  constitution_lock: /root/Enterprise-OS/governance/BASELINE_LOCK.yaml
+  axioms: /root/Enterprise-OS/governance/AXIOMS.md
+  arch_compliance: /root/Enterprise-OS/governance/architecture-compliance.yaml
+  dependency_rules: /root/Enterprise-OS/governance/dependency-rules.yaml
 derived_from:
   - EOS_Hierarchy_of_Truth_via_transformation_catalog
   - ADR-000_Sprint0_Architecture_Freeze
@@ -138,11 +138,11 @@ principle_01_ontological_triad:
         - engine implementations
         - scheduler logic
       storage_locations:
-        - /root/Enterprise OS/enterprise/constitution/
-        - /root/Enterprise OS/enterprise/knowledge/
-        - /root/Enterprise OS/enterprise/schema/
-        - /root/Enterprise OS/enterprise/library/
-        - /root/Enterprise OS/workspace/contracts/
+        - /root/Enterprise-OS/enterprise/constitution/
+        - /root/Enterprise-OS/enterprise/knowledge/
+        - /root/Enterprise-OS/enterprise/schema/
+        - /root/Enterprise-OS/enterprise/library/
+        - /root/Enterprise-OS/workspace/contracts/
       ownership: Enterprise Architect + Domain Steward (human review required for changes)
       acl_check_required: true
     REGISTRY:
@@ -165,8 +165,8 @@ principle_01_ontological_triad:
         - transformation implementation
         - predicate evaluation logic
       storage_locations:
-        - /root/Enterprise OS/workspace/packages/core/transformation-registry/src/registry/
-        - /root/Enterprise OS/workspace/packages/core/predicate-registry/src/registry/
+        - /root/Enterprise-OS/workspace/packages/core/transformation-registry/src/registry/
+        - /root/Enterprise-OS/workspace/packages/core/predicate-registry/src/registry/
       ownership: Platform Engineer (YAML manifests) + automated validation (ACL)
       acl_check_required: true
     RUNTIME:
@@ -197,8 +197,8 @@ principle_01_ontological_triad:
         - hardcode predicate rules as switch/case
         - store compatibility matrix as TypeScript object literal
       storage_locations:
-        - /root/Enterprise OS/workspace/packages/core/runtime/
-        - /root/Enterprise OS/workspace/packages/tooling/eos-cli/
+        - /root/Enterprise-OS/workspace/packages/core/runtime/
+        - /root/Enterprise-OS/workspace/packages/tooling/eos-cli/
       ownership: Platform Engineer — subject to ARCH-18 invariant checks
       acl_check_required: true
   data_flow_unidirectional:
@@ -235,7 +235,7 @@ principle_02_semantic_registry_graph:
       - REQUIRES_PREDICATE (verification step)
       - COMPATIBLE_WITH (version range)
   resolver_rule: Resolver MEMBACA graph edges. Resolver TIDAK menghitung edges dari heuristik.
-  storage_location: /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml#graph
+  storage_location: /root/Enterprise-OS/enterprise/execution/transformation-catalog.yaml#graph
   acl_check_required: true
 
 principle_03_resolver_executor_split:
@@ -258,7 +258,7 @@ principle_03_resolver_executor_split:
         - produce deterministic ExecutionPlan object
       output: ResolverResolutionBundle[] (existing) → ExecutionPlan (future)
       purity: PURE_FUNCTION — no writes, no network, no non-determinism
-      implementation: /root/Enterprise OS/workspace/packages/core/registry-resolver/
+      implementation: /root/Enterprise-OS/workspace/packages/core/registry-resolver/
       forbidden_concerns:
         - calling transformation implementation functions
         - writing evidence files
@@ -320,8 +320,8 @@ principle_05_proof_class_split:
       id_patterns:
         - TRF-PROOF-T<NNN> (single transformation, level 1)
         - EXEC-PROOF-REQ<NNNN> (full pipeline, level 2)
-      storage_location_prefix: /root/Enterprise OS/build/evidence/transformation-proofs/
-      schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts#TransformationProofEntrySchema
+      storage_location_prefix: /root/Enterprise-OS/build/evidence/transformation-proofs/
+      schema_ref: /root/Enterprise-OS/workspace/packages/core/proof-ledger/src/schema.ts#TransformationProofEntrySchema
       verification: Re-run deterministik + hash equality.
       lifetime: Append-only ke ledger. NEVER mutate old proofs.
     VALIDATION_PROOF:
@@ -332,8 +332,8 @@ principle_05_proof_class_split:
         - REGISTRY-PROOF (registry semantic consistency + lifecycle rules)
         - CATALOG-PROOF (catalog completeness per KBE 5-artifact rule)
         - CONTRACT-PROOF (contract schema conformance + backward compatibility)
-      storage_location_prefix: /root/Enterprise OS/build/evidence/validation-proofs/
-      schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts#RepositoryProofEntrySchema (extend for REGISTRY/CATALOG/CONTRACT kinds)
+      storage_location_prefix: /root/Enterprise-OS/build/evidence/validation-proofs/
+      schema_ref: /root/Enterprise-OS/workspace/packages/core/proof-ledger/src/schema.ts#RepositoryProofEntrySchema (extend for REGISTRY/CATALOG/CONTRACT kinds)
       verification: ACL validation run + schema validation.
       lifetime: May be regenerated when governance changes. Previous version preserved for audit.
   prohibition: EXECUTION_PROOF TIDAK BOLEH digunakan sebagai validation substitute. VALIDATION_PROOF TIDAK BOLEH mengklaim execution occurred.
@@ -1198,7 +1198,7 @@ principle_19_constitutional_lexicon:
     - Lexicon completeness: at any gate certification, the set of terms used in certified artifacts MUST have 100% coverage in Lexicon.
   acl_check_required: true
   enforcement_acl_rule_id: ARCH-40-IA19-LEXICON-GOVERNANCE
-  canonical_registry_path: /root/Enterprise OS/enterprise/constitution/lexicon.yaml
+  canonical_registry_path: /root/Enterprise-OS/enterprise/constitution/lexicon.yaml
   gate_impact:
     gate_c: "Low — TF1 is normative for Sprint 0; Lexicon registry added as parallel authoritative source. Backward compat preserved."
     gate_d: "MEDIUM — All Gate-D contracts/specs MUST use only Lexicon-registered terms with status ≥ ACTIVE. LEX_SCAN non-canonical = Gate-D Declined."
@@ -1282,7 +1282,7 @@ principle_20_constitutional_validity:
     gate_e: "FATAL — Repository Certification = IA-20 PASS for entire scope. Certification Report MUST include: (1) per-transformation IA-20 breakdown, (2) aggregate IA-20 verdict, (3) reproducibility hash chain."
 
 eos_6_tier_architecture_reference:
-  canonical_definition_path: /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#architecture_layers_6_tier
+  canonical_definition_path: /root/Enterprise-OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#architecture_layers_6_tier
   layer_names_ordered:
     - KNOWLEDGE_LAYER
     - SEMANTIC_KERNEL
@@ -1295,7 +1295,7 @@ eos_6_tier_architecture_reference:
     knowledge-defined, semantics-governed, plan-driven, evidence-backed execution platform.
 
 eos_knowledge_compiler_pipeline_reference:
-  canonical_definition_path: /root/Enterprise OS/enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
+  canonical_definition_path: /root/Enterprise-OS/enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
   epistemic_states_ordered:
     - KNOWLEDGE
     - KNOWLEDGE_STATE (Knowledge Snapshot, BUILD ARTIFACT)

@@ -8,4 +8,9 @@ experience:
   route: /requirements
 capabilities:
   - requirement-management
+  - evidence-registry
+  - security-hardening
+  - api-platform
+  - workflow-engine
+  - governance-evidence
 claim_boundary: Product-local proof binding for the ILC identity onto the canonical apps/web professional experience surface.

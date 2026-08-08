@@ -5,9 +5,9 @@ layer: META_GOVERNANCE
 abbreviation: EVO-D
 ssot_note: THREE_EXHAUSTIVE_DISJOINT_EVOLUTION_DOMAINS_FOR_EOS._EVERY_ARTIFACT_MAPS_TO_EXACTLY_ONE_DOMAIN_PER_ASP_04._MACHINE_ENFORCED_VIA_ACL_ARCH_24._CHANGE_COST_APPROVAL_COMPATIBILITY_AUDIT_ARE_ALL_METADATA_FIELDS_THAT_CAN_BE_AUDITED.
 governance_ref:
-  architectural_stability_principles: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
-  invariant_architecture: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
-  governance_state: /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
+  architectural_stability_principles: /root/Enterprise-OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
+  invariant_architecture: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml
+  governance_state: /root/Enterprise-OS/governance/GOVERNANCE_STATE.yaml
 derived_from:
   - User_Point_2_Three_Gravity_Zones_As_Evolution_Domains
   - User_Point_Evolution_Manifest_Metadata_Per_Artifact

@@ -9,7 +9,7 @@ export const TRANSFORMATION_T005: TransformationDeclaration = {
   output_kind: "REPOSITORY_PROOF_JSON",
   lifecycle: "DRAFT",
   contract_ref:
-    "/root/Enterprise OS/workspace/contracts/transformations/t005-runtime-to-repo-proof.contract.yaml",
+    "/root/Enterprise-OS/workspace/contracts/transformations/t005-runtime-to-repo-proof.contract.yaml",
   predicate_refs: [
     { predicate_id: "PRED-T005-INPUT-4-HASHES-SET", phase: "PRE_EXECUTION" },
     {

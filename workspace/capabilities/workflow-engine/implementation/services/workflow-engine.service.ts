@@ -9,12 +9,14 @@ import type {
   ExecuteWorkflowOutput,
   GetWorkflowDefinitionInput,
   GetWorkflowDefinitionOutput,
+  TraceExecutionsByDecisionInput,
+  TraceExecutionsByDecisionOutput,
   WorkflowExecutionResult,
   WorkflowExecutionStatus,
   WorkflowStepResult,
 } from "../contracts";
 import { WorkflowDefinitionRepositoryInMemory } from "../repository";
-import { recordRuntimeInvocation } from "@repo/core-runtime";
+import { recordRuntimeInvocation, traceExecutionByDecision, executionContext } from "../../../../packages/core/runtime/src/index";
 
 // ============================================================
 // DIV-001 ENFORCED: Procedure ≠ Workflow.
@@ -145,16 +147,20 @@ function executeRequirementDeliveryReadiness(
   const requirementRefs = Array.from(
     new Set(
       traceability.matchedArtifacts.flatMap(
-        (artifact) => artifact.externalRequirementRefs ?? [],
+        (artifact: any) => artifact.externalRequirementRefs ?? [],
       ),
     ),
-  ).sort((left, right) => left.localeCompare(right));
+  ) as string[];
+  requirementRefs.sort((left, right) => left.localeCompare(right));
 
   const evidenceMatches = dedupeById(
     requirementRefs.flatMap((requirementRef) =>
       evidenceRegistryService.searchEvidenceRegistry({
         requirementRef,
         limit: input.limit ?? 100,
+        decision_id: input.decision_id,
+        productId: input.productId,
+        runId: input.runId,
       }).items,
     ),
   );
@@ -174,12 +180,39 @@ function executeRequirementDeliveryReadiness(
     },
   });
 
+  // TRACEABILITY CLOSURE: Automatically verify requirement if evidence is sufficient and requirement is implemented
+  if (
+    traceability.coverage.complete && 
+    evidenceMatches.length > 0 && 
+    requirement.status === "implemented"
+  ) {
+    requirementService.verifyRequirement({ id: requirement.id });
+    const linkedEvidenceIds = evidenceMatches.map(e => e.id);
+    steps.push({
+      stepId: "close-traceability-loop",
+      kind: "requirement.verify",
+      status: "passed",
+      summary: "Closed traceability loop: Verified requirement after sufficient evidence collection.",
+      output: {
+        requirementId: requirement.id,
+        evidenceCollected: evidenceMatches.length,
+        linkedEvidenceIds,
+        traceabilityComplete: true,
+      },
+    });
+  }
+
   const readyForWorkflow =
     traceability.coverage.complete &&
     evidenceMatches.length > 0 &&
     (requirement.status === "in_delivery" ||
       requirement.status === "implemented" ||
       requirement.status === "verified");
+
+  // Get updated requirement state after potential verification
+  const updatedRequirement = requirementService.getRequirement({
+    id: RequirementId(input.requirementId),
+  });
 
   return {
     workflowId: input.workflowId,
@@ -188,8 +221,8 @@ function executeRequirementDeliveryReadiness(
     output: {
       readyForWorkflow,
       requirementId: requirement.id,
-      requirementStatus: requirement.status,
-      verificationStatus: requirement.verificationStatus,
+      requirementStatus: updatedRequirement?.status ?? requirement.status,
+      verificationStatus: updatedRequirement?.verificationStatus ?? requirement.verificationStatus,
       evidenceCount: evidenceMatches.length,
       traceabilityGapCount: traceability.coverage.gapCount,
     },
@@ -475,38 +508,64 @@ export class WorkflowEngineService {
   }
 
   executeWorkflow(input: ExecuteWorkflowInput): ExecuteWorkflowOutput {
-    const definition = WorkflowDefinitionRepositoryInMemory.byId(input.workflowId);
-    if (definition === undefined) {
-      const result: ExecuteWorkflowOutput = {
-        workflowId: input.workflowId,
-        status: "failed",
-        steps: [],
-        output: { error: "workflow_not_found" },
-      };
+    const ctx = {
+      decision_id: input.decision_id,
+      product_id: input.productId,
+      workflow_id: input.workflowId,
+      run_id: input.runId,
+    };
+
+    return executionContext.run(ctx, () => {
+      const definition = WorkflowDefinitionRepositoryInMemory.byId(input.workflowId);
+      if (definition === undefined) {
+        const result: ExecuteWorkflowOutput = {
+          workflowId: input.workflowId,
+          status: "failed",
+          steps: [],
+          output: { error: "workflow_not_found" },
+        };
+        recordRuntimeInvocation({
+          capabilityId: "workflow-engine",
+          operationId: "execute-workflow",
+          sourceRef: "WorkflowEngineService.executeWorkflow",
+          success: false,
+          productId: input.productId,
+          input,
+          result,
+          decision_id: input.decision_id ?? null,
+        });
+        return result;
+      }
+
+      let result: ExecuteWorkflowOutput;
+      if (input.workflowId === "requirement-delivery-readiness") {
+        result = executeRequirementDeliveryReadiness(input);
+      } else if (input.workflowId === "ai-investigate-requirement") {
+        result = executeAiInvestigateRequirement(input);
+      } else {
+        result = executeEvidenceRunReview(input);
+      }
       recordRuntimeInvocation({
         capabilityId: "workflow-engine",
         operationId: "execute-workflow",
         sourceRef: "WorkflowEngineService.executeWorkflow",
-        success: false,
+        success: result.status === "passed",
+        productId: input.productId,
         input,
         result,
+        decision_id: input.decision_id ?? null,
       });
       return result;
-    }
+    });
+  }
 
-    let result: ExecuteWorkflowOutput;
-    if (input.workflowId === "requirement-delivery-readiness") {
-      result = executeRequirementDeliveryReadiness(input);
-    } else if (input.workflowId === "ai-investigate-requirement") {
-      result = executeAiInvestigateRequirement(input);
-    } else {
-      result = executeEvidenceRunReview(input);
-    }
+  traceExecutionsByDecision(input: TraceExecutionsByDecisionInput): TraceExecutionsByDecisionOutput {
+    const result = traceExecutionByDecision(input.decision_id);
     recordRuntimeInvocation({
       capabilityId: "workflow-engine",
-      operationId: "execute-workflow",
-      sourceRef: "WorkflowEngineService.executeWorkflow",
-      success: result.status === "passed",
+      operationId: "trace-executions-by-decision",
+      sourceRef: "WorkflowEngineService.traceExecutionsByDecision",
+      success: true,
       input,
       result,
     });

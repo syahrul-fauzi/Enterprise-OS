@@ -7,11 +7,11 @@ ir_format_version: "1.0.0"
 ir_abbreviation: DIR
 ssot_note: DECISION_IR_IS_SECOND_STABLE_IR_OF_KNOWLEDGE_COMPILER_PIPELINE._PRODUCED_BY_PASSES_6_AND_7._OUTPUT_OF_PLANNER_IS_DECISION_IR_NOT_EXECUTION_PLAN._EXECUTION_PLAN_IS_COMPILED_FROM_DECISION_IR_BY_PLAN_COMPILER_PASS_8._THIS_DECOUPLES_PLANNING_LOGIC_FROM_RUNTIME_FORMAT_AS_REQUIRED_BY_USER_POINT_5.
 governance_ref:
-  ia_13_stable_ir: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_13_stable_intermediate_representations
-  ia_14_pure_passes: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
-  ia_12_explainability: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_12_explainability_and_justification
-  knowledge_ir_contract: /root/Enterprise OS/workspace/contracts/KNOWLEDGE-IR.contract.yaml
-  pipeline_contract: /root/Enterprise OS/enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
+  ia_13_stable_ir: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_13_stable_intermediate_representations
+  ia_14_pure_passes: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
+  ia_12_explainability: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_12_explainability_and_justification
+  knowledge_ir_contract: /root/Enterprise-OS/workspace/contracts/KNOWLEDGE-IR.contract.yaml
+  pipeline_contract: /root/Enterprise-OS/enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
 derived_from:
   - Decision_Model_Changed_To_Decision_IR_User_Point_4
   - Planner_Produces_DIR_Not_Execution_Plan_User_Point_5

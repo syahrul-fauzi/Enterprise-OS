@@ -4,8 +4,8 @@ kind: CONTRACT
 contract_kind: EXECUTION_REPRODUCIBILITY_CONTRACT
 ssot_note: KNOWLEDGE_SNAPSHOT_IS_SINGLE_SOURCE_OF_TRUTH_FOR_REPRODUCIBILITY._NO_VERSION_PER_ARTIFACT_RECORDED_IN_EXECUTION_CONTEXT._ONLY_SNAPSHOT_ID_RECORDED._ALL_8_DIGESTS_ARE_IMMUTABLE_AFTER_PLAN_BEGINS.
 governance_ref:
-  invariant_architecture_ia10: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_10_immutable_knowledge_snapshot
-  semantic_kernel_planning_semantics: /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#planning_semantics
+  invariant_architecture_ia10: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_10_immutable_knowledge_snapshot
+  semantic_kernel_planning_semantics: /root/Enterprise-OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#planning_semantics
 derived_from:
   - Knowledge_Snapshot_Is_More_Fundamental_Than_Registry_Version_Paradigm_User_20260730
   - IA-10_Immutable_Knowledge_Snapshot_formal_statement
@@ -39,9 +39,9 @@ content_tuple_8_digests:
   tuple:
     - field: constitution_digest
       sources:
-        - /root/Enterprise OS/enterprise/constitution/**
-        - /root/Enterprise OS/governance/BASELINE_LOCK.yaml
-        - /root/Enterprise OS/governance/AXIOMS.md
+        - /root/Enterprise-OS/enterprise/constitution/**
+        - /root/Enterprise-OS/governance/BASELINE_LOCK.yaml
+        - /root/Enterprise-OS/governance/AXIOMS.md
       digest_method:
         - Recursive file walk, lex-ordered by absolute path
         - For each file: canonical content read (no attribute mutation)
@@ -50,7 +50,7 @@ content_tuple_8_digests:
       ia_10_scope: Immutable post-planning
     - field: contract_digest
       sources:
-        - /root/Enterprise OS/workspace/contracts/**
+        - /root/Enterprise-OS/workspace/contracts/**
       digest_method:
         - Recursive file walk, lex-ordered
         - All .contract.yaml + .contract.md + .yaml contracts
@@ -58,19 +58,19 @@ content_tuple_8_digests:
       ia_10_scope: Immutable post-planning
     - field: ontology_digest
       sources:
-        - /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#relationship_definitions
-        - /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#ontology_node_kinds
-        - /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#declared_vs_inferred
-        - /root/Enterprise OS/enterprise/constitution/ontology.md
-        - /root/Enterprise OS/enterprise/constitution/vocabulary.md
+        - /root/Enterprise-OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#relationship_definitions
+        - /root/Enterprise-OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#ontology_node_kinds
+        - /root/Enterprise-OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#declared_vs_inferred
+        - /root/Enterprise-OS/enterprise/constitution/ontology.md
+        - /root/Enterprise-OS/enterprise/constitution/vocabulary.md
       digest_method:
         - Files sorted by path. Content concat. SHA-256.
       ia_10_scope: Immutable post-planning
     - field: registry_digest
       sources:
-        - /root/Enterprise OS/workspace/packages/core/transformation-registry/src/registry/**/manifest.yaml
-        - /root/Enterprise OS/workspace/packages/core/predicate-registry/src/registry/**/manifest.yaml
-        - /root/Enterprise OS/workspace/packages/core/transformation-registry/src/registry/registry-manifest.yaml
+        - /root/Enterprise-OS/workspace/packages/core/transformation-registry/src/registry/**/manifest.yaml
+        - /root/Enterprise-OS/workspace/packages/core/predicate-registry/src/registry/**/manifest.yaml
+        - /root/Enterprise-OS/workspace/packages/core/transformation-registry/src/registry/registry-manifest.yaml
       digest_method:
         - ALL manifest.yaml files loaded
         - Lex-sorted by absolute path
@@ -78,30 +78,30 @@ content_tuple_8_digests:
       ia_10_scope: Immutable post-planning
     - field: graph_digest
       sources:
-        - /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml#graph
+        - /root/Enterprise-OS/enterprise/execution/transformation-catalog.yaml#graph
       digest_method:
         - Serialize graph section to canonical JSON (sorted keys, no comments)
         - SHA-256 of serialized bytes
       ia_10_scope: Immutable post-planning
     - field: policy_digest
       sources:
-        - /root/Enterprise OS/governance/** (all yaml files)
-        - /root/Enterprise OS/governance/** (all md files that are policies)
+        - /root/Enterprise-OS/governance/** (all yaml files)
+        - /root/Enterprise-OS/governance/** (all md files that are policies)
       digest_method:
         - Recursive walk, all regular files, lex-sorted by path
         - Content concat, SHA-256
       ia_10_scope: Immutable post-planning
     - field: schema_digest
       sources:
-        - /root/Enterprise OS/enterprise/schema/**
-        - /root/Enterprise OS/workspace/contracts/**/*.schema.yaml
+        - /root/Enterprise-OS/enterprise/schema/**
+        - /root/Enterprise-OS/workspace/contracts/**/*.schema.yaml
       digest_method:
         - Files sorted. Content concat. SHA-256.
       ia_10_scope: Immutable post-planning
     - field: compatibility_digest
       sources:
-        - /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#compatibility_semantics
-        - /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#relationship_definitions.since_until
+        - /root/Enterprise-OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#compatibility_semantics
+        - /root/Enterprise-OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#relationship_definitions.since_until
       digest_method:
         - Canonical YAML → JSON of those 2 sections. Sorted keys. SHA-256 bytes.
       ia_10_scope: Immutable post-planning
@@ -148,7 +148,7 @@ execution_context_minimal_record:
     - Build-time variables not in snapshot tuple
 
 snapshot_archive:
-  storage_location_prefix: /root/Enterprise OS/build/knowledge-snapshots/
+  storage_location_prefix: /root/Enterprise-OS/build/knowledge-snapshots/
   archive_format:
     path_template: build/knowledge-snapshots/KS-YYYY.MM.DD.NNN/
     contents:

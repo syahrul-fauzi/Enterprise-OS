@@ -20,7 +20,7 @@ contract:
       timestamp: ISO_8601_UTC
       signature: UNSIGNED | <verifying_authority_sig>
       verdict: PASS | FAIL | INCONCLUSIVE
-  output_location: /root/Enterprise OS/build/evidence/repository-proof/
+  output_location: /root/Enterprise-OS/build/evidence/repository-proof/
   storage_rule:
     append_only: true
     never_mutate_existing: true

@@ -81,10 +81,10 @@ consequences:
     - freeze too long → mitigated by strict thaw_criteria (single transform evidence only)
 
 references:
-  - /root/Enterprise OS/CONSTITUTION.md
-  - /root/Enterprise OS/governance/BASELINE_LOCK.yaml (ssot_stack layers 1..5)
-  - /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
-  - /root/Enterprise OS/governance/sprint0-definition-of-done.yaml
-  - /root/Enterprise OS/governance/sprint0-exit-predicates.yaml v2
-  - /root/Enterprise OS/workspace/contracts/repository-proof-output.contract.yaml
-  - /root/Enterprise OS/workspace/contracts/repository-state.contract.yaml
+  - /root/Enterprise-OS/CONSTITUTION.md
+  - /root/Enterprise-OS/governance/BASELINE_LOCK.yaml (ssot_stack layers 1..5)
+  - /root/Enterprise-OS/governance/GOVERNANCE_STATE.yaml
+  - /root/Enterprise-OS/governance/sprint0-definition-of-done.yaml
+  - /root/Enterprise-OS/governance/sprint0-exit-predicates.yaml v2
+  - /root/Enterprise-OS/workspace/contracts/repository-proof-output.contract.yaml
+  - /root/Enterprise-OS/workspace/contracts/repository-state.contract.yaml

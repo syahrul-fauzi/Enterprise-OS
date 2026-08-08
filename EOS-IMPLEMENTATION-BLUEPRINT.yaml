@@ -504,7 +504,7 @@ evidence_layer:
 implementation_readiness_self_check_structure_only_execution_claim_content_can_be_wrong:
   check_1_single_source_of_truth_single_file:
     status: "EXECUTION CLAIM STRUCTURAL: Dokumen ini = 1 file YAML tunggal di root repository. Semua reference (pointer EVIDENCE.md, Measurement Report SHA, dst) di-link dari sini. TETAPI: Isi content = Design Intention murni."
-    evidence: "File location: /root/Enterprise OS/EOS-IMPLEMENTATION-BLUEPRINT.yaml (sha256sum dapat dijalankan auditor untuk integrity)"
+    evidence: "File location: /root/Enterprise-OS/EOS-IMPLEMENTATION-BLUEPRINT.yaml (sha256sum dapat dijalankan auditor untuk integrity)"
   check_2_no_contradiction_cross_domain:
     status: "EXECUTION CLAIM: Manual review sementara ini TIDAK menemukan kontradiksi eksplisit antar domain dependency (A shared identity digunakan B dan C; B dan C TIDAK saling hard depend; C→B optional). TETAPI: Ini membutuhkan review user stakeholder (terutama dependency C→B soft import brief) untuk konfirmasi bisnis model tidak kontradiksi."
   check_3_deliverable_linked_to_milestone:

@@ -1,5 +1,35 @@
 id: agent-orchestration
 name: Agent Orchestration
 version: 0.1.0
+owner: ai-orchestration-domain
+status: ACTIVE
+introduced: "2026-07-20"
+provides:
+  - agent-scheduling
+  - workflow-orchestration
+  - task-execution
+purpose: Orchestrate autonomous agents and complex cross-capability workflows across the EOS ecosystem.
+manifest_version: 1.0.0
+exports:
+  - AgentOrchestrationProvider
+  - OrchestrationPlanRepository
 implementation:
   entry: implementation/service.ts
+depends_on:
+  - workflow-engine
+  - core-runtime
+capability:
+  name: agent-orchestration
+  owner: ai-orchestration-domain
+  purpose: Orchestrate autonomous agents and complex cross-capability workflows across the EOS ecosystem.
+  consumers:
+    - lawyershub
+    - requirement-management
+  maturity:
+    level: core
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - cross_product_uniformity
+stability: active

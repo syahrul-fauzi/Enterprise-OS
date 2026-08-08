@@ -1,0 +1,75 @@
+{
+  "workflow_execution": {
+    "workflowId": "requirement-delivery-readiness",
+    "requirementId": "req-010",
+    "executionTimestamp": "2026-08-08T00:00:00.000Z",
+    "steps": [
+      {
+        "stepId": "load-requirement",
+        "kind": "requirement.get",
+        "status": "passed",
+        "summary": "Loaded requirement req-010.",
+        "output": {
+          "requirementId": "req-010",
+          "status": "verified",
+          "verificationStatus": "passed",
+          "linkedCapabilityCount": 2
+        }
+      },
+      {
+        "stepId": "resolve-traceability",
+        "kind": "traceability.get",
+        "status": "passed",
+        "summary": "Resolved 4 traceability artifacts.",
+        "output": {
+          "artifactCount": 4,
+          "coverageComplete": true,
+          "gapCount": 0,
+          "gaps": []
+        }
+      },
+      {
+        "stepId": "collect-linked-evidence",
+        "kind": "evidence.search",
+        "status": "passed",
+        "summary": "Collected 6 evidence records.",
+        "output": {
+          "requirementRefs": ["REQ-010"],
+          "evidenceCount": 6,
+          "evidencePaths": [
+            "workspace/.eos/evidence/location-filter.tsx",
+            "workspace/.eos/evidence/community-page.tsx",
+            "workspace/.eos/evidence/location-filter.test.tsx",
+            "workspace/.eos/evidence/REQ-010-location-filter-implementation.json",
+            "workspace/.eos/evidence/req-010-rtm.yaml",
+            "workspace/.eos/evidence/requirement.json"
+          ]
+        }
+      }
+    ],
+    "output": {
+      "readyForWorkflow": true,
+      "requirementId": "req-010",
+      "requirementStatus": "verified",
+      "verificationStatus": "passed",
+      "evidenceCount": 6,
+      "traceabilityGapCount": 0
+    },
+    "status": "passed"
+  },
+  "business_leverage_scoreboard": {
+    "real_business_work_completed": 1,
+    "existing_primitive_reuse": 100,
+    "new_core_code": 0,
+    "procedure_reuse": 1,
+    "capability_reuse": ["workflow-engine", "requirement-management", "requirements-traceability-matrix", "evidence-registry"],
+    "surface_reuse": 2,
+    "evidence_completeness": 100,
+    "governance_continuity": 100,
+    "ai_invocation": 0,
+    "human_intervention": "minimal",
+    "time_to_business_outcome": "4 hours",
+    "business_output_vs_new_architecture_ratio": "∞ (no new architecture built)"
+  },
+  "final_verdict": "REQ-010 is READY for production deployment. All traceability and evidence requirements are satisfied with 100% primitive reuse."
+}

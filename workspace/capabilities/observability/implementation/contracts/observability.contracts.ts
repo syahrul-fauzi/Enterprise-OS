@@ -1,3 +1,13 @@
+export interface RuntimeInvocation {
+  readonly capability_id: string;
+  readonly operation_id: string;
+  readonly sourceRef: string;
+  readonly success: boolean;
+  readonly input: Readonly<Record<string, unknown>>;
+  readonly result: Readonly<Record<string, unknown>>;
+  readonly timestamp?: string;
+}
+
 export interface ObservableLogEntry {
   readonly id: string;
   readonly level: "info" | "warn" | "error";

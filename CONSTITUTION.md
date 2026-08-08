@@ -3,7 +3,7 @@
 Change Frequency Level: **Level 0 (Paling Stabil)**
 Expected Change Rate: 1–2 changes per YEAR.
 Change Mechanism: HANYA dapat diubah melalui Keputusan Arsitektural Besar (Strategic Architectural Decision) dengan Evidence SETARA bobot PASAL 1.
-Cross-Reference: [STATUS.md](file:///root/Enterprise%20OS/STATUS.md) sebagai Control Surface. · [ARCHITECTURE.md](file:///root/Enterprise%20OS/ARCHITECTURE.md) · [EVIDENCE.md](file:///root/Enterprise%20OS/EVIDENCE.md) · [ROADMAP.md](file:///root/Enterprise%20OS/ROADMAP.md) (Rule of Five Dokumen Inti #1)
+Cross-Reference: [STATUS.md](file:///root/Enterprise-OS/STATUS.md) sebagai Control Surface. · [ARCHITECTURE.md](file:///root/Enterprise-OS/ARCHITECTURE.md) · [EVIDENCE.md](file:///root/Enterprise-OS/EVIDENCE.md) · [ROADMAP.md](file:///root/Enterprise-OS/ROADMAP.md) (Rule of Five Dokumen Inti #1)
 
 ---
 

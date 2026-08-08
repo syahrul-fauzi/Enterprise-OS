@@ -8,7 +8,7 @@ const DEFINITIONS: readonly WorkflowDefinition[] = Object.freeze([
     id: "requirement-delivery-readiness",
     name: "Requirement Delivery Readiness",
     description:
-      "Loads a requirement, resolves its RTM row, and gathers linked evidence to decide delivery readiness.",
+      "Loads a requirement, resolves its RTM row, gathers linked evidence, closes traceability loop by verifying requirements if ready.",
     requiredInputs: ["requirementId"],
     steps: [
       {
@@ -25,6 +25,11 @@ const DEFINITIONS: readonly WorkflowDefinition[] = Object.freeze([
         id: "collect-linked-evidence",
         kind: "evidence.search",
         description: "Search Evidence Registry for external requirement evidence linked by RTM.",
+      },
+      {
+        id: "close-traceability-loop",
+        kind: "requirement.verify",
+        description: "Automatically verify requirement if traceability is complete and evidence is sufficient to close the traceability loop.",
       },
     ],
   },

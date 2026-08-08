@@ -44,6 +44,8 @@ export interface SearchEvidenceRegistryInput {
   readonly tag?: string;
   readonly limit?: number;
   readonly offset?: number;
+  readonly decision_id?: string;
+  readonly productId?: string;
 }
 
 export interface SearchEvidenceRegistrySummary {

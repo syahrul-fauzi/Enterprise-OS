@@ -5,10 +5,10 @@ layer: META_ARCHITECTURE
 abbreviation: ASP
 ssot_note: ARCHITECTURAL_STABILITY_PRINCIPLES_ARE_THE_META_LAYER_ABOVE_INVARIANT_ARCHITECTURE_BUT_STRICTLY_BELOW_CONSTITUTIONAL_VISION._VISION_(CONSTITUTIONAL-VISION.yaml)_IS_THE_HIGHEST_IDENTITY_OF_EOS._IA_GOVERNS_WHAT_THE_SYSTEM_IS._ASP_GOVERNS_HOW_THE_ARCHITECTURE_ITSELF_MAY_EVOLVE._ASP_MUTATION_REQUIRES_ARCHITECTURE_BOARD_UNANIMOUS_VOTE_PLUS_ADR_AND_MUST_NOT_CONTRADICT_ANY_VISION_STATEMENT._THIS_FILE_HAS_SECOND_HIGHEST_STABILITY_RATING_IN_EOS._IT_DEFINES_EVOLUTION_RULES_OF_THE_RULES.
 governance_ref:
-  vision: /root/Enterprise OS/governance/CONSTITUTIONAL-VISION.yaml
-  governance_state: /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
-  baseline_lock: /root/Enterprise OS/governance/BASELINE_LOCK.yaml
-  invariant_architecture: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
+  vision: /root/Enterprise-OS/governance/CONSTITUTIONAL-VISION.yaml
+  governance_state: /root/Enterprise-OS/governance/GOVERNANCE_STATE.yaml
+  baseline_lock: /root/Enterprise-OS/governance/BASELINE_LOCK.yaml
+  invariant_architecture: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml
 derived_from:
   - User_Point_3_ASP_Meta_Principle_Above_IA
   - User_Point_ASP01_Freeze_Principles_Version_Specs_Replace_Implementations
@@ -204,10 +204,10 @@ asp_change_cost_matrix:
     compatibility_policy: BEHAVIORAL — no compat guarantee between implementations; only conformance test result matters
 
 related_artifacts_to_read:
-  - /root/Enterprise OS/governance/CONSTITUTIONAL-VISION.yaml
-  - /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml
-  - /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
-  - /root/Enterprise OS/governance/CONFORMANCE-MODEL.yaml
-  - /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml
-  - /root/Enterprise OS/workspace/contracts/CONSTITUTION-IR.contract.yaml
-  - /root/Enterprise OS/enterprise/specifications/CONSTITUTIONAL-COMPILER.spec.yaml
+  - /root/Enterprise-OS/governance/CONSTITUTIONAL-VISION.yaml
+  - /root/Enterprise-OS/governance/EVOLUTION-DOMAINS.yaml
+  - /root/Enterprise-OS/governance/PROTOCOL-GOVERNANCE.yaml
+  - /root/Enterprise-OS/governance/CONFORMANCE-MODEL.yaml
+  - /root/Enterprise-OS/governance/CONFORMANCE-PROPERTIES.yaml
+  - /root/Enterprise-OS/workspace/contracts/CONSTITUTION-IR.contract.yaml
+  - /root/Enterprise-OS/enterprise/specifications/CONSTITUTIONAL-COMPILER.spec.yaml

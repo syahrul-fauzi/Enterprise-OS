@@ -1,5 +1,40 @@
 id: evidence-registry
 name: Evidence Registry
 version: 0.1.0
+owner: governance-domain
+status: ACTIVE
+introduced: "2026-07-18"
+provides:
+  - evidence-storage
+  - evidence-retrieval
+  - evidence-aggregation
+purpose: Central registry for storing, indexing, and retrieving all governance and runtime evidence across EOS.
+manifest_version: 1.0.0
+exports:
+  - EvidenceRegistryProvider
+  - EvidenceRepository
+  - EvidenceQueries
 implementation:
   entry: implementation/service.ts
+depends_on:
+  - governance-evidence
+  - core-runtime
+  - trust-framework
+capability:
+  name: evidence-registry
+  owner: governance-domain
+  purpose: Central registry for storing, indexing, and retrieving all governance and runtime evidence across EOS.
+  consumers:
+    - governance-evidence
+    - requirements-traceability-matrix
+    - observability
+    - ilc
+  maturity:
+    level: core
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - cross_product_uniformity
+    - all_products_adopted
+stability: stable

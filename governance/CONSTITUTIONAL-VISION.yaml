@@ -160,9 +160,9 @@ identity_through_technology_change:
 
 related_artifacts_ordered_by_stability:
   # MOST STABLE (TOP) → LEAST STABLE (BOTTOM), as per new layer stack requested by user.
-  - /root/Enterprise OS/governance/CONSTITUTIONAL-VISION.yaml
-  - /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml (ASP)
-  - /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml (IA)
-  - /root/Enterprise OS/enterprise/specifications/*
-  - /root/Enterprise OS/workspace/contracts/* (Protocol contracts)
-  - /root/Enterprise OS/workspace/packages/**/*.ts Implementation
+  - /root/Enterprise-OS/governance/CONSTITUTIONAL-VISION.yaml
+  - /root/Enterprise-OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml (ASP)
+  - /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml (IA)
+  - /root/Enterprise-OS/enterprise/specifications/*
+  - /root/Enterprise-OS/workspace/contracts/* (Protocol contracts)
+  - /root/Enterprise-OS/workspace/packages/**/*.ts Implementation

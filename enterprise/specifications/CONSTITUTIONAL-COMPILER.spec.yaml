@@ -6,13 +6,13 @@ abbreviation: CONST-XFORM
 evolution_domain: DOMAIN-B-SPECIFICATION
 ssot_note: CONSTITUTIONAL_TRANSFORMATION_ENGINE_IS_THE_PURE_TRANSFORMATION_PIPELINE_THAT_COMPILES_DECLARATIVE_CONSTITUTION_ARTIFACTS_INTO_MACHINE-READABLE_VERIFIABLE_RULES._OPERATIONALIZATION_OF_MP-01_COMPUTABLE_GOVERNANCE._IT_CONSUMES_RAW_CONSTITUTION_YAMLS_AND_EMITS_CONSTITUTION_IR_(STABLE_CANONICAL_REPRESENTATION_OF_GOVERNANCE)_PLUS_GENERATED_ACL_RULES_PLUS_COMPATIBILITY_MATRICES_PLUS_PROTOCOL_MIGRATION_RULES._EVERY_TRANSFORMATION_IS_FUNCTIONALLY_PURE_(IA-14)_AND_OUTPUT_IS_DETERMINISTIC_(IA-11).
 governance_ref:
-  vision: /root/Enterprise OS/governance/CONSTITUTIONAL-VISION.yaml
-  mp01: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#MP-01
-  ia13_stable_canonical_representations: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#IA-13-STABLE-CANONICAL-REPRESENTATIONS
-  ia14_pure_transformations: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
-  ia17_authority_preservation: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#IA-17-AUTHORITY-PRESERVATION
-  tf1_terminology_freeze: /root/Enterprise OS/governance/TERMINOLOGY-FREEZE-TF1.yaml
-  constitution_ir_contract: /root/Enterprise OS/workspace/contracts/CONSTITUTION-IR.contract.yaml
+  vision: /root/Enterprise-OS/governance/CONSTITUTIONAL-VISION.yaml
+  mp01: /root/Enterprise-OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#MP-01
+  ia13_stable_canonical_representations: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#IA-13-STABLE-CANONICAL-REPRESENTATIONS
+  ia14_pure_transformations: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
+  ia17_authority_preservation: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#IA-17-AUTHORITY-PRESERVATION
+  tf1_terminology_freeze: /root/Enterprise-OS/governance/TERMINOLOGY-FREEZE-TF1.yaml
+  constitution_ir_contract: /root/Enterprise-OS/workspace/contracts/CONSTITUTION-IR.contract.yaml
 derived_from:
   - User_Point_Constitutional_Compiler_Pipeline
   - User_Point_Governance_Rules_Generated_Not_Manual
@@ -43,31 +43,31 @@ input_manifest_required:
   section: constitution_compiler_inputs
   mandatory_ordered_list:
     - id: INPUT-01
-      path: /root/Enterprise OS/governance/CONSTITUTIONAL-VISION.yaml
+      path: /root/Enterprise-OS/governance/CONSTITUTIONAL-VISION.yaml
       kind: FOUNDATIONAL_VISION
       change_propagation: Input change → new EPOCH required (not version bump)
     - id: INPUT-02
-      path: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
+      path: /root/Enterprise-OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
       kind: META_PRINCIPLES_ASP
       change_propagation: ASP change → ADR + unanimous board → EPOCH bump → full CONST-COMP recompile
     - id: INPUT-03
-      path: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
+      path: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml
       kind: ARCHITECTURAL_INVARIANTS_IA
       change_propagation: IA change → ADR + 2/3 board → major CONSTIT-IR format version if breaks downstream consumer
     - id: INPUT-04
-      path: /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml
+      path: /root/Enterprise-OS/governance/EVOLUTION-DOMAINS.yaml
       kind: DOMAIN_CLASSIFICATION
       change_propagation: Domain change → SEMVER major for CONSTIT-IR (type system change)
     - id: INPUT-05
-      path: /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
+      path: /root/Enterprise-OS/governance/PROTOCOL-GOVERNANCE.yaml
       kind: PROTOCOL_GOVERNANCE
       change_propagation: Proto-gov change → SEMVER minor for CONSTIT-IR; triggers Protocol Compilation sub-pipeline
     - id: INPUT-06
-      path: /root/Enterprise OS/governance/CONFORMANCE-MODEL.yaml
+      path: /root/Enterprise-OS/governance/CONFORMANCE-MODEL.yaml
       kind: CONFORMANCE_LEVEL_MODEL
       change_propagation: Conf-model change → SEMVER minor for CONSTIT-IR
     - id: INPUT-07
-      path: /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml
+      path: /root/Enterprise-OS/governance/CONFORMANCE-PROPERTIES.yaml
       kind: CONFORMANCE_PROPERTY_MODEL
       change_propagation: Conf-prop change → new property = SEMVER minor; property status semantics = SEMVER major
   input_merkle_construction:
@@ -233,7 +233,7 @@ five_compiler_passes:
         target_hash: TBD
 
 output_constit_ir_structure_anchor:
-  contract_ref: /root/Enterprise OS/workspace/contracts/CONSTITUTION-IR.contract.yaml
+  contract_ref: /root/Enterprise-OS/workspace/contracts/CONSTITUTION-IR.contract.yaml
   emit_path: build/governance/constit-ir/CONSTIT-IR-<version>-<merkle8>.yaml
   emit_side_artifacts:
     - build/governance/generated-arch-rules/ARCH-*.generated.yaml  (from Pass 4)
@@ -268,11 +268,11 @@ enforcement_and_downstream_consumers:
         - CONSTIT-IR authority_graph_dag → direction checks
         - CONSTIT-IR boundary_rules → structural scans
         - build/governance/generated-arch-rules/ARCH-*.generated.yaml → concrete regex/parameter scans
-      pipeline_ref: /root/Enterprise OS/enterprise/specifications/CONSTITUTIONAL-VERIFIER.pipeline.yaml
+      pipeline_ref: /root/Enterprise-OS/enterprise/specifications/CONSTITUTIONAL-VERIFIER.pipeline.yaml
     - consumer: Protocol Compiler
       consumes:
         - CONSTIT-IR compatibility_policies + generated-compat/*.yaml
-      pipeline_ref: /root/Enterprise OS/enterprise/specifications/PROTOCOL-COMPILATION.spec.yaml
+      pipeline_ref: /root/Enterprise-OS/enterprise/specifications/PROTOCOL-COMPILATION.spec.yaml
     - consumer: Conformance Verifier
       consumes:
         - CONFORMANCE-PROPERTIES.yaml (six properties)

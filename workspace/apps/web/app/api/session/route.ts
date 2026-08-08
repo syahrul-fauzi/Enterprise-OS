@@ -13,9 +13,18 @@ import {
 } from "../../../lib/product-context";
 
 export async function GET(request: Request) {
-  const session = readWorkspaceSessionFromRequest(request) ?? createDefaultWorkspaceSession();
+  let session = readWorkspaceSessionFromRequest(request) ?? createDefaultWorkspaceSession();
   const trace = createWorkspaceRequestTrace(request, "workspace.session.read");
   const productContext = readProductContextFromRequest(request);
+  
+  // Update session productId dengan productId dari request context jika ada
+  if (productContext.productId && session.productId !== productContext.productId) {
+    session = {
+      ...session,
+      productId: productContext.productId
+    };
+  }
+  
   const headers = applyProductContextHeaders({
     headers: createWorkspaceContextHeaders({ session, trace }),
     productContext,

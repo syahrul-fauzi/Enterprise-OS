@@ -51,6 +51,6 @@ LawyersHub Evidence + EXP-001 Analysis = EOS Learning Dataset
 ---
 
 ## Links
-- [EOS Research Protocol](/root/Enterprise%20OS/experiments/README.md)
-- [EOS STATUS.md](/root/Enterprise%20OS/STATUS.md)
-- [LawyersHub Execution Contract](/root/Enterprise%20OS/workspace/products/lawyershub/execution-contract.yaml)
+- [EOS Research Protocol](/root/Enterprise-OS/experiments/README.md)
+- [EOS STATUS.md](/root/Enterprise-OS/STATUS.md)
+- [LawyersHub Execution Contract](/root/Enterprise-OS/workspace/products/lawyershub/execution-contract.yaml)

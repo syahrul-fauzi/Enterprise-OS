@@ -1,4 +1,5 @@
-import type { ExecutionId, CanonicalSubjectKey } from "./contracts";
+export type ExecutionId = string & { readonly __brand: "ExecutionId" };
+export type CanonicalSubjectKey = string & { readonly __brand: "CanonicalSubjectKey" };
 
 export type AttributionVersion = "eos-attribution-v1" & { readonly __brand: "AttributionVersion" };
 
@@ -14,6 +15,27 @@ export interface EvaluationAttributionRecordV1 {
   readonly evaluatedAt: string;
   readonly inputDigest: string;
   readonly resultDigest: string;
+}
+
+export interface ListAttributionRecordsInput {
+  readonly procedure: string;
+  readonly canonicalSubject: string;
+}
+
+export interface GetLatestAttributionRecordInput {
+  readonly procedure: string;
+  readonly canonicalSubject: string;
+}
+
+export interface VerifyExecutionIdInvariantInput {
+  readonly executionId: string;
+  readonly procedure: string;
+  readonly canonicalSubject: string;
+}
+
+export interface VerifyExecutionIdInvariantOutput {
+  readonly valid: boolean;
+  readonly reason?: string;
 }
 
 export function toProcedureName(name: string): ProcedureName {

@@ -16,12 +16,14 @@
     "staging:down": "bash ./scripts/staging-down.sh",
     "staging:check": "bash ./scripts/staging-check.sh",
     "staging:convergence": "node ./scripts/public-convergence-check.mjs",
+    "staging:gate6-proof": "node --import tsx ./scripts/staging-gate6-proof.ts",
     "verify:genesis-baseline": "pnpm eos gate-c verify-genesis-baseline",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@next/eslint-plugin-next": "^16.2.0",
+    "@types/node": "^26.1.2",
     "@types/node-fetch": "^2.6.13",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.1",

@@ -1,12 +1,22 @@
 id: governance-evidence
 name: Governance Evidence
 version: 0.1.0
+owner: governance-domain
+status: ACTIVE
+introduced: "2026-07-15"
+provides:
+  - governed-delivery
+  - decision-recording
+  - evidence-traceability
+purpose: Provide canonical governance seam for all product delivery approvals, evidence collection, and decision tracking.
 manifest_version: 1.0.0
 exports:
   - GovernanceEvidenceProvider
   - GovernanceEvidenceArtifactCatalog
   - GovernanceEvidenceArtifactKind
   - GovernanceSession
+  - DeliveryDecisionGatewayService
+  - GovernanceDecisionRecord
 depends_on:
   - trust-framework
   - core-runtime
@@ -16,9 +26,25 @@ allowed_dependencies:
 forbidden_dependencies:
   - api-platform
   - governance-read-model
-consumed_by:
-  - api-platform
-  - governance-read-model
+capability:
+  name: governance-evidence
+  owner: governance-domain
+  purpose: Provide canonical governance seam for all product delivery approvals, evidence collection, and decision tracking.
+  consumers:
+    - lawyershub
+    - ilc
+    - services-id
+    - api-platform
+    - governance-read-model
+  maturity:
+    level: core
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - security_validation
+    - multiple_consumers
+    - cross_domain_adoption
 stability: stable
 contracts:
   requires:

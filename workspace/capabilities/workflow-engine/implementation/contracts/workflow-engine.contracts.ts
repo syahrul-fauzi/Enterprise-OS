@@ -1,3 +1,5 @@
+import { traceExecutionByDecision } from "@repo/core-runtime";
+
 export type WorkflowExecutionStatus = "passed" | "failed" | "skipped";
 export type WorkflowStepStatus = WorkflowExecutionStatus | "requires_human";
 
@@ -6,6 +8,7 @@ export type WorkflowStepKind =
   | "requirement.get"
   | "requirement.assess"
   | "requirement.update"
+  | "requirement.verify"
   | "traceability.get"
   | "traceability.assess"
   | "evidence.search"
@@ -43,6 +46,8 @@ export interface WorkflowExecutionInput {
   readonly runId?: string;
   readonly releaseId?: string;
   readonly limit?: number;
+  readonly decision_id?: string;
+  readonly productId?: string;
 }
 
 export interface WorkflowStepResult {
@@ -69,3 +74,9 @@ export type GetWorkflowDefinitionOutput = WorkflowDefinition | undefined;
 export interface ExecuteWorkflowInput extends WorkflowExecutionInput {}
 
 export type ExecuteWorkflowOutput = WorkflowExecutionResult;
+
+export interface TraceExecutionsByDecisionInput {
+  readonly decision_id: string;
+}
+
+export type TraceExecutionsByDecisionOutput = ReturnType<typeof traceExecutionByDecision>;

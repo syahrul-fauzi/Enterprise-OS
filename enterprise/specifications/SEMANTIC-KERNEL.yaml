@@ -3,9 +3,9 @@ status: FROZEN
 kind: CONSTITUTIONAL_SEMANTIC_CONTRACT
 ssot_note: THIS_YAML_IS_SINGLE_SOURCE_OF_TRUTH_FOR_EOS_SEMANTICS._REGISTRY_AND_RUNTIME_MUST_NOT_REDEFINE_SEMANTICS._REGISTRY_ONLY_DECLARES_EDGE_INSTANCES._SEMANTICS_OF_EACH_EDGE_KIND_IS_DEFINED_HERE_AND_ONLY_HERE.
 governance_ref:
-  constitution_lock: /root/Enterprise OS/governance/BASELINE_LOCK.yaml
-  invariant_architecture: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
-  axioms: /root/Enterprise OS/governance/AXIOMS.md
+  constitution_lock: /root/Enterprise-OS/governance/BASELINE_LOCK.yaml
+  invariant_architecture: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml
+  axioms: /root/Enterprise-OS/governance/AXIOMS.md
 derived_from:
   - Knowledge_Defined_Semantics_Governed_Execution_Paradigm_20260730
   - Semantic_Kernel_Is_Abstraction_That_Was_Missing
@@ -42,9 +42,9 @@ architecture_layers_6_tier:
         - Policies
         - Requirements
       representative_paths:
-        - /root/Enterprise OS/enterprise/constitution/
-        - /root/Enterprise OS/workspace/contracts/
-        - /root/Enterprise OS/enterprise/schema/
+        - /root/Enterprise-OS/enterprise/constitution/
+        - /root/Enterprise-OS/workspace/contracts/
+        - /root/Enterprise-OS/enterprise/schema/
     - tier: 2
       name: SEMANTIC_KERNEL
       answers: Apa arti pengetahuan tersebut?
@@ -58,9 +58,9 @@ architecture_layers_6_tier:
         - Planning Semantics
         - Evidence Semantics
       representative_paths:
-        - /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml (THIS FILE ALIASED)
-        - /root/Enterprise OS/enterprise/constitution/ontology.md
-        - /root/Enterprise OS/enterprise/constitution/vocabulary.md
+        - /root/Enterprise-OS/enterprise/specifications/SEMANTIC-KERNEL.yaml (THIS FILE ALIASED)
+        - /root/Enterprise-OS/enterprise/constitution/ontology.md
+        - /root/Enterprise-OS/enterprise/constitution/vocabulary.md
       stability_rating: EXTREME — changes require ADR + major version
     - tier: 3
       name: REGISTRY_LAYER
@@ -75,8 +75,8 @@ architecture_layers_6_tier:
       ontological_rule: Registry = PASSIVE declarative data.
       semantic_rule: Registry only DECLARES edge instances via edges[]. Semantics of edge kind = DEFINED HERE IN SEMANTIC KERNEL.
       representative_paths:
-        - /root/Enterprise OS/workspace/packages/core/transformation-registry/src/registry/
-        - /root/Enterprise OS/workspace/packages/core/predicate-registry/src/registry/
+        - /root/Enterprise-OS/workspace/packages/core/transformation-registry/src/registry/
+        - /root/Enterprise-OS/workspace/packages/core/predicate-registry/src/registry/
     - tier: 4
       name: PLANNING_LAYER
       answers: Bagaimana pengetahuan yang tersedia diatur menjadi eksekusi?
@@ -92,8 +92,8 @@ architecture_layers_6_tier:
         Runtime TIDAK BOLEH membaca Registry / Contract / Predicate / Compatibility / Ontology DIRECTLY.
         Runtime HANYA membaca ExecutionPlan — single input object from Planning Layer.
       representative_paths:
-        - /root/Enterprise OS/workspace/packages/core/registry-resolver/
-        - FUTURE /root/Enterprise OS/workspace/packages/core/planner/
+        - /root/Enterprise-OS/workspace/packages/core/registry-resolver/
+        - FUTURE /root/Enterprise-OS/workspace/packages/core/planner/
     - tier: 5
       name: EXECUTION_LAYER
       answers: Apa yang sedang dieksekusi?
@@ -111,8 +111,8 @@ architecture_layers_6_tier:
         - Compatibility matrices
         - Ontology / vocab
       representative_paths:
-        - /root/Enterprise OS/workspace/packages/core/runtime/
-        - /root/Enterprise OS/workspace/packages/tooling/eos-cli/
+        - /root/Enterprise-OS/workspace/packages/core/runtime/
+        - /root/Enterprise-OS/workspace/packages/tooling/eos-cli/
     - tier: 6
       name: PROVENANCE_LAYER
       answers: Bagaimana bukti terbentuk dan bisa diaudit?
@@ -123,8 +123,8 @@ architecture_layers_6_tier:
         - Audit logs
         - Verification reports
       representative_paths:
-        - /root/Enterprise OS/build/evidence/proof-ledger/
-        - /root/Enterprise OS/build/evidence/
+        - /root/Enterprise-OS/build/evidence/proof-ledger/
+        - /root/Enterprise-OS/build/evidence/
       immutability_rule: Append ONLY. No rewrite. No re-order. No in-place mutation.
 
 ontology_node_kinds:

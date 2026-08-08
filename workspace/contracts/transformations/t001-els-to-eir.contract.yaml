@@ -5,7 +5,7 @@ contract:
   status: DRAFT
   kind: TRANSFORMATION_CONTRACT
   transformation_id: T001
-  transformation_catalog_ref: /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml#transformations[0]
+  transformation_catalog_ref: /root/Enterprise-OS/enterprise/execution/transformation-catalog.yaml#transformations[0]
   axiom_kbe_enforced: true
   kbe_artifact_identity:
     contract_exists: true
@@ -16,7 +16,7 @@ contract:
 
 input_spec:
   kind: ELS_LANGUAGE_SPEC_DOCUMENT
-  schema_ref: /root/Enterprise OS/workspace/packages/core/eir/src/schema.ts#ElsDocument
+  schema_ref: /root/Enterprise-OS/workspace/packages/core/eir/src/schema.ts#ElsDocument
   format: YAML
   required_fields:
     - specification.id
@@ -27,7 +27,7 @@ input_spec:
     - specification.language_spec_version
     - requirements
   golden_reference:
-    location: /root/Enterprise OS/workspace/examples/vertical-slice/REQ-0001
+    location: /root/Enterprise-OS/workspace/examples/vertical-slice/REQ-0001
     stable_identity: REQ-0001
     hash_algorithm: sha256
     notice: Input hash MUST be identical across all runs for deterministic proof
@@ -35,7 +35,7 @@ input_spec:
 
 output_spec:
   kind: EIR_INSTRUCTION_RECORD
-  schema_ref: /root/Enterprise OS/workspace/packages/core/eir/src/schema.ts#EirRecord
+  schema_ref: /root/Enterprise-OS/workspace/packages/core/eir/src/schema.ts#EirRecord
   format: JSON
   required_fields:
     - eir_id
@@ -83,7 +83,7 @@ verdict_rules:
 evidence_output:
   kind: TRANSFORMATION_PROOF
   proof_id_pattern: TRF-PROOF-T001
-  storage_location: /root/Enterprise OS/build/evidence/transformation-proofs/
+  storage_location: /root/Enterprise-OS/build/evidence/transformation-proofs/
   proof_ledger_append_required: true
   proof_ledger_entry_must_include:
     - proof_id

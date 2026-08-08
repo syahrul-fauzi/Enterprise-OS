@@ -1,7 +1,40 @@
 id: legal-document
 name: Legal Documents
 version: 0.1.0
+owner: legal-domain
+status: ACTIVE
+introduced: "2026-07-03"
+provides:
+  - document-lifecycle
+  - document-versioning
+  - document-permissions
+purpose: Manage legal document storage, versioning, collaboration, and access control across EOS.
+manifest_version: 1.0.0
+exports:
+  - DocumentService
+  - DocumentCommands
+  - DocumentQueries
 presentation:
   view: DocumentView
 implementation:
   entry: implementation/service.ts
+depends_on:
+  - knowledge-graph
+  - security-hardening
+  - core-runtime
+capability:
+  name: legal-document
+  owner: legal-domain
+  purpose: Manage legal document storage, versioning, collaboration, and access control across EOS.
+  consumers:
+    - lawyershub
+    - ilc
+    - legal-case
+  maturity:
+    level: product
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - user-adoption
+stability: stable

@@ -5,9 +5,9 @@ layer: PROTOCOL_GOVERNANCE
 abbreviation: PROTO-GOV
 ssot_note: PROTOCOL_GOVERNED_ARCHITECTURE_PARADIGM._PROTOCOL_DEFINES_BOUNDARY_COMPAT_VERSION_GOVERNANCE_NOT_JUST_COMMUNICATION._EVERY_IMPLEMENTATION_COMMUNICATES_ONLY_VIA_PROTOCOL._PROTOCOL_LIFECYCLE_DETERMINISTIC_VERSIONED_AUDITABLE.
 governance_ref:
-  asp: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
-  evolution_domains: /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml
-  invariant_architecture: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
+  asp: /root/Enterprise-OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
+  evolution_domains: /root/Enterprise-OS/governance/EVOLUTION-DOMAINS.yaml
+  invariant_architecture: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml
 derived_from:
   - User_Point_6_Protocol_Governed_Architecture_Not_Merely_Oriented
   - User_Point_Evolution_Manifest_Metadata_Pattern

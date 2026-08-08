@@ -2,7 +2,7 @@ version: "1.0.0"
 status: ACTIVE
 kind: CONSTITUTIONAL_LEXICON_REGISTRY
 abbreviation: LEX
-registry_path: /root/Enterprise OS/enterprise/constitution/lexicon.yaml
+registry_path: /root/Enterprise-OS/enterprise/constitution/lexicon.yaml
 ssot_note: SINGLE SOURCE OF TRUTH for all canonical EOS terminology. Every EOS artifact that introduces or uses a term that appears in EOS governance, canonical forms, contracts, or architectural invariants MUST have its canonical entry here. Tooling SHALL use this registry at Constitutional Verifier CV-STAGE-5 (LEX_SCAN) to reject unregistered terms, warn on deprecated aliases, and perform automatic term migration across epochs. Canonical terms are themselves CONSTITUTIONAL ARTIFACTS subject to PASAL 8 GB > GC filter and Evolution Domain A governance.
 authoritative_ref:
   - IA-19 Constitutional Lexicon Registry (INVARIANT-ARCHITECTURE.yaml)

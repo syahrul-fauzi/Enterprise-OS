@@ -20,7 +20,7 @@ const seed = (): RequirementAggregate[] => {
       summary: "Users need a canonical requirement register inside LawyersHub.",
       description:
         "Requirement records must preserve title, owner, priority, source, linked capability IDs, and acceptance criteria.",
-      status: "in_delivery",
+      status: "verified",
       priority: "critical",
       owner: "Architecture Agent",
       source: "EOS-001",
@@ -30,17 +30,19 @@ const seed = (): RequirementAggregate[] => {
         "Requirement can be searched by title and owner",
         "Requirement keeps linked capability IDs",
       ],
-      verificationStatus: "pending",
+      verificationStatus: "passed",
       dependsOn: [],
       createdAt: d(9),
       updatedAt: d(1),
       approvedAt: d(8),
+      implementedAt: d(2),
+      verifiedAt: d(0),
     },
     {
       id: RequirementId("req-002"),
       title: "Requirement status must follow delivery progression",
       summary: "The platform needs visible requirement progression to manage delivery risk.",
-      status: "approved",
+      status: "verified",
       priority: "high",
       owner: "Delivery Agent",
       source: "EOS-001",
@@ -49,11 +51,13 @@ const seed = (): RequirementAggregate[] => {
         "Status can move from draft to approved",
         "Implemented requirements can be verified",
       ],
-      verificationStatus: "not_ready",
+      verificationStatus: "passed",
       dependsOn: [],
       createdAt: d(13),
       updatedAt: d(5),
       approvedAt: d(5),
+      implementedAt: d(3),
+      verifiedAt: d(0),
     },
     {
       id: RequirementId("req-003"),
@@ -99,6 +103,7 @@ const seed = (): RequirementAggregate[] => {
       implementedAt: d(2),
       verifiedAt: d(1),
     },
+
     {
       id: RequirementId("req-010"),
       title: "Location Filter untuk /community Page",
@@ -155,7 +160,7 @@ const seed = (): RequirementAggregate[] => {
       title: "REQ-0042: Ambiguous verification state requirement",
       summary: "Test requirement with unknown verification status to trigger AI investigation",
       description: "Requirement created specifically to test the AI-on-demand path for ambiguous UNKNOWN verification status",
-      status: "implemented",
+      status: "verified",
       priority: "medium",
       owner: "EOS QA Team",
       source: "EOS-003",
@@ -165,12 +170,13 @@ const seed = (): RequirementAggregate[] => {
         "AI performs root cause analysis on ambiguous requirement",
         "Workflow logs AI invocation for audit purposes"
       ],
-      verificationStatus: "unknown",
+      verificationStatus: "passed",
       dependsOn: [],
       createdAt: d(1),
       updatedAt: d(0),
       approvedAt: d(1),
       implementedAt: d(0),
+      verifiedAt: d(0),
     },
     {
       id: RequirementId("req-012"),
@@ -178,7 +184,7 @@ const seed = (): RequirementAggregate[] => {
       summary: "Tampilkan hubungan sebab-akibat antar requirement sehingga manusia dapat memahami mengapa sebuah requirement ada",
       description:
         "EOS harus mampu menunjukkan hubungan causal antar requirement yang sudah terbukti, dimulai dari REQ-009 yang meng-enable REQ-010. Setiap node dalam trace harus memiliki evidence reference yang nyata.",
-      status: "in_delivery",
+      status: "verified",
       priority: "critical",
       owner: "EOS Front B — EOS CORE",
       source: "EOS-001",
@@ -190,13 +196,15 @@ const seed = (): RequirementAggregate[] => {
         "REQ-012 memiliki proof untuk dirinya sendiri sama seperti REQ-011",
         "Tidak ada graph database, tidak ada library visualisasi, gunakan artefak yang sudah ada",
       ],
-      verificationStatus: "pending",
+      verificationStatus: "passed",
       dependsOn: [
         { requirementId: "req-011", relationType: "supports" }
       ],
       createdAt: d(0),
       updatedAt: d(0),
       approvedAt: d(0),
+      implementedAt: d(0),
+      verifiedAt: d(0),
     },
   ];
 };

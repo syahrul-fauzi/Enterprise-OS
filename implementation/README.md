@@ -322,7 +322,7 @@ Examples:
 
 #### EKE - Enterprise Knowledge Engine (Knowledge Engine)
 The compiler kernel.
-**Owns Contract**: [KnowledgePackage](file:///root/Enterprise%20OS/implementation/eke/contracts/knowledge_package.py) (Stable ABI v1)
+**Owns Contract**: [KnowledgePackage](file:///root/Enterprise-OS/implementation/eke/contracts/knowledge_package.py) (Stable ABI v1)
 
 **Pipeline**:
 ```
@@ -392,7 +392,7 @@ Not in the compiler.
 
 #### EAEO - Enterprise Architecture Execution Orchestrator (Execution Engine)
 Planning engine.
-**Owns Contract**: [MissionContract](file:///root/Enterprise%20OS/implementation/eaeo/contracts/mission_contract.py)
+**Owns Contract**: [MissionContract](file:///root/Enterprise-OS/implementation/eaeo/contracts/mission_contract.py)
 
 **Pipeline**:
 ```
@@ -414,7 +414,7 @@ Mission Contract
 
 #### CEOS - Constitutional Execution Operating System (Execution Engine)
 Governance kernel.
-**Owns Contract**: [AuthorizationDecision](file:///root/Enterprise%20OS/implementation/ceos/contracts/authorization_decision.py)
+**Owns Contract**: [AuthorizationDecision](file:///root/Enterprise-OS/implementation/ceos/contracts/authorization_decision.py)
 
 **Pipeline**:
 ```
@@ -432,7 +432,7 @@ Authorization Decision
 
 #### MOS - Mission Operating System (Execution Engine)
 Runtime engine.
-**Owns Contracts**: [ExecutionLedger](file:///root/Enterprise%20OS/implementation/mos/contracts/execution_ledger.py), [EvidenceBundle](file:///root/Enterprise%20OS/implementation/mos/contracts/evidence_bundle.py)
+**Owns Contracts**: [ExecutionLedger](file:///root/Enterprise-OS/implementation/mos/contracts/execution_ledger.py), [EvidenceBundle](file:///root/Enterprise-OS/implementation/mos/contracts/evidence_bundle.py)
 
 **Pipeline**:
 ```
@@ -694,11 +694,11 @@ All projects in `implementation/` must comply with:
 | Engine | Category | Owns Contract | Consumes | Produces |
 |--------|----------|---------------|----------|----------|
 | EKL | Knowledge | None | Enterprise Specification | Enterprise Model |
-| EKE | Knowledge | [KnowledgePackage](file:///root/Enterprise%20OS/implementation/eke/contracts/knowledge_package.py) | Enterprise Model | Knowledge Package |
+| EKE | Knowledge | [KnowledgePackage](file:///root/Enterprise-OS/implementation/eke/contracts/knowledge_package.py) | Enterprise Model | Knowledge Package |
 | EIS | Knowledge | Intelligence Artifacts (TBD) | Knowledge Package | Intelligence Artifacts / APIs |
-| EAEO | Execution | [MissionContract](file:///root/Enterprise%20OS/implementation/eaeo/contracts/mission_contract.py) | Knowledge Package | Mission Contract |
-| CEOS | Execution | [AuthorizationDecision](file:///root/Enterprise%20OS/implementation/ceos/contracts/authorization_decision.py) | Mission Contract | Authorization Decision |
-| MOS | Execution | [ExecutionLedger](file:///root/Enterprise%20OS/implementation/mos/contracts/execution_ledger.py), [EvidenceBundle](file:///root/Enterprise%20OS/implementation/mos/contracts/evidence_bundle.py) | Authorization Decision | Execution Evidence / Evidence Bundle |
+| EAEO | Execution | [MissionContract](file:///root/Enterprise-OS/implementation/eaeo/contracts/mission_contract.py) | Knowledge Package | Mission Contract |
+| CEOS | Execution | [AuthorizationDecision](file:///root/Enterprise-OS/implementation/ceos/contracts/authorization_decision.py) | Mission Contract | Authorization Decision |
+| MOS | Execution | [ExecutionLedger](file:///root/Enterprise-OS/implementation/mos/contracts/execution_ledger.py), [EvidenceBundle](file:///root/Enterprise-OS/implementation/mos/contracts/evidence_bundle.py) | Authorization Decision | Execution Evidence / Evidence Bundle |
 
 Engines only depend on contracts, never internal implementation details!
 
@@ -965,9 +965,9 @@ Implementation proceeds strictly bottom-up, from engine foundations to products.
 - Architecture fitness checks all pass
 **Deliverable**: `EKL Source → KnowledgePackage → Projections`
 **Key Components Implemented**:
-- [Canonical Serialization Utilities](file:///root/Enterprise%20OS/implementation/shared/serialization/canonical.py)
-- [KnowledgePackage ABI v1](file:///root/Enterprise%20OS/implementation/eke/contracts/knowledge_package.py)
-- [Public SDK (OperationResult, EnterpriseKnowledgeCompiler, ProjectionRuntime)](file:///root/Enterprise%20OS/implementation/eke/api/)
+- [Canonical Serialization Utilities](file:///root/Enterprise-OS/implementation/shared/serialization/canonical.py)
+- [KnowledgePackage ABI v1](file:///root/Enterprise-OS/implementation/eke/contracts/knowledge_package.py)
+- [Public SDK (OperationResult, EnterpriseKnowledgeCompiler, ProjectionRuntime)](file:///root/Enterprise-OS/implementation/eke/api/)
 
 ### Sprint 2: Enterprise Intelligence Services (EIS) 🚀
 **Status**: In Progress
@@ -990,8 +990,8 @@ implementation/eis/
 - ✅ Tidak ada reverse dependency ke EKE
 **Deliverable**: `Knowledge Package → Enterprise Intelligence Package`
 **Key Components Implemented**:
-- [EnterpriseIntelligencePackage ABI v1](file:///root/Enterprise%20OS/implementation/eis/contracts/intelligence_package.py)
-- [EIS Public SDK](file:///root/Enterprise%20OS/implementation/eis/api/)
+- [EnterpriseIntelligencePackage ABI v1](file:///root/Enterprise-OS/implementation/eis/contracts/intelligence_package.py)
+- [EIS Public SDK](file:///root/Enterprise-OS/implementation/eis/api/)
 
 ### Sprint 3: Enterprise Architecture Execution Orchestrator (EAEO)
 **Primary Focus**: Planning and mission orchestration engine.

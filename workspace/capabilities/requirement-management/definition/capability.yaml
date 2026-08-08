@@ -1,6 +1,61 @@
 id: requirement-management
 name: Requirement Management
 version: 0.1.0
+owner: requirements-domain
+status: ACTIVE
+introduced: "2026-07-10"
+provides:
+  - requirement-capture
+  - lifecycle-tracking
+  - verification-management
+  - search-discovery
+purpose: Provide canonical requirement management for all products, including full lifecycle tracking, verification management, and search/discovery capabilities.
+manifest_version: 1.0.0
+exports:
+  - RequirementService
+  - RequirementAggregate
+  - RequirementStatus
+  - SearchRequirementsInput
+  - ApproveRequirementInput
+depends_on:
+  - core-runtime
+  - workflow-engine
+  - governance-evidence
+allowed_dependencies:
+  - core-runtime
+  - workflow-engine
+  - governance-evidence
+forbidden_dependencies:
+  - api-platform
+  - knowledge-graph
+capability:
+  name: requirement-management
+  owner: requirements-domain
+  purpose: Provide canonical requirement management for all products across EOS.
+  consumers:
+    - academic
+    - ilc
+    - lawyershub
+    - services-id
+  maturity:
+    level: core
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - cross_product_uniformity
+    - all_products_adopted
+    - end_to_end_lifecycle
+stability: stable
+contracts:
+  requires:
+    - name: WorkflowEngineProvider
+      range: ">=0.1 <0.2"
+    - name: GovernanceEvidenceProvider
+      range: ">=0.1 <0.2"
+  provides:
+    - name: RequirementService
+      version: 1.0.0
 presentation:
   view: RequirementView
 implementation:

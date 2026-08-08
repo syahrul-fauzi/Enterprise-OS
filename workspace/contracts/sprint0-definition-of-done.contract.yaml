@@ -3,7 +3,7 @@ contract:
   name: sprint_0_definition_of_done
   status: VERIFIED
   purpose: Machine-readable contract that defines DONE condition for Sprint 0 as a simple AND of 6 measurable criteria. No additional criteria permitted without ADR.
-  file: /root/Enterprise OS/governance/sprint0-definition-of-done.yaml
+  file: /root/Enterprise-OS/governance/sprint0-definition-of-done.yaml
   verifier:
     name: eos_auditor_role
     method:

@@ -6,9 +6,9 @@ catalog:
   kind: CANONICAL_ARTIFACT
   ssot_note: THIS_YAML_IS_SINGLE_SOURCE_OF_TRUTH_MARKDOWN_IS_DERIVED_VIEW
   governance_ref:
-    baseline_lock: /root/Enterprise OS/governance/BASELINE_LOCK.yaml
-    axioms: /root/Enterprise OS/governance/AXIOMS.md
-    architecture_freeeze_adr: /root/Enterprise OS/enterprise/decisions/adr/ADR-000-sprint0-architecture-freeze.yaml
+    baseline_lock: /root/Enterprise-OS/governance/BASELINE_LOCK.yaml
+    axioms: /root/Enterprise-OS/governance/AXIOMS.md
+    architecture_freeeze_adr: /root/Enterprise-OS/enterprise/decisions/adr/ADR-000-sprint0-architecture-freeze.yaml
   hierarchy_of_truth:
     order:
       - CONSTITUTION
@@ -37,17 +37,17 @@ catalog:
         kind: TRANSFORMATION_PROOF
         proves: Satu transformasi memenuhi kontraknya
         example_id_pattern: TRF-PROOF-T<NNN>
-        output_location: /root/Enterprise OS/build/evidence/transformation-proofs/
+        output_location: /root/Enterprise-OS/build/evidence/transformation-proofs/
       - level: 2
         kind: EXECUTION_PROOF
         proves: Satu pipeline berjalan deterministik
         example_id_pattern: EXEC-PROOF-REQ<NNNN>
-        output_location: /root/Enterprise OS/build/evidence/execution-proofs/
+        output_location: /root/Enterprise-OS/build/evidence/execution-proofs/
       - level: 3
         kind: REPOSITORY_PROOF
         proves: Seluruh repository mematuhi baseline
         example_id_pattern: REP-PROOF-<seq>
-        output_location: /root/Enterprise OS/build/evidence/repository-proof/
+        output_location: /root/Enterprise-OS/build/evidence/repository-proof/
     dependency_order: TRANSFORMATION_PROOF → EXECUTION_PROOF → REPOSITORY_PROOF
   gate_structure:
     gate_c:
@@ -115,16 +115,16 @@ transformations:
     input_kind: ELS_LANGUAGE_SPEC_DOC
     output_kind: EIR_INSTRUCTION_RECORD
     lifecycle: VERIFIED
-    contract_ref: /root/Enterprise OS/workspace/contracts/transformations/t001-els-to-eir.contract.yaml
+    contract_ref: /root/Enterprise-OS/workspace/contracts/transformations/t001-els-to-eir.contract.yaml
     predicate_refs:
       - PRED-T001-INPUT-SCHEMA
       - PRED-T001-OUTPUT-DETERMINISTIC
       - PRED-T001-CONFORM-EIR
-    implementation_ref: /root/Enterprise OS/workspace/packages/tooling/t001-standalone/src/t001.ts::runT001
-    proof_schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema
+    implementation_ref: /root/Enterprise-OS/workspace/packages/tooling/t001-standalone/src/t001.ts::runT001
+    proof_schema_ref: /root/Enterprise-OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema
     evidence_output_kind: TRANSFORMATION_PROOF
     evidence_output_id: TRF-PROOF-T001
-    golden_reference_input: /root/Enterprise OS/workspace/examples/vertical-slice/REQ-0001
+    golden_reference_input: /root/Enterprise-OS/workspace/examples/vertical-slice/REQ-0001
     root_of_truth: true
     standalone_implementation_required: true
     engine_dependency_forbidden_until_gate_c_verified: true
@@ -144,16 +144,16 @@ transformations:
     input_kind: EIR_INSTRUCTION_RECORD_PLUS_CONTRACT_REF
     output_kind: CAG_CAPABILITY_ARTIFACT_GRAPH
     lifecycle: DRAFT
-    contract_ref: /root/Enterprise OS/workspace/contracts/transformations/t002-eir-to-cag.contract.yaml
+    contract_ref: /root/Enterprise-OS/workspace/contracts/transformations/t002-eir-to-cag.contract.yaml
     predicate_refs:
       - PRED-T002-INPUT-EIR-VERIFIED
       - PRED-T002-OUTPUT-DETERMINISTIC
       - PRED-T002-CONFORM-CAG
-    implementation_ref: /root/Enterprise OS/workspace/packages/tooling/t002-standalone/src/t002.ts::runT002
-    proof_schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema
+    implementation_ref: /root/Enterprise-OS/workspace/packages/tooling/t002-standalone/src/t002.ts::runT002
+    proof_schema_ref: /root/Enterprise-OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema
     evidence_output_kind: TRANSFORMATION_PROOF
     evidence_output_id: TRF-PROOF-T002
-    golden_reference_input: /root/Enterprise OS/workspace/examples/vertical-slice/REQ-0001
+    golden_reference_input: /root/Enterprise-OS/workspace/examples/vertical-slice/REQ-0001
     precedence: AFTER_T001_PASS
     blocked_until_t001_verified: true
     predecessor_id: T001
@@ -171,16 +171,16 @@ transformations:
     input_kind: CAG_SNAPSHOT
     output_kind: TS_IR_TYPESCRIPT_INTERMEDIATE_REPRESENTATION
     lifecycle: DRAFT
-    contract_ref: /root/Enterprise OS/workspace/contracts/transformations/t003-cag-to-tsir.contract.yaml
+    contract_ref: /root/Enterprise-OS/workspace/contracts/transformations/t003-cag-to-tsir.contract.yaml
     predicate_refs:
       - PRED-T003-INPUT-CAG-VERIFIED
       - PRED-T003-NO-HARDCODED-CAPABILITY-ID
       - PRED-T003-OUTPUT-DETERMINISTIC
-    implementation_ref: /root/Enterprise OS/workspace/packages/tooling/t003-standalone/src/t003.ts::runT003
-    proof_schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema
+    implementation_ref: /root/Enterprise-OS/workspace/packages/tooling/t003-standalone/src/t003.ts::runT003
+    proof_schema_ref: /root/Enterprise-OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema
     evidence_output_kind: TRANSFORMATION_PROOF
     evidence_output_id: TRF-PROOF-T003
-    golden_reference_input: /root/Enterprise OS/workspace/examples/vertical-slice/REQ-0001
+    golden_reference_input: /root/Enterprise-OS/workspace/examples/vertical-slice/REQ-0001
     precedence: AFTER_T002_PASS
     blocked_until_t002_verified: true
     predecessor_id: T002
@@ -198,16 +198,16 @@ transformations:
     input_kind: TS_IR_PLUS_REGISTRY
     output_kind: RUNTIME_ARTIFACTS_DIST
     lifecycle: DRAFT
-    contract_ref: /root/Enterprise OS/workspace/contracts/transformations/t004-tsir-to-runtime.contract.yaml
+    contract_ref: /root/Enterprise-OS/workspace/contracts/transformations/t004-tsir-to-runtime.contract.yaml
     predicate_refs:
       - PRED-T004-INPUT-TSIR-VERIFIED
       - PRED-T004-OUTPUT-DETERMINISTIC
       - PRED-T004-CONFORM-RUNTIME-SCHEMA
-    implementation_ref: /root/Enterprise OS/workspace/packages/tooling/t004-standalone/src/t004.ts::runT004
-    proof_schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema
+    implementation_ref: /root/Enterprise-OS/workspace/packages/tooling/t004-standalone/src/t004.ts::runT004
+    proof_schema_ref: /root/Enterprise-OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema
     evidence_output_kind: TRANSFORMATION_PROOF
     evidence_output_id: TRF-PROOF-T004
-    golden_reference_input: /root/Enterprise OS/workspace/examples/vertical-slice/REQ-0001
+    golden_reference_input: /root/Enterprise-OS/workspace/examples/vertical-slice/REQ-0001
     precedence: AFTER_T003_PASS
     blocked_until_t003_verified: true
     predecessor_id: T003
@@ -226,13 +226,13 @@ transformations:
     input_kind: RUNTIME_MANIFEST_PLUS_4_HASHES
     output_kind: REPOSITORY_PROOF_JSON
     lifecycle: DRAFT
-    contract_ref: /root/Enterprise OS/workspace/contracts/transformations/t005-runtime-to-repo-proof.contract.yaml
+    contract_ref: /root/Enterprise-OS/workspace/contracts/transformations/t005-runtime-to-repo-proof.contract.yaml
     predicate_refs:
       - PRED-T005-INPUT-4-HASHES-SET
       - PRED-T005-SIGNATURE-VALID-FORMAT
       - PRED-T005-VERDICT-AND-ONLY-IF-T001-T004-PASS
-    implementation_ref: /root/Enterprise OS/workspace/packages/tooling/t005-standalone/src/t005.ts::runT005
-    proof_schema_ref: /root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::RepositoryProofEntrySchema
+    implementation_ref: /root/Enterprise-OS/workspace/packages/tooling/t005-standalone/src/t005.ts::runT005
+    proof_schema_ref: /root/Enterprise-OS/workspace/packages/core/proof-ledger/src/schema.ts::RepositoryProofEntrySchema
     evidence_output_kind: REPOSITORY_PROOF
     evidence_output_id_pattern: REP-PROOF-<seq>
     precedence: AFTER_T004_PASS
@@ -251,7 +251,7 @@ graph:
   id: EOS-TRANSFORMATION-GRAPH-V2
   kind: CANONICAL_GRAPH_SSOT
   provenance: IA-02_Semantic_Registry_Graph_+_IA-04_Canonical_Graph_Catalog_+_SEMANTIC-KERNEL.yaml_principle_2
-  semantic_kernel_reference: /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#relationship_definitions
+  semantic_kernel_reference: /root/Enterprise-OS/enterprise/specifications/SEMANTIC-KERNEL.yaml#relationship_definitions
   resolver_obligation: >
     Resolver MUST read graph.transformations.<id>.edges[] for edge instances.
     MEANING of each edge.relation (CONSUMES, PRODUCES, PREDECESSOR, SUCCESSOR, REQUIRES_PREDICATE, VALIDATES)

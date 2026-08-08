@@ -9,7 +9,7 @@ export const TRANSFORMATION_T003: TransformationDeclaration = {
   output_kind: "TS_IR_TYPESCRIPT_INTERMEDIATE_REPRESENTATION",
   lifecycle: "DRAFT",
   contract_ref:
-    "/root/Enterprise OS/workspace/contracts/transformations/t003-cag-to-tsir.contract.yaml",
+    "/root/Enterprise-OS/workspace/contracts/transformations/t003-cag-to-tsir.contract.yaml",
   predicate_refs: [
     { predicate_id: "PRED-T003-INPUT-CAG-VERIFIED", phase: "PRE_EXECUTION" },
     {

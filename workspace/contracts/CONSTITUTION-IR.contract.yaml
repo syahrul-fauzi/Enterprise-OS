@@ -8,18 +8,18 @@ ir_abbreviation: CONSTIT-IR
 evolution_domain: DOMAIN-B-SPECIFICATION
 ssot_note: CONSTITUTION_IR_IS_THE_COMPILED_FORM_OF_THE_EOS_CONSTITUTION._INPUT_SOURCE_FILES = CONSTITUTIONAL-VISION.yaml + ARCHITECTURAL-STABILITY-PRINCIPLES.yaml (ASP+MP01) + INVARIANT-ARCHITECTURE.yaml (IA-01..14) + EVOLUTION-DOMAINS.yaml + PROTOCOL-GOVERNANCE.yaml. OUTPUT of Constitutional Compiler. This is the Stable IR that all future verifiers / protocol rule generators / compatibility matrix generators consume so they do NOT parse the constitution prose directly. This is IA-13 Stable IR equivalent for the Constitutional layer.
 governance_ref:
-  vision: /root/Enterprise OS/governance/CONSTITUTIONAL-VISION.yaml
-  asp_mp01: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#MP-01
-  ia13: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_13_stable_intermediate_representations
-  ia14: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
-  protocol_governance: /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
-  conformance_properties: /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml
-  arch_rule_manifest: /root/Enterprise OS/governance/ARCH-RULE-GENERATION.manifest.yaml
-  constitutional_compiler_spec: /root/Enterprise OS/enterprise/specifications/CONSTITUTIONAL-COMPILER.spec.yaml
-  constitutional_verifier_pipeline: /root/Enterprise OS/enterprise/specifications/CONSTITUTIONAL-VERIFIER.pipeline.yaml
-  protocol_compilation_spec: /root/Enterprise OS/enterprise/specifications/PROTOCOL-COMPILATION.spec.yaml
-  authority_dag_schema: /root/Enterprise OS/enterprise/schema/AUTHORITY-DAG.schema.yaml
-  artifact_schema: /root/Enterprise OS/enterprise/schema/artifact.schema.yaml
+  vision: /root/Enterprise-OS/governance/CONSTITUTIONAL-VISION.yaml
+  asp_mp01: /root/Enterprise-OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#MP-01
+  ia13: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_13_stable_intermediate_representations
+  ia14: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
+  protocol_governance: /root/Enterprise-OS/governance/PROTOCOL-GOVERNANCE.yaml
+  conformance_properties: /root/Enterprise-OS/governance/CONFORMANCE-PROPERTIES.yaml
+  arch_rule_manifest: /root/Enterprise-OS/governance/ARCH-RULE-GENERATION.manifest.yaml
+  constitutional_compiler_spec: /root/Enterprise-OS/enterprise/specifications/CONSTITUTIONAL-COMPILER.spec.yaml
+  constitutional_verifier_pipeline: /root/Enterprise-OS/enterprise/specifications/CONSTITUTIONAL-VERIFIER.pipeline.yaml
+  protocol_compilation_spec: /root/Enterprise-OS/enterprise/specifications/PROTOCOL-COMPILATION.spec.yaml
+  authority_dag_schema: /root/Enterprise-OS/enterprise/schema/AUTHORITY-DAG.schema.yaml
+  artifact_schema: /root/Enterprise-OS/enterprise/schema/artifact.schema.yaml
 derived_from:
   - User_Point_Constitution_IR_From_Vision_ASP_IA
   - User_Point_Architecture_Rules_Generated_Not_Manual
@@ -31,13 +31,13 @@ derived_from:
 
 constitution_source_inputs:
   ordered:
-    - /root/Enterprise OS/governance/CONSTITUTIONAL-VISION.yaml
-    - /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
-    - /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
-    - /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml
-    - /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
-    - /root/Enterprise OS/governance/CONFORMANCE-MODEL.yaml
-    - /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml
+    - /root/Enterprise-OS/governance/CONSTITUTIONAL-VISION.yaml
+    - /root/Enterprise-OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
+    - /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml
+    - /root/Enterprise-OS/governance/EVOLUTION-DOMAINS.yaml
+    - /root/Enterprise-OS/governance/PROTOCOL-GOVERNANCE.yaml
+    - /root/Enterprise-OS/governance/CONFORMANCE-MODEL.yaml
+    - /root/Enterprise-OS/governance/CONFORMANCE-PROPERTIES.yaml
   compile_purity:
     statement: "Constitutional Compiler (pass 1-5 below) is a pure function of these inputs only. No env vars, no network, no timestamps in hashable fields. MP-01 Computable Governance."
   compilation_hash_anchor:
@@ -74,7 +74,7 @@ constitution_ir_sections_required:
     mandatory: true
     ir_field: evolution_domain_types
     description: "Evolution Domains as TYPE SYSTEM (per user point 6), elevated to Authority-Oriented Architecture (per TF-1). Not policy strings — machine-checkable type error on import/mutation mismatch. Canonical enumeration = artifact.schema.yaml#artifact_type.type_name (now 19 types, 4 domains, 4 Evidence sub-layers). Any import/mutation violation → TYPE_ERROR (not policy review). Authority Pipeline: AUTHORITY→INTERPRETATION→DECISION→EXECUTION→EVIDENCE stages embedded via authority_stage_index 0..4 inside every type definition."
-    type_system_contract_anchor: /root/Enterprise OS/enterprise/schema/artifact.schema.yaml#artifact_type
+    type_system_contract_anchor: /root/Enterprise-OS/enterprise/schema/artifact.schema.yaml#artifact_type
     terminology_freeze_ref: governance/TERMINOLOGY-FREEZE-TF1.yaml
     ia17_authority_preservation_ref: governance/INVARIANT-ARCHITECTURE.yaml#IA-17-AUTHORITY-PRESERVATION
     enforcement_in_verifier: CONST-VERIF Stage 1 (CV-TYPE-01 import, CV-TYPE-02 mutate, CV-TYPE-03 unclassified) + CV-STAGE-2 AUTHORITY_GAIN_TYPE_ERROR scan
@@ -325,7 +325,7 @@ constitution_ir_sections_required:
   authority_graph_section:
     mandatory: true
     ir_field: authority_graph_dag
-    schema_ref: /root/Enterprise OS/enterprise/schema/AUTHORITY-DAG.schema.yaml
+    schema_ref: /root/Enterprise-OS/enterprise/schema/AUTHORITY-DAG.schema.yaml
     verifier_stage_ref: CV-STAGE-2
     dag_edge_format: { from, to, edge_kind, authority_proof_ref }
     edges_required:
@@ -501,14 +501,14 @@ constitution_ir_sections_required:
         outputs_arch_rule_ids: [ARCH-29-CONF-PROP-MEASURE]
         compiled_check_parameters:
           measurement_algorithms: [MEASURE-DET-v1, MEASURE-COMPAT-v1, MEASURE-REPRO-v1, MEASURE-AUDIT-v1, MEASURE-EXP-v1, MEASURE-CAN-v1]
-          conformance_contract_ref: /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml
-          vector_schema_ref: /root/Enterprise OS/governance/CONFORMANCE-PROPERTIES.yaml#conformance_property_vector_schema
+          conformance_contract_ref: /root/Enterprise-OS/governance/CONFORMANCE-PROPERTIES.yaml
+          vector_schema_ref: /root/Enterprise-OS/governance/CONFORMANCE-PROPERTIES.yaml#conformance_property_vector_schema
       - id: VGEN-TYPE-SYSTEM
         source_statement_ref: Evolution Domains as Type System (artifact.schema.yaml#artifact_type + CONSTIT-IR.type_system_section)
         outputs_arch_rule_ids: [ARCH-26-TYPE-IMPORT, ARCH-27-TYPE-MUTATE, ARCH-28-TYPE-UNCLASSIFIED]
         compiled_check_parameters:
           cv_stage1_checks: [CV-TYPE-01, CV-TYPE-02, CV-TYPE-03]
-          type_system_anchor: /root/Enterprise OS/enterprise/schema/artifact.schema.yaml#artifact_type
+          type_system_anchor: /root/Enterprise-OS/enterprise/schema/artifact.schema.yaml#artifact_type
           type_enumeration_count: 18
           domain_count: 4
       - id: VGEN-AUTH-DAG
@@ -516,7 +516,7 @@ constitution_ir_sections_required:
         outputs_arch_rule_ids: [ARCH-30-DAG-REVERSE, ARCH-31-DAG-CYCLE, ARCH-32-DAG-DANGLING]
         compiled_check_parameters:
           cv_stage2_checks: [CV-DAG-01, CV-DAG-02, CV-DAG-03]
-          dag_schema_ref: /root/Enterprise OS/enterprise/schema/AUTHORITY-DAG.schema.yaml
+          dag_schema_ref: /root/Enterprise-OS/enterprise/schema/AUTHORITY-DAG.schema.yaml
           cycle_algorithm: KAHNS_TOPOLOGICAL_TIEBREAK_AUTH_LEVEL_THEN_LEX
           edge_direction_rule: "topological_index(from) < topological_index(to) → forward else reverse-invalid"
       - id: VGEN-PROTO-COMP

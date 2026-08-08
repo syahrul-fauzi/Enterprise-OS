@@ -9,6 +9,10 @@ export {
   getAttributionBaseDir,
   hasAttributionRecords,
 } from "./implementation";
+export {
+  AttributionReadGatewayService,
+  attributionReadGatewayService,
+} from "./implementation/services/attribution-read-gateway.service";
 export * from "./contracts";
 export type {
   PrepareReleaseCanonicalInputProjection,

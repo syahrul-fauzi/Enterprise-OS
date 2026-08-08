@@ -67,7 +67,7 @@ const GENERATED_AT = new Date().toISOString();
 const COMMON_SOURCES = Object.freeze([
   "Alpha.9 Evidence Provenance Graph Self-Test Harness",
   "selftest.alpha9.ts (single executor session — reported execution evidence, NOT independently verified)",
-  "workspace: /root/Enterprise OS/workspace",
+  "workspace: /root/Enterprise-OS/workspace",
 ]);
 
 const RUNNER_METADATA = Object.freeze({

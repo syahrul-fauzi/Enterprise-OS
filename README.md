@@ -99,7 +99,7 @@ This hypothesis can be proven wrong!
 ---
 
 ## Current Status (Validation Baseline v1.4.x / Software v1.6.0 — Phase C.1.3: Evidence Loop Execution)
-Check [`STATUS.md`](/root/Enterprise%20OS/STATUS.md) for operational control tower and details!
+Check [`STATUS.md`](/root/Enterprise-OS/STATUS.md) for operational control tower and details!
 
 ### Quick Summary
 - ✅ Vertical slice built and running

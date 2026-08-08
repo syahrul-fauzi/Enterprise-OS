@@ -353,7 +353,7 @@ Operational role of SAG:
 - ensure ELS artifacts can be consumed deterministically by generators.
 
 Authoritative reference:
-- [Specification Authoring Guide](file:///root/Enterprise%20OS/enterprise/specifications/specification-authoring-guide.md)
+- [Specification Authoring Guide](file:///root/Enterprise-OS/enterprise/specifications/specification-authoring-guide.md)
 
 ---
 
@@ -370,7 +370,7 @@ Operational role of SES:
 - preserve deterministic execution behavior across technology changes.
 
 Authoritative reference:
-- [Specification Execution Specification](file:///root/Enterprise%20OS/enterprise/specifications/specification-execution-specification.md)
+- [Specification Execution Specification](file:///root/Enterprise-OS/enterprise/specifications/specification-execution-specification.md)
 
 ---
 
@@ -380,7 +380,7 @@ Architecture artifacts are governed objects and must be traceable in the same
 enterprise graph as downstream specifications and implementations.
 
 Machine-readable baseline registry:
-- [architecture-baseline-v1.yaml](file:///root/Enterprise%20OS/enterprise/specifications/architecture-baseline-v1.yaml)
+- [architecture-baseline-v1.yaml](file:///root/Enterprise-OS/enterprise/specifications/architecture-baseline-v1.yaml)
 
 The registry records for each architecture artifact:
 - `id`

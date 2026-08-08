@@ -1,5 +1,36 @@
 id: observability
 name: Observability
 version: 0.1.0
+owner: operations-domain
+status: ACTIVE
+introduced: "2026-07-01"
+provides:
+  - metrics-collection
+  - logging
+  - tracing
+purpose: Provide end-to-end observability, monitoring, and telemetry across all EOS capabilities and products.
+manifest_version: 1.0.0
+exports:
+  - ObservabilityProvider
 implementation:
   entry: implementation/service.ts
+depends_on:
+  - core-runtime
+  - evidence-registry
+  - governance-evidence
+capability:
+  name: observability
+  owner: operations-domain
+  purpose: Provide end-to-end observability, monitoring, and telemetry across all EOS capabilities and products.
+  consumers:
+    - governance-read-model
+    - requirements-traceability-matrix
+    - all products
+  maturity:
+    level: infrastructure
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - full_coverage
+stability: stable

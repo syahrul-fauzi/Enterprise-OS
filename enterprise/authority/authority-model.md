@@ -17,7 +17,7 @@
 
 The Authority Graph G_auth = ⟨V, E_auth⟩, where:
 - **V (nodes):** All EOS artifacts that carry authority (Constitution, ASP, IA, Specifications, Contracts, Protocols, Implementations, Evidence, Verdict, Lexicon Entries, Governance Decisions).
-- **E_auth (edges):** Exactly 8 normative edge kinds defined in [/root/Enterprise OS/enterprise/graph/edge-taxonomy.md](file:///root/Enterprise%20OS/enterprise/graph/edge-taxonomy.md) §1, each with graph_class = authority_graph.
+- **E_auth (edges):** Exactly 8 normative edge kinds defined in [/root/Enterprise-OS/enterprise/graph/edge-taxonomy.md](file:///root/Enterprise-OS/enterprise/graph/edge-taxonomy.md) §1, each with graph_class = authority_graph.
 
 **Property:** Authority is **monotonic** along every path. If `X → ... → Y` is a path in G_auth, then `authority_level(X) ≥ authority_level(Y)` holds componentwise. No transformation, planner, LLM, optimizer, scheduler, or human may produce a node with higher authority_level than its upstream canonical derivation.
 

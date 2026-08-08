@@ -19,20 +19,20 @@ repository_state:
     gate_e: false
   outputs:
     repository_proof:
-      location: /root/Enterprise OS/build/evidence/repository-proof/
+      location: /root/Enterprise-OS/build/evidence/repository-proof/
       current_file: REP-PROOF-0001.json
       current_status: NOT_YET_EMITTED
       generation_rule: output_of_acl_validation_pipeline_must_be_stored_here_never_loaded_back_as_state
       anti_pattern: consumers_must_not_read_repository_proof_as_input_state
     transformation_proofs:
-      location: /root/Enterprise OS/build/evidence/transformation-proofs/
+      location: /root/Enterprise-OS/build/evidence/transformation-proofs/
       anti_pattern: ledger_is_append_only_in_layer_4_proof_ledger
 
 baseline:
   id: EOS-IMPLEMENTATION-BASELINE-V1
   version: "1.0.0"
   status: FROZEN
-  source: /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+  source: /root/Enterprise-OS/governance/BASELINE_LOCK.yaml
 
 state_contract:
   kind: CANONICAL_REPOSITORY_STATE
@@ -71,8 +71,8 @@ repository_compliance:
       repository_status: VERIFIED
     source:
       command: pnpm arch-check
-      location: /root/Enterprise OS/workspace
-      classification_policy: /root/Enterprise OS/governance/architecture-compliance.yaml
+      location: /root/Enterprise-OS/workspace
+      classification_policy: /root/Enterprise-OS/governance/architecture-compliance.yaml
 
 evidence_status:
   governance: VERIFIED
@@ -84,27 +84,27 @@ gate_artifacts:
   A:
     focus: Governance
     primary_artifacts:
-      - /root/Enterprise OS/governance/BASELINE_LOCK.yaml
-      - /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
+      - /root/Enterprise-OS/governance/BASELINE_LOCK.yaml
+      - /root/Enterprise-OS/governance/GOVERNANCE_STATE.yaml
     evidence: Governance Verified
   B:
     focus: Canonical Foundation
     primary_artifacts:
-      - /root/Enterprise OS/workspace/contracts
-      - /root/Enterprise OS/workspace/packages/core/eir
-      - /root/Enterprise OS/workspace/packages/core/predicate-registry
-      - /root/Enterprise OS/workspace/packages/core/transformation-registry
-      - /root/Enterprise OS/workspace/packages/core/proof-ledger
+      - /root/Enterprise-OS/workspace/contracts
+      - /root/Enterprise-OS/workspace/packages/core/eir
+      - /root/Enterprise-OS/workspace/packages/core/predicate-registry
+      - /root/Enterprise-OS/workspace/packages/core/transformation-registry
+      - /root/Enterprise-OS/workspace/packages/core/proof-ledger
     evidence: Conformance Verified
   C:
     focus: First Verified Transformation (T001 · ELS → EIR)
     primary_artifacts:
-      - /root/Enterprise OS/workspace/packages/core/transformation-registry (T001 entry)
-      - /root/Enterprise OS/workspace/packages/core/eir (REQ-0001 golden output)
-      - /root/Enterprise OS/workspace/packages/core/proof-ledger (TRF-PROOF-T001 entry)
-      - /root/Enterprise OS/workspace/examples/vertical-slice/REQ-0001
-      - /root/Enterprise OS/build/evidence/transformation-proofs/TRF-PROOF-T001.json
-      - /root/Enterprise OS/build/evidence/proof-ledger/proof-ledger-state.json
+      - /root/Enterprise-OS/workspace/packages/core/transformation-registry (T001 entry)
+      - /root/Enterprise-OS/workspace/packages/core/eir (REQ-0001 golden output)
+      - /root/Enterprise-OS/workspace/packages/core/proof-ledger (TRF-PROOF-T001 entry)
+      - /root/Enterprise-OS/workspace/examples/vertical-slice/REQ-0001
+      - /root/Enterprise-OS/build/evidence/transformation-proofs/TRF-PROOF-T001.json
+      - /root/Enterprise-OS/build/evidence/proof-ledger/proof-ledger-state.json
     evidence: T001 deterministic PASS with Transformation Proof VERIFIED
     output_note: Gate_C_artifacts_are_independent_transformation_artifacts_before_orchestrator
     t001_evidence:
@@ -136,16 +136,16 @@ gate_artifacts:
   D:
     focus: Execution Platform (Engine + Compiler + Proof Runner)
     primary_artifacts:
-      - /root/Enterprise OS/workspace/packages/engine/transformation-engine
-      - /root/Enterprise OS/workspace/packages/engine/emitters
-      - /root/Enterprise OS/workspace/packages/tooling/compiler-cli
-      - /root/Enterprise OS/build/ci/
+      - /root/Enterprise-OS/workspace/packages/engine/transformation-engine
+      - /root/Enterprise-OS/workspace/packages/engine/emitters
+      - /root/Enterprise-OS/workspace/packages/tooling/compiler-cli
+      - /root/Enterprise-OS/build/ci/
     evidence: Registry-driven orchestration (no hardcoded pipeline) verified
   E:
     focus: Proof of Execution (PoE v1)
     primary_artifacts:
-      - /root/Enterprise OS/build/evidence/
-      - /root/Enterprise OS/enterprise/governance/pipeline-acceptance-criteria.md
+      - /root/Enterprise-OS/build/evidence/
+      - /root/Enterprise-OS/enterprise/governance/pipeline-acceptance-criteria.md
     evidence: End-to-End deterministic execution verified
 
 predicates:

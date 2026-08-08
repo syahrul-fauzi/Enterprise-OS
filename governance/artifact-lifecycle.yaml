@@ -22,7 +22,7 @@ canonical_lifecycle:
 
 artifact_types:
   contract:
-    canonical_location: /root/Enterprise OS/workspace/contracts
+    canonical_location: /root/Enterprise-OS/workspace/contracts
     canonical_lifecycle: VERIFIED
     internal_substates:
       - draft
@@ -34,7 +34,7 @@ artifact_types:
       superseded: DEPRECATED
     promotion_rule: must be machine-readable and reference owning capability or package authority.
   specification:
-    canonical_location: /root/Enterprise OS/enterprise/specifications
+    canonical_location: /root/Enterprise-OS/enterprise/specifications
     canonical_lifecycle: FROZEN
     internal_substates:
       - draft
@@ -47,8 +47,8 @@ artifact_types:
     promotion_rule: must align with constitution and baseline references.
   decision:
     canonical_location:
-      - /root/Enterprise OS/workspace/decisions
-      - /root/Enterprise OS/enterprise/decisions/adr
+      - /root/Enterprise-OS/workspace/decisions
+      - /root/Enterprise-OS/enterprise/decisions/adr
     canonical_lifecycle: VERIFIED
     internal_substates:
       - proposed
@@ -60,7 +60,7 @@ artifact_types:
       superseded: DEPRECATED
     promotion_rule: structural changes require accepted ADR.
   foundation_package:
-    canonical_location: /root/Enterprise OS/workspace/packages/core
+    canonical_location: /root/Enterprise-OS/workspace/packages/core
     canonical_lifecycle: REVIEWED
     internal_substates:
       - scaffolded
@@ -75,8 +75,8 @@ artifact_types:
     promotion_rule: schema, interfaces, tests, and contracts must exist before verified.
   execution_engine:
     canonical_location:
-      - /root/Enterprise OS/workspace/packages/engine
-      - /root/Enterprise OS/workspace/packages/tooling
+      - /root/Enterprise-OS/workspace/packages/engine
+      - /root/Enterprise-OS/workspace/packages/tooling
     canonical_lifecycle: DRAFT
     internal_substates:
       - deferred
@@ -89,9 +89,9 @@ artifact_types:
     promotion_rule: cannot leave deferred before Gate C is open.
   build_output:
     canonical_location:
-      - /root/Enterprise OS/workspace/**/dist
-      - /root/Enterprise OS/workspace/**/.next
-      - /root/Enterprise OS/build/evidence
+      - /root/Enterprise-OS/workspace/**/dist
+      - /root/Enterprise-OS/workspace/**/.next
+      - /root/Enterprise-OS/build/evidence
     canonical_lifecycle: VERIFIED
     internal_substates:
       - generated
@@ -104,8 +104,8 @@ artifact_types:
     promotion_rule: build output is never canonical source of truth.
   proof_artifact:
     canonical_location:
-      - /root/Enterprise OS/build/evidence
-      - /root/Enterprise OS/evidence
+      - /root/Enterprise-OS/build/evidence
+      - /root/Enterprise-OS/evidence
     canonical_lifecycle: VERIFIED
     internal_substates:
       - generated

@@ -1,7 +1,39 @@
 id: legal-case
 name: Case Management
 version: 0.1.0
+owner: legal-domain
+status: ACTIVE
+introduced: "2026-07-05"
+provides:
+  - case-lifecycle
+  - case-workspace
+  - case-permissions
+purpose: Manage legal case lifecycle, workspaces, and collaboration across the EOS platform.
+manifest_version: 1.0.0
+exports:
+  - CaseService
+  - CaseCommands
+  - CaseQueries
 presentation:
   view: CaseView
 implementation:
   entry: implementation/service.ts
+depends_on:
+  - workflow-engine
+  - legal-document
+  - knowledge-graph
+capability:
+  name: legal-case
+  owner: legal-domain
+  purpose: Manage legal case lifecycle, workspaces, and collaboration across the EOS platform.
+  consumers:
+    - lawyershub
+    - ilc
+  maturity:
+    level: product
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - user-adoption
+stability: stable

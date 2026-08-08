@@ -68,11 +68,11 @@ The following work is locked out until the foundation is complete:
 
 Implementation work must stay aligned with:
 
-- `/root/Enterprise OS/CONSTITUTION.md`
-- `/root/Enterprise OS/enterprise/specifications/architecture-baseline-v1.yaml`
-- `/root/Enterprise OS/governance/BASELINE_LOCK.yaml`
-- `/root/Enterprise OS/workspace/workspace.yaml`
-- `/root/Enterprise OS/governance/*.yaml`
+- `/root/Enterprise-OS/CONSTITUTION.md`
+- `/root/Enterprise-OS/enterprise/specifications/architecture-baseline-v1.yaml`
+- `/root/Enterprise-OS/governance/BASELINE_LOCK.yaml`
+- `/root/Enterprise-OS/workspace/workspace.yaml`
+- `/root/Enterprise-OS/governance/*.yaml`
 
 ## Gate A Exit Review
 

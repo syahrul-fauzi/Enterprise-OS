@@ -36,14 +36,14 @@ def main():
         "--input-dir",
         "-i",
         type=Path,
-        default=Path("/root/Enterprise OS/implementation/eke/output"),
+        default=Path("/root/Enterprise-OS/implementation/eke/output"),
         help="Directory containing EKE artifacts (default: eke/output)"
     )
     parser.add_argument(
         "--output-dir",
         "-o",
         type=Path,
-        default=Path("/root/Enterprise OS/implementation/eis/output"),
+        default=Path("/root/Enterprise-OS/implementation/eis/output"),
         help="Directory to write EIS artifacts (default: eis/output)"
     )
     args = parser.parse_args()

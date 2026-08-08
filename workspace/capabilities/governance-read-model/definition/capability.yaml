@@ -1,6 +1,14 @@
 id: governance-read-model
 name: Governance Read Model
 version: 0.1.0
+owner: governance-domain
+status: ACTIVE
+introduced: "2026-07-16"
+provides:
+  - governance-dashboards
+  - read-model-projections
+  - analytics
+purpose: Provide materialized views and analytics dashboards for governance evidence and decision intelligence.
 manifest_version: 1.0.0
 exports:
   - GovernanceReadModelProvider
@@ -11,19 +19,34 @@ exports:
   - GovernanceDashboardView
 depends_on:
   - governance-evidence
+  - evidence-registry
   - core-runtime
 allowed_dependencies:
   - core-runtime
   - governance-evidence
+  - evidence-registry
 forbidden_dependencies:
   - api-platform
   - trust-framework
-consumed_by:
-  - api-platform
+implementation:
+  entry: implementation/service.ts
+capability:
+  name: governance-read-model
+  owner: governance-domain
+  purpose: Provide materialized views and analytics dashboards for governance evidence and decision intelligence.
+  consumers:
+    - api-platform
+    - observability
+    - requirements-traceability-matrix
+  maturity:
+    level: core
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - dashboard_usage
 stability: stable
 contracts:
   provides:
     - name: GovernanceReadModelProvider
       version: 1.0.0
-implementation:
-  entry: implementation/service.ts

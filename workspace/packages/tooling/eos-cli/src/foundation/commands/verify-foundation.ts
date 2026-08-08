@@ -10,6 +10,11 @@ import {
   buildExecutionGraphFitness,
   buildExecutionGraphModel,
 } from "@repo/core-capability-registry";
+import {
+  attributionReadGatewayService,
+  type EvaluationAttributionRecordV1,
+} from "../../../../../../procedures/attribution/index.js";
+import { requirementDeliveryGatewayService } from "../../../../../../capabilities/api-platform/implementation/services/index.js";
 import { materializeArchitectureFitnessReport } from "../../architecture-fitness-runtime.js";
 import { materializeCapabilityGraphProjection } from "../../capability/runtime/graph-runtime.js";
 import { materializeCapabilityGovernanceProjection } from "../../capability/runtime/governance-runtime.js";
@@ -147,6 +152,59 @@ export async function runVerifyFoundationCommand(): Promise<number> {
     governancePortfolioPath,
   );
   const qualityGates = readYamlArtifact<QualityGates>(qualityGatesPath);
+
+  // ==============================
+  // Attribution V1 Governance Consumption (Gate 4)
+  // ==============================
+  // Hanya untuk prepare_release procedure sesuai scope yang dikunci
+  const PREPARE_RELEASE_PROCEDURE = "prepare_release";
+  const PREPARE_RELEASE_CANONICAL_SUBJECT = "release:EOS-001";
+  
+  // Menggunakan AttributionReadGateway - TIDAK ADA filesystem access langsung
+  const attributionRecords = attributionReadGatewayService.listAttributionRecords({
+    procedure: PREPARE_RELEASE_PROCEDURE,
+    canonicalSubject: PREPARE_RELEASE_CANONICAL_SUBJECT,
+  });
+
+  const latestRecord = attributionReadGatewayService.getLatestAttributionRecord({
+    procedure: PREPARE_RELEASE_PROCEDURE,
+    canonicalSubject: PREPARE_RELEASE_CANONICAL_SUBJECT,
+  });
+
+  // Verifikasi invariant - TIDAK PERNAH memparse executionId
+  if (latestRecord) {
+    const invariantCheck = attributionReadGatewayService.verifyExecutionIdInvariant({
+      executionId: latestRecord.executionId,
+      procedure: latestRecord.procedure,
+      canonicalSubject: latestRecord.canonicalSubject,
+    });
+
+    if (!invariantCheck.valid) {
+      console.error("\n❌ INVALID ATTRIBUTION RECORD:", invariantCheck.reason);
+      console.error("   executionId:", latestRecord.executionId);
+      console.error("   procedure:", latestRecord.procedure);
+      console.error("   canonicalSubject:", latestRecord.canonicalSubject);
+      // Lanjutkan eksekusi tetapi tandai record ini invalid
+    } else {
+      console.log("\n✅ Attribution Record valid:");
+      console.log("   Work Identity:", `${latestRecord.procedure}/${latestRecord.canonicalSubject}`);
+      console.log("   Recorded at:", latestRecord.evaluatedAt);
+      console.log("   Recorded input fingerprint:", latestRecord.inputDigest.slice(0, 16));
+      console.log("   Recorded result fingerprint:", latestRecord.resultDigest.slice(0, 16));
+
+      // Gunakan Work Identity untuk query existing RTM/evidence gateway - TIDAK MEMBUAT RELATION BARU
+      const traceability = requirementDeliveryGatewayService.search({
+        linkedCapabilityId: latestRecord.procedure,
+        limit: 10,
+      });
+
+      console.log("\n🔍 Current traceability status:");
+      console.log("   Total requirements linked:", traceability.total);
+      console.log("   Requirements with evidence:", traceability.summary.evidenceBackedCount);
+    }
+  } else {
+    console.log("\nℹ️  No attribution records found for prepare_release procedure");
+  }
   const registryReport = buildCapabilityRegistryModel({
     eosRoot: EOS_ROOT,
     workspaceRoot: WORKSPACE_ROOT,

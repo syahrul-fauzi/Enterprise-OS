@@ -6,7 +6,7 @@ frozen_theory_reference: CC-001
 scientific_method_identity_horizon: "2026-2036 (aligned with CC-001 frozen predicate model)"
 authoritative_refs:
   theory:
-    - file:///root/Enterprise%20OS/governance/CC-001-CONSTITUTIONAL-CHARTER.md
+    - file:///root/Enterprise-OS/governance/CC-001-CONSTITUTIONAL-CHARTER.md
   predicates:
     - LEX-0000A (Predicate A — Legitimate(x))
     - LEX-0000B (Predicate B — MeaningPreserved(T))

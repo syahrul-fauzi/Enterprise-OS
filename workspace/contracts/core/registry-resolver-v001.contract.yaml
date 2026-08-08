@@ -12,12 +12,12 @@ promotion_notes:
 
 specification_language: "EOS Contract v1.0"
 governance_refs:
-  constitution: /root/Enterprise OS/constitution/CONSTITUTION.md
-  baseline_lock: /root/Enterprise OS/governance/BASELINE_LOCK.yaml
+  constitution: /root/Enterprise-OS/constitution/CONSTITUTION.md
+  baseline_lock: /root/Enterprise-OS/governance/BASELINE_LOCK.yaml
   axioms: [AXIOM-IMP-001, AXIOM-IMP-002, AXIOM-IMP-003, AXIOM-IMP-004, AXIOM-IMP-005, AXIOM-IMP-006, AXIOM-IMP-007]
   adr:
-    - /root/Enterprise OS/enterprise/decisions/adr/ADR-001-implementation-axioms-kbe-engine-executor.yaml
-    - /root/Enterprise OS/enterprise/decisions/adr/ADR-002-layered-architecture-invariants-risk-mitigation.yaml
+    - /root/Enterprise-OS/enterprise/decisions/adr/ADR-001-implementation-axioms-kbe-engine-executor.yaml
+    - /root/Enterprise-OS/enterprise/decisions/adr/ADR-002-layered-architecture-invariants-risk-mitigation.yaml
 
 contract_rationale: >
   Registry Resolver adalah "jembatan" antara Transformation Catalog (SSOT YAML) dan seluruh
@@ -109,7 +109,7 @@ verdict_rules:
 
 evidence_output:
   kind: CONFORMANCE_RESULTS
-  location: "/root/Enterprise OS/workspace/packages/core/registry-resolver/tests/conformance.ts"
+  location: "/root/Enterprise-OS/workspace/packages/core/registry-resolver/tests/conformance.ts"
   required_assertions:
     - resolve('T001').proof.proof_level = TRANSFORMATION_PROOF
     - resolve('T001').predicates_ordered.length = 3

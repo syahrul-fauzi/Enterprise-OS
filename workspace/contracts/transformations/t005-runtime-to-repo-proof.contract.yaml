@@ -5,7 +5,7 @@ contract:
   status: DRAFT
   kind: TRANSFORMATION_CONTRACT
   transformation_id: T005
-  transformation_catalog_ref: /root/Enterprise OS/enterprise/execution/transformation-catalog.yaml#transformations[4]
+  transformation_catalog_ref: /root/Enterprise-OS/enterprise/execution/transformation-catalog.yaml#transformations[4]
   axiom_kbe_enforced: true
   precedence_constraint: BLOCKED_UNTIL_T004_VERIFIED
   repository_proof_is_output_not_state: true
@@ -31,4 +31,4 @@ evidence_output:
   kind: REPOSITORY_PROOF
   proof_id_pattern: REP-PROOF-<seq>
   append_only: true
-  output_location: /root/Enterprise OS/build/evidence/repository-proof/
+  output_location: /root/Enterprise-OS/build/evidence/repository-proof/

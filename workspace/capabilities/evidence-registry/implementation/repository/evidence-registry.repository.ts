@@ -12,7 +12,12 @@ const SCAN_ROOTS = [
   "enterprise/science/gate-c/execution",
   "enterprise/science/gate-c/specification/fixtures/evidence",
   "workspace/examples/vertical-slice/REQ-0001",
+  "workspace/examples/vertical-slice/REQ-011",
+  "workspace/examples/vertical-slice/REQ-010",
   "examples/vertical-slice/REQ-0001",
+  "examples/vertical-slice/REQ-011",
+  "examples/vertical-slice/REQ-010",
+  "workspace/.eos/evidence/",
   "products",
 ] as const;
 
@@ -74,7 +79,9 @@ function shouldInclude(relativePath: string): boolean {
     relativePath.includes("/metrics/canonical-evidence-") ||
     relativePath.endsWith(".els.yaml") ||
     relativePath.endsWith(".eir.json") ||
-    (relativePath.includes("/evidence/delivery/") && relativePath.endsWith(".json"))
+    relativePath.endsWith("runtime-invocations.jsonl") ||
+    (relativePath.includes("/evidence/delivery/") &&
+      (relativePath.endsWith(".json") || relativePath.endsWith(".jsonl")))
   );
 }
 
@@ -125,6 +132,124 @@ function extractRequirementRefs(relativePath: string): readonly string[] {
   return Array.from(new Set(matches.map((value) => value.toUpperCase())));
 }
 
+function extractDecisionIdsFromJson(
+  value: unknown,
+  collector: { decisionIds: Set<string>; requirementIds: Set<string> },
+): void {
+  if (value === null || value === undefined) return;
+  if (typeof value === "object") {
+    const rec = value as Record<string, unknown>;
+    if (typeof rec.decision_id === "string" && rec.decision_id.length > 0) {
+      collector.decisionIds.add(rec.decision_id);
+    }
+    if (typeof rec.decisionId === "string" && rec.decisionId.length > 0) {
+      collector.decisionIds.add(rec.decisionId);
+    }
+    if (typeof rec.requirement_id === "string" && rec.requirement_id.length > 0) {
+      collector.requirementIds.add(rec.requirement_id);
+    }
+    if (typeof rec.requirementId === "string" && rec.requirementId.length > 0) {
+      collector.requirementIds.add(rec.requirementId);
+    }
+    if (typeof rec.requirementRef === "string" && rec.requirementRef.length > 0) {
+      collector.requirementIds.add(rec.requirementRef);
+    }
+    if (Array.isArray(rec.requirementRefs)) {
+      for (const ref of rec.requirementRefs) {
+        if (typeof ref === "string" && ref.length > 0) {
+          collector.requirementIds.add(ref);
+        }
+      }
+    }
+    if (Array.isArray(value)) {
+      for (const entry of value as readonly unknown[]) {
+        extractDecisionIdsFromJson(entry, collector);
+      }
+    } else {
+      for (const child of Object.values(rec)) {
+        extractDecisionIdsFromJson(child, collector);
+      }
+    }
+  }
+}
+
+function resolveGovernanceDecisionsByDecisionIds(
+  decisionIds: readonly string[],
+): readonly { readonly requirement_id: string; readonly decision_id: string }[] {
+  if (decisionIds.length === 0) return [];
+  try {
+    const governanceModule = require("../../../governance-evidence/implementation/services/governed-delivery-seam/delivery-decision-gateway.service") as {
+      DeliveryDecisionGatewayService: any;
+    };
+    const Gateway = governanceModule.DeliveryDecisionGatewayService;
+    if (typeof Gateway !== "function") return [];
+    const instance = new Gateway();
+    const out: { requirement_id: string; decision_id: string }[] = [];
+    for (const decisionId of decisionIds) {
+      const decision = instance.getDecisionById?.(decisionId);
+      if (decision && typeof decision.requirement_id === "string") {
+        out.push({ requirement_id: decision.requirement_id, decision_id: decision.decision_id });
+      }
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}
+
+function extractIdentityFromEvidenceContent(absolutePath: string): {
+  readonly requirementRefs: readonly string[];
+  readonly decisionIds: readonly string[];
+} {
+  try {
+    if (!absolutePath.endsWith(".json") && !absolutePath.endsWith(".jsonl")) {
+      return { requirementRefs: [], decisionIds: [] };
+    }
+    const raw = fs.readFileSync(absolutePath, "utf8").trim();
+    if (raw.length === 0) {
+      return { requirementRefs: [], decisionIds: [] };
+    }
+
+    const collector = { decisionIds: new Set<string>(), requirementIds: new Set<string>() };
+
+    if (absolutePath.endsWith(".jsonl")) {
+      for (const line of raw.split(/\r?\n/g)) {
+        const trimmed = line.trim();
+        if (trimmed.length === 0) continue;
+        try {
+          const parsed = JSON.parse(trimmed);
+          extractDecisionIdsFromJson(parsed, collector);
+        } catch {
+          // Skip malformed line
+        }
+      }
+    } else {
+      try {
+        const parsed = JSON.parse(raw);
+        extractDecisionIdsFromJson(parsed, collector);
+      } catch {
+        // Non-JSON content, skip content parse
+      }
+    }
+
+    const resolvedFromDecisions = resolveGovernanceDecisionsByDecisionIds([
+      ...collector.decisionIds,
+    ]);
+    for (const resolved of resolvedFromDecisions) {
+      if (resolved.requirement_id) {
+        collector.requirementIds.add(resolved.requirement_id);
+      }
+    }
+
+    return {
+      requirementRefs: [...collector.requirementIds],
+      decisionIds: [...collector.decisionIds],
+    };
+  } catch {
+    return { requirementRefs: [], decisionIds: [] };
+  }
+}
+
 function normalizeId(relativePath: string): string {
   return Buffer.from(relativePath, "utf8").toString("base64url");
 }
@@ -157,7 +282,12 @@ function buildRecord(relativePath: string, absolutePath: string): EvidenceRecord
   const kind = detectKind(relativePath);
   const scope = detectScope(relativePath);
   const runId = extractRunId(relativePath);
-  const requirementRefs = extractRequirementRefs(relativePath);
+  const pathBasedRefs = extractRequirementRefs(relativePath);
+  const contentIdentity = extractIdentityFromEvidenceContent(absolutePath);
+
+  const mergedRefs = Array.from(
+    new Set<string>([...pathBasedRefs, ...contentIdentity.requirementRefs]),
+  );
 
   return {
     id: normalizeId(relativePath),
@@ -168,9 +298,12 @@ function buildRecord(relativePath: string, absolutePath: string): EvidenceRecord
     sizeBytes: stat.size,
     updatedAt: stat.mtime.toISOString(),
     ...(runId !== undefined ? { runId } : {}),
-    requirementRefs,
-    tags: buildTags(kind, scope, runId, requirementRefs, relativePath),
-  };
+    requirementRefs: mergedRefs,
+    tags: buildTags(kind, scope, runId, mergedRefs, relativePath),
+    ...(contentIdentity.decisionIds.length > 0
+      ? { decisionIds: contentIdentity.decisionIds as readonly string[] }
+      : {}),
+  } as EvidenceRecord & { readonly decisionIds?: readonly string[] };
 }
 
 function buildRecordDetail(absolutePath: string, record: EvidenceRecord): EvidenceRecordDetail {

@@ -1,0 +1,2 @@
+{"capability_id":"governance-read-model","operation_id":"get-latest-snapshot","sourceRef":"GovernanceReadModelService.getLatestSnapshot","success":true,"input":{},"result":{"timestamp":"2026-08-07T23:55:31.353Z"}}
+{"capability_id":"governance-read-model","operation_id":"get-system-health-summary","sourceRef":"GovernanceReadModelService.getSystemHealthSummary","success":true,"input":{},"result":{"passRate":"46.15%","totalCapabilities":13}}

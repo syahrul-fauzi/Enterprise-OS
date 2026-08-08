@@ -4,12 +4,12 @@ kind: SPECIFICATION
 spec_kind: COMPILER_PASS_FRAMEWORK
 ssot_note: THIS_SPEC_DEFINES_THE_8_PASS_FRAMEWORK_FOR_THE_EOS_KNOWLEDGE_COMPILER._EVERY_REASONING_STEP_IS_A_PURE_PASS_THAT_CONSUMES_ONE_INPUT_IR_AND_PRODUCES_ONE_OUTPUT_IR_PLUS_DIAGNOSTICS._IA_14_PURITY_APPLIES_TO_ALL_8_PASSES._INDIVIDUAL_PASSES_ARE_DETERMINISTICALLY_TESTABLE.
 governance_ref:
-  ia13_stable_ir: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_13_stable_intermediate_representations
-  ia14_pure_passes: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
-  ia10_snapshot_boundary: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_10_immutable_knowledge_snapshot
-  pipeline_contract: /root/Enterprise OS/enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
-  knowledge_ir_contract: /root/Enterprise OS/workspace/contracts/KNOWLEDGE-IR.contract.yaml
-  decision_ir_contract: /root/Enterprise OS/workspace/contracts/DECISION-IR.contract.yaml
+  ia13_stable_ir: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_13_stable_intermediate_representations
+  ia14_pure_passes: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_14_pure_compiler_passes
+  ia10_snapshot_boundary: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_10_immutable_knowledge_snapshot
+  pipeline_contract: /root/Enterprise-OS/enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
+  knowledge_ir_contract: /root/Enterprise-OS/workspace/contracts/KNOWLEDGE-IR.contract.yaml
+  decision_ir_contract: /root/Enterprise-OS/workspace/contracts/DECISION-IR.contract.yaml
 derived_from:
   - Reasoning_Layer_Split_Into_Compiler_Passes_User_Point_8
 

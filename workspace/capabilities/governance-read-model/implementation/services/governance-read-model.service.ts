@@ -1,158 +1,137 @@
-import { existsSync, readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
-import { recordRuntimeInvocation } from "@repo/core-runtime";
-import type {
-  GovernanceClaimsView,
-  GovernanceDashboardView,
-  GovernanceHealthView,
-  GovernanceReadModelCatalog,
-  GovernanceReadModelKind,
-  GovernanceReadModelLocation,
-  GovernanceReadModelProvider,
-  GovernanceSummaryView,
-  JsonRecord,
-} from "../contracts";
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const WORKSPACE_ROOT = resolve(__dirname, "../../../../");
+const __dirname = path.dirname(__filename);
+const WORKSPACE_ROOT = path.resolve(__dirname, '../../../../');
 
-const READ_MODEL_PATHS: Record<GovernanceReadModelKind, string> = {
-  summary: resolve(
-    WORKSPACE_ROOT,
-    "foundation/evidence/verification/governance-summary-view.json",
-  ),
-  claims: resolve(
-    WORKSPACE_ROOT,
-    "foundation/evidence/verification/governance-claims-view.json",
-  ),
-  health: resolve(
-    WORKSPACE_ROOT,
-    "foundation/evidence/verification/governance-health-view.json",
-  ),
-  dashboard: resolve(
-    WORKSPACE_ROOT,
-    "foundation/evidence/verification/governance-dashboard-view.json",
-  ),
-};
+const HISTORY_PATH = path.resolve(WORKSPACE_ROOT, 'capabilities/governance-evidence/evidence/history/governance-decisions.history.jsonl');
+const EVIDENCE_PATH = path.join(WORKSPACE_ROOT, 'capabilities/governance-read-model/evidence/verification/runtime-invocations.jsonl');
 
-class GovernanceReadModelCatalogFileSystem implements GovernanceReadModelCatalog {
-  resolve(kind: GovernanceReadModelKind): GovernanceReadModelLocation {
-    return {
-      kind,
-      path: READ_MODEL_PATHS[kind],
+// Ensure evidence directory exists
+function ensureEvidenceDirExists(): void {
+  const dir = path.dirname(EVIDENCE_PATH);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+}
+
+// B7.18.1: Record runtime invocations for governance-read-model
+function recordRuntimeInvocation(invocation: {
+  capability_id: string;
+  operation_id: string;
+  sourceRef: string;
+  success: boolean;
+  input: Record<string, unknown>;
+  result: Record<string, unknown>;
+}): void {
+  ensureEvidenceDirExists();
+  const line = JSON.stringify(invocation) + "\n";
+  fs.appendFileSync(EVIDENCE_PATH, line);
+  console.log(`[GovernanceReadModel Collector] Recorded invocation: ${invocation.operation_id} for ${invocation.capability_id}`);
+}
+
+export class GovernanceReadModelService {
+  /**
+   * Mengambil snapshot keputusan governance terakhir dari history.
+   */
+  public getLatestSnapshot(): any {
+    if (!fs.existsSync(HISTORY_PATH)) {
+      recordRuntimeInvocation({
+        capability_id: "governance-read-model",
+        operation_id: "get-latest-snapshot",
+        sourceRef: "GovernanceReadModelService.getLatestSnapshot",
+        success: false,
+        input: {},
+        result: { error: 'Governance history file not found.' }
+      });
+      throw new Error('Governance history file not found.');
+    }
+
+    const fileContent = fs.readFileSync(HISTORY_PATH, 'utf-8');
+    const lines = fileContent.trim().split('\n');
+    if (lines.length === 0) {
+      recordRuntimeInvocation({
+        capability_id: "governance-read-model",
+        operation_id: "get-latest-snapshot",
+        sourceRef: "GovernanceReadModelService.getLatestSnapshot",
+        success: false,
+        input: {},
+        result: { error: 'History is empty.' }
+      });
+      return { error: 'History is empty.' };
+    }
+
+    const lastLine = lines[lines.length - 1];
+    try {
+      const snapshot = JSON.parse(lastLine);
+      recordRuntimeInvocation({
+        capability_id: "governance-read-model",
+        operation_id: "get-latest-snapshot",
+        sourceRef: "GovernanceReadModelService.getLatestSnapshot",
+        success: true,
+        input: {},
+        result: { timestamp: snapshot.timestamp }
+      });
+      return snapshot;
+    } catch (e) {
+      console.error("Failed to parse last line of history:", e);
+      recordRuntimeInvocation({
+        capability_id: "governance-read-model",
+        operation_id: "get-latest-snapshot",
+        sourceRef: "GovernanceReadModelService.getLatestSnapshot",
+        success: false,
+        input: {},
+        result: { error: 'Failed to parse history data.' }
+      });
+      return { error: 'Failed to parse history data.' };
+    }
+  }
+
+  /**
+   * Menyediakan ringkasan kesehatan sistem.
+   */
+  public getSystemHealthSummary(): any {
+    const snapshot = this.getLatestSnapshot();
+    if (snapshot.error) {
+      recordRuntimeInvocation({
+        capability_id: "governance-read-model",
+        operation_id: "get-system-health-summary",
+        sourceRef: "GovernanceReadModelService.getSystemHealthSummary",
+        success: false,
+        input: {},
+        result: snapshot
+      });
+      return snapshot;
+    }
+
+    const decisions = snapshot.decisions || [];
+    const total = decisions.length;
+    const pass = decisions.filter((d: any) => d.decision === 'PASS').length;
+    const fail = total - pass;
+    const passRate = total > 0 ? (pass / total) * 100 : 0;
+
+    const summary = {
+      timestamp: snapshot.timestamp,
+      totalCapabilities: total,
+      passCount: pass,
+      failCount: fail,
+      passRate: `${passRate.toFixed(2)}%`,
+      failingCapabilities: decisions
+        .filter((d: any) => d.decision !== 'PASS')
+        .map((d: any) => d.capability_id),
     };
+
+    recordRuntimeInvocation({
+      capability_id: "governance-read-model",
+      operation_id: "get-system-health-summary",
+      sourceRef: "GovernanceReadModelService.getSystemHealthSummary",
+      success: true,
+      input: {},
+      result: { passRate: summary.passRate, totalCapabilities: summary.totalCapabilities }
+    });
+
+    return summary;
   }
 }
-
-function readView(path: string, kind: GovernanceReadModelKind): JsonRecord {
-  if (!existsSync(path)) {
-    throw new Error(
-      `governance_read_model_${kind}_unavailable: missing read model at ${path}. Run constitution/foundation verification first.`,
-    );
-  }
-
-  const artifact = JSON.parse(readFileSync(path, "utf8")) as JsonRecord;
-  if (
-    artifact === null ||
-    typeof artifact !== "object" ||
-    Array.isArray(artifact)
-  ) {
-    throw new Error(
-      `governance_read_model_${kind}_shape_mismatch: expected object read model artifact.`,
-    );
-  }
-
-  return artifact;
-}
-
-export class GovernanceReadModelService implements GovernanceReadModelProvider {
-  constructor(
-    private readonly catalog: GovernanceReadModelCatalog = new GovernanceReadModelCatalogFileSystem(),
-  ) {}
-
-  materializeSummary(): GovernanceSummaryView {
-    const location = this.catalog.resolve("summary");
-    const result = readView(
-      location.path,
-      location.kind,
-    ) as GovernanceSummaryView;
-    recordRuntimeInvocation({
-      capabilityId: "governance-read-model",
-      operationId: "materialize-summary",
-      sourceRef: "GovernanceReadModelService.materializeSummary",
-      success: true,
-      input: { kind: location.kind, path: location.path },
-      result: {
-        viewId: result.view_id,
-        viewDigest: result.view_digest,
-      },
-    });
-    return result;
-  }
-
-  materializeClaims(): GovernanceClaimsView {
-    const location = this.catalog.resolve("claims");
-    const result = readView(
-      location.path,
-      location.kind,
-    ) as GovernanceClaimsView;
-    recordRuntimeInvocation({
-      capabilityId: "governance-read-model",
-      operationId: "materialize-claims",
-      sourceRef: "GovernanceReadModelService.materializeClaims",
-      success: true,
-      input: { kind: location.kind, path: location.path },
-      result: {
-        viewId: result.view_id,
-        viewDigest: result.view_digest,
-      },
-    });
-    return result;
-  }
-
-  materializeHealth(): GovernanceHealthView {
-    const location = this.catalog.resolve("health");
-    const result = readView(
-      location.path,
-      location.kind,
-    ) as GovernanceHealthView;
-    recordRuntimeInvocation({
-      capabilityId: "governance-read-model",
-      operationId: "materialize-health",
-      sourceRef: "GovernanceReadModelService.materializeHealth",
-      success: true,
-      input: { kind: location.kind, path: location.path },
-      result: {
-        viewId: result.view_id,
-        viewDigest: result.view_digest,
-      },
-    });
-    return result;
-  }
-
-  materializeDashboard(): GovernanceDashboardView {
-    const location = this.catalog.resolve("dashboard");
-    const result = readView(
-      location.path,
-      location.kind,
-    ) as GovernanceDashboardView;
-    recordRuntimeInvocation({
-      capabilityId: "governance-read-model",
-      operationId: "materialize-dashboard",
-      sourceRef: "GovernanceReadModelService.materializeDashboard",
-      success: true,
-      input: { kind: location.kind, path: location.path },
-      result: {
-        viewId: result.view_id,
-        viewDigest: result.view_digest,
-      },
-    });
-    return result;
-  }
-}
-
-export const governanceReadModelCatalog =
-  new GovernanceReadModelCatalogFileSystem();
-export const governanceReadModelService = new GovernanceReadModelService();

@@ -7,7 +7,7 @@
 We have completed Phase 0 (Repository Baseline) and want to prevent the repository from gradually accumulating parallel concepts or overlapping specification families.
 
 ## Decision
-No new top-level directory, specification family, or artifact category may be introduced without an Architecture Decision Record (ADR) that justifies the change and updates the dependency hierarchy in [enterprise/ROADMAP.md](file:///root/Enterprise%20OS/enterprise/ROADMAP.md).
+No new top-level directory, specification family, or artifact category may be introduced without an Architecture Decision Record (ADR) that justifies the change and updates the dependency hierarchy in [enterprise/ROADMAP.md](file:///root/Enterprise-OS/enterprise/ROADMAP.md).
 
 ## Rationale
 This prevents repository drift and ensures every structural change is intentional and documented.

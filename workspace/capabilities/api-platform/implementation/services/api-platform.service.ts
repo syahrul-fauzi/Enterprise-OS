@@ -417,6 +417,19 @@ export class ApiPlatformService {
                                       typeof params.limit === "number"
                                         ? params.limit
                                         : undefined,
+                                    decision_id:
+                                      typeof params.decision_id === "string"
+                                        ? params.decision_id
+                                        : undefined,
+                                    productId:
+                                      typeof params.productId === "string"
+                                        ? params.productId
+                                        : process.env.EOS_RUNTIME_INVOCATION_PRODUCT_ID,
+                                  })
+                                : input.resource === "workflows" &&
+                                  input.operation === "trace"
+                                ? workflowEngineService.traceExecutionsByDecision({
+                                    decision_id: String(params.decision_id ?? ""),
                                   })
                                 : undefined;
             })();

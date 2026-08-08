@@ -11,7 +11,16 @@
     "eos:doctor": "python3 implementation/eos/engines/doctor/engine.py lawyershub",
     "eos": "pnpm --dir ./workspace eos"
   },
-  "keywords": ["enterprise-os", "evidence-driven", "governance", "kernel", "engines"],
+  "keywords": [
+    "enterprise-os",
+    "evidence-driven",
+    "governance",
+    "kernel",
+    "engines"
+  ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^26.1.2"
+  }
 }

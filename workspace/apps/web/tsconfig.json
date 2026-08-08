@@ -2,6 +2,8 @@
   "extends": "@repo/config-typescript/nextjs.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "ignoreDeprecations": "5.0",
+    "types": ["node"],
     "paths": {
       "@repo/core-kernel": ["../../packages/core/kernel/dist/index"],
       "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*"],

@@ -6,11 +6,11 @@ abbreviation: CONST-VERIF
 evolution_domain: DOMAIN-B-SPECIFICATION
 ssot_note: CONSTITUTIONAL_VERIFIER_IS_THE_NEW_NAME_FOR_THE_OLD_ARCH-CHECK_TOOL._IT_VERIFIES_THAT_IMPLEMENTATION_CONFORMS_TO_CONSTITUTION._IT_DOES_NOT_KNOW_RULES_INTELLECTUALLY;_IT_EXECUTES_COMPILED_RULES_FROM_CONSTIT-IR_GENERATED_BY_CONST-COMP._PIPELINE_IS_PURE_(NO_UPSTREAM_MUTATION)_AND_DETERMINISTIC_(2X_RUN_HASH_EQUAL)._THIS_IS_THE_OPERATIONALIZATION_OF_USER_POINT_4_(ARCH-CHECK_→_CONSTITUTIONAL-VERIFIER)_AND_USER_POINT_7_(AUTHORITY_FLOW_AS_DAG_CHECK).
 governance_ref:
-  mp01: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#MP-01
-  constit_compiler: /root/Enterprise OS/enterprise/specifications/CONSTITUTIONAL-COMPILER.spec.yaml
-  constit_ir: /root/Enterprise OS/workspace/contracts/CONSTITUTION-IR.contract.yaml
-  arch_manifest: /root/Enterprise OS/governance/ARCH-RULE-GENERATION.manifest.yaml
-  authority_dag_schema: /root/Enterprise OS/enterprise/schema/AUTHORITY-DAG.schema.yaml
+  mp01: /root/Enterprise-OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml#MP-01
+  constit_compiler: /root/Enterprise-OS/enterprise/specifications/CONSTITUTIONAL-COMPILER.spec.yaml
+  constit_ir: /root/Enterprise-OS/workspace/contracts/CONSTITUTION-IR.contract.yaml
+  arch_manifest: /root/Enterprise-OS/governance/ARCH-RULE-GENERATION.manifest.yaml
+  authority_dag_schema: /root/Enterprise-OS/enterprise/schema/AUTHORITY-DAG.schema.yaml
 derived_from:
   - User_Point_Constitutional_Verifier_Renamed_From_Arch_Check
   - User_Point_Authority_Flow_DAG_Check

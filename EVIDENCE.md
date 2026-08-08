@@ -3,14 +3,14 @@
 Change Frequency Level: **Level 2 (Evidence Append-Only)**
 Expected Change Rate: setiap eksperimen selesai, setiap audit purity snapshot, setiap gap analysis baru — beberapa kali per minggu / milestone.
 Change Mechanism: APPEND-ONLY (tambah entry BARU di bagian belakang). Hasil evidence lama TIDAK DIHAPUS (sesuai PASAL 3 Immutable Scientific Record Layer 1 identity).
-Cross-Reference: [CONSTITUTION.md](file:///root/Enterprise%20OS/CONSTITUTION.md) · [ARCHITECTURE.md](file:///root/Enterprise%20OS/ARCHITECTURE.md) · [STATUS.md](file:///root/Enterprise%20OS/STATUS.md) · [ROADMAP.md](file:///root/Enterprise%20OS/ROADMAP.md) (Rule of Five Dokumen Inti #3)
+Cross-Reference: [CONSTITUTION.md](file:///root/Enterprise-OS/CONSTITUTION.md) · [ARCHITECTURE.md](file:///root/Enterprise-OS/ARCHITECTURE.md) · [STATUS.md](file:///root/Enterprise-OS/STATUS.md) · [ROADMAP.md](file:///root/Enterprise-OS/ROADMAP.md) (Rule of Five Dokumen Inti #3)
 
 ---
 
 ## ⚠️ EPISTEMIC CAVEAT (SELALU DI BAGIAN ATAS)
 
 **SELURUH ISI DALAM DOKUMEN INI ADALAH EXECUTION REPORT (SISTEM MELAPORKAN DIRINYA SENDIRI).**
-Lihat [CONSTITUTION.md PASAL 2](file:///root/Enterprise%20OS/CONSTITUTION.md#L80-L103) (Auditor Caveat):
+Lihat [CONSTITUTION.md PASAL 2](file:///root/Enterprise-OS/CONSTITUTION.md#L80-L103) (Auditor Caveat):
 - **JANGAN** percaya teks ini sebagai fakta terverifikasi tanpa audit independen.
 - **WAJIB** Auditor: fresh clone, install via lockfile, jalankan reproducibility bundle, bandingkan SHA fingerprint.
 - Sampai audit independen Frontier D selesai: status epistemik = **"self-certified execution report"**, bukan = "fakta independen terverifikasi".
@@ -165,7 +165,7 @@ Masih single-host fisik (Frontier A multi-host BELUM dijalankan) → masih 1 hon
 
 ## EJ-ALPHA12-001 — Alpha.12 Frontier C Falsification Battery 6/6 PASS
 
-Test Suite: [selftest.alpha12-falsification.ts](file:///root/Enterprise%20OS/workspace/packages/composition/selftest.alpha12-falsification.ts)
+Test Suite: [selftest.alpha12-falsification.ts](file:///root/Enterprise-OS/workspace/packages/composition/selftest.alpha12-falsification.ts)
 
 | ID | Attack (falsification attempt) | Expected | Actual | Status |
 |----|--------------------------------|----------|--------|--------|
@@ -200,10 +200,10 @@ Test Suite: [selftest.alpha12-falsification.ts](file:///root/Enterprise%20OS/wor
 
 | Tingkat | Violation | Locus |
 |---------|-----------|-------|
-| CRITICAL | experience field MANDATORY (bukan optional) di kontrak kernel | [types.ts L73](file:///root/Enterprise%20OS/workspace/packages/core/kernel/src/types.ts#L73) · [schemas.ts L19-L23](file:///root/Enterprise%20OS/workspace/packages/core/kernel/src/schemas.ts#L19-L23) · [registry.ts L60-L71](file:///root/Enterprise%20OS/workspace/packages/core/capability-registry/src/registry.ts#L60-L71) |
-| CRITICAL | Composition + Experience folders berada DI DALAM capability directory | [legal-case/experience + composition](file:///root/Enterprise%20OS/workspace/capabilities/legal-case) · [legal-document same structure](file:///root/Enterprise%20OS/workspace/capabilities/legal-document) |
-| HIGH | Routes explicit kind: workspace, path `/workspace/case` dalam capability scope | [case.routes.ts L7-L50](file:///root/Enterprise%20OS/workspace/capabilities/legal-case/experience/routes/case.routes.ts#L7-L50) |
-| HIGH | Runtime package core/runtime/ mengexport React Workspace Component (UI-specific → seharusnya presentation) | [workspace.tsx L4 + L8](file:///root/Enterprise%20OS/workspace/packages/core/runtime/src/workspace.tsx#L4) |
+| CRITICAL | experience field MANDATORY (bukan optional) di kontrak kernel | [types.ts L73](file:///root/Enterprise-OS/workspace/packages/core/kernel/src/types.ts#L73) · [schemas.ts L19-L23](file:///root/Enterprise-OS/workspace/packages/core/kernel/src/schemas.ts#L19-L23) · [registry.ts L60-L71](file:///root/Enterprise-OS/workspace/packages/core/capability-registry/src/registry.ts#L60-L71) |
+| CRITICAL | Composition + Experience folders berada DI DALAM capability directory | [legal-case/experience + composition](file:///root/Enterprise-OS/workspace/capabilities/legal-case) · [legal-document same structure](file:///root/Enterprise-OS/workspace/capabilities/legal-document) |
+| HIGH | Routes explicit kind: workspace, path `/workspace/case` dalam capability scope | [case.routes.ts L7-L50](file:///root/Enterprise-OS/workspace/capabilities/legal-case/experience/routes/case.routes.ts#L7-L50) |
+| HIGH | Runtime package core/runtime/ mengexport React Workspace Component (UI-specific → seharusnya presentation) | [workspace.tsx L4 + L8](file:///root/Enterprise-OS/workspace/packages/core/runtime/src/workspace.tsx#L4) |
 | HIGH | Speculative layout tanpa 2×2 leverage proof (belum ada bukti empiris ELRv2 ≥ 2.0) | Frozen Principle #6 tercatat tapi impl Struktur sekarang = masih speculative → INCONCLUSIVE sampai Alpha.13 bukti |
 
 ### Urutan Perbaikan (Non-Reorg Prematur — PATUH PRINSIP #6)
@@ -340,7 +340,7 @@ Konstusi L29-L43 Failure Mode Meta-Architecture Drift: SELURUH L0-L3 hanya diizi
 
 ### Nilai Epistemik Kalibrasi Ini
 
-⚠️ **HONESTY BOUNDARY v2 (Kalibrasi Kesembilan):** 4 poin di bawah ini = **ASSESMAN DESAIN STRUKTUR + INTENSI MANFAAT** (bukti: desain aturan ADA di artefak). BUKAN = klaim manfaat empiris SUDAH TERBUKTI di lapangan. Untuk setiap klaim manfaat empiris (mengurangi fragmentasi → cognitive load rendah; framing measurement → anti-bias; dll) ⚠️ SEMUA MASIH HIPOTESIS YANG SEDANG DIUJI H3/H4/H5/H6. Perlu bukti B1-B4 Bottleneck Migration selesai dan angka RO1-RO6 terisi untuk diverifikasi atau dibantah. Link cross-reference: [Bagian 2 Tabel H1-H6](file:///root/Enterprise%20OS/EVIDENCE.md#L727-L741).
+⚠️ **HONESTY BOUNDARY v2 (Kalibrasi Kesembilan):** 4 poin di bawah ini = **ASSESMAN DESAIN STRUKTUR + INTENSI MANFAAT** (bukti: desain aturan ADA di artefak). BUKAN = klaim manfaat empiris SUDAH TERBUKTI di lapangan. Untuk setiap klaim manfaat empiris (mengurangi fragmentasi → cognitive load rendah; framing measurement → anti-bias; dll) ⚠️ SEMUA MASIH HIPOTESIS YANG SEDANG DIUJI H3/H4/H5/H6. Perlu bukti B1-B4 Bottleneck Migration selesai dan angka RO1-RO6 terisi untuk diverifikasi atau dibantah. Link cross-reference: [Bagian 2 Tabel H1-H6](file:///root/Enterprise-OS/EVIDENCE.md#L727-L741).
 
 1. **PASAL 8 menjadi filter KONSTITUSIONAL AKTIF**, bukan sekadar tulisan. Setiap usulan penambahan aturan/KPI/metric/gate WAJIB melewati perhitungan GC vs GB — jika GB<=GC ditolak mentah-mentah sebelum sampai ke PASAL 1.
 2. **Rule of Five mencegah fragmentasi dokumen governance (Desain Struktur Terbukti Artefak ✅).** Kecenderungan alami organisasi membuat Policy.md, MetaPolicy.md, Handbook — sekarang TERKUNCI secara konstitusional. Informasi baru HARUS masuk ke salah satu dari 5 wadah yang tersedia ⚠️ (H6: claim "→ cognitive load tetap rendah" = HIPOTESIS BELUM TERBUKTI — perlu data engineer baru onboarding RO5/RO6).
@@ -371,7 +371,7 @@ Kalibrasi ini ditujukan untuk **mencegah** ironi itu dengan menambahkan **self-c
 
 ### Perubahan 1: PASAL 8.A Prinsip Penyusutan Alami Konstitusi (BUKAN PASAL 9 — TEKAN USER EXPLICIT)
 
-**Lokasi Implementasi:** [CONSTITUTION.md PASAL 8.A L99-L145](file:///root/Enterprise%20OS/CONSTITUTION.md#L99-L145)
+**Lokasi Implementasi:** [CONSTITUTION.md PASAL 8.A L99-L145](file:///root/Enterprise-OS/CONSTITUTION.md#L99-L145)
 
 **Spesifikasi User Directive 100% Difollow:**
 - ❌ **BUKAN PASAL 9.** User secara eksplisit melarang penambahan PASAL baru. Implementasi: ini adalah **ANAK KLAUSUL PASAL 8** (PASAL 8.A) — Meta Architecture Budget yang diaplikasikan KEPADA KONSTITUSI SENDIRI.
@@ -389,8 +389,8 @@ Kalibrasi ini ditujukan untuk **mencegah** ironi itu dengan menambahkan **self-c
 ### Perubahan 2: Measurement Report sebagai Artefak PRIMER Alpha.13 — Gate Verdict = HANYA 1 FIELD di Interpretation
 
 **Lokasi Implementasi Utama:**
-- [ROADMAP.md L259-L278](file:///root/Enterprise%20OS/ROADMAP.md#L259-L278) — Evidentiary Flow yang Benar + Penegasan Gate ≠ Artefak Utama
-- [ROADMAP.md L487-L744](file:///root/Enterprise%20OS/ROADMAP.md#L487-L744) — Step 6 Measurement Report Lengkap 6 Bagian Format Resmi + Target Kelulusan Saintifik Diperbarui
+- [ROADMAP.md L259-L278](file:///root/Enterprise-OS/ROADMAP.md#L259-L278) — Evidentiary Flow yang Benar + Penegasan Gate ≠ Artefak Utama
+- [ROADMAP.md L487-L744](file:///root/Enterprise-OS/ROADMAP.md#L487-L744) — Step 6 Measurement Report Lengkap 6 Bagian Format Resmi + Target Kelulusan Saintifik Diperbarui
 
 **Spesifikasi User Directive 100% Difollow:**
 - ✅ **BUKAN output "Gate 0 PASS".** Output utama Alpha.13 adalah **Measurement Report** format 6 Bagian yang diusulkan user (dengan penyempurnaan nama section sesuai flow):
@@ -415,7 +415,7 @@ Kalibrasi ini ditujukan untuk **mencegah** ironi itu dengan menambahkan **self-c
 
 ### Perubahan 3: Decision Object Alpha.13 = WRAPPER Measurement Report (TIDAK MENDUPLIKASI BUKTI)
 
-**Lokasi:** [ROADMAP.md L681-L714](file:///root/Enterprise%20OS/ROADMAP.md#L681-L714)
+**Lokasi:** [ROADMAP.md L681-L714](file:///root/Enterprise-OS/ROADMAP.md#L681-L714)
 
 Sebelum (versi Kalibrasi Keempat): Decision Object menyimpan field sha_before, sha_after, metrik dst — BUKTI DIDUPLIKASI dari artefak measurement. Beresiko drift jika salah satu diubah.
 
@@ -430,7 +430,7 @@ Ini menghindari duplikasi bukti dan menjaga integritas provenance chain.
 
 ### Ringkasan Nilai Epistemik Kalibrasi Kelima
 
-⚠️ **HONESTY BOUNDARY v2 (Kalibrasi Kesembilan):** Tabel di bawah ini = **INTENSI MANFAAT DESAIN** (setiap aturan ADA di artefak). BUKAN = klaim manfaat empiris SUDAH TERBUKTI di lapangan (GC berkurang, engineer cepat produktif, decision accuracy meningkat). ⚠️ SEMUA ini = HIPOTESIS YANG SEDANG DIUJI (H3/H4/H5/H6). Perlu multi-siklus data B4 (≥2 capability berbeda × ≥2 milestone) untuk diverifikasi. Cross-reference: [Bagian 2 Tabel H1-H6](file:///root/Enterprise%20OS/EVIDENCE.md#L727-L741).
+⚠️ **HONESTY BOUNDARY v2 (Kalibrasi Kesembilan):** Tabel di bawah ini = **INTENSI MANFAAT DESAIN** (setiap aturan ADA di artefak). BUKAN = klaim manfaat empiris SUDAH TERBUKTI di lapangan (GC berkurang, engineer cepat produktif, decision accuracy meningkat). ⚠️ SEMUA ini = HIPOTESIS YANG SEDANG DIUJI (H3/H4/H5/H6). Perlu multi-siklus data B4 (≥2 capability berbeda × ≥2 milestone) untuk diverifikasi. Cross-reference: [Bagian 2 Tabel H1-H6](file:///root/Enterprise-OS/EVIDENCE.md#L727-L741).
 
 | Area Kalibrasi | Nilai yang Diberikan (INTENSI DESAIN, BUKAN Terbukti Empiris) | Kontribusi pada ELR v2.0 (⚠️ HIPOTESIS BELUM TERBUKTI) |
 |---|---|---|
@@ -459,7 +459,7 @@ BARU setelah semua 5 checklist → kalibrasi kelima dapat dinyatakan "independen
 
 ### Tabel Status Epistemik (Ringkasan User Assessment)
 
-⚠️ **HONESTY BOUNDARY v2 (Kalibrasi Kesembilan):** Status "Mature" / "Strong" di bawah ini = **PENILAIAN DESAIN STRUKTUR DARI ARTEFAK SAAT INI** (✅ bisa diverifikasi grep/file count/schema). BUKAN = klaim manfaat empiris SUDAH TERBUKTI bekerja di lapangan. ⚠️ SEMUA klaim tentang efektivitas (stabil governance, traceable praktek, kurangi bias) = H1-H6 HIPOTESIS BELUM TERBUKTI. Cross-reference: [Bagian 2 H1-H6](file:///root/Enterprise%20OS/EVIDENCE.md#L727-L741).
+⚠️ **HONESTY BOUNDARY v2 (Kalibrasi Kesembilan):** Status "Mature" / "Strong" di bawah ini = **PENILAIAN DESAIN STRUKTUR DARI ARTEFAK SAAT INI** (✅ bisa diverifikasi grep/file count/schema). BUKAN = klaim manfaat empiris SUDAH TERBUKTI bekerja di lapangan. ⚠️ SEMUA klaim tentang efektivitas (stabil governance, traceable praktek, kurangi bias) = H1-H6 HIPOTESIS BELUM TERBUKTI. Cross-reference: [Bagian 2 H1-H6](file:///root/Enterprise-OS/EVIDENCE.md#L727-L741).
 
 | Area | Status (DESAIN ARTEFAK SAJA, BUKAN Manfaat Empiris) | Justifikasi Bukti + Hypothesis Cross-Reference |
 |---|---|---|
@@ -509,7 +509,7 @@ User menegaskan 8-area epistemik maturity (Tabel di EJ-EPISTEMIC-20260728 L442-L
 
 ### Perubahan 1: Frontier D DIPROMOSIKAN Menjadi OUTCOME #1 Alpha.13 (Di Atas Gate 0 PASS)
 
-**Lokasi:** [ROADMAP.md Target Kelulusan Alpha.13 L857-L918](file:///root/Enterprise%20OS/ROADMAP.md#L857-L918)
+**Lokasi:** [ROADMAP.md Target Kelulusan Alpha.13 L857-L918](file:///root/Enterprise-OS/ROADMAP.md#L857-L918)
 
 Sebelum (versi Kalibrasi Keenam):
 ```
@@ -532,7 +532,7 @@ Ditambahkan **Frontier D Pre-Flight Checklist 6 Item (D1-D6)** di ROADMAP.md L89
 
 ### Perubahan 2: Tiga Risiko Struktural Ditetapkan sebagai Watchlist PASAL 6.B Formal
 
-**Lokasi:** [CONSTITUTION.md PASAL 6.B L447-L462](file:///root/Enterprise%20OS/CONSTITUTION.md#L447-L462) + cross-reference di [EJ-EPISTEMIC-20260728 L457-L465](file:///root/Enterprise%20OS/EVIDENCE.md#L457-L465).
+**Lokasi:** [CONSTITUTION.md PASAL 6.B L447-L462](file:///root/Enterprise-OS/CONSTITUTION.md#L447-L462) + cross-reference di [EJ-EPISTEMIC-20260728 L457-L465](file:///root/Enterprise-OS/EVIDENCE.md#L457-L465).
 
 Tiga risiko BUKAN failure sekarang (kita percaya desain saat ini bersih). Tetapi ini adalah failure mode di sistem governance evidence-heavy yang SUDAH TERBUKTI di organisasi besar, dan sekarang TERCATAT SECARA KONSTITUSIONAL dengan TRIGGER OTOMATIS agar PASAL 8 membetulkan dirinya sendiri:
 
@@ -546,7 +546,7 @@ Tiga risiko BUKAN failure sekarang (kita percaya desain saat ini bersih). Tetapi
 
 ### Perubahan 3: Epistemic Readiness Scorecard Diresmikan di Control Surface (STATUS.md)
 
-**Lokasi:** [STATUS.md L75-L88](file:///root/Enterprise%20OS/STATUS.md#L75-L88)
+**Lokasi:** [STATUS.md L75-L88](file:///root/Enterprise-OS/STATUS.md#L75-L88)
 
 8-area scorecard user assessment dipindahkan menjadi bagian resmi Current Status Snapshot. Cross-reference:
 - Detail per area: EJ-EPISTEMIC-20260728 EVIDENCE.md.
@@ -559,7 +559,7 @@ Ini menjadikan epistemik readiness setara visibilitasnya dengan maturity arsitek
 
 ### Nilai Strategis Kalibrasi Ini (ELR v2.0 Alignment)
 
-⚠️ **HONESTY BOUNDARY v2 (Kalibrasi Kesembilan):** Tabel di bawah ini = **INTENSI MANFAAT DESAIN** (setiap mekanisme pencegahan / trigger ADA di artefak). BUKAN = klaim benefit empiris SUDAH TERBUKTI nyata (Capability Stability ↑ benar-benar terjadi, GC benar-benar berkurang, dll). ⚠️ SEMUA kolom kanan = HIPOTESIS YANG SEDANG DIUJI H3/H4/H5/H6. Perlu multi-siklus data B4 untuk diverifikasi. Cross-reference: [Bagian 2 Tabel H1-H6](file:///root/Enterprise%20OS/EVIDENCE.md#L727-L741).
+⚠️ **HONESTY BOUNDARY v2 (Kalibrasi Kesembilan):** Tabel di bawah ini = **INTENSI MANFAAT DESAIN** (setiap mekanisme pencegahan / trigger ADA di artefak). BUKAN = klaim benefit empiris SUDAH TERBUKTI nyata (Capability Stability ↑ benar-benar terjadi, GC benar-benar berkurang, dll). ⚠️ SEMUA kolom kanan = HIPOTESIS YANG SEDANG DIUJI H3/H4/H5/H6. Perlu multi-siklus data B4 untuk diverifikasi. Cross-reference: [Bagian 2 Tabel H1-H6](file:///root/Enterprise-OS/EVIDENCE.md#L727-L741).
 
 | Perubahan | Kontribusi ELR v2.0 (⚠️ INTENSI DESAIN = HIPOTESIS BELUM TERBUKTI) |
 |---|---|
@@ -609,11 +609,11 @@ Kalibrasi Kedelapan INI BUKAN menambah aturan. Kalibrasi kedelapan = **mendokume
 
 | Area yang Dikonfirmasi User | Penilaian User | Cross-reference Lokasi Aturan Aktif |
 |---|---|---|
-| **Outcome #1 Frontier-D = perubahan paling penting Kalibrasi 7** (bukan TDI, bukan Watchlist) → definisi keberhasilan = auditor independen reproduce reasoning dari artefak saja. | Perubahan ini "jauh lebih dekat prinsip reproducibility engineering/science daripada gate passed". Selaras literatur MECS Press EA Measurement Systematic Study. | [ROADMAP.md L857-L909](file:///root/Enterprise%20OS/ROADMAP.md#L857-L909). |
-| **R1 Report → Mini-Konstitusi:** Hampir PASTI terjadi tanpa pengawasan (Checklist → Template → Template Panjang → Template Menjadi Proses). PASAL 8.A = mekanisme pencegah YANG TEPAT. | User setuju failure mode ini klasik di organisasi evidence-driven. | [CONSTITUTION.md PASAL 8.A L99-L145](file:///root/Enterprise%20OS/CONSTITUTION.md#L99-L145) + [PASAL 6.B R1 L457](file:///root/Enterprise%20OS/CONSTITUTION.md#L457). |
-| **R2 TDI DEFERRED ≥ 30 REPORT ADALAH KEPUTUSAN YANG TEPAT.** | "TDI dibuat sebelum ada data → metric tanpa observasi → menjadi opini." Trigger ≥30 report menjadikan TDI = hipotesis yang bisa diuji. Selaras filosofi "measurement dahulu, metric kemudian." | [CONSTITUTION.md PASAL 6.B R2 L458](file:///root/Enterprise%20OS/CONSTITUTION.md#L458) (saat ini TDI = N/A). |
-| **R3 Sunset Metric 3 Siklus LEBIH PENTING daripada TDI.** | Masalah "metric accumulation" = hampir semua governance framework alami. Metric tak pernah ubah keputusan selama 3 siklus → dasar kuat sunset. Selaras temuan EA measurement study. | [CONSTITUTION.md PASAL 6.B R3 L459](file:///root/Enterprise%20OS/CONSTITUTION.md#L459). |
-| **Evolusi pusat gravitasi EOS:** Architecture-centric → Evidence-centric → *Reproducibility-centric*. | "Ini evolusi konsisten praktik traceability & reproducibility berkembang di EA governance & audit system modern." (UT Research Information Traceability paper). | EJ-EPISTEMIC-20260728 [EVIDENCE.md L442-L453](file:///root/Enterprise%20OS/EVIDENCE.md#L442-L453) + Frontier-D Checklist ROADMAP. |
+| **Outcome #1 Frontier-D = perubahan paling penting Kalibrasi 7** (bukan TDI, bukan Watchlist) → definisi keberhasilan = auditor independen reproduce reasoning dari artefak saja. | Perubahan ini "jauh lebih dekat prinsip reproducibility engineering/science daripada gate passed". Selaras literatur MECS Press EA Measurement Systematic Study. | [ROADMAP.md L857-L909](file:///root/Enterprise-OS/ROADMAP.md#L857-L909). |
+| **R1 Report → Mini-Konstitusi:** Hampir PASTI terjadi tanpa pengawasan (Checklist → Template → Template Panjang → Template Menjadi Proses). PASAL 8.A = mekanisme pencegah YANG TEPAT. | User setuju failure mode ini klasik di organisasi evidence-driven. | [CONSTITUTION.md PASAL 8.A L99-L145](file:///root/Enterprise-OS/CONSTITUTION.md#L99-L145) + [PASAL 6.B R1 L457](file:///root/Enterprise-OS/CONSTITUTION.md#L457). |
+| **R2 TDI DEFERRED ≥ 30 REPORT ADALAH KEPUTUSAN YANG TEPAT.** | "TDI dibuat sebelum ada data → metric tanpa observasi → menjadi opini." Trigger ≥30 report menjadikan TDI = hipotesis yang bisa diuji. Selaras filosofi "measurement dahulu, metric kemudian." | [CONSTITUTION.md PASAL 6.B R2 L458](file:///root/Enterprise-OS/CONSTITUTION.md#L458) (saat ini TDI = N/A). |
+| **R3 Sunset Metric 3 Siklus LEBIH PENTING daripada TDI.** | Masalah "metric accumulation" = hampir semua governance framework alami. Metric tak pernah ubah keputusan selama 3 siklus → dasar kuat sunset. Selaras temuan EA measurement study. | [CONSTITUTION.md PASAL 6.B R3 L459](file:///root/Enterprise-OS/CONSTITUTION.md#L459). |
+| **Evolusi pusat gravitasi EOS:** Architecture-centric → Evidence-centric → *Reproducibility-centric*. | "Ini evolusi konsisten praktik traceability & reproducibility berkembang di EA governance & audit system modern." (UT Research Information Traceability paper). | EJ-EPISTEMIC-20260728 [EVIDENCE.md L442-L453](file:///root/Enterprise-OS/EVIDENCE.md#L442-L453) + Frontier-D Checklist ROADMAP. |
 
 ---
 
@@ -649,7 +649,7 @@ User mendefinisikan ujian Frontier-D yang PALING BERNILAI. Ini BUKAN aturan baru
 >
 > Jika satu poin di atas gagal, → berarti masih ada **tacit knowledge** (pengetahuan implisit) yang BELUM berhasil dipindahkan ke artefak formal. PASAL 6.A dinyatakan BELUM lengkap (butuh revisi artefak agar self-contained).
 
-Cross-reference Frontier-D Checklist: Definisi di atas = **versi strict D4-D5.** Checklist D1-D6 saat ini [ROADMAP.md L890-L900](file:///root/Enterprise%20OS/ROADMAP.md#L890-L900) = moderate version. Saat Frontier-D dijalankan (sesudah report ada), user merekomendasikan COLD VERSION di atas sebagai BENCHMARK UTAMA.
+Cross-reference Frontier-D Checklist: Definisi di atas = **versi strict D4-D5.** Checklist D1-D6 saat ini [ROADMAP.md L890-L900](file:///root/Enterprise-OS/ROADMAP.md#L890-L900) = moderate version. Saat Frontier-D dijalankan (sesudah report ada), user merekomendasikan COLD VERSION di atas sebagai BENCHMARK UTAMA.
 
 ---
 
@@ -815,7 +815,7 @@ User menentukan: Jika user menjadi REVIEWER proyek EOS ini, user TIDAK LAGI memi
 
 ### Nilai Strategis Kalibrasi Ini Terhadap ELR v2.0:
 
-⚠️ **HONESTY BOUNDARY v2 (Applied Kalibrasi 9 Upgrade via Kalibrasi 10 retrospective):** 3 baris di bawah ini = **INTENSI MANFAAT DESAIN** (mekanisme governance ADA di artefak). BUKAN = klaim manfaat empiris SUDAH TERBUKTI berjalan di lapangan (Cap Stability ↑ benar-benar mengurangi kekecewaan stakeholder, Product Reuse ↑ benar-benar komponen reusable, dll). ⚠️ SEMUA = H3/H4/H5/H6 HIPOTESIS YANG SEDANG DIUJI. Cross-reference: [Bagian 2 Tabel H1-H6](file:///root/Enterprise%20OS/EVIDENCE.md#L727-L741) · [Kalibrasi 10 5-Komponen Formalisasi](file:///root/Enterprise%20OS/EVIDENCE.md#L854-L983).
+⚠️ **HONESTY BOUNDARY v2 (Applied Kalibrasi 9 Upgrade via Kalibrasi 10 retrospective):** 3 baris di bawah ini = **INTENSI MANFAAT DESAIN** (mekanisme governance ADA di artefak). BUKAN = klaim manfaat empiris SUDAH TERBUKTI berjalan di lapangan (Cap Stability ↑ benar-benar mengurangi kekecewaan stakeholder, Product Reuse ↑ benar-benar komponen reusable, dll). ⚠️ SEMUA = H3/H4/H5/H6 HIPOTESIS YANG SEDANG DIUJI. Cross-reference: [Bagian 2 Tabel H1-H6](file:///root/Enterprise-OS/EVIDENCE.md#L727-L741) · [Kalibrasi 10 5-Komponen Formalisasi](file:///root/Enterprise-OS/EVIDENCE.md#L854-L983).
 
 | Perubahan | Kontribusi ELR v2.0 (⚠️ INTENSI DESAIN = HIPOTESIS BELUM TERBUKTI) |
 |---|---|
@@ -1269,12 +1269,12 @@ Tabel ringkasan posisi proyek BERDASARKAN VERIFIKASI USER, BUKAN self-assessment
 
 | Area | Status Epistemik Final (User-Verified 2026-07-28) | Cross-Reference Evidence Source |
 |---|---|---|
-| **Desain metodologi** | **Dibekukan (freeze)** sesuai Registered Reports Principle Identity Kalibrasi 10+11 + LOCK 4 komponen directive freeze. | [EJ-DIRECTIVE-FREEZE-20260728-001](file:///root/Enterprise%20OS/EVIDENCE.md#L1121-L1180) · [LOCK#1-Lock#4 Table](file:///root/Enterprise%20OS/EVIDENCE.md#L1159-L1164) |
-| **Hipotesis H1–H6** | **Sudah dipra-registrasi** (5 komponen ilmiah Kalibrasi 10 + sample distinction Kalibrasi 11 + tracker Kalibrasi 11). **BELUM DIUJI** — evidence count = 0 semua. Status = SEMUA NOT TESTED (snap shoot 2026-07-28). | [Kalibrasi 10 H1-H6 5 Komponen](file:///root/Enterprise%20OS/EVIDENCE.md#L854-L983) · [Status Tracker Table Source Truth](file:///root/Enterprise%20OS/EVIDENCE.md#L1080-L1089) |
-| **Bukti empiris** | **BELUM ADA.** B1 Step 1 Report Alpha.13 SHA256 BELUM dihasilkan sama sekali. Semua data RO1-RO6 = ⬜ TIDAK ada angka nyata. Semua H1-H6 verdict = INCONCLUSIVE default (tidak bisa verdict tanpa data). | [Bottleneck B1 Table](file:///root/Enterprise%20OS/EVIDENCE.md#L744-L748) · [RO1-RO6 ⬜ TIDAK](file:///root/Enterprise%20OS/EVIDENCE.md#L767-L781) |
-| **Aktivitas bernilai tertinggi** | **Menghasilkan Measurement Report Alpha.13** Step 0-4 byte-by-byte SHA256 verifiable + 3 Invarian PASS + 2 engineer byte-match (Single Focus Exit Criteria Step 1). | [Urutan Prioritas #1 Step 1](file:///root/Enterprise%20OS/EVIDENCE.md#L956-L965) · [Next Action Item ROADMAP](file:///root/Enterprise%20OS/ROADMAP.md#L138-L155) |
-| **Kalibrasi baru** | **DITUNDA (DILARANG sementara)** sampai ada bukti empiris yang memadai (B1+B2+B3 exit criteria TERPENUHI 100%) + jika kelemahan protokol BENAR-BENAR ditemukan secara SHA-verifiable + 4 field Protocol Revision terpenuhi. Jika dibuat = TIPE `protocol_revision`, BUKAN tipe `kalibrasi`. | [Unlock Criteria LOCK#2](file:///root/Enterprise%20OS/EVIDENCE.md#L1162) · [RR-PR 4 Field Wajib](file:///root/Enterprise%20OS/EVIDENCE.md#L1236-L1250) |
-| **Claim Efektivitas EOS** | **SEMUA = HIPOTESIS BELUM TERBUKTI.** Termasuk klaim seperti: "EOS kurangi cognitive load", "EOS reusable", "EOS stabil governance", "EOS bukti GB>>GC". Tidak satupun = STRONG CONFIRMED / PROVISIONAL PASS (karena data 0). | [HONESTY BOUNDARY v2](file:///root/Enterprise%20OS/EVIDENCE.md#L727-L741) · [Status Tracker NOT TESTED semua](file:///root/Enterprise%20OS/EVIDENCE.md#L1080-L1089) · [Kesimpulan User](file:///root/Enterprise%20OS/EVIDENCE.md#L1151) |
+| **Desain metodologi** | **Dibekukan (freeze)** sesuai Registered Reports Principle Identity Kalibrasi 10+11 + LOCK 4 komponen directive freeze. | [EJ-DIRECTIVE-FREEZE-20260728-001](file:///root/Enterprise-OS/EVIDENCE.md#L1121-L1180) · [LOCK#1-Lock#4 Table](file:///root/Enterprise-OS/EVIDENCE.md#L1159-L1164) |
+| **Hipotesis H1–H6** | **Sudah dipra-registrasi** (5 komponen ilmiah Kalibrasi 10 + sample distinction Kalibrasi 11 + tracker Kalibrasi 11). **BELUM DIUJI** — evidence count = 0 semua. Status = SEMUA NOT TESTED (snap shoot 2026-07-28). | [Kalibrasi 10 H1-H6 5 Komponen](file:///root/Enterprise-OS/EVIDENCE.md#L854-L983) · [Status Tracker Table Source Truth](file:///root/Enterprise-OS/EVIDENCE.md#L1080-L1089) |
+| **Bukti empiris** | **BELUM ADA.** B1 Step 1 Report Alpha.13 SHA256 BELUM dihasilkan sama sekali. Semua data RO1-RO6 = ⬜ TIDAK ada angka nyata. Semua H1-H6 verdict = INCONCLUSIVE default (tidak bisa verdict tanpa data). | [Bottleneck B1 Table](file:///root/Enterprise-OS/EVIDENCE.md#L744-L748) · [RO1-RO6 ⬜ TIDAK](file:///root/Enterprise-OS/EVIDENCE.md#L767-L781) |
+| **Aktivitas bernilai tertinggi** | **Menghasilkan Measurement Report Alpha.13** Step 0-4 byte-by-byte SHA256 verifiable + 3 Invarian PASS + 2 engineer byte-match (Single Focus Exit Criteria Step 1). | [Urutan Prioritas #1 Step 1](file:///root/Enterprise-OS/EVIDENCE.md#L956-L965) · [Next Action Item ROADMAP](file:///root/Enterprise-OS/ROADMAP.md#L138-L155) |
+| **Kalibrasi baru** | **DITUNDA (DILARANG sementara)** sampai ada bukti empiris yang memadai (B1+B2+B3 exit criteria TERPENUHI 100%) + jika kelemahan protokol BENAR-BENAR ditemukan secara SHA-verifiable + 4 field Protocol Revision terpenuhi. Jika dibuat = TIPE `protocol_revision`, BUKAN tipe `kalibrasi`. | [Unlock Criteria LOCK#2](file:///root/Enterprise-OS/EVIDENCE.md#L1162) · [RR-PR 4 Field Wajib](file:///root/Enterprise-OS/EVIDENCE.md#L1236-L1250) |
+| **Claim Efektivitas EOS** | **SEMUA = HIPOTESIS BELUM TERBUKTI.** Termasuk klaim seperti: "EOS kurangi cognitive load", "EOS reusable", "EOS stabil governance", "EOS bukti GB>>GC". Tidak satupun = STRONG CONFIRMED / PROVISIONAL PASS (karena data 0). | [HONESTY BOUNDARY v2](file:///root/Enterprise-OS/EVIDENCE.md#L727-L741) · [Status Tracker NOT TESTED semua](file:///root/Enterprise-OS/EVIDENCE.md#L1080-L1089) · [Kesimpulan User](file:///root/Enterprise-OS/EVIDENCE.md#L1151) |
 
 ---
 
@@ -1351,12 +1351,12 @@ JIKA change_category = EXPLORATORY_ANALYSIS_ADDITION → HANYA FIELD WAJIB:
 
 | Area (EXACT Nama Kolom User) | Status saat ini (EXACT Sesuai User Verbatim) | Cross-Reference Evidence Source |
 |---|---|---|
-| **Metodologi** | **Dibekukan (*freeze*)** sesuai Registered Reports Principle Identity Kalibrasi 10+11 + LOCK 4 komponen directive freeze. | [EJ-DIRECTIVE-FREEZE-20260728-001](file:///root/Enterprise%20OS/EVIDENCE.md#L1121-L1180) |
-| **Hipotesis H1–H6** | **Dipra-registrasi, belum diuji** — evidence count = 0 semua. Status SEMUA = NOT TESTED. Pre-reg contract 5 komponen + sample distinction + tracker ada. | [Kalibrasi 10 Pre-Reg](file:///root/Enterprise%20OS/EVIDENCE.md#L854-L983) · [Tracker Table Source Truth](file:///root/Enterprise%20OS/EVIDENCE.md#L1080-L1089) |
-| **Bukti empiris** | **Belum tersedia.** B1 Step 1 Report Alpha.13 SHA256 = ⬜ BELUM ADA. RO1-RO6 = semua TIDAK ADA angka nyata. | [Bottleneck B1 ⬜ BELUM ADA](file:///root/Enterprise%20OS/EVIDENCE.md#L744-L748) · [RO1-RO6 semua TIDAK](file:///root/Enterprise%20OS/EVIDENCE.md#L767-L781) |
-| **Aktivitas utama** | **Menghasilkan Measurement Report Alpha.13** Step 0-4 byte-by-byte SHA256 verifiable + 3 Invarian PASS + 2 engineer byte-match. | [Next Action Item ROADMAP](file:///root/Enterprise%20OS/ROADMAP.md#L138-L155) · [Urutan Prioritas #1](file:///root/Enterprise%20OS/EVIDENCE.md#L956-L965) |
-| **Revisi metodologi** | **Hanya dipertimbangkan setelah ada bukti yang membenarkan perubahan.** Format RR-PR change_category A (PROT_DEV) butuh 4 field Wajib lengkap + SHA bukti. Category B (Exploratory) = tidak ubah identity, tapi label ⚠️ Eksploratori Post-Hoc. | [Unlock Criteria LOCK#2](file:///root/Enterprise%20OS/EVIDENCE.md#L1162) · [5 Field RR-PR + Category Distinction](#bagian-2-tambahan-1-kategori-distinction-baru-ke-rr-pr-protocol-revision-format-sesuai-user-reminder-registered-reports-deviasi-dibedakan-dari-analisis-eksploratori) |
-| **Kalibrasi baru** | **Ditunda sampai tersedia dasar empiris yang memadai** (B1+B2+B3 exit criteria 100% terisi SHA evidence + kelemahan protokol ditemukan + RR-PR field lengkap). Jika dibuat = tipe `protocol_revision`, BUKAN tipe `kalibrasi`. | [Unlock Criteria LOCK#2](file:///root/Enterprise%20OS/EVIDENCE.md#L1162) · [Larangan Eksplisit Nama Kalibrasi 12](file:///root/Enterprise%20OS/EVIDENCE.md#L1245-L1246) |
+| **Metodologi** | **Dibekukan (*freeze*)** sesuai Registered Reports Principle Identity Kalibrasi 10+11 + LOCK 4 komponen directive freeze. | [EJ-DIRECTIVE-FREEZE-20260728-001](file:///root/Enterprise-OS/EVIDENCE.md#L1121-L1180) |
+| **Hipotesis H1–H6** | **Dipra-registrasi, belum diuji** — evidence count = 0 semua. Status SEMUA = NOT TESTED. Pre-reg contract 5 komponen + sample distinction + tracker ada. | [Kalibrasi 10 Pre-Reg](file:///root/Enterprise-OS/EVIDENCE.md#L854-L983) · [Tracker Table Source Truth](file:///root/Enterprise-OS/EVIDENCE.md#L1080-L1089) |
+| **Bukti empiris** | **Belum tersedia.** B1 Step 1 Report Alpha.13 SHA256 = ⬜ BELUM ADA. RO1-RO6 = semua TIDAK ADA angka nyata. | [Bottleneck B1 ⬜ BELUM ADA](file:///root/Enterprise-OS/EVIDENCE.md#L744-L748) · [RO1-RO6 semua TIDAK](file:///root/Enterprise-OS/EVIDENCE.md#L767-L781) |
+| **Aktivitas utama** | **Menghasilkan Measurement Report Alpha.13** Step 0-4 byte-by-byte SHA256 verifiable + 3 Invarian PASS + 2 engineer byte-match. | [Next Action Item ROADMAP](file:///root/Enterprise-OS/ROADMAP.md#L138-L155) · [Urutan Prioritas #1](file:///root/Enterprise-OS/EVIDENCE.md#L956-L965) |
+| **Revisi metodologi** | **Hanya dipertimbangkan setelah ada bukti yang membenarkan perubahan.** Format RR-PR change_category A (PROT_DEV) butuh 4 field Wajib lengkap + SHA bukti. Category B (Exploratory) = tidak ubah identity, tapi label ⚠️ Eksploratori Post-Hoc. | [Unlock Criteria LOCK#2](file:///root/Enterprise-OS/EVIDENCE.md#L1162) · [5 Field RR-PR + Category Distinction](#bagian-2-tambahan-1-kategori-distinction-baru-ke-rr-pr-protocol-revision-format-sesuai-user-reminder-registered-reports-deviasi-dibedakan-dari-analisis-eksploratori) |
+| **Kalibrasi baru** | **Ditunda sampai tersedia dasar empiris yang memadai** (B1+B2+B3 exit criteria 100% terisi SHA evidence + kelemahan protokol ditemukan + RR-PR field lengkap). Jika dibuat = tipe `protocol_revision`, BUKAN tipe `kalibrasi`. | [Unlock Criteria LOCK#2](file:///root/Enterprise-OS/EVIDENCE.md#L1162) · [Larangan Eksplisit Nama Kalibrasi 12](file:///root/Enterprise-OS/EVIDENCE.md#L1245-L1246) |
 
 ---
 
@@ -1436,12 +1436,12 @@ Tindakan ini (reinterpretasi sidecar via entry baru EJ-DIRECTIVE-EXECUTION-SHIFT
 
 | Area (VERBATIM Nama Kolom User) | Status Saat Ini (VERBATIM User) | Cross-Reference Evidence Source |
 |---|---|---|
-| **Governance / metodologi** | **Dibekukan (*freeze*)** sesuai 4 komponen LOCK directive freeze. | [EJ-DIRECTIVE-FREEZE-20260728-001](file:///root/Enterprise%20OS/EVIDENCE.md#L1121-L1180) · [LOCK #1 LOCK #4 Table](file:///root/Enterprise%20OS/EVIDENCE.md#L1159-L1164) |
-| **Hipotesis H1–H6** | **Dipra-registrasi** (5 komponen ilmiah Kalibrasi 10 + sample distinction Kalibrasi 11 + tracker 4 metadata field Kalibrasi 11). | [Kalibrasi 10 Pre-Registration](file:///root/Enterprise%20OS/EVIDENCE.md#L854-L983) · [Sample Distinction Kalibrasi 11](file:///root/Enterprise%20OS/EVIDENCE.md#L1028-L1039) · [Tracker Status NOT TESTED semua](file:///root/Enterprise%20OS/EVIDENCE.md#L1080-L1089) |
-| **Eksperimen** | **Belum menghasilkan data.** B1 Step 1 Report Alpha.13 SHA256 = ⬜ BELUM ADA. Eksperimen B1 BELUM dijalankan sama sekali. | [Next Action Item ROADMAP.md](file:///root/Enterprise%20OS/ROADMAP.md#L138-L155) · [Urutan Prioritas Step 1 Table](file:///root/Enterprise%20OS/EVIDENCE.md#L956-L965) |
-| **Bukti empiris** | **Belum tersedia.** RO1-RO6 = SEMUA ⬜ TIDAK ADA angka nyata. Σ Evidence Count = 0 semua H1-H6. | [RO1-RO6 ⬜ TIDAK](file:///root/Enterprise%20OS/EVIDENCE.md#L767-L781) · [Status Tracker Evidence Count 0 semua](file:///root/Enterprise%20OS/EVIDENCE.md#L1080-L1089) |
-| **Aktivitas bernilai tertinggi** | **Implementasi Alpha.13 Measurement Report** Step 0-4 byte-by-byte SHA256 verifiable YAML file. 3 Invarian PASS 100%. 2 engineer byte-match SHA identik. | [ROADMAP.md Next Action B1 Step 0-4](file:///root/Enterprise%20OS/ROADMAP.md#L138-L155) |
-| **Perubahan metodologi** | **Ditunda sampai ada bukti yang membenarkan perubahan.** Jika B1+B2+B3 + bukti kuat kelemahan protokol ditemukan → Format 5-field RR-PR change_category A (Justified Deviation) atau B (Exploratory). TETAP TIDAK BOLEH nama "Kalibrasi 12". | [Unlock Criteria LOCK#2](file:///root/Enterprise%20OS/EVIDENCE.md#L1162) · [RR-PR 5 Field Change Category #0-4](file:///root/Enterprise%20OS/EVIDENCE.md#L1296-L1325) |
+| **Governance / metodologi** | **Dibekukan (*freeze*)** sesuai 4 komponen LOCK directive freeze. | [EJ-DIRECTIVE-FREEZE-20260728-001](file:///root/Enterprise-OS/EVIDENCE.md#L1121-L1180) · [LOCK #1 LOCK #4 Table](file:///root/Enterprise-OS/EVIDENCE.md#L1159-L1164) |
+| **Hipotesis H1–H6** | **Dipra-registrasi** (5 komponen ilmiah Kalibrasi 10 + sample distinction Kalibrasi 11 + tracker 4 metadata field Kalibrasi 11). | [Kalibrasi 10 Pre-Registration](file:///root/Enterprise-OS/EVIDENCE.md#L854-L983) · [Sample Distinction Kalibrasi 11](file:///root/Enterprise-OS/EVIDENCE.md#L1028-L1039) · [Tracker Status NOT TESTED semua](file:///root/Enterprise-OS/EVIDENCE.md#L1080-L1089) |
+| **Eksperimen** | **Belum menghasilkan data.** B1 Step 1 Report Alpha.13 SHA256 = ⬜ BELUM ADA. Eksperimen B1 BELUM dijalankan sama sekali. | [Next Action Item ROADMAP.md](file:///root/Enterprise-OS/ROADMAP.md#L138-L155) · [Urutan Prioritas Step 1 Table](file:///root/Enterprise-OS/EVIDENCE.md#L956-L965) |
+| **Bukti empiris** | **Belum tersedia.** RO1-RO6 = SEMUA ⬜ TIDAK ADA angka nyata. Σ Evidence Count = 0 semua H1-H6. | [RO1-RO6 ⬜ TIDAK](file:///root/Enterprise-OS/EVIDENCE.md#L767-L781) · [Status Tracker Evidence Count 0 semua](file:///root/Enterprise-OS/EVIDENCE.md#L1080-L1089) |
+| **Aktivitas bernilai tertinggi** | **Implementasi Alpha.13 Measurement Report** Step 0-4 byte-by-byte SHA256 verifiable YAML file. 3 Invarian PASS 100%. 2 engineer byte-match SHA identik. | [ROADMAP.md Next Action B1 Step 0-4](file:///root/Enterprise-OS/ROADMAP.md#L138-L155) |
+| **Perubahan metodologi** | **Ditunda sampai ada bukti yang membenarkan perubahan.** Jika B1+B2+B3 + bukti kuat kelemahan protokol ditemukan → Format 5-field RR-PR change_category A (Justified Deviation) atau B (Exploratory). TETAP TIDAK BOLEH nama "Kalibrasi 12". | [Unlock Criteria LOCK#2](file:///root/Enterprise-OS/EVIDENCE.md#L1162) · [RR-PR 5 Field Change Category #0-4](file:///root/Enterprise-OS/EVIDENCE.md#L1296-L1325) |
 
 ---
 
@@ -2128,7 +2128,7 @@ Ketika Decision Object REPEAT-2 di-APPEND nanti, field `interpretation_recommend
 
 ### ⚠️ 4 RULE Interpretation Boundary TETAP DITEGASKAN Disini (Wajib Baca Sebelum Buat Kesimpulan):
 
-Seluruh pembaca entry ini WAJIB merujuk ke [EJ-USER-DIRECTIVE-REPEAT2-INTERPRETATION-BOUNDARY-20260729-001](file:///root/Enterprise%20OS/EVIDENCE.md#L2044-L2075) RULE #1 s.d. #4 yang berlaku MANDATORY:
+Seluruh pembaca entry ini WAJIB merujuk ke [EJ-USER-DIRECTIVE-REPEAT2-INTERPRETATION-BOUNDARY-20260729-001](file:///root/Enterprise-OS/EVIDENCE.md#L2044-L2075) RULE #1 s.d. #4 yang berlaku MANDATORY:
 
 1. **RULE #1 TIDAK TERPECAHKAN:** REPEAT-2 Gate0 PASS 1 capability = BUKAN EOS validation definitive / H1 STRONG CONFIRMED. Butuh ≥ 2 capabilities + 7 Gate lanjutan + Frontier-D audit (sample threshold 8-15 per H belum tercapai).
 2. **RULE #2 TIDAK TERPECAHKAN:** Evidence Count H bertambah 2 → 3 (RUNNING) = BUKAN lanjut PROVISIONAL PASS. Status H1-H6 TETAP = RUNNING pada tracker batch #3 (lihat entry EJ-H1-H6-STATUS di bawah).

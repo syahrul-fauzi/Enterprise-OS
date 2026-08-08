@@ -4,9 +4,9 @@ import sys
 import yaml
 from datetime import datetime
 
-CONFIG_PATH = "/root/Enterprise OS/eos.config.yaml"
-PR_RULES_PATH = "/root/Enterprise OS/governance/readiness/production-readiness.yaml"
-BASE_WORKSPACE_PATH = "/root/Enterprise OS/workspace/products"
+CONFIG_PATH = "/root/Enterprise-OS/eos.config.yaml"
+PR_RULES_PATH = "/root/Enterprise-OS/governance/readiness/production-readiness.yaml"
+BASE_WORKSPACE_PATH = "/root/Enterprise-OS/workspace/products"
 
 
 def load_config():

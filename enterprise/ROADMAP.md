@@ -712,11 +712,11 @@ Phase `Architecture Verification` is complete only when:
 9. DoP is achieved.
 
 Authoritative references:
-- [Architecture Closure Baseline](file:///root/Enterprise%20OS/enterprise/specifications/eos-architecture-closure.md)
-- [Specification Authoring Guide](file:///root/Enterprise%20OS/enterprise/specifications/specification-authoring-guide.md)
-- [Specification Execution Specification](file:///root/Enterprise%20OS/enterprise/specifications/specification-execution-specification.md)
-- [Pipeline Acceptance Criteria](file:///root/Enterprise%20OS/enterprise/governance/pipeline-acceptance-criteria.md)
-- [Architecture Baseline Registry](file:///root/Enterprise%20OS/enterprise/specifications/architecture-baseline-v1.yaml)
+- [Architecture Closure Baseline](file:///root/Enterprise-OS/enterprise/specifications/eos-architecture-closure.md)
+- [Specification Authoring Guide](file:///root/Enterprise-OS/enterprise/specifications/specification-authoring-guide.md)
+- [Specification Execution Specification](file:///root/Enterprise-OS/enterprise/specifications/specification-execution-specification.md)
+- [Pipeline Acceptance Criteria](file:///root/Enterprise-OS/enterprise/governance/pipeline-acceptance-criteria.md)
+- [Architecture Baseline Registry](file:///root/Enterprise-OS/enterprise/specifications/architecture-baseline-v1.yaml)
 
 ---
 
@@ -875,33 +875,33 @@ Enterprise Runtime
 ## Artifact Status
 | Order | Artifact | Status | Location |
 |-------|----------|--------|----------|
-| 1 | Enterprise Constitution | ✅ Normative (v1.0.0) | [constitution/](file:///root/Enterprise%20OS/enterprise/constitution/) |
-| 2 | Enterprise Vocabulary | ✅ Normative (v1.0.0) | [constitution/vocabulary.md](file:///root/Enterprise%20OS/enterprise/constitution/vocabulary.md) |
-| 3 | Naming Conventions | ✅ Normative (v1.0.0) | [constitution/naming-conventions.md](file:///root/Enterprise%20OS/enterprise/constitution/naming-conventions.md) |
-| 4 | Relationship Grammar | ✅ Normative (v2.0.0) | [constitution/relationship-grammar.md](file:///root/Enterprise%20OS/enterprise/constitution/relationship-grammar.md) |
-| 5 | Capability Quality Rules | ✅ Normative (v1.0.0) | [constitution/capability-quality-rules.md](file:///root/Enterprise%20OS/enterprise/constitution/capability-quality-rules.md) |
-| 6 | Capability Grammar | ✅ Normative (v1.0.0) | [constitution/capability-grammar.md](file:///root/Enterprise%20OS/enterprise/constitution/capability-grammar.md) |
-| 7 | Enterprise Ontology | ✅ Normative (v1.0.0) | [constitution/ontology.md](file:///root/Enterprise%20OS/enterprise/constitution/ontology.md) |
-| 8 | Enterprise Meta Model | ✅ Normative (v1.0.0) | [constitution/meta-model.md](file:///root/Enterprise%20OS/enterprise/constitution/meta-model.md) |
-| 9 | Enterprise Specification Template | ✅ Normative (v2.0.0) | [constitution/enterprise-specification-template.md](file:///root/Enterprise%20OS/enterprise/constitution/enterprise-specification-template.md) |
-| 10 | EKL Language Specification | ✅ Normative (v1.0.0) | [constitution/ekl-language-specification.md](file:///root/Enterprise%20OS/enterprise/constitution/ekl-language-specification.md) |
-| 11 | Architecture Closure Baseline | ✅ Implementation Baseline v1.0 (Frozen) | [specifications/eos-architecture-closure.md](file:///root/Enterprise%20OS/enterprise/specifications/eos-architecture-closure.md) |
-| 12 | Specification Authoring Guide | ✅ Implementation Baseline v1.0 (Frozen) | [specifications/specification-authoring-guide.md](file:///root/Enterprise%20OS/enterprise/specifications/specification-authoring-guide.md) |
-| 13 | Specification Execution Specification | ✅ Implementation Baseline v1.0 (Frozen) | [specifications/specification-execution-specification.md](file:///root/Enterprise%20OS/enterprise/specifications/specification-execution-specification.md) |
-| 14 | Architecture Baseline Registry | ✅ Implementation Baseline v1.0 (Frozen, append-only) | [specifications/architecture-baseline-v1.yaml](file:///root/Enterprise%20OS/enterprise/specifications/architecture-baseline-v1.yaml) |
-| 15 | Authority Model | ⏳ Normative Draft | [authority/authority-model.md](file:///root/Enterprise%20OS/enterprise/authority/authority-model.md) |
-| 16 | Evidence Model | ⏳ Normative Draft | [governance/evidence-model.md](file:///root/Enterprise%20OS/enterprise/governance/evidence-model.md) |
-| 17 | Pipeline Acceptance Criteria | ✅ Implementation Baseline v1.0 (Frozen Governance Contract) | [governance/pipeline-acceptance-criteria.md](file:///root/Enterprise%20OS/enterprise/governance/pipeline-acceptance-criteria.md) |
-| 18 | Business Capability Model | ✅ Normative (v1.0.0) | [models/capability.md](file:///root/Enterprise%20OS/enterprise/models/capability.md) |
-| 19 | Business Service Model | ✅ Normative (v1.0.0) | [models/business-service.md](file:///root/Enterprise%20OS/enterprise/models/business-service.md) |
-| 20 | Mission Model | ✅ Normative (v1.0.0) | [models/mission.md](file:///root/Enterprise%20OS/enterprise/models/mission.md) |
-| 21 | Canonical Object Specification | ✅ Normative (v1.0.0) | [models/canonical-object-specification.md](file:///root/Enterprise%20OS/enterprise/models/canonical-object-specification.md) |
+| 1 | Enterprise Constitution | ✅ Normative (v1.0.0) | [constitution/](file:///root/Enterprise-OS/enterprise/constitution/) |
+| 2 | Enterprise Vocabulary | ✅ Normative (v1.0.0) | [constitution/vocabulary.md](file:///root/Enterprise-OS/enterprise/constitution/vocabulary.md) |
+| 3 | Naming Conventions | ✅ Normative (v1.0.0) | [constitution/naming-conventions.md](file:///root/Enterprise-OS/enterprise/constitution/naming-conventions.md) |
+| 4 | Relationship Grammar | ✅ Normative (v2.0.0) | [constitution/relationship-grammar.md](file:///root/Enterprise-OS/enterprise/constitution/relationship-grammar.md) |
+| 5 | Capability Quality Rules | ✅ Normative (v1.0.0) | [constitution/capability-quality-rules.md](file:///root/Enterprise-OS/enterprise/constitution/capability-quality-rules.md) |
+| 6 | Capability Grammar | ✅ Normative (v1.0.0) | [constitution/capability-grammar.md](file:///root/Enterprise-OS/enterprise/constitution/capability-grammar.md) |
+| 7 | Enterprise Ontology | ✅ Normative (v1.0.0) | [constitution/ontology.md](file:///root/Enterprise-OS/enterprise/constitution/ontology.md) |
+| 8 | Enterprise Meta Model | ✅ Normative (v1.0.0) | [constitution/meta-model.md](file:///root/Enterprise-OS/enterprise/constitution/meta-model.md) |
+| 9 | Enterprise Specification Template | ✅ Normative (v2.0.0) | [constitution/enterprise-specification-template.md](file:///root/Enterprise-OS/enterprise/constitution/enterprise-specification-template.md) |
+| 10 | EKL Language Specification | ✅ Normative (v1.0.0) | [constitution/ekl-language-specification.md](file:///root/Enterprise-OS/enterprise/constitution/ekl-language-specification.md) |
+| 11 | Architecture Closure Baseline | ✅ Implementation Baseline v1.0 (Frozen) | [specifications/eos-architecture-closure.md](file:///root/Enterprise-OS/enterprise/specifications/eos-architecture-closure.md) |
+| 12 | Specification Authoring Guide | ✅ Implementation Baseline v1.0 (Frozen) | [specifications/specification-authoring-guide.md](file:///root/Enterprise-OS/enterprise/specifications/specification-authoring-guide.md) |
+| 13 | Specification Execution Specification | ✅ Implementation Baseline v1.0 (Frozen) | [specifications/specification-execution-specification.md](file:///root/Enterprise-OS/enterprise/specifications/specification-execution-specification.md) |
+| 14 | Architecture Baseline Registry | ✅ Implementation Baseline v1.0 (Frozen, append-only) | [specifications/architecture-baseline-v1.yaml](file:///root/Enterprise-OS/enterprise/specifications/architecture-baseline-v1.yaml) |
+| 15 | Authority Model | ⏳ Normative Draft | [authority/authority-model.md](file:///root/Enterprise-OS/enterprise/authority/authority-model.md) |
+| 16 | Evidence Model | ⏳ Normative Draft | [governance/evidence-model.md](file:///root/Enterprise-OS/enterprise/governance/evidence-model.md) |
+| 17 | Pipeline Acceptance Criteria | ✅ Implementation Baseline v1.0 (Frozen Governance Contract) | [governance/pipeline-acceptance-criteria.md](file:///root/Enterprise-OS/enterprise/governance/pipeline-acceptance-criteria.md) |
+| 18 | Business Capability Model | ✅ Normative (v1.0.0) | [models/capability.md](file:///root/Enterprise-OS/enterprise/models/capability.md) |
+| 19 | Business Service Model | ✅ Normative (v1.0.0) | [models/business-service.md](file:///root/Enterprise-OS/enterprise/models/business-service.md) |
+| 20 | Mission Model | ✅ Normative (v1.0.0) | [models/mission.md](file:///root/Enterprise-OS/enterprise/models/mission.md) |
+| 21 | Canonical Object Specification | ✅ Normative (v1.0.0) | [models/canonical-object-specification.md](file:///root/Enterprise-OS/enterprise/models/canonical-object-specification.md) |
 
 ---
 
 ## Supporting Grammars (No Dependency Order)
-- ✅ Traceability Model: [traceability/traceability-model.md](file:///root/Enterprise%20OS/enterprise/traceability/traceability-model.md), [lineage.md](file:///root/Enterprise%20OS/enterprise/traceability/lineage.md), [provenance.md](file:///root/Enterprise%20OS/enterprise/traceability/provenance.md)
-- ✅ Lifecycle Grammars: [lifecycle/](file:///root/Enterprise%20OS/enterprise/lifecycle/)
-- ✅ Validation Rules: [validation/](file:///root/Enterprise%20OS/enterprise/validation/)
-- ✅ Evolution: [evolution/](file:///root/Enterprise%20OS/enterprise/evolution/)
-- ✅ Decisions: [decisions/adr/](file:///root/Enterprise%20OS/enterprise/decisions/adr/)
+- ✅ Traceability Model: [traceability/traceability-model.md](file:///root/Enterprise-OS/enterprise/traceability/traceability-model.md), [lineage.md](file:///root/Enterprise-OS/enterprise/traceability/lineage.md), [provenance.md](file:///root/Enterprise-OS/enterprise/traceability/provenance.md)
+- ✅ Lifecycle Grammars: [lifecycle/](file:///root/Enterprise-OS/enterprise/lifecycle/)
+- ✅ Validation Rules: [validation/](file:///root/Enterprise-OS/enterprise/validation/)
+- ✅ Evolution: [evolution/](file:///root/Enterprise-OS/enterprise/evolution/)
+- ✅ Decisions: [decisions/adr/](file:///root/Enterprise-OS/enterprise/decisions/adr/)

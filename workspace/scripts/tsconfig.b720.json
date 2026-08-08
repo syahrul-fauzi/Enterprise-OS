@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "types": ["node"],
+    "esModuleInterop": true,
+    "strict": false,
+    "paths": {
+      "@repo/core-runtime": ["../packages/core/runtime/src/index.ts"],
+      "@repo/core-kernel": ["../packages/core/kernel/src/index.ts"],
+      "@repo/core-constitution": ["../packages/core/constitution/src/index.ts"],
+      "@repo/core-capability-registry": ["../packages/core/capability-registry/src/index.ts"],
+      "@repo/core-registry-resolver": ["../packages/core/registry-resolver/src/index.ts"],
+      "@repo/core-proof-ledger": ["../packages/core/proof-ledger/src/index.ts"],
+      "@repo/core-predicate-registry": ["../packages/core/predicate-registry/src/index.ts"],
+      "@repo/core-transformation-registry": ["../packages/core/transformation-registry/src/index.ts"],
+      "@repo/core-eir": ["../packages/core/eir/src/index.ts"],
+      "@repo/composition": ["../packages/composition/src/index.ts"],
+      "@repo/presentation-types": ["../packages/presentation/presentation-types/src/index.ts"],
+      "@repo/presentation-foundation": ["../packages/presentation/foundation/src/index.ts"],
+      "@repo/presentation-ui-system": ["../packages/presentation/ui-system/src/index.ts"],
+      "@repo/presentation-experience": ["../packages/presentation/experience/src/index.ts"],
+      "@repo/tooling-eos-cli": ["../packages/tooling/eos-cli/src/index.ts"],
+      "@repo/tooling-arch-tests": ["../packages/tooling/arch-tests/src/index.ts"],
+      "@repo/tooling-t001-standalone": ["../packages/tooling/t001-standalone/src/index.ts"],
+      "@repo/composition-legal-workspace": ["../packages/compositions/legal-workspace/src/index.ts"]
+    }
+  }
+}

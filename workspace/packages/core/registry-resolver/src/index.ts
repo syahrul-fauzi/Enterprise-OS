@@ -96,14 +96,14 @@ const CATALOG_BY_ID: ReadonlyMap<string, CatalogTransformationEntry> = new Map(
 );
 
 const DEFAULT_PROOF_SCHEMA =
-  "/root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema";
+  "/root/Enterprise-OS/workspace/packages/core/proof-ledger/src/schema.ts::TransformationProofEntrySchema";
 
 const PROOF_SCHEMA_MAP = {
   TRANSFORMATION_PROOF: DEFAULT_PROOF_SCHEMA,
   EXECUTION_PROOF:
-    "/root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::ExecutionProofEntrySchema",
+    "/root/Enterprise-OS/workspace/packages/core/proof-ledger/src/schema.ts::ExecutionProofEntrySchema",
   REPOSITORY_PROOF:
-    "/root/Enterprise OS/workspace/packages/core/proof-ledger/src/schema.ts::RepositoryProofEntrySchema",
+    "/root/Enterprise-OS/workspace/packages/core/proof-ledger/src/schema.ts::RepositoryProofEntrySchema",
 } as const;
 
 const PREDICATE_ORDER: Readonly<Record<string, number>> = {
@@ -274,7 +274,7 @@ const _buildOne = (t: TransformationDeclaration): ResolverResolutionBundle => {
     predicates_ordered: predicates,
     implementation_ref:
       cat?.implementation_ref ??
-      `/root/Enterprise OS/workspace/packages/tooling/${t.transformation_id.toLowerCase()}-standalone/src/${t.transformation_id.toLowerCase()}.ts::run${t.transformation_id}`,
+      `/root/Enterprise-OS/workspace/packages/tooling/${t.transformation_id.toLowerCase()}-standalone/src/${t.transformation_id.toLowerCase()}.ts::run${t.transformation_id}`,
     proof,
     dag,
     strategy,
@@ -283,7 +283,7 @@ const _buildOne = (t: TransformationDeclaration): ResolverResolutionBundle => {
     golden_reference_input_dir:
       cat?.golden_reference_input ??
       (t.golden_reference_input as string | undefined) ??
-      "/root/Enterprise OS/workspace/examples/vertical-slice/REQ-0001",
+      "/root/Enterprise-OS/workspace/examples/vertical-slice/REQ-0001",
   };
 };
 

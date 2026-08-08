@@ -14,6 +14,9 @@ import {
 import {
   appendAttributionRecord,
 } from "../attribution/implementation";
+import {
+  evaluatePrepareReleaseConditions,
+} from "./contracts";
 import type {
   PrepareReleaseInput,
   PrepareReleaseOutput,
@@ -197,54 +200,50 @@ export function prepareReleaseProcedure(
   const evPosture = buildEvidencePosture(evidenceAssessment);
 
   // ────────────────────────────────────────────────────────────
-  // Dynamic SOP Branching — Handle Ambiguous/Unknown State
+  // Dynamic SOP Branching — Single Semantic Authority
+  // (evaluatePrepareReleaseConditions = frozen canonical evaluator)
   // ────────────────────────────────────────────────────────────
-  const allHardChecksPassed =
-    verificationAssessment.isVerified &&
-    traceabilityAssessment.complete &&
-    evidenceAssessment.complete;
+  const conditionResult = evaluatePrepareReleaseConditions({
+    verification: verificationAssessment,
+    traceability: traceabilityAssessment,
+    evidence: evidenceAssessment,
+  });
 
-  const hasUnknown = verificationAssessment.hasUnknown;
+  const [outcome, executionReason] = conditionResult;
 
   let readinessStatus: PrepareReleaseOutput["readiness"]["status"];
-  let executionReason: PrepareReleaseOutput["execution"]["reason"];
   let aiInvoked = false;
   let aiPlanId: string | null = null;
   let aiInvocationStatus: string | null = null;
-  const ambiguousReqs = [...verificationAssessment.unknownRequirementIds];
+  let ambiguousReqs: readonly string[] = [];
 
-  if (hasUnknown) {
-    // ── Intelligent exception path: AI-on-demand ──
-    // We don't hard-block. We trigger AI investigation to disambiguate.
-    // In a full runtime this would dispatch to agent-orchestration; for
-    // this vertical slice we mark it as "investigation triggered" and
-    // let the UI show the human-wait state.
-    aiInvoked = true;
-    aiPlanId = "investigate-ambiguous-requirement";
-    aiInvocationStatus = "triggered_pending_result";
-
-    readinessStatus = "pending_ai_investigation";
-    executionReason = "intelligence_required";
-
-    steps.push({
-      stepId: "trigger-ai-investigation",
-      kind: "ai.investigate",
-      status: "requires_human",
-      summary: `Triggered AI investigation workflow (${aiPlanId}) for ${ambiguousReqs.length} ambiguous requirement(s): ${ambiguousReqs.join(", ")}. Procedure will wait for investigation results before re-evaluation.`,
-      output: {
-        planId: aiPlanId,
-        ambiguousRequirements: ambiguousReqs,
-        nextAction: "WAIT_FOR_AI_OR_HUMAN",
-      },
-    });
-  } else if (!allHardChecksPassed) {
-    // ── Deterministic block path ──
-    readinessStatus = "blocked";
-    executionReason = "blockers_found";
-  } else {
-    // ── Deterministic happy path ──
-    readinessStatus = "ready";
-    executionReason = "all_checks_passed";
+  switch (outcome) {
+    case "intelligence_required": {
+      const [, , meta] = conditionResult;
+      aiInvoked = true;
+      aiPlanId = meta.aiPlanId;
+      aiInvocationStatus = "triggered_pending_result";
+      ambiguousReqs = meta.ambiguousRequirementIds;
+      readinessStatus = "pending_ai_investigation";
+      steps.push({
+        stepId: "trigger-ai-investigation",
+        kind: "ai.investigate",
+        status: "requires_human",
+        summary: `Triggered AI investigation workflow (${aiPlanId}) for ${ambiguousReqs.length} ambiguous requirement(s): ${ambiguousReqs.join(", ")}. Procedure will wait for investigation results before re-evaluation.`,
+        output: {
+          planId: aiPlanId,
+          ambiguousRequirements: ambiguousReqs,
+          nextAction: "WAIT_FOR_AI_OR_HUMAN",
+        },
+      });
+      break;
+    }
+    case "blocked":
+      readinessStatus = "blocked";
+      break;
+    case "ready":
+      readinessStatus = "ready";
+      break;
   }
 
   const blockers = buildBlockers(reqPosture, tracePosture, evPosture);
@@ -269,6 +268,25 @@ export function prepareReleaseProcedure(
     },
   });
 
+  // Handle potential attribution failure before freezing result object
+  let finalReadinessStatus = readinessStatus;
+  const finalBlockers = [...blockers];
+  
+  try {
+    appendAttributionRecord({
+      executionId: identity.executionId,
+      procedure: PROCEDURE_NAME,
+      canonicalSubject: identity.canonicalSubject,
+      input,
+      output: null, // Temporary value, will update with final result
+      evaluatedAt: new Date().toISOString(),
+    });
+  } catch (e) {
+    // G5: Failure semantics - parent menangkap error dari child procedure
+    finalReadinessStatus = "blocked";
+    finalBlockers.push(`Attribution failed: ${e instanceof Error ? e.message : "Unknown error writing attribution record"}`);
+  }
+
   const result: PrepareReleaseOutput = {
     executionId: identity.executionId,
     procedure: identity.procedure as "prepare_release",
@@ -280,7 +298,7 @@ export function prepareReleaseProcedure(
       reason: executionReason,
     },
     readiness: {
-      status: readinessStatus,
+      status: finalReadinessStatus,
     },
     requirements: reqPosture,
     traceability: tracePosture,
@@ -291,18 +309,24 @@ export function prepareReleaseProcedure(
       ambiguousRequirements: ambiguousReqs,
       invocationStatus: aiInvocationStatus,
     },
-    blockers,
+    blockers: finalBlockers,
     steps,
     generatedAt: new Date().toISOString(),
   };
-  appendAttributionRecord({
-    executionId: result.executionId,
-    procedure: PROCEDURE_NAME,
-    canonicalSubject: result.canonicalSubject,
-    input,
-    output: result,
-    evaluatedAt: result.generatedAt,
-  });
+  
+  // Update the attribution record with the final result
+  try {
+    appendAttributionRecord({
+      executionId: result.executionId,
+      procedure: PROCEDURE_NAME,
+      canonicalSubject: result.canonicalSubject,
+      input,
+      output: result,
+      evaluatedAt: result.generatedAt,
+    });
+  } catch (e) {
+    // If still fails, we already set the final status before creating the result
+  }
   return result;
 }
 

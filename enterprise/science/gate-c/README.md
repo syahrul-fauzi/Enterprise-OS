@@ -1,6 +1,6 @@
 # Gate C Scientific Conformance Package
 
-Gate C is the first scientific conformance framework for the frozen constitutional theory in [CC-001](file:///root/Enterprise%20OS/governance/CC-001-CONSTITUTIONAL-CHARTER.md). It is not a feature test for document management. Document workflows are only the first subject domain used to falsify or corroborate the three-predicate model.
+Gate C is the first scientific conformance framework for the frozen constitutional theory in [CC-001](file:///root/Enterprise-OS/governance/CC-001-CONSTITUTIONAL-CHARTER.md). It is not a feature test for document management. Document workflows are only the first subject domain used to falsify or corroborate the three-predicate model.
 
 The architectural decision now locked in this package is:
 

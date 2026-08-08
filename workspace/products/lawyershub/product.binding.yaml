@@ -8,4 +8,6 @@ experience:
   route: /requirements
 capabilities:
   - requirement-management
+  - workflow-engine
+  - governance-evidence
 claim_boundary: Product-local proof binding for the LawyersHub identity onto the canonical apps/web professional experience surface.

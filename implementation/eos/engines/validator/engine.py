@@ -9,8 +9,8 @@ from typing import Dict, Any, List
 sys.path.insert(0, os.path.join("/root/Enterprise OS", "implementation"))
 from eos.kernel.registry.evidence_registry import load_registry, update_observation_status
 
-CONFIG_PATH = "/root/Enterprise OS/eos.config.yaml"
-RULES_PATH = "/root/Enterprise OS/implementation/eos/engines/validator/rules.yaml"
+CONFIG_PATH = "/root/Enterprise-OS/eos.config.yaml"
+RULES_PATH = "/root/Enterprise-OS/implementation/eos/engines/validator/rules.yaml"
 
 
 def load_config():

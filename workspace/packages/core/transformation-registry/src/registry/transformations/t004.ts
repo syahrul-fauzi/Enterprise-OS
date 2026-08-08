@@ -8,7 +8,7 @@ export const TRANSFORMATION_T004: TransformationDeclaration = {
   output_kind: "RUNTIME_ARTIFACTS_DIST",
   lifecycle: "DRAFT",
   contract_ref:
-    "/root/Enterprise OS/workspace/contracts/transformations/t004-tsir-to-runtime.contract.yaml",
+    "/root/Enterprise-OS/workspace/contracts/transformations/t004-tsir-to-runtime.contract.yaml",
   predicate_refs: [
     { predicate_id: "PRED-T004-INPUT-TSIR-VERIFIED", phase: "PRE_EXECUTION" },
     {

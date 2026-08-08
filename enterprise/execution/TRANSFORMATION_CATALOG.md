@@ -3,7 +3,7 @@
 > **Catalog Status**: FROZEN (Sprint 0 Architecture Freeze — ADR-000)
 > 
 > **⚠️ SSOT NOTICE**: DOKUMEN INI ADALAH DERIVED VIEW SAJA.
-> **Single Source of Truth** = [transformation-catalog.yaml](file:///root/Enterprise%20OS/enterprise/execution/transformation-catalog.yaml)
+> **Single Source of Truth** = [transformation-catalog.yaml](file:///root/Enterprise-OS/enterprise/execution/transformation-catalog.yaml)
 > Tooling HANYA membaca YAML. Manusia boleh membaca Markdown ini sebagai panduan.
 > Perubahan pada katalog HANYA SAH jika dibuat di YAML canonical.
 > 

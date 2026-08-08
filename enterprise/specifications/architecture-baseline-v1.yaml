@@ -22,7 +22,7 @@ baseline:
       name: EOS Philosophy
       status: frozen
       version: 1.0.0
-      location: /root/Enterprise OS/ARCHITECTURE.md
+      location: /root/Enterprise-OS/ARCHITECTURE.md
       depends_on: []
       implements:
         - AXIOM-SEMANTIC-PRIMACY
@@ -32,7 +32,7 @@ baseline:
       name: EOS Architecture Constitution
       status: frozen
       version: 1.0.0
-      location: /root/Enterprise OS/CONSTITUTION.md
+      location: /root/Enterprise-OS/CONSTITUTION.md
       depends_on:
         - ARCH-PHILOSOPHY-001
       implements:
@@ -44,7 +44,7 @@ baseline:
       name: EOS Meta-Architecture
       status: frozen
       version: 1.0.0
-      location: /root/Enterprise OS/enterprise/specifications/eos-architecture-closure.md
+      location: /root/Enterprise-OS/enterprise/specifications/eos-architecture-closure.md
       depends_on:
         - ARCH-CONSTITUTION-001
       implements:
@@ -55,7 +55,7 @@ baseline:
       name: EOS Reference Architecture
       status: frozen
       version: 1.0.0
-      location: /root/Enterprise OS/enterprise/specifications/eos-architecture-closure.md
+      location: /root/Enterprise-OS/enterprise/specifications/eos-architecture-closure.md
       depends_on:
         - ARCH-EMA-001
         - ARCH-CONSTITUTION-001
@@ -68,7 +68,7 @@ baseline:
       name: Specification Authoring Guide
       status: frozen
       version: 1.0.0
-      location: /root/Enterprise OS/enterprise/specifications/specification-authoring-guide.md
+      location: /root/Enterprise-OS/enterprise/specifications/specification-authoring-guide.md
       depends_on:
         - ARCH-ERA-001
         - ARCH-CONSTITUTION-001
@@ -82,7 +82,7 @@ baseline:
       name: Specification Execution Specification
       status: frozen
       version: 1.0.0
-      location: /root/Enterprise OS/enterprise/specifications/specification-execution-specification.md
+      location: /root/Enterprise-OS/enterprise/specifications/specification-execution-specification.md
       depends_on:
         - ARCH-SAG-001
         - ARCH-ERA-001

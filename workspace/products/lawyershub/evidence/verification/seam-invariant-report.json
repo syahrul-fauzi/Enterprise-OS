@@ -1,0 +1,27 @@
+{
+  "timestamp_utc": "2026-08-07T12:06:55.134Z",
+  "product_id": "lawyershub",
+  "seam_invariant_verified": true,
+  "reference_product": "services-id",
+  "decision_id": "dec-f18f99cd-0dff-4f11-8632-76e01b9d0864",
+  "trace_matches": 16,
+  "capabilities_observed": [
+    "api-platform",
+    "workflow-engine",
+    "api-platform",
+    "workflow-engine",
+    "api-platform",
+    "workflow-engine",
+    "api-platform",
+    "workflow-engine",
+    "api-platform",
+    "workflow-engine",
+    "api-platform",
+    "workflow-engine",
+    "api-platform",
+    "workflow-engine",
+    "api-platform",
+    "workflow-engine"
+  ],
+  "verification_passed": true
+}

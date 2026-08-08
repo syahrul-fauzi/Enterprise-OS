@@ -8,7 +8,7 @@ from datetime import datetime
 sys.path.insert(0, os.path.join("/root/Enterprise OS", "implementation"))
 from eos.kernel.registry.evidence_registry import add_observation
 
-CONFIG_PATH = "/root/Enterprise OS/eos.config.yaml"
+CONFIG_PATH = "/root/Enterprise-OS/eos.config.yaml"
 
 
 def load_config():

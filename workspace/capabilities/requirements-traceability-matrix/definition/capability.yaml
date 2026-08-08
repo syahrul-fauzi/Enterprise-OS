@@ -1,5 +1,38 @@
 id: requirements-traceability-matrix
 name: Requirements Traceability Matrix
 version: 0.1.0
+owner: requirements-domain
+status: ACTIVE
+introduced: "2026-07-14"
+provides:
+  - requirement-tracing
+  - impact-analysis
+  - delivery-readiness
+purpose: Maintain end-to-end traceability from business requirements through to production delivery and evidence collection.
+manifest_version: 1.0.0
+exports:
+  - TraceabilityService
+  - TraceabilityQueries
+  - TraceabilityRepository
 implementation:
   entry: implementation/service.ts
+depends_on:
+  - requirement-management
+  - knowledge-graph
+  - evidence-registry
+capability:
+  name: requirements-traceability-matrix
+  owner: requirements-domain
+  purpose: Maintain end-to-end traceability from business requirements through to production delivery.
+  consumers:
+    - lawyershub
+    - services-id
+    - governance-read-model
+  maturity:
+    level: core
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - full_traceability
+stability: stable

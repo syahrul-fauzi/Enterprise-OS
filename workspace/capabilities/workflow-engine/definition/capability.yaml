@@ -1,5 +1,53 @@
 id: workflow-engine
 name: Workflow Engine
 version: 0.1.0
+owner: workflow-domain
+status: ACTIVE
+introduced: "2026-07-20"
+provides:
+  - delivery-orchestration
+  - workflow-execution
+  - state-tracking
+purpose: Provide canonical workflow orchestration for all product delivery processes, including state management and execution tracking.
+manifest_version: 1.0.0
+exports:
+  - WorkflowEngineProvider
+  - WorkflowDefinition
+  - WorkflowInstance
+  - ExecutionState
+depends_on:
+  - core-runtime
+  - governance-evidence
+allowed_dependencies:
+  - core-runtime
+  - governance-evidence
+forbidden_dependencies:
+  - api-platform
+  - requirement-management
+capability:
+  name: workflow-engine
+  owner: workflow-domain
+  purpose: Provide canonical workflow orchestration for all product delivery processes.
+  consumers:
+    - services-id
+    - lawyershub
+    - ilc
+  maturity:
+    level: core
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - scalability_validation
+    - multiple_consumers
+    - cross_domain_adoption
+stability: stable
+contracts:
+  requires:
+    - name: GovernanceEvidenceProvider
+      range: ">=0.1 <0.2"
+  provides:
+    - name: WorkflowEngineProvider
+      version: 1.0.0
 implementation:
   entry: implementation/service.ts

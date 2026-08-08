@@ -12,7 +12,7 @@ index_version:
   max_root_index_loc: 100
 
 transformation_index:
-  root: /root/Enterprise OS/workspace/packages/core/transformation-registry/src/registry/transformations/
+  root: /root/Enterprise-OS/workspace/packages/core/transformation-registry/src/registry/transformations/
   include_pattern: "*/manifest.yaml"
   verified_entries:
     - t001
@@ -21,10 +21,10 @@ transformation_index:
     - t003
     - t004
     - t005
-  loader: /root/Enterprise OS/workspace/packages/core/transformation-registry/src/registry/load-manifest.ts
+  loader: /root/Enterprise-OS/workspace/packages/core/transformation-registry/src/registry/load-manifest.ts
 
 predicate_index:
-  root: /root/Enterprise OS/workspace/packages/core/predicate-registry/src/registry/predicates/
+  root: /root/Enterprise-OS/workspace/packages/core/predicate-registry/src/registry/predicates/
   include_pattern: "*/manifest.yaml"
   verified_entries:
     - t001
@@ -33,7 +33,7 @@ predicate_index:
     - t003
     - t004
     - t005
-  loader: /root/Enterprise OS/workspace/packages/core/predicate-registry/src/registry/load-manifest.ts
+  loader: /root/Enterprise-OS/workspace/packages/core/predicate-registry/src/registry/load-manifest.ts
 
 migration:
   current_strategy: DUAL_SOURCE_DURING_MIGRATION_WINDOW

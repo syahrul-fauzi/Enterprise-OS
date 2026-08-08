@@ -4,10 +4,10 @@ kind: CONTRACT
 contract_kind: PROVENANCE_AUDIT_CONTRACT
 ssot_note: EVIDENCE_PROVENANCE_GRAPH_EPG_IS_SINGLE_SOURCE_OF_TRUTH_FOR_AUDIT._LINEAR_EVIDENCE_CHAIN_IS_DEPRECATED._REPLACED_BY_MERKLE_DAG_WITH_MULTIPARENT_NODES._EVERY_NODE_CARRIES_KNOWLEDGE_SNAPSHOT_ID.
 governance_ref:
-  invariant_architecture_ia05_proof_class_split: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_05_proof_class_split
-  invariant_architecture_ia10_immutable_snapshot: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_10_immutable_knowledge_snapshot
-  invariant_architecture_ia11_semantic_determinism: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_11_semantic_determinism
-  knowledge_snapshot_contract: /root/Enterprise OS/workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml
+  invariant_architecture_ia05_proof_class_split: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_05_proof_class_split
+  invariant_architecture_ia10_immutable_snapshot: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_10_immutable_knowledge_snapshot
+  invariant_architecture_ia11_semantic_determinism: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_11_semantic_determinism
+  knowledge_snapshot_contract: /root/Enterprise-OS/workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml
 derived_from:
   - Evidence_DAG_Not_Evidence_Chain_Paradigm_User_20260730
   - Evidence_Provenance_Graph_with_Merkle_hashing_user_point_6
@@ -81,7 +81,7 @@ node_specification:
         purely via content-hash chain re-derivation.
     - field: knowledge_snapshot
       type: string, KS-YYYY.MM.DD.NNN
-      contract_ref: /root/Enterprise OS/workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml#identifier_specification
+      contract_ref: /root/Enterprise-OS/workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml#identifier_specification
       presence: MANDATORY for all nodes where kind ∈ { TRANSFORMATION, EXECUTION, EXECUTION_PROOF, VALIDATION_PROOF, EXECUTION_PLAN, EVIDENCE }
       rationale: Enforces IA-10. One execution = exactly one immutable snapshot.
     - field: runtime_version

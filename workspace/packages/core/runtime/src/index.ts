@@ -5,5 +5,7 @@ export type {
   HostEnvironment,
 } from "./types";
 export { Runtime } from "./runtime";
-export { recordRuntimeInvocation } from "./invocation-evidence";
+export { recordRuntimeInvocation, traceExecutionByDecision } from "./invocation-evidence";
+export { executionContext } from "./execution-context";
+export type { ExecutionContext } from "./execution-context";
 export type { ResolvedWorkspace } from "@repo/composition";

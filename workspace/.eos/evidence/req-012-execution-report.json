@@ -1,0 +1,54 @@
+{
+  "workflow_execution": {
+    "workflowId": "requirement-delivery-readiness",
+    "status": "failed",
+    "steps": [
+      {
+        "stepId": "load-requirement",
+        "kind": "requirement.get",
+        "status": "passed",
+        "summary": "Loaded requirement req-012.",
+        "output": {
+          "requirementId": "req-012",
+          "status": "verified",
+          "verificationStatus": "passed",
+          "linkedCapabilityCount": 3
+        }
+      },
+      {
+        "stepId": "resolve-traceability",
+        "kind": "traceability.get",
+        "status": "passed",
+        "summary": "Resolved 5 traceability artifacts.",
+        "output": {
+          "artifactCount": 5,
+          "coverageComplete": true,
+          "gapCount": 0,
+          "gaps": []
+        }
+      },
+      {
+        "stepId": "collect-linked-evidence",
+        "kind": "evidence.search",
+        "status": "failed",
+        "summary": "No linked external evidence was found for this requirement.",
+        "output": {
+          "requirementRefs": [
+            "REQ-011"
+          ],
+          "evidenceCount": 0,
+          "evidencePaths": []
+        }
+      }
+    ],
+    "output": {
+      "readyForWorkflow": false,
+      "requirementId": "req-012",
+      "requirementStatus": "verified",
+      "verificationStatus": "passed",
+      "evidenceCount": 0,
+      "traceabilityGapCount": 0
+    },
+    "executionTimestamp": "2026-08-08T11:23:38.898Z"
+  }
+}

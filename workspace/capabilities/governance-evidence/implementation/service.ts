@@ -6,6 +6,22 @@ export type {
   JsonArtifact,
   JsonRecord,
 } from "./contracts";
+// Canonical governed-delivery-seam exports - B7.11 extraction
+export type {
+  GovernanceDecisionRecord,
+} from "./services/governed-delivery-seam";
+export {
+  DeliveryDecisionGatewayService,
+} from "./services/governed-delivery-seam";
+
+// Legacy exports maintained for backward compatibility (deprecated B7.13)
+export type {
+  GovernanceDecisionRecord as LegacyGovernanceDecisionRecord,
+} from "./services/governed-delivery-seam";
+export {
+  DeliveryDecisionGatewayService as LegacyDeliveryDecisionGatewayService,
+} from "./services/governed-delivery-seam";
+
 export {
   GovernanceEvidenceService,
   governanceEvidenceArtifactCatalog,

@@ -10,8 +10,8 @@ from typing import Dict, Any, List
 sys.path.insert(0, os.path.join("/root/Enterprise OS", "implementation"))
 from eos.kernel.registry.evidence_registry import get_validated_observations
 
-CONFIG_PATH = "/root/Enterprise OS/eos.config.yaml"
-RULES_PATH = "/root/Enterprise OS/implementation/eos/engines/pattern/rules.yaml"
+CONFIG_PATH = "/root/Enterprise-OS/eos.config.yaml"
+RULES_PATH = "/root/Enterprise-OS/implementation/eos/engines/pattern/rules.yaml"
 
 
 def load_config() -> Dict[str, Any]:

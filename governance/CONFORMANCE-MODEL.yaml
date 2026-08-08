@@ -5,9 +5,9 @@ layer: CONFORMANCE_META_MODEL
 abbreviation: CONF-M
 ssot_note: EOS_CONFORMANCE_MODEL_PATTERNED_AFTER_POSIX_STANDARD._CONFORMANCE_TEST_SUITE_IS_CANONICAL_TRUTH_NOT_REFERENCE_IMPLEMENTATION._REFERENCE_IMPLEMENTATION_CAN_BE_REMOVED_OR_REPLACED_ENTIRELY_AS_LONG_AS_CONFORMANCE_TESTS_REMAIN_PASSING.
 governance_ref:
-  asp: /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
-  evolution_domains: /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml
-  protocol_governance: /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
+  asp: /root/Enterprise-OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
+  evolution_domains: /root/Enterprise-OS/governance/EVOLUTION-DOMAINS.yaml
+  protocol_governance: /root/Enterprise-OS/governance/PROTOCOL-GOVERNANCE.yaml
 derived_from:
   - User_Point_7_Reference_vs_Alternative_Implementations_POSIX_Pattern
   - ASP_01(c)_Replaceable_Implementations

@@ -3,7 +3,7 @@ contract:
   name: canonical_repository_state_read_contract
   status: VERIFIED
   purpose: Menetapkan single source of truth untuk seluruh konsumen tooling (ACL, CLI, CI, Compiler, Dashboard). Semua tool HARUS membaca root key repository_state dari file ini — tidak boleh menghitung status independen.
-  file: /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
+  file: /root/Enterprise-OS/governance/GOVERNANCE_STATE.yaml
   root_key: repository_state
   sibling_key: repository_proof
   consumers:

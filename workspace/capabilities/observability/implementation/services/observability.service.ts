@@ -1,3 +1,6 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import { agentOrchestrationService } from "../../../agent-orchestration/implementation/services/agent-orchestration.service";
 import { apiPlatformService } from "../../../api-platform/implementation/services/api-platform.service";
 import { evidenceRegistryService } from "../../../evidence-registry/implementation/services/evidence-registry.service";
@@ -9,8 +12,30 @@ import type {
   ObservableMetric,
   ObservableTraceSpan,
   ObservabilitySnapshot,
+  RuntimeInvocation,
 } from "../contracts";
-import { recordRuntimeInvocation } from "@repo/core-runtime";
+// import { recordRuntimeInvocation } from "@repo/core-runtime"; // Unused import commented out per B7.13 constraints
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const WORKSPACE_ROOT = path.resolve(__dirname, "../../../..");
+const EVIDENCE_PATH = path.join(WORKSPACE_ROOT, "capabilities/observability/evidence/verification/runtime-invocations.jsonl");
+
+// Ensure evidence directory exists
+function ensureEvidenceDirExists(): void {
+  const dir = path.dirname(EVIDENCE_PATH);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+}
+
+// B7.18.2: Basic collector to capture invocations and save as evidence
+function recordRuntimeInvocation(invocation: RuntimeInvocation): void {
+  ensureEvidenceDirExists();
+  const line = JSON.stringify(invocation) + "\n";
+  fs.appendFileSync(EVIDENCE_PATH, line);
+  console.log(`[Observability Collector] Recorded invocation: ${invocation.operation_id} for ${invocation.capability_id}`);
+}
 
 function nowIso(): string {
   return new Date("2026-08-01T00:00:00.000Z").toISOString();
@@ -60,8 +85,8 @@ export class ObservabilityService {
       },
     ];
     recordRuntimeInvocation({
-      capabilityId: "observability",
-      operationId: "get-logs",
+      capability_id: "observability",
+      operation_id: "get-logs",
       sourceRef: "ObservabilityService.getLogs",
       success: true,
       input: {},
@@ -118,8 +143,8 @@ export class ObservabilityService {
       },
     ];
     recordRuntimeInvocation({
-      capabilityId: "observability",
-      operationId: "get-metrics",
+      capability_id: "observability",
+      operation_id: "get-metrics",
       sourceRef: "ObservabilityService.getMetrics",
       success: true,
       input: {},
@@ -190,8 +215,8 @@ export class ObservabilityService {
       },
     ];
     recordRuntimeInvocation({
-      capabilityId: "observability",
-      operationId: "get-traces",
+      capability_id: "observability",
+      operation_id: "get-traces",
       sourceRef: "ObservabilityService.getTraces",
       success: true,
       input: {},
@@ -210,8 +235,8 @@ export class ObservabilityService {
       traces: this.getTraces(),
     };
     recordRuntimeInvocation({
-      capabilityId: "observability",
-      operationId: "get-snapshot",
+      capability_id: "observability",
+      operation_id: "get-snapshot",
       sourceRef: "ObservabilityService.getSnapshot",
       success: true,
       input: {},

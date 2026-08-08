@@ -4,11 +4,11 @@ kind: CONSTITUTIONAL_COMPILER_CONTRACT
 ssot_note: THIS_YAML_FORMALIZES_EOS_AS_KNOWLEDGE_COMPILER_PIPELINE._EOS_IS_NOT_A_MERE_COLLECTION_OF_COMPONENTS._EOS_IS_A_SEQUENCE_OF_EPISTEMIC_TRANSFORMATIONS_THAT_PROGRESSIVELY_TRANSFORM_KNOWLEDGE_STATE._ANALOGY_WITH_CLASSICAL_COMPILER_STRONG_AND_INTENTIONAL.
 terminology_note: OFFICIAL_ARCHITECTURE_TERMINOLOGY_FROM_THIS_DOCUMENT_ONWARDS_REPLACES_LAYER_TERMINOLOGY_WITH_STATE_TRANSFORMATION_TERMINOLOGY_WHERE_APPROPRIATE.
 governance_ref:
-  invariant_architecture: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
-  semantic_kernel: /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml
-  ia10_snapshot: /root/Enterprise OS/workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml
-  ia05_proof_split: /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_05_proof_class_split
-  epg_provenance: /root/Enterprise OS/workspace/contracts/EVIDENCE-PROVENANCE-GRAPH.contract.yaml
+  invariant_architecture: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml
+  semantic_kernel: /root/Enterprise-OS/enterprise/specifications/SEMANTIC-KERNEL.yaml
+  ia10_snapshot: /root/Enterprise-OS/workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml
+  ia05_proof_split: /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml#principle_05_proof_class_split
+  epg_provenance: /root/Enterprise-OS/workspace/contracts/EVIDENCE-PROVENANCE-GRAPH.contract.yaml
 derived_from:
   - EOS_as_Knowledge_Compiler_Paradigm_User_20260730
   - From_Layer_Architecture_to_Epistemic_Transformation_Pipeline

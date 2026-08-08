@@ -1,0 +1,94 @@
+{
+  "certificate_id": "b7.10-runtime-proof-certificate",
+  "certified_at_utc": "2026-08-07T04:10:00.000Z",
+  "campaign": "B7.10 Cross-System Reusable-Seam Proof",
+  "verdict": "CERTIFIED — REPEATED INDEPENDENT RUNTIME PROVEN",
+  "seam_invariant": {
+    "claim": "The same governed delivery seam proven for services-id applies identically when product context is switched to lawyershub without modifying boundary/workflow/primitive code.",
+    "status": "PROVEN_NOT_DIVERGENT"
+  },
+  "decision_under_test": {
+    "decision_id": "dec-f18f99cd-0dff-4f11-8632-76e01b9d0864",
+    "requirement_id": "req-003",
+    "decision_type": "delivery-approval",
+    "decision": "approved",
+    "source": "apps/web/workspace/foundation/governance/decisions/gate5-decisions.jsonl"
+  },
+  "gates": {
+    "gate1_boundary": {
+      "status": "PASS",
+      "evidence": {
+        "method": "POST",
+        "url": "http://localhost:3004/api/delivery",
+        "headers": {
+          "x-eos-product-id": "lawyershub",
+          "x-eos-actor-id": "operator.web"
+        },
+        "body": {
+          "requirementId": "req-003",
+          "decisionId": "dec-f18f99cd-0dff-4f11-8632-76e01b9d0864"
+        },
+        "http_status": 200,
+        "response_body_keys": ["requirementId","decisionId","artifactPath","requirementRef","runId","digest"],
+        "response_decisionId_match": true,
+        "response_artifactPath": "products/lawyershub/evidence/delivery/REQ-003/run-req-003/delivery-execution-evidence.json"
+      }
+    },
+    "gate2_business_work": {
+      "status": "PASS",
+      "evidence": {
+        "artifact": "products/lawyershub/evidence/delivery/REQ-003/run-req-003/delivery-execution-evidence.json",
+        "workflow_status": "passed",
+        "ready_for_workflow": true,
+        "evidence_count_before_attach": 3,
+        "traceability_gap_count": 0,
+        "traceability_complete": true,
+        "traceability_artifact_count": 9,
+        "requirement_ref": "REQ-003"
+      }
+    },
+    "gate3_physical_isolation": {
+      "status": "PASS",
+      "evidence": {
+        "services_id_checksum_delta": "ZERO_IDENTICAL_TO_BASELINE",
+        "services_id_files_before": 7,
+        "services_id_files_after": 7,
+        "lawyershub_artifact_found": true,
+        "lawyershub_artifact_size_bytes": 1652,
+        "lawyershub_product_id_field": "lawyershub",
+        "cross_contamination": "NONE"
+      }
+    },
+    "gate4_runtime_trace": {
+      "status": "PASS",
+      "evidence": {
+        "primitive_package": "@repo/core-runtime/dist/index (G6 frozen primitive)",
+        "primitive_invoked": "traceExecutionByDecision(dec-f18f99cd-0dff-4f11-8632-76e01b9d0864)",
+        "ledger_target": "products/lawyershub/evidence/verification/runtime-invocations.jsonl",
+        "total_matches": 8,
+        "all_matches_success_true": true,
+        "operations_found": [
+          "delivery-surface.attach-evidence",
+          "execute-delivery-workflow",
+          "delivery-workflow.execute-approval"
+        ],
+        "schema_fields_non_empty": true,
+        "run_ids_present": ["run-lawyershub-001","run-req-003-lawyershub"]
+      }
+    }
+  },
+  "leverage_decision": {
+    "rule_of_two_status": "SATISFIED",
+    "consumer_count_proven": 2,
+    "consumers": ["services-id (B7.8)", "lawyershub (B7.10)"],
+    "extraction_justified": true,
+    "extraction_executed_now": false,
+    "rationale": "Commander order: 'Jangan extract. Jangan redesign.' — extraction justified (Rule of Two met) tetapi extraction execution is a strategic architectural state change that requires a separate GO signal. Extraction is NOT executed in this B7.10 cycle per scope boundary."
+  },
+  "scope_lock": {
+    "b8_authority": "LOCKED",
+    "g1_g6_modification": "NONE — frozen primitive invoked as-is",
+    "redesign": "NONE — no boundary code changed",
+    "new_workflows": "NONE — reused requirement-delivery-readiness and delivery-workflow existing definitions"
+  }
+}

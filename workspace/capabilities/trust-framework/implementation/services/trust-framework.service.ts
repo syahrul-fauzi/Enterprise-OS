@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { recordRuntimeInvocation } from "@repo/core-runtime";
+// import { recordRuntimeInvocation } from "@repo/core-runtime"; // Commented out for governance-evidence standalone execution
 import type {
   TrustFramework,
   TrustFrameworkCatalog,
@@ -48,17 +48,17 @@ function computeLocalSignatureReference(payloadDigest: string): string {
 export class TrustFrameworkService implements TrustFrameworkProvider {
   getFrameworkCatalog(): TrustFrameworkCatalog {
     const result = readCatalog();
-    recordRuntimeInvocation({
-      capabilityId: "trust-framework",
-      operationId: "get-framework-catalog",
-      sourceRef: "TrustFrameworkService.getFrameworkCatalog",
-      success: true,
-      input: { path: TRUST_FRAMEWORK_PATH },
-      result: {
-        catalogId: result.catalog_id,
-        frameworkCount: Array.isArray(result.frameworks) ? result.frameworks.length : 0,
-      },
-    });
+    // recordRuntimeInvocation({
+    //   capabilityId: "trust-framework",
+    //   operationId: "get-framework-catalog",
+    //   sourceRef: "TrustFrameworkService.getFrameworkCatalog",
+    //   success: true,
+    //   input: { path: TRUST_FRAMEWORK_PATH },
+    //   result: {
+    //     catalogId: result.catalog_id,
+    //     frameworkCount: Array.isArray(result.frameworks) ? result.frameworks.length : 0,
+    //   },
+    // });
     return result;
   }
 

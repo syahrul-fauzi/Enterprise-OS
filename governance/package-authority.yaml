@@ -4,7 +4,7 @@ scope: workspace
 
 authorities:
   apps:
-    path: /root/Enterprise OS/workspace/apps
+    path: /root/Enterprise-OS/workspace/apps
     authority: experience_surface
     allowed_changes:
       - app_specific_ui
@@ -15,7 +15,7 @@ authorities:
       - core_kernel_semantics
       - structural_root_relocation
   capabilities:
-    path: /root/Enterprise OS/workspace/capabilities
+    path: /root/Enterprise-OS/workspace/capabilities
     authority: bounded_capability_implementation
     allowed_changes:
       - capability_definition
@@ -27,7 +27,7 @@ authorities:
       - workspace_root_restructuring
       - engine_hardcoding
   packages/core:
-    path: /root/Enterprise OS/workspace/packages/core
+    path: /root/Enterprise-OS/workspace/packages/core
     authority: canonical_foundation
     allowed_changes:
       - schema
@@ -40,7 +40,7 @@ authorities:
       - ui_framework_logic
       - direct_app_dependencies
   packages/composition:
-    path: /root/Enterprise OS/workspace/packages/composition
+    path: /root/Enterprise-OS/workspace/packages/composition
     authority: composition_descriptor_engine
     allowed_changes:
       - workspace_descriptor
@@ -50,7 +50,7 @@ authorities:
       - direct_ui_rendering
       - capability_business_logic_duplication
   packages/presentation:
-    path: /root/Enterprise OS/workspace/packages/presentation
+    path: /root/Enterprise-OS/workspace/packages/presentation
     authority: reusable_presentation_primitives
     allowed_changes:
       - tokens
@@ -60,7 +60,7 @@ authorities:
       - capability_business_terms
       - runtime_registry_logic
   packages/tooling:
-    path: /root/Enterprise OS/workspace/packages/tooling
+    path: /root/Enterprise-OS/workspace/packages/tooling
     authority: local_verification_tooling
     allowed_changes:
       - architecture_tests
@@ -70,7 +70,7 @@ authorities:
       - canonical_business_contracts
       - runtime_engine_behavior
   contracts:
-    path: /root/Enterprise OS/workspace/contracts
+    path: /root/Enterprise-OS/workspace/contracts
     authority: canonical_contract_definitions
     allowed_changes:
       - contract_schema
@@ -82,7 +82,7 @@ authorities:
       - ui_logic
       - build_output_storage
   decisions:
-    path: /root/Enterprise OS/workspace/decisions
+    path: /root/Enterprise-OS/workspace/decisions
     authority: architectural_decisions
     allowed_changes:
       - adr

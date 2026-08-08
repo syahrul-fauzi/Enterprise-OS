@@ -10,28 +10,28 @@ compliance_objective:
     - gate_exit_predicates
 
 required_artifacts:
-  - /root/Enterprise OS/governance/BASELINE_LOCK.yaml
-  - /root/Enterprise OS/governance/GOVERNANCE_STATE.yaml
-  - /root/Enterprise OS/governance/INVARIANT-ARCHITECTURE.yaml
-  - /root/Enterprise OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
-  - /root/Enterprise OS/governance/EVOLUTION-DOMAINS.yaml
-  - /root/Enterprise OS/governance/PROTOCOL-GOVERNANCE.yaml
-  - /root/Enterprise OS/governance/CONFORMANCE-MODEL.yaml
-  - /root/Enterprise OS/governance/IMPLEMENTATION_BASELINE.md
-  - /root/Enterprise OS/governance/ARCHITECTURE_GOVERNANCE.md
-  - /root/Enterprise OS/governance/dependency-rules.yaml
-  - /root/Enterprise OS/governance/package-authority.yaml
-  - /root/Enterprise OS/governance/artifact-lifecycle.yaml
-  - /root/Enterprise OS/governance/implementation-discipline.yaml
-  - /root/Enterprise OS/governance/sprint0-exit-predicates.yaml
-  - /root/Enterprise OS/enterprise/specifications/SEMANTIC-KERNEL.yaml
-  - /root/Enterprise OS/enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
-  - /root/Enterprise OS/enterprise/specifications/COMPILER-PASSES.spec.yaml
-  - /root/Enterprise OS/workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml
-  - /root/Enterprise OS/workspace/contracts/KNOWLEDGE-IR.contract.yaml
-  - /root/Enterprise OS/workspace/contracts/DECISION-IR.contract.yaml
-  - /root/Enterprise OS/workspace/contracts/EVIDENCE-PROVENANCE-GRAPH.contract.yaml
-  - /root/Enterprise OS/workspace/workspace.yaml
+  - /root/Enterprise-OS/governance/BASELINE_LOCK.yaml
+  - /root/Enterprise-OS/governance/GOVERNANCE_STATE.yaml
+  - /root/Enterprise-OS/governance/INVARIANT-ARCHITECTURE.yaml
+  - /root/Enterprise-OS/governance/ARCHITECTURAL-STABILITY-PRINCIPLES.yaml
+  - /root/Enterprise-OS/governance/EVOLUTION-DOMAINS.yaml
+  - /root/Enterprise-OS/governance/PROTOCOL-GOVERNANCE.yaml
+  - /root/Enterprise-OS/governance/CONFORMANCE-MODEL.yaml
+  - /root/Enterprise-OS/governance/IMPLEMENTATION_BASELINE.md
+  - /root/Enterprise-OS/governance/ARCHITECTURE_GOVERNANCE.md
+  - /root/Enterprise-OS/governance/dependency-rules.yaml
+  - /root/Enterprise-OS/governance/package-authority.yaml
+  - /root/Enterprise-OS/governance/artifact-lifecycle.yaml
+  - /root/Enterprise-OS/governance/implementation-discipline.yaml
+  - /root/Enterprise-OS/governance/sprint0-exit-predicates.yaml
+  - /root/Enterprise-OS/enterprise/specifications/SEMANTIC-KERNEL.yaml
+  - /root/Enterprise-OS/enterprise/specifications/KNOWLEDGE-COMPILER-PIPELINE.yaml
+  - /root/Enterprise-OS/enterprise/specifications/COMPILER-PASSES.spec.yaml
+  - /root/Enterprise-OS/workspace/contracts/KNOWLEDGE-SNAPSHOT.contract.yaml
+  - /root/Enterprise-OS/workspace/contracts/KNOWLEDGE-IR.contract.yaml
+  - /root/Enterprise-OS/workspace/contracts/DECISION-IR.contract.yaml
+  - /root/Enterprise-OS/workspace/contracts/EVIDENCE-PROVENANCE-GRAPH.contract.yaml
+  - /root/Enterprise-OS/workspace/workspace.yaml
 
 checks:
   - id: ACL-001

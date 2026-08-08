@@ -126,14 +126,45 @@ audit("AUDIT #2: executionId invariant across 4 reruns", () => {
 });
 
 // ============================================================
-// AUDIT #3 — evaluatedAt = generatedAt completion
+// AUDIT #3 — executionId invariant verification (Gate 4 requirement)
 // ============================================================
-audit("AUDIT #3: evaluatedAt berasal dari generatedAt (passed into call)", () => {
-  const identity = buildExecutionIdentityV1("prepare_release", "release/EOS-AUDIT03");
+audit("AUDIT #3: executionId invariant terpenuhi: executionId === `${procedure}:${canonicalSubject}`", () => {
+  // Test dengan canonicalSubject yang mengandung colon (untuk membuktikan parsing tidak akan pernah berfungsi jika dipaksakan)
+  const identity = buildExecutionIdentityV1("prepare_release", "release:EOS-AUDIT03:with:colons");
   const input = { releaseId: "EOS-AUDIT03" };
-  const completionTs = "2026-07-04T12:34:56.789Z";
   const output = makeMockOutput({
     releaseId: "EOS-AUDIT03",
+    canonicalSubject: identity.canonicalSubject,
+  });
+  const rec = appendAttributionRecord({
+    executionId: identity.executionId,
+    procedure: "prepare_release",
+    canonicalSubject: identity.canonicalSubject,
+    input,
+    output,
+    evaluatedAt: output.generatedAt,
+  });
+  
+  // Verifikasi invariant yang disyaratkan Gate 4: JANGAN PERNAH parse executionId, selalu gunakan field terpisah
+  const computedExecutionId = `${rec.procedure}:${rec.canonicalSubject}`;
+  const invariantHolds = rec.executionId === computedExecutionId;
+  
+  return {
+    ok: invariantHolds,
+    evidence: `canonicalSubject mengandung colon: "${rec.canonicalSubject}"; executionId=${rec.executionId}; computed=${computedExecutionId}; INVARAIN HOLD: ${invariantHolds}`,
+    note: !invariantHolds ? "INVALID ATTRIBUTION RECORD: executionId tidak cocok dengan procedure:canonicalSubject" : "Pass: executionId invariant terpenuhi, consumer harus menggunakan field terpisah procedure + canonicalSubject, JANGAN parse executionId",
+  };
+});
+
+// ============================================================
+// AUDIT #4 — evaluatedAt = generatedAt completion
+// ============================================================
+audit("AUDIT #4: evaluatedAt berasal dari generatedAt (passed into call)", () => {
+  const identity = buildExecutionIdentityV1("prepare_release", "release/EOS-AUDIT04");
+  const input = { releaseId: "EOS-AUDIT04" };
+  const completionTs = "2026-07-04T12:34:56.789Z";
+  const output = makeMockOutput({
+    releaseId: "EOS-AUDIT04",
     generatedAt: completionTs,
   });
   const rec = appendAttributionRecord({
