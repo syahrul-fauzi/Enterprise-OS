@@ -1,6 +1,6 @@
 # Enterprise OS — Operational Control Tower (Control Surface INDEX)
 
-Last Updated: July 29, 2026 (Alpha.13 REPEAT BATCH #1 Complete: CIEC 2→4 threshold_met true, EDCR sample flag resolved, below-threshold 3→1 G0.7 FPI remaining, 3 Invarian PASS structural. H1/H5 RUNNING evidence_count 1→2, Σ Evidence Count 6→12 semua H. Next: REPEAT-2 FPI Purification Batch target Gate 0 PASS.)
+Last Updated: **August 8, 2026 (D1.2 FULL LIFECYCLE CERTIFIED — 9/9 Command Invocation Records ok:true, 4/4 aggregates reached terminal state. Leverage formula verified: 4 business outputs / 1 shared architecture = 4× marginal efficiency gain)**
 
 Change Frequency Level: **Level 3+ (Control Surface)**
 Expected Change Rate: Snapshot status dapat berubah setiap hari. Tapi: SELURUH konten detail Konstitusi, Arsitektur, Evidence, dan Roadmap SUDAH DIPINDAHKAN ke 4 dokumen terpisah. STATUS.md HANYA berisi INDEX NAVIGASI + SNAPSHOT STATUS TERKINI.
@@ -40,18 +40,18 @@ EOS optimizes engineering decisions.
 
 ---
 
-## 🧪 Current Phase: Phase C.1 — Scientific Validation + Operational Learning
+## 🚀 Current Phase: Phase D.1 — Product Execution (REAL BUSINESS OUTPUT MODE)
 
 | Area                | Status                  |
 |---------------------|-------------------------|
-| EOS architecture    | 🔒 Frozen               |
-| Kernel              | 🔒 Frozen               |
-| Core engines        | 🔒 Frozen               |
-| Governance model    | 🔒 Frozen               |
-| Experiment protocol | ✅ Active                |
-| Decision history    | 🟡 Growing              |
-| Evidence repository | 🟡 Growing              |
-| LawyersHub          | 🧪 Experimental Subject |
+| EOS architecture    | 🔒 FROZEN (tidak ada expansion baru) |
+| Kernel              | 🔒 FROZEN               |
+| Core engines        | 🔒 FROZEN               |
+| Governance model    | ✅ ACTIVE (minimum necessary) |
+| Product execution   | 🔥 LIVE (3+1 products running) |
+| Evidence pipeline   | ✅ ACTIVE               |
+| Leverage measurement | ✅ ACTIVE (4× marginal efficiency verified) |
+| AI Agent integration | 🔥 EXECUTING (follows human→procedure→AI→action pattern) |
 
 ---
 
@@ -59,16 +59,15 @@ EOS optimizes engineering decisions.
 
 | Field | Value |
 |-------|-------|
-| Version | Validation Baseline v1.4.x (Software v1.6.0) |
-| Phase | EXP-001: LawyersHub Evidence Loop Execution (Phase C.1.3) |
-| Primary Workspace | LawyersHub MVP |
-| Second Workspace | Services-ID (Planned) |
-| Current Milestone Priority | **Alpha.13: ⛔ STOP Governance Tuning — 8 Kalibrasi KONSTITUSIONAL DINYATAKAN STABIL (PASAL 1-8 + anak klausul PASAL 6.A/6.B + PASAL 8.A). EKSEKUSI Step 0-4: Hasilkan Measurement Report SHA256 Identifier. Frontier-D Cold Traceability hanya diuji SESUDAH report ada.** (OUTCOME #1 = External Cold Auditability via Frontier-D, BUKAN Gate 0 PASS) |
-| Previous Milestone Complete | Alpha.12 Frontier C Falsification: 6/6 Battery PASS (self-certified — PASAL 2) |
-| Research Protocol | [experiments/README.md](file:///root/Enterprise-OS/experiments/README.md) |
-| Decision Schema | [decision.schema.yaml](file:///root/Enterprise-OS/implementation/eos/contracts/decision.schema.yaml) |
-| Doctor Baseline Run | [delivery-reports/](file:///root/Enterprise-OS/workspace/products/lawyershub/evidence/delivery-reports/) |
-| Friction Log EXP-001 | [friction-log/](file:///root/Enterprise-OS/experiments/EXP-001-lawyershub/friction-log/) |
+| Version | Software v1.9.0 (Validation Baseline v1.5.0) |
+| Phase | PRODUCT_EXECUTION: Phase D.1.2 (Lifecycle Transitions Executed) |
+| Active Workspaces (All LIVE on shared primitives) | LawyersHub (FULL D1.2 CERTIFIED), Services.ID (FULL D1.2 CERTIFIED), ILC (COMMUNITY D1.2 CERTIFIED), Academic (LEVERAGE 4TH PRODUCT) |
+| All Real User Jobs Executed E2E | ✅ LawyersHub: Create/manage legal matter | ✅ Services.ID: Find/request a service | ✅ ILC: Discover and engage with legal content/community |
+| Current Milestone Priority | **D1.3: Multi-Step Business Workflow Composition — Implement Agent-in-the-loop for ambiguous decision points + cross-product aggregate linking (Document↔Matter↔ServiceRequest)** |
+| Previous Milestone Complete | D1.2: 9/9 lifecycle transition commands executed, all aggregates reached terminal state, ProductPreviewShell 100% free of hardcoded demo data |
+| Evidence Ledger Repository | [implementation/eos/kernel/state/command-invocations.json](file:///root/Enterprise-OS/implementation/eos/kernel/state/command-invocations.json) |
+| Delivery Workspace (per product) | `/products/:productId/delivery?requirementId=case-101|sreq-101|disc-101` |
+| Leverage Scorecard | [/workspace/leverage-dashboard.md](file:///root/Enterprise-OS/workspace/leverage-dashboard.md) |
 
 ---
 

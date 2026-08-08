@@ -1,5 +1,5 @@
 version: "1.0"
-status: PROOF
+status: ACTIVE
 product:
   id: ilc
   display_name: Indonesia Lawyers Club
@@ -13,4 +13,5 @@ capabilities:
   - api-platform
   - workflow-engine
   - governance-evidence
-claim_boundary: Product-local proof binding for the ILC identity onto the canonical apps/web professional experience surface.
+  - legal-community
+claim_boundary: Product-ACTIVE binding for the ILC identity onto the canonical apps/web topic/community knowledge surface. Domain aggregates (Topic, ContentArticle, CommunityDiscussion) are connected to the product reality surface.

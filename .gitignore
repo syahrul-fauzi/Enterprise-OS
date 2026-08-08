@@ -11,6 +11,9 @@ Thumbs.db
 .Trash-*
 .nfs*
 
+# legecy
+workspace-legecy/
+
 # ------------------------------
 # IDE and Editor files
 # ------------------------------

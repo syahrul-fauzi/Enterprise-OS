@@ -1,0 +1,210 @@
+product: lawyershub
+generated_at: '2026-08-08T14:21:45.654371'
+total_score: 20
+category_results:
+- name: Architecture
+  weight: 20
+  passed: 0
+  total: 1
+- name: Tests
+  weight: 20
+  passed: 0
+  total: 1
+- name: Evidence
+  weight: 20
+  passed: 1
+  total: 1
+- name: Documentation
+  weight: 20
+  passed: 0
+  total: 1
+- name: Deployment
+  weight: 10
+  passed: 0
+  total: 1
+- name: Monitoring
+  weight: 5
+  passed: 0
+  total: 1
+- name: Backup
+  weight: 5
+  passed: 0
+  total: 1
+decision_log:
+- decision:
+    id: DEC-001
+    category: improvement
+    assessment:
+      priority: critical
+      confidence: 0.9
+    impact:
+      delivery: critical
+      architecture: medium
+      business: medium
+    evidence:
+      observations: []
+      validations:
+      - PR-ARCH-001
+      patterns: []
+    recommendation:
+      action: Create eos.yaml workspace contract
+      effort: 1h
+      expected_outcome: Improve production readiness score
+- decision:
+    id: DEC-002
+    category: improvement
+    assessment:
+      priority: high
+      confidence: 0.9
+    impact:
+      delivery: high
+      architecture: medium
+      business: medium
+    evidence:
+      observations: []
+      validations:
+      - PR-TEST-001
+      patterns: []
+    recommendation:
+      action: Create tests directory
+      effort: 2h
+      expected_outcome: Improve production readiness score
+- decision:
+    id: DEC-003
+    category: improvement
+    assessment:
+      priority: medium
+      confidence: 0.9
+    impact:
+      delivery: medium
+      architecture: low
+      business: low
+    evidence:
+      observations: []
+      validations:
+      - PR-DOC-001
+      patterns: []
+    recommendation:
+      action: Write README.md
+      effort: 1d
+      expected_outcome: Improve production readiness score
+- decision:
+    id: DEC-004
+    category: improvement
+    assessment:
+      priority: medium
+      confidence: 0.9
+    impact:
+      delivery: medium
+      architecture: low
+      business: low
+    evidence:
+      observations: []
+      validations:
+      - PR-DEPLOY-001
+      patterns: []
+    recommendation:
+      action: Create deployment configuration
+      effort: 2d
+      expected_outcome: Improve production readiness score
+- decision:
+    id: DEC-005
+    category: improvement
+    assessment:
+      priority: low
+      confidence: 0.9
+    impact:
+      delivery: low
+      architecture: low
+      business: low
+    evidence:
+      observations: []
+      validations:
+      - PR-MONITOR-001
+      patterns: []
+    recommendation:
+      action: Create monitoring configuration
+      effort: 1d
+      expected_outcome: Improve production readiness score
+- decision:
+    id: DEC-006
+    category: improvement
+    assessment:
+      priority: low
+      confidence: 0.9
+    impact:
+      delivery: low
+      architecture: low
+      business: low
+    evidence:
+      observations: []
+      validations:
+      - PR-BACKUP-001
+      patterns: []
+    recommendation:
+      action: Create backup configuration
+      effort: 1d
+      expected_outcome: Improve production readiness score
+- decision:
+    id: DEC-007
+    category: extraction
+    assessment:
+      priority: low
+      confidence: 0.7
+    impact:
+      delivery: low
+      architecture: high
+      business: medium
+    evidence:
+      observations: []
+      validations: []
+      patterns:
+      - PAT-001
+      - PAT-002
+      - PAT-003
+    recommendation:
+      action: Extract Workspace Creation Flow
+      effort: 3d
+      expected_outcome: Reduce duplicate implementations and improve capability reuse
+- decision:
+    id: DEC-008
+    category: extraction
+    assessment:
+      priority: low
+      confidence: 0.7
+    impact:
+      delivery: low
+      architecture: high
+      business: medium
+    evidence:
+      observations: []
+      validations: []
+      patterns:
+      - PAT-001
+      - PAT-002
+      - PAT-003
+    recommendation:
+      action: "Extract Client \u2192 Matter Relationship"
+      effort: 2d
+      expected_outcome: Reduce duplicate implementations and improve capability reuse
+- decision:
+    id: DEC-009
+    category: extraction
+    assessment:
+      priority: low
+      confidence: 0.7
+    impact:
+      delivery: low
+      architecture: high
+      business: medium
+    evidence:
+      observations: []
+      validations: []
+      patterns:
+      - PAT-001
+      - PAT-002
+      - PAT-003
+    recommendation:
+      action: Extract Document Attachment Workflow
+      effort: 2d
+      expected_outcome: Reduce duplicate implementations and improve capability reuse

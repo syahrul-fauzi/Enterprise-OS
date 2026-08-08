@@ -1,5 +1,5 @@
 version: "1.0"
-status: PROOF
+status: ACTIVE
 product:
   id: lawyershub
   display_name: LawyersHub
@@ -10,4 +10,6 @@ capabilities:
   - requirement-management
   - workflow-engine
   - governance-evidence
-claim_boundary: Product-local proof binding for the LawyersHub identity onto the canonical apps/web professional experience surface.
+  - legal-case
+  - legal-document
+claim_boundary: Product-ACTIVE binding for the LawyersHub identity onto the canonical apps/web professional experience surface. Domain aggregates (Case, Document) are connected to the product reality surface.
