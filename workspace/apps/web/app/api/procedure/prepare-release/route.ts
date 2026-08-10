@@ -3,16 +3,19 @@ import { z } from "zod";
 import { prepareReleaseProcedure } from "@procedures/prepare-release";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import {
-  createDefaultWorkspaceSession,
+  WORKSPACE_SESSION_COOKIE,
+  createAnonymousWorkspaceSession,
   createWorkspaceContextHeaders,
   createWorkspaceRequestTrace,
+  encodeWorkspaceSession,
+  isAuthenticatedSession,
   readWorkspaceSessionFromRequest,
   type WorkspaceSession,
-} from "../../../../lib/workspace-session";
+} from "@repo/core-kernel";
 import {
   applyProductContextHeaders,
   readProductContextFromRequest,
-} from "../../../../lib/product-context";
+} from "@repo/presentation-experience";
 
 const PrepareReleaseBodySchema = z.object({
   releaseId: z.string().min(1, "releaseId is required"),
@@ -35,11 +38,35 @@ function createAnonymousHeaders(trace: {
   return headers;
 }
 
+function authFailureResponse(trace: {
+  readonly requestId: string;
+  readonly traceId: string;
+  readonly intent: string;
+}): NextResponse {
+  const anonymous = createAnonymousWorkspaceSession();
+  const response = NextResponse.json(
+    { error: "Authentication required", authenticated: false },
+    { status: 401, headers: createAnonymousHeaders(trace) },
+  );
+  response.cookies.set({
+    name: WORKSPACE_SESSION_COOKIE,
+    value: encodeWorkspaceSession(anonymous),
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+  });
+  return response;
+}
+
 export async function GET(request: Request) {
-  const session = readWorkspaceSessionFromRequest(request);
-  const effectiveSession = session ?? createDefaultWorkspaceSession();
+  const rawSession = readWorkspaceSessionFromRequest(request);
   const trace = createWorkspaceRequestTrace(request, "procedure.prepare_release");
   const productContext = readProductContextFromRequest(request);
+
+  if (!rawSession || !isAuthenticatedSession(rawSession)) {
+    return authFailureResponse(trace);
+  }
+  const effectiveSession = rawSession;
 
   const { searchParams } = new URL(request.url);
   const releaseId = searchParams.get("releaseId")?.trim();
@@ -87,10 +114,14 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const session = readWorkspaceSessionFromRequest(request);
-  const effectiveSession = session ?? createDefaultWorkspaceSession();
+  const rawSession = readWorkspaceSessionFromRequest(request);
   const trace = createWorkspaceRequestTrace(request, "procedure.prepare_release");
   const productContext = readProductContextFromRequest(request);
+
+  if (!rawSession || !isAuthenticatedSession(rawSession)) {
+    return authFailureResponse(trace);
+  }
+  const effectiveSession = rawSession;
 
   const raw = await request.json();
   const parsed = PrepareReleaseBodySchema.safeParse(raw);

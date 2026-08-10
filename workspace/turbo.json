@@ -2,6 +2,7 @@
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
   "globalEnv": ["EOS_CONSTITUTION_ATTESTATION_PROFILE"],
+  "concurrency": "20",
   "tasks": {
     "arch-check": {
       "inputs": ["$TURBO_DEFAULT$"],

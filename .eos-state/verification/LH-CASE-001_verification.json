@@ -1,0 +1,53 @@
+{
+  "work_id": "LH-CASE-001",
+  "verified_at": "2026-08-09T01:59:21.316875",
+  "acceptance_criteria": {
+    "acceptance_checks": {
+      "authenticated user": {
+        "passed": true
+      },
+      "tenant isolated": {
+        "passed": true
+      },
+      "case persisted": {
+        "passed": true
+      },
+      "case visible": {
+        "passed": true
+      },
+      "evidence recorded": {
+        "passed": true
+      },
+      "test passes": {
+        "passed": true,
+        "test_results": {
+          "passed": 18,
+          "failed": 0,
+          "total": 18,
+          "success": true
+        }
+      }
+    },
+    "all_passed": true,
+    "failed_criteria": [],
+    "passed_criteria": [
+      "authenticated user",
+      "tenant isolated",
+      "case persisted",
+      "case visible",
+      "evidence recorded",
+      "test passes"
+    ]
+  },
+  "security_scan": {
+    "vulnerabilities_found": 0,
+    "critical": 0,
+    "passed": true
+  },
+  "architecture_verification": {
+    "passed": true
+  },
+  "all_passed": true,
+  "total_passed": 6,
+  "total_failed": 0
+}

@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import React from "react";
-import ProductPreviewShell from "../../../components/ProductPreviewShell";
-import ProductRealityPanel from "../../../components/ProductRealityPanel";
-import ProductCreateForm from "../../../components/ProductCreateForm";
-import { readProductPreviewBinding } from "../../../lib/product-binding";
-import { readProductRouteMetadata } from "../../../lib/product-presentation";
+import { ProductPreviewShell } from "@repo/presentation-widgets";
+import { ProductRealityPanel } from "@repo/presentation-widgets";
+import { ProductCreateForm } from "@repo/presentation-features";
+import { readProductBinding, readProductRouteMetadata } from "@repo/presentation-experience";
 
 interface ProductPreviewPageProps {
   readonly params: Promise<{
@@ -16,7 +15,7 @@ export async function generateMetadata(
   input: ProductPreviewPageProps,
 ): Promise<Metadata> {
   const params = await input.params;
-  const binding = readProductPreviewBinding(params.productId);
+  const binding = readProductBinding(params.productId);
 
   return readProductRouteMetadata(
     binding.productId,
@@ -36,7 +35,7 @@ export default async function ProductPreviewPage(
   input: ProductPreviewPageProps,
 ) {
   const params = await input.params;
-  const binding = readProductPreviewBinding(params.productId);
+  const binding = readProductBinding(params.productId);
   const showCreateForm = REAL_JOB_PRODUCT_IDS.has(
     binding.productId.toLowerCase(),
   );

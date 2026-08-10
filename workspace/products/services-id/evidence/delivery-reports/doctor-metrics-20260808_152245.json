@@ -1,0 +1,12 @@
+{
+  "product": "services-id",
+  "generated_at": "2026-08-08T15:22:45.066093",
+  "production_readiness_score": 40,
+  "total_rules": 7,
+  "passed_rules": 2,
+  "failed_rules": 5,
+  "total_actions": 8,
+  "ready_actions": 5,
+  "blocked_actions": 3,
+  "total_decisions": 8
+}

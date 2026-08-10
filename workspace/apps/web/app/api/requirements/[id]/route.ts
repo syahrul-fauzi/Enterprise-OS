@@ -8,11 +8,11 @@ import {
   createWorkspaceContextHeaders,
   createWorkspaceRequestTrace,
   readWorkspaceSessionFromRequest,
-} from "../../../../lib/workspace-session";
+} from "@repo/core-kernel";
 import {
   applyProductContextHeaders,
   readProductContextFromRequest,
-} from "../../../../lib/product-context";
+} from "@repo/presentation-experience";
 
 type Params = Promise<{ id: string }>;
 

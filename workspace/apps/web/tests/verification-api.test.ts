@@ -4,12 +4,12 @@ import { GET as getVerification } from "../app/api/requirements/[id]/verificatio
 import { GET as getProof } from "../app/api/requirements/[id]/proof/route";
 import {
   WORKSPACE_SESSION_COOKIE,
-  createDefaultWorkspaceSession,
+  createAnonymousWorkspaceSession,
   encodeWorkspaceSession,
 } from "../lib/workspace-session";
 
 const sessionCookie = `${WORKSPACE_SESSION_COOKIE}=${encodeWorkspaceSession(
-  createDefaultWorkspaceSession(),
+  createAnonymousWorkspaceSession(),
 )}`;
 const productHeaders = {
   "x-eos-product-id": "lawyershub",

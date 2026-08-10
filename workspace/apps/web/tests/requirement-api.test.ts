@@ -7,12 +7,12 @@ import {
 } from "../app/api/requirements/[id]/route";
 import {
   WORKSPACE_SESSION_COOKIE,
-  createDefaultWorkspaceSession,
+  createAnonymousWorkspaceSession,
   encodeWorkspaceSession,
 } from "../lib/workspace-session";
 
 const sessionCookie = `${WORKSPACE_SESSION_COOKIE}=${encodeWorkspaceSession(
-  createDefaultWorkspaceSession(),
+  createAnonymousWorkspaceSession(),
 )}`;
 const productHeaders = {
   "x-eos-product-id": "services-id",

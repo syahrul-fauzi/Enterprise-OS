@@ -12,11 +12,11 @@ import {
   createWorkspaceContextHeaders,
   createWorkspaceRequestTrace,
   readWorkspaceSessionFromRequest,
-} from "../../../lib/workspace-session";
+} from "@repo/core-kernel";
 import {
   applyProductContextHeaders,
   readProductContextFromRequest,
-} from "../../../lib/product-context";
+} from "@repo/presentation-experience";
 
 const CreateRequirementBodySchema = z.object({
   title: z.string().min(1),

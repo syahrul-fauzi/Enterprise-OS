@@ -1,12 +1,31 @@
 export * from "./types.js";
 export type * from "./interfaces.js";
 export * from "./schema.js";
+export * from "./verification-decision.js";
+export * from "./verification-proof.js";
+export * from "./artifact-graph.js";
+export * from "./delivery-evidence.js";
 export type {
   TransformationProofEntry,
   ExecutionProofEntry,
   RepositoryProofEntry,
   ProofLedgerDocument,
 } from "./interfaces.js";
+export type {
+  VerificationDecisionSnapshot,
+  DecisionEvidenceRecord,
+} from "./verification-decision.js";
+export type {
+  VerificationProofObject,
+} from "./verification-proof.js";
+export type {
+  RequirementArtifactGraph,
+  ArtifactNode,
+  ArtifactEdge,
+} from "./artifact-graph.js";
+export type {
+  PersistedDeliveryEvidence,
+} from "./delivery-evidence.js";
 
 export const PROOF_LEDGER_ID = "PROOF-LEDGER-V1";
 export const PROOF_LEDGER_VERSION = "1.0.0";

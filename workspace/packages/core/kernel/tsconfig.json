@@ -4,7 +4,11 @@
     "rootDir": "src",
     "outDir": "dist",
     "strictNullChecks": true,
-    "declaration": true
+    "declaration": true,
+    "baseUrl": ".",
+    "paths": {
+      "@capabilities/*": ["../../../capabilities/*"]
+    }
   },
   "include": ["src"],
   "exclude": ["dist", "build", "node_modules"]

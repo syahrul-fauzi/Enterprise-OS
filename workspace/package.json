@@ -20,9 +20,13 @@
     "verify:genesis-baseline": "pnpm eos gate-c verify-genesis-baseline",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@next/eslint-plugin-next": "^16.2.0",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^26.1.2",
     "@types/node-fetch": "^2.6.13",
     "@types/react": "^19.1.0",
@@ -34,6 +38,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-turbo": "^2.6.0",
     "globals": "^16.5.0",
+    "js-yaml": "^5.2.3",
     "node-fetch": "^3.3.2",
     "postcss": "^8.5.3",
     "prettier": "^3.6.0",

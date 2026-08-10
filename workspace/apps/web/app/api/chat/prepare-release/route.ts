@@ -6,16 +6,16 @@ import {
 } from "@procedures/prepare-release";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import {
-  createDefaultWorkspaceSession,
+  createAnonymousWorkspaceSession,
   createWorkspaceContextHeaders,
   createWorkspaceRequestTrace,
   readWorkspaceSessionFromRequest,
   type WorkspaceSession,
-} from "../../../../lib/workspace-session";
+} from "@repo/core-kernel";
 import {
   applyProductContextHeaders,
   readProductContextFromRequest,
-} from "../../../../lib/product-context";
+} from "@repo/presentation-experience";
 
 const ChatMessageSchema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
@@ -145,7 +145,7 @@ function buildAssistantResponse(result: PrepareReleaseOutput): ChatMessage {
 
 export async function POST(request: Request) {
   const session = readWorkspaceSessionFromRequest(request);
-  const effectiveSession = session ?? createDefaultWorkspaceSession();
+  const effectiveSession = session ?? createAnonymousWorkspaceSession();
   const trace = createWorkspaceRequestTrace(request, "chat.prepare_release");
   const productContext = readProductContextFromRequest(request);
 

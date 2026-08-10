@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-08-08T16:29:00Z",
+  "productId": "services-id",
+  "realUserJobId": "sreq-101",
+  "testRunner": "node:test + tsx",
+  "totalTests": 6,
+  "passed": 6,
+  "failed": 0,
+  "suites": [
+    {
+      "name": "Services.ID Real User Job: Find/request a service",
+      "tests": 4,
+      "status": "PASS",
+      "cases": [
+        "user can find service providers based on category",
+        "user can create a new service request with complete details",
+        "service request lifecycle transitions are valid",
+        "real user job requirements are linked to EOS capability system"
+      ]
+    },
+    {
+      "name": "Services.ID Product Health Checks",
+      "tests": 2,
+      "status": "PASS",
+      "cases": [
+        "eos.yaml manifest is valid and contains all required fields",
+        "production readiness metrics meet minimum thresholds"
+      ]
+    }
+  ],
+  "verificationStatus": "EXECUTABLE_PROOF"
+}

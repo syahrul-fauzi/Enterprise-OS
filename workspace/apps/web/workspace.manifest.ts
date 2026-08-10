@@ -5,6 +5,16 @@ import {
   default as RequirementViewDefault,
 } from "../../capabilities/requirement-management/experience/views/RequirementView";
 import * as RequirementServiceImplModule from "../../capabilities/requirement-management/implementation/service";
+// Identity capability imports
+import { identityCommands } from "../../capabilities/identity/implementation/commands";
+import {
+  UserRepositoryInMemory,
+  TenantRepositoryInMemory,
+  WorkspaceRepositoryInMemory,
+  MembershipRepositoryInMemory,
+  SessionRepositoryInMemory,
+} from "../../capabilities/identity/implementation/repositories";
+import { passwordService } from "../../capabilities/identity/implementation/services/password.service";
 
 const RequirementViewComponent = RequirementView ?? RequirementViewDefault;
 
@@ -24,8 +34,32 @@ const requirementManagement: CapabilityDescriptor = Object.freeze({
   implementation: requirementImplementation,
 });
 
+// Identity capability implementation
+const identityImplementation: CapabilityImplementation = {
+  commands: identityCommands,
+  queries: {},
+  repositories: {
+    UserRepository: UserRepositoryInMemory,
+    TenantRepository: TenantRepositoryInMemory,
+    WorkspaceRepository: WorkspaceRepositoryInMemory,
+    MembershipRepository: MembershipRepositoryInMemory,
+    SessionRepository: SessionRepositoryInMemory,
+  },
+  services: { passwordService },
+  entry: {},
+};
+
+const identity: CapabilityDescriptor = Object.freeze({
+  id: "identity",
+  version: "1.0.0",
+  name: "Identity",
+  experience: {},
+  implementation: identityImplementation,
+});
+
 export const registry = new StaticRegistry({
   entries: {
     "requirement-management": requirementManagement,
+    "identity": identity,
   },
 });

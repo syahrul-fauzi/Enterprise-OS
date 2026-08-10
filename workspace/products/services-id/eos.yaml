@@ -1,0 +1,44 @@
+version: "1.0"
+workspace:
+  name: services-id
+  display_name: Services.ID
+  description: Marketplace layanan profesional terverifikasi untuk kebutuhan bisnis dan pribadi
+lifecycle:
+  phase: D.1
+  status: ACTIVE
+  contract:
+    stages:
+      - name: discover
+        description: Pengguna menemukan penyedia layanan yang sesuai
+        terminal: false
+      - name: create
+        description: Pengguna mengajukan permintaan layanan
+        terminal: false
+      - name: execute
+        description: Penyedia layanan menerima dan menjalankan permintaan
+        terminal: false
+      - name: progress
+        description: Update status layanan secara berkala
+        terminal: false
+      - name: evidence
+        description: Mengumpulkan semua bukti eksekusi layanan
+        terminal: false
+      - name: complete
+        description: Layanan selesai, bukti terverifikasi
+        terminal: true
+  real_user_jobs:
+    - id: sreq-101
+      name: Find/request a service
+      description: Full lifecycle procurement layanan profesional dari pencarian hingga penyelesaian
+      status: active
+      requirements:
+        - req-svc-001
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 80
+    runtime_invocation_required: true
+governance:
+  baseline_locked: false
+  needs_audit: false
+  evidence_path: ./evidence

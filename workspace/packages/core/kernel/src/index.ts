@@ -26,3 +26,29 @@ export {
   createDigestEngine,
   DigestEngine,
 } from "./digest-engine";
+
+// Session exports (moved from apps/web/lib)
+export type {
+  WorkspaceSession,
+  WorkspaceRequestTrace,
+} from "./session/workspace-session";
+export {
+  WORKSPACE_SESSION_COOKIE,
+  ANONYMOUS_ACTOR_ID,
+  createAnonymousWorkspaceSession,
+  isAuthenticatedSession,
+  encodeWorkspaceSession,
+  decodeWorkspaceSession,
+  readWorkspaceSessionFromCookieHeader,
+  readWorkspaceSessionFromRequest,
+  createWorkspaceRequestTrace,
+  createWorkspaceContextHeaders,
+} from "./session/workspace-session";
+
+// Registry exports (moved from apps/web/lib)
+export type {
+  CommandInvocationRecord,
+} from "./registry/capability-command-registry";
+export {
+  capabilityRegistry,
+} from "./registry/capability-command-registry";

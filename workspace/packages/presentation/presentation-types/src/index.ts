@@ -162,3 +162,34 @@ export type CapabilityExperienceViews = PresentationViews;
  * @deprecated Renamed to PresentationDescriptor — backward compatibility alias.
  */
 export type CapabilityExperienceDescriptor = PresentationDescriptor;
+
+// ==============================
+// Presentation View DTOs
+// ==============================
+// Presentation-facing view DTOs. These are DISTINCT from semantic aggregates
+// (RequirementAggregate, UserAggregate, MembershipAggregate) in capabilities.
+// They describe shape for rendering, not domain contracts.
+
+export type MemberType = 'researcher' | 'institution';
+
+export interface Member {
+  readonly id: string;
+  readonly name: string;
+  readonly type: MemberType;
+  readonly affiliation?: string;
+  readonly location?: string;
+  readonly researchFocus?: string;
+  readonly publicationCount?: number;
+  readonly researcherCount?: number;
+}
+
+export interface Requirement {
+  readonly id: string;
+  readonly title: string;
+  readonly summary?: string;
+  readonly description?: string;
+  readonly status: string;
+  readonly owner?: string;
+  readonly tags?: readonly string[];
+  readonly updatedAt?: string | number | Date;
+}

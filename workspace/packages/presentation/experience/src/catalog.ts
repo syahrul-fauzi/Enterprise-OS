@@ -22,3 +22,21 @@ export function getAllProductSlugs(): string[] {
 export function getAllProductExperiences(): ProductExperience[] {
   return Object.values(catalog);
 }
+
+export function readProductRouteMetadata(
+  productId: string,
+  displayName: string,
+  page: string,
+): { title: string; description: string } {
+  const experience = catalog[productId];
+  if (!experience) {
+    return {
+      title: `${displayName} - ${page}`,
+      description: `${displayName} delivery page`
+    };
+  }
+  return {
+    title: `${displayName} - ${page}`,
+    description: experience.narrative.summary
+  };
+}

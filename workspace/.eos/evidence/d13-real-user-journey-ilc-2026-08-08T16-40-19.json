@@ -1,0 +1,121 @@
+{
+  "product": "ilc",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "ILC binding valid",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Explore topic grid + recent activity",
+      "ok": true,
+      "evidence": [
+        "topics=8",
+        "discussions=3",
+        "articles=5"
+      ]
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Create community article (content-101)",
+      "ok": true,
+      "evidence": [
+        "id=content-101",
+        "status=proposed"
+      ]
+    },
+    {
+      "n": 4,
+      "stage": "EXECUTE",
+      "label": "Publish article (moderator approve)",
+      "ok": true,
+      "evidence": [
+        "status=published"
+      ]
+    },
+    {
+      "n": 5,
+      "stage": "STATE",
+      "label": "Terminal published state verified",
+      "ok": true
+    },
+    {
+      "n": 6,
+      "stage": "EVIDENCE",
+      "label": "Verify attribution ledger (create + publish)",
+      "ok": true
+    },
+    {
+      "n": 7,
+      "stage": "SEE",
+      "label": "User sees published article",
+      "ok": true
+    }
+  ],
+  "totalSteps": 7,
+  "passCount": 7,
+  "failCount": 0,
+  "completedAtISO": "2026-08-08T16:40:19.053Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "ilc",
+      "displayName": "Indonesia Lawyers Club"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "topics_total": 8,
+      "discussions": 3,
+      "articles": 5,
+      "matched_topic": "Hukum Teknologi Digital"
+    },
+    {
+      "step": 3,
+      "stage": "ACTION",
+      "capability": "legal-community.createContentArticle",
+      "evidence_id": "content-101"
+    },
+    {
+      "step": 4,
+      "stage": "EXECUTE",
+      "transition": "proposed→published",
+      "evidence_id": "content-101"
+    },
+    {
+      "step": 5,
+      "stage": "STATE",
+      "terminal": true,
+      "evidence_id": "content-101",
+      "repo_status": "published"
+    },
+    {
+      "step": 6,
+      "stage": "EVIDENCE",
+      "ledger": [
+        {
+          "key": "legal-community.createContentArticle",
+          "ok": true,
+          "t": "2026-08-08T16:40:19.052Z"
+        },
+        {
+          "key": "legal-community.publishContent",
+          "ok": true,
+          "t": "2026-08-08T16:40:19.052Z"
+        }
+      ]
+    },
+    {
+      "step": 7,
+      "stage": "SEE",
+      "evidence_id": "content-101",
+      "user_sees_status": "published",
+      "published_total": 4
+    }
+  ]
+}

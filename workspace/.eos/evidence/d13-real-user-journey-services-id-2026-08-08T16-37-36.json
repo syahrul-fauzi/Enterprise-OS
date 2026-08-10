@@ -1,0 +1,143 @@
+{
+  "product": "services-id",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "Load Services.ID product preview binding",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Browse Cybersecurity providers",
+      "ok": true,
+      "evidence": [
+        "provider=sp-003"
+      ]
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Create service request (sreq-101) via unified capability registry",
+      "ok": true,
+      "evidence": [
+        "evidenceId=sreq-101",
+        "commandKey=service-directory.createServiceRequest"
+      ]
+    },
+    {
+      "n": 4,
+      "stage": "EXECUTE",
+      "label": "Accept service request (vendor accept)",
+      "ok": true,
+      "evidence": [
+        "status=accepted"
+      ]
+    },
+    {
+      "n": 5,
+      "stage": "STATE",
+      "label": "Mark service request delivered (terminal state)",
+      "ok": true
+    },
+    {
+      "n": 6,
+      "stage": "EVIDENCE",
+      "label": "Verify CommandInvocationRecord evidence ledger",
+      "ok": true
+    },
+    {
+      "n": 7,
+      "stage": "SEE",
+      "label": "User melihat sreq-101 status delivered + evidence timestamp di ProductRealityPanel",
+      "ok": true
+    }
+  ],
+  "totalSteps": 7,
+  "passCount": 7,
+  "failCount": 0,
+  "completedAtISO": "2026-08-08T16:37:36.610Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "services-id",
+      "displayName": "Services.ID",
+      "route": "/requirements",
+      "surface": "web"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "category_searched": "Cybersecurity",
+      "providers_found_count": 1,
+      "selected_provider_id": "sp-003",
+      "selected_provider_rating": 4.9
+    },
+    {
+      "step": 3,
+      "stage": "ACTION",
+      "capability": "service-directory",
+      "command": "createServiceRequest",
+      "evidence_id": "sreq-101",
+      "command_key": "service-directory.createServiceRequest",
+      "invoked_at": "2026-08-08T16:37:36.609Z",
+      "invoke_ok": true
+    },
+    {
+      "step": 4,
+      "stage": "EXECUTE",
+      "capability": "service-directory",
+      "command": "acceptServiceRequest",
+      "evidence_id": "sreq-101",
+      "status_transition": "draft → accepted",
+      "command_key": "service-directory.acceptServiceRequest",
+      "invoke_ok": true
+    },
+    {
+      "step": 5,
+      "stage": "STATE",
+      "capability": "service-directory",
+      "command": "markServiceDelivered",
+      "evidence_id": "sreq-101",
+      "status_transition": "accepted → delivered",
+      "terminal": true,
+      "delivered_at": "2026-08-08T16:37:36.610Z"
+    },
+    {
+      "step": 6,
+      "stage": "EVIDENCE",
+      "ledger_records_count": 3,
+      "all_records_ok": true,
+      "records": [
+        {
+          "key": "service-directory.createServiceRequest",
+          "ok": true,
+          "t": "2026-08-08T16:37:36.609Z",
+          "inputSize": 321
+        },
+        {
+          "key": "service-directory.acceptServiceRequest",
+          "ok": true,
+          "t": "2026-08-08T16:37:36.609Z",
+          "inputSize": 39
+        },
+        {
+          "key": "service-directory.markServiceDelivered",
+          "ok": true,
+          "t": "2026-08-08T16:37:36.610Z",
+          "inputSize": 17
+        }
+      ]
+    },
+    {
+      "step": 7,
+      "stage": "SEE",
+      "user_sees_evidence_id": "sreq-101",
+      "user_sees_status": "delivered",
+      "user_sees_title_match": true,
+      "user_sees_delivered_at": "2026-08-08T16:37:36.610Z"
+    }
+  ]
+}

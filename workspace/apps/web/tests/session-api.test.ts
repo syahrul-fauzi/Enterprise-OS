@@ -3,19 +3,19 @@ import test from "node:test";
 import { GET as getSession } from "../app/api/session/route";
 import {
   WORKSPACE_SESSION_COOKIE,
-  createDefaultWorkspaceSession,
+  createAnonymousWorkspaceSession,
   encodeWorkspaceSession,
 } from "../lib/workspace-session";
 
-const sessionCookie = `${WORKSPACE_SESSION_COOKIE}=${encodeWorkspaceSession(
-  createDefaultWorkspaceSession(),
+const anonymousCookie = `${WORKSPACE_SESSION_COOKIE}=${encodeWorkspaceSession(
+  createAnonymousWorkspaceSession(),
 )}`;
 
-test("apps/web session API exposes actor tenant and workspace context", async () => {
+test("apps/web session API exposes anonymous actor when no login happened", async () => {
   const response = await getSession(
     new Request("http://localhost/api/session", {
       headers: {
-        cookie: sessionCookie,
+        cookie: anonymousCookie,
         "x-eos-product-id": "lawyershub",
         "x-eos-product-domain": "staging.lawyershub.id",
         "x-forwarded-host": "staging.lawyershub.id",
@@ -24,24 +24,45 @@ test("apps/web session API exposes actor tenant and workspace context", async ()
   );
 
   assert.equal(response.status, 200);
-  assert.equal(response.headers.get("x-eos-tenant-id"), "tenant.default");
-  assert.equal(response.headers.get("x-eos-workspace-id"), "professional-workspace.default");
   assert.equal(response.headers.get("x-eos-product-id"), "lawyershub");
   assert.equal(response.headers.get("x-eos-product-domain"), "staging.lawyershub.id");
   const payload = await response.json();
-  assert.equal(payload.authenticated, true);
-  assert.equal(payload.session.actorId, "operator.web");
-  assert.equal(payload.session.tenantId, "tenant.default");
+  assert.equal(payload.authenticated, false, "anonymous session should NOT be authenticated");
+  assert.equal(payload.session.actorId, "anonymous.user");
+  assert.equal(payload.session.tenantId, "tenant.anonymous");
   assert.equal(payload.product.productId, "lawyershub");
-  assert.equal(payload.product.productDomain, "staging.lawyershub.id");
 });
 
-test("apps/web session API bootstraps a default session when cookie is missing", async () => {
+test("apps/web session API bootstraps anonymous session when cookie missing", async () => {
   const response = await getSession(new Request("http://localhost/api/session"));
 
   assert.equal(response.status, 200);
   assert.match(String(response.headers.get("set-cookie")), /eos-workspace-session=/);
   const payload = await response.json();
-  assert.equal(payload.authenticated, true);
-  assert.equal(payload.session.workspaceId, "professional-workspace.default");
+  assert.equal(payload.authenticated, false, "no cookie session should NOT be authenticated");
+  assert.equal(payload.session.actorId, "anonymous.user");
+  assert.equal(payload.session.workspaceId, "professional-workspace.anonymous");
+});
+
+test("apps/web session API with seeded user cookie is authenticated", async () => {
+  const seededCookie = `${WORKSPACE_SESSION_COOKIE}=${encodeWorkspaceSession({
+    actorId: "user-001",
+    actorLabel: "Alice Operator",
+    tenantId: "tenant-001",
+    workspaceId: "workspace-001",
+    productId: "services-id.default",
+    issuedAt: new Date().toISOString(),
+  })}`;
+  const response = await getSession(
+    new Request("http://localhost/api/session", {
+      headers: { cookie: seededCookie },
+    }),
+  );
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("x-eos-actor-id"), "user-001");
+  assert.equal(response.headers.get("x-eos-tenant-id"), "tenant-001");
+  assert.equal(response.headers.get("x-eos-workspace-id"), "workspace-001");
+  const payload = await response.json();
+  assert.equal(payload.authenticated, true, "real user (user-001) should be authenticated");
+  assert.equal(payload.session.actorId, "user-001");
 });

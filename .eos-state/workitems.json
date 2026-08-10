@@ -1,0 +1,481 @@
+{
+  "LH-CASE-001": {
+    "work_id": "LH-CASE-001",
+    "product": "LawyersHub",
+    "user_job": "Create and manage a legal matter",
+    "outcome": "User dapat membuat legal matter via capability registry invocation, assign lawyer, close case, dan retrieve kembali dengan atribut lengkap; test menggunakan registry invocation nyata bukan mock object",
+    "constraints": {
+      "architecture_locked": true,
+      "reuse_existing_capabilities": true,
+      "no_new_framework": true,
+      "thin_app_strategy": true,
+      "single_truth_source": true
+    },
+    "acceptance": [
+      "case.create command invoked via capabilityRegistry",
+      "case persisted in CaseRepositoryInMemory dan bisa di-retrieve byId",
+      "case.assignLawyer menghasilkan transisi draft→open",
+      "case.close menghasilkan terminal status closed + closedAt ter-stamp",
+      "semua invocation menghasilkan CommandInvocationRecord (ok:true)",
+      "test LawyersHub 5/5 PASS dengan invocation nyata (tanpa mock)",
+      "evidence artifact JSON tersimpan permanen",
+      "lifecycle draft→open→closed terbukti end-to-end"
+    ],
+    "status": "COMPLETED",
+    "created_at": "2026-08-09T01:55:00.000Z",
+    "updated_at": "2026-08-09T01:59:35.000Z",
+    "assigned_agents": {
+      "commander": "eos-command-center",
+      "recon": "eos-recon",
+      "product_slice": "eos-product-slice",
+      "verification": "eos-verification",
+      "evidence": "eos-evidence-engine"
+    },
+    "evidence": {
+      "artifact_path": ".eos-state/evidence/LH-CASE-001_evidence.json",
+      "test_evidence": "LawyersHub 5/5, Services.ID 6/6, ILC 7/7 → TOTAL 18/18 PASS",
+      "lifecycle_evidence": "9 writes (3 create+3 assign+3 close), 9 CommandInvocationRecord ok:true, 3 terminal closed cases",
+      "regression_free": true,
+      "primitive_reuse_pct": 100.0
+    },
+    "recon_report": {
+      "recon_completed_at": "2026-08-09T01:58:32.151338",
+      "locked_boundaries_verified": 6,
+      "existing_capabilities_found": 18,
+      "reuse_percentage": 100.0,
+      "blocked": false,
+      "can_proceed": true,
+      "report_path": ".eos-state/recon/LH-CASE-001_recon.json"
+    },
+    "execution_plan": {
+      "strategy": "Partial vertical E2E slice — NO new framework, NO new registry keys, NO new components",
+      "tasks": [
+        "reuse existing caseCommands (case.create, case.assignLawyer, case.close)",
+        "reuse existing CaseRepositoryInMemory (seeded with case-001/002/003)",
+        "reuse existing capabilityRegistry (3-layer alias resolver)",
+        "upgrade LawyersHub test: mock → capabilityRegistry.invoke real lifecycle",
+        "regression: verify 18/18 tests across 3 products still PASS",
+        "run Python recon + verification independent agents",
+        "save evidence + update work item status → COMPLETED"
+      ],
+      "started_at": "2026-08-09T01:55:10.000Z",
+      "estimated_completion": "2026-08-09T01:59:30.000Z"
+    },
+    "verification_report": {
+      "verified_at": "2026-08-09T01:59:21.316875",
+      "acceptance_checks": 6,
+      "all_passed": true,
+      "passed_criteria_count": 6,
+      "failed_criteria_count": 0,
+      "security_scan_passed": true,
+      "architecture_lock_preserved": true,
+      "report_path": ".eos-state/verification/LH-CASE-001_verification.json"
+    }
+  },
+  "SREQ-001": {
+    "work_id": "SREQ-001",
+    "product": "Services.ID",
+    "user_job": "Find a service provider and submit a service request with lifecycle",
+    "outcome": "User dapat browse Cybersecurity/IT Support/Infrastructure providers verified via repository, createServiceRequest, accept by provider, markServiceDelivered dengan deliveredAt stamped, dan retrieve request persisten dengan field match (budget, category, requesterName, providerId); semua invocation via capabilityRegistry TANPA mock",
+    "constraints": {
+      "architecture_locked": true,
+      "reuse_existing_capabilities": true,
+      "no_new_framework": true,
+      "no_schema_changes": true,
+      "thin_app_strategy": true,
+      "single_truth_source": true
+    },
+    "acceptance": [
+      "DISCOVER: ServiceProviderRepositoryInMemory.list/filterByCategory tersedia verified providers",
+      "createServiceRequest via capabilityRegistry(\"services-id\",\"createServiceRequest\") → draft, id sreq-*",
+      "acceptServiceRequest: draft→accepted + providerId terasosiasi persisten",
+      "markServiceDelivered: accepted→delivered terminal + deliveredAt stamped instanceof Date",
+      "semua 3 CommandInvocationRecord ok:true + invokedAt ISO parseable",
+      "persistensi: ServiceRequestRepositoryInMemory.byId(sreq) field match: title, category, budget, requesterName, providerId, status, deliveredAt",
+      "Services.ID tests 6/6 lifecycle PASS + 2/2 health checks PASS = TOTAL 8/8",
+      "regression: TOTAL 25 tests across 3 produk ALL PASS, zero failures",
+      "evidence artifact JSON permanen tersimpan di .eos-state/"
+    ],
+    "status": "COMPLETED",
+    "created_at": "2026-08-09T02:05:00.000Z",
+    "updated_at": "2026-08-09T02:12:00.000Z",
+    "assigned_agents": {
+      "commander": "eos-command-center",
+      "recon": "eos-recon",
+      "product_slice": "eos-product-slice",
+      "verification": "eos-verification",
+      "evidence": "eos-evidence-engine"
+    },
+    "evidence": {
+      "artifact_path": ".eos-state/evidence/SREQ-001_evidence.json",
+      "test_evidence": "SREQ-001 suite: 6 lifecycle + 2 health = 8/8 PASS; aggregate 25/25 TOTAL across 3 products",
+      "lifecycle_evidence": "3 writes×6 runs = 18 CommandInvocationRecord ok:true; 6 terminal delivered; monotonic chain draft→accepted→delivered",
+      "regression_free": true,
+      "primitive_reuse_pct": 100.0,
+      "new_capability_count": 0,
+      "new_registry_keys": 0,
+      "schema_mutations": 0,
+      "duplicate_work": false
+    },
+    "recon_report": {
+      "recon_completed_at": "2026-08-09T02:06:15.488211",
+      "locked_boundaries_verified": 8,
+      "existing_capabilities_found": 20,
+      "matched_commands": [
+        "service-directory.createServiceRequest",
+        "service-directory.acceptServiceRequest",
+        "service-directory.markServiceDelivered"
+      ],
+      "registry_prefix_verified": "\"services-id\" alias resolves ke service-directory.* commands via CAPABILITY_PREFIX_ALIASES",
+      "reuse_percentage": 100.0,
+      "blocked": false,
+      "can_proceed": true,
+      "report_path": ".eos-state/recon/SREQ-001_recon.json"
+    },
+    "execution_plan": {
+      "strategy": "Partial vertical E2E Services.ID slice — pattern reuse runLifecycleSvcE2E() mirror runLifecycleE2E() proven di LawyersHub LH-CASE-001",
+      "tasks": [
+        "reuse existing serviceDirectoryCommands (create, accept, markDelivered) tanpa modifikasi",
+        "reuse existing ServiceProviderRepositoryInMemory (6 seeded providers) + ServiceRequestRepositoryInMemory (4 seeded requests)",
+        "reuse existing capabilityRegistry prefix: \"services-id\" → service-directory.*",
+        "copy-pattern runLifecycleE2E from lawyershub.test.ts → runLifecycleSvcE2E di services-id.test.ts",
+        "upgrade 6 mock tests → real registry invocation (1 DISCOVER + 4 lifecycle + 1 ledger format)",
+        "preserve 2 health checks (manifest + quality thresholds) unchanged",
+        "regression run: 3 product test suites aggregate 25/25 all PASS",
+        "save 3 evidence artifacts + mark COMPLETED"
+      ],
+      "started_at": "2026-08-09T02:05:30.000Z",
+      "estimated_completion": "2026-08-09T02:11:50.000Z"
+    },
+    "verification_report": {
+      "verified_at": "2026-08-09T02:11:45.674322",
+      "acceptance_checks": 9,
+      "all_passed": true,
+      "passed_criteria_count": 9,
+      "failed_criteria_count": 0,
+      "tests": {
+        "services-id.test.ts": "8/8 PASS",
+        "lawyershub.test.ts": "8/8 PASS (3 LH001 + 3 LH002 + 2 health)",
+        "ilc.test.ts": "9/9 PASS (7 DISC001 + 2 health)",
+        "aggregate_25_25": true
+      },
+      "architecture_lock_preserved": true,
+      "new_fragmentation_score": 0,
+      "security_scan_passed": true,
+      "tenant_isolation_inherited": true,
+      "report_path": ".eos-state/verification/SREQ-001_verification.json"
+    },
+    "next_highest_leverage_recommendations": [
+      "SREQ-002: Attach deliverable artifact (documentId) ke ServiceRequest via cross-capability link legal-document ↔ service-directory",
+      "After 3 products × 2 slices each: Rule of Two trigger shared-platform Wave 3 promotion untuk pattern runLifecycleXxxE2E + ledger + acceptance contract"
+    ]
+  },
+  "DISC-001": {
+    "work_id": "DISC-001",
+    "product": "ILC",
+    "user_job": "Discover topic, write community article, submit for moderator review, get published",
+    "outcome": "User dapat browse 8 TopicCategory grid + discussions + published articles via repository; createContentArticle via capabilityRegistry → proposed (content-* id, readCount=0); moderator publishContent → published terminal dengan publishedAt stamped; semua field (author, topicLabel, authorAffiliation, title trimmed) tersimpan persisten dan listPublished() konsisten dengan byId()",
+    "constraints": {
+      "architecture_locked": true,
+      "reuse_existing_capabilities": true,
+      "no_new_framework": true,
+      "no_schema_changes": true,
+      "thin_app_strategy": true,
+      "single_truth_source": true
+    },
+    "acceptance": [
+      "DISCOVER: TopicRepositoryInMemory 8 topics (Hukum Teknologi Digital + Hukum Perdata verified ada); ContentArticleRepositoryInMemory.listPublished ≥2; CommunityDiscussionRepositoryInMemory.list ≥2",
+      "createContentArticle via capabilityRegistry(\"ilc\",\"createContentArticle\") → proposed, id content-*, title trimmed, author/topicLabel/affiliation set, readCount=0 engagementCount=0",
+      "publishContent via capabilityRegistry(\"ilc\",\"publishContent\") → proposed→published terminal, publishedAt instanceof Date stamped",
+      "2 CommandInvocationRecord (create+publish) ok:true, commandKey benar, invokedAt ISO parseable",
+      "listPublished() bertambah 1 setelah publish; sort desc by publishedAt; SEMUA yang published dari list bisa byId dengan status === published",
+      "persistensi: byId(contentId).author/topicLabel/authorAffiliation/title SEMUA match input",
+      "ILC tests 7/7 lifecycle PASS + 2 health PASS = 9/9 TOTAL",
+      "regression: aggregate 25/25 across 3 produk ALL PASS, zero failures",
+      "evidence artifacts JSON tersimpan permanen"
+    ],
+    "status": "COMPLETED",
+    "created_at": "2026-08-09T02:05:00.000Z",
+    "updated_at": "2026-08-09T02:12:00.000Z",
+    "assigned_agents": {
+      "commander": "eos-command-center",
+      "recon": "eos-recon",
+      "product_slice": "eos-product-slice",
+      "verification": "eos-verification",
+      "evidence": "eos-evidence-engine"
+    },
+    "evidence": {
+      "artifact_path": ".eos-state/evidence/DISC-001_evidence.json",
+      "test_evidence": "DISC-001 suite 7 lifecycle + 2 health = 9/9 PASS; aggregate 25/25 across 3 products",
+      "lifecycle_evidence": "2 writes×7 runs = 14 CommandInvocationRecord ok:true; 7 terminal published; monotonic proposed→published; listPublished()↔byId() identity check across TOTAL published list 100% match",
+      "regression_free": true,
+      "primitive_reuse_pct": 100.0,
+      "new_capability_count": 0,
+      "new_registry_keys": 0,
+      "schema_mutations": 0,
+      "duplicate_work": false
+    },
+    "recon_report": {
+      "recon_completed_at": "2026-08-09T02:06:48.319002",
+      "locked_boundaries_verified": 8,
+      "existing_capabilities_found": 20,
+      "matched_commands": [
+        "legal-community.createContentArticle",
+        "legal-community.publishContent"
+      ],
+      "registry_prefix_verified": "\"ilc\" alias resolves ke legal-community.*, legal-community.* via CAPABILITY_PREFIX_ALIASES (dibuktikan runner d13)",
+      "reuse_percentage": 100.0,
+      "blocked": false,
+      "can_proceed": true,
+      "report_path": ".eos-state/recon/DISC-001_recon.json"
+    },
+    "execution_plan": {
+      "strategy": "Partial vertical E2E ILC slice — pattern runLifecycleIlcE2E mirror proven LawyersHub pattern",
+      "tasks": [
+        "reuse legalCommunityCommands (createContentArticle, publishContent) unchanged",
+        "reuse 3 seeded repos (Topic 8 topics, ContentArticle 5 seeded articles published×3, Discussion 3 seeded)",
+        "reuse prefix \"ilc\" → legal-community.* via capabilityRegistry (verified d13-all-products line 402)",
+        "copy pattern runLifecycleE2E → runLifecycleIlcE2E di ilc.test.ts",
+        "upgrade 7 mock tests → real registry invocation (1 DISCOVER + 4 lifecycle + 1 ledger + 1 listPublished↔byId identity)",
+        "preserve 2 health checks unchanged",
+        "regression aggregate 25/25 3 produk PASS",
+        "save 3 artifacts + mark COMPLETED"
+      ],
+      "started_at": "2026-08-09T02:05:45.000Z",
+      "estimated_completion": "2026-08-09T02:11:55.000Z"
+    },
+    "verification_report": {
+      "verified_at": "2026-08-09T02:11:50.118820",
+      "acceptance_checks": 9,
+      "all_passed": true,
+      "passed_criteria_count": 9,
+      "failed_criteria_count": 0,
+      "tests": {
+        "ilc.test.ts": "9/9 PASS",
+        "aggregate_25_25": true
+      },
+      "architecture_lock_preserved": true,
+      "new_fragmentation_score": 0,
+      "security_scan_passed": true,
+      "report_path": ".eos-state/verification/DISC-001_verification.json"
+    },
+    "next_highest_leverage_recommendations": [
+      "DISC-002: createCommunityDiscussion ↔ reply lifecycle + engagement counter incrementing",
+      "DISC-003: ContentArticle view + engagement tracking (readCount++ + engagementCount++) via query capability"
+    ]
+  },
+  "LH-CASE-002": {
+    "work_id": "LH-CASE-002",
+    "product": "LawyersHub",
+    "user_job": "Create a legal matter, attach documents, get documents signed, archived, linked persistently to matter",
+    "outcome": "FIRST CROSS-CAPABILITY COMPOSITE SLICE: LegalCase (legal-case) ↔ LegalDocument (legal-document) via NATIVE matterId field di DocumentAggregate built-in (tanpa schema mutation!). case.create → assignLawyer(open) → document.create({matterId:caseId}) → sign → archive. ALL 5 steps ok:true. CRITICAL ASSERTION: DocumentRepositoryInMemory.byId(docId).matterId === caseId EXACT PERSISTEN, preserved di archive TERMINAL STATE.",
+    "constraints": {
+      "architecture_locked": true,
+      "reuse_existing_capabilities": true,
+      "no_new_framework": true,
+      "no_schema_changes": true,
+      "thin_app_strategy": true,
+      "single_truth_source": true,
+      "cross_capability_composition": true
+    },
+    "acceptance": [
+      "Stage 1: legal-case.case.create → draft id case-*, persisted CaseRepositoryInMemory.byId(caseId) !== undefined",
+      "Stage 2: lawyershub.case.assignLawyer → open + lawyerId persisted",
+      "Stage 3: legal-document.document.create({matterId:caseId, title, description, author}) → doc created draft; DocumentRepositoryInMemory.byId(docId).matterId === caseId EXACT (primary assertion)",
+      "Stage 4: document.sign({docId, signer}) → status signed, signedAt instanceof Date stamped, signer echoed",
+      "Stage 5: document.archive(docId) → terminal archived, archivedAt instanceof Date stamped; FINAL AGGREGATE .matterId === caseId MASIH PERSIS",
+      "5 CommandInvocationRecord total, SEMUA ok:true, commandKeys berurutan: case.create → assignLawyer → document.create → document.sign → document.archive",
+      "persistensi: repository.byId untuk BOTH case + document di setiap stage match input",
+      "LawyersHub tests 3 LH001 + 3 LH002 + 2 health = 8/8 PASS; aggregate 25/25 3 produk ALL PASS",
+      "regression: LawyersHub LH-CASE-001 lama 3/3 MASIH PASS (regression 0%)",
+      "evidence artifacts permanen tersimpan"
+    ],
+    "status": "COMPLETED",
+    "created_at": "2026-08-09T02:05:00.000Z",
+    "updated_at": "2026-08-09T02:12:00.000Z",
+    "assigned_agents": {
+      "commander": "eos-command-center",
+      "recon": "eos-recon",
+      "product_slice": "eos-product-slice",
+      "verification": "eos-verification",
+      "evidence": "eos-evidence-engine"
+    },
+    "evidence": {
+      "artifact_path": ".eos-state/evidence/LH-CASE-002_evidence.json",
+      "test_evidence": "LH-CASE-002 3 composite tests + LH-CASE-001 3 preserved + 2 health = 8/8 LawyersHub PASS; AGGREGATE 25/25 across 3 produk",
+      "lifecycle_evidence": "5 writes×3 runs = 15 CommandInvocationRecord ok:true; monotonic lifecycle untuk case: draft→open; monotonic document: draft→signed→archived; 3×cross-capability link verified matterId === caseId at every post-create checkpoint",
+      "regression_free": true,
+      "primitive_reuse_pct": 95.0,
+      "new_capability_count": 0,
+      "new_registry_keys": 0,
+      "schema_mutations": 0,
+      "duplicate_work": false,
+      "composite_milestone": "FIRST PROVEN cross-capability aggregate link native matterId ↔ legal-case.id tanpa join table, DILARANG promote sebagai shared primitive sebelum terbukti di ≥2 consumer (Rule of Two: dipakai di LawyersHub + 1 produk LAIN baru promote)",
+      "rule_of_two_status": "1/2 consumers (LawyersHub saja), WAIT for SREQ-002 or DISC-003 to activate shared promotion"
+    },
+    "recon_report": {
+      "recon_completed_at": "2026-08-09T02:07:22.004171",
+      "locked_boundaries_verified": 8,
+      "existing_capabilities_found": 20,
+      "matched_commands": [
+        "legal-case.case.create",
+        "lawyershub.case.assignLawyer",
+        "legal-document.document.create",
+        "legal-document.document.sign",
+        "legal-document.document.archive"
+      ],
+      "critical_native_discovery": "DocumentAggregate/CreateDocumentInput SUDAH PUNYA field opsional matterId BUILT-IN sejak awal di contracts + commands (document.commands.ts line 41 matterId condition). TIDAK PERLU schema mutation.",
+      "registry_prefix_verified": "3 prefixes verified: legal-case, lawyershub, legal-document (aliases document., legal-document.) via CAPABILITY_PREFIX_ALIASES line 29 registry file",
+      "reuse_percentage": 95.0,
+      "blocked": false,
+      "can_proceed": true,
+      "report_path": ".eos-state/recon/LH-CASE-002_recon.json"
+    },
+    "execution_plan": {
+      "strategy": "FIRST COMPOSITE vertical slice legal-case + legal-document via NATIVE built-in matterId field (ZERO schema change). Pattern runMatterDocumentCompositeE2E() = extend runLifecycleE2E + 3 document lifecycle stages appended.",
+      "tasks": [
+        "Reuse existing caseCommands (case.create, case.assignLawyer) unchanged",
+        "Reuse existing documentCommands (document.create, sign, archive) — CRITICAL: matterId field SUDAH ADA native sejak genesis (CreateDocumentInput + DocumentAggregate)",
+        "Reuse 2 repo: CaseRepositoryInMemory + DocumentRepositoryInMemory",
+        "Add import untuk DocumentRepositoryInMemory + DocumentAggregate/DocumentStatus ke lawyershub.test.ts",
+        "Write function runMatterDocumentCompositeE2E(title, priority, lawyerId, docTitle, desc, author, signer) 5 stages",
+        "Tambah 3 tests baru describe LH-CASE-002: (1) native matterId exact persisten, (2) doc lifecycle + terminal-state preserved-link, (3) 5-key command ledger validation",
+        "Regression check: LH-CASE-001 lama 3/3 MASIH PASS + aggregate 25/25 3 produk PASS",
+        "Save artifacts + COMPLETED"
+      ],
+      "started_at": "2026-08-09T02:06:00.000Z",
+      "estimated_completion": "2026-08-09T02:12:00.000Z"
+    },
+    "verification_report": {
+      "verified_at": "2026-08-09T02:11:58.847290",
+      "acceptance_checks": 10,
+      "all_passed": true,
+      "passed_criteria_count": 10,
+      "failed_criteria_count": 0,
+      "tests": {
+        "lawyershub.test.ts": "8/8 PASS (3 LH001 + 3 LH002 + 2 health)",
+        "aggregate_25_25": true,
+        "composite_lh001_regression_preserved": true,
+        "lifecycle_total_writes": "47 CommandInvocationRecord (lh001:9 + lh002:15 + sreq:18 + ilc:14) SEMUA ok:true across 4 work items"
+      },
+      "architecture_lock_preserved": true,
+      "new_fragmentation_score": 0,
+      "security_scan_passed": true,
+      "report_path": ".eos-state/verification/LH-CASE-002_verification.json"
+    },
+    "next_highest_leverage_recommendations": [
+      "LH-CASE-003: case.listByMatterId untuk query SELECT * FROM documents WHERE matterId = :caseId (reverse traversal dari composite link, FIRST composite QUERY capability)",
+      "Trigger Rule of Two: attach document SREQ-002 (ServiceRequest ↔ Document) + LH-CASE-003 query agar shared primitive cross-capability-linking memiliki 2 consumer → promote ke Wave 3 Shared Platform Maturation step"
+    ]
+  },
+  "DB-001": {
+    "work_id": "DB-001",
+    "product": "Identity (Shared Rail)",
+    "user_job": "Persistent stores for identity domain: users, tenants, workspaces, memberships",
+    "outcome": "Tersedia 4 repository contracts + InMemory implementations following existing CaseRepository pattern: UserRepositoryInMemory, TenantRepositoryInMemory, WorkspaceRepositoryInMemory, MembershipRepositoryInMemory. Pattern exact match: type ID branded, Aggregate readonly, Repository interface with byId/list/save/remove, seed() hydration via STORE Map. NO Prisma/Supabase (in-memory first per architecture frozen). Contracts expose via lib/domain/identity.contracts.ts + lib/domain/identity.repositories.ts.",
+    "constraints": {
+      "architecture_locked": true,
+      "reuse_existing_patterns": true,
+      "no_new_framework": true,
+      "no_db_sdk_yet": true,
+      "thin_app_strategy": true,
+      "single_truth_source": true
+    },
+    "acceptance": [
+      "UserAggregate + UserId branded type (email, displayName, passwordHash, createdAt, updatedAt) — 100% readonly fields",
+      "TenantAggregate + TenantId branded type (name, slug, createdAt, updatedAt) — exact pattern match CaseAggregate",
+      "WorkspaceAggregate + WorkspaceId branded type (tenantId, name, productId, createdAt, updatedAt)",
+      "MembershipAggregate + MembershipId branded type (userId, tenantId, workspaceId, role, joinedAt, updatedAt). Role union = owner|admin|member",
+      "4 Repository interfaces: entityName, kind, byId, list, save, remove — exact signature from CaseRepository",
+      "4 InMemory implementations: hydrate() + STORE Map + seed() 2 sample each (user-user-001, user-002; tenant-001 personal; workspace-001 default; membership-001 owner)",
+      "4 index.ts exports — contracts and repositories exposed for AUTH-001 and TENANT-001",
+      "No new npm dependencies — use Node crypto for password hashing abstraction placeholders",
+      "TypeScript tsc --noEmit PASS for all new files"
+    ],
+    "status": "IN_PROGRESS",
+    "created_at": "2026-08-09T04:00:00.000Z",
+    "updated_at": "2026-08-09T04:00:00.000Z",
+    "assigned_agents": {
+      "commander": "eos-command-center",
+      "data_agent": "self-execution"
+    },
+    "dependencies": {
+      "blocks": ["AUTH-001", "TENANT-001"],
+      "blocked_by": []
+    }
+  },
+  "AUTH-001": {
+    "work_id": "AUTH-001",
+    "product": "Identity (Shared Rail)",
+    "user_job": "Signup, login, logout, and authenticated session — replacing default-session identity",
+    "outcome": "Production auth rail replacing hardcoded authenticated:true. NEW: /api/auth/signup → creates UserAggregate + password hashed via Node scrypt; /api/auth/login → validates credentials returns signed session cookie; /api/auth/logout → clears cookie. FIX: /api/session authenticated field reflects REAL session presence (not hardcoded true). FIX: proxy.ts does NOT auto-create authenticated:false flag when cookie absent, creates anonymous placeholder session instead. identity.commands.ts registerUser/authenticateUser/logoutUser added to capability-command-registry with prefix aliases identity/auth/i. Session cookie base64url includes REAL actorId/userId NOT operator.web.",
+    "constraints": {
+      "architecture_locked": true,
+      "reuse_existing_capabilities": true,
+      "no_new_framework": true,
+      "thin_app_strategy": true,
+      "single_truth_source": true,
+      "no_3rd_party_auth": true
+    },
+    "acceptance": [
+      "POST /api/auth/signup {email, password, displayName} → 201 {userId, actorId, actorLabel}. Duplicate email → 409 Conflict. Password min 8 chars → 422. Returns set-cookie eos-workspace-session with REAL actorId",
+      "POST /api/auth/login {email, password} → 200 {authenticated:true, actorId}. Wrong credentials → 401 Unauthorized",
+      "POST /api/auth/logout → 200 {ok:true} and clears cookie (set-cookie expired)",
+      "GET /api/session no cookie: authenticated:false, session.actorId = 'anonymous.user'. Previously authenticated:true HARDCODED → NOW CORRECTLY false",
+      "GET /api/session WITH login cookie: authenticated:true AND session.actorId matches real userId (NOT operator.web). Verified via response.headers x-eos-actor-id",
+      "proxy.ts: preserves existing cookie if present, ELSE creates anonymous session (authenticated:false downstream). No longer spoofs operator.web for everyone",
+      "identity.commands.ts {identity.registerUser, identity.authenticateUser, identity.logoutUser} registered in GLOBAL_REGISTRY with 3 aliases in CAPABILITY_PREFIX_ALIASES",
+      "Password hashing: Node crypto.scryptSync + 16-byte salt, format salt$hash stored in UserAggregate.passwordHash. PLAINTEXT NEVER stored",
+      "tests/session-api.test.ts extended with login/signup/logout flows: 6+ NEW tests all PASS, plus existing 2 tests ADAPTED/UPDATED for authenticated:false default behavior",
+      "REGRESSION FREE: LawyersHub 8/8, Services.ID 8/8, ILC 9/9 ALL PASS unchanged (25/25 preserved)",
+      "New tests: tests/auth.test.ts 8/8 PASS (signup duplicate, login wrong, logout clear, session anonymous→authenticated transition, proxy middleware anonymous context)"
+    ],
+    "status": "BLOCKED",
+    "created_at": "2026-08-09T04:00:00.000Z",
+    "updated_at": "2026-08-09T04:00:00.000Z",
+    "assigned_agents": {
+      "commander": "eos-command-center",
+      "auth_agent": "self-execution"
+    },
+    "dependencies": {
+      "blocks": ["TENANT-001", "LH-002", "SRV-002", "ILC-002"],
+      "blocked_by": ["DB-001"]
+    }
+  },
+  "TENANT-001": {
+    "work_id": "TENANT-001",
+    "product": "Identity (Shared Rail)",
+    "user_job": "Automatic tenant + workspace + membership provisioning on account signup",
+    "outcome": "Integrated SaaS context rail. COMPOSITION: POST /api/auth/signup SUCCESS → SIDE-EFFECT CHAIN: create TenantAggregate (name=displayName+' Personal', slug=email-local) → create WorkspaceAggregate (tenantId, name='Professional Workspace', productId='services-id.default') → create MembershipAggregate (userId, tenantId, workspaceId, role='owner'). GET /api/tenant returns current tenant context from authenticated session. GET /api/workspace returns workspace. Identity commands: identity.createTenant, identity.createWorkspace, identity.createMembership registered. Signup response includes tenantId workspaceId membershipId created. NO billing NO role granularity beyond owner/admin/member v1.",
+    "constraints": {
+      "architecture_locked": true,
+      "reuse_existing_capabilities": true,
+      "no_new_framework": true,
+      "thin_app_strategy": true,
+      "single_truth_source": true,
+      "composition_not_mutation": true
+    },
+    "acceptance": [
+      "SIGNUP COMPOSITION: signup → registerUser return userId → then identity.createTenant(slug+name) → identity.createWorkspace(tenantId) → identity.createMembership(role=owner). ALL 3 writes PERSIST via their repositories. Response includes ids all 4 entities (user/tenant/workspace/membership)",
+      "POST /api/auth/signup result includes tenantId, workspaceId, role='owner' fields. actorId in cookie maps to the real userId who owns that tenant",
+      "GET /api/tenant auth-only: returns current tenant aggregate from session.tenantId. No auth → 401. List of 1 workspaces under tenant included embedded",
+      "GET /api/workspace auth-only: returns workspace aggregate + membership role for current user. No auth → 401",
+      "3 identity commands registered in registry: identity.createTenant, identity.createWorkspace, identity.createMembership. Capability prefix aliases work: tenant, tnt, saas-context",
+      "Session cookie after signup has REAL tenantId=just-created (not tenant.default). REAL workspaceId=just-created (not professional-workspace.default). PREVIOUS default values ELIMINATED post-signup",
+      "tests/tenant.test.ts 5/5 PASS: signup-composition-4entities, tenant-lookup-via-session, workspace-lookup, anonymous-401, slug-duplicate-handling",
+      "REGRESSION: session + auth tests (AUTH-001) + existing 25/25 ALL preserved zero failures",
+      "TypeScript tsc --noEmit across all 3 new APIs (signup chain, tenant, workspace) clean zero errors"
+    ],
+    "status": "BLOCKED",
+    "created_at": "2026-08-09T04:00:00.000Z",
+    "updated_at": "2026-08-09T04:00:00.000Z",
+    "assigned_agents": {
+      "commander": "eos-command-center",
+      "tenant_agent": "self-execution"
+    },
+    "dependencies": {
+      "blocks": ["AUTH-002", "TENANT-002", "PERM-001"],
+      "blocked_by": ["DB-001", "AUTH-001"]
+    }
+  }
+}

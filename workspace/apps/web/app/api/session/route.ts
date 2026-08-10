@@ -3,28 +3,47 @@ import {
   WORKSPACE_SESSION_COOKIE,
   createWorkspaceContextHeaders,
   createWorkspaceRequestTrace,
-  createDefaultWorkspaceSession,
+  createAnonymousWorkspaceSession,
   encodeWorkspaceSession,
   readWorkspaceSessionFromRequest,
-} from "../../../lib/workspace-session";
+  isAuthenticatedSession,
+  type WorkspaceSession,
+} from "@repo/core-kernel";
 import {
   applyProductContextHeaders,
   readProductContextFromRequest,
-} from "../../../lib/product-context";
+} from "@repo/presentation-experience";
+import { SessionRepositoryInMemory } from "../../../../../capabilities/identity/implementation/repositories";
+import { SessionId } from "../../../../../capabilities/identity/implementation/contracts/identity.contracts";
+
+function resolveEffectiveSession(raw: WorkspaceSession | null): WorkspaceSession {
+  if (raw === null) {
+    return createAnonymousWorkspaceSession();
+  }
+  if (raw.sessionId !== undefined) {
+    const revoked = SessionRepositoryInMemory.isRevoked(SessionId(raw.sessionId));
+    if (revoked) {
+      return createAnonymousWorkspaceSession();
+    }
+  }
+  return raw;
+}
 
 export async function GET(request: Request) {
-  let session = readWorkspaceSessionFromRequest(request) ?? createDefaultWorkspaceSession();
+  const rawSession = readWorkspaceSessionFromRequest(request);
+  let session = resolveEffectiveSession(rawSession);
   const trace = createWorkspaceRequestTrace(request, "workspace.session.read");
   const productContext = readProductContextFromRequest(request);
-  
-  // Update session productId dengan productId dari request context jika ada
+
   if (productContext.productId && session.productId !== productContext.productId) {
     session = {
       ...session,
       productId: productContext.productId
     };
   }
-  
+
+  const authenticated = isAuthenticatedSession(session);
+
   const headers = applyProductContextHeaders({
     headers: createWorkspaceContextHeaders({ session, trace }),
     productContext,
@@ -32,7 +51,7 @@ export async function GET(request: Request) {
 
   const response = NextResponse.json(
     {
-      authenticated: true,
+      authenticated,
       session,
       request: trace,
       product: productContext,

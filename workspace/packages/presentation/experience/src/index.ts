@@ -9,7 +9,9 @@
 export { servicesId } from './services-id';
 export { lawyershub } from './lawyershub';
 export { ilc } from './ilc';
-export { getProductExperience, catalog } from './catalog';
+export { getProductExperience, catalog, readProductRouteMetadata } from './catalog';
+export { readProductBinding } from './product-binding';
+export { readProductContextFromRequest, applyProductContextHeaders } from './product-context';
 
 export type {
   ProductExperience,
@@ -22,3 +24,11 @@ export type {
   ProductJourneyStep,
   ProductTheme,
 } from '@repo/presentation-types';
+export type { ProductPreviewBinding } from './product-binding';
+export type {
+  ProductLandingSection,
+  ProductWorkflowCopy,
+  ProductCardCopy,
+  ProductDeliveryCopy,
+} from './product-copy-types';
+export type { ProductContext } from './product-context';

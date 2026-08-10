@@ -92,8 +92,8 @@ export class RequirementsTraceabilityMatrixService {
     };
 
     recordRuntimeInvocation({
-      capability_id: "requirements-traceability-matrix",
-      operation_id: "assess-traceability",
+      capabilityId: "requirements-traceability-matrix",
+      operationId: "assess-traceability",
       sourceRef: "RequirementsTraceabilityMatrixService.assess",
       success: true,
       input: input as unknown as Readonly<Record<string, unknown>>,

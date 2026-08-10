@@ -1,7 +1,6 @@
 import React from "react";
 import RequirementView from "../../../../capabilities/requirement-management/experience/views/RequirementView";
-import ProfessionalWorkspaceIntro from "../../components/ProfessionalWorkspaceIntro";
-import WorkspaceEntryPanel from "../../components/WorkspaceEntryPanel";
+import { ProfessionalWorkspaceIntro, WorkspaceEntryPanel } from "@repo/presentation-widgets";
 
 export default function RequirementsPage() {
   return (

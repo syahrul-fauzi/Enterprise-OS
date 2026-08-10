@@ -2,9 +2,9 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import {
   WORKSPACE_SESSION_COOKIE,
-  createDefaultWorkspaceSession,
+  createAnonymousWorkspaceSession,
   encodeWorkspaceSession,
-} from "./lib/workspace-session";
+} from "@repo/core-kernel";
 
 export function proxy(request: NextRequest) {
   if (request.cookies.get(WORKSPACE_SESSION_COOKIE)?.value) {
@@ -14,7 +14,7 @@ export function proxy(request: NextRequest) {
   const response = NextResponse.next();
   response.cookies.set({
     name: WORKSPACE_SESSION_COOKIE,
-    value: encodeWorkspaceSession(createDefaultWorkspaceSession()),
+    value: encodeWorkspaceSession(createAnonymousWorkspaceSession()),
     httpOnly: true,
     sameSite: "lax",
     path: "/",

@@ -1,9 +1,8 @@
 import { Suspense } from 'react';
-import { getAllRequirements } from '@/lib/requirement-repository';
-import { ResearchFeed } from '@/components/ResearchFeed';
-import { ResearchSearchBar } from '@/components/ResearchSearchBar';
-import { ProductPreviewShell } from '@/components/ProductPreviewShell';
-import { readProductExperience } from '@/lib/product-experience';
+import { getAllRequirements } from '@repo/core-repository';
+import { ResearchFeed, ProductPreviewShell } from '@repo/presentation-widgets';
+import { ResearchSearchBar } from '@repo/presentation-ui-system';
+import { readProductBinding, readProductExperience } from '@repo/presentation-experience';
 
 // Halaman /research sebagai shared browse page untuk semua produk yang menggunakan discoveryMode: community
 // Mendukung filtering by productId, search query, dan research status via query parameter
@@ -11,6 +10,7 @@ export default async function ResearchPage({ searchParams }) {
   const productId = searchParams?.productId || 'academic'; // Default ke academic
   const searchQuery = searchParams?.q || '';
   const filterStatus = searchParams?.status || 'all'; // 'all', 'open', 'in-progress', 'completed'
+  const binding = readProductBinding(productId);
   const experience = readProductExperience(productId);
   const allResearch = await getAllRequirements({ productId });
 
@@ -24,8 +24,11 @@ export default async function ResearchPage({ searchParams }) {
   });
 
   return (
-    <ProductPreviewShell productId={productId} experience={experience}>
-      <div className="max-w-6xl mx-auto px-4 py-8">
+    <main className="min-h-screen bg-slate-50 px-6 py-10">
+      <div className="mx-auto max-w-7xl space-y-6">
+        <ProductPreviewShell binding={binding} mode="landing" />
+        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+          <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900">
             {experience.navigation.primaryCta?.label || 'Jelajahi Penelitian'}
@@ -48,6 +51,8 @@ export default async function ResearchPage({ searchParams }) {
           </Suspense>
         </div>
       </div>
-    </ProductPreviewShell>
+        </section>
+      </div>
+    </main>
   );
 }

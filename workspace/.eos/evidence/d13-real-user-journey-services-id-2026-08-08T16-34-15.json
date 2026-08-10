@@ -1,0 +1,30 @@
+{
+  "product": "services-id",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "Load Services.ID product preview binding",
+      "ok": false
+    },
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "Load Services.ID product preview binding",
+      "ok": false,
+      "error": "Error: Binding tidak valid untuk services-id"
+    }
+  ],
+  "totalSteps": 2,
+  "passCount": 0,
+  "failCount": 2,
+  "completedAtISO": "2026-08-08T16:34:15.909Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "binding_productId": "services-id",
+      "binding_displayName": "Services.ID"
+    }
+  ]
+}

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import {
   applyProductContextHeaders,
   readProductContextFromRequest,
-} from "../../../lib/product-context";
+} from "@repo/presentation-experience";
 
 export async function GET(request: Request) {
   const productContext = readProductContextFromRequest(request);

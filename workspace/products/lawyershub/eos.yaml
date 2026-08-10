@@ -1,0 +1,44 @@
+version: "1.0"
+workspace:
+  name: lawyershub
+  display_name: LawyersHub
+  description: Platform manajemen kasus hukum untuk advokat dan firma hukum di Indonesia
+lifecycle:
+  phase: D.1
+  status: ACTIVE
+  contract:
+    stages:
+      - name: discover
+        description: Pengguna menemukan dan memahami produk
+        terminal: false
+      - name: create
+        description: Pengguna membuat legal matter baru
+        terminal: false
+      - name: execute
+        description: Proses kasus berjalan dengan assignment lawyer
+        terminal: false
+      - name: progress
+        description: Update status kasus secara berkala
+        terminal: false
+      - name: evidence
+        description: Mengumpulkan semua bukti eksekusi
+        terminal: false
+      - name: complete
+        description: Kasus selesai, evidence terverifikasi
+        terminal: true
+  real_user_jobs:
+    - id: case-101
+      name: Create/manage legal matter
+      description: Full lifecycle manajemen kasus hukum litigasi perusahaan
+      status: active
+      requirements:
+        - req-lh-001
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 80
+    runtime_invocation_required: true
+governance:
+  baseline_locked: false
+  needs_audit: false
+  evidence_path: ./evidence

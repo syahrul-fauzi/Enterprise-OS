@@ -1,8 +1,8 @@
-import { createDefaultWorkspaceSession, encodeWorkspaceSession } from "./apps/web/lib/workspace-session";
+import { createAnonymousWorkspaceSession, encodeWorkspaceSession } from "@repo/core-kernel";
 import fetch from "node-fetch";
 
 async function testProductExecution(productId: string, domain: string, title: string, description: string) {
-  const session = createDefaultWorkspaceSession();
+  const session = createAnonymousWorkspaceSession();
   const encoded = encodeWorkspaceSession(session);
   console.log(`📝 [${productId}] Encoded session generated:`, encoded);
   

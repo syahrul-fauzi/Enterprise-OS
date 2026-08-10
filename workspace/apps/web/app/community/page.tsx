@@ -1,18 +1,7 @@
 import { Suspense } from 'react';
-import { CommunityDirectory } from '../../components/CommunityDirectory';
-import { CommunitySearchBar } from '../../components/CommunitySearchBar';
-import { ProductPreviewShell } from '../../components/ProductPreviewShell';
-import { readProductExperience } from '../../lib/product-experience';
-import { readProductPreviewBinding } from '../../lib/product-binding';
-
-// Definisikan tipe Member secara lokal karena @repo/presentation-types tidak export Member
-interface Member {
-  id: string;
-  name: string;
-  affiliation?: string;
-  type: string;
-  location?: string;
-}
+import { CommunityDirectory, ProductPreviewShell } from '@repo/presentation-widgets';
+import { CommunitySearchBar } from '@repo/presentation-features';
+import { readProductBinding } from '@repo/presentation-experience';
 
 interface CommunityPageProps {
   searchParams?: {
@@ -23,31 +12,12 @@ interface CommunityPageProps {
   };
 }
 
-// Dummy data sementara sampai repository terkonfigurasi
-const getAllMembers = (): Member[] => [
-  { id: '1', name: 'Dr. Ahmad Rizki', affiliation: 'ITB', type: 'researcher', location: 'Bandung' },
-  { id: '2', name: 'Prof. Siti Aminah', affiliation: 'UI', type: 'professor', location: 'Jakarta' },
-  { id: '3', name: 'Dr. Budi Santoso', affiliation: 'UGM', type: 'researcher', location: 'Yogyakarta' },
-];
-
 export default async function CommunityPage({ searchParams }: CommunityPageProps) {
   const productId = searchParams?.productId ?? 'ilc';
-  const binding = readProductPreviewBinding(productId);
-  const experience = readProductExperience(productId);
+  const binding = readProductBinding(productId);
   const searchQuery = searchParams?.q || '';
   const filterType = searchParams?.type || 'all';
   const filterLocation = searchParams?.location || 'all';
-  
-  const allMembers = getAllMembers();
-
-  // Filter anggota berdasarkan search query, type, dan lokasi (REQ-010)
-  const filteredMembers = allMembers.filter((member: Member) => {
-    const matchesSearch = member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          (member.affiliation && member.affiliation.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesType = filterType === 'all' || member.type === filterType;
-    const matchesLocation = filterLocation === 'all' || (member.location && member.location.toLowerCase() === filterLocation.toLowerCase());
-    return matchesSearch && matchesType && matchesLocation;
-  });
 
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-10">
@@ -74,7 +44,12 @@ export default async function CommunityPage({ searchParams }: CommunityPageProps
           
           <div className="mt-8">
             <Suspense fallback={<div className="animate-pulse h-96 bg-slate-100 rounded-xl"></div>}>
-              <CommunityDirectory members={filteredMembers} productId={productId} />
+              <CommunityDirectory 
+                productId={productId}
+                searchQuery={searchQuery}
+                filterType={filterType}
+                filterLocation={filterLocation}
+              />
             </Suspense>
           </div>
         </section>

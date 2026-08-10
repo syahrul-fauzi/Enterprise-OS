@@ -82,28 +82,28 @@ export class RequirementDeliveryGatewayService {
     }).items;
 
     const matchedItems = rows
-      .filter((row) =>
+      .filter((row: any) =>
         input.verificationStatus === undefined || input.verificationStatus === "all"
           ? true
           : row.verificationStatus === input.verificationStatus,
       )
-      .map<RequirementDeliveryTraceabilityItem>((row) => {
+      .map<RequirementDeliveryTraceabilityItem>((row: any) => {
         const requirementRefs = unique(
-          row.matchedArtifacts.flatMap((artifact) => artifact.externalRequirementRefs ?? []),
+          row.matchedArtifacts.flatMap((artifact: any) => artifact.externalRequirementRefs ?? []),
         );
         const evidenceRecords = unique(
-          requirementRefs.flatMap((requirementRef) =>
+          requirementRefs.flatMap((requirementRef: string) =>
             evidenceRegistryService
               .searchEvidenceRegistry({
                 requirementRef,
                 limit: 500,
                 offset: 0,
               })
-              .items.map((item) => item.id),
+              .items.map((item: any) => item.id),
           ),
         )
-          .map((id) => evidenceRegistryService.getEvidenceRecord({ id }))
-          .filter((item): item is NonNullable<typeof item> => item !== undefined);
+          .map((id: string) => evidenceRegistryService.getEvidenceRecord({ id }))
+          .filter((item: any): item is NonNullable<typeof item> => item !== undefined);
 
         const kindBreakdown = evidenceRecords.reduce<Record<EvidenceRecordKind, number>>(
           (acc, record) => {
@@ -157,7 +157,7 @@ export class RequirementDeliveryGatewayService {
         requirementCount: matchedItems.length,
         completeCount: matchedItems.filter((item) => item.traceability.complete).length,
         evidenceBackedCount: matchedItems.filter((item) => item.evidence.matchedCount > 0).length,
-        verifiedCount: matchedItems.filter((item) => item.verificationStatus === "passed").length,
+        verifiedCount: matchedItems.filter((item: any) => item.verificationStatus === "passed").length,
       },
     };
   }

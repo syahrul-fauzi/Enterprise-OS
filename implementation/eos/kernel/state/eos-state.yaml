@@ -1,8 +1,8 @@
 # Enterprise OS State Model
-version: "1.5.0"
-phase: "D1.2"
-sub_phase: "Workflow Lifecycle Transitions Executed — 4 Aggregates Reached Terminal State via Unified Command API (9 invocations, 5 transitions, 3 lifecycle state machines)"
-next_phase: "D1.3 — Multi-Step Business Workflow Composition (Agent-in-the-loop for ambiguous decision points + cross-product aggregate linking)"
+version: "1.6.0"
+phase: "D1.3 CERTIFIED → D1.4 Prep"
+sub_phase: "Real User Journey 7-step pattern executed across LawyersHub + Services.ID + ILC = 21/21 E2E PASS. D1.1+D1.2+D1.3 chains closed; next = Human Acceptance + Deploy Hardening."
+next_phase: "D1.4 — Human Black-Box Acceptance (use the product for real) + Deploy Hardening → SHIP 3 usable products"
 
 architecture:
   status: "FROZEN"
@@ -250,6 +250,114 @@ control_tower:
     evidence: 96
     asset_confidence: 94
     product_reality: 100
-  agent_activity: "ACTIVE — PRODUCT EXECUTION MODE (D1.2 lifecycle certified, moving to D1.3)"
+    test_foundation: 100
+    e2e_user_journey: 100
+  agent_activity: "ACTIVE — PRODUCT EXECUTION MODE. D1.1 4/4 jobs, D1.2 9/9 lifecycle, D1.3 21/21 E2E journey CERTIFIED. Next: Human Black-Box Acceptance → Deploy Hardening → SHIP."
+
+product_leverage_scoreboard:
+  verified_at: "2026-08-08"
+  verification_method: "node:test + Doctor Engine + capabilityRegistry + E2E Journey Runner"
+  products:
+    lawyershub:
+      real_user_job: true
+      executable_test: { pass: 5, total: 5, status: "PASS" }
+      capability_execution: { transitions: 2, terminal: "closed", evidence_id: "case-101" }
+      state_mutation: true
+      evidence_artifact: true
+      doctor_report: true
+      e2e_user_journey: { pass: 7, total: 7, status: "PASS", flow: "OPEN→DISCOVER→ACTION→EXECUTE→STATE→EVIDENCE→SEE" }
+      human_acceptance: null
+      deployable: null
+      product_ready: null
+    services_id:
+      real_user_job: true
+      executable_test: { pass: 6, total: 6, status: "PASS" }
+      capability_execution: { transitions: 2, terminal: "delivered", evidence_id: "sreq-101" }
+      state_mutation: true
+      evidence_artifact: true
+      doctor_report: true
+      e2e_user_journey: { pass: 7, total: 7, status: "PASS", flow: "OPEN→DISCOVER→ACTION→EXECUTE→STATE→EVIDENCE→SEE" }
+      human_acceptance: null
+      deployable: null
+      product_ready: null
+    ilc:
+      real_user_job: true
+      executable_test: { pass: 7, total: 7, status: "PASS" }
+      capability_execution: { transitions: 0, terminal: "surface-live", evidence_id: "disc-101" }
+      state_mutation: false
+      evidence_artifact: true
+      doctor_report: true
+      e2e_user_journey: { pass: 7, total: 7, status: "PASS", flow: "OPEN→DISCOVER→ACTION→EXECUTE→STATE→EVIDENCE→SEE" }
+      human_acceptance: null
+      deployable: null
+      product_ready: null
+    academic_leverage_4th:
+      real_user_job: true
+      executable_test: { pass: 0, total: 0, status: "NOT_APPLICABLE — leverages ILC primitives" }
+      capability_execution: { transitions: 1, terminal: "published", evidence_id: "content-101" }
+      state_mutation: true
+      evidence_artifact: true
+      doctor_report: false
+      e2e_user_journey: { pass: 0, total: 0, status: "NOT_APPLICABLE — leverages ILC journey" }
+      human_acceptance: null
+      deployable: null
+      product_ready: null
+  totals:
+    tests_pass: 18
+    tests_total: 18
+    doctor_reports_generated: 3
+    e2e_journey_steps_pass: 21
+    e2e_journey_steps_total: 21
+    e2e_journey_products: 3
+
+real_user_journey_evidence:
+  batch: "D1.3-ALL-PRODUCTS-20260808"
+  executed_at: "2026-08-08T16:40:19Z"
+  runner: "d13-real-user-journey-all-products.ts"
+  status: "ALL_21_21_PASS"
+  shared_primitive: "7-step canonical pattern: OPEN binding → DISCOVER domain data → ACTION create aggregate → EXECUTE transition → STATE terminal → EVIDENCE ledger → SEE repo query result"
+  shared_reused_components:
+    - "readProductPreviewBinding() — product surface loader"
+    - "Repository pattern (ServiceProvider/Case/Topic/Content repos)"
+    - "capabilityRegistry.invoke() — unified command dispatch"
+    - "CommandInvocationRecord — attribution ledger for every write"
+    - "JourneyStep / JourneyResult shape + pushStep()/finalize() helpers"
+  evidence_count: 3 JSON files
+  evidence_directory: ".eos/evidence/d13-real-user-journey-{lawyershub,services-id,ilc}-*.json"
+  products:
+    lawyershub:
+      evidence_id: "case-101"
+      steps: 7
+      pass: 7
+      terminal_state: "closed"
+      flow_detail: "binding valid → browse matters (n≥1) → create → assign lawyer → close → 3 ledger records → user sees closedAt stamped + lawyerId + priority + title match"
+    services_id:
+      evidence_id: "sreq-101"
+      steps: 7
+      pass: 7
+      terminal_state: "delivered"
+      flow_detail: "binding valid → browse Cybersecurity → pick sp-003 → create → accept → markDelivered → 3 ledger records → user sees deliveredAt stamped + title+budget+requester match"
+    ilc:
+      evidence_id: "content-101"
+      steps: 7
+      pass: 7
+      terminal_state: "published"
+      flow_detail: "binding valid → explore topics+discussions+articles → create article (proposed) → publish (moderator) → repo state verified → 2 ledger records → user sees published article with author+topic+title match"
+
+test_execution_evidence:
+  batch: "D1.2-TEST-FOUNDATION-20260808"
+  executed_at: "2026-08-08T16:29:00Z"
+  runner: "node:test v26 + tsx v4"
+  status: "ALL_PASS"
+  aggregate:
+    lawyershub: { file: "products/lawyershub/tests/lawyershub.test.ts", result: "5/5 PASS", artifact: "products/lawyershub/evidence/verification/test-execution-20260808.json" }
+    services_id: { file: "products/services-id/tests/services-id.test.ts", result: "6/6 PASS", artifact: "products/services-id/evidence/verification/test-execution-20260808.json" }
+    ilc: { file: "products/ilc/tests/ilc.test.ts", result: "7/7 PASS", artifact: "products/ilc/evidence/verification/test-execution-20260808.json" }
+  defect_closed:
+    DEFECT-YAML-001:
+      description: "require('../eos.yaml') SyntaxError — Node.js cannot require() YAML files natively"
+      fix: "Added js-yaml devDependency + loadEosManifest() helper using fs.readFileSync + yaml.load across 3 product test files"
+      applied_to: ["lawyershub.test.ts", "services-id.test.ts", "ilc.test.ts"]
+      closed_at: "2026-08-08T16:25:00Z"
 
 last_updated: "2026-08-08"

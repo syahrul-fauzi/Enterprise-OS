@@ -1,0 +1,12 @@
+{
+  "product": "ilc",
+  "generated_at": "2026-08-08T15:19:50.918934",
+  "production_readiness_score": 20,
+  "total_rules": 7,
+  "passed_rules": 1,
+  "failed_rules": 6,
+  "total_actions": 9,
+  "ready_actions": 6,
+  "blocked_actions": 3,
+  "total_decisions": 9
+}
