@@ -1,19 +1,6 @@
 import { NextResponse } from "next/server";
-import type { CaseId } from "../../../../../../capabilities/legal-case/implementation/contracts";
-import { CaseRepositoryInMemory } from "../../../../../../capabilities/legal-case/implementation/repository";
-import type { ServiceRequestId } from "../../../../../../capabilities/service-directory/implementation/contracts/service.contracts";
-import {
-  ServiceRequestRepositoryInMemory,
-} from "../../../../../../capabilities/service-directory/implementation/repository/service.repository";
-import type {
-  ContentId,
-  DiscussionId,
-} from "../../../../../../capabilities/legal-community/implementation/contracts/community.contracts";
-import {
-  CommunityDiscussionRepositoryInMemory,
-  ContentArticleRepositoryInMemory,
-} from "../../../../../../capabilities/legal-community/implementation/repository/community.repository";
-import { DocumentRepositoryInMemory } from "../../../../../../capabilities/legal-document/implementation/repository";
+import { capabilityRegistry } from "@repo/core-kernel";
+import { GetCaseByIdInputSchema } from "../../../../../../capabilities/legal-case/implementation/commands/get-case-by-id.command";
 
 export const runtime = "nodejs";
 
@@ -44,119 +31,185 @@ export async function GET(
   }
 
   if (id.startsWith("case-")) {
-    const caseId = id as unknown as CaseId;
-    const c = CaseRepositoryInMemory.byId(caseId);
-    if (c === undefined) {
-      return NextResponse.json({ ok: false, error: `Case not found: ${id}` }, { status: 404 });
+    const parsed = GetCaseByIdInputSchema.safeParse({ caseId: id });
+    if (!parsed.success) {
+      const messages = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
+      return NextResponse.json({ error: `Validation failed: ${messages}` }, { status: 422 });
     }
-    const evidenceCount = DocumentRepositoryInMemory.list().filter((d: { readonly matterId?: unknown }) => d.matterId === id).length;
-    return NextResponse.json({
-      ok: true,
-      type: "lawyershub.case",
-      id,
-      displayTitle: c.title,
-      displaySubtitle: c.description ?? "Legal Matter",
-      rawStatus: c.status,
-      owner: c.lawyerId,
-      createdAt: c.createdAt.toISOString(),
-      updatedAt: c.updatedAt.toISOString(),
-      evidenceCount,
-      lifecycle: lifecycle(["draft", "open", "in_progress", "closed"], c.status, {
-        draft: "Draft Matter",
-        open: "Open / Assigned",
-        in_progress: "In Progress",
-        closed: "Closed / Delivered",
-      }),
-      priority: c.priority,
-    });
+
+    try {
+      // Single canonical command invocation - all orchestration in capability layer
+      const output = capabilityRegistry.invoke<{
+        readonly type: "lawyershub.case";
+        readonly id: string;
+        readonly displayTitle: string;
+        readonly displaySubtitle: string;
+        readonly rawStatus: string;
+        readonly owner: string | undefined;
+        readonly createdAt: string;
+        readonly updatedAt: string;
+        readonly evidenceCount: number;
+        readonly priority: string;
+      } | undefined>("case", "getById", parsed.data);
+      
+      const result = output.output;
+      if (result === undefined) {
+        return NextResponse.json({ ok: false, error: `Case not found: ${id}` }, { status: 404 });
+      }
+
+      return NextResponse.json({
+        ok: true,
+        ...result,
+        lifecycle: lifecycle(["draft", "open", "in_progress", "closed"], result.rawStatus, {
+          draft: "Draft Matter",
+          open: "Open / Assigned",
+          in_progress: "In Progress",
+          closed: "Closed / Delivered",
+        }),
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return NextResponse.json({ error: message }, { status: 500 });
+    }
   }
 
   if (id.startsWith("sreq-")) {
-    const sreqId = id as unknown as ServiceRequestId;
-    const r = ServiceRequestRepositoryInMemory.byId(sreqId);
-    if (r === undefined) {
-      return NextResponse.json({ ok: false, error: `ServiceRequest not found: ${id}` }, { status: 404 });
+    const { GetServiceRequestByIdInputSchema } = await import("../../../../../../capabilities/service-directory/implementation/commands/get-service-request-by-id.command");
+    const parsed = GetServiceRequestByIdInputSchema.safeParse({ serviceRequestId: id });
+    if (!parsed.success) {
+      const messages = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
+      return NextResponse.json({ error: `Validation failed: ${messages}` }, { status: 422 });
     }
-    return NextResponse.json({
-      ok: true,
-      type: "services-id.request",
-      id,
-      displayTitle: r.title,
-      displaySubtitle: r.description ?? "Service Request",
-      rawStatus: r.status,
-      owner: r.requesterName,
-      createdAt: r.createdAt.toISOString(),
-      updatedAt: r.updatedAt.toISOString(),
-      evidenceCount: r.providerId ? 1 : 0,
-      lifecycle: lifecycle(["draft", "accepted", "in_service", "delivered"], r.status, {
-        draft: "Draft Request",
-        accepted: "Accepted (Provider Matched)",
-        in_service: "In Service / Delivery",
-        delivered: "Delivered / Verified",
-      }),
-      category: r.category,
-      budget: r.budget,
-      providerId: r.providerId,
-    });
+
+    try {
+      // Single canonical command invocation - all orchestration in capability layer
+      const output = capabilityRegistry.invoke<{
+        readonly type: "services-id.request";
+        readonly id: string;
+        readonly displayTitle: string;
+        readonly displaySubtitle: string;
+        readonly rawStatus: string;
+        readonly owner: string | undefined;
+        readonly createdAt: string;
+        readonly updatedAt: string;
+        readonly evidenceCount: number;
+        readonly category: string | undefined;
+        readonly budget: number | undefined;
+        readonly providerId: string | undefined;
+      } | undefined>("serviceRequest", "getById", parsed.data);
+      
+      const result = output.output;
+      if (result === undefined) {
+        return NextResponse.json({ ok: false, error: `ServiceRequest not found: ${id}` }, { status: 404 });
+      }
+
+      return NextResponse.json({
+        ok: true,
+        ...result,
+        lifecycle: lifecycle(["draft", "accepted", "in_service", "delivered"], result.rawStatus, {
+          draft: "Draft Request",
+          accepted: "Accepted (Provider Matched)",
+          in_service: "In Service / Delivery",
+          delivered: "Delivered / Verified",
+        }),
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return NextResponse.json({ error: message }, { status: 500 });
+    }
   }
 
   if (id.startsWith("content-")) {
-    const contentId = id as unknown as ContentId;
-    const a = ContentArticleRepositoryInMemory.byId(contentId);
-    if (a === undefined) {
-      return NextResponse.json({ ok: false, error: `ContentArticle not found: ${id}` }, { status: 404 });
+    const { GetContentArticleByIdInputSchema } = await import("../../../../../../capabilities/legal-community/implementation/commands/get-content-article-by-id.command");
+    const parsed = GetContentArticleByIdInputSchema.safeParse({ contentId: id });
+    if (!parsed.success) {
+      const messages = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
+      return NextResponse.json({ error: `Validation failed: ${messages}` }, { status: 422 });
     }
-    return NextResponse.json({
-      ok: true,
-      type: "ilc.article",
-      id,
-      displayTitle: a.title,
-      displaySubtitle: a.summary ?? "Legal Community Article / Content",
-      rawStatus: a.status,
-      owner: a.author,
-      createdAt: a.createdAt.toISOString(),
-      updatedAt: a.updatedAt.toISOString(),
-      evidenceCount: a.topicLabel ? 1 : 0,
-      lifecycle: lifecycle(["proposed", "accepted", "in_production", "published"], a.status, {
-        proposed: "Proposed / Submitted",
-        accepted: "Accepted by Editorial",
-        in_production: "In Production / Review",
-        published: "Published & Public",
-      }),
-      topicLabel: a.topicLabel,
-      authorAffiliation: a.authorAffiliation,
-      readCount: a.readCount,
-      engagementCount: a.engagementCount,
-    });
+
+    try {
+      // Single canonical command invocation - all orchestration in capability layer
+      const output = capabilityRegistry.invoke<{
+        readonly type: "ilc.article";
+        readonly id: string;
+        readonly displayTitle: string;
+        readonly displaySubtitle: string;
+        readonly rawStatus: string;
+        readonly owner: string | undefined;
+        readonly createdAt: string;
+        readonly updatedAt: string;
+        readonly evidenceCount: number;
+        readonly topicLabel: string | undefined;
+        readonly authorAffiliation: string | undefined;
+        readonly readCount: number;
+        readonly engagementCount: number;
+      } | undefined>("contentArticle", "getById", parsed.data);
+      
+      const result = output.output;
+      if (result === undefined) {
+        return NextResponse.json({ ok: false, error: `ContentArticle not found: ${id}` }, { status: 404 });
+      }
+
+      return NextResponse.json({
+        ok: true,
+        ...result,
+        lifecycle: lifecycle(["proposed", "accepted", "in_production", "published"], result.rawStatus, {
+          proposed: "Proposed / Submitted",
+          accepted: "Accepted by Editorial",
+          in_production: "In Production / Review",
+          published: "Published & Public",
+        }),
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return NextResponse.json({ error: message }, { status: 500 });
+    }
   }
 
   if (id.startsWith("disc-")) {
-    const discId = id as unknown as DiscussionId;
-    const d = CommunityDiscussionRepositoryInMemory.byId(discId);
-    if (d === undefined) {
-      return NextResponse.json({ ok: false, error: `CommunityDiscussion not found: ${id}` }, { status: 404 });
+    const { GetCommunityDiscussionByIdInputSchema } = await import("../../../../../../capabilities/legal-community/implementation/commands/get-community-discussion-by-id.command");
+    const parsed = GetCommunityDiscussionByIdInputSchema.safeParse({ discussionId: id });
+    if (!parsed.success) {
+      const messages = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
+      return NextResponse.json({ error: `Validation failed: ${messages}` }, { status: 422 });
     }
-    return NextResponse.json({
-      ok: true,
-      type: "ilc.discussion",
-      id,
-      displayTitle: d.title,
-      displaySubtitle: d.summary ?? "Community Discussion",
-      rawStatus: d.status,
-      owner: d.startedBy,
-      createdAt: d.createdAt.toISOString(),
-      updatedAt: d.latestActivityAt.toISOString(),
-      evidenceCount: d.topicLabel ? 1 : 0,
-      lifecycle: lifecycle(["open", "featured", "locked"], d.status, {
-        open: "Open Discussion",
-        featured: "Featured / Pinned",
-        locked: "Locked / Archived",
-      }),
-      topicLabel: d.topicLabel,
-      startedByAffiliation: d.startedByAffiliation,
-      replyCount: d.replyCount,
-      viewCount: d.viewCount,
-    });
+
+    try {
+      // Single canonical command invocation - all orchestration in capability layer
+      const output = capabilityRegistry.invoke<{
+        readonly type: "ilc.discussion";
+        readonly id: string;
+        readonly displayTitle: string;
+        readonly displaySubtitle: string;
+        readonly rawStatus: string;
+        readonly owner: string | undefined;
+        readonly createdAt: string;
+        readonly updatedAt: string;
+        readonly evidenceCount: number;
+        readonly topicLabel: string | undefined;
+        readonly startedByAffiliation: string | undefined;
+        readonly replyCount: number;
+        readonly viewCount: number;
+      } | undefined>("communityDiscussion", "getById", parsed.data);
+      
+      const result = output.output;
+      if (result === undefined) {
+        return NextResponse.json({ ok: false, error: `CommunityDiscussion not found: ${id}` }, { status: 404 });
+      }
+
+      return NextResponse.json({
+        ok: true,
+        ...result,
+        lifecycle: lifecycle(["open", "featured", "locked"], result.rawStatus, {
+          open: "Open Discussion",
+          featured: "Featured / Pinned",
+          locked: "Locked / Archived",
+        }),
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return NextResponse.json({ error: message }, { status: 500 });
+    }
   }
 
   return NextResponse.json(

@@ -1,3 +1,4 @@
+import { PostgresRepository } from "./base.repository";
 import {
   TenantId,
   WorkspaceId,
@@ -5,57 +6,91 @@ import {
   type WorkspaceRepository,
 } from "../contracts/identity.contracts";
 
-type WorkspaceStore = Map<string, WorkspaceAggregate>;
+// PostgreSQL-backed workspace repository implementation
+class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements WorkspaceRepository {
+  readonly entityName = "Workspace" as const;
+  readonly kind = "repository" as const;
 
-const seed = (): WorkspaceAggregate[] => [
-  {
-    id: WorkspaceId("workspace-001"),
-    tenantId: TenantId("tenant-001"),
-    name: "Professional Workspace",
-    productId: "services-id.default",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 30),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
-  },
-  {
-    id: WorkspaceId("workspace-002"),
-    tenantId: TenantId("tenant-002"),
-    name: "Professional Workspace",
-    productId: "lawyershub.default",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 14),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
-  },
-];
+  constructor() {
+    super("workspaces");
+  }
 
-function hydrate(): WorkspaceStore {
-  const s = new Map<string, WorkspaceAggregate>();
-  for (const e of seed()) s.set(e.id, e);
-  return s;
+  // Convert database record to domain aggregate
+  private toAggregate(record: any): WorkspaceAggregate {
+    return {
+      id: WorkspaceId(record.id),
+      tenantId: TenantId(record.tenant_id),
+      name: record.name,
+      slug: record.slug,
+      productId: record.product_id,
+      createdAt: new Date(record.created_at),
+      updatedAt: new Date(record.updated_at),
+    } as WorkspaceAggregate;
+  }
+
+  // Convert domain aggregate to database record
+  private toRecord(entity: WorkspaceAggregate): any {
+    return {
+      id: entity.id,
+      tenant_id: entity.tenantId,
+      name: entity.name,
+      slug: entity.slug,
+      product_id: entity.productId,
+      created_at: entity.createdAt.toISOString(),
+      updated_at: entity.updatedAt.toISOString(),
+    };
+  }
+
+  async byId(id: WorkspaceId): Promise<WorkspaceAggregate | undefined> {
+    const result = await this.query("SELECT * FROM workspaces WHERE id = $1", [id]);
+    if (result.length === 0) return undefined;
+    return this.toAggregate(result[0]);
+  }
+
+  async listByTenant(tenantId: TenantId): Promise<readonly WorkspaceAggregate[]> {
+    const result = await this.query("SELECT * FROM workspaces WHERE tenant_id = $1 ORDER BY created_at DESC", [tenantId]);
+    return result.map((row: any) => this.toAggregate(row));
+  }
+
+  async list(): Promise<readonly WorkspaceAggregate[]> {
+    const result = await this.query("SELECT * FROM workspaces ORDER BY created_at DESC", []);
+    return result.map((row: any) => this.toAggregate(row));
+  }
+
+  async save(entity: WorkspaceAggregate): Promise<WorkspaceAggregate> {
+    const updated = { ...entity, updatedAt: new Date() };
+    const record = this.toRecord(updated);
+    
+    const exists = await this.byId(entity.id);
+    if (exists) {
+      await this.query(
+        `UPDATE workspaces SET 
+          tenant_id = $1, name = $2, slug = $3, product_id = $4, created_at = $5, updated_at = $6
+          WHERE id = $7`,
+        [
+          record.tenant_id, record.name, record.slug, record.product_id,
+          record.created_at, record.updated_at, record.id
+        ]
+      );
+    } else {
+      await this.query(
+        `INSERT INTO workspaces (
+          id, tenant_id, name, slug, product_id, created_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [
+          record.id, record.tenant_id, record.name, record.slug, record.product_id,
+          record.created_at, record.updated_at
+        ]
+      );
+    }
+
+    return this.byId(entity.id) as Promise<WorkspaceAggregate>;
+  }
+
+  async remove(id: WorkspaceId): Promise<boolean> {
+    const result = await this.query("DELETE FROM workspaces WHERE id = $1", [id]);
+    return (result as any).rowCount > 0;
+  }
 }
 
-const WORKSPACE_STORE: WorkspaceStore = hydrate();
-
-export const WorkspaceRepositoryInMemory: WorkspaceRepository = Object.freeze({
-  entityName: "Workspace",
-  kind: "repository",
-
-  byId(id: WorkspaceId): WorkspaceAggregate | undefined {
-    return WORKSPACE_STORE.get(id);
-  },
-
-  listByTenant(tenantId: TenantId): readonly WorkspaceAggregate[] {
-    return [...WORKSPACE_STORE.values()].filter((w) => w.tenantId === tenantId);
-  },
-
-  list(): readonly WorkspaceAggregate[] {
-    return [...WORKSPACE_STORE.values()];
-  },
-
-  save(entity: WorkspaceAggregate): WorkspaceAggregate {
-    WORKSPACE_STORE.set(entity.id, entity);
-    return entity;
-  },
-
-  remove(id: WorkspaceId): boolean {
-    return WORKSPACE_STORE.delete(id);
-  },
-});
+export const WorkspaceRepositoryPostgres: WorkspaceRepository = new WorkspaceRepositoryPostgresImpl();

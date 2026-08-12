@@ -2,7 +2,7 @@
   "extends": "@repo/config-typescript/nextjs.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
     "types": ["node"],
     "paths": {
       "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
@@ -25,6 +25,8 @@
       "@repo/presentation-features/*": ["../../packages/presentation/features/src/*"],
       "@repo/presentation-experience": ["../../packages/presentation/experience/src/index.ts"],
       "@repo/presentation-experience/*": ["../../packages/presentation/experience/src/*"],
+      "@repo/presentation-hooks": ["../../packages/presentation/hooks/src/index.ts"],
+      "@repo/presentation-hooks/*": ["../../packages/presentation/hooks/src/*"],
       "@products/*": ["../../products/*"],
       "@procedures/*": ["../../procedures/*"],
       "@procedures": ["../../procedures/index"],

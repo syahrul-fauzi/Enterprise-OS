@@ -1,0 +1,23 @@
+[
+  {
+    "id": "tenant-001",
+    "name": "Alice Personal",
+    "slug": "alice-personal",
+    "createdAt": "2026-07-11T12:56:14.240Z",
+    "updatedAt": "2026-08-08T12:56:14.240Z"
+  },
+  {
+    "id": "tenant-002",
+    "name": "Bob Personal",
+    "slug": "bob-personal",
+    "createdAt": "2026-07-27T12:56:14.240Z",
+    "updatedAt": "2026-08-09T12:56:14.240Z"
+  },
+  {
+    "id": "tenant-9e6ae427-6a31-463c-83e4-b76b59c3cfe9",
+    "name": "Check User Personal",
+    "slug": "check-user-check",
+    "createdAt": "2026-08-10T12:56:14.240Z",
+    "updatedAt": "2026-08-10T12:56:14.240Z"
+  }
+]

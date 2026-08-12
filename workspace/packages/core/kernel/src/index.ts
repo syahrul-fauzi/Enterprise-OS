@@ -34,6 +34,7 @@ export type {
 } from "./session/workspace-session";
 export {
   WORKSPACE_SESSION_COOKIE,
+  WorkspaceSessionSchema,
   ANONYMOUS_ACTOR_ID,
   createAnonymousWorkspaceSession,
   isAuthenticatedSession,

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { LoginInputSchema, UserId, TenantId, WorkspaceId } from "../../../../../../capabilities/identity/implementation/contracts/identity.contracts";
 import {
   WORKSPACE_SESSION_COOKIE,
   encodeWorkspaceSession,
@@ -9,35 +8,21 @@ import {
   capabilityRegistry,
   type WorkspaceSession,
 } from "@repo/core-kernel";
-import {
-  UserRepositoryInMemory,
-  MembershipRepositoryInMemory,
-  WorkspaceRepositoryInMemory,
-  TenantRepositoryInMemory,
-} from "../../../../../../capabilities/identity/implementation/repositories";
+import { LoginFlowInputSchema } from "../../../../../../capabilities/identity/implementation/commands/login-flow.command";
 
-type AuthCommandOutput = {
+type LoginFlowOutput = {
   readonly authenticated: boolean;
-  readonly userId: string | undefined;
-  readonly actorId: string | undefined;
-  readonly actorLabel: string | undefined;
-  readonly tenantId: string | undefined;
-  readonly workspaceId: string | undefined;
-  readonly productId: string | undefined;
-  readonly role: string | undefined;
-  readonly session: {
-    readonly sessionId: string;
-    readonly userId: string;
-    readonly tenantId: string;
-    readonly workspaceId: string;
-    readonly productId: string;
-    readonly actorLabel: string;
-    readonly issuedAt: string;
-    readonly expiresAt: string;
-  } | undefined;
+  readonly userId: string;
+  readonly actorId: string;
+  readonly actorLabel: string;
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly productId: string;
+  readonly sessionId: string;
+  readonly email: string;
 };
 
-const LoginRequestSchema = LoginInputSchema;
+const LoginRequestSchema = LoginFlowInputSchema;
 
 export async function POST(request: Request) {
   let payload: unknown;
@@ -55,81 +40,74 @@ export async function POST(request: Request) {
 
   const { email, password } = parsed.data;
 
-  const authResult = capabilityRegistry.invoke<AuthCommandOutput>("identity", "authenticateUser", { email, password });
-  const output = authResult.output;
+  try {
+    // Single canonical command invocation - all orchestration in capability layer
+    const loginOutput = await capabilityRegistry.invokeAsync<LoginFlowOutput>("identity", "loginFlow", { 
+      email, 
+      password 
+    });
+    
+    const output = loginOutput.output;
 
-  if (!output.authenticated || !output.userId) {
-    const anonymous = createAnonymousWorkspaceSession();
+    const session: WorkspaceSession = {
+      sessionId: output.sessionId,
+      actorId: output.actorId,
+      actorLabel: output.actorLabel,
+      tenantId: output.tenantId,
+      workspaceId: output.workspaceId,
+      productId: output.productId,
+      issuedAt: new Date().toISOString(),
+      userId: output.userId,
+    } as WorkspaceSession;
+
+    const authenticated = isAuthenticatedSession(session);
+
     const response = NextResponse.json(
       {
-        ok: false,
-        authenticated: false,
-        error: "Invalid email or password",
+        ok: true,
+        authenticated,
+        actorId: session.actorId,
+        actorLabel: session.actorLabel,
+        userId: output.userId,
+        tenantId: output.tenantId,
+        workspaceId: output.workspaceId,
+        productId: session.productId,
+        sessionId: output.sessionId,
+        record: loginOutput.record,
       },
-      { status: 401 },
+      { status: 200 },
     );
+
     response.cookies.set({
       name: WORKSPACE_SESSION_COOKIE,
-      value: encodeWorkspaceSession(anonymous),
+      value: encodeWorkspaceSession(session),
       httpOnly: true,
       sameSite: "lax",
       path: "/",
     });
+
     return response;
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (message.includes("Invalid email or password")) {
+      const anonymous = createAnonymousWorkspaceSession();
+      const response = NextResponse.json(
+        {
+          ok: false,
+          authenticated: false,
+          error: "Invalid email or password",
+        },
+        { status: 401 },
+      );
+      response.cookies.set({
+        name: WORKSPACE_SESSION_COOKIE,
+        value: encodeWorkspaceSession(anonymous),
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+      });
+      return response;
+    }
+    return NextResponse.json({ error: message }, { status: 500 });
   }
-
-  const userId = UserId(output.userId);
-  const user = UserRepositoryInMemory.byId(userId);
-  const memberships = MembershipRepositoryInMemory.listByUser(userId);
-  const primaryMembership = memberships[0];
-  const tenantIdStr = output.tenantId ?? primaryMembership?.tenantId ?? "tenant.anonymous";
-  const workspaceIdStr = output.workspaceId ?? primaryMembership?.workspaceId ?? "professional-workspace.anonymous";
-  const workspace = WorkspaceRepositoryInMemory.byId(WorkspaceId(workspaceIdStr));
-  const tenant = TenantRepositoryInMemory.byId(TenantId(tenantIdStr));
-  const actorLabel = output.actorLabel ?? output.actorLabel ?? user?.displayName ?? "User";
-  const productId = output.productId ?? workspace?.productId ?? "services-id.default";
-
-  const sessionId = output.session?.sessionId;
-
-  const session: WorkspaceSession = {
-    sessionId,
-    actorId: userId,
-    actorLabel,
-    tenantId: tenantIdStr,
-    workspaceId: workspaceIdStr,
-    productId,
-    issuedAt: output.session?.issuedAt ?? new Date().toISOString(),
-  };
-
-  const authenticated = isAuthenticatedSession(session);
-
-  const response = NextResponse.json(
-    {
-      ok: true,
-      authenticated,
-      actorId: session.actorId,
-      actorLabel: session.actorLabel,
-      userId: output.userId,
-      tenantId: tenantIdStr,
-      tenantName: tenant?.name ?? null,
-      workspaceId: workspaceIdStr,
-      workspaceName: workspace?.name ?? null,
-      role: output.role ?? primaryMembership?.role ?? null,
-      productId: session.productId,
-      sessionId,
-      expiresAt: output.session?.expiresAt,
-      record: authResult.record,
-    },
-    { status: 200 },
-  );
-
-  response.cookies.set({
-    name: WORKSPACE_SESSION_COOKIE,
-    value: encodeWorkspaceSession(session),
-    httpOnly: true,
-    sameSite: "lax",
-    path: "/",
-  });
-
-  return response;
 }

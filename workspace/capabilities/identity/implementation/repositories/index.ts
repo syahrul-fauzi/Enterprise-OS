@@ -1,5 +1,6 @@
-export { UserRepositoryInMemory } from "./user.repository";
-export { TenantRepositoryInMemory } from "./tenant.repository";
-export { WorkspaceRepositoryInMemory } from "./workspace.repository";
-export { MembershipRepositoryInMemory } from "./membership.repository";
-export { SessionRepositoryInMemory } from "./session.repository";
+export { UserRepositoryPostgres } from "./user.repository";
+export { TenantRepositoryPostgres } from "./tenant.repository";
+export { WorkspaceRepositoryPostgres } from "./workspace.repository";
+export { MembershipRepositoryPostgres } from "./membership.repository";
+export { SessionRepositoryPostgres } from "./session.repository";
+export { initIdentitySchema } from "./base.repository";

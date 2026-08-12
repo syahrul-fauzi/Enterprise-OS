@@ -48,3 +48,13 @@ export function hashPassword(password: string): string {
 export function verifyPassword(password: string, storedHash: string): boolean {
   return passwordService.verify(password, storedHash);
 }
+
+// Canonical slugification service for tenant/workspace URLs
+export function slugifyForTenant(input: string): string {
+  return input
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")
+    .slice(0, 40) || "organization";
+}

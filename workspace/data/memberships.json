@@ -1,0 +1,29 @@
+[
+  {
+    "id": "membership-001",
+    "userId": "user-001",
+    "tenantId": "tenant-001",
+    "workspaceId": "workspace-001",
+    "role": "owner",
+    "joinedAt": "2026-07-11T12:56:14.241Z",
+    "updatedAt": "2026-08-08T12:56:14.241Z"
+  },
+  {
+    "id": "membership-002",
+    "userId": "user-002",
+    "tenantId": "tenant-002",
+    "workspaceId": "workspace-002",
+    "role": "owner",
+    "joinedAt": "2026-07-27T12:56:14.241Z",
+    "updatedAt": "2026-08-09T12:56:14.241Z"
+  },
+  {
+    "id": "membership-b83bcef1-b1f9-4eec-acc8-97675f711ba3",
+    "userId": "user-41d8e2db-ada4-4524-9643-cb4e22c4952d",
+    "tenantId": "tenant-9e6ae427-6a31-463c-83e4-b76b59c3cfe9",
+    "workspaceId": "workspace-97ded3ed-fe6e-4541-8431-d3bbe80a4d31",
+    "role": "owner",
+    "joinedAt": "2026-08-10T12:56:14.241Z",
+    "updatedAt": "2026-08-10T12:56:14.241Z"
+  }
+]

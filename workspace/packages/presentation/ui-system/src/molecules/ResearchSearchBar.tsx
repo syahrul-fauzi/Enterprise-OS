@@ -1,6 +1,6 @@
 import { BaseSearchBar } from './BaseSearchBar';
 
-interface ResearchSearchBarProps {
+export interface ResearchSearchBarProps {
   initialQuery: string;
   initialStatus: string;
   productId: string;

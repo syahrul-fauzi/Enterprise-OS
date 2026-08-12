@@ -1,4 +1,5 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
+import { randomUUID } from "node:crypto";
 import {
   SessionId,
   UserId,
@@ -6,20 +7,17 @@ import {
   type LoginInput,
   type SessionAggregate,
 } from "../contracts/identity.contracts";
-import {
-  UserRepositoryInMemory,
-  SessionRepositoryInMemory,
-  MembershipRepositoryInMemory,
-  TenantRepositoryInMemory,
-  WorkspaceRepositoryInMemory,
-} from "../repositories";
 import { passwordService } from "../services/password.service";
-
-let sessionIdCounter = 100;
+import {
+  UserRepositoryPostgres,
+  MembershipRepositoryPostgres,
+  TenantRepositoryPostgres,
+  WorkspaceRepositoryPostgres,
+  SessionRepositoryPostgres,
+} from "../repositories";
 
 function newSessionId(): SessionId {
-  sessionIdCounter += 1;
-  return SessionId(`session-${sessionIdCounter}`);
+  return SessionId(`session-${randomUUID()}`);
 }
 
 const DEFAULT_SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
@@ -43,15 +41,16 @@ export type CreateSessionCommand = CapabilityCommand<
 export const createSessionCommand: CreateSessionCommand = {
   kind: "command",
   name: "identity.createSession",
-  version: "1.0.0",
+  version: "2.0.0", // Postgres-backed persistence
 
-  execute(input) {
+  async execute(input) {
     const ttl = input.ttlSeconds ?? DEFAULT_SESSION_TTL_SECONDS;
     const now = new Date();
     const expires = new Date(now.getTime() + ttl * 1000);
     const entity: SessionAggregate = {
       id: newSessionId(),
       userId: input.userId,
+      actorId: input.userId,
       tenantId: input.tenantId,
       workspaceId: input.workspaceId,
       productId: input.productId,
@@ -62,7 +61,7 @@ export const createSessionCommand: CreateSessionCommand = {
       createdAt: now,
       updatedAt: now,
     };
-    SessionRepositoryInMemory.save(entity);
+    await SessionRepositoryPostgres.save(entity);
     return {
       sessionId: entity.id,
       userId: entity.userId,
@@ -93,11 +92,11 @@ type AuthenticateUserCommand = CapabilityCommand<LoginInput, AuthenticateUserOut
 export const loginUserCommand: AuthenticateUserCommand = {
   kind: "command",
   name: "identity.authenticateUser",
-  version: "1.0.0",
+  version: "2.0.0", // Postgres-backed persistence
 
-  execute(input) {
+  async execute(input) {
     const trimmedEmail = input.email.trim().toLowerCase();
-    const user = UserRepositoryInMemory.byEmail(trimmedEmail);
+    const user = await UserRepositoryPostgres.byEmail(trimmedEmail);
     if (user === undefined) {
       return {
         authenticated: false,
@@ -126,13 +125,13 @@ export const loginUserCommand: AuthenticateUserCommand = {
       };
     }
 
-    const memberships = MembershipRepositoryInMemory.listByUser(UserId(user.id));
+    const memberships = await MembershipRepositoryPostgres.listByUser(UserId(user.id));
     const primary = memberships[0];
     const tenant = primary
-      ? TenantRepositoryInMemory.byId(primary.tenantId)
+      ? await TenantRepositoryPostgres.byId(primary.tenantId)
       : undefined;
     const workspace = primary
-      ? WorkspaceRepositoryInMemory.byId(primary.workspaceId)
+      ? await WorkspaceRepositoryPostgres.byId(primary.workspaceId)
       : undefined;
     const tenantId = primary?.tenantId;
     const workspaceId = primary?.workspaceId;
@@ -141,13 +140,13 @@ export const loginUserCommand: AuthenticateUserCommand = {
 
     let session: CreateSessionOutput | undefined = undefined;
     if (tenantId && workspaceId) {
-      const sessionResult = createSessionCommand.execute({
+      const sessionResult = await createSessionCommand.execute({
         userId: user.id,
         tenantId,
         workspaceId,
         productId,
         actorLabel: user.displayName,
-      }) as CreateSessionOutput;
+      });
       session = sessionResult;
     }
 

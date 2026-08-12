@@ -1,8 +1,8 @@
 // Import product-specific context dari Product Runtime di root workspace products/*
-import { provideLawyersHubContext } from "@products/lawyershub/runtime/product-context-provider";
-import { provideServicesIDContext } from "@products/services-id/runtime/product-context-provider";
-import { provideILCContext } from "@products/ilc/runtime/product-context-provider";
-import { provideAcademicContext } from "@products/academic/runtime/product-context-provider";
+import { provideLawyersHubContext } from "@products/lawyershub";
+import { provideServicesIDContext } from "@products/services-id";
+import { provideILCContext } from "@products/ilc";
+import { provideAcademicContext } from "@products/academic";
 
 export interface ProductContext {
   readonly productId: string | null;

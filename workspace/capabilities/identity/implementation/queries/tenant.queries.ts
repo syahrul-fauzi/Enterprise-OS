@@ -2,23 +2,24 @@ import {
   TenantId,
   type TenantAggregate,
 } from "../contracts/identity.contracts";
-import { TenantRepositoryInMemory } from "../repositories";
+import { TenantRepositoryPostgres } from "../repositories";
 
 export const tenantQueries = Object.freeze({
-  byId(id: string): TenantAggregate | undefined {
-    return TenantRepositoryInMemory.byId(TenantId(id));
+  async byId(id: string): Promise<TenantAggregate | undefined> {
+    return TenantRepositoryPostgres.byId(TenantId(id));
   },
 
-  bySlug(slug: string): TenantAggregate | undefined {
-    return TenantRepositoryInMemory.bySlug(slug);
+  async bySlug(slug: string): Promise<TenantAggregate | undefined> {
+    return TenantRepositoryPostgres.bySlug(slug);
   },
 
-  list(): readonly TenantAggregate[] {
-    return TenantRepositoryInMemory.list();
+  async list(): Promise<readonly TenantAggregate[]> {
+    return TenantRepositoryPostgres.list();
   },
 
-  count(): number {
-    return TenantRepositoryInMemory.list().length;
+  async count(): Promise<number> {
+    const list = await TenantRepositoryPostgres.list();
+    return list.length;
   },
 });
 

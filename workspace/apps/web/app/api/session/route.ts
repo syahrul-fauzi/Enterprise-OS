@@ -1,73 +1,65 @@
 import { NextResponse } from "next/server";
 import {
-  WORKSPACE_SESSION_COOKIE,
-  createWorkspaceContextHeaders,
-  createWorkspaceRequestTrace,
-  createAnonymousWorkspaceSession,
-  encodeWorkspaceSession,
+  capabilityRegistry,
   readWorkspaceSessionFromRequest,
+  createAnonymousWorkspaceSession,
   isAuthenticatedSession,
   type WorkspaceSession,
 } from "@repo/core-kernel";
-import {
-  applyProductContextHeaders,
-  readProductContextFromRequest,
-} from "@repo/presentation-experience";
-import { SessionRepositoryInMemory } from "../../../../../capabilities/identity/implementation/repositories";
-import { SessionId } from "../../../../../capabilities/identity/implementation/contracts/identity.contracts";
-
-function resolveEffectiveSession(raw: WorkspaceSession | null): WorkspaceSession {
-  if (raw === null) {
-    return createAnonymousWorkspaceSession();
-  }
-  if (raw.sessionId !== undefined) {
-    const revoked = SessionRepositoryInMemory.isRevoked(SessionId(raw.sessionId));
-    if (revoked) {
-      return createAnonymousWorkspaceSession();
-    }
-  }
-  return raw;
-}
+import type { GetSessionByIdOutput } from "../../../../../capabilities/identity/implementation/commands/get-session-by-id.command";
 
 export async function GET(request: Request) {
-  const rawSession = readWorkspaceSessionFromRequest(request);
-  let session = resolveEffectiveSession(rawSession);
-  const trace = createWorkspaceRequestTrace(request, "workspace.session.read");
-  const productContext = readProductContextFromRequest(request);
+  try {
+    const cookieSession = readWorkspaceSessionFromRequest(request)
+      ?? createAnonymousWorkspaceSession();
 
-  if (productContext.productId && session.productId !== productContext.productId) {
-    session = {
-      ...session,
-      productId: productContext.productId
-    };
+    if (!cookieSession.sessionId) {
+      return NextResponse.json({
+        ok: true,
+        authenticated: false,
+        session: cookieSession,
+      }, { status: 200 });
+    }
+
+    const { output } = await capabilityRegistry.invokeAsync<GetSessionByIdOutput>(
+      "identity",
+      "getSessionById",
+      { sessionId: cookieSession.sessionId }
+    );
+
+    if (!output || !output.authenticated) {
+      const anonymous = createAnonymousWorkspaceSession();
+      return NextResponse.json({
+        ok: true,
+        authenticated: false,
+        session: anonymous,
+      }, { status: 200 });
+    }
+
+    const verifiedSession: WorkspaceSession = {
+      sessionId: output.session.sessionId,
+      actorId: output.session.actorId,
+      actorLabel: output.session.actorLabel,
+      tenantId: output.session.tenantId,
+      workspaceId: output.session.workspaceId,
+      productId: output.session.productId,
+      issuedAt: output.session.issuedAt,
+      userId: output.session.actorId,
+      authenticated: true,
+    } as WorkspaceSession;
+
+    return NextResponse.json({
+      ok: true,
+      authenticated: isAuthenticatedSession(verifiedSession),
+      session: verifiedSession,
+    }, { status: 200 });
+  } catch (error) {
+    const anonymous = createAnonymousWorkspaceSession();
+    return NextResponse.json({
+      ok: false,
+      authenticated: false,
+      session: anonymous,
+      error: error instanceof Error ? error.message : "Failed to fetch session",
+    }, { status: 500 });
   }
-
-  const authenticated = isAuthenticatedSession(session);
-
-  const headers = applyProductContextHeaders({
-    headers: createWorkspaceContextHeaders({ session, trace }),
-    productContext,
-  });
-
-  const response = NextResponse.json(
-    {
-      authenticated,
-      session,
-      request: trace,
-      product: productContext,
-    },
-    {
-      headers,
-    },
-  );
-
-  response.cookies.set({
-    name: WORKSPACE_SESSION_COOKIE,
-    value: encodeWorkspaceSession(session),
-    httpOnly: true,
-    sameSite: "lax",
-    path: "/",
-  });
-
-  return response;
 }

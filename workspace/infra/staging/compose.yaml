@@ -1,4 +1,21 @@
 services:
+  postgres:
+    container_name: eos-staging-postgres
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: eos_user
+      POSTGRES_PASSWORD: eos_pass123
+      POSTGRES_DB: eos_identity
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eos_user -d eos_identity"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   web:
     container_name: eos-staging-web
     build:
@@ -8,9 +25,13 @@ services:
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
+      DATABASE_URL: postgresql://eos_user:eos_pass123@postgres:5432/eos_identity
       EOS_REQUIREMENT_STORAGE_PATH: /data/requirements/requirements.json
       EOS_EVIDENCE_STORAGE_ROOT: /data/evidence
       EOS_RUNTIME_INVOCATION_EVIDENCE_PATH: /app/portfolios/evidence/verification/enterprise/runtime-invocations-staging.jsonl
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
     ports:
       - "3001:3000"
@@ -44,6 +65,7 @@ services:
       - caddy_config:/config
 
 volumes:
+  postgres_data:
   web_state:
   caddy_data:
   caddy_config:

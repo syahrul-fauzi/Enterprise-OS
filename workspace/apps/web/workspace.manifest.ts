@@ -1,3 +1,6 @@
+// Configure persistent storage paths FIRST, before any imports that use them!
+// These are overridden by .env.local in Next.js but kept for compatibility
+
 import { StaticRegistry } from "@repo/core-capability-registry";
 import type { CapabilityDescriptor, CapabilityImplementation } from "@repo/core-kernel";
 import {
@@ -8,14 +11,13 @@ import * as RequirementServiceImplModule from "../../capabilities/requirement-ma
 // Identity capability imports
 import { identityCommands } from "../../capabilities/identity/implementation/commands";
 import {
-  UserRepositoryInMemory,
-  TenantRepositoryInMemory,
-  WorkspaceRepositoryInMemory,
-  MembershipRepositoryInMemory,
-  SessionRepositoryInMemory,
+  UserRepositoryFileBacked,
+  TenantRepositoryFileBacked,
+  WorkspaceRepositoryFileBacked,
+  MembershipRepositoryFileBacked,
+  SessionRepositoryFileBacked,
 } from "../../capabilities/identity/implementation/repositories";
 import { passwordService } from "../../capabilities/identity/implementation/services/password.service";
-
 const RequirementViewComponent = RequirementView ?? RequirementViewDefault;
 
 const requirementImplementation: CapabilityImplementation = {
@@ -39,11 +41,11 @@ const identityImplementation: CapabilityImplementation = {
   commands: identityCommands,
   queries: {},
   repositories: {
-    UserRepository: UserRepositoryInMemory,
-    TenantRepository: TenantRepositoryInMemory,
-    WorkspaceRepository: WorkspaceRepositoryInMemory,
-    MembershipRepository: MembershipRepositoryInMemory,
-    SessionRepository: SessionRepositoryInMemory,
+    UserRepository: UserRepositoryFileBacked,
+    TenantRepository: TenantRepositoryFileBacked,
+    WorkspaceRepository: WorkspaceRepositoryFileBacked,
+    MembershipRepository: MembershipRepositoryFileBacked,
+    SessionRepository: SessionRepositoryFileBacked,
   },
   services: { passwordService },
   entry: {},

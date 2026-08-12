@@ -61,19 +61,31 @@ function clone<T extends CaseAggregate>(entity: T): T {
 export const CaseRepositoryInMemory: CaseRepository = {
   kind: "repository",
   entityName: "Case",
-  byId(id) {
+  async byId(id) {
     const raw = STORE.get(id);
     return raw !== undefined ? clone(raw) : undefined;
   },
-  list() {
+  async list() {
     return Array.from(STORE.values()).map(clone);
   },
-  save(entity) {
+  async listByTenant(tenantId: string) {
+    // In-memory implementation - filter by tenant if available on aggregate
+    return Array.from(STORE.values())
+      .filter(c => (c as any).tenantId === tenantId)
+      .map(clone);
+  },
+  async listByWorkspace(workspaceId: string) {
+    // In-memory implementation - filter by workspace if available on aggregate
+    return Array.from(STORE.values())
+      .filter(c => (c as any).workspaceId === workspaceId)
+      .map(clone);
+  },
+  async save(entity) {
     const updated: CaseAggregate = { ...clone(entity), updatedAt: new Date() };
     STORE.set(updated.id, updated);
     return clone(updated);
   },
-  remove(id) {
+  async remove(id) {
     return STORE.delete(id);
   },
 } as const;

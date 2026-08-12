@@ -1,6 +1,6 @@
 import { BaseSearchBar } from './BaseSearchBar';
 
-interface CommunitySearchBarProps {
+export interface CommunitySearchBarProps {
   initialQuery: string;
   initialType: string;
   initialLocation: string;

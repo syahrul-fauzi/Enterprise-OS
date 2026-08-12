@@ -12,6 +12,7 @@ export { ilc } from './ilc';
 export { getProductExperience, catalog, readProductRouteMetadata } from './catalog';
 export { readProductBinding } from './product-binding';
 export { readProductContextFromRequest, applyProductContextHeaders } from './product-context';
+export { getAllProductSlugs, getAllProductExperiences } from './catalog';
 
 export type {
   ProductExperience,

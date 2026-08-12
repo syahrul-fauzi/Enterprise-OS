@@ -14,6 +14,15 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES2022"
+    "target": "ES2022",
+    "baseUrl": ".",
+    "paths": {
+      "@products/*": ["./products/*"],
+      "@repo/core/*": ["./packages/core/*"],
+      "@repo/core/proof-ledger": ["./packages/core/proof-ledger/src/index.ts"],
+      "@repo/capabilities/*": ["./capabilities/*"],
+      "@repo/presentation/*": ["./packages/presentation/*"],
+      "@repo/config-typescript/*": ["./config/typescript/*"]
+    }
   }
 }

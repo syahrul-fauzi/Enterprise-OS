@@ -1,0 +1,28 @@
+[
+  {
+    "id": "session-101",
+    "userId": "user-41d8e2db-ada4-4524-9643-cb4e22c4952d",
+    "tenantId": "tenant-9e6ae427-6a31-463c-83e4-b76b59c3cfe9",
+    "workspaceId": "workspace-97ded3ed-fe6e-4541-8431-d3bbe80a4d31",
+    "productId": "services-id.default",
+    "actorLabel": "Check User",
+    "issuedAt": "2026-08-10T12:56:14.241Z",
+    "expiresAt": "2026-08-17T12:56:14.241Z",
+    "revokedAt": null,
+    "createdAt": "2026-08-10T12:56:14.241Z",
+    "updatedAt": "2026-08-10T12:56:14.241Z"
+  },
+  {
+    "id": "session-102",
+    "userId": "user-41d8e2db-ada4-4524-9643-cb4e22c4952d",
+    "tenantId": "tenant-9e6ae427-6a31-463c-83e4-b76b59c3cfe9",
+    "workspaceId": "workspace-97ded3ed-fe6e-4541-8431-d3bbe80a4d31",
+    "productId": "services-id.default",
+    "actorLabel": "Check User",
+    "issuedAt": "2026-08-10T12:56:29.128Z",
+    "expiresAt": "2026-08-17T12:56:29.128Z",
+    "revokedAt": "2026-08-10T12:56:29.261Z",
+    "createdAt": "2026-08-10T12:56:29.128Z",
+    "updatedAt": "2026-08-10T12:56:29.261Z"
+  }
+]

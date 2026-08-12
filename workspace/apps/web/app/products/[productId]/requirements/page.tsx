@@ -1,10 +1,7 @@
-import type { Metadata } from "next";
-import React from "react";
-import { ProductPreviewShell } from "@repo/presentation-widgets";
-import RequirementView from "../../../../../../capabilities/requirement-management/experience/views/RequirementView";
-import { readProductBinding, getProductExperience, readProductRouteMetadata } from "@repo/presentation-experience";
+import { ProductRequirementsPage } from '@repo/presentation-widgets';
 
-interface ProductRequirementPreviewPageProps {
+// Define proper Next.js page props - PURE ADAPTER ONLY
+interface ProductRequirementsPageProps {
   readonly params: Promise<{
     readonly productId: string;
   }>;
@@ -13,40 +10,9 @@ interface ProductRequirementPreviewPageProps {
   }>;
 }
 
-export async function generateMetadata(
-  input: ProductRequirementPreviewPageProps,
-): Promise<Metadata> {
-  const params = await input.params;
-  const binding = readProductBinding(params.productId);
-
-  return readProductRouteMetadata(
-    binding.productId,
-    binding.displayName,
-    "requirements",
-  );
-}
-
-export default async function ProductRequirementPreviewPage(input: ProductRequirementPreviewPageProps) {
-  const params = await input.params;
-  const searchParams = await input.searchParams;
-  const binding = readProductBinding(params.productId);
-  const experience = getProductExperience(binding.productId);
-  const requirementId = Array.isArray(searchParams.requirementId)
-    ? searchParams.requirementId[0]
-    : searchParams.requirementId;
-
-  if (!experience) {
-    return <div>Product experience not found</div>;
-  }
-
-  return (
-    <main className="min-h-screen bg-slate-50 px-6 py-10">
-      <div className="mx-auto max-w-7xl space-y-6">
-        <ProductPreviewShell binding={binding} mode="requirements" />
-        <RequirementView
-          productId={binding.productId}
-        />
-      </div>
-    </main>
-  );
+// apps/web ONLY handles Next.js route params - NO presentation ownership
+// All business logic, data fetching, and UI composition in canonical widget
+export default async function ProductRequirementsRoute({ params, searchParams }: ProductRequirementsPageProps) {
+  const { productId } = await params;
+  return <ProductRequirementsPage productId={productId} rawSearchParams={searchParams} />;
 }

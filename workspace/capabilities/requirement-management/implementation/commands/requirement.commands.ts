@@ -21,6 +21,8 @@ import {
   newRequirementId,
   RequirementRepositoryCurrent,
 } from "../repository";
+import { getRequirementsByOwnerCommand } from "./get-requirements-by-owner.command";
+import { getAllRequirementsCommand } from "./get-all-requirements.command";
 
 type CreateRequirementCommand = CapabilityCommand<
   CreateRequirementInput,
@@ -239,4 +241,6 @@ export const requirementCommands: Readonly<Record<string, CapabilityCommand>> = 
   "requirement.startDelivery": startRequirementDelivery,
   "requirement.markImplemented": markRequirementImplemented,
   "requirement.verify": verifyRequirement,
+  "requirement.getByOwner": getRequirementsByOwnerCommand,
+  "requirement.getAll": getAllRequirementsCommand,
 } as const;

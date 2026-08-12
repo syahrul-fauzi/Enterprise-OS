@@ -158,4 +158,45 @@ export const capabilityRegistry = {
       });
     }
   },
+
+  async invokeAsync<Output = unknown>(
+    capability: string,
+    commandName: string,
+    input: unknown,
+  ): Promise<{ readonly output: Awaited<Output>; readonly record: CommandInvocationRecord }> {
+    const { command, candidates, attemptedKeys } = this.resolveByParts(capability, commandName);
+    if (command === undefined) {
+      const sortedCandidates = candidates.slice(0, 8).join(", ");
+      throw new Error(
+        `[capability-registry] Command not found: capability=${capability}, commandName=${commandName}. attempted=${attemptedKeys.join(" | ")}. Available candidates (${candidates.length}): ${sortedCandidates.length > 0 ? sortedCandidates : "(none)"}. Global total keys: ${ALL_KEYS.length}.`,
+      );
+    }
+    const matchedKey =
+      ALL_KEYS.find((k) => GLOBAL_REGISTRY[k] === command) ?? `${capability}.${commandName}`;
+    const inputSize =
+      typeof input === "string"
+        ? input.length
+        : typeof input === "object" && input !== null
+          ? JSON.stringify(input).length
+          : String(input).length;
+    const recordBase: Omit<CommandInvocationRecord, "ok" | "errorMessage"> = {
+      commandKey: matchedKey,
+      capability,
+      commandName,
+      invokedAt: new Date().toISOString(),
+      inputSize,
+    };
+    try {
+      const output = await command.execute(input as never) as Awaited<Output>;
+      return {
+        output,
+        record: { ...recordBase, ok: true },
+      };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      throw Object.assign(new Error(message), {
+        invocationRecord: { ...recordBase, ok: false, errorMessage: message },
+      });
+    }
+  },
 } as const;

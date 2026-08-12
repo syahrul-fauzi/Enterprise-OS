@@ -1,0 +1,26 @@
+[
+  {
+    "id": "user-001",
+    "email": "alice@eos.dev",
+    "displayName": "Alice Operator",
+    "passwordHash": "c464339e47d2ddf1fd70d17e7fbcc8b5$3103f16994259be610f82314fe211e5804b54c5ba56e06bc5868e183a6a899527ce2650dd8141a38eef60843bca7c3bf8d52a419464bdc2a48bbafc715189053",
+    "createdAt": "2026-07-11T12:56:14.194Z",
+    "updatedAt": "2026-08-08T12:56:14.194Z"
+  },
+  {
+    "id": "user-002",
+    "email": "bob@eos.dev",
+    "displayName": "Bob Builder",
+    "passwordHash": "3502a6209fb04a1378c293df2794c2d5$1e9fb6ec92cf1b45bcb905492a0aeeae54308a7bc39936fb76b101f4ed357c2efb1bf6e8346c206a99be666667f436159fce6ec305dee770b09dca5aa2b6c65a",
+    "createdAt": "2026-07-27T12:56:14.239Z",
+    "updatedAt": "2026-08-09T12:56:14.239Z"
+  },
+  {
+    "id": "user-41d8e2db-ada4-4524-9643-cb4e22c4952d",
+    "email": "check@test.com",
+    "displayName": "Check User",
+    "passwordHash": "0926b1844539c92350e44ccad392cd72$e6a2eb9ad85e6a824fd33d7a76e44a009f1f7f96deac7e8d9b6072fab879fd5236657712c03266f0f5fd147c9fbabe5258f3f9309ba1471c59161ecc081e3226",
+    "createdAt": "2026-08-10T12:56:14.149Z",
+    "updatedAt": "2026-08-10T12:56:14.239Z"
+  }
+]

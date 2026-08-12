@@ -14,7 +14,7 @@ interface FilterConfig {
   paramName: string;
 }
 
-interface BaseSearchBarProps {
+export interface BaseSearchBarProps {
   placeholder: string;
   initialQuery: string;
   filters: FilterConfig[]; // Mendukung multiple filter secara dinamis
@@ -45,14 +45,14 @@ export function BaseSearchBar({
 
   // Update URL ketika query atau filter berubah - logika universal untuk semua search bar
   useEffect(() => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams.toString());
     if (query) params.set('q', query);
     else params.delete('q');
     
     // Update semua parameter filter secara dinamis
     filters.forEach(filter => {
       const value = filterValues[filter.paramName];
-      if (value !== 'all') params.set(filter.paramName, value);
+      if (value && value !== 'all') params.set(filter.paramName, value);
       else params.delete(filter.paramName);
     });
     

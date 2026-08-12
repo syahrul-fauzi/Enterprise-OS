@@ -376,5 +376,3 @@ function ILCArticleCreateForm({ submitting, topics, onSubmit }: SubFormProps & {
     </form>
   );
 }
-
-export type { ProductCreateFormProps };

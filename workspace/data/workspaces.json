@@ -1,0 +1,26 @@
+[
+  {
+    "id": "workspace-001",
+    "tenantId": "tenant-001",
+    "name": "Professional Workspace",
+    "productId": "services-id.default",
+    "createdAt": "2026-07-11T12:56:14.240Z",
+    "updatedAt": "2026-08-08T12:56:14.240Z"
+  },
+  {
+    "id": "workspace-002",
+    "tenantId": "tenant-002",
+    "name": "Professional Workspace",
+    "productId": "lawyershub.default",
+    "createdAt": "2026-07-27T12:56:14.240Z",
+    "updatedAt": "2026-08-09T12:56:14.240Z"
+  },
+  {
+    "id": "workspace-97ded3ed-fe6e-4541-8431-d3bbe80a4d31",
+    "tenantId": "tenant-9e6ae427-6a31-463c-83e4-b76b59c3cfe9",
+    "name": "Professional Workspace",
+    "productId": "services-id.default",
+    "createdAt": "2026-08-10T12:56:14.240Z",
+    "updatedAt": "2026-08-10T12:56:14.240Z"
+  }
+]

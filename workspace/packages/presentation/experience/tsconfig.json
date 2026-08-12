@@ -3,11 +3,19 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
+    "baseUrl": ".",
     "composite": true,
-    "incremental": true
+    "incremental": true,
+    "paths": {
+      "@products/*": ["../../../products/*"]
+    }
   },
   "include": ["src"],
   "references": [
-    { "path": "../presentation-types" }
+    { "path": "../presentation-types" },
+    { "path": "../../../products/academic" },
+    { "path": "../../../products/ilc" },
+    { "path": "../../../products/lawyershub" },
+    { "path": "../../../products/services-id" }
   ]
 }

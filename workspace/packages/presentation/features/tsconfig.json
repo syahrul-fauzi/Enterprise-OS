@@ -1,10 +1,36 @@
 {
-  "extends": "@repo/config-typescript/react.json",
+  "extends": "@repo/config-typescript/react-library.json",
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": ".",
-    "tsBuildInfoFile": "tsconfig.tsbuildinfo"
+    "jsx": "react-jsx",
+    "tsBuildInfoFile": "tsconfig.tsbuildinfo",
+    "paths": {
+      "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
+      "@repo/core-kernel/*": ["../../packages/core/kernel/src/*"],
+      "@repo/core-runtime": ["../../packages/core/runtime/src/index.ts"],
+      "@repo/core-runtime/*": ["../../packages/core/runtime/src/*"],
+      "@repo/composition": ["../../packages/composition/src/index.ts"],
+      "@repo/composition/*": ["../../packages/composition/src/*"],
+      "@repo/core-capability-registry": ["../../packages/core/capability-registry/src/index.ts"],
+      "@repo/core-capability-registry/*": ["../../packages/core/capability-registry/src/*"],
+      "@repo/presentation-ui-system": ["../../packages/presentation/ui-system/src/index.ts"],
+      "@repo/presentation-ui-system/*": ["../../packages/presentation/ui-system/src/*"],
+      "@repo/presentation-types": ["../../packages/presentation/presentation-types/src/index.ts"],
+      "@repo/presentation-types/*": ["../../packages/presentation/presentation-types/src/*"],
+      "@repo/presentation-foundation": ["../../packages/presentation/foundation/src/index.ts"],
+      "@repo/presentation-foundation/*": ["../../packages/presentation/foundation/src/*"],
+      "@repo/presentation-widgets": ["../../packages/presentation/widgets/src/index.ts"],
+      "@repo/presentation-widgets/*": ["../../packages/presentation/widgets/src/*"],
+      "@repo/presentation-experience": ["../../packages/presentation/experience/src/index.ts"],
+      "@repo/presentation-experience/*": ["../../packages/presentation/experience/src/*"],
+      "@repo/presentation-hooks": ["../../packages/presentation/hooks/src/index.ts"],
+      "@repo/presentation-hooks/*": ["../../packages/presentation/hooks/src/*"],
+      "@products/*": ["../../products/*"],
+      "@procedures/*": ["../../procedures/*"],
+      "@capabilities/*": ["../../capabilities/*"]
+    }
   },
   "include": ["src/**/*", "./**/*.ts", "./**/*.tsx"],
   "exclude": ["node_modules", "dist"]

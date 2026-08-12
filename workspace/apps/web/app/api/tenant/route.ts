@@ -1,168 +1,111 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import {
-  readWorkspaceSessionFromRequest,
-  isAuthenticatedSession,
-  WORKSPACE_SESSION_COOKIE,
-  encodeWorkspaceSession,
-  createAnonymousWorkspaceSession,
   capabilityRegistry,
+  readWorkspaceSessionFromRequest,
+  createAnonymousWorkspaceSession,
 } from "@repo/core-kernel";
-import {
-  TenantRepositoryInMemory,
-  WorkspaceRepositoryInMemory,
-  MembershipRepositoryInMemory,
-} from "../../../../../capabilities/identity/implementation/repositories";
-import { TenantId, WorkspaceId } from "../../../../../capabilities/identity/implementation/contracts/identity.contracts";
+import type { GetWorkspacesByTenantOutput } from "../../../../../capabilities/identity/implementation/commands/get-workspaces-by-tenant.command";
+import type { CreateTenantWithSlugResolutionOutput } from "../../../../../capabilities/identity/implementation/commands/create-tenant-with-slug-resolution.command";
 
-const CreateTenantRequestSchema = z.object({
-  name: z.string().min(1),
-  slug: z.string().min(1).optional(),
-});
+export async function GET(request: Request) {
+  try {
+    const session = readWorkspaceSessionFromRequest(request)
+      ?? createAnonymousWorkspaceSession();
+    const actorId = (session as any).userId ?? session.actorId;
 
-function slugifyForTenant(input: string): string {
-  return input
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "")
-    .slice(0, 40) || "organization";
-}
+    if (!session.tenantId || !actorId || !session.sessionId) {
+      return NextResponse.json({
+        ok: false,
+        authenticated: false,
+        tenant: undefined,
+        workspaces: [],
+        actorId: session.actorId ?? "",
+      }, { status: 200 });
+    }
 
-function authFailureResponse() {
-  const anonymous = createAnonymousWorkspaceSession();
-  const response = NextResponse.json(
-    {
-      error: "Authentication required",
+    const { output } = await capabilityRegistry.invokeAsync<GetWorkspacesByTenantOutput>(
+      "identity",
+      "getWorkspacesByTenant",
+      {
+        tenantId: session.tenantId,
+        actorId,
+        sessionId: session.sessionId,
+      }
+    );
+
+    if (!output) {
+      return NextResponse.json({
+        ok: false,
+        authenticated: true,
+        error: "Tenant or workspaces not found",
+      }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      ok: true,
+      authenticated: true,
+      tenant: output.tenant,
+      workspaces: output.workspaces,
+      actorId: output.actorId,
+    }, { status: 200 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to fetch tenant";
+    return NextResponse.json({
+      ok: false,
       authenticated: false,
-    },
-    { status: 401 },
-  );
-  response.cookies.set({
-    name: WORKSPACE_SESSION_COOKIE,
-    value: encodeWorkspaceSession(anonymous),
-    httpOnly: true,
-    sameSite: "lax",
-    path: "/",
-  });
-  return response;
+      error: message,
+    }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {
-  const session = readWorkspaceSessionFromRequest(request);
-  if (!session || !isAuthenticatedSession(session)) {
-    return authFailureResponse();
-  }
-
-  let payload: unknown;
   try {
-    payload = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-  }
+    const session = readWorkspaceSessionFromRequest(request)
+      ?? createAnonymousWorkspaceSession();
+    const actorId = (session as any).userId ?? session.actorId;
 
-  const parsed = CreateTenantRequestSchema.safeParse(payload);
-  if (!parsed.success) {
-    const messages = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
-    return NextResponse.json({ error: `Validation failed: ${messages}` }, { status: 422 });
-  }
-
-  const { name } = parsed.data;
-  const slugBase = parsed.data.slug ? slugifyForTenant(parsed.data.slug) : slugifyForTenant(name);
-  let slug = slugBase;
-  let counter = 1;
-  while (TenantRepositoryInMemory.bySlug(slug) !== undefined) {
-    counter += 1;
-    slug = `${slugBase}-${counter}`;
-  }
-
-  type CreateTenantOutput = { readonly tenantId: string; readonly name: string; readonly slug: string };
-
-  try {
-    const tenantOutput = capabilityRegistry.invoke<CreateTenantOutput>("identity", "createTenant", {
-      name,
-      slug,
-    });
-
-    const tenant = TenantRepositoryInMemory.byId(TenantId(tenantOutput.output.tenantId));
-
-    return NextResponse.json(
-      {
-        ok: true,
-        tenant: {
-          id: tenantOutput.output.tenantId,
-          name: tenantOutput.output.name,
-          slug: tenantOutput.output.slug,
-          createdAt: tenant?.createdAt ?? new Date().toISOString(),
-        },
-      },
-      { status: 201 },
-    );
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    if (message.includes("Slug already taken")) {
-      return NextResponse.json({ error: message }, { status: 409 });
+    if (!actorId || !session.sessionId) {
+      return NextResponse.json({
+        ok: false,
+        error: "Unauthorized",
+      }, { status: 401 });
     }
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
-}
 
-export async function GET(request: Request) {
-  const session = readWorkspaceSessionFromRequest(request);
-  if (!session || !isAuthenticatedSession(session)) {
-    const anonymous = createAnonymousWorkspaceSession();
-    const response = NextResponse.json(
+    let payload: unknown;
+    try {
+      payload = await request.json();
+    } catch {
+      return NextResponse.json({ ok: false, error: "Invalid JSON body" }, { status: 400 });
+    }
+
+    const raw = payload as { readonly name?: string; readonly slug?: string };
+    const name = raw.name?.trim();
+    if (!name) {
+      return NextResponse.json({ ok: false, error: "name is required" }, { status: 422 });
+    }
+
+    const { output } = await capabilityRegistry.invokeAsync<CreateTenantWithSlugResolutionOutput>(
+      "identity",
+      "createTenantWithSlugResolution",
       {
-        error: "Authentication required",
-        authenticated: false,
+        name,
+        suggestedSlug: raw.slug?.trim(),
+        ownerId: actorId,
+      }
+    );
+
+    return NextResponse.json({
+      ok: true,
+      tenant: {
+        id: output.tenantId,
+        name: output.name,
+        slug: output.slug,
+        createdAt: output.createdAt,
       },
-      { status: 401 },
-    );
-    response.cookies.set({
-      name: WORKSPACE_SESSION_COOKIE,
-      value: encodeWorkspaceSession(anonymous),
-      httpOnly: true,
-      sameSite: "lax",
-      path: "/",
-    });
-    return response;
+    }, { status: 201 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to create tenant";
+    const status = message.includes("slug") || message.includes("name") ? 422 : 500;
+    return NextResponse.json({ ok: false, error: message }, { status });
   }
-
-  const tenantId = TenantId(session.tenantId);
-  const tenant = TenantRepositoryInMemory.byId(tenantId);
-  if (tenant === undefined) {
-    return NextResponse.json(
-      { error: "Tenant not found", authenticated: true, tenantId: session.tenantId },
-      { status: 404 },
-    );
-  }
-
-  // ENFORCE TENANT ISOLATION: only return workspaces/memberships that the authenticated user has access to for THEIR tenant
-  const workspaces = WorkspaceRepositoryInMemory.listByTenant(tenantId);
-  const memberships = MembershipRepositoryInMemory.listByTenant(tenantId).filter((m) => m.userId === session.actorId);
-  const workspaceDetails = workspaces.map((w) => {
-    const membership = memberships.find((m) => m.workspaceId === w.id);
-    return {
-      id: w.id,
-      name: w.name,
-      productId: w.productId,
-      createdAt: w.createdAt,
-      role: membership?.role ?? null,
-      membershipId: membership?.id ?? null,
-    };
-  }).filter(ws => ws.membershipId !== null); // Only return workspaces the user is actually a member of
-
-  return NextResponse.json({
-    ok: true,
-    authenticated: true,
-    tenant: {
-      id: tenant.id,
-      name: tenant.name,
-      slug: tenant.slug,
-      createdAt: tenant.createdAt,
-      updatedAt: tenant.updatedAt,
-    },
-    workspaces: workspaceDetails,
-    actorId: session.actorId,
-  });
 }

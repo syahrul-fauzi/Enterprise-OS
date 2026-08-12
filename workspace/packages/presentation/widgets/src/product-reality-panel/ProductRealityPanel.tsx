@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import React, { useCallback, useState } from "react";
-import { readProductExperience } from "@repo/presentation/experience";
+import { readProductExperience } from "@repo/presentation-experience";
 import { readProductRealitySnapshot } from "@repo/core-runtime";
 
 export interface ProductRealityPanelProps {

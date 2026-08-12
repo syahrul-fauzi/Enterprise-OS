@@ -1,3 +1,4 @@
+import { PostgresRepository } from "./base.repository";
 import {
   MembershipId,
   TenantId,
@@ -7,79 +8,229 @@ import {
   type MembershipRepository,
 } from "../contracts/identity.contracts";
 
-type MembershipStore = Map<string, MembershipAggregate>;
+// PostgreSQL-backed membership repository implementation
+class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implements MembershipRepository {
+  readonly entityName = "Membership" as const;
+  readonly kind = "repository" as const;
 
-const seed = (): MembershipAggregate[] => [
-  {
-    id: MembershipId("membership-001"),
-    userId: UserId("user-001"),
-    tenantId: TenantId("tenant-001"),
-    workspaceId: WorkspaceId("workspace-001"),
-    role: "owner",
-    joinedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 30),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2),
-  },
-  {
-    id: MembershipId("membership-002"),
-    userId: UserId("user-002"),
-    tenantId: TenantId("tenant-002"),
-    workspaceId: WorkspaceId("workspace-002"),
-    role: "owner",
-    joinedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 14),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
-  },
-];
+  constructor() {
+    super("memberships");
+  }
 
-function hydrate(): MembershipStore {
-  const s = new Map<string, MembershipAggregate>();
-  for (const e of seed()) s.set(e.id, e);
-  return s;
-}
+  // Convert database record to domain aggregate
+  private toAggregate(record: any): MembershipAggregate {
+    return {
+      id: MembershipId(record.id),
+      userId: UserId(record.user_id),
+      tenantId: TenantId(record.tenant_id),
+      workspaceId: WorkspaceId(record.workspace_id),
+      role: record.role,
+      joinedAt: new Date(record.joined_at),
+      updatedAt: new Date(record.updated_at),
+    } as MembershipAggregate;
+  }
 
-const MEMBERSHIP_STORE: MembershipStore = hydrate();
+  // Convert domain aggregate to database record
+  private toRecord(entity: MembershipAggregate): any {
+    return {
+      id: entity.id,
+      user_id: entity.userId,
+      tenant_id: entity.tenantId,
+      workspace_id: entity.workspaceId,
+      role: entity.role,
+      joined_at: entity.joinedAt.toISOString(),
+      updated_at: entity.updatedAt.toISOString(),
+    };
+  }
 
-export const MembershipRepositoryInMemory: MembershipRepository = Object.freeze({
-  entityName: "Membership",
-  kind: "repository",
+  async byId(id: MembershipId): Promise<MembershipAggregate | undefined> {
+    const result = await this.query("SELECT * FROM memberships WHERE id = $1", [id]);
+    if (result.length === 0) return undefined;
+    return this.toAggregate(result[0]);
+  }
 
-  byId(id: MembershipId): MembershipAggregate | undefined {
-    return MEMBERSHIP_STORE.get(id);
-  },
+  async listByUser(userId: UserId): Promise<readonly MembershipAggregate[]> {
+    const result = await this.query("SELECT * FROM memberships WHERE user_id = $1 ORDER BY joined_at DESC", [userId]);
+    return result.map((row: any) => this.toAggregate(row));
+  }
 
-  listByUser(userId: UserId): readonly MembershipAggregate[] {
-    return [...MEMBERSHIP_STORE.values()].filter((m) => m.userId === userId);
-  },
+  async listByTenant(tenantId: TenantId): Promise<readonly MembershipAggregate[]> {
+    const result = await this.query("SELECT * FROM memberships WHERE tenant_id = $1 ORDER BY joined_at DESC", [tenantId]);
+    return result.map((row: any) => this.toAggregate(row));
+  }
 
-  listByTenant(tenantId: TenantId): readonly MembershipAggregate[] {
-    return [...MEMBERSHIP_STORE.values()].filter((m) => m.tenantId === tenantId);
-  },
+  async listByWorkspace(workspaceId: WorkspaceId): Promise<readonly MembershipAggregate[]> {
+    const result = await this.query("SELECT * FROM memberships WHERE workspace_id = $1 ORDER BY joined_at DESC", [workspaceId]);
+    return result.map((row: any) => this.toAggregate(row));
+  }
 
-  listByWorkspace(workspaceId: WorkspaceId): readonly MembershipAggregate[] {
-    return [...MEMBERSHIP_STORE.values()].filter((m) => m.workspaceId === workspaceId);
-  },
-
-  find(
+  async find(
     userId: UserId,
     tenantId: TenantId,
     workspaceId: WorkspaceId,
-  ): MembershipAggregate | undefined {
-    for (const m of MEMBERSHIP_STORE.values()) {
-      if (m.userId === userId && m.tenantId === tenantId && m.workspaceId === workspaceId)
-        return m;
+  ): Promise<MembershipAggregate | undefined> {
+    const result = await this.query(
+      "SELECT * FROM memberships WHERE user_id = $1 AND tenant_id = $2 AND workspace_id = $3",
+      [userId, tenantId, workspaceId]
+    );
+    if (result.length === 0) return undefined;
+    return this.toAggregate(result[0]);
+  }
+
+  async list(): Promise<readonly MembershipAggregate[]> {
+    const result = await this.query("SELECT * FROM memberships ORDER BY joined_at DESC", []);
+    return result.map((row: any) => this.toAggregate(row));
+  }
+
+  async save(entity: MembershipAggregate): Promise<MembershipAggregate> {
+    const updated = { ...entity, updatedAt: new Date() };
+    const record = this.toRecord(updated);
+    
+    const exists = await this.byId(entity.id);
+    if (exists) {
+      await this.query(
+        `UPDATE memberships SET 
+          user_id = $1, tenant_id = $2, workspace_id = $3, role = $4, joined_at = $5, updated_at = $6
+          WHERE id = $7`,
+        [
+          record.user_id, record.tenant_id, record.workspace_id, record.role,
+          record.joined_at, record.updated_at, record.id
+        ]
+      );
+    } else {
+      await this.query(
+        `INSERT INTO memberships (
+          id, user_id, tenant_id, workspace_id, role, joined_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [
+          record.id, record.user_id, record.tenant_id, record.workspace_id, record.role,
+          record.joined_at, record.updated_at
+        ]
+      );
     }
-    return undefined;
-  },
 
-  list(): readonly MembershipAggregate[] {
-    return [...MEMBERSHIP_STORE.values()];
-  },
+    return this.byId(entity.id) as Promise<MembershipAggregate>;
+  }
 
-  save(entity: MembershipAggregate): MembershipAggregate {
-    MEMBERSHIP_STORE.set(entity.id, entity);
-    return entity;
-  },
+  async remove(id: MembershipId): Promise<boolean> {
+    const result = await this.query("DELETE FROM memberships WHERE id = $1", [id]);
+    return (result as any).rowCount > 0;
+  }
+}
 
-  remove(id: MembershipId): boolean {
-    return MEMBERSHIP_STORE.delete(id);
-  },
-});
+export const MembershipRepositoryPostgres: MembershipRepository = new MembershipRepositoryPostgresImpl();
+
+// PostgreSQL-backed membership repository implementation
+class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implements MembershipRepository {
+  readonly entityName = "Membership" as const;
+  readonly kind = "repository" as const;
+  declare pool: Pool;
+
+  constructor() {
+    super("memberships");
+    this.pool = (this as any).pool;
+  }
+
+  // Convert database record to domain aggregate
+  private toAggregate(record: any): MembershipAggregate {
+    return {
+      id: MembershipId(record.id),
+      userId: UserId(record.user_id),
+      tenantId: TenantId(record.tenant_id),
+      workspaceId: WorkspaceId(record.workspace_id),
+      role: record.role as any,
+      joinedAt: new Date(record.created_at),
+      updatedAt: new Date(record.updated_at),
+    } as MembershipAggregate;
+  }
+
+  // Convert domain aggregate to database record
+  private toRecord(entity: MembershipAggregate): any {
+    return {
+      id: entity.id,
+      user_id: entity.userId,
+      tenant_id: entity.tenantId,
+      workspace_id: entity.workspaceId,
+      role: entity.role,
+      created_at: entity.joinedAt,
+      updated_at: entity.updatedAt,
+    };
+  }
+
+  async byId(id: MembershipId): Promise<MembershipAggregate | undefined> {
+    const result = await this.pool.query("SELECT * FROM memberships WHERE id = $1", [id]);
+    if (result.rows.length === 0) return undefined;
+    return this.toAggregate(result.rows[0]);
+  }
+
+  async listByUser(userId: UserId): Promise<readonly MembershipAggregate[]> {
+    const result = await this.pool.query("SELECT * FROM memberships WHERE user_id = $1", [userId]);
+    return result.rows.map((row: any) => this.toAggregate(row));
+  }
+
+  async listByTenant(tenantId: TenantId): Promise<readonly MembershipAggregate[]> {
+    const result = await this.pool.query("SELECT * FROM memberships WHERE tenant_id = $1", [tenantId]);
+    return result.rows.map((row: any) => this.toAggregate(row));
+  }
+
+  async listByWorkspace(workspaceId: WorkspaceId): Promise<readonly MembershipAggregate[]> {
+    const result = await this.pool.query("SELECT * FROM memberships WHERE workspace_id = $1", [workspaceId]);
+    return result.rows.map((row: any) => this.toAggregate(row));
+  }
+
+  async find(
+    userId: UserId,
+    tenantId: TenantId,
+    workspaceId: WorkspaceId,
+  ): Promise<MembershipAggregate | undefined> {
+    const result = await this.pool.query(
+      "SELECT * FROM memberships WHERE user_id = $1 AND tenant_id = $2 AND workspace_id = $3",
+      [userId, tenantId, workspaceId]
+    );
+    if (result.rows.length === 0) return undefined;
+    return this.toAggregate(result.rows[0]);
+  }
+
+  async list(): Promise<readonly MembershipAggregate[]> {
+    const result = await this.pool.query("SELECT * FROM memberships");
+    return result.rows.map((row: any) => this.toAggregate(row));
+  }
+
+  async save(entity: MembershipAggregate): Promise<MembershipAggregate> {
+    const record = this.toRecord({
+      ...entity,
+      updatedAt: new Date(),
+    });
+    
+    const exists = await this.byId(entity.id);
+    if (exists) {
+      await this.pool.query(
+        `UPDATE memberships SET 
+          user_id = $1, tenant_id = $2, workspace_id = $3, role = $4, created_at = $5, updated_at = $6
+          WHERE id = $7`,
+        [
+          record.user_id, record.tenant_id, record.workspace_id, record.role,
+          record.created_at, record.updated_at, record.id
+        ]
+      );
+    } else {
+      await this.pool.query(
+        `INSERT INTO memberships (
+          id, user_id, tenant_id, workspace_id, role, created_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [
+          record.id, record.user_id, record.tenant_id, record.workspace_id,
+          record.role, record.created_at, record.updated_at
+        ]
+      );
+    }
+    return this.toAggregate(record);
+  }
+
+  async remove(id: MembershipId): Promise<boolean> {
+    const result = await this.pool.query("DELETE FROM memberships WHERE id = $1 RETURNING id", [id]);
+    return result.rows.length > 0;
+  }
+}
+
+export const MembershipRepositoryPostgres: MembershipRepository = new MembershipRepositoryPostgresImpl();

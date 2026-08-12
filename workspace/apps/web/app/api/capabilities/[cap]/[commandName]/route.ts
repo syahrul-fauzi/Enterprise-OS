@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { capabilityRegistry } from "../../../../../lib/capability-command-registry";
+import { capabilityRegistry } from "@repo/core-kernel";
 
 export const runtime = "nodejs";
 

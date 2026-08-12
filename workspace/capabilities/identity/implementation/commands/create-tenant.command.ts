@@ -1,16 +1,15 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
+import { randomUUID } from "node:crypto";
 import {
   TenantId,
   type CreateTenantInput,
   type TenantAggregate,
 } from "../contracts/identity.contracts";
-import { TenantRepositoryInMemory } from "../repositories";
-
-let tenantIdCounter = 100;
+import { TenantRepositoryPostgres } from "../repositories";
+import { initIdentitySchema } from "../repositories/base.repository";
 
 function newTenantId(): TenantId {
-  tenantIdCounter += 1;
-  return TenantId(`tenant-${tenantIdCounter}`);
+  return TenantId(`tenant-${randomUUID()}`);
 }
 
 type CreateTenantCommand = CapabilityCommand<
@@ -21,11 +20,15 @@ type CreateTenantCommand = CapabilityCommand<
 export const createTenantCommand: CreateTenantCommand = {
   kind: "command",
   name: "identity.createTenant",
-  version: "1.0.0",
+  version: "2.0.0", // Postgres-backed persistence
 
-  execute(input) {
+  async execute(input) {
+    // Initialize database schema
+    await initIdentitySchema();
+    
     const slug = input.slug.trim().toLowerCase();
-    if (TenantRepositoryInMemory.bySlug(slug) !== undefined) {
+    const existing = await TenantRepositoryPostgres.bySlug(slug);
+    if (existing !== undefined) {
       throw new Error(`[identity.createTenant] Slug already taken: ${slug}`);
     }
     const entity: TenantAggregate = {
@@ -35,7 +38,7 @@ export const createTenantCommand: CreateTenantCommand = {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    TenantRepositoryInMemory.save(entity);
+    await TenantRepositoryPostgres.save(entity);
     return {
       tenantId: entity.id,
       name: entity.name,

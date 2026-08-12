@@ -1,17 +1,15 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
+import { randomUUID } from "node:crypto";
 import {
   MembershipId,
   type CreateMembershipInput,
   type MembershipAggregate,
   type Role,
 } from "../contracts/identity.contracts";
-import { MembershipRepositoryInMemory } from "../repositories";
-
-let membershipIdCounter = 100;
+import { MembershipRepositoryPostgres } from "../repositories";
 
 function newMembershipId(): MembershipId {
-  membershipIdCounter += 1;
-  return MembershipId(`membership-${membershipIdCounter}`);
+  return MembershipId(`membership-${randomUUID()}`);
 }
 
 type CreateMembershipCommand = CapabilityCommand<
@@ -28,10 +26,10 @@ type CreateMembershipCommand = CapabilityCommand<
 export const createMembershipCommand: CreateMembershipCommand = {
   kind: "command",
   name: "identity.createMembership",
-  version: "1.0.0",
+  version: "2.0.0", // Postgres-backed persistence
 
-  execute(input) {
-    const existing = MembershipRepositoryInMemory.find(
+  async execute(input: CreateMembershipInput) {
+    const existing = await MembershipRepositoryPostgres.find(
       input.userId,
       input.tenantId,
       input.workspaceId,
@@ -54,7 +52,7 @@ export const createMembershipCommand: CreateMembershipCommand = {
       joinedAt: new Date(),
       updatedAt: new Date(),
     };
-    MembershipRepositoryInMemory.save(entity);
+    await MembershipRepositoryPostgres.save(entity);
     return {
       membershipId: entity.id,
       userId: entity.userId,

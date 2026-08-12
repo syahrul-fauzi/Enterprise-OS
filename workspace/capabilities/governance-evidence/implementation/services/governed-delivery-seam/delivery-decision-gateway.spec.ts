@@ -1,7 +1,7 @@
 // @ts-ignore - bun:test is Bun's native test runner
 import { describe, it, expect, beforeEach } from "bun:test";
 import { DeliveryDecisionGatewayService, GovernanceDecisionRecord } from "./delivery-decision-gateway.service";
-import type { WorkspaceSession } from "../../../../../../apps/web/lib/workspace-session";
+import type { WorkspaceSession } from "../../../../../apps/web/lib/workspace-session";
 import { rmSync, existsSync } from "node:fs";
 import { join } from "node:path";
 

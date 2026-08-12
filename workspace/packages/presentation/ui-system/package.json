@@ -30,6 +30,7 @@
     "@repo/presentation-foundation": "workspace:*"
   },
   "peerDependencies": {
+    "next": "^14.2.8",
     "react": "^19"
   },
   "devDependencies": {

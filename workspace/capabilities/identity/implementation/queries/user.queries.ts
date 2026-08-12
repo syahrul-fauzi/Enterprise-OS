@@ -2,23 +2,24 @@ import {
   UserId,
   type UserAggregate,
 } from "../contracts/identity.contracts";
-import { UserRepositoryInMemory } from "../repositories";
+import { UserRepositoryPostgres } from "../repositories";
 
 export const userQueries = Object.freeze({
-  byId(id: string): UserAggregate | undefined {
-    return UserRepositoryInMemory.byId(UserId(id));
+  async byId(id: string): Promise<UserAggregate | undefined> {
+    return UserRepositoryPostgres.byId(UserId(id));
   },
 
-  byEmail(email: string): UserAggregate | undefined {
-    return UserRepositoryInMemory.byEmail(email);
+  async byEmail(email: string): Promise<UserAggregate | undefined> {
+    return UserRepositoryPostgres.byEmail(email);
   },
 
-  list(): readonly UserAggregate[] {
-    return UserRepositoryInMemory.list();
+  async list(): Promise<readonly UserAggregate[]> {
+    return UserRepositoryPostgres.list();
   },
 
-  count(): number {
-    return UserRepositoryInMemory.list().length;
+  async count(): Promise<number> {
+    const list = await UserRepositoryPostgres.list();
+    return list.length;
   },
 });
 

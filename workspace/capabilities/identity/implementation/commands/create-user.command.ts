@@ -1,17 +1,15 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
+import { randomUUID } from "node:crypto";
 import {
   UserId,
   type RegisterUserInput,
   type UserAggregate,
 } from "../contracts/identity.contracts";
-import { UserRepositoryInMemory } from "../repositories";
 import { passwordService } from "../services/password.service";
-
-let userIdCounter = 100;
+import { UserRepositoryPostgres } from "../repositories";
 
 function newUserId(): UserId {
-  userIdCounter += 1;
-  return UserId(`user-${userIdCounter}`);
+  return UserId(`user-${randomUUID()}`);
 }
 
 type RegisterUserCommand = CapabilityCommand<
@@ -29,9 +27,10 @@ export const createUserCommand: RegisterUserCommand = {
   name: "identity.registerUser",
   version: "1.0.0",
 
-  execute(input) {
+  async execute(input) {
     const trimmedEmail = input.email.trim().toLowerCase();
-    if (UserRepositoryInMemory.byEmail(trimmedEmail) !== undefined) {
+    const existingUser = await UserRepositoryPostgres.byEmail(trimmedEmail);
+    if (existingUser !== undefined) {
       throw new Error(`[identity.registerUser] Email already registered: ${trimmedEmail}`);
     }
     const entity: UserAggregate = {
@@ -42,7 +41,7 @@ export const createUserCommand: RegisterUserCommand = {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    UserRepositoryInMemory.save(entity);
+    await UserRepositoryPostgres.save(entity);
     return {
       userId: entity.id,
       actorId: entity.id,

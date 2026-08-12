@@ -78,10 +78,12 @@ export interface SearchCasesOutput {
 export type CaseRepository = {
   readonly entityName: "Case";
   readonly kind: "repository";
-  byId(id: CaseId): CaseAggregate | undefined;
-  list(): readonly CaseAggregate[];
-  save(entity: CaseAggregate): CaseAggregate;
-  remove(id: CaseId): boolean;
+  byId(id: CaseId): Promise<CaseAggregate | undefined>;
+  list(): Promise<readonly CaseAggregate[]>;
+  listByTenant(tenantId: string): Promise<readonly CaseAggregate[]>;
+  listByWorkspace(workspaceId: string): Promise<readonly CaseAggregate[]>;
+  save(entity: CaseAggregate): Promise<CaseAggregate>;
+  remove(id: CaseId): Promise<boolean>;
 };
 
 export interface CaseDomainEvents {

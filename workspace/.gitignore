@@ -34,3 +34,16 @@ yarn-error.log*
 
 # ui
 dist/
+
+# Prevent TypeScript build artifacts from cluttering source directories
+**/*.d.ts
+**/*.d.ts.map
+**/*.js
+!**/*.config.js
+!**/next.config.js
+!**/postcss.config.js
+!**/tailwind.config.js
+!**/eslint.config.js
+
+# eos local state
+.eos-state/data/

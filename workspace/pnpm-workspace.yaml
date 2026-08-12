@@ -6,3 +6,4 @@ packages:
   - "packages/composition"
   - "config/*"
   - "packages/tooling/*"
+  - "products/*"

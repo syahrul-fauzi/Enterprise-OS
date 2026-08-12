@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { useWorkspaceSession } from "@repo/presentation-hooks";
 import { WorkspaceEntryPanel } from "@repo/presentation-widgets";

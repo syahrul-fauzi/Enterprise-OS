@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.requirementCommands = exports.verifyRequirement = exports.markRequirementImplemented = exports.startRequirementDelivery = exports.approveRequirement = exports.updateRequirement = exports.createRequirement = void 0;
 const repository_1 = require("../repository");
+const get_requirements_by_owner_command_1 = require("./get-requirements-by-owner.command");
+const get_all_requirements_command_1 = require("./get-all-requirements.command");
 function trimOptional(value) {
     const next = value?.trim();
     return next && next.length > 0 ? next : undefined;
@@ -179,4 +181,6 @@ exports.requirementCommands = {
     "requirement.startDelivery": exports.startRequirementDelivery,
     "requirement.markImplemented": exports.markRequirementImplemented,
     "requirement.verify": exports.verifyRequirement,
+    "requirement.getByOwner": get_requirements_by_owner_command_1.getRequirementsByOwnerCommand,
+    "requirement.getAll": get_all_requirements_command_1.getAllRequirementsCommand,
 };

@@ -40,6 +40,7 @@ export interface TenantAggregate {
   readonly id: TenantId;
   readonly name: string;
   readonly slug: string;
+  readonly ownerId?: UserId;
   readonly createdAt: Readonly<Date>;
   readonly updatedAt: Readonly<Date>;
 }
@@ -48,6 +49,7 @@ export interface WorkspaceAggregate {
   readonly id: WorkspaceId;
   readonly tenantId: TenantId;
   readonly name: string;
+  readonly slug?: string;
   readonly productId: string;
   readonly createdAt: Readonly<Date>;
   readonly updatedAt: Readonly<Date>;
@@ -66,6 +68,7 @@ export interface MembershipAggregate {
 export interface SessionAggregate {
   readonly id: SessionId;
   readonly userId: UserId;
+  readonly actorId: UserId;
   readonly tenantId: TenantId;
   readonly workspaceId: WorkspaceId;
   readonly productId: string;
@@ -80,57 +83,57 @@ export interface SessionAggregate {
 export type UserRepository = {
   readonly entityName: "User";
   readonly kind: "repository";
-  byId(id: UserId): UserAggregate | undefined;
-  byEmail(email: string): UserAggregate | undefined;
-  list(): readonly UserAggregate[];
-  save(entity: UserAggregate): UserAggregate;
-  remove(id: UserId): boolean;
+  byId(id: UserId): Promise<UserAggregate | undefined>;
+  byEmail(email: string): Promise<UserAggregate | undefined>;
+  list(): Promise<readonly UserAggregate[]>;
+  save(entity: UserAggregate): Promise<UserAggregate>;
+  remove(id: UserId): Promise<boolean>;
 };
 
 export type TenantRepository = {
   readonly entityName: "Tenant";
   readonly kind: "repository";
-  byId(id: TenantId): TenantAggregate | undefined;
-  bySlug(slug: string): TenantAggregate | undefined;
-  list(): readonly TenantAggregate[];
-  save(entity: TenantAggregate): TenantAggregate;
-  remove(id: TenantId): boolean;
+  byId(id: TenantId): Promise<TenantAggregate | undefined>;
+  bySlug(slug: string): Promise<TenantAggregate | undefined>;
+  list(): Promise<readonly TenantAggregate[]>;
+  save(entity: TenantAggregate): Promise<TenantAggregate>;
+  remove(id: TenantId): Promise<boolean>;
 };
 
 export type WorkspaceRepository = {
   readonly entityName: "Workspace";
   readonly kind: "repository";
-  byId(id: WorkspaceId): WorkspaceAggregate | undefined;
-  listByTenant(tenantId: TenantId): readonly WorkspaceAggregate[];
-  list(): readonly WorkspaceAggregate[];
-  save(entity: WorkspaceAggregate): WorkspaceAggregate;
-  remove(id: WorkspaceId): boolean;
+  byId(id: WorkspaceId): Promise<WorkspaceAggregate | undefined>;
+  listByTenant(tenantId: TenantId): Promise<readonly WorkspaceAggregate[]>;
+  list(): Promise<readonly WorkspaceAggregate[]>;
+  save(entity: WorkspaceAggregate): Promise<WorkspaceAggregate>;
+  remove(id: WorkspaceId): Promise<boolean>;
 };
 
 export type MembershipRepository = {
   readonly entityName: "Membership";
   readonly kind: "repository";
-  byId(id: MembershipId): MembershipAggregate | undefined;
-  listByUser(userId: UserId): readonly MembershipAggregate[];
-  listByTenant(tenantId: TenantId): readonly MembershipAggregate[];
-  listByWorkspace(workspaceId: WorkspaceId): readonly MembershipAggregate[];
-  find(userId: UserId, tenantId: TenantId, workspaceId: WorkspaceId): MembershipAggregate | undefined;
-  list(): readonly MembershipAggregate[];
-  save(entity: MembershipAggregate): MembershipAggregate;
-  remove(id: MembershipId): boolean;
+  byId(id: MembershipId): Promise<MembershipAggregate | undefined>;
+  listByUser(userId: UserId): Promise<readonly MembershipAggregate[]>;
+  listByTenant(tenantId: TenantId): Promise<readonly MembershipAggregate[]>;
+  listByWorkspace(workspaceId: WorkspaceId): Promise<readonly MembershipAggregate[]>;
+  find(userId: UserId, tenantId: TenantId, workspaceId: WorkspaceId): Promise<MembershipAggregate | undefined>;
+  list(): Promise<readonly MembershipAggregate[]>;
+  save(entity: MembershipAggregate): Promise<MembershipAggregate>;
+  remove(id: MembershipId): Promise<boolean>;
 };
 
 export type SessionRepository = {
   readonly entityName: "Session";
   readonly kind: "repository";
-  byId(id: SessionId): SessionAggregate | undefined;
-  listByUser(userId: UserId): readonly SessionAggregate[];
-  listActiveByUser(userId: UserId): readonly SessionAggregate[];
-  isRevoked(id: SessionId): boolean;
-  revoke(id: SessionId, revokedAt?: Date): SessionAggregate;
-  list(): readonly SessionAggregate[];
-  save(entity: SessionAggregate): SessionAggregate;
-  remove(id: SessionId): boolean;
+  byId(id: SessionId): Promise<SessionAggregate | undefined>;
+  listByUser(userId: UserId): Promise<readonly SessionAggregate[]>;
+  listActiveByUser(userId: UserId): Promise<readonly SessionAggregate[]>;
+  isRevoked(id: SessionId): Promise<boolean>;
+  revoke(id: SessionId, revokedAt?: Date): Promise<SessionAggregate>;
+  list(): Promise<readonly SessionAggregate[]>;
+  save(entity: SessionAggregate): Promise<SessionAggregate>;
+  remove(id: SessionId): Promise<boolean>;
 };
 
 export const RegisterUserInputSchema = z.object({

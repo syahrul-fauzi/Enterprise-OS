@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { WorkspaceSession } from "@repo/core-kernel";
 
-interface UseWorkspaceSessionState {
+export interface UseWorkspaceSessionState {
   loading: boolean;
   authenticated: boolean;
   session: WorkspaceSession | null;

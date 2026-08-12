@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const WORKSPACE_SESSION_COOKIE = "eos-workspace-session";
 
-const WorkspaceSessionSchema = z.object({
+export const WorkspaceSessionSchema = z.object({
   sessionId: z.string().optional(),
   actorId: z.string().min(1),
   actorLabel: z.string().min(1),

@@ -1,16 +1,15 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
+import { randomUUID } from "node:crypto";
 import {
   WorkspaceId,
   type CreateWorkspaceInput,
   type WorkspaceAggregate,
 } from "../contracts/identity.contracts";
-import { WorkspaceRepositoryInMemory } from "../repositories";
-
-let workspaceIdCounter = 100;
+import { WorkspaceRepositoryPostgres } from "../repositories";
+import { slugifyForTenant } from "../services/password.service";
 
 function newWorkspaceId(): WorkspaceId {
-  workspaceIdCounter += 1;
-  return WorkspaceId(`workspace-${workspaceIdCounter}`);
+  return WorkspaceId(`workspace-${randomUUID()}`);
 }
 
 type CreateWorkspaceCommand = CapabilityCommand<
@@ -26,18 +25,19 @@ type CreateWorkspaceCommand = CapabilityCommand<
 export const createWorkspaceCommand: CreateWorkspaceCommand = {
   kind: "command",
   name: "identity.createWorkspace",
-  version: "1.0.0",
+  version: "2.0.0", // Postgres-backed persistence
 
-  execute(input) {
+  async execute(input) {
     const entity: WorkspaceAggregate = {
       id: newWorkspaceId(),
       tenantId: input.tenantId,
       name: input.name.trim(),
+      slug: slugifyForTenant(input.name.trim()),
       productId: input.productId,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    WorkspaceRepositoryInMemory.save(entity);
+    await WorkspaceRepositoryPostgres.save(entity);
     return {
       workspaceId: entity.id,
       tenantId: entity.tenantId,
