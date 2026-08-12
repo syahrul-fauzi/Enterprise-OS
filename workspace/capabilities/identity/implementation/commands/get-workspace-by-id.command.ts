@@ -6,7 +6,7 @@ import {
   TenantRepositoryPostgres,
   SessionRepositoryPostgres
 } from "../repositories";
-import { WorkspaceId, UserId, TenantId, MembershipId } from "../contracts/identity.contracts";
+import { WorkspaceId, UserId, TenantId, MembershipId, SessionId } from "../contracts/identity.contracts";
 import { initIdentitySchema } from "../repositories/base.repository";
 
 export const GetWorkspaceByIdInputSchema = z.object({
@@ -50,7 +50,7 @@ export const getWorkspaceByIdCommand: CapabilityCommand = {
     const { workspaceId, actorId, sessionId } = parsed;
 
     // 1. Validate session exists and is valid (tenant isolation check)
-    const session = await SessionRepositoryPostgres.byId(sessionId);
+    const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null || session.expiresAt < new Date()) {
       return undefined;
     }

@@ -39,21 +39,21 @@ class UserRepositoryPostgresImpl extends PostgresRepository<any> implements User
   }
 
   async byId(id: UserId): Promise<UserAggregate | undefined> {
-    const result = await this.query("SELECT * FROM users WHERE id = $1", [id]);
-    if (result.length === 0) return undefined;
-    return this.toAggregate(result[0]);
+    const result = await this.pool.query("SELECT * FROM users WHERE id = $1", [id]);
+    if (result.rows.length === 0) return undefined;
+    return this.toAggregate(result.rows[0]);
   }
 
   async byEmail(email: string): Promise<UserAggregate | undefined> {
     const needle = email.trim().toLowerCase();
-    const result = await this.query("SELECT * FROM users WHERE LOWER(email) = $1", [needle]);
-    if (result.length === 0) return undefined;
-    return this.toAggregate(result[0]);
+    const result = await this.pool.query("SELECT * FROM users WHERE LOWER(email) = $1", [needle]);
+    if (result.rows.length === 0) return undefined;
+    return this.toAggregate(result.rows[0]);
   }
 
   async list(): Promise<readonly UserAggregate[]> {
-    const result = await this.query("SELECT * FROM users ORDER BY created_at DESC", []);
-    return result.map((row: any) => this.toAggregate(row));
+    const result = await this.pool.query("SELECT * FROM users ORDER BY created_at DESC", []);
+    return result.rows.map((row: any) => this.toAggregate(row));
   }
 
   async save(entity: UserAggregate): Promise<UserAggregate> {
@@ -62,7 +62,7 @@ class UserRepositoryPostgresImpl extends PostgresRepository<any> implements User
     
     const exists = await this.byId(entity.id);
     if (exists) {
-      await this.query(
+      await this.pool.query(
         `UPDATE users SET 
           email = $1, display_name = $2, password_hash = $3, created_at = $4, updated_at = $5
           WHERE id = $6`,
@@ -72,7 +72,7 @@ class UserRepositoryPostgresImpl extends PostgresRepository<any> implements User
         ]
       );
     } else {
-      await this.query(
+      await this.pool.query(
         `INSERT INTO users (
           id, email, display_name, password_hash, created_at, updated_at
         ) VALUES ($1, $2, $3, $4, $5, $6)`,
@@ -87,17 +87,8 @@ class UserRepositoryPostgresImpl extends PostgresRepository<any> implements User
   }
 
   async remove(id: UserId): Promise<boolean> {
-    const result = await this.query("DELETE FROM users WHERE id = $1", [id]);
+    const result = await this.pool.query("DELETE FROM users WHERE id = $1", [id]);
     return (result as any).rowCount > 0;
-  }
-}
-
-export const UserRepositoryPostgres: UserRepository = new UserRepositoryPostgresImpl();
-  }
-
-  async remove(id: UserId): Promise<boolean> {
-    const result = await this.pool.query("DELETE FROM users WHERE id = $1 RETURNING id", [id]);
-    return result.rows.length > 0;
   }
 }
 

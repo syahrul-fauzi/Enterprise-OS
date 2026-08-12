@@ -44,137 +44,23 @@ class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implement
   }
 
   async byId(id: MembershipId): Promise<MembershipAggregate | undefined> {
-    const result = await this.query("SELECT * FROM memberships WHERE id = $1", [id]);
-    if (result.length === 0) return undefined;
-    return this.toAggregate(result[0]);
-  }
-
-  async listByUser(userId: UserId): Promise<readonly MembershipAggregate[]> {
-    const result = await this.query("SELECT * FROM memberships WHERE user_id = $1 ORDER BY joined_at DESC", [userId]);
-    return result.map((row: any) => this.toAggregate(row));
-  }
-
-  async listByTenant(tenantId: TenantId): Promise<readonly MembershipAggregate[]> {
-    const result = await this.query("SELECT * FROM memberships WHERE tenant_id = $1 ORDER BY joined_at DESC", [tenantId]);
-    return result.map((row: any) => this.toAggregate(row));
-  }
-
-  async listByWorkspace(workspaceId: WorkspaceId): Promise<readonly MembershipAggregate[]> {
-    const result = await this.query("SELECT * FROM memberships WHERE workspace_id = $1 ORDER BY joined_at DESC", [workspaceId]);
-    return result.map((row: any) => this.toAggregate(row));
-  }
-
-  async find(
-    userId: UserId,
-    tenantId: TenantId,
-    workspaceId: WorkspaceId,
-  ): Promise<MembershipAggregate | undefined> {
-    const result = await this.query(
-      "SELECT * FROM memberships WHERE user_id = $1 AND tenant_id = $2 AND workspace_id = $3",
-      [userId, tenantId, workspaceId]
-    );
-    if (result.length === 0) return undefined;
-    return this.toAggregate(result[0]);
-  }
-
-  async list(): Promise<readonly MembershipAggregate[]> {
-    const result = await this.query("SELECT * FROM memberships ORDER BY joined_at DESC", []);
-    return result.map((row: any) => this.toAggregate(row));
-  }
-
-  async save(entity: MembershipAggregate): Promise<MembershipAggregate> {
-    const updated = { ...entity, updatedAt: new Date() };
-    const record = this.toRecord(updated);
-    
-    const exists = await this.byId(entity.id);
-    if (exists) {
-      await this.query(
-        `UPDATE memberships SET 
-          user_id = $1, tenant_id = $2, workspace_id = $3, role = $4, joined_at = $5, updated_at = $6
-          WHERE id = $7`,
-        [
-          record.user_id, record.tenant_id, record.workspace_id, record.role,
-          record.joined_at, record.updated_at, record.id
-        ]
-      );
-    } else {
-      await this.query(
-        `INSERT INTO memberships (
-          id, user_id, tenant_id, workspace_id, role, joined_at, updated_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [
-          record.id, record.user_id, record.tenant_id, record.workspace_id, record.role,
-          record.joined_at, record.updated_at
-        ]
-      );
-    }
-
-    return this.byId(entity.id) as Promise<MembershipAggregate>;
-  }
-
-  async remove(id: MembershipId): Promise<boolean> {
-    const result = await this.query("DELETE FROM memberships WHERE id = $1", [id]);
-    return (result as any).rowCount > 0;
-  }
-}
-
-export const MembershipRepositoryPostgres: MembershipRepository = new MembershipRepositoryPostgresImpl();
-
-// PostgreSQL-backed membership repository implementation
-class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implements MembershipRepository {
-  readonly entityName = "Membership" as const;
-  readonly kind = "repository" as const;
-  declare pool: Pool;
-
-  constructor() {
-    super("memberships");
-    this.pool = (this as any).pool;
-  }
-
-  // Convert database record to domain aggregate
-  private toAggregate(record: any): MembershipAggregate {
-    return {
-      id: MembershipId(record.id),
-      userId: UserId(record.user_id),
-      tenantId: TenantId(record.tenant_id),
-      workspaceId: WorkspaceId(record.workspace_id),
-      role: record.role as any,
-      joinedAt: new Date(record.created_at),
-      updatedAt: new Date(record.updated_at),
-    } as MembershipAggregate;
-  }
-
-  // Convert domain aggregate to database record
-  private toRecord(entity: MembershipAggregate): any {
-    return {
-      id: entity.id,
-      user_id: entity.userId,
-      tenant_id: entity.tenantId,
-      workspace_id: entity.workspaceId,
-      role: entity.role,
-      created_at: entity.joinedAt,
-      updated_at: entity.updatedAt,
-    };
-  }
-
-  async byId(id: MembershipId): Promise<MembershipAggregate | undefined> {
     const result = await this.pool.query("SELECT * FROM memberships WHERE id = $1", [id]);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }
 
   async listByUser(userId: UserId): Promise<readonly MembershipAggregate[]> {
-    const result = await this.pool.query("SELECT * FROM memberships WHERE user_id = $1", [userId]);
+    const result = await this.pool.query("SELECT * FROM memberships WHERE user_id = $1 ORDER BY joined_at DESC", [userId]);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
   async listByTenant(tenantId: TenantId): Promise<readonly MembershipAggregate[]> {
-    const result = await this.pool.query("SELECT * FROM memberships WHERE tenant_id = $1", [tenantId]);
+    const result = await this.pool.query("SELECT * FROM memberships WHERE tenant_id = $1 ORDER BY joined_at DESC", [tenantId]);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
   async listByWorkspace(workspaceId: WorkspaceId): Promise<readonly MembershipAggregate[]> {
-    const result = await this.pool.query("SELECT * FROM memberships WHERE workspace_id = $1", [workspaceId]);
+    const result = await this.pool.query("SELECT * FROM memberships WHERE workspace_id = $1 ORDER BY joined_at DESC", [workspaceId]);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
@@ -192,45 +78,46 @@ class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implement
   }
 
   async list(): Promise<readonly MembershipAggregate[]> {
-    const result = await this.pool.query("SELECT * FROM memberships");
+    const result = await this.pool.query("SELECT * FROM memberships ORDER BY joined_at DESC", []);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
   async save(entity: MembershipAggregate): Promise<MembershipAggregate> {
-    const record = this.toRecord({
-      ...entity,
-      updatedAt: new Date(),
-    });
+    const updated = { ...entity, updatedAt: new Date() };
+    const record = this.toRecord(updated);
     
     const exists = await this.byId(entity.id);
     if (exists) {
       await this.pool.query(
         `UPDATE memberships SET 
-          user_id = $1, tenant_id = $2, workspace_id = $3, role = $4, created_at = $5, updated_at = $6
+          user_id = $1, tenant_id = $2, workspace_id = $3, role = $4, joined_at = $5, updated_at = $6
           WHERE id = $7`,
         [
           record.user_id, record.tenant_id, record.workspace_id, record.role,
-          record.created_at, record.updated_at, record.id
+          record.joined_at, record.updated_at, record.id
         ]
       );
     } else {
       await this.pool.query(
         `INSERT INTO memberships (
-          id, user_id, tenant_id, workspace_id, role, created_at, updated_at
+          id, user_id, tenant_id, workspace_id, role, joined_at, updated_at
         ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [
-          record.id, record.user_id, record.tenant_id, record.workspace_id,
-          record.role, record.created_at, record.updated_at
+          record.id, record.user_id, record.tenant_id, record.workspace_id, record.role,
+          record.joined_at, record.updated_at
         ]
       );
     }
-    return this.toAggregate(record);
+
+    return this.byId(entity.id) as Promise<MembershipAggregate>;
   }
 
   async remove(id: MembershipId): Promise<boolean> {
-    const result = await this.pool.query("DELETE FROM memberships WHERE id = $1 RETURNING id", [id]);
-    return result.rows.length > 0;
+    const result = await this.pool.query("DELETE FROM memberships WHERE id = $1", [id]);
+    return (result as any).rowCount > 0;
   }
 }
 
 export const MembershipRepositoryPostgres: MembershipRepository = new MembershipRepositoryPostgresImpl();
+
+// PostgreSQL-backed membership repository implementation

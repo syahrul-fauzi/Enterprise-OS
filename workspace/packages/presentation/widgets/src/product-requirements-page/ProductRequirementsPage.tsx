@@ -3,31 +3,17 @@
 import React from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
 import RequirementView from "../../../../../../capabilities/requirement-management/experience/views/RequirementView";
-import { readProductBinding, getProductExperience, readProductRouteMetadata } from "@repo/presentation-experience";
-import type { Metadata } from "next";
+import { getProductExperience } from "@repo/presentation-experience";
 import type { ProductPreviewBinding } from "@repo/presentation-types";
 
 export interface ProductRequirementsPageProps {
   readonly productId: string;
-  readonly rawSearchParams?: Promise<{
-    readonly requirementId?: string | string[];
-  }>;
+  readonly binding: ProductPreviewBinding;
+  readonly requirementId?: string | string[];
 }
 
-export async function generateMetadata(
-  input: ProductRequirementsPageProps,
-): Promise<Metadata> {
-  const binding = readProductBinding(input.productId);
-  return readProductRouteMetadata(
-    binding.productId,
-    binding.displayName,
-    "requirements",
-  );
-}
-
-export async function ProductRequirementsPage({ productId, rawSearchParams }: ProductRequirementsPageProps) {
-  const searchParams = rawSearchParams ? await rawSearchParams : {};
-  const binding: ProductPreviewBinding = readProductBinding(productId);
+export function ProductRequirementsPage({ productId, binding, requirementId }: ProductRequirementsPageProps) {
+  const searchParams = requirementId ? { requirementId } : {};
   const experience = getProductExperience(productId);
 
   return (

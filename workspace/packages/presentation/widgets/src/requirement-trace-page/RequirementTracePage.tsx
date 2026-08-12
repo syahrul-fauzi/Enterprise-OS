@@ -2,28 +2,16 @@
 
 import React from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
-import { readProductBinding, getProductExperience, readProductRouteMetadata } from "@repo/presentation-experience";
-import type { Metadata } from "next";
+import { getProductExperience } from "@repo/presentation-experience";
 import type { ProductPreviewBinding } from "@repo/presentation-types";
 
 export interface RequirementTracePageProps {
   readonly productId: string;
   readonly requirementId: string;
+  readonly binding: ProductPreviewBinding;
 }
 
-export async function generateMetadata(
-  input: RequirementTracePageProps,
-): Promise<Metadata> {
-  const binding = readProductBinding(input.productId);
-  return readProductRouteMetadata(
-    binding.productId,
-    binding.displayName,
-    "trace",
-  );
-}
-
-export async function RequirementTracePage({ productId, requirementId }: RequirementTracePageProps) {
-  const binding: ProductPreviewBinding = readProductBinding(productId);
+export function RequirementTracePage({ productId, requirementId, binding }: RequirementTracePageProps) {
   const experience = getProductExperience(productId);
 
   return (

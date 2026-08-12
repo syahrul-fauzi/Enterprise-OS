@@ -3,26 +3,17 @@
 import React from "react";
 import { capabilityRegistry } from "@repo/core-kernel";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
-import { ResearchFeed } from "../research-feed/ResearchFeed";
-import { ResearchSearchBar } from "@repo/presentation-ui-system";
-import { readProductBinding, getProductExperience } from "@repo/presentation-experience";
+import { getProductExperience } from "@repo/presentation-experience";
 import type { ProductPreviewBinding, ProductExperience, Requirement } from "@repo/presentation-types";
 
 export interface ResearchPageProps {
-  readonly rawSearchParams?: Promise<{
-    readonly productId?: string;
-    readonly q?: string;
-    readonly status?: string;
-  }>;
+  readonly productId: string;
+  readonly binding: ProductPreviewBinding;
+  readonly searchQuery?: string;
+  readonly filterStatus?: string;
 }
 
-export async function ResearchPage({ rawSearchParams }: ResearchPageProps) {
-  const searchParams = rawSearchParams ? await rawSearchParams : {};
-  const productId = searchParams.productId || 'academic';
-  const searchQuery = searchParams.q || '';
-  const filterStatus = searchParams.status || 'all';
-  
-  const binding: ProductPreviewBinding = readProductBinding(productId);
+export function ResearchPage({ productId, binding, searchQuery = '', filterStatus = 'all' }: ResearchPageProps) {
   const experience: ProductExperience | undefined = getProductExperience(productId);
   
   // Fetch all research data entirely within canonical widget

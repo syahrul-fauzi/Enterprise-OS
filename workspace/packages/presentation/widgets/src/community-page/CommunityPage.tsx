@@ -1,30 +1,26 @@
 "use client";
 
-import { Suspense, use } from 'react';
+import { Suspense } from 'react';
 import { CommunityDirectory } from "../CommunityDirectory";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
 import { CommunitySearchBar } from "@repo/presentation-features";
-import { readProductBinding } from "@repo/presentation-experience";
 import type { ProductPreviewBinding } from "@repo/presentation-types";
 
 export interface CommunityPageProps {
-  readonly rawSearchParams?: Promise<{
-    productId?: string;
-    q?: string;
-    type?: string;
-    location?: string;
-  }>;
+  readonly productId: string;
+  readonly binding: ProductPreviewBinding;
+  readonly searchQuery?: string;
+  readonly filterType?: string;
+  readonly filterLocation?: string;
 }
 
 export function CommunityPage({ 
-  rawSearchParams
+  productId,
+  binding,
+  searchQuery = '',
+  filterType = 'all',
+  filterLocation = 'all'
 }: CommunityPageProps) {
-  const params = use(rawSearchParams ?? Promise.resolve({}));
-  const productId = params?.productId ?? 'ilc';
-  const searchQuery = params?.q || '';
-  const filterType = params?.type || 'all';
-  const filterLocation = params?.location || 'all';
-  const binding = readProductBinding(productId);
 
   return (
     <>

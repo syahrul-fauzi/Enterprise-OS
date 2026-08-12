@@ -170,7 +170,33 @@ export type CapabilityExperienceDescriptor = PresentationDescriptor;
 // (RequirementAggregate, UserAggregate, MembershipAggregate) in capabilities.
 // They describe shape for rendering, not domain contracts.
 
-export type MemberType = 'researcher' | 'institution';
+export type MemberType = 'researcher' | 'institution' | 'professor';
+
+// Canonical ProductPreviewBinding (matches @repo/presentation-experience's product-binding.ts interface)
+export interface ProductPreviewBinding {
+  readonly productId: string;
+  readonly displayName: string;
+  readonly route: string;
+  readonly surface: string;
+}
+
+export interface ProductPresentation {
+  readonly proofBullets?: readonly string[];
+}
+
+export interface ProductRealitySnapshot {
+  readonly items: Array<{
+    requirementId: string;
+    displayTitle: string;
+    displayEyebrow: string;
+    status: string;
+    verificationStatus: string;
+    title?: string;
+    owner?: string;
+    evidenceCount?: number;
+    latestUpdatedAt?: string;
+  }>;
+}
 
 export interface Member {
   readonly id: string;

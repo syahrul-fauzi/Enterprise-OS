@@ -1,4 +1,7 @@
+"use server";
+
 import { InstitutionPage } from '@repo/presentation-widgets';
+import { readProductBinding } from '@repo/presentation-experience';
 
 // Define proper Next.js page props - PURE ADAPTER ONLY
 interface InstitutionPageProps {
@@ -12,5 +15,8 @@ interface InstitutionPageProps {
 // All business logic, data fetching, and UI composition in canonical widget
 export default async function InstitutionRoute({ params, searchParams }: InstitutionPageProps) {
   const { id: institutionId } = await params;
-  return <InstitutionPage institutionId={institutionId} rawSearchParams={searchParams} />;
+  const sp = await searchParams;
+  const productId = sp?.productId || 'academic';
+  const binding = readProductBinding(productId);
+  return <InstitutionPage institutionId={institutionId} productId={productId} binding={binding} />;
 }

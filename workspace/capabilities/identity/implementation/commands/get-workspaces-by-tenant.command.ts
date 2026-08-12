@@ -1,6 +1,6 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
-import { TenantId, UserId } from "../contracts/identity.contracts";
+import { TenantId, UserId, SessionId } from "../contracts/identity.contracts";
 import { 
   TenantRepositoryPostgres, 
   WorkspaceRepositoryPostgres, 
@@ -49,7 +49,7 @@ export const getWorkspacesByTenantCommand: GetWorkspacesByTenantCommand = {
     const parsed = GetWorkspacesByTenantInputSchema.parse(input);
     
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await SessionRepositoryPostgres.byId(parsed.sessionId);
+    const session = await SessionRepositoryPostgres.byId(SessionId(parsed.sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[identity.getWorkspacesByTenant] Invalid or revoked session - authentication violation");
     }

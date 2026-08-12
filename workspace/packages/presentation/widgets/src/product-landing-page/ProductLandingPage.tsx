@@ -5,7 +5,10 @@ import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShel
 import { ProductRealityPanel } from "../product-reality-panel/ProductRealityPanel";
 import { ProductCreateForm } from "@repo/presentation-features";
 import type { ProductPreviewBinding } from "@repo/presentation-types";
-import { readProductExperience, getAllProductSlugs } from "@repo/presentation-experience";
+import { getProductExperience, getAllProductSlugs } from "@repo/presentation-experience";
+
+// Alias for backward compatibility
+const readProductExperience = getProductExperience;
 
 export interface ProductLandingPageProps {
   readonly productId: string;

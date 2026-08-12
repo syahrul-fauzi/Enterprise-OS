@@ -42,19 +42,19 @@ class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements
   }
 
   async byId(id: WorkspaceId): Promise<WorkspaceAggregate | undefined> {
-    const result = await this.query("SELECT * FROM workspaces WHERE id = $1", [id]);
-    if (result.length === 0) return undefined;
-    return this.toAggregate(result[0]);
+    const result = await this.pool.query("SELECT * FROM workspaces WHERE id = $1", [id]);
+    if (result.rows.length === 0) return undefined;
+    return this.toAggregate(result.rows[0]);
   }
 
   async listByTenant(tenantId: TenantId): Promise<readonly WorkspaceAggregate[]> {
-    const result = await this.query("SELECT * FROM workspaces WHERE tenant_id = $1 ORDER BY created_at DESC", [tenantId]);
-    return result.map((row: any) => this.toAggregate(row));
+    const result = await this.pool.query("SELECT * FROM workspaces WHERE tenant_id = $1 ORDER BY created_at DESC", [tenantId]);
+    return result.rows.map((row: any) => this.toAggregate(row));
   }
 
   async list(): Promise<readonly WorkspaceAggregate[]> {
-    const result = await this.query("SELECT * FROM workspaces ORDER BY created_at DESC", []);
-    return result.map((row: any) => this.toAggregate(row));
+    const result = await this.pool.query("SELECT * FROM workspaces ORDER BY created_at DESC", []);
+    return result.rows.map((row: any) => this.toAggregate(row));
   }
 
   async save(entity: WorkspaceAggregate): Promise<WorkspaceAggregate> {
@@ -63,7 +63,7 @@ class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements
     
     const exists = await this.byId(entity.id);
     if (exists) {
-      await this.query(
+      await this.pool.query(
         `UPDATE workspaces SET 
           tenant_id = $1, name = $2, slug = $3, product_id = $4, created_at = $5, updated_at = $6
           WHERE id = $7`,
@@ -73,7 +73,7 @@ class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements
         ]
       );
     } else {
-      await this.query(
+      await this.pool.query(
         `INSERT INTO workspaces (
           id, tenant_id, name, slug, product_id, created_at, updated_at
         ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
@@ -88,7 +88,7 @@ class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements
   }
 
   async remove(id: WorkspaceId): Promise<boolean> {
-    const result = await this.query("DELETE FROM workspaces WHERE id = $1", [id]);
+    const result = await this.pool.query("DELETE FROM workspaces WHERE id = $1", [id]);
     return (result as any).rowCount > 0;
   }
 }

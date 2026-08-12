@@ -4,21 +4,16 @@ import React from "react";
 import { capabilityRegistry } from "@repo/core-kernel";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
 import { ProfileHeader } from "../profile-header/ProfileHeader";
-import { ProfileResearchList } from "../profile-research-list/ProfileResearchList";
-import { readProductBinding, getProductExperience } from "@repo/presentation-experience";
+import { getProductExperience } from "@repo/presentation-experience";
 import type { ProductPreviewBinding, ProductExperience, Member, Requirement } from "@repo/presentation-types";
 
 export interface ProfilePageProps {
   readonly profileId: string;
-  readonly rawSearchParams?: Promise<{
-    readonly productId?: string;
-  }>;
+  readonly productId: string;
+  readonly binding: ProductPreviewBinding;
 }
 
-export async function ProfilePage({ profileId, rawSearchParams }: ProfilePageProps) {
-  const searchParams = rawSearchParams ? await rawSearchParams : {};
-  const productId = searchParams.productId || 'academic';
-  const binding: ProductPreviewBinding = readProductBinding(productId);
+export function ProfilePage({ profileId, productId, binding }: ProfilePageProps) {
   const experience: ProductExperience | undefined = getProductExperience(productId);
   
   // Fetch all profile data entirely within canonical widget

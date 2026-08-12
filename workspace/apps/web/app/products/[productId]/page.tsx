@@ -1,3 +1,5 @@
+"use server";
+
 import type { Metadata } from "next";
 import { ProductLandingPage } from "@repo/presentation-widgets";
 import { readProductBinding, readProductRouteMetadata } from "@repo/presentation-experience";
