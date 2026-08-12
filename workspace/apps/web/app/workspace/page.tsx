@@ -85,20 +85,12 @@ export default function WorkspacePage({
         const errBody = (await tenantRes.json()) as { readonly error?: string };
         setError(errBody.error ?? `Failed to load tenant (${tenantRes.status})`);
       }
-
-      if (authenticated && session?.actorId && tenantRes.ok) {
-        const tenantJson = (await tenantRes.json()) as TenantPayload;
-        setTenantData(tenantJson);
-      } else if (!tenantRes.ok && tenantRes.status !== 401) {
-        const errBody = (await tenantRes.json()) as { readonly error?: string };
-        setError(errBody.error ?? `Failed to load tenant (${tenantRes.status})`);
-      }
     } catch (raw) {
       setError(raw instanceof Error ? raw.message : String(raw));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [authenticated, session?.actorId]);
 
   useEffect(() => {
     void loadData();
@@ -170,8 +162,8 @@ export default function WorkspacePage({
     }
   };
 
-  const isAuthenticated = session?.authenticated === true;
-  const actorLabel = session?.session.actorLabel;
+  const isAuthenticated = authenticated === true;
+  const actorLabel = session?.actorLabel;
 
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-10">
@@ -378,15 +370,15 @@ export default function WorkspacePage({
                       ID: {tenantData.actorId}
                     </div>
                   </div>
-                  <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50 to-white p-5">
+                  <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50 to-white p-5" data-testid="tenant-card">
                     <div className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-600">
                       Organization (Tenant)
                     </div>
                     <div className="mt-2 text-lg font-semibold text-slate-900">
                       {tenantData.tenant.name}
                     </div>
-                    <div className="mt-1 text-xs text-slate-500">
-                      slug: {tenantData.tenant.slug}
+                    <div className="mt-1 text-xs text-slate-500" data-testid="tenant-id">
+                      {tenantData.tenant.id}
                     </div>
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-emerald-50 to-white p-5">
@@ -419,7 +411,7 @@ export default function WorkspacePage({
                             <div className="text-base font-semibold text-slate-900">
                               {ws.name}
                             </div>
-                            <div className="mt-1 text-xs text-slate-500">
+                            <div className="mt-1 text-xs text-slate-500" data-testid="workspace-id">
                               ID: {ws.id}
                             </div>
                           </div>
@@ -449,6 +441,26 @@ export default function WorkspacePage({
                             </span>
                           </div>
                         </div>
+                        {/* Add Create Legal Case button for LawyersHub workspaces */}
+                        {ws.productId === "lawyershub" && (
+                          <button
+                            onClick={async () => {
+                              const resp = await fetch("/api/cases/create", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                  title: "Kasus Hukum Baru",
+                                  priority: "medium",
+                                }),
+                              });
+                              if (resp.ok) window.location.reload();
+                            }}
+                            className="mt-3 w-full rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700"
+                            data-testid="create-case-button"
+                          >
+                            Buat Kasus Hukum Baru
+                          </button>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -462,7 +474,12 @@ export default function WorkspacePage({
           </section>
         ) : null}
 
-        <WorkspaceEntryPanel />
+        <WorkspaceEntryPanel 
+          loading={loading || sessionLoading}
+          authenticated={isAuthenticated}
+          actorLabel={actorLabel || "User"}
+          error={error}
+        />
       </div>
     </main>
   );

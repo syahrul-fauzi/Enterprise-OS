@@ -124,6 +124,8 @@ export async function initIdentitySchema() {
     );
   `);
 
+  // Drop table first in development to ensure schema updates apply
+  await pool.query(`DROP TABLE IF EXISTS memberships CASCADE`);
   await pool.query(`
     CREATE TABLE IF NOT EXISTS memberships (
       id TEXT PRIMARY KEY,
@@ -131,6 +133,7 @@ export async function initIdentitySchema() {
       tenant_id TEXT NOT NULL REFERENCES tenants(id),
       workspace_id TEXT NOT NULL REFERENCES workspaces(id),
       role TEXT NOT NULL,
+      joined_at TIMESTAMP NOT NULL,
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL,
       UNIQUE(user_id, workspace_id)

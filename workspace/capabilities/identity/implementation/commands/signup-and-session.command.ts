@@ -148,6 +148,7 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
       workspaceId: workspaceEntity.id,
       role: "owner",
       joinedAt: new Date(),
+      createdAt: new Date(),
       updatedAt: new Date(),
     };
     await MembershipRepositoryPostgres.save(membershipEntity);

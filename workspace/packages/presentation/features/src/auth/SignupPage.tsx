@@ -46,7 +46,7 @@ export function SignupPage() {
         return;
       }
 
-      router.push("/requirements");
+      router.push("/workspace");
       router.refresh();
     } catch (err) {
       setSubmitting(false);

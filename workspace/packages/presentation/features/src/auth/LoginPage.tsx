@@ -42,7 +42,7 @@ export function LoginPage() {
         return;
       }
 
-      router.push("/requirements");
+      router.push("/workspace");
       router.refresh();
     } catch (err) {
       setSubmitting(false);

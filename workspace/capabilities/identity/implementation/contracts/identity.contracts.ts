@@ -62,6 +62,7 @@ export interface MembershipAggregate {
   readonly workspaceId: WorkspaceId;
   readonly role: Role;
   readonly joinedAt: Readonly<Date>;
+  readonly createdAt: Readonly<Date>;
   readonly updatedAt: Readonly<Date>;
 }
 

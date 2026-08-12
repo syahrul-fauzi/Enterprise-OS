@@ -26,6 +26,7 @@ class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implement
       workspaceId: WorkspaceId(record.workspace_id),
       role: record.role,
       joinedAt: new Date(record.joined_at),
+      createdAt: new Date(record.created_at),
       updatedAt: new Date(record.updated_at),
     } as MembershipAggregate;
   }
@@ -39,6 +40,7 @@ class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implement
       workspace_id: entity.workspaceId,
       role: entity.role,
       joined_at: entity.joinedAt.toISOString(),
+      created_at: entity.createdAt.toISOString(),
       updated_at: entity.updatedAt.toISOString(),
     };
   }
@@ -90,21 +92,21 @@ class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implement
     if (exists) {
       await this.pool.query(
         `UPDATE memberships SET 
-          user_id = $1, tenant_id = $2, workspace_id = $3, role = $4, joined_at = $5, updated_at = $6
-          WHERE id = $7`,
+          user_id = $1, tenant_id = $2, workspace_id = $3, role = $4, joined_at = $5, created_at = $6, updated_at = $7
+          WHERE id = $8`,
         [
           record.user_id, record.tenant_id, record.workspace_id, record.role,
-          record.joined_at, record.updated_at, record.id
+          record.joined_at, record.created_at, record.updated_at, record.id
         ]
       );
     } else {
       await this.pool.query(
         `INSERT INTO memberships (
-          id, user_id, tenant_id, workspace_id, role, joined_at, updated_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          id, user_id, tenant_id, workspace_id, role, joined_at, created_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
         [
           record.id, record.user_id, record.tenant_id, record.workspace_id, record.role,
-          record.joined_at, record.updated_at
+          record.joined_at, record.created_at, record.updated_at
         ]
       );
     }
