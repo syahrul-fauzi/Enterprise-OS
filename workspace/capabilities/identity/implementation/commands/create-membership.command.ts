@@ -50,6 +50,7 @@ export const createMembershipCommand: CreateMembershipCommand = {
       workspaceId: input.workspaceId,
       role: input.role,
       joinedAt: new Date(),
+      createdAt: new Date(),
       updatedAt: new Date(),
     };
     await MembershipRepositoryPostgres.save(entity);

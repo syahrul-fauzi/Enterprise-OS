@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { useWorkspaceSession } from "@repo/presentation-hooks";
 import { WorkspaceEntryPanel } from "@repo/presentation-widgets";
+import { CaseWorkspace } from "@capabilities/legal-case/experience/workspaces/CaseWorkspace";
 
 interface TenantPayload {
   readonly ok: boolean;
@@ -445,16 +446,21 @@ export default function WorkspacePage({
                         {ws.productId === "lawyershub" && (
                           <button
                             onClick={async () => {
-                              const resp = await fetch("/api/cases/create", {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({
-                                  title: "Kasus Hukum Baru",
-                                  priority: "medium",
-                                }),
-                              });
-                              if (resp.ok) window.location.reload();
-                            }}
+              const resp = await fetch("/api/cases/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  title: "Kasus Hukum Baru",
+                  priority: "medium",
+                }),
+              });
+              // Don't reload automatically - let CaseWorkspace refresh its own data,
+              // allowing Playwright to capture the API response properly
+              if (resp.ok) {
+                // Trigger a manual refresh of the CaseWorkspace data
+                window.dispatchEvent(new CustomEvent('cases:refresh'));
+              }
+            }}
                             className="mt-3 w-full rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700"
                             data-testid="create-case-button"
                           >
@@ -464,6 +470,13 @@ export default function WorkspacePage({
                       </div>
                     ))}
                   </div>
+
+                  {/* Case Listing for LawyersHub workspaces - canonical presentation consumption */}
+                  {tenantData && tenantData.workspaces.some(ws => ws.productId === "lawyershub") && (
+                    <div className="mt-8">
+                      <CaseWorkspace />
+                    </div>
+                  )}
                 </div>
               ) : tenantData && tenantData.workspaces.length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm text-slate-600">

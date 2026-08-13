@@ -51,7 +51,8 @@ export const getWorkspaceByIdCommand: CapabilityCommand = {
 
     // 1. Validate session exists and is valid (tenant isolation check)
     const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
-    if (!session || session.revokedAt !== null || session.expiresAt < new Date()) {
+    const sessionExpiresAt = session?.expiresAt ?? new Date(0);
+    if (!session || session.revokedAt !== null || sessionExpiresAt < new Date()) {
       return undefined;
     }
 
@@ -76,24 +77,29 @@ export const getWorkspaceByIdCommand: CapabilityCommand = {
     const membership = await MembershipRepositoryPostgres.find(userId, workspace.tenantId, workspace.id);
     const tenant = await TenantRepositoryPostgres.byId(TenantId(workspace.tenantId));
 
+    const workspaceCreatedAt = workspace.createdAt ?? new Date();
+    const workspaceUpdatedAt = workspace.updatedAt ?? new Date();
+    const tenantResult = tenant ? {
+      id: tenant.id,
+      name: tenant.name,
+      slug: tenant.slug,
+    } : null;
+    const membershipResult = membership ? {
+      id: membership.id,
+      role: membership.role,
+      joinedAt: (membership.joinedAt ?? new Date()).toISOString(),
+    } : null;
+    
     return {
       workspace: {
         id: workspace.id,
         name: workspace.name,
         productId: workspace.productId,
-        createdAt: workspace.createdAt.toISOString(),
-        updatedAt: workspace.updatedAt.toISOString(),
+        createdAt: workspaceCreatedAt.toISOString(),
+        updatedAt: workspaceUpdatedAt.toISOString(),
       },
-      tenant: tenant ? {
-        id: tenant.id,
-        name: tenant.name,
-        slug: tenant.slug,
-      } : null,
-      membership: membership ? {
-        id: membership.id,
-        role: membership.role,
-        joinedAt: membership.joinedAt.toISOString(),
-      } : null,
+      tenant: tenantResult,
+      membership: membershipResult,
       actorId,
     };
   },

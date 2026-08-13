@@ -1,34 +1,91 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import { caseService } from "../../implementation/service";
+import React, { useMemo, useState, useEffect } from "react";
 import type { CaseAggregate, CasePriority, CaseStatus } from "../../implementation/contracts";
 import { CaseCard } from "../components/CaseCard";
 
 type StatusFilter = CaseStatus | "all";
 type PriorityFilter = CasePriority | "all";
+interface SearchCasesOutput {
+  items: CaseAggregate[];
+  total: number;
+  matched: number;
+  offset: number;
+  limit: number;
+}
 
 export function CaseWorkspace() {
-  const initial = useMemo(
-    () => caseService.searchCases({ limit: 50, offset: 0 }),
-    []
-  );
+  const [cases, setCases] = useState<CaseAggregate[]>([]);
+  const [totalCases, setTotalCases] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("all");
   const [query, setQuery] = useState("");
 
+  // Fetch cases from canonical API endpoint (maintains tenant/workspace isolation)
+  useEffect(() => {
+    const fetchCases = async () => {
+      try {
+        const resp = await fetch("/api/cases/list");
+        if (resp.ok) {
+          const data: SearchCasesOutput = await resp.json();
+          setCases(data.items || []);
+          setTotalCases(data.total || 0);
+        } else {
+          setCases([]);
+          setTotalCases(0);
+        }
+      } catch (err) {
+        console.error("[CaseWorkspace] Failed to fetch cases:", err);
+        setCases([]);
+        setTotalCases(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Initial fetch
+    fetchCases();
+
+    // Listen for cases:refresh event to refetch after new case creation
+    const handleRefresh = () => {
+      setLoading(true);
+      fetchCases();
+    };
+
+    window.addEventListener('cases:refresh', handleRefresh);
+    return () => window.removeEventListener('cases:refresh', handleRefresh);
+  }, []);
+
+  // Client-side filtering (matching capability layer logic)
   const result = useMemo(() => {
-    return caseService.searchCases({
-      query,
-      status: statusFilter,
-      priority: priorityFilter,
-      limit: 50,
+    let filtered = cases ? [...cases] : [];
+    
+    if (statusFilter !== "all") {
+      filtered = filtered.filter(c => c.status === statusFilter);
+    }
+    if (priorityFilter !== "all") {
+      filtered = filtered.filter(c => c.priority === priorityFilter);
+    }
+    if (query.trim()) {
+      const q = query.toLowerCase();
+      filtered = filtered.filter(c => 
+        c.title.toLowerCase().includes(q) || 
+        (c.description?.toLowerCase() || "").includes(q)
+      );
+    }
+
+    return {
+      items: filtered,
+      matched: filtered.length,
+      total: totalCases,
       offset: 0,
-    });
-  }, [query, statusFilter, priorityFilter]);
+      limit: 50
+    };
+  }, [cases, query, statusFilter, priorityFilter]);
 
   const filtered: readonly CaseAggregate[] = result.items;
-  const allCount = initial.total;
+  const allCount = result.total;
 
   const statusOptions: readonly StatusFilter[] = [
     "all",
@@ -100,7 +157,11 @@ export function CaseWorkspace() {
         </div>
       </div>
 
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="p-6 text-center text-sm opacity-60 border rounded">
+          Loading cases...
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="p-6 text-center text-sm opacity-60 border border-dashed rounded">
           No cases match the current filters.
         </div>

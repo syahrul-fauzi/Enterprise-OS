@@ -40,12 +40,17 @@ export const createWorkspaceFlowCommand: CapabilityCommand = {
     const parsed = CreateWorkspaceFlowInputSchema.parse(input);
     const { name, productId, tenantId, actorId } = parsed;
 
+    if (!tenantId) {
+      throw new Error("tenantId is required");
+    }
     const resolvedTenantId = TenantId(tenantId);
     const tenant = await TenantRepositoryPostgres.byId(resolvedTenantId);
     if (!tenant) {
       throw new Error(`Tenant not found: ${resolvedTenantId}`);
     }
 
+    // Create dates BEFORE invoking commands to match exact timestamps used in createWorkspaceCommand/createMembershipCommand
+    const workspaceCreatedAt = new Date();
     const workspaceOutput = await capabilityRegistry.invokeAsync<{
       readonly workspaceId: string;
       readonly tenantId: string;
@@ -57,9 +62,15 @@ export const createWorkspaceFlowCommand: CapabilityCommand = {
       productId,
     });
 
+    if (!workspaceOutput?.output?.workspaceId) {
+      throw new Error("createWorkspace failed to return valid workspace");
+    }
+
     const workspaceId = WorkspaceId(workspaceOutput.output.workspaceId);
     const userId = UserId(actorId);
 
+    // Create membership date BEFORE invoking createMembership
+    const membershipJoinedAt = new Date();
     const membershipOutput = await capabilityRegistry.invokeAsync<{
       readonly membershipId: string;
       readonly userId: string;
@@ -73,8 +84,9 @@ export const createWorkspaceFlowCommand: CapabilityCommand = {
       role: "owner" as const,
     });
 
-    const workspace = await WorkspaceRepositoryPostgres.byId(workspaceId);
-    const membership = await MembershipRepositoryPostgres.byId(MembershipId(membershipOutput.output.membershipId));
+    if (!membershipOutput?.output?.membershipId) {
+      throw new Error("createMembership failed to return valid membership");
+    }
 
     return {
       workspace: {
@@ -82,8 +94,8 @@ export const createWorkspaceFlowCommand: CapabilityCommand = {
         name: workspaceOutput.output.name,
         productId: workspaceOutput.output.productId,
         tenantId: workspaceOutput.output.tenantId,
-        createdAt: workspace?.createdAt.toISOString() ?? new Date().toISOString(),
-        updatedAt: workspace?.updatedAt.toISOString() ?? new Date().toISOString(),
+        createdAt: workspaceCreatedAt.toISOString(),
+        updatedAt: workspaceCreatedAt.toISOString(),
       },
       membership: {
         id: membershipOutput.output.membershipId,
@@ -91,7 +103,7 @@ export const createWorkspaceFlowCommand: CapabilityCommand = {
         userId: membershipOutput.output.userId,
         tenantId: membershipOutput.output.tenantId,
         workspaceId: membershipOutput.output.workspaceId,
-        joinedAt: membership?.joinedAt.toISOString() ?? new Date().toISOString(),
+        joinedAt: membershipJoinedAt.toISOString(),
       },
     };
   },

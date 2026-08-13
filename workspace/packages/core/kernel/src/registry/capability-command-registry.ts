@@ -193,6 +193,7 @@ export const capabilityRegistry = {
         record: { ...recordBase, ok: true },
       };
     } catch (err) {
+      console.error("[capability-registry] Original error in command execution:", err);
       const message = err instanceof Error ? err.message : String(err);
       throw Object.assign(new Error(message), {
         invocationRecord: { ...recordBase, ok: false, errorMessage: message },

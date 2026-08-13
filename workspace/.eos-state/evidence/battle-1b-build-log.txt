@@ -1,0 +1,380 @@
+npm warn Unknown project config "auto-install-peers". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> build
+> turbo run build
+
+• turbo 2.10.8
+
+   • Packages in scope: @products/academic, @products/ilc, @products/lawyershub, @products/services-id, @repo/composition, @repo/composition-legal-workspace, @repo/config-eslint, @repo/config-tailwind, @repo/config-typescript, @repo/core-capability-registry, @repo/core-constitution, @repo/core-eir, @repo/core-kernel, @repo/core-predicate-registry, @repo/core-proof-ledger, @repo/core-registry-resolver, @repo/core-runtime, @repo/core-transformation-registry, @repo/presentation-experience, @repo/presentation-features, @repo/presentation-foundation, @repo/presentation-hooks, @repo/presentation-types, @repo/presentation-ui-system, @repo/presentation-widgets, @repo/tooling-arch-tests, @repo/tooling-eos-cli, @repo/tooling-t001-standalone, docs, web
+   • Running build in 30 packages
+   • Remote caching disabled
+
+@repo/presentation-ui-system:build:components: cache hit, replaying logs 444dc6edcce357ce
+@repo/presentation-ui-system:build:components: 
+@repo/presentation-ui-system:build:components: > @repo/presentation-ui-system@0.1.0-alpha.4 build:components /root/Enterprise-OS/workspace/packages/presentation/ui-system
+@repo/presentation-ui-system:build:components: > tsc
+@repo/presentation-ui-system:build:components: 
+@repo/core-kernel:build: cache miss, executing 4b16714f6c721a86
+@repo/core-eir:build: cache hit, replaying logs 077ec650b5b6e41d
+@repo/core-eir:build: 
+@repo/core-eir:build: > @repo/core-eir@0.1.0 build /root/Enterprise-OS/workspace/packages/core/eir
+@repo/core-eir:build: > tsc
+@repo/core-eir:build: 
+@repo/presentation-foundation:build: cache hit, replaying logs 97fc68529f89aa76
+@repo/core-predicate-registry:build: cache hit, replaying logs e82f5a8e6dc0224c
+@repo/core-predicate-registry:build: 
+@repo/presentation-foundation:build: 
+@repo/core-predicate-registry:build: > @repo/core-predicate-registry@0.1.0 build /root/Enterprise-OS/workspace/packages/core/predicate-registry
+@repo/presentation-foundation:build: > @repo/presentation-foundation@0.1.0-alpha.3b build /root/Enterprise-OS/workspace/packages/presentation/foundation
+@repo/core-predicate-registry:build: > tsc
+@repo/presentation-foundation:build: > tsc
+@repo/core-predicate-registry:build: 
+@repo/presentation-foundation:build: 
+@repo/presentation-types:build: cache hit, replaying logs 0b977ed04c1c1195
+@repo/presentation-types:build: 
+@repo/presentation-types:build: > @repo/presentation-types@0.1.0 build /root/Enterprise-OS/workspace/packages/presentation/presentation-types
+@repo/presentation-types:build: > tsc
+@repo/presentation-types:build: 
+@repo/core-transformation-registry:build: cache hit, replaying logs 1895085c05d4ef12
+@repo/core-transformation-registry:build: 
+@repo/core-transformation-registry:build: > @repo/core-transformation-registry@0.1.0 build /root/Enterprise-OS/workspace/packages/core/transformation-registry
+@repo/core-transformation-registry:build: > tsc
+@repo/core-transformation-registry:build: 
+@repo/presentation-widgets:build: cache miss, executing 3cf34e8a1746e733
+@repo/presentation-ui-system:build:styles: cache hit, replaying logs 0bc784e8916e5ca3
+@repo/presentation-ui-system:build:styles: 
+@repo/presentation-ui-system:build:styles: > @repo/presentation-ui-system@0.1.0-alpha.4 build:styles /root/Enterprise-OS/workspace/packages/presentation/ui-system
+@repo/presentation-ui-system:build:styles: > tailwindcss -i ./src/styles.css -o ./dist/index.css
+@repo/presentation-ui-system:build:styles: 
+@repo/presentation-ui-system:build:styles: ≈ tailwindcss v4.3.3
+@repo/presentation-ui-system:build:styles: 
+@repo/presentation-ui-system:build:styles: Done in 143ms
+@repo/presentation-ui-system:build: cache miss, executing 841b47a83ab48809
+@repo/core-kernel:build: 
+@repo/core-kernel:build: > @repo/core-kernel@0.1.0 build /root/Enterprise-OS/workspace/packages/core/kernel
+@repo/core-kernel:build: > tsc
+@repo/core-kernel:build: 
+@repo/presentation-ui-system:build: 
+@repo/presentation-ui-system:build: > @repo/presentation-ui-system@0.1.0-alpha.4 build /root/Enterprise-OS/workspace/packages/presentation/ui-system
+@repo/presentation-ui-system:build: > pnpm run build:styles && pnpm run build:components
+@repo/presentation-ui-system:build: 
+@repo/presentation-widgets:build: 
+@repo/presentation-widgets:build: > @repo/presentation-widgets@0.1.0 build /root/Enterprise-OS/workspace/packages/presentation/widgets
+@repo/presentation-widgets:build: > tsc
+@repo/presentation-widgets:build: 
+@repo/presentation-ui-system:build: 
+@repo/presentation-ui-system:build: > @repo/presentation-ui-system@0.1.0-alpha.4 build:styles /root/Enterprise-OS/workspace/packages/presentation/ui-system
+@repo/presentation-ui-system:build: > tailwindcss -i ./src/styles.css -o ./dist/index.css
+@repo/presentation-ui-system:build: 
+@repo/presentation-ui-system:build: ≈ tailwindcss v4.3.3
+@repo/presentation-ui-system:build: 
+@repo/presentation-ui-system:build: Done in 130ms
+@repo/presentation-ui-system:build: 
+@repo/presentation-ui-system:build: > @repo/presentation-ui-system@0.1.0-alpha.4 build:components /root/Enterprise-OS/workspace/packages/presentation/ui-system
+@repo/presentation-ui-system:build: > tsc
+@repo/presentation-ui-system:build: 
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/create-membership.command.ts(1,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/create-tenant-with-slug-resolution.command.ts(1,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/create-tenant.command.ts(1,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/create-tenant.command.ts(25,17): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/create-user.command.ts(1,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/create-user.command.ts(8,33): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/services/password.service.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "../services/password.service" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-user.command.ts'
+@repo/core-kernel:build:     Imported via "../services/password.service" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/login-user.command.ts'
+@repo/core-kernel:build:     Imported via "../services/password.service" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-workspace.command.ts'
+@repo/core-kernel:build:     Imported via "../services/password.service" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/signup-flow.command.ts'
+@repo/core-kernel:build:     Imported via "../services/password.service" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-tenant-with-slug-resolution.command.ts'
+@repo/core-kernel:build:     Imported via "../services/password.service" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/signup-and-session.command.ts'
+@repo/core-kernel:build:     Imported via "../services/password.service" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/signup-and-session.command.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/create-user.command.ts(9,40): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/index.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-user.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/login-user.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/logout-user.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-tenant.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-workspace.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-membership.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/signup-flow.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-tenant-with-slug-resolution.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-tenant-by-id.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-workspaces-by-tenant.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/login-flow.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-workspace-by-id.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-workspace-flow.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-member-by-id.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-members-by-institution.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/signup-and-session.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-session-by-id.command.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/create-user.command.ts(30,17): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/create-workspace-flow.command.ts(2,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/create-workspace-flow.command.ts(3,36): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/create-workspace.command.ts(1,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/create-workspace.command.ts(30,17): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/get-member-by-id.command.ts(2,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/get-members-by-institution.command.ts(2,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/get-session-by-id.command.ts(2,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/get-session-by-id.command.ts(36,17): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/get-tenant-by-id.command.ts(1,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/get-tenant-by-id.command.ts(31,17): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/get-workspace-by-id.command.ts(2,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/get-workspaces-by-tenant.command.ts(1,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/get-workspaces-by-tenant.command.ts(48,17): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(1,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(2,35): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-user.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "./create-user.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:     Imported via "./create-user.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(3,56): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/login-user.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "./login-user.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:     Imported via "./login-user.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(4,35): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/logout-user.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "./logout-user.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:     Imported via "./logout-user.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(5,37): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-tenant.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "./create-tenant.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:     Imported via "./create-tenant.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(6,40): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-workspace.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "./create-workspace.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:     Imported via "./create-workspace.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(7,41): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-membership.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "./create-membership.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:     Imported via "./create-membership.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(8,35): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/signup-flow.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "./signup-flow.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:     Imported via "./signup-flow.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(9,55): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-tenant-with-slug-resolution.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "./create-tenant-with-slug-resolution.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:     Imported via "./create-tenant-with-slug-resolution.command" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(10,38): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-tenant-by-id.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(11,46): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-workspaces-by-tenant.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(12,34): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/login-flow.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(13,41): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-workspace-by-id.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(14,44): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-workspace-flow.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(15,38): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-member-by-id.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(16,48): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-members-by-institution.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(17,41): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/signup-and-session.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/index.ts(18,39): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-session-by-id.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/login-flow.command.ts(1,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/login-flow.command.ts(14,36): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/login-flow.command.ts(42,17): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/login-user.command.ts(1,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/login-user.command.ts(46,17): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/login-user.command.ts(97,17): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/logout-user.command.ts(1,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/logout-user.command.ts(25,17): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/signup-and-session.command.ts(3,89): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/signup-flow.command.ts(1,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/signup-flow.command.ts(66,17): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/commands/signup-flow.command.ts(124,11): error TS2741: Property 'createdAt' is missing in type '{ id: MembershipId; userId: UserId; tenantId: TenantId; workspaceId: WorkspaceId; role: "owner"; joinedAt: Date; updatedAt: Date; }' but required in type 'MembershipAggregate'.
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/repositories/index.ts(1,40): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/user.repository.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/repositories/index.ts(2,42): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/tenant.repository.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/repositories/index.ts(3,45): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/workspace.repository.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/repositories/index.ts(4,46): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/membership.repository.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/repositories/session.repository.ts(9,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/contracts/identity.contracts.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/session.repository.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-user.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/user.repository.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/tenant.repository.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/workspace.repository.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/membership.repository.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/login-user.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/logout-user.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-tenant.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-workspace.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-membership.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/signup-flow.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-tenant-with-slug-resolution.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-tenant-by-id.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-workspaces-by-tenant.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/login-flow.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-workspace-by-id.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-workspace-flow.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-member-by-id.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-members-by-institution.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/signup-and-session.command.ts'
+@repo/core-kernel:build:     Imported via "../contracts/identity.contracts" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-session-by-id.command.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/identity/implementation/repositories/session.repository.ts(141,19): error TS2339: Property 'length' does not exist on type 'QueryResult<any>'.
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/commands/case.commands.ts(13,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/contracts/index.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "../contracts" from file '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/commands/case.commands.ts'
+@repo/core-kernel:build:     Imported via "../contracts" from file '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/repository/case.repository.ts'
+@repo/core-kernel:build:     Imported via "../contracts" from file '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/commands/get-case-by-id.command.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/commands/case.commands.ts(14,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/commands/case.commands.ts(15,67): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/repository/index.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/commands/case.commands.ts(16,40): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/repository/case-postgres.repository.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "../repository/case-postgres.repository" from file '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/commands/case.commands.ts'
+@repo/core-kernel:build:     Imported via "../repository/case-postgres.repository" from file '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/commands/get-case-by-id.command.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/commands/case.commands.ts(18,43): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/session.repository.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "../../../identity/implementation/repositories/session.repository" from file '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/commands/case.commands.ts'
+@repo/core-kernel:build:     Imported via "../../../identity/implementation/repositories/session.repository" from file '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/commands/get-case-by-id.command.ts'
+@repo/core-kernel:build:     Imported via "./session.repository" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/index.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/commands/case.commands.ts(56,17): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/commands/case.commands.ts(63,58): error TS2345: Argument of type 'string' is not assignable to parameter of type 'SessionId'.
+@repo/core-kernel:build:   Type 'string' is not assignable to type '{ readonly __sessionId: unique symbol; }'.
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/commands/case.commands.ts(107,17): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/commands/case.commands.ts(128,17): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/commands/case.commands.ts(154,17): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/commands/case.commands.ts(215,36): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/commands/get-case-by-id.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/commands/get-case-by-id.command.ts(2,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/commands/get-case-by-id.command.ts(4,44): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/legal-document/implementation/repository/index.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "../../../legal-document/implementation/repository" from file '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/commands/get-case-by-id.command.ts'
+@repo/core-kernel:build:     Imported via "../repository" from file '/root/Enterprise-OS/workspace/capabilities/legal-document/implementation/commands/document.commands.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/contracts/index.ts(1,15): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/contracts/case.contracts.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "./case.contracts" from file '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/contracts/index.ts'
+@repo/core-kernel:build:     Imported via "../contracts/case.contracts" from file '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/repository/case-postgres.repository.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/repository/case-postgres.repository.ts(2,36): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/base.repository.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "../../../identity/implementation/repositories/base.repository" from file '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/repository/case-postgres.repository.ts'
+@repo/core-kernel:build:     Imported via "../../../identity/implementation/repositories/base.repository" from file '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/commands/case.commands.ts'
+@repo/core-kernel:build:     Imported via "./base.repository" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/session.repository.ts'
+@repo/core-kernel:build:     Imported via "../../../identity/implementation/repositories/base.repository" from file '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/commands/get-case-by-id.command.ts'
+@repo/core-kernel:build:     Imported via "./base.repository" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/user.repository.ts'
+@repo/core-kernel:build:     Imported via "./base.repository" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/tenant.repository.ts'
+@repo/core-kernel:build:     Imported via "./base.repository" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/workspace.repository.ts'
+@repo/core-kernel:build:     Imported via "./base.repository" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/membership.repository.ts'
+@repo/core-kernel:build:     Imported via "./base.repository" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/index.ts'
+@repo/core-kernel:build:     Imported via "../repositories/base.repository" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-tenant.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories/base.repository" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/signup-flow.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories/base.repository" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/create-tenant-with-slug-resolution.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories/base.repository" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/get-workspace-by-id.command.ts'
+@repo/core-kernel:build:     Imported via "../repositories/base.repository" from file '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/signup-and-session.command.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/legal-case/implementation/repository/index.ts(6,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/repository/case.repository.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "./case.repository" from file '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/repository/index.ts'
+@repo/core-kernel:build:     Imported via "./case.repository" from file '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/repository/index.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/legal-community/implementation/commands/community.commands.ts(17,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/legal-community/implementation/contracts/community.contracts.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "../contracts/community.contracts" from file '/root/Enterprise-OS/workspace/capabilities/legal-community/implementation/commands/community.commands.ts'
+@repo/core-kernel:build:     Imported via "../contracts/community.contracts" from file '/root/Enterprise-OS/workspace/capabilities/legal-community/implementation/repository/community.repository.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/legal-community/implementation/commands/community.commands.ts(18,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/legal-community/implementation/commands/community.commands.ts(26,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/legal-community/implementation/repository/community.repository.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/legal-community/implementation/commands/community.commands.ts(36,11): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/legal-community/implementation/commands/community.commands.ts(59,11): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/legal-community/implementation/commands/community.commands.ts(82,11): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/legal-document/implementation/commands/document.commands.ts(12,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/legal-document/implementation/commands/document.commands.ts(28,11): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/legal-document/implementation/commands/document.commands.ts(55,11): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/legal-document/implementation/commands/document.commands.ts(85,11): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/legal-document/implementation/commands/document.commands.ts(112,11): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/legal-document/implementation/contracts/index.ts(1,15): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/legal-document/implementation/contracts/document.contracts.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/legal-document/implementation/repository/document.repository.ts(6,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/legal-document/implementation/contracts/index.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "../contracts" from file '/root/Enterprise-OS/workspace/capabilities/legal-document/implementation/repository/document.repository.ts'
+@repo/core-kernel:build:     Imported via "../contracts" from file '/root/Enterprise-OS/workspace/capabilities/legal-document/implementation/commands/document.commands.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/legal-document/implementation/repository/index.ts(5,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/legal-document/implementation/repository/document.repository.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "./document.repository" from file '/root/Enterprise-OS/workspace/capabilities/legal-document/implementation/repository/index.ts'
+@repo/core-kernel:build:     Imported via "./document.repository" from file '/root/Enterprise-OS/workspace/capabilities/legal-document/implementation/repository/index.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/requirement-management/implementation/commands/get-all-requirements.command.ts(2,40): error TS2307: Cannot find module '@repo/core-capability-registry' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/requirement-management/implementation/commands/get-requirements-by-owner.command.ts(2,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/requirement-management/implementation/commands/get-requirements-by-owner.command.ts(32,26): error TS2551: Property 'ownerId' does not exist on type 'RequirementAggregate'. Did you mean 'owner'?
+@repo/core-kernel:build: ../../../capabilities/requirement-management/implementation/commands/get-requirements-by-owner.command.ts(32,68): error TS2339: Property 'productId' does not exist on type 'RequirementAggregate'.
+@repo/core-kernel:build: ../../../capabilities/requirement-management/implementation/commands/get-requirements-by-owner.command.ts(38,21): error TS2339: Property 'author' does not exist on type 'RequirementAggregate'.
+@repo/core-kernel:build: ../../../capabilities/requirement-management/implementation/commands/get-requirements-by-owner.command.ts(38,42): error TS2339: Property 'author' does not exist on type 'RequirementAggregate'.
+@repo/core-kernel:build: ../../../capabilities/requirement-management/implementation/commands/requirement.commands.ts(1,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/requirement-management/implementation/commands/requirement.commands.ts(16,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/contracts/index.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "../contracts" from file '/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/commands/requirement.commands.ts'
+@repo/core-kernel:build:     Imported via "../contracts" from file '/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/repository/requirement.repository.ts'
+@repo/core-kernel:build:     Imported via "../contracts" from file '/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/commands/get-all-requirements.command.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/requirement-management/implementation/commands/requirement.commands.ts(23,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/repository/index.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "../repository" from file '/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/commands/requirement.commands.ts'
+@repo/core-kernel:build:     Imported via "../repository" from file '/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/commands/get-requirements-by-owner.command.ts'
+@repo/core-kernel:build:     Imported via "../repository" from file '/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/commands/get-all-requirements.command.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/requirement-management/implementation/commands/requirement.commands.ts(24,47): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/commands/get-requirements-by-owner.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/requirement-management/implementation/commands/requirement.commands.ts(25,43): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/commands/get-all-requirements.command.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/requirement-management/implementation/contracts/index.ts(1,15): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/contracts/requirement.contracts.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/requirement-management/implementation/repository/index.ts(9,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/repository/requirement.repository.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/service-directory/implementation/commands/service.commands.ts(8,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/service-directory/implementation/contracts/service.contracts.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   The file is in the program because:
+@repo/core-kernel:build:     Imported via "../contracts/service.contracts" from file '/root/Enterprise-OS/workspace/capabilities/service-directory/implementation/commands/service.commands.ts'
+@repo/core-kernel:build:     Imported via "../contracts/service.contracts" from file '/root/Enterprise-OS/workspace/capabilities/service-directory/implementation/repository/service.repository.ts'
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/service-directory/implementation/commands/service.commands.ts(9,40): error TS2307: Cannot find module '@repo/core-kernel' or its corresponding type declarations.
+@repo/core-kernel:build: ../../../capabilities/service-directory/implementation/commands/service.commands.ts(14,8): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/service-directory/implementation/repository/service.repository.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: ../../../capabilities/service-directory/implementation/commands/service.commands.ts(43,11): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/service-directory/implementation/commands/service.commands.ts(66,11): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: ../../../capabilities/service-directory/implementation/commands/service.commands.ts(92,11): error TS7006: Parameter 'input' implicitly has an 'any' type.
+@repo/core-kernel:build: src/registry/capability-command-registry.ts(2,30): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/legal-case/implementation/commands/case.commands.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: src/registry/capability-command-registry.ts(3,42): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/service-directory/implementation/commands/service.commands.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: src/registry/capability-command-registry.ts(4,40): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/legal-community/implementation/commands/community.commands.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: src/registry/capability-command-registry.ts(5,34): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/legal-document/implementation/commands/document.commands.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: src/registry/capability-command-registry.ts(6,37): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/requirement-management/implementation/commands/requirement.commands.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build: src/registry/capability-command-registry.ts(7,34): error TS6059: File '/root/Enterprise-OS/workspace/capabilities/identity/implementation/commands/index.ts' is not under 'rootDir' '/root/Enterprise-OS/workspace/packages/core/kernel/src'. 'rootDir' is expected to contain all source files.
+@repo/core-kernel:build:   File is CommonJS module because '/root/Enterprise-OS/workspace/package.json' does not have field "type"
+@repo/core-kernel:build:  ELIFECYCLE  Command failed with exit code 2.
+@repo/presentation-ui-system:build:  ELIFECYCLE  Command failed.
+@repo/presentation-widgets:build:  ELIFECYCLE  Command failed.
+@repo/presentation-ui-system:build:  ELIFECYCLE  Command failed.
+@repo/core-kernel#build:  ERROR  command (/root/Enterprise-OS/workspace/packages/core/kernel) /root/.nvm/versions/node/v24.16.0/bin/pnpm run build exited (2)
+
+ Tasks:    7 successful, 10 total
+Cached:    7 cached, 10 total
+  Time:    5.956s 
+Failed:    @repo/core-kernel#build
+
+ ERROR  run failed: command  exited (2)

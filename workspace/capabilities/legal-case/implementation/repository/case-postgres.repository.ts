@@ -12,11 +12,9 @@ import {
 class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements CaseRepository {
   readonly entityName = "Case" as const;
   readonly kind = "repository" as const;
-  private pool: Pool;
 
   constructor() {
     super("cases");
-    this.pool = (this as any).pool;
   }
 
   // Convert database record to domain aggregate

@@ -9,14 +9,19 @@ export async function POST(request: Request) {
   try {
     // Extract session from cookie (cookie handling only - all business logic in capability)
     const cookie = request.headers.get("Cookie");
+    console.log(`[POST /api/cases/create] Cookie header received: ${cookie ? cookie.substring(0, 200) + "..." : "MISSING"}`);
     const sessionCookie = cookie?.split(";").find(c => c.trim().startsWith(`${WORKSPACE_SESSION_COOKIE}=`));
     if (!sessionCookie) {
+      console.log(`[POST /api/cases/create] ERROR: ${WORKSPACE_SESSION_COOKIE} cookie not found in headers`);
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const sessionValue = sessionCookie.split("=")[1];
+    console.log(`[POST /api/cases/create] Session cookie value (truncated): ${sessionValue.substring(0, 100)}...`);
     const session = decodeWorkspaceSession(sessionValue);
-    if (!session || !session.tenantId || !session.workspaceId || !session.userId || !session.sessionId) {
+    console.log(`[POST /api/cases/create] Decoded session: ${JSON.stringify(session)}`);
+    if (!session || !session.tenantId || !session.workspaceId || !session.actorId || !session.sessionId) {
+      console.log(`[POST /api/cases/create] ERROR: Invalid session - missing required fields`);
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }
 
@@ -25,14 +30,14 @@ export async function POST(request: Request) {
     const { title, description, priority } = body;
 
     // Single canonical capability invocation - all case creation logic in legal-case capability
-    const { output } = capabilityRegistry.invoke("legal-case", "case.create", {
+    const { output } = await capabilityRegistry.invokeAsync("legal-case", "create", {
       title,
       description,
       priority,
       sessionId: session.sessionId,
       tenantId: session.tenantId,
       workspaceId: session.workspaceId,
-      actorId: session.userId,
+      actorId: session.actorId,
     });
 
     if (!output) {

@@ -2,6 +2,8 @@ import { Pool } from "pg";
 
 // Initialize connection pool once
 let pool: Pool | null = null;
+// Schema initialization flag - prevent multiple schema creation attempts (pg_type duplicate key errors)
+let schemaInitialized = false;
 
 function getPool(): Pool {
   if (!pool) {
@@ -85,6 +87,11 @@ export abstract class PostgresRepository<T extends { id: string }> {
 
 // Initialize database schema (run once at startup)
 export async function initIdentitySchema() {
+  // Skip if already initialized to prevent pg_type duplicate key errors
+  if (schemaInitialized) {
+    return;
+  }
+  
   const pool = getPool();
   
   // Create tables if not exists
@@ -124,8 +131,7 @@ export async function initIdentitySchema() {
     );
   `);
 
-  // Drop table first in development to ensure schema updates apply
-  await pool.query(`DROP TABLE IF EXISTS memberships CASCADE`);
+  // Create table only if it doesn't exist (avoid pg_type duplicate key errors)
   await pool.query(`
     CREATE TABLE IF NOT EXISTS memberships (
       id TEXT PRIMARY KEY,
@@ -175,4 +181,5 @@ export async function initIdentitySchema() {
   `);
 
   console.log("[PostgreSQL] Identity + Legal Case schema initialized successfully");
+  schemaInitialized = true;
 }

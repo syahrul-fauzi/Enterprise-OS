@@ -36,6 +36,8 @@ export const getMemberByIdCommand: CapabilityCommand = {
     }
 
     // Transform user aggregate to presentation-ready member format
+    const userCreatedAt = user.createdAt ?? new Date();
+    const userUpdatedAt = user.updatedAt ?? new Date();
     return {
       type: "researcher", // FIXME: Hardcoded as 'researcher' because UserAggregate no longer has a 'type' property.
       id: memberId,
@@ -45,8 +47,8 @@ export const getMemberByIdCommand: CapabilityCommand = {
       researchFocus: "Unknown Focus", // FIXME: This information is no longer in UserAggregate
       publicationCount: 0, // FIXME: This information is no longer in UserAggregate
       researcherCount: undefined, // FIXME: This information is no longer in UserAggregate
-      createdAt: user.createdAt.toISOString(),
-      updatedAt: user.updatedAt.toISOString(),
+      createdAt: userCreatedAt.toISOString(),
+      updatedAt: userUpdatedAt.toISOString(),
     };
   },
 };

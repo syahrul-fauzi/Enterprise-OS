@@ -1,0 +1,303 @@
+3d6132126c21c18f37bcf15f59e82861eaeef8bd
+
+=== Playwright Full Replay Output ===
+npm warn Unknown project config "auto-install-peers". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+[WebServer] 
+[WebServer] > web@1.0.0 dev /root/Enterprise-OS/workspace/apps/web
+[WebServer] > next dev --port 3004 --port 3006
+[WebServer] 
+
+[WebServer] ▲ Next.js 16.2.0 (Turbopack)
+
+[WebServer] - Local:         http://localhost:3006
+[WebServer] - Network:       http://10.0.0.4:3006
+[WebServer] - Environments: .env.local
+[WebServer] ✓ Ready in 376ms
+
+[WebServer] 
+
+
+Running 2 tests using 1 worker
+
+[WebServer]  GET /api/health 200 in 337ms (next.js: 74ms, proxy.ts: 240ms, application-code: 24ms)
+
+[1/2] [chromium] › tests/lawyershub-case-creation.spec.ts:22:7 › LawyersHub Case Creation Journey (BATTLE-1B) › L1-L5: Signup → LawyersHub Workspace → Create Case → Verify Persistence
+[chromium] › tests/lawyershub-case-creation.spec.ts:22:7 › LawyersHub Case Creation Journey (BATTLE-1B) › L1-L5: Signup → LawyersHub Workspace → Create Case → Verify Persistence
+
+[1B-DEBUG-001] === STEP 1: GET /signup ===
+
+[WebServer]  GET /signup 200 in 423ms (next.js: 88ms, proxy.ts: 5ms, application-code: 330ms)
+
+[1B-DEBUG-001] GET /signup STATUS: 200
+
+[1B-DEBUG-001] GET /signup URL: http://localhost:3006/signup
+
+[WebServer] [browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+[WebServer] 
+[WebServer] - A server/client branch `if (typeof window !== 'undefined')`.
+[WebServer] - Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+[WebServer] - Date formatting in a user's locale which doesn't match the server.
+[WebServer] - External changing data without sending a snapshot of it along with the HTML.
+[WebServer] - Invalid HTML tag nesting.
+[WebServer] 
+[WebServer] It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+[WebServer] 
+[WebServer] https://react.dev/link/hydration-mismatch
+[WebServer] 
+[WebServer]   ...
+[WebServer]     <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+[WebServer]       <RedirectBoundary>
+[WebServer]         <RedirectErrorBoundary router={{...}}>
+[WebServer]           <InnerLayoutRouter url="/signup" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+[WebServer]             <SegmentViewNode type="page" pagePath="signup/pag...">
+[WebServer]               <SegmentTrieNode>
+[WebServer]               <ClientPageRoot Component={function SignupRoute} serverProvidedParams={{...}}>
+[WebServer]                 <SignupRoute params={Promise} searchParams={Promise}>
+[WebServer]                   <SignupPage>
+[WebServer]                     <main className="min-h-scre...">
+[WebServer]                       <div className="w-full max...">
+[WebServer]                         <header>
+[WebServer]                         <section className="rounded-3x...">
+[WebServer]                           <form className="space-y-4" onSubmit={function handleSubmit}>
+[WebServer]                             <label className="block">
+[WebServer]                               <div>
+[WebServer]                               <input
+[WebServer]                                 type="text"
+[WebServer]                                 value=""
+[WebServer]                                 onChange={function onChange}
+[WebServer]                                 placeholder="e.g. Alex Rivera"
+[WebServer]                                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-n..."
+[WebServer]                                 required={true}
+[WebServer]                                 minLength={1}
+[WebServer]                                 autoComplete="name"
+[WebServer] -                               style={{caret-color:"transparent"}}
+[WebServer]                               >
+[WebServer]                             <label className="block">
+[WebServer]                               <div>
+[WebServer]                               <input
+[WebServer]                                 type="email"
+[WebServer]                                 value=""
+[WebServer]                                 onChange={function onChange}
+[WebServer]                                 placeholder="you@company.com"
+[WebServer]                                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-n..."
+[WebServer]                                 required={true}
+[WebServer]                                 minLength={3}
+[WebServer]                                 autoComplete="email"
+[WebServer] -                               style={{caret-color:"transparent"}}
+[WebServer]                               >
+[WebServer]                             <label className="block">
+[WebServer]                               <div>
+[WebServer]                               <input
+[WebServer]                                 type="password"
+[WebServer]                                 value=""
+[WebServer]                                 onChange={function onChange}
+[WebServer]                                 placeholder="Create a secure password"
+[WebServer]                                 className="w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 ..."
+[WebServer]                                 required={true}
+[WebServer]                                 minLength={8}
+[WebServer]                                 autoComplete="new-password"
+[WebServer] -                               style={{caret-color:"transparent"}}
+[WebServer]                               >
+[WebServer]                             ...
+[WebServer]                           ...
+[WebServer]                         ...
+[WebServer]             ...
+[WebServer]           ...
+[WebServer]  
+
+[1B-DEBUG-001] Screenshot saved: artifacts/lawyershub-signup-before.png
+
+
+[1B-DEBUG-001] === STEP 2: SUBMIT SIGNUP ===
+
+[BROWSER LOG] [Fast Refresh] rebuilding
+
+[BROWSER LOG] [Fast Refresh] done in 122ms
+
+[WebServer] [PostgreSQL] Identity + Legal Case schema initialized successfully
+
+[WebServer]  POST /api/auth/signup 201 in 270ms (next.js: 102ms, proxy.ts: 13ms, application-code: 154ms)
+
+[1B-DEBUG-001] POST /api/auth/signup STATUS: 201
+
+[1B-DEBUG-001] POST /api/auth/signup BODY: {"ok":true,"authenticated":true,"userId":"user-8270916c-6e19-43d3-9677-5389eb476827","actorId":"user-8270916c-6e19-43d3-9677-5389eb476827","actorLabel":"Lawyer Test User","email":"lawyershub-case-1786594828775@example.test","tenantId":"tenant-d6294008-47a3-420d-bec4-4b4324c60af6","tenantName":"Lawyer Test User Personal","tenantSlug":"lawyer-test-user-lawyershub-case-1786594-2","workspaceId":"workspace-324871c0-f11c-41b4-af02-f259972b34bc","workspaceName":"Professional Workspace","membershipId":"membership-438f08c6-21e8-463d-bcc7-3595e8a38a83","sessionId":"session-f5decdc0-2c9a-4a79-9711-7a490e4d847c","role":"owner","records":[{"ok":true,"commandKey":"identity.registerUser"},{"ok":true,"commandKey":"identity.createTenant"},{"ok":true,"commandKey":"identity.createWorkspace"},{"ok":true,"commandKey":"identity.createMembership"}]}
+
+
+[1B-DEBUG-001] === STEP 3: COOKIES & SESSION ===
+
+[1B-DEBUG-001] eos-workspace-session cookie found: true
+
+[1B-DEBUG-001] Session cookie value (truncated): eyJzZXNzaW9uSWQiOiJzZXNzaW9uLWY1ZGVjZGMw...
+
+
+[1B-DEBUG-001] === STEP 4: REDIRECT TO /workspace ===
+
+[WebServer]  GET /workspace 200 in 62ms (next.js: 22ms, proxy.ts: 5ms, application-code: 35ms)
+
+[WebServer]  GET /workspace 200 in 38ms (next.js: 3ms, proxy.ts: 10ms, application-code: 25ms)
+
+[1B-DEBUG-001] Arrived at: http://localhost:3006/workspace
+
+
+[1B-DEBUG-001] === STEP 5: CREATE LAWYERSHUB WORKSPACE ===
+
+[WebServer]  GET /api/session 200 in 78ms (next.js: 58ms, proxy.ts: 10ms, application-code: 10ms)
+
+[WebServer]  GET /api/tenant 200 in 155ms (next.js: 117ms, proxy.ts: 9ms, application-code: 29ms)
+
+[WebServer]  GET /api/session 200 in 31ms (next.js: 4ms, proxy.ts: 4ms, application-code: 23ms)
+
+[WebServer]  GET /api/tenant 200 in 171ms (next.js: 121ms, proxy.ts: 9ms, application-code: 41ms)
+
+[WebServer]  GET /api/tenant 200 in 19ms (next.js: 3ms, proxy.ts: 7ms, application-code: 9ms)
+
+[WebServer]  POST /api/workspace 201 in 88ms (next.js: 59ms, proxy.ts: 6ms, application-code: 23ms)
+
+[1B-DEBUG-001] POST /api/workspace STATUS: 201
+
+[1B-DEBUG-001] POST /api/workspace BODY: {"ok":true,"workspace":{"id":"workspace-24f3089c-91ff-4fad-8c8f-f8375992a108","name":"My Law Firm Workspace","productId":"lawyershub","tenantId":"tenant-d6294008-47a3-420d-bec4-4b4324c60af6","createdAt":"2026-08-13T04:20:30.830Z","updatedAt":"2026-08-13T04:20:30.830Z"},"membership":{"id":"membership-5c7c9436-abd7-4652-8701-9c1403db3be2","role":"owner","userId":"user-8270916c-6e19-43d3-9677-5389eb476827","tenantId":"tenant-d6294008-47a3-420d-bec4-4b4324c60af6","workspaceId":"workspace-24f3089c-91ff-4fad-8c8f-f8375992a108","joinedAt":"2026-08-13T04:20:30.836Z"}}
+
+[WebServer]  GET /api/tenant 200 in 17ms (next.js: 2ms, proxy.ts: 5ms, application-code: 10ms)
+
+[1B-DEBUG-001] Workspace 0: ID: workspace-24f3089c-91ff-4fad-8c8f-f8375992a108
+
+[1B-DEBUG-001] Workspace 1: ID: workspace-324871c0-f11c-41b4-af02-f259972b34bc
+
+[1B-DEBUG-001] ✅ Using workspace ID for case creation (matches session): workspace-24f3089c-91ff-4fad-8c8f-f8375992a108
+
+[WebServer]  GET /api/cases/list 200 in 69ms (next.js: 56ms, proxy.ts: 4ms, application-code: 9ms)
+
+[WebServer]  GET /api/cases/list 200 in 10ms (next.js: 2ms, proxy.ts: 4ms, application-code: 4ms)
+
+
+[1B-DEBUG-001] === STEP 6: VERIFY CREATE CASE BUTTON ===
+
+[1B-DEBUG-001] ✅ "Buat Kasus Hukum Baru" button found (LawyersHub-specific)
+
+
+[1B-DEBUG-001] === STEP 7: CREATE LEGAL CASE ===
+
+[1B-DEBUG-001] ⚠️ Could not capture create case response: Error: page.waitForResponse: Test timeout of 30000ms exceeded.
+
+  1) [chromium] › tests/lawyershub-case-creation.spec.ts:22:7 › LawyersHub Case Creation Journey (BATTLE-1B) › L1-L5: Signup → LawyersHub Workspace → Create Case → Verify Persistence 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 201
+    Received: 0
+
+      142 |     
+      143 |     // Verify the API call succeeded regardless of body read issue
+    > 144 |     expect(caseCreateStatus).toBe(201);
+          |                              ^
+      145 |
+      146 |     // Step 8: Verify case survives refresh
+      147 |     console.log('\n[1B-DEBUG-001] === STEP 8: VERIFY PERSISTENCE ACROSS REFRESH ===');
+        at /root/Enterprise-OS/workspace/tests/lawyershub-case-creation.spec.ts:144:30
+
+    Error Context: test-results/lawyershub-case-creation-L-d75b5-e-Case-→-Verify-Persistence-chromium/error-context.md
+
+
+[2/2] [chromium] › tests/lawyershub-case-creation.spec.ts:164:7 › LawyersHub Case Creation Journey (BATTLE-1B) › L6: Tenant Isolation - Cross-tenant case access blocked
+[WebServer]  GET /signup 200 in 53ms (next.js: 3ms, proxy.ts: 4ms, application-code: 46ms)
+
+[WebServer]  POST /api/auth/signup 201 in 86ms (next.js: 2ms, proxy.ts: 6ms, application-code: 78ms)
+
+[WebServer]  GET /workspace 200 in 26ms (next.js: 2ms, proxy.ts: 5ms, application-code: 19ms)
+
+[WebServer]  GET /workspace 200 in 37ms (next.js: 6ms, proxy.ts: 6ms, application-code: 25ms)
+
+[WebServer]  GET /api/session 200 in 24ms (next.js: 5ms, proxy.ts: 7ms, application-code: 11ms)
+
+[WebServer]  GET /api/tenant 200 in 29ms (next.js: 11ms, proxy.ts: 6ms, application-code: 12ms)
+
+[WebServer]  GET /api/tenant 200 in 35ms (next.js: 7ms, proxy.ts: 8ms, application-code: 20ms)
+
+[WebServer]  GET /api/session 200 in 18ms (next.js: 5ms, proxy.ts: 9ms, application-code: 5ms)
+
+[WebServer]  GET /api/tenant 200 in 14ms (next.js: 1915µs, proxy.ts: 4ms, application-code: 9ms)
+
+[WebServer]  POST /api/workspace 201 in 24ms (next.js: 3ms, proxy.ts: 3ms, application-code: 18ms)
+
+[WebServer]  GET /api/tenant 200 in 30ms (next.js: 9ms, proxy.ts: 11ms, application-code: 10ms)
+
+[chromium] › tests/lawyershub-case-creation.spec.ts:164:7 › LawyersHub Case Creation Journey (BATTLE-1B) › L6: Tenant Isolation - Cross-tenant case access blocked
+[1B-ISO-001] User A Workspace 0: ID: workspace-620d474b-2ddc-4bf5-b3e7-d2aca9c676b5
+
+[1B-ISO-001] User A Workspace 1: ID: workspace-34fd6faf-6f11-4ff7-a992-df735bd29884
+
+[WebServer]  GET /api/cases/list 200 in 11ms (next.js: 3ms, proxy.ts: 4ms, application-code: 4ms)
+
+[WebServer]  GET /api/cases/list 200 in 10ms (next.js: 2ms, proxy.ts: 4ms, application-code: 4ms)
+
+[WebServer] [POST /api/cases/create] Cookie header received: eos-workspace-session=eyJzZXNzaW9uSWQiOiJzZXNzaW9uLTA2NWVlMTMyLWQ5YmQtNGE3NC1iZmYwLWIxNTYzYWY1ZDlhMyIsImFjdG9ySWQiOiJ1c2VyLWE1MDg5NDI1LWQ3NDktNDUzNS04Y2MxLWE5ZmFiYWFhMmIwZSIsImFjdG9yTGFiZWwiOiJMYXd5ZX...
+
+[WebServer] [POST /api/cases/create] Session cookie value (truncated): eyJzZXNzaW9uSWQiOiJzZXNzaW9uLTA2NWVlMTMyLWQ5YmQtNGE3NC1iZmYwLWIxNTYzYWY1ZDlhMyIsImFjdG9ySWQiOiJ1c2Vy...
+
+[WebServer] [POST /api/cases/create] Decoded session: {"sessionId":"session-065ee132-d9bd-4a74-bff0-b1563af5d9a3","actorId":"user-a5089425-d749-4535-8cc1-a9fabaaa2b0e","actorLabel":"Lawyer A","tenantId":"tenant-f60aee5a-465c-44d6-8e8f-374ee5c997fa","workspaceId":"workspace-34fd6faf-6f11-4ff7-a992-df735bd29884","productId":"services-id.default","issuedAt":"2026-08-13T04:21:00.353Z"}
+
+[WebServer]  POST /api/cases/create 201 in 72ms (next.js: 53ms, proxy.ts: 3ms, application-code: 16ms)
+
+[WebServer]  GET /api/cases/list 200 in 10ms (next.js: 3ms, proxy.ts: 4ms, application-code: 4ms)
+
+[1B-ISO-001] User A created case: case-101 in workspace: workspace-620d474b-2ddc-4bf5-b3e7-d2aca9c676b5
+
+[WebServer]  GET /signup 200 in 68ms (next.js: 3ms, proxy.ts: 8ms, application-code: 57ms)
+
+[WebServer]  POST /api/auth/signup 201 in 85ms (next.js: 5ms, proxy.ts: 5ms, application-code: 76ms)
+
+[WebServer]  GET /workspace 200 in 26ms (next.js: 4ms, proxy.ts: 4ms, application-code: 19ms)
+
+[WebServer]  GET /workspace 200 in 33ms (next.js: 2ms, proxy.ts: 6ms, application-code: 25ms)
+
+[WebServer]  GET /api/session 200 in 25ms (next.js: 5ms, proxy.ts: 6ms, application-code: 14ms)
+
+[WebServer]  GET /api/tenant 200 in 29ms (next.js: 8ms, proxy.ts: 6ms, application-code: 15ms)
+
+[WebServer]  GET /api/tenant 200 in 31ms (next.js: 10ms, proxy.ts: 7ms, application-code: 14ms)
+
+[WebServer]  GET /api/session 200 in 11ms (next.js: 1861µs, proxy.ts: 4ms, application-code: 5ms)
+
+[WebServer]  GET /api/tenant 200 in 12ms (next.js: 2ms, proxy.ts: 3ms, application-code: 7ms)
+
+[WebServer]  POST /api/workspace 201 in 22ms (next.js: 2ms, proxy.ts: 3ms, application-code: 16ms)
+
+[WebServer]  GET /api/tenant 200 in 21ms (next.js: 5ms, proxy.ts: 6ms, application-code: 11ms)
+
+[1B-ISO-001] User B Workspace 0: ID: workspace-5ed03809-768f-4143-820b-231e267cd904
+
+[1B-ISO-001] User B Workspace 1: ID: workspace-84310711-69e7-41d6-81ea-8c5af7f8cc09
+
+[1B-ISO-001] User B created workspace: workspace-5ed03809-768f-4143-820b-231e267cd904
+
+[WebServer]  GET /api/cases/list 200 in 13ms (next.js: 4ms, proxy.ts: 5ms, application-code: 4ms)
+
+[WebServer]  GET /api/cases/list 200 in 11ms (next.js: 4ms, proxy.ts: 4ms, application-code: 4ms)
+
+[WebServer] [capability-registry] Original error in command execution: Error: [case.getById] Case does not belong to the current tenant/workspace - access denied
+[WebServer]     at Object.execute (../../capabilities/legal-case/implementation/commands/get-case-by-id.command.ts:67:13)
+[WebServer]     at async Object.invokeAsync (../../packages/core/kernel/src/registry/capability-command-registry.ts:190:22)
+[WebServer]     at async GET (app/api/domain/[aggregateId]/route.ts:72:22)
+[WebServer]   65 |     // Additional case-level tenant isolation check
+[WebServer]   66 |     if ((c as any).tenantId !== tenantId || (c as any).workspaceId !== workspaceId) {
+[WebServer] > 67 |       throw new Error("[case.getById] Case does not belong to the current tenant/workspace...
+[WebServer]      |             ^
+[WebServer]   68 |     }
+[WebServer]   69 |
+[WebServer]   70 |     const evidenceCount = DocumentRepositoryInMemory.list().filter((d: { readonly matterId...
+
+[WebServer] [GET /api/domain/case-101] Error: [case.getById] Case does not belong to the current tenant/workspace - access denied
+
+[WebServer]  GET /api/domain/case-101 401 in 1142ms (next.js: 919ms, proxy.ts: 9ms, application-code: 215ms)
+
+[1B-ISO-001] Cross-tenant case access attempt result: OK=false, STATUS=401
+
+[1B-ISO-001] ✅ Tenant isolation verified: User B cannot access User A's case (received 401)
+
+  1 failed
+    [chromium] › tests/lawyershub-case-creation.spec.ts:22:7 › LawyersHub Case Creation Journey (BATTLE-1B) › L1-L5: Signup → LawyersHub Workspace → Create Case → Verify Persistence 
+  1 passed (38.3s)
+
+[36m  Serving HTML report at http://localhost:9323. Press Ctrl+C to quit.[39m

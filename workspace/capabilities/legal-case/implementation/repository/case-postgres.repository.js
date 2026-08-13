@@ -7,10 +7,8 @@ const case_contracts_1 = require("../contracts/case.contracts");
 class CaseRepositoryPostgresImpl extends base_repository_1.PostgresRepository {
     entityName = "Case";
     kind = "repository";
-    pool;
     constructor() {
         super("cases");
-        this.pool = this.pool;
     }
     // Convert database record to domain aggregate
     toAggregate(record) {

@@ -16,7 +16,7 @@ export async function GET(request: Request) {
 
     const sessionValue = sessionCookie.split("=")[1];
     const session = decodeWorkspaceSession(sessionValue);
-    if (!session || !session.tenantId || !session.workspaceId || !session.userId || !session.sessionId) {
+    if (!session || !session.tenantId || !session.workspaceId || !session.actorId || !session.sessionId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }
 
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
       sessionId: session.sessionId,
       tenantId: session.tenantId,
       workspaceId: session.workspaceId,
-      actorId: session.userId,
+      actorId: session.actorId,
     });
 
     if (!output) {

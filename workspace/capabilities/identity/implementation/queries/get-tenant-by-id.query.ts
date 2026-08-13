@@ -41,11 +41,12 @@ export const getTenantByIdQuery: GetTenantByIdQuery = {
       return undefined;
     }
 
+    const tenantCreatedAt = tenant.createdAt ?? new Date();
     return {
       id: tenant.id,
       name: tenant.name,
       slug: tenant.slug,
-      createdAt: tenant.createdAt.toISOString(),
+      createdAt: tenantCreatedAt.toISOString(),
     };
   },
 };

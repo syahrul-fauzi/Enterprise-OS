@@ -206,7 +206,7 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
           tenantId: tenantEntity.id,
           workspaceId: workspaceEntity.id,
           productId,
-          issuedAt: sessionEntity.issuedAt.toISOString(),
+          issuedAt: (sessionEntity.issuedAt ?? new Date()).toISOString(),
         } as WorkspaceSession),
         options: {
           httpOnly: true,

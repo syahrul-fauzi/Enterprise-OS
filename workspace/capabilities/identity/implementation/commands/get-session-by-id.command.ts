@@ -45,7 +45,9 @@ export const getSessionByIdCommand: CapabilityCommand<
       return undefined;
     }
 
-    if (aggregate.expiresAt.getTime() <= Date.now()) {
+    const sessionIssuedAt = aggregate.issuedAt ?? new Date();
+    const sessionExpiresAt = aggregate.expiresAt ?? new Date(Date.now() + 86400000);
+    if (sessionExpiresAt.getTime() <= Date.now()) {
       return undefined;
     }
 
@@ -57,7 +59,7 @@ export const getSessionByIdCommand: CapabilityCommand<
         tenantId: aggregate.tenantId,
         workspaceId: aggregate.workspaceId,
         productId: aggregate.productId,
-        issuedAt: aggregate.issuedAt.toISOString(),
+        issuedAt: sessionIssuedAt.toISOString(),
       },
       authenticated: true,
     };

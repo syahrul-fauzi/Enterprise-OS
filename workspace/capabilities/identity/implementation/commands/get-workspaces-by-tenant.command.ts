@@ -80,22 +80,24 @@ export const getWorkspacesByTenantCommand: GetWorkspacesByTenantCommand = {
     // 7. Map workspaces with their membership details (enforce only workspaces user is member of)
     const workspaceDetails = workspaces.map((w) => {
       const membership = userMemberships.find((m) => m.workspaceId === w.id);
+      const workspaceCreatedAt = w.createdAt ?? new Date();
       return {
         id: w.id,
         name: w.name,
         productId: w.productId,
-        createdAt: w.createdAt.toISOString(),
+        createdAt: workspaceCreatedAt.toISOString(),
         role: membership?.role ?? null,
         membershipId: membership?.id ?? null,
       };
     }).filter(ws => ws.membershipId !== null); // Remove any workspaces user doesn't have membership for
 
+    const tenantCreatedAt = tenant.createdAt ?? new Date();
     return {
       tenant: {
         id: tenant.id,
         name: tenant.name,
         slug: tenant.slug,
-        createdAt: tenant.createdAt.toISOString(),
+        createdAt: tenantCreatedAt.toISOString(),
       },
       workspaces: workspaceDetails,
       actorId: parsed.actorId,

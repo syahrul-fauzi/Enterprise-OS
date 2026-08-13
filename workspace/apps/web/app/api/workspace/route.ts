@@ -85,6 +85,7 @@ export async function POST(request: Request) {
       membership: output.membership,
     }, { status: 201 });
   } catch (error) {
+    console.error("[API /api/workspace POST] ERROR STACK:", error);
     const message = error instanceof Error ? error.message : "Failed to create workspace";
     const status = message.includes("required") || message.includes("Tenant not found") ? 422 : 500;
     return NextResponse.json({ ok: false, error: message }, { status });
