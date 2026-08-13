@@ -1,15 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.defaultRequirementVerificationStatus = exports.defaultRequirementPriority = exports.defaultRequirementStatus = exports.newRequirementId = exports.RequirementRepositoryCurrent = exports.RequirementRepositoryFileBacked = exports.RequirementRepositoryInMemory = void 0;
-const node_fs_1 = require("node:fs");
-const node_path_1 = require("node:path");
-const contracts_1 = require("../contracts");
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
+import { RequirementId, } from "../contracts";
 const seed = () => {
     const now = Date.now();
     const d = (offsetDays) => new Date(now - 1000 * 60 * 60 * 24 * offsetDays);
     return [
         {
-            id: (0, contracts_1.RequirementId)("req-001"),
+            id: RequirementId("req-001"),
             title: "Workspace can capture requirements as first-class records",
             summary: "Users need a canonical requirement register inside LawyersHub.",
             description: "Requirement records must preserve title, owner, priority, source, linked capability IDs, and acceptance criteria.",
@@ -32,7 +29,7 @@ const seed = () => {
             verifiedAt: d(0),
         },
         {
-            id: (0, contracts_1.RequirementId)("req-002"),
+            id: RequirementId("req-002"),
             title: "Requirement status must follow delivery progression",
             summary: "The platform needs visible requirement progression to manage delivery risk.",
             status: "verified",
@@ -53,7 +50,7 @@ const seed = () => {
             verifiedAt: d(0),
         },
         {
-            id: (0, contracts_1.RequirementId)("req-003"),
+            id: RequirementId("req-003"),
             title: "Verified requirements unlock downstream traceability work",
             summary: "Requirement verification should prepare the system for RTM and evidence registry.",
             status: "verified",
@@ -74,7 +71,7 @@ const seed = () => {
             verifiedAt: d(3),
         },
         {
-            id: (0, contracts_1.RequirementId)("req-009"),
+            id: RequirementId("req-009"),
             title: "BaseSearchBar Shared Component Refactor",
             summary: "Refactor komponen search bar menjadi BaseSearchBar yang reusable untuk menghilangkan duplikasi kode",
             description: "Membuat komponen BaseSearchBar shared yang dapat digunakan oleh semua halaman search (Community, Research) dengan dukungan filter dinamis.",
@@ -97,7 +94,7 @@ const seed = () => {
             verifiedAt: d(1),
         },
         {
-            id: (0, contracts_1.RequirementId)("req-010"),
+            id: RequirementId("req-010"),
             title: "Location Filter untuk /community Page",
             summary: "Tambahkan filter lokasi pada halaman komunitas agar pengguna dapat menyaring anggota berdasarkan wilayah",
             status: "verified",
@@ -121,7 +118,7 @@ const seed = () => {
             verifiedAt: d(3),
         },
         {
-            id: (0, contracts_1.RequirementId)("req-011"),
+            id: RequirementId("req-011"),
             title: "Visible Proof Panel untuk Requirements Page",
             summary: "Tampilkan traceability dan proof status requirement secara end-to-end agar manusia dapat melihat bukti verifikasi",
             description: "EOS harus mampu menjawab 6 pertanyaan manusia untuk setiap requirement: apa yang diminta, di mana ditrace, implementasinya apa, evidence-nya apa, verdict-nya apa, dan apakah benar-benar proven.",
@@ -147,7 +144,7 @@ const seed = () => {
             verifiedAt: d(0),
         },
         {
-            id: (0, contracts_1.RequirementId)("req-042"),
+            id: RequirementId("req-042"),
             title: "REQ-0042: Ambiguous verification state requirement",
             summary: "Test requirement with unknown verification status to trigger AI investigation",
             description: "Requirement created specifically to test the AI-on-demand path for ambiguous UNKNOWN verification status",
@@ -173,7 +170,7 @@ const seed = () => {
         // LAWYERSHUB - REAL USER JOB REQUIREMENTS
         // ============================================================
         {
-            id: (0, contracts_1.RequirementId)("req-lh-001"),
+            id: RequirementId("req-lh-001"),
             title: "Create and manage corporate litigation matter",
             summary: "First real legal matter: PT Maju Bersama vs PT Teknologi Nusantara - corporate litigation dispute",
             description: "Real client matter for corporate litigation case with document management, timeline tracking, and client approval workflow.",
@@ -197,7 +194,7 @@ const seed = () => {
             verifiedAt: undefined,
         },
         {
-            id: (0, contracts_1.RequirementId)("req-lh-002"),
+            id: RequirementId("req-lh-002"),
             title: "Client profile management for corporate clients",
             summary: "Manage PT Maju Bersama client profile with complete corporate information",
             description: "Client onboarding workflow for corporate legal clients with KYC verification and contact management.",
@@ -221,7 +218,7 @@ const seed = () => {
             verifiedAt: d(1),
         },
         {
-            id: (0, contracts_1.RequirementId)("req-lh-003"),
+            id: RequirementId("req-lh-003"),
             title: "Document version control for case materials",
             summary: "Track pleading document versions for PT Maju Bersama litigation case",
             description: "Version control system for legal documents with audit trail of all changes and approvals.",
@@ -245,7 +242,7 @@ const seed = () => {
             verifiedAt: undefined,
         },
         {
-            id: (0, contracts_1.RequirementId)("req-lh-004"),
+            id: RequirementId("req-lh-004"),
             title: "Court deadline tracking system",
             summary: "Track all filing deadlines for PT Maju Bersama vs PT Teknologi Nusantara case",
             description: "Automated deadline tracking with reminders for court filings, hearings, and client submissions.",
@@ -272,7 +269,7 @@ const seed = () => {
         // SERVICES.ID - REAL USER JOB REQUIREMENTS
         // ============================================================
         {
-            id: (0, contracts_1.RequirementId)("req-svc-001"),
+            id: RequirementId("req-svc-001"),
             title: "Find and request corporate legal services",
             summary: "User request: Find corporate lawyer for contract review in Jakarta",
             description: "First real service request - user searches for and engages a corporate lawyer to review IT service contract.",
@@ -296,7 +293,7 @@ const seed = () => {
             verifiedAt: undefined,
         },
         {
-            id: (0, contracts_1.RequirementId)("req-svc-002"),
+            id: RequirementId("req-svc-002"),
             title: "Provider profile verification for legal services",
             summary: "Verify corporate law firm profiles listed on Services.ID platform",
             description: "Verification workflow for service providers to confirm credentials, licenses, and professional liability insurance.",
@@ -320,7 +317,7 @@ const seed = () => {
             verifiedAt: d(2),
         },
         {
-            id: (0, contracts_1.RequirementId)("req-svc-003"),
+            id: RequirementId("req-svc-003"),
             title: "Secure payment escrow for service delivery",
             summary: "Implement escrow payment system for IT contract review engagement",
             description: "Secure payment handling where funds are held in escrow until service is satisfactorily completed.",
@@ -347,7 +344,7 @@ const seed = () => {
         // ILC - REAL USER JOB REQUIREMENTS
         // ============================================================
         {
-            id: (0, contracts_1.RequirementId)("req-ilc-001"),
+            id: RequirementId("req-ilc-001"),
             title: "Publish Constitutional Law analysis",
             summary: "Article: Judicial Review in Indonesian Constitutional Court - 2024 Update",
             description: "First community contributed content analyzing recent constitutional court decisions on digital rights and internet regulation.",
@@ -371,7 +368,7 @@ const seed = () => {
             verifiedAt: d(1),
         },
         {
-            id: (0, contracts_1.RequirementId)("req-ilc-002"),
+            id: RequirementId("req-ilc-002"),
             title: "International Trade Law discussion thread",
             summary: "Community discussion: ASEAN Digital Trade Agreement legal implications",
             description: "Engage community members in discussion about new ASEAN digital trade rules and their impact on Indonesian businesses.",
@@ -395,7 +392,7 @@ const seed = () => {
             verifiedAt: undefined,
         },
         {
-            id: (0, contracts_1.RequirementId)("req-ilc-003"),
+            id: RequirementId("req-ilc-003"),
             title: "Human Rights Law webinar series",
             summary: "Upcoming webinar: Digital Privacy Rights after the 2024 Personal Data Protection Act",
             description: "Organize community webinar featuring speakers from Kominfo, civil society, and private sector on PDP implementation.",
@@ -419,7 +416,7 @@ const seed = () => {
             verifiedAt: undefined,
         },
         {
-            id: (0, contracts_1.RequirementId)("req-ilc-004"),
+            id: RequirementId("req-ilc-004"),
             title: "Digital Law resource repository",
             summary: "Collection of Indonesian digital legislation and regulatory guidance",
             description: "Curated repository of all Indonesian laws related to digital technology, data protection, and e-commerce with annotations.",
@@ -443,7 +440,7 @@ const seed = () => {
             verifiedAt: undefined,
         },
         {
-            id: (0, contracts_1.RequirementId)("req-012"),
+            id: RequirementId("req-012"),
             title: "Causal Trace untuk Requirement Dependencies",
             summary: "Tampilkan hubungan sebab-akibat antar requirement sehingga manusia dapat memahami mengapa sebuah requirement ada",
             description: "EOS harus mampu menunjukkan hubungan causal antar requirement yang sudah terbukti, dimulai dari REQ-009 yang meng-enable REQ-010. Setiap node dalam trace harus memiliki evidence reference yang nyata.",
@@ -484,10 +481,10 @@ function resolveRequirementStoragePath() {
     return raw && raw.length > 0 ? raw : undefined;
 }
 function readFileStore(path) {
-    if (!(0, node_fs_1.existsSync)(path)) {
+    if (!existsSync(path)) {
         return hydrate();
     }
-    const raw = (0, node_fs_1.readFileSync)(path, "utf8").trim();
+    const raw = readFileSync(path, "utf8").trim();
     if (raw.length === 0) {
         return hydrate();
     }
@@ -500,9 +497,9 @@ function readFileStore(path) {
     return store;
 }
 function writeFileStore(path, store) {
-    (0, node_fs_1.mkdirSync)((0, node_path_1.dirname)(path), { recursive: true });
+    mkdirSync(dirname(path), { recursive: true });
     const payload = Array.from(store.values()).map(toRecord);
-    (0, node_fs_1.writeFileSync)(path, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+    writeFileSync(path, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
 }
 function clone(entity) {
     return {
@@ -548,7 +545,7 @@ function toRecord(entity) {
 }
 function fromRecord(record) {
     return {
-        id: (0, contracts_1.RequirementId)(record.id),
+        id: RequirementId(record.id),
         title: record.title,
         ...(record.summary !== undefined ? { summary: record.summary } : {}),
         ...(record.description !== undefined ? { description: record.description } : {}),
@@ -569,7 +566,7 @@ function fromRecord(record) {
         ...(record.verifiedAt !== undefined ? { verifiedAt: new Date(record.verifiedAt) } : {}),
     };
 }
-exports.RequirementRepositoryInMemory = {
+export const RequirementRepositoryInMemory = {
     kind: "repository",
     entityName: "Requirement",
     byId(id) {
@@ -593,13 +590,13 @@ exports.RequirementRepositoryInMemory = {
         return STORE.delete(id);
     },
 };
-exports.RequirementRepositoryFileBacked = {
+export const RequirementRepositoryFileBacked = {
     kind: "repository",
     entityName: "Requirement",
     byId(id) {
         const path = resolveRequirementStoragePath();
         if (!path) {
-            return exports.RequirementRepositoryInMemory.byId(id);
+            return RequirementRepositoryInMemory.byId(id);
         }
         const raw = readFileStore(path).get(id);
         return raw !== undefined ? clone(raw) : undefined;
@@ -607,14 +604,14 @@ exports.RequirementRepositoryFileBacked = {
     list() {
         const path = resolveRequirementStoragePath();
         if (!path) {
-            return exports.RequirementRepositoryInMemory.list();
+            return RequirementRepositoryInMemory.list();
         }
         return Array.from(readFileStore(path).values()).map(clone);
     },
     save(entity) {
         const path = resolveRequirementStoragePath();
         if (!path) {
-            return exports.RequirementRepositoryInMemory.save(entity);
+            return RequirementRepositoryInMemory.save(entity);
         }
         const store = readFileStore(path);
         const updated = {
@@ -630,7 +627,7 @@ exports.RequirementRepositoryFileBacked = {
     remove(id) {
         const path = resolveRequirementStoragePath();
         if (!path) {
-            return exports.RequirementRepositoryInMemory.remove(id);
+            return RequirementRepositoryInMemory.remove(id);
         }
         const store = readFileStore(path);
         const removed = store.delete(id);
@@ -638,18 +635,18 @@ exports.RequirementRepositoryFileBacked = {
         return removed;
     },
 };
-exports.RequirementRepositoryCurrent = resolveRequirementStoragePath() !== undefined
-    ? exports.RequirementRepositoryFileBacked
-    : exports.RequirementRepositoryInMemory;
-exports.newRequirementId = (() => {
+export const RequirementRepositoryCurrent = resolveRequirementStoragePath() !== undefined
+    ? RequirementRepositoryFileBacked
+    : RequirementRepositoryInMemory;
+export const newRequirementId = (() => {
     return () => {
-        const highest = exports.RequirementRepositoryCurrent.list()
+        const highest = RequirementRepositoryCurrent.list()
             .map((item) => /^req-(\d+)$/.exec(item.id)?.[1])
             .map((value) => (value ? Number.parseInt(value, 10) : 0))
             .reduce((max, current) => Math.max(max, current), 100);
-        return (0, contracts_1.RequirementId)(`req-${String(highest + 1).padStart(3, "0")}`);
+        return RequirementId(`req-${String(highest + 1).padStart(3, "0")}`);
     };
 })();
-exports.defaultRequirementStatus = "draft";
-exports.defaultRequirementPriority = "medium";
-exports.defaultRequirementVerificationStatus = "not_ready";
+export const defaultRequirementStatus = "draft";
+export const defaultRequirementPriority = "medium";
+export const defaultRequirementVerificationStatus = "not_ready";

@@ -1,0 +1,41 @@
+{
+  "work_id": "REQ-1D-001",
+  "recon_completed_at": "2026-08-13T00:00:00.000Z",
+  "locked_boundaries_verified": {
+    "IDENTITY_SESSION_RAIL": true,
+    "POSTGRES_RAIL": true,
+    "THIN_APP_BOUNDARY": true,
+    "REPLAY_EVIDENCE_RAIL": true
+  },
+  "existing_capabilities_found": ["requirement-management (existing, underutilized)"],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "SessionRepositoryPostgres (identity)",
+      "initIdentitySchema (identity)",
+      "zod validation pattern",
+      "tenant/workspace isolation logic",
+      "API route session cookie pattern",
+      "capability command schema"
+    ],
+    "required_new": [
+      "Add session/tenant/workspace context to CreateRequirementInput",
+      "Add session/tenant/workspace context to UpdateRequirementInput",
+      "Update createRequirement command to enforce isolation",
+      "Update updateRequirement command to enforce isolation",
+      "Update service layer to support async command execution",
+      "Fix grantedByDefault for create/update permissions"
+    ],
+    "reuse_percentage": 85.7
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "MINIMAL FIX completed: requirement-management now fully uses foundation rails, no foundation changes required",
+    "BATTLE-1D candidate: 'User creates requirement in LawyersHub workspace' - end-to-end workflow that validates all 4 recon questions",
+    "Requirement-management is the highest-leverage user job: already bound to 4 products, only needs 6 small changes to be fully functional",
+    "identity/session/workspace rail remains fully sufficient for complex workflows - no changes needed to foundation"
+  ]
+}

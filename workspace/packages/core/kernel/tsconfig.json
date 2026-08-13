@@ -10,6 +10,6 @@
       "@capabilities/*": ["../../../capabilities/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src"]
   "exclude": ["dist", "build", "node_modules"]
 }

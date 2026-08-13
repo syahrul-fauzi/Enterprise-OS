@@ -54,6 +54,11 @@ export interface CreateRequirementInput {
   readonly source?: string;
   readonly linkedCapabilityIds?: readonly string[];
   readonly acceptanceCriteria?: readonly string[];
+  // Required context for tenant isolation
+  readonly sessionId: string;
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
 }
 
 export interface CreateRequirementOutput {
@@ -73,6 +78,11 @@ export interface UpdateRequirementInput {
   readonly source?: string;
   readonly linkedCapabilityIds?: readonly string[];
   readonly acceptanceCriteria?: readonly string[];
+  // Required context for tenant isolation
+  readonly sessionId: string;
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
 }
 
 export interface UpdateRequirementOutput {
@@ -83,6 +93,11 @@ export interface UpdateRequirementOutput {
 
 export interface ApproveRequirementInput {
   readonly id: RequirementId;
+  // Required context for tenant isolation
+  readonly sessionId: string;
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
 }
 
 export interface ApproveRequirementOutput {
@@ -93,6 +108,11 @@ export interface ApproveRequirementOutput {
 
 export interface StartRequirementDeliveryInput {
   readonly id: RequirementId;
+  // Required context for tenant isolation
+  readonly sessionId: string;
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
 }
 
 export interface StartRequirementDeliveryOutput {
@@ -102,6 +122,11 @@ export interface StartRequirementDeliveryOutput {
 
 export interface MarkRequirementImplementedInput {
   readonly id: RequirementId;
+  // Required context for tenant isolation
+  readonly sessionId: string;
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
 }
 
 export interface MarkRequirementImplementedOutput {
@@ -112,6 +137,11 @@ export interface MarkRequirementImplementedOutput {
 
 export interface VerifyRequirementInput {
   readonly id: RequirementId;
+  // Required context for tenant isolation
+  readonly sessionId: string;
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
 }
 
 export interface VerifyRequirementOutput {

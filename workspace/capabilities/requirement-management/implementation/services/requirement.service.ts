@@ -235,8 +235,8 @@ function verifyDigestIntegrityForEvidencePaths(
 export class RequirementService {
   readonly repositories = { Requirement: RequirementRepositoryCurrent } as const;
 
-  createRequirement(input: CreateRequirementInput): CreateRequirementOutput {
-    const result = createRequirement.execute(input) as CreateRequirementOutput;
+  async createRequirement(input: CreateRequirementInput): Promise<CreateRequirementOutput> {
+    const result = await createRequirement.execute(input) as CreateRequirementOutput;
     recordRuntimeInvocation({
       capabilityId: "requirement-management",
       operationId: "create-requirement",
@@ -248,8 +248,8 @@ export class RequirementService {
     return result;
   }
 
-  updateRequirement(input: UpdateRequirementInput): UpdateRequirementOutput {
-    const result = updateRequirement.execute(input) as UpdateRequirementOutput;
+  async updateRequirement(input: UpdateRequirementInput): Promise<UpdateRequirementOutput> {
+    const result = await updateRequirement.execute(input) as UpdateRequirementOutput;
     recordRuntimeInvocation({
       capabilityId: "requirement-management",
       operationId: "update-requirement",

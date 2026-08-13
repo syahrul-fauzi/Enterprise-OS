@@ -1,44 +1,40 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.caseCommands = exports.listCasesByWorkspace = exports.assignLawyer = exports.closeCase = exports.createCase = void 0;
-exports.nextCaseId = nextCaseId;
-const zod_1 = require("zod");
-const repository_1 = require("../repository");
-const case_postgres_repository_1 = require("../repository/case-postgres.repository");
-const base_repository_1 = require("../../../identity/implementation/repositories/base.repository");
-const session_repository_1 = require("../../../identity/implementation/repositories/session.repository");
-const CreateCaseWithContextSchema = zod_1.z.object({
-    title: zod_1.z.string().min(1),
-    description: zod_1.z.string().optional(),
-    priority: zod_1.z.enum(["low", "medium", "high", "critical"]).optional(),
+import { z } from "zod";
+import { newCaseId, defaultCasePriority, defaultCaseStatus } from "../repository";
+import { CaseRepositoryPostgres } from "../repository/case-postgres.repository";
+import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
+import { SessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository";
+const CreateCaseWithContextSchema = z.object({
+    title: z.string().min(1),
+    description: z.string().optional(),
+    priority: z.enum(["low", "medium", "high", "critical"]).optional(),
     // Required context for tenant isolation
-    sessionId: zod_1.z.string().min(1),
-    tenantId: zod_1.z.string().min(1),
-    workspaceId: zod_1.z.string().min(1),
-    actorId: zod_1.z.string().min(1),
+    sessionId: z.string().min(1),
+    tenantId: z.string().min(1),
+    workspaceId: z.string().min(1),
+    actorId: z.string().min(1),
 });
-const ListCasesWithContextSchema = zod_1.z.object({
-    query: zod_1.z.string().optional(),
-    status: zod_1.z.enum(["draft", "open", "in_progress", "closed", "all"]).optional(),
-    priority: zod_1.z.enum(["low", "medium", "high", "critical", "all"]).optional(),
-    limit: zod_1.z.number().int().min(1).max(100).default(20),
-    offset: zod_1.z.number().int().min(0).default(0),
+const ListCasesWithContextSchema = z.object({
+    query: z.string().optional(),
+    status: z.enum(["draft", "open", "in_progress", "closed", "all"]).optional(),
+    priority: z.enum(["low", "medium", "high", "critical", "all"]).optional(),
+    limit: z.number().int().min(1).max(100).default(20),
+    offset: z.number().int().min(0).default(0),
     // Required context for tenant isolation
-    sessionId: zod_1.z.string().min(1),
-    tenantId: zod_1.z.string().min(1),
-    workspaceId: zod_1.z.string().min(1),
-    actorId: zod_1.z.string().min(1),
+    sessionId: z.string().min(1),
+    tenantId: z.string().min(1),
+    workspaceId: z.string().min(1),
+    actorId: z.string().min(1),
 });
-exports.createCase = {
+export const createCase = {
     kind: "command",
     name: "case.create",
     version: "2.0.0",
     async execute(input) {
-        await (0, base_repository_1.initIdentitySchema)();
+        await initIdentitySchema();
         const parsed = CreateCaseWithContextSchema.parse(input);
         const { title, description, priority, tenantId, workspaceId, sessionId, actorId } = parsed;
         // 1. Validate session exists and is active (enforce authentication)
-        const session = await session_repository_1.SessionRepositoryPostgres.byId(sessionId);
+        const session = await SessionRepositoryPostgres.byId(sessionId);
         if (!session || session.revokedAt !== null) {
             throw new Error("[case.create] Invalid or revoked session - authentication violation");
         }
@@ -55,30 +51,30 @@ exports.createCase = {
             throw new Error("[case.create] Cross-workspace access attempt blocked - security violation");
         }
         const entity = {
-            id: (0, repository_1.newCaseId)(),
+            id: newCaseId(),
             title: title.trim(),
             ...(description !== undefined && description !== ""
                 ? { description: description }
                 : {}),
-            status: repository_1.defaultCaseStatus,
-            priority: priority ?? repository_1.defaultCasePriority,
+            status: defaultCaseStatus,
+            priority: priority ?? defaultCasePriority,
             createdAt: new Date(),
             updatedAt: new Date(),
         };
         // Add tenant/workspace context for isolation
         entity.tenantId = tenantId;
         entity.workspaceId = workspaceId;
-        await case_postgres_repository_1.CaseRepositoryPostgres.save(entity);
+        await CaseRepositoryPostgres.save(entity);
         return { id: entity.id, status: entity.status };
     },
 };
-exports.closeCase = {
+export const closeCase = {
     kind: "command",
     name: "case.close",
     version: "2.0.0",
     async execute(input) {
-        await (0, base_repository_1.initIdentitySchema)();
-        const current = await case_postgres_repository_1.CaseRepositoryPostgres.byId(input.id);
+        await initIdentitySchema();
+        const current = await CaseRepositoryPostgres.byId(input.id);
         if (current === undefined) {
             throw new Error(`[case.close] Case not found: ${input.id}`);
         }
@@ -87,17 +83,17 @@ exports.closeCase = {
         }
         const closedAt = new Date();
         const next = { ...current, status: "closed", closedAt };
-        await case_postgres_repository_1.CaseRepositoryPostgres.save(next);
+        await CaseRepositoryPostgres.save(next);
         return { id: next.id, status: "closed", closedAt };
     },
 };
-exports.assignLawyer = {
+export const assignLawyer = {
     kind: "command",
     name: "case.assignLawyer",
     version: "2.0.0",
     async execute(input) {
-        await (0, base_repository_1.initIdentitySchema)();
-        const current = await case_postgres_repository_1.CaseRepositoryPostgres.byId(input.id);
+        await initIdentitySchema();
+        const current = await CaseRepositoryPostgres.byId(input.id);
         if (current === undefined) {
             throw new Error(`[case.assignLawyer] Case not found: ${input.id}`);
         }
@@ -110,20 +106,20 @@ exports.assignLawyer = {
             lawyerId: input.lawyerId,
             status: nextStatus,
         };
-        await case_postgres_repository_1.CaseRepositoryPostgres.save(next);
+        await CaseRepositoryPostgres.save(next);
         return { id: next.id, lawyerId: next.lawyerId, status: next.status };
     },
 };
-exports.listCasesByWorkspace = {
+export const listCasesByWorkspace = {
     kind: "command",
     name: "case.listByWorkspace",
     version: "2.0.0",
     async execute(input) {
-        await (0, base_repository_1.initIdentitySchema)();
+        await initIdentitySchema();
         const parsed = ListCasesWithContextSchema.parse(input);
         const { sessionId, tenantId, workspaceId, actorId, limit, offset } = parsed;
         // Validate session exists and is active
-        const session = await session_repository_1.SessionRepositoryPostgres.byId(sessionId);
+        const session = await SessionRepositoryPostgres.byId(sessionId);
         if (!session) {
             throw new Error("[case.listByWorkspace] Invalid or expired session");
         }
@@ -138,7 +134,7 @@ exports.listCasesByWorkspace = {
             throw new Error("[case.listByWorkspace] Session actor mismatch - authentication violation");
         }
         // Get all cases for this workspace (already filtered by workspace for isolation)
-        const allWorkspaceCases = await case_postgres_repository_1.CaseRepositoryPostgres.listByWorkspace(workspaceId);
+        const allWorkspaceCases = await CaseRepositoryPostgres.listByWorkspace(workspaceId);
         // Apply filters if provided
         let filteredCases = [...allWorkspaceCases];
         // Filter by status if not "all"
@@ -166,14 +162,14 @@ exports.listCasesByWorkspace = {
         };
     },
 };
-const get_case_by_id_command_1 = require("./get-case-by-id.command");
-exports.caseCommands = {
-    "case.create": exports.createCase,
-    "case.close": exports.closeCase,
-    "case.assignLawyer": exports.assignLawyer,
-    "case.getById": get_case_by_id_command_1.getCaseByIdCommand,
-    "case.listByWorkspace": exports.listCasesByWorkspace,
+import { getCaseByIdCommand } from "./get-case-by-id.command";
+export const caseCommands = {
+    "case.create": createCase,
+    "case.close": closeCase,
+    "case.assignLawyer": assignLawyer,
+    "case.getById": getCaseByIdCommand,
+    "case.listByWorkspace": listCasesByWorkspace,
 };
-function nextCaseId() {
-    return (0, repository_1.newCaseId)();
+export function nextCaseId() {
+    return newCaseId();
 }

@@ -1,14 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.defaultServiceRequestStatus = exports.newServiceRequestId = exports.ServiceRequestRepositoryInMemory = exports.ServiceProviderRepositoryInMemory = void 0;
-exports.readServiceDirectoryStats = readServiceDirectoryStats;
-const service_contracts_1 = require("../contracts/service.contracts");
+import { ServiceProviderId, ServiceRequestId, } from "../contracts/service.contracts";
 const now = Date.now();
 const d = (offsetDays) => new Date(now - 1000 * 60 * 60 * 24 * offsetDays);
 const dFuture = (offsetDays) => new Date(now + 1000 * 60 * 60 * 24 * offsetDays);
 const seedProviders = () => [
     {
-        id: (0, service_contracts_1.ServiceProviderId)("sp-001"),
+        id: ServiceProviderId("sp-001"),
         name: "PT Tech Solutions Indonesia",
         category: "Cloud Services",
         description: "Enterprise cloud migration, AWS/Azure/GCP specialists with 150+ certified engineers.",
@@ -18,7 +14,7 @@ const seedProviders = () => [
         createdAt: d(240),
     },
     {
-        id: (0, service_contracts_1.ServiceProviderId)("sp-002"),
+        id: ServiceProviderId("sp-002"),
         name: "CV Cloud Integrator Nusantara",
         category: "Cloud Services",
         description: "SMB-focused cloud setup and cost optimization for mid-market businesses.",
@@ -28,7 +24,7 @@ const seedProviders = () => [
         createdAt: d(180),
     },
     {
-        id: (0, service_contracts_1.ServiceProviderId)("sp-003"),
+        id: ServiceProviderId("sp-003"),
         name: "PT Cyber Security Partners",
         category: "Cybersecurity",
         description: "Penetration testing, ISO 27001 consulting, and SOC monitoring 24/7.",
@@ -38,7 +34,7 @@ const seedProviders = () => [
         createdAt: d(300),
     },
     {
-        id: (0, service_contracts_1.ServiceProviderId)("sp-004"),
+        id: ServiceProviderId("sp-004"),
         name: "Nusa IT Support",
         category: "IT Support",
         description: "On-site and remote IT support for enterprise and branch offices across Indonesia.",
@@ -48,7 +44,7 @@ const seedProviders = () => [
         createdAt: d(120),
     },
     {
-        id: (0, service_contracts_1.ServiceProviderId)("sp-005"),
+        id: ServiceProviderId("sp-005"),
         name: "PT Infrastruktur Data Persada",
         category: "Infrastructure",
         description: "Data center, networking, and server rack deployment with SLA 99.95%.",
@@ -58,7 +54,7 @@ const seedProviders = () => [
         createdAt: d(360),
     },
     {
-        id: (0, service_contracts_1.ServiceProviderId)("sp-006"),
+        id: ServiceProviderId("sp-006"),
         name: "Kodeku Studio",
         category: "Software Development",
         description: "Custom web, mobile, and enterprise application development with agile delivery.",
@@ -70,46 +66,52 @@ const seedProviders = () => [
 ];
 const seedRequests = () => [
     {
-        id: (0, service_contracts_1.ServiceRequestId)("sreq-001"),
+        id: ServiceRequestId("sreq-001"),
         title: "Cloud Migration — Office 365 + AWS",
         description: "Migrate 250 mailboxes and file server to AWS + Office 365 hybrid.",
         category: "Cloud Services",
         status: "in_service",
         requesterName: "Arief Rahman — PT Maju Jaya",
-        providerId: (0, service_contracts_1.ServiceProviderId)("sp-001"),
+        providerId: ServiceProviderId("sp-001"),
         budget: "Rp 450.000.000",
         deadline: dFuture(14),
         createdAt: d(12),
         updatedAt: d(1),
+        tenantId: "tenant-001",
+        workspaceId: "workspace-001",
     },
     {
-        id: (0, service_contracts_1.ServiceRequestId)("sreq-002"),
+        id: ServiceRequestId("sreq-002"),
         title: "Annual Security Penetration Test",
         description: "Black-box + white-box pentest on web apps and internal network, with ISO 27001 report.",
         category: "Cybersecurity",
         status: "accepted",
         requesterName: "Dian Sari — Group Finance",
-        providerId: (0, service_contracts_1.ServiceProviderId)("sp-003"),
+        providerId: ServiceProviderId("sp-003"),
         budget: "Rp 180.000.000",
         deadline: dFuture(30),
         createdAt: d(7),
         updatedAt: d(2),
+        tenantId: "tenant-001",
+        workspaceId: "workspace-001",
     },
     {
-        id: (0, service_contracts_1.ServiceRequestId)("sreq-003"),
+        id: ServiceRequestId("sreq-003"),
         title: "Annual IT Support Package — 50 Users",
         description: "On-site support for HQ + 3 branch offices with SLA response ≤ 2 hours.",
         category: "IT Support",
         status: "delivered",
         requesterName: "Budi Hartono — Retail Chain",
-        providerId: (0, service_contracts_1.ServiceProviderId)("sp-004"),
+        providerId: ServiceProviderId("sp-004"),
         budget: "Rp 320.000.000 / year",
         createdAt: d(90),
         updatedAt: d(5),
         deliveredAt: d(5),
+        tenantId: "tenant-002",
+        workspaceId: "workspace-002",
     },
     {
-        id: (0, service_contracts_1.ServiceRequestId)("sreq-004"),
+        id: ServiceRequestId("sreq-004"),
         title: "New Branch Network Infrastructure",
         description: "Deploy network racks, firewall, switches for 3 new branches in Sumatra.",
         category: "Infrastructure",
@@ -119,6 +121,8 @@ const seedRequests = () => [
         deadline: dFuture(60),
         createdAt: d(2),
         updatedAt: d(1),
+        tenantId: "tenant-002",
+        workspaceId: "workspace-002",
     },
 ];
 function hydrateProviders() {
@@ -152,7 +156,7 @@ function cloneRequest(r) {
         ...(r.deliveredAt ? { deliveredAt: new Date(r.deliveredAt) } : {}),
     };
 }
-exports.ServiceProviderRepositoryInMemory = {
+export const ServiceProviderRepositoryInMemory = {
     kind: "repository",
     entityName: "ServiceProvider",
     byId(id) {
@@ -177,47 +181,59 @@ exports.ServiceProviderRepositoryInMemory = {
         return PROVIDER_STORE.delete(id);
     },
 };
-exports.ServiceRequestRepositoryInMemory = {
+export const ServiceRequestRepositoryInMemory = {
     kind: "repository",
     entityName: "ServiceRequest",
-    byId(id) {
+    async byId(id) {
         const raw = REQUEST_STORE.get(id);
         return raw !== undefined ? cloneRequest(raw) : undefined;
     },
-    list() {
+    async list() {
         return Array.from(REQUEST_STORE.values()).map(cloneRequest);
     },
-    listByStatus(status) {
+    async listByStatus(status) {
+        const all = await this.list();
         if (status === "all")
-            return this.list();
-        return this.list().filter((r) => r.status === status);
+            return all;
+        return all.filter((r) => r.status === status);
     },
-    save(entity) {
+    async listByWorkspace(workspaceId) {
+        const all = await this.list();
+        return all.filter((r) => r.workspaceId === workspaceId);
+    },
+    async listByTenant(tenantId) {
+        const all = await this.list();
+        return all.filter((r) => r.tenantId === tenantId);
+    },
+    async save(entity) {
         const updated = { ...cloneRequest(entity), updatedAt: new Date() };
         REQUEST_STORE.set(updated.id, updated);
         return cloneRequest(updated);
     },
-    remove(id) {
+    async remove(id) {
         return REQUEST_STORE.delete(id);
     },
+    async delete(id) {
+        return this.remove(id);
+    },
 };
-exports.newServiceRequestId = (() => {
+export const newServiceRequestId = (() => {
     let seq = 100;
     return () => {
         seq += 1;
-        return (0, service_contracts_1.ServiceRequestId)(`sreq-${String(seq).padStart(3, "0")}`);
+        return ServiceRequestId(`sreq-${String(seq).padStart(3, "0")}`);
     };
 })();
-exports.defaultServiceRequestStatus = "draft";
-function readServiceDirectoryStats() {
-    const requests = exports.ServiceRequestRepositoryInMemory.list();
-    const providers = exports.ServiceProviderRepositoryInMemory.list();
+export const defaultServiceRequestStatus = "draft";
+export async function readServiceDirectoryStats() {
+    const requests = await ServiceRequestRepositoryInMemory.list();
+    const providers = await ServiceProviderRepositoryInMemory.list();
     return {
         totalRequests: requests.length,
         inService: requests.filter((r) => r.status === "in_service" || r.status === "accepted").length,
         delivered: requests.filter((r) => r.status === "delivered" || r.status === "verified").length,
         pending: requests.filter((r) => r.status === "draft").length,
         totalProviders: providers.length,
-        categories: exports.ServiceProviderRepositoryInMemory.listCategories(),
+        categories: ServiceProviderRepositoryInMemory.listCategories(),
     };
 }

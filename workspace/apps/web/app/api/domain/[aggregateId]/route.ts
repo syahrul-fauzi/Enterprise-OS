@@ -138,7 +138,7 @@ export async function GET(
         readonly category: string | undefined;
         readonly budget: number | undefined;
         readonly providerId: string | undefined;
-      } | undefined>("serviceRequest", "getById", commandInput);
+      } | undefined>("service-directory", "getById", commandInput);
       
       const result = output.output;
       if (result === undefined) {

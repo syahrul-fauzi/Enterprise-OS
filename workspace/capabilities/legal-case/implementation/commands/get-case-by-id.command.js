@@ -1,29 +1,26 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCaseByIdCommand = exports.GetCaseByIdInputSchema = void 0;
-const zod_1 = require("zod");
-const case_postgres_repository_1 = require("../repository/case-postgres.repository");
-const repository_1 = require("../../../legal-document/implementation/repository");
-const base_repository_1 = require("../../../identity/implementation/repositories/base.repository");
-const session_repository_1 = require("../../../identity/implementation/repositories/session.repository");
-exports.GetCaseByIdInputSchema = zod_1.z.object({
-    caseId: zod_1.z.string().min(1).startsWith("case-"),
+import { z } from "zod";
+import { CaseRepositoryPostgres } from "../repository/case-postgres.repository";
+import { DocumentRepositoryInMemory } from "../../../legal-document/implementation/repository";
+import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
+import { SessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository";
+export const GetCaseByIdInputSchema = z.object({
+    caseId: z.string().min(1).startsWith("case-"),
     // Required context for tenant isolation and authentication
-    sessionId: zod_1.z.string().min(1),
-    tenantId: zod_1.z.string().min(1),
-    workspaceId: zod_1.z.string().min(1),
-    actorId: zod_1.z.string().min(1),
+    sessionId: z.string().min(1),
+    tenantId: z.string().min(1),
+    workspaceId: z.string().min(1),
+    actorId: z.string().min(1),
 });
-exports.getCaseByIdCommand = {
+export const getCaseByIdCommand = {
     kind: "command",
     name: "case.getById",
     version: "2.0.0",
     async execute(input) {
-        await (0, base_repository_1.initIdentitySchema)();
-        const parsed = exports.GetCaseByIdInputSchema.parse(input);
+        await initIdentitySchema();
+        const parsed = GetCaseByIdInputSchema.parse(input);
         const { caseId, sessionId, tenantId, workspaceId, actorId } = parsed;
         // Validate session exists and is active
-        const session = await session_repository_1.SessionRepositoryPostgres.byId(sessionId);
+        const session = await SessionRepositoryPostgres.byId(sessionId);
         if (!session) {
             throw new Error("[case.getById] Invalid or expired session");
         }
@@ -37,7 +34,7 @@ exports.getCaseByIdCommand = {
         if (session.actorId !== actorId) {
             throw new Error("[case.getById] Session actor mismatch - authentication violation");
         }
-        const c = await case_postgres_repository_1.CaseRepositoryPostgres.byId(caseId);
+        const c = await CaseRepositoryPostgres.byId(caseId);
         if (c === undefined) {
             return undefined;
         }
@@ -45,7 +42,7 @@ exports.getCaseByIdCommand = {
         if (c.tenantId !== tenantId || c.workspaceId !== workspaceId) {
             throw new Error("[case.getById] Case does not belong to the current tenant/workspace - access denied");
         }
-        const evidenceCount = repository_1.DocumentRepositoryInMemory.list().filter((d) => d.matterId === caseId).length;
+        const evidenceCount = DocumentRepositoryInMemory.list().filter((d) => d.matterId === caseId).length;
         return {
             type: "lawyershub.case",
             id: caseId,

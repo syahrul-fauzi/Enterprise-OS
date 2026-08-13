@@ -1,13 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.defaultDocumentStatus = exports.newDocumentId = exports.DocumentRepositoryInMemory = void 0;
-const contracts_1 = require("../contracts");
+import { DocumentId, } from "../contracts";
 const seed = () => {
     const now = Date.now();
     const d = (offsetDays) => new Date(now - 1000 * 60 * 60 * 24 * offsetDays);
     return [
         {
-            id: (0, contracts_1.DocumentId)("doc-001"),
+            id: DocumentId("doc-001"),
             title: "Perjanjian Sewa Kantor - Jakarta Pusat",
             description: "Perjanjian sewa gedung untuk periode 2024-2027",
             status: "signed",
@@ -18,7 +15,7 @@ const seed = () => {
             signedAt: d(10),
         },
         {
-            id: (0, contracts_1.DocumentId)("doc-002"),
+            id: DocumentId("doc-002"),
             title: "Kuilitas Hukum - Ketenagakerjaan",
             description: "Kuitansi hukum terkait pemutusan hubungan kerja karyawan senior",
             status: "review",
@@ -28,7 +25,7 @@ const seed = () => {
             updatedAt: d(7),
         },
         {
-            id: (0, contracts_1.DocumentId)("doc-003"),
+            id: DocumentId("doc-003"),
             title: "Draft Perjanjian Jual Beli Saham",
             status: "draft",
             matterId: "case-003",
@@ -37,7 +34,7 @@ const seed = () => {
             updatedAt: d(2),
         },
         {
-            id: (0, contracts_1.DocumentId)("doc-004"),
+            id: DocumentId("doc-004"),
             title: "Pendapat Hukum - Tata Kelola Perusahaan",
             description: "Opini hukum terkait struktur GCG PT XYZ yang baru",
             status: "archived",
@@ -67,7 +64,7 @@ function clone(entity) {
             : {}),
     };
 }
-exports.DocumentRepositoryInMemory = {
+export const DocumentRepositoryInMemory = {
     kind: "repository",
     entityName: "Document",
     byId(id) {
@@ -86,11 +83,11 @@ exports.DocumentRepositoryInMemory = {
         return STORE.delete(id);
     },
 };
-exports.newDocumentId = (() => {
+export const newDocumentId = (() => {
     let seq = 100;
     return () => {
         seq += 1;
-        return (0, contracts_1.DocumentId)(`doc-${String(seq).padStart(3, "0")}`);
+        return DocumentId(`doc-${String(seq).padStart(3, "0")}`);
     };
 })();
-exports.defaultDocumentStatus = "draft";
+export const defaultDocumentStatus = "draft";

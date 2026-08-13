@@ -6,11 +6,13 @@
     "strictNullChecks": true,
     "declaration": true,
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
       "@repo/core-kernel/*": ["../../packages/core/kernel/src/*"],
       "@repo/core-capability-registry": ["../../packages/core/capability-registry/src/index.ts"],
-      "@repo/core-capability-registry/*": ["../../packages/core/capability-registry/src/*"]
+      "@repo/core-capability-registry/*": ["../../packages/core/capability-registry/src/*"],
+      "@capabilities/identity/*": ["../identity/*"]
     }
   },
   "include": ["**/*.ts"],

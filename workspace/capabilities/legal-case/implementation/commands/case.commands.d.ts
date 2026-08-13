@@ -10,19 +10,19 @@ declare const CreateCaseWithContextSchema: z.ZodObject<{
     workspaceId: z.ZodString;
     actorId: z.ZodString;
 }, "strip", z.ZodTypeAny, {
+    title: string;
     sessionId: string;
     actorId: string;
     tenantId: string;
     workspaceId: string;
-    title: string;
     description?: string | undefined;
     priority?: "low" | "medium" | "high" | "critical" | undefined;
 }, {
+    title: string;
     sessionId: string;
     actorId: string;
     tenantId: string;
     workspaceId: string;
-    title: string;
     description?: string | undefined;
     priority?: "low" | "medium" | "high" | "critical" | undefined;
 }>;
@@ -44,16 +44,16 @@ declare const ListCasesWithContextSchema: z.ZodObject<{
     limit: number;
     offset: number;
     query?: string | undefined;
-    status?: "draft" | "open" | "in_progress" | "closed" | "all" | undefined;
-    priority?: "low" | "medium" | "high" | "critical" | "all" | undefined;
+    status?: "all" | "draft" | "open" | "in_progress" | "closed" | undefined;
+    priority?: "all" | "low" | "medium" | "high" | "critical" | undefined;
 }, {
     sessionId: string;
     actorId: string;
     tenantId: string;
     workspaceId: string;
     query?: string | undefined;
-    status?: "draft" | "open" | "in_progress" | "closed" | "all" | undefined;
-    priority?: "low" | "medium" | "high" | "critical" | "all" | undefined;
+    status?: "all" | "draft" | "open" | "in_progress" | "closed" | undefined;
+    priority?: "all" | "low" | "medium" | "high" | "critical" | undefined;
     limit?: number | undefined;
     offset?: number | undefined;
 }>;

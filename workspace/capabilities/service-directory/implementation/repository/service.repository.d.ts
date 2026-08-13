@@ -11,5 +11,5 @@ export interface ServiceDirectoryStats {
     readonly totalProviders: number;
     readonly categories: readonly ServiceProviderCategory[];
 }
-export declare function readServiceDirectoryStats(): ServiceDirectoryStats;
+export declare function readServiceDirectoryStats(): Promise<ServiceDirectoryStats>;
 //# sourceMappingURL=service.repository.d.ts.map

@@ -187,6 +187,12 @@ export function RequirementCard({
               >
                 View Proof →
               </a>
+              <a
+                href={`/api/requirements/${item.id}/evidence`}
+                className="inline-flex items-center gap-1 text-xs text-blue-700 hover:text-blue-900 ml-3"
+              >
+                View Evidence Registry →
+              </a>
             </div>
           </div>
         )}

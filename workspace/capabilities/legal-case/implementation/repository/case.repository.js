@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.defaultCasePriority = exports.defaultCaseStatus = exports.newCaseId = exports.CaseRepositoryInMemory = void 0;
-const contracts_1 = require("../contracts");
+import { CaseId, } from "../contracts";
 const seed = () => [
     {
-        id: (0, contracts_1.CaseId)("case-001"),
+        id: CaseId("case-001"),
         title: "Vendor Agreement Review",
         description: "Review and finalize vendor contract for Q3 procurement.",
         status: "open",
@@ -13,7 +10,7 @@ const seed = () => [
         updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 4),
     },
     {
-        id: (0, contracts_1.CaseId)("case-002"),
+        id: CaseId("case-002"),
         title: "IP Filing — Trade Secret Protection",
         description: "Prepare and file intellectual property trade secret documentation package.",
         status: "in_progress",
@@ -23,7 +20,7 @@ const seed = () => [
         updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 12),
     },
     {
-        id: (0, contracts_1.CaseId)("case-003"),
+        id: CaseId("case-003"),
         title: "Employment Handbook Update",
         status: "draft",
         priority: "medium",
@@ -47,7 +44,7 @@ function clone(entity) {
         ...(entity.closedAt !== undefined ? { closedAt: new Date(entity.closedAt) } : {}),
     };
 }
-exports.CaseRepositoryInMemory = {
+export const CaseRepositoryInMemory = {
     kind: "repository",
     entityName: "Case",
     async byId(id) {
@@ -78,12 +75,12 @@ exports.CaseRepositoryInMemory = {
         return STORE.delete(id);
     },
 };
-exports.newCaseId = (() => {
+export const newCaseId = (() => {
     let seq = 100;
     return () => {
         seq += 1;
-        return (0, contracts_1.CaseId)(`case-${String(seq).padStart(3, "0")}`);
+        return CaseId(`case-${String(seq).padStart(3, "0")}`);
     };
 })();
-exports.defaultCaseStatus = "draft";
-exports.defaultCasePriority = "medium";
+export const defaultCaseStatus = "draft";
+export const defaultCasePriority = "medium";

@@ -1,14 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.TopicId = TopicId;
-exports.ContentId = ContentId;
-exports.DiscussionId = DiscussionId;
-function TopicId(value) {
+export function TopicId(value) {
     return value;
 }
-function ContentId(value) {
+export function ContentId(value) {
     return value;
 }
-function DiscussionId(value) {
+export function DiscussionId(value) {
     return value;
 }

@@ -89,6 +89,8 @@ const seedRequests = (): ServiceRequestAggregate[] => [
     deadline: dFuture(14),
     createdAt: d(12),
     updatedAt: d(1),
+    tenantId: "tenant-001",
+    workspaceId: "workspace-001",
   },
   {
     id: ServiceRequestId("sreq-002"),
@@ -102,6 +104,8 @@ const seedRequests = (): ServiceRequestAggregate[] => [
     deadline: dFuture(30),
     createdAt: d(7),
     updatedAt: d(2),
+    tenantId: "tenant-001",
+    workspaceId: "workspace-001",
   },
   {
     id: ServiceRequestId("sreq-003"),
@@ -115,6 +119,8 @@ const seedRequests = (): ServiceRequestAggregate[] => [
     createdAt: d(90),
     updatedAt: d(5),
     deliveredAt: d(5),
+    tenantId: "tenant-002",
+    workspaceId: "workspace-002",
   },
   {
     id: ServiceRequestId("sreq-004"),
@@ -127,6 +133,8 @@ const seedRequests = (): ServiceRequestAggregate[] => [
     deadline: dFuture(60),
     createdAt: d(2),
     updatedAt: d(1),
+    tenantId: "tenant-002",
+    workspaceId: "workspace-002",
   },
 ];
 
@@ -198,24 +206,36 @@ export const ServiceProviderRepositoryInMemory: ServiceProviderRepository = {
 export const ServiceRequestRepositoryInMemory: ServiceRequestRepository = {
   kind: "repository",
   entityName: "ServiceRequest",
-  byId(id) {
+  async byId(id) {
     const raw = REQUEST_STORE.get(id);
     return raw !== undefined ? cloneRequest(raw) : undefined;
   },
-  list() {
+  async list() {
     return Array.from(REQUEST_STORE.values()).map(cloneRequest);
   },
-  listByStatus(status) {
-    if (status === "all") return this.list();
-    return this.list().filter((r) => r.status === status);
+  async listByStatus(status) {
+    const all = await this.list();
+    if (status === "all") return all;
+    return all.filter((r) => r.status === status);
   },
-  save(entity) {
+  async listByWorkspace(workspaceId: string) {
+    const all = await this.list();
+    return all.filter((r) => r.workspaceId === workspaceId);
+  },
+  async listByTenant(tenantId: string) {
+    const all = await this.list();
+    return all.filter((r) => r.tenantId === tenantId);
+  },
+  async save(entity) {
     const updated: ServiceRequestAggregate = { ...cloneRequest(entity), updatedAt: new Date() };
     REQUEST_STORE.set(updated.id, updated);
     return cloneRequest(updated);
   },
-  remove(id) {
+  async remove(id) {
     return REQUEST_STORE.delete(id);
+  },
+  async delete(id) {
+    return this.remove(id);
   },
 } as const;
 
@@ -238,9 +258,9 @@ export interface ServiceDirectoryStats {
   readonly categories: readonly ServiceProviderCategory[];
 }
 
-export function readServiceDirectoryStats(): ServiceDirectoryStats {
-  const requests = ServiceRequestRepositoryInMemory.list();
-  const providers = ServiceProviderRepositoryInMemory.list();
+export async function readServiceDirectoryStats(): Promise<ServiceDirectoryStats> {
+  const requests = await ServiceRequestRepositoryInMemory.list();
+  const providers = await ServiceProviderRepositoryInMemory.list();
   return {
     totalRequests: requests.length,
     inService: requests.filter((r) => r.status === "in_service" || r.status === "accepted").length,

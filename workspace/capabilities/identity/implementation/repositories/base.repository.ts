@@ -180,6 +180,26 @@ export async function initIdentitySchema() {
     );
   `);
 
-  console.log("[PostgreSQL] Identity + Legal Case schema initialized successfully");
+  // Create service_requests table for service-directory capability
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS service_requests (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT,
+      category TEXT NOT NULL,
+      status TEXT NOT NULL,
+      requester_name TEXT,
+      provider_id TEXT,
+      budget TEXT,
+      deadline TIMESTAMP,
+      tenant_id TEXT NOT NULL REFERENCES tenants(id),
+      workspace_id TEXT NOT NULL REFERENCES workspaces(id),
+      created_at TIMESTAMP NOT NULL,
+      updated_at TIMESTAMP NOT NULL,
+      delivered_at TIMESTAMP
+    );
+  `);
+
+  console.log("[PostgreSQL] Identity + Legal Case + Service Directory schema initialized successfully");
   schemaInitialized = true;
 }

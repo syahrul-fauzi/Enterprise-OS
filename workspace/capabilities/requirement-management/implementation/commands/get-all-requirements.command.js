@@ -1,21 +1,18 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllRequirementsCommand = exports.GetAllRequirementsInputSchema = void 0;
-const zod_1 = require("zod");
-const repository_1 = require("../repository");
-exports.GetAllRequirementsInputSchema = zod_1.z.object({
-    productId: zod_1.z.string().min(1).default("academic"),
-    searchQuery: zod_1.z.string().default(""),
-    filterStatus: zod_1.z.string().default("all"),
+import { z } from "zod";
+import { RequirementRepositoryCurrent } from "../repository";
+export const GetAllRequirementsInputSchema = z.object({
+    productId: z.string().min(1).default("academic"),
+    searchQuery: z.string().default(""),
+    filterStatus: z.string().default("all"),
 });
-exports.getAllRequirementsCommand = {
+export const getAllRequirementsCommand = {
     kind: "command",
     name: "requirement.getAll",
     version: "1.0.0",
     execute(input) {
-        const parsed = exports.GetAllRequirementsInputSchema.parse(input);
+        const parsed = GetAllRequirementsInputSchema.parse(input);
         const { searchQuery, filterStatus } = parsed;
-        const allRequirements = repository_1.RequirementRepositoryCurrent.list();
+        const allRequirements = RequirementRepositoryCurrent.list();
         const filteredRequirements = allRequirements
             .filter((req) => {
             if (!searchQuery)

@@ -18,6 +18,8 @@ import {
   SessionRepositoryFileBacked,
 } from "../../capabilities/identity/implementation/repositories";
 import { passwordService } from "../../capabilities/identity/implementation/services/password.service";
+// Evidence Registry capability imports
+import * as EvidenceRegistryServiceImplModule from "../../capabilities/evidence-registry/implementation/service";
 const RequirementViewComponent = RequirementView ?? RequirementViewDefault;
 
 const requirementImplementation: CapabilityImplementation = {
@@ -59,9 +61,27 @@ const identity: CapabilityDescriptor = Object.freeze({
   implementation: identityImplementation,
 });
 
+// Evidence Registry capability implementation
+const evidenceRegistryImplementation: CapabilityImplementation = {
+  commands: {},
+  queries: EvidenceRegistryServiceImplModule.evidenceRegistryQueries,
+  repositories: { EvidenceRegistryRepository: EvidenceRegistryServiceImplModule.EvidenceRegistryRepositoryFileSystem },
+  services: {},
+  entry: EvidenceRegistryServiceImplModule,
+};
+
+const evidenceRegistry: CapabilityDescriptor = Object.freeze({
+  id: "evidence-registry",
+  version: "0.1.0",
+  name: "Evidence Registry",
+  experience: {},
+  implementation: evidenceRegistryImplementation,
+});
+
 export const registry = new StaticRegistry({
   entries: {
     "requirement-management": requirementManagement,
     "identity": identity,
+    "evidence-registry": evidenceRegistry,
   },
 });

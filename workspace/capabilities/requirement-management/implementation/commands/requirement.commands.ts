@@ -1,4 +1,5 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
+import { z } from "zod";
 import {
   type ApproveRequirementInput,
   type ApproveRequirementOutput,
@@ -23,14 +24,49 @@ import {
 } from "../repository";
 import { getRequirementsByOwnerCommand } from "./get-requirements-by-owner.command";
 import { getAllRequirementsCommand } from "./get-all-requirements.command";
+import { SessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository";
+import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
+
+const CreateRequirementWithContextSchema = z.object({
+  title: z.string().min(1),
+  summary: z.string().optional(),
+  description: z.string().optional(),
+  priority: z.enum(["low", "medium", "high", "critical"]).optional(),
+  owner: z.string().optional(),
+  source: z.string().optional(),
+  linkedCapabilityIds: z.array(z.string()).optional(),
+  acceptanceCriteria: z.array(z.string()).optional(),
+  // Required context for tenant isolation
+  sessionId: z.string().min(1),
+  tenantId: z.string().min(1),
+  workspaceId: z.string().min(1),
+  actorId: z.string().min(1),
+});
+
+const UpdateRequirementWithContextSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().optional(),
+  summary: z.string().optional(),
+  description: z.string().optional(),
+  priority: z.enum(["low", "medium", "high", "critical"]).optional(),
+  owner: z.string().optional(),
+  source: z.string().optional(),
+  linkedCapabilityIds: z.array(z.string()).optional(),
+  acceptanceCriteria: z.array(z.string()).optional(),
+  // Required context for tenant isolation
+  sessionId: z.string().min(1),
+  tenantId: z.string().min(1),
+  workspaceId: z.string().min(1),
+  actorId: z.string().min(1),
+});
 
 type CreateRequirementCommand = CapabilityCommand<
-  CreateRequirementInput,
-  CreateRequirementOutput
+  z.infer<typeof CreateRequirementWithContextSchema>,
+  Promise<CreateRequirementOutput>
 >;
 type UpdateRequirementCommand = CapabilityCommand<
-  UpdateRequirementInput,
-  UpdateRequirementOutput
+  z.infer<typeof UpdateRequirementWithContextSchema>,
+  Promise<UpdateRequirementOutput>
 >;
 type ApproveRequirementCommand = CapabilityCommand<
   ApproveRequirementInput,
@@ -57,31 +93,63 @@ function trimOptional(value: string | undefined): string | undefined {
 export const createRequirement: CreateRequirementCommand = {
   kind: "command",
   name: "requirement.create",
-  version: "0.1.0",
-  execute(input: CreateRequirementInput) {
-    const title = input.title.trim();
-    if (title.length === 0) {
+  version: "0.2.0",
+  async execute(input) {
+    await initIdentitySchema();
+    
+    const parsed = CreateRequirementWithContextSchema.parse(input);
+    const { 
+      title, summary, description, priority, owner, source, linkedCapabilityIds, acceptanceCriteria,
+      tenantId, workspaceId, sessionId, actorId 
+    } = parsed;
+
+    // 1. Validate session exists and is active (enforce authentication)
+    const session = await SessionRepositoryPostgres.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[requirement.create] Invalid or revoked session - authentication violation");
+    }
+
+    // 2. Enforce actor match - session actor must match request actor
+    if (session.actorId !== actorId) {
+      throw new Error("[requirement.create] Session actor mismatch - authentication violation");
+    }
+
+    // 3. Enforce tenant isolation - requested tenant must match session's tenant
+    if (session.tenantId !== tenantId) {
+      throw new Error("[requirement.create] Cross-tenant access attempt blocked - security violation");
+    }
+
+    // 4. Enforce workspace isolation - requested workspace must match session's workspace
+    if (session.workspaceId !== workspaceId) {
+      throw new Error("[requirement.create] Cross-workspace access attempt blocked - security violation");
+    }
+
+    const cleanTitle = title.trim();
+    if (cleanTitle.length === 0) {
       throw new Error("[requirement.create] Requirement title cannot be empty");
     }
     const now = new Date();
     const entity: RequirementAggregate = {
       id: newRequirementId(),
-      title,
-      ...(trimOptional(input.summary) !== undefined ? { summary: trimOptional(input.summary) } : {}),
-      ...(trimOptional(input.description) !== undefined
-        ? { description: trimOptional(input.description) }
+      title: cleanTitle,
+      ...(trimOptional(summary) !== undefined ? { summary: trimOptional(summary) } : {}),
+      ...(trimOptional(description) !== undefined
+        ? { description: trimOptional(description) }
         : {}),
       status: defaultRequirementStatus,
-      priority: input.priority ?? defaultRequirementPriority,
-      ...(trimOptional(input.owner) !== undefined ? { owner: trimOptional(input.owner) } : {}),
-      ...(trimOptional(input.source) !== undefined ? { source: trimOptional(input.source) } : {}),
-      linkedCapabilityIds: [...(input.linkedCapabilityIds ?? [])],
-      acceptanceCriteria: [...(input.acceptanceCriteria ?? [])].map((item) => item.trim()).filter(Boolean),
+      priority: priority ?? defaultRequirementPriority,
+      ...(trimOptional(owner) !== undefined ? { owner: trimOptional(owner) } : {}),
+      ...(trimOptional(source) !== undefined ? { source: trimOptional(source) } : {}),
+      linkedCapabilityIds: [...(linkedCapabilityIds ?? [])],
+      acceptanceCriteria: [...(acceptanceCriteria ?? [])].map((item) => item.trim()).filter(Boolean),
       verificationStatus: defaultRequirementVerificationStatus,
       dependsOn: [],
       createdAt: now,
       updatedAt: now,
     };
+    // Add tenant/workspace context for isolation
+    (entity as any).tenantId = tenantId;
+    (entity as any).workspaceId = workspaceId;
     RequirementRepositoryCurrent.save(entity);
     return {
       id: entity.id,
@@ -95,28 +163,61 @@ export const createRequirement: CreateRequirementCommand = {
 export const updateRequirement: UpdateRequirementCommand = {
   kind: "command",
   name: "requirement.update",
-  version: "0.1.0",
-  execute(input: UpdateRequirementInput) {
-    const current = RequirementRepositoryCurrent.byId(input.id);
+  version: "0.2.0",
+  async execute(input) {
+    await initIdentitySchema();
+    
+    const parsed = UpdateRequirementWithContextSchema.parse(input);
+    const { 
+      id, title, summary, description, priority, owner, source, linkedCapabilityIds, acceptanceCriteria,
+      tenantId, workspaceId, sessionId, actorId 
+    } = parsed;
+
+    // 1. Validate session exists and is active (enforce authentication)
+    const session = await SessionRepositoryPostgres.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[requirement.update] Invalid or revoked session - authentication violation");
+    }
+
+    // 2. Enforce actor match - session actor must match request actor
+    if (session.actorId !== actorId) {
+      throw new Error("[requirement.update] Session actor mismatch - authentication violation");
+    }
+
+    // 3. Enforce tenant isolation - requested tenant must match session's tenant
+    if (session.tenantId !== tenantId) {
+      throw new Error("[requirement.update] Cross-tenant access attempt blocked - security violation");
+    }
+
+    // 4. Enforce workspace isolation - requested workspace must match session's workspace
+    if (session.workspaceId !== workspaceId) {
+      throw new Error("[requirement.update] Cross-workspace access attempt blocked - security violation");
+    }
+
+    const current = RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
-      throw new Error(`[requirement.update] Requirement not found: ${input.id}`);
+      throw new Error(`[requirement.update] Requirement not found: ${id}`);
+    }
+    // 5. Enforce requirement belongs to the same tenant/workspace
+    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
+      throw new Error("[requirement.update] Requirement not found in workspace - security violation");
     }
     const next: RequirementAggregate = {
       ...current,
-      ...(input.title !== undefined ? { title: input.title.trim() || current.title } : {}),
-      ...(input.summary !== undefined ? { summary: trimOptional(input.summary) } : {}),
-      ...(input.description !== undefined
-        ? { description: trimOptional(input.description) }
+      ...(title !== undefined ? { title: title.trim() || current.title } : {}),
+      ...(summary !== undefined ? { summary: trimOptional(summary) } : {}),
+      ...(description !== undefined
+        ? { description: trimOptional(description) }
         : {}),
-      ...(input.priority !== undefined ? { priority: input.priority } : {}),
-      ...(input.owner !== undefined ? { owner: trimOptional(input.owner) } : {}),
-      ...(input.source !== undefined ? { source: trimOptional(input.source) } : {}),
-      ...(input.linkedCapabilityIds !== undefined
-        ? { linkedCapabilityIds: [...input.linkedCapabilityIds] }
+      ...(priority !== undefined ? { priority: priority } : {}),
+      ...(owner !== undefined ? { owner: trimOptional(owner) } : {}),
+      ...(source !== undefined ? { source: trimOptional(source) } : {}),
+      ...(linkedCapabilityIds !== undefined
+        ? { linkedCapabilityIds: [...linkedCapabilityIds] }
         : {}),
-      ...(input.acceptanceCriteria !== undefined
+      ...(acceptanceCriteria !== undefined
         ? {
-            acceptanceCriteria: input.acceptanceCriteria
+            acceptanceCriteria: acceptanceCriteria
               .map((item) => item.trim())
               .filter(Boolean),
           }
@@ -127,18 +228,101 @@ export const updateRequirement: UpdateRequirementCommand = {
   },
 };
 
+const ApproveRequirementWithContextSchema = z.object({
+  id: z.string().min(1),
+  // Required context for tenant isolation
+  sessionId: z.string().min(1),
+  tenantId: z.string().min(1),
+  workspaceId: z.string().min(1),
+  actorId: z.string().min(1),
+});
+
+const StartRequirementDeliveryWithContextSchema = z.object({
+  id: z.string().min(1),
+  // Required context for tenant isolation
+  sessionId: z.string().min(1),
+  tenantId: z.string().min(1),
+  workspaceId: z.string().min(1),
+  actorId: z.string().min(1),
+});
+
+const MarkRequirementImplementedWithContextSchema = z.object({
+  id: z.string().min(1),
+  // Required context for tenant isolation
+  sessionId: z.string().min(1),
+  tenantId: z.string().min(1),
+  workspaceId: z.string().min(1),
+  actorId: z.string().min(1),
+});
+
+const VerifyRequirementWithContextSchema = z.object({
+  id: z.string().min(1),
+  // Required context for tenant isolation
+  sessionId: z.string().min(1),
+  tenantId: z.string().min(1),
+  workspaceId: z.string().min(1),
+  actorId: z.string().min(1),
+});
+
+type ApproveRequirementCommand = CapabilityCommand<
+  z.infer<typeof ApproveRequirementWithContextSchema>,
+  Promise<ApproveRequirementOutput>
+>;
+type StartRequirementDeliveryCommand = CapabilityCommand<
+  z.infer<typeof StartRequirementDeliveryWithContextSchema>,
+  Promise<StartRequirementDeliveryOutput>
+>;
+type MarkRequirementImplementedCommand = CapabilityCommand<
+  z.infer<typeof MarkRequirementImplementedWithContextSchema>,
+  Promise<MarkRequirementImplementedOutput>
+>;
+type VerifyRequirementCommand = CapabilityCommand<
+  z.infer<typeof VerifyRequirementWithContextSchema>,
+  Promise<VerifyRequirementOutput>
+>;
+
 export const approveRequirement: ApproveRequirementCommand = {
   kind: "command",
   name: "requirement.approve",
-  version: "0.1.0",
-  execute(input: ApproveRequirementInput) {
-    const current = RequirementRepositoryCurrent.byId(input.id);
+  version: "0.2.0",
+  async execute(input) {
+    await initIdentitySchema();
+    
+    const parsed = ApproveRequirementWithContextSchema.parse(input);
+    const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
+
+    // 1. Validate session exists and is active (enforce authentication)
+    const session = await SessionRepositoryPostgres.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[requirement.approve] Invalid or revoked session - authentication violation");
+    }
+
+    // 2. Enforce actor match - session actor must match request actor
+    if (session.actorId !== actorId) {
+      throw new Error("[requirement.approve] Session actor mismatch - authentication violation");
+    }
+
+    // 3. Enforce tenant isolation - requested tenant must match session's tenant
+    if (session.tenantId !== tenantId) {
+      throw new Error("[requirement.approve] Cross-tenant access attempt blocked - security violation");
+    }
+
+    // 4. Enforce workspace isolation - requested workspace must match session's workspace
+    if (session.workspaceId !== workspaceId) {
+      throw new Error("[requirement.approve] Cross-workspace access attempt blocked - security violation");
+    }
+
+    const current = RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
-      throw new Error(`[requirement.approve] Requirement not found: ${input.id}`);
+      throw new Error(`[requirement.approve] Requirement not found: ${id}`);
+    }
+    // 5. Enforce requirement belongs to the same tenant/workspace
+    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
+      throw new Error("[requirement.approve] Requirement not found in workspace - security violation");
     }
     if (current.status !== "draft") {
       throw new Error(
-        `[requirement.approve] Requirement must be in draft status before approval: ${input.id}`,
+        `[requirement.approve] Requirement must be in draft status before approval: ${id}`,
       );
     }
     const approvedAt = new Date();
@@ -156,15 +340,45 @@ export const approveRequirement: ApproveRequirementCommand = {
 export const startRequirementDelivery: StartRequirementDeliveryCommand = {
   kind: "command",
   name: "requirement.startDelivery",
-  version: "0.1.0",
-  execute(input: StartRequirementDeliveryInput) {
-    const current = RequirementRepositoryCurrent.byId(input.id);
+  version: "0.2.0",
+  async execute(input) {
+    await initIdentitySchema();
+    
+    const parsed = StartRequirementDeliveryWithContextSchema.parse(input);
+    const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
+
+    // 1. Validate session exists and is active (enforce authentication)
+    const session = await SessionRepositoryPostgres.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[requirement.startDelivery] Invalid or revoked session - authentication violation");
+    }
+
+    // 2. Enforce actor match - session actor must match request actor
+    if (session.actorId !== actorId) {
+      throw new Error("[requirement.startDelivery] Session actor mismatch - authentication violation");
+    }
+
+    // 3. Enforce tenant isolation - requested tenant must match session's tenant
+    if (session.tenantId !== tenantId) {
+      throw new Error("[requirement.startDelivery] Cross-tenant access attempt blocked - security violation");
+    }
+
+    // 4. Enforce workspace isolation - requested workspace must match session's workspace
+    if (session.workspaceId !== workspaceId) {
+      throw new Error("[requirement.startDelivery] Cross-workspace access attempt blocked - security violation");
+    }
+
+    const current = RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
-      throw new Error(`[requirement.startDelivery] Requirement not found: ${input.id}`);
+      throw new Error(`[requirement.startDelivery] Requirement not found: ${id}`);
+    }
+    // 5. Enforce requirement belongs to the same tenant/workspace
+    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
+      throw new Error("[requirement.startDelivery] Requirement not found in workspace - security violation");
     }
     if (current.status !== "approved") {
       throw new Error(
-        `[requirement.startDelivery] Requirement must be approved before delivery starts: ${input.id}`,
+        `[requirement.startDelivery] Requirement must be approved before delivery starts: ${id}`,
       );
     }
     const next: RequirementAggregate = {
@@ -180,15 +394,45 @@ export const startRequirementDelivery: StartRequirementDeliveryCommand = {
 export const markRequirementImplemented: MarkRequirementImplementedCommand = {
   kind: "command",
   name: "requirement.markImplemented",
-  version: "0.1.0",
-  execute(input: MarkRequirementImplementedInput) {
-    const current = RequirementRepositoryCurrent.byId(input.id);
+  version: "0.2.0",
+  async execute(input) {
+    await initIdentitySchema();
+    
+    const parsed = MarkRequirementImplementedWithContextSchema.parse(input);
+    const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
+
+    // 1. Validate session exists and is active (enforce authentication)
+    const session = await SessionRepositoryPostgres.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[requirement.markImplemented] Invalid or revoked session - authentication violation");
+    }
+
+    // 2. Enforce actor match - session actor must match request actor
+    if (session.actorId !== actorId) {
+      throw new Error("[requirement.markImplemented] Session actor mismatch - authentication violation");
+    }
+
+    // 3. Enforce tenant isolation - requested tenant must match session's tenant
+    if (session.tenantId !== tenantId) {
+      throw new Error("[requirement.markImplemented] Cross-tenant access attempt blocked - security violation");
+    }
+
+    // 4. Enforce workspace isolation - requested workspace must match session's workspace
+    if (session.workspaceId !== workspaceId) {
+      throw new Error("[requirement.markImplemented] Cross-workspace access attempt blocked - security violation");
+    }
+
+    const current = RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
-      throw new Error(`[requirement.markImplemented] Requirement not found: ${input.id}`);
+      throw new Error(`[requirement.markImplemented] Requirement not found: ${id}`);
+    }
+    // 5. Enforce requirement belongs to the same tenant/workspace
+    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
+      throw new Error("[requirement.markImplemented] Requirement not found in workspace - security violation");
     }
     if (current.status !== "in_delivery") {
       throw new Error(
-        `[requirement.markImplemented] Requirement must be in delivery before implementation is recorded: ${input.id}`,
+        `[requirement.markImplemented] Requirement must be in delivery before implementation is recorded: ${id}`,
       );
     }
     const implementedAt = new Date();
@@ -206,15 +450,45 @@ export const markRequirementImplemented: MarkRequirementImplementedCommand = {
 export const verifyRequirement: VerifyRequirementCommand = {
   kind: "command",
   name: "requirement.verify",
-  version: "0.1.0",
-  execute(input: VerifyRequirementInput) {
-    const current = RequirementRepositoryCurrent.byId(input.id);
+  version: "0.2.0",
+  async execute(input) {
+    await initIdentitySchema();
+    
+    const parsed = VerifyRequirementWithContextSchema.parse(input);
+    const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
+
+    // 1. Validate session exists and is active (enforce authentication)
+    const session = await SessionRepositoryPostgres.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[requirement.verify] Invalid or revoked session - authentication violation");
+    }
+
+    // 2. Enforce actor match - session actor must match request actor
+    if (session.actorId !== actorId) {
+      throw new Error("[requirement.verify] Session actor mismatch - authentication violation");
+    }
+
+    // 3. Enforce tenant isolation - requested tenant must match session's tenant
+    if (session.tenantId !== tenantId) {
+      throw new Error("[requirement.verify] Cross-tenant access attempt blocked - security violation");
+    }
+
+    // 4. Enforce workspace isolation - requested workspace must match session's workspace
+    if (session.workspaceId !== workspaceId) {
+      throw new Error("[requirement.verify] Cross-workspace access attempt blocked - security violation");
+    }
+
+    const current = RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
-      throw new Error(`[requirement.verify] Requirement not found: ${input.id}`);
+      throw new Error(`[requirement.verify] Requirement not found: ${id}`);
+    }
+    // 5. Enforce requirement belongs to the same tenant/workspace
+    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
+      throw new Error("[requirement.verify] Requirement not found in workspace - security violation");
     }
     if (current.status !== "implemented") {
       throw new Error(
-        `[requirement.verify] Requirement must be implemented before verification: ${input.id}`,
+        `[requirement.verify] Requirement must be implemented before verification: ${id}`,
       );
     }
     const verifiedAt = new Date();

@@ -1,9 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.documentCommands = exports.updateDocument = exports.archiveDocument = exports.signDocument = exports.createDocument = void 0;
-exports.nextDocumentId = nextDocumentId;
-const repository_1 = require("../repository");
-exports.createDocument = {
+import { DocumentRepositoryInMemory, newDocumentId, defaultDocumentStatus, } from "../repository";
+export const createDocument = {
     kind: "command",
     name: "document.create",
     version: "0.1.0",
@@ -14,27 +10,27 @@ exports.createDocument = {
         }
         const now = new Date();
         const entity = {
-            id: (0, repository_1.newDocumentId)(),
+            id: newDocumentId(),
             title: trimmed,
             ...(input.description !== undefined && input.description !== ""
                 ? { description: input.description }
                 : {}),
-            status: repository_1.defaultDocumentStatus,
+            status: defaultDocumentStatus,
             ...(input.matterId !== undefined ? { matterId: input.matterId } : {}),
             ...(input.author !== undefined ? { author: input.author } : {}),
             createdAt: now,
             updatedAt: now,
         };
-        repository_1.DocumentRepositoryInMemory.save(entity);
+        DocumentRepositoryInMemory.save(entity);
         return { id: entity.id, status: entity.status, createdAt: now };
     },
 };
-exports.signDocument = {
+export const signDocument = {
     kind: "command",
     name: "document.sign",
     version: "0.1.0",
     execute(input) {
-        const current = repository_1.DocumentRepositoryInMemory.byId(input.id);
+        const current = DocumentRepositoryInMemory.byId(input.id);
         if (current === undefined) {
             throw new Error(`[document.sign] Document not found: ${input.id}`);
         }
@@ -47,7 +43,7 @@ exports.signDocument = {
             status: "signed",
             signedAt,
         };
-        repository_1.DocumentRepositoryInMemory.save(next);
+        DocumentRepositoryInMemory.save(next);
         return {
             id: next.id,
             status: "signed",
@@ -56,12 +52,12 @@ exports.signDocument = {
         };
     },
 };
-exports.archiveDocument = {
+export const archiveDocument = {
     kind: "command",
     name: "document.archive",
     version: "0.1.0",
     execute(input) {
-        const current = repository_1.DocumentRepositoryInMemory.byId(input.id);
+        const current = DocumentRepositoryInMemory.byId(input.id);
         if (current === undefined) {
             throw new Error(`[document.archive] Document not found: ${input.id}`);
         }
@@ -78,16 +74,16 @@ exports.archiveDocument = {
             status: "archived",
             archivedAt,
         };
-        repository_1.DocumentRepositoryInMemory.save(next);
+        DocumentRepositoryInMemory.save(next);
         return { id: next.id, status: "archived", archivedAt };
     },
 };
-exports.updateDocument = {
+export const updateDocument = {
     kind: "command",
     name: "document.update",
     version: "0.1.0",
     execute(input) {
-        const current = repository_1.DocumentRepositoryInMemory.byId(input.id);
+        const current = DocumentRepositoryInMemory.byId(input.id);
         if (current === undefined) {
             throw new Error(`[document.update] Document not found: ${input.id}`);
         }
@@ -109,16 +105,16 @@ exports.updateDocument = {
             ...(input.matterId !== undefined ? { matterId: input.matterId } : {}),
             ...(input.status !== undefined ? { status: input.status } : {}),
         };
-        const saved = repository_1.DocumentRepositoryInMemory.save(next);
+        const saved = DocumentRepositoryInMemory.save(next);
         return { id: saved.id, status: saved.status, updatedAt: saved.updatedAt };
     },
 };
-exports.documentCommands = {
-    "document.create": exports.createDocument,
-    "document.sign": exports.signDocument,
-    "document.archive": exports.archiveDocument,
-    "document.update": exports.updateDocument,
+export const documentCommands = {
+    "document.create": createDocument,
+    "document.sign": signDocument,
+    "document.archive": archiveDocument,
+    "document.update": updateDocument,
 };
-function nextDocumentId() {
-    return (0, repository_1.newDocumentId)();
+export function nextDocumentId() {
+    return newDocumentId();
 }

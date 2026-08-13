@@ -1,0 +1,37 @@
+id: service-directory
+name: Service Directory
+version: 0.1.0
+owner: services-domain
+status: ACTIVE
+introduced: "2026-08-13"
+provides:
+  - service-request-lifecycle
+  - service-catalog
+  - vendor-management
+purpose: Manage service request lifecycles, vendor directory, and service delivery workflows across the EOS platform.
+manifest_version: 1.0.0
+exports:
+  - ServiceDirectoryService
+  - ServiceRequestCommands
+  - ServiceQueries
+presentation:
+  view: ServicesWorkspaceView
+implementation:
+  entry: implementation/commands/service.commands.ts
+depends_on:
+  - identity
+  - workflow-engine
+capability:
+  name: service-directory
+  owner: services-domain
+  purpose: Manage service request lifecycles, vendor directory, and service delivery workflows across the EOS platform.
+  consumers:
+    - services-id
+  maturity:
+    level: product
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - cross-product_uniformity
+stability: stable

@@ -1,4 +1,55 @@
 {
+  "REQ-1D-001": {
+    "work_id": "REQ-1D-001",
+    "product": "LawyersHub",
+    "user_job": "Create a requirement for a legal product, assign owner, track delivery lifecycle, mark as verified",
+    "outcome": "User dapat membuat requirement, approve untuk delivery, track implementasi, dan verifikasi selesai dengan full tenant isolation; semua command via capabilityRegistry dengan session validation berjalan; requirement lifecycle draft→approved→in_delivery→implemented→verified terbukti end-to-end.",
+    "constraints": {
+      "architecture_locked": true,
+      "reuse_existing_capabilities": true,
+      "no_new_framework": true,
+      "no_schema_changes": true,
+      "thin_app_strategy": true,
+      "single_truth_source": true,
+      "no_horizontal_platforms": true
+    },
+    "acceptance": [
+      "createRequirement via capabilityRegistry(\"lawyershub\",\"createRequirement\") → draft dengan id req-*",
+      "approveRequirement: draft→approved + deliveryStartedAt ter-stamp",
+      "markRequirementImplemented: approved→implemented + implementedAt ter-stamp",
+      "verifyRequirement: implemented→verified terminal + verifiedAt ter-stamp",
+      "semua session validation berjalan: tidak boleh cross-tenant/cross-workspace",
+      "permission create/update grantedByDefault:true berjalan untuk workspace user",
+      "RequirementRepository.byId(req) semua field (title, owner, workspaceId, status) match input",
+      "LawyersHub requirement tests 7/7 lifecycle PASS + 2 health checks PASS = TOTAL 9/9",
+      "regression: aggregate seluruh test suite semua produk ALL PASS, zero failures",
+      "evidence artifact JSON permanen tersimpan di .eos-state/"
+    ],
+    "status": "READY_TO_EXECUTE",
+    "created_at": "2026-08-13T00:00:00.000Z",
+    "updated_at": "2026-08-13T00:00:00.000Z",
+    "assigned_agents": {
+      "commander": "eos-command-center",
+      "recon": "eos-recon",
+      "product_slice": "eos-product-slice",
+      "verification": "eos-verification",
+      "evidence": "eos-evidence-engine"
+    },
+    "evidence": null,
+    "recon_report": {
+      "recon_completed_at": "2026-08-13T00:00:00.000Z",
+      "locked_boundaries_verified": ["IDENTITY_SESSION_RAIL", "POSTGRES_RAIL", "THIN_APP_BOUNDARY", "REPLAY_EVIDENCE_RAIL"],
+      "existing_capabilities_found": ["requirement-management (existing, underutilized)"],
+      "reuse_percentage": 85.7,
+      "blocked": false,
+      "can_proceed": true,
+      "report_path": ".eos-state/recon/REQ-1D-RECON-report.json"
+    },
+    "execution_plan": null,
+    "verification_report": null,
+    "dependencies": ["BATTLE-1C"],
+    "is_next_highest_leverage": true
+  },
   "LH-CASE-001": {
     "work_id": "LH-CASE-001",
     "product": "LawyersHub",

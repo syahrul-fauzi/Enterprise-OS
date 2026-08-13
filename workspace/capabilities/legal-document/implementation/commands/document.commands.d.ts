@@ -10,5 +10,5 @@ export declare const archiveDocument: ArchiveDocumentCommand;
 export declare const updateDocument: UpdateDocumentCommand;
 export declare const documentCommands: Readonly<Record<string, CapabilityCommand>>;
 export type { CreateDocumentCommand, SignDocumentCommand, ArchiveDocumentCommand, UpdateDocumentCommand, };
-export declare function nextDocumentId(): import("../contracts").DocumentId;
+export declare function nextDocumentId(): any;
 //# sourceMappingURL=document.commands.d.ts.map

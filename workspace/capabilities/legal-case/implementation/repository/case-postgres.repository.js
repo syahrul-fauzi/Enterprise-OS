@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.CaseRepositoryPostgres = void 0;
-const base_repository_1 = require("../../../identity/implementation/repositories/base.repository");
-const case_contracts_1 = require("../contracts/case.contracts");
+import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository";
+import { CaseId, } from "../contracts/case.contracts";
 // PostgreSQL-backed case repository implementation
-class CaseRepositoryPostgresImpl extends base_repository_1.PostgresRepository {
+class CaseRepositoryPostgresImpl extends PostgresRepository {
     entityName = "Case";
     kind = "repository";
     constructor() {
@@ -13,7 +10,7 @@ class CaseRepositoryPostgresImpl extends base_repository_1.PostgresRepository {
     // Convert database record to domain aggregate
     toAggregate(record) {
         return {
-            id: (0, case_contracts_1.CaseId)(record.id),
+            id: CaseId(record.id),
             title: record.title,
             description: record.description,
             status: record.status,
@@ -81,4 +78,4 @@ class CaseRepositoryPostgresImpl extends base_repository_1.PostgresRepository {
         return result.rows.length > 0;
     }
 }
-exports.CaseRepositoryPostgres = new CaseRepositoryPostgresImpl();
+export const CaseRepositoryPostgres = new CaseRepositoryPostgresImpl();

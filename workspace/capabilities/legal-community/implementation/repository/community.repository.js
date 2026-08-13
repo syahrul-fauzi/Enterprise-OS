@@ -1,13 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.newDiscussionId = exports.newContentId = exports.defaultDiscussionStatus = exports.defaultContentStatus = exports.CommunityDiscussionRepositoryInMemory = exports.ContentArticleRepositoryInMemory = exports.TopicRepositoryInMemory = void 0;
-exports.readCommunityStats = readCommunityStats;
-const community_contracts_1 = require("../contracts/community.contracts");
+import { ContentId, DiscussionId, TopicId, } from "../contracts/community.contracts";
 const now = Date.now();
 const d = (offsetDays, offsetHours = 0) => new Date(now - 1000 * 60 * 60 * (24 * offsetDays + offsetHours));
 const seedTopics = () => [
     {
-        id: (0, community_contracts_1.TopicId)("topic-001"),
+        id: TopicId("topic-001"),
         label: "Hukum Perusahaan",
         slug: "hukum-perusahaan",
         description: "Pendirian PT, GCG, merger & akuisisi, RUPS, dan tanggung jawab direksi serta komisaris.",
@@ -17,7 +13,7 @@ const seedTopics = () => [
         createdAt: d(360),
     },
     {
-        id: (0, community_contracts_1.TopicId)("topic-002"),
+        id: TopicId("topic-002"),
         label: "Hukum Teknologi Digital",
         slug: "hukum-teknologi-digital",
         description: "UU PDP, UU ITE, platform liability, AI governance, dan perlindungan data pribadi di ranah digital.",
@@ -27,7 +23,7 @@ const seedTopics = () => [
         createdAt: d(300),
     },
     {
-        id: (0, community_contracts_1.TopicId)("topic-003"),
+        id: TopicId("topic-003"),
         label: "Hukum Ketenagakerjaan",
         slug: "hukum-ketenagakerjaan",
         description: "UU Ketenagakerjaan, PHK, BPJS Ketenagakerjaan, kontrak kerja, dan hubungan industrial.",
@@ -37,7 +33,7 @@ const seedTopics = () => [
         createdAt: d(330),
     },
     {
-        id: (0, community_contracts_1.TopicId)("topic-004"),
+        id: TopicId("topic-004"),
         label: "Hukum Perdata",
         slug: "hukum-perdata",
         description: "Perikatan, perjanjian, gugatan perdata, wanprestasi, dan hukum kebendaan.",
@@ -47,7 +43,7 @@ const seedTopics = () => [
         createdAt: d(350),
     },
     {
-        id: (0, community_contracts_1.TopicId)("topic-005"),
+        id: TopicId("topic-005"),
         label: "Hukum Pidana",
         slug: "hukum-pidana",
         description: "KUHP baru, tindak pidana umum, white collar crime, dan prosedur pidana serta pemasyarakatan.",
@@ -57,7 +53,7 @@ const seedTopics = () => [
         createdAt: d(340),
     },
     {
-        id: (0, community_contracts_1.TopicId)("topic-006"),
+        id: TopicId("topic-006"),
         label: "Hukum Keluarga",
         slug: "hukum-keluarga",
         description: "Perkawinan, perceraian, harta bersama, hak asuh anak, dan waris berdasarkan KUHPerdata & UU Perkawinan.",
@@ -67,7 +63,7 @@ const seedTopics = () => [
         createdAt: d(310),
     },
     {
-        id: (0, community_contracts_1.TopicId)("topic-007"),
+        id: TopicId("topic-007"),
         label: "Hukum Internasional",
         slug: "hukum-internasional",
         description: "Perjanjian internasional, hukum laut, hak asasi manusia internasional, dan sengketa lintas batas.",
@@ -77,7 +73,7 @@ const seedTopics = () => [
         createdAt: d(280),
     },
     {
-        id: (0, community_contracts_1.TopicId)("topic-008"),
+        id: TopicId("topic-008"),
         label: "Hukum Tata Negara",
         slug: "hukum-tata-negara",
         description: "Konstitusi, lembaga negara, pemilu, otonomi daerah, dan uji materi di Mahkamah Konstitusi.",
@@ -89,10 +85,10 @@ const seedTopics = () => [
 ];
 const seedArticles = () => [
     {
-        id: (0, community_contracts_1.ContentId)("content-001"),
+        id: ContentId("content-001"),
         title: "Gugatan Class Action Konsumen E-Commerce: Landasan Hukum dan Prosedurnya",
         summary: "Analisis yuridis gugatan class action di sektor e-commerce berdasarkan UU Perlindungan Konsumen dan terbaru UU ITE.",
-        topicId: (0, community_contracts_1.TopicId)("topic-004"),
+        topicId: TopicId("topic-004"),
         topicLabel: "Hukum Perdata",
         author: "Dr. Dewi Kartika, S.H., M.Hum.",
         authorAffiliation: "FH UI",
@@ -104,10 +100,10 @@ const seedArticles = () => [
         publishedAt: d(5),
     },
     {
-        id: (0, community_contracts_1.ContentId)("content-002"),
+        id: ContentId("content-002"),
         title: "Tanggung Jawab Direksi dalam Merger Tanpa RUPS: Tinjauan UU PT",
         summary: "Kapan direksi bisa menyetujui merger tanpa RUPS lengkap? Pelajari batasan, mekanisme, dan risiko hukumnya.",
-        topicId: (0, community_contracts_1.TopicId)("topic-001"),
+        topicId: TopicId("topic-001"),
         topicLabel: "Hukum Perusahaan",
         author: "Prof. Dr. Bambang Sutopo, S.H., M.Sc.",
         authorAffiliation: "FH UGM",
@@ -119,10 +115,10 @@ const seedArticles = () => [
         publishedAt: d(8),
     },
     {
-        id: (0, community_contracts_1.ContentId)("content-003"),
+        id: ContentId("content-003"),
         title: "UU PDP dan AI Generatif: Kewajiban Pengendali Data untuk RAG Pipeline",
         summary: "Apa kewajiban hukum penyedia AI generatif yang memproses data pribadi Indonesia? Breakdown pasal demi pasal.",
-        topicId: (0, community_contracts_1.TopicId)("topic-002"),
+        topicId: TopicId("topic-002"),
         topicLabel: "Hukum Teknologi Digital",
         author: "Sarah Wijaya, S.H., LL.M.",
         authorAffiliation: "Cyber Law Institute",
@@ -134,10 +130,10 @@ const seedArticles = () => [
         publishedAt: d(3),
     },
     {
-        id: (0, community_contracts_1.ContentId)("content-004"),
+        id: ContentId("content-004"),
         title: "Outsourcing vs PKWTT Setelah UU Cipta Kerja: Perbedaan dan Risiko PHK",
         summary: "Panduan praktis membedakan hubungan kerja outsourcing vs PKWTT serta kesiapan dokumen kalau terjadi sengketa PHK.",
-        topicId: (0, community_contracts_1.TopicId)("topic-003"),
+        topicId: TopicId("topic-003"),
         topicLabel: "Hukum Ketenagakerjaan",
         author: "Arief Rahman, S.H., M.H.",
         authorAffiliation: "Pengurus Apindo",
@@ -148,10 +144,10 @@ const seedArticles = () => [
         updatedAt: d(1),
     },
     {
-        id: (0, community_contracts_1.ContentId)("content-005"),
+        id: ContentId("content-005"),
         title: "Pembagian Harta Bersama dalam Perceraian: Yang Bisa dan Tidak Bisa Dibagi",
         summary: "Kenali batasan objek harta bersama, bukti kepemilikan, dan mekanisme lelang eksekusi yang adil.",
-        topicId: (0, community_contracts_1.TopicId)("topic-006"),
+        topicId: TopicId("topic-006"),
         topicLabel: "Hukum Keluarga",
         author: "Dr. Siti Nurhaliza, S.H., M.Hum.",
         authorAffiliation: "FH UNPAD",
@@ -164,7 +160,7 @@ const seedArticles = () => [
 ];
 const seedDiscussions = () => [
     {
-        id: (0, community_contracts_1.DiscussionId)("disc-001"),
+        id: DiscussionId("disc-001"),
         title: "Perlukah Standar Etika Khusus untuk Pengacara AI di Indonesia?",
         summary: "Diskusi hangat: apakah advokat yang menggunakan AI perlu kode etik tambahan selain Kode Etik Advokat yang ada?",
         topicLabel: "Hukum Teknologi Digital",
@@ -177,7 +173,7 @@ const seedDiscussions = () => [
         latestActivityAt: d(0, 2),
     },
     {
-        id: (0, community_contracts_1.DiscussionId)("disc-002"),
+        id: DiscussionId("disc-002"),
         title: "Template Perjanjian Kerjasama Startup: Apa Saja Clause Wajib?",
         summary: "Berbagi template clause standar untuk perjanjian kerjasama startup dengan vendor / investor: mana yang harus selalu ada.",
         topicLabel: "Hukum Perusahaan",
@@ -190,7 +186,7 @@ const seedDiscussions = () => [
         latestActivityAt: d(0, 6),
     },
     {
-        id: (0, community_contracts_1.DiscussionId)("disc-003"),
+        id: DiscussionId("disc-003"),
         title: "Jaminan Sosial Pekerja Remote: BPJS Ketenagakerjaan Harus Tetap Jalan?",
         summary: "Pekerja remote lintas negara: bagaimana kewajiban perusahaan dan pekerja terkait jaminan sosial?",
         topicLabel: "Hukum Ketenagakerjaan",
@@ -242,7 +238,7 @@ function cloneDiscussion(d) {
         latestActivityAt: new Date(d.latestActivityAt),
     };
 }
-exports.TopicRepositoryInMemory = {
+export const TopicRepositoryInMemory = {
     kind: "repository",
     entityName: "Topic",
     byId(id) {
@@ -264,7 +260,7 @@ exports.TopicRepositoryInMemory = {
         return TOPIC_STORE.delete(id);
     },
 };
-exports.ContentArticleRepositoryInMemory = {
+export const ContentArticleRepositoryInMemory = {
     kind: "repository",
     entityName: "ContentArticle",
     byId(id) {
@@ -292,7 +288,7 @@ exports.ContentArticleRepositoryInMemory = {
         return ARTICLE_STORE.delete(id);
     },
 };
-exports.CommunityDiscussionRepositoryInMemory = {
+export const CommunityDiscussionRepositoryInMemory = {
     kind: "repository",
     entityName: "CommunityDiscussion",
     byId(id) {
@@ -319,29 +315,29 @@ exports.CommunityDiscussionRepositoryInMemory = {
         return DISCUSSION_STORE.delete(id);
     },
 };
-exports.defaultContentStatus = "proposed";
-exports.defaultDiscussionStatus = "open";
-exports.newContentId = (() => {
+export const defaultContentStatus = "proposed";
+export const defaultDiscussionStatus = "open";
+export const newContentId = (() => {
     let seq = 100;
     return () => {
         seq += 1;
-        return (0, community_contracts_1.ContentId)(`content-${String(seq).padStart(3, "0")}`);
+        return ContentId(`content-${String(seq).padStart(3, "0")}`);
     };
 })();
-exports.newDiscussionId = (() => {
+export const newDiscussionId = (() => {
     let seq = 100;
     return () => {
         seq += 1;
-        return (0, community_contracts_1.DiscussionId)(`disc-${String(seq).padStart(3, "0")}`);
+        return DiscussionId(`disc-${String(seq).padStart(3, "0")}`);
     };
 })();
-function readCommunityStats() {
+export function readCommunityStats() {
     return {
-        topicCount: exports.TopicRepositoryInMemory.list().length,
-        articleCount: exports.ContentArticleRepositoryInMemory.list().length,
-        discussionCount: exports.CommunityDiscussionRepositoryInMemory.list().length,
-        topicsFeatured: exports.TopicRepositoryInMemory.listFeatured().map((t) => t.label),
-        topicLabels: [...exports.TopicRepositoryInMemory.list()]
+        topicCount: TopicRepositoryInMemory.list().length,
+        articleCount: ContentArticleRepositoryInMemory.list().length,
+        discussionCount: CommunityDiscussionRepositoryInMemory.list().length,
+        topicsFeatured: TopicRepositoryInMemory.listFeatured().map((t) => t.label),
+        topicLabels: [...TopicRepositoryInMemory.list()]
             .sort((a, b) => b.featured === a.featured ? 0 : b.featured ? 1 : -1)
             .map((t) => t.label),
     };

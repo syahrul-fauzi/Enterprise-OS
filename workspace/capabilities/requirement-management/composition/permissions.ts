@@ -17,13 +17,13 @@ export const requirementPermissions: RequirementPermissionRule[] = [
   {
     action: "create",
     resource: "requirement",
-    grantedByDefault: false,
+    grantedByDefault: true,
     scope: "workspace",
   },
   {
     action: "update",
     resource: "requirement",
-    grantedByDefault: false,
+    grantedByDefault: true,
     scope: "workspace",
   },
   {

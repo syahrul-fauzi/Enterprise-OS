@@ -45,6 +45,8 @@ export interface ServiceRequestAggregate {
   readonly createdAt: Readonly<Date>;
   readonly updatedAt: Readonly<Date>;
   readonly deliveredAt?: Readonly<Date>;
+  readonly tenantId: string;
+  readonly workspaceId: string;
 }
 
 export interface CreateServiceRequestInput {
@@ -74,9 +76,12 @@ export type ServiceProviderRepository = {
 export type ServiceRequestRepository = {
   readonly entityName: "ServiceRequest";
   readonly kind: "repository";
-  byId(id: ServiceRequestId): ServiceRequestAggregate | undefined;
-  list(): readonly ServiceRequestAggregate[];
-  listByStatus(status: ServiceRequestStatus | "all"): readonly ServiceRequestAggregate[];
-  save(entity: ServiceRequestAggregate): ServiceRequestAggregate;
-  remove(id: ServiceRequestId): boolean;
+  byId(id: ServiceRequestId): Promise<ServiceRequestAggregate | undefined>;
+  list(): Promise<readonly ServiceRequestAggregate[]>;
+  listByStatus(status: ServiceRequestStatus | "all"): Promise<readonly ServiceRequestAggregate[]>;
+  listByWorkspace(workspaceId: string): Promise<readonly ServiceRequestAggregate[]>;
+  listByTenant(tenantId: string): Promise<readonly ServiceRequestAggregate[]>;
+  save(entity: ServiceRequestAggregate): Promise<ServiceRequestAggregate>;
+  remove(id: ServiceRequestId): Promise<boolean>;
+  delete(id: ServiceRequestId): Promise<boolean>;
 };
