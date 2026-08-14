@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository";
+import { PostgresRepository } from "./base.repository.js";
 import {
   MembershipId,
   TenantId,
@@ -6,7 +6,7 @@ import {
   WorkspaceId,
   type MembershipAggregate,
   type MembershipRepository,
-} from "../contracts/identity.contracts";
+} from "../contracts/identity.contracts.js";
 
 // PostgreSQL-backed membership repository implementation
 class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implements MembershipRepository {

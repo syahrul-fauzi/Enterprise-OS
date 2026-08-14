@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository";
+import { PostgresRepository } from "./base.repository.js";
 import {
   SessionId,
   UserId,
@@ -6,7 +6,7 @@ import {
   WorkspaceId,
   type SessionAggregate,
   type SessionRepository,
-} from "../contracts/identity.contracts";
+} from "../contracts/identity.contracts.js";
 
 // PostgreSQL-backed session repository implementation
 class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements SessionRepository {
@@ -138,7 +138,7 @@ class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements S
 
   async remove(id: SessionId): Promise<boolean> {
     const result = await this.pool.query("DELETE FROM sessions WHERE id = $1 RETURNING id", [id]);
-    return result.length > 0;
+    return result.rows.length > 0;
   }
 }
 

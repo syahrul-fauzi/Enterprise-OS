@@ -5,11 +5,16 @@
     "outDir": "dist",
     "strictNullChecks": true,
     "declaration": true,
+    "incremental": true,
+    "composite": true,
+    "ignoreDeprecations": "5.0",
     "baseUrl": ".",
     "paths": {
       "@capabilities/*": ["../../../capabilities/*"]
     }
   },
-  "include": ["src"]
+  "references": [
+  ],
+  "include": ["src"],
   "exclude": ["dist", "build", "node_modules"]
 }

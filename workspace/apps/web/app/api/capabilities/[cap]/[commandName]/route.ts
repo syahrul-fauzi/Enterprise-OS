@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { capabilityRegistry } from "@repo/core-kernel";
+import {
+  WORKSPACE_SESSION_COOKIE,
+  decodeWorkspaceSession,
+} from "@repo/core-kernel";
 
 export const runtime = "nodejs";
 
@@ -22,15 +26,43 @@ export async function POST(
     );
   }
 
-  let body: unknown;
+  // Extract and validate session from cookie (authentication & tenant isolation)
+  const cookie = request.headers.get("Cookie");
+  const sessionCookie = cookie?.split(";").find(c => c.trim().startsWith(`${WORKSPACE_SESSION_COOKIE}=`));
+  
+  if (!sessionCookie) {
+    return NextResponse.json({ error: "Unauthorized - missing session cookie" }, { status: 401 });
+  }
+
+  let session;
   try {
-    body = await request.json();
+    session = decodeWorkspaceSession(sessionCookie.split("=")[1]);
+    if (!session || !session.sessionId || !session.tenantId || !session.workspaceId || !session.actorId) {
+      return NextResponse.json({ error: "Invalid session - missing required context fields" }, { status: 401 });
+    }
+  } catch (e) {
+    return NextResponse.json({ error: "Failed to decode session" }, { status: 401 });
+  }
+
+  let body: Record<string, unknown>;
+  try {
+    body = await request.json() as Record<string, unknown>;
   } catch {
     body = {};
   }
 
   try {
-    const result = capabilityRegistry.invoke(capability, commandName, body);
+    // Combine request body with session context for mandatory tenant isolation
+    // This ensures ALL capability commands receive the required authentication context
+    const authenticatedPayload = {
+      ...body,
+      sessionId: session.sessionId,
+      tenantId: session.tenantId,
+      workspaceId: session.workspaceId,
+      actorId: session.actorId,
+    };
+
+    const result = capabilityRegistry.invoke(capability, commandName, authenticatedPayload);
     return NextResponse.json(
       {
         ok: true,

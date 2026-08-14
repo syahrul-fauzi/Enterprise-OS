@@ -11,15 +11,27 @@ import * as RequirementServiceImplModule from "../../capabilities/requirement-ma
 // Identity capability imports
 import { identityCommands } from "../../capabilities/identity/implementation/commands";
 import {
-  UserRepositoryFileBacked,
-  TenantRepositoryFileBacked,
-  WorkspaceRepositoryFileBacked,
-  MembershipRepositoryFileBacked,
-  SessionRepositoryFileBacked,
+  UserRepositoryPostgres,
+  TenantRepositoryPostgres,
+  WorkspaceRepositoryPostgres,
+  MembershipRepositoryPostgres,
+  SessionRepositoryPostgres,
 } from "../../capabilities/identity/implementation/repositories";
 import { passwordService } from "../../capabilities/identity/implementation/services/password.service";
 // Evidence Registry capability imports
 import * as EvidenceRegistryServiceImplModule from "../../capabilities/evidence-registry/implementation/service";
+// Consultation capability imports
+import * as ConsultationServiceImplModule from "../../capabilities/consultation/implementation/service";
+import { 
+  createConsultation, 
+  triageConsultation, 
+  listConsultationsByWorkspace, 
+  resolveConsultation, 
+  pauseConsultation, 
+  resumeConsultation,
+  getConsultation,
+  searchConsultations
+} from "../../capabilities/consultation/implementation/commands/consultation.commands";
 const RequirementViewComponent = RequirementView ?? RequirementViewDefault;
 
 const requirementImplementation: CapabilityImplementation = {
@@ -43,11 +55,11 @@ const identityImplementation: CapabilityImplementation = {
   commands: identityCommands,
   queries: {},
   repositories: {
-    UserRepository: UserRepositoryFileBacked,
-    TenantRepository: TenantRepositoryFileBacked,
-    WorkspaceRepository: WorkspaceRepositoryFileBacked,
-    MembershipRepository: MembershipRepositoryFileBacked,
-    SessionRepository: SessionRepositoryFileBacked,
+    UserRepository: UserRepositoryPostgres,
+    TenantRepository: TenantRepositoryPostgres,
+    WorkspaceRepository: WorkspaceRepositoryPostgres,
+    MembershipRepository: MembershipRepositoryPostgres,
+    SessionRepository: SessionRepositoryPostgres,
   },
   services: { passwordService },
   entry: {},
@@ -61,10 +73,16 @@ const identity: CapabilityDescriptor = Object.freeze({
   implementation: identityImplementation,
 });
 
+// Import evidence registry queries dengan properti lengkap
+import { getEvidenceRecord, searchEvidenceRegistry } from "../../capabilities/evidence-registry/implementation/queries/evidence-registry.queries";
+
 // Evidence Registry capability implementation
 const evidenceRegistryImplementation: CapabilityImplementation = {
-  commands: {},
-  queries: EvidenceRegistryServiceImplModule.evidenceRegistryQueries,
+  commands: EvidenceRegistryServiceImplModule.evidenceRegistryCommands,
+  queries: {
+    "evidence.get": { ...getEvidenceRecord, kind: "query", name: "evidence.get" },
+    "evidence.search": { ...searchEvidenceRegistry, kind: "query", name: "evidence.search" },
+  },
   repositories: { EvidenceRegistryRepository: EvidenceRegistryServiceImplModule.EvidenceRegistryRepositoryFileSystem },
   services: {},
   entry: EvidenceRegistryServiceImplModule,
@@ -78,10 +96,59 @@ const evidenceRegistry: CapabilityDescriptor = Object.freeze({
   implementation: evidenceRegistryImplementation,
 });
 
+// Consultation capability implementation
+const consultationImplementation: CapabilityImplementation = {
+  commands: {
+    "consultation.create": createConsultation,
+    "consultation.triage": triageConsultation,
+    "consultation.listByWorkspace": listConsultationsByWorkspace,
+    "consultation.resolve": resolveConsultation,
+    "consultation.pause": pauseConsultation,
+    "consultation.resume": resumeConsultation,
+  },
+  queries: {
+    "consultation.get": getConsultation,
+    "consultation.search": searchConsultations,
+  },
+  repositories: { ConsultationRepository: ConsultationServiceImplModule.ConsultationRepositoryInMemory },
+  services: {},
+  entry: ConsultationServiceImplModule,
+};
+
+const consultation: CapabilityDescriptor = Object.freeze({
+  id: "consultation",
+  version: "0.1.0",
+  name: "Consultation Management",
+  experience: {},
+  implementation: consultationImplementation,
+});
+
+// Observability capability imports
+import * as ObservabilityServiceImplModule from "../../capabilities/observability/implementation/service";
+
+// Observability capability implementation
+const observabilityImplementation: CapabilityImplementation = {
+  commands: ObservabilityServiceImplModule.observabilityCommands,
+  queries: {},
+  repositories: {},
+  services: {},
+  entry: ObservabilityServiceImplModule,
+};
+
+const observability: CapabilityDescriptor = Object.freeze({
+  id: "observability",
+  version: "0.1.0",
+  name: "Observability & Incident Management",
+  experience: {},
+  implementation: observabilityImplementation,
+});
+
 export const registry = new StaticRegistry({
   entries: {
     "requirement-management": requirementManagement,
     "identity": identity,
     "evidence-registry": evidenceRegistry,
+    "consultation": consultation,
+    "observability": observability,
   },
 });

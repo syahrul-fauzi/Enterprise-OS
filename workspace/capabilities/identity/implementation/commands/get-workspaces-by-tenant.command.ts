@@ -1,12 +1,12 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
-import { TenantId, UserId, SessionId } from "../contracts/identity.contracts";
+import { TenantId, UserId, SessionId, type MembershipAggregate, type WorkspaceAggregate } from "../contracts/identity.contracts.js";
 import { 
   TenantRepositoryPostgres, 
   WorkspaceRepositoryPostgres, 
   MembershipRepositoryPostgres,
   SessionRepositoryPostgres 
-} from "../repositories";
+} from "../repositories/index.js";
 
 export const GetWorkspacesByTenantInputSchema = z.object({
   tenantId: z.string().min(1),
@@ -75,11 +75,11 @@ export const getWorkspacesByTenantCommand: GetWorkspacesByTenantCommand = {
     
     // 6. Get all memberships for this user in this tenant only
     const memberships = await MembershipRepositoryPostgres.listByTenant(TenantId(parsed.tenantId));
-    const userMemberships = memberships.filter((m) => m.userId === UserId(parsed.actorId));
+    const userMemberships = memberships.filter((m: MembershipAggregate) => m.userId === UserId(parsed.actorId));
     
     // 7. Map workspaces with their membership details (enforce only workspaces user is member of)
-    const workspaceDetails = workspaces.map((w) => {
-      const membership = userMemberships.find((m) => m.workspaceId === w.id);
+    const workspaceDetails = workspaces.map((w: WorkspaceAggregate) => {
+      const membership = userMemberships.find((m: MembershipAggregate) => m.workspaceId === w.id);
       const workspaceCreatedAt = w.createdAt ?? new Date();
       return {
         id: w.id,
@@ -89,7 +89,7 @@ export const getWorkspacesByTenantCommand: GetWorkspacesByTenantCommand = {
         role: membership?.role ?? null,
         membershipId: membership?.id ?? null,
       };
-    }).filter(ws => ws.membershipId !== null); // Remove any workspaces user doesn't have membership for
+    }).filter((ws) => ws.membershipId !== null); // Remove any workspaces user doesn't have membership for
 
     const tenantCreatedAt = tenant.createdAt ?? new Date();
     return {

@@ -1,0 +1,57 @@
+{
+  "work_id": "CONSULT-L006",
+  "recon_completed_at": "2026-08-14T12:00:00.000Z",
+  "locked_boundaries_verified": {
+    "consultation_boundary_intact": true,
+    "observability_boundary_intact": true,
+    "no_cross_boundary_violations": true
+  },
+  "existing_capabilities_found": [
+    {
+      "id": "consultation",
+      "version": "0.1.0",
+      "status": "ACTIVE",
+      "commands": ["create", "triage", "listByWorkspace", "resolve", "pause", "resume"],
+      "purpose": "Longitudinal consultation management with governed learning",
+      "relevance": "Core spine yang akan digunakan untuk technical operations use case"
+    },
+    {
+      "id": "observability",
+      "version": "0.1.0",
+      "status": "ACTIVE",
+      "provides": ["metrics-collection", "logging", "tracing"],
+      "purpose": "End-to-end observability & monitoring",
+      "relevance": "Target domain capability untuk technical operations server issue"
+    }
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "consultation.create (already in registry)",
+      "consultation.resume (already in registry)",
+      "consultation.resolve (already in registry)",
+      "learning.extract-candidate (already implemented)",
+      "learning.approve-candidate (already implemented)",
+      "observability metrics infrastructure (already exists)",
+      "tenant isolation (core primitive)",
+      "evidence persistence (core primitive)"
+    ],
+    "required_new": [
+      "test file: datacenter-server-issue.test.ts (mirror longitudinal_legal_case.test.ts untuk observability domain)",
+      "register observability capability di workspace.manifest.ts jika belum terdaftar",
+      "satu minimal command di observability untuk menerima work dari consultation"
+    ],
+    "reuse_percentage": 92.3
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "REUSE semua primitive consultation yang sudah ada untuk use case server down datacenter",
+    "Buat test file minimal (mirror legal case) untuk membuktikan 4 continuity proof di domain observability",
+    "Register observability di capability registry jika belum terdaftar",
+    "Tidak perlu modifikasi apapun di consultation core (sudah cukup universal)",
+    "Jalankan test end-to-end untuk memverifikasi spine consultation tetap utuh di domain teknis"
+  ]
+}

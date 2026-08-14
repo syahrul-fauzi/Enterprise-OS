@@ -38,3 +38,42 @@ export interface ObservabilitySnapshot {
   readonly metrics: readonly ObservableMetric[];
   readonly traces: readonly ObservableTraceSpan[];
 }
+
+export type IncidentId = string & { __brand: "IncidentId" };
+export type IncidentStatus = "draft" | "open" | "in_progress" | "resolved" | "closed";
+export type IncidentPriority = "low" | "medium" | "high" | "critical";
+export type IncidentCategory = "Infrastructure" | "Application" | "Database" | "Network" | "Security";
+
+export interface IncidentAggregate {
+  readonly id: IncidentId;
+  readonly title: string;
+  readonly description?: string;
+  readonly category: IncidentCategory;
+  readonly status: IncidentStatus;
+  readonly priority: IncidentPriority;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
+}
+
+export interface CreateIncidentInput {
+  readonly title: string;
+  readonly description?: string;
+  readonly priority?: IncidentPriority;
+  readonly category?: IncidentCategory;
+  readonly sessionId: string;
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
+}
+
+export interface CreateIncidentOutput {
+  readonly id: IncidentId;
+  readonly status: IncidentStatus;
+}
+
+export function newIncidentId(): IncidentId {
+  return `inc-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 9)}` as IncidentId;
+}
+
+export const defaultIncidentStatus: IncidentStatus = "draft";
+export const defaultIncidentPriority: IncidentPriority = "medium";

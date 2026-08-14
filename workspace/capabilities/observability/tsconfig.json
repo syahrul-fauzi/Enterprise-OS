@@ -1,0 +1,38 @@
+{
+  "extends": "../../config/typescript/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "strictNullChecks": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "ignoreDeprecations": "5.0",
+    "types": ["node"],
+    "skipLibCheck": true,
+    "composite": true,
+    "rootDir": "./implementation",
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "module": "NodeNext",
+    "moduleDetection": "force",
+    "moduleResolution": "NodeNext",
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "ES2022",
+    "paths": {
+      "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
+      "@repo/core-kernel/*": ["../../packages/core/kernel/src/*"],
+      "@capabilities/consultation/*": ["../consultation/*"],
+      "@capabilities/identity/*": ["../identity/*"],
+      "@capabilities/legal-case/*": ["../legal-case/*"]
+    }
+  },
+  "references": [
+    { "path": "../identity/tsconfig.json" },
+    { "path": "../legal-case/tsconfig.json" }
+  ],
+  "include": ["implementation/**/*.ts"],
+  "exclude": ["dist", "node_modules", "**/*.d.ts"]
+}

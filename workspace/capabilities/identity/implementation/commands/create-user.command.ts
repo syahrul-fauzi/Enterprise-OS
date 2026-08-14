@@ -4,9 +4,9 @@ import {
   UserId,
   type RegisterUserInput,
   type UserAggregate,
-} from "../contracts/identity.contracts";
-import { passwordService } from "../services/password.service";
-import { UserRepositoryPostgres } from "../repositories";
+} from "../contracts/identity.contracts.js";
+import { passwordService } from "../services/password.service.js";
+import { UserRepositoryPostgres } from "../repositories/index.js";
 
 function newUserId(): UserId {
   return UserId(`user-${randomUUID()}`);

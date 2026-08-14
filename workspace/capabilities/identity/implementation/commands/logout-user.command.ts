@@ -2,8 +2,8 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import {
   SessionId,
   type SessionAggregate,
-} from "../contracts/identity.contracts";
-import { SessionRepositoryPostgres } from "../repositories";
+} from "../contracts/identity.contracts.js";
+import { SessionRepositoryPostgres } from "../repositories/index.js";
 
 type LogoutInput = {
   readonly sessionId?: string;

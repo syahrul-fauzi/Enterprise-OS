@@ -1,10 +1,12 @@
-import type { CapabilityCommand } from "../types";
-import { caseCommands } from "@capabilities/legal-case/implementation/commands/case.commands";
-import { serviceDirectoryCommands } from "@capabilities/service-directory/implementation/commands/service.commands";
-import { legalCommunityCommands } from "@capabilities/legal-community/implementation/commands/community.commands";
-import { documentCommands } from "@capabilities/legal-document/implementation/commands/document.commands";
-import { requirementCommands } from "@capabilities/requirement-management/implementation/commands/requirement.commands";
-import { identityCommands } from "@capabilities/identity/implementation/commands";
+import type { CapabilityCommand } from "../types.js";
+// Use relative paths for tsx runtime resolution (tsconfig path mappings not resolved by tsx)
+// Node.js path.relative confirms: ../../../../../ traverses from registry dir → workspace root
+// @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
+import { identityCommands } from "../../../../../capabilities/identity/implementation/commands/index.js";
+// @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
+import { consultationCommands } from "../../../../../capabilities/consultation/implementation/commands/index.js";
+// @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
+import { observabilityCommands } from "../../../../../capabilities/observability/implementation/commands/observability.commands.js";
 
 export interface CommandInvocationRecord {
   readonly commandKey: string;
@@ -18,11 +20,8 @@ export interface CommandInvocationRecord {
 
 const GLOBAL_REGISTRY: Readonly<Record<string, CapabilityCommand>> = {
   ...identityCommands,
-  ...caseCommands,
-  ...serviceDirectoryCommands,
-  ...legalCommunityCommands,
-  ...documentCommands,
-  ...requirementCommands,
+  ...consultationCommands,
+  ...observabilityCommands,
 } as const;
 
 const CAPABILITY_PREFIX_ALIASES: Readonly<Record<string, readonly string[]>> = {
@@ -48,6 +47,12 @@ const CAPABILITY_PREFIX_ALIASES: Readonly<Record<string, readonly string[]>> = {
   ilc: ["legal-community."],
   academic: ["legal-community."],
   community: ["legal-community."],
+  "consultation": ["consultation."],
+  consultations: ["consultation."],
+  "observability": ["incident.", "observability."],
+  sre: ["incident.", "observability."],
+  infrastructure: ["incident.", "observability."],
+  ops: ["incident.", "observability."],
 } as const;
 
 function normalizeCommandName(raw: string): string {

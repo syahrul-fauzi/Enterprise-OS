@@ -10,15 +10,15 @@ import {
   type TenantAggregate,
   type WorkspaceAggregate,
   type MembershipAggregate,
-} from "../contracts/identity.contracts";
-import { passwordService, slugifyForTenant } from "../services/password.service";
+} from "../contracts/identity.contracts.js";
+import { passwordService, slugifyForTenant } from "../services/password.service.js";
 import {
   UserRepositoryPostgres,
   TenantRepositoryPostgres,
   WorkspaceRepositoryPostgres,
   MembershipRepositoryPostgres,
-} from "../repositories";
-import { initIdentitySchema } from "../repositories/base.repository";
+} from "../repositories/index.js";
+import { initIdentitySchema } from "../repositories/base.repository.js";
 
 function newUserId(): UserId {
   return UserId(`user-${randomUUID()}`);
@@ -128,6 +128,7 @@ export const signupFlowCommand: SignupFlowCommand = {
       workspaceId: workspaceEntity.id,
       role: "owner",
       joinedAt: new Date(),
+      createdAt: new Date(),
       updatedAt: new Date(),
     };
     await MembershipRepositoryPostgres.save(membershipEntity);

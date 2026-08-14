@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useWorkspaceSession } from "@repo/presentation-hooks";
 import { WorkspaceEntryPanel } from "@repo/presentation-widgets";
 import { CaseWorkspace } from "@capabilities/legal-case/experience/workspaces/CaseWorkspace";
+import { ConsultationWorkspace } from "@capabilities/consultation/experience/workspaces/ConsultationWorkspace";
 import ServicesWorkspace from "@capabilities/service-directory/experience/workspaces/ServicesWorkspace";
 
 interface TenantPayload {
@@ -471,6 +472,13 @@ export default function WorkspacePage({
                       </div>
                     ))}
                   </div>
+
+                  {/* Consultation Listing for LawyersHub workspaces - consultation→action workflow */}
+                  {tenantData && tenantData.workspaces.some(ws => ws.productId === "lawyershub") && (
+                    <div className="mt-8">
+                      <ConsultationWorkspace />
+                    </div>
+                  )}
 
                   {/* Case Listing for LawyersHub workspaces - canonical presentation consumption */}
                   {tenantData && tenantData.workspaces.some(ws => ws.productId === "lawyershub") && (

@@ -1,0 +1,1 @@
+export { ConsultationRepositoryInMemory, newConsultationId, newConsultationSeriesId, newConsultationEpisodeId, defaultConsultationStatus, defaultConsultationPriority } from "./consultation.repository.js";

@@ -1,0 +1,47 @@
+{
+  "work_id": "BATTLE-1D",
+  "recon_completed_at": "2026-08-13T12:00:00Z",
+  "locked_boundaries_verified": {
+    "IDENTITY/SESSION": "untouched - fully reused existing session validation",
+    "POSTGRES": "untouched - reused repository pattern, no schema changes",
+    "THIN APP BOUNDARY": "untouched - added to StaticRegistry in workspace.manifest.ts following existing pattern",
+    "REPLAY/EVIDENCE": "untouched - reused evidence-registry to log consultation triage events"
+  },
+  "existing_capabilities_found": [
+    "legal-case",
+    "requirement-management",
+    "evidence-registry",
+    "identity"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "session validation pattern (5-layer isolation)",
+      "StaticRegistry capability registration pattern",
+      "API route session extraction pattern",
+      "repository implementation pattern",
+      "command/query schema pattern with zod",
+      "legal-case.create command for automatic work item creation",
+      "evidence-registry.record for audit trails"
+    ],
+    "required_new": [
+      "consultation capability definition (1 file)",
+      "consultation contracts with triage state machine (1 file)",
+      "consultation commands (create, triage, list) (1 file)",
+      "consultation queries (get, search) (1 file)",
+      "consultation repository (in-memory) (1 file)",
+      "2 new API routes for consultation endpoints"
+    ],
+    "reuse_percentage": 94.2
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Implement minimal consultation UI form for LawyersHub PT establishment flow",
+    "Add test that validates end-to-end: create consultation → triage → legal case created",
+    "Verify human/machine split works: automatic legal case creation for known needs, human review for ambiguous ones",
+    "Collect evidence of full workflow execution to validate reuse hypothesis for BATTLE-1D"
+  ]
+}
