@@ -19,4 +19,33 @@ experiments:
     conclusion: pending
     start_date: 2026-07-24
     target_end_date: TBD
-
+  - id: PROD-MEASURE-001
+    name: AMDAL Consultation Effectiveness Experiment
+    subject: Consultation Capability
+    hypothesis: |
+      Minimum Sufficient Outcome (MSO) discipline produces
+      better real-world outcomes with less unnecessary work
+      while maintaining correctness, quality, and trust.
+    current_phase: STAGING - Case 1 Execution (AMDAL Pabrik Kimia)
+    status: running
+    evidence_count: 0
+    decision_count: 0
+    conclusion: pending
+    start_date: 2026-08-14
+    target_cases: 5
+    core_questions:
+      - "Did Consultation understand the right problem?"
+      - "Did it request the right work?"
+      - "Did it stop at the right boundary?"
+      - "Did the user obtain the intended outcome?"
+    guarded_metrics:
+      - outcome_quality: maintained ↔
+      - evidence_completeness: maintained ↔
+      - decision_correctness: maintained ↔
+      - human_trust: maintained ↔
+      - realworld_result: maintained ↔
+      - cost_time: reduced ↓
+      - unnecessary_work: reduced ↓
+    foundations_locked:
+      - consultation: 🔒 DO NOT TOUCH
+      - mso: 🔒 DO NOT TOUCH

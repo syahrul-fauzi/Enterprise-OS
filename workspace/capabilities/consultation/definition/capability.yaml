@@ -39,6 +39,30 @@ capability:
     - user-adoption
     - end_to_end_lifecycle
 stability: experimental
+# 🔒 CONSULTATION FOUNDATION FROZEN - No new features or engines during PROD-MEASURE-001 experiment
+# 🧪 PROD-MEASURE-001: REAL-CASE CONTROLLED EXPERIMENT - 5 AMDAL cases in staging
+# Epistemik discipline enforced: true leverage is derived metric, requires comparative evidence
+experiments:
+  - id: PROD-MEASURE-001
+    name: AMDAL Consultation Effectiveness Experiment
+    status: RUNNING
+    start_date: "2026-08-14"
+    core_questions:
+      - "Did Consultation understand the right problem?"
+      - "Did it request the right work?"
+      - "Did it stop at the right boundary?"
+      - "Did the user obtain the intended outcome?"
+    case1_preliminary:
+       outcome: "SUFFICIENT"
+       requiredCapabilitiesInvoked: 2
+       unnecessaryCapabilitiesNotCalled: "..."
+       trueLeverage: 2
+       trueLeverageStatus: "⏳ derived metric / perlu definisi"
+       # Format sesuai koreksi epistemik War Room:
+       # Outcome: SUFFICIENT             ✅ observed
+       # Required capability: 2          ✅ observed
+       # Unnecessary work avoided: ...   ✅ jika ada evidence
+       # True leverage: 2                ⏳ derived metric / perlu definisi
 contracts:
   requires:
     - name: WorkflowEngineProvider
