@@ -2,10 +2,12 @@
   "extends": "@repo/config-typescript/react-library.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
     "baseUrl": ".",
+    "ignoreDeprecations": "5.0",
+    "skipLibCheck": true,
     "jsx": "react-jsx",
     "tsBuildInfoFile": "tsconfig.tsbuildinfo",
+    "typeRoots": ["./node_modules/@types", "/root/Enterprise-OS/workspace/node_modules/@types"],
     "paths": {
       "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
       "@repo/core-kernel/*": ["../../packages/core/kernel/src/*"],
@@ -18,6 +20,7 @@
       "@repo/presentation-ui-system": ["../../packages/presentation/ui-system/src/index.ts"],
       "@repo/presentation-ui-system/*": ["../../packages/presentation/ui-system/src/*"],
       "@repo/presentation-types": ["../../packages/presentation/presentation-types/src/index.ts"],
+      "@repo/capabilities/*": ["../../../capabilities/*"],
       "@repo/presentation-types/*": ["../../packages/presentation/presentation-types/src/*"],
       "@repo/presentation-foundation": ["../../packages/presentation/foundation/src/index.ts"],
       "@repo/presentation-foundation/*": ["../../packages/presentation/foundation/src/*"],
@@ -29,8 +32,11 @@
       "@repo/presentation-hooks/*": ["../../packages/presentation/hooks/src/*"],
       "@products/*": ["../../products/*"],
       "@procedures/*": ["../../procedures/*"],
-      "@capabilities/*": ["../../capabilities/*"]
-    }
+      "@capabilities/*": ["../../capabilities/*"],
+      "next/link": ["/root/Enterprise-OS/workspace/apps/web/node_modules/next/dist/client/app-dir/link.d.ts"],
+      "next/navigation": ["/root/Enterprise-OS/workspace/apps/web/node_modules/next/dist/client/components/navigation.d.ts"]
+      }
+  
   },
   "include": ["src/**/*", "./**/*.ts", "./**/*.tsx"],
   "exclude": ["node_modules", "dist"]

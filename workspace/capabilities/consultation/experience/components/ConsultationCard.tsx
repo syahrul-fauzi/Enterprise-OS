@@ -6,7 +6,25 @@ export interface ConsultationCardProps {
   readonly item: ConsultationAggregate;
 }
 
-const STATUS_LABEL: Record<ConsultationAggregate["status"], string> = {
+const STATUS_LABEL: Record<string, string> = {
+  OPEN: "Terbuka",
+  UNDERSTANDING: "Memahami Konteks",
+  CONTEXT_COMPLETE: "Konteks Lengkap",
+  ASSESSING: "Menilai",
+  RECOMMENDING: "Memberi Rekomendasi",
+  AWAITING_DECISION: "Menunggu Keputusan",
+  HANDOFF: "Serah Terima",
+  EXECUTING: "Eksekusi",
+  RESOLVED: "Selesai",
+  PAUSED: "Dijeda",
+  RESUMED: "Dilanjutkan",
+  WAITING_FOR_INFORMATION: "Menunggu Informasi",
+  WAITING_FOR_HUMAN: "Menunggu Manusia",
+  ESCALATED: "Dieskalasi",
+  REFERRED: "Dirujuk",
+  BLOCKED: "Terblokir",
+  OUT_OF_SCOPE: "Di Luar Ruang Lingkup",
+  CANCELLED: "Dibatalkan",
   draft: "Draft",
   submitted: "Terkirim",
   triaging: "Dalam Proses Analisis",

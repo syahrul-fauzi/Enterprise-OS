@@ -10,7 +10,7 @@ import {
   TRANSFORMATION_COUNT_SPRINT0_REQUIRED,
   ResolverResolutionBundleSchema,
   RegistryResolverRegistryDocumentSchema,
-} from "../src/index.js";
+} from "../src/index";
 import type { TransformationId } from "@repo/core-transformation-registry";
 
 void describe("@repo/core-registry-resolver conformance", () => {

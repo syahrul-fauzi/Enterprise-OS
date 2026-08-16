@@ -9,7 +9,7 @@ import type {
   BlockedStatus,
   FailureStrategy,
   RollbackStrategy,
-} from "./types.js";
+} from "./types";
 import type { TransformationId } from "@repo/core-transformation-registry";
 
 export const TRANSFORMATION_ID_VALIDATION_RULE =

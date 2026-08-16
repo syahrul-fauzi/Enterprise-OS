@@ -7,7 +7,7 @@
     "declaration": true,
     "declarationMap": true,
     "incremental": true,
-    "ignoreDeprecations": "5.0",
+    "ignoreDeprecations": "6.0",
     "types": ["node"],
     "skipLibCheck": true,
     "composite": true,

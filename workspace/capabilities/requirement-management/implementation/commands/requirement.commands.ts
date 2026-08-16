@@ -14,17 +14,17 @@ import {
   type UpdateRequirementOutput,
   type VerifyRequirementInput,
   type VerifyRequirementOutput,
-} from "../contracts";
+} from "../contracts/index";
 import {
   defaultRequirementPriority,
   defaultRequirementStatus,
   defaultRequirementVerificationStatus,
   newRequirementId,
   RequirementRepositoryCurrent,
-} from "../repository";
+} from "../repository/index";
 import { getRequirementsByOwnerCommand } from "./get-requirements-by-owner.command";
 import { getAllRequirementsCommand } from "./get-all-requirements.command";
-import { SessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository";
+import { getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository";
 import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
 
 const CreateRequirementWithContextSchema = z.object({
@@ -69,21 +69,22 @@ type UpdateRequirementCommand = CapabilityCommand<
   Promise<UpdateRequirementOutput>
 >;
 type ApproveRequirementCommand = CapabilityCommand<
-  ApproveRequirementInput,
-  ApproveRequirementOutput
+  z.infer<typeof ApproveRequirementWithContextSchema>,
+  Promise<ApproveRequirementOutput>
 >;
 type StartRequirementDeliveryCommand = CapabilityCommand<
-  StartRequirementDeliveryInput,
-  StartRequirementDeliveryOutput
+  z.infer<typeof StartRequirementDeliveryWithContextSchema>,
+  Promise<StartRequirementDeliveryOutput>
 >;
 type MarkRequirementImplementedCommand = CapabilityCommand<
-  MarkRequirementImplementedInput,
-  MarkRequirementImplementedOutput
+  z.infer<typeof MarkRequirementImplementedWithContextSchema>,
+  Promise<MarkRequirementImplementedOutput>
 >;
 type VerifyRequirementCommand = CapabilityCommand<
-  VerifyRequirementInput,
-  VerifyRequirementOutput
+  z.infer<typeof VerifyRequirementWithContextSchema>,
+  Promise<VerifyRequirementOutput>
 >;
+
 
 function trimOptional(value: string | undefined): string | undefined {
   const next = value?.trim();
@@ -93,7 +94,7 @@ function trimOptional(value: string | undefined): string | undefined {
 export const createRequirement: CreateRequirementCommand = {
   kind: "command",
   name: "requirement.create",
-  version: "0.2.0",
+  version: "2.0.0",
   async execute(input) {
     await initIdentitySchema();
     
@@ -104,7 +105,8 @@ export const createRequirement: CreateRequirementCommand = {
     } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await SessionRepositoryPostgres.byId(sessionId as any);
+    const sessionRepo = getSessionRepositoryPostgres();
+    const session = await sessionRepo.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.create] Invalid or revoked session - authentication violation");
     }
@@ -129,8 +131,9 @@ export const createRequirement: CreateRequirementCommand = {
       throw new Error("[requirement.create] Requirement title cannot be empty");
     }
     const now = new Date();
+    const entityId = await newRequirementId();
     const entity: RequirementAggregate = {
-      id: newRequirementId(),
+      id: entityId,
       title: cleanTitle,
       ...(trimOptional(summary) !== undefined ? { summary: trimOptional(summary) } : {}),
       ...(trimOptional(description) !== undefined
@@ -150,7 +153,7 @@ export const createRequirement: CreateRequirementCommand = {
     // Add tenant/workspace context for isolation
     (entity as any).tenantId = tenantId;
     (entity as any).workspaceId = workspaceId;
-    RequirementRepositoryCurrent.save(entity);
+    await RequirementRepositoryCurrent.save(entity);
     return {
       id: entity.id,
       status: entity.status,
@@ -163,7 +166,7 @@ export const createRequirement: CreateRequirementCommand = {
 export const updateRequirement: UpdateRequirementCommand = {
   kind: "command",
   name: "requirement.update",
-  version: "0.2.0",
+  version: "2.0.0",
   async execute(input) {
     await initIdentitySchema();
     
@@ -174,7 +177,8 @@ export const updateRequirement: UpdateRequirementCommand = {
     } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await SessionRepositoryPostgres.byId(sessionId as any);
+    const sessionRepo = getSessionRepositoryPostgres();
+    const session = await sessionRepo.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.update] Invalid or revoked session - authentication violation");
     }
@@ -194,7 +198,7 @@ export const updateRequirement: UpdateRequirementCommand = {
       throw new Error("[requirement.update] Cross-workspace access attempt blocked - security violation");
     }
 
-    const current = RequirementRepositoryCurrent.byId(id as any);
+    const current = await RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
       throw new Error(`[requirement.update] Requirement not found: ${id}`);
     }
@@ -223,7 +227,7 @@ export const updateRequirement: UpdateRequirementCommand = {
           }
         : {}),
     };
-    const saved = RequirementRepositoryCurrent.save(next);
+    const saved = await RequirementRepositoryCurrent.save(next);
     return { id: saved.id, status: saved.status, updatedAt: saved.updatedAt };
   },
 };
@@ -264,27 +268,12 @@ const VerifyRequirementWithContextSchema = z.object({
   actorId: z.string().min(1),
 });
 
-type ApproveRequirementCommand = CapabilityCommand<
-  z.infer<typeof ApproveRequirementWithContextSchema>,
-  Promise<ApproveRequirementOutput>
->;
-type StartRequirementDeliveryCommand = CapabilityCommand<
-  z.infer<typeof StartRequirementDeliveryWithContextSchema>,
-  Promise<StartRequirementDeliveryOutput>
->;
-type MarkRequirementImplementedCommand = CapabilityCommand<
-  z.infer<typeof MarkRequirementImplementedWithContextSchema>,
-  Promise<MarkRequirementImplementedOutput>
->;
-type VerifyRequirementCommand = CapabilityCommand<
-  z.infer<typeof VerifyRequirementWithContextSchema>,
-  Promise<VerifyRequirementOutput>
->;
+
 
 export const approveRequirement: ApproveRequirementCommand = {
   kind: "command",
   name: "requirement.approve",
-  version: "0.2.0",
+  version: "2.0.0",
   async execute(input) {
     await initIdentitySchema();
     
@@ -292,7 +281,8 @@ export const approveRequirement: ApproveRequirementCommand = {
     const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await SessionRepositoryPostgres.byId(sessionId as any);
+    const sessionRepo = getSessionRepositoryPostgres();
+    const session = await sessionRepo.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.approve] Invalid or revoked session - authentication violation");
     }
@@ -312,7 +302,7 @@ export const approveRequirement: ApproveRequirementCommand = {
       throw new Error("[requirement.approve] Cross-workspace access attempt blocked - security violation");
     }
 
-    const current = RequirementRepositoryCurrent.byId(id as any);
+    const current = await RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
       throw new Error(`[requirement.approve] Requirement not found: ${id}`);
     }
@@ -332,7 +322,7 @@ export const approveRequirement: ApproveRequirementCommand = {
       verificationStatus: "not_ready",
       approvedAt,
     };
-    RequirementRepositoryCurrent.save(next);
+    await RequirementRepositoryCurrent.save(next);
     return { id: next.id, status: "approved", approvedAt };
   },
 };
@@ -340,7 +330,7 @@ export const approveRequirement: ApproveRequirementCommand = {
 export const startRequirementDelivery: StartRequirementDeliveryCommand = {
   kind: "command",
   name: "requirement.startDelivery",
-  version: "0.2.0",
+  version: "2.0.0",
   async execute(input) {
     await initIdentitySchema();
     
@@ -348,7 +338,8 @@ export const startRequirementDelivery: StartRequirementDeliveryCommand = {
     const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await SessionRepositoryPostgres.byId(sessionId as any);
+    const sessionRepo = getSessionRepositoryPostgres();
+    const session = await sessionRepo.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.startDelivery] Invalid or revoked session - authentication violation");
     }
@@ -368,7 +359,7 @@ export const startRequirementDelivery: StartRequirementDeliveryCommand = {
       throw new Error("[requirement.startDelivery] Cross-workspace access attempt blocked - security violation");
     }
 
-    const current = RequirementRepositoryCurrent.byId(id as any);
+    const current = await RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
       throw new Error(`[requirement.startDelivery] Requirement not found: ${id}`);
     }
@@ -386,7 +377,7 @@ export const startRequirementDelivery: StartRequirementDeliveryCommand = {
       status: "in_delivery",
       verificationStatus: "pending",
     };
-    RequirementRepositoryCurrent.save(next);
+    await RequirementRepositoryCurrent.save(next);
     return { id: next.id, status: "in_delivery" };
   },
 };
@@ -394,7 +385,7 @@ export const startRequirementDelivery: StartRequirementDeliveryCommand = {
 export const markRequirementImplemented: MarkRequirementImplementedCommand = {
   kind: "command",
   name: "requirement.markImplemented",
-  version: "0.2.0",
+  version: "2.0.0",
   async execute(input) {
     await initIdentitySchema();
     
@@ -402,7 +393,8 @@ export const markRequirementImplemented: MarkRequirementImplementedCommand = {
     const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await SessionRepositoryPostgres.byId(sessionId as any);
+    const sessionRepo = getSessionRepositoryPostgres();
+    const session = await sessionRepo.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.markImplemented] Invalid or revoked session - authentication violation");
     }
@@ -422,7 +414,7 @@ export const markRequirementImplemented: MarkRequirementImplementedCommand = {
       throw new Error("[requirement.markImplemented] Cross-workspace access attempt blocked - security violation");
     }
 
-    const current = RequirementRepositoryCurrent.byId(id as any);
+    const current = await RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
       throw new Error(`[requirement.markImplemented] Requirement not found: ${id}`);
     }
@@ -442,7 +434,7 @@ export const markRequirementImplemented: MarkRequirementImplementedCommand = {
       verificationStatus: "pending",
       implementedAt,
     };
-    RequirementRepositoryCurrent.save(next);
+    await RequirementRepositoryCurrent.save(next);
     return { id: next.id, status: "implemented", implementedAt };
   },
 };
@@ -450,7 +442,7 @@ export const markRequirementImplemented: MarkRequirementImplementedCommand = {
 export const verifyRequirement: VerifyRequirementCommand = {
   kind: "command",
   name: "requirement.verify",
-  version: "0.2.0",
+  version: "2.0.0",
   async execute(input) {
     await initIdentitySchema();
     
@@ -458,7 +450,8 @@ export const verifyRequirement: VerifyRequirementCommand = {
     const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await SessionRepositoryPostgres.byId(sessionId as any);
+    const sessionRepo = getSessionRepositoryPostgres();
+    const session = await sessionRepo.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.verify] Invalid or revoked session - authentication violation");
     }
@@ -478,7 +471,7 @@ export const verifyRequirement: VerifyRequirementCommand = {
       throw new Error("[requirement.verify] Cross-workspace access attempt blocked - security violation");
     }
 
-    const current = RequirementRepositoryCurrent.byId(id as any);
+    const current = await RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
       throw new Error(`[requirement.verify] Requirement not found: ${id}`);
     }
@@ -498,7 +491,7 @@ export const verifyRequirement: VerifyRequirementCommand = {
       verificationStatus: "passed",
       verifiedAt,
     };
-    RequirementRepositoryCurrent.save(next);
+    await RequirementRepositoryCurrent.save(next);
     return {
       id: next.id,
       status: "verified",

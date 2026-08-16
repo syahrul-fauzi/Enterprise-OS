@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
-import { trustFrameworkService } from "../../../trust-framework/implementation/services/trust-framework.service.js";
+import { trustFrameworkService } from "../../../trust-framework/implementation/services/trust-framework.service";
 
 const { existsSync, readFileSync, readdirSync } = fs;
 const { dirname, resolve, join } = path;

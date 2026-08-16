@@ -1,18 +1,29 @@
 {
-  "extends": "@repo/config-typescript/base.json",
   "compilerOptions": {
-    "rootDir": ".",
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
     "outDir": "./dist",
     "strictNullChecks": true,
     "declaration": true,
-    "baseUrl": ".",
+    "incremental": true,
+    "ignoreDeprecations": "6.0",
+    "types": ["node"],
+    "skipLibCheck": true,
+    "composite": true,
+    "rootDir": "./",
     "paths": {
+      "*": ["./*"],
       "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
       "@repo/core-kernel/*": ["../../packages/core/kernel/src/*"],
-      "@repo/core-capability-registry": ["../../packages/core/capability-registry/src/index.ts"],
-      "@repo/core-capability-registry/*": ["../../packages/core/capability-registry/src/*"]
+      "@capabilities/identity/*": ["../identity/*"]
     }
   },
-  "include": ["**/*.ts"],
-  "exclude": ["dist", "node_modules"]
+  "references": [
+    { "path": "../../packages/core/kernel/tsconfig.json" },
+    { "path": "../identity/tsconfig.json" }
+  ],
+  "include": ["implementation/**/*.ts"],
+  "exclude": ["dist", "node_modules", "**/*.d.ts"]
 }

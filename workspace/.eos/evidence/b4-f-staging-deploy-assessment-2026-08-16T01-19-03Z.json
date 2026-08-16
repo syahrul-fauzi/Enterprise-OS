@@ -1,0 +1,25 @@
+{
+  "work_id": "B4-F-DEPLOY-ASSESSMENT",
+  "timestamp": "2026-08-16T01-19-03Z",
+  "pg_bundle_leak": {
+    "pre_existing": true,
+    "trace": "InstitutionPage → capability-command-registry → community.commands → base.repository → pg → tls/util/types",
+    "regression_by_b4_wave": false
+  },
+  "deployment_configs": {
+    "dockerfile_exists": true,
+    "dockerfile_workdir_mismatch": true,
+    "vercel_config_exists": true,
+    "vercel_config_spa_rewrite_incorrect_for_next_app_router": true,
+    "staging_scripts_present": true
+  },
+  "b4_immediate_solution": "Use NEXT DEV SERVER (port 3004) for B4 human black-box session. Already proven HTTP 200 8/8 + adapters render correctly.",
+  "production_blockers_4": [
+    "pg driver in client bundle via InstitutionPage import chain",
+    "vercel.json SPA rewrite incompatible with Next 16 dynamic routes",
+    "Dockerfile COPY paths mismatch (workspace/apps vs /app/apps workdir)",
+    ".env / secrets not configured for public deployment"
+  ],
+  "architecture_freeze_compliance": "All 4 fixes = TARGETED MINIMAL FIXES (no new engine/DSL/registry/abstraction). Permissible under frozen architecture.",
+  "recommendation": "B4 human black-box → DEV SERVER now. Build/staging fixes → deferred. Production deploy → after B4 gates cleared."
+}

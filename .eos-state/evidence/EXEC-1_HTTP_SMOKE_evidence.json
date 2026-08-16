@@ -1,0 +1,85 @@
+{
+  "work_id": "EXEC-1",
+  "timestamp": "2026-08-16",
+  "base_url": "http://127.0.0.1:3004",
+  "summary": {
+    "all_200": true,
+    "all_displayname_checks_pass": false
+  },
+  "routes": [
+    {
+      "route": "/",
+      "name": "Root",
+      "code": 200,
+      "checks": {},
+      "body_len": 17056
+    },
+    {
+      "route": "/signup",
+      "name": "Signup",
+      "code": 200,
+      "checks": {},
+      "body_len": 15358
+    },
+    {
+      "route": "/workspace",
+      "name": "Workspace",
+      "code": 200,
+      "checks": {},
+      "body_len": 15116
+    },
+    {
+      "route": "/products/lawyershub",
+      "name": "LawyersHub",
+      "code": 200,
+      "checks": {
+        "LawyersHub": true,
+        "Legal Practice Platform": false,
+        "Start a Legal Matter": true
+      },
+      "body_len": 23067
+    },
+    {
+      "route": "/products/services-id",
+      "name": "Services.ID",
+      "code": 200,
+      "checks": {
+        "Services.ID": true,
+        "Services Marketplace": false,
+        "Find a Service Provider": false
+      },
+      "body_len": 23275
+    },
+    {
+      "route": "/products/ilc",
+      "name": "ILC",
+      "code": 200,
+      "checks": {
+        "Indonesia Lawyers Club": false,
+        "Explore / Join Community": false,
+        "Mulai Diskusi": true
+      },
+      "body_len": 23919
+    },
+    {
+      "route": "/products/academic",
+      "name": "Academic",
+      "code": 200,
+      "checks": {
+        "Academic Community": true,
+        "Submit Research Article": false,
+        "Submit Artikel": true
+      },
+      "body_len": 23422
+    },
+    {
+      "route": "/products/lawyershub/delivery",
+      "name": "Delivery",
+      "code": 200,
+      "checks": {
+        "Delivery": true
+      },
+      "body_len": 18113
+    }
+  ]
+}

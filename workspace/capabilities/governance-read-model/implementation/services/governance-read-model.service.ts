@@ -1,6 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { GovernanceReadModelCatalog, GovernanceReadModelLocation, GovernanceReadModelKind } from "../contracts/governance-read-model.contracts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,6 +10,26 @@ const WORKSPACE_ROOT = path.resolve(__dirname, '../../../../');
 const HISTORY_PATH = path.resolve(WORKSPACE_ROOT, 'capabilities/governance-evidence/evidence/history/governance-decisions.history.jsonl');
 const EVIDENCE_PATH = path.join(WORKSPACE_ROOT, 'capabilities/governance-read-model/evidence/verification/runtime-invocations.jsonl');
 
+const EVIDENCE_PATHS: Record<string, string> = {
+  summary: path.join(WORKSPACE_ROOT, 'capabilities/governance-read-model/evidence/summary.json'),
+  claims: path.join(WORKSPACE_ROOT, 'capabilities/governance-read-model/evidence/claims.json'),
+  health: path.join(WORKSPACE_ROOT, 'capabilities/governance-read-model/evidence/health.json'),
+  dashboard: path.join(WORKSPACE_ROOT, 'capabilities/governance-read-model/evidence/dashboard.json'),
+};
+
+class GovernanceReadModelCatalogFileSystem implements GovernanceReadModelCatalog {
+  resolve(
+    kind: GovernanceReadModelKind,
+  ): GovernanceReadModelLocation {
+    return {
+      kind,
+      path: EVIDENCE_PATHS[kind],
+    };
+  }
+}
+
+export const governanceReadModelCatalog = new GovernanceReadModelCatalogFileSystem();
+
 // Ensure evidence directory exists
 function ensureEvidenceDirExists(): void {
   const dir = path.dirname(EVIDENCE_PATH);
@@ -16,7 +37,6 @@ function ensureEvidenceDirExists(): void {
     fs.mkdirSync(dir, { recursive: true });
   }
 }
-
 // B7.18.1: Record runtime invocations for governance-read-model
 function recordRuntimeInvocation(invocation: {
   capability_id: string;
@@ -134,4 +154,25 @@ export class GovernanceReadModelService {
 
     return summary;
   }
+
+  /**
+   * Implementasi interface GovernanceReadModelProvider untuk kompatibilitas
+   */
+  public materializeSummary(): any {
+    return this.getSystemHealthSummary();
+  }
+
+  public materializeClaims(): any {
+    return this.getSystemHealthSummary();
+  }
+
+  public materializeHealth(): any {
+    return this.getSystemHealthSummary();
+  }
+
+  public materializeDashboard(): any {
+    return this.getSystemHealthSummary();
+  }
 }
+
+export const governanceReadModelService = new GovernanceReadModelService();

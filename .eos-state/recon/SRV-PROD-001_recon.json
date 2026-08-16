@@ -1,0 +1,43 @@
+{
+  "work_id": "SRV-PROD-001",
+  "recon_completed_at": "2026-08-15T14:30:00Z",
+  "locked_boundaries_verified": {
+    "consultation_frozen": true,
+    "no_new_architecture": true,
+    "rule_of_two_compliant": true
+  },
+  "existing_capabilities_found": [
+    "service-directory (capabilities/service-directory)",
+    "identity (shared auth/tenant/workspace)",
+    "requirement-management (shared state/evidence pattern)",
+    "workflow-engine (lifecycle tracking)"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "auth/tenant/workspace isolation primitives from identity capability",
+      "Postgres repository pattern from requirement-management",
+      "session validation flow from ILC implementation",
+      "service request lifecycle commands (create/accept/deliver) already implemented",
+      "UI components: CreateServiceRequestModal, ServiceRequestCard, ServicesWorkspaceView",
+      "API routes already registered in capability-command-registry",
+      "in-memory and Postgres repository implementations",
+      "E2E test suite for service request lifecycle"
+    ],
+    "required_new": [
+      "None — all primitives required for SRV-PROD-001 already exist"
+    ],
+    "reuse_percentage": 100.0
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "REUSE all existing service-directory primitives for SRV-PROD-001",
+    "Validate tenant isolation for service requests (mirror requirement-management implementation)",
+    "Run existing E2E test suite to confirm full lifecycle works for Services.ID",
+    "Execute health check suite to validate all API routes return 200 OK",
+    "Document 100% reuse as evidence of shared rail leverage"
+  ]
+}

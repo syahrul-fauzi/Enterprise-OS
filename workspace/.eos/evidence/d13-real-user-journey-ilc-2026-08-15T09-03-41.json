@@ -1,0 +1,41 @@
+{
+  "product": "ilc",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "ILC binding valid",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Browse legal topics",
+      "ok": true
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Publish article",
+      "ok": false,
+      "error": "Error: [capability-registry] Command not found: capability=ilc, commandName=publishContentArticle. attempted=legal-community.publishContentArticle | legal-community.publishContentArticle | legal-community.publishContentArticle | legal-community.contentArticle. Available candidates (3): legal-community.createContentArticle, legal-community.createCommunityDiscussion, legal-community.publishContent. Global total keys: 43."
+    }
+  ],
+  "totalSteps": 3,
+  "passCount": 2,
+  "failCount": 1,
+  "completedAtISO": "2026-08-15T09:03:41.563Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "ilc",
+      "displayName": "ilc"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "total_topics": 8
+    }
+  ]
+}

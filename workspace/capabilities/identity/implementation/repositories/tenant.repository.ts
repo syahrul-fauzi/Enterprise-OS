@@ -1,10 +1,10 @@
-import { PostgresRepository } from "./base.repository.js";
+import { PostgresRepository } from "./base.repository";
 import {
   TenantId,
   UserId,
   type TenantAggregate,
   type TenantRepository,
-} from "../contracts/identity.contracts.js";
+} from "../contracts/identity.contracts";
 
 // PostgreSQL-backed tenant repository implementation
 class TenantRepositoryPostgresImpl extends PostgresRepository<any> implements TenantRepository {
@@ -92,4 +92,23 @@ class TenantRepositoryPostgresImpl extends PostgresRepository<any> implements Te
   }
 }
 
-export const TenantRepositoryPostgres: TenantRepository = new TenantRepositoryPostgresImpl();
+let _instance: TenantRepository | null = null;
+export function getTenantRepositoryPostgres(): TenantRepository {
+  if (!_instance) {
+    _instance = new TenantRepositoryPostgresImpl();
+  }
+  return _instance;
+}
+
+const _lazyPgTenantRepo: TenantRepository = new Proxy({} as TenantRepository, {
+  get(_target: any, prop: string | symbol) {
+    const real = getTenantRepositoryPostgres();
+    const method = (real as any)[prop];
+    if (typeof method === "function") {
+      return method.bind(real);
+    }
+    return method;
+  },
+});
+
+export const TenantRepositoryPostgres = _lazyPgTenantRepo;

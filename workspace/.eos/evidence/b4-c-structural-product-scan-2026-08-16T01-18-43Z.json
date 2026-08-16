@@ -1,0 +1,92 @@
+{
+  "work_id": "B4-C-STRUCTURAL-SCAN",
+  "timestamp": "2026-08-16T01-18-43Z",
+  "pass": 48,
+  "fail": 1,
+  "total": 49,
+  "verdict": "HAS_FAILURES",
+  "note": "Structural presentation adapter + product distinctness verification. HUMAN black-box distinctness still REQUIRED per Commander: structural PROVEN ≠ human SUBJECTIVE product experience proven.",
+  "base_url": "http://localhost:3004",
+  "results": {
+    "lawyershub": {
+      "displayName": true,
+      "categoryBadge": false,
+      "audienceCard": true,
+      "valueProp": true,
+      "trustCopy": true,
+      "primaryCTA": true,
+      "formHeading": true,
+      "comboboxLabel": true,
+      "comboboxOptions": true,
+      "lifecycleText": true,
+      "realitySnapshot": true
+    },
+    "services-id": {
+      "displayName": true,
+      "categoryBadge": true,
+      "audienceCard": true,
+      "valueProp": true,
+      "trustCopy": true,
+      "primaryCTA": true,
+      "formHeading": true,
+      "comboboxLabel": true,
+      "comboboxOptions": true,
+      "lifecycleText": true,
+      "realitySnapshot": true
+    },
+    "ilc": {
+      "displayName": true,
+      "categoryBadge": true,
+      "audienceCard": true,
+      "valueProp": true,
+      "trustCopy": true,
+      "primaryCTA": true,
+      "formHeading": true,
+      "comboboxLabel": true,
+      "comboboxOptions": true,
+      "lifecycleText": true,
+      "realitySnapshot": true
+    },
+    "academic": {
+      "displayName": true,
+      "categoryBadge": true,
+      "audienceCard": true,
+      "valueProp": true,
+      "trustCopy": true,
+      "primaryCTA": true,
+      "formHeading": true,
+      "comboboxLabel": true,
+      "comboboxOptions": true,
+      "lifecycleText": true,
+      "realitySnapshot": true
+    }
+  },
+  "distinctness_matrix": {
+    "LH_vs_SRV_selectors": {
+      "lh_has_priority_selector": true,
+      "srv_has_category_selector": true,
+      "lh_no_it_cloud_options": true,
+      "srv_no_low_medium_high_options": true,
+      "distinct": true
+    },
+    "ILC_vs_Academic_RuleOfTwo": {
+      "both_use_shared_TOPIK_primitive": true,
+      "ilc_CTA_discussion_not_publish": true,
+      "academic_CTA_submit_publish_not_discuss": true,
+      "shared_primitive_2_distinct_jobs": true
+    },
+    "LH_vs_SRV_CTA_wording": {
+      "lh_has_law_specific_cta": true,
+      "srv_has_service_specific_cta": true,
+      "lh_NO_service_wording_in_CTA": true,
+      "srv_NO_law_wording_in_CTA": true,
+      "distinct": true
+    },
+    "LH_vs_SRV_lifecycle_wording": {
+      "lh_mentions_Draft_Open_Closed": true,
+      "srv_mentions_Draft_Accepted_Delivered": true,
+      "distinct": true
+    },
+    "all_4_displayNames_proper_not_lowercase": true
+  }
+}

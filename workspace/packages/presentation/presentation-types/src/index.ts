@@ -181,6 +181,14 @@ export interface ProductPreviewBinding {
 }
 
 export interface ProductPresentation {
+  readonly categoryLabel?: string;
+  readonly summary?: string;
+  readonly audienceTitle?: string;
+  readonly audienceDescription?: string;
+  readonly valueTitle?: string;
+  readonly valueDescription?: string;
+  readonly proofTitle?: string;
+  readonly proofDescription?: string;
   readonly proofBullets?: readonly string[];
 }
 

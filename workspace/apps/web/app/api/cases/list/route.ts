@@ -15,6 +15,9 @@ export async function GET(request: Request) {
     }
 
     const sessionValue = sessionCookie.split("=")[1];
+    if (!sessionValue) {
+      return NextResponse.json({ error: "Invalid session cookie" }, { status: 401 });
+    }
     const session = decodeWorkspaceSession(sessionValue);
     if (!session || !session.tenantId || !session.workspaceId || !session.actorId || !session.sessionId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
@@ -29,7 +32,7 @@ export async function GET(request: Request) {
     const offset = parseInt(searchParams.get("offset") || "0", 10);
 
     // Single canonical capability invocation - all case listing logic in legal-case capability
-    const { output } = capabilityRegistry.invoke("legal-case", "case.listByWorkspace", {
+    const { output } = await capabilityRegistry.invoke("legal-case", "case.listByWorkspace", {
       query,
       status,
       priority,

@@ -1,0 +1,80 @@
+{
+  "work_id": "B4-A-HTTP-SMOKE",
+  "timestamp": "2026-08-16T01-13-06Z",
+  "base_url": "http://localhost:3004",
+  "pass": 21,
+  "fail": 0,
+  "total": 21,
+  "verdict": "ALL_PASS",
+  "results": {
+    "root": {
+      "httpStatus": 200,
+      "httpOk": true,
+      "displayNameCheck": null,
+      "adapterContentCheck": null,
+      "sharedLeakCheck": null,
+      "bodyLength": 17056
+    },
+    "signup": {
+      "httpStatus": 200,
+      "httpOk": true,
+      "displayNameCheck": null,
+      "adapterContentCheck": null,
+      "sharedLeakCheck": null,
+      "bodyLength": 15358
+    },
+    "workspace": {
+      "httpStatus": 200,
+      "httpOk": true,
+      "displayNameCheck": null,
+      "adapterContentCheck": null,
+      "sharedLeakCheck": null,
+      "bodyLength": 15116
+    },
+    "lawyershub": {
+      "httpStatus": 200,
+      "httpOk": true,
+      "displayNameCheck": true,
+      "adapterContentCheck": true,
+      "sharedLeakCheck": true,
+      "bodyLength": 23069
+    },
+    "services-id": {
+      "httpStatus": 200,
+      "httpOk": true,
+      "displayNameCheck": true,
+      "adapterContentCheck": true,
+      "sharedLeakCheck": true,
+      "bodyLength": 23276
+    },
+    "ilc": {
+      "httpStatus": 200,
+      "httpOk": true,
+      "displayNameCheck": true,
+      "adapterContentCheck": true,
+      "sharedLeakCheck": true,
+      "bodyLength": 24004
+    },
+    "academic": {
+      "httpStatus": 200,
+      "httpOk": true,
+      "displayNameCheck": true,
+      "adapterContentCheck": true,
+      "sharedLeakCheck": true,
+      "bodyLength": 23466
+    },
+    "delivery": {
+      "httpStatus": 200,
+      "httpOk": true,
+      "displayNameCheck": null,
+      "adapterContentCheck": null,
+      "sharedLeakCheck": null,
+      "bodyLength": 18204
+    },
+    "lawyershub-name-ratio": {
+      "lowerCount": 4,
+      "properCount": 10
+    }
+  },
+  "acceptance_note": "HTTP 200 + displayName NOT-lowercase + adapter content present + shared execution leak NOT on landing surfaces = structural B4 presentation layer verified. Human unbriefed black-box still REQUIRED per Commander War Room decision."
+}

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { RequirementRepositoryCurrent } from "../repository";
+import { RequirementRepositoryCurrent } from "../repository/index";
+import type { RequirementAggregate } from "../contracts/index";
 
 export const GetRequirementsByOwnerInputSchema = z.object({
   ownerId: z.string().min(1),
@@ -29,8 +30,8 @@ export const getRequirementsByOwnerCommand: CapabilityCommand = {
 
     const allRequirements = RequirementRepositoryCurrent.list();
     const ownerRequirements = allRequirements
-      .filter(req => req.ownerId === ownerId && (!productId || req.productId === productId))
-      .map(req => ({
+      .filter((req: RequirementAggregate) => req.ownerId === ownerId && (!productId || req.productId === productId))
+      .map((req: RequirementAggregate) => ({
         id: req.id,
         title: req.title,
         description: req.description,

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { capabilityRegistry } from "@repo/core-kernel";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
 import { ProfileHeader } from "../profile-header/ProfileHeader";
 import { getProductExperience } from "@repo/presentation-experience";
@@ -15,13 +14,27 @@ export interface ProfilePageProps {
 
 export function ProfilePage({ profileId, productId, binding }: ProfilePageProps) {
   const experience: ProductExperience | undefined = getProductExperience(productId);
-  
-  // Fetch all profile data entirely within canonical widget
-  const memberOutput = capabilityRegistry.invoke<{ output: Member | null }>("identity", "getMemberById", { memberId: profileId });
-  const profile = memberOutput.output;
-  
-  const researchOutput = capabilityRegistry.invoke<{ output: Requirement[] }>("requirement", "getByAuthor", { authorId: profileId, productId });
-  const authoredResearch = researchOutput.output || [];
+  const [profile, setProfile] = React.useState<Member | null>(null);
+  const [authoredRequirements, setAuthoredRequirements] = React.useState<Requirement[]>([]);
+
+  React.useEffect(() => {
+    async function fetchProfileData() {
+      try {
+        const url = `/api/profile/${encodeURIComponent(profileId)}?productId=${encodeURIComponent(productId)}&includeRequirements=1`;
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json()) as {
+          profile?: Member | null;
+          authoredRequirements?: Requirement[];
+        };
+        setProfile(data.profile ?? null);
+        setAuthoredRequirements(data.authoredRequirements ?? []);
+      } catch (err) {
+        console.error("[ProfilePage] fetch error:", err);
+      }
+    }
+    if (profileId) fetchProfileData();
+  }, [profileId, productId]);
 
   if (!profile) {
     return (

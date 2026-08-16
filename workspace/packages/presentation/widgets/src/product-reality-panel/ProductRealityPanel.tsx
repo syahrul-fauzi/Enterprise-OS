@@ -341,8 +341,8 @@ function toneClasses(tone: LifecycleAction["tone"]): string {
 export function ProductRealityPanel({ productId }: ProductRealityPanelProps) {
   const snapshot = readProductRealitySnapshot(productId);
   const copy = readRealityCopy(productId);
-  const experience = getProductExperience(productId);
-  const statusLabels = experience.card.statusLabels;
+  const experience: any = getProductExperience(productId);
+  const statusLabels = experience?.card?.statusLabels ?? {};
   const [busy, setBusy] = useState<Set<BusyKey>>(new Set());
   const [lastResult, setLastResult] = useState<{
     at: number;
@@ -416,9 +416,6 @@ export function ProductRealityPanel({ productId }: ProductRealityPanelProps) {
         <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">
           {copy.description}
         </p>
-        <p className="mt-2 text-xs leading-5 text-slate-500">
-          D1.2 Lifecycle: Tombol di bawah memanggil unified command registry `POST /api/capabilities/:cap/:commandName` dan mencatat attribution record per invokasi.
-        </p>
       </div>
 
       {lastResult && (
@@ -467,7 +464,7 @@ export function ProductRealityPanel({ productId }: ProductRealityPanelProps) {
                   </div>
                   <div className="flex items-start justify-between gap-3">
                     <dt className="text-slate-500">{copy.evidenceLabel}</dt>
-                    <dd className="text-right font-medium text-slate-900">{item.evidenceCount}</dd>
+                    <dd className="text-right font-medium text-slate-900">{(item as unknown as {evidenceCount?: number}).evidenceCount ?? 0}</dd>
                   </div>
                   <div className="flex items-start justify-between gap-3">
                     <dt className="text-slate-500">{copy.proofLabel}</dt>
@@ -478,7 +475,7 @@ export function ProductRealityPanel({ productId }: ProductRealityPanelProps) {
                 </dl>
 
                 <p className="mt-4 text-xs leading-5 text-slate-500">
-                  Latest activity: {formatMoment(item.latestUpdatedAt)}
+                  Latest activity: {(item as unknown as {latestUpdatedAt?: string}).latestUpdatedAt ? formatMoment((item as unknown as {latestUpdatedAt: string}).latestUpdatedAt) : "Never"}
                 </p>
                 <p className="mt-2 text-xs leading-5 text-slate-500">
                   Evidence is recorded on the platform and reviewable from the progress surface.

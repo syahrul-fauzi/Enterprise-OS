@@ -1,21 +1,21 @@
 import type {
   TransformationDeclaration,
   TransformationRegistryDocument,
-} from "./interfaces.js";
+} from "./interfaces";
 
-import { TRANSFORMATION_T001 } from "./registry/transformations/t001.js";
-import { TRANSFORMATION_T002 } from "./registry/transformations/t002.js";
-import { TRANSFORMATION_T003 } from "./registry/transformations/t003.js";
-import { TRANSFORMATION_T004 } from "./registry/transformations/t004.js";
-import { TRANSFORMATION_T005 } from "./registry/transformations/t005.js";
+import { TRANSFORMATION_T001 } from "./registry/transformations/t001";
+import { TRANSFORMATION_T002 } from "./registry/transformations/t002";
+import { TRANSFORMATION_T003 } from "./registry/transformations/t003";
+import { TRANSFORMATION_T004 } from "./registry/transformations/t004";
+import { TRANSFORMATION_T005 } from "./registry/transformations/t005";
 
-export * from "./types.js";
-export type * from "./interfaces.js";
-export * from "./schema.js";
+export * from "./types";
+export type * from "./interfaces";
+export * from "./schema";
 export type {
   TransformationDeclaration,
   TransformationRegistryDocument,
-} from "./interfaces.js";
+} from "./interfaces";
 
 export {
   TRANSFORMATION_T001,

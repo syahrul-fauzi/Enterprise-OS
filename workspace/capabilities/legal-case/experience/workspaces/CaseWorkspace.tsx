@@ -26,7 +26,7 @@ export function CaseWorkspace() {
   useEffect(() => {
     const fetchCases = async () => {
       try {
-        const resp = await fetch("/api/cases/list");
+        const resp = await fetch("/api/capabilities/lawyershub/case.search");
         if (resp.ok) {
           const data: SearchCasesOutput = await resp.json();
           setCases(data.items || []);

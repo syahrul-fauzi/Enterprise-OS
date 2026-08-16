@@ -3,7 +3,7 @@ import type {
   HashChainLink,
   PredicateResultSummary,
   ProofVerdict,
-} from "./types.js";
+} from "./types";
 
 export interface TransformationProofEntry {
   readonly proof_id: string;

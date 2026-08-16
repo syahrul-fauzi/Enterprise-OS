@@ -106,8 +106,8 @@ export class RequirementDeliveryGatewayService {
           .filter((item: any): item is NonNullable<typeof item> => item !== undefined);
 
         const kindBreakdown = evidenceRecords.reduce<Record<EvidenceRecordKind, number>>(
-          (acc, record) => {
-            acc[record.kind] += 1;
+          (acc, record: any) => {
+            acc[record.kind as EvidenceRecordKind] += 1;
             return acc;
           },
           createEmptyEvidenceKindBreakdown(),
@@ -117,7 +117,7 @@ export class RequirementDeliveryGatewayService {
           evidenceRecords.length === 0
             ? null
             : [...evidenceRecords]
-                .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt))[0]
+                .sort((left: any, right: any) => right.updatedAt.localeCompare(left.updatedAt))[0]
                 ?.updatedAt ?? null;
 
         return {
@@ -130,10 +130,10 @@ export class RequirementDeliveryGatewayService {
           traceability: {
             complete: row.coverage.complete,
             artifactCount: row.coverage.artifactCount,
-            verificationArtifactCount: row.matchedArtifacts.filter((artifact) => artifact.kind === "test")
+            verificationArtifactCount: row.matchedArtifacts.filter((artifact: any) => artifact.kind === "test")
               .length,
             evidenceArtifactCount: row.matchedArtifacts.filter(
-              (artifact) => artifact.kind === "specification" || artifact.kind === "evidence",
+              (artifact: any) => artifact.kind === "specification" || artifact.kind === "evidence",
             ).length,
             gaps: row.coverage.gaps,
           },
@@ -141,7 +141,7 @@ export class RequirementDeliveryGatewayService {
             requirementRefs,
             matchedCount: evidenceRecords.length,
             latestUpdatedAt,
-            samplePaths: evidenceRecords.slice(0, 3).map((record) => record.path),
+            samplePaths: evidenceRecords.slice(0, 3).map((record: any) => record.path),
             kindBreakdown,
           },
         };

@@ -1,10 +1,24 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { ContentArticleRepositoryInMemory } from "../repository/community.repository";
+import { 
+  ContentArticleRepositoryInMemory, 
+  getContentArticleRepositoryPostgres
+} from "../repository/index";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index";
 import type { ContentId } from "../contracts/community.contracts";
+import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
+
+// Environment-based repository toggle (production rail pattern)
+const contentRepository = process.env.DATABASE_URL 
+  ? getContentArticleRepositoryPostgres() 
+  : ContentArticleRepositoryInMemory;
+const sessionRepository = process.env.DATABASE_URL 
+  ? getSessionRepositoryPostgres() 
+  : SessionRepositoryInMemory;
 
 export const GetContentArticleByIdInputSchema = z.object({
   contentId: z.string().min(1).startsWith("content-"),
+  sessionId: z.string().min(1),
 });
 
 export type GetContentArticleByIdInput = z.infer<typeof GetContentArticleByIdInputSchema>;
@@ -25,17 +39,36 @@ export type GetContentArticleByIdOutput = {
   readonly engagementCount: number;
 } | undefined;
 
-export const getContentArticleByIdCommand: CapabilityCommand = {
+export const getContentArticleByIdCommand: CapabilityCommand<GetContentArticleByIdInput, Promise<GetContentArticleByIdOutput>> = {
   kind: "command",
   name: "contentArticle.getById",
-  version: "1.0.0",
-  execute(input: unknown) {
+  version: "2.0.0",
+  async execute(input: unknown) {
+    // Initialize Postgres schema only when in production mode
+    if (process.env.DATABASE_URL) {
+      await initIdentitySchema();
+    }
+    
     const parsed = GetContentArticleByIdInputSchema.parse(input);
-    const { contentId } = parsed;
+    const { contentId, sessionId } = parsed;
 
-    const a = ContentArticleRepositoryInMemory.byId(contentId as unknown as ContentId);
+    // Validate session exists and is active (authentication + tenant isolation foundation)
+    const session = await sessionRepository.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[contentArticle.getById] Invalid or revoked session - authentication violation");
+    }
+
+    // Auto-populate isolation context from trusted session
+    const { tenantId, workspaceId, actorId } = session;
+
+    const a = await contentRepository.byId(contentId as unknown as ContentId);
     if (a === undefined) {
       return undefined;
+    }
+
+    // Tenant isolation enforcement: ensure content belongs to current tenant/workspace
+    if ((a as any).tenantId !== tenantId || (a as any).workspaceId !== workspaceId) {
+      throw new Error("[contentArticle.getById] Article does not belong to the current tenant/workspace - access denied");
     }
 
     return {

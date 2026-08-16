@@ -2,6 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
+import { useWorkspaceSession } from "@repo/presentation-hooks";
+import { getProductExperience } from "@repo/presentation-experience";
 
 interface SessionState {
   loading: boolean;
@@ -9,31 +11,55 @@ interface SessionState {
   actorLabel: string | null;
   loggingOut?: boolean;
   onLogout?: () => Promise<void>;
+  productId?: string;
 }
 
 export function ProfessionalWorkspaceIntro({ 
-  loading, 
-  authenticated, 
-  actorLabel, 
+  loading: externalLoading, 
+  authenticated: externalAuthenticated, 
+  actorLabel: externalActorLabel, 
   loggingOut = false,
-  onLogout 
+  onLogout,
+  productId: externalProductId
 }: SessionState) {
+  // If internal session hook is available, use it for real session state
+  const internalSession = useWorkspaceSession ? useWorkspaceSession() : null;
+  
+  const loading = internalSession?.loading ?? externalLoading;
+  const authenticated = internalSession?.authenticated ?? externalAuthenticated;
+  const actorLabel = internalSession?.session?.actorLabel ?? externalActorLabel;
+  const hostPart = typeof window !== 'undefined' ? window.location.host.split('.')[0] : undefined;
+  const workspaceProductId = externalProductId ?? hostPart ?? "professional";
+  
+  const experience = getProductExperience ? getProductExperience(workspaceProductId) : null;
+  
+  // Use product-specific content if available, otherwise fall back to generic
+  const displayName = experience?.identity?.name || "Professional Workspace";
+  const tagline = experience?.positioning?.valueDescription || "Capture requirements, align owners, and move work forward.";
+  const badgeText = experience?.identity?.category || "Professional Workspace";
+  
+  const bestForText = experience?.audience?.description || "Teams handling client requests, delivery scoping, and approval-ready work intake.";
+  const whatYouCanDoText = experience?.workflow?.requirementSummary || "Create, review, update, and advance requirements from draft to verified delivery.";
+  const startHereText = `Open the workspace, add your first ${experience?.entry?.primaryActionLabel?.toLowerCase() || "request"}, then track it toward delivery readiness.`;
+
+  const primaryCta = experience?.navigation?.primaryCta || { label: "Open Workspace", href: "/requirements" };
+  const loginText = "Login";
+  const signupText = "Get Started";
+
   return (
     <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
       <div className="border-b border-slate-100 bg-gradient-to-br from-indigo-50 via-white to-emerald-50 p-6 sm:p-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-4">
             <div className="inline-flex rounded-full border border-indigo-200 bg-white/90 px-3 py-1 text-xs font-semibold text-indigo-700">
-              Professional Workspace
+              {badgeText}
             </div>
             <div>
               <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                Capture requirements, align owners, and move work forward.
+                {displayName}
               </h1>
               <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">
-                A focused workspace for teams that need to turn incoming requests
-                into clear, actionable requirements without losing ownership,
-                delivery status, or verification history.
+                {tagline}
               </p>
             </div>
           </div>
@@ -55,9 +81,9 @@ export function ProfessionalWorkspaceIntro({
                 </button>
                 <Link
                   className="rounded-xl bg-slate-950 px-4 py-2.5 font-medium text-white transition hover:bg-slate-800"
-                  href="/requirements"
+                  href={primaryCta.href}
                 >
-                  Open Workspace
+                  {primaryCta.label}
                 </Link>
               </div>
             ) : (
@@ -66,13 +92,13 @@ export function ProfessionalWorkspaceIntro({
                   className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 font-medium text-slate-700 transition hover:bg-slate-50"
                   href="/login"
                 >
-                  Login
+                  {loginText}
                 </Link>
                 <Link
                   className="rounded-xl bg-slate-950 px-4 py-2.5 font-medium text-white transition hover:bg-slate-800"
                   href="/signup"
                 >
-                  Get Started
+                  {signupText}
                 </Link>
               </>
             )}
@@ -86,8 +112,7 @@ export function ProfessionalWorkspaceIntro({
             Best For
           </div>
           <p className="mt-3 text-sm leading-6 text-slate-700">
-            Teams handling client requests, delivery scoping, and approval-ready
-            work intake.
+            {bestForText}
           </p>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
@@ -95,8 +120,7 @@ export function ProfessionalWorkspaceIntro({
             What You Can Do
           </div>
           <p className="mt-3 text-sm leading-6 text-slate-700">
-            Create, review, update, and advance requirements from draft to
-            verified delivery.
+            {whatYouCanDoText}
           </p>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
@@ -104,8 +128,7 @@ export function ProfessionalWorkspaceIntro({
             Start Here
           </div>
           <p className="mt-3 text-sm leading-6 text-slate-700">
-            Open the Requirement workspace, add the first request, then track it
-            as it moves toward delivery readiness.
+            {startHereText}
           </p>
         </div>
       </div>

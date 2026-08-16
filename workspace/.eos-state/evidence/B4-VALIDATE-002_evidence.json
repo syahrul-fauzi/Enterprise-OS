@@ -1,0 +1,74 @@
+{
+  "work_id": "B4-VALIDATE-002",
+  "product": "Services.ID",
+  "phase": "RECON + STRUCTURAL DISTINCTNESS COMPLETE",
+  "status": "PENDING_UNBRIEFED_HUMAN_OBSERVER",
+  "recon_date": "2026-08-15",
+  "screenshot_evidence": "/root/Enterprise-OS/workspace/.eos-state/evidence/b4-validation/b4-servicesid-landing.png",
+  "snapshot_ref_count": 15,
+  "snapshot_interactive_refs": 6,
+  "page_url": "http://localhost:3004/products/services-id",
+  "page_title": "services-id - landing",
+  "structural_observer_assessment": {
+    "what_product_is_for": {
+      "h1_heading": "services-id",
+      "h2_form_heading": "Ajukan Permintaan Layanan",
+      "workflow_description": "Kirim permintaan layanan ke provider terdaftar — dari Draft → Accepted → In Service → Delivered.",
+      "trust_heading": "Real service work moving through the platform",
+      "trust_body": "These are real service requests with delivery evidence and visible progress. This is trust from activity, not invented testimonials."
+    },
+    "natural_first_action_options": [
+      "Isi Judul Permintaan + pilih KATEGORI Layanan + Deskripsi → klik 'Ajukan Permintaan'",
+      "Klik link 'Start Work' / 'Requirements'"
+    ],
+    "primary_cta_button": "Ajukan Permintaan",
+    "expected_product_specific_outcome": "Permintaan layanan tersimpan dengan Draft, user memahami ini untuk dikelola hingga Accepted oleh provider dan Delivered.",
+    "product_specific_keywords": ["permintaan layanan", "provider", "kategori", "Draft → Accepted → In Service → Delivered", "delivery evidence"],
+    "fields_distinct_from_others_comparison": {
+      "combobox_label": "Kategori",
+      "combobox_options": ["Cloud Services", "IT Support", "Infrastructure", "Cybersecurity", "Software Development"],
+      "vs_LAWYERSHUB": "LH gunakan PRIORITAS (low/medium/high/critical) BUKAN Kategori. LH = kasus hukum, SRV = marketplace layanan.",
+      "vs_ILC_ACADEMIC": "ILC/Academic gunakan TOPIK HUKUM BUKAN Kategori IT/Cloud"
+    }
+  },
+  "b4_lawyershub_vs_servicesid_distinctness_matrix_SNAPSHOT_PROVEN": {
+    "form_heading": {
+      "lawyershub": "Buat Legal Matter (Kasus) Baru",
+      "services_id": "Ajukan Permintaan Layanan",
+      "distinct": true
+    },
+    "primary_cta": {
+      "lawyershub": "Buat Kasus",
+      "services_id": "Ajukan Permintaan",
+      "distinct": true
+    },
+    "workflow_lifecycle": {
+      "lawyershub": "Draft → Open → In Progress → Closed (LEGAL)",
+      "services_id": "Draft → Accepted → In Service → Delivered (SERVICE)",
+      "distinct": true
+    },
+    "selector_field_name": {
+      "lawyershub": "Prioritas",
+      "services_id": "Kategori",
+      "distinct": true
+    },
+    "selector_options": {
+      "lawyershub": "low, medium, high, critical",
+      "services_id": "Cloud Services, IT Support, Infrastructure, Cybersecurity, Software Dev",
+      "distinct": true
+    },
+    "trust_heading": {
+      "lawyershub": "Real legal matters with visible accountability",
+      "services_id": "Real service work moving through the platform",
+      "distinct": true
+    }
+  },
+  "shared_execution_invisible_proof": "Leak MF-002 FIXED — same as LH, 15 refs after fix.",
+  "still_needs_real_unbriefed_human": true,
+  "unbriefed_observer_must_answer_distinctness_vs_lh": {
+    "a": "Ini produk apa bedanya dengan LawyersHub? (expected: LawyersHub untuk kasus hukum, Services.ID untuk cari/ajukan jasa/layanan umum)",
+    "b": "First action Anda di sini beda dengan di LawyersHub? (expected: di sini pilih KATEGORI layanan, di LH pilih PRIORITAS kasus)",
+    "c": "Expected result apa yang Anda harapkan selesai? (expected: layanan delivered, BUKAN kasus closed)"
+  },
+  "replay_regression_proof_SRV_8_8_PASS": "Runtime replay SREQ-001: node --test 8/8 PASS deterministic identical with original artifact."
+}

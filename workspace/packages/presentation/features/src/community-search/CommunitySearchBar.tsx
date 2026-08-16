@@ -1,8 +1,7 @@
 "use client";
+import { BaseSearchBar } from '@repo/presentation-ui-system';
 
-import { BaseSearchBar } from '@repo/presentation/ui-system/src/molecules/BaseSearchBar';
-
-interface CommunitySearchBarProps {
+export interface CommunitySearchBarProps {
   initialQuery: string;
   initialType: string;
   initialLocation: string;

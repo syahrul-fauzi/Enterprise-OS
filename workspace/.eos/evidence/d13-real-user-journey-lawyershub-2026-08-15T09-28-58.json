@@ -1,0 +1,56 @@
+{
+  "product": "lawyershub",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "LawyersHub binding valid",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Browse recent matters",
+      "ok": true
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Create new case (case-101)",
+      "ok": true,
+      "evidence": [
+        "id=case-101"
+      ]
+    },
+    {
+      "n": 4,
+      "stage": "EXECUTE",
+      "label": "Assign lawyer",
+      "ok": false,
+      "error": "Error: [capability-registry] Command not found: capability=lawyershub, commandName=assignLawyerToCase. attempted=case.assignLawyerToCase | case.assignLawyerToCase | case.assignLawyerToCase | case.lawyerToCase | legal-case.assignLawyerToCase | legal-case.assignLawyerToCase | legal-case.assignLawyerToCase | legal-case.lawyerToCase. Available candidates (5): case.create, case.close, case.assignLawyer, case.getById, case.listByWorkspace. Global total keys: 14."
+    }
+  ],
+  "totalSteps": 4,
+  "passCount": 3,
+  "failCount": 1,
+  "completedAtISO": "2026-08-15T09:28:58.640Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "lawyershub",
+      "displayName": "lawyershub"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "total_cases": 3
+    },
+    {
+      "step": 3,
+      "stage": "ACTION",
+      "capability": "legal-case.createCase",
+      "evidence_id": "case-101"
+    }
+  ]
+}

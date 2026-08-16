@@ -7,7 +7,7 @@ import {
   RepositoryProofEntrySchema,
   TransformationProofEntrySchema,
   validateLevelDependency,
-} from "../src/index.js";
+} from "../src/index";
 
 void describe("@repo/core-proof-ledger conformance", () => {
   void it("PROOF_LEVEL_ORDER is Transformation → Execution → Repository (hierarchy ADR-001)", () => {

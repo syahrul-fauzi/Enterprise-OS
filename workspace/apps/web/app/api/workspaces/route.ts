@@ -17,15 +17,18 @@ export async function GET(request: Request) {
     }
 
     const sessionValue = sessionCookie.split("=")[1];
+    if (!sessionValue) {
+      return NextResponse.json({ error: "Invalid session cookie" }, { status: 401 });
+    }
     const session = decodeWorkspaceSession(sessionValue);
-    if (!session || !session.tenantId || !(session.userId ?? session.actorId) || !session.sessionId) {
+    if (!session || !session.tenantId || !session.actorId || !session.sessionId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }
 
     // Single canonical capability invocation - all workspace listing logic in identity capability
     const { output } = await capabilityRegistry.invokeAsync("identity", "getWorkspacesByTenant", {
       tenantId: session.tenantId,
-      actorId: (session.userId ?? session.actorId) as string,
+      actorId: session.actorId,
       sessionId: session.sessionId,
     });
 

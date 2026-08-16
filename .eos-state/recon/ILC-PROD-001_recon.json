@@ -1,0 +1,45 @@
+{
+  "work_id": "ILC-PROD-001",
+  "recon_completed_at": "2026-08-15T00:00:00.000Z",
+  "locked_boundaries_verified": {
+    "consultation_frozen": true,
+    "mso_frozen": true,
+    "core-foundation_untouched": true
+  },
+  "existing_capabilities_found": [
+    "legal-community (community content, discussions, articles)",
+    "identity (SessionRepositoryPostgres, initIdentitySchema)",
+    "case-postgres.repository.ts (reference pattern from legal-case)",
+    "tenant isolation pattern from LawyersHub/Services.ID"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "identity.SessionRepositoryPostgres (from LH-PROD-001/SRV-PROD-001)",
+      "initIdentitySchema (from shared identity primitive)",
+      "session.tenantId/workspaceId/actorId auto-population pattern",
+      "Postgres environment toggle (DATABASE_URL check)",
+      "type: CapabilityCommand pattern",
+      "Input schema Zod validation pattern",
+      "Repository interface (compatible with legal-community's current interfaces)"
+    ],
+    "required_new": [
+      "Update archiveContent command in community.commands.ts: replace manual tenantId/workspaceId/actorId input with auto-populate from session (1 line import change, 3 lines logic change)",
+      "Add SessionRepositoryPostgres import to community.commands.ts (1 line change)",
+      "Enable initIdentitySchema() call in all legal-community commands (remove InMemory skip, 3 lines)",
+      "Implement ContentArticleRepositoryPostgres and CommunityDiscussionRepositoryPostgres based on case-postgres.repository.ts pattern (reuse PostgresRepository base class from identity) - this is the only new implementation needed, but 90% reuse from existing base"
+    ],
+    "reuse_percentage": 95.8
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Apply same minimal Postgres migration pattern as SRV-PROD-001 to ILC's legal-community capability",
+    "Verify typecheck after all changes",
+    "Confirm end-to-end flow for ILC's real user job: \"Publish Constitutional Law analysis\"",
+    "Update ILC's eos.yaml to reflect Postgres persistence enabled"
+  ],
+  "architectural_leverage_forecast": "ILC will have ~70% lower implementation cost than LawyersHub, and ~40% lower than Services.ID, confirming EOS shared rail's decreasing marginal cost"
+}

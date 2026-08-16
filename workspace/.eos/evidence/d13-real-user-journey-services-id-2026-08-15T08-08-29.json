@@ -1,0 +1,46 @@
+{
+  "product": "services-id",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "Services.ID binding valid",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Browse Cybersecurity providers",
+      "ok": true,
+      "evidence": [
+        "picked=sp-003"
+      ]
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Create service request",
+      "ok": false,
+      "error": "Error: [PostgreSQL] DATABASE_URL environment variable is required"
+    }
+  ],
+  "totalSteps": 3,
+  "passCount": 2,
+  "failCount": 1,
+  "completedAtISO": "2026-08-15T08:08:29.287Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "services-id",
+      "displayName": "services-id"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "category": "Cybersecurity",
+      "count": 1,
+      "picked": "sp-003"
+    }
+  ]
+}

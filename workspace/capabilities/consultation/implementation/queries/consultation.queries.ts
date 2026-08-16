@@ -9,11 +9,11 @@ import {
   type GetConsultationOutput,
   type SearchConsultationsInput,
   type SearchConsultationsOutput,
-} from "../contracts/consultation.contracts.js";
+} from "../contracts/consultation.contracts";
 import type { CapabilityQuery } from "@repo/core-kernel";
-import { ConsultationRepositoryInMemory } from "../repository/consultation.repository.js";
-import { initIdentitySchema, SessionRepositoryPostgres } from "../../../identity/implementation/repositories/index.js";
-import { SessionId } from "../../../identity/implementation/contracts/identity.contracts.js";
+import { ConsultationRepositoryInMemory } from "../repository/consultation.repository";
+import { initIdentitySchema, SessionRepositoryPostgres } from "../../../identity/implementation/repositories/index";
+import { SessionId } from "../../../identity/implementation/contracts/identity.contracts";
 
 type GetConsultationQuery = CapabilityQuery<GetConsultationInput, GetConsultationOutput>;
 type SearchConsultationsQuery = CapabilityQuery<SearchConsultationsInput, SearchConsultationsOutput>;

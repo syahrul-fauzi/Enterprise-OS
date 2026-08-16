@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   try {
     const payload = await request.json();
     // Single canonical capability invocation - all delivery logic in capability layer
-    const { output } = capabilityRegistry.invoke("delivery", "submitDelivery", payload);
+    const { output } = await capabilityRegistry.invoke("delivery", "submitDelivery", payload);
     return NextResponse.json(output, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Delivery submission failed" }, { status: 500 });

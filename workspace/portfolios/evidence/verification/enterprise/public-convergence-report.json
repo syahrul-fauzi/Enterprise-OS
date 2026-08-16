@@ -1,47 +1,29 @@
 {
-  "generatedAt": "2026-08-04T16:20:34.123Z",
+  "generatedAt": "2026-08-14T11:12:51.755Z",
   "timeoutMs": 10000,
   "summary": {
-    "canonicalCurrentBuildCount": 2,
+    "canonicalCurrentBuildCount": 0,
     "oldSurfaceCount": 0,
-    "unreachableCount": 1
+    "unreachableCount": 3
   },
   "results": [
     {
       "productId": "services-id",
       "host": "services-id.com",
-      "classification": "canonical_current_build",
-      "checks": {
-        "rootStatus": 200,
-        "requirementsStatus": 200,
-        "sessionStatus": 200,
-        "sessionLooksLikeEos": true,
-        "hasCurrentRoot": true,
-        "hasCurrentRequirements": true,
-        "hasCurrentMetadata": true,
-        "hasLegacySurface": false
-      }
+      "classification": "unreachable",
+      "error": "connect ECONNREFUSED 127.0.0.1:443"
     },
     {
       "productId": "lawyershub",
       "host": "lawyershub.id",
-      "classification": "canonical_current_build",
-      "checks": {
-        "rootStatus": 200,
-        "requirementsStatus": 200,
-        "sessionStatus": 200,
-        "sessionLooksLikeEos": true,
-        "hasCurrentRoot": true,
-        "hasCurrentRequirements": true,
-        "hasCurrentMetadata": true,
-        "hasLegacySurface": false
-      }
+      "classification": "unreachable",
+      "error": "connect ECONNREFUSED 127.0.0.1:443"
     },
     {
       "productId": "ilc",
-      "host": "staging.indonesialawyersclub.id",
+      "host": "indonesialawyersclub.id",
       "classification": "unreachable",
-      "error": "Timeout after 10000ms"
+      "error": "connect ECONNREFUSED 127.0.0.1:443"
     }
   ]
 }

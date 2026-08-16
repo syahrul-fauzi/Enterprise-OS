@@ -1,4 +1,4 @@
-import { governanceEvidenceService } from "./governance-evidence.service.js";
+import { governanceEvidenceService } from "./governance-evidence.service";
 
 async function main() {
   console.log("=== B7.17 PRE-CAMPAIGN: TESTING DECISION INTELLIGENCE ENGINE ===\n");

@@ -3,7 +3,39 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "jsx": "react-jsx",
-    "types": ["node"]
+    "types": ["node"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "baseUrl": ".",
+    "paths": {
+      "@repo/core-kernel": ["packages/core/kernel/src/index.ts"],
+      "@repo/core-kernel/*": ["packages/core/kernel/src/*"],
+      "@repo/core-runtime": ["packages/core/runtime/src/index.ts"],
+      "@repo/core-runtime/*": ["packages/core/runtime/src/*"],
+      "@repo/core-capability-registry": ["packages/core/capability-registry/src/index.ts"],
+      "@repo/core-capability-registry/*": ["packages/core/capability-registry/src/*"],
+      "@repo/core-registry-resolver": ["packages/core/registry-resolver/src/index.ts"],
+      "@repo/core-registry-resolver/*": ["packages/core/registry-resolver/src/*"],
+      "@repo/composition": ["packages/composition/src/index.ts"],
+      "@repo/composition/*": ["packages/composition/src/*"],
+      "@repo/presentation-ui-system": ["packages/presentation/ui-system/src/index.ts"],
+      "@repo/presentation-ui-system/*": ["packages/presentation/ui-system/src/*"],
+      "@repo/presentation-types": ["packages/presentation/presentation-types/src/index.ts"],
+      "@repo/presentation-types/*": ["packages/presentation/presentation-types/src/*"],
+      "@repo/presentation-foundation": ["packages/presentation/foundation/src/index.ts"],
+      "@repo/presentation-foundation/*": ["packages/presentation/foundation/src/*"],
+      "@repo/presentation-widgets": ["packages/presentation/widgets/src/index.ts"],
+      "@repo/presentation-widgets/*": ["packages/presentation/widgets/src/*"],
+      "@repo/presentation-features": ["packages/presentation/features/src/index.ts"],
+      "@repo/presentation-features/*": ["packages/presentation/features/src/*"],
+      "@repo/presentation-experience": ["packages/presentation/experience/src/index.ts"],
+      "@repo/presentation-experience/*": ["packages/presentation/experience/src/*"],
+      "@repo/presentation-hooks": ["packages/presentation/hooks/src/index.ts"],
+      "@repo/presentation-hooks/*": ["packages/presentation/hooks/src/*"],
+      "@products/*": ["products/*"],
+      "@capabilities/*": ["capabilities/*"]
+    }
   },
   "include": [
     "capabilities/**/*.ts",
@@ -11,6 +43,8 @@
     "packages/**/*.ts",
     "packages/**/*.tsx",
     "apps/**/*.ts",
-    "apps/**/*.tsx"
+    "apps/**/*.tsx",
+    "products/**/*.ts",
+    "products/**/*.tsx"
   ]
 }

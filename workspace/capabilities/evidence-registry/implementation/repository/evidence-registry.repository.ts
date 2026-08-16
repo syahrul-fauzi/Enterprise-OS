@@ -372,4 +372,10 @@ export const EvidenceRegistryRepositoryFileSystem: EvidenceRegistryRepository = 
     const match = scanRecords(repoRoot).find((entry) => entry.record.id === id);
     return match === undefined ? undefined : buildRecordDetail(match.absolutePath, match.record);
   },
+  save(_entity: unknown): never {
+    throw new Error("EvidenceRegistryRepositoryFileSystem.save is not implemented - read-only repository");
+  },
+  remove(_id: string): boolean {
+    return false;
+  },
 } as const;

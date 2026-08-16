@@ -193,8 +193,8 @@ export interface AssessVerificationOutput {
 export interface RequirementRepository {
   readonly entityName: "Requirement";
   readonly kind: "repository";
-  byId(id: RequirementId): RequirementAggregate | undefined;
-  list(): readonly RequirementAggregate[];
-  save(entity: RequirementAggregate): RequirementAggregate;
-  remove(id: RequirementId): boolean;
+  byId(id: RequirementId): Promise<RequirementAggregate | undefined>;
+  list(): Promise<readonly RequirementAggregate[]>;
+  save(entity: RequirementAggregate): Promise<RequirementAggregate>;
+  remove(id: RequirementId): Promise<boolean>;
 }

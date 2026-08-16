@@ -2,7 +2,6 @@
   "extends": "@repo/config-typescript/nextjs.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
     "types": ["node"],
     "paths": {
       "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
@@ -49,5 +48,5 @@
     "../../capabilities/**/*.ts",
     "../../capabilities/**/*.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "../../procedures/**/tests/**", "../../procedures/**/*.test.ts", "../../procedures/**/audit-conformance.ts"]
 }

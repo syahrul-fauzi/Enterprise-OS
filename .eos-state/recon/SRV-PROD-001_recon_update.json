@@ -1,0 +1,46 @@
+{
+  "work_id": "SRV-PROD-001",
+  "recon_completed_at": "2026-08-15T00:00:00.000Z",
+  "locked_boundaries_verified": {
+    "consultation_frozen": true,
+    "shared_rail_integrity": true,
+    "tenant_isolation_compliant": true,
+    "rule_of_two_satisfied": true,
+    "thin_app_strategy_compliant": true
+  },
+  "existing_capabilities_found": [
+    "identity/session (shared rail)",
+    "identity/tenant (shared rail)",
+    "identity/workspace (shared rail)",
+    "core-kernel/capability-registry",
+    "presentation/widgets/ProductPreviewShell",
+    "presentation/hooks/useWorkspaceSession",
+    "persistence/postgres-base-repository"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "getSessionRepositoryPostgres() from identity capability (shared session validation)",
+      "initIdentitySchema() from identity capability (Postgres schema initialization)",
+      "PostgresRepository base class (persistence abstraction)",
+      "useWorkspaceSession() hook (frontend session state management)",
+      "ProductPreviewShell UI component (shared product layout)",
+      "capabilityRegistry.invoke() pattern (command execution)",
+      "tenant/workspace isolation checks (reused from legal-community.commands.ts)",
+      "environment-based repository toggle (process.env.DATABASE_URL)"
+    ],
+    "required_new": ["ServiceProviderRepositoryPostgresImpl (1 file, ≤50 lines)", "createServiceProfile command (1 file, ≤150 lines)", "getServiceProviders query (1 file, ≤50 lines)"],
+    "reuse_percentage": 87.5
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Reuse legal-community.commands.ts pattern exactly for service profile commands to maintain isolation consistency",
+    "Reuse identity repositories' getSessionRepositoryPostgres() export pattern for service repository exports",
+    "Maintain ≤3 lines/file change rule for any shared primitive modifications",
+    "Execute eos-verification after implementation to validate tenant isolation",
+    "Update workitems.json to mark SRV-PROD-001 as IN_PROGRESS"
+  ]
+}

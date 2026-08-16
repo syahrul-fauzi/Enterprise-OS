@@ -33,6 +33,8 @@ export interface EvidenceRegistryRepository {
   readonly kind: "repository";
   list(): readonly EvidenceRecord[];
   byId(id: string): EvidenceRecordDetail | undefined;
+  save(entity: unknown): never;
+  remove(id: string): boolean;
 }
 
 export interface SearchEvidenceRegistryInput {

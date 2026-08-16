@@ -1,0 +1,74 @@
+{
+  "work_id": "B4-VALIDATE-003",
+  "products": ["ILC", "Academic Community"],
+  "phase": "RULE_OF_TWO + THIN_APP_DISTINCTNESS STRUCTURAL PROVEN",
+  "status": "PENDING_UNBRIEFED_HUMAN_OBSERVER_DISTINCTNESS",
+  "recon_date": "2026-08-15",
+  "ilc_screenshot": "/root/Enterprise-OS/workspace/.eos-state/evidence/b4-validation/b4-ilc-landing.png",
+  "academic_screenshot": "/root/Enterprise-OS/workspace/.eos-state/evidence/b4-validation/b4-academic-landing.png",
+  "shared_primitive_legal_community": "SHARED ACROSS BOTH PRODUCTS (Rule of Two PROVEN at render level)",
+  "structural_thin_app_matrix": {
+    "shared_EXACT_same_data_source_both_products": {
+      "combobox_name": "Topik",
+      "combobox_options_identical_order": [
+        "Pilih topik",
+        "Hukum Perusahaan",
+        "Hukum Perdata",
+        "Hukum Pidana",
+        "Hukum Keluarga",
+        "Hukum Internasional",
+        "Hukum Teknologi Digital",
+        "Hukum Ketenagakerjaan",
+        "Hukum Tata Negara"
+      ],
+      "options_count": 8,
+      "IDENTICAL_across_ilc_and_academic": true,
+      "note": "Ini SHARED legal-community topic primitive — sama persis 8 opsi, sama urutan, SAMA data source. Rule of Two 2 consumers confirmed."
+    },
+    "yet_distinct_product_jobs": {
+      "ILC": {
+        "h1_heading": "ilc",
+        "h2_form_heading": "Mulai Diskusi Komunitas Baru",
+        "workflow_description": "Mulai diskusi publik tentang topik hukum — komunitas akan mereply dan terlibat.",
+        "primary_cta_button": "Mulai Diskusi",
+        "judul_label": "Judul Diskusi",
+        "konten_label": "Deskripsi",
+        "judul_placeholder": "Masukkan judul diskusi komunitas...",
+        "konten_placeholder": "Jelaskan detail diskusi yang ingin dibuka...",
+        "trust_heading": "Real community and editorial activity on the platform",
+        "trust_body": "These are real topic and program records with participation or publication evidence. Trust comes from visible activity, not fake community metrics.",
+        "product_job": "KOMUNITAS HUKUM PRAKTISI — user ingin BERDISKUSI tentang topik hukum, BERINTERAKSI dengan komunitas, membuka topik diskusi."
+      },
+      "ACADEMIC_COMMUNITY": {
+        "h1_heading": "academic",
+        "h2_form_heading": "Tulis Artikel Komunitas Baru",
+        "workflow_description": "Submit artikel penelitian / analisis hukum — melalui Proposed → Accepted → Published.",
+        "primary_cta_button": "Submit Artikel",
+        "judul_label": "Judul Artikel",
+        "konten_label": "Konten Artikel",
+        "judul_placeholder": "Masukkan judul artikel penelitian...",
+        "konten_placeholder": "Tulis konten artikel Anda...",
+        "trust_heading": "Real workflow activity",
+        "trust_body": "These records come from real platform activity rather than synthetic claims or placeholder trust signals.",
+        "product_job": "PUBLIKASI ILMIAH/AKADEMIS — user ingin MEMBUAT ARTIKEL PENELITIAN, submit untuk review, PUBLISH sebagai karya akademis."
+      },
+      "distinction_summary": {
+        "SHARED": "SAMA: 8 Topik Hukum options + shared legal-community primitive",
+        "DISTINCT_HEADING": "ILC='Mulai Diskusi Komunitas', ACAD='Tulis Artikel Komunitas' (bedanya: 'Diskusi' vs 'Artikel')",
+        "DISTINCT_CTA": "ILC='Mulai Diskusi' vs ACAD='Submit Artikel'",
+        "DISTINCT_LIFECYCLE": "ILC='komunitas mereply dan terlibat' (no terminal lifecycle) vs ACAD='Proposed→Accepted→Published' (academic publish lifecycle)",
+        "DISTINCT_KONTEN": "ILC='Deskripsi' ringkas diskusi vs ACAD='Konten Artikel' full artikel penelitian",
+        "DISTINCT_TRUST_COPY": "ILC='community participation, fake community metrics' vs ACAD='synthetic claims, placeholder trust signals'"
+      }
+    }
+  },
+  "thin_app_signal_31_LOC_visual_corroboration": "31 LOC Academic-specific code = HANYA binding + copy + lifecycle wording, TANPA fork primitive. Hasil di UI: SHARED combobox, DISTINCT job copy dan CTA. Ini PERSIS thesis Thin App Strategy: produk baru dengan marginal implementation sangat kecil TANPA architectural fork — TERBUKTI di render level visual.",
+  "shared_execution_invisible": "MF-002 leak removed — refs=15 both products (before: 16)",
+  "replay_regression_proof_ILC_9_9_PASS": "Runtime replay DISC-001: node --test 9/9 PASS. Shared legal-community primitive deterministic and healthy after 2 consumers.",
+  "still_needs_real_unbriefed_human": true,
+  "unbriefed_observer_must_answer_ilc_vs_academic_distinctness": {
+    "question": "Buka ILC kemudian buka Academic — apakah menurut Anda ini dua produk berbeda atau hanya skin warna beda?",
+    "expected_correct_answer": "BEDA produk — ILC untuk diskusi komunitas hukum, Academic untuk submit/publikasi artikel penelitian. CTA dan cara kerjanya beda."
+  },
+  "governance_rule_of_two_economics_note": "1 shared primitive (legal-community) → 2 distinct business outputs (community discussion + academic publication). RULE OF TWO LOCKED: jangan promote sebagai platform sebelum ≥3rd consumer uses shared primitive with same pattern."
+}

@@ -1,15 +1,15 @@
-import type { PredicateDeclaration } from "./interfaces.js";
+import type { PredicateDeclaration } from "./interfaces";
 
-import { T001_PREDICATES } from "./registry/predicates/t001.js";
+import { T001_PREDICATES } from "./registry/predicates/t001";
 
-export * from "./types.js";
-export type * from "./interfaces.js";
-export * from "./schema.js";
+export * from "./types";
+export type * from "./interfaces";
+export * from "./schema";
 export type {
   PredicateDeclaration,
   PredicateEvaluationResult,
   PredicateRegistryDocument,
-} from "./interfaces.js";
+} from "./interfaces";
 
 export { T001_PREDICATES };
 

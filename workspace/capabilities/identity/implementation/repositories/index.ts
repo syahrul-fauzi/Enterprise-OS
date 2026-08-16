@@ -1,6 +1,8 @@
-export { UserRepositoryPostgres } from "./user.repository.js";
-export { TenantRepositoryPostgres } from "./tenant.repository.js";
-export { WorkspaceRepositoryPostgres } from "./workspace.repository.js";
-export { MembershipRepositoryPostgres } from "./membership.repository.js";
-export { SessionRepositoryPostgres } from "./session.repository.js";
-export { initIdentitySchema } from "./base.repository.js";
+export { getUserRepositoryPostgres, UserRepositoryPostgres } from "./user.repository";
+export { UserRepositoryInMemory, newUserId } from "./user.inmemory";
+export { SessionRepositoryInMemory, newSessionId } from "./session.inmemory";
+export { getTenantRepositoryPostgres, TenantRepositoryPostgres } from "./tenant.repository";
+export { getWorkspaceRepositoryPostgres, WorkspaceRepositoryPostgres } from "./workspace.repository";
+export { getMembershipRepositoryPostgres, MembershipRepositoryPostgres } from "./membership.repository";
+export { getSessionRepositoryPostgres, SessionRepositoryPostgres } from "./session.repository";
+export { initIdentitySchema } from "./base.repository";

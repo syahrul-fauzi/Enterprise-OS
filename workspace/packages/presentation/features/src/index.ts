@@ -4,4 +4,4 @@ export type { ProductCreateFormProps } from "./product-creation/ProductCreateFor
 export { CommunitySearchBar } from "./community-search/CommunitySearchBar";
 export type { CommunitySearchBarProps } from "./community-search/CommunitySearchBar";
 
-export { LoginPage, SignupPage } from "./auth";
+export { LoginPage, SignupPage } from "./auth/index";

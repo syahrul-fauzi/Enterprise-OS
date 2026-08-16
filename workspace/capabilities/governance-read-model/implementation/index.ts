@@ -1,4 +1,4 @@
-import { GovernanceReadModelService } from './services/governance-read-model.service.js';
+import { GovernanceReadModelService } from './services/governance-read-model.service';
 
 function main() {
   const readModelService = new GovernanceReadModelService();

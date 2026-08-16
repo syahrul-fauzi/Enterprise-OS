@@ -123,13 +123,13 @@ Semua produk menggunakan primitive EOS yang sama: canonical web surface, shared 
 
 ## EOS PRODUCT LEVERAGE SCOREBOARD (HEAD-VERIFIED EXECUTABLE EVIDENCE)
 
-Berikut scoreboard berdasarkan **bukti runtime aktual**, bukan narasi. Verification timestamp: 2026-08-08 (Phase D1.3 — E2E Real User Journey 21/21 PASS).
+Berikut scoreboard berdasarkan **bukti runtime aktual**, bukan narasi. Verification timestamp: 2026-08-16 (B4 structural wave — Engineering First Light 🟢, EOS First Light 🟡 pending B4 HUMAN BLACK-BOX OBSERVER).
 
 ```text
                       LawyersHub   Services.ID      ILC       Academic(4th)
 ────────────────────────────────────────────────────────────────────────────
 Real user job              ✓            ✓            ✓            ✓
-Executable test            ✓ 5/5        ✓ 6/6        ✓ 7/7        —
+Executable test            ✓ 8/8        ✓ 8/8        ✓ 9/9        —
 Capability execution       ✓ 2 trans    ✓ 2 trans    ✓ surface    ✓ 1 trans
   (capabilityRegistry)     closed       delivered    live         published
 State mutation             ✓            ✓            —            ✓
@@ -140,11 +140,21 @@ E2E User Journey           ✓ 7/7        ✓ 7/7        ✓ 7/7        —
                            DISCOVER→    DISCOVER→    DISCOVER→
                            SEE result   SEE result   SEE result
 ────────────────────────────────────────────────────────────────────────────
-Human acceptance           ?            ?            ?            ?
-Deployable                 ?            ?            ?            ?
+Human acceptance           ❌            ❌            ❌            ❌
+(PENDING B4 OBSERVER)      G1-G6        G1-G6        G1-G6        D1 skin/beda?
+Deployable                 ❌            ❌            ❌            ❌
+(4 BLOCKERS DEFERRED)      DEV 3004 OK  DEV 3004 OK  DEV 3004 OK  DEV 3004 OK
 ────────────────────────────────────────────────────────────────────────────
-PRODUCT READY              —            —            —            —
+PRODUCT READY              ❌            ❌            ❌            ❌
+(PENDING 6/6 B4 GATES)
 ```
+
+**NOTE PER KOMANDAN 2026-08-15:**
+- 98.5% = shared-rail-to-marginal-product LOC ratio (BUKAN true reuse%)
+- 64.2x structural leverage SRV (KOREKSI: bukan 66x — 86840/1353 ≈ 64.2x)
+- "66x cheaper" = KLAIM EKONOMI DITOLAK tanpa engineering effort/time evidence
+- Academic 31 LOC = STRONGEST THIN-APP SIGNAL (marginal impl 31 LOC tanpa fork primitive)
+- LH upgrade 5→8/8 test: +3 LH-CASE-002 Matter↔Document COMPOSITE E2E terbukti document.matterId === caseId EXACT PERSIST
 
 ### E2E Real User Journey (D1.3) — EXECUTABLE PROOF 21/21 PASS
 
@@ -160,14 +170,19 @@ PRODUCT READY              —            —            —            —
 E2E runner: [d13-real-user-journey-all-products.ts](file:///root/Enterprise-OS/workspace/scripts/d13-real-user-journey-all-products.ts)
 Evidence artifacts: `.eos/evidence/d13-real-user-journey-*.json` (3 JSON files)
 
-### Test Foundation (TEST-001) — EXECUTABLE PROOF (18/18 PASS)
+### Test Foundation (TEST-001) — EXECUTABLE PROOF (25/25 PASS B4 WAVE)
 
 | Produk       | File Test (HEAD path)                                 | Total | Pass | Fail | Runner          |
 |--------------|-------------------------------------------------------|-------|------|------|-----------------|
-| LawyersHub   | [lawyershub.test.ts](file:///root/Enterprise-OS/workspace/products/lawyershub/tests/lawyershub.test.ts) | 5     | 5    | 0    | node:test + tsx |
-| Services.ID  | [services-id.test.ts](file:///root/Enterprise-OS/workspace/products/services-id/tests/services-id.test.ts) | 6     | 6    | 0    | node:test + tsx |
-| ILC          | [ilc.test.ts](file:///root/Enterprise-OS/workspace/products/ilc/tests/ilc.test.ts)                   | 7     | 7    | 0    | node:test + tsx |
-| **TOTAL**    |                                                                                                       | **18**| **18**| **0**|                 |
+| LawyersHub   | [lawyershub.test.ts](file:///root/Enterprise-OS/workspace/products/lawyershub/tests/lawyershub.test.ts) | 8     | 8    | 0    | node:test + tsx |
+| Services.ID  | [services-id.test.ts](file:///root/Enterprise-OS/workspace/products/services-id/tests/services-id.test.ts) | 8     | 8    | 0    | node:test + tsx |
+| ILC          | [ilc.test.ts](file:///root/Enterprise-OS/workspace/products/ilc/tests/ilc.test.ts)                   | 9     | 9    | 0    | node:test + tsx |
+| **TOTAL**    |                                                                                                       | **25**| **25**| **0**|                 |
+
+**UPGRADE NOTE (LH +3 / SRV +2 / ILC +2 vs D1.2 baseline 18/18):**
+- LawyersHub: +3 tests = LH-CASE-002 Matter↔Document COMPOSITE E2E 3/3 (document.create({matterId}) → byId.matterId EXACT PERSIST → lifecycle 3 transitions → 5 CommandInvocationRecord URUT)
+- Services.ID: +2 regression tests post minimal-fix SessionRepositoryProxy
+- ILC: +2 health + regression checks
 
 Evidence artifacts:
 - LawyersHub: [test-execution-20260808.json](file:///root/Enterprise-OS/workspace/products/lawyershub/evidence/verification/test-execution-20260808.json) + [health-report](file:///root/Enterprise-OS/workspace/products/lawyershub/evidence/delivery-reports)
@@ -179,62 +194,85 @@ Evidence artifacts:
 
 ---
 
-## 🔥 COMMAND CENTER — MODE: PRODUCT EXECUTION
+## 🔥 COMMAND CENTER — MODE: VALIDATION LAYER (B4 WAVE STRUCTURAL DONE · PENDING HUMAN OBSERVER)
 
 ```text
-EOS FOUNDATION              🔒 FROZEN (Architecture, Kernel, Engines)
+EOS FOUNDATION              🔒 FROZEN (Architecture, Kernel, Engines) PER KOMANDAN
 
-LAWYERSHUB                  🟢 REAL  (case-101 closed ✅, 5/5 test, 7/7 journey)
-SERVICES.ID                 🟢 REAL  (sreq-101 delivered ✅, 6/6 test, 7/7 journey)
-ILC                         🟢 REAL  (disc-101 live ✅, 7/7 test, 7/7 journey)
-ACADEMIC (4× LEVERAGE)      🟢 REAL  (content-101 published ✅)
+LAWYERSHUB                  🟢 ENG  (case-101 closed ✅, 8/8 test NEW, 7/7 journey)   🟡 B4 G1 pending
+SERVICES.ID                 🟢 ENG  (sreq-101 delivered ✅, 8/8 test, 7/7 journey)    🟡 B4 G2 pending
+ILC                         🟢 ENG  (disc-101 live ✅, 9/9 test, 7/7 journey)         🟡 B4 G3 DISTINCTNESS pending
+ACADEMIC (4× LEVERAGE)      🟢 ENG  (content-101 published ✅, 31 LOC THIN)           🟡 B4 D1 skin/beda pending
 
-TEST FOUNDATION             🟢 CERTIFIED — 18/18 executable tests PASS
+TEST FOUNDATION             🟢 CERTIFIED — 25/25 executable tests PASS B4 WAVE
 E2E USER JOURNEY            🟢 CERTIFIED — 21/21 steps PASS (3 prod × 7 steps)
-SHARED PRIMITIVE            🟢 REUSED    (1 registry + 1 journey pattern → 4 products)
-PRODUCT EXECUTION           🔥 ACTIVE
-CAPABILITY EXECUTION        🟢 OPERATIONAL — 9+ invocations ok:true + 3× full journey ledger
-EVIDENCE PIPELINE           🟢 ACTIVE
+B4-A HTTP SMOKE             🟢 CERTIFIED — 21/21 structural checks (8 route + 4 display + 4 adapter + 4 leak + 1 LH)
+B4-C STRUCTURAL SCAN        🟢 CERTIFIED — 48/49 PASS 97.96% · 5/5 DISTINCTNESS RULES PASS
+B4-E GOVERNANCE TRACE       🟢 STRUCTURAL PROVEN — 8 node × 2 products = 16 renders · next-action distinct LH≠SRV
+B4-B OBSERVER HARNESS       🟢 READY — B4-HUMAN-OBSERVER-SCRIPT MD generated · 6 GATES G1-G6 terkunci
+B4-F STAGING PATH           🟡 DEV 3004 OK for observer · 4 pre-existing build BLOCKERS DEFERRED frozen
+
+SHARED PRIMITIVE            🟢 REUSED (1 registry + 1 journey pattern → 4 products)
+CAPABILITY EXECUTION        🟢 OPERATIONAL — 25 test suites · 3× full journey ledger · 5 transition steps LH composite NEW
+EVIDENCE PIPELINE           🟢 ACTIVE · 11+ B4 artifacts captured wave ini
 DOCTOR ENGINE               🟢 3 reports generated
 
+HUMAN ACCEPTANCE GATES      🔴 0/6 PASS — PENDING UNBRIEFED EXTERNAL OBSERVER
+  B4-G1 LH understand job   ❌
+  B4-G2 SRV different job   ❌
+  B4-G3 4 products distinct ❌
+  B4-G4 shared invisible    ❌
+  B4-G5 governance exp      ❌
+  B4-G6 1 app ≠ skins       ❌
+EOS FIRST LIGHT LOCKED      🔴 NO (6/6 human gates = acceptance bar)
+PRODUCTION PUBLIC           🔴 NO (4 build blockers deferred)
+
 NEXT MILESTONES (Ordered by Product Impact):
-    ✓  VERIFY 3 TESTS — DONE (18/18 PASS, HEAD-verified 2026-08-08)
-    ✓  REAL USER JOURNEY — DONE (21/21 PASS, D1.3 CERTIFIED 2026-08-08)
-    →  HUMAN ACCEPTANCE — UP NEXT (manual black-box session use-the-product-for-real)
-    →  DEPLOY HARDENING
-    →  SHIP 3 USABLE PRODUCTS
+    ✓  B4-A HTTP SMOKE 21/21 — DONE (2026-08-16)
+    ✓  B4-C STRUCTURAL SCAN 48/49 + 5/5 DISTINCT — DONE
+    ✓  B4-E GOVERNANCE 8-NODE × 2 PROD — DONE
+    ✓  B4-B OBSERVER SCRIPT GENERATED — DONE
+    ✓  B4-D REPLAY RUNTIME VALIDATED LH 8/8 SRV 8/8 ILC 9/9 — DONE
+    →  B4-VALIDATE-001 SINGLE HUMAN OBSERVER SESSION ← NEXT SINGLE HIGHEST LEVERAGE ACTION
+       (6 GATES G1-G6 PASS → EOS Experience First Light LOCKED 🟢)
+    →  BUILD-001 DEPLOY HARDENING (pg bundle + vercel rewrite + docker + env) — SETELAH B4 LOCK
+    →  SHIP 4 USABLE PRODUCTS
 ```
 
-**No Frontier F. No new DSL. No new registry. No campaign.**
-> We finish products. — 1 shared primitive → 3 products → 21 E2E executable steps PASS → 3 evidence chains.
+**Per Komandan 2026-08-15 — Architecture FROZEN ABSOLUTE:**
+TIDAK BOLEH: engine baru, DSL baru, registry baru, renderer baru, auth baru, tenant layer baru, capability abstraction baru, refactor besar.
+HANYA BOLEH: validation layer, product surface polish, deployment setup, evidence capture.
 
 ---
 
 ## Execution Sequencing (Current Status)
 
 ```text
-TEST-001 (18/18 ✅)
+TEST-001 (25/25 ✅ B4-WAVE)
    ↓
 DOC-001 (scoreboard) ─────────┐
                               │
-DEPLOY-001 ───────────────────┤
+B4-A/B/C/D/E (structural) ────┤  ALL DONE 🟢
                               ▼
 E2E USER JOURNEY (21/21 ✅) ──┘
                               │
                               ▼
-                      PRODUCTION PATH
+                      B4 HUMAN BLACK-BOX ← NEXT (SINGLE SESSION, 6 GATES G1-G6)
+                              │
+                              ▼ (6/6 PASS)
+                   EOS EXPERIENCE FIRST LIGHT LOCKED 🟢
                               │
                               ▼
-                HUMAN BLACK-BOX ACCEPTANCE ← NEXT
+                 BUILD HARDENING + PUBLIC DEPLOY
                               │
                               ▼
-              REAL PRODUCT COMPLETION ×3
+              REAL PRODUCT COMPLETION ×4
 ```
 
 ---
 
-## Current Status (Software v1.10.0 — Phase D.1.3 CERTIFIED: 21/21 E2E User Journey PASS × 3 Products)
-Check [`STATUS.md`](/root/Enterprise-OS/STATUS.md) for operational control tower and details!
+## Current Status (Software v1.10.0 — Phase D1.4 PENDING B4 HUMAN BLACK-BOX: Engineering First Light 🟢, EOS Experience 🟡)
+Check [`STATUS.md`](/root/Enterprise-OS/STATUS.md) for operational control tower and details.
 
 ### Quick Summary
 - ✅ **Three (plus one leverage) product bindings LIVE** on shared surface: LawyersHub, Services.ID, ILC + Academic community
@@ -242,9 +280,21 @@ Check [`STATUS.md`](/root/Enterprise-OS/STATUS.md) for operational control tower
 - ✅ Evidence pipeline active (Observation → Validation → Decision → Learning)
 - ✅ Capability extraction **OPERATIONAL** (4 domain capabilities extracted + 19 commands registered in ONE registry)
 - ✅ **D.1.1 ACHIEVED**: 4/4 end-to-end product jobs executed (create aggregates)
-- ✅ **D.1.2 ACHIEVED — Full lifecycle certified**: 5 transition steps executed, 9/9 invocations ok:true, 4/4 aggregates reached terminal state (closed/delivered/published/open). CommandInvocationRecord ledger preserved for every write.
-- ✅ **D.1.3 CERTIFIED — 3× Real User Journey**: 7-step canonical pattern (OPEN→DISCOVER→ACTION→EXECUTE→STATE→EVIDENCE→SEE) executed across LawyersHub + Services.ID + ILC = 21/21 E2E PASS. 1 shared primitive → 3 products reuse identical pattern = 3× leverage.
-- 🟡 Next milestone: D.1.4 Human Black-Box Acceptance (manual use-the-product-for-real session) → Deploy Hardening → SHIP 3 usable products.
+- ✅ **D.1.2 ACHIEVED — Full lifecycle certified**: 5 transition steps executed, 9/9 invocations ok:true, 4/4 aggregates reached terminal state. CommandInvocationRecord ledger preserved for every write.
+- ✅ **D.1.3 CERTIFIED — 3× Real User Journey**: 7-step canonical pattern OPEN→DISCOVER→ACTION→EXECUTE→STATE→EVIDENCE→SEE = 21/21 E2E PASS. 1 shared primitive → 3 products = 3× leverage.
+- ✅ **B4 WAVE STRUCTURAL CERTIFIED 2026-08-16**: HTTP 21/21, structural 48/49 (97.96%) 5/5 distinctness, governance 8-node×2 structural, replay runtime VALIDATED 25/25, harness script READY.
+- 🟡 **D.1.4 PENDING SINGLE B4 OBSERVER SESSION**: G1-G6 6 gates 0/6 PASS. Setelah 6/6 → EOS Experience First Light LOCKED → Production hardening.
+
+### B4-WAVE Structural Snapshot (2026-08-16)
+| Sub-slice | Result | Evidence Artifact |
+|-----------|--------|-------------------|
+| B4-A HTTP smoke 8/8 route + display + adapter + leak | 21/21 PASS | `.eos-state/evidence/b4-a-http-smoke-*.json` |
+| B4-B Black-box harness + observer script | READY | `B4-BLACKBOX-HARNESS-*.json`, `B4-HUMAN-OBSERVER-SCRIPT-*.md` |
+| B4-C 49-point structural scan × 4 produk | 48/49 PASS (97.96%) — 1 minor LH categoryBadge regex | `b4-c-structural-product-scan-*.json` |
+| B4-C Distinctness 5 rules (LH≠SRV, ILC≠Academic, R2, CTA, lifecycle) | 5/5 PASS | embedded B4-C |
+| B4-D Runtime re-run LH 8/8, SRV 8/8, ILC 9/9 | PASS · LH-CASE-002 composite NEW 3/3 | per-product test files |
+| B4-E Governance 8-node trace × 2 products | 8 structural checks PASS · next-action LH≠SRV PROVEN | `b4-e-governance-trace-*.json` |
+| B4-F Deploy blockers assessment | Dev Server 3004 ✅ OK for B4 · 4 blockers DEFERRED frozen | `b4-f-staging-deploy-assessment-*.json` |
 
 ### D.1.1 — Runtime Evidence (actual invocations, not claims)
 Measured via unified capability registry + repository state mutation:

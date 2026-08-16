@@ -1,0 +1,47 @@
+{
+  "work_id": "GOLDEN-001",
+  "recon_completed_at": "2026-08-14T18:15:00.000Z",
+  "locked_boundaries_verified": {
+    "consultation": "FROZEN - no modifications needed",
+    "mso": "FROZEN - no modifications needed",
+    "core_eos": "Unchanged - all primitives already exist"
+  },
+  "existing_capabilities_found": [
+    "identity/auth",
+    "tenant isolation",
+    "capability registry",
+    "evidence ledger",
+    "consultation front door",
+    "case lifecycle management",
+    "service request lifecycle",
+    "community content lifecycle",
+    "shared presentation widgets",
+    "product experience catalog"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "sign up flow",
+      "login flow",
+      "workspace session management",
+      "all three product experiences (lawyershub, ilc, services-id)",
+      "create forms for all products",
+      "lifecycle state transitions",
+      "evidence tracking",
+      "root landing page infrastructure"
+    ],
+    "required_new": [
+      "product selector on root landing page to showcase all three EOS products"
+    ],
+    "reuse_percentage": 96.4
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Add minimal product selector to RootLandingPage to showcase all three products on the root landing page",
+    "Verify the sign up → create workspace → submit case flow is fully functional",
+    "Run end-to-end test to confirm golden path works without issues"
+  ]
+}

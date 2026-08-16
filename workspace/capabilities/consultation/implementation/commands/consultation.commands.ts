@@ -20,12 +20,14 @@ import {
   EosConsultationControlId,
   LearningCandidate,
   LearningCandidateStatus,
-} from "../contracts/consultation.contracts.js";
+} from "../contracts/consultation.contracts";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { newConsultationId, newConsultationSeriesId, newConsultationEpisodeId, defaultConsultationStatus, defaultConsultationPriority, ConsultationRepositoryInMemory } from "../repository/index.js";
-import { initIdentitySchema, SessionRepositoryPostgres } from "../../../identity/implementation/repositories/index.js";
-import { SessionId } from "../../../identity/implementation/contracts/identity.contracts.js";
-import { ConsultationStatus } from "../contracts/consultation.contracts.js";
+import { newConsultationId, newConsultationSeriesId, newConsultationEpisodeId, defaultConsultationStatus, defaultConsultationPriority, ConsultationRepositoryInMemory } from "../repository/index";
+import { initIdentitySchema, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index";
+import { SessionId } from "../../../identity/implementation/contracts/identity.contracts";
+import { ConsultationStatus } from "../contracts/consultation.contracts";
+
+const SessionRepositoryPostgres = getSessionRepositoryPostgres();
 
 type ShallowMutable<T> = { -readonly [P in keyof T]: T[P] };
 type DeepMutable<T> = T extends readonly (infer U)[] ? DeepMutable<U>[] :

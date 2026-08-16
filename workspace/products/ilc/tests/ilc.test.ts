@@ -34,19 +34,21 @@ interface IlcLifecycleLedger {
   };
 }
 
-function runLifecycleIlcE2E(
+const ILC_SESSION_ID = "session-test-001";
+
+async function runLifecycleIlcE2E(
   title: string,
   summary: string,
   topicLabel: TopicCategory,
   author: string,
   authorAffiliation: string,
-): IlcLifecycleLedger {
+): Promise<IlcLifecycleLedger> {
   const records: CommandInvocationRecord[] = [];
 
-  const createResult = capabilityRegistry.invoke<{ readonly id: string; readonly status: ContentStatus }>(
+  const createResult = await capabilityRegistry.invoke<{ readonly id: string; readonly status: ContentStatus }>(
     "ilc",
     "createContentArticle",
-    { title, summary, topicLabel, author, authorAffiliation },
+    { title, summary, topicLabel, author, authorAffiliation, sessionId: ILC_SESSION_ID },
   );
   records.push(createResult.record);
   assert.equal(createResult.record.ok, true, "legal-community.createContentArticle must record ok:true");
@@ -64,11 +66,11 @@ function runLifecycleIlcE2E(
   assert.equal(pAfterCreate.readCount, 0, "initial readCount = 0");
   assert.equal(pAfterCreate.engagementCount, 0, "initial engagementCount = 0");
 
-  const publishResult = capabilityRegistry.invoke<{
+  const publishResult = await capabilityRegistry.invoke<{
     readonly id: string;
     readonly status: "published";
     readonly publishedAt: Date;
-  }>("ilc", "publishContent", { id });
+  }>("ilc", "publishContent", { id, sessionId: ILC_SESSION_ID });
   records.push(publishResult.record);
   assert.equal(publishResult.record.ok, true, "legal-community.publishContent must record ok:true");
   assert.equal(publishResult.output.status, "published", "publishContent on proposed → published");
@@ -103,8 +105,8 @@ test.describe("DISC-001 · ILC Lifecycle E2E (capabilityRegistry · NO MOCKS)", 
     assert.ok(Array.isArray(art) && art.length >= 2, `artikel published minimal 2, got ${art.length}`);
   });
 
-  test("createContentArticle → persist → retrieved byId dengan author/topicLabel/affiliation match", () => {
-    const ledger = runLifecycleIlcE2E(
+  test("createContentArticle → persist → retrieved byId dengan author/topicLabel/affiliation match", async () => {
+    const ledger = await runLifecycleIlcE2E(
       "  Analisis Komparatif Implementasi UU PDP Pasal 26 di ASEAN: Adequacy Decision vs Standard Contractual Clauses  ",
       "Studi komparatif lintas 4 negara ASEAN (ID/MY/SG/TH) terkait mekanisme transfer data cross-border untuk sektor perbankan dan fintech; include adequacy assessment gap analysis + rekomendasi SCC lokal.",
       "Hukum Teknologi Digital",
@@ -128,8 +130,8 @@ test.describe("DISC-001 · ILC Lifecycle E2E (capabilityRegistry · NO MOCKS)", 
     );
   });
 
-  test("publishContent menghasilkan transisi proposed→published + publishedAt ter-stamp persisten", () => {
-    const ledger = runLifecycleIlcE2E(
+  test("publishContent menghasilkan transisi proposed→published + publishedAt ter-stamp persisten", async () => {
+    const ledger = await runLifecycleIlcE2E(
       "Yurisdiksi dan Enforceability Smart Contract pada Arbitrase Dagang di Bawah UU Arbitrase No.30/1999",
       "Analisis putusan terbaru MA terkait smart contract sebagai bukti otentik + komparasi dengan UNCITRAL Model Law 2006 + recomendasi revisi UU Arbitrase.",
       "Hukum Dagang",
@@ -144,8 +146,8 @@ test.describe("DISC-001 · ILC Lifecycle E2E (capabilityRegistry · NO MOCKS)", 
     assert.equal(row?.status, "published", "repo status = published");
   });
 
-  test("status transisi proposed→published monotonik tanpa intermediate state tak terdefinisi", () => {
-    const ledger = runLifecycleIlcE2E(
+  test("status transisi proposed→published monotonik tanpa intermediate state tak terdefinisi", async () => {
+    const ledger = await runLifecycleIlcE2E(
       "Kepatuhan Privacy by Design dalam Pengembangan Generative AI: Studi Kasus Lembaga Jasa Keuangan OJK",
       "Audit gap PbD vs OJK SEOJK/POJK terbaru terkait LLM usage pada credit scoring + rekomendasi DPIA framework.",
       "Hukum Keuangan dan Perbankan",
@@ -157,9 +159,9 @@ test.describe("DISC-001 · ILC Lifecycle E2E (capabilityRegistry · NO MOCKS)", 
     assert.equal(ledger.publishedOutput.status, "published", "terminasi di published");
   });
 
-  test("ContentArticle yang published muncul di listPublished() dengan sort publishedAt desc terbaru", () => {
+  test("ContentArticle yang published muncul di listPublished() dengan sort publishedAt desc terbaru", async () => {
     const before = ContentArticleRepositoryInMemory.listPublished();
-    const ledger = runLifecycleIlcE2E(
+    const ledger = await runLifecycleIlcE2E(
       "Tinjauan Konstitusionalitas Omnibus Law Cipta Kerja terhadap Hak Buruh atas Upah Layak Pasal 28G Ayat (1) UUD 1945",
       "Analisis putusan MK No.1-10/PUU-XX/2022 terkait judicial review UU No.11/2020 + reformulasi pasal upah minimum sektoral.",
       "Hukum Perburuhan",
@@ -175,8 +177,8 @@ test.describe("DISC-001 · ILC Lifecycle E2E (capabilityRegistry · NO MOCKS)", 
     assert.ok(own !== undefined && own.status === "published", "artikel kita muncul sebagai published di repo");
   });
 
-  test("CommandInvocationRecord createContentArticle + publishContent memiliki key dan invokedAt terformat benar", () => {
-    const ledger = runLifecycleIlcE2E(
+  test("CommandInvocationRecord createContentArticle + publishContent memiliki key dan invokedAt terformat benar", async () => {
+    const ledger = await runLifecycleIlcE2E(
       "Pertanggungjawaban Pidana Korporasi terhadap Tindak Pidana Pencemaran Nama Baik melalui Platform Media Sosial",
       "Studi kasus putusan PN Tipikor terkait liability direksi atas ujaran kebencian viral di X/Twitter + batas tanggung jawab platform UU ITE Pasal 28.",
       "Hukum Pidana",
@@ -195,8 +197,8 @@ test.describe("DISC-001 · ILC Lifecycle E2E (capabilityRegistry · NO MOCKS)", 
     }
   });
 
-  test("listPublished() dan byId() consistent: semua yang published dari list bisa diambil byId dengan status published", () => {
-    const ledger = runLifecycleIlcE2E(
+  test("listPublished() dan byId() consistent: semua yang published dari list bisa diambil byId dengan status published", async () => {
+    const ledger = await runLifecycleIlcE2E(
       "Reformasi Tata Kelola Data Desa: Harmonisisasi PP No.3/2024 tentang Inovasi Desa dengan Peraturan Desa terhadap Hak Atas Data",
       "Gap analysis tata kelola data desa level kabupaten vs UU Desa + formulir conscent bentuk sederhana untuk 3T.",
       "Hukum Tata Negara dan Administrasi",

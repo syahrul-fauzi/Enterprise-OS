@@ -1,12 +1,24 @@
-import type { CapabilityCommand } from "../types.js";
+import type { CapabilityCommand } from "../types";
 // Use relative paths for tsx runtime resolution (tsconfig path mappings not resolved by tsx)
 // Node.js path.relative confirms: ../../../../../ traverses from registry dir → workspace root
 // @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
-import { identityCommands } from "../../../../../capabilities/identity/implementation/commands/index.js";
+import { caseCommands } from "../../../../../capabilities/legal-case/implementation/commands/case.commands";
 // @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
-import { consultationCommands } from "../../../../../capabilities/consultation/implementation/commands/index.js";
+import { legalCommunityCommands } from "../../../../../capabilities/legal-community/implementation/commands/index";
 // @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
-import { observabilityCommands } from "../../../../../capabilities/observability/implementation/commands/observability.commands.js";
+import { serviceDirectoryCommands } from "../../../../../capabilities/service-directory/implementation/commands/index";
+// @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
+import { documentCommands } from "../../../../../capabilities/legal-document/implementation/commands/index";
+// @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
+import { signupAndSessionCommand } from "../../../../../capabilities/identity/implementation/commands/signup-and-session.command";
+// @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
+import { observabilityCommands } from "../../../../../capabilities/observability/implementation/commands/observability.commands";
+// @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
+import { requirementCommands } from "../../../../../capabilities/requirement-management/implementation/commands/requirement.commands";
+
+const identityRailOnlyCommands: Readonly<Record<string, CapabilityCommand>> = {
+  "identity.signupAndCreateSession": signupAndSessionCommand,
+};
 
 export interface CommandInvocationRecord {
   readonly commandKey: string;
@@ -18,10 +30,15 @@ export interface CommandInvocationRecord {
   readonly errorMessage?: string;
 }
 
+// Hanya load capabilities yang dibutuhkan untuk FIRST LIGHT demo (hindari Postgres dependencies yang tidak perlu)
 const GLOBAL_REGISTRY: Readonly<Record<string, CapabilityCommand>> = {
-  ...identityCommands,
-  ...consultationCommands,
+  ...identityRailOnlyCommands,
+  ...caseCommands,
+  ...legalCommunityCommands,
+  ...serviceDirectoryCommands,
+  ...documentCommands,
   ...observabilityCommands,
+  ...requirementCommands,
 } as const;
 
 const CAPABILITY_PREFIX_ALIASES: Readonly<Record<string, readonly string[]>> = {
@@ -35,7 +52,7 @@ const CAPABILITY_PREFIX_ALIASES: Readonly<Record<string, readonly string[]>> = {
   ws: ["identity."],
   membership: ["identity."],
   "legal-case": ["case.", "legal-case."],
-  lawyershub: ["case.", "legal-case."],
+  lawyershub: ["case.", "legal-case.", "requirement.", "requirement-management."],
   "legal-document": ["document.", "legal-document."],
   documents: ["document.", "legal-document."],
   "requirement-management": ["requirement.", "requirement-management."],
@@ -95,7 +112,7 @@ export const capabilityRegistry = {
         const related = ALL_KEYS.filter((k) => k.startsWith(prefix)).slice(0, 12);
         return { command: GLOBAL_REGISTRY[directKey], candidates: related, attemptedKeys };
       }
-      const stripped = commandName.replace(/^create|^publish|^accept|^mark|^assign|^close|^update|^approve|^start|^verify|^get|^search|^sign|^archive|^list/i, "");
+      const stripped = commandName.replace(/^create|^publish|^accept|^mark|^assign|^close|^update|^approve|^start|^verify|^get|^search|^sign|^archive|^list/i, "").replace(/Incident$|Service$|Case$|Document$|Post$|Provider$|Request$/i, "");
       const lowFirst = stripped.length > 0 ? stripped[0]!.toLowerCase() + stripped.slice(1) : stripped;
       const variants = [
         `${prefix}${commandName}`,
@@ -123,11 +140,11 @@ export const capabilityRegistry = {
 
     return { command: undefined, candidates: Array.from(prefixCandidates).slice(0, 12), attemptedKeys };
   },
-  invoke<Output = unknown>(
+  async invoke<Output = unknown>(
     capability: string,
     commandName: string,
     input: unknown,
-  ): { readonly output: Output; readonly record: CommandInvocationRecord } {
+  ): Promise<{ readonly output: Awaited<Output>; readonly record: CommandInvocationRecord }> {
     const { command, candidates, attemptedKeys } = this.resolveByParts(capability, commandName);
     if (command === undefined) {
       const sortedCandidates = candidates.slice(0, 8).join(", ");
@@ -151,7 +168,7 @@ export const capabilityRegistry = {
       inputSize,
     };
     try {
-      const output = command.execute(input as never) as Output;
+      const output = await command.execute(input as never) as Awaited<Output>;
       return {
         output,
         record: { ...recordBase, ok: true },

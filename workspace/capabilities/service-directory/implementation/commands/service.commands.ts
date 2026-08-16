@@ -5,18 +5,40 @@ import {
   ServiceProviderCategory,
   ServiceProviderId,
   ServiceRequestAggregate,
+  ServiceProviderAggregate,
   ServiceRequestId,
   ServiceRequestStatus,
 } from "../contracts/service.contracts";
-import type { CapabilityCommand } from "@repo/core-kernel";
+import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types";
 import {
   ServiceRequestRepositoryInMemory,
-  ServiceRequestRepositoryPostgres,
+  ServiceProviderRepositoryInMemory,
   newServiceRequestId,
   defaultServiceRequestStatus,
-} from "../repository";
-import { initIdentitySchema } from "@capabilities/identity/implementation/repositories/base.repository";
-import { SessionRepositoryPostgres } from "@capabilities/identity/implementation/repositories/session.repository";
+  getServiceRequestRepositoryPostgres,
+  getServiceProviderRepositoryPostgres,
+} from "../repository/index";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../identity/implementation/repositories/index";
+
+// SHARED RAIL: Initialize identity schema if Postgres is active (MIRRORS ILC pattern)
+if (process.env.DATABASE_URL) {
+  initIdentitySchema();
+}
+
+// SHARED RAIL: Toggle session repository based on environment (MIRRORS LH pattern)
+const sessionRepository = process.env.DATABASE_URL
+  ? getSessionRepositoryPostgres()
+  : SessionRepositoryInMemory;
+
+// SHARED RAIL: Toggle repository based on environment (MIRRORS LH pattern)
+const serviceRepository = process.env.DATABASE_URL
+  ? getServiceRequestRepositoryPostgres()
+  : ServiceRequestRepositoryInMemory;
+
+// SHARED RAIL: Toggle service provider repository based on environment
+const providerRepository = process.env.DATABASE_URL
+  ? getServiceProviderRepositoryPostgres()
+  : ServiceProviderRepositoryInMemory;
 
 // Define base interfaces only once
 interface AcceptServiceRequestInput {
@@ -37,45 +59,37 @@ interface MarkServiceDeliveredOutput {
   readonly status: "delivered";
   readonly deliveredAt: Date;
 }
-// Accept service request with full session context
+
+// SHARED RAIL: Accept service request with sessionId ONLY (MIRRORS LH minimal context pattern)
 const AcceptServiceRequestWithContextSchema = z.object({
   id: z.string().min(1),
   providerId: z.string().min(1),
-  // Required context for tenant isolation
+  // SHARED RAIL: Only sessionId required - auto-populate tenantId/workspaceId/actorId from session (MIRRORS LH)
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
 });
 
 type AcceptServiceRequestWithContextInput = z.infer<typeof AcceptServiceRequestWithContextSchema>;
 type AcceptServiceRequestCommand = CapabilityCommand<AcceptServiceRequestWithContextInput, Promise<AcceptServiceRequestOutput>>;
 
-// Mark service delivered with full session context
+// SHARED RAIL: Mark service delivered with sessionId ONLY (MIRRORS LH minimal context pattern)
 const MarkServiceDeliveredWithContextSchema = z.object({
   id: z.string().min(1),
-  // Required context for tenant isolation
+  // SHARED RAIL: Only sessionId required - auto-populate tenantId/workspaceId/actorId from session (MIRRORS LH)
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
 });
 
 type MarkServiceDeliveredWithContextInput = z.infer<typeof MarkServiceDeliveredWithContextSchema>;
 type MarkServiceDeliveredCommand = CapabilityCommand<MarkServiceDeliveredWithContextInput, Promise<MarkServiceDeliveredOutput>>;
 
-// List service requests with session context for tenant/workspace isolation
+// SHARED RAIL: List service requests with sessionId ONLY (MIRRORS LH minimal context pattern)
 const ListServiceRequestsWithContextSchema = z.object({
   query: z.string().optional(),
   status: z.enum(["draft", "accepted", "in_service", "delivered", "all"]).optional(),
   category: z.enum(["Cloud Services", "Cybersecurity", "IT Support", "Infrastructure", "Software Development", "all"]).optional(),
   limit: z.number().int().min(1).max(100).default(20),
   offset: z.number().int().min(0).default(0),
-  // Required context for tenant isolation
+  // SHARED RAIL: Only sessionId required - auto-populate tenantId/workspaceId/actorId from session (MIRRORS LH)
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
 });
 
 type ListServiceRequestsWithContextInput = z.infer<typeof ListServiceRequestsWithContextSchema>;
@@ -90,18 +104,15 @@ type ListServiceRequestsOutput = {
 
 type ListServiceRequestsCommand = CapabilityCommand<ListServiceRequestsWithContextInput, Promise<ListServiceRequestsOutput>>;
 
-// Create service request with full session context
+// SHARED RAIL: Create service request with sessionId ONLY (MIRRORS LH minimal context pattern)
 const CreateServiceRequestWithContextSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   category: z.enum(["Cloud Services", "Cybersecurity", "IT Support", "Infrastructure", "Software Development"]),
   requesterName: z.string().optional(),
   budget: z.string().optional(),
-  // Required context for tenant isolation
+  // SHARED RAIL: Only sessionId required - auto-populate tenantId/workspaceId/actorId from session (MIRRORS LH)
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
 });
 
 type CreateServiceRequestWithContextInput = z.infer<typeof CreateServiceRequestWithContextSchema>;
@@ -112,31 +123,19 @@ export const createServiceRequest: CreateServiceRequestCommand = {
   name: "service-directory.createServiceRequest",
   version: "2.0.0",
   async execute(input: CreateServiceRequestWithContextInput) {
-    await initIdentitySchema();
-    
     const parsed = CreateServiceRequestWithContextSchema.parse(input);
-    const { title, description, category, requesterName, budget, sessionId, tenantId, workspaceId, actorId } = parsed;
+    const { title, description, category, requesterName, budget, sessionId } = parsed;
 
-    // 1. Validate session exists and is active (enforce authentication)
-    const session = await SessionRepositoryPostgres.byId(sessionId as any);
+    // 1. Validate session exists and is active (SHARED RAIL — MIRRORS LH)
+    const session = await sessionRepository.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[service-directory.createServiceRequest] Invalid or revoked session - authentication violation");
     }
 
-    // 2. Enforce actor match - session actor must match request actor
-    if (session.actorId !== actorId) {
-      throw new Error("[service-directory.createServiceRequest] Session actor mismatch - authentication violation");
-    }
-
-    // 3. Enforce tenant isolation - requested tenant must match session's tenant
-    if (session.tenantId !== tenantId) {
-      throw new Error("[service-directory.createServiceRequest] Cross-tenant access attempt blocked - security violation");
-    }
-
-    // 4. Enforce workspace isolation - requested workspace must match session's workspace
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[service-directory.createServiceRequest] Cross-workspace access attempt blocked - security violation");
-    }
+    // 2. Auto-populate isolation context from trusted session (SHARED RAIL — MIRRORS LH minimal fix)
+    const { tenantId, workspaceId, actorId } = session;
+    // Enforce security via session's already verified isolation guarantees
+    // No need for additional checks - session is cryptographically bound to tenant/workspace
 
     const entity: ServiceRequestAggregate = {
       id: newServiceRequestId(),
@@ -146,18 +145,17 @@ export const createServiceRequest: CreateServiceRequestCommand = {
         : {}),
       category: category as ServiceProviderCategory,
       status: defaultServiceRequestStatus,
-      ...(requesterName ? { requesterName } : {}),
+      requesterName,
       ...(budget ? { budget } : {}),
       createdAt: new Date(),
       updatedAt: new Date(),
       tenantId,
       workspaceId,
+      actorId,
     };
-    
-    // Save to both repositories for backward compatibility
-    ServiceRequestRepositoryInMemory.save(entity);
-    await ServiceRequestRepositoryPostgres.save(entity);
-    
+
+    await serviceRepository.save(entity);
+
     return { id: entity.id, status: entity.status };
   },
 };
@@ -167,33 +165,18 @@ export const acceptServiceRequest: AcceptServiceRequestCommand = {
   name: "service-directory.acceptServiceRequest",
   version: "2.0.0",
   async execute(input: AcceptServiceRequestWithContextInput) {
-    await initIdentitySchema();
-    
     const parsed = AcceptServiceRequestWithContextSchema.parse(input);
-    const { id, providerId, sessionId, tenantId, workspaceId, actorId } = parsed;
+    const { id, providerId, sessionId } = parsed;
 
-    // 1. Validate session exists and is active (enforce authentication)
-    const session = await SessionRepositoryPostgres.byId(sessionId as any);
+    // 1. Validate session exists and is active (SHARED RAIL — MIRRORS LH)
+    const session = await sessionRepository.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[service-directory.acceptServiceRequest] Invalid or revoked session - authentication violation");
     }
+    // 2. Auto-populate isolation context from trusted session (SHARED RAIL — MIRRORS LH)
+    const { tenantId, workspaceId } = session;
 
-    // 2. Enforce actor match - session actor must match request actor
-    if (session.actorId !== actorId) {
-      throw new Error("[service-directory.acceptServiceRequest] Session actor mismatch - authentication violation");
-    }
-
-    // 3. Enforce tenant isolation - requested tenant must match session's tenant
-    if (session.tenantId !== tenantId) {
-      throw new Error("[service-directory.acceptServiceRequest] Cross-tenant access attempt blocked - security violation");
-    }
-
-    // 4. Enforce workspace isolation - requested workspace must match session's workspace
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[service-directory.acceptServiceRequest] Cross-workspace access attempt blocked - security violation");
-    }
-
-    const current = await ServiceRequestRepositoryPostgres.byId(ServiceRequestId(id));
+    const current = await serviceRepository.byId(ServiceRequestId(id));
     if (current === undefined) {
       throw new Error(`[service-directory.acceptServiceRequest] ServiceRequest not found: ${id}`);
     }
@@ -210,8 +193,7 @@ export const acceptServiceRequest: AcceptServiceRequestCommand = {
       providerId: ServiceProviderId(providerId),
       updatedAt: new Date(),
     };
-    ServiceRequestRepositoryInMemory.save(next);
-    await ServiceRequestRepositoryPostgres.save(next);
+    await serviceRepository.save(next);
     return { id: next.id, status: "accepted", providerId: next.providerId! };
   },
 };
@@ -221,33 +203,18 @@ export const markServiceDelivered: MarkServiceDeliveredCommand = {
   name: "service-directory.markServiceDelivered",
   version: "2.0.0",
   async execute(input: MarkServiceDeliveredWithContextInput) {
-    await initIdentitySchema();
-    
     const parsed = MarkServiceDeliveredWithContextSchema.parse(input);
-    const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
+    const { id, sessionId } = parsed;
 
-    // 1. Validate session exists and is active (enforce authentication)
-    const session = await SessionRepositoryPostgres.byId(sessionId as any);
+    // 1. Validate session exists and is active (SHARED RAIL — MIRRORS LH)
+    const session = await sessionRepository.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[service-directory.markServiceDelivered] Invalid or revoked session - authentication violation");
     }
+    // 2. Auto-populate isolation context from trusted session (SHARED RAIL — MIRRORS LH)
+    const { tenantId, workspaceId } = session;
 
-    // 2. Enforce actor match - session actor must match request actor
-    if (session.actorId !== actorId) {
-      throw new Error("[service-directory.markServiceDelivered] Session actor mismatch - authentication violation");
-    }
-
-    // 3. Enforce tenant isolation - requested tenant must match session's tenant
-    if (session.tenantId !== tenantId) {
-      throw new Error("[service-directory.markServiceDelivered] Cross-tenant access attempt blocked - security violation");
-    }
-
-    // 4. Enforce workspace isolation - requested workspace must match session's workspace
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[service-directory.markServiceDelivered] Cross-workspace access attempt blocked - security violation");
-    }
-
-    const current = await ServiceRequestRepositoryPostgres.byId(ServiceRequestId(id));
+    const current = await serviceRepository.byId(ServiceRequestId(id));
     if (current === undefined) {
       throw new Error(`[service-directory.markServiceDelivered] ServiceRequest not found: ${id}`);
     }
@@ -259,14 +226,13 @@ export const markServiceDelivered: MarkServiceDeliveredCommand = {
       };
     }
     const deliveredAt = new Date();
-    const next: ServiceRequestAggregate = { 
-      ...current, 
-      status: "delivered", 
+    const next: ServiceRequestAggregate = {
+      ...current,
+      status: "delivered",
       deliveredAt,
       updatedAt: new Date()
     };
-    ServiceRequestRepositoryInMemory.save(next);
-    await ServiceRequestRepositoryPostgres.save(next);
+    await serviceRepository.save(next);
     return { id: next.id, status: "delivered", deliveredAt };
   },
 };
@@ -276,56 +242,47 @@ export const listServiceRequestsByWorkspace: ListServiceRequestsCommand = {
   name: "service-directory.listByWorkspace",
   version: "2.0.0",
   async execute(input: ListServiceRequestsWithContextInput) {
-    await initIdentitySchema();
-    
     const parsed = ListServiceRequestsWithContextSchema.parse(input);
-    const { sessionId, tenantId, workspaceId, actorId, limit, offset } = parsed;
+    const { sessionId, limit, offset } = parsed;
 
-    // Validate session exists and is active
-    const session = await SessionRepositoryPostgres.byId(sessionId as any);
-    if (!session) {
-      throw new Error("[service-directory.listByWorkspace] Invalid or expired session");
+    // Validate session exists and is active (SHARED RAIL — MIRRORS LH)
+    const session = await sessionRepository.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[service-directory.listByWorkspace] Invalid or revoked session - authentication violation");
     }
 
-    // Validate tenant and workspace isolation
-    if (session.tenantId !== tenantId) {
-      throw new Error("[service-directory.listByWorkspace] Session tenant mismatch - tenant isolation violation");
-    }
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[service-directory.listByWorkspace] Session workspace mismatch - tenant isolation violation");
-    }
-    if (session.actorId !== actorId) {
-      throw new Error("[service-directory.listByWorkspace] Session actor mismatch - authentication violation");
-    }
+    // Auto-populate isolation context from trusted session (SHARED RAIL — MIRRORS LH minimal fix)
+    const { tenantId, workspaceId, actorId } = session;
+    // Session is already verified during creation - no need for redundant checks
 
     // Get all service requests for this workspace (already filtered by workspace for isolation)
-    const allWorkspaceRequests = await ServiceRequestRepositoryPostgres.listByWorkspace(workspaceId);
-    
+    const allWorkspaceRequests = await serviceRepository.listByWorkspace(workspaceId);
+
     // Apply filters if provided
     let filteredRequests = [...allWorkspaceRequests];
-    
+
     // Filter by status if not "all"
     if (parsed.status && parsed.status !== "all") {
       filteredRequests = filteredRequests.filter(r => r.status === parsed.status);
     }
-    
+
     // Filter by category if not "all"
     if (parsed.category && parsed.category !== "all") {
       filteredRequests = filteredRequests.filter(r => r.category === parsed.category);
     }
-    
+
     // Filter by search query if provided
     if (parsed.query) {
       const query = parsed.query.toLowerCase();
-      filteredRequests = filteredRequests.filter(r => 
-        r.title.toLowerCase().includes(query) || 
+      filteredRequests = filteredRequests.filter(r =>
+        r.title.toLowerCase().includes(query) ||
         (r.description?.toLowerCase().includes(query) ?? false)
       );
     }
 
     // Apply pagination
     const paginatedRequests = filteredRequests.slice(offset, offset + limit);
-    
+
     return {
       items: paginatedRequests,
       total: allWorkspaceRequests.length,

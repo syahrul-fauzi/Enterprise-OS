@@ -22,13 +22,15 @@ interface LifecycleLedger {
   readonly closedOutput: { readonly id: string; readonly status: "closed"; readonly closedAt: Date };
 }
 
-function runLifecycleE2E(title: string, priority: "low" | "medium" | "high" | "critical", lawyerId: string): LifecycleLedger {
+const LH_SESSION_ID = "session-test-001";
+
+async function runLifecycleE2E(title: string, priority: "low" | "medium" | "high" | "critical", lawyerId: string): Promise<LifecycleLedger> {
   const records: CommandInvocationRecord[] = [];
 
-  const createResult = capabilityRegistry.invoke<{ readonly id: string; readonly status: CaseStatus }>(
+  const createResult = await capabilityRegistry.invoke<{ readonly id: string; readonly status: CaseStatus }>(
     "legal-case",
     "case.create",
-    { title, priority },
+    { title, priority, sessionId: LH_SESSION_ID },
   );
   records.push(createResult.record);
   assert.equal(createResult.record.ok, true, "case.create invocation must record ok:true");
@@ -36,12 +38,12 @@ function runLifecycleE2E(title: string, priority: "low" | "medium" | "high" | "c
   assert.equal(createResult.output.status, "draft", "case.create initial status must = draft");
 
   const caseId = createResult.output.id as string;
-  const persistedAfterCreate = CaseRepositoryInMemory.byId(caseId as never);
+  const persistedAfterCreate = await CaseRepositoryInMemory.byId(caseId as never);
   assert.ok(persistedAfterCreate !== undefined, `case ${caseId} must be retrievable from repository after create`);
   assert.equal(persistedAfterCreate.title, title, "persisted title must match input");
   assert.equal(persistedAfterCreate.status, "draft", "persisted status after create = draft");
 
-  const assignResult = capabilityRegistry.invoke<{ readonly id: string; readonly lawyerId: string; readonly status: CaseStatus }>(
+  const assignResult = await capabilityRegistry.invoke<{ readonly id: string; readonly lawyerId: string; readonly status: CaseStatus }>(
     "lawyershub",
     "case.assignLawyer",
     { id: caseId, lawyerId },
@@ -51,11 +53,11 @@ function runLifecycleE2E(title: string, priority: "low" | "medium" | "high" | "c
   assert.equal(assignResult.output.lawyerId, lawyerId, "assignLawyer output must echo lawyerId");
   assert.equal(assignResult.output.status, "open", "assignLawyer on draft transitions to open");
 
-  const persistedAfterAssign = CaseRepositoryInMemory.byId(caseId as never);
+  const persistedAfterAssign = await CaseRepositoryInMemory.byId(caseId as never);
   assert.equal(persistedAfterAssign?.status, "open", "repository status after assign = open");
   assert.equal(persistedAfterAssign?.lawyerId, lawyerId, "repository lawyerId matches assigned lawyerId");
 
-  const closeResult = capabilityRegistry.invoke<{ readonly id: string; readonly status: "closed"; readonly closedAt: Date }>(
+  const closeResult = await capabilityRegistry.invoke<{ readonly id: string; readonly status: "closed"; readonly closedAt: Date }>(
     "legal-case",
     "case.close",
     { id: caseId },
@@ -65,7 +67,7 @@ function runLifecycleE2E(title: string, priority: "low" | "medium" | "high" | "c
   assert.equal(closeResult.output.status, "closed", "case.close terminal status = closed");
   assert.ok(closeResult.output.closedAt instanceof Date, "close output must stamp closedAt");
 
-  const persistedAfterClose = CaseRepositoryInMemory.byId(caseId as never);
+  const persistedAfterClose = await CaseRepositoryInMemory.byId(caseId as never);
   assert.equal(persistedAfterClose?.status, "closed", "repository terminal status = closed");
   assert.ok(persistedAfterClose?.closedAt instanceof Date, "repository closedAt stamped on terminal aggregate");
 
@@ -80,8 +82,8 @@ function runLifecycleE2E(title: string, priority: "low" | "medium" | "high" | "c
 
 // LH-CASE-001 — Full lifecycle via unified capability registry invocation
 test.describe("LH-CASE-001 · Lifecycle E2E (capabilityRegistry invocation · NO MOCKS)", () => {
-  test("case.create → persist ke repository → retrieved byId dengan field match", () => {
-    const ledger = runLifecycleE2E(
+  test("case.create → persist ke repository → retrieved byId dengan field match", async () => {
+    const ledger = await runLifecycleE2E(
       "Perjanjian Lisensi Perangkat Lunak Enterprise SaaS",
       "high",
       "lawyer-LHCASE001",
@@ -90,31 +92,31 @@ test.describe("LH-CASE-001 · Lifecycle E2E (capabilityRegistry invocation · NO
     const allOk = ledger.records.every((r) => r.ok === true);
     assert.equal(allOk, true, `semua ${ledger.records.length} CommandInvocationRecord ok:true`);
 
-    const rehydrated: CaseAggregate | undefined = CaseRepositoryInMemory.byId(ledger.createdCaseId as never);
+    const rehydrated: CaseAggregate | undefined = await CaseRepositoryInMemory.byId(ledger.createdCaseId as never);
     assert.ok(rehydrated !== undefined, "final retrieval: case byId tersedia");
     assert.equal(rehydrated.status, "closed", "final status = closed terminal");
     assert.equal(rehydrated.lawyerId, "lawyer-LHCASE001", "final lawyerId persisten");
     assert.equal(rehydrated.priority, "high", "priority tersimpan sesuai input");
   });
 
-  test("case.assignLawyer menghasilkan transisi status draft→open + lawyerId persisten", () => {
+  test("case.assignLawyer menghasilkan transisi status draft→open + lawyerId persisten", async () => {
     const title = "Sengketa Merek Dagang Waralaba Makanan Cepat Saji";
     const lawyerId = "lawyer-warkop";
-    const ledger = runLifecycleE2E(title, "critical", lawyerId);
+    const ledger = await runLifecycleE2E(title, "critical", lawyerId);
     assert.equal(ledger.assignedOutput.status, "open", "assign → open");
     assert.equal(ledger.assignedOutput.lawyerId, lawyerId, "echo lawyerId");
-    const row = CaseRepositoryInMemory.byId(ledger.createdCaseId as never);
+    const row = await CaseRepositoryInMemory.byId(ledger.createdCaseId as never);
     assert.equal(row?.lawyerId, lawyerId, "repo lawyerId = assigned");
     assert.equal(row?.status, "closed", "final status tetap closed setelah close");
   });
 
-  test("case.close men-stamp closedAt + mencapai terminal state closed", () => {
-    const ledger = runLifecycleE2E("Kepatuhan PDP Transfer Data Cross-Border Vendor", "medium", "lawyer-pdp01");
+  test("case.close men-stamp closedAt + mencapai terminal state closed", async () => {
+    const ledger = await runLifecycleE2E("Kepatuhan PDP Transfer Data Cross-Border Vendor", "medium", "lawyer-pdp01");
     const beforeClosed = ledger.closedOutput.closedAt.getTime();
     assert.ok(Number.isFinite(beforeClosed), "closedAt adalah Date valid");
     assert.equal(ledger.closedOutput.status, "closed", "status tertutup = closed");
 
-    const repo = CaseRepositoryInMemory.byId(ledger.createdCaseId as never);
+    const repo = await CaseRepositoryInMemory.byId(ledger.createdCaseId as never);
     assert.ok(repo?.closedAt !== undefined, "aggregate.closedAt tidak undefined pasca close");
     assert.ok(repo?.closedAt instanceof Date, "aggregate.closedAt bertipe Date");
     assert.equal(ledger.records.length, 3, "3 writes = 3 ledger records (create + assign + close)");
@@ -136,7 +138,7 @@ interface MatterDocCompositeLedger {
   readonly docAuthor: string;
 }
 
-function runMatterDocumentCompositeE2E(
+async function runMatterDocumentCompositeE2E(
   matterTitle: string,
   priority: "low" | "medium" | "high" | "critical",
   lawyerId: string,
@@ -144,24 +146,24 @@ function runMatterDocumentCompositeE2E(
   docDescription: string,
   docAuthor: string,
   docSigner: string,
-): MatterDocCompositeLedger {
+): Promise<MatterDocCompositeLedger> {
   const records: CommandInvocationRecord[] = [];
 
   // Stage 1 — LegalCase.create → draft
-  const caseCr = capabilityRegistry.invoke<{ readonly id: string; readonly status: CaseStatus }>(
+  const caseCr = await capabilityRegistry.invoke<{ readonly id: string; readonly status: CaseStatus }>(
     "legal-case",
     "case.create",
-    { title: matterTitle, priority },
+    { title: matterTitle, priority, sessionId: LH_SESSION_ID },
   );
   records.push(caseCr.record);
   assert.equal(caseCr.record.ok, true, "case.create record ok:true");
   assert.equal(caseCr.output.status, "draft", "case.create → draft");
   const caseId = caseCr.output.id as string;
-  const caseAfterCreate = CaseRepositoryInMemory.byId(caseId as never);
+  const caseAfterCreate = await CaseRepositoryInMemory.byId(caseId as never);
   assert.ok(caseAfterCreate !== undefined, "case persisted after create");
 
   // Stage 2 — case.assignLawyer → open
-  const caseAs = capabilityRegistry.invoke<{ readonly id: string; readonly lawyerId: string; readonly status: CaseStatus }>(
+  const caseAs = await capabilityRegistry.invoke<{ readonly id: string; readonly lawyerId: string; readonly status: CaseStatus }>(
     "lawyershub",
     "case.assignLawyer",
     { id: caseId, lawyerId },
@@ -169,11 +171,11 @@ function runMatterDocumentCompositeE2E(
   records.push(caseAs.record);
   assert.equal(caseAs.record.ok, true, "case.assignLawyer record ok:true");
   assert.equal(caseAs.output.status, "open", "assignLawyer → open");
-  const caseAfterAssign = CaseRepositoryInMemory.byId(caseId as never);
+  const caseAfterAssign = await CaseRepositoryInMemory.byId(caseId as never);
   assert.equal(caseAfterAssign?.lawyerId, lawyerId, "repo lawyerId match assigned");
 
   // Stage 3 — LegalDocument.create({matterId:caseId}) → draft (CROSS-CAPABILITY LINK)
-  const docCr = capabilityRegistry.invoke<{ readonly id: string; readonly status: DocumentStatus; readonly createdAt: Date }>(
+  const docCr = await capabilityRegistry.invoke<{ readonly id: string; readonly status: DocumentStatus; readonly createdAt: Date }>(
     "legal-document",
     "document.create",
     { title: docTitle, description: docDescription, matterId: caseId, author: docAuthor },
@@ -188,7 +190,7 @@ function runMatterDocumentCompositeE2E(
   assert.equal(docAfterCreate.author, docAuthor, "document author persisted");
 
   // Stage 4 — document.sign → signed
-  const docSg = capabilityRegistry.invoke<{
+  const docSg = await capabilityRegistry.invoke<{
     readonly id: string;
     readonly status: "signed";
     readonly signedAt: Date;
@@ -203,7 +205,7 @@ function runMatterDocumentCompositeE2E(
   assert.ok(docAfterSign?.signedAt instanceof Date, "repo signedAt stamped");
 
   // Stage 5 — document.archive → archived terminal
-  const docAr = capabilityRegistry.invoke<{ readonly id: string; readonly status: "archived"; readonly archivedAt: Date }>(
+  const docAr = await capabilityRegistry.invoke<{ readonly id: string; readonly status: "archived"; readonly archivedAt: Date }>(
     "legal-document",
     "document.archive",
     { id: docId },
@@ -235,8 +237,8 @@ function runMatterDocumentCompositeE2E(
 
 // LH-CASE-002 — Cross-Capability Composite: LegalCase ↔ LegalDocument native matterId linking
 test.describe("LH-CASE-002 · Matter↔Document Composite E2E (legal-case + legal-document · NO MOCKS)", () => {
-  test("Native cross-capability link: document.create({matterId:caseId}) → byId(doc).matterId === caseId EXACT PERSISTEN", () => {
-    const ledger = runMatterDocumentCompositeE2E(
+  test("Native cross-capability link: document.create({matterId:caseId}) → byId(doc).matterId === caseId EXACT PERSISTEN", async () => {
+    const ledger = await runMatterDocumentCompositeE2E(
       "Perkara Wanprestasi Penyediaan Perangkat Jaringan Kantor Cabang",
       "high",
       "lawyer-LHCASE002-01",
@@ -254,13 +256,13 @@ test.describe("LH-CASE-002 · Matter↔Document Composite E2E (legal-case + lega
     assert.ok(retrievedDoc !== undefined, "final document byId dapat diambil");
     assert.equal(retrievedDoc.matterId, ledger.caseId, `PRIMARY ASSERTION: doc.matterId = "${ledger.caseId}" PERSIS SAMA DENGAN case.id`);
 
-    const retrievedCase: CaseAggregate | undefined = CaseRepositoryInMemory.byId(ledger.caseId as never);
+    const retrievedCase: CaseAggregate | undefined = await CaseRepositoryInMemory.byId(ledger.caseId as never);
     assert.ok(retrievedCase !== undefined, "case byId dapat diambil");
     assert.equal(retrievedCase.title, ledger.matterTitle, "case title persisted trimmed");
   });
 
-  test("Document lifecycle monotonik draft→signed→archived + signedAt/archivedAt ter-stamp + matterId tetap terikat setelah terminal", () => {
-    const ledger = runMatterDocumentCompositeE2E(
+  test("Document lifecycle monotonik draft→signed→archived + signedAt/archivedAt ter-stamp + matterId tetap terikat setelah terminal", async () => {
+    const ledger = await runMatterDocumentCompositeE2E(
       "Sengketa Merek Dagang Waralaba Roti Khas 'Bandung Maknyus'",
       "critical",
       "lawyer-warkop-002",
@@ -284,8 +286,8 @@ test.describe("LH-CASE-002 · Matter↔Document Composite E2E (legal-case + lega
     assert.ok(finalDoc?.archivedAt instanceof Date, "aggregate.archivedAt ter-stamp permanen");
   });
 
-  test("CommandInvocationRecord 5-step composite memiliki commandKey berurutan: case.create→assignLawyer→document.create→sign→archive", () => {
-    const ledger = runMatterDocumentCompositeE2E(
+  test("CommandInvocationRecord 5-step composite memiliki commandKey berurutan: case.create→assignLawyer→document.create→sign→archive", async () => {
+    const ledger = await runMatterDocumentCompositeE2E(
       "Kepatuhan GDPR Schrems-II untuk Transfer Data Lintas-Atlantik Kantor Perwakilan EU",
       "high",
       "lawyer-gdpr-001",

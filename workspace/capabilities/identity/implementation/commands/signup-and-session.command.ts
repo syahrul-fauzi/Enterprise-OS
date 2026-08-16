@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
-import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "@repo/core-kernel";
-import { slugifyForTenant } from "../services/password.service.js";
+import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "../../../../packages/core/kernel/src/session/workspace-session";
+import { slugifyForTenant } from "../services/password.service";
 import {
   UserId,
   TenantId,
@@ -13,32 +13,88 @@ import {
   type WorkspaceAggregate,
   type MembershipAggregate,
   type SessionAggregate,
-} from "../contracts/identity.contracts.js";
-import { passwordService } from "../services/password.service.js";
+} from "../contracts/identity.contracts";
+import { passwordService } from "../services/password.service";
 import {
-  UserRepositoryPostgres,
-  TenantRepositoryPostgres,
-  WorkspaceRepositoryPostgres,
-  MembershipRepositoryPostgres,
-  SessionRepositoryPostgres,
-} from "../repositories/index.js";
-import { initIdentitySchema } from "../repositories/base.repository.js";
+  getUserRepositoryPostgres,
+  getTenantRepositoryPostgres,
+  getWorkspaceRepositoryPostgres,
+  getMembershipRepositoryPostgres,
+  getSessionRepositoryPostgres,
+  initIdentitySchema,
+  UserRepositoryInMemory,
+  SessionRepositoryInMemory,
+} from "../repositories/index";
 
 const DEFAULT_SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 
-// Factory functions for generating unique IDs
 function newUserId(): UserId { return UserId(`user-${randomUUID()}`); }
 function newTenantId(): TenantId { return TenantId(`tenant-${randomUUID()}`); }
 function newWorkspaceId(): WorkspaceId { return WorkspaceId(`workspace-${randomUUID()}`); }
 function newMembershipId(): MembershipId { return MembershipId(`membership-${randomUUID()}`); }
 function newSessionId(): SessionId { return SessionId(`session-${randomUUID()}`); }
 
-// Signup input schema (matches API requirements)
+const _tenantInMemoryStore = new Map<string, TenantAggregate>();
+const TenantRepositoryInMemoryFallback = {
+  async byId(id: TenantId): Promise<TenantAggregate | undefined> {
+    return _tenantInMemoryStore.get(id as string);
+  },
+  async bySlug(slug: string): Promise<TenantAggregate | undefined> {
+    const needle = slug.trim().toLowerCase();
+    for (const t of _tenantInMemoryStore.values()) {
+      if ((t.slug as string).toLowerCase() === needle) return t;
+    }
+    return undefined;
+  },
+  async save(entity: TenantAggregate): Promise<TenantAggregate> {
+    _tenantInMemoryStore.set(entity.id as string, entity);
+    return entity;
+  },
+};
+
+const _workspaceInMemoryStore = new Map<string, WorkspaceAggregate>();
+const WorkspaceRepositoryInMemoryFallback = {
+  async byId(id: WorkspaceId): Promise<WorkspaceAggregate | undefined> {
+    return _workspaceInMemoryStore.get(id as string);
+  },
+  async save(entity: WorkspaceAggregate): Promise<WorkspaceAggregate> {
+    _workspaceInMemoryStore.set(entity.id as string, entity);
+    return entity;
+  },
+};
+
+const _membershipInMemoryStore = new Map<string, MembershipAggregate>();
+const MembershipRepositoryInMemoryFallback = {
+  async byId(id: MembershipId): Promise<MembershipAggregate | undefined> {
+    return _membershipInMemoryStore.get(id as string);
+  },
+  async save(entity: MembershipAggregate): Promise<MembershipAggregate> {
+    _membershipInMemoryStore.set(entity.id as string, entity);
+    return entity;
+  },
+};
+
+const userRepo = process.env.DATABASE_URL
+  ? getUserRepositoryPostgres()
+  : UserRepositoryInMemory;
+const tenantRepo = process.env.DATABASE_URL
+  ? getTenantRepositoryPostgres()
+  : TenantRepositoryInMemoryFallback;
+const workspaceRepo = process.env.DATABASE_URL
+  ? getWorkspaceRepositoryPostgres()
+  : WorkspaceRepositoryInMemoryFallback;
+const membershipRepo = process.env.DATABASE_URL
+  ? getMembershipRepositoryPostgres()
+  : MembershipRepositoryInMemoryFallback;
+const sessionRepo = process.env.DATABASE_URL
+  ? getSessionRepositoryPostgres()
+  : SessionRepositoryInMemory;
+
 export const SignupAndSessionInputSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
   displayName: z.string().min(2),
-  productId: z.string().default("services-id.default"),
+  productId: z.enum(["lawyershub", "services-id", "ilc", "academic"]).default("lawyershub"),
 });
 
 export type SignupAndSessionInput = z.infer<typeof SignupAndSessionInputSchema>;
@@ -78,18 +134,18 @@ export type SignupAndSessionCommand = {
 export const signupAndSessionCommand: SignupAndSessionCommand = {
   kind: "command",
   name: "identity.signupAndCreateSession",
-  version: "2.0.0", // Postgres-backed persistence
+  version: "2.0.0",
 
   async execute(input: SignupAndSessionInput) {
-    // Initialize database schema first
-    await initIdentitySchema();
-    
-    const parsed = SignupAndSessionInputSchema.parse(input);
-    const { email, password, displayName, productId = "services-id.default" } = parsed;
+    if (process.env.DATABASE_URL) {
+      await initIdentitySchema();
+    }
 
-    // 1. Create user (PostgreSQL persistent)
+    const parsed = SignupAndSessionInputSchema.parse(input);
+    const { email, password, displayName, productId = "lawyershub" } = parsed;
+
     const trimmedEmail = email.trim().toLowerCase();
-    const existingUser = await UserRepositoryPostgres.byEmail(trimmedEmail);
+    const existingUser = await userRepo.byEmail(trimmedEmail);
     if (existingUser !== undefined) {
       throw new Error(`[identity.signupAndCreateSession] Email already registered: ${trimmedEmail}`);
     }
@@ -102,21 +158,19 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    await UserRepositoryPostgres.save(userEntity);
+    await userRepo.save(userEntity);
 
-    // 2. Generate unique tenant slug (PostgreSQL check)
     const emailLocalPart = email.split("@")[0] ?? displayName;
     const slugBase = slugifyForTenant(`${displayName}-${emailLocalPart}`);
     let slug = slugBase;
     let counter = 1;
-    let existingSlug = await TenantRepositoryPostgres.bySlug(slug);
+    let existingSlug = await tenantRepo.bySlug(slug);
     while (existingSlug !== undefined) {
       counter += 1;
       slug = `${slugBase}-${counter}`;
-      existingSlug = await TenantRepositoryPostgres.bySlug(slug);
+      existingSlug = await tenantRepo.bySlug(slug);
     }
 
-    // 3. Create tenant (PostgreSQL persistent)
     const tenantEntity: TenantAggregate = {
       id: newTenantId(),
       name: `${displayName} Personal`,
@@ -125,9 +179,8 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    await TenantRepositoryPostgres.save(tenantEntity);
+    await tenantRepo.save(tenantEntity);
 
-    // 4. Create workspace (PostgreSQL persistent)
     const workspaceSlugBase = slugifyForTenant("Professional Workspace");
     const workspaceEntity: WorkspaceAggregate = {
       id: newWorkspaceId(),
@@ -138,9 +191,8 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    await WorkspaceRepositoryPostgres.save(workspaceEntity);
+    await workspaceRepo.save(workspaceEntity);
 
-    // 5. Create membership (PostgreSQL persistent)
     const membershipEntity: MembershipAggregate = {
       id: newMembershipId(),
       userId: userEntity.id,
@@ -151,9 +203,8 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    await MembershipRepositoryPostgres.save(membershipEntity);
+    await membershipRepo.save(membershipEntity);
 
-    // 6. Create session (PostgreSQL persistent)
     const ttl = DEFAULT_SESSION_TTL_SECONDS;
     const now = new Date();
     const expires = new Date(now.getTime() + ttl * 1000);
@@ -171,9 +222,8 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
       createdAt: now,
       updatedAt: now,
     };
-    await SessionRepositoryPostgres.save(sessionEntity);
+    await sessionRepo.save(sessionEntity);
 
-    // 7. Format HTTP response + cookie configuration
     return {
       response: {
         ok: true,

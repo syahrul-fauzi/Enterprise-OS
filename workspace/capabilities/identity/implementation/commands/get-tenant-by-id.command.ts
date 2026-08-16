@@ -2,8 +2,8 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
 import {
   TenantId,
-} from "../contracts/identity.contracts.js";
-import { TenantRepositoryPostgres } from "../repositories/index.js";
+} from "../contracts/identity.contracts";
+import { TenantRepositoryPostgres } from "../repositories/index";
 
 export const GetTenantByIdInputSchema = z.object({
   tenantId: z.string().min(1),

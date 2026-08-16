@@ -40,17 +40,20 @@ export async function GET(
     }
 
     const sessionValue = sessionCookie.split("=")[1];
+    if (!sessionValue) {
+      return NextResponse.json({ error: "Invalid session cookie" }, { status: 401 });
+    }
     const session = decodeWorkspaceSession(sessionValue);
-    if (!session || !session.tenantId || !session.workspaceId || !(session.userId ?? session.actorId) || !session.sessionId) {
+    if (!session || !session.tenantId || !session.workspaceId || !session.actorId || !session.sessionId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }
 
-    // Create reusable session context for all capability invocations
+    // Create reusable session context for all aggregate types
     const sessionContext = {
       sessionId: session.sessionId,
       tenantId: session.tenantId,
       workspaceId: session.workspaceId,
-      actorId: (session.userId ?? session.actorId) as string,
+      actorId: session.actorId,
     };
 
   if (id.startsWith("case-")) {

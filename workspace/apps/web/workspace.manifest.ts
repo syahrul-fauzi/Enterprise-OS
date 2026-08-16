@@ -28,9 +28,7 @@ import {
   listConsultationsByWorkspace, 
   resolveConsultation, 
   pauseConsultation, 
-  resumeConsultation,
-  getConsultation,
-  searchConsultations
+  resumeConsultation
 } from "../../capabilities/consultation/implementation/commands/consultation.commands";
 const RequirementViewComponent = RequirementView ?? RequirementViewDefault;
 
@@ -107,8 +105,6 @@ const consultationImplementation: CapabilityImplementation = {
     "consultation.resume": resumeConsultation,
   },
   queries: {
-    "consultation.get": getConsultation,
-    "consultation.search": searchConsultations,
   },
   repositories: { ConsultationRepository: ConsultationServiceImplModule.ConsultationRepositoryInMemory },
   services: {},
@@ -121,6 +117,33 @@ const consultation: CapabilityDescriptor = Object.freeze({
   name: "Consultation Management",
   experience: {},
   implementation: consultationImplementation,
+});
+
+// Legal Case capability imports
+import { CaseWorkspace } from "../../capabilities/legal-case/experience/workspaces/CaseWorkspace";
+import * as LegalCaseServiceImplModule from "../../capabilities/legal-case/implementation/services";
+import { caseCommands } from "../../capabilities/legal-case/implementation/commands/index";
+import { getCase, searchCases } from "../../capabilities/legal-case/implementation/queries/case.queries";
+import { CaseRepositoryPostgres } from "../../capabilities/legal-case/implementation/repository/case-postgres.repository";
+
+// Legal Case capability implementation
+const legalCaseImplementation: CapabilityImplementation = {
+  commands: caseCommands,
+  queries: {
+    "case.get": { ...getCase, kind: "query", name: "case.get" },
+    "case.search": { ...searchCases, kind: "query", name: "case.search" },
+  },
+  repositories: { CaseRepository: CaseRepositoryPostgres },
+  services: { CaseService: LegalCaseServiceImplModule.caseService },
+  entry: LegalCaseServiceImplModule,
+};
+
+const legalCase: CapabilityDescriptor = Object.freeze({
+  id: "legal-case",
+  version: "0.1.0",
+  name: "Legal Case Management",
+  experience: { view: CaseWorkspace },
+  implementation: legalCaseImplementation,
 });
 
 // Observability capability imports
@@ -149,6 +172,7 @@ export const registry = new StaticRegistry({
     "identity": identity,
     "evidence-registry": evidenceRegistry,
     "consultation": consultation,
+    "legal-case": legalCase,
     "observability": observability,
   },
 });

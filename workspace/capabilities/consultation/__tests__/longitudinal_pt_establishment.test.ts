@@ -1,8 +1,8 @@
 // Test lengkap untuk CONSULT-L005: Membuktikan 4 Proof pada PT Establishment vertical
 import assert from "node:assert/strict";
 import test from "node:test";
-import { capabilityRegistry } from "../../../packages/core/kernel/src/registry/capability-command-registry.js";
-import { ConsultationRepositoryInMemory } from "../implementation/repository/consultation.repository.js";
+import { capabilityRegistry } from "../../../packages/core/kernel/src/registry/capability-command-registry";
+import { ConsultationRepositoryInMemory } from "../implementation/repository/consultation.repository";
 
 test("PT Establishment Longitudinal Consultation Flow (CONSULT-L005)", async () => {
   // Setup test session (mock sederhana karena SessionRepositoryPostgres membutuhkan koneksi DB)

@@ -1,0 +1,49 @@
+{
+  "product": "ilc",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "ILC binding valid",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Browse legal topics",
+      "ok": true
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Publish article (content-101)",
+      "ok": false,
+      "evidence": [
+        "id=content-101"
+      ]
+    }
+  ],
+  "totalSteps": 3,
+  "passCount": 2,
+  "failCount": 1,
+  "completedAtISO": "2026-08-15T09:25:02.178Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "ilc",
+      "displayName": "ilc"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "total_topics": 8
+    },
+    {
+      "step": 3,
+      "stage": "ACTION",
+      "capability": "legal-community.publishContentArticle",
+      "evidence_id": "content-101"
+    }
+  ]
+}

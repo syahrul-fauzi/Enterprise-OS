@@ -15,6 +15,9 @@ export async function GET(request: Request) {
     }
 
     const sessionValue = sessionCookie.split("=")[1];
+    if (!sessionValue) {
+      return NextResponse.json({ error: "Invalid session cookie" }, { status: 401 });
+    }
     const session = decodeWorkspaceSession(sessionValue);
     if (!session || !session.tenantId || !session.workspaceId || !session.actorId || !session.sessionId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
@@ -29,6 +32,7 @@ export async function GET(request: Request) {
     const offset = parseInt(searchParams.get("offset") || "0", 10);
 
     // Single canonical capability invocation - all service request listing logic in service-directory capability
+    // SHARED RAIL: sessionId ONLY - tenant/workspace/actor derived from trusted session (MIRRORS LH pattern)
     const { output } = await capabilityRegistry.invokeAsync("service-directory", "listByWorkspace", {
       query,
       status,
@@ -36,9 +40,6 @@ export async function GET(request: Request) {
       limit,
       offset,
       sessionId: session.sessionId,
-      tenantId: session.tenantId,
-      workspaceId: session.workspaceId,
-      actorId: session.actorId,
     });
 
     if (!output) {

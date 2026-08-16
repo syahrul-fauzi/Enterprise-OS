@@ -4,6 +4,9 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+// Fix TypeScript module resolution type mismatch
+const SafeLink = Link as any;
+
 export function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -54,11 +57,11 @@ export function LoginPage() {
     <main className="min-h-screen bg-slate-50 px-6 py-10 flex items-center justify-center">
       <div className="w-full max-w-md space-y-6">
         <header className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center gap-2 group">
+          <SafeLink href="/" className="inline-flex items-center gap-2 group">
             <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-slate-900 to-slate-700 flex items-center justify-center text-white text-sm font-bold shadow-sm group-hover:shadow-md transition-shadow">
               E
             </div>
-          </Link>
+          </SafeLink>
           <div className="pt-2">
             <div className="inline-flex rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
               Welcome Back
@@ -126,12 +129,12 @@ export function LoginPage() {
 
           <div className="mt-6 pt-6 border-t border-slate-200 text-center text-sm text-slate-600">
             Don&apos;t have an account?{" "}
-            <Link
+            <SafeLink
               href="/signup"
               className="font-medium text-slate-950 hover:text-slate-700 underline-offset-4 hover:underline"
             >
               Create one instead
-            </Link>
+            </SafeLink>
           </div>
         </section>
 

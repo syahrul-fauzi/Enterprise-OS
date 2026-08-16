@@ -28,13 +28,30 @@ export function ServicesWorkspace() {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const resp = await fetch("/api/service-requests/list", {
+        // Get current session context from cookies (maintain tenant/workspace isolation)
+        const cookie = document.cookie;
+        const sessionCookie = cookie.split(";").find(c => c.trim().startsWith("workspace-session="));
+        let session = null;
+        if (sessionCookie) {
+          try {
+            session = JSON.parse(atob(sessionCookie.split("=")[1]));
+          } catch(e) {
+            console.error("[ServicesWorkspace] Failed to decode session:", e);
+          }
+        }
+
+        // Use shared rail API endpoint with proper session context (matches GET route pattern)
+        const url = new URL("/api/service-requests/list", window.location.origin);
+        url.searchParams.set("limit", "50");
+        url.searchParams.set("offset", "0");
+        const resp = await fetch(url.toString(), {
+          method: "GET",
           credentials: "include",
         });
         if (resp.ok) {
-          const data: SearchServiceRequestsOutput = await resp.json();
-          setRequests(data.items || []);
-          setTotalRequests(data.total || 0);
+          const { output } = await resp.json();
+          setRequests(output.items || []);
+          setTotalRequests(output.total || 0);
         } else {
           setRequests([]);
           setTotalRequests(0);
@@ -119,10 +136,29 @@ export function ServicesWorkspace() {
     category: ServiceProviderCategory;
     budget?: string;
   }) => {
+    // Get current session context from cookies (maintain tenant/workspace isolation)
+    const cookie = document.cookie;
+    const sessionCookie = cookie.split(";").find(c => c.trim().startsWith("workspace-session="));
+    let session = null;
+    if (sessionCookie) {
+      try {
+        session = JSON.parse(atob(sessionCookie.split("=")[1]));
+      } catch(e) {
+        console.error("[ServicesWorkspace] Failed to decode session:", e);
+      }
+    }
+
+    // Use shared rail API endpoint with proper session context
     const resp = await fetch("/api/service-requests/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        ...data,
+        sessionId: session?.sessionId,
+        tenantId: session?.tenantId,
+        workspaceId: session?.workspaceId,
+        actorId: session?.actorId,
+      }),
       credentials: "include",
     });
     if (!resp.ok) throw new Error("Failed to create service request");

@@ -1,0 +1,63 @@
+{
+  "work_id": "B4-E-GOVERNANCE-TRACE",
+  "timestamp": "2026-08-16T01-13-57Z",
+  "pass": 8,
+  "fail": 0,
+  "total": 8,
+  "verdict": "ALL_PASS_STRUCTURAL",
+  "acceptance_note": "Structural governance 8-node chain verified. HUMAN observer still MUST open trace page and explain each node — this automated check only proves HTML contains nodes.",
+  "routes_checked": [
+    {
+      "productId": "lawyershub",
+      "requirementId": "case-101",
+      "label": "LH case-101"
+    },
+    {
+      "productId": "services-id",
+      "requirementId": "sreq-101",
+      "label": "SRV sreq-101"
+    }
+  ],
+  "expected_nodes": [
+    "REQUIREMENT",
+    "ATTRIBUTION",
+    "PROCEDURE",
+    "CAPABILITY",
+    "PERSISTENCE",
+    "EVIDENCE",
+    "EVALUATION",
+    "DECISION"
+  ],
+  "results": {
+    "LH case-101": {
+      "http": 200,
+      "nodesFound": [
+        "REQUIREMENT",
+        "ATTRIBUTION",
+        "PROCEDURE",
+        "CAPABILITY",
+        "PERSISTENCE",
+        "EVIDENCE",
+        "EVALUATION",
+        "DECISION"
+      ],
+      "nodeCount": 8,
+      "nextActionPresent": true
+    },
+    "SRV sreq-101": {
+      "http": 200,
+      "nodesFound": [
+        "REQUIREMENT",
+        "ATTRIBUTION",
+        "PROCEDURE",
+        "CAPABILITY",
+        "PERSISTENCE",
+        "EVIDENCE",
+        "EVALUATION",
+        "DECISION"
+      ],
+      "nodeCount": 8,
+      "nextActionPresent": true
+    }
+  }
+}

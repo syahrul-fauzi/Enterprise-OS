@@ -1,7 +1,100 @@
 import fs from "fs";
 import path from "path";
+import { DigestEngine } from "@repo/core-kernel";
 
 const PREDICATE_VERSION = "requirement-verification-predicate/0.2.0";
+
+type RequirementId = (id: string) => string;
+const RequirementId: RequirementId = (id) => id;
+
+interface RequirementAggregate {
+  readonly id: string;
+  readonly title: string;
+  readonly summary?: string;
+  readonly description?: string;
+  readonly priority: string;
+  readonly owner?: string;
+  readonly source?: string;
+  readonly linkedCapabilityIds: readonly string[];
+  readonly acceptanceCriteria: readonly string[];
+  readonly status: string;
+  readonly verificationStatus: string;
+  readonly createdAt: Date;
+  readonly approvedAt?: Date;
+  readonly implementedAt?: Date;
+}
+
+interface RequirementGetQuery {
+  readonly id: string;
+}
+
+interface RequirementServiceStub {
+  getRequirement(query: RequirementGetQuery): RequirementAggregate | undefined;
+}
+
+interface DeliverySearchQuery {
+  readonly requirementId: string;
+  readonly coverage: "all" | "partial";
+  readonly limit: number;
+  readonly offset: number;
+}
+
+interface DeliverySearchResultItem {
+  readonly traceability: {
+    readonly complete: boolean;
+    readonly artifactCount: number;
+    readonly evidenceArtifactCount: number;
+    readonly verificationArtifactCount: number;
+    readonly gaps: readonly string[];
+  };
+  readonly evidence: {
+    readonly matchedCount: number;
+    readonly requirementRefs: readonly string[];
+    readonly samplePaths: readonly string[];
+    readonly kindBreakdown: Readonly<Record<string, number>>;
+    readonly latestUpdatedAt: string | null;
+  };
+}
+
+interface DeliveryGatewayStub {
+  search(query: DeliverySearchQuery): { readonly items: readonly DeliverySearchResultItem[] };
+}
+
+interface EvidenceRegistrySearchQuery {
+  readonly requirementRef: string;
+  readonly limit: number;
+  readonly offset: number;
+}
+
+interface EvidenceRegistryRecord {
+  readonly id: string;
+  readonly kind: string;
+  readonly path: string;
+  readonly requirementRefs: readonly string[];
+  readonly runId?: string;
+}
+
+interface EvidenceRegistryStub {
+  searchEvidenceRegistry(query: EvidenceRegistrySearchQuery): { readonly items: readonly EvidenceRegistryRecord[] };
+}
+
+const requirementService: RequirementServiceStub = {
+  getRequirement: () => {
+    throw new Error("requirementService not available in proof-ledger standalone context. Requirement must be injected.");
+  },
+};
+
+const requirementDeliveryGatewayService: DeliveryGatewayStub = {
+  search: () => {
+    throw new Error("requirementDeliveryGatewayService not available in proof-ledger standalone context. Delivery must be injected.");
+  },
+};
+
+const evidenceRegistryService: EvidenceRegistryStub = {
+  searchEvidenceRegistry: () => {
+    throw new Error("evidenceRegistryService not available in proof-ledger standalone context. Evidence registry must be injected.");
+  },
+};
 
 type DecisionVerdict = "passed" | "failed";
 
@@ -164,7 +257,7 @@ function stableRequirementFacts(requirement: RequirementAggregate) {
     priority: requirement.priority,
     owner: requirement.owner ?? null,
     source: requirement.source ?? null,
-    linkedCapabilityIds: [...requirement.linkedCapabilityIds].sort((left, right) =>
+    linkedCapabilityIds: [...requirement.linkedCapabilityIds].sort((left: string, right: string) =>
       left.localeCompare(right),
     ),
     acceptanceCriteria: [...requirement.acceptanceCriteria],
@@ -222,19 +315,19 @@ function buildEvidenceSet(requirementId: string): readonly DecisionEvidenceRecor
       limit: 200,
       offset: 0,
     })
-    .items.map((record) => {
+    .items.map((record: EvidenceRegistryRecord) => {
       const absolutePath = resolveEvidenceAbsolutePath(record.path);
       const contentHash = DigestEngine.digestText(fs.readFileSync(absolutePath, "utf8"));
       return {
         id: record.id,
         kind: record.kind,
         path: record.path,
-        requirementRefs: [...record.requirementRefs].sort((left, right) => left.localeCompare(right)),
+        requirementRefs: [...record.requirementRefs].sort((left: string, right: string) => left.localeCompare(right)),
         ...(record.runId ? { runId: record.runId } : {}),
         contentHash,
-      };
+      } as DecisionEvidenceRecord;
     })
-    .sort((left, right) => left.id.localeCompare(right.id));
+    .sort((left: DecisionEvidenceRecord, right: DecisionEvidenceRecord) => left.id.localeCompare(right.id));
 }
 
 export interface VerificationDecisionSnapshot {
@@ -292,18 +385,18 @@ export function computeVerificationDecision(requirementId: string): Verification
     verificationArtifactCount: delivery.traceability.verificationArtifactCount,
     gaps: [...delivery.traceability.gaps],
     evidenceMatchedCount: delivery.evidence.matchedCount,
-    evidenceRequirementRefs: [...delivery.evidence.requirementRefs].sort((left, right) =>
+    evidenceRequirementRefs: [...delivery.evidence.requirementRefs].sort((left: string, right: string) =>
       left.localeCompare(right),
     ),
-    evidenceSamplePaths: [...delivery.evidence.samplePaths].sort((left, right) =>
+    evidenceSamplePaths: [...delivery.evidence.samplePaths].sort((left: string, right: string) =>
       left.localeCompare(right),
     ),
     kindBreakdown: Object.fromEntries(
-      Object.entries(delivery.evidence.kindBreakdown).sort(([left], [right]) =>
+      Object.entries(delivery.evidence.kindBreakdown).sort(([left]: readonly [string, number], [right]: readonly [string, number]) =>
         left.localeCompare(right),
       ),
-    ),
-  } as const;
+    ) as Readonly<Record<string, number>>,
+  };
 
   const lifecycleEligible = requirement.implementedAt !== undefined;
   const requirementHash = DigestEngine.digest(requirementFacts);

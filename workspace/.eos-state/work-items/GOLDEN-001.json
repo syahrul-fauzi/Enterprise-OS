@@ -1,0 +1,22 @@
+{
+  "work_id": "GOLDEN-001",
+  "user_job": "External user signs up, creates a LawyersHub workspace, submits a legal case, and sees the full lifecycle from entry to outcome - all on the same EOS shared rail",
+  "battle": "BATTLE 1 - Public Experience",
+  "acceptance_criteria": [
+    "Landing page accessible without login, clearly presents ILC/LawyersHub/Services.ID as product options",
+    "Sign up flow works for external user with email/password authentication",
+    "User can create a LawyersHub workspace with one click",
+    "User can submit a legal case through Consultation front door",
+    "Case transitions through full lifecycle: draft → accepted → in_review → resolved",
+    "All interactions recorded in evidence ledger with proper attribution",
+    "End-to-end test runs without mocks, passes 100%",
+    "User never sees 'EOS' or 'capability' jargon - experience feels like one unified product"
+  ],
+  "golden_path_sequence": [
+    "Landing → Sign up → Workspace → Consultation → Case Creation → Lifecycle Progression → Outcome → Evidence History",
+  ],
+  "recon_required": true,
+  "reuse_target": 95,
+  "status": "PENDING_EXECUTION",
+  "created_at": "2026-08-14T18:00:00.000Z"
+}

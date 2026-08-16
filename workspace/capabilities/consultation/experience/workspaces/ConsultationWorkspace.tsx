@@ -5,8 +5,8 @@ import type { ConsultationAggregate, ConsultationPriority, ConsultationStatus } 
 import { ConsultationCard } from "../components/ConsultationCard";
 import { CreateConsultationModal } from "../components/CreateConsultationModal";
 
-type StatusFilter = ConsultationStatus | "all";
-type PriorityFilter = ConsultationPriority | "all";
+type StatusFilter = string;
+type PriorityFilter = string;
 interface SearchConsultationsOutput {
   items: ConsultationAggregate[];
   total: number;

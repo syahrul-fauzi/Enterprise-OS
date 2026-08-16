@@ -1,12 +1,13 @@
-import { capabilityRegistry, type CommandInvocationRecord } from "../apps/web/lib/capability-command-registry";
+import { capabilityRegistry, type CommandInvocationRecord } from "../packages/core/kernel/src/registry/capability-command-registry";
 import {
   ServiceProviderRepositoryInMemory,
   ServiceRequestRepositoryInMemory,
 } from "../capabilities/service-directory/implementation/repository";
-import { readProductPreviewBinding } from "../apps/web/lib/product-binding";
+import { readProductBinding } from "../packages/presentation/experience/src/product-binding";
 import type { ServiceRequestAggregate } from "../capabilities/service-directory/implementation/contracts/service.contracts";
-import fs from "node:fs";
-import path from "node:path";
+import { ServiceRequestId } from "../capabilities/service-directory/implementation/contracts/service.contracts";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 interface JourneyStep {
   readonly n: number;
@@ -98,7 +99,7 @@ async function servicesIdJourney(): Promise<JourneyResult> {
   n += 1;
   stageLabel(n, "OPEN", "User mengetik /products/services-id → browser me-load product surface");
   try {
-    const binding = readProductPreviewBinding("services-id");
+    const binding = readProductBinding("services-id");
     const ok =
       binding.productId.toLowerCase() === "services-id" &&
       binding.displayName.length > 0 &&
@@ -152,7 +153,7 @@ async function servicesIdJourney(): Promise<JourneyResult> {
   n += 1;
   stageLabel(n, "ACTION", "User klik 'Request Service' pada provider sp-003 → submit form request");
   try {
-    const invoke = capabilityRegistry.invoke<{ id: string; status: string; providerId?: string }>(
+    const invoke = await capabilityRegistry.invokeAsync<{ id: string; status: string; providerId?: string }>(
       "services-id",
       "createServiceRequest",
       {
@@ -162,6 +163,10 @@ async function servicesIdJourney(): Promise<JourneyResult> {
         requesterName: USER_REQUESTER,
         providerId: selectedProviderId,
         budget: USER_REQ_BUDGET,
+        sessionId: "session-test-001",
+        tenantId: "tenant-001",
+        workspaceId: "workspace-001",
+        actorId: "user-001"
       },
     );
     ledger.push(invoke.record);
@@ -202,10 +207,14 @@ async function servicesIdJourney(): Promise<JourneyResult> {
   n += 1;
   stageLabel(n, "EXECUTE", "Vendor sp-003 (Cyber Security Partners) menerima permintaan → status accepted");
   try {
-    const accepted = capabilityRegistry.invoke<ServiceRequestAggregate>("services-id", "acceptServiceRequest", {
-      id: createdSreqId as string,
-      providerId: selectedProviderId,
-    });
+    const accepted = await capabilityRegistry.invokeAsync<ServiceRequestAggregate>("services-id", "acceptServiceRequest", {
+        id: ServiceRequestId(createdSreqId),
+        providerId: selectedProviderId,
+        sessionId: "session-test-001",
+        tenantId: "tenant-001",
+        workspaceId: "workspace-001",
+        actorId: "user-002"
+      });
     ledger.push(accepted.record);
     const ok =
       accepted.record.ok === true &&
@@ -238,9 +247,13 @@ async function servicesIdJourney(): Promise<JourneyResult> {
   n += 1;
   stageLabel(n, "STATE", "Vendor menyelesaikan pekerjaan → markDelivered, state delivered (terminal)");
   try {
-    const delivered = capabilityRegistry.invoke<ServiceRequestAggregate>("services-id", "markServiceDelivered", {
-      id: createdSreqId as string,
-    });
+    const delivered = await capabilityRegistry.invokeAsync<ServiceRequestAggregate>("services-id", "markServiceDelivered", {
+        id: ServiceRequestId(createdSreqId),
+        sessionId: "session-test-001",
+        tenantId: "tenant-001",
+        workspaceId: "workspace-001",
+        actorId: "user-002"
+      });
     ledger.push(delivered.record);
     const ok =
       delivered.record.ok === true &&
@@ -303,8 +316,8 @@ async function servicesIdJourney(): Promise<JourneyResult> {
   n += 1;
   stageLabel(n, "SEE", `User melihat ${createdSreqId} = DELIVERED + title/budget/requester sesuai + deliveredAt`);
   try {
-    const found = createdSreqId ? ServiceRequestRepositoryInMemory.byId(createdSreqId) : undefined;
-    const allRequests = ServiceRequestRepositoryInMemory.list();
+    const found = createdSreqId ? await ServiceRequestRepositoryInMemory.byId(ServiceRequestId(createdSreqId)) : undefined;
+    const allRequests = await ServiceRequestRepositoryInMemory.list();
     const userCanSee =
       found !== undefined &&
       found.status === "delivered" &&
@@ -388,7 +401,7 @@ async function main(): Promise<void> {
   console.log("║  ENTERPRISE OS  ·  PHASE D1.3  —  REAL USER JOURNEY E2E EXECUTION RUNNER  (SERVICES.ID)    ║");
   console.log("╠══════════════════════════════════════════════════════════════════════════════════════════════╣");
   console.log("║  7-step canonical flow:  OPEN → DISCOVER → ACTION → EXECUTE → STATE → EVIDENCE → SEE       ║");
-  console.log("║  Primitive reuse: readProductPreviewBinding + Repository + capabilityRegistry + Attribution ║");
+  console.log("║  Primitive reuse: readProductBinding + Repository + capabilityRegistry + Attribution ║");
   console.log("╚══════════════════════════════════════════════════════════════════════════════════════════════╝");
 
   const results: JourneyResult[] = [];

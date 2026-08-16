@@ -1,4 +1,5 @@
-import { computeVerificationDecision, type VerificationDecisionSnapshot } from "./verification-decision.js";
+import { DigestEngine } from "@repo/core-kernel";
+import { computeVerificationDecision, type VerificationDecisionSnapshot } from "./verification-decision";
 
 const PROOF_SCHEMA_VERSION = "1.0.0";
 const PROOF_OBJECT_KIND = "verification-decision-proof";

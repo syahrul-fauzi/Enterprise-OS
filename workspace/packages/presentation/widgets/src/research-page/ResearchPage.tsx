@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { capabilityRegistry } from "@repo/core-kernel";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
 import { getProductExperience } from "@repo/presentation-experience";
 import type { ProductPreviewBinding, ProductExperience, Requirement } from "@repo/presentation-types";
@@ -15,14 +14,26 @@ export interface ResearchPageProps {
 
 export function ResearchPage({ productId, binding, searchQuery = '', filterStatus = 'all' }: ResearchPageProps) {
   const experience: ProductExperience | undefined = getProductExperience(productId);
-  
-  // Fetch all research data entirely within canonical widget
-  const researchOutput = capabilityRegistry.invoke<{ output: Requirement[] }>("requirement", "getAll", { 
-    productId, 
-    searchQuery, 
-    filterStatus 
-  });
-  const filteredResearch = researchOutput.output || [];
+  const [filteredResearch, setFilteredResearch] = React.useState<Requirement[]>([]);
+
+  React.useEffect(() => {
+    async function fetchResearch() {
+      try {
+        const params = new URLSearchParams({
+          productId,
+          searchQuery,
+          filterStatus,
+        });
+        const res = await fetch(`/api/research?${params.toString()}`, { cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json()) as { items?: Requirement[] };
+        setFilteredResearch(data.items ?? []);
+      } catch (err) {
+        console.error("[ResearchPage] fetch error:", err);
+      }
+    }
+    fetchResearch();
+  }, [productId, searchQuery, filterStatus]);
 
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-10">

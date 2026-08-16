@@ -1,4 +1,4 @@
-import type { PredicateIdentity, PredicatePhase, PredicateStatus } from "./types.js";
+import type { PredicateIdentity, PredicatePhase, PredicateStatus } from "./types";
 
 export interface PredicateDeclaration {
   readonly predicate_id: string;

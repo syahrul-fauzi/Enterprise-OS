@@ -25,18 +25,18 @@ import {
   type ResolverResolutionBundle,
   type BlockedStatus,
   type RetryConfig,
-} from "./types.js";
+} from "./types";
 import type {
   ResolverDagSpec,
   ResolverProofSpec,
   ResolverStrategySpec,
   ResolverContractRef,
   CompatibilityMatrix,
-} from "./interfaces.js";
+} from "./interfaces";
 
-export * from "./types.js";
-export type * from "./interfaces.js";
-export * from "./schema.js";
+export * from "./types";
+export type * from "./interfaces";
+export * from "./schema";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

@@ -1,0 +1,116 @@
+{
+  "product": "lawyershub",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "LawyersHub binding valid",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Browse recent matters",
+      "ok": true
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Create new case (case-101)",
+      "ok": true,
+      "evidence": [
+        "id=case-101"
+      ]
+    },
+    {
+      "n": 4,
+      "stage": "EXECUTE",
+      "label": "Assign lawyer to case",
+      "ok": true,
+      "evidence": [
+        "lawyer=lawyer-002"
+      ]
+    },
+    {
+      "n": 5,
+      "stage": "STATE",
+      "label": "Close case (terminal)",
+      "ok": true
+    },
+    {
+      "n": 6,
+      "stage": "EVIDENCE",
+      "label": "Verify attribution ledger",
+      "ok": true
+    },
+    {
+      "n": 7,
+      "stage": "SEE",
+      "label": "User sees closed result",
+      "ok": false
+    }
+  ],
+  "totalSteps": 7,
+  "passCount": 6,
+  "failCount": 1,
+  "completedAtISO": "2026-08-15T09:47:46.810Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "lawyershub",
+      "displayName": "lawyershub"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "total_cases": 3
+    },
+    {
+      "step": 3,
+      "stage": "ACTION",
+      "capability": "legal-case.createCase",
+      "evidence_id": "case-101"
+    },
+    {
+      "step": 4,
+      "stage": "EXECUTE",
+      "transition": "open→assigned",
+      "evidence_id": "case-101",
+      "lawyer": "lawyer-002"
+    },
+    {
+      "step": 5,
+      "stage": "STATE",
+      "transition": "assigned→closed",
+      "terminal": true,
+      "evidence_id": "case-101"
+    },
+    {
+      "step": 6,
+      "stage": "EVIDENCE",
+      "ledger": [
+        {
+          "key": "case.create",
+          "ok": true,
+          "t": "2026-08-15T09:47:46.809Z"
+        },
+        {
+          "key": "case.assignLawyer",
+          "ok": true,
+          "t": "2026-08-15T09:47:46.809Z"
+        },
+        {
+          "key": "case.close",
+          "ok": true,
+          "t": "2026-08-15T09:47:46.810Z"
+        }
+      ]
+    },
+    {
+      "step": 7,
+      "stage": "SEE",
+      "evidence_id": "case-101"
+    }
+  ]
+}

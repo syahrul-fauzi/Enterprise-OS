@@ -1,8 +1,8 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
-import { GovernanceEvidenceService } from "./governance-evidence.service.js";
-import type { GovernanceConfidenceVerdict } from "../contracts/governance-evidence.contracts.js";
+import { GovernanceEvidenceService } from "./governance-evidence.service";
+import type { GovernanceConfidenceVerdict } from "../contracts/governance-evidence.contracts";
 
 const { existsSync, watch, readFileSync, writeFileSync, mkdirSync } = fs;
 const { dirname, resolve, join } = path;

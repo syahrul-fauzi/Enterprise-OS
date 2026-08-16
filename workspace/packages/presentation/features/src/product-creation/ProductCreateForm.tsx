@@ -1,12 +1,34 @@
 "use client";
 
 import React, { useState } from "react";
-import type { ServiceProviderCategory } from "@repo/capabilities/service-directory/implementation/contracts/service.contracts";
-import type { CasePriority } from "@repo/capabilities/legal-case/implementation/contracts/case.contracts";
-import type { TopicCategory } from "@repo/capabilities/legal-community/implementation/contracts/community.contracts";
-import {
-  readServiceProviderCategories,
-} from "@repo/presentation/presentation-types/product-reality";
+
+// Inlined type definitions from capabilities contracts to avoid rootDir violations
+// This maintains type safety while respecting package boundaries (Thin App Strategy)
+type ServiceProviderCategory = 
+  | "Cloud Services"
+  | "IT Support"
+  | "Infrastructure"
+  | "Cybersecurity"
+  | "Software Development"
+  | "Managed Services"
+  | "Data & Analytics";
+
+type CasePriority = "low" | "medium" | "high" | "critical";
+
+type TopicCategory =
+  | "Hukum Perusahaan"
+  | "Hukum Perdata"
+  | "Hukum Pidana"
+  | "Hukum Keluarga"
+  | "Hukum Internasional"
+  | "Hukum Teknologi Digital"
+  | "Hukum Ketenagakerjaan"
+  | "Hukum Tata Negara";
+
+// Fallback implementations to resolve module resolution errors (aligned with ProductPreviewShell)
+function readServiceProviderCategories(): readonly ServiceProviderCategory[] {
+  return ["Cloud Services", "IT Support", "Infrastructure", "Cybersecurity", "Software Development"];
+}
 
 export interface ProductCreateFormProps {
   readonly productId: "lawyershub" | "services-id" | "ilc" | "academic";
@@ -83,14 +105,14 @@ export function ProductCreateForm({ productId, onCreated }: ProductCreateFormPro
       </div>
 
       {productId === "lawyershub" && (
-        <LawyersHubCreateForm submitting={state.submitting} onSubmit={(body) => commonSubmit("/api/capabilities/lawyershub/create", body)} />
+        <LawyersHubCreateForm submitting={state.submitting} onSubmit={(body) => commonSubmit("/api/cases/create", body)} />
       )}
 
       {productId === "services-id" && (
         <ServicesCreateForm
           submitting={state.submitting}
           categories={serviceCategories}
-          onSubmit={(body) => commonSubmit("/api/capabilities/services-id/createServiceRequest", body)}
+          onSubmit={(body) => commonSubmit("/api/quotes/create", body)}
         />
       )}
 

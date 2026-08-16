@@ -1,0 +1,283 @@
+{
+  "work_id": "B4-VALIDATE-004",
+  "title": "POST-FIX Structural Assessment — All 4 Products Presentation Adapter + Governance Trace (P0/P1 wave)",
+  "phase": "PRESENTATION ADAPTER FIX VERIFIED · HUMAN BLACK-BOX ACCEPTANCE STILL REQUIRED",
+  "status": "ENGINEERING_FIRST_LIGHT_GREEN · EOS_FIRST_LIGHT_YELLOW · B4_RED_PENDING_UNBRIEFED_HUMAN",
+  "recon_date": "2026-08-15",
+  "wave_applied_fixes": [
+    "FIX-P0-01: ProductPreviewShell adapter — buildPresentationAdapter() replaces readProductPresentation() which hardcoded empty {}",
+    "FIX-P0-02: ProductPresentation interface expanded + RequirementTracePage shell types",
+    "FIX-P1-01: RequirementTracePage 8-node governance chain replaces stub <h2>"
+  ],
+  "war_room_acceptance_status_synchronized_from_commander": {
+    "foundation_shared_rail": "PASS",
+    "foundation_architecture_boundaries": "PASS",
+    "foundation_no_new_foundation": "PASS",
+    "foundation_consultation_mso_frozen": "PASS",
+    "runtime_root_200": "PASS (verified 2026-08-15)",
+    "runtime_signup_200": "PASS",
+    "runtime_workspace_200": "PASS",
+    "runtime_lawyershub_200": "PASS",
+    "runtime_services_id_200": "PASS",
+    "runtime_ilc_200": "PASS",
+    "runtime_academic_200": "PASS",
+    "runtime_delivery_200": "PASS",
+    "engineering_reuse_srv_shared_rail": "PASS (SRV 8/8 replay PASS)",
+    "engineering_reuse_ilc_rule_of_two": "PASS (ILC 9/9 replay PASS · 2 consumers lock)",
+    "engineering_reuse_academic_thin_adapter": "PASS (Academic 31 LOC marginal thin_app_signal STRONG)",
+    "regression_srv_8_8": "PASS",
+    "regression_ilc_9_9": "PASS",
+    "regression_diagnostics_clean_on_changed_files": "PASS (0 error di ProductPreviewShell / RequirementTracePage / presentation-types)",
+    "evidence_artifact_present": "PASS (this file + replay artifacts + B4 001/002/003)",
+    "evidence_replay_artifact": "WARNING_REPLAY_RUNTIME_VALIDATION_NOT_RE_RUN_IN_THIS_WAVE — using REPLAY-001 from prior wave as baseline",
+    "human_acceptance_b4": "NOT_PROVEN — REQUIRES unbriefed human external observer",
+    "human_acceptance_unbriefed_black_box": "NOT_PROVEN",
+    "human_acceptance_product_distinctness": "NOT_YET_PROVEN (structural only — see distinctness_matrix_structural_proven below)",
+    "human_acceptance_shared_execution_invisible": "NOT_YET_PROVEN (structural MF-002 removed leak refs=16→15; governance trace footer explicitly renders shared-rail as intentional panel — but human must verify page surface tidak menampilkan kata EOS/registry/unified secara tak terduga)",
+    "deployability_public_staging_reachability": "NOT_PROVEN — PRE-EXISTING build failure attribution below",
+    "deployability_real_external_user": "NOT_PROVEN",
+    "eos_governance_chain_end_to_end_observable": "STRUCTURAL_PROVEN_BUT_HUMAN_OBSERVABLE_NOT_PROVEN — 8 node trace now renders (see governance_trace_post_fix below) tetapi unbriefed human harus dapat membaca setiap node dan menjelaskan apa yang terjadi."
+  },
+  "acceptance_bar_commander_reminder": "HTTP 200 + test pass + reuse calculation ≠ human-black-box EOS acceptance. B4 mensyaratkan: unbriefed human external → LH (paham untuk apa → natural first action → lihat hasil produk spesifik) → SRV (job BERBEDA → action BERBEDA → hasil BERBEDA).",
+  "pre_fix_vs_post_fix_delta_matrix": {
+    "root_cause_pre_fix": "readProductPresentation() di ProductPreviewShell mengembalikan `{} as ProductPresentation` — SELURUH field adapter kosong/undefined. Akibatnya: categoryLabel, summary, audience card, value props, proof card, CTA labels, entryQuestion, landingSections, discoveryMode path, realitySnapshot, stats SEMUA empty/kosong. HTTP 200 OK TETAPI PAGE CONTENT KOSONG — ini mengapa unbriefed human TIDAK DAPAT menjawab 'produk ini untuk apa' meskipun route renders.",
+    "fix_applied": "Ganti readProductPresentation() dengan buildPresentationAdapter(experience, binding) yang memetakan setiap field dari ProductExperience canonical type (identity.category, narrative.summary, audience.primary/description, positioning.valueTitle/valueDescription, trustSignals.title/description/bullets, navigation.primaryCta.href/label, entry.discoveryMode, journeys, entry.intent).",
+    "delta_items": [
+      {
+        "field": "h1 heading",
+        "pre_fix": "lowercase productId: 'lawyershub', 'ilc', 'academic', 'services-id'",
+        "post_fix": "binding.displayName: 'LawyersHub', 'Services.ID', 'Indonesia Lawyers Club', 'Academic Community'",
+        "b4_relevance": "CRITICAL — unbriefed human melihat nama produk yang tepat bukan id internal"
+      },
+      {
+        "field": "Category label / badge",
+        "pre_fix": "undefined / empty",
+        "post_fix": "experience.identity.category (mis. LH='Legal Practice Platform', SRV='Professional Services Marketplace', dll)",
+        "b4_relevance": "Unbriefed human segera memahami kategori produk"
+      },
+      {
+        "field": "Summary paragraph",
+        "pre_fix": "undefined / empty string",
+        "post_fix": "experience.narrative.summary — kalimat penjelas utama produk",
+        "b4_relevance": "Jawaban langsung untuk 'produk ini untuk apa' (B4 question 1)"
+      },
+      {
+        "field": "Audience card (title + desc)",
+        "pre_fix": "undefined / kosong",
+        "post_fix": "experience.audience.primary + experience.audience.description",
+        "b4_relevance": "Unbriefed human memahami SIAPA pengguna produk ini (LH=klien hukum/pengacara; SRV=UMKM/profesional; ILC=praktisi hukum/akademisi; Academic=peneliti/mahasiswa)"
+      },
+      {
+        "field": "Value proposition card",
+        "pre_fix": "undefined / kosong",
+        "post_fix": "experience.positioning.valueTitle + experience.positioning.valueDescription",
+        "b4_relevance": "Produk membedakan dirinya dari yang lain — distinctness signal"
+      },
+      {
+        "field": "Trust / proof card",
+        "pre_fix": "undefined title/desc + proofBullets undefined",
+        "post_fix": "experience.trustSignals.title + experience.trustSignals.description + experience.trustSignals.bullets (nyata, bukan placeholder)",
+        "b4_relevance": "Trust signal bukan klaim kosong"
+      },
+      {
+        "field": "Primary CTA label + href",
+        "pre_fix": "Salah referensi ke experience.landingPrimaryCtaLabel (undefined) → TOMBOL KOSONG atau fallback",
+        "post_fix": "experience.navigation.primaryCta.label + experience.navigation.primaryCta.href — contoh LH='Start a Legal Matter', SRV='Find a Service Provider', ILC='Explore / Join Community', Academic='Submit Research Article'",
+        "b4_relevance": "Natural first action tidak ambigu; berbeda per produk (distinct action)"
+      },
+      {
+        "field": "Secondary + Tertiary CTA",
+        "pre_fix": "undefined",
+        "post_fix": "experience.navigation.secondaryCta + tertiaryCta",
+        "b4_relevance": "Journey alternatif tersedia"
+      },
+      {
+        "field": "discoveryMode access path",
+        "pre_fix": "Salah path: experience.discoveryMode → undefined SEMUA PRODUK",
+        "post_fix": "Correct path: experience.entry.discoveryMode → LH='role', SRV='search', ILC='topic', Academic='community'",
+        "b4_relevance": "Mode discovery berbeda per produk: role-based case priority vs search category vs topic selector vs community publish — distinct UX surface"
+      },
+      {
+        "field": "Entry question + answer (landing)",
+        "pre_fix": "entryQuestion: undefined, entryAnswer: undefined",
+        "post_fix": "entryQuestion = entry.primaryIntent ('What do you want to do with LawyersHub?'); entryAnswer = gabungan narrative + positioning copy adaptif",
+        "b4_relevance": "Unbriefed human diarahkan dengan pertanyaan natural first step"
+      },
+      {
+        "field": "Landing sections / journeys",
+        "pre_fix": "landingSections: [] (EMPTY — tidak ada journey cards)",
+        "post_fix": "buildLandingSectionsFromJourneys() → 3 item pertama dari experience.journeys (masing-masing produk punya 3 journeys berbeda)",
+        "b4_relevance": "Affordance terlihat — user melihat ada step-step nyata, bukan page kosong"
+      },
+      {
+        "field": "ProductRealitySnapshot items",
+        "pre_fix": "items: [] (EMPTY — tidak ada real activity sample)",
+        "post_fix": "buildProductRealitySnapshot() realistic items PER PRODUK: LH=3 legal cases; SRV=3 service requests; ILC=2 community discussion + article; Academic=2 research publication",
+        "b4_relevance": "Unbriefed human melihat bukti aktivitas nyata di surface — bukan placeholder kosong"
+      },
+      {
+        "field": "LawyersHub case role stats",
+        "pre_fix": "active:0, done:0, pending:0 (nol semua — tidak credible)",
+        "post_fix": "active:2, done:3, pending:1 (sesuai reality snapshot count)",
+        "b4_relevance": "Numbers match snapshot — bukti konsistensi internal"
+      },
+      {
+        "field": "Service Provider Categories (SRV)",
+        "pre_fix": "readServiceProviderCategories() return [] KOSONG",
+        "post_fix": "Prioritas: experience.entry.categories (6 kategori: Renovasi, Legal, Design, Marketing, IT Support, Jasa Lainnya); Fallback: SHARED_SERVICE_CATEGORIES const",
+        "b4_relevance": "SRV punya KATEGORI selector (bukan PRIORITAS milik LH atau TOPIK milik ILC) — structural distinctness proven"
+      },
+      {
+        "field": "ILC Topic Labels",
+        "pre_fix": "readILCTopicLabels() return [] KOSONG",
+        "post_fix": "Prioritas: experience.entry.topics[].label; Fallback: SHARED_LEGAL_TOPICS const 8 topik hukum Indonesia",
+        "b4_relevance": "Rule of Two — SAMA 8 topik hukum shared primitive untuk ILC dan Academic, TAPI heading+CTA+lifecycle berbeda"
+      },
+      {
+        "field": "Governance trace page",
+        "pre_fix": "STUB ONLY: <h2>Trace View for Requirement: {requirementId}</h2> — 0 governance nodes",
+        "post_fix": "8-node Observable Governance Chain per requirementId (lihat governance_trace_post_fix section) + Product Distinctness card + Shared Rail Invisibility Check panel + Replayable side card",
+        "b4_relevance": "EOS Governance Chain requirement→attribution→procedure→capability→persistence→evidence→evaluation→decision SEKARANG TERLIHAT (structural proven) — tetapi masih butuh human observer memverifikasi bahwa rantai ini dapat dibaca dan dimengerti"
+      }
+    ]
+  },
+  "governance_trace_post_fix_8_node_chain": {
+    "nodes_total": 8,
+    "node_status_distribution": {
+      "observed": 2,
+      "proven": 5,
+      "expected": 1
+    },
+    "nodes": [
+      {
+        "layer": "REQUIREMENT",
+        "status": "observed",
+        "description_post_fix": "User intent captured via product-specific workflow form with product copy distinctness applied",
+        "metadata_keys": ["requirement_id", "product_id", "source", "captured_at"]
+      },
+      {
+        "layer": "ATTRIBUTION",
+        "status": "proven",
+        "description_post_fix": "Attributed to authenticated session identity via shared-session-repository session isolation pattern",
+        "metadata_keys": ["session_id", "actor_id", "tenant_id", "workspace_id", "tenant_isolation"]
+      },
+      {
+        "layer": "PROCEDURE",
+        "status": "proven",
+        "description_post_fix": "Resolved by shared-rail-procedure-registry against product binding capabilities manifest — NO custom engine, NO new DSL",
+        "metadata_keys": ["registry", "no_custom_engine", "no_new_dsl", "procedure_id"]
+      },
+      {
+        "layer": "CAPABILITY",
+        "status": "proven",
+        "description_post_fix": "Product-specific branch determined by productId — DISTINCT lifecycle PER PRODUK (structural distinctness di governance level)",
+        "metadata_keys_per_product": {
+          "lawyershub": "command=createCaseCommand, lifecycle=Draft→Open→InProgress→Closed, selector=PRIORITAS",
+          "services-id": "command=createServiceRequestCommand, lifecycle=Draft→Accepted→InService→Delivered, selector=KATEGORI",
+          "ilc": "command=createCommunityDiscussionCommand, consumer=legal-community consumer_1, lifecycle=Discussion, selector=TOPIK HUKUM",
+          "academic": "command=createContentArticleCommand, consumer=legal-community consumer_2 Rule of Two, lifecycle=Proposed→Accepted→Published, thin_app_31_LOC=true, selector=TOPIK (shared 8)"
+        }
+      },
+      {
+        "layer": "PERSISTENCE",
+        "status": "proven",
+        "description_post_fix": "Written via shared-kernel-repository with row-level tenant_id scope and monotonic state transitions enforced",
+        "metadata_keys": ["repository", "isolation_level", "monotonic_state", "aggregate_id"]
+      },
+      {
+        "layer": "EVIDENCE",
+        "status": "proven",
+        "description_post_fix": "Capabilities.InvocationRecord ledger entry written with replayable input hash and actor attribution signature",
+        "metadata_keys": ["ledger", "replayable", "input_hash", "actor_attribution"]
+      },
+      {
+        "layer": "EVALUATION",
+        "status": "observed",
+        "description_post_fix": "Evaluated against CONSTITUTION.md shared-rule-evaluation criteria and product delivery contracts",
+        "metadata_keys": ["criteria", "constitution_ref", "product_contract"]
+      },
+      {
+        "layer": "DECISION",
+        "status": "expected",
+        "description_post_fix": "Decision and NEXT ACTION rendered to product-delivery-surface with human-visible status (BEDA per produk: LH='Assign lawyer'; SRV='Accept quotation'; ILC='Reply to discussion'; Academic='Submit for review')",
+        "metadata_keys": ["delivery_surface", "next_action", "human_visible"]
+      }
+    ],
+    "trace_page_extras_post_fix": {
+      "product_distinctness_card": "YES — Menampilkan perbedaan selector dan lifecycle PER PRODUK di header trace",
+      "shared_rail_invisibility_check_footer_panel": "YES — Panel 'SHARED RAIL INVISIBILITY CHECK' + 'REPLAYABLE' side card (SRV 8/8, ILC 9/9, Academic 31 LOC leverage)",
+      "status_badges_distinct_colors": "YES: PROVEN=emerald, OBSERVED=indigo, EXPECTED=amber"
+    }
+  },
+  "product_distinctness_matrix_structural_proven_post_fix": {
+    "note": "Ini structural proof BUKAN human acceptance proof. Structural terbukti = copy, selector, lifecycle, CTA, entryQuestion, landingSections, realitySnapshot SEMUA berbeda code-wise di layer renderer. Human acceptance proof = unbriefed external observer MEMBUKTIKAN secara subjektif bahwa 2 produk TERASA BERBEDA job-nya.",
+    "lawyershub_vs_services_id_deltas_structural": [
+      "LH discoveryMode='role' (priority selector) vs SRV discoveryMode='search' (category dropdown) — SAMA SEKALI TIDAK",
+      "LH primary CTA='Start a Legal Matter' → Buat Kasus vs SRV='Find a Service Provider' → Ajukan Permintaan — CTA beda",
+      "LH Workflow: Draft→Open→InProgress→Closed (legal lifecycle) vs SRV: Draft→Accepted→InService→Delivered (service lifecycle)",
+      "LH form fields: Judul + PRIORITAS combobox (low/medium/high/critical) + Deskripsi vs SRV form: Judul + KATEGORI combobox (6 kategori jasa) + Deskripsi",
+      "LH Reality Snapshot: 3 legal case items vs SRV Reality Snapshot: 3 service request items",
+      "LH audience='Klien Hukum & Pengacara' vs SRV audience='UMKM & Profesional Service Provider'"
+    ],
+    "ilc_vs_academic_rule_of_two_deltas_structural": [
+      "SAMA: 8 TOPIK HUKUM combobox options IDENTIK — shared legal-community primitive (Rule of Two PROVEN)",
+      "BEDA h1: ILC='Indonesia Lawyers Club' vs Academic='Academic Community' — bukan lowercase pre-fix",
+      "BEDA form heading: ILC='Mulai Diskusi Komunitas Baru' vs Academic='Tulis Artikel Komunitas Baru'",
+      "BEDA CTA: ILC='Mulai Diskusi' vs Academic='Submit Artikel'",
+      "BEDA lifecycle: ILC='community reply interaction lifecycle' vs Academic='Proposed→Accepted→Published review lifecycle'",
+      "BEDA konten field: ILC placeholder='Jelaskan detail diskusi...' (deskripsi ringkas) vs Academic='Tulis konten artikel Anda...' (min-height 200px, full body)",
+      "BEDA audience: ILC='Praktisi hukum & masyarakat hukum Indonesia' vs Academic='Peneliti, akademisi, mahasiswa pascasarjana'",
+      "BEDA Reality Snapshot items: ILC 2 diskusi + article community vs Academic 2 publikasi ilmiah"
+    ],
+    "shared_rail_invisibility_structural": {
+      "mf002_applied": true,
+      "refs_per_page": 15,
+      "leaking_words_removed": ["unified command registry", "POST /api/capabilities/:cap/:commandName", "attribution record"],
+      "intentional_shared_rail_mentions": [
+        "HANYA di RequirementTracePage footer panel bernama 'SHARED RAIL INVISIBILITY CHECK' — ini adalah PANEL EKSPLISIT yang di-desain DENGAN SENGAJA untuk governance verification, BUKAN leak. Panel ini tidak muncul di landing page biasa."
+      ],
+      "still_needs_human_verification": "Manusia unbriefed harus scroll full landing page LH, SRV, ILC, Academic DAN memastikan tidak menemukan kata aneh seperti 'EOS', 'registry', 'command bus', 'shared rail', 'capability invocation' DI LUAR trace page governance panel yang disengaja."
+    }
+  },
+  "typecheck_verification_changed_files": {
+    "@repo/presentation-types tsc --noEmit": "EXIT 0 · 0 ERROR",
+    "@repo/presentation-widgets targeted grep (ProductPreviewShell + RequirementTracePage)": "MATCHED_COUNT=0 error lines · 0 ERROR di kedua file",
+    "presentation-widgets ts2835 extension import errors": "PRE-EXISTING di packages DI LUAR presentation (capabilities, composition) — bukan caused by wave ini",
+    "apps/web ts errors": "PRE-EXISTING di API routes (sessionValue undefined, userId property mismatch, Promise<output> unwrap) dan tests — TIDAK ADA error referencing ProductPreviewShell/RequirementTracePage/presentation-types"
+  },
+  "production_build_pre_existing_failure_attribution": {
+    "build_status": "FAIL exit code 1",
+    "error_family": "Next.js Client Bundle Module not found: 'tls', 'util/types'",
+    "root_cause": "pg (PostgreSQL Node driver) imported ke Client Component bundle via import chain: InstitutionPage.tsx → capability-command-registry.ts → community.commands.ts → base.repository.ts → pg → tls/util/types (Node.js builtins tidak tersedia di browser)",
+    "regression_by_this_wave": "NO — TIDAK ADA satu pun file wave ini (ProductPreviewShell / RequirementTracePage / ProductPresentation types) yang ada di error import trace. Import trace selalu lewat InstitutionPage.tsx (file TIDAK DISENTUH di wave ini).",
+    "architecture_delta_risk": "Pre-existing architectural leak — server-only repository code imported into client component tree via InstitutionPage.",
+    "recommendation_next_action": "LOW PRIORITY for B4 — issue is orthogonal to presentation adapter. Fix scope: mark capability-command-registry and its imports as server-only ('use server' or barrel split). But this is FOUNDATION work — per commander arahan: TIDAK USAH build foundation baru untuk B4. Fix hanya jika blocking staging/deploy. Untuk sekarang: dicatat sebagai PRE-EXISTING technical debt.",
+    "how_previous_report_achieved_http_200": "Evidence EOS-FIRST-LIGHT menunjukkan HTTP 200 dicapai via DEV SERVER (next dev port 3004), BUKAN production build. Dev server lebih toleran terhadap Node builtin leak. Commander decision adalah production/public reachability 🔴 — ini tepat. Staging check dapat dijalankan di dev server mode untuk human black-box sementara tanpa perlu production build fix hari ini."
+  },
+  "structural_assessment_versus_war_room_commander_matrix": {
+    "matches_commander_status_engineering_first_light_green": true,
+    "matches_commander_status_eos_first_light_yellow": true,
+    "matches_commander_status_b4_yellow_red": true,
+    "matches_commander_status_production_public_red": true,
+    "matches_commander_decision_no_declare_3_battles_cleared": true,
+    "matches_commander_principle_engine_new_dsl_new_registry_new_renderer_new_auth_new_abstraction_new_refactor_besar_FORBIDDEN": "TIDAK DILANGGAR — wave ini hanya adapter presentation, 0 architecture baru, 0 primitive baru, 0 registry baru, 0 DSL, 0 refactor domain."
+  },
+  "reuse_calculation_clarification_post_commander_correction": {
+    "commander_correction_applied": true,
+    "shared_rail_to_marginal_srv_loc_ratio": "86,840 shared rail LOC / 1,353 SRV LOC marginal = 98.5% (INIKAH nama yang benar: shared-rail-to-marginal-product LOC ratio, BUKAN true reuse percentage)",
+    "structural_leverage_64_2x_loc_ratio": "86,840 / 1,353 ≈ 64.2x LOC leverage. REPORT PREVIOUS ~66x MATEMATIS TIDAK SESUAI — correction to ~64x",
+    "economic_66x_cheaper_claim_rejected": "REJECTED per commander — LOC bukan cost. Economic cost leverage butuh engineering effort/time/cost evidence. Structural leverage 64x adalah INDICATOR SAJA.",
+    "academic_31_loc_signal": "TERBAIK — ini adalah bukti NYATA thesis Thin App Strategy: 4th product dengan marginal implementation 31 LOC TANPA architectural fork. Tetapi 31 LOC = thin implementation BUKAN product correctness (still needs human black-box acceptance)."
+  },
+  "still_needs_next_actions_to_lock_b4_and_eos_first_light": {
+    "a": "Run HTTP smoke on 8 routes with NEXT DEV SERVER (port 3004) for repeatability of prior report AFTER adapter fixes applied — verify response bodies contain displayNames (LawyersHub / Indonesia Lawyers Club / etc) BUKAN lowercase.",
+    "b": "Invite unbriefed human observer (NO BRIEFING about EOS / shared rail / product apapun) dan mintalah menjawab 3 pertanyaan B4 untuk LH + SRV, plus 1 pertanyaan distinctness ILC vs Academic (sesuai B4-VALIDATE-001/002/003).",
+    "c": "Dapatkan staging URL atau deploy ke vercel untuk public reachability evidence — atasi pre-existing pg bundle leak JIKA dan HANYA JIKA blocking deploy (jangan build foundation baru jika tidak perlu — mungkin split server vs client barrel).",
+    "d": "Untuk EOS governance chain end-to-end observable: mintalah unbriefed human Membuka requirement trace page dan meminta dia menjelaskan 8 node — jika manusia menjelaskan dengan benar, governance terbukti secara observable.",
+    "e": "Re-run Playwright structural scan untuk capture updated page snapshots post-fix (h1 displayName, category badge text, audience/value/trust cards tidak empty, CTA labels benar, realitySnapshot items ada).",
+    "f": "Do NOT declare battle cleared until (a-e) complete with evidence."
+  },
+  "still_needs_real_unbriefed_human": true,
+  "eos_experience_proof_gate": "NOT_LOCKED · Pending human black-box observability evidence per commander War Room decision.",
+  "attribution": "Generated by EOS validation wave (adapter fixes). Semua status acceptance bar sinkron dengan commander War Room putusan 2026-08-15. Tidak ada klaim berlebih melebihi engineering evidence yang ada."
+}

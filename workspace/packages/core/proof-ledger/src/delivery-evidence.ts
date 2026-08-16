@@ -1,5 +1,11 @@
 import fs from "fs";
 import path from "path";
+import { WorkspaceSession, DigestEngine } from "@repo/core-kernel";
+
+interface ProductContext {
+  readonly productDomain: string;
+  readonly requestHost: string;
+}
 
 interface DeliveryEvidenceRequirement {
   readonly id: string;

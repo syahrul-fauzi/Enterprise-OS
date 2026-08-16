@@ -1,7 +1,6 @@
 {
   "extends": "@repo/config-typescript/base.json",
   "compilerOptions": {
-    "rootDir": "src",
     "outDir": "dist",
     "strictNullChecks": true,
     "declaration": true,
@@ -9,12 +8,16 @@
     "composite": true,
     "ignoreDeprecations": "5.0",
     "baseUrl": ".",
+    "rootDir": "./src",
     "paths": {
       "@capabilities/*": ["../../../capabilities/*"]
     }
   },
   "references": [
+    { "path": "../../../capabilities/identity/tsconfig.json" },
+    { "path": "../../../capabilities/observability/tsconfig.json" },
+    { "path": "../../../capabilities/legal-case/tsconfig.json" }
   ],
-  "include": ["src"],
+  "include": ["src/**/*.ts"],
   "exclude": ["dist", "build", "node_modules"]
 }

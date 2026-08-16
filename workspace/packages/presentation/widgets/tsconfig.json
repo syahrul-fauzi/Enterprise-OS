@@ -1,10 +1,12 @@
 {
   "extends": "@repo/config-typescript/react-library.json",
   "compilerOptions": {
-    "rootDir": "src",
     "outDir": "dist",
     "strictNullChecks": true,
+    "rootDir": "../../..",
     "baseUrl": ".",
+    "ignoreDeprecations": "5.0",
+    "skipLibCheck": true,
     "jsx": "react-jsx",
     "tsBuildInfoFile": "tsconfig.tsbuildinfo",
     "paths": {

@@ -1,0 +1,41 @@
+{
+  "product": "lawyershub",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "LawyersHub binding valid",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Browse recent matters",
+      "ok": true
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Create new case",
+      "ok": false,
+      "error": "Error: [capability-registry] Command not found: capability=lawyershub, commandName=createCase. attempted=case.createCase | case.createCase | case.createCase | case.case | legal-case.createCase | legal-case.createCase | legal-case.createCase | legal-case.case. Available candidates (5): case.create, case.close, case.assignLawyer, case.getById, case.listByWorkspace. Global total keys: 43."
+    }
+  ],
+  "totalSteps": 3,
+  "passCount": 2,
+  "failCount": 1,
+  "completedAtISO": "2026-08-15T08:36:11.978Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "lawyershub",
+      "displayName": "lawyershub"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "total_cases": 3
+    }
+  ]
+}

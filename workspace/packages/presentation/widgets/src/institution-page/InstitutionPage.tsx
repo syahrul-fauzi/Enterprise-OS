@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { capabilityRegistry } from "@repo/core-kernel";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
 import { ProfileHeader } from "../profile-header/ProfileHeader";
 import { getProductExperience } from "@repo/presentation-experience";
@@ -15,13 +14,28 @@ export interface InstitutionPageProps {
 
 export function InstitutionPage({ institutionId, productId, binding }: InstitutionPageProps) {
   const experience: ProductExperience | undefined = getProductExperience(productId);
-  
-  // Fetch data entirely within canonical widget
-  const memberOutput = capabilityRegistry.invoke<{ output: Member | null }>("identity", "getMemberById", { memberId: institutionId });
-  const institution = memberOutput.output;
-  
-  const researchersOutput = capabilityRegistry.invoke<{ output: Member[] }>("identity", "getMembersByInstitution", { institutionId, productId });
-  const affiliatedResearchers = researchersOutput.output || [];
+
+  const [institution, setInstitution] = React.useState<Member | null>(null);
+  const [affiliatedResearchers, setAffiliatedResearchers] = React.useState<Member[]>([]);
+
+  React.useEffect(() => {
+    async function fetchInstitutionData() {
+      try {
+        const url = `/api/institution/${encodeURIComponent(institutionId)}?productId=${encodeURIComponent(productId)}`;
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json()) as {
+          institution?: Member | null;
+          affiliatedResearchers?: Member[];
+        };
+        setInstitution(data.institution ?? null);
+        setAffiliatedResearchers(data.affiliatedResearchers ?? []);
+      } catch (err) {
+        console.error("[InstitutionPage] fetch error:", err);
+      }
+    }
+    fetchInstitutionData();
+  }, [institutionId, productId]);
 
   if (!institution || institution.type !== 'institution') {
     return (

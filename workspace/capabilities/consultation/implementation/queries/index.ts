@@ -1,1 +1,1 @@
-export { getConsultation, searchConsultations } from "./consultation.queries.js";
+export { getConsultation, searchConsultations } from "./consultation.queries";

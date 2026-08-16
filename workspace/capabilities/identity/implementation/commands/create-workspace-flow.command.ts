@@ -1,8 +1,7 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { capabilityRegistry } from "@repo/core-kernel";
-import { WorkspaceRepositoryPostgres, MembershipRepositoryPostgres, TenantRepositoryPostgres } from "../repositories/index.js";
-import { WorkspaceId, UserId, TenantId, MembershipId } from "../contracts/identity.contracts.js";
+import { getWorkspaceRepositoryPostgres, getMembershipRepositoryPostgres, getTenantRepositoryPostgres } from "../repositories/index";
+import { WorkspaceId, UserId, TenantId, MembershipId } from "../contracts/identity.contracts";
 
 export const CreateWorkspaceFlowInputSchema = z.object({
   name: z.string().min(1),
@@ -40,23 +39,21 @@ export const createWorkspaceFlowCommand: CapabilityCommand = {
     const parsed = CreateWorkspaceFlowInputSchema.parse(input);
     const { name, productId, tenantId, actorId } = parsed;
 
+    // Lazy import capabilityRegistry to avoid circular initialization
+    const { capabilityRegistry } = await import("@repo/core-kernel");
+
     if (!tenantId) {
       throw new Error("tenantId is required");
     }
     const resolvedTenantId = TenantId(tenantId);
-    const tenant = await TenantRepositoryPostgres.byId(resolvedTenantId);
+    const tenant = await getTenantRepositoryPostgres().byId(resolvedTenantId);
     if (!tenant) {
       throw new Error(`Tenant not found: ${resolvedTenantId}`);
     }
 
     // Create dates BEFORE invoking commands to match exact timestamps used in createWorkspaceCommand/createMembershipCommand
     const workspaceCreatedAt = new Date();
-    const workspaceOutput = await capabilityRegistry.invokeAsync<{
-      readonly workspaceId: string;
-      readonly tenantId: string;
-      readonly name: string;
-      readonly productId: string;
-    }>("identity", "createWorkspace", {
+    const workspaceOutput = await capabilityRegistry.invokeAsync("identity", "createWorkspace", {
       tenantId: resolvedTenantId,
       name,
       productId,
@@ -71,13 +68,7 @@ export const createWorkspaceFlowCommand: CapabilityCommand = {
 
     // Create membership date BEFORE invoking createMembership
     const membershipJoinedAt = new Date();
-    const membershipOutput = await capabilityRegistry.invokeAsync<{
-      readonly membershipId: string;
-      readonly userId: string;
-      readonly tenantId: string;
-      readonly workspaceId: string;
-      readonly role: "owner" | "admin" | "member";
-    }>("identity", "createMembership", {
+    const membershipOutput = await capabilityRegistry.invokeAsync("identity", "createMembership", {
       userId,
       tenantId: resolvedTenantId,
       workspaceId,

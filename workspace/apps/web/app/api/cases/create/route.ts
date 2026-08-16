@@ -17,6 +17,9 @@ export async function POST(request: Request) {
     }
 
     const sessionValue = sessionCookie.split("=")[1];
+    if (!sessionValue) {
+      return NextResponse.json({ error: "Invalid session cookie" }, { status: 401 });
+    }
     console.log(`[POST /api/cases/create] Session cookie value (truncated): ${sessionValue.substring(0, 100)}...`);
     const session = decodeWorkspaceSession(sessionValue);
     console.log(`[POST /api/cases/create] Decoded session: ${JSON.stringify(session)}`);
@@ -30,14 +33,12 @@ export async function POST(request: Request) {
     const { title, description, priority } = body;
 
     // Single canonical capability invocation - all case creation logic in legal-case capability
-    const { output } = await capabilityRegistry.invokeAsync("legal-case", "create", {
+    // MINIMAL PATTERN: sessionId ONLY - tenant/workspace/actor derived from trusted session inside capability
+    const { output } = await capabilityRegistry.invokeAsync("legal-case", "case.create", {
       title,
       description,
       priority,
       sessionId: session.sessionId,
-      tenantId: session.tenantId,
-      workspaceId: session.workspaceId,
-      actorId: session.actorId,
     });
 
     if (!output) {

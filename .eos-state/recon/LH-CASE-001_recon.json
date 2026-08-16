@@ -1,73 +1,40 @@
 {
   "work_id": "LH-CASE-001",
-  "recon_completed_at": "2026-08-09T01:58:32.151338",
+  "recon_completed_at": "2026-08-15T12:00:00.000Z",
   "locked_boundaries_verified": {
-    "B7.19_identity": true,
-    "thin_app_stage1": true,
-    "frontier_c_conditional": true,
-    "frontier_d_composition": true,
-    "frontier_e_operational_leverage": true,
-    "B8.x": true
+    "core/eos": true,
+    "consultation/foundation": true,
+    "mso/core": true
   },
-  "existing_capabilities": [
+  "existing_capabilities_found": [
     "legal-case",
-    "legal-community",
-    "connector-ecosystem",
-    "observability",
-    "security-hardening",
-    "evidence-registry",
-    "governance-evidence",
     "requirement-management",
-    "knowledge-graph",
-    "governance-read-model",
-    "requirements-traceability-matrix",
-    "api-platform",
-    "trust-framework",
-    "agent-orchestration",
-    "identity",
     "workflow-engine",
-    "legal-document",
-    "service-directory"
+    "governance-evidence",
+    "legal-document"
   ],
-  "existing_procedures": [
-    "attribution",
-    "prepare-release"
-  ],
-  "existing_tables": [],
   "reuse_analysis": {
-    "can_reuse_auth": true,
-    "can_reuse_tenant": true,
-    "can_reuse_db_base": true,
-    "can_reuse_evidence": true,
-    "required_new": [
-      "create_legal_matter procedure definition"
-    ],
     "reusable_existing": [
-      "identity",
-      "security-hardening",
-      "trust-framework",
-      "evidence-registry",
-      "governance-evidence",
-      "governance-read-model",
-      "legal-case",
-      "legal-community",
-      "legal-document",
-      "requirement-management",
-      "requirements-traceability-matrix",
-      "service-directory"
+      "auth/session",
+      "tenant/isolation",
+      "persistence/postgres",
+      "evidence/ledger",
+      "ui/ProductCreateForm",
+      "api/cases/create",
+      "capability/case.create",
+      "repository/CaseRepositoryPostgres"
     ],
+    "required_new": [],
     "reuse_percentage": 100.0
   },
   "blocker_analysis": {
     "blocked": false,
     "block_reason": null,
-    "critical_missing": [],
-    "can_proceed": true
+    "critical_missing": []
   },
-  "reused_existing": true,
   "recommendations": [
-    "Implement: create_legal_matter procedure definition",
-    "Reuse: identity, security-hardening, trust-framework, evidence-registry, governance-evidence, governance-read-model, legal-case, legal-community, legal-document, requirement-management, requirements-traceability-matrix, service-directory",
-    "Overall reuse: 100.0%"
+    "REUSE all existing primitives",
+    "Golden path already 100% implemented",
+    "Verify end-to-end execution with real capability invocation"
   ]
 }

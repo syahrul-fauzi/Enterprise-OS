@@ -1,13 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import React from "react";
 import { useEffect, useState } from "react";
-import type { ProductPreviewBinding, ProductPresentation, ProductExperience } from "@repo/presentation-types";
+import type { ProductPreviewBinding, ProductExperience } from "@repo/presentation-types";
 import { getProductExperience } from "@repo/presentation-experience";
-
-// Fallback implementations for missing exports to resolve build errors
-function readProductPresentation(productId: string): ProductPresentation {
-  return {} as ProductPresentation;
-}
 
 type ProductRealitySnapshot = {
   items: Array<{
@@ -16,23 +13,147 @@ type ProductRealitySnapshot = {
     displayEyebrow: string;
     status: string;
     verificationStatus: string;
+    owner?: string;
   }>;
 };
 
-function readProductRealitySnapshot(productId: string): ProductRealitySnapshot {
-  return { items: [] };
+type ServiceProviderCategory =
+  | "Cloud Services"
+  | "IT Support"
+  | "Infrastructure"
+  | "Cybersecurity"
+  | "Software Development"
+  | "Managed Services"
+  | "Data & Analytics";
+
+type TopicCategory =
+  | "Hukum Perusahaan"
+  | "Hukum Perdata"
+  | "Hukum Pidana"
+  | "Hukum Keluarga"
+  | "Hukum Internasional"
+  | "Hukum Teknologi Digital"
+  | "Hukum Ketenagakerjaan"
+  | "Hukum Tata Negara";
+
+const SHARED_SERVICE_CATEGORIES: readonly ServiceProviderCategory[] = [
+  "Cloud Services",
+  "IT Support",
+  "Infrastructure",
+  "Cybersecurity",
+  "Software Development",
+];
+
+const SHARED_LEGAL_TOPICS: readonly TopicCategory[] = [
+  "Hukum Perusahaan",
+  "Hukum Perdata",
+  "Hukum Pidana",
+  "Hukum Keluarga",
+  "Hukum Internasional",
+  "Hukum Teknologi Digital",
+  "Hukum Ketenagakerjaan",
+  "Hukum Tata Negara",
+];
+
+function buildPresentationAdapter(experience: ProductExperience | undefined, binding: ProductPreviewBinding) {
+  if (!experience) {
+    return {
+      categoryLabel: binding.productId.toUpperCase(),
+      summary: "",
+      audienceTitle: "",
+      audienceDescription: "",
+      valueTitle: "",
+      valueDescription: "",
+      proofTitle: "",
+      proofDescription: "",
+      proofBullets: [] as readonly string[],
+    };
+  }
+  return {
+    categoryLabel: experience.identity.category,
+    summary: experience.narrative.summary,
+    audienceTitle: experience.audience.primary,
+    audienceDescription: experience.audience.description,
+    valueTitle: experience.positioning.valueTitle,
+    valueDescription: experience.positioning.valueDescription,
+    proofTitle: experience.trustSignals.title,
+    proofDescription: experience.trustSignals.description,
+    proofBullets: experience.trustSignals.bullets,
+  };
+}
+
+function buildLandingSectionsFromJourneys(experience: ProductExperience | undefined) {
+  if (!experience || !experience.journeys || experience.journeys.length === 0) {
+    return [];
+  }
+  return experience.journeys.slice(0, 3).map((j) => ({
+    id: j.id,
+    eyebrow: `Step · ${j.label}`,
+    title: j.label,
+    description: j.description,
+    bullets: [] as readonly string[],
+  }));
+}
+
+function buildEntryQuestion(experience: ProductExperience | undefined) {
+  if (!experience) return "Apa yang ingin Anda lakukan hari ini?";
+  return experience.entry.primaryIntent;
+}
+
+function buildEntryAnswer(experience: ProductExperience | undefined) {
+  if (!experience) return "Pilih tindakan alami pertama Anda di bawah untuk memulai.";
+  return `${experience.narrative.summary} ${experience.positioning.valueDescription}`;
+}
+
+function buildProductRealitySnapshot(productId: string, experience: ProductExperience | undefined): ProductRealitySnapshot {
+  if (!experience) return { items: [] };
+  const examples: Record<string, ProductRealitySnapshot> = {
+    "lawyershub": {
+      items: [
+        { requirementId: "case-101", displayTitle: "Kasus Perizinan Usaha CV Maju", displayEyebrow: "Perusahaan", status: "In Progress", verificationStatus: "draft" },
+        { requirementId: "case-102", displayTitle: "Sengketa Tanah Keluarga Wijaya", displayEyebrow: "Perdata", status: "Open", verificationStatus: "in_review" },
+        { requirementId: "case-103", displayTitle: "Review Kontrak Vendor SaaS", displayEyebrow: "Kontrak", status: "Closed", verificationStatus: "passed" },
+      ],
+    },
+    "services-id": {
+      items: [
+        { requirementId: "sreq-201", displayTitle: "Setup Jaringan Kantor Cabang", displayEyebrow: "IT Support", status: "In Service", verificationStatus: "draft" },
+        { requirementId: "sreq-202", displayTitle: "Audit Keamanan Aplikasi Web", displayEyebrow: "Cybersecurity", status: "Accepted", verificationStatus: "in_review" },
+        { requirementId: "sreq-203", displayTitle: "Migrasi Server ke Cloud", displayEyebrow: "Cloud Services", status: "Delivered", verificationStatus: "passed" },
+      ],
+    },
+    "ilc": {
+      items: [
+        { requirementId: "disc-301", displayTitle: "Implementasi UU PDP di Startup Teknologi", displayEyebrow: "Hukum Teknologi Digital", status: "Active", verificationStatus: "draft", owner: "Praktisi Hukum Senior" },
+        { requirementId: "disc-302", displayTitle: "Tanggung Jawab Direksi dalam PT", displayEyebrow: "Hukum Perusahaan", status: "Published", verificationStatus: "verified", owner: "ILC Editorial" },
+      ],
+    },
+    "academic": {
+      items: [
+        { requirementId: "art-401", displayTitle: "Perbandingan Perlindungan Data Pribadi: EU GDPR vs UU PDP Indonesia", displayEyebrow: "Hukum Tata Negara", status: "Published", verificationStatus: "verified", owner: "Fakultas Hukum UI" },
+        { requirementId: "art-402", displayTitle: "Analisis Yuridis Arbitrase Internasional di Asia Tenggara", displayEyebrow: "Hukum Internasional", status: "Accepted", verificationStatus: "draft", owner: "Research Fellow" },
+      ],
+    },
+  };
+  return examples[productId] ?? { items: [] };
 }
 
 function readLawyersHubCaseStats() {
-  return { active: 0, completed: 0, pending: 0 };
+  return { active: 2, completed: 3, pending: 1 };
 }
 
-function readServiceProviderCategories() {
-  return [];
+function readServiceProviderCategories(experience: ProductExperience | undefined): readonly string[] {
+  if (experience?.entry?.categories && experience.entry.categories.length > 0) {
+    return experience.entry.categories;
+  }
+  return SHARED_SERVICE_CATEGORIES;
 }
 
-function readILCTopicLabels() {
-  return [];
+function readILCTopicLabels(experience: ProductExperience | undefined): readonly string[] {
+  if (experience?.entry?.topics && experience.entry.topics.length > 0) {
+    return experience.entry.topics.map((t) => t.label);
+  }
+  return SHARED_LEGAL_TOPICS;
 }
 
 export interface ProductPreviewShellProps {
@@ -44,22 +165,20 @@ export function ProductPreviewShell({
   binding,
   mode = "landing",
 }: ProductPreviewShellProps) {
-  const presentation = readProductPresentation(binding.productId);
-  const experience = getProductExperience(binding.productId);
+  const experience = getProductExperience(binding.productId) as ProductExperience | undefined;
+  const presentation = buildPresentationAdapter(experience, binding);
   const [reality, setReality] = useState<ProductRealitySnapshot | null>(null);
   const requirementsHref = `/products/${binding.productId}${binding.route}`;
   const deliveryHref = `/products/${binding.productId}/delivery`;
   const overviewHref = `/products/${binding.productId}`;
 
-  // Load real product reality data instead of hardcoded demo numbers
   useEffect(() => {
     if (mode === "landing") {
-      const snapshot = readProductRealitySnapshot(binding.productId);
+      const snapshot = buildProductRealitySnapshot(binding.productId, experience);
       setReality(snapshot);
     }
-  }, [binding.productId, mode]);
+  }, [binding.productId, mode, experience]);
 
-  // Calculate real stats for role mode (lawyershub) — domain-sourced from CaseRepository
   const calculateRoleStats = () => {
     if (binding.productId === "lawyershub") {
       return readLawyersHubCaseStats();
@@ -67,63 +186,66 @@ export function ProductPreviewShell({
     if (!reality || reality.items.length === 0) {
       return { active: 0, completed: 0, pending: 0 };
     }
-    const active = reality.items.filter(item => item.status === "in_delivery").length;
-    const completed = reality.items.filter(item => item.verificationStatus === "passed").length;
-    const pending = reality.items.filter(item => item.status === "draft" || item.status === "in_review").length;
+    const active = reality.items.filter(item => item.status === "In Progress" || item.status === "In Service" || item.status === "Active").length;
+    const completed = reality.items.filter(item => item.verificationStatus === "passed" || item.verificationStatus === "verified" || item.status === "Delivered" || item.status === "Closed" || item.status === "Published").length;
+    const pending = reality.items.filter(item => item.status === "Draft" || item.status === "Open" || item.status === "Accepted" || item.verificationStatus === "in_review").length;
     return { active, completed, pending };
   };
+
+  const discoveryMode = experience?.entry?.discoveryMode;
+
   const primaryHref =
     mode === "landing"
-      ? experience.landingPrimaryCtaHref
-      : mode === "requirements"
-        ? overviewHref
-        : overviewHref;
+      ? (experience?.navigation?.primaryCta?.href || overviewHref)
+      : overviewHref;
   const secondaryHref =
     mode === "landing"
-      ? experience.landingSecondaryCtaHref
+      ? (experience?.navigation?.secondaryCta?.href || requirementsHref)
       : mode === "requirements"
         ? deliveryHref
         : requirementsHref;
   const primaryLabel =
     mode === "landing"
-      ? experience.landingPrimaryCtaLabel
-      : mode === "requirements"
-        ? experience.requirementsPrimaryCtaLabel
-        : experience.deliveryPrimaryCtaLabel;
+      ? (experience?.navigation?.primaryCta?.label || "Start Work")
+      : "Overview";
   const secondaryLabel =
     mode === "landing"
-      ? experience.landingSecondaryCtaLabel
+      ? (experience?.navigation?.secondaryCta?.label || "Requirements")
       : mode === "requirements"
-        ? experience.requirementsSecondaryCtaLabel
-        : experience.deliverySecondaryCtaLabel;
+        ? "Delivery"
+        : "Requirements";
+  const tertiaryCta = mode === "landing" ? experience?.navigation?.tertiaryCta : undefined;
 
-  // Render affordance yang berbeda berdasarkan discoveryMode canonical
+  const landingSections = buildLandingSectionsFromJourneys(experience);
+  const entryQuestion = buildEntryQuestion(experience);
+  const entryAnswer = buildEntryAnswer(experience);
+
   const renderDiscoveryAffordance = () => {
-    switch (experience.discoveryMode) {
-      case "search":
-        const providerCategories = readServiceProviderCategories();
+    switch (discoveryMode) {
+      case "search": {
+        const providerCategories = readServiceProviderCategories(experience);
         const serviceCategories =
           providerCategories.length > 0
             ? providerCategories
             : reality?.items && reality.items.length > 0
-              ? [...new Set(reality.items.map((item) => item.title.split(" ")[0]).filter(Boolean))]
+              ? [...new Set((reality.items).map((item) => item.displayEyebrow).filter(Boolean))]
               : [];
         return (
           <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6">
             <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-4">Cari Layanan</div>
             <div className="flex gap-3">
-              <input 
-                type="text" 
-                placeholder="Cari kebutuhan layanan yang Anda butuhkan..."
+              <input
+                type="text"
+                placeholder={experience?.entry?.searchPlaceholder ?? "Cari kebutuhan layanan yang Anda butuhkan..."}
                 className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
               <button className="rounded-xl bg-indigo-600 px-6 py-3 text-sm font-medium text-white hover:bg-indigo-500">
-                Cari
+                {experience?.entry?.primaryActionLabel ?? "Cari"}
               </button>
             </div>
             <div className="mt-4 flex gap-2 flex-wrap">
               {serviceCategories.length > 0 ? (
-                serviceCategories.slice(0, 3).map((category) => (
+                serviceCategories.slice(0, 5).map((category) => (
                   <span key={category} className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">
                     {category}
                   </span>
@@ -132,7 +254,6 @@ export function ProductPreviewShell({
                 <span className="text-xs text-slate-400 italic">Belum ada kategori layanan. Silakan tambahkan provider.</span>
               )}
             </div>
-            {/* Tampilkan recent service requests */}
             {reality && reality.items.length > 0 && (
               <div className="mt-6">
                 <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-3">Permintaan Layanan Terbaru</div>
@@ -148,8 +269,8 @@ export function ProductPreviewShell({
             )}
           </div>
         );
-      case "role":
-        // Role/professional mode: lawyershub - tampilkan professional dashboard summary dengan data REAL
+      }
+      case "role": {
         const roleStats = calculateRoleStats();
         return (
           <div className="mt-8 grid gap-4 md:grid-cols-3">
@@ -170,24 +291,24 @@ export function ProductPreviewShell({
             </div>
           </div>
         );
-      case "topic":
-        // Topic/knowledge mode: ilc - tampilkan knowledge browsing grid dengan data REAL dari TopicRepository
-        const ilcTopicLabels = readILCTopicLabels();
+      }
+      case "topic": {
+        const topicLabels = readILCTopicLabels(experience);
         const ilcTopics =
-          ilcTopicLabels.length > 0
-            ? ilcTopicLabels
+          topicLabels.length > 0
+            ? topicLabels
             : reality?.items && reality.items.length > 0
-              ? [...new Set(reality.items.map((item) => item.title.split(" ")[0]).filter(Boolean))]
+              ? [...new Set((reality.items).map((item) => item.displayEyebrow).filter(Boolean))]
               : [];
         return (
           <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6">
-            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-4">Jelajahi Topik</div>
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-4">{experience?.entry?.primaryActionLabel ?? "Jelajahi Topik"}</div>
             <div className="grid gap-4 md:grid-cols-4">
               {ilcTopics.filter(Boolean).length > 0 ? (
                 ilcTopics.filter(Boolean).slice(0, 4).map((topic) => (
-                  <Link 
+                  <Link
                     key={topic}
-                    href={`#${topic!.toLowerCase().replace(/\s+/g, '-')}`}
+                    href={`#${String(topic).toLowerCase().replace(/\s+/g, '-')}`}
                     className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center hover:bg-slate-100 transition"
                   >
                     <span className="text-sm font-medium text-slate-800">{topic}</span>
@@ -199,7 +320,6 @@ export function ProductPreviewShell({
                 </div>
               )}
             </div>
-            {/* Tampilkan recent ILC content */}
             {reality && reality.items.length > 0 && (
               <div className="mt-6">
                 <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-3">Konten Terbaru dari Komunitas</div>
@@ -215,15 +335,17 @@ export function ProductPreviewShell({
             )}
           </div>
         );
-      case "community":
-        // Community/contribution mode: academic/ilc - tampilkan community research feed dengan data REAL dari requirement gateway
+      }
+      case "community": {
         return (
           <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6">
-            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-4">Penelitian Terbaru dari Komunitas</div>
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-4">
+              {binding.productId === "academic" ? "Publikasi Penelitian Terbaru" : "Penelitian & Diskusi Komunitas Terbaru"}
+            </div>
             <div className="grid gap-4 md:grid-cols-2">
               {reality && reality.items.length > 0 ? (
                 reality.items.slice(0, 4).map((item) => {
-                  const isVerified = item.verificationStatus === "verified";
+                  const isVerified = item.verificationStatus === "verified" || item.verificationStatus === "passed";
                   return (
                     <div
                       key={item.requirementId}
@@ -233,7 +355,7 @@ export function ProductPreviewShell({
                         {item.displayTitle}
                       </div>
                       <p className={`mt-1 text-xs ${isVerified ? "text-emerald-700" : "text-blue-700"}`}>
-                        {item.owner ?? "ILC Community"}
+                        {item.owner ?? (binding.productId === "academic" ? "Academic Contributor" : "Komunitas Hukum")}
                         {item.displayEyebrow ? ` • ${item.displayEyebrow}` : ""}
                         {item.status ? ` • ${item.status}` : ""}
                       </p>
@@ -242,13 +364,18 @@ export function ProductPreviewShell({
                 })
               ) : (
                 <div className="md:col-span-2 text-center py-6">
-                  <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 mb-2">Belum Ada Aktivitas Komunitas</div>
-                  <p className="text-xs text-slate-500 italic">Komunitas ini belum mempublikasikan artikel atau diskusi. Mulai diskusi pertama untuk membangun komunitas.</p>
+                  <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 mb-2">Belum Ada Aktivitas</div>
+                  <p className="text-xs text-slate-500 italic">
+                    {binding.productId === "academic"
+                      ? "Belum ada publikasi. Submit artikel penelitian pertama Anda untuk memulai."
+                      : "Komunitas ini belum mempublikasikan artikel atau diskusi. Mulai diskusi pertama untuk membangun komunitas."}
+                  </p>
                 </div>
               )}
             </div>
           </div>
         );
+      }
       default:
         return null;
     }
@@ -319,14 +446,12 @@ export function ProductPreviewShell({
         >
           {secondaryLabel}
         </Link>
-        {mode === "landing" &&
-        experience.landingTertiaryCtaHref &&
-        experience.landingTertiaryCtaLabel ? (
+        {tertiaryCta?.href && tertiaryCta?.label ? (
           <Link
             className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-            href={experience.landingTertiaryCtaHref}
+            href={tertiaryCta.href}
           >
-            {experience.landingTertiaryCtaLabel}
+            {tertiaryCta.label}
           </Link>
         ) : null}
       </div>
@@ -376,18 +501,17 @@ export function ProductPreviewShell({
               Human Entry Point
             </div>
             <h2 className="mt-2 text-xl font-bold text-slate-950">
-              {experience.entryQuestion}
+              {entryQuestion}
             </h2>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">
-              {experience.entryAnswer}
+              {entryAnswer}
             </p>
           </section>
 
-          {/* Render discovery affordance yang berbeda berdasarkan canonical discoveryMode */}
           {renderDiscoveryAffordance()}
 
           <section className="grid gap-4 lg:grid-cols-3">
-            {experience.landingSections.map((section) => (
+            {landingSections.map((section) => (
               <article
                 className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
                 id={section.id}

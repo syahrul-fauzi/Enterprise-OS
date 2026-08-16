@@ -7,7 +7,7 @@ export type ApiPlatformResource =
   | "constitution"
   | "governance";
 
-export type ApiPlatformOperation = "search" | "get" | "execute" | "list";
+export type ApiPlatformOperation = "search" | "get" | "execute" | "list" | "trace";
 
 export type GovernanceEvidenceArtifact =
   | "report"

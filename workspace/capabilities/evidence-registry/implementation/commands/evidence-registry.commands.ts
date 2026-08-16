@@ -31,7 +31,7 @@ export const recordEvidence: RecordEvidenceCommand = {
     const { sessionId, actorId, tenantId, workspaceId, entityRef, entityType, action, details, timestamp } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication - foundation rail)
-    const session = await SessionRepositoryPostgres.byId(sessionId);
+    const session = await SessionRepositoryPostgres.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[evidence.record] Invalid or revoked session - authentication violation");
     }

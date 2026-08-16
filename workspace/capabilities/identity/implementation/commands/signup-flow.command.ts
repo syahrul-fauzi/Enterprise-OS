@@ -10,15 +10,15 @@ import {
   type TenantAggregate,
   type WorkspaceAggregate,
   type MembershipAggregate,
-} from "../contracts/identity.contracts.js";
-import { passwordService, slugifyForTenant } from "../services/password.service.js";
+} from "../contracts/identity.contracts";
+import { passwordService, slugifyForTenant } from "../services/password.service";
 import {
-  UserRepositoryPostgres,
-  TenantRepositoryPostgres,
-  WorkspaceRepositoryPostgres,
-  MembershipRepositoryPostgres,
-} from "../repositories/index.js";
-import { initIdentitySchema } from "../repositories/base.repository.js";
+  getUserRepositoryPostgres,
+  getTenantRepositoryPostgres,
+  getWorkspaceRepositoryPostgres,
+  getMembershipRepositoryPostgres,
+} from "../repositories/index";
+import { initIdentitySchema } from "../repositories/base.repository";
 
 function newUserId(): UserId {
   return UserId(`user-${randomUUID()}`);
@@ -42,7 +42,7 @@ export const SignupFlowInputSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
   displayName: z.string().min(2),
-  productId: z.string().default("services-id.default"),
+  productId: z.string().default("lawyershub"),
 });
 
 export type SignupFlowCommand = CapabilityCommand<
@@ -70,7 +70,7 @@ export const signupFlowCommand: SignupFlowCommand = {
     
     // 1. Create user (PostgreSQL persistent)
     const trimmedEmail = email.trim().toLowerCase();
-    const existingUser = await UserRepositoryPostgres.byEmail(trimmedEmail);
+    const existingUser = await getUserRepositoryPostgres().byEmail(trimmedEmail);
     if (existingUser !== undefined) {
       throw new Error(`[identity.signupFlow] Email already registered: ${trimmedEmail}`);
     }
@@ -83,18 +83,18 @@ export const signupFlowCommand: SignupFlowCommand = {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    await UserRepositoryPostgres.save(userEntity);
+    await getUserRepositoryPostgres().save(userEntity);
 
     // 2. Generate and handle tenant slug collision (PostgreSQL check)
     const emailLocalPart = email.split("@")[0] ?? displayName;
     const slugBase = slugifyForTenant(`${displayName}-${emailLocalPart}`);
     let slug = slugBase;
     let counter = 1;
-    let existingSlug = await TenantRepositoryPostgres.bySlug(slug);
+    let existingSlug = await getTenantRepositoryPostgres().bySlug(slug);
     while (existingSlug !== undefined) {
       counter += 1;
       slug = `${slugBase}-${counter}`;
-      existingSlug = await TenantRepositoryPostgres.bySlug(slug);
+      existingSlug = await getTenantRepositoryPostgres().bySlug(slug);
     }
 
     // 3. Create tenant (PostgreSQL persistent)

@@ -2,7 +2,6 @@
 
 import React from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
-import RequirementView from "../../../../../../capabilities/requirement-management/experience/views/RequirementView";
 import { getProductExperience } from "@repo/presentation-experience";
 import type { ProductPreviewBinding } from "@repo/presentation-types";
 
@@ -19,7 +18,10 @@ export function ProductRequirementsPage({ productId, binding, requirementId }: P
   return (
     <>
       <ProductPreviewShell binding={binding} mode="requirements" />
-      <RequirementView productId={productId} searchParams={searchParams} />
+      <div className="p-8 max-w-4xl mx-auto">
+        <h1 className="text-2xl font-bold mb-4">Requirement Management</h1>
+        <p className="text-gray-600">Requirements workspace for {productId} is coming soon. Core infrastructure is already in place, UI components are being ported to the shared rail.</p>
+      </div>
     </>
   );
 }

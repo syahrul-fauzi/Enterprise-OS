@@ -1,8 +1,8 @@
 // Test lengkap untuk CONSULT-L006 Technical Operations Vertical: Membuktikan cross-domain reuse
 import assert from "node:assert/strict";
 import test from "node:test";
-import { capabilityRegistry } from "../../../packages/core/kernel/src/registry/capability-command-registry.js";
-import { ConsultationRepositoryInMemory } from "../implementation/repository/consultation.repository.js";
+import { capabilityRegistry } from "../../../packages/core/kernel/src/registry/capability-command-registry";
+import { ConsultationRepositoryInMemory } from "../implementation/repository/consultation.repository";
 
 test("Datacenter Server Issue Longitudinal Consultation Flow (CONSULT-L006 Cross-Domain Proof)", async () => {
   // Setup test session (simulasi SRE yang valid)

@@ -1,21 +1,21 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { createUserCommand } from "./create-user.command.js";
-import { loginUserCommand, createSessionCommand } from "./login-user.command.js";
-import { logoutUserCommand } from "./logout-user.command.js";
-import { createTenantCommand } from "./create-tenant.command.js";
-import { createWorkspaceCommand } from "./create-workspace.command.js";
-import { createMembershipCommand } from "./create-membership.command.js";
-import { signupFlowCommand } from "./signup-flow.command.js";
-import { createTenantWithSlugResolutionCommand } from "./create-tenant-with-slug-resolution.command.js";
-import { getTenantByIdCommand } from "./get-tenant-by-id.command.js";
-import { getWorkspacesByTenantCommand } from "./get-workspaces-by-tenant.command.js";
-import { loginFlowCommand } from "./login-flow.command.js";
-import { getWorkspaceByIdCommand } from "./get-workspace-by-id.command.js";
-import { createWorkspaceFlowCommand } from "./create-workspace-flow.command.js";
-import { getMemberByIdCommand } from "./get-member-by-id.command.js";
-import { getMembersByInstitutionCommand } from "./get-members-by-institution.command.js";
-import { signupAndSessionCommand } from "./signup-and-session.command.js";
-import { getSessionByIdCommand } from "./get-session-by-id.command.js";
+import { createUserCommand } from "./create-user.command";
+import { loginUserCommand, createSessionCommand } from "./login-user.command";
+import { logoutUserCommand } from "./logout-user.command";
+import { createTenantCommand } from "./create-tenant.command";
+import { createWorkspaceCommand } from "./create-workspace.command";
+import { createMembershipCommand } from "./create-membership.command";
+import { signupFlowCommand } from "./signup-flow.command";
+import { createTenantWithSlugResolutionCommand } from "./create-tenant-with-slug-resolution.command";
+import { getTenantByIdCommand } from "./get-tenant-by-id.command";
+import { getWorkspacesByTenantCommand } from "./get-workspaces-by-tenant.command";
+import { loginFlowCommand } from "./login-flow.command";
+import { getWorkspaceByIdCommand } from "./get-workspace-by-id.command";
+import { createWorkspaceFlowCommand } from "./create-workspace-flow.command";
+import { getMemberByIdCommand } from "./get-member-by-id.command";
+import { getMembersByInstitutionCommand } from "./get-members-by-institution.command";
+import { signupAndSessionCommand } from "./signup-and-session.command";
+import { getSessionByIdCommand } from "./get-session-by-id.command";
 
 export const identityCommands: Readonly<Record<string, CapabilityCommand>> = {
   "identity.registerUser": createUserCommand,
@@ -38,11 +38,11 @@ export const identityCommands: Readonly<Record<string, CapabilityCommand>> = {
   "identity.getSessionById": getSessionByIdCommand,
 } as const;
 
-export * from "./create-user.command.js";
-export * from "./login-user.command.js";
-export * from "./logout-user.command.js";
-export * from "./create-tenant.command.js";
-export * from "./create-workspace.command.js";
-export * from "./create-membership.command.js";
-export * from "./signup-flow.command.js";
-export * from "./create-tenant-with-slug-resolution.command.js";
+export * from "./create-user.command";
+export * from "./login-user.command";
+export * from "./logout-user.command";
+export * from "./create-tenant.command";
+export * from "./create-workspace.command";
+export * from "./create-membership.command";
+export * from "./signup-flow.command";
+export * from "./create-tenant-with-slug-resolution.command";

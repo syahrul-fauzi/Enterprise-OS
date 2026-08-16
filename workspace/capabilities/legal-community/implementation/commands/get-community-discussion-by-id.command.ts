@@ -1,10 +1,24 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { CommunityDiscussionRepositoryInMemory } from "../repository/community.repository";
+import { 
+  CommunityDiscussionRepositoryInMemory, 
+  getCommunityDiscussionRepositoryPostgres
+} from "../repository/index";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index";
 import type { DiscussionId } from "../contracts/community.contracts";
+import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
+
+// Environment-based repository toggle (production rail pattern)
+const discussionRepository = process.env.DATABASE_URL 
+  ? getCommunityDiscussionRepositoryPostgres() 
+  : CommunityDiscussionRepositoryInMemory;
+const sessionRepository = process.env.DATABASE_URL 
+  ? getSessionRepositoryPostgres() 
+  : SessionRepositoryInMemory;
 
 export const GetCommunityDiscussionByIdInputSchema = z.object({
   discussionId: z.string().min(1).startsWith("disc-"),
+  sessionId: z.string().min(1),
 });
 
 export type GetCommunityDiscussionByIdInput = z.infer<typeof GetCommunityDiscussionByIdInputSchema>;
@@ -25,17 +39,36 @@ export type GetCommunityDiscussionByIdOutput = {
   readonly viewCount: number;
 } | undefined;
 
-export const getCommunityDiscussionByIdCommand: CapabilityCommand = {
+export const getCommunityDiscussionByIdCommand: CapabilityCommand<GetCommunityDiscussionByIdInput, Promise<GetCommunityDiscussionByIdOutput>> = {
   kind: "command",
   name: "communityDiscussion.getById",
-  version: "1.0.0",
-  execute(input: unknown) {
+  version: "2.0.0",
+  async execute(input: unknown) {
+    // Initialize Postgres schema only when in production mode
+    if (process.env.DATABASE_URL) {
+      await initIdentitySchema();
+    }
+    
     const parsed = GetCommunityDiscussionByIdInputSchema.parse(input);
-    const { discussionId } = parsed;
+    const { discussionId, sessionId } = parsed;
 
-    const d = CommunityDiscussionRepositoryInMemory.byId(discussionId as unknown as DiscussionId);
+    // Validate session exists and is active (authentication + tenant isolation foundation)
+    const session = await sessionRepository.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[communityDiscussion.getById] Invalid or revoked session - authentication violation");
+    }
+
+    // Auto-populate isolation context from trusted session
+    const { tenantId, workspaceId, actorId } = session;
+
+    const d = await discussionRepository.byId(discussionId as unknown as DiscussionId);
     if (d === undefined) {
       return undefined;
+    }
+
+    // Tenant isolation enforcement: ensure discussion belongs to current tenant/workspace
+    if ((d as any).tenantId !== tenantId || (d as any).workspaceId !== workspaceId) {
+      throw new Error("[communityDiscussion.getById] Discussion does not belong to the current tenant/workspace - access denied");
     }
 
     return {

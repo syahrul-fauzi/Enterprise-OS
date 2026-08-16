@@ -1,1 +1,1 @@
-export { createConsultation, triageConsultation, listConsultationsByWorkspace, resolveConsultation, consultationCommands } from "./consultation.commands.js";
+export { createConsultation, triageConsultation, listConsultationsByWorkspace, resolveConsultation, consultationCommands } from "./consultation.commands";

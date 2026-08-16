@@ -1,5 +1,6 @@
 {
   "name": "@repo/presentation-features",
+  "type": "module",
   "version": "0.1.0-alpha.4",
   "sideEffects": [
     "**/*.css"
@@ -26,7 +27,8 @@
     "@repo/presentation-ui-system": "workspace:*"
   },
   "peerDependencies": {
-    "react": "^19"
+    "react": "^19",
+    "next": "^16.2.0"
   },
   "devDependencies": {
     "@repo/config-eslint": "workspace:*",

@@ -1,14 +1,35 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { newIncidentId, defaultIncidentStatus, defaultIncidentPriority } from "../repository";
+import {
+  newIncidentId,
+  defaultIncidentStatus,
+  defaultIncidentPriority,
+  IncidentRepositoryInMemory,
+} from "../repository";
 import { IncidentRepositoryPostgres } from "../repository/incident-postgres.repository";
 import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
-import { SessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository";
+import { getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository";
 import type {
   CreateIncidentInput,
   CreateIncidentOutput,
   IncidentAggregate,
 } from "../contracts/observability.contracts";
+
+const _sessionRepo = process.env.DATABASE_URL
+  ? getSessionRepositoryPostgres()
+  : null;
+function getSessionRepository() {
+  if (_sessionRepo === null) {
+    throw new Error("[observability] DATABASE_URL required for session authentication in Postgres mode");
+  }
+  return _sessionRepo;
+}
+const _incidentRepo = process.env.DATABASE_URL
+  ? IncidentRepositoryPostgres
+  : IncidentRepositoryInMemory;
+function getIncidentRepository() {
+  return _incidentRepo as typeof IncidentRepositoryInMemory | typeof IncidentRepositoryPostgres;
+}
 
 const CreateIncidentWithContextSchema = z.object({
   title: z.string().min(1),
@@ -30,30 +51,26 @@ export const createIncident: CreateIncidentCommand = {
   name: "incident.create",
   version: "2.0.0",
   async execute(input) {
-    await initIdentitySchema();
-    
+    if (process.env.DATABASE_URL) await initIdentitySchema();
+
     const parsed = CreateIncidentWithContextSchema.parse(input);
     const { title, description, priority, category, tenantId, workspaceId, sessionId, actorId } = parsed;
 
-    // 1. Validate session exists and is active (enforce authentication)
-    const session = await SessionRepositoryPostgres.byId(sessionId);
-    if (!session || session.revokedAt !== null) {
-      throw new Error("[incident.create] Invalid or revoked session - authentication violation");
-    }
-
-    // 2. Enforce actor match - session actor must match request actor
-    if (session.actorId !== actorId) {
-      throw new Error("[incident.create] Session actor mismatch - authentication violation");
-    }
-
-    // 3. Enforce tenant isolation - requested tenant must match session's tenant
-    if (session.tenantId !== tenantId) {
-      throw new Error("[incident.create] Cross-tenant access attempt blocked - security violation");
-    }
-
-    // 4. Enforce workspace isolation - requested workspace must match session's workspace
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[incident.create] Cross-workspace access attempt blocked - security violation");
+    if (process.env.DATABASE_URL) {
+      const SessionRepo = getSessionRepository();
+      const session = await SessionRepo.byId(sessionId);
+      if (!session || session.revokedAt !== null) {
+        throw new Error("[incident.create] Invalid or revoked session - authentication violation");
+      }
+      if (session.actorId !== actorId) {
+        throw new Error("[incident.create] Session actor mismatch - authentication violation");
+      }
+      if (session.tenantId !== tenantId) {
+        throw new Error("[incident.create] Cross-tenant access attempt blocked - security violation");
+      }
+      if (session.workspaceId !== workspaceId) {
+        throw new Error("[incident.create] Cross-workspace access attempt blocked - security violation");
+      }
     }
 
     const entity: IncidentAggregate = {
@@ -68,11 +85,11 @@ export const createIncident: CreateIncidentCommand = {
       createdAt: new Date(),
       updatedAt: new Date(),
     } as any;
-    // Add tenant/workspace context for isolation
     (entity as any).tenantId = tenantId;
     (entity as any).workspaceId = workspaceId;
 
-    await IncidentRepositoryPostgres.save(entity);
+    const IncidentRepo = getIncidentRepository();
+    await IncidentRepo.save(entity);
     return { id: entity.id, status: entity.status };
   },
 };

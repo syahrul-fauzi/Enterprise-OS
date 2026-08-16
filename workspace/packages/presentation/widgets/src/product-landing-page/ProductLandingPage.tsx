@@ -34,7 +34,7 @@ export function ProductLandingPage({ productId, binding }: ProductLandingPagePro
       <ProductPreviewShell binding={binding} mode="landing" />
       {showCreateForm ? (
         <ProductCreateForm
-          productId={createFormProductId}
+          productId={(createFormProductId as "lawyershub" | "services-id" | "ilc" | "academic") ?? "lawyershub"}
           onCreated={handleCreateSuccess}
         />
       ) : null}

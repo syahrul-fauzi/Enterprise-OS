@@ -1,5 +1,73 @@
 import fs from "fs";
 import path from "path";
+import { DigestEngine } from "@repo/core-kernel";
+
+type RequirementId = (id: string) => string;
+const RequirementId: RequirementId = (id) => id;
+
+interface RequirementLinkedAggregate {
+  readonly id: string;
+  readonly title: string;
+  readonly summary?: string;
+  readonly description?: string;
+  readonly priority: string;
+  readonly owner?: string;
+  readonly source?: string;
+  readonly linkedCapabilityIds: readonly string[];
+  readonly acceptanceCriteria: readonly string[];
+  readonly status: string;
+  readonly createdAt: Date;
+  readonly approvedAt?: Date;
+  readonly implementedAt?: Date;
+}
+
+interface RequirementGetQuery {
+  readonly id: string;
+}
+
+interface RequirementServiceStub {
+  getRequirement(query: RequirementGetQuery): RequirementLinkedAggregate | undefined;
+}
+
+interface DeliverySearchQuery {
+  readonly requirementId: string;
+  readonly coverage: "all" | "partial";
+  readonly limit: number;
+  readonly offset: number;
+}
+
+interface DeliverySearchResultItem {
+  readonly traceability: {
+    readonly complete: boolean;
+    readonly artifactCount: number;
+    readonly evidenceArtifactCount: number;
+    readonly verificationArtifactCount: number;
+    readonly gaps: readonly string[];
+  };
+  readonly evidence: {
+    readonly matchedCount: number;
+    readonly requirementRefs: readonly string[];
+    readonly samplePaths: readonly string[];
+    readonly kindBreakdown: Readonly<Record<string, number>>;
+    readonly latestUpdatedAt: string | null;
+  };
+}
+
+interface DeliveryGatewayStub {
+  search(query: DeliverySearchQuery): { readonly items: readonly DeliverySearchResultItem[] };
+}
+
+const requirementService: RequirementServiceStub = {
+  getRequirement: () => {
+    throw new Error("requirementService not available in proof-ledger standalone context. Requirement must be injected.");
+  },
+};
+
+const requirementDeliveryGatewayService: DeliveryGatewayStub = {
+  search: () => {
+    throw new Error("requirementDeliveryGatewayService not available in proof-ledger standalone context. Delivery must be injected.");
+  },
+};
 
 export interface ArtifactNode {
   readonly id: string;
@@ -97,7 +165,7 @@ export function computeArtifactGraphForRequirement(requirementId: string): Requi
     governance_status: requirement.status === "verified" ? "VALID" : "PENDING",
   };
 
-  const implementationNodes: ArtifactNode[] = requirement.linkedCapabilityIds.map((capId) => ({
+  const implementationNodes: ArtifactNode[] = requirement.linkedCapabilityIds.map((capId: string) => ({
     id: `implementation:${capId}`,
     type: "implementation",
     label: `Implementation for ${capId}`,
@@ -105,7 +173,7 @@ export function computeArtifactGraphForRequirement(requirementId: string): Requi
     governance_status: "VALID",
   }));
 
-  const evidenceNodes: ArtifactNode[] = delivery.evidence.samplePaths.map((path, index) => ({
+  const evidenceNodes: ArtifactNode[] = delivery.evidence.samplePaths.map((path: string, index: number) => ({
     id: `evidence:${index}`,
     type: "evidence",
     label: `Evidence artifact ${index + 1}`,
@@ -117,24 +185,24 @@ export function computeArtifactGraphForRequirement(requirementId: string): Requi
     requirementNode,
     ...implementationNodes,
     ...evidenceNodes,
-    ...globalGraph.nodes.filter((n) => 
-      requirement.linkedCapabilityIds.some((capId) => n.id === `capability:${capId}`)
+    ...globalGraph.nodes.filter((n: ArtifactNode) => 
+      requirement.linkedCapabilityIds.some((capId: string) => n.id === `capability:${capId}`)
     ),
   ];
 
   const edges: ArtifactEdge[] = [
-    ...implementationNodes.map((implNode) => ({
+    ...implementationNodes.map((implNode: ArtifactNode) => ({
       from: requirementNode.id,
       to: implNode.id,
       relation: "implements" as const,
     })),
-    ...evidenceNodes.map((evNode, index) => ({
+    ...evidenceNodes.map((evNode: ArtifactNode, index: number) => ({
       from: implementationNodes[0]?.id || requirementNode.id,
       to: evNode.id,
       relation: "verified_by" as const,
     })),
-    ...globalGraph.edges.filter((e) =>
-      requirement.linkedCapabilityIds.some((capId) => e.from === `capability:${capId}` || e.to === `capability:${capId}`)
+    ...globalGraph.edges.filter((e: ArtifactEdge) =>
+      requirement.linkedCapabilityIds.some((capId: string) => e.from === `capability:${capId}` || e.to === `capability:${capId}`)
     ),
   ];
 

@@ -5,8 +5,8 @@ import { useEffect, useState, useCallback } from "react";
 import { useWorkspaceSession } from "@repo/presentation-hooks";
 import { WorkspaceEntryPanel } from "@repo/presentation-widgets";
 import { CaseWorkspace } from "@capabilities/legal-case/experience/workspaces/CaseWorkspace";
-import { ConsultationWorkspace } from "@capabilities/consultation/experience/workspaces/ConsultationWorkspace";
 import ServicesWorkspace from "@capabilities/service-directory/experience/workspaces/ServicesWorkspace";
+import { CommunityWorkspace } from "@capabilities/legal-community/experience/workspaces/CommunityWorkspace";
 
 interface TenantPayload {
   readonly ok: boolean;
@@ -73,7 +73,7 @@ export default function WorkspacePage({
   const [tenantName, setTenantName] = useState("");
   const [tenantSlug, setTenantSlug] = useState("");
   const [workspaceName, setWorkspaceName] = useState("");
-  const [workspaceProductId, setWorkspaceProductId] = useState("services-id.default");
+  const [workspaceProductId, setWorkspaceProductId] = useState("lawyershub");
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -156,7 +156,7 @@ export default function WorkspacePage({
       }
       setWorkspaceFormOpen(false);
       setWorkspaceName("");
-      setWorkspaceProductId("services-id.default");
+      setWorkspaceProductId("services-id");
       await loadData();
     } catch (raw) {
       setError(raw instanceof Error ? raw.message : String(raw));
@@ -312,14 +312,18 @@ export default function WorkspacePage({
                 required
                 className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-950/20"
               />
-              <input
-                type="text"
+              <select
                 value={workspaceProductId}
                 onChange={(e) => setWorkspaceProductId(e.target.value)}
-                placeholder="Product ID (e.g. services-id.default)"
                 required
-                className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-950/20"
-              />
+                className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-950/20 appearance-none bg-no-repeat bg-right pr-10"
+                style={{ backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")", backgroundPosition: "right 0.5rem center", backgroundSize: "1.5em 1.5em" }}
+              >
+                <option value="lawyershub">🟢 LawyersHub — Kelola Kasus Hukum (First Light · D1.3 Certified)</option>
+                <option value="services-id">� Services.ID — Permintaan & Direktori Layanan (D1.3 Certified)</option>
+                <option value="ilc">🟢 ILC — Komunitas & Konten Hukum (D1.3 Certified · Community Surface)</option>
+                <option value="academic">🟢 Academic — Riset & Publikasi (LEVERAGE · Shared Primitives)</option>
+              </select>
               <div className="flex gap-2">
                 <button
                   type="submit"
@@ -469,16 +473,80 @@ export default function WorkspacePage({
                             Buat Kasus Hukum Baru
                           </button>
                         )}
+                        {/* Add Create Service Request button for Services.ID workspaces */}
+                        {ws.productId.startsWith("services-id") && (
+                          <button
+                            onClick={async () => {
+              const resp = await fetch("/api/service-requests/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  title: "Permintaan Layanan Baru",
+                  category: "IT Support",
+                }),
+              });
+              if (resp.ok) {
+                // Trigger a manual refresh of the ServicesWorkspace data
+                window.dispatchEvent(new CustomEvent('service-requests:refresh'));
+              }
+            }}
+                            className="mt-3 w-full rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700"
+                            data-testid="create-service-request-button"
+                          >
+                            Buat Permintaan Layanan Baru
+                          </button>
+                        )}
+                        {/* Add Create Discussion button for ILC workspaces */}
+                        {ws.productId === "ilc" && (
+                          <button
+                            onClick={async () => {
+              const resp = await fetch("/api/community/discussions/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({
+                  title: "Diskusi Hukum: Topik Baru",
+                  topicLabel: "Hukum Perusahaan",
+                  summary: "Mari diskusikan praktik terbaru seputar topik ini.",
+                }),
+              });
+              if (resp.ok) {
+                window.dispatchEvent(new CustomEvent('community:refresh'));
+              }
+            }}
+                            className="mt-3 w-full rounded-lg bg-purple-600 px-3 py-2 text-xs font-semibold text-white hover:bg-purple-700"
+                            data-testid="create-discussion-button"
+                          >
+                            Mulai Diskusi Baru
+                          </button>
+                        )}
+                        {/* Add Create Article button for ILC & Academic workspaces (shared legal-community rail) */}
+                        {(ws.productId === "ilc" || ws.productId === "academic") && (
+                          <button
+                            onClick={async () => {
+              const resp = await fetch("/api/community/articles/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({
+                  title: "Artikel: Tinjauan Hukum Terbaru",
+                  topicLabel: ws.productId === "academic" ? "Hukum Tata Negara" : "Hukum Teknologi Digital",
+                  summary: "Analisis yuridis perkembangan regulasi dan implikasinya.",
+                }),
+              });
+              if (resp.ok) {
+                window.dispatchEvent(new CustomEvent('community:refresh'));
+              }
+            }}
+                            className="mt-3 w-full rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
+                            data-testid={ws.productId === "academic" ? "create-academic-article-button" : "create-article-button"}
+                          >
+                            {ws.productId === "academic" ? "Publikasi Artikel Akademis Baru" : "Tulis Artikel Hukum Baru"}
+                          </button>
+                        )}
                       </div>
                     ))}
                   </div>
-
-                  {/* Consultation Listing for LawyersHub workspaces - consultation→action workflow */}
-                  {tenantData && tenantData.workspaces.some(ws => ws.productId === "lawyershub") && (
-                    <div className="mt-8">
-                      <ConsultationWorkspace />
-                    </div>
-                  )}
 
                   {/* Case Listing for LawyersHub workspaces - canonical presentation consumption */}
                   {tenantData && tenantData.workspaces.some(ws => ws.productId === "lawyershub") && (
@@ -491,6 +559,13 @@ export default function WorkspacePage({
                   {tenantData && tenantData.workspaces.some(ws => ws.productId.startsWith("services-id")) && (
                     <div className="mt-8">
                       <ServicesWorkspace />
+                    </div>
+                  )}
+
+                  {/* Community Hub Listing for ILC & Academic workspaces — shared legal-community rail, 2 distinct business jobs */}
+                  {tenantData && tenantData.workspaces.some(ws => ws.productId === "ilc" || ws.productId === "academic") && (
+                    <div className="mt-8">
+                      <CommunityWorkspace />
                     </div>
                   )}
                 </div>

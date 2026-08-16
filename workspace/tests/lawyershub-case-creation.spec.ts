@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import fs from 'node:fs';
 
 // Declare global variables to avoid TypeScript errors
 declare global {
@@ -15,13 +16,12 @@ declare global {
 test.describe('LawyersHub Case Creation Journey (BATTLE-1B)', () => {
   // Store global test user data accessible to all tests
   const timestamp = Date.now();
-  global.caseTestUserEmail = `lawyershub-case-${timestamp}@example.test`;
-  global.caseTestUserPassword = 'secure-password-123!';
+  (globalThis as any).caseTestUserEmail = `lawyershub-case-${timestamp}@example.test`;
+  (globalThis as any).caseTestUserPassword = 'secure-password-123!';
   const displayName = 'Lawyer Test User';
 
   test('L1-L5: Signup → LawyersHub Workspace → Create Case → Verify Persistence', async ({ page, context }) => {
     // Create artifacts directory if not exists
-    const fs = require('fs');
     if (!fs.existsSync('./artifacts')) fs.mkdirSync('./artifacts');
     
     // Step 1: GET /signup - Verify page loads
@@ -39,8 +39,8 @@ test.describe('LawyersHub Case Creation Journey (BATTLE-1B)', () => {
 
     // Fill signup form
     await page.getByLabel('Display Name *').fill(displayName);
-    await page.getByLabel('Email *').fill(global.caseTestUserEmail);
-    await page.getByLabel('Password *').fill(global.caseTestUserPassword);
+    await page.getByLabel('Email *').fill((globalThis as any).caseTestUserEmail);
+    await page.getByLabel('Password *').fill((globalThis as any).caseTestUserPassword);
 
     // Step 2: Submit signup and capture response
     console.log('\n[1B-DEBUG-001] === STEP 2: SUBMIT SIGNUP ===');
@@ -104,8 +104,8 @@ test.describe('LawyersHub Case Creation Journey (BATTLE-1B)', () => {
     // Use the FIRST workspace (the one that's active in the session cookie - session hasn't been updated after creating new workspace)
     // This is a frontend limitation - after creating new workspace, the app should refresh the session cookie
     const workspaceIdRaw = await workspaceIdElements.nth(0).innerText();
-    global.caseWorkspaceId = workspaceIdRaw.replace('ID: ', '');
-    console.log(`[1B-DEBUG-001] ✅ Using workspace ID for case creation (matches session): ${global.caseWorkspaceId}`);
+    (globalThis as any).caseWorkspaceId = workspaceIdRaw.replace('ID: ', '');
+    console.log(`[1B-DEBUG-001] ✅ Using workspace ID for case creation (matches session): ${(globalThis as any).caseWorkspaceId}`);
     await page.screenshot({ path: 'artifacts/lawyershub-workspace-created.png', fullPage: true });
 
     // Step 6: Verify create-case button exists (only for lawyershub)
@@ -117,7 +117,7 @@ test.describe('LawyersHub Case Creation Journey (BATTLE-1B)', () => {
     // Step 7: Click create case button and intercept API call
     console.log('\n[1B-DEBUG-001] === STEP 7: CREATE LEGAL CASE ===');
     const caseCreateRequestPromise = page.waitForResponse(resp => 
-      resp.url().includes('/api/cases/create') && resp.request().method() === 'POST'
+      resp.url().includes('/api/capabilities/lawyershub/case.create') && resp.request().method() === 'POST'
     );
     
     // Click the create case button - uses event-driven cases:refresh, NOT page reload
@@ -130,9 +130,9 @@ test.describe('LawyersHub Case Creation Journey (BATTLE-1B)', () => {
     caseCreateStatus = caseCreateResponse.status();
     const caseData = await caseCreateResponse.json();
     createdCaseId = caseData.id;
-    global.createdCaseId = createdCaseId;
+    (globalThis as any).createdCaseId = createdCaseId;
     console.log(`[1B-DEBUG-001] POST /api/cases/create STATUS: ${caseCreateStatus}`);
-    console.log(`[1B-DEBUG-001] ✅ Case created with ID: ${global.createdCaseId}`);
+    console.log(`[1B-DEBUG-001] ✅ Case created with ID: ${(globalThis as any).createdCaseId}`);
     
     // Verify the API call succeeded
     expect(caseCreateStatus).toBe(201);
@@ -155,7 +155,7 @@ test.describe('LawyersHub Case Creation Journey (BATTLE-1B)', () => {
     
     // Verify we're still authenticated and same workspace
     const workspaceIdAfterRefresh = await page.locator('[data-testid="workspace-id"]').innerText().then(t => t.replace('ID: ', ''));
-    expect(workspaceIdAfterRefresh).toEqual(global.caseWorkspaceId);
+    expect(workspaceIdAfterRefresh).toEqual((globalThis as any).caseWorkspaceId);
     console.log(`[1B-DEBUG-001] ✅ Same workspace persists after refresh: ${workspaceIdAfterRefresh}`);
     
     // Step 8.1: Verify case is still visible after refresh
@@ -163,11 +163,11 @@ test.describe('LawyersHub Case Creation Journey (BATTLE-1B)', () => {
         // Wait for loading state to disappear after page refresh
         await page.waitForSelector('text/Loading cases...', { state: 'detached', timeout: 15000 });
         // Simple, reliable locator - font-mono spans are rare and always contain case IDs in CaseCard
-        const caseIdSpanAfterRefresh = page.locator('span.font-mono').filter({ hasText: global.createdCaseId });
+        const caseIdSpanAfterRefresh = page.locator('span.font-mono').filter({ hasText: (globalThis as any).createdCaseId });
         await caseIdSpanAfterRefresh.waitFor({ timeout: 15000 });
         const caseAfterRefresh = await caseIdSpanAfterRefresh.isVisible();
         expect(caseAfterRefresh).toBe(true);
-        console.log(`[1B-DEBUG-001] ✅ Case ${global.createdCaseId} visible in list after refresh - persistence verified!`);
+        console.log(`[1B-DEBUG-001] ✅ Case ${(globalThis as any).createdCaseId} visible in list after refresh - persistence verified!`);
     
     await page.screenshot({ path: 'artifacts/lawyershub-after-case-creation.png', fullPage: true });
 
@@ -216,7 +216,7 @@ test.describe('LawyersHub Case Creation Journey (BATTLE-1B)', () => {
     
     // Create case for User A
     const caseARequestPromise = pageA.waitForResponse(resp => 
-      resp.url().includes('/api/cases/create') && resp.request().method() === 'POST'
+      resp.url().includes('/api/capabilities/lawyershub/case.create') && resp.request().method() === 'POST'
     );
     await pageA.getByTestId('create-case-button').click();
     let caseAId = null;

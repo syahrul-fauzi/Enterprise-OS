@@ -1,10 +1,10 @@
-import { PostgresRepository } from "./base.repository.js";
+import { PostgresRepository } from "./base.repository";
 import {
   TenantId,
   WorkspaceId,
   type WorkspaceAggregate,
   type WorkspaceRepository,
-} from "../contracts/identity.contracts.js";
+} from "../contracts/identity.contracts";
 
 // PostgreSQL-backed workspace repository implementation
 class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements WorkspaceRepository {
@@ -93,4 +93,23 @@ class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements
   }
 }
 
-export const WorkspaceRepositoryPostgres: WorkspaceRepository = new WorkspaceRepositoryPostgresImpl();
+let _instance: WorkspaceRepository | null = null;
+export function getWorkspaceRepositoryPostgres(): WorkspaceRepository {
+  if (!_instance) {
+    _instance = new WorkspaceRepositoryPostgresImpl();
+  }
+  return _instance;
+}
+
+const _lazyPgWorkspaceRepo: WorkspaceRepository = new Proxy({} as WorkspaceRepository, {
+  get(_target: any, prop: string | symbol) {
+    const real = getWorkspaceRepositoryPostgres();
+    const method = (real as any)[prop];
+    if (typeof method === "function") {
+      return method.bind(real);
+    }
+    return method;
+  },
+});
+
+export const WorkspaceRepositoryPostgres = _lazyPgWorkspaceRepo;

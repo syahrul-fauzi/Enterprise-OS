@@ -114,4 +114,25 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
   }
 }
 
-export const CaseRepositoryPostgres: CaseRepository = new CaseRepositoryPostgresImpl();
+// Lazy initialization function to avoid eager Postgres pool creation
+let caseRepositoryPostgresInstance: CaseRepositoryPostgresImpl | null = null;
+
+export function getCaseRepositoryPostgres(): CaseRepository {
+  if (!caseRepositoryPostgresInstance) {
+    caseRepositoryPostgresInstance = new CaseRepositoryPostgresImpl();
+  }
+  return caseRepositoryPostgresInstance;
+}
+
+const _lazyPgCaseRepo: CaseRepository = new Proxy({} as CaseRepository, {
+  get(_target: any, prop: string | symbol) {
+    const real = getCaseRepositoryPostgres();
+    const method = (real as any)[prop];
+    if (typeof method === "function") {
+      return method.bind(real);
+    }
+    return method;
+  },
+});
+
+export const CaseRepositoryPostgres = _lazyPgCaseRepo;

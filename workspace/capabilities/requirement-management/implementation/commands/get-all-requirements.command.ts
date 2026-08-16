@@ -1,7 +1,7 @@
+import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
-import type { CapabilityCommand } from "@repo/core-capability-registry";
-import { RequirementRepositoryCurrent } from "../repository";
-import type { RequirementAggregate } from "../contracts";
+import { RequirementRepositoryCurrent } from "../repository/index";
+import type { RequirementAggregate } from "../contracts/index";
 
 export const GetAllRequirementsInputSchema = z.object({
   productId: z.string().min(1).default("academic"),

@@ -112,7 +112,7 @@ test.describe('Services.ID Service Request Journey (BATTLE-1C)', () => {
     // Step 7: Click create service request button to open modal, fill form, submit
     console.log('\n[1C-DEBUG-001] === STEP 7: CREATE SERVICE REQUEST ===');
     const serviceRequestCreatePromise = page.waitForResponse(resp => 
-      resp.url().includes('/api/service-requests/create') && resp.request().method() === 'POST'
+      resp.url().includes('/api/capabilities/services-id/createServiceRequest') && resp.request().method() === 'POST'
     );
     
     // Click the create service request button - opens modal first (Services.ID pattern)
@@ -130,7 +130,7 @@ test.describe('Services.ID Service Request Journey (BATTLE-1C)', () => {
     serviceRequestCreateStatus = serviceRequestResponse.status();
     const serviceRequestData = await serviceRequestResponse.json();
     createdServiceRequestId = serviceRequestData.id;
-    console.log(`[1C-DEBUG-001] POST /api/service-requests/create STATUS: ${serviceRequestCreateStatus}`);
+    console.log(`[1C-DEBUG-001] POST /api/capabilities/services-id/createServiceRequest STATUS: ${serviceRequestCreateStatus}`);
     console.log(`[1C-DEBUG-001] ✅ Service request created with ID: ${createdServiceRequestId}`);
     
     // Verify the API call succeeded
@@ -215,7 +215,7 @@ test.describe('Services.ID Service Request Journey (BATTLE-1C)', () => {
     
     // Create service request for User A
     const serviceARequestPromise = pageA.waitForResponse(resp => 
-      resp.url().includes('/api/service-requests/create') && resp.request().method() === 'POST'
+      resp.url().includes('/api/capabilities/services-id/createServiceRequest') && resp.request().method() === 'POST'
     );
     await pageA.getByTestId('create-service-request-button').click();
     // Fill modal form for User A's service request

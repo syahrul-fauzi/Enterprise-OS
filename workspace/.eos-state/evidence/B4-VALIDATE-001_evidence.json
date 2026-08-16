@@ -1,0 +1,53 @@
+{
+  "work_id": "B4-VALIDATE-001",
+  "product": "LawyersHub",
+  "phase": "RECON + STRUCTURAL SIMULATION COMPLETE",
+  "status": "PENDING_UNBRIEFED_HUMAN_OBSERVER",
+  "recon_date": "2026-08-15",
+  "screenshot_evidence": "/root/Enterprise-OS/workspace/.eos-state/evidence/b4-validation/b4-lawyershub-landing.png",
+  "snapshot_ref_count": 15,
+  "snapshot_interactive_refs": 6,
+  "page_url": "http://localhost:3004/products/lawyershub",
+  "page_title": "lawyershub - landing",
+  "structural_observer_assessment": {
+    "what_product_is_for": {
+      "h1_heading": "lawyershub",
+      "h2_form_heading": "Buat Legal Matter (Kasus) Baru",
+      "workflow_description": "Catat legal matter baru untuk klien — berjalan melalui workflow Draft → Open → In Progress → Closed.",
+      "trust_heading": "Real legal matters with visible accountability",
+      "trust_body": "These are real legal work records with supporting evidence and visible progress. Trust comes from accountable activity, not empty legal-tech claims."
+    },
+    "natural_first_action_options": [
+      "Isi form Judul Kasus + Prioritas + Deskripsi → klik 'Buat Kasus'",
+      "Klik link 'Start Work' atau 'Requirements' di nav atas"
+    ],
+    "primary_cta_button": "Buat Kasus",
+    "expected_product_specific_outcome": "Kasus hukum baru tersimpan dengan status Draft, terlihat di listing matter, user memahami ini sebagai kasus untuk dikelola hingga Closed (dengan assign lawyer, close case).",
+    "product_specific_keywords": ["kasus", "hukum", "legal matter", "klien", "prioritas", "workflow Draft → Open → In Progress → Closed"],
+    "fields_distinct_from_srv_ilc_academic": {
+      "combobox_label": "Prioritas",
+      "combobox_options": ["low", "medium", "high", "critical"],
+      "distinct_vs_services_id": "SERVICES.ID punya KATEGORI (Cloud Services, IT Support, Cybersecurity) BUKAN Prioritas",
+      "distinct_vs_ilc_academic": "ILC/ACADEMIC punya TOPIK HUKUM BUKAN Prioritas"
+    }
+  },
+  "shared_execution_invisible_structural_proof": {
+    "shared_leak_text_present_before_fix_mf002": "D1.2 Lifecycle: Tombol di bawah memanggil unified command registry `POST /api/capabilities/:cap/:commandName` dan mencatat attribution record per invokasi.",
+    "leak_present_on_4_products_before_fix": true,
+    "leak_fixed_via_mf002": true,
+    "refs_before_fix_per_page": 16,
+    "refs_after_fix_per_page": 15,
+    "leaking_words_no_longer_found_in_page_snapshot_refs": [
+      "unified command registry",
+      "POST /api/capabilities/:cap/:commandName",
+      "attribution record"
+    ]
+  },
+  "still_needs_real_unbriefed_human": true,
+  "unbriefed_observer_must_answer_3_questions": {
+    "a": "Produk ini untuk apa? (expected: untuk mengelola kasus hukum / legal matter untuk klien hukum)",
+    "b": "Apa yang baru saja terjadi setelah Anda klik first action? (expected: kasus dibuat, disimpan, ditambahkan ke daftar)",
+    "c": "Apa yang harus dilakukan selanjutnya? (expected: assign lawyer ke kasus, kemudian pantau hingga kasus selesai closed)"
+  },
+  "minimal_fixes_applied": ["MF-001 (import fix)", "MF-002 (shared leak removal)"]
+}

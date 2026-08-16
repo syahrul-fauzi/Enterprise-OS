@@ -6,15 +6,15 @@ import {
   type CreateSessionInput,
   type LoginInput,
   type SessionAggregate,
-} from "../contracts/identity.contracts.js";
-import { passwordService } from "../services/password.service.js";
+} from "../contracts/identity.contracts";
+import { passwordService } from "../services/password.service";
 import {
-  UserRepositoryPostgres,
-  MembershipRepositoryPostgres,
-  TenantRepositoryPostgres,
-  WorkspaceRepositoryPostgres,
-  SessionRepositoryPostgres,
-} from "../repositories/index.js";
+  UserRepositoryInMemory,
+  MembershipRepositoryInMemory,
+  TenantRepositoryInMemory,
+  WorkspaceRepositoryInMemory,
+  SessionRepositoryInMemory,
+} from "../repositories/index";
 
 function newSessionId(): SessionId {
   return SessionId(`session-${randomUUID()}`);
@@ -61,7 +61,7 @@ export const createSessionCommand: CreateSessionCommand = {
       createdAt: now,
       updatedAt: now,
     };
-    await SessionRepositoryPostgres.save(entity);
+    await SessionRepositoryInMemory.save(entity);
     return {
       sessionId: entity.id,
       userId: entity.userId,
@@ -96,7 +96,7 @@ export const loginUserCommand: AuthenticateUserCommand = {
 
   async execute(input) {
     const trimmedEmail = input.email.trim().toLowerCase();
-    const user = await UserRepositoryPostgres.byEmail(trimmedEmail);
+    const user = await UserRepositoryInMemory.byEmail(trimmedEmail);
     if (user === undefined) {
       return {
         authenticated: false,
@@ -125,13 +125,13 @@ export const loginUserCommand: AuthenticateUserCommand = {
       };
     }
 
-    const memberships = await MembershipRepositoryPostgres.listByUser(UserId(user.id));
+    const memberships = await MembershipRepositoryInMemory.listByUser(UserId(user.id));
     const primary = memberships[0];
     const tenant = primary
-      ? await TenantRepositoryPostgres.byId(primary.tenantId)
+      ? await TenantRepositoryInMemory.byId(primary.tenantId)
       : undefined;
     const workspace = primary
-      ? await WorkspaceRepositoryPostgres.byId(primary.workspaceId)
+      ? await WorkspaceRepositoryInMemory.byId(primary.workspaceId)
       : undefined;
     const tenantId = primary?.tenantId;
     const workspaceId = primary?.workspaceId;

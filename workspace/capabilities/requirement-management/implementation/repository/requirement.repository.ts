@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
+import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository";
 import {
   RequirementAggregate,
   RequirementId,
@@ -683,20 +684,104 @@ export const RequirementRepositoryFileBacked: RequirementRepository = {
   },
 } as const;
 
+// RequirementPostgresRepository implementation for production rail
+class RequirementRepositoryPostgresImpl extends PostgresRepository<RequirementAggregate> implements RequirementRepository {
+  readonly entityName = "Requirement" as const;
+  readonly kind = "repository" as const;
+
+  constructor() {
+    super("requirements");
+  }
+
+  // Implement required RequirementRepository interface methods
+  async byId(id: RequirementId): Promise<RequirementAggregate | undefined> {
+    return super.byId(id);
+  }
+
+  async list(): Promise<readonly RequirementAggregate[]> {
+    return super.list();
+  }
+
+  async save(entity: RequirementAggregate): Promise<RequirementAggregate> {
+    return super.save(entity);
+  }
+
+  // Implement remove method if required by interface
+  async remove(id: RequirementId): Promise<boolean> {
+    return super.remove(id);
+  }
+
+  toRecord(entity: RequirementAggregate): Record<string, any> {
+    return {
+      ...super.toRecord(entity),
+      tenantId: (entity as any).tenantId,
+      workspaceId: (entity as any).workspaceId,
+      actorId: (entity as any).actorId,
+      title: entity.title,
+      summary: entity.summary,
+      description: entity.description,
+      status: entity.status,
+      priority: entity.priority,
+      owner: entity.owner,
+      source: entity.source,
+      linkedCapabilityIds: entity.linkedCapabilityIds,
+      acceptanceCriteria: entity.acceptanceCriteria,
+      verificationStatus: entity.verificationStatus,
+      dependsOn: entity.dependsOn,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      approvedAt: entity.approvedAt,
+      implementedAt: entity.implementedAt,
+      verifiedAt: entity.verifiedAt,
+    };
+  }
+
+  toAggregate(record: Record<string, any>): RequirementAggregate {
+    const aggregate = super.toAggregate(record);
+    (aggregate as any).tenantId = record.tenantId;
+    (aggregate as any).workspaceId = record.workspaceId;
+    (aggregate as any).actorId = record.actorId;
+    return aggregate;
+  }
+}
+
+let requirementRepositoryPostgresInstance: RequirementRepositoryPostgresImpl | null = null;
+
+export function getRequirementRepositoryPostgres(): RequirementRepository {
+  if (!requirementRepositoryPostgresInstance) {
+    requirementRepositoryPostgresInstance = new RequirementRepositoryPostgresImpl();
+  }
+  return requirementRepositoryPostgresInstance;
+}
+
+const _lazyPgRequirementRepo: RequirementRepository = new Proxy({} as RequirementRepository, {
+  get(_target: any, prop: string | symbol) {
+    const real = getRequirementRepositoryPostgres();
+    const method = (real as any)[prop];
+    if (typeof method === "function") {
+      return method.bind(real);
+    }
+    return method;
+  },
+});
+
+export const RequirementRepositoryPostgres = _lazyPgRequirementRepo;
+
 export const RequirementRepositoryCurrent: RequirementRepository =
-  resolveRequirementStoragePath() !== undefined
+  process.env.DATABASE_URL !== undefined
+    ? RequirementRepositoryPostgres
+    : resolveRequirementStoragePath() !== undefined
     ? RequirementRepositoryFileBacked
     : RequirementRepositoryInMemory;
 
-export const newRequirementId = (() => {
-  return (): RequirementId => {
-    const highest = RequirementRepositoryCurrent.list()
-      .map((item) => /^req-(\d+)$/.exec(item.id)?.[1])
-      .map((value) => (value ? Number.parseInt(value, 10) : 0))
-      .reduce((max, current) => Math.max(max, current), 100);
-    return RequirementId(`req-${String(highest + 1).padStart(3, "0")}`);
-  };
-})();
+export const newRequirementId = async (): Promise<RequirementId> => {
+  const allRequirements = await RequirementRepositoryCurrent.list();
+  const highest = allRequirements
+    .map((item) => /^req-(\d+)$/.exec(item.id)?.[1])
+    .map((value) => (value ? Number.parseInt(value, 10) : 0))
+    .reduce((max, current) => Math.max(max, current), 100);
+  return RequirementId(`req-${String(highest + 1).padStart(3, "0")}`);
+};
 
 export const defaultRequirementStatus: RequirementStatus = "draft";
 export const defaultRequirementPriority: RequirementPriority = "medium";

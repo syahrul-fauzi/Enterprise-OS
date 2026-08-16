@@ -1,9 +1,9 @@
-import { PostgresRepository } from "./base.repository.js";
+import { PostgresRepository } from "./base.repository";
 import {
   UserId,
   type UserAggregate,
   type UserRepository,
-} from "../contracts/identity.contracts.js";
+} from "../contracts/identity.contracts";
 
 // PostgreSQL-backed user repository implementation
 class UserRepositoryPostgresImpl extends PostgresRepository<any> implements UserRepository {
@@ -92,4 +92,23 @@ class UserRepositoryPostgresImpl extends PostgresRepository<any> implements User
   }
 }
 
-export const UserRepositoryPostgres: UserRepository = new UserRepositoryPostgresImpl();
+let _instance: UserRepository | null = null;
+export function getUserRepositoryPostgres(): UserRepository {
+  if (!_instance) {
+    _instance = new UserRepositoryPostgresImpl();
+  }
+  return _instance;
+}
+
+const _lazyPgUserRepo: UserRepository = new Proxy({} as UserRepository, {
+  get(_target: any, prop: string | symbol) {
+    const real = getUserRepositoryPostgres();
+    const method = (real as any)[prop];
+    if (typeof method === "function") {
+      return method.bind(real);
+    }
+    return method;
+  },
+});
+
+export const UserRepositoryPostgres = _lazyPgUserRepo;

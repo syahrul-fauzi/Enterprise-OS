@@ -38,10 +38,29 @@ function resolveProductBindingPath(productId: string): string {
 }
 
 function readScalarField(raw: string, fieldName: string): string | undefined {
-  const escaped = fieldName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const match = raw.match(new RegExp(`^\\s*${escaped}:\\s*(.+)$`, "m"));
-  const value = match?.[1];
-  return value ? value.trim().replace(/^["']|["']$/g, "") : undefined;
+  const flatEscaped = fieldName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const flatMatch = raw.match(new RegExp(`^\\s*${flatEscaped}:\\s*(.+)$`, "m"));
+  if (flatMatch && flatMatch[1]) {
+    const v = flatMatch[1].trim().replace(/^["']|["']$/g, "");
+    if (v) return v;
+  }
+
+  const parts = fieldName.split(".");
+  if (parts.length !== 2) return undefined;
+
+  const parent = parts[0];
+  const child = parts[1];
+  if (!parent || !child) return undefined;
+  const parentEscaped = parent.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const childEscaped = child.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const nestedMatch = raw.match(
+    new RegExp(
+      `^\\s*${parentEscaped}:\\s*\\n((?:\\s+[^\\n]*\\n)*?)\\s*${childEscaped}:\\s*(.+)$`,
+      "m",
+    ),
+  );
+  const nestedValue = nestedMatch?.[2];
+  return nestedValue ? nestedValue.trim().replace(/^["']|["']$/g, "") : undefined;
 }
 
 function readProductBindingManifest(productId: string): ProductBindingManifest {

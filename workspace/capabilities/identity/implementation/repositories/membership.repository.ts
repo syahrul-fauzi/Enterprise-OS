@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository.js";
+import { PostgresRepository } from "./base.repository";
 import {
   MembershipId,
   TenantId,
@@ -6,7 +6,7 @@ import {
   WorkspaceId,
   type MembershipAggregate,
   type MembershipRepository,
-} from "../contracts/identity.contracts.js";
+} from "../contracts/identity.contracts";
 
 // PostgreSQL-backed membership repository implementation
 class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implements MembershipRepository {
@@ -120,6 +120,23 @@ class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implement
   }
 }
 
-export const MembershipRepositoryPostgres: MembershipRepository = new MembershipRepositoryPostgresImpl();
+let _instance: MembershipRepository | null = null;
+export function getMembershipRepositoryPostgres(): MembershipRepository {
+  if (!_instance) {
+    _instance = new MembershipRepositoryPostgresImpl();
+  }
+  return _instance;
+}
 
-// PostgreSQL-backed membership repository implementation
+const _lazyPgMembershipRepo: MembershipRepository = new Proxy({} as MembershipRepository, {
+  get(_target: any, prop: string | symbol) {
+    const real = getMembershipRepositoryPostgres();
+    const method = (real as any)[prop];
+    if (typeof method === "function") {
+      return method.bind(real);
+    }
+    return method;
+  },
+});
+
+export const MembershipRepositoryPostgres = _lazyPgMembershipRepo;

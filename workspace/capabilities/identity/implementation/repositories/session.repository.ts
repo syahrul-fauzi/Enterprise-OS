@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository.js";
+import { PostgresRepository } from "./base.repository";
 import {
   SessionId,
   UserId,
@@ -6,7 +6,7 @@ import {
   WorkspaceId,
   type SessionAggregate,
   type SessionRepository,
-} from "../contracts/identity.contracts.js";
+} from "../contracts/identity.contracts";
 
 // PostgreSQL-backed session repository implementation
 class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements SessionRepository {
@@ -142,4 +142,27 @@ class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements S
   }
 }
 
-export const SessionRepositoryPostgres: SessionRepository = new SessionRepositoryPostgresImpl();
+type SessionRepoMethods = keyof SessionRepository;
+
+const _lazyPgRepo: SessionRepository = new Proxy({} as SessionRepository, {
+  get(_target: any, prop: string | symbol) {
+    const real = (() => {
+      if (!_instance) {
+        _instance = new SessionRepositoryPostgresImpl();
+      }
+      return _instance;
+    })();
+    const method = (real as any)[prop];
+    if (typeof method === "function") {
+      return method.bind(real);
+    }
+    return method;
+  },
+});
+
+let _instance: SessionRepository | null = null;
+export function getSessionRepositoryPostgres(): SessionRepository {
+  return _lazyPgRepo;
+}
+
+export const SessionRepositoryPostgres = _lazyPgRepo;

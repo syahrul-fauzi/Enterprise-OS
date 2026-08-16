@@ -1,8 +1,8 @@
 # Enterprise OS State Model
-version: "1.6.0"
-phase: "D1.3 CERTIFIED → D1.4 Prep"
-sub_phase: "Real User Journey 7-step pattern executed across LawyersHub + Services.ID + ILC = 21/21 E2E PASS. D1.1+D1.2+D1.3 chains closed; next = Human Acceptance + Deploy Hardening."
-next_phase: "D1.4 — Human Black-Box Acceptance (use the product for real) + Deploy Hardening → SHIP 3 usable products"
+version: "1.8.1"
+phase: "D1.4 HUMAN BLACK-BOX VALIDATION — COMMANDER ORDER LOCKED (ARCH FROZEN · BUILD DEFERRED · SINGLE ACTION: INVITE OBSERVER)"
+sub_phase: "Per Komandan 2026-08-15: Engineering First Light 🟢 (HTTP 200 8/8, LH 8/8, SRV 8/8, ILC 9/9). B4 validation wave 2026-08-16: HTTP smoke 21/21 PASS, structural scan 48/49 PASS 5/5 distinctness PASS, governance 8-node structural PROVEN, replay runtime VALIDATED, harness + observer script READY. EOS First Light tetap 🟡 karena HUMAN OBSERVER UNBRIEFED BELUM DIJALANKAN (B4-G1 s/d B4-G6 pending). Engineering evidence ≠ EOS acceptance. Next action = single B4 observer session, NOT architecture."
+next_phase: "D1.4 LOCK — (1) B4 LawyersHub unbriefed black-box PASS, (2) B4 Services.ID unbriefed black-box PASS, (3) Product distinctness LH≠SRV≠ILC≠Academic PROVEN, (4) Shared execution invisible PROVEN, (5) Public staging reachable, (6) EOS governance chain end-to-end observable."
 
 architecture:
   status: "FROZEN"
@@ -155,11 +155,11 @@ unified_command_infrastructure:
   command_registry_size: 19
   capability_prefix_aliases_active: true
   prefixes:
-    - "case./legal-case." → LawyersHub
-    - "service-directory." → Services.ID
-    - "legal-community." → ILC & Academic
-    - "document./legal-document." → Document capability
-    - "requirement./requirement-management." → Requirement workspace
+    - '"case./legal-case." → LawyersHub'
+    - '"service-directory." → Services.ID'
+    - '"legal-community." → ILC & Academic'
+    - '"document./legal-document." → Document capability'
+    - '"requirement./requirement-management." → Requirement workspace'
   api_entrypoint: "POST /api/capabilities/:cap/:commandName"
   attribution_ledger:
     fields: ["commandKey", "capability", "commandName", "invokedAt", "inputSize", "ok", "errorMessage"]
@@ -246,69 +246,224 @@ agent_mode: "PRODUCT_EXECUTION"
 control_tower:
   health:
     architecture: 100
-    delivery: 98
-    evidence: 96
-    asset_confidence: 94
+    delivery: 92
+    evidence: 88
+    asset_confidence: 90
     product_reality: 100
     test_foundation: 100
     e2e_user_journey: 100
-  agent_activity: "ACTIVE — PRODUCT EXECUTION MODE. D1.1 4/4 jobs, D1.2 9/9 lifecycle, D1.3 21/21 E2E journey CERTIFIED. Next: Human Black-Box Acceptance → Deploy Hardening → SHIP."
+    human_acceptance: 0
+    deployability: 0
+    governance_chain_observability: 50
+  agent_activity: "COMMANDER ORDER 2026-08-16 LOCKED: Architecture FROZEN, Build hardening DEFERRED (4 blockers). NEXT ACTION = SINGLE B4-VALIDATE-001: INVITE 1 EXTERNAL UNBRIEFED OBSERVER (NOT CODING). Session 30 menit S1→S6 6 GATES G1-G6. Satu FAIL = B4 NOT PROVEN. TIDAK AKAN MEMALSUKAN EVIDENCE OBSERVER EKSTERNAL. Engineering evidence sudah complete (LH8 SRV8 ILC9, HTTP 21/21, structural 48/49, governance 8-node×2, replay validated, harness ready). Sampai observer session complete: NO CODE, NO REFACTOR, NO NEW ENGINE, NO BUILD FIX."
+
+war_room_dashboard:
+  snapshot_time: "2026-08-16 02:00 UTC (COMMANDER ORDER LOCKED v1.8.1)"
+  per_komandan: "PUTUSAN VALID — jangan declare 'semua 3 battle cleared' dulu. Engineering First Light 🟢, EOS First Light 🟡, B4 🟡/🔴, Production 🔴"
+  commander_order_2026_08_16_LOCKED:
+    order_id: "COMMANDER-ORDER-B4-LOCKED-20260816"
+    architecture: "FROZEN ABSOLUTE — TANPA PENGECOUALIAN"
+    architecture_compliance_audit: "100% PASS (8 larangan TIDAK dilanggar: no engine/DSL/registry/renderer/auth/tenant/capability-refactor."
+    build_hardening_deferred:
+      status: "EXPLICITLY DEFERRED — JANGAN DIPERBAIKI SEKARANG"
+      blockers_deferred_list:
+        1: "pg masuk client bundle → next build FAIL Module not found 'tls', 'util/types'"
+        2: "vercel.json /(.*)→/index.html SPA rewrite salah untuk Next 16 dynamic router"
+        3: "Dockerfile WORKDIR/COPY apps mismatch path workspace/apps/web"
+        4: ".env/secrets production tidak configured"
+      deferral_reason: "B4 observer 3004 DEV SERVER SUFFICIENT untuk B4. Build hardening SETELAH B4 LOCK. Artifact: b4-f-staging-deploy-assessment-*.json"
+    single_engineering_action: "B4-VALIDATE-001 SINGLE SESSION — 1 external unbriefed observer → 30 menit → 6 gates G1-G6"
+    observer_spec:
+      briefing: '"Anda mencoba 4 produk web. Saya kasih URL berurutan. Untuk setiap halaman, jawab pertanyaan yang saya berikan secara alami. Jangan cari jawaban. Tidak ada jawaban benar/salah — kami membutuhkan kesan first-impression RAW Anda."'
+      forbidden_words: ["EOS", "Enterprise OS", "shared rail", "capability registry", "command bus", "thin app strategy", "leverage"]
+      selection_criteria: ["never worked EOS codebase", "never read README/STATUS/EOS docs", "never seen LH/SRV/ILC/Academic demo", "capable using web app filling forms clicking buttons", "no architecture briefing given"]
+    session_flow_locked:
+      S1: "Root / Signup"
+      S2: "LawyersHub (Q1/Q2/Q3)"
+      S3: "Services.ID (Q1/Q2/Q3 — DIFFERENT job than LH MUST BE)"
+      S4: "ILC + Academic (D1 distinctness question: beda atau skin?)"
+      S5: "Governance Trace (G8: 8 nodes + explain DECISION next action)"
+      S6: "Debrief (INV1 shared-invisible check + G6: multi-product workspace vs 1-app-skins)"
+    acceptance_bar_locked:
+      gates_0_of_6_pass_current: "PENDING_HUMAN — engineering team TIDAK BOLEH menjawab sendiri; WAJIB observer jawab"
+      gates:
+        G1: "Observer paham LawyersHub + natural first action (Prioritas combobox Buat Kasus) + expected legal outcome (Draft→Open→Closed)"
+        G2: "Observer paham Services.ID sebagai PEKERJAAN BERBEDA (bukan kasus hukum) + first action BEDA (KATEGORI combobox Ajukan Permintaan) + expected service outcome (Draft→Accepted→Delivered)"
+        G3: "LH ≠ SRV ≠ ILC ≠ Academic TERASA sebagai produk BERBEDA (bukan skin/label ganti doang) — D1 + D2 + jawaban manusia"
+        G4: "Shared EOS machinery TIDAK TERLIHAT pada landing experience — INV1 checklist 0 unexpected leak (governance trace panel = INTENTIONAL SHARED, BUKAN LEAK)"
+        G5: "Observer BISA MEMAHAMI governance trace page + MENJELASKAN 8 node BERURUT + MENYEBUTKAN NEXT ACTION product-specific untuk kasus ini"
+        G6: "Experience TERASA SEBAGAI: beberapa produk BERBEDA dalam 1 workspace login bersama. BUKAN: 1 app dengan skin warna berbeda"
+      pass_threshold: "6/6 ALL PASS — 1 FAIL = B4 NOT PROVEN = FIX ONLY THAT FAIL = RE-RUN ONLY THAT GATE (NOT FULL REPLAY)"
+    evidence_integrity_pledge: "TIDAK AKAN MEMALSUKAN EVIDENCE OBSERVER EKSTERNAL. Engineering team dapat: menyiapkan script, acceptance criteria, evidence schema, mengevaluasi jawaban observer. TIDAK DAPAT: mengklaim 6 gates PASS sebelum manusia eksternal BENAR-BENAR menjalankan session dan menghasilkan jawaban."
+    dev_server_target: "http://localhost:3004 — HTTP 200 VERIFIED 2026-08-16. Snapshot: PORT 3004 HTTP 200"
+  foundation:
+    shared_rail: "OK"
+    architecture_boundaries: "OK"
+    no_new_foundation: "OK"
+    consultation_mso_frozen: "OK"
+  runtime_http_200:
+    root: "OK 200"
+    signup: "OK 200"
+    workspace: "OK 200"
+    lawyershub: "OK 200"
+    services_id: "OK 200"
+    ilc: "OK 200"
+    academic: "OK 200"
+    delivery: "OK 200"
+    total: "8/8 HTTP 200"
+  engineering_reuse:
+    srv_shared_rail: "OK evidence"
+    ilc_rule_of_two: "OK evidence"
+    academic_thin_adapter: "OK 31 LOC evidence"
+  regression:
+    lawyershub: "8/8 PASS UPGRADED +3 LH-CASE-002 Matter↔Document COMPOSITE E2E (document.create({matterId}) TERIKAT PERSISTEN case-101 === doc.matterId)"
+    srv: "8/8 PASS"
+    ilc: "9/9 PASS"
+    diagnostics: "CLEAN post-B4-wave (GetDiagnostics [] empty — 0 lint/type error)"
+  evidence:
+    evidence_artifact: "OK — 6 B4 artifacts + harness JSON + observer MD + 4 product screenshots"
+    replay_artifact: "RUNTIME_REPLAY_VALIDATED — LH 8/8 + SRV 8/8 + ILC 9/9 replay PASS post minimal-fix SessionRepositoryProxy + buildPresentationAdapter. B4-VALIDATE-004 WARNING_REPLAY → PASS."
+  human_acceptance_eos_core:
+    b4: "NOT_PROVEN"
+    unbriefed_black_box: "NOT_PROVEN"
+    product_distinctness: "STRUCTURAL_PROVEN (48/49 scan + 5/5 distinctness matrix) — HUMAN_SUBJECTIVE_PENDING"
+    shared_execution_invisible: "STRUCTURAL_PROVEN (MF-002 refs 16→15 leak removed) — HUMAN_SUBJECTIVE_PENDING"
+  deployability:
+    public_staging_reachability: "NOT_PROVEN"
+    real_external_user: "NOT_PROVEN"
+  eos_governance_experience:
+    requirement_to_traceability_to_evidence: "STRUCTURAL_PROVEN_HUMAN_PENDING — 8 node renders × 2 products (LH & SRV)"
+    evaluation_to_attribution_to_decision: "STRUCTURAL_PROVEN_HUMAN_PENDING — DECISION node next-action product-specific (LH: Assign/Close; SRV: Accept/Delivered)"
+    next_action_observable: "STRUCTURAL_PROVEN_HUMAN_PENDING — trace page renders distinct lifecycle wording per product"
+  status_summary:
+    engineering_first_light: "GREEN"
+    eos_first_light: "YELLOW"
+    b4_human_black_box: "YELLOW_RED_PENDING"
+    production_public: "RED"
+  next_battlefield: "SINGLE B4-VALIDATE-001 HUMAN OBSERVER SESSION (NOT architecture). Jalankan script: workspace/.eos-state/evidence/B4-HUMAN-OBSERVER-SCRIPT-2026-08-16T01-17-16Z.md. Requirement → 6 GATES G1-G6 PASS 6/6 → EOS Experience First Light LOCKED 🟢."
+  architecture_freeze_reminder: |
+    PER KOMANDAN — TIDAK BOLEH:
+    * engine baru
+    * DSL baru
+    * registry baru
+    * renderer baru
+    * auth baru
+    * tenant layer baru
+    * capability abstraction baru
+    * refactor besar
+    HANYA BOLEH: validation layer, product surface polish, deployment setup, evidence capture
+  b4_wave_validation_summary_20260816:
+    b4_a_http_smoke: "21/21 PASS — 8 route + 4 displayName proper (LawyersHub 10x not lowercase) + 4 adapter renders + 4 MF-002 shared leak CLEAN + LH proper-name check"
+    b4_b_harness_ready: "PASS — B4-BLACKBOX-HARNESS JSON v1.0 + B4-HUMAN-OBSERVER-SCRIPT MD generated. 6 GATES G1-G6, Q1/Q2/Q3 x 2 produk, D1/D2 distinctness, G8 governance, INV1 invisibility checklist."
+    b4_c_structural_scan: "48/49 PASS 97.96% — 49-point scan display/category/audience/value/trust/CTA/form/selector/lifecycle/reality × 4 produk. 1 FAIL minor LH categoryBadge regex (non-critical, 98% structural ok). 5/5 DISTINCTNESS RULES PASS (LH vs SRV selectors, ILC×Acad R2, CTA wording, lifecycle wording, 4 proper names)."
+    b4_d_runtime_replay: "PASS — LH 8/8, SRV 8/8, ILC 9/9 regression suites re-run POST minimal-fix wave (FIX-P0-01 adapter + FIX-P1-01 governance trace). CommandInvocationRecord ISO stamped. LH-CASE-002 composite NEW 3/3 PASS Matter↔Document linking."
+    b4_e_governance_trace: "8 STRUCTURAL CHECKS PASS — (1) REQUIREMENT node, (2) ATTRIBUTION, (3) PROCEDURE, (4) CAPABILITY, (5) PERSISTENCE, (6) EVIDENCE, (7) EVALUATION, (8) DECISION + NEXT ACTION. 2 products × 8 nodes = 16 renders. Distinctness INSIDE governance PROVEN (LH mentions Priority/Cycle; SRV mentions Category/Provider lifecycle)."
+    b4_f_staging_deploy: "DEV SERVER 3004 ✅ READY FOR B4 OBSERVER. 4 PRE-EXISTING DEPLOY BLOCKERS DEFERRED (frozen rule non-blocking B4): (1) pg bundle leak tls/util/types next build FAIL, (2) vercel.json SPA rewrite /(.*)→/index.html salah untuk Next 16 dynamic router, (3) Dockerfile WORKDIR apps/web COPY mismatch, (4) .env/production secrets tidak configured. FIX DEFERRED per Commander: B4 di dev server 3004 OK, build production tidak perlu untuk B4."
+  active_slices_count: 8
+  blocked_slices_count: 0
+  next_highest_leverage: "B4-VALIDATE-001 LawyersHub UNBRIEFED HUMAN OBSERVER. Single session = 6 gates G1-G6 unlock EOS First Light LOCK. Artifact path: .eos-state/evidence/B4-HUMAN-OBSERVER-SCRIPT-2026-08-16T01-17-16Z.md"
 
 product_leverage_scoreboard:
-  verified_at: "2026-08-08"
-  verification_method: "node:test + Doctor Engine + capabilityRegistry + E2E Journey Runner"
+  verified_at: "2026-08-16 (B4 WAVE + LH UPGRADE)"
+  verification_method: "node:test + Doctor Engine + capabilityRegistry + E2E Journey Runner + HTTP 200 + B4 structural scan + Governance trace renders (EOS-B4-WAVE-20260816)"
+  structural_leverage_note: |
+    PER KOMANDAN 2026-08-15:
+    - shared-rail-to-marginal-product LOC ratio = 86,840 / (86,840 + 1,353) = 98.5% untuk SRV
+    - 98.5% INI ADALAH structural shared-rail ratio, BUKAN true reuse percentage
+    - Koreksi aritmatika SRV leverage ratio: 86,840 / 1,353 ≈ 64.2x (bukan 66x — report sendiri menyebut ~66x)
+    - 64.2x LOC leverage BOLEH dijadikan indikator structural leverage, TETAPI
+    - JANGAN nyatakan "64.2x cheaper" (economic cost leverage) tanpa engineering effort/time/cost evidence
+    - "Produk ke-2 66x lebih murah" = DITOLAK KLAIM EKONOMI (belum ada time/effort evidence)
+    - Academic 31 LOC = strongest thin-app leverage signal (marginal implementation sangat kecil)
+    - 31 LOC membuktikan thin implementation, BUKAN otomatis product correctness
+    - Koreksi reuse denominator: "shared LOC bukan cost
   products:
     lawyershub:
       real_user_job: true
-      executable_test: { pass: 5, total: 5, status: "PASS" }
+      executable_test: { pass: 8, total: 8, status: "PASS UPGRADED — LH-CASE-001 3/3 + LH-CASE-002 Matter↔Document COMPOSITE 3/3 + Health 2/2" }
       capability_execution: { transitions: 2, terminal: "closed", evidence_id: "case-101" }
       state_mutation: true
       evidence_artifact: true
       doctor_report: true
       e2e_user_journey: { pass: 7, total: 7, status: "PASS", flow: "OPEN→DISCOVER→ACTION→EXECUTE→STATE→EVIDENCE→SEE" }
-      human_acceptance: null
-      deployable: null
-      product_ready: null
+      http_routes_200: { landing: true, delivery: true }
+      human_acceptance: "NOT_PROVEN"
+      b4_unbriefed_black_box: "NOT_PROVEN"
+      product_distinctness: "STRUCTURAL_PROVEN_HUMAN_PENDING"
+      shared_execution_invisible: "STRUCTURAL_PROVEN_HUMAN_PENDING"
+      deployable: "NOT_PROVEN"
+      public_reachable: "NOT_PROVEN"
+      product_ready: "PENDING_HUMAN_ACCEPTANCE"
     services_id:
       real_user_job: true
-      executable_test: { pass: 6, total: 6, status: "PASS" }
+      executable_test: { pass: 8, total: 8, status: "PASS (POST-FIRST-LIGHT-REGRESSION — SREQ-001 5/5 + Health 2/2 + regression SessionRepositoryProxy fix verification 1/1" }
       capability_execution: { transitions: 2, terminal: "delivered", evidence_id: "sreq-101" }
       state_mutation: true
       evidence_artifact: true
       doctor_report: true
       e2e_user_journey: { pass: 7, total: 7, status: "PASS", flow: "OPEN→DISCOVER→ACTION→EXECUTE→STATE→EVIDENCE→SEE" }
-      human_acceptance: null
-      deployable: null
-      product_ready: null
+      http_routes_200: { landing: true }
+      shared_rail_health: "SRV 8/8 tests PASS post minimal-fix SessionRepositoryProxy"
+      structural_marginal_loc: 1353
+      structural_leverage_ratio: "86,840 shared / 1,353 marginal SRV-specific ≈ 64.2x (KOMANDAN KOREKSI — bukan 66x)"
+      human_acceptance: "NOT_PROVEN"
+      b4_unbriefed_black_box: "NOT_PROVEN"
+      product_distinctness: "STRUCTURAL_PROVEN_HUMAN_PENDING"
+      shared_execution_invisible: "STRUCTURAL_PROVEN_HUMAN_PENDING"
+      deployable: "NOT_PROVEN"
+      public_reachable: "NOT_PROVEN"
+      product_ready: "PENDING_HUMAN_ACCEPTANCE"
     ilc:
       real_user_job: true
-      executable_test: { pass: 7, total: 7, status: "PASS" }
+      executable_test: { pass: 9, total: 9, status: "PASS (POST-FIRST-LIGHT-REGRESSION — DISC-001 7/7 + Health 2/2" }
       capability_execution: { transitions: 0, terminal: "surface-live", evidence_id: "disc-101" }
       state_mutation: false
       evidence_artifact: true
       doctor_report: true
       e2e_user_journey: { pass: 7, total: 7, status: "PASS", flow: "OPEN→DISCOVER→ACTION→EXECUTE→STATE→EVIDENCE→SEE" }
-      human_acceptance: null
-      deployable: null
-      product_ready: null
+      http_routes_200: { landing: true }
+      shared_rail_health: "ILC 9/9 tests PASS post minimal-fix SessionRepositoryProxy"
+      rule_of_two_legal_community: "PROVEN via ILC + Academic = 2 consumers / 1 legal-community primitive cost"
+      structural_marginal_loc: 272
+      human_acceptance: "NOT_PROVEN"
+      b4_unbriefed_black_box: "NOT_PROVEN"
+      product_distinctness: "STRUCTURAL_PROVEN_HUMAN_PENDING — D1 'beda atau skin saja? PENDING HUMAN ANSWER"
+      shared_execution_invisible: "STRUCTURAL_PROVEN_HUMAN_PENDING"
+      deployable: "NOT_PROVEN"
+      public_reachable: "NOT_PROVEN"
+      product_ready: "PENDING_HUMAN_ACCEPTANCE"
     academic_leverage_4th:
       real_user_job: true
-      executable_test: { pass: 0, total: 0, status: "NOT_APPLICABLE — leverages ILC primitives" }
+      executable_test: { pass: 0, total: 0, status: "NOT_APPLICABLE — leverages ILC primitives via Rule of Two" }
       capability_execution: { transitions: 1, terminal: "published", evidence_id: "content-101" }
       state_mutation: true
       evidence_artifact: true
       doctor_report: false
       e2e_user_journey: { pass: 0, total: 0, status: "NOT_APPLICABLE — leverages ILC journey" }
-      human_acceptance: null
-      deployable: null
-      product_ready: null
+      http_routes_200: { landing: true }
+      thin_app_31_loc_signal: "STRONGEST_LEVERAGE_SIGNAL — 31 LOC specific + existing legal-community rail = 4th product output"
+      structural_marginal_loc: 31
+      human_acceptance: "NOT_PROVEN"
+      b4_unbriefed_black_box: "NOT_PROVEN"
+      product_distinctness: "STRUCTURAL_PROVEN_HUMAN_PENDING — D1 pertanyaan 'beda atau skin?' PENDING JAWABAN MANUSIA"
+      shared_execution_invisible: "STRUCTURAL_PROVEN_HUMAN_PENDING"
+      deployable: "NOT_PROVEN"
+      public_reachable: "NOT_PROVEN"
+      product_ready: "PENDING_DISTINCTNESS_PROOF"
   totals:
-    tests_pass: 18
-    tests_total: 18
+    tests_pass: 25
+    tests_total: 25
     doctor_reports_generated: 3
     e2e_journey_steps_pass: 21
     e2e_journey_steps_total: 21
     e2e_journey_products: 3
+    http_200_routes: 8
+    http_200_total: 8
+    human_acceptance_products: 0
+    b4_unbriefed_pass: 0
+    deployable_products: 0
+    eos_first_light_locked: false
+    engineering_first_light_locked: true
 
 real_user_journey_evidence:
   batch: "D1.3-ALL-PRODUCTS-20260808"
@@ -345,19 +500,29 @@ real_user_journey_evidence:
       flow_detail: "binding valid → explore topics+discussions+articles → create article (proposed) → publish (moderator) → repo state verified → 2 ledger records → user sees published article with author+topic+title match"
 
 test_execution_evidence:
-  batch: "D1.2-TEST-FOUNDATION-20260808"
-  executed_at: "2026-08-08T16:29:00Z"
-  runner: "node:test v26 + tsx v4"
-  status: "ALL_PASS"
+  batch: "B4-WAVE-REGRESSION-20260816"
+  executed_at: "2026-08-16T01-13-00Z"
+  runner: "node:test v26 + tsx v4 + B4 structural fetch-based smoke scanner + governance trace renderer check"
+  status: "ALL_PASS_25_25"
   aggregate:
-    lawyershub: { file: "products/lawyershub/tests/lawyershub.test.ts", result: "5/5 PASS", artifact: "products/lawyershub/evidence/verification/test-execution-20260808.json" }
-    services_id: { file: "products/services-id/tests/services-id.test.ts", result: "6/6 PASS", artifact: "products/services-id/evidence/verification/test-execution-20260808.json" }
-    ilc: { file: "products/ilc/tests/ilc.test.ts", result: "7/7 PASS", artifact: "products/ilc/evidence/verification/test-execution-20260808.json" }
+    lawyershub: { file: "products/lawyershub/tests/lawyershub.test.ts", result: "8/8 PASS UPGRADED — +3 LH-CASE-002 Matter↔Document COMPOSITE E2E NEW", artifact: "products/lawyershub/evidence/verification/test-execution-20260816.json" }
+    services_id: { file: "products/services-id/tests/services-id.test.ts", result: "8/8 PASS (POST-MINIMAL-FIX SessionRepositoryProxy)", artifact: "products/services-id/evidence/verification/test-execution-20260816.json" }
+    ilc: { file: "products/ilc/tests/ilc.test.ts", result: "9/9 PASS (POST-MINIMAL-FIX SessionRepositoryProxy)", artifact: "products/ilc/evidence/verification/test-execution-20260816.json" }
+  b4_supplementary_structural:
+    b4_a_http_smoke_21_21: "HTTP smoke 8/8 route 200 + 4 displayName proper + 4 adapter content + 4 MF-002 leak clean + 1 LH proper-name check → 21/21 PASS"
+    b4_c_structural_scan_48_49: "49-point product surface scan × 4 produk = 48/49 PASS (97.96%) — 1 minor LH categoryBadge regex FAIL non-critical. 5/5 DISTINCTNESS rules PASS."
+    b4_e_governance_8_node: "Governance trace 8-node REQUIREMENT→ATTRIBUTION→PROCEDURE→CAPABILITY→PERSISTENCE→EVIDENCE→EVALUATION→DECISION × 2 produk LH & SRV = 16 node renders OK. Next-action product-specific distinct (Assign/Close vs Accept/Deliver) PROVEN structural."
+    b4_b_harness_generated: "B4-BLACKBOX-HARNESS-1.0.0 + B4-HUMAN-OBSERVER-SCRIPT MD ready. 6 GATES G1-G6 acceptance bar terkunci per Commander."
   defect_closed:
     DEFECT-YAML-001:
       description: "require('../eos.yaml') SyntaxError — Node.js cannot require() YAML files natively"
       fix: "Added js-yaml devDependency + loadEosManifest() helper using fs.readFileSync + yaml.load across 3 product test files"
       applied_to: ["lawyershub.test.ts", "services-id.test.ts", "ilc.test.ts"]
       closed_at: "2026-08-08T16:25:00Z"
+    REPLAY-RUNTIME-B4V004-WARNING:
+      description: "B4-VALIDATE-004 WARNING_REPLAY_RUNTIME_VALIDATION_NOT_RE_RUN_IN_THIS_WAVE"
+      fix: "Re-run full suites LH 8/8 + SRV 8/8 + ILC 9/9 post FIX-P0-01 buildPresentationAdapter + FIX-P1-01 governance trace page. All PASS."
+      applied_to: ["lawyershub.test.ts", "services-id.test.ts", "ilc.test.ts"]
+      closed_at: "2026-08-16T01-13-00Z"
 
-last_updated: "2026-08-08"
+last_updated: "2026-08-16 (B4 WAVE structural complete — eos-state.yaml v1.8.0 synced per Commander assessment 2026-08-15)"

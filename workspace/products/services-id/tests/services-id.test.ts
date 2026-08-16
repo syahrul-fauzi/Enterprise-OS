@@ -35,20 +35,29 @@ interface SvcLifecycleLedger {
   };
 }
 
-function runLifecycleSvcE2E(
+const SRV_SESSION_ID = "session-test-002";
+
+async function runLifecycleSvcE2E(
   title: string,
   description: string,
   category: ServiceProviderCategory,
   requesterName: string,
   providerId: string,
   budget: number,
-): SvcLifecycleLedger {
+): Promise<SvcLifecycleLedger> {
   const records: CommandInvocationRecord[] = [];
 
-  const createResult = capabilityRegistry.invoke<{ readonly id: string; readonly status: ServiceRequestStatus }>(
+  const createResult = await capabilityRegistry.invoke<{ readonly id: string; readonly status: ServiceRequestStatus }>(
     "services-id",
     "createServiceRequest",
-    { title, description, category, requesterName, providerId, budget },
+    {
+      title,
+      description,
+      category,
+      requesterName,
+      budget: budget.toString(),
+      sessionId: SRV_SESSION_ID,
+    },
   );
   records.push(createResult.record);
   assert.equal(createResult.record.ok, true, "service-directory.createServiceRequest must record ok:true");
@@ -56,39 +65,39 @@ function runLifecycleSvcE2E(
   assert.equal(createResult.output.status, "draft", "createServiceRequest initial status = draft");
 
   const id = createResult.output.id as string;
-  const pAfterCreate = ServiceRequestRepositoryInMemory.byId(id);
+  const pAfterCreate = await ServiceRequestRepositoryInMemory.byId(id);
   assert.ok(pAfterCreate !== undefined, `sreq ${id} retrievable dari repository setelah create`);
   assert.equal(pAfterCreate.title, title.trim(), "persisted title match input");
   assert.equal(pAfterCreate.status, "draft", "persisted status after create = draft");
   assert.equal(pAfterCreate.category, category, "persisted category match");
   assert.equal(pAfterCreate.requesterName, requesterName, "persisted requesterName match");
-  assert.equal(pAfterCreate.budget, budget, "persisted budget match");
+  assert.equal(pAfterCreate.budget, budget.toString(), "persisted budget match (string)");
 
-  const acceptResult = capabilityRegistry.invoke<{
+  const acceptResult = await capabilityRegistry.invoke<{
     readonly id: string;
     readonly status: ServiceRequestStatus;
     readonly providerId: string;
-  }>("services-id", "acceptServiceRequest", { id, providerId });
+  }>("services-id", "acceptServiceRequest", { id, providerId, sessionId: SRV_SESSION_ID });
   records.push(acceptResult.record);
   assert.equal(acceptResult.record.ok, true, "service-directory.acceptServiceRequest must record ok:true");
   assert.equal(acceptResult.output.status, "accepted", "acceptServiceRequest on draft → accepted");
   assert.equal(acceptResult.output.providerId, providerId, "accept echo providerId");
 
-  const pAfterAccept = ServiceRequestRepositoryInMemory.byId(id);
+  const pAfterAccept = await ServiceRequestRepositoryInMemory.byId(id);
   assert.equal(pAfterAccept?.status, "accepted", "repo status after accept = accepted");
   assert.equal(pAfterAccept?.providerId, providerId, "repo providerId match assigned");
 
-  const deliverResult = capabilityRegistry.invoke<{
+  const deliverResult = await capabilityRegistry.invoke<{
     readonly id: string;
     readonly status: "delivered";
     readonly deliveredAt: Date;
-  }>("services-id", "markServiceDelivered", { id });
+  }>("services-id", "markServiceDelivered", { id, sessionId: SRV_SESSION_ID });
   records.push(deliverResult.record);
   assert.equal(deliverResult.record.ok, true, "service-directory.markServiceDelivered must record ok:true");
   assert.equal(deliverResult.output.status, "delivered", "markServiceDelivered terminal = delivered");
   assert.ok(deliverResult.output.deliveredAt instanceof Date, "delivered output stamps deliveredAt");
 
-  const pAfterDeliver = ServiceRequestRepositoryInMemory.byId(id);
+  const pAfterDeliver = await ServiceRequestRepositoryInMemory.byId(id);
   assert.equal(pAfterDeliver?.status, "delivered", "repo terminal status = delivered");
   assert.ok(pAfterDeliver?.deliveredAt instanceof Date, "repo deliveredAt stamped");
 
@@ -112,8 +121,8 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
     assert.ok(verifiedCyber.length >= 1, "minimal 1 provider Cybersecurity ter-verified");
   });
 
-  test("createServiceRequest → persist → retrieved byId dengan field budget/category/requester match", () => {
-    const ledger = runLifecycleSvcE2E(
+  test("createServiceRequest → persist → retrieved byId dengan field budget/category/requester match", async () => {
+    const ledger = await runLifecycleSvcE2E(
       "   Penetration Testing Aplikasi Mobile dan Backend   ",
       "Blackbox + graybox pentest iOS/Android + REST API dengan evidence report lengkap",
       "Cybersecurity",
@@ -125,21 +134,21 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
     const allOk = ledger.records.every((r) => r.ok === true);
     assert.equal(allOk, true, `semua ${ledger.records.length} CommandInvocationRecord ok:true`);
 
-    const rehydrated: ServiceRequestAggregate | undefined = ServiceRequestRepositoryInMemory.byId(ledger.createdId);
+    const rehydrated: ServiceRequestAggregate | undefined = await ServiceRequestRepositoryInMemory.byId(ledger.createdId);
     assert.ok(rehydrated !== undefined, "final retrieval: sreq byId tersedia");
     assert.equal(rehydrated.status, "delivered", "final status = delivered terminal");
     assert.equal(rehydrated.providerId, ledger.input.providerId, "final providerId persisten");
-    assert.equal(rehydrated.budget, ledger.input.budget, "budget tersimpan persis 85000000");
+    assert.equal(rehydrated.budget, ledger.input.budget.toString(), "budget tersimpan persis 85000000 (string)");
     assert.equal(rehydrated.requesterName, ledger.input.requesterName, "requesterName tersimpan");
     assert.equal(rehydrated.category, "Cybersecurity", "category tersimpan Cybersecurity");
     assert.equal(rehydrated.title, "Penetration Testing Aplikasi Mobile dan Backend", "title di-trim saat persist");
   });
 
-  test("acceptServiceRequest menghasilkan transisi draft→accepted + providerId terasosiasi persisten", () => {
+  test("acceptServiceRequest menghasilkan transisi draft→accepted + providerId terasosiasi persisten", async () => {
     const provider = ServiceProviderRepositoryInMemory.listByCategory("IT Support")[0];
     assert.ok(provider !== undefined, "provider IT Support tersedia");
     const title = "Outsourcing Managed IT Support 12 Bulan untuk Kantor Cabang";
-    const ledger = runLifecycleSvcE2E(
+    const ledger = await runLifecycleSvcE2E(
       title,
       "Helpdesk on-site + remote monitoring + patch management",
       "IT Support",
@@ -149,13 +158,13 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
     );
     assert.equal(ledger.acceptedOutput.status, "accepted", "accept → accepted");
     assert.equal(ledger.acceptedOutput.providerId, provider.id, "echo providerId");
-    const row = ServiceRequestRepositoryInMemory.byId(ledger.createdId);
+    const row = await ServiceRequestRepositoryInMemory.byId(ledger.createdId);
     assert.equal(row?.providerId, provider.id, "repo providerId = assigned");
     assert.equal(row?.status, "delivered", "final status delivered setelah markServiceDelivered");
   });
 
-  test("markServiceDelivered men-stamp deliveredAt + mencapai terminal state delivered", () => {
-    const ledger = runLifecycleSvcE2E(
+  test("markServiceDelivered men-stamp deliveredAt + mencapai terminal state delivered", async () => {
+    const ledger = await runLifecycleSvcE2E(
       "Implementasi Zero Trust Network Architecture untuk Hybrid Cloud",
       "Assessment + deploy Zero Trust untuk AWS + on-prem 3 kantor",
       "Infrastructure",
@@ -167,15 +176,15 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
     assert.ok(Number.isFinite(t), "deliveredAt adalah Date valid");
     assert.equal(ledger.deliveredOutput.status, "delivered", "status = delivered");
 
-    const repo = ServiceRequestRepositoryInMemory.byId(ledger.createdId);
+    const repo = await ServiceRequestRepositoryInMemory.byId(ledger.createdId);
     assert.ok(repo?.deliveredAt !== undefined, "aggregate.deliveredAt tidak undefined pasca delivered");
     assert.ok(repo?.deliveredAt instanceof Date, "aggregate.deliveredAt bertipe Date");
     assert.equal(ledger.records.length, 3, "3 writes = 3 ledger records (create + accept + deliver)");
-    assert.equal(repo?.budget, 325000000, "budget 325 juta tersimpan");
+    assert.equal(repo?.budget, ledger.input.budget.toString(), "budget 325 juta tersimpan (string)");
   });
 
-  test("lifecycle: draft → accepted → delivered membentuk rantai transisi monotonik tanpa rollback", () => {
-    const ledger = runLifecycleSvcE2E(
+  test("lifecycle: draft → accepted → delivered membentuk rantai transisi monotonik tanpa rollback", async () => {
+    const ledger = await runLifecycleSvcE2E(
       "Pengembangan Sistem Informasi Manajemen Arsip Digital Perusahaan",
       "Custom web app + OCR + e-archive indexing, 6 bulan delivery",
       "Software Development",
@@ -188,8 +197,8 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
     assert.equal(ledger.deliveredOutput.status, "delivered", "terminasi di delivered, bukan state lebih awal");
   });
 
-  test("Semua 3 CommandInvocationRecord memiliki invokedAt terformat ISO + commandKey yang benar", () => {
-    const ledger = runLifecycleSvcE2E(
+  test("Semua 3 CommandInvocationRecord memiliki invokedAt terformat ISO + commandKey yang benar", async () => {
+    const ledger = await runLifecycleSvcE2E(
       "Jasa Audit Kepatuhan PDP/E-Commerce untuk Merchant Aggregator",
       "Gap analysis PDP UU No.27/2022 + remediation plan + sertifikasi",
       "Cybersecurity",

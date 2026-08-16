@@ -17,6 +17,9 @@ export async function POST(request: Request) {
     }
 
     const sessionValue = sessionCookie.split("=")[1];
+    if (!sessionValue) {
+      return NextResponse.json({ error: "Invalid session cookie" }, { status: 401 });
+    }
     console.log(`[POST /api/service-requests/create] Session cookie value (truncated): ${sessionValue.substring(0, 100)}...`);
     const session = decodeWorkspaceSession(sessionValue);
     console.log(`[POST /api/service-requests/create] Decoded session: ${JSON.stringify(session)}`);
@@ -30,15 +33,13 @@ export async function POST(request: Request) {
     const { title, description, category, budget } = body;
 
     // Single canonical capability invocation - all service request creation logic in service-directory capability
+    // SHARED RAIL: sessionId ONLY - tenant/workspace/actor derived from trusted session (MIRRORS LH pattern)
     const { output } = await capabilityRegistry.invokeAsync("service-directory", "createServiceRequest", {
       title,
       description: description || "",
       category,
       budget,
       sessionId: session.sessionId,
-      tenantId: session.tenantId,
-      workspaceId: session.workspaceId,
-      actorId: session.actorId,
     });
 
     if (!output) {

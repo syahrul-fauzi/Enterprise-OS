@@ -6,7 +6,7 @@ import type {
   EirDeterminismContext,
   SpecKind,
   EirTraceAnchor,
-} from "./types.js";
+} from "./types";
 
 export interface ElsDocument {
   readonly specification: ElsIdentity;
