@@ -141,6 +141,12 @@ const seedRequests = (): ServiceRequestAggregate[] => [
 type ProviderStore = Map<string, ServiceProviderAggregate>;
 type RequestStore = Map<string, ServiceRequestAggregate>;
 
+const _GLOBAL = globalThis as unknown as {
+  __eos_srv_provider_store?: ProviderStore;
+  __eos_srv_request_store?: RequestStore;
+  __eos_srv_seq_counter?: number;
+};
+
 function hydrateProviders(): ProviderStore {
   const store = new Map<string, ServiceProviderAggregate>();
   for (const p of seedProviders()) {
@@ -157,8 +163,8 @@ function hydrateRequests(): RequestStore {
   return store;
 }
 
-const PROVIDER_STORE: ProviderStore = hydrateProviders();
-const REQUEST_STORE: RequestStore = hydrateRequests();
+const PROVIDER_STORE: ProviderStore = _GLOBAL.__eos_srv_provider_store ??= hydrateProviders();
+const REQUEST_STORE: RequestStore = _GLOBAL.__eos_srv_request_store ??= hydrateRequests();
 
 function cloneProvider(p: ServiceProviderAggregate): ServiceProviderAggregate {
   return {
@@ -239,13 +245,11 @@ export const ServiceRequestRepositoryInMemory: ServiceRequestRepository = {
   },
 } as const;
 
-export const newServiceRequestId = (() => {
-  let seq = 100;
-  return (): ServiceRequestId => {
-    seq += 1;
-    return ServiceRequestId(`sreq-${String(seq).padStart(3, "0")}`);
-  };
-})();
+export const newServiceRequestId = (): ServiceRequestId => {
+  _GLOBAL.__eos_srv_seq_counter ??= 100;
+  _GLOBAL.__eos_srv_seq_counter += 1;
+  return ServiceRequestId(`sreq-${String(_GLOBAL.__eos_srv_seq_counter).padStart(3, "0")}`);
+};
 
 export const defaultServiceRequestStatus: ServiceRequestStatus = "draft";
 

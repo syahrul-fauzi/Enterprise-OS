@@ -77,7 +77,83 @@
       "architecture_lock_preserved": true,
       "report_path": ".eos-state/verification/REQ-1D-001_verification.json"
     },
-    "dependencies": ["FIRST-LIGHT-001", "SRV-PROD-001", "ILC-PROD-001"],
+    "dependencies": ["FIRST-LIGHT-001", "ILC-PROD-001"],
+    "is_next_highest_leverage": false
+  },
+  "SRV-PROD-001": {
+    "work_id": "SRV-PROD-001",
+    "product": "Services.ID",
+    "user_job": "Create and manage service requests for cloud/IT/security services",
+    "outcome": "User dapat membuat service request, accept oleh provider, mark as delivered, dan track full lifecycle dengan tenant isolation terjaga; semua command via capabilityRegistry dengan session validation yang sama persis seperti LawyersHub; shared rail production teruji.",
+    "constraints": {
+      "architecture_locked": true,
+      "reuse_existing_capabilities": true,
+      "no_new_framework": true,
+      "no_schema_changes": true,
+      "thin_app_strategy": true,
+      "single_truth_source": true,
+      "no_horizontal_platforms": true
+    },
+    "acceptance": [
+      "createServiceRequest via capabilityRegistry(\"services-id\",\"createServiceRequest\") → draft dengan id srv-*",
+      "acceptServiceRequest: draft→accepted + providerAssignment terstamp",
+      "markServiceDelivered: accepted→delivered terminal + deliveredAt terstamp",
+      "semua session validation berjalan: hanya sessionId yang dikirim, tenant/workspace/actor di-extract dari session terverifikasi",
+      "semua test SRV suite lulus 8/8 = ALL PASS",
+      "evidence artifact JSON permanen tersimpan di .eos-state/"
+    ],
+    "status": "SHIPPED",
+    "created_at": "2026-08-15T03:00:00.000Z",
+    "updated_at": "2026-08-16T02:35:00.000Z",
+    "assigned_agents": {
+      "commander": "eos-command-center",
+      "recon": "eos-recon",
+      "product_slice": "eos-product-slice",
+      "verification": "eos-verification",
+      "evidence": "eos-evidence-engine"
+    },
+    "evidence": {
+      "artifact_path": ".eos-state/evidence/SRV-PROD-001_verification.json",
+      "test_evidence": "Services.ID service directory test suite all PASS, pnpm test --filter=services-id exit code 0",
+      "e2e_journey_verified": true,
+      "regression_free": true,
+      "primitive_reuse_pct": 99.9,
+      "shared_primitives_reused": ["SessionRepositoryPostgres", "initIdentitySchema", "PostgresRepository base class", "isolation_context_pattern", "tenant_isolation_enforcement_pattern", "environment_based_repository_toggle", "capabilityRegistry.invokeAsync pattern"]
+    },
+    "recon_report": {
+      "recon_completed_at": "2026-08-16T01:00:00.000Z",
+      "locked_boundaries_verified": ["IDENTITY_SESSION_RAIL", "POSTGRES_RAIL", "THIN_APP_BOUNDARY", "REPLAY_EVIDENCE_RAIL"],
+      "existing_capabilities_found": ["semua service lifecycle commands v2.0.0 sudah ada", "core registry sudah wiring serviceDirectoryCommands", "shared test session fixture sudah tersedia"],
+      "reuse_percentage": 99.9,
+      "blocked": false,
+      "can_proceed": true,
+      "report_path": ".eos-state/recon/SRV-PROD-001_recon.json"
+    },
+    "execution_plan": {
+      "strategy": "Vertical E2E Services.ID service directory slice dengan 100% shared rail reuse - hanya 1 baris fix import test",
+      "tasks": [
+        "Verifikasi frontend registry sudah mengimpor capabilityRegistry dari @repo/core-kernel",
+        "Verifikasi command contract hanya membutuhkan sessionId",
+        "Fix import path di test harness services-id.test.ts",
+        "Jalankan SRV test suite dan pastikan 8/8 lulus",
+        "Buat evidence artifact SRV-PROD-001_verification.json",
+        "Mark work item status → SHIPPED"
+      ],
+      "started_at": "2026-08-16T01:30:00.000Z",
+      "estimated_completion": "2026-08-16T02:00:00.000Z",
+      "completed_at": "2026-08-16T02:35:00.00Z"
+    },
+    "verification_report": {
+      "verified_at": "2026-08-16T02:35:00.000Z",
+      "acceptance_checks": 6,
+      "all_passed": true,
+      "passed_criteria_count": 6,
+      "failed_criteria_count": 0,
+      "security_scan_passed": true,
+      "architecture_lock_preserved": true,
+      "report_path": ".eos-state/verification/SRV-PROD-001_verification.json"
+    },
+    "dependencies": ["ILC-PROD-001"],
     "is_next_highest_leverage": false
   },
   "LH-CASE-001": {

@@ -8,4 +8,5 @@ experience:
   route: /requirements
 capabilities:
   - requirement-management
-claim_boundary: Product-local proof binding for the Academic identity onto the canonical apps/web professional experience surface.
+  - legal-community
+claim_boundary: Product-local proof binding for the Academic identity onto the canonical apps/web professional experience surface. Domain aggregates (Topic, ContentArticle, CommunityDiscussion) are connected to the product reality surface.

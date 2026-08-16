@@ -1,0 +1,65 @@
+{
+  "product": "lawyershub",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "LawyersHub binding valid",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Browse recent matters",
+      "ok": true
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Create new case (case-101)",
+      "ok": true,
+      "evidence": [
+        "id=case-101"
+      ]
+    },
+    {
+      "n": 4,
+      "stage": "EXECUTE",
+      "label": "Assign lawyer to case",
+      "ok": false,
+      "evidence": [
+        "lawyer=lawyer-002"
+      ]
+    }
+  ],
+  "totalSteps": 4,
+  "passCount": 3,
+  "failCount": 1,
+  "completedAtISO": "2026-08-16T04:15:14.430Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "lawyershub",
+      "displayName": "LawyersHub"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "total_cases": 3
+    },
+    {
+      "step": 3,
+      "stage": "ACTION",
+      "capability": "legal-case.createCase",
+      "evidence_id": "case-101"
+    },
+    {
+      "step": 4,
+      "stage": "EXECUTE",
+      "transition": "open→assigned",
+      "evidence_id": "case-101",
+      "lawyer": "lawyer-002"
+    }
+  ]
+}

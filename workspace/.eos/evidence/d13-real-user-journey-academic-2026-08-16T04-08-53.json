@@ -1,0 +1,51 @@
+{
+  "product": "academic",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "Academic binding valid",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Browse academic topics",
+      "ok": true,
+      "evidence": []
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Create academic article (content-102)",
+      "ok": false,
+      "evidence": [
+        "id=content-102"
+      ]
+    }
+  ],
+  "totalSteps": 3,
+  "passCount": 2,
+  "failCount": 1,
+  "completedAtISO": "2026-08-16T04:08:53.700Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "academic",
+      "displayName": "Academic Community"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "category": "Hukum Tata Negara",
+      "count": 0
+    },
+    {
+      "step": 3,
+      "stage": "ACTION",
+      "capability": "legal-community.createContentArticle",
+      "evidence_id": "content-102"
+    }
+  ]
+}

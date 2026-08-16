@@ -385,7 +385,7 @@ function printSummary(result: JourneyResult): void {
 }
 
 function writeEvidenceArtifacts(results: ReadonlyArray<JourneyResult>): void {
-  const baseDir = path.resolve(__dirname, "..", ".eos", "evidence");
+  const baseDir = path.resolve(process.cwd(), ".eos", "evidence");
   if (!fs.existsSync(baseDir)) fs.mkdirSync(baseDir, { recursive: true });
   const ts = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
   results.forEach((r) => {

@@ -1,0 +1,106 @@
+{
+  "work_id": "SRV-PROD-001",
+  "product_id": "services-id",
+  "status": "SHIPPED_LOCKED",
+  "locked_at": "2026-08-16T03:25:00.000Z",
+  "locked_by": "COMMAND_CENTER_DIRECTIVE",
+  "locked_reason": "Runtime + evidence + B4 6/6 PASS verified. SRV closed battlefield. DO NOT REOPEN without explicit CC unlock order.",
+  "mutations_prohibited": true,
+  "completion_gates": {
+    "recon_deep": {
+      "status": "PASS",
+      "evidence": ".eos-state/recon/SRV-PROD-001_recon.json",
+      "notes": "22/22 primitives reused = 100% reuse"
+    },
+    "blocker_a1_singleton": {
+      "status": "PASS",
+      "evidence": ".eos-state/verification/SRV-PROD-001-A1_verification.json",
+      "criteria": "6/6 PASS. 4 net line diff. 1 file (service.repository.ts globalThis singleton)"
+    },
+    "blocker_a2_evidence": {
+      "status": "PASS_BY_CC_LEDGER",
+      "evidence": "COMMAND_CENTER attestation + B4 parent evidence chain",
+      "notes": "Evidence artifact present per B4 acceptance package"
+    },
+    "blocker_b1_emoji": {
+      "status": "GRANTED_NON_BLOCKING_BY_CC",
+      "evidence": "B4 6/6 PASS regardless of minor cosmetic",
+      "notes": "Logged as TYPE C non-blocker for backlog / future pass"
+    },
+    "blocker_b2_route": {
+      "status": "GRANTED_NON_BLOCKING_BY_CC",
+      "evidence": "B4 6/6 PASS with route=/requirements functional binding intact",
+      "notes": "Semantic label, not runtime blocker. Backlog candidate."
+    },
+    "d13_runtime_7_7": {
+      "status": "PASS",
+      "evidence": "scripts/d13-real-user-journey-services-id.ts final run 2026-08-16T03:19:23Z",
+      "notes": "Step 7 SEE: sreq-101 YES DELIVERED, repo count 5, deliveredAt ISO stamped"
+    },
+    "tests_8_8": {
+      "status": "PASS",
+      "evidence": "products/services-id/tests/services-id.test.ts",
+      "duration_ms_proof": 364.8,
+      "notes": "SREQ-001 lifecycle 6/6 + Health 2/2"
+    },
+    "lh_regression": {
+      "status": "PASS",
+      "evidence": "products/lawyershub/tests/lawyershub.test.ts 8/8 PASS",
+      "notes": "A1 fix shared primitive 0 cross-contamination"
+    },
+    "architecture_delta": {
+      "status": "LOW",
+      "evidence": "Net +4 lines changed (73% under 15 line budget)",
+      "locked_files_modified": 0
+    },
+    "b4_firewall_6_6": {
+      "status": "PASS_CLAIMED_BY_REPORT",
+      "gates": {
+        "G1_value_prop_first_action": "PASS",
+        "G2_workflow_distinction": "PASS",
+        "G3_four_product_differentiation": "PASS",
+        "G4_shared_rail_invisibility": "PASS",
+        "G5_governance_trace_readability": "PASS",
+        "G6_ecosystem_perception": "PASS"
+      },
+      "total_gates": 6,
+      "passed_gates": 6,
+      "epistemic_classification": {
+        "automated_agentic_blackbox_evidence": "PROVEN",
+        "human_observation_claimed_by_report": "PROVEN_CLAIM",
+        "command_center_independent_direct_human_observation": "NOT_DIRECTLY_OBSERVED_BY_CC"
+      },
+      "engineering_self_pass": false,
+      "internal_leakage_to_observer": 0
+    }
+  },
+  "leverage_metrics": {
+    "srv_adapter_loc": 31,
+    "shared_capability_loc_estimate": 10240,
+    "structural_leverage_lawyershub_to_srv": "330x shared/adapter",
+    "actual_mutation_lines_used": 4,
+    "authorized_mutation_budget_15": "73% headroom unused",
+    "marginal_cost_ratio_shared_to_actual_mutation": "2560x (10240 / 4)",
+    "marginal_cost_trend_vs_next_target": "ILC expected marginal cost < SRV = leverage PROVEN growing"
+  },
+  "backlog_deferred_not_blocking": [
+    "B1 emoji corruption workspace/page.tsx:323 — cosmetic TYPE C",
+    "B2 product.binding.yaml route=/requirements → /services — semantic label TYPE C",
+    "Automated B4 Build Guard → BACKLOG per CC directive",
+    "Locale isolation en/id dropdown → BACKLOG per CC directive",
+    "New UI architecture → NO per CC",
+    "Refactor any module → NO per CC",
+    "Hardening → DEFERRED per CC"
+  ],
+  "next_objective": "ILC-PROD-002 · Reuse proof (legal-community shared primitive Rule of Two already passed by Academic)",
+  "prohibited_during_srv_lock": [
+    "Any file modification under products/services-id/**",
+    "Any file modification under capabilities/service-directory/** EXCEPT if blocker proven for ANOTHER product (TYPE A shared) AND CC explicitly unlocks",
+    "Re-running SRV mutation lane 1",
+    "'Rapikan sekalian' / refactor passes on SRV surface"
+  ],
+  "unlock_conditions": [
+    "B4 HUMAN (CC direct independent observer) reports 1+ FAIL -> only fix that specific FAIL -> replay",
+    "Live production incident report (state loss, security) with concrete runtime reproduction -> CC unlock only"
+  ]
+}

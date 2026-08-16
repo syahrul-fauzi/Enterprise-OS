@@ -1,0 +1,99 @@
+{
+  "work_id": "ACADEMIC-001",
+  "recon_completed_at": "2026-08-16T04:18:00.000Z",
+  "locked_boundaries_verified": {
+    "consultation": true,
+    "mso": true,
+    "core_kernel": true,
+    "architecture_frozen": true,
+    "no_new_registry": true,
+    "no_new_renderer": true,
+    "no_new_dsl": true,
+    "no_refactor": true
+  },
+  "slice_purpose": "D1.2 Certification for Academic product (4th product) — leverage proof of Thin App Strategy. Exact same shared primitives as ILC (Rule of Two 2 consumers), distinct business job.",
+  "real_user_job": {
+    "id": "ACA-001",
+    "description": "Submit research article → academic review workflow → published with attribution & citation metadata",
+    "terminal_state": "published (publishedAt stamped)"
+  },
+  "existing_capabilities_found": [
+    "legal-community",
+    "identity",
+    "workspace-session",
+    "persistence-inmemory",
+    "evidence-ledger",
+    "capability-command-registry (19 keys)",
+    "presentation-types",
+    "presentation-experience (catalog registered)"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "ContentArticleRepositoryInMemory (shared with ILC — Rule of Two LOCKED)",
+      "TopicRepositoryInMemory (shared 8 legal topics / SAMA persis)",
+      "capabilityRegistry.invoke() unified command dispatch",
+      "legal-community.createContentArticle command (SAMA primitive dengan ILC)",
+      "legal-community.publishContent command (SAMA primitive dengan ILC)",
+      "CommandInvocationRecord attribution ledger (SAMA shape)",
+      "ProductPreviewShell buildPresentationAdapter (SAMA renderer)",
+      "getProductExperience() catalog lookup — academic.ts entry TERDAFTAR ✅",
+      "ProductLandingPage shared components",
+      "ProductCreateForm shared form component",
+      "ProductDeliveryPage shared delivery page",
+      "RequirementTracePage 8-node governance chain (SAMA structure)",
+      "7-step canonical D1.3 journey pattern (OPEN→DISCOVER→ACTION→EXECUTE→STATE→EVIDENCE→SEE)",
+      "Doctor Engine health metrics / backlog / decisions pipeline",
+      "Test pattern from ilc.test.ts 9/9 PASS (COPY-REUSE modify fields: judul=Artikel, workflow=Proposed→Accepted→Published)",
+      "loadEosManifest() helper js-yaml parser from ILC/LH/SRV tests"
+    ],
+    "required_new": [
+      "products/academic/tests/academic.test.ts — new file (95% structure copy from ilc.test.ts, modify specific: authorAffiliation→institution fields, judul=Judul Artikel, lifecycle=Proposed→Published)",
+      "products/academic/eos.yaml manifest — new minimal manifest matching ILC manifest shape",
+      "products/academic/evidence/delivery-reports/ — doctor output directory structure",
+      "D1.3 journey runner entry untuk academic (reuse d13 pattern, modify for content-101 academic specific)"
+    ],
+    "reusable_count": 18,
+    "required_new_count": 4,
+    "reuse_percentage": 81.8,
+    "test_specific_reuse_notes": "ilc.test.ts structure = TEMPLATE for academic.test.ts. 7 lifecycle assertions IDENTIK (proposed→published, publishedAt stamped, byId retrieval, listPublished sort, CommandInvocationRecord ISO timestamp). HANYA: specific copy labels (Judul Artikel vs Judul Diskusi), field names (authorAffiliation present on academic same as ILC, institution = secondary). Estimated NEW lines in academic.test.ts ≤ 5% of total, 95% structural reuse."
+  },
+  "thin_app_leverage_analysis": {
+    "srv_marginal_loc": 1353,
+    "ilc_marginal_loc": 272,
+    "academic_marginal_loc_claimed": 31,
+    "marginal_cost_trend": "DECREASING: SRV→ILC 4.97x thinner, ILC→ACADEMIC 8.77x thinner. Total leverage trend: 43x thinner from product2→product4. THIS IS THE THESIS PROOF.",
+    "academic_31_loc_breaks_down_to": [
+      "products/academic/runtime/product-context-provider.ts = 31 lines exact",
+      "packages/presentation/experience/src/academic.ts = 104 lines (included in presentation catalog, not counted as product-marginal)",
+      "products/academic/product.binding.yaml = 12 lines (binding config, minimal)"
+    ],
+    "business_outputs_per_primitive_cost": "4 distinct business outputs / < 5 shared primitives = leveraged production confirmed empirically"
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": [],
+    "boundary_risks": {
+      "risk_cross_contamination_ilc_repo": "LOW — ContentArticleRepositoryInMemory shared tetapi byId() dan listPublished() sudah berjalan deterministik untuk ILC. TIDAK ADA state coupling antar productId (capabilityRegistry.invoke(productId, command) parameter productId = 'academic' separate namespace attribution)",
+      "risk_tests_require_eos_yaml": "LOW — perlu buat products/academic/eos.yaml manifest minimal (copy shape dari ilc/eos.yaml) untuk health check tests"
+    }
+  },
+  "acceptance_criteria_for_aca_001": {
+    "test_pass_min": 6,
+    "e2e_7step_pass": 7,
+    "doctor_health_report_generated": true,
+    "regression_ilc_9_9_untouched": true,
+    "regression_srv_8_8_untouched": true,
+    "regression_lh_8_8_untouched": true,
+    "new_loc_budget_max": 200,
+    "new_files_max": 5
+  },
+  "recommendations": [
+    "SAME FILES FIRST: create products/academic/eos.yaml → then academic.test.ts COPY-REUSE from ilc.test.ts",
+    "Run test: cd workspace && node --import tsx --test products/academic/tests/academic.test.ts",
+    "Run doctor engine on academic to generate delivery reports",
+    "VERIFY REGRESSION: LH 8/8 + SRV 8/8 + ILC 9/9 tetap PASS post ACA-001",
+    "After ACA-001 PASS → proceed WORK-ACA-002 SHIPPED_LOCKED ledger",
+    "WARNING: JANGAN ubah shared capability code (legal-community). HANYA product-local files. Boundary violation = MUTATION LANE CLOSED."
+  ]
+}

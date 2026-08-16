@@ -1,0 +1,116 @@
+{
+  "product": "ilc",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "ILC binding valid",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Browse legal topics",
+      "ok": true
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Publish article (content-101)",
+      "ok": true,
+      "evidence": [
+        "id=content-101"
+      ]
+    },
+    {
+      "n": 4,
+      "stage": "EXECUTE",
+      "label": "Editor curates article",
+      "ok": true,
+      "evidence": [
+        "status=published"
+      ]
+    },
+    {
+      "n": 5,
+      "stage": "STATE",
+      "label": "Archive article (terminal)",
+      "ok": true
+    },
+    {
+      "n": 6,
+      "stage": "EVIDENCE",
+      "label": "Verify attribution ledger",
+      "ok": true
+    },
+    {
+      "n": 7,
+      "stage": "SEE",
+      "label": "User sees archived result",
+      "ok": true
+    }
+  ],
+  "totalSteps": 7,
+  "passCount": 7,
+  "failCount": 0,
+  "completedAtISO": "2026-08-16T04:13:10.039Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "ilc",
+      "displayName": "Indonesia Lawyers Club"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "total_topics": 8
+    },
+    {
+      "step": 3,
+      "stage": "ACTION",
+      "capability": "legal-community.publishContentArticle",
+      "evidence_id": "content-101"
+    },
+    {
+      "step": 4,
+      "stage": "EXECUTE",
+      "transition": "draft→published",
+      "evidence_id": "content-101"
+    },
+    {
+      "step": 5,
+      "stage": "STATE",
+      "transition": "published→archived",
+      "terminal": true,
+      "evidence_id": "content-101"
+    },
+    {
+      "step": 6,
+      "stage": "EVIDENCE",
+      "ledger": [
+        {
+          "key": "legal-community.createContentArticle",
+          "ok": true,
+          "t": "2026-08-16T04:13:10.038Z"
+        },
+        {
+          "key": "legal-community.publishContent",
+          "ok": true,
+          "t": "2026-08-16T04:13:10.038Z"
+        },
+        {
+          "key": "legal-community.archiveContent",
+          "ok": true,
+          "t": "2026-08-16T04:13:10.039Z"
+        }
+      ]
+    },
+    {
+      "step": 7,
+      "stage": "SEE",
+      "evidence_id": "content-101",
+      "user_sees_status": "archived"
+    }
+  ]
+}

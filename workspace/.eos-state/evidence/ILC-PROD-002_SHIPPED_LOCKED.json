@@ -1,0 +1,95 @@
+{
+  "work_id": "ILC-PROD-002",
+  "product_id": "ilc",
+  "display_name": "Indonesia Lawyers Club",
+  "status": "SHIPPED_LOCKED",
+  "locked_at": "2026-08-16T04:15:00.000Z",
+  "locked_by": "COMMAND_CENTER_DIRECTIVE + RECON_VERIFIED",
+  "locked_reason": "Runtime + evidence + B4 6/6 PASS verified per Commander assessment 2026-08-16. ILC closed battlefield. DO NOT REOPEN without explicit CC unlock order.",
+  "mutations_prohibited": true,
+  "completion_gates": {
+    "recon_deep": {
+      "status": "PASS",
+      "evidence": ".eos-state/recon/ILC-001_recon.json",
+      "notes": "Reuse 100% — 13 primitives reused = 100% shared rail. 0 required_new primitives"
+    },
+    "rule_of_two_legal_community": {
+      "status": "PASS",
+      "evidence": ".eos-state/evidence/B4-VALIDATE-003_evidence.json",
+      "notes": "legal-community primitive = 2 consumers (ILC + Academic) CONFIRMED structural. Shared 8 legal topics identical both products. Rule of Two LOCKED."
+    },
+    "d13_runtime_7_7": {
+      "status": "PASS",
+      "evidence": "eos-state.yaml product_jobs_executed batch D1.2-LIFECYCLE-TRANSITIONS content-101",
+      "notes": "content-101 proposed→published terminal, publishedAt stamped, CommandInvocationRecord 2 ok:true"
+    },
+    "tests_9_9": {
+      "status": "PASS",
+      "evidence": "products/ilc/tests/ilc.test.ts",
+      "duration_ms_proof": 402.354,
+      "notes": "DISC-001 lifecycle 7/7 + Health 2/2 = 9/9. Runtime verified 2026-08-16: baseline replay PASS"
+    },
+    "lh_regression": {
+      "status": "PASS",
+      "evidence": "products/lawyershub/tests/lawyershub.test.ts 8/8 PASS",
+      "notes": "Shared primitive 0 cross-contamination. ILC legal-community tidak ganggu legal-case atau service-directory"
+    },
+    "srv_regression": {
+      "status": "PASS",
+      "evidence": "products/services-id/tests/services-id.test.ts 8/8 PASS",
+      "notes": "ILC mutation lane 0 interference with SRV closed battlefield"
+    },
+    "architecture_delta": {
+      "status": "LOW",
+      "evidence": "Net structural marginal LOC = 272 (eos-state.yaml product_leverage_scoreboard)",
+      "locked_files_modified": 0
+    },
+    "b4_firewall_6_6": {
+      "status": "PASS_CLAIMED_BY_REPORT",
+      "gates": {
+        "G1_value_prop_first_action": "PASS",
+        "G2_workflow_distinction": "PASS",
+        "G3_four_product_differentiation": "PASS",
+        "G4_shared_rail_invisibility": "PASS",
+        "G5_governance_trace_readability": "PASS",
+        "G6_ecosystem_perception": "PASS"
+      },
+      "total_gates": 6,
+      "passed_gates": 6,
+      "epistemic_classification": {
+        "automated_agentic_blackbox_evidence": "PROVEN",
+        "human_observation_claimed_by_report": "PROVEN_CLAIM",
+        "command_center_independent_direct_human_observation": "NOT_DIRECTLY_OBSERVED_BY_CC"
+      },
+      "engineering_self_pass": false,
+      "internal_leakage_to_observer": 0
+    }
+  },
+  "leverage_metrics": {
+    "ilc_adapter_loc": 272,
+    "rule_of_two_2nd_consumer_academic_loc": 31,
+    "shared_legal_community_reuse": "2 products / 1 primitive cost = 2x leverage dari shared legal-community",
+    "authorized_mutation_budget_15_used_percent_remaining": "100% unused (0 new code for lock)",
+    "marginal_cost_trend_vs_srv": "ILC 272 vs SRV 1353 = 4.97x THINNER marginal code = leverage increasing ✅"
+  },
+  "backlog_deferred_not_blocking": [
+    "ILC product.binding.yaml status ACTIVE → future semantic label TYPE C",
+    "Moderator open/featured/locked affordances — future slice",
+    "Automated B4 Build Guard → BACKLOG per CC directive",
+    "Locale isolation en/id dropdown → BACKLOG per CC directive",
+    "New UI architecture → NO per CC",
+    "Refactor any module → NO per CC",
+    "Hardening → DEFERRED per CC"
+  ],
+  "next_objective": "WORK-ACA-001 Academic D1.2 certification — leverage proof produk ke-4 dengan 31 LOC thin adapter. Test COPY-REUSE dari ILC test suite pattern. Rule of Two 2 consumer legal-community locked now producing 2 DISTINCT business outputs.",
+  "prohibited_during_ilc_lock": [
+    "Any file modification under products/ilc/**",
+    "Any file modification under capabilities/legal-community/** EXCEPT if blocker proven for ANOTHER product (TYPE A shared) AND CC explicitly unlocks",
+    "Re-running ILC mutation lane",
+    "'Rapikan sekalian / refactor passes on ILC surface"
+  ],
+  "unlock_conditions": [
+    "B4 HUMAN (CC direct independent observer) reports 1+ FAIL -> only fix that specific FAIL -> replay",
+    "Live production incident report (state loss, security) with concrete runtime reproduction -> CC unlock only"
+  ]
+}

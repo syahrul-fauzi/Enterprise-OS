@@ -1,0 +1,74 @@
+{
+  "product": "academic",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "Academic binding valid",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Browse academic topics",
+      "ok": true,
+      "evidence": []
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Create academic article (content-102)",
+      "ok": true,
+      "evidence": [
+        "id=content-102"
+      ]
+    },
+    {
+      "n": 4,
+      "stage": "EXECUTE",
+      "label": "Publish academic article",
+      "ok": true
+    },
+    {
+      "n": 5,
+      "stage": "STATE",
+      "label": "Verify published state",
+      "ok": false
+    }
+  ],
+  "totalSteps": 5,
+  "passCount": 4,
+  "failCount": 1,
+  "completedAtISO": "2026-08-16T04:13:10.040Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "academic",
+      "displayName": "Academic Community"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "category": "Hukum Tata Negara",
+      "count": 0
+    },
+    {
+      "step": 3,
+      "stage": "ACTION",
+      "capability": "legal-community.createContentArticle",
+      "evidence_id": "content-102"
+    },
+    {
+      "step": 4,
+      "stage": "EXECUTE",
+      "capability": "legal-community.publishContent",
+      "status": "published"
+    },
+    {
+      "step": 5,
+      "stage": "STATE",
+      "id": "content-102"
+    }
+  ]
+}

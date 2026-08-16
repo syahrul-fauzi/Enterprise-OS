@@ -3,7 +3,7 @@ import test from "node:test";
 import fs from "node:fs";
 import path from "node:path";
 import yaml from "js-yaml";
-import { capabilityRegistry, type CommandInvocationRecord } from "../../../apps/web/lib/capability-command-registry";
+import { capabilityRegistry, type CommandInvocationRecord } from "@repo/core-kernel";
 import {
   ServiceProviderRepositoryInMemory,
   ServiceRequestRepositoryInMemory,
