@@ -1,0 +1,79 @@
+{
+  "ilc_p0_experiment": {
+    "case_id": "case_01HXYZ789ABCDEFG",
+    "discussion_id": "disc_01HABC123456789",
+    "timestamps": {
+      "T0": "2026-08-16T14:32:15.123Z",
+      "T1": "2026-08-16T14:32:15.876Z",
+      "T2": "2026-08-16T14:32:18.234Z",
+      "T3": "2026-08-17T00:15:20.081Z",
+      "T3_captured_at": "2026-08-17T00:15:20.100Z",
+      "T3_verified_by": "VERIFY-ILC-T3 standalone (independent replay) — ALL_PASSED verdict",
+      "T4": "2026-08-17T00:15:31.598Z",
+      "T4_captured_at": "2026-08-17T00:15:31.610Z",
+      "T4_verified_by": "VERIFY-ILC-T4 standalone (independent replay) — 6/6 semantic checks PASS; outcome_claimed=false",
+      "T5": null,
+      "T5_status": "PENDING_HUMAN_EXTERNAL_ACTION",
+      "T5_cannot_be_set_by_agent": "TRUE — B4 Firewall blocks agent self-certification of external delivery+outcome"
+    },
+    "professional_first_action": {
+      "action": "case.assignLawyer",
+      "actor": "lawyer-001",
+      "first_action_relevant": true,
+      "state_before": { "status": "draft", "lawyerId": null },
+      "state_after": { "status": "in_progress", "lawyerId": "lawyer-001" },
+      "verification": "VERIFY-ILC-T3 verdict: ALL_PASSED. Independent process confirmed state mutation + persistence."
+    },
+    "professional_next_action_t4": {
+      "action": "document.create",
+      "actor": "lawyer-001",
+      "artifact_id": "doc-101",
+      "artifact_title": "Surat Peringatan Pengosongan Ilegal - Cease and Desist Letter",
+      "artifact_linked_to_case": true,
+      "case_status_remains": "in_progress",
+      "relevant": true,
+      "outcome_claimed": false,
+      "verification": "VERIFY-ILC-T4 standalone: document_persisted=true, linked_to_case=true, outcome_claimed_in_t4_evidence=false"
+    },
+    "external_action_t5": {
+      "status": "NOT_PERFORMED",
+      "blocker": "HUMAN_EXTERNAL_ACTION_REQUIRED",
+      "blocker_reason": "Agent inside repository cannot: (1) send real registered email, (2) receive real landlord reply, (3) exercise professional legal judgement to verify outcome. All 9 steps enumerated in t5 evidence file require a human. See .eos-state/evidence/case_01HXYZ789ABCDEFG_t5_evidence.json",
+      "violation_corrected": "PREVIOUS T5 RUN WAS INVALID: manufactured synthetic HUMAN_CONFIRMED and set outcome_verified=true via script assertion. Rolled back on 2026-08-17; classification=EVIDENCE_MANUFACTURE+SCRIPT_ASSERTION_CLAIM; see violation_record in T5 evidence file.",
+      "required_human_steps": 9,
+      "completed_human_steps": 0
+    },
+    "acceptance_criteria_met": {
+      "case_id_not_null": true,
+      "discussion_id_not_null": true,
+      "T0_captured": true,
+      "T1_captured": true,
+      "T2_captured": true,
+      "T3_captured": true,
+      "T4_captured": true,
+      "T5_captured": false,
+      "context_visible": true,
+      "missing_context": null,
+      "professional_action_executed": true,
+      "first_action_relevant": true,
+      "state_changed_at_T3": true,
+      "state_changed_at_T4_artifact_added": true,
+      "state_changed_at_T5_outcome": false,
+      "L4_REQUIRED_real_world_outcome_validated": false,
+      "L4_CANDIDATE": false,
+      "L5_REQUIRED_economic_leverage": false
+    },
+    "evidence_artifacts": {
+      "T3": ".eos-state/evidence/case_01HXYZ789ABCDEFG_evidence.json",
+      "T4": ".eos-state/evidence/case_01HXYZ789ABCDEFG_t4_evidence.json",
+      "T5": ".eos-state/evidence/case_01HXYZ789ABCDEFG_t5_evidence.json (CORRECTED — PENDING status, null outcome)",
+      "VERIFY_T3": ".eos-state/verification/verify-ilc-t3_verification.json",
+      "VERIFY_T4": ".eos-state/verification/verify-ilc-t4_verification.json"
+    },
+    "status": "T3_VERIFIED_T4_VERIFIED__T5_PENDING_HUMAN_EXTERNAL_ACTION",
+    "evidence_ladder": "L3_ACHIEVED__L4_PENDING_HUMAN_EXECUTION",
+    "evidence_ladder_correction_note": "Previous report incorrectly claimed L4 CANDIDATE + L5 INDICATED. Rolled back. L4 requires T5 real external execution + human professional outcome verification. EOS agent cannot self-certify L4/L5 per B4 Firewall doctrine.",
+    "next_target": "L4 — HUMAN must execute 9 steps in T5 evidence file and attach real artifacts + professional verdict",
+    "b4_firewall_status": "ENFORCED — outcome_verified remains null for T5; no script may set it"
+  }
+}

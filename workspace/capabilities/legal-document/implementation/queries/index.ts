@@ -3,5 +3,5 @@ export {
   searchDocuments,
   listDocumentsByStatus,
   documentQueries,
-} from "./document.queries";
-export type * from "./document.queries";
+} from "./document.queries.js";
+export type * from "./document.queries.js";

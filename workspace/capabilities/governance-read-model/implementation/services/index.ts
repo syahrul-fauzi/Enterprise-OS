@@ -1,1 +1,1 @@
-export * from "./governance-read-model.service";
+export * from "./governance-read-model.service.js";

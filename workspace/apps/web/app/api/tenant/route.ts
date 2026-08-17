@@ -4,8 +4,8 @@ import {
   readWorkspaceSessionFromRequest,
   createAnonymousWorkspaceSession,
 } from "@repo/core-kernel";
-import type { GetWorkspacesByTenantOutput } from "../../../../../capabilities/identity/implementation/commands/get-workspaces-by-tenant.command";
-import type { CreateTenantWithSlugResolutionOutput } from "../../../../../capabilities/identity/implementation/commands/create-tenant-with-slug-resolution.command";
+import type { GetWorkspacesByTenantOutput } from "../../../../../capabilities/identity/implementation/commands/get-workspaces-by-tenant.command.js";
+import type { CreateTenantWithSlugResolutionOutput } from "../../../../../capabilities/identity/implementation/commands/create-tenant-with-slug-resolution.command.js";
 
 export async function GET(request: Request) {
   try {

@@ -1,6 +1,6 @@
-export { BaseSearchBar } from "./BaseSearchBar";
-export { CommunitySearchBar } from "./CommunitySearchBar";
-export { ResearchSearchBar } from "./ResearchSearchBar";
-export type { BaseSearchBarProps } from "./BaseSearchBar";
-export type { CommunitySearchBarProps } from "./CommunitySearchBar";
-export type { ResearchSearchBarProps } from "./ResearchSearchBar";
+export { BaseSearchBar } from "./BaseSearchBar.js";
+export { CommunitySearchBar } from "./CommunitySearchBar.js";
+export { ResearchSearchBar } from "./ResearchSearchBar.js";
+export type { BaseSearchBarProps } from "./BaseSearchBar.js";
+export type { CommunitySearchBarProps } from "./CommunitySearchBar.js";
+export type { ResearchSearchBarProps } from "./ResearchSearchBar.js";

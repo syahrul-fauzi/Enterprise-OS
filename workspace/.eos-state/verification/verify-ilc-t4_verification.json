@@ -1,0 +1,15 @@
+{
+  "work_id": "VERIFY-ILC-T4",
+  "verified_at": "2026-08-17T00:21:45.237Z",
+  "checks": {
+    "document_persisted": true,
+    "document_linked_to_case": true,
+    "case_status_unchanged": true,
+    "artifact_count_increased": true,
+    "author_matches_professional": true,
+    "outcome_claimed_in_t4_evidence": false,
+    "all_passed": false
+  },
+  "verdict": "FAILED",
+  "finding": "T4 is LEGITIMATE. It only claims artifact creation and case-linking, NOT outcome. Evidence artifact correctly sets outcome_verified=false and evidence_ladder_level=L4 (artifact ready, but not delivered/verified). No self-certified outcome present."
+}

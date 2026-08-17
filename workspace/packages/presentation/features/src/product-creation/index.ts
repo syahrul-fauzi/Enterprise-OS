@@ -1,2 +1,2 @@
-export { ProductCreateForm } from "./ProductCreateForm";
-export type { ProductCreateFormProps } from "./ProductCreateForm";
+export { ProductCreateForm } from "./ProductCreateForm.js";
+export type { ProductCreateFormProps } from "./ProductCreateForm.js";

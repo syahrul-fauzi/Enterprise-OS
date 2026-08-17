@@ -1,9 +1,9 @@
 import {
   RequirementId,
   requirementService,
-} from "../../../requirement-management/implementation/service";
-import { evidenceRegistryService } from "../../../evidence-registry/implementation/service";
-import { requirementsTraceabilityMatrixService } from "../../../requirements-traceability-matrix/implementation/service";
+} from "../../../requirement-management/implementation/service.js";
+import { evidenceRegistryService } from "../../../evidence-registry/implementation/service.js";
+import { requirementsTraceabilityMatrixService } from "../../../requirements-traceability-matrix/implementation/service.js";
 import type {
   ExecuteWorkflowInput,
   ExecuteWorkflowOutput,
@@ -14,9 +14,9 @@ import type {
   WorkflowExecutionResult,
   WorkflowExecutionStatus,
   WorkflowStepResult,
-} from "../contracts";
-import { WorkflowDefinitionRepositoryInMemory } from "../repository";
-import { recordRuntimeInvocation, traceExecutionByDecision, executionContext } from "../../../../packages/core/runtime/src/index";
+} from "../contracts/index.js";
+import { WorkflowDefinitionRepositoryInMemory } from "../repository/index.js";
+import { recordRuntimeInvocation, traceExecutionByDecision, executionContext } from "../../../../packages/core/runtime/src/index.js";
 
 // ============================================================
 // DIV-001 ENFORCED: Procedure ≠ Workflow.
@@ -747,5 +747,5 @@ export class WorkflowEngineService {
 
 export const workflowEngineService = new WorkflowEngineService();
 
-export * from "../contracts";
-export * from "../repository";
+export * from "../contracts/index.js";
+export * from "../repository/index.js";

@@ -7,7 +7,7 @@ import type {
   EirCapabilityRef,
   EirDeterminismContext,
   EirTraceAnchor,
-} from "./types";
+} from "./types.js";
 
 export const CanonicalStatusSchema = z.enum([
   "DRAFT",

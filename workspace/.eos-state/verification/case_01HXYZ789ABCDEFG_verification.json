@@ -1,0 +1,56 @@
+{
+  "work_id": "ILC-RT-002/003",
+  "verified_at": "2026-08-16T15:52:35.318Z",
+  "acceptance_criteria": {
+    "case_exists_in_repository": {
+      "passed": false,
+      "evidence": "Case case_01HXYZ789ABCDEFG not found in repository"
+    },
+    "case_state_transition_correct": {
+      "passed": false,
+      "evidence": "Case not found - dependent check failed"
+    },
+    "lawyer_assigned_correctly": {
+      "passed": false,
+      "evidence": "Case not found - dependent check failed"
+    },
+    "tenant_isolation_preserved": {
+      "passed": false,
+      "evidence": "Case not found - dependent check failed"
+    },
+    "timestamps_updated": {
+      "passed": false,
+      "evidence": "Case not found - dependent check failed"
+    },
+    "evidence_artifact_exists": {
+      "passed": true,
+      "evidence": "Evidence file found at /root/Enterprise-OS/workspace/.eos-state/evidence/case_01HXYZ789ABCDEFG_evidence.json"
+    },
+    "evidence_artifact_valid": {
+      "passed": true,
+      "evidence": "All required fields present, file size: 728 bytes"
+    }
+  },
+  "all_passed": false,
+  "total_passed": 2,
+  "total_failed": 5,
+  "passed_criteria": [
+    "evidence_artifact_exists",
+    "evidence_artifact_valid"
+  ],
+  "failed_criteria": [
+    "case_exists_in_repository",
+    "case_state_transition_correct",
+    "lawyer_assigned_correctly",
+    "tenant_isolation_preserved",
+    "timestamps_updated"
+  ],
+  "security_scan": {
+    "passed": true,
+    "vulnerabilities_found": 0
+  },
+  "architecture_verification": {
+    "passed": true,
+    "locked_files_modified": []
+  }
+}

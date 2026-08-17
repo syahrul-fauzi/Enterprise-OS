@@ -3,7 +3,7 @@ import type {
   RequirementPriority,
   RequirementStatus,
   RequirementVerificationStatus,
-} from "../../../requirement-management/implementation/contracts";
+} from "../../../requirement-management/implementation/contracts/index.js";
 
 export type TraceabilityArtifactKind =
   | "capability"

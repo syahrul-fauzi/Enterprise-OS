@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { POST as postDelivery } from "../app/api/delivery/route";
+import { POST as postDelivery } from "../app/api/delivery/route.js";
 import {
   WORKSPACE_SESSION_COOKIE,
   createAnonymousWorkspaceSession,
   encodeWorkspaceSession,
-} from "../lib/workspace-session";
+} from "../lib/workspace-session.js";
 
 const sessionCookie = `${WORKSPACE_SESSION_COOKIE}=${encodeWorkspaceSession(
   createAnonymousWorkspaceSession(),

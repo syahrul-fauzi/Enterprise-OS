@@ -4,9 +4,9 @@ import {
   WorkspaceId,
   type CreateWorkspaceInput,
   type WorkspaceAggregate,
-} from "../contracts/identity.contracts";
-import { WorkspaceRepositoryPostgres } from "../repositories/index";
-import { slugifyForTenant } from "../services/password.service";
+} from "../contracts/identity.contracts.js";
+import { WorkspaceRepositoryPostgres } from "../repositories/index.js";
+import { slugifyForTenant } from "../services/password.service.js";
 
 function newWorkspaceId(): WorkspaceId {
   return WorkspaceId(`workspace-${randomUUID()}`);

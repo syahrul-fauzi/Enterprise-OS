@@ -4,9 +4,9 @@ import {
   TenantId,
   type CreateTenantInput,
   type TenantAggregate,
-} from "../contracts/identity.contracts";
-import { TenantRepositoryPostgres } from "../repositories/index";
-import { initIdentitySchema } from "../repositories/base.repository";
+} from "../contracts/identity.contracts.js";
+import { TenantRepositoryPostgres } from "../repositories/index.js";
+import { initIdentitySchema } from "../repositories/base.repository.js";
 
 function newTenantId(): TenantId {
   return TenantId(`tenant-${randomUUID()}`);

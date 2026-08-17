@@ -6,34 +6,34 @@ declare const __filename: string;
 const _require = createRequire(__filename);
 const crypto = _require("node:crypto") as typeof import("node:crypto");
 
-import type { ProducerContext } from "../certification/producers/types";
-import { produceEvidencePackageEnvelope } from "../certification/producers/types";
-import { gitCommitHashProducer } from "../certification/producers/git-commit-verify";
-import { runtimeBenchmarkProducer } from "../certification/producers/runtime-benchmark";
-import { abiCompilerDiffProducer } from "../certification/producers/abi-compiler-diff";
+import type { ProducerContext } from "../certification/producers/types.js";
+import { produceEvidencePackageEnvelope } from "../certification/producers/types.js";
+import { gitCommitHashProducer } from "../certification/producers/git-commit-verify.js";
+import { runtimeBenchmarkProducer } from "../certification/producers/runtime-benchmark.js";
+import { abiCompilerDiffProducer } from "../certification/producers/abi-compiler-diff.js";
 import {
   runAllIndependentProducers,
   buildAlpha8EvidencePkgs,
   buildAlpha8AggregatePkgs,
   buildAlpha8Claims,
   buildAlpha8ClaimRelations,
-} from "../certification/producers/correlate";
-import { computeEvidenceIdSync } from "../certification/evidence";
+} from "../certification/producers/correlate.js";
+import { computeEvidenceIdSync } from "../certification/evidence.js";
 import {
   buildCertificationMatrix,
   runCertificationSelfTest,
   compareCertificationSnapshots,
   computeFullRevocationCascade,
   alpha6Matrix,
-} from "../certification/matrix";
+} from "../certification/matrix.js";
 import type {
   CertificationMatrixEnvelope,
   CertificationClaim,
   EvidencePackage,
   ClaimRelation,
   EvidenceId,
-} from "../certification/types";
-import { EvidenceId as EvidenceIdBrand } from "../certification/types";
+} from "../certification/types.js";
+import { EvidenceId as EvidenceIdBrand } from "../certification/types.js";
 
 const REPO_ROOT = path.resolve(__dirname, "..", "..", "..", "..");
 

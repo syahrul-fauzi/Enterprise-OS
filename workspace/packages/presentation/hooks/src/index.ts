@@ -1,1 +1,1 @@
-export { useWorkspaceSession } from "./use-workspace-session";
+export { useWorkspaceSession } from "./use-workspace-session/index.js";

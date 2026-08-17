@@ -2,13 +2,13 @@ import type {
   EvidencePackage,
   EvidenceDerivationKind,
   ExperimentDefinition,
-} from "../types";
-import { EVIDENCE_SCHEMA_VERSION } from "../types";
+} from "../types.js";
+import { EVIDENCE_SCHEMA_VERSION } from "../types.js";
 import {
   buildProvenanceChainSync,
   type ProvenanceChainResult,
   type BuildProvenanceChainInput,
-} from "../evidence";
+} from "../evidence.js";
 
 export interface ProducerContext {
   readonly repoRoot: string;

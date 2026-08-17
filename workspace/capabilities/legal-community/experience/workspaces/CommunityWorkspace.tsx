@@ -1,13 +1,14 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
+import { useWorkspaceSession } from "@/packages/core/kernel/src/session/workspace-session";
 import type {
   CommunityDiscussionAggregate,
   DiscussionStatus,
   TopicCategory,
   ContentArticleAggregate,
   ContentStatus,
-} from "../../implementation/contracts/community.contracts";
+} from "../../implementation/contracts/community.contracts.js";
 
 type DiscussionStatusFilter = DiscussionStatus | "all";
 type ArticleStatusFilter = ContentStatus | "all";
@@ -48,6 +49,39 @@ const TOPIC_OPTIONS: readonly TopicCategory[] = [
 const fmtOption = (s: string) => s.replace("_", " ");
 
 function DiscussionCard({ item }: { readonly item: CommunityDiscussionAggregate }) {
+  const { session } = useWorkspaceSession();
+  const [isEscalating, setIsEscalating] = useState(false);
+  
+  const handleEscalateToCase = async () => {
+    if (!session) return;
+    setIsEscalating(true);
+    try {
+      const response = await fetch("/api/cases/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          title: `Escalated from discussion: ${item.title}`,
+          description: item.summary || `Discussion from ILC community: ${item.title}`,
+          priority: "medium",
+          sessionId: session.sessionId,
+          sourceDiscussionId: item.id,
+        })
+      });
+      
+      if (response.ok) {
+        alert("Diskusi berhasil di-eskalasi menjadi kasus hukum!");
+      } else {
+        alert("Gagal melakukan eskalasi, silakan coba lagi.");
+      }
+    } catch (error) {
+      console.error("Escalation error:", error);
+      alert("Terjadi kesalahan saat melakukan eskalasi.");
+    } finally {
+      setIsEscalating(false);
+    }
+  };
+
   const statusColor =
     item.status === "featured"
       ? "bg-amber-100 text-amber-800 border-amber-200"
@@ -93,6 +127,15 @@ function DiscussionCard({ item }: { readonly item: CommunityDiscussionAggregate 
           ) : null}
         </div>
       ) : null}
+      <div className="mt-4 pt-3 border-t border-slate-100">
+        <button
+          onClick={handleEscalateToCase}
+          disabled={isEscalating || item.status === "locked"}
+          className="w-full px-3 py-2 text-xs font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isEscalating ? "Mengeskalasi..." : "Eskalasi ke Kasus Hukum"}
+        </button>
+      </div>
     </div>
   );
 }

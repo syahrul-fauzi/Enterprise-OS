@@ -1,7 +1,7 @@
-import { evidenceRegistryService } from "../../../evidence-registry/implementation/services/evidence-registry.service";
-import { requirementService } from "../../../requirement-management/implementation/services/requirement.service";
-import { workflowEngineService } from "../../../workflow-engine/implementation/services/workflow-engine.service";
-import type { ConnectorDefinition, ConnectorSyncResult } from "../contracts";
+import { evidenceRegistryService } from "../../../evidence-registry/implementation/services/evidence-registry.service.js";
+import { requirementService } from "../../../requirement-management/implementation/services/requirement.service.js";
+import { workflowEngineService } from "../../../workflow-engine/implementation/services/workflow-engine.service.js";
+import type { ConnectorDefinition, ConnectorSyncResult } from "../contracts/index.js";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 
 const CONNECTORS: readonly ConnectorDefinition[] = Object.freeze([
@@ -154,4 +154,4 @@ export class ConnectorEcosystemService {
 
 export const connectorEcosystemService = new ConnectorEcosystemService();
 
-export * from "../contracts";
+export * from "../contracts/index.js";

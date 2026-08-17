@@ -1,8 +1,8 @@
-import type { SlotId } from "../slots";
-import { SlotId as makeSlotId } from "../slots";
-import type { RegionId } from "../regions";
-import type { WorkspaceGraph, CapabilityGraphNode, SlotGraphNode, GraphNodeId, WorkspaceGraphNode } from "../graph/types";
-import type { NavigationDescriptor } from "../navigation";
+import type { SlotId } from "../slots/index.js";
+import { SlotId as makeSlotId } from "../slots/index.js";
+import type { RegionId } from "../regions/index.js";
+import type { WorkspaceGraph, CapabilityGraphNode, SlotGraphNode, GraphNodeId, WorkspaceGraphNode } from "../graph/types.js";
+import type { NavigationDescriptor } from "../navigation/index.js";
 import type {
   ResolvedNavigation,
   ResolvedRegion,
@@ -11,7 +11,7 @@ import type {
   ResolverCapabilityRegistry,
   ResolverContext,
   ResolverStatusEntry,
-} from "./types";
+} from "./types.js";
 
 export function resolveWorkspace(graph: WorkspaceGraph, ctx: ResolverContext): ResolvedWorkspace {
   const warnings: string[] = [];

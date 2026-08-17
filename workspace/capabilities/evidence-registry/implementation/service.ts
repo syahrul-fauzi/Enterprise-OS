@@ -9,8 +9,8 @@ export type {
   SearchEvidenceRegistryInput,
   SearchEvidenceRegistryOutput,
   SearchEvidenceRegistrySummary,
-} from "./contracts";
-export * from "./services";
-export * from "./queries";
-export * from "./repository";
-export * from "./commands";
+} from "./contracts/index.js";
+export * from "./services/index.js";
+export * from "./queries/index.js";
+export * from "./repository/index.js";
+export * from "./commands/index.js";

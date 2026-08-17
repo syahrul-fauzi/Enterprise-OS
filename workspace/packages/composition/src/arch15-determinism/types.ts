@@ -1,6 +1,6 @@
-import type { ComposeResult } from "../compose";
-import type { DescriptorSource } from "../normalizer/types";
-import type { ResolverContext, ResolverCapabilityEntry } from "../resolver/types";
+import type { ComposeResult } from "../compose/index.js";
+import type { DescriptorSource } from "../normalizer/types.js";
+import type { ResolverContext, ResolverCapabilityEntry } from "../resolver/types.js";
 
 export type Arch15AViolationKind =
   | "env-var-read"

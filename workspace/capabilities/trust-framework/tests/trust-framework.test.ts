@@ -3,7 +3,7 @@ import test from "node:test";
 import {
   localTrustSignatureProvider,
   trustFrameworkService,
-} from "../implementation/service";
+} from "../implementation/service.js";
 
 test("trust framework exposes the signed local development catalog entry", () => {
   const catalog = trustFrameworkService.getFrameworkCatalog();

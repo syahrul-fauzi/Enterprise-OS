@@ -6,9 +6,9 @@ import {
   type SearchDocumentsOutput,
   type ListDocumentsByStatusInput,
   type ListDocumentsByStatusOutput,
-} from "../contracts";
+} from "../contracts/index.js";
 import type { CapabilityQuery } from "@repo/core-kernel";
-import { DocumentRepositoryInMemory } from "../repository";
+import { DocumentRepositoryInMemory } from "../repository/index.js";
 
 type GetDocumentQuery = CapabilityQuery<GetDocumentInput, GetDocumentOutput>;
 type SearchDocumentsQuery = CapabilityQuery<SearchDocumentsInput, SearchDocumentsOutput>;

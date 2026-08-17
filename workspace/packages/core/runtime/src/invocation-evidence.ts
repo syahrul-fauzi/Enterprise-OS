@@ -1,7 +1,7 @@
 import { appendFileSync, mkdirSync, readFileSync } from "fs";
 import { dirname } from "path";
 import { createHash } from "crypto";
-import { executionContext } from "./execution-context";
+import { executionContext } from "./execution-context.js";
 
 export type RuntimeInvocationEvent = {
   readonly timestamp_utc: string;

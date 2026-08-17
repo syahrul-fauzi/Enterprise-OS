@@ -5,7 +5,7 @@ import type {
   RequirementPriority,
   RequirementStatus,
   RequirementVerificationStatus,
-} from "../../implementation/contracts";
+} from "../../implementation/contracts/index.js";
 
 const STATUS_LABEL: Record<
   RequirementStatus,

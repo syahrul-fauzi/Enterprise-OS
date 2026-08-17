@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useWorkspaceSession } from "../../../hooks/src/use-workspace-session/use-workspace-session.ts";
+import { useWorkspaceSession } from "../../../hooks/src/use-workspace-session/use-workspace-session";
 import { ProfessionalWorkspaceIntro, WorkspaceEntryPanel } from "..";
 import { getAllProductExperiences } from "@repo/presentation-experience";
 

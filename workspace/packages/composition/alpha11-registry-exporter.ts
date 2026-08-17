@@ -1,14 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { runAllIndependentProducers } from "./src/certification/producers/correlate";
+import { runAllIndependentProducers } from "./src/certification/producers/correlate.js";
 import {
   buildEmptyProvenanceRegistry,
   mergeProvenanceChainIntoRegistry,
   computeExperimentDefinitionIdSync,
   computeRawObservationIdSync,
-} from "./src/certification/evidence";
-import type { ProvenanceRegistryCollection } from "./src/certification/evidence";
+} from "./src/certification/evidence.js";
+import type { ProvenanceRegistryCollection } from "./src/certification/evidence.js";
 
 function nowIso(offsetMs: number = 0): string { return new Date(Date.now() + offsetMs).toISOString(); }
 

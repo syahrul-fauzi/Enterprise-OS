@@ -6,7 +6,7 @@ import type {
   Arch16Violation,
   Arch16ViolationKind,
   VerifyArch16Fn,
-} from "./types";
+} from "./types.js";
 
 const RUNTIME_FORBIDDEN_STAGES = [
   "normalization",

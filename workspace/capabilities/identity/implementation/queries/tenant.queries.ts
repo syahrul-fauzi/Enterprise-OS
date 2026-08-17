@@ -1,8 +1,8 @@
 import {
   TenantId,
   type TenantAggregate,
-} from "../contracts/identity.contracts";
-import { TenantRepositoryPostgres } from "../repositories/index";
+} from "../contracts/identity.contracts.js";
+import { TenantRepositoryPostgres } from "../repositories/index.js";
 
 export const tenantQueries = Object.freeze({
   async byId(id: string): Promise<TenantAggregate | undefined> {

@@ -1,8 +1,8 @@
-import type { SlotId } from "../slots";
-import type { GraphNodeId, WorkspaceGraph, WorkspaceGraphNode } from "../graph/types";
-import type { WorkspaceId } from "../normalizer/types";
-import type { NavigationDescriptor } from "../navigation";
-import type { RegionDescriptor, RegionId } from "../regions";
+import type { SlotId } from "../slots/index.js";
+import type { GraphNodeId, WorkspaceGraph, WorkspaceGraphNode } from "../graph/types.js";
+import type { WorkspaceId } from "../normalizer/types.js";
+import type { NavigationDescriptor } from "../navigation/index.js";
+import type { RegionDescriptor, RegionId } from "../regions/index.js";
 
 export interface ResolverFeatureFlags {
   readonly flags: Readonly<Record<string, boolean>>;

@@ -2,10 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import Page from "../app/page";
-import RequirementsPage from "../app/requirements/page";
-import ProfessionalWorkspaceIntro from "../components/ProfessionalWorkspaceIntro";
-import * as RequirementViewModule from "../../../capabilities/requirement-management/experience/views/RequirementView";
+import Page from "../app/page.js";
+import RequirementsPage from "../app/requirements/page.js";
+import ProfessionalWorkspaceIntro from "../components/ProfessionalWorkspaceIntro.js";
+import * as RequirementViewModule from "../../../capabilities/requirement-management/experience/views/RequirementView.js";
 
 test("professional workspace surface stays product-agnostic", () => {
   const html = renderToStaticMarkup(<Page />);

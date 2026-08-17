@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import type { ConsultationPriority } from "../../implementation/contracts/consultation.contracts";
+import type { ConsultationPriority } from "../../implementation/contracts/consultation.contracts.js";
 
 interface CreateConsultationModalProps {
   isOpen: boolean;

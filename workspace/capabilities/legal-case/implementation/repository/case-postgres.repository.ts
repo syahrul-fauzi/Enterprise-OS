@@ -1,12 +1,12 @@
 import { Pool } from "pg";
-import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository";
+import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
 import {
   CaseId,
   type CaseAggregate,
   type CaseRepository,
   CaseStatus,
   CasePriority,
-} from "../contracts/case.contracts";
+} from "../contracts/case.contracts.js";
 
 // PostgreSQL-backed case repository implementation
 class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements CaseRepository {

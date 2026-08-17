@@ -1,7 +1,8 @@
-import { servicesId } from './services-id';
-import { lawyershub } from './lawyershub';
-import { ilc } from './ilc';
-import { academic } from './academic';
+import { servicesId } from './services-id.js';
+import { lawyershub } from './lawyershub.js';
+import { ilc } from './ilc.js';
+import { academic } from './academic.js';
+import { commsme } from './commsme.js';
 import type { ProductExperience } from '@repo/presentation-types';
 
 export const catalog: Record<string, ProductExperience> = {
@@ -9,6 +10,7 @@ export const catalog: Record<string, ProductExperience> = {
   'lawyershub': lawyershub,
   'ilc': ilc,
   'academic': academic,
+  'commsme': commsme,
 };
 
 export function getProductExperience(slug: string): ProductExperience | undefined {

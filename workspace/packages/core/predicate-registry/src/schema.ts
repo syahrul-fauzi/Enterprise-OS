@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { PredicatePhase, PredicateStatus } from "./types";
+import type { PredicatePhase, PredicateStatus } from "./types.js";
 
 export const PredicateStatusSchema = z.enum([
   "PASS",

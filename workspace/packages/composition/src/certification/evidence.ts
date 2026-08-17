@@ -1,4 +1,4 @@
-import { canonicalSerialize } from "../canonical/serialize";
+import { canonicalSerialize } from "../canonical/serialize.js";
 import type {
   EvidenceId,
   EvidencePackage,
@@ -25,7 +25,7 @@ import type {
   ExperimentDefinitionRegistryEntry,
   RawObservationRegistryEntry,
   ClaimConsensusClassification,
-} from "./types";
+} from "./types.js";
 import {
   EvidenceId as EvidenceIdBrand,
   GraphTopologyId as GraphTopologyIdBrand,
@@ -37,7 +37,7 @@ import {
   ExperimentExecutionId as ExperimentExecutionIdBrand,
   RawObservationId as RawObservationIdBrand,
   ProvenanceEdgeId as ProvenanceEdgeIdBrand,
-} from "./types";
+} from "./types.js";
 
 export type Sha256Hex = string;
 
@@ -999,7 +999,7 @@ import type {
 } from "./types";
 import {
   PROVENANCE_GRAPH_MODEL_VERSION,
-} from "./types";
+} from "./types.js";
 
 export function buildEmptyProvenanceGraph(): CertificationProvenanceGraph {
   return Object.freeze({

@@ -8,8 +8,8 @@ import {
   ServiceProviderAggregate,
   ServiceRequestId,
   ServiceRequestStatus,
-} from "../contracts/service.contracts";
-import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types";
+} from "../contracts/service.contracts.js";
+import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
 import {
   ServiceRequestRepositoryInMemory,
   ServiceProviderRepositoryInMemory,
@@ -17,8 +17,8 @@ import {
   defaultServiceRequestStatus,
   getServiceRequestRepositoryPostgres,
   getServiceProviderRepositoryPostgres,
-} from "../repository/index";
-import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../identity/implementation/repositories/index";
+} from "../repository/index.js";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../identity/implementation/repositories/index.js";
 
 // SHARED RAIL: Initialize identity schema if Postgres is active (MIRRORS ILC pattern)
 if (process.env.DATABASE_URL) {
@@ -85,7 +85,7 @@ type MarkServiceDeliveredCommand = CapabilityCommand<MarkServiceDeliveredWithCon
 const ListServiceRequestsWithContextSchema = z.object({
   query: z.string().optional(),
   status: z.enum(["draft", "accepted", "in_service", "delivered", "all"]).optional(),
-  category: z.enum(["Cloud Services", "Cybersecurity", "IT Support", "Infrastructure", "Software Development", "all"]).optional(),
+  category: z.enum(["Cloud Services", "Cybersecurity", "IT Support", "Infrastructure", "Software Development", "Business Licensing", "all"]).optional(),
   limit: z.number().int().min(1).max(100).default(20),
   offset: z.number().int().min(0).default(0),
   // SHARED RAIL: Only sessionId required - auto-populate tenantId/workspaceId/actorId from session (MIRRORS LH)
@@ -108,7 +108,7 @@ type ListServiceRequestsCommand = CapabilityCommand<ListServiceRequestsWithConte
 const CreateServiceRequestWithContextSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
-  category: z.enum(["Cloud Services", "Cybersecurity", "IT Support", "Infrastructure", "Software Development"]),
+  category: z.enum(["Cloud Services", "Cybersecurity", "IT Support", "Infrastructure", "Software Development", "Business Licensing"]),
   requesterName: z.string().optional(),
   budget: z.string().optional(),
   // SHARED RAIL: Only sessionId required - auto-populate tenantId/workspaceId/actorId from session (MIRRORS LH)
@@ -293,7 +293,7 @@ export const listServiceRequestsByWorkspace: ListServiceRequestsCommand = {
   },
 };
 
-import { getServiceRequestByIdCommand } from "./get-service-request-by-id.command";
+import { getServiceRequestByIdCommand } from "./get-service-request-by-id.command.js";
 
 export const serviceDirectoryCommands: Readonly<Record<string, CapabilityCommand>> = {
   "service-directory.createServiceRequest": createServiceRequest,

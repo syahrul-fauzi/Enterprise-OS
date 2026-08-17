@@ -1,4 +1,4 @@
-import { requirementWorkspace } from "./workspace";
+import { requirementWorkspace } from "./workspace.js";
 
 export interface RequirementPermissionRule {
   readonly action: string;

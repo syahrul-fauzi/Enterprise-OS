@@ -1,1 +1,1 @@
-export * from "./workflow-definition.repository";
+export * from "./workflow-definition.repository.js";

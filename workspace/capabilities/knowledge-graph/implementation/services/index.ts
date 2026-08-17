@@ -1,1 +1,1 @@
-export * from "./knowledge-graph.service";
+export * from "./knowledge-graph.service.js";

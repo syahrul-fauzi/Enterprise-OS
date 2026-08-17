@@ -1,8 +1,8 @@
 import type { CapabilityAggregateBindingManifest, CapabilityDescriptor } from "@repo/core-kernel";
-import type { RegionId } from "../regions";
-import type { SlotId, SlotInstance } from "../slots";
-import type { LayoutId } from "../layouts";
-import type { NavigationDescriptor } from "../navigation";
+import type { RegionId } from "../regions/index.js";
+import type { SlotId, SlotInstance } from "../slots/index.js";
+import type { LayoutId } from "../layouts/index.js";
+import type { NavigationDescriptor } from "../navigation/index.js";
 
 export interface CompositionWorkspaceDescriptor {
   readonly id: string;

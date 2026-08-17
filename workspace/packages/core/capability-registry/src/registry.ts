@@ -4,8 +4,8 @@ import type {
   CapabilityRegistry,
   DefineCapabilityBindingResult,
   StaticRegistryConfig,
-} from "./types";
-import type { CapabilityDescriptor } from "./types";
+} from "./types.js";
+import type { CapabilityDescriptor } from "./types.js";
 
 export class StaticRegistry implements CapabilityRegistry {
   readonly kind = "static";

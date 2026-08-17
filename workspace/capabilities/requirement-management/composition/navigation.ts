@@ -1,7 +1,7 @@
 import {
   requirementWorkspace,
   type RequirementNavigationEntry,
-} from "./workspace";
+} from "./workspace.js";
 
 export interface RequirementNavigationDescriptor {
   readonly workspaceId: typeof requirementWorkspace.id;

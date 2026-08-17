@@ -1,4 +1,4 @@
-import type { TransformationDeclaration } from "../../interfaces";
+import type { TransformationDeclaration } from "../../interfaces.js";
 
 export const TRANSFORMATION_T003: TransformationDeclaration = {
   transformation_id: "T003",

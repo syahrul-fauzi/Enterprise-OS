@@ -1,9 +1,9 @@
 // Test lengkap untuk CONSULT-L005 Legal Case Vertical: Membuktikan cross-domain reuse
 import assert from "node:assert/strict";
 import test from "node:test";
-import { capabilityRegistry } from "../../../packages/core/kernel/src/registry/capability-command-registry";
-import { ConsultationRepositoryInMemory } from "../implementation/repository/consultation.repository";
-import { CaseRepositoryInMemory } from "../../legal-case/implementation/repository/case.repository";
+import { capabilityRegistry } from "../../../packages/core/kernel/src/registry/capability-command-registry.js";
+import { ConsultationRepositoryInMemory } from "../implementation/repository/consultation.repository.js";
+import { CaseRepositoryInMemory } from "../../legal-case/implementation/repository/case.repository.js";
 
 test("Legal Case Longitudinal Consultation Flow (CONSULT-L005 Cross-Domain Proof)", async () => {
   // Setup test session (simulasi user yang valid)

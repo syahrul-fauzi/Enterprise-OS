@@ -13,10 +13,10 @@ export type {
   SearchCasesInput,
   SearchCasesOutput,
   CaseRepository,
-} from "./contracts";
-export { CaseId } from "./contracts";
-export * from "./services";
-export * from "./commands";
-export * from "./queries";
-export * from "./repository";
+} from "./contracts/index.js";
+export { CaseId } from "./contracts/index.js";
+export * from "./services/index.js";
+export * from "./commands/index.js";
+export * from "./queries/index.js";
+export * from "./repository/index.js";
 

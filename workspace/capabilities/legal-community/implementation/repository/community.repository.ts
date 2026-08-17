@@ -11,7 +11,7 @@ import {
   TopicCategory,
   TopicId,
   TopicRepository,
-} from "../contracts/community.contracts";
+} from "../contracts/community.contracts.js";
 
 const now = Date.now();
 const d = (offsetDays: number, offsetHours = 0): Date =>
@@ -237,6 +237,12 @@ type TopicStore = Map<string, TopicAggregate>;
 type ArticleStore = Map<string, ContentArticleAggregate>;
 type DiscussionStore = Map<string, CommunityDiscussionAggregate>;
 
+const _GLOBAL_COM = globalThis as unknown as {
+  __eos_com_topic_store?: TopicStore;
+  __eos_com_article_store?: ArticleStore;
+  __eos_com_discussion_store?: DiscussionStore;
+};
+
 function hydrateTopics(): TopicStore {
   const s = new Map<string, TopicAggregate>();
   for (const t of seedTopics()) s.set(t.id, t);
@@ -253,9 +259,9 @@ function hydrateDiscussions(): DiscussionStore {
   return s;
 }
 
-const TOPIC_STORE: TopicStore = hydrateTopics();
-const ARTICLE_STORE: ArticleStore = hydrateArticles();
-const DISCUSSION_STORE: DiscussionStore = hydrateDiscussions();
+const TOPIC_STORE: TopicStore = _GLOBAL_COM.__eos_com_topic_store ??= hydrateTopics();
+const ARTICLE_STORE: ArticleStore = _GLOBAL_COM.__eos_com_article_store ??= hydrateArticles();
+const DISCUSSION_STORE: DiscussionStore = _GLOBAL_COM.__eos_com_discussion_store ??= hydrateDiscussions();
 
 function cloneTopic(t: TopicAggregate): TopicAggregate {
   return { ...t, createdAt: new Date(t.createdAt) };

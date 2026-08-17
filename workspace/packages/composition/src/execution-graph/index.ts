@@ -2,7 +2,7 @@ import type {
   ExecutionGraphNode,
   ExecutionGraphReport,
 } from "@repo/core-capability-registry";
-import type { ResolverCapabilityEntry } from "../resolver/types";
+import type { ResolverCapabilityEntry } from "../resolver/types.js";
 
 function asCapabilityNode(
   node: ExecutionGraphNode,

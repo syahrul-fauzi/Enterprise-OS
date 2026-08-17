@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
-import { ProfileHeader } from "../profile-header/ProfileHeader";
+import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell.js";
+import { ProfileHeader } from "../profile-header/ProfileHeader.js";
 import { getProductExperience } from "@repo/presentation-experience";
 import type { ProductPreviewBinding, ProductExperience, Member, Requirement } from "@repo/presentation-types";
 
@@ -62,8 +62,27 @@ export function ProfilePage({ profileId, productId, binding }: ProfilePageProps)
     <main className="min-h-screen bg-slate-50 px-6 py-10">
       <div className="mx-auto max-w-7xl space-y-6">
         <ProductPreviewShell binding={binding} mode="landing" />
-        <ProfileHeader member={profile} />
-        <ProfileResearchList items={authoredResearch} />
+        <ProfileHeader member={profile} productId={productId} />
+        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="mb-4">
+            <h2 className="text-xl font-bold text-slate-900">Penelitian / Konten Yang Ditulis</h2>
+            <p className="mt-1 text-sm text-slate-600">{authoredRequirements.length} item dipublikasikan oleh profil ini.</p>
+          </div>
+          {authoredRequirements.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center text-sm text-slate-600">
+              Belum ada konten yang dipublikasikan.
+            </div>
+          ) : (
+            <div className="grid gap-3 md:grid-cols-2">
+              {authoredRequirements.map((item) => (
+                <article key={item.id} className="rounded-2xl border border-slate-200 bg-white p-4">
+                  <div className="text-base font-semibold text-slate-900">{item.title ?? item.id}</div>
+                  {item.summary && <div className="mt-2 text-sm text-slate-600">{item.summary}</div>}
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </main>
   );

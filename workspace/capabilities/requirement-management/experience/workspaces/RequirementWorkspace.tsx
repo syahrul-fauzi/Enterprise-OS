@@ -6,11 +6,11 @@ import type {
   RequirementPriority,
   RequirementStatus,
   RequirementVerificationStatus,
-} from "../../implementation/contracts";
+} from "../../implementation/contracts/index.js";
 import {
   RequirementCard,
   type RequirementAction,
-} from "../components/RequirementCard";
+} from "../components/RequirementCard.js";
 
 type StatusFilter = RequirementStatus | "all";
 type PriorityFilter = RequirementPriority | "all";

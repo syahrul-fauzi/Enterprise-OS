@@ -1,0 +1,35 @@
+{
+  "product": "commsme",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "COMMSME platform dimuat",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Layanan kontrak kerja dipilih",
+      "ok": true
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Formulir terisi lengkap",
+      "ok": true
+    },
+    {
+      "n": 4,
+      "stage": "EXECUTE",
+      "label": "Buat kontrak kerja",
+      "ok": false,
+      "error": "Error: Capability return error: undefined"
+    }
+  ],
+  "totalSteps": 4,
+  "passCount": 3,
+  "failCount": 1,
+  "completedAtISO": "2026-08-17T01:19:47.703Z",
+  "evidenceChain": []
+}

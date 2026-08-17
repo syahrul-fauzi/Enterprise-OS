@@ -5,7 +5,7 @@ import {
   RequirementWorkspace,
   type RequirementCardCopy,
   type RequirementWorkspaceCopy,
-} from "../workspaces/RequirementWorkspace";
+} from "../workspaces/RequirementWorkspace.js";
 
 export interface RequirementViewProps {
   readonly productId?: string;

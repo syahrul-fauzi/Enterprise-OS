@@ -1,4 +1,4 @@
-import type { ConstitutionLaw } from "./laws";
+import type { ConstitutionLaw } from "./laws.js";
 
 export type ConstitutionLawProfile = "baseline" | "strict" | "enterprise";
 

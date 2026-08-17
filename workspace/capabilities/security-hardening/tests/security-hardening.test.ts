@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { securityHardeningService } from "../implementation/service";
-import { GET as getPlatform } from "../../../apps/lawyershub/app/api/platform/route";
-import { GET as getObservabilityLogs } from "../../../apps/lawyershub/app/api/observability/logs/route";
-import { GET as getConstitutionClaims } from "../../../apps/lawyershub/app/api/constitution/claims/route";
+import { securityHardeningService } from "../implementation/service.js";
+import { GET as getPlatform } from "../../../apps/lawyershub/app/api/platform/route.js";
+import { GET as getObservabilityLogs } from "../../../apps/lawyershub/app/api/observability/logs/route.js";
+import { GET as getConstitutionClaims } from "../../../apps/lawyershub/app/api/constitution/claims/route.js";
 
 test("security hardening reports missing secret in strict mode", () => {
   const previousStrict = process.env.EOS_STRICT_AUTH;

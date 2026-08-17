@@ -5,4 +5,4 @@
  */
 
 export { DeliveryDecisionGatewayService } from "./delivery-decision-gateway.service";
-export type { GovernanceDecisionRecord } from "./delivery-decision-gateway.service";
+export type { GovernanceDecisionRecord } from "./delivery-decision-gateway.service.js";

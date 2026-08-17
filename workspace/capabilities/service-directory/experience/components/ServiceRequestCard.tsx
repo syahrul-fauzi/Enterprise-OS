@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "@repo/presentation-ui-system";
-import type { ServiceRequestAggregate } from "../../implementation/contracts";
+import type { ServiceRequestAggregate } from "../../implementation/contracts.js";
 
 export interface ServiceRequestCardProps {
   readonly item: ServiceRequestAggregate;

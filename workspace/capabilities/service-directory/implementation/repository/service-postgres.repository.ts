@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository";
+import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
 import {
   ServiceRequestId,
   ServiceProviderId,
@@ -9,8 +9,8 @@ import {
   type ServiceProviderRepository,
   ServiceRequestStatus,
   ServiceProviderCategory,
-} from "../contracts/service.contracts";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/identity-schema";
+} from "../contracts/service.contracts.js";
+import { initIdentitySchema } from "../../../identity/implementation/repositories/identity-schema.js";
 
 // PostgreSQL-backed service request repository implementation
 class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> implements ServiceRequestRepository {

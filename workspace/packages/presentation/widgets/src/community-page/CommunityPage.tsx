@@ -1,8 +1,8 @@
 "use client";
 
 import { Suspense } from 'react';
-import { CommunityDirectory } from "../CommunityDirectory";
-import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
+import { CommunityDirectory } from "../CommunityDirectory.js";
+import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell.js";
 import { CommunitySearchBar } from "@repo/presentation-features";
 import type { ProductPreviewBinding } from "@repo/presentation-types";
 

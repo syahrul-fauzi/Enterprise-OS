@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { evidenceRegistryService } from "../implementation/service";
+import { evidenceRegistryService } from "../implementation/service.js";
 
 test("evidence registry indexes core science ledger artifacts", () => {
   const result = evidenceRegistryService.searchEvidenceRegistry({

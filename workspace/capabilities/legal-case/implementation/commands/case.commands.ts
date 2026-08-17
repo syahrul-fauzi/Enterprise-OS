@@ -10,12 +10,12 @@ import {
   CreateCaseOutput,
   SearchCasesInput,
   SearchCasesOutput,
-} from "../contracts";
-import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types";
-import { newCaseId, defaultCasePriority, defaultCaseStatus, getCaseRepositoryPostgres } from "../repository/index";
-import { CaseRepositoryInMemory } from "../repository/index";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
-import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index";
+} from "../contracts/index.js";
+import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
+import { newCaseId, defaultCasePriority, defaultCaseStatus, getCaseRepositoryPostgres } from "../repository/index.js";
+import { CaseRepositoryInMemory } from "../repository/index.js";
+import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index.js";
 
 // Toggle session repository based on environment (match identity production rail)
 const sessionRepository = process.env.DATABASE_URL 
@@ -31,8 +31,9 @@ const CreateCaseWithContextSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   priority: z.enum(["low", "medium", "high", "critical"]).optional(),
-  // Only sessionId required - auto-populate tenantId/workspaceId/actorId from session
   sessionId: z.string().min(1),
+  sourceDiscussionId: z.string().optional(),
+  id: z.string().regex(/^case[-_]/).optional(),
 });
 
 const ListCasesWithContextSchema = z.object({
@@ -71,7 +72,7 @@ export const createCase: CreateCaseCommand = {
     await ensureIdentitySchema();
     
     const parsed = CreateCaseWithContextSchema.parse(input);
-    const { title, description, priority, sessionId } = parsed;
+    const { title, description, priority, sessionId, sourceDiscussionId, id: preferredId } = parsed;
 
     // 1. Validate session exists and is active (use toggled session repository for production rail)
     const session = await sessionRepository.byId(sessionId as any);
@@ -84,11 +85,22 @@ export const createCase: CreateCaseCommand = {
     // Enforce security via session's already verified isolation guarantees
     // No need for additional checks - session is cryptographically bound to tenant/workspace
 
+    // Preferred ID: if provided and unused, apply it (canonical experiment ID replay support)
+    let caseId: CaseId = newCaseId();
+    if (preferredId !== undefined) {
+      const existing = await caseRepository.byId(preferredId as CaseId);
+      if (existing) throw new Error(`[case.create] Preferred case ID already exists: ${preferredId}`);
+      caseId = preferredId as CaseId;
+    }
+
     const entity: CaseAggregate = {
-      id: newCaseId(),
+      id: caseId,
       title: title.trim(),
       ...(description !== undefined && description !== ""
         ? { description: description }
+        : {}),
+      ...(sourceDiscussionId !== undefined
+        ? { sourceDiscussionId: sourceDiscussionId }
         : {}),
       status: defaultCaseStatus,
       priority: priority ?? defaultCasePriority,
@@ -205,7 +217,7 @@ export const listCasesByWorkspace: ListCasesCommand = {
   },
 };
 
-import { getCaseByIdCommand } from "./get-case-by-id.command";
+import { getCaseByIdCommand } from "./get-case-by-id.command.js";
 
 export const caseCommands: Readonly<Record<string, CapabilityCommand>> = {
   "case.create": createCase,

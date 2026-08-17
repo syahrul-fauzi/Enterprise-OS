@@ -1,4 +1,4 @@
-import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index";
+import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index.js";
 import type {
   AssessTraceabilityInput,
   AssessTraceabilityOutput,
@@ -7,10 +7,10 @@ import type {
   SearchTraceabilityMatrixInput,
   SearchTraceabilityMatrixOutput,
   TraceabilityGap,
-} from "../contracts";
-import { traceabilityQueries } from "../queries";
-import { TraceabilityArtifactRepositoryInMemory } from "../repository";
-import { requirementService } from "../../../requirement-management/implementation/service";
+} from "../contracts/index.js";
+import { traceabilityQueries } from "../queries/index.js";
+import { TraceabilityArtifactRepositoryInMemory } from "../repository/index.js";
+import { requirementService } from "../../../requirement-management/implementation/service.js";
 
 export class RequirementsTraceabilityMatrixService {
   readonly repositories = {
@@ -111,6 +111,6 @@ export class RequirementsTraceabilityMatrixService {
 export const requirementsTraceabilityMatrixService =
   new RequirementsTraceabilityMatrixService();
 
-export * from "../contracts";
-export * from "../queries";
-export * from "../repository";
+export * from "../contracts/index.js";
+export * from "../queries/index.js";
+export * from "../repository/index.js";

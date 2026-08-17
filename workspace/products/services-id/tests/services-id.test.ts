@@ -2,17 +2,18 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
 import path from "node:path";
-import yaml from "js-yaml";
+import * as yaml from "js-yaml";
 import { capabilityRegistry, type CommandInvocationRecord } from "@repo/core-kernel";
 import {
   ServiceProviderRepositoryInMemory,
   ServiceRequestRepositoryInMemory,
-} from "../../../capabilities/service-directory/implementation/repository/service.repository";
+} from "../../../capabilities/service-directory/implementation/repository/service.repository.js";
+import { ServiceRequestId } from "../../../capabilities/service-directory/implementation/contracts/service.contracts.js";
 import type {
   ServiceProviderCategory,
   ServiceRequestAggregate,
   ServiceRequestStatus,
-} from "../../../capabilities/service-directory/implementation/contracts/service.contracts";
+} from "../../../capabilities/service-directory/implementation/contracts/service.contracts.js";
 
 const loadEosManifest = () => {
   const manifestPath = path.resolve(__dirname, "..", "eos.yaml");
@@ -65,7 +66,7 @@ async function runLifecycleSvcE2E(
   assert.equal(createResult.output.status, "draft", "createServiceRequest initial status = draft");
 
   const id = createResult.output.id as string;
-  const pAfterCreate = await ServiceRequestRepositoryInMemory.byId(id);
+  const pAfterCreate = await ServiceRequestRepositoryInMemory.byId(ServiceRequestId(id));
   assert.ok(pAfterCreate !== undefined, `sreq ${id} retrievable dari repository setelah create`);
   assert.equal(pAfterCreate.title, title.trim(), "persisted title match input");
   assert.equal(pAfterCreate.status, "draft", "persisted status after create = draft");
@@ -83,7 +84,7 @@ async function runLifecycleSvcE2E(
   assert.equal(acceptResult.output.status, "accepted", "acceptServiceRequest on draft → accepted");
   assert.equal(acceptResult.output.providerId, providerId, "accept echo providerId");
 
-  const pAfterAccept = await ServiceRequestRepositoryInMemory.byId(id);
+  const pAfterAccept = await ServiceRequestRepositoryInMemory.byId(ServiceRequestId(id));
   assert.equal(pAfterAccept?.status, "accepted", "repo status after accept = accepted");
   assert.equal(pAfterAccept?.providerId, providerId, "repo providerId match assigned");
 
@@ -97,7 +98,7 @@ async function runLifecycleSvcE2E(
   assert.equal(deliverResult.output.status, "delivered", "markServiceDelivered terminal = delivered");
   assert.ok(deliverResult.output.deliveredAt instanceof Date, "delivered output stamps deliveredAt");
 
-  const pAfterDeliver = await ServiceRequestRepositoryInMemory.byId(id);
+  const pAfterDeliver = await ServiceRequestRepositoryInMemory.byId(ServiceRequestId(id));
   assert.equal(pAfterDeliver?.status, "delivered", "repo terminal status = delivered");
   assert.ok(pAfterDeliver?.deliveredAt instanceof Date, "repo deliveredAt stamped");
 
@@ -134,7 +135,7 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
     const allOk = ledger.records.every((r) => r.ok === true);
     assert.equal(allOk, true, `semua ${ledger.records.length} CommandInvocationRecord ok:true`);
 
-    const rehydrated: ServiceRequestAggregate | undefined = await ServiceRequestRepositoryInMemory.byId(ledger.createdId);
+    const rehydrated: ServiceRequestAggregate | undefined = await ServiceRequestRepositoryInMemory.byId(ServiceRequestId(ledger.createdId));
     assert.ok(rehydrated !== undefined, "final retrieval: sreq byId tersedia");
     assert.equal(rehydrated.status, "delivered", "final status = delivered terminal");
     assert.equal(rehydrated.providerId, ledger.input.providerId, "final providerId persisten");
@@ -158,7 +159,7 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
     );
     assert.equal(ledger.acceptedOutput.status, "accepted", "accept → accepted");
     assert.equal(ledger.acceptedOutput.providerId, provider.id, "echo providerId");
-    const row = await ServiceRequestRepositoryInMemory.byId(ledger.createdId);
+    const row = await ServiceRequestRepositoryInMemory.byId(ServiceRequestId(ledger.createdId));
     assert.equal(row?.providerId, provider.id, "repo providerId = assigned");
     assert.equal(row?.status, "delivered", "final status delivered setelah markServiceDelivered");
   });
@@ -176,7 +177,7 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
     assert.ok(Number.isFinite(t), "deliveredAt adalah Date valid");
     assert.equal(ledger.deliveredOutput.status, "delivered", "status = delivered");
 
-    const repo = await ServiceRequestRepositoryInMemory.byId(ledger.createdId);
+    const repo = await ServiceRequestRepositoryInMemory.byId(ServiceRequestId(ledger.createdId));
     assert.ok(repo?.deliveredAt !== undefined, "aggregate.deliveredAt tidak undefined pasca delivered");
     assert.ok(repo?.deliveredAt instanceof Date, "aggregate.deliveredAt bertipe Date");
     assert.equal(ledger.records.length, 3, "3 writes = 3 ledger records (create + accept + deliver)");

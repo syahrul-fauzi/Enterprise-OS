@@ -1,20 +1,24 @@
-import type { CapabilityCommand } from "../types";
+import type { CapabilityCommand } from "../types.js";
 // Use relative paths for tsx runtime resolution (tsconfig path mappings not resolved by tsx)
 // Node.js path.relative confirms: ../../../../../ traverses from registry dir → workspace root
 // @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
-import { caseCommands } from "../../../../../capabilities/legal-case/implementation/commands/case.commands";
+import { caseCommands } from "../../../../../capabilities/legal-case/implementation/commands/case.commands.js";
 // @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
-import { legalCommunityCommands } from "../../../../../capabilities/legal-community/implementation/commands/index";
+import { legalCommunityCommands } from "../../../../../capabilities/legal-community/implementation/commands/index.js";
 // @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
-import { serviceDirectoryCommands } from "../../../../../capabilities/service-directory/implementation/commands/index";
+import { serviceDirectoryCommands } from "../../../../../capabilities/service-directory/implementation/commands/index.js";
 // @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
-import { documentCommands } from "../../../../../capabilities/legal-document/implementation/commands/index";
+import { documentCommands } from "../../../../../capabilities/legal-document/implementation/commands/index.js";
 // @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
-import { signupAndSessionCommand } from "../../../../../capabilities/identity/implementation/commands/signup-and-session.command";
+import { signupAndSessionCommand } from "../../../../../capabilities/identity/implementation/commands/signup-and-session.command.js";
 // @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
-import { observabilityCommands } from "../../../../../capabilities/observability/implementation/commands/observability.commands";
+import { observabilityCommands } from "../../../../../capabilities/observability/implementation/commands/observability.commands.js";
 // @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
-import { requirementCommands } from "../../../../../capabilities/requirement-management/implementation/commands/requirement.commands";
+import { requirementCommands } from "../../../../../capabilities/requirement-management/implementation/commands/requirement.commands.js";
+// @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
+import { consultationCommands } from "../../../../../capabilities/consultation/implementation/commands/index.js";
+// @ts-ignore - TypeScript rootDir restriction, secara runtime import berjalan dengan benar (Node.js ESM)
+import { evidenceRegistryCommands } from "../../../../../capabilities/evidence-registry/implementation/commands/evidence-registry.commands.js";
 
 const identityRailOnlyCommands: Readonly<Record<string, CapabilityCommand>> = {
   "identity.signupAndCreateSession": signupAndSessionCommand,
@@ -39,6 +43,8 @@ const GLOBAL_REGISTRY: Readonly<Record<string, CapabilityCommand>> = {
   ...documentCommands,
   ...observabilityCommands,
   ...requirementCommands,
+  ...consultationCommands,
+  ...evidenceRegistryCommands,
 } as const;
 
 const CAPABILITY_PREFIX_ALIASES: Readonly<Record<string, readonly string[]>> = {
@@ -64,8 +70,11 @@ const CAPABILITY_PREFIX_ALIASES: Readonly<Record<string, readonly string[]>> = {
   ilc: ["legal-community."],
   academic: ["legal-community."],
   community: ["legal-community."],
+  commsme: ["case.", "document.", "service-directory.", "legal-community.", "requirement.", "consultation.", "learning."],
   "consultation": ["consultation."],
-  consultations: ["consultation."],
+  "consultations": ["consultation."],
+  "evidence-registry": ["evidence.", "evidence-registry."],
+  "evidence": ["evidence.", "evidence-registry."],
   "observability": ["incident.", "observability."],
   sre: ["incident.", "observability."],
   infrastructure: ["incident.", "observability."],

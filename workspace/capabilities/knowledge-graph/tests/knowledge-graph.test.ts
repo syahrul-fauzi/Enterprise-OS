@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { knowledgeGraphService } from "../implementation/services/knowledge-graph.service";
+import { knowledgeGraphService } from "../implementation/services/knowledge-graph.service.js";
 
 test("knowledge graph builds nodes and edges", () => {
   const snapshot = knowledgeGraphService.getSnapshot();

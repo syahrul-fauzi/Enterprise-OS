@@ -5,5 +5,5 @@ export {
   updateDocument,
   documentCommands,
   nextDocumentId,
-} from "./document.commands";
-export type * from "./document.commands";
+} from "./document.commands.js";
+export type * from "./document.commands.js";

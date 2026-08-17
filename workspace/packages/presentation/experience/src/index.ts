@@ -7,12 +7,14 @@
 // yang menerima satu object experience tanpa perlu logic kondisional per produk.
 
 export { servicesId } from './services-id';
-export { lawyershub } from './lawyershub';
-export { ilc } from './ilc';
-export { getProductExperience, catalog, readProductRouteMetadata } from './catalog';
-export { readProductBinding } from './product-binding';
-export { readProductContextFromRequest, applyProductContextHeaders } from './product-context';
-export { getAllProductSlugs, getAllProductExperiences } from './catalog';
+export { lawyershub } from './lawyershub.js';
+export { ilc } from './ilc.js';
+export { academic } from './academic.js';
+export { commsme } from './commsme.js';
+export { getProductExperience, catalog, readProductRouteMetadata } from './catalog.js';
+export { readProductBinding } from './product-binding.js';
+export { readProductContextFromRequest, applyProductContextHeaders } from './product-context.js';
+export { getAllProductSlugs, getAllProductExperiences } from './catalog.js';
 
 export type {
   ProductExperience,
@@ -25,11 +27,11 @@ export type {
   ProductJourneyStep,
   ProductTheme,
 } from '@repo/presentation-types';
-export type { ProductPreviewBinding } from './product-binding';
+export type { ProductPreviewBinding } from './product-binding.js';
 export type {
   ProductLandingSection,
   ProductWorkflowCopy,
   ProductCardCopy,
   ProductDeliveryCopy,
-} from './product-copy-types';
-export type { ProductContext } from './product-context';
+} from './product-copy-types.js';
+export type { ProductContext } from './product-context.js';

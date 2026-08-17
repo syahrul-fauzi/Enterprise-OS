@@ -1,0 +1,15 @@
+{
+  "work_id": "VERIFY-ILC-T3",
+  "verified_at": "2026-08-17T00:21:34.195Z",
+  "checks": {
+    "state_changed": true,
+    "status_transition": "draft→in_progress",
+    "lawyer_assigned": true,
+    "status_became_in_progress": true,
+    "persistence_confirmed": true,
+    "all_passed": true,
+    "outcome_claimed_in_t3_evidence": false
+  },
+  "verdict": "ALL_PASSED",
+  "finding": "T3 is LEGITIMATE. It only claims state mutation (assignLawyer), NOT outcome. Evidence artifact correctly sets evidence_ladder_level=L3 (action executed). No self-certified outcome present."
+}

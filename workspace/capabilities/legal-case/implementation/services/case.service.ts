@@ -10,10 +10,10 @@ import {
   GetCaseOutput,
   SearchCasesInput,
   SearchCasesOutput,
-} from "../contracts";
-import { createCase, closeCase, assignLawyer } from "../commands";
-import { getCase, searchCases } from "../queries";
-import { CaseRepositoryInMemory } from "../repository";
+} from "../contracts/index.js";
+import { createCase, closeCase, assignLawyer } from "../commands/index.js";
+import { getCase, searchCases } from "../queries/index.js";
+import { CaseRepositoryInMemory } from "../repository/index.js";
 
 export class CaseService {
   readonly repositories = { Case: CaseRepositoryInMemory } as const;
@@ -40,7 +40,7 @@ export class CaseService {
 
 export const caseService = new CaseService();
 
-export * from "../contracts";
-export * from "../commands";
-export * from "../queries";
-export * from "../repository";
+export * from "../contracts/index.js";
+export * from "../commands/index.js";
+export * from "../queries/index.js";
+export * from "../repository/index.js";

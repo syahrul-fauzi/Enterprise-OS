@@ -1,19 +1,19 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { POST as signup } from "../app/api/auth/signup/route";
-import { GET as getTenant } from "../app/api/tenant/route";
-import { GET as getWorkspace } from "../app/api/workspace/route";
+import { POST as signup } from "../app/api/auth/signup/route.js";
+import { GET as getTenant } from "../app/api/tenant/route.js";
+import { GET as getWorkspace } from "../app/api/workspace/route.js";
 import {
   WORKSPACE_SESSION_COOKIE,
   encodeWorkspaceSession,
-} from "../lib/workspace-session";
+} from "../lib/workspace-session.js";
 import {
   TenantRepositoryInMemory,
   WorkspaceRepositoryInMemory,
   MembershipRepositoryInMemory,
   UserRepositoryInMemory,
-} from "../../capabilities/identity/implementation/repositories";
-import { capabilityRegistry } from "../lib/capability-command-registry";
+} from "../../capabilities/identity/implementation/repositories.js";
+import { capabilityRegistry } from "../lib/capability-command-registry.js";
 
 function jsonRequest<T = unknown>(url: string, body: T): Request {
   return new Request(url, {

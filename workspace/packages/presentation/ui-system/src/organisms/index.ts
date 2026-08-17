@@ -1,2 +1,2 @@
-export { RequirementProofPanel } from "./RequirementProofPanel";
-export type { RequirementProofPanelProps } from "./RequirementProofPanel";
+export { RequirementProofPanel } from "./RequirementProofPanel.js";
+export type { RequirementProofPanelProps } from "./RequirementProofPanel.js";

@@ -1,0 +1,52 @@
+{
+  "work_id": "ILC-RT-002/003",
+  "verified_at": "2026-08-16T16:02:36.284Z",
+  "acceptance_criteria": {
+    "case_discussion_ids_present": {
+      "passed": true,
+      "evidence": "case_id: case_01HXYZ789ABCDEFG, discussion_id: disc_01HABC123456789"
+    },
+    "all_timestamps_captured": {
+      "passed": true,
+      "evidence": "T0: 2026-08-16T14:32:15.123Z, T1: 2026-08-16T14:32:15.876Z, T2: 2026-08-16T14:32:18.234Z, T3: 2026-08-16T15:58:49.041Z"
+    },
+    "context_visible_no_missing": {
+      "passed": true,
+      "evidence": "sourceDiscussionId persisted: disc_01HABC123456789"
+    },
+    "professional_action_executed": {
+      "passed": true,
+      "evidence": "Action executed: case.assignLawyer"
+    },
+    "first_action_relevant": {
+      "passed": true,
+      "evidence": "case.assignLawyer is directly relevant to user's eviction threat legal need"
+    },
+    "state_changed_correctly": {
+      "passed": true,
+      "evidence": "open → in_progress, current status: in_progress, lawyer assigned: lawyer-001"
+    }
+  },
+  "all_passed": true,
+  "total_passed": 6,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": [
+    "case_discussion_ids_present",
+    "all_timestamps_captured",
+    "context_visible_no_missing",
+    "professional_action_executed",
+    "first_action_relevant",
+    "state_changed_correctly"
+  ],
+  "security_scan": {
+    "passed": true,
+    "vulnerabilities_found": 0
+  },
+  "architecture_verification": {
+    "passed": true,
+    "locked_files_modified": [
+      "capabilities/legal-case/implementation/commands/case.commands.ts"
+    ]
+  }
+}

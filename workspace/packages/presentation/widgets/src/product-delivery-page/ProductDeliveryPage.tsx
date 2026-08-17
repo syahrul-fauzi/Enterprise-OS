@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
-import { DeliveryWorkspace } from "../delivery-workspace/DeliveryWorkspace";
+import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell.js";
+import { DeliveryWorkspace } from "../delivery-workspace/DeliveryWorkspace.js";
 import { getProductExperience } from "@repo/presentation-experience";
 import type { ProductPreviewBinding } from "@repo/presentation-types";
 

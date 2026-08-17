@@ -1,20 +1,20 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { apiPlatformService } from "../implementation/service";
-import { GET as getGovernanceClaims } from "../../../apps/lawyershub/app/api/governance/claims/route";
-import { GET as getGovernanceDashboard } from "../../../apps/lawyershub/app/api/governance/dashboard/route";
-import { GET as getGovernanceEvidencePackages } from "../../../apps/lawyershub/app/api/governance/evidence-packages/route";
-import { GET as getGovernanceHealth } from "../../../apps/lawyershub/app/api/governance/health/route";
-import { GET as getGovernanceSummary } from "../../../apps/lawyershub/app/api/governance/summary/route";
-import { GET as getPlatform } from "../../../apps/lawyershub/app/api/platform/route";
-import { POST as postPlatformQuery } from "../../../apps/lawyershub/app/api/platform/query/route";
-import { GET as getConstitutionAttestationPolicy } from "../../../apps/lawyershub/app/api/constitution/attestation-policy/route";
-import { GET as getConstitutionAttestations } from "../../../apps/lawyershub/app/api/constitution/attestations/route";
-import { GET as getConstitutionCertificates } from "../../../apps/lawyershub/app/api/constitution/certificates/route";
-import { GET as getConstitutionClaims } from "../../../apps/lawyershub/app/api/constitution/claims/route";
-import { GET as getConstitutionEvidencePackages } from "../../../apps/lawyershub/app/api/constitution/evidence-packages/route";
-import { GET as getConstitutionLawResults } from "../../../apps/lawyershub/app/api/constitution/law-results/route";
-import { GET as getConstitutionSummary } from "../../../apps/lawyershub/app/api/constitution/summary/route";
+import { apiPlatformService } from "../implementation/service.js";
+import { GET as getGovernanceClaims } from "../../../apps/lawyershub/app/api/governance/claims/route.js";
+import { GET as getGovernanceDashboard } from "../../../apps/lawyershub/app/api/governance/dashboard/route.js";
+import { GET as getGovernanceEvidencePackages } from "../../../apps/lawyershub/app/api/governance/evidence-packages/route.js";
+import { GET as getGovernanceHealth } from "../../../apps/lawyershub/app/api/governance/health/route.js";
+import { GET as getGovernanceSummary } from "../../../apps/lawyershub/app/api/governance/summary/route.js";
+import { GET as getPlatform } from "../../../apps/lawyershub/app/api/platform/route.js";
+import { POST as postPlatformQuery } from "../../../apps/lawyershub/app/api/platform/query/route.js";
+import { GET as getConstitutionAttestationPolicy } from "../../../apps/lawyershub/app/api/constitution/attestation-policy/route.js";
+import { GET as getConstitutionAttestations } from "../../../apps/lawyershub/app/api/constitution/attestations/route.js";
+import { GET as getConstitutionCertificates } from "../../../apps/lawyershub/app/api/constitution/certificates/route.js";
+import { GET as getConstitutionClaims } from "../../../apps/lawyershub/app/api/constitution/claims/route.js";
+import { GET as getConstitutionEvidencePackages } from "../../../apps/lawyershub/app/api/constitution/evidence-packages/route.js";
+import { GET as getConstitutionLawResults } from "../../../apps/lawyershub/app/api/constitution/law-results/route.js";
+import { GET as getConstitutionSummary } from "../../../apps/lawyershub/app/api/constitution/summary/route.js";
 
 const headers = {
   "x-eos-api-key": "eos-dev-key",

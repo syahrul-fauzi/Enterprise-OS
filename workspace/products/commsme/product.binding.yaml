@@ -1,0 +1,17 @@
+version: "1.0"
+status: ACTIVE
+product:
+  id: commsme
+  display_name: CommsMe — MSME Legal Companion
+experience:
+  surface: web
+  route: /requirements
+capabilities:
+  - requirement-management
+  - evidence-registry
+  - workflow-engine
+  - governance-evidence
+  - legal-case
+  - service-directory
+  - legal-community
+claim_boundary: Product-ACTIVE binding untuk identitas MSME Legal Companion sebagai KOMPOSISI substrate dari 3 shared capabilities (legal-case LawyersHub, service-directory Services.ID, legal-community ILC). Product ini HANYA menyusun permukaan UMKM workflow di atas 3 substrate yang sudah locked / terbukti runtime. 0 new capability domain aggregates, TIDAK ada refactor shared layer selain registration minimal (catalog + product-context if-else).

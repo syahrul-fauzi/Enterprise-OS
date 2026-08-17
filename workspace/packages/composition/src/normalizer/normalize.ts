@@ -1,22 +1,22 @@
-import type { LayoutId } from "../layouts";
-import { LayoutId as makeLayoutId } from "../layouts";
-import type { RegionId, RegionKind, RegionDescriptor } from "../regions";
-import { RegionId as makeRegionId } from "../regions";
-import type { SlotId, SlotDescriptor, SlotInstance, SlotDescriptor as SlotD } from "../slots";
-import { SlotId as makeSlotId } from "../slots";
-import type { CompositionWorkspaceDescriptor } from "../workspace";
-import type { NavigationDescriptor } from "../navigation";
+import type { LayoutId } from "../layouts/index.js";
+import { LayoutId as makeLayoutId } from "../layouts/index.js";
+import type { RegionId, RegionKind, RegionDescriptor } from "../regions/index.js";
+import { RegionId as makeRegionId } from "../regions/index.js";
+import type { SlotId, SlotDescriptor, SlotInstance, SlotDescriptor as SlotD } from "../slots/index.js";
+import { SlotId as makeSlotId } from "../slots/index.js";
+import type { CompositionWorkspaceDescriptor } from "../workspace/index.js";
+import type { NavigationDescriptor } from "../navigation/index.js";
 import type {
   DescriptorSource,
   NormalizedWorkspace,
   NormalizeWorkspaceFn,
   ValidationIssue,
   WorkspaceId,
-} from "./types";
-import { WorkspaceId as makeWorkspaceId } from "./types";
-import { canonicalSerialize } from "../canonical/serialize";
-import { fnv1a32 } from "../canonical/hash";
-import { deepFreeze } from "../canonical/deep-freeze";
+} from "./types.js";
+import { WorkspaceId as makeWorkspaceId } from "./types.js";
+import { canonicalSerialize } from "../canonical/serialize.js";
+import { fnv1a32 } from "../canonical/hash.js";
+import { deepFreeze } from "../canonical/deep-freeze.js";
 
 const DEFAULT_LAYOUT_PATTERN = "sidebar-main";
 const DEFAULT_LAYOUT_ID = "layout::sidebar-main" as LayoutId;

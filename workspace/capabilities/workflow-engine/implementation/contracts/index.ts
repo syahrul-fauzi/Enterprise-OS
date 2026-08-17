@@ -1,1 +1,1 @@
-export * from "./workflow-engine.contracts";
+export * from "./workflow-engine.contracts.js";

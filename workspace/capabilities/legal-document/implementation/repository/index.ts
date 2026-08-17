@@ -2,5 +2,5 @@ export {
   DocumentRepositoryInMemory,
   newDocumentId,
   defaultDocumentStatus,
-} from "./document.repository";
-export type * from "./document.repository";
+} from "./document.repository.js";
+export type * from "./document.repository.js";

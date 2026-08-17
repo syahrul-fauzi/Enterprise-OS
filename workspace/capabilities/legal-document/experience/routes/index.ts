@@ -1,2 +1,2 @@
-export { documentRoutes, documentExperienceRoutes } from "./document.routes";
-export type * from "./document.routes";
+export { documentRoutes, documentExperienceRoutes } from "./document.routes.js";
+export type * from "./document.routes.js";

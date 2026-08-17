@@ -1,8 +1,8 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { ServiceRequestRepositoryInMemory, getServiceRequestRepositoryPostgres } from "../repository/index";
-import type { ServiceRequestId, ServiceRequestAggregate } from "../contracts/service.contracts";
-import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../identity/implementation/repositories/index";
+import { ServiceRequestRepositoryInMemory, getServiceRequestRepositoryPostgres } from "../repository/index.js";
+import type { ServiceRequestId, ServiceRequestAggregate } from "../contracts/service.contracts.js";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../identity/implementation/repositories/index.js";
 
 const sessionRepository = process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()

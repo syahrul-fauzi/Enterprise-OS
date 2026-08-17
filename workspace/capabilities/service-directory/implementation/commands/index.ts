@@ -1,2 +1,2 @@
-export * from "./service.commands";
-export { serviceDirectoryCommands as default } from "./service.commands";
+export * from "./service.commands.js";
+export { serviceDirectoryCommands as default } from "./service.commands.js";

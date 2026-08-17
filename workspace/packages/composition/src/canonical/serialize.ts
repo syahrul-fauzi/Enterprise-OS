@@ -1,4 +1,4 @@
-import type { CanonicalJsonString } from "./types";
+import type { CanonicalJsonString } from "./types.js";
 
 export type CanonicalRejectKind =
   | "function"

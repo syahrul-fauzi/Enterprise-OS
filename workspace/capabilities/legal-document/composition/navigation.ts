@@ -1,4 +1,4 @@
-import { documentWorkspace, type DocumentNavigationEntry } from "./workspace";
+import { documentWorkspace, type DocumentNavigationEntry } from "./workspace.js";
 
 export interface DocumentNavigationDescriptor {
   readonly workspaceId: typeof documentWorkspace.id;

@@ -6,7 +6,7 @@ import {
   RESOLVER_VERSION,
   RESOLVER_ID,
   type ProofLevel,
-} from "./types";
+} from "./types.js";
 import {
   TransformationIdSchema,
   TransformationStatusSchema,

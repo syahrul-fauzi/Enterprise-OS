@@ -1,8 +1,8 @@
-import { agentOrchestrationService } from "../../../agent-orchestration/implementation/services/agent-orchestration.service";
-import { evidenceRegistryService } from "../../../evidence-registry/implementation/services/evidence-registry.service";
-import { requirementService } from "../../../requirement-management/implementation/services/requirement.service";
-import { workflowEngineService } from "../../../workflow-engine/implementation/services/workflow-engine.service";
-import type { KnowledgeEdge, KnowledgeGraphSnapshot, KnowledgeNode } from "../contracts";
+import { agentOrchestrationService } from "../../../agent-orchestration/implementation/services/agent-orchestration.service.js";
+import { evidenceRegistryService } from "../../../evidence-registry/implementation/services/evidence-registry.service.js";
+import { requirementService } from "../../../requirement-management/implementation/services/requirement.service.js";
+import { workflowEngineService } from "../../../workflow-engine/implementation/services/workflow-engine.service.js";
+import type { KnowledgeEdge, KnowledgeGraphSnapshot, KnowledgeNode } from "../contracts/index.js";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 
 export class KnowledgeGraphService {
@@ -97,4 +97,4 @@ export class KnowledgeGraphService {
 
 export const knowledgeGraphService = new KnowledgeGraphService();
 
-export * from "../contracts";
+export * from "../contracts/index.js";

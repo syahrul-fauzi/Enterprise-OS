@@ -1,1 +1,1 @@
-export * from "./evidence-registry.repository";
+export * from "./evidence-registry.repository.js";

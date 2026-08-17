@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { VerificationProofPanel } from "../experience/components/VerificationProofPanel";
+import { VerificationProofPanel } from "../experience/components/VerificationProofPanel.js";
 
 // Mock fetch to prevent actual API calls in tests
 global.fetch = vi.fn(() => 

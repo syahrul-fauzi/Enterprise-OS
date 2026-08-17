@@ -2,7 +2,7 @@
   "extends": "../../../config/typescript/base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
+    "ignoreDeprecations": "5.0",
     "baseUrl": ".",
     "composite": true,
     "incremental": true,
@@ -16,6 +16,7 @@
     { "path": "../../../products/academic" },
     { "path": "../../../products/ilc" },
     { "path": "../../../products/lawyershub" },
-    { "path": "../../../products/services-id" }
+    { "path": "../../../products/services-id" },
+    { "path": "../../../products/commsme" }
   ]
 }

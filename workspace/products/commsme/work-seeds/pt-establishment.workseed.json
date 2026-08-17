@@ -1,0 +1,296 @@
+{
+  "workSeedId": "WORKSEED-PT-ESTABLISHMENT-UMKM-001",
+  "product": "commsme",
+  "version": "1.0.0",
+  "canonical": true,
+  "need": {
+    "id": "need.pt-establishment.umkm",
+    "title": "Pendirian PT untuk UMKM",
+    "summary": "Pelaku UMKM membutuhkan pendirian PT (Perseroan Terbatas) atau CV untuk legalitas usaha, meliputi Akta Notaris, NIB OSS, NPWP Badan, dan SK Kemenkumham.",
+    "userStory": "Sebagai pemilik UMKM, saya ingin mendirikan PT agar usaha saya berbadan hukum resmi, bisa mengajukan pinjaman bank, menandatangani kontrak dengan vendor besar, dan memiliki perlindungan hukum pribadi yang terpisah.",
+    "domain": "legal.company_establishment",
+    "severity": "high",
+    "timeSensitivity": "within_14_days"
+  },
+  "outcome": {
+    "successCriteria": [
+      "Pengguna memiliki Akta Pendirian PT yang ditandatangani Notaris",
+      "NIB (Nomor Induk Berusaha) terbit dari OSS RBA",
+      "NPWP Badan Usaha terdaftar di DJP",
+      "SK Kemenkumham terbit sebagai bukti pendirian sah",
+      "Semua dokumen tersimpan di Evidence Registry dan dapat diunduh pengguna",
+      "Konteks handoff 100% lengkap: pengguna tidak perlu mengulang cerita jika bertemu profesional lain"
+    ],
+    "failureModes": [
+      "Nama PT bentrok di Kemenkumham → perlu 3 opsi nama cadangan",
+      "Alamat domisili tidak sesuai persyaratan → perlu surat keterangan domisili",
+      "Modal awal tidak cukup minimum → perlu penyesuaian permodalannya"
+    ]
+  },
+  "context": {
+    "preconditions": [
+      "Pengguna adalah WNI atau memiliki badan hukum Indonesia",
+      "Pengguna memiliki minimal 1 opsi nama PT (sebaiknya 3 opsi)",
+      "Pengguna memiliki alamat domisili usaha yang dapat diverifikasi"
+    ],
+    "assumptions": [
+      "PT berbentuk PT Perorangan (untuk UMKM dengan 1 pendiri) atau PT standar (2+ pendiri)",
+      "Modal dasar minimum sesuai UU No.40 Tahun 2007 (tidak ada minimum nominal, tapi praktis > Rp 50 juta untuk kemudahan)"
+    ],
+    "regulatoryReferences": [
+      "UU No.40 Tahun 2007 tentang Perseroan Terbatas",
+      "UU No.11 Tahun 2020 tentang Cipta Kerja (PP No.21/2021 perubahan)",
+      "Peraturan Kemenkumham tentang Pendaftaran PT secara elektronik",
+      "Peraturan OSS RBA tentang NIB"
+    ]
+  },
+  "requiredInputs": [
+    {
+      "id": "input.business_field",
+      "label": "Bidang Usaha",
+      "type": "select",
+      "options": ["perdagangan", "jasa", "manufaktur", "kuliner", "teknologi", "lainnya"],
+      "required": true,
+      "example": "kuliner (waralaba kopi)",
+      "kbliHint": "Akan dipetakan ke kode KBLI OSS"
+    },
+    {
+      "id": "input.pt_name_options",
+      "label": "3 Opsi Nama PT",
+      "type": "text_multiline",
+      "required": true,
+      "example": "1. PT Kopi Nusantara Sejahtera\n2. PT Kopi Nusantara Mandiri\n3. PT Minang Kopi Indonesia",
+      "constraint": "Minimal 3 opsi, hindari nama generik; sistem akan cek kesamaan di Kemenkumham (via Notaris)"
+    },
+    {
+      "id": "input.address_domicile",
+      "label": "Alamat Domisili PT",
+      "type": "text",
+      "required": true,
+      "example": "Jl. Sudirman No.123, Kec. Menteng, Jakarta Pusat, DKI Jakarta 10310"
+    },
+    {
+      "id": "input.founders",
+      "label": "Data Pendiri (1 atau lebih)",
+      "type": "json_object",
+      "required": true,
+      "schema": {
+        "nama_lengkap": "string",
+        "nik_ktp": "string (16 digit)",
+        "alamat_ktp": "string",
+        "npwp_pribadi": "string (opsional)",
+        "jabatan": "Direktur / Komisaris / Pemegang Saham",
+        "persentase_saham": "number (%)"
+      }
+    },
+    {
+      "id": "input.capital_structure",
+      "label": "Struktur Permodalannya",
+      "type": "json_object",
+      "required": true,
+      "schema": {
+        "modal_dasar": "number (Rp)",
+        "modal_ditempatkan": "number (Rp, minimal 25% dari modal dasar)",
+        "modal_setoran": "number (Rp)"
+      },
+      "example": {
+        "modal_dasar": 100000000,
+        "modal_ditempatkan": 25000000,
+        "modal_setoran": 25000000
+      }
+    },
+    {
+      "id": "input.business_license_needed",
+      "label": "Izin Usaha Tambahan yang Dibutuhkan",
+      "type": "multiselect",
+      "options": ["PIRT (makanan/minuman kemasan)", "SPPKL (lingkungan)", "SIUP (perdagangan)", "TDP/OSS (standar)", "lainnya"],
+      "required": false,
+      "hint": "Standarnya: NIB dari OSS sudah cukup untuk kebanyakan UMKM. Izin tambahan menyesuaikan bidang usaha."
+    }
+  ],
+  "procedure": [
+    {
+      "step": 1,
+      "id": "proc.1.context_collection",
+      "title": "Kumpulkan Konteks & Validasi Kelengkapan Input",
+      "description": "AI mengumpulkan jawaban pengguna untuk semua requiredInputs, memvalidasi format (NIK 16 digit, struktur modal, alamat lengkap).",
+      "actor": "ai",
+      "capabilities": ["consultation.create", "evidence.record"],
+      "durationEstimateMinutes": 15,
+      "exitCriteria": [
+        "Semua requiredInputs terjawab dan tervalidasi formatnya",
+        "Work Item berstatus collecting_context → context_complete",
+        "HandoffContext.whatWeKnow mencakup semua input pengguna"
+      ]
+    },
+    {
+      "step": 2,
+      "id": "proc.2.ai_document_draft",
+      "title": "Buat Draf Dokumen Pendirian",
+      "description": "AI menyusun draf awal: maksud dan tujuan PT, susunan direksi/komisaris, struktur modal, pasal-pasal standar UU PT.",
+      "actor": "ai",
+      "capabilities": ["evidence.record", "document_template.generate"],
+      "durationEstimateMinutes": 20,
+      "exitCriteria": [
+        "Draf Akta Pendirian tersimpan sebagai artifact",
+        "Draf dicek checklist: nama PT, alamat, bidang usaha (KBLI), modal, susunan organ"
+      ]
+    },
+    {
+      "step": 3,
+      "id": "proc.3.human_boundary_notary_handoff",
+      "title": "Handoff ke Notaris Pendamping UMKM (HUMAN BOUNDARY)",
+      "description": "HUMAN DECISION NEEDED: Notaris memverifikasi draf, mengecek ketersediaan nama di Kemenkumham, dan melakukan tanda tangan Akta di hadapan Notaris.",
+      "actor": "human_professional",
+      "roleRequired": "Notaris terdaftar di Kemenkumham",
+      "handoffContext": [
+        "what: 'Pendirian PT untuk UMKM [nama PT opsi 1]'",
+        "whatWeKnow: (semua input pengguna + draf akta)",
+        "documentsAvailable: ['Draf Akta Pendirian', 'KTP Pendiri', 'NPWP Pendiri (jika ada)']",
+        "whatMissing: ['Pengecekan nama Kemenkumham', 'Tanda tangan Akta di hadapan Notaris', 'Surat keterangan domisili (jika alamat masih lemah)']",
+        "whatDone: ['Pengumpulan konteks AI', 'Pembuatan draf Akta']",
+        "aiLimits: ['AI TIDAK dapat menandatangani Akta sebagai Notaris (legal requirement)', 'AI TIDAK dapat mengajukan permohonan ke Kemenkumham/OSS tanpa akun profesional terverifikasi']",
+        "humanDecisionsNeeded: ['Nama PT final setelah cek Kemenkumham', 'Penyesuaian draf Akta (jika ada pasal khusus)', 'Tanggal penandatanganan Akta']"
+      ],
+      "durationEstimateDays": 3,
+      "exitCriteria": [
+        "Akta Pendirian ditandatangani Notaris dan para pendiri",
+        "Berkas-berkas pendukung asli diterima Notaris",
+        "Evidence menyertakan tanda tangan digital Notaris (scan/berkas asli)"
+      ]
+    },
+    {
+      "step": 4,
+      "id": "proc.4.external_action_kemenkumham_oss",
+      "title": "Eksternal Action: Ajukan ke Kemenkumham + OSS + DJP",
+      "description": "Notaris mengajukan permohonan SK Kemenkumham, NIB OSS, dan NPWP Badan secara elektronik melalui sistem resmi Pemerintah.",
+      "actor": "external_system + human_professional",
+      "externalDependencies": ["Sistem AHU Kemenkumham", "OSS RBA Kemenko Perekonomian", "DJOnline DJP"],
+      "durationEstimateDays": "1-7 hari kerja",
+      "exitCriteria": [
+        "SK Kemenkumham terbit (status: BERLAKU)",
+        "NIB 13 digit terbit dari OSS",
+        "NPWP Badan 15 digit terdaftar di DJP"
+      ],
+      "riskMitigation": "Jika ada penolakan Kemenkumham/OSS, Notaris memberikan surat koreksi dan memandu pengguna untuk revisi data."
+    },
+    {
+      "step": 5,
+      "id": "proc.5.delivery_close",
+      "title": "Penyerahan Hasil & Close Work Item",
+      "description": "Semua dokumen dikumpulkan, diverifikasi, diserahkan kepada pengguna. Work Item ditutup sebagai IMPLEMENTED → VERIFIED.",
+      "actor": "human_professional + ai",
+      "capabilities": ["evidence.record", "case.close", "consultation.update"],
+      "durationEstimateMinutes": 30,
+      "deliverables": [
+        "Salinan Akta Pendirian PT yang telah dilegalisir Notaris",
+        "SK Kemenkumham (PDF + softcopy)",
+        "NIB OSS (PDF)",
+        "NPWP Badan (PDF)",
+        "Ringkasan langkah selanjutnya: rekening bank, izin tambahan jika diperlukan"
+      ],
+      "exitCriteria": [
+        "Work Item status = verified",
+        "Evidence completeness = 100% (semua dokumen + riwayat percakapan + bukti transaksi)",
+        "Pengguna menerima notifikasi hasil melalui CommsMe"
+      ]
+    }
+  ],
+  "capabilities": {
+    "deterministic": [
+      {
+        "id": "cap.evidence.record",
+        "reusedFrom": "@capabilities/evidence-registry",
+        "invocations": ["work_item_created_from_commsme_chat", "context_updated_in_conversation", "notary_handoff_triggered", "external_action_started", "work_item_verified_closed"]
+      },
+      {
+        "id": "cap.case.close",
+        "reusedFrom": "@capabilities/consultation",
+        "note": "Close consultation/work item setelah verifikasi hasil"
+      }
+    ],
+    "ai_assisted": [
+      {
+        "id": "cap.consultation.create",
+        "reusedFrom": "@capabilities/consultation",
+        "note": "Buat Work Item dari percakapan chat CommsMe"
+      },
+      {
+        "id": "cap.consultation.update",
+        "reusedFrom": "@capabilities/consultation",
+        "note": "Update status work item & tambahkan handoff context setiap progress"
+      }
+    ],
+    "human_only": [
+      {
+        "id": "professional.notary_signature",
+        "role": "Notaris",
+        "reason": "Hukum Indonesia mensyaratkan Akta PT ditandatangani di hadapan Notaris publik terdaftar."
+      },
+      {
+        "id": "government_system_submission",
+        "actor": "Notaris/Profesional",
+        "reason": "Pengajuan ke Kemenkumham/OSS/DJP memerlukan akun profesional terverifikasi dan/atau akses khusus."
+      }
+    ]
+  },
+  "humanBoundary": {
+    "nonDelegableToAI": [
+      "Penandatanganan Akta Pendirian oleh Notaris (legal requirement hard constraint)",
+      "Pengajuan resmi ke Kemenkumham AHU / OSS / DJP (membutuhkan identitas profesional)",
+      "Pengecekan fisik dokumen asli (KTP, KK, bukti domisili) jika diperlukan"
+    ],
+    "contextRetentionGuarantee": {
+      "guarantee": "100% handoff context retained",
+      "mechanism": "Semua whatWeKnow + documentsAvailable + whatDone + aiLimits diserahkan dalam structured JSON ke profesional dashboard. Profesional TIDAK PERLU menanyakan ulang: 'Mau buat apa?' 'Nama PT apa?' 'Alamat di mana?'"
+    }
+  },
+  "externalActions": [
+    {
+      "id": "ext.1.notary_signing",
+      "description": "Akta ditandatangani Notaris & pendiri secara fisik atau elektronik (e-Notaris)",
+      "externalParty": "Notaris Terdaftar",
+      "triggerCondition": "Step 3 dimulai, semua input pendukung lengkap"
+    },
+    {
+      "id": "ext.2.kemenkumham_approval",
+      "description": "SK Kemenkumham terbit setelah verifikasi AHU sistem",
+      "externalParty": "Kemenkumham RI (Sistem AHU)",
+      "typicalLatencyBusinessDays": "1-5"
+    },
+    {
+      "id": "ext.3.oss_nib_issuance",
+      "description": "NIB terbit dari OSS RBA setelah data perusahaan diverifikasi",
+      "externalParty": "OSS RBA Kemenko Perekonomian",
+      "typicalLatencyBusinessDays": "1"
+    },
+    {
+      "id": "ext.4.npwp_registration",
+      "description": "NPWP Badan terdaftar otomatis atau via DJOnline",
+      "externalParty": "DJP RI",
+      "typicalLatencyBusinessDays": "1"
+    }
+  ],
+  "evidence": {
+    "ledgerActions": [
+      { "action": "work_item_created", "stage": "proc.1", "entityType": "consultation" },
+      { "action": "input_validated", "stage": "proc.1", "entityType": "consultation" },
+      { "action": "draft_akte_generated", "stage": "proc.2", "entityType": "document" },
+      { "action": "handoff_to_notary", "stage": "proc.3", "entityType": "handoff" },
+      { "action": "akte_signed_notary", "stage": "proc.3", "entityType": "document" },
+      { "action": "ext_kemenkumham_submitted", "stage": "proc.4", "entityType": "external_action" },
+      { "action": "sk_kemenkumham_issued", "stage": "proc.4", "entityType": "government_document" },
+      { "action": "nib_oss_issued", "stage": "proc.4", "entityType": "government_document" },
+      { "action": "npwp_badan_issued", "stage": "proc.4", "entityType": "government_document" },
+      { "action": "work_item_verified_closed", "stage": "proc.5", "entityType": "consultation" }
+    ],
+    "completenessFormula": "len(issued_government_docs) >= 3 AND len(handoff_context) > 0 AND len(deliverables) = 5"
+  },
+  "kpi": {
+    "targetTimeToFirstOutcomeBusinessDays": 10,
+    "targetHandoffContextRetentionPercent": 100,
+    "targetRealWorkCompletionRatePercent": 95,
+    "targetHumanRepetitionRatePercent": 0,
+    "note": "Time-to-First-Outcome: dihitung dari user kirim pesan pertama chat → SK Kemenkumham diterima pengguna."
+  }
+}

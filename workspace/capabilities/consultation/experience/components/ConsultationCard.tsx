@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "@repo/presentation-ui-system";
-import type { ConsultationAggregate } from "../../implementation/contracts/consultation.contracts";
+import type { ConsultationAggregate } from "../../implementation/contracts/consultation.contracts.js";
 
 export interface ConsultationCardProps {
   readonly item: ConsultationAggregate;

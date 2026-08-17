@@ -1,15 +1,15 @@
-import type { DesignTokens } from "../tokens";
-import type { TypographyScale } from "../typography";
-import type { MotionScale } from "../motion";
-import type { IconRegistry } from "../icons";
-import { lightColors, darkColors } from "../tokens/colors";
-import { spacing } from "../tokens/spacing";
-import { radius } from "../tokens/radius";
-import { elevation } from "../tokens/elevation";
-import { semantic } from "../tokens/semantic";
-import { typography } from "../typography";
-import { motion } from "../motion";
-import { iconRegistry } from "../icons";
+import type { DesignTokens } from "../tokens/index.js";
+import type { TypographyScale } from "../typography/index.js";
+import type { MotionScale } from "../motion/index.js";
+import type { IconRegistry } from "../icons/index.js";
+import { lightColors, darkColors } from "../tokens/colors.js";
+import { spacing } from "../tokens/spacing.js";
+import { radius } from "../tokens/radius.js";
+import { elevation } from "../tokens/elevation.js";
+import { semantic } from "../tokens/semantic.js";
+import { typography } from "../typography/index.js";
+import { motion } from "../motion/index.js";
+import { iconRegistry } from "../icons/index.js";
 
 export type ThemeMode = "light" | "dark" | "auto";
 

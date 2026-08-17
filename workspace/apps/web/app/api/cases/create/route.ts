@@ -35,11 +35,13 @@ export async function POST(request: Request) {
     // Single canonical capability invocation - all case creation logic in legal-case capability
     // MINIMAL PATTERN: sessionId ONLY - tenant/workspace/actor derived from trusted session inside capability
     const { output } = await capabilityRegistry.invokeAsync("legal-case", "case.create", {
-      title,
-      description,
-      priority,
-      sessionId: session.sessionId,
-    });
+          title,
+          description,
+          priority,
+          sessionId: session.sessionId,
+          // Forward sourceDiscussionId if provided (ILC escalation context)
+          ...(body.sourceDiscussionId && { sourceDiscussionId: body.sourceDiscussionId }),
+        });
 
     if (!output) {
       return NextResponse.json({ error: "Failed to create case" }, { status: 500 });

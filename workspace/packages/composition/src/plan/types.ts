@@ -1,9 +1,9 @@
-import type { LayoutDescriptor } from "../layouts";
-import type { NavigationDescriptor } from "../navigation";
-import type { RegionDescriptor, RegionId } from "../regions";
-import type { SlotDescriptor, SlotId, SlotInstance } from "../slots";
-import type { NormalizedWorkspace, ValidationIssue, WorkspaceId } from "../normalizer/types";
-import type { CanonicalJsonString, Fnv1a32Hex } from "../canonical/types";
+import type { LayoutDescriptor } from "../layouts/index.js";
+import type { NavigationDescriptor } from "../navigation/index.js";
+import type { RegionDescriptor, RegionId } from "../regions/index.js";
+import type { SlotDescriptor, SlotId, SlotInstance } from "../slots/index.js";
+import type { NormalizedWorkspace, ValidationIssue, WorkspaceId } from "../normalizer/types.js";
+import type { CanonicalJsonString, Fnv1a32Hex } from "../canonical/types.js";
 
 export type CapabilityRequirementSource =
   | "workspace-permission"

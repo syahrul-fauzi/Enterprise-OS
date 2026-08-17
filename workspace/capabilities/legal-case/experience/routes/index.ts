@@ -1,2 +1,2 @@
-export { caseRoutes, caseExperienceRoutes } from "./case.routes";
-export type * from "./case.routes";
+export { caseRoutes, caseExperienceRoutes } from "./case.routes.js";
+export type * from "./case.routes.js";

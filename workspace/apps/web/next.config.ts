@@ -4,10 +4,21 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(import.meta.dirname, "../.."),
+    resolveAlias: {
+      "@repo/presentation-hooks": "./packages/presentation/hooks/dist",
+      "@repo/presentation-widgets": "./packages/presentation/widgets/dist",
+      "@repo/presentation-experience": "./packages/presentation/experience/dist",
+    },
   },
-  transpilePackages: ["@repo/presentation-ui-system", "@repo/presentation-widgets"],
+  transpilePackages: ["@repo/core-kernel"],
   webpack: (config, { isServer }) => {
-    // Externalize Node.js core modules and server-only packages from client bundles
+    config.resolve = config.resolve || {} as any;
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      "@repo/presentation-hooks": path.resolve(import.meta.dirname, "../../packages/presentation/hooks/dist"),
+      "@repo/presentation-widgets": path.resolve(import.meta.dirname, "../../packages/presentation/widgets/dist"),
+      "@repo/presentation-experience": path.resolve(import.meta.dirname, "../../packages/presentation/experience/dist"),
+    };
     if (!isServer) {
       config.externals = [
         ...(config.externals || []),

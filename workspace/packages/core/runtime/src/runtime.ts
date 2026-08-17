@@ -4,7 +4,7 @@ import type {
   RuntimeMountResult,
   RuntimeLifecycle,
   HostEnvironment,
-} from "./types";
+} from "./types.js";
 import type React from "react";
 
 type ExtractComponentFn = (resolved: {

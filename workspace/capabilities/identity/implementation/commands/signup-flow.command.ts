@@ -10,15 +10,15 @@ import {
   type TenantAggregate,
   type WorkspaceAggregate,
   type MembershipAggregate,
-} from "../contracts/identity.contracts";
-import { passwordService, slugifyForTenant } from "../services/password.service";
+} from "../contracts/identity.contracts.js";
+import { passwordService, slugifyForTenant } from "../services/password.service.js";
 import {
   getUserRepositoryPostgres,
   getTenantRepositoryPostgres,
   getWorkspaceRepositoryPostgres,
   getMembershipRepositoryPostgres,
-} from "../repositories/index";
-import { initIdentitySchema } from "../repositories/base.repository";
+} from "../repositories/index.js";
+import { initIdentitySchema } from "../repositories/base.repository.js";
 
 function newUserId(): UserId {
   return UserId(`user-${randomUUID()}`);

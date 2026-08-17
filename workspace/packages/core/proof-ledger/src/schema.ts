@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { AuthoritySignature, HashChainLink, PredicateResultSummary } from "./types";
+import type { AuthoritySignature, HashChainLink, PredicateResultSummary } from "./types.js";
 
 const AuthoritySignatureUnsignedSchema = z.object({
   kind: z.literal("UNSIGNED"),

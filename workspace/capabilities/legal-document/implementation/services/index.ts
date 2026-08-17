@@ -1,2 +1,2 @@
-export { DocumentService, documentService } from "./document.service";
-export type * from "./document.service";
+export { DocumentService, documentService } from "./document.service.js";
+export type * from "./document.service.js";

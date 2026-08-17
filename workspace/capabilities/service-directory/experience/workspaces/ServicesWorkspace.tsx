@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
-import type { ServiceRequestAggregate, ServiceRequestStatus, ServiceProviderCategory } from "../../implementation/contracts/service.contracts";
-import { ServiceRequestCard } from "../components/ServiceRequestCard";
-import { CreateServiceRequestModal } from "../components/CreateServiceRequestModal";
+import type { ServiceRequestAggregate, ServiceRequestStatus, ServiceProviderCategory } from "../../implementation/contracts/service.contracts.js";
+import { ServiceRequestCard } from "../components/ServiceRequestCard.js";
+import { CreateServiceRequestModal } from "../components/CreateServiceRequestModal.js";
 
 type StatusFilter = ServiceRequestStatus | "all";
 type CategoryFilter = ServiceProviderCategory | "all";
@@ -49,9 +49,9 @@ export function ServicesWorkspace() {
           credentials: "include",
         });
         if (resp.ok) {
-          const { output } = await resp.json();
-          setRequests(output.items || []);
-          setTotalRequests(output.total || 0);
+          const data = await resp.json();
+          setRequests(data.items || []);
+          setTotalRequests(data.total || 0);
         } else {
           setRequests([]);
           setTotalRequests(0);

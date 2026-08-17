@@ -1,1 +1,1 @@
-export * from "./governance-read-model.contracts";
+export * from "./governance-read-model.contracts.js";

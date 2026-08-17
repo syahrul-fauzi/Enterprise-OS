@@ -1,6 +1,6 @@
 import { createRequire } from "node:module";
-import type { IndependentEvidenceProducer, ProducerContext } from "./types";
-import { produceEvidencePackageEnvelope } from "./types";
+import type { IndependentEvidenceProducer, ProducerContext } from "./types.js";
+import { produceEvidencePackageEnvelope } from "./types.js";
 
 declare const __filename: string;
 const _require = createRequire(__filename);

@@ -2,7 +2,7 @@ import {
   UserAggregate,
   UserId,
   type UserRepository,
-} from "../contracts/identity.contracts";
+} from "../contracts/identity.contracts.js";
 
 const seed = (): UserAggregate[] => [
   {

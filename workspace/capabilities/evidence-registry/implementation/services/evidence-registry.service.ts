@@ -1,6 +1,6 @@
 import {
   requirementService,
-} from "../../../requirement-management/implementation/service";
+} from "../../../requirement-management/implementation/service.js";
 import type {
   AssessEvidenceInput,
   AssessEvidenceOutput,
@@ -8,10 +8,10 @@ import type {
   GetEvidenceRecordOutput,
   SearchEvidenceRegistryInput,
   SearchEvidenceRegistryOutput,
-} from "../contracts";
-import { evidenceRegistryQueries } from "../queries";
-import { EvidenceRegistryRepositoryFileSystem } from "../repository";
-import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index";
+} from "../contracts/index.js";
+import { evidenceRegistryQueries } from "../queries/index.js";
+import { EvidenceRegistryRepositoryFileSystem } from "../repository/index.js";
+import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index.js";
 
 export class EvidenceRegistryService {
   readonly repositories = {
@@ -46,8 +46,8 @@ export class EvidenceRegistryService {
         returned: result.items.length,
         summary: result.summary,
       },
-      decision_id: input.decision_id ?? null,
-      productId: input.productId ?? null,
+      decision_id: input.decision_id ?? undefined,
+      productId: input.productId ?? undefined,
     });
     return result;
   }
@@ -115,6 +115,6 @@ export class EvidenceRegistryService {
 
 export const evidenceRegistryService = new EvidenceRegistryService();
 
-export * from "../contracts";
-export * from "../queries";
-export * from "../repository";
+export * from "../contracts/index.js";
+export * from "../queries/index.js";
+export * from "../repository/index.js";

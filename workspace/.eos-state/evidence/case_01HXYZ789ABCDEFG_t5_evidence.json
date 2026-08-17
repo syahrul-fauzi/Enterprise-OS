@@ -1,0 +1,105 @@
+{
+  "work_id": "ILC-RT-005",
+  "case_id": "case_01HXYZ789ABCDEFG",
+  "recorded_at": "2026-08-17T00:15:20.000Z",
+  "status": "PENDING_HUMAN_EXTERNAL_ACTION",
+  "violation_record": {
+    "classification": "EVIDENCE_MANUFACTURE + SCRIPT_ASSERTION_CLAIM",
+    "violated_doctrine": [
+      "DO NOT create synthetic outcome",
+      "DO NOT manufacture evidence",
+      "DO NOT mark outcome verified from script assertion",
+      "B4 Firewall: No self-certification"
+    ],
+    "corrected_at": "2026-08-17T00:25:00.000Z",
+    "note": "Previous version of this file contained hardcoded synthetic HUMAN_CONFIRMED data (channel, timestamp, external_response) and set outcome_verified=true from script. Those fields were not captured from real external events. This record has been rolled back to PENDING status per EOS doctrine."
+  },
+  "t4_state_reached_verified": {
+    "document_id": "doc-101",
+    "document_title": "Surat Peringatan Pengosongan Ilegal - Cease and Desist Letter",
+    "document_exists": true,
+    "linked_to_case": true,
+    "case_status": "in_progress",
+    "lawyer_assigned": "lawyer-001",
+    "verified_by": "VERIFY-ILC-T4 (independent replay, ALL semantic checks PASS)"
+  },
+  "t5_required_human_actions_not_yet_performed": [
+    {
+      "step": 1,
+      "action": "Professional opens existing ILC case (case_01HXYZ789ABCDEFG)",
+      "requires": "human",
+      "capturable_evidence": "screenshot / browser session recording showing case open with context",
+      "status": "NOT_PERFORMED"
+    },
+    {
+      "step": 2,
+      "action": "Professional opens existing legal document (doc-101 — cease-and-desist letter)",
+      "requires": "human",
+      "capturable_evidence": "screenshot of document viewer showing title + matterId + content",
+      "status": "NOT_PERFORMED"
+    },
+    {
+      "step": 3,
+      "action": "Professional performs ACTUAL delivery (e.g., sends the document via real registered_email_with_read_receipt to real landlord address)",
+      "requires": "human_external",
+      "capturable_evidence": "Email headers screenshot, read-receipt confirmation, registered-mail tracking number PDF",
+      "status": "NOT_PERFORMED"
+    },
+    {
+      "step": 4,
+      "action": "Capture externally observable delivery evidence (read receipt / tracking / signed proof)",
+      "requires": "human_external",
+      "capturable_evidence": "Original proof-of-delivery file (PDF/PNG) attached to case",
+      "status": "NOT_PERFORMED"
+    },
+    {
+      "step": 5,
+      "action": "Wait for actual recipient response (real landlord reply)",
+      "requires": "human_external_wait",
+      "capturable_evidence": "Original landlord email / letter with full headers and source metadata",
+      "status": "NOT_PERFORMED"
+    },
+    {
+      "step": 6,
+      "action": "Attach response + evidence files to existing case (as artifacts under case_01HXYZ789ABCDEFG)",
+      "requires": "human_system_input",
+      "capturable_evidence": "Attachment records in case file list with hashes",
+      "status": "NOT_PERFORMED"
+    },
+    {
+      "step": 7,
+      "action": "Professional VERIFIES outcome (reads landlord response, confirms 'membatalkan rencana pengosongan' = outcome achieved)",
+      "requires": "human_professional_judgement",
+      "capturable_evidence": "Professional's logged verdict + timestamp with actor identity",
+      "status": "NOT_PERFORMED"
+    },
+    {
+      "step": 8,
+      "action": "Record T5 timestamp (actual delivery time from proof, NOT script time)",
+      "requires": "human",
+      "capturable_evidence": "T5 = timestamp present in proof-of-delivery document (e.g., email Date: header)",
+      "status": "NOT_PERFORMED"
+    },
+    {
+      "step": 9,
+      "action": "Record outcome (verified true/false with professional judgement reference)",
+      "requires": "human",
+      "capturable_evidence": "outcome_verified = professional's explicit verdict, NOT a script boolean",
+      "status": "NOT_PERFORMED"
+    }
+  ],
+  "t5_timestamp": null,
+  "t5_action": null,
+  "t5_channel": null,
+  "t5_delivery_confirmed_by_external_evidence": null,
+  "t5_external_response_raw_artifact": null,
+  "t5_state_before": null,
+  "t5_state_after": null,
+  "professional_verdict_on_outcome": null,
+  "outcome_verified": null,
+  "blocker": "HUMAN_EXTERNAL_ACTION_REQUIRED — Agent operating in repository cannot send real registered email, cannot receive real landlord reply, cannot exercise professional legal judgement on outcome. All 9 steps above require a human. STOP.",
+  "evidence_ladder_level": "L3_MAX_WITH_T4_READY_FOR_T5",
+  "evidence_ladder_clarification": "T3 (L3 action execution) is VERIFIED. T4 (artifact prepared) is VERIFIED but does NOT constitute L4 by itself — L4 requires real-world outcome validation. T5 (external execution + outcome verification) must be performed by a human. Therefore current MAX verified level = L3.",
+  "target_evidence_level": "L4 — requires HUMAN execution of steps 1-9 above",
+  "b4_self_certification_block": "THIS FILE MAY NOT BE MARKED outcome_verified=true BY ANY SCRIPT. A human professional must sign off with actor identity + explicit verdict reference. B4 Firewall prevents agent self-certification."
+}

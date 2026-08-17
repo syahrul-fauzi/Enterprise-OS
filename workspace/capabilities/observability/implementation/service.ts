@@ -6,6 +6,6 @@ export type {
   IncidentAggregate,
   CreateIncidentInput,
   CreateIncidentOutput,
-} from "./contracts";
-export { observabilityCommands } from "./commands/observability.commands";
-export * from "./services";
+} from "./contracts/index.js";
+export { observabilityCommands } from "./commands/observability.commands.js";
+export * from "./services/index.js";

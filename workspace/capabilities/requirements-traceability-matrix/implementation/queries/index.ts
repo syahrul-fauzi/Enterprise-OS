@@ -1,1 +1,1 @@
-export * from "./traceability.queries";
+export * from "./traceability.queries.js";

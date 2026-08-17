@@ -1,4 +1,4 @@
-import { documentExperienceRoutes } from "../experience/routes";
+import { documentExperienceRoutes } from "../experience/routes/index.js";
 
 export interface DocumentCompositionRouteDescriptor {
   readonly id: string;

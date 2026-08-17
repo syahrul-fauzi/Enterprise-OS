@@ -1,1 +1,1 @@
-export * from "./connector-ecosystem.service";
+export * from "./connector-ecosystem.service.js";

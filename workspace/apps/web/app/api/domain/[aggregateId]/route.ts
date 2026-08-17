@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { capabilityRegistry } from "@repo/core-kernel";
-import { GetCaseByIdInputSchema } from "../../../../../../capabilities/legal-case/implementation/commands/get-case-by-id.command";
+import { GetCaseByIdInputSchema } from "../../../../../../capabilities/legal-case/implementation/commands/get-case-by-id.command.js";
 
 export const runtime = "nodejs";
 

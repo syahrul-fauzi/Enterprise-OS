@@ -1,4 +1,4 @@
-import type { PredicateDeclaration } from "../../interfaces";
+import type { PredicateDeclaration } from "../../interfaces.js";
 
 export const T001_PREDICATES: readonly PredicateDeclaration[] = [
   {

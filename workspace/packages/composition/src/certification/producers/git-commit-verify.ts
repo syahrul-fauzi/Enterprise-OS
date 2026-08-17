@@ -1,6 +1,6 @@
 import { spawnSync } from "node:child_process";
-import type { IndependentEvidenceProducer, ProducerContext } from "./types";
-import { produceEvidencePackageEnvelope } from "./types";
+import type { IndependentEvidenceProducer, ProducerContext } from "./types.js";
+import { produceEvidencePackageEnvelope } from "./types.js";
 
 const PRODUCER_ID = "git-commit-verify-v1";
 const PRODUCER_NAME = "Git Commit Hash & Diff-Stat External IEP";

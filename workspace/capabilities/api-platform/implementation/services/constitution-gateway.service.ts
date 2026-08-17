@@ -1,19 +1,19 @@
 import type {
   ConstitutionArtifactSelector,
   ConstitutionPresentationArtifactSelector,
-} from "../contracts";
+} from "../contracts/index.js";
 import type {
   JsonArtifact,
   JsonRecord,
-} from "../../../governance-evidence/implementation/service";
+} from "../../../governance-evidence/implementation/service.js";
 import {
   governanceEvidenceGatewayService,
   GovernanceEvidenceGatewayService,
-} from "./governance-evidence-gateway.service";
+} from "./governance-evidence-gateway.service.js";
 import {
   governanceReadGatewayService,
   GovernanceReadGatewayService,
-} from "./governance-read-gateway.service";
+} from "./governance-read-gateway.service.js";
 
 export class ConstitutionGatewayService {
   constructor(

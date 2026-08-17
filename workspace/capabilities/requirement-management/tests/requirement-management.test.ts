@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   requirementService,
-} from "../implementation/service";
+} from "../implementation/service.js";
 
 test("requirement management supports lifecycle from create to verify", () => {
   const created = requirementService.createRequirement({

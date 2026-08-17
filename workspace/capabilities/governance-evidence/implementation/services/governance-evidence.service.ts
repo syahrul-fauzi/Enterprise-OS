@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
-import { trustFrameworkService } from "../../../trust-framework/implementation/services/trust-framework.service";
+import { trustFrameworkService } from "../../../trust-framework/implementation/services/trust-framework.service.js";
 
 const { existsSync, readFileSync, readdirSync } = fs;
 const { dirname, resolve, join } = path;
@@ -17,7 +17,7 @@ import type {
   AggregatedEvidence,
   CapabilityEvidenceRequirements,
   GovernanceConfidenceVerdict,
-} from "../contracts";
+} from "../contracts/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -210,7 +210,7 @@ export class GovernanceEvidenceService implements GovernanceEvidenceProvider {
             console.log(`[DEBUG] Parsed invocation: ${invocation.capability_id} / ${invocation.operation_id}`);
             
             // Track by source (product vs capability)
-            const source = invocationPath.includes("/products/") ? invocationPath.split("/products/")[1].split("/")[0] : "internal-capability";
+            const source = invocationPath.includes("/products/") ? (invocationPath.split("/products/")[1] || "").split("/")[0] || "internal-capability" : "internal-capability";
             byProduct[source] = (byProduct[source] || 0) + 1;
             byCapability[invocation.capability_id] = (byCapability[invocation.capability_id] || 0) + 1;
             operationCounts[invocation.operation_id] = (operationCounts[invocation.operation_id] || 0) + 1;
@@ -264,29 +264,29 @@ export class GovernanceEvidenceService implements GovernanceEvidenceProvider {
 
         const evidenceRequired: string[] = [];
         if (evidenceRequiredMatches.length > 0) {
-          const lines = evidenceRequiredMatches[0][0].split('\n').slice(1);
+          const lines = (evidenceRequiredMatches[0]?.[0] || '').split('\n').slice(1);
           lines.forEach((line: string) => {
             const match = line.match(/-\s*(.*)/);
-            if (match) evidenceRequired.push(match[1].trim());
+             if (match && match[1]) evidenceRequired.push(match[1].trim());
           });
         }
 
         const consumers: string[] = [];
         if (consumersMatches.length > 0) {
-          const lines = consumersMatches[0][0].split('\n').slice(1);
+          const lines = (consumersMatches[0]?.[0] || '').split('\n').slice(1);
           lines.forEach((line: string) => {
             const match = line.match(/-\s*(.*)/);
-            if (match) consumers.push(match[1].trim());
+            if (match && match[1]) consumers.push(match[1].trim());
           });
         }
 
-        if (idMatch && ownerMatch && maturityMatch) {
+        if (idMatch && idMatch[1] && ownerMatch && ownerMatch[1] && maturityMatch && maturityMatch[1]) {
           allCapabilityMetadata.push({
             capability_id: idMatch[1].trim(),
             owner: ownerMatch[1].trim(),
             evidence_required: evidenceRequired,
             consumers: consumers,
-            maturity_level: maturityMatch[1].trim(),
+            maturity_level: maturityMatch[1].trim()
           });
         }
       }
@@ -332,7 +332,7 @@ export class GovernanceEvidenceService implements GovernanceEvidenceProvider {
       switch(evidenceType) {
         case "production_usage":
           // Check if capability has >0 runtime invocations
-          if (aggregatedEvidence.by_capability[capability.capability_id] > 0) {
+          if ((aggregatedEvidence.by_capability[capability.capability_id] || 0) > 0) {
             isMet = true;
             evidence_met.push("production_usage");
             rationale.push(`Production usage detected (${aggregatedEvidence.by_capability[capability.capability_id]} invocations).`);
@@ -422,7 +422,7 @@ export class GovernanceEvidenceService implements GovernanceEvidenceProvider {
 
         default:
           // Generic check - if we have any invocations, consider it potentially met
-          if (aggregatedEvidence.by_capability[capability.capability_id] > 0) {
+          if ((aggregatedEvidence.by_capability[capability.capability_id] || 0) > 0) {
             isMet = true;
             evidence_met.push(evidenceType);
             rationale.push(`${evidenceType}: Runtime activity detected.`);

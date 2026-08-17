@@ -5,8 +5,8 @@ import {
   type GetRequirementOutput,
   type SearchRequirementsInput,
   type SearchRequirementsOutput,
-} from "../contracts";
-import { RequirementRepositoryCurrent } from "../repository";
+} from "../contracts/index.js";
+import { RequirementRepositoryCurrent } from "../repository/index.js";
 
 type GetRequirementQuery = CapabilityQuery<GetRequirementInput, GetRequirementOutput>;
 type SearchRequirementsQuery = CapabilityQuery<

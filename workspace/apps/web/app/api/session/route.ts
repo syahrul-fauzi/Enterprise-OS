@@ -6,7 +6,7 @@ import {
   isAuthenticatedSession,
   type WorkspaceSession,
 } from "@repo/core-kernel";
-import type { GetSessionByIdOutput } from "../../../../../capabilities/identity/implementation/commands/get-session-by-id.command";
+import type { GetSessionByIdOutput } from "../../../../../capabilities/identity/implementation/commands/get-session-by-id.command.js";
 
 export async function GET(request: Request) {
   try {

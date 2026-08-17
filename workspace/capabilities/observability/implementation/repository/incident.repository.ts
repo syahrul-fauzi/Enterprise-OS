@@ -1,5 +1,5 @@
-import type { IncidentAggregate, IncidentId, IncidentStatus, IncidentPriority } from "../contracts/observability.contracts";
-import { newIncidentId, defaultIncidentStatus, defaultIncidentPriority } from "../contracts/observability.contracts";
+import type { IncidentAggregate, IncidentId, IncidentStatus, IncidentPriority } from "../contracts/observability.contracts.js";
+import { newIncidentId, defaultIncidentStatus, defaultIncidentPriority } from "../contracts/observability.contracts.js";
 
 const inMemoryIncidents: IncidentAggregate[] = [];
 

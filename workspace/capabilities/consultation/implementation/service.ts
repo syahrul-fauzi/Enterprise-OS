@@ -12,8 +12,8 @@ export type {
   SearchConsultationsInput,
   SearchConsultationsOutput,
   ConsultationRepository,
-} from "./contracts/consultation.contracts";
-export { ConsultationId } from "./contracts/consultation.contracts";
-export * from "./commands/index";
-export * from "./queries/index";
-export * from "./repository/consultation.repository";
+} from "./contracts/consultation.contracts.js";
+export { ConsultationId } from "./contracts/consultation.contracts.js";
+export * from "./commands/index.js";
+export * from "./queries/index.js";
+export * from "./repository/consultation.repository.js";

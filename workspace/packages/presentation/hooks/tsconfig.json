@@ -2,7 +2,6 @@
   "extends": "@repo/config-typescript/react.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src",
     "baseUrl": ".",
     "strictNullChecks": true,
     "tsBuildInfoFile": "tsconfig.tsbuildinfo",

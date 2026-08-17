@@ -73,7 +73,7 @@ export default function WorkspacePage({
   const [tenantName, setTenantName] = useState("");
   const [tenantSlug, setTenantSlug] = useState("");
   const [workspaceName, setWorkspaceName] = useState("");
-  const [workspaceProductId, setWorkspaceProductId] = useState("lawyershub");
+  const [workspaceProductId, setWorkspaceProductId] = useState("commsme");
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -319,6 +319,7 @@ export default function WorkspacePage({
                 className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-950/20 appearance-none bg-no-repeat bg-right pr-10"
                 style={{ backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")", backgroundPosition: "right 0.5rem center", backgroundSize: "1.5em 1.5em" }}
               >
+                <option value="commsme">🟠 COMMSME — Pendamping Hukum UMKM (FIRST LIGHT)</option>
                 <option value="lawyershub">🟢 LawyersHub — Kelola Kasus Hukum (First Light · D1.3 Certified)</option>
                 <option value="services-id">� Services.ID — Permintaan & Direktori Layanan (D1.3 Certified)</option>
                 <option value="ilc">🟢 ILC — Komunitas & Konten Hukum (D1.3 Certified · Community Surface)</option>
@@ -544,12 +545,34 @@ export default function WorkspacePage({
                             {ws.productId === "academic" ? "Publikasi Artikel Akademis Baru" : "Tulis Artikel Hukum Baru"}
                           </button>
                         )}
+                        {/* Add Create Legal Case button for COMMSME workspaces (reuses legal-case capability) */}
+                        {ws.productId === "commsme" && (
+                          <button
+                            onClick={async () => {
+              const resp = await fetch("/api/cases/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  title: "Kebutuhan Hukum UMKM Baru",
+                  priority: "medium",
+                }),
+              });
+              if (resp.ok) {
+                window.dispatchEvent(new CustomEvent('cases:refresh'));
+              }
+            }}
+                            className="mt-3 w-full rounded-lg bg-amber-600 px-3 py-2 text-xs font-semibold text-white hover:bg-amber-700"
+                            data-testid="create-umkm-case-button"
+                          >
+                            Mulai Kebutuhan Hukum UMKM
+                          </button>
+                        )}
                       </div>
                     ))}
                   </div>
 
-                  {/* Case Listing for LawyersHub workspaces - canonical presentation consumption */}
-                  {tenantData && tenantData.workspaces.some(ws => ws.productId === "lawyershub") && (
+                  {/* Case Listing for LawyersHub and COMMSME workspaces - reuses legal-case capability */}
+                  {tenantData && tenantData.workspaces.some(ws => ws.productId === "lawyershub" || ws.productId === "commsme") && (
                     <div className="mt-8">
                       <CaseWorkspace />
                     </div>

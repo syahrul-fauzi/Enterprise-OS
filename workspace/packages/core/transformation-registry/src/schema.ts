@@ -3,7 +3,7 @@ import type {
   TransformationId,
   TransformationPrecedence,
   TransformationStatus,
-} from "./types";
+} from "./types.js";
 
 export const TransformationIdSchema = z.enum([
   "T001",

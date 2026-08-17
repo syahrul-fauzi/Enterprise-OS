@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { Card } from "@repo/presentation-ui-system";
-import type { VerificationProofObject } from "../../../../../../apps/web/lib/proof-object";
-import type { RequirementAggregate } from "../../implementation/contracts";
+import type { VerificationProofObject } from "../../../../../../apps/web/lib/proof-object.js";
+import type { RequirementAggregate } from "../../implementation/contracts/index.js";
 
 interface VerificationProofPanelProps {
   readonly requirementId: string;

@@ -1,1 +1,1 @@
-export * from "./trust-framework.contracts";
+export * from "./trust-framework.contracts.js";

@@ -1,8 +1,8 @@
-import type { LayoutDescriptor } from "../layouts";
-import type { NavigationItem } from "../navigation";
-import type { RegionDescriptor, RegionId } from "../regions";
-import type { SlotDescriptor, SlotId, SlotInstance } from "../slots";
-import type { NormalizedWorkspace, ValidationIssue, WorkspaceId } from "../normalizer/types";
+import type { LayoutDescriptor } from "../layouts/index.js";
+import type { NavigationItem } from "../navigation/index.js";
+import type { RegionDescriptor, RegionId } from "../regions/index.js";
+import type { SlotDescriptor, SlotId, SlotInstance } from "../slots/index.js";
+import type { NormalizedWorkspace, ValidationIssue, WorkspaceId } from "../normalizer/types.js";
 import type {
   BuildCompositionPlanFn,
   CapabilityRequirement,
@@ -14,10 +14,10 @@ import type {
   PlanValidityReport,
   SlotWithoutDefaultReport,
   StructuralOutline,
-} from "./types";
-import { canonicalSerialize } from "../canonical/serialize";
-import { fnv1a32 } from "../canonical/hash";
-import { deepFreeze } from "../canonical/deep-freeze";
+} from "./types.js";
+import { canonicalSerialize } from "../canonical/serialize.js";
+import { fnv1a32 } from "../canonical/hash.js";
+import { deepFreeze } from "../canonical/deep-freeze.js";
 
 function stableArr<T>(arr: readonly T[], key: (t: T) => string): readonly T[] {
   return arr.slice().sort((a, b) => key(a).localeCompare(key(b)));

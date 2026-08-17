@@ -4,7 +4,7 @@ import { dirname, resolve } from "node:path";
 import type {
   ConstitutionDependencyDiscovery,
   ConstitutionDependencyModuleInput,
-} from "./engine";
+} from "./engine.js";
 
 type GovernedModuleDefinition = {
   readonly module_id: string;

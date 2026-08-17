@@ -9,7 +9,7 @@ import {
   ConsultationStatus,
   ConsultationPriority,
   AssistanceMode,
-} from "../contracts/consultation.contracts";
+} from "../contracts/consultation.contracts.js";
 
 const seed = (): ConsultationAggregate[] => {
   const now = new Date();

@@ -1,2 +1,2 @@
-export type { ConnectorDefinition, ConnectorSyncResult } from "./contracts";
-export * from "./services";
+export type { ConnectorDefinition, ConnectorSyncResult } from "./contracts/index.js";
+export * from "./services/index.js";

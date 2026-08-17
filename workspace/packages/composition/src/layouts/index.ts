@@ -1,4 +1,4 @@
-import type { RegionId, RegionKind } from "../regions";
+import type { RegionId, RegionKind } from "../regions/index.js";
 
 export type LayoutId = string & { readonly __layoutId: unique symbol };
 export function LayoutId(s: string): LayoutId {

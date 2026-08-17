@@ -1,1 +1,1 @@
-export * from "./requirement.routes";
+export * from "./requirement.routes.js";

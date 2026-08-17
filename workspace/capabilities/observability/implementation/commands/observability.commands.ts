@@ -5,15 +5,15 @@ import {
   defaultIncidentStatus,
   defaultIncidentPriority,
   IncidentRepositoryInMemory,
-} from "../repository";
-import { IncidentRepositoryPostgres } from "../repository/incident-postgres.repository";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
-import { getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository";
+} from "../repository/index.js";
+import { IncidentRepositoryPostgres } from "../repository/incident-postgres.repository.js";
+import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
+import { getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository.js";
 import type {
   CreateIncidentInput,
   CreateIncidentOutput,
   IncidentAggregate,
-} from "../contracts/observability.contracts";
+} from "../contracts/observability.contracts.js";
 
 const _sessionRepo = process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()

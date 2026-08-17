@@ -1,4 +1,4 @@
-import type { IncidentAggregate, IncidentId } from "../contracts/observability.contracts";
+import type { IncidentAggregate, IncidentId } from "../contracts/observability.contracts.js";
 
 // In-memory fallback for PostgreSQL (simplified implementation matching other capabilities)
 const postgresIncidents = new Map<string, IncidentAggregate>();

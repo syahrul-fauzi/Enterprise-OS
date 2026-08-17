@@ -1,1 +1,1 @@
-export * from "./security-hardening.contracts";
+export * from "./security-hardening.contracts.js";

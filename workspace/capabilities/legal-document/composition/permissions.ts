@@ -1,4 +1,4 @@
-import { documentWorkspace } from "./workspace";
+import { documentWorkspace } from "./workspace.js";
 
 export interface DocumentPermissionRule {
   readonly action: string;

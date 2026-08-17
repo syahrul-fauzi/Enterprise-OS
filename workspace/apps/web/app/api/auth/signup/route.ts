@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { capabilityRegistry } from "@repo/core-kernel";
-import { SignupAndSessionInputSchema } from "../../../../../../capabilities/identity/implementation/commands/signup-and-session.command";
+import { SignupAndSessionInputSchema } from "../../../../../../capabilities/identity/implementation/commands/signup-and-session.command.js";
 
 type SignupApiOutput = {
   readonly response: unknown;

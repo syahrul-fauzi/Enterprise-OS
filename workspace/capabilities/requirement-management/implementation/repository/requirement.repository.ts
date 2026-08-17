@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
-import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository";
+import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
 import {
   RequirementAggregate,
   RequirementId,
@@ -9,7 +9,7 @@ import {
   type RequirementStatus,
   type RequirementVerificationStatus,
   type RequirementDependency,
-} from "../contracts";
+} from "../contracts/index.js";
 
 const seed = (): RequirementAggregate[] => {
   const now = Date.now();
@@ -513,7 +513,7 @@ function hydrate(): Store {
   return store;
 }
 
-const STORE: Store = hydrate();
+const STORE: Store = (globalThis as any).__EOS_REQUIREMENT_STORE__ ??= hydrate();
 
 function resolveRequirementStoragePath(): string | undefined {
   const raw = process.env.EOS_REQUIREMENT_STORAGE_PATH?.trim();

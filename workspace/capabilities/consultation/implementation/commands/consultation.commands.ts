@@ -20,14 +20,24 @@ import {
   EosConsultationControlId,
   LearningCandidate,
   LearningCandidateStatus,
-} from "../contracts/consultation.contracts";
+} from "../contracts/consultation.contracts.js";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { newConsultationId, newConsultationSeriesId, newConsultationEpisodeId, defaultConsultationStatus, defaultConsultationPriority, ConsultationRepositoryInMemory } from "../repository/index";
-import { initIdentitySchema, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index";
-import { SessionId } from "../../../identity/implementation/contracts/identity.contracts";
-import { ConsultationStatus } from "../contracts/consultation.contracts";
+import { newConsultationId, newConsultationSeriesId, newConsultationEpisodeId, defaultConsultationStatus, defaultConsultationPriority, ConsultationRepositoryInMemory } from "../repository/index.js";
+import { initIdentitySchema, getSessionRepositoryPostgres, SessionRepositoryInMemory } from "../../../identity/implementation/repositories/index.js";
+import { SessionId } from "../../../identity/implementation/contracts/identity.contracts.js";
+import { ConsultationStatus } from "../contracts/consultation.contracts.js";
 
-const SessionRepositoryPostgres = getSessionRepositoryPostgres();
+const SessionRepositoryPostgres = process.env.DATABASE_URL
+  ? getSessionRepositoryPostgres()
+  : SessionRepositoryInMemory;
+
+let schemaInitialized = false;
+async function ensureIdentitySchema() {
+  if (!schemaInitialized && process.env.DATABASE_URL) {
+    await ensureIdentitySchema();
+    schemaInitialized = true;
+  }
+}
 
 type ShallowMutable<T> = { -readonly [P in keyof T]: T[P] };
 type DeepMutable<T> = T extends readonly (infer U)[] ? DeepMutable<U>[] :
@@ -206,7 +216,7 @@ export const createConsultation: CreateConsultationCommand = {
   name: "consultation.create",
   version: "1.0.0",
   async execute(input: z.infer<typeof CreateConsultationWithContextSchema>) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
 
     const parsed = CreateConsultationWithContextSchema.parse(input);
     const { title, description, userNeed, priority, founder, ownership, businessType, domicile, kbli, seriesId: inputSeriesId, tenantId, workspaceId, sessionId, actorId } = parsed;
@@ -408,7 +418,7 @@ export const triageConsultation: TriageConsultationCommand = {
   name: "consultation.triage",
   version: "1.0.0",
   async execute(input: z.infer<typeof TriageConsultationWithContextSchema>) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
 
     const parsed = TriageConsultationWithContextSchema.parse(input);
     const { id, triageResult, triageNotes, linkedWorkItemId, intent, need, diagnosis, missingFields, recommendedAction, riskLevel, autonomyLevel, riskRationale, tenantId, workspaceId, sessionId, actorId } = parsed;
@@ -1780,7 +1790,7 @@ export const listConsultationsByWorkspace: ListConsultationsCommand = {
   name: "consultation.listByWorkspace",
   version: "1.0.0",
   async execute(input: z.infer<typeof ListConsultationsWithContextSchema>) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
 
     const parsed = ListConsultationsWithContextSchema.parse(input);
     const { sessionId, tenantId, workspaceId, actorId, limit, offset } = parsed;
@@ -1878,7 +1888,7 @@ export const resolveConsultation: ResolveConsultationCommand = {
   name: "consultation.resolve",
   version: "1.0.0",
   async execute(input: z.infer<typeof ResolveConsultationWithContextSchema>) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
 
     const parsed = ResolveConsultationWithContextSchema.parse(input);
     const {
@@ -2029,7 +2039,7 @@ export const pauseConsultation: PauseConsultationCommand = {
   name: "consultation.pause",
   version: "1.0.0",
   async execute(input: z.infer<typeof PauseConsultationWithContextSchema>) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
 
     const parsed = PauseConsultationWithContextSchema.parse(input);
     const { id, pauseReason, sessionId, tenantId, workspaceId, actorId } = parsed;
@@ -2137,7 +2147,7 @@ export const resumeConsultation: ResumeConsultationCommand = {
   name: "consultation.resume",
   version: "1.0.0",
   async execute(input: z.infer<typeof ResumeConsultationWithContextSchema>) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
 
     const parsed = ResumeConsultationWithContextSchema.parse(input);
     const { id, resumeReason, newEvidence, sessionId, tenantId, workspaceId, actorId } = parsed;
@@ -2496,7 +2506,7 @@ export const createConsultationSeries: CreateConsultationSeriesCommand = {
   name: "consultation.createSeries",
   version: "1.0.0",
   async execute(input: CreateConsultationSeriesWithContextInput) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
 
     const parsed = CreateConsultationSeriesWithContextSchema.parse(input);
     const { title, description, primaryDomain, userId, tenantId, workspaceId, sessionId, actorId } = parsed;
@@ -2555,7 +2565,7 @@ export const createConsultationEpisode: CreateConsultationEpisodeCommand = {
   name: "consultation.createEpisode",
   version: "1.0.0",
   async execute(input: CreateConsultationEpisodeWithContextInput) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
 
     const parsed = CreateConsultationEpisodeWithContextSchema.parse(input);
     const { seriesId, consultationId, sequenceNumber, contextSnapshot, facts, decisions, evidence, assumptions, unresolvedQuestions, outcome, nextRecommendedAction, linkedWorkItems, sessionId, tenantId, workspaceId, actorId } = parsed;
@@ -2712,7 +2722,7 @@ export const extractLearningCandidate: ExtractLearningCandidateCommand = {
   name: "learning.extract-candidate",
   version: "1.0.0",
   async execute(input: z.infer<typeof ExtractLearningCandidateSchema>) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
     const parsed = ExtractLearningCandidateSchema.parse(input);
     const { seriesId, sourceEpisodes, pattern, confidence, sessionId, actorId, tenantId, workspaceId } = parsed;
 
@@ -2798,7 +2808,7 @@ export const approveLearningCandidate: ApproveLearningCandidateCommand = {
   name: "learning.approve-candidate",
   version: "1.0.0",
   async execute(input: z.infer<typeof ApproveLearningCandidateSchema>) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
     const parsed = ApproveLearningCandidateSchema.parse(input);
     const { id, seriesId, reviewedBy, controlIds, sessionId, actorId, tenantId, workspaceId } = parsed;
 
@@ -2881,7 +2891,7 @@ export const createObservabilityIncident: CreateObservabilityIncidentCommand = {
   name: "create_observability_incident",
   version: "1.0.0",
   async execute(input: z.infer<typeof CreateObservabilityIncidentSchema>) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
     const parsed = CreateObservabilityIncidentSchema.parse(input);
     const { 
       title, description, priority, serverId, datacenter, 

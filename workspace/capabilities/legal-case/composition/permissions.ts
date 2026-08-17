@@ -1,4 +1,4 @@
-import { caseWorkspace } from "./workspace";
+import { caseWorkspace } from "./workspace.js";
 
 export interface CasePermissionRule {
   readonly action: string;

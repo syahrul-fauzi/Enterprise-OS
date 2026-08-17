@@ -3,7 +3,7 @@ export {
   closeCase,
   assignLawyer,
   caseCommands,
-} from "./case.commands";
-export { getCaseByIdCommand } from "./get-case-by-id.command";
-export type * from "./case.commands";
-export type * from "./get-case-by-id.command";
+} from "./case.commands.js";
+export { getCaseByIdCommand } from "./get-case-by-id.command.js";
+export type * from "./case.commands.js";
+export type * from "./get-case-by-id.command.js";

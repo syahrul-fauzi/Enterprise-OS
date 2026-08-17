@@ -1,2 +1,2 @@
-export * from "./traceability.service";
-export { requirementsTraceabilityMatrixService } from "./traceability.service";
+export * from "./traceability.service.js";
+export { requirementsTraceabilityMatrixService } from "./traceability.service.js";

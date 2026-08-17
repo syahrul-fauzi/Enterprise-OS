@@ -4,7 +4,7 @@ import {
   WORKSPACE_SESSION_COOKIE,
   createAnonymousWorkspaceSession,
   encodeWorkspaceSession,
-} from "@repo/core-kernel";
+} from "../../packages/core/kernel/dist/session/workspace-session.js";
 
 export function proxy(request: NextRequest) {
   if (request.cookies.get(WORKSPACE_SESSION_COOKIE)?.value) {

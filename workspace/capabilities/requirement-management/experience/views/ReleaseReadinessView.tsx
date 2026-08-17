@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ReleaseReadinessWorkspace } from "../workspaces/ReleaseReadinessWorkspace";
+import { ReleaseReadinessWorkspace } from "../workspaces/ReleaseReadinessWorkspace.js";
 
 export interface ReleaseReadinessViewProps {
   readonly defaultReleaseId?: string;

@@ -1,2 +1,2 @@
-export * from "./community.commands";
-export { legalCommunityCommands as default } from "./community.commands";
+export * from "./community.commands.js";
+export { legalCommunityCommands as default } from "./community.commands.js";

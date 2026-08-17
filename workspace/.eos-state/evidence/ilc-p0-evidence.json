@@ -1,0 +1,94 @@
+{
+  "work_id": "ILC-P0",
+  "work_type": "VERTICAL_SLICE",
+  "domain": "indonesia-lawyers-club",
+  "eos_evidence_ladder": "L3",
+  "evidence_summary": "Conversation→Work transition implemented with context-preserving escalation",
+  "verified_criteria": [
+    {
+      "criterion": "arch_lock",
+      "status": "VERIFIED",
+      "evidence_type": "structural",
+      "evidence_path": "git diff: no locked files modified",
+      "verified_at": "2026-08-16T00:00:00Z"
+    },
+    {
+      "criterion": "capability_reuse",
+      "status": "VERIFIED",
+      "evidence_type": "structural", 
+      "evidence_path": "products/ilc/product.binding.yaml: legal-case added",
+      "verified_at": "2026-08-16T00:00:00Z"
+    },
+    {
+      "criterion": "escalation_logic",
+      "status": "VERIFIED",
+      "evidence_type": "implementation",
+      "evidence_path": "capabilities/legal-community/experience/workspaces/CommunityWorkspace.tsx: handleEscalateToCase",
+      "verified_at": "2026-08-16T00:00:00Z"
+    },
+    {
+      "criterion": "ui_integration",
+      "status": "VERIFIED",
+      "evidence_type": "implementation",
+      "evidence_path": "capabilities/legal-community/experience/workspaces/CommunityWorkspace.tsx: Tombol escalation terpasang",
+      "verified_at": "2026-08-16T00:00:00Z"
+    },
+    {
+      "criterion": "context_transfer",
+      "status": "VERIFIED",
+      "evidence_type": "implementation",
+      "evidence_path": "handleEscalateToCase mengirim sourceDiscussionId, title, summary ke /api/cases/create",
+      "verified_at": "2026-08-16T00:00:00Z"
+    },
+    {
+      "criterion": "localization",
+      "status": "VERIFIED",
+      "evidence_type": "implementation",
+      "evidence_path": "Semua teks UI menggunakan Bahasa Indonesia",
+      "verified_at": "2026-08-16T00:00:00Z"
+    },
+    {
+      "criterion": "security_scan",
+      "status": "VERIFIED",
+      "evidence_type": "security",
+      "evidence_path": "0 vulnerabilities found",
+      "verified_at": "2026-08-16T00:00:00Z"
+    }
+  ],
+  "pending_criteria": [
+    {
+      "criterion": "human_repetition_rate",
+      "status": "NOT_YET_PROVEN",
+      "required_evidence": "Real human observation: lawyer tidak meminta user mengulang informasi",
+      "target_completion": "after real execution"
+    },
+    {
+      "criterion": "real_work_completion",
+      "status": "NOT_YET_PROVEN",
+      "required_evidence": "Case mencapai outcome nyata",
+      "target_completion": "after real execution"
+    },
+    {
+      "criterion": "operator_usability",
+      "status": "NOT_YET_PROVEN",
+      "required_evidence": "Professional dapat memahami context tanpa penjelasan tambahan",
+      "target_completion": "after real execution"
+    },
+    {
+      "criterion": "economic_leverage",
+      "status": "NOT_YET_PROVEN",
+      "required_evidence": "Time-to-First-Professional-Action terukur dan menurun",
+      "target_completion": "after cross-domain execution"
+    },
+    {
+      "criterion": "cross_domain_scalability",
+      "status": "HYPOTHESIS",
+      "required_evidence": "Services.ID dapat compose primitive yang sama dengan delta lebih kecil",
+      "target_completion": "after next domain implementation"
+    }
+  ],
+  "next_highest_leverage_action": "Jalankan ILC-P0 sebagai pekerjaan nyata dengan user dan operator manusia untuk mengumpulkan operational evidence",
+  "governance_status": "ACCEPTED",
+  "created_at": "2026-08-16T00:00:00Z",
+  "last_updated": "2026-08-16T00:00:00Z"
+}

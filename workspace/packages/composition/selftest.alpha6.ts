@@ -1,4 +1,4 @@
-import { compose, buildGraph } from "./src/index";
+import { compose, buildGraph } from "./src/index.js";
 
 const REGION_SIDEBAR = "region::sidebar" as any;
 const REGION_MAIN = "region::main" as any;

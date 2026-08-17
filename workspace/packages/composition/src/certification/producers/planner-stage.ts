@@ -1,5 +1,5 @@
-import type { IndependentEvidenceProducer, ProducerContext } from "./types";
-import { produceEvidencePackageEnvelope } from "./types";
+import type { IndependentEvidenceProducer, ProducerContext } from "./types.js";
+import { produceEvidencePackageEnvelope } from "./types.js";
 import { normalizeWorkspace, buildCompositionPlan, buildGraphFromNormalized, buildGraphFromPlan } from "@repo/composition";
 import type { DescriptorSource, NormalizedWorkspace, CompositionPlan, WorkspaceGraph } from "@repo/composition";
 import { canonicalSerialize } from "@repo/composition";

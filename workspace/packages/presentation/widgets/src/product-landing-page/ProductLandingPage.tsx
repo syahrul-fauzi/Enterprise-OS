@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
-import { ProductRealityPanel } from "../product-reality-panel/ProductRealityPanel";
+import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell.js";
+import { ProductRealityPanel } from "../product-reality-panel/ProductRealityPanel.js";
 import { ProductCreateForm } from "@repo/presentation-features";
 import type { ProductPreviewBinding } from "@repo/presentation-types";
 import { getProductExperience, getAllProductSlugs } from "@repo/presentation-experience";

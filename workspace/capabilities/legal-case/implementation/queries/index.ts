@@ -1,2 +1,2 @@
-export { getCase, searchCases, caseQueries } from "./case.queries";
-export type * from "./case.queries";
+export { getCase, searchCases, caseQueries } from "./case.queries.js";
+export type * from "./case.queries.js";

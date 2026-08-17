@@ -1,4 +1,4 @@
-import type { SlotId } from "../slots";
+import type { SlotId } from "../slots/index.js";
 
 export type RegionId = string & { readonly __regionId: unique symbol };
 export function RegionId(s: string): RegionId {

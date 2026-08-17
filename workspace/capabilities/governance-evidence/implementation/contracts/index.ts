@@ -1,1 +1,1 @@
-export * from "./governance-evidence.contracts";
+export * from "./governance-evidence.contracts.js";

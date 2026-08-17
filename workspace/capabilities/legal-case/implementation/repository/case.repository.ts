@@ -4,7 +4,7 @@ import {
   type CaseRepository,
   CaseStatus,
   CasePriority,
-} from "../contracts";
+} from "../contracts/index.js";
 
 const seed = (): CaseAggregate[] => [
   {
@@ -47,7 +47,7 @@ function hydrate(): Store {
   return store;
 }
 
-const STORE: Store = hydrate();
+const STORE: Store = (globalThis as any).__EOS_LEGAL_CASE_STORE__ ??= hydrate();
 
 function clone<T extends CaseAggregate>(entity: T): T {
   return {

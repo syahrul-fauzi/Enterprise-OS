@@ -40,7 +40,7 @@ export type {
   LifecycleStage,
   ProductPortfolio,
   RepositoryRegistryOptions,
-} from "./repository-registry";
+} from "./repository-registry.js";
 
 export interface CapabilityRegistry {
   readonly kind: string;

@@ -8,9 +8,9 @@ export type {
   GovernanceReadModelProvider,
   GovernanceSummaryView,
   JsonRecord,
-} from "./contracts";
+} from "./contracts/index.js";
 export {
   GovernanceReadModelService,
   governanceReadModelCatalog,
   governanceReadModelService,
-} from "./services/governance-read-model.service";
+} from "./services/governance-read-model.service.js";

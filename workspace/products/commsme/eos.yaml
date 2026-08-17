@@ -1,0 +1,84 @@
+version: "1.0"
+workspace:
+  name: commsme
+  display_name: CommsMe (MSME Legal Companion)
+  description: "Pendamping hukum terpadu satu pintu untuk pelaku UMKM Indonesia: pendirian badan usaha, perizinan, kontrak vendor, konsultasi, SOP legal, dan vendor directory. Dibangun sebagai KOMPOSISI dari 3 shared substrate capabilities LawyersHub (legal-case), Services.ID (service-directory), dan ILC/Academic (legal-community) — TANPA capability baru."
+lifecycle:
+  phase: D.1
+  status: ACTIVE
+  contract:
+    stages:
+      - name: open
+        description: Pemilik UMKM membuka MSME Legal Companion dashboard — permukaan produk siap
+        terminal: false
+      - name: discover
+        description: Lihat 6 kebutuhan hukum UMKM populer dan pilih yang sesuai
+        terminal: false
+      - name: choose
+        description: Pilih paket kebutuhan (badan hukum/perizinan/kontrak/konsultasi/SOP HR/vendor)
+        terminal: false
+      - name: create
+        description: Isi detail UMKM dan submit kebutuhan → substrate capability mapping otomatis
+        terminal: false
+      - name: execute
+        description: Jalankan alur shared capability yang sesuai (case/service/community)
+        terminal: false
+      - name: state
+        description: Lihat state perubahan, bukti CommandInvocationRecord, dan output dokumen
+        terminal: false
+      - name: see
+        description: Hasil tersedia end-to-end dan user dapat melihat manfaat nyata (dokumen + status)
+        terminal: true
+  real_user_jobs:
+    - id: umkm-101
+      name: Daftar PT / CV badan usaha formal
+      description: Pemilik UMKM mendaftarkan PT perorangan atau CV via LawyersHub legal-case createCase → createDocument akta pendirian
+      status: active
+      substrate_mapping: capability = legal-case (LH) · command = createCase + createDocument
+      requirements:
+        - req-com-001
+    - id: umkm-102
+      name: Daftar NIB / PIRT / Izin Usaha
+      description: Permintaan perizinan NIB, PIRT makanan/minuman, atau SPPL via Services.ID service-directory ke provider konsultan perizinan
+      status: active
+      substrate_mapping: capability = service-directory (SRV) · command = discoverProvider + createServiceRequest
+      requirements:
+        - req-com-002
+    - id: umkm-103
+      name: Buat Kontrak Vendor / NDA / Perjanjian Klien
+      description: Kontrak kerjasama vendor, NDA rahasia dagang, atau perjanjian proyek klien via LawyersHub legal-case dengan lampiran document template
+      status: active
+      substrate_mapping: capability = legal-case (LH) · command = createCase + createDocument
+      requirements:
+        - req-com-003
+    - id: umkm-104
+      name: Konsultasi Hukum Bisnis Harian (Tanya Jawab)
+      description: Tanya jawab ringan tentang batas tanggung jawab usaha, retur konsumen, UU Perlindungan Konsumen, dll via legal-community discussion
+      status: active
+      substrate_mapping: capability = legal-community (ILC) · command = createDiscussion
+      requirements:
+        - req-com-004
+    - id: umkm-105
+      name: Publikasi SOP Karyawan / HR Legal
+      description: Terbitkan SOP internal, kontrak kerja karyawan harian/tetap, peraturan toko via legal-community article publish
+      status: active
+      substrate_mapping: capability = legal-community (ILC/Acad) · command = createContentArticle + publishContent
+      requirements:
+        - req-com-005
+    - id: umkm-106
+      name: Temukan Vendor Legal Terpercaya (Notaris / Pajak / Advokat)
+      description: Cari dan ajukan permintaan ke notaris, konsultan pajak, dan advokat UMKM spesialis lokal via service-directory category Legal Consultant for MSME
+      status: active
+      substrate_mapping: capability = service-directory (SRV) · command = discoverProvidersByCategory + createServiceRequest
+      requirements:
+        - req-com-006
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 70
+    runtime_invocation_required: true
+governance:
+  baseline_locked: false
+  needs_audit: false
+  evidence_path: ./evidence
+  note: SHARED CAPABILITY SUBSTRATE COMPOSITION — 0 new capability commands. TIDAK ada abstraction horizontal. Pure product-local manifest + integration registration 4 files (catalog, product-context, index, commsme adapter) di presentation layer PURE registration, 0 behavior baru.

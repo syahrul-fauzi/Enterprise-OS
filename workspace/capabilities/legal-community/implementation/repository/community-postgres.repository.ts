@@ -1,4 +1,4 @@
-import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository";
+import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
 import {
   ContentId,
   DiscussionId,
@@ -9,7 +9,7 @@ import {
   ContentStatus,
   DiscussionStatus,
   TopicCategory,
-} from "../contracts/community.contracts";
+} from "../contracts/community.contracts.js";
 
 // PostgreSQL-backed content article repository implementation
 class ContentArticleRepositoryPostgresImpl extends PostgresRepository<any> implements ContentArticleRepository {

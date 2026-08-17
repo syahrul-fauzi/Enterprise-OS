@@ -3,7 +3,7 @@ import type {
   TransformationPrecedence,
   TransformationPredicateRef,
   TransformationStatus,
-} from "./types";
+} from "./types.js";
 
 export interface TransformationDeclaration {
   readonly transformation_id: TransformationId;

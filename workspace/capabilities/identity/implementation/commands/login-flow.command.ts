@@ -4,13 +4,13 @@ import {
   UserId,
   TenantId,
   WorkspaceId,
-} from "../contracts/identity.contracts";
+} from "../contracts/identity.contracts.js";
 import {
   getUserRepositoryPostgres,
   getMembershipRepositoryPostgres,
   getWorkspaceRepositoryPostgres,
   getTenantRepositoryPostgres,
-} from "../repositories/index";
+} from "../repositories/index.js";
 
 export const LoginFlowInputSchema = z.object({
   email: z.string().email(),

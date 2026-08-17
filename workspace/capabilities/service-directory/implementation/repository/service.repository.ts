@@ -7,7 +7,7 @@ import {
   ServiceRequestId,
   ServiceRequestRepository,
   ServiceRequestStatus,
-} from "../contracts/service.contracts";
+} from "../contracts/service.contracts.js";
 
 const now = Date.now();
 const d = (offsetDays: number): Date => new Date(now - 1000 * 60 * 60 * 24 * offsetDays);

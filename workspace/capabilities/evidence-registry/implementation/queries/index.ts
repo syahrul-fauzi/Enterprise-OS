@@ -1,1 +1,1 @@
-export * from "./evidence-registry.queries";
+export * from "./evidence-registry.queries.js";

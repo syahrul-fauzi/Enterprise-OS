@@ -2,5 +2,5 @@ export type {
   KnowledgeEdge,
   KnowledgeGraphSnapshot,
   KnowledgeNode,
-} from "./contracts";
-export * from "./services";
+} from "./contracts/index.js";
+export * from "./services/index.js";

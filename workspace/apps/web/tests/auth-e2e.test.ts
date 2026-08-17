@@ -1,16 +1,16 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { POST as signup } from "../app/api/auth/signup/route";
-import { POST as login } from "../app/api/auth/login/route";
-import { POST as logout } from "../app/api/auth/logout/route";
-import { GET as getSession } from "../app/api/session/route";
+import { POST as signup } from "../app/api/auth/signup/route.js";
+import { POST as login } from "../app/api/auth/login/route.js";
+import { POST as logout } from "../app/api/auth/logout/route.js";
+import { GET as getSession } from "../app/api/session/route.js";
 import {
   WORKSPACE_SESSION_COOKIE,
   encodeWorkspaceSession,
   decodeWorkspaceSession,
   isAuthenticatedSession,
   createAnonymousWorkspaceSession,
-} from "../lib/workspace-session";
+} from "../lib/workspace-session.js";
 
 function jsonRequest<T = unknown>(url: string, body: T, cookie?: string): Request {
   const headers: Record<string, string> = {

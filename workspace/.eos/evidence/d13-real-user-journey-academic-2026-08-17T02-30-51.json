@@ -1,0 +1,109 @@
+{
+  "product": "academic",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "Academic binding valid",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Browse academic topics",
+      "ok": true,
+      "evidence": []
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Create academic article (content-102)",
+      "ok": true,
+      "evidence": [
+        "id=content-102"
+      ]
+    },
+    {
+      "n": 4,
+      "stage": "EXECUTE",
+      "label": "Publish academic article",
+      "ok": true
+    },
+    {
+      "n": 5,
+      "stage": "STATE",
+      "label": "Verify published state",
+      "ok": true
+    },
+    {
+      "n": 6,
+      "stage": "EVIDENCE",
+      "label": "Verify attribution ledger",
+      "ok": true
+    },
+    {
+      "n": 7,
+      "stage": "SEE",
+      "label": "User sees published result",
+      "ok": true
+    }
+  ],
+  "totalSteps": 7,
+  "passCount": 7,
+  "failCount": 0,
+  "completedAtISO": "2026-08-17T02:30:51.839Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "academic",
+      "displayName": "Academic Community"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "category": "Hukum Tata Negara",
+      "count": 0
+    },
+    {
+      "step": 3,
+      "stage": "ACTION",
+      "capability": "legal-community.createContentArticle",
+      "evidence_id": "content-102"
+    },
+    {
+      "step": 4,
+      "stage": "EXECUTE",
+      "capability": "legal-community.publishContent",
+      "status": "published"
+    },
+    {
+      "step": 5,
+      "stage": "STATE",
+      "id": "content-102",
+      "status": "published"
+    },
+    {
+      "step": 6,
+      "stage": "EVIDENCE",
+      "ledger": [
+        {
+          "key": "legal-community.createContentArticle",
+          "ok": true,
+          "t": "2026-08-17T02:30:51.839Z"
+        },
+        {
+          "key": "legal-community.publishContent",
+          "ok": true,
+          "t": "2026-08-17T02:30:51.839Z"
+        }
+      ]
+    },
+    {
+      "step": 7,
+      "stage": "SEE",
+      "evidence_id": "content-102",
+      "user_sees_status": "published"
+    }
+  ]
+}

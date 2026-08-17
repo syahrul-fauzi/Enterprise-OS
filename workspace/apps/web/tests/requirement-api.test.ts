@@ -1,15 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { GET as getRequirements, POST as postRequirements } from "../app/api/requirements/route";
+import { GET as getRequirements, POST as postRequirements } from "../app/api/requirements/route.js";
 import {
   GET as getRequirementById,
   PATCH as patchRequirementById,
-} from "../app/api/requirements/[id]/route";
+} from "../app/api/requirements/[id]/route.js";
 import {
   WORKSPACE_SESSION_COOKIE,
   createAnonymousWorkspaceSession,
   encodeWorkspaceSession,
-} from "../lib/workspace-session";
+} from "../lib/workspace-session.js";
 
 const sessionCookie = `${WORKSPACE_SESSION_COOKIE}=${encodeWorkspaceSession(
   createAnonymousWorkspaceSession(),

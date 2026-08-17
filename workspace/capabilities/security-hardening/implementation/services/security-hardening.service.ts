@@ -2,7 +2,7 @@ import type {
   AuthorizationDecision,
   EosScope,
   SecurityConfigSummary,
-} from "../contracts";
+} from "../contracts/index.js";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 
 const DEFAULT_KEY = "eos-dev-key";
@@ -147,4 +147,4 @@ export class SecurityHardeningService {
 
 export const securityHardeningService = new SecurityHardeningService();
 
-export * from "../contracts";
+export * from "../contracts/index.js";

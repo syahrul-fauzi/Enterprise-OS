@@ -1,7 +1,7 @@
 import { join, isAbsolute, relative } from "node:path";
 import { readdirSync, statSync, readFileSync, existsSync } from "node:fs";
-import type { IndependentEvidenceProducer, ProducerContext } from "./types";
-import { produceEvidencePackageEnvelope } from "./types";
+import type { IndependentEvidenceProducer, ProducerContext } from "./types.js";
+import { produceEvidencePackageEnvelope } from "./types.js";
 
 const PRODUCER_ID = "filesystem-audit-v1";
 const PRODUCER_NAME = "Filesystem Structure & Manifest Scanner";

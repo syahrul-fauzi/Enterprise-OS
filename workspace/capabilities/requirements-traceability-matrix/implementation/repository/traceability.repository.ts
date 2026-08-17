@@ -1,7 +1,7 @@
 import type {
   TraceabilityArtifact,
   TraceabilityArtifactRepository,
-} from "../contracts";
+} from "../contracts/index.js";
 
 const ARTIFACTS: readonly TraceabilityArtifact[] = Object.freeze([
   {

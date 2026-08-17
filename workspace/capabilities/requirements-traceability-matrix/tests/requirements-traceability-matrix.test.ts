@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { RequirementId } from "../../requirement-management/implementation/contracts";
+import { RequirementId } from "../../requirement-management/implementation/contracts/index.js";
 import {
   requirementsTraceabilityMatrixService,
-} from "../implementation/service";
+} from "../implementation/service.js";
 
 test("rtm returns a traceability row for requirement delivery artifacts", () => {
   const row = requirementsTraceabilityMatrixService.getTraceabilityRow({

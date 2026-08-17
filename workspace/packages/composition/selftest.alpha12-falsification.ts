@@ -2,8 +2,8 @@ import path from "node:path";
 import {
   runAllIndependentProducers,
   INTERNAL_AGGREGATE_EXTENDED_KEY,
-} from "./src/certification/producers/correlate";
-import type { ExtendedEvidencePackage } from "./src/certification/evidence";
+} from "./src/certification/producers/correlate.js";
+import type { ExtendedEvidencePackage } from "./src/certification/evidence.js";
 import {
   buildEmptyProvenanceRegistry,
   mergeProvenanceChainIntoRegistry,
@@ -17,13 +17,13 @@ import {
   canonicalObservationContentFingerprint,
   verifyRawObservationIdentity,
   type ProvenanceRegistryCollection,
-} from "./src/certification/evidence";
+} from "./src/certification/evidence.js";
 import type {
   CertificationClaim,
   ClaimConsensusClassification,
   ExperimentExecution,
   RawObservation,
-} from "./src/certification/types";
+} from "./src/certification/types.js";
 
 type InvariantResult = {
   readonly id: string;

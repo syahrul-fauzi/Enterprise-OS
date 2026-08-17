@@ -15,6 +15,7 @@ export interface CaseAggregate {
   readonly status: CaseStatus;
   readonly priority: CasePriority;
   readonly lawyerId?: string;
+  readonly sourceDiscussionId?: string; // ILC: source community discussion ID for context tracing
   readonly createdAt: Readonly<Date>;
   readonly updatedAt: Readonly<Date>;
   readonly closedAt?: Readonly<Date>;
@@ -24,6 +25,8 @@ export interface CreateCaseInput {
   readonly title: string;
   readonly description?: string;
   readonly priority?: CasePriority;
+  readonly sessionId: string;
+  readonly sourceDiscussionId?: string; // ILC: preserve source community discussion context
 }
 
 export interface CreateCaseOutput {

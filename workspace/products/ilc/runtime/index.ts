@@ -1,1 +1,1 @@
-export * from './product-context-provider';
+export * from './product-context-provider.js';

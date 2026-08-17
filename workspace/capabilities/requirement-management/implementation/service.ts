@@ -20,9 +20,9 @@ export type {
   UpdateRequirementOutput,
   VerifyRequirementInput,
   VerifyRequirementOutput,
-} from "./contracts";
-export { RequirementId } from "./contracts";
-export * from "./services";
-export * from "./commands";
-export * from "./queries";
-export * from "./repository";
+} from "./contracts/index.js";
+export { RequirementId } from "./contracts/index.js";
+export * from "./services/index.js";
+export * from "./commands/index.js";
+export * from "./queries/index.js";
+export * from "./repository/index.js";

@@ -1,4 +1,4 @@
-import type { SlotId } from "../slots";
+import type { SlotId } from "../slots/index.js";
 
 export type NavigationItemKind =
   | "link"

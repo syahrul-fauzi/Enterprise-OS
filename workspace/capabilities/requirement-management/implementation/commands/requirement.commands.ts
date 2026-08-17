@@ -14,18 +14,33 @@ import {
   type UpdateRequirementOutput,
   type VerifyRequirementInput,
   type VerifyRequirementOutput,
-} from "../contracts/index";
+} from "../contracts/index.js";
 import {
   defaultRequirementPriority,
   defaultRequirementStatus,
   defaultRequirementVerificationStatus,
   newRequirementId,
   RequirementRepositoryCurrent,
-} from "../repository/index";
-import { getRequirementsByOwnerCommand } from "./get-requirements-by-owner.command";
-import { getAllRequirementsCommand } from "./get-all-requirements.command";
-import { getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
+} from "../repository/index.js";
+import { getRequirementsByOwnerCommand } from "./get-requirements-by-owner.command.js";
+import { getAllRequirementsCommand } from "./get-all-requirements.command.js";
+import { getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository.js";
+import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
+import { SessionRepositoryInMemory } from "../../../identity/implementation/repositories/index.js";
+
+// Toggle session repository based on environment — same pattern as legal-case.commands.ts
+const sessionRepository = process.env.DATABASE_URL
+  ? getSessionRepositoryPostgres()
+  : SessionRepositoryInMemory;
+
+// Initialize schema only in production Postgres mode, not per invocation
+let schemaInitialized = false;
+async function ensureIdentitySchema() {
+  if (!schemaInitialized && process.env.DATABASE_URL) {
+    await initIdentitySchema();
+    schemaInitialized = true;
+  }
+}
 
 const CreateRequirementWithContextSchema = z.object({
   title: z.string().min(1),
@@ -96,7 +111,7 @@ export const createRequirement: CreateRequirementCommand = {
   name: "requirement.create",
   version: "2.0.0",
   async execute(input) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
     
     const parsed = CreateRequirementWithContextSchema.parse(input);
     const { 
@@ -105,8 +120,7 @@ export const createRequirement: CreateRequirementCommand = {
     } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const sessionRepo = getSessionRepositoryPostgres();
-    const session = await sessionRepo.byId(sessionId as any);
+    const session = await sessionRepository.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.create] Invalid or revoked session - authentication violation");
     }
@@ -168,7 +182,7 @@ export const updateRequirement: UpdateRequirementCommand = {
   name: "requirement.update",
   version: "2.0.0",
   async execute(input) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
     
     const parsed = UpdateRequirementWithContextSchema.parse(input);
     const { 
@@ -177,8 +191,7 @@ export const updateRequirement: UpdateRequirementCommand = {
     } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const sessionRepo = getSessionRepositoryPostgres();
-    const session = await sessionRepo.byId(sessionId as any);
+    const session = await sessionRepository.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.update] Invalid or revoked session - authentication violation");
     }
@@ -275,14 +288,13 @@ export const approveRequirement: ApproveRequirementCommand = {
   name: "requirement.approve",
   version: "2.0.0",
   async execute(input) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
     
     const parsed = ApproveRequirementWithContextSchema.parse(input);
     const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const sessionRepo = getSessionRepositoryPostgres();
-    const session = await sessionRepo.byId(sessionId as any);
+    const session = await sessionRepository.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.approve] Invalid or revoked session - authentication violation");
     }
@@ -332,14 +344,13 @@ export const startRequirementDelivery: StartRequirementDeliveryCommand = {
   name: "requirement.startDelivery",
   version: "2.0.0",
   async execute(input) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
     
     const parsed = StartRequirementDeliveryWithContextSchema.parse(input);
     const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const sessionRepo = getSessionRepositoryPostgres();
-    const session = await sessionRepo.byId(sessionId as any);
+    const session = await sessionRepository.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.startDelivery] Invalid or revoked session - authentication violation");
     }
@@ -387,14 +398,13 @@ export const markRequirementImplemented: MarkRequirementImplementedCommand = {
   name: "requirement.markImplemented",
   version: "2.0.0",
   async execute(input) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
     
     const parsed = MarkRequirementImplementedWithContextSchema.parse(input);
     const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const sessionRepo = getSessionRepositoryPostgres();
-    const session = await sessionRepo.byId(sessionId as any);
+    const session = await sessionRepository.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.markImplemented] Invalid or revoked session - authentication violation");
     }
@@ -444,14 +454,13 @@ export const verifyRequirement: VerifyRequirementCommand = {
   name: "requirement.verify",
   version: "2.0.0",
   async execute(input) {
-    await initIdentitySchema();
+    await ensureIdentitySchema();
     
     const parsed = VerifyRequirementWithContextSchema.parse(input);
     const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const sessionRepo = getSessionRepositoryPostgres();
-    const session = await sessionRepo.byId(sessionId as any);
+    const session = await sessionRepository.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.verify] Invalid or revoked session - authentication violation");
     }

@@ -3,10 +3,10 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import { 
   CommunityDiscussionRepositoryInMemory, 
   getCommunityDiscussionRepositoryPostgres
-} from "../repository/index";
-import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index";
-import type { DiscussionId } from "../contracts/community.contracts";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
+} from "../repository/index.js";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index.js";
+import type { DiscussionId } from "../contracts/community.contracts.js";
+import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
 
 // Environment-based repository toggle (production rail pattern)
 const discussionRepository = process.env.DATABASE_URL 

@@ -1,19 +1,19 @@
-export * from "./tokens";
-export * from "./typography";
-export * from "./icons";
-export * from "./motion";
-export * from "./themes";
+export * from "./tokens/index.js";
+export * from "./typography/index.js";
+export * from "./icons/index.js";
+export * from "./motion/index.js";
+export * from "./themes/index.js";
 
-import type { DesignTokens } from "./tokens";
-import type { TypographyScale } from "./typography";
-import type { MotionScale } from "./motion";
-import type { IconRegistry } from "./icons";
-import type { Theme } from "./themes";
-import { tokens } from "./tokens";
-import { typography } from "./typography";
-import { motion } from "./motion";
-import { iconRegistry } from "./icons";
-import { defaultTheme, availableThemes } from "./themes";
+import type { DesignTokens } from "./tokens/index.js";
+import type { TypographyScale } from "./typography/index.js";
+import type { MotionScale } from "./motion/index.js";
+import type { IconRegistry } from "./icons/index.js";
+import type { Theme } from "./themes/index.js";
+import { tokens } from "./tokens/index.js";
+import { typography } from "./typography/index.js";
+import { motion } from "./motion/index.js";
+import { iconRegistry } from "./icons/index.js";
+import { defaultTheme, availableThemes } from "./themes/index.js";
 
 export interface FoundationConstitution {
   readonly tokens: DesignTokens;

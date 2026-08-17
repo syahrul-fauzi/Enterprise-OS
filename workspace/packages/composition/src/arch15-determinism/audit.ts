@@ -1,7 +1,7 @@
-import type { ComposeInput, ComposeResult } from "../compose";
-import { compose } from "../compose";
-import type { DescriptorSource } from "../normalizer/types";
-import type { ResolverContext, ResolverCapabilityEntry } from "../resolver/types";
+import type { ComposeInput, ComposeResult } from "../compose/index.js";
+import { compose } from "../compose/index.js";
+import type { DescriptorSource } from "../normalizer/types.js";
+import type { ResolverContext, ResolverCapabilityEntry } from "../resolver/types.js";
 import type {
   Arch15APurityReport,
   Arch15ADependencyAudit,
@@ -15,7 +15,7 @@ import type {
   VerifyArch15AFn,
   VerifyArch15BFn,
   VerifyArch15Fn,
-} from "./types";
+} from "./types.js";
 
 function hashInput(source: DescriptorSource, resolver: unknown): string {
   let h = 2166136261 >>> 0;

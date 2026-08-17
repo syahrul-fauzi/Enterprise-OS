@@ -1,4 +1,4 @@
-import { caseExperienceRoutes } from "../experience/routes";
+import { caseExperienceRoutes } from "../experience/routes/index.js";
 
 export interface CaseCompositionRouteDescriptor {
   readonly id: string;

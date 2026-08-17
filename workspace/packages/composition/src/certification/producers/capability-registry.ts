@@ -1,5 +1,5 @@
-import type { IndependentEvidenceProducer, ProducerContext } from "./types";
-import { produceEvidencePackageEnvelope } from "./types";
+import type { IndependentEvidenceProducer, ProducerContext } from "./types.js";
+import { produceEvidencePackageEnvelope } from "./types.js";
 import { join, isAbsolute, resolve as resolvePath } from "node:path";
 import { createRequire } from "node:module";
 import type { CapabilityDescriptor } from "@repo/core-kernel";

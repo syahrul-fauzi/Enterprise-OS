@@ -30,18 +30,18 @@ export type {
   DefineCapabilityBindingResult,
   RepositoryRegistryOptions,
   StaticRegistryConfig,
-} from "./types";
-export type { CapabilityDescriptor } from "./types";
+} from "./types.js";
+export type { CapabilityDescriptor } from "./types.js";
 /**
  * @deprecated Renamed to DefineCapabilityBindingResult.
  * Backward compatibility type alias.
  */
-export type { DefineWorkspaceResult } from "./types";
+export type { DefineWorkspaceResult } from "./types.js";
 export {
   StaticRegistry,
   defineCapabilityBinding,
   defineWorkspace,
-} from "./registry";
+} from "./registry.js";
 export {
   buildArtifactRegistryModel,
   buildArtifactGraph,
@@ -57,4 +57,4 @@ export {
   buildContractVersionRegistryReport,
   buildExecutionGraphFitness,
   buildExecutionGraphModel,
-} from "./repository-registry";
+} from "./repository-registry.js";

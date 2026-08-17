@@ -1,11 +1,11 @@
 import { z } from "zod";
-import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types";
-import { CaseRepositoryInMemory } from "../repository/index";
-import { DocumentRepositoryInMemory } from "../../../legal-document/implementation/repository/index";
-import type { CaseId, CaseAggregate } from "../contracts";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
-import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index";
-import { getCaseRepositoryPostgres } from "../repository/index";
+import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
+import { CaseRepositoryInMemory } from "../repository/index.js";
+import { DocumentRepositoryInMemory } from "../../../legal-document/implementation/repository/index.js";
+import type { CaseId, CaseAggregate } from "../contracts/index.js";
+import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index.js";
+import { getCaseRepositoryPostgres } from "../repository/index.js";
 
 // Toggle repositories based on environment (match identity production rail)
 const caseRepository = process.env.DATABASE_URL 

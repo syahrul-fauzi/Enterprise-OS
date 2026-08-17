@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository";
+import { PostgresRepository } from "./base.repository.js";
 import {
   SessionId,
   UserId,
@@ -6,7 +6,7 @@ import {
   WorkspaceId,
   type SessionAggregate,
   type SessionRepository,
-} from "../contracts/identity.contracts";
+} from "../contracts/identity.contracts.js";
 
 // PostgreSQL-backed session repository implementation
 class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements SessionRepository {

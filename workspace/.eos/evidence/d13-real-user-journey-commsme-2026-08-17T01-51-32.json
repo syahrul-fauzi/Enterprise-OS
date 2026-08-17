@@ -1,0 +1,154 @@
+{
+  "product": "commsme",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "COMMSME platform dimuat",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Layanan kontrak kerja dipilih",
+      "ok": true
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Formulir terisi lengkap (3 substrate: NDA + NIB + SOP)",
+      "ok": true
+    },
+    {
+      "n": 4,
+      "stage": "EXECUTE",
+      "label": "Lifecycle 7 transitions: NDA×4 + NIB×2 + SOP×1 = 7 cap invokes",
+      "ok": true
+    },
+    {
+      "n": 5,
+      "stage": "STATE",
+      "label": "Status kontrak, NIB, SOP mencapai terminal state",
+      "ok": true
+    },
+    {
+      "n": 6,
+      "stage": "EVIDENCE",
+      "label": "Verify attribution ledger (10 cap invocations × 3 substrates)",
+      "ok": true
+    },
+    {
+      "n": 7,
+      "stage": "SEE",
+      "label": "UMKM melihat 4 hasil: NDA signed, NIB selesai, SOP terpublikasi, case tertutup",
+      "ok": true
+    }
+  ],
+  "totalSteps": 7,
+  "passCount": 7,
+  "failCount": 0,
+  "completedAtISO": "2026-08-17T01:51:32.971Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "commsme",
+      "displayName": "CommsMe — MSME Legal Companion"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "shared_providers": 6,
+      "shared_topics": 8,
+      "shared_cases": 4
+    },
+    {
+      "step": 3,
+      "stage": "ACTION",
+      "nda_case": "case-102",
+      "nib_sreq": "sreq-102",
+      "sop_content": "content-103"
+    },
+    {
+      "step": 4,
+      "stage": "EXECUTE",
+      "transitions": {
+        "nda": "draft→open→doc_created→signed→closed",
+        "nib": "draft→accepted→delivered",
+        "sop": "proposed→published"
+      }
+    },
+    {
+      "step": 5,
+      "stage": "STATE",
+      "nda_terminal": true,
+      "nib_terminal": true,
+      "sop_terminal": true
+    },
+    {
+      "step": 6,
+      "stage": "EVIDENCE",
+      "ledger": [
+        {
+          "key": "case.create",
+          "ok": true,
+          "t": "2026-08-17T01:51:32.969Z"
+        },
+        {
+          "key": "service-directory.createServiceRequest",
+          "ok": true,
+          "t": "2026-08-17T01:51:32.969Z"
+        },
+        {
+          "key": "legal-community.createContentArticle",
+          "ok": true,
+          "t": "2026-08-17T01:51:32.970Z"
+        },
+        {
+          "key": "case.assignLawyer",
+          "ok": true,
+          "t": "2026-08-17T01:51:32.970Z"
+        },
+        {
+          "key": "document.create",
+          "ok": true,
+          "t": "2026-08-17T01:51:32.970Z"
+        },
+        {
+          "key": "document.sign",
+          "ok": true,
+          "t": "2026-08-17T01:51:32.970Z"
+        },
+        {
+          "key": "case.close",
+          "ok": true,
+          "t": "2026-08-17T01:51:32.970Z"
+        },
+        {
+          "key": "service-directory.acceptServiceRequest",
+          "ok": true,
+          "t": "2026-08-17T01:51:32.970Z"
+        },
+        {
+          "key": "service-directory.markServiceDelivered",
+          "ok": true,
+          "t": "2026-08-17T01:51:32.970Z"
+        },
+        {
+          "key": "legal-community.publishContent",
+          "ok": true,
+          "t": "2026-08-17T01:51:32.971Z"
+        }
+      ]
+    },
+    {
+      "step": 7,
+      "stage": "SEE",
+      "nda_signed_doc": "doc-101",
+      "nda_closed": "case-102",
+      "nib_delivered": "sreq-102",
+      "sop_published": "content-103",
+      "user_sees_status": "4 outputs tersedia"
+    }
+  ]
+}

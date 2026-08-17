@@ -1,4 +1,4 @@
-import { STATUS, type StatusValue } from "../_lib/eos-knowledge-model";
+import { STATUS, type StatusValue } from "../_lib/eos-knowledge-model.js";
 
 const isGreen = (s: string): boolean =>
   s.includes("✅") || s === STATUS.PROVEN || s.toLowerCase().includes("pass");

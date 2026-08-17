@@ -7,7 +7,7 @@ import {
   getTransformationById,
   getRootOfTrustTransformation,
   TransformationRegistryDocumentSchema,
-} from "../src/index";
+} from "../src/index.js";
 
 void describe("@repo/core-transformation-registry conformance", () => {
   void it("declares exactly TRANSFORMATION_COUNT_SPRINT0_REQUIRED entries = 5", () => {

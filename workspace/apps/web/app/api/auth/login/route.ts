@@ -8,7 +8,7 @@ import {
   capabilityRegistry,
   type WorkspaceSession,
 } from "@repo/core-kernel";
-import { LoginFlowInputSchema } from "../../../../../../capabilities/identity/implementation/commands/login-flow.command";
+import { LoginFlowInputSchema } from "../../../../../../capabilities/identity/implementation/commands/login-flow.command.js";
 
 type LoginFlowOutput = {
   readonly authenticated: boolean;

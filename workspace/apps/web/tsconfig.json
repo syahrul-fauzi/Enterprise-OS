@@ -1,8 +1,10 @@
 {
   "extends": "@repo/config-typescript/nextjs.json",
   "compilerOptions": {
+    "ignoreDeprecations": "5.0",
     "baseUrl": ".",
     "types": ["node"],
+    "resolveJsonModule": true,
     "paths": {
       "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
       "@repo/core-kernel/*": ["../../packages/core/kernel/src/*"],

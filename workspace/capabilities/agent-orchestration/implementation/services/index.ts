@@ -1,1 +1,1 @@
-export * from "./agent-orchestration.service";
+export * from "./agent-orchestration.service.js";

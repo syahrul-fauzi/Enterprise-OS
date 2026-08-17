@@ -8,6 +8,6 @@ export type {
   OrchestrationPlanRepository,
   OrchestrationPlanStatus,
   OrchestrationWorkItem,
-} from "./contracts";
-export * from "./services";
-export * from "./repository";
+} from "./contracts/index.js";
+export * from "./services/index.js";
+export * from "./repository/index.js";

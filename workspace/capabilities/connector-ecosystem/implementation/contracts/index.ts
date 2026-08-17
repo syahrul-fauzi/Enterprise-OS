@@ -1,1 +1,1 @@
-export * from "./connector-ecosystem.contracts";
+export * from "./connector-ecosystem.contracts.js";

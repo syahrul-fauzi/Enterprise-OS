@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import type { RequirementArtifactGraph } from "../../../../../apps/web/lib/artifact-graph";
+import type { RequirementArtifactGraph } from "../../../../../apps/web/lib/artifact-graph.js";
 
 export interface CausalTraceViewProps {
   readonly productId: string;

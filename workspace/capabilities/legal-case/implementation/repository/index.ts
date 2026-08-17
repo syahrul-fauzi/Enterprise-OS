@@ -3,6 +3,6 @@ export {
   newCaseId,
   defaultCaseStatus,
   defaultCasePriority,
-} from "./case.repository";
-export { getCaseRepositoryPostgres, CaseRepositoryPostgres } from "./case-postgres.repository";
-export type * from "./case.repository";
+} from "./case.repository.js";
+export { getCaseRepositoryPostgres, CaseRepositoryPostgres } from "./case-postgres.repository.js";
+export type * from "./case.repository.js";

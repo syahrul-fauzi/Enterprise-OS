@@ -3,8 +3,8 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import {
   SessionId,
   type SessionAggregate,
-} from "../contracts/identity.contracts";
-import { SessionRepositoryPostgres } from "../repositories/index";
+} from "../contracts/identity.contracts.js";
+import { SessionRepositoryPostgres } from "../repositories/index.js";
 
 export const GetSessionByIdInputSchema = z.object({
   sessionId: z.string().min(1),

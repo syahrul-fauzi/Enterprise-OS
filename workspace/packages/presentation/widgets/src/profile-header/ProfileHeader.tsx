@@ -1,25 +1,19 @@
 "use client";
 
 import React from "react";
+import type { Member } from "@repo/presentation-types";
 
-type MemberType = "researcher" | "institution";
-
-interface Member {
-  readonly type: MemberType;
-  readonly name: string;
-  readonly affiliation?: string;
-  readonly location?: string;
-  readonly bio?: string;
+type ProfileMember = Member & {
   readonly publicationCount?: number;
   readonly citationCount?: number;
   readonly researcherCount?: number;
   readonly website?: string;
   readonly linkedin?: string;
   readonly github?: string;
-}
+};
 
 export interface ProfileHeaderProps {
-  member: Member;
+  member: ProfileMember;
   productId: string;
 }
 

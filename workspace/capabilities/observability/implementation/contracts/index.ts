@@ -1,1 +1,1 @@
-export * from "./observability.contracts";
+export * from "./observability.contracts.js";

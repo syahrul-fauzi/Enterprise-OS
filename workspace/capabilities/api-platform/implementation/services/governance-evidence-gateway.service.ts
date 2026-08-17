@@ -3,8 +3,8 @@ import type {
   GovernanceEvidenceProvider,
   JsonArtifact,
   JsonRecord,
-} from "../../../governance-evidence/implementation/service";
-import { governanceEvidenceService } from "../../../governance-evidence/implementation/service";
+} from "../../../governance-evidence/implementation/service.js";
+import { governanceEvidenceService } from "../../../governance-evidence/implementation/service.js";
 
 export class GovernanceEvidenceGatewayService {
   constructor(

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { notFound } from "next/navigation";
-import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
+import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell.js";
 
 // Fallback for missing VerificationProofPanel export
 function VerificationProofPanel({ requirementId }: { requirementId: string }) {

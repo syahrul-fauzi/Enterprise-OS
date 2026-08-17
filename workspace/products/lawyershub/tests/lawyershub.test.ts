@@ -2,12 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
 import path from "node:path";
-import yaml from "js-yaml";
-import { capabilityRegistry, type CommandInvocationRecord } from "../../../apps/web/lib/capability-command-registry";
-import { CaseRepositoryInMemory } from "../../../capabilities/legal-case/implementation/repository/case.repository";
-import type { CaseAggregate, CaseStatus } from "../../../capabilities/legal-case/implementation/contracts/case.contracts";
-import { DocumentRepositoryInMemory } from "../../../capabilities/legal-document/implementation/repository";
-import type { DocumentAggregate, DocumentStatus } from "../../../capabilities/legal-document/implementation/contracts";
+import * as yaml from "js-yaml";
+import { capabilityRegistry, type CommandInvocationRecord } from "@repo/core-kernel";
+import { CaseRepositoryInMemory } from "../../../capabilities/legal-case/implementation/repository/case.repository.js";
+import type { CaseAggregate, CaseStatus } from "../../../capabilities/legal-case/implementation/contracts/case.contracts.js";
+import { DocumentRepositoryInMemory } from "../../../capabilities/legal-document/implementation/repository/index.js";
+import { DocumentId } from "../../../capabilities/legal-document/implementation/contracts/index.js";
+import type { DocumentAggregate, DocumentStatus } from "../../../capabilities/legal-document/implementation/contracts/index.js";
 
 const loadEosManifest = () => {
   const manifestPath = path.resolve(__dirname, "..", "eos.yaml");
@@ -184,7 +185,7 @@ async function runMatterDocumentCompositeE2E(
   assert.equal(docCr.record.ok, true, "document.create record ok:true");
   assert.equal(docCr.output.status, "draft", "document.create → draft");
   const docId = docCr.output.id as string;
-  const docAfterCreate = DocumentRepositoryInMemory.byId(docId);
+  const docAfterCreate = DocumentRepositoryInMemory.byId(DocumentId(docId));
   assert.ok(docAfterCreate !== undefined, "document persisted after create");
   assert.equal(docAfterCreate.matterId, caseId, "CRITICAL: document.matterId === case.id (native cross-capability link)");
   assert.equal(docAfterCreate.author, docAuthor, "document author persisted");
@@ -200,7 +201,7 @@ async function runMatterDocumentCompositeE2E(
   assert.equal(docSg.record.ok, true, "document.sign record ok:true");
   assert.equal(docSg.output.status, "signed", "sign → signed");
   assert.ok(docSg.output.signedAt instanceof Date, "sign stamps signedAt");
-  const docAfterSign = DocumentRepositoryInMemory.byId(docId);
+  const docAfterSign = DocumentRepositoryInMemory.byId(DocumentId(docId));
   assert.equal(docAfterSign?.status, "signed", "repo signed");
   assert.ok(docAfterSign?.signedAt instanceof Date, "repo signedAt stamped");
 
@@ -214,7 +215,7 @@ async function runMatterDocumentCompositeE2E(
   assert.equal(docAr.record.ok, true, "document.archive record ok:true");
   assert.equal(docAr.output.status, "archived", "archive → archived terminal");
   assert.ok(docAr.output.archivedAt instanceof Date, "archive stamps archivedAt");
-  const docAfterArchive = DocumentRepositoryInMemory.byId(docId);
+  const docAfterArchive = DocumentRepositoryInMemory.byId(DocumentId(docId));
   assert.equal(docAfterArchive?.status, "archived", "repo terminal status = archived");
   assert.ok(docAfterArchive?.archivedAt instanceof Date, "repo archivedAt stamped");
   assert.equal(docAfterArchive?.matterId, caseId, "matterId STILL PERSIS = caseId setelah archive terminal");
@@ -252,7 +253,7 @@ test.describe("LH-CASE-002 · Matter↔Document Composite E2E (legal-case + lega
     assert.equal(allOk, true, `semua ${ledger.records.length} CommandInvocationRecord ok:true`);
     assert.equal(ledger.records.length, 5, "5 writes = 5 ledger records (case.create+assign + doc.create+sign+archive)");
 
-    const retrievedDoc: DocumentAggregate | undefined = DocumentRepositoryInMemory.byId(ledger.docId);
+    const retrievedDoc: DocumentAggregate | undefined = DocumentRepositoryInMemory.byId(DocumentId(ledger.docId));
     assert.ok(retrievedDoc !== undefined, "final document byId dapat diambil");
     assert.equal(retrievedDoc.matterId, ledger.caseId, `PRIMARY ASSERTION: doc.matterId = "${ledger.caseId}" PERSIS SAMA DENGAN case.id`);
 
@@ -279,7 +280,7 @@ test.describe("LH-CASE-002 · Matter↔Document Composite E2E (legal-case + lega
     assert.ok(Number.isFinite(sgT) && Number.isFinite(arT), "signedAt/archivedAt Date valid");
     assert.ok(arT >= sgT, "archivedAt >= signedAt (monotonik timestamp)");
 
-    const finalDoc = DocumentRepositoryInMemory.byId(ledger.docId);
+    const finalDoc = DocumentRepositoryInMemory.byId(DocumentId(ledger.docId));
     assert.equal(finalDoc?.status, "archived", "final doc status = archived");
     assert.equal(finalDoc?.matterId, ledger.caseId, "matterId MASIH TERIKAT BAHKAN SETELAH status archived terminal");
     assert.ok(finalDoc?.signedAt instanceof Date, "aggregate.signedAt tidak hilang di archive");

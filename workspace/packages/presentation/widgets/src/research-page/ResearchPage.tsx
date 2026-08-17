@@ -1,9 +1,11 @@
 "use client";
 
 import React from "react";
-import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
+import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell.js";
 import { getProductExperience } from "@repo/presentation-experience";
 import type { ProductPreviewBinding, ProductExperience, Requirement } from "@repo/presentation-types";
+import { ResearchSearchBar } from "@repo/presentation-ui-system";
+import { ResearchFeed } from "../ResearchFeed.js";
 
 export interface ResearchPageProps {
   readonly productId: string;
@@ -54,7 +56,7 @@ export function ResearchPage({ productId, binding, searchQuery = '', filterStatu
               initialQuery={searchQuery}
               initialStatus={filterStatus}
             />
-            <ResearchFeed items={filteredResearch} />
+            <ResearchFeed researchItems={filteredResearch} productId={productId} />
           </div>
         </section>
       </div>

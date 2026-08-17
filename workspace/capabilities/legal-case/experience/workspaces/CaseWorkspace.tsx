@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
-import type { CaseAggregate, CasePriority, CaseStatus } from "../../implementation/contracts";
-import { CaseCard } from "../components/CaseCard";
+import type { CaseAggregate, CasePriority, CaseStatus } from "../../implementation/contracts/index.js";
+import { CaseCard } from "../components/CaseCard.js";
 
 type StatusFilter = CaseStatus | "all";
 type PriorityFilter = CasePriority | "all";

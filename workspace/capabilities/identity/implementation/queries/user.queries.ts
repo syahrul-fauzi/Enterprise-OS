@@ -1,8 +1,8 @@
 import {
   UserId,
   type UserAggregate,
-} from "../contracts/identity.contracts";
-import { getUserRepositoryPostgres } from "../repositories/index";
+} from "../contracts/identity.contracts.js";
+import { getUserRepositoryPostgres } from "../repositories/index.js";
 
 export const userQueries = Object.freeze({
   async byId(id: string): Promise<UserAggregate | undefined> {

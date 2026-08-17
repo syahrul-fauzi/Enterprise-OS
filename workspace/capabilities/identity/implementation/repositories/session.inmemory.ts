@@ -5,7 +5,7 @@ import {
   WorkspaceId,
   type SessionAggregate,
   type SessionRepository,
-} from "../contracts/identity.contracts";
+} from "../contracts/identity.contracts.js";
 
 function clone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj)) as T;
@@ -67,7 +67,7 @@ const hydrate = (): Map<string, SessionAggregate> => {
 };
 
 type Store = Map<string, SessionAggregate>;
-const STORE: Store = hydrate();
+const STORE: Store = (globalThis as any).__EOS_IDENTITY_SESSION_STORE__ ??= hydrate();
 
 export const SessionRepositoryInMemory: SessionRepository = {
   kind: "repository",

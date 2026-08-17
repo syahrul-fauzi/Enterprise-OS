@@ -1,15 +1,15 @@
-import type { DescriptorSource } from "../normalizer/types";
-import { normalizeWorkspace } from "../normalizer/normalize";
-import { buildCompositionPlan } from "../plan/build-plan";
-import { buildGraphFromPlan } from "../graph/build";
-import type { ResolverContext, ResolvedWorkspace } from "../resolver/types";
-import { resolveWorkspace } from "../resolver/resolve";
-import type { WorkspaceGraph } from "../graph/types";
-import type { NormalizedWorkspace } from "../normalizer/types";
-import type { ResolverCapabilityEntry } from "../resolver/types";
-import type { CompositionPlan } from "../plan/types";
+import type { DescriptorSource } from "../normalizer/types.js";
+import { normalizeWorkspace } from "../normalizer/normalize.js";
+import { buildCompositionPlan } from "../plan/build-plan.js";
+import { buildGraphFromPlan } from "../graph/build.js";
+import type { ResolverContext, ResolvedWorkspace } from "../resolver/types.js";
+import { resolveWorkspace } from "../resolver/resolve.js";
+import type { WorkspaceGraph } from "../graph/types.js";
+import type { NormalizedWorkspace } from "../normalizer/types.js";
+import type { ResolverCapabilityEntry } from "../resolver/types.js";
+import type { CompositionPlan } from "../plan/types.js";
 import type { ExecutionGraphReport } from "@repo/core-capability-registry";
-import { buildCapabilityEntriesFromExecutionGraph } from "../execution-graph";
+import { buildCapabilityEntriesFromExecutionGraph } from "../execution-graph/index.js";
 
 export interface ComposeInput extends DescriptorSource {
   readonly resolver?: Partial<Pick<ResolverContext, "actor" | "features" | "slotOverrides" | "requestId">> & {

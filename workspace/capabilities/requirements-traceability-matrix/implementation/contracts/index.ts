@@ -1,1 +1,1 @@
-export * from "./traceability.contracts";
+export * from "./traceability.contracts.js";

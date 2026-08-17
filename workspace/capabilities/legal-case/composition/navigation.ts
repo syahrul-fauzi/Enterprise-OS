@@ -1,4 +1,4 @@
-import { caseWorkspace, type CaseNavigationEntry } from "./workspace";
+import { caseWorkspace, type CaseNavigationEntry } from "./workspace.js";
 
 export interface CaseNavigationDescriptor {
   readonly workspaceId: typeof caseWorkspace.id;

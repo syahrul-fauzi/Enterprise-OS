@@ -389,11 +389,7 @@ operational_layer:
     domain_c: "RTO = 8 JAM"
   incident_response_severity_matrix_design_intention:
     sev1_critical:
-      contoh: [
-        "LawyersHub 5xx error untuk ≥20% user (tidak bisa buka dokumen perkara)",
-        "Services-ID OIDC tidak dapat issue token → B DAN C user TIDAK BISA login selama >5 menit",
-        "Ada indikasi kebocoran data PII dokumen hukum (confirmed or highly suspected)"
-      ]
+      contoh: ["LawyersHub 5xx error untuk ≥20% user (tidak bisa buka dokumen perkara)", "Services-ID OIDC tidak dapat issue token → B DAN C user TIDAK BISA login selama >5 menit", "Ada indikasi kebocoran data PII dokumen hukum (confirmed or highly suspected)"]
       ack_time_minutes: 15
       mitigation_time_hours: 1
       postmortem_deadline_hours: 24

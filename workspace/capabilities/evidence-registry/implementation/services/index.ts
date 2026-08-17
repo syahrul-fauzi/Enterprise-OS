@@ -1,1 +1,1 @@
-export * from "./evidence-registry.service";
+export * from "./evidence-registry.service.js";

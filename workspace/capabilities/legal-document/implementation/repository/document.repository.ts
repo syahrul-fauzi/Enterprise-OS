@@ -3,7 +3,7 @@ import {
   DocumentId,
   type DocumentRepository,
   DocumentStatus,
-} from "../contracts";
+} from "../contracts/index.js";
 
 const seed = (): DocumentAggregate[] => {
   const now = Date.now();
@@ -63,7 +63,7 @@ function hydrate(): Store {
   return store;
 }
 
-const STORE: Store = hydrate();
+const STORE: Store = (globalThis as any).__EOS_LEGAL_DOCUMENT_STORE__ ??= hydrate();
 
 function clone<T extends DocumentAggregate>(entity: T): T {
   return {

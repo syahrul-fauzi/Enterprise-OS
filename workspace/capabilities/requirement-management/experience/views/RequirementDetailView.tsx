@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Card } from "@repo/presentation-ui-system";
-import type { RequirementAggregate } from "../../implementation/contracts";
-import type { VerificationProofObject } from "../../../../apps/web/lib/proof-object";
-import type { VerificationDecisionSnapshot } from "../../../../apps/web/lib/verification-decision";
+import type { RequirementAggregate } from "../../implementation/contracts/index.js";
+import type { VerificationProofObject } from "../../../../apps/web/lib/proof-object.js";
+import type { VerificationDecisionSnapshot } from "../../../../apps/web/lib/verification-decision.js";
 
 interface RequirementDetailData {
   requirement: RequirementAggregate;

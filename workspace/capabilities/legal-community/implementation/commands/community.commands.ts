@@ -12,9 +12,9 @@ import {
   PublishContentInput,
   PublishContentOutput,
   TopicCategory,
-} from "../contracts/community.contracts";
+} from "../contracts/community.contracts.js";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../identity/implementation/repositories/index";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../identity/implementation/repositories/index.js";
 import {
   CommunityDiscussionRepositoryInMemory,
   ContentArticleRepositoryInMemory,
@@ -24,7 +24,7 @@ import {
   newDiscussionId,
   getContentArticleRepositoryPostgres,
   getCommunityDiscussionRepositoryPostgres,
-} from "../repository/index";
+} from "../repository/index.js";
 
 const sessionRepository = process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()

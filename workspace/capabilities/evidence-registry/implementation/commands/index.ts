@@ -1,4 +1,4 @@
 export {
   recordEvidence,
   evidenceRegistryCommands,
-} from "./evidence-registry.commands";
+} from "./evidence-registry.commands.js";

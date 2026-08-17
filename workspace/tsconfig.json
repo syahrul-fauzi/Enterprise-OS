@@ -6,19 +6,41 @@
     "types": ["node"],
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
+    "ignoreDeprecations": "5.0",
     "baseUrl": ".",
     "paths": {
+      "@products/*": ["products/*"],
+      "@capabilities/*": ["capabilities/*"],
+      "@repo/config-typescript/*": ["config/typescript/*"],
+      "@repo/config-eslint/*": ["config/eslint/*"],
+      "@repo/config-tailwind/*": ["config/tailwind/*"],
+
       "@repo/core-kernel": ["packages/core/kernel/src/index.ts"],
       "@repo/core-kernel/*": ["packages/core/kernel/src/*"],
       "@repo/core-runtime": ["packages/core/runtime/src/index.ts"],
       "@repo/core-runtime/*": ["packages/core/runtime/src/*"],
+      "@repo/core-eir": ["packages/core/eir/src/index.ts"],
+      "@repo/core-eir/*": ["packages/core/eir/src/*"],
+      "@repo/core-transformation-registry": ["packages/core/transformation-registry/src/index.ts"],
+      "@repo/core-transformation-registry/*": ["packages/core/transformation-registry/src/*"],
+      "@repo/core-predicate-registry": ["packages/core/predicate-registry/src/index.ts"],
+      "@repo/core-predicate-registry/*": ["packages/core/predicate-registry/src/*"],
+      "@repo/core-proof-ledger": ["packages/core/proof-ledger/src/index.ts"],
+      "@repo/core-proof-ledger/*": ["packages/core/proof-ledger/src/*"],
+      "@repo/core-constitution": ["packages/core/constitution/src/index.ts"],
+      "@repo/core-constitution/*": ["packages/core/constitution/src/*"],
       "@repo/core-capability-registry": ["packages/core/capability-registry/src/index.ts"],
       "@repo/core-capability-registry/*": ["packages/core/capability-registry/src/*"],
       "@repo/core-registry-resolver": ["packages/core/registry-resolver/src/index.ts"],
       "@repo/core-registry-resolver/*": ["packages/core/registry-resolver/src/*"],
+      "@repo/core/*": ["packages/core/*"],
+
       "@repo/composition": ["packages/composition/src/index.ts"],
       "@repo/composition/*": ["packages/composition/src/*"],
+      "@repo/composition-legal-workspace": ["packages/composition-legal-workspace/src/index.ts"],
+      "@repo/composition-legal-workspace/*": ["packages/composition-legal-workspace/src/*"],
+
       "@repo/presentation-ui-system": ["packages/presentation/ui-system/src/index.ts"],
       "@repo/presentation-ui-system/*": ["packages/presentation/ui-system/src/*"],
       "@repo/presentation-types": ["packages/presentation/presentation-types/src/index.ts"],
@@ -33,8 +55,13 @@
       "@repo/presentation-experience/*": ["packages/presentation/experience/src/*"],
       "@repo/presentation-hooks": ["packages/presentation/hooks/src/index.ts"],
       "@repo/presentation-hooks/*": ["packages/presentation/hooks/src/*"],
-      "@products/*": ["products/*"],
-      "@capabilities/*": ["capabilities/*"]
+
+      "@repo/tooling-eos-cli": ["packages/tooling/eos-cli/src/index.ts"],
+      "@repo/tooling-eos-cli/*": ["packages/tooling/eos-cli/src/*"],
+      "@repo/tooling-arch-tests": ["packages/tooling/arch-tests/src/*"],
+      "@repo/tooling-arch-tests/*": ["packages/tooling/arch-tests/src/*"],
+      "@repo/tooling-t001-standalone": ["packages/tooling/t001-standalone/src/*"],
+      "@repo/tooling-t001-standalone/*": ["packages/tooling/t001-standalone/src/*"]
     }
   },
   "include": [

@@ -1,6 +1,6 @@
 # Enterprise OS — Operational Control Tower (Control Surface INDEX)
 
-Last Updated: **August 8, 2026 (D1.2 FULL LIFECYCLE CERTIFIED — 9/9 Command Invocation Records ok:true, 4/4 aggregates reached terminal state. Leverage formula verified: 4 business outputs / 1 shared architecture = 4× marginal efficiency gain)**
+Last Updated: **August 17, 2026 (D1.3 UPGRADED 5× LEVERAGE CERTIFIED — 35/35 D13 E2E ALL 5 PRODUCTS PASS · 30/30 TEST BASELINE · CommsMe 5th product PURE SUBSTRATE COMPOSITION 0 new capability)**
 
 Change Frequency Level: **Level 3+ (Control Surface)**
 Expected Change Rate: Snapshot status dapat berubah setiap hari. Tapi: SELURUH konten detail Konstitusi, Arsitektur, Evidence, dan Roadmap SUDAH DIPINDAHKAN ke 4 dokumen terpisah. STATUS.md HANYA berisi INDEX NAVIGASI + SNAPSHOT STATUS TERKINI.
@@ -48,9 +48,9 @@ EOS optimizes engineering decisions.
 | Kernel              | 🔒 FROZEN               |
 | Core engines        | 🔒 FROZEN               |
 | Governance model    | ✅ ACTIVE (minimum necessary) |
-| Product execution   | 🔥 LIVE (3+1 products running) |
-| Evidence pipeline   | ✅ ACTIVE               |
-| Leverage measurement | ✅ ACTIVE (4× marginal efficiency verified) |
+| Product execution   | 🔥 LIVE (5 products running on shared primitives: LH + SRV + ILC + Academic + CommsMe) |
+| Evidence pipeline   | ✅ ACTIVE (5 D13 JSON evidence artifacts + 30/30 test suites) |
+| Leverage measurement | ✅ ACTIVE (5× verified: 5 business output / 1 shared substrate = 5× leverage) |
 | AI Agent integration | 🔥 EXECUTING (follows human→procedure→AI→action pattern) |
 
 ---
@@ -59,12 +59,12 @@ EOS optimizes engineering decisions.
 
 | Field | Value |
 |-------|-------|
-| Version | Software v1.9.0 (Validation Baseline v1.5.0) |
-| Phase | PRODUCT_EXECUTION: Phase D.1.2 (Lifecycle Transitions Executed) |
-| Active Workspaces (All LIVE on shared primitives) | LawyersHub (FULL D1.2 CERTIFIED), Services.ID (FULL D1.2 CERTIFIED), ILC (COMMUNITY D1.2 CERTIFIED), Academic (LEVERAGE 4TH PRODUCT) |
-| All Real User Jobs Executed E2E | ✅ LawyersHub: Create/manage legal matter | ✅ Services.ID: Find/request a service | ✅ ILC: Discover and engage with legal content/community |
-| Current Milestone Priority | **D1.3: Multi-Step Business Workflow Composition — Implement Agent-in-the-loop for ambiguous decision points + cross-product aggregate linking (Document↔Matter↔ServiceRequest)** |
-| Previous Milestone Complete | D1.2: 9/9 lifecycle transition commands executed, all aggregates reached terminal state, ProductPreviewShell 100% free of hardcoded demo data |
+| Version | Software v1.10.0 (D1.3 UPGRADE Baseline v1.6.0 — 35/35 D13 + 30/30 TEST) |
+| Phase | PRODUCT_EXECUTION: Phase D.1.3 CERTIFIED UPGRADE (5 products × 7 steps = 35/35 E2E PASS) |
+| Active Workspaces (All LIVE on shared primitives) | LawyersHub (FULL D1.3 CERTIFIED), Services.ID (FULL D1.3 CERTIFIED), ILC (COMMUNITY D1.3 CERTIFIED), Academic (LEVERAGE PROVEN 4TH PRODUCT 7/7), CommsMe (MSME 5TH PRODUCT 7/7 PURE SUBSTRATE) |
+| All Real User Jobs Executed E2E | ✅ LawyersHub: Create/manage legal matter | ✅ Services.ID: Find/request a service | ✅ ILC: Discover and engage with legal content/community | ✅ Academic: Publish academic content | ✅ CommsMe: UMKM 3 composition NDA + NIB perizinan + SOP karyawan |
+| Current Milestone Priority | **D1.4: B4 HUMAN OBSERVER SINGLE SESSION G1-G6 (6 gates) → EOS Experience First Light LOCKED → Production hardening (4 frozen blockers)** |
+| Previous Milestone Complete | D1.3 5× LEVERAGE UPGRADE: 35/35 D13 E2E ALL 5 PRODUCTS + 30/30 TEST + CommsMe pure substrate composition (0 new capability 10 CLI × 3 substrate) |
 | Evidence Ledger Repository | [implementation/eos/kernel/state/command-invocations.json](file:///root/Enterprise-OS/implementation/eos/kernel/state/command-invocations.json) |
 | Delivery Workspace (per product) | `/products/:productId/delivery?requirementId=case-101|sreq-101|disc-101` |
 | Leverage Scorecard | [/workspace/leverage-dashboard.md](file:///root/Enterprise-OS/workspace/leverage-dashboard.md) |

@@ -3,13 +3,13 @@ import {
   defineConstitutionLawRegistry,
   type ConstitutionLawProfile,
   type ConstitutionLawRegistry,
-} from "./law-registry";
+} from "./law-registry.js";
 import {
   createConstitutionLawResult,
   indexLawResults,
   runConstitutionLaws,
   type ConstitutionLaw,
-} from "./laws";
+} from "./laws.js";
 
 export type JsonRecord = Record<string, unknown>;
 export type ConstitutionCheckStatus = "PASS" | "FAIL";

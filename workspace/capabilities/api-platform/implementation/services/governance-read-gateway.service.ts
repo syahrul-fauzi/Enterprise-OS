@@ -5,8 +5,8 @@ import type {
   GovernanceReadModelKind,
   GovernanceReadModelProvider,
   GovernanceSummaryView,
-} from "../../../governance-read-model/implementation/service";
-import { governanceReadModelService } from "../../../governance-read-model/implementation/service";
+} from "../../../governance-read-model/implementation/service.js";
+import { governanceReadModelService } from "../../../governance-read-model/implementation/service.js";
 
 export class GovernanceReadGatewayService {
   constructor(

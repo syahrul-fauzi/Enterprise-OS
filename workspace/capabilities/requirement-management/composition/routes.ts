@@ -1,4 +1,4 @@
-import { requirementRoutes } from "../experience/routes";
+import { requirementRoutes } from "../experience/routes/index.js";
 
 export interface RequirementCompositionRouteDescriptor {
   readonly id: string;

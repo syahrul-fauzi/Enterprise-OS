@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "@repo/presentation-ui-system";
-import type { CaseAggregate } from "../../implementation/contracts";
+import type { CaseAggregate } from "../../implementation/contracts/index.js";
 
 export interface CaseCardProps {
   readonly item: CaseAggregate;
@@ -34,7 +34,7 @@ export function CaseCard({ item }: CaseCardProps) {
           <p className="text-sm leading-relaxed">{item.description}</p>
         )}
         <div className="flex items-center justify-between pt-2 border-t">
-          <div className="flex items-center gap-2 text-xs uppercase tracking-wider font-medium">
+          <div className="flex items-center gap-2 text-xs uppercase tracking-wider font-medium flex-wrap">
             <span>{STATUS_LABEL[item.status]}</span>
             <span className="text-[10px] font-normal px-1.5 py-0.5 rounded border">
               {PRIORITY_LABEL[item.priority]}
@@ -42,6 +42,11 @@ export function CaseCard({ item }: CaseCardProps) {
             {item.lawyerId !== undefined && (
               <span className="text-[10px] font-mono normal-case tracking-normal opacity-70">
                 Assigned: {item.lawyerId}
+              </span>
+            )}
+            {item.sourceDiscussionId !== undefined && (
+              <span className="text-[10px] font-mono normal-case tracking-normal opacity-70 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 text-blue-800">
+                Dari diskusi ILC: {item.sourceDiscussionId.substring(0, 8)}...
               </span>
             )}
           </div>

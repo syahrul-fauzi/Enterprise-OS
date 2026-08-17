@@ -1,1 +1,1 @@
-export * from "./security-hardening.service";
+export * from "./security-hardening.service.js";

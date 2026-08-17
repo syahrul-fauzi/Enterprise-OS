@@ -1,0 +1,46 @@
+{
+  "eos_evidence_ladder_definition": {
+    "L0": "Architecture exists",
+    "L1": "Product surface works", 
+    "L2": "Product composes shared capability",
+    "L3": "Conversation becomes Work",
+    "L4": "Human/system executes Work",
+    "L5": "Real outcome delivered",
+    "L6": "Same rail reused across domains",
+    "L7": "Marginal execution effort decreases",
+    "L8": "Economic operating leverage proven"
+  },
+  "current_products_status": [
+    {
+      "product_id": "commsme",
+      "display_name": "COMMSME UMKM Legal Platform",
+      "current_ladder_level": "L4",
+      "level_description": "Automated need→work→execution flow implemented",
+      "pending_next_level": "L5 - Real outcome delivery with UMKM user"
+    },
+    {
+      "product_id": "ilc",
+      "display_name": "Indonesia Lawyers Club",
+      "current_ladder_level": "L3",
+      "level_description": "Conversation→Work transition with context-preserving escalation implemented",
+      "pending_next_level": "L4 - Professional executes escalated case"
+    },
+    {
+      "product_id": "lawyershub",
+      "display_name": "Lawyers Hub Core Platform",
+      "current_ladder_level": "L4",
+      "level_description": "Core case management workflow operational",
+      "pending_next_level": "L6 - Cross-domain shared primitive optimization"
+    },
+    {
+      "product_id": "services-id",
+      "display_name": "Services.ID",
+      "current_ladder_level": "L1",
+      "level_description": "Product surface initialized",
+      "pending_next_level": "L2 - Compose shared capabilities for first use case"
+    }
+  ],
+  "eos_overall_status": "STRUCTURAL_PROGRESS",
+  "next_cross_domain_milestone": "Achieve L6 for all products: verify that the same operating rail powers 2+ domains with measurable reuse",
+  "updated_at": "2026-08-16T00:00:00Z"
+}

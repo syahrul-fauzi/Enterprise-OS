@@ -1,11 +1,11 @@
 import type {
   IndependentEvidenceProducer,
   ProducerContext,
-} from "./types";
-import { filesystemScanner } from "./filesystem-scanner";
-import { astScanner } from "./ast-scanner";
-import { importBoundaryScanner } from "./import-boundary-scanner";
-import { runtimeProbe } from "./runtime-probe";
+} from "./types.js";
+import { filesystemScanner } from "./filesystem-scanner.js";
+import { astScanner } from "./ast-scanner.js";
+import { importBoundaryScanner } from "./import-boundary-scanner.js";
+import { runtimeProbe } from "./runtime-probe.js";
 import type {
   EvidencePackage,
   EvidencePackageIdentity,
@@ -19,12 +19,12 @@ import type {
   ExperimentDefinition,
   RawObservationId,
   SemanticObservationOutcome,
-} from "../types";
-import type { EvidenceId as EvidenceIdBranded } from "../types";
+} from "../types.js";
+import type { EvidenceId as EvidenceIdBranded } from "../types.js";
 import {
   ExperimentDefinitionId,
   PROVENANCE_PROTOCOL_VERSION,
-} from "../types";
+} from "../types.js";
 import {
   computeEvidenceIdSync,
   buildProvenanceChainSync,
@@ -32,7 +32,7 @@ import {
   type FullProvenanceChain,
   type ExtendedEvidencePackage,
   computeExperimentDefinitionIdSync,
-} from "../evidence";
+} from "../evidence.js";
 
 export const ALPHA8_INDEPENDENT_PRODUCERS: ReadonlyArray<IndependentEvidenceProducer> =
   Object.freeze([

@@ -2,18 +2,19 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
 import path from "node:path";
-import yaml from "js-yaml";
-import { capabilityRegistry, type CommandInvocationRecord } from "../../../apps/web/lib/capability-command-registry";
+import * as yaml from "js-yaml";
+import { capabilityRegistry, type CommandInvocationRecord } from "@repo/core-kernel";
 import {
   TopicRepositoryInMemory,
   ContentArticleRepositoryInMemory,
   CommunityDiscussionRepositoryInMemory,
-} from "../../../capabilities/legal-community/implementation/repository/community.repository";
+} from "../../../capabilities/legal-community/implementation/repository/community.repository.js";
+import { ContentId } from "../../../capabilities/legal-community/implementation/contracts/community.contracts.js";
 import type {
   ContentArticleAggregate,
   ContentStatus,
   TopicCategory,
-} from "../../../capabilities/legal-community/implementation/contracts/community.contracts";
+} from "../../../capabilities/legal-community/implementation/contracts/community.contracts.js";
 
 const loadEosManifest = () => {
   const manifestPath = path.resolve(__dirname, "..", "eos.yaml");
@@ -56,7 +57,7 @@ async function runLifecycleIlcE2E(
   assert.equal(createResult.output.status, "proposed", "createContentArticle initial status = proposed");
 
   const id = createResult.output.id as string;
-  const pAfterCreate = ContentArticleRepositoryInMemory.byId(id);
+  const pAfterCreate = ContentArticleRepositoryInMemory.byId(ContentId(id));
   assert.ok(pAfterCreate !== undefined, `content ${id} retrievable dari repository setelah create`);
   assert.equal(pAfterCreate.title, title.trim(), "persisted title match input (trimmed)");
   assert.equal(pAfterCreate.status, "proposed", "persisted status after create = proposed");
@@ -76,7 +77,7 @@ async function runLifecycleIlcE2E(
   assert.equal(publishResult.output.status, "published", "publishContent on proposed → published");
   assert.ok(publishResult.output.publishedAt instanceof Date, "publish output stamps publishedAt");
 
-  const pAfterPublish = ContentArticleRepositoryInMemory.byId(id);
+  const pAfterPublish = ContentArticleRepositoryInMemory.byId(ContentId(id));
   assert.equal(pAfterPublish?.status, "published", "repo status setelah publish = published");
   assert.ok(pAfterPublish?.publishedAt instanceof Date, "repo publishedAt stamped");
 
@@ -117,7 +118,7 @@ test.describe("DISC-001 · ILC Lifecycle E2E (capabilityRegistry · NO MOCKS)", 
     const allOk = ledger.records.every((r) => r.ok === true);
     assert.equal(allOk, true, `semua ${ledger.records.length} CommandInvocationRecord ok:true`);
 
-    const rehydrated: ContentArticleAggregate | undefined = ContentArticleRepositoryInMemory.byId(ledger.createdId);
+    const rehydrated: ContentArticleAggregate | undefined = ContentArticleRepositoryInMemory.byId(ContentId(ledger.createdId));
     assert.ok(rehydrated !== undefined, "final retrieval: content byId tersedia");
     assert.equal(rehydrated.status, "published", "final status = published terminal");
     assert.equal(rehydrated.author, ledger.input.author, "final author persisten");
@@ -134,14 +135,14 @@ test.describe("DISC-001 · ILC Lifecycle E2E (capabilityRegistry · NO MOCKS)", 
     const ledger = await runLifecycleIlcE2E(
       "Yurisdiksi dan Enforceability Smart Contract pada Arbitrase Dagang di Bawah UU Arbitrase No.30/1999",
       "Analisis putusan terbaru MA terkait smart contract sebagai bukti otentik + komparasi dengan UNCITRAL Model Law 2006 + recomendasi revisi UU Arbitrase.",
-      "Hukum Dagang",
+      "Hukum Dagang" as TopicCategory,
       "Dr. Adrian Nugroho, S.H., M.Arbit.",
       "Badan Arbitrase Nasional Indonesia (BANI) — Pusat Riset Arbitrase",
     );
     assert.equal(ledger.publishedOutput.status, "published", "publish → published");
     assert.ok(ledger.publishedOutput.publishedAt instanceof Date, "echo publishedAt");
 
-    const row = ContentArticleRepositoryInMemory.byId(ledger.createdId);
+    const row = ContentArticleRepositoryInMemory.byId(ContentId(ledger.createdId));
     assert.ok(row?.publishedAt instanceof Date, "repo publishedAt = stamped");
     assert.equal(row?.status, "published", "repo status = published");
   });
@@ -150,7 +151,7 @@ test.describe("DISC-001 · ILC Lifecycle E2E (capabilityRegistry · NO MOCKS)", 
     const ledger = await runLifecycleIlcE2E(
       "Kepatuhan Privacy by Design dalam Pengembangan Generative AI: Studi Kasus Lembaga Jasa Keuangan OJK",
       "Audit gap PbD vs OJK SEOJK/POJK terbaru terkait LLM usage pada credit scoring + rekomendasi DPIA framework.",
-      "Hukum Keuangan dan Perbankan",
+      "Hukum Keuangan dan Perbankan" as TopicCategory,
       "Ibu Irma Suryani, S.H., LL.M.",
       "Otoritas Jasa Keuangan — Direktorat Pengawasan Fintech",
     );
@@ -164,7 +165,7 @@ test.describe("DISC-001 · ILC Lifecycle E2E (capabilityRegistry · NO MOCKS)", 
     const ledger = await runLifecycleIlcE2E(
       "Tinjauan Konstitusionalitas Omnibus Law Cipta Kerja terhadap Hak Buruh atas Upah Layak Pasal 28G Ayat (1) UUD 1945",
       "Analisis putusan MK No.1-10/PUU-XX/2022 terkait judicial review UU No.11/2020 + reformulasi pasal upah minimum sektoral.",
-      "Hukum Perburuhan",
+      "Hukum Perburuhan" as TopicCategory,
       "Prof. Dr. Bambang Santoso, S.H., M.Hum.",
       "Fakultas Hukum Universitas Gadjah Mada — Pusat Studi Hukum Konstitusi",
     );
@@ -173,7 +174,7 @@ test.describe("DISC-001 · ILC Lifecycle E2E (capabilityRegistry · NO MOCKS)", 
 
     const firstPublishedAfter = after[0];
     assert.ok(firstPublishedAfter.publishedAt instanceof Date, "teratas adalah published dengan publishedAt ter-stamp");
-    const own = ContentArticleRepositoryInMemory.byId(ledger.createdId);
+    const own = ContentArticleRepositoryInMemory.byId(ContentId(ledger.createdId));
     assert.ok(own !== undefined && own.status === "published", "artikel kita muncul sebagai published di repo");
   });
 
@@ -201,7 +202,7 @@ test.describe("DISC-001 · ILC Lifecycle E2E (capabilityRegistry · NO MOCKS)", 
     const ledger = await runLifecycleIlcE2E(
       "Reformasi Tata Kelola Data Desa: Harmonisisasi PP No.3/2024 tentang Inovasi Desa dengan Peraturan Desa terhadap Hak Atas Data",
       "Gap analysis tata kelola data desa level kabupaten vs UU Desa + formulir conscent bentuk sederhana untuk 3T.",
-      "Hukum Tata Negara dan Administrasi",
+      "Hukum Tata Negara dan Administrasi" as TopicCategory,
       "Dr. Sutan Rangkuti, S.H., M.P.A.",
       "Kementerian Dalam Negeri — Direktorat Jenderal Otonomi Daerah",
     );
@@ -211,7 +212,7 @@ test.describe("DISC-001 · ILC Lifecycle E2E (capabilityRegistry · NO MOCKS)", 
       assert.ok(retrieved !== undefined, `published id=${art.id} bisa diambil byId`);
       assert.equal(retrieved.status, "published", `byId(${art.id}) status == published`);
     }
-    const our = ContentArticleRepositoryInMemory.byId(ledger.createdId);
+    const our = ContentArticleRepositoryInMemory.byId(ContentId(ledger.createdId));
     assert.ok(our !== undefined, "artikel kita byId dapat ditemukan");
     assert.equal(our.title, ledger.input.title, "title byId match input yang di-trim");
   });

@@ -3,6 +3,7 @@ import { provideLawyersHubContext } from "@products/lawyershub";
 import { provideServicesIDContext } from "@products/services-id";
 import { provideILCContext } from "@products/ilc";
 import { provideAcademicContext } from "@products/academic";
+import { provideCommsMeContext } from "@products/commsme";
 
 export interface ProductContext {
   readonly productId: string | null;
@@ -45,6 +46,10 @@ export function readProductContextFromRequest(request: Request): ProductContext 
     const acadContext = provideAcademicContext();
     productSpecificContext = acadContext;
     productDomain = productDomain ?? acadContext.domain;
+  } else if (productId === "commsme") {
+    const commsmeContext = provideCommsMeContext();
+    productSpecificContext = commsmeContext;
+    productDomain = productDomain ?? commsmeContext.domain;
   }
 
   return {

@@ -1,1 +1,1 @@
-export { WorkspaceEntryPanel } from "./WorkspaceEntryPanel";
+export { WorkspaceEntryPanel } from "./WorkspaceEntryPanel.js";

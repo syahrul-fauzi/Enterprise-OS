@@ -2,8 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   buildEmpiricalReplicationGroupsFromMultipleRegistries,
-} from "./src/certification/evidence";
-import type { ProvenanceRegistryCollection } from "./src/certification/evidence";
+} from "./src/certification/evidence.js";
+import type { ProvenanceRegistryCollection } from "./src/certification/evidence.js";
 
 function loadRegistry(jsonPath: string): ProvenanceRegistryCollection {
   const raw = JSON.parse(fs.readFileSync(jsonPath, "utf8"));

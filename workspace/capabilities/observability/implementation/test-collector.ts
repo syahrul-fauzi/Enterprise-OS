@@ -1,4 +1,4 @@
-import { ObservabilityService } from './services/observability.service';
+import { ObservabilityService } from './services/observability.service.js';
 
 function main() {
   console.log('[TEST] Testing Observability Collector implementation...');

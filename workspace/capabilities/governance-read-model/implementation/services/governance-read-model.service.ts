@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { GovernanceReadModelCatalog, GovernanceReadModelLocation, GovernanceReadModelKind } from "../contracts/governance-read-model.contracts";
+import type { GovernanceReadModelCatalog, GovernanceReadModelLocation, GovernanceReadModelKind } from "../contracts/governance-read-model.contracts.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,7 +23,7 @@ class GovernanceReadModelCatalogFileSystem implements GovernanceReadModelCatalog
   ): GovernanceReadModelLocation {
     return {
       kind,
-      path: EVIDENCE_PATHS[kind],
+      path: EVIDENCE_PATHS[kind] || '',
     };
   }
 }
@@ -85,7 +85,7 @@ export class GovernanceReadModelService {
 
     const lastLine = lines[lines.length - 1];
     try {
-      const snapshot = JSON.parse(lastLine);
+      const snapshot = lastLine ? JSON.parse(lastLine) : {};
       recordRuntimeInvocation({
         capability_id: "governance-read-model",
         operation_id: "get-latest-snapshot",

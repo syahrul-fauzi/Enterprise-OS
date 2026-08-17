@@ -5,8 +5,8 @@ import {
   documentService,
   type DocumentAggregate,
   type DocumentStatus,
-} from "../../implementation/service";
-import { DocumentCard } from "../components/DocumentCard";
+} from "../../implementation/service.js";
+import { DocumentCard } from "../components/DocumentCard.js";
 
 type StatusFilter = DocumentStatus | "all";
 

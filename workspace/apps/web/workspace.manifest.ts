@@ -6,8 +6,8 @@ import type { CapabilityDescriptor, CapabilityImplementation } from "@repo/core-
 import {
   RequirementView,
   default as RequirementViewDefault,
-} from "../../capabilities/requirement-management/experience/views/RequirementView";
-import * as RequirementServiceImplModule from "../../capabilities/requirement-management/implementation/service";
+} from "../../capabilities/requirement-management/experience/views/RequirementView.js";
+import * as RequirementServiceImplModule from "../../capabilities/requirement-management/implementation/service.js";
 // Identity capability imports
 import { identityCommands } from "../../capabilities/identity/implementation/commands";
 import {
@@ -16,8 +16,8 @@ import {
   WorkspaceRepositoryPostgres,
   MembershipRepositoryPostgres,
   SessionRepositoryPostgres,
-} from "../../capabilities/identity/implementation/repositories";
-import { passwordService } from "../../capabilities/identity/implementation/services/password.service";
+} from "../../capabilities/identity/implementation/repositories/index.js";
+import { passwordService } from "../../capabilities/identity/implementation/services/password.service.js";
 // Evidence Registry capability imports
 import * as EvidenceRegistryServiceImplModule from "../../capabilities/evidence-registry/implementation/service";
 // Consultation capability imports
@@ -29,7 +29,7 @@ import {
   resolveConsultation, 
   pauseConsultation, 
   resumeConsultation
-} from "../../capabilities/consultation/implementation/commands/consultation.commands";
+} from "../../capabilities/consultation/implementation/commands/consultation.commands.js";
 const RequirementViewComponent = RequirementView ?? RequirementViewDefault;
 
 const requirementImplementation: CapabilityImplementation = {
@@ -121,10 +121,10 @@ const consultation: CapabilityDescriptor = Object.freeze({
 
 // Legal Case capability imports
 import { CaseWorkspace } from "../../capabilities/legal-case/experience/workspaces/CaseWorkspace";
-import * as LegalCaseServiceImplModule from "../../capabilities/legal-case/implementation/services";
-import { caseCommands } from "../../capabilities/legal-case/implementation/commands/index";
-import { getCase, searchCases } from "../../capabilities/legal-case/implementation/queries/case.queries";
-import { CaseRepositoryPostgres } from "../../capabilities/legal-case/implementation/repository/case-postgres.repository";
+import * as LegalCaseServiceImplModule from "../../capabilities/legal-case/implementation/services/index.js";
+import { caseCommands } from "../../capabilities/legal-case/implementation/commands/index.js";
+import { getCase, searchCases } from "../../capabilities/legal-case/implementation/queries/case.queries.js";
+import { CaseRepositoryPostgres } from "../../capabilities/legal-case/implementation/repository/case-postgres.repository.js";
 
 // Legal Case capability implementation
 const legalCaseImplementation: CapabilityImplementation = {
@@ -144,6 +144,27 @@ const legalCase: CapabilityDescriptor = Object.freeze({
   name: "Legal Case Management",
   experience: { view: CaseWorkspace },
   implementation: legalCaseImplementation,
+});
+
+// Legal Document capability imports
+import { documentCommands } from "../../capabilities/legal-document/implementation/commands/document.commands";
+import { DocumentRepositoryInMemory } from "../../capabilities/legal-document/implementation/repository/document.repository.js";
+
+// Legal Document capability implementation
+const legalDocumentImplementation: CapabilityImplementation = {
+  commands: documentCommands,
+  queries: {},
+  repositories: { DocumentRepository: DocumentRepositoryInMemory },
+  services: {},
+  entry: {},
+};
+
+const legalDocument: CapabilityDescriptor = Object.freeze({
+  id: "legal-document",
+  version: "0.1.0",
+  name: "Legal Document Management",
+  experience: {},
+  implementation: legalDocumentImplementation,
 });
 
 // Observability capability imports
@@ -173,6 +194,7 @@ export const registry = new StaticRegistry({
     "evidence-registry": evidenceRegistry,
     "consultation": consultation,
     "legal-case": legalCase,
+    "legal-document": legalDocument,
     "observability": observability,
   },
 });

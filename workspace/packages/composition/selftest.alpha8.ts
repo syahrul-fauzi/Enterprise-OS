@@ -7,11 +7,11 @@ import {
   buildAlpha8ClaimRelations,
   ALPHA8_INDEPENDENT_PRODUCERS,
   replayExperimentDefinition,
-} from "./src/certification/producers/correlate";
+} from "./src/certification/producers/correlate.js";
 import type {
   ProducerContext,
-} from "./src/certification/producers/types";
-import { buildCertificationMatrix } from "./src/certification/matrix";
+} from "./src/certification/producers/types.js";
+import { buildCertificationMatrix } from "./src/certification/matrix.js";
 import {
   verifyEvidenceIdentity,
   verifyRelationIdentity,
@@ -31,7 +31,7 @@ import {
   computeExperimentExecutionIdSync,
   buildProvenanceChainSync,
   type BuildProvenanceChainInput,
-} from "./src/certification/evidence";
+} from "./src/certification/evidence.js";
 import type {
   EvidenceId,
   EvidencePackage,
@@ -43,12 +43,12 @@ import type {
   ExperimentDefinition,
   RawObservation,
   SemanticObservationOutcome,
-} from "./src/certification/types";
+} from "./src/certification/types.js";
 import {
   EVIDENCE_SCHEMA_VERSION,
   PROVENANCE_PROTOCOL_VERSION,
   PROVENANCE_GRAPH_MODEL_VERSION,
-} from "./src/certification/types";
+} from "./src/certification/types.js";
 
 function resolveWorkspaceRoot(): string {
   if (process.env.EOS_REPO_ROOT && process.env.EOS_REPO_ROOT.length > 0) {

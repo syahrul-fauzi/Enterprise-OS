@@ -1,12 +1,12 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
-import { TenantId, UserId, SessionId, type MembershipAggregate, type WorkspaceAggregate } from "../contracts/identity.contracts";
+import { TenantId, UserId, SessionId, type MembershipAggregate, type WorkspaceAggregate } from "../contracts/identity.contracts.js";
 import { 
   TenantRepositoryPostgres, 
   WorkspaceRepositoryPostgres, 
   MembershipRepositoryPostgres,
   SessionRepositoryPostgres 
-} from "../repositories/index";
+} from "../repositories/index.js";
 
 export const GetWorkspacesByTenantInputSchema = z.object({
   tenantId: z.string().min(1),

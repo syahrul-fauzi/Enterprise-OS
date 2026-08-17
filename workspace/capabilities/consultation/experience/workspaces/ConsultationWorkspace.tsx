@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
-import type { ConsultationAggregate, ConsultationPriority, ConsultationStatus } from "../../implementation/contracts/consultation.contracts";
-import { ConsultationCard } from "../components/ConsultationCard";
-import { CreateConsultationModal } from "../components/CreateConsultationModal";
+import type { ConsultationAggregate, ConsultationPriority, ConsultationStatus } from "../../implementation/contracts/consultation.contracts.js";
+import { ConsultationCard } from "../components/ConsultationCard.js";
+import { CreateConsultationModal } from "../components/CreateConsultationModal.js";
 
 type StatusFilter = string;
 type PriorityFilter = string;

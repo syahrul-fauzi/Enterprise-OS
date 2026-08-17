@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { agentOrchestrationService } from "../implementation/service";
+import { agentOrchestrationService } from "../implementation/service.js";
 
 test("agent orchestration lists canonical plans", () => {
   const plans = agentOrchestrationService.listPlans();

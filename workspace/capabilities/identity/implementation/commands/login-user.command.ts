@@ -6,15 +6,15 @@ import {
   type CreateSessionInput,
   type LoginInput,
   type SessionAggregate,
-} from "../contracts/identity.contracts";
-import { passwordService } from "../services/password.service";
+} from "../contracts/identity.contracts.js";
+import { passwordService } from "../services/password.service.js";
 import {
   UserRepositoryInMemory,
   MembershipRepositoryInMemory,
   TenantRepositoryInMemory,
   WorkspaceRepositoryInMemory,
   SessionRepositoryInMemory,
-} from "../repositories/index";
+} from "../repositories/index.js";
 
 function newSessionId(): SessionId {
   return SessionId(`session-${randomUUID()}`);

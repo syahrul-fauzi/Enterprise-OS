@@ -1,4 +1,4 @@
-import type { CanonicalHashEnvelope, CanonicalJsonString, Fnv1a32Hex } from "./types";
+import type { CanonicalHashEnvelope, CanonicalJsonString, Fnv1a32Hex } from "./types.js";
 
 const FNV_OFFSET_BASIS_32 = 2166136261 >>> 0;
 const FNV_PRIME_32 = 16777619;

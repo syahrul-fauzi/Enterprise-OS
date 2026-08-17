@@ -1,7 +1,7 @@
 import type {
   WorkflowDefinition,
   WorkflowDefinitionRepository,
-} from "../contracts";
+} from "../contracts/index.js";
 
 const DEFINITIONS: readonly WorkflowDefinition[] = Object.freeze([
   {

@@ -1,12 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { GET as getVerification } from "../app/api/requirements/[id]/verification/route";
-import { GET as getProof } from "../app/api/requirements/[id]/proof/route";
+import { GET as getVerification } from "../app/api/requirements/[id]/verification/route.js";
+import { GET as getProof } from "../app/api/requirements/[id]/proof/route.js";
 import {
   WORKSPACE_SESSION_COOKIE,
   createAnonymousWorkspaceSession,
   encodeWorkspaceSession,
-} from "../lib/workspace-session";
+} from "../lib/workspace-session.js";
 
 const sessionCookie = `${WORKSPACE_SESSION_COOKIE}=${encodeWorkspaceSession(
   createAnonymousWorkspaceSession(),

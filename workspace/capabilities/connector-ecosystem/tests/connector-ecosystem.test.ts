@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { connectorEcosystemService } from "../implementation/services/connector-ecosystem.service";
+import { connectorEcosystemService } from "../implementation/services/connector-ecosystem.service.js";
 
 test("connector ecosystem lists first connectors", () => {
   const connectors = connectorEcosystemService.listConnectors();

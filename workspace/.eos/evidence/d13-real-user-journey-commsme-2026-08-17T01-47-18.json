@@ -1,0 +1,43 @@
+{
+  "product": "commsme",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "COMMSME platform dimuat",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Layanan kontrak kerja dipilih",
+      "ok": true
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Isi formulir (3 composites)",
+      "ok": false,
+      "error": "Error: [case.create] Invalid or revoked session - authentication violation"
+    }
+  ],
+  "totalSteps": 3,
+  "passCount": 2,
+  "failCount": 1,
+  "completedAtISO": "2026-08-17T01:47:18.000Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "commsme",
+      "displayName": "CommsMe — MSME Legal Companion"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "shared_providers": 6,
+      "shared_topics": 8,
+      "shared_cases": 4
+    }
+  ]
+}

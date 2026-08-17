@@ -1,2 +1,2 @@
-export { ProductLandingPage } from "./ProductLandingPage";
-export type { ProductLandingPageProps } from "./ProductLandingPage";
+export { ProductLandingPage } from "./ProductLandingPage.js";
+export type { ProductLandingPageProps } from "./ProductLandingPage.js";

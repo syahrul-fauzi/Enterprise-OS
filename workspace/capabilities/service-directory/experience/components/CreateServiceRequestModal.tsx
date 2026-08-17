@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import type { ServiceProviderCategory } from "../../implementation/contracts/service.contracts";
+import type { ServiceProviderCategory } from "../../implementation/contracts/service.contracts.js";
 
 interface CreateServiceRequestModalProps {
   isOpen: boolean;

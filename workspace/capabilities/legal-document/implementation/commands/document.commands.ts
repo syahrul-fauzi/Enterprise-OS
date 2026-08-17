@@ -8,13 +8,13 @@ import {
   SignDocumentOutput,
   UpdateDocumentInput,
   UpdateDocumentOutput,
-} from "../contracts";
+} from "../contracts/index.js";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import {
   DocumentRepositoryInMemory,
   newDocumentId,
   defaultDocumentStatus,
-} from "../repository";
+} from "../repository/index.js";
 
 type CreateDocumentCommand = CapabilityCommand<CreateDocumentInput, CreateDocumentOutput>;
 type SignDocumentCommand = CapabilityCommand<SignDocumentInput, SignDocumentOutput>;

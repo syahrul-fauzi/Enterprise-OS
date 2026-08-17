@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { GET as getHealth } from "../app/api/health/route";
+import { GET as getHealth } from "../app/api/health/route.js";
 
 test("apps/web health API reports runtime health and product context", async () => {
   const response = await getHealth(

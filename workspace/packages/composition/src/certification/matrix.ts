@@ -14,7 +14,7 @@ import type {
   EvidenceDerivationKind,
   ThreatToValidity,
   CertificationSnapshotId,
-} from "./types";
+} from "./types.js";
 import {
   EVIDENCE_LAYER_DEFINITION,
   LAYER_LIFECYCLE_STATUS,
@@ -23,8 +23,8 @@ import {
   RELATION_LAYER_RULES,
   isRelationAllowed,
   EPISTEMIC_PROTOCOL_VERSION,
-} from "./types";
-import { computeEvidenceIdSync, computeGraphTopologyIdSync, verifyEvidenceIdentity, computeRelationIdSync, verifyRelationIdentity, computeSnapshotIdSync, verifySnapshotIdentity, computeExperimentDefinitionIdSync, computeExperimentExecutionIdSync, computeRawObservationIdSync, buildProvenanceGraph, computeObservationReuseIndex, countSemanticEvidenceEdges, type ExtendedEvidencePackage } from "./evidence";
+} from "./types.js";
+import { computeEvidenceIdSync, computeGraphTopologyIdSync, verifyEvidenceIdentity, computeRelationIdSync, verifyRelationIdentity, computeSnapshotIdSync, verifySnapshotIdentity, computeExperimentDefinitionIdSync, computeExperimentExecutionIdSync, computeRawObservationIdSync, buildProvenanceGraph, computeObservationReuseIndex, countSemanticEvidenceEdges, type ExtendedEvidencePackage } from "./evidence.js";
 
 function countByLevelAndStatus(claims: Readonly<Record<string, CertificationClaim>>): CertificationMatrixEnvelope["summary"] {
   const base: Record<EvidenceLevel, Record<CertificationStatus, number>> = {

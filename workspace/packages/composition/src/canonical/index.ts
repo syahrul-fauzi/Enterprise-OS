@@ -1,5 +1,5 @@
-export * from "./types";
-export type * from "./types";
-export * from "./hash";
-export * from "./serialize";
-export * from "./deep-freeze";
+export * from "./types.js";
+export type * from "./types.js";
+export * from "./hash.js";
+export * from "./serialize.js";
+export * from "./deep-freeze.js";

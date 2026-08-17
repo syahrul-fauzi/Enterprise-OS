@@ -5,9 +5,9 @@ import {
   MembershipRepositoryPostgres, 
   TenantRepositoryPostgres,
   SessionRepositoryPostgres
-} from "../repositories/index";
-import { WorkspaceId, UserId, TenantId, MembershipId, SessionId } from "../contracts/identity.contracts";
-import { initIdentitySchema } from "../repositories/base.repository";
+} from "../repositories/index.js";
+import { WorkspaceId, UserId, TenantId, MembershipId, SessionId } from "../contracts/identity.contracts.js";
+import { initIdentitySchema } from "../repositories/base.repository.js";
 
 export const GetWorkspaceByIdInputSchema = z.object({
   workspaceId: z.string().min(1),

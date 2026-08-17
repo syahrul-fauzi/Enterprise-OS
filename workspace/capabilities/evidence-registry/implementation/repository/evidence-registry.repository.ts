@@ -6,7 +6,7 @@ import type {
   EvidenceRecordKind,
   EvidenceRecordScope,
   EvidenceRegistryRepository,
-} from "../contracts";
+} from "../contracts/index.js";
 
 const SCAN_ROOTS = [
   "enterprise/science/gate-c/execution",

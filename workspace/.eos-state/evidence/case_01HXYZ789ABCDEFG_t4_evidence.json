@@ -1,0 +1,40 @@
+{
+  "work_id": "ILC-RT-004",
+  "case_id": "case_01HXYZ789ABCDEFG",
+  "executed_at": "2026-08-17T00:15:31.598Z",
+  "professional_next_action": {
+    "action": "document.create",
+    "actor": "lawyer-001",
+    "timestamp": "2026-08-17T00:15:31.598Z",
+    "previous_state": {
+      "status": "in_progress",
+      "lawyerId": "lawyer-001"
+    },
+    "new_state": {
+      "status": "in_progress",
+      "lawyerId": "lawyer-001",
+      "documentCount": 1,
+      "latestDocumentId": "doc-101"
+    },
+    "artifact_details": {
+      "document_id": "doc-101",
+      "document_title": "Surat Peringatan Pengosongan Ilegal - Cease and Desist Letter",
+      "linked_to_matter": true
+    }
+  },
+  "invocation_record": {
+    "recorded": true,
+    "timestamp": "2026-08-17T00:15:31.598Z"
+  },
+  "persistence_verification": {
+    "document_retrieved_successfully": true,
+    "linked_to_case": true,
+    "all_fields_match": true
+  },
+  "user_visible_result": "User receives notification that lawyer has prepared a legal letter for their case",
+  "external_result": "Letter ready to be sent to the landlord; next step would be physical delivery/email",
+  "outcome_verified": false,
+  "blocker": null,
+  "evidence_ladder_level": "L4",
+  "target_evidence_level": "L5"
+}

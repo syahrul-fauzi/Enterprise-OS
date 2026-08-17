@@ -1,8 +1,8 @@
 import { join, isAbsolute, relative } from "node:path";
 import { existsSync } from "node:fs";
 import ts from "typescript";
-import type { IndependentEvidenceProducer, ProducerContext } from "./types";
-import { produceEvidencePackageEnvelope } from "./types";
+import type { IndependentEvidenceProducer, ProducerContext } from "./types.js";
+import { produceEvidencePackageEnvelope } from "./types.js";
 
 const PRODUCER_ID = "import-boundary-v1";
 const PRODUCER_NAME = "Semantic Import Boundary Scanner (TypeChecker)";

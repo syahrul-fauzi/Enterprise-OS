@@ -13,8 +13,8 @@ export type {
   TraceabilityMatrixSummary,
   TraceabilityMatchReason,
   TraceabilityReferenceKind,
-} from "./contracts";
-export * from "./services";
-export { requirementsTraceabilityMatrixService } from "./services/traceability.service";
-export * from "./queries";
-export * from "./repository";
+} from "./contracts/index.js";
+export * from "./services/index.js";
+export { requirementsTraceabilityMatrixService } from "./services/traceability.service.js";
+export * from "./queries/index.js";
+export * from "./repository/index.js";

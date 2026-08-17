@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { workflowEngineService } from "../implementation/service";
-import { prepareReleaseProcedure } from "../../../procedures/prepare-release";
+import { workflowEngineService } from "../implementation/service.js";
+import { prepareReleaseProcedure } from "../../../procedures/prepare-release/index.js";
 
 test("workflow engine lists deterministic core workflow definitions", () => {
   const definitions = workflowEngineService.listWorkflowDefinitions();

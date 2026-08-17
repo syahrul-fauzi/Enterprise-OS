@@ -1,5 +1,5 @@
-import type { IndependentEvidenceProducer, ProducerContext } from "./types";
-import { produceEvidencePackageEnvelope } from "./types";
+import type { IndependentEvidenceProducer, ProducerContext } from "./types.js";
+import { produceEvidencePackageEnvelope } from "./types.js";
 import { join, resolve as resolvePath, isAbsolute } from "node:path";
 import { createRequire } from "node:module";
 import type { ResolvedWorkspace } from "@repo/composition";

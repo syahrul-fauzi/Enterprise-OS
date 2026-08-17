@@ -4,9 +4,9 @@ import {
   type GetCaseOutput,
   type SearchCasesInput,
   type SearchCasesOutput,
-} from "../contracts";
+} from "../contracts/index.js";
 import type { CapabilityQuery } from "@repo/core-kernel";
-import { CaseRepositoryInMemory } from "../repository";
+import { CaseRepositoryInMemory } from "../repository/index.js";
 
 type GetCaseQuery = CapabilityQuery<GetCaseInput, GetCaseOutput>;
 type SearchCasesQuery = CapabilityQuery<SearchCasesInput, SearchCasesOutput>;

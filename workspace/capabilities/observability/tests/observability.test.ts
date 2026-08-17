@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { observabilityService } from "../implementation/service";
+import { observabilityService } from "../implementation/service.js";
 
 test("observability service emits logs, metrics, and traces", () => {
   const logs = observabilityService.getLogs();

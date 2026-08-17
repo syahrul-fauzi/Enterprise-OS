@@ -1,9 +1,9 @@
-import type { LayoutDescriptor, LayoutId } from "../layouts";
-import type { NavigationDescriptor } from "../navigation";
-import type { RegionDescriptor, RegionId } from "../regions";
-import type { SlotDescriptor, SlotId, SlotInstance } from "../slots";
-import type { CompositionWorkspaceDescriptor } from "../workspace";
-import type { CanonicalJsonString, Fnv1a32Hex } from "../canonical/types";
+import type { LayoutDescriptor, LayoutId } from "../layouts/index.js";
+import type { NavigationDescriptor } from "../navigation/index.js";
+import type { RegionDescriptor, RegionId } from "../regions/index.js";
+import type { SlotDescriptor, SlotId, SlotInstance } from "../slots/index.js";
+import type { CompositionWorkspaceDescriptor } from "../workspace/index.js";
+import type { CanonicalJsonString, Fnv1a32Hex } from "../canonical/types.js";
 
 export type WorkspaceId = string & { readonly __workspaceId: unique symbol };
 export function WorkspaceId(s: string): WorkspaceId {

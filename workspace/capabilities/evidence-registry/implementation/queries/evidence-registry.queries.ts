@@ -6,8 +6,8 @@ import type {
   SearchEvidenceRegistryInput,
   SearchEvidenceRegistryOutput,
   SearchEvidenceRegistrySummary,
-} from "../contracts";
-import { EvidenceRegistryRepositoryFileSystem } from "../repository";
+} from "../contracts/index.js";
+import { EvidenceRegistryRepositoryFileSystem } from "../repository/index.js";
 
 function normalizeSearchValue(value: string | undefined): string | undefined {
   const normalized = value?.trim().toLowerCase();

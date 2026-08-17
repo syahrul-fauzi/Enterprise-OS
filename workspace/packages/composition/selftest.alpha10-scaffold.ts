@@ -8,7 +8,7 @@ import {
   buildAlpha8ClaimRelations,
   buildAlpha8EvidenceDerivationParents,
   INTERNAL_AGGREGATE_EXTENDED_KEY,
-} from "./src/certification/producers/correlate";
+} from "./src/certification/producers/correlate.js";
 import {
   computeEvidenceIdSync,
   buildEmptyProvenanceRegistry,
@@ -20,8 +20,8 @@ import {
   computeRawObservationIdSync,
   type ExtendedEvidencePackage,
   type ProvenanceRegistryCollection,
-} from "./src/certification/evidence";
-import type { EvidencePackage, CertificationClaim, ClaimRelation, EvidenceId, ExperimentDefinition } from "./src/certification/types";
+} from "./src/certification/evidence.js";
+import type { EvidencePackage, CertificationClaim, ClaimRelation, EvidenceId, ExperimentDefinition } from "./src/certification/types.js";
 
 function nowIso(): string { return new Date().toISOString(); }
 

@@ -6,7 +6,7 @@ import {
   ALL_PREDICATES,
   PredicateRegistryDocumentSchema,
   getPredicateById,
-} from "../src/index";
+} from "../src/index.js";
 
 void describe("@repo/core-predicate-registry conformance", () => {
   void it("declares exactly PREDICATE_COUNT_T001_REQUIRED predicates for T001", () => {

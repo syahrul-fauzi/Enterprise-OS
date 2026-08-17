@@ -1,0 +1,10 @@
+{
+  "extends": "../../config/typescript/react-library.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./runtime",
+    "composite": true
+  },
+  "include": ["runtime"],
+  "exclude": ["dist", "build", "node_modules"]
+}

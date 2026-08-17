@@ -1,4 +1,4 @@
-import { workflowEngineService } from "../../../workflow-engine/implementation/services/workflow-engine.service";
+import { workflowEngineService } from "../../../workflow-engine/implementation/services/workflow-engine.service.js";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import type {
   DispatchOrchestrationInput,
@@ -8,8 +8,8 @@ import type {
   OrchestrationDispatchStep,
   OrchestrationPlan,
   OrchestrationPlanStatus,
-} from "../contracts";
-import { OrchestrationPlanRepositoryInMemory } from "../repository";
+} from "../contracts/index.js";
+import { OrchestrationPlanRepositoryInMemory } from "../repository/index.js";
 
 function summarizeStatus(steps: readonly OrchestrationDispatchStep[]): OrchestrationPlanStatus {
   return steps.every((step) => step.status === "passed") ? "completed" : "failed";
@@ -131,5 +131,5 @@ export class AgentOrchestrationService {
 
 export const agentOrchestrationService = new AgentOrchestrationService();
 
-export * from "../contracts";
-export * from "../repository";
+export * from "../contracts/index.js";
+export * from "../repository/index.js";

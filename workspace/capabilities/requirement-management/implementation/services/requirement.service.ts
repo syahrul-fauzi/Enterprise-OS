@@ -21,7 +21,7 @@ import {
   type UpdateRequirementOutput,
   type VerifyRequirementInput,
   type VerifyRequirementOutput,
-} from "../contracts";
+} from "../contracts/index.js";
 import {
   approveRequirement,
   createRequirement,
@@ -29,10 +29,10 @@ import {
   startRequirementDelivery,
   updateRequirement,
   verifyRequirement,
-} from "../commands";
-import { getRequirement, searchRequirements } from "../queries";
-import { RequirementRepositoryCurrent } from "../repository";
-import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index";
+} from "../commands/index.js";
+import { getRequirement, searchRequirements } from "../queries/index.js";
+import { RequirementRepositoryCurrent } from "../repository/index.js";
+import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index.js";
 
 function digestCanonicalize(value: unknown): unknown {
   if (value === undefined || value === null) {
@@ -635,7 +635,7 @@ export class RequirementService {
 
 export const requirementService = new RequirementService();
 
-export * from "../contracts";
-export * from "../commands";
-export * from "../queries";
-export * from "../repository";
+export * from "../contracts/index.js";
+export * from "../commands/index.js";
+export * from "../queries/index.js";
+export * from "../repository/index.js";

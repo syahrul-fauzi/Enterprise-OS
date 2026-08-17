@@ -14,19 +14,19 @@ import {
   SignDocumentOutput,
   UpdateDocumentInput,
   UpdateDocumentOutput,
-} from "../contracts";
+} from "../contracts/index.js";
 import {
   createDocument,
   signDocument,
   archiveDocument,
   updateDocument,
-} from "../commands";
+} from "../commands/index.js";
 import {
   getDocument,
   searchDocuments,
   listDocumentsByStatus,
-} from "../queries";
-import { DocumentRepositoryInMemory } from "../repository";
+} from "../queries/index.js";
+import { DocumentRepositoryInMemory } from "../repository/index.js";
 
 export class DocumentService {
   readonly repositories = { Document: DocumentRepositoryInMemory } as const;
@@ -61,7 +61,7 @@ export class DocumentService {
 
 export const documentService = new DocumentService();
 
-export * from "../contracts";
-export * from "../commands";
-export * from "../queries";
-export * from "../repository";
+export * from "../contracts/index.js";
+export * from "../commands/index.js";
+export * from "../queries/index.js";
+export * from "../repository/index.js";

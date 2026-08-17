@@ -9,7 +9,7 @@ import {
   EirRecordSchema,
   CanonicalStatusSchema,
   SpecKindSchema,
-} from "../src/schema";
+} from "../src/schema.js";
 
 const TESTS_DIR = dirname(fileURLToPath(import.meta.url));
 const WORKSPACE_ROOT = resolve(join(TESTS_DIR, "..", "..", "..", ".."));

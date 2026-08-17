@@ -3,8 +3,8 @@ import path from "node:path";
 import {
   runAllIndependentProducers,
   INTERNAL_AGGREGATE_EXTENDED_KEY,
-} from "./src/certification/producers/correlate";
-import type { ExtendedEvidencePackage } from "./src/certification/evidence";
+} from "./src/certification/producers/correlate.js";
+import type { ExtendedEvidencePackage } from "./src/certification/evidence.js";
 import {
   buildEmptyProvenanceRegistry,
   mergeProvenanceChainIntoRegistry,
@@ -15,8 +15,8 @@ import {
   type ProvenanceRegistryCollection,
   buildEmpiricalReplicationGroupsFromMultipleRegistries,
   enrichGraphWithAlpha11EmpiricalReplication,
-} from "./src/certification/evidence";
-import type { EvidencePackage, CertificationClaim } from "./src/certification/types";
+} from "./src/certification/evidence.js";
+import type { EvidencePackage, CertificationClaim } from "./src/certification/types.js";
 
 function nowIso(offsetMs: number = 0): string {
   return new Date(Date.now() + offsetMs).toISOString();

@@ -1,3 +1,3 @@
-export { ProfileHeader } from "./ProfileHeader";
-export type { ProfileHeaderProps } from "./ProfileHeader";
-export { default } from "./ProfileHeader";
+export { ProfileHeader } from "./ProfileHeader.js";
+export type { ProfileHeaderProps } from "./ProfileHeader.js";
+export { default } from "./ProfileHeader.js";

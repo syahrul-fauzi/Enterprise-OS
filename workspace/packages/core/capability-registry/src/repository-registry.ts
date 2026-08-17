@@ -1360,7 +1360,7 @@ export function buildArtifactRegistryModel(
   );
 
   const productArtifacts: readonly ArtifactRegistryEntry[] = loadedProducts.map(
-    (product) => ({
+    (product): ArtifactRegistryEntry => ({
       id: `product:${product.id}`,
       artifact_type: "product",
       label: product.id,
@@ -1399,7 +1399,7 @@ export function buildArtifactRegistryModel(
   );
 
   const capabilityArtifacts: readonly ArtifactRegistryEntry[] =
-    registry.capabilities.map((capability) => ({
+    registry.capabilities.map((capability): ArtifactRegistryEntry => ({
       id: `capability:${capability.id}`,
       artifact_type: "capability",
       label: capability.name,

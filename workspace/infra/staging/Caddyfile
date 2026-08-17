@@ -58,4 +58,14 @@
 	import eos_web_proxy academic
 }
 
+# Product #5: FIRST LIGHT COMMSME - UMKM Legal Support Platform
+`http://{$COMMSME_DOMAIN}`, commsme.local {
+	import http_redirect
+}
+
+`https://{$COMMSME_DOMAIN}` {
+	tls {$CADDY_TLS}
+	import eos_web_proxy commsme
+}
+
 # End of Caddyfile

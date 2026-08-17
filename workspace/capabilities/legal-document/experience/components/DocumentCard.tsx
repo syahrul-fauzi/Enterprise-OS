@@ -3,7 +3,7 @@ import { Card } from "@repo/presentation-ui-system";
 import {
   type DocumentAggregate,
   type DocumentStatus,
-} from "../../implementation/contracts";
+} from "../../implementation/contracts/index.js";
 
 const STATUS_LABEL: Record<DocumentStatus, { readonly label: string; readonly style: string }> = {
   draft: { label: "Draft", style: "bg-gray-100 text-gray-700 border-gray-300" },

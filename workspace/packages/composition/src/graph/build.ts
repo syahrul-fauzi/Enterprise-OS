@@ -1,11 +1,11 @@
-import type { LayoutDescriptor } from "../layouts";
-import type { NavigationItem } from "../navigation";
-import type { RegionDescriptor, RegionId } from "../regions";
-import type { SlotId, SlotDescriptor, SlotInstance } from "../slots";
-import type { NormalizedWorkspace, WorkspaceId, ValidationIssue } from "../normalizer/types";
-import { normalizeWorkspace } from "../normalizer/normalize";
-import type { CompositionPlan } from "../plan/types";
-import { buildCompositionPlan } from "../plan/build-plan";
+import type { LayoutDescriptor } from "../layouts/index.js";
+import type { NavigationItem } from "../navigation/index.js";
+import type { RegionDescriptor, RegionId } from "../regions/index.js";
+import type { SlotId, SlotDescriptor, SlotInstance } from "../slots/index.js";
+import type { NormalizedWorkspace, WorkspaceId, ValidationIssue } from "../normalizer/types.js";
+import { normalizeWorkspace } from "../normalizer/normalize.js";
+import type { CompositionPlan } from "../plan/types.js";
+import { buildCompositionPlan } from "../plan/build-plan.js";
 import type {
   CapabilityGraphNode,
   GraphNode,
@@ -18,13 +18,13 @@ import type {
   SlotGraphNode,
   WorkspaceGraph,
   WorkspaceGraphNode,
-} from "./types";
-import { GraphNodeId as GID } from "./types";
-import type { DescriptorSource } from "../normalizer/types";
-import { canonicalSerialize } from "../canonical/serialize";
-import { fnv1a32 } from "../canonical/hash";
-import { deepFreeze } from "../canonical/deep-freeze";
-import type { Fnv1a32Hex } from "../canonical/types";
+} from "./types.js";
+import { GraphNodeId as GID } from "./types.js";
+import type { DescriptorSource } from "../normalizer/types.js";
+import { canonicalSerialize } from "../canonical/serialize.js";
+import { fnv1a32 } from "../canonical/hash.js";
+import { deepFreeze } from "../canonical/deep-freeze.js";
+import type { Fnv1a32Hex } from "../canonical/types.js";
 
 function kindPrefix(kind: GraphNodeKind): string {
   switch (kind) {

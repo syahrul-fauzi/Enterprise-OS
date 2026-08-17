@@ -1,7 +1,7 @@
 import type {
   OrchestrationPlan,
   OrchestrationPlanRepository,
-} from "../contracts";
+} from "../contracts/index.js";
 
 const PLANS: readonly OrchestrationPlan[] = Object.freeze([
   {

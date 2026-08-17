@@ -13,31 +13,31 @@ export type {
   JsonRecord,
   ProjectionEvidenceInput,
   ReplayEvidenceInput,
-} from "./engine";
+} from "./engine.js";
 export {
   assertConstitutionReport,
   buildConstitutionReport,
   verifyConstitution,
   CONSTITUTION_VERSION,
-} from "./engine";
+} from "./engine.js";
 export {
   discoverConstitutionDependencyModules,
   inspectConstitutionDependencyDiscovery,
-} from "./governed-modules";
+} from "./governed-modules.js";
 export type {
   ConstitutionLaw,
   ConstitutionLawBlockingStatus,
   ConstitutionPredicate,
   ConstitutionProofResult,
   ConstitutionLawResult,
-} from "./laws";
+} from "./laws.js";
 export {
   createConstitutionLawResult,
   indexLawResults,
   runConstitutionLaws,
-} from "./laws";
+} from "./laws.js";
 export type {
   ConstitutionLawProfile,
   ConstitutionLawRegistry,
-} from "./law-registry";
-export { defineConstitutionLawRegistry } from "./law-registry";
+} from "./law-registry.js";
+export { defineConstitutionLawRegistry } from "./law-registry.js";

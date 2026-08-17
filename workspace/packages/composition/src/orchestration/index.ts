@@ -1,10 +1,10 @@
 import type { CapabilityDescriptor, CapabilityAggregateBindingManifest } from "@repo/core-kernel";
 import type { CapabilityRegistry } from "@repo/core-capability-registry";
-import type { CompositionResult, CompositionWorkspaceDescriptor } from "../workspace";
-import type { Composer } from "../workspace";
-import type { NavigationDescriptor } from "../navigation";
-import type { RegionId } from "../regions";
-import type { SlotInstance } from "../slots";
+import type { CompositionResult, CompositionWorkspaceDescriptor } from "../workspace/index.js";
+import type { Composer } from "../workspace/index.js";
+import type { NavigationDescriptor } from "../navigation/index.js";
+import type { RegionId } from "../regions/index.js";
+import type { SlotInstance } from "../slots/index.js";
 
 export interface OrchestratorLoadInput {
   readonly workspace: CapabilityAggregateBindingManifest | CompositionWorkspaceDescriptor;

@@ -1,9 +1,9 @@
-import type { LayoutDescriptor } from "../layouts";
-import type { NavigationDescriptor, NavigationItem } from "../navigation";
-import type { RegionDescriptor, RegionId } from "../regions";
-import type { SlotDescriptor, SlotId, SlotInstance } from "../slots";
-import type { ValidationIssue, WorkspaceId } from "../normalizer/types";
-import type { CanonicalJsonString, Fnv1a32Hex } from "../canonical/types";
+import type { LayoutDescriptor } from "../layouts/index.js";
+import type { NavigationDescriptor, NavigationItem } from "../navigation/index.js";
+import type { RegionDescriptor, RegionId } from "../regions/index.js";
+import type { SlotDescriptor, SlotId, SlotInstance } from "../slots/index.js";
+import type { ValidationIssue, WorkspaceId } from "../normalizer/types.js";
+import type { CanonicalJsonString, Fnv1a32Hex } from "../canonical/types.js";
 
 export type GraphNodeKind = "workspace" | "layout" | "region" | "slot" | "capability" | "navigation" | "navigation-item";
 export type GraphNodeId = string & { readonly __graphNodeId: unique symbol };

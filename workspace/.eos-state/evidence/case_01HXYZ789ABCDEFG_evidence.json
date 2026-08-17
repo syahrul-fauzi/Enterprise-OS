@@ -1,0 +1,29 @@
+{
+  "work_id": "ILC-RT-002/003",
+  "case_id": "case_01HXYZ789ABCDEFG",
+  "executed_at": "2026-08-17T00:15:20.081Z",
+  "professional_first_action": {
+    "action": "case.assignLawyer",
+    "actor": "lawyer-001",
+    "timestamp": "2026-08-17T00:15:20.081Z",
+    "previous_state": {
+      "status": "draft",
+      "lawyerId": null
+    },
+    "new_state": {
+      "status": "in_progress",
+      "lawyerId": "lawyer-001"
+    }
+  },
+  "invocation_record": {
+    "recorded": true,
+    "timestamp": "2026-08-17T00:15:20.081Z"
+  },
+  "persistence_verification": {
+    "repository": "CaseRepositoryInMemory",
+    "retrieved_successfully": true,
+    "all_fields_match": true
+  },
+  "evidence_ladder_level": "L3",
+  "target_evidence_level": "L4"
+}

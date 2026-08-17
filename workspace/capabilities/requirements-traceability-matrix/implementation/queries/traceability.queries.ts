@@ -1,6 +1,6 @@
-import { RequirementId, type RequirementAggregate } from "../../../requirement-management/implementation/contracts";
-import { requirementService } from "../../../requirement-management/implementation/service";
-import { evidenceRegistryService } from "../../../evidence-registry/implementation/service";
+import { RequirementId, type RequirementAggregate } from "../../../requirement-management/implementation/contracts/index.js";
+import { requirementService } from "../../../requirement-management/implementation/service.js";
+import { evidenceRegistryService } from "../../../evidence-registry/implementation/service.js";
 import type {
   GetTraceabilityRowInput,
   GetTraceabilityRowOutput,
@@ -13,8 +13,8 @@ import type {
   TraceabilityArtifactKind,
   TraceabilityMatrixSummary,
   TraceabilityMatchReason,
-} from "../contracts";
-import { TraceabilityArtifactRepositoryInMemory } from "../repository";
+} from "../contracts/index.js";
+import { TraceabilityArtifactRepositoryInMemory } from "../repository/index.js";
 
 const DELIVERY_ARTIFACT_KINDS = new Set<TraceabilityArtifactKind>([
   "capability",

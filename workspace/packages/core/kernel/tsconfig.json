@@ -8,7 +8,6 @@
     "composite": true,
     "ignoreDeprecations": "5.0",
     "baseUrl": ".",
-    "rootDir": "./src",
     "paths": {
       "@capabilities/*": ["../../../capabilities/*"]
     }

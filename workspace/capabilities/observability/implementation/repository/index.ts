@@ -1,2 +1,2 @@
-export { newIncidentId, defaultIncidentStatus, defaultIncidentPriority, IncidentRepositoryInMemory } from "./incident.repository";
-export { IncidentRepositoryPostgres } from "./incident-postgres.repository";
+export { newIncidentId, defaultIncidentStatus, defaultIncidentPriority, IncidentRepositoryInMemory } from "./incident.repository.js";
+export { IncidentRepositoryPostgres } from "./incident-postgres.repository.js";
