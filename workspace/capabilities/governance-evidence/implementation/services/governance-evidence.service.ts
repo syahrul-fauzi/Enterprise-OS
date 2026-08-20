@@ -307,6 +307,37 @@ export class GovernanceEvidenceService implements GovernanceEvidenceProvider {
     const evidence_met: string[] = [];
     const evidence_missing: string[] = [];
     
+    // VME-001: Calculate economic leverage correlation from dashboard metrics
+    const dashboardPath = resolve(WORKSPACE_ROOT, ".eos-state/eos-leverage-dashboard.json");
+    let costCorrelationScore = 0.0;
+    if (existsSync(dashboardPath)) {
+      const dashboardData = JSON.parse(readFileSync(dashboardPath, "utf8"));
+      const rwpTable = dashboardData.economic_leverage_status?.rwp_summary_table || dashboardData.rwp_summary_table || [];
+      
+      if (rwpTable.length >= 5) {
+        // Extract metrics for correlation analysis
+        const domainGlueTrend = rwpTable.map((entry: any) => entry.domain_glue_lines || 0);
+        const humanFrictionTrend = rwpTable.map((entry: any) => entry.human_friction_score || 5.0);
+        const buildTimeTrend = rwpTable.map((entry: any) => entry.build_time_ratio || 1.0);
+        
+        // Calculate correlation between domain glue (engineering cost) and human friction
+        let glueFrictionCorrelation = 0;
+        for (let i = 1; i < domainGlueTrend.length; i++) {
+          if (domainGlueTrend[i] <= domainGlueTrend[i-1] && humanFrictionTrend[i] <= humanFrictionTrend[i-1]) {
+            glueFrictionCorrelation++;
+          }
+          if (buildTimeTrend[i] <= buildTimeTrend[i-1]) {
+            glueFrictionCorrelation++;
+          }
+        }
+        
+        // Normalize correlation score (0.0-1.0) based on valid sequential reductions
+        const maxPossibleCorrelations = (domainGlueTrend.length - 1) * 2;
+        costCorrelationScore = maxPossibleCorrelations > 0 ? glueFrictionCorrelation / maxPossibleCorrelations : 0;
+        rationale.push(`VME-001: Engineering cost correlation score = ${(costCorrelationScore * 100).toFixed(1)}% (domain glue ↔ human friction/build time).`);
+      }
+    }
+
     // Define evidence weights (each evidence type contributes specific marginal value)
     const evidenceWeights: Record<string, number> = {
       "production_usage": 0.3,      // Core foundational evidence
@@ -322,6 +353,7 @@ export class GovernanceEvidenceService implements GovernanceEvidenceProvider {
       "scalability_validation": 0.05, // Performance under load
       "connector-security": 0.1,    // Integration security
       "dashboard_usage": 0.05,      // Operational usage
+      "engineering_cost_correlation": 0.2, // VME-001: Economic leverage evidence
     };
 
     // Check EVERY required evidence type for marginal information gain
@@ -420,6 +452,18 @@ export class GovernanceEvidenceService implements GovernanceEvidenceProvider {
           }
           break;
 
+        // VME-001: Special handling for engineering cost correlation evidence
+        case "engineering_cost_correlation":
+          if (costCorrelationScore >= 0.8) {
+            isMet = true;
+            evidence_met.push("engineering_cost_correlation");
+            rationale.push(`Engineering cost correlation validated (${(costCorrelationScore * 100).toFixed(1)}% sequential reduction across RWP series).`);
+          } else {
+            rationale.push(`Engineering cost correlation requires additional data (current score: ${(costCorrelationScore * 100).toFixed(1)}%).`);
+          }
+          break;
+
+        // Default handling for all unknown evidence types
         default:
           // Generic check - if we have any invocations, consider it potentially met
           if ((aggregatedEvidence.by_capability[capability.capability_id] || 0) > 0) {
@@ -427,6 +471,7 @@ export class GovernanceEvidenceService implements GovernanceEvidenceProvider {
             evidence_met.push(evidenceType);
             rationale.push(`${evidenceType}: Runtime activity detected.`);
           }
+          break;
       }
 
       if (isMet) {

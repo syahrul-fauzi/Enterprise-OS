@@ -1,4 +1,133 @@
-{
+"P0-PT-001": {
+    "work_id": "P0-PT-001",
+    "product": "CommsMe",
+    "user_job": "Complete PT establishment work from human intent to external outcome (Kemenkumham/OSS/DJP submission)",
+    "outcome": "Satu pekerjaan pendirian PT lengkap dari intent manusia menuju professional action dan outcome eksternal; 100% handoff context retention; semua eksperimen F2-F5 hanya diaktifkan jika friction terbukti; thin experimental artifacts tidak menjadi platform besar.",
+    "constraints": {
+      "architecture_locked": true,
+      "reuse_existing_capabilities": true,
+      "no_new_framework": true,
+      "no_schema_changes": false,
+      "thin_app_strategy": true,
+      "single_truth_source": true,
+      "no_horizontal_platforms": true,
+      "experiment_activation_gates": true,
+      "speculative_building_banned": true
+    },
+    "acceptance": [
+      "P0-PT-001 berjalan menuju manusia nyata (B4 human observer terbrief)",
+      "Project Context sebagai knowledge experiment, bukan subsystem",
+      "Execution Contract sebagai thin adapter experiment, bukan framework",
+      "Professional Work Package sebagai projection dari Work + Context yang sudah ada",
+      "Context reconstruction + TNA + MWC + reuse ratio terukur",
+      "Hanya implement minimal primitive jika friction nyata muncul",
+      "Jalankan work kedua dengan machinery yang sama, bandingkan marginal effort",
+      "Semua session validation & tenant isolation berjalan",
+      "regression: seluruh test suite semua produk ALL PASS, zero failures",
+      "evidence artifact JSON permanen tersimpan di .eos-state/"
+    ],
+    "status": "ACTIVE",
+    "created_at": "2026-08-17T00:00:00.000Z",
+    "updated_at": "2026-08-17T13:00:00.000Z",
+    "world_truth_scoreboard": {
+      "human_started_work": "🟢 EXECUTE_NOW",
+      "work_item_created": "🟡 PREFLIGHT_CHECK",
+      "work_completed": "🔴",
+      "professional_received_usable_handoff": "🔴",
+      "professional_acted": "🔴",
+      "external_action_occurred": "🔴",
+      "external_response_received": "🔴",
+      "outcome_verified": "🔴"
+    },
+    "assigned_agents": {
+      "commander": "eos-command-center",
+      "recon": "eos-recon",
+      "product_slice": "eos-product-slice",
+      "verification": "eos-verification",
+      "evidence": "eos-evidence-engine"
+    },
+    "vertical_integration": "P0-PT-001 sebagai ONE REAL WORK dengan F2/F3/F4/F5 sebagai seams (bukan proyek terpisah)",
+    "battle_map_version": "2026-08-17 tripartite truth framework (engineering/operational/world)",
+    "truth_classification": {
+      "engineering_truth": {
+        "status": "✅ VERIFIED",
+        "criteria": ["artifact exists", "projection works", "polling works", "reuse confirmed", "no_new_capabilities: 0"],
+        "evidence_link": "workspace/products/commsme/runtime/product-context-provider.ts"
+      },
+      "operational_truth": {
+        "status": "⏳ PENDING",
+        "criteria": ["work actually moves", "handoff is usable", "context survives transition"],
+        "evidence_link": "waiting for B4 observation"
+      },
+      "world_truth": {
+        "status": "🔴 UNCLAIMED",
+        "criteria": ["real professional acts", "external action happens", "external response returns", "outcome is verified"],
+        "evidence_link": "awaiting external execution"
+      }
+    },
+    "five_fronts": {
+      "F1_Reality": { "name": "P0-PT-001 + B4", "status": "🔴 ACTIVE", "description": "Medan utama: pekerjaan nyata manusia — reality signal source" },
+      "F2_Context": { "name": "Context continuity seam", "status": "🟢 INTEGRATED - TESTABLE", "description": "context-loss-map.json sebagai thin projection pada P0; siap testing dengan data P0 nyata" },
+      "F3_Execution": { "name": "Authority + action boundary seam", "status": "🟢 INTEGRATED - TESTABLE", "description": "execution-contract.json sebagai thin adapter pada P0; siap testing tanpa menjadi framework" },
+      "F4_Handoff": { "name": "Professional handoff seam", "status": "🟢 INTEGRATED - TESTABLE", "description": "professional-handoff-record.json sebagai projection dari work+context P0; engineering claim menunggu operational verification" },
+      "F5_Leverage": { "name": "Measurement seam", "status": "🟢 ACTIVE - INSTRUMENTED", "description": "MWC/ReuseRatio/CR/TNA baseline instrumentation siap; tidak memaksakan target sebelum baseline world data" }
+    },
+    "experiment_activation_gates": {
+      "EXP-001_Work_Package": { "condition": "Context loss >20% OR reconstruction >3 items", "status": "❌ HOLD - waiting for evidence", "est_lines": 15 },
+      "EXP-002_Execution_Contract": { "condition": "Ambiguity score >3/10", "status": "❌ HOLD - waiting for evidence", "est_lines": 2 },
+      "EXP-003_Project_Context": { "condition": "Systemic context loss across >2 work items", "status": "❌ HOLD - waiting for evidence", "est_lines": 3 }
+    },
+    "evidence": {
+      "artifact_path": ".eos-state/evidence/P0-PT-001_evidence.json",
+      "primitive_reuse_pct": 92.3,
+      "shared_primitives_reused": ["Consultation Cumulative Context", "EpistemicStatus Type System", "Core Runtime ExecutionContext", "Workflow Engine Pipeline", "Work Seed Handoff Pattern", "Evidence Registry Tracking", "Execution Chain Projection"],
+      "thin_artifacts_only": true,
+      "seam_activation_status": {
+        "F2_Context": "INTEGRATED - template siap, menunggu baseline B4",
+        "F3_Execution": "INTEGRATED - template siap, menunggu baseline B4",
+        "F4_Handoff": "INTEGRATED - template siap, menunggu baseline B4",
+        "F5_Leverage": "ACTIVE - measurement tracking berjalan"
+      },
+      "doctrine_compliance": {
+        "no_new_capabilities": true,
+        "no_horizontal_platforms": true,
+        "measurement_theater_avoided": true,
+        "vertical_experiment_maintained": true
+      }
+    },
+    "recon_report": {
+      "recon_completed_at": "2026-08-17T00:00:00.000Z",
+      "locked_boundaries_verified": ["IDENTITY_SESSION_RAIL", "POSTGRES_RAIL", "THIN_APP_BOUNDARY", "REPLAY_EVIDENCE_RAIL", "RULE_OF_TWO_COMPLIANCE"],
+      "existing_capabilities_found": ["consultation", "evidence-registry", "workflow-engine", "legal-case", "service-directory", "legal-community", "identity", "requirement-management"],
+      "reuse_percentage": 92.3,
+      "blocked": false,
+      "can_proceed": true,
+      "report_path": ".eos-state/recon/P0-PT-001_recon.json"
+    },
+    "execution_plan": {
+      "strategy": "Satu vertical experiment P0-PT-001 dengan empat seams (F2/F3/F4/F5) sebagai thin projections; tripartite truth framework untuk memisahkan engineering/operational/world claim; semua pembangunan terikat pada real-work friction; tidak ada speculative build",
+      "allowed_activities": ["B4 observation untuk reality signal", "P0 execution preparation verifikasi", "F2/F3/F4 projection testing terhadap data P0", "F5 baseline instrumentation tanpa paksa target", "minimal blocker fixes jika ada aktual"],
+      "frozen_activities": ["capability baru apapun", "horizontal context engine", "generic execution engine", "generic handoff platform", "speculative Services.ID work", "refactor besar", "klaim world truth sebelum external verification"],
+      "tasks": [
+        "Brief B4 human observer (prioritas #1) untuk capture tripartite truth data: engineering state vs operational execution vs world outcome",
+        "Jalankan F2/F3/F4 projection testing terhadap P0 data mock untuk verifikasi thin artifacts bekerja tanpa jadi platform",
+        "Pertahankan F5 instrumentation sebagai baseline-only: tidak set target sebelum world data terkumpul",
+        "Isi context-loss-map-template.json dengan real context loss data dari B4 observation",
+        "Isi execution-contract-observation-template.json dengan ambiguity score 1-10 tiap step dari B4",
+        "Isi professional-handoff-record-template.json dengan operational usability data ketika handoff pertama",
+        "Update leverage-measurement-template.json dengan baseline operational metrics (bukan engineering reuse) setelah P0 selesai",
+        "Jika real friction muncul → ikuti urutan: Observe → Localize → Classify → Smallest Fix (<=15 lines) → Verify → Evidence",
+        "Jalankan work kedua dengan machinery yang sama, bandingkan penurunan reconstruction/human repetition/TNA sebagai bukti EOS leverage",
+        "Mark status ONLY jika world_truth semua criteria terpenuhi: real professional acts + external outcome verified"
+      ],
+      "started_at": "2026-08-17T00:00:00.000Z",
+      "estimated_completion": "2026-08-24T00:00:00.000Z",
+      "completed_at": null
+    },
+    "verification_report": null,
+    "dependencies": ["SRV-PROD-001", "LH-CASE-001", "FIRST-LIGHT-001"],
+    "is_next_highest_leverage": true
+  },
   "REQ-1D-001": {
     "work_id": "REQ-1D-001",
     "product": "LawyersHub",

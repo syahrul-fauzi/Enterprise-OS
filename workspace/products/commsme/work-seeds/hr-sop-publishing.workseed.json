@@ -1,0 +1,188 @@
+{
+  "workSeedId": "WORKSEED-HR-SOP-PUBLISHING-UMKM-003",
+  "product": "commsme",
+  "version": "1.0.0",
+  "canonical": true,
+  "need": {
+    "id": "need.hr.sop_publishing.umkm",
+    "title": "Publikasi SOP Karyawan / HR Legal untuk UMKM",
+    "summary": "Pelaku UMKM membutuhkan publikasi dokumen HR internal: kontrak kerja karyawan harian/tetap, peraturan toko, SOP keamanan toko, dan ketentuan lembur/cuti sebagai konten terverifikasi di Legal Community.",
+    "userStory": "Sebagai pemilik UMKM, saya ingin menerbitkan SOP karyawan yang sah menurut UU Ketenagakerjaan No.13/2003 agar hubungan kerja dengan karyawan jelas, terhindar dari sengketa PHK, dan memiliki dokumen standar untuk merekrut karyawan baru.",
+    "domain": "legal.employment_law",
+    "severity": "medium",
+    "timeSensitivity": "within_10_days"
+  },
+  "outcome": {
+    "successCriteria": [
+      "ContentArticle SOP terdaftar di Legal Community dengan topicLabel 'Hukum Ketenagakerjaan'",
+      "Status artikel menjadi 'published' dengan publishedAt timestamp",
+      "Semua isi SOP sesuai dengan UU No.13/2003 jo Omnibus Law Cipta Kerja",
+      "Artikel dapat diakses oleh semua karyawan UMKM dalam tenant yang sama",
+      "HandoffContext 100% lengkap: konsultan HR tidak perlu menanyakan ulang detail usaha jika perlu review",
+      "Evidence menyimpan semua versi draf sebelum publish untuk audit trail"
+    ],
+    "failureModes": [
+      "Isi SOP melanggar ketentuan upah minimum provinsi → perlu review ulang oleh konsultan HR",
+      "Tidak ada penandatanganan karyawan sebagai bukti penerimaan → perlu addendum tanda tangan",
+      "Artikel tidak ter-publish karena permission issue → perlu verifikasi tenant/workspace hak akses"
+    ]
+  },
+  "context": {
+    "preconditions": [
+      "Pengguna memiliki akses admin ke workspace CommsMe UMKM",
+      "Pengguna mengetahui jumlah karyawan dan jenis kontrak (harian/tetap)",
+      "Pengguna memiliki data upah, lembur, dan cuti yang akan dimasukkan ke SOP"
+    ],
+    "assumptions": [
+      "SOP berlaku untuk wilayah Indonesia, choice of law = Hukum Ketenagakerjaan Indonesia",
+      "Penyelesaian sengketa ketenagakerjaan default = Musyawarah → Lembaga Penyelesaian Perselisihan Hubungan Industrial (LPHI)",
+      "Masa berlaku SOP 2 tahun dengan review tahunan"
+    ],
+    "regulatoryReferences": [
+      "UU No.13 Tahun 2003 tentang Ketenagakerjaan",
+      "UU No.11 Tahun 2020 tentang Cipta Kerja (Omnibus Law)",
+      "PP No.35 Tahun 2021 tentang Perjanjian Kerja Waktu Tertentu dan Perjanjian Kerja Waktu Tidak Tertentu"
+    ]
+  },
+  "requiredInputs": [
+    {
+      "id": "input.sop_type",
+      "label": "Jenis SOP yang Dibutuhkan",
+      "type": "select",
+      "options": ["Kontrak Kerja Karyawan Tetap", "Kontrak Kerja Karyawan Harian", "Peraturan Internal Toko", "SOP Keamanan & Kesehatan Kerja (K3)"],
+      "required": true,
+      "example": "Kontrak Kerja Karyawan Tetap"
+    },
+    {
+      "id": "input.business_details",
+      "label": "Detail Usaha UMKM",
+      "type": "json_object",
+      "required": true,
+      "schema": {
+        "nama_lengkap_usaha": "string",
+        "alamat_usaha": "string",
+        "nama_pemilik": "string",
+        "jabatan_pemilik": "string"
+      }
+    },
+    {
+      "id": "input.employment_terms",
+      "label": "Syarat-Syarat Kerja",
+      "type": "json_object",
+      "required": true,
+      "schema": {
+        "upah_bulanan": "number",
+        "waktu_kerja_per_minggu": "string",
+        "cuti_tahunan": "number",
+        "masa_kontrak_bulan": "number",
+        "ada_bpjs": "Ya/Tidak"
+      },
+      "example": {
+        "upah_bulanan": 3500000,
+        "waktu_kerja_per_minggu": "Senin-Sabtu 08.00-17.00",
+        "cuti_tahunan": 12,
+        "masa_kontrak_bulan": 12,
+        "ada_bpjs": "Ya"
+      }
+    },
+    {
+      "id": "input.additional_clauses",
+      "label": "Klausul Tambahan (Opsional)",
+      "type": "text_multiline",
+      "required": false,
+      "example": "Karyawan dilarang berhenti kerja mendadak tanpa pemberitahuan 30 hari sebelumnya. Denda keterlambatan masuk kerja Rp50.000/hari."
+    }
+  ],
+  "procedure": [
+    {
+      "step": 1,
+      "id": "proc.1.context_collection",
+      "title": "Kumpulkan Konteks & Validasi Input SOP",
+      "description": "AI mengumpulkan jawaban untuk requiredInputs, memvalidasi format upah sesuai UMR provinsi, dan memastikan semua field wajib terisi.",
+      "actor": "ai",
+      "capabilities": ["consultation.create", "evidence.record"],
+      "durationEstimateMinutes": 12,
+      "exitCriteria": [
+        "Semua requiredInputs terjawab dan tervalidasi formatnya",
+        "Work Item berstatus collecting_context → context_complete",
+        "HandoffContext.whatWeKnow mencakup semua detail usaha dan syarat kerja"
+      ]
+    },
+    {
+      "step": 2,
+      "id": "proc.2.ai_sop_draft",
+      "title": "Buat Draf SOP sesuai UU Ketenagakerjaan",
+      "description": "AI menyusun draf SOP lengkap dengan klausul standar: jangka waktu kontrak, upah, cuti, lembur, PHK, dan penyelesaian sengketa.",
+      "actor": "ai",
+      "capabilities": ["evidence.record", "document_template.generate"],
+      "durationEstimateMinutes": 22,
+      "exitCriteria": [
+        "Draf SOP tersimpan sebagai artifact dengan documentType = 'hr-sop-document'",
+        "Draf dicek checklist: nama usaha, alamat, pemilik, syarat kerja, dan klausul hukum lengkap"
+      ]
+    },
+    {
+      "step": 3,
+      "id": "proc.3.human_boundary_hr_review",
+      "title": "Handoff ke HR Professional Review (HUMAN BOUNDARY)",
+      "description": "Konsultan HR spesialis ketenagakerjaan meninjau draf SOP, memberikan koreksi jika ada yang melanggar UU, dan menyetujui untuk publish.",
+      "actor": "human_professional",
+      "roleRequired": "Konsultan HR UMKM Spesialis Ketenagakerjaan",
+      "handoffContext": [
+        "what: 'Review & Publish SOP Karyawan untuk UMKM [Nama Usaha]'",
+        "whatWeKnow": "(semua input pengguna + draf SOP + detail usaha)",
+        "documentsAvailable": "['Draf SOP AI, KTP pemilik usaha, NPWP usaha']",
+        "whatMissing": "['Tanda tangan persetujuan konsultan HR, catatan review jika ada koreksi']",
+        "whatDone": "['Pengumpulan konteks AI, Pembuatan draf sesuai UU Ketenagakerjaan']",
+        "aiLimits": [
+          "AI TIDAK dapat memberikan opini hukum tentang kepatuhan SOP terhadap kasus spesifik",
+          "AI TIDAK dapat menggantikan verifikasi manusia untuk kondisi usaha unik"
+        ],
+        "humanDecisionsNeeded": [
+          "Penyesuaian klausul jika tidak sesuai dengan kondisi usaha spesifik",
+          "Persetujuan publish artikel ke Legal Community",
+          "Rekomendasi addendum jika ada syarat khusus yang perlu ditambahkan"
+        ]
+      ],
+      "durationEstimateDays": 2,
+      "exitCriteria": [
+        "Draf SOP sudah direview dan disetujui oleh konsultan HR",
+        "Semua koreksi sudah diaplikasikan ke draf final"
+      ]
+    },
+    {
+      "step": 4,
+      "id": "proc.4.create_publish_article",
+      "title": "Buat & Publish ContentArticle ke Legal Community",
+      "description": "AI memanggil capability legal-community.createContentArticle kemudian publishContent untuk mempublikasikan SOP sebagai artikel terverifikasi.",
+      "actor": "ai",
+      "capabilities": ["legal-community.createContentArticle", "legal-community.publishContent", "evidence.record"],
+      "durationEstimateMinutes": 15,
+      "exitCriteria": [
+        "ContentArticle berhasil dibuat dengan topicLabel 'Hukum Ketenagakerjaan'",
+        "Status artikel berubah menjadi 'published' dengan publishedAt timestamp",
+        "Artikel dapat diakses oleh semua pengguna dalam tenant yang sama"
+      ]
+    },
+    {
+      "step": 5,
+      "id": "proc.5.delivery_close",
+      "title": "Penyerahan Hasil & Close Work Item",
+      "description": "Semua bukti publish dikumpulkan, notifikasi dikirim ke pemilik UMKM, dan Work Item ditutup dengan status VERIFIED.",
+      "actor": "human_professional + ai",
+      "capabilities": ["evidence.record", "case.close", "consultation.update"],
+      "durationEstimateMinutes": 18,
+      "deliverables": [
+        "Link akses artikel SOP yang sudah dipublish",
+        "PDF SOP yang bisa diunduh dan dicetak",
+        "Ringkasan hak dan kewajiban karyawan dalam Bahasa Indonesia sederhana",
+        "Laporan review singkat dari konsultan HR"
+      ],
+      "exitCriteria": [
+        "Work Item status = verified",
+        "Evidence completeness = 100% (semua versi draf + review + publish record)",
+        "Pengguna menerima notifikasi hasil melalui CommsMe"
+      ]
+    }
+  ]
+}

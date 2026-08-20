@@ -1,5 +1,5 @@
-import { CapabilityAggregateBindingSchema } from "@repo/core-kernel";
-import type { CapabilityAggregateBindingManifest } from "@repo/core-kernel";
+import { CapabilityAggregateBindingSchema } from "./schemas.js";
+import type { CapabilityAggregateBindingManifest } from "./schemas.js";
 import type {
   CapabilityRegistry,
   DefineCapabilityBindingResult,

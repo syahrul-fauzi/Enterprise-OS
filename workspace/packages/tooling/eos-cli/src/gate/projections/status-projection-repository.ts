@@ -76,3 +76,45 @@ export function readGateCStatusProjectionRecord(): Record<string, unknown> {
   }
   return parsed as Record<string, unknown>;
 }
+
+// Gate F: Production Readiness Gates
+export const GATE_F_STATUS_PROJECTION_PATH = resolve(
+  EOS_ROOT,
+  "build/evidence/production-readiness/gate-f-status.yaml",
+);
+
+export const GATE_F_STATUS_PROJECTION_REF =
+  "build/evidence/production-readiness/gate-f-status.yaml";
+
+export function persistGateFStatusProjectionRecord(
+  projection: Record<string, unknown>,
+): Record<string, unknown> {
+  return writeGateCStatusProjectionArtifacts({
+    payload: projection,
+    statusYamlPath: GATE_F_STATUS_PROJECTION_PATH,
+    statusYamlRef: GATE_F_STATUS_PROJECTION_REF,
+  });
+}
+
+export function materializeAndPersistGateFStatusProjection(input: {
+  readonly buildProjection: () => Record<string, unknown>;
+}): Record<string, unknown> {
+  return materializeAndPersistStatusProjection({
+    buildProjection: input.buildProjection,
+    persistProjection: persistGateFStatusProjectionRecord,
+  });
+}
+
+export function hasGateFStatusProjectionRecord(): boolean {
+  return existsSync(GATE_F_STATUS_PROJECTION_PATH);
+}
+
+export function readGateFStatusProjectionRecord(): Record<string, unknown> {
+  const parsed = YAML.parse(readFileSync(GATE_F_STATUS_PROJECTION_PATH, "utf8"));
+  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+    throw new Error(
+      `Expected object at ${GATE_F_STATUS_PROJECTION_REF}`,
+    );
+  }
+  return parsed as Record<string, unknown>;
+}

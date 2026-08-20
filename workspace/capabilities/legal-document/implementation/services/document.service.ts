@@ -8,6 +8,8 @@ import {
   GetDocumentOutput,
   ListDocumentsByStatusInput,
   ListDocumentsByStatusOutput,
+  ReviewDocumentInput,
+  ReviewDocumentOutput,
   SearchDocumentsInput,
   SearchDocumentsOutput,
   SignDocumentInput,
@@ -17,6 +19,7 @@ import {
 } from "../contracts/index.js";
 import {
   createDocument,
+  reviewDocument,
   signDocument,
   archiveDocument,
   updateDocument,
@@ -36,6 +39,9 @@ export class DocumentService {
   }
   signDocument(input: SignDocumentInput): SignDocumentOutput {
     return signDocument.execute(input) as SignDocumentOutput;
+  }
+  reviewDocument(input: ReviewDocumentInput): ReviewDocumentOutput {
+    return reviewDocument.execute(input) as ReviewDocumentOutput;
   }
   archiveDocument(input: ArchiveDocumentInput): ArchiveDocumentOutput {
     return archiveDocument.execute(input) as ArchiveDocumentOutput;

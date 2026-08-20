@@ -1,10 +1,16 @@
 {
-  "extends": "@repo/config-typescript/react-library.json",
+  "extends": "../../../config/typescript/base.json",
   "compilerOptions": {
     "outDir": "dist",
     "strictNullChecks": true,
     "declaration": true,
-    "types": ["node"]
+    "incremental": false,
+    "composite": false,
+    "noEmit": true,
+    "types": ["node"],
+    "paths": {
+      "@repo/composition": ["../../composition/dist/index.d.ts", "../../composition/src/index.ts"]
+    }
   },
   "include": ["src"],
   "exclude": ["dist", "build", "node_modules"]

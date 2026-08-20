@@ -1,4 +1,5 @@
 import React from "react";
+import { useRouter } from "next/navigation";
 import { Card } from "@repo/presentation-ui-system";
 import {
   type DocumentAggregate,
@@ -33,7 +34,10 @@ function formatDate(date: Date): string {
 }
 
 export function DocumentCard({ item }: DocumentCardProps) {
+  const router = useRouter();
   const status = STATUS_LABEL[item.status];
+  const canEdit = item.status === "draft" || item.status === "review";
+  
   return (
     <Card
       title={
@@ -66,6 +70,14 @@ export function DocumentCard({ item }: DocumentCardProps) {
           <div className="text-[10px] font-mono text-gray-400">
             matter: {item.matterId}
           </div>
+        )}
+        {canEdit && (
+          <button
+            onClick={() => router.push(`/documents/${item.id}/edit`)}
+            className="w-full mt-2 rounded-lg bg-slate-100 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200 transition-colors"
+          >
+            Edit
+          </button>
         )}
       </div>
     </Card>

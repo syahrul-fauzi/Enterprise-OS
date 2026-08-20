@@ -21,6 +21,10 @@ import {
   runGateCVerifyGenesisBaselineCommand,
   runGateCRunCaseCommand,
 } from "./gate/commands/gate-c.js";
+import {
+  runGateFRunCommand,
+  runGateFStatusCommand,
+} from "./gate/commands/gate-f.js";
 import { runVerifyFoundationCommand } from "./foundation/commands/verify-foundation.js";
 import { runVerifyConstitutionCommand } from "./commands/verify-constitution.js";
 import { runVerifyPortfolioCommand } from "./commands/verify-portfolio.js";
@@ -129,6 +133,20 @@ async function main(): Promise<number> {
           "Run: pnpm eos help\n",
       );
       return 1;
+    case "gate-f": {
+      const subcommand = args[1];
+      if (subcommand === "run") {
+        return runGateFRunCommand();
+      }
+      if (subcommand === "status") {
+        return runGateFStatusCommand();
+      }
+      process.stderr.write(
+        `Unknown gate-f subcommand: ${subcommand || "(missing)"}\n` +
+          "Run: pnpm eos help\n",
+      );
+      return 1;
+    }
     case "help":
     case "-h":
     case "--help":
@@ -151,6 +169,8 @@ async function main(): Promise<number> {
           "  pnpm eos gate-c genesis-evidence    Materialize frozen bundle + run-001 + clean replay",
           "  pnpm eos gate-c verify-genesis-baseline    Replay immutable run-001 tanpa memutasi baseline",
           "  pnpm eos gate-c run-case <run-id> <subject-rel-path>    Jalankan case C1 tanpa auto-accept",
+          "  pnpm eos gate-f run    Jalankan Gate F: Production Readiness Validation",
+          "  pnpm eos gate-f status    Tampilkan status operasional Gate F terakhir",
           "  pnpm eos verify-product <product-id>    Hasilkan evidence verifikasi empiris untuk produk nyata",
           "  pnpm eos verify-product-binding <product-id>    Verifikasi jalur product binding ke experience surface",
           "  pnpm eos verify-portfolio <portfolio-id>    Hasilkan evidence verifikasi tingkat portofolio",

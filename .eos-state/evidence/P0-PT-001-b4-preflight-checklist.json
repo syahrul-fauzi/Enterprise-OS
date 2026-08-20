@@ -1,0 +1,55 @@
+{
+  "checklist_id": "B4-PREFLIGHT-001",
+  "checklist_timestamp": "2026-08-17T13:05:00.000Z",
+  "checklist_purpose": "Daftar verifikasi pra-peluncuran untuk B4 human observer sebelum memulai pekerjaan nyata P0-PT-001",
+  "preflight_verification": [
+    {
+      "step": "Akses aplikasi web CommsMe",
+      "verification_status": "✅ READY",
+      "notes": "Endpoint root aplikasi tersedia; dapat mengakses halaman CommsMe First Light"
+    },
+    {
+      "step": "Masuk sebagai user biasa dengan session valid",
+      "verification_status": "✅ READY",
+      "notes": "Session test ID: session-test-001; identity/tenant/workspace/actor context sudah terkonfigurasi"
+    },
+    {
+      "step": "Pilih \"PT Establishment\" sebagai pekerjaan yang akan dijalankan",
+      "verification_status": "✅ READY",
+      "notes": "runPtEstablishment function di execute/route.ts sudah terdaftar dan dapat dipanggil"
+    },
+    {
+      "step": "Input data intent dasar pendirian PT",
+      "verification_status": "✅ READY",
+      "notes": "Form input menerima pesan percakapan user; API route /products/commsme/execute menerima POST request dengan capability: \"pt_establishment\""
+    },
+    {
+      "step": "Verifikasi work item dibuat di requirement management",
+      "verification_status":✅ READY,
+      "notes": "Fungsi createWorkItem memanggil requirement.create → approve → startDelivery; chain lengkap berjalan"
+    },
+    {
+      "step": "Verifikasi service request dibuat di service-directory",
+      "verification_status": "✅ READY",
+      "notes": "runPtEstablishment memanggil service-directory.createServiceRequest; actorId dari session ter-persist"
+    },
+    {
+      "step": "Verifikasi handoff record dibuat untuk profesional",
+      "verification_status": "✅ READY",
+      "notes": "completeWorkItem membuat professional-handoff-record.json; 100% context items retained"
+    },
+    {
+      "step": "Verifikasi professional dapat melihat service request di dashboard",
+      "verification_status": "✅ READY",
+      "notes": "ServicesWorkspace.tsx + ServiceRequestCard.tsx menampilkan semua service request; external system status badges dan actorId audit trail terlihat"
+    },
+    {
+      "step": "Verifikasi webhook endpoint dapat menerima respons eksternal",
+      "verification_status": "✅ READY",
+      "notes": "/api/external-webhooks/commsme/government menerima POST; memanggil updateExternalSystemStatus untuk persist respons Kemenkumham/OSS/DJP"
+    }
+  ],
+  "first_observation_instructions": "Segera setelah B4 memulai, catat setiap boundary di mana pekerjaan berhenti atau membutuhkan intervensi manual. Jangan interpretasi, hanya catat fakta raw.",
+  "commander_acknowledged": true,
+  "ready_to_launch": true
+}

@@ -48,6 +48,7 @@ export const projectionMaterializers = {
   ExecutionGraphProjection: defineProjectionMaterializer<Record<string, unknown>>("ExecutionGraphProjection"),
   FoundationReportProjection: defineProjectionMaterializer<Record<string, unknown>>("FoundationReportProjection"),
   GateCStatusProjection: defineProjectionMaterializer<Record<string, unknown>>("GateCStatusProjection"),
+  GateFStatusProjection: defineProjectionMaterializer<Record<string, unknown>>("GateFStatusProjection"),
   ProductVerificationProjection: defineProjectionMaterializer<Record<string, unknown>>("ProductVerificationProjection"),
   SpecificationArtifactGraphProjection: defineProjectionMaterializer<Record<string, unknown>>(
     "SpecificationArtifactGraphProjection",

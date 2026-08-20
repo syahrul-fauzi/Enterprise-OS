@@ -1,4 +1,5 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
     "strictNullChecks": true,
@@ -6,37 +7,45 @@
     "declarationMap": true,
     "incremental": true,
     "ignoreDeprecations": "5.0",
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "skipLibCheck": true,
     "composite": true,
     "rootDir": ".",
     "esModuleInterop": true,
     "isolatedModules": true,
-    "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "lib": [
+      "es2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "module": "NodeNext",
     "moduleDetection": "force",
     "moduleResolution": "NodeNext",
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "strict": true,
-    "target": "ES2022",
-    "paths": {
-      "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
-      "@repo/core-kernel/*": ["../../packages/core/kernel/src/*"],
-      "@capabilities/identity/*": ["../identity/*"],
-      "@capabilities/legal-case/*": ["../legal-case/*"],
-      "@capabilities/observability/*": ["../observability/*"],
-      "@capabilities/consultation/*": ["./*"],
-      "@products/*": ["../../products/*"],
-      "@repo/core/*": ["../../packages/core/*"],
-      "@repo/presentation/*": ["../../packages/presentation/*"]
-    }
+    "target": "ES2022"
   },
   "references": [
-    { "path": "../identity/tsconfig.json" },
-    { "path": "../legal-case/tsconfig.json" },
-    { "path": "../observability/tsconfig.json" }
+    {
+      "path": "../identity/tsconfig.json"
+    },
+    {
+      "path": "../legal-case/tsconfig.json"
+    },
+    {
+      "path": "../observability/tsconfig.json"
+    }
   ],
-  "include": ["implementation/**/*.ts", "__tests__/**/*.ts"],
-  "exclude": ["dist", "node_modules", "**/*.d.ts"]
+  "include": [
+    "implementation/**/*.ts",
+    "__tests__/**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "**/*.d.ts"
+  ]
 }

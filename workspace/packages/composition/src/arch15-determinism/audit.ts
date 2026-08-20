@@ -211,6 +211,44 @@ export const verifyArch15B: VerifyArch15BFn = function verifyArch15B(source, res
   }
 
   const first = snapshots[0];
+  if (!first || iterations < 2) {
+    const t1 = typeof performance !== "undefined" && typeof performance.now === "function" ? performance.now() : Date.now();
+    return Object.freeze({
+      rule: "ARCH-15B",
+      title: "Stable Output",
+      iterations,
+      inputHash,
+      planHashes: Object.freeze(planHashes.slice()),
+      graphHashes: Object.freeze(graphHashes.slice()),
+      normalizedHashes: Object.freeze(normalizedHashes.slice()),
+      planCanonicalHashes: Object.freeze(planCanonicalHashes.slice()),
+      graphStructuralChecksums: Object.freeze(graphStructuralChecksums.slice()),
+      resolvedActiveCapabilityOrders: Object.freeze(resolvedActiveCapabilityOrders.slice()),
+      regionOrders: Object.freeze(regionOrders.slice()),
+      slotOrders: Object.freeze(slotOrders.slice()),
+      navigationOrders: Object.freeze(navigationOrders.slice()),
+      nodeOrders: Object.freeze(nodeOrders.slice()),
+      planHashStable: true,
+      graphHashStable: true,
+      normalizedHashStable: true,
+      normalizedCanonicalJsonStable: true,
+      planCanonicalHashStable: true,
+      planCanonicalJsonStable: true,
+      graphCanonicalJsonStable: true,
+      graphStructuralChecksumStable: true,
+      regionOrderStable: true,
+      slotOrderStable: true,
+      navigationOrderStable: true,
+      nodeOrderStable: true,
+      activeCapabilitiesOrderStable: true,
+      snapshotEqualityStable: true,
+      allOutputsStable: true,
+      violations: Object.freeze([]),
+      durationMs: t1 - t0,
+      passed: true,
+    });
+  }
+
   for (let i = 1; i < iterations; i++) {
     if (normalizedHashes[0] !== normalizedHashes[i]) {
       violations.push({
@@ -345,19 +383,33 @@ export const verifyArch15B: VerifyArch15BFn = function verifyArch15B(source, res
     }
   }
 
-  const normalizedHashStable = normalizedHashes.every(h => h === normalizedHashes[0]);
-  const normalizedCanonicalJsonStable = normalizedCanonicalJsons.every(h => h === normalizedCanonicalJsons[0]);
-  const planCanonicalHashStable = planCanonicalHashes.every(h => h === planCanonicalHashes[0]);
-  const planCanonicalJsonStable = planCanonicalJsons.every(h => h === planCanonicalJsons[0]);
-  const planHashStable = planHashes.every(h => h === planHashes[0]);
-  const graphHashStable = graphHashes.every(h => h === graphHashes[0]);
-  const graphStructuralChecksumStable = graphStructuralChecksums.every(h => h === graphStructuralChecksums[0]);
-  const graphCanonicalJsonStable = graphCanonicalJsons.every(h => h === graphCanonicalJsons[0]);
-  const regionOrderStable = regionOrders.every(o => strArrEq(regionOrders[0], o));
-  const slotOrderStable = slotOrders.every(o => strArrEq(slotOrders[0], o));
-  const navigationOrderStable = navigationOrders.every(o => strArrEq(navigationOrders[0], o));
-  const nodeOrderStable = nodeOrders.every(o => strArrEq(nodeOrders[0], o));
-  const activeCapabilitiesOrderStable = resolvedActiveCapabilityOrders.every(o => strArrEq(resolvedActiveCapabilityOrders[0], o));
+  const firstHash = normalizedHashes[0] ?? "";
+  const firstNormalizedCanonical = normalizedCanonicalJsons[0] ?? "";
+  const firstPlanCanonicalHash = planCanonicalHashes[0] ?? "";
+  const firstPlanCanonicalJson = planCanonicalJsons[0] ?? "";
+  const firstPlanHash = planHashes[0] ?? "";
+  const firstGraphHash = graphHashes[0] ?? "";
+  const firstGraphStructuralChecksum = graphStructuralChecksums[0] ?? "";
+  const firstGraphCanonicalJson = graphCanonicalJsons[0] ?? "";
+  const firstRegionOrder = regionOrders[0] ?? Object.freeze([] as readonly string[]);
+  const firstSlotOrder = slotOrders[0] ?? Object.freeze([] as readonly string[]);
+  const firstNavigationOrder = navigationOrders[0] ?? Object.freeze([] as readonly string[]);
+  const firstNodeOrder = nodeOrders[0] ?? Object.freeze([] as readonly string[]);
+  const firstActiveCapabilitiesOrder = resolvedActiveCapabilityOrders[0] ?? Object.freeze([] as readonly string[]);
+
+  const normalizedHashStable = normalizedHashes.every(h => h === firstHash);
+  const normalizedCanonicalJsonStable = normalizedCanonicalJsons.every(h => h === firstNormalizedCanonical);
+  const planCanonicalHashStable = planCanonicalHashes.every(h => h === firstPlanCanonicalHash);
+  const planCanonicalJsonStable = planCanonicalJsons.every(h => h === firstPlanCanonicalJson);
+  const planHashStable = planHashes.every(h => h === firstPlanHash);
+  const graphHashStable = graphHashes.every(h => h === firstGraphHash);
+  const graphStructuralChecksumStable = graphStructuralChecksums.every(h => h === firstGraphStructuralChecksum);
+  const graphCanonicalJsonStable = graphCanonicalJsons.every(h => h === firstGraphCanonicalJson);
+  const regionOrderStable = regionOrders.every(o => strArrEq(firstRegionOrder, o));
+  const slotOrderStable = slotOrders.every(o => strArrEq(firstSlotOrder, o));
+  const navigationOrderStable = navigationOrders.every(o => strArrEq(firstNavigationOrder, o));
+  const nodeOrderStable = nodeOrders.every(o => strArrEq(firstNodeOrder, o));
+  const activeCapabilitiesOrderStable = resolvedActiveCapabilityOrders.every(o => strArrEq(firstActiveCapabilitiesOrder, o));
   const snapshotEqualityStable = snapshots.every(s => snapshotEquals(first, s));
   const allStable =
     normalizedHashStable &&

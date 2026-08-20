@@ -1,0 +1,70 @@
+{
+  "work_id": "PT-003",
+  "name": "Execution Observability Layer",
+  "purpose": "Membuat C19 failure boundary dapat diamati dan direproduksi (measurement only, no repair)",
+  "completed_at": "2026-08-19T00:00:00.000Z",
+  "status": "COMPLETE",
+  "core_questions_answered": [
+    {
+      "question": "Work mana?",
+      "field": "decision_id",
+      "implementation": "Auto-captured dari ambient executionContext",
+      "status": "ANSWERED"
+    },
+    {
+      "question": "Execution mana?",
+      "field": "executionId",
+      "implementation": "Passed explicitly saat recordObservedExecution()",
+      "status": "ANSWERED"
+    },
+    {
+      "question": "Execution context mana?",
+      "field": "context_trace_id",
+      "implementation": "OpenTelemetry-style UUID auto-generated oleh executionContext",
+      "status": "ANSWERED"
+    },
+    {
+      "question": "Apakah ini re-entry atau execution baru?",
+      "field": "is_reentry",
+      "implementation": "Auto-detected via activeContextStores map di executionContext",
+      "status": "ANSWERED"
+    },
+    {
+      "question": "Apa lineage sebelum dan sesudah re-entry?",
+      "field": "parent_context_trace_id",
+      "implementation": "Linkage ke context asli yang aktif sebelumnya",
+      "status": "ANSWERED"
+    }
+  ],
+  "guardrails_compliance": {
+    "no_RetryManager": true,
+    "no_IdempotencyManager": true,
+    "no_WorkRecovery": true,
+    "no_ExecutionCoordinator": true,
+    "no_domain_recovery_logic": true,
+    "overall_compliant": true
+  },
+  "c19_test8_verification": {
+    "failure_scenario": "Idempotent re-entry dengan separate executionContext (AsyncLocalStorage reset)",
+    "detection_capability": true,
+    "detectReentryAnomalies_output": {
+      "has_disconnected_parent": true,
+      "disconnected_executions": ["exec-retry-001"],
+      "has_context_linkage": false
+    },
+    "visualization": "W1 (pt003-w-reentry-001)\n├── E1: exec-timeout-001 | ctx=dc5b72f3 | reentry=false | parentCtx=null\n└── E2: exec-retry-001 | ctx=5e6a3fc1 | reentry=true | parentCtx=null ← ANOMALY DETECTED"
+  },
+  "test_results": {
+    "total_tests": 3,
+    "passed": 3,
+    "failed": 0,
+    "test_file": ".eos-state/tests/pt-003-observability.test.ts"
+  },
+  "files_modified": [
+    "packages/core/runtime/src/execution-context.ts",
+    "packages/core/runtime/src/execution-observability.ts",
+    ".eos-state/tests/pt-003-observability.test.ts"
+  ],
+  "architectural_note": "Boundary C19-TEST-8 dapat diatasi dengan minimal fix pada propagation executionContext yang sudah ada. Tidak memerlukan primitive/machinery baru sesuai Rule of Two.",
+  "next_step_recommendation": "Verifikasi PRD-002 (artifact graph persistence) dan jalankan C19 full test suite untuk konfirmasi semua 7/8 invariants survive dengan PT-003 instrumentation aktif"
+}

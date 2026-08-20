@@ -51,6 +51,8 @@ const CreateRequirementWithContextSchema = z.object({
   source: z.string().optional(),
   linkedCapabilityIds: z.array(z.string()).optional(),
   acceptanceCriteria: z.array(z.string()).optional(),
+  // Work identity binding (from decision_id)
+  workId: z.string().optional(),
   // Required context for tenant isolation
   sessionId: z.string().min(1),
   tenantId: z.string().min(1),
@@ -149,6 +151,7 @@ export const createRequirement: CreateRequirementCommand = {
     const entity: RequirementAggregate = {
       id: entityId,
       title: cleanTitle,
+      ...(input.workId ? { workId: input.workId } : {}),
       ...(trimOptional(summary) !== undefined ? { summary: trimOptional(summary) } : {}),
       ...(trimOptional(description) !== undefined
         ? { description: trimOptional(description) }
@@ -239,6 +242,8 @@ export const updateRequirement: UpdateRequirementCommand = {
               .filter(Boolean),
           }
         : {}),
+      // Preserve workId across all state transitions (C9-C4-DOC-001 requirement)
+      workId: current.workId,
     };
     const saved = await RequirementRepositoryCurrent.save(next);
     return { id: saved.id, status: saved.status, updatedAt: saved.updatedAt };
@@ -247,6 +252,9 @@ export const updateRequirement: UpdateRequirementCommand = {
 
 const ApproveRequirementWithContextSchema = z.object({
   id: z.string().min(1),
+  // PT-004 non-linear flow support (RWP-003)
+  workId: z.string().optional(),
+  parentContextTraceId: z.string().optional(),
   // Required context for tenant isolation
   sessionId: z.string().min(1),
   tenantId: z.string().min(1),
@@ -327,12 +335,19 @@ export const approveRequirement: ApproveRequirementCommand = {
         `[requirement.approve] Requirement must be in draft status before approval: ${id}`,
       );
     }
+    // Bind legal-case workId to requirement (RWP-002 minimal fix)
+    // RWP-003 non-linear PT-004 context propagation support (3-line minimal fix)
+    const workId = (input as any).workId || current.workId;
+    if ((input as any).parentContextTraceId) {
+      (executionContext as any).lastParentTraceId = (input as any).parentContextTraceId;
+    }
     const approvedAt = new Date();
     const next: RequirementAggregate = {
       ...current,
       status: "approved",
       verificationStatus: "not_ready",
       approvedAt,
+      workId,
     };
     await RequirementRepositoryCurrent.save(next);
     return { id: next.id, status: "approved", approvedAt };
@@ -387,6 +402,7 @@ export const startRequirementDelivery: StartRequirementDeliveryCommand = {
       ...current,
       status: "in_delivery",
       verificationStatus: "pending",
+      workId: current.workId,
     };
     await RequirementRepositoryCurrent.save(next);
     return { id: next.id, status: "in_delivery" };
@@ -443,6 +459,7 @@ export const markRequirementImplemented: MarkRequirementImplementedCommand = {
       status: "implemented",
       verificationStatus: "pending",
       implementedAt,
+      workId: current.workId,
     };
     await RequirementRepositoryCurrent.save(next);
     return { id: next.id, status: "implemented", implementedAt };
@@ -499,6 +516,7 @@ export const verifyRequirement: VerifyRequirementCommand = {
       status: "verified",
       verificationStatus: "passed",
       verifiedAt,
+      workId: current.workId,
     };
     await RequirementRepositoryCurrent.save(next);
     return {

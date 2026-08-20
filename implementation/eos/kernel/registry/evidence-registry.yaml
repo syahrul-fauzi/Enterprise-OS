@@ -16,3 +16,35 @@ evidence:
   file: workspace/products/lawyershub/evidence/observations/observation-20260724_043138.md
   created_at: '2026-07-24T04:31:38.710768'
   validated_at: '2026-07-24T04:31:45.379642'
+- id: OBS-003
+  source:
+    product: commsme
+  type: observation
+  status: validated
+  file: ../Enterprise-OS/workspace/products/commsme/evidence/observations/observation-20260817_065905.md
+  created_at: '2026-08-17T06:59:05.324636'
+  validated_at: '2026-08-17T07:00:39.256156'
+- id: OBS-004
+  source:
+    product: commsme
+  type: observation
+  status: validated
+  file: ../Enterprise-OS/workspace/products/commsme/evidence/observations/observation-20260817_065933.md
+  created_at: '2026-08-17T06:59:33.438504'
+  validated_at: '2026-08-17T07:00:39.250476'
+- id: OBS-005
+  source:
+    product: commsme
+  type: observation
+  status: validated
+  file: ../Enterprise-OS/workspace/products/commsme/evidence/observations/observation-20260817_070035.md
+  created_at: '2026-08-17T07:00:35.311391'
+  validated_at: '2026-08-17T07:00:39.244490'
+- id: OBS-006
+  source:
+    product: commsme
+  type: observation
+  status: validated
+  file: ../Enterprise-OS/workspace/products/commsme/evidence/observations/observation-20260817_071740.md
+  created_at: '2026-08-17T07:17:40.876038'
+  validated_at: '2026-08-19T10:31:42.228212'

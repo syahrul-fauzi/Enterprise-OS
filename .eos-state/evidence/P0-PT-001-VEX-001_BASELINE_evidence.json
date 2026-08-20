@@ -1,0 +1,98 @@
+{
+  "work_id": "P0-PT-001-VEX-001",
+  "executed_at": "2026-08-17T07:11:30.000Z",
+  "classification": "VERTICAL_EXPERIMENT_BASELINE_OBSERVATION",
+  "epistemic_status": "BASELINE_ONLY — NOT PROVEN AT RUNTIME",
+  "doctrine_compliance": {
+    "primary_question": "Apa perubahan terkecil yang membuat pekerjaan nyata berikutnya lebih dekat ke outcome DAN sekaligus mengajari kita sesuatu tentang operating model EOS?",
+    "answer_tested": "Penerapan F2(Context Spine)+F3(Execution Thin Waist)+F4(PWP Handoff) SEBAGAI 4 SEAM PADA SATU VERTICAL SLICE P0-PT-001 (Step 3 Notary Handoff), BUKAN 4 PROYEK TERPIAH.",
+    "anti_idle_trap": "NOT STANDING BY — AKTIF: membangun machinery di sekitar satu real-work vertical sambil menunggu reality truth signal B4.",
+    "flow_compliant": "OBSERVE → BASELINE (this file) → MEASURE (runtime B4) → COMPARE (before vs after) → THEN SET TARGET (numeric targets BELUM DITETAPKAN)",
+    "measurement_theater_prevention": "Semua angka CR/TNA/MWC/RR BEFORE/AFTER = BASELINE HIPOTESIS OBSERVASI, BUKAN acceptance truth. TIDAK ada klaim pengurangan 54.5%/82.2%/85.7% sebagai fakta terbukti.",
+    "no_speculative_targets": true,
+    "target_setting_rule_locked": "TARGETS_SET_AFTER_B4_RUNTIME_MEASUREMENT_ONLY"
+  },
+  "one_real_work": {
+    "product": "CommsMe",
+    "work_seed": "workspace/products/commsme/work-seeds/pt-establishment.workseed.json",
+    "focus_step": "STEP 3 = HUMAN BOUNDARY NOTARIS HANDOFF (proc.3.human_boundary_notary_handoff)",
+    "rationale_step_selection": "Ini adalah boundary dimana EOS internal state berpapasan dengan manusia profesional eksternal untuk pertama kalinya. Disinilah sebagian besar friction context reconstruction, TNA, dan human repetition biasanya muncul.",
+    "four_seams_applied_together": [
+      "F2 = Context Spine (14 fields) — projectContextFromWorkSeed()",
+      "F3 = Execution Thin Waist (8 fields) — adaptProjectContextStepToExecutionContract()",
+      "F4 = Handoff Projection (12 fields) — projectProfessionalWorkPackage()",
+      "F5 = Measurement (4 canonical metrics baseline compute)"
+    ]
+  },
+  "seam_chain_fingerprint": {
+    "runner_file": ".eos/experiments/vertical-P0-PT-001.experiment.ts",
+    "f2_version": "F2-EXPERIMENT-v0.1",
+    "f3_version": "F3-EXPERIMENT-v0.1",
+    "f4_version": "F4-EXPERIMENT-v0.1",
+    "f5_version": "F5-EXPERIMENT-v0.1",
+    "end_to_end_chain_shape_tests_pass_19_of_19": true
+  },
+  "baseline_measurement_BEFORE_seam_manual_handoff_legacy": {
+    "source": "MANUAL_HANDOFF_LEGACY (chat/email bebas tanpa struktur)",
+    "info_items_eos_available": 0,
+    "info_items_reconstructed_by_human": 22,
+    "estimated_TNA_minutes": 45,
+    "estimated_human_repetition_count": 7,
+    "notes": "Hipotesis baseline: tanpa seam, notaris bertanya ulang identitas founder, alamat PT, maksud & tujuan pendirian, nama PT, NIB/NPWP status, upload KTP/NPWP founder sebelum action pertama benar."
+  },
+  "baseline_measurement_AFTER_seam_F2_F3_F4_projection": {
+    "source": "SEAM_CHAIN (PWP projection dari EOS state yang sama)",
+    "info_items_eos_available": 11,
+    "info_items_reconstructed_by_human_only_missing_facts": 10,
+    "estimated_TNA_minutes": 8,
+    "estimated_human_repetition_count": 1,
+    "notes": "Hipotesis after seam: dengan PWP notaris HANYA perlu mengumpulkan MISSING INPUT. Info dasar tidak perlu ditanya ulang."
+  },
+  "delta_estimate_hypothesis_only_not_proven": {
+    "context_reconstruction_delta_pct": 54.5,
+    "time_to_next_action_delta_pct": 82.2,
+    "human_repetition_delta_pct": 85.7,
+    "hard_disclaimer": "INI HANYA PERBANDINGAN BERDASARKAN BASELINE OBSERVASI HIPOTESIS. BUKAN BUKTI RUNTIME. JANGAN DIKLAIM SEBAGAI FAKTA EOS SAVE 82% TIME TANPA B4."
+  },
+  "next_reality_signal_required_before_proof": [
+    "B4 real human observer terlibat",
+    "P0-PT-001 dijalankan sampai ke notaris HANDOFF RIIL",
+    "Timestamp handoff diberikan",
+    "Action pertama benar di-timestamp (untuk TNA aktual)",
+    "Pertanyaan notaris dicatat untuk CR aktual",
+    "HUMAN REPETITION COUNT aktual dicatat",
+    "P0-PT-002 dijalankan DENGAN MESIN SAMA untuk Rule of Two",
+    "Perbandingan WORK#1 vs WORK#2 dilakukan (marginal effort)"
+  ],
+  "compliance_to_minimal_fix_doctrine_all_4_gates_pass": {
+    "NO_NEW_CAPABILITY": true,
+    "NO_ENGINE_NO_SERVICE_NO_PLATFORM": true,
+    "NO_KERNEL_MUTATION_FROZEN_ARCHITECTURE_31": true,
+    "NO_SPECULATIVE_NUMERIC_TARGET_SET": true,
+    "ALL_ARTIFACTS_LOCATED_IN_EXPERIMENT_SANDBOX_ONLY": true
+  },
+  "commander_status_after_vex_001": {
+    "FOUNDATION": "🟢 LOCKED",
+    "L3_ENGINEERING_OPS": "🟢 PROVEN",
+    "OBSERVABILITY": "🟢 OPERATIONAL",
+    "LAUNCHER_BLOCKER": "🟢 RESOLVED",
+    "VERTICAL_EXPERIMENT": "🟢 BASELINE CAPTURED (P0-PT-001-VEX-001)",
+    "P0_PT_001": "🔴 ACTIVE (Fokus = Step 3 Notary Handoff + B4)",
+    "B4_REAL_HUMAN": "🔴 PENDING REALITY SIGNAL",
+    "REAL_PROFESSIONAL": "🔴 PENDING",
+    "EXTERNAL_ACTION": "🔴 PENDING",
+    "WORLD_OUTCOME_L4": "⏳ UNCLAIMED",
+    "F2_CONTEXT_SPINE": "🟠 EXPERIMENT — INTEGRATED (vertical chain proven executable via runner)",
+    "F3_EXEC_CONTRACT": "🟠 EXPERIMENT — INTEGRATED",
+    "F4_PWP_HANDOFF": "🟠 EXPERIMENT — INTEGRATED",
+    "F5_LEVERAGE_MEASUREMENT": "🟠 BASELINE ESTABLISHED (curve hypothesis TIDAK DISET SEBAGAI TARGET)",
+    "REPEATABILITY": "⚪ NOT YET MEASURED (butuh P0-PT-002)",
+    "L5_LEVERAGE_10X": "⚪ NOT CLAIMED (butuh WORK#1 vs WORK#2 vs WORK#3 measurement)"
+  },
+  "battle_map_correctness": {
+    "EOS_IDLE": false,
+    "MODE": "VERTICAL_EXPERIMENT_AROUND_ONE_REAL_WORK",
+    "ANTI_IDLE_TRAP_AVOIDED": "STANDING BY status diganti ke ACTIVELY DEVELOPING MACHINERY AROUND VERTICAL SLICE NYATA",
+    "next_move_philosophy": "Fix friction → move work → capture truth → extract primitive → reuse → move more work. EOS TIDAK menunggu selesai dibangun untuk mulai hidup. EOS DIBANGUN SEDANG BERJALAN."
+  }
+}

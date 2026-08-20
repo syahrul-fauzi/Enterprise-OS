@@ -4,8 +4,8 @@ import sys
 import yaml
 from datetime import datetime
 
-# Add implementation to path
-sys.path.insert(0, os.path.join("/root/Enterprise OS", "implementation"))
+# Add implementation to path - FIXED: corrected space to hyphen in root path
+sys.path.insert(0, os.path.join("/root/Enterprise-OS", "implementation"))
 from eos.kernel.registry.evidence_registry import add_observation
 
 CONFIG_PATH = "/root/Enterprise-OS/eos.config.yaml"

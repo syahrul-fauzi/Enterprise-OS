@@ -32,6 +32,14 @@ export interface ServiceProviderAggregate {
   readonly createdAt: Readonly<Date>;
 }
 
+export interface ExternalSystemResponse {
+  readonly system: string;
+  readonly status: string;
+  readonly referenceId?: string;
+  readonly data?: Record<string, unknown>;
+  readonly receivedAt: Readonly<Date>;
+}
+
 export interface ServiceRequestAggregate {
   readonly id: ServiceRequestId;
   readonly title: string;
@@ -47,6 +55,8 @@ export interface ServiceRequestAggregate {
   readonly deliveredAt?: Readonly<Date>;
   readonly tenantId: string;
   readonly workspaceId: string;
+  readonly actorId?: string;
+  readonly externalResponses?: readonly ExternalSystemResponse[];
 }
 
 export interface CreateServiceRequestInput {
@@ -60,6 +70,24 @@ export interface CreateServiceRequestInput {
 export interface CreateServiceRequestOutput {
   readonly id: ServiceRequestId;
   readonly status: ServiceRequestStatus;
+}
+
+export interface UpdateExternalSystemStatusInput {
+  readonly id: ServiceRequestId;
+  readonly externalSystem: string;
+  readonly externalStatus: string;
+  readonly externalReferenceId?: string;
+  readonly responseData?: Record<string, unknown>;
+  readonly receivedAt: string;
+  readonly sessionId: string;
+}
+
+export interface UpdateExternalSystemStatusOutput {
+  readonly success: boolean;
+  readonly id: ServiceRequestId;
+  readonly externalSystem: string;
+  readonly externalStatus: string;
+  readonly receivedAt: string;
 }
 
 export type ServiceProviderRepository = {

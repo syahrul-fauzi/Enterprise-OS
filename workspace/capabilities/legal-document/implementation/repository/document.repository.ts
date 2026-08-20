@@ -34,9 +34,11 @@ const seed = (): DocumentAggregate[] => {
     {
       id: DocumentId("doc-003"),
       title: "Draft Perjanjian Jual Beli Saham",
+      description: "Pasal awal: Denda keterlambatan sebesar 1% per hari dari nilai transaksi.",
       status: "draft",
       matterId: "case-003",
       author: "Dewi Lestari",
+      workId: "W1",
       createdAt: d(23),
       updatedAt: d(2),
     },

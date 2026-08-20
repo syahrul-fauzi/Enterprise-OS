@@ -101,9 +101,25 @@ function buildEntryQuestion(experience: ProductExperience | undefined) {
 }
 
 function buildEntryAnswer(experience: ProductExperience | undefined) {
-  if (!experience) return "Pilih tindakan alami pertama Anda di bawah untuk memulai.";
-  return `${experience.narrative.summary} ${experience.positioning.valueDescription}`;
-}
+    if (!experience) return "Pilih tindakan alami pertama Anda di bawah untuk memulai.";
+    
+    // Indonesian localization with product-specific language to ensure distinctiveness
+    if (experience.productId === "lawyershub") {
+      return "LawyersHub adalah platform manajemen kasus hukum profesional untuk membuka masalah hukum, memantau progres penanganan, dan menjaga akuntabilitas semua pihak. Jalankan pekerjaan hukum dengan konteks, bukti, dan transparansi sehingga klien dan profesional dapat melihat apa yang terjadi dan langkah apa selanjutnya.";
+    }
+    if (experience.productId === "services-id") {
+      return "Services.ID adalah pasar layanan digital dan platform pengiriman yang membantu Anda menerjemahkan kebutuhan menjadi layanan yang dapat dipantau dan dipercaya. Jelaskan apa yang Anda butuhkan, proses akan berjalan, dan Anda dapat meninjau hasil pengiriman dengan bukti yang terverifikasi.";
+    }
+    if (experience.productId === "ilc") {
+      return "ILC adalah pusat pengetahuan hukum dan komunitas profesional di mana siapa saja dapat mengeksplorasi, memahami, mendiskusikan, dan berkontribusi pada wacana hukum. Temukan wawasan hukum, bergabung dalam diskusi dengan ahli, dan berkontribusi pada kumpulan pengetahuan hukum bersama yang dapat diakses oleh semua orang.";
+    }
+    if (experience.productId === "academic") {
+      return "Academic Community adalah platform kolaborasi penelitian global di mana peneliti dapat berbagi temuan, berkolaborasi dengan rekan sejawat dari seluruh dunia, dan membangun pengetahuan kolektif dengan bukti yang dapat diverifikasi dan tinjauan sejawat yang terbuka.";
+    }
+    
+    // Fallback for other products
+    return `${experience.narrative.summary} ${experience.positioning.valueDescription}`;
+  }
 
 function buildProductRealitySnapshot(productId: string, experience: ProductExperience | undefined): ProductRealitySnapshot {
   if (!experience) return { items: [] };
@@ -206,11 +222,11 @@ export function ProductPreviewShell({
         : requirementsHref;
   const primaryLabel =
     mode === "landing"
-      ? (experience?.navigation?.primaryCta?.label || "Start Work")
+      ? (experience?.navigation?.primaryCta?.label || "Mulai Kasus Hukum")
       : "Overview";
   const secondaryLabel =
     mode === "landing"
-      ? (experience?.navigation?.secondaryCta?.label || "Requirements")
+      ? (experience?.navigation?.secondaryCta?.label || "Lihat Progress Hukum")
       : mode === "requirements"
         ? "Delivery"
         : "Requirements";
@@ -277,17 +293,17 @@ export function ProductPreviewShell({
             <div className="rounded-3xl border border-slate-200 bg-blue-50 p-6">
               <div className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">Kasus Aktif</div>
               <div className="mt-2 text-3xl font-bold text-blue-900">{roleStats.active}</div>
-              <p className="mt-1 text-sm text-blue-700">Legal matters in progress</p>
+              <p className="mt-1 text-sm text-blue-700">Masalah hukum yang sedang diproses oleh pengacara</p>
             </div>
             <div className="rounded-3xl border border-slate-200 bg-green-50 p-6">
               <div className="text-xs font-semibold uppercase tracking-[0.18em] text-green-600">Selesai Bulan Ini</div>
               <div className="mt-2 text-3xl font-bold text-green-900">{roleStats.completed}</div>
-              <p className="mt-1 text-sm text-green-700">Cases successfully resolved</p>
+              <p className="mt-1 text-sm text-green-700">Kasus hukum yang telah selesai diputuskan</p>
             </div>
             <div className="rounded-3xl border border-slate-200 bg-purple-50 p-6">
-              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-purple-600">Menunggu Review</div>
+              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-purple-600">Menunggu Persetujuan</div>
               <div className="mt-2 text-3xl font-bold text-purple-900">{roleStats.pending}</div>
-              <p className="mt-1 text-sm text-purple-700">Pending client approval</p>
+              <p className="mt-1 text-sm text-purple-700">Menunggu persetujuan dari klien</p>
             </div>
           </div>
         );
@@ -460,7 +476,10 @@ export function ProductPreviewShell({
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-2xl">
             <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Honest trust signal
+              {binding.productId === "lawyershub" && "Akuntabilitas Hukum"}
+              {binding.productId === "services-id" && "Transparansi Layanan"}
+              {binding.productId === "ilc" && "Verifikasi Pengetahuan"}
+              {binding.productId === "academic" && "Integritas Akademik"}
             </div>
             <h2 className="mt-2 text-xl font-bold text-slate-950">
               {presentation.proofTitle}
@@ -471,13 +490,22 @@ export function ProductPreviewShell({
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-700">
             <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Proof Before Claim
+              {binding.productId === "lawyershub" && "Akuntabilitas Hukum"}
+              {binding.productId === "services-id" && "Transparansi Layanan"}
+              {binding.productId === "ilc" && "Verifikasi Pengetahuan"}
+              {binding.productId === "academic" && "Integritas Akademik"}
             </div>
             <div className="mt-2 font-medium text-slate-900">
-              Built-in evidence and verified workflow
+              {binding.productId === "lawyershub" && "Bukti hukum dan track record kasus terverifikasi"}
+              {binding.productId === "services-id" && "Bukti pengiriman layanan dan review klien"}
+              {binding.productId === "ilc" && "Diskusi terverifikasi oleh profesional hukum"}
+              {binding.productId === "academic" && "Peer review dan sitasi penelitian terpercaya"}
             </div>
             <div className="mt-1">
-              This product uses visible progress and evidence instead of invented trust signals.
+              {binding.productId === "lawyershub" && "Platform ini menggunakan progres kasus yang terlihat dan bukti hukum yang terverifikasi, bukan klaim marketing semata."}
+              {binding.productId === "services-id" && "Platform ini menggunakan progres layanan yang terlihat dan bukti pengiriman yang terverifikasi, bukan janji kosong."}
+              {binding.productId === "ilc" && "Platform ini menggunakan konten yang diverifikasi oleh profesional hukum dan riwayat diskusi yang transparan."}
+              {binding.productId === "academic" && "Platform ini menggunakan penelitian yang diverifikasi dan tinjauan sejawat untuk menjaga integritas akademik."}
             </div>
           </div>
         </div>
@@ -498,7 +526,10 @@ export function ProductPreviewShell({
         <div className="mt-6 space-y-6">
           <section className="rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
             <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Human Entry Point
+              {binding.productId === "lawyershub" && "Mulai Perkara Hukum"}
+              {binding.productId === "services-id" && "Ajukan Kebutuhan Layanan"}
+              {binding.productId === "ilc" && "Jelajahi Wawasan Hukum"}
+              {binding.productId === "academic" && "Telusuri Penelitian"}
             </div>
             <h2 className="mt-2 text-xl font-bold text-slate-950">
               {entryQuestion}

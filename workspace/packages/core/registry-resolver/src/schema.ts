@@ -28,6 +28,9 @@ export const ProofLevelSchema = z.enum(ProofLevelLiterals);
 export const RetryConfigSchema = z.object({
   max_attempts: z.number().int().positive(),
   backoff: z.string().min(1),
+  circuit_breaker_threshold: z.number().int().positive().optional(),
+  exponential_backoff_multiplier: z.number().positive().optional(),
+  circuit_breaker_cooldown_ms: z.number().int().positive().optional(),
 });
 
 export const CompatibilityMatrixSchema = z.object({

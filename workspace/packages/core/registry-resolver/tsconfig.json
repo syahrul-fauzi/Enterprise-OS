@@ -1,12 +1,19 @@
 {
-  "extends": "@repo/config-typescript/base.json",
+  "extends": "../../../config/typescript/base.json",
   "compilerOptions": {
     "outDir": "dist",
     "strictNullChecks": true,
     "declaration": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "moduleResolution": "node16",
+    "paths": {
+      "*": ["./*"],
+      "@repo/core-transformation-registry": ["../transformation-registry/dist"],
+      "@repo/core-predicate-registry": ["../predicate-registry/dist"],
+      "@repo/core-proof-ledger": ["../proof-ledger/dist"]
+    }
   },
   "include": ["src"],
-  "exclude": ["dist", "build", "node_modules", "tests"]
+  "exclude": ["dist", "build", "node_modules", "tests", "../transformation-registry", "../predicate-registry", "../proof-ledger"]
 }

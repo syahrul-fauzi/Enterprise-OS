@@ -1,4 +1,4 @@
-import type { CapabilityDescriptor, CapabilityAggregateBindingManifest } from "@repo/core-kernel";
+import type { CapabilityDescriptor, CapabilityAggregateBindingManifest } from "../workspace/index.js";
 import type { CapabilityRegistry } from "@repo/core-capability-registry";
 import type { CompositionResult, CompositionWorkspaceDescriptor } from "../workspace/index.js";
 import type { Composer } from "../workspace/index.js";
@@ -29,5 +29,3 @@ export interface CompositionRuntimeBridge {
 export interface Orchestrator extends OrchestratorLifecycle {
   readonly bridge: CompositionRuntimeBridge;
 }
-
-

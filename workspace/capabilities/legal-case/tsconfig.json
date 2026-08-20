@@ -1,5 +1,5 @@
 {
-  "extends": "@repo/config-typescript/base.json",
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "rootDir": "./implementation",
     "outDir": "./dist",
@@ -22,14 +22,6 @@
     "strict": true,
     "target": "ES2022",
     "baseUrl": ".",
-    "paths": {
-      "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
-      "@repo/core-kernel/*": ["../../packages/core/kernel/src/*"],
-      "@repo/core-capability-registry": ["../../packages/core/capability-registry/src/index.ts"],
-      "@repo/core-capability-registry/*": ["../../packages/core/capability-registry/src/*"],
-      "@capabilities/identity/*": ["../identity/*"],
-      "@capabilities/consultation/*": ["../consultation/*"]
-    }
   },
   "references": [
     { "path": "../identity/tsconfig.json" }

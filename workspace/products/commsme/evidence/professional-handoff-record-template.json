@@ -1,0 +1,27 @@
+{
+  "work_id": "P0-PT-001",
+  "title": "Professional Work Package Handoff Record - PT Establishment",
+  "description": "Tracks context retention for AI→human professional handoff (guarantee: 100% context retained)",
+  "handoff_metrics": {
+    "total_context_items_provided": 0,
+    "context_items_missing_in_handoff": 0,
+    "context_retention_percentage": 0.0,
+    "professional_feedback_score": null,
+    "time_to_complete_first_action": null
+  },
+  "context_items": {
+    "whatWeKnow": { "provided": false, "notes": "" },
+    "documentsAvailable": { "provided": false, "notes": "" },
+    "whatDone": { "provided": false, "notes": "" },
+    "aiLimits": { "provided": false, "notes": "" },
+    "nextSteps": { "provided": false, "notes": "" }
+  },
+  "professional_notes": "",
+  "experiment_activation_check": {
+    "EXP-001_Work_Package_eligible": false
+  },
+  "created_at": "2026-08-17T06:59:33Z",
+  "last_updated": "2026-08-17T08:45:00.000Z",
+  "vertical_experiment_alignment": "F4 sebagai professional handoff seam dalam satu vertical experiment P0-PT-001 (bukan project terpisah)",
+  "doctrine_alignment": "hanya aktivasi jika context retention <80%; tidak membuat handoff platform baru"
+}

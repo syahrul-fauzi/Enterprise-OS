@@ -32,6 +32,9 @@ export const KBE_MIN_PREDICATE_COUNT = 3;
 export interface RetryConfig {
   readonly max_attempts: number;
   readonly backoff: string;
+  readonly circuit_breaker_threshold?: number;
+  readonly exponential_backoff_multiplier?: number;
+  readonly circuit_breaker_cooldown_ms?: number;
 }
 
 export interface CompatibilityMatrix {

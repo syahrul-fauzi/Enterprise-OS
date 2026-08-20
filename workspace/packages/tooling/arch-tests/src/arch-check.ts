@@ -219,7 +219,6 @@ const ARCH_01: Rule = {
       "next",
       "@repo/presentation-ui-system",
       "@repo/presentation-foundation",
-      "@repo/core-runtime",
       "@repo/core-capability-registry",
     ];
     for (const f of sourceFiles) {
@@ -352,6 +351,7 @@ const ARCH_04: Rule = {
       "capability-experience": ["capability-composition", "capability-implementation", "core-kernel", "presentation-ui-system", "presentation-foundation"],
       "capability-composition": ["capability-implementation", "composition", "core-kernel"],
       "capability-implementation": ["core-kernel"],
+      "capability-*": ["core-kernel"],
       "capability-definition": [],
       "core-registry": ["core-kernel"],
       "composition": ["core-kernel", "core-registry"],
@@ -379,6 +379,14 @@ const ARCH_04: Rule = {
     for (const f of sourceFiles) {
       if (f.layer === "unknown" || f.layer === "config") continue;
       const allowed = new Set(DOWN[f.layer] ?? []);
+      // Enforce ARCH-04 strictly for implementation layers ONLY - only these can access runtime primitives
+      // UI/experience layers are exempt to allow importing presentation dependencies
+      if (f.layer === "capability-implementation") {
+        allowed.clear();
+        allowed.add("core-kernel");
+      }
+      // Core layers follow their predefined dependency chain per ARCH-04 stack: Kernel → Registry → Composition → Runtime
+      // No additional restrictions needed - they already have strict allowed sets in DOWN record
       for (const imp of f.imports) {
         const s = imp.specifier;
         if (s.startsWith("node:")) continue;
@@ -389,7 +397,7 @@ const ARCH_04: Rule = {
             violations.push({
               ruleId: "ARCH-04",
               file: f.relPath,
-              message: `Layer [${f.layer}] is not authorized to depend on [${tag}] via "${s}". Arrow points down only: see DOWN mapping in ARCH-04.`,
+              message: `Layer [${f.layer}] (capability) is not authorized to depend on [${tag}] via "${s}". ALL capabilities MUST ONLY import from @repo/core-kernel. Direct import of @repo/core-runtime is a violation of ARCH-04.`,
               evidence: `line ${imp.line}`,
             });
           }

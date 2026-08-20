@@ -497,7 +497,11 @@ export function computeSnapshotDelta(
     const evKeysB = Object.keys(envelopeB.evidencePackages).sort();
     const evValuesEqual =
       evKeysA.length === evKeysB.length &&
-      evKeysA.every((k, i) => k === evKeysB[i] && envelopeA.evidencePackages[k].id === envelopeB.evidencePackages[k].id);
+      evKeysA.every((k, i) => {
+        const a = envelopeA.evidencePackages[k];
+        const b = envelopeB.evidencePackages[evKeysB[i] ?? k];
+        return !!a && !!b && k === evKeysB[i] && a.id === b.id;
+      });
     if (!evValuesEqual) changed.push("evidencePackages");
     const sortedRelsA = sortedClaimRelations(envelopeA.claimRelations);
     const sortedRelsB = sortedClaimRelations(envelopeB.claimRelations);
@@ -505,6 +509,7 @@ export function computeSnapshotDelta(
       sortedRelsA.length === sortedRelsB.length &&
       sortedRelsA.every((ra, idx) => {
         const rb = sortedRelsB[idx];
+        if (!rb) return false;
         return ra.fromClaimId === rb.fromClaimId && ra.kind === rb.kind && ra.toClaimId === rb.toClaimId;
       });
     if (!relsEqual) changed.push("claimRelations");
@@ -1059,7 +1064,7 @@ export function buildEvidenceObservationEdgesForPackage(
   const edges: EvidenceObservationSemanticEdge[] = [];
   for (let i = 0; i < observations.length; i++) {
     const rawObs = observations[i];
-    // SELALU recompute identity observation untuk menghindari edge dengan id placeholder
+    if (!rawObs) continue;
     const ident = rawObs.id && /^obs:sha256:[a-f0-9]{64}$/.test(String(rawObs.id)) && !String(rawObs.id).endsWith("0".repeat(64))
       ? { id: rawObs.id }
       : computeRawObservationIdSync(rawObs);

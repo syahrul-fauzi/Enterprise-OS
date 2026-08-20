@@ -81,6 +81,25 @@ export const CaseRepositoryInMemory: CaseRepository = {
       .map(clone);
   },
   async save(entity) {
+    // PR-003: Optimistic concurrency control for in-memory repository
+    const existing = STORE.get(entity.id);
+    if (existing) {
+      // Version check if both entities have version field
+      if ((entity as any).version !== undefined && (existing as any).version !== undefined) {
+        if ((entity as any).version !== (existing as any).version) {
+          throw new Error(`[CaseRepositoryInMemory] Concurrent modification detected for case:${entity.id} - current version ${(existing as any).version}, attempted update from version ${(entity as any).version}`);
+        }
+        // Increment version
+        (entity as any).version = (entity as any).version + 1;
+      } else if ((entity as any).version === undefined && (existing as any).version === undefined) {
+        // Initialize version
+        (entity as any).version = 1;
+      }
+    } else {
+      // New entity - initialize version
+      (entity as any).version = 1;
+    }
+
     const updated: CaseAggregate = { ...clone(entity), updatedAt: new Date() };
     STORE.set(updated.id, updated);
     return clone(updated);

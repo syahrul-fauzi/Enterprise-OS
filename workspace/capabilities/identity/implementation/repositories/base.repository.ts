@@ -44,24 +44,45 @@ export abstract class PostgresRepository<T extends { id: string }> {
     return result.rows;
   }
 
-  async save(entity: T): Promise<T> {
+  async save(entity: T & { version?: number }): Promise<T> {
     const exists = await this.byId(entity.id);
     const columns = Object.keys(entity);
     const values = Object.values(entity);
     const placeholders = values.map((_, i) => `$${i + 1}`).join(", ");
 
     if (exists) {
-      // Update existing
-      const setClause = columns.map((col, i) => `${col} = $${i + 1}`).join(", ");
+      // PR-003: Optimistic concurrency control - check version if present
+      const existingEntity = exists as T & { version?: number };
+      if (entity.version !== undefined && existingEntity.version !== undefined) {
+        // Version check failed - concurrent modification detected
+        if (entity.version !== existingEntity.version) {
+          throw new Error(`[PostgresRepository] Concurrent modification detected for ${this.tableName}:${entity.id} - current version ${existingEntity.version}, attempted update from version ${entity.version}`);
+        }
+        // Increment version for successful update
+        (entity as any).version = entity.version + 1;
+      } else if (entity.version === undefined && existingEntity.version === undefined) {
+        // Initialize version if not present on existing record
+        (entity as any).version = 1;
+      }
+      
+      // Refresh columns and values with updated version
+      const updatedColumns = Object.keys(entity);
+      const updatedValues = Object.values(entity);
+      const updatedSetClause = updatedColumns.map((col, i) => `${col} = $${i + 1}`).join(", ");
       await this.pool.query(
-        `UPDATE ${this.tableName} SET ${setClause} WHERE id = $${values.length}`,
-        [...values, entity.id]
+        `UPDATE ${this.tableName} SET ${updatedSetClause} WHERE id = $${updatedValues.length}`,
+        [...updatedValues, entity.id]
       );
     } else {
-      // Insert new
+      // PR-003: Initialize version field for new entities
+      (entity as any).version = 1;
+      // Insert new with initialized version
+      const newColumns = Object.keys(entity);
+      const newValues = Object.values(entity);
+      const newPlaceholders = newValues.map((_, i) => `$${i + 1}`).join(", ");
       await this.pool.query(
-        `INSERT INTO ${this.tableName} (${columns.join(", ")}) VALUES (${placeholders})`,
-        values
+        `INSERT INTO ${this.tableName} (${newColumns.join(", ")}) VALUES (${newPlaceholders})`,
+        newValues
       );
     }
     return entity;

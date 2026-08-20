@@ -162,7 +162,8 @@ export const verifyArch16: VerifyArch16Fn = function verifyArch16(target, option
           to: compilerPath,
           kind: "import",
         };
-        mutableNodes[runtimePath].push(edge);
+        const bucket = mutableNodes[runtimePath];
+        if (bucket) bucket.push(edge);
         void compound;
       }
     }
@@ -175,7 +176,10 @@ export const verifyArch16: VerifyArch16Fn = function verifyArch16(target, option
   let dependencyGraph: Arch16DependencyGraph | undefined;
   if (collectGraph && mutableNodes !== undefined) {
     const out: Record<string, readonly Arch16DependencyEdge[]> = {};
-    for (const k of Object.keys(mutableNodes)) out[k] = Object.freeze(mutableNodes[k].slice());
+    for (const k of Object.keys(mutableNodes)) {
+      const bucket = mutableNodes[k];
+      out[k] = Object.freeze((bucket ?? []).slice());
+    }
     dependencyGraph = Object.freeze({ nodes: Object.freeze(out) });
   }
 

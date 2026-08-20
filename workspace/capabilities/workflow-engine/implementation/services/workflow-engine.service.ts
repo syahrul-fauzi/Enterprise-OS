@@ -16,7 +16,7 @@ import type {
   WorkflowStepResult,
 } from "../contracts/index.js";
 import { WorkflowDefinitionRepositoryInMemory } from "../repository/index.js";
-import { recordRuntimeInvocation, traceExecutionByDecision, executionContext } from "../../../../packages/core/runtime/src/index.js";
+import { recordRuntimeInvocation, traceExecutionByDecision, executionContext } from "@repo/core-runtime";
 
 // ============================================================
 // DIV-001 ENFORCED: Procedure ≠ Workflow.

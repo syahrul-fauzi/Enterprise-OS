@@ -1,0 +1,121 @@
+{
+  "product": "services-id",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "Services.ID binding valid",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Browse Cybersecurity providers",
+      "ok": true,
+      "evidence": [
+        "picked=sp-003"
+      ]
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Create service request (sreq-101)",
+      "ok": true,
+      "evidence": [
+        "id=sreq-101"
+      ]
+    },
+    {
+      "n": 4,
+      "stage": "EXECUTE",
+      "label": "Vendor accepts request",
+      "ok": true,
+      "evidence": [
+        "status=accepted"
+      ]
+    },
+    {
+      "n": 5,
+      "stage": "STATE",
+      "label": "Mark delivered (terminal)",
+      "ok": true
+    },
+    {
+      "n": 6,
+      "stage": "EVIDENCE",
+      "label": "Verify attribution ledger",
+      "ok": true
+    },
+    {
+      "n": 7,
+      "stage": "SEE",
+      "label": "User sees delivered result",
+      "ok": true
+    }
+  ],
+  "totalSteps": 7,
+  "passCount": 7,
+  "failCount": 0,
+  "completedAtISO": "2026-08-19T12:07:19.759Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "services-id",
+      "displayName": "Services.ID"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "category": "Cybersecurity",
+      "count": 1,
+      "picked": "sp-003"
+    },
+    {
+      "step": 3,
+      "stage": "ACTION",
+      "capability": "service-directory.createServiceRequest",
+      "evidence_id": "sreq-101"
+    },
+    {
+      "step": 4,
+      "stage": "EXECUTE",
+      "transition": "draft→accepted",
+      "evidence_id": "sreq-101"
+    },
+    {
+      "step": 5,
+      "stage": "STATE",
+      "transition": "accepted→delivered",
+      "terminal": true,
+      "evidence_id": "sreq-101"
+    },
+    {
+      "step": 6,
+      "stage": "EVIDENCE",
+      "ledger": [
+        {
+          "key": "service-directory.createServiceRequest",
+          "ok": true,
+          "t": "2026-08-19T12:07:19.756Z"
+        },
+        {
+          "key": "service-directory.acceptServiceRequest",
+          "ok": true,
+          "t": "2026-08-19T12:07:19.758Z"
+        },
+        {
+          "key": "service-directory.markServiceDelivered",
+          "ok": true,
+          "t": "2026-08-19T12:07:19.758Z"
+        }
+      ]
+    },
+    {
+      "step": 7,
+      "stage": "SEE",
+      "evidence_id": "sreq-101",
+      "user_sees_status": "delivered"
+    }
+  ]
+}

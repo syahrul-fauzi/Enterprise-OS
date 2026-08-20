@@ -1,0 +1,208 @@
+# Production Readiness Gates (Gate F)
+# Mandatory criteria for all components/services promoted to production
+# Aligned with EOS governance framework and constitutional architecture
+
+version: "1.0.0"
+last_updated: "2026-08-20"
+gate_id: "GATE-F"
+name: "Production Readiness Validation"
+
+# Core Domain Definitions with Pass/Fail Criteria
+domains:
+  1. functional_testing:
+    name: "Functional Testing"
+    description: "100% pass rate for all test suites, no critical/high open defects"
+    criteria:
+      - all_unit_tests_pass:
+          check: "npm run test -- --watchAll=false"
+          pass_condition: "exit_code=0 AND all_tests_passed=100%"
+          severity: BLOCKER
+      - all_integration_tests_pass:
+          check: "npm run test:integration"
+          pass_condition: "exit_code=0 AND all_tests_passed=100%"
+          severity: BLOCKER
+      - all_e2e_tests_pass:
+          check: "npm run test:e2e -- --headless"
+          pass_condition: "exit_code=0 AND all_tests_passed=100%"
+          severity: BLOCKER
+      - open_defects_severity:
+          check: "Manual + automated defect scan"
+          pass_condition: "zero_critical=0 AND zero_high=0"
+          severity: BLOCKER
+    evidence_required:
+      - test_report_junit.xml
+      - coverage_report/lcov.info
+      - defect_scan_report.json
+
+  2. performance_benchmarks:
+    name: "Performance Benchmarks"
+    description: "Meet latency, throughput, error rate thresholds under peak production traffic"
+    criteria:
+      - p95_latency_threshold:
+          check: "k6 run load-tests/peak-traffic.js"
+          pass_condition: "p95<500ms"
+          severity: BLOCKER
+      - throughput_sustainment:
+          check: "k6 run load-tests/peak-traffic.js"
+          pass_condition: "rps>=1000 sustain 30min"
+          severity: BLOCKER
+      - error_rate_threshold:
+          check: "k6 run load-tests/peak-traffic.js"
+          pass_condition: "error_rate<0.1%"
+          severity: BLOCKER
+    evidence_required:
+      - k6_load_test_report.json
+      - metrics_snapshot_prometheus.json
+
+  3. security_compliance:
+    name: "Security Compliance"
+    description: "Zero critical/high unremediated vulnerabilities in all scans"
+    criteria:
+      - sast_scan_pass:
+          check: "npm run scan:sast"
+          pass_condition: "zero_critical=0 AND zero_high=0"
+          severity: BLOCKER
+      - dast_scan_pass:
+          check: "npm run scan:dast"
+          pass_condition: "zero_critical=0 AND zero_high=0"
+          severity: BLOCKER
+      - dependency_scan_pass:
+          check: "npm audit --production"
+          pass_condition: "exit_code=0 AND critical=0 AND high=0"
+          severity: BLOCKER
+      - compliance_audit_pass:
+          check: "Manual compliance audit"
+          pass_condition: "all_controls_implemented=true"
+          severity: BLOCKER
+    evidence_required:
+      - sast_report.json
+      - dast_report.json
+      - dependency_audit_report.json
+      - compliance_audit_signoff.md
+
+  4. reliability_standards:
+    name: "Reliability Standards"
+    description: "Automated backups, DR, circuit breakers, MTTR meets requirements"
+    criteria:
+      - automated_backups_configured:
+          check: "Infrastructure as code validation"
+          pass_condition: "backup_schedule_daily=true AND retention_30d=true"
+          severity: BLOCKER
+      - disaster_recovery_tested:
+          check: "DR failover test execution"
+          pass_condition: "rto<4h AND rpo<1h"
+          severity: BLOCKER
+      - circuit_breakers_implemented:
+          check: "Code analysis + load test validation"
+          pass_condition: "all_external_deps_have_circuit_breaker=true"
+          severity: MAJOR
+      - mttr_requirement_met:
+          check: "Historical incident analysis"
+          pass_condition: "mttr<1h"
+          severity: BLOCKER
+    evidence_required:
+      - backup_validation_report.json
+      - dr_test_report.md
+      - circuit_breaker_verification.json
+      - mttr_calculation.json
+
+  5. observability_requirements:
+    name: "Observability Requirements"
+    description: "Comprehensive logging, metrics, tracing with production alerting"
+    criteria:
+      - structured_logging_configured:
+          check: "E2E log validation"
+          pass_condition: "json_logs=true AND all_critical_events_logged=true"
+          severity: BLOCKER
+      - metrics_instrumented:
+          check: "Prometheus scrape validation"
+          pass_condition: "business_metrics=true AND infrastructure_metrics=true"
+          severity: BLOCKER
+      - distributed_tracing_implemented:
+          check: "Jaeger trace validation"
+          pass_condition: "endtoend_trace_complete=true AND trace_sample_rate=10%"
+          severity: MAJOR
+      - alerting_thresholds_defined:
+          check: "Grafana alert validation"
+          pass_condition: "critical_alerts_configured=true AND oncall_escalation_configured=true"
+          severity: BLOCKER
+    evidence_required:
+      - observability_validation_report.json
+      - alerting_playbook.md
+
+  6. operational_readiness:
+    name: "Operational Readiness"
+    description: "Documented runbooks, automated deployments, staging-prod parity"
+    criteria:
+      - runbooks_available:
+          check: "Documentation audit"
+          pass_condition: "all_critical_services_have_runbooks=true"
+          severity: BLOCKER
+      - deployment_playbooks_tested:
+          check: "CI/CD pipeline execution"
+          pass_condition: "automated_deployment_staging_successful=100%"
+          severity: BLOCKER
+      - incident_response_protocols:
+          check: "Tabletop exercise validation"
+          pass_condition: "irp_accepted_by_sre_team=true"
+          severity: BLOCKER
+      - staging_prod_parity:
+          check: "Infrastructure comparison"
+          pass_condition: "config_parity_99%+=true AND scaling_parity=true"
+          severity: BLOCKER
+    evidence_required:
+      - runbook_inventory.md
+      - deployment_pipeline_history.json
+      - irp_documentation.md
+      - parity_validation_report.json
+
+  7. compliance_validation:
+    name: "Compliance Validation"
+    description: "Adherence to data governance, privacy, regulatory requirements"
+    criteria:
+      - data_classification_implemented:
+          check: "Data architecture audit"
+          pass_condition: "pii_data_encrypted_at_rest=true AND pii_encrypted_in_transit=true"
+          severity: BLOCKER
+      - privacy_controls_validated:
+          check: "GDPR/CCPA compliance audit"
+          check_scope: "Lawyers Hub customer data"
+          pass_condition: "data_subject_access_request_flow_implemented=true"
+          severity: BLOCKER
+      - audit_logs_retention:
+          check: "Infrastructure validation"
+          pass_condition: "audit_logs_retention_7y=true (legal requirement)"
+          severity: BLOCKER
+      - regulatory_audit_signoff:
+          check: "Third-party audit execution"
+          pass_condition: "audit_passed_with_no_findings=true"
+          severity: BLOCKER
+    evidence_required:
+      - data_classification_report.json
+      - privacy_audit_report.md
+      - regulatory_audit_signoff.md
+
+# Exception Process (Formalized)
+exception_process:
+  1. exception_request:
+      action: "Submit exception request with business justification"
+      owner: "Product Owner"
+  2. impact_assessment:
+      action: "Security + SRE team conduct risk assessment"
+      owner: "CTO + CISO"
+  3. approval_workflow:
+      action: "Executive approval required for all exceptions"
+      approvers: ["CTO", "CISO", "CPO"]
+  4. exception_tracking:
+      action: "All exceptions logged in governance state with expiry"
+      retention: "permanent in proof ledger"
+  5. remediation_mandate:
+      action: "Exceptions require remediation timeline <90d"
+      severity: "BLOCKER if no timeline provided"
+
+# Report Generation
+reporting:
+  template: "/root/Enterprise-OS/governance/templates/production-readiness-report.md"
+  output_location: "/root/Enterprise-OS/build/evidence/production-readiness/{{commit_hash}}_report.json"
+  ci_integration: ".github/workflows/production-gate.yml"
+  blocking_promotion: true

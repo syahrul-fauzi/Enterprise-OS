@@ -22,7 +22,7 @@ export const ilc: ProductExperience = {
   },
   navigation: {
     primaryCta: {
-      label: "Explore / Join",
+      label: "Jelajahi / Bergabung",
       href: "/topics"
     },
     secondaryCta: {

@@ -3,7 +3,7 @@ import type {
   EosScope,
   SecurityConfigSummary,
 } from "../contracts/index.js";
-import { recordRuntimeInvocation } from "@repo/core-runtime";
+import { recordRuntimeInvocation } from "@repo/core-kernel";
 
 const DEFAULT_KEY = "eos-dev-key";
 const DEFAULT_SCOPES: readonly EosScope[] = [

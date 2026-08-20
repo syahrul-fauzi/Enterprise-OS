@@ -3,9 +3,10 @@ const nextConfig = {
     turbopack: {
         root: path.resolve(import.meta.dirname, "../.."),
         resolveAlias: {
-            "@repo/presentation-hooks": "./packages/presentation/hooks/dist",
-            "@repo/presentation-widgets": "./packages/presentation/widgets/dist",
-            "@repo/presentation-experience": "./packages/presentation/experience/dist",
+            "@repo/presentation-hooks": path.resolve(import.meta.dirname, "../../packages/presentation/hooks/dist/index.js"),
+            "@repo/presentation-widgets": path.resolve(import.meta.dirname, "../../packages/presentation/widgets/dist/index.js"),
+            "@repo/presentation-experience": path.resolve(import.meta.dirname, "../../packages/presentation/experience/dist/index.js"),
+            "../../../../../../capabilities/requirement-management/experience/views/RequirementView": path.resolve(import.meta.dirname, "../../capabilities/requirement-management/experience/views/RequirementView.tsx"),
         },
     },
     transpilePackages: ["@repo/core-kernel"],

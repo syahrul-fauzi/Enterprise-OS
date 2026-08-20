@@ -5,9 +5,9 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(import.meta.dirname, "../.."),
     resolveAlias: {
-      "@repo/presentation-hooks": "./packages/presentation/hooks/dist",
-      "@repo/presentation-widgets": "./packages/presentation/widgets/dist",
-      "@repo/presentation-experience": "./packages/presentation/experience/dist",
+      "@repo/presentation-hooks": path.resolve(import.meta.dirname, "../../packages/presentation/hooks/dist"),
+      "@repo/presentation-widgets": path.resolve(import.meta.dirname, "../../packages/presentation/widgets/dist"),
+      "@repo/presentation-experience": path.resolve(import.meta.dirname, "../../packages/presentation/experience/dist"),
     },
   },
   transpilePackages: ["@repo/core-kernel"],

@@ -11,7 +11,7 @@ import type {
 } from "../contracts/index.js";
 import { evidenceRegistryQueries } from "../queries/index.js";
 import { EvidenceRegistryRepositoryFileSystem } from "../repository/index.js";
-import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index.js";
+import { recordRuntimeInvocation } from "@repo/core-kernel";
 
 export class EvidenceRegistryService {
   readonly repositories = {

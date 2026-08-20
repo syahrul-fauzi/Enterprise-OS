@@ -4,6 +4,7 @@ export * from "./schema.js";
 export * from "./verification-decision.js";
 export * from "./verification-proof.js";
 export * from "./artifact-graph.js";
+export * from "./artifact-persistence.js";
 export * from "./delivery-evidence.js";
 export type {
   TransformationProofEntry,

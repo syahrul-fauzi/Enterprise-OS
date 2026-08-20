@@ -1,0 +1,94 @@
+{
+  "work_id": "P0-PT-001",
+  "title": "Leverage Metrics Tracking - PT Establishment",
+  "description": "Tracks F5 metrics: MWC (Marginal Work Cost), Reuse Ratio, CR (Context Reconstruction), TNA (Time-to-Next-Action)",
+  "metrics": {
+    "operational_metrics": {
+      "context_reconstruction": {
+        "name": "Context Reconstruction (human repetition)",
+        "description": "Jumlah item konteks yang harus direkonstruksi manual oleh manusia",
+        "total_context_items": 0,
+        "manually_reconstructed": 0,
+        "cr_percentage": 0.0,
+        "baseline_observation": "Pending B4 human data collection",
+        "notes": "Track untuk bandingkan WORK#1 vs WORK#2: apakah angka turun?"
+      },
+      "human_repetition": {
+        "name": "Human Repetition Count",
+        "description": "Berapa kali pengguna harus mengulang informasi yang sudah diberikan",
+        "total_questions_asked": 0,
+        "repeated_questions": 0,
+        "repetition_percentage": 0.0,
+        "baseline_observation": "Pending B4 human data collection",
+        "notes": "Core operational metric: bukti EOS mengurangi pengulangan manusia"
+      },
+      "engineering_intervention": {
+        "name": "Engineering Intervention Needed",
+        "description": "Jumlah kali engineering harus intervensi selama workflow berjalan",
+        "total_interventions": 0,
+        "intervention_reasons": [],
+        "baseline_observation": "Pending B4 human data collection",
+        "notes": "Track untuk bukti machinery EOS semakin mandiri"
+      },
+      "time_to_next_action": {
+        "name": "Time-to-Next-Action (TNA) average",
+        "description": "Rata-rata latency antar step workflow (menit)",
+        "boundary_latencies": {
+          "user→signup": null,
+          "signup→auth": null,
+          "auth→tenant": null,
+          "tenant→workspace": null,
+          "workspace→product": null,
+          "product→real_job": null,
+          "ai→handoff": null
+        },
+        "average_tna_minutes": null,
+        "baseline_observation": "Pending B4 human data collection",
+        "notes": "Track untuk bandingkan WORK#1 vs WORK#2: apakah TNA berkurang?"
+      }
+    },
+    "engineering_metrics": {
+      "mwc": {
+        "name": "Marginal Work Cost (code)",
+        "description": "Lines of new code written for this work item vs total lines",
+        "total_lines_in_workflow": 0,
+        "new_lines_written": 0,
+        "mwc_percentage": 0.0,
+        "hypothesis_target": "<20%",
+        "baseline_observation": "Engineering baseline: 92.3% reuse tercapai",
+        "notes": "Hanya signal engineering, bukan leverage utama EOS"
+      },
+      "code_reuse_ratio": {
+        "name": "Code Reuse Ratio",
+        "description": "Percentage of existing EOS capabilities/substrates reused (code level)",
+        "total_capabilities_used": 3,
+        "reused_capabilities": 3,
+        "reuse_ratio_percentage": 100.0,
+        "achieved_reuse": 92.3,
+        "notes": "P0-PT-001_recon.json: 92.3% reuse code awal; bukan bukti operating machinery reuse"
+      }
+    },
+    "leverage_comparison": {
+      "work1_baseline": null,
+      "work2_improvement": null,
+      "reduction_cr": null,
+      "reduction_repetition": null,
+      "reduction_interventions": null,
+      "reduction_tna": null
+    },
+  "leverage_summary": {
+    "overall_leverage_score": null,
+    "measurement_status": "AWAITING_BASELINE",
+    "hypothesis_validation": {
+      "70%_reconstruction_reduction_achieved": false,
+      "less_than_20%_new_machinery_achieved": false
+    },
+    "doctrine_alignment": "Semua angka sebagai hipotesis, measurement theater dihindari"
+  },
+  "created_at": "2026-08-17T06:59:33Z",
+  "last_updated": "2026-08-17T10:45:00.000Z",
+  "truth_separation_lock": "operational_evidence_dari_simulasi_bisa_diklaim; world_truth_hanya_setelah_profesional+eksternal_nyata",
+  "vertical_experiment_alignment": "F5 sebagai measurement seam dalam satu vertical experiment P0-PT-001; memisahkan engineering metrics vs operational metrics untuk track EOS sebagai operating machinery, bukan cuma code reuse",
+  "tripartite_truth_alignment": "engineering_metrics = engineering truth claim; operational_metrics menunggu operational truth dari B4; leverage_comparison baru terisi setelah world truth WORK#2 tercapai",
+  "leverage_doctrine_compliance": "92.3% code reuse bukan kemenangan utama; fokus pada penurunan operational metrics di WORK#2 vs WORK#1 sebagai bukti EOS machinery yang reusable"
+}

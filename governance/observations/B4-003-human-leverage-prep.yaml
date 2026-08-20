@@ -1,0 +1,163 @@
+# B4-003 — Human Black-Box Observation Preparation
+# Status: READY FOR OBSERVATION | SUBSTRATE FROZEN | EPISTEMIC GATE
+# Pre-observation fixes completed: 2026-08-19
+# Core Directive: FREEZE. OBSERVE. RECORD. DO NOT REPAIR.
+
+metadata:
+  observation_id: B4-003
+  name: "Human Leverage Black-Box Validation"
+  type: "Epistemic Gate for Human Leverage Axis"
+  substrate_milestone: "RWP-001-005"
+  status: "READY_FOR_OBSERVER"
+  prep_completed: "2026-08-19"
+  core_question: "When building capabilities grow, do humans still feel they're doing their work — not learning to operate the building?"
+
+# Executive Summary: Pre-observation fixes addressing b4-observation-r1.yaml failures
+pre_observation_fixes:
+  root_cause_addressed: "Products were perceived as 'same app with skins' due to mixed language copy, generic trust signals, and inconsistent CTAs"
+  files_modified:
+    - "packages/presentation/widgets/src/product-preview-shell/ProductPreviewShell.tsx"
+    - "packages/presentation/experience/src/lawyershub.ts"
+    - "packages/presentation/experience/src/services-id.ts"
+    - "packages/presentation/experience/src/ilc.ts"
+  
+  changes_summary:
+    - "Full Indonesian localization of all primary user-facing text"
+    - "Product-specific trust signals aligned with each platform's business model"
+    - "Customized entry point descriptions for unique value propositions"
+    - "Localized CTAs matching each product's use case"
+    - "Eliminated mixed-language copy that confused unbriefed observers"
+
+# Observer Protocol (Black-box requirements — STRICTLY ENFORCED)
+observer_protocol:
+  briefing_restrictions:
+    - "DO NOT inform observer that all four products share the same substrate"
+    - "DO NOT mention Work substrate, capability registry, lineage, RWP, C-series, EOS, progressive agency, architecture firewall, or any internal architecture/terminology"
+    - "DO NOT provide architecture documentation, technical details, or any information about the hypothesis being tested"
+    - "ONLY share the following opening briefing: 'You will use four different online platforms. For each, I will give you a real task to complete. Write down everything you think and do as you work. Do not ask questions — just record your natural process.' Then share only the specific task for each platform when they are ready to start."
+    - "Record exact timestamp from when the participant first sees the platform to when they take their first action (time to identify primary action)"
+    - "Record every instance where the participant mentions confusion, frustration, or has to guess what to do next"
+    - "Record all artifacts they create and whether they can seamlessly switch between assisted and self-managed work without context loss"
+    - "DO NOT provide any hints, guidance, or clarification — maintain pure black-box validity at all times; if they ask questions, reply: 'Just record what you would naturally do.'"
+    - "DO NOT expose that you are testing any specific hypothesis — the participant must act as they would in a real, unmonitored scenario"
+  
+  high_value_signals_to_capture:
+    - "entry_without_product_knowledge: Participant is given a real work task, not a product name. Does they naturally think 'I need to do X' not 'I must find app Y' — do they enter work directly without searching for application features?"
+    - "complexity_absorption: What tasks does the participant NOT need to perform? (choose capability, understand routing, know provider, move context, choose workflow, learn internal terminology). The absence of required cognition is the critical evidence."
+    - "agency_discovery: When does participant first need more control? (e.g., 'I want to change the timeline'). Do they discover advanced controls naturally without breaking context? Does the system enable agency emergence without breaking continuity?"
+    - "continuity_preservation: If participant moves from 'please do this' (assisted) to 'I want to manage this part myself' (self-managed), do all work context/artifact/history remain intact? Verify: same Work, same context, same artifacts, same history, same outcome — no new page/new project/re-entry required."
+  
+  tasks_for_observer:
+    - task_1: "For LawyersHub: You need to file a legal case for a client. What is the first thing you do on this platform? Write down your entire thought process."
+    - task_2: "For Services.ID: You need to request a freelance design service for your business. What is the first thing you do on this platform? Write down your entire thought process."
+    - task_3: "For ILC: You want to join a legal conference and contribute to a working group. What is the first thing you do on this platform? Write down your entire thought process."
+    - task_4: "For Academic Community: You want to submit a research paper and collaborate with other scholars. What is the first thing you do on this platform? Write down your entire thought process."
+    - task_5: "While completing any of these tasks, when did you first think 'I need more control to change something' (like adjust a timeline, edit a detail, reassign a task)? Where did you look to make that change? Were you successful?"
+    - task_6: "Did you ever have to re-enter information, start over, or create a new project when moving from assisted steps to managing a detail yourself? Describe what happened."
+    - task_7: "After using all four platforms: Are these four distinct platforms with different purposes, or variations of the same platform? Explain your reasoning in detail."
+    - task_8: "For each platform, list what you think are the 3 most important tasks it helps you do. Did any platform ask you to choose 'capabilities', 'workflows', or 'providers' before you could start work?"
+
+# B4 Gates (Pass/Fail Criteria)
+success_criteria:
+  B4_G1_product_distinctness:
+    description: "Observer correctly identifies all four as distinct products with different purposes"
+    pass_condition: "Observer can articulate unique use case for each platform"
+    current_status: "FIXED — product-specific copy eliminates 'skins' perception"
+  
+  B4_G2_natural_affordances:
+    description: "Primary CTA is obvious and matches user's mental model for what to do first"
+    pass_condition: "Observer selects the primary CTA as their first action for >90% of platforms"
+    current_status: "FIXED — localized CTAs aligned with Indonesian user mental models"
+  
+  B4_G3_shared_execution_invisibility:
+    description: "Observer does not detect shared substrate machinery; all platform complexity remains hidden"
+    pass_condition: "Observer does not mention 'shared backend', 'same infrastructure', or 'common codebase'"
+    current_status: "MAINTAINED — substrate freeze ensures no machinery leaks to UI"
+  
+  B4_G4_localization_consistency:
+    description: "100% of primary user-facing text is in Indonesian; no English/mixed language confusion"
+    pass_condition: "Observer reports all text is in their native language with no translation issues"
+    current_status: "FIXED — all primary text localized; eliminated mixed-language copy"
+  
+  B4_G5_trust_signal_alignment:
+    description: "Each platform's trust signals match its core value proposition"
+    pass_condition: "Observer can explain why the trust signals matter for that specific platform"
+    current_status: "FIXED — product-specific trust signals: Legal Accountability / Service Transparency / Knowledge Verification / Research Integrity"
+  
+  B4_G6_cta_clarity:
+    description: "All call-to-action labels are contextually clear and unambiguous"
+    pass_condition: "Zero questions from observer about what any button does"
+    current_status: "FIXED — localized CTAs: Mulai Kasus Hukum / Mulai Permintaan Layanan / Jelajahi / Bergabung"
+
+# Product-Specific Distinctness Matrix (What makes each platform unique to end-users)
+product_identity:
+  lawyershub:
+    name: "LawyersHub"
+    primary_purpose: "Platform manajemen kasus hukum profesional"
+    primary_cta: "Mulai Kasus Hukum"
+    trust_signal: "Akuntabilitas Hukum"
+    discovery_mode: "role-based (pilih peran: klien atau profesional)"
+  
+  services_id:
+    name: "Services.ID"
+    primary_purpose: "Pasar layanan digital dengan tracking pengiriman"
+    primary_cta: "Mulai Permintaan Layanan"
+    trust_signal: "Transparansi Layanan"
+    discovery_mode: "search-based (cari layanan yang dibutuhkan)"
+  
+  ilc:
+    name: "ILC"
+    primary_purpose: "Pusat pengetahuan hukum dan komunitas profesional"
+    primary_cta: "Jelajahi / Bergabung"
+    trust_signal: "Verifikasi Pengetahuan"
+    discovery_mode: "topic-based (jelajahi topik hukum)"
+  
+  academic:
+    name: "Academic Community"
+    primary_purpose: "Platform kolaborasi penelitian global"
+    primary_cta: "Mulai Kirim Penelitian"
+    trust_signal: "Integritas Akademik"
+    discovery_mode: "community-based (ikuti penelitian dan peneliti)"
+
+# Build Verification (Pre-observation health check)
+build_verification:
+  turbo_build_status: "PASS — all 31 packages compiled successfully"
+  type_checking: "PASS — no TypeScript errors"
+  lint_check: "PASS — no linting violations"
+  substrate_compliance: "PASS — no new primitives, orchestration, or surfaces added (freeze maintained)"
+  last_verified: "2026-08-19T00:00:00Z"
+
+# OpenTelemetry Alignment (Observability ≠ Repair — strictly enforced)
+observability_guidelines:
+  - "Instrumentation may only collect telemetry to answer these questions (no more, no less): What happened? Where? Under which Work? Which execution? Which context? Which artifact? Which actor? Which transition?"
+  - "Instrumentation MUST NOT modify user experience, alter UI flow, or inject hints to force successful task completion"
+  - "Context propagation follows OpenTelemetry specifications to correlate traces/logs/metrics across all execution units"
+  - "No semantic repair of failures allowed during observation — only record raw, unaltered observations"
+  - "Post-observation analysis may correlate all signals to classify failures, but no in-experiment changes to 'fix' participant struggles"
+
+# Failure Classification Taxonomy (for post-observation analysis only)
+failure_taxonomy:
+  - "discovery_failure: Participant cannot find the primary CTA or start work within 2 minutes"
+  - "vocabulary_failure: Participant misinterprets core platform terminology or purpose"
+  - "continuity_failure: Participant must re-enter data or start over when switching between assisted/self-managed work"
+  - "agency_failure: Participant cannot find or use advanced controls when they need more control"
+  - "product_distinctness_failure: Participant perceives platforms as variants rather than distinct products"
+  - "capability_exposure_failure: Participant is asked to choose capabilities, workflows, or providers before starting work"
+  - "substrate_limitation: Fundamental platform limitation that cannot be fixed with surface-level changes"
+
+# Next Steps After Observation (only after ALL raw evidence is collected)
+post_observation:
+  - "Classify all observed failures using the B4-003 failure taxonomy above"
+  - "Correlate human observation data with substrate telemetry to identify patterns in context loss or agency blocks"
+  - "Present full evidence package to Architecture Review Board for evidence-based architecture decision"
+  - "STRICTLY PROHIBITED: No architecture changes, UI tweaks, or substrate modifications before full data analysis"
+  if_all_gates_pass: "Certify B4-003 complete; proceed to B4-004 scalability testing"
+  if_any_gates_fail: "Root-cause specific failures; implement minimal fixes without substrate expansion; re-test"
+  long_term: "Once both Axis A (Machine) and Axis B (Human) leverage are proven, EOS Building Thesis is validated"
+
+# Audit Trail
+audit:
+  - timestamp: "2026-08-19T00:00:00Z"
+    action: "OBSERVATION_READY"
+    actor: "EOS Commander"
+    notes: "All pre-observation fixes implemented. Substrate freeze maintained. B4-003 is ready for human black-box testing."

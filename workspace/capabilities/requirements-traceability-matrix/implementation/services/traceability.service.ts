@@ -1,4 +1,4 @@
-import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index.js";
+import { recordRuntimeInvocation } from "@repo/core-kernel";
 import type {
   AssessTraceabilityInput,
   AssessTraceabilityOutput,

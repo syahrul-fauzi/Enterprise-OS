@@ -1777,3 +1777,429 @@ Primary metric: REAL BUSINESS OUTCOME / ARCHITECTURE COST
 ```
 
 **Rule:** Dokumen ini boleh berevolusi, tetapi perubahan harus mengikuti real engineering evidence dan perubahan mission; bukan berubah setiap kali arah diskusi berubah.
+
+---
+
+# 36. 🎖️ COMMANDER EPISTEMIC STATUS LOCK (2026-08-19 — FREEZE POINT)
+
+> **B4-003 is not an implementation milestone. It is an epistemic gate for the Human Leverage axis.**
+>
+> **EOS tidak perlu membuktikan bahwa substrate bisa melakukan lebih banyak hal.** Pertanyaan sekarang: *"Ketika kemampuan gedung bertambah, apakah manusia tetap merasa sedang mengerjakan pekerjaannya—bukan sedang belajar mengoperasikan gedung?"*
+>
+> **Kalimat kunci:** *"Kita sudah membuktikan bahwa satu Building dapat menampung dua work types secara engineering. Sekarang kita harus membuktikan bahwa manusia nyata dapat menggunakan Building yang sama untuk menghasilkan outcome nyata tanpa reconstruction yang tidak perlu."*
+
+---
+
+## 36.1 MACHINE / ENGINEERING (RWP-001 → RWP-005 Evidenced)
+
+```text
+Continuity substrate        🟢 strong evidence
+Work identity               🟢 proven
+Execution lineage           🟢 proven
+Artifact lineage            🟢 proven
+Cross-capability composition 🟢 proven
+Context propagation         🟢 evidenced after PT-004
+RWP-001..005 leverage       🟢 evidenced for tested workloads
+```
+
+---
+
+## 36.2 HUMAN / WORLD (B4-003 NEXT — PURE BLACK-BOX ONLY)
+
+```text
+Universal entry             🟡 pending B4-003
+Complexity absorption       🟡 pending B4-003
+Human agency discovery      🟡 pending B4-003
+Human continuity perception 🟡 pending B4-003
+Product distinctness        🟡 must be observed
+```
+
+> **High-value signals for B4-003 (NOT usability test biasa):**
+> 1. **Entry tanpa product knowledge:** Participant berpikir "Saya perlu melakukan X" bukan "Saya harus mencari aplikasi Y"
+> 2. **Complexity absorption:** Catat APA YANG TIDAK PERLU DILAKUKAN participant (absence of required cognition = evidence penting)
+> 3. **Agency discovery:** Ketika agency dibutuhkan, apakah sistem memungkinkan agency itu muncul tanpa memutus continuity?
+> 4. **Continuity:** "tolong kerjakan" → "saya mau atur bagian ini sendiri" = same Work, same context, same artifacts, same history, same outcome (BUKAN new page / new project / new context)
+
+---
+
+## 36.3 GLOBAL STATUS LOCKED
+
+```text
+Universal Building          🟡 hypothesis
+Economic scaling law        🟡 evidence, not universal law
+Absolute economic benefit   ⚪ not measured
+Production readiness        ⚪ not established
+```
+
+---
+
+## 36.3.1 📏 B4-003 MEASUREMENT BOUNDARY (STRICTLY LOCKED)
+
+**YANG HARUS DIUKUR (human-side only — no internal machinery metrics):**
+
+| Signal     | Pertanyaan                                                      |
+| ---------- | --------------------------------------------------------------- |
+| Entry      | Apakah manusia bisa mulai tanpa mengetahui product/system?      |
+| Vocabulary | Apakah bahasa sistem mengikuti bahasa manusia?                  |
+| Discovery  | Apakah user menemukan kemampuan yang dibutuhkan secara natural? |
+| Complexity | Apakah capability besar tetap terasa sederhana?                 |
+| Agency     | Kapan user merasa membutuhkan kontrol lebih?                    |
+| Continuity | Apakah pendalaman terasa sebagai pekerjaan yang sama?           |
+| Outcome    | Apakah manusia benar-benar menyelesaikan pekerjaan?             |
+| Confusion  | Di mana sistem memaksa manusia memahami machinery?              |
+
+**YANG TIDAK BOLEH DIJADIKAN SUCCESS METRIC (machine-side — tetap sebagai evidence TERPISAH):**
+```text
+berapa banyak capability yang dipanggil
+berapa banyak EOS primitive digunakan
+berapa cepat internal workflow selesai
+berapa banyak trace/span
+berapa banyak code reuse
+```
+
+---
+
+## 36.3.2 🌳 B4-003 DECISION TREE (NO MUTATION DURING OBSERVATION)
+
+```text
+B4-003
+   │
+   ├── PASS → preserve substrate
+   │
+   ├── PARTIAL → classify boundary
+   │
+   └── FAIL → preserve raw evidence
+                  │
+                  ▼
+             investigate
+                  │
+                  ▼
+          only then consider change
+```
+
+> **Prinsip:** *Tidak ada perubahan machinery selama observasi.*
+> Kalau kita memperbaiki sistem ketika observer sedang mengujinya, kita kehilangan kemampuan menjawab: *"Apa sebenarnya yang dialami manusia pada substrate yang sedang kita uji?"*
+
+---
+
+## 36.3.3 🏛️ PT-004 SEMANTIC IDENTITY (TERBUKTI)
+
+Hasil PT-004 menunjukkan:
+
+```text
+E1 executionId = E1
+context      = C1
+work         = W1
+
+        ↓ re-entry
+
+E2 executionId = E2
+context      = C2
+parentContext = C1
+work         = W1
+```
+
+Kita **TIDAK** melakukan:
+```text
+E2 := E1
+```
+hanya agar idempotency terlihat berhasil.
+
+**Kesimpulan epistemik PT-004:**
+> **Work identity ≠ Execution identity ≠ Execution context** → tetap dipertahankan.
+> **Failure boundary berada pada propagation/transport, bukan pada Work semantic primitive.**
+
+Node.js `AsyncLocalStorage` = **transport/context mechanism** untuk menjaga state koheren sepanjang operasi async/promise chain, BUKAN semantic identity model EOS.
+
+---
+
+## 36.3.4 🎯 EOS OVERALL STATUS (LOCKED — 4 BRANCH FORMAT)
+
+```text
+EOS
+│
+├── Machine thesis
+│     └── 🟢 strongly evidenced
+│
+├── Economic leverage
+│     └── 🟢 evidenced on tested RWP workloads
+│
+├── Human leverage
+│     └── 🟡 awaiting black-box evidence
+│
+└── Universal Building
+      └── 🟡 overarching hypothesis
+```
+
+> **Dua kalimat epistemik terkunci:**
+> 1. *"EOS telah memperoleh strong engineering evidence bahwa Work/Context/Execution/Artifact continuity dapat menjadi substrate komposisi lintas capability dengan biaya binding yang rendah pada workload yang diuji."*
+> 2. *"EOS belum memperoleh world-truth evidence bahwa manusia dapat menggunakan substrate tersebut secara intuitif, sederhana, dan tetap memperoleh professional agency."*
+
+---
+
+## 36.3.5 🏛️ ARCHITECTURAL SEPARATION QUALITY (UNINTENDED BUT VALUABLE)
+
+Evidence menunjukkan separation arsitektur EOS sekarang bersih:
+
+```text
+             HUMAN WORLD
+                  │
+                  ▼
+             B4-003
+          black-box observation
+                  │
+                  │ evidence
+                  ▼
+        ┌─────────────────────┐
+        │   OBSERVABILITY     │
+        │ trace/log/metrics   │
+        └──────────┬──────────┘
+                   │
+                   ▼
+              WORK W1
+                   │
+        ┌──────────┼──────────┐
+        ▼          ▼          ▼
+       E1         E2         E3
+       │          │          │
+       ▼          ▼          ▼
+      A1         A2         A3
+       └──────────┼──────────┘
+                  ▼
+             composition
+```
+
+**TIDAK ADA** premature abstraksi yang harus muncul hanya untuk menjelaskan fenomena ini:
+```text
+❌ WorkGodObject
+❌ CompositionManager
+❌ UniversalOrchestrator
+❌ RetryManager
+❌ HumanAgencyManager
+```
+
+Ini adalah hasil arsitektural yang jauh lebih menarik daripada sekadar jumlah test.
+
+---
+
+## 36.3.6 B4-003 NEGATIVE OUTCOME VALUE (HASIL NEGATIF JUGA BERNILAI TINGGI)
+
+Bahkan hasil negatif B4-003 = evidence berharga. Misalnya:
+
+| Observer statement | Signal classification |
+|---------------------|----------------------|
+| "Saya tidak tahu harus mulai dari mana." | Universal Entry ❌ |
+| "Saya tahu apa yang harus dikerjakan, tapi tidak tahu bagaimana mengontrol langkahnya." | Complexity absorption 🟢 · Professional agency ❌ |
+| "Ketika saya ingin mengatur timeline, saya merasa seperti masuk ke aplikasi lain." | Work continuity ❌ |
+
+Ini BUKAN kegagalan eksperimen. Ini adalah **failure boundary manusia** yang sebelumnya tidak terlihat. Keduanya valid.
+
+---
+
+## 36.4 ⚠️ THREE CLAIMS DOWNGRADED (PER COMMANDER REVIEW)
+
+| Premature Claim | Honest Locked Status | Why |
+|-----------------|---------------------|-----|
+| ❌ "25× LEVERAGE PROVEN" | 🟡 25× = engineering proxy / hypothesis, NOT economic proof | 12.5h → <0.5h = reconstructive measurement dari test authoring, BUKAN clocked comparable real-work execution. |
+| ❌ "Rule of Two satisfied (F2/F3/F4 shared)" | 🟡 F2/F3/F4: 2-work engineering survival ✅ · world reuse ⏳ · shared EOS primitive = CANDIDATE, promotion final ⏳ | 2 work representations ada. KEDUA BELUM melewati B4 human observation. Schema compatibility ≠ real-world shared primitive. |
+| ❌ "Lobby empirically proven" | 🟡 Lobby = engineering candidate backed by two work traces, NOT usability proof | Same navigation/execution pattern pada PT-001 & PT-002 = engineering truth. Human affordance (starts work / continues / resumes next action) = BELUM diuji. |
+
+---
+
+## 36.5 🔒 FREEZE DISCIPLINE — NO ARCHITECTURE CHANGES BEFORE B4-003 RAW EVIDENCE
+
+```text
+RWP-005
+   ↓
+Machine leverage evidenced
+   ↓
+FREEZE (effective 2026-08-19)
+   ↓
+B4-003
+   ↓
+Human black-box evidence
+   ↓
+compare signals
+   ↓
+ONLY THEN architecture decision
+```
+
+**FORBIDDEN before B4-003 raw evidence:**
+```text
++ ProfessionalMode    + AgencyManager      + WorkComposition
++ UniversalDashboard  + new capability     + new orchestration
++ new registry        + new DSL            + new renderer
+```
+
+**PERMITTED (observe-only = OpenTelemetry context propagation principle):**
+```text
+OBSERVE
+  ↓
+CORRELATE
+  ↓
+RECONSTRUCT
+  ↓
+UNDERSTAND
+  ↓
+CLASSIFY
+```
+
+**STRICTLY FORBIDDEN:**
+```text
+OBSERVE
+  ↓
+DETECT FAILURE
+  ↓
+AUTO REPAIR
+```
+
+> **Prinsip instrumentation:** *instrumentation untuk melihat failure, bukan untuk menghilangkan failure.*
+>
+> OpenTelemetry menjelaskan observability = memahami sistem dari luar & menjawab *"why is this happening?"* melalui instrumentation, traces, metrics, logs. Distributed tracing = mengikuti propagasi operasi melalui sistem kompleks. Context propagation = mekanisme korelasi antar execution unit & signal, BUKAN repair semantic failure.
+
+Instrumentation B4-003/C19 BOLEH menjawab:
+```text
+What happened?
+Where?
+Under which Work?
+Which execution?
+Which context?
+Which artifact?
+Which actor?
+Which transition?
+```
+TETAPI **TIDAK BOLEH** mengubah hasil eksperimen agar terlihat sukses (violasi B4 Firewall).
+
+---
+
+## 36.6 P0-PT-001 & P0-PT-002 EPISTEMIC CALIBRATION
+
+```text
+P0-PT-001
+
+ENGINEERING EXECUTION       ✅
+ARCHITECTURAL REUSE         ✅
+REPORTED OUTCOME            ✅
+RAW WORLD EVIDENCE          ❌
+B4 HUMAN OBSERVATION        ⏳
+L4 WORLD TRUTH              ❌ NOT CLOSED
+```
+
+```text
+P0-PT-002 / ONE-BUILDING TEST (engineering phase)
+
+ENGINEERING REUSE           ✅
+STRUCTURAL REUSE            ✅
+SAME RAIL                   ✅
+NEW CAPABILITY              0
+NEW UI SURFACE              0
+REAL HUMAN WORK             ⏳
+REAL PROFESSIONAL           ⏳
+REAL EXTERNAL ACTION        ⏳
+REAL EXTERNAL RESPONSE      ⏳
+VERIFIED WORLD OUTCOME      ⏳
+```
+
+> **One-Building Test:** Machinery EOS sekarang mampu menjalankan representasi/test untuk work type kedua.
+> **BELUM:** manusia kedua benar-benar menjalankan pekerjaan kedua di dunia nyata dengan machinery yang sama.
+
+---
+
+## 36.7 B4-003 FAILURE CLASSIFICATION (KLASIFIKASI DULU, BARU PERBAIKI)
+
+Jika B4-003 gagal, JANGAN langsung memperbaiki UI. Klasifikasikan failure type terlebih dahulu:
+
+```text
+B4-003 FAILURE
+      │
+      ├── discovery failure        → Lobby / entry point salah desain?
+      ├── vocabulary failure       → Human vocabulary tidak match mental model?
+      ├── continuity failure       → Agency switch memutus Work/context?
+      ├── agency failure           → Ketika butuh kontrol, tidak ada jalan natural?
+      ├── product-distinctness failure → Terlihat sebagai skin, bukan produk beda?
+      ├── capability exposure failure → Internal terminology bocor ke user?
+      └── actual substrate limitation → Benar-benar limitation substrate, bukan UX?
+```
+
+Hanya setelah klasifikasi failure = evidence-driven, barulah kita tahu **lapisan mana yang benar-benar salah**. Itu jauh lebih sehat daripada menambal Building sampai participant berhasil.
+
+---
+
+## 36.8 EOS WAR ROOM — LOCKED STATUS SUMMARY
+
+```text
+P0-PT-001
+  Engineering proof              ✅
+  World truth                    ⏳ B4
+
+P0-PT-002
+  Engineering reuse              ✅
+  World truth                    ⏳
+
+F2 Project Context
+  2-work engineering survival    ✅
+  World validation               ⏳
+
+F3 Execution Contract
+  2-work engineering survival    ✅
+  World validation               ⏳
+
+F4 Professional Work Package
+  2-work engineering survival    ✅
+  World validation               ⏳
+
+Lobby
+  common execution pattern       ✅
+  human usability                ⏳
+
+25× leverage
+  engineering proxy              🟡
+  measured economic leverage     ⏳
+
+L4 CLOSED                         ❌
+L5 CLOSED                         ❌
+```
+
+---
+
+## 36.8.1 ✅ FOUNDATION EVIDENCE LOCKED (30/30 — ENGINEERING REGRESSION PROOF)
+
+```text
+LawyersHub      8/8
+Services.ID     8/8
+ILC             9/9
+CommsMe         5/5
+──────────────────
+TOTAL          30/30
+```
+
+> **Honesty Boundary:** Ini adalah **engineering regression evidence**. Perubahan yang dijalankan = HANYA status/docs (`STATUS.md`, `README.md`, `eos-state.yaml`, `Roadmap.md`), tidak ada code mutation capability/kernel.
+>
+> Foundation hijau membuktikan: **freeze discipline tidak merusak capability foundation.**
+>
+> **BUKAN** berarti "seluruh EOS runtime terbukti sehat." Itu klaim yang lebih luas daripada evidence.
+>
+> Mengenai D1.3 CommsMe step-4 report: **UNRELATED / NOT ATTRIBUTABLE TO STATUS-ONLY CHANGES**. Tidak ada indikasi perubahan status menyebabkan failure (runtime TIDAK membaca `eos-state.yaml` = confirmed via grep + 30/30 foundation PASS). Status definitive "pre-existing" menunggu baseline historical evidence / revert verification.
+
+---
+
+## 36.9 FINAL OPERATIONAL SENTENCES (LOCKED 2026-08-19)
+
+> **Kita sudah membuktikan bahwa satu Building dapat menampung dua work types secara engineering. Sekarang kita harus membuktikan bahwa manusia nyata dapat menggunakan Building yang sama untuk menghasilkan outcome nyata tanpa reconstruction yang tidak perlu.**
+>
+> Itulah **One-Building Test yang sesungguhnya**. Dan setelah itu, apa pun yang kita bangun berikutnya harus lahir dari **friction yang benar-benar kita lihat**, bukan dari imajinasi arsitektur.
+
+---
+
+# **FREEZE. OBSERVE. RECORD. DON'T REPAIR.**
+
+> Ketidakmampuan kita untuk mengubah sistem selama B4-003 = bagian dari kualitas eksperimennya.
+>
+> - Jika B4-003 **BERHASIL**: machine leverage dan human leverage mulai bertemu pada **Work yang sama** (jauh lebih kuat daripada "UI bagus").
+> - Jika B4-003 **GAGAL**: kita tidak kehilangan EOS—kita mendapatkan **failure boundary manusia** yang sebelumnya tidak terlihat.
+>
+> Keduanya adalah hasil penelitian yang valid.
+
+---
+
+**FREEZE UNTIL B4-003 RAW EVIDENCE EXIST. NO ARCHITECTURAL DRIFT. OBSERVE-ONLY. NO AUTO REPAIR.** 🫡

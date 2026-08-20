@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { DigestEngine } from "@repo/core-kernel";
+import { ArtifactGraphPersistence } from "./artifact-persistence.js";
 
 type RequirementId = (id: string) => string;
 const RequirementId: RequirementId = (id) => id;
@@ -87,6 +88,9 @@ export interface RequirementArtifactGraph {
   readonly graphId: string;
   readonly requirementId: string;
   readonly generatedAt: string;
+  readonly decisionId: string;
+  readonly tenantId: string;
+  readonly productId: string;
   readonly nodes: readonly ArtifactNode[];
   readonly edges: readonly ArtifactEdge[];
   readonly summary: {
@@ -104,7 +108,7 @@ export interface RequirementArtifactGraph {
   }[];
 }
 
-function resolveWorkspaceRoot(): string {
+export function resolveWorkspaceRoot(): string {
   const candidates = [
     process.cwd(),
     "/app",
@@ -215,10 +219,29 @@ export function computeArtifactGraphForRequirement(requirementId: string): Requi
     },
   ];
 
+  // Dapatkan current execution context dari process.env (dari invocation-evidence)
+  const currentDecisionId = process.env.LH_DECISION_ID || "unknown-decision";
+  const currentTenantId = process.env.LH_TENANT_ID || "unknown-tenant";
+  const currentProductId = "legal-hub";
+  
+  // Simpan graph ke persistence layer
+  const persistence = ArtifactGraphPersistence.getInstance();
+  persistence.saveArtifactGraph(
+    `artifact-graph-${requirementId}`,
+    currentDecisionId,
+    currentTenantId,
+    currentProductId,
+    nodes,
+    edges
+  );
+
   return {
     graphId: `artifact-graph-${requirementId}`,
     requirementId,
     generatedAt: new Date().toISOString(),
+    decisionId: currentDecisionId,
+    tenantId: currentTenantId,
+    productId: currentProductId,
     nodes,
     edges,
     summary: {

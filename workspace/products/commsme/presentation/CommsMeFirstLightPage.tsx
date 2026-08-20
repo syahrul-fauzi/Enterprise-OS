@@ -32,6 +32,7 @@ interface ExecutionResult {
 }
 
 interface WorkPollResponse {
+  readonly id: string;
   readonly ok: boolean;
   readonly workId?: string;
   readonly status?: "draft" | "approved" | "in_delivery" | "implemented" | "verified";
@@ -51,6 +52,7 @@ interface WorkPollResponse {
     readonly verifiedAt: string | null;
     readonly updatedAt: string | null;
   };
+  readonly updatedAt?: string | null;
   readonly handoffReady?: boolean;
   readonly error?: string;
 }
@@ -103,6 +105,9 @@ export default function CommsMeFirstLightPage() {
   const [activeWorkSeed, setActiveWorkSeed] = useState<typeof PT_ESTABLISHMENT_WORKSEED | null>(null);
   const [requiredInputsProgress, setRequiredInputsProgress] = useState<Record<string, any>>({});
   const [currentInputIndex, setCurrentInputIndex] = useState<number>(0);
+  // Minimum Common Lobby: State untuk daftar pekerjaan aktif user
+  const [activeWorks, setActiveWorks] = useState<readonly WorkPollResponse[]>([]);
+  const [isLoadingActiveWorks, setIsLoadingActiveWorks] = useState<boolean>(false);
 
   // Add keyframe animation for spinner
   useEffect(() => {
@@ -179,9 +184,55 @@ export default function CommsMeFirstLightPage() {
     ]);
   }
 
+  // ============================================
+  // MINIMUM COMMON LOBBY - 4 Core Actions Implementation
+  // ============================================
+  async function loadActiveWorks() {
+    setIsLoadingActiveWorks(true);
+    try {
+      const res = await fetch("/products/commsme/work/list", {
+        credentials: "include"
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setActiveWorks(data.works || []);
+      }
+    } catch (_) {
+      setActiveWorks([]);
+    } finally {
+      setIsLoadingActiveWorks(false);
+    }
+  }
+
   function goDiscoveryFromLanding() {
+    // Start a need - Action 1: Mulai pekerjaan baru
     setStage("discovery");
     setExecution(null);
+  }
+
+  function continueActiveWork(work: WorkPollResponse) {
+    // Continue active work - Action 2: Lanjutkan pekerjaan yang sudah berjalan
+    setActiveWorkId(work.id);
+    setStage("status");
+    setHandoffContext(prev => ({
+      ...prev,
+      what: work.title,
+      whatDone: [`Melanjutkan pekerjaan aktif: ${work.title}`]
+    }));
+  }
+
+  function seeCurrentWork() {
+    // See current work - Action 3: Lihat semua pekerjaan aktif
+    loadActiveWorks();
+    setStage("status");
+  }
+
+  function resumeNextAction() {
+    // Resume next action - Action 4: Lanjutkan langkah berikutnya dari pekerjaan terakhir
+    if (activeWorks.length > 0) {
+      const lastWork = activeWorks[0]; // Urutkan berdasarkan updatedAt terbaru
+      continueActiveWork(lastWork);
+    }
   }
 
   function chooseNeed(needKey: NeedKey) {
@@ -581,14 +632,60 @@ export default function CommsMeFirstLightPage() {
                 <br />
                 Kami membantu Anda menemukan langkah yang tepat dan menghubungkan Anda dengan proses serta tenaga profesional yang sesuai.
               </p>
-              <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
-                <button onClick={goDiscoveryFromLanding} style={{ background: brandColor, color: "#fff", padding: "16px 28px", borderRadius: 14, fontSize: 17, fontWeight: 800, border: "none", cursor: "pointer", boxShadow: "0 4px 14px rgba(180,83,9,0.18)", transition: "all 0.2s ease", transform: "scale(1)" }} onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.03)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(180,83,9,0.22)"; }} onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 4px 14px rgba(180,83,9,0.18)"; }}>
-                  🚀 Mulai Konsultasi
+              
+              {/* MINIMUM COMMON LOBBY - 4 Core Actions sesuai user mandate */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px,1fr))", gap: 16, maxWidth: 900, margin: "0 auto 24px" }}>
+                <button 
+                  onClick={goDiscoveryFromLanding} 
+                  style={{ background: brandColor, color: "#fff", padding: "20px 24px", borderRadius: 14, fontSize: 16, fontWeight: 800, border: "none", cursor: "pointer", boxShadow: "0 4px 14px rgba(180,83,9,0.18)", transition: "all 0.2s ease" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.03)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(180,83,9,0.22)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 4px 14px rgba(180,83,9,0.18)"; }}
+                >
+                  🚀 Start a need
+                  <div style={{ fontSize: 12, fontWeight: 500, marginTop: 4, opacity: 0.9 }}>Mulai pekerjaan baru</div>
                 </button>
-                <button onClick={() => setStage("discovery")} style={{ background: "#fff", color: brandColor, padding: "16px 28px", borderRadius: 14, fontSize: 17, fontWeight: 700, border: "2px solid " + brandColorAccent, cursor: "pointer" }}>
-                  Lihat Kebutuhan Saya
+                <button 
+                  onClick={seeCurrentWork} 
+                  style={{ background: "#fff", color: brandColor, padding: "20px 24px", borderRadius: 14, fontSize: 16, fontWeight: 700, border: "2px solid " + brandColorAccent, cursor: "pointer", transition: "all 0.2s ease" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.03)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
+                >
+                  📋 See current work
+                  <div style={{ fontSize: 12, fontWeight: 500, marginTop: 4, opacity: 0.9 }}>Lihat semua pekerjaan aktif</div>
+                </button>
+                <button 
+                  onClick={resumeNextAction} 
+                  style={{ background: "#fff", color: brandColor, padding: "20px 24px", borderRadius: 14, fontSize: 16, fontWeight: 700, border: "2px solid " + brandColorAccent, cursor: "pointer", transition: "all 0.2s ease" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.03)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
+                >
+                  ⏩ Resume next action
+                  <div style={{ fontSize: 12, fontWeight: 500, marginTop: 4, opacity: 0.9 }}>Lanjutkan pekerjaan terakhir</div>
                 </button>
               </div>
+
+              {/* Daftar pekerjaan aktif jika ada */}
+              {isLoadingActiveWorks ? (
+                <div style={{ padding: 16, color: "#78350f" }}>Memuat daftar pekerjaan aktif...</div>
+              ) : activeWorks.length > 0 ? (
+                <div style={{ marginTop: 24, padding: 24, background: "#fffbeb", borderRadius: 14, border: "1px solid #fed7aa" }}>
+                  <h3 style={{ margin: "0 0 16px 0", fontSize: 18, color: "#431407" }}>Pekerjaan Aktif Anda ({activeWorks.length})</h3>
+                  <div style={{ display: "grid", gap: 12 }}>
+                    {activeWorks.map((work) => (
+                      <button 
+                        key={work.id} 
+                        onClick={() => continueActiveWork(work)}
+                        style={{ textAlign: "left", padding: 16, background: "#fff", borderRadius: 12, border: "1px solid #fcd34d", cursor: "pointer", transition: "all 0.2s ease" }}
+                        onMouseEnter={(e) => { e.currentTarget.style.transform = "translateX(4px)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.transform = "translateX(0)"; }}
+                      >
+                        <div style={{ fontWeight: 700, color: "#431407" }}>{work.title}</div>
+                        <div style={{ fontSize: 13, color: "#78350f", marginTop: 4 }}>Status: {work.status} · Terakhir diperbarui: {new Date(work.updatedAt || "").toLocaleDateString("id-ID")}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
             </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 14 }}>

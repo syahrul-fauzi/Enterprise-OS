@@ -8,6 +8,7 @@ export function DocumentId(value: string): DocumentId {
 
 export interface DocumentAggregate {
   readonly id: DocumentId;
+  readonly workId?: string; // Work identity binding (from decision_id)
   readonly title: string;
   readonly description?: string;
   readonly status: DocumentStatus;
@@ -24,6 +25,13 @@ export interface CreateDocumentInput {
   readonly description?: string;
   readonly matterId?: string;
   readonly author?: string;
+  // Work identity binding (from decision_id)
+  readonly workId?: string;
+  // Required context for tenant isolation
+  readonly sessionId: string;
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
 }
 
 export interface CreateDocumentOutput {
@@ -61,12 +69,32 @@ export interface UpdateDocumentInput {
   readonly description?: string;
   readonly matterId?: string;
   readonly status?: Exclude<DocumentStatus, "signed" | "archived">;
+  readonly lineageDepth?: number;
+  readonly parentArtifactId?: string;
+  readonly workId?: string;
+  readonly parentContextTraceId?: string;
 }
 
 export interface UpdateDocumentOutput {
   readonly id: DocumentId;
   readonly status: DocumentStatus;
   readonly updatedAt: Date;
+}
+
+export interface ReviewDocumentInput {
+  readonly id: DocumentId;
+  readonly reviewer?: string;
+  readonly approval: boolean;
+  readonly comments?: string;
+}
+
+export interface ReviewDocumentOutput {
+  readonly id: DocumentId;
+  readonly status: "review" | "draft";
+  readonly reviewedAt: Date;
+  readonly reviewer?: string;
+  readonly approval: boolean;
+  readonly comments?: string;
 }
 
 export interface GetDocumentInput {

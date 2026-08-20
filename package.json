@@ -4,11 +4,11 @@
   "description": "Enterprise OS — Evidence-Driven Product Learning Platform (Kernel + Engines)",
   "private": true,
   "scripts": {
-    "eos:observe": "python3 implementation/eos/engines/observer/engine.py",
-    "eos:validate": "python3 implementation/eos/engines/validator/engine.py",
-    "eos:status": "python3 implementation/eos/kernel/cli/status-reader.py",
-    "eos:pattern": "python3 implementation/eos/engines/pattern/engine.py",
-    "eos:doctor": "python3 implementation/eos/engines/doctor/engine.py lawyershub",
+    "eos:observe": "PYTHONPATH=implementation python3 implementation/eos/engines/observer/engine.py",
+    "eos:validate": "PYTHONPATH=implementation python3 implementation/eos/engines/validator/engine.py",
+    "eos:status": "PYTHONPATH=implementation python3 implementation/eos/kernel/cli/status-reader.py",
+    "eos:pattern": "PYTHONPATH=implementation python3 implementation/eos/engines/pattern/engine.py",
+    "eos:doctor": "PYTHONPATH=implementation python3 implementation/eos/engines/doctor/engine.py lawyershub",
     "eos": "pnpm --dir ./workspace eos"
   },
   "keywords": [

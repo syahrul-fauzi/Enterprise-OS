@@ -22,16 +22,16 @@ export const academic: ProductExperience = {
   },
   navigation: {
     primaryCta: {
+      label: "Mulai Kirim Penelitian",
+      href: "/products/academic/requirements"
+    },
+    secondaryCta: {
       label: "Jelajahi Penelitian",
       href: "/research"
     },
-    secondaryCta: {
+    tertiaryCta: {
       label: "Bergabung Komunitas",
       href: "/community"
-    },
-    tertiaryCta: {
-      label: "Mulai Kontribusi",
-      href: "/products/academic/requirements"
     }
   },
   trustSignals: {
@@ -83,7 +83,7 @@ export const academic: ProductExperience = {
   },
   entry: {
     primaryIntent: "Penelitian, kolaborasi, dan berbagi pengetahuan akademik.",
-    primaryActionLabel: "Telusuri Penelitian",
+    primaryActionLabel: "Mulai Kirim Penelitian",
     discoveryMode: "community",
     topics: [
       { id: "computer-science", label: "Computer Science", description: "Artificial intelligence, machine learning, and computing research" },

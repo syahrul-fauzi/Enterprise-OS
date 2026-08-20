@@ -27,6 +27,7 @@ export interface RequirementDependency {
 
 export interface RequirementAggregate {
   readonly id: RequirementId;
+  readonly workId?: string;
   readonly title: string;
   readonly summary?: string;
   readonly description?: string;
@@ -54,6 +55,8 @@ export interface CreateRequirementInput {
   readonly source?: string;
   readonly linkedCapabilityIds?: readonly string[];
   readonly acceptanceCriteria?: readonly string[];
+  // Work identity binding (from decision_id)
+  readonly workId?: string;
   // Required context for tenant isolation
   readonly sessionId: string;
   readonly tenantId: string;

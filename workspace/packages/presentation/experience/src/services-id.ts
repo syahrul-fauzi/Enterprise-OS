@@ -22,7 +22,7 @@ export const servicesId: ProductExperience = {
   },
   navigation: {
     primaryCta: {
-      label: "Start a Service",
+      label: "Mulai Permintaan Layanan",
       href: "/requirements"
     },
     secondaryCta: {

@@ -52,10 +52,10 @@ async function runLifecycleE2E(title: string, priority: "low" | "medium" | "high
   records.push(assignResult.record);
   assert.equal(assignResult.record.ok, true, "case.assignLawyer invocation must record ok:true");
   assert.equal(assignResult.output.lawyerId, lawyerId, "assignLawyer output must echo lawyerId");
-  assert.equal(assignResult.output.status, "open", "assignLawyer on draft transitions to open");
+  assert.equal(assignResult.output.status, "in_progress", "assignLawyer on draft transitions to in_progress (ILC-P0 professional-first-action state)");
 
   const persistedAfterAssign = await CaseRepositoryInMemory.byId(caseId as never);
-  assert.equal(persistedAfterAssign?.status, "open", "repository status after assign = open");
+  assert.equal(persistedAfterAssign?.status, "in_progress", "repository status after assign = in_progress");
   assert.equal(persistedAfterAssign?.lawyerId, lawyerId, "repository lawyerId matches assigned lawyerId");
 
   const closeResult = await capabilityRegistry.invoke<{ readonly id: string; readonly status: "closed"; readonly closedAt: Date }>(
@@ -100,11 +100,11 @@ test.describe("LH-CASE-001 · Lifecycle E2E (capabilityRegistry invocation · NO
     assert.equal(rehydrated.priority, "high", "priority tersimpan sesuai input");
   });
 
-  test("case.assignLawyer menghasilkan transisi status draft→open + lawyerId persisten", async () => {
+  test("case.assignLawyer menghasilkan transisi status draft→in_progress + lawyerId persisten", async () => {
     const title = "Sengketa Merek Dagang Waralaba Makanan Cepat Saji";
     const lawyerId = "lawyer-warkop";
     const ledger = await runLifecycleE2E(title, "critical", lawyerId);
-    assert.equal(ledger.assignedOutput.status, "open", "assign → open");
+    assert.equal(ledger.assignedOutput.status, "in_progress", "assign → in_progress");
     assert.equal(ledger.assignedOutput.lawyerId, lawyerId, "echo lawyerId");
     const row = await CaseRepositoryInMemory.byId(ledger.createdCaseId as never);
     assert.equal(row?.lawyerId, lawyerId, "repo lawyerId = assigned");
@@ -163,7 +163,7 @@ async function runMatterDocumentCompositeE2E(
   const caseAfterCreate = await CaseRepositoryInMemory.byId(caseId as never);
   assert.ok(caseAfterCreate !== undefined, "case persisted after create");
 
-  // Stage 2 — case.assignLawyer → open
+  // Stage 2 — case.assignLawyer → in_progress (ILC-P0 professional-first-action state)
   const caseAs = await capabilityRegistry.invoke<{ readonly id: string; readonly lawyerId: string; readonly status: CaseStatus }>(
     "lawyershub",
     "case.assignLawyer",
@@ -171,7 +171,7 @@ async function runMatterDocumentCompositeE2E(
   );
   records.push(caseAs.record);
   assert.equal(caseAs.record.ok, true, "case.assignLawyer record ok:true");
-  assert.equal(caseAs.output.status, "open", "assignLawyer → open");
+  assert.equal(caseAs.output.status, "in_progress", "assignLawyer → in_progress (ILC-P0 professional-first-action state)");
   const caseAfterAssign = await CaseRepositoryInMemory.byId(caseId as never);
   assert.equal(caseAfterAssign?.lawyerId, lawyerId, "repo lawyerId match assigned");
 

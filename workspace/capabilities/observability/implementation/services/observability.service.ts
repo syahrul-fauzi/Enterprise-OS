@@ -7,6 +7,13 @@ import { evidenceRegistryService } from "../../../evidence-registry/implementati
 import { requirementService } from "../../../requirement-management/implementation/services/requirement.service.js";
 import { requirementsTraceabilityMatrixService } from "../../../requirements-traceability-matrix/implementation/services/traceability.service.js";
 import { workflowEngineService } from "../../../workflow-engine/implementation/services/workflow-engine.service.js";
+// PR-007: Reuse core-runtime observability primitives (substrate freeze compliant)
+import { 
+  executionTraces, 
+  getTraceForDecision, 
+  verifyWorkIdCorrelation,
+  type ObservedExecution 
+} from "../../../../packages/core/runtime/src/execution-observability.js";
 import type {
   ObservableLogEntry,
   ObservableMetric,
@@ -14,7 +21,6 @@ import type {
   ObservabilitySnapshot,
   RuntimeInvocation,
 } from "../contracts/index.js";
-// import { recordRuntimeInvocation } from "@repo/core-runtime"; // Unused import commented out per B7.13 constraints
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -157,63 +163,114 @@ export class ObservabilityService {
   }
 
   getTraces(): readonly ObservableTraceSpan[] {
-    const dispatch = agentOrchestrationService.dispatch({
-      planId: "orchestrate-requirement-delivery",
-    });
-    const workflow = workflowEngineService.executeWorkflow({
-      workflowId: "requirement-delivery-readiness",
-      requirementId: "req-003",
-    });
-    const evidence = evidenceRegistryService.searchEvidenceRegistry({
-      requirementRef: "REQ-0001",
-      limit: 10,
-      offset: 0,
-    });
-
-    const result: readonly ObservableTraceSpan[] = [
-      {
-        id: "trace-capability-eos-007",
-        name: "agent-orchestration",
-        kind: "capability",
-        status: dispatch.status === "completed" ? "ok" : "warning",
-        attributes: {
-          planId: dispatch.planId,
-          totalSteps: dispatch.output.totalSteps,
-        },
-      },
-      {
-        id: "trace-workflow-delivery",
-        parentId: "trace-capability-eos-007",
-        name: "requirement-delivery-readiness",
+    // PR-007: Convert real core-runtime executionTraces to ObservableTraceSpan (100% correlation)
+    const allTraces: ObservableTraceSpan[] = [];
+    let traceCounter = 0;
+    
+    // Iterate all decision IDs to collect every execution trace
+    for (const [decisionId, executions] of executionTraces.entries()) {
+      // Root span for the entire decision/work
+      const rootExecution = executions[0];
+      if (!rootExecution) continue;
+      
+      const rootSpanId = `trace-${decisionId}-${traceCounter++}`;
+      allTraces.push({
+        id: rootSpanId,
+        name: `workflow:${rootExecution.logicalWorkId || decisionId}`,
         kind: "workflow",
-        status: workflow.status === "passed" ? "ok" : "warning",
+        status: rootExecution.success ? "ok" : "warning",
         attributes: {
-          requirementId: "req-003",
-          evidenceCount: workflow.output.evidenceCount,
+          decisionId,
+          logicalWorkId: rootExecution.logicalWorkId,
+          contextTraceId: rootExecution.context_trace_id,
+          executionCount: executions.length,
         },
-      },
-      {
-        id: "trace-evidence-req-0001",
-        parentId: "trace-workflow-delivery",
-        name: "REQ-0001 evidence lineage",
-        kind: "evidence",
-        status: evidence.matched > 0 ? "ok" : "warning",
-        attributes: {
-          requirementRef: "REQ-0001",
-          matched: evidence.matched,
+      });
+      
+      // Add child spans for every execution in the decision
+      executions.forEach((exec, idx) => {
+        const childSpanId = `${rootSpanId}-${idx}`;
+        allTraces.push({
+          id: childSpanId,
+          parentId: rootSpanId,
+          name: `execution:${exec.executionId}`,
+          kind: exec.is_reentry ? "reentry" : "execution",
+          status: exec.success ? "ok" : "error",
+          attributes: {
+            executionId: exec.executionId,
+            logicalWorkId: exec.logicalWorkId,
+            contextTraceId: exec.context_trace_id,
+            parentContextTraceId: exec.parent_context_trace_id,
+            isReentry: exec.is_reentry,
+            error: exec.error,
+          },
+        });
+      });
+    }
+
+    // Fallback to mock data only if no real traces exist (for backwards compatibility)
+    if (allTraces.length === 0) {
+      const dispatch = agentOrchestrationService.dispatch({
+        planId: "orchestrate-requirement-delivery",
+      });
+      const workflow = workflowEngineService.executeWorkflow({
+        workflowId: "requirement-delivery-readiness",
+        requirementId: "req-003",
+      });
+      const evidence = evidenceRegistryService.searchEvidenceRegistry({
+        requirementRef: "REQ-0001",
+        limit: 10,
+        offset: 0,
+      });
+
+      const result: readonly ObservableTraceSpan[] = [
+        {
+          id: "trace-capability-eos-007",
+          name: "agent-orchestration",
+          kind: "capability",
+          status: dispatch.status === "completed" ? "ok" : "warning",
+          attributes: {
+            planId: dispatch.planId,
+            totalSteps: dispatch.output.totalSteps,
+          },
         },
-      },
-      {
-        id: "trace-api-platform",
-        parentId: "trace-capability-eos-007",
-        name: "/api/platform/query",
-        kind: "api",
-        status: "ok",
-        attributes: {
-          endpointCount: apiPlatformService.getDescriptor().endpoints.length,
+        {
+          id: "trace-workflow-delivery",
+          parentId: "trace-capability-eos-007",
+          name: "requirement-delivery-readiness",
+          kind: "workflow",
+          status: workflow.status === "passed" ? "ok" : "warning",
+          attributes: {
+            requirementId: "req-003",
+            evidenceCount: workflow.output.evidenceCount,
+          },
         },
-      },
-    ];
+        {
+          id: "trace-evidence-req-0001",
+          parentId: "trace-workflow-delivery",
+          name: "REQ-0001 evidence lineage",
+          kind: "evidence",
+          status: evidence.matched > 0 ? "ok" : "warning",
+          attributes: {
+            requirementRef: "REQ-0001",
+            matched: evidence.matched,
+          },
+        },
+        {
+          id: "trace-api-platform",
+          parentId: "trace-capability-eos-007",
+          name: "/api/platform/query",
+          kind: "api",
+          status: "ok",
+          attributes: {
+            endpointCount: apiPlatformService.getDescriptor().endpoints.length,
+          },
+        },
+      ];
+      return result;
+    }
+
+    const result = allTraces;
     recordRuntimeInvocation({
       capability_id: "observability",
       operation_id: "get-traces",
@@ -229,6 +286,16 @@ export class ObservabilityService {
   }
 
   getSnapshot(): ObservabilitySnapshot {
+    // PR-007: Verify Work ID correlation before returning snapshot (PT-003 compliant)
+    let totalCorrelationScore = 100;
+    for (const [decisionId] of executionTraces.entries()) {
+      const correlation = verifyWorkIdCorrelation(decisionId);
+      if (!correlation.is_100_percent_compliant) {
+        console.warn(`[Observability] Work ID correlation issue for ${decisionId}: ${correlation.correlation_percentage.toFixed(1)}%`);
+        totalCorrelationScore = Math.min(totalCorrelationScore, correlation.correlation_percentage);
+      }
+    }
+
     const result: ObservabilitySnapshot = {
       logs: this.getLogs(),
       metrics: this.getMetrics(),
@@ -244,6 +311,7 @@ export class ObservabilityService {
         logs: result.logs.length,
         metrics: result.metrics.length,
         traces: result.traces.length,
+        workIdCorrelationScore: totalCorrelationScore,
       },
     });
     return result;

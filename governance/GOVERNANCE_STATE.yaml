@@ -7,6 +7,7 @@ repository_state:
     C: VERIFIED
     D: DRAFT
     E: DRAFT
+    F: DRAFT
   proof:
     baseline_hash: PENDING_EMISSION
     governance_hash: PENDING_EMISSION
@@ -17,6 +18,7 @@ repository_state:
     gate_c: true
     gate_d: false
     gate_e: false
+    gate_f: false
   outputs:
     repository_proof:
       location: /root/Enterprise-OS/build/evidence/repository-proof/
@@ -147,6 +149,13 @@ gate_artifacts:
       - /root/Enterprise-OS/build/evidence/
       - /root/Enterprise-OS/enterprise/governance/pipeline-acceptance-criteria.md
     evidence: End-to-End deterministic execution verified
+  F:
+    focus: Production Readiness Gates (v1)
+    primary_artifacts:
+      - /root/Enterprise-OS/governance/production-readiness-criteria.yaml
+      - /root/Enterprise-OS/workspace/packages/tooling/eos-cli/src/gate/commands/gate-f.ts
+      - /root/Enterprise-OS/.github/workflows/production-gate.yml
+    evidence: 7 core production domains validated, automated CI/CD enforcement, exception process documented
 
 predicates:
   ready_gate_b:

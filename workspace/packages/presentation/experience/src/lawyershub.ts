@@ -22,7 +22,7 @@ export const lawyershub: ProductExperience = {
   },
   navigation: {
     primaryCta: {
-      label: "Start a Legal Matter",
+      label: "Mulai Kasus Hukum",
       href: "/requirements"
     },
     secondaryCta: {

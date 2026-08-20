@@ -1,0 +1,19 @@
+{"work_id": "PRD-001",
+  "recon_completed_at": "2026-08-19T07:15:00.000Z",
+  "locked_boundaries_verified": {
+    "no_new_composition_engine": true,
+    "no_domain_glue": true,
+    "no_work_god_object": true
+  },
+  "existing_capabilities_found": [],
+  "reuse_analysis": {
+    "reusable_existing": ["executionContext.get()", "recordRuntimeInvocation", "traceExecutionByDecision", "AsyncLocalStorage context propagation"],
+    "required_new": ["cross-decision artifact access validator", "unauthorized access audit logger", "authorization enforcement hook in recordRuntimeInvocation"],
+    "reuse_percentage": 40.0
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": ["Implement minimal authorization check in recordRuntimeInvocation (invocation-evidence.ts) that validates inputRefs are only from the same decision_id and tenant_id", "Add audit log entry for any unauthorized access attempts", "Create test case to verify authorization works as expected"]}

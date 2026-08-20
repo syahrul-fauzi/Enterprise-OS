@@ -209,7 +209,7 @@ capability_extraction:
       leverage: "ServiceProvider categories drive search surface, ServiceRequest drives recent activity. Create/accept/deliver commands LIVE."
     - name: "legal-community"
       product_usage: ["ilc", "academic"]
-      leverage: "Topic powers topic grid, Content/Discussion power community feed across 2 PRODUCTS (ILC + Academic). 3 commands LIVE. Rule of Two LEVERAGE PROVEN."
+      leverage: "Topic powers topic grid, Content/Discussion power community feed across 2 PRODUCTS (ILC + Academic). 3 commands LIVE. Rule of Two ENGINEERING PROXY (2-work structural survival ✅ · world reuse ⏳ · CANDIDATE shared primitive · promotion final ⏳ B4 human observation)."
   leverage_formula:
     numerator_business_outputs: 4 (LawyersHub Matter, Services Request, ILC Discussion, Academic Article)
     denominator_shared_primitives:
@@ -345,7 +345,7 @@ war_room_dashboard:
     eos_first_light: "GREEN_CLAIMED (pending independent human verification). Structural 8/8 + B4 6/6 claimed."
     b4_human_black_box: "GREEN_CLAIMED_LOCKED_6_6 — HONESTY LABEL: NOT_DIRECTLY_OBSERVED_BY_CC"
     production_public: "RED"
-  next_battlefield: "WORK-ACA-001 · Academic D1.2 CERTIFICATION (4th product leverage proof). 31 LOC thin adapter + legal-community Rule of Two shared primitive. Test COPY-REUSE dari ilc.test.ts. Goal: 6+ tests PASS + 7/7 E2E + doctor report generated. = PROOF marginal cost trend SRV 1353 → ILC 272 → Academic 31 SEMAKIN KECIL = Leverage thesis EMPIRICAL PROVEN."
+  next_battlefield: "WORK-ACA-001 · Academic D1.2 CERTIFICATION (4th product engineering reuse proof). 31 LOC thin adapter + legal-community Rule of Two shared primitive CANDIDATE. Test COPY-REUSE dari ilc.test.ts. Goal: 6+ tests PASS + 7/7 E2E + doctor report generated. = Leverage thesis ENGINEERING PROXY (structural trend evidenced, economic leverage NOT MEASURED, world truth ⏳ B4)."
   architecture_freeze_reminder: |
     PER KOMANDAN — TIDAK BOLEH:
     * engine baru
@@ -370,20 +370,24 @@ war_room_dashboard:
   blocked_slices_count: 0
   closed_battlefields_count: 3
   closed_battlefields: ["LAWYERSHUB", "SERVICES.ID (SRV-PROD-001)", "ILC (ILC-PROD-002 WORK-ILC-001)"]
-  next_highest_leverage: "WORK-ACA-001 Academic D1.2 Certification — leverage proof produk ke-4 dengan 31 LOC adapter + legal-community Rule of Two shared primitive. Recon artifact: .eos-state/recon/ACADEMIC-001_recon.json. Acceptance: tests ≥6 PASS + 7/7 E2E + doctor report generated + regression LH/SRV/ILC 25/25 tetap PASS = green. 25/25 baseline verified 2026-08-16: 0 regression."
+  next_highest_leverage: "B4-003 HUMAN LEVERAGE BLACK-BOX EPISTEMIC GATE (FROZEN 2026-08-19). HIGHEST PRIORITY: Run unbriefed observer through real work tasks on dev server 3004. Record raw evidence ONLY (OBSERVE→CORRELATE→RECONSTRUCT→UNDERSTAND→CLASSIFY), NO auto-repair. Academic (WORK-ACA-001) = QUEUED POST-B4 raw evidence; engineering proxy 31 LOC adapter + legal-community Rule of Two CANDIDATE (2-work structural survival ✅ · world reuse ⏳ · promotion final ⏳). Acceptance post-B4 decision only."
 
 product_leverage_scoreboard:
   verified_at: "2026-08-16 (COMMAND CENTER v1.9.0 · WORK-ILC-001 ILC SHIPPED LOCKED · ACADEMIC QUEUED NEXT)"
   verification_method: "node:test + Doctor Engine + capabilityRegistry + E2E Journey Runner + HTTP 200 + B4 structural scan + Governance trace renders + LEDGER EVIDENCE (EOS-COMMAND-CENTER-2026-08-16)"
   structural_leverage_note: |
-    PER KOMANDAN 2026-08-16 LOCKED:
+    PER KOMANDAN 2026-08-19 EPISTEMIC FREEZE LOCKED (V2 CALIBRATED):
+    - EOS OVERALL STATUS (LOCKED 4-BRANCH): Machine thesis 🟢 strongly evidenced · Economic leverage 🟢 evidenced on tested RWP workloads · Human leverage 🟡 awaiting black-box evidence · Universal Building 🟡 overarching hypothesis
     - B4 FIREWALL 🔒 6/6 PASS (3-tier epistemic: automated ✅ + human claim ✅ + CC independent ⚪)
     - shared-rail-to-marginal-product LOC ratio = 86,840 / (86,840 + 1,353) = 98.5% untuk SRV (structural ratio BUKAN true reuse%)
     - Koreksi aritmatika SRV leverage ratio: 86,840 / 1,353 ≈ 64.2x (bukan 66x)
     - 64.2x = structural leverage indicator, BUKAN 64.2x cheaper (economic claim TANPA effort/time evidence)
-    - Leverage TREND PROVEN EMPIRICAL: SRV 1353 LOC → ILC 272 LOC → Academic 31 LOC = MARGINAL COST SEMAKIN KECIL 4.97x kemudian 8.77x
-    - Academic 31 LOC = THIN-APP THESIS PROOF SIGNAL — 4th product dengan implementation sangat marginal TANPA architectural fork
-    - Rule of Two LOCKED: legal-community primitive → 2 DISTINCT business outputs (ILC discussion + Academic publication) = 2x / 1 cost
+    - Leverage TREND: 🟡 evidenced, NOT universal law. SRV 1353 → ILC 272 (4.97x thinner) → Academic 31 (8.77x thinner vs ILC) = ENGINEERING PROXY structural evidence only. NOT = measured economic ROI.
+    - Absolute economic benefit: ⚪ NOT MEASURED. Production readiness: ⚪ NOT ESTABLISHED.
+    - Academic 31 LOC = THIN-APP THESIS ENGINEERING SIGNAL — 4th product dengan implementation sangat marginal TANPA architectural fork
+    - Rule of Two ENGINEERING CANDIDATE (🟡, BUKAN satisfied): F2/F3/F4 2-work engineering survival ✅ · world reuse ⏳ · shared EOS primitive = CANDIDATE · promotion final ⏳ B4 human observation
+    - D1.3 step-4 CommsMe report: UNRELATED / NOT ATTRIBUTABLE TO STATUS-ONLY CHANGES (grep confirmed: runtime TIDAK baca eos-state.yaml). 30/30 foundation = ENGINEERING REGRESSION PROOF, BUKAN entire EOS runtime healthy.
+    - EOS kalimat epistemik terkunci: (1) Work/Context/Execution/Artifact continuity = substrate komposisi lintas-capability dengan binding cost rendah PADA WORKLOAD YANG DIUJI 🟢 engineering evidence. (2) Manusia pakai substrate secara intuitif/sederhana + tetap punya professional agency = BELUM world-truth evidence 🟡.
   products:
     lawyershub:
       real_user_job: true
@@ -476,7 +480,7 @@ product_leverage_scoreboard:
     deployable_products: 0
     eos_first_light_locked: false
     engineering_first_light_locked: true
-    leverage_trend_proven_srv_to_ilc_to_academic: "SRV 1353 → ILC 272 (4.97x thinner) → Academic 31 (8.77x thinner vs ILC) = 43.6x total leverage marginal cost trend PROVEN structural"
+    leverage_trend_proven_srv_to_ilc_to_academic: "SRV 1353 → ILC 272 (4.97x thinner) → Academic 31 (8.77x thinner vs ILC) = 43.6x total leverage marginal cost trend ENGINEERING PROXY (structural only · NOT economic leverage proof · B4 human axis ⏳)"
 
 real_user_journey_evidence:
   batch: "D1.3-ALL-PRODUCTS-20260808"

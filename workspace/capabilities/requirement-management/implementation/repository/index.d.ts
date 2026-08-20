@@ -1,2 +1,1 @@
-export { RequirementRepositoryCurrent, RequirementRepositoryFileBacked, RequirementRepositoryInMemory, newRequirementId, defaultRequirementPriority, defaultRequirementStatus, defaultRequirementVerificationStatus, } from "./requirement.repository.js";
-//# sourceMappingURL=index.d.ts.map
+export { RequirementRepositoryCurrent, RequirementRepositoryFileBacked, RequirementRepositoryInMemory, RequirementRepositoryPostgres, newRequirementId, defaultRequirementPriority, defaultRequirementStatus, defaultRequirementVerificationStatus, } from "./requirement.repository.js";

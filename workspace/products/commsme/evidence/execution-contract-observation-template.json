@@ -1,0 +1,55 @@
+{
+  "work_id": "P0-PT-001",
+  "title": "Execution Contract Ambiguity Observation - PT Establishment",
+  "description": "Tracks execution flow ambiguity score to evaluate EXP-002 activation need",
+  "execution_steps": [
+    {
+      "step_id": "step_001",
+      "name": "Initiate PT establishment workflow",
+      "ambiguity_score": null,
+      "context_needed": [],
+      "context_provided": [],
+      "notes": ""
+    },
+    {
+      "step_id": "step_002",
+      "name": "Collect required business data",
+      "ambiguity_score": null,
+      "context_needed": [],
+      "context_provided": [],
+      "notes": ""
+    },
+    {
+      "step_id": "step_003",
+      "name": "Generate submission documents",
+      "ambiguity_score": null,
+      "context_needed": [],
+      "context_provided": [],
+      "notes": ""
+    },
+    {
+      "step_id": "step_004",
+      "name": "Handoff to professional for review",
+      "ambiguity_score": null,
+      "context_needed": [],
+      "context_provided": [],
+      "notes": ""
+    },
+    {
+      "step_id": "step_005",
+      "name": "Submit to Kemenkumham/OSS/DJP",
+      "ambiguity_score": null,
+      "context_needed": [],
+      "context_provided": [],
+      "notes": ""
+    }
+  ],
+  "overall_ambiguity_score": null,
+  "experiment_activation_check": {
+    "EXP-002_Execution_Contract_eligible": false
+  },
+  "created_at": "2026-08-17T06:59:33Z",
+  "last_updated": "2026-08-17T08:45:00.000Z",
+  "vertical_experiment_alignment": "F3 sebagai authority + action boundary seam dalam satu vertical experiment P0-PT-001 (bukan project terpisah)",
+  "doctrine_alignment": "hanya aktivasi jika ambiguity score >3/10; tidak membuat execution orchestration engine baru"
+}

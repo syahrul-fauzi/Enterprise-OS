@@ -1,20 +1,18 @@
 {
-  "extends": "../../config/typescript/base.json",
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "rootDir": ".",
     "outDir": "./dist",
     "strictNullChecks": true,
     "declaration": true,
     "baseUrl": ".",
-    "ignoreDeprecations": "5.0",
-    "paths": {
-      "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
-      "@repo/core-kernel/*": ["../../packages/core/kernel/src/*"],
-      "@repo/core-capability-registry": ["../../packages/core/capability-registry/src/index.ts"],
-      "@repo/core-capability-registry/*": ["../../packages/core/capability-registry/src/*"],
-      "@capabilities/identity/*": ["../identity/*"]
-    }
+    "ignoreDeprecations": "5.0"
   },
-  "include": ["**/*.ts"],
-  "exclude": ["dist", "node_modules"]
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
 }

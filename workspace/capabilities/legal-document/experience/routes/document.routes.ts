@@ -4,6 +4,7 @@ export type CapabilityRouteId =
   | "list"
   | "detail"
   | "create"
+  | "edit"
   | "sign"
   | "workspace"
   | "default";
@@ -45,6 +46,13 @@ export const documentRoutes: Readonly<
     path: "/documents/create",
     view: "DocumentView",
     label: "Create Document",
+    requiresAuth: true,
+  },
+  edit: {
+    id: "edit",
+    path: "/documents/:id/edit",
+    view: "DocumentView",
+    label: "Edit Document",
     requiresAuth: true,
   },
   sign: {

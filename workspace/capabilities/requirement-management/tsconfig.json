@@ -9,21 +9,28 @@
     "declaration": true,
     "incremental": true,
     "ignoreDeprecations": "5.0",
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "skipLibCheck": true,
     "composite": true,
-    "rootDir": "./",
-    "paths": {
-      "*": ["./*"],
-      "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
-      "@repo/core-kernel/*": ["../../packages/core/kernel/src/*"],
-      "@capabilities/identity/*": ["../identity/*"]
-    }
+    "rootDir": "./"
   },
   "references": [
-    { "path": "../../packages/core/kernel/tsconfig.json" },
-    { "path": "../identity/tsconfig.json" }
+    {
+      "path": "../../packages/core/kernel/tsconfig.json"
+    },
+    {
+      "path": "../identity/tsconfig.json"
+    }
   ],
-  "include": ["implementation/**/*.ts"],
-  "exclude": ["dist", "node_modules", "**/*.d.ts"]
+  "include": [
+    "implementation/**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "**/*.d.ts"
+  ],
+  "extends": "../tsconfig.json"
 }

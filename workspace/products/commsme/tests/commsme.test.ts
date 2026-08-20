@@ -145,7 +145,7 @@ test.describe("WORK-COM-001 · MSME Legal Companion Canonical Workflow (7 Steps 
     );
     records.push(assignNda.record);
     assert.equal(assignNda.record.ok, true, "A: assignLawyer advokat UMKM ok:true");
-    assert.equal(assignNda.output.status, "open", "A: after assign = open transition legal (consistent with LH-CASE-001 proven substrate draft→open)");
+    assert.equal(assignNda.output.status, "in_progress", "A: after assign = in_progress transition legal (consistent with professional-first-action state draft→in_progress)");
 
     // Buat dokumen NDA di dalam case (sebagai lampiran dokumen kontrak)
     const createNdaDoc = await capabilityRegistry.invoke<{ readonly id: string; readonly status: "draft"; readonly createdAt: Date }>(
@@ -340,7 +340,7 @@ test.describe("WORK-COM-001 · MSME Legal Companion Canonical Workflow (7 Steps 
     const nibRecords = records.slice(5, 8).map((r) => r.commandKey.split(":")[0]);
     assert.deepEqual(nibRecords, ["service-directory.createServiceRequest", "service-directory.acceptServiceRequest", "service-directory.markServiceDelivered"], "B: service-request lifecycle URUT BENAR monotonic draft→accepted→delivered");
 
-    const expectedMonotonicA: CaseStatus[] = ["draft", "open", "closed"];
+    const expectedMonotonicA: CaseStatus[] = ["draft", "in_progress", "closed"];
     const actualMonotonicA = [createNdaCase.output.status, assignNda.output.status, closeNdaCase.output.status];
     assert.deepEqual(actualMonotonicA, expectedMonotonicA, "A: status case transitions MONOTONIK (tidak bisa kembali) — menjaga integrity UMKM workflow");
 

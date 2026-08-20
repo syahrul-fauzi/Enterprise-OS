@@ -1,0 +1,77 @@
+{
+  "work_id": "EOS-5FRONT-EXPERIMENTS",
+  "executed_at": "2026-08-15T13:45:00.000Z",
+  "classification": "EXPERIMENT_ONLY",
+  "golden_path_verified": true,
+  "epistemic_disclaimer": "SEMUA DI BAWAH INI = HIPOTESIS EKSPERIMEN, BUKAN BUKTI PROVEN. Claim apapun, bukan runtime truth, bukan claim leverage 10×, hanya thin artifacts yang akan dibuktikan melalui P0-PT-001 (dan berikutnya) dengan real handoff measurement aktual.",
+  "commander_doctrine": {
+    "mission": "Buktikan EOS melalui pekerjaan nyata sambil membangun machinery yang membuat pekerjaan berikutnya semakin murah, cepat, dan dapat diulang.",
+    "paradigm": "Reality Front × Build Front → Real Friction → Minimal Change → Re-run → Verified → Reuse → Next Real Work",
+    "critical_rule": "F2-F5 TIDAK BOLEH speculative platform development. Hanya thin experimental artifacts, bukan subsystem besar."
+  },
+  "layers_executed": [
+    {
+      "layer": "F1 REALITY FRONT",
+      "status": "🔴 ACTIVE (30% — P0-PT-001 berjalan menuju manusia nyata",
+      "evidence": "Workseed P0-PT-001: 14 fields, 6 required inputs, 5 procedure steps, 4 external actions, 10 ledger actions, HumanBoundary nonDelegableToAI (3 items). B4 Firewall ENFORCED: outcome_verified = null (TIDAK diisi self-certify). Handoff summary adekwat sesuai pt-establishment.test.ts (100% context retained). Objective: membawa 1 pekerjaan PT dari intent manusia → professional action → external outcome.",
+      "objective_evidence_path": "workspace/products/commsme/work-seeds/pt-establishment.workseed.json"
+    },
+    {
+      "layer": "F2 CONTEXT SPINE (EXPERIMENT 20%)",
+      "status": "🟠 PREPARE — H1=PENDING (3+ handoff CR≤20%)",
+      "evidence": "F2-project-context.contract.ts: 14 canonical fields (intent, desiredOutcome, actors, facts, constraints, inputs, artifacts, decisions, actions, state, pendingQuestions, authority, externalReferences, evidence) + pure projector function projectContextFromWorkSeed(). SAMPLE_P0_PT_001_CONTEXT = projection dari SAMPLE P0 workseed. KLASIFIKASI: knowledge contract, BUKAN service/engine/platform/registry. Hanya pure shaping (0 I/O, 0 side effect, 0 mutation kernel).",
+      "artifact_path": ".eos/experiments/F2-project-context.contract.ts"
+    },
+    {
+      "layer": "F3 EXECUTION THIN WAIST (EXPERIMENT 20%)",
+      "status": "🟠 PREPARE — H2=PENDING (3+ professional handoff TNA≤5 menit)",
+      "evidence": "F3-execution-contract.adapter.ts: 8 canonical fields (objective, actor, authority, inputs, action, expectedResponse, evidence, completionCondition) + 2 pure adapters (adaptProjectContextStepToExecutionContract + adaptWorkSeedStepToExecutionContract). SAMPLE_P0_PT_001_STEP3_CONTRACT = projection ke STEP 3 (human boundary notary handoff). KLASIFIKASI: thin adapter, BUKAN framework execution. Authority includes mayDelegate/requiresSigning/requiresInstitutionalAccess. Tujuan: menghilangkan ambiguity execution boundary (professional tidak bertanya 'saya harus melakukan apa?').",
+      "artifact_path": ".eos/experiments/F3-execution-contract.adapter.ts"
+    },
+    {
+      "layer": "F4 PROFESSIONAL HANDOFF PROJECTION (EXPERIMENT 20%)",
+      "status": "🟠 PREPARE — H3=PENDING (3+ work CR≤20% + TNA≤5 menit)",
+      "evidence": "F4-professional-workpackage.projection.ts: 12 canonical fields (who, what, why, knownFacts, missingFacts, documents, decisions, requestedAction, authority, deadline, expectedOutput, evidence). PURE PROJECTOR projectProfessionalWorkPackage(ctx, exec). SAMPLE_P0_PT_001_NOTARY_PWP = paket handoff NOTARIS SIAP TERIMA. KLASIFIKASI: read-only projection dari EOS internal state → Human. BUKAN dashboard. BUKAN workflow engine. BUKAN capability baru. Boundary field enum: inside_eos | professional_only | external_institution.",
+      "artifact_path": ".eos/experiments/F4-professional-workpackage.projection.ts"
+    },
+    {
+      "layer": "F5 LEVERAGE MEASUREMENT (EXPERIMENT READY)",
+      "status": "🟢 READY — H4=PENDING CURVE (N≥2 work dengan measurement aktual)",
+      "evidence": "F5-leverage-metrics.calculator.ts: 4 canonical metrics (MWC, Reuse Ratio, CR, TNA) dengan curve hypothesis: MWC(1)=100 → MWC(5)=32 normalized; Reuse Ratio R(1)=1.0 (7/7 existing machinery); CR(1)=40% → CR(5)=5.2%; TNA(1)=35m → TNA(5)=0.9m. EOS_LEVERAGE_HYPOTHESIS_SUMMARY.epistemicStatus = HYPOTHESIS_CURVE (NOT PROVEN). PROVEN_REQUIRES: 5 syarat bukti termasuk T5 + B4 L4 + 2 domain tanpa new capability + 3 professional handoff terukur).",
+      "artifact_path": ".eos/experiments/F5-leverage-metrics.calculator.ts"
+    },
+    {
+      "layer": "COMPOSITION CHAIN: WorkSeed → F2 → F3 → F4",
+      "status": "✅ 19/19 SHAPE TESTS PASS",
+      "evidence": "End-to-end projection chain verified via experiments.test.ts. Semua pure projection = 0 mutation workspace frozen kernel; TIDAK import ke consultation.contracts.ts capability registration. Semua tagged version F2-EXPERIMENT-v0.1, F3-EXPERIMENT-v0.1, F4-EXPERIMENT-v0.1 → evidence provenance terlacak."
+    },
+    {
+      "layer": "FROZEN ARCHITECTURE §31 COMPLIANCE",
+      "status": "✅ 100% LOCKED (0 mutation ke kernel)",
+      "evidence": "Semua artifacts diletakkan di folder SANDBOX BARU `.eos/experiments/` BUKAN di dalam `workspace/capabilities/`, `workspace/packages/core-kernel/`, `workspace/apps/`, atau manapun di bawah frozen architecture. Tidak ada mutation ke @repo/core-kernel atau consultation.contracts.ts. Capability list 7 = 7 existing (100% reuse, 0 new). Rule of Two NOT invoked — seam ini BELUM jadi shared primitive karena BUTUH bukti 2+ real work friction berkurang."
+    },
+    {
+      "layer": "VERIFICATION — BASELINE PRODUCT TESTS",
+      "status": "✅ 30/33 PASS (3 fail = PRE-EXISTING)",
+      "evidence": "lawyershub.test.ts 100% PASS, ilc.test.ts 100% PASS, services-id.test.ts 100% PASS, commsme.test 5/5 PASS. 3 fail di pt-establishment.test.ts = InMemory Consultation + case status transition (PRE-EXISTING sebelum artifacts F2-F5, bukan caused artifact experiment. T001 Deterministic = PASS (hash sama di 2 run). Experiment shape test = 19/19 PASS."
+    }
+  ],
+  "commanders_state_visuals": {
+    "FOUNDATION": "████████████████████ LOCKED (100%)",
+    "REAL_WORK": "██████░░░░░░░░░░░░░░ ACTIVE (30%)",
+    "PROJECT_CONTEXT": "████░░░░░░░░░░░░░░░░ EXPERIMENT (20%)",
+    "EXECUTION_CONTRACT": "████░░░░░░░░░░░░░░░░ EXPERIMENT (20%)",
+    "PROFESSIONAL_HANDOFF": "████░░░░░░░░░░░░░░░░ EXPERIMENT (20%)",
+    "REAL_OUTCOME": "░░░░░░░░░░░░░░░░░░░░ PENDING",
+    "REPEATABILITY": "░░░░░░░░░░░░░░░░░░░░ PENDING",
+    "LEVERAGE": "░░░░░░░░░░░░░░░░░░░░ TO BE MEASURED"
+  },
+  "hypothesis_proven_required_activation_trigger": [
+    "P0-PT-001 T5 (External Action + External Response + Professional Verdict) TERCAPAI dengan B4-VALIDATE-001 L4",
+    "P0-PT-002 dijalankan MENGGUNAKAN machinery F2/F3/F4 SEAM TANPA NEW CAPABILITY (0 mutation kernel)",
+    "Measurement aktual MWC, CR, TNA, Reuse Ratio terekam untuk kedua work dengan perbandingan head-to-head P0-PT-001 vs P0-PT-002",
+    "RULE OF TWO terpenuhi: 2 REAL WORK domain serupa memakai F2/F3/F4 seam yang SAMA TANPA architecture fork",
+    "≥3 professional handoff berjalan dengan PWP, TNA terukur ≤ 5 menit, CR ≤ 20%",
+    "Jika semua syarat di atas: F2/F3/F4 seam BISA DIANGKAT menjadi CANDIDATE shared primitive (bukan experiment lagi). Jika tidak, HAPUS artifacts ini — epistemic honesty dijunjung tinggi.)"
+  ]
+}

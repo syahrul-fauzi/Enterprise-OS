@@ -1,0 +1,64 @@
+{
+  "work_id": "W5-REAL-WORK-PRESSURE-001",
+  "verified_at": "2026-08-19T15:00:00.000Z",
+  "acceptance_criteria": {
+    "ac1": {
+      "passed": true,
+      "evidence": "Capabilities used: legal-case, legal-document, consultation, identity (4 capabilities ≥3 requirement)",
+      "test_output": "Recon report confirms all capabilities exist and are activatable"
+    },
+    "ac2": {
+      "passed": true,
+      "evidence": "Artifacts created: legal case, document draft, consultation record - all persisted",
+      "test_output": "All artifacts created with unique IDs and linked via workId"
+    },
+    "ac3": {
+      "passed": true,
+      "evidence": "2 actors authenticated: client-001 (client) and lawyer-001 (lawyer)",
+      "test_output": "Both actors created valid sessions via identity.authenticateUser command"
+    },
+    "ac4": {
+      "passed": true,
+      "evidence": "1 revision created via legal-document.update command on initial document",
+      "test_output": "Document ID preserved across revision - same document, updated content"
+    },
+    "ac5": {
+      "passed": true,
+      "evidence": "Capability handoff complete: Identity → Legal-Case → Legal-Document → Consultation",
+      "test_output": "All capabilities chained natively with workId and matterId linking"
+    },
+    "ac6": {
+      "passed": true,
+      "evidence": "No new orchestration code, 100% existing substrate usage",
+      "test_output": "Test file contains zero new core code, only capability invocations"
+    },
+    "ac7": {
+      "passed": true,
+      "evidence": "Lineage fully preserved: same decision_id across all executions, parent_context_trace_id links initial → revision",
+      "test_output": "PT-004 context propagation working correctly for re-entry scenario"
+    },
+    "ac8": {
+      "passed": true,
+      "evidence": "All artifacts persisted to PRD-002 artifact graph persistence",
+      "test_output": "Artifact graph file created with tenantId and workId in filename"
+    }
+  },
+  "all_passed": true,
+  "total_passed": 8,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["ac1", "ac2", "ac3", "ac4", "ac5", "ac6", "ac7", "ac8"],
+  "security_scan": {
+    "passed": true,
+    "vulnerabilities_found": 0
+  },
+  "architecture_verification": {
+    "passed": true,
+    "locked_files_modified": [],
+    "frozen_substrate_compliant": true
+  },
+  "domain_glue_measured_lines": 0,
+  "reuse_percentage": 100.0,
+  "verdict": "ALL_PASSED",
+  "recommendation": "Slice can proceed to EVIDENCE phase - all acceptance criteria verified independently"
+}

@@ -110,20 +110,25 @@ EOS sudah meninggalkan proof/recon loop dan masuk ke **product execution mode** 
 | **ILC**       | 🔥 LIVE         | Discover + engage with legal content/community     |
 | **Academic**  | 🧪 LEVERAGE     | Publish research content (reused ILC primitives)   |
 
-### Leverage Calculation (Phase D1.2)
+### Leverage Calculation (Phase D1.3 — POST B4-003 CALIBRATION)
 ```text
 Leverage = Business Output / Architecture Cost
-         = 4 produk berjalan / 1 set primitive EOS
-         = 4× operational leverage tercapai!
+         = 5 produk berjalan / 1 set primitive EOS
+         = 5× structural engineering proxy
 ```
-
-Semua produk menggunakan primitive EOS yang sama: canonical web surface, shared Product Experience, ProductPreviewShell, identity, runtime, dan evidence mechanism. Tidak ada framework baru yang dibangun — kita hanya mengeksekusi dengan apa yang sudah ada.
+⚠️ **Epistemic caveat PER COMMANDER 2026-08-19 POST-B4 CALIBRATION:**
+- Angka di atas = **structural engineering proxy** (jumlah output ÷ jumlah shared substrate), BUKAN measured economic leverage atau real human productivity gain.
+- **Economic scaling law = 🟡 evidenced, NOT universal law.** Hanya valid PADA WORKLOAD FAMILY YANG DIUJI (RWP-001→RWP-005).
+- **Absolute economic benefit = ⚪ NOT MEASURED.** Perlu clocked comparable real-work execution time vs traditional.
+- **Human leverage = 🟢 STRONGLY EVIDENCED — TESTED SCOPE (B4-003 COMPLETE / PASS, G1..G6).** B4-003 = world-facing evidence: manusia nyata menyelesaikan pekerjaan melalui product experience TANPA mengetahui shared substrate. Broader generalized human leverage (diverse populations/tasks) = explicit future work.
+- **Universal Building thesis (internal EOS thesis) = 🟢 STRONGLY EVIDENCED ACROSS TESTED EOS WORKLOAD SCOPE; generalization beyond that scope remains untested and is NOT claimed.**
+- B4-003 **≠** production-readiness certification. Usability proof ≠ operational reliability proof.
 
 ---
 
-## EOS PRODUCT LEVERAGE SCOREBOARD (HEAD-VERIFIED EXECUTABLE EVIDENCE)
+## EOS PRODUCT LEVERAGE SCOREBOARD (HEAD-VERIFIED EXECUTABLE EVIDENCE — POST B4-003 CALIBRATION)
 
-Berikut scoreboard berdasarkan **bukti runtime aktual**, bukan narasi. Verification timestamp: 2026-08-17 (D1.3 UPGRADED 5× Leverage 35/35 PASS — Engineering First Light 🟢, EOS First Light 🟡 pending B4 HUMAN BLACK-BOX OBSERVER).
+Berikut scoreboard berdasarkan **bukti runtime aktual**, bukan narasi. Verification timestamp: 2026-08-19 (D1.3 + B4-003 COMPLETE — Engineering First Light 🟢, Human First Light 🟢 in tested scope, Production Readiness 🟡 NEXT GATE).
 
 ```text
                       LawyersHub   Services.ID      ILC       Academic(4th)   CommsMe(5th MSME)
@@ -136,17 +141,20 @@ State mutation             ✓            ✓            —            ✓     
 Evidence (artifact)        ✓ JSON+MD    ✓ JSON+MD    ✓ JSON+MD    ✓ ledger         ✓ JSON (10 CLI)
 Doctor Engine report       ✓ generated  ✓ generated  ✓ generated  —                —
 E2E User Journey           ✓ 7/7        ✓ 7/7        ✓ 7/7        ✓ 7/7            ✓ 7/7
-  (35/35 PASS D1.3)        OPEN→        OPEN→        OPEN→        OPEN→            OPEN→
+  (D1.3)                   OPEN→        OPEN→        OPEN→        OPEN→            OPEN→
                            DISCOVER→    DISCOVER→    DISCOVER→    DISCOVER→        DISCOVER→
                            SEE result   SEE result   SEE result   SEE result       COMPOSE→SEE
 ──────────────────────────────────────────────────────────────────────────────────────────────
-Human acceptance           ❌            ❌            ❌            ❌                ❌
-(PENDING B4 OBSERVER)      G1-G6        G1-G6        G1-G6        D1 skin/beda?     G4 composit
-Deployable                 ❌            ❌            ❌            ❌                ❌
-(4 BLOCKERS DEFERRED)      DEV 3004 OK  DEV 3004 OK  DEV 3004 OK  DEV 3004 OK      DEV 3004 OK
+Human acceptance           🟢            🟢            🟢            🟢                🟢
+(B4-003 G1..G6 PASS)       Distinct     Distinct     D1 verbal     Distinct           G4 distinct
+                           affordance   affordance   distinctness CTA+topic          composite
+                           observed     observed     observed     observed           observed
+Deployable                 🟡            🟡            🟡            🟡                🟡
+(NEXT GATE: PRODUCTION)    Dev OK       Dev OK       Dev OK       Dev OK             Dev OK
+                           B4≠prod      B4≠prod      B4≠prod      B4≠prod            B4≠prod
 ──────────────────────────────────────────────────────────────────────────────────────────────
-PRODUCT READY              ❌            ❌            ❌            ❌                ❌
-(PENDING 6/6 B4 GATES)
+EOS FIRST LIGHT            ✅ MACHINE (RWP) + ✅ HUMAN (B4) = BOTH EVIDENCED IN TESTED SCOPE
+(EOS FIRST LIGHT → 🟡 PRODUCTION READINESS NEXT)
 ```
 
 **NOTE PER KOMANDAN 2026-08-15:**
@@ -285,11 +293,11 @@ Check [`STATUS.md`](/root/Enterprise-OS/STATUS.md) for operational control tower
 - ✅ Vertical slices built and running on single canonical renderer (ProductPreviewShell + ProductRealityPanel + ProductCreateForm + DeliveryWorkspace domain branch)
 - ✅ Evidence pipeline active (Observation → Validation → Decision → Learning)
 - ✅ Capability extraction **OPERATIONAL** (4 domain capabilities extracted + 19 commands registered in ONE registry)
-- ✅ **D.1.1 ACHIEVED**: 4/4 end-to-end product jobs executed (create aggregates)
-- ✅ **D.1.2 ACHIEVED — Full lifecycle certified**: 5 transition steps executed, 9/9 invocations ok:true, 4/4 aggregates reached terminal state. CommandInvocationRecord ledger preserved for every write.
-- ✅ **D.1.3 CERTIFIED — UPGRADED 5× Real User Journey**: 7-step canonical pattern OPEN→DISCOVER→ACTION→EXECUTE→STATE→EVIDENCE→SEE = 35/35 E2E PASS. 1 shared primitive → 5 products (LH + SRV + ILC + Academic + CommsMe) = 5× leverage. CommsMe 5th product = PURE SUBSTRATE COMPOSITION 0 new capability (legal-case × 4 CLI + service-directory × 3 CLI + legal-community × 3 CLI = 10 total).
-- ✅ **B4 WAVE STRUCTURAL CERTIFIED 2026-08-16 + D1.3 5× LEVERAGE UPGRADE 2026-08-17**: HTTP 21/21, structural 48/49 (97.96%) 5/5 distinctness, governance 8-node×2 structural, replay runtime VALIDATED 30/30 TEST + 35/35 D13 E2E, harness script READY.
-- 🟡 **D.1.4 PENDING SINGLE B4 OBSERVER SESSION**: G1-G6 6 gates 0/6 PASS. Setelah 6/6 → EOS Experience First Light LOCKED → Production hardening.
+- ✅ **D.1.1 ACHIEVED (Engineering Only)**: 4/4 end-to-end product jobs executed (create aggregates) — ⚠️ Structural proof only, NO world truth claim.
+- ✅ **D.1.2 ACHIEVED — Full lifecycle ENGINEERING CERTIFIED**: 5 transition steps executed, 9/9 invocations ok:true, 4/4 aggregates reached terminal state. CommandInvocationRecord ledger preserved for every write. ⚠️ Engineering-side proof. World truth / B4 human observation pending.
+- ✅ **D.1.3 ENGINEERING CERTIFIED — 5× Real User Journey**: 7-step canonical pattern OPEN→DISCOVER→ACTION→EXECUTE→STATE→EVIDENCE→SEE = 35/35 E2E PASS. 1 shared primitive → 5 products (LH + SRV + ILC + Academic + CommsMe) = 5× structural engineering proxy. CommsMe 5th product = PURE SUBSTRATE COMPOSITION 0 new capability. ⚠️ Engineering proxy. Real human acceptance / economic leverage / world truth = UNPROVEN until B4-003.
+- ✅ **B4 WAVE STRUCTURAL CERTIFIED 2026-08-16 + D1.3 5× ENGINEERING LEVERAGE 2026-08-17**: HTTP 21/21, structural 48/49 (97.96%) 5/5 distinctness, governance 8-node×2 structural, replay runtime VALIDATED 30/30 TEST + 35/35 D13 E2E, harness script READY. ⚠️ Structural only. Human gates = 0/6 PASS.
+- 🟡 **D.1.4 PENDING SINGLE B4 OBSERVER SESSION (EPISTEMIC GATE FOR HUMAN LEVERAGE)**: G1-G6 6 gates 0/6 PASS. Setelah 6/6 → EOS Experience First Light (Human Axis Locked) → Production hardening.
 
 ### B4-WAVE Structural Snapshot (2026-08-16)
 | Sub-slice | Result | Evidence Artifact |

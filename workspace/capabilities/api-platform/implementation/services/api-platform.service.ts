@@ -9,7 +9,7 @@ import type {
   ApiPlatformQueryInput,
   ApiPlatformQueryOutput,
 } from "../contracts/index.js";
-import { recordRuntimeInvocation } from "@repo/core-runtime";
+import { recordRuntimeInvocation } from "@repo/core-kernel";
 import { governanceReadGatewayService } from "./governance-read-gateway.service.js";
 import { requirementDeliveryGatewayService } from "./requirement-delivery-gateway.service.js";
 

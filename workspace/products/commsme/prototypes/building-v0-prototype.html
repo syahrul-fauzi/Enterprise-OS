@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EOS Building v0 - Human Prototype</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        html, body {
+            background-color: #fafafa;
+            min-height: 100vh;
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+        
+        #app {
+            width: 100%;
+            max-width: 420px;
+            min-width: 100%;
+            margin: 0 auto;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            border: 3px solid red; /* Debug border - lihat batas container */
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Lobby specific styles */
+        .lobby-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .lobby-header .brand-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .lobby-header .brand-primary {
+            color: #1c1917;
+        }
+        
+        .lobby-header .brand-secondary {
+            color: #78716c;
+        }
+        
+        .lobby-header .header-profile {
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+        
+        .lobby-header .header-profile:hover {
+            background-color: #f5f5f4;
+        }
+        
+        .input-microcopy {
+            font-size: 12px;
+            color: #78716c;
+            line-height: 1.4;
+            margin-top: 8px;
+            text-align: center;
+        }
+        
+        .main-question {
+            margin-top: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .main-title {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            line-height: 1.3;
+            color: #292524;
+            font-weight: 700;
+            width: 100%;
+        }
+        
+        .input-group {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        #main-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d6d3d1;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        #main-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+        }
+        
+        #start-btn {
+            width: 100%;
+            background-color: #1c1917;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        #start-btn:hover {
+            background-color: #44403c;
+        }
+        
+        .quick-options-section {
+            margin-top: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .quick-options-label {
+            font-size: 14px;
+            color: #57534e;
+            margin-bottom: 8px;
+        }
+        
+        .work-card {
+            background-color: white;
+            border: 1px solid #e7e5e4;
+            border-radius: 12px;
+            padding: 16px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .work-card:hover {
+            border-color: #a8a29e;
+        }
+        
+        .work-card.new-work:hover {
+            border-color: #93c5fd;
+            background-color: #eff6ff;
+        }
+        
+        .work-card-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .work-card-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #292524;
+        }
+        
+        .work-card-arrow {
+            color: #a8a29e;
+            font-size: 16px;
+        }
+        
+        .active-works-section {
+            margin-top: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .active-works-label {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #78716c;
+        }
+
+        /* Common back button styles */
+        .back-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        #back-btn, #back-to-lobby-btn, #back-lobby-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #back-btn:hover, #back-to-lobby-btn:hover, #back-lobby-btn:hover {
+            background-color: #f5f5f4;
+        }
+
+        .back-label {
+            font-size: 14px;
+            color: #78716c;
+        }
+
+        /* Work state styles */
+        .work-content {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            padding-top: 16px;
+        }
+
+        .work-title {
+            font-size: 24px;
+            font-weight: 500;
+            color: #292524;
+        }
+
+        .work-card {
+            background-color: white;
+            border: 1px solid #e7e5e4;
+            border-radius: 16px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .section-label {
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #57534e;
+            margin-bottom: 16px;
+        }
+
+        .completed-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #bbf7d0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .check-icon svg {
+            width: 12px;
+            height: 12px;
+            color: #16a34a;
+        }
+
+        .item-text {
+            color: #44403c;
+        }
+
+        .work-input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #d6d3d1;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .work-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+        }
+
+        .continue-btn {
+            align-self: flex-end;
+            padding: 12px 24px;
+            background-color: #1c1917;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .continue-btn:hover {
+            background-color: #44403c;
+        }
+
+        /* Legal case workspace styles */
+        .case-status-card {
+            background-color: white;
+            border: 1px solid #e7e5e4;
+            border-radius: 16px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .case-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1c1917;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e7e5e4;
+        }
+
+        .case-meta {
+            color: #78716c;
+            margin-top: 4px;
+        }
+
+        .assign-lawyer-btn {
+            padding: 8px 16px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .assign-lawyer-btn:hover {
+            background-color: #3b82f6;
+        }
+
+        .close-case-btn {
+            padding: 8px 16px;
+            background-color: #1c1917;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .close-case-btn:hover {
+            background-color: #44403c;
+        }
+
+        .case-id {
+            font-size: 14px;
+            color: #78716c;
+            padding-top: 16px;
+        }
+
+        .loading-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        /* Waiting state styles */
+        .waiting-card {
+            background-color: white;
+            border: 1px solid #e7e5e4;
+            border-radius: 16px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .waiting-title {
+            font-size: 24px;
+            font-weight: 500;
+            color: #292524;
+        }
+
+        .waiting-status {
+            font-size: 20px;
+            color: #44403c;
+            margin-bottom: 12px;
+        }
+
+        .waiting-description {
+            color: #78716c;
+            line-height: 1.5;
+        }
+
+        .waiting-note {
+            border-top: 1px solid #e7e5e4;
+            padding-top: 32px;
+        }
+
+        .waiting-note-title {
+            font-size: 18px;
+            color: #57534e;
+            margin-bottom: 8px;
+        }
+
+        .waiting-note-desc {
+            color: #a8a29e;
+            line-height: 1.5;
+        }
+
+        .finish-btn {
+            align-self: flex-start;
+            padding: 12px 24px;
+            background-color: #1c1917;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .finish-btn:hover {
+            background-color: #44403c;
+        }
+
+        /* Result state styles */
+        .success-card {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 16px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Aplikasi akan di-render oleh JavaScript -->
+    </div>
+
+    <script>
+        // EOS Capability Registry Bridge - minimal binding only, no new business logic
+        window.capabilityRegistry = {
+            async invoke(capability, commandName, input) {
+                console.log(`[capability-registry] Invoked: ${capability}.${commandName}`, input);
+                // Reuse existing legal-case command schemas from capability
+                if (capability === "legal-case" && commandName === "case.create") {
+                    return {
+                        output: { id: `case-${Date.now()}`, status: "draft" },
+                        record: { ok: true, invokedAt: new Date().toISOString() }
+                    };
+                }
+                if (capability === "legal-case" && commandName === "case.assignLawyer") {
+                    return {
+                        output: { id: input.id, lawyerId: input.lawyerId, status: "in_progress" },
+                        record: { ok: true, invokedAt: new Date().toISOString() }
+                    };
+                }
+                if (capability === "legal-case" && commandName === "case.close") {
+                    return {
+                        output: { id: input.id, status: "closed" },
+                        record: { ok: true, invokedAt: new Date().toISOString() }
+                    };
+                }
+                throw new Error(`Command not found: ${capability}.${commandName}`);
+            }
+        };
+
+        // State aplikasi
+        let currentState = 'LOBBY'; // LOBBY | WORK | WAITING | RESULT
+        let selectedWork = null;
+        let currentCase = null; // Preserve case context between renders (no context reconstruction)
+
+        // Data pekerjaan aktif
+        const activeWorks = [
+            { id: 'nda-vendor', title: 'NDA Vendor', status: 'active' },
+            { id: 'pt-establishment', title: 'PT Establishment', status: 'active' }
+        ];
+
+        // Pilihan pekerjaan baru (categorical intent actions - UX optimized)
+        const newWorkOptions = [
+            { id: 'perizinan-nib', title: '📋 Layanan Perizinan & NIB' },
+            { id: 'kontrak-mitra', title: '📝 Drafting Kontrak & Perjanjian' },
+            { id: 'konsultasi-hukum', title: '⚡ Konsultasi Hukum Fast-Track' }
+        ];
+
+        // Data untuk state WORK (ketika user pilih pekerjaan)
+        const workData = {
+            'perizinan-nib': {
+                title: 'Pengurusan Perizinan & NIB',
+                completed: ['data usaha', 'alamat tempat usaha', 'identitas pemilik'],
+                needed: 'Detail skala usaha dan jenis barang/jasa',
+                nextAction: 'Lanjutkan Proses'
+            },
+            'kontrak-mitra': {
+                title: 'Drafting Kontrak & Perjanjian',
+                completed: ['informasi perusahaan', 'data mitra', 'kebutuhan kontrak'],
+                needed: 'Detail jangka waktu kerjasama',
+                nextAction: 'Lanjutkan'
+            },
+            'konsultasi-hukum': {
+                title: 'Konsultasi Hukum Fast-Track',
+                completed: ['identitas pemohon', 'deskripsi awal masalah'],
+                needed: 'Dokumen pendukung jika ada',
+                nextAction: 'Jadwalkan Konsultasi'
+            },
+            'legal-case': {
+                title: 'Kasus Hukum Umum',
+                completed: ['data klien', 'detail kasus', 'dokumen pendukung'],
+                needed: 'Bukti pendukung tambahan',
+                nextAction: 'Lanjutkan'
+            }
+        };
+
+        // Render fungsi utama
+        function render() {
+            const app = document.getElementById('app');
+            switch(currentState) {
+                case 'LOBBY':
+                    app.innerHTML = renderLobby();
+                    break;
+                case 'WORK':
+                    app.innerHTML = renderWork();
+                    break;
+                case 'WAITING':
+                    app.innerHTML = renderWaiting();
+                    break;
+                case 'RESULT':
+                    app.innerHTML = renderResult();
+                    break;
+            }
+            attachEventListeners();
+        }
+
+        // Render LOBBY (state awal)
+        function renderLobby() {
+            const activeWorksHtml = activeWorks.map(work => `
+                <div class="work-card" data-id="${work.id}">
+                    <div class="work-card-content">
+                        <span class="work-card-title">${work.title}</span>
+                        <span class="work-card-arrow">→</span>
+                    </div>
+                </div>
+            `).join('');
+
+            const newWorksHtml = newWorkOptions.map(work => `
+                <div class="work-card new-work" data-id="${work.id}">
+                    <div class="work-card-content">
+                        <span class="work-card-title">${work.title}</span>
+                        <span class="work-card-arrow">+</span>
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+                <div class="fade-in">
+                    <!-- Header -->
+                    <div class="lobby-header">
+                        <div class="brand-group">
+                            <span class="brand-primary">hola</span>
+                            <span class="brand-secondary">CommsMe</span>
+                        </div>
+                        <span class="header-profile">👤</span>
+                    </div>
+
+                    <!-- Conditional Hierarchy - Pertama: Pekerjaan yang sedang berjalan (untuk returning user) -->
+                    ${activeWorks.length > 0 ? `
+                    <div class="active-works-section">
+                        <p class="active-works-label">📌 Pekerjaan yang masih berjalan:</p>
+                        ${activeWorksHtml}
+                    </div>
+                    ` : ''}
+
+                    <!-- Second: Primary Action Block (buat permintaan baru) -->
+                    <div class="main-question">
+                        <h1 class="main-title">Apa yang ingin Anda selesaikan hari ini?</h1>
+                        
+                        <!-- Input intent bebas - SATU-SATUNYA entry point utama -->
+                        <div class="input-group">
+                            <input id="main-input" type="text" placeholder="Ketik masalah Anda, sistem AI akan mengarahkan ke tim yang tepat...">
+                            <button id="start-btn">Proses & Analisis →</button>
+                        </div>
+                        <p class="input-microcopy">AI kami akan langsung menganalisis kebutuhan Anda dan menghubungkan ke divisi perizinan atau tim hukum yang sesuai.</p>
+
+                        <!-- Pilihan cepat sebagai SHORTCUT saja, bukan entry point kedua -->
+                        <div class="quick-options-section">
+                            <span class="quick-options-label">atau pilih layanan cepat:</span>
+                            ${newWorksHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Legal Case Workspace - LawyersHub integration (reuses existing legal-case capability)
+        function renderLegalCaseWorkspace() {
+            // If we have an existing case, preserve context (0 reconstruction)
+            if (currentCase) {
+                const statusText = currentCase.status === "draft" ? "Draft" : "Dalam Proses";
+                const lawyerText = currentCase.lawyerId ? "Advokat telah ditugaskan" : "Belum ditugaskan";
+                
+                return `
+                    <div class="fade-in">
+                        <header class="back-header">
+                            <button id="back-btn">
+                                <svg class="w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                </svg>
+                            </button>
+                            <span class="back-label">Kembali ke lobby</span>
+                        </header>
+                        <div class="work-content">
+                            <div class="case-status-card">
+                                <div>
+                                    <h2 class="case-title">${currentCase.title}</h2>
+                                    <p class="case-meta">Status: ${statusText} | Lawyer: ${lawyerText}</p>
+                                </div>
+                                ${currentCase.status === "draft" ? `
+                                    <button id="assign-lawyer-btn" class="assign-lawyer-btn">Tugaskan Lawyer</button>
+                                ` : ""}
+                                ${currentCase.status === "in_progress" ? `
+                                    <button id="close-case-btn" class="close-case-btn">Selesaikan Kasus</button>
+                                ` : ""}
+                                <div class="case-id">ID Kasus: ${currentCase.id}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Loading state for first render
+            setTimeout(async () => {
+                const mainInput = document.getElementById('main-input');
+                const caseTitle = mainInput?.value?.trim() || "Legal Matter Baru";
+                
+                // Invoke EXISTING legal-case capability from kernel (no new machinery)
+                const { output: createResult } = await window.capabilityRegistry.invoke("legal-case", "case.create", {
+                    title: caseTitle,
+                    sessionId: "session-test-001",
+                    priority: "medium"
+                });
+
+                // Preserve case context globally to avoid reconstruction
+                currentCase = {
+                    id: createResult.id,
+                    title: caseTitle,
+                    status: createResult.status,
+                    lawyerId: null
+                };
+
+                // Re-render with preserved context
+                render();
+            }, 100);
+
+            return `
+                <div class="fade-in">
+                    <header class="back-header">
+                        <button id="back-btn">
+                            <svg class="w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                        </button>
+                        <span class="back-label">Kembali ke lobby</span>
+                    </header>
+                    <div class="work-content">
+                        <div class="case-status-card loading-state">
+                            <div class="pulse-dot w-3 h-3 bg-blue-600 rounded-full"></div>
+                            <p style="color: #78716c;">Memuat kasus hukum...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render WORK (state setelah user pilih pekerjaan)
+        function renderWork() {
+            // Special handling for legal-case (LawyersHub) - reuses existing Building machinery
+            if (selectedWork === 'legal-case') {
+                return renderLegalCaseWorkspace();
+            }
+
+            // Default rendering for CommsMe work types (unchanged, preserves existing behavior)
+            const data = workData[selectedWork];
+            const completedHtml = data.completed.map(item => `
+                <div class="flex items-center gap-3">
+                    <span class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
+                        <svg class="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </span>
+                    <span class="text-stone-700">${item}</span>
+                </div>
+            `).join('');
+
+            return `
+                <div class="fade-in space-y-8">
+                    <!-- Header with back button -->
+                    <header class="flex items-center gap-4">
+                        <button id="back-btn" class="w-8 h-8 rounded-full hover:bg-stone-100 flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                        </button>
+                        <span class="text-sm text-stone-500">Kembali ke lobby</span>
+                    </header>
+
+                    <!-- Work content -->
+                    <div class="space-y-8 pt-4">
+                        <h2 class="text-2xl font-medium text-stone-800">${data.title}</h2>
+                        
+                        <div class="bg-white rounded-2xl p-8 border border-stone-200 space-y-8">
+                            <!-- Yang sudah diketahui -->
+                            <div class="space-y-4">
+                                <p class="text-sm font-medium text-stone-600 uppercase tracking-wide">Kami sudah memiliki</p>
+                                <div class="space-y-3">
+                                    ${completedHtml}
+                                </div>
+                            </div>
+
+                            <!-- Yang dibutuhkan -->
+                            <div class="border-t border-stone-100 pt-8 space-y-4">
+                                <p class="text-sm font-medium text-stone-600 uppercase tracking-wide">Yang dibutuhkan dari Anda</p>
+                                <input type="text" placeholder="${data.needed}" class="w-full px-4 py-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+
+                            <!-- CTA Button -->
+                            <div class="pt-4 flex justify-end">
+                                <button id="continue-btn" class="px-6 py-3 bg-stone-900 text-white rounded-xl hover:bg-stone-800 transition-colors font-medium">
+                                    ${data.nextAction} →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render WAITING (state handoff / menunggu pihak lain)
+        function renderWaiting() {
+            return `
+                <div class="fade-in space-y-8">
+                    <header class="flex items-center gap-4">
+                        <button id="back-to-lobby-btn" class="w-8 h-8 rounded-full hover:bg-stone-100 flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M12 3l9 9-9 9"/>
+                            </svg>
+                        </button>
+                        <span class="text-sm text-stone-500">Kembali ke lobby</span>
+                    </header>
+
+                    <div class="pt-12 space-y-8">
+                        <div class="bg-white rounded-2xl p-10 border border-stone-200 space-y-8">
+                            <h2 class="text-2xl font-medium text-stone-800">Pekerjaan sedang berjalan</h2>
+                            
+                            <div class="space-y-4">
+                                <p class="text-stone-700 text-lg">Sedang berjalan</p>
+                                <p class="text-stone-500">Kami sedang menyiapkan dokumen Anda dan akan memberi tahu Anda jika ada yang perlu dilakukan.</p>
+                            </div>
+
+                            <div class="border-t border-stone-100 pt-8">
+                                <p class="text-stone-600 text-lg">Anda tidak perlu melakukan apa-apa sekarang.</p>
+                                <p class="text-stone-400 mt-2">Kami akan mengirimkan notifikasi ketika pekerjaan membutuhkan tindakan Anda lagi.</p>
+                            </div>
+
+                            <div class="pt-4">
+                                <button id="finish-to-result-btn" class="px-6 py-3 bg-stone-900 text-white rounded-xl hover:bg-stone-800 transition-colors font-medium">
+                                    Selesai (Demo) →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render RESULT (state akhir pekerjaan selesai)
+        function renderResult() {
+            return `
+                <div class="fade-in space-y-8">
+                    <header class="flex items-center gap-4">
+                        <button id="back-lobby-btn" class="w-8 h-8 rounded-full hover:bg-stone-100 flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M12 3l9 9-9 9"/>
+                            </svg>
+                        </button>
+                        <span class="text-sm text-stone-500">Kembali ke lobby</span>
+                    </header>
+
+                    <div class="pt-12 space-y-8">
+                        <div class="bg-green-50 rounded-2xl p-10 border border-green-100 space-y-6 text-center">
+                            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+                                <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <h2 class="text-2xl font-medium text-stone-800">✓ Selesai</h2>
+                            <p class="text-stone-600 text-lg">Kontrak Anda sudah ditandatangani.</p>
+
+                            <div class="pt-6 space-y-3">
+                                <button class="w-full px-6 py-3 bg-white border border-stone-200 rounded-xl hover:bg-stone-50 transition-colors font-medium text-stone-700">
+                                    [Lihat hasil]
+                                </button>
+                                <button id="new-work-btn" class="w-full px-6 py-3 bg-stone-900 text-white rounded-xl hover:bg-stone-800 transition-colors font-medium">
+                                    [Mulai pekerjaan lain]
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Attach event listeners untuk interaksi
+        function attachEventListeners() {
+            // Legal-case specific event listeners (LawyersHub binding)
+            const assignLawyerBtn = document.getElementById('assign-lawyer-btn');
+            const closeCaseBtn = document.getElementById('close-case-btn');
+            
+            if (assignLawyerBtn) {
+                assignLawyerBtn.addEventListener('click', async () => {
+                    // Invoke EXISTING case.assignLawyer command from legal-case capability
+                    await window.capabilityRegistry.invoke("legal-case", "case.assignLawyer", {
+                        id: currentCase.id,
+                        lawyerId: "lawyer-test-001"
+                    });
+                    // Update context to preserve state (0 reconstruction)
+                    currentCase.status = "in_progress";
+                    currentCase.lawyerId = "lawyer-test-001";
+                    render();
+                });
+            }
+            
+            if (closeCaseBtn) {
+                closeCaseBtn.addEventListener('click', async () => {
+                    // Invoke EXISTING case.close command from legal-case capability
+                    await window.capabilityRegistry.invoke("legal-case", "case.close", {
+                        id: currentCase.id
+                    });
+                    // Reset case context and transition to WAITING (existing state, no new state)
+                    currentCase = null;
+                    currentState = 'WAITING';
+                    render();
+                });
+            }
+
+            // Event listener untuk input utama (SATU-SATUNYA entry point)
+            const mainInput = document.getElementById('main-input');
+            const startBtn = document.getElementById('start-btn');
+            
+            if (mainInput && startBtn) {
+                // Mulai pekerjaan dari input bebas
+                startBtn.addEventListener('click', () => {
+                    if (mainInput.value.trim().length > 0) {
+                        // Reset case context when starting new legal case
+                        if (selectedWork === 'legal-case') currentCase = null;
+                        selectedWork = 'legal-case';
+                        currentState = 'WORK';
+                        render();
+                    }
+                });
+                
+                // Support enter key untuk submit
+                mainInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && mainInput.value.trim().length > 0) {
+                        // Reset case context when starting new legal case
+                        if (selectedWork === 'legal-case') currentCase = null;
+                        selectedWork = 'legal-case';
+                        currentState = 'WORK';
+                        render();
+                    }
+                });
+            }
+
+            // Event listener untuk pekerjaan baru (shortcut saja)
+            document.querySelectorAll('.new-work-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    selectedWork = e.currentTarget.dataset.id;
+                    currentState = 'WORK';
+                    render();
+                });
+            });
+
+            // Event listener untuk pekerjaan yang sedang berjalan
+            document.querySelectorAll('.work-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    selectedWork = e.currentTarget.dataset.id;
+                    currentState = 'WAITING';
+                    render();
+                });
+            });
+
+            // Back button dari WORK ke LOBBY
+            const backBtn = document.getElementById('back-btn');
+            if (backBtn) {
+                backBtn.addEventListener('click', () => {
+                    currentState = 'LOBBY';
+                    render();
+                });
+            }
+
+            // Continue button dari WORK ke WAITING
+            const continueBtn = document.getElementById('continue-btn');
+            if (continueBtn) {
+                continueBtn.addEventListener('click', () => {
+                    currentState = 'WAITING';
+                    render();
+                });
+            }
+
+            // Back to lobby dari WAITING
+            const backToLobbyBtn = document.getElementById('back-to-lobby-btn');
+            if (backToLobbyBtn) {
+                backToLobbyBtn.addEventListener('click', () => {
+                    currentState = 'LOBBY';
+                    render();
+                });
+            }
+
+            // Finish demo button ke RESULT
+            const finishBtn = document.getElementById('finish-to-result-btn');
+            if (finishBtn) {
+                finishBtn.addEventListener('click', () => {
+                    currentState = 'RESULT';
+                    render();
+                });
+            }
+
+            // Back lobby dari RESULT
+            const backLobbyBtn = document.getElementById('back-lobby-btn');
+            if (backLobbyBtn) {
+                backLobbyBtn.addEventListener('click', () => {
+                    currentState = 'LOBBY';
+                    render();
+                });
+            }
+
+            // Mulai pekerjaan lain dari RESULT
+            const newWorkBtn = document.getElementById('new-work-btn');
+            if (newWorkBtn) {
+                newWorkBtn.addEventListener('click', () => {
+                    currentState = 'LOBBY';
+                    render();
+                });
+            }
+        }
+
+        // Inisialisasi aplikasi
+        render();
+    </script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 export {
   createDocument,
+  reviewDocument,
   signDocument,
   archiveDocument,
   updateDocument,

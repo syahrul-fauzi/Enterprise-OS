@@ -22,7 +22,7 @@ export function canonicalHashFromJson(json: CanonicalJsonString): CanonicalHashE
 
 export function fnv1aCombine(parts: readonly string[]): Fnv1a32Hex {
   if (parts.length === 0) return fnv1a32("");
-  let out = parts[0];
-  for (let i = 1; i < parts.length; i++) out = `${out}|${parts[i]}`;
+  let out = parts[0] ?? "";
+  for (let i = 1; i < parts.length; i++) out = `${out}|${parts[i] ?? ""}`;
   return fnv1a32(out);
 }

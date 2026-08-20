@@ -1,0 +1,64 @@
+{
+  "product": "commsme",
+  "steps": [
+    {
+      "n": 1,
+      "stage": "OPEN",
+      "label": "COMMSME platform dimuat",
+      "ok": true
+    },
+    {
+      "n": 2,
+      "stage": "DISCOVER",
+      "label": "Layanan kontrak kerja dipilih",
+      "ok": true
+    },
+    {
+      "n": 3,
+      "stage": "ACTION",
+      "label": "Formulir terisi lengkap (3 substrate: NDA + NIB + SOP)",
+      "ok": true
+    },
+    {
+      "n": 4,
+      "stage": "EXECUTE",
+      "label": "Lifecycle 7 transitions: NDA×4 + NIB×2 + SOP×1 = 7 cap invokes",
+      "ok": false
+    }
+  ],
+  "totalSteps": 4,
+  "passCount": 3,
+  "failCount": 1,
+  "completedAtISO": "2026-08-19T12:30:47.188Z",
+  "evidenceChain": [
+    {
+      "step": 1,
+      "stage": "OPEN",
+      "productId": "commsme",
+      "displayName": "CommsMe — MSME Legal Companion"
+    },
+    {
+      "step": 2,
+      "stage": "DISCOVER",
+      "shared_providers": 6,
+      "shared_topics": 8,
+      "shared_cases": 4
+    },
+    {
+      "step": 3,
+      "stage": "ACTION",
+      "nda_case": "case-102",
+      "nib_sreq": "sreq-102",
+      "sop_content": "content-103"
+    },
+    {
+      "step": 4,
+      "stage": "EXECUTE",
+      "transitions": {
+        "nda": "draft→open→doc_created→signed→closed",
+        "nib": "draft→accepted→delivered",
+        "sop": "proposed→published"
+      }
+    }
+  ]
+}

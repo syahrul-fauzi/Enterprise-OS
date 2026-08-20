@@ -478,7 +478,7 @@ function buildEvidenceIdentityIndex(
   for (const k of needsRebuild) inDeg[k] = 0;
   const children: Record<string, string[]> = {};
   for (const k of needsRebuild) {
-    for (const p of validParentKeys[k]) {
+    for (const p of validParentKeys[k] ?? []) {
       if (!Object.prototype.hasOwnProperty.call(validParentKeys, p)) continue;
       if (!children[p]) children[p] = [];
       children[p].push(k);
@@ -512,6 +512,7 @@ function buildEvidenceIdentityIndex(
       parentEids.push(keyToEid[pk]);
     }
     const base = pkgs[key];
+    if (!base) continue;
     const rebuilt: EvidencePackage = Object.freeze({
       ...base,
       derivedFromEvidenceIds: Object.freeze([
@@ -572,8 +573,12 @@ export const EVIDENCE_ID_KEYS: Readonly<Record<string, keyof typeof ALPHA6_EVIDE
   A7_RUNTIME_MOUNT: "PKG_A7_RUNTIME_MOUNT_SIGNATURE",
 });
 
-const evId = (key: keyof typeof EVIDENCE_ID_KEYS): readonly EvidenceId[] =>
-  Object.freeze([ALPHA6_EVIDENCE_IDS[EVIDENCE_ID_KEYS[key]].id]);
+const evId = (key: keyof typeof EVIDENCE_ID_KEYS): readonly EvidenceId[] => {
+  const k = EVIDENCE_ID_KEYS[key];
+  const ev = ALPHA6_EVIDENCE_IDS[k];
+  if (!ev) return Object.freeze([]);
+  return Object.freeze([ev.id]);
+};
 
 const ALPHA6_CLAIM_RELATIONS: readonly ClaimRelation[] = Object.freeze([
   Object.freeze({
@@ -843,7 +848,7 @@ export const ALPHA_6_CLAIMS: Readonly<Record<string, CertificationClaim>> = Obje
     status: "PASS",
     evidenceIds: [...evId("A7_RUNTIME_EXISTS")],
     observedEvidence: {
-      rawObservations: ALPHA6_EVIDENCE_PKGS.PKG_A7_RUNTIME_PACKAGE_EXISTS.rawObservations,
+      rawObservations: (ALPHA6_EVIDENCE_PKGS.PKG_A7_RUNTIME_PACKAGE_EXISTS?.rawObservations ?? []) as readonly string[],
       assertionIds: ["runtime package.json exists", "dependencies @repo/composition only (selain react)", "export audit: hanya Runtime+Workspace+types", "no kernel / capability registry imports"],
       exitCode: 0,
     },
@@ -934,10 +939,10 @@ export function buildCertificationMatrix(
   extraDefinitionPairs?: ReadonlyArray<readonly [import("./types").ExperimentDefinition, import("./types").ExperimentDefinition]>,
 ): CertificationMatrixEnvelope {
   const mergedClaims: Record<string, CertificationClaim> = { ...ALPHA_6_CLAIMS };
-  for (const k of Object.keys(extraClaims)) mergedClaims[k] = extraClaims[k];
+  if (extraClaims) for (const k of Object.keys(extraClaims)) mergedClaims[k] = extraClaims[k];
   Object.freeze(mergedClaims);
   const mergedPkgs: Record<string, EvidencePackage> = { ...ALPHA6_EVIDENCE_PKGS };
-  for (const k of Object.keys(extraEvidence)) mergedPkgs[k] = extraEvidence[k];
+  if (extraEvidence) for (const k of Object.keys(extraEvidence)) mergedPkgs[k] = extraEvidence[k];
   const mergedDerivationParents: Record<string, readonly string[]> = { ...ALPHA6_DERIVATION_PARENTS };
   const mergedEvidence = buildEvidenceIdentityIndex(Object.freeze(mergedPkgs), Object.freeze(mergedDerivationParents));
   const rawRelations = [...ALPHA6_CLAIM_RELATIONS, ...extraRelations];

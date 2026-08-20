@@ -1,0 +1,97 @@
+# Production Readiness Gate (Gate F) Enforcement
+# Runs on all PRs targeting main branch that are marked for production promotion
+# Blocks merge unless all gates pass or exception is approved
+
+name: "Production Readiness Gate (Gate F)"
+run-name: ${{ github.actor }} is validating production promotion ${{ github.sha }}
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    # Only run if PR has production promotion label
+    labels: ["production-promotion"]
+
+jobs:
+  gate-f-validation:
+    name: "Gate F: Production Readiness Validation"
+    runs-on: ubuntu-latest
+    environment: production-validation
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      # 1. Functional Testing Gates
+      - name: Run unit tests
+        run: pnpm test -- --watchAll=false
+        continue-on-error: false
+
+      - name: Run integration tests
+        run: pnpm test:integration
+        continue-on-error: false
+
+      - name: Run E2E tests
+        run: pnpm test:e2e -- --headless
+        continue-on-error: false
+
+      # 2. Security Compliance Gates
+      - name: Run dependency audit
+        run: pnpm audit --production
+        continue-on-error: false
+
+      - name: Run SAST scan
+        run: pnpm scan:sast
+        continue-on-error: false
+
+      # 3. Core Build & Type Checks (reuse existing EOS gates)
+      - name: Run architecture checks
+        run: pnpm arch-check
+        continue-on-error: false
+
+      - name: Run type checking
+        run: pnpm check-types
+        continue-on-error: false
+
+      - name: Run production build
+        run: pnpm build
+        continue-on-error: false
+
+      # 4. Execute Gate F EOS CLI validation
+      - name: Run Gate F validation
+        run: pnpm eos-cli gate run f
+        continue-on-error: false
+
+      # 5. Generate and store evidence
+      - name: Upload production readiness evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-readiness-report-${{ github.sha }}
+          path: /root/Enterprise-OS/build/evidence/production-readiness/
+          retention-days: 90
+
+  exception-review:
+    name: "Exception Review (if required)"
+    needs: gate-f-validation
+    if: failure() && github.event.inputs.exception_requested == 'true'
+    runs-on: ubuntu-latest
+    environment: exception-approval
+    steps:
+      - name: Require executive approval
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ secrets.GITHUB_TOKEN }}
+          approvers: cto@lawyershub.com,ciso@lawyershub.com,cpo@lawyershub.com
+          minimum-approvals: 2
+          issue-title: "Production Promotion Exception Required"
+          issue-body: "Gate F validation failed, executive approval required to proceed with production promotion. Exception must include 90-day remediation timeline."

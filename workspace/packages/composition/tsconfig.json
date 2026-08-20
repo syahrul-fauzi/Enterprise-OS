@@ -6,10 +6,16 @@
     "moduleResolution": "NodeNext",
     "strict": true,
     "declaration": true,
+    "incremental": false,
+    "composite": false,
+    "rootDir": "src",
     "skipLibCheck": true,
     "noUncheckedIndexedAccess": false,
     "esModuleInterop": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "@repo/core-capability-registry": ["../core/capability-registry/dist"]
+    }
   },
   "include": ["src/**/*.ts"]
 }

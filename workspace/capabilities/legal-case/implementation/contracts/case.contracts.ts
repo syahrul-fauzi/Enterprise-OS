@@ -8,8 +8,15 @@ export function CaseId(value: string): CaseId {
   return value as CaseId;
 }
 
+export interface ExecutionContextMetadata {
+  readonly decision_id?: string | null;
+  readonly last_invocation_digest?: string | null;
+  readonly propagated_from: "cross-capability" | "direct-api";
+}
+
 export interface CaseAggregate {
   readonly id: CaseId;
+  readonly workId?: string; // Work identity binding (from decision_id)
   readonly title: string;
   readonly description?: string;
   readonly status: CaseStatus;
@@ -19,14 +26,23 @@ export interface CaseAggregate {
   readonly createdAt: Readonly<Date>;
   readonly updatedAt: Readonly<Date>;
   readonly closedAt?: Readonly<Date>;
+  // Ambient execution context for distributed tracing (W4-C20-001 compliance)
+  readonly executionContext?: ExecutionContextMetadata;
 }
 
 export interface CreateCaseInput {
   readonly title: string;
   readonly description?: string;
   readonly priority?: CasePriority;
-  readonly sessionId: string;
   readonly sourceDiscussionId?: string; // ILC: preserve source community discussion context
+  readonly lawyerId?: string;
+  // Work identity binding (from decision_id)
+  readonly workId?: string;
+  // Required context for tenant isolation
+  readonly sessionId: string;
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
 }
 
 export interface CreateCaseOutput {
@@ -46,8 +62,11 @@ export interface CloseCaseOutput {
 }
 
 export interface AssignLawyerInput {
-  readonly id: CaseId;
-  readonly lawyerId: string;
+    readonly id: CaseId;
+    readonly lawyerId: string;
+    readonly transferReason?: string;
+    readonly workId?: string;
+    readonly parentContextTraceId?: string;
 }
 
 export interface AssignLawyerOutput {

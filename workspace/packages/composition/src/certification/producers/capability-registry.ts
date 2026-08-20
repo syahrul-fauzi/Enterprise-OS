@@ -2,7 +2,7 @@ import type { IndependentEvidenceProducer, ProducerContext } from "./types.js";
 import { produceEvidencePackageEnvelope } from "./types.js";
 import { join, isAbsolute, resolve as resolvePath } from "node:path";
 import { createRequire } from "node:module";
-import type { CapabilityDescriptor } from "@repo/core-kernel";
+import type { CapabilityDescriptor } from "../../workspace/index.js";
 
 declare const __filename: string;
 const _require = createRequire(__filename);

@@ -1,0 +1,285 @@
+{
+  "workSeedId": "WORKSEED-CONTRACT-VENDOR-NDA-UMKM-002",
+  "product": "commsme",
+  "version": "1.0.0",
+  "canonical": true,
+  "need": {
+    "id": "need.contract.vendor_nda.umkm",
+    "title": "Pembuatan Kontrak Vendor / NDA untuk UMKM",
+    "summary": "Pelaku UMKM membutuhkan kontrak kerjasama vendor atau NDA (Non-Disclosure Agreement) / perjanjian kerahasiaan untuk melindungi aset bisnis, informasi rahasia, dan mengatur hubungan dengan pihak ketiga.",
+    "userStory": "Sebagai pemilik UMKM, saya ingin memiliki kontrak vendor atau perjanjian NDA yang sah menurut hukum Indonesia, agar ketika bekerjasama dengan supplier, mitra waralaba, atau konsultan, hak bisnis saya terlindungi, informasi rahasia tidak bocor, dan ada kepastian hukum jika terjadi sengketa.",
+    "domain": "legal.contract_drafting",
+    "severity": "high",
+    "timeSensitivity": "within_7_days"
+  },
+  "outcome": {
+    "successCriteria": [
+      "Pengguna memiliki draf Kontrak Vendor / NDA yang disesuaikan konteks bisnis dan sesuai KUHPerdata / UU ITE",
+      "Draf dokumen ditinjau dan ditandatangani oleh pihak-pihak yang berkepentingan (via legal professional review)",
+      "Semua dokumen tersimpan di Evidence Registry dan dapat diunduh pengguna",
+      "Hasil mencakup: klausul kerahasiaan, klausul ganti rugi, klausul penyelesaian sengketa, durasi kontrak, dan terminasi",
+      "Konteks handoff 100% lengkap: pihak profesional tidak perlu menanyakan ulang detail bisnis pengguna"
+    ],
+    "failureModes": [
+      "Jenis kontrak ambigu antara B2B vendor biasa vs NDA murni → perlu wawancara awal",
+      "Kewarganegaraan / domisili pihak beda negara → perlu choice of law clause",
+      "Pihak enggan menandatangani → perlu opsi surat pernyataan komitmen alternatif"
+    ]
+  },
+  "context": {
+    "preconditions": [
+      "Pengguna memiliki badan hukum (PT/CV) atau beroperasi sebagai usaha perorangan",
+      "Pengguna mengetahui identitas pihak lawan (vendor / mitra) minimal nama dan kontak",
+      "Pengguna dapat menjelaskan jenis kerjasama yang dijalin (barang/jasa/waralaba/konsultansi)"
+    ],
+    "assumptions": [
+      "Kontrak berlaku di wilayah hukum Indonesia, choice of law = Hukum Positivistik Indonesia",
+      "Penyelesaian sengketa default = Musyawarah → Arbitrase / Pengadilan Negeri sesuai kesepakatan",
+      "Durasi standar 1 tahun dengan opsi perpanjangan otomatis jika tidak ada keberatan"
+    ],
+    "regulatoryReferences": [
+      "KUHPerdata Buku III tentang Perikatan (Pasal 1313 dst.)",
+      "UU No.19 Tahun 2016 tentang Informasi dan Transaksi Elektronik (ITE) Pasal 25-26 bukti elektronik",
+      "UU No.30 Tahun 1999 tentang Arbitrase dan Alternatif Penyelesaian Sengketa",
+      "Pasal 1320 KUHPerdata: Syarat sahnya perjanjian (sepakat, cakap, hal tertentu, causa halal)"
+    ]
+  },
+  "requiredInputs": [
+    {
+      "id": "input.contract_type",
+      "label": "Jenis Kontrak yang Dibutuhkan",
+      "type": "select",
+      "options": ["NDA (Perjanjian Kerahasiaan Saja)", "Kontrak Kerjasama Vendor (Supplier Barang)", "Kontrak Kerjasama Vendor (Jasa/Konsultan)", "Kontrak Waralaba (Franchisee)", "Kontrak Perjanjian Kerjasama Umum (MoU)"],
+      "required": true,
+      "example": "NDA (Perjanjian Kerahasiaan Saja)",
+      "hint": "Pilih satu yang paling dekat; sistem akan menyesuaikan klausul."
+    },
+    {
+      "id": "input.party_a_details",
+      "label": "Identitas Pihak Pertama (Anda / UMKM)",
+      "type": "json_object",
+      "required": true,
+      "schema": {
+        "nama_lengkap_badan_usaha": "string",
+        "badan_hukum_status": "PT/CV/Perorangan",
+        "alamat": "string",
+        "penanda_tangan_jabatan": "Direktur/Pemilik/PIC",
+        "nama_penanda_tangan": "string"
+      }
+    },
+    {
+      "id": "input.party_b_details",
+      "label": "Identitas Pihak Kedua (Vendor / Mitra)",
+      "type": "json_object",
+      "required": true,
+      "schema": {
+        "nama_lengkap_badan_usaha": "string",
+        "badan_hukum_status": "PT/CV/Perorangan",
+        "alamat": "string",
+        "penanda_tangan_jabatan": "string",
+        "nama_penanda_tangan": "string",
+        "kontak_email_telp": "string"
+      }
+    },
+    {
+      "id": "input.contract_objective",
+      "label": "Tujuan / Objek Perjanjian",
+      "type": "text_multiline",
+      "required": true,
+      "example": "Pihak B menjamin kerahasiaan resep kopi signature dan daftar supplier Pihak A selama bekerjasama sebagai waralaba cabang X.",
+      "hint": "Jelaskan secara ringkas apa yang ingin diatur / dilindungi dalam perjanjian ini."
+    },
+    {
+      "id": "input.confidential_info",
+      "label": "Informasi Rahasia yang Dilindungi (jika NDA / ada klausul kerahasiaan)",
+      "type": "multiselect",
+      "options": ["Data pelanggan / database", "Resep / formula aset inti", "Harga pokok & struktur biaya", "Rencana ekspansi & strategi bisnis", "Kode sumber / aset digital", "Dokumen keuangan internal", "Lainnya (sebutkan di kolom tujuan)"],
+      "required": false
+    },
+    {
+      "id": "input.contract_duration_terms",
+      "label": "Durasi & Syarat Penting Lainnya",
+      "type": "json_object",
+      "required": true,
+      "schema": {
+        "durasi_kontrak_tahun": "number",
+        "opsi_perpanjangan": "Ya/Tidak",
+        "nilai_transaksi_rp": "number (opsional, 0 jika MoU)",
+        "cara_pembayaran_tempo": "string (opsional)",
+        "masa_berlaku_klausul_rahasiasetelah_terminasi_tahun": "number (default 3 tahun untuk NDA)"
+      },
+      "example": {
+        "durasi_kontrak_tahun": 1,
+        "opsi_perpanjangan": "Ya",
+        "nilai_transaksi_rp": 50000000,
+        "cara_pembayaran_tempo": "50% di muka, 50% setelah selesai",
+        "masa_berlaku_klausul_rahasiasetelah_terminasi_tahun": 3
+      }
+    }
+  ],
+  "procedure": [
+    {
+      "step": 1,
+      "id": "proc.1.context_collection",
+      "title": "Kumpulkan Konteks & Klasifikasi Jenis Kontrak",
+      "description": "AI mengumpulkan jawaban untuk requiredInputs, mengklasifikasikan jenis kontrak (NDA/vendor/waralaba/MoU), dan memvalidasi identitas pihak A + B.",
+      "actor": "ai",
+      "capabilities": ["consultation.create", "evidence.record"],
+      "durationEstimateMinutes": 15,
+      "exitCriteria": [
+        "Semua requiredInputs terjawab dan tervalidasi",
+        "Jenis kontrak (NDA/vendor/MoU) diklasifikasikan",
+        "Work Item berstatus collecting_context → context_complete"
+      ]
+    },
+    {
+      "step": 2,
+      "id": "proc.2.ai_contract_draft",
+      "title": "Buat Draf Kontrak dengan Klausul Standar Indonesia",
+      "description": "AI menyusun draf sesuai jenis kontrak dan UU yang berlaku: Pihak A+B, Latar Belakang, Objek Perjanjian, Hak Kewajiban, Rahasia Dagang, Ganti Rugi, Sengketa, Durasi, Terminasi, TTD.",
+      "actor": "ai",
+      "capabilities": ["evidence.record", "document_template.generate"],
+      "durationEstimateMinutes": 25,
+      "exitCriteria": [
+        "Draf Kontrak tersimpan sebagai artifact dengan documentType = 'commercial-contract' atau 'nda-agreement'",
+        "Draf dicek checklist: pihak lengkap, objek jelas, klausul kerahasiaan/ganti rugi/sengketa/durasi/terminasi ada"
+      ]
+    },
+    {
+      "step": 3,
+      "id": "proc.3.human_boundary_legal_review",
+      "title": "Handoff ke Legal Reviewer Profesional (HUMAN BOUNDARY)",
+      "description": "HUMAN DECISION NEEDED: Advokat / konsultan hukum UMKM meninjau draf kontrak, memberi komentar, dan (jika sesuai) menerapkan tanda tangan e-sign atau tanda tangan basah.",
+      "actor": "human_professional",
+      "roleRequired": "Advokat/Konsultan Hukum UMKM Spesialis Kontrak Bisnis",
+      "handoffContext": [
+        "what: 'Pembuatan / Review Kontrak [jenis] untuk UMKM [Nama Pihak A]'",
+        "whatWeKnow": "(semua input pengguna + draf kontrak + detail pihak A dan B)",
+        "documentsAvailable": "['Draf Kontrak final AI', 'KTP Penandatangan A (jika ada)', 'Bukti badan hukum Pihak A/B (jika ada)']",
+        "whatMissing": "['Tanda tangan basah / e-sign pihak A + B', 'Catatan review tambahan advokat jika ada klausul kurang menguntungkan']",
+        "whatDone": "['Pengumpulan konteks AI', 'Pembuatan draf sesuai KUHPerdata + UU ITE']",
+        "aiLimits": "['AI TIDAK dapat menandatangani sebagai advokat / saksi ahli hukum', 'AI TIDAK dapat menjamin hakim akan menerima klausul tertentu (perlu judgment manusia)']",
+        "humanDecisionsNeeded": "['Penyesuaian klausul jika kurang adil / tidak sesuai kebiasaan bisnis', 'Tanggal penandatanganan', 'Rekomendasi pilihan penyelesaian sengketa (Arbitrase/Pengadilan) yang paling tepat']"
+      ],
+      "durationEstimateDays": 2,
+      "exitCriteria": [
+        "Draf Kontrak ditandatangani (e-sign atau basah discan) oleh Advokat reviewer dan Pihak A",
+        "Evidence menyertakan catatan review profesional dan tanda tangan digital / scan dokumen asli"
+      ]
+    },
+    {
+      "step": 4,
+      "id": "proc.4.party_b_sign_and_close",
+      "title": "Tanda Tangan Pihak B & Penutupan Work Item",
+      "description": "Pihak B menerima salinan draf final dan menandatangani (difasilitasi profesional). Work Item ditutup.",
+      "actor": "external_party + human_professional + ai",
+      "externalDependencies": ["Pihak B (vendor/mitra)"],
+      "durationEstimateDays": "1-5 hari",
+      "exitCriteria": [
+        "Kedua belah pihak telah menandatangani",
+        "Dokumen final tersimpan lengkap di Evidence Registry"
+      ]
+    },
+    {
+      "step": 5,
+      "id": "proc.5.delivery_close",
+      "title": "Penyerahan Hasil & Close Work Item",
+      "description": "Semua versi dokumen dikumpulkan, diverifikasi, diserahkan ke pengguna. Work Item ditutup IMPLEMENTED → VERIFIED.",
+      "actor": "human_professional + ai",
+      "capabilities": ["evidence.record", "case.close", "consultation.update"],
+      "durationEstimateMinutes": 20,
+      "deliverables": [
+        "Salinan Kontrak / NDA yang sudah ditandatangani kedua belah pihak (PDF + scan)",
+        "Ringkasan klausul penting dalam Bahasa Indonesia sederhana untuk UMKM",
+        "Daftar tindakan jika ada pelanggaran (langkah hukum yang bisa ditempuh)"
+      ],
+      "exitCriteria": [
+        "Work Item status = verified",
+        "Evidence completeness = 100% (semua versi dokumen + review + tanda tangan + ringkasan)",
+        "Pengguna menerima notifikasi hasil melalui CommsMe"
+      ]
+    }
+  ],
+  "capabilities": {
+    "deterministic": [
+      {
+        "id": "cap.evidence.record",
+        "reusedFrom": "@capabilities/evidence-registry",
+        "invocations": ["work_item_created_from_commsme_chat", "context_updated_in_conversation", "legal_review_handoff_triggered", "party_b_signature_recorded", "work_item_verified_closed"]
+      },
+      {
+        "id": "cap.case.close",
+        "reusedFrom": "@capabilities/consultation",
+        "note": "Close case setelah dokumen tervalidasi"
+      }
+    ],
+    "ai_assisted": [
+      {
+        "id": "cap.consultation.create",
+        "reusedFrom": "@capabilities/consultation",
+        "note": "Buat Work Item dari percakapan chat CommsMe request kontrak"
+      },
+      {
+        "id": "cap.consultation.update",
+        "reusedFrom": "@capabilities/consultation",
+        "note": "Update status work item & tambahkan handoff context setiap progress"
+      }
+    ],
+    "human_only": [
+      {
+        "id": "professional.legal_review_and_sign",
+        "role": "Advokat/Konsultan Hukum UMKM",
+        "reason": "Review profesional diperlukan untuk memastikan klausul kontrak tidak merugikan klien UMKM dan sesuai yurisdiksi Indonesia."
+      },
+      {
+        "id": "parties.signature",
+        "actor": "Pihak A + Pihak B",
+        "reason": "Perjanjian sah menurut Pasal 1320 KUHPerdata membutuhkan sepakat (kesepakatan yang dinyatakan dengan tanda tangan)."
+      }
+    ]
+  },
+  "humanBoundary": {
+    "nonDelegableToAI": [
+      "Tanda tangan kontrak oleh pihak A dan B (legal requirement hard constraint)",
+      "Review hukum profesional terhadap draf kontrak (advokat judgment call)",
+      "Rekomendasi klausul tambahan berdasarkan kebiasaan bisnis lokal di Indonesia"
+    ],
+    "contextRetentionGuarantee": {
+      "guarantee": "100% handoff context retained",
+      "mechanism": "Semua whatWeKnow + documentsAvailable + whatDone + aiLimits + parties detail diserahkan dalam structured JSON ke profesional dashboard. Profesional TIDAK PERLU menanyakan ulang: 'Pihak A siapa?' 'Objek perjanjian apa?' 'Jenis kontraknya apa?'"
+    }
+  },
+  "externalActions": [
+    {
+      "id": "ext.1.legal_review",
+      "description": "Advokat UMKM meninjau dan memberi komentar draf kontrak",
+      "externalParty": "Advokat/Konsultan Hukum UMKM Terverifikasi",
+      "triggerCondition": "Step 3 dimulai, draf final AI sudah tersedia"
+    },
+    {
+      "id": "ext.2.party_b_countersign",
+      "description": "Pihak B (vendor/mitra) menerima salinan dan menandatangani balasan",
+      "externalParty": "Pihak B: Vendor / Mitra Kerjasama",
+      "typicalLatencyBusinessDays": "1-5"
+    }
+  ],
+  "evidence": {
+    "ledgerActions": [
+      { "action": "work_item_created", "stage": "proc.1", "entityType": "consultation" },
+      { "action": "input_validated", "stage": "proc.1", "entityType": "consultation" },
+      { "action": "draft_contract_generated", "stage": "proc.2", "entityType": "document" },
+      { "action": "handoff_to_legal_reviewer", "stage": "proc.3", "entityType": "handoff" },
+      { "action": "contract_signed_reviewed", "stage": "proc.3", "entityType": "document" },
+      { "action": "party_b_signed", "stage": "proc.4", "entityType": "external_action" },
+      { "action": "work_item_verified_closed", "stage": "proc.5", "entityType": "consultation" }
+    ],
+    "completenessFormula": "len(signed_documents) >= 2 AND len(handoff_context) > 0 AND len(deliverables) = 3"
+  },
+  "kpi": {
+    "targetTimeToFirstOutcomeBusinessDays": 7,
+    "targetHandoffContextRetentionPercent": 100,
+    "targetRealWorkCompletionRatePercent": 95,
+    "targetHumanRepetitionRatePercent": 0,
+    "note": "Time-to-First-Outcome: dihitung dari user kirim pesan pertama chat → dokumen kontrak signed Pihak A dan Advokat."
+  }
+}

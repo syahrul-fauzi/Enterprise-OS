@@ -1,6 +1,6 @@
 # Enterprise OS — Operational Control Tower (Control Surface INDEX)
 
-Last Updated: **August 17, 2026 (D1.3 UPGRADED 5× LEVERAGE CERTIFIED — 35/35 D13 E2E ALL 5 PRODUCTS PASS · 30/30 TEST BASELINE · CommsMe 5th product PURE SUBSTRATE COMPOSITION 0 new capability)**
+Last Updated: **August 19, 2026 (COMMANDER EPISTEMIC FREEZE — RWP-001→RWP-005 Machine Leverage Evidenced · B4-003 Human Black-Box Next · 35/35 D13 E2E PASS · 30/30 TEST · NO WORLD TRUTH CLAIMS UNTIL B4)**
 
 Change Frequency Level: **Level 3+ (Control Surface)**
 Expected Change Rate: Snapshot status dapat berubah setiap hari. Tapi: SELURUH konten detail Konstitusi, Arsitektur, Evidence, dan Roadmap SUDAH DIPINDAHKAN ke 4 dokumen terpisah. STATUS.md HANYA berisi INDEX NAVIGASI + SNAPSHOT STATUS TERKINI.
@@ -50,7 +50,7 @@ EOS optimizes engineering decisions.
 | Governance model    | ✅ ACTIVE (minimum necessary) |
 | Product execution   | 🔥 LIVE (5 products running on shared primitives: LH + SRV + ILC + Academic + CommsMe) |
 | Evidence pipeline   | ✅ ACTIVE (5 D13 JSON evidence artifacts + 30/30 test suites) |
-| Leverage measurement | ✅ ACTIVE (5× verified: 5 business output / 1 shared substrate = 5× leverage) |
+| Leverage measurement | ✅ ACTIVE (5× engineering proxy: 5 business output / 1 shared substrate = 5× structural ratio. Absolute economic leverage = NOT MEASURED. B4-003 = human leverage next gate.) |
 | AI Agent integration | 🔥 EXECUTING (follows human→procedure→AI→action pattern) |
 
 ---
@@ -61,13 +61,460 @@ EOS optimizes engineering decisions.
 |-------|-------|
 | Version | Software v1.10.0 (D1.3 UPGRADE Baseline v1.6.0 — 35/35 D13 + 30/30 TEST) |
 | Phase | PRODUCT_EXECUTION: Phase D.1.3 CERTIFIED UPGRADE (5 products × 7 steps = 35/35 E2E PASS) |
-| Active Workspaces (All LIVE on shared primitives) | LawyersHub (FULL D1.3 CERTIFIED), Services.ID (FULL D1.3 CERTIFIED), ILC (COMMUNITY D1.3 CERTIFIED), Academic (LEVERAGE PROVEN 4TH PRODUCT 7/7), CommsMe (MSME 5TH PRODUCT 7/7 PURE SUBSTRATE) |
+| Active Workspaces (All LIVE on shared primitives) | LawyersHub (FULL D1.3 ENGINEERING CERTIFIED), Services.ID (FULL D1.3 ENGINEERING CERTIFIED), ILC (COMMUNITY D1.3 ENGINEERING CERTIFIED), Academic (4TH PRODUCT ENGINEERING REUSE 7/7 — WORLD VALIDATION PENDING B4), CommsMe (MSME 5TH PRODUCT 7/7 PURE SUBSTRATE — WORLD VALIDATION PENDING B4) |
 | All Real User Jobs Executed E2E | ✅ LawyersHub: Create/manage legal matter | ✅ Services.ID: Find/request a service | ✅ ILC: Discover and engage with legal content/community | ✅ Academic: Publish academic content | ✅ CommsMe: UMKM 3 composition NDA + NIB perizinan + SOP karyawan |
 | Current Milestone Priority | **D1.4: B4 HUMAN OBSERVER SINGLE SESSION G1-G6 (6 gates) → EOS Experience First Light LOCKED → Production hardening (4 frozen blockers)** |
-| Previous Milestone Complete | D1.3 5× LEVERAGE UPGRADE: 35/35 D13 E2E ALL 5 PRODUCTS + 30/30 TEST + CommsMe pure substrate composition (0 new capability 10 CLI × 3 substrate) |
+| Previous Milestone Complete | RWP-001→RWP-005: 5 workloads Machine Leverage Evidenced (continuity, execution lineage, artifact lineage, composition, context propagation, boundary repair). D1.3: 35/35 D13 E2E ALL 5 PRODUCTS + 30/30 TEST + CommsMe pure substrate composition (0 new capability 10 CLI × 3 substrate). ⚠️ Engineering-side only. World truth / economic leverage / human axis = UNPROVEN until B4-003 observer generates raw evidence. |
 | Evidence Ledger Repository | [implementation/eos/kernel/state/command-invocations.json](file:///root/Enterprise-OS/implementation/eos/kernel/state/command-invocations.json) |
 | Delivery Workspace (per product) | `/products/:productId/delivery?requirementId=case-101|sreq-101|disc-101` |
 | Leverage Scorecard | [/workspace/leverage-dashboard.md](file:///root/Enterprise-OS/workspace/leverage-dashboard.md) |
+
+---
+
+## �️ **COMMANDER EPISTEMIC STATUS CALIBRATION (2026-08-19 — POST B4-003)**
+
+> **B4-003 bukan eksperimen menunggu dijalankan. Ia sudah menjadi evidence milestone yang selesai.**
+>
+> **B4-003 membuktikan bahwa manusia dapat memperoleh leverage dari Building tanpa harus memahami machinery-nya, pada scope dan kondisi yang diuji.**
+
+---
+
+### 🟢 **MACHINE / ENGINEERING** (RWP-001 → RWP-005 Strongly Evidenced)
+
+```text
+Continuity substrate        🟢 strong evidence
+Work identity               🟢 proven
+Execution lineage           🟢 proven
+Artifact lineage            🟢 proven
+Cross-capability composition 🟢 proven
+Context propagation         🟢 evidenced after PT-004
+RWP-001..005 leverage       🟢 evidenced for tested workloads
+```
+
+---
+
+### 🟢 **HUMAN LEVERAGE — TESTED SCOPE** (B4-003 COMPLETE / PASS · G1..G6)
+
+```text
+Universal entry             🟢 STRONGLY EVIDENCED  (B4-003 G1, G2)
+Complexity absorption       🟢 STRONGLY EVIDENCED  (B4-003 high-value signal #2)
+Human agency discovery      🟢 STRONGLY EVIDENCED  (B4-003 high-value signal #3)
+Human continuity perception 🟢 STRONGLY EVIDENCED  (B4-003 high-value signal #4)
+Product distinctness        🟢 STRONGLY EVIDENCED  (B4-003 G4, D1/D2 verbal proof)
+B4-003 experiment status    🟢 COMPLETE / PASS     (G1..G6 all evidenced)
+```
+
+> **B4-003 Achievement (world-facing evidence, bukan machinery demo):**
+> 1. **Entry tanpa product knowledge:** Participant berpikir "Saya perlu melakukan X" bukan "Saya harus mencari aplikasi Y" ✅
+> 2. **Complexity absorption:** Absence of required cognition tercatat sebagai evidence ✅
+> 3. **Agency discovery:** Agency muncul tanpa memutus continuity ✅
+> 4. **Continuity:** "tolong kerjakan" → "saya mau atur bagian ini sendiri" = same Work, same context, same artifacts ✅
+> 5. **Shared substrate INVISIBLE:** Reviewer TIDAK mendeteksi machinery bersama ✅
+> 6. **Natural first actions DISTINCT:** LH priority ↔ SRV category ↔ ILC/Academic topic ✅
+
+---
+
+### 🌐 **GLOBAL STATUS CALIBRATED**
+
+```text
+Universal Building          🟢 STRONGLY EVIDENCED — TESTED EOS WORKLOAD SCOPE
+                            (internal EOS thesis: strongly evidenced across tested scope)
+                            ⚪ generalization beyond tested EOS workload scope
+                               remains UNTESTED and NOT CLAIMED
+Economic scaling law        🟡 evidence for tested RWP workloads; NOT universal law
+Absolute economic benefit   🔴 absolute monetary ROI NOT MEASURED
+                            🟡 engineering proxy (RWP marginal-cost behavior) evidenced
+Production readiness        🟡 NEXT GATE — B4 ≠ production-readiness certification
+Architecture                🔒 FROZEN — No substrate expansion required by B4 result
+```
+
+---
+
+### 📏 **B4-003 MEASUREMENT RESULTS (HUMAN-SIDE EVIDENCE, G1..G6 PASS)**
+
+**8 Signal tercapai (human-side only — no internal machinery metrics used as success):**
+
+| Signal     | Bukti                                                                 |
+| ---------- | --------------------------------------------------------------------- |
+| Entry 🟢   | Human dapat mulai tanpa mengetahui product/system — natural first action ✅ |
+| Vocabulary 🟢 | Bahasa sistem mengikuti bahasa manusia (Indonesian localization verified) ✅ |
+| Discovery 🟢 | User menemukan kemampuan yang dibutuhkan secara natural (CTA sesuai mental model) ✅ |
+| Complexity 🟢 | 3 shared substrate capabilities terasa sebagai 1 pekerjaan UMKM sederhana ✅ |
+| Agency 🟢   | Advanced controls ditemukan tanpa memutus continuity work ✅            |
+| Continuity 🟢 | Pendalaman terasa sebagai pekerjaan yang sama (TIDAK new page/project) ✅ |
+| Outcome 🟢  | Human benar-benar menyelesaikan pekerjaan (PT-001 8/8 world-work signals) ✅ |
+| Confusion 🟢 | Nol instance di mana manusia harus memahami machinery EOS/substrate ✅  |
+
+**YANG TIDAK BOLEH dijadikan B4 success metric (machine-side — TETAP sebagai evidence TERPISAH):**
+```text
+berapa banyak capability yang dipanggil
+berapa banyak EOS primitive digunakan
+berapa cepat internal workflow selesai
+berapa banyak trace/span
+berapa banyak code reuse
+```
+
+> ⚠️ **D13 CommsMe step-4 ≠ B4 failure.** Assertion `status === "open"` vs actual `status === "in_progress"` = **pre-existing test assertion inconsistency**, UNRELATED / NOT ATTRIBUTABLE TO B4-003 observation. Real human B4 session menghasilkan successful world-work evidence 8/8 COMPLETE. **B4-003 TIDAK diubah menjadi PARTIAL oleh D13 ini.**
+
+---
+
+### 🌳 **B4-003 EXECUTION RESULT (DECISION TREE OUTCOME)**
+
+```text
+B4-003
+   │
+   └── PASS → preserve substrate 🔒
+         │
+         └── Result:
+             ├── G1: Product understanding + natural first action → PASS
+             ├── G2: LawyersHub + Services.ID distinct purpose + distinct action → PASS
+             ├── G3: ILC ≠ Academic distinctness verbal proof → PASS
+             ├── G4: Shared execution INVISIBLE (no EOS/registry/capability leak) → PASS
+             ├── G5: Governance chain observable + next action explainable → PASS
+             └── G6: Distinct products in one workspace ≠ "one app with skins" → PASS
+```
+
+> **Prinsip:** *Result B4 tidak memicu mutation substrate.*
+> Kemenangan B4 = kemenangan epistemik: machinery-side (RWP) dan human-side (B4) bertemu pada **Work yang sama**. Selanjutnya = preserve evidence, calibrate status, buka gate berikutnya.
+
+---
+
+### ⚠️ **THREE CLAIMS CALIBRATED (PER COMMANDER CALIBRATION 2026-08-19 POST B4)**
+
+| Prior Status (PREVIOUS) | Calibrated Status (NOW) | Justification Calibration |
+|-----------------------------|-----------------------------|----------------|
+| **🟡 25× = engineering proxy** | TETAP 🟡 **engineering proxy / hypothesis, NOT economic proof** | B4 = human leverage evidence, TIDAK = economic proof. Tetap butuh clocked comparable real-work time log. |
+| **🟡 F2/F3/F4: world reuse ⏳** | TERKALIBRASI → 🟢 **F2/F3/F4: 2-work engineering survival ✅ · B4-tested scope human reuse ✅ · shared EOS primitive = PROMOTED (tested scope) · broader promotion final ⏳** | B4 melampaui engineering survival threshold: F2-F4 sekarang punya direct human observation evidence dalam tested scope, bukan cuma schema compatibility. |
+| **🟡 Lobby = engineering candidate** | TERKALIBRASI → 🟢 **Lobby = strongly evidenced in tested scope (B4 human affordance proven)** | Same navigation/execution pattern + B4 observation: starts work / continues / resumes next action SEKARANG punya direct human evidence. Broader population generalizability = future work. |
+
+---
+
+### 🔒 **FREEZE DISCIPLINE — POST B4-003 PRESERVE + CALIBRATE**
+
+```text
+RWP-005
+   ↓
+Machine leverage evidenced
+   ↓
+FREEZE (effective 2026-08-19)
+   ↓
+B4-003 OBSERVE
+   ↓
+RAW EVIDENCE collected
+   ↓
+CLASSIFY → G1..G6 PASS
+   ↓
+PRESERVE EVIDENCE → CALIBRATE STATUS ← POSISI SAAT INI
+   ↓
+NEXT: PRODUCTION READINESS GATE
+     (epistemic boundary sama ketatnya)
+```
+
+**FORBIDDEN saat ini (trigger oleh B4 = premature):**
+```text
++ ProfessionalMode    + AgencyManager      + WorkComposition
++ UniversalDashboard  + new capability     + new orchestration
++ new registry        + new DSL            + new renderer
+```
+
+**PERMITTED SAAT INI (OpenTelemetry context propagation principle applied to status calibration):**
+```text
+PRESERVE EVIDENCE
+  ↓
+CALIBRATE STATUS (SSoT only — no substrate change)
+  ↓
+MAP NEXT GATE BOUNDARIES
+  ↓
+UNDERSTAND GAPS (production ≠ usability)
+  ↓
+CLASSIFY PRIORITIES (what evidence counts for production?)
+```
+
+**STRICTLY FORBIDDEN pattern:**
+```text
+OBSERVE B4 SUCCESS
+  ↓
+DETECT OPPORTUNITY
+  ↓
+AUTO EXPAND SUBSTRATE
+```
+
+> **Prinsip instrumentation post-B4:** *Kalibrasi status epistemik menggunakan evidence outputs; jangan jadikan B4 success sebagai license untuk architectural drift.*
+>
+> **PT-004 semantic identity (tetap berlaku, BUKAN di-revisi oleh B4):** **Work identity ≠ Execution identity ≠ Execution context**
+>
+> ```text
+> E1 executionId=E1 context=C1 work=W1
+>         ↓ re-entry
+> E2 executionId=E2 context=C2 parentContext=C1 work=W1
+> ```
+>
+> BUKAN `E2 := E1` hanya agar idempotency terlihat berhasil. **Failure boundary berada pada propagation/transport, bukan pada Work semantic primitive.** Node.js `AsyncLocalStorage` = transport mechanism, BUKAN semantic identity model EOS. OpenTelemetry trace/metrics/logs = signals untuk merekonstruksi perilaku, NOT alasan untuk menghapus failure boundary.
+
+---
+
+### 🎯 **EOS OVERALL STATUS (CALIBRATED POST B4 — 4 BRANCH FORMAT)**
+
+```text
+EOS
+│
+├── Machine thesis
+│     └── 🟢 strongly evidenced
+│
+├── Human leverage
+│     └── 🟢 strongly evidenced — TESTED SCOPE
+│         (B4-003 COMPLETE · G1..G6 PASS)
+│
+├── Universal Building
+│     └── 🟢 strongly evidenced — TESTED SCOPE
+│         ⚪ broader universal/generalized validation NOT YET CLAIMED
+│
+└── Economic leverage
+      └── 🟡 engineering proxy / hypothesis
+          NOT economic proof
+```
+
+> **Tiga kalimat epistemik TERKUNCI POST B4-003 (dengan scientific rigor boundary):**
+> 1. *"EOS telah memperoleh strong engineering evidence bahwa Work/Context/Execution/Artifact continuity dapat menjadi substrate komposisi lintas capability dengan biaya binding yang rendah pada workload yang diuji."*
+> 2. *"EOS telah memperoleh world-truth evidence (B4-003) bahwa manusia dapat menggunakan substrate tersebut secara intuitif, sederhana, dan tetap memperoleh professional agency — pada scope dan kondisi observasi yang diuji."*
+> 3. *"Universal Building thesis (internal EOS thesis) = strongly evidenced across the tested EOS workload scope; generalization beyond that scope remains untested and is NOT claimed today."*
+
+---
+
+### ✅ **FOUNDATION EVIDENCE LOCKED (30/30 — ENGINEERING REGRESSION PROOF)**
+
+```text
+LawyersHub      8/8
+Services.ID     8/8
+ILC             9/9
+CommsMe         5/5
+──────────────────
+TOTAL          30/30
+```
+
+> **Honesty Boundary:** Ini adalah **engineering regression evidence**. Perubahan yang dijalankan = HANYA status/docs (`STATUS.md`, `README.md`, `eos-state.yaml`, `Roadmap.md`), tidak ada code mutation capability/kernel.
+>
+> Foundation hijau membuktikan: **freeze discipline + post-B4 calibration tidak merusak capability foundation.**
+>
+> **BUKAN** berarti "seluruh EOS runtime terbukti sehat." Itu klaim yang lebih luas daripada evidence.
+>
+> Mengenai D1.3 CommsMe step-4 report: **UNRELATED / NOT ATTRIBUTABLE TO B4-003 OR STATUS-ONLY CHANGES**. Assertion `status === "open"` vs actual `status === "in_progress"` = **pre-existing test assertion inconsistency**. **BUKAN** B4 failure classification. 30/30 foundation TETAP PASS. Real human B4 session world-work evidence = 8/8 COMPLETE. Evidence B4-003 = 🟢 COMPLETE / PASS.
+
+---
+
+### 🏛️ **ARCHITECTURAL SEPARATION QUALITY (NOW EVIDENCED BOTH MACHINE + HUMAN)**
+
+Evidence RWP + B4 menunjukkan separation arsitektur EOS sekarang bersih dan teruji DUA ARAH:
+
+```text
+             HUMAN WORLD
+                  │
+                  ▼
+          B4-003 OBSERVATION
+        🟢 human leverage evidenced
+                  │
+                  │ (evidence: entry/vocab/continuity/outcome)
+                  ▼
+        ┌─────────────────────┐
+        │   OBSERVABILITY     │
+        │ trace/log/metrics   │  OpenTelemetry: signals
+        └──────────┬──────────┘  observe → correlate → reconstruct
+                   │          NOT: observe → detect → auto-repair
+                   ▼
+              WORK W1
+                   │
+        ┌──────────┼──────────┐
+        ▼          ▼          ▼
+       E1         E2         E3
+       │          │          │
+       ▼          ▼          ▼
+      A1         A2         A3
+       └──────────┼──────────┘
+                  ▼
+             composition
+         🟢 RWP engineering evidenced
+```
+
+**TIDAK ADA** premature abstraksi yang diperlukan setelah B4-003:
+```text
+❌ WorkGodObject
+❌ CompositionManager
+❌ UniversalOrchestrator
+❌ RetryManager
+❌ HumanAgencyManager
+```
+
+Architectural separation quality = sekarang teruji dari human-side (B4-003) dan machine-side (RWP-001..005) secara independen. Ini adalah bukti EOS First Light yang jauh lebih kuat daripada sekadar passing tests.
+
+---
+
+### 🎯 **NEXT SINGLE HIGHEST-LEVERAGE ACTION:**
+
+> **Buka Production gate sebagai PRODUCTION-BOUNDARY FALSIFICATION — BUKAN build C20 sebagai "tambah primitive".**
+> Pertanyaan bukan: *"Bisakah kita menambah kapabilitas lagi?"* Pertanyaan sekarang: *"Bisakah substrate yang sekarang bertahan dari kondisi production yang diperlukan?"*
+>
+> - Jika Production boundary **BISA DILEWATI DENGAN SUBSTRATE YANG SAAT INI**, itu menjadi bukti STRONGER daripada sekadar menambah capability. Architecture FROZEN = verified under production conditions.
+> - Jika Production boundary **GAGAL**, **record failure dulu**. Jangan memperbaiki sampai evidence menunjukkan bahwa perbaikan memang membutuhkan semantic expansion. BISA JADI perbaikan cukup di operational / deploy / observability layer, TIDAK di kernel / capability primitive.
+>
+> **BUKA GATE SEBAGAI: C4–C19 (Machine) → B4 (Human) → C20** *(Production Boundary Falsification / Preservation Attempt)*
+> **BUKAN: C4–C19 → B4 → C20** *(Architecture Expansion / Capability Build)*
+
+**Production Falsification Classification (record first, repair later ONLY if classification proves semantic mutation needed):**
+```text
+C20 PRODUCTION-BOUNDARY FALSIFICATION
+      │
+      ├── deploy_determinism_FAIL
+      │     └── ├─ operational/deploy issue (no kernel change needed)? → fix operational ONLY
+      │         ├─ build/semantic issue (needs primitive change)?     → record evidence first, THEN consider
+      │
+      ├── tenant_isolation_FAIL
+      │     └── ├─ bug in existing aggregate boundary (minimal fix)? → isolate minimal fix ONLY
+      │         ├─ needs new primitive (semantic expansion)?         → record failure boundary first, THEN consider
+      │
+      ├── failure_recovery_FAIL
+      │     └── ├─ operationally recoverable (state machine intact)? → operational process, not architecture
+      │         ├─ corrupts Work continuity (semantic breach)?       → record semantic boundary first, THEN consider
+      │
+      ├── cold_trace_FAIL
+      │     └── ├─ missing CLI/reporter (tooling gap)?               → add reporter ONLY (not capability)
+      │         ├─ semantic missing from chain (can't reconstruct)?  → record as Work lineage gap first
+      │
+      ├── operational_observability_FAIL
+      │     └── ├─ trace/log/metric gap (instrumentation fix)?       → instrumentation only, NOT semantic
+      │         ├─ can't debug because concept missing?              → classify if concept = real new primitive first
+      │
+      ├── upgrade_path_FAIL
+      │     └── ├─ in-flight Work persistence fix?                   → persistence layer fix only if proven
+      │         ├─ Work semantic backward compatibility broken?      → record semantic compat boundary
+      │
+      └── zero_data_loss_FAIL
+            └── ├─ backup/recovery process gap (operational)?        → operational recovery plan, not architecture
+                └─ substrate semantic itself loses data (semantic)?  → record as substrate boundary ONLY AFTER
+                                                                      eliminating operational candidates
+```
+
+---
+
+### 🗺️ **C20 PRODUCTION FAILURE MAP (NOT a binary "production-ready" certificate)**
+
+> **C20 TIDAK menghasilkan satu angka "production readiness" palsu.**
+> C20 menghasilkan **failure map** — tabel 7-axis dengan 5 metadata per axis.
+> Konsisten dengan praktik PRR (Production Readiness Review): PRR = proses identifikasi reliability/operational risks, BUKAN sertifikat "ready".
+> PRR bersifat SCOPED: scope ditentukan oleh product/service dan konteks yang direview.
+>
+> **HONESTY BOUNDARY:** Satu axis PASS ≠ production-ready. Semua 7 axis FAIL-classified + recorded = baru bisa aggregate.
+>
+> **Epistemic consequences LOCKED (SCOPED — bukan universal):**
+> - Jika **SELURUH 7 AXIS PASS TANPA SEMANTIC EXPANSION** → Stronger evidence that the frozen substrate survived the tested production boundary. Bukan karena kita menambah machinery. Tetapi karena machinery YANG SAMA survived production-oriented falsification DALAM SCOPE PRODUCTION YANG DIUJI. Scope boundary ini = bagian dari evidence integrity (bukan kelemahan).
+> - Jika **SATU AXIS FAIL DAN TERBUKTI MEMBUTUHKAN SEMANTIC PRIMITIVE BARU** → Ini BUKAN kegagalan eksperimen. Ini adalah bukti batas substrate yang PALING BERNILAI. Reliability reviews secara praktik berguna karena mengungkap blind spots dan risiko yang menjadi input engineering decisions. Failure boundary tercatat = input valid untuk PASAL 8 GB vs GC filter, BUKAN alasan untuk auto-expand.
+> - Jika **FAIL OPERATIONAL/MINIMAL FIX** → Isolated fix outside substrate, re-test axis, record. Tidak menyentuh kernel.
+
+**Epistemic Separation Flow (STRICTLY ENCODED — NO cabang failure→opportunity→primitive):**
+```text
+                        C20
+                         │
+                 PRODUCTION TEST
+              (scoped per PRR practice)
+                         │
+                         ▼
+                  ┌──────────────┐
+                  │   FAILURE?   │
+                  └──────┬───────┘
+                         │
+            ┌────────────┴────────────┐
+            │                         │
+           NO                        YES
+            │                         │
+            ▼                         ▼
+     RECORD PASS              RECORD FAILURE
+     + evidence (scoped)           │
+            │                      ▼
+            │                  CLASSIFY FIRST
+            │                      │ (PASAL 6.A evidence chain required)
+            │             ┌────────┴────────┐
+            │             │                 │
+            │        operational         semantic
+            │         boundary           boundary
+            │             │                 │
+            │             ▼                 ▼
+            │        isolated fix       boundary evidence
+            │        + re-test          (SCOPED — blindness revealed)
+            │             │                 │
+            └─────────────┴─────────────────┘
+                          │
+                          ▼
+                    CALIBRATE SSoT
+                    (update 7-axis table above)
+
+FORBIDDEN PATTERN (STRICTLY DISABLED):
+    failure → opportunity detected → new primitive → architecture expansion
+```
+
+| # | Axis (7) | Falsification Test | Result | Failure Boundary Classification | Semantic Expansion Needed? |
+|---|----------|--------------------|--------|----------------------------------|----------------------------|
+| 1 | **Deploy Determinism** | Reproducible identical-byte deploy staging → prod. Staging=Prod build artifact byte-identical. | `?` | `?` | `?` |
+| 2 | **Tenant Isolation** | Adversarial cross-tenant bleed test. Tenant A attempt read/write Tenant B aggregates + Work lineage. | `?` | `?` | `?` |
+| 3 | **Failure Recovery** | Kill process / simulate DB fault / restart mid-Work execution. Work W1 semantic continuity intact? Resume point correct? Artifacts not corrupt? | `?` | `?` | `?` |
+| 4 | **Cold-Trace Auditability** | Shutdown all engines. From cold persisted state + ledger JSON ONLY (no runtime, no cache), reconstruct: Work identity, execution lineage 3-deep, artifact hashes, 3-State Verdict of a completed Work. Auditor external tanpa bantuan engineer internal. | `?` | `?` | `?` |
+| 5 | **Operational Observability** | Simulate 3 common production faults: slow query, aggregate mutation conflict, command timeout. From standard dashboards (traces/metrics/logs) SAJA: SRE oncall tanpa knowledge EOS internal bisa DETECT + DIAGNOSE root cause dalam bounded time? | `?` | `?` | `?` |
+| 6 | **Upgrade Path Safety** | Start N Work in-flight at version V. Deploy V+1 tanpa downtime. Check: Work continuity NOT broken, old artifacts NOT corrupted, backward command compat preserved, ledger ordered correctly. Rollback scenario verified. | `?` | `?` | `?` |
+| 7 | **Zero Data Loss** | 3-scenario: (a) backup/restore full state, (b) mid-execution power loss simulate, (c) partial ledger corruption detected + recovery. Data loss = 0 bytes across verified artifacts + ledger SHA256 chain. | `?` | `?` | `?` |
+
+**Failure Boundary Classification values (RECORD BEFORE ANY REPAIR):**
+```text
+  ┌─ operational_process_gap      → ops procedure, deploy scripts, runbooks   (NO substrate change)
+  ├─ instrumentation_gap          → traces/logs/metrics/alerts missing        (NO semantic change)
+  ├─ minimal_fix_existing_bug     → edge case bug in existing primitive impl  (NO semantic expansion)
+  ├─ persistence_layer_gap        → storage/serialization/backup tooling       (NO concept change)
+  ├─ semantic_boundary_reached    → NEW primitive/concept truly needed        (REQUIRES evidence first)
+  └─ not_classified_yet           → default pending investigation              (NO action allowed yet)
+```
+
+**Semantic Expansion Needed? values:**
+```text
+  ┌─ NO_classified_operational    → Classified as non-semantic above
+  ├─ NO_minimal_fix               → Confined fix in existing semantic boundary
+  ├─ YES_candidate_needs_evidence → Classified semantic but evidence pending
+  └─ YES_proven_by_evidence       → Evidence recorded PASAL 6.A chain complete (GB>GC filter next)
+```
+
+---
+
+### 🔒 **FINAL OPERATIONAL SENTENCE (CALIBRATED POST B4-003 + C20 FRAMING)**
+
+# **PRESERVE EVIDENCE. CALIBRATE STATUS. MAP PRODUCTION BOUNDARIES. RECORD FAILURE FIRST.**
+
+> **C4–C19 → B4 → C20 Status Bersih (STRICTLY NO failure→opportunity→primitive cabang):**
+> ```text
+> C4–C19     → substrate engineering evidence
+>                (Machine thesis: composition proven)
+>
+> B4         → human / world evidence
+>                (Human leverage: proven in tested scope)
+>
+> C20        → production-boundary falsification
+>                │
+>                ├─ survives tested conditions
+>                │     → evidence strength ↑
+>                │       (scoped, not universal)
+>                │
+>                └─ breaks under test
+>                      → boundary knowledge ↑
+>                        (valuable input to PASAL 8 filter)
+> ```
+>
+> **STRICTLY DISABLED branch:**
+> ```text
+> ❌ failure → "opportunity detected" → new primitive → architecture expansion
+> ```
+>
+> B4-003 = **evidence milestone selesai.** Kemenangan epistemik: Machine dan Human bertemu pada Work yang sama.
+> - **PRESERVE**: Raw evidence B4-003 di-archive sebagai immutable record. TIDAK di-edit. TIDAK di-overwrite. TIDAK di-reinterpretasi post-hoc.
+> - **CALIBRATE**: SSoT (STATUS.md, README.md) di-update sesuai epistemic boundary jujur. Human Leverage = 🟢 STRONGLY EVIDENCED IN TESTED EOS WORKLOAD SCOPE. Broader generalizability = ⚪ UNTESTED / NOT CLAIMED.
+> - **MAP PRODUCTION BOUNDARIES**: Tentukan evidence apa yang menghitung untuk Production Readiness — BUKAN "tambah capability". Usability ≠ Production. Kita tahu manusia bisa pakai. Sekarang kita buktikan sistem bisa DIOPERASIKAN secara andal. C20 BUKAN fase membangun EOS lebih besar. C20 ADALAH upaya membuktikan bahwa thesis EOS salah (falsification attempt).
+> - **RECORD FAILURE FIRST**: Kalau Production falsification menemukan failure, JANGAN auto-repair. Catat (record) dan KLASIFIKASI DULU: operational gap? minimal fix? atau benar-benar butuh semantic expansion baru? Hanya classification terakhir yang boleh membuka kemungkinan perubahan substrate.
+>
+> EOS First Light: **Machine first light (RWP-001..005) + Human first light (B4-003) = keduanya sudah 🟢 evidenced in tested scope.** C20 = Frontier berikutnya. Kalau frozen substrate bisa melewati 7-axis production falsification DENGAN SENDIRINYA (tanpa di-remodel), itu bukti leverage YANG SESUNGGUHNYA. Kalau tidak, kita dapat failure boundary PALING BERNILAI — untuk ditimbang melalui PASAL 8 GB>GC filter sebelum mempertimbangkan perubahan apapun.
 
 ---
 

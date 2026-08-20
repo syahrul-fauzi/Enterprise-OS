@@ -449,30 +449,34 @@ export default function WorkspacePage({
                             </span>
                           </div>
                         </div>
-                        {/* Add Create Legal Case button for LawyersHub workspaces */}
+                        {/* Add Navigation buttons for LawyersHub workspaces - links to new dedicated routes */}
                         {ws.productId === "lawyershub" && (
-                          <button
-                            onClick={async () => {
-              const resp = await fetch("/api/cases/create", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  title: "Kasus Hukum Baru",
-                  priority: "medium",
-                }),
-              });
-              // Don't reload automatically - let CaseWorkspace refresh its own data,
-              // allowing Playwright to capture the API response properly
-              if (resp.ok) {
-                // Trigger a manual refresh of the CaseWorkspace data
-                window.dispatchEvent(new CustomEvent('cases:refresh'));
-              }
-            }}
-                            className="mt-3 w-full rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700"
-                            data-testid="create-case-button"
-                          >
-                            Buat Kasus Hukum Baru
-                          </button>
+                          <div className="mt-3 grid grid-cols-4 gap-2">
+                            <Link 
+                              href="/cases"
+                              className="rounded-lg bg-indigo-600 px-2 py-2 text-xs font-semibold text-white hover:bg-indigo-700 text-center"
+                            >
+                              Lihat Kasus
+                            </Link>
+                            <Link 
+                              href="/documents"
+                              className="rounded-lg bg-emerald-600 px-2 py-2 text-xs font-semibold text-white hover:bg-emerald-700 text-center"
+                            >
+                              Dokumen
+                            </Link>
+                            <Link 
+                              href="/requirements"
+                              className="rounded-lg bg-amber-600 px-2 py-2 text-xs font-semibold text-white hover:bg-amber-700 text-center"
+                            >
+                              Persyaratan
+                            </Link>
+                            <Link 
+                              href="/evidence"
+                              className="rounded-lg bg-slate-600 px-2 py-2 text-xs font-semibold text-white hover:bg-slate-700 text-center"
+                            >
+                              Riwayat
+                            </Link>
+                          </div>
                         )}
                         {/* Add Create Service Request button for Services.ID workspaces */}
                         {ws.productId.startsWith("services-id") && (

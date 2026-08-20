@@ -2,6 +2,8 @@ import { z } from "zod";
 import {
   CreateServiceRequestInput,
   CreateServiceRequestOutput,
+  UpdateExternalSystemStatusInput,
+  UpdateExternalSystemStatusOutput,
   ServiceProviderCategory,
   ServiceProviderId,
   ServiceRequestAggregate,
@@ -174,7 +176,7 @@ export const acceptServiceRequest: AcceptServiceRequestCommand = {
       throw new Error("[service-directory.acceptServiceRequest] Invalid or revoked session - authentication violation");
     }
     // 2. Auto-populate isolation context from trusted session (SHARED RAIL — MIRRORS LH)
-    const { tenantId, workspaceId } = session;
+    const { tenantId, workspaceId, actorId } = session;
 
     const current = await serviceRepository.byId(ServiceRequestId(id));
     if (current === undefined) {
@@ -191,6 +193,7 @@ export const acceptServiceRequest: AcceptServiceRequestCommand = {
       ...current,
       status: "accepted",
       providerId: ServiceProviderId(providerId),
+      actorId,
       updatedAt: new Date(),
     };
     await serviceRepository.save(next);
@@ -212,7 +215,7 @@ export const markServiceDelivered: MarkServiceDeliveredCommand = {
       throw new Error("[service-directory.markServiceDelivered] Invalid or revoked session - authentication violation");
     }
     // 2. Auto-populate isolation context from trusted session (SHARED RAIL — MIRRORS LH)
-    const { tenantId, workspaceId } = session;
+    const { tenantId, workspaceId, actorId } = session;
 
     const current = await serviceRepository.byId(ServiceRequestId(id));
     if (current === undefined) {
@@ -230,6 +233,7 @@ export const markServiceDelivered: MarkServiceDeliveredCommand = {
       ...current,
       status: "delivered",
       deliveredAt,
+      actorId,
       updatedAt: new Date()
     };
     await serviceRepository.save(next);
@@ -295,12 +299,64 @@ export const listServiceRequestsByWorkspace: ListServiceRequestsCommand = {
 
 import { getServiceRequestByIdCommand } from "./get-service-request-by-id.command.js";
 
+// Minimal command to handle external system webhook responses - only what's needed for P0-PT-001
+type UpdateExternalSystemStatusCommand = CapabilityCommand<
+  "service-directory.updateExternalSystemStatus",
+  UpdateExternalSystemStatusInput,
+  UpdateExternalSystemStatusOutput
+>;
+
+export const updateExternalSystemStatus: UpdateExternalSystemStatusCommand = {
+  kind: "command",
+  name: "service-directory.updateExternalSystemStatus",
+  version: "1.0.0",
+  async execute(input: UpdateExternalSystemStatusInput) {
+    const { id, externalSystem, externalStatus, externalReferenceId, responseData, receivedAt, sessionId } = input;
+    
+    // SHARED RAIL: Validate session first (mirrors all other commands)
+    const session = await sessionRepository.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[service-directory.updateExternalSystemStatus] Invalid or revoked session");
+    }
+    const { tenantId, workspaceId, actorId } = session;
+
+    // Get current service request
+    const current = await serviceRepository.byId(ServiceRequestId(id));
+    if (!current) {
+      throw new Error(`[service-directory.updateExternalSystemStatus] ServiceRequest not found: ${id}`);
+    }
+
+    // Update aggregate with external system data - minimal change to existing structure
+    const externalResponses = current.externalResponses ?? [];
+    const next: ServiceRequestAggregate = {
+      ...current,
+      externalResponses: [
+        ...externalResponses,
+        {
+          system: externalSystem,
+          status: externalStatus,
+          referenceId: externalReferenceId,
+          data: responseData,
+          receivedAt: new Date(receivedAt)
+        }
+      ],
+      actorId,
+      updatedAt: new Date(),
+    };
+
+    // Persist changes
+    await serviceRepository.save(next);
+    return { success: true, id: ServiceRequestId(id), externalSystem, externalStatus, receivedAt };
+  }
+};
+
 export const serviceDirectoryCommands: Readonly<Record<string, CapabilityCommand>> = {
   "service-directory.createServiceRequest": createServiceRequest,
   "service-directory.acceptServiceRequest": acceptServiceRequest,
   "service-directory.markServiceDelivered": markServiceDelivered,
   "service-directory.listByWorkspace": listServiceRequestsByWorkspace,
   "service-directory.getById": getServiceRequestByIdCommand,
+  "service-directory.updateExternalSystemStatus": updateExternalSystemStatus,
 } as const;
 
 export type {

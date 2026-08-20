@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { DigestEngine } from "@repo/core-kernel";
+import { DigestEngine } from "./digest-engine.js";
 import { basename, dirname, resolve } from "node:path";
 import yaml from "yaml";
 import { z } from "zod";

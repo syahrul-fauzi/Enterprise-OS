@@ -1,0 +1,279 @@
+• turbo 2.10.10
+
+   • Packages in scope: @repo/config-eslint, @repo/config-tailwind, @repo/config-typescript, @repo/core-kernel, @repo/presentation-experience, @repo/presentation-foundation, @repo/presentation-types, @repo/presentation-ui-system, @repo/presentation-widgets, web
+   • Running build in 10 packages
+   • Remote caching disabled
+
+@repo/core-kernel:build: cache hit, replaying logs 74f952d76675e320
+@repo/core-kernel:build: 
+@repo/core-kernel:build: > @repo/core-kernel@0.1.0 build /root/Enterprise-OS/workspace/packages/core/kernel
+@repo/core-kernel:build: > tsc
+@repo/core-kernel:build: 
+@repo/presentation-types:build: cache hit, replaying logs c36a4b24f7962f40
+@repo/presentation-types:build: 
+@repo/presentation-types:build: > @repo/presentation-types@0.1.0 build /root/Enterprise-OS/workspace/packages/presentation/presentation-types
+@repo/presentation-types:build: > tsc
+@repo/presentation-types:build: 
+@repo/presentation-foundation:build: cache hit, replaying logs 424b3bc55399c2df
+@repo/presentation-foundation:build: 
+@repo/presentation-foundation:build: > @repo/presentation-foundation@0.1.0-alpha.3b build /root/Enterprise-OS/workspace/packages/presentation/foundation
+@repo/presentation-foundation:build: > tsc
+@repo/presentation-foundation:build: 
+@repo/presentation-widgets:build: cache miss, executing 491aae6109a9773f
+@repo/presentation-experience:build: cache hit, replaying logs 80f517fc34653423
+@repo/presentation-experience:build: 
+@repo/presentation-experience:build: > @repo/presentation-experience@0.1.0 build /root/Enterprise-OS/workspace/packages/presentation/experience
+@repo/presentation-experience:build: > tsc
+@repo/presentation-experience:build: 
+@repo/presentation-ui-system:build:styles: cache hit, replaying logs e7d9059f42a7de95
+@repo/presentation-ui-system:build:styles: 
+@repo/presentation-ui-system:build:styles: > @repo/presentation-ui-system@0.1.0-alpha.4 build:styles /root/Enterprise-OS/workspace/packages/presentation/ui-system
+@repo/presentation-ui-system:build:styles: > tailwindcss -i ./src/styles.css -o ./dist/index.css
+@repo/presentation-ui-system:build:styles: 
+@repo/presentation-ui-system:build:styles: ≈ tailwindcss v4.3.3
+@repo/presentation-ui-system:build:styles: 
+@repo/presentation-ui-system:build:styles: Done in 234ms
+@repo/presentation-ui-system:build:components: cache hit, replaying logs 0fe5bc6a021d14e8
+@repo/presentation-ui-system:build:components: 
+@repo/presentation-ui-system:build:components: > @repo/presentation-ui-system@0.1.0-alpha.4 build:components /root/Enterprise-OS/workspace/packages/presentation/ui-system
+@repo/presentation-ui-system:build:components: > tsc
+@repo/presentation-ui-system:build:components: 
+@repo/presentation-ui-system:build: cache hit, replaying logs 652dfbbb47e4d0c6
+@repo/presentation-ui-system:build: 
+@repo/presentation-ui-system:build: > @repo/presentation-ui-system@0.1.0-alpha.4 build /root/Enterprise-OS/workspace/packages/presentation/ui-system
+@repo/presentation-ui-system:build: > pnpm run build:styles && pnpm run build:components
+@repo/presentation-ui-system:build: 
+@repo/presentation-ui-system:build: 
+@repo/presentation-ui-system:build: > @repo/presentation-ui-system@0.1.0-alpha.4 build:styles /root/Enterprise-OS/workspace/packages/presentation/ui-system
+@repo/presentation-ui-system:build: > tailwindcss -i ./src/styles.css -o ./dist/index.css
+@repo/presentation-ui-system:build: 
+@repo/presentation-ui-system:build: ≈ tailwindcss v4.3.3
+@repo/presentation-ui-system:build: 
+@repo/presentation-ui-system:build: Done in 383ms
+@repo/presentation-ui-system:build: 
+@repo/presentation-ui-system:build: > @repo/presentation-ui-system@0.1.0-alpha.4 build:components /root/Enterprise-OS/workspace/packages/presentation/ui-system
+@repo/presentation-ui-system:build: > tsc
+@repo/presentation-ui-system:build: 
+@repo/presentation-widgets:build: 
+@repo/presentation-widgets:build: > @repo/presentation-widgets@0.1.0 build /root/Enterprise-OS/workspace/packages/presentation/widgets
+@repo/presentation-widgets:build: > tsc
+@repo/presentation-widgets:build: 
+@repo/presentation-widgets:build: ../../../capabilities/consultation/implementation/commands/consultation.commands.ts(1528,133): error TS2339: Property 'confidence' does not exist on type '{ readonly ok: boolean; readonly output?: unknown; }'.
+@repo/presentation-widgets:build: ../../../capabilities/consultation/implementation/commands/consultation.commands.ts(1585,145): error TS2339: Property 'confidence' does not exist on type '{ readonly ok: boolean; readonly output?: unknown; }'.
+@repo/presentation-widgets:build: ../../../capabilities/identity/implementation/repositories/session.inmemory.ts(19,5): error TS2322: Type 'string' is not assignable to type 'SessionId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __sessionId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/identity/implementation/repositories/session.inmemory.ts(20,5): error TS2322: Type 'string' is not assignable to type 'UserId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __userId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/identity/implementation/repositories/session.inmemory.ts(21,5): error TS2322: Type 'string' is not assignable to type 'UserId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __userId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/identity/implementation/repositories/session.inmemory.ts(22,5): error TS2322: Type 'string' is not assignable to type 'TenantId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __tenantId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/identity/implementation/repositories/session.inmemory.ts(23,5): error TS2322: Type 'string' is not assignable to type 'WorkspaceId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __workspaceId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/identity/implementation/repositories/session.inmemory.ts(34,5): error TS2322: Type 'string' is not assignable to type 'SessionId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __sessionId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/identity/implementation/repositories/session.inmemory.ts(35,5): error TS2322: Type 'string' is not assignable to type 'UserId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __userId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/identity/implementation/repositories/session.inmemory.ts(36,5): error TS2322: Type 'string' is not assignable to type 'UserId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __userId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/identity/implementation/repositories/session.inmemory.ts(37,5): error TS2322: Type 'string' is not assignable to type 'TenantId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __tenantId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/identity/implementation/repositories/session.inmemory.ts(38,5): error TS2322: Type 'string' is not assignable to type 'WorkspaceId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __workspaceId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/identity/implementation/repositories/session.inmemory.ts(49,5): error TS2322: Type 'string' is not assignable to type 'SessionId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __sessionId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/identity/implementation/repositories/session.inmemory.ts(50,5): error TS2322: Type 'string' is not assignable to type 'UserId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __userId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/identity/implementation/repositories/session.inmemory.ts(51,5): error TS2322: Type 'string' is not assignable to type 'UserId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __userId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/identity/implementation/repositories/session.inmemory.ts(52,5): error TS2322: Type 'string' is not assignable to type 'TenantId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __tenantId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/identity/implementation/repositories/session.inmemory.ts(53,5): error TS2322: Type 'string' is not assignable to type 'WorkspaceId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __workspaceId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/legal-case/implementation/commands/case.commands.ts(151,7): error TS2367: This comparison appears to be unintentional because the types '"draft" | "open" | "in_progress"' and '"closed"' have no overlap.
+@repo/presentation-widgets:build: ../../../capabilities/legal-community/implementation/commands/community.commands.ts(69,7): error TS2353: Object literal may only specify known properties, and 'tenantId' does not exist in type 'ContentArticleAggregate'.
+@repo/presentation-widgets:build: ../../../capabilities/legal-community/implementation/commands/community.commands.ts(141,7): error TS2353: Object literal may only specify known properties, and 'tenantId' does not exist in type 'CommunityDiscussionAggregate'.
+@repo/presentation-widgets:build: ../../../capabilities/legal-community/implementation/commands/community.commands.ts(182,29): error TS2339: Property 'archivedAt' does not exist on type 'ContentArticleAggregate'.
+@repo/presentation-widgets:build: ../../../capabilities/legal-community/implementation/commands/community.commands.ts(186,77): error TS2353: Object literal may only specify known properties, and 'archivedAt' does not exist in type 'ContentArticleAggregate'.
+@repo/presentation-widgets:build: ../../../capabilities/legal-community/implementation/repository/community-postgres.repository.ts(63,18): error TS2339: Property 'archivedAt' does not exist on type 'ContentArticleAggregate'.
+@repo/presentation-widgets:build: ../../../capabilities/legal-community/implementation/repository/community-postgres.repository.ts(63,54): error TS2339: Property 'archivedAt' does not exist on type 'ContentArticleAggregate'.
+@repo/presentation-widgets:build: ../../../capabilities/legal-community/implementation/repository/community-postgres.repository.ts(68,9): error TS2416: Property 'byId' in type 'ContentArticleRepositoryPostgresImpl' is not assignable to the same property in base type 'ContentArticleRepository'.
+@repo/presentation-widgets:build:   Type '(id: ContentId) => Promise<ContentArticleAggregate | undefined>' is not assignable to type '(id: ContentId) => ContentArticleAggregate | undefined'.
+@repo/presentation-widgets:build:     Type 'Promise<ContentArticleAggregate | undefined>' is missing the following properties from type 'ContentArticleAggregate': id, title, status, readCount, and 3 more.
+@repo/presentation-widgets:build: ../../../capabilities/legal-community/implementation/repository/community-postgres.repository.ts(73,9): error TS2416: Property 'save' in type 'ContentArticleRepositoryPostgresImpl' is not assignable to the same property in base type 'ContentArticleRepository'.
+@repo/presentation-widgets:build:   Type '(entity: ContentArticleAggregate) => Promise<ContentArticleAggregate>' is not assignable to type '(entity: ContentArticleAggregate) => ContentArticleAggregate'.
+@repo/presentation-widgets:build:     Type 'Promise<ContentArticleAggregate>' is missing the following properties from type 'ContentArticleAggregate': id, title, status, readCount, and 3 more.
+@repo/presentation-widgets:build: ../../../capabilities/legal-community/implementation/repository/community-postgres.repository.ts(130,9): error TS2416: Property 'byId' in type 'CommunityDiscussionRepositoryPostgresImpl' is not assignable to the same property in base type 'CommunityDiscussionRepository'.
+@repo/presentation-widgets:build:   Type '(id: DiscussionId) => Promise<CommunityDiscussionAggregate | undefined>' is not assignable to type '(id: DiscussionId) => CommunityDiscussionAggregate | undefined'.
+@repo/presentation-widgets:build:     Type 'Promise<CommunityDiscussionAggregate | undefined>' is missing the following properties from type 'CommunityDiscussionAggregate': id, title, status, replyCount, and 3 more.
+@repo/presentation-widgets:build: ../../../capabilities/legal-community/implementation/repository/community-postgres.repository.ts(135,9): error TS2416: Property 'save' in type 'CommunityDiscussionRepositoryPostgresImpl' is not assignable to the same property in base type 'CommunityDiscussionRepository'.
+@repo/presentation-widgets:build:   Type '(entity: CommunityDiscussionAggregate) => Promise<CommunityDiscussionAggregate>' is not assignable to type '(entity: CommunityDiscussionAggregate) => CommunityDiscussionAggregate'.
+@repo/presentation-widgets:build:     Type 'Promise<CommunityDiscussionAggregate>' is missing the following properties from type 'CommunityDiscussionAggregate': id, title, status, replyCount, and 3 more.
+@repo/presentation-widgets:build: ../../../capabilities/legal-community/implementation/repository/community-postgres.repository.ts(144,3): error TS2739: Type 'ContentArticleRepositoryPostgresImpl' is missing the following properties from type 'ContentArticleRepository': listByTopic, listPublished
+@repo/presentation-widgets:build: ../../../capabilities/legal-community/implementation/repository/community-postgres.repository.ts(148,3): error TS2741: Property 'listLatest' is missing in type 'CommunityDiscussionRepositoryPostgresImpl' but required in type 'CommunityDiscussionRepository'.
+@repo/presentation-widgets:build: ../../../capabilities/observability/implementation/commands/observability.commands.ts(61,46): error TS2345: Argument of type 'string' is not assignable to parameter of type 'SessionId'.
+@repo/presentation-widgets:build:   Type 'string' is not assignable to type '{ readonly __sessionId: unique symbol; }'.
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/commands/get-all-requirements.command.ts(32,11): error TS2740: Type 'Promise<readonly RequirementAggregate[]>' is missing the following properties from type 'readonly RequirementAggregate[]': length, concat, join, slice, and 20 more.
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/commands/get-requirements-by-owner.command.ts(33,8): error TS2339: Property 'filter' does not exist on type 'Promise<readonly RequirementAggregate[]>'.
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/commands/get-requirements-by-owner.command.ts(33,50): error TS2551: Property 'ownerId' does not exist on type 'RequirementAggregate'. Did you mean 'owner'?
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/commands/get-requirements-by-owner.command.ts(33,92): error TS2339: Property 'productId' does not exist on type 'RequirementAggregate'.
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/commands/get-requirements-by-owner.command.ts(39,21): error TS2339: Property 'author' does not exist on type 'RequirementAggregate'.
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/commands/get-requirements-by-owner.command.ts(39,42): error TS2339: Property 'author' does not exist on type 'RequirementAggregate'.
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/repository/requirement.repository.ts(619,3): error TS2322: Type '(id: RequirementId) => RequirementAggregate | undefined' is not assignable to type '(id: RequirementId) => Promise<RequirementAggregate | undefined>'.
+@repo/presentation-widgets:build:   Type 'RequirementAggregate | undefined' is not assignable to type 'Promise<RequirementAggregate | undefined>'.
+@repo/presentation-widgets:build:     Type 'undefined' is not assignable to type 'Promise<RequirementAggregate | undefined>'.
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/repository/requirement.repository.ts(623,3): error TS2322: Type '() => RequirementAggregate[]' is not assignable to type '() => Promise<readonly RequirementAggregate[]>'.
+@repo/presentation-widgets:build:   Type 'RequirementAggregate[]' is missing the following properties from type 'Promise<readonly RequirementAggregate[]>': then, catch, finally, [Symbol.toStringTag]
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/repository/requirement.repository.ts(626,3): error TS2322: Type '(entity: RequirementAggregate) => RequirementAggregate' is not assignable to type '(entity: RequirementAggregate) => Promise<RequirementAggregate>'.
+@repo/presentation-widgets:build:   Type 'RequirementAggregate' is missing the following properties from type 'Promise<RequirementAggregate>': then, catch, finally, [Symbol.toStringTag]
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/repository/requirement.repository.ts(636,3): error TS2322: Type '(id: RequirementId) => boolean' is not assignable to type '(id: RequirementId) => Promise<boolean>'.
+@repo/presentation-widgets:build:   Type 'boolean' is not assignable to type 'Promise<boolean>'.
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/repository/requirement.repository.ts(644,3): error TS2322: Type '(id: RequirementId) => RequirementAggregate | Promise<RequirementAggregate | undefined> | undefined' is not assignable to type '(id: RequirementId) => Promise<RequirementAggregate | undefined>'.
+@repo/presentation-widgets:build:   Type 'RequirementAggregate | Promise<RequirementAggregate | undefined> | undefined' is not assignable to type 'Promise<RequirementAggregate | undefined>'.
+@repo/presentation-widgets:build:     Type 'undefined' is not assignable to type 'Promise<RequirementAggregate | undefined>'.
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/repository/requirement.repository.ts(652,3): error TS2322: Type '() => Promise<readonly RequirementAggregate[]> | RequirementAggregate[]' is not assignable to type '() => Promise<readonly RequirementAggregate[]>'.
+@repo/presentation-widgets:build:   Type 'Promise<readonly RequirementAggregate[]> | RequirementAggregate[]' is not assignable to type 'Promise<readonly RequirementAggregate[]>'.
+@repo/presentation-widgets:build:     Type 'RequirementAggregate[]' is missing the following properties from type 'Promise<readonly RequirementAggregate[]>': then, catch, finally, [Symbol.toStringTag]
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/repository/requirement.repository.ts(659,3): error TS2322: Type '(entity: RequirementAggregate) => RequirementAggregate | Promise<RequirementAggregate>' is not assignable to type '(entity: RequirementAggregate) => Promise<RequirementAggregate>'.
+@repo/presentation-widgets:build:   Type 'RequirementAggregate | Promise<RequirementAggregate>' is not assignable to type 'Promise<RequirementAggregate>'.
+@repo/presentation-widgets:build:     Type 'RequirementAggregate' is missing the following properties from type 'Promise<RequirementAggregate>': then, catch, finally, [Symbol.toStringTag]
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/repository/requirement.repository.ts(675,3): error TS2322: Type '(id: RequirementId) => boolean | Promise<boolean>' is not assignable to type '(id: RequirementId) => Promise<boolean>'.
+@repo/presentation-widgets:build:   Type 'boolean | Promise<boolean>' is not assignable to type 'Promise<boolean>'.
+@repo/presentation-widgets:build:     Type 'boolean' is not assignable to type 'Promise<boolean>'.
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/repository/requirement.repository.ts(716,16): error TS2339: Property 'toRecord' does not exist on type 'PostgresRepository<RequirementAggregate>'.
+@repo/presentation-widgets:build: ../../../capabilities/requirement-management/implementation/repository/requirement.repository.ts(740,29): error TS2339: Property 'toAggregate' does not exist on type 'PostgresRepository<RequirementAggregate>'.
+@repo/presentation-widgets:build: ../../../capabilities/service-directory/implementation/commands/service.commands.ts(303,42): error TS2707: Generic type 'CapabilityCommand<TInput, TOutput>' requires between 0 and 2 type arguments.
+@repo/presentation-widgets:build: ../../../capabilities/service-directory/implementation/repository/service-postgres.repository.ts(13,36): error TS2307: Cannot find module '../../../identity/implementation/repositories/identity-schema.js' or its corresponding type declarations.
+@repo/presentation-widgets:build: ../../../capabilities/service-directory/implementation/repository/service-postgres.repository.ts(182,25): error TS2339: Property 'tenantId' does not exist on type 'ServiceProviderAggregate'.
+@repo/presentation-widgets:build: ../../../capabilities/service-directory/implementation/repository/service-postgres.repository.ts(183,28): error TS2339: Property 'workspaceId' does not exist on type 'ServiceProviderAggregate'.
+@repo/presentation-widgets:build: ../../../capabilities/service-directory/implementation/repository/service-postgres.repository.ts(188,9): error TS2416: Property 'byId' in type 'ServiceProviderRepositoryPostgresImpl' is not assignable to the same property in base type 'ServiceProviderRepository'.
+@repo/presentation-widgets:build:   Type '(id: ServiceProviderId) => Promise<ServiceProviderAggregate | undefined>' is not assignable to type '(id: ServiceProviderId) => ServiceProviderAggregate | undefined'.
+@repo/presentation-widgets:build:     Type 'Promise<ServiceProviderAggregate | undefined>' is missing the following properties from type 'ServiceProviderAggregate': id, name, category, description, and 3 more.
+@repo/presentation-widgets:build: ../../../capabilities/service-directory/implementation/repository/service-postgres.repository.ts(197,9): error TS2416: Property 'list' in type 'ServiceProviderRepositoryPostgresImpl' is not assignable to the same property in base type 'ServiceProviderRepository'.
+@repo/presentation-widgets:build:   Type '() => Promise<readonly ServiceProviderAggregate[]>' is not assignable to type '() => readonly ServiceProviderAggregate[]'.
+@repo/presentation-widgets:build:     Type 'Promise<readonly ServiceProviderAggregate[]>' is missing the following properties from type 'readonly ServiceProviderAggregate[]': length, concat, join, slice, and 20 more.
+@repo/presentation-widgets:build: ../../../capabilities/service-directory/implementation/repository/service-postgres.repository.ts(202,9): error TS2416: Property 'listByCategory' in type 'ServiceProviderRepositoryPostgresImpl' is not assignable to the same property in base type 'ServiceProviderRepository'.
+@repo/presentation-widgets:build:   Type '(category: "all" | ServiceProviderCategory) => Promise<readonly ServiceProviderAggregate[]>' is not assignable to type '(category: ServiceProviderCategory) => readonly ServiceProviderAggregate[]'.
+@repo/presentation-widgets:build:     Type 'Promise<readonly ServiceProviderAggregate[]>' is missing the following properties from type 'readonly ServiceProviderAggregate[]': length, concat, join, slice, and 20 more.
+@repo/presentation-widgets:build: ../../../capabilities/service-directory/implementation/repository/service-postgres.repository.ts(229,9): error TS2416: Property 'save' in type 'ServiceProviderRepositoryPostgresImpl' is not assignable to the same property in base type 'ServiceProviderRepository'.
+@repo/presentation-widgets:build:   Type '(entity: ServiceProviderAggregate) => Promise<ServiceProviderAggregate>' is not assignable to type '(entity: ServiceProviderAggregate) => ServiceProviderAggregate'.
+@repo/presentation-widgets:build:     Type 'Promise<ServiceProviderAggregate>' is missing the following properties from type 'ServiceProviderAggregate': id, name, category, description, and 3 more.
+@repo/presentation-widgets:build: ../../../capabilities/service-directory/implementation/repository/service-postgres.repository.ts(254,9): error TS2416: Property 'remove' in type 'ServiceProviderRepositoryPostgresImpl' is not assignable to the same property in base type 'ServiceProviderRepository'.
+@repo/presentation-widgets:build:   Type '(id: ServiceProviderId) => Promise<boolean>' is not assignable to type '(id: ServiceProviderId) => boolean'.
+@repo/presentation-widgets:build:     Type 'Promise<boolean>' is not assignable to type 'boolean'.
+@repo/presentation-widgets:build: ../../../capabilities/service-directory/implementation/repository/service-postgres.repository.ts(282,3): error TS2741: Property 'listCategories' is missing in type 'ServiceProviderRepositoryPostgresImpl' but required in type 'ServiceProviderRepository'.
+@repo/presentation-widgets:build: ../../composition/src/arch15-determinism/audit.ts(292,19): error TS2345: Argument of type 'readonly string[] | undefined' is not assignable to parameter of type 'readonly string[]'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'readonly string[]'.
+@repo/presentation-widgets:build: ../../composition/src/arch15-determinism/audit.ts(301,19): error TS2345: Argument of type 'readonly string[] | undefined' is not assignable to parameter of type 'readonly string[]'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'readonly string[]'.
+@repo/presentation-widgets:build: ../../composition/src/arch15-determinism/audit.ts(310,19): error TS2345: Argument of type 'readonly string[] | undefined' is not assignable to parameter of type 'readonly string[]'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'readonly string[]'.
+@repo/presentation-widgets:build: ../../composition/src/arch15-determinism/audit.ts(319,19): error TS2345: Argument of type 'readonly string[] | undefined' is not assignable to parameter of type 'readonly string[]'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'readonly string[]'.
+@repo/presentation-widgets:build: ../../composition/src/arch15-determinism/audit.ts(328,19): error TS2345: Argument of type 'readonly string[] | undefined' is not assignable to parameter of type 'readonly string[]'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'readonly string[]'.
+@repo/presentation-widgets:build: ../../composition/src/arch15-determinism/audit.ts(337,25): error TS2345: Argument of type 'Arch15Snapshot | undefined' is not assignable to parameter of type 'Arch15Snapshot'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'Arch15Snapshot'.
+@repo/presentation-widgets:build: ../../composition/src/arch15-determinism/audit.ts(356,62): error TS2345: Argument of type 'readonly string[] | undefined' is not assignable to parameter of type 'readonly string[]'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'readonly string[]'.
+@repo/presentation-widgets:build: ../../composition/src/arch15-determinism/audit.ts(357,58): error TS2345: Argument of type 'readonly string[] | undefined' is not assignable to parameter of type 'readonly string[]'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'readonly string[]'.
+@repo/presentation-widgets:build: ../../composition/src/arch15-determinism/audit.ts(358,70): error TS2345: Argument of type 'readonly string[] | undefined' is not assignable to parameter of type 'readonly string[]'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'readonly string[]'.
+@repo/presentation-widgets:build: ../../composition/src/arch15-determinism/audit.ts(359,58): error TS2345: Argument of type 'readonly string[] | undefined' is not assignable to parameter of type 'readonly string[]'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'readonly string[]'.
+@repo/presentation-widgets:build: ../../composition/src/arch15-determinism/audit.ts(360,92): error TS2345: Argument of type 'readonly string[] | undefined' is not assignable to parameter of type 'readonly string[]'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'readonly string[]'.
+@repo/presentation-widgets:build: ../../composition/src/arch15-determinism/audit.ts(361,70): error TS2345: Argument of type 'Arch15Snapshot | undefined' is not assignable to parameter of type 'Arch15Snapshot'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'Arch15Snapshot'.
+@repo/presentation-widgets:build: ../../composition/src/arch16-boundary/verify.ts(165,9): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/arch16-boundary/verify.ts(178,71): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/canonical/hash.ts(27,18): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'string'.
+@repo/presentation-widgets:build: ../../composition/src/certification/evidence.ts(500,51): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/evidence.ts(500,88): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/evidence.ts(508,35): error TS18048: 'rb' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/evidence.ts(508,65): error TS18048: 'rb' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/evidence.ts(508,93): error TS18048: 'rb' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/evidence.ts(1063,19): error TS18048: 'rawObs' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/evidence.ts(1063,72): error TS18048: 'rawObs' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/evidence.ts(1063,95): error TS18048: 'rawObs' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/evidence.ts(1064,15): error TS18048: 'rawObs' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/evidence.ts(1065,37): error TS2345: Argument of type 'RawObservation | undefined' is not assignable to parameter of type 'RawObservation'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'RawObservation'.
+@repo/presentation-widgets:build: ../../composition/src/certification/evidence.ts(1066,11): error TS2322: Type 'RawObservation | { id: RawObservationId; provenanceVersion?: "1.0" | undefined; experimentExecutionId?: ExperimentExecutionId | undefined; ... 5 more ...; targetAssertionId?: string | undefined; } | undefined' is not assignable to type 'RawObservation'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'RawObservation'.
+@repo/presentation-widgets:build: ../../composition/src/certification/evidence.ts(1066,46): error TS18048: 'rawObs' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/matrix.ts(481,21): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/matrix.ts(515,11): error TS2322: Type 'Readonly<{ derivedFromEvidenceIds: readonly EvidenceId[]; packageVersion?: "2.0" | undefined; schemaVersion?: "2.0" | undefined; derivation?: EvidenceDerivationKind | undefined; ... 18 more ...; independentRun?: boolean | undefined; }>' is not assignable to type 'EvidencePackage'.
+@repo/presentation-widgets:build:   Types of property 'packageVersion' are incompatible.
+@repo/presentation-widgets:build:     Type '"2.0" | undefined' is not assignable to type '"2.0"'.
+@repo/presentation-widgets:build:       Type 'undefined' is not assignable to type '"2.0"'.
+@repo/presentation-widgets:build: ../../composition/src/certification/matrix.ts(518,14): error TS18048: 'base' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/matrix.ts(576,38): error TS2538: Type 'undefined' cannot be used as an index type.
+@repo/presentation-widgets:build: ../../composition/src/certification/matrix.ts(846,24): error TS18048: 'ALPHA6_EVIDENCE_PKGS.PKG_A7_RUNTIME_PACKAGE_EXISTS' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/matrix.ts(937,45): error TS2322: Type 'CertificationClaim | undefined' is not assignable to type 'CertificationClaim'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'CertificationClaim'.
+@repo/presentation-widgets:build: ../../composition/src/certification/matrix.ts(940,47): error TS2322: Type 'EvidencePackage | undefined' is not assignable to type 'EvidencePackage'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'EvidencePackage'.
+@repo/presentation-widgets:build: ../../composition/src/certification/matrix.ts(1237,58): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/matrix.ts(1279,7): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/matrix.ts(1358,5): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/matrix.ts(1496,40): error TS18048: 'pkgIdent' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/matrix.ts(2214,55): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/matrix.ts(2256,14): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/certification/matrix.ts(2256,56): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/graph/build.ts(90,5): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/graph/build.ts(151,9): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/graph/build.ts(218,68): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/graph/build.ts(223,18): error TS18048: 'n' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/graph/build.ts(224,13): error TS18048: 'n' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/graph/build.ts(225,17): error TS18048: 'n' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/graph/build.ts(225,37): error TS18048: 'n' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/graph/build.ts(226,14): error TS18048: 'n' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/graph/build.ts(227,24): error TS18048: 'n' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/normalizer/normalize.ts(118,46): error TS2538: Type 'undefined' cannot be used as an index type.
+@repo/presentation-widgets:build: ../../composition/src/normalizer/normalize.ts(119,51): error TS2345: Argument of type 'RegionId | undefined' is not assignable to parameter of type 'RegionId'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'RegionId'.
+@repo/presentation-widgets:build:     Type 'undefined' is not assignable to type 'string'.
+@repo/presentation-widgets:build: ../../composition/src/plan/build-plan.ts(109,17): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/plan/build-plan.ts(110,31): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/plan/build-plan.ts(113,68): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/plan/build-plan.ts(159,11): error TS2322: Type 'RegionId | undefined' is not assignable to type 'RegionId'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'RegionId'.
+@repo/presentation-widgets:build:     Type 'undefined' is not assignable to type 'string'.
+@repo/presentation-widgets:build: ../../composition/src/plan/build-plan.ts(166,11): error TS2322: Type 'RegionId | undefined' is not assignable to type 'RegionId'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'RegionId'.
+@repo/presentation-widgets:build:     Type 'undefined' is not assignable to type 'string'.
+@repo/presentation-widgets:build: ../../composition/src/plan/build-plan.ts(173,11): error TS2322: Type 'RegionId | undefined' is not assignable to type 'RegionId'.
+@repo/presentation-widgets:build:   Type 'undefined' is not assignable to type 'RegionId'.
+@repo/presentation-widgets:build:     Type 'undefined' is not assignable to type 'string'.
+@repo/presentation-widgets:build: ../../composition/src/plan/build-plan.ts(192,27): error TS18048: 'req' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/plan/build-plan.ts(197,17): error TS18048: 'req' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/plan/build-plan.ts(231,54): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/plan/build-plan.ts(232,45): error TS2532: Object is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/resolver/resolve.ts(100,31): error TS2538: Type 'undefined' cannot be used as an index type.
+@repo/presentation-widgets:build: ../../composition/src/resolver/resolve.ts(135,11): error TS18048: 'child' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/resolver/resolve.ts(157,11): error TS18048: 'it' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/resolver/resolve.ts(158,33): error TS18048: 'it' is possibly 'undefined'.
+@repo/presentation-widgets:build: ../../composition/src/resolver/resolve.ts(167,67): error TS2538: Type 'undefined' cannot be used as an index type.
+@repo/presentation-widgets:build: ../features/src/auth/LoginPage.tsx(4,18): error TS2307: Cannot find module 'next/link' or its corresponding type declarations.
+@repo/presentation-widgets:build: ../features/src/auth/LoginPage.tsx(5,27): error TS2307: Cannot find module 'next/navigation' or its corresponding type declarations.
+@repo/presentation-widgets:build: ../features/src/auth/SignupPage.tsx(4,18): error TS2307: Cannot find module 'next/link' or its corresponding type declarations.
+@repo/presentation-widgets:build: ../features/src/auth/SignupPage.tsx(5,27): error TS2307: Cannot find module 'next/navigation' or its corresponding type declarations.
+@repo/presentation-widgets:build: src/delivery-workspace/DeliveryWorkspace.tsx(6,42): error TS2307: Cannot find module '@repo/presentation/presentation-types' or its corresponding type declarations.
+@repo/presentation-widgets:build: src/delivery-workspace/DeliveryWorkspace.tsx(624,70): error TS2339: Property 'evidenceArtifactCount' does not exist on type '{ readonly traceability: { readonly complete: boolean; readonly artifactCount: number; readonly verificationArtifactCount: number; readonly evidenceArtifactCount: number; readonly gaps: readonly string[]; }; readonly evidence: { ...; }; }'.
+@repo/presentation-widgets:build: src/institution-page/InstitutionPage.tsx(66,10): error TS2741: Property 'productId' is missing in type '{ member: Member; }' but required in type 'ProfileHeaderProps'.
+@repo/presentation-widgets:build: src/institution-page/InstitutionPage.tsx(67,10): error TS2304: Cannot find name 'InstitutionResearcherList'.
+@repo/presentation-widgets:build: src/product-delivery-page/ProductDeliveryPage.tsx(20,8): error TS2741: Property 'displayName' is missing in type '{ productId: string; }' but required in type 'DeliveryWorkspaceProps'.
+@repo/presentation-widgets:build: src/profile-header/ProfileHeader.tsx(34,19): error TS2339: Property 'bio' does not exist on type 'ProfileMember'.
+@repo/presentation-widgets:build: src/profile-header/ProfileHeader.tsx(34,85): error TS2339: Property 'bio' does not exist on type 'ProfileMember'.
+@repo/presentation-widgets:build:  ELIFECYCLE  Command failed with exit code 2.
+@repo/presentation-widgets#build:  ERROR  command (/root/Enterprise-OS/workspace/packages/presentation/widgets) /root/.local/share/pnpm/store/v11/links/@/pnpm/10.19.0/639c87e68469f9709494c773547266009a1d139648fa3398fca877a4359d50c8/bin/pnpm run build exited (2)
+
+ Tasks:    7 successful, 8 total
+Cached:    7 cached, 8 total
+  Time:    2.019s 
+Failed:    @repo/presentation-widgets#build
+
+ ERROR  run failed: command  exited (2)

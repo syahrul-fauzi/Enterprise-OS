@@ -53,3 +53,13 @@ export type {
 export {
   capabilityRegistry,
 } from "./registry/capability-command-registry.js";
+
+// Core runtime mediation layer (ARCH-04 compliant - capabilities access core-runtime ONLY via core-kernel)
+export {
+  recordRuntimeInvocation,
+  traceExecutionByDecision,
+} from "@repo/core-runtime";
+export type {
+  RuntimeInvocationEvent,
+  ExecutionContext,
+} from "@repo/core-runtime";
