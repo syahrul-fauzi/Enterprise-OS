@@ -129,10 +129,10 @@ export type ListDocumentsByStatusOutput = readonly DocumentAggregate[];
 export type DocumentRepository = {
   readonly entityName: "Document";
   readonly kind: "repository";
-  byId(id: DocumentId): DocumentAggregate | undefined;
-  list(): readonly DocumentAggregate[];
-  save(entity: DocumentAggregate): DocumentAggregate;
-  remove(id: DocumentId): boolean;
+  byId(id: DocumentId): Promise<DocumentAggregate | undefined> | DocumentAggregate | undefined;
+  list(): Promise<readonly DocumentAggregate[]> | readonly DocumentAggregate[];
+  save(entity: DocumentAggregate): Promise<DocumentAggregate> | DocumentAggregate;
+  remove(id: DocumentId): Promise<boolean> | boolean;
 };
 
 export interface DocumentDomainEvents {

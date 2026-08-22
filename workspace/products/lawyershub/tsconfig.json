@@ -2,9 +2,9 @@
   "extends": "../../config/typescript/react-library.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./runtime",
+    "rootDir": "./",
     "composite": true
   },
-  "include": ["runtime"],
+  "include": ["index.ts", "runtime"],
   "exclude": ["dist", "build", "node_modules"]
 }

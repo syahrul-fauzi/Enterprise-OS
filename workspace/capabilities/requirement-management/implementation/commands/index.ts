@@ -3,6 +3,7 @@ export {
   createRequirement,
   markRequirementImplemented,
   requirementCommands,
+  requestRequirementReview,
   startRequirementDelivery,
   updateRequirement,
   verifyRequirement,

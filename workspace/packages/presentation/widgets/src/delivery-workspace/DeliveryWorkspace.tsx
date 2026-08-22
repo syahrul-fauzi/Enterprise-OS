@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
-import type { ProductDeliveryCopy } from "@repo/presentation/presentation-types";
+import type { ProductDeliveryCopy } from "@repo/presentation-experience";
 
 type RequirementStatus =
   | "draft"
@@ -16,7 +16,7 @@ type VerificationStatus = "not_ready" | "pending" | "passed" | "failed";
 
 export interface DeliveryWorkspaceProps {
   readonly productId: string;
-  readonly displayName: string;
+  readonly displayName?: string;
   readonly requirementId?: string;
   readonly copy?: ProductDeliveryCopy;
 }
@@ -139,10 +139,10 @@ function caseLifecycle(rawStatus: string): readonly DomainLifecycleStep[] {
   return order.map((s, i) => ({
     key: s,
     label: {
-      draft: "Draft Matter",
-      open: "Open / Assigned",
-      in_progress: "In Progress",
-      closed: "Closed / Delivered",
+      draft: "Draf",
+      open: "Buka / Ditetapkan",
+      in_progress: "Sedang Dikerjakan",
+      closed: "Selesai / Diserahkan",
     }[s],
     reached: idx === -1 ? i <= 0 : i <= idx,
     active: idx === i,
@@ -155,10 +155,10 @@ function serviceLifecycle(rawStatus: string): readonly DomainLifecycleStep[] {
   return order.map((s, i) => ({
     key: s,
     label: {
-      draft: "Draft Request",
-      accepted: "Accepted (Provider Matched)",
-      in_service: "In Service / Delivery",
-      delivered: "Delivered / Verified",
+      draft: "Draf Permintaan",
+      accepted: "Diterima (Provider Cocok)",
+      in_service: "Sedang Dilayani",
+      delivered: "Terserahkan / Tervalidasi",
     }[s],
     reached: idx === -1 ? i <= 0 : i <= idx,
     active: idx === i,
@@ -171,10 +171,10 @@ function articleLifecycle(rawStatus: string): readonly DomainLifecycleStep[] {
   return order.map((s, i) => ({
     key: s,
     label: {
-      proposed: "Proposed / Submitted",
-      accepted: "Accepted by Editorial",
-      in_production: "In Production / Review",
-      published: "Published & Public",
+      proposed: "Diajukan / Dikirim",
+      accepted: "Diterima Redaksi",
+      in_production: "Sedang Produksi / Review",
+      published: "Terpublikasi & Publik",
     }[s],
     reached: idx === -1 ? i <= 0 : i <= idx,
     active: idx === i,
@@ -187,9 +187,9 @@ function discussionLifecycle(rawStatus: string): readonly DomainLifecycleStep[] 
   return order.map((s, i) => ({
     key: s,
     label: {
-      open: "Open Discussion",
-      featured: "Featured / Pinned",
-      locked: "Locked / Archived",
+      open: "Diskusi Terbuka",
+      featured: "Diunggulkan / Disematkan",
+      locked: "Ditutup / Diarsipkan",
     }[s],
     reached: idx === -1 ? i <= 0 : i <= idx,
     active: idx === i,
@@ -201,7 +201,7 @@ function caseActions(status: string): readonly DomainLifecycleAction[] {
     return [
       {
         key: "assign_lawyer",
-        label: "Assign Lawyer → Open Matter",
+        label: "Tetapkan Penasihat Hukum → Buka Kasus",
         capability: "lawyershub",
         commandName: "assignLawyer",
         buildInput: (id) => ({ id, lawyerId: "lawyer-eos-d12" }),
@@ -213,7 +213,7 @@ function caseActions(status: string): readonly DomainLifecycleAction[] {
     return [
       {
         key: "close",
-        label: "Close Matter",
+        label: "Selesaikan Kasus",
         capability: "lawyershub",
         commandName: "close",
         buildInput: (id) => ({ id }),
@@ -229,7 +229,7 @@ function serviceRequestActions(status: string): readonly DomainLifecycleAction[]
     return [
       {
         key: "accept",
-        label: "Accept Request (Assign Provider)",
+        label: "Terima Permintaan (Tetapkan Provider)",
         capability: "services-id",
         commandName: "acceptServiceRequest",
         buildInput: (id) => ({ id, providerId: `provider-${id}-d12` }),
@@ -241,7 +241,7 @@ function serviceRequestActions(status: string): readonly DomainLifecycleAction[]
     return [
       {
         key: "deliver",
-        label: "Mark Service Delivered",
+        label: "Tandai Layanan Terserahkan",
         capability: "services-id",
         commandName: "markServiceDelivered",
         buildInput: (id) => ({ id }),
@@ -257,7 +257,7 @@ function articleActions(status: string): readonly DomainLifecycleAction[] {
     return [
       {
         key: "publish",
-        label: status === "proposed" ? "Accept & Publish Article" : "Publish Article",
+        label: status === "proposed" ? "Terima & Publikasikan Artikel" : "Publikasikan Artikel",
         capability: "ilc",
         commandName: "publishContent",
         buildInput: (id) => ({ id }),
@@ -550,10 +550,10 @@ export function DeliveryWorkspace({
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-slate-950">
-              {displayName} Delivery Workspace
+              Ruang Kerja {displayName ?? productId}
             </h1>
             <p className="mt-2 text-slate-600">
-              {copy?.workspaceDescription ?? "Track requirement delivery progress with full evidence traceability."}
+              {copy?.workspaceDescription ?? "Pantau progres penyelesaian pekerjaan beserta seluruh catatan bukti pendukung secara lengkap."}
             </p>
           </div>
         </div>
@@ -565,11 +565,11 @@ export function DeliveryWorkspace({
           </div>
         ) : domainError ? (
           <div className="mt-8 rounded-2xl border border-red-200 bg-red-50 p-4">
-            <p className="text-red-800">Failed to load domain state: {domainError}</p>
+            <p className="text-red-800">Gagal memuat status domain: {domainError}</p>
           </div>
         ) : lifecycle && domainState ? (
           <div className="mt-8">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 mb-4">Progress</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 mb-4">Progres</h3>
             <div className="flex items-center gap-2 overflow-x-auto pb-2">
               {lifecycle.map((step, idx) => (
                 <React.Fragment key={step.key}>
@@ -591,7 +591,7 @@ export function DeliveryWorkspace({
                     disabled={domainBusy === action.key}
                     className={`inline-flex items-center rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${actionTone(action.tone)}`}
                   >
-                    {domainBusy === action.key ? "Processing..." : action.label}
+                    {domainBusy === action.key ? "Memproses..." : action.label}
                   </button>
                 ))}
               </div>
@@ -610,7 +610,7 @@ export function DeliveryWorkspace({
       {/* Delivery Payload Details (if requirement-based) */}
       {payload && (
         <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <h2 className="text-xl font-bold text-slate-900 mb-4">Delivery Status: {payload.requirement.id}</h2>
+          <h2 className="text-xl font-bold text-slate-900 mb-4">Status Penyelesaian: {payload.requirement.id}</h2>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
               <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Status</div>
@@ -620,8 +620,8 @@ export function DeliveryWorkspace({
             </div>
             {payload.delivery && (
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Evidence Artifacts</div>
-                <p className="mt-2 text-slate-900">{payload.delivery.evidenceArtifactCount} artifacts</p>
+                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Catatan Bukti Pendukung</div>
+                <p className="mt-2 text-slate-900">{payload.delivery.traceability.evidenceArtifactCount} dokumen</p>
               </div>
             )}
           </div>
@@ -631,9 +631,9 @@ export function DeliveryWorkspace({
       {/* Verification Status */}
       {verification && (
         <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <h2 className="text-xl font-bold text-slate-900 mb-4">Verification Status</h2>
+          <h2 className="text-xl font-bold text-slate-900 mb-4">Status Verifikasi</h2>
           <span className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold border ${verification.verdict === "passed" ? "bg-emerald-100 text-emerald-800 border-emerald-300" : "bg-amber-100 text-amber-800 border-amber-300"}`}>
-            {verification.verdict === "passed" ? "✓ VERIFIED" : "⚠ PENDING VERIFICATION"}
+            {verification.verdict === "passed" ? "✓ TERVERIFIKASI" : "⚠ MENUNGGU VERIFIKASI"}
           </span>
         </section>
       )}

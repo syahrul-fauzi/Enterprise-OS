@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
+import { useLocale } from "@repo/presentation-hooks/use-locale/use-locale";
 import type { ServiceRequestAggregate, ServiceRequestStatus, ServiceProviderCategory } from "../../implementation/contracts/service.contracts.js";
 import { ServiceRequestCard } from "../components/ServiceRequestCard.js";
-import { CreateServiceRequestModal } from "../components/CreateServiceRequestModal.js";
+import { CreateServiceRequestModal, BatchCreateServiceRequestModal } from "../components/CreateServiceRequestModal.js";
 
 type StatusFilter = ServiceRequestStatus | "all";
 type CategoryFilter = ServiceProviderCategory | "all";
@@ -16,6 +17,7 @@ interface SearchServiceRequestsOutput {
 }
 
 export function ServicesWorkspace() {
+  const { t } = useLocale();
   const [requests, setRequests] = useState<ServiceRequestAggregate[]>([]);
   const [totalRequests, setTotalRequests] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -23,6 +25,7 @@ export function ServicesWorkspace() {
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [query, setQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [batchModalOpen, setBatchModalOpen] = useState(false);
 
   // Fetch service requests from canonical API endpoint (maintains tenant/workspace isolation)
   useEffect(() => {
@@ -117,18 +120,27 @@ export function ServicesWorkspace() {
     "verified",
   ] as const;
 
-  const categoryOptions: readonly CategoryFilter[] = [
-    "all",
-    "Cloud Services",
-    "IT Support",
-    "Infrastructure",
-    "Cybersecurity",
-    "Software Development",
-    "Managed Services",
-    "Data & Analytics",
-  ] as const;
+  // Map internal categories to locale-aware labels
+  const categoryKeyMap: Record<ServiceProviderCategory, string> = {
+    "Cloud Services": "services.category.cloud",
+    "IT Support": "services.category.it",
+    "Infrastructure": "services.category.infrastructure",
+    "Cybersecurity": "services.category.cybersecurity",
+    "Software Development": "services.category.software",
+    "Managed Services": "services.category.managed",
+    "Data & Analytics": "services.category.data",
+  };
 
-  const fmtOption = (s: string) => s.replace("_", " ");
+  // Map internal statuses to locale-aware labels
+  const statusKeyMap: Record<ServiceRequestStatus, string> = {
+    "draft": "services.status.draft",
+    "accepted": "services.status.accepted",
+    "in_service": "services.status.in_service",
+    "delivered": "services.status.delivered",
+    "verified": "services.status.verified",
+  };
+
+  const fmtOption = (key: string) => t(key);
 
   const handleCreateSubmit = async (data: {
     title: string;
@@ -166,31 +178,88 @@ export function ServicesWorkspace() {
     window.dispatchEvent(new Event('service-requests:refresh'));
   };
 
+  const handleBatchCreateSubmit = async (data: Array<{
+    title: string;
+    description: string;
+    category: ServiceProviderCategory;
+    budget?: string;
+  }>) => {
+    // Get current session context from cookies (maintain tenant/workspace isolation)
+    const cookie = document.cookie;
+    const sessionCookie = cookie.split(";").find(c => c.trim().startsWith("workspace-session="));
+    let session = null;
+    if (sessionCookie) {
+      try {
+        session = JSON.parse(atob(sessionCookie.split("=")[1]));
+      } catch(e) {
+        console.error("[ServicesWorkspace] Failed to decode session:", e);
+      }
+    }
+
+    // Use shared rail API endpoint with proper session context
+    const resp = await fetch("/api/service-requests/batch-create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        items: data,
+        sessionId: session?.sessionId,
+        tenantId: session?.tenantId,
+        workspaceId: session?.workspaceId,
+        actorId: session?.actorId,
+      }),
+      credentials: "include",
+    });
+    if (!resp.ok) throw new Error("Failed to batch create service requests");
+    // Broadcast refresh event to update UI with new requests
+    window.dispatchEvent(new Event('service-requests:refresh'));
+  };
+
+  // Helper to replace placeholders in translated strings
+  const fmt = (key: string, values: Record<string, string | number>) => {
+    let str = t(key);
+    Object.entries(values).forEach(([k, v]) => {
+      str = str.replace(`{${k}}`, String(v));
+    });
+    return str;
+  };
+
+  const hasAnyRequests = requests.length > 0;
+
   return (
     <div className="p-4 border rounded-lg bg-white shadow-sm space-y-3">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-        <h2 className="text-xl font-bold">Service Requests</h2>
+        <h2 className="text-xl font-bold">{t("services.title")}</h2>
         <div className="flex items-center gap-2">
           <div className="text-sm opacity-70">
-            showing {filtered.length} of {allCount} (matched {result.matched})
+            {fmt("services.showing", { filtered: filtered.length, total: allCount, matched: result.matched })}
           </div>
-          <button
-            data-testid="create-service-request-button"
-            onClick={() => setModalOpen(true)}
-            className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition"
-            type="button"
-          >
-            Buat Permintaan Layanan Baru
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              data-testid="batch-create-service-request-button"
+              onClick={() => setBatchModalOpen(true)}
+              className="px-4 py-2 bg-gray-600 text-white text-sm rounded-lg hover:bg-gray-700 transition"
+              type="button"
+            >
+              {t("services.button.batchCreate")}
+            </button>
+            <button
+              data-testid="create-service-request-button"
+              onClick={() => setModalOpen(true)}
+              className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition"
+              type="button"
+            >
+              {t("services.button.create")}
+            </button>
+          </div>
         </div>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
         <input
-          aria-label="Search service requests"
+          aria-label={t("services.search.placeholder")}
           className="px-3 py-1.5 border rounded text-sm w-full sm:max-w-xs"
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search service requests..."
+          placeholder={t("services.search.placeholder")}
           value={query}
         />
         <div className="flex flex-wrap gap-1">
@@ -205,7 +274,7 @@ export function ServicesWorkspace() {
               onClick={() => setStatusFilter(s)}
               type="button"
             >
-              {fmtOption(s)}
+              {s === "all" ? "Semua" : fmtOption(statusKeyMap[s as ServiceRequestStatus])}
             </button>
           ))}
         </div>
@@ -221,7 +290,7 @@ export function ServicesWorkspace() {
               onClick={() => setCategoryFilter(s)}
               type="button"
             >
-              {fmtOption(s)}
+              {s === "all" ? "Semua" : fmtOption(categoryKeyMap[s as ServiceProviderCategory])}
             </button>
           ))}
         </div>
@@ -229,12 +298,28 @@ export function ServicesWorkspace() {
 
       {loading ? (
         <div className="p-6 text-center text-sm opacity-60 border rounded">
-          Loading service requests...
+          {t("common.loading")}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="p-6 text-center text-sm opacity-60 border border-dashed rounded">
-          No service requests match the current filters.
-        </div>
+        !hasAnyRequests ? (
+          // Empty state - no requests at all
+          <div className="p-12 text-center border border-dashed rounded space-y-4">
+            <h3 className="text-lg font-semibold">{t("services.empty.heading")}</h3>
+            <p className="text-sm opacity-70">{t("services.empty.subheading")}</p>
+            <button
+              onClick={() => setModalOpen(true)}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              type="button"
+            >
+              {t("services.empty.cta")}
+            </button>
+          </div>
+        ) : (
+          // Filtered no matches state
+          <div className="p-6 text-center text-sm opacity-60 border border-dashed rounded">
+            {t("services.noMatches")}
+          </div>
+        )
       ) : (
         <div className="grid gap-3 md:grid-cols-2">
           {filtered.map((r) => (
@@ -247,6 +332,11 @@ export function ServicesWorkspace() {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         onSubmit={handleCreateSubmit}
+      />
+      <BatchCreateServiceRequestModal
+        isOpen={batchModalOpen}
+        onClose={() => setBatchModalOpen(false)}
+        onSubmit={handleBatchCreateSubmit}
       />
     </div>
   );

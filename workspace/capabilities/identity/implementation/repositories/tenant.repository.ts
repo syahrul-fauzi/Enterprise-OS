@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository.js";
+import { PostgresRepository } from "./base.repository";
 import {
   TenantId,
   UserId,
@@ -15,24 +15,26 @@ class TenantRepositoryPostgresImpl extends PostgresRepository<any> implements Te
     super("tenants");
   }
 
-  // Convert database record to domain aggregate
-  private toAggregate(record: any): TenantAggregate {
+  // Convert database record to domain aggregate - implements base.repository.ts abstract protected method
+  protected toAggregate(record: any): TenantAggregate {
     return {
       id: TenantId(record.id),
       name: record.name,
       slug: record.slug,
+      customDomain: record.custom_domain,
       ownerId: UserId(record.owner_id),
       createdAt: new Date(record.created_at),
       updatedAt: new Date(record.updated_at),
     } as TenantAggregate;
   }
 
-  // Convert domain aggregate to database record
-  private toRecord(entity: TenantAggregate): any {
+  // Convert domain aggregate to database record - implements base.repository.ts abstract protected method
+  protected toRecord(entity: TenantAggregate): any {
     return {
       id: entity.id,
       name: entity.name,
       slug: entity.slug,
+      custom_domain: entity.customDomain,
       owner_id: entity.ownerId,
       created_at: entity.createdAt.toISOString(),
       updated_at: entity.updatedAt.toISOString(),
@@ -48,6 +50,13 @@ class TenantRepositoryPostgresImpl extends PostgresRepository<any> implements Te
   async bySlug(slug: string): Promise<TenantAggregate | undefined> {
     const needle = slug.trim().toLowerCase();
     const result = await this.pool.query("SELECT * FROM tenants WHERE LOWER(slug) = $1", [needle]);
+    if (result.rows.length === 0) return undefined;
+    return this.toAggregate(result.rows[0]);
+  }
+
+  async byCustomDomain(domain: string): Promise<TenantAggregate | undefined> {
+    const needle = domain.trim().toLowerCase();
+    const result = await this.pool.query("SELECT * FROM tenants WHERE LOWER(custom_domain) = $1", [needle]);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }

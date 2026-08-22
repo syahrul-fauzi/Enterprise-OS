@@ -1,4 +1,5 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
+import { executionContext } from "@repo/core-runtime";
 import { z } from "zod";
 import {
   type ApproveRequirementInput,
@@ -24,6 +25,7 @@ import {
 } from "../repository/index.js";
 import { getRequirementsByOwnerCommand } from "./get-requirements-by-owner.command.js";
 import { getAllRequirementsCommand } from "./get-all-requirements.command.js";
+import { getRequirementByIdCommand } from "./get-requirement-by-id.command.js";
 import { getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository.js";
 import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
 import { SessionRepositoryInMemory } from "../../../identity/implementation/repositories/index.js";
@@ -112,7 +114,7 @@ export const createRequirement: CreateRequirementCommand = {
   kind: "command",
   name: "requirement.create",
   version: "2.0.0",
-  async execute(input) {
+  async execute(input: z.infer<typeof CreateRequirementWithContextSchema>) {
     await ensureIdentitySchema();
     
     const parsed = CreateRequirementWithContextSchema.parse(input);
@@ -184,7 +186,7 @@ export const updateRequirement: UpdateRequirementCommand = {
   kind: "command",
   name: "requirement.update",
   version: "2.0.0",
-  async execute(input) {
+  async execute(input: z.infer<typeof UpdateRequirementWithContextSchema>) {
     await ensureIdentitySchema();
     
     const parsed = UpdateRequirementWithContextSchema.parse(input);
@@ -280,6 +282,18 @@ const MarkRequirementImplementedWithContextSchema = z.object({
   actorId: z.string().min(1),
 });
 
+const RequestRequirementReviewWithContextSchema = z.object({
+  id: z.string().min(1),
+  reviewerIds: z.array(z.string().min(1)).min(1),
+  // Required context for tenant isolation
+  sessionId: z.string().min(1),
+  tenantId: z.string().min(1),
+  workspaceId: z.string().min(1),
+  actorId: z.string().min(1),
+  // Work identity persistence (C12 invariant)
+  workId: z.string().optional(),
+});
+
 const VerifyRequirementWithContextSchema = z.object({
   id: z.string().min(1),
   // Required context for tenant isolation
@@ -295,7 +309,7 @@ export const approveRequirement: ApproveRequirementCommand = {
   kind: "command",
   name: "requirement.approve",
   version: "2.0.0",
-  async execute(input) {
+  async execute(input: z.infer<typeof ApproveRequirementWithContextSchema>) {
     await ensureIdentitySchema();
     
     const parsed = ApproveRequirementWithContextSchema.parse(input);
@@ -330,22 +344,24 @@ export const approveRequirement: ApproveRequirementCommand = {
     if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
       throw new Error("[requirement.approve] Requirement not found in workspace - security violation");
     }
-    if (current.status !== "draft") {
+    // C14 Precondition: Requirement must be in review_completed status to approve (post-review workflow)
+    if (current.status !== "review_completed") {
       throw new Error(
-        `[requirement.approve] Requirement must be in draft status before approval: ${id}`,
+        `[requirement.approve] Requirement must be in review_completed status before approval: ${id} (current status: ${current.status})`,
       );
     }
-    // Bind legal-case workId to requirement (RWP-002 minimal fix)
-    // RWP-003 non-linear PT-004 context propagation support (3-line minimal fix)
-    const workId = (input as any).workId || current.workId;
-    if ((input as any).parentContextTraceId) {
-      (executionContext as any).lastParentTraceId = (input as any).parentContextTraceId;
+    // C14-X: Wrong Actor Rejection - ONLY original owner can approve after review
+    if (current.owner !== actorId) {
+      throw new Error(`[requirement.approve] Only original owner can approve requirement: ${id} (actor: ${actorId}, owner: ${current.owner})`);
     }
+    // C14 Invariant: Preserve work identity (W1 remains intact)
+    const workId = current.workId!;
     const approvedAt = new Date();
     const next: RequirementAggregate = {
       ...current,
       status: "approved",
       verificationStatus: "not_ready",
+      approvedBy: actorId,
       approvedAt,
       workId,
     };
@@ -358,7 +374,7 @@ export const startRequirementDelivery: StartRequirementDeliveryCommand = {
   kind: "command",
   name: "requirement.startDelivery",
   version: "2.0.0",
-  async execute(input) {
+  async execute(input: z.infer<typeof StartRequirementDeliveryWithContextSchema>) {
     await ensureIdentitySchema();
     
     const parsed = StartRequirementDeliveryWithContextSchema.parse(input);
@@ -413,7 +429,7 @@ export const markRequirementImplemented: MarkRequirementImplementedCommand = {
   kind: "command",
   name: "requirement.markImplemented",
   version: "2.0.0",
-  async execute(input) {
+  async execute(input: z.infer<typeof MarkRequirementImplementedWithContextSchema>) {
     await ensureIdentitySchema();
     
     const parsed = MarkRequirementImplementedWithContextSchema.parse(input);
@@ -466,11 +482,105 @@ export const markRequirementImplemented: MarkRequirementImplementedCommand = {
   },
 };
 
+type RequestRequirementReviewCommand = CapabilityCommand<
+  z.infer<typeof RequestRequirementReviewWithContextSchema>,
+  Promise<{
+    id: string;
+    status: string;
+    reviewerIds: string[];
+    reviewRequestedBy: string;
+    requestedAt: Date;
+    workId: string;
+    artifactVersion: number;
+  }>
+>;
+
+export const requestRequirementReview: RequestRequirementReviewCommand = {
+  kind: "command",
+  name: "requirement.requestReview",
+  version: "2.0.0",
+  async execute(input: z.infer<typeof RequestRequirementReviewWithContextSchema>) {
+    await ensureIdentitySchema();
+    
+    const parsed = RequestRequirementReviewWithContextSchema.parse(input);
+    const { id, sessionId, tenantId, workspaceId, actorId, reviewerIds } = parsed;
+
+    // 1. Validate session exists and is active (enforce authentication)
+    const session = await sessionRepository.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[requirement.requestReview] Invalid or revoked session - authentication violation");
+    }
+
+    // 2. Enforce actor match - session actor must match request actor
+    if (session.actorId !== actorId) {
+      throw new Error("[requirement.requestReview] Session actor mismatch - authentication violation");
+    }
+
+    // 3. Enforce tenant isolation - requested tenant must match session's tenant
+    if (session.tenantId !== tenantId) {
+      throw new Error("[requirement.requestReview] Cross-tenant access attempt blocked - security violation");
+    }
+
+    // 4. Enforce workspace isolation - requested workspace must match session's workspace
+    if (session.workspaceId !== workspaceId) {
+      throw new Error("[requirement.requestReview] Cross-workspace access attempt blocked - security violation");
+    }
+
+    const current = await RequirementRepositoryCurrent.byId(id as any);
+    if (current === undefined) {
+      throw new Error(`[requirement.requestReview] Requirement not found: ${id}`);
+    }
+    // 5. Enforce requirement belongs to the same tenant/workspace
+    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
+      throw new Error("[requirement.requestReview] Requirement not found in workspace - security violation");
+    }
+    // C12 Precondition: Requirement must be in draft status to request review
+    if (current.status !== "draft") {
+      throw new Error(
+        `[requirement.requestReview] Requirement must be in draft status to request review: ${id} (current status: ${current.status})`,
+      );
+    }
+    // Prevent requesting review to self (C18: check all reviewers)
+    if (reviewerIds.includes(actorId)) {
+      throw new Error(
+        `[requirement.requestReview] Cannot request review from yourself: ${id}`,
+      );
+    }
+
+    // C12 Invariant: Preserve work identity
+    const workId = (input as any).workId || current.workId;
+    const requestedAt = new Date();
+    // Initialize version if not exists (repository will increment automatically)
+    const currentVersion = (current as any).version ?? 0;
+    
+    const next: RequirementAggregate = {
+      ...current,
+      status: "in_review",
+      reviewerIds,
+      reviewRequestedBy: actorId,
+      requestedAt,
+      workId,
+      version: currentVersion,
+    };
+    const saved = await RequirementRepositoryCurrent.save(next);
+    
+    return {
+      id: saved.id,
+      status: "in_review",
+      reviewerIds: saved.reviewerIds!,
+      reviewRequestedBy: saved.reviewRequestedBy!,
+      requestedAt: saved.requestedAt!,
+      workId: saved.workId!,
+      artifactVersion: (saved as any).version,
+    };
+  },
+};
+
 export const verifyRequirement: VerifyRequirementCommand = {
   kind: "command",
   name: "requirement.verify",
   version: "2.0.0",
-  async execute(input) {
+  async execute(input: z.infer<typeof VerifyRequirementWithContextSchema>) {
     await ensureIdentitySchema();
     
     const parsed = VerifyRequirementWithContextSchema.parse(input);
@@ -528,6 +638,101 @@ export const verifyRequirement: VerifyRequirementCommand = {
   },
 };
 
+// C13: Complete requirement review (reviewer only)
+const CompleteRequirementReviewWithContextSchema = z.object({
+  id: z.string(),
+  sessionId: z.string(),
+  tenantId: z.string(),
+  workspaceId: z.string(),
+  actorId: z.string(),
+});
+
+type CompleteRequirementReviewCommand = CapabilityCommand<
+  z.infer<typeof CompleteRequirementReviewWithContextSchema>,
+  Promise<{
+    id: string;
+    status: string;
+    reviewCompletedBy: string;
+    reviewCompletedAt: Date;
+    workId: string;
+    artifactVersion: number;
+  }>
+>;
+
+export const completeRequirementReview: CompleteRequirementReviewCommand = {
+  kind: "command",
+  name: "requirement.completeReview",
+  version: "1.0.0",
+  async execute(input: z.infer<typeof CompleteRequirementReviewWithContextSchema>) {
+    await ensureIdentitySchema();
+    
+    const parsed = CompleteRequirementReviewWithContextSchema.parse(input);
+    const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
+
+    // 1. Validate session exists and is active (enforce authentication)
+    const session = await sessionRepository.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[requirement.completeReview] Invalid or revoked session - authentication violation");
+    }
+
+    // 2. Enforce actor match - session actor must match request actor
+    if (session.actorId !== actorId) {
+      throw new Error("[requirement.completeReview] Session actor mismatch - authentication violation");
+    }
+
+    // 3. Enforce tenant isolation - requested tenant must match session's tenant
+    if (session.tenantId !== tenantId) {
+      throw new Error("[requirement.completeReview] Cross-tenant access attempt blocked - security violation");
+    }
+
+    // 4. Enforce workspace isolation - requested workspace must match session's workspace
+    if (session.workspaceId !== workspaceId) {
+      throw new Error("[requirement.completeReview] Cross-workspace access attempt blocked - security violation");
+    }
+
+    const current = await RequirementRepositoryCurrent.byId(id as any);
+    if (current === undefined) {
+      throw new Error(`[requirement.completeReview] Requirement not found: ${id}`);
+    }
+
+    // 5. Enforce requirement belongs to the same tenant/workspace
+    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
+      throw new Error("[requirement.completeReview] Requirement not found in workspace - security violation");
+    }
+
+    // C13-X/C18: Core Wrong Actor Rejection - ONLY assigned reviewers can complete review
+    if (!current.reviewerIds.includes(actorId)) {
+      throw new Error(`[requirement.completeReview] Only assigned reviewer can complete review: ${id} (actor: ${actorId}, reviewers: ${current.reviewerIds.join(', ')})`);
+    }
+
+    // 6. Enforce state transition: only in_review can become review_completed
+    if (current.status !== "in_review") {
+      throw new Error(`[requirement.completeReview] Requirement must be in_review to complete review: ${id} (current status: ${current.status})`);
+    }
+
+    const reviewCompletedAt = new Date();
+    const currentVersion = (current as any).version ?? 0;
+    const next: RequirementAggregate = {
+      ...current,
+      status: "review_completed",
+      reviewCompletedBy: actorId,
+      reviewCompletedAt,
+      workId: current.workId!,
+      version: currentVersion,
+    };
+    const saved = await RequirementRepositoryCurrent.save(next);
+    
+    return {
+      id: saved.id,
+      status: "review_completed",
+      reviewCompletedBy: saved.reviewCompletedBy!,
+      reviewCompletedAt: saved.reviewCompletedAt!,
+      workId: saved.workId!,
+      artifactVersion: (saved as any).version,
+    };
+  },
+};
+
 export const requirementCommands: Readonly<Record<string, CapabilityCommand>> = {
   "requirement.create": createRequirement,
   "requirement.update": updateRequirement,
@@ -535,6 +740,106 @@ export const requirementCommands: Readonly<Record<string, CapabilityCommand>> = 
   "requirement.startDelivery": startRequirementDelivery,
   "requirement.markImplemented": markRequirementImplemented,
   "requirement.verify": verifyRequirement,
+  "requirement.requestReview": requestRequirementReview,
+  "requirement.completeReview": completeRequirementReview,
+  // "requirement.rejectReview": rejectRequirementReview, // Temporary disabled: initialization order error - Cannot access 'rejectRequirementReview' before initialization
   "requirement.getByOwner": getRequirementsByOwnerCommand,
   "requirement.getAll": getAllRequirementsCommand,
+  "requirement.getById": getRequirementByIdCommand,
 } as const;
+// C17: Reject requirement review (reviewer only, same C13-X pattern)
+const RejectRequirementReviewWithContextSchema = z.object({
+  id: z.string().min(1),
+  sessionId: z.string().min(1),
+  tenantId: z.string().min(1),
+  workspaceId: z.string().min(1),
+  actorId: z.string().min(1),
+  rejectionReason: z.string().optional(),
+});
+
+type RejectRequirementReviewCommand = CapabilityCommand<
+  z.infer<typeof RejectRequirementReviewWithContextSchema>,
+  Promise<{
+    id: string;
+    status: string;
+    reviewRejectedBy: string;
+    reviewRejectedAt: Date;
+    workId: string;
+    artifactVersion: number;
+  }>
+>;
+
+export const rejectRequirementReview: RejectRequirementReviewCommand = {
+  kind: "command",
+  name: "requirement.rejectReview",
+  version: "1.0.0",
+  async execute(input: z.infer<typeof RejectRequirementReviewWithContextSchema>) {
+    await ensureIdentitySchema();
+    
+    const parsed = RejectRequirementReviewWithContextSchema.parse(input);
+    const { id, sessionId, tenantId, workspaceId, actorId, rejectionReason } = parsed;
+
+    // 1. Validate session exists and is active (enforce authentication)
+    const session = await sessionRepository.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[requirement.rejectReview] Invalid or revoked session - authentication violation");
+    }
+
+    // 2. Enforce actor match - session actor must match request actor
+    if (session.actorId !== actorId) {
+      throw new Error("[requirement.rejectReview] Session actor mismatch - authentication violation");
+    }
+
+    // 3. Enforce tenant isolation - requested tenant must match session's tenant
+    if (session.tenantId !== tenantId) {
+      throw new Error("[requirement.rejectReview] Cross-tenant access attempt blocked - security violation");
+    }
+
+    // 4. Enforce workspace isolation - requested workspace must match session's workspace
+    if (session.workspaceId !== workspaceId) {
+      throw new Error("[requirement.rejectReview] Cross-workspace access attempt blocked - security violation");
+    }
+
+    const current = await RequirementRepositoryCurrent.byId(id as any);
+    if (current === undefined) {
+      throw new Error(`[requirement.rejectReview] Requirement not found: ${id}`);
+    }
+
+    // 5. Enforce requirement belongs to the same tenant/workspace
+    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
+      throw new Error("[requirement.rejectReview] Requirement not found in workspace - security violation");
+    }
+
+    // C17-X/C18: Extend C13-X - ONLY assigned reviewers can reject review
+    if (!current.reviewerIds.includes(actorId)) {
+      throw new Error(`[requirement.rejectReview] Only assigned reviewer can reject review: ${id} (actor: ${actorId}, reviewers: ${current.reviewerIds.join(', ')})`);
+    }
+
+    // 6. Enforce state transition: only in_review can become review_rejected
+    if (current.status !== "in_review") {
+      throw new Error(`[requirement.rejectReview] Requirement must be in_review to reject review: ${id} (current status: ${current.status})`);
+    }
+
+    const reviewRejectedAt = new Date();
+    const currentVersion = (current as any).version ?? 0;
+    const next: RequirementAggregate = {
+      ...current,
+      status: "review_rejected",
+      reviewRejectedBy: actorId,
+      reviewRejectedAt,
+      rejectionReason,
+      workId: current.workId!,
+      version: currentVersion,
+    };
+    const saved = await RequirementRepositoryCurrent.save(next);
+    
+    return {
+      id: saved.id,
+      status: "review_rejected",
+      reviewRejectedBy: saved.reviewRejectedBy!,
+      reviewRejectedAt: saved.reviewRejectedAt!,
+      workId: saved.workId!,
+      artifactVersion: (saved as any).version,
+    };
+  },
+};

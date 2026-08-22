@@ -29,10 +29,15 @@ import {
   searchDocuments,
   listDocumentsByStatus,
 } from "../queries/index.js";
-import { DocumentRepositoryInMemory } from "../repository/index.js";
+import { DocumentRepositoryInMemory, getDocumentRepositoryPostgres } from "../repository/index.js";
+
+// Environment-based repository toggle (production-ready Postgres persistence)
+const documentRepository = process.env.DATABASE_URL 
+  ? getDocumentRepositoryPostgres() 
+  : DocumentRepositoryInMemory;
 
 export class DocumentService {
-  readonly repositories = { Document: DocumentRepositoryInMemory } as const;
+  readonly repositories = { Document: documentRepository } as const;
 
   createDocument(input: CreateDocumentInput): CreateDocumentOutput {
     return createDocument.execute(input) as CreateDocumentOutput;
@@ -60,8 +65,8 @@ export class DocumentService {
   ): ListDocumentsByStatusOutput {
     return listDocumentsByStatus.execute(input) as ListDocumentsByStatusOutput;
   }
-  listDocuments(): readonly DocumentAggregate[] {
-    return DocumentRepositoryInMemory.list();
+  async listDocuments(): Promise<readonly DocumentAggregate[]> {
+    return await documentRepository.list();
   }
 }
 

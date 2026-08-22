@@ -2,11 +2,13 @@ import "@repo/presentation-ui-system/styles.css";
 import "./globals.css";
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
+import { LocaleProvider } from "@repo/presentation-hooks";
+import { DEFAULT_LOCALE } from "@repo/presentation-hooks/use-locale/use-locale";
 
 export const metadata: Metadata = {
-  title: "Professional Workspace | Requirement Intake",
+  title: "LawyersHub — Ruang Kerja Hukum Profesional",
   description:
-    "Capture, review, and advance requirements in a focused workspace built for delivery teams and client-facing operations.",
+    "Kelola kasus hukum, dokumen, klien, dan aktivitas tim dalam satu workspace yang fokus, aman, dan siap produksi.",
 };
 
 export default function RootLayout({
@@ -15,8 +17,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={GeistSans.className}>{children}</body>
+    <html lang={DEFAULT_LOCALE}>
+      <body className={GeistSans.className}>
+        <LocaleProvider>{children}</LocaleProvider>
+      </body>
     </html>
   );
 }

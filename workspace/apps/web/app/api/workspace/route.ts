@@ -4,7 +4,7 @@ import {
   readWorkspaceSessionFromRequest,
   createAnonymousWorkspaceSession,
 } from "@repo/core-kernel";
-import type { CreateWorkspaceFlowOutput } from "../../../../../capabilities/identity/implementation/commands/create-workspace-flow.command.js";
+import type { CreateWorkspaceFlowOutput } from "identity/implementation/commands/create-workspace-flow.command";
 
 export async function GET(request: Request) {
   try {

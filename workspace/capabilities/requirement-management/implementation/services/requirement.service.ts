@@ -304,7 +304,7 @@ export class RequirementService {
     return result;
   }
 
-  verifyRequirement(input: VerifyRequirementInput): VerifyRequirementOutput {
+  async verifyRequirement(input: VerifyRequirementInput): Promise<VerifyRequirementOutput> {
     const strictVerification =
       (process.env.EOS_VERIFY_PREDICATE_STRICT?.trim() ?? "0") === "1";
     const requireDigestIntegrity =
@@ -378,7 +378,8 @@ export class RequirementService {
       if (gatewayRow) {
         const traceabilityComplete = gatewayRow.traceability?.complete === true;
         const evidenceMatchedCount = gatewayRow.evidence?.matchedCount ?? 0;
-        const eligible = RequirementRepositoryCurrent.byId(input.id)?.implementedAt !== undefined;
+        const requirement = await RequirementRepositoryCurrent.byId(input.id);
+        const eligible = requirement?.implementedAt !== undefined;
 
         if (evidencePaths.length === 0 && evidenceMatchedCount > 0) {
           try {
@@ -429,8 +430,8 @@ export class RequirementService {
             limit: 200,
             offset: 0,
           });
-        const eligible =
-          RequirementRepositoryCurrent.byId(input.id)?.implementedAt !== undefined;
+        const requirement2 = await RequirementRepositoryCurrent.byId(input.id);
+        const eligible = requirement2?.implementedAt !== undefined;
         const traceabilityComplete = directTrace?.coverage?.complete === true;
         const evidenceMatchedCount = directEvidence?.matched ?? 0;
         evidencePaths = directEvidence.items.map((i) => ({ path: (i as any).path }));
@@ -563,12 +564,12 @@ export class RequirementService {
     return result;
   }
 
-  listRequirements(): readonly RequirementAggregate[] {
+  async listRequirements(): Promise<readonly RequirementAggregate[]> {
     return RequirementRepositoryCurrent.list();
   }
 
-  getRequirementsByRelease(releaseId: string): readonly RequirementAggregate[] {
-    const allRequirements = this.listRequirements();
+  async getRequirementsByRelease(releaseId: string): Promise<readonly RequirementAggregate[]> {
+    const allRequirements = await this.listRequirements();
     
     // Return release-specific requirements to support conditional intelligence test cases
     if (releaseId === "12.3-happy") {
@@ -595,18 +596,18 @@ export class RequirementService {
     return allRequirements;
   }
 
-  assessVerification(input: AssessVerificationInput): AssessVerificationOutput {
+  async assessVerification(input: AssessVerificationInput): Promise<AssessVerificationOutput> {
     // Filter requirements by releaseId to support test-specific states
-    const requirements = this.getRequirementsByRelease(input.releaseId);
+    const requirements = await this.getRequirementsByRelease(input.releaseId);
     const totalRequirements = requirements.length;
     const verifiedRequirements = requirements.filter(
-      (r) => r.verificationStatus === "passed",
+      (r: any) => r.verificationStatus === "passed",
     ).length;
     const unknownRequirements = requirements.filter(
-      (r) => r.verificationStatus === "unknown",
+      (r: any) => r.verificationStatus === "unknown",
     );
     const blockedRequirements = requirements.filter(
-      (r) =>
+      (r: any) =>
         r.verificationStatus !== "passed" && r.verificationStatus !== "unknown",
     ).length;
 

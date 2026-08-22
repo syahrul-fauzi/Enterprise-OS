@@ -4,7 +4,15 @@ import {
   SessionId,
   type SessionAggregate,
 } from "../contracts/identity.contracts.js";
-import { SessionRepositoryPostgres } from "../repositories/index.js";
+import {
+  SessionRepositoryPostgres,
+  SessionRepositoryInMemory,
+  getSessionRepositoryPostgres,
+} from "../repositories/index.js";
+
+const sessionRepository = process.env.DATABASE_URL
+  ? getSessionRepositoryPostgres()
+  : SessionRepositoryInMemory;
 
 export const GetSessionByIdInputSchema = z.object({
   sessionId: z.string().min(1),
@@ -20,6 +28,7 @@ export type GetSessionByIdOutput = {
     readonly tenantId: string;
     readonly workspaceId: string;
     readonly productId: string;
+    readonly isAgent: boolean;
     readonly issuedAt: string;
   };
   readonly authenticated: boolean;
@@ -31,11 +40,11 @@ export const getSessionByIdCommand: CapabilityCommand<
 > = {
   kind: "command",
   name: "identity.getSessionById",
-  version: "2.0.0", // Postgres-backed persistence
+  version: "2.0.0",
 
   async execute(input) {
     const parsed = GetSessionByIdInputSchema.parse(input);
-    const aggregate = await SessionRepositoryPostgres.byId(SessionId(parsed.sessionId));
+    const aggregate = await sessionRepository.byId(SessionId(parsed.sessionId));
     
     if (aggregate === undefined) {
       return undefined;
@@ -59,6 +68,7 @@ export const getSessionByIdCommand: CapabilityCommand<
         tenantId: aggregate.tenantId,
         workspaceId: aggregate.workspaceId,
         productId: aggregate.productId,
+        isAgent: aggregate.isAgent,
         issuedAt: sessionIssuedAt.toISOString(),
       },
       authenticated: true,

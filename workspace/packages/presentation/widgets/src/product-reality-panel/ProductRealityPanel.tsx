@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { getProductExperience } from "@repo/presentation-experience";
 
 // Fallback implementation for missing export to resolve build errors
@@ -14,6 +14,32 @@ type ProductRealitySnapshot = {
     verificationStatus: string;
   }>;
 };
+
+async function fetchProductRealitySnapshot(productId: string): Promise<ProductRealitySnapshot> {
+  if (productId.toLowerCase() === "lawyershub") {
+    try {
+      const resp = await fetch("/api/cases/list");
+      if (resp.ok) {
+        const data = await resp.json();
+        const cases = data.cases || [];
+        return {
+          items: cases.map((caseItem: any) => ({
+            requirementId: caseItem.id,
+            displayTitle: caseItem.title,
+            displayEyebrow: "Legal Matter",
+            status: caseItem.status,
+            verificationStatus: caseItem.verificationStatus || "pending",
+            latestUpdatedAt: caseItem.updatedAt,
+            evidenceCount: caseItem.evidenceCount || 0,
+          })),
+        };
+      }
+    } catch (err) {
+      console.error("[ProductRealityPanel] Failed to fetch cases:", err);
+    }
+  }
+  return { items: [] };
+}
 
 function readProductRealitySnapshot(productId: string): ProductRealitySnapshot {
   return { items: [] };
@@ -50,17 +76,17 @@ const PRODUCT_REALITY_COPY: Record<string, ProductRealityCopy> = {
     openLabel: "Open service progress",
   },
   lawyershub: {
-    eyebrow: "Real Activity",
-    title: "Real legal matters with visible accountability",
+    eyebrow: "Aktivitas Nyata",
+    title: "Kasus Hukum dengan Akuntabilitas Jelas",
     description:
-      "These are real legal work records with supporting evidence and visible progress. Trust comes from accountable activity, not empty legal-tech claims.",
-    emptyTitle: "No real legal activity is visible yet.",
+      "Ini adalah rekaman pekerjaan hukum nyata dengan bukti pendukung dan progres yang terlihat. Kepercayaan berasal dari aktivitas yang tercatat, bukan klaim kosong.",
+    emptyTitle: "Belum Ada Aktivitas Hukum yang Terlihat",
     emptyDescription:
-      "The surface is live, but there is not enough evidence-backed legal activity on this product surface to display here yet.",
-    statusLabel: "Matter status",
-    evidenceLabel: "Supporting records",
-    proofLabel: "Trust check",
-    openLabel: "Open legal progress",
+      "Platform sudah aktif, namun belum ada cukup aktivitas kasus hukum dengan bukti tercatat untuk ditampilkan di halaman ini. Klik tombol 'Buat Kasus Hukum Baru' untuk memulai.",
+    statusLabel: "Status Kasus",
+    evidenceLabel: "Jumlah Bukti",
+    proofLabel: "Status Verifikasi",
+    openLabel: "Lihat Detail Kasus",
   },
   ilc: {
     eyebrow: "Real Activity",
@@ -94,10 +120,10 @@ function readRealityCopy(productId: string): ProductRealityCopy {
 
 function formatMoment(value: string | null): string {
   if (!value) {
-    return "No recent update yet";
+    return "Belum ada pembaruan";
   }
 
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("id-ID", {
     dateStyle: "medium",
     timeStyle: "short",
     timeZone: "UTC",
@@ -106,18 +132,18 @@ function formatMoment(value: string | null): string {
 
 function humanVerificationLabel(value: string): string {
   if (value === "passed") {
-    return "Verified";
+    return "Terverifikasi";
   }
 
   if (value === "pending") {
-    return "In review";
+    return "Dalam peninjauan";
   }
 
   if (value === "failed") {
-    return "Needs attention";
+    return "Butuh perhatian";
   }
 
-  return "Not ready";
+  return "Belum siap";
 }
 
 type BusyKey = string;
@@ -135,7 +161,7 @@ const LAWYERSHUB_LIFECYCLE_BY_STATUS: Readonly<Record<string, readonly Lifecycle
   draft: [
     {
       key: "assign_lawyer",
-      label: "Assign Lawyer → Open",
+      label: "Tunjuk Pengacara → Buka Kasus",
       capability: "lawyershub",
       commandName: "assignLawyer",
       buildInput: (id) => ({ id, lawyerId: "lawyer-eos-d12" }),
@@ -145,7 +171,7 @@ const LAWYERSHUB_LIFECYCLE_BY_STATUS: Readonly<Record<string, readonly Lifecycle
   open: [
     {
       key: "start_progress",
-      label: "Start Progress (Re-assign)",
+      label: "Mulai Proses (Re-assign)",
       capability: "lawyershub",
       commandName: "assignLawyer",
       buildInput: (id) => ({ id, lawyerId: "lawyer-eos-d12" }),
@@ -153,7 +179,7 @@ const LAWYERSHUB_LIFECYCLE_BY_STATUS: Readonly<Record<string, readonly Lifecycle
     },
     {
       key: "close_case",
-      label: "Close Case",
+      label: "Selesaikan Kasus",
       capability: "lawyershub",
       commandName: "close",
       buildInput: (id) => ({ id }),
@@ -163,7 +189,7 @@ const LAWYERSHUB_LIFECYCLE_BY_STATUS: Readonly<Record<string, readonly Lifecycle
   in_progress: [
     {
       key: "close_case",
-      label: "Close Case",
+      label: "Selesaikan Kasus",
       capability: "lawyershub",
       commandName: "close",
       buildInput: (id) => ({ id }),
@@ -173,7 +199,7 @@ const LAWYERSHUB_LIFECYCLE_BY_STATUS: Readonly<Record<string, readonly Lifecycle
   approved: [
     {
       key: "close_case",
-      label: "Close Case",
+      label: "Selesaikan Kasus",
       capability: "lawyershub",
       commandName: "close",
       buildInput: (id) => ({ id }),
@@ -183,7 +209,7 @@ const LAWYERSHUB_LIFECYCLE_BY_STATUS: Readonly<Record<string, readonly Lifecycle
   in_delivery: [
     {
       key: "close_case",
-      label: "Close Case",
+      label: "Selesaikan Kasus",
       capability: "lawyershub",
       commandName: "close",
       buildInput: (id) => ({ id }),
@@ -339,8 +365,10 @@ function toneClasses(tone: LifecycleAction["tone"]): string {
 }
 
 export function ProductRealityPanel({ productId }: ProductRealityPanelProps) {
-  const snapshot = readProductRealitySnapshot(productId);
   const copy = readRealityCopy(productId);
+  const [snapshot, setSnapshot] = useState<ProductRealitySnapshot>({ items: [] });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const experience: any = getProductExperience(productId);
   const statusLabels = experience?.card?.statusLabels ?? {};
   const [busy, setBusy] = useState<Set<BusyKey>>(new Set());
@@ -350,6 +378,26 @@ export function ProductRealityPanel({ productId }: ProductRealityPanelProps) {
     ok: boolean;
     message: string;
   } | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadSnapshot() {
+      try {
+        const data = await fetchProductRealitySnapshot(productId);
+        if (mounted) {
+          setSnapshot(data);
+          setLoading(false);
+        }
+      } catch (err) {
+        if (mounted) {
+          setError(err instanceof Error ? err.message : "Gagal memuat daftar kasus");
+          setLoading(false);
+        }
+      }
+    }
+    loadSnapshot();
+    return () => { mounted = false; };
+  }, [productId]);
 
   const handleAction = useCallback(
     async (itemId: string, action: LifecycleAction) => {
@@ -405,40 +453,62 @@ export function ProductRealityPanel({ productId }: ProductRealityPanelProps) {
   );
 
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+    <section className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 md:p-8">
       <div className="max-w-3xl">
         <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
           {copy.eyebrow}
         </div>
-        <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
+        <h2 className="mt-2 text-xl font-bold tracking-tight text-slate-950 sm:text-2xl md:text-3xl">
           {copy.title}
         </h2>
-        <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">
+        <p className="mt-3 text-sm leading-6 text-slate-600">
           {copy.description}
         </p>
       </div>
+
+      {loading && (
+        <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-6">
+          <div className="flex items-center gap-3">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-400 border-t-transparent"></div>
+            <span className="text-sm text-slate-600">Memuat daftar kasus...</span>
+          </div>
+        </div>
+      )}
+
+      {error && !loading && (
+        <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-6">
+          <div className="text-sm font-semibold text-red-900">Gagal Memuat Data</div>
+          <p className="mt-2 text-sm text-red-700">{error}. Silakan refresh halaman atau coba kembali nanti.</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="mt-3 rounded-lg bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-700"
+          >
+            Refresh Halaman
+          </button>
+        </div>
+      )}
 
       {lastResult && (
         <div
           className={`mt-5 rounded-2xl border p-4 text-sm ${lastResult.ok ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-red-200 bg-red-50 text-red-800"}`}
         >
-          <div className="font-semibold">{lastResult.ok ? "✅ Lifecycle transition executed" : "❌ Transition failed"}</div>
+          <div className="font-semibold">{lastResult.ok ? "✅ Berhasil memproses kasus" : "❌ Gagal memproses kasus"}</div>
           <div className="mt-1 text-xs">{lastResult.id} — {lastResult.message}</div>
         </div>
       )}
 
-      {snapshot.items.length === 0 ? (
+      {!loading && !error && snapshot.items.length === 0 ? (
         <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6">
           <div className="text-sm font-semibold text-slate-900">{copy.emptyTitle}</div>
           <p className="mt-2 text-sm leading-6 text-slate-600">{copy.emptyDescription}</p>
         </div>
-      ) : (
-        <div className="mt-6 grid gap-4 lg:grid-cols-3">
+      ) : !loading && !error && (
+        <div className="mt-6 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {snapshot.items.map((item) => {
             const actions = resolveLifecycleActions(productId, item.status, item.requirementId);
             return (
               <article
-                className="rounded-3xl border border-slate-200 bg-slate-50 p-5"
+                className="rounded-3xl border border-slate-200 bg-slate-50 p-5 min-w-0"
                 key={`${productId}-${item.requirementId}`}
               >
                 <div className="flex items-start justify-between gap-4">
@@ -475,16 +545,16 @@ export function ProductRealityPanel({ productId }: ProductRealityPanelProps) {
                 </dl>
 
                 <p className="mt-4 text-xs leading-5 text-slate-500">
-                  Latest activity: {(item as unknown as {latestUpdatedAt?: string}).latestUpdatedAt ? formatMoment((item as unknown as {latestUpdatedAt: string}).latestUpdatedAt) : "Never"}
+                  Aktivitas terakhir: {(item as unknown as {latestUpdatedAt?: string}).latestUpdatedAt ? formatMoment((item as unknown as {latestUpdatedAt: string}).latestUpdatedAt) : "Belum ada pembaruan"}
                 </p>
                 <p className="mt-2 text-xs leading-5 text-slate-500">
-                  Evidence is recorded on the platform and reviewable from the progress surface.
+                  Semua bukti tercatat di platform dan dapat dilihat dari halaman progres.
                 </p>
 
                 {actions.length > 0 && (
                   <div className="mt-4 space-y-2">
                     <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      Lifecycle Actions (D1.2)
+                      Aksi Tersedia
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {actions.map((action) => {
@@ -498,7 +568,7 @@ export function ProductRealityPanel({ productId }: ProductRealityPanelProps) {
                             onClick={() => void handleAction(item.requirementId, action)}
                             className={`rounded-xl border px-3 py-2 text-xs font-medium transition disabled:opacity-50 disabled:cursor-not-allowed ${toneClasses(action.tone)}`}
                           >
-                            {isBusy ? "Executing..." : action.label}
+                            {isBusy ? "Memproses..." : action.label}
                           </button>
                         );
                       })}
@@ -508,8 +578,8 @@ export function ProductRealityPanel({ productId }: ProductRealityPanelProps) {
 
                 <div className="mt-4">
                   <Link
-                    href={`/delivery/${item.requirementId}`}
-                    className="inline-flex items-center rounded-lg bg-slate-900 px-3 py-2 text-xs font-medium text-white hover:bg-slate-800"
+                    href={`/cases/${item.requirementId}`}
+                    className="inline-flex items-center rounded-lg bg-slate-900 px-3 py-2 text-xs font-medium text-white hover:bg-slate-800 w-full justify-center"
                   >
                     {copy.openLabel} →
                   </Link>

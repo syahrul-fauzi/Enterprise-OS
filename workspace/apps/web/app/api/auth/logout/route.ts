@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import {
   capabilityRegistry,
   WORKSPACE_SESSION_COOKIE,
-  createAnonymousWorkspaceSession,
-  encodeWorkspaceSession,
   readWorkspaceSessionFromRequest,
 } from "@repo/core-kernel";
 
@@ -16,7 +14,6 @@ export async function POST(request: Request) {
       await capabilityRegistry.invokeAsync("identity", "logoutUser", { sessionId });
     }
 
-    const anonymous = createAnonymousWorkspaceSession();
     const response = NextResponse.json({
       ok: true,
       authenticated: false,
@@ -24,7 +21,9 @@ export async function POST(request: Request) {
 
     response.cookies.set({
       name: WORKSPACE_SESSION_COOKIE,
-      value: encodeWorkspaceSession(anonymous),
+      value: "",
+      expires: new Date(0),
+      maxAge: 0,
       httpOnly: true,
       sameSite: "lax",
       path: "/",
@@ -32,7 +31,6 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
-    const anonymous = createAnonymousWorkspaceSession();
     const response = NextResponse.json({
       ok: false,
       error: "Logout failed",
@@ -40,7 +38,9 @@ export async function POST(request: Request) {
 
     response.cookies.set({
       name: WORKSPACE_SESSION_COOKIE,
-      value: encodeWorkspaceSession(anonymous),
+      value: "",
+      expires: new Date(0),
+      maxAge: 0,
       httpOnly: true,
       sameSite: "lax",
       path: "/",

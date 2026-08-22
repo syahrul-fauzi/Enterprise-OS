@@ -8,7 +8,12 @@ import {
   type ListDocumentsByStatusOutput,
 } from "../contracts/index.js";
 import type { CapabilityQuery } from "@repo/core-kernel";
-import { DocumentRepositoryInMemory } from "../repository/index.js";
+import { DocumentRepositoryInMemory, getDocumentRepositoryPostgres } from "../repository/index.js";
+
+// Environment-based repository toggle (production-ready Postgres persistence)
+const documentRepository = process.env.DATABASE_URL 
+  ? getDocumentRepositoryPostgres() 
+  : DocumentRepositoryInMemory;
 
 type GetDocumentQuery = CapabilityQuery<GetDocumentInput, GetDocumentOutput>;
 type SearchDocumentsQuery = CapabilityQuery<SearchDocumentsInput, SearchDocumentsOutput>;
@@ -21,8 +26,8 @@ export const getDocument: GetDocumentQuery = {
   kind: "query",
   name: "document.get",
   version: "0.1.0",
-  execute(input) {
-    return DocumentRepositoryInMemory.byId(input.id);
+  async execute(input) {
+    return await documentRepository.byId(input.id);
   },
 };
 
@@ -30,8 +35,8 @@ export const searchDocuments: SearchDocumentsQuery = {
   kind: "query",
   name: "document.search",
   version: "0.1.0",
-  execute(input) {
-    const all = DocumentRepositoryInMemory.list();
+  async execute(input) {
+    const all = await documentRepository.list();
     const q = (input.query ?? "").trim().toLowerCase();
     let filtered: readonly DocumentAggregate[] = all;
     if (input.status !== undefined && input.status !== "all") {
@@ -68,8 +73,9 @@ export const listDocumentsByStatus: ListDocumentsByStatusQuery = {
   kind: "query",
   name: "document.listByStatus",
   version: "0.1.0",
-  execute(input) {
-    return DocumentRepositoryInMemory.list().filter((d) => d.status === input.status);
+  async execute(input) {
+    const all = await documentRepository.list();
+    return all.filter((d) => d.status === input.status);
   },
 };
 

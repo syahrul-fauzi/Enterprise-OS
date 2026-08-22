@@ -26,10 +26,10 @@ export function CaseWorkspace() {
   useEffect(() => {
     const fetchCases = async () => {
       try {
-        const resp = await fetch("/api/capabilities/lawyershub/case.search");
+        const resp = await fetch("/api/cases/list");
         if (resp.ok) {
-          const data: SearchCasesOutput = await resp.json();
-          setCases(data.items || []);
+          const data = await resp.json();
+          setCases(data.cases || []);
           setTotalCases(data.total || 0);
         } else {
           setCases([]);
@@ -168,7 +168,9 @@ export function CaseWorkspace() {
       ) : (
         <div className="grid gap-3 md:grid-cols-2">
           {filtered.map((c) => (
-            <CaseCard key={c.id} item={c} />
+            <a key={c.id} href={`/cases/${encodeURIComponent(c.id)}`} className="block transition hover:opacity-90">
+              <CaseCard item={c} />
+            </a>
           ))}
         </div>
       )}

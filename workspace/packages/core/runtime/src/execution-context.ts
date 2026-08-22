@@ -48,9 +48,10 @@ export const executionContext = {
       const key = getStoreKey(ctx.decision_id, ctx.tenant_id);
       const existingStore = activeContextStores.get(key);
       
-      // Hanya auto-detect jika tidak ada override manual dari test
-      if (existingStore && existingStore.context_trace_id !== context_trace_id && !ctx.is_reentry && !ctx.parent_context_trace_id) {
-        // Ini adalah RE-ENTRY: work yang sama, execution context baru
+      // Hanya auto-detect jika tidak ada override manual dari test - FIX: Only re-enter if we're inside an existing asyncLocalStorage stack (not just async parallel execution)
+      const currentAmbientStore = asyncLocalStorage.getStore();
+      if (existingStore && existingStore.context_trace_id !== context_trace_id && !ctx.is_reentry && !ctx.parent_context_trace_id && currentAmbientStore) {
+        // Ini adalah RE-ENTRY: work yang sama, execution context baru (only if we're inside an existing execution context stack)
         is_reentry = true;
         parent_context_trace_id = existingStore.context_trace_id;
         console.log(`[executionContext] Re-entry detected for ${ctx.decision_id} (tenant ${ctx.tenant_id})`);

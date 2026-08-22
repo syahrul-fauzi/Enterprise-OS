@@ -1,0 +1,1 @@
+export { ProductPreviewShell } from "./ProductPreviewShell";

@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository.js";
+import { PostgresRepository } from "./base.repository";
 import {
   SessionId,
   UserId,
@@ -17,8 +17,8 @@ class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements S
     super("sessions");
   }
 
-  // Convert database record to domain aggregate
-  private toAggregate(record: any): SessionAggregate {
+  // Convert database record to domain aggregate - implements base.repository.ts abstract protected method
+  protected toAggregate(record: any): SessionAggregate {
     return {
       id: SessionId(record.id),
       userId: UserId(record.user_id),
@@ -27,6 +27,7 @@ class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements S
       workspaceId: WorkspaceId(record.workspace_id),
       productId: record.product_id,
       actorLabel: record.actor_label,
+      isAgent: record.is_agent ?? false,
       issuedAt: new Date(record.issued_at),
       expiresAt: new Date(record.expires_at),
       revokedAt: record.revoked_at ? new Date(record.revoked_at) : null,
@@ -35,8 +36,8 @@ class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements S
     } as SessionAggregate;
   }
 
-  // Convert domain aggregate to database record
-  private toRecord(entity: SessionAggregate): any {
+  // Convert domain aggregate to database record - implements base.repository.ts abstract protected method
+  protected toRecord(entity: SessionAggregate): any {
     return {
       id: entity.id,
       user_id: entity.userId,
@@ -45,6 +46,7 @@ class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements S
       workspace_id: entity.workspaceId,
       product_id: entity.productId,
       actor_label: entity.actorLabel,
+      is_agent: entity.isAgent,
       issued_at: entity.issuedAt.toISOString(),
       expires_at: entity.expiresAt.toISOString(),
       revoked_at: entity.revokedAt?.toISOString() ?? null,
@@ -113,22 +115,22 @@ class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements S
       await this.pool.query(
         `UPDATE sessions SET 
           user_id = $1, actor_id = $2, tenant_id = $3, workspace_id = $4, product_id = $5, actor_label = $6,
-          issued_at = $7, expires_at = $8, revoked_at = $9, created_at = $10, updated_at = $11
-          WHERE id = $12`,
+          is_agent = $7, issued_at = $8, expires_at = $9, revoked_at = $10, created_at = $11, updated_at = $12
+          WHERE id = $13`,
         [
           record.user_id, record.actor_id, record.tenant_id, record.workspace_id, record.product_id, record.actor_label,
-          record.issued_at, record.expires_at, record.revoked_at, record.created_at, record.updated_at,
+          record.is_agent, record.issued_at, record.expires_at, record.revoked_at, record.created_at, record.updated_at,
           record.id
         ]
       );
     } else {
       await this.pool.query(
         `INSERT INTO sessions (
-          id, user_id, actor_id, tenant_id, workspace_id, product_id, actor_label,
+          id, user_id, actor_id, tenant_id, workspace_id, product_id, actor_label, is_agent,
           issued_at, expires_at, revoked_at, created_at, updated_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
         [
-          record.id, record.user_id, record.actor_id, record.tenant_id, record.workspace_id, record.product_id, record.actor_label,
+          record.id, record.user_id, record.actor_id, record.tenant_id, record.workspace_id, record.product_id, record.actor_label, record.is_agent,
           record.issued_at, record.expires_at, record.revoked_at, record.created_at, record.updated_at
         ]
       );

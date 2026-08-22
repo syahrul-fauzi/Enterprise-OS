@@ -62,20 +62,20 @@ export function SignupPage() {
       <div className="w-full max-w-md space-y-6">
         <header className="text-center space-y-2">
           <SafeLink href="/" className="inline-flex items-center gap-2 group">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-slate-900 to-slate-700 flex items-center justify-center text-white text-sm font-bold shadow-sm group-hover:shadow-md transition-shadow">
-              E
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-700 to-indigo-500 flex items-center justify-center text-white text-sm font-bold shadow-sm group-hover:shadow-md transition-shadow">
+              LH
             </div>
           </SafeLink>
           <div className="pt-2">
-            <div className="inline-flex rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-              Create Account
+            <div className="inline-flex rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+              Buat Akun
             </div>
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-950 pt-2">
-            Start your Professional Workspace
+            Mulai Ruang Kerja Hukum Profesional
           </h1>
           <p className="text-sm text-slate-600">
-            Set up your tenant, workspace, and owner membership in one step.
+            Siapkan tenant, ruang kerja, dan akses pemilik dalam satu langkah.
           </p>
         </header>
 
@@ -83,13 +83,13 @@ export function SignupPage() {
           <form className="space-y-4" onSubmit={handleSubmit}>
             <label className="block">
               <div className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 mb-2">
-                Display Name *
+                Nama Lengkap *
               </div>
               <input
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="e.g. Alex Rivera"
+                placeholder="Contoh: Budi Santoso"
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 required
                 minLength={1}
@@ -105,7 +105,7 @@ export function SignupPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@company.com"
+                placeholder="anda@firma-hukum.com"
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 required
                 minLength={3}
@@ -116,7 +116,7 @@ export function SignupPage() {
             <label className="block">
               <div className="flex items-center justify-between mb-2">
                 <div className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">
-                  Password *
+                  Kata Sandi *
                 </div>
                 <div
                   className={`text-xs font-medium ${
@@ -128,17 +128,17 @@ export function SignupPage() {
                   }`}
                 >
                   {password.length === 0
-                    ? "Minimum 8 characters"
+                    ? "Minimal 8 karakter"
                     : passwordValid
-                      ? "Strong enough"
-                      : `${8 - password.length} more character${8 - password.length === 1 ? "" : "s"}`}
+                      ? "Cukup kuat"
+                      : `${8 - password.length} karakter lagi`}
                 </div>
               </div>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Create a secure password"
+                placeholder="Buat kata sandi yang aman"
                 className={`w-full rounded-xl border px-4 py-3 text-sm focus:outline-none focus:ring-2 ${
                   password.length === 0
                     ? "border-slate-300 focus:ring-indigo-500"
@@ -154,7 +154,7 @@ export function SignupPage() {
 
             {error && (
               <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-                <div className="font-semibold mb-1">Signup failed:</div>
+                <div className="font-semibold mb-1">Pembuatan akun gagal:</div>
                 <div>{error}</div>
               </div>
             )}
@@ -165,26 +165,31 @@ export function SignupPage() {
                 disabled={disabled}
                 className="w-full rounded-xl bg-slate-950 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {submitting ? "Creating account..." : "Create Account & Enter Workspace"}
+                {submitting ? "Memproses..." : "Buat Akun & Masuk ke Ruang Kerja"}
               </button>
             </div>
           </form>
 
           <div className="mt-6 pt-6 border-t border-slate-200 text-center text-sm text-slate-600">
-            Already have an account?{" "}
+            Sudah punya akun?{" "}
             <SafeLink
               href="/login"
               className="font-medium text-slate-950 hover:text-slate-700 underline-offset-4 hover:underline"
             >
-              Sign in instead
+              Masuk di sini
             </SafeLink>
           </div>
         </section>
 
-        <div className="text-center text-xs text-slate-500 space-y-1">
-          <div>Seeded test credentials for later login:</div>
-          <div className="font-mono text-slate-500">
-            alice@eos.dev / password123 · bob@eos.dev / password123
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm text-center text-sm text-slate-500 space-y-1">
+          <div className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 mb-2">
+            Butuh Bantuan?
+          </div>
+          <div>
+            Tim support LawyersHub siap membantu onboarding organisasi hukum Anda.
+          </div>
+          <div className="text-slate-400 text-xs pt-1">
+            Kontak administrator platform untuk akses enterprise.
           </div>
         </div>
       </div>

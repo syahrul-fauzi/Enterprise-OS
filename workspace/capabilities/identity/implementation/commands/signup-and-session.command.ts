@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
-import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "../../../../packages/core/kernel/src/session/workspace-session.js";
+import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "@repo/core-kernel";
 import { slugifyForTenant } from "../services/password.service.js";
 import {
   UserId,
@@ -8,13 +8,8 @@ import {
   WorkspaceId,
   MembershipId,
   SessionId,
-  type UserAggregate,
-  type TenantAggregate,
-  type WorkspaceAggregate,
-  type MembershipAggregate,
-  type SessionAggregate,
 } from "../contracts/identity.contracts.js";
-import { passwordService } from "../services/password.service.js";
+import { passwordService } from "../services/password.service";
 import {
   getUserRepositoryPostgres,
   getTenantRepositoryPostgres,
@@ -24,7 +19,10 @@ import {
   initIdentitySchema,
   UserRepositoryInMemory,
   SessionRepositoryInMemory,
-} from "../repositories/index.js";
+  TenantRepositoryInMemory,
+  WorkspaceRepositoryInMemory,
+  MembershipRepositoryInMemory,
+} from "@capabilities/identity/implementation/repositories";
 
 const DEFAULT_SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 
@@ -34,58 +32,18 @@ function newWorkspaceId(): WorkspaceId { return WorkspaceId(`workspace-${randomU
 function newMembershipId(): MembershipId { return MembershipId(`membership-${randomUUID()}`); }
 function newSessionId(): SessionId { return SessionId(`session-${randomUUID()}`); }
 
-const _tenantInMemoryStore = new Map<string, TenantAggregate>();
-const TenantRepositoryInMemoryFallback = {
-  async byId(id: TenantId): Promise<TenantAggregate | undefined> {
-    return _tenantInMemoryStore.get(id as string);
-  },
-  async bySlug(slug: string): Promise<TenantAggregate | undefined> {
-    const needle = slug.trim().toLowerCase();
-    for (const t of _tenantInMemoryStore.values()) {
-      if ((t.slug as string).toLowerCase() === needle) return t;
-    }
-    return undefined;
-  },
-  async save(entity: TenantAggregate): Promise<TenantAggregate> {
-    _tenantInMemoryStore.set(entity.id as string, entity);
-    return entity;
-  },
-};
-
-const _workspaceInMemoryStore = new Map<string, WorkspaceAggregate>();
-const WorkspaceRepositoryInMemoryFallback = {
-  async byId(id: WorkspaceId): Promise<WorkspaceAggregate | undefined> {
-    return _workspaceInMemoryStore.get(id as string);
-  },
-  async save(entity: WorkspaceAggregate): Promise<WorkspaceAggregate> {
-    _workspaceInMemoryStore.set(entity.id as string, entity);
-    return entity;
-  },
-};
-
-const _membershipInMemoryStore = new Map<string, MembershipAggregate>();
-const MembershipRepositoryInMemoryFallback = {
-  async byId(id: MembershipId): Promise<MembershipAggregate | undefined> {
-    return _membershipInMemoryStore.get(id as string);
-  },
-  async save(entity: MembershipAggregate): Promise<MembershipAggregate> {
-    _membershipInMemoryStore.set(entity.id as string, entity);
-    return entity;
-  },
-};
-
 const userRepo = process.env.DATABASE_URL
   ? getUserRepositoryPostgres()
   : UserRepositoryInMemory;
 const tenantRepo = process.env.DATABASE_URL
   ? getTenantRepositoryPostgres()
-  : TenantRepositoryInMemoryFallback;
+  : TenantRepositoryInMemory;
 const workspaceRepo = process.env.DATABASE_URL
   ? getWorkspaceRepositoryPostgres()
-  : WorkspaceRepositoryInMemoryFallback;
+  : WorkspaceRepositoryInMemory;
 const membershipRepo = process.env.DATABASE_URL
   ? getMembershipRepositoryPostgres()
-  : MembershipRepositoryInMemoryFallback;
+  : MembershipRepositoryInMemory;
 const sessionRepo = process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()
   : SessionRepositoryInMemory;
@@ -216,6 +174,7 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
       workspaceId: workspaceEntity.id,
       productId,
       actorLabel: displayName,
+      isAgent: false,
       issuedAt: now,
       expiresAt: expires,
       revokedAt: null,

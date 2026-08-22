@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository.js";
+import { PostgresRepository } from "./base.repository";
 import {
   UserId,
   type UserAggregate,
@@ -14,8 +14,8 @@ class UserRepositoryPostgresImpl extends PostgresRepository<any> implements User
     super("users");
   }
 
-  // Convert database record to domain aggregate
-  private toAggregate(record: any): UserAggregate {
+  // Convert database record to domain aggregate - implements base.repository.ts abstract protected method
+  protected toAggregate(record: any): UserAggregate {
     return {
       id: UserId(record.id),
       email: record.email,
@@ -26,8 +26,8 @@ class UserRepositoryPostgresImpl extends PostgresRepository<any> implements User
     } as UserAggregate;
   }
 
-  // Convert domain aggregate to database record
-  private toRecord(entity: UserAggregate): any {
+  // Convert domain aggregate to database record - implements base.repository.ts abstract protected method
+  protected toRecord(entity: UserAggregate): any {
     return {
       id: entity.id,
       email: entity.email,

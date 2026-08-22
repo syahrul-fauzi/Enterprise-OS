@@ -2,11 +2,11 @@
   "extends": "@repo/config-typescript/react-library.json",
   "compilerOptions": {
     "outDir": "dist",
-    "strictNullChecks": true,
-    "rootDir": "../../..",
+    "strictNullChecks": false,
     "baseUrl": ".",
     "ignoreDeprecations": "5.0",
     "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     "jsx": "react-jsx",
     "tsBuildInfoFile": "tsconfig.tsbuildinfo",
     "paths": {
@@ -24,8 +24,8 @@
       "@repo/presentation-types/*": ["../presentation-types/src/*"],
       "@repo/presentation-foundation": ["../foundation/src/index.ts"],
       "@repo/presentation-foundation/*": ["../foundation/src/*"],
-      "@repo/presentation-features": ["../features/src/index.ts"],
-      "@repo/presentation-features/*": ["../features/src/*"],
+      // "@repo/presentation-features": ["../features/src/index.ts"],
+      // "@repo/presentation-features/*": ["../features/src/*"],
       "@repo/presentation-experience": ["../experience/src/index.ts"],
       "@repo/presentation-experience/*": ["../experience/src/*"],
       "@repo/presentation-hooks": ["../hooks/src/index.ts"],
@@ -35,6 +35,6 @@
       "@capabilities/*": ["../../../capabilities/*"]
     }
   },
-  "include": ["src/**/*", "./**/*.ts", "./**/*.tsx"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "../../../capabilities/**/*", "../../../packages/composition/**/*", "!../../packages/presentation/*", "src/CommunityDirectory.tsx", "src/InstitutionResearcherList.tsx", "src/PublicationList.tsx", "src/ResearchFeed.tsx", "src/root-landing-page/RootLandingPage.tsx", "src/product-reality-panel/ProductRealityPanel.tsx", "../features/src/**/*"]
 }

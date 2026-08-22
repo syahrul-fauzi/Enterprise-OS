@@ -7,6 +7,7 @@ import {
   type ServiceProviderAggregate,
   type ServiceRequestRepository,
   type ServiceProviderRepository,
+  type CreateServiceRequestInput,
   ServiceRequestStatus,
   ServiceProviderCategory,
 } from "../contracts/service.contracts.js";
@@ -127,6 +128,46 @@ class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> imple
     }
 
     return this.toAggregate(record);
+  }
+
+  async createMany(entities: CreateServiceRequestInput[]): Promise<string[]> {
+    const ids: string[] = [];
+    
+    // Begin transaction to ensure atomicity
+    const client = await this.pool.connect();
+    try {
+      await client.query("BEGIN");
+      
+      for (const entity of entities) {
+        const id = crypto.randomUUID();
+        ids.push(id);
+        
+        const record = {
+          id,
+          title: entity.title,
+          description: entity.description,
+          category: entity.category,
+          status: entity.status,
+          budget: entity.budget,
+          actor_id: entity.createdBy,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+        
+        await client.query(
+          "INSERT INTO service_requests (id, title, description, category, status, budget, actor_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+          [record.id, record.title, record.description, record.category, record.status, record.budget, record.actor_id, record.created_at, record.updated_at]
+        );
+      }
+      
+      await client.query("COMMIT");
+      return ids;
+    } catch (error) {
+      await client.query("ROLLBACK");
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 
   async remove(id: ServiceRequestId): Promise<boolean> {

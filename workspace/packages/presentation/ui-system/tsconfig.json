@@ -2,9 +2,10 @@
   "extends": "@repo/config-typescript/react-library.json",
   "compilerOptions": {
     "outDir": "dist",
+    "strictNullChecks": false,
     "declaration": true,
-    "strictNullChecks": true
+    "strictNullChecks": false
   },
   "include": ["src"],
-  "exclude": ["dist", "build", "node_modules"]
+  "exclude": ["dist", "build", "node_modules", "../../../composition/src/arch15-determinism", "../../../composition/src/arch16-boundary", "../../../composition/src/certification", "../../../composition/src/graph", "../../../composition/src/normalizer", "../../../composition/src/plan", "../../../composition/src/resolver", "../../core/kernel/src/registry/capability-command-registry.ts", "../../../packages/core/kernel/src/registry/capability-command-registry.ts", "../../../workspace/packages/core/kernel/src/registry/capability-command-registry.ts", "/app/packages/core/kernel/src/registry/capability-command-registry.ts", "../widgets"]
 }

@@ -40,6 +40,7 @@ export interface TenantAggregate {
   readonly id: TenantId;
   readonly name: string;
   readonly slug: string;
+  readonly customDomain?: string; // Untuk white label domain apex (misal "firmahukum.com")
   readonly ownerId?: UserId;
   readonly createdAt: Readonly<Date>;
   readonly updatedAt: Readonly<Date>;
@@ -74,6 +75,7 @@ export interface SessionAggregate {
   readonly workspaceId: WorkspaceId;
   readonly productId: string;
   readonly actorLabel: string;
+  readonly isAgent: boolean;
   readonly issuedAt: Readonly<Date>;
   readonly expiresAt: Readonly<Date>;
   readonly revokedAt: Readonly<Date> | null;
@@ -96,6 +98,7 @@ export type TenantRepository = {
   readonly kind: "repository";
   byId(id: TenantId): Promise<TenantAggregate | undefined>;
   bySlug(slug: string): Promise<TenantAggregate | undefined>;
+  byCustomDomain(domain: string): Promise<TenantAggregate | undefined>;
   list(): Promise<readonly TenantAggregate[]>;
   save(entity: TenantAggregate): Promise<TenantAggregate>;
   remove(id: TenantId): Promise<boolean>;
@@ -175,4 +178,5 @@ export interface CreateSessionInput {
   readonly productId: string;
   readonly actorLabel: string;
   readonly ttlSeconds?: number;
+  readonly isAgent?: boolean;
 }

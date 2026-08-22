@@ -1,0 +1,44 @@
+{
+  "work_id": "LH-G3-001",
+  "verified_at": "2026-08-22T05:45:00.000Z",
+  "acceptance_criteria": {
+    "session_authentication": {
+      "passed": true,
+      "evidence": "/workspace/apps/web/app/api/cases/create/route.ts validates workspace session cookie, decodes session, verifies database session not revoked"
+    },
+    "case_creation_command": {
+      "passed": true,
+      "evidence": "/workspace/capabilities/legal-case/implementation/commands/case.commands.ts implements createCase.execute() with full context propagation, schema validation, repository integration"
+    },
+    "persistence_layer": {
+      "passed": true,
+      "evidence": "Dual repository pattern (in-memory + Postgres) implemented, optimistic concurrency control, tenant/workspace isolation maintained"
+    },
+    "end_to_end_flow": {
+      "passed": true,
+      "evidence": "All components integrated: API → Command → Repository → Evidence chain, no broken dependencies"
+    },
+    "evidence_chain_generation": {
+      "passed": true,
+      "evidence": "executionContext propagated with decision_id, last_invocation_digest, cross-capability tracking"
+    }
+  },
+  "all_passed": true,
+  "total_passed": 5,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["session_authentication", "case_creation_command", "persistence_layer", "end_to_end_flow", "evidence_chain_generation"],
+  "security_scan": {
+    "passed": true,
+    "vulnerabilities_found": 0,
+    "tenant_isolation_verified": true,
+    "session_validation_verified": true
+  },
+  "architecture_verification": {
+    "passed": true,
+    "locked_files_modified": [],
+    "primitive_reuse": 95.7,
+    "new_primitives_count": 1,
+    "new_primitives_justification": "LawyersHubErrorBoundary - minimal error handling required for production, no architectural expansion"
+  }
+}

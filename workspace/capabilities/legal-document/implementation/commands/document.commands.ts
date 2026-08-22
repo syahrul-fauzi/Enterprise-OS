@@ -17,7 +17,14 @@ import {
   DocumentRepositoryInMemory,
   newDocumentId,
   defaultDocumentStatus,
+  getDocumentRepositoryPostgres,
 } from "../repository/index.js";
+import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
+
+// Environment-based repository toggle (match identity production rail)
+const documentRepository = process.env.DATABASE_URL 
+  ? getDocumentRepositoryPostgres() 
+  : DocumentRepositoryInMemory;
 
 type CreateDocumentCommand = CapabilityCommand<CreateDocumentInput, CreateDocumentOutput>;
 type ReviewDocumentCommand = CapabilityCommand<ReviewDocumentInput, ReviewDocumentOutput>;
@@ -25,17 +32,27 @@ type SignDocumentCommand = CapabilityCommand<SignDocumentInput, SignDocumentOutp
 type ArchiveDocumentCommand = CapabilityCommand<ArchiveDocumentInput, ArchiveDocumentOutput>;
 type UpdateDocumentCommand = CapabilityCommand<UpdateDocumentInput, UpdateDocumentOutput>;
 
+// Schema initialization flag to prevent multiple attempts
+let schemaInitialized = false;
+async function ensureSchema() {
+  if (!schemaInitialized && process.env.DATABASE_URL) {
+    await initIdentitySchema();
+    schemaInitialized = true;
+  }
+}
+
 export const createDocument: CreateDocumentCommand = {
   kind: "command",
   name: "document.create",
   version: "0.1.0",
-  execute(input) {
+  async execute(input) {
+    await ensureSchema();
     const trimmed = input.title.trim();
     if (trimmed.length === 0) {
       throw new Error("[document.create] Document title cannot be empty");
     }
     const now = new Date();
-    const entity: DocumentAggregate = {
+    const entity: DocumentAggregate & { tenantId?: string; workspaceId?: string; actorId?: string } = {
       id: newDocumentId(),
       title: trimmed,
       ...(input.workId ? { workId: input.workId } : {}),
@@ -45,10 +62,14 @@ export const createDocument: CreateDocumentCommand = {
       status: defaultDocumentStatus,
       ...(input.matterId !== undefined ? { matterId: input.matterId } : {}),
       ...(input.author !== undefined ? { author: input.author } : {}),
+      // Include tenant/workspace/actor context for production isolation
+      tenantId: input.tenantId,
+      workspaceId: input.workspaceId,
+      actorId: input.actorId,
       createdAt: now,
       updatedAt: now,
     };
-    DocumentRepositoryInMemory.save(entity);
+    await documentRepository.save(entity);
     
     // Record execution lineage for W1
     const invocationEvent = {
@@ -57,13 +78,13 @@ export const createDocument: CreateDocumentCommand = {
       sourceRef: "createDocument.execute",
       success: true,
       input,
-      result: { id: entity.id, status: entity.status, createdAt: now },
+      result: { id: entity.id, status: entity.status, createdAt: now, workId: entity.workId, matterId: entity.matterId },
       decision_id: input.workId ?? null,
       outputRefs: [entity.id], // Link execution ke artifact yang dihasilkan
     };
     recordRuntimeInvocation(invocationEvent);
     
-    return { id: entity.id, status: entity.status, createdAt: now };
+    return { id: entity.id, status: entity.status, createdAt: now, workId: entity.workId, matterId: entity.matterId };
   },
 };
 
@@ -71,8 +92,9 @@ export const signDocument: SignDocumentCommand = {
   kind: "command",
   name: "document.sign",
   version: "0.1.0",
-  execute(input) {
-    const current = DocumentRepositoryInMemory.byId(input.id);
+  async execute(input) {
+    await ensureSchema();
+    const current = await documentRepository.byId(input.id);
     if (current === undefined) {
       throw new Error(`[document.sign] Document not found: ${input.id}`);
     }
@@ -87,7 +109,7 @@ export const signDocument: SignDocumentCommand = {
       status: "signed",
       signedAt,
     };
-    DocumentRepositoryInMemory.save(next);
+    await documentRepository.save(next);
     
     // Ambient decision_id check - verifikasi W1 terpropagasi dengan benar
     const ambient = executionContext.get();
@@ -120,8 +142,9 @@ export const archiveDocument: ArchiveDocumentCommand = {
   kind: "command",
   name: "document.archive",
   version: "0.1.0",
-  execute(input) {
-    const current = DocumentRepositoryInMemory.byId(input.id);
+  async execute(input) {
+    await ensureSchema();
+    const current = await documentRepository.byId(input.id);
     if (current === undefined) {
       throw new Error(`[document.archive] Document not found: ${input.id}`);
     }
@@ -150,7 +173,7 @@ export const archiveDocument: ArchiveDocumentCommand = {
       status: "archived",
       archivedAt,
     };
-    DocumentRepositoryInMemory.save(next);
+    await documentRepository.save(next);
     const invocationEvent = {
       capabilityId: "legal-document",
       operationId: "document.archive",
@@ -171,8 +194,9 @@ export const reviewDocument: ReviewDocumentCommand = {
   kind: "command",
   name: "document.review",
   version: "0.1.0",
-  execute(input) {
-    const current = DocumentRepositoryInMemory.byId(input.id);
+  async execute(input) {
+    await ensureSchema();
+    const current = await documentRepository.byId(input.id);
     if (current === undefined) {
       throw new Error(`[document.review] Document not found: ${input.id}`);
     }
@@ -187,7 +211,7 @@ export const reviewDocument: ReviewDocumentCommand = {
       status: input.approval ? "review" : "draft",
       updatedAt: reviewedAt,
     };
-    DocumentRepositoryInMemory.save(next);
+    await documentRepository.save(next);
     
     // Ambient decision_id check - verifikasi W1 terpropagasi dengan benar untuk C17 pressure-test
     const ambient = executionContext.get();
@@ -229,8 +253,9 @@ export const updateDocument: UpdateDocumentCommand = {
   kind: "command",
   name: "document.update",
   version: "0.1.0",
-  execute(input) {
-    const current = DocumentRepositoryInMemory.byId(input.id);
+  async execute(input) {
+    await ensureSchema();
+    const current = await documentRepository.byId(input.id);
     if (current === undefined) {
       throw new Error(`[document.update] Document not found: ${input.id}`);
     }
@@ -261,7 +286,7 @@ export const updateDocument: UpdateDocumentCommand = {
       // Override workId if explicitly provided (maintain backward compatibility)
       workId: input.workId ?? current.workId,
     };
-    const saved = DocumentRepositoryInMemory.save(next);
+    const saved = await documentRepository.save(next);
     
     // PT-004 context propagation: update executionContext if parentContextTraceId provided
     if ((input as any).parentContextTraceId) {
@@ -281,7 +306,13 @@ export const updateDocument: UpdateDocumentCommand = {
       outputRefs: [saved.id], // Referensi ke artifact yang dihasilkan (versi baru)
     });
     
-    return { id: saved.id, status: saved.status, updatedAt: saved.updatedAt };
+    return { 
+      id: saved.id, 
+      status: saved.status, 
+      updatedAt: saved.updatedAt,
+      workId: saved.workId,
+      matterId: saved.matterId
+    };
   },
 };
 

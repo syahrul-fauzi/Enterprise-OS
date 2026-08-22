@@ -351,7 +351,6 @@ const ARCH_04: Rule = {
       "capability-experience": ["capability-composition", "capability-implementation", "core-kernel", "presentation-ui-system", "presentation-foundation"],
       "capability-composition": ["capability-implementation", "composition", "core-kernel"],
       "capability-implementation": ["core-kernel"],
-      "capability-*": ["core-kernel"],
       "capability-definition": [],
       "core-registry": ["core-kernel"],
       "composition": ["core-kernel", "core-registry"],

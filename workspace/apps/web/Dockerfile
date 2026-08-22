@@ -16,7 +16,7 @@ COPY contracts ./contracts
 COPY foundation ./foundation
 COPY packages ./packages
 COPY products ./products
-COPY scripts ./scripts
+COPY data ./data
 
 RUN pnpm install --frozen-lockfile
 RUN pnpm turbo run build --filter=web...

@@ -1,0 +1,85 @@
+{
+  "experiment_id": "P8-EXPERIMENT-1787300486939",
+  "work_id": "law-work-0b2f4c75-9bbc",
+  "executed_at": "2026-08-21T08:21:27.011Z",
+  "passed": true,
+  "invariants_verified": [
+    {
+      "key": "id",
+      "original": "law-work-0b2f4c75-9bbc",
+      "reconstructed": "law-work-0b2f4c75-9bbc",
+      "pass": true
+    },
+    {
+      "key": "tenant_id",
+      "original": "tenant-p8-test-0b5c4735",
+      "reconstructed": "tenant-p8-test-0b5c4735",
+      "pass": true
+    },
+    {
+      "key": "workspace_id",
+      "original": "ws-p8-test-3c9787a5",
+      "reconstructed": "ws-p8-test-3c9787a5",
+      "pass": true
+    },
+    {
+      "key": "actor_id",
+      "original": "user-p8-test-91230a33",
+      "reconstructed": "user-p8-test-91230a33",
+      "pass": true
+    },
+    {
+      "key": "logical_work_id",
+      "original": "logical-law-work-0b2f4c75-9bbc",
+      "reconstructed": "logical-law-work-0b2f4c75-9bbc",
+      "pass": true
+    },
+    {
+      "key": "status",
+      "original": "draft",
+      "reconstructed": "draft",
+      "pass": true
+    },
+    {
+      "key": "priority",
+      "original": "high",
+      "reconstructed": "high",
+      "pass": true
+    },
+    {
+      "key": "version",
+      "original": 1,
+      "reconstructed": 1,
+      "pass": true
+    }
+  ],
+  "raw_record": {
+    "id": "law-work-0b2f4c75-9bbc",
+    "logical_work_id": "logical-law-work-0b2f4c75-9bbc",
+    "title": "P8 Test Legal Case: Corporate Contract Dispute",
+    "description": "P8 experiment to verify work identity survives runtime death",
+    "summary": "Test case for persistence verification across process boundaries",
+    "priority": "high",
+    "status": "draft",
+    "tenant_id": "tenant-p8-test-0b5c4735",
+    "workspace_id": "ws-p8-test-3c9787a5",
+    "actor_id": "user-p8-test-91230a33",
+    "created_by": "user-p8-test-91230a33",
+    "created_at": "2026-08-21T08:21:26.989Z",
+    "updated_at": "2026-08-21T08:21:26.989Z",
+    "version": 1,
+    "artifacts": [],
+    "tags": [
+      "p8-experiment",
+      "legal-case",
+      "persistence-test"
+    ],
+    "linked_capability_ids": [],
+    "acceptance_criteria": [],
+    "verification_status": null,
+    "depends_on": [],
+    "approved_at": null,
+    "implemented_at": null,
+    "verified_at": null
+  }
+}

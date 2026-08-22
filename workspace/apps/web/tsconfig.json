@@ -47,8 +47,12 @@
     "next-env.d.ts",
     "next.config.ts",
     "../../procedures/**/*.ts",
-    "../../capabilities/**/*.ts",
-    "../../capabilities/**/*.tsx"
+    "../../capabilities/legal-case/**/*.ts",
+    "../../capabilities/legal-case/**/*.tsx",
+    "../../capabilities/legal-document/**/*.ts",
+    "../../capabilities/legal-document/**/*.tsx",
+    "../../capabilities/identity/**/*.ts",
+    "../../capabilities/identity/**/*.tsx"
   ],
   "exclude": ["node_modules", "../../procedures/**/tests/**", "../../procedures/**/*.test.ts", "../../procedures/**/audit-conformance.ts"]
 }

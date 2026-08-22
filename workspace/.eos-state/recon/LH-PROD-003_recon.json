@@ -1,0 +1,253 @@
+{
+  "work_id": "LH-PROD-003",
+  "recon_completed_at": "2026-08-21T00:00:00Z",
+  "locked_boundaries_verified": {
+    "semantic_substrate_frozen": true,
+    "no_new_orchestration_layers": true,
+    "all_extensions_backward_compatible": true,
+    "substrate_scope_note": "This slice is PRODUCTIONIZATION only. No new primitives. Substrate changes are limited to bug fixes and boundary enforcement."
+  },
+  "existing_capabilities_found": [
+    "Identity capability: signup/login/logout/session commands with Postgres-backed persistence",
+    "Identity capability: Tenant/Workspace/Membership aggregates with FK-enforced isolation",
+    "Identity capability: PostgresRepository base class with version-based optimistic concurrency (PR-003 compliant)",
+    "Apps/web HTTP routes: /api/auth/signup, /api/auth/login, /api/auth/logout, /api/session, /api/tenant, /api/workspace",
+    "Cookie-based WorkspaceSession propagation (httpOnly, sameSite=lax, WORKSPACE_SESSION_COOKIE)",
+    "LawyersHub product context provider (productId=lawyershub, branding, features)",
+    "LawyersHub workflow: Case → Document → Review → Approval → Payment",
+    "Staging deployment: Docker compose (postgres:5433, web:3001, caddy:80/443)",
+    "P8 experiment runner (CREATE → PERSIST → TERMINATE → RECONSTRUCT pattern)",
+    "P9 independent addressability verification (SQL-only W1 lookup)",
+    "Capability command registry with execution context propagation (AsyncLocalStorage)",
+    "PostgreSQL schema: users, tenants, workspaces, memberships, sessions, cases, service_requests, requirements"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      {
+        "id": "P3-AUTH-001",
+        "name": "Signup + Session Creation Flow",
+        "primitive": "identity.signupAndCreateSession command",
+        "source": "workspace/capabilities/identity/implementation/commands/signup-and-session.command.ts",
+        "reuse": "REUSE",
+        "note": "Creates user + tenant + workspace + membership + session in one transaction. Accepts productId (default lawyershub). Uses Postgres when DATABASE_URL is set."
+      },
+      {
+        "id": "P3-AUTH-002",
+        "name": "Login Flow",
+        "primitive": "identity.loginFlow command + /api/auth/login route",
+        "source": "workspace/capabilities/identity/implementation/commands/login-flow.command.ts",
+        "reuse": "REUSE",
+        "note": "Authenticates user against Postgres, resolves primary membership + tenant + workspace. Sets WORKSPACE_SESSION_COOKIE with httpOnly+lax."
+      },
+      {
+        "id": "P3-AUTH-003",
+        "name": "Session Validation",
+        "primitive": "/api/session route + identity.getSessionById command",
+        "source": "workspace/apps/web/app/api/session/route.ts",
+        "reuse": "REUSE",
+        "note": "Reads session cookie, validates against Postgres sessions table, returns authenticated status + session context. Fail-closed on invalid session."
+      },
+      {
+        "id": "P4-TENANT-001",
+        "name": "Tenant Creation with Slug Resolution",
+        "primitive": "identity.createTenantWithSlugResolution command + /api/tenant POST",
+        "source": "workspace/capabilities/identity/implementation/commands/create-tenant-with-slug-resolution.command.ts",
+        "reuse": "REUSE",
+        "note": "Creates tenant with auto-slugification and conflict resolution. FK-enforced owner_id to users table."
+      },
+      {
+        "id": "P4-TENANT-002",
+        "name": "Workspace Creation Flow",
+        "primitive": "identity.createWorkspaceFlow command + /api/workspace POST",
+        "source": "workspace/capabilities/identity/implementation/commands/create-workspace-flow.command.ts",
+        "reuse": "REUSE",
+        "note": "Creates workspace bounded to tenant + productId, auto-creates owner membership. FK: tenant_id → tenants.id, UNIQUE(slug, tenant_id)."
+      },
+      {
+        "id": "P4-TENANT-003",
+        "name": "Membership + Role Aggregates",
+        "primitive": "MembershipAggregate + MembershipRepository",
+        "source": "workspace/capabilities/identity/implementation/contracts/identity.contracts.ts",
+        "reuse": "REUSE",
+        "note": "Role type: owner | admin | member. UNIQUE(user_id, workspace_id) constraint prevents duplicate memberships."
+      },
+      {
+        "id": "P5-PERSIST-001",
+        "name": "Postgres Repository Base Class",
+        "primitive": "PostgresRepository<T> with CRUD + version-based OCC",
+        "source": "workspace/capabilities/identity/implementation/repositories/base.repository.ts",
+        "reuse": "REUSE",
+        "note": "PR-003 compliant: version integer auto-increment, concurrent modification detection via version mismatch error."
+      },
+      {
+        "id": "P5-PERSIST-002",
+        "name": "Legal Case Postgres Repository",
+        "primitive": "case-postgres.repository.ts (cases table with work_id column)",
+        "source": "workspace/capabilities/legal-case/implementation/repository/case-postgres.repository.ts",
+        "reuse": "REUSE",
+        "note": "Has work_id for Work Identity anchoring, tenant_id + workspace_id FK isolation columns."
+      },
+      {
+        "id": "P5-PERSIST-003",
+        "name": "Identity Schema Auto-initialization",
+        "primitive": "initIdentitySchema() function",
+        "source": "workspace/capabilities/identity/implementation/repositories/base.repository.ts#L128-L280",
+        "reuse": "REUSE",
+        "note": "CREATE TABLE IF NOT EXISTS for all 8 tables. Idempotent (schemaInitialized guard). ALTER TABLE ADD COLUMN IF NOT EXISTS for migrations."
+      },
+      {
+        "id": "P6-RECOVER-001",
+        "name": "P8 Experiment Restart Pattern",
+        "primitive": "run-p8-experiment.ts: CREATE→PERSIST→TERMINATE→RECONSTRUCT",
+        "source": "workspace/run-p8-experiment.ts",
+        "reuse": "REUSE",
+        "note": "Demonstrates in-process nullification of all state followed by fresh PostgreSQL reconstruction. Validates 7 invariants (work_id, tenant_id, workspace_id, actor_id, status, priority, version)."
+      },
+      {
+        "id": "P8-EVIDENCE-001",
+        "name": "Evidence Audit Trail Format",
+        "primitive": "lh-prod-003-evidence.yaml structure",
+        "source": "workspace/governance/certification/lh-prod-003-evidence.yaml",
+        "reuse": "REUSE",
+        "note": "Structured evidence format: status, environment_config, evidence (dns/tls/http/reverse_proxy/application), audit_trail with timestamped actions."
+      },
+      {
+        "id": "DEPLOY-001",
+        "name": "Staging Docker Compose Stack",
+        "primitive": "postgres + web + caddy with healthchecks",
+        "source": "workspace/infra/staging/compose.yaml",
+        "reuse": "REUSE",
+        "note": "PostgreSQL 15 on 5433, Next.js web on 3001, Caddy reverse proxy on 80/443. Service dependencies with healthcheck conditions. Persistent volumes: postgres_data, web_state, caddy_data."
+      }
+    ],
+    "required_new": [
+      {
+        "id": "P4-FIX-001",
+        "name": "Membership Enforcement on Command Execution",
+        "classification": "MINIMAL FIX",
+        "description": "Commands accept tenantId + workspaceId as input but do NOT verify that session's actor has a valid Membership for the (userId, tenantId, workspaceId) triple. Need centralized check in capability registry invoke() or per-command check.",
+        "files_to_modify": [
+          "packages/core/kernel/src/registry/capability-command-registry.ts"
+        ],
+        "effort_lines": 20
+      },
+      {
+        "id": "P5-FIX-001",
+        "name": "Verify work_id Populated on All Case Creates",
+        "classification": "MINIMAL FIX",
+        "description": "P8 experiment passes explicit workId to case.create. Need to verify case.create generates and persists work_id when not explicitly passed (auto-generate if missing). Verify cases table has non-null work_id for all rows.",
+        "files_to_modify": [
+          "capabilities/legal-case/implementation/commands/*.ts"
+        ],
+        "effort_lines": 15
+      },
+      {
+        "id": "P8-NEW-001",
+        "name": "P8 Runner Against Deployed HTTP Endpoints",
+        "classification": "MISSING",
+        "description": "Current run-p8-experiment.ts uses in-process capabilityRegistry.invoke() (not real deployment). Need a P8 runner that: (1) starts the staging stack via docker compose, (2) calls actual HTTP endpoints (/api/auth/signup → /api/auth/login → /api/cases/create → /api/session), (3) stops stack, (4) restarts stack, (5) verifies reconstruction via direct SQL against running Postgres. This is CRITICAL because P8 must validate the DEPLOYED path, not in-process paths.",
+        "files_to_create": [
+          "workspace/run-p8-deployed-path.ts"
+        ],
+        "effort_lines": 150,
+        "dependency": "Requires P3 (AUTH) + P4 (TENANT) + P5 (PERSIST) fixes to be applied first"
+      },
+      {
+        "id": "P9-NEW-001",
+        "name": "P9 World Outcome: Human-Observable Work Resumption Proof",
+        "classification": "MISSING",
+        "description": "P9 must demonstrate: authenticated user returns, sees 'You stopped here: Document Review', clicks 'Next Action', work resumes with same Work Identity. Currently P9 only tests SQL-level addressability. Need HTTP-level resumption proof that matches the EOS FIRST LIGHT narrative (leave → return → continue).",
+        "files_to_create": [
+          "workspace/run-p9-human-resumption.ts"
+        ],
+        "effort_lines": 120,
+        "dependency": "P8 deployed path passing"
+      },
+      {
+        "id": "INFRA-FIX-001",
+        "name": "LH-PROD-003 Evidence Gap: Health + Auth + Tenant Endpoints Verified Against Running Stack",
+        "classification": "MINIMAL FIX",
+        "description": "lh-prod-003-evidence.yaml currently IN_PROGRESS with all evidence observed=false. Need to actually run the staging stack and collect real evidence for: health_endpoint_200, login success (JWT/cookie), tenant creation success, workspace creation success, case creation + persistence. Currently the yaml records configuration but NOT actual runtime evidence.",
+        "files_to_modify": [
+          "governance/certification/lh-prod-003-evidence.yaml"
+        ],
+        "effort_lines": 50
+      }
+    ],
+    "reuse_percentage": 82.0
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": [
+      "P8 Deployed-path runner: Without this, P8 evidence is UNVERIFIED (the user explicitly said: 'Kalau P8 runner lolos tetapi deployment yang akan digunakan user gagal, itu belum Reality Gate.')"
+    ],
+    "risk_items": [
+      {
+        "id": "RISK-P4-001",
+        "severity": "HIGH",
+        "description": "No membership enforcement on command execution means actor from Tenant A can pass tenantId=Tenant-B to commands and access Tenant B's data (cross-tenant read/write possible via forged input). This is PRODUCTION BLOCKER for P4 (Tenant Isolation).",
+        "mitigation": "Add centralized membership check BEFORE command execution in capability registry. Membership table has UNIQUE(user_id, workspace_id) — use it for a fast FK lookup."
+      },
+      {
+        "id": "RISK-P3-001",
+        "severity": "MEDIUM",
+        "description": "Password hashing service: Need to verify passwordService uses actual bcrypt/scrypt/argon2 (not a stub). Weak hashing = P3 fail.",
+        "mitigation": "Inspect password.service.ts and run a test: create user with known password, verify stored hash is NOT plaintext and verify bcrypt-like format."
+      },
+      {
+        "id": "RISK-P6-001",
+        "severity": "MEDIUM",
+        "description": "In-memory repositories (CaseRepositoryInMemory, DocumentRepositoryInMemory) are still used when DATABASE_URL is not set. For production deployment, DATABASE_URL MUST be set and the code path MUST use Postgres repos. Need to verify the env-conditional in signup-and-session.command.ts (line 77-91) correctly selects Postgres repos in staging compose (WEB service sets DATABASE_URL in compose.yaml line 28).",
+        "mitigation": "Add startup assertion log: 'Using [Postgres|In-Memory] repositories' to make it visible which adapter is active in deployment."
+      }
+    ]
+  },
+  "recommendations": [
+    "EXECUTE PHASE 1 FIRST: Fix the 2 production blockers (RISK-P4-001: membership enforcement; RISK-P3-001: password hashing verification). These are G1 (Auth) and G2 (Tenant Isolation) blockers.",
+    "EXECUTE PHASE 2: Run base-repository-smoke.test.ts first to confirm round-trip persistence (camelCase ↔ snake_case) works — this was the bug that was patched, confirm it passes.",
+    "EXECUTE PHASE 3: Build and start the actual staging compose stack. Do NOT test in-process first. The user mandate is: P8 validates DEPLOYED path.",
+    "EXECUTE PHASE 4: Run P8 deployed-path runner against the live stack (http://localhost:3001 or caddy port 80/443 with lawyershub.id local DNS override).",
+    "EXECUTE PHASE 5: Run P9 human-resumption proof: signup → create case → work → stop container → restart container → login → verify 'next action' resumes with same Work identity.",
+    "EXECUTE PHASE 6: Update lh-prod-003-evidence.yaml with ACTUAL observed evidence from the running stack (not claims).",
+    "STRICTLY DO NOT: Comment out unrelated widgets to make build green. If build fails, classify blocker per user rule: (a) unrelated+deployment-independent → isolate boundary; (b) unrelated but blocks deployment → production blocker fix; (c) workflow-specific → fix immediately.",
+    "DO NOT introduce new primitives (no C22, no new capability). This is vertical productionization of EXISTING substrate only.",
+    "Evidence Chain Rule: Every LH-PROD-003 evidence entry MUST be independently reproducible by running a script. NO manual screenshots or 'works on my machine' evidence accepted."
+  ],
+  "acceptance_gates_linked": {
+    "G1 Auth works (P3)": {
+      "status": "REUSE_READY",
+      "verification": "Run apps/web/tests/auth.test.ts + auth-e2e.test.ts against staging stack with DATABASE_URL pointing to staging Postgres",
+      "blocker_fix": "RISK-P3-001 (password hashing strength)"
+    },
+    "G2 Tenant isolation works (P4)": {
+      "status": "MINIMAL_FIX_REQUIRED",
+      "verification": "Create Tenant A + User A. Create Tenant B + User B. Try to invoke case.create as User A with tenantId=Tenant-B. MUST fail with 403/access denied.",
+      "blocker_fix": "P4-FIX-001 (membership enforcement)"
+    },
+    "G3 Durable Work (P5)": {
+      "status": "REUSE_READY",
+      "verification": "Run base-repository-smoke.test.ts + verify cases.work_id IS NOT NULL after case.create (without explicit workId param)"
+    },
+    "G4 Restart survival (P6)": {
+      "status": "REUSE_READY",
+      "verification": "P8 deployed path: docker compose down → docker compose up → verify persisted case resolves"
+    },
+    "G5 Human UI (P7)": {
+      "status": "EVIDENCED (from B4)",
+      "verification": "B4 F004-F007 PASS: LawyersHub UI, Work View, leave→return, next-action recovery already working in prior runs"
+    },
+    "G6 Independent evidence (P8)": {
+      "status": "MISSING (runner for deployed path)",
+      "verification": "P8-NEW-001 deployed-path runner script produces SHA-verifiable evidence JSON that can be audited independently"
+    },
+    "G7 External outcome (P9)": {
+      "status": "MISSING (human resumption proof)",
+      "verification": "P9-NEW-001 human-resumption runner: leave→return→continue via HTTP endpoints with same Work Identity"
+    },
+    "G8 Real human (P10)": {
+      "status": "BLOCKED_UNTIL_G1-G7_PASS",
+      "verification": "3 real users complete the EOS FIRST LIGHT flow manually and answer the 3 leverage questions"
+    }
+  }
+}

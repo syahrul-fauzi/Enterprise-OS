@@ -58,20 +58,20 @@ export function LoginPage() {
       <div className="w-full max-w-md space-y-6">
         <header className="text-center space-y-2">
           <SafeLink href="/" className="inline-flex items-center gap-2 group">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-slate-900 to-slate-700 flex items-center justify-center text-white text-sm font-bold shadow-sm group-hover:shadow-md transition-shadow">
-              E
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-700 to-indigo-500 flex items-center justify-center text-white text-sm font-bold shadow-sm group-hover:shadow-md transition-shadow">
+              LH
             </div>
           </SafeLink>
           <div className="pt-2">
-            <div className="inline-flex rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-              Welcome Back
+            <div className="inline-flex rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+              Selamat Datang
             </div>
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-950 pt-2">
-            Sign in to your Workspace
+            Masuk ke Ruang Kerja Hukum
           </h1>
           <p className="text-sm text-slate-600">
-            Access your tenant, workspace, and assigned roles.
+            Akses tenant, ruang kerja, dan peran yang Anda emban.
           </p>
         </header>
 
@@ -85,7 +85,7 @@ export function LoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@company.com"
+                placeholder="anda@firma-hukum.com"
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 required
                 minLength={3}
@@ -95,13 +95,13 @@ export function LoginPage() {
 
             <label className="block">
               <div className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 mb-2">
-                Password *
+                Kata Sandi *
               </div>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
+                placeholder="Masukkan kata sandi"
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 required
                 minLength={1}
@@ -111,7 +111,7 @@ export function LoginPage() {
 
             {error && (
               <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-              <div className="font-semibold mb-1">Sign in failed:</div>
+              <div className="font-semibold mb-1">Gagal masuk:</div>
               <div>{error}</div>
             </div>
             )}
@@ -122,63 +122,31 @@ export function LoginPage() {
                 disabled={disabled}
                 className="w-full rounded-xl bg-slate-950 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {submitting ? "Signing in..." : "Sign In to Workspace"}
+                {submitting ? "Memproses..." : "Masuk ke Ruang Kerja"}
               </button>
             </div>
           </form>
 
           <div className="mt-6 pt-6 border-t border-slate-200 text-center text-sm text-slate-600">
-            Don&apos;t have an account?{" "}
+            Belum punya akun?{" "}
             <SafeLink
               href="/signup"
               className="font-medium text-slate-950 hover:text-slate-700 underline-offset-4 hover:underline"
             >
-              Create one instead
+              Buat akun baru
             </SafeLink>
           </div>
         </section>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 mb-3">
-            Seeded test accounts
+            Butuh bantuan?
           </div>
-          <div className="space-y-2 text-sm">
-            <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-slate-50 border border-slate-100">
-              <div>
-                <div className="font-medium text-slate-900">Alice</div>
-                <div className="text-xs font-mono text-slate-500">alice@eos.dev</div>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setEmail("alice@eos.dev");
-                  setPassword("password123");
-                }}
-                className="text-xs font-medium text-slate-700 hover:text-slate-900 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 transition-colors"
-              >
-                Autofill
-              </button>
-            </div>
-            <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-slate-50 border border-slate-100">
-              <div>
-                <div className="font-medium text-slate-900">Bob</div>
-                <div className="text-xs font-mono text-slate-500">bob@eos.dev</div>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setEmail("bob@eos.dev");
-                  setPassword("password123");
-                }}
-                className="text-xs font-medium text-slate-700 hover:text-slate-900 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 transition-colors"
-              >
-                Autofill
-              </button>
-            </div>
-            <div className="text-xs text-slate-500 font-medium pt-1">
-              Password for both:&nbsp;
-              <span className="font-mono">password123</span>
-            </div>
+          <div className="space-y-2 text-sm text-slate-600">
+            <p className="leading-relaxed">
+              Jika Anda adalah anggota organisasi, gunakan alamat email perusahaan yang telah diundang.
+              Untuk masalah akses atau pendaftaran akun, hubungi administrator workspace Anda.
+            </p>
           </div>
         </div>
       </div>

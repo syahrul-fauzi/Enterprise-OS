@@ -37,6 +37,17 @@ export async function POST(request: Request) {
       sessionId: COM_SESSION_ID
     });
 
+    // C21: Extract idempotency key from request headers and acknowledge external response
+    // This links the external system's World Truth back to EOS's idempotency state machine
+    const idempotencyKey = request.headers.get("x-idempotency-key");
+    if (idempotencyKey) {
+      const success = status === "success" || status === "completed" || status === "confirmed";
+      capabilityRegistry.acknowledgeExternalResponse(idempotencyKey, success, externalReferenceId);
+      console.log(`[webhook] Acknowledged external response for idempotency key: ${idempotencyKey}, success: ${success}`);
+    } else {
+      console.warn(`[webhook] No X-Idempotency-Key header found - cannot update idempotency state for serviceRequestId: ${serviceRequestId}`);
+    }
+
     // Write evidence to CommsMe evidence store for World Truth verification (follows handoff record pattern)
     const fs = await import('fs/promises');
     const path = await import('path');
@@ -49,6 +60,7 @@ export async function POST(request: Request) {
         externalReferenceId,
         receivedAt: new Date().toISOString(),
         responseData,
+        idempotencyKey,
         capabilityInvocationOutput: output
       }, null, 2)
     );

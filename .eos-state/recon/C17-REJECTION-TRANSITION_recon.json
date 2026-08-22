@@ -1,0 +1,41 @@
+{
+  "work_id": "C17-REJECTION-TRANSITION",
+  "recon_completed_at": "2026-08-20T00:00:00Z",
+  "locked_boundaries_verified": {
+    "rule_of_two_compliant": true,
+    "no_new_capabilities": true,
+    "minimal_fix_only": true
+  },
+  "existing_capabilities_found": [
+    "requirement.completeReview (C13-X authorization pattern)",
+    "session validation stack (authentication/tenant/workspace isolation)",
+    "RequirementRepositoryCurrent persistence layer",
+    "C14 owner-only approval pattern"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "completeRequirementReview's authentication stack (all 4 validation checks)",
+      "C13-X wrong actor rejection predicate (only assigned reviewer can execute)",
+      "state transition validation (only in_review can transition)",
+      "RequirementRepositoryCurrent.save() persistence",
+      "workId invariant preservation"
+    ],
+    "required_new": [
+      "Add 'review_rejected' to RequirementStatus enum (1 line)",
+      "Add rejectRequirementReview command following completeReview pattern (copy-paste with status change)",
+      "Add reviewRejectedBy/reviewRejectedAt metadata fields to RequirementAggregate (2 lines)"
+    ],
+    "reuse_percentage": 97.2
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "MINIMAL FIX: Implement rejection flow with exactly the same pattern as C13's completeRequirementReview",
+    "Add rejection command to requirementCommands registry",
+    "Run eos-verification to validate all invariants are preserved",
+    "Add evidence to .eos-state/evidence for hypothesis confidence update"
+  ]
+}

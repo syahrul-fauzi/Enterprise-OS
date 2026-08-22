@@ -1,2 +1,2 @@
-export { CommunityPage } from "./CommunityPage.js";
-export type { CommunityPageProps } from "./CommunityPage.js";
+export { CommunityPage } from "./CommunityPage";
+export type { CommunityPageProps } from "./CommunityPage";

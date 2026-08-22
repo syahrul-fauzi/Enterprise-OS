@@ -1,0 +1,18 @@
+{
+  "experiment_id": "P9-EXPERIMENT-1787312941011",
+  "work_id": "law-work-0b2f4c75-9bbc",
+  "executed_at": "2026-08-21T11:49:01.011Z",
+  "passed": false,
+  "acceptance_criteria": [
+    {
+      "test": "Direct W1 lookup",
+      "passed": false,
+      "details": "No record found",
+      "timestamp": "2026-08-21T11:49:01.045Z"
+    }
+  ],
+  "raw_record": null,
+  "errors": [
+    "Direct W1 lookup: No record found"
+  ]
+}

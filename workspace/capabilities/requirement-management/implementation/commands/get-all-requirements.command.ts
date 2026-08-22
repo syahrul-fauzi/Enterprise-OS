@@ -25,11 +25,11 @@ export const getAllRequirementsCommand: CapabilityCommand = {
   kind: "command",
   name: "requirement.getAll",
   version: "1.0.0",
-  execute(input: unknown) {
+  async execute(input: unknown) {
     const parsed = GetAllRequirementsInputSchema.parse(input);
     const { searchQuery, filterStatus } = parsed;
 
-    const allRequirements: readonly RequirementAggregate[] = RequirementRepositoryCurrent.list();
+    const allRequirements: readonly RequirementAggregate[] = await RequirementRepositoryCurrent.list();
     const filteredRequirements = allRequirements
       .filter((req) => {
         if (!searchQuery) return true;

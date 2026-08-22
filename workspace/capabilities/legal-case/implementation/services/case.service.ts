@@ -13,10 +13,15 @@ import {
 } from "../contracts/index.js";
 import { createCase, closeCase, assignLawyer } from "../commands/index.js";
 import { getCase, searchCases } from "../queries/index.js";
-import { CaseRepositoryInMemory } from "../repository/index.js";
+import { CaseRepositoryInMemory, getCaseRepositoryPostgres } from "../repository/index.js";
+
+// Match the same environment-based repository toggle as commands/case.commands.ts
+const caseRepository = process.env.DATABASE_URL 
+  ? getCaseRepositoryPostgres() 
+  : CaseRepositoryInMemory;
 
 export class CaseService {
-  readonly repositories = { Case: CaseRepositoryInMemory } as const;
+  readonly repositories = { Case: caseRepository } as const;
 
   createCase(input: CreateCaseInput): CreateCaseOutput {
     return createCase.execute(input) as CreateCaseOutput;
@@ -34,7 +39,7 @@ export class CaseService {
     return searchCases.execute(input) as SearchCasesOutput;
   }
   listCases(): readonly CaseAggregate[] {
-    return CaseRepositoryInMemory.list();
+    return caseRepository.list();
   }
 }
 

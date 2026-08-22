@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { capabilityRegistry } from "@repo/core-kernel";
-import { SignupAndSessionInputSchema } from "../../../../../../capabilities/identity/implementation/commands/signup-and-session.command.js";
+import { encodeWorkspaceSession, WORKSPACE_SESSION_COOKIE, type WorkspaceSession } from "@repo/core-kernel";
+// REALITY PATH ONLY - Bypass capabilityRegistry, import command langsung
+import { SignupAndSessionInputSchema, signupAndSessionCommand } from "@capabilities/identity/implementation/commands/signup-and-session.command";
 
 type SignupApiOutput = {
   readonly response: unknown;
@@ -26,8 +27,8 @@ export async function POST(request: Request) {
   }
 
   try {
-    // PURE HTTP ADAPTER: All business logic resides in capability layer (signup-and-session.command.ts)
-    const { output } = await capabilityRegistry.invokeAsync<SignupApiOutput>("identity", "signupAndCreateSession", parsed.data);
+    // REALITY PATH ONLY - Bypass capabilityRegistry, panggil execute langsung
+    const output = await signupAndSessionCommand.execute(parsed.data);
 
     const response = NextResponse.json(output.response, { status: 201 });
     output.cookies.forEach(cookie => {

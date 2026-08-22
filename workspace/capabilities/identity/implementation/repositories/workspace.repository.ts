@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository.js";
+import { PostgresRepository } from "./base.repository";
 import {
   TenantId,
   WorkspaceId,
@@ -15,8 +15,8 @@ class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements
     super("workspaces");
   }
 
-  // Convert database record to domain aggregate
-  private toAggregate(record: any): WorkspaceAggregate {
+  // Convert database record to domain aggregate - implements base.repository.ts abstract protected method
+  protected toAggregate(record: any): WorkspaceAggregate {
     return {
       id: WorkspaceId(record.id),
       tenantId: TenantId(record.tenant_id),
@@ -28,8 +28,8 @@ class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements
     } as WorkspaceAggregate;
   }
 
-  // Convert domain aggregate to database record
-  private toRecord(entity: WorkspaceAggregate): any {
+  // Convert domain aggregate to database record - implements base.repository.ts abstract protected method
+  protected toRecord(entity: WorkspaceAggregate): any {
     return {
       id: entity.id,
       tenant_id: entity.tenantId,

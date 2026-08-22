@@ -41,8 +41,8 @@ function buildDeterministicTraceChain(productId: string, requirementId: string):
     {
       id: requirementId + "-attribution",
       layer: "ATTRIBUTION",
-      title: "Actor Attribution",
-      description: "Authenticated actor identity linked via EOS session — tenant/workspace membership verified.",
+      title: "Atribusi Pengguna",
+      description: "Identitas pengguna terautentikasi diverifikasi beserta keanggotaan organisasi dan ruang kerjanya.",
       status: "proven",
       metadata: {
         session_id: "sess_eos_demo_001",
@@ -54,8 +54,8 @@ function buildDeterministicTraceChain(productId: string, requirementId: string):
     {
       id: requirementId + "-procedure",
       layer: "PROCEDURE",
-      title: "Procedure Selection",
-      description: "EOS rail selected product-aware procedure bound via capability-gateway, NOT via product-local engine.",
+      title: "Alur Kerja Produk",
+      description: "Alur kerja diterapkan sesuai konteks produk yang dipilih — LawyersHub, Services.ID, atau ILC.",
       status: "proven",
       metadata: {
         procedure_binding: "shared-rail-procedure-registry",
@@ -69,14 +69,14 @@ function buildDeterministicTraceChain(productId: string, requirementId: string):
     baseNodes.push({
       id: requirementId + "-capability",
       layer: "CAPABILITY",
-      title: "legal-case / createCaseCommand",
-      description: "Shared capability invoked via unified registry — CaseAggregate created in status=draft per legal-case.procedure#createCase. LawyersHub-specific copy/lifecycle applied.",
+      title: "Kasus Hukum / Buat Kasus",
+      description: "Kasus hukum baru dicatat sebagai draf — informasi, siklus hidup, dan bahasa tampilan LawyersHub diterapkan secara konsisten.",
       status: "proven",
       metadata: {
         capability_id: "legal-case",
         command: "createCaseCommand",
         aggregate_status: "draft",
-        lifecycle: "Draft→Open→InProgress→Closed",
+        lifecycle: "Draf → Buka → Dikerjakan → Selesai",
       },
     });
   } else if (productId === "services-id") {
@@ -298,36 +298,7 @@ export function RequirementTracePage({ productId, requirementId, binding }: Requ
           ))}
         </ol>
 
-        <div className="rounded-3xl border border-emerald-200 bg-emerald-50 p-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-            <div>
-              <div className="inline-flex rounded-full border border-emerald-200 bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
-                SHARED RAIL INVISIBILITY CHECK
-              </div>
-              <h3 className="mt-3 text-xl font-bold text-emerald-950">
-                Shared execution tetap tidak terlihat oleh human — hanya product outcome yang terlihat
-              </h3>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-emerald-900">
-                8 node di atas menjalani bersama shared execution primitive (session → tenant → workspace → capability-registry → repository → evidence-ledger).
-                Tetapi user HANYA melihat product-specific copy, lifecycle, dan selector. Shared execution words (unified registry, POST /api/capabilities, dll)
-                TIDAK muncul di product surface — ini bukti thin-app strategy berjalan.
-              </p>
-            </div>
-            <div className="rounded-2xl border border-emerald-200 bg-white p-4 text-xs text-emerald-900">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-700">
-                REPLAYABLE
-              </div>
-              <div className="mt-2 font-semibold text-emerald-950">
-                Chain determinism:
-              </div>
-              <ul className="mt-1 list-disc pl-5 space-y-0.5">
-                <li>SRV 8/8 PASS</li>
-                <li>ILC 9/9 PASS</li>
-                <li>Academic: 31 LOC leverage</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+
       </section>
     </>
   );

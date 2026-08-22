@@ -1,4 +1,13 @@
-export type ServiceRequestStatus = "draft" | "accepted" | "in_service" | "delivered" | "verified";
+export type ServiceRequestStatus = "draft" | "accepted" | "in_service" | "delivered" | "verified" | "cancelled";
+
+export interface CreateServiceRequestInput {
+  readonly title: string;
+  readonly description: string;
+  readonly category: ServiceProviderCategory;
+  readonly budget?: string;
+  readonly createdBy: string;
+  readonly status: ServiceRequestStatus;
+}
 
 export type ServiceProviderCategory =
   | "Cloud Services"
@@ -110,6 +119,7 @@ export type ServiceRequestRepository = {
   listByWorkspace(workspaceId: string): Promise<readonly ServiceRequestAggregate[]>;
   listByTenant(tenantId: string): Promise<readonly ServiceRequestAggregate[]>;
   save(entity: ServiceRequestAggregate): Promise<ServiceRequestAggregate>;
+  createMany(entities: CreateServiceRequestInput[]): Promise<string[]>;
   remove(id: ServiceRequestId): Promise<boolean>;
   delete(id: ServiceRequestId): Promise<boolean>;
 };

@@ -1,73 +1,73 @@
 import type { ProductExperience } from '@repo/presentation-types';
 
-export const lawyershub: ProductExperience = {
+export const lawyershub: ProductExperience & { card?: any } = {
   identity: {
     productId: "lawyershub",
     name: "LawyersHub",
-    description: "Professional legal service network and case management platform",
-    category: "legal service network"
+    description: "Platform Manajemen Kasus Hukum Profesional",
+    category: "Platform Hukum"
   },
   audience: {
-    primary: "client + legal professional",
-    secondary: ["law firms", "corporate legal teams"],
-    description: "Lawyers, legal professionals, law firms, corporate legal teams, and clients who are actively running legal work."
+    primary: "Klien + Profesional Hukum",
+    secondary: ["Firma Hukum", "Tim Hukum Perusahaan"],
+    description: "Pengacara, profesional hukum, firma hukum, tim hukum perusahaan, dan klien yang aktif mengelola pekerjaan hukum."
   },
   positioning: {
-    valueTitle: "Legal Work with Context and Accountability",
-    valueDescription: "Run legal work with context, evidence, and accountability so clients and professionals can see what is happening and what comes next."
+    valueTitle: "Pekerjaan Hukum dengan Konteks dan Akuntabilitas",
+    valueDescription: "Kelola pekerjaan hukum dengan konteks, bukti, dan akuntabilitas agar klien dan profesional dapat melihat apa yang terjadi dan langkah selanjutnya."
   },
   narrative: {
-    summary: "LawyersHub is a professional legal workbench for opening matters, following legal work, and keeping outcomes accountable.",
-    journey: ["legal need", "professional", "matter", "resolution"]
+    summary: "LawyersHub adalah workbench hukum profesional untuk membuka perkara, memantau pekerjaan hukum, dan menjaga akuntabilitas outcome.",
+    journey: ["kebutuhan hukum", "profesional", "perkara", "selesai"]
   },
   navigation: {
     primaryCta: {
-      label: "Mulai Kasus Hukum",
-      href: "/requirements"
+      label: "Buat Kasus Hukum Baru",
+      href: "/cases/new"
     },
     secondaryCta: {
-      label: "Lihat Progress Hukum",
-      href: "/delivery"
+      label: "Lihat Semua Kasus",
+      href: "/cases"
     }
   },
   trustSignals: {
-    title: "Accountable Legal Outcomes",
-    description: "LawyersHub shows matter progress, supporting records, and accountable outcomes instead of empty legal-tech marketing claims.",
+    title: "Outcome Hukum yang Akuntabel",
+    description: "LawyersHub menampilkan progres perkara, catatan pendukung, dan outcome yang akuntabel, bukan klaim pemasaran legal-tech yang kosong.",
     bullets: [
-      "Each legal matter keeps its own visible progress",
-      "Supporting records stay attached to the matter",
-      "Professional accountability remains visible through the work"
+      "Setiap perkara hukum memiliki progres yang terlihat",
+      "Catatan pendukung tetap terhubung dengan perkara",
+      "Akuntabilitas profesional tetap terlihat sepanjang pekerjaan"
     ]
   },
   journeys: [
     {
       id: "landing",
-      label: "Landing",
+      label: "Halaman Utama",
       description: "Halaman depan dengan nilai proposisi platform hukum profesional"
     },
     {
       id: "describe-legal-need",
-      label: "Describe Legal Need",
-      description: "Jelaskan kebutuhan hukum yang dihadapi secara detail"
+      label: "Jelaskan Kebutuhan Hukum",
+      description: "Jelaskan kebutuhan hukum yang Anda hadapi secara detail"
     },
     {
       id: "find-connect-professional",
-      label: "Find / Connect Professional",
+      label: "Cari & Hubungkan Profesional",
       description: "Cari dan hubungkan dengan profesional hukum yang sesuai"
     },
     {
       id: "legal-matter",
-      label: "Legal Matter",
+      label: "Perkara Hukum",
       description: "Kasus hukum tercatat dan mulai diproses oleh profesional"
     },
     {
       id: "matter-progress",
-      label: "Matter Progress",
+      label: "Progres Perkara",
       description: "Pantau progres penanganan kasus hukum secara real-time"
     },
     {
       id: "supporting-records",
-      label: "Supporting Records",
+      label: "Catatan Pendukung",
       description: "Semua dokumen dan bukti pendukung kasus tersimpan terorganisir"
     },
     {
@@ -105,5 +105,24 @@ export const lawyershub: ProductExperience = {
     updateHelper: "Perbarui status penanganan kasus",
     createLabel: "Buat Kasus Hukum",
     updateLabel: "Perbarui Kasus"
+  },
+  card: {
+    statusLabels: {
+      draft: "Draf",
+      open: "Terbuka",
+      in_progress: "Dalam Proses",
+      closed: "Selesai",
+      "In Progress": "Dalam Proses",
+      "Open": "Terbuka",
+      "Closed": "Selesai",
+      "Draft": "Draf"
+    },
+    verificationLabel: "Terverifikasi",
+    ownerLabel: "Pemilik",
+    successLabel: "Sukses",
+    referenceLabel: "Referensi",
+    readyLabel: "Siap",
+    actionLabels: {},
+    showCapabilityIds: false
   }
 };

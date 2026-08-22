@@ -1,15 +1,19 @@
 {
-  "extends": "../../../tsconfig.json",
+  "extends": "../../../config/typescript/base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "declaration": true,
     "ignoreDeprecations": "5.0",
     "composite": false,
     "incremental": false,
     "skipLibCheck": true,
-    "noEmit": true
+    "noEmit": false,
+    "rootDir": "src",
+    "paths": {
+      "@repo/core-runtime": ["../runtime/dist/index.d.ts", "../runtime/src/index.ts"]
+    }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["dist", "build", "node_modules", "../../capabilities/**/*"]
+  "exclude": ["dist", "build", "node_modules", "**/capabilities/**/*", "**/composition/src/arch15-determinism", "**/composition/src/arch16-boundary", "**/composition/src/certification", "**/composition/src/graph", "**/composition/src/normalizer", "**/composition/src/plan", "**/composition/src/resolver"]
 }

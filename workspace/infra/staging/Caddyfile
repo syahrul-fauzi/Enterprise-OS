@@ -1,71 +1,155 @@
-(security_headers) {
-	header {
-		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-		X-Content-Type-Options "nosniff"
-		X-Frame-Options "DENY"
-		Referrer-Policy "strict-origin-when-cross-origin"
-		Permissions-Policy "geolocation=(self), microphone=(), camera=()"
+{
+	admin off
+	log {
+		output stdout
+		format console
+		level INFO
 	}
+	auto_https off
 }
 
-(http_redirect) {
-	redir `https://{host}{uri}` 308
-}
-
-(eos_web_proxy) {
-	import security_headers
-
+# Konfigurasi asli yang pernah berjalan: Akses localhost HTTP, domain publik dengan TLS internal
+http://localhost {
 	reverse_proxy web:3000 {
-		header_up X-EOS-Product-Id {args[0]}
-		header_up X-EOS-Product-Domain {host}
+		# HAPUS SEMUA X-EOS-* headers dari client sebelum overwrites
+		header_down -X-EOS-Tenant-Subdomain
+		header_down -X-EOS-Is-White-Label
+		header_down -X-EOS-Tenant-ID
+		header_down -X-EOS-Tenant-Brand-Name
+
+		header_up Host {host}
+		# Bersihkan headers upstream juga
+		header_up -X-EOS-Tenant-Subdomain
+		header_up -X-EOS-Is-White-Label
+		header_up -X-EOS-Tenant-ID
+		header_up -X-EOS-Tenant-Brand-Name
 	}
 }
 
-`http://{$SERVICES_ID_DOMAIN}` {
-	import http_redirect
+# WILDCARD SUBDOMAIN SUPPORT untuk multi-tenant: semua subdomain
+# LawyersHub family
+https://*.lawyershub.id, https://*.academic.lawyershub.id, https://*.commsme.lawyershub.id {
+	tls /etc/caddy/certs/lawyershub-origin.pem /etc/caddy/certs/lawyershub-origin.key
+	reverse_proxy web:3000 {
+		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
+		header_up -X-EOS-Tenant-Subdomain
+		header_up -X-EOS-Is-White-Label
+		header_up -X-EOS-Tenant-ID
+		header_up -X-EOS-Tenant-Brand-Name
+
+		header_up Host {host}
+		# SET TRUSTED HEADER - hanya Caddy yang boleh set ini
+		header_up X-EOS-Tenant-Subdomain {labels.0}
+	}
 }
 
-`https://{$SERVICES_ID_DOMAIN}` {
-	tls {$CADDY_TLS}
-	import eos_web_proxy services-id
+# Services-ID family
+https://*.services-id.com {
+	tls /etc/caddy/certs/servicesid-origin.pem /etc/caddy/certs/servicesid-origin.key
+	reverse_proxy web:3000 {
+		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
+		header_up -X-EOS-Tenant-Subdomain
+		header_up -X-EOS-Is-White-Label
+		header_up -X-EOS-Tenant-ID
+		header_up -X-EOS-Tenant-Brand-Name
+
+		header_up Host {host}
+		# SET TRUSTED HEADER - hanya Caddy yang boleh set ini
+		header_up X-EOS-Tenant-Subdomain {labels.0}
+	}
 }
 
-`http://{$LAWYERSHUB_DOMAIN}` {
-	import http_redirect
+# MAIN DOMAINS (root domains tanpa subdomain - WHITE LABEL APEX)
+# LawyersHub apex
+https://lawyershub.id {
+	tls /etc/caddy/certs/lawyershub-origin.pem /etc/caddy/certs/lawyershub-origin.key
+	reverse_proxy web:3000 {
+		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
+		header_up -X-EOS-Tenant-Subdomain
+		header_up -X-EOS-Is-White-Label
+		header_up -X-EOS-Tenant-ID
+		header_up -X-EOS-Tenant-Brand-Name
+
+		header_up Host {host}
+		# SET TRUSTED HEADER - hanya Caddy yang boleh set ini
+		header_up X-EOS-Is-White-Label "true"
+	}
 }
 
-`https://{$LAWYERSHUB_DOMAIN}` {
-	tls {$CADDY_TLS}
-	import eos_web_proxy lawyershub
+# Services-ID apex
+https://services-id.com {
+	tls /etc/caddy/certs/servicesid-origin.pem /etc/caddy/certs/servicesid-origin.key
+	reverse_proxy web:3000 {
+		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
+		header_up -X-EOS-Tenant-Subdomain
+		header_up -X-EOS-Is-White-Label
+		header_up -X-EOS-Tenant-ID
+		header_up -X-EOS-Tenant-Brand-Name
+
+		header_up Host {host}
+		# SET TRUSTED HEADER - hanya Caddy yang boleh set ini
+		header_up X-EOS-Is-White-Label "true"
+	}
 }
 
-`http://{$ILC_DOMAIN}` {
-	import http_redirect
+# Indonesia Lawyers Club apex
+https://indonesialawyersclub.id {
+	tls /etc/caddy/certs/ilc-origin.pem /etc/caddy/certs/ilc-origin.key
+	reverse_proxy web:3000 {
+		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
+		header_up -X-EOS-Tenant-Subdomain
+		header_up -X-EOS-Is-White-Label
+		header_up -X-EOS-Tenant-ID
+		header_up -X-EOS-Tenant-Brand-Name
+
+		header_up Host {host}
+		# SET TRUSTED HEADER - hanya Caddy yang boleh set ini
+		header_up X-EOS-Is-White-Label "true"
+	}
 }
 
-`https://{$ILC_DOMAIN}` {
-	tls {$CADDY_TLS}
-	import eos_web_proxy ilc
+# Indonesia Lawyers Club wildcard
+https://*.indonesialawyersclub.id {
+	tls /etc/caddy/certs/ilc-origin.pem /etc/caddy/certs/ilc-origin.key
+	reverse_proxy web:3000 {
+		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
+		header_up -X-EOS-Tenant-Subdomain
+		header_up -X-EOS-Is-White-Label
+		header_up -X-EOS-Tenant-ID
+		header_up -X-EOS-Tenant-Brand-Name
+
+		header_up Host {host}
+		# SET TRUSTED HEADER - hanya Caddy yang boleh set ini
+		header_up X-EOS-Tenant-Subdomain {labels.0}
+	}
 }
 
-# Product #4 Spike: Academic Community
-`http://{$ACADEMIC_DOMAIN}` {
-	import http_redirect
-}
+# WHITE LABEL SUPPORT: Tambahkan custom domain klien di sini
+# Contoh untuk client alice.firmahukum.com:
+# https://alice.firmahukum.com {
+#   # AUTO-HTTPS SETUP: Untuk VPS/production, uncomment line di bawah dan ganti email
+#   # tls ops@your-domain.tld
+#   # Untuk staging/local: gunakan internal TLS
+#   tls internal
+#   reverse_proxy web:3000 {
+#     # HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
+#     header_up -X-EOS-Tenant-Subdomain
+#     header_up -X-EOS-Is-White-Label
+#     header_up -X-EOS-Tenant-ID
+#     header_up -X-EOS-Tenant-Brand-Name
+#     
+#     header_up Host {host}
+#     # SET TRUSTED WHITE LABEL HEADER - hanya Caddy yang boleh set ini
+#     header_up X-EOS-Is-White-Label "true"
+#   }
+# }
 
-`https://{$ACADEMIC_DOMAIN}`, academic.local {
-	tls {$CADDY_TLS}
-	import eos_web_proxy academic
-}
-
-# Product #5: FIRST LIGHT COMMSME - UMKM Legal Support Platform
-`http://{$COMMSME_DOMAIN}`, commsme.local {
-	import http_redirect
-}
-
-`https://{$COMMSME_DOMAIN}` {
-	tls {$CADDY_TLS}
-	import eos_web_proxy commsme
+# HTTP -> HTTPS Redirect ditangani oleh Cloudflare Tunnel (Origin SSL + Always Use HTTPS)
+# Hanya listen on HTTP untuk healthcheck saja
+http://localhost:80 {
+	handle /api/health {
+		respond 200 "OK"
+	}
 }
 
 # End of Caddyfile

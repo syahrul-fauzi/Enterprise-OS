@@ -1,0 +1,218 @@
+Note: Unnecessary use of -X or --request, POST is already inferred.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:3001...
+* Connected to localhost (127.0.0.1) port 3001 (#0)
+> POST /api/auth/login HTTP/1.1
+> Host: localhost:3001
+> User-Agent: curl/7.88.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 50
+> 
+} [50 bytes data]
+< HTTP/1.1 200 OK
+* Added cookie eos-workspace-session="eyJhY3RvcklkIjoiYW5vbnltb3VzLnVzZXIiLCJhY3RvckxhYmVsIjoiQW5vbnltb3VzIFZpc2l0b3IiLCJ0ZW5hbnRJZCI6InRlbmFudC5hbm9ueW1vdXMiLCJ3b3Jrc3BhY2VJZCI6InByb2Zlc3Npb25hbC13b3Jrc3BhY2UuYW5vbnltb3VzIiwicHJvZHVjdElkIjoic2VydmljZXMtaWQuZGVmYXVsdCIsImlzc3VlZEF0IjoiMjAyNi0wOC0yMlQwMzo0NDoyOS40MDJaIn0" for domain localhost, path /, expire 0
+< set-cookie: eos-workspace-session=eyJhY3RvcklkIjoiYW5vbnltb3VzLnVzZXIiLCJhY3RvckxhYmVsIjoiQW5vbnltb3VzIFZpc2l0b3IiLCJ0ZW5hbnRJZCI6InRlbmFudC5hbm9ueW1vdXMiLCJ3b3Jrc3BhY2VJZCI6InByb2Zlc3Npb25hbC13b3Jrc3BhY2UuYW5vbnltb3VzIiwicHJvZHVjdElkIjoic2VydmljZXMtaWQuZGVmYXVsdCIsImlzc3VlZEF0IjoiMjAyNi0wOC0yMlQwMzo0NDoyOS40MDJaIn0; Path=/; HttpOnly; SameSite=lax
+* Replaced cookie eos-workspace-session="eyJzZXNzaW9uSWQiOiJzZXNzaW9uLTEwMiIsImFjdG9ySWQiOiJ1c2VyLTAwMSIsImFjdG9yTGFiZWwiOiJBbGljZSBPcGVyYXRvciIsInRlbmFudElkIjoidGVuYW50LTAwMSIsIndvcmtzcGFjZUlkIjoid29ya3NwYWNlLTAwMSIsInByb2R1Y3RJZCI6InNlcnZpY2VzLWlkLmRlZmF1bHQiLCJpc3N1ZWRBdCI6IjIwMjYtMDgtMjJUMDM6NDQ6MjkuNDMzWiIsInVzZXJJZCI6InVzZXItMDAxIn0" for domain localhost, path /, expire 0
+< set-cookie: eos-workspace-session=eyJzZXNzaW9uSWQiOiJzZXNzaW9uLTEwMiIsImFjdG9ySWQiOiJ1c2VyLTAwMSIsImFjdG9yTGFiZWwiOiJBbGljZSBPcGVyYXRvciIsInRlbmFudElkIjoidGVuYW50LTAwMSIsIndvcmtzcGFjZUlkIjoid29ya3NwYWNlLTAwMSIsInByb2R1Y3RJZCI6InNlcnZpY2VzLWlkLmRlZmF1bHQiLCJpc3N1ZWRBdCI6IjIwMjYtMDgtMjJUMDM6NDQ6MjkuNDMzWiIsInVzZXJJZCI6InVzZXItMDAxIn0; Path=/; HttpOnly; SameSite=lax
+< vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+< content-type: application/json
+< Date: Sat, 22 Aug 2026 03:44:29 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Transfer-Encoding: chunked
+< 
+{ [284 bytes data]
+100   322    0   272  100    50   7821   1437 --:--:-- --:--:-- --:--:--  9470
+* Connection #0 to host localhost left intact
+{"ok":true,"authenticated":true,"actorId":"user-001","actorLabel":"Alice Operator","userId":"user-001","tenantId":"tenant-001","workspaceId":"workspace-001","productId":"services-id.default","sessionId":"session-102","redirectUrl":"/alice-personal/professional-workspace"}SESSION_COOKIE: #HttpOnly_localhost	FALSE	/	FALSE	0	eos-workspace-session	eyJzZXNzaW9uSWQiOiJzZXNzaW9uLTEwMiIsImFjdG9ySWQiOiJ1c2VyLTAwMSIsImFjdG9yTGFiZWwiOiJBbGljZSBPcGVyYXRvciIsInRlbmFudElkIjoidGVuYW50LTAwMSIsIndvcmtzcGFjZUlkIjoid29ya3NwYWNlLTAwMSIsInByb2R1Y3RJZCI6InNlcnZpY2VzLWlkLmRlZmF1bHQiLCJpc3N1ZWRBdCI6IjIwMjYtMDgtMjJUMDM6NDQ6MjkuNDMzWiIsInVzZXJJZCI6InVzZXItMDAxIn0
+Note: Unnecessary use of -X or --request, GET is already inferred.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:3001...
+* Connected to localhost (127.0.0.1) port 3001 (#0)
+> GET /products/lawyershub HTTP/1.1
+> Host: localhost:3001
+> User-Agent: curl/7.88.1
+> Accept: */*
+> Cookie: eos-workspace-session=eyJzZXNzaW9uSWQiOiJzZXNzaW9uLTEwMiIsImFjdG9ySWQiOiJ1c2VyLTAwMSIsImFjdG9yTGFiZWwiOiJBbGljZSBPcGVyYXRvciIsInRlbmFudElkIjoidGVuYW50LTAwMSIsIndvcmtzcGFjZUlkIjoid29ya3NwYWNlLTAwMSIsInByb2R1Y3RJZCI6InNlcnZpY2VzLWlkLmRlZmF1bHQiLCJpc3N1ZWRBdCI6IjIwMjYtMDgtMjJUMDM6NDQ6MjkuNDMzWiIsInVzZXJJZCI6InVzZXItMDAxIn0
+> 
+< HTTP/1.1 200 OK
+< Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+< link: </_next/static/media/0b78ff376f6b9734-s.p.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2"
+< X-Powered-By: Next.js
+< Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
+< Content-Type: text/html; charset=utf-8
+< Date: Sat, 22 Aug 2026 03:44:29 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Transfer-Encoding: chunked
+< 
+{ [11736 bytes data]
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/css/1cb68a29e7a30621.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-9ab777eea84213c8.js"/><script src="/_next/static/chunks/e74ff225-61ff378d6fdbea71.js" async=""></script><script src="/_next/static/chunks/9738-1ba20d50333f72f2.js" async=""></script><script src="/_next/static/chunks/main-app-7812750e1c8e1605.js" async=""></script><script src="/_next/static/chunks/6114-2795068568377b3d.js" async=""></script><script src="/_next/static/chunks/3108-b37b70b83f288f70.js" async=""></script><script src="/_next/static/chunks/9413-11bff750fe6c8de5.js" async=""></script><script src="/_next/static/chunks/4998-8aaa4b94eef7547f.js" async=""></script><script src="/_next/static/chunks/830-b4cffe291951d8ef.js" async=""></script><script src="/_next/static/chunks/6452-91931128db4f2674.js" async=""></script><script src="/_next/static/chunks/1918-04a06f7d92d8e482.js" async=""></script><script src="/_next/static/chunks/8037-b119c567dab0bff1.js" async=""></script><script src="/_next/static/chunks/app/products/%5BproductId%5D/page-d20587724c7124d7.js" async=""></script><meta name="next-size-adjust" content=""/><title>LawyersHub - landing</title><meta name="description" content="LawyersHub is a professional legal workbench for opening matters, following legal work, and keeping outcomes accountable."/><script src="/_next/static/chunks/polyfills-42372ed130431b0a.js" noModule=""></script></head><body class="__className_8adcd2"><div hidden=""><!--$--><!--/$--></div><section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"><div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"><div class="space-y-3"><div class="inline-flex rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">legal service network</div><h1 class="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">LawyersHub</h1><p class="max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">LawyersHub is a professional legal workbench for opening matters, following legal work, and keeping outcomes accountable.</p></div><div class="grid gap-3 sm:grid-cols-3"><div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4"><div class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Audience</div><div class="mt-2 text-sm font-medium text-slate-900">client + legal professional</div><p class="mt-2 text-sm leading-6 text-slate-600">Lawyers, legal professionals, law firms, corporate legal teams, and clients who are actively running legal work.</p></div><div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4"><div class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Value Proposition</div><div class="mt-2 text-sm font-medium text-slate-900">Legal Work with Context and Accountability</div><p class="mt-2 text-sm leading-6 text-slate-600">Run legal work with context, evidence, and accountability so clients and professionals can see what is happening and what comes next.</p></div><div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4"><div class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Trust Signal</div><div class="mt-2 text-sm font-medium text-slate-900">Accountable Legal Outcomes</div><p class="mt-2 text-sm leading-6 text-slate-600">LawyersHub shows matter progress, supporting records, and accountable outcomes instead of empty legal-tech marketing claims.</p></div></div></div><div class="mt-6 flex flex-wrap gap-3"><a class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800" href="/requirements">Mulai Kasus Hukum</a><a class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50" href="/delivery">Lihat Progress Hukum</a></div><div class="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6"><div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between"><div class="max-w-2xl"><div class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Akuntabilitas Hukum</div><h2 class="mt-2 text-xl font-bold text-slate-950">Accountable Legal Outcomes</h2><p class="mt-3 text-sm leading-6 text-slate-600 sm:text-base">LawyersHub shows matter progress, supporting records, and accountable outcomes instead of empty legal-tech marketing claims.</p></div><div class="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-700"><div class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Akuntabilitas Hukum</div><div class="mt-2 font-medium text-slate-900">Bukti hukum dan track record kasus terverifikasi</div><div class="mt-1">Platform ini menggunakan progres kasus yang terlihat dan bukti hukum yang terverifikasi, bukan klaim marketing semata.</div></div></div><ul class="mt-5 grid gap-3 md:grid-cols-3"><li class="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm leading-6 text-slate-700">Each legal matter keeps its own visible progress</li><li class="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm leading-6 text-slate-700">Supporting records stay attached to the matter</li><li class="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm leading-6 text-slate-700">Professional accountability remains visible through the work</li></ul></div><div class="mt-6 space-y-6"><section class="rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6"><div class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Mulai Perkara Hukum</div><h2 class="mt-2 text-xl font-bold text-slate-950">Temukan bantuan hukum yang tepat.</h2><p class="mt-3 max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">LawyersHub adalah platform manajemen kasus hukum profesional untuk membuka masalah hukum, memantau progres penanganan, dan menjaga akuntabilitas semua pihak. Jalankan pekerjaan hukum dengan konteks, bukti, dan transparansi sehingga klien dan profesional dapat melihat apa yang terjadi dan langkah apa selanjutnya.</p></section><div class="mt-8 grid gap-4 md:grid-cols-3"><div class="rounded-3xl border border-slate-200 bg-blue-50 p-6"><div class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">Kasus Aktif</div><div class="mt-2 text-3xl font-bold text-blue-900">2</div><p class="mt-1 text-sm text-blue-700">Masalah hukum yang sedang diproses oleh pengacara</p></div><div class="rounded-3xl border border-slate-200 bg-green-50 p-6"><div class="text-xs font-semibold uppercase tracking-[0.18em] text-green-600">Selesai Bulan Ini</div><div class="mt-2 text-3xl font-bold text-green-900">3</div><p class="mt-1 text-sm text-green-700">Kasus hukum yang telah selesai diputuskan</p></div><div class="rounded-3xl border border-slate-200 bg-purple-50 p-6"><div class="text-xs font-semibold uppercase tracking-[0.18em] text-purple-600">Menunggu Persetujuan</div><div class="mt-2 text-3xl font-bold text-purple-900">1</div><p class="mt-1 text-sm text-purple-700">Menunggu persetujuan dari klien</p></div></div><section class="grid gap-4 lg:grid-cols-3"><article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" id="landing"><div class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Step · Landing</div><h3 class="mt-2 text-lg font-semibold text-slate-950">Landing</h3><p class="mt-3 text-sm leading-6 text-slate-600">Halaman depan dengan nilai proposisi platform hukum profesional</p><ul class="mt-4 space-y-2 text-sm leading-6 text-slate-700"></ul></article><article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" id="describe-legal-need"><div class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Step · Describe Legal Need</div><h3 class="mt-2 text-lg font-semibold text-slate-950">Describe Legal Need</h3><p class="mt-3 text-sm leading-6 text-slate-600">Jelaskan kebutuhan hukum yang dihadapi secara detail</p><ul class="mt-4 space-y-2 text-sm leading-6 text-slate-700"></ul></article><article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm" id="find-connect-professional"><div class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Step · Find / Connect Professional</div><h3 class="mt-2 text-lg font-semibold text-slate-950">Find / Connect Professional</h3><p class="mt-3 text-sm leading-6 text-slate-600">Cari dan hubungkan dengan profesional hukum yang sesuai</p><ul class="mt-4 space-y-2 text-sm leading-6 text-slate-700"></ul></article></section></div></section><section class="rounded-3xl border border-indigo-200 bg-white p-6 shadow-sm sm:p-8"><div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between mb-6"><div><div class="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-600 mb-1">First Real User Job</div><h2 class="text-xl font-bold text-slate-950">Buat Legal Matter (Kasus) Baru</h2><p class="mt-2 text-sm text-slate-600">Catat legal matter baru untuk klien — berjalan melalui workflow Draft → Open → In Progress → Closed.</p></div></div><form class="grid gap-4 md:grid-cols-3"><div class="md:col-span-2"><label class="block text-sm font-medium text-slate-700 mb-1">Judul Kasus</label><input type="text" class="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="Masukkan judul legal matter..." value=""/></div><div><label class="block text-sm font-medium text-slate-700 mb-1">Prioritas</label><select class="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"><option value="low">low</option><option value="medium" selected="">medium</option><option value="high">high</option><option value="critical">critical</option></select></div><div class="md:col-span-3"><label class="block text-sm font-medium text-slate-700 mb-1">Deskripsi</label><textarea class="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 min-h-[100px]" placeholder="Jelaskan detail legal matter..."></textarea></div><div class="md:col-span-3"><button type="submit" disabled="" class="inline-flex items-center rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50">Buat Kasus</button></div></form></section><section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"><div class="max-w-3xl"><div class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Real Activity</div><h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Real legal matters with visible accountability</h2><p class="mt-3 text-sm leading-6 text-slate-600 sm:text-base">These are real legal work records with supporting evidence and visible progress. Trust comes from accountable activity, not empty legal-tech claims.</p></div><div class="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6"><div class="text-sm font-semibold text-slate-900">No real legal activity is visible yet.</div><p class="mt-2 text-sm leading-6 text-slate-600">The surface is live, but there is not enough evidence-backed legal activity on this product surface to display here yet.</p></div></section><!--$--><!--/$--><script src="/_next/static/chunks/webpack-9ab777eea84213c8.js" id="_R_" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[8059,[],\"\"]\n3:I[8903,[],\"\"]\n5:I[4850,[],\"OutletBoundary\"]\n6:\"$Sreact.suspense\"\n9:I[4850,[],\"ViewportBoundary\"]\nb:I[4850,[],\"MetadataBoundary\"]\nd:I[6001,[],\"default\",1]\nf:I[5465,[\"6114\",\"static/chunks/6114-2795068568377b3d.js\",\"3108\",\"static/chunks/3108-b37b70b83f288f70.js\",\"9413\",\"static/chunks/9413-11bff750fe6c8de5.js\",\"4998\",\"static/chunks/4998-8aaa4b94eef7547f.js\",\"830\",\"static/chunks/830-b4cffe291951d8ef.js\",\"6452\",\"static/chunks/6452-91931128db4f2674.js\",\"1918\",\"static/chunks/1918-04a06f7d92d8e482.js\",\"8037\",\"static/chunks/8037-b119c567dab0bff1.js\",\"1736\",\"static/chunks/app/products/%5BproductId%5D/page-d20587724c7124d7.js\"],\"ProductLandingPage\"]\n:HL[\"/_next/static/media/0b78ff376f6b9734-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/css/1cb68a29e7a30621.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"c\":[\"\",\"products\",\"lawyershub\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"products\",{\"children\":[[\"productId\",\"lawyershub\",\"d\",null],{\"children\":[\"__PAGE__\",{}]}]}]},\"$undefined\",\"$undefined\",16],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/1cb68a29e7a30621.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"en\",\"children\":[\"$\",\"body\",null,{\"className\":\"__className_8adcd2\",\"children\":[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L3\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":404}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}]}]]}],{\"children\":[[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L3\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L3\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[[\"$\",\"$1\",\"c\",{\"children\":[\"$L4\",null,[\"$\",\"$L5\",null,{\"children\":[\"$\",\"$6\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@7\"}]}]]}],{},null,false,null]},null,false,\"$@8\"]},null,false,\"$@8\"]},null,false,null],[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L9\",null,{\"children\":\"$La\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$Lb\",null,{\"children\":[\"$\",\"$6\",null,{\"name\":\"Next.Metadata\",\"children\":\"$Lc\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}],false]],\"m\":\"$undefined\",\"G\":[\"$d\",[]],\"S\":false,\"h\":null,\"s\":\"$undefi100 17166    0 17166    0     0   111k      0 --:--:-- --:--:-- --:--:--  111k
+* Connection #0 to host localhost left intact
+ned\",\"l\":\"$undefined\",\"p\":\"$undefined\",\"d\":\"$undefined\",\"b\":\"t-fMyeK7hhHz1oQIykxKj\"}\n"])</script><script>self.__next_f.push([1,"e:[]\n8:\"$We\"\n4:[\"$\",\"$Lf\",null,{\"productId\":\"lawyershub\",\"binding\":{\"productId\":\"lawyershub\",\"displayName\":\"LawyersHub\",\"route\":\"/requirements\",\"surface\":\"web\"}}]\na:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n7:null\nc:[[\"$\",\"title\",\"0\",{\"children\":\"LawyersHub - landing\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"LawyersHub is a professional legal workbench for opening matters, following legal work, and keeping outcomes accountable.\"}]]\n"])</script></body></html>Note: Unnecessary use of -X or --request, POST is already inferred.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:3001...
+* Connected to localhost (127.0.0.1) port 3001 (#0)
+> POST /api/cases/create HTTP/1.1
+> Host: localhost:3001
+> User-Agent: curl/7.88.1
+> Accept: */*
+> Cookie: eos-workspace-session=eyJzZXNzaW9uSWQiOiJzZXNzaW9uLTEwMiIsImFjdG9ySWQiOiJ1c2VyLTAwMSIsImFjdG9yTGFiZWwiOiJBbGljZSBPcGVyYXRvciIsInRlbmFudElkIjoidGVuYW50LTAwMSIsIndvcmtzcGFjZUlkIjoid29ya3NwYWNlLTAwMSIsInByb2R1Y3RJZCI6InNlcnZpY2VzLWlkLmRlZmF1bHQiLCJpc3N1ZWRBdCI6IjIwMjYtMDgtMjJUMDM6NDQ6MjkuNDMzWiIsInVzZXJJZCI6InVzZXItMDAxIn0
+> Content-Type: application/json
+> Content-Length: 174
+> 
+} [174 bytes data]
+< HTTP/1.1 201 Created
+< vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+< content-type: application/json
+< Date: Sat, 22 Aug 2026 03:44:29 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Transfer-Encoding: chunked
+< 
+{ [65 bytes data]
+100   228    0    54  100   174   2278   7342 --:--:-- --:--:-- --:--:--  9913
+* Connection #0 to host localhost left intact
+{"id":"case-101","status":"draft","workId":"case-101"}Note: Unnecessary use of -X or --request, GET is already inferred.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:3001...
+* Connected to localhost (127.0.0.1) port 3001 (#0)
+> GET /api/cases/list HTTP/1.1
+> Host: localhost:3001
+> User-Agent: curl/7.88.1
+> Accept: */*
+> Cookie: eos-workspace-session=eyJzZXNzaW9uSWQiOiJzZXNzaW9uLTEwMiIsImFjdG9ySWQiOiJ1c2VyLTAwMSIsImFjdG9yTGFiZWwiOiJBbGljZSBPcGVyYXRvciIsInRlbmFudElkIjoidGVuYW50LTAwMSIsIndvcmtzcGFjZUlkIjoid29ya3NwYWNlLTAwMSIsInByb2R1Y3RJZCI6InNlcnZpY2VzLWlkLmRlZmF1bHQiLCJpc3N1ZWRBdCI6IjIwMjYtMDgtMjJUMDM6NDQ6MjkuNDMzWiIsInVzZXJJZCI6InVzZXItMDAxIn0
+> 
+< HTTP/1.1 200 OK
+< vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+< content-type: application/json
+< Date: Sat, 22 Aug 2026 03:44:29 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Transfer-Encoding: chunked
+< 
+{ [438 bytes data]
+100   426    0   426    0     0  51862      0 --:--:-- --:--:-- --:--:-- 53250
+* Connection #0 to host localhost left intact
+{"cases":[{"id":"case-101","title":"Sengketa Kontrak Kerjasama PT ABC","description":"Review dan penanganan sengketa pasal wanprestasi pada perjanjian distribusi.","status":"draft","priority":"high","lawyerId":null,"workId":"case-101","sourceDiscussionId":null,"actorId":"user-001","tenantId":"tenant-001","workspaceId":"workspace-001","createdAt":"2026-08-22T03:44:29.626Z","updatedAt":"2026-08-22T03:44:29.626Z"}],"total":1}    id    | work_id  |               title               | priority | actor_id |       created_at        
+----------+----------+-----------------------------------+----------+----------+-------------------------
+ case-101 | case-101 | Sengketa Kontrak Kerjasama PT ABC | high     | user-001 | 2026-08-22 03:44:29.626
+(1 row)
+
+1. [R4] Old cookies deleted - simulate browser closed
+Note: Unnecessary use of -X or --request, POST is already inferred.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:3001...
+* Connected to localhost (127.0.0.1) port 3001 (#0)
+> POST /api/auth/login HTTP/1.1
+> Host: localhost:3001
+> User-Agent: curl/7.88.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 50
+> 
+} [50 bytes data]
+< HTTP/1.1 200 OK
+* Added cookie eos-workspace-session="eyJhY3RvcklkIjoiYW5vbnltb3VzLnVzZXIiLCJhY3RvckxhYmVsIjoiQW5vbnltb3VzIFZpc2l0b3IiLCJ0ZW5hbnRJZCI6InRlbmFudC5hbm9ueW1vdXMiLCJ3b3Jrc3BhY2VJZCI6InByb2Zlc3Npb25hbC13b3Jrc3BhY2UuYW5vbnltb3VzIiwicHJvZHVjdElkIjoic2VydmljZXMtaWQuZGVmYXVsdCIsImlzc3VlZEF0IjoiMjAyNi0wOC0yMlQwMzo0NToyNS40NTBaIn0" for domain localhost, path /, expire 0
+< set-cookie: eos-workspace-session=eyJhY3RvcklkIjoiYW5vbnltb3VzLnVzZXIiLCJhY3RvckxhYmVsIjoiQW5vbnltb3VzIFZpc2l0b3IiLCJ0ZW5hbnRJZCI6InRlbmFudC5hbm9ueW1vdXMiLCJ3b3Jrc3BhY2VJZCI6InByb2Zlc3Npb25hbC13b3Jrc3BhY2UuYW5vbnltb3VzIiwicHJvZHVjdElkIjoic2VydmljZXMtaWQuZGVmYXVsdCIsImlzc3VlZEF0IjoiMjAyNi0wOC0yMlQwMzo0NToyNS40NTBaIn0; Path=/; HttpOnly; SameSite=lax
+* Replaced cookie eos-workspace-session="eyJzZXNzaW9uSWQiOiJzZXNzaW9uLTEwMyIsImFjdG9ySWQiOiJ1c2VyLTAwMSIsImFjdG9yTGFiZWwiOiJBbGljZSBPcGVyYXRvciIsInRlbmFudElkIjoidGVuYW50LTAwMSIsIndvcmtzcGFjZUlkIjoid29ya3NwYWNlLTAwMSIsInByb2R1Y3RJZCI6InNlcnZpY2VzLWlkLmRlZmF1bHQiLCJpc3N1ZWRBdCI6IjIwMjYtMDgtMjJUMDM6NDU6MjUuNDgwWiIsInVzZXJJZCI6InVzZXItMDAxIn0" for domain localhost, path /, expire 0
+< set-cookie: eos-workspace-session=eyJzZXNzaW9uSWQiOiJzZXNzaW9uLTEwMyIsImFjdG9ySWQiOiJ1c2VyLTAwMSIsImFjdG9yTGFiZWwiOiJBbGljZSBPcGVyYXRvciIsInRlbmFudElkIjoidGVuYW50LTAwMSIsIndvcmtzcGFjZUlkIjoid29ya3NwYWNlLTAwMSIsInByb2R1Y3RJZCI6InNlcnZpY2VzLWlkLmRlZmF1bHQiLCJpc3N1ZWRBdCI6IjIwMjYtMDgtMjJUMDM6NDU6MjUuNDgwWiIsInVzZXJJZCI6InVzZXItMDAxIn0; Path=/; HttpOnly; SameSite=lax
+< vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+< content-type: application/json
+< Date: Sat, 22 Aug 2026 03:45:25 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Transfer-Encoding: chunked
+< 
+{ [284 bytes data]
+100   322    0   272  100    50   8043   1478 --:--:-- --:--:-- --:--:--  9757
+* Connection #0 to host localhost left intact
+{"ok":true,"authenticated":true,"actorId":"user-001","actorLabel":"Alice Operator","userId":"user-001","tenantId":"tenant-001","workspaceId":"workspace-001","productId":"services-id.default","sessionId":"session-103","redirectUrl":"/alice-personal/professional-workspace"}NEW_SESSION_COOKIE: #HttpOnly_localhost	FALSE	/	FALSE	0	eos-workspace-session	eyJzZXNzaW9uSWQiOiJzZXNzaW9uLTEwMyIsImFjdG9ySWQiOiJ1c2VyLTAwMSIsImFjdG9yTGFiZWwiOiJBbGljZSBPcGVyYXRvciIsInRlbmFudElkIjoidGVuYW50LTAwMSIsIndvcmtzcGFjZUlkIjoid29ya3NwYWNlLTAwMSIsInByb2R1Y3RJZCI6InNlcnZpY2VzLWlkLmRlZmF1bHQiLCJpc3N1ZWRBdCI6IjIwMjYtMDgtMjJUMDM6NDU6MjUuNDgwWiIsInVzZXJJZCI6InVzZXItMDAxIn0
+Note: Unnecessary use of -X or --request, GET is already inferred.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:3001...
+* Connected to localhost (127.0.0.1) port 3001 (#0)
+> GET /api/cases/list HTTP/1.1
+> Host: localhost:3001
+> User-Agent: curl/7.88.1
+> Accept: */*
+> Cookie: eos-workspace-session=eyJzZXNzaW9uSWQiOiJzZXNzaW9uLTEwMyIsImFjdG9ySWQiOiJ1c2VyLTAwMSIsImFjdG9yTGFiZWwiOiJBbGljZSBPcGVyYXRvciIsInRlbmFudElkIjoidGVuYW50LTAwMSIsIndvcmtzcGFjZUlkIjoid29ya3NwYWNlLTAwMSIsInByb2R1Y3RJZCI6InNlcnZpY2VzLWlkLmRlZmF1bHQiLCJpc3N1ZWRBdCI6IjIwMjYtMDgtMjJUMDM6NDU6MjUuNDgwWiIsInVzZXJJZCI6InVzZXItMDAxIn0
+> 
+< HTTP/1.1 200 OK
+< vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+< content-type: application/json
+< Date: Sat, 22 Aug 2026 03:45:25 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Transfer-Encoding: chunked
+< 
+{ [438 bytes data]
+100   426    0   426    0     0  48119      0 --:--:-- --:--:-- --:--:-- 53250
+* Connection #0 to host localhost left intact
+{"cases":[{"id":"case-101","title":"Sengketa Kontrak Kerjasama PT ABC","description":"Review dan penanganan sengketa pasal wanprestasi pada perjanjian distribusi.","status":"draft","priority":"high","lawyerId":null,"workId":"case-101","sourceDiscussionId":null,"actorId":"user-001","tenantId":"tenant-001","workspaceId":"workspace-001","createdAt":"2026-08-22T03:44:29.626Z","updatedAt":"2026-08-22T03:44:29.626Z"}],"total":1}    id    | work_id  |               title               | priority | actor_id |       created_at        
+----------+----------+-----------------------------------+----------+----------+-------------------------
+ case-101 | case-101 | Sengketa Kontrak Kerjasama PT ABC | high     | user-001 | 2026-08-22 03:44:29.626
+(1 row)
+
+Note: Unnecessary use of -X or --request, POST is already inferred.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:3001...
+* Connected to localhost (127.0.0.1) port 3001 (#0)
+> POST /api/auth/login HTTP/1.1
+> Host: localhost:3001
+> User-Agent: curl/7.88.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 50
+> 
+} [50 bytes data]
+< HTTP/1.1 200 OK
+* Added cookie eos-workspace-session="eyJhY3RvcklkIjoiYW5vbnltb3VzLnVzZXIiLCJhY3RvckxhYmVsIjoiQW5vbnltb3VzIFZpc2l0b3IiLCJ0ZW5hbnRJZCI6InRlbmFudC5hbm9ueW1vdXMiLCJ3b3Jrc3BhY2VJZCI6InByb2Zlc3Npb25hbC13b3Jrc3BhY2UuYW5vbnltb3VzIiwicHJvZHVjdElkIjoic2VydmljZXMtaWQuZGVmYXVsdCIsImlzc3VlZEF0IjoiMjAyNi0wOC0yMlQwMzo0NjozNi4xNTNaIn0" for domain localhost, path /, expire 0
+< set-cookie: eos-workspace-session=eyJhY3RvcklkIjoiYW5vbnltb3VzLnVzZXIiLCJhY3RvckxhYmVsIjoiQW5vbnltb3VzIFZpc2l0b3IiLCJ0ZW5hbnRJZCI6InRlbmFudC5hbm9ueW1vdXMiLCJ3b3Jrc3BhY2VJZCI6InByb2Zlc3Npb25hbC13b3Jrc3BhY2UuYW5vbnltb3VzIiwicHJvZHVjdElkIjoic2VydmljZXMtaWQuZGVmYXVsdCIsImlzc3VlZEF0IjoiMjAyNi0wOC0yMlQwMzo0NjozNi4xNTNaIn0; Path=/; HttpOnly; SameSite=lax
+* Replaced cookie eos-workspace-session="eyJzZXNzaW9uSWQiOiJzZXNzaW9uLTEwNCIsImFjdG9ySWQiOiJ1c2VyLTAwMSIsImFjdG9yTGFiZWwiOiJBbGljZSBPcGVyYXRvciIsInRlbmFudElkIjoidGVuYW50LTAwMSIsIndvcmtzcGFjZUlkIjoid29ya3NwYWNlLTAwMSIsInByb2R1Y3RJZCI6InNlcnZpY2VzLWlkLmRlZmF1bHQiLCJpc3N1ZWRBdCI6IjIwMjYtMDgtMjJUMDM6NDY6MzYuMTgzWiIsInVzZXJJZCI6InVzZXItMDAxIn0" for domain localhost, path /, expire 0
+< set-cookie: eos-workspace-session=eyJzZXNzaW9uSWQiOiJzZXNzaW9uLTEwNCIsImFjdG9ySWQiOiJ1c2VyLTAwMSIsImFjdG9yTGFiZWwiOiJBbGljZSBPcGVyYXRvciIsInRlbmFudElkIjoidGVuYW50LTAwMSIsIndvcmtzcGFjZUlkIjoid29ya3NwYWNlLTAwMSIsInByb2R1Y3RJZCI6InNlcnZpY2VzLWlkLmRlZmF1bHQiLCJpc3N1ZWRBdCI6IjIwMjYtMDgtMjJUMDM6NDY6MzYuMTgzWiIsInVzZXJJZCI6InVzZXItMDAxIn0; Path=/; HttpOnly; SameSite=lax
+< vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+< content-type: application/json
+< Date: Sat, 22 Aug 2026 03:46:36 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Transfer-Encoding: chunked
+< 
+{ [284 bytes data]
+100   322    0   272  100    50   7934   1458 --:--:-- --:--:-- --:--:--  9470
+* Connection #0 to host localhost left intact
+{"ok":true,"authenticated":true,"actorId":"user-001","actorLabel":"Alice Operator","userId":"user-001","tenantId":"tenant-001","workspaceId":"workspace-001","productId":"services-id.default","sessionId":"session-104","redirectUrl":"/alice-personal/professional-workspace"}Note: Unnecessary use of -X or --request, GET is already inferred.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:3001...
+* Connected to localhost (127.0.0.1) port 3001 (#0)
+> GET /api/cases/list HTTP/1.1
+> Host: localhost:3001
+> User-Agent: curl/7.88.1
+> Accept: */*
+> Cookie: eos-workspace-session=eyJzZXNzaW9uSWQiOiJzZXNzaW9uLTEwNCIsImFjdG9ySWQiOiJ1c2VyLTAwMSIsImFjdG9yTGFiZWwiOiJBbGljZSBPcGVyYXRvciIsInRlbmFudElkIjoidGVuYW50LTAwMSIsIndvcmtzcGFjZUlkIjoid29ya3NwYWNlLTAwMSIsInByb2R1Y3RJZCI6InNlcnZpY2VzLWlkLmRlZmF1bHQiLCJpc3N1ZWRBdCI6IjIwMjYtMDgtMjJUMDM6NDY6MzYuMTgzWiIsInVzZXJJZCI6InVzZXItMDAxIn0
+> 
+< HTTP/1.1 200 OK
+< vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+< content-type: application/json
+< Date: Sat, 22 Aug 2026 03:46:36 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Transfer-Encoding: chunked
+< 
+{ [438 bytes data]
+100   426    0   426    0     0  47849      0 --:--:-- --:--:-- --:--:-- 53250
+* Connection #0 to host localhost left intact
+{"cases":[{"id":"case-101","title":"Sengketa Kontrak Kerjasama PT ABC","description":"Review dan penanganan sengketa pasal wanprestasi pada perjanjian distribusi.","status":"draft","priority":"high","lawyerId":null,"workId":"case-101","sourceDiscussionId":null,"actorId":"user-001","tenantId":"tenant-001","workspaceId":"workspace-001","createdAt":"2026-08-22T03:44:29.626Z","updatedAt":"2026-08-22T03:44:29.626Z"}],"total":1}    id    | work_id  |               title               | priority | actor_id |       created_at        
+----------+----------+-----------------------------------+----------+----------+-------------------------
+ case-101 | case-101 | Sengketa Kontrak Kerjasama PT ABC | high     | user-001 | 2026-08-22 03:44:29.626
+(1 row)
+

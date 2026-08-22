@@ -14,8 +14,8 @@
     "./*": "./dist/*.js"
   },
   "license": "MIT",
-  "scripts": {
-    "build": "tsc",
+ "scripts": {
+    "build": "tsc --skipLibCheck",
     "check-types": "tsc --noEmit",
     "dev": "tsc --watch",
     "lint": "eslint src --max-warnings 0"

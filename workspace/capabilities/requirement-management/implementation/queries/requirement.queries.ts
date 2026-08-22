@@ -18,7 +18,7 @@ export const getRequirement: GetRequirementQuery = {
   kind: "query",
   name: "requirement.get",
   version: "0.1.0",
-  execute(input: GetRequirementInput) {
+  async execute(input: GetRequirementInput) {
     return RequirementRepositoryCurrent.byId(input.id);
   },
 };
@@ -27,8 +27,8 @@ export const searchRequirements: SearchRequirementsQuery = {
   kind: "query",
   name: "requirement.search",
   version: "0.1.0",
-  execute(input: SearchRequirementsInput) {
-    const all = RequirementRepositoryCurrent.list();
+  async execute(input: SearchRequirementsInput) {
+    const all = await RequirementRepositoryCurrent.list();
     const q = (input.query ?? "").trim().toLowerCase();
     let filtered: readonly RequirementAggregate[] = all;
 

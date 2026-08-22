@@ -24,19 +24,18 @@ export const getRequirementsByOwnerCommand: CapabilityCommand = {
   kind: "command",
   name: "requirement.getByOwner",
   version: "1.0.0",
-  execute(input: unknown) {
+  async execute(input: unknown) {
     const parsed = GetRequirementsByOwnerInputSchema.parse(input);
     const { ownerId, productId } = parsed;
 
-    const allRequirements = RequirementRepositoryCurrent.list();
+    const allRequirements = await RequirementRepositoryCurrent.list();
     const ownerRequirements = allRequirements
-      .filter((req: RequirementAggregate) => req.ownerId === ownerId && (!productId || req.productId === productId))
+      .filter((req: RequirementAggregate) => req.owner === ownerId)
       .map((req: RequirementAggregate) => ({
         id: req.id,
         title: req.title,
         description: req.description,
         status: req.status,
-        author: req.author ? { name: req.author.name } : undefined,
         createdAt: req.createdAt.toISOString(),
         updatedAt: req.updatedAt.toISOString(),
       }));

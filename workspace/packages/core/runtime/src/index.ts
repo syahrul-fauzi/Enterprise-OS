@@ -12,3 +12,8 @@ export { recordObservedExecution, getTraceForDecision, detectReentryAnomalies, v
 export type { ObservedExecution } from "./execution-observability.js";
 export type { ExecutionContext } from "./execution-context.js";
 export type { ResolvedWorkspace } from "@repo/composition";
+// FIX-UI-001: New execution status and email queue exports
+export { ExecutionStatusRepository } from "./execution-status.js";
+export type { ExecutionStatus } from "./execution-status.js";
+export { EmailQueueRepository } from "./email-queue.js";
+export type { QueuedEmail } from "./email-queue.js";

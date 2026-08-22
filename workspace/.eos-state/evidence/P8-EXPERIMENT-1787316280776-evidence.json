@@ -1,0 +1,66 @@
+{
+  "experiment_id": "P8-EXPERIMENT-1787316280776",
+  "work_id": "case-dbd1aee9-5918",
+  "executed_at": "2026-08-21T12:44:41.169Z",
+  "passed": true,
+  "invariants_verified": [
+    {
+      "key": "work_id",
+      "original": "case-dbd1aee9-5918",
+      "reconstructed": "case-dbd1aee9-5918",
+      "pass": true
+    },
+    {
+      "key": "tenant_id",
+      "original": "tenant-996f3968-b807-4928-a3fa-21fdec2fefab",
+      "reconstructed": "tenant-996f3968-b807-4928-a3fa-21fdec2fefab",
+      "pass": true
+    },
+    {
+      "key": "workspace_id",
+      "original": "workspace-224ffbc3-1892-4a0b-b275-0a803df09c96",
+      "reconstructed": "workspace-224ffbc3-1892-4a0b-b275-0a803df09c96",
+      "pass": true
+    },
+    {
+      "key": "actor_id",
+      "original": "user-e1c67988-f340-4e4f-87f1-620fc973744b",
+      "reconstructed": "user-e1c67988-f340-4e4f-87f1-620fc973744b",
+      "pass": true
+    },
+    {
+      "key": "status",
+      "original": "draft",
+      "reconstructed": "draft",
+      "pass": true
+    },
+    {
+      "key": "priority",
+      "original": "high",
+      "reconstructed": "high",
+      "pass": true
+    },
+    {
+      "key": "version",
+      "original": 1,
+      "reconstructed": 1,
+      "pass": true
+    }
+  ],
+  "raw_record": {
+    "id": "case-dbd1aee9-5918",
+    "title": "P8 Test Legal Case: Corporate Contract Dispute",
+    "description": "P8 experiment to verify work identity survives runtime death",
+    "status": "draft",
+    "priority": "high",
+    "lawyer_id": null,
+    "tenant_id": "tenant-996f3968-b807-4928-a3fa-21fdec2fefab",
+    "workspace_id": "workspace-224ffbc3-1892-4a0b-b275-0a803df09c96",
+    "created_at": "2026-08-21T12:44:41.146Z",
+    "updated_at": "2026-08-21T12:44:41.146Z",
+    "closed_at": null,
+    "work_id": "case-dbd1aee9-5918",
+    "version": 1,
+    "actor_id": "user-e1c67988-f340-4e4f-87f1-620fc973744b"
+  }
+}

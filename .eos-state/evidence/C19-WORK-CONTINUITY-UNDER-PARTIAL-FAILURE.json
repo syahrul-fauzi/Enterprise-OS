@@ -1,0 +1,138 @@
+{
+  "decision_id": "C19-WORK-CONTINUITY-UNDER-PARTIAL-FAILURE",
+  "executed_at": "2026-08-20T08:55:55.310Z",
+  "allPassed": true,
+  "criteria": [
+    {
+      "name": "Work identity (W1 preserved)",
+      "pass": true
+    },
+    {
+      "name": "Failed context state atomic (no partial mutations)",
+      "pass": true
+    },
+    {
+      "name": "Recovery context is fresh (new trace ID)",
+      "pass": true
+    },
+    {
+      "name": "Lineage preserved (parent trace linked)",
+      "pass": true
+    },
+    {
+      "name": "Recovery actor different (execution replaceable)",
+      "pass": true
+    },
+    {
+      "name": "Authorization recomputed for recovery",
+      "pass": true
+    },
+    {
+      "name": "No work fragmentation (still one W1)",
+      "pass": true
+    },
+    {
+      "name": "No artifact duplication (no new work created)",
+      "pass": true
+    },
+    {
+      "name": "Final state deterministic (all mutations applied)",
+      "pass": true
+    },
+    {
+      "name": "No evidence ambiguity (traces linked)",
+      "pass": true
+    },
+    {
+      "name": "OCC versioning preserved during recovery",
+      "pass": true
+    },
+    {
+      "name": "Recovery succeeded without reconstruction",
+      "pass": true
+    }
+  ],
+  "traces": [
+    {
+      "decision_id": "C19-WORK-CONTINUITY-UNDER-PARTIAL-FAILURE",
+      "executionId": "exec-c19-partial-update-prepared",
+      "success": true,
+      "details": {
+        "mutations_prepared": [
+          "status",
+          "reviewerIds"
+        ],
+        "save_not_called": true
+      },
+      "logicalWorkId": "W1-C19-TEST-001",
+      "context_trace_id": "95998cef-5b6e-44ad-9a55-d7306d605b37",
+      "is_reentry": false,
+      "parent_context_trace_id": null,
+      "idempotency_key": "d63c0dc0-b68d-493a-ba46-61667f238b46",
+      "timestamp_utc": "2026-08-20T08:55:55.309Z"
+    },
+    {
+      "decision_id": "C19-WORK-CONTINUITY-UNDER-PARTIAL-FAILURE",
+      "executionId": "exec-c19-crash-event",
+      "success": false,
+      "details": {
+        "failure_type": "process_crash",
+        "stage": "mid_transition"
+      },
+      "logicalWorkId": "W1-C19-TEST-001",
+      "context_trace_id": "95998cef-5b6e-44ad-9a55-d7306d605b37",
+      "is_reentry": false,
+      "parent_context_trace_id": null,
+      "idempotency_key": "d63c0dc0-b68d-493a-ba46-61667f238b46",
+      "timestamp_utc": "2026-08-20T08:55:55.309Z"
+    },
+    {
+      "decision_id": "C19-WORK-CONTINUITY-UNDER-PARTIAL-FAILURE",
+      "executionId": "exec-c19-failing-context-complete",
+      "success": false,
+      "details": {
+        "crash_caught": true,
+        "crash_message": "SIMULATED_PROCESS_CRASH: Execution terminated unexpectedly"
+      },
+      "logicalWorkId": "W1-C19-TEST-001",
+      "context_trace_id": "95998cef-5b6e-44ad-9a55-d7306d605b37",
+      "is_reentry": false,
+      "parent_context_trace_id": null,
+      "idempotency_key": "d63c0dc0-b68d-493a-ba46-61667f238b46",
+      "timestamp_utc": "2026-08-20T08:55:55.309Z"
+    },
+    {
+      "decision_id": "C19-WORK-CONTINUITY-UNDER-PARTIAL-FAILURE",
+      "executionId": "exec-c19-recovery-complete",
+      "success": true,
+      "details": {
+        "recovery_completed": true,
+        "final_version": 2
+      },
+      "logicalWorkId": "W1-C19-TEST-001",
+      "context_trace_id": "de10a5ac-78cf-4d1f-8cac-e06cd20c057d",
+      "is_reentry": false,
+      "parent_context_trace_id": "95998cef-5b6e-44ad-9a55-d7306d605b37",
+      "idempotency_key": "d1e2f4ef-8d07-487b-af3a-22aefbcc27fb",
+      "timestamp_utc": "2026-08-20T08:55:55.310Z"
+    }
+  ],
+  "anomalies": {
+    "has_disconnected_parent": false,
+    "disconnected_executions": [],
+    "has_context_linkage": true
+  },
+  "workCorrelation": {
+    "total_executions": 4,
+    "correlated_executions": 4,
+    "correlation_percentage": 100,
+    "uncorrelated_executions": [],
+    "is_100_percent_compliant": true
+  },
+  "final_state": {
+    "id": "REQ-C19-001",
+    "workId": "W1-C19-TEST-001",
+    "version": 2,
+    "status": "in_review"
+  }
+}

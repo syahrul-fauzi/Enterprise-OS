@@ -1,10 +1,12 @@
 export type RequirementStatus =
   | "draft"
+  | "in_review"
+  | "review_completed"
+  | "review_rejected"
   | "approved"
   | "in_delivery"
   | "implemented"
   | "verified";
-
 export type RequirementPriority = "low" | "medium" | "high" | "critical";
 
 export type RequirementVerificationStatus =
@@ -41,9 +43,18 @@ export interface RequirementAggregate {
   readonly dependsOn: readonly RequirementDependency[];
   readonly createdAt: Readonly<Date>;
   readonly updatedAt: Readonly<Date>;
+  readonly approvedBy?: string;
   readonly approvedAt?: Readonly<Date>;
   readonly implementedAt?: Readonly<Date>;
   readonly verifiedAt?: Readonly<Date>;
+  // C12/C13/C18 review metadata (C18: support multiple parallel reviewers)
+  readonly reviewerIds?: string[];
+  readonly reviewRequestedBy?: string;
+  readonly requestedAt?: Readonly<Date>;
+  readonly reviewCompletedBy?: string;
+  readonly reviewCompletedAt?: Readonly<Date>;
+  // Version tracking for evidence
+  readonly version?: number;
 }
 
 export interface CreateRequirementInput {

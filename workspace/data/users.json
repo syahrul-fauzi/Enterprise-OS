@@ -3,9 +3,9 @@
     "id": "user-001",
     "email": "alice@eos.dev",
     "displayName": "Alice Operator",
-    "passwordHash": "c464339e47d2ddf1fd70d17e7fbcc8b5$3103f16994259be610f82314fe211e5804b54c5ba56e06bc5868e183a6a899527ce2650dd8141a38eef60843bca7c3bf8d52a419464bdc2a48bbafc715189053",
+    "passwordHash": "1e199e09e00da0a30ca59d1729ed086f$25bc0149ac5612f0dec15aba0344ac367000e6618a7f741eefd631efc64a47dba0f9012675c86f428c75c09e052633da9ff0ce52375f5aa61310bd70893957cc",
     "createdAt": "2026-07-11T12:56:14.194Z",
-    "updatedAt": "2026-08-08T12:56:14.194Z"
+    "updatedAt": "2026-08-22T03:30:00.000Z"
   },
   {
     "id": "user-002",

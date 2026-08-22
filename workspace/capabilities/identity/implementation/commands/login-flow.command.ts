@@ -1,16 +1,52 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
+import * as crypto from "node:crypto";
 import {
   UserId,
   TenantId,
   WorkspaceId,
-} from "../contracts/identity.contracts.js";
+} from "../contracts/identity.contracts";
+import { UserId as UserIdValue, TenantId as TenantIdValue, WorkspaceId as WorkspaceIdValue } from "../contracts/identity.contracts";
+import { randomUUID } from "node:crypto";
+
+// REALITY PATH ONLY - Import repository Postgres yang dibutuhkan
 import {
   getUserRepositoryPostgres,
   getMembershipRepositoryPostgres,
-  getWorkspaceRepositoryPostgres,
   getTenantRepositoryPostgres,
-} from "../repositories/index.js";
+  getWorkspaceRepositoryPostgres,
+  getSessionRepositoryPostgres,
+  newSessionId,
+} from "../repositories/index";
+const userRepository = getUserRepositoryPostgres();
+const membershipRepository = getMembershipRepositoryPostgres();
+const tenantRepository = getTenantRepositoryPostgres();
+const workspaceRepository = getWorkspaceRepositoryPostgres();
+const sessionRepository = getSessionRepositoryPostgres();
+
+// REALITY PATH ONLY - Inline password verify untuk menghindari import error
+const SCRYPT_KEYLEN = 64;
+const SALT_BYTES = 16;
+const SALT_SEPARATOR = "$";
+function scryptDerive(password: string, salt: Buffer): string {
+  const derived = crypto.scryptSync(password, salt, SCRYPT_KEYLEN) as Buffer;
+  return `${salt.toString("hex")}${SALT_SEPARATOR}${derived.toString("hex")}`;
+}
+function verifyPassword(password: string, storedHash: string): boolean {
+  try {
+    const [saltHex] = storedHash.split(SALT_SEPARATOR);
+    if (!saltHex) return false;
+    const salt = Buffer.from(saltHex, "hex");
+    const expected = scryptDerive(password, salt);
+    return crypto.timingSafeEqual(
+      Buffer.from(expected, "utf8"),
+      Buffer.from(storedHash, "utf8"),
+    );
+  } catch {
+    return false;
+  }
+}
+
 
 export const LoginFlowInputSchema = z.object({
   email: z.string().email(),
@@ -21,11 +57,11 @@ export type LoginFlowInput = z.infer<typeof LoginFlowInputSchema>;
 
 export type LoginFlowOutput = {
   readonly authenticated: boolean;
-  readonly userId: string;
+  readonly userId: UserId;
   readonly actorId: string;
   readonly actorLabel: string;
-  readonly tenantId: string;
-  readonly workspaceId: string;
+  readonly tenantId: TenantId;
+  readonly workspaceId: WorkspaceId;
   readonly productId: string;
   readonly sessionId: string;
   readonly email: string;
@@ -36,48 +72,58 @@ type LoginFlowCommand = CapabilityCommand<LoginFlowInput, LoginFlowOutput>;
 export const loginFlowCommand: LoginFlowCommand = {
   kind: "command",
   name: "identity.loginFlow",
-  version: "2.0.0", // Postgres-backed persistence
+  version: "2.0.0",
 
   async execute(input) {
     const parsed = LoginFlowInputSchema.parse(input);
     const { email, password } = parsed;
 
-    // Lazy import capabilityRegistry to avoid circular initialization
-    const { capabilityRegistry } = await import("@repo/core-kernel");
-    
-    // First authenticate user via core auth command (uses Postgres)
-    const authResult = await capabilityRegistry.invokeAsync("identity", "authenticateUser", { email, password });
-
-    const authOutput = authResult.output;
-    if (!authOutput.authenticated || !authOutput.userId) {
-      throw new Error("Invalid email or password");
+    // REALITY PATH ONLY - Inline seluruh logika login untuk menghindari semua import error
+    const user = await userRepository.findByEmail(email);
+    if (!user) {
+      throw new Error("Invalid credentials");
+    }
+    const passwordValid = verifyPassword(password, user.passwordHash);
+    if (!passwordValid) {
+      throw new Error("Invalid credentials");
     }
 
-    // Resolve all entities from repositories (supports both in-memory and Postgres via lazy loaders)
-    const userId = UserId(authOutput.userId);
-    const user = await getUserRepositoryPostgres().byId(userId);
-    const memberships = await getMembershipRepositoryPostgres().listByUser(userId);
-    const primaryMembership = memberships[0];
-    
-    const tenantIdStr = authOutput.tenantId ?? primaryMembership?.tenantId ?? "tenant.anonymous";
-    const workspaceIdStr = authOutput.workspaceId ?? primaryMembership?.workspaceId ?? "professional-workspace.anonymous";
-    
-    const workspace = await getWorkspaceRepositoryPostgres().byId(WorkspaceId(workspaceIdStr));
-    const tenant = await getTenantRepositoryPostgres().byId(TenantId(tenantIdStr));
-    const actorLabel = authOutput.actorLabel ?? user?.displayName ?? "User";
-    const productId = authOutput.productId ?? workspace?.productId ?? "services-id.default";
-    const sessionId = authOutput.session?.sessionId ?? "";
+    // After successful authentication, find first tenant/membership to auto-select workspace
+    const memberships = await membershipRepository.findByUserId(user.id);
+    if (memberships.length === 0) {
+      throw new Error("No workspaces available for user");
+    }
+    const firstMembership = memberships[0];
+    const tenant = await tenantRepository.findById(firstMembership.tenantId);
+    if (!tenant) {
+      throw new Error("Tenant not found");
+    }
+    const workspaces = await workspaceRepository.findByTenantId(firstMembership.tenantId);
+    if (workspaces.length === 0) {
+      throw new Error("No workspaces found for tenant");
+    }
+    const workspace = workspaces[0];
+    // Create a new session for the user
+    const sessionId = newSessionId();
+    const session = await sessionRepository.create({
+      id: sessionId,
+      userId: user.id,
+      workspaceId: workspace.id,
+      tenantId: tenant.id,
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 1 week
+    });
 
     return {
       authenticated: true,
-      userId: authOutput.userId,
-      actorId: authOutput.userId,
-      actorLabel,
-      tenantId: tenantIdStr,
-      workspaceId: workspaceIdStr,
-      productId,
-      sessionId,
-      email,
+      userId: user.id,
+      actorId: user.id,
+      actorLabel: user.displayName || "User",
+      tenantId: tenant.id,
+      workspaceId: workspace.id,
+      productId: "services-id.default",
+      sessionId: session.id,
+      email: user.email,
     };
   },
 };

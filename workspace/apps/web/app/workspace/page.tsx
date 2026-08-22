@@ -1,12 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useWorkspaceSession } from "@repo/presentation-hooks";
-import { WorkspaceEntryPanel } from "@repo/presentation-widgets";
 import { CaseWorkspace } from "@capabilities/legal-case/experience/workspaces/CaseWorkspace";
-import ServicesWorkspace from "@capabilities/service-directory/experience/workspaces/ServicesWorkspace";
-import { CommunityWorkspace } from "@capabilities/legal-community/experience/workspaces/CommunityWorkspace";
 
 interface TenantPayload {
   readonly ok: boolean;
@@ -175,14 +172,13 @@ export default function WorkspacePage({
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="space-y-3">
               <div className="inline-flex rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-                Tenant Workspace
+                Ruang Kerja Organisasi
               </div>
               <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                Manage your organization and workspaces
+                Kelola organisasi dan ruang kerja Anda
               </h1>
               <p className="max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">
-                Create tenants (organizations), provision workspaces within them, and manage
-                membership access. Each workspace is an isolated product boundary for delivery.
+                Buat organisasi, siapkan ruang kerja di dalamnya, dan kelola akses anggota. Setiap ruang kerja adalah batas produk yang terisolasi untuk pengiriman layanan.
               </p>
             </div>
 
@@ -193,19 +189,19 @@ export default function WorkspacePage({
                     onClick={() => setTenantFormOpen((v) => !v)}
                     className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-900 transition hover:bg-slate-100"
                   >
-                    Create Organization
+                    Buat Organisasi
                   </button>
                   <button
                     onClick={() => setWorkspaceFormOpen((v) => !v)}
                     className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
                   >
-                    Create Workspace
+                    Buat Ruang Kerja
                   </button>
                   <button
                     onClick={handleLogout}
                     className="rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700 transition hover:bg-red-100"
                   >
-                    Logout
+                    Keluar
                   </button>
                 </>
               ) : (
@@ -213,7 +209,7 @@ export default function WorkspacePage({
                   className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
                   href="/"
                 >
-                  Sign in to continue
+                  Masuk untuk melanjutkan
                 </Link>
               )}
             </div>
@@ -222,7 +218,7 @@ export default function WorkspacePage({
 
         {error ? (
           <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700">
-            <div className="font-semibold">Attention needed</div>
+            <div className="font-semibold">Perlu perhatian</div>
             <p className="mt-1">{error}</p>
           </div>
         ) : null}
@@ -235,12 +231,10 @@ export default function WorkspacePage({
                   Anonymous Session
                 </div>
                 <h2 className="mt-3 text-xl font-bold text-amber-900">
-                  Sign in to access your workspace
+                  Masuk untuk mengakses ruang kerja Anda
                 </h2>
                 <p className="mt-2 max-w-3xl text-sm leading-6 text-amber-800">
-                  You are currently browsing as an anonymous visitor. To manage tenants, create
-                  workspaces, and access your organization data, please sign in or create an
-                  account first.
+                  Anda sedang menjelajah sebagai pengunjung anonim. Untuk mengelola organisasi, membuat ruang kerja, dan mengakses data organisasi Anda, silakan masuk atau buat akun terlebih dahulu.
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">
@@ -248,7 +242,7 @@ export default function WorkspacePage({
                   className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
                   href="/"
                 >
-                  Go to sign in
+                  Masuk sekarang
                 </Link>
               </div>
             </div>
@@ -257,16 +251,16 @@ export default function WorkspacePage({
 
         {isAuthenticated && tenantFormOpen ? (
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-lg font-bold text-slate-950">Create new organization (tenant)</h2>
+            <h2 className="text-lg font-bold text-slate-950">Buat organisasi baru</h2>
             <p className="mt-1 text-sm text-slate-600">
-              Organizations (tenants) are top-level containers for workspaces and members.
+              Organisasi adalah wadah tingkat atas untuk ruang kerja dan anggota.
             </p>
             <form onSubmit={handleCreateTenant} className="mt-4 grid gap-3 md:grid-cols-[1fr_1fr_auto]">
               <input
                 type="text"
                 value={tenantName}
                 onChange={(e) => setTenantName(e.target.value)}
-                placeholder="Organization name (e.g. Acme Legal)"
+                placeholder="Nama organisasi (contoh: Firma Hukum Andi)"
                 required
                 className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-950/20"
               />
@@ -274,7 +268,7 @@ export default function WorkspacePage({
                 type="text"
                 value={tenantSlug}
                 onChange={(e) => setTenantSlug(e.target.value)}
-                placeholder="URL slug (optional, auto-generated)"
+                placeholder="Slug URL (opsional, dibuat otomatis)"
                 className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-950/20"
               />
               <div className="flex gap-2">
@@ -321,7 +315,7 @@ export default function WorkspacePage({
               >
                 <option value="commsme">🟠 COMMSME — Pendamping Hukum UMKM (FIRST LIGHT)</option>
                 <option value="lawyershub">🟢 LawyersHub — Kelola Kasus Hukum (First Light · D1.3 Certified)</option>
-                <option value="services-id">� Services.ID — Permintaan & Direktori Layanan (D1.3 Certified)</option>
+                <option value="services-id">🔵 Services.ID — Permintaan & Direktori Layanan (D1.3 Certified)</option>
                 <option value="ilc">🟢 ILC — Komunitas & Konten Hukum (D1.3 Certified · Community Surface)</option>
                 <option value="academic">🟢 Academic — Riset & Publikasi (LEVERAGE · Shared Primitives)</option>
               </select>
@@ -356,8 +350,7 @@ export default function WorkspacePage({
                   Welcome back{actorLabel ? `, ${actorLabel}` : ""}
                 </h2>
                 <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-                  Here is your current active organization and the list of workspaces you have
-                  access to.
+                  Berikut adalah organisasi aktif Anda dan daftar ruang kerja yang dapat Anda akses.
                 </p>
               </div>
 
@@ -369,7 +362,7 @@ export default function WorkspacePage({
                 <div className="grid gap-4 lg:grid-cols-3">
                   <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-5">
                     <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      Active Operator
+                      Operator Aktif
                     </div>
                     <div className="mt-2 text-lg font-semibold text-slate-900">
                       {actorLabel ?? "—"}
@@ -380,7 +373,7 @@ export default function WorkspacePage({
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50 to-white p-5" data-testid="tenant-card">
                     <div className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-600">
-                      Organization (Tenant)
+                      Organisasi
                     </div>
                     <div className="mt-2 text-lg font-semibold text-slate-900">
                       {tenantData.tenant.name}
@@ -391,13 +384,13 @@ export default function WorkspacePage({
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-emerald-50 to-white p-5">
                     <div className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-600">
-                      Workspace count
+                      Jumlah Ruang Kerja
                     </div>
                     <div className="mt-2 text-lg font-semibold text-slate-900">
-                      {tenantData.workspaces.length} workspace{tenantData.workspaces.length === 1 ? "" : "s"}
+                      {tenantData.workspaces.length} ruang kerja
                     </div>
                     <div className="mt-1 text-xs text-slate-500">
-                      you have membership access
+                      Anda memiliki akses keanggotaan
                     </div>
                   </div>
                 </div>
@@ -406,7 +399,7 @@ export default function WorkspacePage({
               {tenantData && tenantData.workspaces.length > 0 ? (
                 <div className="mt-2">
                   <div className="mb-3 text-sm font-semibold text-slate-700">
-                    Your Workspaces
+                    Ruang Kerja Anda
                   </div>
                   <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                     {tenantData.workspaces.map((ws) => (
@@ -451,7 +444,13 @@ export default function WorkspacePage({
                         </div>
                         {/* Add Navigation buttons for LawyersHub workspaces - links to new dedicated routes */}
                         {ws.productId === "lawyershub" && (
-                          <div className="mt-3 grid grid-cols-4 gap-2">
+                          <div className="mt-3 grid grid-cols-5 gap-2">
+                            <Link 
+                              href="/cases/new"
+                              className="rounded-lg bg-blue-600 px-2 py-2 text-xs font-semibold text-white hover:bg-blue-700 text-center"
+                            >
+                              Buat Kasus Baru
+                            </Link>
                             <Link 
                               href="/cases"
                               className="rounded-lg bg-indigo-600 px-2 py-2 text-xs font-semibold text-white hover:bg-indigo-700 text-center"
@@ -575,42 +574,21 @@ export default function WorkspacePage({
                     ))}
                   </div>
 
-                  {/* Case Listing for LawyersHub and COMMSME workspaces - reuses legal-case capability */}
-                  {tenantData && tenantData.workspaces.some(ws => ws.productId === "lawyershub" || ws.productId === "commsme") && (
+                  {/* Lawyers Hub Case Listing - legal-case capability */}
+                  {tenantData && (
                     <div className="mt-8">
                       <CaseWorkspace />
-                    </div>
-                  )}
-
-                  {/* Service Requests Listing for Services.ID workspaces - canonical presentation consumption */}
-                  {tenantData && tenantData.workspaces.some(ws => ws.productId.startsWith("services-id")) && (
-                    <div className="mt-8">
-                      <ServicesWorkspace />
-                    </div>
-                  )}
-
-                  {/* Community Hub Listing for ILC & Academic workspaces — shared legal-community rail, 2 distinct business jobs */}
-                  {tenantData && tenantData.workspaces.some(ws => ws.productId === "ilc" || ws.productId === "academic") && (
-                    <div className="mt-8">
-                      <CommunityWorkspace />
                     </div>
                   )}
                 </div>
               ) : tenantData && tenantData.workspaces.length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm text-slate-600">
-                  No workspaces yet — click <span className="font-semibold text-slate-900">Create Workspace</span> to provision your first one.
+                  No Lawyers Hub workspaces yet — contact your administrator to provision your workspace.
                 </div>
               ) : null}
             </div>
           </section>
         ) : null}
-
-        <WorkspaceEntryPanel 
-          loading={loading || sessionLoading}
-          authenticated={isAuthenticated}
-          actorLabel={actorLabel || "User"}
-          error={error}
-        />
       </div>
     </main>
   );

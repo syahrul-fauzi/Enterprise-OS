@@ -23,9 +23,11 @@ const sessionRepository = process.env.DATABASE_URL
   : SessionRepositoryInMemory;
 
 // Toggle repository based on environment (minimal fix for production rail)
+console.log("[case.commands.ts] DATABASE_URL present:", !!process.env.DATABASE_URL);
 const caseRepository = process.env.DATABASE_URL 
   ? getCaseRepositoryPostgres() 
   : CaseRepositoryInMemory;
+console.log("[case.commands.ts] Using case repository type:", process.env.DATABASE_URL ? "POSTGRES" : "IN-MEMORY");
 
 const CreateCaseWithContextSchema = z.object({
   title: z.string().min(1),
@@ -135,12 +137,13 @@ export const createCase: CreateCaseCommand = {
       // Add execution context for lineage tracking (W4-C20-001 compliance)
       executionContext,
     } as any;
-    // Add tenant/workspace context for isolation
+    // Add tenant/workspace/actor context for isolation
     (entity as any).tenantId = tenantId;
     (entity as any).workspaceId = workspaceId;
+    (entity as any).actorId = actorId;
 
     await caseRepository.save(entity);
-    return { id: entity.id, status: entity.status };
+    return { id: entity.id, status: entity.status, workId: entity.workId || entity.id };
   },
 };
 

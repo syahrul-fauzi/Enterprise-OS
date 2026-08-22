@@ -1,7 +1,7 @@
 {
-  "baseUrl": "https://lawyershub.id",
-  "generatedAt": "2026-08-06T16:35:01.833Z",
+  "baseUrl": "https://127.0.0.1",
+  "generatedAt": "2026-08-22T05:29:21.380Z",
   "status": "failed",
-  "error": "unable to get local issuer certificate",
+  "error": "Workspace root did not render Professional Workspace.",
   "checks": []
 }

@@ -20,17 +20,11 @@ interface ProductBindingManifest {
 }
 
 function workspaceRoot(): string {
-  const current = resolve(process.cwd());
-  if (existsSync(resolve(current, "products"))) {
-    return current;
-  }
-
-  const candidate = resolve(current, "../..");
-  if (existsSync(resolve(candidate, "products"))) {
-    return candidate;
-  }
-
-  return current;
+  // REALITY PATH ONLY: Hardcode absolute path to workspace root to fix product.binding.yaml resolution in Next.js server
+  // This is minimal fix for path resolution failure in containerized Next.js app
+  const workspaceRoot = resolve("/app");
+  console.log("[product-binding.ts] REALITY_PATH_ONLY: workspaceRoot set to /app, products exists?", existsSync(resolve(workspaceRoot, "products")));
+  return workspaceRoot;
 }
 
 function resolveProductBindingPath(productId: string): string {

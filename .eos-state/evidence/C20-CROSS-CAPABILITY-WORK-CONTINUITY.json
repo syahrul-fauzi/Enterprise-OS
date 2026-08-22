@@ -1,0 +1,113 @@
+{
+  "decision_id": "C20-CROSS-CAPABILITY-WORK-CONTINUITY",
+  "work_id": "W1-C20-TEST-001",
+  "executed_at": "2026-08-20T09:03:39.292Z",
+  "artifacts": {
+    "legalCase": {
+      "id": "case-101",
+      "workId": "W1-C20-TEST-001"
+    },
+    "legalDocument": {
+      "id": "doc-101",
+      "workId": "W1-C20-TEST-001"
+    },
+    "requirement": {
+      "id": {},
+      "workId": "W1-C20-TEST-001"
+    }
+  },
+  "traces": [
+    {
+      "decision_id": "C20-CROSS-CAPABILITY-WORK-CONTINUITY",
+      "executionId": "exec-c20-case-created",
+      "success": true,
+      "logicalWorkId": "W1-C20-TEST-001",
+      "context_trace_id": "1e00ac3d-c7c3-474f-9e11-eeb67abc085e",
+      "is_reentry": false,
+      "parent_context_trace_id": null,
+      "idempotency_key": "cc75d240-37a2-4099-aba7-252ce2fa007b",
+      "timestamp_utc": "2026-08-20T09:03:39.293Z"
+    },
+    {
+      "decision_id": "C20-CROSS-CAPABILITY-WORK-CONTINUITY",
+      "executionId": "exec-c20-document-created",
+      "success": true,
+      "logicalWorkId": "W1-C20-TEST-001",
+      "context_trace_id": "ba6e6871-8835-4d1a-90fc-e81cf7bd63f6",
+      "is_reentry": false,
+      "parent_context_trace_id": null,
+      "idempotency_key": "c075140d-6ad0-4025-96ff-3330e6e61e88",
+      "timestamp_utc": "2026-08-20T09:03:39.294Z"
+    },
+    {
+      "decision_id": "C20-CROSS-CAPABILITY-WORK-CONTINUITY",
+      "executionId": "exec-c20-requirement-created",
+      "success": true,
+      "logicalWorkId": "W1-C20-TEST-001",
+      "context_trace_id": "13427422-a6a6-4144-a3d9-56f366d7c630",
+      "is_reentry": false,
+      "parent_context_trace_id": null,
+      "idempotency_key": "e37e725f-f5c4-4b47-8a3e-e8ced8972e95",
+      "timestamp_utc": "2026-08-20T09:03:39.295Z"
+    }
+  ],
+  "criteria": [
+    {
+      "name": "Work identity (W1 preserved across all capabilities)",
+      "pass": true
+    },
+    {
+      "name": "Capability sequence legal-case → legal-document → requirement-management completed",
+      "pass": true
+    },
+    {
+      "name": "Artifact lineage continuous (parent-child traceable)",
+      "pass": true
+    },
+    {
+      "name": "Context allowed to change (fresh trace ID for each capability)",
+      "pass": true
+    },
+    {
+      "name": "Actor allowed to change (partner → agent → paralegal)",
+      "pass": true
+    },
+    {
+      "name": "Authorization recomputed for each capability",
+      "pass": true
+    },
+    {
+      "name": "Evidence cross-capability traceable (single decision_id)",
+      "pass": true
+    },
+    {
+      "name": "Ownership unchanged (tenant/workspace tetap sama)",
+      "pass": true
+    },
+    {
+      "name": "Tenant unchanged (T-LAWYERSHUB-MAIN preserved)",
+      "pass": true
+    },
+    {
+      "name": "Workspace unchanged (ws-main-legal-team preserved)",
+      "pass": true
+    },
+    {
+      "name": "New Work created = 0 (hanya W1)",
+      "pass": true
+    },
+    {
+      "name": "Artifact copy created = 0 (semua agregat unique)",
+      "pass": true
+    },
+    {
+      "name": "Reconstruction required = 0 (semua agregat baca workId dari context)",
+      "pass": true
+    },
+    {
+      "name": "Capability B tidak mengetahui internal private state Capability A",
+      "pass": true
+    }
+  ],
+  "allPassed": true
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useWorkspaceSession } from "@repo/presentation-hooks";
 import {
   documentService,
   type DocumentAggregate,
@@ -13,8 +13,9 @@ import { DocumentCard } from "../components/DocumentCard.js";
 type StatusFilter = DocumentStatus | "all";
 
 export function DocumentWorkspace() {
-  const params = useParams<{ id?: string }>();
-  const router = useRouter();
+  // Parse params client-side to avoid next/navigation dependency while preserving routing
+  const [params, setParams] = useState<{ id?: string; action?: string }>({});
+  const { session, authenticated, cachedSession, saveScrollPosition, restoreScrollPosition } = useWorkspaceSession();
   
   const initial = useMemo(
     () => documentService.searchDocuments({ limit: 50, offset: 0 }),
@@ -25,15 +26,75 @@ export function DocumentWorkspace() {
   
   // C11-001: Edit state management (reused from RequirementWorkspace pattern)
   const [editingDocumentId, setEditingDocumentId] = useState<string | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Parse path client-side on mount and update, preserve same functionality without next/navigation
+  useEffect(() => {
+    const parsePath = () => {
+      const path = window.location.pathname;
+      const matchCreate = path.match(/\/documents\/create$/);
+      const matchEdit = path.match(/\/documents\/([^/]+)\/edit$/);
+      const matchView = path.match(/\/documents\/([^/]+)$/);
+      
+      if (matchCreate) {
+        setParams({ action: "create" });
+        setIsCreating(true);
+        setTitle("");
+        setDescription("");
+        setEditingDocumentId(null);
+        setError(null);
+        
+        // Extract caseId from URL search params to link document to current work (case)
+        const searchParams = new URLSearchParams(window.location.search);
+        const caseIdFromUrl = searchParams.get("caseId");
+        if (caseIdFromUrl) {
+          // Pre-set title with case context - user can edit
+          setTitle(`Document for Case ${caseIdFromUrl.substring(0, 8)}...`);
+        }
+      } else if (matchEdit) {
+        const id = matchEdit[1];
+        if (!id) return;
+        setParams({ id, action: "edit" });
+        const document = documentService.getDocument({ id: DocumentId(id) });
+        if (document) {
+          handleEdit(document);
+        }
+      } else if (matchView) {
+        const id = matchView[1];
+        if (!id) return;
+        setParams({ id });
+        const document = documentService.getDocument({ id: DocumentId(id) });
+        if (document) {
+          handleEdit(document);
+        }
+      } else {
+        // Default to list view
+        setParams({});
+        setIsCreating(false);
+        setEditingDocumentId(null);
+      }
+    };
+
+    // Initial parse
+    parsePath();
+    // Listen for popstate (back/forward navigation)
+    window.addEventListener('popstate', parsePath);
+    return () => window.removeEventListener('popstate', parsePath);
+  }, []);
+
   const result = useMemo(() => {
+    // Extract caseId from URL to filter documents by current work (case)
+    const searchParams = new URLSearchParams(window.location.search);
+    const caseIdFromUrl = searchParams.get("caseId");
+    
     return documentService.searchDocuments({
       query,
       status: statusFilter,
+      ...(caseIdFromUrl && { matterId: caseIdFromUrl }),
       limit: 50,
       offset: 0,
     });
@@ -50,23 +111,16 @@ export function DocumentWorkspace() {
     "archived",
   ] as const;
 
-  // C11-001: Load document into edit state when routed to /documents/:id/edit
-  useEffect(() => {
-    if (params.id) {
-      const document = documentService.getDocument({ id: DocumentId(params.id) });
-      if (document) {
-        handleEdit(document);
-      }
-    }
-  }, [params.id]);
+// Redundant logic removed - path parsing unified in single useEffect above
 
   function resetForm() {
     setTitle("");
     setDescription("");
     setEditingDocumentId(null);
+    setIsCreating(false);
     setError(null);
-    // Return to documents list after edit completion
-    router.push("/documents");
+    // Return to documents list after creation/edit completion
+    window.location.href = "/documents";
   }
 
   function handleEdit(item: DocumentAggregate) {
@@ -76,37 +130,63 @@ export function DocumentWorkspace() {
     setError(null);
   }
 
-  // C11-001: Submit edits using existing document.update capability
+  // Unified submit handler for both create and edit
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitting(true);
     setError(null);
     
     try {
-      if (!editingDocumentId) {
-        throw new Error("No document selected for editing");
-      }
+      if (isCreating) {
+        // Create new document using document.create capability - pass through matterId from caseId
+        const searchParams = new URLSearchParams(window.location.search);
+        const caseIdFromUrl = searchParams.get("caseId");
+        const response = await fetch("/api/capabilities/legal-document/document.create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title,
+            description,
+            ...(caseIdFromUrl && { matterId: caseIdFromUrl }),
+          }),
+        });
 
-      const response = await fetch("/api/capabilities/legal-document/document.update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: editingDocumentId,
-          title,
-          description,
-        }),
-      });
+        if (!response.ok) {
+          const payload = (await response.json()) as {
+            readonly error?: string;
+            readonly detail?: string;
+          };
+          throw new Error(
+            payload.detail ??
+            payload.error ??
+            "Failed to create document"
+          );
+        }
+      } else if (editingDocumentId) {
+        // Update existing document using document.update capability
+        const response = await fetch("/api/capabilities/legal-document/document.update", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: editingDocumentId,
+            title,
+            description,
+          }),
+        });
 
-      if (!response.ok) {
-        const payload = (await response.json()) as {
-          readonly error?: string;
-          readonly detail?: string;
-        };
-        throw new Error(
-          payload.detail ??
-          payload.error ??
-          "Failed to update document"
-        );
+        if (!response.ok) {
+          const payload = (await response.json()) as {
+            readonly error?: string;
+            readonly detail?: string;
+          };
+          throw new Error(
+            payload.detail ??
+            payload.error ??
+            "Failed to update document"
+          );
+        }
+      } else {
+        throw new Error("No document selected for editing or creation");
       }
 
       resetForm();
@@ -121,11 +201,11 @@ export function DocumentWorkspace() {
     resetForm();
   }
 
-  // C11-001: Edit form - minimal human-facing surface
-  if (editingDocumentId) {
+  // C11-001: Create/Edit form - minimal human-facing surface
+  if (editingDocumentId || isCreating) {
     return (
       <div className="p-4 border rounded-lg bg-white shadow-sm space-y-3">
-        <h2 className="text-xl font-bold text-gray-800">Edit Document</h2>
+        <h2 className="text-xl font-bold text-gray-800">{isCreating ? "Create New Document" : "Edit Document"}</h2>
         
         {error && (
           <div className="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
@@ -168,7 +248,7 @@ export function DocumentWorkspace() {
               disabled={submitting}
               className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 disabled:opacity-50"
             >
-              {submitting ? "Saving..." : "Save Changes"}
+              {submitting ? "Saving..." : isCreating ? "Create Document" : "Save Changes"}
             </button>
             <button
               type="button"
@@ -185,10 +265,21 @@ export function DocumentWorkspace() {
   }
 
   // Original document list view (unchanged)
+  // Extract caseId to show context in document list
+  const searchParams = new URLSearchParams(window.location.search);
+  const caseIdFromUrl = searchParams.get("caseId");
+
   return (
     <div className="p-4 border rounded-lg bg-white shadow-sm space-y-3">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-        <h2 className="text-xl font-bold text-gray-800">Legal Documents</h2>
+        <div>
+          <h2 className="text-xl font-bold text-gray-800">Legal Documents</h2>
+          {caseIdFromUrl && (
+            <p className="text-sm text-gray-500 mt-1">
+              Showing documents for Case #{caseIdFromUrl.substring(0, 8)}...
+            </p>
+          )}
+        </div>
         <div className="flex items-center gap-2 text-xs text-gray-500">
           <span>
             showing {filtered.length} of {totalCount} (matched {result.matched})

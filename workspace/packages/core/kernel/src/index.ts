@@ -6,32 +6,32 @@ export type {
   CapabilityRepository,
   CapabilityImplementation,
   WorkspaceAggregateBinding,
-} from "./types.js";
+} from "./types";
 
 export {
   CapabilityManifestSchema,
   CapabilityAggregateBindingSchema,
-} from "./schemas.js";
+} from "./schemas";
 export type {
   CapabilityManifest,
   CapabilityAggregateBindingManifest,
-} from "./schemas.js";
+} from "./schemas";
 export type {
   DigestCanonicalizer,
   DigestComputation,
   DigestEngineContract,
   DigestHashAlgorithm,
-} from "./digest-engine.js";
+} from "./digest-engine";
 export {
   createDigestEngine,
   DigestEngine,
-} from "./digest-engine.js";
+} from "./digest-engine";
 
 // Session exports (moved from apps/web/lib)
 export type {
   WorkspaceSession,
   WorkspaceRequestTrace,
-} from "./session/workspace-session.js";
+} from "./session/workspace-session";
 export {
   WORKSPACE_SESSION_COOKIE,
   WorkspaceSessionSchema,
@@ -44,15 +44,15 @@ export {
   readWorkspaceSessionFromRequest,
   createWorkspaceRequestTrace,
   createWorkspaceContextHeaders,
-} from "./session/workspace-session.js";
+} from "./session/workspace-session";
 
 // Registry exports (moved from apps/web/lib)
 export type {
   CommandInvocationRecord,
-} from "./registry/capability-command-registry.js";
+} from "./registry/capability-command-registry";
 export {
   capabilityRegistry,
-} from "./registry/capability-command-registry.js";
+} from "./registry/capability-command-registry";
 
 // Core runtime mediation layer (ARCH-04 compliant - capabilities access core-runtime ONLY via core-kernel)
 export {

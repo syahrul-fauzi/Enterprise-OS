@@ -1,16 +1,18 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
-import { CaseRepositoryInMemory } from "../repository/index.js";
-import { DocumentRepositoryInMemory } from "../../../legal-document/implementation/repository/index.js";
+import { CaseRepositoryInMemory, getCaseRepositoryPostgres } from "../repository/index.js";
+import { DocumentRepositoryInMemory, getDocumentRepositoryPostgres } from "../../../legal-document/implementation/repository/index.js";
 import type { CaseId, CaseAggregate } from "../contracts/index.js";
 import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
 import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index.js";
-import { getCaseRepositoryPostgres } from "../repository/index.js";
 
-// Toggle repositories based on environment (match identity production rail)
+// Toggle all repositories based on environment (match identity production rail)
 const caseRepository = process.env.DATABASE_URL 
   ? getCaseRepositoryPostgres() 
   : CaseRepositoryInMemory;
+const documentRepository = process.env.DATABASE_URL 
+  ? getDocumentRepositoryPostgres() 
+  : DocumentRepositoryInMemory;
 const sessionRepository = process.env.DATABASE_URL 
   ? getSessionRepositoryPostgres() 
   : SessionRepositoryInMemory;
@@ -69,7 +71,7 @@ export const getCaseByIdCommand: CapabilityCommand<GetCaseByIdInput, Promise<Get
       throw new Error("[case.getById] Case does not belong to the current tenant/workspace - access denied");
     }
 
-    const evidenceCount = DocumentRepositoryInMemory.list().filter((d: { readonly matterId?: unknown }) => d.matterId === caseId).length;
+    const evidenceCount = (await documentRepository.listByMatter(caseId)).length;
 
     return {
       type: "lawyershub.case",

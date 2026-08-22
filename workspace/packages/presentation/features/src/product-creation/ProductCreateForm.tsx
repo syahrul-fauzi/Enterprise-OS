@@ -36,6 +36,12 @@ export interface ProductCreateFormProps {
 }
 
 const CASE_PRIORITIES: readonly CasePriority[] = ["low", "medium", "high", "critical"] as const;
+const PRIORITY_LABEL: Record<CasePriority, string> = {
+  low: "Rendah",
+  medium: "Sedang",
+  high: "Tinggi",
+  critical: "Kritis",
+};
 
 function useCreateFormState() {
   const [submitting, setSubmitting] = useState(false);
@@ -86,20 +92,17 @@ export function ProductCreateForm({ productId, onCreated }: ProductCreateFormPro
     <section className="rounded-3xl border border-indigo-200 bg-white p-6 shadow-sm sm:p-8">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between mb-6">
         <div>
-          <div className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-600 mb-1">
-            First Real User Job
-          </div>
           <h2 className="text-xl font-bold text-slate-950">
-            {productId === "lawyershub" && "Buat Legal Matter (Kasus) Baru"}
+            {productId === "lawyershub" && "Buat Kasus Hukum Baru"}
             {productId === "services-id" && "Ajukan Permintaan Layanan"}
             {productId === "ilc" && "Mulai Diskusi Komunitas Baru"}
             {productId === "academic" && "Tulis Artikel Komunitas Baru"}
           </h2>
           <p className="mt-2 text-sm text-slate-600">
-            {productId === "lawyershub" && "Catat legal matter baru untuk klien — berjalan melalui workflow Draft → Open → In Progress → Closed."}
-            {productId === "services-id" && "Kirim permintaan layanan ke provider terdaftar — dari Draft → Accepted → In Service → Delivered."}
+            {productId === "lawyershub" && "Catat kasus hukum baru untuk klien — berjalan melalui workflow Draf → Terbuka → Dalam Proses → Selesai."}
+            {productId === "services-id" && "Kirim permintaan layanan ke provider terdaftar — dari Draf → Diterima → Dalam Layanan → Selesai."}
             {productId === "ilc" && "Mulai diskusi publik tentang topik hukum — komunitas akan mereply dan terlibat."}
-            {productId === "academic" && "Submit artikel penelitian / analisis hukum — melalui Proposed → Accepted → Published."}
+            {productId === "academic" && "Submit artikel penelitian / analisis hukum — melalui Diajukan → Diterima → Dipublikasikan."}
           </p>
         </div>
       </div>
@@ -185,7 +188,7 @@ function LawyersHubCreateForm({ submitting, onSubmit }: SubFormProps) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          placeholder="Masukkan judul legal matter..."
+          placeholder="Masukkan judul kasus hukum..."
         />
       </div>
       <div>
@@ -196,7 +199,7 @@ function LawyersHubCreateForm({ submitting, onSubmit }: SubFormProps) {
           className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
         >
           {CASE_PRIORITIES.map((p) => (
-            <option key={p} value={p}>{p}</option>
+            <option key={p} value={p}>{PRIORITY_LABEL[p]}</option>
           ))}
         </select>
       </div>
@@ -206,7 +209,7 @@ function LawyersHubCreateForm({ submitting, onSubmit }: SubFormProps) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 min-h-[100px]"
-          placeholder="Jelaskan detail legal matter..."
+          placeholder="Jelaskan detail kasus hukum..."
         />
       </div>
       <div className="md:col-span-3">

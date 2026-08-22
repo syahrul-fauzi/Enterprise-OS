@@ -17,8 +17,8 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
     super("cases");
   }
 
-  // Convert database record to domain aggregate
-  private toAggregate(record: any): CaseAggregate {
+  // Convert database record to domain aggregate - implements base.repository.ts abstract protected method
+  protected toAggregate(record: any): CaseAggregate {
     return {
       id: CaseId(record.id),
       title: record.title,
@@ -26,14 +26,19 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
       status: record.status as CaseStatus,
       priority: record.priority as CasePriority,
       lawyerId: record.lawyer_id,
+      workId: record.work_id,
+      sourceDiscussionId: record.source_discussion_id,
+      actorId: record.actor_id,
+      tenantId: record.tenant_id,
+      workspaceId: record.workspace_id,
       createdAt: new Date(record.created_at),
       updatedAt: new Date(record.updated_at),
       ...(record.closed_at && { closedAt: new Date(record.closed_at) }),
     } as CaseAggregate;
   }
 
-  // Convert domain aggregate to database record
-  private toRecord(entity: CaseAggregate): any {
+  // Convert domain aggregate to database record - implements base.repository.ts abstract protected method
+  protected toRecord(entity: CaseAggregate): any {
     return {
       id: entity.id,
       title: entity.title,
@@ -41,8 +46,11 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
       status: entity.status,
       priority: entity.priority,
       lawyer_id: entity.lawyerId,
+      work_id: (entity as any).workId || entity.id,
+      source_discussion_id: entity.sourceDiscussionId,
       tenant_id: (entity as any).tenantId,
       workspace_id: (entity as any).workspaceId,
+      actor_id: (entity as any).actorId,
       created_at: entity.createdAt,
       updated_at: entity.updatedAt,
       ...(entity.closedAt && { closed_at: entity.closedAt }),
@@ -79,31 +87,8 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
-  async save(entity: CaseAggregate): Promise<CaseAggregate> {
-    const exists = await this.byId(entity.id);
-    const record = this.toRecord(entity);
-    const columns = Object.keys(record);
-    const values = Object.values(record);
-    const placeholders = values.map((_, i) => `$${i + 1}`).join(", ");
-
-    if (exists) {
-      // Update existing
-      const setClause = columns.map((col, i) => `${col} = $${i + 1}`).join(", ");
-      await this.pool.query(
-        `UPDATE cases SET ${setClause} WHERE id = $${values.length + 1}`,
-        [...values, entity.id]
-      );
-    } else {
-      // Insert new
-      await this.pool.query(
-        `INSERT INTO cases (${columns.join(", ")}) VALUES (${placeholders})`,
-        values
-      );
-    }
-
-    const updated = { ...entity, updatedAt: new Date() } as CaseAggregate;
-    return this.toAggregate(this.toRecord(updated));
-  }
+  // Use base.repository.ts's save() method which implements the abstract protected toRecord()/toAggregate() pattern
+  // This ensures consistent camelCase→snake_case mapping across all repositories
 
   async remove(id: CaseId): Promise<boolean> {
     const result = await this.pool.query(

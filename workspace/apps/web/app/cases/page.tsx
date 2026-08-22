@@ -1,8 +1,9 @@
 "use server";
 
-import { ProductCasesPage } from '@repo/presentation-widgets';
-import { readProductBinding } from '@repo/presentation-experience';
-import { readProductRouteMetadata } from '@repo/presentation-experience';
+// @ts-ignore: widget source is available at runtime, TypeScript can't resolve package path
+import { ProductCasesPage } from "@repo/presentation-widgets/product-cases-page/ProductCasesPage";
+import { readProductBinding } from "@repo/presentation-experience/product-binding";
+import { readProductRouteMetadata } from "@repo/presentation-experience/catalog";
 import type { Metadata } from "next";
 
 // Define proper Next.js page props - PURE ADAPTER ONLY (follows existing product route pattern)

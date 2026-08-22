@@ -10,7 +10,7 @@ export interface LawyersHubProductContext {
   readonly domain: "lawyershub.enterprise-os.com";
   readonly branding: {
     readonly primaryColor: "#1e40af";
-    readonly logoPath: "/products/lawyershub/assets/logo.svg";
+    readonly logoPath: string;
   };
   readonly features: {
     readonly contractManagement: boolean;
@@ -19,14 +19,18 @@ export interface LawyersHubProductContext {
   };
 }
 
-export function provideLawyersHubContext(): LawyersHubProductContext {
+export function provideLawyersHubContext(requestHeaders?: Headers): LawyersHubProductContext {
+  // Override branding jika white label header ada
+  const isWhiteLabel = requestHeaders?.get("X-EOS-Is-White-Label") === "true";
+  const tenantBrandName = requestHeaders?.get("X-EOS-Tenant-Brand-Name");
+  
   return {
     productId: "lawyershub",
-    displayName: "LawyersHub",
+    displayName: (isWhiteLabel && tenantBrandName) ? tenantBrandName as any : "LawyersHub",
     domain: "lawyershub.enterprise-os.com",
     branding: {
       primaryColor: "#1e40af",
-      logoPath: "/products/lawyershub/assets/logo.svg",
+      logoPath: isWhiteLabel ? "/branding/tenant-logo.svg" : "/products/lawyershub/assets/logo.svg",
     },
     features: {
       contractManagement: true,

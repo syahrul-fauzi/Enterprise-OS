@@ -3,7 +3,14 @@ import {
   SessionId,
   type SessionAggregate,
 } from "../contracts/identity.contracts.js";
-import { SessionRepositoryPostgres } from "../repositories/index.js";
+import {
+  getSessionRepositoryPostgres,
+  SessionRepositoryInMemory,
+} from "../repositories/index.js";
+
+const sessionRepository = process.env.DATABASE_URL
+  ? getSessionRepositoryPostgres()
+  : SessionRepositoryInMemory;
 
 type LogoutInput = {
   readonly sessionId?: string;
@@ -20,19 +27,18 @@ type LogoutUserCommand = CapabilityCommand<LogoutInput, LogoutOutput>;
 export const logoutUserCommand: LogoutUserCommand = {
   kind: "command",
   name: "identity.logoutUser",
-  version: "2.0.0", // Postgres-backed persistence
+  version: "2.0.0",
 
   async execute(input) {
     if (!input.sessionId) {
       return { ok: true as const };
     }
     const sid = SessionId(input.sessionId);
-    const existing = await SessionRepositoryPostgres.byId(sid);
+    const existing = await sessionRepository.byId(sid);
     if (existing === undefined) {
       return { ok: true as const };
     }
-    // Session repository revoke method is async for Postgres
-    const revoked: SessionAggregate = await SessionRepositoryPostgres.revoke(sid);
+    const revoked: SessionAggregate = await sessionRepository.revoke(sid);
     return {
       ok: true as const,
       revokedSessionId: revoked.id,

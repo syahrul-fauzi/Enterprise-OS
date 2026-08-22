@@ -6,7 +6,7 @@
     "declaration": true,
     "incremental": false,
     "composite": false,
-    "noEmit": true,
+    "noEmit": false,
     "types": ["node"],
     "paths": {
       "@repo/composition": ["../../composition/dist/index.d.ts", "../../composition/src/index.ts"]

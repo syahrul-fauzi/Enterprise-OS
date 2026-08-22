@@ -23,6 +23,7 @@ const hydrate = (): Map<string, SessionAggregate> => {
     workspaceId: "workspace-001",
     productId: "lawyershub",
     actorLabel: "Demo User",
+    isAgent: false,
     issuedAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
     expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days from now
     revokedAt: null,
@@ -38,6 +39,7 @@ const hydrate = (): Map<string, SessionAggregate> => {
     workspaceId: "workspace-001",
     productId: "services-id",
     actorLabel: "Service Provider",
+    isAgent: false,
     issuedAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
     expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days from now
     revokedAt: null,
@@ -53,16 +55,35 @@ const hydrate = (): Map<string, SessionAggregate> => {
     workspaceId: "workspace-001",
     productId: "lawyershub.default",
     actorLabel: "LawyersHub User",
+    isAgent: false,
     issuedAt: new Date(Date.now() - 1000 * 60 * 60 * 2),
     expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
     revokedAt: null,
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2),
     updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 2),
   };
+
+  // C15: Add test agent session (agent identity for human→agent→human handoff testing)
+  const testAgentSession: SessionAggregate = {
+    id: "session-agent-001",
+    userId: "agent-001",
+    actorId: "agent-001",
+    tenantId: "tenant-001",
+    workspaceId: "workspace-001",
+    productId: "lawyershub.default",
+    actorLabel: "EOS Validation Agent",
+    isAgent: true,
+    issuedAt: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+    expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 day from now
+    revokedAt: null,
+    createdAt: new Date(Date.now() - 1000 * 60 * 30),
+    updatedAt: new Date(Date.now() - 1000 * 60 * 30),
+  };
   
   store.set(testSession1.id, testSession1);
   store.set(testSession2.id, testSession2);
   store.set(testSession3.id, testSession3);
+  store.set(testAgentSession.id, testAgentSession);
   return store;
 };
 

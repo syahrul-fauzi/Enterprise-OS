@@ -2,11 +2,28 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
 import { TenantId, UserId, SessionId, type MembershipAggregate, type WorkspaceAggregate } from "../contracts/identity.contracts.js";
 import { 
-  TenantRepositoryPostgres, 
-  WorkspaceRepositoryPostgres, 
-  MembershipRepositoryPostgres,
-  SessionRepositoryPostgres 
+  getTenantRepositoryPostgres, 
+  getWorkspaceRepositoryPostgres, 
+  getMembershipRepositoryPostgres,
+  getSessionRepositoryPostgres,
+  TenantRepositoryInMemory,
+  WorkspaceRepositoryInMemory,
+  MembershipRepositoryInMemory,
+  SessionRepositoryInMemory,
 } from "../repositories/index.js";
+
+const tenantRepository = process.env.DATABASE_URL
+  ? getTenantRepositoryPostgres()
+  : TenantRepositoryInMemory;
+const workspaceRepository = process.env.DATABASE_URL
+  ? getWorkspaceRepositoryPostgres()
+  : WorkspaceRepositoryInMemory;
+const membershipRepository = process.env.DATABASE_URL
+  ? getMembershipRepositoryPostgres()
+  : MembershipRepositoryInMemory;
+const sessionRepository = process.env.DATABASE_URL
+  ? getSessionRepositoryPostgres()
+  : SessionRepositoryInMemory;
 
 export const GetWorkspacesByTenantInputSchema = z.object({
   tenantId: z.string().min(1),
@@ -49,7 +66,7 @@ export const getWorkspacesByTenantCommand: GetWorkspacesByTenantCommand = {
     const parsed = GetWorkspacesByTenantInputSchema.parse(input);
     
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await SessionRepositoryPostgres.byId(SessionId(parsed.sessionId));
+    const session = await sessionRepository.byId(SessionId(parsed.sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[identity.getWorkspacesByTenant] Invalid or revoked session - authentication violation");
     }
@@ -64,17 +81,17 @@ export const getWorkspacesByTenantCommand: GetWorkspacesByTenantCommand = {
       throw new Error("[identity.getWorkspacesByTenant] Cross-tenant access attempt blocked - security violation");
     }
 
-    // 4. Get tenant from PostgreSQL repository
-    const tenant = await TenantRepositoryPostgres.byId(TenantId(parsed.tenantId));
+    // 4. Get tenant from repository
+    const tenant = await tenantRepository.byId(TenantId(parsed.tenantId));
     if (!tenant) {
       return undefined;
     }
 
-    // 5. Get all workspaces for this tenant only (PostgreSQL filtered query)
-    const workspaces = await WorkspaceRepositoryPostgres.listByTenant(TenantId(parsed.tenantId));
+    // 5. Get all workspaces for this tenant only
+    const workspaces = await workspaceRepository.listByTenant(TenantId(parsed.tenantId));
     
     // 6. Get all memberships for this user in this tenant only
-    const memberships = await MembershipRepositoryPostgres.listByTenant(TenantId(parsed.tenantId));
+    const memberships = await membershipRepository.listByTenant(TenantId(parsed.tenantId));
     const userMemberships = memberships.filter((m: MembershipAggregate) => m.userId === UserId(parsed.actorId));
     
     // 7. Map workspaces with their membership details (enforce only workspaces user is member of)

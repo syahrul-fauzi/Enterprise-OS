@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository.js";
+import { PostgresRepository } from "./base.repository";
 import {
   MembershipId,
   TenantId,
@@ -17,8 +17,8 @@ class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implement
     super("memberships");
   }
 
-  // Convert database record to domain aggregate
-  private toAggregate(record: any): MembershipAggregate {
+  // Convert database record to domain aggregate - implements base.repository.ts abstract protected method
+  protected toAggregate(record: any): MembershipAggregate {
     return {
       id: MembershipId(record.id),
       userId: UserId(record.user_id),
@@ -31,8 +31,8 @@ class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implement
     } as MembershipAggregate;
   }
 
-  // Convert domain aggregate to database record
-  private toRecord(entity: MembershipAggregate): any {
+  // Convert domain aggregate to database record - implements base.repository.ts abstract protected method
+  protected toRecord(entity: MembershipAggregate): any {
     return {
       id: entity.id,
       user_id: entity.userId,

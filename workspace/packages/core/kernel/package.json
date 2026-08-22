@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "@repo/core-runtime": "workspace:*",
-    "@repo/core-registry-resolver": "workspace:*",
     "zod": "^3.24.1"
   },
   "devDependencies": {

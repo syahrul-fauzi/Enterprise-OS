@@ -92,41 +92,50 @@ export default function ExecutionChainPanel({
       ? proof.provenance.evidencePaths
       : payload.delivery?.evidence.samplePaths ?? [];
 
+  function yesNoId(value: boolean | undefined): string {
+    return value ? "lengkap" : "belum lengkap";
+  }
+
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <div className="inline-flex rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-            Execution Chain
+          <div className="inline-flex rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+            Jejak Pekerjaan
           </div>
           <h3 className="mt-3 text-2xl font-bold tracking-tight text-slate-950">
-            One requirement moving through RTM, evidence, verification, and proof.
+            Satu permintaan, dari pembuatan sampai terverifikasi
           </h3>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
-            This is the visible EOS slice: the same runtime surface shows the requirement,
-            traceability coverage, linked evidence, verification verdict, and computed proof.
+            Tampilan ini menunjukkan progres pekerjaan Anda: detail permintaan, cakupan dokumen pendukung,
+            bukti aktivitas terkait, hasil verifikasi, dan catatan bukti yang sudah dihitung.
           </p>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
-          Requirement <span className="font-mono">{payload.requirement.id}</span>
+          ID Pekerjaan <span className="font-mono">{payload.requirement.id}</span>
         </div>
       </div>
 
       <div className="mt-6 grid gap-4 xl:grid-cols-5">
         <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-            Requirement
+            Permintaan
           </div>
           <div className="mt-3 text-sm font-medium text-slate-900">{payload.requirement.title}</div>
           <div className="mt-2 text-xs text-slate-600">Status: {payload.requirement.status}</div>
           <div className="mt-1 text-xs text-slate-600">
-            Capabilities: {payload.requirement.linkedCapabilityIds.join(", ")}
+            Modul terkait: {payload.requirement.linkedCapabilityIds.map(id => 
+              id === 'legal-case' ? 'Kasus Hukum' : 
+              id === 'legal-document' ? 'Dokumen Hukum' : 
+              id === 'services-id' ? 'Manajemen Layanan' : 
+              id === 'ilc' ? 'Komunitas Hukum' : id
+            ).join(", ")}
           </div>
         </article>
 
         <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-            RTM
+            Kelengkapan Dokumen
           </div>
           <div className="mt-3">
             <span
@@ -135,21 +144,20 @@ export default function ExecutionChainPanel({
                   payload.delivery?.traceability.complete,
               )}`}
             >
-              complete:{" "}
-              {yesNo(
+              {yesNoId(
                 verification?.registryProjection.traceabilityComplete ??
                   payload.delivery?.traceability.complete,
               )}
             </span>
           </div>
           <div className="mt-3 text-xs text-slate-600">
-            Artifacts:{" "}
+            Total dokumen:{" "}
             {verification?.registryProjection.artifactCount ??
               payload.delivery?.traceability.artifactCount ??
               0}
           </div>
           <div className="mt-1 text-xs text-slate-600">
-            Gaps:{" "}
+            Kekurangan:{" "}
             {verification?.registryProjection.gaps.length ??
               payload.delivery?.traceability.gaps.length ??
               0}
@@ -158,25 +166,25 @@ export default function ExecutionChainPanel({
 
         <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-            Evidence
+            Bukti Aktivitas
           </div>
           <div className="mt-3 text-sm font-medium text-slate-900">
             {verification?.registryProjection.evidenceMatchedCount ??
               payload.delivery?.evidence.matchedCount ??
               0}{" "}
-            linked records
+            catatan terhubung
           </div>
           <div className="mt-2 text-xs text-slate-600">
-            Verification artifacts: {payload.delivery?.traceability.verificationArtifactCount ?? 0}
+            Dokumen verifikasi: {payload.delivery?.traceability.verificationArtifactCount ?? 0}
           </div>
           <div className="mt-1 text-xs text-slate-600">
-            Evidence artifacts: {payload.delivery?.traceability.evidenceArtifactCount ?? 0}
+            Catatan bukti: {payload.delivery?.traceability.evidenceArtifactCount ?? 0}
           </div>
         </article>
 
         <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-            Verification
+            Hasil Verifikasi
           </div>
           <div className="mt-3">
             <span
@@ -188,25 +196,25 @@ export default function ExecutionChainPanel({
             </span>
           </div>
           <div className="mt-3 text-xs text-slate-600">
-            Predicate: {verification?.predicateVersion ?? "loading"}
+            Aturan: {verification?.predicateVersion ?? "memuat"}
           </div>
           <div className="mt-1 text-xs text-slate-600">
-            Lifecycle eligible: {yesNo(verification?.lifecycleEligible)}
+            Bisa lanjut siklus: {yesNoId(verification?.lifecycleEligible)}
           </div>
         </article>
 
         <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-            Proof
+            Catatan Bukti
           </div>
           <div className="mt-3 text-xs font-medium text-slate-900">
-            {proof?.proofId ?? "Proof pending"}
+            {proof?.proofId ?? "Bukti sedang diproses"}
           </div>
           <div className="mt-2 text-xs text-slate-600">
-            Predicate ID: {proof?.predicateId ?? "requirement-verification"}
+            ID Aturan: {proof?.predicateId ?? "verifikasi-otomatis"}
           </div>
           <div className="mt-1 text-xs text-slate-600">
-            Digest: {shortHash(proof?.proofDigest)}
+            Sidik jari: {shortHash(proof?.proofDigest)}
           </div>
         </article>
       </div>
@@ -214,34 +222,34 @@ export default function ExecutionChainPanel({
       <div className="mt-6 grid gap-4 xl:grid-cols-[1fr_1fr]">
         <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-            Computed Status
+            Status Terhitung
           </div>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <div className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-xs text-slate-700">
-              <div className="font-semibold text-slate-900">Decision fingerprint</div>
+              <div className="font-semibold text-slate-900">Sidik jari keputusan</div>
               <div className="mt-1 font-mono">{shortHash(verification?.decisionFingerprint)}</div>
             </div>
             <div className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-xs text-slate-700">
-              <div className="font-semibold text-slate-900">Evidence set hash</div>
+              <div className="font-semibold text-slate-900">Hash kumpulan bukti</div>
               <div className="mt-1 font-mono">{shortHash(verification?.evidenceSetHash)}</div>
             </div>
             <div className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-xs text-slate-700">
-              <div className="font-semibold text-slate-900">Proof digest</div>
+              <div className="font-semibold text-slate-900">Intisari bukti</div>
               <div className="mt-1 font-mono">{shortHash(proof?.proofDigest)}</div>
             </div>
             <div className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-xs text-slate-700">
-              <div className="font-semibold text-slate-900">Evaluated at</div>
-              <div className="mt-1">{proof?.evaluatedAt ?? "pending"}</div>
+              <div className="font-semibold text-slate-900">Waktu verifikasi</div>
+              <div className="mt-1">{proof?.evaluatedAt ?? "menunggu"}</div>
             </div>
           </div>
         </article>
 
         <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-            Evidence Footprint
+            Riwayat Bukti
           </div>
           {loading ? (
-            <p className="mt-3 text-sm text-slate-600">Loading verification proof...</p>
+            <p className="mt-3 text-sm text-slate-600">Memuat bukti verifikasi...</p>
           ) : error ? (
             <p className="mt-3 text-sm text-amber-700">{error}</p>
           ) : evidencePaths.length ? (
@@ -254,7 +262,7 @@ export default function ExecutionChainPanel({
             </ul>
           ) : (
             <p className="mt-3 text-sm text-slate-600">
-              No linked evidence paths are available yet for this requirement.
+              Belum ada riwayat bukti yang terhubung untuk permintaan ini.
             </p>
           )}
         </article>

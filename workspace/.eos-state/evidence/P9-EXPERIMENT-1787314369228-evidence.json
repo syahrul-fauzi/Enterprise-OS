@@ -1,0 +1,104 @@
+{
+  "experiment_id": "P9-EXPERIMENT-1787314369228",
+  "work_id": "law-work-0b2f4c75-9bbc",
+  "executed_at": "2026-08-21T12:12:49.228Z",
+  "passed": true,
+  "acceptance_criteria": [
+    {
+      "test": "Direct W1 lookup",
+      "passed": true,
+      "details": "Found W1 with id law-work-0b2f4c75-9bbc",
+      "timestamp": "2026-08-21T12:12:49.268Z"
+    },
+    {
+      "test": "Lookup without active execution",
+      "passed": true,
+      "details": "No execution context was initialized or loaded",
+      "timestamp": "2026-08-21T12:12:49.268Z"
+    },
+    {
+      "test": "Lookup after process restart",
+      "passed": true,
+      "details": "This is a brand new node.js process with no shared state from P8",
+      "timestamp": "2026-08-21T12:12:49.268Z"
+    },
+    {
+      "test": "Lookup without original session",
+      "passed": true,
+      "details": "No session object was created or referenced during lookup",
+      "timestamp": "2026-08-21T12:12:49.268Z"
+    },
+    {
+      "test": "Lookup with different actor",
+      "passed": true,
+      "details": "W1 resolves correctly even for an unrelated actor/tenant",
+      "timestamp": "2026-08-21T12:12:49.281Z"
+    },
+    {
+      "test": "Lookup after capability changes",
+      "passed": true,
+      "details": "No capability registry was initialized; W1 resolved purely by ID",
+      "timestamp": "2026-08-21T12:12:49.281Z"
+    },
+    {
+      "test": "Lookup when execution history unavailable",
+      "passed": true,
+      "details": "No execution history was queried or loaded",
+      "timestamp": "2026-08-21T12:12:49.281Z"
+    },
+    {
+      "test": "Lookup with external state UNKNOWN",
+      "passed": true,
+      "details": "No external state (product, feature flags, etc.) was loaded",
+      "timestamp": "2026-08-21T12:12:49.281Z"
+    },
+    {
+      "test": "No execution→Work derivation",
+      "passed": true,
+      "details": "W1 was looked up directly by ID; no executionId used to derive work",
+      "timestamp": "2026-08-21T12:12:49.281Z"
+    },
+    {
+      "test": "No actor/session→Work reconstruction",
+      "passed": true,
+      "details": "W1 was not inferred from any actor/session context",
+      "timestamp": "2026-08-21T12:12:49.281Z"
+    },
+    {
+      "test": "No lineage reconstruction required",
+      "passed": true,
+      "details": "W1 was identified directly by ID; no lineage queries needed",
+      "timestamp": "2026-08-21T12:12:49.281Z"
+    }
+  ],
+  "raw_record": {
+    "id": "law-work-0b2f4c75-9bbc",
+    "logical_work_id": "logical-law-work-0b2f4c75-9bbc",
+    "title": "P8 Test Legal Case: Corporate Contract Dispute",
+    "description": "P8 experiment to verify work identity survives runtime death",
+    "summary": "Test case for persistence verification across process boundaries",
+    "priority": "high",
+    "status": "draft",
+    "tenant_id": "tenant-p8-test-0b5c4735",
+    "workspace_id": "ws-p8-test-3c9787a5",
+    "actor_id": "user-p8-test-91230a33",
+    "created_by": "user-p8-test-91230a33",
+    "created_at": "2026-08-21T08:21:26.989Z",
+    "updated_at": "2026-08-21T08:21:26.989Z",
+    "version": 1,
+    "artifacts": [],
+    "tags": [
+      "p8-experiment",
+      "legal-case",
+      "persistence-test"
+    ],
+    "linked_capability_ids": [],
+    "acceptance_criteria": [],
+    "verification_status": null,
+    "depends_on": [],
+    "approved_at": null,
+    "implemented_at": null,
+    "verified_at": null
+  },
+  "errors": []
+}

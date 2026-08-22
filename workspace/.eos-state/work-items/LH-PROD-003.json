@@ -1,0 +1,205 @@
+{
+  "work_id": "LH-PROD-003",
+  "name": "Authentication + Tenant/Workspace Reality Path",
+  "type": "vertical-production-path",
+  "status": "IN_PROGRESS",
+  "priority": "P0",
+  "created_at": "2026-08-21T00:00:00Z",
+  "commander_directive": "FINISH THE REALITY PATH — P3 Auth → P4 Tenant Isolation → P8 Evidence → P9 External Outcome → P10 Real Human. No new primitives. Substrate frozen. Productionization only.",
+  "definition_of_done": "A fresh authenticated user must be able to enter the LawyersHub workspace, operate inside the correct tenant/workspace boundary, create/continue the same Work, and leave durable evidence that survives process restart. ALL 8 gates have passing evidence.",
+  "sequencing": ["P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"],
+  "gates": {
+    "G1 Auth works (P3)": {
+      "status": "BLOCKED",
+      "blocker": "invokeAsync() not implemented - ALL API routes throw 'not fully implemented'",
+      "acceptance": [
+        "Signup creates user + tenant + workspace + membership (4 entities)",
+        "Session cookie is set (httpOnly, lax)",
+        "Login validates password via scrypt + timingSafeEqual",
+        "Logout invalidates session",
+        "Session route returns authenticated:false after logout"
+      ]
+    },
+    "G2 Tenant isolation works (P4)": {
+      "status": "BLOCKED",
+      "blocker": "Same invokeAsync blocker; plus inputWorkspaceId no-fallback skips DB validation",
+      "acceptance": [
+        "User A cannot create Work in Tenant B's workspace",
+        "Cross-tenant access attempt throws 403 or security error",
+        "Postgres FK: cases.tenant_id → tenants.id enforced",
+        "UNIQUE(user_id, workspace_id) on memberships prevents duplicate access grants"
+      ]
+    },
+    "G3 Durable Work (P5)": {
+      "status": "READY_TO_VERIFY",
+      "blocker": null,
+      "acceptance": [
+        "Postgres case.save() writes to cases table",
+        "Round-trip camelCase ↔ snake_case preserves all fields",
+        "work_id column non-null for all created cases",
+        "version-based optimistic concurrency works"
+      ]
+    },
+    "G4 Restart survival (P6)": {
+      "status": "BLOCKED",
+      "blocker": "Needs LIVE staging stack",
+      "acceptance": [
+        "docker compose down → up preserves persisted Work",
+        "Case data survives web container death",
+        "In-memory state is NOT used for production path"
+      ]
+    },
+    "G5 Human UI (P7)": {
+      "status": "EVIDENCED_B4",
+      "blocker": null,
+      "acceptance": [
+        "B4 F004-F007 PASS (from prior experiments)",
+        "LawyersHub UI is reachable",
+        "Work View shows state",
+        "Next-action recovery works"
+      ]
+    },
+    "G6 Independent evidence (P8)": {
+      "status": "MISSING",
+      "blocker": "Current run-p8-experiment.ts uses in-process calls, NOT HTTP against deployed stack",
+      "acceptance": [
+        "P8 runner hits actual HTTP endpoints (signup → login → create case)",
+        "Process death simulated via docker compose restart",
+        "7 invariants verified: work_id + tenant_id + workspace_id + actor_id + status + priority + version",
+        "Evidence JSON is SHA-linkable and independently reproducible"
+      ]
+    },
+    "G7 External outcome (P9)": {
+      "status": "MISSING",
+      "blocker": "Requires G1-G6 pass",
+      "acceptance": [
+        "Leave → Return flow works via HTTP",
+        "\"You stopped here: Document Review\" context restored",
+        "Same Work Identity (workId) constant across leave/return",
+        "\"Next Action\" is actionable and continues Work"
+      ]
+    },
+    "G8 Real human (P10)": {
+      "status": "BLOCKED",
+      "blocker": "Requires G1-G7 pass",
+      "acceptance": [
+        "3 real humans complete EOS FIRST LIGHT flow",
+        "Did they return? → YES",
+        "Did EOS correctly restore context? → YES",
+        "Did they actually continue the work? → YES",
+        "1 qualitative question: what's the most disruptive thing if EOS forgot your work?"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "P0-01",
+      "phase": "Foundation",
+      "title": "Fix invokeAsync() delegation to invoke()",
+      "status": "PENDING",
+      "severity": "P0",
+      "file": "workspace/packages/core/kernel/src/registry/capability-command-registry.ts#L600-L615",
+      "description": "invokeAsync throws 'not fully implemented' for all commands. All API routes use invokeAsync(). Must delegate to this.invoke() with correct return type handling."
+    },
+    {
+      "id": "P0-02",
+      "phase": "Foundation",
+      "title": "Expand publicCommands set to match actual command names",
+      "status": "PENDING",
+      "severity": "P0",
+      "file": "workspace/packages/core/kernel/src/registry/capability-command-registry.ts#L348-L353",
+      "description": "Add identity.loginFlow, identity.authenticateUser, identity.createTenantWithSlugResolution, identity.getWorkspacesByTenant, identity.getWorkspaceById, identity.getSessionById to public commands. Also identity.logout if it exists."
+    },
+    {
+      "id": "P0-03",
+      "phase": "Security",
+      "title": "Fix inputWorkspaceId fallback for session validation guard",
+      "status": "PENDING",
+      "severity": "P0",
+      "file": "workspace/packages/core/kernel/src/registry/capability-command-registry.ts#L391-L398",
+      "description": "Line 391: inputWorkspaceId defaults to undefined if not in request. Line 398 requires BOTH inputTenantId && inputWorkspaceId to be truthy for DB-backed session validation. If workspaceId is not in input (common pattern), ALL tenant/workspace isolation checks are SKIPPED. Fix: fallback inputWorkspaceId to session.workspaceId before the conditional. Or remove inputWorkspaceId from required guard."
+    },
+    {
+      "id": "P0-04",
+      "phase": "Persistence",
+      "title": "Run base-repository-smoke.test.ts",
+      "status": "PENDING",
+      "severity": "P1",
+      "file": "workspace/.eos/verification/base-repository-smoke.test.ts",
+      "description": "Confirm camelCase ↔ snake_case round-trip was properly fixed. This validates the bugfix mentioned in lh-prod-003-evidence.yaml."
+    },
+    {
+      "id": "P1-01",
+      "phase": "Deployment",
+      "title": "Start staging Docker stack (postgres + web + caddy)",
+      "status": "PENDING",
+      "severity": "P1",
+      "file": "workspace/infra/staging/compose.yaml",
+      "description": "docker compose up -d, wait for healthchecks on all 3 services. Verify /api/health returns 200 via caddy."
+    },
+    {
+      "id": "P1-02",
+      "phase": "P3 Verification",
+      "title": "Verify P3 Auth against LIVE stack (HTTP)",
+      "status": "PENDING",
+      "severity": "P1",
+      "description": "Sequence: signup → verify session → logout → verify no auth → login → verify session again. All via real HTTP calls to staging stack."
+    },
+    {
+      "id": "P1-03",
+      "phase": "P4 Verification",
+      "title": "Verify P4 Tenant Isolation against LIVE stack (HTTP)",
+      "status": "PENDING",
+      "severity": "P1",
+      "description": "Create TenantA+UserA and TenantB+UserB. As UserA with UserA session: try to create case with tenantId=TenantB. MUST fail with security error. Then create with UserA's own tenantId: MUST succeed."
+    },
+    {
+      "id": "P2-01",
+      "phase": "P8",
+      "title": "Create P8 Deployed-Path Runner script",
+      "status": "PENDING",
+      "severity": "P1",
+      "new_file": "workspace/run-p8-deployed-path.ts",
+      "description": "Script that exercises P8 flow against LIVE HTTP endpoints, NOT in-process. Sequence: signup → login → create work → verify persistence → docker compose stop/up → login → verify work persisted → 7 invariants. Output evidence JSON."
+    },
+    {
+      "id": "P2-02",
+      "phase": "P8",
+      "title": "Execute P8 deployed-path runner",
+      "status": "PENDING",
+      "severity": "P1",
+      "description": "Run the script, save evidence to .eos-state/evidence/P8-DEPLOYED-{timestamp}.json."
+    },
+    {
+      "id": "P3-01",
+      "phase": "P9",
+      "title": "Create P9 Human-Resumption Proof script",
+      "status": "PENDING",
+      "severity": "P2",
+      "new_file": "workspace/run-p9-human-resumption.ts",
+      "description": "EOS FIRST LIGHT flow via HTTP: signup lawyer → create matter → add document → work (update status to UNDER_REVIEW) → leave (logout + restart) → return → verify 'You stopped here: Document Review' → continue → verify WorkId still constant."
+    },
+    {
+      "id": "P3-02",
+      "phase": "Evidence",
+      "title": "Update lh-prod-003-evidence.yaml with REAL runtime evidence",
+      "status": "PENDING",
+      "severity": "P2",
+      "file": "workspace/governance/certification/lh-prod-003-evidence.yaml",
+      "description": "Replace all observed:false entries with actual observed values from running stack. Append audit trail entries with timestamps for every completed step."
+    }
+  ],
+  "do_not_do": [
+    "NO new primitives (no C22)",
+    "NO economics theory work",
+    "NO architecture research",
+    "NO new dashboard widgets",
+    "NO commenting out unrelated widgets to make build green (classify blocker properly instead)",
+    "NO substrate semantic changes (bugfixes to existing substrate are allowed)"
+  ],
+  "classification_rules_for_blockers": {
+    "unrelated + deployment-independent": "isolate build boundary properly",
+    "unrelated but blocks actual deployment": "production blocker → fix immediately",
+    "workflow-specific to LH-PROD-003 path": "fix immediately"
+  }
+}

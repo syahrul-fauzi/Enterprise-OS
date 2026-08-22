@@ -26,29 +26,36 @@ export abstract class PostgresRepository<T extends { id: string }> {
   protected tableName: string;
   protected pool: Pool;
 
+  // Abstract mapping methods for camelCase ↔ snake_case conversion
+  protected abstract toRecord(entity: T): Record<string, any>;
+  protected abstract toAggregate(record: Record<string, any>): T;
+
   constructor(tableName: string) {
     this.tableName = tableName;
     this.pool = getPool();
   }
 
   async byId(id: string): Promise<T | undefined> {
-    const result = await this.pool.query<T>(
+    const result = await this.pool.query<Record<string, any>>(
       `SELECT * FROM ${this.tableName} WHERE id = $1`,
       [id]
     );
-    return result.rows[0];
+    if (result.rows.length === 0) return undefined;
+    return this.toAggregate(result.rows[0]);
   }
 
   async list(): Promise<readonly T[]> {
-    const result = await this.pool.query<T>(`SELECT * FROM ${this.tableName}`);
-    return result.rows;
+    const result = await this.pool.query<Record<string, any>>(`SELECT * FROM ${this.tableName}`);
+    return result.rows.map(row => this.toAggregate(row));
   }
 
   async save(entity: T & { version?: number }): Promise<T> {
+    console.log(`[base.repository.ts] save() called for table: ${this.tableName}, entity ID: ${entity.id}`);
+    // Convert domain entity to database record (camelCase → snake_case)
+    const record = this.toRecord(entity);
     const exists = await this.byId(entity.id);
-    const columns = Object.keys(entity);
-    const values = Object.values(entity);
-    const placeholders = values.map((_, i) => `$${i + 1}`).join(", ");
+    console.log(`[base.repository.ts] Entity exists in DB: ${exists ? "YES" : "NO"}`);
+    console.log(`[base.repository.ts] Generated record:`, JSON.stringify(record, null, 2));
 
     if (exists) {
       // PR-003: Optimistic concurrency control - check version if present
@@ -59,30 +66,51 @@ export abstract class PostgresRepository<T extends { id: string }> {
           throw new Error(`[PostgresRepository] Concurrent modification detected for ${this.tableName}:${entity.id} - current version ${existingEntity.version}, attempted update from version ${entity.version}`);
         }
         // Increment version for successful update
-        (entity as any).version = entity.version + 1;
+        record.version = entity.version + 1;
       } else if (entity.version === undefined && existingEntity.version === undefined) {
         // Initialize version if not present on existing record
-        (entity as any).version = 1;
+        record.version = 1;
       }
       
-      // Refresh columns and values with updated version
-      const updatedColumns = Object.keys(entity);
-      const updatedValues = Object.values(entity);
-      const updatedSetClause = updatedColumns.map((col, i) => `${col} = $${i + 1}`).join(", ");
+      // Build update query with explicit version casting
+      const columns = Object.keys(record);
+      const setClauses: string[] = [];
+      const values: any[] = [];
+      columns.forEach((col, idx) => {
+        values.push(record[col]);
+        if (col === 'version') {
+          setClauses.push(`${col} = $${idx + 1}::integer`);
+        } else {
+          setClauses.push(`${col} = $${idx + 1}`);
+        }
+      });
+      // Add WHERE clause placeholder as last parameter
+      values.push(entity.id);
       await this.pool.query(
-        `UPDATE ${this.tableName} SET ${updatedSetClause} WHERE id = $${updatedValues.length}`,
-        [...updatedValues, entity.id]
+        `UPDATE ${this.tableName} SET ${setClauses.join(", ")} WHERE id = $${values.length}`,
+        values
       );
     } else {
       // PR-003: Initialize version field for new entities
-      (entity as any).version = 1;
-      // Insert new with initialized version
-      const newColumns = Object.keys(entity);
-      const newValues = Object.values(entity);
-      const newPlaceholders = newValues.map((_, i) => `$${i + 1}`).join(", ");
+      if (entity.version === undefined) {
+        record.version = 1;
+      }
+      
+      // Build insert query with explicit version casting
+      const columns = Object.keys(record);
+      const placeholders: string[] = [];
+      const values: any[] = [];
+      columns.forEach((col, idx) => {
+        values.push(record[col]);
+        if (col === 'version') {
+          placeholders.push(`$${idx + 1}::integer`);
+        } else {
+          placeholders.push(`$${idx + 1}`);
+        }
+      });
       await this.pool.query(
-        `INSERT INTO ${this.tableName} (${newColumns.join(", ")}) VALUES (${newPlaceholders})`,
-        newValues
+        `INSERT INTO ${this.tableName} (${columns.join(", ")}) VALUES (${placeholders.join(", ")})`,
+        values
       );
     }
     return entity;
@@ -94,15 +122,17 @@ export abstract class PostgresRepository<T extends { id: string }> {
   }
 
   async query(filter: Partial<T>): Promise<T[]> {
-    const filterKeys = Object.keys(filter);
-    const filterValues = Object.values(filter);
+    // Convert domain filter to database record (camelCase → snake_case)
+    const recordFilter = this.toRecord(filter as T);
+    const filterKeys = Object.keys(recordFilter);
+    const filterValues = Object.values(recordFilter);
     const whereClause = filterKeys.map((key, i) => `${key} = $${i + 1}`).join(" AND ");
     
-    const result = await this.pool.query<T>(
+    const result = await this.pool.query<Record<string, any>>(
       `SELECT * FROM ${this.tableName} WHERE ${whereClause}`,
       filterValues
     );
-    return result.rows;
+    return result.rows.map(row => this.toAggregate(row));
   }
 }
 
@@ -176,11 +206,47 @@ export async function initIdentitySchema() {
       workspace_id TEXT NOT NULL REFERENCES workspaces(id),
       product_id TEXT NOT NULL,
       actor_label TEXT NOT NULL,
+      is_agent BOOLEAN NOT NULL DEFAULT FALSE,
       issued_at TIMESTAMP NOT NULL,
       expires_at TIMESTAMP NOT NULL,
       revoked_at TIMESTAMP,
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL
+    );
+  `);
+
+  // C15: Add is_agent column if it doesn't exist (migration for existing tables)
+  await pool.query(`
+    ALTER TABLE sessions 
+    ADD COLUMN IF NOT EXISTS is_agent BOOLEAN NOT NULL DEFAULT FALSE;
+  `);
+
+  // Create requirements table for requirement-management capability (PRODUCTION SCHEMA)
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS requirements (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      summary TEXT NOT NULL,
+      description TEXT,
+      status TEXT NOT NULL,
+      priority TEXT NOT NULL,
+      owner TEXT NOT NULL,
+      source TEXT NOT NULL,
+      actor_id TEXT REFERENCES users(id),
+      tenant_id TEXT NOT NULL REFERENCES tenants(id),
+      workspace_id TEXT NOT NULL REFERENCES workspaces(id),
+      logical_work_id TEXT,
+      linked_capability_ids TEXT[] NOT NULL DEFAULT '{}',
+      acceptance_criteria TEXT[] NOT NULL DEFAULT '{}',
+      verification_status TEXT NOT NULL,
+      depends_on TEXT[] NOT NULL DEFAULT '{}',
+      version INTEGER NOT NULL DEFAULT 1,
+      created_by TEXT,
+      created_at TIMESTAMP NOT NULL,
+      updated_at TIMESTAMP NOT NULL,
+      approved_at TIMESTAMP,
+      implemented_at TIMESTAMP,
+      verified_at TIMESTAMP
     );
   `);
 
@@ -195,10 +261,32 @@ export async function initIdentitySchema() {
       lawyer_id TEXT,
       tenant_id TEXT NOT NULL REFERENCES tenants(id),
       workspace_id TEXT NOT NULL REFERENCES workspaces(id),
+      actor_id TEXT REFERENCES users(id),
+      source_discussion_id TEXT,
+      work_id TEXT,
+      version INTEGER NOT NULL DEFAULT 1,
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL,
       closed_at TIMESTAMP
     );
+  `);
+  
+  // Migrations for existing tables (add columns that may be missing)
+  await pool.query(`
+    ALTER TABLE cases 
+    ADD COLUMN IF NOT EXISTS work_id TEXT;
+  `);
+  await pool.query(`
+    ALTER TABLE cases 
+    ADD COLUMN IF NOT EXISTS actor_id TEXT REFERENCES users(id);
+  `);
+  await pool.query(`
+    ALTER TABLE cases 
+    ADD COLUMN IF NOT EXISTS source_discussion_id TEXT;
+  `);
+  await pool.query(`
+    ALTER TABLE cases 
+    ADD COLUMN IF NOT EXISTS version INTEGER NOT NULL DEFAULT 1;
   `);
 
   // Create service_requests table for service-directory capability
@@ -221,6 +309,35 @@ export async function initIdentitySchema() {
     );
   `);
 
-  console.log("[PostgreSQL] Identity + Legal Case + Service Directory schema initialized successfully");
+  // Create requirements table for requirement-management capability
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS requirements (
+      id TEXT PRIMARY KEY,
+      tenant_id TEXT NOT NULL REFERENCES tenants(id),
+      workspace_id TEXT NOT NULL REFERENCES workspaces(id),
+      actor_id TEXT NOT NULL REFERENCES users(id),
+      logical_work_id TEXT,
+      title TEXT NOT NULL,
+      summary TEXT,
+      description TEXT,
+      status TEXT NOT NULL,
+      priority TEXT NOT NULL,
+      owner TEXT,
+      source TEXT,
+      linked_capability_ids TEXT[],
+      acceptance_criteria TEXT[],
+      verification_status TEXT,
+      depends_on TEXT[],
+      created_by TEXT REFERENCES users(id),
+      created_at TIMESTAMP NOT NULL,
+      updated_at TIMESTAMP NOT NULL,
+      approved_at TIMESTAMP,
+      implemented_at TIMESTAMP,
+      verified_at TIMESTAMP,
+      version INTEGER NOT NULL DEFAULT 1
+    );
+  `);
+
+  console.log("[PostgreSQL] Identity + Legal Case + Service Directory + Requirement Management schema initialized successfully");
   schemaInitialized = true;
 }

@@ -7,6 +7,7 @@
     "composite": true,
     "incremental": true,
     "paths": {
+      "@repo/presentation-types": ["../presentation-types/dist"],
       "@products/*": ["../../../products/*"]
     }
   },

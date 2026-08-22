@@ -53,6 +53,7 @@ export interface ProductDeliveryCopy {
   readonly inProgressLabel: string;
   readonly completedLabel: string;
   readonly blockedLabel: string;
+  readonly workspaceDescription?: string;
 }
 
 export type { CanonicalProductExperience as ProductExperience };
