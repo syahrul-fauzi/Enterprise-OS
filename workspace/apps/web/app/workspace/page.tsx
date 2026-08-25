@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useWorkspaceSession } from "@repo/presentation-hooks";
-import { CaseWorkspace } from "@capabilities/legal-case/experience/workspaces/CaseWorkspace";
+import { CaseWorkspace } from "@capabilities/legal-case/experience/workspaces/CaseWorkspace.js";
 
 interface TenantPayload {
   readonly ok: boolean;
@@ -523,6 +523,16 @@ export default function WorkspacePage({
                           >
                             Mulai Diskusi Baru
                           </button>
+                        )}
+                        {/* Add PT Regular Concierge button - ILC→LawyersHub commercial surface */}
+                        {ws.productId === "ilc" && (
+                          <Link 
+                            href="/cases/new?source=ilc&service=pt-regular-concierge"
+                            className="mt-3 w-full rounded-lg bg-green-600 px-3 py-2 text-xs font-semibold text-white hover:bg-green-700 text-center"
+                            data-testid="pt-regular-concierge-button"
+                          >
+                            Butuh Pendirian PT Regular? Konsultasikan Sekarang
+                          </Link>
                         )}
                         {/* Add Create Article button for ILC & Academic workspaces (shared legal-community rail) */}
                         {(ws.productId === "ilc" || ws.productId === "academic") && (

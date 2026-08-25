@@ -1,1 +1,1 @@
-export { CommunitySearchBar } from "./CommunitySearchBar.js";
+export * from "./CommunitySearchBar.js";

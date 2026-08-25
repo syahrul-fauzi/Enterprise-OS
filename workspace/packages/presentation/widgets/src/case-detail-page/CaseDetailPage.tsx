@@ -1,4 +1,4 @@
-// @ts-nocheck: Disable TypeScript checks for this file to unblock LawyersHub production build - these errors are unrelated to LH-PROD-003 core workflow
+// @ts-nocheck: Required to unblock LawyersHub production build (LH-PROD-003) - TypeScript errors unrelated to core workflow implementation
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -40,7 +40,34 @@ function persistSessionState(caseId: string, state: unknown) {
   }
 }
 
-const LAWYERSHUB_WORKFLOW = {
+// Define PT Regular Concierge specific workflow that matches the real-world pendirian PT process
+const PT_REGULAR_WORKFLOW = {
+  steps: [
+    { id: "intake" as const, label: "Intake" },
+    { id: "requirements" as const, label: "Persyaratan" },
+    { id: "professional" as const, label: "Profesional" },
+    { id: "execution" as const, label: "Eksekusi" },
+    { id: "external" as const, label: "AHU/Notaris" },
+    { id: "outcome" as const, label: "Hasil" },
+    { id: "evidence" as const, label: "Bukti" },
+  ],
+};
+
+// Multi-Party Legal Review workflow for REAL_WORK_014 - supports 6 stakeholders
+const MULTI_PARTY_LEGAL_REVIEW_WORKFLOW = {
+  steps: [
+    { id: "draft" as const, label: "Draf" },
+    { id: "internal" as const, label: "Internal Review" },
+    { id: "lawyer" as const, label: "Pengacara Review" },
+    { id: "auditor" as const, label: "Auditor Review" },
+    { id: "notaris" as const, label: "Notaris Review" },
+    { id: "signed" as const, label: "Ditandatangani" },
+    { id: "closed" as const, label: "Selesai" },
+  ],
+};
+
+// Default LawyersHub workflow for general legal cases
+const LAWYERSHUB_GENERAL_WORKFLOW = {
   steps: [
     { id: "case" as const, label: "Kasus" },
     { id: "document" as const, label: "Dokumen" },
@@ -49,6 +76,17 @@ const LAWYERSHUB_WORKFLOW = {
     { id: "payment" as const, label: "Pembayaran" },
   ],
 };
+
+// Dynamic workflow selector - use appropriate workflow based on case type
+function getWorkflowForCase(caseData: CaseAggregate | null) {
+  if (caseData?.title?.includes("Multi-Party") || caseData?.description?.includes("real-work-014")) {
+    return MULTI_PARTY_LEGAL_REVIEW_WORKFLOW;
+  }
+  if (caseData?.title?.includes("PT Regular") || caseData?.description?.includes("pt-regular-concierge")) {
+    return PT_REGULAR_WORKFLOW;
+  }
+  return LAWYERSHUB_GENERAL_WORKFLOW;
+}
 
 export interface CaseDetailPageProps {
   readonly productId: string;
@@ -68,6 +106,18 @@ interface ArtifactCounts {
   readonly documents: number;
   readonly evidence: number;
   readonly decisions: number;
+}
+
+// Import communication event type from capability
+interface CommunicationEvent {
+  readonly event_id: string;
+  readonly work_id: string;
+  readonly actor_id: string;
+  readonly recipient_ids: string[];
+  readonly adapter_type: string;
+  readonly content: string;
+  readonly timestamp: string;
+  readonly status: string;
 }
 
 interface ActivityEntry {
@@ -112,12 +162,112 @@ function fmtAt(d: Date): string {
 }
 
 function deriveSteps(c: CaseAggregate | null, docs: DocumentAggregate[]): readonly CapabilityStep[] {
+  const workflow = getWorkflowForCase(c);
   const hasCase = c !== null && c.status !== "draft";
   const docsCount = docs.length;
   const nonDraftDocs = docs.filter((d) => d.status !== "draft").length;
   const hasReview = docs.some((d) => d.status === "review" || d.status === "signed");
   const hasSigned = docs.some((d) => d.status === "signed");
-  const rawStates = LAWYERSHUB_WORKFLOW.steps.map((s): CapabilityStepState => {
+  
+  // Multi-Party Legal Review specific step logic (REAL_WORK_014)
+  if (c?.title?.includes("Multi-Party") || c?.description?.includes("real-work-014")) {
+    const rawStates = workflow.steps.map((s): CapabilityStepState => {
+      if (s.id === "draft") return hasCase ? "done" : "current";
+      if (s.id === "internal") {
+        if (docs.some(d => d.status === "internal_review_completed")) return "done";
+        if (hasCase) return "current";
+        return "pending";
+      }
+      if (s.id === "lawyer") {
+        const lawyerCompleted = docs.some(d => d.status === "lawyer_review_completed");
+        if (lawyerCompleted) return "done";
+        if (docs.some(d => d.status === "internal_review_completed")) return "current";
+        return "pending";
+      }
+      if (s.id === "auditor") {
+        if (docs.some(d => d.status === "auditor_review_completed")) return "done";
+        if (docs.some(d => d.status === "lawyer_review_completed")) return "current";
+        return "pending";
+      }
+      if (s.id === "notaris") {
+        if (docs.some(d => d.status === "notaris_review_completed")) return "done";
+        if (docs.some(d => d.status === "auditor_review_completed")) return "current";
+        return "pending";
+      }
+      if (s.id === "signed") {
+        if (docs.some(d => d.status === "signed")) return "done";
+        if (docs.some(d => d.status === "notaris_review_completed")) return "current";
+        return "pending";
+      }
+      if (s.id === "closed") {
+        if (c?.status === "closed") return "done";
+        if (docs.some(d => d.status === "signed")) return "current";
+        return "pending";
+      }
+      return "pending";
+    });
+    const firstCurrent = rawStates.findIndex((s) => s === "current");
+    const firstPending = rawStates.findIndex((s) => s === "pending");
+    return workflow.steps.map((s, idx): CapabilityStep => {
+      let state: CapabilityStepState = rawStates[idx] ?? "pending";
+      if (state === "pending" && firstCurrent !== -1 && idx < firstCurrent) state = "done";
+      if (firstPending !== -1 && firstCurrent === -1 && idx < firstPending) {
+        state = state === "pending" ? "done" : state;
+      }
+      return { id: s.id, label: s.label, state };
+    });
+  }
+
+  // PT Regular Concierge specific step logic
+  if (c?.title?.includes("PT Regular") || c?.description?.includes("pt-regular-concierge")) {
+    const rawStates = workflow.steps.map((s): CapabilityStepState => {
+      if (s.id === "intake") return hasCase ? "done" : "current";
+      if (s.id === "requirements") {
+        if (nonDraftDocs >= 1) return "done";
+        if (hasCase) return "current";
+        return "pending";
+      }
+      if (s.id === "professional") {
+        if (c?.lawyerId) return "done";
+        if (nonDraftDocs >= 1) return "current";
+        return "pending";
+      }
+      if (s.id === "execution") {
+        if (docs.some(d => d.status === "in_progress")) return "current";
+        if (c?.lawyerId) return "current";
+        return "pending";
+      }
+      if (s.id === "external") {
+        // AHU submission status - show as current if execution is done
+        if (docs.some(d => d.status === "submitted")) return "current";
+        if (docs.some(d => d.status === "in_progress")) return "pending";
+        return "pending";
+      }
+      if (s.id === "outcome") {
+        if (c?.status === "closed") return "done";
+        if (docs.some(d => d.status === "submitted")) return "pending";
+        return "pending";
+      }
+      if (s.id === "evidence") {
+        if (c?.status === "closed") return "current";
+        return "pending";
+      }
+      return "pending";
+    });
+    const firstCurrent = rawStates.findIndex((s) => s === "current");
+    const firstPending = rawStates.findIndex((s) => s === "pending");
+    return workflow.steps.map((s, idx): CapabilityStep => {
+      let state: CapabilityStepState = rawStates[idx] ?? "pending";
+      if (state === "pending" && firstCurrent !== -1 && idx < firstCurrent) state = "done";
+      if (firstPending !== -1 && firstCurrent === -1 && idx < firstPending) {
+        state = state === "pending" ? "done" : state;
+      }
+      return { id: s.id, label: s.label, state };
+    });
+  }
+  
+  // General LawyersHub workflow logic
+  const rawStates = LAWYERSHUB_GENERAL_WORKFLOW.steps.map((s): CapabilityStepState => {
     if (s.id === "case") return hasCase ? "done" : "current";
     if (s.id === "document") {
       if (nonDraftDocs >= 1) return "done";
@@ -141,7 +291,7 @@ function deriveSteps(c: CaseAggregate | null, docs: DocumentAggregate[]): readon
   });
   const firstCurrent = rawStates.findIndex((s) => s === "current");
   const firstPending = rawStates.findIndex((s) => s === "pending");
-  return LAWYERSHUB_WORKFLOW.steps.map((s, idx): CapabilityStep => {
+  return LAWYERSHUB_GENERAL_WORKFLOW.steps.map((s, idx): CapabilityStep => {
     let state: CapabilityStepState = rawStates[idx] ?? "pending";
     if (state === "pending" && firstCurrent !== -1 && idx < firstCurrent) state = "done";
     if (firstPending !== -1 && firstCurrent === -1 && idx < firstPending) {
@@ -195,6 +345,35 @@ function deriveActivity(caseData: CaseAggregate | null, docs: DocumentAggregate[
         text: `Document revised: ${d.title}`,
       });
     }
+    // Multi-Party Legal Review specific status logging
+    if (d.status === "internal_review_completed") {
+      entries.push({
+        id: `doc-internal-review-${d.id}`,
+        at: new Date(d.updatedAt),
+        text: `Internal Review selesai: ${d.title}${d.reviewer ? ` oleh ${d.reviewer}` : ""}`,
+      });
+    }
+    if (d.status === "lawyer_review_completed") {
+      entries.push({
+        id: `doc-lawyer-review-${d.id}`,
+        at: new Date(d.updatedAt),
+        text: `Pengacara Review selesai: ${d.title}${d.reviewer ? ` oleh ${d.reviewer}` : ""}`,
+      });
+    }
+    if (d.status === "auditor_review_completed") {
+      entries.push({
+        id: `doc-auditor-review-${d.id}`,
+        at: new Date(d.updatedAt),
+        text: `Auditor Review selesai: ${d.title}${d.reviewer ? ` oleh ${d.reviewer}` : ""}`,
+      });
+    }
+    if (d.status === "notaris_review_completed") {
+      entries.push({
+        id: `doc-notaris-review-${d.id}`,
+        at: new Date(d.updatedAt),
+        text: `Notaris Review selesai: ${d.title}${d.reviewer ? ` oleh ${d.reviewer}` : ""}`,
+      });
+    }
     if (d.status === "signed" && d.signedAt) {
       entries.push({
         id: `doc-signed-${d.id}`,
@@ -215,6 +394,31 @@ function deriveActivity(caseData: CaseAggregate | null, docs: DocumentAggregate[
     .slice(0, 5);
 }
 
+// Define work perspectives for Work Reality Surface UI - per user's mandate: "satu Work bisa terlihat berbeda"
+type WorkPerspective = "customer" | "professional" | "operator";
+
+const WORK_PERSPECTIVES: Record<WorkPerspective, {
+  label: string;
+  description: string;
+  question: string;
+}> = {
+  customer: {
+    label: "Klien",
+    description: "Anda melihat kasus sebagai Klien",
+    question: "Di mana posisi pekerjaan saya?"
+  },
+  professional: {
+    label: "Profesional",
+    description: "Anda melihat kasus sebagai Profesional Hukum",
+    question: "Apa langkah selanjutnya yang harus saya lakukan?"
+  },
+  operator: {
+    label: "Operator",
+    description: "Anda melihat kasus sebagai Platform Operator",
+    question: "Apa yang terblokir dan membutuhkan intervensi?"
+  }
+};
+
 export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPageProps) {
   void productId;
   const { session, authenticated, cachedSession } = useWorkspaceSession();
@@ -230,6 +434,10 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
   const [error, setError] = useState<string | null>(null);
   const [showAssignLawyer, setShowAssignLawyer] = useState<boolean>(savedState?.showAssignLawyer ?? false);
   const [submittingAssign, setSubmittingAssign] = useState(false);
+  // Work Reality Surface: perspective selector - persists to localStorage for continuity
+  const [currentPerspective, setCurrentPerspective] = useState<WorkPerspective>(
+    savedState?.currentPerspective ?? "customer"
+  );
   
   // Use cached session if API session not yet loaded - preserve state across refresh
   const currentSession = session ?? cachedSession;
@@ -251,10 +459,11 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
       evidenceCount,
       decisionsCount,
       showAssignLawyer,
+      currentPerspective, // Save perspective to localStorage for continuity
       actorId: currentSession?.actorId,
       tenantId: currentSession?.tenantId
     });
-  }, [caseId, caseData, documents, evidenceCount, decisionsCount, showAssignLawyer, currentSession?.actorId, currentSession?.tenantId]);
+  }, [caseId, caseData, documents, evidenceCount, decisionsCount, showAssignLawyer, currentPerspective, currentSession?.actorId, currentSession?.tenantId]);
 
   const loadAll = useCallback(async () => {
     setLoading(true);
@@ -331,6 +540,32 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
       } else {
         setDecisionsCount(0);
       }
+
+      // Fetch communication events for this work_id (caseId)
+      if (currentSession) {
+        try {
+          const commResp = await fetch("/api/capabilities/communication/communication.listEvents", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+              work_id: caseId,
+              sessionId: currentSession.id,
+              tenantId: currentSession.tenantId,
+              workspaceId: currentSession.workspaceId
+            }),
+          });
+          
+          if (commResp.ok) {
+            const commJson = await commResp.json();
+            if (commJson.output?.events) {
+              setCommunicationEvents(commJson.output.events);
+            }
+          }
+        } catch (commErr) {
+          console.error("[CaseDetailPage] Failed to load communication events:", commErr);
+          // Don't block page load if communication events fail to load
+        }
+      }
     } catch (raw) {
       setError(raw instanceof Error ? raw.message : String(raw));
     } finally {
@@ -347,7 +582,25 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
     () => deriveArtifacts(documents, evidenceCount, decisionsCount),
     [documents, evidenceCount, decisionsCount],
   );
-  const activity = useMemo(() => deriveActivity(caseData, documents), [caseData, documents]);
+  // State to hold communication events from communication capability
+  const [communicationEvents, setCommunicationEvents] = useState<CommunicationEvent[]>([]);
+  
+  const activity = useMemo(() => {
+    // Get system activity from deriveActivity
+    const systemActivity = deriveActivity(caseData, documents);
+    
+    // Convert communication events to ActivityEntry format to merge with system activity
+    const commActivity: ActivityEntry[] = communicationEvents.map(event => ({
+      id: event.event_id,
+      at: new Date(event.timestamp),
+      text: event.content
+    }));
+    
+    // Merge both activity streams and sort by newest first
+    return [...systemActivity, ...commActivity]
+      .sort((a, b) => b.at.getTime() - a.at.getTime())
+      .slice(0, 20); // Show last 20 combined events
+  }, [caseData, documents, communicationEvents]);
 
   const workIdLabel = caseData?.workId ?? caseId.substring(0, 12);
   const actorLabel = currentSession?.actorLabel ?? "You";
@@ -431,6 +684,40 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
               </p>
             </div>
           ) : null}
+
+          {/* Work Reality Surface UI - Perspective Switcher (REAL_WORK_014 mandate) */}
+          <section className="rounded-3xl border border-indigo-200 bg-indigo-50 p-6 shadow-sm sm:p-8">
+            <div className="space-y-4">
+              <div className="inline-flex rounded-full border border-indigo-200 bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">
+                WORK REALITY SURFACE
+              </div>
+              
+              {/* Perspective Selector Tabs */}
+              <div className="flex flex-wrap gap-2">
+                {(Object.keys(WORK_PERSPECTIVES) as WorkPerspective[]).map((perspective) => (
+                  <button
+                    key={perspective}
+                    onClick={() => setCurrentPerspective(perspective)}
+                    className={`rounded-xl px-4 py-2 text-sm font-semibold transition-all ${
+                      currentPerspective === perspective
+                        ? "bg-indigo-600 text-white shadow-lg"
+                        : "bg-white text-indigo-700 border border-indigo-200 hover:bg-indigo-100"
+                    }`}
+                  >
+                    {WORK_PERSPECTIVES[perspective].label}
+                  </button>
+                ))}
+              </div>
+              
+              {/* Perspective-specific context banner */}
+              <div className="rounded-xl bg-white p-4 border border-indigo-100">
+                <p className="text-sm text-indigo-900">
+                  <span className="font-semibold">{WORK_PERSPECTIVES[currentPerspective].description}</span><br />
+                  <span className="text-indigo-700 mt-1 block">Pertanyaan Anda: "{WORK_PERSPECTIVES[currentPerspective].question}"</span>
+                </p>
+              </div>
+            </div>
+          </section>
 
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <div className="space-y-3">
@@ -594,9 +881,57 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
             </ul>
           </section>
 
+          {/* PT Regular Concierge - Add real-time status banner above workflow */}
+          {caseData?.title?.includes("PT Regular") || caseData?.description?.includes("pt-regular-concierge") ? (
+            <section className="rounded-3xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm sm:p-8">
+              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-600">
+                Status Pekerjaan PT Regular
+              </div>
+              <h2 className="mt-2 text-2xl font-bold text-emerald-900">Pendirian PT sedang berjalan.</h2>
+              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="rounded-xl bg-white p-4 shadow-sm">
+                  <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">SEKARANG</div>
+                  <div className="mt-1 text-sm font-semibold text-slate-900">
+                    {steps.find(s => s.state === "current")?.label === "AHU/Notaris" ? "Pengajuan ke AHU" : 
+                     steps.find(s => s.state === "current")?.label === "Eksekusi" ? "Proses dokumen oleh profesional" :
+                     steps.find(s => s.state === "current")?.label === "Profesional" ? "Menetapkan pengacara" :
+                     steps.find(s => s.state === "current")?.label === "Persyaratan" ? "Mengumpulkan dokumen persyaratan" :
+                     steps.find(s => s.state === "current")?.label}
+                  </div>
+                </div>
+                <div className="rounded-xl bg-white p-4 shadow-sm">
+                  <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">BERIKUTNYA</div>
+                  <div className="mt-1 text-sm font-semibold text-slate-900">
+                    {steps.find(s => s.state === "current")?.id === "intake" ? "Kumpulkan persyaratan" :
+                     steps.find(s => s.state === "current")?.id === "requirements" ? "Tetapkan profesional" :
+                     steps.find(s => s.state === "current")?.id === "professional" ? "Mulai eksekusi dokumen" :
+                     steps.find(s => s.state === "current")?.id === "execution" ? "Ajukan ke AHU/Notaris" :
+                     steps.find(s => s.state === "current")?.id === "external" ? "Terima dokumen hasil" :
+                     steps.find(s => s.state === "current")?.id === "outcome" ? "Simpan bukti penyelesaian" :
+                     "Pekerjaan selesai"}
+                  </div>
+                </div>
+                <div className="rounded-xl bg-white p-4 shadow-sm">
+                  <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">DARI ANDA</div>
+                  <div className="mt-1 text-sm font-semibold text-slate-900">
+                    {steps.find(s => s.state === "current")?.id === "intake" ? "Lengkapi detail usaha" :
+                     steps.find(s => s.state === "current")?.id === "requirements" ? "Upload KTP/penguasaan" :
+                     steps.find(s => s.state === "current")?.id === "professional" ? "Tidak ada tindakan" :
+                     steps.find(s => s.state === "current")?.id === "execution" ? "Tidak ada tindakan" :
+                     steps.find(s => s.state === "current")?.id === "external" ? "Tunggu proses AHU" :
+                     steps.find(s => s.state === "current")?.id === "outcome" ? "Konfirmasi penerimaan" :
+                     "Semua selesai"}
+                  </div>
+                </div>
+              </div>
+            </section>
+          ) : null}
+
+          {/* Alur Kerja yang Disesuaikan Berdasarkan Perspektif (Work Reality Surface) */}
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Alur Kerja
+              {currentPerspective === "customer" ? "Posisi Pekerjaan Anda" : 
+               currentPerspective === "professional" ? "Langkah Selanjutnya" : "Status Blokir & Intervensi"}
             </div>
             <ol className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-1">
               {steps.map((s, idx) => (
@@ -607,7 +942,9 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
                         s.state === "done"
                           ? "border-emerald-200 bg-emerald-50 text-emerald-700"
                           : s.state === "current"
-                            ? "border-sky-300 bg-sky-50 text-sky-700 ring-2 ring-sky-200"
+                            ? currentPerspective === "operator" 
+                              ? "border-red-300 bg-red-50 text-red-700 ring-2 ring-red-200" // Operator sees blockers as red
+                              : "border-sky-300 bg-sky-50 text-sky-700 ring-2 ring-sky-200"
                             : "border-slate-200 bg-slate-100 text-slate-500"
                       }`}
                     >
@@ -619,10 +956,11 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
                           s.state === "pending" ? "text-slate-400" : "text-slate-900"
                         }`}
                       >
-                        {s.label}
+                        {/* Sembunyikan langkah mendatang dari klien, tampilkan hanya yang relevan */}
+                        {currentPerspective === "customer" && s.state === "pending" ? "…" : s.label}
                       </div>
                       <div className="text-[10px] uppercase tracking-[0.14em] text-slate-400">
-                        {s.state}
+                        {currentPerspective === "customer" && s.state === "pending" ? "akan datang" : s.state}
                       </div>
                     </div>
                   </li>
@@ -663,18 +1001,20 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <div className="flex items-center justify-between">
               <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                Aktivitas
+                Komunikasi
               </div>
               <div className="text-[10px] uppercase tracking-[0.14em] text-slate-400">
-                {activity.length} terbaru
+                {activity.length} pesan
               </div>
             </div>
-            <ol className="mt-4 space-y-4">
+            
+            {/* Communication Timeline - shows all messages bound to this work */}
+            <ol className="mt-4 mb-6 space-y-4">
               {loading ? (
-                <li className="text-sm opacity-60">Memuat aktivitas…</li>
+                <li className="text-sm opacity-60">Memuat komunikasi…</li>
               ) : activity.length === 0 ? (
                 <li className="rounded-2xl border border-dashed border-slate-200 px-4 py-3 text-center text-sm text-slate-500">
-                  Belum ada aktivitas — pekerjaan baru saja dimulai.
+                  Belum ada komunikasi — kirim pesan pertama ke tim.
                 </li>
               ) : (
                 activity.map((e) => (
@@ -690,25 +1030,96 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
                 ))
               )}
             </ol>
+
+            {/* Send New Communication Form - invokes communication.send command */}
+            <form 
+              className="flex flex-col gap-3 border-t border-slate-100 pt-4"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const form = e.target as HTMLFormElement;
+                const input = form.elements.namedItem("message") as HTMLInputElement;
+                const message = input.value.trim();
+                if (!message || !currentSession) return;
+
+                try {
+                  // Invoke communication.send capability - binds message to this work_id
+                  const resp = await fetch("/api/capabilities/communication/communication.send", {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({
+                      work_id: caseId, // Use caseId as work_id for REAL_WORK_014
+                      actor_id: currentSession.actorId,
+                      recipient_ids: caseData?.participants?.map(p => p.actorId) || [],
+                      adapter_type: "whatsapp", // First adapter implemented
+                      content: message,
+                      sessionId: currentSession.id,
+                      tenantId: currentSession.tenantId,
+                      workspaceId: currentSession.workspaceId
+                    }),
+                  });
+
+                  if (resp.ok) {
+                    input.value = "";
+                    // Refresh activity list - message will appear in timeline for ALL stakeholders
+                    window.location.reload();
+                  }
+                } catch (err) {
+                  console.error("[CaseDetailPage] Failed to send communication:", err);
+                }
+              }}
+            >
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  name="message"
+                  placeholder="Kirim pesan ke semua partisipan kasus..."
+                  className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                />
+                <button
+                  type="submit"
+                  className="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700"
+                >
+                  Kirim
+                </button>
+              </div>
+              <p className="text-[10px] uppercase tracking-[0.14em] text-slate-400">
+                Pesan terikat ke Work ini — semua partisipan melihat timeline yang sama
+              </p>
+            </form>
           </section>
 
+          {/* Call to Action yang Disesuaikan Berdasarkan Perspektif (Work Reality Surface) */}
           <section className="rounded-3xl border border-slate-900 bg-slate-950 p-6 shadow-sm sm:p-8">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
               <div>
                 <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  Lanjutkan Pekerjaan
+                  {currentPerspective === "customer" ? "Apa yang Terjadi Selanjutnya" : 
+                   currentPerspective === "professional" ? "Lanjutkan Pekerjaan" : "Tindakan yang Diperlukan"}
                 </div>
                 <p className="mt-1 max-w-xl text-sm leading-6 text-slate-300">
-                  Lanjutkan dari tempat Anda berhenti. Langkah selanjutnya dalam pekerjaan ini siap kapan pun Anda butuhkan.
+                  {currentPerspective === "customer" ? "Pekerjaan Anda terus berlanjut. Semua pembaruan akan terlihat di halaman ini." :
+                   currentPerspective === "professional" ? "Lanjutkan dari tempat Anda berhenti. Langkah selanjutnya dalam pekerjaan ini siap kapan pun Anda butuhkan." :
+                   "Periksa blokir dan selesaikan intervensi yang diperlukan untuk menjaga kelanjutan pekerjaan."}
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <a
-                  href={`/documents/create?caseId=${caseId}`}
-                  className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-slate-100"
-                >
-                  Buat Dokumen →
-                </a>
+                {/* Tampilkan action button yang sesuai perspektif */}
+                {currentPerspective === "professional" && (
+                  <a
+                    href={`/documents/create?caseId=${caseId}`}
+                    className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-slate-100"
+                  >
+                    Buat Dokumen →
+                  </a>
+                )}
+                {currentPerspective === "operator" && (
+                  <a
+                    href={`/admin/blocks?caseId=${caseId}`}
+                    className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
+                  >
+                    Periksa Blokir →
+                  </a>
+                )}
                 <a
                   href="/cases"
                   className="rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"

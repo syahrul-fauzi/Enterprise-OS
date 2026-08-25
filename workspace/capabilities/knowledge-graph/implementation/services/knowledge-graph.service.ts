@@ -3,7 +3,7 @@ import { evidenceRegistryService } from "../../../evidence-registry/implementati
 import { requirementService } from "../../../requirement-management/implementation/services/requirement.service.js";
 import { workflowEngineService } from "../../../workflow-engine/implementation/services/workflow-engine.service.js";
 import type { KnowledgeEdge, KnowledgeGraphSnapshot, KnowledgeNode } from "../contracts/index.js";
-import { recordRuntimeInvocation } from "@repo/core-kernel";
+import { recordRuntimeInvocation } from "@repo/core-runtime";
 
 export class KnowledgeGraphService {
   getSnapshot(): KnowledgeGraphSnapshot {

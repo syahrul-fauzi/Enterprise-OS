@@ -1,5 +1,14 @@
 import type { ServiceProviderCategory } from "../contracts/service.contracts.js";
-import { VALID_SERVICE_CATEGORIES } from "../../../../packages/core/src/constants/service-categories.js";
+
+const VALID_SERVICE_CATEGORIES: readonly ServiceProviderCategory[] = [
+  "Cloud Services",
+  "IT Support",
+  "Infrastructure",
+  "Cybersecurity",
+  "Software Development",
+  "Managed Services",
+  "Data & Analytics",
+];
 
 interface BatchValidationResult {
   valid: boolean;

@@ -4,5 +4,5 @@
  * Menjaga interface stabil meskipun internal implementation berubah
  */
 
-export { DeliveryDecisionGatewayService } from "./delivery-decision-gateway.service";
+export { DeliveryDecisionGatewayService } from "./delivery-decision-gateway.service.js";
 export type { GovernanceDecisionRecord } from "./delivery-decision-gateway.service.js";

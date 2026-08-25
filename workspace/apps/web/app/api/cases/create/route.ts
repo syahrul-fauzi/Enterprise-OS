@@ -7,11 +7,11 @@ import {
 import {
   createCase,
   listCasesByWorkspace,
-} from "../../../../../../capabilities/legal-case/implementation/commands/case.commands";
+} from "../../../../../../capabilities/legal-case/implementation/commands/case.commands.js";
 import {
   getSessionRepositoryPostgres,
   initIdentitySchema,
-} from "../../../../../../capabilities/identity/implementation/repositories/index";
+} from "../../../../../../capabilities/identity/dist/repositories/index.js";
 
 const CreateCaseRequestSchema = z.object({
   title: z.string().min(1),

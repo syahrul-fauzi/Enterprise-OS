@@ -10,7 +10,7 @@ import type {
   TrustSignatureProviderSPI,
   TrustSignatureReference,
   TrustVerificationResult,
-} from "../contracts";
+} from "../contracts/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

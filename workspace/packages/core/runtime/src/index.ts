@@ -12,8 +12,14 @@ export { recordObservedExecution, getTraceForDecision, detectReentryAnomalies, v
 export type { ObservedExecution } from "./execution-observability.js";
 export type { ExecutionContext } from "./execution-context.js";
 export type { ResolvedWorkspace } from "@repo/composition";
-// FIX-UI-001: New execution status and email queue exports
-export { ExecutionStatusRepository } from "./execution-status.js";
+// SERVER-ONLY MODULES (ExecutionStatusRepository + EmailQueueRepository) are intentionally
+// NOT exported from this barrel. They have top-level side effects and depend on
+// Node.js-only packages (ioredis → net/tls). Exporting them here forces every
+// consumer of this barrel — including browser code — to pull in Node.js built-ins,
+// which breaks Next.js client bundles with "Can't resolve 'net'" errors.
+//
+// Server-side consumers (API routes, scripts) MUST import these directly:
+//   import { ExecutionStatusRepository } from "@repo/core-runtime/src/execution-status.js";
+//   import { EmailQueueRepository } from "@repo/core-runtime/src/email-queue.js";
 export type { ExecutionStatus } from "./execution-status.js";
-export { EmailQueueRepository } from "./email-queue.js";
 export type { QueuedEmail } from "./email-queue.js";

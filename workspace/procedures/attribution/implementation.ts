@@ -7,15 +7,15 @@ import {
   type AttributionVersion,
   type ProcedureName,
   toProcedureName,
-} from "./contracts";
+} from "./contracts.js";
 import type {
   ExecutionId,
   CanonicalSubjectKey,
-} from "../contracts";
+} from "../contracts.js";
 import type {
   PrepareReleaseInput,
   PrepareReleaseOutput,
-} from "../prepare-release/contracts";
+} from "../prepare-release/contracts.js";
 
 type JsonPrimitive = string | number | boolean | null;
 type JsonValue = JsonPrimitive | JsonValue[] | { readonly [key: string]: JsonValue };

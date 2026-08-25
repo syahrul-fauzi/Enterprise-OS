@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
-import { decodeWorkspaceSession, createAnonymousWorkspaceSession } from "../../../packages/core/kernel/src/session/workspace-session";
+import { decodeWorkspaceSession, createAnonymousWorkspaceSession } from "../../../packages/core/kernel/src/session/workspace-session.js";
 import PT_ESTABLISHMENT_WORKSEED from "../work-seeds/pt-establishment.workseed.json" assert { type: "json" };
 
 type Stage = "landing" | "discovery" | "conversation" | "escalation" | "status" | "outcome";

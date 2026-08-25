@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { encodeWorkspaceSession, WORKSPACE_SESSION_COOKIE, type WorkspaceSession } from "@repo/core-kernel";
 // REALITY PATH ONLY - Bypass capabilityRegistry, import command langsung
-import { SignupAndSessionInputSchema, signupAndSessionCommand } from "@capabilities/identity/implementation/commands/signup-and-session.command";
+import { SignupAndSessionInputSchema, signupAndSessionCommand } from "@capabilities/identity/implementation/commands/signup-and-session.command.js";
 
 type SignupApiOutput = {
   readonly response: unknown;

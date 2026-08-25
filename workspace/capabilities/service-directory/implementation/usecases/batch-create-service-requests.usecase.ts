@@ -1,5 +1,5 @@
 import type { ServiceProviderCategory, CreateServiceRequestInput } from "../contracts/service.contracts.js";
-import { ServiceRequestRepository } from "../repository/service-request.repository.js";
+import { ServiceRequestRepositoryInMemory as ServiceRequestRepository } from "../repository/service.repository.js";
 import { validateBatchItems } from "../validation/batch-validator.js";
 
 interface BatchCreateInput {

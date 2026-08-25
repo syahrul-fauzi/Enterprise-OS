@@ -1,3 +1,3 @@
-export * from "./contracts";
-export * from "./prepare-release";
-export * from "./attribution";
+export * from "./contracts.js";
+export * from "./prepare-release/index.js";
+export * from "./attribution/index.js";

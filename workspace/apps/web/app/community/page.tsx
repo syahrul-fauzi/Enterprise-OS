@@ -1,7 +1,7 @@
 "use server";
 
 import { CommunityPage } from '@repo/presentation-widgets';
-import { readProductBinding } from '@repo/presentation-experience';
+import { readProductBinding } from '@repo/presentation-experience/product-binding.js';
 
 interface CommunityPageProps {
   searchParams?: Promise<{

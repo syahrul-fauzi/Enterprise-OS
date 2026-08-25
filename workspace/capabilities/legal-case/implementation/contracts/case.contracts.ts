@@ -22,10 +22,12 @@ export interface CaseAggregate {
   readonly status: CaseStatus;
   readonly priority: CasePriority;
   readonly lawyerId?: string;
+  readonly actorId?: string; // Actor identity for work continuity grounding
   readonly sourceDiscussionId?: string; // ILC: source community discussion ID for context tracing
   readonly createdAt: Readonly<Date>;
   readonly updatedAt: Readonly<Date>;
   readonly closedAt?: Readonly<Date>;
+  readonly deadline?: Readonly<Date>; // Case deadline for continuity tracking
   // Ambient execution context for distributed tracing (W4-C20-001 compliance)
   readonly executionContext?: ExecutionContextMetadata;
 }
@@ -53,6 +55,10 @@ export interface CreateCaseOutput {
 export interface CloseCaseInput {
   readonly id: CaseId;
   readonly reason?: string;
+  readonly sessionId: string;
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string; // Required for audit logging and tenant isolation
 }
 
 export interface CloseCaseOutput {
@@ -67,6 +73,10 @@ export interface AssignLawyerInput {
     readonly transferReason?: string;
     readonly workId?: string;
     readonly parentContextTraceId?: string;
+    readonly sessionId: string;
+    readonly tenantId: string;
+    readonly workspaceId: string;
+    readonly actorId: string; // Required for audit logging and tenant isolation
 }
 
 export interface AssignLawyerOutput {
@@ -100,12 +110,12 @@ export interface SearchCasesOutput {
 export type CaseRepository = {
   readonly entityName: "Case";
   readonly kind: "repository";
-  byId(id: CaseId): Promise<CaseAggregate | undefined>;
-  list(): Promise<readonly CaseAggregate[]>;
+  byId(id: CaseId, context?: { tenantId: string; workspaceId: string }): Promise<CaseAggregate | undefined>;
+  list(context?: { tenantId: string; workspaceId: string }): Promise<readonly CaseAggregate[]>;
   listByTenant(tenantId: string): Promise<readonly CaseAggregate[]>;
   listByWorkspace(workspaceId: string): Promise<readonly CaseAggregate[]>;
-  save(entity: CaseAggregate): Promise<CaseAggregate>;
-  remove(id: CaseId): Promise<boolean>;
+  save(entity: CaseAggregate, context?: { tenantId: string; workspaceId: string; actorId: string }): Promise<CaseAggregate>;
+  remove(id: CaseId, context?: { tenantId: string; workspaceId: string }): Promise<boolean>;
 };
 
 export interface CaseDomainEvents {

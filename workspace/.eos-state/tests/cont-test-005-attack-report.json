@@ -1,0 +1,168 @@
+{
+  "test_id": "CONT-TEST-005",
+  "vector": "External response mutation",
+  "executed_at": "2026-08-24T06:00:29.812Z",
+  "test_type": "ADVERSARIAL_CODE_SIMULATION — NOT REALITY-GATED (no browser, no real webhook, no real DB)",
+  "attacks_executed": 10,
+  "continuity_breaks_observed": 0,
+  "broken_attacks": [],
+  "per_attack_results": [
+    {
+      "attackName": "CASE-SENSITIVITY: CASE-cont005",
+      "mutatedWorkId": "CASE-cont005",
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "continuityBreak": false,
+      "notes": [
+        "orphan_detected=true",
+        "work_id repair AUDITED (lineage trace present)"
+      ]
+    },
+    {
+      "attackName": "WHITESPACE: case-cont005\\u0020",
+      "mutatedWorkId": "case-cont005 ",
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "continuityBreak": false,
+      "notes": [
+        "orphan_detected=true",
+        "work_id repair AUDITED (lineage trace present)"
+      ]
+    },
+    {
+      "attackName": "PATTERN-MATCH BUT WRONG: case-999",
+      "mutatedWorkId": "case-999",
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "continuityBreak": false,
+      "notes": [
+        "orphan_detected=false",
+        "work_id repair AUDITED (lineage trace present)"
+      ]
+    },
+    {
+      "attackName": "EMPTY STRING",
+      "mutatedWorkId": "",
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "continuityBreak": false,
+      "notes": [
+        "orphan_detected=true",
+        "work_id repair AUDITED (lineage trace present)"
+      ]
+    },
+    {
+      "attackName": "NULL work_id",
+      "mutatedWorkId": null,
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "continuityBreak": false,
+      "notes": [
+        "orphan_detected=true",
+        "work_id repair AUDITED (lineage trace present)"
+      ]
+    },
+    {
+      "attackName": "HOMOGLYPH: сase-cont005 (Cyrillic first char)",
+      "mutatedWorkId": "сase-cont005",
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "continuityBreak": false,
+      "notes": [
+        "orphan_detected=true",
+        "work_id repair AUDITED (lineage trace present)"
+      ]
+    },
+    {
+      "attackName": "FORMAT-BYPASS: case_cont005 (underscore)",
+      "mutatedWorkId": "case_cont005",
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "continuityBreak": false,
+      "notes": [
+        "orphan_detected=true",
+        "work_id repair AUDITED (lineage trace present)"
+      ]
+    },
+    {
+      "attackName": "CROSS-TENANT CLAIM: case-cont005 + fake tenant",
+      "mutatedWorkId": "case-cont005",
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "continuityBreak": false,
+      "notes": [
+        "orphan_detected=true"
+      ]
+    },
+    {
+      "attackName": "PRIV-ESC: external claims actor=lawyer007",
+      "mutatedWorkId": "case-cont005",
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "continuityBreak": false,
+      "notes": [
+        "orphan_detected=true"
+      ]
+    },
+    {
+      "attackName": "REPLAY-NO-CONTEXT: ids only",
+      "mutatedWorkId": "case-cont005",
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "continuityBreak": false,
+      "notes": [
+        "orphan_detected=true"
+      ]
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 "use server";
 
 import { ProductDeliveryPage } from "@repo/presentation-widgets/product-delivery-page/ProductDeliveryPage";
-import { readProductBinding } from "@repo/presentation-experience/product-binding";
-import { readProductRouteMetadata } from "@repo/presentation-experience/catalog";
+import { readProductBinding } from "@repo/presentation-experience/product-binding.js";
+import { readProductRouteMetadata } from "@repo/presentation-experience/catalog.js";
 import type { Metadata } from "next";
 
 interface EvidenceRouteProps {

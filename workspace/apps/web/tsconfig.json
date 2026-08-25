@@ -1,7 +1,7 @@
 {
   "extends": "@repo/config-typescript/nextjs.json",
   "compilerOptions": {
-    "ignoreDeprecations": "5.0",
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "types": ["node"],
     "resolveJsonModule": true,
@@ -31,7 +31,15 @@
       "@products/*": ["../../products/*"],
       "@procedures/*": ["../../procedures/*"],
       "@procedures": ["../../procedures/index"],
-      "@capabilities/*": ["../../capabilities/*"]
+      "@capabilities/*": ["../../capabilities/*"],
+      "identity/*": ["../../capabilities/identity/*"],
+      "legal-case/*": ["../../capabilities/legal-case/*"],
+      "legal-document/*": ["../../capabilities/legal-document/*"],
+      "communication/*": ["../../capabilities/communication/*"],
+      "service-directory/*": ["../../capabilities/service-directory/*"],
+      "legal-community/*": ["../../capabilities/legal-community/*"],
+      "requirements-traceability-matrix/*": ["../../capabilities/requirements-traceability-matrix/*"],
+      "requirement-management/*": ["../../capabilities/requirement-management/*"]
     },
     "plugins": [
       {
@@ -51,6 +59,8 @@
     "../../capabilities/legal-case/**/*.tsx",
     "../../capabilities/legal-document/**/*.ts",
     "../../capabilities/legal-document/**/*.tsx",
+    "../../capabilities/communication/**/*.ts",
+    "../../capabilities/communication/**/*.tsx",
     "../../capabilities/identity/**/*.ts",
     "../../capabilities/identity/**/*.tsx"
   ],

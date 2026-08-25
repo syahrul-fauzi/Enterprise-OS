@@ -2,7 +2,8 @@
 
 import type { Metadata } from "next";
 import { ProductLandingPage } from "@repo/presentation-widgets";
-import { readProductBinding, readProductRouteMetadata } from "@repo/presentation-experience";
+import { readProductBinding } from "@repo/presentation-experience/product-binding.js";
+import { readProductRouteMetadata } from "@repo/presentation-experience";
 
 interface ProductPreviewPageProps {
   readonly params: Promise<{

@@ -10,7 +10,7 @@ import {
   SignDocumentOutput,
   UpdateDocumentInput,
   UpdateDocumentOutput,
-} from "../contracts/index.js";
+} from "../contracts/document.contracts.js";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { recordRuntimeInvocation, executionContext } from "@repo/core-runtime";
 import {
@@ -19,8 +19,6 @@ import {
   defaultDocumentStatus,
   getDocumentRepositoryPostgres,
 } from "../repository/index.js";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
-
 // Environment-based repository toggle (match identity production rail)
 const documentRepository = process.env.DATABASE_URL 
   ? getDocumentRepositoryPostgres() 
@@ -32,11 +30,10 @@ type SignDocumentCommand = CapabilityCommand<SignDocumentInput, SignDocumentOutp
 type ArchiveDocumentCommand = CapabilityCommand<ArchiveDocumentInput, ArchiveDocumentOutput>;
 type UpdateDocumentCommand = CapabilityCommand<UpdateDocumentInput, UpdateDocumentOutput>;
 
-// Schema initialization flag to prevent multiple attempts
+// WORK-015: Schema initialized via core database migration manager
 let schemaInitialized = false;
 async function ensureSchema() {
   if (!schemaInitialized && process.env.DATABASE_URL) {
-    await initIdentitySchema();
     schemaInitialized = true;
   }
 }
@@ -45,7 +42,7 @@ export const createDocument: CreateDocumentCommand = {
   kind: "command",
   name: "document.create",
   version: "0.1.0",
-  async execute(input) {
+  async execute(input: CreateDocumentInput) {
     await ensureSchema();
     const trimmed = input.title.trim();
     if (trimmed.length === 0) {
@@ -69,7 +66,12 @@ export const createDocument: CreateDocumentCommand = {
       createdAt: now,
       updatedAt: now,
     };
-    await documentRepository.save(entity);
+    // WORK-015: Pass tenant/workspace/actor context to repository for isolation enforcement
+    await documentRepository.save(entity, { 
+      tenantId: input.tenantId, 
+      workspaceId: input.workspaceId, 
+      actorId: input.actorId 
+    });
     
     // Record execution lineage for W1
     const invocationEvent = {
@@ -92,9 +94,13 @@ export const signDocument: SignDocumentCommand = {
   kind: "command",
   name: "document.sign",
   version: "0.1.0",
-  async execute(input) {
+  async execute(input: SignDocumentInput) {
     await ensureSchema();
-    const current = await documentRepository.byId(input.id);
+    // WORK-015: Pass tenant/workspace context to enforce tenant isolation during read
+    const current = await documentRepository.byId(input.id, { 
+      tenantId: input.tenantId, 
+      workspaceId: input.workspaceId 
+    });
     if (current === undefined) {
       throw new Error(`[document.sign] Document not found: ${input.id}`);
     }
@@ -103,13 +109,21 @@ export const signDocument: SignDocumentCommand = {
         `[document.sign] Cannot sign an archived document: ${input.id}`
       );
     }
+    if (!input.signer) {
+      throw new Error(`[document.sign] Signer is required to sign document: ${input.id}`);
+    }
     const signedAt = new Date();
     const next: DocumentAggregate = {
       ...current,
       status: "signed",
       signedAt,
     };
-    await documentRepository.save(next);
+    // WORK-015: Pass tenant/workspace/actor context to repository for isolation enforcement
+    await documentRepository.save(next, { 
+      tenantId: input.tenantId, 
+      workspaceId: input.workspaceId, 
+      actorId: input.signer // TypeScript narrows this to string after runtime check
+    });
     
     // Ambient decision_id check - verifikasi W1 terpropagasi dengan benar
     const ambient = executionContext.get();
@@ -142,9 +156,13 @@ export const archiveDocument: ArchiveDocumentCommand = {
   kind: "command",
   name: "document.archive",
   version: "0.1.0",
-  async execute(input) {
+  async execute(input: ArchiveDocumentInput) {
     await ensureSchema();
-    const current = await documentRepository.byId(input.id);
+    // WORK-015: Pass tenant/workspace context to enforce tenant isolation during read
+    const current = await documentRepository.byId(input.id, { 
+      tenantId: input.tenantId, 
+      workspaceId: input.workspaceId 
+    });
     if (current === undefined) {
       throw new Error(`[document.archive] Document not found: ${input.id}`);
     }
@@ -173,7 +191,12 @@ export const archiveDocument: ArchiveDocumentCommand = {
       status: "archived",
       archivedAt,
     };
-    await documentRepository.save(next);
+    // WORK-015: Pass tenant/workspace/actor context to repository for isolation enforcement
+    await documentRepository.save(next, { 
+      tenantId: input.tenantId, 
+      workspaceId: input.workspaceId, 
+      actorId: input.archiverId || input.actorId 
+    });
     const invocationEvent = {
       capabilityId: "legal-document",
       operationId: "document.archive",
@@ -194,9 +217,13 @@ export const reviewDocument: ReviewDocumentCommand = {
   kind: "command",
   name: "document.review",
   version: "0.1.0",
-  async execute(input) {
+  async execute(input: ReviewDocumentInput) {
     await ensureSchema();
-    const current = await documentRepository.byId(input.id);
+    // WORK-015: Pass tenant/workspace context to enforce tenant isolation during read
+    const current = await documentRepository.byId(input.id, { 
+      tenantId: input.tenantId, 
+      workspaceId: input.workspaceId 
+    });
     if (current === undefined) {
       throw new Error(`[document.review] Document not found: ${input.id}`);
     }
@@ -211,7 +238,12 @@ export const reviewDocument: ReviewDocumentCommand = {
       status: input.approval ? "review" : "draft",
       updatedAt: reviewedAt,
     };
-    await documentRepository.save(next);
+    // WORK-015: Pass tenant/workspace/actor context to repository for isolation enforcement
+    await documentRepository.save(next, { 
+      tenantId: input.tenantId, 
+      workspaceId: input.workspaceId, 
+      actorId: input.reviewerId || input.reviewer || input.actorId 
+    });
     
     // Ambient decision_id check - verifikasi W1 terpropagasi dengan benar untuk C17 pressure-test
     const ambient = executionContext.get();
@@ -253,9 +285,13 @@ export const updateDocument: UpdateDocumentCommand = {
   kind: "command",
   name: "document.update",
   version: "0.1.0",
-  async execute(input) {
+  async execute(input: UpdateDocumentInput) {
     await ensureSchema();
-    const current = await documentRepository.byId(input.id);
+    // WORK-015: Pass tenant/workspace context to enforce tenant isolation during read
+    const current = await documentRepository.byId(input.id, { 
+      tenantId: input.tenantId, 
+      workspaceId: input.workspaceId 
+    });
     if (current === undefined) {
       throw new Error(`[document.update] Document not found: ${input.id}`);
     }
@@ -286,7 +322,12 @@ export const updateDocument: UpdateDocumentCommand = {
       // Override workId if explicitly provided (maintain backward compatibility)
       workId: input.workId ?? current.workId,
     };
-    const saved = await documentRepository.save(next);
+    // WORK-015: Pass tenant/workspace/actor context to repository for isolation enforcement
+    const saved = await documentRepository.save(next, { 
+      tenantId: input.tenantId, 
+      workspaceId: input.workspaceId, 
+      actorId: input.updaterId || input.actorId 
+    });
     
     // PT-004 context propagation: update executionContext if parentContextTraceId provided
     if ((input as any).parentContextTraceId) {

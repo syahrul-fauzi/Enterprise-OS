@@ -12,9 +12,25 @@ export { ilc } from './ilc';
 export { academic } from './academic';
 export { commsme } from './commsme';
 export { getProductExperience, catalog, readProductRouteMetadata } from './catalog';
-export { readProductBinding } from './product-binding';
 export { readProductContextFromRequest, applyProductContextHeaders } from './product-context';
 export { getAllProductSlugs, getAllProductExperiences } from './catalog';
+
+// ============================================================================
+// SERVER-ONLY BOUNDARY - readProductBinding excluded from shared barrel
+// ============================================================================
+// readProductBinding uses node:fs (readFileSync, existsSync) and node:path
+// to load product.binding.yaml manifests from disk. It is strictly a server
+// primitive. Including its VALUE export in this shared barrel forces every
+// consumer — including browser client components (e.g. InstitutionPage.tsx
+// marked "use client" that imports getProductExperience from this barrel) —
+// to pull node:fs / node:path into their bundle, which Next.js Webpack
+// rejects with UnhandledSchemeError.
+//
+// Server-side pages/routes/scripts that need file-bound manifests MUST import
+// the primitive directly:
+//   import { readProductBinding } from "@repo/presentation-experience/product-binding.js";
+// ============================================================================
+export type { ProductPreviewBinding } from './product-binding';
 
 export type {
   ProductExperience,
@@ -27,7 +43,6 @@ export type {
   ProductJourneyStep,
   ProductTheme,
 } from '@repo/presentation-types';
-export type { ProductPreviewBinding } from './product-binding';
 export type {
   ProductLandingSection,
   ProductWorkflowCopy,

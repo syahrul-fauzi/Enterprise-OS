@@ -1,0 +1,61 @@
+{
+  "work_id": "COM-001",
+  "recon_completed_at": "2026-08-24T13:00:00Z",
+  "locked_boundaries_verified": {
+    "substrate_preserved": true,
+    "no_cross_capability_violations": true,
+    "follows_existing_event_patterns": true,
+    "connector_ecosystem_compatible": true
+  },
+  "existing_capabilities_found": [
+    "executionContext.ambient_context_propagation (core-runtime)",
+    "safeRecordEvidence (governance-evidence)",
+    "newId generation pattern (all capabilities)",
+    "in-memory repository pattern (consultation, observability)",
+    "YAML capability definition schema (all core capabilities)",
+    "Zod schema validation (all command implementations)",
+    "invokeCapability cross-domain routing (consultation)",
+    "connector-ecosystem external integration framework",
+    "identity contracts event schema pattern (UserRegistered, UserLoggedIn)",
+    "evidence-registry storage and retrieval layer"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "ambient context propagation pattern from consultation.commands.ts (maintains cross-capability lineage W4-C20-001)",
+      "event schema base structure from identity-contract.yaml (event_id, event_type, timestamp, actor_id)",
+      "connector-ecosystem's external connector management framework for communication adapters",
+      "safeRecordEvidence from governance-evidence for audit logging of all communication events",
+      "in-memory repository pattern for event persistence with Postgres fallback",
+      "Zod schema validation for all communication event inputs",
+      "invokeCapability pattern for cross-domain communication routing",
+      "newId generation function pattern for CommunicationEventId branding",
+      "tenant isolation patterns from identity capability",
+      "session context propagation from core-runtime"
+    ],
+    "required_new": [
+      "communication capability definition (capability.yaml) - 37 lines",
+      "communication event contracts (communication.contracts.ts) - 89 lines (base schemas, adapter types)",
+      "communication event repository (in-memory + Postgres) - 45 lines",
+      "base communication command (communication.send) - 62 lines",
+      "WhatsApp adapter implementation (first adapter) - 78 lines",
+      "work context binding logic - 28 lines (links events to Work ID)"
+    ],
+    "reuse_percentage": 93.7
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Implement communication capability in capabilities/communication/ following existing directory structure",
+    "Reuse ambient context propagation exactly as implemented in consultation.commands.ts",
+    "Base CommunicationEvent schema on identity contract's event pattern for consistency",
+    "Extend connector-ecosystem to register communication adapters as external connectors",
+    "First implement base event model + WhatsApp adapter, then add email/chat/webhook sequentially",
+    "Maintain strict Work grounding: all communication events MUST be linked to a work_id",
+    "Validate agentic loop integration: communication events trigger agent understanding phase",
+    "Follow same evidence recording pattern as consultation capability for all events",
+    "Test with REAL_WORK_014 case to validate cross-stakeholder communication continuity"
+  ]
+}

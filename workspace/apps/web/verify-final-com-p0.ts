@@ -4,7 +4,7 @@
 // NOTE: HANYA GUNAKAN capabilityRegistry.invoke() — TIDAK ADA direct import repository
 //       (menghindari duplicate singleton InMemory instance — B4 compliant)
 
-import { capabilityRegistry } from "/root/Enterprise-OS/workspace/apps/web/lib/capability-command-registry";
+import { capabilityRegistry } from "./lib/capability-command-registry.js";
 
 const COM_SESSION_ID = "session-test-001";
 const COM_TENANT_ID = "tenant-001";

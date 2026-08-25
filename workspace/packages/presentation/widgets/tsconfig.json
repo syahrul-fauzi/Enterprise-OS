@@ -2,14 +2,14 @@
   "extends": "@repo/config-typescript/react-library.json",
   "compilerOptions": {
     "outDir": "dist",
+    "rootDir": "./src",
     "strictNullChecks": false,
-    "baseUrl": ".",
-    "ignoreDeprecations": "5.0",
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "jsx": "react-jsx",
     "tsBuildInfoFile": "tsconfig.tsbuildinfo",
     "paths": {
+      "*": ["./*"],
       "@repo/core-kernel": ["../../core/kernel/src/index.ts"],
       "@repo/core-kernel/*": ["../../core/kernel/src/*"],
       "@repo/core-runtime": ["../../core/runtime/src/index.ts"],

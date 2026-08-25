@@ -4,7 +4,7 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import Page from "../app/page.js";
 import RequirementsPage from "../app/requirements/page.js";
-import ProfessionalWorkspaceIntro from "../components/ProfessionalWorkspaceIntro.js";
+import { ProfessionalWorkspaceIntro } from "@repo/presentation-widgets/professional-workspace-intro/ProfessionalWorkspaceIntro.js";
 import * as RequirementViewModule from "../../../capabilities/requirement-management/experience/views/RequirementView.js";
 
 test("professional workspace surface stays product-agnostic", () => {

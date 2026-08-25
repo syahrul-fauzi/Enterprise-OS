@@ -8,8 +8,7 @@ import {
   default as RequirementViewDefault,
 } from "../../capabilities/requirement-management/experience/views/RequirementView.js";
 import * as RequirementServiceImplModule from "../../capabilities/requirement-management/implementation/service.js";
-// Identity capability imports
-import { identityCommands } from "../../capabilities/identity/implementation/commands";
+import { identityCommands } from "../../capabilities/identity/implementation/commands/index.js";
 import {
   UserRepositoryPostgres,
   TenantRepositoryPostgres,
@@ -18,10 +17,8 @@ import {
   SessionRepositoryPostgres,
 } from "../../capabilities/identity/implementation/repositories/index.js";
 import { passwordService } from "../../capabilities/identity/implementation/services/password.service.js";
-// Evidence Registry capability imports
-import * as EvidenceRegistryServiceImplModule from "../../capabilities/evidence-registry/implementation/service";
-// Consultation capability imports
-import * as ConsultationServiceImplModule from "../../capabilities/consultation/implementation/service";
+import * as EvidenceRegistryServiceImplModule from "../../capabilities/evidence-registry/implementation/service.js";
+import * as ConsultationServiceImplModule from "../../capabilities/consultation/implementation/service.js";
 import { 
   createConsultation, 
   triageConsultation, 
@@ -72,7 +69,7 @@ const identity: CapabilityDescriptor = Object.freeze({
 });
 
 // Import evidence registry queries dengan properti lengkap
-import { getEvidenceRecord, searchEvidenceRegistry } from "../../capabilities/evidence-registry/implementation/queries/evidence-registry.queries";
+import { getEvidenceRecord, searchEvidenceRegistry } from "../../capabilities/evidence-registry/implementation/queries/evidence-registry.queries.js";
 
 // Evidence Registry capability implementation
 const evidenceRegistryImplementation: CapabilityImplementation = {
@@ -120,7 +117,7 @@ const consultation: CapabilityDescriptor = Object.freeze({
 });
 
 // Legal Case capability imports
-import { CaseWorkspace } from "../../capabilities/legal-case/experience/workspaces/CaseWorkspace";
+import { CaseWorkspace } from "../../capabilities/legal-case/experience/workspaces/CaseWorkspace.js";
 import * as LegalCaseServiceImplModule from "../../capabilities/legal-case/implementation/services/index.js";
 import { caseCommands } from "../../capabilities/legal-case/implementation/commands/index.js";
 import { getCase, searchCases } from "../../capabilities/legal-case/implementation/queries/case.queries.js";
@@ -147,7 +144,29 @@ const legalCase: CapabilityDescriptor = Object.freeze({
 });
 
 // Legal Document capability imports
-import { documentCommands } from "../../capabilities/legal-document/implementation/commands/document.commands";
+
+// Communication capability imports
+import { communicationCommands } from "../../capabilities/communication/implementation/commands/index.js";
+import { CommunicationRepositoryInMemory } from "../../capabilities/communication/implementation/repository/index.js";
+import { communicationService } from "../../capabilities/communication/implementation/services/communication.service.js";
+
+// Communication capability implementation
+const communicationImplementation: CapabilityImplementation = {
+  commands: communicationCommands,
+  queries: {},
+  repositories: { CommunicationRepository: CommunicationRepositoryInMemory },
+  services: { CommunicationService: communicationService },
+  entry: null,
+};
+
+const communication: CapabilityDescriptor = Object.freeze({
+  id: "communication",
+  version: "0.1.0",
+  name: "Communication Adapter Layer",
+  experience: {},
+  implementation: communicationImplementation,
+});
+import { documentCommands } from "../../capabilities/legal-document/implementation/commands/document.commands.js";
 import { DocumentRepositoryInMemory } from "../../capabilities/legal-document/implementation/repository/document.repository.js";
 
 // Legal Document capability implementation
@@ -168,7 +187,7 @@ const legalDocument: CapabilityDescriptor = Object.freeze({
 });
 
 // Observability capability imports
-import * as ObservabilityServiceImplModule from "../../capabilities/observability/implementation/service";
+import * as ObservabilityServiceImplModule from "../../capabilities/observability/implementation/service.js";
 
 // Observability capability implementation
 const observabilityImplementation: CapabilityImplementation = {
@@ -196,5 +215,6 @@ export const registry = new StaticRegistry({
     "legal-case": legalCase,
     "legal-document": legalDocument,
     "observability": observability,
+    "communication": communication,
   },
 });

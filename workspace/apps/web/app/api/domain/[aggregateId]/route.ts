@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { capabilityRegistry } from "@repo/core-kernel";
-import { GetCaseByIdInputSchema } from "legal-case/implementation/commands/get-case-by-id.command";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
+import { GetCaseByIdInputSchema } from "legal-case/implementation/commands/get-case-by-id.command.js";
 
 export const runtime = "nodejs";
 
@@ -112,7 +112,7 @@ export async function GET(
   }
 
   if (id.startsWith("sreq-")) {
-    const { GetServiceRequestByIdInputSchema } = await import("../../../../../../capabilities/service-directory/implementation/commands/get-service-request-by-id.command");
+    const { GetServiceRequestByIdInputSchema } = await import("../../../../../../capabilities/service-directory/implementation/commands/get-service-request-by-id.command.js");
     // Validate with all required fields including session context
     const parsed = GetServiceRequestByIdInputSchema.safeParse({ 
       serviceRequestId: id,
@@ -170,7 +170,7 @@ export async function GET(
   }
 
   if (id.startsWith("content-")) {
-    const { GetContentArticleByIdInputSchema } = await import("../../../../../../capabilities/legal-community/implementation/commands/get-content-article-by-id.command");
+    const { GetContentArticleByIdInputSchema } = await import("../../../../../../capabilities/legal-community/implementation/commands/get-content-article-by-id.command.js");
     // Validate with all required fields including session context
     const parsed = GetContentArticleByIdInputSchema.safeParse({ 
       contentId: id,
@@ -229,7 +229,7 @@ export async function GET(
   }
 
   if (id.startsWith("disc-")) {
-    const { GetCommunityDiscussionByIdInputSchema } = await import("../../../../../../capabilities/legal-community/implementation/commands/get-community-discussion-by-id.command");
+    const { GetCommunityDiscussionByIdInputSchema } = await import("../../../../../../capabilities/legal-community/implementation/commands/get-community-discussion-by-id.command.js");
     // Validate with all required fields including session context
     const parsed = GetCommunityDiscussionByIdInputSchema.safeParse({ 
       discussionId: id,

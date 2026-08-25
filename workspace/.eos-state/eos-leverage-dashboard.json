@@ -1,10 +1,340 @@
-{"dashboard_updated_at": "2026-08-20T02:45:00.000Z", "economic_leverage_status": {"overall_status": "CONTINUITY_LEVERAGE_EVIDENCED", "general_scaling_proven": false, "current_rwp_series": ["RWP-001", "RWP-002", "RWP-003", "RWP-004", "RWP-005"], "completed_rwps": ["RWP-001", "RWP-002", "RWP-003", "RWP-004", "RWP-005"],
-  "in_progress_rwps": ["B4-003"],
-  "planned_rwps": [],
-  "rwp_summary_table": [
-    {"rwp_id": "RWP-001", "work_id": "RWP-001", "name": "Klaim Asuransi Kendaraan", "domain": "Insurance Claims", "workload_domain": "insurance-claim", "domain_glue_lines": 17, "orchestration_glue_lines": 0, "new_surface_lines": 0, "context_reconstruction_lines": 4, "human_friction_score": 5.0, "reuse_percentage": 96.4, "status": "COMPLETED", "completed_at": "2026-08-19T19:00:00.00Z", "test_category": "baseline", "build_time_ratio": 1.0, "pt004_applied": false},
-    {"rwp_id": "RWP-002", "work_id": "RWP-002", "name": "Pengajuan Lisensi Notaris", "domain": "Professional Licensing", "workload_domain": "employment-dispute", "domain_glue_lines": 12, "orchestration_glue_lines": 0, "new_surface_lines": 0, "context_reconstruction_lines": 3, "human_friction_score": 3.5, "reuse_percentage": 97.8, "status": "COMPLETED", "completed_at": "2026-08-19T22:50:00.00Z", "test_category": "same_capability_different_domain", "implementation_started_at": "2026-08-19T22:10:00.00Z", "build_time_ratio": 0.8, "pt004_applied": false},
-    {"rwp_id": "RWP-003", "work_id": "RWP-003", "name": "Mediasi Sengketa Tanah", "domain": "Land Dispute Mediation", "workload_domain": "ip-infringement", "domain_glue_lines": 7, "orchestration_glue_lines": 0, "new_surface_lines": 0, "context_reconstruction_lines": 0, "human_friction_score": 2.1, "reuse_percentage": 98.5, "status": "COMPLETED", "completed_at": "2026-08-19T23:30:00.00Z", "test_category": "different_capability_composition", "recon_completed_at": "2026-08-19T22:35:00.00Z", "implementation_started_at": "2026-08-19T22:40:00.00Z", "build_time_ratio": 0.7, "last_updated": "2026-08-19T23:30:00.00Z", "pt004_applied": true},
-    {"rwp_id": "RWP-004", "work_id": "RWP-004", "name": "Kasus Pro Bono High Turnover", "domain": "Pro Bono Legal Aid", "workload_domain": "corporate-merger", "domain_glue_lines": 3, "orchestration_glue_lines": 0, "new_surface_lines": 0, "context_reconstruction_lines": 0, "human_friction_score": 1.5, "reuse_percentage": 99.1, "status": "COMPLETED", "completed_at": "2026-08-19T23:55:00.00Z", "test_category": "high_actor_turnover", "implementation_started_at": "2026-08-19T23:30:00.00Z", "build_time_ratio": 0.6, "last_updated": "2026-08-19T23:55:00.00Z", "pt004_applied": true},
-    {"rwp_id": "RWP-005", "work_id": "RWP-005", "name": "Warisan Multigenerasi Heavy Lineage", "domain": "Inheritance Law", "workload_domain": "inheritance-dispute", "domain_glue_lines": 4, "orchestration_glue_lines": 0, "new_surface_lines": 0, "context_reconstruction_lines": 0, "human_friction_score": 1.2, "reuse_percentage": 99.5, "status": "COMPLETED", "implementation_started_at": "2026-08-20T00:05:00.00Z", "recon_completed_at": "2026-08-20T00:10:00.00Z", "completed_at": "2026-08-20T00:50:00.00Z", "test_category": "heavy_artifact_lineage", "build_time_ratio": 0.5, "last_updated": "2026-08-20T00:50:00.00Z", "pt004_applied": true}
-  ], "leverage_classification": {"architectural_leverage": "EVIDENCED", "composition_leverage": "EVIDENCED", "reuse_leverage": "EVIDENCED", "scaling_law_hypothesis": "SUPPORTED_BY_RWP_001_TO_005", "absolute_economic_benefit": "NOT_MEASURED", "universal_economic_law": "NOT_PROVEN"}, "epistemic_status": {"work_identity": "STRONGLY_EVIDENCED", "execution_lineage": "STRONGLY_EVIDENCED", "artifact_lineage": "STRONGLY_EVIDENCED", "actor_continuity": "STRONGLY_EVIDENCED", "context_propagation": "STRONGLY_EVIDENCED_POST_PT004", "natural_composition": "STRONGLY_EVIDENCED", "cross_capability_reuse": "STRONGLY_EVIDENCED", "new_semantic_primitives_required": "NOT_REQUIRED", "per_work_orchestration_required": "NOT_REQUIRED", "new_user_surfaces_required": "NOT_REQUIRED", "context_reduction_post_pt004": "ACHIEVED_ZERO_RECONSTRUCTION", "marginal_domain_glue_declining": "REPEATEDLY_MEASURED", "marginal_build_cost_declining": "REPEATEDLY_MEASURED", "economic_scaling_law": "SUPPORTED", "absolute_monetary_roi": "NOT_MEASURED", "customer_willingness_to_pay": "NOT_MEASURED", "production_economics": "NEXT_FRONTIER"}}, "substrate_freeze_milestone": {"milestone_name": "RWP-001–005 Continuity Leverage Evidence", "frozen_timestamp": "2026-08-20T02:45:00.000Z", "freeze_rationale": "Substrate terbukti menghasilkan continuity leverage pada workload yang diuji. Tidak perlu menambahkan abstraksi baru (WorkComposition, ReuseManager, dll.) yang dapat merusak eksperimen. Kembali ke validasi human black-box B4-003.", "freeze_requirements": ["no_new_primitives_ever", "no_new_orchestration_layer", "no_new_surface_abstractions", "substrate_remains_frozen_until_b4_003_complete"], "key_findings": ["PT-004 mengubah reuse boundary: context_reconstruction turun dari 4→0 setelah fix propagation", "Semua RWP pasca-PT004 hanya butuh binding, bukan reconstruction", "domain_glue menurun 76% dari baseline, build_time menurun 50%", "P_new=0, O_glue=0, S_new=0 di seluruh seri - tidak ada ekspansi semantic"], "literature_cited": ["Krüger & Berger 2023: Platform-oriented reuse empirical analysis", "2024 Systematic Review: Software reuse benefits variability", "OpenTelemetry Context Propagation: continuity as substrate property"]}, "scaling_law_hypothesis": {"target_slope": "low_constant_marginal_cost", "observed_points": [{"x": 1, "y": 17}, {"x": 2, "y": 12}, {"x": 3, "y": 7}, {"x": 4, "y": 3}, {"x": 5, "y": 4}], "predicted_next_points": [], "hypothesis_supported": true, "verification_note": "Marginal cost menurun seiring bertambahnya kompleksitas workload, mendukung sublinear scaling hypothesis EOS untuk workload family yang diuji. pola ini konsisten dengan temuan platform-oriented reuse literature tetapi belum membuktikan hukum universal."}, "substrate_lock_status": {"substrate_frozen": true, "frozen_since": "2026-08-19T16:00:00.00Z", "frozen_until": "B4-003_human_leverage_validated", "no_new_primitives_added": true, "substrate_lift_criteria": ["human_cognitive_load_measured", "cross_domain_work_by_real_users", "building_thesis_validated", "economic_value_correlation_validated"], "lock_violations": 0, "total_domain_glue_all_rwps": 43, "current_value_measurement_progress": "37.5%"}, "next_highest_leverage_work": "Execute B4-003 human black-box observation", "next_step_action": "Kembali ke observasi human black-box untuk B4-003. Substrate sudah ter-freeze dengan bukti machine leverage yang kuat. Sekarang buktikan bahwa manusia dapat menggunakan breadth tersebut tanpa harus mempelajari complexity mesin. Validasi Building thesis sebagai titik pertemuan machine + human leverage.", "eos_value_model": {"core_thesis": "Continuity substrate memindahkan complexity dari per-work orchestration ke reusable substrate, sehingga pekerjaan baru terutama membutuhkan binding, bukan reconstruction.", "dual_leverage_model": {"machine_leverage": {"status": "EVIDENCED", "question": "Apakah substrate membuat composition murah?", "evidence": "domain_glue menurun, build_time menurun, P_new/O_glue/S_new=0", "next_validation": "none - already evidenced on tested workloads"}, "human_leverage": {"status": "NOT_YET_VALIDATED", "question": "Apakah manusia dapat menggunakan breadth tersebut tanpa mempelajari breadth-nya?", "evidence": "pending", "next_validation": "B4-003 human black-box observation"}}, "war_room_metrics": {"active_slices": 1, "blocked": 0, "in_review": 0, "ready": 0, "shipped": 6, "arch_delta": "NEGLIGIBLE", "primitive_reuse": 99.5, "duplicate_work": 0, "failed_replay": 0, "all_rwp_completed": true, "current_focus_work": "B4-003", "axis_a_machine_leverage_complete": true, "axis_b_human_leverage_in_progress": true, "work_shipped_last_7d": 5, "workload_diversity_score": 1.0, "marginal_cost_reduction_factor": 0.5}}
+{
+  "dashboard_updated_at": "2026-08-24T05:30:00.000Z",
+  "epistemic_correction": "Applied 2026-08-24: All STRONGLY_EVIDENCED/EVIDENCED claims downgraded to SYNTHETIC_SIMULATED. Continuity claims require REALITY GATE (browser + channel + human actor + DB verified state transition). Synthetic in-memory tests are NOT valid measurement evidence.",
+  "economic_leverage_status": {
+    "overall_status": "MACHINE_LEVERAGE_SIMULATED_ONLY — HUMAN_CONTINUITY_NOT_YET_MEASURED",
+    "general_scaling_proven": false,
+    "current_rwp_series": [
+      "RWP-001",
+      "RWP-002",
+      "RWP-003",
+      "RWP-004",
+      "RWP-005"
+    ],
+    "completed_rwps": [
+      "RWP-001",
+      "RWP-002",
+      "RWP-003",
+      "RWP-004",
+      "RWP-005"
+    ],
+    "in_progress_rwps": [
+      "B4-003"
+    ],
+    "planned_rwps": [],
+    "rwp_summary_table": [
+      {
+        "rwp_id": "RWP-001",
+        "work_id": "RWP-001",
+        "name": "Klaim Asuransi Kendaraan",
+        "domain": "Insurance Claims",
+        "workload_domain": "insurance-claim",
+        "domain_glue_lines": 17,
+        "orchestration_glue_lines": 0,
+        "new_surface_lines": 0,
+        "context_reconstruction_lines": 4,
+        "human_friction_score": 5,
+        "reuse_percentage": 96.4,
+        "status": "COMPLETED",
+        "completed_at": "2026-08-19T19:00:00.00Z",
+        "test_category": "baseline",
+        "build_time_ratio": 1,
+        "pt004_applied": false
+      },
+      {
+        "rwp_id": "RWP-002",
+        "work_id": "RWP-002",
+        "name": "Pengajuan Lisensi Notaris",
+        "domain": "Professional Licensing",
+        "workload_domain": "employment-dispute",
+        "domain_glue_lines": 12,
+        "orchestration_glue_lines": 0,
+        "new_surface_lines": 0,
+        "context_reconstruction_lines": 3,
+        "human_friction_score": 3.5,
+        "reuse_percentage": 97.8,
+        "status": "COMPLETED",
+        "completed_at": "2026-08-19T22:50:00.00Z",
+        "test_category": "same_capability_different_domain",
+        "implementation_started_at": "2026-08-19T22:10:00.00Z",
+        "build_time_ratio": 0.8,
+        "pt004_applied": false
+      },
+      {
+        "rwp_id": "RWP-003",
+        "work_id": "RWP-003",
+        "name": "Mediasi Sengketa Tanah",
+        "domain": "Land Dispute Mediation",
+        "workload_domain": "ip-infringement",
+        "domain_glue_lines": 7,
+        "orchestration_glue_lines": 0,
+        "new_surface_lines": 0,
+        "context_reconstruction_lines": 0,
+        "human_friction_score": 2.1,
+        "reuse_percentage": 98.5,
+        "status": "COMPLETED",
+        "completed_at": "2026-08-19T23:30:00.00Z",
+        "test_category": "different_capability_composition",
+        "recon_completed_at": "2026-08-19T22:35:00.00Z",
+        "implementation_started_at": "2026-08-19T22:40:00.00Z",
+        "build_time_ratio": 0.7,
+        "last_updated": "2026-08-19T23:30:00.00Z",
+        "pt004_applied": true
+      },
+      {
+        "rwp_id": "RWP-004",
+        "work_id": "RWP-004",
+        "name": "Kasus Pro Bono High Turnover",
+        "domain": "Pro Bono Legal Aid",
+        "workload_domain": "corporate-merger",
+        "domain_glue_lines": 3,
+        "orchestration_glue_lines": 0,
+        "new_surface_lines": 0,
+        "context_reconstruction_lines": 0,
+        "human_friction_score": 1.5,
+        "reuse_percentage": 99.1,
+        "status": "COMPLETED",
+        "completed_at": "2026-08-19T23:55:00.00Z",
+        "test_category": "high_actor_turnover",
+        "implementation_started_at": "2026-08-19T23:30:00.00Z",
+        "build_time_ratio": 0.6,
+        "last_updated": "2026-08-19T23:55:00.00Z",
+        "pt004_applied": true
+      },
+      {
+        "rwp_id": "RWP-005",
+        "work_id": "RWP-005",
+        "name": "Warisan Multigenerasi Heavy Lineage",
+        "domain": "Inheritance Law",
+        "workload_domain": "inheritance-dispute",
+        "domain_glue_lines": 4,
+        "orchestration_glue_lines": 0,
+        "new_surface_lines": 0,
+        "context_reconstruction_lines": 0,
+        "human_friction_score": 1.2,
+        "reuse_percentage": 99.5,
+        "status": "COMPLETED",
+        "implementation_started_at": "2026-08-20T00:05:00.00Z",
+        "recon_completed_at": "2026-08-20T00:10:00.00Z",
+        "completed_at": "2026-08-20T00:50:00.00Z",
+        "test_category": "heavy_artifact_lineage",
+        "build_time_ratio": 0.5,
+        "last_updated": "2026-08-20T00:50:00.00Z",
+        "pt004_applied": true
+      }
+    ],
+    "leverage_classification": {
+      "architectural_leverage": "SYNTHETIC_SIMULATED",
+      "composition_leverage": "SYNTHETIC_SIMULATED",
+      "reuse_leverage": "SYNTHETIC_SIMULATED",
+      "scaling_law_hypothesis": "SUPPORTED_BY_RWP_001_TO_005",
+      "absolute_economic_benefit": "NOT_MEASURED",
+      "universal_economic_law": "NOT_PROVEN"
+    },
+    "epistemic_status": {
+      "work_identity": "SYNTHETIC_SIMULATED_ONLY_NOT_REALITY_GATED",
+      "execution_lineage": "SYNTHETIC_SIMULATED_ONLY_NOT_REALITY_GATED",
+      "artifact_lineage": "SYNTHETIC_SIMULATED_ONLY_NOT_REALITY_GATED",
+      "actor_continuity": "SYNTHETIC_SIMULATED_ONLY_NOT_REALITY_GATED",
+      "context_propagation": "SYNTHETIC_SIMULATED_ONLY_NOT_REALITY_GATED_POST_PT004",
+      "natural_composition": "SYNTHETIC_SIMULATED_ONLY_NOT_REALITY_GATED",
+      "cross_capability_reuse": "SYNTHETIC_SIMULATED_ONLY_NOT_REALITY_GATED",
+      "new_semantic_primitives_required": "NOT_REQUIRED",
+      "per_work_orchestration_required": "NOT_REQUIRED",
+      "new_user_surfaces_required": "NOT_REQUIRED",
+      "context_reduction_post_pt004": "ACHIEVED_ZERO_RECONSTRUCTION",
+      "marginal_domain_glue_declining": "REPEATEDLY_MEASURED",
+      "marginal_build_cost_declining": "REPEATEDLY_MEASURED",
+      "economic_scaling_law": "SUPPORTED",
+      "absolute_monetary_roi": "NOT_MEASURED",
+      "customer_willingness_to_pay": "NOT_MEASURED",
+      "production_economics": "NEXT_FRONTIER"
+    }
+  },
+  "substrate_freeze_milestone": {
+    "milestone_name": "RWP-001–005 Continuity Leverage Evidence",
+    "frozen_timestamp": "2026-08-20T02:45:00.000Z",
+    "freeze_rationale": "Substrate menunjukan pola reuse yang MENARIK pada workload sintetis yang diuji — BELUM TERBUKTI di real world. Tidak perlu menambahkan abstraksi baru (WorkComposition, ReuseManager, dll.) yang dapat merusak eksperimen. Fokus: serang continuity boundary, cari failure, jangan bukti.",
+    "freeze_requirements": [
+      "no_new_primitives_ever",
+      "no_new_orchestration_layer",
+      "no_new_surface_abstractions",
+      "substrate_remains_frozen_until_b4_003_complete"
+    ],
+    "key_findings": [
+      "PT-004 mengubah reuse boundary: context_reconstruction turun dari 4→0 setelah fix propagation",
+      "Semua RWP pasca-PT004 hanya butuh binding, bukan reconstruction",
+      "domain_glue menurun 76% dari baseline, build_time menurun 50%",
+      "P_new=0, O_glue=0, S_new=0 di seluruh seri - tidak ada ekspansi semantic"
+    ],
+    "literature_cited": [
+      "Krüger & Berger 2023: Platform-oriented reuse empirical analysis",
+      "2024 Systematic Review: Software reuse benefits variability",
+      "OpenTelemetry Context Propagation: continuity as substrate property"
+    ]
+  },
+  "scaling_law_hypothesis": {
+    "target_slope": "low_constant_marginal_cost",
+    "observed_points": [
+      {
+        "x": 1,
+        "y": 17
+      },
+      {
+        "x": 2,
+        "y": 12
+      },
+      {
+        "x": 3,
+        "y": 7
+      },
+      {
+        "x": 4,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 4
+      }
+    ],
+    "predicted_next_points": [],
+    "hypothesis_supported": true,
+    "verification_note": "Marginal cost menurun seiring bertambahnya kompleksitas workload, mendukung sublinear scaling hypothesis EOS untuk workload family yang diuji. pola ini konsisten dengan temuan platform-oriented reuse literature tetapi belum membuktikan hukum universal."
+  },
+  "substrate_lock_status": {
+    "substrate_frozen": true,
+    "frozen_since": "2026-08-19T16:00:00.00Z",
+    "frozen_until": "B4-003_human_leverage_validated",
+    "no_new_primitives_added": true,
+    "substrate_lift_criteria": [
+      "human_cognitive_load_measured",
+      "cross_domain_work_by_real_users",
+      "building_thesis_validated",
+      "economic_value_correlation_validated"
+    ],
+    "lock_violations": 0,
+    "total_domain_glue_all_rwps": 43,
+    "current_value_measurement_progress": "37.5%"
+  },
+  "next_highest_leverage_work": "Execute 7 CONT-TEST attack vectors against continuity boundaries",
+  "next_step_action": "Freeze berlaku. MODE SERANG: Jalankan 7 CONT-TEST sebagai attack vectors terhadap continuity boundary. TIDAK BOLEH mengklaim PASS sebelum ada REALITY GATE (browser + channel + aktor manusia + Work state transition terverifikasi di DB). Cari failure — failure adalah jackpot engineering.",
+  "eos_value_model": {
+    "core_thesis": "Continuity substrate memindahkan complexity dari per-work orchestration ke reusable substrate, sehingga pekerjaan baru terutama membutuhkan binding, bukan reconstruction.",
+    "dual_leverage_model": {
+      "machine_leverage": {
+        "status": "SYNTHETIC_SIMULATED_ONLY_MACHINE_PATH",
+        "question": "Apakah substrate membuat composition murah?",
+        "evidence": "domain_glue menurun, build_time menurun, P_new/O_glue/S_new=0",
+        "next_validation": "Requires REALITY GATE — browser + channel + human actor before claiming machine leverage"
+      },
+      "human_leverage": {
+        "status": "NOT_YET_VALIDATED",
+        "question": "Apakah manusia dapat menggunakan breadth tersebut tanpa mempelajari breadth-nya?",
+        "evidence": "pending",
+        "next_validation": "B4-003 human black-box observation"
+      }
+    },
+    "war_room_metrics": {
+      "active_slices": 1,
+      "blocked": 0,
+      "in_review": 0,
+      "ready": 0,
+      "shipped": 6,
+      "arch_delta": "NEGLIGIBLE",
+      "primitive_reuse": 99.5,
+      "duplicate_work": 0,
+      "failed_replay": 0,
+      "all_rwp_completed": true,
+      "current_focus_work": "CONT-TEST ATTACK MODE",
+      "axis_a_machine_leverage_complete": false,
+      "axis_b_human_leverage_in_progress": true,
+      "work_shipped_last_7d": 5,
+      "workload_diversity_score": 1,
+      "marginal_cost_reduction_factor": 0.5,
+      "continuity_breaks": {
+        "observed_breaks_yet": 0,
+        "reality_gated_tests_executed": 0,
+        "synthetic_simulations_executed": 38,
+        "exposure_attempts": 4,
+        "epistemic_status": "NOT_YET_MEASURED — synthetic simulations do not count toward Tests Executed. 1 continuity break reproduced in adversarial code simulation (REGEX DISCREPANCY GROUNDING). Still requires REALITY GATE (browser + channel + human actor + DB verified state transition) before elevating to Observed / Tests Executed counters."
+      },
+      "synthetic_adversarial_findings": {
+        "continuity_breaks_reproduced_in_code_sim": 1,
+        "breaks": [
+          {
+            "break_id": "BREAK-REGEX-GROUNDING-001",
+            "test_source": "REGEX DISCREPANCY JACKPOT ATTACK",
+            "classification": "GROUNDING-REGEX-MISMATCH",
+            "cross_capability": "legal-case.createCase (L37 regex) <> communication.OrphanScanner (L83 regex)",
+            "trigger_condition": "User creates case via API/command with underscore in preferredId (passes /^case[-_]/), then sends email/chat on same work_id → OrphanScanner flags INVALID_WORK_ID_FORMAT on comm event",
+            "continuity_primitive_impact": {
+              "Q1_same_work": "BREAK",
+              "Q2_same_context": "BREAK",
+              "Q3_same_actor_identity": "PASS",
+              "Q4_same_authority": "BREAK",
+              "Q5_same_lineage": "BREAK",
+              "Q6_same_evidence_chain": "BREAK",
+              "Q7_did_work_move": "NO"
+            },
+            "severity_in_code_sim": "HIGH — 5/7 continuity primitives broken; event is orphaned from valid Work lineage",
+            "requires_reality_gate_to_confirm": true,
+            "engineering_target_hint": "Unify single WorkId canonical regex in @repo/shared; both createCase AND OrphanScanner must reference the same import. Minimally invasive fix: align orphan.scanner.ts L83 regex to accept same allowlist format as case.commands.ts L37, OR tighten case create regex to strict hyphen+digits pattern.",
+            "report_path": "workspace/.eos-state/tests/cont-test-regex-jackpot-report.json"
+          }
+        ]
+      },
+      "cont_test_execution_log": [
+        {
+          "test_id": "CONT-TEST-001",
+          "attack_vector": "Channel Change (WhatsApp → Email → Slack)",
+          "execution_mode": "code_simulation_in_memory",
+          "attacks_injected": 4,
+          "continuity_breaks_observed": false,
+          "side_failures_escalated": [],
+          "report_path": "workspace/.eos-state/tests/cont-test-001-attack-report.json",
+          "counts_toward_tests_executed": false,
+          "notes": "Slack work_id whitespace mutation repair passed; Q1-Q7 continuity questions answered per attack"
+        },
+        {
+          "test_id": "CONT-TEST-002",
+          "attack_vector": "Actor Change / Handoff (Customer → Lawyer Arief → Lawyer Budi)",
+          "execution_mode": "code_simulation_in_memory",
+          "attacks_injected": 5,
+          "continuity_breaks_observed": false,
+          "side_failures_escalated": [
+            "REGISTRY-AGENTICNOTIFY-EMPTY: capability-registry global keys count = 0; agenticNotify fails on any state transition"
+          ],
+          "report_path": "workspace/.eos-state/tests/cont-test-002-attack-report.json",
+          "counts_toward_tests_executed": false,
+          "notes": "Stale-actor post-handoff message and transferReason fake-id injection both passed; Q1-Q7 answered per step"
+        },
+        {
+          "test_id": "CONT-TEST-005",
+          "attack_vector": "External Response Mutation (work_id mutation matrix)",
+          "execution_mode": "code_simulation_in_memory",
+          "attacks_injected": 10,
+          "continuity_breaks_observed": false,
+          "side_failures_escalated": [
+            "REGEX-DISCREPANCY-WORKID: createCase accepts /^case[-_]/ (underscore) but OrphanScanner requires /^(case|matter|project)-\\d+$/ (hyphen + digits); potential continuity leak path"
+          ],
+          "report_path": "workspace/.eos-state/tests/cont-test-005-attack-report.json",
+          "counts_toward_tests_executed": false,
+          "notes": "Case/whitespace/homoglyph/cross-tenant/replay/null mutations all repaired by grounding converter; Q1-Q7 answered per attack"
+        },
+        {
+          "test_id": "ATTACK-REGEX-JACKPOT",
+          "attack_vector": "REGEX DISCREPANCY REPRODUCTION (create case_CONT014-jackpot → email event → OrphanScanner)",
+          "execution_mode": "code_simulation_in_memory_ADVERSARIAL",
+          "attacks_injected": 1,
+          "continuity_breaks_observed": true,
+          "side_failures_escalated": [
+            "GROUNDING-REGEX-MISMATCH CLASSIFIED as BREAK-REGEX-GROUNDING-001 — 5/7 primitives broken"
+          ],
+          "report_path": "workspace/.eos-state/tests/cont-test-regex-jackpot-report.json",
+          "counts_toward_tests_executed": false,
+          "notes": "JACKPOT. First adversarial continuity break reproduced: valid Work (underscore id) → comm event ORPHANED by strict OrphanScanner format validator. Q1/Q2/Q4/Q5/Q6 all FAIL. Engineering target: unify WorkId regex into one shared canonical import."
+        }
+      ]
+    }
+  }
+}

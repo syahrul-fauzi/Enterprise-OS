@@ -1,5 +1,5 @@
 import { workflowEngineService } from "../../../workflow-engine/implementation/services/workflow-engine.service.js";
-import { recordRuntimeInvocation } from "@repo/core-kernel";
+import { recordRuntimeInvocation } from "@repo/core-runtime";
 import type {
   DispatchOrchestrationInput,
   GetOrchestrationPlanInput,

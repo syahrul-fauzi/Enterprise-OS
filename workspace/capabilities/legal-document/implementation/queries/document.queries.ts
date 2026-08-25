@@ -6,8 +6,8 @@ import {
   type SearchDocumentsOutput,
   type ListDocumentsByStatusInput,
   type ListDocumentsByStatusOutput,
-} from "../contracts/index.js";
-import type { CapabilityQuery } from "@repo/core-kernel";
+} from "../contracts/document.contracts.js";
+import type { CapabilityQuery } from "../../../../packages/core/kernel/src/index.js";
 import { DocumentRepositoryInMemory, getDocumentRepositoryPostgres } from "../repository/index.js";
 
 // Environment-based repository toggle (production-ready Postgres persistence)
@@ -26,8 +26,10 @@ export const getDocument: GetDocumentQuery = {
   kind: "query",
   name: "document.get",
   version: "0.1.0",
-  async execute(input) {
-    return await documentRepository.byId(input.id);
+  async execute(input: GetDocumentInput) {
+    // WORK-015: Extract tenant and workspace context from request metadata
+    const context = (input as any).context;
+    return await documentRepository.byId(input.id, context);
   },
 };
 
@@ -35,15 +37,27 @@ export const searchDocuments: SearchDocumentsQuery = {
   kind: "query",
   name: "document.search",
   version: "0.1.0",
-  async execute(input) {
-    const all = await documentRepository.list();
+  async execute(input: SearchDocumentsInput) {
+    // WORK-015: Extract tenant and workspace context from request metadata
+    const context = (input as any).context;
+    const all = await documentRepository.list(context);
     const q = (input.query ?? "").trim().toLowerCase();
     let filtered: readonly DocumentAggregate[] = all;
     if (input.status !== undefined && input.status !== "all") {
       filtered = filtered.filter((d) => d.status === input.status);
     }
     if (input.matterId !== undefined) {
-      filtered = filtered.filter((d) => d.matterId === input.matterId);
+      // Use repository's listByMatter with tenant isolation instead of in-memory filtering
+      const matterDocuments = await documentRepository.listByMatter(input.matterId, context);
+      filtered = matterDocuments.filter((d) => {
+        if (input.status !== undefined && input.status !== "all" && d.status !== input.status) return false;
+        if (input.author !== undefined && d.author !== input.author) return false;
+        if (q.length > 0) {
+          const hay = `${d.title}\n${d.description ?? ""}\n${d.id}\n${d.author ?? ""}\n${d.matterId ?? ""}`.toLowerCase();
+          return hay.includes(q);
+        }
+        return true;
+      });
     }
     if (input.author !== undefined) {
       filtered = filtered.filter((d) => d.author === input.author);
@@ -73,8 +87,10 @@ export const listDocumentsByStatus: ListDocumentsByStatusQuery = {
   kind: "query",
   name: "document.listByStatus",
   version: "0.1.0",
-  async execute(input) {
-    const all = await documentRepository.list();
+  async execute(input: ListDocumentsByStatusInput) {
+    // WORK-015: Extract tenant and workspace context from request metadata
+    const context = (input as any).context;
+    const all = await documentRepository.list(context);
     return all.filter((d) => d.status === input.status);
   },
 };

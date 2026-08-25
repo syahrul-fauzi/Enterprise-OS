@@ -1,4 +1,4 @@
-import { recordRuntimeInvocation } from "@repo/core-kernel";
+import { recordRuntimeInvocation } from "@repo/core-runtime";
 import type {
   AssessTraceabilityInput,
   AssessTraceabilityOutput,

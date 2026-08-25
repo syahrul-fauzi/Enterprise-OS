@@ -9,15 +9,14 @@ export type {
 // Canonical governed-delivery-seam exports - B7.11 extraction
 export type {
   GovernanceDecisionRecord,
-} from "./services/governed-delivery-seam";
+} from "./services/governed-delivery-seam/index.js";
 export {
   DeliveryDecisionGatewayService,
 } from "./services/governed-delivery-seam/index.js";
 
-// Legacy exports maintained for backward compatibility (deprecated B7.13)
 export type {
   GovernanceDecisionRecord as LegacyGovernanceDecisionRecord,
-} from "./services/governed-delivery-seam";
+} from "./services/governed-delivery-seam/index.js";
 export {
   DeliveryDecisionGatewayService as LegacyDeliveryDecisionGatewayService,
 } from "./services/governed-delivery-seam/index.js";

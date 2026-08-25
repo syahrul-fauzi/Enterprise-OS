@@ -7,9 +7,9 @@ import {
   readProductBindingManifest,
   resolveProductBindingPath,
   resolveProductWorkspaceManifestPath,
-} from "../src/product-binding-runtime.ts";
-import { EOS_ROOT } from "../src/state.ts";
-import { tryReadWorkspaceCapabilities } from "../src/workspace-capability-runtime.ts";
+} from "../src/product-binding-runtime.js";
+import { EOS_ROOT } from "../src/state.js";
+import { tryReadWorkspaceCapabilities } from "../src/workspace-capability-runtime.js";
 
 const productId = process.env.EOS_PRODUCT_BINDING_PRODUCT_ID;
 

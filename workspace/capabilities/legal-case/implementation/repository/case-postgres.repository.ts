@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index.js";
 import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
 import {
   CaseId,
@@ -57,17 +58,30 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
     };
   }
 
-  async byId(id: CaseId): Promise<CaseAggregate | undefined> {
-    const result = await this.pool.query(
-      "SELECT * FROM cases WHERE id = $1",
-      [id]
-    );
+  async byId(id: CaseId, context?: { tenantId: string; workspaceId: string }): Promise<CaseAggregate | undefined> {
+    let query = "SELECT * FROM cases WHERE id = $1";
+    const params: any[] = [id];
+    
+    if (context) {
+      query += " AND tenant_id = $2 AND workspace_id = $3";
+      params.push(context.tenantId, context.workspaceId);
+    }
+    
+    const result = await this.pool.query(query, params);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }
 
-  async list(): Promise<readonly CaseAggregate[]> {
-    const result = await this.pool.query("SELECT * FROM cases");
+  async list(context?: { tenantId: string; workspaceId: string }): Promise<readonly CaseAggregate[]> {
+    let query = "SELECT * FROM cases";
+    const params: any[] = [];
+    
+    if (context) {
+      query += " WHERE tenant_id = $1 AND workspace_id = $2";
+      params.push(context.tenantId, context.workspaceId);
+    }
+    
+    const result = await this.pool.query(query, params);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
@@ -90,11 +104,41 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
   // Use base.repository.ts's save() method which implements the abstract protected toRecord()/toAggregate() pattern
   // This ensures consistent camelCase→snake_case mapping across all repositories
 
-  async remove(id: CaseId): Promise<boolean> {
-    const result = await this.pool.query(
-      "DELETE FROM cases WHERE id = $1 RETURNING id",
-      [id]
-    );
+  async remove(id: CaseId, context?: { tenantId: string; workspaceId: string }): Promise<boolean> {
+    let query = "DELETE FROM cases WHERE id = $1 RETURNING id";
+    const params: any[] = [id];
+    
+    if (context) {
+      query += " AND tenant_id = $2 AND workspace_id = $3";
+      params.push(context.tenantId, context.workspaceId);
+    }
+    
+    const result = await this.pool.query(query, params);
+    
+    // WORK-015: Log deletion in audit ledger
+    if (result.rows.length > 0) {
+      recordRuntimeInvocation({
+        capabilityId: "legal-case",
+        operationId: "repository.remove",
+        sourceRef: "CaseRepositoryPostgres.remove",
+        success: true,
+        input: { caseId: id },
+        result: { deleted: true },
+        tenant_id: context?.tenantId || null,
+        inputRefs: [id]
+      });
+    } else {
+      recordRuntimeInvocation({
+        capabilityId: "legal-case",
+        operationId: "repository.remove",
+        sourceRef: "CaseRepositoryPostgres.remove",
+        success: false,
+        input: { caseId: id },
+        result: { reason: "entity_not_found_or_isolation_violation" },
+        tenant_id: context?.tenantId || null
+      });
+    }
+    
     return result.rows.length > 0;
   }
 }

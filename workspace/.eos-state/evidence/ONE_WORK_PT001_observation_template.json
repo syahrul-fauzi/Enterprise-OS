@@ -1,0 +1,64 @@
+{
+  "observation_id": "OBS-PT-001",
+  "thesis_tested": "EOS VISUAL THESIS — One Work. Every Perspective. One Continuity.",
+  "workflow": "PT Regular Concierge",
+  "surface_url": "/products/lawyershub/cases/[case-id]",
+  "commander_locked_date": "2026-08-23T00:00:00Z",
+  "no_substrate_changes": true,
+  "prototype_build_verified": true,
+  "build_exit_code": 0,
+  "primitive_reuse": "100%",
+  "observations": [
+    {
+      "observer_role": "customer",
+      "observer_unbriefed": true,
+      "timestamp_start": null,
+      "timestamp_end": null,
+      "time_to_understand_seconds": null,
+      "answers": {
+        "what_is_currently_happening": null,
+        "what_do_i_need_to_do_next": null,
+        "is_work_stuck_or_on_track": null,
+        "qualitative_feedback": null,
+        "needed_explanation": false,
+        "explanation_duration_minutes": null
+      },
+      "verdict": null
+    },
+    {
+      "observer_role": "professional",
+      "observer_unbriefed": true,
+      "timestamp_start": null,
+      "timestamp_end": null,
+      "time_to_understand_seconds": null,
+      "answers": {
+        "what_is_currently_happening": null,
+        "what_do_i_need_to_do_next": null,
+        "is_work_stuck_or_on_track": null,
+        "qualitative_feedback": null,
+        "needed_explanation": false,
+        "explanation_duration_minutes": null
+      },
+      "verdict": null
+    },
+    {
+      "observer_role": "operator",
+      "observer_unbriefed": true,
+      "timestamp_start": null,
+      "timestamp_end": null,
+      "time_to_understand_seconds": null,
+      "answers": {
+        "what_is_currently_happening": null,
+        "what_do_i_need_to_do_next": null,
+        "is_work_stuck_or_on_track": null,
+        "qualitative_feedback": null,
+        "needed_explanation": false,
+        "explanation_duration_minutes": null
+      },
+      "verdict": null
+    }
+  ],
+  "overall_thesis_verdict": null,
+  "recommendation": null,
+  "next_step_approved": false
+}

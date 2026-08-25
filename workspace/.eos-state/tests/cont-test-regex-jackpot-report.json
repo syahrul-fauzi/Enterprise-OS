@@ -1,0 +1,64 @@
+{
+  "attack_name": "REGEX_DISCREPANCY_JACKPOT",
+  "target_work_id": "case_CONT014-jackpot",
+  "create_case_regex": "/^case[-_]/ (case.commands.ts L37 — accepts hyphen OR UNDERSCORE prefix)",
+  "orphan_scanner_regex": "/^(case|matter|project)-\\d+$/ (orphan.scanner.ts L83 — requires HYPHEN only, terminal digits)",
+  "steps": [
+    {
+      "label": "Create case with preferredId=case_CONT014-jackpot",
+      "pass": true,
+      "note": "Case created id=case_CONT014-jackpot workId=case_CONT014-jackpot"
+    },
+    {
+      "label": "CaseRepository.byId(case_CONT014-jackpot)",
+      "pass": true,
+      "note": "Work exists in repo id=case_CONT014-jackpot title=Regex Discrepancy Jackpot — Work with Underscore ID"
+    },
+    {
+      "label": "Save CommunicationEvent email with work_id=case_CONT014-jackpot",
+      "pass": true,
+      "note": "Event saved event_id=evt_uf4q94cltv"
+    },
+    {
+      "label": "CommunicationRepository.byWorkId(case_CONT014-jackpot)",
+      "pass": true,
+      "note": "found 1 events, expected 1. event_ids=evt_uf4q94cltv"
+    },
+    {
+      "label": "OrphanScanner flags case_CONT014-jackpot as INVALID_WORK_ID",
+      "pass": true,
+      "note": "jackpotHit=true orphans=1 workStillExistsInRepo=true"
+    }
+  ],
+  "continuity": {
+    "q1_same_work": false,
+    "q2_same_context": false,
+    "q3_same_actor_identity": true,
+    "q4_same_authority": false,
+    "q5_same_lineage": false,
+    "q6_same_evidence_chain": false,
+    "q7_did_work_move": false,
+    "overall_break": true,
+    "break_classification": "CONTINUITY BREAK: GROUNDING-REGEX-MISMATCH. Valid Work (underscore ID) allowed by createCase; comm event orphaned by strict OrphanScanner format validator. Cross-capability regex inconsistency between case.commands.ts L37 and orphan.scanner.ts L83. Communication events no longer visible in Work continuity lineage after scanner runs."
+  },
+  "orphan_scan_result": {
+    "scan_timestamp": "2026-08-24T06:12:17.201Z",
+    "total_events": 1,
+    "orphan_events": 1,
+    "orphan_details": [
+      {
+        "event_id": "evt_uf4q94cltv",
+        "work_id": "case_CONT014-jackpot",
+        "actor_id": "actor-customer-001",
+        "adapter_type": "email",
+        "timestamp": "2026-08-24T06:12:17.200Z",
+        "reason": "invalid_work_id"
+      }
+    ],
+    "compliance_score": 0
+  },
+  "continuity_break_observed": true,
+  "notes": [
+    "session create: Cannot read properties of undefined (reading 'create')"
+  ]
+}

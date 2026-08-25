@@ -1,0 +1,19 @@
+capability:
+  id: "work-inspection"
+  name: "Work Inspection Agent"
+  description: "Intelligent agent that observes Work state, inspects continuity, detects bottlenecks, and proposes actions to maintain work flow. Implements the grounded agentic loop: Work → observe → inspect → detect → propose → update Work."
+  version: "0.1.0"
+  substrate_freeze_compliant: true
+  core_boundaries_respected:
+    - "Work remains the single boundary for all operations"
+    - "Communication remains fabric, never a product"
+    - "All agent actions are grounded in a valid Work ID"
+    - "No premature abstractions - logic built for legal use case first"
+  dependencies:
+    - "communication@^1.0.0"
+    - "legal-case@^1.0.0"
+    - "shared@^1.0.0"
+  alignment:
+    eos_thesis: "Implements the core vision of Work-grounded communication-and-coordination substrate"
+    agentic_loop: "Fully implements the grounded agentic loop as defined in architectural thesis"
+    experiment_ilc_lawyershub: "Critical component to validate ILC→LawyersHub conversation→execution continuity"

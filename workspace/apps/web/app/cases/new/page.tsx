@@ -1,8 +1,8 @@
 "use server";
 
 import { ProductCasesPage } from "@repo/presentation-widgets/product-cases-page/ProductCasesPage";
-import { readProductBinding } from "@repo/presentation-experience/product-binding";
-import { readProductRouteMetadata } from "@repo/presentation-experience/catalog";
+import { readProductBinding } from "@repo/presentation-experience/product-binding.js";
+import { readProductRouteMetadata } from "@repo/presentation-experience/catalog.js";
 import type { Metadata } from "next";
 
 interface NewCaseRouteProps {

@@ -4,6 +4,7 @@ import {
   type DocumentRepository,
   DocumentStatus,
 } from "../contracts/index.js";
+import { recordRuntimeInvocation } from "@repo/core-runtime";
 
 const seed = (): DocumentAggregate[] => {
   const now = Date.now();
@@ -82,20 +83,149 @@ function clone<T extends DocumentAggregate>(entity: T): T {
 export const DocumentRepositoryInMemory: DocumentRepository = {
   kind: "repository",
   entityName: "Document",
-  byId(id) {
+  byId(id: DocumentId, context?: { tenantId: string; workspaceId: string }) {
     const raw = STORE.get(id);
-    return raw !== undefined ? clone(raw) : undefined;
+    if (!raw) return undefined;
+    
+    // WORK-015: Enforce tenant isolation if context is provided
+    if (context) {
+      if ((raw as any).tenantId !== context.tenantId || ((raw as any).workspaceId && (raw as any).workspaceId !== context.workspaceId)) {
+        console.error(`[DocumentRepositoryInMemory] Cross-tenant access attempt blocked: document ${id} belongs to tenant ${(raw as any).tenantId}, requested tenant ${context.tenantId}`);
+        return undefined;
+      }
+    }
+    
+    return clone(raw);
   },
-  list() {
-    return Array.from(STORE.values()).map(clone);
+  list(context?: { tenantId: string; workspaceId: string }) {
+    let values = Array.from(STORE.values());
+    
+    // WORK-015: Enforce tenant isolation if context is provided
+    if (context) {
+      values = values.filter(d => 
+        (d as any).tenantId === context.tenantId && 
+        (!(d as any).workspaceId || (d as any).workspaceId === context.workspaceId)
+      );
+    }
+    
+    return values.map(clone);
   },
-  save(entity) {
-    const updated: DocumentAggregate = { ...clone(entity), updatedAt: new Date() };
-    STORE.set(updated.id, updated);
-    return clone(updated);
+  async listByMatter(matterId: string, context?: { tenantId: string; workspaceId: string }) {
+    let values = Array.from(STORE.values()).filter(d => d.matterId === matterId);
+    
+    // WORK-015: Enforce tenant isolation if context is provided
+    if (context) {
+      values = values.filter(d => 
+        (d as any).tenantId === context.tenantId && 
+        (!(d as any).workspaceId || (d as any).workspaceId === context.workspaceId)
+      );
+    }
+    
+    return values.map(clone);
   },
-  remove(id) {
-    return STORE.delete(id);
+  save(entity, context) {
+    const cloned = clone(entity);
+    // WORK-015: Inject audit metadata from context if provided
+    if (context) {
+      (cloned as any).tenantId = context.tenantId;
+      (cloned as any).workspaceId = context.workspaceId;
+      (cloned as any).lastModifiedBy = context.actorId;
+    }
+    // Implement optimistic concurrency control (versioning)
+    const existing = STORE.get(entity.id);
+    if (existing) {
+      // Version check if both entities have version field
+      if ((entity as any).version !== undefined && (existing as any).version !== undefined) {
+        if ((entity as any).version !== (existing as any).version) {
+          throw new Error(`[DocumentRepositoryInMemory] Concurrent modification detected for document:${entity.id} - current version ${(existing as any).version}, attempted update from version ${(entity as any).version}`);
+        }
+        // Increment version
+        (cloned as any).version = (entity as any).version + 1;
+      } else if ((entity as any).version === undefined && (existing as any).version === undefined) {
+        // Initialize version
+        (cloned as any).version = 1;
+      }
+    } else {
+      // New entity - initialize version
+      (cloned as any).version = 1;
+    }
+    (cloned as any).updatedAt = new Date();
+    
+    STORE.set(cloned.id, cloned);
+    
+    // WORK-015: Append to immutable audit ledger
+    recordRuntimeInvocation({
+      capabilityId: "legal-document",
+      operationId: "repository.save",
+      sourceRef: "DocumentRepositoryInMemory.save",
+      success: true,
+      input: { entityId: entity.id, previousVersion: (entity as any).version || 0 },
+      result: { newVersion: (cloned as any).version },
+      tenant_id: context?.tenantId || null,
+      decision_id: null,
+      inputRefs: [entity.id],
+      outputRefs: [cloned.id]
+    });
+    
+    return clone(cloned);
+  },
+  remove(id, context) {
+    // WORK-015: Enforce tenant isolation before allowing deletion
+    const raw = STORE.get(id);
+    if (!raw) {
+      // WORK-015: Log failed deletion attempt
+      recordRuntimeInvocation({
+        capabilityId: "legal-document",
+        operationId: "repository.remove",
+        sourceRef: "DocumentRepositoryInMemory.remove",
+        success: false,
+        input: { entityId: id },
+        result: { reason: "entity_not_found" },
+        tenant_id: context?.tenantId || null,
+        decision_id: null
+      });
+      return false;
+    }
+    
+    if (context) {
+      const documentTenantId = (raw as any).tenantId;
+      const documentWorkspaceId = (raw as any).workspaceId;
+      
+      if (documentTenantId && documentWorkspaceId) {
+        if (documentTenantId !== context.tenantId || documentWorkspaceId !== context.workspaceId) {
+          // WORK-015: Log cross-tenant deletion attempt (security violation)
+          recordRuntimeInvocation({
+            capabilityId: "legal-document",
+            operationId: "repository.remove",
+            sourceRef: "DocumentRepositoryInMemory.remove",
+            success: false,
+            input: { entityId: id, attemptedTenantId: context.tenantId, actualTenantId: documentTenantId },
+            result: { reason: "tenant_isolation_violation" },
+            tenant_id: context.tenantId,
+            decision_id: null
+          });
+          return false;
+        }
+      }
+    }
+    
+    const deleted = STORE.delete(id);
+    if (deleted) {
+      // WORK-015: Append successful deletion to audit ledger
+      recordRuntimeInvocation({
+        capabilityId: "legal-document",
+        operationId: "repository.remove",
+        sourceRef: "DocumentRepositoryInMemory.remove",
+        success: true,
+        input: { entityId: id },
+        result: { deleted: true },
+        tenant_id: context?.tenantId || null,
+        decision_id: null,
+        inputRefs: [id]
+      });
+    }
+    
+    return deleted;
   },
 } as const;
 

@@ -1,9 +1,9 @@
 import "@repo/presentation-ui-system/styles.css";
 import "./globals.css";
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
+import { GeistSans } from "geist/font";
 import { LocaleProvider } from "@repo/presentation-hooks";
-import { DEFAULT_LOCALE } from "@repo/presentation-hooks/use-locale/use-locale";
+import { DEFAULT_LOCALE } from "@repo/presentation-hooks/use-locale/use-locale.js";
 
 export const metadata: Metadata = {
   title: "LawyersHub — Ruang Kerja Hukum Profesional",

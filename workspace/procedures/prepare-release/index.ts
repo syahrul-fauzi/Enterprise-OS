@@ -1,2 +1,2 @@
-export { prepareReleaseProcedure } from "./implementation";
-export * from "./contracts";
+export { prepareReleaseProcedure } from "./implementation.js";
+export * from "./contracts.js";

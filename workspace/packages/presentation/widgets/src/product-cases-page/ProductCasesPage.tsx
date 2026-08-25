@@ -42,8 +42,15 @@ export function ProductCasesPage({ productId, binding, caseId }: ProductCasesPag
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
-    if (searchParams.get("new") === "case") {
+    // Auto-open create case form for new=true OR ILC PT Regular Concierge source
+    if (searchParams.get("new") === "case" || searchParams.get("source") === "ilc") {
       setShowCreate(true);
+      // Auto-populate PT Regular Concierge case title if service parameter is present
+      if (searchParams.get("service") === "pt-regular-concierge") {
+        setTitle("Pendirian PT Regular - Konsultasi & Pengurusan");
+        setDescription("Kebutuhan pendirian PT Regular melalui ILC LawyersHub Concierge. Kami akan mengoordinasikan seluruh proses profesional dari intake hingga dokumen hasil selesai.");
+        setPriority("high");
+      }
     }
   }, []);
 

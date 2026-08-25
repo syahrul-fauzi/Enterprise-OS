@@ -5,8 +5,8 @@ import {
   UserId,
   TenantId,
   WorkspaceId,
-} from "../contracts/identity.contracts";
-import { UserId as UserIdValue, TenantId as TenantIdValue, WorkspaceId as WorkspaceIdValue } from "../contracts/identity.contracts";
+} from "../contracts/identity.contracts.js";
+import { UserId as UserIdValue, TenantId as TenantIdValue, WorkspaceId as WorkspaceIdValue } from "../contracts/identity.contracts.js";
 import { randomUUID } from "node:crypto";
 
 // REALITY PATH ONLY - Import repository Postgres yang dibutuhkan
@@ -17,7 +17,7 @@ import {
   getWorkspaceRepositoryPostgres,
   getSessionRepositoryPostgres,
   newSessionId,
-} from "../repositories/index";
+} from "../repositories/index.js";
 const userRepository = getUserRepositoryPostgres();
 const membershipRepository = getMembershipRepositoryPostgres();
 const tenantRepository = getTenantRepositoryPostgres();

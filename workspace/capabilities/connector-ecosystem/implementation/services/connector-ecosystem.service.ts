@@ -2,7 +2,7 @@ import { evidenceRegistryService } from "../../../evidence-registry/implementati
 import { requirementService } from "../../../requirement-management/implementation/services/requirement.service.js";
 import { workflowEngineService } from "../../../workflow-engine/implementation/services/workflow-engine.service.js";
 import type { ConnectorDefinition, ConnectorSyncResult } from "../contracts/index.js";
-import { recordRuntimeInvocation } from "@repo/core-kernel";
+import { recordRuntimeInvocation } from "@repo/core-runtime";
 
 const CONNECTORS: readonly ConnectorDefinition[] = Object.freeze([
   {
@@ -25,6 +25,13 @@ const CONNECTORS: readonly ConnectorDefinition[] = Object.freeze([
     direction: "export",
     target: "operations-dashboards",
     description: "Exports workflow definitions and operational readiness to dashboards.",
+  },
+  {
+    id: "whatsapp-business-api",
+    name: "WhatsApp Business Cloud API Connector",
+    direction: "inbound-outbound",
+    target: "meta-whatsapp-cloud",
+    description: "Sends and receives WhatsApp messages via Meta's WhatsApp Business Cloud API v18.0 - first production communication adapter for EOS work-grounded messaging.",
   },
 ]);
 

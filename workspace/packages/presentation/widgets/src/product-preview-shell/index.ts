@@ -1,1 +1,1 @@
-export { ProductPreviewShell } from "./ProductPreviewShell";
+export { ProductPreviewShell } from "./ProductPreviewShell.js";

@@ -1,2 +1,2 @@
-export { LoginPage } from './LoginPage.js';
-export { SignupPage } from './SignupPage.js';
+export * from "./LoginPage.js";
+export * from "./SignupPage.js";

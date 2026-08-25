@@ -43,6 +43,10 @@ export interface CreateDocumentOutput {
 export interface SignDocumentInput {
   readonly id: DocumentId;
   readonly signer?: string;
+  // Required context for tenant isolation (WORK-015)
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
 }
 
 export interface SignDocumentOutput {
@@ -55,6 +59,11 @@ export interface SignDocumentOutput {
 export interface ArchiveDocumentInput {
   readonly id: DocumentId;
   readonly reason?: string;
+  // Required context for tenant isolation (WORK-015)
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
+  readonly archiverId?: string;
 }
 
 export interface ArchiveDocumentOutput {
@@ -73,6 +82,11 @@ export interface UpdateDocumentInput {
   readonly parentArtifactId?: string;
   readonly workId?: string;
   readonly parentContextTraceId?: string;
+  // Required context for tenant isolation (WORK-015)
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
+  readonly updaterId?: string;
 }
 
 export interface UpdateDocumentOutput {
@@ -86,6 +100,11 @@ export interface ReviewDocumentInput {
   readonly reviewer?: string;
   readonly approval: boolean;
   readonly comments?: string;
+  // Required context for tenant isolation (WORK-015)
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
+  readonly reviewerId?: string;
 }
 
 export interface ReviewDocumentOutput {
@@ -99,6 +118,10 @@ export interface ReviewDocumentOutput {
 
 export interface GetDocumentInput {
   readonly id: DocumentId;
+  // Required context for tenant isolation (WORK-015)
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly context?: { tenantId: string; workspaceId: string };
 }
 
 export type GetDocumentOutput = DocumentAggregate | undefined;
@@ -110,6 +133,10 @@ export interface SearchDocumentsInput {
   readonly author?: string;
   readonly limit?: number;
   readonly offset?: number;
+  // Required context for tenant isolation (WORK-015)
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly context?: { tenantId: string; workspaceId: string };
 }
 
 export interface SearchDocumentsOutput {
@@ -122,6 +149,10 @@ export interface SearchDocumentsOutput {
 
 export interface ListDocumentsByStatusInput {
   readonly status: DocumentStatus;
+  // Required context for tenant isolation (WORK-015)
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly context?: { tenantId: string; workspaceId: string };
 }
 
 export type ListDocumentsByStatusOutput = readonly DocumentAggregate[];
@@ -129,10 +160,11 @@ export type ListDocumentsByStatusOutput = readonly DocumentAggregate[];
 export type DocumentRepository = {
   readonly entityName: "Document";
   readonly kind: "repository";
-  byId(id: DocumentId): Promise<DocumentAggregate | undefined> | DocumentAggregate | undefined;
-  list(): Promise<readonly DocumentAggregate[]> | readonly DocumentAggregate[];
-  save(entity: DocumentAggregate): Promise<DocumentAggregate> | DocumentAggregate;
-  remove(id: DocumentId): Promise<boolean> | boolean;
+  byId(id: DocumentId, context?: { tenantId: string; workspaceId: string }): Promise<DocumentAggregate | undefined> | DocumentAggregate | undefined;
+  list(context?: { tenantId: string; workspaceId: string }): Promise<readonly DocumentAggregate[]> | readonly DocumentAggregate[];
+  listByMatter(matterId: string, context?: { tenantId: string; workspaceId: string }): Promise<readonly DocumentAggregate[]> | readonly DocumentAggregate[];
+  save(entity: DocumentAggregate, context?: { tenantId: string; workspaceId: string; actorId: string }): Promise<DocumentAggregate> | DocumentAggregate;
+  remove(id: DocumentId, context?: { tenantId: string; workspaceId: string }): Promise<boolean> | boolean;
 };
 
 export interface DocumentDomainEvents {

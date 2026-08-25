@@ -1,22 +1,22 @@
 import {
   requirementService,
-} from "../../capabilities/requirement-management/implementation/services";
-import type { AssessVerificationOutput } from "../../capabilities/requirement-management/implementation/contracts";
-import { requirementsTraceabilityMatrixService } from "../../capabilities/requirements-traceability-matrix/implementation/services";
-import type { AssessTraceabilityOutput } from "../../capabilities/requirements-traceability-matrix/implementation/contracts";
+} from "../../capabilities/requirement-management/implementation/services/index.js";
+import type { AssessVerificationOutput } from "../../capabilities/requirement-management/implementation/contracts/index.js";
+import { requirementsTraceabilityMatrixService } from "../../capabilities/requirements-traceability-matrix/implementation/services/index.js";
+import type { AssessTraceabilityOutput } from "../../capabilities/requirements-traceability-matrix/implementation/contracts/index.js";
 import {
   evidenceRegistryService,
-} from "../../capabilities/evidence-registry/implementation/services";
-import type { AssessEvidenceOutput } from "../../capabilities/evidence-registry/implementation/contracts";
+} from "../../capabilities/evidence-registry/implementation/services/index.js";
+import type { AssessEvidenceOutput } from "../../capabilities/evidence-registry/implementation/contracts/index.js";
 import {
   buildExecutionIdentityV1,
-} from "../contracts";
+} from "../contracts.js";
 import {
   appendAttributionRecord,
-} from "../attribution/implementation";
+} from "../attribution/implementation.js";
 import {
   evaluatePrepareReleaseConditions,
-} from "./contracts";
+} from "./contracts.js";
 import type {
   PrepareReleaseInput,
   PrepareReleaseOutput,
@@ -24,7 +24,7 @@ import type {
   PrepareReleaseRequirementPosture,
   PrepareReleaseTraceabilityPosture,
   PrepareReleaseEvidencePosture,
-} from "./contracts";
+} from "./contracts.js";
 
 function buildRequirementPosture(
   assessment: AssessVerificationOutput,
@@ -330,5 +330,5 @@ export function prepareReleaseProcedure(
   return result;
 }
 
-export { type PrepareReleaseInput, type PrepareReleaseOutput } from "./contracts";
-export * from "./contracts";
+export { type PrepareReleaseInput, type PrepareReleaseOutput } from "./contracts.js";
+export * from "./contracts.js";

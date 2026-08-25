@@ -12,7 +12,7 @@ import {
   WorkspaceRepositoryInMemory,
   MembershipRepositoryInMemory,
   UserRepositoryInMemory,
-} from "../../capabilities/identity/implementation/repositories.js";
+} from "../../../capabilities/identity/implementation/repositories/index.js";
 import { capabilityRegistry } from "../lib/capability-command-registry.js";
 
 function jsonRequest<T = unknown>(url: string, body: T): Request {

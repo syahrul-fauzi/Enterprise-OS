@@ -1,4 +1,4 @@
-import type { ExecutionId, CanonicalSubjectKey } from "../contracts";
+import type { ExecutionId, CanonicalSubjectKey } from "../contracts.js";
 
 export type PrepareReleaseReadinessStatus = "ready" | "blocked" | "pending_ai_investigation";
 

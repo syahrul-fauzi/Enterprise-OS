@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { RequirementRepositoryCurrent } from "requirement-management/implementation/repository";
-import { SessionRepositoryInMemory } from "identity/implementation/repositories";
-import { getSessionRepositoryPostgres } from "identity/implementation/repositories/session.repository";
+import { RequirementRepositoryCurrent } from "@capabilities/requirement-management/implementation/repository/index.js";
+import { SessionRepositoryInMemory } from "@capabilities/identity/implementation/repositories/index.js";
+import { getSessionRepositoryPostgres } from "@capabilities/identity/implementation/repositories/session.repository.js";
 
 const COM_SESSION_ID = "session-test-001";
 const COM_TENANT_ID = "tenant-001";

@@ -1,7 +1,7 @@
 "use server";
 
 import { ProfilePage } from '@repo/presentation-widgets';
-import { readProductBinding } from '@repo/presentation-experience';
+import { readProductBinding } from '@repo/presentation-experience/product-binding.js';
 
 // Define proper Next.js page props - PURE ADAPTER ONLY
 interface ProfilePageProps {

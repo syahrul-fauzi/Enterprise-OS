@@ -1,4 +1,4 @@
-import CommsMeFirstLightPage from "@products/commsme/presentation/CommsMeFirstLightPage";
+import CommsMeFirstLightPage from "@products/commsme/presentation/CommsMeFirstLightPage.js";
 
 export const metadata = {
   title: "COMMSME · Pendamping Hukum UMKM",

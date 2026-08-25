@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { capabilityRegistry } from "@repo/core-kernel";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
 
 // Minimal webhook endpoint to receive external system responses (OSS, Kemenkumham, DJP)
 // Follows existing Next.js API route pattern from governance/decisions/route.ts and service-requests/list/route.ts

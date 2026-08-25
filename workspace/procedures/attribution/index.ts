@@ -8,13 +8,13 @@ export {
   encodeProcedureFilesystemSafe,
   getAttributionBaseDir,
   hasAttributionRecords,
-} from "./implementation";
+} from "./implementation.js";
 export {
   AttributionReadGatewayService,
   attributionReadGatewayService,
-} from "./implementation/services/attribution-read-gateway.service";
-export * from "./contracts";
+} from "./implementation/services/attribution-read-gateway.service.js";
+export * from "./contracts.js";
 export type {
   PrepareReleaseCanonicalInputProjection,
   PrepareReleaseCanonicalResultProjectionV1,
-} from "./implementation";
+} from "./implementation.js";

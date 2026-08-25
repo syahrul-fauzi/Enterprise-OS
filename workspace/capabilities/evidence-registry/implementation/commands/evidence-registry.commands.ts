@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { recordRuntimeInvocation } from "@repo/core-kernel";
+import { recordRuntimeInvocation } from "@repo/core-runtime";
 import { SessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository.js";
 import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
 

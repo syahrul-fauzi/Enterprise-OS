@@ -15,7 +15,7 @@ import {
   getWorkspaceRepositoryPostgres,
   newSessionId,
   initIdentitySchema,
-} from "../../../../../../capabilities/identity/implementation/repositories/index";
+} from "../../../../../../capabilities/identity/dist/repositories/index.js";
 import type { SessionAggregate } from "../../../../../../capabilities/identity/implementation/contracts/identity.contracts";
 const SCRYPT_KEYLEN = 64;
 const SALT_BYTES = 16;

@@ -5,7 +5,7 @@ import {
   createAnonymousWorkspaceSession,
   encodeWorkspaceSession,
 } from "../../packages/core/kernel/dist/session/workspace-session.js";
-import { getTenantRepositoryPostgres } from "../../capabilities/identity/implementation/repositories/tenant.repository.js";
+import { getTenantRepositoryPostgres } from "../../capabilities/identity/dist/repositories/tenant.repository.js";
 
 export async function proxy(request: NextRequest) {
   // DEFENSE-IN-DEPTH: Hapus semua client-sent X-EOS-* headers untuk double security
@@ -43,14 +43,15 @@ export async function proxy(request: NextRequest) {
   }
 
   // Handle white label domain (custom domain) - Caddy set X-EOS-Is-White-Label
-  const isWhiteLabel = request.headers.get("X-EOS-Is-White-Label") === "true";
+  const isWhiteLabelHeader = request.headers.get("X-EOS-Is-White-Label");
+  const isWhiteLabel = isWhiteLabelHeader === "true";
   if (isWhiteLabel) {
     const host = request.headers.get("Host"); // full domain dari white label
     if (host) {
       try {
         const tenantRepo = getTenantRepositoryPostgres();
         // Coba resolve sebagai domain apex terlebih dahulu (customDomain)
-        let tenant = await tenantRepo.byCustomDomain(host);
+        let tenant = await tenantRepo.byCustomDomain(host as string);
         
         if (!tenant) {
           // Jika bukan apex domain, coba resolve sebagai subdomain slug (tenant-slug.firmahukum.com)
@@ -79,7 +80,8 @@ export async function proxy(request: NextRequest) {
   }
 
   // Handle anonymous session jika belum ada cookie
-  if (request.cookies.get(WORKSPACE_SESSION_COOKIE)?.value) {
+  const sessionCookie = request.cookies.get(WORKSPACE_SESSION_COOKIE)?.value;
+  if (sessionCookie) {
     return response;
   }
 

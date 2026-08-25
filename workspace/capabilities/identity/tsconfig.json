@@ -1,23 +1,32 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "rootDir": "./implementation",
     "outDir": "./dist",
     "strictNullChecks": true,
     "declaration": true,
+    "declarationMap": true,
     "incremental": true,
-    "baseUrl": ".",
     "ignoreDeprecations": "5.0",
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "skipLibCheck": true,
     "composite": true,
-    "rootDir": "./"
+    "noEmit": false,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "module": "NodeNext",
+    "moduleDetection": "force",
+    "moduleResolution": "NodeNext",
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "ES2022"
   },
   "references": [
-    {
-      "path": "../../packages/core/kernel/tsconfig.json"
-    }
+    { "path": "../../packages/core/kernel/tsconfig.json" },
+    { "path": "../../packages/core/runtime/tsconfig.json" },
+    { "path": "../shared/tsconfig.json" }
   ],
   "include": [
     "implementation/**/*.ts"

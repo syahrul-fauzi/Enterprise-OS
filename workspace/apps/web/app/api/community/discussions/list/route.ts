@@ -5,11 +5,11 @@ import {
 } from "@repo/core-kernel";
 import {
   CommunityDiscussionRepositoryInMemory,
-} from "@capabilities/legal-community/implementation/repository/community.repository";
+} from "@capabilities/legal-community/implementation/repository/community.repository.js";
 import {
   getCommunityDiscussionRepositoryPostgres,
-} from "@capabilities/legal-community/implementation/repository/community-postgres.repository";
-import type { CommunityDiscussionAggregate, DiscussionStatus, TopicCategory } from "@capabilities/legal-community/implementation/contracts/community.contracts";
+} from "@capabilities/legal-community/implementation/repository/community-postgres.repository.js";
+import type { CommunityDiscussionAggregate, DiscussionStatus, TopicCategory } from "@capabilities/legal-community/implementation/contracts/community.contracts.js";
 
 const CommunityDiscussionStore: typeof CommunityDiscussionRepositoryInMemory | ReturnType<typeof getCommunityDiscussionRepositoryPostgres> =
   process.env.DATABASE_URL ? getCommunityDiscussionRepositoryPostgres() : CommunityDiscussionRepositoryInMemory;

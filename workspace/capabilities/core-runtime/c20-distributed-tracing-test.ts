@@ -6,8 +6,8 @@
  * nodes using isolated executionContext.run() calls to verify cross-region context propagation
  */
 
-import { executionContext } from '../../packages/core/runtime/src/execution-context';
-import { recordRuntimeInvocation, traceExecutionByDecision } from '../../packages/core/runtime/src/invocation-evidence';
+import { executionContext } from '../../packages/core/runtime/src/execution-context.js';
+import { recordRuntimeInvocation, traceExecutionByDecision } from '../../packages/core/runtime/src/invocation-evidence.js';
 import { unlinkSync, readFileSync } from 'fs';
 import { dirname } from 'path';
 import { mkdirSync } from 'fs';

@@ -1,0 +1,60 @@
+{
+  "test_id": "CONT-TEST-001",
+  "vector": "Channel change (WhatsApp → Email → Slack)",
+  "executed_at": "2026-08-24T06:02:01.465Z",
+  "test_type": "ADVERSARIAL_CODE_SIMULATION — NOT REALITY-GATED (no real WhatsApp API, no real SMTP, no real Slack)",
+  "channels_tested": 3,
+  "mutation_attacks_injected": 1,
+  "continuity_breaks_observed": 0,
+  "cross_channel_integrity_pass": true,
+  "per_channel_results": [
+    {
+      "channel": "whatsapp",
+      "senderId": "actor-customer-014",
+      "senderLabel": "Customer (WhatsApp)",
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "grounded_work_id": "case-014",
+      "actor_type": "human",
+      "continuityBreak": false,
+      "notes": []
+    },
+    {
+      "channel": "email",
+      "senderId": "actor-lawyer-023",
+      "senderLabel": "Lawyer (Email)",
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "grounded_work_id": "case-014",
+      "actor_type": "human",
+      "continuityBreak": false,
+      "notes": []
+    },
+    {
+      "channel": "slack",
+      "senderId": "actor-operator-005",
+      "senderLabel": "Operator (Slack)",
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "grounded_work_id": "case-014",
+      "actor_type": "human",
+      "continuityBreak": false,
+      "notes": []
+    }
+  ]
+}

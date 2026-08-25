@@ -1,0 +1,66 @@
+{
+  "test_id": "CONT-TEST-002",
+  "vector": "Actor change (Customer → Lawyer-A → Lawyer-B handoff)",
+  "executed_at": "2026-08-24T06:03:22.443Z",
+  "test_type": "ADVERSARIAL_CODE_SIMULATION — NOT REALITY-GATED (no browser, no RBAC system, no DB transactions)",
+  "handoff_steps_tested": 3,
+  "injection_attacks": 1,
+  "stale_actor_tested": true,
+  "continuity_breaks_observed": 0,
+  "cross_actor_integrity_pass": true,
+  "per_step_results": [
+    {
+      "step": "Lawyer-A reply",
+      "perspective": "Lawyer Arief",
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "continuityBreak": false,
+      "observed_work_id": "case-002-handoff",
+      "observed_lawyer_id": "actor-lawyer-ARIEF-007",
+      "notes": [
+        "lawyerId_after_assignment=actor-lawyer-ARIEF-007"
+      ]
+    },
+    {
+      "step": "Lawyer-B post-handoff",
+      "perspective": "Lawyer Budi (after handoff)",
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "continuityBreak": false,
+      "observed_work_id": "case-002-handoff",
+      "observed_lawyer_id": "actor-lawyer-BUDI-099",
+      "notes": [
+        "new_lawyer_id=actor-lawyer-BUDI-099",
+        "transfer_reason_injected_fake_case-999-FAKE-ID"
+      ]
+    },
+    {
+      "step": "Lawyer-A STALE post-handoff",
+      "perspective": "Stale Lawyer-Arief (escalation)",
+      "q1_sameWork": true,
+      "q2_sameContext": true,
+      "q3_sameActorIdentity": true,
+      "q4_sameAuthority": true,
+      "q5_sameLineage": true,
+      "q6_sameEvidenceChain": true,
+      "q7_workMoved": false,
+      "continuityBreak": false,
+      "observed_work_id": "case-002-handoff",
+      "observed_lawyer_id": "actor-lawyer-BUDI-099",
+      "notes": [
+        "stale_actor_lawyer=actor-lawyer-ARIEF-007",
+        "current_lawyer=actor-lawyer-BUDI-099"
+      ]
+    }
+  ]
+}

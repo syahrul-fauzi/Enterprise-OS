@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
 import {
-  capabilityRegistry,
   readWorkspaceSessionFromRequest,
   createAnonymousWorkspaceSession,
 } from "@repo/core-kernel";
-import type { CreateWorkspaceFlowOutput } from "identity/implementation/commands/create-workspace-flow.command";
+import type { CreateWorkspaceFlowOutput } from "identity/implementation/commands/create-workspace-flow.command.js";
 
 export async function GET(request: Request) {
   try {

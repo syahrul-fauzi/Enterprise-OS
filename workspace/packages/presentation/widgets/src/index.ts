@@ -24,14 +24,17 @@ export type { CommunityPageProps } from "./community-page";
 export { ProductLandingPage } from "./product-landing-page";
 export type { ProductLandingPageProps } from "./product-landing-page";
 
-// Commented out until presentation-features dependencies are resolved - unrelated to LH-PROD-003
-// export { ProductRequirementsPage } from "./product-requirements-page/ProductRequirementsPage";
-// export type { ProductRequirementsPageProps } from "./product-requirements-page/ProductRequirementsPage";
-// export { ProductDocumentsPage } from "./product-documents-page/ProductDocumentsPage";
-// export type { ProductDocumentsPageProps } from "./product-documents-page/ProductDocumentsPage";
-// export { RequirementDetailPage } from "./requirement-detail-page/RequirementDetailPage";
-// export type { RequirementDetailPageProps } from "./requirement-detail-page/RequirementDetailPage.js";
-// export { RequirementProofPage } from "./requirement-proof-page/RequirementProofPage";
-// export type { RequirementProofPageProps } from "./requirement-proof-page/RequirementProofPage.js";
-// export { RequirementTracePage } from "./requirement-trace-page/RequirementTracePage";
-// export type { RequirementTracePageProps } from "./requirement-trace-page/RequirementTracePage.js";
+export { ProductRequirementsPage } from "./product-requirements-page/ProductRequirementsPage";
+export type { ProductRequirementsPageProps } from "./product-requirements-page/ProductRequirementsPage";
+export { ProductDocumentsPage } from "./product-documents-page/ProductDocumentsPage";
+export type { ProductDocumentsPageProps } from "./product-documents-page/ProductDocumentsPage";
+export { RequirementDetailPage } from "./requirement-detail-page/RequirementDetailPage";
+export type { RequirementDetailPageProps } from "./requirement-detail-page/RequirementDetailPage";
+export { RequirementProofPage } from "./requirement-proof-page/RequirementProofPage";
+export type { RequirementProofPageProps } from "./requirement-proof-page/RequirementProofPage";
+export { RequirementTracePage } from "./requirement-trace-page/RequirementTracePage";
+export type { RequirementTracePageProps } from "./requirement-trace-page/RequirementTracePage";
+export { InstitutionPage } from "./institution-page/InstitutionPage";
+export type { InstitutionPageProps } from "./institution-page/InstitutionPage";
+export { ProfilePage } from "./profile-page/ProfilePage";
+export type { ProfilePageProps } from "./profile-page/ProfilePage";

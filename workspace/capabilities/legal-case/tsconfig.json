@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "rootDir": "./implementation",
     "outDir": "./dist",
@@ -11,6 +11,7 @@
     "types": ["node"],
     "skipLibCheck": true,
     "composite": true,
+    "noEmit": false,
     "esModuleInterop": true,
     "isolatedModules": true,
     "lib": ["es2022", "DOM", "DOM.Iterable"],
@@ -20,11 +21,13 @@
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "strict": true,
-    "target": "ES2022",
-    "baseUrl": ".",
+    "target": "ES2022"
   },
   "references": [
-    { "path": "../identity/tsconfig.json" }
+    { "path": "../../packages/core/kernel/tsconfig.json" },
+    { "path": "../../packages/core/runtime/tsconfig.json" },
+    { "path": "../identity/tsconfig.json" },
+    { "path": "../shared/tsconfig.json" }
   ],
   "include": ["implementation/**/*.ts"],
   "exclude": ["dist", "node_modules", "**/*.d.ts"]

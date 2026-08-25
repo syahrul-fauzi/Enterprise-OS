@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository";
+import { PostgresRepository } from "./base.repository.js";
 import {
   UserId,
   type UserAggregate,

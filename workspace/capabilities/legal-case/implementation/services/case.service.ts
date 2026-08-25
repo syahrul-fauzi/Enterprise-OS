@@ -13,11 +13,11 @@ import {
 } from "../contracts/index.js";
 import { createCase, closeCase, assignLawyer } from "../commands/index.js";
 import { getCase, searchCases } from "../queries/index.js";
-import { CaseRepositoryInMemory, getCaseRepositoryPostgres } from "../repository/index.js";
+import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
 
 // Match the same environment-based repository toggle as commands/case.commands.ts
 const caseRepository = process.env.DATABASE_URL 
-  ? getCaseRepositoryPostgres() 
+  ? CaseRepositoryPostgres 
   : CaseRepositoryInMemory;
 
 export class CaseService {

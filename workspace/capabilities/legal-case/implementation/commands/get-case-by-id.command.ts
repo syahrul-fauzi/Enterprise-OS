@@ -1,21 +1,15 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
-import { CaseRepositoryInMemory, getCaseRepositoryPostgres } from "../repository/index.js";
-import { DocumentRepositoryInMemory, getDocumentRepositoryPostgres } from "../../../legal-document/implementation/repository/index.js";
+import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
+import { SessionRepositoryInMemory } from "../../../identity/implementation/repositories/index.js";
 import type { CaseId, CaseAggregate } from "../contracts/index.js";
 import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
-import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index.js";
 
-// Toggle all repositories based on environment (match identity production rail)
+// Toggle repository based on environment (match identity production rail)
 const caseRepository = process.env.DATABASE_URL 
-  ? getCaseRepositoryPostgres() 
+  ? CaseRepositoryPostgres 
   : CaseRepositoryInMemory;
-const documentRepository = process.env.DATABASE_URL 
-  ? getDocumentRepositoryPostgres() 
-  : DocumentRepositoryInMemory;
-const sessionRepository = process.env.DATABASE_URL 
-  ? getSessionRepositoryPostgres() 
-  : SessionRepositoryInMemory;
+const sessionRepository = SessionRepositoryInMemory;
 
 export const GetCaseByIdInputSchema = z.object({
   caseId: z.string().min(1).startsWith("case-"),
@@ -61,7 +55,10 @@ export const getCaseByIdCommand: CapabilityCommand<GetCaseByIdInput, Promise<Get
     const { tenantId, workspaceId, actorId } = session;
     // Session is already verified during creation - no need for redundant checks
 
-    const c = await caseRepository.byId(caseId as unknown as CaseId);
+    const c = await caseRepository.byId(caseId as unknown as CaseId, { 
+      tenantId, 
+      workspaceId 
+    });
     if (c === undefined) {
       return undefined;
     }
@@ -70,8 +67,6 @@ export const getCaseByIdCommand: CapabilityCommand<GetCaseByIdInput, Promise<Get
     if ((c as any).tenantId !== tenantId || (c as any).workspaceId !== workspaceId) {
       throw new Error("[case.getById] Case does not belong to the current tenant/workspace - access denied");
     }
-
-    const evidenceCount = (await documentRepository.listByMatter(caseId)).length;
 
     return {
       type: "lawyershub.case",
@@ -82,7 +77,7 @@ export const getCaseByIdCommand: CapabilityCommand<GetCaseByIdInput, Promise<Get
       owner: c.lawyerId,
       createdAt: c.createdAt.toISOString(),
       updatedAt: c.updatedAt.toISOString(),
-      evidenceCount,
+      evidenceCount: 0,
       priority: c.priority,
     };
   },

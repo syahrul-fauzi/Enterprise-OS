@@ -4,8 +4,9 @@
     "outDir": "dist",
     "strictNullChecks": true,
     "declaration": true,
-    "incremental": false,
-    "composite": false,
+    "incremental": true,
+    "composite": true,
+    "ignoreDeprecations": "5.0",
     "noEmit": false,
     "types": ["node"],
     "paths": {

@@ -6,11 +6,11 @@ import {
   type SearchCasesOutput,
 } from "../contracts/index.js";
 import type { CapabilityQuery } from "@repo/core-kernel";
-import { CaseRepositoryInMemory, getCaseRepositoryPostgres } from "../repository/index.js";
+import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
 
 // Match the same environment-based repository toggle as commands/case.commands.ts
 const caseRepository = process.env.DATABASE_URL 
-  ? getCaseRepositoryPostgres() 
+  ? CaseRepositoryPostgres 
   : CaseRepositoryInMemory;
 
 type GetCaseQuery = CapabilityQuery<GetCaseInput, GetCaseOutput>;

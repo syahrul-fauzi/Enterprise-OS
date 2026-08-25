@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { capabilityRegistry } from "@repo/core-kernel";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,

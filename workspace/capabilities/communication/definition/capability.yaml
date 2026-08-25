@@ -1,0 +1,54 @@
+id: communication
+name: Communication Adapter Layer
+version: 0.1.0
+owner: integration-domain
+status: ACTIVE
+introduced: "2026-08-24"
+provides:
+  - communication-event
+  - message-adapter
+  - cross-party-coordination
+  - work-grounded-messaging
+purpose: EOS communication infrastructure - enables all actors (human, professional, agent, machine, external system) to communicate against the same Work with shared context. EOS owns continuity across conversations, not the conversation itself.
+manifest_version: 1.0.0
+exports:
+  - CommunicationProvider
+implementation:
+  entry: implementation/service.ts
+depends_on:
+  - core-runtime
+  - governance-evidence
+  - evidence-registry
+  - connector-ecosystem
+  - security-hardening
+  - identity
+capability:
+  name: communication
+  owner: integration-domain
+  purpose: Communication & Coordination Substrate for Work - ground all communication in a shared Work reference to eliminate fragmented understanding.
+  consumers:
+    - lawyershub
+    - ilc
+    - commsme
+    - services-id
+  maturity:
+    level: core
+  lifecycle:
+    state: active
+  evidence_required:
+    - cross_stakeholder_alignment
+    - agentic_loop_grounding
+    - adapter_security_compliance
+    - work_context_preservation
+stability: stable
+contracts:
+  requires:
+    - name: CoreRuntimeProvider
+      range: ">=0.1 <0.2"
+    - name: GovernanceEvidenceProvider
+      range: ">=0.1 <0.2"
+    - name: ConnectorEcosystemProvider
+      range: ">=0.1 <0.2"
+  provides:
+    - name: CommunicationService
+      version: 1.0.0

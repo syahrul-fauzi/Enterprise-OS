@@ -10,6 +10,6 @@ export {
   getProductFromHostname,
   isMasterDomain,
   getRootRouteForHostname
-} from './product-domains';
+} from './product-domains.js';
 
-export type { ProductDomainConfig } from './product-domains';
+export type { ProductDomainConfig } from './product-domains.js';

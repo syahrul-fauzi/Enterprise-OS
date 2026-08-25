@@ -11,7 +11,7 @@ import {
   ServiceRequestStatus,
   ServiceProviderCategory,
 } from "../contracts/service.contracts.js";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/identity-schema.js";
+import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
 
 // PostgreSQL-backed service request repository implementation
 class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> implements ServiceRequestRepository {

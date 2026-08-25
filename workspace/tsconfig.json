@@ -8,10 +8,15 @@
     "skipLibCheck": true,
     "strictNullChecks": false,
     "ignoreDeprecations": "5.0",
+    "noEmit": true,
+    "composite": true,
+    "allowImportingTsExtensions": false,
     "baseUrl": ".",
     "paths": {
       "@products/*": ["products/*"],
       "@capabilities/*": ["capabilities/*"],
+      "@procedures/*": ["procedures/*"],
+      "@procedures": ["procedures/index.js"],
       "@repo/config-typescript/*": ["config/typescript/*"],
       "@repo/config-eslint/*": ["config/eslint/*"],
       "@repo/config-tailwind/*": ["config/tailwind/*"],
@@ -59,9 +64,10 @@
       "@repo/tooling-eos-cli": ["packages/tooling/eos-cli/src/index.ts"],
       "@repo/tooling-eos-cli/*": ["packages/tooling/eos-cli/src/*"],
       "@repo/tooling-arch-tests": ["packages/tooling/arch-tests/src/*"],
-      "@repo/tooling-arch-tests/*": ["packages/tooling/arch-tests/src/*"],
       "@repo/tooling-t001-standalone": ["packages/tooling/t001-standalone/src/*"],
-      "@repo/tooling-t001-standalone/*": ["packages/tooling/t001-standalone/src/*"]
+      "@repo/tooling-t001-standalone/*": ["packages/tooling/t001-standalone/src/*"],
+      "@repo/core-platform": ["packages/core/platform/src/index.ts"],
+      "@repo/core-platform/*": ["packages/core/platform/src/*"]
     }
   },
   "include": [

@@ -8,7 +8,7 @@ import {
 import {
   getSessionRepositoryPostgres,
   initIdentitySchema,
-} from "../../../../../capabilities/identity/implementation/repositories/index";
+} from "../../../../../capabilities/identity/dist/repositories/index.js";
 
 export async function GET(request: Request) {
   try {

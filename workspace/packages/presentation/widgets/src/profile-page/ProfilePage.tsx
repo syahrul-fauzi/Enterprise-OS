@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell.js";
-import { ProfileHeader } from "../profile-header/ProfileHeader.js";
+import { ProductPreviewShell } from "../product-preview-shell/index.js";
+import { ProfileHeader } from "../profile-header/index.js";
 import { getProductExperience } from "@repo/presentation-experience";
 import type { ProductPreviewBinding, ProductExperience, Member, Requirement } from "@repo/presentation-types";
 

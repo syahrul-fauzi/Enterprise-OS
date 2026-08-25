@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { EmailQueueRepository } from '@repo/core-runtime';
+import { EmailQueueRepository } from '@repo/core-runtime/email-queue.js';
 
 export async function POST(
   request: Request

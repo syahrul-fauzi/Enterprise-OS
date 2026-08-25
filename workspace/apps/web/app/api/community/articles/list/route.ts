@@ -5,11 +5,11 @@ import {
 } from "@repo/core-kernel";
 import {
   ContentArticleRepositoryInMemory,
-} from "@capabilities/legal-community/implementation/repository/community.repository";
+} from "@capabilities/legal-community/implementation/repository/community.repository.js";
 import {
   getContentArticleRepositoryPostgres,
-} from "@capabilities/legal-community/implementation/repository/community-postgres.repository";
-import type { ContentArticleAggregate, ContentStatus, TopicCategory } from "@capabilities/legal-community/implementation/contracts/community.contracts";
+} from "@capabilities/legal-community/implementation/repository/community-postgres.repository.js";
+import type { ContentArticleAggregate, ContentStatus, TopicCategory } from "@capabilities/legal-community/implementation/contracts/community.contracts.js";
 
 const ContentArticleStore: typeof ContentArticleRepositoryInMemory | ReturnType<typeof getContentArticleRepositoryPostgres> =
   process.env.DATABASE_URL ? getContentArticleRepositoryPostgres() : ContentArticleRepositoryInMemory;

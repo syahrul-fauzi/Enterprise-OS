@@ -6,7 +6,7 @@ import {
   materializePortfolioVerificationSummaryMarkdown,
   resolvePortfolioProducts,
   type ProductPortfolio,
-} from "../src/portfolio-verification-runtime.ts";
+} from "../src/portfolio-verification-runtime.js";
 
 test("portfolio verification runtime resolves enterprise and targeted products", () => {
   const portfolio: ProductPortfolio = {

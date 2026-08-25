@@ -5,6 +5,60 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import type { ProductDeliveryCopy } from "@repo/presentation-experience";
 
+// Define work perspectives for Work Reality Surface UI - shared primitive per Rule of Two
+type WorkPerspective = "customer" | "professional" | "operator";
+
+const WORK_PERSPECTIVES: Record<WorkPerspective, {
+  label: string;
+  description: string;
+  question: string;
+}> = {
+  customer: {
+    label: "Klien",
+    description: "Anda melihat permintaan layanan sebagai Klien",
+    question: "Di mana posisi pekerjaan saya?"
+  },
+  professional: {
+    label: "Provider",
+    description: "Anda melihat permintaan layanan sebagai Penyedia Layanan",
+    question: "Apa langkah selanjutnya yang harus saya lakukan?"
+  },
+  operator: {
+    label: "Operator",
+    description: "Anda melihat permintaan layanan sebagai Platform Operator",
+    question: "Apa yang terblokir dan membutuhkan intervensi?"
+  }
+};
+
+// Hydrate session state from localStorage for continuity across refresh
+function hydrateSessionState(workId: string) {
+  try {
+    const stored = window.localStorage.getItem(`eos-work-view-${workId}`);
+    if (!stored) return null;
+    const parsed = JSON.parse(stored);
+    if (Date.now() - parsed.timestamp < 86400000) {
+      return parsed.state;
+    }
+    window.localStorage.removeItem(`eos-work-view-${workId}`);
+    return null;
+  } catch (e) {
+    console.warn("[DeliveryWorkspace] Failed to hydrate local storage state:", e);
+    return null;
+  }
+}
+
+// Persist session state to localStorage for continuity across refresh
+function persistSessionState(workId: string, state: unknown) {
+  try {
+    window.localStorage.setItem(`eos-work-view-${workId}`, JSON.stringify({
+      state,
+      timestamp: Date.now()
+    }));
+  } catch (e) {
+    console.warn("[DeliveryWorkspace] Failed to persist to local storage:", e);
+  }
+}
+
 type RequirementStatus =
   | "draft"
   | "approved"
@@ -378,6 +432,18 @@ export function DeliveryWorkspace({
   const [domainError, setDomainError] = useState<string | null>(null);
   const [domainBusy, setDomainBusy] = useState<string | null>(null);
   const [domainResult, setDomainResult] = useState<{ at: number; ok: boolean; message: string } | null>(null);
+  // Work Reality Surface: perspective selector - persists to localStorage for continuity
+  const savedState = requirementId ? hydrateSessionState(requirementId) : null;
+  const [currentPerspective, setCurrentPerspective] = useState<WorkPerspective>(
+    savedState?.currentPerspective ?? "customer"
+  );
+  
+  // Persist perspective changes to localStorage
+  useEffect(() => {
+    if (requirementId) {
+      persistSessionState(requirementId, { currentPerspective });
+    }
+  }, [currentPerspective, requirementId]);
 
   const [payload, setPayload] = useState<DeliveryPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -545,6 +611,42 @@ export function DeliveryWorkspace({
 
   return (
     <div className="space-y-6">
+      {/* Work Reality Surface UI - Perspective Switcher (Services.ID REAL_WORK_014 mandate) */}
+      {requirementId && (domainType === "services-id.request" || domainType === "lawyershub.case") && (
+        <section className="rounded-3xl border border-indigo-200 bg-indigo-50 p-6 shadow-sm sm:p-8">
+          <div className="space-y-4">
+            <div className="inline-flex rounded-full border border-indigo-200 bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">
+              WORK REALITY SURFACE
+            </div>
+            
+            {/* Perspective Selector Tabs */}
+            <div className="flex flex-wrap gap-2">
+              {(Object.keys(WORK_PERSPECTIVES) as WorkPerspective[]).map((perspective) => (
+                <button
+                  key={perspective}
+                  onClick={() => setCurrentPerspective(perspective)}
+                  className={`rounded-xl px-4 py-2 text-sm font-semibold transition-all ${
+                    currentPerspective === perspective
+                      ? "bg-indigo-600 text-white shadow-lg"
+                      : "bg-white text-indigo-700 border border-indigo-200 hover:bg-indigo-100"
+                  }`}
+                >
+                  {WORK_PERSPECTIVES[perspective].label}
+                </button>
+              ))}
+            </div>
+            
+            {/* Perspective-specific context banner */}
+            <div className="rounded-xl bg-white p-4 border border-indigo-100">
+              <p className="text-sm text-indigo-900">
+                <span className="font-semibold">{WORK_PERSPECTIVES[currentPerspective].description}</span><br />
+                <span className="text-indigo-700 mt-1 block">Pertanyaan Anda: "{WORK_PERSPECTIVES[currentPerspective].question}"</span>
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Workspace Header */}
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <div className="flex items-start justify-between">

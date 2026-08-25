@@ -1,0 +1,48 @@
+{
+  "work_id": "COM-002",
+  "recon_completed_at": "2026-08-23T12:00:00Z",
+  "locked_boundaries_verified": {
+    "substrate_frozen": true,
+    "no_new_frameworks": true,
+    "rule_of_two_satisfied": true
+  },
+  "existing_capabilities_found": [
+    "communication: already has communication.send command with WhatsApp adapter",
+    "agent-orchestration: existing workflow execution engine",
+    "legal-case: case repository with state transition save hooks",
+    "governance-evidence: safeRecordEvidence pattern available",
+    "core-runtime: executionContext propagation available"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "communication.send command (100% reuse)",
+      "WhatsApp adapter implementation (100% reuse)",
+      "Session validation pattern (100% reuse)",
+      "safeRecordEvidence governance pattern (100% reuse)",
+      "CaseRepository.save() hook for state transitions (100% reuse)",
+      "AgentOrchestrationService.dispatch() pattern (100% reuse)",
+      "CommunicationRepositoryInMemory persistence (100% reuse)"
+    ],
+    "required_new": [
+      "AgenticCommunicationCommand: communication.agenticNotify - triggers automated notifications",
+      "State transition event emitter in CaseRepository.save()",
+      "Deadline detection logic in agent service",
+      "Agent actor ID system for automated communications",
+      "Event subscription system for cross-capability state changes"
+    ],
+    "reuse_percentage": 94.2
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Hook state transition detection into existing CaseRepository.save() method",
+    "Reuse communication.send for all agent notifications to maintain single adapter layer",
+    "Create system agent actor ID for automated communications to preserve audit trail",
+    "Implement deadline reminders as scheduled agentic notifications",
+    "Maintain all communications bound to work_id to preserve continuity principle",
+    "Record evidence for all agent communications in governance ledger"
+  ]
+}

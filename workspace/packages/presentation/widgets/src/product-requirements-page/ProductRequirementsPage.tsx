@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell.js";
+import { ProductPreviewShell } from "../product-preview-shell/index.js";
 import { getProductExperience } from "@repo/presentation-experience";
 import type { ProductPreviewBinding } from "@repo/presentation-types";
 

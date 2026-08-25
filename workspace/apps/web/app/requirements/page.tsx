@@ -2,7 +2,7 @@
 
 // @ts-ignore: widget source is available at runtime, TypeScript can't resolve package path
 import { ProductRequirementsPage } from '@repo/presentation-widgets';
-import { readProductBinding } from '@repo/presentation-experience';
+import { readProductBinding } from '@repo/presentation-experience/product-binding.js';
 import { readProductRouteMetadata } from '@repo/presentation-experience';
 import type { Metadata } from "next";
 

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { ExecutionStatusRepository } from '@repo/core-runtime';
+import { ExecutionStatusRepository } from '@repo/core-runtime/execution-status.js';
 
 export const dynamic = 'force-dynamic';
 

@@ -8,7 +8,7 @@ import {
   WORKSPACE_SESSION_COOKIE,
   encodeWorkspaceSession,
 } from "../lib/workspace-session.js";
-import { UserRepositoryInMemory } from "../../capabilities/identity/implementation/repositories.js";
+import { UserRepositoryInMemory } from "../../../capabilities/identity/implementation/repositories/index.js";
 
 function jsonRequest<T = unknown>(url: string, body: T, cookie?: string): Request {
   const headers: Record<string, string> = {

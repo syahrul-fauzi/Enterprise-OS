@@ -12,8 +12,8 @@ import {
   SearchCasesOutput,
 } from "../contracts/index.js";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
-import { newCaseId, defaultCasePriority, defaultCaseStatus, getCaseRepositoryPostgres } from "../repository/index.js";
-import { CaseRepositoryInMemory } from "../repository/index.js";
+import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
+import { newCaseId, defaultCasePriority, defaultCaseStatus } from "../repository/case.repository.js";
 import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
 import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index.js";
 
@@ -25,7 +25,7 @@ const sessionRepository = process.env.DATABASE_URL
 // Toggle repository based on environment (minimal fix for production rail)
 console.log("[case.commands.ts] DATABASE_URL present:", !!process.env.DATABASE_URL);
 const caseRepository = process.env.DATABASE_URL 
-  ? getCaseRepositoryPostgres() 
+  ? CaseRepositoryPostgres 
   : CaseRepositoryInMemory;
 console.log("[case.commands.ts] Using case repository type:", process.env.DATABASE_URL ? "POSTGRES" : "IN-MEMORY");
 
@@ -142,7 +142,11 @@ export const createCase: CreateCaseCommand = {
     (entity as any).workspaceId = workspaceId;
     (entity as any).actorId = actorId;
 
-    await caseRepository.save(entity);
+    await caseRepository.save(entity, { 
+      tenantId: tenantId, 
+      workspaceId: workspaceId, 
+      actorId: actorId 
+    });
     return { id: entity.id, status: entity.status, workId: entity.workId || entity.id };
   },
 };
@@ -152,7 +156,12 @@ export const closeCase: CloseCaseCommand = {
   name: "case.close",
   version: "2.0.0",
   async execute(input) {
-    const current = await caseRepository.byId(input.id as CaseId);
+    // Extract tenant/workspace/actor context from input for isolation
+    const { tenantId, workspaceId, actorId } = input as any;
+    const current = await caseRepository.byId(input.id as CaseId, { 
+      tenantId: tenantId, 
+      workspaceId: workspaceId 
+    });
     if (current === undefined) {
       throw new Error(`[case.close] Case not found: ${input.id}`);
     }
@@ -161,7 +170,11 @@ export const closeCase: CloseCaseCommand = {
     }
     const closedAt = new Date();
     const next: CaseAggregate = { ...current, status: "closed", closedAt, workId: current.workId };
-    await caseRepository.save(next);
+    await caseRepository.save(next, { 
+      tenantId: tenantId, 
+      workspaceId: workspaceId, 
+      actorId: input.actorId 
+    });
     return { id: next.id, status: "closed", closedAt };
   },
 };
@@ -171,7 +184,12 @@ export const assignLawyer: AssignLawyerCommand = {
   name: "case.assignLawyer",
   version: "2.0.0",
   async execute(input) {
-    const current = await caseRepository.byId(input.id as CaseId);
+    // Extract tenant/workspace/actor context from input for isolation
+    const { tenantId, workspaceId, actorId } = input as any;
+    const current = await caseRepository.byId(input.id as CaseId, { 
+      tenantId: tenantId, 
+      workspaceId: workspaceId 
+    });
     if (current === undefined) {
       throw new Error(`[case.assignLawyer] Case not found: ${input.id}`);
     }
@@ -186,7 +204,11 @@ export const assignLawyer: AssignLawyerCommand = {
       status: nextStatus,
       workId: current.workId,
     };
-    await caseRepository.save(next);
+    await caseRepository.save(next, { 
+      tenantId: tenantId, 
+      workspaceId: workspaceId, 
+      actorId: input.actorId 
+    });
     return { id: next.id, lawyerId: next.lawyerId!, status: next.status };
   },
 };

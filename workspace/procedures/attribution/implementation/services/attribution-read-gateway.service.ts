@@ -4,7 +4,7 @@ import type {
   GetLatestAttributionRecordInput,
   VerifyExecutionIdInvariantInput,
   VerifyExecutionIdInvariantOutput,
-} from "../../contracts";
+} from "../../contracts.js";
 import {
   listAttributionRecords,
   getLatestAttributionRecord,

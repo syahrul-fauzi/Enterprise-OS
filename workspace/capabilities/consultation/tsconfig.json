@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
     "strictNullChecks": true,
@@ -12,7 +12,7 @@
     ],
     "skipLibCheck": true,
     "composite": true,
-    "rootDir": ".",
+    "rootDir": "./implementation",
     "esModuleInterop": true,
     "isolatedModules": true,
     "lib": [
@@ -29,15 +29,12 @@
     "target": "ES2022"
   },
   "references": [
-    {
-      "path": "../identity/tsconfig.json"
-    },
-    {
-      "path": "../legal-case/tsconfig.json"
-    },
-    {
-      "path": "../observability/tsconfig.json"
-    }
+    { "path": "../../packages/core/kernel/tsconfig.json" },
+    { "path": "../../packages/core/runtime/tsconfig.json" },
+    { "path": "../identity/tsconfig.json" },
+    { "path": "../legal-case/tsconfig.json" },
+    { "path": "../observability/tsconfig.json" },
+    { "path": "../shared/tsconfig.json" }
   ],
   "include": [
     "implementation/**/*.ts",

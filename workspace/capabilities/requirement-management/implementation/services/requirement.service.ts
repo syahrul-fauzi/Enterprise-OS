@@ -32,7 +32,7 @@ import {
 } from "../commands/index.js";
 import { getRequirement, searchRequirements } from "../queries/index.js";
 import { RequirementRepositoryCurrent } from "../repository/index.js";
-import { recordRuntimeInvocation } from "@repo/core-kernel";
+import { recordRuntimeInvocation } from "@repo/core-runtime";
 
 function digestCanonicalize(value: unknown): unknown {
   if (value === undefined || value === null) {

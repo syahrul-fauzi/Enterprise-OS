@@ -65,8 +65,9 @@ export class DocumentService {
   ): ListDocumentsByStatusOutput {
     return listDocumentsByStatus.execute(input) as ListDocumentsByStatusOutput;
   }
-  async listDocuments(): Promise<readonly DocumentAggregate[]> {
-    return await documentRepository.list();
+  async listDocuments(context?: { tenantId: string; workspaceId: string }): Promise<readonly DocumentAggregate[]> {
+    // WORK-015: Pass tenant/workspace context to enforce tenant isolation during read
+    return await documentRepository.list(context);
   }
 }
 

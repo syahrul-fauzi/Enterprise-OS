@@ -9,7 +9,7 @@ import {
   MembershipId,
   SessionId,
 } from "../contracts/identity.contracts.js";
-import { passwordService } from "../services/password.service";
+import { passwordService } from "../services/password.service.js";
 import {
   getUserRepositoryPostgres,
   getTenantRepositoryPostgres,
@@ -22,7 +22,7 @@ import {
   TenantRepositoryInMemory,
   WorkspaceRepositoryInMemory,
   MembershipRepositoryInMemory,
-} from "@capabilities/identity/implementation/repositories";
+} from "@capabilities/identity/implementation/repositories/index.js";
 
 const DEFAULT_SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 

@@ -1,4 +1,4 @@
-import { traceExecutionByDecision } from "@repo/core-kernel";
+import { traceExecutionByDecision } from "@repo/core-runtime";
 
 export type WorkflowExecutionStatus = "passed" | "failed" | "skipped";
 export type WorkflowStepStatus = WorkflowExecutionStatus | "requires_human";

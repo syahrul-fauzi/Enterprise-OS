@@ -1,5 +1,5 @@
-import { PostgresRepository } from "./base.repository";
-import {
+import { PostgresRepository } from "./base.repository.js";
+import { 
   TenantId,
   UserId,
   type TenantAggregate,
