@@ -5,7 +5,7 @@ import {
   createAnonymousWorkspaceSession,
   encodeWorkspaceSession,
 } from "../../packages/core/kernel/dist/session/workspace-session.js";
-import { getTenantRepositoryPostgres } from "../../capabilities/identity/dist/repositories/tenant.repository.js";
+import { getTenantRepositoryPostgres } from "@repo/capabilities-identity";
 
 export async function proxy(request: NextRequest) {
   // DEFENSE-IN-DEPTH: Hapus semua client-sent X-EOS-* headers untuk double security
@@ -51,12 +51,12 @@ export async function proxy(request: NextRequest) {
       try {
         const tenantRepo = getTenantRepositoryPostgres();
         // Coba resolve sebagai domain apex terlebih dahulu (customDomain)
-        let tenant = await tenantRepo.byCustomDomain(host as string);
+        let tenant = await tenantRepo.byCustomDomain(host!);
         
         if (!tenant) {
           // Jika bukan apex domain, coba resolve sebagai subdomain slug (tenant-slug.firmahukum.com)
           const hostParts = host.split(".");
-          const whiteLabelSlug = hostParts[0];
+          const whiteLabelSlug = hostParts[0]!;
           tenant = await tenantRepo.bySlug(whiteLabelSlug);
         }
         

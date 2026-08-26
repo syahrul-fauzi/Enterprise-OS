@@ -97,6 +97,7 @@ export type TenantRepository = {
   readonly entityName: "Tenant";
   readonly kind: "repository";
   byId(id: TenantId): Promise<TenantAggregate | undefined>;
+
   bySlug(slug: string): Promise<TenantAggregate | undefined>;
   byCustomDomain(domain: string): Promise<TenantAggregate | undefined>;
   list(): Promise<readonly TenantAggregate[]>;
@@ -136,6 +137,7 @@ export type SessionRepository = {
   isRevoked(id: SessionId): Promise<boolean>;
   revoke(id: SessionId, revokedAt?: Date): Promise<SessionAggregate>;
   list(): Promise<readonly SessionAggregate[]>;
+  create(entity: SessionAggregate): Promise<SessionAggregate>;
   save(entity: SessionAggregate): Promise<SessionAggregate>;
   remove(id: SessionId): Promise<boolean>;
 };

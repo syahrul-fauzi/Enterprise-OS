@@ -5,8 +5,8 @@ import {
   type CreateMembershipInput,
   type MembershipAggregate,
   type Role,
-} from "../contracts/identity.contracts.js";
-import { MembershipRepositoryPostgres } from "../repositories/index.js";
+} from "../contracts/identity.contracts";
+import { MembershipRepositoryPostgres } from "../repositories/index";
 
 function newMembershipId(): MembershipId {
   return MembershipId(`membership-${randomUUID()}`);

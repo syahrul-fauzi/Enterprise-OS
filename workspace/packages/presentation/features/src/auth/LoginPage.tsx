@@ -12,6 +12,7 @@ export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [oidcSubmitting, setOidcSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const formValid =
@@ -19,6 +20,7 @@ export function LoginPage() {
     email.includes("@") &&
     password.length >= 1;
   const disabled = submitting || !formValid;
+  const oidcDisabled = submitting || oidcSubmitting;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +51,36 @@ export function LoginPage() {
       router.refresh();
     } catch (err) {
       setSubmitting(false);
+      setError(err instanceof Error ? err.message : String(err));
+    }
+  };
+
+  const handleOidcLogin = async () => {
+    if (oidcDisabled) return;
+
+    setError(null);
+    setOidcSubmitting(true);
+
+    try {
+      const resp = await fetch("/api/auth/oidc-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+
+      const json = await resp.json();
+      setOidcSubmitting(false);
+
+      if (!resp.ok || !json.ok) {
+        setError(json.error ?? `HTTP ${resp.status}`);
+        return;
+      }
+
+      if (json.authorizationUrl) {
+        window.location.href = json.authorizationUrl;
+      }
+    } catch (err) {
+      setOidcSubmitting(false);
       setError(err instanceof Error ? err.message : String(err));
     }
   };
@@ -126,6 +158,17 @@ export function LoginPage() {
               </button>
             </div>
           </form>
+
+          <div className="mt-6 pt-6 border-t border-slate-200">
+            <button
+              type="button"
+              disabled={oidcDisabled}
+              onClick={handleOidcLogin}
+              className="w-full rounded-xl border border-indigo-300 bg-indigo-50 px-6 py-3 text-sm font-medium text-indigo-700 transition hover:bg-indigo-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {oidcSubmitting ? "Menghubungkan SSO..." : "Masuk dengan SSO (OIDC)"}
+            </button>
+          </div>
 
           <div className="mt-6 pt-6 border-t border-slate-200 text-center text-sm text-slate-600">
             Belum punya akun?{" "}

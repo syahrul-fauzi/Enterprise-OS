@@ -6,6 +6,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import type { ProductPreviewBinding, ProductExperience } from "@repo/presentation-types";
 import { getProductExperience } from "@repo/presentation-experience";
+import { getSpineNavigationForProductId, type SpineNavigationItem } from "@repo/presentation-config";
 
 type ProductRealitySnapshot = {
   items: Array<{
@@ -229,27 +230,32 @@ export function ProductPreviewShell({
 
   const discoveryMode = experience?.entry?.discoveryMode;
 
-  const primaryHref =
-    mode === "landing"
-      ? (experience?.navigation?.primaryCta?.href || overviewHref)
-      : overviewHref;
-  const secondaryHref =
-    mode === "landing"
-      ? (experience?.navigation?.secondaryCta?.href || requirementsHref)
-      : mode === "requirements"
-        ? deliveryHref
-        : requirementsHref;
-  const primaryLabel =
-    mode === "landing"
-      ? (experience?.navigation?.primaryCta?.label || "Mulai Kasus Hukum")
-      : "Overview";
-  const secondaryLabel =
-    mode === "landing"
-      ? (experience?.navigation?.secondaryCta?.label || "Lihat Progress Hukum")
-      : mode === "requirements"
-        ? "Delivery"
-        : "Requirements";
-  const tertiaryCta = mode === "landing" ? experience?.navigation?.tertiaryCta : undefined;
+  // EOS Product Spine Navigation (10× decision surface reduction: load from centralized config)
+  const spineNavigation = getSpineNavigationForProductId(binding.productId) || [
+    { key: "work" as const, labelKey: "navigation.work", href: "/cases" },
+    { key: "communication" as const, labelKey: "navigation.communication", href: "/communications" },
+    { key: "profile" as const, labelKey: "navigation.profile", href: "/profile" }
+  ];
+  
+  // Map label keys to Indonesian labels (temporary until i18n is fully implemented)
+  const labelMap: Record<string, string> = {
+    "navigation.work": "Pekerjaan Saya",
+    "navigation.communication": "Komunikasi", 
+    "navigation.profile": "Profil"
+  };
+  
+  // Extract individual navigation items for backward compatibility
+  const workItem = spineNavigation.find(item => item.key === "work");
+  const communicationItem = spineNavigation.find(item => item.key === "communication");
+  const profileItem = spineNavigation.find(item => item.key === "profile");
+  
+  const primaryHref = workItem?.href || "/cases";
+  const secondaryHref = communicationItem?.href || "/communications";
+  const profileHref = profileItem?.href || "/profile";
+  const primaryLabel = labelMap[workItem?.labelKey || "navigation.work"];
+  const secondaryLabel = labelMap[communicationItem?.labelKey || "navigation.communication"];
+  const profileLabel = labelMap[profileItem?.labelKey || "navigation.profile"];
+  const tertiaryCta = undefined; // Remove all non-spine CTAs permanently
 
   function calculateRoleStats() {
     return stats;
@@ -476,14 +482,12 @@ export function ProductPreviewShell({
         >
           {secondaryLabel}
         </Link>
-        {tertiaryCta?.href && tertiaryCta?.label ? (
-          <Link
-            className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-            href={tertiaryCta.href}
-          >
-            {tertiaryCta.label}
-          </Link>
-        ) : null}
+        <Link
+          className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+          href={profileHref}
+        >
+          {profileLabel}
+        </Link>
       </div>
 
       <div className="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6">

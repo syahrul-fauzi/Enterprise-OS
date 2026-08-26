@@ -5,10 +5,10 @@ import {
   type ExecutionAuditFieldValidation,
   type ExecutionLifecycleStateMapping,
   type ExecutionArchitecturalDivergence,
-} from "../_lib/eos-knowledge-model.js";
-import { StatusBadge } from "../_components/status-badge.js";
-import { Section, SectionCard, LabeledRow } from "../_components/section.js";
-import { PageHeader } from "../_components/navigation.js";
+} from "../_lib/eos-knowledge-model";
+import { StatusBadge } from "../_components/status-badge";
+import { Section, SectionCard, LabeledRow } from "../_components/section";
+import { PageHeader } from "../_components/navigation";
 
 export default function ExecutionDesignPage() {
   const ex = EXECUTION_MODEL_V1;

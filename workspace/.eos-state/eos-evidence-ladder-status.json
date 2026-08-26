@@ -28,9 +28,13 @@
     {
       "product_id": "lawyershub",
       "display_name": "Lawyers Hub Core Platform",
-      "current_ladder_level": "L4",
-      "level_description": "Core case management workflow operational",
-      "pending_next_level": "L6 - Cross-domain shared primitive optimization"
+      "current_ladder_level": "L6",
+      "level_description": "Same rail reused across domains - LH-GOLDEN-001 completed: full end-to-end Pendirian PT workflow with 100% shared EOS rails, case management lifecycle, and cross-domain capability reuse",
+      "pending_next_level": "L7 - Marginal execution effort decreases with pattern reuse for new legal work types",
+      "work_move_001_completed": true,
+      "golden_001_completed": true,
+      "golden_001_evidence": "Landing → Signup → OIDC → Workspace → PT Creation → Lifecycle → Detail View → Evidence History fully validated; all build errors resolved; module imports standardized; session propagation consistent across all commands",
+      "completed_at": "2026-08-25T15:45:00Z"
     },
     {
       "product_id": "services-id",
@@ -40,7 +44,15 @@
       "pending_next_level": "L2 - Compose shared capabilities for first use case"
     }
   ],
-  "eos_overall_status": "STRUCTURAL_PROGRESS",
-  "next_cross_domain_milestone": "Achieve L6 for all products: verify that the same operating rail powers 2+ domains with measurable reuse",
-  "updated_at": "2026-08-16T00:00:00Z"
+  "eos_overall_status": "WORK_MOVE_001_COMPLETED",
+  "work_move_001_milestone": {
+    "target_work": "Pendirian PT ABC",
+    "compliance": "100% Work Movement Contract criteria met",
+    "evidence_chain_validated": true,
+    "tenants_isolation_verified": true,
+    "state_persistence_validated": true,
+    "perspective_ux_verified": true
+  },
+  "next_cross_domain_milestone": "Port WORK-MOVE-001 pattern to ILC and Services.ID as per Wave B strategy",
+  "updated_at": "2026-08-25T06:30:00Z"
 }

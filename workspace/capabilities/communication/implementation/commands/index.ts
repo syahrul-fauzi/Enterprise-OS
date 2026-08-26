@@ -1,1 +1,1 @@
-export { communicationCommands } from "./communication.commands.js";
+export { communicationCommands, communicationQueries } from "./communication.commands.js";

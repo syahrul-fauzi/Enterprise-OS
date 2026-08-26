@@ -5,7 +5,7 @@ import {
   WorkspaceId,
   type SessionAggregate,
   type SessionRepository,
-} from "../contracts/identity.contracts.js";
+} from "../contracts/index";
 
 function clone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj)) as T;
@@ -16,11 +16,11 @@ const hydrate = (): Map<string, SessionAggregate> => {
   
   // Seed test sessions untuk FIRST LIGHT demo (supports multiple actors)
   const testSession1: SessionAggregate = {
-    id: "session-test-001",
-    userId: "user-001",
-    actorId: "user-001",
-    tenantId: "tenant-001",
-    workspaceId: "workspace-001",
+    id: SessionId("session-test-001"),
+    userId: UserId("user-001"),
+    actorId: UserId("user-001"),
+    tenantId: TenantId("tenant-001"),
+    workspaceId: WorkspaceId("workspace-001"),
     productId: "lawyershub",
     actorLabel: "Demo User",
     isAgent: false,
@@ -32,11 +32,11 @@ const hydrate = (): Map<string, SessionAggregate> => {
   };
   
   const testSession2: SessionAggregate = {
-    id: "session-test-002",
-    userId: "user-002",
-    actorId: "user-002",
-    tenantId: "tenant-001",
-    workspaceId: "workspace-001",
+    id: SessionId("session-test-002"),
+    userId: UserId("user-002"),
+    actorId: UserId("user-002"),
+    tenantId: TenantId("tenant-001"),
+    workspaceId: WorkspaceId("workspace-001"),
     productId: "services-id",
     actorLabel: "Service Provider",
     isAgent: false,
@@ -48,11 +48,11 @@ const hydrate = (): Map<string, SessionAggregate> => {
   };
 
   const testSession3: SessionAggregate = {
-    id: "session-test-003",
-    userId: "user-003",
-    actorId: "user-003",
-    tenantId: "tenant-001",
-    workspaceId: "workspace-001",
+    id: SessionId("session-test-003"),
+    userId: UserId("user-003"),
+    actorId: UserId("user-003"),
+    tenantId: TenantId("tenant-001"),
+    workspaceId: WorkspaceId("workspace-001"),
     productId: "lawyershub.default",
     actorLabel: "LawyersHub User",
     isAgent: false,
@@ -65,11 +65,11 @@ const hydrate = (): Map<string, SessionAggregate> => {
 
   // C15: Add test agent session (agent identity for human→agent→human handoff testing)
   const testAgentSession: SessionAggregate = {
-    id: "session-agent-001",
-    userId: "agent-001",
-    actorId: "agent-001",
-    tenantId: "tenant-001",
-    workspaceId: "workspace-001",
+    id: SessionId("session-agent-001"),
+    userId: UserId("agent-001"),
+    actorId: UserId("agent-001"),
+    tenantId: TenantId("tenant-001"),
+    workspaceId: WorkspaceId("workspace-001"),
     productId: "lawyershub.default",
     actorLabel: "EOS Validation Agent",
     isAgent: true,
@@ -93,7 +93,7 @@ const STORE: Store = (globalThis as any).__EOS_IDENTITY_SESSION_STORE__ ??= hydr
 export const SessionRepositoryInMemory: SessionRepository = {
   kind: "repository",
   entityName: "Session",
-  async byId(id) {
+  async byId(id: SessionId) {
     const raw = STORE.get(id);
     return raw !== undefined ? clone(raw) : undefined;
   },
@@ -122,11 +122,17 @@ export const SessionRepositoryInMemory: SessionRepository = {
   async list(): Promise<readonly SessionAggregate[]> {
     return Array.from(STORE.values()).map(clone);
   },
+  async create(entity: SessionAggregate): Promise<SessionAggregate> {
+    const updated: SessionAggregate = { ...clone(entity), updatedAt: new Date() };
+    STORE.set(updated.id, updated);
+    return clone(updated);
+  },
   async save(entity: SessionAggregate): Promise<SessionAggregate> {
     const updated: SessionAggregate = { ...clone(entity), updatedAt: new Date() };
     STORE.set(updated.id, updated);
     return clone(updated);
   },
+
   async remove(id: SessionId): Promise<boolean> {
     return STORE.delete(id);
   },

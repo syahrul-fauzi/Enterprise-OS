@@ -8,5 +8,12 @@ interface RootRouteProps {
 // apps/web ONLY handles Next.js route params - NO presentation ownership
 // All business logic, data fetching, and UI composition in canonical widget
 export default async function RootRoute({ searchParams }: RootRouteProps) {
-  return <RootLandingPage searchParams={searchParams} />;
+  return (
+    <RootLandingPage 
+      brandName="LawyersHub EOS"
+      heroTitle="Your work, connected."
+      heroSubtitle="Platform hukum enterprise yang menghubungkan semua pihak dalam satu Workspace yang aman. Satu tempat untuk mengelola seluruh kasus, kontrak, dan persyaratan legal."
+      searchParams={searchParams} 
+    />
+  );
 }

@@ -2,7 +2,7 @@ import {
   UserAggregate,
   UserId,
   type UserRepository,
-} from "../contracts/identity.contracts.js";
+} from "../contracts/index";
 
 const seed = (): UserAggregate[] => [
   {
@@ -38,24 +38,23 @@ function clone<T extends UserAggregate>(entity: T): T {
 export const UserRepositoryInMemory: UserRepository = {
   kind: "repository",
   entityName: "User",
-  async byId(id) {
+  async byId(id: UserId) {
     const raw = STORE.get(id);
     return raw !== undefined ? clone(raw) : undefined;
   },
-  async byEmail(email) {
-    const needle = email.trim().toLowerCase();
-    const found = Array.from(STORE.values()).find(u => u.email.toLowerCase() === needle);
-    return found !== undefined ? clone(found) : undefined;
+  async byEmail(email: string) {
+    const raw = Array.from(STORE.values()).find(u => u.email === email);
+    return raw !== undefined ? clone(raw) : undefined;
   },
   async list() {
     return Array.from(STORE.values()).map(clone);
   },
-  async save(entity) {
+  async save(entity: UserAggregate) {
     const updated: UserAggregate = { ...clone(entity), updatedAt: new Date() };
     STORE.set(updated.id, updated);
     return clone(updated);
   },
-  async remove(id) {
+  async remove(id: UserId) {
     return STORE.delete(id);
   },
 } as const;

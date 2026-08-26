@@ -53,6 +53,152 @@ export interface CommandInvocationRecord {
   readonly errorMessage?: string;
 }
 
+// SHARED WORKFLOW DEFINITION PRIMITIVE - Earned abstraction from Wave B implementation
+// This interface is derived from invariants identified across LawyersHub, ILC, and Services.ID
+export interface WorkflowStep {
+  readonly id: string;
+  readonly label: string;
+  readonly capability: string;
+  readonly command?: string;
+  readonly description: string;
+  readonly requiredRoles: readonly string[];
+}
+
+export interface WorkflowTransition {
+  readonly requiredRoles: readonly string[];
+  readonly from: string;
+  readonly to: string;
+}
+
+export interface WorkflowDefinition {
+  readonly id: string;
+  readonly productId: string;
+  readonly label: string;
+  readonly steps: readonly WorkflowStep[];
+  readonly transitions: Readonly<Record<string, WorkflowTransition>>;
+  readonly initialStep: string;
+  readonly terminalStep: string;
+}
+
+// Generic workflow orchestrator that executes transitions using existing capability commands
+// REUSE: Uses capabilityRegistry.invoke() - no new command execution infrastructure
+export async function executeWorkflowTransition(
+  workflow: WorkflowDefinition,
+  currentStepId: string,
+  actorId: string,
+  context: {
+    workId: string;
+    sessionId: string;
+    tenantId: string;
+    workspaceId: string;
+    result?: string;
+  }
+): Promise<{
+  success: boolean;
+  nextStep?: WorkflowStep;
+  error?: string;
+  evidenceAdded: boolean;
+}> {
+  // 1. Validate workflow definition first
+  if (!isValidWorkflowDefinition(workflow)) {
+    return { success: false, error: "Invalid workflow definition", evidenceAdded: false };
+  }
+
+  // 2. Find current step in workflow
+  const currentStep = workflow.steps.find(s => s.id === currentStepId);
+  if (!currentStep) {
+    return { success: false, error: `Current step not found: ${currentStepId}`, evidenceAdded: false };
+  }
+
+  // 3. Validate actor has required roles for this step
+  if (!currentStep.requiredRoles.some(role => actorId.includes(role) || actorId.endsWith(role.replace(/[^a-zA-Z0-9]/g, '-001')))) {
+    return { success: false, error: `Actor ${actorId} lacks required roles for step ${currentStepId}`, evidenceAdded: false };
+  }
+
+  // 4. Find all transitions FROM current step
+  const possibleTransitions = Object.values(workflow.transitions).filter(t => t.from === currentStepId);
+  if (possibleTransitions.length === 0) {
+    if (currentStepId === workflow.terminalStep) {
+      return { success: true, nextStep: undefined, evidenceAdded: false };
+    }
+    return { success: false, error: `No transitions found from step ${currentStepId}`, evidenceAdded: false };
+  }
+
+  // 5. Take first valid transition (single path enforcement for Wave C)
+  const transition = possibleTransitions[0];
+  const nextStep = workflow.steps.find(s => s.id === transition.to);
+  if (!nextStep) {
+    return { success: false, error: `Next step not found: ${transition.to}`, evidenceAdded: false };
+  }
+
+  // 6. Execute the current step's command if it exists (uses EXISTING commands - no new capabilities)
+  if (currentStep.command) {
+    try {
+      const { capabilityRegistry } = await import("../index.js");
+      const commonInput = {
+        id: context.workId,
+        sessionId: context.sessionId,
+        tenantId: context.tenantId,
+        workspaceId: context.workspaceId,
+        actorId: actorId,
+        outcomeDescription: context.result === 'approved' ? `Step ${currentStepId} completed by ${actorId}` : undefined,
+        externalReferenceId: `ref-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
+      };
+
+      // Invoke EXISTING capability command - case.markCompleted, request.create, etc.
+      await capabilityRegistry.invoke(currentStep.capability, currentStep.command, commonInput);
+      
+      // 7. Trigger communication notification (existing capability, maintains evidence chain)
+      await capabilityRegistry.invoke("communication", "agenticNotify", {
+        work_id: context.workId,
+        trigger: "state_transition",
+        old_state: currentStepId,
+        new_state: transition.to,
+        recipient_ids: nextStep.requiredRoles.map(r => `${r}-001`),
+        adapter_type: "whatsapp",
+        sessionId: context.sessionId,
+        tenantId: context.tenantId,
+        workspaceId: context.workspaceId
+      });
+
+      return { success: true, nextStep, evidenceAdded: true };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error executing command";
+      return { success: false, error: errorMessage, evidenceAdded: false };
+    }
+  }
+
+  // If no command to execute, just return next step
+  return { success: true, nextStep, evidenceAdded: false };
+}
+
+// Type guard to validate any product's workflow definition complies with shared interface
+export function isValidWorkflowDefinition(def: unknown): def is WorkflowDefinition {
+  if (!def || typeof def !== 'object') return false;
+  const wf = def as WorkflowDefinition;
+  return (
+    typeof wf.id === 'string' &&
+    typeof wf.productId === 'string' &&
+    typeof wf.label === 'string' &&
+    typeof wf.initialStep === 'string' &&
+    typeof wf.terminalStep === 'string' &&
+    Array.isArray(wf.steps) &&
+    typeof wf.transitions === 'object' &&
+    wf.steps.every(step => 
+      typeof step.id === 'string' &&
+      typeof step.label === 'string' &&
+      typeof step.capability === 'string' &&
+      typeof step.description === 'string' &&
+      Array.isArray(step.requiredRoles)
+    ) &&
+    Object.values(wf.transitions).every(t => 
+      typeof t.from === 'string' &&
+      typeof t.to === 'string' &&
+      Array.isArray(t.requiredRoles)
+    )
+  );
+}
+
 // C21: Idempotency state interface with full ambiguity boundary support
 export type IdempotencyState = "PREPARED" | "DISPATCHED" | "ACKNOWLEDGED" | "FAILED" | "UNKNOWN";
 export interface IdempotencyEntry {

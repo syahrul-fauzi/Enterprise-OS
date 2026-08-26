@@ -1,4 +1,14 @@
-export type DocumentStatus = "draft" | "review" | "signed" | "archived";
+export type DocumentStatus = 
+  | "draft" 
+  | "review" 
+  | "signed" 
+  | "archived"
+  | "internal_review_completed"
+  | "lawyer_review_completed"
+  | "auditor_review_completed"
+  | "notaris_review_completed"
+  | "in_progress"
+  | "submitted";
 
 export type DocumentId = string & { readonly __documentId: unique symbol };
 

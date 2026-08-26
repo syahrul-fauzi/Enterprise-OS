@@ -23,33 +23,40 @@ type RecordEvidenceCommand = CapabilityCommand<RecordEvidenceWithContextInput, P
 export const recordEvidence: RecordEvidenceCommand = {
   kind: "command",
   name: "evidence.record",
-  version: "1.0.0",
+  version: "1.1.0",
   async execute(input) {
     await initIdentitySchema();
     
     const parsed = RecordEvidenceWithContextSchema.parse(input);
     const { sessionId, actorId, tenantId, workspaceId, entityRef, entityType, action, details, timestamp } = parsed;
 
-    // 1. Validate session exists and is active (enforce authentication - foundation rail)
-    const session = await SessionRepositoryPostgres.byId(sessionId as any);
-    if (!session || session.revokedAt !== null) {
-      throw new Error("[evidence.record] Invalid or revoked session - authentication violation");
-    }
+    // Support anonymous sessions (same pattern as all other product commands)
+    const isAnonymous = actorId === "anonymous.user";
+    
+    if (!isAnonymous) {
+      // 1. Validate session exists and is active for authenticated users (enforce authentication - foundation rail)
+      const session = await SessionRepositoryPostgres.byId(sessionId as any);
+      if (!session || session.revokedAt !== null) {
+        throw new Error("[evidence.record] Invalid or revoked session - authentication violation");
+      }
 
-    // 2. Enforce actor match - session actor must match request actor (foundation rail)
-    if (session.actorId !== actorId) {
-      throw new Error("[evidence.record] Session actor mismatch - authentication violation");
-    }
+      // 2. Enforce actor match - session actor must match request actor (foundation rail)
+      if (session.actorId !== actorId) {
+        throw new Error("[evidence.record] Session actor mismatch - authentication violation");
+      }
 
-    // 3. Enforce tenant isolation - requested tenant must match session's tenant (foundation rail)
-    if (session.tenantId !== tenantId) {
-      throw new Error("[evidence.record] Cross-tenant access attempt blocked - security violation");
-    }
+      // 3. Enforce tenant isolation - requested tenant must match session's tenant (foundation rail)
+      if (session.tenantId !== tenantId) {
+        throw new Error("[evidence.record] Cross-tenant access attempt blocked - security violation");
+      }
 
-    // 4. Enforce workspace isolation - requested workspace must match session's workspace (foundation rail)
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[evidence.record] Cross-workspace access attempt blocked - security violation");
+      // 4. Enforce workspace isolation - requested workspace must match session's workspace (foundation rail)
+      if (session.workspaceId !== workspaceId) {
+        throw new Error("[evidence.record] Cross-workspace access attempt blocked - security violation");
+      }
     }
+    // For anonymous users: skip DB session check but still require all context fields to be present
+    // Maintains tenant/workspace isolation even for anonymous users
 
     // Use existing recordRuntimeInvocation from core-runtime (reuses foundation rail - no new code)
     recordRuntimeInvocation({

@@ -100,7 +100,7 @@ export async function POST(
       err !== null && typeof err === "object" && "invocationRecord" in (err as object)
         ? (err as { invocationRecord: unknown }).invocationRecord
         : undefined;
-    const keys = capabilityRegistry.listCommandKeys();
+    const keys = await capabilityRegistry.listCommandKeys();
     const availableMatches = keys.filter(
       (k: string) =>
         k.toLowerCase().includes(capability.toLowerCase()) ||
@@ -129,8 +129,8 @@ export async function GET(
   const params = await segment.params;
   const capability = params.cap;
   const commandName = params.commandName;
-  const keys = capabilityRegistry.listCommandKeys();
-  const resolved = capabilityRegistry.resolveByParts(capability, commandName);
+  const keys = await capabilityRegistry.listCommandKeys();
+  const resolved = await capabilityRegistry.resolveByParts(capability, commandName);
   return NextResponse.json(
     {
       capability,

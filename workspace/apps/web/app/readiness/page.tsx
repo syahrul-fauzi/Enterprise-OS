@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import ReleaseReadinessWorkspace from "@capabilities/requirement-management/experience/workspaces/ReleaseReadinessWorkspace.js";
-import ReleaseReadinessChat from "@capabilities/requirement-management/experience/workspaces/ReleaseReadinessChat.js";
+import ReleaseReadinessWorkspace from "@capabilities/requirement-management/experience/workspaces/ReleaseReadinessWorkspace";
+import ReleaseReadinessChat from "@capabilities/requirement-management/experience/workspaces/ReleaseReadinessChat";
 
 type Surface = "workspace" | "chat" | "split";
 

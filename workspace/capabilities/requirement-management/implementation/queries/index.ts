@@ -1,1 +1,1 @@
-export { getRequirement, requirementQueries, searchRequirements } from "./requirement.queries.js";
+export { getRequirement, requirementQueries, searchRequirements } from "./requirement.queries";

@@ -15,20 +15,20 @@ import {
   type UpdateRequirementOutput,
   type VerifyRequirementInput,
   type VerifyRequirementOutput,
-} from "../contracts/index.js";
+} from "../contracts/index";
 import {
   defaultRequirementPriority,
   defaultRequirementStatus,
   defaultRequirementVerificationStatus,
   newRequirementId,
   RequirementRepositoryCurrent,
-} from "../repository/index.js";
-import { getRequirementsByOwnerCommand } from "./get-requirements-by-owner.command.js";
-import { getAllRequirementsCommand } from "./get-all-requirements.command.js";
-import { getRequirementByIdCommand } from "./get-requirement-by-id.command.js";
-import { getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository.js";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
-import { SessionRepositoryInMemory } from "../../../identity/implementation/repositories/index.js";
+} from "../repository/index";
+import { getRequirementsByOwnerCommand } from "./get-requirements-by-owner.command";
+import { getAllRequirementsCommand } from "./get-all-requirements.command";
+import { getRequirementByIdCommand } from "./get-requirement-by-id.command";
+import { getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository";
+import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
+import { SessionRepositoryInMemory } from "../../../identity/implementation/repositories/index";
 
 // Toggle session repository based on environment — same pattern as legal-case.commands.ts
 const sessionRepository = process.env.DATABASE_URL
@@ -149,7 +149,7 @@ export const createRequirement: CreateRequirementCommand = {
       throw new Error("[requirement.create] Requirement title cannot be empty");
     }
     const now = new Date();
-    const entityId = await newRequirementId();
+    const entityId = newRequirementId();
     const entity: RequirementAggregate = {
       id: entityId,
       title: cleanTitle,
@@ -701,8 +701,8 @@ export const completeRequirementReview: CompleteRequirementReviewCommand = {
     }
 
     // C13-X/C18: Core Wrong Actor Rejection - ONLY assigned reviewers can complete review
-    if (!current.reviewerIds.includes(actorId)) {
-      throw new Error(`[requirement.completeReview] Only assigned reviewer can complete review: ${id} (actor: ${actorId}, reviewers: ${current.reviewerIds.join(', ')})`);
+    if (!current.reviewerIds?.includes(actorId)) {
+      throw new Error(`[requirement.completeReview] Only assigned reviewer can complete review: ${id} (actor: ${actorId}, reviewers: ${current.reviewerIds?.join(', ') || 'none'})`);
     }
 
     // 6. Enforce state transition: only in_review can become review_completed
@@ -811,8 +811,8 @@ export const rejectRequirementReview: RejectRequirementReviewCommand = {
     }
 
     // C17-X/C18: Extend C13-X - ONLY assigned reviewers can reject review
-    if (!current.reviewerIds.includes(actorId)) {
-      throw new Error(`[requirement.rejectReview] Only assigned reviewer can reject review: ${id} (actor: ${actorId}, reviewers: ${current.reviewerIds.join(', ')})`);
+    if (!current.reviewerIds?.includes(actorId)) {
+      throw new Error(`[requirement.rejectReview] Only assigned reviewer can reject review: ${id} (actor: ${actorId}, reviewers: ${current.reviewerIds?.join(', ') || 'none'})`);
     }
 
     // 6. Enforce state transition: only in_review can become review_rejected

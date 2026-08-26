@@ -1,7 +1,7 @@
 import { Pool } from "pg";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
-import { CommunicationEvent, CommunicationEventId, CommunicationEventStatus } from "../contracts/communication.contracts.js";
-import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager.js";
+import { CommunicationEvent, CommunicationEventId, CommunicationEventStatus } from "../contracts/communication.contracts";
+import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager";
 
 // Validate required environment variables in production
 if (process.env.NODE_ENV === "production" && !process.env.POSTGRES_CONNECTION_STRING) {

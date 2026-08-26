@@ -2,10 +2,10 @@
   "extends": "@repo/config-typescript/react-library.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "ignoreDeprecations": "5.0",
     "skipLibCheck": true,
     "jsx": "react-jsx",
     "tsBuildInfoFile": "tsconfig.tsbuildinfo",
+    "ignoreDeprecations": "6.0",
     "typeRoots": ["./node_modules/@types", "/root/Enterprise-OS/workspace/node_modules/@types"],
     "paths": {
       "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],

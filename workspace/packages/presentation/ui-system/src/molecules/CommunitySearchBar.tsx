@@ -1,4 +1,4 @@
-import { BaseSearchBar } from './BaseSearchBar.js';
+import { BaseSearchBar } from './BaseSearchBar';
 
 export interface CommunitySearchBarProps {
   initialQuery: string;

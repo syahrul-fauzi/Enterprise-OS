@@ -236,7 +236,7 @@ export class RequirementService {
   readonly repositories = { Requirement: RequirementRepositoryCurrent } as const;
 
   async createRequirement(input: CreateRequirementInput): Promise<CreateRequirementOutput> {
-    const result = await createRequirement.execute(input) as CreateRequirementOutput;
+    const result = await createRequirement.execute({...input, linkedCapabilityIds: [...input.linkedCapabilityIds]} as any) as CreateRequirementOutput;
     recordRuntimeInvocation({
       capabilityId: "requirement-management",
       operationId: "create-requirement",
@@ -249,7 +249,7 @@ export class RequirementService {
   }
 
   async updateRequirement(input: UpdateRequirementInput): Promise<UpdateRequirementOutput> {
-    const result = await updateRequirement.execute(input) as UpdateRequirementOutput;
+    const result = await updateRequirement.execute({...input, linkedCapabilityIds: [...input.linkedCapabilityIds]} as any) as UpdateRequirementOutput;
     recordRuntimeInvocation({
       capabilityId: "requirement-management",
       operationId: "update-requirement",
@@ -261,8 +261,8 @@ export class RequirementService {
     return result;
   }
 
-  approveRequirement(input: ApproveRequirementInput): ApproveRequirementOutput {
-    const result = approveRequirement.execute(input) as ApproveRequirementOutput;
+  async approveRequirement(input: ApproveRequirementInput): Promise<ApproveRequirementOutput> {
+    const result = await approveRequirement.execute(input) as ApproveRequirementOutput;
     recordRuntimeInvocation({
       capabilityId: "requirement-management",
       operationId: "approve-requirement",
@@ -274,10 +274,10 @@ export class RequirementService {
     return result;
   }
 
-  startRequirementDelivery(
+  async startRequirementDelivery(
     input: StartRequirementDeliveryInput,
-  ): StartRequirementDeliveryOutput {
-    const result = startRequirementDelivery.execute(input) as StartRequirementDeliveryOutput;
+  ): Promise<StartRequirementDeliveryOutput> {
+    const result = await startRequirementDelivery.execute(input) as StartRequirementDeliveryOutput;
     recordRuntimeInvocation({
       capabilityId: "requirement-management",
       operationId: "start-requirement-delivery",
@@ -289,10 +289,10 @@ export class RequirementService {
     return result;
   }
 
-  markRequirementImplemented(
+  async markRequirementImplemented(
     input: MarkRequirementImplementedInput,
-  ): MarkRequirementImplementedOutput {
-    const result = markRequirementImplemented.execute(input) as MarkRequirementImplementedOutput;
+  ): Promise<MarkRequirementImplementedOutput> {
+    const result = await markRequirementImplemented.execute(input) as MarkRequirementImplementedOutput;
     recordRuntimeInvocation({
       capabilityId: "requirement-management",
       operationId: "mark-requirement-implemented",
@@ -494,7 +494,7 @@ export class RequirementService {
       throw error;
     }
 
-    const result = verifyRequirement.execute(input) as VerifyRequirementOutput;
+    const result = await verifyRequirement.execute(input) as VerifyRequirementOutput;
     recordRuntimeInvocation({
       capabilityId: "requirement-management",
       operationId: "verify-requirement",

@@ -3,7 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { Gradient } from "@repo/presentation-ui-system";
-import { KnowNavigation } from "./_components/navigation.js";
+import { KnowNavigation } from "./_components/navigation";
 
 export const metadata: Metadata = {
   title: "EOS KNOW — Enterprise OS Self-Description Surface",

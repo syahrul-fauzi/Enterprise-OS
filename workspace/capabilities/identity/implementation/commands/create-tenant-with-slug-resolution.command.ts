@@ -5,10 +5,10 @@ import {
   TenantId,
   UserId,
   type TenantAggregate,
-} from "../contracts/identity.contracts.js";
-import { TenantRepositoryPostgres } from "../repositories/index.js";
-import { initIdentitySchema } from "../repositories/base.repository.js";
-import { slugifyForTenant } from "../services/password.service.js";
+} from "../contracts/identity.contracts";
+import { TenantRepositoryPostgres } from "../repositories/index";
+import { initIdentitySchema } from "../repositories/base.repository";
+import { slugifyForTenant } from "../services/password.service";
 
 function newTenantId(): TenantId {
   return TenantId(`tenant-${randomUUID()}`);

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import * as crypto from "crypto";
-import { CommunicationRepositoryInMemory as CommunicationRepository } from "@capabilities/communication/implementation/repository/communication.repository.js";
+import { CommunicationRepositoryInMemory as CommunicationRepository } from "@capabilities/communication/implementation/repository/communication.repository";
 
 // Slack user ID to work ID mapping for REAL_WORK_014 observability test
 // Maps Slack user IDs to their active case IDs - EXACT same pattern as WhatsApp/Email/Webchat

@@ -7,16 +7,16 @@ import {
   RequirementView,
   default as RequirementViewDefault,
 } from "../../capabilities/requirement-management/experience/views/RequirementView.js";
-import * as RequirementServiceImplModule from "../../capabilities/requirement-management/implementation/service.js";
-import { identityCommands } from "../../capabilities/identity/implementation/commands/index.js";
+import * as RequirementServiceImplModule from "@repo/capabilities-requirement-management";
+import { identityCommands } from "@repo/capabilities-identity";
 import {
   UserRepositoryPostgres,
   TenantRepositoryPostgres,
   WorkspaceRepositoryPostgres,
   MembershipRepositoryPostgres,
   SessionRepositoryPostgres,
-} from "../../capabilities/identity/implementation/repositories/index.js";
-import { passwordService } from "../../capabilities/identity/implementation/services/password.service.js";
+  passwordService
+} from "@repo/capabilities-identity";
 import * as EvidenceRegistryServiceImplModule from "../../capabilities/evidence-registry/implementation/service.js";
 import * as ConsultationServiceImplModule from "../../capabilities/consultation/implementation/service.js";
 import { 
@@ -146,14 +146,14 @@ const legalCase: CapabilityDescriptor = Object.freeze({
 // Legal Document capability imports
 
 // Communication capability imports
-import { communicationCommands } from "../../capabilities/communication/implementation/commands/index.js";
+import { communicationCommands, communicationQueries } from "../../capabilities/communication/implementation/commands/index.js";
 import { CommunicationRepositoryInMemory } from "../../capabilities/communication/implementation/repository/index.js";
 import { communicationService } from "../../capabilities/communication/implementation/services/communication.service.js";
 
 // Communication capability implementation
 const communicationImplementation: CapabilityImplementation = {
   commands: communicationCommands,
-  queries: {},
+  queries: communicationQueries,
   repositories: { CommunicationRepository: CommunicationRepositoryInMemory },
   services: { CommunicationService: communicationService },
   entry: null,

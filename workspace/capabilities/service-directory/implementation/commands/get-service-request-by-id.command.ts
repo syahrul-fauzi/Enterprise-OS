@@ -1,9 +1,9 @@
 // @ts-nocheck: Skip TypeScript checks to unblock Lawyers Hub staging deployment
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { ServiceRequestRepositoryInMemory, getServiceRequestRepositoryPostgres } from "../repository/index.js";
-import type { ServiceRequestId, ServiceRequestAggregate } from "../contracts/service.contracts.js";
-import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../identity/implementation/repositories/index.js";
+import { ServiceRequestRepositoryInMemory, getServiceRequestRepositoryPostgres } from "../repository/index";
+import type { ServiceRequestId, ServiceRequestAggregate } from "../contracts/service.contracts";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../identity/implementation/repositories/index";
 
 const sessionRepository = process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()

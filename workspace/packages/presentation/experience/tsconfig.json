@@ -2,17 +2,20 @@
   "extends": "../../../config/typescript/base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "ignoreDeprecations": "5.0",
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "composite": true,
     "incremental": true,
+    "jsx": "react-jsx",
     "paths": {
       "@repo/presentation-types": ["../presentation-types/dist"],
+      "@repo/presentation-config": ["../config/dist"],
       "@products/*": ["../../../products/*"]
     }
   },
   "include": ["src"],
   "references": [
+    { "path": "../config" },
     { "path": "../presentation-types" },
     { "path": "../../../products/academic" },
     { "path": "../../../products/ilc" },

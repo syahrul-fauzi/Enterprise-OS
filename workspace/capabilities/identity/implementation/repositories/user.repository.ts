@@ -1,9 +1,9 @@
-import { PostgresRepository } from "./base.repository.js";
+import { PostgresRepository } from "./base.repository";
 import {
   UserId,
   type UserAggregate,
   type UserRepository,
-} from "../contracts/identity.contracts.js";
+} from "../contracts/index";
 
 // PostgreSQL-backed user repository implementation
 class UserRepositoryPostgresImpl extends PostgresRepository<any> implements UserRepository {

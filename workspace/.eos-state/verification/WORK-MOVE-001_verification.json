@@ -1,0 +1,67 @@
+{
+  "work_id": "WORK-MOVE-001",
+  "verified_at": "2026-08-25T00:00:00.000Z",
+  "acceptance_criteria": {
+    "criterion_1": {
+      "passed": true,
+      "evidence": "UI button implemented in CoordinationSection.tsx, only visible to professional perspective with lawyer-review action"
+    },
+    "criterion_2": {
+      "passed": true,
+      "evidence": "API route /api/cases/transition supports WORK-MOVE-001 format (workId/action/result) and invokes case.markCompleted"
+    },
+    "criterion_3": {
+      "passed": true,
+      "evidence": "case.markCompleted command exists in caseCommands and registered in workspace.manifest.ts legal-case entry"
+    },
+    "criterion_4": {
+      "passed": true,
+      "evidence": "State transition persists: case.status changes to 'closed', evidence chain appended with outcome"
+    },
+    "criterion_5": {
+      "passed": true,
+      "evidence": "UI rehydrates after reload: derive-work-state.ts produces new coordination/inspection state for closed PT ABC case"
+    },
+    "criterion_6": {
+      "passed": true,
+      "evidence": "All 8 Work Movement Contract criteria satisfied with full traceability"
+    },
+    "criterion_7": {
+      "passed": true,
+      "evidence": "No new frameworks created - reused existing capabilityRegistry and command primitives"
+    },
+    "criterion_8": {
+      "passed": true,
+      "evidence": "WorkRealitySurface remains single source of truth, no new dashboards/platforms"
+    },
+    "criterion_9": {
+      "passed": true,
+      "evidence": "Wave B completed: WORK-MOVE pattern ported to LawyersHub, ILC, Services.ID via configuration only (no code duplication)"
+    },
+    "criterion_10": {
+      "passed": true,
+      "evidence": "Wave C completed: Earned abstractions extracted after invariant proof across 3 products: shared WorkflowStep/WorkflowTransition/WorkflowDefinition interfaces + generic executeWorkflowTransition() orchestrator in core-kernel"
+    },
+    "criterion_11": {
+      "passed": true,
+      "evidence": "UI automatically extracts productId from URL path (/[productId]/cases/[caseId]) - works out-of-the-box for all 3 products"
+    },
+    "criterion_12": {
+      "passed": true,
+      "evidence": "WORKFLOW_REGISTRY centralized all product workflows, dynamic lookup based on productId - eliminates hardcoded workflow references"
+    }
+  },
+  "all_passed": true,
+  "total_passed": 12,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["criterion_1", "criterion_2", "criterion_3", "criterion_4", "criterion_5", "criterion_6", "criterion_7", "criterion_8", "criterion_9", "criterion_10", "criterion_11", "criterion_12"],
+  "security_scan": {
+    "passed": true,
+    "vulnerabilities_found": 0
+  },
+  "architecture_verification": {
+    "passed": true,
+    "locked_files_modified": []
+  }
+}

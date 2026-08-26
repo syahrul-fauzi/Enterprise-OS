@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { OrphanCommunicationScanner } from "../../../../../../../capabilities/communication/implementation/observability/orphan.scanner.js";
+import { OrphanCommunicationScanner } from "../../../../../../../capabilities/communication/implementation/observability/orphan.scanner";
 
 // On-demand scan endpoint for WORK-017 observability
 // Can be triggered from Work Reality Surface or CI/CD pipelines

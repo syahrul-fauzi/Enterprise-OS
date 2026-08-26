@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { randomUUID } from "node:crypto";
 
 export const WORKSPACE_SESSION_COOKIE = "eos-workspace-session";
 
@@ -37,6 +38,7 @@ export function createAnonymousWorkspaceSession(): WorkspaceSession {
     tenantId: ANONYMOUS_SESSION_TEMPLATE.tenantId,
     workspaceId: ANONYMOUS_SESSION_TEMPLATE.workspaceId,
     productId: ANONYMOUS_SESSION_TEMPLATE.productId,
+    sessionId: `session-${randomUUID()}`,
     issuedAt: new Date().toISOString(),
   };
 }

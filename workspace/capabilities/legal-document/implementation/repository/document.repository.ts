@@ -229,12 +229,21 @@ export const DocumentRepositoryInMemory: DocumentRepository = {
   },
 } as const;
 
-export const newDocumentId = (() => {
-  let seq = 100;
-  return (): DocumentId => {
-    seq += 1;
-    return DocumentId(`doc-${String(seq).padStart(3, "0")}`);
+// P1 FIX: Generate alphanumeric IDs to match orphan scanner universal work_id pattern
+// Before: doc-101 → After: article-abc123 (passes scanner's article-[\w-]+ regex)
+const generateRandomSuffix = () => {
+  return Math.random().toString(36).substring(2, 8); // 6 random alphanumeric characters
+};
+
+export const newDocumentId = (): DocumentId => {
+  return DocumentId(`document-${generateRandomSuffix()}`);
+};
+
+if (process.env.NODE_ENV === "test") {
+  (DocumentRepositoryInMemory as any).clear = () => {
+    STORE.clear();
+    console.log("[DocumentRepository] In-memory store cleared for test isolation");
   };
-})();
+}
 
 export const defaultDocumentStatus: DocumentStatus = "draft";

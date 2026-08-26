@@ -5,8 +5,8 @@ import {
   UserId,
   TenantId,
   WorkspaceId,
-} from "../contracts/identity.contracts.js";
-import { UserId as UserIdValue, TenantId as TenantIdValue, WorkspaceId as WorkspaceIdValue } from "../contracts/identity.contracts.js";
+} from "../contracts/identity.contracts";
+import { UserId as UserIdValue, TenantId as TenantIdValue, WorkspaceId as WorkspaceIdValue } from "../contracts/identity.contracts";
 import { randomUUID } from "node:crypto";
 
 // REALITY PATH ONLY - Import repository Postgres yang dibutuhkan
@@ -17,7 +17,7 @@ import {
   getWorkspaceRepositoryPostgres,
   getSessionRepositoryPostgres,
   newSessionId,
-} from "../repositories/index.js";
+} from "../repositories/index";
 const userRepository = getUserRepositoryPostgres();
 const membershipRepository = getMembershipRepositoryPostgres();
 const tenantRepository = getTenantRepositoryPostgres();
@@ -79,7 +79,7 @@ export const loginFlowCommand: LoginFlowCommand = {
     const { email, password } = parsed;
 
     // REALITY PATH ONLY - Inline seluruh logika login untuk menghindari semua import error
-    const user = await userRepository.findByEmail(email);
+    const user = await userRepository.byEmail(email);
     if (!user) {
       throw new Error("Invalid credentials");
     }
@@ -89,16 +89,16 @@ export const loginFlowCommand: LoginFlowCommand = {
     }
 
     // After successful authentication, find first tenant/membership to auto-select workspace
-    const memberships = await membershipRepository.findByUserId(user.id);
+    const memberships = await membershipRepository.listByUser(user.id);
     if (memberships.length === 0) {
       throw new Error("No workspaces available for user");
     }
     const firstMembership = memberships[0];
-    const tenant = await tenantRepository.findById(firstMembership.tenantId);
+    const tenant = await tenantRepository.byId(firstMembership.tenantId);
     if (!tenant) {
       throw new Error("Tenant not found");
     }
-    const workspaces = await workspaceRepository.findByTenantId(firstMembership.tenantId);
+    const workspaces = await workspaceRepository.listByTenant(firstMembership.tenantId);
     if (workspaces.length === 0) {
       throw new Error("No workspaces found for tenant");
     }
@@ -108,10 +108,17 @@ export const loginFlowCommand: LoginFlowCommand = {
     const session = await sessionRepository.create({
       id: sessionId,
       userId: user.id,
+      actorId: user.id,
       workspaceId: workspace.id,
       tenantId: tenant.id,
-      createdAt: new Date().toISOString(),
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 1 week
+      productId: "services-id.default",
+      actorLabel: user.displayName || "User",
+      isAgent: false,
+      issuedAt: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      revokedAt: null,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week
     });
 
     return {

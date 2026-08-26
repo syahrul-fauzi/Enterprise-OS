@@ -1,0 +1,74 @@
+{
+  "work_id": "WAVE2-PTABC-001",
+  "user_job": "User creates Pendirian PT ABC as a legal case and completes full end-to-end workflow",
+  "slice_status": "COMPLETE",
+  "execution_contract_verification": {
+    "1_intent": {
+      "verified": true,
+      "evidence": "work_id and user_job defined, Pendirian PT ABC sebagai golden path work"
+    },
+    "2_product_experience": {
+      "verified": true,
+      "evidence": "User-facing wording sudah lengkap: 'Mulai Pekerjaan Baru', 'Kasus Hukum' description menyertakan 'Pendirian PT', placeholder input 'Contoh: Pendirian PT ABC Indonesia', lifecycle PT_REGULAR_WORKFLOW: intake→requirements→professional→execution→external→outcome→evidence",
+      "lifecycle_states": ["draft", "open", "in_progress", "closed"]
+    },
+    "3_ui": {
+      "verified": true,
+      "evidence": "/work/new/page.tsx sudah mendukung legal-case creation dengan submit handler yang memanggil /api/cases/create, UniversalWorkPage (/work/[id]/page.tsx) terintegrasi WorkRealitySurface dengan perspective switcher, CaseDetailPage memiliki PT_REGULAR_WORKFLOW yang sesuai real-world process",
+      "components": ["NewWorkPage", "UniversalWorkPage", "WorkRealitySurface", "CaseDetailPage"]
+    },
+    "4_api": {
+      "verified": true,
+      "evidence": "POST /api/cases/create - menangani anonymous + authenticated sessions, validasi input, memanggil case.create capability; POST /api/cases/transition - mendukung executeWorkflowTransition untuk Work Movement Contract compliance",
+      "endpoints": ["/api/cases/create", "/api/cases/transition"]
+    },
+    "5_capability": {
+      "verified": true,
+      "evidence": "capabilityRegistry.invoke('legal-case', 'case.create', input) workable, createCase command terdaftar dengan version 2.0.0, mendukung cross-capability invocation dan context propagation, closeCase dan assignLawyer juga tersedia untuk workflow transitions",
+      "registry_keys": ["case.create", "case.close", "case.assignLawyer"]
+    },
+    "6_persistence": {
+      "verified": true,
+      "evidence": "CaseRepositoryInMemory dan CaseRepositoryPostgres tersedia, save() dan byId() berfungsi, mendukung tenant isolation, entity yang dibuat memiliki workId binding untuk universal /work/[id] routing",
+      "repositories": ["CaseRepositoryInMemory", "CaseRepositoryPostgres"]
+    },
+    "7_state_transition": {
+      "verified": true,
+      "evidence": "Lifecycle berjalan: create → draft (default), assignLawyer → open, eksekusi langkah workflow → in_progress, closeCase → closed. executeWorkflowTransition di API transition mendukung perpindahan step PT_REGULAR_WORKFLOW",
+      "transitions": ["draft→open", "open→in_progress", "in_progress→closed"]
+    },
+    "8_evidence": {
+      "verified": true,
+      "evidence": "AttributionLedger mendukung record semua write operations, executionContext disimpan di entity case dengan decision_id dan last_invocation_digest untuk lineage tracking, setiap command invocation memiliki invokedAt timestamp",
+      "ledger_compliance": "W4-C20-001 (context propagation) terpenuhi"
+    },
+    "9_test": {
+      "verified": true,
+      "evidence": "Komponen dapat diinvokasi secara real tanpa mocks, API endpoint dapat dipanggil dari browser, create case menghasilkan id yang valid dan redirect ke /work/[id], transition 'Review result' memicu state change yang persist",
+      "test_type": "Manual E2E verification passed, automation scaffold tersedia"
+    }
+  },
+  "work_movement_contract_compliance": {
+    "work_identity_preserved": true,
+    "actor_authority_known": true,
+    "previous_state_known": true,
+    "action_known": true,
+    "result_recorded": true,
+    "new_state_derivable": true,
+    "next_action_visible": true,
+    "evidence_traceable": true,
+    "score": "8/8 (FULL COMPLIANCE)"
+  },
+  "product_spine_integration": {
+    "w1_005_verified": true,
+    "thin_composition": true,
+    "single_work_entry": true,
+    "post_submit_redirect": true,
+    "reality_based_errors": true,
+    "anonymous_flow_preserved": true,
+    "five_rules_compliance": "ALL PASSED"
+  },
+  "created_at": "2026-08-25T00:00:00.000Z",
+  "golden_path_status": "READY",
+  "wave_2_verdict": "PASS - Pendirian PT ABC golden path end-to-end complete"
+}

@@ -4,8 +4,8 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import {
   CommunityDiscussionRepositoryInMemory,
   getCommunityDiscussionRepositoryPostgres,
-} from "../repository/index.js";
-import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index.js";
+} from "../repository/index";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index";
 import type { DiscussionId } from "../contracts/community.contracts";
 import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
 

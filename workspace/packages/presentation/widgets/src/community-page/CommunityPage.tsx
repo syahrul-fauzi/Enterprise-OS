@@ -4,7 +4,7 @@
 import { Suspense } from 'react';
 import { CommunityDirectory } from "../CommunityDirectory";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
-import { CommunitySearchBar } from "@repo/presentation-features";
+import { CommunitySearchBar } from "@repo/presentation-ui-system";
 import type { ProductPreviewBinding } from "@repo/presentation-types";
 
 export interface CommunityPageProps {

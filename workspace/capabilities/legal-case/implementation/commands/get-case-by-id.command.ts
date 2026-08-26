@@ -1,9 +1,9 @@
 import { z } from "zod";
-import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
-import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
-import { SessionRepositoryInMemory } from "../../../identity/implementation/repositories/index.js";
-import type { CaseId, CaseAggregate } from "../contracts/index.js";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
+import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types";
+import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index";
+import { SessionRepositoryInMemory } from "../../../identity/implementation/repositories/index";
+import type { CaseId, CaseAggregate } from "../contracts/index";
+import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
 
 // Toggle repository based on environment (match identity production rail)
 const caseRepository = process.env.DATABASE_URL 

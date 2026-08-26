@@ -9,7 +9,9 @@ export {
   DOMAIN_TO_PRODUCT_MAP,
   getProductFromHostname,
   isMasterDomain,
-  getRootRouteForHostname
+  getRootRouteForHostname,
+  getSpineNavigationForHostname,
+  getSpineNavigationForProductId
 } from './product-domains.js';
 
-export type { ProductDomainConfig } from './product-domains.js';
+export type { ProductDomainConfig, SpineNavigationItem } from './product-domains.js';

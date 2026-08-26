@@ -1,1 +1,1 @@
-export * from "./requirement.service.js";
+export * from "./requirement.service";

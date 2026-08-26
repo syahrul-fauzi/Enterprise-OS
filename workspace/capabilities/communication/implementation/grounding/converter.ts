@@ -319,7 +319,7 @@ export async function needsManualGrounding(
   event: CommunicationEvent
 ): Promise<boolean> {
   // Reuse the exact same validation from OrphanScanner - no duplicate logic!
-  const validWorkIdPattern = /^(case|matter|project)-\d+$/;
+  const validWorkIdPattern = /^(case|matter|project|discussion|content|topic|request|service|article|publication|work)-[\w-]+$/;
   
   if (!event.work_id || event.work_id.trim() === "") {
     console.log("[GroundingConverter] Event needs manual grounding: missing work_id");

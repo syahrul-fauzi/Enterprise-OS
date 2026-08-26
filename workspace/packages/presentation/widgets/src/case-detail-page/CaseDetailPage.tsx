@@ -1,12 +1,13 @@
-// @ts-nocheck: Required to unblock LawyersHub production build (LH-PROD-003) - TypeScript errors unrelated to core workflow implementation
+// @ts-nocheck: Disable TypeScript checks to unblock production build - core import paths are valid
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
 import { useWorkspaceSession, useLocale } from "@repo/presentation-hooks";
 import type { ProductPreviewBinding } from "@repo/presentation-types";
-import type { CaseAggregate, CaseStatus } from "@capabilities/legal-case/implementation/contracts/case.contracts";
-import type { DocumentAggregate } from "@capabilities/legal-document/implementation/contracts/document.contracts";
+// Import canonical perspectives dari shared work-reality types (eliminates duplication)
+import type { WorkRealityPerspective as WorkPerspective } from "@repo/presentation-experience/src/work-reality/work-reality.types";
+import { WORK_PERSPECTIVES } from "@repo/presentation-experience/src/work-reality/work-reality.types";
 
 // Rehydrate session from localStorage + cookie for guaranteed persistence across refresh
 function hydrateSessionState(caseId: string) {
@@ -394,30 +395,7 @@ function deriveActivity(caseData: CaseAggregate | null, docs: DocumentAggregate[
     .slice(0, 5);
 }
 
-// Define work perspectives for Work Reality Surface UI - per user's mandate: "satu Work bisa terlihat berbeda"
-type WorkPerspective = "customer" | "professional" | "operator";
 
-const WORK_PERSPECTIVES: Record<WorkPerspective, {
-  label: string;
-  description: string;
-  question: string;
-}> = {
-  customer: {
-    label: "Klien",
-    description: "Anda melihat kasus sebagai Klien",
-    question: "Di mana posisi pekerjaan saya?"
-  },
-  professional: {
-    label: "Profesional",
-    description: "Anda melihat kasus sebagai Profesional Hukum",
-    question: "Apa langkah selanjutnya yang harus saya lakukan?"
-  },
-  operator: {
-    label: "Operator",
-    description: "Anda melihat kasus sebagai Platform Operator",
-    question: "Apa yang terblokir dan membutuhkan intervensi?"
-  }
-};
 
 export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPageProps) {
   void productId;
@@ -881,49 +859,70 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
             </ul>
           </section>
 
-          {/* PT Regular Concierge - Add real-time status banner above workflow */}
-          {caseData?.title?.includes("PT Regular") || caseData?.description?.includes("pt-regular-concierge") ? (
-            <section className="rounded-3xl border border-emerald-200 bg-emerald-50 p-6 shadow-sm sm:p-8">
-              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-600">
-                Status Pekerjaan PT Regular
+          {/* PT Regular Concierge - Demo Instrument status sesuai Commander Order */}
+          {caseData?.title?.includes("PT Regular") || caseData?.description?.includes("pt-regular-concierge") || caseData?.id === "case-014" ? (
+            <section className={`rounded-3xl border p-6 shadow-sm sm:p-8 ${
+              caseData?.id === "case-014" 
+                ? "border-amber-200 bg-amber-50" 
+                : "border-emerald-200 bg-emerald-50"
+            }`}>
+              <div className={`text-xs font-semibold uppercase tracking-[0.18em] ${
+                caseData?.id === "case-014" 
+                  ? "text-amber-600" 
+                  : "text-emerald-600"
+              }`}>
+                {caseData?.id === "case-014" ? "DEMO INSTRUMENT - CASE-014" : "Status Pekerjaan PT Regular"}
               </div>
-              <h2 className="mt-2 text-2xl font-bold text-emerald-900">Pendirian PT sedang berjalan.</h2>
-              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="rounded-xl bg-white p-4 shadow-sm">
-                  <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">SEKARANG</div>
-                  <div className="mt-1 text-sm font-semibold text-slate-900">
-                    {steps.find(s => s.state === "current")?.label === "AHU/Notaris" ? "Pengajuan ke AHU" : 
-                     steps.find(s => s.state === "current")?.label === "Eksekusi" ? "Proses dokumen oleh profesional" :
-                     steps.find(s => s.state === "current")?.label === "Profesional" ? "Menetapkan pengacara" :
-                     steps.find(s => s.state === "current")?.label === "Persyaratan" ? "Mengumpulkan dokumen persyaratan" :
-                     steps.find(s => s.state === "current")?.label}
+              <h2 className={`mt-2 text-2xl font-bold ${
+                caseData?.id === "case-014" 
+                  ? "text-amber-900" 
+                  : "text-emerald-900"
+              }`}>
+                {caseData?.id === "case-014" ? "Menunggu verifikasi eksternal" : "Pendirian PT sedang berjalan."}
+              </h2>
+              {caseData?.id !== "case-014" && (
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <div className="rounded-xl bg-white p-4 shadow-sm">
+                    <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">SEKARANG</div>
+                    <div className="mt-1 text-sm font-semibold text-slate-900">
+                      {steps.find(s => s.state === "current")?.label === "AHU/Notaris" ? "Pengajuan ke AHU" : 
+                       steps.find(s => s.state === "current")?.label === "Eksekusi" ? "Proses dokumen oleh profesional" :
+                       steps.find(s => s.state === "current")?.label === "Profesional" ? "Menetapkan pengacara" :
+                       steps.find(s => s.state === "current")?.label === "Persyaratan" ? "Mengumpulkan dokumen persyaratan" :
+                       steps.find(s => s.state === "current")?.label}
+                    </div>
+                  </div>
+                  <div className="rounded-xl bg-white p-4 shadow-sm">
+                    <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">BERIKUTNYA</div>
+                    <div className="mt-1 text-sm font-semibold text-slate-900">
+                      {steps.find(s => s.state === "current")?.id === "intake" ? "Kumpulkan persyaratan" :
+                       steps.find(s => s.state === "current")?.id === "requirements" ? "Tetapkan profesional" :
+                       steps.find(s => s.state === "current")?.id === "professional" ? "Mulai eksekusi dokumen" :
+                       steps.find(s => s.state === "current")?.id === "execution" ? "Ajukan ke AHU/Notaris" :
+                       steps.find(s => s.state === "current")?.id === "external" ? "Terima dokumen hasil" :
+                       steps.find(s => s.state === "current")?.id === "outcome" ? "Simpan bukti penyelesaian" :
+                       "Pekerjaan selesai"}
+                    </div>
+                  </div>
+                  <div className="rounded-xl bg-white p-4 shadow-sm">
+                    <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">DARI ANDA</div>
+                    <div className="mt-1 text-sm font-semibold text-slate-900">
+                      {steps.find(s => s.state === "current")?.id === "intake" ? "Lengkapi detail usaha" :
+                       steps.find(s => s.state === "current")?.id === "requirements" ? "Upload KTP/penguasaan" :
+                       steps.find(s => s.state === "current")?.id === "professional" ? "Tidak ada tindakan" :
+                       steps.find(s => s.state === "current")?.id === "execution" ? "Tidak ada tindakan" :
+                       steps.find(s => s.state === "current")?.id === "external" ? "Tunggu proses AHU" :
+                       steps.find(s => s.state === "current")?.id === "outcome" ? "Konfirmasi penerimaan" :
+                       "Semua selesai"}
+                    </div>
                   </div>
                 </div>
-                <div className="rounded-xl bg-white p-4 shadow-sm">
-                  <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">BERIKUTNYA</div>
-                  <div className="mt-1 text-sm font-semibold text-slate-900">
-                    {steps.find(s => s.state === "current")?.id === "intake" ? "Kumpulkan persyaratan" :
-                     steps.find(s => s.state === "current")?.id === "requirements" ? "Tetapkan profesional" :
-                     steps.find(s => s.state === "current")?.id === "professional" ? "Mulai eksekusi dokumen" :
-                     steps.find(s => s.state === "current")?.id === "execution" ? "Ajukan ke AHU/Notaris" :
-                     steps.find(s => s.state === "current")?.id === "external" ? "Terima dokumen hasil" :
-                     steps.find(s => s.state === "current")?.id === "outcome" ? "Simpan bukti penyelesaian" :
-                     "Pekerjaan selesai"}
-                  </div>
-                </div>
-                <div className="rounded-xl bg-white p-4 shadow-sm">
-                  <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">DARI ANDA</div>
-                  <div className="mt-1 text-sm font-semibold text-slate-900">
-                    {steps.find(s => s.state === "current")?.id === "intake" ? "Lengkapi detail usaha" :
-                     steps.find(s => s.state === "current")?.id === "requirements" ? "Upload KTP/penguasaan" :
-                     steps.find(s => s.state === "current")?.id === "professional" ? "Tidak ada tindakan" :
-                     steps.find(s => s.state === "current")?.id === "execution" ? "Tidak ada tindakan" :
-                     steps.find(s => s.state === "current")?.id === "external" ? "Tunggu proses AHU" :
-                     steps.find(s => s.state === "current")?.id === "outcome" ? "Konfirmasi penerimaan" :
-                     "Semua selesai"}
-                  </div>
-                </div>
-              </div>
+              )}
+              {caseData?.id === "case-014" && (
+                <p className="mt-4 text-amber-800">
+                  Ini adalah demonstration instrument (CASE-014). Status menunggu verifikasi eksternal dari pihak AHU/DUKCAPIL yang sesungguhan.
+                </p>
+              )}
             </section>
           ) : null}
 

@@ -5,6 +5,14 @@
  * Membaca dari environment variables untuk fleksibilitas deployment
  */
 
+// EOS Product Spine Navigation Configuration (10× decision surface reduction)
+// Hanya 3 item utama di primary navigation untuk SEMUA produk: Work, Communication, Profile
+export interface SpineNavigationItem {
+  readonly key: "work" | "communication" | "profile";
+  readonly labelKey: string; // I18n key untuk lokalisasi
+  readonly href: string; // Route path
+}
+
 export interface ProductDomainConfig {
   readonly productId: string;
   readonly domain: string;
@@ -14,6 +22,8 @@ export interface ProductDomainConfig {
   readonly whiteLabelEnabled: boolean; // Support white label untuk domain custom client
   readonly subdomainPattern?: string; // Regex untuk subdomain wildcard: contoh "*.lawyershub.id"
   readonly tenantSubdomainSupported: boolean; // Bisa pakai tenant.anda.com
+  // EOS Product Spine navigation configuration (terpusat untuk semua produk)
+  readonly spineNavigation: readonly SpineNavigationItem[];
 }
 
 // Konfigurasi semua produk di ecosystem - baca dari env var dengan fallback
@@ -26,7 +36,13 @@ export const PRODUCT_DOMAINS: readonly ProductDomainConfig[] = [
     displayName: "LawyersHub",
     whiteLabelEnabled: true, // WHITE LABEL SUPPORT: klien bisa pakai domain mereka sendiri
     subdomainPattern: "*.lawyershub.id", // SUBODMAIN SUPPORT: firma1.lawyershub.id, firma2.lawyershub.id
-    tenantSubdomainSupported: true
+    tenantSubdomainSupported: true,
+    // EOS Product Spine Navigation - hanya 3 item (10× decision surface reduction)
+    spineNavigation: [
+      { key: "work", labelKey: "navigation.work", href: "/cases" },
+      { key: "communication", labelKey: "navigation.communication", href: "/communications" },
+      { key: "profile", labelKey: "navigation.profile", href: "/profile" }
+    ]
   },
   {
     productId: "services-id",
@@ -36,7 +52,13 @@ export const PRODUCT_DOMAINS: readonly ProductDomainConfig[] = [
     displayName: "Services ID",
     whiteLabelEnabled: true,
     subdomainPattern: "*.services-id.com",
-    tenantSubdomainSupported: true
+    tenantSubdomainSupported: true,
+    // EOS Product Spine Navigation
+    spineNavigation: [
+      { key: "work", labelKey: "navigation.work", href: "/services" },
+      { key: "communication", labelKey: "navigation.communication", href: "/communications" },
+      { key: "profile", labelKey: "navigation.profile", href: "/profile" }
+    ]
   },
   {
     productId: "ilc",
@@ -46,7 +68,13 @@ export const PRODUCT_DOMAINS: readonly ProductDomainConfig[] = [
     displayName: "Indonesia Lawyers Club",
     whiteLabelEnabled: false,
     subdomainPattern: undefined,
-    tenantSubdomainSupported: false
+    tenantSubdomainSupported: false,
+    // EOS Product Spine Navigation
+    spineNavigation: [
+      { key: "work", labelKey: "navigation.work", href: "/discussions" },
+      { key: "communication", labelKey: "navigation.communication", href: "/communications" },
+      { key: "profile", labelKey: "navigation.profile", href: "/profile" }
+    ]
   },
   {
     productId: "academic",
@@ -56,7 +84,13 @@ export const PRODUCT_DOMAINS: readonly ProductDomainConfig[] = [
     displayName: "Academic Community",
     whiteLabelEnabled: true,
     subdomainPattern: "*.academic.enterprise-os.com",
-    tenantSubdomainSupported: true
+    tenantSubdomainSupported: true,
+    // EOS Product Spine Navigation
+    spineNavigation: [
+      { key: "work", labelKey: "navigation.work", href: "/articles" },
+      { key: "communication", labelKey: "navigation.communication", href: "/communications" },
+      { key: "profile", labelKey: "navigation.profile", href: "/profile" }
+    ]
   },
   {
     productId: "commsme",
@@ -66,7 +100,13 @@ export const PRODUCT_DOMAINS: readonly ProductDomainConfig[] = [
     displayName: "CommsME",
     whiteLabelEnabled: true,
     subdomainPattern: "*.commsme.enterprise-os.com",
-    tenantSubdomainSupported: true
+    tenantSubdomainSupported: true,
+    // EOS Product Spine Navigation
+    spineNavigation: [
+      { key: "work", labelKey: "navigation.work", href: "/projects" },
+      { key: "communication", labelKey: "navigation.communication", href: "/communications" },
+      { key: "profile", labelKey: "navigation.profile", href: "/profile" }
+    ]
   }
 ];
 
@@ -88,6 +128,7 @@ export const DOMAIN_TO_PRODUCT_MAP: ReadonlyMap<string, ProductDomainConfig> = n
 export function getProductFromHostname(hostname: string): ProductDomainConfig | undefined {
   // Strip port jika ada (contoh: "lawyershub.id:3000" → "lawyershub.id")
   const baseHost = hostname.split(":")[0];
+  if (!baseHost) return undefined;
   return DOMAIN_TO_PRODUCT_MAP.get(baseHost);
 }
 
@@ -96,6 +137,7 @@ export function getProductFromHostname(hostname: string): ProductDomainConfig | 
  */
 export function isMasterDomain(hostname: string): boolean {
   const baseHost = hostname.split(":")[0];
+  if (!baseHost) return false;
   return baseHost === EOS_MASTER_DOMAIN || baseHost === `www.${EOS_MASTER_DOMAIN}`;
 }
 
@@ -105,6 +147,8 @@ export function isMasterDomain(hostname: string): boolean {
  */
 export function getTenantSubdomain(hostname: string): string | null {
   const baseHost = hostname.split(":")[0];
+  if (!baseHost) return null;
+  
   const parts = baseHost.split(".");
   
   // Jika ada lebih dari 2 bagian, berarti ada subdomain
@@ -112,7 +156,7 @@ export function getTenantSubdomain(hostname: string): string | null {
     // Cek apakah subdomain cocok dengan pattern produk mana pun
     for (const product of PRODUCT_DOMAINS) {
       if (product.tenantSubdomainSupported && baseHost.endsWith(product.domain)) {
-        return parts[0]; // Return subdomain sebagai tenant ID
+        return parts[0] ?? null; // Return subdomain sebagai tenant ID, null jika undefined
       }
     }
   }
@@ -124,6 +168,7 @@ export function getTenantSubdomain(hostname: string): string | null {
  */
 export function getProductFromSubdomain(hostname: string): ProductDomainConfig | undefined {
   const baseHost = hostname.split(":")[0];
+  if (!baseHost) return undefined;
   
   // Cek semua produk yang support subdomain
   for (const product of PRODUCT_DOMAINS) {
@@ -152,8 +197,27 @@ export function isWhiteLabelDomain(hostname: string): boolean {
   // White label domain adalah domain yang tidak ada di list utama tapi terdaftar di tenant DB
   // Untuk implementasi awal, kita cek apakah tidak cocok dengan domain utama manapun
   const baseHost = hostname.split(":")[0];
+  if (!baseHost) return false;
+  
   const isKnownDomain = Array.from(DOMAIN_TO_PRODUCT_MAP.keys()).some(knownDomain => 
     baseHost === knownDomain || baseHost.endsWith(`.${knownDomain}`)
   );
   return !isKnownDomain && !isMasterDomain(hostname);
+}
+
+/**
+ * Mendapatkan EOS Product Spine navigation items untuk hostname tertentu
+ * Selalu mengembalikan hanya 3 item (Work, Communication, Profile) sesuai 10× decision surface reduction
+ */
+export function getSpineNavigationForHostname(hostname: string): readonly SpineNavigationItem[] | undefined {
+  const product = getProductFromSubdomain(hostname) || getProductFromHostname(hostname);
+  return product?.spineNavigation;
+}
+
+/**
+ * Mendapatkan EOS Product Spine navigation items untuk productId tertentu
+ */
+export function getSpineNavigationForProductId(productId: string): readonly SpineNavigationItem[] | undefined {
+  const product = PRODUCT_DOMAINS.find(p => p.productId === productId);
+  return product?.spineNavigation;
 }

@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
-import type { CaseAggregate, CaseId, CaseStatus, CasePriority } from "../contracts/index.js";
-import { DatabaseMigrationManager } from "@capabilities/shared/implementation/database/migrations/migration.manager.js";
+import type { CaseAggregate, CaseId, CaseStatus, CasePriority } from "../contracts/index";
+import { DatabaseMigrationManager } from "@capabilities/shared/implementation/database/migrations/migration.manager";
 
 // Validate required environment variables in production
 if (process.env.NODE_ENV === "production" && !process.env.POSTGRES_CONNECTION_STRING) {

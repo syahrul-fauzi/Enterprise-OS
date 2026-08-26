@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { RequirementRepositoryCurrent } from "../repository/index.js";
-import type { RequirementAggregate } from "../contracts/index.js";
+import { RequirementRepositoryCurrent } from "../repository/index";
+import type { RequirementAggregate } from "../contracts/index";
 
 export const GetRequirementByIdInputSchema = z.object({
   id: z.string().min(1),

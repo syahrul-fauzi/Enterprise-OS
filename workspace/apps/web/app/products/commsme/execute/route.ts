@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { capabilityRegistry } from "../../../../lib/capability-command-registry.js";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 
 const COM_SESSION_ID = "session-test-001";
 const COM_TENANT_ID = "tenant-001";

@@ -1,3 +1,3 @@
-export * from "./card.js";
-export * from "./gradient.js";
-export * from "./turborepo-logo.js";
+export * from "./card";
+export * from "./gradient";
+export * from "./turborepo-logo";

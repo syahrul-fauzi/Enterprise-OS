@@ -7,5 +7,5 @@ export type {
   CommunicationAdapterType,
   CommunicationEventStatus
 } from "./contracts/index.js";
-export { communicationCommands } from "./commands/index.js";
+export { communicationCommands, communicationQueries } from "./commands/index.js";
 export { CommunicationRepositoryInMemory } from "./repository/index.js";

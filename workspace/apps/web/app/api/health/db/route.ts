@@ -1,9 +1,9 @@
 // Database health check API endpoint - Kubernetes liveness/readiness probe
 // Exposes POSTGRES connection status for orchestration systems
 import { NextResponse } from "next/server";
-import { DatabaseHealthChecker } from "@capabilities/shared/implementation/database/health.check.js";
-import { CommunicationRepositoryPostgres } from "@capabilities/communication/implementation/repository/communication.postgres.repository.js";
-import { CaseRepositoryPostgres } from "@capabilities/legal-case/implementation/repository/case.postgres.repository.js";
+import { DatabaseHealthChecker } from "@capabilities/shared/implementation/database/health.check";
+import { CommunicationRepositoryPostgres } from "@capabilities/communication/implementation/repository/communication.postgres.repository";
+import { CaseRepositoryPostgres } from "@capabilities/legal-case/implementation/repository/case.postgres.repository";
 
 export async function GET() {
   try {

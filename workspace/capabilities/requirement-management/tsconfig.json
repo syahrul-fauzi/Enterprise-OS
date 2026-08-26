@@ -1,20 +1,21 @@
 {
+  "extends": "../../config/typescript/base.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
-    "outDir": "./dist",
-    "strictNullChecks": true,
+    "outDir": "dist",
+    "strictNullChecks": false,
     "declaration": true,
-    "incremental": true,
     "ignoreDeprecations": "5.0",
-    "types": [
-      "node"
-    ],
-    "skipLibCheck": true,
     "composite": true,
-    "rootDir": "./"
+    "incremental": true,
+    "skipLibCheck": true,
+    "noEmit": false,
+    "rootDir": ".",
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@repo/core-kernel": ["../../packages/core/kernel/dist/index.d.ts", "../../packages/core/kernel/src/index.ts"],
+      "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*.d.ts", "../../packages/core/kernel/src/*"]
+    }
   },
   "references": [
     {
@@ -24,13 +25,6 @@
       "path": "../identity/tsconfig.json"
     }
   ],
-  "include": [
-    "implementation/**/*.ts"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "**/*.d.ts"
-  ],
-  "extends": "../../tsconfig.json"
+  "include": ["index.ts", "implementation/**/*.ts"],
+  "exclude": ["dist", "build", "node_modules"]
 }

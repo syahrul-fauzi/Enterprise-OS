@@ -18,7 +18,8 @@
   },
   "dependencies": {
     "@repo/presentation-types": "workspace:*",
-    "@repo/core-kernel": "workspace:*"
+    "@repo/core-kernel": "workspace:*",
+    "@repo/presentation-hooks": "workspace:*"
   },
   "devDependencies": {
     "eslint": "^9.39.1",

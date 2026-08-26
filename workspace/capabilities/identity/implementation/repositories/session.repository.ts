@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository.js";
+import { PostgresRepository } from "./base.repository";
 import {
   SessionId,
   UserId,
@@ -6,7 +6,7 @@ import {
   WorkspaceId,
   type SessionAggregate,
   type SessionRepository,
-} from "../contracts/identity.contracts.js";
+} from "../contracts/index";
 
 // PostgreSQL-backed session repository implementation
 class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements SessionRepository {
@@ -104,6 +104,9 @@ class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements S
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
+  async create(entity: SessionAggregate): Promise<SessionAggregate> {
+    return super.save(entity);
+  }
   async save(entity: SessionAggregate): Promise<SessionAggregate> {
     const record = this.toRecord({
       ...entity,

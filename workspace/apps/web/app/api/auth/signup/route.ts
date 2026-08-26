@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { encodeWorkspaceSession, WORKSPACE_SESSION_COOKIE, type WorkspaceSession } from "@repo/core-kernel";
-// REALITY PATH ONLY - Bypass capabilityRegistry, import command langsung
-import { SignupAndSessionInputSchema, signupAndSessionCommand } from "@capabilities/identity/implementation/commands/signup-and-session.command.js";
+// Import from canonical package entry point
+import { SignupAndSessionInputSchema, signupAndSessionCommand } from "@repo/capabilities-identity";
 
 type SignupApiOutput = {
   readonly response: unknown;
@@ -22,16 +22,16 @@ export async function POST(request: Request) {
 
   const parsed = SignupAndSessionInputSchema.safeParse(payload);
   if (!parsed.success) {
-    const messages = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
-    return NextResponse.json({ error: `Validation failed: ${messages}` }, { status: 422 });
-  }
+      const messages = parsed.error.issues.map((i: { path: (string | number)[]; message: string }) => `${i.path.join(".")}: ${i.message}`).join("; ");
+      return NextResponse.json({ error: `Validation failed: ${messages}` }, { status: 422 });
+    }
 
   try {
     // REALITY PATH ONLY - Bypass capabilityRegistry, panggil execute langsung
     const output = await signupAndSessionCommand.execute(parsed.data);
 
     const response = NextResponse.json(output.response, { status: 201 });
-    output.cookies.forEach(cookie => {
+    output.cookies.forEach((cookie: { name: string; value: string; options: Record<string, unknown> }) => {
       response.cookies.set(cookie.name, cookie.value, cookie.options);
     });
 

@@ -7,4 +7,4 @@ export {
   defaultRequirementPriority,
   defaultRequirementStatus,
   defaultRequirementVerificationStatus,
-} from "./requirement.repository.js";
+} from "./requirement.repository";

@@ -2,13 +2,14 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useWorkspaceSession } from "@repo/presentation-hooks";
+// Import ONLY types from server-side contracts (no implementations)
 import {
-  documentService,
   type DocumentAggregate,
   type DocumentStatus,
+  type SearchDocumentsOutput,
   DocumentId,
-} from "../../implementation/service.js";
-import { DocumentCard } from "../components/DocumentCard.js";
+} from "../../implementation/contracts/document.contracts";
+import { DocumentCard } from "../components/DocumentCard";
 
 type StatusFilter = DocumentStatus | "all";
 
@@ -17,10 +18,20 @@ export function DocumentWorkspace() {
   const [params, setParams] = useState<{ id?: string; action?: string }>({});
   const { session, authenticated, cachedSession, saveScrollPosition, restoreScrollPosition } = useWorkspaceSession();
   
-  const initial = useMemo(
-    () => documentService.searchDocuments({ limit: 50, offset: 0 }),
-    []
-  );
+  const [initial, setInitial] = useState<SearchDocumentsOutput | null>(null);
+  
+  useEffect(() => {
+    if (session?.tenantId && session?.workspaceId) {
+      // Use API route to fetch documents instead of inline server action (Next.js requirement)
+      fetch("/api/documents/list", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ limit: 50, offset: 0, tenantId: session.tenantId, workspaceId: session.workspaceId })
+      })
+        .then(res => res.json())
+        .then(data => setInitial(data));
+    }
+  }, [session?.tenantId, session?.workspaceId]);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [query, setQuery] = useState("");
   
@@ -34,6 +45,8 @@ export function DocumentWorkspace() {
 
   // Parse path client-side on mount and update, preserve same functionality without next/navigation
   useEffect(() => {
+    if (!session?.tenantId || !session?.workspaceId) return;
+    
     const parsePath = () => {
       const path = window.location.pathname;
       const matchCreate = path.match(/\/documents\/create$/);
@@ -59,7 +72,7 @@ export function DocumentWorkspace() {
         const id = matchEdit[1];
         if (!id) return;
         setParams({ id, action: "edit" });
-        const document = documentService.getDocument({ id: DocumentId(id) });
+        const document = documentService.getDocument({ id: DocumentId(id), tenantId: session.tenantId, workspaceId: session.workspaceId });
         if (document) {
           handleEdit(document);
         }
@@ -67,7 +80,7 @@ export function DocumentWorkspace() {
         const id = matchView[1];
         if (!id) return;
         setParams({ id });
-        const document = documentService.getDocument({ id: DocumentId(id) });
+        const document = documentService.getDocument({ id: DocumentId(id), tenantId: session.tenantId, workspaceId: session.workspaceId });
         if (document) {
           handleEdit(document);
         }
@@ -84,9 +97,11 @@ export function DocumentWorkspace() {
     // Listen for popstate (back/forward navigation)
     window.addEventListener('popstate', parsePath);
     return () => window.removeEventListener('popstate', parsePath);
-  }, []);
+  }, [session?.tenantId, session?.workspaceId]);
 
   const result = useMemo(() => {
+    if (!session?.tenantId || !session?.workspaceId) return { items: [] as readonly DocumentAggregate[], total: 0, matched: 0 };
+    
     // Extract caseId from URL to filter documents by current work (case)
     const searchParams = new URLSearchParams(window.location.search);
     const caseIdFromUrl = searchParams.get("caseId");
@@ -97,11 +112,13 @@ export function DocumentWorkspace() {
       ...(caseIdFromUrl && { matterId: caseIdFromUrl }),
       limit: 50,
       offset: 0,
+      tenantId: session.tenantId,
+      workspaceId: session.workspaceId
     });
-  }, [query, statusFilter]);
+  }, [query, statusFilter, session?.tenantId, session?.workspaceId]);
 
   const filtered: readonly DocumentAggregate[] = result.items;
-  const totalCount = initial.total;
+  const totalCount = initial?.total ?? 0;
 
   const statusOptions: readonly StatusFilter[] = [
     "all",

@@ -1,15 +1,15 @@
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
 import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "@repo/core-kernel";
-import { slugifyForTenant } from "../services/password.service.js";
+import { slugifyForTenant } from "../services/password.service";
 import {
   UserId,
   TenantId,
   WorkspaceId,
   MembershipId,
   SessionId,
-} from "../contracts/identity.contracts.js";
-import { passwordService } from "../services/password.service.js";
+} from "../contracts/identity.contracts";
+import { passwordService } from "../services/password.service";
 import {
   getUserRepositoryPostgres,
   getTenantRepositoryPostgres,
@@ -22,7 +22,7 @@ import {
   TenantRepositoryInMemory,
   WorkspaceRepositoryInMemory,
   MembershipRepositoryInMemory,
-} from "@capabilities/identity/implementation/repositories/index.js";
+} from "../repositories/index";
 
 const DEFAULT_SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 
@@ -108,7 +108,7 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
       throw new Error(`[identity.signupAndCreateSession] Email already registered: ${trimmedEmail}`);
     }
 
-    const userEntity: UserAggregate = {
+    const userEntity: any = {
       id: newUserId(),
       email: trimmedEmail,
       displayName: displayName.trim(),
@@ -129,7 +129,7 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
       existingSlug = await tenantRepo.bySlug(slug);
     }
 
-    const tenantEntity: TenantAggregate = {
+    const tenantEntity: any = {
       id: newTenantId(),
       name: `${displayName} Personal`,
       slug,
@@ -140,7 +140,7 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
     await tenantRepo.save(tenantEntity);
 
     const workspaceSlugBase = slugifyForTenant("Professional Workspace");
-    const workspaceEntity: WorkspaceAggregate = {
+    const workspaceEntity: any = {
       id: newWorkspaceId(),
       tenantId: tenantEntity.id,
       name: "Professional Workspace",
@@ -151,7 +151,7 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
     };
     await workspaceRepo.save(workspaceEntity);
 
-    const membershipEntity: MembershipAggregate = {
+    const membershipEntity: any = {
       id: newMembershipId(),
       userId: userEntity.id,
       tenantId: tenantEntity.id,
@@ -166,7 +166,7 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
     const ttl = DEFAULT_SESSION_TTL_SECONDS;
     const now = new Date();
     const expires = new Date(now.getTime() + ttl * 1000);
-    const sessionEntity: SessionAggregate = {
+    const sessionEntity: any = {
       id: newSessionId(),
       userId: userEntity.id,
       actorId: userEntity.id,

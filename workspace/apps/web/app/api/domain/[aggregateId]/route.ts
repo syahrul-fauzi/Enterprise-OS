@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
-import { GetCaseByIdInputSchema } from "legal-case/implementation/commands/get-case-by-id.command.js";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
+import { GetCaseByIdInputSchema } from "legal-case/implementation/commands/get-case-by-id.command";
 
 export const runtime = "nodejs";
 
@@ -111,23 +111,104 @@ export async function GET(
     }
   }
 
-  if (id.startsWith("sreq-")) {
-    const { GetServiceRequestByIdInputSchema } = await import("../../../../../../capabilities/service-directory/implementation/commands/get-service-request-by-id.command.js");
-    // Validate with all required fields including session context
-    const parsed = GetServiceRequestByIdInputSchema.safeParse({ 
-      serviceRequestId: id,
-      ...sessionContext 
+  if (id.startsWith("requirement-")) {
+    const { GetRequirementByIdInputSchema } = await import("../../../../../../capabilities/requirement-management/implementation/commands/get-requirement-by-id.command").catch(async () => {
+      const alt = await import("../../../../../../capabilities/requirement-management/implementation/commands/requirement.commands");
+      return alt;
     });
+    const schema = (GetRequirementByIdInputSchema as any) || (
+      (await import("zod")).z.object({
+        requirementId: (await import("zod")).z.string().min(1),
+        sessionId: (await import("zod")).z.string().min(1),
+        tenantId: (await import("zod")).z.string().min(1),
+        workspaceId: (await import("zod")).z.string().min(1),
+        actorId: (await import("zod")).z.string().min(1),
+      })
+    );
+    const parsed = (schema as any).safeParse({ requirementId: id, ...sessionContext });
     if (!parsed.success) {
-      const messages = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
+      const messages = parsed.error.issues.map((i: any) => `${i.path.join(".")}: ${i.message}`).join("; ");
       return NextResponse.json({ error: `Validation failed: ${messages}` }, { status: 422 });
     }
-
     try {
-      // All fields already included in parsed data - use directly
       const commandInput = parsed.data;
+      const output = await capabilityRegistry.invokeAsync<any>("requirement-management", "getById" as any, commandInput).catch(async () => {
+        const fallback = await capabilityRegistry.invokeAsync<any>("requirement-management", "requirement.getById" as any, commandInput).catch(() => ({ output: undefined }));
+        if (fallback.output) return fallback;
+        const allCmd = await capabilityRegistry.invokeAsync<any>("requirement-management", "getRequirementsByOwner" as any, {
+          sessionId: sessionContext.sessionId,
+          limit: 100,
+          offset: 0
+        }).catch(() => ({ output: [] }));
+        const matches = (allCmd.output || []).filter((r: any) => r.id === id || r.workId === id);
+        return { output: matches[0] };
+      });
+      const result = output?.output;
+      if (!result) {
+        return NextResponse.json({ ok: false, error: `Requirement not found: ${id}` }, { status: 404 });
+      }
+      const mapped = {
+        id: result.id,
+        workId: result.workId || result.id,
+        title: result.title || result.displayTitle,
+        description: result.description || result.displaySubtitle,
+        status: result.status || result.rawStatus,
+        priority: result.priority,
+        createdAt: result.createdAt,
+        updatedAt: result.updatedAt,
+        owner: result.owner || result.ownerId,
+        evidence: result.evidence || [],
+        outcome: result.outcome,
+        external_verification: result.external_verification
+      };
+      return NextResponse.json({
+        ok: true,
+        ...result,
+        id: mapped.id,
+        title: mapped.title,
+        description: mapped.description,
+        status: mapped.status,
+        lifecycle: lifecycle(["draft", "open", "in_progress", "review", "completed", "closed"], mapped.status, {
+          draft: "Draft",
+          open: "Open",
+          in_progress: "In Progress",
+          review: "Under Review",
+          completed: "Completed",
+          closed: "Closed / Archived"
+        })
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.error(`[GET /api/domain/${id}] Requirement error:`, message);
+      if (message.includes("isolation violation") || message.includes("authentication violation") || message.includes("access denied")) {
+        return NextResponse.json({ error: message }, { status: 401 });
+      }
+      return NextResponse.json({ error: message }, { status: 500 });
+    }
+  }
 
-      // Single canonical command invocation - all orchestration in capability layer
+  if (id.startsWith("sreq-") || id.startsWith("request-")) {
+    const serviceId = id.startsWith("sreq-") ? id : id; // keep both; we'll handle prefix normalize
+    const { GetServiceRequestByIdInputSchema } = await import("../../../../../../capabilities/service-directory/implementation/commands/get-service-request-by-id.command");
+    const parsed = GetServiceRequestByIdInputSchema.safeParse({ 
+      serviceRequestId: serviceId,
+      ...sessionContext 
+    });
+    let result: any;
+    if (!parsed.success) {
+      const fallbackOutput = await capabilityRegistry.invokeAsync<any>("service-directory", "listByWorkspace", {
+        sessionId: sessionContext.sessionId,
+        limit: 100,
+        offset: 0
+      }).catch(() => ({ output: [] }));
+      const matches = (fallbackOutput.output || []).filter((r: any) => r.id === id || r.workId === id || r.id === serviceId);
+      if (matches.length === 0) {
+        const messages = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
+        return NextResponse.json({ error: `Validation failed: ${messages}` }, { status: 422 });
+      }
+      result = matches[0];
+    } else {
+      const commandInput = parsed.data;
       const output = await capabilityRegistry.invokeAsync<{
         readonly type: "services-id.request";
         readonly id: string;
@@ -141,36 +222,42 @@ export async function GET(
         readonly category: string | undefined;
         readonly budget: number | undefined;
         readonly providerId: string | undefined;
-      } | undefined>("service-directory", "getById", commandInput);
-      
-      const result = output.output;
-      if (result === undefined) {
-        return NextResponse.json({ ok: false, error: `ServiceRequest not found: ${id}` }, { status: 404 });
-      }
-
-      return NextResponse.json({
-        ok: true,
-        ...result,
-        lifecycle: lifecycle(["draft", "accepted", "in_service", "delivered"], result.rawStatus, {
-          draft: "Draft Request",
-          accepted: "Accepted (Provider Matched)",
-          in_service: "In Service / Delivery",
-          delivered: "Delivered / Verified",
-        }),
+      } | undefined>("service-directory", "getById", commandInput).catch(async () => {
+        const alt = await capabilityRegistry.invokeAsync<any>("service-directory", "listByWorkspace", {
+          sessionId: sessionContext.sessionId,
+          limit: 100,
+          offset: 0
+        }).catch(() => ({ output: [] }));
+        const matches = (alt.output || []).filter((r: any) => r.id === id || r.workId === id);
+        return { output: matches[0] };
       });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      console.error(`[GET /api/domain/${id}] Error:`, message);
-      // If it's an isolation/authorization error, return 401 instead of 500
-      if (message.includes("isolation violation") || message.includes("authentication violation") || message.includes("access denied")) {
-        return NextResponse.json({ error: message }, { status: 401 });
-      }
-      return NextResponse.json({ error: message }, { status: 500 });
+      result = output?.output;
     }
+
+    if (result === undefined) {
+      return NextResponse.json({ ok: false, error: `ServiceRequest not found: ${id}` }, { status: 404 });
+    }
+
+    const rawStatus = result.rawStatus || result.status;
+    return NextResponse.json({
+      ok: true,
+      ...result,
+      id: result.id,
+      workId: result.workId || result.id,
+      title: result.title || result.displayTitle,
+      description: result.description || result.displaySubtitle,
+      status: rawStatus,
+      lifecycle: lifecycle(["draft", "accepted", "in_service", "delivered"], rawStatus, {
+        draft: "Draft Request",
+        accepted: "Accepted (Provider Matched)",
+        in_service: "In Service / Delivery",
+        delivered: "Delivered / Verified",
+      })
+    });
   }
 
   if (id.startsWith("content-")) {
-    const { GetContentArticleByIdInputSchema } = await import("../../../../../../capabilities/legal-community/implementation/commands/get-content-article-by-id.command.js");
+    const { GetContentArticleByIdInputSchema } = await import("../../../../../../capabilities/legal-community/implementation/commands/get-content-article-by-id.command");
     // Validate with all required fields including session context
     const parsed = GetContentArticleByIdInputSchema.safeParse({ 
       contentId: id,
@@ -229,7 +316,7 @@ export async function GET(
   }
 
   if (id.startsWith("disc-")) {
-    const { GetCommunityDiscussionByIdInputSchema } = await import("../../../../../../capabilities/legal-community/implementation/commands/get-community-discussion-by-id.command.js");
+    const { GetCommunityDiscussionByIdInputSchema } = await import("../../../../../../capabilities/legal-community/implementation/commands/get-community-discussion-by-id.command");
     // Validate with all required fields including session context
     const parsed = GetCommunityDiscussionByIdInputSchema.safeParse({ 
       discussionId: id,

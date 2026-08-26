@@ -2,7 +2,7 @@ import {
   TenantAggregate,
   TenantId,
   type TenantRepository,
-} from "../contracts/identity.contracts.js";
+} from "../contracts/index";
 
 function clone<T extends TenantAggregate>(entity: T): T {
   return {
@@ -21,21 +21,25 @@ const STORE: Store = (globalThis as any).__EOS_IDENTITY_TENANT_STORE__ ??= hydra
 export const TenantRepositoryInMemory: TenantRepository = {
   kind: "repository",
   entityName: "Tenant",
-  async byId(id) {
+  async byId(id: TenantId) {
     const raw = STORE.get(id as string);
     return raw !== undefined ? clone(raw) : undefined;
   },
-  async bySlug(slug) {
+  async bySlug(slug: string) {
     const needle = slug.trim().toLowerCase();
     const found = Array.from(STORE.values()).find(
       (t) => t.slug.toLowerCase() === needle,
     );
     return found !== undefined ? clone(found) : undefined;
   },
+  async byCustomDomain(domain: string) {
+    const raw = Array.from(STORE.values()).find(t => t.customDomain === domain);
+    return raw !== undefined ? clone(raw) : undefined;
+  },
   async list() {
     return Array.from(STORE.values()).map(clone);
   },
-  async save(entity) {
+  async save(entity: TenantAggregate) {
     const updated: TenantAggregate = {
       ...clone(entity),
       updatedAt: new Date(),
@@ -43,7 +47,7 @@ export const TenantRepositoryInMemory: TenantRepository = {
     STORE.set(updated.id as string, updated);
     return clone(updated);
   },
-  async remove(id) {
+  async remove(id: TenantId) {
     return STORE.delete(id as string);
   },
 } as const;

@@ -33,7 +33,7 @@ function getRequest(url: string, cookie?: string): Request {
 function extractCookieValue(setCookie: string | null, name: string): string | null {
   if (!setCookie) return null;
   const match = setCookie.match(new RegExp(`${name}=([^;]+)`));
-  return match ? match[1] : null;
+  return match ? (match[1] ?? null) : null;
 }
 
 test("AUTH-E2E home session check: anonymous user → authenticated=false", async () => {

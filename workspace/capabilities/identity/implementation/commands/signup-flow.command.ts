@@ -10,15 +10,15 @@ import {
   type TenantAggregate,
   type WorkspaceAggregate,
   type MembershipAggregate,
-} from "../contracts/identity.contracts.js";
-import { passwordService, slugifyForTenant } from "../services/password.service.js";
+} from "../contracts/identity.contracts";
+import { passwordService, slugifyForTenant } from "../services/password.service";
 import {
   getUserRepositoryPostgres,
   getTenantRepositoryPostgres,
   getWorkspaceRepositoryPostgres,
   getMembershipRepositoryPostgres,
-} from "../repositories/index.js";
-import { initIdentitySchema } from "../repositories/base.repository.js";
+} from "../repositories/index";
+import { initIdentitySchema } from "../repositories/base.repository";
 
 function newUserId(): UserId {
   return UserId(`user-${randomUUID()}`);
@@ -106,7 +106,8 @@ export const signupFlowCommand: SignupFlowCommand = {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    await TenantRepositoryPostgres.save(tenantEntity);
+    const tenantRepository = getTenantRepositoryPostgres();
+    await tenantRepository.save(tenantEntity);
 
     // 4. Create workspace (PostgreSQL persistent)
     const workspaceEntity: WorkspaceAggregate = {
@@ -118,7 +119,8 @@ export const signupFlowCommand: SignupFlowCommand = {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    await WorkspaceRepositoryPostgres.save(workspaceEntity);
+    const workspaceRepository = getWorkspaceRepositoryPostgres();
+    await workspaceRepository.save(workspaceEntity);
 
     // 5. Create membership (PostgreSQL persistent)
     const membershipEntity: MembershipAggregate = {
@@ -131,7 +133,8 @@ export const signupFlowCommand: SignupFlowCommand = {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    await MembershipRepositoryPostgres.save(membershipEntity);
+    const membershipRepository = getMembershipRepositoryPostgres();
+    await membershipRepository.save(membershipEntity);
 
     return {
       userId: userEntity.id,

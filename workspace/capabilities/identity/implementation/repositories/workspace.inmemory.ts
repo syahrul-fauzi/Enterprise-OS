@@ -3,7 +3,7 @@ import {
   WorkspaceId,
   TenantId,
   type WorkspaceRepository,
-} from "../contracts/identity.contracts.js";
+} from "../contracts/index";
 
 function clone<T extends WorkspaceAggregate>(entity: T): T {
   return {
@@ -22,7 +22,7 @@ const STORE: Store = (globalThis as any).__EOS_IDENTITY_WORKSPACE_STORE__ ??= hy
 export const WorkspaceRepositoryInMemory: WorkspaceRepository = {
   kind: "repository",
   entityName: "Workspace",
-  async byId(id) {
+  async byId(id: WorkspaceId) {
     const raw = STORE.get(id as string);
     return raw !== undefined ? clone(raw) : undefined;
   },
@@ -34,7 +34,7 @@ export const WorkspaceRepositoryInMemory: WorkspaceRepository = {
   async list() {
     return Array.from(STORE.values()).map(clone);
   },
-  async save(entity) {
+  async save(entity: WorkspaceAggregate) {
     const updated: WorkspaceAggregate = {
       ...clone(entity),
       updatedAt: new Date(),
@@ -42,7 +42,7 @@ export const WorkspaceRepositoryInMemory: WorkspaceRepository = {
     STORE.set(updated.id as string, updated);
     return clone(updated);
   },
-  async remove(id) {
+  async remove(id: WorkspaceId) {
     return STORE.delete(id as string);
   },
 } as const;

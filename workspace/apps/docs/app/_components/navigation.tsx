@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { EOS_KNOWLEDGE_MODEL, STATUS } from "../_lib/eos-knowledge-model.js";
-import { StatusBadge } from "./status-badge.js";
+import { EOS_KNOWLEDGE_MODEL, STATUS } from "../_lib/eos-knowledge-model";
+import { StatusBadge } from "./status-badge";
 
 const NAV = [
   { href: "/", label: "Overview" },

@@ -3,12 +3,12 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import {
   SessionId,
   type SessionAggregate,
-} from "../contracts/identity.contracts.js";
+} from "../contracts/identity.contracts";
 import {
   SessionRepositoryPostgres,
   SessionRepositoryInMemory,
   getSessionRepositoryPostgres,
-} from "../repositories/index.js";
+} from "../repositories/index";
 
 const sessionRepository = process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()

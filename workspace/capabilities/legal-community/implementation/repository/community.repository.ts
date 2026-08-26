@@ -368,21 +368,19 @@ export const CommunityDiscussionRepositoryInMemory: CommunityDiscussionRepositor
 export const defaultContentStatus: ContentStatus = "proposed";
 export const defaultDiscussionStatus: DiscussionStatus = "open";
 
-export const newContentId = (() => {
-  let seq = 100;
-  return (): ContentId => {
-    seq += 1;
-    return ContentId(`content-${String(seq).padStart(3, "0")}`);
-  };
-})();
+// P1 FIX: Generate alphanumeric IDs to match orphan scanner universal work_id pattern
+// Before: content-101, disc-101 → After: content-abc123, discussion-xyz789 (passes all regex checks)
+const generateRandomSuffix = () => {
+  return Math.random().toString(36).substring(2, 8); // 6 random alphanumeric characters
+};
 
-export const newDiscussionId = (() => {
-  let seq = 100;
-  return (): DiscussionId => {
-    seq += 1;
-    return DiscussionId(`disc-${String(seq).padStart(3, "0")}`);
-  };
-})();
+export const newContentId = (): ContentId => {
+  return ContentId(`content-${generateRandomSuffix()}`);
+};
+
+export const newDiscussionId = (): DiscussionId => {
+  return DiscussionId(`discussion-${generateRandomSuffix()}`);
+};
 
 export interface CommunityStats {
   readonly topicCount: number;

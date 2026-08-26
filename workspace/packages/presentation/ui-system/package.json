@@ -1,18 +1,21 @@
 {
   "name": "@repo/presentation-ui-system",
   "version": "0.1.0-alpha.4",
+  "type": "module",
   "sideEffects": [
     "**/*.css"
   ],
   "files": [
     "dist"
   ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     "./styles.css": "./dist/index.css",
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     },
     "./*": "./dist/*.js"
   },
@@ -21,9 +24,9 @@
     "build": "pnpm run build:styles && pnpm run build:components",
     "build:styles": "tailwindcss -i ./src/styles.css -o ./dist/index.css",
     "build:components": "tsc",
-    "check-types": "tsc --noEmit",
+    "check-types": "tsc --noEmit -p tsconfig.dev.json",
     "dev:styles": "tailwindcss -i ./src/styles.css -o ./dist/index.css --watch",
-    "dev:components": "tsc --watch",
+    "dev:components": "tsc --watch -p tsconfig.dev.json",
     "lint": "eslint src --max-warnings 0"
   },
   "dependencies": {

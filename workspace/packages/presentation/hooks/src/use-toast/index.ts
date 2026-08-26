@@ -1,1 +1,1 @@
-export { useToast, type Toast } from "./use-toast";
+export { useToast, type Toast } from "./use-toast.js";

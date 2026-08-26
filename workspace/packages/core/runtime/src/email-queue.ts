@@ -36,7 +36,7 @@ if (useInMemory) {
       if (index > -1) arr.splice(index, 1);
     },
     set: async () => {},
-    get: async () => null
+    get: async (): Promise<null> => null
   };
   
   // Disable queue processing in test environment to prevent infinite loops
@@ -73,7 +73,7 @@ if (useInMemory) {
         if (index > -1) arr.splice(index, 1);
       },
       set: async () => {},
-      get: async () => null
+      get: async (): Promise<null> => null
     };
   });
 }

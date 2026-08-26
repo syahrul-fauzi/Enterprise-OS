@@ -1,6 +1,6 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
-import { TenantId, UserId, SessionId, type MembershipAggregate, type WorkspaceAggregate } from "../contracts/identity.contracts.js";
+import { TenantId, UserId, SessionId, type MembershipAggregate, type WorkspaceAggregate } from "../contracts/identity.contracts";
 import { 
   getTenantRepositoryPostgres, 
   getWorkspaceRepositoryPostgres, 
@@ -10,7 +10,7 @@ import {
   WorkspaceRepositoryInMemory,
   MembershipRepositoryInMemory,
   SessionRepositoryInMemory,
-} from "../repositories/index.js";
+} from "../repositories/index";
 
 const tenantRepository = process.env.DATABASE_URL
   ? getTenantRepositoryPostgres()
@@ -106,7 +106,7 @@ export const getWorkspacesByTenantCommand: GetWorkspacesByTenantCommand = {
         role: membership?.role ?? null,
         membershipId: membership?.id ?? null,
       };
-    }).filter((ws) => ws.membershipId !== null); // Remove any workspaces user doesn't have membership for
+    }).filter((ws: any) => ws.membershipId !== null); // Remove any workspaces user doesn't have membership for
 
     const tenantCreatedAt = tenant.createdAt ?? new Date();
     return {

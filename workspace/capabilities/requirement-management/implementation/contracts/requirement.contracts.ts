@@ -53,6 +53,9 @@ export interface RequirementAggregate {
   readonly requestedAt?: Readonly<Date>;
   readonly reviewCompletedBy?: string;
   readonly reviewCompletedAt?: Readonly<Date>;
+  readonly reviewRejectedBy?: string;
+  readonly reviewRejectedAt?: Readonly<Date>;
+  readonly rejectionReason?: string;
   // Version tracking for evidence
   readonly version?: number;
 }

@@ -220,11 +220,15 @@ function cloneRequest(r: ServiceRequestAggregate): ServiceRequestAggregate {
   };
 }
 
-// Generate new IDs
+// P1 FIX: Generate alphanumeric IDs to match orphan scanner universal work_id pattern
+// Before: sreq-101 → After: request-abc123 (passes scanner's request-[\w-]+ regex)
+const generateRandomSuffix = () => {
+  return Math.random().toString(36).substring(2, 8); // 6 random alphanumeric characters
+};
+
+// Generate new IDs that comply with universal work_id contract
 export const newServiceRequestId = (): ServiceRequestId => {
-  _GLOBAL.__eos_srv_seq_counter ??= 100;
-  _GLOBAL.__eos_srv_seq_counter += 1;
-  return createServiceRequestId(`sreq-${String(_GLOBAL.__eos_srv_seq_counter).padStart(3, "0")}`);
+  return createServiceRequestId(`request-${generateRandomSuffix()}`);
 };
 
 export const defaultServiceRequestStatus: ServiceRequestStatus = "draft";
@@ -314,7 +318,7 @@ export const ServiceProviderRepositoryInMemory: ServiceProviderRepository = {
   },
   async listByLocation(location: string) {
     const all = await this.list();
-    return all.filter((p) => p.location.toLowerCase().includes(location.toLowerCase()));
+    return all.filter((p) => p.location?.toLowerCase().includes(location.toLowerCase()));
   },
   async save(entity: ServiceProviderAggregate) {
     const updated = cloneProvider(entity);

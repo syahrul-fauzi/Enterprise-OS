@@ -15,8 +15,8 @@ import {
   getWorkspaceRepositoryPostgres,
   newSessionId,
   initIdentitySchema,
-} from "../../../../../../capabilities/identity/dist/repositories/index.js";
-import type { SessionAggregate } from "../../../../../../capabilities/identity/implementation/contracts/identity.contracts";
+} from "@repo/capabilities-identity";
+import type { SessionAggregate } from "@repo/capabilities-identity";
 const SCRYPT_KEYLEN = 64;
 const SALT_BYTES = 16;
 const SALT_SEPARATOR = "$";
@@ -90,7 +90,6 @@ export async function POST(request: Request) {
           email: u.email,
           displayName: u.displayName,
           passwordHash: u.passwordHash,
-          emailVerified: true,
           createdAt: new Date(u.createdAt),
           updatedAt: new Date(u.updatedAt),
         });
@@ -168,6 +167,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No workspaces available" }, { status: 500 });
     }
     const firstMembership = memberships[0];
+    if (!firstMembership) {
+      console.error("[LOGIN FAIL] First membership is undefined");
+      return NextResponse.json({ error: "Failed to resolve membership" }, { status: 500 });
+    }
     console.log("[LOGIN DEBUG] First membership:", firstMembership);
     const tenant = await tenantRepository.byId(firstMembership.tenantId);
     if (!tenant) {

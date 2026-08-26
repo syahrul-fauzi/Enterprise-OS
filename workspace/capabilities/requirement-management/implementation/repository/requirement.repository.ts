@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
-import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
+import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository";
 import {
   RequirementAggregate,
   RequirementId,
@@ -9,7 +9,7 @@ import {
   type RequirementStatus,
   type RequirementVerificationStatus,
   type RequirementDependency,
-} from "../contracts/index.js";
+} from "../contracts/index";
 
 const seed = (): RequirementAggregate[] => {
   const now = Date.now();
@@ -856,14 +856,22 @@ export const RequirementRepositoryCurrent: RequirementRepository =
     ? RequirementRepositoryFileBacked
     : RequirementRepositoryInMemory;
 
-export const newRequirementId = async (): Promise<RequirementId> => {
-  const allRequirements = await RequirementRepositoryCurrent.list();
-  const highest = allRequirements
-    .map((item) => /^req-(\d+)$/.exec(item.id)?.[1])
-    .map((value) => (value ? Number.parseInt(value, 10) : 0))
-    .reduce((max, current) => Math.max(max, current), 100);
-  return RequirementId(`req-${String(highest + 1).padStart(3, "0")}`);
+// P1 FIX: Generate alphanumeric IDs to match orphan scanner universal work_id pattern
+// Before: req-101 → After: requirement-abc123 (passes scanner's requirement-[\w-]+ regex)
+const generateRandomSuffix = () => {
+  return Math.random().toString(36).substring(2, 8); // 6 random alphanumeric characters
 };
+
+export const newRequirementId = (): RequirementId => {
+  return RequirementId(`requirement-${generateRandomSuffix()}`);
+};
+
+if (process.env.NODE_ENV === "test") {
+  (RequirementRepositoryInMemory as any).clear = () => {
+    STORE.clear();
+    console.log("[RequirementRepository] In-memory store cleared for test isolation");
+  };
+}
 
 export const defaultRequirementStatus: RequirementStatus = "draft";
 export const defaultRequirementPriority: RequirementPriority = "medium";

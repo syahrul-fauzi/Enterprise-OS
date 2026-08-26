@@ -1,14 +1,23 @@
-import { CommunicationRepositoryInMemory as CommunicationRepository } from "../repository/communication.repository.js";
-import type { CommunicationEvent } from "../contracts/communication.contracts.js";
+import { CommunicationRepositoryInMemory as CommunicationRepository } from "../repository/communication.repository.ts";
+import type { CommunicationEvent } from "../contracts/communication.contracts.ts";
 
 // Import domain repositories to validate if work_id actually exists in any system
-import { CaseRepositoryInMemory as CaseRepository } from "@capabilities/legal-case/implementation/repository/case.repository.js";
+import { CaseRepositoryInMemory as CaseRepository } from "@capabilities/legal-case/implementation/repository/case.repository";
 // Import Services.ID ServiceRequestRepository for cross-domain validation
-import { ServiceRequestRepositoryInMemory as ServiceRequestRepository } from "@capabilities/service-directory/implementation/repository/service.repository.js";
+import { ServiceRequestRepositoryInMemory as ServiceRequestRepository } from "@capabilities/service-directory/implementation/repository/service.repository";
 // Import ILC CommunityDiscussionRepository and Academic ContentArticleRepository for cross-domain validation
-import { CommunityDiscussionRepositoryInMemory as DiscussionRepository, ContentArticleRepositoryInMemory as ArticleRepository } from "@capabilities/legal-community/implementation/repository/index.js";
+import { CommunityDiscussionRepositoryInMemory as DiscussionRepository, ContentArticleRepositoryInMemory as ArticleRepository } from "@capabilities/legal-community/implementation/repository/index";
 
-interface OrphanCommunicationReport {
+// Unified work ID validation pattern that accepts all work types from all domains
+// - LawyersHub: case-*, matter-*
+// - ILC: discussion-*, content-*, topic-*
+// - Services.ID: request-*, service-*
+// - Academic: article-*, publication-*
+// - Generic: work-*, project-*, requirement-*, document-*
+// This implements EOS core requirement: workId persists across ALL domain transformations
+export const validWorkIdPattern = /^(case|matter|project|discussion|content|topic|request|service|article|publication|work|requirement|document)-[\w-]+$/;
+
+export interface OrphanCommunicationReport {
   scan_timestamp: string;
   total_events: number;
   orphan_events: number;
@@ -23,7 +32,7 @@ interface OrphanCommunicationReport {
   compliance_score: number; // Percentage of grounded events
 }
 
-class OrphanCommunicationScanner {
+export class OrphanCommunicationScanner {
   /**
    * Scan all communication events to find orphans - implements EOS core law:
    * "No communication is valuable unless grounded in Work"
@@ -40,7 +49,7 @@ class OrphanCommunicationScanner {
           work_id: event.work_id,
           actor_id: event.sender_id || event.actor_id || "unknown",
           adapter_type: event.adapter_type,
-          timestamp: event.timestamp.toISOString(),
+          timestamp: typeof event.timestamp === 'string' ? event.timestamp : event.timestamp.toISOString(),
           reason: orphanCheck.reason
         });
       }
@@ -84,14 +93,8 @@ class OrphanCommunicationScanner {
     }
 
     // Check 2: work_id is invalid format (supports all work types from all domains)
-    // Unified pattern that accepts:
-    // - LawyersHub: case-*, matter-*
-    // - ILC: discussion-*, content-*, topic-*
-    // - Services.ID: request-*, service-*
-    // - Academic: article-*, publication-*
-    // - Generic: work-*, project-*
-    // This implements EOS core requirement: workId persists across ALL domain transformations
-    const validWorkIdPattern = /^(case|matter|project|discussion|content|topic|request|service|article|publication|work)-[\w-]+$/;
+    // Uses top-level exported validWorkIdPattern which implements EOS core requirement:
+    // workId persists across ALL domain transformations
     if (!validWorkIdPattern.test(event.work_id)) {
       return { is_orphan: true, reason: "invalid_work_id" };
     }
@@ -139,6 +142,28 @@ class OrphanCommunicationScanner {
         } catch (e) { /* continue checking */ }
       }
       
+      // If not found, try RequirementManagement RequirementRepository (supports requirements/feature requests)
+      if (!existingWork) {
+        try {
+          const { RequirementRepositoryInMemory } = await import("../../../requirement-management/implementation/repository/index.ts");
+          existingWork = await RequirementRepositoryInMemory.byId(event.work_id);
+          if (existingWork) {
+            console.debug(`[OrphanScanner] Found work ${event.work_id} in RequirementManagement RequirementRepository`);
+          }
+        } catch (e) { /* continue checking */ }
+      }
+      
+      // If not found, try LegalDocument DocumentRepository (supports legal documents/contracts)
+      if (!existingWork) {
+        try {
+          const { DocumentRepositoryInMemory } = await import("../../../legal-document/implementation/repository/index.js");
+          existingWork = await DocumentRepositoryInMemory.byId(event.work_id);
+          if (existingWork) {
+            console.debug(`[OrphanScanner] Found work ${event.work_id} in LegalDocument DocumentRepository`);
+          }
+        } catch (e) { /* continue checking */ }
+      }
+      
       // If work not found in ANY repository, mark as orphan
       if (!existingWork) {
         console.warn(`[OrphanScanner] Work ${event.work_id} not found in ANY domain repository`);
@@ -169,5 +194,3 @@ class OrphanCommunicationScanner {
     }, intervalMs);
   }
 }
-
-export { OrphanCommunicationScanner, OrphanCommunicationReport };

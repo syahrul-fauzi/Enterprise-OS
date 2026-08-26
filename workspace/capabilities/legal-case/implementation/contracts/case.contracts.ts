@@ -14,6 +14,42 @@ export interface ExecutionContextMetadata {
   readonly propagated_from: "cross-capability" | "direct-api";
 }
 
+export interface CaseEvidence {
+  readonly id: string;
+  readonly type: "document" | "external_response" | "communication" | "outcome";
+  readonly title: string;
+  readonly url?: string;
+  readonly content?: string;
+  readonly uploadedBy: string;
+  readonly uploadedAt: Readonly<Date>;
+  readonly metadata?: Record<string, any>;
+}
+
+export interface ExternalVerification {
+  readonly verified: boolean;
+  readonly source: string; // "ahu.go.id", "oss.go.id", "court.go.id", "professional-verification"
+  readonly timestamp: Readonly<Date>;
+  readonly notes?: string;
+  readonly referenceId?: string; // Government/third-party reference number
+  readonly actorId: string; // Who submitted this verification
+}
+
+export interface CaseOutcome {
+  readonly description: string;
+  readonly completedAt: Readonly<Date>;
+  readonly verifiedBy?: string;
+  readonly externalReferenceId?: string; // Deprecated: use external_verification.referenceId
+  readonly external_verification?: ExternalVerification; // NEW: Real-world truth tracking
+}
+
+export interface PTEstablishmentDetails {
+  readonly namaPTLengkap: string;
+  readonly alamatDomisili: string;
+  readonly bidangUsaha: string;
+  readonly jumlahPendiri: number;
+  readonly modalDasar: number; // IDR
+}
+
 export interface CaseAggregate {
   readonly id: CaseId;
   readonly workId?: string; // Work identity binding (from decision_id)
@@ -24,10 +60,14 @@ export interface CaseAggregate {
   readonly lawyerId?: string;
   readonly actorId?: string; // Actor identity for work continuity grounding
   readonly sourceDiscussionId?: string; // ILC: source community discussion ID for context tracing
+  readonly ptEstablishmentDetails?: PTEstablishmentDetails; // Golden work: Pendirian PT spesifik fields
   readonly createdAt: Readonly<Date>;
   readonly updatedAt: Readonly<Date>;
   readonly closedAt?: Readonly<Date>;
   readonly deadline?: Readonly<Date>; // Case deadline for continuity tracking
+  readonly evidence: readonly CaseEvidence[]; // Evidence chain - immutable append-only
+  readonly outcome?: CaseOutcome; // Final real-world outcome
+  readonly external_verification?: ExternalVerification; // NEW: Top-level external truth tracking (also available in outcome)
   // Ambient execution context for distributed tracing (W4-C20-001 compliance)
   readonly executionContext?: ExecutionContextMetadata;
 }

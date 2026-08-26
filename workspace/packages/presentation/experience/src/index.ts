@@ -15,6 +15,33 @@ export { getProductExperience, catalog, readProductRouteMetadata } from './catal
 export { readProductContextFromRequest, applyProductContextHeaders } from './product-context';
 export { getAllProductSlugs, getAllProductExperiences } from './catalog';
 
+// Core EOS Work Reality Surface - reusable across all products (gunakan barrel dari ./work-reality)
+export { 
+  WorkRealitySurface,
+  WorkRealityHeader,
+  WorkSection,
+  NowSection,
+  NextSection,
+  PeopleSection,
+  CommunicationSection,
+  InspectionSection,
+  CoordinationSection,
+  EvidenceSection
+} from './work-reality';
+
+// Type contracts for Work Reality (juga dari barrel)
+export type {
+  WorkIdentity,
+  WorkState,
+  WorkParticipant,
+  CommunicationEvent as WorkCommunicationEvent,
+  WorkInspection,
+  WorkCoordinationAction,
+  EvidenceArtifact,
+  WorkRealityModel,
+  WorkRealityPerspective
+} from './work-reality';
+
 // ============================================================================
 // SERVER-ONLY BOUNDARY - readProductBinding excluded from shared barrel
 // ============================================================================

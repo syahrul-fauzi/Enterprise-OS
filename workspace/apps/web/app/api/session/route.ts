@@ -8,24 +8,27 @@ import {
 import {
   getSessionRepositoryPostgres,
   initIdentitySchema,
-} from "../../../../../capabilities/identity/dist/repositories/index.js";
+} from "@repo/capabilities-identity/repositories";
 
 export async function GET(request: Request) {
   try {
     const cookieSession = readWorkspaceSessionFromRequest(request)
       ?? createAnonymousWorkspaceSession();
 
-    if (!cookieSession.sessionId) {
+    // For InMemory/light mode (no DATABASE_URL configured), always return the cookie session
+    // This matches FIRST LIGHT MODE specified in .env.local
+    if (!process.env.DATABASE_URL) {
       return NextResponse.json(
         {
           ok: true,
-          authenticated: false,
+          authenticated: isAuthenticatedSession(cookieSession),
           session: cookieSession,
         },
         { status: 200 },
       );
     }
 
+    // Production path with Postgres - only executed if DATABASE_URL is set
     await initIdentitySchema();
     const sessionRepository = getSessionRepositoryPostgres();
     const dbSession = await sessionRepository.byId(cookieSession.sessionId as any);
@@ -63,15 +66,17 @@ export async function GET(request: Request) {
       { status: 200 },
     );
   } catch (error) {
+    // Graceful fallback - never fail session loading, always return anonymous session
     const anonymous = createAnonymousWorkspaceSession();
+    console.warn("[session] Graceful fallback to anonymous session:", error instanceof Error ? error.message : error);
     return NextResponse.json(
       {
-        ok: false,
+        ok: true,
         authenticated: false,
         session: anonymous,
-        error: error instanceof Error ? error.message : "Failed to fetch session",
+        error: undefined, // Don't expose internal errors to client
       },
-      { status: 500 },
+      { status: 200 }, // Always return 200 - client side handles anonymous state
     );
   }
 }

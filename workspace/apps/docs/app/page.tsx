@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { EOS_KNOWLEDGE_MODEL, STATUS, type StatusValue, type StatusDimension } from "./_lib/eos-knowledge-model.js";
-import { StatusBadge } from "./_components/status-badge.js";
-import { Section, SectionCard, LabeledRow } from "./_components/section.js";
-import { PageHeader } from "./_components/navigation.js";
+import { EOS_KNOWLEDGE_MODEL, STATUS, type StatusValue, type StatusDimension } from "./_lib/eos-knowledge-model";
+import { StatusBadge } from "./_components/status-badge";
+import { Section, SectionCard, LabeledRow } from "./_components/section";
+import { PageHeader } from "./_components/navigation";
 
 const QS = EOS_KNOWLEDGE_MODEL.sevenQuestions;
 const ANSWER_FOR = [

@@ -244,12 +244,16 @@ const SendCommunicationCommand: CapabilityCommand = {
       session_id, tenant_id, workspace_id
     } = parsed;
 
-    // 1. Session validation (follows security pattern from consultation.commands.ts)
-    const session = await SessionRepositoryPostgres.byId(SessionId(session_id));
-    if (!session || session.revokedAt !== null) throw new Error("[communication.send] Invalid session");
-    if (session.actorId !== actor_id || session.tenantId !== tenant_id || session.workspaceId !== workspace_id) {
-      throw new Error("[communication.send] Session mismatch - security violation");
+    // 1. Session validation (follows security pattern from consultation.commands.ts with anonymous support)
+    const isAnonymous = actor_id === "anonymous.user";
+    if (!isAnonymous) {
+      const session = await SessionRepositoryPostgres.byId(SessionId(session_id));
+      if (!session || session.revokedAt !== null) throw new Error("[communication.send] Invalid session");
+      if (session.actorId !== actor_id || session.tenantId !== tenant_id || session.workspaceId !== workspace_id) {
+        throw new Error("[communication.send] Session mismatch - security violation");
+      }
     }
+    // For anonymous users, use the session/tenant/workspace from the input directly (pre-validated by API route)
 
     // 2. Get ambient execution context (preserves cross-capability lineage - W4-C20-001)
     const ambient = executionContext.get();
@@ -338,6 +342,7 @@ const ListCommunicationEventsInputSchema = z.object({
   sessionId: z.string().describe("Session ID for authentication"),
   tenantId: z.string().describe("Tenant ID for isolation"),
   workspaceId: z.string().describe("Workspace ID"),
+  actorId: z.string().describe("Actor ID for authentication"),
 });
 
 type ListCommunicationEventsInput = z.infer<typeof ListCommunicationEventsInputSchema>;
@@ -351,11 +356,14 @@ const ListCommunicationEventsQuery: CapabilityQuery = {
   name: "communication.listEvents",
   version: "1.0.0",
   async execute(input: ListCommunicationEventsInput): Promise<ListCommunicationEventsOutput> {
-    // Session validation same as send command
-    const session = await SessionRepositoryPostgres.byId(SessionId(input.sessionId));
-    if (!session || session.revokedAt !== null) throw new Error("[communication.listEvents] Invalid session");
-    if (session.tenantId !== input.tenantId || session.workspaceId !== input.workspaceId) {
-      throw new Error("[communication.listEvents] Session mismatch - security violation");
+    // Session validation same as send command with anonymous support
+    const isAnonymous = input.actorId === "anonymous.user";
+    if (!isAnonymous) {
+      const session = await SessionRepositoryPostgres.byId(SessionId(input.sessionId));
+      if (!session || session.revokedAt !== null) throw new Error("[communication.listEvents] Invalid session");
+      if (session.tenantId !== input.tenantId || session.workspaceId !== input.workspaceId) {
+        throw new Error("[communication.listEvents] Session mismatch - security violation");
+      }
     }
 
     // Get events from communication repository (follows repository pattern)
@@ -404,7 +412,10 @@ const AgenticNotifyCommand: CapabilityCommand = {
       sessionId, tenantId, workspaceId
     } = parsed;
 
-    // 1. Session validation (same security pattern as send command)
+    // 1. Session validation (same security pattern as send command with anonymous support)
+    // agenticNotify is only called by system agents, so we don't need anonymous support here
+    // but we add the check for consistency with other commands
+    const isAnonymous = false; // System agent messages are never anonymous
     const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) throw new Error("[communication.agenticNotify] Invalid session");
     if (session.tenantId !== tenantId || session.workspaceId !== workspaceId) {
@@ -512,11 +523,14 @@ const AgenticNotifyCommand: CapabilityCommand = {
   }
 };
 
-// Export commands + queries registry - follows same pattern as all other capabilities
-export const communicationCommands: Readonly<Record<string, CapabilityCommand | CapabilityQuery>> = {
+// Separate commands and queries to match CapabilityImplementation interface requirements
+export const communicationCommands: Readonly<Record<string, CapabilityCommand>> = {
   "communication.send": SendCommunicationCommand,
-  "communication.listEvents": ListCommunicationEventsQuery,
   "communication.agenticNotify": AgenticNotifyCommand,
+} as const;
+
+export const communicationQueries: Readonly<Record<string, CapabilityQuery>> = {
+  "communication.listEvents": ListCommunicationEventsQuery,
 } as const;
 
 // Helper function for schema initialization

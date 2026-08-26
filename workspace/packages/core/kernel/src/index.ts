@@ -8,6 +8,18 @@ export type {
   WorkspaceAggregateBinding,
 } from "./types";
 
+// SHARED WORKFLOW DEFINITION PRIMITIVES - Earned abstractions from Wave B implementation
+export type {
+  WorkflowStep,
+  WorkflowTransition,
+  WorkflowDefinition,
+} from "./registry/capability-command-registry";
+export {
+  isValidWorkflowDefinition,
+  executeWorkflowTransition,
+  capabilityRegistry,
+} from "./registry/capability-command-registry";
+
 export {
   CapabilityManifestSchema,
   CapabilityAggregateBindingSchema,

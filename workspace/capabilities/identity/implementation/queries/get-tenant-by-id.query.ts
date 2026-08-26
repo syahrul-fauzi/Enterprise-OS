@@ -3,9 +3,9 @@ import { z } from "zod";
 import {
   TenantId,
   type TenantAggregate,
-} from "../contracts/identity.contracts.js";
-import { TenantRepositoryPostgres } from "../repositories/index.js";
-import { initIdentitySchema } from "../repositories/base.repository.js";
+} from "../contracts/identity.contracts";
+import { TenantRepositoryPostgres } from "../repositories/index";
+import { initIdentitySchema } from "../repositories/base.repository";
 
 export const GetTenantByIdInputSchema = z.object({
   tenantId: z.string().min(1),

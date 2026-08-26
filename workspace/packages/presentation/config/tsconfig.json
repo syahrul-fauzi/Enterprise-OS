@@ -1,0 +1,17 @@
+{
+  "extends": "../../../config/typescript/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "composite": true,
+    "incremental": true,
+    "jsx": "react-jsx",
+    "rootDir": "./src",
+    "paths": {
+      "@repo/core-kernel": ["../../core/kernel/dist"],
+      "@repo/core-runtime": ["../../core/runtime/dist"]
+    }
+  },
+  "include": ["src"],
+  "references": []
+}

@@ -1,7 +1,7 @@
 {
   "extends": "@repo/config-typescript/nextjs.json",
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
     "baseUrl": ".",
     "types": ["node"],
     "resolveJsonModule": true,
@@ -28,11 +28,12 @@
       "@repo/presentation-experience/*": ["../../packages/presentation/experience/src/*"],
       "@repo/presentation-hooks": ["../../packages/presentation/hooks/src/index.ts"],
       "@repo/presentation-hooks/*": ["../../packages/presentation/hooks/src/*"],
+      "@repo/capabilities-identity": ["../../capabilities/identity/implementation/index.ts"],
+      "@repo/capabilities-identity/*": ["../../capabilities/identity/implementation/*"],
       "@products/*": ["../../products/*"],
       "@procedures/*": ["../../procedures/*"],
       "@procedures": ["../../procedures/index"],
       "@capabilities/*": ["../../capabilities/*"],
-      "identity/*": ["../../capabilities/identity/*"],
       "legal-case/*": ["../../capabilities/legal-case/*"],
       "legal-document/*": ["../../capabilities/legal-document/*"],
       "communication/*": ["../../capabilities/communication/*"],

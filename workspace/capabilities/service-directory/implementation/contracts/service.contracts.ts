@@ -39,6 +39,8 @@ export interface ServiceProviderAggregate {
   readonly location?: string;
   readonly verified: boolean;
   readonly createdAt: Readonly<Date>;
+  readonly tenantId: string;
+  readonly workspaceId: string;
 }
 
 export interface ExternalSystemResponse {
@@ -102,12 +104,13 @@ export interface UpdateExternalSystemStatusOutput {
 export type ServiceProviderRepository = {
   readonly entityName: "ServiceProvider";
   readonly kind: "repository";
-  byId(id: ServiceProviderId): ServiceProviderAggregate | undefined;
-  list(): readonly ServiceProviderAggregate[];
-  listByCategory(category: ServiceProviderCategory): readonly ServiceProviderAggregate[];
+  byId(id: ServiceProviderId): Promise<ServiceProviderAggregate | undefined>;
+  list(): Promise<readonly ServiceProviderAggregate[]>;
+  listByCategory(category: ServiceProviderCategory): Promise<readonly ServiceProviderAggregate[]>;
+  listByLocation(location: string): Promise<readonly ServiceProviderAggregate[]>;
   listCategories(): readonly ServiceProviderCategory[];
-  save(entity: ServiceProviderAggregate): ServiceProviderAggregate;
-  remove(id: ServiceProviderId): boolean;
+  save(entity: ServiceProviderAggregate): Promise<ServiceProviderAggregate>;
+  remove(id: ServiceProviderId): Promise<boolean>;
 };
 
 export type ServiceRequestRepository = {

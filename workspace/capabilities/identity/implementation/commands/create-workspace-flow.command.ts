@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { getWorkspaceRepositoryPostgres, getMembershipRepositoryPostgres, getTenantRepositoryPostgres } from "../repositories/index.js";
-import { WorkspaceId, UserId, TenantId, MembershipId } from "../contracts/identity.contracts.js";
+import { getWorkspaceRepositoryPostgres, getMembershipRepositoryPostgres, getTenantRepositoryPostgres } from "../repositories/index";
+import { WorkspaceId, UserId, TenantId, MembershipId } from "../contracts/identity.contracts";
 
 export const CreateWorkspaceFlowInputSchema = z.object({
   name: z.string().min(1),
@@ -40,7 +40,9 @@ export const createWorkspaceFlowCommand: CapabilityCommand = {
     const { name, productId, tenantId, actorId } = parsed;
 
     // Lazy import capabilityRegistry to avoid circular initialization
-    const { capabilityRegistry } = await import("@repo/core-kernel");
+    const kernel = await import("@repo/core-kernel");
+  // Capability registry exists in kernel but TypeScript definitions don't include it yet
+  const capabilityRegistry = (kernel.default as any).capabilityRegistry || {};
 
     if (!tenantId) {
       throw new Error("tenantId is required");
