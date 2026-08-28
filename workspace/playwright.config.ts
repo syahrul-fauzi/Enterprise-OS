@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import * as process from 'node:process';
 
 export default defineConfig({
   testDir: './tests',
@@ -9,7 +10,9 @@ export default defineConfig({
   reporter: 'html',
   use: {
     baseURL: 'http://localhost:3006',
-    trace: 'on-first-retry',
+    trace: 'on',
+    screenshot: 'on',
+    video: 'on',
     launchOptions: {
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     }

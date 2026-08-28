@@ -7,7 +7,7 @@
 
 import type { CommunicationEvent, CommunicationEventId } from "../contracts/communication.contracts.js";
 import { newCommunicationEventId } from "../contracts/communication.contracts.js";
-import type { CaseAggregate, CaseId } from "@capabilities/legal-case/implementation/contracts/case.contracts.js";
+import type { CaseAggregate, CaseId } from "../../../legal-case/contracts/case.contracts.js";
 import { CommunicationRepositoryInMemory as CommunicationRepository } from "../repository/communication.repository.js";
 
 // LAMPORT TIMESTAMP IMPLEMENTATION - solusi untuk CONTINUITY BREAK-003 (time drift)

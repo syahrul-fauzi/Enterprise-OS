@@ -33,6 +33,17 @@ export function ProductCasesPage({ productId, binding, caseId }: ProductCasesPag
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
+  // PT Establishment specific fields for full compliance with Indonesian regulations
+  const [namaPTLengkap, setNamaPTLengkap] = useState("");
+  const [alamatDomisili, setAlamatDomisili] = useState("");
+  const [bidangUsaha, setBidangUsaha] = useState("");
+  const [jumlahPendiri, setJumlahPendiri] = useState(1);
+  const [modalDasar, setModalDasar] = useState(100000000); // Minimum Rp100.000.000 sesuai regulasi Indonesia
+  const [noNIB, setNoNIB] = useState("");
+  const [npwp, setNpwp] = useState("");
+  const [penanggungJawabNIK, setPenanggungJawabNIK] = useState("");
+  const [isPTEstablishment, setIsPTEstablishment] = useState(false);
+  
   // Use locale-based priority labels
   const PRIORITY_LABEL: Record<CasePriority, string> = {
     low: t("cases.priority.low"),
@@ -51,6 +62,7 @@ export function ProductCasesPage({ productId, binding, caseId }: ProductCasesPag
         setTitle("Pendirian PT Regular - Konsultasi & Pengurusan");
         setDescription("Kebutuhan pendirian PT Regular melalui ILC LawyersHub Concierge. Kami akan mengoordinasikan seluruh proses profesional dari intake hingga dokumen hasil selesai.");
         setPriority("high");
+        setIsPTEstablishment(true);
       }
     }
   }, []);
@@ -61,6 +73,18 @@ export function ProductCasesPage({ productId, binding, caseId }: ProductCasesPag
     setSubmitting(true);
     setError(null);
     try {
+      // Build PT establishment details if this is a PT creation case
+      const ptEstablishmentDetails = isPTEstablishment ? {
+        namaPTLengkap,
+        alamatDomisili,
+        bidangUsaha,
+        jumlahPendiri,
+        modalDasar,
+        noNIB,
+        npwp,
+        penanggungJawabNIK
+      } : undefined;
+
       const resp = await fetch("/api/cases/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -68,6 +92,7 @@ export function ProductCasesPage({ productId, binding, caseId }: ProductCasesPag
           title: title.trim(),
           description: description.trim() || undefined,
           priority,
+          ptEstablishmentDetails,
         }),
       });
       if (!resp.ok) {
@@ -84,6 +109,16 @@ export function ProductCasesPage({ productId, binding, caseId }: ProductCasesPag
         setTitle("");
         setDescription("");
         setPriority("medium");
+        // Reset PT fields
+        setNamaPTLengkap("");
+        setAlamatDomisili("");
+        setBidangUsaha("");
+        setJumlahPendiri(1);
+        setModalDasar(100000000);
+        setNoNIB("");
+        setNpwp("");
+        setPenanggungJawabNIK("");
+        setIsPTEstablishment(false);
       }
     } catch (raw) {
       setError(raw instanceof Error ? raw.message : String(raw));
@@ -193,6 +228,148 @@ export function ProductCasesPage({ productId, binding, caseId }: ProductCasesPag
                     <option value="critical">{PRIORITY_LABEL.critical}</option>
                   </select>
                 </div>
+                <div className="flex items-center gap-3 pt-2">
+                  <input
+                    type="checkbox"
+                    id="isPTEstablishment"
+                    checked={isPTEstablishment}
+                    onChange={(e) => setIsPTEstablishment(e.target.checked)}
+                    className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                  />
+                  <label htmlFor="isPTEstablishment" className="text-sm font-medium text-slate-700">
+                    Kasus ini adalah pendirian PT (Perseroan Terbatas)
+                  </label>
+                </div>
+
+                {/* PT Establishment specific fields - only show for PT creation cases */}
+                {isPTEstablishment && (
+                  <div className="mt-6 space-y-4 border-t border-slate-200 pt-6">
+                    <h3 className="text-lg font-semibold text-slate-900">Detail Pendirian PT</h3>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Nama PT Lengkap *
+                      </label>
+                      <input
+                        type="text"
+                        value={namaPTLengkap}
+                        onChange={(e) => setNamaPTLengkap(e.target.value)}
+                        placeholder="Masukkan nama lengkap PT..."
+                        className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        required={isPTEstablishment}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Alamat Domisili *
+                      </label>
+                      <textarea
+                        value={alamatDomisili}
+                        onChange={(e) => setAlamatDomisili(e.target.value)}
+                        placeholder="Masukkan alamat domisili PT..."
+                        rows={2}
+                        className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        required={isPTEstablishment}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Bidang Usaha *
+                      </label>
+                      <input
+                        type="text"
+                        value={bidangUsaha}
+                        onChange={(e) => setBidangUsaha(e.target.value)}
+                        placeholder="Masukkan bidang usaha PT..."
+                        className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        required={isPTEstablishment}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                          Jumlah Pendiri *
+                        </label>
+                        <input
+                          type="number"
+                          min={1}
+                          max={100}
+                          value={jumlahPendiri}
+                          onChange={(e) => setJumlahPendiri(parseInt(e.target.value))}
+                          className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          required={isPTEstablishment}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                          Modal Dasar (Rp) *
+                        </label>
+                        <input
+                          type="number"
+                          min={100000000}
+                          value={modalDasar}
+                          onChange={(e) => setModalDasar(parseInt(e.target.value))}
+                          placeholder="Minimal Rp100.000.000"
+                          className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          required={isPTEstablishment}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                          Nomor NIB *
+                        </label>
+                        <input
+                          type="text"
+                          minLength={10}
+                          maxLength={13}
+                          value={noNIB}
+                          onChange={(e) => setNoNIB(e.target.value)}
+                          placeholder="Nomor Induk Berusaha"
+                          className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          required={isPTEstablishment}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                          NPWP Badan Usaha *
+                        </label>
+                        <input
+                          type="text"
+                          minLength={15}
+                          maxLength={20}
+                          value={npwp}
+                          onChange={(e) => setNpwp(e.target.value)}
+                          placeholder="NPWP PT"
+                          className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          required={isPTEstablishment}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        NIK Penanggung Jawab *
+                      </label>
+                      <input
+                        type="text"
+                        minLength={16}
+                        maxLength={16}
+                        value={penanggungJawabNIK}
+                        onChange={(e) => setPenanggungJawabNIK(e.target.value)}
+                        placeholder="NIK 16 digit penanggung jawab"
+                        className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        required={isPTEstablishment}
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <button
                   type="submit"
                   disabled={submitting}

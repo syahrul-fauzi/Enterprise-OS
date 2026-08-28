@@ -17,7 +17,7 @@
     "lint": "eslint src --max-warnings 0"
   },
   "dependencies": {
-    "@repo/presentation-types": "workspace:*",
+    "@repo/presentation-entities": "workspace:*",
     "@repo/core-kernel": "workspace:*",
     "@repo/presentation-hooks": "workspace:*"
   },

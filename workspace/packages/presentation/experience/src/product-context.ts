@@ -1,10 +1,10 @@
 // @ts-nocheck: Skip TypeScript checks for product context imports to unblock Lawyers Hub production build
 // Import product-specific context dari Product Runtime di root workspace products/*
 import { provideLawyersHubContext } from "@products/lawyershub/runtime/index.js";
-import { provideServicesIDContext } from "@products/services-id/runtime/index.js";
-import { provideILCContext } from "@products/ilc/runtime/index.js";
-import { provideAcademicContext } from "@products/academic/runtime/index.js";
-import { provideCommsMeContext } from "@products/commsme/runtime/index.js";
+// import { provideServicesIDContext } from "@products/services-id/runtime/index.js";
+// import { provideILCContext } from "@products/ilc/runtime/index.js";
+// import { provideAcademicContext } from "@products/academic/runtime/index.js";
+// import { provideCommsMeContext } from "@products/commsme/runtime/index.js";
 // Import centralized domain configuration
 import { getProductFromHostname } from "@repo/presentation-config";
 

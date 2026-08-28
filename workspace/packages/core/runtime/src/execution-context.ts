@@ -1,6 +1,18 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import { randomUUID } from "node:crypto";
 
+export type CircuitBreakerState = {
+  readonly consecutiveFailures: number;
+  readonly isOpen: boolean;
+  readonly lastFailureTime: number;
+};
+
+export type ConcurrencyState = {
+  readonly active_count: number;
+  readonly execution_ids: string[];
+  readonly artifact_ids: string[];
+};
+
 export type ExecutionContext = {
   readonly decision_id?: string | null;
   readonly product_id?: string;
@@ -18,6 +30,9 @@ export type ExecutionContext = {
   // PR-001: Circuit breaker state (pure observation only - no execution changes)
   readonly consecutive_failures?: number;
   readonly circuit_breaker_open?: boolean;
+  // WORK-PROD-004: Full circuit breaker & concurrency state for observability
+  readonly circuit_breaker_state?: CircuitBreakerState;
+  readonly concurrency_state?: ConcurrencyState;
 };
 
 // Track active stores per decision_id+tenant_id untuk re-entry continuity

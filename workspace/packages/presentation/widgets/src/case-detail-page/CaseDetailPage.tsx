@@ -9,8 +9,9 @@ import type { ProductPreviewBinding } from "@repo/presentation-types";
 import type { WorkRealityPerspective as WorkPerspective } from "@repo/presentation-experience/src/work-reality/work-reality.types";
 import { WORK_PERSPECTIVES } from "@repo/presentation-experience/src/work-reality/work-reality.types";
 
-// Rehydrate session from localStorage + cookie for guaranteed persistence across refresh
+// Rehydrate session from localStorage + cookie for guaranteed persistence across refresh (SSR-safe)
 function hydrateSessionState(caseId: string) {
+  if (typeof window === "undefined") return null;
   try {
     const stored = window.localStorage.getItem(`eos-work-view-case-${caseId}`);
     if (!stored) return null;
@@ -29,8 +30,9 @@ function hydrateSessionState(caseId: string) {
 
 
 
-// Persist session + UI state to localStorage for continuity across refresh
+// Persist session + UI state to localStorage for continuity across refresh (SSR-safe)
 function persistSessionState(caseId: string, state: unknown) {
+  if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(`eos-work-view-${caseId}`, JSON.stringify({
       state,
@@ -447,10 +449,10 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
     setLoading(true);
     setError(null);
     try {
-      const caseResp = await fetch("/api/capabilities/lawyershub/case.getById", {
+      const caseResp = await fetch("/api/capabilities/legal-case/case.getById", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ id: caseId }),
+        body: JSON.stringify({ caseId }),
       });
       let caseAggregate: CaseAggregate | null = null;
       if (caseResp.ok) {
@@ -463,16 +465,8 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
       const matterId = caseId;
 
       const [docsResp, evResp, decResp] = await Promise.allSettled([
-        fetch("/api/capabilities/lawyershub/document.search", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ matterId, limit: 50, offset: 0 }),
-        }),
-        fetch("/api/capabilities/evidence-registry/searchEvidenceRegistry", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ decision_id: workId ?? caseId, limit: 0, offset: 0 }),
-        }).catch(() => null),
+        Promise.resolve(null), // legal-document capability commented-out in manifest; short-circuit
+        Promise.resolve(null), // evidence-registry capability commented-out in manifest; short-circuit
         fetch("/api/governance/decisions", { cache: "no-store" }).catch(() => null),
       ]);
 
@@ -580,7 +574,7 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
       .slice(0, 20); // Show last 20 combined events
   }, [caseData, documents, communicationEvents]);
 
-  const workIdLabel = caseData?.workId ?? caseId.substring(0, 12);
+  const workIdLabel = caseData?.workId ?? (caseId ? caseId.substring(0, 12) : "case-xxx"); // Fixed: added null check and ensure comma in substring
   const actorLabel = currentSession?.actorLabel ?? "You";
   const isOwner = currentSession?.tenantId && isAuthenticated;
   // Map agent IDs to human-readable labels
@@ -706,10 +700,10 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
                 <div className="space-y-3">
                   {/* Back to all cases button (F006 fix) - move button to header for easy access */}
                   <a
-                    href="/cases"
+                    href="/work"
                     className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
                   >
-                    ← Kembali ke Semua Kasus
+                    ← Kembali ke Semua Pekerjaan
                   </a>
                   <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
                     {loading ? "Memuat Pekerjaan…" : caseData ? caseData.title : "Kasus tidak ditemukan"}

@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { DigestEngine } from "@repo/core-kernel";
+import { DigestEngine } from "@repo/core-kernel/digest-engine.js";
 
 const PREDICATE_VERSION = "requirement-verification-predicate/0.2.0";
 

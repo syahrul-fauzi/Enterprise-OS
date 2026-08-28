@@ -2,7 +2,6 @@
   "extends": "@repo/config-typescript/react-library.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src",
     "strictNullChecks": false,
     "declaration": true,
     "composite": false,
@@ -10,9 +9,8 @@
     "emitDeclarationOnly": true,
     "module": "preserve",
     "moduleResolution": "bundler",
-    "ignoreDeprecations": "6.0",
     "skipLibCheck": true
   },
   "include": ["src/**/*"],
-  "exclude": ["dist", "build", "node_modules", "../../composition", "../../core", "../../packages", "/app", "../widgets", "../foundation", "../hooks"]
+  "exclude": ["dist", "build", "node_modules"]
 }

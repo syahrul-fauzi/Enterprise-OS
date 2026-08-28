@@ -17,11 +17,12 @@ export { CommunicationSection } from './CommunicationSection';
 export { InspectionSection } from './InspectionSection';
 export { CoordinationSection } from './CoordinationSection';
 export { EvidenceSection } from './EvidenceSection';
+export { ActivitySection } from './ActivitySection';
 export { WorkRealityHeader } from './WorkRealityHeader';
 
 // Type contracts
-export type { 
-  WorkRealityModel, 
+export type {
+  WorkRealityModel,
   WorkRealityPerspective,
   WorkIdentity,
   WorkState,
@@ -29,5 +30,6 @@ export type {
   CommunicationEvent,
   WorkInspection,
   WorkCoordinationAction,
-  EvidenceArtifact
-} from './work-reality.types';
+  EvidenceArtifact,
+  ActivityEntry
+} from '@repo/presentation-entities';

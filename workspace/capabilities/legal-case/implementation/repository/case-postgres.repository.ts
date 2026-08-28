@@ -1,13 +1,56 @@
 import { Pool } from "pg";
-import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index.js";
-import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
+import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository";
+import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager";
 import {
   CaseId,
   type CaseAggregate,
   type CaseRepository,
   CaseStatus,
   CasePriority,
-} from "../contracts/case.contracts.js";
+} from "../../contracts/case.contracts";
+
+// Validate required environment variables in production - matches communication.postgres.repository.ts pattern
+// EXCEPTION: Skip during Next.js build phase (phase-production-build) because build-time static analysis runs in "production" NODE_ENV but has no DB connection
+const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
+if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.POSTGRES_CONNECTION_STRING) {
+  throw new Error("[CaseRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING environment variable is required in production");
+}
+
+// Read replica configuration for horizontal scaling of read-heavy legal case queries
+// Separate write primary from read replicas to distribute load - matches communication.postgres.repository.ts pattern
+const writePool = new Pool({
+  connectionString: process.env.POSTGRES_WRITE_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || "postgresql://localhost:5432/eos_identity",
+  max: 10, // Smaller pool for writes (fewer write operations)
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
+
+const readPool = new Pool({
+  connectionString: process.env.POSTGRES_READ_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || "postgresql://localhost:5432/eos_identity",
+  max: 30, // Larger pool for read-heavy case queries
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
+
+// Run migrations on initialization - ensures schema is always up-to-date
+let migrationsInitialized = false;
+async function initializeDatabase() {
+  if (migrationsInitialized) return;
+  const result = await DatabaseMigrationManager.runMigrations(writePool);
+  if (result.errors.length > 0) {
+    console.error("[CaseRepositoryPostgres] Database initialization failed:", result.errors);
+    throw new Error(`Database migration failed: ${result.errors.join(", ")}`);
+  }
+  console.log(`[CaseRepositoryPostgres] Database initialized: ${result.executed.length} migrations executed, ${result.already_applied.length} already applied`);
+  migrationsInitialized = true;
+}
+
+// Initialize on module load - only when not in build phase to prevent build failures
+if (!isBuildPhase) {
+  initializeDatabase().catch(err => console.error("[CaseRepositoryPostgres] Failed to initialize database:", err));
+}
+
+import { recordRuntimeInvocation } from "@repo/core-runtime";
 
 // PostgreSQL-backed case repository implementation
 class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements CaseRepository {
@@ -16,6 +59,22 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
 
   constructor() {
     super("cases");
+  }
+
+  /**
+   * Expose both pools for health checking and monitoring
+   * Used by Kubernetes liveness/readiness probes - matches communication.postgres.repository.ts interface
+   */
+  getPools(): {write: Pool; read: Pool} {
+    return { write: writePool, read: readPool };
+  }
+  
+  /**
+   * Backward compatibility for health check system
+   * @deprecated Use getPools() instead
+   */
+  getPool(): Pool {
+    return writePool;
   }
 
   // Convert database record to domain aggregate - implements base.repository.ts abstract protected method
@@ -32,6 +91,8 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
       actorId: record.actor_id,
       tenantId: record.tenant_id,
       workspaceId: record.workspace_id,
+      // Load intent dari database jika ada (Intent primitive integration)
+      ...(record.intent && { intent: record.intent }),
       createdAt: new Date(record.created_at),
       updatedAt: new Date(record.updated_at),
       ...(record.closed_at && { closedAt: new Date(record.closed_at) }),
@@ -49,11 +110,13 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
       lawyer_id: entity.lawyerId,
       work_id: (entity as any).workId || entity.id,
       source_discussion_id: entity.sourceDiscussionId,
-      tenant_id: (entity as any).tenantId,
-      workspace_id: (entity as any).workspaceId,
-      actor_id: (entity as any).actorId,
+      tenant_id: entity.tenantId,
+      workspace_id: entity.workspaceId,
+      actor_id: entity.actorId,
       created_at: entity.createdAt,
       updated_at: entity.updatedAt,
+      // Simpan intent JSON jika ada (Intent primitive integration)
+      ...((entity as any).intent && { intent: (entity as any).intent }),
       ...(entity.closedAt && { closed_at: entity.closedAt }),
     };
   }

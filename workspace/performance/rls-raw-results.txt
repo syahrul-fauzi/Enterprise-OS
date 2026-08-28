@@ -1,0 +1,21 @@
+                                                             QUERY PLAN                                                             
+------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate  (cost=23.11..23.12 rows=1 width=8) (actual time=0.055..0.056 rows=1 loops=1)
+   ->  Bitmap Heap Scan on legal_cases  (cost=4.23..23.08 rows=10 width=0) (actual time=0.045..0.050 rows=10 loops=1)
+         Recheck Cond: ((tenant_id)::text = 'tenant-1'::text)
+         Heap Blocks: exact=3
+         ->  Bitmap Index Scan on idx_cases_tenant_id  (cost=0.00..4.23 rows=10 width=0) (actual time=0.031..0.031 rows=10 loops=1)
+               Index Cond: ((tenant_id)::text = 'tenant-1'::text)
+ Planning Time: 1.014 ms
+ Execution Time: 0.176 ms
+(8 rows)
+
+SET
+                                                    QUERY PLAN                                                    
+------------------------------------------------------------------------------------------------------------------
+ Aggregate  (cost=34.50..34.51 rows=1 width=8) (actual time=0.171..0.171 rows=1 loops=1)
+   ->  Seq Scan on legal_cases  (cost=0.00..32.00 rows=1000 width=0) (actual time=0.005..0.117 rows=1000 loops=1)
+ Planning Time: 0.094 ms
+ Execution Time: 0.212 ms
+(4 rows)
+

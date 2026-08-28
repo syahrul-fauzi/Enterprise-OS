@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "@repo/presentation-ui-system";
-import type { CaseAggregate } from "../../implementation/contracts/index.js";
+import type { CaseAggregate } from "../../contracts/index";
 
 export interface CaseCardProps {
   readonly item: CaseAggregate;

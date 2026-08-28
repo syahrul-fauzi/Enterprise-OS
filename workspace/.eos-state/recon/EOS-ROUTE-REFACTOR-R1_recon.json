@@ -1,0 +1,47 @@
+{
+  "work_id": "EOS-ROUTE-REFACTOR-R1",
+  "recon_completed_at": "2026-08-28T00:00:00.000Z",
+  "locked_boundaries_verified": {
+    "golden_kernel_untouched": true,
+    "no_new_primitives": true,
+    "only_route_groups": true
+  },
+  "existing_capabilities_found": [
+    "legal-case:case.create",
+    "work runtime already proven at /work/[id]",
+    "presentation features already have intent/work blocks at @repo/presentation-features"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "/app/work/[id]/page.tsx - work runtime proven",
+      "/app/work/new/page.tsx - EOS-FACE-FORMATION-001 already implemented",
+      "packages/presentation/features/src/intent/* - all intent blocks exist",
+      "packages/presentation/features/src/work/* - all work blocks exist",
+      "packages/presentation/experience/src/work-reality/* - all work reality components reusable"
+    ],
+    "required_new": [
+      "Create app/(eos)/ route group (Next.js route group, no URL change)",
+      "Move existing /app/page.tsx → app/(eos)/page.tsx",
+      "Move existing /app/work/* → app/(eos)/work/*",
+      "Add API group /api/intent/ for intent resolution endpoints"
+    ],
+    "reuse_percentage": 94.0,
+    "legacy_duplicates_found": [
+      "api/communication/ + api/communications/ - duplicate communication endpoints",
+      "app/cases/ + app/work/ - case model vs work aggregate (duplicate work creation flows)",
+      "app/service-requests/ + app/work/ - another work aggregate duplicate",
+      "api/cases/ + api/work/ - duplicate capability transport layers"
+    ]
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "PHASE R1: INVENTORY - First create the route group (eos) without moving any files yet",
+    "PHASE R2: CANONICALIZE - Move only /app/page.tsx and /app/work/* into (eos) group first",
+    "PHASE R3: AUDIT - After EOS-FACE-FORMATION-001 is proven, audit app/cases/ and app/service-requests/ for redundancy",
+    "Rule maintained: Never move anything until the current slice is 100% production-proven"
+  ]
+}

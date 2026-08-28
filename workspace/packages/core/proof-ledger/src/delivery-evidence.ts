@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { WorkspaceSession, DigestEngine } from "@repo/core-kernel";
+import { WorkspaceSession } from "@repo/core-kernel";
+import { DigestEngine } from "@repo/core-kernel/digest-engine.js";
 
 interface ProductContext {
   readonly productDomain: string;

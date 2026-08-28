@@ -1,4 +1,5 @@
-import { DigestEngine } from "@repo/core-kernel";
+// Fixed import per @repo/core-kernel documentation - DigestEngine must be imported directly from digest-engine subpath
+import { DigestEngine } from "@repo/core-kernel/digest-engine.js";
 
 import { captureExecutionTimestampUtc } from "../../governance-runtime.js";
 import type { DecisionSynthesis } from "../../runtime-contracts/models/decision.js";

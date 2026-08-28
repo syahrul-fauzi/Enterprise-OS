@@ -2,7 +2,7 @@ import { mkdirSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import assert from "node:assert/strict";
 import { resolve } from "node:path";
 import test from "node:test";
-import { DigestEngine } from "@repo/core-kernel";
+import { DigestEngine } from "@repo/core-kernel/digest-engine.js";
 import { materializeCapabilityGraphProjection } from "../src/capability-graph-runtime.js";
 import type { CapabilityGovernanceProjection } from "../src/capability-governance-runtime.js";
 import { EOS_ROOT } from "../src/state.js";

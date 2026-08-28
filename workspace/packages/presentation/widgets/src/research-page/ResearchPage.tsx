@@ -4,7 +4,8 @@
 import React from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell.js";
 import { getProductExperience } from "@repo/presentation-experience";
-import type { ProductPreviewBinding, ProductExperience, Requirement } from "@repo/presentation-types";
+import type { ProductPreviewBinding, ProductExperience } from "@repo/presentation-types";
+import type { Requirement } from "@repo/presentation-entities";
 import { ResearchSearchBar } from "@repo/presentation-ui-system";
 import { ResearchFeed } from "../ResearchFeed.js";
 

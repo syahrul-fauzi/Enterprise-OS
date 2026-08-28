@@ -3,7 +3,7 @@ import { lawyershub } from './lawyershub';
 import { ilc } from './ilc';
 import { academic } from './academic';
 import { commsme } from './commsme';
-import type { ProductExperience } from '@repo/presentation-types';
+import type { ProductExperience } from '@repo/presentation-entities';
 
 export const catalog: Record<string, ProductExperience> = {
   'services-id': servicesId,

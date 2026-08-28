@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import * as yaml from "js-yaml";
 import { CaseRepositoryInMemory } from "../../../capabilities/legal-case/implementation/repository/case.repository.js";
-import type { CaseAggregate } from "../../../capabilities/legal-case/implementation/contracts/case.contracts.js";
+import type { CaseAggregate } from "../../../capabilities/legal-case/contracts/case.contracts.js";
 import { DocumentRepositoryInMemory } from "../../../capabilities/legal-document/implementation/repository/index.js";
 import type { DocumentAggregate } from "../../../capabilities/legal-document/implementation/contracts/index.js";
 

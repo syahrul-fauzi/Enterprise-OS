@@ -4,14 +4,14 @@ import {
   type GetCaseOutput,
   type SearchCasesInput,
   type SearchCasesOutput,
-} from "../contracts/index.js";
+} from "../../contracts/index";
 import type { CapabilityQuery } from "@repo/core-kernel";
-import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
+import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index";
 
 // Match the same environment-based repository toggle as commands/case.commands.ts
 const caseRepository = process.env.DATABASE_URL 
   ? CaseRepositoryPostgres 
-  : CaseRepositoryInMemory;
+  : new CaseRepositoryInMemory();
 
 type GetCaseQuery = CapabilityQuery<GetCaseInput, GetCaseOutput>;
 type SearchCasesQuery = CapabilityQuery<SearchCasesInput, SearchCasesOutput>;
@@ -29,8 +29,8 @@ export const searchCases: SearchCasesQuery = {
   kind: "query",
   name: "case.search",
   version: "0.1.0",
-  execute(input) {
-    const all = caseRepository.list();
+  async execute(input) {
+    const all = await caseRepository.list();
     const q = (input.query ?? "").trim().toLowerCase();
     let filtered: readonly CaseAggregate[] = all;
     if (input.status !== undefined && input.status !== "all") {

@@ -16,9 +16,9 @@ cd "$ROOT_DIR"
 pnpm turbo run build \
   --filter=@repo/core-runtime \
   --filter=@repo/core-kernel \
+  --filter=@repo/presentation-entities \
   --filter=@repo/presentation-ui-system \
-  --filter=@repo/presentation-hooks \
-  --filter=@repo/presentation-types
+  --filter=@repo/presentation-hooks
 
 # Start staging environment with updated local dist files
 echo "=== Starting staging environment with Docker Compose ==="

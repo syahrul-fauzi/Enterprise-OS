@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import type { CommunicationEvent, WorkRealityPerspective } from './work-reality.types';
+import type { CommunicationEvent, WorkRealityPerspective } from '@repo/presentation-entities';
 
 const perspectiveLabels: Record<WorkRealityPerspective, string> = {
   customer: "PERCAKAPAN",

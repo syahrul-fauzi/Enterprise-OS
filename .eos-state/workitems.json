@@ -31,7 +31,7 @@
     "updated_at": "2026-08-17T13:00:00.000Z",
     "world_truth_scoreboard": {
       "human_started_work": "🟢 EXECUTE_NOW",
-      "work_item_created": "🟡 PREFLIGHT_CHECK",
+      "work_item_created": "🟢 PREFLIGHT_CHECK_COMPLETE",
       "work_completed": "🔴",
       "professional_received_usable_handoff": "🔴",
       "professional_acted": "🔴",
@@ -51,13 +51,13 @@
     "truth_classification": {
       "engineering_truth": {
         "status": "✅ VERIFIED",
-        "criteria": ["artifact exists", "projection works", "polling works", "reuse confirmed", "no_new_capabilities: 0"],
-        "evidence_link": "workspace/products/commsme/runtime/product-context-provider.ts"
+        "criteria": ["artifact exists", "projection works", "polling works", "reuse confirmed", "no_new_capabilities: 0", "pt_establishment_form_integrated", "build_successful", "typecheck_passed", "pt_details_persisted_in_jsonb"],
+        "evidence_link": "workspace/capabilities/legal-case/implementation/repository/case.postgres.repository.ts"
       },
       "operational_truth": {
-        "status": "⏳ PENDING",
+        "status": "🟢 READY_FOR_B4_OBSERVATION",
         "criteria": ["work actually moves", "handoff is usable", "context survives transition"],
-        "evidence_link": "waiting for B4 observation"
+        "evidence_link": "awaiting B4 human observer briefing"
       },
       "world_truth": {
         "status": "🔴 UNCLAIMED",

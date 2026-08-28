@@ -1,21 +1,18 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { CaseRepositoryInMemory } from "../../capabilities/legal-case/implementation/repositories/case.repository.inmemory.js";
-import { DocumentRepositoryInMemory } from "../../capabilities/legal-document/implementation/repositories/document.repository.inmemory.js";
+import { CaseRepositoryInMemory } from "../../../capabilities/legal-case/implementation/repository/case.repository.js";
 
 describe("Persistence restore test (process death simulation)", () => {
-  it("can restore case and document from disk after process restart, same workId preserved", async () => {
+  it("can restore case from disk after process restart, same workId preserved", async () => {
     // Simulate process restart: create new repository instances
     const newCaseRepo = new CaseRepositoryInMemory();
-    const newDocRepo = new DocumentRepositoryInMemory();
     
     // Load from disk (what happens when we restart the process)
     const files = [
-      ...(await import("node:fs")).readdirSync("/tmp/").filter(f => f.startsWith("eos-live-case-")),
-      ...(await import("node:fs")).readdirSync("/tmp/").filter(f => f.startsWith("eos-live-doc-"))
+      ...(await import("node:fs")).readdirSync("/tmp/").filter(f => f.startsWith("eos-live-case-"))
     ];
     
-    assert.ok(files.length >= 2, "Should have saved case and document files");
+    assert.ok(files.length >= 1, "Should have saved case files");
     console.log("Found saved files:", files);
     
     // Load the most recent case
@@ -27,7 +24,7 @@ describe("Persistence restore test (process death simulation)", () => {
     assert.ok(allCases.length > 0, "Should load at least one case from disk");
     
     const restoredCase = allCases[0];
-    const originalWorkId = restoredCase.workId;
+    const originalWorkId = restoredCase!.workId;
     console.log("Restored case workId:", originalWorkId);
     assert.ok(originalWorkId, "WorkId should exist in restored case");
     

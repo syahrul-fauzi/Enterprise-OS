@@ -1,1 +1,1 @@
-export { TurborepoLogo } from "./atoms/turborepo-logo.js";
+export { TurborepoLogo } from "./atoms/turborepo-logo";

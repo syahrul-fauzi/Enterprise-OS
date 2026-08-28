@@ -52,8 +52,6 @@
 
       "@repo/presentation-ui-system": ["../../packages/presentation/ui-system/src/index.ts"],
       "@repo/presentation-ui-system/*": ["../../packages/presentation/ui-system/src/*"],
-      "@repo/presentation-types": ["../../packages/presentation/presentation-types/src/index.ts"],
-      "@repo/presentation-types/*": ["../../packages/presentation/presentation-types/src/*"],
       "@repo/presentation-foundation": ["../../packages/presentation/foundation/src/index.ts"],
       "@repo/presentation-foundation/*": ["../../packages/presentation/foundation/src/*"],
       "@repo/presentation-widgets": ["../../packages/presentation/widgets/src/index.ts"],
@@ -64,6 +62,12 @@
       "@repo/presentation-experience/*": ["../../packages/presentation/experience/src/*"],
       "@repo/presentation-hooks": ["../../packages/presentation/hooks/src/index.ts"],
       "@repo/presentation-hooks/*": ["../../packages/presentation/hooks/src/*"],
+      "@repo/presentation-entities": ["../../packages/presentation/entities/src/index.ts"],
+      "@repo/presentation-entities/*": ["../../packages/presentation/entities/src/*"],
+      "@repo/presentation-templates": ["../../packages/presentation/templates/src/index.ts"],
+      "@repo/presentation-templates/*": ["../../packages/presentation/templates/src/*"],
+      "@repo/presentation-pages": ["../../packages/presentation/pages/src/index.ts"],
+      "@repo/presentation-pages/*": ["../../packages/presentation/pages/src/*"],
 
       "@repo/tooling-eos-cli": ["../../packages/tooling/eos-cli/src/index.ts"],
       "@repo/tooling-eos-cli/*": ["../../packages/tooling/eos-cli/src/*"],

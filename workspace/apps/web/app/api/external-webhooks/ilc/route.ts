@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import * as crypto from "crypto";
-import { CommunicationRepository } from "@capabilities/communication/implementation/repository/index.js";
+import { randomUUID } from "node:crypto";
+import { CommunicationRepository, CommunicationRepositoryInMemory, newCommunicationEventId } from "communication/implementation/repository/index";
+import { CaseRepository, CaseRepositoryInMemory } from "legal-case/implementation/repository/index";
+import { executionContext } from "../../../../../../packages/core/runtime/src/execution-context.js";
+import { recordObservedExecution } from "../../../../../../packages/core/runtime/src/execution-observability.js";
+import { startExecutionTimer, recordRuntimeInvocation } from "../../../../../../packages/core/runtime/src/invocation-evidence.js";
 
 // ILC community user ID to work ID mapping for WORK-018 ILC continuity
 // Maps ILC community member IDs to their respective LawyersHub work IDs
@@ -20,8 +25,9 @@ const ILC_TO_LAWYERSHUB_WORK_MAPPING: Record<string, string> = {
 // Resolve work ID from ILC community user ID - implements conversation→Work grounding
 function resolveWorkIdFromIlcUserId(userId: string): string | null {
   // First check exact match
-  if (ILC_TO_LAWYERSHUB_WORK_MAPPING[userId.toLowerCase()]) {
-    return ILC_TO_LAWYERSHUB_WORK_MAPPING[userId.toLowerCase()];
+  const workId = ILC_TO_LAWYERSHUB_WORK_MAPPING[userId.toLowerCase()];
+  if (workId) {
+    return workId;
   }
   
   // For WORK-018 prototype, default to case-003 if user not found - maintains shared reality
@@ -86,7 +92,14 @@ async function verifyIlcSignature(request: Request): Promise<boolean> {
 // GET handler for webhook verification - EXACT same pattern as WhatsApp/Email/Webchat
 // Validates that only ILC platform can subscribe to this webhook
 export async function GET(request: Request) {
-  const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
+  const xForwardedFor = request.headers.get("x-forwarded-for");
+  let clientIp = "unknown";
+  if (xForwardedFor) {
+    const parts = xForwardedFor.split(",");
+    if (parts.length > 0 && parts[0]) {
+      clientIp = parts[0].trim();
+    }
+  }
   if (!isIpAllowed(clientIp, ILC_ALLOWED_IPS)) {
     console.error(`[ILCWebhook] Blocked verification request from unauthorized IP: ${clientIp}`);
     return NextResponse.json({ error: "Unauthorized source IP" }, { status: 403 });
@@ -110,7 +123,14 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     // 1. IP Whitelisting check - security first, same order as all other adapters
-    const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
+    const xForwardedFor = request.headers.get("x-forwarded-for");
+    let clientIp = "unknown";
+    if (xForwardedFor) {
+      const parts = xForwardedFor.split(",");
+      if (parts.length > 0 && parts[0]) {
+        clientIp = parts[0].trim();
+      }
+    }
     if (!isIpAllowed(clientIp, ILC_ALLOWED_IPS)) {
       console.error(`[ILCWebhook] Blocked POST request from unauthorized IP: ${clientIp}`);
       return NextResponse.json({ error: "Unauthorized source IP" }, { status: 403 });
@@ -139,23 +159,70 @@ export async function POST(request: Request) {
     const resolvedWorkId = resolveWorkIdFromIlcUserId(sender_id);
     if (!resolvedWorkId) {
       console.error(`[ILCWebhook] Could not resolve work ID for ILC user ${sender_id}`);
+      
+      // Record failed execution in observability (WORK-PROD-008: distributed tracing lintas domain)
+      const failureExecutionId = randomUUID();
+      startExecutionTimer(failureExecutionId);
+      recordObservedExecution({
+        decision_id: "ilc-webhook-unresolved-work",
+        executionId: failureExecutionId,
+        success: false,
+        error: "Could not resolve work ID from ILC user identifier"
+      });
+      // WORK-PROD-004: Record failed runtime invocation with metrics
+      recordRuntimeInvocation({
+        capabilityId: "ilc-webhook",
+        operationId: "process-webhook-event",
+        sourceRef: `ilc/${sender_id}`,
+        success: false,
+        input: body,
+        result: { error: "Could not resolve work ID from ILC user identifier" },
+        work_id: null,
+        executionId: failureExecutionId
+      });
+      
       return NextResponse.json({ error: "ILC user not associated with any LawyersHub work" }, { status: 400 });
     }
 
-    // 5. Save communication event to repository - same pattern as all other adapters
+    // 5. Initialize execution context for observability tracing
+    // WORK-PROD-008: Maintain distributed tracing chain across ILC↔LawyersHub domain boundaries
+    const executionId = randomUUID();
+    startExecutionTimer(executionId); // Start timer for metrics collection (WORK-PROD-004)
+    
+    return executionContext.run({
+      decision_id: `ilc-webhook-${resolvedWorkId}`,
+      logicalWorkId: resolvedWorkId,
+      actor_id: sender_id,
+      tenant_id: "tenant-001",
+      context_trace_id: executionId,
+      is_reentry: false
+    }, async () => {
+      // Record successful work resolution in observability
+      recordObservedExecution({
+        decision_id: "ilc-webhook-processed",
+        executionId: executionId,
+        success: true,
+        logicalWorkId: resolvedWorkId
+      });
+
+    // 6. Save communication event to repository - same pattern as all other adapters
     // The ILC message is now fully grounded in a LawyersHub work - no orphan communication
-    const eventId = CommunicationRepositoryInMemory.newCommunicationEventId();
+    const eventId = newCommunicationEventId();
     await CommunicationRepositoryInMemory.save({
       event_id: eventId,
       work_id: resolvedWorkId, // PROPERLY GROUNDED to LawyersHub case (ILC → LawyersHub bridging)
       tenant_id: "tenant-001",
+      workspace_id: "workspace-001",
+      session_id: "session-001",
       actor_id: sender_id,
       recipient_ids: ["ai-agent-001", "lawyer-007", "operator-001"], // Send to relevant stakeholders + AI Agent for intelligent inspection
-      event_type: "inbound_message",
+      event_type: "CommunicationSent",
       content: `[ILC Discussion: ${discussion_topic}] ${message}`, // Preserve ILC context in message
       adapter_type: "api_webhook", // ILC uses api_webhook adapter type per CommunicationAdapterTypes
       timestamp: new Date().toISOString(),
-      status: "received",
+      status: "delivered",
+      lamport_clock: 0,
+      previous_event_id: null,
       metadata: {
         ilc_discussion_topic: discussion_topic,
         ilc_sender_role: sender_role,
@@ -166,6 +233,18 @@ export async function POST(request: Request) {
     console.log(`[ILCWebhook] WORK-018: Bridged ILC message from ${sender_id} to LawyersHub work ${resolvedWorkId}: "${message.substring(0, 100)}..."`);
     console.log(`[ILCWebhook] Conversation → Work continuity verified: ILC discussion now part of shared reality`);
     
+    // WORK-PROD-004: Record runtime invocation with metrics
+    recordRuntimeInvocation({
+      capabilityId: "ilc-webhook",
+      operationId: "process-webhook-event",
+      sourceRef: `ilc/${sender_id}`,
+      success: true,
+      input: body,
+      result: { success: true, event_id: eventId, work_id: resolvedWorkId },
+      work_id: resolvedWorkId,
+      executionId: executionId
+    });
+
     // Return success response to ILC platform
     return NextResponse.json({ 
       success: true, 
@@ -174,8 +253,51 @@ export async function POST(request: Request) {
       continuity_verified: true,
       eos_thesis_enforced: "ILC conversation successfully grounded in LawyersHub Work"
     }, { status: 200 });
+    });
   } catch (error) {
-    console.error("[ILCWebhook] Error processing ILC webhook:", error);
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("[ILCWebhook] Error processing ILC webhook:", message);
+    
+    // Capture work_id if available from parsed body before failure
+    let failedWorkId: string | null = null;
+    try {
+      const body = await request.clone().json();
+      if (body?.sender_id) {
+        failedWorkId = resolveWorkIdFromIlcUserId(body.sender_id);
+      }
+    } catch { /* ignore parsing errors, fallback to null */ }
+    
+    // WORK-PROD-010: Initialize execution timer BEFORE any processing (moves to top of failure path)
+    const failureExecutionId = randomUUID();
+    startExecutionTimer(failureExecutionId);
+    
+    // Record failed execution in observability with work_id if resolved
+    recordObservedExecution({
+      decision_id: "ilc-webhook-error",
+      executionId: failureExecutionId,
+      success: false,
+      error: message,
+      logicalWorkId: failedWorkId ?? undefined
+    });
+    
+    // WORK-PROD-010: Record failed runtime invocation with full metrics including work_id
+    recordRuntimeInvocation({
+      capabilityId: "ilc-webhook",
+      operationId: "process-webhook-event",
+      sourceRef: failedWorkId ? `ilc/${failedWorkId}` : "ilc/unknown",
+      success: false,
+      input: {},
+      result: { error: message },
+      work_id: failedWorkId,
+      executionId: failureExecutionId
+    });
+    
+    // WORK-PROD-010: Always record WorkRealityMetrics even on failure - critical for observability
+    if (failedWorkId) {
+      const { recordWorkExecutionMetrics } = require("../../../../../../packages/core/runtime/src/execution-observability.js");
+      recordWorkExecutionMetrics(failedWorkId, Date.now() - parseInt(failureExecutionId.slice(0, 8), 16), false);
+    }
+    
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

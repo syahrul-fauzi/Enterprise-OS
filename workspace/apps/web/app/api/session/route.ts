@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import {
+  WORKSPACE_SESSION_COOKIE,
   readWorkspaceSessionFromRequest,
   createAnonymousWorkspaceSession,
+  encodeWorkspaceSession,
   isAuthenticatedSession,
   type WorkspaceSession,
 } from "@repo/core-kernel";
@@ -12,20 +14,34 @@ import {
 
 export async function GET(request: Request) {
   try {
-    const cookieSession = readWorkspaceSessionFromRequest(request)
-      ?? createAnonymousWorkspaceSession();
+    const existingCookieSession = readWorkspaceSessionFromRequest(request);
+    const cookieSession = existingCookieSession ?? createAnonymousWorkspaceSession();
+    const isNewAnonymousSession = existingCookieSession === null;
 
     // For InMemory/light mode (no DATABASE_URL configured), always return the cookie session
     // This matches FIRST LIGHT MODE specified in .env.local
     if (!process.env.DATABASE_URL) {
-      return NextResponse.json(
+      const response = NextResponse.json(
         {
           ok: true,
           authenticated: isAuthenticatedSession(cookieSession),
           session: cookieSession,
+          isNewAnonymousSession,
         },
         { status: 200 },
       );
+      // Always SET cookie for anonymous sessions so subsequent requests carry the session
+      // This is the CRITICAL FIX - without setting the cookie, /work/* routes all redirect to /
+      if (isNewAnonymousSession) {
+        response.cookies.set({
+          name: WORKSPACE_SESSION_COOKIE,
+          value: encodeWorkspaceSession(cookieSession),
+          httpOnly: true,
+          sameSite: "lax",
+          path: "/",
+        });
+      }
+      return response;
     }
 
     // Production path with Postgres - only executed if DATABASE_URL is set
@@ -35,14 +51,23 @@ export async function GET(request: Request) {
 
     if (!dbSession || dbSession.revokedAt !== null) {
       const anonymous = createAnonymousWorkspaceSession();
-      return NextResponse.json(
+      const response = NextResponse.json(
         {
           ok: true,
           authenticated: false,
           session: anonymous,
+          isNewAnonymousSession: true,
         },
         { status: 200 },
       );
+      response.cookies.set({
+        name: WORKSPACE_SESSION_COOKIE,
+        value: encodeWorkspaceSession(anonymous),
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+      });
+      return response;
     }
 
     const verifiedSession: WorkspaceSession = {
@@ -62,6 +87,7 @@ export async function GET(request: Request) {
         ok: true,
         authenticated: isAuthenticatedSession(verifiedSession),
         session: verifiedSession,
+        isNewAnonymousSession: false,
       },
       { status: 200 },
     );
@@ -69,14 +95,23 @@ export async function GET(request: Request) {
     // Graceful fallback - never fail session loading, always return anonymous session
     const anonymous = createAnonymousWorkspaceSession();
     console.warn("[session] Graceful fallback to anonymous session:", error instanceof Error ? error.message : error);
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         ok: true,
         authenticated: false,
         session: anonymous,
         error: undefined, // Don't expose internal errors to client
+        isNewAnonymousSession: true,
       },
       { status: 200 }, // Always return 200 - client side handles anonymous state
     );
+    response.cookies.set({
+      name: WORKSPACE_SESSION_COOKIE,
+      value: encodeWorkspaceSession(anonymous),
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/",
+    });
+    return response;
   }
 }

@@ -22,8 +22,6 @@
       "@repo/core-capability-registry/*": ["../../core/capability-registry/dist/*"],
       "@repo/presentation-ui-system": ["../ui-system/dist"],
       "@repo/presentation-ui-system/*": ["../ui-system/dist/*"],
-      "@repo/presentation-types": ["../presentation-types/dist"],
-      "@repo/presentation-types/*": ["../presentation-types/dist/*"],
       "@repo/presentation-foundation": ["../foundation/dist"],
       "@repo/presentation-foundation/*": ["../foundation/dist/*"],
       "@repo/presentation-features": ["../features/dist"],

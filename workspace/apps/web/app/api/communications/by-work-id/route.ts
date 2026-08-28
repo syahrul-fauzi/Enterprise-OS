@@ -5,7 +5,7 @@ import {
   createAnonymousWorkspaceSession,
   encodeWorkspaceSession
 } from "@repo/core-kernel";
-import { CommunicationRepositoryInMemory } from "../../../../../../capabilities/communication/dist/repository/communication.repository.js";
+import { CommunicationRepositoryInMemory } from "../../../../../../capabilities/communication/implementation/repository/index";
 
 // P0 FIX: Enable anonymous users to access communications on their work items
 // EOS-COMM-002: API endpoint to retrieve ALL communication events bound to a single workId

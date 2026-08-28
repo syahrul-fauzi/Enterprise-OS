@@ -1,0 +1,6 @@
+NAME                        CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O
+eos-staging-web             0.03%     89.66MiB / 54.93GiB   0.16%     1.57MB / 1.99MB   0B / 0B
+eos-staging-redis           4.07%     8.039MiB / 54.93GiB   0.01%     1.23MB / 785kB    0B / 0B
+eos-staging-postgres        0.00%     65.77MiB / 54.93GiB   0.12%     187kB / 238kB     0B / 79.8MB
+eos-staging-tunnel-origin   0.00%     20.19MiB / 54.93GiB   0.04%     0B / 0B           369kB / 16.4kB
+lawyershub-tunnel-origin    0.00%     15.75MiB / 54.93GiB   0.03%     0B / 0B           176kB / 12.3kB

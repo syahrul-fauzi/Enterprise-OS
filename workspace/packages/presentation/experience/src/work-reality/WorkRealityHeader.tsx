@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import type { WorkIdentity } from './work-reality.types';
+import type { WorkIdentity } from '@repo/presentation-entities';
 
 interface WorkRealityHeaderProps {
   identity: WorkIdentity;
@@ -14,12 +14,30 @@ interface WorkRealityHeaderProps {
  */
 export function WorkRealityHeader({ identity }: WorkRealityHeaderProps) {
   return (
-    <header className="text-center py-6">
-      <h1 className="text-3xl font-bold text-slate-900">EOS</h1>
-      <p className="text-lg text-slate-600 mt-2">WHAT IS HAPPENING?</p>
-      <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-full">
-        <span className="text-emerald-700 font-semibold">THIS IS THE SAME WORK.</span>
-        <span className="text-emerald-600 text-sm font-mono">ID: {identity.workId}</span>
+    <header className="py-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">{identity.title}</h1>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 border border-emerald-200 rounded-full">
+              <span className="text-emerald-700 font-medium">{identity.status}</span>
+              <span className="text-emerald-600 text-xs font-mono" data-testid="work-id">ID: {identity.workId}</span>
+            </span>
+            {identity.specialization && (
+              <span className="inline-flex items-center px-3 py-1 bg-blue-50 border border-blue-200 rounded-full text-xs font-medium text-blue-700" data-testid="work-specialization">
+                {identity.specialization}
+              </span>
+            )}
+            {identity.linkedIntentId && (
+              <span className="inline-flex items-center gap-1 px-3 py-1 bg-violet-50 border border-violet-200 rounded-full text-xs font-mono text-violet-700">
+                ↳ Intent: <span data-testid="linked-intent-id">{identity.linkedIntentId}</span>
+              </span>
+            )}
+          </div>
+        </div>
+        <div className="text-slate-500 text-sm">
+          <span className="font-semibold">EOS</span>
+        </div>
       </div>
     </header>
   );

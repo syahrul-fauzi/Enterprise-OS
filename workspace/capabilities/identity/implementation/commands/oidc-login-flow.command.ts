@@ -3,12 +3,10 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
 import { URL } from "url";
 
-// For this PoC, we'll hardcode the OIDC client details.
-// In a real application, this would be configured elsewhere.
-const OIDC_CLIENT_ID = 'auth-code-client';
-const OIDC_CLIENT_SECRET = 'secret';
-const OIDC_REDIRECT_URI = 'http://127.0.0.1:8080/api/auth/callback';
-const HYDRA_PUBLIC_URL = 'http://127.0.0.1:4444';
+// OIDC configuration from environment variables (consistent with API routes)
+const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID || "lawyershub-client";
+const OIDC_REDIRECT_URI = process.env.OIDC_REDIRECT_URI || "http://127.0.0.1:3007/api/auth/callback";
+const HYDRA_PUBLIC_URL = process.env.HYDRA_PUBLIC_URL || "http://127.0.0.1:4444";
 
 export const OidcLoginFlowInputSchema = z.object({});
 

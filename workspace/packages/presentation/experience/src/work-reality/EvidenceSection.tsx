@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import type { EvidenceArtifact, WorkRealityPerspective } from './work-reality.types';
+import type { EvidenceArtifact, WorkRealityPerspective } from '@repo/presentation-entities';
 
 // Perspective-specific header labels
 const perspectiveLabels: Record<WorkRealityPerspective, string> = {

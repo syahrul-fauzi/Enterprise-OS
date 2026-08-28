@@ -4,7 +4,9 @@ import { CommunicationEvent, CommunicationEventId, CommunicationEventStatus } fr
 import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager";
 
 // Validate required environment variables in production
-if (process.env.NODE_ENV === "production" && !process.env.POSTGRES_CONNECTION_STRING) {
+// EXCEPTION: Skip during Next.js build phase (phase-production-build) because build-time static analysis runs in "production" NODE_ENV but has no DB connection
+const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
+if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.POSTGRES_CONNECTION_STRING) {
   throw new Error("[CommunicationRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING environment variable is required in production");
 }
 
@@ -48,6 +50,7 @@ async function initializeSchema(): Promise<void> {
       event_id VARCHAR(255) PRIMARY KEY,
       work_id VARCHAR(255) NOT NULL,
       tenant_id VARCHAR(255) NOT NULL,
+      workspace_id VARCHAR(255) NOT NULL,
       sender_id VARCHAR(255) NOT NULL,
       recipient_ids TEXT[] NOT NULL,
       event_type VARCHAR(50) NOT NULL,
@@ -63,6 +66,7 @@ async function initializeSchema(): Promise<void> {
     
     CREATE INDEX IF NOT EXISTS idx_communication_work_id ON communication_events(work_id);
     CREATE INDEX IF NOT EXISTS idx_communication_tenant_id ON communication_events(tenant_id);
+    CREATE INDEX IF NOT EXISTS idx_communication_workspace_id ON communication_events(workspace_id);
   `;
   
   await writePool.query(createTableQuery);
@@ -92,18 +96,25 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
   }
 
   async byId(id: CommunicationEventId, context?: { tenantId: string; workspaceId: string }): Promise<CommunicationEvent | undefined> {
-    let query = "SELECT * FROM communication_events WHERE event_id = $1";
+    const query = "SELECT * FROM communication_events WHERE event_id = $1";
     const params: any[] = [id];
     
-    // WORK-015: Enforce tenant isolation - always filter by tenant/workspace if context is provided
-    if (context) {
-      query += " AND tenant_id = $2 AND workspace_id = $3";
-      params.push(context.tenantId, context.workspaceId);
+    // Create a mutable copy of the query to allow modifications
+    let mutableQuery = query;
+    try {
+      // Development: Always filter explicitly by tenant/workspace (RLS not used in dev)
+      if (context) {
+        mutableQuery += " AND tenant_id = $2 AND workspace_id = $3";
+        params.push(context.tenantId, context.workspaceId);
+      }
+      
+      const result = await readPool.query(mutableQuery, params);
+      if (result.rows.length === 0) return undefined;
+      return mapRowToCommunicationEvent(result.rows[0]);
+    } catch (error) {
+      console.error("[CommunicationRepositoryPostgres] byId error:", error);
+      throw error;
     }
-    
-    const result = await readPool.query(query, params);
-    if (result.rows.length === 0) return undefined;
-    return mapRowToCommunicationEvent(result.rows[0]);
   }
 
   async byWorkId(workId: string, context?: { tenantId: string; workspaceId: string }): Promise<readonly CommunicationEvent[]> {

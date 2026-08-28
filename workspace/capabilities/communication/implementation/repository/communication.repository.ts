@@ -207,7 +207,7 @@ class CommunicationRepositoryInMemoryImpl implements CommunicationRepository {
     }
     
     // Ensure entity has required Lamport clock properties for causal tracking
-    const lastEvent: LamportCommunicationEvent | null = inMemoryEvents.length > 0 ? inMemoryEvents[inMemoryEvents.length - 1] : null;
+    const lastEvent: LamportCommunicationEvent | null | undefined = inMemoryEvents.length > 0 ? inMemoryEvents[inMemoryEvents.length - 1] : null;
     
     // Type guard to check if entity is already a LamportCommunicationEvent
     function isLamportEvent(e: CommunicationEvent | LamportCommunicationEvent): e is LamportCommunicationEvent {

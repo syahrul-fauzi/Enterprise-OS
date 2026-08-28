@@ -4,7 +4,7 @@
  */
 import { window } from 'vm';
 import { describe, it, expect } from '@jest/globals';
-import type { CreateCaseInput, CreateCaseOutput } from '../../../capabilities/legal-case/implementation/contracts/index.js';
+import type { CreateCaseInput, CreateCaseOutput } from '../../../capabilities/legal-case/contracts/index.js';
 
 // Mock the capability registry (simulate what the browser would have)
 const mockCapabilityRegistry = {

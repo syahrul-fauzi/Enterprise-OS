@@ -142,6 +142,53 @@ export type SessionRepository = {
   remove(id: SessionId): Promise<boolean>;
 };
 
+// Intent primitive - first-class EOS primitive for capturing user needs before work formation
+// Implements the EOS Face → Intent/Need → Work Formation flow
+export type IntentId = string & { readonly __intentId: unique symbol };
+export function IntentId(value: string): IntentId {
+  return value as IntentId;
+}
+
+export type IntentStatus = 
+  | "DRAFT"
+  | "UNDERSTANDING"
+  | "RESOLVED"
+  | "CONVERTED_TO_WORK"
+  | "ARCHIVED";
+
+export type IntentCategory = 
+  | "LEGAL_SERVICE"
+  | "GENERAL_INQUIRY"
+  | "SUPPORT_REQUEST"
+  | "PRODUCT_REQUEST"
+  | "GOVERNANCE_ACTION";
+
+export interface IntentAggregate {
+  readonly id: IntentId;
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
+  readonly title: string;
+  readonly description?: string;
+  readonly category: IntentCategory;
+  readonly status: IntentStatus;
+  readonly metadata?: Record<string, any>;
+  readonly convertedToWorkId?: string;
+  readonly createdAt: Readonly<Date>;
+  readonly updatedAt: Readonly<Date>;
+  readonly version?: number;
+}
+
+export type IntentRepository = {
+  readonly entityName: "Intent";
+  readonly kind: "repository";
+  byId(id: string, context?: { tenantId: string; workspaceId: string }): Promise<IntentAggregate | undefined>;
+  list(): Promise<readonly IntentAggregate[]>;
+  save(entity: IntentAggregate): Promise<IntentAggregate>;
+  remove(id: string): Promise<boolean>;
+  markAsConverted(intentId: string, workId: string): Promise<boolean>;
+};
+
 export const RegisterUserInputSchema = z.object({
   email: z.string().min(3).email(),
   password: z.string().min(8),

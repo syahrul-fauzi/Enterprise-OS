@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import type { WorkRealityPerspective } from './work-reality.types';
+import type { WorkRealityPerspective } from '@repo/presentation-entities';
 
 // Perspective-specific header labels
 const perspectiveLabels: Record<WorkRealityPerspective, string> = {

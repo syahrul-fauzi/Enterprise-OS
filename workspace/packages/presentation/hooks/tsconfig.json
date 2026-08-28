@@ -6,7 +6,7 @@
     "baseUrl": ".",
     "strictNullChecks": true,
     "tsBuildInfoFile": "tsconfig.tsbuildinfo",
-    "ignoreDeprecations": "5.0",
+    "skipLibCheck": true,
     "paths": {
       "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
       "@repo/core-kernel/*": ["../../packages/core/kernel/src/*"],
@@ -18,8 +18,6 @@
       "@repo/core-capability-registry/*": ["../../packages/core/capability-registry/src/*"],
       "@repo/presentation-ui-system": ["../../packages/presentation/ui-system/src/index.ts"],
       "@repo/presentation-ui-system/*": ["../../packages/presentation/ui-system/src/*"],
-      "@repo/presentation-types": ["../../packages/presentation/presentation-types/src/index.ts"],
-      "@repo/presentation-types/*": ["../../packages/presentation/presentation-types/src/*"],
       "@repo/presentation-foundation": ["../../packages/presentation/foundation/src/index.ts"],
       "@repo/presentation-foundation/*": ["../../packages/presentation/foundation/src/*"],
       "@repo/presentation-widgets": ["../../packages/presentation/widgets/src/index.ts"],

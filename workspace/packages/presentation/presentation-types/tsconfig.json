@@ -1,9 +1,0 @@
-{
-  "extends": "@repo/config-typescript/base.json",
-  "compilerOptions": {
-    "outDir": "./dist",
-    "composite": true,
-    "incremental": true
-  },
-  "include": ["src"]
-}

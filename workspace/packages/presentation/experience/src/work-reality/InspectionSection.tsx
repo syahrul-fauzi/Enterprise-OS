@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import type { WorkInspection, WorkRealityPerspective } from './work-reality.types';
+import type { WorkInspection, WorkRealityPerspective } from '@repo/presentation-entities';
 
 // Perspective-specific header labels (hanya dipakai oleh operator/agent, tidak pernah dilihat customer/professional)
 const perspectiveLabels: Record<WorkRealityPerspective, string> = {

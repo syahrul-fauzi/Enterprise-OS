@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import * as crypto from "node:crypto";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   WORKSPACE_SESSION_COOKIE,
   encodeWorkspaceSession,
   type WorkspaceSession,
 } from "@repo/core-kernel";
-import { randomUUID } from "node:crypto";
 import {
   getUserRepositoryPostgres,
   getSessionRepositoryPostgres,
@@ -71,13 +73,13 @@ export async function POST(request: Request) {
     const tenantRepository = getTenantRepositoryPostgres();
     const workspaceRepository = getWorkspaceRepositoryPostgres();
     
-    // Seed data logic - PASTIKAN BERJALAN SETIAP KALI JIKA TABEL KOSONG
-    const fs = require('fs');
-    const path = require('path');
-    const usersData = JSON.parse(fs.readFileSync(path.join('/app/data/users.json'), 'utf8'));
-    const tenantsData = JSON.parse(fs.readFileSync(path.join('/app/data/tenants.json'), 'utf8'));
-    const workspacesData = JSON.parse(fs.readFileSync(path.join('/app/data/workspaces.json'), 'utf8'));
-    const membershipsData = JSON.parse(fs.readFileSync(path.join('/app/data/memberships.json'), 'utf8'));
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const DATA_DIR = path.resolve(__dirname, "../../../../../../../data");
+
+    const usersData = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "users.json"), "utf8"));
+    const tenantsData = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "tenants.json"), "utf8"));
+    const workspacesData = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "workspaces.json"), "utf8"));
+    const membershipsData = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "memberships.json"), "utf8"));
 
     // Seed users if empty
     const existingUsers = await userRepository.list();
@@ -205,13 +207,15 @@ export async function POST(request: Request) {
     } as SessionAggregate);
     console.log("[LOGIN SUCCESS] Session created:", sessionId);
 
+    const effectiveProductId = workspace.productId || "lawyershub.default";
+
     const session: WorkspaceSession = {
       sessionId: sessionId,
       actorId: user.id,
       actorLabel: user.displayName || "User",
       tenantId: tenant.id,
       workspaceId: workspace.id,
-      productId: "services-id.default",
+      productId: effectiveProductId,
       issuedAt: new Date().toISOString(),
       userId: user.id,
     } as WorkspaceSession;
@@ -227,7 +231,7 @@ export async function POST(request: Request) {
         workspaceId: workspace.id,
         productId: session.productId,
         sessionId: sessionId,
-        redirectUrl: `/${tenant.slug}/${workspace.slug}`,
+        redirectUrl: "/workspace",
       },
       { status: 200 },
     );

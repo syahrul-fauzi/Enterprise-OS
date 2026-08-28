@@ -3,24 +3,47 @@
   "compilerOptions": {
     "outDir": "./dist",
     "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
     "composite": true,
     "incremental": true,
     "jsx": "react-jsx",
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "paths": {
-      "@repo/presentation-types": ["../presentation-types/dist"],
-      "@repo/presentation-config": ["../config/dist"],
-      "@products/*": ["../../../products/*"]
+      "@repo/presentation-config": [
+        "../config/dist"
+      ],
+      "@repo/presentation-entities": [
+        "../entities/dist/src"
+      ],
+      "@repo/presentation-pages": [
+        "../pages/dist/src"
+      ],
+      "@products/*": [
+        "../../../products/*"
+      ]
     }
   },
-  "include": ["src"],
+  "include": [
+    "src/**/*"
+  ],
   "references": [
-    { "path": "../config" },
-    { "path": "../presentation-types" },
-    { "path": "../../../products/academic" },
-    { "path": "../../../products/ilc" },
-    { "path": "../../../products/lawyershub" },
-    { "path": "../../../products/services-id" },
-    { "path": "../../../products/commsme" }
+    {
+      "path": "../config"
+    },
+    {
+      "path": "../entities"
+    },
+    {
+      "path": "../pages"
+    },
+    {
+      "path": "../../../products/academic"
+    },
+    {
+      "path": "../../../products/lawyershub"
+    },
+    {
+      "path": "../../../products/services-id"
+    }
   ]
 }

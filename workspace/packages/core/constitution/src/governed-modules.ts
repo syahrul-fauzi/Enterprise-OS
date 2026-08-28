@@ -1,4 +1,4 @@
-import { DigestEngine } from "@repo/core-kernel";
+import { DigestEngine } from "@repo/core-kernel/digest-engine.js";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import type {

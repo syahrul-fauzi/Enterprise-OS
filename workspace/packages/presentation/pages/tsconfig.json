@@ -1,0 +1,35 @@
+{
+  "extends": "../../../config/typescript/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "composite": true,
+    "incremental": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "@repo/presentation-templates": [
+        "../templates/dist/src"
+      ],
+      "@repo/presentation-features": [
+        "../features/src"
+      ],
+      "@repo/presentation-ui-system": [
+        "../ui-system/src"
+      ],
+      "@repo/presentation-entities": [
+        "../entities/dist/src"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "references": [
+    {
+      "path": "../templates"
+    },
+    {
+      "path": "../entities"
+    }
+  ]
+}

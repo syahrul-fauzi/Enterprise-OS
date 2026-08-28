@@ -4,7 +4,7 @@ import {
   decodeWorkspaceSession,
   createAnonymousWorkspaceSession
 } from "@repo/core-kernel";
-import { CommunicationRepositoryInMemory } from "../../../../../../capabilities/communication/dist/repository/communication.repository.js";
+import { CommunicationRepositoryInMemory } from "../../../../../../capabilities/communication/implementation/repository/index";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import crypto from "crypto";
 

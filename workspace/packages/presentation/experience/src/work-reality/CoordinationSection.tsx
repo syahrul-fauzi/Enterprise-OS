@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useWorkspaceSession } from "@repo/presentation-hooks";
-import type { WorkCoordinationAction, WorkRealityPerspective } from './work-reality.types';
+import type { WorkCoordinationAction, WorkRealityPerspective } from '@repo/presentation-entities';
 
 interface CoordinationSectionProps {
   actions: WorkCoordinationAction[];

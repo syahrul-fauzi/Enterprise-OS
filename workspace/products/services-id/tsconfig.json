@@ -5,6 +5,10 @@
     "rootDir": "./",
     "composite": true
   },
-  "include": ["index.ts", "runtime"],
+  "references": [
+    { "path": "../../packages/core/kernel/tsconfig.json" },
+    { "path": "../../packages/core/runtime/tsconfig.json" }
+  ],
+  "include": ["index.ts", "runtime/**/*.ts", "runtime/**/*.tsx", "tests/**/*.ts", "tests/**/*.tsx"],
   "exclude": ["dist", "build", "node_modules"]
 }

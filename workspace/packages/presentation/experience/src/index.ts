@@ -40,7 +40,9 @@ export type {
   EvidenceArtifact,
   WorkRealityModel,
   WorkRealityPerspective
-} from './work-reality';
+} from '@repo/presentation-entities';
+
+export { WORK_PERSPECTIVES } from '@repo/presentation-entities';
 
 // ============================================================================
 // SERVER-ONLY BOUNDARY - readProductBinding excluded from shared barrel
@@ -69,7 +71,7 @@ export type {
   ProductTrustSignal,
   ProductJourneyStep,
   ProductTheme,
-} from '@repo/presentation-types';
+} from '@repo/presentation-entities';
 export type {
   ProductLandingSection,
   ProductWorkflowCopy,

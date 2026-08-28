@@ -1,0 +1,1 @@
+export { WorkRealityTemplate } from './work-reality-template/WorkRealityTemplate';

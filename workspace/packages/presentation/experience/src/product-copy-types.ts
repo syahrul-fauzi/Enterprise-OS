@@ -1,4 +1,4 @@
-import type { ProductExperience as CanonicalProductExperience } from "@repo/presentation-types";
+import type { ProductExperience as CanonicalProductExperience } from "@repo/presentation-entities";
 
 export interface ProductLandingSection {
   readonly id?: string;

@@ -5,7 +5,7 @@ import path from "node:path";
 import * as yaml from "js-yaml";
 import { capabilityRegistry, type CommandInvocationRecord } from "../../../packages/core/kernel/src/index.js";
 import { CaseRepositoryInMemory } from "../../../capabilities/legal-case/implementation/repository/case.repository.js";
-import type { CaseAggregate, CaseStatus } from "../../../capabilities/legal-case/implementation/contracts/case.contracts.js";
+import type { CaseAggregate, CaseStatus } from "../../../capabilities/legal-case/contracts/index.js";
 import { DocumentRepositoryInMemory } from "../../../capabilities/legal-document/implementation/repository/index.js";
 import { DocumentId } from "../../../capabilities/legal-document/implementation/contracts/index.js";
 import type { DocumentAggregate, DocumentStatus } from "../../../capabilities/legal-document/implementation/contracts/index.js";

@@ -5,7 +5,7 @@ import {
   radiusPx,
   spacingPx,
   transitionBase,
-} from "../foundation";
+} from "../foundation.js";
 
 export interface CardProps {
   readonly as?: ElementType;

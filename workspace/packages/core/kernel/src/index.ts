@@ -87,6 +87,17 @@ export type {
   CommandInvocationRecord,
 } from "./registry/capability-command-registry";
 
+// Golden Kernel Invariant Registry (Trust Boundary)
+export type {
+  KernelInvariant,
+} from "./invariant.registry";
+export {
+  GOLDEN_KERNEL_INVARIANTS,
+  validateInvariant,
+  getInvariant,
+  getAllInvariants,
+} from "./invariant.registry";
+
 // Core runtime mediation layer (ARCH-04 compliant - capabilities access core-runtime ONLY via core-kernel)
 //
 // SERVER-ONLY BOUNDARY: recordRuntimeInvocation and traceExecutionByDecision are

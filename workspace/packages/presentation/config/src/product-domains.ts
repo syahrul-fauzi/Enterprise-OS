@@ -26,30 +26,31 @@ export interface ProductDomainConfig {
   readonly spineNavigation: readonly SpineNavigationItem[];
 }
 
-// Konfigurasi semua produk di ecosystem - baca dari env var dengan fallback
-export const PRODUCT_DOMAINS: readonly ProductDomainConfig[] = [
-  {
+// Konfigurasi semua produk di ecosystem - format Record<string, ProductDomainConfig>
+// untuk lookup O(1) berdasarkan productId yang sesuai dengan URL slug
+export const PRODUCT_DOMAINS: Record<string, ProductDomainConfig> = {
+  'lawyershub': {
     productId: "lawyershub",
     domain: process.env.LAWYERSHUB_DOMAIN || "lawyershub.id",
     wwwDomain: process.env.LAWYERSHUB_WWW_DOMAIN || "www.lawyershub.id",
-    rootRoute: "/cases",
+    rootRoute: "/work",
     displayName: "LawyersHub",
     whiteLabelEnabled: true, // WHITE LABEL SUPPORT: klien bisa pakai domain mereka sendiri
     subdomainPattern: "*.lawyershub.id", // SUBODMAIN SUPPORT: firma1.lawyershub.id, firma2.lawyershub.id
     tenantSubdomainSupported: true,
     // EOS Product Spine Navigation - hanya 3 item (10× decision surface reduction)
     spineNavigation: [
-      { key: "work", labelKey: "navigation.work", href: "/cases" },
+      { key: "work", labelKey: "navigation.work", href: "/work" },
       { key: "communication", labelKey: "navigation.communication", href: "/communications" },
       { key: "profile", labelKey: "navigation.profile", href: "/profile" }
     ]
   },
-  {
+  'services-id': {
     productId: "services-id",
     domain: process.env.SERVICES_ID_DOMAIN || "services-id.com",
     wwwDomain: process.env.SERVICES_ID_WWW_DOMAIN || "www.services-id.com",
     rootRoute: "/services",
-    displayName: "Services ID",
+    displayName: "Services.ID",
     whiteLabelEnabled: true,
     subdomainPattern: "*.services-id.com",
     tenantSubdomainSupported: true,
@@ -60,7 +61,7 @@ export const PRODUCT_DOMAINS: readonly ProductDomainConfig[] = [
       { key: "profile", labelKey: "navigation.profile", href: "/profile" }
     ]
   },
-  {
+  'ilc': {
     productId: "ilc",
     domain: process.env.ILC_DOMAIN || "indonesialawyersclub.id",
     wwwDomain: process.env.ILC_WWW_DOMAIN || "www.indonesialawyersclub.id",
@@ -76,7 +77,7 @@ export const PRODUCT_DOMAINS: readonly ProductDomainConfig[] = [
       { key: "profile", labelKey: "navigation.profile", href: "/profile" }
     ]
   },
-  {
+  'academic': {
     productId: "academic",
     domain: process.env.ACADEMIC_DOMAIN || "academic.enterprise-os.com",
     wwwDomain: `www.${process.env.ACADEMIC_DOMAIN || "academic.enterprise-os.com"}`,
@@ -92,7 +93,7 @@ export const PRODUCT_DOMAINS: readonly ProductDomainConfig[] = [
       { key: "profile", labelKey: "navigation.profile", href: "/profile" }
     ]
   },
-  {
+  'commsme': {
     productId: "commsme",
     domain: process.env.COMMSME_DOMAIN || "commsme.enterprise-os.com",
     wwwDomain: `www.${process.env.COMMSME_DOMAIN || "commsme.enterprise-os.com"}`,
@@ -108,14 +109,27 @@ export const PRODUCT_DOMAINS: readonly ProductDomainConfig[] = [
       { key: "profile", labelKey: "navigation.profile", href: "/profile" }
     ]
   }
-];
+};
+
+// Array version untuk backward compatibility dengan kode yang melakukan iterasi
+export const PRODUCT_DOMAINS_ARRAY: readonly ProductDomainConfig[] = Object.values(PRODUCT_DOMAINS);
+
+/**
+ * Mendapatkan konfigurasi domain produk berdasarkan productId (URL slug)
+ * Fungsi ini adalah SSoT lookup untuk semua Server Component/Route Handler
+ */
+export function getProductDomainConfig(productId: string): ProductDomainConfig | undefined {
+  // Normalisasi input untuk menghindari case sensitivity issues
+  const normalizedId = productId?.toLowerCase();
+  return PRODUCT_DOMAINS[normalizedId];
+}
 
 // Master domain untuk mengakses semua produk dalam satu tempat
 export const EOS_MASTER_DOMAIN = process.env.EOS_MASTER_DOMAIN || "eos.enterprise-os.com";
 
 // Build lookup map untuk cepat mencari productId dari hostname
 export const DOMAIN_TO_PRODUCT_MAP: ReadonlyMap<string, ProductDomainConfig> = new Map(
-  PRODUCT_DOMAINS.flatMap(config => [
+  PRODUCT_DOMAINS_ARRAY.flatMap(config => [
     [config.domain, config],
     [config.wwwDomain, config]
   ])
@@ -154,7 +168,7 @@ export function getTenantSubdomain(hostname: string): string | null {
   // Jika ada lebih dari 2 bagian, berarti ada subdomain
   if (parts.length > 2) {
     // Cek apakah subdomain cocok dengan pattern produk mana pun
-    for (const product of PRODUCT_DOMAINS) {
+    for (const product of PRODUCT_DOMAINS_ARRAY) {
       if (product.tenantSubdomainSupported && baseHost.endsWith(product.domain)) {
         return parts[0] ?? null; // Return subdomain sebagai tenant ID, null jika undefined
       }
@@ -171,7 +185,7 @@ export function getProductFromSubdomain(hostname: string): ProductDomainConfig |
   if (!baseHost) return undefined;
   
   // Cek semua produk yang support subdomain
-  for (const product of PRODUCT_DOMAINS) {
+  for (const product of PRODUCT_DOMAINS_ARRAY) {
     if (product.subdomainPattern && baseHost.endsWith(product.domain)) {
       return product;
     }
@@ -218,6 +232,6 @@ export function getSpineNavigationForHostname(hostname: string): readonly SpineN
  * Mendapatkan EOS Product Spine navigation items untuk productId tertentu
  */
 export function getSpineNavigationForProductId(productId: string): readonly SpineNavigationItem[] | undefined {
-  const product = PRODUCT_DOMAINS.find(p => p.productId === productId);
+  const product = PRODUCT_DOMAINS_ARRAY.find(p => p.productId === productId);
   return product?.spineNavigation;
 }

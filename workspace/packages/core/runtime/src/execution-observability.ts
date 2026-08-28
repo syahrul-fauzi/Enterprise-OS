@@ -4,6 +4,18 @@ import type { ExecutionContext } from "./execution-context.js";
 
 // PT-003: OpenTelemetry-style observability instrumentation
 // HANYA measurement, TIDAK ADA repair/recovery logic
+export interface CircuitBreakerState {
+  consecutive_failures: number;
+  is_open: boolean;
+  last_failure_time_ms: number;
+}
+
+export interface ConcurrencyState {
+  in_flight_executions: number;
+  active_execution_ids: string[];
+  artifact_ids_in_use: string[];
+}
+
 export interface ObservedExecution {
   decision_id: string;
   executionId: string;
@@ -16,12 +28,15 @@ export interface ObservedExecution {
   timestamp_utc: string;
   success: boolean;
   error?: string;
+  // WORK-PROD-004: Circuit breaker & concurrency state tracking
+  circuit_breaker?: CircuitBreakerState;
+  concurrency?: ConcurrencyState;
 }
 
 export const executionTraces: Map<string, ObservedExecution[]> = new Map();
 
 // Auto-capture context dari ambient executionContext
-export function recordObservedExecution(execution: Omit<ObservedExecution, "timestamp_utc" | "is_reentry" | "context_trace_id" | "parent_context_trace_id" | "idempotency_key"> & { logicalWorkId?: string }): void {
+export function recordObservedExecution(execution: Omit<ObservedExecution, "timestamp_utc" | "is_reentry" | "context_trace_id" | "parent_context_trace_id" | "idempotency_key" | "circuit_breaker" | "concurrency"> & { logicalWorkId?: string }): void {
   const ambientCtx = executionContext.get();
   const timestamp = new Date().toISOString();
   
@@ -34,6 +49,24 @@ export function recordObservedExecution(execution: Omit<ObservedExecution, "time
   const is_reentry = ambientCtx?.is_reentry || false;
   const parent_context_trace_id = ambientCtx?.parent_context_trace_id || null;
   
+  // WORK-PROD-004: Extract circuit breaker state from execution context if available
+  const circuit_breaker: CircuitBreakerState | undefined = ambientCtx?.circuit_breaker_state ? {
+    consecutive_failures: ambientCtx.circuit_breaker_state.consecutiveFailures,
+    is_open: ambientCtx.circuit_breaker_state.isOpen,
+    last_failure_time_ms: ambientCtx.circuit_breaker_state.lastFailureTime
+  } : ambientCtx?.circuit_breaker_open !== undefined || ambientCtx?.consecutive_failures !== undefined ? {
+    consecutive_failures: ambientCtx?.consecutive_failures ?? 0,
+    is_open: ambientCtx?.circuit_breaker_open ?? false,
+    last_failure_time_ms: 0
+  } : undefined;
+  
+  // WORK-PROD-004: Extract concurrency state from execution context if available
+  const concurrency: ConcurrencyState | undefined = ambientCtx?.concurrency_state ? {
+    in_flight_executions: ambientCtx.concurrency_state.active_count,
+    active_execution_ids: ambientCtx.concurrency_state.execution_ids,
+    artifact_ids_in_use: ambientCtx.concurrency_state.artifact_ids
+  } : undefined;
+  
   const observed: ObservedExecution = {
     ...execution,
     logicalWorkId,
@@ -41,6 +74,8 @@ export function recordObservedExecution(execution: Omit<ObservedExecution, "time
     is_reentry,
     parent_context_trace_id,
     idempotency_key,
+    circuit_breaker,
+    concurrency,
     timestamp_utc: timestamp
   };
 
@@ -150,4 +185,167 @@ export function shouldOpenCircuitBreaker(consecutiveFailures: number, threshold?
 export function shouldResetCircuitBreaker(lastFailureTime: number, cooldownMs?: number): boolean {
   const circuitCooldown = cooldownMs ?? 30000; // Default 30 second cooldown
   return Date.now() - lastFailureTime >= circuitCooldown;
+}
+
+// --- WORK-PROD-004: Production Monitoring & Observability Extensions ---
+// Core business metrics for Work Reality operations
+export interface WorkRealityMetrics {
+  work_id: string;
+  total_executions: number;
+  successful_executions: number;
+  failed_executions: number;
+  total_latency_ms: number;
+  p95_latency_ms: number;
+  avg_latency_ms: number;
+  error_rate: number;
+  last_updated_utc: string;
+}
+
+const workMetricsStore: Map<string, WorkRealityMetrics> = new Map();
+
+// Record execution metrics for a specific Work
+export function recordWorkExecutionMetrics(workId: string, executionTimeMs: number, success: boolean): void {
+  const existing = workMetricsStore.get(workId) ?? {
+    work_id: workId,
+    total_executions: 0,
+    successful_executions: 0,
+    failed_executions: 0,
+    total_latency_ms: 0,
+    p95_latency_ms: 0,
+    avg_latency_ms: 0,
+    error_rate: 0,
+    last_updated_utc: new Date().toISOString()
+  };
+
+  // Update metrics
+  existing.total_executions += 1;
+  existing.total_latency_ms += executionTimeMs;
+  if (success) {
+    existing.successful_executions += 1;
+  } else {
+    existing.failed_executions += 1;
+  }
+  
+  // Recalculate aggregates
+  existing.avg_latency_ms = existing.total_latency_ms / existing.total_executions;
+  existing.error_rate = existing.failed_executions / existing.total_executions;
+  // Simplified p95 calculation (production would use proper percentile calculation)
+  existing.p95_latency_ms = Math.max(existing.p95_latency_ms, executionTimeMs);
+  existing.last_updated_utc = new Date().toISOString();
+
+  workMetricsStore.set(workId, existing);
+  
+  // Structured logging for observability platforms
+  console.log(`[METRICS] work=${workId} | executions=${existing.total_executions} | success=${existing.successful_executions} | errors=${existing.failed_executions} | error_rate=${(existing.error_rate * 100).toFixed(2)}% | avg_latency=${existing.avg_latency_ms.toFixed(2)}ms | p95_latency=${existing.p95_latency_ms}ms`);
+}
+
+// Get metrics for a specific Work
+export function getWorkMetrics(workId: string): WorkRealityMetrics | undefined {
+  return workMetricsStore.get(workId);
+}
+
+// Get all tracked Work metrics
+export function getAllWorkMetrics(): WorkRealityMetrics[] {
+  return Array.from(workMetricsStore.values());
+}
+
+// Alerting thresholds for critical metrics (aligned with production-readiness requirements)
+export const ALERT_THRESHOLDS = {
+  error_rate: 0.05, // Alert if error rate >5%
+  p95_latency_ms: 2000, // Alert if p95 latency >2s
+  consecutive_failures: 5 // Alert after 5 consecutive failures for a Work
+} as const;
+
+// Database connection pool metrics interface for external monitoring
+export interface ConnectionPoolMetrics {
+  total_connections: number;
+  active_connections: number;
+  idle_connections: number;
+  waiting_connections: number;
+  max_pool_size: number;
+  last_updated_utc: string;
+}
+
+const connectionPoolMetricsStore: Map<string, ConnectionPoolMetrics> = new Map();
+
+// Update database connection pool metrics
+export function updateConnectionPoolMetrics(poolId: string, metrics: Omit<ConnectionPoolMetrics, "last_updated_utc">): void {
+  const updated: ConnectionPoolMetrics = {
+    ...metrics,
+    last_updated_utc: new Date().toISOString()
+  };
+  connectionPoolMetricsStore.set(poolId, updated);
+  console.log(`[DB_POOL] pool=${poolId} | active=${updated.active_connections}/${updated.max_pool_size} | idle=${updated.idle_connections} | waiting=${updated.waiting_connections}`);
+}
+
+// Get connection pool metrics for a specific pool
+export function getConnectionPoolMetrics(poolId: string): ConnectionPoolMetrics | undefined {
+  return connectionPoolMetricsStore.get(poolId);
+}
+
+// Get all connection pool metrics
+export function getAllConnectionPoolMetrics(): ConnectionPoolMetrics[] {
+  return Array.from(connectionPoolMetricsStore.values());
+}
+
+// Core SLO definitions for production Work operations
+export const WORK_OPERATION_SLOS = {
+  p95_latency_ms: 2000, // 95% of operations must complete <2s
+  availability_percent: 99.9, // 99.9% uptime
+  error_rate_max: 0.001, // <0.1% error rate
+  concurrent_executions_max: 100 // Max 100 concurrent Work executions
+} as const;
+
+// Check if metrics exceed alert thresholds and return anomaly detection result
+export function detectMetricAnomalies(workId: string): {
+  has_anomaly: boolean;
+  anomalies: string[];
+  metrics: WorkRealityMetrics | undefined;
+} {
+  const metrics = workMetricsStore.get(workId);
+  if (!metrics) {
+    return { has_anomaly: false, anomalies: [], metrics: undefined };
+  }
+
+  const anomalies: string[] = [];
+  
+  if (metrics.error_rate > ALERT_THRESHOLDS.error_rate) {
+    anomalies.push(`Error rate ${(metrics.error_rate * 100).toFixed(2)}% exceeds threshold of ${ALERT_THRESHOLDS.error_rate * 100}%`);
+  }
+  
+  if (metrics.p95_latency_ms > ALERT_THRESHOLDS.p95_latency_ms) {
+    anomalies.push(`P95 latency ${metrics.p95_latency_ms}ms exceeds threshold of ${ALERT_THRESHOLDS.p95_latency_ms}ms`);
+  }
+
+  return {
+    has_anomaly: anomalies.length > 0,
+    anomalies,
+    metrics
+  };
+}
+
+// Database connection pool metrics tracking
+export interface ConnectionPoolMetrics {
+  pool_name: string;
+  total_connections: number;
+  active_connections: number;
+  idle_connections: number;
+  wait_count: number;
+  last_updated_utc: string;
+}
+
+const poolMetricsStore: Map<string, ConnectionPoolMetrics> = new Map();
+
+export function recordConnectionPoolMetrics(poolName: string, metrics: Omit<ConnectionPoolMetrics, "pool_name" | "last_updated_utc">): void {
+  poolMetricsStore.set(poolName, {
+    ...metrics,
+    pool_name: poolName,
+    last_updated_utc: new Date().toISOString()
+  });
+  
+  console.log(`[DB_POOL] pool=${poolName} | total=${metrics.total_connections} | active=${metrics.active_connections} | idle=${metrics.idle_connections} | wait=${metrics.wait_count}`);
+}
+
+export function getPoolMetrics(poolName: string): ConnectionPoolMetrics | undefined {
+  return poolMetricsStore.get(poolName);
 }

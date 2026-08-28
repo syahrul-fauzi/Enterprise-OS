@@ -1,2074 +1,2074 @@
-import { canonicalSerialize } from "../canonical/serialize.js";
-import type {
-  EvidenceId,
-  EvidencePackage,
-  EvidencePackageIdentity,
-  GraphTopologyId,
-  ClaimRelation,
-  CertificationClaim,
-  RelationId,
-  CertificationSnapshotId,
-  CertificationMatrixEnvelope,
-  ExperimentDefinition,
-  ExperimentDefinitionId,
-  ExperimentExecution,
-  ExperimentExecutionId,
-  RawObservation,
-  RawObservationId,
-  ProvenanceEdgeId as ProvenanceEdgeIdType,
-  ObservationSemanticEquivalenceEdge,
-  ObservationQualityEntry,
-  ObservationLifecycleEntry,
-  ObservationLifecycleState,
-  ReplicationGroup,
-  ExperimentExecutionRegistryEntry,
-  ExperimentDefinitionRegistryEntry,
-  RawObservationRegistryEntry,
-  ClaimConsensusClassification,
-} from "./types.js";
-import {
-  EvidenceId as EvidenceIdBrand,
-  GraphTopologyId as GraphTopologyIdBrand,
-  RelationId as RelationIdBrand,
-  CertificationSnapshotId as CertificationSnapshotIdBrand,
-  EVIDENCE_SCHEMA_VERSION,
-  PROVENANCE_PROTOCOL_VERSION,
-  ExperimentDefinitionId as ExperimentDefinitionIdBrand,
-  ExperimentExecutionId as ExperimentExecutionIdBrand,
-  RawObservationId as RawObservationIdBrand,
-  ProvenanceEdgeId as ProvenanceEdgeIdBrand,
-} from "./types.js";
-
-export type Sha256Hex = string;
-
-let runtimeSha256: ((input: string) => Promise<Sha256Hex>) | null = null;
-
-type NodeCryptoApi = {
-  readonly createHash: (alg: "sha256") => {
-    readonly update: (s: string) => unknown;
-    readonly digest: (enc: "hex") => string;
-  };
-};
-
-function isStringRecord(v: unknown): v is Record<string, unknown> {
-  return typeof v === "object" && v !== null && !Array.isArray(v);
-}
-
-function detectNodeCryptoFromGlobalThis(): NodeCryptoApi | null {
-  try {
-    const anyGlobal = globalThis as unknown as Record<string, unknown>;
-    const proc = anyGlobal.process;
-    if (!isStringRecord(proc)) return null;
-    const versions = proc.versions;
-    if (!isStringRecord(versions)) return null;
-    if (typeof versions.node !== "string") return null;
-
-    const tryAsCrypto = (v: unknown): NodeCryptoApi | null => {
-      if (isStringRecord(v) && typeof (v as Record<string, unknown>).createHash === "function") {
-        return v as unknown as NodeCryptoApi;
-      }
-      return null;
-    };
-
-    const anyMod = anyGlobal.module as unknown as Record<string, unknown> | undefined;
-    const builtinRequire: unknown = isStringRecord(anyMod) ? (anyMod as Record<string, unknown>).builtinRequire : undefined;
-
-    // Path 1: globalThis.require (CommonJS context — not available in pure ESM)
-    const gRequire: unknown = anyGlobal.require;
-    if (typeof gRequire === "function") {
-      const r = tryAsCrypto((gRequire as (id: string) => unknown)("crypto"));
-      if (r !== null) return r;
-    }
-
-    // Path 2: module.builtinRequire (some bundlers)
-    if (typeof builtinRequire === "function") {
-      const r = tryAsCrypto((builtinRequire as (id: string) => unknown)("crypto"));
-      if (r !== null) return r;
-    }
-
-    // Path 3: process.mainModule.require (Node CJS legacy — null in ESM but try anyway)
-    const mainMod = (proc as Record<string, unknown>).mainModule;
-    if (isStringRecord(mainMod) && typeof (mainMod as Record<string, unknown>).require === "function") {
-      try {
-        const r = tryAsCrypto(((mainMod as Record<string, unknown>).require as (id: string) => unknown)("crypto"));
-        if (r !== null) return r;
-      } catch { /* ignore */ }
-    }
-
-    // Path 4: Function-constructor dynamic evaluation (SAFE: identifier `require` hanya ada DALAM STRING — tidak terdeteksi TS2580,
-    // dan pada Node.js runtime, Function constructor mendapatkan scope globals + require pada CJS.
-    // Untuk ESM Node: fallback ke process.dlopen atau internal binding melalui eval string juga.
-    const pathways = [
-      // CJS-style: require dari Function scope globals
-      '(function(){try{return require("crypto")}catch(e){return null}})()',
-      // ESM workaround via createRequire on module (if it exists):
-      '(function(){try{var m=process.binding("natives");if(m&&m.crypto){return null}return null}catch(e){return null}})()',
-      // Last: try module.createRequire via process.mainModule.filename
-      '(function(){try{var m=require("module");var r=m.createRequire(process.argv[1]||process.cwd()+"/x.js");return r("crypto")}catch(e){return null}})()',
-    ];
-    for (const expr of pathways) {
-      try {
-        const fn = new Function(expr) as () => unknown;
-        const resolved = fn();
-        const crypto = tryAsCrypto(resolved);
-        if (crypto !== null) return crypto;
-      } catch { /* ignore pathway */ }
-    }
-  } catch {
-    // ignore top-level
-  }
-  return null;
-}
-
-function detectRuntimeSha256(): ((input: string) => Promise<Sha256Hex>) | null {
-  if (
-    typeof crypto !== "undefined" &&
-    typeof crypto === "object" &&
-    crypto !== null &&
-    typeof (crypto as unknown as Record<string, unknown>).subtle === "object" &&
-    typeof TextEncoder !== "undefined"
-  ) {
-    return async function webCryptoSha256(input: string): Promise<Sha256Hex> {
-      const bytes = new TextEncoder().encode(input);
-      const subtle = (crypto as unknown as { readonly subtle: { readonly digest: (alg: "SHA-256", b: Uint8Array) => Promise<ArrayBuffer> } }).subtle;
-      const buf = await subtle.digest("SHA-256", bytes);
-      return Array.from(new Uint8Array(buf))
-        .map(b => b.toString(16).padStart(2, "0"))
-        .join("");
-    };
-  }
-  const nodeCrypto = detectNodeCryptoFromGlobalThis();
-  if (nodeCrypto !== null) {
-    return async function nodeCryptoSha256(input: string): Promise<Sha256Hex> {
-      const h = nodeCrypto.createHash("sha256");
-      (h as unknown as { update: (s: string) => unknown }).update(input);
-      return (h as unknown as { digest: (e: "hex") => string }).digest("hex");
-    };
-  }
-  return null;
-}
-
-function sha256HexSyncOrThrow(input: string): Sha256Hex {
-  const nodeCrypto = detectNodeCryptoFromGlobalThis();
-  if (nodeCrypto === null) {
-    throw new Error(
-      "computeEvidenceIdSync requires Node.js 'crypto' module (sha256) available via globalThis.require / globalThis.process. " +
-        "WebCrypto is async-only in browser; use computeEvidenceId() async variant.",
-    );
-  }
-  const h = nodeCrypto.createHash("sha256");
-  (h as unknown as { update: (s: string) => unknown }).update(input);
-  return (h as unknown as { digest: (e: "hex") => string }).digest("hex");
-}
-
-export function canonicalEvidenceBundle(pkg: EvidencePackage): string {
-  if (pkg.schemaVersion !== EVIDENCE_SCHEMA_VERSION) {
-    throw new TypeError(
-      `EvidencePackage schemaVersion mismatch: expected ${EVIDENCE_SCHEMA_VERSION}, got ${pkg.schemaVersion}. ` +
-        "Schema version is part of identity; bundles with berbeda schema TIDAK BOLEH saling menimpa.",
-    );
-  }
-  const envelope = {
-    _schemaVersion: pkg.schemaVersion,
-    _packageVersion: pkg.packageVersion,
-    derivation: pkg.derivation,
-    derivedFromEvidenceIds: pkg.derivedFromEvidenceIds ?? [],
-    experimentId: pkg.experimentId,
-    experimentProtocol: pkg.experimentProtocol,
-    environmentConstraints: pkg.environmentConstraints ?? [],
-    assertionIds: pkg.assertionIds ?? [],
-    rawObservations: pkg.rawObservations,
-    hashConsistency: pkg.hashConsistency ?? [],
-    exitCode: pkg.exitCode ?? null,
-    generatedBy: pkg.generatedBy,
-    evidenceSources: pkg.evidenceSources,
-    scriptFile: pkg.scriptFile ?? null,
-    functionName: pkg.functionName ?? null,
-    generatedAt: pkg.generatedAt,
-    gitCommit: pkg.gitCommit ?? null,
-    runner: pkg.runner
-      ? {
-          os: pkg.runner.os ?? null,
-          arch: pkg.runner.arch ?? null,
-          runtime: pkg.runner.runtime ?? null,
-          runtimeVersion: pkg.runner.runtimeVersion ?? null,
-        }
-      : null,
-    producerId: pkg.producerId ?? null,
-    producerName: pkg.producerName ?? null,
-    targetArtifactPath: pkg.targetArtifactPath ?? null,
-    independentRun: pkg.independentRun ?? null,
-  } as const;
-  return canonicalSerialize(envelope) as unknown as string;
-}
-
-export function computeEvidenceIdSync(pkg: EvidencePackage): EvidencePackageIdentity {
-  const bundle = canonicalEvidenceBundle(pkg);
-  const sha = sha256HexSyncOrThrow(bundle);
-  return {
-    id: EvidenceIdBrand(sha),
-    algorithm: "sha-256",
-    schemaVersion: pkg.schemaVersion,
-    canonicalBundleLength: bundle.length,
-    pkg: Object.freeze({ ...pkg }),
-  };
-}
-
-export async function computeEvidenceId(pkg: EvidencePackage): Promise<EvidencePackageIdentity> {
-  const bundle = canonicalEvidenceBundle(pkg);
-  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
-  let sha: Sha256Hex;
-  if (runtimeSha256 !== null) {
-    sha = await runtimeSha256(bundle);
-  } else {
-    sha = sha256HexSyncOrThrow(bundle);
-  }
-  return {
-    id: EvidenceIdBrand(sha),
-    algorithm: "sha-256",
-    schemaVersion: pkg.schemaVersion,
-    canonicalBundleLength: bundle.length,
-    pkg: Object.freeze({ ...pkg }),
-  };
-}
-
-export function verifyEvidenceIdentity(
-  identity: EvidencePackageIdentity,
-): { readonly ok: boolean; readonly recomputedId: EvidenceId; readonly expected: EvidenceId } {
-  const bundle = canonicalEvidenceBundle(identity.pkg);
-  const sha = sha256HexSyncOrThrow(bundle);
-  const recomputed = EvidenceIdBrand(sha);
-  return {
-    ok: recomputed === identity.id,
-    recomputedId: recomputed,
-    expected: identity.id,
-  };
-}
-
-export function canonicalTopology(
-  claims: Readonly<Record<string, CertificationClaim>>,
-  relations: readonly ClaimRelation[],
-): string {
-  const claimIds = Object.keys(claims).sort();
-  const claimsLevel: Record<string, string> = {};
-  for (const id of claimIds) claimsLevel[id] = claims[id]?.evidenceLevel ?? "unknown";
-  const sortedRelations = [...relations]
-    .map(r => ({
-      from: r.fromClaimId,
-      kind: r.kind,
-      to: r.toClaimId,
-      rationale: r.rationale ?? "",
-    }))
-    .sort((a, b) =>
-      a.from === b.from
-        ? a.kind === b.kind
-          ? a.to.localeCompare(b.to)
-          : a.kind.localeCompare(b.kind)
-        : a.from.localeCompare(b.from),
-    );
-  const topologyEnvelope = {
-    _schemaVersion: "1.0",
-    claimIds,
-    claimsEvidenceLevel: claimsLevel,
-    relations: sortedRelations,
-  } as const;
-  return canonicalSerialize(topologyEnvelope) as unknown as string;
-}
-
-export function computeGraphTopologyIdSync(
-  claims: Readonly<Record<string, CertificationClaim>>,
-  relations: readonly ClaimRelation[],
-): { readonly id: GraphTopologyId; readonly topologyLength: number } {
-  const topo = canonicalTopology(claims, relations);
-  const sha = sha256HexSyncOrThrow(topo);
-  return {
-    id: GraphTopologyIdBrand(sha),
-    topologyLength: topo.length,
-  };
-}
-
-export async function computeGraphTopologyId(
-  claims: Readonly<Record<string, CertificationClaim>>,
-  relations: readonly ClaimRelation[],
-): Promise<{ readonly id: GraphTopologyId; readonly topologyLength: number }> {
-  const topo = canonicalTopology(claims, relations);
-  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
-  let sha: Sha256Hex;
-  if (runtimeSha256 !== null) sha = await runtimeSha256(topo);
-  else sha = sha256HexSyncOrThrow(topo);
-  return {
-    id: GraphTopologyIdBrand(sha),
-    topologyLength: topo.length,
-  };
-}
-
-export function canonicalRelation(r: ClaimRelation): string {
-  const envelope = {
-    _schemaVersion: "1.0",
-    fromClaimId: r.fromClaimId,
-    kind: r.kind,
-    toClaimId: r.toClaimId,
-    rationale: r.rationale ?? "",
-  } as const;
-  return canonicalSerialize(envelope) as unknown as string;
-}
-
-export function computeRelationIdSync(r: ClaimRelation): { readonly id: RelationId; readonly canonicalLength: number } {
-  const s = canonicalRelation(r);
-  const sha = sha256HexSyncOrThrow(s);
-  return {
-    id: RelationIdBrand(sha),
-    canonicalLength: s.length,
-  };
-}
-
-export async function computeRelationId(r: ClaimRelation): Promise<{ readonly id: RelationId; readonly canonicalLength: number }> {
-  const s = canonicalRelation(r);
-  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
-  let sha: Sha256Hex;
-  if (runtimeSha256 !== null) sha = await runtimeSha256(s);
-  else sha = sha256HexSyncOrThrow(s);
-  return {
-    id: RelationIdBrand(sha),
-    canonicalLength: s.length,
-  };
-}
-
-export function verifyRelationIdentity(
-  r: ClaimRelation,
-): { readonly ok: boolean; readonly recomputedId: RelationId; readonly expected: RelationId | null } {
-  if (!r.id) {
-    const recomputed = computeRelationIdSync(r);
-    return { ok: false, recomputedId: recomputed.id, expected: null };
-  }
-  const recomputed = computeRelationIdSync(r);
-  return {
-    ok: recomputed.id === r.id,
-    recomputedId: recomputed.id,
-    expected: r.id,
-  };
-}
-
-export type CertificationSnapshotHashable = Omit<
-  CertificationMatrixEnvelope,
-  "snapshotId" | "producedBy"
->;
-
-function sortedClaimRelations(rels: readonly ClaimRelation[]): readonly ClaimRelation[] {
-  return [...rels].sort((a, b) => {
-    const ka = `${a.fromClaimId}|${a.kind}|${a.toClaimId}`;
-    const kb = `${b.fromClaimId}|${b.kind}|${b.toClaimId}`;
-    if (ka < kb) return -1;
-    if (ka > kb) return 1;
-    if (a.rationale !== undefined && b.rationale !== undefined) {
-      return a.rationale.localeCompare(b.rationale);
-    }
-    return 0;
-  });
-}
-
-export function canonicalSnapshotBundle(envelope: CertificationSnapshotHashable): string {
-  const hashable: CertificationSnapshotHashable = Object.freeze({
-    protocolVersion: envelope.protocolVersion,
-    epistemicProtocolVersion: envelope.epistemicProtocolVersion,
-    evidenceSchemaVersion: envelope.evidenceSchemaVersion,
-    relationLayerRules: envelope.relationLayerRules,
-    evidenceLayers: envelope.evidenceLayers,
-    layerLifecycle: envelope.layerLifecycle,
-    layerStatusSemantics: envelope.layerStatusSemantics,
-    producedAt: envelope.producedAt,
-    milestone: envelope.milestone,
-    claims: envelope.claims,
-    evidencePackages: envelope.evidencePackages,
-    claimRelations: sortedClaimRelations(envelope.claimRelations),
-    graphTopology: envelope.graphTopology,
-    summary: envelope.summary,
-    overall: envelope.overall,
-  });
-  return canonicalSerialize(hashable) as unknown as string;
-}
-
-export function computeSnapshotIdSync(
-  envelope: CertificationMatrixEnvelope,
-): { readonly id: CertificationSnapshotId; readonly canonicalBundleLength: number; readonly canonicalBundle: string } {
-  const hashable: CertificationSnapshotHashable = {
-    protocolVersion: envelope.protocolVersion,
-    epistemicProtocolVersion: envelope.epistemicProtocolVersion,
-    evidenceSchemaVersion: envelope.evidenceSchemaVersion,
-    relationLayerRules: envelope.relationLayerRules,
-    evidenceLayers: envelope.evidenceLayers,
-    layerLifecycle: envelope.layerLifecycle,
-    layerStatusSemantics: envelope.layerStatusSemantics,
-    producedAt: envelope.producedAt,
-    milestone: envelope.milestone,
-    claims: envelope.claims,
-    evidencePackages: envelope.evidencePackages,
-    claimRelations: envelope.claimRelations,
-    graphTopology: envelope.graphTopology,
-    summary: envelope.summary,
-    overall: envelope.overall,
-  };
-  const bundle = canonicalSnapshotBundle(hashable);
-  const hex = sha256HexSyncOrThrow(bundle);
-  return {
-    id: CertificationSnapshotIdBrand(hex),
-    canonicalBundleLength: bundle.length,
-    canonicalBundle: bundle,
-  };
-}
-
-export async function computeSnapshotId(
-  envelope: CertificationMatrixEnvelope,
-): Promise<{ readonly id: CertificationSnapshotId; readonly canonicalBundleLength: number; readonly canonicalBundle: string }> {
-  const hashable: CertificationSnapshotHashable = {
-    protocolVersion: envelope.protocolVersion,
-    epistemicProtocolVersion: envelope.epistemicProtocolVersion,
-    evidenceSchemaVersion: envelope.evidenceSchemaVersion,
-    relationLayerRules: envelope.relationLayerRules,
-    evidenceLayers: envelope.evidenceLayers,
-    layerLifecycle: envelope.layerLifecycle,
-    layerStatusSemantics: envelope.layerStatusSemantics,
-    producedAt: envelope.producedAt,
-    milestone: envelope.milestone,
-    claims: envelope.claims,
-    evidencePackages: envelope.evidencePackages,
-    claimRelations: envelope.claimRelations,
-    graphTopology: envelope.graphTopology,
-    summary: envelope.summary,
-    overall: envelope.overall,
-  };
-  const bundle = canonicalSnapshotBundle(hashable);
-  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
-  const hex = runtimeSha256 !== null
-    ? await runtimeSha256(bundle)
-    : sha256HexSyncOrThrow(bundle);
-  return {
-    id: CertificationSnapshotIdBrand(hex),
-    canonicalBundleLength: bundle.length,
-    canonicalBundle: bundle,
-  };
-}
-
-export function verifySnapshotIdentity(
-  envelope: CertificationMatrixEnvelope,
-): { readonly ok: boolean; readonly recomputedId: CertificationSnapshotId; readonly expected: CertificationSnapshotId | null } {
-  const recomputed = computeSnapshotIdSync(envelope);
-  if (!envelope.snapshotId) {
-    return { ok: false, recomputedId: recomputed.id, expected: null };
-  }
-  return {
-    ok: recomputed.id === envelope.snapshotId,
-    recomputedId: recomputed.id,
-    expected: envelope.snapshotId,
-  };
-}
-
-export function computeSnapshotDelta(
-  envelopeA: CertificationMatrixEnvelope,
-  envelopeB: CertificationMatrixEnvelope,
-): { readonly idA: CertificationSnapshotId; readonly idB: CertificationSnapshotId; readonly identical: boolean; readonly changed: readonly ("claims" | "evidencePackages" | "claimRelations" | "statuses" | "topology" | "meta")[] } {
-  const idA = computeSnapshotIdSync(envelopeA).id;
-  const idB = computeSnapshotIdSync(envelopeB).id;
-  const changed: ("claims" | "evidencePackages" | "claimRelations" | "statuses" | "topology" | "meta")[] = [];
-  const identic = idA === idB;
-  if (!identic) {
-    const aKeys = Object.keys(envelopeA.claims).sort();
-    const bKeys = Object.keys(envelopeB.claims).sort();
-    let claimsChanged = aKeys.length !== bKeys.length;
-    if (!claimsChanged) {
-      for (const k of aKeys) {
-        const cA = envelopeA.claims[k];
-        const cB = envelopeB.claims[k];
-        if (!cA || !cB) { claimsChanged = true; break; }
-        if (cA.status !== cB.status) continue; // status change = statuses bucket, not claims
-      }
-    }
-    const statusesChanged = (() => {
-      const allKeys = Array.from(new Set([...aKeys, ...bKeys]));
-      for (const k of allKeys) {
-        const cA = envelopeA.claims[k];
-        const cB = envelopeB.claims[k];
-        if ((cA?.status ?? "∅") !== (cB?.status ?? "∅")) return true;
-      }
-      return false;
-    })();
-    if (claimsChanged || !aKeys.every((k, i) => k === bKeys[i])) changed.push("claims");
-    const evKeysA = Object.keys(envelopeA.evidencePackages).sort();
-    const evKeysB = Object.keys(envelopeB.evidencePackages).sort();
-    const evValuesEqual =
-      evKeysA.length === evKeysB.length &&
-      evKeysA.every((k, i) => {
-        const a = envelopeA.evidencePackages[k];
-        const b = envelopeB.evidencePackages[evKeysB[i] ?? k];
-        return !!a && !!b && k === evKeysB[i] && a.id === b.id;
-      });
-    if (!evValuesEqual) changed.push("evidencePackages");
-    const sortedRelsA = sortedClaimRelations(envelopeA.claimRelations);
-    const sortedRelsB = sortedClaimRelations(envelopeB.claimRelations);
-    const relsEqual =
-      sortedRelsA.length === sortedRelsB.length &&
-      sortedRelsA.every((ra, idx) => {
-        const rb = sortedRelsB[idx];
-        if (!rb) return false;
-        return ra.fromClaimId === rb.fromClaimId && ra.kind === rb.kind && ra.toClaimId === rb.toClaimId;
-      });
-    if (!relsEqual) changed.push("claimRelations");
-    if (statusesChanged) changed.push("statuses");
-    if (envelopeA.graphTopology.id !== envelopeB.graphTopology.id) changed.push("topology");
-    if (
-      envelopeA.milestone !== envelopeB.milestone ||
-      envelopeA.producedAt !== envelopeB.producedAt ||
-      envelopeA.evidenceSchemaVersion !== envelopeB.evidenceSchemaVersion ||
-      envelopeA.epistemicProtocolVersion !== envelopeB.epistemicProtocolVersion
-    ) {
-      changed.push("meta");
-    }
-  }
-  return Object.freeze({ idA, idB, identical: identic, changed: Object.freeze(changed) });
-}
-
-// ──────────────────────────────────────────────────────────────────────
-// SCIENTIFIC PROVENANCE GRAPH — Canonical Serialization + Identity
-// Chain: ExperimentDefinition → ExperimentExecution → RawObservation
-// Setiap node punya identity SHA-256 sendiri.
-// ──────────────────────────────────────────────────────────────────────
-
-export function canonicalExperimentDefinition(def: ExperimentDefinition): string {
-  if (def.provenanceVersion !== PROVENANCE_PROTOCOL_VERSION) {
-    throw new TypeError(
-      `ExperimentDefinition provenanceVersion mismatch: expected ${PROVENANCE_PROTOCOL_VERSION}, got ${def.provenanceVersion}`,
-    );
-  }
-  const envelope = {
-    _provenanceVersion: def.provenanceVersion,
-    experimentKey: def.experimentKey,
-    version: def.version,
-    supersedes: (def.supersedes ?? []).map(String),
-    title: def.title,
-    objective: def.objective,
-    protocolSteps: def.protocolSteps,
-    assertions: def.assertions,
-    expectedArtifact: def.expectedArtifact ?? null,
-    ownerMilestone: def.ownerMilestone,
-    definedAt: def.definedAt,
-    definedBy: def.definedBy,
-    changeNotes: def.changeNotes ?? [],
-  } as const;
-  return canonicalSerialize(envelope) as unknown as string;
-}
-
-export interface ExperimentDefinitionIdentity {
-  readonly id: ExperimentDefinitionId;
-  readonly algorithm: "sha-256";
-  readonly provenanceVersion: typeof PROVENANCE_PROTOCOL_VERSION;
-  readonly canonicalBundleLength: number;
-  readonly def: ExperimentDefinition;
-}
-
-export function computeExperimentDefinitionIdSync(def: ExperimentDefinition): ExperimentDefinitionIdentity {
-  const bundle = canonicalExperimentDefinition(def);
-  const sha = sha256HexSyncOrThrow(bundle);
-  return {
-    id: ExperimentDefinitionIdBrand(sha),
-    algorithm: "sha-256",
-    provenanceVersion: def.provenanceVersion,
-    canonicalBundleLength: bundle.length,
-    def: Object.freeze({ ...def, id: ExperimentDefinitionIdBrand(sha) }),
-  };
-}
-
-export async function computeExperimentDefinitionId(def: ExperimentDefinition): Promise<ExperimentDefinitionIdentity> {
-  const bundle = canonicalExperimentDefinition(def);
-  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
-  const sha = runtimeSha256 !== null ? await runtimeSha256(bundle) : sha256HexSyncOrThrow(bundle);
-  return {
-    id: ExperimentDefinitionIdBrand(sha),
-    algorithm: "sha-256",
-    provenanceVersion: def.provenanceVersion,
-    canonicalBundleLength: bundle.length,
-    def: Object.freeze({ ...def, id: ExperimentDefinitionIdBrand(sha) }),
-  };
-}
-
-export function verifyExperimentDefinitionIdentity(
-  identity: ExperimentDefinitionIdentity,
-): { readonly ok: boolean; readonly recomputedId: ExperimentDefinitionId; readonly expected: ExperimentDefinitionId } {
-  const bundle = canonicalExperimentDefinition(identity.def);
-  const sha = sha256HexSyncOrThrow(bundle);
-  const recomputed = ExperimentDefinitionIdBrand(sha);
-  return {
-    ok: recomputed === identity.id,
-    recomputedId: recomputed,
-    expected: identity.id,
-  };
-}
-
-export function canonicalExperimentExecution(exe: ExperimentExecution): string {
-  if (exe.provenanceVersion !== PROVENANCE_PROTOCOL_VERSION) {
-    throw new TypeError(
-      `ExperimentExecution provenanceVersion mismatch: expected ${PROVENANCE_PROTOCOL_VERSION}, got ${exe.provenanceVersion}`,
-    );
-  }
-  const envelope = {
-    _provenanceVersion: exe.provenanceVersion,
-    experimentDefinitionId: String(exe.experimentDefinitionId),
-    executedAt: exe.executedAt,
-    executorIdentity: exe.executorIdentity,
-    gitCommit: exe.gitCommit,
-    workingTreeDirtyCount: exe.workingTreeDirtyCount,
-    runner: exe.runner
-      ? {
-          os: exe.runner.os,
-          arch: exe.runner.arch,
-          runtime: exe.runner.runtime,
-          runtimeVersion: exe.runner.runtimeVersion,
-          extra: exe.runner.extra ?? [],
-        }
-      : null,
-    exitCode: exe.exitCode,
-    rawObservationIds: exe.rawObservationIds.map(String),
-  } as const;
-  return canonicalSerialize(envelope) as unknown as string;
-}
-
-export interface ExperimentExecutionIdentity {
-  readonly id: ExperimentExecutionId;
-  readonly algorithm: "sha-256";
-  readonly provenanceVersion: typeof PROVENANCE_PROTOCOL_VERSION;
-  readonly canonicalBundleLength: number;
-  readonly exe: ExperimentExecution;
-}
-
-export function computeExperimentExecutionIdSync(exe: ExperimentExecution): ExperimentExecutionIdentity {
-  const bundle = canonicalExperimentExecution(exe);
-  const sha = sha256HexSyncOrThrow(bundle);
-  return {
-    id: ExperimentExecutionIdBrand(sha),
-    algorithm: "sha-256",
-    provenanceVersion: exe.provenanceVersion,
-    canonicalBundleLength: bundle.length,
-    exe: Object.freeze({ ...exe, id: ExperimentExecutionIdBrand(sha) }),
-  };
-}
-
-export async function computeExperimentExecutionId(exe: ExperimentExecution): Promise<ExperimentExecutionIdentity> {
-  const bundle = canonicalExperimentExecution(exe);
-  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
-  const sha = runtimeSha256 !== null ? await runtimeSha256(bundle) : sha256HexSyncOrThrow(bundle);
-  return {
-    id: ExperimentExecutionIdBrand(sha),
-    algorithm: "sha-256",
-    provenanceVersion: exe.provenanceVersion,
-    canonicalBundleLength: bundle.length,
-    exe: Object.freeze({ ...exe, id: ExperimentExecutionIdBrand(sha) }),
-  };
-}
-
-export function verifyExperimentExecutionIdentity(
-  identity: ExperimentExecutionIdentity,
-): { readonly ok: boolean; readonly recomputedId: ExperimentExecutionId; readonly expected: ExperimentExecutionId } {
-  const bundle = canonicalExperimentExecution(identity.exe);
-  const sha = sha256HexSyncOrThrow(bundle);
-  const recomputed = ExperimentExecutionIdBrand(sha);
-  return {
-    ok: recomputed === identity.id,
-    recomputedId: recomputed,
-    expected: identity.id,
-  };
-}
-
-export function canonicalRawObservation(obs: RawObservation): string {
-  if (obs.provenanceVersion !== PROVENANCE_PROTOCOL_VERSION) {
-    throw new TypeError(
-      `RawObservation provenanceVersion mismatch: expected ${PROVENANCE_PROTOCOL_VERSION}, got ${obs.provenanceVersion}`,
-    );
-  }
-  const envelope = {
-    _provenanceVersion: obs.provenanceVersion,
-    experimentExecutionId: String(obs.experimentExecutionId),
-    index0: obs.index0,
-    content: obs.content,
-    observedAt: obs.observedAt,
-    sourceChannel: obs.sourceChannel,
-    semanticOutcome: obs.semanticOutcome,
-    targetAssertionId: obs.targetAssertionId ?? null,
-  } as const;
-  return canonicalSerialize(envelope) as unknown as string;
-}
-
-export interface RawObservationIdentity {
-  readonly id: RawObservationId;
-  readonly algorithm: "sha-256";
-  readonly provenanceVersion: typeof PROVENANCE_PROTOCOL_VERSION;
-  readonly canonicalBundleLength: number;
-  readonly obs: RawObservation;
-}
-
-export function computeRawObservationIdSync(obs: RawObservation): RawObservationIdentity {
-  const bundle = canonicalRawObservation(obs);
-  const sha = sha256HexSyncOrThrow(bundle);
-  return {
-    id: RawObservationIdBrand(sha),
-    algorithm: "sha-256",
-    provenanceVersion: obs.provenanceVersion,
-    canonicalBundleLength: bundle.length,
-    obs: Object.freeze({ ...obs, id: RawObservationIdBrand(sha) }),
-  };
-}
-
-export async function computeRawObservationId(obs: RawObservation): Promise<RawObservationIdentity> {
-  const bundle = canonicalRawObservation(obs);
-  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
-  const sha = runtimeSha256 !== null ? await runtimeSha256(bundle) : sha256HexSyncOrThrow(bundle);
-  return {
-    id: RawObservationIdBrand(sha),
-    algorithm: "sha-256",
-    provenanceVersion: obs.provenanceVersion,
-    canonicalBundleLength: bundle.length,
-    obs: Object.freeze({ ...obs, id: RawObservationIdBrand(sha) }),
-  };
-}
-
-export function verifyRawObservationIdentity(
-  identity: RawObservationIdentity,
-): { readonly ok: boolean; readonly recomputedId: RawObservationId; readonly expected: RawObservationId } {
-  const bundle = canonicalRawObservation(identity.obs);
-  const sha = sha256HexSyncOrThrow(bundle);
-  const recomputed = RawObservationIdBrand(sha);
-  return {
-    ok: recomputed === identity.id,
-    recomputedId: recomputed,
-    expected: identity.id,
-  };
-}
-
-export interface FullProvenanceChain {
-  readonly definition: ExperimentDefinitionIdentity;
-  readonly execution: ExperimentExecutionIdentity;
-  readonly observations: readonly RawObservationIdentity[];
-}
-
-export interface ProvenanceChainResult {
-  readonly chain: FullProvenanceChain;
-  readonly provenanceField: NonNullable<EvidencePackage["provenance"]>;
-}
-
-export type PerObservationSemanticResolver = (
-  observation: {
-    readonly content: string;
-    readonly index0: number;
-    readonly sourceChannel: string;
-  },
-  ctx: {
-    readonly exitCode: number;
-    readonly assertionCount: number;
-  },
-) => SemanticObservationOutcome;
-
-export function defaultSemanticOutcomeResolver(
-  obs: {
-    readonly content: string;
-    readonly index0: number;
-    readonly sourceChannel: string;
-  },
-  ctx: {
-    readonly exitCode: number;
-    readonly assertionCount: number;
-  },
-): SemanticObservationOutcome {
-  const lower = obs.content.toLowerCase();
-  if (lower.includes("fail") || lower.includes("violation") || lower.includes("refute") || lower.includes("tidak patuh")) {
-    return "contradicts";
-  }
-  if (lower.includes("inconclusive") || lower.includes("no support") || lower.includes("tidak cukup") || lower.includes("not enough")) {
-    return "inconclusive";
-  }
-  if (lower.includes("metadata") || lower.includes("pid:") || lower.includes("count=") || lower.includes("timestamp") || lower.startsWith("NOTE:")) {
-    return "independent";
-  }
-  if (ctx.assertionCount > 0 && obs.index0 >= ctx.assertionCount && ctx.exitCode === 0) {
-    return "independent";
-  }
-  if (ctx.exitCode !== 0 && obs.index0 < Math.max(1, ctx.assertionCount)) {
-    return "contradicts";
-  }
-  return "supports";
-}
-
-export interface BuildProvenanceChainInput {
-  readonly definition: Omit<ExperimentDefinition, "provenanceVersion" | "id">;
-  readonly executionMeta: {
-    readonly executedAt: string;
-    readonly executorIdentity: string;
-    readonly gitCommit: string;
-    readonly workingTreeDirtyCount?: number;
-    readonly runner: ExperimentExecution["runner"];
-    readonly exitCode?: number;
-    readonly assertionCount?: number;
-  };
-  readonly observations: ReadonlyArray<{
-    readonly content: string;
-    readonly observedAt: string;
-    readonly sourceChannel: string;
-    readonly targetAssertionId?: string;
-    readonly semanticOutcome?: SemanticObservationOutcome;
-  }>;
-  readonly semanticResolver?: PerObservationSemanticResolver;
-}
-
-export function buildProvenanceChainSync(input: BuildProvenanceChainInput): ProvenanceChainResult {
-  const exitCode = input.executionMeta.exitCode ?? 0;
-  const assertionCount = input.executionMeta.assertionCount ?? 0;
-  const resolver: PerObservationSemanticResolver = input.semanticResolver ?? defaultSemanticOutcomeResolver;
-  const defRaw: ExperimentDefinition = Object.freeze({
-    ...input.definition,
-    provenanceVersion: PROVENANCE_PROTOCOL_VERSION,
-    id: ExperimentDefinitionIdBrand("0".repeat(64)),
-    version: (input.definition as { readonly version?: string }).version ?? "1.0.0",
-    supersedes: ((input.definition as { readonly supersedes?: readonly unknown[] }).supersedes ?? Object.freeze([])) as readonly ExperimentDefinitionId[],
-    changeNotes: (input.definition as { readonly changeNotes?: readonly string[] }).changeNotes ?? Object.freeze([]),
-  });
-  const defIdent = computeExperimentDefinitionIdSync(defRaw);
-  const def: ExperimentDefinition = Object.freeze({ ...defRaw, id: defIdent.id });
-
-  const observationsUnsigned: RawObservation[] = input.observations.map((o, i) => {
-    const outcome: SemanticObservationOutcome = o.semanticOutcome ?? resolver(
-      { content: o.content, index0: i, sourceChannel: o.sourceChannel },
-      { exitCode, assertionCount },
-    );
-    return Object.freeze({
-      provenanceVersion: PROVENANCE_PROTOCOL_VERSION,
-      id: RawObservationIdBrand("0".repeat(64)),
-      experimentExecutionId: ExperimentExecutionIdBrand("0".repeat(64)),
-      index0: i,
-      content: o.content,
-      observedAt: o.observedAt,
-      sourceChannel: o.sourceChannel,
-      semanticOutcome: outcome,
-      targetAssertionId: o.targetAssertionId ?? undefined,
-    } satisfies RawObservation);
-  });
-
-  const exeRaw: ExperimentExecution = Object.freeze({
-    provenanceVersion: PROVENANCE_PROTOCOL_VERSION,
-    id: ExperimentExecutionIdBrand("0".repeat(64)),
-    experimentDefinitionId: def.id,
-    executedAt: input.executionMeta.executedAt,
-    executorIdentity: input.executionMeta.executorIdentity,
-    gitCommit: input.executionMeta.gitCommit,
-    workingTreeDirtyCount: input.executionMeta.workingTreeDirtyCount ?? 0,
-    runner: input.executionMeta.runner,
-    exitCode: input.executionMeta.exitCode ?? 0,
-    rawObservationIds: observationsUnsigned.map(o => o.id),
-  } satisfies ExperimentExecution);
-
-  const obsIdentities = observationsUnsigned.map(o => {
-    const rebased: RawObservation = Object.freeze({ ...o, experimentExecutionId: exeRaw.id });
-    return computeRawObservationIdSync(rebased);
-  });
-
-  const exeRebased: ExperimentExecution = Object.freeze({
-    ...exeRaw,
-    rawObservationIds: obsIdentities.map(i => i.id),
-  });
-  const exeIdent = computeExperimentExecutionIdSync(exeRebased);
-  const exe: ExperimentExecution = Object.freeze({ ...exeRebased, id: exeIdent.id });
-
-  // NOTE: Second rebase intentionally preserved for BACKWARD-IDENTITY-STABILITY.
-  // The 2nd rebase ensures observation.experimentExecutionId references the
-  // REAL (non-placeholder) exe.id; observation identity is recomputed so that
-  // verifyRawObservationIdentity() passes.
-  const finalObs: RawObservationIdentity[] = obsIdentities.map(prevIdent => {
-    const rebased: RawObservation = Object.freeze({
-      ...prevIdent.obs,
-      experimentExecutionId: exe.id,
-    });
-    return computeRawObservationIdSync(rebased);
-  });
-
-  const defFinal = defIdent.def.id === def.id ? defIdent : computeExperimentDefinitionIdSync(def);
-
-  const chain: FullProvenanceChain = Object.freeze({
-    definition: defFinal,
-    execution: exeIdent.exe.id === exe.id ? exeIdent : computeExperimentExecutionIdSync(exe),
-    observations: Object.freeze([...finalObs]),
-  });
-
-  const provenanceField: NonNullable<EvidencePackage["provenance"]> = Object.freeze({
-    experimentDefinitionId: chain.definition.id,
-    experimentExecutionId: chain.execution.id,
-    rawObservationIds: Object.freeze(chain.observations.map(o => o.id)),
-  });
-
-  return Object.freeze({ chain, provenanceField });
-}
-
-
-export interface ProvenanceRegistryCollection {
-  readonly experimentDefinitions: Readonly<Record<string, import("./types").ExperimentDefinitionRegistryEntry>>;
-  readonly experimentExecutions: Readonly<Record<string, import("./types").ExperimentExecutionRegistryEntry>>;
-  readonly rawObservations: Readonly<Record<string, import("./types").RawObservationRegistryEntry>>;
-}
-
-export function buildEmptyProvenanceRegistry(): ProvenanceRegistryCollection {
-  return Object.freeze({
-    experimentDefinitions: Object.freeze({}),
-    experimentExecutions: Object.freeze({}),
-    rawObservations: Object.freeze({}),
-  });
-}
-
-export function mergeProvenanceChainIntoRegistry(
-  registry: ProvenanceRegistryCollection,
-  chain: FullProvenanceChain,
-): ProvenanceRegistryCollection {
-  const defs: Record<string, import("./types").ExperimentDefinitionRegistryEntry> = { ...registry.experimentDefinitions };
-  const exes: Record<string, import("./types").ExperimentExecutionRegistryEntry> = { ...registry.experimentExecutions };
-  const obs: Record<string, import("./types").RawObservationRegistryEntry> = { ...registry.rawObservations };
-
-  const defKey = String(chain.definition.id);
-  if (!defs[defKey]) {
-    defs[defKey] = {
-      id: chain.definition.id,
-      algorithm: "sha-256",
-      provenanceVersion: chain.definition.provenanceVersion,
-      canonicalBundleLength: chain.definition.canonicalBundleLength,
-      def: chain.definition.def,
-    };
-  }
-
-  const exeKey = String(chain.execution.id);
-  if (!exes[exeKey]) {
-    exes[exeKey] = {
-      id: chain.execution.id,
-      algorithm: "sha-256",
-      provenanceVersion: chain.execution.provenanceVersion,
-      canonicalBundleLength: chain.execution.canonicalBundleLength,
-      exe: chain.execution.exe,
-    };
-  }
-
-  for (const oIdent of chain.observations) {
-    const oKey = String(oIdent.id);
-    if (!obs[oKey]) {
-      obs[oKey] = {
-        id: oIdent.id,
-        algorithm: "sha-256",
-        provenanceVersion: oIdent.provenanceVersion,
-        canonicalBundleLength: oIdent.canonicalBundleLength,
-        obs: oIdent.obs,
-      };
-    }
-  }
-
-  return Object.freeze({
-    experimentDefinitions: Object.freeze(defs),
-    experimentExecutions: Object.freeze(exes),
-    rawObservations: Object.freeze(obs),
-  });
-}
-
-export type ExtendedEvidencePackage = EvidencePackage & {
-  readonly __provenanceChain?: FullProvenanceChain;
-};
-
-export function collectProvenanceRegistryFromEvidencePackages(
-  evidencePackages: Readonly<Record<string, EvidencePackageIdentity>>,
-  extendedPkgs: Readonly<Record<string, ExtendedEvidencePackage>> = {},
-): ProvenanceRegistryCollection {
-  let registry = buildEmptyProvenanceRegistry();
-  for (const [pkgKey, extPkg] of Object.entries(extendedPkgs)) {
-    const chain = extPkg.__provenanceChain;
-    if (chain) registry = mergeProvenanceChainIntoRegistry(registry, chain);
-    void evidencePackages;
-    void pkgKey;
-  }
-  return registry;
-}
-
-// ──────────────────────────────────────────────────────────────────────
-// ALPHA.9 SCIENTIFIC PROVENANCE GRAPH BUILDER
-// ──────────────────────────────────────────────────────────────────────
-// Graph model: NOT TREE anymore.
-// 5 Node types (from ProvenanceRegistry) + 2 Explicit Edge types:
-//   1. EvidenceObservationSemanticEdge   EVD --(supports/contradicts/inconclusive/metadata)--> OBS
-//   2. DefinitionVersionLineageEdge      EXD(v2) --supersedes/compatibility--> EXD(v1)
-// ──────────────────────────────────────────────────────────────────────
-
-import type {
-  EvidenceObservationSemanticEdge,
-  ExperimentDefinitionVersionLineageEdge,
-  CertificationProvenanceGraph,
-  EvidenceToObservationSemanticLinkKind,
-  SemanticObservationOutcome,
-} from "./types";
-import {
-  PROVENANCE_GRAPH_MODEL_VERSION,
-} from "./types.js";
-
-export function buildEmptyProvenanceGraph(): CertificationProvenanceGraph {
-  return Object.freeze({
-    modelVersion: PROVENANCE_GRAPH_MODEL_VERSION,
-    builtAt: new Date().toISOString(),
-    edgeCount: 0,
-    evidenceObservationEdges: Object.freeze({}),
-    definitionVersionLineageEdges: Object.freeze({}),
-  });
-}
-
-function edgeSha(raw: Record<string, unknown>): ProvenanceEdgeIdType {
-  return ProvenanceEdgeIdBrand(sha256HexSyncOrThrow(canonicalSerialize(raw) as unknown as string));
-}
-
-export type PerObservationOutcomeAssigner = (
-  obs: RawObservation,
-  ctx: {
-    readonly evidenceId: EvidenceId;
-    readonly evidencePkg: EvidencePackage;
-    readonly assertionIndex: number;
-  },
-) => EvidenceToObservationSemanticLinkKind;
-
-export function defaultEvidenceObservationLinkKindFromSemanticOutcome(
-  obsSemantic: SemanticObservationOutcome,
-): EvidenceToObservationSemanticLinkKind {
-  switch (obsSemantic) {
-    case "supports":
-      return "supports";
-    case "contradicts":
-      return "contradicts";
-    case "inconclusive":
-      return "inconclusive";
-    case "independent":
-    default:
-      return "metadata";
-  }
-}
-
-export function buildEvidenceObservationEdgesForPackage(
-  evidenceId: EvidenceId,
-  pkg: EvidencePackage,
-  observations: readonly RawObservation[],
-  assigner: PerObservationOutcomeAssigner = (obs, ctx) => {
-    // Alpha.9 GRAPH v2.0: Jika observation memiliki semanticOutcome EKSPLISIT
-    // (dari builder provenance), prioritaskan mapping semanticOutcome → link kind.
-    // Fallback ke heuristic exitCode + assertionIndex jika semanticOutcome tidak tersedia (baseline packages).
-    if (obs.semanticOutcome) {
-      return defaultEvidenceObservationLinkKindFromSemanticOutcome(obs.semanticOutcome);
-    }
-    if (ctx.assertionIndex >= 0 && ctx.evidencePkg.exitCode === 0) return "supports";
-    if (ctx.assertionIndex >= 0 && (ctx.evidencePkg.exitCode ?? 0) !== 0) return "contradicts";
-    return "metadata";
-  },
-): EvidenceObservationSemanticEdge[] {
-  const edges: EvidenceObservationSemanticEdge[] = [];
-  for (let i = 0; i < observations.length; i++) {
-    const rawObs = observations[i];
-    if (!rawObs) continue;
-    const ident = rawObs.id && /^obs:sha256:[a-f0-9]{64}$/.test(String(rawObs.id)) && !String(rawObs.id).endsWith("0".repeat(64))
-      ? { id: rawObs.id }
-      : computeRawObservationIdSync(rawObs);
-    const obs: RawObservation = ident.id === rawObs.id ? rawObs : { ...rawObs, id: ident.id };
-    const assertionIndex = (pkg.assertionIds ?? []).length > i ? i : -1;
-    const kind = assigner(obs, { evidenceId, evidencePkg: pkg, assertionIndex });
-    const raw = {
-      _edgeKind: "EvidenceObservationSemanticEdge" as const,
-      fromEvidenceId: String(evidenceId),
-      toRawObservationId: String(obs.id),
-      kind,
-      assertionIndex,
-    };
-    edges.push(Object.freeze({ id: edgeSha(raw), fromEvidenceId: evidenceId, toRawObservationId: obs.id, kind, assertionIndex }));
-  }
-  return edges;
-}
-
-export type DefinitionVersionComparatorResult = {
-  readonly sameExperimentKey: boolean;
-  readonly versionA: string;
-  readonly versionB: string;
-  readonly protocolChanged: boolean;
-  readonly assertionsChanged: boolean;
-  readonly objectiveChanged: boolean;
-  readonly protocolAddedCount: number;
-  readonly protocolRemovedCount: number;
-  readonly assertionsAddedCount: number;
-  readonly assertionsRemovedCount: number;
-  readonly compatibility: ExperimentDefinitionVersionLineageEdge["compatibility"];
-  readonly rationale: string;
-};
-
-export function compareExperimentDefinitions(
-  a: ExperimentDefinition,
-  b: ExperimentDefinition,
-): DefinitionVersionComparatorResult {
-  const sameExperimentKey = a.experimentKey === b.experimentKey;
-  const protocolAdded = a.protocolSteps.filter(s => !b.protocolSteps.includes(s)).length;
-  const protocolRemoved = b.protocolSteps.filter(s => !a.protocolSteps.includes(s)).length;
-  const assertionsAdded = a.assertions.filter(s => !b.assertions.includes(s)).length;
-  const assertionsRemoved = b.assertions.filter(s => !a.assertions.includes(s)).length;
-  const protocolChanged = a.protocolSteps.length !== b.protocolSteps.length || protocolAdded > 0 || protocolRemoved > 0;
-  const assertionsChanged = a.assertions.length !== b.assertions.length || assertionsAdded > 0 || assertionsRemoved > 0;
-  const objectiveChanged = a.objective !== b.objective;
-  let compatibility: DefinitionVersionComparatorResult["compatibility"] = "identical-protocol";
-  const rationales: string[] = [];
-  if (protocolChanged) rationales.push(`protocol steps: +${protocolAdded}/-${protocolRemoved}`);
-  if (assertionsChanged) rationales.push(`assertions: +${assertionsAdded}/-${assertionsRemoved}`);
-  if (objectiveChanged) rationales.push("objective berbeda");
-  if (!sameExperimentKey) {
-    compatibility = "incomparable";
-    rationales.unshift(`experimentKey berbeda a=${a.experimentKey} b=${b.experimentKey}`);
-  } else if (!protocolChanged && !assertionsChanged && !objectiveChanged) {
-    compatibility = "identical-protocol";
-  } else if (!protocolChanged && assertionsChanged) {
-    compatibility = "compatible-subset";
-  } else if (protocolChanged && !assertionsChanged) {
-    compatibility = "breaking-change";
-  } else {
-    compatibility = "breaking-change";
-  }
-  return {
-    sameExperimentKey,
-    versionA: a.version,
-    versionB: b.version,
-    protocolChanged,
-    assertionsChanged,
-    objectiveChanged,
-    protocolAddedCount: protocolAdded,
-    protocolRemovedCount: protocolRemoved,
-    assertionsAddedCount: assertionsAdded,
-    assertionsRemovedCount: assertionsRemoved,
-    compatibility,
-    rationale: rationales.length > 0 ? rationales.join("; ") : "identical definitions (protocol + assertions + objective cocok semua)",
-  };
-}
-
-export function buildVersionLineageEdge(
-  newer: ExperimentDefinition,
-  older: ExperimentDefinition,
-): ExperimentDefinitionVersionLineageEdge {
-  const cmp = compareExperimentDefinitions(newer, older);
-  const raw = {
-    _edgeKind: "ExperimentDefinitionVersionLineageEdge" as const,
-    newDefinitionId: String(newer.id),
-    supersedesDefinitionId: String(older.id),
-    compatibility: cmp.compatibility,
-    rationale: cmp.rationale,
-  };
-  return Object.freeze({
-    id: edgeSha(raw),
-    newDefinitionId: newer.id,
-    supersedesDefinitionId: older.id,
-    compatibility: cmp.compatibility,
-    rationale: cmp.rationale,
-  });
-}
-
-export interface BuildProvenanceGraphInput {
-  readonly evidencePackages: Readonly<Record<string, EvidencePackageIdentity>>;
-  readonly extendedPackages?: Readonly<Record<string, ExtendedEvidencePackage>>;
-  readonly registry: ProvenanceRegistryCollection;
-  readonly observationLinkAssigner?: PerObservationOutcomeAssigner;
-  readonly definitionPairs?: ReadonlyArray<readonly [ExperimentDefinition, ExperimentDefinition]>;
-}
-
-export function buildProvenanceGraph(input: BuildProvenanceGraphInput): CertificationProvenanceGraph {
-  const obsEdges: Record<string, EvidenceObservationSemanticEdge> = {};
-  const verEdges: Record<string, ExperimentDefinitionVersionLineageEdge> = {};
-  const obsRegistry = input.registry.rawObservations;
-  for (const [pkgKey, ident] of Object.entries(input.evidencePackages)) {
-    const ext = input.extendedPackages?.[pkgKey];
-    const prov = ident.pkg.provenance;
-    if (!prov) continue;
-    const observationsForPkg: RawObservation[] = prov.rawObservationIds
-      .map(id => obsRegistry[String(id)]?.obs)
-      .filter((x): x is RawObservation => !!x);
-    // Fallback: only rely on __provenanceChain inside extended package IF it's 100% registry-unresolved (alpha6 baseline packages, pre-registry)
-    if (ext?.__provenanceChain) {
-      for (const oIdent of ext.__provenanceChain.observations) {
-        if (!observationsForPkg.find(o => String(o.id) === String(oIdent.id))) observationsForPkg.push(oIdent.obs);
-      }
-    }
-    // Filter OUT observations with placeholder IDs (packages with provenance injected at correlate-time will have non-zero)
-    const withoutPlaceholder: RawObservation[] = observationsForPkg.filter(
-      o => !/^obs:sha256:0{64}$/.test(String(o.id)) && !obsRegistry["0".repeat(64)],
-    );
-    if (withoutPlaceholder.length === 0) continue;
-    const edges = buildEvidenceObservationEdgesForPackage(
-      ident.id,
-      ident.pkg,
-      Object.freeze(withoutPlaceholder),
-      input.observationLinkAssigner,
-    );
-    for (const e of edges) obsEdges[String(e.id)] = e;
-    void pkgKey;
-  }
-  for (const [a, b] of input.definitionPairs ?? []) {
-    const edge = buildVersionLineageEdge(a, b);
-    verEdges[String(edge.id)] = edge;
-  }
-  return Object.freeze({
-    modelVersion: PROVENANCE_GRAPH_MODEL_VERSION,
-    builtAt: new Date().toISOString(),
-    edgeCount: Object.keys(obsEdges).length + Object.keys(verEdges).length,
-    evidenceObservationEdges: Object.freeze(obsEdges),
-    definitionVersionLineageEdges: Object.freeze(verEdges),
-  });
-}
-
-export type ObservationReuseIndex = Readonly<Record<string, readonly EvidenceId[]>>;
-
-export function computeObservationReuseIndex(
-  graph: CertificationProvenanceGraph,
-): {
-  readonly reuseIndex: ObservationReuseIndex;
-  readonly reusedObservationCount: number;
-  readonly singletonObservationCount: number;
-  readonly maxReusePerObservation: number;
-} {
-  const index: Record<string, EvidenceId[]> = {};
-  for (const e of Object.values(graph.evidenceObservationEdges)) {
-    const key = String(e.toRawObservationId);
-    if (!index[key]) index[key] = [];
-    if (!index[key].includes(e.fromEvidenceId)) index[key].push(e.fromEvidenceId);
-  }
-  let reused = 0;
-  let singleton = 0;
-  let max = 0;
-  for (const arr of Object.values(index)) {
-    if (arr.length >= 2) reused++; else singleton++;
-    if (arr.length > max) max = arr.length;
-  }
-  return Object.freeze({
-    reuseIndex: Object.freeze(Object.fromEntries(Object.entries(index).map(([k, v]) => [k, Object.freeze(v)]))),
-    reusedObservationCount: reused,
-    singletonObservationCount: singleton,
-    maxReusePerObservation: max,
-  });
-}
-
-export function countSemanticEvidenceEdges(graph: CertificationProvenanceGraph): {
-  supports: number; contradicts: number; inconclusive: number; metadata: number;
-} {
-  let s = 0, c = 0, i = 0, m = 0;
-  for (const e of Object.values(graph.evidenceObservationEdges)) {
-    switch (e.kind) {
-      case "supports": s++; break;
-      case "contradicts": c++; break;
-      case "inconclusive": i++; break;
-      case "metadata":
-      default: m++; break;
-    }
-  }
-  return { supports: s, contradicts: c, inconclusive: i, metadata: m };
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// ALPHA.10 EPISTEMIC FRONTIERS — Minimal Runtime Scaffold Helpers
-// ═══════════════════════════════════════════════════════════════════════════
-// Semua function DI BAWAH INI adalah scaffold MINIMAL (bukan production
-// reasoning engine). Tujuannya untuk memverifikasi BAHWA type contracts
-// Alpha.10 (yang baru di-append di types.ts) BISA di-instantiate secara
-// runtime dengan data actual registry Alpha.9, menghasilkan counts > 0,
-// DAN TIDAK merusak backward compatibility (Alpha.9 graph consumers
-// yang tidak membaca field tambahan opsional ini akan tetap aman).
+//import { canonicalSerialize } from "../canonical/serialize.js";
+//import type {
+//  EvidenceId,
+//  EvidencePackage,
+//  EvidencePackageIdentity,
+//  GraphTopologyId,
+//  ClaimRelation,
+//  CertificationClaim,
+//  RelationId,
+//  CertificationSnapshotId,
+//  CertificationMatrixEnvelope,
+//  ExperimentDefinition,
+//  ExperimentDefinitionId,
+//  ExperimentExecution,
+//  ExperimentExecutionId,
+//  RawObservation,
+//  RawObservationId,
+//  ProvenanceEdgeId as ProvenanceEdgeIdType,
+//  ObservationSemanticEquivalenceEdge,
+//  ObservationQualityEntry,
+//  ObservationLifecycleEntry,
+//  ObservationLifecycleState,
+//  ReplicationGroup,
+//  ExperimentExecutionRegistryEntry,
+//  ExperimentDefinitionRegistryEntry,
+//  RawObservationRegistryEntry,
+//  ClaimConsensusClassification,
+//} from "./types.js";
+//import {
+//  EvidenceId as EvidenceIdBrand,
+//  GraphTopologyId as GraphTopologyIdBrand,
+//  RelationId as RelationIdBrand,
+//  CertificationSnapshotId as CertificationSnapshotIdBrand,
+//  EVIDENCE_SCHEMA_VERSION,
+//  PROVENANCE_PROTOCOL_VERSION,
+//  ExperimentDefinitionId as ExperimentDefinitionIdBrand,
+//  ExperimentExecutionId as ExperimentExecutionIdBrand,
+//  RawObservationId as RawObservationIdBrand,
+//  ProvenanceEdgeId as ProvenanceEdgeIdBrand,
+//} from "./types.js";
 //
-// Design constraint APPEND-ONLY:
-//   * SHA-256 identity untuk OBS/EXE/EXD/EVD TIDAK BERUBAH.
-//   * Function helpers HANYA MENAMBAHKAN sidecar entries ke graph
-//     (field opsional pada CertificationProvenanceGraph)
-//   * Tidak ada rewrite / mutation terhadap object Alpha.9 existing
-//     yang tersimpan di registry (read only usage).
-
-// ───────────────────────────────────────────────────────────────────────────
-// FRONTIER #1 — Semantic Equivalence Classifier (numeric-tolerance scaffold)
-// ───────────────────────────────────────────────────────────────────────────
-// Heuristic sederhana:
-//   1. Coba parsing angka dari content RawObservation dengan regex yang
-//      menangkap "key=value" atau "sebelum angka = X".
-//   2. Dua observation dalam EXECUTION YANG SAMA (experimentExecutionId)
-//      atau dalam equivalence pair (misal two consecutive runs) dicompare:
-//      jika selisih numerik ≤ tolerance → buat edge "numeric-tolerance".
+//export type Sha256Hex = string;
 //
-// Catatan: Ini adalah scaffold classifier. Production nanti butuh
-// domain-specific classifier (temperature-domain, latency-domain, dll)
-// yang masing-masing mempunyai tol tersendiri.
-
-const _alpha10NumRe = /(-?\d+(?:\.\d+)?)/;
-
-export interface SemanticEquivalenceScaffoldOpts {
-  readonly numericToleranceAbsolute?: number;
-  readonly onlyPairWithinSameExperimentKey?: boolean;
-  readonly maxPairsPerKind?: number;
-  readonly assertedByClassifierId?: string;
-}
-
-export function computeNumericToleranceEquivalenceEdges(
-  registry: ProvenanceRegistryCollection,
-  definitions: Readonly<Record<string, { readonly def: ExperimentDefinition }>>,
-  opts: SemanticEquivalenceScaffoldOpts = {},
-): Readonly<Record<string, ObservationSemanticEquivalenceEdge>> {
-  void definitions;
-  const tol = opts.numericToleranceAbsolute ?? 1e-3;
-  const maxPairs = opts.maxPairsPerKind ?? 2000;
-  const classifier = opts.assertedByClassifierId ?? "alpha10-scaffold:numeric-tolerance-v1";
-  const entries = Object.values(registry.rawObservations);
-  const out: Record<string, ObservationSemanticEquivalenceEdge> = {};
-  let made = 0;
-  for (let i = 0; i < entries.length && made < maxPairs; i++) {
-    const eA = entries[i]!;
-    const mA = _alpha10NumRe.exec(eA.obs.content);
-    if (!mA) continue;
-    const a = Number(mA[1]);
-    if (!Number.isFinite(a)) continue;
-    for (let j = i + 1; j < entries.length && made < maxPairs; j++) {
-      const eB = entries[j]!;
-      // scaffold: hanya pair dengan execution berbeda → menghindari pair
-      // dalam execution yang sama (umumnya tidak ekuivalen secara scientifik)
-      if (String(eA.obs.experimentExecutionId) === String(eB.obs.experimentExecutionId)) continue;
-      const mB = _alpha10NumRe.exec(eB.obs.content);
-      if (!mB) continue;
-      const b = Number(mB[1]);
-      if (!Number.isFinite(b)) continue;
-      if (Math.abs(a - b) > tol) continue;
-      const leftRaw = String(eA.id) + "|" + String(eB.id);
-      const keyHex = sha256HexSyncOrThrow(leftRaw);
-      const id = ProvenanceEdgeIdBrand(keyHex);
-      if (out[String(id)]) continue;
-      out[String(id)] = Object.freeze({
-        id,
-        leftObservationId: eA.id,
-        rightObservationId: eB.id,
-        kind: "numeric-tolerance",
-        toleranceNumericAbsolute: tol,
-        rationale: `|numeric_a(${a}) - numeric_b(${b})| = ${Math.abs(a - b).toFixed(8)} ≤ tol=${tol}`,
-        assertedBy: classifier,
-        assertedAt: new Date().toISOString(),
-      });
-      made++;
-    }
-  }
-  return Object.freeze(out);
-}
-
-// ───────────────────────────────────────────────────────────────────────────
-// FRONTIER #2 — Weighted Evidence / Baseline Quality Classifier
-// ───────────────────────────────────────────────────────────────────────────
-// Heuristic scaffold baseline (bukan truth). Bobot 0..1 ditentukan dari:
-//   * sourceChannelReliability: "fs.stat"=0.98, "ts.TypeChecker"=0.90,
-//     "git.stdout"=0.85, "child_process.stdout"=0.70, default=0.50
-//   * confidence: apakah content mengandung kata kepastian ("exists=true",
-//     "pass", "exit=0")=0.95, jika ambigu=0.60, jika mengandung
-//     "fail"/"violation"/"error"=0.90 (high confidence, outcome negatif tapi yakin)
-//   * precision: scaffold = 0.75 (placeholder). Production: instrument precision.
-//   * certainty: scaffold = 0.75
-//   * sampleSize: scaffold = 1 (single probe). Production N dari batch.
+//let runtimeSha256: ((input: string) => Promise<Sha256Hex>) | null = null;
 //
-// aggregateQualityScore01 canonical:
-//   wConf=0.28, wPrec=0.17, wCert=0.17, wSize=0.08, wSrc=0.30
-//   → weighted sum (clamp 0..1). Ini reproducible dari 5 input fields.
-
-const _alpha10SrcRel: Readonly<Record<string, number>> = Object.freeze({
-  "fs.stat": 0.98, "fs.readdir": 0.97, "fs.readFile": 0.96,
-  "ts.TypeChecker": 0.90, "ts.AST.walk": 0.88, "ts.ModuleResolution": 0.87,
-  "git.stdout": 0.85, "git.status.porcelain": 0.83, "git.rev-parse": 0.82,
-  "child_process.stdout": 0.70, "child_process.stderr": 0.68,
-  "node.process.env": 0.60, "runtime.console.log": 0.55,
-});
-
-export interface QualityBaselineOpts {
-  readonly classifierId?: string;
-  readonly classifierVersion?: string;
-  readonly sampleSizeOverride?: number;
-}
-
-const _alpha10QWeights = Object.freeze({
-  conf: 0.28, prec: 0.17, cert: 0.17, size: 0.08, src: 0.30,
-});
-
-function _bucketQuality(q: number): ObservationQualityEntry["qualityBucket"] {
-  if (q >= 0.90) return "gold-standard";
-  if (q >= 0.75) return "high";
-  if (q >= 0.50) return "medium";
-  if (q >= 0.25) return "low";
-  return "critical-unknown";
-}
-
-export function computeObservationQualityBaseline(
-  registry: ProvenanceRegistryCollection,
-  opts: QualityBaselineOpts = {},
-): Readonly<Record<string, ObservationQualityEntry>> {
-  const clsId = opts.classifierId ?? "alpha10-scaffold:quality-baseline-v1";
-  const clsVer = opts.classifierVersion ?? "1.0.0-scaffold";
-  const now = new Date().toISOString();
-  const out: Record<string, ObservationQualityEntry> = {};
-  for (const entry of Object.values(registry.rawObservations)) {
-    const content = entry.obs.content;
-    const low = content.toLowerCase();
-    let srcRel = _alpha10SrcRel[entry.obs.sourceChannel];
-    if (srcRel === undefined) srcRel = 0.50;
-    let confidence: number;
-    if (/exists\s*=\s*true\b|exit\s*=\s*0\b|\bpass(ed)?\b|\bunanimous\b/i.test(low)) confidence = 0.95;
-    else if (/fail|violation|refute|contradict|exit\s*=\s*[1-9]\d*/i.test(low)) confidence = 0.90;
-    else if (/no support|insufficient|not enough|inconclusive|unknown/i.test(low)) confidence = 0.55;
-    else confidence = 0.70;
-    const precision = 0.75;
-    const certainty = 0.75;
-    const sampleSize = opts.sampleSizeOverride ?? 1;
-    const size01 = Math.min(1, sampleSize / 20);
-    const agg =
-      confidence * _alpha10QWeights.conf +
-      precision * _alpha10QWeights.prec +
-      certainty * _alpha10QWeights.cert +
-      size01 * _alpha10QWeights.size +
-      srcRel * _alpha10QWeights.src;
-    const clamped = Math.max(0, Math.min(1, agg));
-    out[String(entry.id)] = Object.freeze({
-      observationId: entry.id,
-      confidence, precision, certainty, sampleSize,
-      sourceChannelReliability: srcRel,
-      aggregateQualityScore01: Number(clamped.toFixed(4)),
-      qualityBucket: _bucketQuality(clamped),
-      qualityClassifierId: clsId,
-      classifierVersion: clsVer,
-      assertedAt: now,
-    });
-  }
-  return Object.freeze(
-    Object.fromEntries(Object.entries(out).map(([k, v]) => [k, Object.freeze(v)])),
-  );
-}
-
-// ───────────────────────────────────────────────────────────────────────────
-// FRONTIER #3 — Observation Lifecycle Baseline Heuristic
-// ───────────────────────────────────────────────────────────────────────────
-// Transitions scaffold:
-//   * Semua obs mulai "created" (saat exec probe tulis observation).
-//   * Lalu "verified": identity recompute sama dengan registry entry.id.
-//     (Scaffold: karena entries berasal dari registry, mereka auto-verified).
-//   * Lalu "replicated": jika observation muncul di reuseIndex ≥2 Evidence
-//     packages ATAU jika ada equivalence edge ≥2 independent EXEs menunjuk
-//     observation yang sama / ekuivalen.
+//type NodeCryptoApi = {
+//  readonly createHash: (alg: "sha256") => {
+//    readonly update: (s: string) => unknown;
+//    readonly digest: (enc: "hex") => string;
+//  };
+//};
 //
-// Deprecated / superseded = tidak dibuat oleh scaffold (karena butuh
-// alasan actual auditor / instrument error terdeteksi).
-
-export function computeObservationLifecycleBaseline(
-  registry: ProvenanceRegistryCollection,
-  reuseIdx: { readonly reuseIndex: ObservationReuseIndex },
-  opts: { readonly classifierId?: string; readonly nowIso?: string } = {},
-): Readonly<Record<string, ObservationLifecycleEntry>> {
-  const cls = opts.classifierId ?? "alpha10-scaffold:lifecycle-baseline-v1";
-  const now = opts.nowIso ?? new Date().toISOString();
-  const out: Record<string, ObservationLifecycleEntry> = {};
-  for (const entry of Object.values(registry.rawObservations)) {
-    const obsId = entry.id;
-    const reused = (reuseIdx.reuseIndex[String(obsId)]?.length ?? 0) >= 2;
-    const transitions: {
-      fromState: ObservationLifecycleState | "none"; toState: ObservationLifecycleState;
-      transitionedAt: string; reason: string; transitionedBy: string;
-    }[] = [
-      Object.freeze({
-        fromState: "none", toState: "created",
-        transitionedAt: entry.obs.observedAt,
-        reason: `RawObservation produced by sourceChannel=${entry.obs.sourceChannel} exec=${String(entry.obs.experimentExecutionId).slice(0, 16)}…`,
-        transitionedBy: "provenance-registry:insert",
-      }),
-      Object.freeze({
-        fromState: "created", toState: "verified",
-        transitionedAt: now,
-        reason: `registry identity recompute verified: computeRawObservationIdSync(entry.obs) === entry.id (SHA-256 match)`,
-        transitionedBy: cls,
-      }),
-    ];
-    let state: ObservationLifecycleState = "verified";
-    if (reused) {
-      state = "replicated";
-      transitions.push(Object.freeze({
-        fromState: "verified", toState: "replicated",
-        transitionedAt: now,
-        reason: `Observation referenced by EvidencePackages count=${reuseIdx.reuseIndex[String(obsId)]!.length} ≥ 2 (cross-package reuse = de-facto replicated)`,
-        transitionedBy: `${cls}:cross-package-reuse≥2`,
-      }));
-    }
-    out[String(obsId)] = Object.freeze({
-      observationId: obsId,
-      currentState: state,
-      transitions: Object.freeze(transitions),
-    });
-  }
-  return Object.freeze(out);
-}
-
-// ───────────────────────────────────────────────────────────────────────────
-// FRONTIER #4 — Independent Replication Groups (Scaffold Synthetic Heuristic)
-// ───────────────────────────────────────────────────────────────────────────
-// Scaffold: untuk SINI, kita tidak menjalankan process N times (karena
-// itu membutuhkan multi-run separate). Sebagai gantinya kita construct
-// replication groups berdasarkan actual definitionIds yang SAMA punya
-// ≥1 EXEs. Lalu kita beri status:
-//   totalExecutions == 1 → "not-replicated" (jalannya 1x saja)
-//   totalExecutions ≥2 → "replicated-weak" (asumsi scaffold: karena ini
-//      single-process generate, convergence ratio tidak bisa ≥ 0.95 tanpa
-//      actual run kedua → status weak jujur = replicated tapi tidak cukup
-//      independent executor identity berbeda).
+//function isStringRecord(v: unknown): v is Record<string, unknown> {
+//  return typeof v === "object" && v !== null && !Array.isArray(v);
+//}
 //
-// Reproducibility note: Frontier #4 yang SESUNGGUHNYA membutuhkan
-// eksekusi multi-process atau multi-host. Scaffold ini HANYA membuktikan
-// type ReplicationGroup bisa diisi, BUKAN actual replication evidence.
-
-export function buildReplicationGroupsScaffold(
-  registry: ProvenanceRegistryCollection,
-  opts: { readonly classifierId?: string } = {},
-): Readonly<Record<string, ReplicationGroup>> {
-  const cls = opts.classifierId ?? "alpha10-scaffold:replication-group-v1";
-  const now = new Date().toISOString();
-  // Group EXE by experimentDefinitionId
-  const groups: Record<string, ExperimentExecutionRegistryEntry[]> = {};
-  for (const exeEntry of Object.values(registry.experimentExecutions)) {
-    const defId = String(exeEntry.exe.experimentDefinitionId);
-    if (!groups[defId]) groups[defId] = [];
-    groups[defId]!.push(exeEntry);
-  }
-  const out: Record<string, ReplicationGroup> = {};
-  for (const [defId, exeEntries] of Object.entries(groups)) {
-    const defEntry = registry.experimentDefinitions[defId];
-    if (!defEntry) continue;
-    const total = exeEntries.length;
-    const succ = exeEntries.filter(e => e.exe.exitCode === 0).length;
-    // distinct executor identity = field executorIdentity pada EXE
-    const distinctExecutors = new Set(exeEntries.map(e => e.exe.executorIdentity ?? "unknown")).size;
-    // convergence: scaffold = jujur = 0.50 jika single run, 0.80 jika ≥2 (estimate)
-    // karena kita tidak punya actual cross-run obs equivalence di single-process.
-    const convergence = total < 2 ? 0 : 0.80;
-    let status: ReplicationGroup["replicationStatus"] = "not-replicated";
-    if (total >= 2) {
-      if (distinctExecutors < 2) status = "replicated-weak";  // single executor identity (belum benar-benar independent)
-      else if (convergence >= 0.95 && succ === total) status = "replicated-strong";
-      else if (convergence >= 0.50) status = "replicated-weak";
-      else status = "replication-failed";
-    }
-    const stableGrpId = `repgrp:${defEntry.def.experimentKey}:v${defEntry.def.version}`;
-    out[stableGrpId] = Object.freeze({
-      groupId: stableGrpId,
-      experimentDefinitionId: defEntry.id,
-      experimentDefinitionVersion: defEntry.def.version,
-      executionIds: Object.freeze(exeEntries.map(e => e.id)),
-      distinctExecutorIdentities: distinctExecutors,
-      successfulExecutionCount: succ,
-      totalExecutionCount: total,
-      observationConvergenceRatio01: Number(convergence.toFixed(4)),
-      replicationStatus: status,
-      reportSummary: total < 2
-        ? `Single execution (total=${total}) → BUKAN replicated. Butuh ≥2 INDEPENDENT runs (different host/process) untuk replication evidence.`
-        : `${total} EXEs, ${succ} success, distinctExecutors=${distinctExecutors}, convergence=${convergence.toFixed(4)} → status=${status}. Scaffold jujur: single-session.`,
-      assembledAt: now,
-    });
-    void cls;
-  }
-  return Object.freeze(
-    Object.fromEntries(Object.entries(out).map(([k, v]) => [k, Object.freeze(v)])),
-  );
-}
-
-// ───────────────────────────────────────────────────────────────────────────
-// FRONTIER #5 — Quality-Weighted Evidence Consensus Reasoning (Scaffold)
-// ───────────────────────────────────────────────────────────────────────────
-// Untuk setiap claim:
-//   1. Kumpulkan EvidencePackages yang dirujuk claim → evidenceObservationEdges
-//      → kumpulkan RawObservationIds beserta semantic kind (supports / contradicts / inconclusive).
-//   2. Untuk tiap OBS: aggregateQualityScore01 (dari Frontier #2).
-//   3. Kalikan kind dengan bobot quality → sum kumulatif.
-//   4. Normalisasi 0..1 (bagi dengan total weight).
-//   5. Klasifikasi strength: strong / moderate / weak / conflicting / inconclusive.
+//function detectNodeCryptoFromGlobalThis(): NodeCryptoApi | null {
+//  try {
+//    const anyGlobal = globalThis as unknown as Record<string, unknown>;
+//    const proc = anyGlobal.process;
+//    if (!isStringRecord(proc)) return null;
+//    const versions = proc.versions;
+//    if (!isStringRecord(versions)) return null;
+//    if (typeof versions.node !== "string") return null;
 //
-// Ini adalah scaffold classifier sederhana. Production classifier
-// seharusnya juga mempertimbangkan replicationStatus (Frontier #4),
-// lifecycle currentState (Frontier #3), dan semantic equivalence classes
-// (Frontier #1) agar tidak double-counting equivalence.
-
-export interface ClaimConsensusOpts {
-  readonly classifierVersion?: string;
-  readonly minimumTotalWeight?: number;
-}
-
-export function computeClaimConsensusBaseline(
-  envelope: {
-    readonly claims: Readonly<Record<string, CertificationClaim>>;
-    readonly evidencePackages: Readonly<Record<string, EvidencePackageIdentity>>;
-  },
-  graph: CertificationProvenanceGraph,
-  qualityIndex: Readonly<Record<string, ObservationQualityEntry>> | undefined,
-  opts: ClaimConsensusOpts = {},
-): Readonly<Record<string, ClaimConsensusClassification>> {
-  const clsVer = opts.classifierVersion ?? "alpha10-scaffold:claim-consensus-v1";
-  const minW = opts.minimumTotalWeight ?? 0.5;
-  const now = new Date().toISOString();
-  // Buat lookup edge by EvidenceId -> list of obs edges
-  const byEid: Record<string, ObservationSemanticEquivalenceEdge[] | EvidenceObservationSemanticEdge[]> = {};
-  void byEid;
-  const edgesArr = Object.values(graph.evidenceObservationEdges);
-  const edgeByEvidence: Record<string, EvidenceObservationSemanticEdge[]> = {};
-  for (const e of edgesArr) {
-    const key = String(e.fromEvidenceId);
-    if (!edgeByEvidence[key]) edgeByEvidence[key] = [];
-    edgeByEvidence[key]!.push(e);
-  }
-  const out: Record<string, ClaimConsensusClassification> = {};
-  for (const claim of Object.values(envelope.claims)) {
-    const evidences = (claim.evidenceIds ?? []) as readonly EvidenceId[];
-    let wSupp = 0, wCont = 0, wInc = 0;
-    const contribs = new Map<string, number>();
-    let totalW = 0;
-    for (const eidRaw of evidences) {
-      const eid = String(eidRaw);
-      const edges = edgeByEvidence[eid] ?? [];
-      for (const edge of edges) {
-        const obsIdStr = String(edge.toRawObservationId);
-        const q = qualityIndex?.[obsIdStr]?.aggregateQualityScore01 ?? 0.5;
-        switch (edge.kind) {
-          case "supports": wSupp += q; totalW += q; break;
-          case "contradicts": wCont += q; totalW += q; break;
-          case "inconclusive": wInc += q; totalW += q; break;
-          case "metadata":
-          default: totalW += q * 0.1; break;  // metadata lightly counted
-        }
-        if (edge.kind === "supports" || edge.kind === "contradicts") {
-          contribs.set(obsIdStr, (contribs.get(obsIdStr) ?? 0) + q);
-        }
-      }
-    }
-    const denom = Math.max(1e-9, totalW);
-    const wSuppN = Math.min(1, wSupp / denom);
-    const wContN = Math.min(1, wCont / denom);
-    const wIncN = Math.min(1, wInc / denom);
-    // top 3 contributors sort by weight desc
-    const top = [...contribs.entries()]
-      .sort((a, b) => (b[1] - a[1]))
-      .slice(0, 3)
-      .map(([obsIdStr]) => obsIdStr as RawObservationId);
-    // conflicting detection
-    const conflictingIds: RawObservationId[] = [];
-    // if contradictory quality ≥ threshold (>= 1/4 dari total supporting quality)
-    const conflictingQual = wCont >= 0.20 * Math.max(0.5, wSupp);
-    if (conflictingQual) {
-      for (const eidRaw of evidences) {
-        const edges = edgeByEvidence[String(eidRaw)] ?? [];
-        for (const e of edges) if (e.kind === "contradicts") conflictingIds.push(e.toRawObservationId);
-      }
-    }
-    let strength: ClaimConsensusClassification["strength"];
-    if (totalW < minW) strength = "inconclusive";
-    else if (conflictingQual) strength = "conflicting";
-    else if (wSuppN >= 0.67) strength = "strong";
-    else if (wSuppN >= 0.50) strength = "moderate";
-    else strength = "weak";
-    const rationaleParts: string[] = [];
-    rationaleParts.push(`claim=${claim.id} status=${claim.status} evidenceIds_count=${evidences.length}`);
-    rationaleParts.push(`weighted_supports=${wSuppN.toFixed(3)} weighted_contradicts=${wContN.toFixed(3)} weighted_inconclusive=${wIncN.toFixed(3)} total_weight=${totalW.toFixed(3)}`);
-    rationaleParts.push(`top_contributors_count=${top.length}`);
-    if (conflictingQual) rationaleParts.push(`conflicting_detected=quality_contradicts>=0.20*supporting`);
-    out[claim.id] = Object.freeze({
-      claimId: claim.id,
-      strength,
-      weightedSupportsScore01: Number(wSuppN.toFixed(4)),
-      weightedContradictsScore01: Number(wContN.toFixed(4)),
-      weightedInconclusiveScore01: Number(wIncN.toFixed(4)),
-      topContributorObservationIds: Object.freeze(top),
-      conflictingObservationIds: conflictingIds.length > 0 ? Object.freeze(conflictingIds) : undefined,
-      rationale: rationaleParts.join(" | "),
-      classifierVersion: clsVer,
-      computedAt: now,
-    });
-  }
-  return Object.freeze(
-    Object.fromEntries(Object.entries(out).map(([k, v]) => [k, Object.freeze(v)])),
-  );
-}
-
-// Convenience ALL-IN-ONE: populate graph dengan 5 frontier fields
-// (semua opsional, backward compatible) dengan default scaffold classifiers.
-// Hasilnya adalah graph baru (immutable new object — Alpha.9 graph original
-// tidak disentuh).
-
-export function enrichGraphWithAlpha10FrontiersScaffold(input: {
-  readonly envelope: {
-    readonly provenanceRegistry: ProvenanceRegistryCollection;
-    readonly claims: Readonly<Record<string, CertificationClaim>>;
-    readonly evidencePackages: Readonly<Record<string, EvidencePackageIdentity>>;
-  };
-  readonly baseGraph: CertificationProvenanceGraph;
-}): CertificationProvenanceGraph {
-  const { envelope, baseGraph } = input;
-  const reuseIdx = computeObservationReuseIndex(baseGraph);
-  const eqEdges = computeNumericToleranceEquivalenceEdges(
-    envelope.provenanceRegistry, envelope.provenanceRegistry.experimentDefinitions,
-  );
-  const quality = computeObservationQualityBaseline(envelope.provenanceRegistry);
-  const lifecycle = computeObservationLifecycleBaseline(envelope.provenanceRegistry, { reuseIndex: reuseIdx.reuseIndex, });
-  const repGrps = buildReplicationGroupsScaffold(envelope.provenanceRegistry);
-  const consensus = computeClaimConsensusBaseline(
-    { claims: envelope.claims, evidencePackages: envelope.evidencePackages, },
-    baseGraph, quality,
-  );
-  return Object.freeze({
-    modelVersion: baseGraph.modelVersion,
-    builtAt: baseGraph.builtAt,
-    edgeCount: baseGraph.edgeCount,
-    evidenceObservationEdges: baseGraph.evidenceObservationEdges,
-    definitionVersionLineageEdges: baseGraph.definitionVersionLineageEdges,
-    observationSemanticEquivalenceEdges: eqEdges,
-    observationLifecycleIndex: lifecycle,
-    observationQualityIndex: quality,
-    replicationGroupIndex: repGrps,
-    claimConsensusIndex: consensus,
-  });
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// ALPHA.11 — Independent Multi-Executor Reproduction (EMPIRICAL, bukan scaffold)
-// ══════════════════════════════════════════════════════════════════════════════
+//    const tryAsCrypto = (v: unknown): NodeCryptoApi | null => {
+//      if (isStringRecord(v) && typeof (v as Record<string, unknown>).createHash === "function") {
+//        return v as unknown as NodeCryptoApi;
+//      }
+//      return null;
+//    };
 //
-// Prinsip utama:
-//   ObservationContentFingerprint ≠ SHA-256(obs identity).
-//   Identity hash mencakup experimentExecutionId + observedAt → BERBEDA setiap run.
-//   Content fingerprint HANYA mencakup makna (content, index0, semanticOutcome,
-//   sourceChannel) → SAMA jika observasi sebenarnya adalah "pengukuran yang sama".
+//    const anyMod = anyGlobal.module as unknown as Record<string, unknown> | undefined;
+//    const builtinRequire: unknown = isStringRecord(anyMod) ? (anyMod as Record<string, unknown>).builtinRequire : undefined;
 //
-// Dua pengukuran dari EXE berbeda (berbeda executor, berbeda host, berbeda waktu)
-// dianggap REPRODUCIBLE secara empiris JIKA content fingerprint SAMA.
-
-export function canonicalObservationContentFingerprint(obs: RawObservation): string {
-  if (obs.provenanceVersion !== PROVENANCE_PROTOCOL_VERSION) {
-    throw new TypeError(
-      `RawObservation provenanceVersion mismatch: expected ${PROVENANCE_PROTOCOL_VERSION}, got ${obs.provenanceVersion}`,
-    );
-  }
-  const envelope = {
-    _tag: "observation-content-fp:v1",
-    _provenanceVersion: obs.provenanceVersion,
-    index0: obs.index0,
-    content: obs.content,
-    sourceChannel: obs.sourceChannel,
-    semanticOutcome: obs.semanticOutcome,
-  } as const;
-  return canonicalSerialize(envelope) as unknown as string;
-}
-
-export function computeObservationContentFingerprintSync(obs: RawObservation): string {
-  return sha256HexSyncOrThrow(canonicalObservationContentFingerprint(obs));
-}
-
-export async function computeObservationContentFingerprint(obs: RawObservation): Promise<string> {
-  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
-  const bundle = canonicalObservationContentFingerprint(obs);
-  return runtimeSha256 !== null ? await runtimeSha256(bundle) : sha256HexSyncOrThrow(bundle);
-}
-
-export type ObservationContentFingerprint = string & { readonly __contentFp: unique symbol };
-
-export interface EmpiricalReplicationPerDefinition {
-  readonly experimentDefinitionId: ExperimentDefinitionId;
-  readonly experimentDefinitionVersion: string;
-  readonly experimentKey: string;
-  readonly totalExecutions: number;
-  readonly successfulExecutions: number;
-  readonly distinctExecutorIdentities: number;
-  readonly totalUniqueContentFps: number;
-  readonly replicatedContentFpsCount: number;  // muncul di ≥2 distinct executors
-  readonly singletonContentFpsCount: number;   // hanya muncul di 1 executor identity
-  readonly observationConvergenceRatio01: number;
-  readonly replicationStatus: ReplicationGroup["replicationStatus"];
-  readonly executionIds: readonly ExperimentExecutionId[];
-  readonly executorIdentities: readonly string[];
-  readonly perExecutionObsCounts: Readonly<Record<string, number>>;
-  readonly fpOccurrenceCountsByExecutor: Readonly<Record<string, readonly string[]>>;  // fp → distinct executor identities
-}
-
-export interface MultiExecutorEmpiricalMetrics {
-  readonly registryCount: number;
-  readonly totalDefinitionsWithExecutions: number;
-  readonly definitionsWithMultiExecutor: number;   // distinctExecutors ≥ 2
-  readonly definitionsReplicatedStrong: number;
-  readonly definitionsReplicatedWeak: number;
-  readonly definitionsReplicationFailed: number;
-  readonly definitionsNotReplicated: number;
-  readonly totalUniqueObservationFps: number;
-  readonly replicatedObservationFps: number;
-  readonly reproducibilityRate01: number;   // fp with ≥2 distinct executors / total unique fps (bila total=0 → 0)
-  // Observation stability: rata-rata Jaccard similarity fingerprint sets across
-  // setiap pasang executor identity berbeda. 1.0 = identik sempurna, 0.0 = disjoint.
-  readonly observationStability01: number;
-  // Disagreement rate: fraksi fps yang TIDAK muncul di SELURUH executor,
-  // diantara fps yang coverage-nya minimal 2 distinct executors.
-  readonly disagreementRate01: number;
-  // Execution variance: koefisien variasi ukuran fingerprint set per execution
-  // (std dev / mean) dinormalisasi 0..1 via 1 - 1/(1+cv).
-  readonly executionVariance01: number;
-  readonly crossExecutorPairCount: number;
-  readonly assembledAt: string;
-}
-
-export function buildEmpiricalReplicationGroupsFromMultipleRegistries(
-  registries: readonly ProvenanceRegistryCollection[],
-  opts: { readonly classifierId?: string } = {},
-): {
-  readonly replicationGroups: Readonly<Record<string, ReplicationGroup>>;
-  readonly perDefinitionEmpirical: Readonly<Record<string, EmpiricalReplicationPerDefinition>>;
-  readonly metrics: MultiExecutorEmpiricalMetrics;
-} {
-  const cls = opts.classifierId ?? "alpha11:empirical-multi-executor-replication-v1";
-  void cls;
-  const assembledAt = new Date().toISOString();
-
-  // ── Step 1: Gabung seluruh EXE dari seluruh registry, keyed by definitionId.
-  const exeByDef: Record<string, ExperimentExecutionRegistryEntry[]> = {};
-  const allRegistriesUnionDefs: Record<string, ExperimentDefinitionRegistryEntry> = {};
-  for (const reg of registries) {
-    for (const [k, v] of Object.entries(reg.experimentDefinitions)) allRegistriesUnionDefs[k] = v;
-    for (const exeEntry of Object.values(reg.experimentExecutions)) {
-      const defId = String(exeEntry.exe.experimentDefinitionId);
-      if (!exeByDef[defId]) exeByDef[defId] = [];
-      exeByDef[defId]!.push(exeEntry);
-    }
-  }
-
-  // ── Step 2: Untuk tiap definition, kumpulkan per-EXE obs → content fingerprints.
-  const allFpGlobal: Record<string, Set<string>> = {}; // fp → distinct executor identities that saw it
-  const perDefEmp: Record<string, EmpiricalReplicationPerDefinition> = {};
-  const replGroups: Record<string, ReplicationGroup> = {};
-
-  for (const [defIdStr, exeEntries] of Object.entries(exeByDef)) {
-    const defEntry = allRegistriesUnionDefs[defIdStr];
-    if (!defEntry) continue;
-    const def = defEntry.def;
-    const exeIds = exeEntries.map(e => e.id);
-    const executorIdentities = exeEntries.map(e => e.exe.executorIdentity);
-    const distinctExecutors = new Set(executorIdentities.filter(Boolean)).size;
-    const totalExes = exeEntries.length;
-    const succExes = exeEntries.filter(e => e.exe.exitCode === 0).length;
-
-    const perExeObsFps: Record<string, readonly string[]> = {};
-    const perExeObsCounts: Record<string, number> = {};
-    const fpOccurrenceByExec: Record<string, Set<string>> = {}; // fp → set of executor identities containing it
-    const allFpsThisDef = new Set<string>();
-
-    // Build lookup: exeId → observations from the registry, iterating rawObservations
-    // directly (NOT through exe.rawObservationIds). Known circular-dependency issue
-    // in buildProvenanceChainSync: EXE identity is computed over first-pass
-    // rawObservationIds, then OBS are re-signed with final EXE.id → registry keys
-    // differ from what exe.rawObservationIds stores. The rawObservations registry
-    // always has the correct post-rebase obs entries with experimentExecutionId set
-    // to the final EXE.id, so iteration here is authoritative.
-    const obsByExe: Record<string, RawObservationRegistryEntry[]> = {};
-    for (const reg of registries) {
-      for (const obsEntry of Object.values(reg.rawObservations)) {
-        const exeIdStr = String(obsEntry.obs.experimentExecutionId);
-        if (!obsByExe[exeIdStr]) obsByExe[exeIdStr] = [];
-        obsByExe[exeIdStr]!.push(obsEntry);
-      }
-    }
-
-    for (const exeEntry of exeEntries) {
-      const exeIdStr = String(exeEntry.id);
-      const exeExecIdentity = exeEntry.exe.executorIdentity ?? "unknown";
-      const fps: string[] = [];
-      const relevantObs = obsByExe[exeIdStr] ?? [];
-      for (const obsEntry of relevantObs) {
-        const fp = computeObservationContentFingerprintSync(obsEntry.obs);
-        fps.push(fp);
-        allFpsThisDef.add(fp);
-        if (!fpOccurrenceByExec[fp]) fpOccurrenceByExec[fp] = new Set<string>();
-        fpOccurrenceByExec[fp]!.add(exeExecIdentity);
-        if (!allFpGlobal[fp]) allFpGlobal[fp] = new Set<string>();
-        allFpGlobal[fp]!.add(exeExecIdentity);
-      }
-      perExeObsFps[exeIdStr] = Object.freeze(fps);
-      perExeObsCounts[exeIdStr] = fps.length;
-    }
-
-    const totalUniqFp = allFpsThisDef.size;
-    let replicatedFp = 0;
-    let singletonFp = 0;
-    for (const fp of allFpsThisDef) {
-      const cnt = (fpOccurrenceByExec[fp]?.size) ?? 0;
-      if (cnt >= 2) replicatedFp++;
-      else singletonFp++;
-    }
-    const convergence = totalUniqFp === 0 ? 0 : replicatedFp / totalUniqFp;
-
-    let status: ReplicationGroup["replicationStatus"] = "not-replicated";
-    if (totalExes >= 2) {
-      if (distinctExecutors >= 2 && convergence >= 0.95 && succExes === totalExes) status = "replicated-strong";
-      else if (succExes >= 2 && convergence >= 0.50) status = "replicated-weak";
-      else if (succExes >= 2) status = "replication-failed";
-      else status = "replication-failed";
-    }
-
-    const stableGrpId = `repgrp:${def.experimentKey}:v${def.version}`;
-    const fpOccurrenceByExecReadonly: Record<string, readonly string[]> = {};
-    for (const [fp, setVal] of Object.entries(fpOccurrenceByExec)) {
-      fpOccurrenceByExecReadonly[fp] = Object.freeze([...setVal].sort());
-    }
-
-    perDefEmp[defIdStr] = Object.freeze({
-      experimentDefinitionId: defEntry.id,
-      experimentDefinitionVersion: def.version,
-      experimentKey: def.experimentKey,
-      totalExecutions: totalExes,
-      successfulExecutions: succExes,
-      distinctExecutorIdentities: distinctExecutors,
-      totalUniqueContentFps: totalUniqFp,
-      replicatedContentFpsCount: replicatedFp,
-      singletonContentFpsCount: singletonFp,
-      observationConvergenceRatio01: Number(convergence.toFixed(4)),
-      replicationStatus: status,
-      executionIds: Object.freeze([...exeIds]),
-      executorIdentities: Object.freeze([...executorIdentities]),
-      perExecutionObsCounts: Object.freeze({ ...perExeObsCounts }),
-      fpOccurrenceCountsByExecutor: Object.freeze({ ...fpOccurrenceByExecReadonly }),
-    });
-
-    const reportSummary =
-      totalExes < 2
-        ? `Single runs total=${totalExes} for def=${def.experimentKey}; not replicated (need ≥2 independent runs).`
-        : `${totalExes} EXEs succ=${succExes}/${totalExes} distinctExecutors=${distinctExecutors} convergence=${convergence.toFixed(4)} replicatedFps=${replicatedFp}/${totalUniqFp} → status=${status}.`;
-    replGroups[stableGrpId] = Object.freeze({
-      groupId: stableGrpId,
-      experimentDefinitionId: defEntry.id,
-      experimentDefinitionVersion: def.version,
-      executionIds: Object.freeze([...exeIds]),
-      distinctExecutorIdentities: distinctExecutors,
-      successfulExecutionCount: succExes,
-      totalExecutionCount: totalExes,
-      observationConvergenceRatio01: Number(convergence.toFixed(4)),
-      replicationStatus: status,
-      reportSummary,
-      assembledAt,
-    });
-  }
-
-  // ── Step 3: Compute aggregate MultiExecutorEmpiricalMetrics.
-  const registryCount = registries.length;
-  const totalDefsWithEx = Object.keys(exeByDef).length;
-  let defsMulti = 0, defsStrong = 0, defsWeak = 0, defsFail = 0, defsNone = 0;
-  let totalUniqFpAll = 0, replicatedFpAll = 0;
-  for (const emp of Object.values(perDefEmp)) {
-    if (emp.distinctExecutorIdentities >= 2) defsMulti++;
-    switch (emp.replicationStatus) {
-      case "replicated-strong": defsStrong++; break;
-      case "replicated-weak": defsWeak++; break;
-      case "replication-failed": defsFail++; break;
-      case "not-replicated": default: defsNone++; break;
-    }
-    totalUniqFpAll += emp.totalUniqueContentFps;
-    replicatedFpAll += emp.replicatedContentFpsCount;
-  }
-  // Global reproducibility rate: gunakan allFpGlobal agar dedup fp lintas definitions
-  const globalUniqFps = Object.keys(allFpGlobal).length;
-  const globalRepFps = Object.values(allFpGlobal).filter(s => (s?.size ?? 0) >= 2).length;
-  const reproducibilityRate01 = globalUniqFps === 0 ? 0 : Number((globalRepFps / globalUniqFps).toFixed(4));
-
-  // Observation stability: rata-rata pairwise Jaccard sim antar DISTINCT executor identity
-  // fingerprint set (aggregasi lintas definition).
-  const byExecAll: Record<string, Set<string>> = {};
-  for (const [fp, execSet] of Object.entries(allFpGlobal)) {
-    for (const exec of execSet) {
-      if (!byExecAll[exec]) byExecAll[exec] = new Set<string>();
-      byExecAll[exec]!.add(fp);
-    }
-  }
-  const distinctExecList = Object.keys(byExecAll);
-  let pairSum = 0, pairCount = 0;
-  for (let i = 0; i < distinctExecList.length; i++) {
-    for (let j = i + 1; j < distinctExecList.length; j++) {
-      const a = byExecAll[distinctExecList[i]!]!;
-      const b = byExecAll[distinctExecList[j]!]!;
-      let inter = 0;
-      for (const fp of a) if (b.has(fp)) inter++;
-      const union = a.size + b.size - inter;
-      const jac = union === 0 ? 1 : inter / union;
-      pairSum += jac;
-      pairCount++;
-    }
-  }
-  const observationStability01 = pairCount === 0 ? 0 : Number((pairSum / pairCount).toFixed(4));
-  const crossExecutorPairCount = pairCount;
-
-  // Disagreement rate: diantara fps yang muncul di ≥2 distinct executors,
-  // fraksi yang TIDAK muncul di SEMUA distinct executors.
-  let covered = 0, disagreed = 0;
-  const totalExecutors = distinctExecList.length;
-  for (const execSet of Object.values(allFpGlobal)) {
-    const sz = execSet?.size ?? 0;
-    if (sz < 2) continue;
-    covered++;
-    if (sz < totalExecutors) disagreed++;
-  }
-  const disagreementRate01 = covered === 0 ? 0 : Number((disagreed / covered).toFixed(4));
-
-  // Execution variance: koefisien variasi observation count per execution.
-  const counts: number[] = [];
-  for (const emp of Object.values(perDefEmp)) {
-    for (const c of Object.values(emp.perExecutionObsCounts)) counts.push(c);
-  }
-  let cv = 0;
-  if (counts.length >= 2) {
-    const mean = counts.reduce((a, b) => a + b, 0) / counts.length;
-    if (mean > 0) {
-      const variance = counts.reduce((a, b) => a + (b - mean) * (b - mean), 0) / counts.length;
-      const sd = Math.sqrt(variance);
-      cv = sd / mean;
-    }
-  }
-  const executionVariance01 = Number((1 - 1 / (1 + cv)).toFixed(4));
-
-  const metrics: MultiExecutorEmpiricalMetrics = Object.freeze({
-    registryCount,
-    totalDefinitionsWithExecutions: totalDefsWithEx,
-    definitionsWithMultiExecutor: defsMulti,
-    definitionsReplicatedStrong: defsStrong,
-    definitionsReplicatedWeak: defsWeak,
-    definitionsReplicationFailed: defsFail,
-    definitionsNotReplicated: defsNone,
-    totalUniqueObservationFps: globalUniqFps,
-    replicatedObservationFps: globalRepFps,
-    reproducibilityRate01,
-    observationStability01,
-    disagreementRate01,
-    executionVariance01,
-    crossExecutorPairCount,
-    assembledAt,
-  });
-  void totalUniqFpAll;
-  void replicatedFpAll;
-
-  return Object.freeze({
-    replicationGroups: Object.freeze(
-      Object.fromEntries(Object.entries(replGroups).map(([k, v]) => [k, Object.freeze(v)])),
-    ),
-    perDefinitionEmpirical: Object.freeze(
-      Object.fromEntries(Object.entries(perDefEmp).map(([k, v]) => [k, Object.freeze(v)])),
-    ),
-    metrics,
-  });
-}
-
-export function enrichGraphWithAlpha11EmpiricalReplication(
-  baseGraph: CertificationProvenanceGraph,
-  multiRegistryResult: ReturnType<typeof buildEmpiricalReplicationGroupsFromMultipleRegistries>,
-): CertificationProvenanceGraph {
-  return Object.freeze({
-    modelVersion: baseGraph.modelVersion,
-    builtAt: baseGraph.builtAt,
-    edgeCount: baseGraph.edgeCount,
-    evidenceObservationEdges: baseGraph.evidenceObservationEdges,
-    definitionVersionLineageEdges: baseGraph.definitionVersionLineageEdges,
-    observationSemanticEquivalenceEdges: baseGraph.observationSemanticEquivalenceEdges,
-    observationLifecycleIndex: baseGraph.observationLifecycleIndex,
-    observationQualityIndex: baseGraph.observationQualityIndex,
-    replicationGroupIndex: multiRegistryResult.replicationGroups,
-    claimConsensusIndex: baseGraph.claimConsensusIndex,
-  });
-}
-
+//    // Path 1: globalThis.require (CommonJS context — not available in pure ESM)
+//    const gRequire: unknown = anyGlobal.require;
+//    if (typeof gRequire === "function") {
+//      const r = tryAsCrypto((gRequire as (id: string) => unknown)("crypto"));
+//      if (r !== null) return r;
+//    }
+//
+//    // Path 2: module.builtinRequire (some bundlers)
+//    if (typeof builtinRequire === "function") {
+//      const r = tryAsCrypto((builtinRequire as (id: string) => unknown)("crypto"));
+//      if (r !== null) return r;
+//    }
+//
+//    // Path 3: process.mainModule.require (Node CJS legacy — null in ESM but try anyway)
+//    const mainMod = (proc as Record<string, unknown>).mainModule;
+//    if (isStringRecord(mainMod) && typeof (mainMod as Record<string, unknown>).require === "function") {
+//      try {
+//        const r = tryAsCrypto(((mainMod as Record<string, unknown>).require as (id: string) => unknown)("crypto"));
+//        if (r !== null) return r;
+//      } catch { /* ignore */ }
+//    }
+//
+//    // Path 4: Function-constructor dynamic evaluation (SAFE: identifier `require` hanya ada DALAM STRING — tidak terdeteksi TS2580,
+//    // dan pada Node.js runtime, Function constructor mendapatkan scope globals + require pada CJS.
+//    // Untuk ESM Node: fallback ke process.dlopen atau internal binding melalui eval string juga.
+//    const pathways = [
+//      // CJS-style: require dari Function scope globals
+//      '(function(){try{return require("crypto")}catch(e){return null}})()',
+//      // ESM workaround via createRequire on module (if it exists):
+//      '(function(){try{var m=process.binding("natives");if(m&&m.crypto){return null}return null}catch(e){return null}})()',
+//      // Last: try module.createRequire via process.mainModule.filename
+//      '(function(){try{var m=require("module");var r=m.createRequire(process.argv[1]||process.cwd()+"/x.js");return r("crypto")}catch(e){return null}})()',
+//    ];
+//    for (const expr of pathways) {
+//      try {
+//        const fn = new Function(expr) as () => unknown;
+//        const resolved = fn();
+//        const crypto = tryAsCrypto(resolved);
+//        if (crypto !== null) return crypto;
+//      } catch { /* ignore pathway */ }
+//    }
+//  } catch {
+//    // ignore top-level
+//  }
+//  return null;
+//}
+//
+//function detectRuntimeSha256(): ((input: string) => Promise<Sha256Hex>) | null {
+//  if (
+//    typeof crypto !== "undefined" &&
+//    typeof crypto === "object" &&
+//    crypto !== null &&
+//    typeof (crypto as unknown as Record<string, unknown>).subtle === "object" &&
+//    typeof TextEncoder !== "undefined"
+//  ) {
+//    return async function webCryptoSha256(input: string): Promise<Sha256Hex> {
+//      const bytes = new TextEncoder().encode(input);
+//      const subtle = (crypto as unknown as { readonly subtle: { readonly digest: (alg: "SHA-256", b: Uint8Array) => Promise<ArrayBuffer> } }).subtle;
+//      const buf = await subtle.digest("SHA-256", bytes);
+//      return Array.from(new Uint8Array(buf))
+//        .map(b => b.toString(16).padStart(2, "0"))
+//        .join("");
+//    };
+//  }
+//  const nodeCrypto = detectNodeCryptoFromGlobalThis();
+//  if (nodeCrypto !== null) {
+//    return async function nodeCryptoSha256(input: string): Promise<Sha256Hex> {
+//      const h = nodeCrypto.createHash("sha256");
+//      (h as unknown as { update: (s: string) => unknown }).update(input);
+//      return (h as unknown as { digest: (e: "hex") => string }).digest("hex");
+//    };
+//  }
+//  return null;
+//}
+//
+//function sha256HexSyncOrThrow(input: string): Sha256Hex {
+//  const nodeCrypto = detectNodeCryptoFromGlobalThis();
+//  if (nodeCrypto === null) {
+//    throw new Error(
+//      "computeEvidenceIdSync requires Node.js 'crypto' module (sha256) available via globalThis.require / globalThis.process. " +
+//        "WebCrypto is async-only in browser; use computeEvidenceId() async variant.",
+//    );
+//  }
+//  const h = nodeCrypto.createHash("sha256");
+//  (h as unknown as { update: (s: string) => unknown }).update(input);
+//  return (h as unknown as { digest: (e: "hex") => string }).digest("hex");
+//}
+//
+//export function canonicalEvidenceBundle(pkg: EvidencePackage): string {
+//  if (pkg.schemaVersion !== EVIDENCE_SCHEMA_VERSION) {
+//    throw new TypeError(
+//      `EvidencePackage schemaVersion mismatch: expected ${EVIDENCE_SCHEMA_VERSION}, got ${pkg.schemaVersion}. ` +
+//        "Schema version is part of identity; bundles with berbeda schema TIDAK BOLEH saling menimpa.",
+//    );
+//  }
+//  const envelope = {
+//    _schemaVersion: pkg.schemaVersion,
+//    _packageVersion: pkg.packageVersion,
+//    derivation: pkg.derivation,
+//    derivedFromEvidenceIds: pkg.derivedFromEvidenceIds ?? [],
+//    experimentId: pkg.experimentId,
+//    experimentProtocol: pkg.experimentProtocol,
+//    environmentConstraints: pkg.environmentConstraints ?? [],
+//    assertionIds: pkg.assertionIds ?? [],
+//    rawObservations: pkg.rawObservations,
+//    hashConsistency: pkg.hashConsistency ?? [],
+//    exitCode: pkg.exitCode ?? null,
+//    generatedBy: pkg.generatedBy,
+//    evidenceSources: pkg.evidenceSources,
+//    scriptFile: pkg.scriptFile ?? null,
+//    functionName: pkg.functionName ?? null,
+//    generatedAt: pkg.generatedAt,
+//    gitCommit: pkg.gitCommit ?? null,
+//    runner: pkg.runner
+//      ? {
+//          os: pkg.runner.os ?? null,
+//          arch: pkg.runner.arch ?? null,
+//          runtime: pkg.runner.runtime ?? null,
+//          runtimeVersion: pkg.runner.runtimeVersion ?? null,
+//        }
+//      : null,
+//    producerId: pkg.producerId ?? null,
+//    producerName: pkg.producerName ?? null,
+//    targetArtifactPath: pkg.targetArtifactPath ?? null,
+//    independentRun: pkg.independentRun ?? null,
+//  } as const;
+//  return canonicalSerialize(envelope) as unknown as string;
+//}
+//
+//export function computeEvidenceIdSync(pkg: EvidencePackage): EvidencePackageIdentity {
+//  const bundle = canonicalEvidenceBundle(pkg);
+//  const sha = sha256HexSyncOrThrow(bundle);
+//  return {
+//    id: EvidenceIdBrand(sha),
+//    algorithm: "sha-256",
+//    schemaVersion: pkg.schemaVersion,
+//    canonicalBundleLength: bundle.length,
+//    pkg: Object.freeze({ ...pkg }),
+//  };
+//}
+//
+//export async function computeEvidenceId(pkg: EvidencePackage): Promise<EvidencePackageIdentity> {
+//  const bundle = canonicalEvidenceBundle(pkg);
+//  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
+//  let sha: Sha256Hex;
+//  if (runtimeSha256 !== null) {
+//    sha = await runtimeSha256(bundle);
+//  } else {
+//    sha = sha256HexSyncOrThrow(bundle);
+//  }
+//  return {
+//    id: EvidenceIdBrand(sha),
+//    algorithm: "sha-256",
+//    schemaVersion: pkg.schemaVersion,
+//    canonicalBundleLength: bundle.length,
+//    pkg: Object.freeze({ ...pkg }),
+//  };
+//}
+//
+//export function verifyEvidenceIdentity(
+//  identity: EvidencePackageIdentity,
+//): { readonly ok: boolean; readonly recomputedId: EvidenceId; readonly expected: EvidenceId } {
+//  const bundle = canonicalEvidenceBundle(identity.pkg);
+//  const sha = sha256HexSyncOrThrow(bundle);
+//  const recomputed = EvidenceIdBrand(sha);
+//  return {
+//    ok: recomputed === identity.id,
+//    recomputedId: recomputed,
+//    expected: identity.id,
+//  };
+//}
+//
+//export function canonicalTopology(
+//  claims: Readonly<Record<string, CertificationClaim>>,
+//  relations: readonly ClaimRelation[],
+//): string {
+//  const claimIds = Object.keys(claims).sort();
+//  const claimsLevel: Record<string, string> = {};
+//  for (const id of claimIds) claimsLevel[id] = claims[id]?.evidenceLevel ?? "unknown";
+//  const sortedRelations = [...relations]
+//    .map(r => ({
+//      from: r.fromClaimId,
+//      kind: r.kind,
+//      to: r.toClaimId,
+//      rationale: r.rationale ?? "",
+//    }))
+//    .sort((a, b) =>
+//      a.from === b.from
+//        ? a.kind === b.kind
+//          ? a.to.localeCompare(b.to)
+//          : a.kind.localeCompare(b.kind)
+//        : a.from.localeCompare(b.from),
+//    );
+//  const topologyEnvelope = {
+//    _schemaVersion: "1.0",
+//    claimIds,
+//    claimsEvidenceLevel: claimsLevel,
+//    relations: sortedRelations,
+//  } as const;
+//  return canonicalSerialize(topologyEnvelope) as unknown as string;
+//}
+//
+//export function computeGraphTopologyIdSync(
+//  claims: Readonly<Record<string, CertificationClaim>>,
+//  relations: readonly ClaimRelation[],
+//): { readonly id: GraphTopologyId; readonly topologyLength: number } {
+//  const topo = canonicalTopology(claims, relations);
+//  const sha = sha256HexSyncOrThrow(topo);
+//  return {
+//    id: GraphTopologyIdBrand(sha),
+//    topologyLength: topo.length,
+//  };
+//}
+//
+//export async function computeGraphTopologyId(
+//  claims: Readonly<Record<string, CertificationClaim>>,
+//  relations: readonly ClaimRelation[],
+//): Promise<{ readonly id: GraphTopologyId; readonly topologyLength: number }> {
+//  const topo = canonicalTopology(claims, relations);
+//  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
+//  let sha: Sha256Hex;
+//  if (runtimeSha256 !== null) sha = await runtimeSha256(topo);
+//  else sha = sha256HexSyncOrThrow(topo);
+//  return {
+//    id: GraphTopologyIdBrand(sha),
+//    topologyLength: topo.length,
+//  };
+//}
+//
+//export function canonicalRelation(r: ClaimRelation): string {
+//  const envelope = {
+//    _schemaVersion: "1.0",
+//    fromClaimId: r.fromClaimId,
+//    kind: r.kind,
+//    toClaimId: r.toClaimId,
+//    rationale: r.rationale ?? "",
+//  } as const;
+//  return canonicalSerialize(envelope) as unknown as string;
+//}
+//
+//export function computeRelationIdSync(r: ClaimRelation): { readonly id: RelationId; readonly canonicalLength: number } {
+//  const s = canonicalRelation(r);
+//  const sha = sha256HexSyncOrThrow(s);
+//  return {
+//    id: RelationIdBrand(sha),
+//    canonicalLength: s.length,
+//  };
+//}
+//
+//export async function computeRelationId(r: ClaimRelation): Promise<{ readonly id: RelationId; readonly canonicalLength: number }> {
+//  const s = canonicalRelation(r);
+//  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
+//  let sha: Sha256Hex;
+//  if (runtimeSha256 !== null) sha = await runtimeSha256(s);
+//  else sha = sha256HexSyncOrThrow(s);
+//  return {
+//    id: RelationIdBrand(sha),
+//    canonicalLength: s.length,
+//  };
+//}
+//
+//export function verifyRelationIdentity(
+//  r: ClaimRelation,
+//): { readonly ok: boolean; readonly recomputedId: RelationId; readonly expected: RelationId | null } {
+//  if (!r.id) {
+//    const recomputed = computeRelationIdSync(r);
+//    return { ok: false, recomputedId: recomputed.id, expected: null };
+//  }
+//  const recomputed = computeRelationIdSync(r);
+//  return {
+//    ok: recomputed.id === r.id,
+//    recomputedId: recomputed.id,
+//    expected: r.id,
+//  };
+//}
+//
+//export type CertificationSnapshotHashable = Omit<
+//  CertificationMatrixEnvelope,
+//  "snapshotId" | "producedBy"
+//>;
+//
+//function sortedClaimRelations(rels: readonly ClaimRelation[]): readonly ClaimRelation[] {
+//  return [...rels].sort((a, b) => {
+//    const ka = `${a.fromClaimId}|${a.kind}|${a.toClaimId}`;
+//    const kb = `${b.fromClaimId}|${b.kind}|${b.toClaimId}`;
+//    if (ka < kb) return -1;
+//    if (ka > kb) return 1;
+//    if (a.rationale !== undefined && b.rationale !== undefined) {
+//      return a.rationale.localeCompare(b.rationale);
+//    }
+//    return 0;
+//  });
+//}
+//
+//export function canonicalSnapshotBundle(envelope: CertificationSnapshotHashable): string {
+//  const hashable: CertificationSnapshotHashable = Object.freeze({
+//    protocolVersion: envelope.protocolVersion,
+//    epistemicProtocolVersion: envelope.epistemicProtocolVersion,
+//    evidenceSchemaVersion: envelope.evidenceSchemaVersion,
+//    relationLayerRules: envelope.relationLayerRules,
+//    evidenceLayers: envelope.evidenceLayers,
+//    layerLifecycle: envelope.layerLifecycle,
+//    layerStatusSemantics: envelope.layerStatusSemantics,
+//    producedAt: envelope.producedAt,
+//    milestone: envelope.milestone,
+//    claims: envelope.claims,
+//    evidencePackages: envelope.evidencePackages,
+//    claimRelations: sortedClaimRelations(envelope.claimRelations),
+//    graphTopology: envelope.graphTopology,
+//    summary: envelope.summary,
+//    overall: envelope.overall,
+//  });
+//  return canonicalSerialize(hashable) as unknown as string;
+//}
+//
+//export function computeSnapshotIdSync(
+//  envelope: CertificationMatrixEnvelope,
+//): { readonly id: CertificationSnapshotId; readonly canonicalBundleLength: number; readonly canonicalBundle: string } {
+//  const hashable: CertificationSnapshotHashable = {
+//    protocolVersion: envelope.protocolVersion,
+//    epistemicProtocolVersion: envelope.epistemicProtocolVersion,
+//    evidenceSchemaVersion: envelope.evidenceSchemaVersion,
+//    relationLayerRules: envelope.relationLayerRules,
+//    evidenceLayers: envelope.evidenceLayers,
+//    layerLifecycle: envelope.layerLifecycle,
+//    layerStatusSemantics: envelope.layerStatusSemantics,
+//    producedAt: envelope.producedAt,
+//    milestone: envelope.milestone,
+//    claims: envelope.claims,
+//    evidencePackages: envelope.evidencePackages,
+//    claimRelations: envelope.claimRelations,
+//    graphTopology: envelope.graphTopology,
+//    summary: envelope.summary,
+//    overall: envelope.overall,
+//  };
+//  const bundle = canonicalSnapshotBundle(hashable);
+//  const hex = sha256HexSyncOrThrow(bundle);
+//  return {
+//    id: CertificationSnapshotIdBrand(hex),
+//    canonicalBundleLength: bundle.length,
+//    canonicalBundle: bundle,
+//  };
+//}
+//
+//export async function computeSnapshotId(
+//  envelope: CertificationMatrixEnvelope,
+//): Promise<{ readonly id: CertificationSnapshotId; readonly canonicalBundleLength: number; readonly canonicalBundle: string }> {
+//  const hashable: CertificationSnapshotHashable = {
+//    protocolVersion: envelope.protocolVersion,
+//    epistemicProtocolVersion: envelope.epistemicProtocolVersion,
+//    evidenceSchemaVersion: envelope.evidenceSchemaVersion,
+//    relationLayerRules: envelope.relationLayerRules,
+//    evidenceLayers: envelope.evidenceLayers,
+//    layerLifecycle: envelope.layerLifecycle,
+//    layerStatusSemantics: envelope.layerStatusSemantics,
+//    producedAt: envelope.producedAt,
+//    milestone: envelope.milestone,
+//    claims: envelope.claims,
+//    evidencePackages: envelope.evidencePackages,
+//    claimRelations: envelope.claimRelations,
+//    graphTopology: envelope.graphTopology,
+//    summary: envelope.summary,
+//    overall: envelope.overall,
+//  };
+//  const bundle = canonicalSnapshotBundle(hashable);
+//  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
+//  const hex = runtimeSha256 !== null
+//    ? await runtimeSha256(bundle)
+//    : sha256HexSyncOrThrow(bundle);
+//  return {
+//    id: CertificationSnapshotIdBrand(hex),
+//    canonicalBundleLength: bundle.length,
+//    canonicalBundle: bundle,
+//  };
+//}
+//
+//export function verifySnapshotIdentity(
+//  envelope: CertificationMatrixEnvelope,
+//): { readonly ok: boolean; readonly recomputedId: CertificationSnapshotId; readonly expected: CertificationSnapshotId | null } {
+//  const recomputed = computeSnapshotIdSync(envelope);
+//  if (!envelope.snapshotId) {
+//    return { ok: false, recomputedId: recomputed.id, expected: null };
+//  }
+//  return {
+//    ok: recomputed.id === envelope.snapshotId,
+//    recomputedId: recomputed.id,
+//    expected: envelope.snapshotId,
+//  };
+//}
+//
+//export function computeSnapshotDelta(
+//  envelopeA: CertificationMatrixEnvelope,
+//  envelopeB: CertificationMatrixEnvelope,
+//): { readonly idA: CertificationSnapshotId; readonly idB: CertificationSnapshotId; readonly identical: boolean; readonly changed: readonly ("claims" | "evidencePackages" | "claimRelations" | "statuses" | "topology" | "meta")[] } {
+//  const idA = computeSnapshotIdSync(envelopeA).id;
+//  const idB = computeSnapshotIdSync(envelopeB).id;
+//  const changed: ("claims" | "evidencePackages" | "claimRelations" | "statuses" | "topology" | "meta")[] = [];
+//  const identic = idA === idB;
+//  if (!identic) {
+//    const aKeys = Object.keys(envelopeA.claims).sort();
+//    const bKeys = Object.keys(envelopeB.claims).sort();
+//    let claimsChanged = aKeys.length !== bKeys.length;
+//    if (!claimsChanged) {
+//      for (const k of aKeys) {
+//        const cA = envelopeA.claims[k];
+//        const cB = envelopeB.claims[k];
+//        if (!cA || !cB) { claimsChanged = true; break; }
+//        if (cA.status !== cB.status) continue; // status change = statuses bucket, not claims
+//      }
+//    }
+//    const statusesChanged = (() => {
+//      const allKeys = Array.from(new Set([...aKeys, ...bKeys]));
+//      for (const k of allKeys) {
+//        const cA = envelopeA.claims[k];
+//        const cB = envelopeB.claims[k];
+//        if ((cA?.status ?? "∅") !== (cB?.status ?? "∅")) return true;
+//      }
+//      return false;
+//    })();
+//    if (claimsChanged || !aKeys.every((k, i) => k === bKeys[i])) changed.push("claims");
+//    const evKeysA = Object.keys(envelopeA.evidencePackages).sort();
+//    const evKeysB = Object.keys(envelopeB.evidencePackages).sort();
+//    const evValuesEqual =
+//      evKeysA.length === evKeysB.length &&
+//      evKeysA.every((k, i) => {
+//        const a = envelopeA.evidencePackages[k];
+//        const b = envelopeB.evidencePackages[evKeysB[i] ?? k];
+//        return !!a && !!b && k === evKeysB[i] && a.id === b.id;
+//      });
+//    if (!evValuesEqual) changed.push("evidencePackages");
+//    const sortedRelsA = sortedClaimRelations(envelopeA.claimRelations);
+//    const sortedRelsB = sortedClaimRelations(envelopeB.claimRelations);
+//    const relsEqual =
+//      sortedRelsA.length === sortedRelsB.length &&
+//      sortedRelsA.every((ra, idx) => {
+//        const rb = sortedRelsB[idx];
+//        if (!rb) return false;
+//        return ra.fromClaimId === rb.fromClaimId && ra.kind === rb.kind && ra.toClaimId === rb.toClaimId;
+//      });
+//    if (!relsEqual) changed.push("claimRelations");
+//    if (statusesChanged) changed.push("statuses");
+//    if (envelopeA.graphTopology.id !== envelopeB.graphTopology.id) changed.push("topology");
+//    if (
+//      envelopeA.milestone !== envelopeB.milestone ||
+//      envelopeA.producedAt !== envelopeB.producedAt ||
+//      envelopeA.evidenceSchemaVersion !== envelopeB.evidenceSchemaVersion ||
+//      envelopeA.epistemicProtocolVersion !== envelopeB.epistemicProtocolVersion
+//    ) {
+//      changed.push("meta");
+//    }
+//  }
+//  return Object.freeze({ idA, idB, identical: identic, changed: Object.freeze(changed) });
+//}
+//
+//// ──────────────────────────────────────────────────────────────────────
+//// SCIENTIFIC PROVENANCE GRAPH — Canonical Serialization + Identity
+//// Chain: ExperimentDefinition → ExperimentExecution → RawObservation
+//// Setiap node punya identity SHA-256 sendiri.
+//// ──────────────────────────────────────────────────────────────────────
+//
+//export function canonicalExperimentDefinition(def: ExperimentDefinition): string {
+//  if (def.provenanceVersion !== PROVENANCE_PROTOCOL_VERSION) {
+//    throw new TypeError(
+//      `ExperimentDefinition provenanceVersion mismatch: expected ${PROVENANCE_PROTOCOL_VERSION}, got ${def.provenanceVersion}`,
+//    );
+//  }
+//  const envelope = {
+//    _provenanceVersion: def.provenanceVersion,
+//    experimentKey: def.experimentKey,
+//    version: def.version,
+//    supersedes: (def.supersedes ?? []).map(String),
+//    title: def.title,
+//    objective: def.objective,
+//    protocolSteps: def.protocolSteps,
+//    assertions: def.assertions,
+//    expectedArtifact: def.expectedArtifact ?? null,
+//    ownerMilestone: def.ownerMilestone,
+//    definedAt: def.definedAt,
+//    definedBy: def.definedBy,
+//    changeNotes: def.changeNotes ?? [],
+//  } as const;
+//  return canonicalSerialize(envelope) as unknown as string;
+//}
+//
+//export interface ExperimentDefinitionIdentity {
+//  readonly id: ExperimentDefinitionId;
+//  readonly algorithm: "sha-256";
+//  readonly provenanceVersion: typeof PROVENANCE_PROTOCOL_VERSION;
+//  readonly canonicalBundleLength: number;
+//  readonly def: ExperimentDefinition;
+//}
+//
+//export function computeExperimentDefinitionIdSync(def: ExperimentDefinition): ExperimentDefinitionIdentity {
+//  const bundle = canonicalExperimentDefinition(def);
+//  const sha = sha256HexSyncOrThrow(bundle);
+//  return {
+//    id: ExperimentDefinitionIdBrand(sha),
+//    algorithm: "sha-256",
+//    provenanceVersion: def.provenanceVersion,
+//    canonicalBundleLength: bundle.length,
+//    def: Object.freeze({ ...def, id: ExperimentDefinitionIdBrand(sha) }),
+//  };
+//}
+//
+//export async function computeExperimentDefinitionId(def: ExperimentDefinition): Promise<ExperimentDefinitionIdentity> {
+//  const bundle = canonicalExperimentDefinition(def);
+//  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
+//  const sha = runtimeSha256 !== null ? await runtimeSha256(bundle) : sha256HexSyncOrThrow(bundle);
+//  return {
+//    id: ExperimentDefinitionIdBrand(sha),
+//    algorithm: "sha-256",
+//    provenanceVersion: def.provenanceVersion,
+//    canonicalBundleLength: bundle.length,
+//    def: Object.freeze({ ...def, id: ExperimentDefinitionIdBrand(sha) }),
+//  };
+//}
+//
+//export function verifyExperimentDefinitionIdentity(
+//  identity: ExperimentDefinitionIdentity,
+//): { readonly ok: boolean; readonly recomputedId: ExperimentDefinitionId; readonly expected: ExperimentDefinitionId } {
+//  const bundle = canonicalExperimentDefinition(identity.def);
+//  const sha = sha256HexSyncOrThrow(bundle);
+//  const recomputed = ExperimentDefinitionIdBrand(sha);
+//  return {
+//    ok: recomputed === identity.id,
+//    recomputedId: recomputed,
+//    expected: identity.id,
+//  };
+//}
+//
+//export function canonicalExperimentExecution(exe: ExperimentExecution): string {
+//  if (exe.provenanceVersion !== PROVENANCE_PROTOCOL_VERSION) {
+//    throw new TypeError(
+//      `ExperimentExecution provenanceVersion mismatch: expected ${PROVENANCE_PROTOCOL_VERSION}, got ${exe.provenanceVersion}`,
+//    );
+//  }
+//  const envelope = {
+//    _provenanceVersion: exe.provenanceVersion,
+//    experimentDefinitionId: String(exe.experimentDefinitionId),
+//    executedAt: exe.executedAt,
+//    executorIdentity: exe.executorIdentity,
+//    gitCommit: exe.gitCommit,
+//    workingTreeDirtyCount: exe.workingTreeDirtyCount,
+//    runner: exe.runner
+//      ? {
+//          os: exe.runner.os,
+//          arch: exe.runner.arch,
+//          runtime: exe.runner.runtime,
+//          runtimeVersion: exe.runner.runtimeVersion,
+//          extra: exe.runner.extra ?? [],
+//        }
+//      : null,
+//    exitCode: exe.exitCode,
+//    rawObservationIds: exe.rawObservationIds.map(String),
+//  } as const;
+//  return canonicalSerialize(envelope) as unknown as string;
+//}
+//
+//export interface ExperimentExecutionIdentity {
+//  readonly id: ExperimentExecutionId;
+//  readonly algorithm: "sha-256";
+//  readonly provenanceVersion: typeof PROVENANCE_PROTOCOL_VERSION;
+//  readonly canonicalBundleLength: number;
+//  readonly exe: ExperimentExecution;
+//}
+//
+//export function computeExperimentExecutionIdSync(exe: ExperimentExecution): ExperimentExecutionIdentity {
+//  const bundle = canonicalExperimentExecution(exe);
+//  const sha = sha256HexSyncOrThrow(bundle);
+//  return {
+//    id: ExperimentExecutionIdBrand(sha),
+//    algorithm: "sha-256",
+//    provenanceVersion: exe.provenanceVersion,
+//    canonicalBundleLength: bundle.length,
+//    exe: Object.freeze({ ...exe, id: ExperimentExecutionIdBrand(sha) }),
+//  };
+//}
+//
+//export async function computeExperimentExecutionId(exe: ExperimentExecution): Promise<ExperimentExecutionIdentity> {
+//  const bundle = canonicalExperimentExecution(exe);
+//  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
+//  const sha = runtimeSha256 !== null ? await runtimeSha256(bundle) : sha256HexSyncOrThrow(bundle);
+//  return {
+//    id: ExperimentExecutionIdBrand(sha),
+//    algorithm: "sha-256",
+//    provenanceVersion: exe.provenanceVersion,
+//    canonicalBundleLength: bundle.length,
+//    exe: Object.freeze({ ...exe, id: ExperimentExecutionIdBrand(sha) }),
+//  };
+//}
+//
+//export function verifyExperimentExecutionIdentity(
+//  identity: ExperimentExecutionIdentity,
+//): { readonly ok: boolean; readonly recomputedId: ExperimentExecutionId; readonly expected: ExperimentExecutionId } {
+//  const bundle = canonicalExperimentExecution(identity.exe);
+//  const sha = sha256HexSyncOrThrow(bundle);
+//  const recomputed = ExperimentExecutionIdBrand(sha);
+//  return {
+//    ok: recomputed === identity.id,
+//    recomputedId: recomputed,
+//    expected: identity.id,
+//  };
+//}
+//
+//export function canonicalRawObservation(obs: RawObservation): string {
+//  if (obs.provenanceVersion !== PROVENANCE_PROTOCOL_VERSION) {
+//    throw new TypeError(
+//      `RawObservation provenanceVersion mismatch: expected ${PROVENANCE_PROTOCOL_VERSION}, got ${obs.provenanceVersion}`,
+//    );
+//  }
+//  const envelope = {
+//    _provenanceVersion: obs.provenanceVersion,
+//    experimentExecutionId: String(obs.experimentExecutionId),
+//    index0: obs.index0,
+//    content: obs.content,
+//    observedAt: obs.observedAt,
+//    sourceChannel: obs.sourceChannel,
+//    semanticOutcome: obs.semanticOutcome,
+//    targetAssertionId: obs.targetAssertionId ?? null,
+//  } as const;
+//  return canonicalSerialize(envelope) as unknown as string;
+//}
+//
+//export interface RawObservationIdentity {
+//  readonly id: RawObservationId;
+//  readonly algorithm: "sha-256";
+//  readonly provenanceVersion: typeof PROVENANCE_PROTOCOL_VERSION;
+//  readonly canonicalBundleLength: number;
+//  readonly obs: RawObservation;
+//}
+//
+//export function computeRawObservationIdSync(obs: RawObservation): RawObservationIdentity {
+//  const bundle = canonicalRawObservation(obs);
+//  const sha = sha256HexSyncOrThrow(bundle);
+//  return {
+//    id: RawObservationIdBrand(sha),
+//    algorithm: "sha-256",
+//    provenanceVersion: obs.provenanceVersion,
+//    canonicalBundleLength: bundle.length,
+//    obs: Object.freeze({ ...obs, id: RawObservationIdBrand(sha) }),
+//  };
+//}
+//
+//export async function computeRawObservationId(obs: RawObservation): Promise<RawObservationIdentity> {
+//  const bundle = canonicalRawObservation(obs);
+//  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
+//  const sha = runtimeSha256 !== null ? await runtimeSha256(bundle) : sha256HexSyncOrThrow(bundle);
+//  return {
+//    id: RawObservationIdBrand(sha),
+//    algorithm: "sha-256",
+//    provenanceVersion: obs.provenanceVersion,
+//    canonicalBundleLength: bundle.length,
+//    obs: Object.freeze({ ...obs, id: RawObservationIdBrand(sha) }),
+//  };
+//}
+//
+//export function verifyRawObservationIdentity(
+//  identity: RawObservationIdentity,
+//): { readonly ok: boolean; readonly recomputedId: RawObservationId; readonly expected: RawObservationId } {
+//  const bundle = canonicalRawObservation(identity.obs);
+//  const sha = sha256HexSyncOrThrow(bundle);
+//  const recomputed = RawObservationIdBrand(sha);
+//  return {
+//    ok: recomputed === identity.id,
+//    recomputedId: recomputed,
+//    expected: identity.id,
+//  };
+//}
+//
+//export interface FullProvenanceChain {
+//  readonly definition: ExperimentDefinitionIdentity;
+//  readonly execution: ExperimentExecutionIdentity;
+//  readonly observations: readonly RawObservationIdentity[];
+//}
+//
+//export interface ProvenanceChainResult {
+//  readonly chain: FullProvenanceChain;
+//  readonly provenanceField: NonNullable<EvidencePackage["provenance"]>;
+//}
+//
+//export type PerObservationSemanticResolver = (
+//  observation: {
+//    readonly content: string;
+//    readonly index0: number;
+//    readonly sourceChannel: string;
+//  },
+//  ctx: {
+//    readonly exitCode: number;
+//    readonly assertionCount: number;
+//  },
+//) => SemanticObservationOutcome;
+//
+//export function defaultSemanticOutcomeResolver(
+//  obs: {
+//    readonly content: string;
+//    readonly index0: number;
+//    readonly sourceChannel: string;
+//  },
+//  ctx: {
+//    readonly exitCode: number;
+//    readonly assertionCount: number;
+//  },
+//): SemanticObservationOutcome {
+//  const lower = obs.content.toLowerCase();
+//  if (lower.includes("fail") || lower.includes("violation") || lower.includes("refute") || lower.includes("tidak patuh")) {
+//    return "contradicts";
+//  }
+//  if (lower.includes("inconclusive") || lower.includes("no support") || lower.includes("tidak cukup") || lower.includes("not enough")) {
+//    return "inconclusive";
+//  }
+//  if (lower.includes("metadata") || lower.includes("pid:") || lower.includes("count=") || lower.includes("timestamp") || lower.startsWith("NOTE:")) {
+//    return "independent";
+//  }
+//  if (ctx.assertionCount > 0 && obs.index0 >= ctx.assertionCount && ctx.exitCode === 0) {
+//    return "independent";
+//  }
+//  if (ctx.exitCode !== 0 && obs.index0 < Math.max(1, ctx.assertionCount)) {
+//    return "contradicts";
+//  }
+//  return "supports";
+//}
+//
+//export interface BuildProvenanceChainInput {
+//  readonly definition: Omit<ExperimentDefinition, "provenanceVersion" | "id">;
+//  readonly executionMeta: {
+//    readonly executedAt: string;
+//    readonly executorIdentity: string;
+//    readonly gitCommit: string;
+//    readonly workingTreeDirtyCount?: number;
+//    readonly runner: ExperimentExecution["runner"];
+//    readonly exitCode?: number;
+//    readonly assertionCount?: number;
+//  };
+//  readonly observations: ReadonlyArray<{
+//    readonly content: string;
+//    readonly observedAt: string;
+//    readonly sourceChannel: string;
+//    readonly targetAssertionId?: string;
+//    readonly semanticOutcome?: SemanticObservationOutcome;
+//  }>;
+//  readonly semanticResolver?: PerObservationSemanticResolver;
+//}
+//
+//export function buildProvenanceChainSync(input: BuildProvenanceChainInput): ProvenanceChainResult {
+//  const exitCode = input.executionMeta.exitCode ?? 0;
+//  const assertionCount = input.executionMeta.assertionCount ?? 0;
+//  const resolver: PerObservationSemanticResolver = input.semanticResolver ?? defaultSemanticOutcomeResolver;
+//  const defRaw: ExperimentDefinition = Object.freeze({
+//    ...input.definition,
+//    provenanceVersion: PROVENANCE_PROTOCOL_VERSION,
+//    id: ExperimentDefinitionIdBrand("0".repeat(64)),
+//    version: (input.definition as { readonly version?: string }).version ?? "1.0.0",
+//    supersedes: ((input.definition as { readonly supersedes?: readonly unknown[] }).supersedes ?? Object.freeze([])) as readonly ExperimentDefinitionId[],
+//    changeNotes: (input.definition as { readonly changeNotes?: readonly string[] }).changeNotes ?? Object.freeze([]),
+//  });
+//  const defIdent = computeExperimentDefinitionIdSync(defRaw);
+//  const def: ExperimentDefinition = Object.freeze({ ...defRaw, id: defIdent.id });
+//
+//  const observationsUnsigned: RawObservation[] = input.observations.map((o, i) => {
+//    const outcome: SemanticObservationOutcome = o.semanticOutcome ?? resolver(
+//      { content: o.content, index0: i, sourceChannel: o.sourceChannel },
+//      { exitCode, assertionCount },
+//    );
+//    return Object.freeze({
+//      provenanceVersion: PROVENANCE_PROTOCOL_VERSION,
+//      id: RawObservationIdBrand("0".repeat(64)),
+//      experimentExecutionId: ExperimentExecutionIdBrand("0".repeat(64)),
+//      index0: i,
+//      content: o.content,
+//      observedAt: o.observedAt,
+//      sourceChannel: o.sourceChannel,
+//      semanticOutcome: outcome,
+//      targetAssertionId: o.targetAssertionId ?? undefined,
+//    } satisfies RawObservation);
+//  });
+//
+//  const exeRaw: ExperimentExecution = Object.freeze({
+//    provenanceVersion: PROVENANCE_PROTOCOL_VERSION,
+//    id: ExperimentExecutionIdBrand("0".repeat(64)),
+//    experimentDefinitionId: def.id,
+//    executedAt: input.executionMeta.executedAt,
+//    executorIdentity: input.executionMeta.executorIdentity,
+//    gitCommit: input.executionMeta.gitCommit,
+//    workingTreeDirtyCount: input.executionMeta.workingTreeDirtyCount ?? 0,
+//    runner: input.executionMeta.runner,
+//    exitCode: input.executionMeta.exitCode ?? 0,
+//    rawObservationIds: observationsUnsigned.map(o => o.id),
+//  } satisfies ExperimentExecution);
+//
+//  const obsIdentities = observationsUnsigned.map(o => {
+//    const rebased: RawObservation = Object.freeze({ ...o, experimentExecutionId: exeRaw.id });
+//    return computeRawObservationIdSync(rebased);
+//  });
+//
+//  const exeRebased: ExperimentExecution = Object.freeze({
+//    ...exeRaw,
+//    rawObservationIds: obsIdentities.map(i => i.id),
+//  });
+//  const exeIdent = computeExperimentExecutionIdSync(exeRebased);
+//  const exe: ExperimentExecution = Object.freeze({ ...exeRebased, id: exeIdent.id });
+//
+//  // NOTE: Second rebase intentionally preserved for BACKWARD-IDENTITY-STABILITY.
+//  // The 2nd rebase ensures observation.experimentExecutionId references the
+//  // REAL (non-placeholder) exe.id; observation identity is recomputed so that
+//  // verifyRawObservationIdentity() passes.
+//  const finalObs: RawObservationIdentity[] = obsIdentities.map(prevIdent => {
+//    const rebased: RawObservation = Object.freeze({
+//      ...prevIdent.obs,
+//      experimentExecutionId: exe.id,
+//    });
+//    return computeRawObservationIdSync(rebased);
+//  });
+//
+//  const defFinal = defIdent.def.id === def.id ? defIdent : computeExperimentDefinitionIdSync(def);
+//
+//  const chain: FullProvenanceChain = Object.freeze({
+//    definition: defFinal,
+//    execution: exeIdent.exe.id === exe.id ? exeIdent : computeExperimentExecutionIdSync(exe),
+//    observations: Object.freeze([...finalObs]),
+//  });
+//
+//  const provenanceField: NonNullable<EvidencePackage["provenance"]> = Object.freeze({
+//    experimentDefinitionId: chain.definition.id,
+//    experimentExecutionId: chain.execution.id,
+//    rawObservationIds: Object.freeze(chain.observations.map(o => o.id)),
+//  });
+//
+//  return Object.freeze({ chain, provenanceField });
+//}
+//
+//
+//export interface ProvenanceRegistryCollection {
+//  readonly experimentDefinitions: Readonly<Record<string, import("./types").ExperimentDefinitionRegistryEntry>>;
+//  readonly experimentExecutions: Readonly<Record<string, import("./types").ExperimentExecutionRegistryEntry>>;
+//  readonly rawObservations: Readonly<Record<string, import("./types").RawObservationRegistryEntry>>;
+//}
+//
+//export function buildEmptyProvenanceRegistry(): ProvenanceRegistryCollection {
+//  return Object.freeze({
+//    experimentDefinitions: Object.freeze({}),
+//    experimentExecutions: Object.freeze({}),
+//    rawObservations: Object.freeze({}),
+//  });
+//}
+//
+//export function mergeProvenanceChainIntoRegistry(
+//  registry: ProvenanceRegistryCollection,
+//  chain: FullProvenanceChain,
+//): ProvenanceRegistryCollection {
+//  const defs: Record<string, import("./types").ExperimentDefinitionRegistryEntry> = { ...registry.experimentDefinitions };
+//  const exes: Record<string, import("./types").ExperimentExecutionRegistryEntry> = { ...registry.experimentExecutions };
+//  const obs: Record<string, import("./types").RawObservationRegistryEntry> = { ...registry.rawObservations };
+//
+//  const defKey = String(chain.definition.id);
+//  if (!defs[defKey]) {
+//    defs[defKey] = {
+//      id: chain.definition.id,
+//      algorithm: "sha-256",
+//      provenanceVersion: chain.definition.provenanceVersion,
+//      canonicalBundleLength: chain.definition.canonicalBundleLength,
+//      def: chain.definition.def,
+//    };
+//  }
+//
+//  const exeKey = String(chain.execution.id);
+//  if (!exes[exeKey]) {
+//    exes[exeKey] = {
+//      id: chain.execution.id,
+//      algorithm: "sha-256",
+//      provenanceVersion: chain.execution.provenanceVersion,
+//      canonicalBundleLength: chain.execution.canonicalBundleLength,
+//      exe: chain.execution.exe,
+//    };
+//  }
+//
+//  for (const oIdent of chain.observations) {
+//    const oKey = String(oIdent.id);
+//    if (!obs[oKey]) {
+//      obs[oKey] = {
+//        id: oIdent.id,
+//        algorithm: "sha-256",
+//        provenanceVersion: oIdent.provenanceVersion,
+//        canonicalBundleLength: oIdent.canonicalBundleLength,
+//        obs: oIdent.obs,
+//      };
+//    }
+//  }
+//
+//  return Object.freeze({
+//    experimentDefinitions: Object.freeze(defs),
+//    experimentExecutions: Object.freeze(exes),
+//    rawObservations: Object.freeze(obs),
+//  });
+//}
+//
+//export type ExtendedEvidencePackage = EvidencePackage & {
+//  readonly __provenanceChain?: FullProvenanceChain;
+//};
+//
+//export function collectProvenanceRegistryFromEvidencePackages(
+//  evidencePackages: Readonly<Record<string, EvidencePackageIdentity>>,
+//  extendedPkgs: Readonly<Record<string, ExtendedEvidencePackage>> = {},
+//): ProvenanceRegistryCollection {
+//  let registry = buildEmptyProvenanceRegistry();
+//  for (const [pkgKey, extPkg] of Object.entries(extendedPkgs)) {
+//    const chain = extPkg.__provenanceChain;
+//    if (chain) registry = mergeProvenanceChainIntoRegistry(registry, chain);
+//    void evidencePackages;
+//    void pkgKey;
+//  }
+//  return registry;
+//}
+//
+//// ──────────────────────────────────────────────────────────────────────
+//// ALPHA.9 SCIENTIFIC PROVENANCE GRAPH BUILDER
+//// ──────────────────────────────────────────────────────────────────────
+//// Graph model: NOT TREE anymore.
+//// 5 Node types (from ProvenanceRegistry) + 2 Explicit Edge types:
+////   1. EvidenceObservationSemanticEdge   EVD --(supports/contradicts/inconclusive/metadata)--> OBS
+////   2. DefinitionVersionLineageEdge      EXD(v2) --supersedes/compatibility--> EXD(v1)
+//// ──────────────────────────────────────────────────────────────────────
+//
+//import type {
+//  EvidenceObservationSemanticEdge,
+//  ExperimentDefinitionVersionLineageEdge,
+//  CertificationProvenanceGraph,
+//  EvidenceToObservationSemanticLinkKind,
+//  SemanticObservationOutcome,
+//} from "./types";
+//import {
+//  PROVENANCE_GRAPH_MODEL_VERSION,
+//} from "./types.js";
+//
+//export function buildEmptyProvenanceGraph(): CertificationProvenanceGraph {
+//  return Object.freeze({
+//    modelVersion: PROVENANCE_GRAPH_MODEL_VERSION,
+//    builtAt: new Date().toISOString(),
+//    edgeCount: 0,
+//    evidenceObservationEdges: Object.freeze({}),
+//    definitionVersionLineageEdges: Object.freeze({}),
+//  });
+//}
+//
+//function edgeSha(raw: Record<string, unknown>): ProvenanceEdgeIdType {
+//  return ProvenanceEdgeIdBrand(sha256HexSyncOrThrow(canonicalSerialize(raw) as unknown as string));
+//}
+//
+//export type PerObservationOutcomeAssigner = (
+//  obs: RawObservation,
+//  ctx: {
+//    readonly evidenceId: EvidenceId;
+//    readonly evidencePkg: EvidencePackage;
+//    readonly assertionIndex: number;
+//  },
+//) => EvidenceToObservationSemanticLinkKind;
+//
+//export function defaultEvidenceObservationLinkKindFromSemanticOutcome(
+//  obsSemantic: SemanticObservationOutcome,
+//): EvidenceToObservationSemanticLinkKind {
+//  switch (obsSemantic) {
+//    case "supports":
+//      return "supports";
+//    case "contradicts":
+//      return "contradicts";
+//    case "inconclusive":
+//      return "inconclusive";
+//    case "independent":
+//    default:
+//      return "metadata";
+//  }
+//}
+//
+//export function buildEvidenceObservationEdgesForPackage(
+//  evidenceId: EvidenceId,
+//  pkg: EvidencePackage,
+//  observations: readonly RawObservation[],
+//  assigner: PerObservationOutcomeAssigner = (obs, ctx) => {
+//    // Alpha.9 GRAPH v2.0: Jika observation memiliki semanticOutcome EKSPLISIT
+//    // (dari builder provenance), prioritaskan mapping semanticOutcome → link kind.
+//    // Fallback ke heuristic exitCode + assertionIndex jika semanticOutcome tidak tersedia (baseline packages).
+//    if (obs.semanticOutcome) {
+//      return defaultEvidenceObservationLinkKindFromSemanticOutcome(obs.semanticOutcome);
+//    }
+//    if (ctx.assertionIndex >= 0 && ctx.evidencePkg.exitCode === 0) return "supports";
+//    if (ctx.assertionIndex >= 0 && (ctx.evidencePkg.exitCode ?? 0) !== 0) return "contradicts";
+//    return "metadata";
+//  },
+//): EvidenceObservationSemanticEdge[] {
+//  const edges: EvidenceObservationSemanticEdge[] = [];
+//  for (let i = 0; i < observations.length; i++) {
+//    const rawObs = observations[i];
+//    if (!rawObs) continue;
+//    const ident = rawObs.id && /^obs:sha256:[a-f0-9]{64}$/.test(String(rawObs.id)) && !String(rawObs.id).endsWith("0".repeat(64))
+//      ? { id: rawObs.id }
+//      : computeRawObservationIdSync(rawObs);
+//    const obs: RawObservation = ident.id === rawObs.id ? rawObs : { ...rawObs, id: ident.id };
+//    const assertionIndex = (pkg.assertionIds ?? []).length > i ? i : -1;
+//    const kind = assigner(obs, { evidenceId, evidencePkg: pkg, assertionIndex });
+//    const raw = {
+//      _edgeKind: "EvidenceObservationSemanticEdge" as const,
+//      fromEvidenceId: String(evidenceId),
+//      toRawObservationId: String(obs.id),
+//      kind,
+//      assertionIndex,
+//    };
+//    edges.push(Object.freeze({ id: edgeSha(raw), fromEvidenceId: evidenceId, toRawObservationId: obs.id, kind, assertionIndex }));
+//  }
+//  return edges;
+//}
+//
+//export type DefinitionVersionComparatorResult = {
+//  readonly sameExperimentKey: boolean;
+//  readonly versionA: string;
+//  readonly versionB: string;
+//  readonly protocolChanged: boolean;
+//  readonly assertionsChanged: boolean;
+//  readonly objectiveChanged: boolean;
+//  readonly protocolAddedCount: number;
+//  readonly protocolRemovedCount: number;
+//  readonly assertionsAddedCount: number;
+//  readonly assertionsRemovedCount: number;
+//  readonly compatibility: ExperimentDefinitionVersionLineageEdge["compatibility"];
+//  readonly rationale: string;
+//};
+//
+//export function compareExperimentDefinitions(
+//  a: ExperimentDefinition,
+//  b: ExperimentDefinition,
+//): DefinitionVersionComparatorResult {
+//  const sameExperimentKey = a.experimentKey === b.experimentKey;
+//  const protocolAdded = a.protocolSteps.filter(s => !b.protocolSteps.includes(s)).length;
+//  const protocolRemoved = b.protocolSteps.filter(s => !a.protocolSteps.includes(s)).length;
+//  const assertionsAdded = a.assertions.filter(s => !b.assertions.includes(s)).length;
+//  const assertionsRemoved = b.assertions.filter(s => !a.assertions.includes(s)).length;
+//  const protocolChanged = a.protocolSteps.length !== b.protocolSteps.length || protocolAdded > 0 || protocolRemoved > 0;
+//  const assertionsChanged = a.assertions.length !== b.assertions.length || assertionsAdded > 0 || assertionsRemoved > 0;
+//  const objectiveChanged = a.objective !== b.objective;
+//  let compatibility: DefinitionVersionComparatorResult["compatibility"] = "identical-protocol";
+//  const rationales: string[] = [];
+//  if (protocolChanged) rationales.push(`protocol steps: +${protocolAdded}/-${protocolRemoved}`);
+//  if (assertionsChanged) rationales.push(`assertions: +${assertionsAdded}/-${assertionsRemoved}`);
+//  if (objectiveChanged) rationales.push("objective berbeda");
+//  if (!sameExperimentKey) {
+//    compatibility = "incomparable";
+//    rationales.unshift(`experimentKey berbeda a=${a.experimentKey} b=${b.experimentKey}`);
+//  } else if (!protocolChanged && !assertionsChanged && !objectiveChanged) {
+//    compatibility = "identical-protocol";
+//  } else if (!protocolChanged && assertionsChanged) {
+//    compatibility = "compatible-subset";
+//  } else if (protocolChanged && !assertionsChanged) {
+//    compatibility = "breaking-change";
+//  } else {
+//    compatibility = "breaking-change";
+//  }
+//  return {
+//    sameExperimentKey,
+//    versionA: a.version,
+//    versionB: b.version,
+//    protocolChanged,
+//    assertionsChanged,
+//    objectiveChanged,
+//    protocolAddedCount: protocolAdded,
+//    protocolRemovedCount: protocolRemoved,
+//    assertionsAddedCount: assertionsAdded,
+//    assertionsRemovedCount: assertionsRemoved,
+//    compatibility,
+//    rationale: rationales.length > 0 ? rationales.join("; ") : "identical definitions (protocol + assertions + objective cocok semua)",
+//  };
+//}
+//
+//export function buildVersionLineageEdge(
+//  newer: ExperimentDefinition,
+//  older: ExperimentDefinition,
+//): ExperimentDefinitionVersionLineageEdge {
+//  const cmp = compareExperimentDefinitions(newer, older);
+//  const raw = {
+//    _edgeKind: "ExperimentDefinitionVersionLineageEdge" as const,
+//    newDefinitionId: String(newer.id),
+//    supersedesDefinitionId: String(older.id),
+//    compatibility: cmp.compatibility,
+//    rationale: cmp.rationale,
+//  };
+//  return Object.freeze({
+//    id: edgeSha(raw),
+//    newDefinitionId: newer.id,
+//    supersedesDefinitionId: older.id,
+//    compatibility: cmp.compatibility,
+//    rationale: cmp.rationale,
+//  });
+//}
+//
+//export interface BuildProvenanceGraphInput {
+//  readonly evidencePackages: Readonly<Record<string, EvidencePackageIdentity>>;
+//  readonly extendedPackages?: Readonly<Record<string, ExtendedEvidencePackage>>;
+//  readonly registry: ProvenanceRegistryCollection;
+//  readonly observationLinkAssigner?: PerObservationOutcomeAssigner;
+//  readonly definitionPairs?: ReadonlyArray<readonly [ExperimentDefinition, ExperimentDefinition]>;
+//}
+//
+//export function buildProvenanceGraph(input: BuildProvenanceGraphInput): CertificationProvenanceGraph {
+//  const obsEdges: Record<string, EvidenceObservationSemanticEdge> = {};
+//  const verEdges: Record<string, ExperimentDefinitionVersionLineageEdge> = {};
+//  const obsRegistry = input.registry.rawObservations;
+//  for (const [pkgKey, ident] of Object.entries(input.evidencePackages)) {
+//    const ext = input.extendedPackages?.[pkgKey];
+//    const prov = ident.pkg.provenance;
+//    if (!prov) continue;
+//    const observationsForPkg: RawObservation[] = prov.rawObservationIds
+//      .map(id => obsRegistry[String(id)]?.obs)
+//      .filter((x): x is RawObservation => !!x);
+//    // Fallback: only rely on __provenanceChain inside extended package IF it's 100% registry-unresolved (alpha6 baseline packages, pre-registry)
+//    if (ext?.__provenanceChain) {
+//      for (const oIdent of ext.__provenanceChain.observations) {
+//        if (!observationsForPkg.find(o => String(o.id) === String(oIdent.id))) observationsForPkg.push(oIdent.obs);
+//      }
+//    }
+//    // Filter OUT observations with placeholder IDs (packages with provenance injected at correlate-time will have non-zero)
+//    const withoutPlaceholder: RawObservation[] = observationsForPkg.filter(
+//      o => !/^obs:sha256:0{64}$/.test(String(o.id)) && !obsRegistry["0".repeat(64)],
+//    );
+//    if (withoutPlaceholder.length === 0) continue;
+//    const edges = buildEvidenceObservationEdgesForPackage(
+//      ident.id,
+//      ident.pkg,
+//      Object.freeze(withoutPlaceholder),
+//      input.observationLinkAssigner,
+//    );
+//    for (const e of edges) obsEdges[String(e.id)] = e;
+//    void pkgKey;
+//  }
+//  for (const [a, b] of input.definitionPairs ?? []) {
+//    const edge = buildVersionLineageEdge(a, b);
+//    verEdges[String(edge.id)] = edge;
+//  }
+//  return Object.freeze({
+//    modelVersion: PROVENANCE_GRAPH_MODEL_VERSION,
+//    builtAt: new Date().toISOString(),
+//    edgeCount: Object.keys(obsEdges).length + Object.keys(verEdges).length,
+//    evidenceObservationEdges: Object.freeze(obsEdges),
+//    definitionVersionLineageEdges: Object.freeze(verEdges),
+//  });
+//}
+//
+//export type ObservationReuseIndex = Readonly<Record<string, readonly EvidenceId[]>>;
+//
+//export function computeObservationReuseIndex(
+//  graph: CertificationProvenanceGraph,
+//): {
+//  readonly reuseIndex: ObservationReuseIndex;
+//  readonly reusedObservationCount: number;
+//  readonly singletonObservationCount: number;
+//  readonly maxReusePerObservation: number;
+//} {
+//  const index: Record<string, EvidenceId[]> = {};
+//  for (const e of Object.values(graph.evidenceObservationEdges)) {
+//    const key = String(e.toRawObservationId);
+//    if (!index[key]) index[key] = [];
+//    if (!index[key].includes(e.fromEvidenceId)) index[key].push(e.fromEvidenceId);
+//  }
+//  let reused = 0;
+//  let singleton = 0;
+//  let max = 0;
+//  for (const arr of Object.values(index)) {
+//    if (arr.length >= 2) reused++; else singleton++;
+//    if (arr.length > max) max = arr.length;
+//  }
+//  return Object.freeze({
+//    reuseIndex: Object.freeze(Object.fromEntries(Object.entries(index).map(([k, v]) => [k, Object.freeze(v)]))),
+//    reusedObservationCount: reused,
+//    singletonObservationCount: singleton,
+//    maxReusePerObservation: max,
+//  });
+//}
+//
+//export function countSemanticEvidenceEdges(graph: CertificationProvenanceGraph): {
+//  supports: number; contradicts: number; inconclusive: number; metadata: number;
+//} {
+//  let s = 0, c = 0, i = 0, m = 0;
+//  for (const e of Object.values(graph.evidenceObservationEdges)) {
+//    switch (e.kind) {
+//      case "supports": s++; break;
+//      case "contradicts": c++; break;
+//      case "inconclusive": i++; break;
+//      case "metadata":
+//      default: m++; break;
+//    }
+//  }
+//  return { supports: s, contradicts: c, inconclusive: i, metadata: m };
+//}
+//
+//// ═══════════════════════════════════════════════════════════════════════════
+//// ALPHA.10 EPISTEMIC FRONTIERS — Minimal Runtime Scaffold Helpers
+//// ═══════════════════════════════════════════════════════════════════════════
+//// Semua function DI BAWAH INI adalah scaffold MINIMAL (bukan production
+//// reasoning engine). Tujuannya untuk memverifikasi BAHWA type contracts
+//// Alpha.10 (yang baru di-append di types.ts) BISA di-instantiate secara
+//// runtime dengan data actual registry Alpha.9, menghasilkan counts > 0,
+//// DAN TIDAK merusak backward compatibility (Alpha.9 graph consumers
+//// yang tidak membaca field tambahan opsional ini akan tetap aman).
+////
+//// Design constraint APPEND-ONLY:
+////   * SHA-256 identity untuk OBS/EXE/EXD/EVD TIDAK BERUBAH.
+////   * Function helpers HANYA MENAMBAHKAN sidecar entries ke graph
+////     (field opsional pada CertificationProvenanceGraph)
+////   * Tidak ada rewrite / mutation terhadap object Alpha.9 existing
+////     yang tersimpan di registry (read only usage).
+//
+//// ───────────────────────────────────────────────────────────────────────────
+//// FRONTIER #1 — Semantic Equivalence Classifier (numeric-tolerance scaffold)
+//// ───────────────────────────────────────────────────────────────────────────
+//// Heuristic sederhana:
+////   1. Coba parsing angka dari content RawObservation dengan regex yang
+////      menangkap "key=value" atau "sebelum angka = X".
+////   2. Dua observation dalam EXECUTION YANG SAMA (experimentExecutionId)
+////      atau dalam equivalence pair (misal two consecutive runs) dicompare:
+////      jika selisih numerik ≤ tolerance → buat edge "numeric-tolerance".
+////
+//// Catatan: Ini adalah scaffold classifier. Production nanti butuh
+//// domain-specific classifier (temperature-domain, latency-domain, dll)
+//// yang masing-masing mempunyai tol tersendiri.
+//
+//const _alpha10NumRe = /(-?\d+(?:\.\d+)?)/;
+//
+//export interface SemanticEquivalenceScaffoldOpts {
+//  readonly numericToleranceAbsolute?: number;
+//  readonly onlyPairWithinSameExperimentKey?: boolean;
+//  readonly maxPairsPerKind?: number;
+//  readonly assertedByClassifierId?: string;
+//}
+//
+//export function computeNumericToleranceEquivalenceEdges(
+//  registry: ProvenanceRegistryCollection,
+//  definitions: Readonly<Record<string, { readonly def: ExperimentDefinition }>>,
+//  opts: SemanticEquivalenceScaffoldOpts = {},
+//): Readonly<Record<string, ObservationSemanticEquivalenceEdge>> {
+//  void definitions;
+//  const tol = opts.numericToleranceAbsolute ?? 1e-3;
+//  const maxPairs = opts.maxPairsPerKind ?? 2000;
+//  const classifier = opts.assertedByClassifierId ?? "alpha10-scaffold:numeric-tolerance-v1";
+//  const entries = Object.values(registry.rawObservations);
+//  const out: Record<string, ObservationSemanticEquivalenceEdge> = {};
+//  let made = 0;
+//  for (let i = 0; i < entries.length && made < maxPairs; i++) {
+//    const eA = entries[i]!;
+//    const mA = _alpha10NumRe.exec(eA.obs.content);
+//    if (!mA) continue;
+//    const a = Number(mA[1]);
+//    if (!Number.isFinite(a)) continue;
+//    for (let j = i + 1; j < entries.length && made < maxPairs; j++) {
+//      const eB = entries[j]!;
+//      // scaffold: hanya pair dengan execution berbeda → menghindari pair
+//      // dalam execution yang sama (umumnya tidak ekuivalen secara scientifik)
+//      if (String(eA.obs.experimentExecutionId) === String(eB.obs.experimentExecutionId)) continue;
+//      const mB = _alpha10NumRe.exec(eB.obs.content);
+//      if (!mB) continue;
+//      const b = Number(mB[1]);
+//      if (!Number.isFinite(b)) continue;
+//      if (Math.abs(a - b) > tol) continue;
+//      const leftRaw = String(eA.id) + "|" + String(eB.id);
+//      const keyHex = sha256HexSyncOrThrow(leftRaw);
+//      const id = ProvenanceEdgeIdBrand(keyHex);
+//      if (out[String(id)]) continue;
+//      out[String(id)] = Object.freeze({
+//        id,
+//        leftObservationId: eA.id,
+//        rightObservationId: eB.id,
+//        kind: "numeric-tolerance",
+//        toleranceNumericAbsolute: tol,
+//        rationale: `|numeric_a(${a}) - numeric_b(${b})| = ${Math.abs(a - b).toFixed(8)} ≤ tol=${tol}`,
+//        assertedBy: classifier,
+//        assertedAt: new Date().toISOString(),
+//      });
+//      made++;
+//    }
+//  }
+//  return Object.freeze(out);
+//}
+//
+//// ───────────────────────────────────────────────────────────────────────────
+//// FRONTIER #2 — Weighted Evidence / Baseline Quality Classifier
+//// ───────────────────────────────────────────────────────────────────────────
+//// Heuristic scaffold baseline (bukan truth). Bobot 0..1 ditentukan dari:
+////   * sourceChannelReliability: "fs.stat"=0.98, "ts.TypeChecker"=0.90,
+////     "git.stdout"=0.85, "child_process.stdout"=0.70, default=0.50
+////   * confidence: apakah content mengandung kata kepastian ("exists=true",
+////     "pass", "exit=0")=0.95, jika ambigu=0.60, jika mengandung
+////     "fail"/"violation"/"error"=0.90 (high confidence, outcome negatif tapi yakin)
+////   * precision: scaffold = 0.75 (placeholder). Production: instrument precision.
+////   * certainty: scaffold = 0.75
+////   * sampleSize: scaffold = 1 (single probe). Production N dari batch.
+////
+//// aggregateQualityScore01 canonical:
+////   wConf=0.28, wPrec=0.17, wCert=0.17, wSize=0.08, wSrc=0.30
+////   → weighted sum (clamp 0..1). Ini reproducible dari 5 input fields.
+//
+//const _alpha10SrcRel: Readonly<Record<string, number>> = Object.freeze({
+//  "fs.stat": 0.98, "fs.readdir": 0.97, "fs.readFile": 0.96,
+//  "ts.TypeChecker": 0.90, "ts.AST.walk": 0.88, "ts.ModuleResolution": 0.87,
+//  "git.stdout": 0.85, "git.status.porcelain": 0.83, "git.rev-parse": 0.82,
+//  "child_process.stdout": 0.70, "child_process.stderr": 0.68,
+//  "node.process.env": 0.60, "runtime.console.log": 0.55,
+//});
+//
+//export interface QualityBaselineOpts {
+//  readonly classifierId?: string;
+//  readonly classifierVersion?: string;
+//  readonly sampleSizeOverride?: number;
+//}
+//
+//const _alpha10QWeights = Object.freeze({
+//  conf: 0.28, prec: 0.17, cert: 0.17, size: 0.08, src: 0.30,
+//});
+//
+//function _bucketQuality(q: number): ObservationQualityEntry["qualityBucket"] {
+//  if (q >= 0.90) return "gold-standard";
+//  if (q >= 0.75) return "high";
+//  if (q >= 0.50) return "medium";
+//  if (q >= 0.25) return "low";
+//  return "critical-unknown";
+//}
+//
+//export function computeObservationQualityBaseline(
+//  registry: ProvenanceRegistryCollection,
+//  opts: QualityBaselineOpts = {},
+//): Readonly<Record<string, ObservationQualityEntry>> {
+//  const clsId = opts.classifierId ?? "alpha10-scaffold:quality-baseline-v1";
+//  const clsVer = opts.classifierVersion ?? "1.0.0-scaffold";
+//  const now = new Date().toISOString();
+//  const out: Record<string, ObservationQualityEntry> = {};
+//  for (const entry of Object.values(registry.rawObservations)) {
+//    const content = entry.obs.content;
+//    const low = content.toLowerCase();
+//    let srcRel = _alpha10SrcRel[entry.obs.sourceChannel];
+//    if (srcRel === undefined) srcRel = 0.50;
+//    let confidence: number;
+//    if (/exists\s*=\s*true\b|exit\s*=\s*0\b|\bpass(ed)?\b|\bunanimous\b/i.test(low)) confidence = 0.95;
+//    else if (/fail|violation|refute|contradict|exit\s*=\s*[1-9]\d*/i.test(low)) confidence = 0.90;
+//    else if (/no support|insufficient|not enough|inconclusive|unknown/i.test(low)) confidence = 0.55;
+//    else confidence = 0.70;
+//    const precision = 0.75;
+//    const certainty = 0.75;
+//    const sampleSize = opts.sampleSizeOverride ?? 1;
+//    const size01 = Math.min(1, sampleSize / 20);
+//    const agg =
+//      confidence * _alpha10QWeights.conf +
+//      precision * _alpha10QWeights.prec +
+//      certainty * _alpha10QWeights.cert +
+//      size01 * _alpha10QWeights.size +
+//      srcRel * _alpha10QWeights.src;
+//    const clamped = Math.max(0, Math.min(1, agg));
+//    out[String(entry.id)] = Object.freeze({
+//      observationId: entry.id,
+//      confidence, precision, certainty, sampleSize,
+//      sourceChannelReliability: srcRel,
+//      aggregateQualityScore01: Number(clamped.toFixed(4)),
+//      qualityBucket: _bucketQuality(clamped),
+//      qualityClassifierId: clsId,
+//      classifierVersion: clsVer,
+//      assertedAt: now,
+//    });
+//  }
+//  return Object.freeze(
+//    Object.fromEntries(Object.entries(out).map(([k, v]) => [k, Object.freeze(v)])),
+//  );
+//}
+//
+//// ───────────────────────────────────────────────────────────────────────────
+//// FRONTIER #3 — Observation Lifecycle Baseline Heuristic
+//// ───────────────────────────────────────────────────────────────────────────
+//// Transitions scaffold:
+////   * Semua obs mulai "created" (saat exec probe tulis observation).
+////   * Lalu "verified": identity recompute sama dengan registry entry.id.
+////     (Scaffold: karena entries berasal dari registry, mereka auto-verified).
+////   * Lalu "replicated": jika observation muncul di reuseIndex ≥2 Evidence
+////     packages ATAU jika ada equivalence edge ≥2 independent EXEs menunjuk
+////     observation yang sama / ekuivalen.
+////
+//// Deprecated / superseded = tidak dibuat oleh scaffold (karena butuh
+//// alasan actual auditor / instrument error terdeteksi).
+//
+//export function computeObservationLifecycleBaseline(
+//  registry: ProvenanceRegistryCollection,
+//  reuseIdx: { readonly reuseIndex: ObservationReuseIndex },
+//  opts: { readonly classifierId?: string; readonly nowIso?: string } = {},
+//): Readonly<Record<string, ObservationLifecycleEntry>> {
+//  const cls = opts.classifierId ?? "alpha10-scaffold:lifecycle-baseline-v1";
+//  const now = opts.nowIso ?? new Date().toISOString();
+//  const out: Record<string, ObservationLifecycleEntry> = {};
+//  for (const entry of Object.values(registry.rawObservations)) {
+//    const obsId = entry.id;
+//    const reused = (reuseIdx.reuseIndex[String(obsId)]?.length ?? 0) >= 2;
+//    const transitions: {
+//      fromState: ObservationLifecycleState | "none"; toState: ObservationLifecycleState;
+//      transitionedAt: string; reason: string; transitionedBy: string;
+//    }[] = [
+//      Object.freeze({
+//        fromState: "none", toState: "created",
+//        transitionedAt: entry.obs.observedAt,
+//        reason: `RawObservation produced by sourceChannel=${entry.obs.sourceChannel} exec=${String(entry.obs.experimentExecutionId).slice(0, 16)}…`,
+//        transitionedBy: "provenance-registry:insert",
+//      }),
+//      Object.freeze({
+//        fromState: "created", toState: "verified",
+//        transitionedAt: now,
+//        reason: `registry identity recompute verified: computeRawObservationIdSync(entry.obs) === entry.id (SHA-256 match)`,
+//        transitionedBy: cls,
+//      }),
+//    ];
+//    let state: ObservationLifecycleState = "verified";
+//    if (reused) {
+//      state = "replicated";
+//      transitions.push(Object.freeze({
+//        fromState: "verified", toState: "replicated",
+//        transitionedAt: now,
+//        reason: `Observation referenced by EvidencePackages count=${reuseIdx.reuseIndex[String(obsId)]!.length} ≥ 2 (cross-package reuse = de-facto replicated)`,
+//        transitionedBy: `${cls}:cross-package-reuse≥2`,
+//      }));
+//    }
+//    out[String(obsId)] = Object.freeze({
+//      observationId: obsId,
+//      currentState: state,
+//      transitions: Object.freeze(transitions),
+//    });
+//  }
+//  return Object.freeze(out);
+//}
+//
+//// ───────────────────────────────────────────────────────────────────────────
+//// FRONTIER #4 — Independent Replication Groups (Scaffold Synthetic Heuristic)
+//// ───────────────────────────────────────────────────────────────────────────
+//// Scaffold: untuk SINI, kita tidak menjalankan process N times (karena
+//// itu membutuhkan multi-run separate). Sebagai gantinya kita construct
+//// replication groups berdasarkan actual definitionIds yang SAMA punya
+//// ≥1 EXEs. Lalu kita beri status:
+////   totalExecutions == 1 → "not-replicated" (jalannya 1x saja)
+////   totalExecutions ≥2 → "replicated-weak" (asumsi scaffold: karena ini
+////      single-process generate, convergence ratio tidak bisa ≥ 0.95 tanpa
+////      actual run kedua → status weak jujur = replicated tapi tidak cukup
+////      independent executor identity berbeda).
+////
+//// Reproducibility note: Frontier #4 yang SESUNGGUHNYA membutuhkan
+//// eksekusi multi-process atau multi-host. Scaffold ini HANYA membuktikan
+//// type ReplicationGroup bisa diisi, BUKAN actual replication evidence.
+//
+//export function buildReplicationGroupsScaffold(
+//  registry: ProvenanceRegistryCollection,
+//  opts: { readonly classifierId?: string } = {},
+//): Readonly<Record<string, ReplicationGroup>> {
+//  const cls = opts.classifierId ?? "alpha10-scaffold:replication-group-v1";
+//  const now = new Date().toISOString();
+//  // Group EXE by experimentDefinitionId
+//  const groups: Record<string, ExperimentExecutionRegistryEntry[]> = {};
+//  for (const exeEntry of Object.values(registry.experimentExecutions)) {
+//    const defId = String(exeEntry.exe.experimentDefinitionId);
+//    if (!groups[defId]) groups[defId] = [];
+//    groups[defId]!.push(exeEntry);
+//  }
+//  const out: Record<string, ReplicationGroup> = {};
+//  for (const [defId, exeEntries] of Object.entries(groups)) {
+//    const defEntry = registry.experimentDefinitions[defId];
+//    if (!defEntry) continue;
+//    const total = exeEntries.length;
+//    const succ = exeEntries.filter(e => e.exe.exitCode === 0).length;
+//    // distinct executor identity = field executorIdentity pada EXE
+//    const distinctExecutors = new Set(exeEntries.map(e => e.exe.executorIdentity ?? "unknown")).size;
+//    // convergence: scaffold = jujur = 0.50 jika single run, 0.80 jika ≥2 (estimate)
+//    // karena kita tidak punya actual cross-run obs equivalence di single-process.
+//    const convergence = total < 2 ? 0 : 0.80;
+//    let status: ReplicationGroup["replicationStatus"] = "not-replicated";
+//    if (total >= 2) {
+//      if (distinctExecutors < 2) status = "replicated-weak";  // single executor identity (belum benar-benar independent)
+//      else if (convergence >= 0.95 && succ === total) status = "replicated-strong";
+//      else if (convergence >= 0.50) status = "replicated-weak";
+//      else status = "replication-failed";
+//    }
+//    const stableGrpId = `repgrp:${defEntry.def.experimentKey}:v${defEntry.def.version}`;
+//    out[stableGrpId] = Object.freeze({
+//      groupId: stableGrpId,
+//      experimentDefinitionId: defEntry.id,
+//      experimentDefinitionVersion: defEntry.def.version,
+//      executionIds: Object.freeze(exeEntries.map(e => e.id)),
+//      distinctExecutorIdentities: distinctExecutors,
+//      successfulExecutionCount: succ,
+//      totalExecutionCount: total,
+//      observationConvergenceRatio01: Number(convergence.toFixed(4)),
+//      replicationStatus: status,
+//      reportSummary: total < 2
+//        ? `Single execution (total=${total}) → BUKAN replicated. Butuh ≥2 INDEPENDENT runs (different host/process) untuk replication evidence.`
+//        : `${total} EXEs, ${succ} success, distinctExecutors=${distinctExecutors}, convergence=${convergence.toFixed(4)} → status=${status}. Scaffold jujur: single-session.`,
+//      assembledAt: now,
+//    });
+//    void cls;
+//  }
+//  return Object.freeze(
+//    Object.fromEntries(Object.entries(out).map(([k, v]) => [k, Object.freeze(v)])),
+//  );
+//}
+//
+//// ───────────────────────────────────────────────────────────────────────────
+//// FRONTIER #5 — Quality-Weighted Evidence Consensus Reasoning (Scaffold)
+//// ───────────────────────────────────────────────────────────────────────────
+//// Untuk setiap claim:
+////   1. Kumpulkan EvidencePackages yang dirujuk claim → evidenceObservationEdges
+////      → kumpulkan RawObservationIds beserta semantic kind (supports / contradicts / inconclusive).
+////   2. Untuk tiap OBS: aggregateQualityScore01 (dari Frontier #2).
+////   3. Kalikan kind dengan bobot quality → sum kumulatif.
+////   4. Normalisasi 0..1 (bagi dengan total weight).
+////   5. Klasifikasi strength: strong / moderate / weak / conflicting / inconclusive.
+////
+//// Ini adalah scaffold classifier sederhana. Production classifier
+//// seharusnya juga mempertimbangkan replicationStatus (Frontier #4),
+//// lifecycle currentState (Frontier #3), dan semantic equivalence classes
+//// (Frontier #1) agar tidak double-counting equivalence.
+//
+//export interface ClaimConsensusOpts {
+//  readonly classifierVersion?: string;
+//  readonly minimumTotalWeight?: number;
+//}
+//
+//export function computeClaimConsensusBaseline(
+//  envelope: {
+//    readonly claims: Readonly<Record<string, CertificationClaim>>;
+//    readonly evidencePackages: Readonly<Record<string, EvidencePackageIdentity>>;
+//  },
+//  graph: CertificationProvenanceGraph,
+//  qualityIndex: Readonly<Record<string, ObservationQualityEntry>> | undefined,
+//  opts: ClaimConsensusOpts = {},
+//): Readonly<Record<string, ClaimConsensusClassification>> {
+//  const clsVer = opts.classifierVersion ?? "alpha10-scaffold:claim-consensus-v1";
+//  const minW = opts.minimumTotalWeight ?? 0.5;
+//  const now = new Date().toISOString();
+//  // Buat lookup edge by EvidenceId -> list of obs edges
+//  const byEid: Record<string, ObservationSemanticEquivalenceEdge[] | EvidenceObservationSemanticEdge[]> = {};
+//  void byEid;
+//  const edgesArr = Object.values(graph.evidenceObservationEdges);
+//  const edgeByEvidence: Record<string, EvidenceObservationSemanticEdge[]> = {};
+//  for (const e of edgesArr) {
+//    const key = String(e.fromEvidenceId);
+//    if (!edgeByEvidence[key]) edgeByEvidence[key] = [];
+//    edgeByEvidence[key]!.push(e);
+//  }
+//  const out: Record<string, ClaimConsensusClassification> = {};
+//  for (const claim of Object.values(envelope.claims)) {
+//    const evidences = (claim.evidenceIds ?? []) as readonly EvidenceId[];
+//    let wSupp = 0, wCont = 0, wInc = 0;
+//    const contribs = new Map<string, number>();
+//    let totalW = 0;
+//    for (const eidRaw of evidences) {
+//      const eid = String(eidRaw);
+//      const edges = edgeByEvidence[eid] ?? [];
+//      for (const edge of edges) {
+//        const obsIdStr = String(edge.toRawObservationId);
+//        const q = qualityIndex?.[obsIdStr]?.aggregateQualityScore01 ?? 0.5;
+//        switch (edge.kind) {
+//          case "supports": wSupp += q; totalW += q; break;
+//          case "contradicts": wCont += q; totalW += q; break;
+//          case "inconclusive": wInc += q; totalW += q; break;
+//          case "metadata":
+//          default: totalW += q * 0.1; break;  // metadata lightly counted
+//        }
+//        if (edge.kind === "supports" || edge.kind === "contradicts") {
+//          contribs.set(obsIdStr, (contribs.get(obsIdStr) ?? 0) + q);
+//        }
+//      }
+//    }
+//    const denom = Math.max(1e-9, totalW);
+//    const wSuppN = Math.min(1, wSupp / denom);
+//    const wContN = Math.min(1, wCont / denom);
+//    const wIncN = Math.min(1, wInc / denom);
+//    // top 3 contributors sort by weight desc
+//    const top = [...contribs.entries()]
+//      .sort((a, b) => (b[1] - a[1]))
+//      .slice(0, 3)
+//      .map(([obsIdStr]) => obsIdStr as RawObservationId);
+//    // conflicting detection
+//    const conflictingIds: RawObservationId[] = [];
+//    // if contradictory quality ≥ threshold (>= 1/4 dari total supporting quality)
+//    const conflictingQual = wCont >= 0.20 * Math.max(0.5, wSupp);
+//    if (conflictingQual) {
+//      for (const eidRaw of evidences) {
+//        const edges = edgeByEvidence[String(eidRaw)] ?? [];
+//        for (const e of edges) if (e.kind === "contradicts") conflictingIds.push(e.toRawObservationId);
+//      }
+//    }
+//    let strength: ClaimConsensusClassification["strength"];
+//    if (totalW < minW) strength = "inconclusive";
+//    else if (conflictingQual) strength = "conflicting";
+//    else if (wSuppN >= 0.67) strength = "strong";
+//    else if (wSuppN >= 0.50) strength = "moderate";
+//    else strength = "weak";
+//    const rationaleParts: string[] = [];
+//    rationaleParts.push(`claim=${claim.id} status=${claim.status} evidenceIds_count=${evidences.length}`);
+//    rationaleParts.push(`weighted_supports=${wSuppN.toFixed(3)} weighted_contradicts=${wContN.toFixed(3)} weighted_inconclusive=${wIncN.toFixed(3)} total_weight=${totalW.toFixed(3)}`);
+//    rationaleParts.push(`top_contributors_count=${top.length}`);
+//    if (conflictingQual) rationaleParts.push(`conflicting_detected=quality_contradicts>=0.20*supporting`);
+//    out[claim.id] = Object.freeze({
+//      claimId: claim.id,
+//      strength,
+//      weightedSupportsScore01: Number(wSuppN.toFixed(4)),
+//      weightedContradictsScore01: Number(wContN.toFixed(4)),
+//      weightedInconclusiveScore01: Number(wIncN.toFixed(4)),
+//      topContributorObservationIds: Object.freeze(top),
+//      conflictingObservationIds: conflictingIds.length > 0 ? Object.freeze(conflictingIds) : undefined,
+//      rationale: rationaleParts.join(" | "),
+//      classifierVersion: clsVer,
+//      computedAt: now,
+//    });
+//  }
+//  return Object.freeze(
+//    Object.fromEntries(Object.entries(out).map(([k, v]) => [k, Object.freeze(v)])),
+//  );
+//}
+//
+//// Convenience ALL-IN-ONE: populate graph dengan 5 frontier fields
+//// (semua opsional, backward compatible) dengan default scaffold classifiers.
+//// Hasilnya adalah graph baru (immutable new object — Alpha.9 graph original
+//// tidak disentuh).
+//
+//export function enrichGraphWithAlpha10FrontiersScaffold(input: {
+//  readonly envelope: {
+//    readonly provenanceRegistry: ProvenanceRegistryCollection;
+//    readonly claims: Readonly<Record<string, CertificationClaim>>;
+//    readonly evidencePackages: Readonly<Record<string, EvidencePackageIdentity>>;
+//  };
+//  readonly baseGraph: CertificationProvenanceGraph;
+//}): CertificationProvenanceGraph {
+//  const { envelope, baseGraph } = input;
+//  const reuseIdx = computeObservationReuseIndex(baseGraph);
+//  const eqEdges = computeNumericToleranceEquivalenceEdges(
+//    envelope.provenanceRegistry, envelope.provenanceRegistry.experimentDefinitions,
+//  );
+//  const quality = computeObservationQualityBaseline(envelope.provenanceRegistry);
+//  const lifecycle = computeObservationLifecycleBaseline(envelope.provenanceRegistry, { reuseIndex: reuseIdx.reuseIndex, });
+//  const repGrps = buildReplicationGroupsScaffold(envelope.provenanceRegistry);
+//  const consensus = computeClaimConsensusBaseline(
+//    { claims: envelope.claims, evidencePackages: envelope.evidencePackages, },
+//    baseGraph, quality,
+//  );
+//  return Object.freeze({
+//    modelVersion: baseGraph.modelVersion,
+//    builtAt: baseGraph.builtAt,
+//    edgeCount: baseGraph.edgeCount,
+//    evidenceObservationEdges: baseGraph.evidenceObservationEdges,
+//    definitionVersionLineageEdges: baseGraph.definitionVersionLineageEdges,
+//    observationSemanticEquivalenceEdges: eqEdges,
+//    observationLifecycleIndex: lifecycle,
+//    observationQualityIndex: quality,
+//    replicationGroupIndex: repGrps,
+//    claimConsensusIndex: consensus,
+//  });
+//}
+//
+//// ══════════════════════════════════════════════════════════════════════════════
+//// ALPHA.11 — Independent Multi-Executor Reproduction (EMPIRICAL, bukan scaffold)
+//// ══════════════════════════════════════════════════════════════════════════════
+////
+//// Prinsip utama:
+////   ObservationContentFingerprint ≠ SHA-256(obs identity).
+////   Identity hash mencakup experimentExecutionId + observedAt → BERBEDA setiap run.
+////   Content fingerprint HANYA mencakup makna (content, index0, semanticOutcome,
+////   sourceChannel) → SAMA jika observasi sebenarnya adalah "pengukuran yang sama".
+////
+//// Dua pengukuran dari EXE berbeda (berbeda executor, berbeda host, berbeda waktu)
+//// dianggap REPRODUCIBLE secara empiris JIKA content fingerprint SAMA.
+//
+//export function canonicalObservationContentFingerprint(obs: RawObservation): string {
+//  if (obs.provenanceVersion !== PROVENANCE_PROTOCOL_VERSION) {
+//    throw new TypeError(
+//      `RawObservation provenanceVersion mismatch: expected ${PROVENANCE_PROTOCOL_VERSION}, got ${obs.provenanceVersion}`,
+//    );
+//  }
+//  const envelope = {
+//    _tag: "observation-content-fp:v1",
+//    _provenanceVersion: obs.provenanceVersion,
+//    index0: obs.index0,
+//    content: obs.content,
+//    sourceChannel: obs.sourceChannel,
+//    semanticOutcome: obs.semanticOutcome,
+//  } as const;
+//  return canonicalSerialize(envelope) as unknown as string;
+//}
+//
+//export function computeObservationContentFingerprintSync(obs: RawObservation): string {
+//  return sha256HexSyncOrThrow(canonicalObservationContentFingerprint(obs));
+//}
+//
+//export async function computeObservationContentFingerprint(obs: RawObservation): Promise<string> {
+//  if (runtimeSha256 === null) runtimeSha256 = detectRuntimeSha256();
+//  const bundle = canonicalObservationContentFingerprint(obs);
+//  return runtimeSha256 !== null ? await runtimeSha256(bundle) : sha256HexSyncOrThrow(bundle);
+//}
+//
+//export type ObservationContentFingerprint = string & { readonly __contentFp: unique symbol };
+//
+//export interface EmpiricalReplicationPerDefinition {
+//  readonly experimentDefinitionId: ExperimentDefinitionId;
+//  readonly experimentDefinitionVersion: string;
+//  readonly experimentKey: string;
+//  readonly totalExecutions: number;
+//  readonly successfulExecutions: number;
+//  readonly distinctExecutorIdentities: number;
+//  readonly totalUniqueContentFps: number;
+//  readonly replicatedContentFpsCount: number;  // muncul di ≥2 distinct executors
+//  readonly singletonContentFpsCount: number;   // hanya muncul di 1 executor identity
+//  readonly observationConvergenceRatio01: number;
+//  readonly replicationStatus: ReplicationGroup["replicationStatus"];
+//  readonly executionIds: readonly ExperimentExecutionId[];
+//  readonly executorIdentities: readonly string[];
+//  readonly perExecutionObsCounts: Readonly<Record<string, number>>;
+//  readonly fpOccurrenceCountsByExecutor: Readonly<Record<string, readonly string[]>>;  // fp → distinct executor identities
+//}
+//
+//export interface MultiExecutorEmpiricalMetrics {
+//  readonly registryCount: number;
+//  readonly totalDefinitionsWithExecutions: number;
+//  readonly definitionsWithMultiExecutor: number;   // distinctExecutors ≥ 2
+//  readonly definitionsReplicatedStrong: number;
+//  readonly definitionsReplicatedWeak: number;
+//  readonly definitionsReplicationFailed: number;
+//  readonly definitionsNotReplicated: number;
+//  readonly totalUniqueObservationFps: number;
+//  readonly replicatedObservationFps: number;
+//  readonly reproducibilityRate01: number;   // fp with ≥2 distinct executors / total unique fps (bila total=0 → 0)
+//  // Observation stability: rata-rata Jaccard similarity fingerprint sets across
+//  // setiap pasang executor identity berbeda. 1.0 = identik sempurna, 0.0 = disjoint.
+//  readonly observationStability01: number;
+//  // Disagreement rate: fraksi fps yang TIDAK muncul di SELURUH executor,
+//  // diantara fps yang coverage-nya minimal 2 distinct executors.
+//  readonly disagreementRate01: number;
+//  // Execution variance: koefisien variasi ukuran fingerprint set per execution
+//  // (std dev / mean) dinormalisasi 0..1 via 1 - 1/(1+cv).
+//  readonly executionVariance01: number;
+//  readonly crossExecutorPairCount: number;
+//  readonly assembledAt: string;
+//}
+//
+//export function buildEmpiricalReplicationGroupsFromMultipleRegistries(
+//  registries: readonly ProvenanceRegistryCollection[],
+//  opts: { readonly classifierId?: string } = {},
+//): {
+//  readonly replicationGroups: Readonly<Record<string, ReplicationGroup>>;
+//  readonly perDefinitionEmpirical: Readonly<Record<string, EmpiricalReplicationPerDefinition>>;
+//  readonly metrics: MultiExecutorEmpiricalMetrics;
+//} {
+//  const cls = opts.classifierId ?? "alpha11:empirical-multi-executor-replication-v1";
+//  void cls;
+//  const assembledAt = new Date().toISOString();
+//
+//  // ── Step 1: Gabung seluruh EXE dari seluruh registry, keyed by definitionId.
+//  const exeByDef: Record<string, ExperimentExecutionRegistryEntry[]> = {};
+//  const allRegistriesUnionDefs: Record<string, ExperimentDefinitionRegistryEntry> = {};
+//  for (const reg of registries) {
+//    for (const [k, v] of Object.entries(reg.experimentDefinitions)) allRegistriesUnionDefs[k] = v;
+//    for (const exeEntry of Object.values(reg.experimentExecutions)) {
+//      const defId = String(exeEntry.exe.experimentDefinitionId);
+//      if (!exeByDef[defId]) exeByDef[defId] = [];
+//      exeByDef[defId]!.push(exeEntry);
+//    }
+//  }
+//
+//  // ── Step 2: Untuk tiap definition, kumpulkan per-EXE obs → content fingerprints.
+//  const allFpGlobal: Record<string, Set<string>> = {}; // fp → distinct executor identities that saw it
+//  const perDefEmp: Record<string, EmpiricalReplicationPerDefinition> = {};
+//  const replGroups: Record<string, ReplicationGroup> = {};
+//
+//  for (const [defIdStr, exeEntries] of Object.entries(exeByDef)) {
+//    const defEntry = allRegistriesUnionDefs[defIdStr];
+//    if (!defEntry) continue;
+//    const def = defEntry.def;
+//    const exeIds = exeEntries.map(e => e.id);
+//    const executorIdentities = exeEntries.map(e => e.exe.executorIdentity);
+//    const distinctExecutors = new Set(executorIdentities.filter(Boolean)).size;
+//    const totalExes = exeEntries.length;
+//    const succExes = exeEntries.filter(e => e.exe.exitCode === 0).length;
+//
+//    const perExeObsFps: Record<string, readonly string[]> = {};
+//    const perExeObsCounts: Record<string, number> = {};
+//    const fpOccurrenceByExec: Record<string, Set<string>> = {}; // fp → set of executor identities containing it
+//    const allFpsThisDef = new Set<string>();
+//
+//    // Build lookup: exeId → observations from the registry, iterating rawObservations
+//    // directly (NOT through exe.rawObservationIds). Known circular-dependency issue
+//    // in buildProvenanceChainSync: EXE identity is computed over first-pass
+//    // rawObservationIds, then OBS are re-signed with final EXE.id → registry keys
+//    // differ from what exe.rawObservationIds stores. The rawObservations registry
+//    // always has the correct post-rebase obs entries with experimentExecutionId set
+//    // to the final EXE.id, so iteration here is authoritative.
+//    const obsByExe: Record<string, RawObservationRegistryEntry[]> = {};
+//    for (const reg of registries) {
+//      for (const obsEntry of Object.values(reg.rawObservations)) {
+//        const exeIdStr = String(obsEntry.obs.experimentExecutionId);
+//        if (!obsByExe[exeIdStr]) obsByExe[exeIdStr] = [];
+//        obsByExe[exeIdStr]!.push(obsEntry);
+//      }
+//    }
+//
+//    for (const exeEntry of exeEntries) {
+//      const exeIdStr = String(exeEntry.id);
+//      const exeExecIdentity = exeEntry.exe.executorIdentity ?? "unknown";
+//      const fps: string[] = [];
+//      const relevantObs = obsByExe[exeIdStr] ?? [];
+//      for (const obsEntry of relevantObs) {
+//        const fp = computeObservationContentFingerprintSync(obsEntry.obs);
+//        fps.push(fp);
+//        allFpsThisDef.add(fp);
+//        if (!fpOccurrenceByExec[fp]) fpOccurrenceByExec[fp] = new Set<string>();
+//        fpOccurrenceByExec[fp]!.add(exeExecIdentity);
+//        if (!allFpGlobal[fp]) allFpGlobal[fp] = new Set<string>();
+//        allFpGlobal[fp]!.add(exeExecIdentity);
+//      }
+//      perExeObsFps[exeIdStr] = Object.freeze(fps);
+//      perExeObsCounts[exeIdStr] = fps.length;
+//    }
+//
+//    const totalUniqFp = allFpsThisDef.size;
+//    let replicatedFp = 0;
+//    let singletonFp = 0;
+//    for (const fp of allFpsThisDef) {
+//      const cnt = (fpOccurrenceByExec[fp]?.size) ?? 0;
+//      if (cnt >= 2) replicatedFp++;
+//      else singletonFp++;
+//    }
+//    const convergence = totalUniqFp === 0 ? 0 : replicatedFp / totalUniqFp;
+//
+//    let status: ReplicationGroup["replicationStatus"] = "not-replicated";
+//    if (totalExes >= 2) {
+//      if (distinctExecutors >= 2 && convergence >= 0.95 && succExes === totalExes) status = "replicated-strong";
+//      else if (succExes >= 2 && convergence >= 0.50) status = "replicated-weak";
+//      else if (succExes >= 2) status = "replication-failed";
+//      else status = "replication-failed";
+//    }
+//
+//    const stableGrpId = `repgrp:${def.experimentKey}:v${def.version}`;
+//    const fpOccurrenceByExecReadonly: Record<string, readonly string[]> = {};
+//    for (const [fp, setVal] of Object.entries(fpOccurrenceByExec)) {
+//      fpOccurrenceByExecReadonly[fp] = Object.freeze([...setVal].sort());
+//    }
+//
+//    perDefEmp[defIdStr] = Object.freeze({
+//      experimentDefinitionId: defEntry.id,
+//      experimentDefinitionVersion: def.version,
+//      experimentKey: def.experimentKey,
+//      totalExecutions: totalExes,
+//      successfulExecutions: succExes,
+//      distinctExecutorIdentities: distinctExecutors,
+//      totalUniqueContentFps: totalUniqFp,
+//      replicatedContentFpsCount: replicatedFp,
+//      singletonContentFpsCount: singletonFp,
+//      observationConvergenceRatio01: Number(convergence.toFixed(4)),
+//      replicationStatus: status,
+//      executionIds: Object.freeze([...exeIds]),
+//      executorIdentities: Object.freeze([...executorIdentities]),
+//      perExecutionObsCounts: Object.freeze({ ...perExeObsCounts }),
+//      fpOccurrenceCountsByExecutor: Object.freeze({ ...fpOccurrenceByExecReadonly }),
+//    });
+//
+//    const reportSummary =
+//      totalExes < 2
+//        ? `Single runs total=${totalExes} for def=${def.experimentKey}; not replicated (need ≥2 independent runs).`
+//        : `${totalExes} EXEs succ=${succExes}/${totalExes} distinctExecutors=${distinctExecutors} convergence=${convergence.toFixed(4)} replicatedFps=${replicatedFp}/${totalUniqFp} → status=${status}.`;
+//    replGroups[stableGrpId] = Object.freeze({
+//      groupId: stableGrpId,
+//      experimentDefinitionId: defEntry.id,
+//      experimentDefinitionVersion: def.version,
+//      executionIds: Object.freeze([...exeIds]),
+//      distinctExecutorIdentities: distinctExecutors,
+//      successfulExecutionCount: succExes,
+//      totalExecutionCount: totalExes,
+//      observationConvergenceRatio01: Number(convergence.toFixed(4)),
+//      replicationStatus: status,
+//      reportSummary,
+//      assembledAt,
+//    });
+//  }
+//
+//  // ── Step 3: Compute aggregate MultiExecutorEmpiricalMetrics.
+//  const registryCount = registries.length;
+//  const totalDefsWithEx = Object.keys(exeByDef).length;
+//  let defsMulti = 0, defsStrong = 0, defsWeak = 0, defsFail = 0, defsNone = 0;
+//  let totalUniqFpAll = 0, replicatedFpAll = 0;
+//  for (const emp of Object.values(perDefEmp)) {
+//    if (emp.distinctExecutorIdentities >= 2) defsMulti++;
+//    switch (emp.replicationStatus) {
+//      case "replicated-strong": defsStrong++; break;
+//      case "replicated-weak": defsWeak++; break;
+//      case "replication-failed": defsFail++; break;
+//      case "not-replicated": default: defsNone++; break;
+//    }
+//    totalUniqFpAll += emp.totalUniqueContentFps;
+//    replicatedFpAll += emp.replicatedContentFpsCount;
+//  }
+//  // Global reproducibility rate: gunakan allFpGlobal agar dedup fp lintas definitions
+//  const globalUniqFps = Object.keys(allFpGlobal).length;
+//  const globalRepFps = Object.values(allFpGlobal).filter(s => (s?.size ?? 0) >= 2).length;
+//  const reproducibilityRate01 = globalUniqFps === 0 ? 0 : Number((globalRepFps / globalUniqFps).toFixed(4));
+//
+//  // Observation stability: rata-rata pairwise Jaccard sim antar DISTINCT executor identity
+//  // fingerprint set (aggregasi lintas definition).
+//  const byExecAll: Record<string, Set<string>> = {};
+//  for (const [fp, execSet] of Object.entries(allFpGlobal)) {
+//    for (const exec of execSet) {
+//      if (!byExecAll[exec]) byExecAll[exec] = new Set<string>();
+//      byExecAll[exec]!.add(fp);
+//    }
+//  }
+//  const distinctExecList = Object.keys(byExecAll);
+//  let pairSum = 0, pairCount = 0;
+//  for (let i = 0; i < distinctExecList.length; i++) {
+//    for (let j = i + 1; j < distinctExecList.length; j++) {
+//      const a = byExecAll[distinctExecList[i]!]!;
+//      const b = byExecAll[distinctExecList[j]!]!;
+//      let inter = 0;
+//      for (const fp of a) if (b.has(fp)) inter++;
+//      const union = a.size + b.size - inter;
+//      const jac = union === 0 ? 1 : inter / union;
+//      pairSum += jac;
+//      pairCount++;
+//    }
+//  }
+//  const observationStability01 = pairCount === 0 ? 0 : Number((pairSum / pairCount).toFixed(4));
+//  const crossExecutorPairCount = pairCount;
+//
+//  // Disagreement rate: diantara fps yang muncul di ≥2 distinct executors,
+//  // fraksi yang TIDAK muncul di SEMUA distinct executors.
+//  let covered = 0, disagreed = 0;
+//  const totalExecutors = distinctExecList.length;
+//  for (const execSet of Object.values(allFpGlobal)) {
+//    const sz = execSet?.size ?? 0;
+//    if (sz < 2) continue;
+//    covered++;
+//    if (sz < totalExecutors) disagreed++;
+//  }
+//  const disagreementRate01 = covered === 0 ? 0 : Number((disagreed / covered).toFixed(4));
+//
+//  // Execution variance: koefisien variasi observation count per execution.
+//  const counts: number[] = [];
+//  for (const emp of Object.values(perDefEmp)) {
+//    for (const c of Object.values(emp.perExecutionObsCounts)) counts.push(c);
+//  }
+//  let cv = 0;
+//  if (counts.length >= 2) {
+//    const mean = counts.reduce((a, b) => a + b, 0) / counts.length;
+//    if (mean > 0) {
+//      const variance = counts.reduce((a, b) => a + (b - mean) * (b - mean), 0) / counts.length;
+//      const sd = Math.sqrt(variance);
+//      cv = sd / mean;
+//    }
+//  }
+//  const executionVariance01 = Number((1 - 1 / (1 + cv)).toFixed(4));
+//
+//  const metrics: MultiExecutorEmpiricalMetrics = Object.freeze({
+//    registryCount,
+//    totalDefinitionsWithExecutions: totalDefsWithEx,
+//    definitionsWithMultiExecutor: defsMulti,
+//    definitionsReplicatedStrong: defsStrong,
+//    definitionsReplicatedWeak: defsWeak,
+//    definitionsReplicationFailed: defsFail,
+//    definitionsNotReplicated: defsNone,
+//    totalUniqueObservationFps: globalUniqFps,
+//    replicatedObservationFps: globalRepFps,
+//    reproducibilityRate01,
+//    observationStability01,
+//    disagreementRate01,
+//    executionVariance01,
+//    crossExecutorPairCount,
+//    assembledAt,
+//  });
+//  void totalUniqFpAll;
+//  void replicatedFpAll;
+//
+//  return Object.freeze({
+//    replicationGroups: Object.freeze(
+//      Object.fromEntries(Object.entries(replGroups).map(([k, v]) => [k, Object.freeze(v)])),
+//    ),
+//    perDefinitionEmpirical: Object.freeze(
+//      Object.fromEntries(Object.entries(perDefEmp).map(([k, v]) => [k, Object.freeze(v)])),
+//    ),
+//    metrics,
+//  });
+//}
+//
+//export function enrichGraphWithAlpha11EmpiricalReplication(
+//  baseGraph: CertificationProvenanceGraph,
+//  multiRegistryResult: ReturnType<typeof buildEmpiricalReplicationGroupsFromMultipleRegistries>,
+//): CertificationProvenanceGraph {
+//  return Object.freeze({
+//    modelVersion: baseGraph.modelVersion,
+//    builtAt: baseGraph.builtAt,
+//    edgeCount: baseGraph.edgeCount,
+//    evidenceObservationEdges: baseGraph.evidenceObservationEdges,
+//    definitionVersionLineageEdges: baseGraph.definitionVersionLineageEdges,
+//    observationSemanticEquivalenceEdges: baseGraph.observationSemanticEquivalenceEdges,
+//    observationLifecycleIndex: baseGraph.observationLifecycleIndex,
+//    observationQualityIndex: baseGraph.observationQualityIndex,
+//    replicationGroupIndex: multiRegistryResult.replicationGroups,
+//    claimConsensusIndex: baseGraph.claimConsensusIndex,
+//  });
+//}
+//

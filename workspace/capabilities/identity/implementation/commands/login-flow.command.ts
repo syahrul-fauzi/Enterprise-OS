@@ -94,6 +94,9 @@ export const loginFlowCommand: LoginFlowCommand = {
       throw new Error("No workspaces available for user");
     }
     const firstMembership = memberships[0];
+    if (!firstMembership) {
+      throw new Error("No memberships found for user");
+    }
     const tenant = await tenantRepository.byId(firstMembership.tenantId);
     if (!tenant) {
       throw new Error("Tenant not found");
@@ -103,6 +106,9 @@ export const loginFlowCommand: LoginFlowCommand = {
       throw new Error("No workspaces found for tenant");
     }
     const workspace = workspaces[0];
+    if (!workspace) {
+      throw new Error("No workspaces found for user");
+    }
     // Create a new session for the user
     const sessionId = newSessionId();
     const session = await sessionRepository.create({

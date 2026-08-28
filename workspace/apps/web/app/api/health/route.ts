@@ -6,7 +6,7 @@ import {
 
 export async function GET(request: Request) {
   // ULTIMATE TEMPORARY FIX: Manually set all headers to bypass any auto-detection issues
-  const host = request.headers.get("host")?.split(":")[0];
+  const host = request.headers.get("host")?.split(":")[0] || "localhost";
   let productId: string | null = null;
   
   if (host?.includes("lawyershub")) productId = "lawyershub";

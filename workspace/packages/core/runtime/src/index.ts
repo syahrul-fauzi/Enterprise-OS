@@ -1,17 +1,17 @@
-export type {
-  MountedCapability,
-  RuntimeMountResult,
-  RuntimeLifecycle,
-  HostEnvironment,
-} from "./types.js";
-export { Runtime } from "./runtime.js";
+// export type {
+//   MountedCapability,
+//   RuntimeMountResult,
+//   RuntimeLifecycle,
+//   HostEnvironment,
+// } from "./types.js";
+// export { Runtime } from "./runtime.js";
 export { recordRuntimeInvocation, traceExecutionByDecision } from "./invocation-evidence.js";
 export type { RuntimeInvocationEvent } from "./invocation-evidence.js";
 export { executionContext } from "./execution-context.js";
 export { recordObservedExecution, getTraceForDecision, detectReentryAnomalies, verifyWorkIdCorrelation, calculateExponentialBackoff, shouldOpenCircuitBreaker, shouldResetCircuitBreaker } from "./execution-observability.js";
 export type { ObservedExecution } from "./execution-observability.js";
 export type { ExecutionContext } from "./execution-context.js";
-export type { ResolvedWorkspace } from "@repo/composition";
+// export type { ResolvedWorkspace } from "@repo/composition";
 // SERVER-ONLY MODULES (ExecutionStatusRepository + EmailQueueRepository) are intentionally
 // NOT exported from this barrel. They have top-level side effects and depend on
 // Node.js-only packages (ioredis → net/tls). Exporting them here forces every

@@ -5,7 +5,7 @@ import {
   newCommunicationEventId,
   defaultCommunicationStatus,
   CommunicationRepositoryInMemory,
-} from "../repository/communication.repository.js";
+} from "../repository/communication.repository";
 
 // Local invokeCapability implementation following the same pattern as other capabilities
 async function invokeCapability<Output = unknown>(
@@ -37,22 +37,14 @@ async function safeRecordEvidence(payload: unknown): Promise<{ readonly ok: bool
   return { ok: true };
 }
 
-// Extend CommunicationRepositoryInMemory with async byWorkId that delegates to sync implementation
-const originalByWorkId = CommunicationRepositoryInMemory.byWorkId;
-CommunicationRepositoryInMemory.byWorkId = function(workId: string) {
-  return originalByWorkId.call(CommunicationRepositoryInMemory, workId);
-};
-CommunicationRepositoryInMemory.byWorkId = async function(workId: string) {
-  return this.byWorkId(workId);
-};
 import {
   SendCommunicationInputSchema,
   type SendCommunicationInput,
   type SendCommunicationOutput,
   type CommunicationEvent,
 } from "../contracts/communication.contracts.js";
-import { getSessionRepositoryPostgres, SessionRepositoryInMemory } from "@capabilities/identity/implementation/repositories/index.js";
-import { SessionId } from "@capabilities/identity/implementation/contracts/identity.contracts.js";
+import { getSessionRepositoryPostgres, SessionRepositoryInMemory } from "@capabilities/identity/implementation/repositories/index";
+import { SessionId } from "@capabilities/identity/implementation/contracts/identity.contracts";
 
 const SessionRepositoryPostgres = process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()

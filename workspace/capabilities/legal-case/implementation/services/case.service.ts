@@ -10,42 +10,42 @@ import {
   GetCaseOutput,
   SearchCasesInput,
   SearchCasesOutput,
-} from "../contracts/index.js";
-import { createCase, closeCase, assignLawyer } from "../commands/index.js";
-import { getCase, searchCases } from "../queries/index.js";
-import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
+} from "../../contracts/index";
+import { createCase, closeCase, assignLawyer } from "../commands/index";
+import { getCase, searchCases } from "../queries/index";
+import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index";
 
 // Match the same environment-based repository toggle as commands/case.commands.ts
 const caseRepository = process.env.DATABASE_URL 
   ? CaseRepositoryPostgres 
-  : CaseRepositoryInMemory;
+  : new CaseRepositoryInMemory();
 
 export class CaseService {
   readonly repositories = { Case: caseRepository } as const;
 
-  createCase(input: CreateCaseInput): CreateCaseOutput {
-    return createCase.execute(input) as CreateCaseOutput;
+  async createCase(input: CreateCaseInput): Promise<CreateCaseOutput> {
+    return await createCase.execute(input) as CreateCaseOutput;
   }
-  closeCase(input: CloseCaseInput): CloseCaseOutput {
-    return closeCase.execute(input) as CloseCaseOutput;
+  async closeCase(input: CloseCaseInput): Promise<CloseCaseOutput> {
+    return await closeCase.execute(input) as CloseCaseOutput;
   }
-  assignLawyer(input: AssignLawyerInput): AssignLawyerOutput {
-    return assignLawyer.execute(input) as AssignLawyerOutput;
+  async assignLawyer(input: AssignLawyerInput): Promise<AssignLawyerOutput> {
+    return await assignLawyer.execute(input) as AssignLawyerOutput;
   }
-  getCase(input: GetCaseInput): GetCaseOutput {
-    return getCase.execute(input) as GetCaseOutput;
+  async getCase(input: GetCaseInput): Promise<GetCaseOutput> {
+    return await getCase.execute(input) as GetCaseOutput;
   }
-  searchCases(input: SearchCasesInput): SearchCasesOutput {
-    return searchCases.execute(input) as SearchCasesOutput;
+  async searchCases(input: SearchCasesInput): Promise<SearchCasesOutput> {
+    return await searchCases.execute(input) as SearchCasesOutput;
   }
-  listCases(): readonly CaseAggregate[] {
-    return caseRepository.list();
+  async listCases(): Promise<readonly CaseAggregate[]> {
+    return await caseRepository.list();
   }
 }
 
 export const caseService = new CaseService();
 
-export * from "../contracts/index.js";
+export * from "../../contracts/index.js";
 export * from "../commands/index.js";
 export * from "../queries/index.js";
-export * from "../repository/index.js";
+// export * from "../repository/index.js"; (duplicate removed, CaseRepository already exported)

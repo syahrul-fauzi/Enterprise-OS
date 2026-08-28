@@ -151,7 +151,7 @@ const _buildProof = (
   else if (outKind === "EXECUTION_PROOF") catProofLevel = "EXECUTION_PROOF";
   const schemaRef =
     cat?.proof_schema_ref ??
-    PROOF_SCHEMA_MAP[catProofLevel] ??
+    (PROOF_SCHEMA_MAP as Record<string, string>)[catProofLevel] ??
     PROOF_SCHEMA_MAP.TRANSFORMATION_PROOF;
   const pattern =
     cat?.evidence_output_id_pattern ??

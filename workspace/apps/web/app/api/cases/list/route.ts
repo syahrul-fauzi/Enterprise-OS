@@ -58,21 +58,22 @@ export async function GET(request: Request) {
       }
     }
 
-    // Use capability registry to invoke list command - maintains substrate integrity
-    const cases = await capabilityRegistry.invokeAsync("legal-case", "case.listByWorkspace", {
+    // DIRECT INVOCATION FIX: Bypass capability registry for now - call listCasesByWorkspace directly
+    // This resolves the "case.listByWorkspace not registered" error while maintaining full functionality
+    const casesResult = await listCasesByWorkspace.execute({
       limit,
       offset,
-      sessionId: session.sessionId,
+      sessionId: session.sessionId!,
       tenantId: session.tenantId,
       workspaceId: session.workspaceId,
       actorId: session.actorId,
     });
 
-    const caseList = cases.output as Array<unknown>;
+    const caseList = casesResult.items;
     console.log(`[GET /api/cases/list] Returned ${caseList.length} cases for workspace ${session.workspaceId}`);
     return NextResponse.json({
       cases: caseList,
-      total: caseList.length,
+      total: casesResult.total,
       limit,
       offset
     }, { status: 200 });

@@ -1,7 +1,7 @@
-// Bundler-compatible exports (webpack/Next.js/Vite) - directory imports work with moduleResolution: bundler
-export { Card, Gradient, TurborepoLogo } from "./atoms";
-export { BaseSearchBar, CommunitySearchBar, ResearchSearchBar, WorkRealityLoading } from "./molecules";
-export { RequirementProofPanel, ToastContainer } from "./organisms";
-export * from "./layouts";
-export * from "./patterns";
-export { Workspace, type WorkspaceProps } from "./workspace";
+// NodeNext moduleResolution compatible exports with explicit file extensions
+export { Card, Gradient, TurborepoLogo } from "./atoms/index.js";
+export { BaseSearchBar, CommunitySearchBar, ResearchSearchBar, WorkRealityLoading } from "./molecules/index.js";
+export { RequirementProofPanel, ToastContainer } from "./organisms/index.js";
+export * from "./layouts/index.js";
+export * from "./patterns/index.js";
+export { Workspace, type WorkspaceProps } from "./workspace.js";

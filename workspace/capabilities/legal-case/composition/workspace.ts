@@ -82,21 +82,21 @@ export const caseWorkspace: CaseWorkspaceDescriptor = {
   },
   navigation: [
     {
-      id: "nav-case-list",
-      label: "All Cases",
-      route: "/cases",
+      id: "nav-work-list",
+      label: "All Work",
+      route: "/work",
       regionRole: "sidebar",
       order: 10,
     },
     {
-      id: "nav-case-create",
-      label: "Create Case",
-      route: "/cases/create",
+      id: "nav-work-create",
+      label: "Create Work",
+      route: "/work/new",
       regionRole: "sidebar",
       order: 20,
     },
   ],
-  defaultRoute: "/cases",
+  defaultRoute: "/work",
   requiresAuth: true,
   permissions: ["case:view", "case:create"],
 } as const;

@@ -5,7 +5,8 @@ import React from "react";
 import { ProductPreviewShell } from "../product-preview-shell/index.js";
 import { ProfileHeader } from "../profile-header/index.js";
 import { getProductExperience } from "@repo/presentation-experience";
-import type { ProductPreviewBinding, ProductExperience, Member, Requirement } from "@repo/presentation-types";
+import type { ProductPreviewBinding, ProductExperience } from "@repo/presentation-types";
+import type { Member, Requirement } from "@repo/presentation-entities";
 
 export interface ProfilePageProps {
   readonly profileId: string;

@@ -8,15 +8,19 @@ import { NowSection } from './NowSection';
 import { NextSection } from './NextSection';
 import { PeopleSection } from './PeopleSection';
 import { CommunicationSection } from './CommunicationSection';
+import { ActivitySection } from './ActivitySection';
 import { InspectionSection } from './InspectionSection';
 import { CoordinationSection } from './CoordinationSection';
 import { EvidenceSection } from './EvidenceSection';
-import type { WorkRealityModel, WorkRealityPerspective } from './work-reality.types';
-import { WORK_PERSPECTIVES } from './work-reality.types';
+import type { WorkRealityModel, WorkRealityPerspective } from "@repo/presentation-entities";
+import { WORK_PERSPECTIVES } from "@repo/presentation-entities";
 
 interface WorkRealitySurfaceProps {
   model: WorkRealityModel;
   perspective?: WorkRealityPerspective;
+  onAssignLawyer?: (formData: FormData) => Promise<void>;
+  onAddEvidence?: (formData: FormData) => Promise<void>;
+  onMarkCompleted?: (formData: FormData) => Promise<void>;
 }
 
 /**
@@ -28,7 +32,10 @@ interface WorkRealitySurfaceProps {
  */
 export function WorkRealitySurface({ 
   model, 
-  perspective = 'operator' // Default perspective
+  perspective = 'operator', // Default perspective
+  onAssignLawyer,
+  onAddEvidence,
+  onMarkCompleted
 }: WorkRealitySurfaceProps) {
   // State untuk perspective switcher - user dapat mengubah view tanpa reload
   const [currentPerspective, setCurrentPerspective] = useState<WorkRealityPerspective>(perspective);
@@ -39,23 +46,19 @@ export function WorkRealitySurface({
         {/* Core EOS Header - selalu ditampilkan di semua perspective */}
         <WorkRealityHeader identity={model.identity} />
         
-        {/* Perspective Switcher Section - EOS FACE improvement: user can switch views tanpa EOS knowledge */}
-        <section className="rounded-3xl border border-indigo-200 bg-indigo-50 p-6 shadow-sm sm:p-8">
+        {/* Perspective Switcher Section - Clean, minimal design aligned with Work Reality visual constitution */}
+        <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="space-y-4">
-            <div className="inline-flex rounded-full border border-indigo-200 bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">
-              WORK REALITY SURFACE
-            </div>
-            
-            {/* Perspective Selector Tabs - reused from CaseDetailPage/DeliveryWorkspace patterns */}
+            {/* Perspective Selector Tabs - simplified visual language */}
             <div className="flex flex-wrap gap-2">
               {(Object.keys(WORK_PERSPECTIVES) as WorkRealityPerspective[]).map((persp) => (
                 <button
                   key={persp}
                   onClick={() => setCurrentPerspective(persp)}
-                  className={`rounded-xl px-4 py-2 text-sm font-semibold transition-all 
+                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-all 
                     ${currentPerspective === persp
-                      ? "bg-indigo-600 text-white shadow-lg"
-                      : "bg-white text-indigo-700 border border-indigo-200 hover:bg-indigo-100"
+                      ? "bg-blue-600 text-white shadow-sm"
+                      : "bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200"
                     }`}
                 >
                   {WORK_PERSPECTIVES[persp].label}
@@ -63,11 +66,11 @@ export function WorkRealitySurface({
               ))}
             </div>
             
-            {/* Perspective-specific context banner - membantu user memahami view mereka */}
-            <div className="rounded-xl bg-white p-4 border border-indigo-100">
-              <p className="text-sm text-indigo-900">
+            {/* Perspective-specific context banner - minimal styling */}
+            <div className="rounded-lg bg-gray-50 p-4 border border-gray-100">
+              <p className="text-sm text-gray-900">
                 <span className="font-semibold">{WORK_PERSPECTIVES[currentPerspective].description}</span><br />
-                <span className="text-indigo-700 mt-1 block">Pertanyaan Anda: "{WORK_PERSPECTIVES[currentPerspective].question}"</span>
+                <span className="text-gray-600 mt-1 block">Pertanyaan Anda: "{WORK_PERSPECTIVES[currentPerspective].question}"</span>
               </p>
             </div>
           </div>
@@ -87,13 +90,23 @@ export function WorkRealitySurface({
             />
             
             {/* NEXT Section */}
-            <NextSection nextAction={model.state.nextAction} perspective={currentPerspective} />
+            <NextSection 
+              nextAction={model.state.nextAction} 
+              perspective={currentPerspective}
+              workId={model.identity.workId}
+              onAssignLawyer={onAssignLawyer}
+              onAddEvidence={onAddEvidence}
+              onMarkCompleted={onMarkCompleted}
+            />
             
             {/* PEOPLE Section - hanya tampilkan yang relevan dengan perspective */}
             <PeopleSection participants={model.participants} currentPerspective={currentPerspective} workId={model.identity.workId} />
             
             {/* COMMUNICATION Section */}
             <CommunicationSection communications={model.communications} perspective={currentPerspective} workId={model.identity.workId} />
+            
+            {/* ACTIVITY Section - Urutan peristiwa tercatat */}
+            <ActivitySection activity={model.activity} perspective={currentPerspective} workId={model.identity.workId} />
             
             {/* INSPECTION Section - hanya untuk operator/agent */}
             {(currentPerspective === 'operator' || currentPerspective === 'agent') && (

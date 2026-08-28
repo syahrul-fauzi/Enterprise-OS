@@ -4,7 +4,7 @@ import {
   WORKSPACE_SESSION_COOKIE,
   createAnonymousWorkspaceSession,
   encodeWorkspaceSession,
-} from "../../packages/core/kernel/dist/session/workspace-session.js";
+} from "../../packages/core/kernel/src/session/workspace-session.js";
 import { getTenantRepositoryPostgres } from "@repo/capabilities-identity";
 
 export async function proxy(request: NextRequest) {

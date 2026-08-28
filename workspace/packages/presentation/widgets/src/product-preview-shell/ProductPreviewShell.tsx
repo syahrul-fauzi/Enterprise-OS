@@ -4,7 +4,7 @@
 import Link from "next/link";
 import React from "react";
 import { useEffect, useState } from "react";
-import type { ProductPreviewBinding, ProductExperience } from "@repo/presentation-types";
+import type { ProductExperience } from "@repo/presentation-entities";
 import { getProductExperience } from "@repo/presentation-experience";
 import { getSpineNavigationForProductId, type SpineNavigationItem } from "@repo/presentation-config";
 

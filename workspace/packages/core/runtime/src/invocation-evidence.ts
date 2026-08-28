@@ -1,7 +1,8 @@
 import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname } from "path";
-import { createHash } from "crypto";
+import { createHash, randomUUID } from "crypto";
 import { executionContext } from "./execution-context.js";
+import { recordWorkExecutionMetrics } from "./execution-observability.js";
 
 export type RuntimeInvocationEvent = {
   readonly timestamp_utc: string;
@@ -79,6 +80,13 @@ function validateArtifactAccess(inputRefs: readonly string[] | undefined, curren
   }
 }
 
+// Track execution start time for metrics
+const executionStartTimes = new Map<string, number>();
+
+export function startExecutionTimer(executionId: string): void {
+  executionStartTimes.set(executionId, Date.now());
+}
+
 export function recordRuntimeInvocation(input: {
   readonly capabilityId: string;
   readonly operationId: string;
@@ -92,6 +100,8 @@ export function recordRuntimeInvocation(input: {
   readonly inputRefs?: readonly string[];
   readonly outputRefs?: readonly string[];
   readonly parentInvocationIds?: readonly string[];
+  readonly work_id?: string | null;
+  readonly executionId?: string | null;
 }): void {
   const evidencePath = process.env.EOS_RUNTIME_INVOCATION_EVIDENCE_PATH?.trim();
   if (!evidencePath) {
@@ -186,11 +196,21 @@ export function recordRuntimeInvocation(input: {
     parentInvocationIds: resolved_parentInvocationIds,
   } satisfies RuntimeInvocationEvent;
 
-  appendFileSync(evidencePath, `${JSON.stringify(event)}\n`, "utf8");
-  
+  // WORK-PROD-004: Record execution metrics for observability
+  const executionId = input.executionId ?? randomUUID();
+  const startTime = executionStartTimes.get(executionId);
+  if (startTime) {
+    const executionTimeMs = Date.now() - startTime;
+    const resolvedWorkId = input.work_id ?? ambient?.logicalWorkId ?? ambient?.workflow_id ?? "unknown-work";
+    recordWorkExecutionMetrics(resolvedWorkId, executionTimeMs, input.success);
+    executionStartTimes.delete(executionId);
+  }
+
   // Update ambient context dengan invocation digest terbaru untuk child executions
   // Jangan pernah mutate store asli - buat clone untuk mencegah race condition antar sibling async stacks
   executionContext.setLastInvocationDigest(invocation_digest);
+
+  appendFileSync(evidencePath, `${JSON.stringify(event)}\n`, "utf8");
 }
 
 export function traceExecutionByDecision(decisionId: string, tenantId?: string | null): {

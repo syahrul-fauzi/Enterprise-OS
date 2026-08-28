@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { Requirement } from '@repo/presentation-types';
+import type { Requirement } from '@repo/presentation-entities';
 
 export interface ResearchFeedProps {
   researchItems: Requirement[];

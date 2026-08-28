@@ -1,4 +1,4 @@
-import { DigestEngine } from "@repo/core-kernel";
+import { DigestEngine } from "@repo/core-kernel/digest-engine.js";
 
 type JsonRecord = Record<string, unknown>;
 

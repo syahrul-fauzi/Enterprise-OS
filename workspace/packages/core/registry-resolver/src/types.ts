@@ -4,9 +4,11 @@ import type {
   TransformationPrecedence,
 } from "@repo/core-transformation-registry";
 import type { PredicateDeclaration } from "@repo/core-predicate-registry";
-import type { ProofLevel } from "@repo/core-proof-ledger";
-
-export type { ProofLevel } from "@repo/core-proof-ledger";
+// Define ProofLevel locally to resolve import issues - matches @repo/core-proof-ledger/src/types.ts
+export type ProofLevel =
+  | "TRANSFORMATION_PROOF"
+  | "EXECUTION_PROOF"
+  | "REPOSITORY_PROOF";
 
 export const FAILURE_STRATEGIES = [
   "FAIL_FAST",

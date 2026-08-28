@@ -19,6 +19,9 @@ const PTEstablishmentDetailsSchema = z.object({
   bidangUsaha: z.string().min(1),
   jumlahPendiri: z.number().int().min(1).max(100),
   modalDasar: z.number().min(100000000),
+  noNIB: z.string().min(10).max(13),
+  npwp: z.string().min(15).max(20),
+  penanggungJawabNIK: z.string().length(16),
 });
 
 const CreateCaseRequestSchema = z.object({
@@ -27,6 +30,7 @@ const CreateCaseRequestSchema = z.object({
   priority: z.enum(["low", "medium", "high", "critical"]).optional(),
   sourceDiscussionId: z.string().optional(),
   ptEstablishmentDetails: PTEstablishmentDetailsSchema.optional(),
+  linkedIntentId: z.string().optional(), // CONTEXT INTEGRITY: Link Work/Case to originating Intent
 });
 
 export async function POST(request: Request) {
@@ -76,7 +80,7 @@ export async function POST(request: Request) {
       const messages = parsed.error.issues.map(i => `${i.path.join(".")}: ${i.message}`).join("; ");
       return NextResponse.json({ error: `Validation failed: ${messages}` }, { status: 422 });
     }
-    const { title, description, priority, sourceDiscussionId } = parsed.data;
+    const { title, description, priority, sourceDiscussionId, ptEstablishmentDetails } = parsed.data;
 
     // Use capabilityRegistry to invoke case.create - substrate compliance: never bypass capability system
     // Import kernel's capability registry directly (SERVER-ONLY boundary compliance - API route is server-side)
@@ -86,6 +90,7 @@ export async function POST(request: Request) {
       description,
       priority,
       sourceDiscussionId,
+      ptEstablishmentDetails,
       sessionId: session.sessionId,
       tenantId: session.tenantId,
       workspaceId: session.workspaceId,

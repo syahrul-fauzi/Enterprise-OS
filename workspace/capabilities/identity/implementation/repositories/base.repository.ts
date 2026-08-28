@@ -35,13 +35,28 @@ export abstract class PostgresRepository<T extends { id: string }> {
     this.pool = getPool();
   }
 
+  /**
+   * Set current tenant and workspace for RLS (Row Level Security) enforcement
+   * Must be called before any database operation in production to enforce tenant isolation
+   */
+  protected async setSessionContext(tenantId: string, workspaceId: string): Promise<void> {
+    await this.pool.query(`SELECT set_config('app.current_tenant', $1, false), set_config('app.current_workspace', $2, false)`, [tenantId, workspaceId]);
+  }
+
+  /**
+   * Clear session context after operation completes
+   */
+  protected async clearSessionContext(): Promise<void> {
+    await this.pool.query(`SELECT set_config('app.current_tenant', '', false), set_config('app.current_workspace', '', false)`);
+  }
+
   async byId(id: string): Promise<T | undefined> {
     const result = await this.pool.query<Record<string, any>>(
       `SELECT * FROM ${this.tableName} WHERE id = $1`,
       [id]
     );
     if (result.rows.length === 0) return undefined;
-    return this.toAggregate(result.rows[0]);
+    return this.toAggregate(result.rows[0]!);
   }
 
   async list(): Promise<readonly T[]> {
@@ -287,6 +302,29 @@ export async function initIdentitySchema() {
   await pool.query(`
     ALTER TABLE cases 
     ADD COLUMN IF NOT EXISTS version INTEGER NOT NULL DEFAULT 1;
+  `);
+  await pool.query(`
+    ALTER TABLE cases 
+    ADD COLUMN IF NOT EXISTS intent JSONB;
+  `);
+
+  // Create intents table for Intent primitive (first-class EOS primitive)
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS intents (
+      id TEXT PRIMARY KEY,
+      tenant_id TEXT NOT NULL REFERENCES tenants(id),
+      workspace_id TEXT NOT NULL REFERENCES workspaces(id),
+      actor_id TEXT NOT NULL REFERENCES users(id),
+      title TEXT NOT NULL,
+      description TEXT,
+      category TEXT NOT NULL,
+      status TEXT NOT NULL,
+      metadata JSONB,
+      created_at TIMESTAMP NOT NULL,
+      updated_at TIMESTAMP NOT NULL,
+      converted_to_work_id TEXT REFERENCES cases(id),
+      version INTEGER NOT NULL DEFAULT 1
+    );
   `);
 
   // Create service_requests table for service-directory capability

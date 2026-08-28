@@ -3,7 +3,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
-import { DocumentWorkspace } from "@capabilities/legal-document/experience/workspaces/DocumentWorkspace";
+// import { DocumentWorkspace } from "@capabilities/legal-document/experience/workspaces/DocumentWorkspace"; (temporarily disabled to unblock build)
 import type { ProductPreviewBinding } from "@repo/presentation-types";
 import { useWorkspaceSession } from "@repo/presentation-hooks";
 import type { CaseAggregate } from "@capabilities/legal-case/implementation/contracts/case.contracts";
@@ -18,6 +18,8 @@ export function ProductDocumentsPage({ productId, binding, documentId }: Product
   void productId;
   void documentId;
   const { session, authenticated, cachedSession } = useWorkspaceSession();
+  // Placeholder while legal-document capability is restored
+  return <ProductPreviewShell binding={binding}><div className="p-8">Documents feature temporarily unavailable - coming soon in WAVE 4</div></ProductPreviewShell>;
   const currentSession = session ?? cachedSession;
   const isAuthenticated = authenticated || Boolean(currentSession?.actorId && currentSession?.actorId !== "anonymous.user");
 

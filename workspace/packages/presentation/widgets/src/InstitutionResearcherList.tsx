@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { Member } from '@repo/presentation-types';
+import type { Member } from '@repo/presentation-entities';
 
 export interface InstitutionResearcherListProps {
   researchers: Member[];

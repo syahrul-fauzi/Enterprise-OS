@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import type { CommandInvocationRecord } from "@repo/core-kernel";
 import { CaseRepositoryInMemory } from "../../../capabilities/legal-case/implementation/repository/case.repository.js";
-import type { CaseAggregate } from "../../../capabilities/legal-case/implementation/contracts/case.contracts.js";
+import type { CaseAggregate } from "../../../capabilities/legal-case/contracts/case.contracts.js";
 
 // MOCK CAPABILITY REGISTRY (sesuai pattern yang sudah ada di LawyersHub tests + Services.ID)
 const mockCapabilityRegistry = {

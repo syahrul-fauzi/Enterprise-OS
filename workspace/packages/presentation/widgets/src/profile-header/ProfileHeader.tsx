@@ -2,7 +2,7 @@
 "use client";
 
 import React from "react";
-import type { Member } from "@repo/presentation-types";
+import type { Member } from "@repo/presentation-entities";
 
 type ProfileMember = Member & {
   readonly publicationCount?: number;

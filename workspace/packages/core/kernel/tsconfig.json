@@ -15,5 +15,5 @@
     }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["dist", "build", "node_modules", "**/capabilities/**/*", "**/composition/src/arch15-determinism", "**/composition/src/arch16-boundary", "**/composition/src/certification", "**/composition/src/graph", "**/composition/src/normalizer", "**/composition/src/plan", "**/composition/src/resolver"]
+  "exclude": ["node_modules", "**/capabilities/**/*", "**/composition/src/arch15-determinism", "**/composition/src/arch16-boundary", "**/composition/src/certification", "**/composition/src/graph", "**/composition/src/normalizer", "**/composition/src/plan", "**/composition/src/resolver"]
 }

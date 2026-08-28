@@ -1,4 +1,4 @@
-import type { ProductExperience } from '@repo/presentation-types';
+import type { ProductExperience } from '@repo/presentation-entities';
 
 export const lawyershub: ProductExperience & { card?: any } = {
   identity: {

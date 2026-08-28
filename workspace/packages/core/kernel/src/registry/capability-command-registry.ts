@@ -2,7 +2,7 @@
 import type { CapabilityCommand } from "../types.js";
 import { randomUUID } from "crypto";
 // PR-001: Import reliability utilities from core-runtime (ARCH-04 compliant - kernel uses core-runtime exports)
-// @ts-ignore - @repo/core-runtime is a workspace package that resolves at build/runtime
+// Use workspace package import to align with package.json dependencies and tsconfig project references
 import { calculateExponentialBackoff, shouldOpenCircuitBreaker, shouldResetCircuitBreaker, executionContext } from "@repo/core-runtime";
 // Define RetryConfig type locally since it's not exported from ../types
 export interface RetryConfig {
@@ -650,13 +650,19 @@ export const capabilityRegistry = {
           this.securityStates.set(securityKey, { failedAttempts: 0, lastFailedAt: 0, blockedUntil: 0 });
         }
         
-        // PT-003: Update execution context with reset circuit breaker state
+        // PT-003: Update execution context with reset circuit breaker state - preserve all existing context properties
         const successCtx = executionContext.get();
         if (successCtx) {
           executionContext.run({
             ...successCtx,
             consecutive_failures: 0,
-            circuit_breaker_open: false
+            circuit_breaker_open: false,
+            // Preserve circuit_breaker_state object to maintain context continuity across async stacks
+            circuit_breaker_state: successCtx.circuit_breaker_state ? {
+              ...successCtx.circuit_breaker_state,
+              consecutiveFailures: 0,
+              isOpen: false
+            } : undefined
           }, () => {});
         }
         
@@ -708,11 +714,37 @@ export const capabilityRegistry = {
         };
         this.circuitBreakerStates.set(circuitKey, circuitState);
 
+        // PR-001: Update execution context with new circuit breaker state - preserve all work context
+        const failureCtx = executionContext.get();
+        if (failureCtx) {
+          executionContext.run({
+            ...failureCtx,
+            consecutive_failures: newConsecutiveFails,
+            circuit_breaker_open: circuitState.isOpen,
+            // Update circuit_breaker_state object to maintain context continuity
+            circuit_breaker_state: {
+              consecutiveFailures: newConsecutiveFails,
+              isOpen: circuitState.isOpen,
+              lastFailureTime: circuitState.lastFailureTime
+            }
+          }, () => {});
+        }
+
         if (attempt < maxAttempts) {
-          // Validate backoff strategy from RetryConfig (supports exponential from registry-resolver)
-          const delay = retryConfig?.backoff === "exponential" 
-            ? calculateExponentialBackoff(attempt, {})
-            : 1000; // Default for non-exponential backoff strategies
+          // Validate backoff strategy from RetryConfig (supports both string "exponential" and object format)
+          let delay = 1000; // Default for non-exponential backoff strategies
+          if (typeof retryConfig?.backoff === "string" && retryConfig.backoff === "exponential") {
+            // Backward compatibility: string "exponential" from registry-resolver types
+            delay = calculateExponentialBackoff(attempt, {
+              exponential_backoff_multiplier: retryConfig.exponential_backoff_multiplier
+            });
+          } else if (typeof retryConfig?.backoff === "object" && retryConfig.backoff) {
+            // Object format with initial_delay_ms, max_delay_ms, factor (from local RetryConfig interface)
+            const baseDelay = retryConfig.backoff.initial_delay_ms ?? 1000;
+            const maxDelay = retryConfig.backoff.max_delay_ms ?? 30000;
+            const factor = retryConfig.backoff.factor ?? 2;
+            delay = Math.min(baseDelay * Math.pow(factor, attempt - 1), maxDelay);
+          }
           await new Promise(resolve => setTimeout(resolve, delay));
           continue;
         }

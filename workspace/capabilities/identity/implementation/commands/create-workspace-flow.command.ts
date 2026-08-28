@@ -42,7 +42,7 @@ export const createWorkspaceFlowCommand: CapabilityCommand = {
     // Lazy import capabilityRegistry to avoid circular initialization
     const kernel = await import("@repo/core-kernel");
   // Capability registry exists in kernel but TypeScript definitions don't include it yet
-  const capabilityRegistry = (kernel.default as any).capabilityRegistry || {};
+  const capabilityRegistry = (kernel as any).capabilityRegistry || {};
 
     if (!tenantId) {
       throw new Error("tenantId is required");

@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   },
   webpack: (config) => {
     config.module.rules.push({
-      test: /@repo\/capabilities-identity|@repo\/presentation-ui-system/,
+      test: /@repo\/.*/,
       resolve: {
         fullySpecified: false,
       },

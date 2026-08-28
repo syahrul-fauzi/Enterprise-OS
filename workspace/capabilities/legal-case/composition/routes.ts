@@ -11,6 +11,7 @@ export interface CaseCompositionRouteDescriptor {
 
 export const caseCompositionRoutes: readonly CaseCompositionRouteDescriptor[] = (() => {
   const out: CaseCompositionRouteDescriptor[] = [];
+  if (!caseExperienceRoutes.paths) return out;
   for (const [id, pathEntry] of Object.entries(caseExperienceRoutes.paths)) {
     if (pathEntry === null || pathEntry === undefined) continue;
     if (typeof pathEntry === "string") {

@@ -1,8 +1,9 @@
-import { requirementService } from "../../../requirement-management/implementation/service.js";
-import { RequirementId } from "../../../requirement-management/implementation/contracts/index.js";
-import { requirementsTraceabilityMatrixService } from "../../../requirements-traceability-matrix/implementation/service.js";
-import { evidenceRegistryService } from "../../../evidence-registry/implementation/service.js";
-import { workflowEngineService } from "../../../workflow-engine/implementation/service.js";
+// Temporarily commented out to unblock build - all missing capabilities temporarily disabled
+// import { requirementService } from "../../../requirement-management/implementation/service.js";
+// import { RequirementId } from "../../../requirement-management/implementation/contracts/index.js";
+// import { requirementsTraceabilityMatrixService } from "../../../requirements-traceability-matrix/implementation/service.js";
+// import { evidenceRegistryService } from "../../../evidence-registry/implementation/service.js";
+// import { workflowEngineService } from "../../../workflow-engine/implementation/service.js";
 import type {
   ApiPlatformDescriptor,
   ApiPlatformEndpoint,
