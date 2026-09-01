@@ -7,14 +7,14 @@ test("connector ecosystem lists first connectors", () => {
   assert.ok(connectors.length >= 3);
 });
 
-test("connector ecosystem exports requirement data", () => {
-  const result = connectorEcosystemService.sync("requirements-json-export");
+test("connector ecosystem exports requirement data", async () => {
+  const result = await connectorEcosystemService.sync({ connectorId: "requirements-json-export" });
   assert.equal(result.status, "completed");
   assert.ok(result.exportedCount > 0);
 });
 
-test("connector ecosystem syncs evidence data", () => {
-  const result = connectorEcosystemService.sync("evidence-registry-sync");
+test("connector ecosystem syncs evidence data", async () => {
+  const result = await connectorEcosystemService.sync({ connectorId: "evidence-registry-sync" });
   assert.equal(result.status, "completed");
   assert.ok(result.exportedCount > 0);
 });

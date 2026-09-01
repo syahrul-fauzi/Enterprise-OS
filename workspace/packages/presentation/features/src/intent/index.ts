@@ -8,8 +8,10 @@ export type {
   IntentContext,
   IntentResolution,
   IntentContract,
-  FormationConfirmation
+  FormationConfirmation,
+  IntentRefinementPageProps
 } from './types.js';
 
 export { IntentNeedInput } from './IntentNeedInput.js';
 export { IntentUnderstandingPreview } from './IntentUnderstandingPreview.js';
+export { IntentRefinementPage } from './IntentRefinementPage.js';

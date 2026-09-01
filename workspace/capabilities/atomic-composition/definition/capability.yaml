@@ -1,0 +1,37 @@
+id: atomic-composition
+name: Atomic Work Composition
+version: 1.0.0
+owner: composition-domain
+status: ACTIVE
+introduced: "2026-08-28"
+provides:
+  - actor-management
+  - capability-registry
+  - work-requirements
+  - assignment-system
+  - team-composition
+  - organization-evolution
+purpose: Implements the core EOS model where Work forms the Team through dynamic capability-based composition of Actors. Enables the atomic work composition model: Need → Work → Requirements → Capabilities → Actors → Composition → Team → Execution → Evidence → Outcome → Economic Value.
+
+capability:
+  name: atomic-composition
+  owner: composition-domain
+  purpose: Dynamic team formation from work requirements and actor capabilities
+  consumers:
+    - lawyershub
+    - services-id
+    - ilc
+  maturity:
+    level: core
+  lifecycle:
+    state: active
+  evidence_required:
+    - golden_proof_verification
+    - cross_domain_reuse
+    - persistence_verification
+  dependencies:
+    - identity
+    - work-core
+    - work-inspection
+    - agent-orchestration
+    - governance-evidence

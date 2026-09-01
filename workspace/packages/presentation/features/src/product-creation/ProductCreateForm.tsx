@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import { Card, Input, TextArea, Select, Button } from "@repo/presentation-ui-system";
 
-// Inlined type definitions from capabilities contracts to avoid rootDir violations
-// This maintains type safety while respecting package boundaries (Thin App Strategy)
-type ServiceProviderCategory = 
+type ServiceProviderCategory =
   | "Cloud Services"
   | "IT Support"
   | "Infrastructure"
@@ -25,7 +24,6 @@ type TopicCategory =
   | "Hukum Ketenagakerjaan"
   | "Hukum Tata Negara";
 
-// Fallback implementations to resolve module resolution errors (aligned with ProductPreviewShell)
 function readServiceProviderCategories(): readonly ServiceProviderCategory[] {
   return ["Cloud Services", "IT Support", "Infrastructure", "Cybersecurity", "Software Development"];
 }
@@ -43,11 +41,35 @@ const PRIORITY_LABEL: Record<CasePriority, string> = {
   critical: "Kritis",
 };
 
+const PRODUCT_TITLE: Record<ProductCreateFormProps['productId'], { title: string; description: string }> = {
+  lawyershub: {
+    title: "Buat Kasus Hukum Baru",
+    description: "Catat kasus hukum baru untuk klien — berjalan melalui workflow Draf → Terbuka → Dalam Proses → Selesai.",
+  },
+  "services-id": {
+    title: "Ajukan Permintaan Layanan",
+    description: "Kirim permintaan layanan ke provider terdaftar — dari Draf → Diterima → Dalam Layanan → Selesai.",
+  },
+  ilc: {
+    title: "Mulai Diskusi Komunitas Baru",
+    description: "Mulai diskusi publik tentang topik hukum — komunitas akan mereply dan terlibat.",
+  },
+  academic: {
+    title: "Tulis Artikel Komunitas Baru",
+    description: "Submit artikel penelitian / analisis hukum — melalui Diajukan → Diterima → Dipublikasikan.",
+  },
+};
+
 function useCreateFormState() {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<{ output: unknown; record: unknown } | null>(null);
   const [error, setError] = useState<string | null>(null);
   return { submitting, setSubmitting, result, setResult, error, setError };
+}
+
+interface SubFormProps {
+  readonly submitting: boolean;
+  readonly onSubmit: (body: Record<string, unknown>) => void;
 }
 
 export function ProductCreateForm({ productId, onCreated }: ProductCreateFormProps) {
@@ -88,83 +110,99 @@ export function ProductCreateForm({ productId, onCreated }: ProductCreateFormPro
     }
   };
 
+  const content = PRODUCT_TITLE[productId];
+
+  const renderSubForm = () => {
+    switch (productId) {
+      case "lawyershub":
+        return (
+          <LawyersHubCreateForm
+            submitting={state.submitting}
+            onSubmit={(body) => commonSubmit("/api/cases/create", body)}
+          />
+        );
+      case "services-id":
+        return (
+          <ServicesCreateForm
+            submitting={state.submitting}
+            categories={serviceCategories}
+            onSubmit={(body) => commonSubmit("/api/quotes/create", body)}
+          />
+        );
+      case "ilc":
+        return (
+          <ILCDiscussionCreateForm
+            submitting={state.submitting}
+            topics={ilcTopicLabels}
+            onSubmit={(body) => commonSubmit("/api/capabilities/ilc/createCommunityDiscussion", body)}
+          />
+        );
+      case "academic":
+        return (
+          <ILCArticleCreateForm
+            submitting={state.submitting}
+            topics={ilcTopicLabels}
+            onSubmit={(body) => commonSubmit("/api/capabilities/academic/createContentArticle", body)}
+          />
+        );
+    }
+  };
+
   return (
-    <section className="rounded-3xl border border-indigo-200 bg-white p-6 shadow-sm sm:p-8">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between mb-6">
-        <div>
-          <h2 className="text-xl font-bold text-slate-950">
-            {productId === "lawyershub" && "Buat Kasus Hukum Baru"}
-            {productId === "services-id" && "Ajukan Permintaan Layanan"}
-            {productId === "ilc" && "Mulai Diskusi Komunitas Baru"}
-            {productId === "academic" && "Tulis Artikel Komunitas Baru"}
+    <section aria-labelledby="product-create-title">
+      <Card
+        size="lg"
+        title={
+          <h2 id="product-create-title" className="text-xl font-bold text-text-primary">
+            {content.title}
           </h2>
-          <p className="mt-2 text-sm text-slate-600">
-            {productId === "lawyershub" && "Catat kasus hukum baru untuk klien — berjalan melalui workflow Draf → Terbuka → Dalam Proses → Selesai."}
-            {productId === "services-id" && "Kirim permintaan layanan ke provider terdaftar — dari Draf → Diterima → Dalam Layanan → Selesai."}
-            {productId === "ilc" && "Mulai diskusi publik tentang topik hukum — komunitas akan mereply dan terlibat."}
-            {productId === "academic" && "Submit artikel penelitian / analisis hukum — melalui Diajukan → Diterima → Dipublikasikan."}
-          </p>
-        </div>
-      </div>
+        }
+        subtitle={content.description}
+      >
+        {renderSubForm()}
 
-      {productId === "lawyershub" && (
-        <LawyersHubCreateForm submitting={state.submitting} onSubmit={(body) => commonSubmit("/api/cases/create", body)} />
-      )}
-
-      {productId === "services-id" && (
-        <ServicesCreateForm
-          submitting={state.submitting}
-          categories={serviceCategories}
-          onSubmit={(body) => commonSubmit("/api/quotes/create", body)}
-        />
-      )}
-
-      {productId === "ilc" && (
-        <ILCDiscussionCreateForm
-          submitting={state.submitting}
-          topics={ilcTopicLabels}
-          onSubmit={(body) => commonSubmit("/api/capabilities/ilc/createCommunityDiscussion", body)}
-        />
-      )}
-
-      {productId === "academic" && (
-        <ILCArticleCreateForm
-          submitting={state.submitting}
-          topics={ilcTopicLabels}
-          onSubmit={(body) => commonSubmit("/api/capabilities/academic/createContentArticle", body)}
-        />
-      )}
-
-      {(state.result || state.error) && (
-        <div className="mt-6">
-          {state.error && (
-            <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-              <div className="font-semibold mb-1">Gagal diproses:</div>
-              <div>{state.error}</div>
-            </div>
-          )}
-          {state.result && (
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
-              <div className="font-semibold mb-1">Berhasil dibuat:</div>
-              <pre className="whitespace-pre-wrap text-xs bg-emerald-100/60 rounded-lg p-3 mt-2 overflow-x-auto">
-{JSON.stringify(state.result.output, null, 2)}
-              </pre>
-              {(state.result.record as { invokedAt?: string } | null)?.invokedAt && (
-                <div className="mt-2 text-xs text-emerald-700">
-                  Executed at: {(state.result.record as { invokedAt: string }).invokedAt}
+        {(state.result || state.error) && (
+          <div className="mt-6 space-y-3">
+            {state.error && (
+              <div
+                role="alert"
+                className="rounded-xl border border-status-danger/30 bg-status-danger/5 p-4 text-sm text-status-danger-fg"
+              >
+                <div className="font-semibold mb-1 flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                  </svg>
+                  Gagal diproses:
                 </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
+                <div>{state.error}</div>
+              </div>
+            )}
+            {state.result && (
+              <div
+                role="status"
+                className="rounded-xl border border-status-success/30 bg-status-success/5 p-4 text-sm text-status-success-fg"
+              >
+                <div className="font-semibold mb-1 flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Berhasil dibuat:
+                </div>
+                <pre className="whitespace-pre-wrap text-xs bg-status-success/10 rounded-lg p-3 mt-2 overflow-x-auto border border-status-success/20">
+{JSON.stringify(state.result.output, null, 2)}
+                </pre>
+                {(state.result.record as { invokedAt?: string } | null)?.invokedAt && (
+                  <div className="mt-2 text-xs text-status-success-fg/90">
+                    Executed at: {(state.result.record as { invokedAt: string }).invokedAt}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </Card>
     </section>
   );
-}
-
-interface SubFormProps {
-  readonly submitting: boolean;
-  readonly onSubmit: (body: Record<string, unknown>) => void;
 }
 
 function LawyersHubCreateForm({ submitting, onSubmit }: SubFormProps) {
@@ -173,6 +211,8 @@ function LawyersHubCreateForm({ submitting, onSubmit }: SubFormProps) {
   const [priority, setPriority] = useState<CasePriority>("medium");
 
   const disabled = submitting || title.trim().length < 3;
+  const submitLabel = submitting ? "Memproses..." : "Buat Kasus";
+
   return (
     <form
       onSubmit={(e) => {
@@ -180,46 +220,49 @@ function LawyersHubCreateForm({ submitting, onSubmit }: SubFormProps) {
         onSubmit({ title, description, priority });
       }}
       className="grid gap-4 md:grid-cols-3"
+      aria-label="Form pembuatan kasus hukum"
     >
       <div className="md:col-span-2">
-        <label className="block text-sm font-medium text-slate-700 mb-1">Judul Kasus</label>
-        <input
-          type="text"
+        <Input
+          label="Judul Kasus"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
           placeholder="Masukkan judul kasus hukum..."
+          required
+          size="md"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">Prioritas</label>
-        <select
+        <Select
+          label="Prioritas"
           value={priority}
           onChange={(e) => setPriority(e.target.value as CasePriority)}
-          className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        >
-          {CASE_PRIORITIES.map((p) => (
-            <option key={p} value={p}>{PRIORITY_LABEL[p]}</option>
-          ))}
-        </select>
-      </div>
-      <div className="md:col-span-3">
-        <label className="block text-sm font-medium text-slate-700 mb-1">Deskripsi</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 min-h-[100px]"
-          placeholder="Jelaskan detail kasus hukum..."
+          size="md"
+          options={CASE_PRIORITIES.map((p) => ({ value: p, label: PRIORITY_LABEL[p] }))}
         />
       </div>
       <div className="md:col-span-3">
-        <button
+        <TextArea
+          label="Deskripsi"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Jelaskan detail kasus hukum..."
+          rows={4}
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-3">
+        <Button
           type="submit"
+          intent="primary"
+          variant="solid"
+          size="md"
+          loading={submitting}
+          loadingText="Memproses..."
           disabled={disabled}
-          className="inline-flex items-center rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
         >
-          {submitting ? "Memproses..." : "Buat Kasus"}
-        </button>
+          {submitLabel}
+        </Button>
       </div>
     </form>
   );
@@ -231,6 +274,8 @@ function ServicesCreateForm({ submitting, categories, onSubmit }: SubFormProps &
   const [category, setCategory] = useState("");
 
   const disabled = submitting || title.trim().length < 3;
+  const submitLabel = submitting ? "Memproses..." : "Ajukan Permintaan";
+
   return (
     <form
       onSubmit={(e) => {
@@ -238,47 +283,50 @@ function ServicesCreateForm({ submitting, categories, onSubmit }: SubFormProps &
         onSubmit({ title, description, category });
       }}
       className="grid gap-4 md:grid-cols-3"
+      aria-label="Form permintaan layanan"
     >
       <div className="md:col-span-2">
-        <label className="block text-sm font-medium text-slate-700 mb-1">Judul Permintaan</label>
-        <input
-          type="text"
+        <Input
+          label="Judul Permintaan"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
           placeholder="Masukkan judul permintaan layanan..."
+          required
+          size="md"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">Kategori</label>
-        <select
+        <Select
+          label="Kategori"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        >
-          <option value="">Pilih kategori</option>
-          {categories.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
-      </div>
-      <div className="md:col-span-3">
-        <label className="block text-sm font-medium text-slate-700 mb-1">Deskripsi</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 min-h-[100px]"
-          placeholder="Jelaskan detail permintaan layanan..."
+          size="md"
+          placeholder="Pilih kategori"
+          options={categories.map((c) => ({ value: c, label: c }))}
         />
       </div>
       <div className="md:col-span-3">
-        <button
+        <TextArea
+          label="Deskripsi"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Jelaskan detail permintaan layanan..."
+          rows={4}
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-3">
+        <Button
           type="submit"
+          intent="primary"
+          variant="solid"
+          size="md"
+          loading={submitting}
+          loadingText="Memproses..."
           disabled={disabled}
-          className="inline-flex items-center rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
         >
-          {submitting ? "Memproses..." : "Ajukan Permintaan"}
-        </button>
+          {submitLabel}
+        </Button>
       </div>
     </form>
   );
@@ -290,6 +338,8 @@ function ILCDiscussionCreateForm({ submitting, topics, onSubmit }: SubFormProps 
   const [topic, setTopic] = useState("");
 
   const disabled = submitting || title.trim().length < 3;
+  const submitLabel = submitting ? "Memproses..." : "Mulai Diskusi";
+
   return (
     <form
       onSubmit={(e) => {
@@ -297,47 +347,50 @@ function ILCDiscussionCreateForm({ submitting, topics, onSubmit }: SubFormProps 
         onSubmit({ title, description, topic });
       }}
       className="grid gap-4 md:grid-cols-3"
+      aria-label="Form pembuatan diskusi komunitas"
     >
       <div className="md:col-span-2">
-        <label className="block text-sm font-medium text-slate-700 mb-1">Judul Diskusi</label>
-        <input
-          type="text"
+        <Input
+          label="Judul Diskusi"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
           placeholder="Masukkan judul diskusi komunitas..."
+          required
+          size="md"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">Topik Hukum</label>
-        <select
+        <Select
+          label="Topik Hukum"
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
-          className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        >
-          <option value="">Pilih topik</option>
-          {topics.map((t) => (
-            <option key={t} value={t}>{t}</option>
-          ))}
-        </select>
-      </div>
-      <div className="md:col-span-3">
-        <label className="block text-sm font-medium text-slate-700 mb-1">Deskripsi</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 min-h-[100px]"
-          placeholder="Jelaskan detail diskusi yang ingin dibuka..."
+          size="md"
+          placeholder="Pilih topik"
+          options={topics.map((t) => ({ value: t, label: t }))}
         />
       </div>
       <div className="md:col-span-3">
-        <button
+        <TextArea
+          label="Deskripsi"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Jelaskan detail diskusi yang ingin dibuka..."
+          rows={4}
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-3">
+        <Button
           type="submit"
+          intent="primary"
+          variant="solid"
+          size="md"
+          loading={submitting}
+          loadingText="Memproses..."
           disabled={disabled}
-          className="inline-flex items-center rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
         >
-          {submitting ? "Memproses..." : "Mulai Diskusi"}
-        </button>
+          {submitLabel}
+        </Button>
       </div>
     </form>
   );
@@ -349,6 +402,8 @@ function ILCArticleCreateForm({ submitting, topics, onSubmit }: SubFormProps & {
   const [topic, setTopic] = useState("");
 
   const disabled = submitting || title.trim().length < 3;
+  const submitLabel = submitting ? "Memproses..." : "Submit Artikel";
+
   return (
     <form
       onSubmit={(e) => {
@@ -356,47 +411,50 @@ function ILCArticleCreateForm({ submitting, topics, onSubmit }: SubFormProps & {
         onSubmit({ title, content, topic });
       }}
       className="grid gap-4 md:grid-cols-3"
+      aria-label="Form submit artikel komunitas"
     >
       <div className="md:col-span-2">
-        <label className="block text-sm font-medium text-slate-700 mb-1">Judul Artikel</label>
-        <input
-          type="text"
+        <Input
+          label="Judul Artikel"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
           placeholder="Masukkan judul artikel penelitian..."
+          required
+          size="md"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">Topik Hukum</label>
-        <select
+        <Select
+          label="Topik Hukum"
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
-          className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        >
-          <option value="">Pilih topik</option>
-          {topics.map((t) => (
-            <option key={t} value={t}>{t}</option>
-          ))}
-        </select>
-      </div>
-      <div className="md:col-span-3">
-        <label className="block text-sm font-medium text-slate-700 mb-1">Konten Artikel</label>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="w-full rounded-xl border border-slate-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 min-h-[200px]"
-          placeholder="Tulis konten artikel Anda..."
+          size="md"
+          placeholder="Pilih topik"
+          options={topics.map((t) => ({ value: t, label: t }))}
         />
       </div>
       <div className="md:col-span-3">
-        <button
+        <TextArea
+          label="Konten Artikel"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="Tulis konten artikel Anda..."
+          rows={8}
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-3">
+        <Button
           type="submit"
+          intent="primary"
+          variant="solid"
+          size="md"
+          loading={submitting}
+          loadingText="Memproses..."
           disabled={disabled}
-          className="inline-flex items-center rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
         >
-          {submitting ? "Memproses..." : "Submit Artikel"}
-        </button>
+          {submitLabel}
+        </Button>
       </div>
     </form>
   );

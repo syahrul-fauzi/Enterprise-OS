@@ -113,12 +113,12 @@ async function runLifecycleSvcE2E(
 }
 
 test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO MOCKS)", () => {
-  test("DISCOVER: list Cybersecurity providers yang verified tersedia di repository", () => {
-    const all = ServiceProviderRepositoryInMemory.list();
-    const cyber = all.filter((p) => p.category === "Cybersecurity");
+  test("DISCOVER: list Cybersecurity providers yang verified tersedia di repository", async () => {
+    const all = await ServiceProviderRepositoryInMemory.list();
+    const cyber = all.filter((p: any) => p?.category === "Cybersecurity");
     assert.ok(all.length >= 4, `total providers cukup, got ${all.length}`);
     assert.ok(cyber.length >= 1, `harus ada minimal 1 Cybersecurity provider, got ${cyber.length}`);
-    const verifiedCyber = cyber.filter((p) => p.verified === true);
+    const verifiedCyber = cyber.filter((p: any) => p?.verified === true);
     assert.ok(verifiedCyber.length >= 1, "minimal 1 provider Cybersecurity ter-verified");
   });
 
@@ -146,7 +146,8 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
   });
 
   test("acceptServiceRequest menghasilkan transisi draft→accepted + providerId terasosiasi persisten", async () => {
-    const provider = ServiceProviderRepositoryInMemory.listByCategory("IT Support")[0];
+    const providers = await ServiceProviderRepositoryInMemory.listByCategory("IT Support");
+    const provider = providers[0];
     assert.ok(provider !== undefined, "provider IT Support tersedia");
     const title = "Outsourcing Managed IT Support 12 Bulan untuk Kantor Cabang";
     const ledger = await runLifecycleSvcE2E(
@@ -212,6 +213,7 @@ test.describe("SREQ-001 · Services.ID Lifecycle E2E (capabilityRegistry · NO M
     const expectedKeys = ["createServiceRequest", "acceptServiceRequest", "markServiceDelivered"];
     for (let i = 0; i < ledger.records.length; i += 1) {
       const r = ledger.records[i];
+      if (!r) continue;
       assert.equal(r.ok, true, `record ${i} ok:true`);
       assert.ok(r.commandKey.includes(expectedKeys[i]), `record ${i} commandKey mengandung ${expectedKeys[i]}`);
       assert.ok(r.invokedAt.length >= 16, `record ${i} invokedAt terformat panjang cukup`);

@@ -27,7 +27,7 @@ export const createWorkspaceCommand: CreateWorkspaceCommand = {
   name: "identity.createWorkspace",
   version: "2.0.0", // Postgres-backed persistence
 
-  async execute(input) {
+  async execute(input: CreateWorkspaceInput) {
     const entity: WorkspaceAggregate = {
       id: newWorkspaceId(),
       tenantId: input.tenantId,

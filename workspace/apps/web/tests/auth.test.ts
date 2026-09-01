@@ -25,7 +25,7 @@ function jsonRequest<T = unknown>(url: string, body: T, cookie?: string): Reques
 function extractSessionFromSetCookie(setCookie: string | null): { actorId: string; tenantId: string; workspaceId: string } | null {
   if (!setCookie) return null;
   const match = setCookie.match(/eos-workspace-session=([^;]+)/);
-  if (!match) return null;
+  if (!match || !match[1]) return null;
   try {
     const decoded = Buffer.from(match[1], "base64url").toString("utf8");
     return JSON.parse(decoded);
@@ -65,7 +65,7 @@ test("AUTH signup creates user + tenant + workspace + membership (4 entities)", 
   assert.equal(sc!.tenantId, body.tenantId, "cookie tenantId matches new tenant");
   assert.equal(sc!.workspaceId, body.workspaceId, "cookie workspaceId matches new workspace");
 
-  const saved = UserRepositoryInMemory.byEmail("new-user-signup@eos.dev");
+  const saved = await UserRepositoryInMemory.byEmail("new-user-signup@eos.dev");
   assert.notEqual(saved, undefined);
   assert.equal(saved!.displayName, "New Signup User");
   assert.notEqual(saved!.passwordHash, "password123", "plaintext password NEVER stored");
@@ -271,8 +271,8 @@ test("AUTH password verify: same password different signup → different hashes 
   assert.equal(u2.status, 201);
   const b1 = await u1.json();
   const b2 = await u2.json();
-  const record1 = UserRepositoryInMemory.byEmail(b1.email)!;
-  const record2 = UserRepositoryInMemory.byEmail(b2.email)!;
+  const record1 = (await UserRepositoryInMemory.byEmail(b1.email))!;
+  const record2 = (await UserRepositoryInMemory.byEmail(b2.email))!;
   assert.notEqual(record1.passwordHash, record2.passwordHash, "two users same password MUST have different hashes due to random salt");
 });
 
@@ -432,5 +432,5 @@ function decodeWorkspaceSessionSafe(raw: string | undefined): ReturnType<typeof 
 function extractCookieValue(setCookie: string | null, name: string): string | null {
   if (!setCookie) return null;
   const match = setCookie.match(new RegExp(`${name}=([^;]+)`));
-  return match ? match[1] : null;
+  return match ? match[1] || null : null;
 }

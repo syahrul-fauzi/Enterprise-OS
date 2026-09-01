@@ -1,0 +1,11 @@
+{
+  "id": "req-6-001",
+  "requirementId": "req-cap-payment-setup-001",
+  "workId": "work-batik-jaya-launch-001",
+  "capabilityId": "cap-payment-setup",
+  "quantity": 1,
+  "minimumTrust": "trusted",
+  "authority": "execute",
+  "resolved": true,
+  "createdAt": "2026-08-31T03:58:26.686Z"
+}

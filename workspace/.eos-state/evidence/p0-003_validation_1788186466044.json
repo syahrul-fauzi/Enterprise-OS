@@ -1,0 +1,47 @@
+{
+  "work_id": "W1-P0-003",
+  "started_at": "2026-08-31T14:27:45.956Z",
+  "gates": {
+    "assign_provider_persisted": {
+      "passed": true,
+      "evidence": "providerId changed from null → provider-lawyer-001"
+    },
+    "refresh_preserves_provider": {
+      "passed": true,
+      "evidence": "After repository re-read (simulated browser refresh), provider remains: provider-lawyer-001"
+    },
+    "evidence_appended": {
+      "passed": true,
+      "evidence": "Evidence added successfully, total evidence count: 1"
+    },
+    "refresh_preserves_evidence": {
+      "passed": true,
+      "evidence": "Evidence survives refresh, no duplicates: 1 items"
+    },
+    "status_changed": {
+      "passed": true,
+      "evidence": "Status transitioned: draft → closed"
+    },
+    "transition_recorded": {
+      "passed": true,
+      "evidence": "Transition timestamp updated: Mon Aug 31 2026 14:27:45 GMT+0000 (Coordinated Universal Time) → Mon Aug 31 2026 14:27:46 GMT+0000 (Coordinated Universal Time)"
+    },
+    "refresh_preserves_status": {
+      "passed": true,
+      "evidence": "Completed status survives refresh: closed"
+    },
+    "reentry_preserves_all": {
+      "passed": true,
+      "evidence": "Hard re-entry retains all state: provider=provider-lawyer-001, evidence=2, status=closed"
+    },
+    "second_actor_sees_reality": {
+      "passed": true,
+      "evidence": "Actor B observes identical reality: workId=case-sh94k2, provider=provider-lawyer-001, evidence=2, status=closed"
+    }
+  },
+  "all_passed": true,
+  "persistence_level": "LEVEL B",
+  "total_passed": 9,
+  "total_failed": 0,
+  "completed_at": "2026-08-31T14:27:46.044Z"
+}

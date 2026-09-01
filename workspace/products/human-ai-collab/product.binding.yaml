@@ -1,0 +1,16 @@
+version: "1.0"
+status: ACTIVE
+product:
+  id: human-ai-collab
+  display_name: Human+AI Work Organization
+experience:
+  surface: web
+  route: /requirements
+capabilities:
+  - requirement-management
+  - workflow-engine
+  - governance-evidence
+  - work-core
+  - atomic-composition
+  - ai-agent-execution
+claim_boundary: Product-ACTIVE binding for the Human+AI Work Organization identity onto the canonical apps/web professional experience surface. Domain aggregates (Work, Composition, WorkBinding) are connected to the product reality surface, enabling universal Human+AI+External collaboration.

@@ -1,0 +1,17 @@
+{
+  "compositionId": "composition-work-client-x-website-2026-001-1787970588972",
+  "workId": "work-client-x-website-2026-001",
+  "teamId": "team-work-client-x-website-2026-001-1787970588972",
+  "requirementIds": [
+    "req-fe-website-clientx",
+    "req-be-website-clientx",
+    "req-design-website-clientx",
+    "req-qa-website-clientx"
+  ],
+  "assignmentIds": [
+    "wb-work-client-x-website-2026-001-0-1787970588972",
+    "wb-work-client-x-website-2026-001-1-1787970588972"
+  ],
+  "persistedAt": "2026-08-29T02:29:48.979Z",
+  "version": "1.0.0"
+}

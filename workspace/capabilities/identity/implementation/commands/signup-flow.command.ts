@@ -63,7 +63,7 @@ export const signupFlowCommand: SignupFlowCommand = {
   name: "identity.signupFlow",
   version: "1.0.0",
 
-  async execute(input) {
+  async execute(input: z.infer<typeof SignupFlowInputSchema>) {
     await initIdentitySchema();
     const parsed = SignupFlowInputSchema.parse(input);
     const { email, password, displayName, productId } = parsed;

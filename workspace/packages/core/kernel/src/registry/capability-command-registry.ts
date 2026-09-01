@@ -3,7 +3,7 @@ import type { CapabilityCommand } from "../types.js";
 import { randomUUID } from "crypto";
 // PR-001: Import reliability utilities from core-runtime (ARCH-04 compliant - kernel uses core-runtime exports)
 // Use workspace package import to align with package.json dependencies and tsconfig project references
-import { calculateExponentialBackoff, shouldOpenCircuitBreaker, shouldResetCircuitBreaker, executionContext } from "@repo/core-runtime";
+import { calculateExponentialBackoff, shouldOpenCircuitBreaker, shouldResetCircuitBreaker, executionContext } from "../../../runtime/dist/src/index.js";
 // Define RetryConfig type locally since it's not exported from ../types
 export interface RetryConfig {
   readonly max_attempts: number;

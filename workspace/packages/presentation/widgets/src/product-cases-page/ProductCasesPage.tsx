@@ -11,13 +11,16 @@ export interface ProductCasesPageProps {
   readonly productId: string;
   readonly binding: ProductPreviewBinding;
   readonly caseId?: string | string[];
+  readonly session?: unknown;
+  readonly isNewCase?: boolean;
 }
 
 type CasePriority = "low" | "medium" | "high" | "critical";
 
-export function ProductCasesPage({ productId, binding, caseId }: ProductCasesPageProps) {
+export function ProductCasesPage({ productId, binding, caseId, session: serverSession, isNewCase }: ProductCasesPageProps) {
   void caseId;
   void productId;
+  void serverSession;
   const { session, authenticated, cachedSession } = useWorkspaceSession();
   const { t } = useLocale();
   const currentSession = session ?? cachedSession;
@@ -54,8 +57,10 @@ export function ProductCasesPage({ productId, binding, caseId }: ProductCasesPag
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
-    // Auto-open create case form for new=true OR ILC PT Regular Concierge source
-    if (searchParams.get("new") === "case" || searchParams.get("source") === "ilc") {
+    // Auto-open create case form if:
+    // 1. URL has new=true OR source=ilc, OR
+    // 2. Component is explicitly rendered as isNewCase (direct from /cases/new route)
+    if (isNewCase || searchParams.get("new") === "case" || searchParams.get("source") === "ilc") {
       setShowCreate(true);
       // Auto-populate PT Regular Concierge case title if service parameter is present
       if (searchParams.get("service") === "pt-regular-concierge") {
@@ -65,7 +70,7 @@ export function ProductCasesPage({ productId, binding, caseId }: ProductCasesPag
         setIsPTEstablishment(true);
       }
     }
-  }, []);
+  }, [isNewCase]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -168,7 +173,16 @@ export function ProductCasesPage({ productId, binding, caseId }: ProductCasesPag
             </div>
           </section>
 
-          {showCreate && (
+          {!isAuthenticated ? (
+            <div className="rounded-3xl border border-slate-200 bg-white p-12 shadow-sm text-center">
+              <div className="text-6xl mb-4">🔒</div>
+              <h3 className="text-xl font-bold text-text-primary mb-2">Anda belum masuk</h3>
+              <p className="text-text-secondary max-w-md mx-auto mb-6">Silakan masuk terlebih dahulu untuk membuat kasus baru.</p>
+              <a href="/enter" className="px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition inline-block">
+                Masuk ke Workspace
+              </a>
+            </div>
+          ) : showCreate ? (
             <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
               <div className="flex items-center justify-between mb-5">
                 <div>
@@ -375,10 +389,31 @@ export function ProductCasesPage({ productId, binding, caseId }: ProductCasesPag
                   disabled={submitting}
                   className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-60"
                 >
-                  {submitting ? t("common.loading") : t("common.create")}
+                  {submitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
+                      {t("common.loading")}
+                    </>
+                  ) : t("common.create")}
                 </button>
               </form>
             </section>
+          ) : (
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900">Lihat daftar kasus Anda</h3>
+                  <p className="text-slate-600">Semua pekerjaan hukum Anda dalam satu tempat.</p>
+                </div>
+                <button
+                  onClick={() => setShowCreate(true)}
+                  className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
+                >
+                  <span aria-hidden>＋</span>
+                  Buat Kasus Baru
+                </button>
+              </div>
+            </div>
           )}
 
           <CaseWorkspace />

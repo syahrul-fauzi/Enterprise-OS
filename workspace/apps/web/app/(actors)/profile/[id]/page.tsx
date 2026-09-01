@@ -1,7 +1,13 @@
 "use server";
 
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { ProfilePage } from '@repo/presentation-widgets';
 import { readProductBinding } from '@repo/presentation-experience/product-binding.js';
+import {
+  WORKSPACE_SESSION_COOKIE,
+  decodeWorkspaceSession,
+} from "@repo/core-kernel";
 
 // Define proper Next.js page props - PURE ADAPTER ONLY
 interface ProfilePageProps {
@@ -11,12 +17,38 @@ interface ProfilePageProps {
   }>;
 }
 
+// Server-side session resolution - follows golden spine MyReality pattern
+async function resolveSessionOrEnter() {
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);
+  if (!sessionCookie?.value) {
+    redirect("/");
+  }
+
+  let session;
+  try {
+    session = decodeWorkspaceSession(sessionCookie.value);
+  } catch {
+    cookieStore.delete(WORKSPACE_SESSION_COOKIE);
+    redirect("/");
+  }
+
+  if (!session) {
+    cookieStore.delete(WORKSPACE_SESSION_COOKIE);
+    redirect("/");
+  }
+  return session;
+}
+
 // apps/web ONLY handles Next.js route params - NO presentation ownership
 // All business logic, data fetching, and UI composition in canonical widget
+// Boundary compliance: Session resolved server-side, no client-side auth logic
 export default async function ProfileRoute({ params, searchParams }: ProfilePageProps) {
+  // Resolve session FIRST - canonical pattern from golden spine
+  const session = await resolveSessionOrEnter();
   const { id: profileId } = await params;
   const sp = await searchParams;
   const productId = sp?.productId || 'academic';
   const binding = readProductBinding(productId);
-  return <ProfilePage profileId={profileId} productId={productId} binding={binding} />;
+  return <ProfilePage session={session} profileId={profileId} productId={productId} binding={binding} />;
 }

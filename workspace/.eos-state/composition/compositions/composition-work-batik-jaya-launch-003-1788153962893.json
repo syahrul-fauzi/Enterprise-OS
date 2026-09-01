@@ -1,0 +1,19 @@
+{
+  "compositionId": "composition-work-batik-jaya-launch-003-1788153962893",
+  "workId": "work-batik-jaya-launch-003",
+  "teamId": "team-work-batik-jaya-launch-003-1788153962893",
+  "requirementIds": [
+    "req-ui-ux-design-001",
+    "req-frontend-dev-001",
+    "req-cloud-services-001",
+    "req-qa-001"
+  ],
+  "assignmentIds": [
+    "wb-work-batik-jaya-launch-003-req-ui-ux-design-001-0-1788153962893",
+    "wb-work-batik-jaya-launch-003-req-frontend-dev-001-0-1788153962893",
+    "wb-work-batik-jaya-launch-003-req-cloud-services-001-0-1788153962893",
+    "wb-work-batik-jaya-launch-003-req-qa-001-0-1788153962893"
+  ],
+  "persistedAt": "2026-08-31T05:26:02.903Z",
+  "version": "1.0.0"
+}

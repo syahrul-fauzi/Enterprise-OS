@@ -48,7 +48,10 @@ async function runW1Chain() {
       id: D1,
       reviewer: "Senior Partner",
       approval: true,
-      comments: "Approved with minor edits"
+      comments: "Approved with minor edits",
+      tenantId: "test-tenant",
+      workspaceId: "test-workspace",
+      actorId: "test-user"
     });
   });
   const R1 = reviewResult.id;
@@ -59,7 +62,10 @@ async function runW1Chain() {
   const signResult = executionContext.run(w1Context, () => {
     return documentService.signDocument({
       id: R1,
-      signer: "Managing Partner"
+      signer: "Managing Partner",
+      tenantId: "test-tenant",
+      workspaceId: "test-workspace",
+      actorId: "test-user"
     });
   });
   const S1 = signResult.id;

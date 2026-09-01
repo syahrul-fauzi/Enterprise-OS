@@ -29,7 +29,7 @@ export const logoutUserCommand: LogoutUserCommand = {
   name: "identity.logoutUser",
   version: "2.0.0",
 
-  async execute(input) {
+  async execute(input: LogoutInput) {
     if (!input.sessionId) {
       return { ok: true as const };
     }

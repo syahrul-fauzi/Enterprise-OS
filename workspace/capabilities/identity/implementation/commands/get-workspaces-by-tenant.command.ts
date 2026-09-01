@@ -62,7 +62,7 @@ export const getWorkspacesByTenantCommand: GetWorkspacesByTenantCommand = {
   kind: "command",
   name: "identity.getWorkspacesByTenant",
   version: "1.0.0",
-  async execute(input) {
+  async execute(input: GetWorkspacesByTenantInput) {
     const parsed = GetWorkspacesByTenantInputSchema.parse(input);
     
     // 1. Validate session exists and is active (enforce authentication)

@@ -27,7 +27,7 @@ export const createUserCommand: RegisterUserCommand = {
   name: "identity.registerUser",
   version: "1.0.0",
 
-  async execute(input) {
+  async execute(input: RegisterUserInput) {
     const trimmedEmail = input.email.trim().toLowerCase();
     const existingUser = await UserRepositoryPostgres.byEmail(trimmedEmail);
     if (existingUser !== undefined) {

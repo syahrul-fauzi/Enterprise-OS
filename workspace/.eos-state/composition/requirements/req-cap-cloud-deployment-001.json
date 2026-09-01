@@ -1,0 +1,11 @@
+{
+  "id": "req-5-001",
+  "requirementId": "req-cap-cloud-deployment-001",
+  "workId": "work-batik-jaya-launch-001",
+  "capabilityId": "cap-cloud-deployment",
+  "quantity": 1,
+  "minimumTrust": "trusted",
+  "authority": "execute",
+  "resolved": true,
+  "createdAt": "2026-08-31T03:58:26.686Z"
+}

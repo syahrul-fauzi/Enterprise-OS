@@ -3,13 +3,11 @@
   "compilerOptions": {
     "outDir": "dist",
     "strictNullChecks": false,
-    "declaration": true,
-    "composite": true,
-    "noEmitOnError": true,
-    "emitDeclarationOnly": true,
-    "module": "preserve",
-    "moduleResolution": "bundler",
-    "skipLibCheck": true
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "skipLibCheck": true,
+    "rootDir": "src",
+    "composite": true
   },
   "include": ["src/**/*"],
   "exclude": ["dist", "build", "node_modules"]

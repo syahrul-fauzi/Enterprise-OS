@@ -1,0 +1,11 @@
+{
+  "id": "req-0-001",
+  "requirementId": "req-cap-business-strategy-001",
+  "workId": "work-batik-jaya-launch-001",
+  "capabilityId": "cap-business-strategy",
+  "quantity": 1,
+  "minimumTrust": "trusted",
+  "authority": "execute",
+  "resolved": true,
+  "createdAt": "2026-08-31T03:58:26.686Z"
+}

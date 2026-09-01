@@ -1,73 +1,43 @@
-"use client";
-import { useState } from 'react';
-import { useRouter } from "next/navigation";
-import { IntentNeedInput } from "@repo/presentation-features";
-import type { IntentSource, IntentContext } from "@repo/presentation-features";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import {
+  WORKSPACE_SESSION_COOKIE,
+  decodeWorkspaceSession,
+} from "@repo/core-kernel";
+import { IntentExperience } from "@repo/presentation-experience";
 
-export default function NewIntentPage() {
-  const router = useRouter();
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+/**
+ * R9 — Thin Page Adapter for /intent/new route.
+ *
+ * BOUNDARY COMPLIANCE:
+ * - Page = ROUTE ADAPTER only
+ * - No JSX composition beyond passing model to experience
+ * - No business logic / API construction / data transformation
+ *
+ * Full flow:
+ *   Route handler → session check → runtime aggregation → buildIntentModel() →
+ *   IntentExperience (presentation composition)
+ */
+export default async function NewIntentPage() {
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);
 
-  // Handler ketika intent berhasil di-capture oleh IntentNeedInput
-  const handleIntentCaptured = async (expression: string, source: IntentSource, context?: IntentContext) => {
-    setIsProcessing(true);
-    console.log("[INTENT] 📥 Intent captured:", expression, source, context);
-    
-    try {
-      const resolvedIntent = {
-        id: crypto.randomUUID(),
-        expression,
-        source,
-        context,
-        resolution: {
-          objective: "Establish a PT for my new business.",
-          context: "Legal / Company Formation",
-          expectedOutcome: "PT successfully established with complete legal documentation",
-          workType: "Legal Case",
-          confidence: 0.95
-        },
-        status: "draft",
-        createdAt: new Date().toISOString()
-      };
-      
-      // Simpan intent ke database via API - matches canonical /api/intent/* route structure
-      const response = await fetch('/api/intent/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(resolvedIntent),
-      });
+  if (!sessionCookie?.value) {
+    redirect("/");
+  }
 
-      if (!response.ok) {
-        throw new Error('Failed to save intent to server');
-      }
+  let session;
+  try {
+    session = decodeWorkspaceSession(sessionCookie.value);
+  } catch {
+    cookieStore.delete(WORKSPACE_SESSION_COOKIE);
+    redirect("/");
+  }
 
-      const result = await response.json();
-      console.log("[INTENT] 💾 Intent disimpan ke database:", result.intentId);
-      
-      router.push(`/intent/${result.intentId}`);
-    } catch (error) {
-      console.error("[INTENT] ❌ Gagal menyimpan intent:", error);
-      setIsProcessing(false);
-    }
-  };
+  if (!session) {
+    cookieStore.delete(WORKSPACE_SESSION_COOKIE);
+    redirect("/");
+  }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <header className="mb-12 text-center">
-          <h1 className="text-3xl font-bold text-slate-900 mb-3">Apa yang ingin Anda capai?</h1>
-          <p className="text-slate-600">Jelaskan kebutuhan Anda, EOS akan membantu membentuk Work yang tepat.</p>
-        </header>
-        
-        <main>
-          <IntentNeedInput
-            onIntentCaptured={handleIntentCaptured}
-            disabled={isProcessing}
-          />
-        </main>
-      </div>
-    </div>
-  );
+  return <IntentExperience />;
 }

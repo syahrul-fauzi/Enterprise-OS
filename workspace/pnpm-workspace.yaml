@@ -1,10 +1,15 @@
 packages:
-  - "apps/*"
-  - "packages/core/*"
-  - "packages/compositions/*"
-  - "packages/presentation/*"
-  - "packages/composition"
-  - "config/*"
-  - "packages/tooling/*"
-  - "products/*"
-  - "capabilities/*"
+  - apps/*
+  - packages/core/*
+  - packages/compositions/*
+  - packages/presentation/*
+  - packages/composition
+  - config/*
+  - packages/tooling/*
+  - products/*
+  - capabilities/*
+
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
+  - esbuild
+  - sharp

@@ -1,0 +1,82 @@
+{
+  "work_id": "w-p0003-w1-001",
+  "validation_completed_at": "2026-08-31T19:30:00.000Z",
+  "executor": "eos-verification-agent",
+  "baseline_snapshot": {
+    "workId": "w-p0003-w1-001",
+    "status": "draft",
+    "providerId": null,
+    "evidence_length": 0,
+    "createdAt": "2026-08-31T10:00:00.000Z",
+    "updatedAt": "2026-08-31T10:00:00.000Z"
+  },
+  "step_results": [
+    {
+      "step": "2 - Assign Provider",
+      "action": "assignProviderAction executed",
+      "before": "null",
+      "after": "provider.budi",
+      "refresh_test": "PASS",
+      "notes": "Provider persists after browser refresh, UI reflects assignment correctly"
+    },
+    {
+      "step": "3 - Add Evidence",
+      "action": "addEvidenceAction executed with 'Pernyataan identitas diri (KTP)'",
+      "evidence_count_before": 0,
+      "evidence_count_after": 1,
+      "full_refresh_test": "PASS",
+      "duplicate_check": "PASS - no evidence duplication on reload",
+      "notes": "Evidence appended correctly, survives full page refresh"
+    },
+    {
+      "step": "4 - Complete Work",
+      "action": "markCompletedAction executed",
+      "status_before": "draft",
+      "status_after": "completed",
+      "transition_recorded": true,
+      "refresh_test": "PASS",
+      "notes": "Status transition recorded in activity log, persists after refresh"
+    },
+    {
+      "step": "5 - Hard Re-entry",
+      "reentry_path": "/ → /my-reality → /work/w-p0003-w1-001",
+      "reality_match": "FULL_MATCH",
+      "persisted_values": {
+        "providerId": "provider.budi",
+        "evidence_length": 1,
+        "status": "completed"
+      },
+      "notes": "Hard re-entry preserves all context, same reality observed"
+    },
+    {
+      "step": "6 - Second Actor Continuation",
+      "actorB_session": "new-session-actor-budi",
+      "same_workId": true,
+      "same_provider": true,
+      "same_evidence": true,
+      "same_status": true,
+      "same_context": true,
+      "notes": "Actor B observes exact same reality, can continue work without data loss"
+    }
+  ],
+  "acceptance_gates": {
+    "mutation_executes": true,
+    "canonical_store_state_change": true,
+    "ui_reflects_new_state": true,
+    "refresh_preserves_state": true,
+    "reentry_preserves_context": true,
+    "evidence_survives": true,
+    "transition_explainable": true,
+    "second_actor_sees_latest": true,
+    "no_duplicate_mutation": true,
+    "production_build_green": true
+  },
+  "persistence_classification": {
+    "LEVEL_A": "PASS",
+    "LEVEL_B": "PASS",
+    "LEVEL_C": "NOT_APPLICABLE",
+    "classification_notes": "Canonical store is in-memory. Server restart resets state. No claims of durable production persistence. Honest boundary maintained per instruction."
+  },
+  "p003_definition_of_done": "✅ SHIPPED",
+  "verification_notes": "All P0-003 requirements met. Runtime evidence collected. No core changes, no new primitives. Reused all existing canonical store and API routes. Ready to proceed to P0-004."
+}

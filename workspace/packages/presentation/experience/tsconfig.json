@@ -1,49 +1,69 @@
 {
-  "extends": "../../../config/typescript/base.json",
+  "extends": "../../../config/typescript/react-library.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "baseUrl": ".",
+    "outDir": "dist",
+    "rootDir": "src",
+    "strictNullChecks": false,
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "noEmitOnError": true,
     "composite": true,
     "incremental": true,
-    "jsx": "react-jsx",
-    "module": "preserve",
-    "moduleResolution": "bundler",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "skipLibCheck": true,
     "paths": {
       "@repo/presentation-config": [
         "../config/dist"
       ],
+      "@repo/presentation-config/*": [
+        "../config/dist/*"
+      ],
       "@repo/presentation-entities": [
-        "../entities/dist/src"
+        "../entities/dist"
+      ],
+      "@repo/presentation-entities/*": [
+        "../entities/dist/*"
       ],
       "@repo/presentation-pages": [
-        "../pages/dist/src"
+        "../pages/dist"
+      ],
+      "@repo/presentation-pages/*": [
+        "../pages/dist/*"
+      ],
+      "@repo/presentation-features": [
+        "../features/dist"
+      ],
+      "@repo/presentation-features/*": [
+        "../features/dist/*"
+      ],
+      "@repo/presentation-ui-system": [
+        "../ui-system/dist"
+      ],
+      "@repo/presentation-ui-system/*": [
+        "../ui-system/dist/*"
+      ],
+      "@repo/presentation-widgets": [
+        "../widgets/dist"
+      ],
+      "@repo/presentation-widgets/*": [
+        "../widgets/dist/*"
+      ],
+      "@repo/core-kernel": ["../../core/kernel/dist"],
+      "@repo/core-kernel/*": ["../../core/kernel/dist/*"],
+      "@repo/presentation-hooks": [
+        "../hooks/dist"
+      ],
+      "@repo/presentation-hooks/*": [
+        "../hooks/dist/*"
       ],
       "@products/*": [
-        "../../../products/*"
+        "../../../products/*/dist"
       ]
     }
   },
   "include": [
     "src/**/*"
   ],
-  "references": [
-    {
-      "path": "../config"
-    },
-    {
-      "path": "../entities"
-    },
-    {
-      "path": "../pages"
-    },
-    {
-      "path": "../../../products/academic"
-    },
-    {
-      "path": "../../../products/lawyershub"
-    },
-    {
-      "path": "../../../products/services-id"
-    }
-  ]
+  "exclude": ["dist", "build", "node_modules", "../../../products/**/*"]
 }

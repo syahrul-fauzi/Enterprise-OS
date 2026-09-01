@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import type { IntentContract } from "@repo/presentation-features";
+import type { IntentContract, IntentContext, IntentResolution } from "@repo/presentation-features";
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
@@ -12,6 +12,99 @@ import {
   initIdentitySchema,
 } from "../../../../../../capabilities/identity/implementation/repositories/index";
 import { IntentId, type IntentCategory } from "../../../../../../capabilities/identity/implementation/contracts/index";
+
+// R4 Universal Entry - Semantic Intent Resolver untuk multiple domain (SERVER-SIDE only)
+function resolveSemanticIntent(expression: string): { 
+  resolution: IntentResolution; 
+  context: IntentContext;
+  domainType: string;
+} {
+  const lowerExpression = expression.toLowerCase();
+  
+  // Legal domain patterns
+  if (lowerExpression.includes("mendirikan pt") || lowerExpression.includes("mendirikan perusahaan") || 
+      lowerExpression.includes("legal") || lowerExpression.includes("hukum") || 
+      lowerExpression.includes("kasus") || lowerExpression.includes("kontrak")) {
+    return {
+      resolution: {
+        objective: "Mendirikan PT untuk bisnis baru",
+        context: "Legal / Company Formation",
+        expectedOutcome: "PT berhasil didirikan dengan dokumen legal lengkap",
+        workType: "legal-case",
+        confidence: 0.95
+      },
+      context: { domain: "legal", locale: "id-ID" },
+      domainType: "legal-case"
+    };
+  }
+  
+  // Services domain patterns (Services.ID)
+  if (lowerExpression.includes("jasa") || lowerExpression.includes("servis") || 
+      lowerExpression.includes("perbaikan") || lowerExpression.includes("maintenance") || 
+      lowerExpression.includes("konsultan") || lowerExpression.includes("IT") ||
+      lowerExpression.includes("teknologi")) {
+    return {
+      resolution: {
+        objective: "Meminta layanan jasa profesional",
+        context: "Services / Professional Service Request",
+        expectedOutcome: "Layanan berhasil diadakan dan diselesaikan oleh penyedia jasa",
+        workType: "service-request",
+        confidence: 0.92
+      },
+      context: { domain: "services", locale: "id-ID" },
+      domainType: "service-request"
+    };
+  }
+  
+  // Professional EOS Face: Generic business/growth intent handling (no hardcoded golden proofs)
+  if (lowerExpression.includes("meluncurkan bisnis") || lowerExpression.includes("launch business") || 
+      lowerExpression.includes("bisnis online") || lowerExpression.includes("start bisnis") ||
+      lowerExpression.includes("buka usaha") || lowerExpression.includes("mulai usaha") ||
+      lowerExpression.includes("mengembangkan usaha") || lowerExpression.includes("tambah penjualan")) {
+    return {
+      resolution: {
+        objective: "Mengembangkan usaha saya",
+        context: "Pengembangan Bisnis / Pertumbuhan Usaha",
+        expectedOutcome: "Usaha dapat berkembang dengan bantuan penyedia layanan yang sesuai",
+        workType: "business-growth",
+        confidence: 0.95
+      },
+      context: { domain: "business", locale: "id-ID" },
+      domainType: "business-growth"
+    };
+  }
+  
+  // Academic domain patterns (ILC)
+  if (lowerExpression.includes("akademik") || lowerExpression.includes("kuliah") || 
+      lowerExpression.includes("penelitian") || lowerExpression.includes("riset") || 
+      lowerExpression.includes("skripsi") || lowerExpression.includes("tesis") ||
+      lowerExpression.includes("studi")) {
+    return {
+      resolution: {
+        objective: "Melakukan penelitian akademik",
+        context: "Academic / Research and Study",
+        expectedOutcome: "Penelitian selesai dengan hasil yang dapat dipublikasikan",
+        workType: "academic-research",
+        confidence: 0.90
+      },
+      context: { domain: "academic", locale: "id-ID" },
+      domainType: "consultation"
+    };
+  }
+  
+  // Default fallback - generic work
+  return {
+    resolution: {
+      objective: "Menjalankan pekerjaan umum",
+      context: "General / Generic Work",
+      expectedOutcome: "Pekerjaan berhasil diselesaikan",
+      workType: "generic",
+      confidence: 0.7
+    },
+    context: { domain: "generic", locale: "id-ID" },
+    domainType: "generic"
+  };
+}
 
 const GLOBAL_INTENT_STORE_KEY = Symbol.for('eos.face.intent.store.v1');
 function getGlobalIntentStore(): Map<string, IntentContract> {
@@ -25,14 +118,30 @@ const intentStore = getGlobalIntentStore();
 
 export async function POST(request: Request) {
   try {
-    const intent: IntentContract = await request.json();
+    const rawIntent = await request.json();
     
-    if (!intent.id || !intent.expression || !intent.resolution) {
+    // Client only sends raw expression and source - server handles ALL semantic interpretation
+    if (!rawIntent.expression || !rawIntent.source) {
       return NextResponse.json(
-        { error: "Invalid IntentContract: missing required fields" },
+        { error: "Invalid raw intent: missing required fields (expression, source)" },
         { status: 400 }
       );
     }
+
+    // SERVER-SIDE ONLY: Resolve semantic intent - preserves Presentation Composition Invariant
+    const { resolution, context, domainType } = resolveSemanticIntent(rawIntent.expression);
+    console.log("[API/INTENT/CREATE] 🔍 Semantically resolved on server:", domainType, resolution.context);
+    
+    // Create canonical IntentContract with server-resolved semantics
+    const intent: IntentContract = {
+      id: crypto.randomUUID(),
+      expression: rawIntent.expression,
+      source: rawIntent.source,
+      context,
+      resolution,
+      status: "draft",
+      createdAt: new Date().toISOString()
+    };
 
     const cookieStore = await cookies();
     let sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);

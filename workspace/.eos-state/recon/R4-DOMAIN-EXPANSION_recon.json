@@ -1,0 +1,83 @@
+{
+  "work_id": "R4-DOMAIN-EXPANSION-001",
+  "recon_completed_at": "2026-08-28T18:30:00.000Z",
+  "locked_boundaries_verified": {
+    "canonical_work_primitive_intact": true,
+    "intent_contract_preserved": true,
+    "work_reality_url_stays": true,
+    "module_resolution_bundler_maintained": true
+  },
+  "existing_capabilities_found": [
+    {
+      "name": "core work-core",
+      "location": "capabilities/work-core",
+    "purpose": "Core Work aggregate with domainType field, createFromWork pattern, domainCapabilityMap that supports multiple specializations",
+    "supports_r4_requirement": "Core work invariance (R4-03)
+    },
+    {
+      "name": "identity/intent system",
+      "location": "capabilities/identity",
+      "purpose": "IntentContract with domain context, semantic resolution fields, persistence layer that already supports multiple domains",
+    "supports_r4_requirement": "Universal entry + Intent resolution (R4-01, R4-02)"
+    },
+    {
+      "name": "legal-case specialization",
+      "location": "capabilities/legal-case",
+      "purpose": "Implements case.createFromWork command that extends core Work, follows specialization pattern",
+    "supports_r4_requirement": "Domain specialization pattern (R4-03)"
+    },
+    {
+      "name": "consultation.tmp specialization",
+      "location": "capabilities/consultation.tmp",
+      "purpose": "Existing consultation work specialization that could be adapted to follow same createFromWork pattern",
+    "supports_r4_requirement": "Domain specialization pattern (R4-03)"
+    },
+    {
+      "name": "presentation intent components",
+      "location": "packages/presentation/features/src/intent",
+      "purpose": "IntentNeedInput, IntentUnderstandingPreview, IntentRefinementPage - all reusable and domain-agnostic",
+    "supports_r4_requirement": "Presentation alignment (R4-04), Canonical Work Reality (R4-05)"
+    },
+    {
+      "name": "work-reality experience",
+      "location": "packages/presentation/entities/src/work-reality",
+      "purpose": "Canonical Work reality surface that supports specialization labels, perspective-aware display, supports all domains",
+    "supports_r4_requirement": "Canonical Work Reality (R4-05), Presentation alignment (R4-04)"
+    }
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "Core Work aggregate (work-core with domainType field",
+      "Intent system (persistence + UI components)",
+      "All presentation layer components (work-reality, intent components)",
+      "createFromWork specialization pattern already implemented for legal-case",
+      "Canonical /work/[id] route structure",
+      "Canonical /api/work/create API that delegates to domain capabilities",
+      "deriveSpecialization() function in work API",
+      "derive-work-state.ts that handles specialization labels"
+    ],
+    "required_new": [
+      "Semantic intent resolver that can resolve multiple domain intents (legal, services, academic) - currently hardcoded to legal in new/page.tsx)",
+      "services-id domain capability implementing createFromWork pattern following legal-case pattern",
+      "academic capability (ILC) domain capability implementing createFromWork pattern",
+      "Extend IntentCategory in identity contracts to support SERVICE_REQUEST, ACADEMIC_RESEARCH beyond just LEGAL_SERVICE",
+      "Update IntentNeedInput to remove hardcoded domain: 'legal' default context",
+      "Add domain-specific work formation pages that collect required domain fields after intent resolution"
+    ],
+    "reuse_percentage": 78.0
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "MINIMAL FIX: Update /app/(eos)/intent/new/page.tsx to implement semantic resolver that maps user input to correct domain/workType",
+    "REUSE: Follow legal-case createFromWork pattern for services and academic domains - no new core primitives needed",
+    "REUSE: Keep all existing UI components (IntentUnderstandingPreview, WorkRealityPanel) - they're already domain-agnostic",
+    "MINIMAL FIX: Extend IntentCategory enum to support additional domains without breaking existing code",
+    "MINIMAL FIX: Remove hardcoded domain: 'legal' in IntentNeedInput and let semantic resolver set domain context",
+    "VERIFY: The domainCapabilityMap in work.commands.ts already has 'service-request' entry, just needs implementation of service-request.createFromWork",
+    "MAINTAIN: All canonical routes (/work/[id], /api/work/create) remain the single source of truth - no new domain-specific routes"
+  ]
+}

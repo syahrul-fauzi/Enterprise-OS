@@ -27,7 +27,7 @@ const sessionRepository = process.env.NODE_ENV === "production" && process.env.D
 console.log("[case.commands.ts] NODE_ENV:", process.env.NODE_ENV, "DATABASE_URL present:", !!process.env.DATABASE_URL);
 const caseRepository = process.env.NODE_ENV === "production" && process.env.DATABASE_URL
   ? CaseRepositoryPostgres
-  : new CaseRepositoryInMemory();
+  : CaseRepositoryInMemory;
 console.log("[case.commands.ts] Using case repository type:", (process.env.NODE_ENV === "production" && process.env.DATABASE_URL) ? "POSTGRES" : "IN-MEMORY");
 
 // Import Intent repository to validate linkedIntentId exists (CONTEXT INTEGRITY guarantee)

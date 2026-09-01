@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { color, spacingPx, designTokens } from "../foundation.js";
+import { color, spacingPx, designTokens } from "../foundation";
 
 export interface GradientProps {
   readonly small?: boolean;

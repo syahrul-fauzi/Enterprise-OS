@@ -22,11 +22,11 @@ export type GetMemberByIdOutput = {
   readonly updatedAt: string;
 } | undefined;
 
-export const getMemberByIdCommand: CapabilityCommand = {
+export const getMemberByIdCommand: CapabilityCommand<GetMemberByIdInput, GetMemberByIdOutput> = {
   kind: "command",
   name: "identity.getMemberById",
   version: "2.0.0", // Postgres-backed persistence
-  async execute(input: unknown) {
+  async execute(input: GetMemberByIdInput) {
     const parsed = GetMemberByIdInputSchema.parse(input);
     const { memberId } = parsed;
 
@@ -46,7 +46,7 @@ export const getMemberByIdCommand: CapabilityCommand = {
       location: "Unknown Location", // FIXME: This information is no longer in UserAggregate
       researchFocus: "Unknown Focus", // FIXME: This information is no longer in UserAggregate
       publicationCount: 0, // FIXME: This information is no longer in UserAggregate
-      researcherCount: undefined, // FIXME: This information is no longer in UserAggregate
+      researcherCount: undefined as number | undefined, // FIXME: This information is no longer in UserAggregate
       createdAt: userCreatedAt.toISOString(),
       updatedAt: userUpdatedAt.toISOString(),
     };

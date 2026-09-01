@@ -1,0 +1,16 @@
+{
+  "id": "binding-req-ui-ux-design-001-0",
+  "bindingId": "wb-work-batik-jaya-launch-003-req-ui-ux-design-001-0-1788154235696",
+  "compositionId": "composition-work-batik-jaya-launch-003-1788154235696",
+  "actorProjectionId": "sp-003",
+  "providerType": "human",
+  "workId": "work-batik-jaya-launch-003",
+  "capabilityReference": "ui-ux-design",
+  "requirementId": "req-ui-ux-design-001",
+  "role": "Team Member",
+  "authority": "execute",
+  "status": "completed",
+  "boundAt": "2026-08-31T05:30:35.696Z",
+  "completedAt": "2026-08-31T05:30:35.712Z",
+  "evidence": "ui-ux-design-delivered-by-CyberGuard-Asia-1788154235709"
+}

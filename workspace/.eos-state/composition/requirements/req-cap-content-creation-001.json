@@ -1,0 +1,11 @@
+{
+  "id": "req-3-001",
+  "requirementId": "req-cap-content-creation-001",
+  "workId": "work-batik-jaya-launch-001",
+  "capabilityId": "cap-content-creation",
+  "quantity": 1,
+  "minimumTrust": "trusted",
+  "authority": "execute",
+  "resolved": true,
+  "createdAt": "2026-08-31T03:58:26.686Z"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "binding-req-ui-ux-design-001-0",
+  "bindingId": "wb-work-batik-jaya-launch-003-req-ui-ux-design-001-0-1788153842361",
+  "compositionId": "composition-work-batik-jaya-launch-003-1788153842361",
+  "actorProjectionId": "sp-003",
+  "providerType": "human",
+  "workId": "work-batik-jaya-launch-003",
+  "capabilityReference": "ui-ux-design",
+  "requirementId": "req-ui-ux-design-001",
+  "role": "Team Member",
+  "authority": "execute",
+  "status": "pending",
+  "boundAt": "2026-08-31T05:24:02.361Z",
+  "completedAt": "2026-08-31T05:24:02.361Z"
+}

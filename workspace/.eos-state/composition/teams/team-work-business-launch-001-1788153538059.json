@@ -1,0 +1,24 @@
+{
+  "teamId": "team-work-business-launch-001-1788153538059",
+  "id": "team-1788153538059",
+  "projectionId": "team-work-business-launch-001-1788153538059",
+  "workId": "work-business-launch-001",
+  "name": "Team for Work work-bus",
+  "bindings": [
+    "wb-work-business-launch-001-req-business-002-0-1788153538059",
+    "wb-work-business-launch-001-req-business-004-0-1788153538059",
+    "wb-work-business-launch-001-req-business-005-0-1788153538059"
+  ],
+  "actorProjections": [
+    "sp-001",
+    "sp-002",
+    "sp-003",
+    "sp-004",
+    "sp-005",
+    "sp-006"
+  ],
+  "isEphemeral": true,
+  "projectedAt": "2026-08-31T05:18:58.058Z",
+  "status": "completed",
+  "dissolvedAt": "2026-08-31T05:18:58.082Z"
+}

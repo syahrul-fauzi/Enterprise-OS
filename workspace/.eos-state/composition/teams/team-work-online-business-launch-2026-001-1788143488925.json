@@ -1,0 +1,29 @@
+{
+  "teamId": "team-work-online-business-launch-2026-001-1788143488925",
+  "id": "team-1788143488925",
+  "projectionId": "team-work-online-business-launch-2026-001-1788143488925",
+  "workId": "work-online-business-launch-2026-001",
+  "name": "Team for Work work-onl",
+  "bindings": [
+    "wb-work-online-business-launch-2026-001-0-1788143488925",
+    "wb-work-online-business-launch-2026-001-1-1788143488925",
+    "wb-work-online-business-launch-2026-001-2-1788143488925",
+    "wb-work-online-business-launch-2026-001-3-1788143488925",
+    "wb-work-online-business-launch-2026-001-4-1788143488925",
+    "wb-work-online-business-launch-2026-001-5-1788143488925",
+    "wb-work-online-business-launch-2026-001-6-1788143488925"
+  ],
+  "actorProjections": [
+    "human-sarah-strategist-2026",
+    "human-mike-designer-2026",
+    "human-alex-developer-2026",
+    "human-emma-content-2026",
+    "ai-gpt4-research-agent-2026",
+    "ai-claude-content-agent-2026",
+    "service-vercel-deployment-2026",
+    "service-stripe-payments-2026"
+  ],
+  "isEphemeral": true,
+  "composedAt": "2026-08-31T02:31:28.924Z",
+  "status": "active"
+}

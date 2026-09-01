@@ -1,0 +1,17 @@
+{
+  "id": "binding-req-qa-001-0",
+  "bindingId": "wb-work-batik-jaya-launch-003-req-qa-001-0-1788154032811",
+  "compositionId": "composition-work-batik-jaya-launch-003-1788154032810",
+  "actorProjectionId": "sp-004",
+  "providerType": "human",
+  "workId": "work-batik-jaya-launch-003",
+  "capabilityReference": "qa",
+  "requirementId": "req-qa-001",
+  "role": "QA Engineer",
+  "authority": "execute",
+  "status": "completed",
+  "boundAt": "2026-08-31T05:27:12.811Z",
+  "completedAt": "2026-08-31T05:27:15.644Z",
+  "evidence": "VERIFIED: qa deliverable reviewed and accepted",
+  "verifiedAt": "2026-08-31T05:27:15.644Z"
+}

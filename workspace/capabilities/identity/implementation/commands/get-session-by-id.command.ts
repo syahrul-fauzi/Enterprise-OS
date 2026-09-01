@@ -42,7 +42,7 @@ export const getSessionByIdCommand: CapabilityCommand<
   name: "identity.getSessionById",
   version: "2.0.0",
 
-  async execute(input) {
+  async execute(input: GetSessionByIdInput) {
     const parsed = GetSessionByIdInputSchema.parse(input);
     const aggregate = await sessionRepository.byId(SessionId(parsed.sessionId));
     

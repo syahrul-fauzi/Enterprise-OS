@@ -1,0 +1,25 @@
+{
+  "compositionId": "composition-work-batik-jaya-launch-001-1788148289213",
+  "workId": "work-batik-jaya-launch-001",
+  "teamId": "team-work-batik-jaya-launch-001-1788148289213",
+  "requirementIds": [
+    "req-cap-business-strategy-001",
+    "req-cap-brand-design-001",
+    "req-cap-market-research-001",
+    "req-cap-content-creation-001",
+    "req-cap-web-development-001",
+    "req-cap-cloud-deployment-001",
+    "req-cap-payment-setup-001"
+  ],
+  "assignmentIds": [
+    "wb-work-batik-jaya-launch-001-req-0-001-0-1788148289213",
+    "wb-work-batik-jaya-launch-001-req-1-001-0-1788148289213",
+    "wb-work-batik-jaya-launch-001-req-2-001-0-1788148289213",
+    "wb-work-batik-jaya-launch-001-req-3-001-0-1788148289213",
+    "wb-work-batik-jaya-launch-001-req-4-001-0-1788148289213",
+    "wb-work-batik-jaya-launch-001-req-5-001-0-1788148289213",
+    "wb-work-batik-jaya-launch-001-req-6-001-0-1788148289213"
+  ],
+  "persistedAt": "2026-08-31T03:51:29.322Z",
+  "version": "1.0.0"
+}

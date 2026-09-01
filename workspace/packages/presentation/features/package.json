@@ -14,6 +14,18 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./intent/types": {
+      "types": "./dist/intent/types.d.ts",
+      "default": "./dist/intent/types.js"
+    },
+    "./reality/types": {
+      "types": "./dist/reality/types.d.ts",
+      "default": "./dist/reality/types.js"
+    },
+    "./work/types": {
+      "types": "./dist/work/types.d.ts",
+      "default": "./dist/work/types.js"
+    },
     "./*": "./dist/*/index.js"
   },
   "license": "MIT",

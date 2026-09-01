@@ -107,6 +107,7 @@ export interface WorkIdentity {
   status: string;
   linkedIntentId?: string;
   specialization?: string;
+  workspaceId?: string;
 }
 
 export interface WorkState {
@@ -214,6 +215,91 @@ export interface WorkRealityModel {
   coordination: WorkCoordinationAction[];
   evidence: EvidenceArtifact[];
   activity: ActivityEntry[];
+  actor?: {
+    id: string;
+    role: WorkParticipant['role'];
+  };
+}
+
+/**
+ * R9 - MY REALITY MODEL: Canonical presentation contract untuk My Reality experience
+ * Satu model untuk semua platform (GitHub, Zendesk, Shopee, internal) masuk ke presentation layer
+ * Memenuhi R8-HR invariants: identity consistency, external reality, priority sorting, continuation
+ */
+export interface PlatformReference {
+  id: string;
+  source: "github-platform" | "zendesk-support" | "shopee-marketplace" | "legal-case" | "internal";
+  name: string;
+  label: string;
+  bgColor: string;
+  textColor: string;
+}
+
+export interface CompanionInsight {
+  id: string;
+  workId: string;
+  title: string;
+  severity: "low" | "medium" | "high" | "critical";
+  actionLabel: string;
+}
+
+export interface RealityWorkItem {
+  workId: string;
+  id: string;
+  title: string;
+  description?: string;
+  state: "open" | "in_progress" | "blocked" | "completed";
+  priority: "now" | "next" | "watching";
+  platform?: PlatformReference;
+  bottleneck?: {
+    type: string;
+    severity: "low" | "medium" | "high" | "critical";
+    label: string;
+    description?: string;
+  };
+  nextAction?: {
+    label: string;
+    actionId: string;
+    description?: string;
+  };
+  href: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PlatformDistribution {
+  platform: string;
+  count: number;
+}
+
+export interface MyRealityModel {
+  actor: {
+    id: string;
+    displayName: string;
+  };
+  summary: {
+    totalWork: number;
+    inProgress: number;
+    bottlenecked: number;
+    completed: number;
+    // Fase 1: AI Agent metrics untuk realtime dashboard
+    aiProcessing?: number;
+    aiCompleted?: number;
+    aiFailed?: number;
+    aiTotal?: number;
+  };
+  priority: {
+    now: RealityWorkItem[];
+    next: RealityWorkItem[];
+    watching: RealityWorkItem[];
+  };
+  companion: {
+    active: boolean;
+    summary: string;
+    insights: CompanionInsight[];
+  };
+  activity: ActivityEntry[];
+  platformDistribution: PlatformDistribution[];
 }
 
 /**

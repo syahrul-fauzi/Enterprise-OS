@@ -1,0 +1,19 @@
+{
+  "id": "binding-req-business-001-0",
+  "bindingId": "wb-work-business-launch-001-req-business-001-0-1788150935059",
+  "compositionId": "composition-work-business-launch-001-1788150935059",
+  "actorProjectionId": "actor-andi-strategist-001",
+  "providerType": "human",
+  "workId": "work-business-launch-001",
+  "capabilityReference": "business-strategy",
+  "requirementId": "req-business-001",
+  "role": "Team Member",
+  "authority": [
+    "approve:strategy",
+    "present:client"
+  ],
+  "status": "completed",
+  "boundAt": "2026-08-31T04:35:35.059Z",
+  "completedAt": "2026-08-31T04:35:35.072Z",
+  "evidence": "business-strategy-business-launch-delivered-1788150935068"
+}

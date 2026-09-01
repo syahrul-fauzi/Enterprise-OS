@@ -18,7 +18,7 @@ import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/in
 // Match the same environment-based repository toggle as commands/case.commands.ts
 const caseRepository = process.env.DATABASE_URL 
   ? CaseRepositoryPostgres 
-  : new CaseRepositoryInMemory();
+  : CaseRepositoryInMemory;
 
 export class CaseService {
   readonly repositories = { Case: caseRepository } as const;

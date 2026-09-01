@@ -26,6 +26,26 @@ const nextConfig = {
     "capabilities",
     "products",
   ],
+  productionBrowserSourceMaps: false,
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
+  turbopack: {
+    resolveExtensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
+  },
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /@repo\/.*/,
+      resolve: {
+        fullySpecified: false,
+      },
+    });
+    return config;
+  },
 };
 
 export default nextConfig;

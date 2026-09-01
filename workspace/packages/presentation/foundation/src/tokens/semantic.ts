@@ -1,6 +1,6 @@
-import type { ColorTokens } from "./colors.js";
-import type { RadiusTokens } from "./radius.js";
-import type { ElevationTokens } from "./elevation.js";
+import type { ColorTokens } from "./colors";
+import type { RadiusTokens } from "./radius";
+import type { ElevationTokens } from "./elevation";
 
 export type SemanticIntent =
   | "primary"

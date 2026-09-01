@@ -2,10 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import Page from "../app/page.js";
-import RequirementsPage from "../app/requirements/page.js";
-import { ProfessionalWorkspaceIntro } from "@repo/presentation-widgets/professional-workspace-intro/ProfessionalWorkspaceIntro.js";
-import * as RequirementViewModule from "../../../capabilities/requirement-management/experience/views/RequirementView.js";
+import Page from "../app/page";
+import RequirementsPage from "../app/requirements/page";
+import { ProfessionalWorkspaceIntro } from "@repo/presentation-widgets/professional-workspace-intro/ProfessionalWorkspaceIntro";
+import * as RequirementViewModule from "../../../capabilities/requirement-management/experience/views/RequirementView";
 
 test("professional workspace surface stays product-agnostic", () => {
   const html = renderToStaticMarkup(<Page />);
@@ -14,7 +14,12 @@ test("professional workspace surface stays product-agnostic", () => {
 });
 
 test("professional workspace intro renders generic experience metadata", () => {
-  const html = renderToStaticMarkup(<ProfessionalWorkspaceIntro />);
+  const mockSession: any = {
+    loading: false,
+    authenticated: true,
+    actorLabel: "Test User",
+  };
+  const html = renderToStaticMarkup(<ProfessionalWorkspaceIntro {...mockSession} />);
   assert.ok(html.includes("Professional Workspace"));
   assert.ok(html.includes("Create, review, update, and advance requirements"));
   assert.ok(html.includes("Open Requirement Workspace"));

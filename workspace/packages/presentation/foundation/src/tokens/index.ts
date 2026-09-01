@@ -1,19 +1,19 @@
-export * from "./colors.js";
-export * from "./spacing.js";
-export * from "./radius.js";
-export * from "./elevation.js";
-export * from "./semantic.js";
+export * from "./colors";
+export * from "./spacing";
+export * from "./radius";
+export * from "./elevation";
+export * from "./semantic";
 
-import type { ColorTokens } from "./colors.js";
-import type { SpacingTokens } from "./spacing.js";
-import type { RadiusTokens } from "./radius.js";
-import type { ElevationTokens } from "./elevation.js";
-import type { SemanticTokens } from "./semantic.js";
-import { defaultColors } from "./colors.js";
-import { defaultSpacing } from "./spacing.js";
-import { defaultRadius } from "./radius.js";
-import { defaultElevation } from "./elevation.js";
-import { defaultSemantic } from "./semantic.js";
+import type { ColorTokens } from "./colors";
+import type { SpacingTokens } from "./spacing";
+import type { RadiusTokens } from "./radius";
+import type { ElevationTokens } from "./elevation";
+import type { SemanticTokens } from "./semantic";
+import { defaultColors } from "./colors";
+import { defaultSpacing } from "./spacing";
+import { defaultRadius } from "./radius";
+import { defaultElevation } from "./elevation";
+import { defaultSemantic } from "./semantic";
 
 export interface DesignTokens {
   readonly colors: ColorTokens;

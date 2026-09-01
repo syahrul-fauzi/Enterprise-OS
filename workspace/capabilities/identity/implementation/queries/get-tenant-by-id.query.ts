@@ -30,7 +30,7 @@ export const getTenantByIdQuery: GetTenantByIdQuery = {
   name: "identity.getTenantById",
   version: "2.0.0", // Postgres-backed persistence
 
-  async execute(input) {
+  async execute(input: GetTenantByIdInput) {
     // Initialize database schema
     await initIdentitySchema();
     

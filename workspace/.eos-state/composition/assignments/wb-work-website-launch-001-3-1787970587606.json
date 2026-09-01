@@ -1,0 +1,12 @@
+{
+  "id": "binding-3",
+  "bindingId": "wb-work-website-launch-001-3-1787970587606",
+  "actorProjectionId": "actor-charlie",
+  "workId": "work-website-launch-001",
+  "capabilityReference": "qa",
+  "requirementId": "req-qa",
+  "role": "QA Engineer",
+  "authority": "execute",
+  "status": "pending",
+  "boundAt": "2026-08-29T02:29:47.606Z"
+}

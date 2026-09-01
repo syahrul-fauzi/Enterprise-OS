@@ -1,0 +1,19 @@
+{
+  "id": "binding-undefined-0",
+  "bindingId": "wb-work-business-launch-001-undefined-0-1788147405577",
+  "actorProjectionId": "actor-lina-content-001",
+  "workId": "work-business-launch-001",
+  "capabilityReference": "content-creation",
+  "requirementId": "req-business-007",
+  "role": "Team Member",
+  "authority": [
+    "publish:blog",
+    "optimize:seo"
+  ],
+  "status": "completed",
+  "boundAt": "2026-08-31T03:36:45.577Z",
+  "actorId": null,
+  "tenantId": "umkm-client-001",
+  "evidence": "content-creation-business-launch-delivered-1788147405606",
+  "completedAt": "2026-08-31T03:36:45.609Z"
+}

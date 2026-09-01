@@ -1,8 +1,8 @@
 {
-  "timestamp": "2026-08-28T17:18:47.632Z",
+  "timestamp": "2026-08-29T04:12:35.676Z",
   "humanExpression": "Saya ingin mendirikan PT untuk bisnis baru saya.",
-  "intentId": "83e06748-c230-43cc-90dd-39140952e8e5",
-  "workId": "w-20b2e2e9d6c74e49",
+  "intentId": "3e9ea9c7-4b72-4de5-ab33-ed257c8b3215",
+  "workId": "w-ed0bfa8071f94990",
   "lineageVerified": true,
   "specialization": "Legal Case",
   "allGatesPassed": true

@@ -1,0 +1,12 @@
+{
+  "id": "binding-1",
+  "bindingId": "wb-work-website-launch-001-1-1787970587606",
+  "actorProjectionId": "actor-bob",
+  "workId": "work-website-launch-001",
+  "capabilityReference": "back-end-dev",
+  "requirementId": "req-backend-dev",
+  "role": "Backend Developer",
+  "authority": "execute",
+  "status": "pending",
+  "boundAt": "2026-08-29T02:29:47.606Z"
+}

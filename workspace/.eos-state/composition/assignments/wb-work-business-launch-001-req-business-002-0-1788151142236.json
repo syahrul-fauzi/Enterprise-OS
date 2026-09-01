@@ -1,0 +1,19 @@
+{
+  "id": "binding-req-business-002-0",
+  "bindingId": "wb-work-business-launch-001-req-business-002-0-1788151142236",
+  "compositionId": "composition-work-business-launch-001-1788151142236",
+  "actorProjectionId": "actor-siti-designer-001",
+  "providerType": "human",
+  "workId": "work-business-launch-001",
+  "capabilityReference": "ui-ux-design",
+  "requirementId": "req-business-002",
+  "role": "Team Member",
+  "authority": [
+    "design:assets",
+    "approve:branding"
+  ],
+  "status": "completed",
+  "boundAt": "2026-08-31T04:39:02.236Z",
+  "completedAt": "2026-08-31T04:39:02.256Z",
+  "evidence": "ui-ux-design-business-launch-delivered-1788151142252"
+}

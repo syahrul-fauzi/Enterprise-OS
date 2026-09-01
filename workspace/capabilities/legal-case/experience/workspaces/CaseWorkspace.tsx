@@ -18,6 +18,7 @@ export function CaseWorkspace() {
   const [cases, setCases] = useState<CaseAggregate[]>([]);
   const [totalCases, setTotalCases] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("all");
   const [query, setQuery] = useState("");
@@ -27,18 +28,19 @@ export function CaseWorkspace() {
     const fetchCases = async () => {
       try {
         const resp = await fetch("/api/cases/list");
-        if (resp.ok) {
-          const data = await resp.json();
-          setCases(data.cases || []);
-          setTotalCases(data.total || 0);
-        } else {
-          setCases([]);
-          setTotalCases(0);
+        if (!resp.ok) {
+          throw new Error(`Failed to fetch cases: HTTP ${resp.status}`);
         }
+        const data = await resp.json();
+        setCases(data.cases || []);
+        setTotalCases(data.total || 0);
+        setFetchError(null);
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Gagal memuat daftar kasus. Silakan coba lagi nanti.";
         console.error("[CaseWorkspace] Failed to fetch cases:", err);
         setCases([]);
         setTotalCases(0);
+        setFetchError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -158,12 +160,33 @@ export function CaseWorkspace() {
       </div>
 
       {loading ? (
-        <div className="p-6 text-center text-sm opacity-60 border rounded">
-          Loading cases...
+        <div className="p-12 text-center border rounded flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
+          <p className="text-lg font-medium text-text-primary">Memuat daftar kasus...</p>
+        </div>
+      ) : fetchError ? (
+        <div className="p-12 text-center border border-red-200 bg-red-50 rounded flex flex-col items-center gap-4">
+          <div className="text-6xl" aria-hidden="true">⚠️</div>
+          <h3 className="text-xl font-bold text-red-800">Gagal memuat kasus</h3>
+          <p className="text-red-700 max-w-md">{fetchError}</p>
+          <button 
+            onClick={() => { setLoading(true); setFetchError(null); window.location.reload(); }}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+          >
+            Coba Lagi
+          </button>
+        </div>
+      ) : allCount === 0 ? (
+        <div className="p-12 text-center border border-dashed rounded flex flex-col items-center gap-4">
+          <div className="text-6xl" aria-hidden="true">📭</div>
+          <h3 className="text-xl font-bold text-text-primary">Belum ada kasus</h3>
+          <p className="text-text-secondary max-w-md">Anda belum memiliki kasus yang dibuat. Klik tombol "Buat Kasus Baru" untuk memulai pekerjaan pertama Anda.</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="p-6 text-center text-sm opacity-60 border border-dashed rounded">
-          No cases match the current filters.
+        <div className="p-12 text-center border border-dashed rounded flex flex-col items-center gap-4">
+          <div className="text-6xl" aria-hidden="true">🔍</div>
+          <h3 className="text-xl font-bold text-text-primary">Tidak ada kasus yang cocok</h3>
+          <p className="text-text-secondary max-w-md">Tidak ada kasus yang sesuai dengan filter pencarian Anda. Coba ubah filter atau kata kunci pencarian.</p>
         </div>
       ) : (
         <div className="grid gap-3 md:grid-cols-2">

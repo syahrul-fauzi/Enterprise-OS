@@ -2,11 +2,12 @@
   "extends": "@repo/config-typescript/react-library.json",
   "compilerOptions": {
     "outDir": "dist",
+    "rootDir": "src",
     "strictNullChecks": false,
     "declaration": true,
     "composite": true,
     "noEmitOnError": true,
-    "emitDeclarationOnly": true,
+    "emitDeclarationOnly": false,
     "module": "preserve",
     "moduleResolution": "bundler",
     "skipLibCheck": true

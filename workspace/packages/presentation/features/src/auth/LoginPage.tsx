@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Card, Input, Button } from "@repo/presentation-ui-system";
 
-// Fix TypeScript module resolution type mismatch
 const SafeLink = Link as any;
 
 export function LoginPage() {
@@ -86,112 +86,123 @@ export function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 px-6 py-10 flex items-center justify-center">
-      <div className="w-full max-w-md space-y-6">
+    <main className="min-h-screen bg-surface-background px-6 py-10 flex items-center justify-center">
+      <a href="#login-form" className="skip-link">Lewati ke formulir masuk</a>
+      <div id="login-form" className="w-full max-w-md space-y-6">
         <header className="text-center space-y-2">
           <SafeLink href="/" className="inline-flex items-center gap-2 group">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-700 to-indigo-500 flex items-center justify-center text-white text-sm font-bold shadow-sm group-hover:shadow-md transition-shadow">
-              LH
+            <div className="h-10 w-10 rounded-md bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center text-text-inverse text-sm font-bold shadow-token-sm group-hover:shadow-token-md transition-shadow duration-eos-fast">
+              EOS
             </div>
           </SafeLink>
           <div className="pt-2">
-            <div className="inline-flex rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+            <div className="inline-flex rounded-full border border-brand-primary/20 bg-brand-primary/10 px-3 py-1 text-xs font-semibold text-brand-primary">
               Selamat Datang
             </div>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-950 pt-2">
-            Masuk ke Ruang Kerja Hukum
+          <h1 className="pt-2">
+            Masuk ke Ruang Kerja EOS
           </h1>
-          <p className="text-sm text-slate-600">
-            Akses tenant, ruang kerja, dan peran yang Anda emban.
+          <p className="text-sm text-text-secondary">
+            Akses semua pekerjaan Anda, ruang kerja, dan kolaborasi dengan tim.
           </p>
         </header>
 
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <Card size="lg">
           <form className="space-y-4" onSubmit={handleSubmit}>
-            <label className="block">
-              <div className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 mb-2">
-                Email *
-              </div>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="anda@firma-hukum.com"
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                required
-                minLength={3}
-                autoComplete="email"
-              />
-            </label>
+            <Input
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="anda@firma-hukum.com"
+              required
+              minLength={3}
+              autoComplete="email"
+            />
 
-            <label className="block">
-              <div className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 mb-2">
-                Kata Sandi *
-              </div>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Masukkan kata sandi"
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                required
-                minLength={1}
-                autoComplete="current-password"
-              />
-            </label>
+            <Input
+              label="Kata Sandi"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Masukkan kata sandi"
+              required
+              minLength={1}
+              autoComplete="current-password"
+            />
 
             {error && (
-              <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-              <div className="font-semibold mb-1">Gagal masuk:</div>
-              <div>{error}</div>
-            </div>
+              <div
+                role="alert"
+                className="rounded-md border border-status-danger/30 bg-status-danger/5 p-4 text-sm text-status-danger"
+              >
+                <div className="flex items-start gap-2">
+                  <svg className="w-4 h-4 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.376L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                  </svg>
+                  <div>
+                    <div className="font-semibold mb-0.5">Gagal masuk</div>
+                    <div className="text-status-danger/90">{error}</div>
+                  </div>
+                </div>
+              </div>
             )}
 
             <div className="pt-2">
-              <button
+              <Button
                 type="submit"
+                intent="primary"
+                variant="solid"
+                size="lg"
+                block
                 disabled={disabled}
-                className="w-full rounded-xl bg-slate-950 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                loading={submitting}
+                loadingText="Memproses..."
               >
-                {submitting ? "Memproses..." : "Masuk ke Ruang Kerja"}
-              </button>
+                Masuk ke EOS
+              </Button>
             </div>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-slate-200">
-            <button
+          <div className="mt-6 pt-6 border-t border-surface-divider">
+            <Button
               type="button"
+              intent="primary"
+              variant="soft"
+              size="lg"
+              block
               disabled={oidcDisabled}
+              loading={oidcSubmitting}
+              loadingText="Menghubungkan SSO..."
               onClick={handleOidcLogin}
-              className="w-full rounded-xl border border-indigo-300 bg-indigo-50 px-6 py-3 text-sm font-medium text-indigo-700 transition hover:bg-indigo-100 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {oidcSubmitting ? "Menghubungkan SSO..." : "Masuk dengan SSO (OIDC)"}
-            </button>
+              Masuk dengan SSO (OIDC)
+            </Button>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-slate-200 text-center text-sm text-slate-600">
+          <div className="mt-6 pt-6 border-t border-surface-divider text-center text-sm text-text-secondary">
             Belum punya akun?{" "}
             <SafeLink
               href="/signup"
-              className="font-medium text-slate-950 hover:text-slate-700 underline-offset-4 hover:underline"
+              className="font-medium text-text-primary hover:text-text-secondary underline-offset-4 hover:underline"
             >
               Buat akun baru
             </SafeLink>
           </div>
-        </section>
+        </Card>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500 mb-3">
+        <Card size="md">
+          <div className="text-xs font-semibold uppercase tracking-wider text-text-secondary mb-3">
             Butuh bantuan?
           </div>
-          <div className="space-y-2 text-sm text-slate-600">
+          <div className="space-y-2 text-sm text-text-secondary">
             <p className="leading-relaxed">
               Jika Anda adalah anggota organisasi, gunakan alamat email perusahaan yang telah diundang.
               Untuk masalah akses atau pendaftaran akun, hubungi administrator workspace Anda.
             </p>
           </div>
-        </div>
+        </Card>
       </div>
     </main>
   );

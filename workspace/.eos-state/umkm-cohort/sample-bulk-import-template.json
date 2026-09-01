@@ -1,0 +1,107 @@
+[
+  {
+    "nib": "1234567890133",
+    "name": "Toko Kerajinan Kayu Jepara",
+    "description": "UMKM produksi furniture kayu yang ingin go digital dengan website toko online",
+    "category": "A_Go_Digital",
+    "subcategory": "website"
+  },
+  {
+    "nib": "1234567890134",
+    "name": "Warung Sate Pak Slamet",
+    "description": "Warung sate terkenal di Yogyakarta ingin meningkatkan penjualan melalui digital marketing",
+    "category": "B_Grow_Sales",
+    "subcategory": "marketing"
+  },
+  {
+    "nib": "1234567890135",
+    "name": "Pabrik Konveksi Bandung",
+    "description": "Pabrik pakaian ingin mengoptimalkan operasional dengan sistem inventory otomatis",
+    "category": "C_Improve_Operations",
+    "subcategory": "automation"
+  },
+  {
+    "nib": "1234567890136",
+    "name": "Studio Desain Grafis Jakarta",
+    "description": "Studio desain mengalami masalah manajemen proyek yang perlu diselesaikan segera",
+    "category": "D_Solve_Critical",
+    "subcategory": "diagnosis"
+  },
+  {
+    "nib": "1234567890137",
+    "name": "Peternakan Ayam Bogor",
+    "description": "Peternakan skala kecil ingin meningkatkan penjualan melalui platform online",
+    "category": "B_Grow_Sales",
+    "subcategory": "sales_ops"
+  },
+  {
+    "nib": "1234567890138",
+    "name": "Bakery Ibu Siti Surabaya",
+    "description": "Toko roti rumahan ingin meningkatkan kehadiran digital dan penjualan online",
+    "category": "A_Go_Digital",
+    "subcategory": "digital_presence"
+  },
+  {
+    "nib": "1234567890139",
+    "name": "Jasa Bengkel Motor Malang",
+    "description": "Bengkel motor ingin meningkatkan operasional dengan sistem booking online",
+    "category": "C_Improve_Operations",
+    "subcategory": "process_improvement"
+  },
+  {
+    "nib": "1234567890140",
+    "name": "Keramik Tulis Bali",
+    "description": "Pengrajin keramik ingin meningkatkan penjualan melalui marketplace",
+    "category": "B_Grow_Sales",
+    "subcategory": "campaign"
+  },
+  {
+    "nib": "1234567890141",
+    "name": "Pabrik Olahan Makanan Medan",
+    "description": "Pabrik keripik singkong mengalami masalah supply chain yang perlu diselesaikan",
+    "category": "D_Solve_Critical",
+    "subcategory": "specialist"
+  },
+  {
+    "nib": "1234567890142",
+    "name": "Toko Buku Semarang",
+    "description": "Toko buku independen ingin go digital dengan website dan sistem penjualan online",
+    "category": "A_Go_Digital",
+    "subcategory": "online_payment"
+  },
+  {
+    "nib": "1234567890143",
+    "name": "Jasa Fotografi Wedding Makassar",
+    "description": "Fotografer wedding ingin meningkatkan penjualan paket dengan digital marketing",
+    "category": "B_Grow_Sales",
+    "subcategory": "marketing"
+  },
+  {
+    "nib": "1234567890144",
+    "name": "Pabrik Tas Purwakarta",
+    "description": "Pabrik tas ingin mengoptimalkan operasional dengan manajemen produksi yang lebih baik",
+    "category": "C_Improve_Operations",
+    "subcategory": "automation"
+  },
+  {
+    "nib": "1234567890145",
+    "name": "Warung Kopi Pekanbaru",
+    "description": "Kedai kopi mengalami masalah penurunan pengunjung yang perlu dianalisis dan diselesaikan",
+    "category": "D_Solve_Critical",
+    "subcategory": "diagnosis"
+  },
+  {
+    "nib": "1234567890146",
+    "name": "Kerajinan Perak Palembang",
+    "description": "Pengrajin perak ingin go digital dengan toko online dan social media",
+    "category": "A_Go_Digital",
+    "subcategory": "website"
+  },
+  {
+    "nib": "1234567890147",
+    "name": "Jasa Catering Padang",
+    "description": "Catering rumahan ingin meningkatkan penjualan dengan sistem pre-order online",
+    "category": "B_Grow_Sales",
+    "subcategory": "sales_ops"
+  }
+]

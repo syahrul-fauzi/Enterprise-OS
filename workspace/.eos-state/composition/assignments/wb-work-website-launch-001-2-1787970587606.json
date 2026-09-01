@@ -1,0 +1,12 @@
+{
+  "id": "binding-2",
+  "bindingId": "wb-work-website-launch-001-2-1787970587606",
+  "actorProjectionId": "actor-alice",
+  "workId": "work-website-launch-001",
+  "capabilityReference": "designer",
+  "requirementId": "req-designer",
+  "role": "UI/UX Designer",
+  "authority": "execute",
+  "status": "pending",
+  "boundAt": "2026-08-29T02:29:47.606Z"
+}

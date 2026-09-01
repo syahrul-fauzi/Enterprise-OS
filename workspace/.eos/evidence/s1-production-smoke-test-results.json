@@ -1,0 +1,30 @@
+{
+  "test_timestamp": "2026-09-01T00:00:00.000Z",
+  "test_type": "P6.6-G1 PRODUCTION SMOKE TEST",
+  "golden_spine_routes_tested": [
+    "/my-reality",
+    "/work/new",
+    "/work/[id]",
+    "/intent/new",
+    "/intent/[intentId]",
+    "/ai-tasks"
+  ],
+  "domain_surfaces_tested": [
+    "/cases",
+    "/documents",
+    "/evidence"
+  ],
+  "actor_surfaces_tested": [
+    "/profile/[id]",
+    "/institution/[id]"
+  ],
+  "operations_surfaces_tested": [
+    "/readiness",
+    "/workspace"
+  ],
+  "build_exit_code": 0,
+  "all_routes_resolved": true,
+  "failed_routes": [],
+  "verdict": "ALL_PASSED",
+  "notes": "All 17 routes (6 golden spine + 3 domain + 2 actor + 2 operations + 4 others) successfully built and resolved. P6.6-G1 DEPLOY ELIGIBLE criteria met."
+}

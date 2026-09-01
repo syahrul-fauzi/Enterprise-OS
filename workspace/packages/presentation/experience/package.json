@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --skipLibCheck",
     "check-types": "tsc --noEmit",
     "dev": "tsc --watch",
     "lint": "eslint src --max-warnings 0"
@@ -19,7 +19,9 @@
   "dependencies": {
     "@repo/presentation-entities": "workspace:*",
     "@repo/core-kernel": "workspace:*",
-    "@repo/presentation-hooks": "workspace:*"
+    "@repo/presentation-hooks": "workspace:*",
+    "@repo/presentation-features": "workspace:*",
+    "@repo/presentation-ui-system": "workspace:*"
   },
   "devDependencies": {
     "eslint": "^9.39.1",

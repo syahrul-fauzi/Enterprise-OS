@@ -18,16 +18,16 @@ export { getAllProductSlugs, getAllProductExperiences } from './catalog';
 // Core EOS Work Reality Surface - reusable across all products (gunakan barrel dari ./work-reality)
 export { 
   WorkRealitySurface,
-  WorkRealityHeader,
-  WorkSection,
-  NowSection,
-  NextSection,
-  PeopleSection,
-  CommunicationSection,
-  InspectionSection,
-  CoordinationSection,
-  EvidenceSection
+  WorkRealityExperience,
+  useWorkRealityController
 } from './work-reality';
+
+// R9 - INTENT EXPERIENCE - Intent formation experience following MyReality golden pattern
+// Follows canonical presentation architecture: Experience=composition, Controller=runtime, Features=semantic blocks
+export {
+  IntentExperience,
+  useIntentController
+} from './intent';
 
 // Type contracts for Work Reality (juga dari barrel)
 export type {
@@ -43,6 +43,41 @@ export type {
 } from '@repo/presentation-entities';
 
 export { WORK_PERSPECTIVES } from '@repo/presentation-entities';
+
+// ============================================================
+// R9 - MY REALITY EXPERIENCE - Canonical Presentation Blocks
+// ============================================================
+// Reusable EOS Work Reality presentation building blocks:
+// Layout, Header, Priority, WorkList, Companion, Activity, Experience composition
+// Single source of truth for all pages/routes that need My Reality view.
+//
+// Boundary: presentation-only, receives MyRealityModel (presentation-ready contract)
+// NO runtime, connectors, or business logic inside these blocks.
+// ============================================================
+export {
+  MyRealityHeader,
+  MyRealityPriority,
+  MyRealityWorkList,
+  MyRealityCompanion,
+  MyRealityActivity,
+  MyRealityExperience,
+  MyRealityLayout,
+  MyRealityWorkListItem,
+} from './my-reality';
+export type {
+  MyRealityCompanionProps,
+  MyRealityExperienceProps,
+  MyRealityLayoutProps,
+  MyRealityWorkListItemProps,
+} from './my-reality';
+export type {
+  MyRealityModel,
+  RealityWorkItem,
+  PlatformReference,
+  CompanionInsight,
+  PlatformDistribution,
+  ActivityEntry,
+} from '@repo/presentation-entities';
 
 // ============================================================================
 // SERVER-ONLY BOUNDARY - readProductBinding excluded from shared barrel
@@ -79,3 +114,8 @@ export type {
   ProductDeliveryCopy,
 } from './product-copy-types';
 export type { ProductContext } from './product-context';
+
+export {
+  LowFidelityPrototype,
+  HighFidelityPrototype,
+} from './ui-ux-redesign';

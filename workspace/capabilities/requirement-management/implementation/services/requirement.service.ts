@@ -236,7 +236,7 @@ export class RequirementService {
   readonly repositories = { Requirement: RequirementRepositoryCurrent } as const;
 
   async createRequirement(input: CreateRequirementInput): Promise<CreateRequirementOutput> {
-    const result = await createRequirement.execute({...input, linkedCapabilityIds: [...input.linkedCapabilityIds]} as any) as CreateRequirementOutput;
+    const result = await createRequirement.execute({...input, linkedCapabilityIds: [...(input.linkedCapabilityIds || [])]} as any) as CreateRequirementOutput;
     recordRuntimeInvocation({
       capabilityId: "requirement-management",
       operationId: "create-requirement",
@@ -249,7 +249,7 @@ export class RequirementService {
   }
 
   async updateRequirement(input: UpdateRequirementInput): Promise<UpdateRequirementOutput> {
-    const result = await updateRequirement.execute({...input, linkedCapabilityIds: [...input.linkedCapabilityIds]} as any) as UpdateRequirementOutput;
+    const result = await updateRequirement.execute({...input, linkedCapabilityIds: [...(input.linkedCapabilityIds || [])]} as any) as UpdateRequirementOutput;
     recordRuntimeInvocation({
       capabilityId: "requirement-management",
       operationId: "update-requirement",

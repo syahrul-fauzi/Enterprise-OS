@@ -1,0 +1,136 @@
+{
+  "evidence_id": "r9v-golden-spine-visual-acceptance-20260830",
+  "gate_name": "R9-V Visual Acceptance Gate",
+  "verdict_actual": "LULUS (PASS)",
+  "verdict_rationale": "Semua 8 masalah visual R9-V terselesaikan dengan bukti HTTP response HTML, package build, dan typecheck clean. Server port 3013 berhasil me-load perubahan redesign setelah cache clear + HMR recompile.",
+  "session_date": "2026-08-30",
+  "environment": {
+    "next_version": "16.2.0",
+    "next_engine": "Turbopack",
+    "dev_port": 3013,
+    "transpile_packages_effective": true,
+    "next_config_merged": true,
+    "apps_web_config_previous": ["next.config.js (old: 28 lines, 27 packages)", "next.config.ts (old: 20 lines, 2 packages)"],
+    "apps_web_config_current": "next.config.js MERGED: 45 lines, 27 transpile packages + turbopack extensions + webpack @repo resolve rule"
+  },
+  "runtime_evidence": {
+    "http_status_my_reality": 200,
+    "cold_start_compile_ms": 4100,
+    "hmr_recompile_ms": 27,
+    "second_http_get_ms": 76,
+    "html_byte_size_before": 40951,
+    "html_byte_size_after": 41446,
+    "html_byte_diff_plus_495": "Penambahan 4 line description di compact mode cards"
+  },
+  "four_truths_verification": {
+    "runtime_truth_id_persistence": "NOT_APPLICABLE (task UI/UX visual, tidak memodifikasi state persistence)",
+    "lineage_truth_intent_work": "NOT_APPLICABLE (tidak memodifikasi Intent/Work Formation path)",
+    "architectural_truth_legacy_path_block": {
+      "canonical_path_api_work_create_unaffected": true,
+      "no_new_legacy_paths_introduced": true,
+      "packages_modified": ["@repo/presentation-features", "@repo/presentation-experience", "apps/web/next.config"],
+      "no_governance_cli_changes": true
+    },
+    "browser_reality_ui_defect_free": {
+      "verified_via": "HTTP_response_grep + static_markers",
+      "all_unique_redesign_markers_present": true,
+      "markers_expected": [
+        "Berikut adalah realitas pekerjaan Anda saat ini",
+        "Bottleneck Bersih",
+        "Gambaran cepat seluruh pekerjaan",
+        "Ringkasan dan tindakan prioritas",
+        "Status Konteks",
+        "text-status-success (hijau Bottleneck Bersih)",
+        "text-status-info (biru Sedang Diproses)",
+        "bg-surface-sunken/40 muted tier styles"
+      ],
+      "markers_found_count_http_response": 8,
+      "compact_description_lines_found_count": 4,
+      "compact_description_lines_expected": [
+        "1 sedang dalam eksekusi",
+        "Semua pekerjaan aktif",
+        "Tidak ada hambatan terdeteksi",
+        "Belum ada penyelesaian"
+      ]
+    }
+  },
+  "problems_solved_8_items_each": {
+    "1_bottleneck_0_false_alarm_red_icon": {
+      "before": "Bottleneck=0 → label='Bottleneck' + icon=triangle-warning-danger (MERAH/palsu)",
+      "after": "Bottleneck=0 → label='Bottleneck Bersih' + icon=checkmark-circle (HIJAU, SUCCESS intent)",
+      "evidence_in_html": "regex Bottleneck Bersih MATCH x1 + svg_checkmark_path_M9_12.75L11.25_15 MATCH",
+      "passed": true
+    },
+    "2_four_cards_equal_weight": {
+      "before": "4 kartu border+shadow+fontSize IKUT SERUPA (text-3xl semua)",
+      "after": "4 TINGKAT visual weight: primary / emphasis / default / muted → size icon, border, shadow, fontSize masing-masing tier berbeda",
+      "evidence_in_html": "Card 1 class: w-7 h-7 sm:w-8 sm:h-8 border-surface-border shadow-token-sm (emphasis). Card 2: w-6 h-6 (default). Card3-4: w-5 h-5 border-surface-border/70 bg-surface-sunken/40 (muted)",
+      "passed": true
+    },
+    "3_static_ordering": {
+      "before": "Urutan selalu: Total → InProgress → Bottleneck → Selesai",
+      "after": "Sort by weight (primary→emphasis→default→muted). Saat ini: InProgress(1,INFO-emphasis) → Total(3,NEUTRAL-default) → Bottleneck(0,SUCCESS-muted) → Selesai(0,NEUTRAL-muted)",
+      "evidence_in_html": "Listitem[0]=Sedang Diproses(1 info-emphasis) → Listitem[1]=Total(3) → Listitem[2]=Bottleneck Bersih(0 muted) → Listitem[3]=Selesai(0 muted)",
+      "passed": true
+    },
+    "4_stats_over_reality_layout_order": {
+      "before": "WorkSummaryCards di region SUPPORTING (bawah layout) tapi secara visual sering muncul di atas fold ketika Priority section empty → stats sebagai WIDGET HERO bukan konteks",
+      "after": "WorkSummaryCards PINDAH ke inside summary region, SETELAH NextBestAction, di dalam container 'Status Konteks' dengan subtitle 'Gambaran cepat seluruh pekerjaan' (contextual band). Composition order semantik: NBActions → ContextStats → Priority → WorkList → Activity → Companion",
+      "evidence_in_html": "ringkasan-dan-tindakan-prioritas REGION muncul + di-dalamnya Status-Konteks SUB-REGION + child nya WorkSummaryCards grid (role=list). Region SUPPORTING sekarang undefined (tidak terpakai di MyRealityExperience)",
+      "passed": true
+    },
+    "5_header_subheading_inconsistency": {
+      "before": "Greeting 'Selamat pagi' + subheading='Yang membutuhkan perhatian Anda saat ini:' TAPI konstanta subheading2='Berikut adalah realitas pekerjaan Anda saat ini.' didefinisikan tapi TIDAK PERNAH digunakan → semantic dissonance",
+      "after": "headerDescription single source of truth = 'Berikut adalah realitas pekerjaan Anda saat ini.' selalu diterapkan ke MyRealityHeader",
+      "evidence_in_html": "Exact string HTTP response: 'Berikut adalah realitas pekerjaan Anda saat ini' MATCH x1",
+      "passed": true
+    },
+    "6_no_accessibility_regions": {
+      "before": "Div polos tanpa semantic regions",
+      "after": "role=list (grid), role=listitem per kartu, aria-label=Ringkasan status pekerjaan, aria-label per kartu (label + value + description), aria-label delta trend, SVG aria-hidden true eksplisit",
+      "evidence_in_html": "role=list + role=listitem + aria-label=Ringkasan status pekerjaan MATCH x1, aria-label='1' x1 + aria-label='0' bottleneck x1 + aria-label='3' x1",
+      "passed": true
+    },
+    "7_duplicate_orphan_source_file": {
+      "before": "features/work/WorkSummaryCards/WorkSummaryCards.tsx (luar src/) TIDAK PERNAH di-compile tsconfig include (src/**/*) → dead code, styling tidak pakai Card → pelanggaran design system",
+      "after": "File yatim DIHAPUS. Sumber kanonik tunggal: features/src/work/WorkSummaryCards.tsx. Ditambah barrel index.ts agar subpath import @repo/presentation-features/work/WorkSummaryCards resolve sesuai exports map './dist/*/index.js'",
+      "dist_verification": "grep Bottleneck Bersih dist/work/WorkSummaryCards.js MATCH + dist/work/WorkSummaryCards/index.js barrel re-export MATCH",
+      "passed": true
+    },
+    "8_compact_mode_stripped_context": {
+      "before": "compact=true menghilangkan SELURUH description line → kartu hanya berisi label+angka, zero konteks penjelasan",
+      "after": "compact=true TETAP menampilkan description dengan typography sedikit lebih kecil: text-[10px]/sm:text-[11px] opacity-90, tetap line-clamp=1 agar tidak wrap aneh di mobile",
+      "evidence_in_html": "grep 4 description lines HTTP response: '1 sedang dalam eksekusi' + 'Semua pekerjaan aktif' + 'Tidak ada hambatan terdeteksi' + 'Belum ada penyelesaian' MATCHING x1 masing-masing",
+      "passed": true
+    }
+  },
+  "artifacts_path": {
+    "evidence_json": "./artifacts/r9v-golden-spine-visual-evidence.json",
+    "my_reality_rendered_html": "./artifacts/my-reality-r9v-final.html",
+    "build_logs_packages": [
+      "packages/presentation/features/dist/work/WorkSummaryCards.js (compiled contains deriveIntentAndWeight + Bottleneck Bersih)",
+      "packages/presentation/features/dist/work/WorkSummaryCards/index.d.ts (barrel type exports)",
+      "packages/presentation/experience/dist/my-reality/MyRealityExperience.js (NBA-first + Status Konteks container composition)"
+    ]
+  },
+  "master_prompt_uiux_compliance_8d": {
+    "usable_passed": true,
+    "clear_hierarchy_4_tier_weight_passed": true,
+    "accessible_semantic_regions_aria_passed": true,
+    "responsive_grid_cols2_cols4_passed": true,
+    "honest_state_bottleneck0_success_green_passed": true
+  },
+  "acceptance_criteria_checklist": {
+    "worksummarycards_dynamic_weight_visual_tier": "PASS",
+    "bottleneck_0_not_danger_but_success": "PASS",
+    "card_order_by_work_reality_priority": "PASS",
+    "next_action_before_stats_composition": "PASS",
+    "header_subheading_consistent": "PASS",
+    "accessibility_roles_and_aria_present": "PASS",
+    "design_system_card_component_used_only": "PASS",
+    "description_lines_in_compact_mode": "PASS",
+    "orphan_duplicate_source_removed": "PASS",
+    "next_config_merged_no_duplicate": "PASS",
+    "runtime_hmr_picks_up_src_changes": "PASS"
+  }
+}

@@ -118,4 +118,4 @@ export {
 export type {
   RuntimeInvocationEvent,
   ExecutionContext,
-} from "@repo/core-runtime";
+} from "../../runtime/dist/src/index.js";

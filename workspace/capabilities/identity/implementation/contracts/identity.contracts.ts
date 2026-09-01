@@ -158,6 +158,8 @@ export type IntentStatus =
 
 export type IntentCategory = 
   | "LEGAL_SERVICE"
+  | "SERVICE_REQUEST"
+  | "ACADEMIC_RESEARCH"
   | "GENERAL_INQUIRY"
   | "SUPPORT_REQUEST"
   | "PRODUCT_REQUEST"

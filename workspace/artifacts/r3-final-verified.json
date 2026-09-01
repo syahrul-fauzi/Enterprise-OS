@@ -1,0 +1,20 @@
+{
+  "r3VerifiedAt": "2026-08-29T04:12:35.676Z",
+  "testPassed": true,
+  "capturedWorkId": "w-ed0bfa8071f94990",
+  "capturedIntentId": "3e9ea9c7-4b72-4de5-ab33-ed257c8b3215",
+  "lineagePreserved": true,
+  "canonicalAPIUsed": true,
+  "noForbiddenAPIs": true,
+  "allGatesPassed": true,
+  "workExistsInWorkspace": true,
+  "continuityVerified": true,
+  "crossActorPreserved": true,
+  "refreshPreserved": true,
+  "browser": "chromium",
+  "artifacts": [
+    "artifacts/r3-work-page-loaded.png",
+    "artifacts/r3-verification-evidence.json",
+    "artifacts/r3-final-governance-lock.json"
+  ]
+}

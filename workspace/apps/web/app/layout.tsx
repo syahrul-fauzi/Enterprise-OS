@@ -5,10 +5,12 @@ import { GeistSans } from "geist/font";
 import { LocaleProvider } from "@repo/presentation-hooks";
 import { DEFAULT_LOCALE } from "@repo/presentation-hooks/use-locale/use-locale.js";
 
+import { ThemeProvider } from "./providers/theme-provider";
+
 export const metadata: Metadata = {
-  title: "LawyersHub — Ruang Kerja Hukum Profesional",
+  title: "EOS — Ruang Kerja Profesional",
   description:
-    "Kelola kasus hukum, dokumen, klien, dan aktivitas tim dalam satu workspace yang fokus, aman, dan siap produksi.",
+    "Kelola pekerjaan, dokumen, klien, dan aktivitas tim dalam satu workspace yang fokus, aman, dan siap produksi.",
 };
 
 export default function RootLayout({
@@ -17,9 +19,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang={DEFAULT_LOCALE}>
+    <html lang={DEFAULT_LOCALE} suppressHydrationWarning>
       <body className={GeistSans.className}>
-        <LocaleProvider>{children}</LocaleProvider>
+        <ThemeProvider
+          defaultTheme="system"
+        >
+          <LocaleProvider>{children}</LocaleProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

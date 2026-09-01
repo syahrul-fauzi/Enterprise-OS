@@ -1,0 +1,19 @@
+{
+  "id": "binding-req-business-004-0",
+  "bindingId": "wb-work-business-launch-001-req-business-004-0-1788151142236",
+  "compositionId": "composition-work-business-launch-001-1788151142236",
+  "actorProjectionId": "actor-doni-developer-001",
+  "providerType": "human",
+  "workId": "work-business-launch-001",
+  "capabilityReference": "frontend-dev",
+  "requirementId": "req-business-004",
+  "role": "Team Member",
+  "authority": [
+    "code:implement",
+    "deploy:staging"
+  ],
+  "status": "completed",
+  "boundAt": "2026-08-31T04:39:02.236Z",
+  "completedAt": "2026-08-31T04:39:02.272Z",
+  "evidence": "frontend-dev-business-launch-delivered-1788151142267"
+}

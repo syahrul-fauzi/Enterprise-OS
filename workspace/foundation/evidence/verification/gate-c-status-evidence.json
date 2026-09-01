@@ -1,8 +1,8 @@
 {
-  "artifact_id": "gate-c-status-evidence:306161d57b1e63f8",
+  "artifact_id": "gate-c-status-evidence:9445958842c23da7",
   "artifact_type": "gate-c-status-evidence",
   "schema_version": "1.0.0",
-  "generated_at_utc": "2026-08-05T10:50:50.058Z",
+  "generated_at_utc": "2026-08-31T02:04:02.574Z",
   "subject": {
     "subject_ref": "enterprise/science/gate-c/execution/gate-c-status.yaml",
     "subject_type": "gate-c-status",
@@ -1031,7 +1031,7 @@
     },
     "projection_payload_ref": "workspace/foundation/evidence/verification/gate-c-status-projection.json"
   },
-  "digest": "306161d57b1e63f8f195d82112541b1e53491817461cce7aae24bf4b6eaae64f",
+  "digest": "9445958842c23da7b165d0707c2e51a7f2f1ff4e78983ab84dc720c0da67a83f",
   "signature": {
     "status": "UNSIGNED",
     "key_id": null,

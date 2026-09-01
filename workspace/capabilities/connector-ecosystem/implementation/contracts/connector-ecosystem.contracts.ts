@@ -1,7 +1,7 @@
 export interface ConnectorDefinition {
   readonly id: string;
   readonly name: string;
-  readonly direction: "export" | "sync";
+  readonly direction: "export" | "sync" | "inbound-outbound" | "bidirectional";
   readonly target: string;
   readonly description: string;
 }

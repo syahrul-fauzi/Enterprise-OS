@@ -1,13 +1,12 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../config/typescript/base.json",
   "compilerOptions": {
-    "rootDir": "./",
     "outDir": "./dist",
+    "rootDir": "./",
     "strictNullChecks": true,
     "declaration": true,
     "declarationMap": true,
     "incremental": true,
-    "ignoreDeprecations": "6.0",
     "types": ["node"],
     "skipLibCheck": true,
     "composite": true,
@@ -15,15 +14,22 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "lib": ["es2022", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "module": "NodeNext",
     "moduleDetection": "force",
-    "moduleResolution": "bundler",
+    "moduleResolution": "NodeNext",
     "emitDeclarationOnly": true,
     "allowImportingTsExtensions": true,
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "strict": true,
-    "target": "ES2022"
+    "target": "ES2022",
+    "paths": {
+      "@repo/core-kernel": ["../../packages/core/kernel/dist/index.d.ts", "../../packages/core/kernel/src/index.ts"],
+      "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*.d.ts", "../../packages/core/kernel/src/*"],
+      "@repo/capability-identity": ["../../capabilities/identity/dist/index.d.ts", "../../capabilities/identity/src/index.ts"],
+      "@repo/capability-shared": ["../../capabilities/shared/dist/index.d.ts", "../../capabilities/shared/src/index.ts"],
+      "@repo/capability-work-core": ["../../capabilities/work-core/dist/index.d.ts", "../../capabilities/work-core/src/index.ts"]
+    }
   },
   "references": [
     { "path": "../../packages/core/kernel/tsconfig.json" },

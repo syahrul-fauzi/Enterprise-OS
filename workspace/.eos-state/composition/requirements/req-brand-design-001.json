@@ -1,0 +1,11 @@
+{
+  "id": "req-design-1",
+  "requirementId": "req-brand-design-001",
+  "workId": "work-online-business-launch-2026-001",
+  "capabilityId": "cap-brand-design",
+  "quantity": 1,
+  "minimumTrust": "verified",
+  "authority": "execute",
+  "resolved": true,
+  "createdAt": "2026-08-29T10:00:00Z"
+}

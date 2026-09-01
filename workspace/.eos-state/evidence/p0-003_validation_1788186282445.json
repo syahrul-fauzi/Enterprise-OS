@@ -1,0 +1,35 @@
+{
+  "work_id": "W1-P0-003",
+  "started_at": "2026-08-31T14:24:42.301Z",
+  "gates": {
+    "assign_provider_persisted": {
+      "passed": true,
+      "evidence": "providerId changed from null → provider-lawyer-001"
+    },
+    "refresh_preserves_provider": {
+      "passed": true,
+      "evidence": "After repository re-read (simulated browser refresh), provider remains: provider-lawyer-001"
+    },
+    "evidence_appended": {
+      "passed": false,
+      "evidence": "addEvidence execution failed: [\n  {\n    \"received\": \"verification-document\",\n    \"code\": \"invalid_enum_value\",\n    \"options\": [\n      \"document\",\n      \"external_response\",\n      \"communication\",\n      \"outcome\"\n    ],\n    \"path\": [\n      \"evidence\",\n      \"type\"\n    ],\n    \"message\": \"Invalid enum value. Expected 'document' | 'external_response' | 'communication' | 'outcome', received 'verification-document'\"\n  }\n]"
+    },
+    "status_changed": {
+      "passed": false,
+      "evidence": "markCompleted execution failed: Error: [case.markCompleted] Invalid or revoked session - authentication violation"
+    },
+    "reentry_preserves_all": {
+      "passed": false,
+      "evidence": "State lost on re-entry: provider=provider-lawyer-001, evidence=0, status=in_progress"
+    },
+    "second_actor_sees_reality": {
+      "passed": false,
+      "evidence": "Actor B sees different state: workId=case-jrh769, provider=provider-lawyer-001, evidence=0, status=in_progress"
+    }
+  },
+  "all_passed": false,
+  "persistence_level": "LEVEL B",
+  "total_passed": 2,
+  "total_failed": 4,
+  "completed_at": "2026-08-31T14:24:42.445Z"
+}

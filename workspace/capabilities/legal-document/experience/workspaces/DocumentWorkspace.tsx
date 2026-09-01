@@ -286,42 +286,92 @@ export function DocumentWorkspace() {
   const searchParams = new URLSearchParams(window.location.search);
   const caseIdFromUrl = searchParams.get("caseId");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const paginatedItems = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  if (initial === null) {
+    return (
+      <div className="p-12 text-center">
+        <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-slate-600 font-medium">Memuat dokumen...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-8 text-center border-2 border-red-200 rounded-3xl bg-red-50">
+        <div className="text-5xl mb-4">⚠️</div>
+        <h3 className="text-xl font-bold text-red-800 mb-2">Gagal memuat dokumen</h3>
+        <p className="text-red-600 mb-6">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition"
+        >
+          Coba Lagi
+        </button>
+      </div>
+    );
+  }
+
+  if (totalCount === 0) {
+    return (
+      <div className="p-12 text-center border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50">
+        <div className="text-6xl mb-4">📄</div>
+        <h3 className="text-xl font-bold text-slate-800 mb-2">Belum ada dokumen</h3>
+        <p className="text-slate-600 max-w-md mx-auto mb-6">
+          Mulai buat dokumen pertama Anda untuk mengelola pekerjaan legal secara terstruktur.
+        </p>
+        <a
+          href="/documents/create"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition"
+        >
+          <span aria-hidden>＋</span>
+          Buat Dokumen Pertama
+        </a>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-4 border rounded-lg bg-white shadow-sm space-y-3">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+    <div className="p-4 sm:p-6 border-0 rounded-none bg-white shadow-sm space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-gray-800">Legal Documents</h2>
+          <h2 className="text-2xl font-bold text-slate-900">Legal Documents</h2>
           {caseIdFromUrl && (
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-slate-500 mt-1">
               Showing documents for Case #{caseIdFromUrl.substring(0, 8)}...
             </p>
           )}
         </div>
-        <div className="flex items-center gap-2 text-xs text-gray-500">
+        <div className="flex items-center gap-2 text-sm text-slate-500">
           <span>
-            showing {filtered.length} of {totalCount} (matched {result.matched})
+            showing {paginatedItems.length} of {filtered.length} (total {totalCount})
           </span>
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+      <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
         <input
           aria-label="Search documents"
-          className="px-3 py-1.5 border rounded text-sm w-full sm:max-w-xs"
-          onChange={(e) => setQuery(e.target.value)}
+          className="px-4 py-2.5 border border-slate-300 rounded-xl text-sm w-full sm:max-w-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          onChange={(e) => { setQuery(e.target.value); setCurrentPage(1); }}
           placeholder="Search documents..."
           value={query}
         />
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-2">
           {statusOptions.map((s) => (
             <button
               key={s}
-              className={`text-xs px-2 py-1 rounded border transition ${
+              className={`text-xs px-3 py-1.5 rounded-xl border transition font-medium ${
                 statusFilter === s
-                  ? "bg-gray-800 text-white border-gray-800"
-                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                  ? "bg-slate-900 text-white border-slate-900"
+                  : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
               }`}
-              onClick={() => setStatusFilter(s)}
+              onClick={() => { setStatusFilter(s); setCurrentPage(1); }}
               type="button"
             >
               {s === "all" ? "All" : s.replace("_", " ")}
@@ -331,15 +381,43 @@ export function DocumentWorkspace() {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="p-6 text-center text-sm text-gray-500 border border-dashed rounded">
-          No documents match the current filters.
+        <div className="p-10 text-center border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50">
+          <div className="text-5xl mb-4">🔍</div>
+          <h3 className="text-lg font-bold text-slate-700 mb-2">Tidak ada dokumen yang cocok</h3>
+          <p className="text-slate-500">Coba ubah filter atau kata kunci pencarian Anda.</p>
         </div>
       ) : (
-        <div className="grid gap-3 md:grid-cols-2">
-          {filtered.map((d: DocumentAggregate) => (
-            <DocumentCard key={d.id} item={d} />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-4 md:grid-cols-2">
+            {paginatedItems.map((d: DocumentAggregate) => (
+              <DocumentCard key={d.id} item={d} />
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between pt-6 border-t border-slate-200">
+              <p className="text-sm text-slate-500">
+                Halaman {currentPage} dari {totalPages}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                >
+                  Sebelumnya
+                </button>
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                >
+                  Selanjutnya
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

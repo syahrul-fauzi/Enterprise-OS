@@ -1,0 +1,20 @@
+{
+  "teamId": "team-work-client-x-website-2026-001-1787970588972",
+  "id": "team-1787970588972",
+  "projectionId": "team-work-client-x-website-2026-001-1787970588972",
+  "workId": "work-client-x-website-2026-001",
+  "name": "Team for Work work-cli",
+  "bindings": [
+    "wb-work-client-x-website-2026-001-0-1787970588972",
+    "wb-work-client-x-website-2026-001-1-1787970588972"
+  ],
+  "actorProjections": [
+    "human-jane-2026",
+    "human-bob-2026",
+    "human-alice-2026",
+    "human-charlie-2026"
+  ],
+  "isEphemeral": true,
+  "composedAt": "2026-08-29T02:29:48.972Z",
+  "status": "active"
+}

@@ -1,0 +1,25 @@
+{
+  "compositionId": "composition-work-business-launch-001-1788150935059",
+  "workId": "work-business-launch-001",
+  "teamId": "team-work-business-launch-001-1788150935059",
+  "requirementIds": [
+    "req-business-001",
+    "req-business-002",
+    "req-business-003",
+    "req-business-004",
+    "req-business-005",
+    "req-business-006",
+    "req-business-007"
+  ],
+  "assignmentIds": [
+    "wb-work-business-launch-001-req-business-001-0-1788150935059",
+    "wb-work-business-launch-001-req-business-002-0-1788150935059",
+    "wb-work-business-launch-001-req-business-003-0-1788150935059",
+    "wb-work-business-launch-001-req-business-004-0-1788150935059",
+    "wb-work-business-launch-001-req-business-005-0-1788150935059",
+    "wb-work-business-launch-001-req-business-006-0-1788150935059",
+    "wb-work-business-launch-001-req-business-007-0-1788150935059"
+  ],
+  "persistedAt": "2026-08-31T04:35:35.068Z",
+  "version": "1.0.0"
+}

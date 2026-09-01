@@ -1,0 +1,19 @@
+{
+  "compositionId": "composition-work-small-business-launch-001-1788153351497",
+  "workId": "work-small-business-launch-001",
+  "teamId": "team-work-small-business-launch-001-1788153351498",
+  "requirementIds": [
+    "req-frontend-dev",
+    "req-backend-dev",
+    "req-designer",
+    "req-qa"
+  ],
+  "assignmentIds": [
+    "wb-work-small-business-launch-001-req-frontend-dev-0-1788153351498",
+    "wb-work-small-business-launch-001-req-backend-dev-0-1788153351498",
+    "wb-work-small-business-launch-001-req-designer-0-1788153351498",
+    "wb-work-small-business-launch-001-req-qa-0-1788153351498"
+  ],
+  "persistedAt": "2026-08-31T05:15:51.506Z",
+  "version": "1.0.0"
+}

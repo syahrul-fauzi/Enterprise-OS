@@ -1,0 +1,23 @@
+{
+  "teamId": "team-work-website-launch-001-1787970587606",
+  "id": "team-1787970587606",
+  "projectionId": "team-work-website-launch-001-1787970587606",
+  "workId": "work-website-launch-001",
+  "name": "Team for Work work-web",
+  "bindings": [
+    "wb-work-website-launch-001-0-1787970587606",
+    "wb-work-website-launch-001-1-1787970587606",
+    "wb-work-website-launch-001-2-1787970587606",
+    "wb-work-website-launch-001-3-1787970587606"
+  ],
+  "actorProjections": [
+    "actor-jane",
+    "actor-bob",
+    "actor-alice",
+    "actor-charlie",
+    "actor-diana"
+  ],
+  "isEphemeral": true,
+  "composedAt": "2026-08-29T02:29:47.605Z",
+  "status": "active"
+}

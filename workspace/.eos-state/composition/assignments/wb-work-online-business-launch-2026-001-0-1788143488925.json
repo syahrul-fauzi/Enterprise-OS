@@ -1,0 +1,12 @@
+{
+  "id": "binding-0",
+  "bindingId": "wb-work-online-business-launch-2026-001-0-1788143488925",
+  "actorProjectionId": "human-sarah-strategist-2026",
+  "workId": "work-online-business-launch-2026-001",
+  "capabilityReference": "cap-business-strategy",
+  "requirementId": "req-business-strategy-001",
+  "role": "Team Member",
+  "authority": "approve",
+  "status": "pending",
+  "boundAt": "2026-08-31T02:31:28.925Z"
+}

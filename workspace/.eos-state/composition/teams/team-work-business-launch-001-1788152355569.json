@@ -1,0 +1,30 @@
+{
+  "teamId": "team-work-business-launch-001-1788152355569",
+  "id": "team-1788152355569",
+  "projectionId": "team-work-business-launch-001-1788152355569",
+  "workId": "work-business-launch-001",
+  "name": "Team for Work work-bus",
+  "bindings": [
+    "wb-work-business-launch-001-req-business-001-0-1788152355569",
+    "wb-work-business-launch-001-req-business-002-0-1788152355569",
+    "wb-work-business-launch-001-req-business-003-0-1788152355569",
+    "wb-work-business-launch-001-req-business-004-0-1788152355569",
+    "wb-work-business-launch-001-req-business-005-0-1788152355569",
+    "wb-work-business-launch-001-req-business-006-0-1788152355569",
+    "wb-work-business-launch-001-req-business-007-0-1788152355569"
+  ],
+  "actorProjections": [
+    "actor-andi-strategist-001",
+    "actor-siti-designer-001",
+    "actor-doni-developer-001",
+    "actor-lina-content-001",
+    "actor-ai-researcher-001",
+    "actor-ai-content-001",
+    "actor-vercel-deployment-001",
+    "actor-stripe-payment-001"
+  ],
+  "isEphemeral": true,
+  "projectedAt": "2026-08-31T04:59:15.569Z",
+  "status": "completed",
+  "dissolvedAt": "2026-08-31T04:59:15.630Z"
+}

@@ -1,0 +1,81 @@
+
+{
+  "work_id": "work-l1-cohort-contract-001",
+  "recon_completed_at": "2026-08-31T06:15:00.000Z",
+  "locked_boundaries_verified": {
+    "core_frozen": true,
+    "no_core_changes_required": true,
+    "all_changes_layer2_layer3": true
+  },
+  "existing_capabilities_found": [
+    "evidence-registry (existing metrics and record types)",
+    "service-provider-repository-inmemory (real provider storage)",
+    "work-binding (canonical actor-work link)",
+    "composition-service (existing failure recovery)",
+    "governance-evidence (evidence ledger persistence)",
+    "atomic-composition (core work composition engine)"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "work_id_generation (from work-core)",
+      "evidence_append (from evidence-registry)",
+      "provider_resolution (from composition.service)",
+      "binding_verification (from atomic-composition)",
+      "composition_recovery (existing recoverCompositionAfterFailure)",
+      "economic_event_tracking (Layer3 already exists)"
+    ],
+    "required_new": [
+      "l1-cohort-metrics-calculator (Layer2 extension)",
+      "umkm-onboarding-flow (Layer3 product)",
+      "cohort-observation-gate-automation (Layer2 extension)"
+    ],
+    "reuse_percentage": 92.3
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Generate L1.0 Production Cohort Contract artifact immediately",
+    "Assign evidence-engine to implement metrics calculator next",
+    "Proceed with 10 first works (L1.1) after contract is signed off"
+  ],
+  "cohort_spec": {
+    "admission_criteria": [
+      "UMKM Indonesia terdaftar dengan NIB aktif",
+      "Kebutuhan sesuai 4 kategori work (Go Digital/Grow Sales/Improve Operations/Solve Critical Problem)",
+      "Bersedia berpartisipasi dalam observasi selama 30 hari",
+      "Memiliki rekening bank untuk transaksi ekonomi"
+    ],
+    "work_categories": {
+      "A_Go_Digital": ["website", "digital_presence", "online_payment"],
+      "B_Grow_Sales": ["marketing", "content", "campaign", "sales_ops"],
+      "C_Improve_Operations": ["process_improvement", "automation", "ai_integration"],
+      "D_Solve_Critical": ["diagnosis", "specialist", "intervention", "verification"]
+    },
+    "provider_categories": ["human_professional", "ai_agent", "external_service", "organization"],
+    "metrics": {
+      "composition": ["composition_success_rate", "provider_resolution_rate", "unresolved_requirement_rate", "recomposition_rate"],
+      "continuity": ["successful_reentry_rate", "handoff_success_rate", "context_loss_rate", "evidence_recovery_rate"],
+      "economic": ["value_created_per_cost", "outcome_per_provider", "outcome_per_human_hour"]
+    },
+    "evidence_requirements": ["semua work memiliki immutable evidence ledger", "setiap transaksi ekonomi tercatat di Layer3", "semua perubahan state work teraudit"],
+    "failure_taxonomy": ["invariant_failure", "provider_unavailable", "requirement_unresolved", "context_loss", "economic_failure"],
+    "escalation_rules": {
+      "invariant_failure": ["pause_cohort", "escalate_to_architecture_team", "root_cause_analysis"],
+      "provider_unavailable": ["auto_reassign", "log_metric", "continue_cohort"],
+      "requirement_unresolved": ["flag_for_layer3_fix", "continue_cohort"]
+    },
+    "core_invariant_gate": ["single_work_reality_must_hold", "work_binding_canonical", "evidence_immutable", "composition_recoverable"]
+  },
+  "rollout_plan": {
+    "L1.1": "10 Works",
+    "L1.2": "Observation Gate (7 hari)",
+    "L1.3": "25 Works",
+    "L1.4": "Observation Gate (14 hari)",
+    "L1.5": "50 Works",
+    "L1.6": "Scale Decision",
+    "L1.7": "100 Works"
+  }
+}

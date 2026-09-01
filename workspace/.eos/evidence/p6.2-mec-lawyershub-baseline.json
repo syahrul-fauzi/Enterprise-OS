@@ -1,0 +1,54 @@
+{
+  "audit_id": "P6.2-MEC-LAWYERSHUB-BASELINE-20260901",
+  "phase": "P6.2 Measure baseline MEC",
+  "domain": "LawyersHub",
+  "golden_work": "Pendirian PT (PT-establishment)",
+  "measurement_date": "2026-09-01",
+  "mec_calculation": {
+    "total_presentation_blocks_used": 15,
+    "reused_existing_blocks": 15,
+    "new_visual_blocks_created": 0,
+    "new_composition_lines_added": 57,
+    "new_domain_logic_outside_presentation": 0,
+    "mec_score": 0,
+    "mec_percentage": 0
+  },
+  "blocks_inventory": {
+    "shared_reality_features": [
+      "RealityIdentityHeader",
+      "RealityWorkHeader", 
+      "RealityNow",
+      "RealityNext",
+      "RealityPeople",
+      "RealityCommunication",
+      "RealityActivity",
+      "RealityInspection",
+      "RealityCoordination",
+      "RealityEvidence"
+    ],
+    "core_experience_blocks": [
+      "WorkRealityTemplate",
+      "useWorkRealityController",
+      "WorkRealityExperience",
+      "WorkRealitySurface"
+    ],
+    "ui_system_primitives": [
+      "Card"
+    ]
+  },
+  "compliance_verdict": {
+    "presentation_invariant_maintained": true,
+    "server_owned_semantics": true,
+    "no_domain_logic_in_presentation": true,
+    "reality_interpretation_server_only": true,
+    "route_layer_pattern_compliant": true
+  },
+  "evidence_files": [
+    "/packages/presentation/features/src/reality/index.ts",
+    "/packages/presentation/experience/src/work-reality/WorkRealityExperience.tsx",
+    "/packages/presentation/experience/src/work-reality/WorkRealitySurface.tsx", 
+    "/packages/presentation/templates/src/work-reality-template/WorkRealityTemplate.tsx",
+    "/apps/web/app/(eos)/work/[id]/page.tsx"
+  ],
+  "notes": "LawyersHub Golden Work 100% reused existing canonical presentation blocks. Zero new visual blocks created. Only 57 lines of new composition code in the template. Semantic contracts maintained, no domain leakage. Baseline MEC = 0% new code required for first domain implementation."
+}

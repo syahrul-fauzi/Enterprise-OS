@@ -1,0 +1,15 @@
+{
+  "id": "binding-req-cloud-services-001-0",
+  "bindingId": "wb-work-batik-jaya-launch-003-req-cloud-services-001-0-1788153989418",
+  "compositionId": "composition-work-batik-jaya-launch-003-1788153989417",
+  "actorProjectionId": "sp-001",
+  "providerType": "external-service",
+  "workId": "work-batik-jaya-launch-003",
+  "capabilityReference": "web-deployment",
+  "requirementId": "req-cloud-services-001",
+  "role": "Team Member",
+  "authority": "execute",
+  "status": "pending",
+  "boundAt": "2026-08-31T05:26:29.418Z",
+  "completedAt": "2026-08-31T05:26:29.418Z"
+}

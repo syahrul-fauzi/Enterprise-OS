@@ -1,0 +1,11 @@
+{
+  "id": "req-qa-1",
+  "requirementId": "req-qa-website-clientx",
+  "workId": "work-client-x-website-2026-001",
+  "capabilityId": "cap-quality-assurance",
+  "quantity": 1,
+  "minimumTrust": "verified",
+  "authority": "approve",
+  "resolved": false,
+  "createdAt": "2026-08-28T10:00:00Z"
+}

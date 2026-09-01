@@ -28,7 +28,7 @@ export const getTenantByIdCommand: GetTenantByIdCommand = {
   name: "identity.getTenantById",
   version: "2.0.0", // Postgres-backed persistence
 
-  async execute(input) {
+  async execute(input: GetTenantByIdInput) {
     const parsed = GetTenantByIdInputSchema.parse(input);
     const tenant = await TenantRepositoryPostgres.byId(TenantId(parsed.tenantId));
     

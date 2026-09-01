@@ -1,0 +1,17 @@
+{
+  "id": "binding-req-frontend-dev-001-0",
+  "bindingId": "wb-work-batik-jaya-launch-003-req-frontend-dev-001-0-1788154032811",
+  "compositionId": "composition-work-batik-jaya-launch-003-1788154032810",
+  "actorProjectionId": "sp-006",
+  "providerType": "external-service",
+  "workId": "work-batik-jaya-launch-003",
+  "capabilityReference": "frontend-dev",
+  "requirementId": "req-frontend-dev-001",
+  "role": "Team Member",
+  "authority": "execute",
+  "status": "completed",
+  "boundAt": "2026-08-31T05:27:12.811Z",
+  "completedAt": "2026-08-31T05:27:14.131Z",
+  "evidence": "VERIFIED: Code merged: a1b2c3d4e5f6 in PR https://github.com/batikjaya/store/pull/42",
+  "verifiedAt": "2026-08-31T05:27:14.131Z"
+}

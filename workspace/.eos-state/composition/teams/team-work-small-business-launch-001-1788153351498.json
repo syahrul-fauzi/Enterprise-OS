@@ -1,0 +1,24 @@
+{
+  "teamId": "team-work-small-business-launch-001-1788153351498",
+  "id": "team-1788153351498",
+  "projectionId": "team-work-small-business-launch-001-1788153351498",
+  "workId": "work-small-business-launch-001",
+  "name": "Team for Work work-sma",
+  "bindings": [
+    "wb-work-small-business-launch-001-req-frontend-dev-0-1788153351498",
+    "wb-work-small-business-launch-001-req-backend-dev-0-1788153351498",
+    "wb-work-small-business-launch-001-req-designer-0-1788153351498",
+    "wb-work-small-business-launch-001-req-qa-0-1788153351498"
+  ],
+  "actorProjections": [
+    "sp-001",
+    "sp-002",
+    "sp-003",
+    "sp-004",
+    "sp-005",
+    "sp-006"
+  ],
+  "isEphemeral": true,
+  "projectedAt": "2026-08-31T05:15:51.497Z",
+  "status": "active"
+}

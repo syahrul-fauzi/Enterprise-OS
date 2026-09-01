@@ -22,7 +22,7 @@ export const createTenantCommand: CreateTenantCommand = {
   name: "identity.createTenant",
   version: "2.0.0", // Postgres-backed persistence
 
-  async execute(input) {
+  async execute(input: CreateTenantInput) {
     // Initialize database schema
     await initIdentitySchema();
     

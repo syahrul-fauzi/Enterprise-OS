@@ -7,7 +7,9 @@ import React from 'react';
  * Diekstrak dari route apps/web agar bisa di-reuse oleh semua produk yang menggunakan WorkRealitySurface
  * Menjaga thin app mandate: route tidak perlu menduplikasi loading UI
  */
-export function WorkRealityLoading() {
+export interface WorkRealityLoadingProps {}
+
+export function WorkRealityLoading(props: WorkRealityLoadingProps) {
   return (
     <main className="min-h-screen bg-slate-50 p-6">
       <div className="mx-auto max-w-4xl">

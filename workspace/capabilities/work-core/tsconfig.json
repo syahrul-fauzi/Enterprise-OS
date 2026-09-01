@@ -1,0 +1,38 @@
+{
+  "extends": "../../config/typescript/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strictNullChecks": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "ignoreDeprecations": "5.0",
+    "types": ["node"],
+    "skipLibCheck": true,
+    "composite": true,
+    "noEmit": false,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "module": "NodeNext",
+    "moduleDetection": "force",
+    "moduleResolution": "NodeNext",
+    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": true,
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "ES2022",
+    "paths": {
+      "@repo/core-kernel": ["../../packages/core/kernel/dist/index.d.ts", "../../packages/core/kernel/src/index.ts"],
+      "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*.d.ts", "../../packages/core/kernel/src/*"]
+    }
+  },
+  "references": [
+    { "path": "../../packages/core/kernel/tsconfig.json" },
+    { "path": "../../packages/core/runtime/tsconfig.json" }
+  ],
+  "include": ["implementation/**/*.ts", "contracts/**/*.ts"],
+  "exclude": ["dist", "node_modules", "**/*.d.ts"]
+}

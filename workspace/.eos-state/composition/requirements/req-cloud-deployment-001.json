@@ -1,0 +1,11 @@
+{
+  "id": "req-deploy-1",
+  "requirementId": "req-cloud-deployment-001",
+  "workId": "work-online-business-launch-2026-001",
+  "capabilityId": "cap-cloud-deployment",
+  "quantity": 1,
+  "minimumTrust": "certified",
+  "authority": "execute",
+  "resolved": true,
+  "createdAt": "2026-08-29T10:00:00Z"
+}

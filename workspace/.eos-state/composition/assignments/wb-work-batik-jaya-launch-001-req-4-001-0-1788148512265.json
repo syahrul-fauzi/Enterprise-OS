@@ -1,0 +1,16 @@
+{
+  "id": "binding-req-4-001-0",
+  "bindingId": "wb-work-batik-jaya-launch-001-req-4-001-0-1788148512265",
+  "compositionId": "composition-work-batik-jaya-launch-001-1788148512265",
+  "actorProjectionId": "human-webdev-001",
+  "providerType": "human-professional",
+  "workId": "work-batik-jaya-launch-001",
+  "capabilityReference": "cap-web-development",
+  "requirementId": "req-cap-web-development-001",
+  "role": "Team Member",
+  "authority": "execute",
+  "status": "pending",
+  "boundAt": "2026-08-31T03:55:12.265Z",
+  "actorId": null,
+  "tenantId": null
+}

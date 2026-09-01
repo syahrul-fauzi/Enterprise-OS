@@ -1,0 +1,12 @@
+{
+  "id": "binding-req-dev-1-0",
+  "bindingId": "wb-work-online-business-launch-2026-001-req-dev-1-0-1788143548124",
+  "actorProjectionId": "human-alex-developer-2026",
+  "workId": "work-online-business-launch-2026-001",
+  "capabilityReference": "cap-web-development",
+  "requirementId": "req-web-development-001",
+  "role": "Team Member",
+  "authority": "execute",
+  "status": "pending",
+  "boundAt": "2026-08-31T02:32:28.124Z"
+}

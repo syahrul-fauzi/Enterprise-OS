@@ -9,7 +9,7 @@ export default defineConfig({
   workers: 1,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3006',
+    baseURL: 'http://localhost:3013',
     trace: 'on',
     screenshot: 'on',
     video: 'on',
@@ -23,11 +23,12 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], headless: true },
     },
   ],
-  webServer: {
-    command: 'cd apps/web && pnpm dev --port 3006',
-    url: 'http://localhost:3006/api/health',
-    reuseExistingServer: !process.env.CI,
-    stdout: 'pipe',
-    stderr: 'pipe',
-  },
+  webServer: undefined,
+  // webServer: {
+  //   command: 'cd apps/web && pnpm dev --port 3006',
+  //   url: 'http://localhost:3006/api/health',
+  //   reuseExistingServer: !process.env.CI,
+  //   stdout: 'pipe',
+  //   stderr: 'pipe',
+  // },
 });

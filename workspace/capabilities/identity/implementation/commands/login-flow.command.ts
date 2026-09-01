@@ -74,7 +74,7 @@ export const loginFlowCommand: LoginFlowCommand = {
   name: "identity.loginFlow",
   version: "2.0.0",
 
-  async execute(input) {
+  async execute(input: LoginFlowInput) {
     const parsed = LoginFlowInputSchema.parse(input);
     const { email, password } = parsed;
 

@@ -1,0 +1,39 @@
+id: services-id
+name: Service Request Management
+version: 0.1.0
+owner: services-domain
+status: ACTIVE
+introduced: "2026-08-29"
+provides:
+  - service-request-lifecycle
+  - service-workspace
+  - service-permissions
+purpose: Manage service request lifecycle, workspaces, and collaboration across the EOS platform.
+manifest_version: 1.0.0
+exports:
+  - ServiceRequestService
+  - ServiceRequestCommands
+  - ServiceRequestQueries
+presentation:
+  view: ServiceRequestView
+implementation:
+  entry: implementation/service.ts
+depends_on:
+  - workflow-engine
+  - service-directory
+  - human-operations
+capability:
+  name: services-id
+  owner: services-domain
+  purpose: Manage service request lifecycle, workspaces, and collaboration across the EOS platform.
+  consumers:
+    - services.id
+    - ilc
+  maturity:
+    level: prototype
+  lifecycle:
+    state: active
+  evidence_required:
+    - r4-validation
+    - user-adoption
+stability: prototype

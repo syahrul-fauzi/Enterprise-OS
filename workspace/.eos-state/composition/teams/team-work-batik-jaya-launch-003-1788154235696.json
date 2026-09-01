@@ -1,0 +1,23 @@
+{
+  "teamId": "team-work-batik-jaya-launch-003-1788154235696",
+  "id": "team-1788154235696",
+  "projectionId": "team-work-batik-jaya-launch-003-1788154235696",
+  "workId": "work-batik-jaya-launch-003",
+  "name": "Team for Work work-bat",
+  "bindings": [
+    "wb-work-batik-jaya-launch-003-req-ui-ux-design-001-0-1788154235696",
+    "wb-work-batik-jaya-launch-003-req-frontend-dev-001-0-1788154235696",
+    "wb-work-batik-jaya-launch-003-req-web-deployment-001-0-1788154235696",
+    "wb-work-batik-jaya-launch-003-req-qa-001-0-1788154235696"
+  ],
+  "actorProjections": [
+    "sp-001",
+    "sp-003",
+    "sp-004",
+    "sp-006"
+  ],
+  "isEphemeral": true,
+  "projectedAt": "2026-08-31T05:30:35.696Z",
+  "status": "completed",
+  "dissolvedAt": "2026-08-31T05:30:35.741Z"
+}

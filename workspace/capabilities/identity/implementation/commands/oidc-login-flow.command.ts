@@ -23,7 +23,7 @@ export const oidcLoginFlowCommand: OidcLoginFlowCommand = {
   name: "identity.oidcLoginFlow",
   version: "1.0.0",
 
-  async execute(input) {
+  async execute(input: OidcLoginFlowInput) {
     const authUrl = new URL('/oauth2/auth', HYDRA_PUBLIC_URL);
     authUrl.searchParams.set('client_id', OIDC_CLIENT_ID);
     authUrl.searchParams.set('redirect_uri', OIDC_REDIRECT_URI);

@@ -22,12 +22,18 @@ export type {
   WorkCoordinationAction,
   EvidenceArtifact,
   ActivityEntry,
+  // R9 - My Reality Model Types (new for human reality proof)
+  MyRealityModel,
+  RealityWorkItem,
+  PlatformReference,
+  CompanionInsight,
+  PlatformDistribution,
   // Community & Publication Types (formerly in @repo/presentation-types)
   Member,
   Requirement,
   // Presentation Route Types (formerly in @repo/presentation-types)
   PresentationRoutes,
   CapabilityExperienceRoutes
-} from './work-reality/work-reality';
+} from './work-reality/work-reality.js';
 
-export { WORK_PERSPECTIVES } from './work-reality/work-reality';
+export { WORK_PERSPECTIVES } from './work-reality/work-reality.js';

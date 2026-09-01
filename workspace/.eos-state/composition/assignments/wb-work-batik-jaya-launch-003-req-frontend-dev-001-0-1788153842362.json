@@ -1,0 +1,15 @@
+{
+  "id": "binding-req-frontend-dev-001-0",
+  "bindingId": "wb-work-batik-jaya-launch-003-req-frontend-dev-001-0-1788153842362",
+  "compositionId": "composition-work-batik-jaya-launch-003-1788153842361",
+  "actorProjectionId": "sp-006",
+  "providerType": "external-service",
+  "workId": "work-batik-jaya-launch-003",
+  "capabilityReference": "frontend-dev",
+  "requirementId": "req-frontend-dev-001",
+  "role": "Team Member",
+  "authority": "execute",
+  "status": "pending",
+  "boundAt": "2026-08-31T05:24:02.362Z",
+  "completedAt": "2026-08-31T05:24:02.362Z"
+}

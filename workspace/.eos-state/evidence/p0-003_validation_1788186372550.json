@@ -1,0 +1,35 @@
+{
+  "work_id": "W1-P0-003",
+  "started_at": "2026-08-31T14:26:12.398Z",
+  "gates": {
+    "assign_provider_persisted": {
+      "passed": true,
+      "evidence": "providerId changed from null → provider-lawyer-001"
+    },
+    "refresh_preserves_provider": {
+      "passed": true,
+      "evidence": "After repository re-read (simulated browser refresh), provider remains: provider-lawyer-001"
+    },
+    "evidence_appended": {
+      "passed": false,
+      "evidence": "addEvidence execution failed: Error: [case.addEvidence] Context mismatch - security violation"
+    },
+    "status_changed": {
+      "passed": false,
+      "evidence": "markCompleted execution failed: Error: [capability-registry] Command not found: capability=communication, commandName=agenticNotify. attempted=agenticNotify | communication.agenticNotify | communication.agenticNotify. Available candidates (0): (none). Global total keys: 0."
+    },
+    "reentry_preserves_all": {
+      "passed": true,
+      "evidence": "Hard re-entry retains all state: provider=provider-lawyer-001, evidence=1, status=closed"
+    },
+    "second_actor_sees_reality": {
+      "passed": true,
+      "evidence": "Actor B observes identical reality: workId=case-v1tyqc, provider=provider-lawyer-001, evidence=1, status=closed"
+    }
+  },
+  "all_passed": false,
+  "persistence_level": "LEVEL B",
+  "total_passed": 4,
+  "total_failed": 2,
+  "completed_at": "2026-08-31T14:26:12.550Z"
+}

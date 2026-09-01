@@ -1,0 +1,15 @@
+{
+  "compositionId": "composition-work-batik-jaya-launch-003-1788153802719",
+  "workId": "work-batik-jaya-launch-003",
+  "teamId": "team-work-batik-jaya-launch-003-1788153802719",
+  "requirementIds": [
+    "req-business-strategy-001",
+    "req-ui-ux-design-001",
+    "req-frontend-dev-001",
+    "req-web-deployment-001",
+    "req-payment-processing-001"
+  ],
+  "assignmentIds": [],
+  "persistedAt": "2026-08-31T05:23:22.726Z",
+  "version": "1.0.0"
+}

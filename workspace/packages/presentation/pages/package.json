@@ -19,7 +19,8 @@
     "@repo/presentation-templates": "workspace:*",
     "@repo/presentation-features": "workspace:*",
     "@repo/presentation-ui-system": "workspace:*",
-    "@repo/presentation-entities": "workspace:*"
+    "@repo/presentation-entities": "workspace:*",
+    "next": "^14.2.35"
   },
   "devDependencies": {
     "@repo/config-eslint": "workspace:*",

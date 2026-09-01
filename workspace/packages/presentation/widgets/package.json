@@ -21,7 +21,11 @@
     "lint": "eslint src --max-warnings 0"
   },
   "dependencies": {
-    "@repo/presentation-entities": "workspace:*"
+    "@repo/presentation-entities": "workspace:*",
+    "@repo/presentation-ui-system": "workspace:*",
+    "@repo/presentation-foundation": "workspace:*",
+    "lucide-react": "^0.411.0",
+    "react-grid-layout": "^1.4.4"
   },
   "peerDependencies": {
     "next": "^15 || ^16",
@@ -31,6 +35,7 @@
     "@repo/config-eslint": "workspace:*",
     "@repo/config-typescript": "workspace:*",
     "@types/react": "^19.1.0",
+    "@types/react-grid-layout": "^1.3.5",
     "eslint": "^9.39.1",
     "next": "^16.2.0",
     "typescript": "5.9.2"

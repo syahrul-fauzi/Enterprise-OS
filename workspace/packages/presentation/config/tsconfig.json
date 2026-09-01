@@ -1,12 +1,12 @@
 {
   "extends": "../../../config/typescript/base.json",
   "compilerOptions": {
-    "outDir": "./dist",
+    "outDir": "dist",
     "baseUrl": ".",
     "composite": true,
     "incremental": true,
     "jsx": "react-jsx",
-    "rootDir": "./src",
+    "rootDir": "src",
     "paths": {
       "@repo/core-kernel": ["../../core/kernel/dist"],
       "@repo/core-runtime": ["../../core/runtime/dist"]

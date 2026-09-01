@@ -1,0 +1,14 @@
+{
+  "id": "binding-req-4-001-0",
+  "bindingId": "wb-work-batik-jaya-launch-001-req-4-001-0-1788148128210",
+  "actorProjectionId": "human-webdev-001",
+  "workId": "work-batik-jaya-launch-001",
+  "capabilityReference": "cap-web-development",
+  "requirementId": "req-cap-web-development-001",
+  "role": "Team Member",
+  "authority": "execute",
+  "status": "pending",
+  "boundAt": "2026-08-31T03:48:48.210Z",
+  "actorId": null,
+  "tenantId": null
+}

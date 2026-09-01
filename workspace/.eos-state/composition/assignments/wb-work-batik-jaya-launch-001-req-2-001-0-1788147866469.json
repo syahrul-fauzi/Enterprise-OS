@@ -1,0 +1,14 @@
+{
+  "id": "binding-req-2-001-0",
+  "bindingId": "wb-work-batik-jaya-launch-001-req-2-001-0-1788147866469",
+  "actorProjectionId": "ai-gpt4-research-001",
+  "workId": "work-batik-jaya-launch-001",
+  "capabilityReference": "cap-market-research",
+  "requirementId": "req-cap-market-research-001",
+  "role": "Team Member",
+  "authority": "execute",
+  "status": "pending",
+  "boundAt": "2026-08-31T03:44:26.469Z",
+  "actorId": null,
+  "tenantId": null
+}

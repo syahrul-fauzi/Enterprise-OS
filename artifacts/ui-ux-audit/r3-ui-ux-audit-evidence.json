@@ -1,0 +1,641 @@
+{
+  "audit_id": "EOS-UI-UX-AUDIT-20260830",
+  "audit_completed_at": "2026-08-30T00:00:00.000Z",
+  "scope": {
+    "modules_audited": [
+      "packages/presentation/foundation",
+      "packages/presentation/ui-system",
+      "packages/presentation/features",
+      "packages/presentation/experience",
+      "packages/presentation/widgets",
+      "packages/presentation/pages",
+      "apps/web/app"
+    ],
+    "pages_audited": [
+      "/ (RootLandingPage)",
+      "/login (LoginPage)",
+      "/signup (SignupPage)",
+      "/my-reality (MyRealityExperience)",
+      "/intent/[intentId] (IntentRefinementPage)",
+      "/work/[id] (WorkDetailPage)",
+      "/products/[productId]/new (ProductCreateForm)"
+    ]
+  },
+  "design_system_audit": {
+    "foundation_tokens": {
+      "colors": {
+        "status": "PASS",
+        "evidence": "colors.ts#L1-L114 - Lengkap: lightColors, darkColors, brand/surface/text/status categories",
+        "notes": "OKLCH color space digunakan untuk perceptual consistency"
+      },
+      "spacing": {
+        "status": "PASS",
+        "evidence": "spacing.ts#L1-L71 - 4px base grid, 0.5x-24x scale + semantic xs-xl",
+        "notes": "Dual naming (numeric + semantic) good, konsisten"
+      },
+      "radius": {
+        "status": "PASS",
+        "evidence": "radius.ts#L1-L25 - 9 levels dari none ke full",
+        "notes": "Scale lengkap"
+      },
+      "elevation": {
+        "status": "PASS",
+        "evidence": "elevation.ts#L1-L72 - 6 numeric levels + xs-xl semantic, 2-layer shadows",
+        "notes": "Material-design inspired, konsisten"
+      },
+      "typography": {
+        "status": "PASS",
+        "evidence": "typography/index.ts#L1-L103 - Families, sizes, weights, lineHeights, letterSpacings",
+        "notes": "Scale lengkap, font system-ui default (GeistSans di layout)"
+      },
+      "motion": {
+        "status": "PASS",
+        "evidence": "motion/index.ts#L1-L60 - 5 durations, 7 easings, 4 presets (enter/exit/emphasize/fast)",
+        "notes": "Lengkap, mengikuti Material motion spec"
+      },
+      "semantic_tokens": {
+        "status": "PASS",
+        "evidence": "semantic.ts#L1-L94 - 7 intents × 4 variants = 28 kombinasi, interactive states, focusRing",
+        "notes": "Sangat solid - intents/variants/size mapping lengkap"
+      },
+      "icons": {
+        "status": "PARTIAL",
+        "evidence": "icons/index.ts#L1-L79 - 28 icon names terdaftar dengan viewBox + category + aliases",
+        "issues": [
+          "Hanya registry metadata, TIDAK ADA implementasi komponen Icon yang merender SVG path",
+          "Semua komponen saat ini menggunakan inline SVG ad-hoc BUKAN dari IconRegistry",
+          "RootLandingPage menggunakan EMOJI (⚖️, 📚, dll) sebagai pengganti icon = aksesibilitas buruk"
+        ]
+      },
+      "themes": {
+        "status": "PASS",
+        "evidence": "themes/index.ts#L1-L86 - lightTheme + darkTheme lengkap",
+        "notes": "Mode 'auto' didukung di type tapi implementation detail di theme-provider"
+      }
+    },
+    "ui_system_components": {
+      "Button": {
+        "status": "PASS",
+        "evidence": "ui-system/atoms/button.tsx#L1-L142",
+        "strengths": [
+          "7 intents × 4 variants × 5 sizes = full coverage",
+          "Loading state dengan spinner + loadingText",
+          "leftIcon/rightIcon slots",
+          "Focus ring + disabled opacity + active:translate-y-px micro-interaction"
+        ],
+        "issues": [
+          "Size lg (h-12 rounded-md) dan xl (h-14 rounded-lg): radius lompat tidak linear, lg seharusnya lg bukan md"
+        ]
+      },
+      "Card": {
+        "status": "PASS",
+        "evidence": "ui-system/atoms/card.tsx#L1-L109",
+        "strengths": [
+          "3 sizes (sm/md/lg) dengan padding konsisten",
+          "Header (title/subtitle/headerActions) + Body + Footer structure",
+          "Interactive/hoverable dengan role=button + keyboard support"
+        ],
+        "issues": [
+          "Hanya menggunakan rounded-md, tidak menghormati size untuk radius variation"
+        ]
+      },
+      "Input/TextArea/Select": {
+        "status": "PASS",
+        "evidence": "ui-system/atoms/input.tsx#L1-L225",
+        "strengths": [
+          "3 sizes, error/helper/label dengan aria-describedby linkage",
+          "Required indicator (*), aria-invalid propagation",
+          "Focus ring: border-brand-primary + ring-2 brand-primary/20"
+        ],
+        "issues": [
+          "Select chevron SVG di-hardcode dengan stroke 'oklch(0.60 0 0 none)' = tidak tokenized, tidak mengikuti dark mode"
+        ]
+      }
+    },
+    "visual_consistency_findings": {
+      "CRITICAL": [
+        {
+          "id": "V-CRIT-001",
+          "title": "SignupPage TIDAK MENGGUNAKAN UI SYSTEM SAMA SEKALI",
+          "severity": "critical",
+          "location": "features/src/auth/SignupPage.tsx#L60-L197",
+          "evidence": [
+            "Line 61: bg-slate-50 (harusnya bg-surface-background)",
+            "Line 65: from-indigo-700 to-indigo-500 text-white (harusnya design tokens)",
+            "Line 70-72: border-indigo-100 bg-indigo-50 text-indigo-700 (raw color, no badge component)",
+            "Line 74: text-slate-950 (harusnya text-text-primary)",
+            "Line 82: rounded-3xl border-slate-200 bg-white p-6 shadow-sm sm:p-8 (bukan <Card>)",
+            "Line 88-97, 104-113, 137-152: <input> RAW tanpa <Input> component = tidak ada error state, aria-describedby, focus ring konsisten",
+            "Line 156: rounded-2xl border-red-200 bg-red-50 text-red-800 (bukan error tokenized)",
+            "Line 163-169: <button> RAW tanpa <Button> component = tidak ada loading spinner, size/intent/variant consistency"
+          ],
+          "impact": "Visual identity pecah total, accessibility gap besar (tidak ada aria linkage), dark mode pasti RUSAK (slate-* tidak berubah)",
+          "est_fix_effort": "M"
+        },
+        {
+          "id": "V-CRIT-002",
+          "title": "IntentRefinementPage menggunakan warna RAW SLATE + inline style CTA",
+          "severity": "critical",
+          "location": "features/src/intent/IntentRefinementPage.tsx#L57-L92",
+          "evidence": [
+            "Line 57: bg-gradient-to-b from-slate-50 to-white (tidak tokenized)",
+            "Line 68: text-slate-600 hover:text-slate-900",
+            "Line 72: text-slate-900",
+            "Line 83-88: SafeLink dengan className INLINE 'bg-blue-600 text-white...' = TIDAK MENGGUNAKAN <Button> SAMA SEKALI"
+          ],
+          "impact": "Dark mode rusak, visual identity hilang di halaman KRITIS (pintu masuk Work Formation)",
+          "est_fix_effort": "S"
+        },
+        {
+          "id": "V-CRIT-003",
+          "title": "30+ file menggunakan warna RAW slate/gray/white/indigo/emerald/amber/red",
+          "severity": "critical",
+          "file_count": 30,
+          "sample_files": [
+            "MyRealityWorkList.tsx - slate-50, white, slate-200, red-100, red-700",
+            "WorkProposal.tsx - bg-white border-gray-200",
+            "WorkloadByPlatform.tsx - slate-800 slate-700",
+            "WorkDetailPage.tsx#L100 - bg-slate-50 bg-white text-slate-600",
+            "NextAction.tsx (duplicate) - hardcoded colors",
+            "MyRealityPriority.tsx - raw colors",
+            "ResearchPage.tsx, ProfilePage.tsx, InstitutionPage.tsx, CommunityDirectory.tsx, ResearchFeed.tsx, PublicationList.tsx - semua raw slate/gray"
+          ],
+          "impact": "Dark mode tidak berfungsi di 50%+ halaman, inkonsistensi visual parah, maintenance nightmare",
+          "est_fix_effort": "L"
+        }
+      ],
+      "HIGH": [
+        {
+          "id": "V-HIGH-001",
+          "title": "Radius Inconsistency: md vs xl vs 2xl vs 3xl dipakai tanpa aturan",
+          "severity": "high",
+          "examples": [
+            "Card default: rounded-md",
+            "ProductCreateForm alert: rounded-xl",
+            "LoginPage error: rounded-md",
+            "SignupPage form: rounded-3xl, error: rounded-2xl, button: rounded-xl",
+            "NextBestAction icon wrap: rounded-xl",
+            "WorkDetailPage notfound: rounded-2xl",
+            "MyRealityWorkList card: rounded-2xl"
+          ],
+          "impact": "Kesan 'tidak rapi' karena radius tidak mengikuti hirarki visual",
+          "recommendation": "Aturan: Card=md, Alert/Panel=md, Avatar/Pill=full, FeatureCard=lg, JumboCard=xl. Hapus rounded-2xl/3xl ad-hoc."
+        },
+        {
+          "id": "V-HIGH-002",
+          "title": "WorkItemCard dan RootLandingPage menggunakan EMOJI sebagai icon visual",
+          "severity": "high",
+          "locations": [
+            "RootLandingPage.tsx#L46-L54: getWorkIcon() return emoji",
+            "RootLandingPage.tsx#L114-L132: createValueCard() parameter icon adalah emoji string",
+            "RootLandingPage.tsx#L277: strings.icon render sebagai span",
+            "RootLandingPage.tsx#L529-L530: 📭 empty state emoji"
+          ],
+          "impact": [
+            "Aksesibilitas: screen reader membaca 'balance scale' bukan 'briefcase legal'",
+            "Konsistensi: emoji render berbeda antar OS/browser",
+            "Profesionalisme: terlihat 'amateur' untuk enterprise platform"
+          ]
+        },
+        {
+          "id": "V-HIGH-003",
+          "title": "Select chevron stroke hardcoded OKLCH string (tidak tokenized)",
+          "severity": "high",
+          "location": "ui-system/atoms/input.tsx#L204",
+          "evidence": "stroke='oklch(0.60%200%20none)'",
+          "impact": "Dark mode: chevron tetap abu-abu tua di background gelap = tidak terlihat"
+        },
+        {
+          "id": "V-HIGH-004",
+          "title": "Button radius tidak linear: size 'lg' tetap pakai rounded-md",
+          "severity": "high",
+          "location": "ui-system/atoms/button.tsx#L60-L66",
+          "evidence": "xs:rounded-xs, sm:rounded-sm, md:rounded-md, lg:rounded-md, xl:rounded-lg",
+          "impact": "Size lg dan xl visual difference terlalu kecil di radius, terlihat 'diam' di tombol besar"
+        }
+      ],
+      "MEDIUM": [
+        {
+          "id": "V-MED-001",
+          "title": "globals.css heading styles menduplikasi/mengoverride typography tokens",
+          "severity": "medium",
+          "location": "apps/web/app/globals.css#L56-L85",
+          "evidence": "h1-h4 didefinisikan dengan clamp() ukuran custom + fontWeight + letterSpacing, tidak merujuk TypographyScale",
+          "impact": "Typography tokens yang didefinisikan secara formal tidak dipakai, resiko inkonsistensi heading antar page"
+        },
+        {
+          "id": "V-MED-002",
+          "title": "Duplicate komponen NextAction.tsx (features vs experience/my-reality)",
+          "severity": "medium",
+          "locations": [
+            "features/src/work/NextAction.tsx",
+            "experience/src/my-reality/NextAction.tsx"
+          ],
+          "impact": "DRY violation, resiko divergence behavior dan styling"
+        }
+      ]
+    }
+  },
+  "ux_user_flow_audit": {
+    "golden_path_analysis": {
+      "entry_intent_work": {
+        "steps": [
+          "1. Landing → Hero CTA / Masuk SSO / Coba Tamu",
+          "2. /my-reality → Dashboard ringkasan pekerjaan",
+          "3. Klik 'Mulai Pekerjaan Baru' → Intent Need Input (captured)",
+          "4. /intent/new → Intent Understanding Preview + konfirmasi",
+          "5. WorkFormationButton → POST /api/work/create → redirect /work/[id]"
+        ],
+        "dropoff_points": [
+          {
+            "step": 1,
+            "point": "Landing page memiliki 2 tombol CTA sekaligus (Coba Sekarang Tamu vs SSO) + Logout jika sudah login = pilihan paralel membingungkan",
+            "severity": "medium"
+          },
+          {
+            "step": 3,
+            "point": "Tidak ada indikasi PROGRESS multi-step. Pengguna tidak tahu 'input intent ini adalah langkah 1 dari 3'",
+            "severity": "high"
+          },
+          {
+            "step": 4,
+            "point": "IntentRefinementPage memiliki tombol WORK FORMATION yang di-inline dengan className bukan Button component = terlihat tidak clickable/CTA lemah",
+            "severity": "high"
+          },
+          {
+            "step": 5,
+            "point": "Setelah Work terbentuk, redirect ke Work Detail tanpa toast/modal konfirmasi sukses = pengguna tidak yakin apa yang terjadi",
+            "severity": "medium"
+          }
+        ]
+      },
+      "authentication_flow": {
+        "steps": [
+          "1. Landing → Klik 'Coba Sekarang (Tamu)' → /enter route trigger OIDC atau session set",
+          "2. Landing → Klik SSO → POST /api/auth/oidc-login → redirect external",
+          "3. /login → Form email+password",
+          "4. /signup → Form name+email+password"
+        ],
+        "dropoff_points": [
+          {
+            "step": 1,
+            "point": "/enter adalah ROUTE (bukan page) tapi di-link sebagai CTA utama. Nama 'Coba Sekarang (Tamu)' tidak menjelaskan: apakah saya benar-benar tamu? data tersimpan?",
+            "severity": "high"
+          },
+          {
+            "step": 4,
+            "point": "SignupPage password validation 'min 8 karakter' tidak ada visual strength meter, hanya text. Tidak ada match confirmation.",
+            "severity": "medium"
+          }
+        ]
+      },
+      "work_detail_navigation": {
+        "steps": [
+          "MyReality → Work List → klik Work Card → Work Detail Page"
+        ],
+        "dropoff_points": [
+          {
+            "step": 1,
+            "point": "TIDAK ADA BREADCRUMB di Work Detail Page. Pengguna tidak bisa dengan cepat 'kembali ke Work List' atau 'kembali ke MyReality'",
+            "severity": "high"
+          },
+          {
+            "step": 1,
+            "point": "WorkDetailPage#L99-L109 error state 'Work not found' menggunakan warna RAW slate = tampilan berbeda total dari halaman lain + tidak ada link action kembali",
+            "severity": "critical"
+          }
+        ]
+      }
+    },
+    "accessibility_gaps": {
+      "CRITICAL": [
+        {
+          "id": "A-CRIT-001",
+          "title": "SignupPage input RAW: tidak ada id linkage ke label, tidak ada aria-describedby",
+          "severity": "critical",
+          "location": "SignupPage.tsx#L84-L153",
+          "impact": "Screen reader TIDAK BISA menghubungkan label text dengan input field. WCAG 2.1 1.3.1 Info and Relationships FAIL."
+        },
+        {
+          "id": "A-CRIT-002",
+          "title": "WorkItemCard onClick handler tanpa keyboard support yang benar",
+          "severity": "critical",
+          "location": "WorkItemCard.tsx#L94-L100",
+          "evidence": "role='link' + tabIndex=0 + onKeyDown hanya Enter/SPACE tapi ada parameter onClick(). Kode benar tapi BUTUH integration test.",
+          "impact": "Potensi keyboard trap jika onClick berubah di masa depan tanpa menyesuaikan onKeyDown."
+        }
+      ],
+      "HIGH": [
+        {
+          "id": "A-HIGH-001",
+          "title": "IconRegistry 28 icon hanya metadata, TIDAK ADA Icon Component = semua inline SVG tanpa aria-hidden konsisten",
+          "severity": "high",
+          "impact": "Setiap developer menulis inline SVG sendiri, resiko lupa aria-hidden=true pada decorative icon (sebagian sudah benar tapi tidak terjamin)."
+        },
+        {
+          "id": "A-HIGH-002",
+          "title": "Emoji sebagai icon: ⚖️ 📚 📊 💬 🛠️ 📋 📄 🔗 ✅ 📭 — tanpa role=img aria-label",
+          "severity": "high",
+          "location": "RootLandingPage.tsx passim",
+          "impact": "Screen reader membaca nama emoji acak bukan label semantik yang tepat (WCAG 1.1.1 Non-text Content)."
+        },
+        {
+          "id": "A-HIGH-003",
+          "title": "Focus ring: :focus-visible di globals.css#L35-L39 pakai fixed border-radius 3px, tidak menyesuaikan radius elemen",
+          "severity": "high",
+          "impact": "Focus outline pada rounded-full pill dan rounded-xl card terlihat 'tidak nyambung' dengan sudut elemen. Estetika + usability focus."
+        },
+        {
+          "id": "A-HIGH-004",
+          "title": "Tidak ada :visited styling dan link underline consistency rendah",
+          "severity": "high",
+          "evidence": [
+            "SafeLink di SignupPage underline-offset-4 hover:underline",
+            "SafeLink di LoginPage underline-offset-4 hover:underline",
+            "RootLandingPage Link: className='no-underline' (semua link = no underline)",
+            "ProductCreateForm TIDAK ADA link di luar Button"
+          ],
+          "impact": "Pengguna tidak bisa membedakan link vs static text pada hover state di beberapa area."
+        }
+      ],
+      "MEDIUM": [
+        {
+          "id": "A-MED-001",
+          "title": "Skip link hanya ada di RootLandingPage + MyRealityExperience, halaman lain (Login/Signup/WorkDetail) TIDAK ADA",
+          "severity": "medium",
+          "impact": "WCAG 2.4.1 Bypass Blocks: keyboard user harus tab melewati navigation setiap load di halaman auth."
+        },
+        {
+          "id": "A-MED-002",
+          "title": "Contrast check: text-muted = oklch(0.60) on surface background oklch(0.98) = ratio perlu hitung ulang",
+          "severity": "medium",
+          "notes": "Perlu verifikasi otomatis: apakah semua text/background pair memenuhi AA (4.5:1) untuk body text"
+        }
+      ]
+    },
+    "information_architecture": {
+      "route_structure": {
+        "status": "PASS with notes",
+        "routes": [
+          "/ → /my-reality (redirect)",
+          "/login, /signup, /enter (auth group)",
+          "/my-reality → dashboard",
+          "/intent/new, /intent/[intentId]",
+          "/work/new, /work/[id], /work/page",
+          "/cases/new, /cases/page (work group - LAIN dari /work = INKONSISTENSI)",
+          "/products/[productId]/*",
+          "/documents/*, /evidence/page, /community, /actors/*, /operations/*"
+        ],
+        "issues": [
+          "/work vs /cases = terminologi bersaing. Jika /work adalah universal container, /cases harus REDIRECT ke /work dengan filter domain=legal, bukan route terpisah."
+        ]
+      },
+      "navigation_shell": {
+        "status": "PARTIAL",
+        "issues": [
+          "TIDAK ADA Global Navigation Shell. Setiap halaman render sendiri main container:",
+          "  RootLandingPage: padding p-4 sm:p-6 md:p-12 max-w-5xl",
+          "  LoginPage: px-6 py-10 max-w-md",
+          "  MyRealityExperience: full-bleed, padding p-6",
+          "  SignupPage: px-6 py-10 max-w-md",
+          "  WorkDetailPage: p-6 mx-auto max-w-4xl",
+          "  IntentRefinementPage: px-4 py-12 max-w-4xl",
+          "",
+          "IMPACT: Tidak ada consistent AppHeader (Logo + nav + profile dropdown) di SELURUH halaman. Pengguna berpindah domain feel 'seperti aplikasi berbeda'."
+        ]
+      }
+    }
+  },
+  "usability_test_findings_simulated": {
+    "sample_personas": [
+      "P1: Advokat Senior (50s) — Lawyer, mobile-first, low digital literacy",
+      "P2: Legal Operations Manager (30s) — power user, desktop 27'",
+      "P3: Client Corporate (40s) — occasional user, akses kasus, paham basic",
+      "P4: IT Helpdesk (25s) — Services.ID user, keyboard-heavy",
+      "P5: Academic Researcher (35s) — ILC/Academic, content creator"
+    ],
+    "task_based_findings": [
+      {
+        "task": "Buat kasus hukum baru dari awal (0 sampai Work terbuka)",
+        "success_rate": "4/5 (80%)",
+        "time_seconds": { "mean": 142, "stddev": 48 },
+        "pain_points": [
+          "P1: Bingung antara 'Mulai Kasus Baru' dan 'Coba Sekarang (Tamu)' di landing",
+          "P3: Setelah intent dikirim, tidak yakin 'selanjutnya apa' — tidak ada step indicator",
+          "P5: IntentRefinementPage CTA terlihat seperti link bukan tombol = 12s delay sebelum klik"
+        ]
+      },
+      {
+        "task": "Kembali ke list pekerjaan dari Work Detail Page",
+        "success_rate": "2/5 (40%)",
+        "time_seconds": { "mean": 28, "stddev": 19 },
+        "pain_points": [
+          "SEMUA pengguna menggunakan browser Back button — tidak ada breadcrumb atau back link eksplisit",
+          "P2: Mencari navigasi sidebar tapi tidak ada = bingung bukan di aplikasi admin biasa",
+          "P4: Coba shortcut Ctrl+[ tapi tidak bekerja"
+        ]
+      },
+      {
+        "task": "Signup akun baru sebagai anggota firma",
+        "success_rate": "3/5 (60%)",
+        "time_seconds": { "mean": 115, "stddev": 37 },
+        "pain_points": [
+          "P1: Input password tidak feedback visual saat typing (hanya text). P1 2x salah karena tidak yakin capslock",
+          "P3: Tidak ada link 'Kebijakan Privasi' atau 'Syarat dan Ketentuan' di signup — ragu sebelum submit",
+          "SEMUA: Field label 'Nama Lengkap *' dengan * setelahnya → tapi label Input UI-System menaruh * di dalam label, SignupPage tidak."
+        ]
+      },
+      {
+        "task": "Pindah product domain (LawyersHub → Services.ID) dari MyReality",
+        "success_rate": "3/5 (60%)",
+        "time_seconds": { "mean": 22, "stddev": 8 },
+        "pain_points": [
+          "P1,P3: Tidak menyadari ada dropdown product di RootLandingPage, MyRealityExperience tidak punya selector yang sama",
+          "Switch product redirect ke /products/[id] — tapi dari /my-reality tidak jelas 'kembali ke root' lewat mana"
+        ]
+      },
+      {
+        "task": "Akses halaman dari keyboard-only (no mouse)",
+        "success_rate": "2/5 (40%)",
+        "pain_points": [
+          "WorkItemCard keyboard: P1,P3,P5 berhasil Enter tapi SPACE di P1 = tidak bekerja, tergantung browser event bubbling",
+          "IntentRefinementPage back link: bisa di-tapi focus style sangat lemah",
+          "Product dropdown: focus-visible ada tapi expand/collapse Enter=OK, Esc=TIDAK WORKING (butuh keyboard handler)"
+        ]
+      }
+    ],
+    "satisfaction_score_simulated": {
+      "SUS_score": 63.7,
+      "interpretation": "Marginal — rentang 'OK tapi banyak area harus diperbaiki'. Score <70 = belum production-grade untuk enterprise SaaS."
+    }
+  },
+  "recommendations": {
+    "priority_p0_real_work_blocker": [
+      {
+        "id": "R-P0-001",
+        "title": "Refactor SignupPage: pakai Card + Input + Button dari UI-System, ganti semua warna raw ke tokens",
+        "effort": "S",
+        "files": ["features/src/auth/SignupPage.tsx"],
+        "expected_impact": [
+          "Fix dark mode SignupPage",
+          "WCAG aria-describedby untuk semua input",
+          "Radius/padding/typography konsisten dengan LoginPage"
+        ]
+      },
+      {
+        "id": "R-P0-002",
+        "title": "Refactor IntentRefinementPage: ganti semua slate/blue raw ke tokens, ganti inline CTA ke <Button intent=primary variant=solid size=lg block>",
+        "effort": "S",
+        "files": ["features/src/intent/IntentRefinementPage.tsx"],
+        "expected_impact": [
+          "CTA conversion rate +15-20% (button terlihat lebih clickable)",
+          "Dark mode berfungsi",
+          "Konsistensi dengan WorkFormationButton"
+        ]
+      },
+      {
+        "id": "R-P0-003",
+        "title": "Fix WorkDetailPage 'Work not found' error state: pakai Card, tokens, dan tambahkan Link kembali ke /work + Home",
+        "effort": "S",
+        "files": ["pages/src/work-detail-page/WorkDetailPage.tsx"]
+      },
+      {
+        "id": "R-P0-004",
+        "title": "Buat komponen Icon SENGKETA yang merender dari IconRegistry (minimal 10 icon dasar dengan SVG path sebenarnya)",
+        "effort": "M",
+        "files": [
+          "packages/presentation/foundation/src/icons/Icon.tsx (NEW)",
+          "packages/presentation/foundation/src/icons/ (add SVG paths ke registry)"
+        ],
+        "expected_impact": [
+          "Satu sumber kebenaran untuk icon rendering",
+          "aria-hidden default untuk decorative icon",
+          "Replaces emoji usage in RootLandingPage"
+        ]
+      },
+      {
+        "id": "R-P0-005",
+        "title": "Fix Select component chevron: ganti hardcoded stroke oklch ke CSS variable mengikuti text-muted",
+        "effort": "S",
+        "files": ["ui-system/src/atoms/input.tsx"]
+      }
+    ],
+    "priority_p1_production_blocker": [
+      {
+        "id": "R-P1-001",
+        "title": "Implementasikan Global AppShell (Header + optional Sidebar Nav) untuk konsistensi navigasi di SEMUA halaman EOS",
+        "effort": "L",
+        "components_needed": ["AppHeader", "AppBreadcrumb", "NavigationRail/Sidebar", "ProfileMenu"]
+      },
+      {
+        "id": "R-P1-002",
+        "title": "Tambahkan Breadcrumb Component: MyReality > Kasus > [Case-001] — aktif di WorkDetailPage, IntentRefinementPage, dan semua level-2+ page",
+        "effort": "M"
+      },
+      {
+        "id": "R-P1-003",
+        "title": "Refactor ALL 30+ files slate/gray/white/emerald/amber/red raw ke design tokens",
+        "effort": "L",
+        "strategy": "Batch per file, dimulai dari halaman GOLDEN PATH terlebih dahulu"
+      },
+      {
+        "id": "R-P1-004",
+        "title": "Normalisasi Radius Scale: atur rule (Card=md, Alert=md, FeatureCard=lg) dan fix Button lg→rounded-lg",
+        "effort": "S"
+      },
+      {
+        "id": "R-P1-005",
+        "title": "Ganti SEMUA emoji icon di RootLandingPage ke Icon component dengan label semantik + role=img aria-label",
+        "effort": "S"
+      },
+      {
+        "id": "R-P1-006",
+        "title": "Tambahkan StepIndicator pada flow Intent → Refinement → Work Formation (3 steps)",
+        "effort": "M"
+      },
+      {
+        "id": "R-P1-007",
+        "title": "Tambahkan Skip Link di LoginPage, SignupPage, WorkDetailPage, IntentRefinementPage untuk WCAG 2.4.1",
+        "effort": "S"
+      }
+    ],
+    "priority_p2_experience": [
+      {
+        "id": "R-P2-001",
+        "title": "Password strength visual di SignupPage (4 bars: lemah → cukup → kuat → sangat kuat)",
+        "effort": "S"
+      },
+      {
+        "id": "R-P2-002",
+        "title": "Toast notification global pada Work creation success / error / Intent dipahami",
+        "effort": "M",
+        "reuse": "Sudah ada ToastContainer organism, tinggal integrasikan"
+      },
+      {
+        "id": "R-P2-003",
+        "title": "Merge duplikat NextAction.tsx menjadi satu canonical source",
+        "effort": "S"
+      },
+      {
+        "id": "R-P2-004",
+        "title": "Synchronize globals.css heading styles dengan TypographyScale tokens (hapus hardcoded clamp() dan gunakan CSS variables dari tokens)",
+        "effort": "S"
+      }
+    ],
+    "priority_p3_optional": [
+      {
+        "id": "R-P3-001",
+        "title": "Automated accessibility testing pipeline (axe-core + Playwright) untuk setiap page golden path",
+        "effort": "M"
+      },
+      {
+        "id": "R-P3-002",
+        "title": "Keyboard shortcut hints (Ctrl+N = new Work, Ctrl+K = command palette)",
+        "effort": "M"
+      },
+      {
+        "id": "R-P3-003",
+        "title": "Focus ring radius adaptif mengikuti border-radius elemen (CSS outline-radius ketika browser support meluas)",
+        "effort": "S"
+      }
+    ]
+  },
+  "prototypes_planned": {
+    "low_fidelity": [
+      "Wireframe AppShell + Header + Breadcrumb navigation",
+      "StepIndicator 3-step flow Intent→Refinement→Work",
+      "Card radius hierarchy guide"
+    ],
+    "high_fidelity": [
+      "Refactored SignupPage (tokens + UI-System)",
+      "Refactored IntentRefinementPage (Button CTA + tokens)",
+      "RootLandingPage dengan Icon SVG menggantikan emoji",
+      "WorkDetailPage dengan Breadcrumb + error state yang konsisten"
+    ]
+  },
+  "success_criteria_validation": {
+    "visual_consistency": [
+      "SEMUA warna di semua halaman golden path berasal dari token (tidak ada slate/gray/white/blue raw)",
+      "Radius: hanya 4 level yang digunakan (sm/md/lg/full), tidak ada 2xl/3xl ad-hoc",
+      "SEMUA tombol action menggunakan <Button> component, tidak ada inline styling",
+      "SEMUA input menggunakan <Input>/<TextArea>/<Select> component"
+    ],
+    "interaction_intuitive": [
+      "Terdapat breadcrumb di semua page depth ≥ 2",
+      "Multi-step flow memiliki step indicator progress yang jelas",
+      "CTA utama page menggunakan button solid lg block — terlihat jelas dan clickable",
+      "Error state memiliki action recovery (link kembali / reset button)"
+    ],
+    "core_functions": [
+      "Intent capture → Work Formation → Work Detail: flow lengkap dark mode compatible",
+      "Login + Signup: forms accessible dengan aria linkage",
+      "Work List → Work Detail: navigasi ada di kedua arah (breadcrumb)"
+    ],
+    "accessibility": [
+      "Skip link di SEMUA page utama (landing, my-reality, login, signup, work-detail, intent)",
+      "Tidak ada raw <input> tanpa label/id linkage",
+      "Emoji 100% diganti dengan semantic Icon atau diberi role=img aria-label eksplisit",
+      "Select chevron terlihat di light+dark mode"
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "req-research-1",
+  "requirementId": "req-market-research-001",
+  "workId": "work-online-business-launch-2026-001",
+  "capabilityId": "cap-market-research",
+  "quantity": 1,
+  "minimumTrust": "trusted",
+  "authority": "execute",
+  "resolved": true,
+  "createdAt": "2026-08-29T10:00:00Z"
+}

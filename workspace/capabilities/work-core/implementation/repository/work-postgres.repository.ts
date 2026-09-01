@@ -20,28 +20,38 @@ export class WorkRepositoryPostgres implements CapabilityRepository<WorkAggregat
       priority: work.priority || "medium",
       linkedIntentId: work.linkedIntentId,
       domainType: work.domainType || "generic",
+      workMode: work.workMode || "oneshot",
       sessionId: work.sessionId!,
       tenantId: work.tenantId!,
       workspaceId: work.workspaceId!,
       actorId: work.actorId!,
       status: work.status || "draft",
       createdAt: new Date().toISOString(),
+      requiredCapabilities: work.requiredCapabilities || [],
       ...work,
-    };
+    } as WorkAggregate;
 
     this.works.set(id, savedWork);
     return savedWork;
   }
 
-  async byId(id: string): Promise<WorkAggregate | null> {
-    return this.works.get(id) || null;
+  async byId(id: string): Promise<WorkAggregate | undefined> {
+    return this.works.get(id);
   }
 
-  async byWorkId(workId: string): Promise<WorkAggregate | null> {
+  async byWorkId(workId: string): Promise<WorkAggregate | undefined> {
     for (const work of this.works.values()) {
       if (work.workId === workId) return work;
     }
-    return null;
+    return undefined;
+  }
+
+  async list(): Promise<readonly WorkAggregate[]> {
+    return Array.from(this.works.values());
+  }
+
+  async remove(id: string): Promise<boolean> {
+    return this.works.delete(id);
   }
 
   async listByWorkspace(workspaceId: string): Promise<WorkAggregate[]> {

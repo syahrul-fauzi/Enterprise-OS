@@ -1,0 +1,15 @@
+{
+  "id": "binding-req-frontend-dev-0",
+  "bindingId": "wb-work-small-business-launch-001-req-frontend-dev-0-1788153351498",
+  "compositionId": "composition-work-small-business-launch-001-1788153351497",
+  "actorProjectionId": "sp-001",
+  "providerType": "external-service",
+  "workId": "work-small-business-launch-001",
+  "capabilityReference": "front-end-dev",
+  "requirementId": "req-frontend-dev",
+  "role": "Frontend Developer",
+  "authority": "execute",
+  "status": "pending",
+  "boundAt": "2026-08-31T05:15:51.498Z",
+  "completedAt": "2026-08-31T05:15:51.498Z"
+}

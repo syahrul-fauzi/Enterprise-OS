@@ -1,0 +1,16 @@
+{
+  "id": "binding-req-deploy-1-0",
+  "bindingId": "wb-work-online-business-launch-2026-001-req-deploy-1-0-1788149525348",
+  "compositionId": "composition-work-online-business-launch-2026-001-1788149525347",
+  "actorProjectionId": "service-vercel-deployment-2026",
+  "providerType": "external-service",
+  "workId": "work-online-business-launch-2026-001",
+  "capabilityReference": "cap-cloud-deployment",
+  "requirementId": "req-cloud-deployment-001",
+  "role": "Team Member",
+  "authority": "execute",
+  "status": "pending",
+  "boundAt": "2026-08-31T04:12:05.348Z",
+  "actorId": null,
+  "tenantId": null
+}

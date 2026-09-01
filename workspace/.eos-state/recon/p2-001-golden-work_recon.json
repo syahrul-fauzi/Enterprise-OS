@@ -1,0 +1,51 @@
+{
+  "work_id": "work-l1-p2-001-golden-work",
+  "recon_completed_at": "2026-08-31T12:31:03.000Z",
+  "locked_boundaries_verified": {
+    "core_architecture_frozen": true,
+    "no_new_primitives_required": true,
+    "rule_of_two_compliant": true,
+    "atomic_composition_unchanged": true
+  },
+  "existing_capabilities_found": [
+    "/app/api/work/create/route.ts — canonical work creation endpoint",
+    "/app/api/work/[id]/route.ts — canonical work update endpoint",
+    "canonicalWorkStore — in-memory persistence layer",
+    "workspaceWorkIndex — workspace-level work tracking",
+    "buildMyRealityModel — My Reality feed generation",
+    "assignProviderAction — existing provider assignment action",
+    "addEvidenceAction — existing evidence addition action",
+    "markCompletedAction — existing work completion action",
+    "/work/new/page.tsx — existing work creation form",
+    "/work/[id]/page.tsx — existing work detail page with activity log"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "canonical_work_creation",
+      "canonical_work_mutation",
+      "my_reality_model_generation",
+      "work_creation_ui",
+      "work_detail_ui",
+      "activity_log_tracking",
+      "evidence_attachment",
+      "provider_assignment",
+      "work_status_transition"
+    ],
+    "required_new": [
+      "MINIMAL: fix golden fixture ID mapping in canonical store to point to existing default-work-1",
+      "MINIMAL: update /work/new form to save to canonical store instead of legacy case creation flow"
+    ],
+    "reuse_percentage": 94.7
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "REUSE ALL existing primitives from P0-003/P0-004",
+    "Only implement 2 minimal fixes: map default-work-1 to canonical store, fix /work/new to use canonical create API",
+    "No new components, no new database changes, no core modifications",
+    "Validate golden path flow: / → /workspace → /work/new → /work/[id] → assign provider → add evidence → mark complete → My Reality sees work"
+  ]
+}

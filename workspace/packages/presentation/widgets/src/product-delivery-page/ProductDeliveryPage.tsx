@@ -6,19 +6,30 @@ import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShel
 import { DeliveryWorkspace } from "../delivery-workspace/DeliveryWorkspace";
 import { getProductExperience } from "@repo/presentation-experience";
 import type { ProductPreviewBinding } from "@repo/presentation-types";
+import type { WorkspaceSession } from "@repo/core-kernel";
 
 export interface ProductDeliveryPageProps {
   readonly productId: string;
   readonly binding: ProductPreviewBinding;
+  readonly session: WorkspaceSession;
 }
 
-export function ProductDeliveryPage({ productId, binding }: ProductDeliveryPageProps) {
+export function ProductDeliveryPage({ productId, binding, session }: ProductDeliveryPageProps) {
   const experience = getProductExperience(productId);
 
   return (
     <>
       <ProductPreviewShell binding={binding} mode="delivery" />
-      <DeliveryWorkspace productId={productId} />
+      <div className="mx-auto max-w-6xl px-6 py-10">
+        <DeliveryWorkspace 
+          productId={productId} 
+          requirementId={null}
+          displayName={`Delivery: ${productId}`}
+          copy={{
+            workspaceDescription: "Pantau progres penyelesaian produk beserta seluruh catatan bukti pendukung secara lengkap."
+          }}
+        />
+      </div>
     </>
   );
 }

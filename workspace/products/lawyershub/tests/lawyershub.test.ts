@@ -302,6 +302,7 @@ test.describe("LH-CASE-002 · Matter↔Document Composite E2E (legal-case + lega
     const expectedKeyContains = ["case.create", "assignLawyer", "document.create", "document.sign", "document.archive"];
     for (let i = 0; i < ledger.records.length; i += 1) {
       const r = ledger.records[i];
+      if (!r) continue;
       assert.equal(r.ok, true, `record ${i} ok:true`);
       assert.ok(
         r.commandKey.includes(expectedKeyContains[i]),

@@ -1,0 +1,29 @@
+{
+  "work_id": "work-l1-p2-001-golden-work",
+  "recon_completed_at": "2026-08-31T12:32:32.525Z",
+  "locked_boundaries_verified": {
+    "core_architecture_frozen": true,
+    "no_new_primitives_required": true,
+    "rule_of_two_maintained": true
+  },
+  "existing_capabilities_found": [
+    "work.create, work.update"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "canonical-work-store",
+      "work-update-api",
+      "my-reality-model",
+      "work-detail-page",
+      "work-creation-form"
+    ],
+    "required_new": [],
+    "reuse_percentage": 71.42857142857143
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": []
+}

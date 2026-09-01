@@ -6,8 +6,8 @@ import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShel
 import { useWorkspaceSession, useLocale } from "@repo/presentation-hooks";
 import type { ProductPreviewBinding } from "@repo/presentation-types";
 // Import canonical perspectives dari shared work-reality types (eliminates duplication)
-import type { WorkRealityPerspective as WorkPerspective } from "@repo/presentation-experience/src/work-reality/work-reality.types";
-import { WORK_PERSPECTIVES } from "@repo/presentation-experience/src/work-reality/work-reality.types";
+import type { WorkRealityPerspective as WorkPerspective } from "@repo/presentation-experience/work-reality/work-reality.types";
+import { ALL_PERSPECTIVES } from "@repo/presentation-experience/work-reality/work-reality.types";
 
 // Rehydrate session from localStorage + cookie for guaranteed persistence across refresh (SSR-safe)
 function hydrateSessionState(caseId: string) {
@@ -95,6 +95,7 @@ export interface CaseDetailPageProps {
   readonly productId: string;
   readonly caseId: string;
   readonly binding: ProductPreviewBinding;
+  readonly session: unknown;
 }
 
 type CapabilityStepState = "done" | "current" | "pending";
@@ -399,7 +400,7 @@ function deriveActivity(caseData: CaseAggregate | null, docs: DocumentAggregate[
 
 
 
-export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPageProps) {
+export function CaseDetailPage({ productId, caseId, binding, session: routeSession }: CaseDetailPageProps & { readonly session: unknown }) {
   void productId;
   const { session, authenticated, cachedSession } = useWorkspaceSession();
   const { t, formatDate } = useLocale();
@@ -410,7 +411,7 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
   const [documents, setDocuments] = useState<DocumentAggregate[]>(savedState?.documents ?? []);
   const [evidenceCount, setEvidenceCount] = useState<number>(savedState?.evidenceCount ?? 0);
   const [decisionsCount, setDecisionsCount] = useState<number>(savedState?.decisionsCount ?? 0);
-  const [loading, setLoading] = useState<boolean>(false); // Skip loading if we have cached state
+  const [loading, setLoading] = useState<boolean>(true); // Start with loading state to ensure proper UX
   const [error, setError] = useState<string | null>(null);
   const [showAssignLawyer, setShowAssignLawyer] = useState<boolean>(savedState?.showAssignLawyer ?? false);
   const [submittingAssign, setSubmittingAssign] = useState(false);
@@ -705,9 +706,37 @@ export function CaseDetailPage({ productId, caseId, binding }: CaseDetailPagePro
                   >
                     ← Kembali ke Semua Pekerjaan
                   </a>
-                  <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                    {loading ? "Memuat Pekerjaan…" : caseData ? caseData.title : "Kasus tidak ditemukan"}
-                  </h1>
+                  {loading ? (
+                    <div className="p-12 text-center border rounded flex flex-col items-center gap-4">
+                      <div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
+                      <p className="text-lg font-medium text-text-primary">Memuat detail kasus...</p>
+                    </div>
+                  ) : error ? (
+                    <div className="p-12 text-center border border-red-200 bg-red-50 rounded flex flex-col items-center gap-4">
+                      <div className="text-6xl" aria-hidden="true">⚠️</div>
+                      <h3 className="text-xl font-bold text-red-800">Gagal memuat kasus</h3>
+                      <p className="text-red-700 max-w-md">{error}</p>
+                      <button 
+                        onClick={() => { setLoading(true); setError(null); loadAll(); }}
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                      >
+                        Coba Lagi
+                      </button>
+                    </div>
+                  ) : !caseData ? (
+                    <div className="p-12 text-center border border-dashed rounded flex flex-col items-center gap-4">
+                      <div className="text-6xl" aria-hidden="true">📭</div>
+                      <h3 className="text-xl font-bold text-text-primary">Kasus tidak ditemukan</h3>
+                      <p className="text-text-secondary max-w-md">Kasus yang Anda cari tidak ada atau Anda tidak memiliki akses untuk melihatnya.</p>
+                      <a href="/cases" className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition">
+                        Kembali ke Daftar Kasus
+                      </a>
+                    </div>
+                  ) : (
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+                      {caseData.title}
+                    </h1>
+                  )}
                   <div className="font-mono text-xs tracking-wide text-slate-500">
                     P-{workIdLabel}
                   </div>

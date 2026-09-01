@@ -1,5 +1,7 @@
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import { CaseId, type CaseRepository, type CaseAggregate, type CaseId as CaseIdType, CaseStatus, CasePriority } from "../../contracts/index";
+// Import canonical realtime notifier from core package (D1 architecture compliance)
+import { notifyWorkspaceListeners } from "../../../../packages/core/realtime/src/workspace-notifier";
 
 // In-memory store for cases - isolated to this module
 const STORE = new Map<string, CaseAggregate>();
@@ -19,6 +21,21 @@ function clone<T extends CaseAggregate>(entity: T): T {
 
 // Track state transition listeners for workflow hooks
 const stateTransitionListeners: Array<(previous: CaseAggregate, updated: CaseAggregate) => Promise<void>> = [];
+
+// Public API to register state transition listeners
+export function addStateTransitionListener(listener: (previous: CaseAggregate, updated: CaseAggregate) => Promise<void>) {
+  stateTransitionListeners.push(listener);
+  console.log("[CaseRepository] New state transition listener registered");
+}
+
+// Public API to remove state transition listener (for cleanup)
+export function removeStateTransitionListener(listener: (previous: CaseAggregate, updated: CaseAggregate) => Promise<void>) {
+  const index = stateTransitionListeners.indexOf(listener);
+  if (index > -1) {
+    stateTransitionListeners.splice(index, 1);
+    console.log("[CaseRepository] State transition listener removed");
+  }
+}
 
 // Global scanner interval for cleanup in tests
 declare global {
@@ -60,9 +77,9 @@ async function startDeadlineDetectionScanner(): Promise<void> {
   console.log("[CaseRepository] Deadline detection scanner started");
 }
 
-export class CaseRepositoryInMemory implements CaseRepository {
-  readonly kind: "repository" = "repository";
-  readonly entityName: "Case" = "Case";
+export const CaseRepositoryInMemory: CaseRepository = {
+  kind: "repository",
+  entityName: "Case",
 
   // Test isolation methods
   clear() {
@@ -70,7 +87,7 @@ export class CaseRepositoryInMemory implements CaseRepository {
     notifiedDeadlineCases.clear();
     stateTransitionListeners.length = 0;
     console.log("[CaseRepository] In-memory store cleared for test isolation - test will create its own case data");
-  }
+  },
 
   stopScanner() {
     if (globalThis.__EOS_CASE_SCANNER_INTERVAL__) {
@@ -78,7 +95,7 @@ export class CaseRepositoryInMemory implements CaseRepository {
       globalThis.__EOS_CASE_SCANNER_INTERVAL__ = null;
       console.log("[CaseRepository] Deadline scanner stopped during test cleanup");
     }
-  }
+  },
 
   // Load from disk method for persistence restore tests
   async loadFromDisk(filePath: string) {
@@ -98,7 +115,7 @@ export class CaseRepositoryInMemory implements CaseRepository {
       console.error(`[CaseRepositoryInMemory] Failed to load from disk: ${filePath}`, err);
       throw err;
     }
-  }
+  },
 
   // WORK-015: Enforce tenant isolation at repository layer - defense-in-depth
   async byId(id: string, context?: { tenantId: string; workspaceId: string }) {
@@ -130,7 +147,7 @@ export class CaseRepositoryInMemory implements CaseRepository {
     }
     
     return clone(raw);
-  }
+  },
 
   async list(context?: { tenantId: string; workspaceId: string }): Promise<readonly CaseAggregate[]> {
     let cases = Array.from(STORE.values()) as CaseAggregate[];
@@ -145,12 +162,12 @@ export class CaseRepositoryInMemory implements CaseRepository {
     }
     
     return cases.map(clone);
-  }
+  },
 
   async listByTenant(tenantId: string): Promise<readonly CaseAggregate[]> {
     const cases = Array.from(STORE.values()).filter(c => (c as any).tenantId === tenantId) as CaseAggregate[];
     return cases.map(clone);
-  }
+  },
 
   async listByWorkspace(workspaceId: string): Promise<readonly CaseAggregate[]> {
     let cases: CaseAggregate[];
@@ -161,7 +178,7 @@ export class CaseRepositoryInMemory implements CaseRepository {
       cases = Array.from(STORE.values()) as CaseAggregate[];
     }
     return cases.map(clone);
-  }
+  },
 
   async save(entity: CaseAggregate, context?: { tenantId: string; workspaceId: string; actorId: string }) {
     const existing = STORE.get(entity.id);
@@ -198,6 +215,13 @@ export class CaseRepositoryInMemory implements CaseRepository {
     
     // Trigger state transition listeners if state changed
     if (existing && existing.status !== entity.status) {
+      // Trigger realtime updates for all connected clients in this workspace
+      const workspaceId = (updated as any).workspaceId;
+      if (workspaceId) {
+        notifyWorkspaceListeners(workspaceId);
+        console.log(`[CaseRepository] State changed for case ${entity.id}, notified workspace ${workspaceId}`);
+      }
+      
       for (const listener of stateTransitionListeners) {
         try {
           await listener(existing, updated);
@@ -219,7 +243,7 @@ export class CaseRepositoryInMemory implements CaseRepository {
     });
     
     return clone(updated);
-  }
+  },
 
   async remove(id: string, context?: { tenantId: string; workspaceId: string }) {
     const existing = STORE.get(id);
@@ -238,8 +262,8 @@ export class CaseRepositoryInMemory implements CaseRepository {
             sourceRef: "CaseRepositoryInMemory.remove",
             success: false,
             input: { caseId: id },
-            result: { reason: "cross_tenant_isolation_violation", caseTenantId, requestedTenantId: context.tenantId },
-            tenant_id: context.tenantId,
+            result: { reason: "tenant_isolation_violation" },
+            tenant_id: context?.tenantId || null,
             inputRefs: [id]
           });
           return false;
@@ -272,8 +296,8 @@ export class CaseRepositoryInMemory implements CaseRepository {
       });
     }
     return deleted;
-  }
-}
+  },
+};
 
 export const newCaseId = (() => {
   // FIX CONTINUITY BREAK-001: Generate alphanumeric case IDs that match the universal work_id pattern

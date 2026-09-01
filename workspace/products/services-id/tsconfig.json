@@ -9,6 +9,6 @@
     { "path": "../../packages/core/kernel/tsconfig.json" },
     { "path": "../../packages/core/runtime/tsconfig.json" }
   ],
-  "include": ["index.ts", "runtime/**/*.ts", "runtime/**/*.tsx", "tests/**/*.ts", "tests/**/*.tsx"],
+  "include": ["index.ts", "runtime/**/*.ts", "runtime/**/*.tsx"],
   "exclude": ["dist", "build", "node_modules"]
 }

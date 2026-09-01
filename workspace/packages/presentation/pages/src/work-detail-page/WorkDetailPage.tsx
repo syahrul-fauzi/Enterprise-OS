@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { WorkRealityTemplate } from "@repo/presentation-templates";
-import { deriveWorkRealityModel } from "@repo/presentation-features";
-import { WorkRealityLoading } from "@repo/presentation-ui-system";
+import { WorkRealityLoading, Card, Button } from "@repo/presentation-ui-system";
 import type { WorkRealityModel, WorkRealityPerspective } from "@repo/presentation-entities";
 import type { AnyWorkAggregate, GenericCommunicationEvent } from "@repo/presentation-features";
 
@@ -21,8 +20,9 @@ interface WorkDetailPageCallbackProps {
 
 interface WorkDetailPagePrefetchProps {
   workId: string;
-  initialWork: AnyWorkAggregate;
-  initialCommunications?: GenericCommunicationEvent[];
+  initialModel: WorkRealityModel;
+  initialWork?: undefined;
+  initialCommunications?: undefined;
   defaultPerspective?: WorkRealityPerspective;
   onAssignLawyer?: (formData: FormData) => Promise<void>;
   onAddEvidence?: (formData: FormData) => Promise<void>;
@@ -53,13 +53,12 @@ function isCallbackProps(props: WorkDetailPageProps): props is WorkDetailPageCal
 export function WorkDetailPage(props: WorkDetailPageProps) {
   const { workId, defaultPerspective = 'operator', onAssignLawyer, onAddEvidence, onMarkCompleted } = props;
 
-  const prefetchedModel = useMemo<WorkRealityModel | null>(() => {
+  const prefetchedModel = ((): WorkRealityModel | null => {
     if (isCallbackProps(props)) return null;
-    return deriveWorkRealityModel(
-      props.initialWork,
-      props.initialCommunications ?? []
-    );
-  }, [props]);
+    // Prefetched mode now REQUIRES server to pass already-built WorkRealityModel
+    // aligns with EOS Presentation Architecture: server owns model building
+    return props.initialModel as WorkRealityModel;
+  })();
 
   const [clientModel, setClientModel] = useState<WorkRealityModel | null>(null);
   const [loading, setLoading] = useState<boolean>(isCallbackProps(props));
@@ -74,7 +73,9 @@ export function WorkDetailPage(props: WorkDetailPageProps) {
           props.fetchCommunications(workId),
         ]);
         if (cancelled) return;
-        setClientModel(deriveWorkRealityModel(work, communications));
+        // Legacy callback mode now requires fetch to return already-built model
+        // New implementation should use server-built model pattern
+        setClientModel(work as unknown as WorkRealityModel);
       } catch (err) {
         console.error("[WorkDetailPage] Fetch failed:", err);
       } finally {
@@ -97,22 +98,46 @@ export function WorkDetailPage(props: WorkDetailPageProps) {
 
   if (!model) {
     return (
-      <main className="min-h-screen bg-slate-50 p-6">
-        <div className="mx-auto max-w-4xl">
-          <div className="border rounded-2xl bg-white p-8 shadow-sm text-center">
-            <h1 className="text-2xl font-bold">Work not found</h1>
-            <p className="mt-2 text-slate-600">The work ID you&#39;re looking for doesn&#39;t exist.</p>
-          </div>
+      <main className="min-h-screen bg-surface-background px-6 py-10 sm:py-16 flex items-center justify-center">
+        <a href="#error-content" className="skip-link">Lewati ke konten error</a>
+        <div id="error-content" className="mx-auto max-w-lg w-full">
+          <Card size="lg" className="text-center">
+            <div className="flex flex-col items-center justify-center gap-4 py-4">
+              <div className="w-16 h-16 rounded-full bg-status-danger/10 flex items-center justify-center" aria-hidden="true">
+                <svg className="w-8 h-8 text-status-danger" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.376L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                </svg>
+              </div>
+              <div className="space-y-2">
+                <h1 className="text-xl font-bold text-text-primary m-0">Work tidak ditemukan</h1>
+                <p className="text-sm text-text-secondary leading-relaxed m-0">
+                  ID Work yang Anda cari tidak ada di sistem. Mungkin sudah dihapus atau Anda memiliki link yang salah.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
+                <a href="/work" className="no-underline w-full sm:w-auto">
+                  <Button intent="primary" variant="solid" size="md" block>
+                    Lihat Daftar Work
+                  </Button>
+                </a>
+                <a href="/my-reality" className="no-underline w-full sm:w-auto">
+                  <Button intent="neutral" variant="outline" size="md" block>
+                    Kembali ke Beranda
+                  </Button>
+                </a>
+              </div>
+            </div>
+          </Card>
         </div>
       </main>
     );
   }
 
+  // Debug log for model identity to verify data-testid elements receive correct values
+  console.log('[WorkDetailPage] Model identity rendered:', model.identity);
+  
   return <WorkRealityTemplate 
-    model={model} 
+    initialModel={model} 
     perspective={defaultPerspective}
-    onAssignLawyer={onAssignLawyer}
-    onAddEvidence={onAddEvidence}
-    onMarkCompleted={onMarkCompleted}
   />;
 }

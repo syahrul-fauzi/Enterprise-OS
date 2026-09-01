@@ -1,16 +1,1 @@
-{
-  "extends": "@repo/config-typescript/react-library.json",
-  "compilerOptions": {
-    "outDir": "dist",
-    "strictNullChecks": false,
-    "declaration": true,
-    "composite": false,
-    "noEmitOnError": true,
-    "emitDeclarationOnly": true,
-    "module": "preserve",
-    "moduleResolution": "bundler",
-    "skipLibCheck": true
-  },
-  "include": ["src/**/*"],
-  "exclude": ["dist", "build", "node_modules"]
-}
+{"extends": "@repo/config-typescript/react-library.json", "compilerOptions": {"outDir": "dist", "rootDir": "src", "module": "preserve", "moduleResolution": "bundler", "strictNullChecks": false, "skipLibCheck": true, "paths": {"@repo/presentation-foundation": ["../foundation/dist/src"], "@repo/presentation-foundation/*": ["../foundation/dist/src/*"], "@repo/presentation-hooks": ["../hooks/dist"], "@repo/presentation-hooks/*": ["../hooks/dist/*"]}}, "include": ["src/**/*"], "exclude": ["dist", "build", "node_modules"]}

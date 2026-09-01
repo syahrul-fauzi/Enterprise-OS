@@ -1,0 +1,19 @@
+{
+  "teamId": "team-work-batik-jaya-launch-003-1788153802719",
+  "id": "team-1788153802719",
+  "projectionId": "team-work-batik-jaya-launch-003-1788153802719",
+  "workId": "work-batik-jaya-launch-003",
+  "name": "Team for Work work-bat",
+  "bindings": [],
+  "actorProjections": [
+    "sp-001",
+    "sp-002",
+    "sp-003",
+    "sp-004",
+    "sp-005",
+    "sp-006"
+  ],
+  "isEphemeral": true,
+  "projectedAt": "2026-08-31T05:23:22.719Z",
+  "status": "active"
+}

@@ -9,7 +9,7 @@ import { initIdentitySchema } from "../../../identity/implementation/repositorie
 // Only use Postgres in NODE_ENV=production
 const caseRepository = process.env.NODE_ENV === "production" && process.env.DATABASE_URL
   ? CaseRepositoryPostgres 
-  : new CaseRepositoryInMemory();
+  : CaseRepositoryInMemory;
 const sessionRepository = process.env.NODE_ENV === "production" && process.env.DATABASE_URL
   ? SessionRepositoryPostgres 
   : SessionRepositoryInMemory;

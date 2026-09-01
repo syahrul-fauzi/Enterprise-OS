@@ -1,0 +1,19 @@
+{
+  "id": "binding-req-business-003-0",
+  "bindingId": "wb-work-business-launch-001-req-business-003-0-1788150935059",
+  "compositionId": "composition-work-business-launch-001-1788150935059",
+  "actorProjectionId": "actor-ai-researcher-001",
+  "providerType": "human",
+  "workId": "work-business-launch-001",
+  "capabilityReference": "market-research",
+  "requirementId": "req-business-003",
+  "role": "Team Member",
+  "authority": [
+    "collect:data",
+    "generate:report"
+  ],
+  "status": "completed",
+  "boundAt": "2026-08-31T04:35:35.059Z",
+  "completedAt": "2026-08-31T04:35:35.087Z",
+  "evidence": "market-research-business-launch-delivered-1788150935083"
+}

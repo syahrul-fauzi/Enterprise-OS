@@ -1,0 +1,12 @@
+{
+  "id": "binding-0",
+  "bindingId": "wb-work-client-x-website-2026-001-0-1787970588972",
+  "actorProjectionId": "human-jane-2026",
+  "workId": "work-client-x-website-2026-001",
+  "capabilityReference": "cap-frontend-development",
+  "requirementId": "req-fe-website-clientx",
+  "role": "Team Member",
+  "authority": "execute",
+  "status": "pending",
+  "boundAt": "2026-08-29T02:29:48.972Z"
+}

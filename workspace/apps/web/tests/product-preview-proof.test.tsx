@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import ProductPreviewPage from "../app/products/[productId]/page.js";
-import ProductRequirementPreviewPage from "../app/products/[productId]/requirements/page.js";
+import ProductPreviewPage from "../app/products/[productId]/page";
+import ProductRequirementPreviewPage from "../app/products/[productId]/requirements/page";
 
 test("services-id preview route renders the Services.ID product context", async () => {
   const html = renderToStaticMarkup(
