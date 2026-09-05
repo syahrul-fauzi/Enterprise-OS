@@ -1,0 +1,73 @@
+{
+  "work_id": "COMM-005",
+  "acquisition_package_generated_at": "2026-09-23T10:00:00.000Z",
+  "buyer_profile": {
+    "business_name": "ElectronicsStoreJKT",
+    "vertical": "UMKM Retail Elektronik dengan Online Shop",
+    "pain_point": "Ketidaksesuaian stok barang Returns antara gudang vs sistem, menyebabkan kerugian inventory berkelanjutan",
+    "contact": {
+      "whatsapp": "+62-812-3456-7890",
+      "email": "electronicstorejkt@gmail.com",
+      "source": "Tokopedia Seller Community post 2026-09-20"
+    },
+    "has_authority": true,
+    "has_ability_to_pay": true,
+    "verification_source": "reality_signal (tokopedia_verified: true)"
+  },
+  "outbound_sequences": {
+    "whatsapp_opening": {
+      "content": "Halo Pak/Bu ElectronicsStoreJKT! 👋\nSaya dari EOS Team, kami melihat postingan Anda di Tokopedia Seller Community mengenai masalah stok Returns yang tidak cocok antara gudang vs sistem. Kami spesialis di resolusi exception operasional UMKM—pernah membantu 3 toko retail elektronik di Jabodetabek selesaikan masalah inventory returns yang sama. Kami bisa bantu:\n1. Cek root cause selisihnya dalam 3 hari\n2. Normalisasi stok returns di sistem + catatan gudang\n3. Berikan laporan bukti lengkap biar tidak terulang lagi.\n\nBisa kita bahas 15 menit saja besok untuk detail lebih lanjut?",
+      "scheduled_send_at": "2026-09-23T10:30:00.000Z",
+      "channel": "whatsapp_business"
+    },
+    "whatsapp_followup_24h": {
+      "content": "Halo Pak/Bu, saya mau follow-up pesan saya mengenai stok returns elektronik. Kalau Anda punya waktu sebentar, saya bisa bagikan case study toko lain yang kami bantu, lengkap dengan biaya dan timeline penyelesaiannya.",
+      "scheduled_send_at": "2026-09-24T10:30:00.000Z",
+      "channel": "whatsapp_business"
+    }
+  },
+  "formal_offer": {
+    "document_type": "pdf_offer",
+    "price_idr": 950000,
+    "timeline_days": 3,
+    "acceptance_criteria": [
+      "system_return_quantity == physical_return_stock_gudang",
+      "root_cause_documented",
+      "all_changes_logged_in_immutable_ledger"
+    ],
+    "deliverables": [
+      "root_cause_analysis_report",
+      "normalized_inventory_returns_both_systems",
+      "evidence_package_with_audit_logs",
+      "sop_preventive_measures_for_electronics_retail"
+    ]
+  },
+  "objection_handling": {
+    "too_expensive": {
+      "script": "Bandingkan dengan rugi kalau selisih returns berlanjut 1 bulan: Rugi Anda bisa Rp 3jt+ karena kehilangan inventory dan penjualan. Kami cuma charge 31% dari potensi rugi Anda."
+    },
+    "faster_timeline": {
+      "script": "Ya! Kalau Anda bisa berikan akses dalam 24 jam, kami bisa selesaikan dalam 2 hari tanpa biaya tambahan."
+    },
+    "self_resolve_first": {
+      "script": "Tentu! Kami bisa standby, tapi ingat bahwa tiap hari stok returns tidak konsisten, risiko kerugian makin tinggi. Kalau Anda mau bantuan darurat, kami bisa respon dalam 1 jam."
+    }
+  },
+  "execution_readiness": {
+    "all_capabilities_available": true,
+    "workflow_trigger_ready": true,
+    "ecommerce_specialist_assigned": "ecommerce-specialist.001",
+    "first_available_meeting_slot": "2026-09-24T09:00:00.000Z"
+  },
+  "core_freeze_compliant": true,
+  "reality_validation_status": "PREPARED_READY_FOR_OUTREACH",
+  "execution_governance": {
+    "serial_lane_compliant": true,
+    "current_acquisition_policy_aligned": true,
+    "latest_reality_evidence_validated": true,
+    "opportunity_priority_rank": 5,
+    "deferrable_if_current_work_produces_blocker": false,
+    "attempt_executed": false,
+    "reused_artifacts_from": ["COMM-002", "COMM-003", "COMM-004"]
+  }
+}

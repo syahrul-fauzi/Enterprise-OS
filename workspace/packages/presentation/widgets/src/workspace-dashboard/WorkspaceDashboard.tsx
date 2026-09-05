@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
-import { Card, Button } from "@repo/presentation-ui-system";
-import { PriorityWorkList } from "@repo/presentation-features";
+import { Card, Button, PermissionDenied, ErrorState, WorkRealityLoading, EmptyState, Pagination } from "@repo/presentation-ui-system";
+import { PriorityWorkList, UXStateAuditDashboard } from "@repo/presentation-features";
+import { usePageStates, UXStateComplianceRegistry } from "@repo/presentation-hooks";
 // Manually define WorkItemCardProps matching the interface from @repo/presentation-features/src/work/WorkItemCard
 export interface WorkItemCardProps {
   workId: string;
@@ -48,23 +49,20 @@ export function WorkspaceDashboard({
   searchParams,
   workItems = [],
 }: WorkspaceDashboardProps) {
-  // 1. Permission check - only authenticated users can access workspace
+  // 1. Permission check - menggunakan shared PermissionDenied component
   if (!session?.user) {
     return (
       <main className="min-h-screen bg-slate-50 px-6 py-10">
         <div className="mx-auto max-w-7xl space-y-6">
           <ProductPreviewShell binding={binding} mode="landing" />
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-              <h1 className="text-2xl font-bold text-slate-900">Akses Ditolak</h1>
-              <p className="mt-2 text-slate-600">Anda tidak memiliki izin untuk mengakses workspace. Silakan masuk terlebih dahulu.</p>
-              <Link 
-                href={`/login?productId=${productId}`}
-                className="mt-6 inline-block rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-              >
-                Masuk ke Platform
-              </Link>
-            </div>
+            <PermissionDenied
+              title="Akses Ditolak"
+              description="Anda tidak memiliki izin untuk mengakses workspace. Silakan masuk terlebih dahulu."
+              icon="🔒"
+              backLabel="Masuk ke Platform"
+              onBack={() => window.location.href = `/login?productId=${productId}`}
+            />
           </section>
         </div>
       </main>
@@ -105,19 +103,34 @@ export function WorkspaceDashboard({
       updatedAt: new Date().toISOString(),
     }));
 
-  // Local loading state for async operations
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  // Use shared usePageStates hook for standardized page state management
+  const {
+    state,
+    isLoading,
+    hasError,
+    setLoading,
+    setSuccess,
+    setError,
+    goToPage,
+    getPaginatedData,
+  } = usePageStates<WorkItemCardProps[]>({
+    initialPageSize: 10,
+  });
 
   // Calculate pagination
   const allDisplayItems = [...nowItems, ...nextItems, ...watchingItems];
-  const totalPages = Math.ceil(allDisplayItems.length / itemsPerPage);
-  const paginatedItems = allDisplayItems.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  
+  // Initialize with success state if we have data
+  if (state.status === "idle" && workItems.length > 0) {
+    setSuccess(allDisplayItems, allDisplayItems.length);
+  } else if (state.status === "idle" && workItems.length === 0) {
+    // If no work items, set empty state
+    setEmpty();
+  }
+
+  // Get paginated data from the hook
+  const paginatedItems = getPaginatedData(allDisplayItems);
+  const { currentPage, totalPages } = state.pagination;
 
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-10">
@@ -146,48 +159,44 @@ export function WorkspaceDashboard({
             </Link>
           </div>
 
-          {/* Error state */}
-          {error && (
-            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-700 mb-6">
-              <div className="font-semibold">Terjadi kesalahan</div>
-              <p className="mt-1">{error}</p>
-            </div>
+          {/* Error state - using hook's hasError */}
+          {hasError && (
+            <ErrorState
+              title="Terjadi kesalahan"
+              description={state.error || "Terjadi kesalahan yang tidak diketahui"}
+              onRetry={() => setError(null)}
+              className="mb-6"
+            />
           )}
 
-          {/* Loading state */}
+          {/* Loading state - using hook's isLoading */}
           {isLoading && (
             <div className="grid gap-3 md:grid-cols-3 mb-6">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+              <section className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
                 <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Pekerjaan Aktif</div>
-                <div className="mt-2 h-5 w-3/4 animate-pulse rounded-md bg-slate-200"></div>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+                <WorkRealityLoading size="sm" className="mt-2" />
+              </section>
+              <section className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
                 <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Menunggu</div>
-                <div className="mt-2 h-5 w-3/4 animate-pulse rounded-md bg-slate-200"></div>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+                <WorkRealityLoading size="sm" className="mt-2" />
+              </section>
+              <section className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
                 <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Selesai</div>
-                <div className="mt-2 h-5 w-3/4 animate-pulse rounded-md bg-slate-200"></div>
-              </div>
+                <WorkRealityLoading size="sm" className="mt-2" />
+              </section>
             </div>
           )}
 
-          {/* Empty state */}
-          {!isLoading && workItems.length === 0 && (
-            <div className="text-center py-16 border border-dashed border-slate-200 rounded-2xl">
-              <div className="mx-auto h-16 w-16 bg-slate-100 rounded-full flex items-center justify-center">
-                <svg className="h-8 w-8 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-slate-900">Belum ada pekerjaan</h3>
-              <p className="mt-2 text-sm text-slate-600 max-w-md mx-auto">
-                Mulailah dengan membuat pekerjaan pertama Anda. Semua kebutuhan yang ingin Anda selesaikan dapat dilacak dari awal hingga selesai di EOS.
-              </p>
-              <Link href="/work/new" className="mt-6 inline-block">
-                <Button intent="primary" variant="solid">Buat Pekerjaan Pertama</Button>
-              </Link>
-            </div>
+          {/* Empty state - using hook's showEmptyState */}
+          {state.showEmptyState && (
+            <EmptyState
+              title="Belum ada pekerjaan"
+              description="Mulailah dengan membuat pekerjaan pertama Anda. Semua kebutuhan yang ingin Anda selesaikan dapat dilacak dari awal hingga selesai di EOS."
+              icon="📋"
+              primaryActionLabel="Buat Pekerjaan Pertama"
+              onPrimaryAction={() => window.location.href = "/work/new"}
+              className="py-16 border border-dashed border-slate-200 rounded-2xl"
+            />
           )}
 
           {/* Work list with pagination */}
@@ -200,41 +209,29 @@ export function WorkspaceDashboard({
                 onViewAll={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
               />
               
-              {/* Pagination controls - implements pagination visual state */}
+              {/* Pagination controls - implements pagination visual state using hook's goToPage */}
               {totalPages > 1 && (
-                <div className="mt-8 flex items-center justify-between border-t border-slate-200 pt-6">
-                  <p className="text-sm text-slate-600">
-                    Menampilkan {(currentPage - 1) * itemsPerPage + 1}-{Math.min(currentPage * itemsPerPage, allDisplayItems.length)} dari {allDisplayItems.length} pekerjaan
-                  </p>
-                  <div className="flex gap-2">
-                    <button 
-                      disabled={currentPage === 1}
-                      className="px-3 py-1 rounded border border-slate-200 text-slate-400 cursor-not-allowed disabled:opacity-50"
-                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                    >
-                      Sebelumnya
-                    </button>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                      <button
-                        key={page}
-                        className={`px-3 py-1 rounded border ${page === currentPage ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}
-                        onClick={() => setCurrentPage(page)}
-                      >
-                        {page}
-                      </button>
-                    ))}
-                    <button 
-                      disabled={currentPage === totalPages}
-                      className="px-3 py-1 rounded border border-slate-200 text-slate-400 cursor-not-allowed disabled:opacity-50"
-                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                    >
-                      Selanjutnya
-                    </button>
-                  </div>
-                </div>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={allDisplayItems.length}
+                  itemsPerPage={10}
+                  onPageChange={goToPage}
+                  className="mt-8 border-t border-slate-200 pt-6"
+                  labels={{
+                    previous: "Sebelumnya",
+                    next: "Selanjutnya",
+                    showing: "Menampilkan {start}-{end} dari {total} pekerjaan",
+                  }}
+                />
               )}
             </>
           )}
+
+          {/* UX State Audit Dashboard - integrated into main workspace dashboard for compliance monitoring */}
+          <div className="mt-12">
+            <UXStateAuditDashboard />
+          </div>
         </section>
       </div>
     </main>

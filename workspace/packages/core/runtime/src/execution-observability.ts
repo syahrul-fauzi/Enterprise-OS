@@ -198,14 +198,25 @@ export interface WorkRealityMetrics {
   p95_latency_ms: number;
   avg_latency_ms: number;
   error_rate: number;
+  // PR-002 REAL WORK REALITY COHORT - Production Metrics
+  understanding_recovery_total: number;
+  understanding_recovery_success: number;
+  wrong_understanding_corrected: number;
+  wrong_understanding_total: number;
+  unknowns_preserved: number;
+  unknowns_total: number;
+  generalization_applications: number;
+  generalization_successes: number;
+  work_formation_quality_score: number;
+  work_formation_total: number;
   last_updated_utc: string;
 }
 
 const workMetricsStore: Map<string, WorkRealityMetrics> = new Map();
 
-// Record execution metrics for a specific Work
-export function recordWorkExecutionMetrics(workId: string, executionTimeMs: number, success: boolean): void {
-  const existing = workMetricsStore.get(workId) ?? {
+// Helper to create empty metrics object (PR-002 compliance)
+function createEmptyWorkMetrics(workId: string): WorkRealityMetrics {
+  return {
     work_id: workId,
     total_executions: 0,
     successful_executions: 0,
@@ -214,8 +225,24 @@ export function recordWorkExecutionMetrics(workId: string, executionTimeMs: numb
     p95_latency_ms: 0,
     avg_latency_ms: 0,
     error_rate: 0,
+    // PR-002 production metrics initialized to 0
+    understanding_recovery_total: 0,
+    understanding_recovery_success: 0,
+    wrong_understanding_corrected: 0,
+    wrong_understanding_total: 0,
+    unknowns_preserved: 0,
+    unknowns_total: 0,
+    generalization_applications: 0,
+    generalization_successes: 0,
+    work_formation_quality_score: 0,
+    work_formation_total: 0,
     last_updated_utc: new Date().toISOString()
   };
+}
+
+// Record execution metrics for a specific Work
+export function recordWorkExecutionMetrics(workId: string, executionTimeMs: number, success: boolean): void {
+  const existing = workMetricsStore.get(workId) ?? createEmptyWorkMetrics(workId);
 
   // Update metrics
   existing.total_executions += 1;
@@ -242,6 +269,99 @@ export function recordWorkExecutionMetrics(workId: string, executionTimeMs: numb
 // Get metrics for a specific Work
 export function getWorkMetrics(workId: string): WorkRealityMetrics | undefined {
   return workMetricsStore.get(workId);
+}
+
+// PR-002: Track understanding recovery event (ambiguous input → sufficient understanding)
+export function recordUnderstandingRecovery(workId: string, success: boolean): void {
+  const existing = workMetricsStore.get(workId) ?? createEmptyWorkMetrics(workId);
+  existing.understanding_recovery_total += 1;
+  if (success) existing.understanding_recovery_success += 1;
+  existing.last_updated_utc = new Date().toISOString();
+  workMetricsStore.set(workId, existing);
+  console.log(`[PR-002-METRICS] work=${workId} | understanding_recovery=${success ? "SUCCESS" : "FAILED"} | total=${existing.understanding_recovery_total} | success_rate=${((existing.understanding_recovery_success / existing.understanding_recovery_total) * 100).toFixed(2)}%`);
+}
+
+// PR-002: Track wrong understanding correction event (human correction → resolved understanding)
+export function recordWrongUnderstandingCorrection(workId: string, corrected: boolean): void {
+  const existing = workMetricsStore.get(workId) ?? createEmptyWorkMetrics(workId);
+  existing.wrong_understanding_total += 1;
+  if (corrected) existing.wrong_understanding_corrected += 1;
+  existing.last_updated_utc = new Date().toISOString();
+  workMetricsStore.set(workId, existing);
+  console.log(`[PR-002-METRICS] work=${workId} | wrong_understanding_corrected=${corrected} | total=${existing.wrong_understanding_total} | correction_rate=${((existing.wrong_understanding_corrected / existing.wrong_understanding_total) * 100).toFixed(2)}%`);
+}
+
+// PR-002: Track unknown integrity event (EOS correctly admitted "I don't know" instead of guessing)
+export function recordUnknownPreservation(workId: string, preserved: boolean): void {
+  const existing = workMetricsStore.get(workId) ?? createEmptyWorkMetrics(workId);
+  existing.unknowns_total += 1;
+  if (preserved) existing.unknowns_preserved += 1;
+  existing.last_updated_utc = new Date().toISOString();
+  workMetricsStore.set(workId, existing);
+  console.log(`[PR-002-METRICS] work=${workId} | unknown_preserved=${preserved} | total=${existing.unknowns_total} | integrity_rate=${((existing.unknowns_preserved / existing.unknowns_total) * 100).toFixed(2)}%`);
+}
+
+// PR-002: Track generalization application (promoted knowledge used to improve runtime)
+export function recordGeneralizationApplication(workId: string, success: boolean): void {
+  const existing = workMetricsStore.get(workId) ?? createEmptyWorkMetrics(workId);
+  existing.generalization_applications += 1;
+  if (success) existing.generalization_successes += 1;
+  existing.last_updated_utc = new Date().toISOString();
+  workMetricsStore.set(workId, existing);
+  console.log(`[PR-002-METRICS] work=${workId} | generalization_application=${success ? "SUCCESS" : "FAILED"} | total=${existing.generalization_applications} | leverage_rate=${((existing.generalization_successes / existing.generalization_applications) * 100).toFixed(2)}%`);
+}
+
+// PR-002: Track work formation quality (meaningful work created with proper capabilities)
+export function recordWorkFormationQuality(workId: string, qualityScore: number): void {
+  const existing = workMetricsStore.get(workId) ?? createEmptyWorkMetrics(workId);
+  // Running average of quality scores (0-1 scale)
+  const currentTotal = existing.work_formation_quality_score * existing.work_formation_total;
+  existing.work_formation_total += 1;
+  existing.work_formation_quality_score = (currentTotal + qualityScore) / existing.work_formation_total;
+  existing.last_updated_utc = new Date().toISOString();
+  workMetricsStore.set(workId, existing);
+  console.log(`[PR-002-METRICS] work=${workId} | work_formation_quality=${qualityScore} | avg_quality=${(existing.work_formation_quality_score * 100).toFixed(2)}% | total_formations=${existing.work_formation_total}`);
+}
+
+// PR-002: Calculate all production rates for reporting
+export function getPR002Metrics(workId: string): {
+  understanding_recovery_rate: number;
+  wrong_understanding_correction_rate: number;
+  unknown_integrity_rate: number;
+  generalization_leverage_rate: number;
+  avg_work_formation_quality: number;
+  raw_metrics: WorkRealityMetrics | undefined;
+} {
+  const metrics = workMetricsStore.get(workId);
+  if (!metrics) {
+    return {
+      understanding_recovery_rate: 0,
+      wrong_understanding_correction_rate: 0,
+      unknown_integrity_rate: 0,
+      generalization_leverage_rate: 0,
+      avg_work_formation_quality: 0,
+      raw_metrics: undefined
+    };
+  }
+
+  return {
+    understanding_recovery_rate: metrics.understanding_recovery_total > 0 
+      ? metrics.understanding_recovery_success / metrics.understanding_recovery_total 
+      : 0,
+    wrong_understanding_correction_rate: metrics.wrong_understanding_total > 0 
+      ? metrics.wrong_understanding_corrected / metrics.wrong_understanding_total 
+      : 0,
+    unknown_integrity_rate: metrics.unknowns_total > 0 
+      ? metrics.unknowns_preserved / metrics.unknowns_total 
+      : 0,
+    generalization_leverage_rate: metrics.generalization_applications > 0 
+      ? metrics.generalization_successes / metrics.generalization_applications 
+      : 0,
+    avg_work_formation_quality: metrics.work_formation_total > 0 
+      ? metrics.work_formation_quality_score 
+      : 0,
+    raw_metrics: metrics
+  };
 }
 
 // Get all tracked Work metrics

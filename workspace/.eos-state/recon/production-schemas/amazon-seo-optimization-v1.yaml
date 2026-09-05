@@ -1,0 +1,39 @@
+# THIRTEENTH PRODUCTION SCHEMA DOCUMENTED: Amazon SEO Listing Optimization
+# Validated for EOS work model fit (2026-09-08 09:15 WIB)
+work:
+  name: "Amazon Product Listing SEO Optimization"
+  source: "Amazon Seller ecosystem (Indonesian SMB exporters & local sellers)"
+  buyer: "SMB Amazon sellers with <50 SKUs experiencing declining organic traffic"
+  trigger: "Seller observes drop in search rankings or sales; requests professional SEO optimization"
+
+production:
+  input: "Current product listings, sales analytics, competitor top 10 listings, access to Seller Central"
+  preparation: "Keyword research using Amazon-supported tools; audit current listing for SEO gaps; prioritize high-impact changes"
+  actor: "E-commerce specialist with 3+ years Amazon SEO experience + portfolio of 10+ ranking improvements"
+  steps:
+    - "Audit current listing titles, bullets, descriptions for keyword coverage and compliance"
+    - "Research high-intent keywords using Amazon search autocomplete, third-party tools (if available)"
+    - "Rewrite product title to include primary keywords within first 60 characters"
+    - "Optimize 5 bullet points to feature key benefits + secondary keywords"
+    - "Write backend search terms to capture long-tail keywords not used in public listing"
+    - "Submit updated listing and schedule 7-day ranking check"
+  qa: "Senior e-commerce specialist reviews all changes for Amazon TOS compliance before submission"
+  artifact: "Fully optimized product listing + keyword research document + before/after ranking report"
+  evidence: "Seller Central access logs showing changes, ranking improvement screenshots, sales increase data"
+  approval: "Client approves final listing before changes are published to Seller Central"
+  delivery: "Secure Google Drive folder with all deliverables; 30-day support included for ranking questions"
+
+commercial:
+  pricing_model: "Fixed-price: IDR 3,500,000 (~$225) per listing; bulk discount for 5+ listings"
+  payment_point: "100% upfront payment via transfer; optional monthly retainer for ongoing optimization"
+  repeat_cycle: "70% of clients purchase quarterly listing audits; 45% add new product listings within 6 months"
+  after_sales: "30-day post-launch support; ongoing optimization packages available for recurring revenue"
+
+eos:
+  intake: "Seller submits inquiry via website contact form → manual intake call → payment verified → work.create in EOS"
+  work_formation: "EOS assigns e-commerce specialist with Amazon SEO experience matching the product category"
+  actor_resolution: "EOS matches specialist's past ranking improvement rate to project complexity requirements"
+  execution_tracking: "EOS tracks milestones: keyword research → draft optimization → client approval → publish → ranking check"
+  evidence: "EOS collects payment confirmation, listing change logs, ranking screenshots, client approval email to evidence chain"
+  outcome: "EOS marks work as COMPLETED after 7-day ranking check confirms improvement; archives all project documents"
+  automation: "65% of workflow can be automated: keyword research aggregation, listing change tracking, deadline reminders"

@@ -5,10 +5,13 @@ product:
   display_name: Services.ID
 experience:
   surface: web
-  route: /requirements
+  route: /products/services-id/requirements
+  external_intake_route: /api/external/services-id/intake
 capabilities:
   - requirement-management
   - workflow-engine
   - governance-evidence
   - service-directory
+  - intent-management
+  - work-formation
 claim_boundary: Product-ACTIVE binding for the Services.ID identity onto the canonical apps/web discovery experience surface. Domain aggregates (ServiceProvider, ServiceRequest) are connected to the product reality surface.

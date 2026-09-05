@@ -1,10 +1,10 @@
-// @ts-nocheck: Disable TypeScript checks to unblock production build - import paths are valid in runtime
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
-import type { ProductPreviewBinding } from "@repo/presentation-types";
-import { useWorkspaceSession, useLocale } from "@repo/presentation-hooks";
+import type { ProductPreviewBinding } from "@repo/presentation-experience";
+import { useWorkspaceSession, useLocale, usePageStates } from "@repo/presentation-hooks";
+import { WorkRealityLoading, EmptyState, ErrorState, PermissionDenied, Pagination } from "@repo/presentation-ui-system";
 import type { ServiceRequestAggregate, ServiceRequestPriority, ServiceRequestStatus } from "@capabilities/services-id/implementation/contracts/service-request.contracts";
 
 export interface ProductServiceRequestsPageProps {
@@ -44,11 +44,24 @@ export function ProductServiceRequestsPage({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  // State management for service requests list and UI states (satisfies 11 visual states requirement)
+  // State management menggunakan usePageStates hook untuk standarisasi 9 UX states
+  const {
+    state,
+    isLoading,
+    hasError,
+    showEmptyState,
+    setLoading,
+    setSuccess,
+    setError,
+    setEmpty,
+    setLongContent,
+    setPermissionDenied,
+    goToPage,
+    getPaginatedData,
+  } = usePageStates<ServiceRequestAggregate[]>({
+    initialPageSize: 10,
+  });
   const [serviceRequests, setServiceRequests] = useState<ServiceRequestAggregate[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [paginationPage, setPaginationPage] = useState(1);
-  const itemsPerPage = 10;
 
   // Locale-based priority labels
   const PRIORITY_LABEL: Record<ServiceRequestPriority, string> = {
@@ -77,10 +90,12 @@ export function ProductServiceRequestsPage({
   useEffect(() => {
     const fetchServiceRequests = async () => {
       if (!isAuthenticated) {
-        setLoading(false);
+        setPermissionDenied();
         return;
       }
 
+      setLoading();
+      
       try {
         const resp = await fetch("/api/capabilities/services-id/service-request.list", {
           method: "POST",
@@ -93,18 +108,26 @@ export function ProductServiceRequestsPage({
 
         if (resp.ok) {
           const json = await resp.json();
-          setServiceRequests(json.output || []);
+          const requests = json.output || [];
+          setServiceRequests(requests);
+          
+          if (requests.length === 0) {
+            setEmpty();
+          } else if (requests.length > 50) {
+            setLongContent();
+            setSuccess(requests, requests.length);
+          } else {
+            setSuccess(requests, requests.length);
+          }
         }
       } catch (err) {
         console.error("[ProductServiceRequestsPage] Failed to fetch service requests:", err);
         setError("Gagal memuat daftar permintaan layanan. Silakan coba lagi nanti.");
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchServiceRequests();
-  }, [isAuthenticated, currentSession]);
+  }, [isAuthenticated, currentSession, setLoading, setSuccess, setError, setEmpty, setLongContent, setPermissionDenied]);
 
   // Handle form submission for new service request
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -163,84 +186,66 @@ export function ProductServiceRequestsPage({
     }
   }
 
-  // Permission denied state
-  if (!isAuthenticated) {
+  // Permission denied state (menggunakan shared component)
+  if (state.status === "permission-denied") {
     return (
       <ProductPreviewShell binding={binding}>
         <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 sm:py-10">
           <div className="mx-auto max-w-2xl">
-            <div className="rounded-3xl border border-slate-200 bg-white p-12 shadow-sm text-center">
-              <div className="text-6xl mb-4">🔒</div>
-              <h3 className="text-xl font-bold text-text-primary mb-2">Anda belum masuk</h3>
-              <p className="text-text-secondary max-w-md mx-auto mb-6">Silakan masuk terlebih dahulu untuk mengelola permintaan layanan.</p>
-              <a href="/enter" className="px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition inline-block">
-                Masuk ke Workspace
-              </a>
-            </div>
+            <PermissionDenied
+              title="Anda belum masuk"
+              description="Silakan masuk terlebih dahulu untuk mengelola permintaan layanan."
+              icon="🔒"
+              backLabel="Masuk ke Workspace"
+              onBack={() => window.location.href = "/enter"}
+            />
           </div>
         </main>
       </ProductPreviewShell>
     );
   }
 
-  // Loading state
-  if (loading) {
+  // Loading state (menggunakan shared component)
+  if (isLoading) {
+    return (
+      <ProductPreviewShell binding={binding}>
+        <WorkRealityLoading />
+      </ProductPreviewShell>
+    );
+  }
+
+  // Error state (menggunakan shared component)
+  if (hasError) {
     return (
       <ProductPreviewShell binding={binding}>
         <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 sm:py-10">
-          <div className="mx-auto max-w-5xl">
-            <div className="animate-pulse space-y-4">
-              <div className="h-8 bg-slate-100 rounded-xl w-1/3"></div>
-              <div className="h-4 bg-slate-100 rounded-xl w-2/3"></div>
-              <div className="h-32 bg-slate-100 rounded-xl w-full"></div>
-              <div className="h-32 bg-slate-100 rounded-xl w-full"></div>
-            </div>
+          <div className="mx-auto max-w-2xl">
+            <ErrorState
+              title="Terjadi Kesalahan"
+              description={state.error || "Gagal memuat daftar permintaan layanan. Silakan coba lagi nanti."}
+              icon="⚠️"
+              retryLabel="Muat Ulang"
+              onRetry={() => window.location.reload()}
+            />
           </div>
         </main>
       </ProductPreviewShell>
     );
   }
 
-  // Error state
-  if (error && serviceRequests.length === 0) {
+  // Empty state (menggunakan shared component)
+  if (showEmptyState || serviceRequests.length === 0) {
     return (
       <ProductPreviewShell binding={binding}>
         <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 sm:py-10">
           <div className="mx-auto max-w-2xl">
-            <div className="rounded-3xl border border-red-200 bg-red-50 p-12 shadow-sm text-center">
-              <div className="text-6xl mb-4">⚠️</div>
-              <h3 className="text-xl font-bold text-red-800 mb-2">Terjadi Kesalahan</h3>
-              <p className="text-red-700 max-w-md mx-auto mb-6">{error}</p>
-              <button 
-                onClick={() => window.location.reload()}
-                className="px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition inline-block"
-              >
-                Muat Ulang
-              </button>
-            </div>
-          </div>
-        </main>
-      </ProductPreviewShell>
-    );
-  }
-
-  // Empty state
-  if (serviceRequests.length === 0) {
-    return (
-      <ProductPreviewShell binding={binding}>
-        <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 sm:py-10">
-          <div className="mx-auto max-w-2xl">
-            <div className="rounded-3xl border border-slate-200 bg-white p-12 shadow-sm text-center">
-              <div className="text-6xl mb-4">📋</div>
-              <h3 className="text-xl font-bold text-text-primary mb-2">Belum ada permintaan layanan</h3>
-              <p className="text-text-secondary max-w-md mx-auto mb-6">Buat permintaan layanan pertama Anda untuk memulai.</p>
-              <button 
-                onClick={() => setShowCreate(true)}
-                className="px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition inline-block"
-              >
-                Buat Permintaan Baru
-              </button>
-            </div>
+            <EmptyState
+              title="Belum ada permintaan layanan"
+              description="Buat permintaan layanan pertama Anda untuk memulai."
+              icon="📋"
+              actionLabel="Buat Permintaan Baru"
+              onAction={() => setShowCreate(true)}
+            />
 
             {/* Create form modal */}
             {showCreate && (
@@ -323,12 +328,8 @@ export function ProductServiceRequestsPage({
     );
   }
 
-  // Pagination calculation
-  const totalPages = Math.ceil(serviceRequests.length / itemsPerPage);
-  const paginatedRequests = serviceRequests.slice(
-    (paginationPage - 1) * itemsPerPage,
-    paginationPage * itemsPerPage
-  );
+  // Get paginated data dari usePageStates hook
+  const paginatedRequests = getPaginatedData(serviceRequests);
 
   // Main content state with all requests and pagination
   return (
@@ -387,26 +388,18 @@ export function ProductServiceRequestsPage({
             ))}
           </div>
 
-          {/* Pagination controls */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-8">
-              <button
-                onClick={() => setPaginationPage(prev => Math.max(1, prev - 1))}
-                disabled={paginationPage === 1}
-                className="px-3 py-1 border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Sebelumnya
-              </button>
-              <span className="text-sm text-slate-600">
-                Halaman {paginationPage} dari {totalPages}
-              </span>
-              <button
-                onClick={() => setPaginationPage(prev => Math.min(totalPages, prev + 1))}
-                disabled={paginationPage === totalPages}
-                className="px-3 py-1 border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Selanjutnya
-              </button>
+          {/* Pagination controls (menggunakan shared component) */}
+          {state.pagination.totalPages > 1 && (
+            <div className="mt-8">
+              <Pagination
+                currentPage={state.pagination.currentPage}
+                totalPages={state.pagination.totalPages}
+                onPageChange={goToPage}
+                previousLabel="Sebelumnya"
+                nextLabel="Selanjutnya"
+                pageLabel="Halaman"
+                ofLabel="dari"
+              />
             </div>
           )}
 

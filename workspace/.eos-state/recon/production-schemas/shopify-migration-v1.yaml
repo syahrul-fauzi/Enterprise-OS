@@ -1,0 +1,41 @@
+# FOURTEENTH PRODUCTION SCHEMA DOCUMENTED: Shopify Store Migration
+# Validated for EOS work model fit (2026-09-08 09:20 WIB)
+work:
+  name: "Shopify Store Migration & Setup"
+  source: "Shopify Merchant ecosystem (Indonesian SMBs moving from WooCommerce, Magento, or other platforms)"
+  buyer: "Existing e-commerce businesses looking to switch to Shopify for better scalability"
+  trigger: "Merchant outgrows current platform; experiences technical limitations; or wants Shopify's native features"
+
+production:
+  input: "Source platform admin credentials, Shopify store access, migration requirements checklist, theme preferences"
+  preparation: "Full backup of source store data; audit current store structure; plan migration timeline to minimize downtime"
+  actor: "Shopify migration specialist with 5+ successful cross-platform migrations completed"
+  steps:
+    - "Complete full backup of all source store data: products, customers, orders, inventory"
+    - "Set up basic Shopify store structure: collections, payment gateways, shipping settings"
+    - "Import all products with correct SKUs, pricing, inventory levels, and images"
+    - "Migrate customer records with order history and contact information"
+    - "Import historical order data for accounting continuity"
+    - "Install and configure agreed-upon theme; perform basic customization to match brand"
+    - "Test checkout process, payment gateway, and all core functionality"
+    - "Schedule DNS switch and post-migration monitoring plan"
+  qa: "Senior Shopify developer reviews entire store before launch; completes 20-point pre-launch checklist"
+  artifact: "Fully functional Shopify store with all data migrated; post-launch monitoring report; 30-day support document"
+  evidence: "Migration logs, pre-launch checklist screenshots, client approval email, DNS propagation confirmation"
+  approval: "Client performs user acceptance testing (UAT) on staging store before public launch"
+  delivery: "Client receives full store access credentials; 30-minute handoff call to explain Shopify backend"
+
+commercial:
+  pricing_model: "Fixed-price: IDR 8,000,000 (~$515) per migration; 50% upfront, 50% post-launch"
+  payment_point: "First payment at project kickoff; final payment after successful DNS propagation and UAT signoff"
+  repeat_cycle: "80% of migration clients purchase monthly Shopify maintenance plans post-launch"
+  after_sales: "30-day free bug fixes and support; optional monthly maintenance package: IDR 1,500,000/month"
+
+eos:
+  intake: "Merchant submits migration request form → discovery call to assess scope → proposal sent → contract signed"
+  work_formation: "EOS assigns migration specialist with experience in the client's source platform"
+  actor_resolution: "EOS matches specialist's past migration success rate to project complexity (number of SKUs, customizations)"
+  execution_tracking: "EOS tracks migration milestones: backup → import → setup → testing → UAT → launch → post-launch check"
+  evidence: "EOS collects all migration logs, checklists, client approvals, and launch confirmations to evidence chain"
+  outcome: "EOS marks work as COMPLETED after 7-day post-launch monitoring confirms no critical issues"
+  automation: "50% of workflow can be automated: data import scripts, pre-launch checklist generation, uptime monitoring"

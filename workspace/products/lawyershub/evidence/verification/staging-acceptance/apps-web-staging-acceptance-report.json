@@ -1,6 +1,6 @@
 {
-  "baseUrl": "https://127.0.0.1",
-  "generatedAt": "2026-08-22T05:29:21.380Z",
+  "baseUrl": "http://127.0.0.1:3001",
+  "generatedAt": "2026-09-01T10:06:19.615Z",
   "status": "failed",
   "error": "Workspace root did not render Professional Workspace.",
   "checks": []

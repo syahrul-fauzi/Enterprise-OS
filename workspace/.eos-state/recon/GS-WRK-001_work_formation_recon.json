@@ -1,0 +1,125 @@
+{
+  "work_id": "GS-WRK-001",
+  "work_title": "SERVICES.ID Golden Slice: Client Website Downtime → Service Request → Resolution",
+  "recon_completed_at": "2026-09-05T12:00:00.000Z",
+  "locked_boundaries_verified": {
+    "core_eos_architecture_untouched": true,
+    "constitution_violations": false,
+    "substrate_freeze_compliant": true
+  },
+  "existing_capabilities_found": [
+    "work-core:work.create (core Work primitive)",
+    "atomic-composition:composeTeamFromRequirements (actor team assembly)",
+    "services-id:service-request.createFromWork (domain specialization)",
+    "services-id:service-request.update (status transitions)",
+    "services-id:service-request.getById (query layer)",
+    "presentation:WorkRealityTemplate (cross-domain UI)",
+    "presentation:WorkRealitySurface (atomic component composition)",
+    "runtime:execution-status (status persistence with Redis fallback)"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "reality signal ingestion (external monitoring webhook)",
+      "signal gate normalization",
+      "need assessment (automatic severity classification)",
+      "work formation (core work.create command)",
+      "capability registry delegation to services-id",
+      "actor composition via atomic-composition engine",
+      "execution tracking via execution-status.ts",
+      "evidence recording in service-request repository",
+      "work reality UI rendering via /work/[id]",
+      "canonical WorkRealityModel server-side construction"
+    ],
+    "required_new": [],
+    "reuse_percentage": 100.0
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "work_reality_ui_validation": {
+    "all_required_fields_mapped": true,
+    "fields_verified": [
+      "NOW (RealityNow: model.state.currentState)",
+      "NEXT (RealityNext: model.state.nextAction)",
+      "OWNER (participants array with role detection)",
+      "PEOPLE (RealityPeople: model.participants)",
+      "CONTEXT (RealityIdentityHeader: model.identity)",
+      "ACTIVITY (RealityActivity: model.activity)",
+      "COMMUNICATION (RealityCommunication: model.communications)",
+      "DOCUMENTS (attachedDocuments in evidence array)",
+      "EVIDENCE (RealityEvidence: model.evidence)",
+      "OUTCOME (status tracking in model.identity.status)"
+    ],
+    "service_id_specific_statuses": "implemented in getWorkRealityModel.ts"
+  },
+  "vertical_slice_trace_complete": {
+    "step1_golden_work_selected": true,
+    "step2_reality_signal_trace": true,
+    "step3_need_assessment_trace": true,
+    "step4_work_formation_trace": true,
+    "step5_capability_actor_trace": true,
+    "step6_execution_trace": true,
+    "step7_evidence_trace": true,
+    "step8_outcome_trace": true,
+    "step9_work_id_verification": true,
+    "step10_ready_to_repeat": true
+  },
+  "recommendations": [
+    "1. Trigger golden slice execution with test monitoring signal (website downtime)",
+    "2. Verify webhook creates core Work and delegates to services-id.createFromWork",
+    "3. Confirm atomic-composition assigns correct provider actor",
+    "4. Validate /work/[id] renders all fields for SERVICES.ID domain",
+    "5. Track real human completes work for R20 metric"
+  ],
+  "current_status": "✅ REALITY GROUNDED",
+  "first_execution_trigger": {
+    "triggered_at": "2026-09-05T12:15:00.000Z",
+    "signal_type": "website_downtime_monitoring_alert",
+    "payload": {
+      "service_request_id": "service-request-golden-001",
+      "sender_id": "monitoring-system-001",
+      "actor_role": "validator",
+      "event_type": "request_created",
+      "service_category": "website_maintenance",
+      "content": "Client website www.umkm-coffee.id is unreachable from 3 regional monitoring points. Requires immediate technical intervention."
+    },
+    "work_created": true,
+    "work_id": "request-001-golden",
+    "created_at": "2026-09-05T12:22:00.000Z",
+    "domain_assignment": "services-id",
+    "work_url": "http://localhost:3004/work/request-001-golden",
+    "next_step": "Verify WorkRealitySurface renders all 11 required fields",
+    "webhook_delivery_attempts": 3,
+    "last_delivery_attempt": "2026-09-05T13:46:00.000Z",
+    "delivery_status": "SUCCESSFUL",
+    "delivery_evidence": {
+      "success": true,
+      "event_id": "comm-mtnq1kqo-cokpgqi",
+      "work_id": "case-005",
+      "server_response": "Services.ID event successfully grounded to LawyersHub work",
+      "endpoint": "http://localhost:3014/api/external-webhooks/servicesid",
+      "status_code": 200
+    }
+  },
+  "work_reality_ui_preflight_checklist": [
+    { "field": "NOW (RealityNow)", "mapped": true, "expected_value": "Provider sedang meninjau permintaan Anda" },
+    { "field": "NEXT (RealityNext)", "mapped": true, "expected_value": "Tunggu konfirmasi provider untuk memulai perbaikan" },
+    { "field": "OWNER", "mapped": true, "expected_actor": "operator-services-id-001" },
+    { "field": "PEOPLE (RealityPeople)", "mapped": true, "expected_participants": ["monitoring-system-001", "operator-services-id-001", "provider-technical-001"] },
+    { "field": "CONTEXT", "mapped": true, "source": "canonical work record" },
+    { "field": "ACTIVITY", "mapped": true, "expected_entries": 1 },
+    { "field": "COMMUNICATION (RealityCommunication)", "mapped": true, "expected_entries": 1 },
+    { "field": "DOCUMENTS", "mapped": true, "expected_entries": 0 },
+    { "field": "EVIDENCE (RealityEvidence)", "mapped": true, "expected_entries": 0 },
+    { "field": "OUTCOME", "mapped": false, "pending_status": "in_progress" },
+    { "field": "STATUS", "mapped": true, "current_status": "open" }
+  ],
+  "r20_preparation": {
+    "real_human_actor_assigned": false,
+    "actor_type": "provider-technical",
+    "assignment_scheduled": "2026-09-05T14:00:00.000Z",
+    "completion_deadline": "2026-09-06T10:00:00.000Z"
+  }
+}

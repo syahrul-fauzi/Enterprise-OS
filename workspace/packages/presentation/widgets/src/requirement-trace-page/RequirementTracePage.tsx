@@ -1,10 +1,9 @@
-// @ts-nocheck: Disable TypeScript checks to unblock production build - import paths are valid in runtime
 "use client";
 
 import React, { useMemo } from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell.js";
 import { getProductExperience } from "@repo/presentation-experience";
-import type { ProductPreviewBinding } from "@repo/presentation-types";
+import type { ProductPreviewBinding } from "@repo/presentation-experience";
 
 export interface RequirementTracePageProps {
   readonly productId: string;

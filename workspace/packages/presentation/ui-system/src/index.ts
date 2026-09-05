@@ -19,8 +19,8 @@ export type {
   TextAreaProps,
   SelectProps,
 } from "./atoms/index";
-export { BaseSearchBar, CommunitySearchBar, ResearchSearchBar, WorkRealityLoading, Breadcrumb } from "./molecules/index";
-export type { BreadcrumbProps, BreadcrumbItem } from "./molecules/index";
+export { BaseSearchBar, CommunitySearchBar, ResearchSearchBar, WorkRealityLoading, Breadcrumb, EmptyState, ErrorState, PermissionDenied, Pagination } from "./molecules/index";
+export type { BreadcrumbProps, BreadcrumbItem, EmptyStateProps, ErrorStateProps, PermissionDeniedProps, PaginationProps, WorkRealityLoadingProps } from "./molecules/index";
 export { RequirementProofPanel, ToastContainer } from "./organisms/index";
 export * from "./layouts/index";
 export * from "./patterns/index";

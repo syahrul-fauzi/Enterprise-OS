@@ -1,0 +1,39 @@
+# FIFTH PRODUCTION SCHEMA DOCUMENTED: Legal Case Management Workflow
+# Validated for EOS work model fit (2026-09-22 17:55 WIB)
+work:
+  name: "Legal Case Management & Document Preparation"
+  source: "Legal ecosystem (Indonesian law firms & in-house legal teams)"
+  buyer: "Small to mid-sized law firms handling corporate, family, or intellectual property cases"
+  trigger: "Client submits case intake form with case details; retainer payment confirmed; work order created"
+
+production:
+  input: "Client case details, initial documents, retainer agreement signed"
+  preparation: "Case file creation in document management system; assign lead lawyer based on case type"
+  actor: "Lead lawyer with 5+ years of experience in the relevant practice area + paralegal support"
+  steps:
+    - "Review all initial client documents and identify missing information"
+    - "Schedule client intake call to collect additional case details"
+    - "Draft all required legal documents (complaints, contracts, filings) based on case type"
+    - "Conduct legal research to support case strategy and document requirements"
+    - "File all necessary documents with relevant courts/authorities"
+    - "Schedule follow-up meetings with client to provide case updates"
+  qa: "Senior partner reviews all legal documents before filing to ensure accuracy and compliance"
+  artifact: "Complete case file (digital + physical), all filed legal documents, client update reports"
+  evidence: "Client call recordings, document filing confirmations, court receipt stamps, client approval emails"
+  approval: "Client approves all documents before filing; signs off on case strategy during milestone meetings"
+  delivery: "Secure client portal access to case file; monthly case update reports sent automatically"
+
+commercial:
+  pricing_model: "Retainer-based: IDR 15,000,000 (~$965) monthly retainer; additional court fees billed separately"
+  payment_point: "Retainer paid upfront at the start of each month; court fees paid in advance of filing"
+  repeat_cycle: "Case duration averages 6-12 months; 40% of clients retain firm for additional cases"
+  after_sales: "Post-case support included for 30 days after case closure; document storage available for 7 years"
+
+eos:
+  intake: "Client submits case intake form via law firm website → webhook sends to EOS work.create; payment verified"
+  work_formation: "EOS assigns lead lawyer and paralegal based on case type and current caseload"
+  actor_resolution: "EOS matches legal team to case based on practice area expertise and workload capacity"
+  execution_tracking: "EOS tracks case milestones: intake → document preparation → filing → hearings → closing"
+  evidence: "EOS collects all call recordings, filing confirmations, client approvals, and court receipts to evidence chain"
+  outcome: "EOS marks case as COMPLETED after final court decision; archives all case documents permanently"
+  automation: "55% of workflow can be automated: document template population, deadline reminders, client update reports"

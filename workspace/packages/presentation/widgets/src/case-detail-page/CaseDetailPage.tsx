@@ -1,13 +1,12 @@
-// @ts-nocheck: Disable TypeScript checks to unblock production build - core import paths are valid
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
 import { useWorkspaceSession, useLocale } from "@repo/presentation-hooks";
-import type { ProductPreviewBinding } from "@repo/presentation-types";
+import type { ProductPreviewBinding } from "@repo/presentation-experience";
 // Import canonical perspectives dari shared work-reality types (eliminates duplication)
-import type { WorkRealityPerspective as WorkPerspective } from "@repo/presentation-experience/work-reality/work-reality.types";
-import { ALL_PERSPECTIVES } from "@repo/presentation-experience/work-reality/work-reality.types";
+import type { WorkRealityPerspective as WorkPerspective, WorkRealityModel } from "@repo/presentation-entities";
+import { WORK_PERSPECTIVES } from "@repo/presentation-entities";
 
 // Rehydrate session from localStorage + cookie for guaranteed persistence across refresh (SSR-safe)
 function hydrateSessionState(caseId: string) {
@@ -81,6 +80,9 @@ const LAWYERSHUB_GENERAL_WORKFLOW = {
 };
 
 // Dynamic workflow selector - use appropriate workflow based on case type
+type CaseAggregate = any;
+type DocumentAggregate = any;
+type CaseStatus = string;
 function getWorkflowForCase(caseData: CaseAggregate | null) {
   if (caseData?.title?.includes("Multi-Party") || caseData?.description?.includes("real-work-014")) {
     return MULTI_PARTY_LEGAL_REVIEW_WORKFLOW;

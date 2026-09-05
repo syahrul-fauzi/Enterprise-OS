@@ -1,0 +1,14 @@
+{
+  "workId": "RL4-001",
+  "scannedAt": "2026-09-04T00:33:58.194Z",
+  "totalItems": 0,
+  "classifications": {
+    "REAL": 0,
+    "PARTIALLY_REAL": 0,
+    "SIMULATED": 0,
+    "TEST_ONLY": 0,
+    "NOT_ADMITTED": 0
+  },
+  "items": [],
+  "reportPath": "/root/Enterprise-OS/workspace/.eos-state/recon/RL4-001_inventory_report.json"
+}

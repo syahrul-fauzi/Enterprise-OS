@@ -5,8 +5,8 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { CommunityDirectory } from "../CommunityDirectory";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
-import { CommunitySearchBar } from "@repo/presentation-ui-system";
-import { Button, Card } from "@repo/presentation-ui-system";
+import { CommunitySearchBar, WorkRealityLoading } from "@repo/presentation-ui-system";
+import { Button, Card, PermissionDenied, ErrorState, Pagination } from "@repo/presentation-ui-system";
 import { useWorkspaceSession } from "@repo/presentation-hooks/use-workspace-session";
 import type { ProductPreviewBinding } from "@repo/presentation-types";
 import type { WorkspaceSession } from "@repo/core-kernel";
@@ -34,36 +34,52 @@ export function CommunityPage({
 }: CommunityPageProps) {
   const { loading, authenticated, error: sessionError } = useWorkspaceSession();
 
-  // Permission Denied State Handler
+  // Permission Denied State Handler - menggunakan shared PermissionDenied component
   if (sessionError?.includes('403') || sessionError?.includes('forbidden') || sessionError?.includes('unauthorized')) {
     return (
-      <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col items-center justify-center min-h-[80vh]">
-        <Card size="lg" className="w-full max-w-lg text-center">
-          <div className="text-6xl mb-6" aria-hidden="true">🚫</div>
-          <h1 className="text-2xl font-bold text-text-primary mb-3">Akses Ditolak</h1>
-          <p className="text-text-secondary mb-6">Anda tidak memiliki izin untuk mengakses komunitas ini. Silakan hubungi administrator jika Anda membutuhkan akses.</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/" className="no-underline">
-              <Button intent="neutral" variant="outline">
-                Kembali ke Beranda
-              </Button>
-            </Link>
-          </div>
-        </Card>
-      </div>
+      <main className="min-h-screen bg-slate-50 px-6 py-10">
+        <div className="mx-auto max-w-7xl space-y-6">
+          <ProductPreviewShell binding={binding} mode="landing" />
+          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <PermissionDenied
+              title="Akses Ditolak"
+              description="Anda tidak memiliki izin untuk mengakses komunitas ini. Silakan hubungi administrator jika Anda membutuhkan akses."
+              icon="🚫"
+              backLabel="Kembali ke Beranda"
+              onBack={() => window.location.href = "/"}
+            />
+          </section>
+        </div>
+      </main>
     );
   }
 
-  // Loading State
+  // General Error State Handler - menggunakan shared ErrorState component
+  if (sessionError) {
+    return (
+      <main className="min-h-screen bg-slate-50 px-6 py-10">
+        <div className="mx-auto max-w-7xl space-y-6">
+          <ProductPreviewShell binding={binding} mode="landing" />
+          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <ErrorState
+              title="Gagal Memuat Komunitas"
+              description="Terjadi kesalahan saat mencoba memuat data komunitas. Silakan coba lagi nanti."
+              icon="⚠️"
+              retryLabel="Coba Lagi"
+              onRetry={() => window.location.reload()}
+            />
+          </section>
+        </div>
+      </main>
+    );
+  }
+
+  // Loading State - menggunakan shared WorkRealityLoading component
   if (loading) {
     return (
-      <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col items-center justify-center min-h-[80vh]">
-        <div className="flex flex-col items-center gap-6">
-          <div className="w-16 h-16 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
-          <p className="text-lg font-medium text-text-primary">Memuat komunitas...</p>
-          <p className="text-sm text-text-muted">Silakan tunggu sebentar</p>
-        </div>
-      </div>
+      <main className="min-h-screen bg-slate-50">
+        <WorkRealityLoading />
+      </main>
     );
   }
 
@@ -98,31 +114,17 @@ export function CommunityPage({
             />
           </Suspense>
           
-          {/* Pagination Controls */}
-          <div className="mt-8 flex items-center justify-between border-t border-slate-200 pt-6">
-            <p className="text-sm text-slate-600">
-              Menampilkan halaman {currentPage}
-            </p>
-            <div className="flex gap-3">
-              {currentPage > 1 && (
-                <Link 
-                  href={`/community?productId=${productId}&q=${searchQuery}&type=${filterType}&location=${filterLocation}&page=${currentPage - 1}`}
-                  className="no-underline"
-                >
-                  <Button intent="neutral" variant="outline">
-                    Sebelumnya
-                  </Button>
-                </Link>
-              )}
-              <Link 
-                href={`/community?productId=${productId}&q=${searchQuery}&type=${filterType}&location=${filterLocation}&page=${currentPage + 1}`}
-                className="no-underline"
-              >
-                <Button intent="primary" variant="solid">
-                  Selanjutnya
-                </Button>
-              </Link>
-            </div>
+          {/* Pagination Controls - menggunakan shared Pagination component */}
+          <div className="mt-8">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={999} // Placeholder - harus diisi oleh CommunityDirectory dengan total halaman sebenarnya
+              totalItems={9999} // Placeholder - harus diisi oleh CommunityDirectory dengan total item sebenarnya
+              itemsPerPage={pageSize}
+              onPageChange={(page) => {
+                window.location.href = `/community?productId=${productId}&q=${searchQuery}&type=${filterType}&location=${filterLocation}&page=${page}`;
+              }}
+            />
           </div>
         </div>
       </section>

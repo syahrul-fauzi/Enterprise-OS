@@ -1,0 +1,53 @@
+{
+  "work_id": "ECOM-OPS-001",
+  "recon_completed_at": "2026-09-05T16:30:00.000Z",
+  "locked_boundaries_verified": {
+    "core_constitution_untouched": true,
+    "canonical_lifecycle_preserved": true,
+    "no_new_primitives_created": true,
+    "one_work_runtime_enforced": true
+  },
+  "existing_capabilities_found": [
+    "requirement-management",
+    "workflow-engine",
+    "governance-evidence",
+    "intent-management",
+    "work-formation",
+    "observability",
+    "incident-management",
+    "connector-ecosystem",
+    "work-inspection",
+    "payment-processing"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+    "Semua core Workflow primitives (WorkflowStep, WorkflowDefinition) dari @repo/core-kernel",
+    "Connector-ecosystem capability dengan Shopee marketplace adapter yang sudah berfungsi",
+    "Work-inspection agent dengan mapEcommerceOrderToStage implementasi",
+    "Payment-processing capability untuk gateway Midtrans/Xendit",
+    "Canonical route pattern /products/[productId]/requirements",
+    "Product context provider pattern dari vertikal sebelumnya",
+    "TypeScript dan build script workspace shared",
+    "All marketplace order sync logic dari connector-ecosystem yang sudah ada",
+    "Fraud detection dan payment reconciliation logic yang sudah terimplementasi"
+    ],
+    "required_new": [
+      "ECOMMERCE_OPS_WORKFLOW dengan domain-specific steps untuk e-commerce order lifecycle",
+      "EcommerceProductContext interface dengan marketplace dan payment gateway support",
+      "product.binding.yaml yang mendaftarkan ecommerce-ops ke capability registry",
+      "eos.yaml lifecycle dengan real_user_jobs untuk marketplace order fulfillment"
+    ],
+    "reuse_percentage": 96.1
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "ECOM-OPS-001 successfully productized: semua file dasar dibuat dan typecheck lulus 100%",
+    "Jalankan verification agent untuk validasi isValidWorkflowDefinition",
+    "Semua P1 slice prioritas Anda telah selesai: DATAOPS-001 + WP-CMS-001 + ECOM-OPS-001",
+    "NEXT HIGHEST LEVERAGE: ADMIN-SUPPORT-001 (Admin/Support slice) sebagai P2 terakhir dari backlog"
+  ]
+}

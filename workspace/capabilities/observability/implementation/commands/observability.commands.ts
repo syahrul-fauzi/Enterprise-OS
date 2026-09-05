@@ -35,7 +35,7 @@ const CreateIncidentWithContextSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   priority: z.enum(["low", "medium", "high", "critical"]).optional(),
-  category: z.enum(["Infrastructure", "Application", "Database", "Network", "Security"]).optional(),
+  category: z.enum(["Infrastructure", "Application", "Database", "Network", "Security", "Payment"]).optional(),
   // Required context for tenant isolation
   sessionId: z.string().min(1),
   tenantId: z.string().min(1),

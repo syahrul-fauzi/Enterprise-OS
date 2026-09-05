@@ -5,7 +5,7 @@ product:
   display_name: LawyersHub
 experience:
   surface: web
-  route: /requirements
+  route: /products/lawyershub/requirements
 capabilities:
   - requirement-management
   - workflow-engine

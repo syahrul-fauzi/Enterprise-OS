@@ -22,4 +22,4 @@ export type { ExecutionContext } from "./execution-context.js";
 //   import { ExecutionStatusRepository } from "@repo/core-runtime/src/execution-status.js";
 //   import { EmailQueueRepository } from "@repo/core-runtime/src/email-queue.js";
 export type { ExecutionStatus } from "./execution-status.js";
-export type { QueuedEmail } from "./email-queue.js";
+export type { QueuedEmail, CarlyInboxMessage } from "./email-queue.js";

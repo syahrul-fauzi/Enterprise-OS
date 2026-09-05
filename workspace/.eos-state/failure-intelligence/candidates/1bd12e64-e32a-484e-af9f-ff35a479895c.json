@@ -1,0 +1,66 @@
+{
+  "id": "1bd12e64-e32a-484e-af9f-ff35a479895c",
+  "sourceObservations": [
+    "1edec2d5-27f3-4785-93a6-abe93fe08026",
+    "5882aaec-8bfb-4a8d-88f5-7e44eda1456a",
+    "185f3355-984a-44c4-80df-ca8dc83b91ec"
+  ],
+  "abstraction": {
+    "primitive": "COMPARE_BUSINESS_ENTITIES",
+    "level": "SEMANTIC_OPERATION"
+  },
+  "invariant": {
+    "description": "Generalized pattern: User is requesting comparison between multiple business entities",
+    "preservedFeatures": [
+      "semanticOperation",
+      "rootCategory"
+    ],
+    "variableFeatures": [
+      "entities",
+      "inputExpression"
+    ]
+  },
+  "applicability": {
+    "domains": "ANY",
+    "origins": "ANY"
+  },
+  "evidence": {
+    "observedCount": 3,
+    "holdoutPassCount": 0,
+    "counterexampleCount": 0
+  },
+  "status": "PROMOTED",
+  "createdAt": "2026-09-03T12:10:46.470Z",
+  "updatedAt": "2026-09-03T12:10:46.470Z",
+  "trigger": {
+    "failureId": "185f3355-984a-44c4-80df-ca8dc83b91ec",
+    "triggerClusterId": "a2e0d190-1e8c-46fa-8ce8-bc39f3895bb7"
+  },
+  "target": "understanding",
+  "proposedChange": null,
+  "rationale": "Generated from cluster a2e0d190-1e8c-46fa-8ce8-bc39f3895bb7 with 3 observations",
+  "confidence": 0.7,
+  "expectedCoverage": [],
+  "regressionRisk": 0.1,
+  "validationRequired": true,
+  "promotionStatus": "CANDIDATE",
+  "sourceClusterId": "a2e0d190-1e8c-46fa-8ce8-bc39f3895bb7",
+  "sourceFailureIds": [
+    "1edec2d5-27f3-4785-93a6-abe93fe08026",
+    "5882aaec-8bfb-4a8d-88f5-7e44eda1456a",
+    "185f3355-984a-44c4-80df-ca8dc83b91ec"
+  ],
+  "rootCategory": "KNOWLEDGE",
+  "semanticPattern": "COMPARE_BUSINESS_ENTITIES",
+  "suggestedEnrichment": {
+    "type": "KNOWLEDGE_GAP",
+    "target": "SEMANTIC_UNDERSTANDING",
+    "description": "Generalized pattern: User is requesting comparison between multiple business entities",
+    "complexityImpact": 1
+  },
+  "generalizationEvidence": {
+    "totalObservations": 3,
+    "uniqueEntities": 2,
+    "coverage": 1
+  }
+}

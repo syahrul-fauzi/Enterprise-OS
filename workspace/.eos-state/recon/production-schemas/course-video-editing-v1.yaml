@@ -1,0 +1,39 @@
+# PRODUCTION SCHEMA: Course Video Editing Workflow
+# Validated for EOS work model fit (2026-09-23 12:00 WIB)
+work:
+  name: "Online Course Video Production (12 module videos)"
+  source: "Indonesian EdTech Companies / Independent Course Creators"
+  buyer: "Educational institutions / professional instructors"
+  trigger: "Creator uploads raw lecture footage to cloud storage; project manager confirms intake"
+
+production:
+  input: "Raw lecture recordings (1-2 hours per module), slide decks, course outline"
+  preparation: "Sync slides with lecture footage; identify key talking points per module"
+  actor: "Video editing specialist with edtech content experience"
+  steps:
+    - "Sync presentation slides with lecture audio"
+    - "Cut out pauses, mistakes, and off-topic segments"
+    - "Add lower-third name/title cards and chapter markers"
+    - "Enhance audio quality (noise reduction, volume normalization)"
+    - "Add intro/outro sequence with course branding"
+    - "Export in 1080p MP4 format optimized for streaming"
+  qa: "Pedagogical specialist reviews content flow and technical quality"
+  artifact: "12 final module videos + course trailer + closed caption files"
+  evidence: "Timestamped editing project files + LMS upload confirmation screenshots"
+  approval: "Instructor approves full course via private Vimeo link review"
+  delivery: "Google Drive shared folder + LMS bulk upload instructions"
+
+commercial:
+  pricing_model: "Fixed-price per course: IDR 15,000,000 (~$975) for 12 modules"
+  payment_point: "30% upfront, 70% upon instructor approval"
+  repeat_cycle: "65% of edtech clients produce 2-3 courses annually"
+  after_sales: "3 rounds of revisions included; additional modules IDR 1,200,000/module"
+
+eos:
+  intake: "EdTech partner shares project brief via email → EOS operator creates work.order"
+  work_formation: "EOS creates work order with module deadlines, QC milestones, and delivery date"
+  actor_resolution: "EOS matches available editor with edtech content expertise and capacity"
+  execution_tracking: "EOS tracks step completion: sync → edit → enhance → export → QA"
+  evidence: "EOS operator uploads final videos, LMS upload screenshots, and approval recording"
+  outcome: "EOS marks work as COMPLETED only after final payment is received"
+  automation: "55% of workflow can be automated: audio normalization, chapter marking, deadline reminders"

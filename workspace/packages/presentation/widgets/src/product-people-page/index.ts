@@ -1,0 +1,1 @@
+export { ProductPeoplePage } from "./ProductPeoplePage";

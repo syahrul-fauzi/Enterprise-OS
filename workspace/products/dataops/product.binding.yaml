@@ -1,0 +1,16 @@
+version: "1.0"
+status: ACTIVE
+product:
+  id: dataops
+  display_name: Data/Ops Work
+experience:
+  surface: web
+  route: /products/dataops/requirements
+capabilities:
+  - requirement-management
+  - workflow-engine
+  - governance-evidence
+  - intent-management
+  - work-formation
+  - data-processing
+claim_boundary: Universal Data/Ops Work category binding onto canonical EOS Work Runtime. Domain aggregates (DataJob, OperationLog) are connected to the universal work reality surface.

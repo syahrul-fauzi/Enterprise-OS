@@ -5,7 +5,15 @@ import type { IntentSource, IntentContext } from './types';
 import { TextArea, Button } from "@repo/presentation-ui-system";
 
 interface IntentNeedInputProps {
-  onIntentCaptured: (expression: string, source: IntentSource, context?: IntentContext) => void;
+  onIntentCaptured: (expression: string, source: IntentSource, context?: IntentContext) => Promise<{
+    success: boolean;
+    isInformationRequest?: boolean;
+    informationResponse?: string;
+    canFormWork?: boolean;
+    intentId?: string;
+    message?: string;
+    error?: string;
+  }>;
   defaultValue?: string;
   placeholder?: string;
   disabled?: boolean;
@@ -20,21 +28,22 @@ interface IntentNeedInputProps {
 export const IntentNeedInput: React.FC<IntentNeedInputProps> = ({
   onIntentCaptured,
   defaultValue = '',
-  placeholder = 'Apa yang perlu Anda selesaikan?',
+  placeholder = 'Saya ingin mendirikan PT XYZ Indonesia untuk usaha ekspor kopi',
   disabled = false,
   className = '',
   label,
   helperText,
-  submitLabel = 'Pahami Kebutuhan Saya',
+  submitLabel = '✨ Bantu EOS memahami →',
   submitting: externalSubmitting,
-  submittingText = 'Memproses...',
+  submittingText = 'EOS sedang memahami kebutuhan Anda...',
 }) => {
   const [expression, setExpression] = useState<string>(defaultValue);
   const [internalSubmitting, setInternalSubmitting] = useState<boolean>(false);
+  const [informationResponse, setInformationResponse] = useState<string | null>(null);
 
   const isSubmitting = externalSubmitting ?? internalSubmitting;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!expression.trim() || disabled || isSubmitting) return;
     
@@ -50,7 +59,18 @@ export const IntentNeedInput: React.FC<IntentNeedInputProps> = ({
     };
 
     setInternalSubmitting(true);
-    onIntentCaptured(expression.trim(), source, context);
+    setInformationResponse(null);
+    
+    try {
+      const result = await onIntentCaptured(expression.trim(), source, context);
+      if (result?.isInformationRequest && result?.informationResponse) {
+        setInformationResponse(result.informationResponse);
+      }
+    } catch (error) {
+      console.error("Failed to process expression:", error);
+    } finally {
+      setInternalSubmitting(false);
+    }
   };
 
   return (
@@ -70,7 +90,7 @@ export const IntentNeedInput: React.FC<IntentNeedInputProps> = ({
         type="submit"
         intent="primary"
         variant="solid"
-        size="lg"
+        size="xl"
         block
         disabled={!expression.trim() || disabled || isSubmitting}
         loading={isSubmitting}
@@ -83,6 +103,14 @@ export const IntentNeedInput: React.FC<IntentNeedInputProps> = ({
       >
         {submitLabel}
       </Button>
+      
+      {/* Display information response from knowledge base if available */}
+      {informationResponse && (
+        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <h4 className="text-sm font-semibold text-blue-900 mb-2">Jawaban dari EOS:</h4>
+          <p className="text-sm text-blue-800 whitespace-pre-line">{informationResponse}</p>
+        </div>
+      )}
     </form>
   );
 };

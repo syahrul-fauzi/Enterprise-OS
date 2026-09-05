@@ -64,6 +64,7 @@ export class IntentRepositoryInMemory implements IntentRepository {
     this.intents.set(intentId, {
       ...intent,
       convertedToWorkId: workId,
+      status: "WORK_FORMED",
       updatedAt: new Date(),
       version: (intent.version ?? 0) + 1,
     });

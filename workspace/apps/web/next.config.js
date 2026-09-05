@@ -34,15 +34,22 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
-  turbopack: {
-    resolveExtensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
-  },
+  turbopack: {},
+  // Fix node: prefix import error - mark node built-ins as server-only external packages (Next.js 16+)
+  serverExternalPackages: ['async_hooks', 'fs', 'path', 'url', 'stream', 'http', 'https', 'net', 'tls', 'zlib', 'buffer', 'util', 'events', 'crypto'],
+  turbopack: {},
+  outputFileTracingRoot: '/root/Enterprise-OS',
   webpack: (config) => {
     config.module.rules.push({
       test: /@repo\/.*/,
       resolve: {
         fullySpecified: false,
       },
+    });
+    // Handle node: prefix imports by marking them as externals
+    const nodeBuiltins = ['async_hooks', 'fs', 'path', 'url', 'stream', 'http', 'https', 'net', 'tls', 'zlib', 'buffer', 'util', 'events', 'crypto'];
+    nodeBuiltins.forEach(moduleName => {
+      config.externals.push(`node:${moduleName}`);
     });
     return config;
   },

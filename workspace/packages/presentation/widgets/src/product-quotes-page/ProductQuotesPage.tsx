@@ -1,9 +1,8 @@
-// @ts-nocheck: Disable TypeScript checks to unblock production build - import paths are valid in runtime
 "use client";
 import React, { useState, useEffect } from "react";
 import { useWorkspaceSession, useLocale } from "@repo/presentation-hooks";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
-import type { ProductPreviewBinding } from "@repo/presentation-types";
+import type { ProductPreviewBinding } from "@repo/presentation-experience";
 
 // Type definitions for quotes surface (aligns with canonical Work model)
 export interface ProductQuotesPageProps {

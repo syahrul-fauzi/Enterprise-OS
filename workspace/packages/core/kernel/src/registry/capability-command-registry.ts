@@ -80,6 +80,224 @@ export interface WorkflowDefinition {
   readonly terminalStep: string;
 }
 
+// LH-LGL-001: LawyersHub Legal Consultation Workflow
+// Enforces: EXPRESSION → UNDERSTANDING → CONSULTATION NEED → LEGAL SPECIALIST RESOLUTION → HUMAN CONSULTATION → USER DECISION → OPTIONAL LEGAL WORK
+export const LH_LGL_001_ConsultationWorkflow: WorkflowDefinition = {
+  id: "lh-lgl-001-legal-consultation",
+  productId: "lawyershub",
+  label: "LawyersHub Legal Consultation Workflow",
+  steps: [
+    {
+      id: "expression-received",
+      label: "User Expression Received",
+      capability: "consultation",
+      command: "consultation.create",
+      description: "Initial user problem statement captured",
+      requiredRoles: ["customer", "user"]
+    },
+    {
+      id: "understanding-complete",
+      label: "Intent Understanding Complete",
+      capability: "consultation",
+      command: "consultation.triage",
+      description: "Consultation intent analyzed and needs identified",
+      requiredRoles: ["system", "automated"]
+    },
+    {
+      id: "specialist-assigned",
+      label: "Legal Specialist Assigned",
+      capability: "consultation",
+      command: "consultation.assign",
+      description: "Eligible legal specialist bound to consultation",
+      requiredRoles: ["system", "automated"]
+    },
+    {
+      id: "consultation-conducted",
+      label: "Human Consultation Conducted",
+      capability: "consultation",
+      command: "consultation.resolve",
+      description: "Legal specialist provided assessment and options",
+      requiredRoles: ["legal-specialist", "lawyer"]
+    },
+    {
+      id: "user-decision",
+      label: "User Decision Made",
+      capability: "consultation",
+      command: undefined,
+      description: "User decides to close, ask more, or create legal work",
+      requiredRoles: ["customer", "user"]
+    },
+    {
+      id: "legal-work-created",
+      label: "Optional Legal Work Created",
+      capability: "legal-case",
+      command: "case.create",
+      description: "Formal legal case work initiated only after explicit user approval",
+      requiredRoles: ["system", "legal-specialist"]
+    },
+    {
+      id: "consultation-closed",
+      label: "Consultation Closed",
+      capability: "consultation",
+      command: "consultation.close",
+      description: "Consultation process completed",
+      requiredRoles: ["customer", "legal-specialist"]
+    }
+  ],
+  transitions: {
+    "expression-to-understanding": {
+      requiredRoles: ["system", "automated"],
+      from: "expression-received",
+      to: "understanding-complete"
+    },
+    "understanding-to-specialist": {
+      requiredRoles: ["system", "automated"],
+      from: "understanding-complete",
+      to: "specialist-assigned"
+    },
+    "specialist-to-consultation": {
+      requiredRoles: ["legal-specialist", "lawyer"],
+      from: "specialist-assigned",
+      to: "consultation-conducted"
+    },
+    "consultation-to-decision": {
+      requiredRoles: ["customer", "user"],
+      from: "consultation-conducted",
+      to: "user-decision"
+    },
+    "decision-to-legal-work": {
+      requiredRoles: ["customer", "user"],
+      from: "user-decision",
+      to: "legal-work-created"
+    },
+    "decision-to-close": {
+      requiredRoles: ["customer", "user"],
+      from: "user-decision",
+      to: "consultation-closed"
+    },
+    "legal-work-to-close": {
+      requiredRoles: ["legal-specialist"],
+      from: "legal-work-created",
+      to: "consultation-closed"
+    }
+  },
+  initialStep: "expression-received",
+  terminalStep: "consultation-closed"
+};
+
+// ILC-INS-001: Institutional Coordination Workflow
+// Enforces: INSTITUTIONAL NEED → MULTI-ACTOR COORDINATION → APPROVAL / AUTHORITY → EXECUTION → INSTITUTIONAL OUTCOME
+export const ILC_INS_001_InstitutionalWorkflow: WorkflowDefinition = {
+  id: "ilc-ins-001-institutional-coordination",
+  productId: "ilc",
+  label: "ILC Institutional Coordination Workflow",
+  steps: [
+    {
+      id: "institutional-need-submitted",
+      label: "Institutional Need Submitted",
+      capability: "requirement-management",
+      command: "requirement.create",
+      description: "Formal institutional requirement captured",
+      requiredRoles: ["institutional-representative", "authorized-user"]
+    },
+    {
+      id: "requirements-analyzed",
+      label: "Requirements Analyzed",
+      capability: "requirement-management",
+      command: "requirement.analyze",
+      description: "Institutional needs broken down into actionable requirements",
+      requiredRoles: ["system", "automated"]
+    },
+    {
+      id: "actors-composed",
+      label: "Multi-Actor Team Composed",
+      capability: "atomic-composition",
+      command: "composition.create",
+      description: "Capability-based team formed with all required authority roles",
+      requiredRoles: ["system", "automated"]
+    },
+    {
+      id: "first-approval",
+      label: "Departmental Approval",
+      capability: "governance-evidence",
+      command: "approval.record",
+      description: "First-level departmental authority signs off",
+      requiredRoles: ["department-head", "authorized-approver"]
+    },
+    {
+      id: "second-approval",
+      label: "Executive Approval",
+      capability: "governance-evidence",
+      command: "approval.record",
+      description: "Executive-level institutional approval obtained",
+      requiredRoles: ["executive", "institutional-authority"]
+    },
+    {
+      id: "execution-initiated",
+      label: "Execution Initiated",
+      capability: "workflow-engine",
+      command: "workflow.start",
+      description: "Formal execution phase begins after all approvals",
+      requiredRoles: ["project-manager", "execution-lead"]
+    },
+    {
+      id: "outcome-delivered",
+      label: "Institutional Outcome Delivered",
+      capability: "workflow-engine",
+      command: "workflow.complete",
+      description: "All execution tasks completed, institutional objective achieved",
+      requiredRoles: ["project-manager", "execution-lead"]
+    },
+    {
+      id: "institutional-work-closed",
+      label: "Work Closed & Archived",
+      capability: "work-core",
+      command: "work.close",
+      description: "Institutional work formally closed with complete evidence chain",
+      requiredRoles: ["institutional-representative", "system"]
+    }
+  ],
+  transitions: {
+    "submitted-to-analyzed": {
+      requiredRoles: ["system", "automated"],
+      from: "institutional-need-submitted",
+      to: "requirements-analyzed"
+    },
+    "analyzed-to-composed": {
+      requiredRoles: ["system", "automated"],
+      from: "requirements-analyzed",
+      to: "actors-composed"
+    },
+    "composed-to-first-approval": {
+      requiredRoles: ["department-head", "authorized-approver"],
+      from: "actors-composed",
+      to: "first-approval"
+    },
+    "first-to-second-approval": {
+      requiredRoles: ["executive", "institutional-authority"],
+      from: "first-approval",
+      to: "second-approval"
+    },
+    "approved-to-execution": {
+      requiredRoles: ["project-manager", "execution-lead"],
+      from: "second-approval",
+      to: "execution-initiated"
+    },
+    "execution-to-outcome": {
+      requiredRoles: ["project-manager", "execution-lead"],
+      from: "execution-initiated",
+      to: "outcome-delivered"
+    },
+    "outcome-to-closed": {
+      requiredRoles: ["institutional-representative", "system"],
+      from: "outcome-delivered",
+      to: "institutional-work-closed"
+    }
+  },
+  initialStep: "institutional-need-submitted",
+  terminalStep: "institutional-work-closed"
+};
+
 // Generic workflow orchestrator that executes transitions using existing capability commands
 // REUSE: Uses capabilityRegistry.invoke() - no new command execution infrastructure
 export async function executeWorkflowTransition(

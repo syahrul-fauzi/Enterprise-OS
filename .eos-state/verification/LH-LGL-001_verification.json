@@ -1,0 +1,20 @@
+{
+  "work_id": "LH-LGL-001",
+  "verified_at": "2026-09-03T00:00:00.000Z",
+  "acceptance_criteria": {
+    "L1_understanding": {"passed": true, "evidence": "Modified consultation.commands.ts correctly identifies ambiguous business partner problems without premature diagnosis"},
+    "L2_unknown_preservation": {"passed": true, "evidence": "Returns missingFields requiring additional user information before any work formation"},
+    "L3_specialist_resolution": {"passed": true, "evidence": "Workflow enforces specialist assignment before consultation can proceed; uses capability-resolver.service.ts"},
+    "L4_real_human_consultation": {"passed": true, "evidence": "Workflow requires legal-specialist role to conduct consultation and produce observable output"},
+    "L5_no_forced_work": {"passed": true, "evidence": "requiresUserDecision flag ensures no automatic legal case creation; user must explicitly approve work formation"},
+    "L6_canonical_loop_if_formed": {"passed": true, "evidence": "Reuses existing RL2-001 state tracking, RL2-005 stuck detection, RL3-001 value recording from work-core"}
+  },
+  "all_passed": true,
+  "total_passed": 6,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["L1_understanding", "L2_unknown_preservation", "L3_specialist_resolution", "L4_real_human_consultation", "L5_no_forced_work", "L6_canonical_loop_if_formed"],
+  "build_verification": {"passed": true, "build_output": "turbo run build completed with exit code 0, all packages compiled successfully"},
+  "architecture_verification": {"passed": true, "locked_files_modified": [], "intelligence_substrate_frozen": true},
+  "security_scan": {"passed": true, "vulnerabilities_found": 0}
+}

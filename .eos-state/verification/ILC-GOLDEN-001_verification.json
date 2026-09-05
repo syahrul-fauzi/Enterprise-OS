@@ -1,0 +1,25 @@
+{
+  "work_id": "ILC-GOLDEN-001",
+  "verified_at": "2026-09-05T04:20:00Z",
+  "acceptance_criteria": {
+    "signal_received": {"passed": true, "evidence": "Institutional need for digitalization captured as reality signal, work created with correct domainType: institutional-initiative"},
+    "work_formed": {"passed": true, "evidence": "CanonicalWorkRecord persisted dengan semua field required, semua participants terdaftar dengan roles yang jelas"},
+    "capability_resolved": {"passed": true, "evidence": "ilc-institutional-coordination capability commands (submit-need/analyze-requirements/approve-budget/implement/close) semua invokable dan dieksekusi"},
+    "actor_assigned": {"passed": true, "evidence": "project-manager.ilc.001 assigned dalam work model, terlihat di /work/ilc-case-001 UI, semua 6 actors terikat dengan observable responsibilities"},
+    "execution_completed": {"passed": true, "evidence": "Workflow transisi lengkap: draft → need-submitted → requirements-analyzed → budget-approved → implementation-in-progress → system-launched → closed — semua step tercatat dengan timestamp"},
+    "evidence_collected": {"passed": true, "evidence": "ev-implementation-report-001 + ev-bap-certificate-001 + ev-executive-approval-001 terattach dan terverifikasi di work model"},
+    "outcome_verified": {"passed": true, "evidence": "external_verification hadir dengan konfirmasi ILC Institutional System + Executive Authority, outcomeDescription terisi lengkap"},
+    "ui_rendered": {"passed": true, "evidence": "/work/ilc-case-001 merender semua field required, domain vocabulary institusi muncul dengan benar, hierarchical roles terlihat di UI"},
+    "spine_reuse_verified": {"passed": true, "evidence": "EOS spine SAMA yang digunakan SERVICES.ID dan LawyersHub juga berfungsi untuk ILC — ZERO perubahan core, 100% primitif yang sama"},
+    "ilc_gates_passed": {"passed": true, "evidence": "Semua 11 ILC reality gates dari ilc-ins-001.test.ts terpenuhi: I1-I11 semua pass, tidak ada institutional lifecycle fork"}
+  },
+  "all_passed": true,
+  "total_passed": 10,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["signal_received", "work_formed", "capability_resolved", "actor_assigned", "execution_completed", "evidence_collected", "outcome_verified", "ui_rendered", "spine_reuse_verified", "ilc_gates_passed"],
+  "security_scan": {"passed": true, "vulnerabilities_found": 0},
+  "architecture_verification": {"passed": true, "locked_files_modified": [], "frozen_core_compliant": true},
+  "r20_verification": {"passed": true, "human_can_complete_work": true, "triple_domain_works": true, "eos_spine_works_untuk_semua_domain": true},
+  "notes": "ILC golden slice fully verified end-to-end. EOS production spine berhasil menangani domain ketiga tanpa modifikasi core. Cross-domain reuse terbukti 100% untuk ketiga domain: SERVICES.ID (ekonomi), LawyersHub (hukum), ILC (institusional). Semua persyaratan R20 terpenuhi."
+}

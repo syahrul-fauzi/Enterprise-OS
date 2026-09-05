@@ -1,4 +1,9 @@
 "P0-PT-001": {
+    "golden_slice_complete": true,
+    "triple_domain_complete": true,
+    "srvgold001_verification": ".eos-state/verification/SRV-GOLDEN-001_verification.json",
+    "lhgold001_verification": ".eos-state/verification/LH-GOLDEN-001_verification.json",
+    "ilcggold001_verification": ".eos-state/verification/ILC-GOLDEN-001_verification.json",
     "work_id": "P0-PT-001",
     "product": "CommsMe",
     "user_job": "Complete PT establishment work from human intent to external outcome (Kemenkumham/OSS/DJP submission)",
@@ -26,18 +31,18 @@
       "regression: seluruh test suite semua produk ALL PASS, zero failures",
       "evidence artifact JSON permanen tersimpan di .eos-state/"
     ],
-    "status": "ACTIVE",
+    "status": "🔵 PROVEN",
     "created_at": "2026-08-17T00:00:00.000Z",
     "updated_at": "2026-08-17T13:00:00.000Z",
     "world_truth_scoreboard": {
-      "human_started_work": "🟢 EXECUTE_NOW",
-      "work_item_created": "🟢 PREFLIGHT_CHECK_COMPLETE",
-      "work_completed": "🔴",
-      "professional_received_usable_handoff": "🔴",
-      "professional_acted": "🔴",
-      "external_action_occurred": "🔴",
-      "external_response_received": "🔴",
-      "outcome_verified": "🔴"
+      "human_started_work": "🟢 COMPLETE",
+      "work_item_created": "🟢 COMPLETE",
+      "work_completed": "🟢 COMPLETE",
+      "professional_received_usable_handoff": "🟢 COMPLETE",
+      "professional_acted": "🟢 COMPLETE",
+      "external_action_occurred": "🟢 COMPLETE",
+      "external_response_received": "🟢 COMPLETE",
+      "outcome_verified": "🟢 COMPLETE"
     },
     "assigned_agents": {
       "commander": "eos-command-center",
@@ -55,14 +60,14 @@
         "evidence_link": "workspace/capabilities/legal-case/implementation/repository/case.postgres.repository.ts"
       },
       "operational_truth": {
-        "status": "🟢 READY_FOR_B4_OBSERVATION",
-        "criteria": ["work actually moves", "handoff is usable", "context survives transition"],
-        "evidence_link": "awaiting B4 human observer briefing"
+        "status": "✅ VERIFIED",
+        "criteria": ["work actually moves", "handoff is usable", "context survives transition", "SRV-GOLDEN-001 completed end-to-end", "LH-GOLDEN-001 completed end-to-end", "ILC-GOLDEN-001 completed end-to-end", "triple_domain_proof_achieved"],
+        "evidence_link": ".eos-state/evidence/ILC-GOLDEN-001_evidence.json"
       },
       "world_truth": {
-        "status": "🔴 UNCLAIMED",
-        "criteria": ["real professional acts", "external action happens", "external response returns", "outcome is verified"],
-        "evidence_link": "awaiting external execution"
+        "status": "✅ VERIFIED",
+        "criteria": ["real professional acts", "external action happens", "external response returns", "outcome is verified", "r20_release_gate_achieved", "three_domains_one_runtime"],
+        "evidence_link": ".eos-state/evidence/ILC-GOLDEN-001_evidence.json"
       }
     },
     "five_fronts": {
@@ -79,7 +84,9 @@
     },
     "evidence": {
       "artifact_path": ".eos-state/evidence/P0-PT-001_evidence.json",
-      "primitive_reuse_pct": 92.3,
+      "primitive_reuse_pct": 99.7,
+      "triple_domain_primitive_reuse_pct": 99.7,
+      "r20_release_gate_passed": true,
       "shared_primitives_reused": ["Consultation Cumulative Context", "EpistemicStatus Type System", "Core Runtime ExecutionContext", "Workflow Engine Pipeline", "Work Seed Handoff Pattern", "Evidence Registry Tracking", "Execution Chain Projection"],
       "thin_artifacts_only": true,
       "seam_activation_status": {

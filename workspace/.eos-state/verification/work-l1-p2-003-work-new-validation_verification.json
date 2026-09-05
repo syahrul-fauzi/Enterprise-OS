@@ -1,0 +1,73 @@
+{
+  "work_id": "work-l1-p2-003-work-new-validation",
+  "verified_at": "2026-09-01T15:30:00Z",
+  "acceptance_criteria": {
+    "c1_valid_intent_resolved": {
+      "passed": true,
+      "evidence": "intentId dari URL /work/new?intentId={id} di-resolve server-side via fetchIntentServerSide() yang memanggil canonical API /api/intent/{intentId}. Intent benar-benar dibaca dari store (PostgreSQL atau in-memory), bukan sekadar string yang dipakai tanpa validasi. Jika intent tidak ditemukan, redirect kembali ke /intent/new terjadi."
+    },
+    "c2_intent_participates_in_formation": {
+      "passed": true,
+      "evidence": "Canonical Intent fully participates in Work Formation: intent.resolution.objective dijadikan title Work, intent.expression sebagai description, intentId di-pass sebagai linkedIntentId. Work tidak dibuat independen dari intent - semua field Work berasal dari intent kecuali UUID yang di-generate server-side."
+    },
+    "c3_canonical_work_persisted": {
+      "passed": true,
+      "evidence": "Canonical Work disimpan ke canonicalWorkStore (in-memory) dan PostgreSQL (jika production). Semua field CanonicalWorkRecord terisi: workId, linkedIntentId, tenantId, workspaceId, actorId, status, createdAt, updatedAt. Work benar-benar persist sebelum redirect."
+    },
+    "c4_stable_workid_produced": {
+      "passed": true,
+      "evidence": "WorkId di-generate server-side oleh capabilityRegistry (atau UUID fallback jika registry unavailable) dengan format 'w-<16 chars>'. WorkId stabil, tidak berubah setelah reload, dan menjadi identitas untuk /work/[id]."
+    },
+    "c5_context_preserved_correctly": {
+      "passed": true,
+      "evidence": "Context inheritance 100% terpenuhi: Intent.actorId → Work.actorId, Intent.workspaceId → Work.workspaceId, Intent.tenantId → Work.tenantId. Semua field context sama persis, tidak ada perubahan atau silent assignment. Context tidak hilang selama transition."
+    },
+    "c6_no_temp_ui_object": {
+      "passed": true,
+      "evidence": "Tidak ada local state atau preview di /work/new yang berpura-pura menjadi Work. Urutan eksak: FORM SUBMITTED → API /api/work/create dipanggil → CANONICAL WORK PERSISTED → WORK ID RETURNED → REDIRECT /work/[id]. Work hanya dibuat setelah API response 201 diterima."
+    },
+    "c7_workid_accepted_by_work_id_page": {
+      "passed": true,
+      "evidence": "/work/[id] menerima WorkId yang sama dari /work/new. getWorkRealityModel() dapat membaca canonicalWorkStore.get(workId) dan membangun WorkRealityModel untuk WorkRealityTemplate. Chain /work/new → /work/[id] terhubung sepenuhnya."
+    },
+    "c8_reload_resolves_same_work": {
+      "passed": true,
+      "evidence": "Setelah browser full refresh di /work/[workId], workId tetap sama dan dapat di-resolve kembali dari store. Work tetap ada, tidak hilang setelah reload. Reload continuity terpenuhi sama seperti /work/[id] master slice."
+    },
+    "c9_presentation_does_not_own_formation": {
+      "passed": true,
+      "evidence": "Presentation layer (IntentUnderstandingPreview) hanya menerima intent untuk preview dan memanggil onConfirm callback. Semua canonical formation logic (API call, persistence, context assignment) terjadi server-side di apps/web. Tidak ada business logic di packages/presentation."
+    },
+    "c10_no_orphan_work_produced": {
+      "passed": true,
+      "evidence": "Jika API /api/work/create gagal (response not ok), error ditangkap dan Work tidak pernah dibuat. Jika user keluar sebelum konfirmasi, tidak ada orphan Work yang tertinggal di store. Failure state tidak menghasilkan fake Work."
+    },
+    "c11_formation_produces_traceable_evidence": {
+      "passed": true,
+      "evidence": "Setelah Work dibuat, console log tercatat: '[POST /api/work/create] Work created successfully: {workId} (domain: {domainType}, linkedIntent: {linkedIntentId})'. Work memiliki audit trail di server, chain intent → work dapat dilacak via linkedIntentId."
+    },
+    "c12_source_runtime_evidence_agree": {
+      "passed": true,
+      "evidence": "Source code di /work/new/page.tsx dan /api/work/create/route.ts 100% sesuai dengan runtime behavior. Semua claim di source code terbukti dalam staging runtime: server-side fetch, session check, redirect sequence, context inheritance."
+    }
+  },
+  "all_passed": true,
+  "total_passed": 12,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["c1_valid_intent_resolved", "c2_intent_participates_in_formation", "c3_canonical_work_persisted", "c4_stable_workid_produced", "c5_context_preserved_correctly", "c6_no_temp_ui_object", "c7_workid_accepted_by_work_id_page", "c8_reload_resolves_same_work", "c9_presentation_does_not_own_formation", "c10_no_orphan_work_produced", "c11_formation_produces_traceable_evidence", "c12_source_runtime_evidence_agree"],
+  "security_scan": {
+    "passed": true,
+    "vulnerabilities_found": 0
+  },
+  "architecture_verification": {
+    "passed": true,
+    "locked_files_modified": []
+  },
+  "chain_verification": {
+    "passed": true,
+    "chain": "REAL NEED → CANONICAL INTENT (via /intent/new) → CANONICAL WORK (via /work/new) → WORK REALITY (via /work/[id])",
+    "evidence": "Semua node di Golden Spine chain sekarang terhubung dan terverifikasi. Intent → Work transition adalah boundary yang menentukan, dan sekarang terbukti tidak ada context yang hilang, tidak ada fake object, dan chain dapat dilacak end-to-end."
+  },
+  "verification_notes": "SEMUA 12 ACCEPTANCE CRITERIA P2-003 LULUS 100%. /work/new telah berhasil memvalidasi transition Intent → Canonical Work yang tidak hanya menghasilkan object persistensi, tetapi juga mempertahankan semua context operasional dan mengikuti boundary yang telah ditetapkan. Chain Golden Spine sekarang memiliki bukti executable yang solid untuk tiga node pertama."
+}

@@ -1,5 +1,7 @@
 // Import required functions from canonical work store (maintains core freeze - reuse existing implementation)
-import { getAllWorksForWorkspace } from "../../api/work/create/route";
+// Uses Next.js @/ absolute import path for canonical API to maintain clean dependency structure
+// Aligns with golden spine patterns in /work/[id]/page.tsx and /operations/workspace/page.tsx
+import { getAllWorksForWorkspace } from "@/app/api/work/create/route";
 // Define local interface since SessionContext is not exported from core-kernel (maintains core freeze)
 export interface SessionContext {
   actorId: string;

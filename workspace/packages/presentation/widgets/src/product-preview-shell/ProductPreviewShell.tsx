@@ -1,12 +1,12 @@
-// @ts-nocheck: Disable TypeScript checks for this file to unblock LawyersHub production build - errors are unrelated to LH-PROD-003 core workflow
 "use client";
 
 import Link from "next/link";
 import React from "react";
 import { useEffect, useState } from "react";
 import type { ProductExperience } from "@repo/presentation-entities";
+import type { ProductPreviewBinding } from "@repo/presentation-experience";
 import { getProductExperience } from "@repo/presentation-experience";
-import { getSpineNavigationForProductId, type SpineNavigationItem } from "@repo/presentation-config";
+import { createWorkspaceNavigation, type NavigationDescriptor, type NavigationItem } from "@repo/composition/navigation"; // IDE cache refresh
 
 type ProductRealitySnapshot = {
   items: Array<{
@@ -162,9 +162,9 @@ async function fetchLawyersHubCaseStats() {
     if (resp.ok) {
       const data = await resp.json();
       const cases = data.cases || [];
-      const active = cases.filter(item => item.status === "in_progress" || item.status === "open").length;
-      const completed = cases.filter(item => item.status === "closed" || item.verificationStatus === "passed").length;
-      const pending = cases.filter(item => item.status === "draft" || item.verificationStatus === "pending").length;
+      const active = cases.filter((item: any) => item.status === "in_progress" || item.status === "open").length;
+      const completed = cases.filter((item: any) => item.status === "closed" || item.verificationStatus === "passed").length;
+      const pending = cases.filter((item: any) => item.status === "draft" || item.verificationStatus === "pending").length;
       return { active, completed, pending };
     }
   } catch (err) {
@@ -191,15 +191,20 @@ function readILCTopicLabels(experience: ProductExperience | undefined): readonly
 export interface ProductPreviewShellProps {
   readonly binding: ProductPreviewBinding;
   readonly mode?: "landing" | "requirements" | "delivery" | "detail" | "trace";
+  readonly children?: React.ReactNode;
+  readonly session?: any;
 }
 
 export function ProductPreviewShell({
   binding,
   mode = "landing",
+  children,
+  session,
 }: ProductPreviewShellProps) {
   const experience = getProductExperience(binding.productId) as ProductExperience | undefined;
   const presentation = buildPresentationAdapter(experience, binding);
   const [reality, setReality] = useState<ProductRealitySnapshot | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const requirementsHref = `/products/${binding.productId}${binding.route}`;
   const deliveryHref = `/products/${binding.productId}/delivery`;
   const overviewHref = `/products/${binding.productId}`;
@@ -230,32 +235,22 @@ export function ProductPreviewShell({
 
   const discoveryMode = experience?.entry?.discoveryMode;
 
-  // EOS Product Spine Navigation (10× decision surface reduction: load from centralized config)
-  const spineNavigation = getSpineNavigationForProductId(binding.productId) || [
-    { key: "work" as const, labelKey: "navigation.work", href: "/cases" },
-    { key: "communication" as const, labelKey: "navigation.communication", href: "/communications" },
-    { key: "profile" as const, labelKey: "navigation.profile", href: "/profile" }
-  ];
+  // UX-SHELL-001: Use UNIFIED NAVIGATION as single source of truth
+  const userCapabilities = session?.userCapabilities || [];
+  const navigation: NavigationDescriptor = createWorkspaceNavigation(binding.productId, userCapabilities);
   
-  // Map label keys to Indonesian labels (temporary until i18n is fully implemented)
-  const labelMap: Record<string, string> = {
-    "navigation.work": "Pekerjaan Saya",
-    "navigation.communication": "Komunikasi", 
-    "navigation.profile": "Profil"
-  };
+  // Extract primary navigation items for shell rendering
+  const navItems = navigation.items;
+  // Get main navigation items (first 3 for desktop, all in mobile hamburger)
+  const primaryNavItems = navItems.slice(0, 3);
+  const settingsItem = navItems.find((item: NavigationItem) => item.id === "nav-settings");
+  // Map all items to display labels (already in plain text from unified source)
+  const getNavigationItemDetails = (item: NavigationItem) => ({
+    href: item.href || "/",
+    label: item.label,
+  });
   
-  // Extract individual navigation items for backward compatibility
-  const workItem = spineNavigation.find(item => item.key === "work");
-  const communicationItem = spineNavigation.find(item => item.key === "communication");
-  const profileItem = spineNavigation.find(item => item.key === "profile");
-  
-  const primaryHref = workItem?.href || "/cases";
-  const secondaryHref = communicationItem?.href || "/communications";
-  const profileHref = profileItem?.href || "/profile";
-  const primaryLabel = labelMap[workItem?.labelKey || "navigation.work"];
-  const secondaryLabel = labelMap[communicationItem?.labelKey || "navigation.communication"];
-  const profileLabel = labelMap[profileItem?.labelKey || "navigation.profile"];
-  const tertiaryCta = undefined; // Remove all non-spine CTAs permanently
+  const tertiaryCta: any = undefined; // Remove all non-spine CTAs permanently
 
   function calculateRoleStats() {
     return stats;
@@ -427,165 +422,249 @@ export function ProductPreviewShell({
   };
 
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-        <div className="space-y-3">
-          <div className="inline-flex rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
-            {presentation.categoryLabel}
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-            {binding.displayName}
-          </h1>
-          <p className="max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">
-            {presentation.summary}
-          </p>
-        </div>
+    <>
+      {/* UX-SHELL-001: Responsive App Shell Header - works on desktop/tablet/mobile */}
+      <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            {/* Logo/Brand */}
+            <div className="flex items-center">
+              <Link href="/" className="text-lg font-bold text-slate-900">
+                EOS Workspace
+              </Link>
+            </div>
 
-        <div className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
-            <div className="mt-2 text-sm font-medium text-slate-900">
-              {presentation.audienceTitle}
-            </div>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              {presentation.audienceDescription}
-            </p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
-            <div className="mt-2 text-sm font-medium text-slate-900">
-              {presentation.valueTitle}
-            </div>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              {presentation.valueDescription}
-            </p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
-            <div className="mt-2 text-sm font-medium text-slate-900">
-              {presentation.proofTitle}
-            </div>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              {presentation.proofDescription}
-            </p>
-          </div>
-        </div>
-      </div>
+            {/* Desktop Navigation - hidden on mobile */}
+            <nav className="hidden md:flex items-center gap-6">
+              {navItems.map((item: NavigationItem) => (
+                <Link
+                  key={item.id}
+                  href={item.href || "/"}
+                  className="text-sm font-medium text-slate-600 transition hover:text-slate-900"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
 
-      <div className="mt-6 flex flex-wrap gap-3">
-        <Link
-          className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
-          href={primaryHref}
-        >
-          {primaryLabel}
-        </Link>
-        <Link
-          className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-          href={secondaryHref}
-        >
-          {secondaryLabel}
-        </Link>
-        <Link
-          className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-          href={profileHref}
-        >
-          {profileLabel}
-        </Link>
-      </div>
-
-      <div className="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-2xl">
-            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-              {binding.productId === "lawyershub" && "Akuntabilitas Hukum"}
-              {binding.productId === "services-id" && "Transparansi Layanan"}
-              {binding.productId === "ilc" && "Verifikasi Pengetahuan"}
-              {binding.productId === "academic" && "Integritas Akademik"}
-            </div>
-            <h2 className="mt-2 text-xl font-bold text-slate-950">
-              {presentation.proofTitle}
-            </h2>
-            <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">
-              {presentation.proofDescription}
-            </p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-700">
-            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-              {binding.productId === "lawyershub" && "Akuntabilitas Hukum"}
-              {binding.productId === "services-id" && "Transparansi Layanan"}
-              {binding.productId === "ilc" && "Verifikasi Pengetahuan"}
-              {binding.productId === "academic" && "Integritas Akademik"}
-            </div>
-            <div className="mt-2 font-medium text-slate-900">
-              {binding.productId === "lawyershub" && "Bukti hukum dan track record kasus terverifikasi"}
-              {binding.productId === "services-id" && "Bukti pengiriman layanan dan review klien"}
-              {binding.productId === "ilc" && "Diskusi terverifikasi oleh profesional hukum"}
-              {binding.productId === "academic" && "Peer review dan sitasi penelitian terpercaya"}
-            </div>
-            <div className="mt-1">
-              {binding.productId === "lawyershub" && "Platform ini menggunakan progres kasus yang terlihat dan bukti hukum yang terverifikasi, bukan klaim marketing semata."}
-              {binding.productId === "services-id" && "Platform ini menggunakan progres layanan yang terlihat dan bukti pengiriman yang terverifikasi, bukan janji kosong."}
-              {binding.productId === "ilc" && "Platform ini menggunakan konten yang diverifikasi oleh profesional hukum dan riwayat diskusi yang transparan."}
-              {binding.productId === "academic" && "Platform ini menggunakan penelitian yang diverifikasi dan tinjauan sejawat untuk menjaga integritas akademik."}
-            </div>
-          </div>
-        </div>
-
-        <ul className="mt-5 grid gap-3 md:grid-cols-3">
-          {presentation.proofBullets.map((bullet) => (
-            <li
-              key={bullet}
-              className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm leading-6 text-slate-700"
+            {/* Mobile menu button - visible only on mobile */}
+            <button
+              className="inline-flex items-center justify-center rounded-md p-2 text-slate-700 md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle navigation"
             >
-              {bullet}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {mode === "landing" ? (
-        <div className="mt-6 space-y-6">
-          <section className="rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
-            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-              {binding.productId === "lawyershub" && "Mulai Perkara Hukum"}
-              {binding.productId === "services-id" && "Ajukan Kebutuhan Layanan"}
-              {binding.productId === "ilc" && "Jelajahi Wawasan Hukum"}
-              {binding.productId === "academic" && "Telusuri Penelitian"}
-            </div>
-            <h2 className="mt-2 text-xl font-bold text-slate-950">
-              {entryQuestion}
-            </h2>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">
-              {entryAnswer}
-            </p>
-          </section>
-
-          {renderDiscoveryAffordance()}
-
-          <section className="grid gap-4 lg:grid-cols-3">
-            {landingSections.map((section) => (
-              <article
-                className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
-                id={section.id}
-                key={`${binding.productId}-${section.title}`}
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
               >
-                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                  {section.eyebrow}
-                </div>
-                <h3 className="mt-2 text-lg font-semibold text-slate-950">
-                  {section.title}
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">
-                  {section.description}
-                </p>
-                <ul className="mt-4 space-y-2 text-sm leading-6 text-slate-700">
-                  {section.bullets.map((bullet) => (
-                    <li key={bullet}>{bullet}</li>
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </section>
+                {mobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 12h18M3 6h18M3 18h18" />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
-      ) : null}
-    </section>
+
+        {/* Mobile Navigation Menu - only visible when open on mobile */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-slate-200 bg-white">
+            <div className="container mx-auto px-4 py-4 sm:px-6">
+              <nav className="flex flex-col gap-4">
+                {navItems.map((item: NavigationItem) => (
+                  <Link
+                    key={item.id}
+                    href={item.href || "/"}
+                    className="text-base font-medium text-slate-600 transition hover:text-slate-900"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* Main content */}
+      <main className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-3">
+            <div className="inline-flex rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+              {presentation.categoryLabel}
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+              {binding.displayName}
+            </h1>
+            <p className="max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">
+              {presentation.summary}
+            </p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+              <div className="mt-2 text-sm font-medium text-slate-900">
+                {presentation.audienceTitle}
+              </div>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                {presentation.audienceDescription}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+              <div className="mt-2 text-sm font-medium text-slate-900">
+                {presentation.valueTitle}
+              </div>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                {presentation.valueDescription}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+              <div className="mt-2 text-sm font-medium text-slate-900">
+                {presentation.proofTitle}
+              </div>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                {presentation.proofDescription}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-3">
+          {/* Render primary navigation items from unified source */}
+          {primaryNavItems.map((item: NavigationItem, index: number) => {
+            const details = getNavigationItemDetails(item);
+            // Primary button for first item, outline for others
+            const isPrimary = index === 0;
+            return (
+              <Link
+                key={item.id}
+                className={`rounded-xl px-4 py-2.5 text-sm font-medium transition ${
+                  isPrimary 
+                    ? "bg-slate-950 text-white hover:bg-slate-800" 
+                    : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                }`}
+                href={details.href}
+              >
+                {details.label}
+              </Link>
+            );
+          })}
+          {/* Settings link - always visible */}
+          {settingsItem && (
+            <Link
+              className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+              href={settingsItem.href || "/settings"}
+            >
+              {settingsItem.label}
+            </Link>
+          )}
+        </div>
+
+        <div className="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-2xl">
+              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                {binding.productId === "lawyershub" && "Akuntabilitas Hukum"}
+                {binding.productId === "services-id" && "Transparansi Layanan"}
+                {binding.productId === "ilc" && "Verifikasi Pengetahuan"}
+                {binding.productId === "academic" && "Integritas Akademik"}
+              </div>
+              <h2 className="mt-2 text-xl font-bold text-slate-950">
+                {presentation.proofTitle}
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">
+                {presentation.proofDescription}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-700">
+              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                {binding.productId === "lawyershub" && "Akuntabilitas Hukum"}
+                {binding.productId === "services-id" && "Transparansi Layanan"}
+                {binding.productId === "ilc" && "Verifikasi Pengetahuan"}
+                {binding.productId === "academic" && "Integritas Akademik"}
+              </div>
+              <div className="mt-2 font-medium text-slate-900">
+                {binding.productId === "lawyershub" && "Bukti hukum dan track record kasus terverifikasi"}
+                {binding.productId === "services-id" && "Bukti pengiriman layanan dan review klien"}
+                {binding.productId === "ilc" && "Diskusi terverifikasi oleh profesional hukum"}
+                {binding.productId === "academic" && "Peer review dan sitasi penelitian terpercaya"}
+              </div>
+              <div className="mt-1">
+                {binding.productId === "lawyershub" && "Platform ini menggunakan progres kasus yang terlihat dan bukti hukum yang terverifikasi, bukan klaim marketing semata."}
+                {binding.productId === "services-id" && "Platform ini menggunakan progres layanan yang terlihat dan bukti pengiriman yang terverifikasi, bukan janji kosong."}
+                {binding.productId === "ilc" && "Platform ini menggunakan konten yang diverifikasi oleh profesional hukum dan riwayat diskusi yang transparan."}
+                {binding.productId === "academic" && "Platform ini menggunakan penelitian yang diverifikasi dan tinjauan sejawat untuk menjaga integritas akademik."}
+              </div>
+            </div>
+          </div>
+
+          <ul className="mt-5 grid gap-3 md:grid-cols-3">
+            {presentation.proofBullets.map((bullet) => (
+              <li
+                key={bullet}
+                className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm leading-6 text-slate-700"
+              >
+                {bullet}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {mode === "landing" ? (
+          <div className="mt-6 space-y-6">
+            <section className="rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
+              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                {binding.productId === "lawyershub" && "Mulai Perkara Hukum"}
+                {binding.productId === "services-id" && "Ajukan Kebutuhan Layanan"}
+                {binding.productId === "ilc" && "Jelajahi Wawasan Hukum"}
+                {binding.productId === "academic" && "Telusuri Penelitian"}
+              </div>
+              <h2 className="mt-2 text-xl font-bold text-slate-950">
+                {entryQuestion}
+              </h2>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">
+                {entryAnswer}
+              </p>
+            </section>
+
+            {renderDiscoveryAffordance()}
+
+            <section className="grid gap-4 lg:grid-cols-3">
+              {landingSections.map((section) => (
+                <article
+                  className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
+                  id={section.id}
+                  key={`${binding.productId}-${section.title}`}
+                >
+                  <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    {section.eyebrow}
+                  </div>
+                  <h3 className="mt-2 text-lg font-semibold text-slate-950">
+                    {section.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">
+                    {section.description}
+                  </p>
+                  <ul className="mt-4 space-y-2 text-sm leading-6 text-slate-700">
+                    {section.bullets.map((bullet) => (
+                      <li key={bullet}>{bullet}</li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </section>
+          </div>
+        ) : null}
+      </section>
+      {children}
+    </main>
+    </>
   );
 }
 

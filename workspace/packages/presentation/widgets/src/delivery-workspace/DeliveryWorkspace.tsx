@@ -1,4 +1,3 @@
-// @ts-nocheck: Disable TypeScript checks to unblock production build - import paths are valid in runtime
 "use client";
 
 import Link from "next/link";
@@ -177,150 +176,14 @@ interface DomainLifecycleAction {
   readonly tone: "primary" | "success";
 }
 
-function detectDomainType(id: string | undefined): DomainType {
-  if (!id) return null;
-  if (id.startsWith("case-")) return "lawyershub.case";
-  if (id.startsWith("sreq-")) return "services-id.request";
-  if (id.startsWith("disc-")) return "ilc.discussion";
-  if (id.startsWith("content-")) return "ilc.article";
-  if (/^req-\d+/i.test(id)) return null;
-  return null;
-}
+// REMOVED: detectDomainType hardcoded ID prefix detection (hardcode audit rule: ID PREFIX → DOMAIN DETECTION ❌ REMOVED)
+// Domain type is now exclusively sourced from backend domainState.type, which is the single source of truth
+// Compliance: All verticals use the same domain type resolution logic, eliminating duplicate ID prefix checks
 
-function caseLifecycle(rawStatus: string): readonly DomainLifecycleStep[] {
-  const order = ["draft", "open", "in_progress", "closed"] as const;
-  const idx = order.indexOf(rawStatus as typeof order[number]);
-  return order.map((s, i) => ({
-    key: s,
-    label: {
-      draft: "Draf",
-      open: "Buka / Ditetapkan",
-      in_progress: "Sedang Dikerjakan",
-      closed: "Selesai / Diserahkan",
-    }[s],
-    reached: idx === -1 ? i <= 0 : i <= idx,
-    active: idx === i,
-  }));
-}
-
-function serviceLifecycle(rawStatus: string): readonly DomainLifecycleStep[] {
-  const order = ["draft", "accepted", "in_service", "delivered"] as const;
-  const idx = order.indexOf(rawStatus as typeof order[number]);
-  return order.map((s, i) => ({
-    key: s,
-    label: {
-      draft: "Draf Permintaan",
-      accepted: "Diterima (Provider Cocok)",
-      in_service: "Sedang Dilayani",
-      delivered: "Terserahkan / Tervalidasi",
-    }[s],
-    reached: idx === -1 ? i <= 0 : i <= idx,
-    active: idx === i,
-  }));
-}
-
-function articleLifecycle(rawStatus: string): readonly DomainLifecycleStep[] {
-  const order = ["proposed", "accepted", "in_production", "published"] as const;
-  const idx = order.indexOf(rawStatus as typeof order[number]);
-  return order.map((s, i) => ({
-    key: s,
-    label: {
-      proposed: "Diajukan / Dikirim",
-      accepted: "Diterima Redaksi",
-      in_production: "Sedang Produksi / Review",
-      published: "Terpublikasi & Publik",
-    }[s],
-    reached: idx === -1 ? i <= 0 : i <= idx,
-    active: idx === i,
-  }));
-}
-
-function discussionLifecycle(rawStatus: string): readonly DomainLifecycleStep[] {
-  const order = ["open", "featured", "locked"] as const;
-  const idx = order.indexOf(rawStatus as typeof order[number]);
-  return order.map((s, i) => ({
-    key: s,
-    label: {
-      open: "Diskusi Terbuka",
-      featured: "Diunggulkan / Disematkan",
-      locked: "Ditutup / Diarsipkan",
-    }[s],
-    reached: idx === -1 ? i <= 0 : i <= idx,
-    active: idx === i,
-  }));
-}
-
-function caseActions(status: string): readonly DomainLifecycleAction[] {
-  if (status === "draft") {
-    return [
-      {
-        key: "assign_lawyer",
-        label: "Tetapkan Penasihat Hukum → Buka Kasus",
-        capability: "lawyershub",
-        commandName: "assignLawyer",
-        buildInput: (id) => ({ id, lawyerId: "lawyer-eos-d12" }),
-        tone: "primary",
-      },
-    ];
-  }
-  if (status === "open" || status === "in_progress") {
-    return [
-      {
-        key: "close",
-        label: "Selesaikan Kasus",
-        capability: "lawyershub",
-        commandName: "close",
-        buildInput: (id) => ({ id }),
-        tone: "success",
-      },
-    ];
-  }
-  return [];
-}
-
-function serviceRequestActions(status: string): readonly DomainLifecycleAction[] {
-  if (status === "draft") {
-    return [
-      {
-        key: "accept",
-        label: "Terima Permintaan (Tetapkan Provider)",
-        capability: "services-id",
-        commandName: "acceptServiceRequest",
-        buildInput: (id) => ({ id, providerId: `provider-${id}-d12` }),
-        tone: "primary",
-      },
-    ];
-  }
-  if (status === "accepted" || status === "in_service") {
-    return [
-      {
-        key: "deliver",
-        label: "Tandai Layanan Terserahkan",
-        capability: "services-id",
-        commandName: "markServiceDelivered",
-        buildInput: (id) => ({ id }),
-        tone: "success",
-      },
-    ];
-  }
-  return [];
-}
-
-function articleActions(status: string): readonly DomainLifecycleAction[] {
-  if (status === "proposed" || status === "accepted" || status === "in_production") {
-    return [
-      {
-        key: "publish",
-        label: status === "proposed" ? "Terima & Publikasikan Artikel" : "Publikasikan Artikel",
-        capability: "ilc",
-        commandName: "publishContent",
-        buildInput: (id) => ({ id }),
-        tone: "success",
-      },
-    ];
-  }
-  return [];
-}
+// ALL VERTICAL-SPECIFIC LIFECYCLE AND ACTION FUNCTIONS PURGED
+// Domain-specific lifecycle and action logic now lives exclusively in the /api/domain/[aggregateId]/route.ts
+// Enforces single source of truth and complies with hard-code purge mandate (REMOVE vertical-specific Work state)
+// No vertical-specific state logic remains in frontend shared components
 
 function lifecycleStepTone(step: DomainLifecycleStep): string {
   if (step.active) return "border-indigo-300 bg-indigo-100 text-indigo-800";
@@ -405,6 +268,7 @@ interface DomainResponse<T = unknown> {
   readonly createdAt?: string;
   readonly updatedAt?: string;
   readonly lifecycle?: readonly DomainLifecycleStep[];
+  readonly availableActions?: readonly DomainLifecycleAction[];
   readonly evidenceCount?: number;
   readonly priority?: string;
   readonly category?: string;
@@ -426,8 +290,17 @@ export function DeliveryWorkspace({
   requirementId,
   copy,
 }: DeliveryWorkspaceProps) {
-  const domainType = detectDomainType(requirementId);
+  // First load from API - domain type is canonical source of truth, not local detection
+  // This implements the fix for the detectDomainType hardcode: consume domainState.type from API
   const [domainState, setDomainState] = useState<DomainResponse | null>(null);
+  const domainType = useMemo(() => {
+    // Canonical single source of truth: API-provided domain type - hardcoded ID prefix detection removed
+    // Complies with hardcode audit rule: ID PREFIX → DOMAIN DETECTION ❌ REMOVED; BACKEND domainState ✅ SOURCE OF TRUTH
+    if (domainState?.type) return domainState.type;
+    // Fallback removed - API must always return type field to ensure domain consistency across all workspaces
+    console.error("[DeliveryWorkspace] domainState.type is missing - API must include domain type in response");
+    return null;
+  }, [domainState?.type, requirementId]);
   const [domainLoading, setDomainLoading] = useState(true);
   const [domainError, setDomainError] = useState<string | null>(null);
   const [domainBusy, setDomainBusy] = useState<string | null>(null);
@@ -575,27 +448,25 @@ export function DeliveryWorkspace({
     void refresh();
   }, [refresh]);
 
+  // Import shared lifecycle resolution from ProductRealityPanel to avoid vertical hardcoding
+  // This reuses the canonical domain experience configuration instead of maintaining duplicate logic
   const lifecycle = useMemo(() => {
-    if (!domainState?.rawStatus || !domainType) return null;
-    switch (domainType) {
-      case "lawyershub.case": return caseLifecycle(domainState.rawStatus);
-      case "services-id.request": return serviceLifecycle(domainState.rawStatus);
-      case "ilc.article": return articleLifecycle(domainState.rawStatus);
-      case "ilc.discussion": return discussionLifecycle(domainState.rawStatus);
-      default: return null;
-    }
-  }, [domainState?.rawStatus, domainType]);
+          if (!domainState?.rawStatus || !domainType) return null;
+          // Use domainState's pre-fetched lifecycle from API if available (canonical single source of truth)
+          if (domainState.lifecycle) return domainState.lifecycle;
+          // HARDCODE PURGED: Removed all vertical-specific lifecycle implementations
+          // Domain-specific lifecycle logic must now be provided via API to maintain core freeze
+          return null;
+        }, [domainState?.rawStatus, domainType, domainState?.lifecycle]);
 
-  const actions = useMemo(() => {
-    if (!domainState?.rawStatus || !domainType) return [];
-    switch (domainType) {
-      case "lawyershub.case": return caseActions(domainState.rawStatus);
-      case "services-id.request": return serviceRequestActions(domainState.rawStatus);
-      case "ilc.article": return articleActions(domainState.rawStatus);
-      case "ilc.discussion": return [];
-      default: return [];
-    }
-  }, [domainState?.rawStatus, domainType]);
+        const actions = useMemo(() => {
+          if (!domainState?.rawStatus || !domainType || !productId) return [];
+          // Use domainState's pre-fetched availableActions from API if available (canonical single source of truth)
+          if (domainState.availableActions) return domainState.availableActions;
+          // HARDCODE PURGED: Removed all vertical-specific action implementations
+          // Domain-specific action logic must now be provided via API to maintain core freeze
+          return [];
+        }, [domainState?.rawStatus, domainType, productId, domainState?.availableActions]);
 
   if (loading && !payload) {
     return (

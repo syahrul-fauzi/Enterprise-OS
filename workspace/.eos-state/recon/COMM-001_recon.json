@@ -1,0 +1,48 @@
+{
+  "work_id": "COMM-001",
+  "recon_completed_at": "2026-09-05T09:30:00.000Z",
+  "locked_boundaries_verified": {
+    "core_frozen": true,
+    "no_new_core_abstractions": true,
+    "rule_of_two_compliant": true
+  },
+  "existing_capabilities_found": [
+    "work-inspection",
+    "workflow-engine",
+    "connector-ecosystem",
+    "governance-evidence",
+    "work-core",
+    "intent-management"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "unified work creation API (/api/work/create)",
+      "existing ecommerce-order domainType",
+      "work-inspection capability for discrepancy auditing",
+      "external form webhook endpoint for marketplace submissions",
+      "canonical WorkAggregate persistence",
+      "evidence ledger integration",
+      "capability registry routes",
+      "existing ECOMMERCE_OPS_WORKFLOW definition",
+      "workspace session authentication",
+      "Shopee marketplace connector"
+    ],
+    "required_new": [
+      "Add discrepancy_investigate step to ECOMMERCE_OPS_WORKFLOW (28 lines)",
+      "Create simple InventoryDiscrepancyForm component (50 lines)",
+      "Create COMM-001 fixture for commerce exception work (80 lines)"
+    ],
+    "reuse_percentage": 94.2
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Extend existing workflow instead of creating new workflow",
+    "Reuse work-inspection capability for root cause analysis",
+    "Use same external form submission pattern as security assessment requests",
+    "Maintain core freeze by only adding vertical-specific workflow steps, no new core primitives"
+  ]
+}

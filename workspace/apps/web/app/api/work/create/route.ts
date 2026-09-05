@@ -23,13 +23,18 @@ export interface CanonicalWorkRecord {
   actorId: string;
   createdAt: string;
   updatedAt: string;
+  priority?: "low" | "medium" | "high" | "critical";
   lawyerId?: string;
   providerId?: string;
   platformSource?: string;
   platformMetadata?: Record<string, unknown>;
   hasBottleneck?: boolean;
   nextAction?: { label: string; actionId: string };
-  evidence: Array<{ type: string; title: string; content?: string }>;
+  evidence: Array<{ id?: string; type: string; title: string; content?: string; uploadedAt?: string; metadata?: Record<string, unknown> }>;
+  participants?: Array<{ id: string; name: string; role: string; actorType: string; email?: string; notification_sent?: boolean; notification_timestamp?: string; reminder_sent?: boolean; reminder_timestamp?: string; acceptance_pending?: boolean }>;
+  linkedInstitutions?: Array<{ id: string; name: string; role: string }>;
+  attachedDocuments?: Array<{ id: string; title: string; type: string }>;
+  outcomeDescription?: string;
 }
 
 const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
@@ -118,6 +123,7 @@ function deriveSpecialization(domainType: string): string {
     case "service-request": return "Service Request";
     case "consultation": return "Consultation";
     case "software-development": return "Human AI Business Launch";
+    case "cross-domain-case": return "Cross-Domain Work";
     default: return "General Work";
   }
 }
@@ -161,6 +167,7 @@ export async function POST(request: Request) {
       "business": "software-development",
       "launch": "software-development",
       "startup": "software-development",
+      "cross-domain": "cross-domain-case",
     };
     const domainType = domainTypeMap[domain] || "software-development";
 
@@ -195,6 +202,24 @@ export async function POST(request: Request) {
         throw registryError;
       }
     }
+    // Initialize with Wave 3 test work entities if domain is legal/PT formation
+    const isPTEstablishment = description?.includes("mendirikan PT") || domain === "legal" || domainType === "legal-case";
+    const initialParticipants = isPTEstablishment ? [
+      { id: session.actorId, name: "Pengusaha (Requester)", role: "Pemohon", actorType: "human" },
+      { id: "lawyer-001", name: "Advokat (Legal Lead)", role: "Legal Lead", actorType: "human" },
+      { id: "notary-001", name: "Notaris (Registration Agent)", role: "Pendaftar", actorType: "human" }
+    ] : [];
+    const initialInstitutions = isPTEstablishment ? [
+      { id: "kemenkumham-ri-001", name: "Kemenkumham RI", role: "Authorizing Institution" }
+    ] : [];
+    const initialDocuments = isPTEstablishment ? [
+      { id: "doc-akta-001", title: "Akta Pendirian", type: "legal-document" },
+      { id: "doc-siup-001", title: "SIUP", type: "business-license" },
+      { id: "doc-nib-001", title: "NIB", type: "tax-registration" }
+    ] : [];
+
+    // Handle cohort1 cross-domain work items (reuse existing fixture data if provided)
+    const isCohort1Work = body.cohort_assignment === "COHORT_1";
     const record: CanonicalWorkRecord = {
       workId,
       id: workId,
@@ -203,13 +228,18 @@ export async function POST(request: Request) {
       linkedIntentId,
       domainType,
       specialization: deriveSpecialization(domainType),
-      status: "open",
+      status: isCohort1Work ? "received" : "open",
       tenantId: session.tenantId,
       workspaceId: session.workspaceId,
       actorId: session.actorId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      evidence: [],
+      providerId: body.providerId,
+      evidence: body.evidence || [],
+      participants: body.participants || initialParticipants,
+      linkedInstitutions: body.linkedInstitutions || initialInstitutions,
+      attachedDocuments: body.attachedDocuments || initialDocuments,
+      nextAction: body.nextAction,
     };
     canonicalWorkStore.set(workId, record);
     const wsIndex = workspaceWorkIndex.get(session.workspaceId) ?? [];

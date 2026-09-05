@@ -5,7 +5,7 @@ product:
   display_name: Human+AI Work Organization
 experience:
   surface: web
-  route: /requirements
+  route: /products/human-ai-collab/requirements
 capabilities:
   - requirement-management
   - workflow-engine

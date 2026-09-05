@@ -1,0 +1,24 @@
+{
+  "work_id": "work-l1-p2-002-intent-new-validation",
+  "verified_at": "2026-09-01T14:30:00Z",
+  "acceptance_criteria": {
+    "c1_submit_real_need": {"passed": true, "evidence": "IntentExperience + IntentController memungkinkan user mengirimkan raw need 'Mendirikan PT untuk bisnis baru' via /intent/new, controller mengirim raw expression ke server tanpa interpretasi client-side"},
+    "c2_canonical_conversion": {"passed": true, "evidence": "resolveSemanticIntent() di server (/api/intent/create/route.ts#L21) mengkonversi raw need menjadi IntentContract canonical dengan semua field yang dibutuhkan: resolution.objective, context, domainType"},
+    "c3_persist_required_fields": {"passed": true, "evidence": "Intent selalu disimpan dengan tenantId, workspaceId, actorId dari session (safeSession di /api/intent/create/route.ts#L183), di PostgreSQL (production) maupun in-memory store (development)"},
+    "c4_redirect_to_work_new": {"passed": true, "evidence": "Setelah intent berhasil dibuat, API mengembalikan intentId yang digunakan IntentController untuk navigasi ke /work/new?intentId={id} (IntentController.ts#L45). /work/new menerima intentId dan melakukan fetch intent secara server-side"},
+    "c5_server_only_logic": {"passed": true, "evidence": "Semua semantic resolution dan canonical conversion terjadi server-side. Client hanya mengirim raw {expression, source} tanpa interpretasi apa pun. Tidak ada logic domain di packages/presentation"},
+    "c6_thin_adapter_pattern": {"passed": true, "evidence": "/intent/new/page.tsx (L32) hanya melakukan session check dan merender IntentExperience, zero business logic. Semua logic domain ada di server, sesuai master slice reference /work/[id]"},
+    "c7_boundary_compliance": {"passed": true, "evidence": "apps/web mengelola route ownership, session resolution, canonical model loading. packages/presentation hanya mengelola experience dan interaction. EOS runtime menangani truth dan persistence. Boundary lock 100% terpenuhi"},
+    "c8_presentation_data_minimal": {"passed": true, "evidence": "IntentExperience hanya menerima data yang dibutuhkan untuk render UI, tidak menerima seluruh canonical model kecuali yang diperlukan untuk presentasi. Tidak ada leakage runtime logic ke presentation"},
+    "c9_type_checks_pass": {"passed": true, "evidence": "Tidak ada @ts-nocheck di semua file terkait /intent/new. Semua import dari @repo/presentation-* valid, type checking lewat tanpa error di build process"},
+    "c10_reload_continuity": {"passed": true, "evidence": "Intent tersimpan di store, setelah browser refresh /work/new?intentId={id} tetap bisa fetch intent yang sama. Tidak ada hilangnya context setelah reload, sama seperti reload continuity yang sudah diverifikasi di /work/[id]"}
+  },
+  "all_passed": true,
+  "total_passed": 10,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["c1_submit_real_need", "c2_canonical_conversion", "c3_persist_required_fields", "c4_redirect_to_work_new", "c5_server_only_logic", "c6_thin_adapter_pattern", "c7_boundary_compliance", "c8_presentation_data_minimal", "c9_type_checks_pass", "c10_reload_continuity"],
+  "security_scan": {"passed": true, "vulnerabilities_found": 0},
+  "architecture_verification": {"passed": true, "locked_files_modified": []},
+  "verification_notes": "Semua acceptance criteria untuk /intent/new lulus 100%. Raw need dari user berhasil dikonversi menjadi Intent canonical di server, persist dengan semua field session, dan flow berlanjut ke /work/new sesuai Golden Spine trace. Route ini memenuhi semua standar master slice yang ditetapkan untuk /work/[id]."
+}

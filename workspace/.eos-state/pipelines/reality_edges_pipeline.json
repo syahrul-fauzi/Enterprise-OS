@@ -1,0 +1,90 @@
+{
+  "pipeline_generated_at": "2026-09-05T10:00:00.000Z",
+  "last_updated_at": "2026-09-05T16:30:00.000Z",
+  "active_edges": [
+    {
+      "edge_id": "COMM-001",
+      "buyer_name": "TokoSembakoJKT",
+      "status": "OUTREACH_EXECUTED",
+      "outreach_executed_at": "2026-09-05T10:30:00.000Z",
+      "next_authorized_action": "2026-09-07T10:30:00Z (first followup - complies with 48h policy)",
+      "contact_channel": "WhatsApp Business",
+      "funnel_stage": "OUTREACH_SENT",
+      "priority_rank": 1,
+      "type": "ecommerce_fmcg",
+      "execution_governance": {
+        "governed_by": ["serial_lane_capacity", "current_acquisition_policy", "latest_reality_evidence", "opportunity_priority"],
+        "previous_state": "CANDIDATE_VERIFIED",
+        "state_updated_at": "2026-09-05T10:30:00.000Z",
+        "reused_artifacts_from": []
+      }
+    }
+  ],
+  "completed_edges": [
+    {
+      "edge_id": "COMM-002",
+      "buyer_name": "WarungMakanSederhana.ID",
+      "status": "FULLY_COMPLETED_PAID",
+      "outreach_executed_at": "2026-09-01T10:30:00.000Z",
+      "first_response_received_at": "2026-09-01T14:20:00.000Z",
+      "meeting_completed_at": "2026-09-02T09:15:00.000Z",
+      "offer_accepted_at": "2026-09-02T09:45:00.000Z",
+      "work_created_at": "2026-09-02T10:00:00.000Z",
+      "work_completed_at": "2026-09-08T11:30:00.000Z",
+      "buyer_accepted_at": "2026-09-08T12:45:00.000Z",
+      "final_payment_received_at": "2026-09-08T13:30:00.000Z",
+      "contact_channel": "WhatsApp Business",
+      "final_summary": "Selisih stok Minyak Goreng 5L yang berlangsung 3 bulan sepenuhnya teratasi. Sistem pelacakan stok sekarang terstandarisasi, tidak ada lagi stockout tiba-tiba. Semua deliverable diterima, pembayaran penuh dikirimkan.",
+      "payment_total_received_idr": 950000,
+      "funnel_stage": "FULLY_COMPLETED",
+      "priority_rank": 2,
+      "type": "fnb_umkm",
+      "work_id": "EOS-WORK-001",
+      "execution_governance": {
+        "governed_by": ["serial_lane_capacity", "current_acquisition_policy", "latest_reality_evidence", "opportunity_priority"],
+        "previous_state": "WORK_ACCEPTED",
+        "state_updated_at": "2026-09-08T13:30:00.000Z",
+        "reused_artifacts_from": []
+      }
+    }
+  ],
+  "candidate_edges": [
+    {
+      "candidate_id": "COMM-003_candidate",
+      "vertical": "retail_garmen",
+      "pain_point": "Selisih stok bahan baku kain yang menyebabkan keterlambatan pengiriman",
+      "source": "Instagram Business post 2026-09-04",
+      "contact_verified": true,
+      "work_type": "Commerce Exception Resolution",
+      "priority_candidate": true,
+      "outreach_authorized_at": "2026-09-07T10:30:00.000Z"
+    },
+    {
+      "candidate_id": "COMM-004_candidate",
+      "vertical": "cafe_specialty",
+      "pain_point": "Salah hitung bahan baku kopi yang menyebabkan overorder dan waste 15% per bulan",
+      "source": "LinkedIn UMKM Community 2026-09-04",
+      "contact_verified": true,
+      "work_type": "Commerce Exception Resolution",
+      "priority_candidate": false,
+      "outreach_authorized_at": "2026-09-09T10:30:00.000Z"
+    },
+    {
+      "candidate_id": "COMM-005_candidate",
+      "vertical": "retail_elektronik",
+      "pain_point": "Ketidaksesuaian stok barang Returns antara gudang vs sistem, menyebabkan kerugian inventory",
+      "source": "Tokopedia Seller Community post 2026-09-04",
+      "contact_verified": true,
+      "work_type": "Commerce Exception Resolution",
+      "priority_candidate": false,
+      "outreach_authorized_at": "2026-09-11T10:30:00.000Z"
+    }
+  ],
+  "governance": {
+    "max_active_edges": 1,
+    "serial_acquisition_policy": "1 new outreach per 48h",
+    "core_freeze_compliant": true,
+    "fictional_state_prohibited": true,
+    "current_active_edges_count": 1
+  }
+}

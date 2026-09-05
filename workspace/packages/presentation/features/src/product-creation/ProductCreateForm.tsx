@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import * as React from "react";
+import { useState } from "react";
 import { Card, Input, TextArea, Select, Button } from "@repo/presentation-ui-system";
 
 type ServiceProviderCategory =
@@ -51,8 +52,8 @@ const PRODUCT_TITLE: Record<ProductCreateFormProps['productId'], { title: string
     description: "Kirim permintaan layanan ke provider terdaftar — dari Draf → Diterima → Dalam Layanan → Selesai.",
   },
   ilc: {
-    title: "Mulai Diskusi Komunitas Baru",
-    description: "Mulai diskusi publik tentang topik hukum — komunitas akan mereply dan terlibat.",
+    title: "Daftarkan Pelatihan & Sertifikasi Baru",
+    description: "Buat program pelatihan vokasi dan sertifikasi teknisi digital untuk UMKM — dari Pendaftaran → Pelaksanaan → Sertifikasi.",
   },
   academic: {
     title: "Tulis Artikel Komunitas Baru",
@@ -118,7 +119,7 @@ export function ProductCreateForm({ productId, onCreated }: ProductCreateFormPro
         return (
           <LawyersHubCreateForm
             submitting={state.submitting}
-            onSubmit={(body) => commonSubmit("/api/cases/create", body)}
+            onSubmit={(body) => commonSubmit("/api/capabilities/legal-case/case.create", body)}
           />
         );
       case "services-id":
@@ -126,15 +127,14 @@ export function ProductCreateForm({ productId, onCreated }: ProductCreateFormPro
           <ServicesCreateForm
             submitting={state.submitting}
             categories={serviceCategories}
-            onSubmit={(body) => commonSubmit("/api/quotes/create", body)}
+            onSubmit={(body) => commonSubmit("/api/capabilities/service-directory/service-directory.createServiceRequest", body)}
           />
         );
       case "ilc":
         return (
-          <ILCDiscussionCreateForm
+          <ILCTrainingCreateForm
             submitting={state.submitting}
-            topics={ilcTopicLabels}
-            onSubmit={(body) => commonSubmit("/api/capabilities/ilc/createCommunityDiscussion", body)}
+            onSubmit={(body) => commonSubmit("/api/capabilities/human-consultant-matcher/match-experts", body)}
           />
         );
       case "academic":
@@ -209,6 +209,15 @@ function LawyersHubCreateForm({ submitting, onSubmit }: SubFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<CasePriority>("medium");
+  // PT Pendirian fields untuk kasus pendaftaran PT Indonesia (lh-case-001)
+  const [namaPTLengkap, setNamaPTLengkap] = useState("");
+  const [alamatDomisili, setAlamatDomisili] = useState("");
+  const [bidangUsaha, setBidangUsaha] = useState("");
+  const [jumlahPendiri, setJumlahPendiri] = useState(1);
+  const [modalDasar, setModalDasar] = useState(100000000);
+  const [noNIB, setNoNIB] = useState("");
+  const [npwp, setNpwp] = useState("");
+  const [penanggungJawabNIK, setPenanggungJawabNIK] = useState("");
 
   const disabled = submitting || title.trim().length < 3;
   const submitLabel = submitting ? "Memproses..." : "Buat Kasus";
@@ -217,11 +226,22 @@ function LawyersHubCreateForm({ submitting, onSubmit }: SubFormProps) {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        onSubmit({ title, description, priority });
+        // Sertakan detail PT Pendirian jika semua field terisi (untuk kasus pendaftaran PT)
+        const ptEstablishmentDetails = namaPTLengkap && alamatDomisili && bidangUsaha && noNIB && npwp && penanggungJawabNIK.length === 16
+          ? { namaPTLengkap, alamatDomisili, bidangUsaha, jumlahPendiri, modalDasar, noNIB, npwp, penanggungJawabNIK }
+          : undefined;
+        
+        onSubmit({ 
+          title, 
+          description, 
+          priority,
+          ...(ptEstablishmentDetails && { ptEstablishmentDetails })
+        });
       }}
       className="grid gap-4 md:grid-cols-3"
       aria-label="Form pembuatan kasus hukum"
     >
+      {/* Existing core case fields */}
       <div className="md:col-span-2">
         <Input
           label="Judul Kasus"
@@ -251,6 +271,88 @@ function LawyersHubCreateForm({ submitting, onSubmit }: SubFormProps) {
           size="md"
         />
       </div>
+
+      {/* PT Pendirian fields - hanya untuk kasus pendaftaran PT (lh-case-001) */}
+      <div className="md:col-span-3 mt-4">
+        <h3 className="text-lg font-semibold mb-4 border-b border-gray-200 pb-2">Detail Pendaftaran PT (opsional, isi hanya jika kasus adalah pendirian PT)</h3>
+      </div>
+      <div className="md:col-span-2">
+        <Input
+          label="Nama PT Lengkap"
+          value={namaPTLengkap}
+          onChange={(e) => setNamaPTLengkap(e.target.value)}
+          placeholder="Contoh: PT Kopi Nusantara Mandiri"
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-1">
+        <Input
+          label="Jumlah Pendiri"
+          type="number"
+          min={1}
+          max={100}
+          value={jumlahPendiri.toString()}
+          onChange={(e) => setJumlahPendiri(parseInt(e.target.value) || 1)}
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-3">
+        <Input
+          label="Alamat Domisili"
+          value={alamatDomisili}
+          onChange={(e) => setAlamatDomisili(e.target.value)}
+          placeholder="Alamat lengkap domisili PT"
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-2">
+        <Input
+          label="Bidang Usaha"
+          value={bidangUsaha}
+          onChange={(e) => setBidangUsaha(e.target.value)}
+          placeholder="Contoh: Jasa Teknologi Informasi"
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-1">
+        <Input
+          label="Modal Dasar (Rp)"
+          type="number"
+          min={100000000}
+          value={modalDasar.toString()}
+          onChange={(e) => setModalDasar(parseInt(e.target.value) || 100000000)}
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-1">
+        <Input
+          label="Nomor NIB"
+          value={noNIB}
+          onChange={(e) => setNoNIB(e.target.value)}
+          placeholder="10-13 digit"
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-1">
+        <Input
+          label="NPWP Badan"
+          value={npwp}
+          onChange={(e) => setNpwp(e.target.value)}
+          placeholder="15-20 digit"
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-1">
+        <Input
+          label="NIK Penanggung Jawab"
+          value={penanggungJawabNIK}
+          onChange={(e) => setPenanggungJawabNIK(e.target.value)}
+          placeholder="16 digit"
+          size="md"
+          maxLength={16}
+        />
+      </div>
+
       <div className="md:col-span-3">
         <Button
           type="submit"
@@ -272,19 +374,31 @@ function ServicesCreateForm({ submitting, categories, onSubmit }: SubFormProps &
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  // Golden slice SERVICES-ID-CASE-001: Specific service request fields for cybersecurity audit
+  const [requesterName, setRequesterName] = useState("");
+  const [budget, setBudget] = useState("");
 
-  const disabled = submitting || title.trim().length < 3;
+  const disabled = submitting || title.trim().length < 3 || category.trim().length < 3;
   const submitLabel = submitting ? "Memproses..." : "Ajukan Permintaan";
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        onSubmit({ title, description, category });
+        // Sertakan detail lengkap untuk permintaan layanan keamanan siber (golden slice SERVICES-ID-CASE-001)
+        onSubmit({ 
+          title, 
+          description, 
+          category,
+          requesterName,
+          budget,
+          sessionId: "anon-session-001" // Hardcoded dev session (matches LH/ILC pattern)
+        });
       }}
       className="grid gap-4 md:grid-cols-3"
       aria-label="Form permintaan layanan"
     >
+      {/* Core service request fields */}
       <div className="md:col-span-2">
         <Input
           label="Judul Permintaan"
@@ -299,10 +413,11 @@ function ServicesCreateForm({ submitting, categories, onSubmit }: SubFormProps &
         <Select
           label="Kategori"
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          onChange={(e) => setCategory(e.target.value as any)}
           size="md"
           placeholder="Pilih kategori"
           options={categories.map((c) => ({ value: c, label: c }))}
+          required
         />
       </div>
       <div className="md:col-span-3">
@@ -315,6 +430,31 @@ function ServicesCreateForm({ submitting, categories, onSubmit }: SubFormProps &
           size="md"
         />
       </div>
+      
+      {/* Golden slice-specific fields for cybersecurity audit request */}
+      <div className="md:col-span-3 mt-4">
+        <h3 className="text-lg font-semibold mb-4 border-b border-gray-200 pb-2">Detail Permintaan (wajib untuk audit keamanan siber)</h3>
+      </div>
+      <div className="md:col-span-2">
+        <Input
+          label="Nama Pemohon"
+          value={requesterName}
+          onChange={(e) => setRequesterName(e.target.value)}
+          placeholder="Nama lengkap pemohon layanan"
+          required
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-1">
+        <Input
+          label="Estimasi Budget (Rp)"
+          value={budget}
+          onChange={(e) => setBudget(e.target.value)}
+          placeholder="Contoh: 50000000"
+          size="md"
+        />
+      </div>
+
       <div className="md:col-span-3">
         <Button
           type="submit"
@@ -332,53 +472,133 @@ function ServicesCreateForm({ submitting, categories, onSubmit }: SubFormProps &
   );
 }
 
-function ILCDiscussionCreateForm({ submitting, topics, onSubmit }: SubFormProps & { topics: readonly TopicCategory[] }) {
+function ILCTrainingCreateForm({ submitting, onSubmit }: SubFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [topic, setTopic] = useState("");
+  const [priority, setPriority] = useState<CasePriority>("medium");
+  // Pelatihan & Sertifikasi fields untuk ILC golden slice ilc-case-001
+  const [lokasiPelatihan, setLokasiPelatihan] = useState("");
+  const [tanggalMulai, setTanggalMulai] = useState("");
+  const [tanggalSelesai, setTanggalSelesai] = useState("");
+  const [kuotaPeserta, setKuotaPeserta] = useState(30);
+  const [biayaPelatihan, setBiayaPelatihan] = useState(500000);
+  const [kategoriPelatihan, setKategoriPelatihan] = useState("Teknologi Digital");
 
   const disabled = submitting || title.trim().length < 3;
-  const submitLabel = submitting ? "Memproses..." : "Mulai Diskusi";
+  const submitLabel = submitting ? "Memproses..." : "Daftarkan Pelatihan";
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        onSubmit({ title, description, topic });
+        // Sertakan detail pelatihan jika semua field terisi (untuk kasus pendaftaran program pelatihan)
+        const trainingDetails = lokasiPelatihan && tanggalMulai && tanggalSelesai
+          ? { lokasiPelatihan, tanggalMulai, tanggalSelesai, kuotaPeserta, biayaPelatihan, kategoriPelatihan }
+          : undefined;
+        
+        onSubmit({ 
+                  title, 
+                  description, 
+                  priority,
+                  ...(trainingDetails && { trainingDetails })
+                });
       }}
       className="grid gap-4 md:grid-cols-3"
-      aria-label="Form pembuatan diskusi komunitas"
+      aria-label="Form pendaftaran program pelatihan dan sertifikasi"
     >
+      {/* Core training fields */}
       <div className="md:col-span-2">
         <Input
-          label="Judul Diskusi"
+          label="Nama Program Pelatihan"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Masukkan judul diskusi komunitas..."
+          placeholder="Masukkan nama program pelatihan..."
           required
           size="md"
         />
       </div>
       <div>
         <Select
-          label="Topik Hukum"
-          value={topic}
-          onChange={(e) => setTopic(e.target.value)}
+          label="Prioritas"
+          value={priority}
+          onChange={(e) => setPriority(e.target.value as CasePriority)}
           size="md"
-          placeholder="Pilih topik"
-          options={topics.map((t) => ({ value: t, label: t }))}
+          options={CASE_PRIORITIES.map((p) => ({ value: p, label: PRIORITY_LABEL[p] }))}
         />
       </div>
       <div className="md:col-span-3">
         <TextArea
-          label="Deskripsi"
+          label="Deskripsi Program"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Jelaskan detail diskusi yang ingin dibuka..."
+          placeholder="Jelaskan detail program pelatihan dan sertifikasi..."
           rows={4}
           size="md"
         />
       </div>
+
+      {/* Pelatihan & Sertifikasi fields - untuk ILC golden slice ilc-case-001 */}
+      <div className="md:col-span-3 mt-4">
+        <h3 className="text-lg font-semibold mb-4 border-b border-gray-200 pb-2">Detail Pelaksanaan Pelatihan</h3>
+      </div>
+      <div className="md:col-span-3">
+        <Input
+          label="Lokasi Pelatihan"
+          value={lokasiPelatihan}
+          onChange={(e) => setLokasiPelatihan(e.target.value)}
+          placeholder="Alamat lengkap lokasi pelatihan atau link virtual"
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-1">
+        <Input
+          label="Tanggal Mulai"
+          type="date"
+          value={tanggalMulai}
+          onChange={(e) => setTanggalMulai(e.target.value)}
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-1">
+        <Input
+          label="Tanggal Selesai"
+          type="date"
+          value={tanggalSelesai}
+          onChange={(e) => setTanggalSelesai(e.target.value)}
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-1">
+        <Input
+          label="Kuota Peserta"
+          type="number"
+          min={1}
+          max={100}
+          value={kuotaPeserta.toString()}
+          onChange={(e) => setKuotaPeserta(parseInt(e.target.value) || 30)}
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-2">
+        <Input
+          label="Kategori Pelatihan"
+          value={kategoriPelatihan}
+          onChange={(e) => setKategoriPelatihan(e.target.value)}
+          placeholder="Contoh: Teknologi Digital, Manajemen Bisnis"
+          size="md"
+        />
+      </div>
+      <div className="md:col-span-1">
+        <Input
+          label="Biaya (Rp)"
+          type="number"
+          min={0}
+          value={biayaPelatihan.toString()}
+          onChange={(e) => setBiayaPelatihan(parseInt(e.target.value) || 500000)}
+          size="md"
+        />
+      </div>
+
       <div className="md:col-span-3">
         <Button
           type="submit"

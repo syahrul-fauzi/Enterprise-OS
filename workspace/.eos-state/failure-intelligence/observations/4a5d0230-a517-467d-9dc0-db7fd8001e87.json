@@ -1,0 +1,38 @@
+{
+  "id": "4a5d0230-a517-467d-9dc0-db7fd8001e87",
+  "occurredAt": "2026-09-03T12:10:46.472Z",
+  "source": {
+    "interactionId": "586a1953-e1ac-4855-a89c-4f479d639a3b"
+  },
+  "input": {
+    "raw": "Saya bingung.",
+    "normalized": "saya bingung."
+  },
+  "expected": {
+    "understandingSufficient": false,
+    "requiresClarification": true
+  },
+  "observed": {
+    "understandingSufficient": false,
+    "requiresClarification": true
+  },
+  "classification": "UNDERSTANDING.INSUFFICIENT",
+  "rootCategory": "UNDERSTANDING",
+  "severity": "LOW",
+  "status": "OBSERVED",
+  "failureFingerprint": {
+    "rootCategory": "UNDERSTANDING",
+    "semanticOperation": "UNKNOWN",
+    "entities": [],
+    "resolutionType": "CLARIFICATION",
+    "failureMode": "UNDERSTANDING_GAP"
+  },
+  "dimensions": {
+    "isUnknown": true,
+    "isSystemic": false,
+    "requiresCodeChange": false,
+    "severity": "LOW",
+    "domain": "GENERAL",
+    "recoveryAction": "ASK_CLARIFICATION"
+  }
+}

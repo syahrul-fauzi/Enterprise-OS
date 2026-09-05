@@ -1,0 +1,39 @@
+# THIRD PRODUCTION SCHEMA DOCUMENTED: WordPress Monthly Maintenance Workflow
+# Validated for EOS work model fit (2026-09-22 16:45 WIB)
+work:
+  name: "WordPress Monthly Maintenance & Security Updates"
+  source: "WordPress ecosystem (Indonesian SMB merchants)"
+  buyer: "Small business owners with WordPress websites (10-100k monthly visitors)"
+  trigger: "Recurring calendar event 1st of every month; automated alert sent to maintenance team"
+
+production:
+  input: "WP admin access, hosting credentials, previous month's maintenance report"
+  preparation: "Full website backup before any updates; run security scan to identify vulnerabilities"
+  actor: "WordPress specialist with 3+ years of maintenance experience"
+  steps:
+    - "Create full backup (files + database) and store in secure cloud storage"
+    - "Update WordPress core, themes, and all plugins to latest stable versions"
+    - "Run post-update security scan to confirm no vulnerabilities remain"
+    - "Check website functionality: forms, checkout, pages, and media load correctly"
+    - "Generate performance report (PageSpeed Insights) to track improvements"
+    - "Document all changes and any issues found during maintenance"
+  qa: "Team lead reviews all updates and generates client-facing summary report"
+  artifact: "Monthly maintenance report + performance screenshots + changelog of updates"
+  evidence: "Backup timestamp, scan reports before/after updates, client email receipt"
+  approval: "Client signs off on report via email within 7 days of delivery"
+  delivery: "PDF report sent via email + calendar invite for next month's maintenance"
+
+commercial:
+  pricing_model: "Recurring subscription: IDR 1,200,000 (~$77) per month per website"
+  payment_point: "Auto-debit 1st of every month; 100% upfront for all maintenance work"
+  repeat_cycle: "Monthly recurring service for 85% of clients; average retention 18 months"
+  after_sales: "Emergency support included (response within 4 hours for critical issues); additional development work billed hourly"
+
+eos:
+  intake: "Client fills out onboarding form → EOS creates recurring work order automatically"
+  work_formation: "EOS assigns work order to available WP specialist 3 days before 1st of month"
+  actor_resolution: "EOS matches specialist based on current monthly workload and plugin expertise"
+  execution_tracking: "EOS tracks maintenance steps: backup → updates → scan → functionality check → report"
+  evidence: "EOS automatically collects all scan data, report files, and client approval receipts"
+  outcome: "EOS marks work as COMPLETED after payment confirmation + creates next month's work order"
+  automation: "75% of workflow can be automated: backup creation, update execution, initial scanning, recurring work order creation"

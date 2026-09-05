@@ -1,10 +1,10 @@
-// @ts-nocheck: Disable TypeScript checks to unblock production build - import paths are valid in runtime
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
 import { useWorkspaceSession } from "@repo/presentation-hooks";
-import type { ProductPreviewBinding } from "@repo/presentation-types";
+import type { ProductPreviewBinding } from "@repo/presentation-experience";
+// DocumentAggregate/Status types imported from canonical legal document contracts - @ts-nocheck removed (MINIMAL FIX: architecture lock compliance)
 import type { DocumentAggregate, DocumentStatus } from "@capabilities/legal-document/implementation/contracts/document.contracts";
 
 const LAWYERSHUB_DOC_WORKFLOW = {

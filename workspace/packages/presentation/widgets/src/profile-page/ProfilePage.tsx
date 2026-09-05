@@ -1,12 +1,14 @@
-// @ts-nocheck: Disable TypeScript checks to unblock production build - import paths are valid in runtime
 "use client";
 
 import React from "react";
 import { ProductPreviewShell } from "../product-preview-shell/index.js";
 import { ProfileHeader } from "../profile-header/index.js";
 import { getProductExperience } from "@repo/presentation-experience";
-import type { ProductPreviewBinding, ProductExperience } from "@repo/presentation-types";
+import type { ProductPreviewBinding, ProductExperience } from "@repo/presentation-experience";
+// Member/Requirement types imported from canonical entities - @ts-nocheck removed (MINIMAL FIX: architecture lock compliance)
 import type { Member, Requirement } from "@repo/presentation-entities";
+// Import shared state components untuk UX consistency (memenuhi mandate UX-UXSTATE-001)
+import { WorkRealityLoading, EmptyState } from "@repo/presentation-ui-system";
 
 export interface ProfilePageProps {
   readonly profileId: string;
@@ -38,28 +40,16 @@ export function ProfilePage({ profileId, productId, binding }: ProfilePageProps)
     if (profileId) fetchProfileData();
   }, [profileId, productId]);
 
+  // Loading state selama fetch data profil menggunakan shared WorkRealityLoading
   if (!profile) {
     return (
-      <main className="min-h-screen bg-slate-50 px-6 py-10">
-        <div className="mx-auto max-w-7xl space-y-6">
-          <ProductPreviewShell binding={binding} mode="landing" />
-          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-              <h1 className="text-2xl font-bold text-slate-900">Profil tidak ditemukan</h1>
-              <p className="mt-2 text-slate-600">Profil yang Anda cari tidak tersedia atau telah dihapus dari platform.</p>
-              <a 
-                href={`/community?productId=${productId}`}
-                className="mt-6 inline-block rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-              >
-                Kembali ke Komunitas
-              </a>
-            </div>
-          </section>
-        </div>
+      <main className="min-h-screen bg-slate-50">
+        <WorkRealityLoading />
       </main>
     );
   }
 
+  // Return fully rendered profile page
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-10">
       <div className="mx-auto max-w-7xl space-y-6">
@@ -71,9 +61,11 @@ export function ProfilePage({ profileId, productId, binding }: ProfilePageProps)
             <p className="mt-1 text-sm text-slate-600">{authoredRequirements.length} item dipublikasikan oleh profil ini.</p>
           </div>
           {authoredRequirements.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center text-sm text-slate-600">
-              Belum ada konten yang dipublikasikan.
-            </div>
+            <EmptyState
+              title="Belum ada konten yang dipublikasikan"
+              description="Profil ini belum mempublikasikan penelitian atau konten apapun di platform."
+              icon="📝"
+            />
           ) : (
             <div className="grid gap-3 md:grid-cols-2">
               {authoredRequirements.map((item) => (

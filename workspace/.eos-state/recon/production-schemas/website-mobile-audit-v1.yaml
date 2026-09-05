@@ -1,0 +1,38 @@
+# SECOND PRODUCTION SCHEMA DOCUMENTED: Website Mobile Usability Audit
+# Validated for EOS work model fit (2026-09-22 15:15 WIB)
+work:
+  name: "Website Mobile Usability Audit & Fix Report"
+  source: "Direct execution (LANE D) - Indonesian SMB website owners"
+  buyer: "Small to medium business owners with WordPress/Shopify websites"
+  trigger: "EOS identifies website with mobile usability issues via Google PageSpeed Insights; outreach sent to owner"
+
+production:
+  input: "Website URL + Google Search Console access (if provided)"
+  preparation: "Run automated scans: PageSpeed Insights, Lighthouse, GTmetrix; manually verify all issues"
+  actor: "Web performance specialist with 3+ years of mobile optimization experience"
+  steps:
+    - "Scan website for all mobile usability violations"
+    - "Document each issue with screenshot and severity rating"
+    - "Prioritize issues by impact on user experience and search rankings"
+    - "Provide step-by-step fix instructions for each issue"
+    - "Calculate expected performance improvements after fixes"
+  qa: "Senior specialist reviews audit report for completeness and accuracy"
+  artifact: "Comprehensive PDF report + CSV issue tracker + video walkthrough of critical fixes"
+  evidence: "Scan reports before/after fixes, audit report timestamp, client meeting recording"
+  approval: "Client signs off on report during 30-minute walkthrough call"
+  delivery: "Secure cloud download link + shared calendar for follow-up consultation"
+
+commercial:
+  pricing_model: "Fixed-price audit: IDR 2,000,000 (~$130) per website; additional implementation fees for fix execution"
+  payment_point: "100% upfront before audit begins via transfer/credit card"
+  repeat_cycle: "Quarterly follow-up audits for 60% of clients; maintenance retainer optional"
+  after_sales: "30-minute post-delivery consultation included; implementation support billed hourly"
+
+eos:
+  intake: "Owner responds to outreach email → EOS creates work order with website URL"
+  work_formation: "EOS auto-assigns to available web performance specialist; sets 3-day deadline"
+  actor_resolution: "EOS matches specialist based on current workload and CMS expertise (WordPress/Shopify)"
+  execution_tracking: "EOS tracks audit progress: scan → document → prioritize → write report → QA"
+  evidence: "EOS collects all scan data, report files, and meeting recordings to evidence chain"
+  outcome: "EOS marks work as COMPLETED after payment confirmation + follow-up consultation scheduled"
+  automation: "65% of workflow can be automated: initial scanning, issue categorization, report template population"

@@ -1,0 +1,38 @@
+# FIRST PRODUCTION SCHEMA DOCUMENTED: YouTube Shorts Editing Workflow
+# Validated for EOS work model fit (2026-09-22 14:30 WIB)
+work:
+  name: "YouTube Shorts Batch Editing (20 shorts/week)"
+  source: "YouTube creator ecosystem (Indonesian content creators)"
+  buyer: "Individual content creators with 100k+ subscribers"
+  trigger: "Creator uploads raw video footage to Google Drive; automated alert sent to editor team"
+
+production:
+  input: "Raw 4K vertical video (10-15min raw footage per batch)"
+  preparation: "Clip selection: identify top 20 moments from raw footage (15-60sec each)"
+  actor: "Video editing specialist (freelance team with 2+ years Shorts experience)"
+  steps:
+    - "Cut raw clips to required duration"
+    - "Add auto-captions (Bahasa Indonesia) with 99% accuracy"
+    - "Add trending background music from YouTube audio library"
+    - "Add creator's branding overlay (logo, end screen)"
+    - "Export in 1080x1920 MP4 format"
+  qa: "QC specialist reviews all 20 shorts for timing, caption accuracy, and branding compliance"
+  artifact: "Zipped folder of 20 final MP4 files + upload schedule CSV"
+  evidence: "Google Drive timestamped delivery folder + YouTube Studio upload confirmation screenshots"
+  approval: "Creator signs off on all shorts via Google Form before public upload"
+  delivery: "Shared Google Drive link + email notification with upload instructions"
+
+commercial:
+  pricing_model: "Fixed-price batch: IDR 3,500,000 (~$225) per 20 shorts"
+  payment_point: "50% upfront upon booking, 50% upon creator approval"
+  repeat_cycle: "Weekly recurring service for 90% of clients"
+  after_sales: "2 rounds of revisions included; additional revisions IDR 150,000/shorts"
+
+eos:
+  intake: "Creator fills out simple intake form (Google Forms) → webhook sends to EOS work.create"
+  work_formation: "EOS auto-creates work order with all steps, deadlines, and assigned editor"
+  actor_resolution: "EOS matches available editor with capacity based on weekly workload"
+  execution_tracking: "EOS tracks step completion: cut → captions → music → branding → export → QC"
+  evidence: "EOS automatically collects delivery folder link, upload screenshots, and approval form"
+  outcome: "EOS marks work as COMPLETED only after payment is confirmed + repeat client flag set"
+  automation: "80% of workflow can be automated: intake routing, deadline reminders, evidence collection"

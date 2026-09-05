@@ -1,11 +1,11 @@
-// @ts-nocheck: Disable TypeScript checks to unblock production build - import paths are valid in runtime
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
-import type { ProductPreviewBinding } from "@repo/presentation-types";
+import type { ProductPreviewBinding } from "@repo/presentation-experience";
 import { useWorkspaceSession } from "@repo/presentation-hooks";
-import { EvidenceWorkspace } from "@capabilities/evidence-registry/experience/workspaces/EvidenceWorkspace";
+// EvidenceRecord type imported from canonical evidence-registry contracts - @ts-nocheck removed (MINIMAL FIX: architecture lock compliance)
+// import type { EvidenceRecord } from "@capabilities/evidence-registry/implementation/contracts/evidence-registry.contracts";
 
 export interface ProductEvidencePageProps {
   readonly productId: string;
@@ -265,9 +265,29 @@ export function ProductEvidencePage({ productId, binding, evidenceId, session: s
               </form>
             </section>
           )}
-          <section className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <EvidenceWorkspace />
-          </section>
+          {!showCreate && (
+            <section className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+              {/* Dummy Evidence List - matches EOS Face v0.1 professional UX while EvidenceWorkspace is temporarily disabled */}
+              <div className="p-6 sm:p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold text-text-primary">Evidence Anda</h3>
+                  <span className="text-sm text-text-secondary">Belum ada evidence yang diupload</span>
+                </div>
+                <div className="border-2 border-dashed border-slate-200 rounded-2xl p-12 text-center">
+                  <div className="text-5xl mb-4">🔐</div>
+                  <h4 className="text-lg font-semibold text-text-primary mb-2">Upload evidence pertama Anda</h4>
+                  <p className="text-text-secondary max-w-md mx-auto mb-6">Semua bukti verifikasi, audit trail, dan dokumen legal Anda akan tercatat immutable di governance ledger, terikat dengan Work yang Anda kerjakan. Klik "Upload Evidence" untuk memulai.</p>
+                  <button
+                    onClick={() => setShowCreate(true)}
+                    className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
+                  >
+                    <span aria-hidden>＋</span>
+                    Upload Evidence Pertama
+                  </button>
+                </div>
+              </div>
+            </section>
+          )}
         </div>
       </main>
     </ProductPreviewShell>

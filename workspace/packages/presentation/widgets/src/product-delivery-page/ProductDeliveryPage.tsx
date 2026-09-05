@@ -1,11 +1,10 @@
-// @ts-nocheck: Disable TypeScript checks to unblock production build - import paths are valid in runtime
 "use client";
 
 import React from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
 import { DeliveryWorkspace } from "../delivery-workspace/DeliveryWorkspace";
 import { getProductExperience } from "@repo/presentation-experience";
-import type { ProductPreviewBinding } from "@repo/presentation-types";
+import type { ProductPreviewBinding } from "@repo/presentation-experience";
 import type { WorkspaceSession } from "@repo/core-kernel";
 
 export interface ProductDeliveryPageProps {

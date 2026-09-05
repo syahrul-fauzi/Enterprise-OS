@@ -1,0 +1,44 @@
+version: "1.0"
+workspace:
+  name: ilc
+  display_name: ILC
+  description: Platform koordinasi institusional untuk manajemen inisiatif dan persetujuan departemen di Indonesia
+lifecycle:
+  phase: D.1
+  status: ACTIVE
+  contract:
+    stages:
+      - name: discover
+        description: Pengguna menemukan dan memahami produk
+        terminal: false
+      - name: create
+        description: Pengguna membuat inisiatif institusional baru
+        terminal: false
+      - name: execute
+        description: Proses inisiatif berjalan dengan persetujuan departemen
+        terminal: false
+      - name: progress
+        description: Update status inisiatif secara berkala
+        terminal: false
+      - name: evidence
+        description: Mengumpulkan semua bukti eksekusi
+        terminal: false
+      - name: complete
+        description: Inisiatif selesai, evidence terverifikasi
+        terminal: true
+  real_user_jobs:
+    - id: ins-101
+      name: Create/manage institutional initiative
+      description: Full lifecycle manajemen koordinasi institusional dengan alur persetujuan hierarkis
+      status: active
+      requirements:
+        - req-ilc-001
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 80
+    runtime_invocation_required: true
+governance:
+  baseline_locked: false
+  needs_audit: false
+  evidence_path: ./evidence

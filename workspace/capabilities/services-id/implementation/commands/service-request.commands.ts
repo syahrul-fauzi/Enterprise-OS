@@ -153,7 +153,56 @@ const createServiceRequestFromWork: CapabilityCommand<{
   },
 };
 
+// Add updateServiceRequest command for status transitions - follows minimal change principle
+const UpdateServiceRequestSchema = z.object({
+  id: z.string(),
+  status: z.enum(["draft", "open", "in_progress", "closed"]).optional(),
+  sessionId: z.string(),
+  tenantId: z.string(),
+  workspaceId: z.string(),
+  actorId: z.string(),
+});
+
+const updateServiceRequest: CapabilityCommand<
+  z.infer<typeof UpdateServiceRequestSchema>,
+  Promise<{ id: string; status: ServiceRequestStatus }>
+> = {
+  kind: "command",
+  name: "service-request.update",
+  version: "1.0.0",
+  async execute(input) {
+    await ensureIdentitySchema();
+    const validated = UpdateServiceRequestSchema.parse(input);
+    
+    const existing = STORE.get(validated.id);
+    if (!existing) throw new Error(`Service request ${validated.id} not found`);
+
+    const updated: ShallowMutable<ServiceRequestAggregate> = { ...existing };
+    if (validated.status) {
+      updated.status = validated.status;
+      updated.updatedAt = new Date();
+      if (validated.status === "closed") {
+        updated.closedAt = new Date();
+      }
+    }
+
+    STORE.set(validated.id, updated as ServiceRequestAggregate);
+    await safeRecordEvidence({
+      capability: "services-id",
+      command: "service-request.update",
+      input: validated,
+      output: { id: validated.id, status: updated.status },
+    });
+
+    return {
+      id: validated.id,
+      status: updated.status,
+    };
+  }
+};
+
 export const serviceRequestCommands: Readonly<Record<string, CapabilityCommand>> = {
   "service-request.create": createServiceRequest,
   "service-request.createFromWork": createServiceRequestFromWork,
+  "service-request.update": updateServiceRequest,
 } as const;

@@ -1,16 +1,6 @@
 import type { WorkflowStep, WorkflowDefinition } from "@repo/core-kernel";
 
-export interface ServicesIDWorkflowStep extends WorkflowStep {
-  readonly id: "request" | "document" | "verification" | "external-response" | "inspection" | "review" | "approval" | "payment" | "completed";
-}
-
-export interface ServicesIDWorkflowDefinition extends WorkflowDefinition {
-  readonly id: "services-id-business-fulfillment";
-  readonly productId: "services-id";
-  readonly steps: readonly ServicesIDWorkflowStep[];
-}
-
-export const SERVICESID_BUSINESS_WORKFLOW: ServicesIDWorkflowDefinition = {
+export const SERVICESID_BUSINESS_WORKFLOW: WorkflowDefinition = {
   id: "services-id-business-fulfillment",
   productId: "services-id",
   label: "Request → Document → Verification → External Response → Inspection → Review → Approval → Payment → Completed",
@@ -99,8 +89,5 @@ export const SERVICESID_BUSINESS_WORKFLOW: ServicesIDWorkflowDefinition = {
   } as const
 };
 
-export function getServicesIDWorkflow(): ServicesIDWorkflowDefinition {
-  return SERVICESID_BUSINESS_WORKFLOW;
-}
-
-export type ServicesIDWorkflowStepId = ServicesIDWorkflowStep["id"];
+// Domain-specific type alias for type safety (no new interface created)
+export type ServicesIDWorkflowStepId = "request" | "document" | "verification" | "external-response" | "inspection" | "review" | "approval" | "payment" | "completed";

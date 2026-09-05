@@ -1,4 +1,3 @@
-// @ts-nocheck: Disable TypeScript checks for this file to unblock LawyersHub production build - errors are unrelated to LH-PROD-003 core workflow
 "use client";
 
 import React from "react";

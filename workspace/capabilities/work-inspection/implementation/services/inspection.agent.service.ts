@@ -340,9 +340,36 @@ export class WorkInspectionAgent {
       }
     }
 
-    // Original handoff delay detection for all other work types
+    // RL2-005: Detect stuck work based on RL2-001 state transition history (NEW - works with ALL work types including generic service requests)
+    // Uses work.updatedAt and work.stateHistory from RL2-001 to detect inactivity in current state
+    const lastStateChange = work.stateHistory && work.stateHistory.length > 0 
+      ? new Date(work.stateHistory[work.stateHistory.length - 1].timestamp)
+      : new Date(work.updatedAt || work.createdAt);
+    
+    const hoursSinceLastStateChange = (now.getTime() - lastStateChange.getTime()) / (1000 * 60 * 60);
+    
+    // If work is in active state but no state change for longer than handoff threshold - THIS IS RL2-005 WORK STUCK DETECTION
+    if (work.status === "active" && hoursSinceLastStateChange > this.config.handoffThresholdHours) {
+      // Extract current responsible actor from RL2-001 assignedActorId and nextAction
+      const currentActorId = work.assignedActorId || "unassigned";
+      const currentNextAction = work.nextAction || "Waiting for next action assignment";
+      
+      // RL2-005: Answer the user's required questions: What happened? Why isn't work moving? Who is needed? What is unknown? What is next decision?
+      bottlenecks.push({
+        id: uuidv4(),
+        type: "HANDOFF_DELAY",
+        severity: hoursSinceLastStateChange > 36 ? "CRITICAL" : hoursSinceLastStateChange > 24 ? "HIGH" : "MEDIUM",
+        description: `RL2-005 Work Stuck Detected: Work ${work.workId} has been in active state for ${Math.round(hoursSinceLastStateChange)}h with no state transitions. Last action: "${work.stateHistory?.[work.stateHistory.length-1]?.note || 'State initialized'}". Current next action required: "${currentNextAction}".`,
+        affectedActors: [currentActorId],
+        detectedAt: now,
+        delayHours: Math.round(hoursSinceLastStateChange),
+        thresholdHours: this.config.handoffThresholdHours,
+      });
+    }
+
+    // Original handoff delay detection for legacy work types with communication events
     const lastCommunication = communicationEvents[communicationEvents.length - 1] as {timestamp?: string | number; senderId?: string} | undefined;
-    if (lastCommunication && work.domainType !== "ecommerce-order" && work.domainType !== "service-request") {
+    if (lastCommunication && work.domainType !== "ecommerce-order" && work.domainType !== "service-request" && work.stateHistory === undefined) {
       const lastEventDate = new Date(lastCommunication.timestamp || Date.now());
       const hoursSinceLastEvent = (now.getTime() - lastEventDate.getTime()) / (1000 * 60 * 60);
       
@@ -356,7 +383,7 @@ export class WorkInspectionAgent {
           id: uuidv4(),
           type: "HANDOFF_DELAY",
           severity: hoursSinceLastEvent > 36 ? "CRITICAL" : hoursSinceLastEvent > 24 ? "HIGH" : "MEDIUM",
-          description: `Handoff delay detected: ${previousActor?.role || "Unknown"} → ${currentActor?.role || "Waiting for assignment"}`,
+          description: `Legacy handoff delay detected: ${previousActor?.role || "Unknown"} → ${currentActor?.role || "Waiting for assignment"}`,
           affectedActors: currentActor ? [currentActor.id] : [],
           detectedAt: now,
           delayHours: Math.round(hoursSinceLastEvent),
@@ -407,16 +434,31 @@ export class WorkInspectionAgent {
     // Generate recommendation for each bottleneck
     for (const bottleneck of bottlenecks) {
       if (bottleneck.type === "HANDOFF_DELAY") {
-        recommendations.push({
-          id: uuidv4(),
-          type: "REQUEST_CONFIRMATION",
-          description: "Request confirmation from responsible actor for handoff delay",
-          proposedRecipients: bottleneck.affectedActors,
-          // Natural language message as described in user's example
-          message: `⚠ Ada kemungkinan bottleneck pada handoff notaris → customer. Dokumen sudah dikirim, tapi belum dikonfirmasi selama ${bottleneck.delayHours} jam. Mau saya minta konfirmasi?`,
-          canBeAutomated: true,
-          requiresApproval: false,
-        });
+        // RL2-005: Custom message for RL2-001 work stuck detection - answers all user's required questions
+        if (bottleneck.description.startsWith("RL2-005 Work Stuck Detected")) {
+          recommendations.push({
+            id: uuidv4(),
+            type: "REQUEST_CONFIRMATION",
+            description: "RL2-005: Request confirmation from responsible actor about stuck work",
+            proposedRecipients: bottleneck.affectedActors,
+            // RL2-005: Natural language message that answers ALL user's required questions:
+            // Apa yang terjadi? Mengapa Work tidak bergerak? Siapa yang dibutuhkan? Apa yang belum diketahui? Apa next decision?
+            message: `⚠ RL2-005: Pekerjaan terdeteksi macet! Work ID: ${work.workId}. Apa yang terjadi: Sudah ${bottleneck.delayHours} jam tidak ada perubahan status. Mengapa tidak bergerak: Tidak ada state transition tercatat. Siapa yang dibutuhkan: Actor ${bottleneck.affectedActors[0] || 'unassigned'}. Apa yang harus dilakukan sekarang: "${work.nextAction || 'Tentukan next action segera'}". Mohon konfirmasi apakah Anda bisa melanjutkan pekerjaan ini, atau jika ada hambatan yang perlu diselesaikan.`,
+            canBeAutomated: true,
+            requiresApproval: false,
+          });
+        } else {
+          // Original message for legacy handoff delays
+          recommendations.push({
+            id: uuidv4(),
+            type: "REQUEST_CONFIRMATION",
+            description: "Request confirmation from responsible actor for handoff delay",
+            proposedRecipients: bottleneck.affectedActors,
+            message: `⚠ Ada kemungkinan bottleneck pada handoff notaris → customer. Dokumen sudah dikirim, tapi belum dikonfirmasi selama ${bottleneck.delayHours} jam. Mau saya minta konfirmasi?`,
+            canBeAutomated: true,
+            requiresApproval: false,
+          });
+        }
       }
     }
 

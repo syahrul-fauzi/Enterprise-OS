@@ -82,12 +82,12 @@ export const servicesId: ProductExperience = {
     brandName: "Services.ID"
   },
   entry: {
-    primaryIntent: "Cari jasa yang Anda butuhkan.",
-    primaryActionLabel: "Cari Jasa",
-    discoveryMode: "search",
-    searchPlaceholder: "Apa yang Anda butuhkan?",
+    primaryIntent: "Sebelum sistem Anda go-live atau menghadapi security review dari klien, kami membantu menemukan risiko keamanan yang paling penting dan menentukan apa yang harus diperbaiki terlebih dahulu.",
+    primaryActionLabel: "Ceritakan Situasi Anda",
+    discoveryMode: "focused",
+    searchPlaceholder: "Saya akan meluncurkan platform baru dan butuh memahami risiko keamanan yang perlu diperbaiki...",
     categories: [
-      "Renovasi", "Legal", "Design", "Marketing", "IT Support", "Jasa Lainnya"
+      "Security Readiness Assessment", "Go-Live Preparation", "Compliance Review", "Client Security Audit", "Penetration Testing"
     ]
   },
   workflow: {

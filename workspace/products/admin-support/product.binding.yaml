@@ -1,0 +1,21 @@
+version: "1.0"
+status: ACTIVE
+product:
+  id: admin-support
+  display_name: Admin & Support
+experience:
+  surface: web
+  route: /products/admin-support/requirements
+capabilities:
+  - requirement-management
+  - workflow-engine
+  - governance-evidence
+  - intent-management
+  - work-formation
+  - observability
+  - incident-management
+  - connector-ecosystem
+  - work-inspection
+  - consultation
+  - identity
+claim_boundary: Universal Admin/Support Work category binding onto canonical EOS Work Runtime. Ticketing sync, IT incident resolution, HR admin operations, and finance support tasks connected to universal work reality surface without creating new lifecycle.

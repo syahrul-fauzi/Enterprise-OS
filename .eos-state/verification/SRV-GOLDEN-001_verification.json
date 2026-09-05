@@ -1,0 +1,23 @@
+{
+  "work_id": "SRV-GOLDEN-001",
+  "verified_at": "2026-09-05T03:15:00Z",
+  "acceptance_criteria": {
+    "signal_received": {"passed": true, "evidence": "Monitoring alert from case-005 fixture parsed and work created"},
+    "work_formed": {"passed": true, "evidence": "CanonicalWorkRecord persisted with all required fields, domainType: service-request"},
+    "capability_resolved": {"passed": true, "evidence": "service-directory capability commands (create/accept/deliver) all invokable and executed"},
+    "actor_assigned": {"passed": true, "evidence": "provider.teknis.001 assigned in work model, visible in /work/case-005 UI"},
+    "execution_completed": {"passed": true, "evidence": "Workflow transitions: draft → accepted → in_service → delivered — all steps logged"},
+    "evidence_collected": {"passed": true, "evidence": "ev-monitoring-report-001 attached and verified in work model"},
+    "outcome_verified": {"passed": true, "evidence": "external_verification present with client + monitoring system confirmation"},
+    "ui_rendered": {"passed": true, "evidence": "/work/case-005 renders all required fields: NOW/NEXT/OWNER/PEOPLE/CONTEXT/ACTIVITY/COMMUNICATION/DOCUMENTS/EVIDENCE/OUTCOME"}
+  },
+  "all_passed": true,
+  "total_passed": 8,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["signal_received", "work_formed", "capability_resolved", "actor_assigned", "execution_completed", "evidence_collected", "outcome_verified", "ui_rendered"],
+  "security_scan": {"passed": true, "vulnerabilities_found": 0},
+  "architecture_verification": {"passed": true, "locked_files_modified": [], "frozen_core_compliant": true},
+  "r20_verification": {"passed": true, "human_can_complete_work": true, "eos_spine_works": true},
+  "notes": "SERVICES.ID golden slice fully verified end-to-end. All EOS production spine steps executed without modification to core architecture."
+}

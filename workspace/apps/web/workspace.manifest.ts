@@ -18,15 +18,15 @@ import {
   passwordService
 } from "@repo/capabilities-identity";
 // import * as EvidenceRegistryServiceImplModule from "../../capabilities/evidence-registry/implementation/service.js";
-// import * as ConsultationServiceImplModule from "../../capabilities/consultation/implementation/service.js";
-// import { 
-//   createConsultation, 
-//   triageConsultation, 
-//   listConsultationsByWorkspace, 
-//   resolveConsultation, 
-//   pauseConsultation, 
-//   resumeConsultation
-// } from "../../capabilities/consultation/implementation/commands/consultation.commands.js";
+import * as ConsultationServiceImplModule from "../../capabilities/consultation/implementation/service.js";
+import { 
+  createConsultation, 
+  triageConsultation, 
+  listConsultationsByWorkspace, 
+  resolveConsultation, 
+  pauseConsultation, 
+  resumeConsultation
+} from "../../capabilities/consultation/implementation/commands/consultation.commands.js";
 // const RequirementViewComponent = RequirementView ?? RequirementViewDefault; (temporarily disabled)
 
 // const requirementImplementation: CapabilityImplementation = {
@@ -92,29 +92,29 @@ const identity: CapabilityDescriptor = Object.freeze({
 // });
 
 // Consultation capability implementation
-// const consultationImplementation: CapabilityImplementation = {
-//   commands: {
-//     "consultation.create": createConsultation,
-//     "consultation.triage": triageConsultation,
-//     "consultation.listByWorkspace": listConsultationsByWorkspace,
-//     "consultation.resolve": resolveConsultation,
-//     "consultation.pause": pauseConsultation,
-//     "consultation.resume": resumeConsultation,
-//   },
-//   queries: {
-//   },
-//   repositories: { ConsultationRepository: ConsultationServiceImplModule.ConsultationRepositoryInMemory },
-//   services: {},
-//   entry: ConsultationServiceImplModule,
-// };
+const consultationImplementation: CapabilityImplementation = {
+  commands: {
+    "consultation.create": createConsultation,
+    "consultation.triage": triageConsultation,
+    "consultation.listByWorkspace": listConsultationsByWorkspace,
+    "consultation.resolve": resolveConsultation,
+    "consultation.pause": pauseConsultation,
+    "consultation.resume": resumeConsultation,
+  },
+  queries: {
+  },
+  repositories: { ConsultationRepository: ConsultationServiceImplModule.ConsultationRepositoryInMemory },
+  services: {},
+  entry: ConsultationServiceImplModule,
+};
 
-// const consultation: CapabilityDescriptor = Object.freeze({
-//   id: "consultation",
-//   version: "0.1.0",
-//   name: "Consultation Management",
-//   experience: {},
-//   implementation: consultationImplementation,
-// });
+const consultation: CapabilityDescriptor = Object.freeze({
+  id: "consultation",
+  version: "0.1.0",
+  name: "Consultation Management",
+  experience: {},
+  implementation: consultationImplementation,
+});
 
 // Legal Case capability imports
 import { CaseWorkspace } from "../../capabilities/legal-case/experience/workspaces/CaseWorkspace.js";
@@ -255,6 +255,7 @@ export const registry = new StaticRegistry({
     "identity": identity,
     // "evidence-registry": evidenceRegistry,
     "work-core": workCore,
+    "consultation": consultation, // ENABLED for LH-LGL-001 LawyersHub Legal Consultation
     // "consultation.tmp": consultation, (temporarily disabled to resolve build - unrelated to spine flow)
     "legal-case": legalCase,
     // "legal-document": legalDocument, (temporarily disabled)

@@ -1,0 +1,47 @@
+{
+  "package_generated_at": "2026-09-05T15:45:00.000Z",
+  "work_type": "Commerce Exception Resolution",
+  "core_freeze_compliant": true,
+  "input_requirements": [
+    "concrete operational discrepancy details",
+    "buyer contact with access authority",
+    "system credentials (POS/marketplace) untuk audit",
+    "physical stock count document"
+  ],
+  "scope_boundary": "hanya satu SKU discrepancy per work",
+  "acceptance_criteria": [
+    "pos_quantity == physical_stock",
+    "root_cause_documented_and_verified",
+    "all_changes_logged_in_immutable_ledger",
+    "buyer_signoff_on_resolution"
+  ],
+  "execution_checklist": [
+    "01: Terima work dan verifikasi data input",
+    "02: Jalankan workflow discrepancy_investigate",
+    "03: Audit log transaksi 7 hari terakhir",
+    "04: Verifikasi stok fisik vs sistem",
+    "05: Identifikasi root cause",
+    "06: Normalisasi stok di semua sistem",
+    "07: Buat laporan root cause analysis",
+    "08: Kirim ke buyer untuk signoff",
+    "09: Terima payment dan tutup work"
+  ],
+  "delivery_package": [
+    "root_cause_analysis_report.pdf",
+    "normalized_inventory_audit_log.json",
+    "sop_preventive_measures.pdf",
+    "final_acceptance_signoff.pdf"
+  ],
+  "payment_flow": {
+    "gateway": "Midtrans/OVO Business",
+    "invoice_sent_at": "work_accepted",
+    "due_days": 7,
+    "late_fee_percent": 2
+  },
+  "supply_validation": {
+    "ecommerce_specialist_available": true,
+    "workflow_trigger_ready": true,
+    "all_capabilities_online": true,
+    "next_available_slot": "2026-09-08T09:00:00Z"
+  }
+}

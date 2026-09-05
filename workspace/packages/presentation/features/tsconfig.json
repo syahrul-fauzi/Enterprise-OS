@@ -43,7 +43,7 @@
       "@repo/capabilities/*": ["../../../capabilities/*/dist"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/index.ts"],
   "references": [],
   "exclude": ["node_modules", "dist"]
 }

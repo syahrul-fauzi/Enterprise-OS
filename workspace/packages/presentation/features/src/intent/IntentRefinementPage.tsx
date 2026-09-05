@@ -118,7 +118,7 @@ export function IntentRefinementPage({
   ];
 
   return (
-    <main className="min-h-screen bg-surface-background px-6 py-10 sm:py-12">
+    <main className="min-h-screen bg-surface-background px-6 py-10 sm:py-12 pb-24">
       <a href="#intent-content" className="skip-link">Lewati ke detail intent</a>
       <div id="intent-content" className="max-w-4xl mx-auto space-y-8">
         <nav aria-label="Step progres" className="w-full">

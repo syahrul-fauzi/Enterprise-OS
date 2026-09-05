@@ -1,0 +1,33 @@
+{
+  "id": "4a5094ba-7a23-4979-8d31-917588c83c0d",
+  "candidateId": "1bd12e64-e32a-484e-af9f-ff35a479895c",
+  "runAt": "2026-09-03T12:10:47.474Z",
+  "holdoutResults": [
+    {
+      "input": "Bandingkan harga mobil A dan mobil B",
+      "matched": true,
+      "timestamp": "2026-09-03T12:10:47.474Z"
+    }
+  ],
+  "negativeResults": [
+    {
+      "input": "Saya ingin memesan tiket pesawat",
+      "falsePositive": false,
+      "timestamp": "2026-09-03T12:10:47.474Z"
+    }
+  ],
+  "generalizationMetrics": {
+    "observedCases": 3,
+    "holdoutCases": 1,
+    "observedCoverage": 1,
+    "holdoutCoverage": 1,
+    "newArtifactsCreated": 1,
+    "semanticPatternsAdded": 1,
+    "policiesAdded": 0,
+    "providerMappingsAdded": 0,
+    "complexityCost": 1,
+    "learningLeverageRatio": 2
+  },
+  "overallScore": 0.95,
+  "passed": true
+}

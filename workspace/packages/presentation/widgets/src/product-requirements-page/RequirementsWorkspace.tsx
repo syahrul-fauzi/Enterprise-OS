@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { Spinner } from "@repo/presentation-ui-system/atoms/button";
 // Define local RequirementRecord type since external registry not found yet
 interface RequirementRecord {
   id: string;
@@ -154,12 +155,12 @@ export function RequirementsWorkspace({ productId, showCreate, onCloseCreate }: 
     currentPage * itemsPerPage
   );
 
-  // Loading state (memenuhi 11 visual state: loading)
+  // Loading state (memenuhi 11 visual state: loading) - menggunakan shared Spinner component
   if (loading) {
     return (
       <div className="p-12 text-center">
-        <div className="w-10 h-10 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-slate-600 font-medium">Memuat requirements...</p>
+        <Spinner size="md" />
+        <p className="text-slate-600 font-medium mt-4">Memuat requirements...</p>
       </div>
     );
   }

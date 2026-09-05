@@ -181,11 +181,102 @@ export async function PUT(request: NextRequest) {
     if (canonicalWork) {
       const body = await request.json();
       
+      // RL2-001: Import required work transition logic and repository
+      const { executeTransition, WorkTransitionCommand } = require('../../../../../../packages/presentation/features/src/work/work-actions.js');
+      const WorkRepositoryPostgres = require('../../../../../../capabilities/work-core/implementation/repository/work-postgres.repository.js').WorkRepositoryPostgres;
+      const workRepository = new WorkRepositoryPostgres();
+      
+      // RL2-001: Support work transition commands for real work execution
+      if (body.command) {
+        try {
+          // Get session from cookie for actor attribution
+          const cookie = request.headers.get("Cookie");
+          let sessionCookie = cookie?.split(";").find(c => c.trim().startsWith(`${WORKSPACE_SESSION_COOKIE}=`));
+          let parsedSession = {
+            sessionId: "anonymous-session",
+            tenantId: "tenant-001",
+            workspaceId: "workspace-001",
+            actorId: "public-user"
+          };
+          
+          if (sessionCookie?.value) {
+            try {
+              const decodedSession = Buffer.from(sessionCookie.value.split('=')[1], 'base64').toString('utf-8');
+              const existingSession = JSON.parse(decodedSession);
+              if (existingSession.sessionId) {
+                parsedSession = existingSession;
+              }
+            } catch (e) { /* Fallback to anonymous */ }
+          }
+
+          // Execute RL2-001 compliant transition using canonical work-actions
+          const transitionResult = await executeTransition(
+            { workId: workId, title: canonicalWork.title },
+            { currentState: canonicalWork.status, nextAction: canonicalWork.nextAction || "Review work" },
+            {
+              workId: workId,
+              command: body.command as WorkTransitionCommand,
+              actorId: body.actorId || parsedSession.actorId,
+              note: body.note || `Status updated via API: ${body.command}`
+            }
+          );
+
+          // Get the updated work from repository to sync canonical store
+          const allWorks = await workRepository.list();
+          const updatedWork = allWorks.find(w => w.workId === workId);
+          
+          if (updatedWork) {
+            // Sync canonical store with RL2-001 repository state
+            canonicalWork.status = updatedWork.status;
+            canonicalWork.assignedActorId = updatedWork.assignedActorId;
+            canonicalWork.nextAction = updatedWork.nextAction;
+            canonicalWork.stateHistory = updatedWork.stateHistory;
+            canonicalWork.updatedAt = updatedWork.updatedAt;
+            
+            // Save back to canonical store
+            const canonicalWorkStore = require('../create/route').canonicalWorkStore;
+            canonicalWorkStore.set(workId, canonicalWork);
+            
+            // Notify workspace listeners of update (P0-003: realtime state sync)
+            const { notifyWorkspaceListeners } = require('../create/route');
+            notifyWorkspaceListeners(canonicalWork.workspaceId);
+            
+            console.log(`[API/WORK/PUT] ✅ RL2-001 transition executed: ${workId} → ${updatedWork.status} by ${parsedSession.actorId}`);
+            return NextResponse.json({
+              success: true,
+              work: canonicalWork,
+              transition: transitionResult,
+              _eos_source: "rl2-001-work-repository",
+              message: `Work transitioned to ${updatedWork.status} successfully`
+            }, { status: 200 });
+          }
+        } catch (transitionError) {
+          console.error(`[API/WORK/PUT] ⚠️ RL2-001 transition failed, falling back to legacy update:`, transitionError);
+          // Fall through to legacy update logic if transition fails
+        }
+      }
+      
+      // Legacy update logic (maintained for backward compatibility)
       // Apply mutations to canonical record
       if (body.providerId) {
         canonicalWork.providerId = body.providerId;
         (canonicalWork as any).providerAssignedAt = new Date().toISOString();
         console.log(`[API/WORK/PUT] ✅ Provider assigned to canonical work ${workId}: ${body.providerId}`);
+      }
+      if (body.participants && Array.isArray(body.participants)) {
+        // Add participants/people to work (supports multiple actors: requester, lawyer, notary)
+        canonicalWork.participants = [...(canonicalWork.participants || []), ...body.participants];
+        console.log(`[API/WORK/PUT] ✅ ${body.participants.length} participants added to canonical work ${workId}: ${body.participants.map((p: any) => p.name).join(', ')}`);
+      }
+      if (body.linkedInstitutions && Array.isArray(body.linkedInstitutions)) {
+        // Link institutions to work (supports Kemenkumham RI etc.)
+        canonicalWork.linkedInstitutions = [...(canonicalWork.linkedInstitutions || []), ...body.linkedInstitutions];
+        console.log(`[API/WORK/PUT] ✅ ${body.linkedInstitutions.length} institutions linked to canonical work ${workId}: ${body.linkedInstitutions.map((i: any) => i.name).join(', ')}`);
+      }
+      if (body.attachedDocuments && Array.isArray(body.attachedDocuments)) {
+        // Attach documents to work (supports Akta Pendirian, SIUP, NIB etc.)
+        canonicalWork.attachedDocuments = [...(canonicalWork.attachedDocuments || []), ...body.attachedDocuments];
+        console.log(`[API/WORK/PUT] ✅ ${body.attachedDocuments.length} documents attached to canonical work ${workId}: ${body.attachedDocuments.map((d: any) => d.title).join(', ')}`);
       }
       if (body.evidence && Array.isArray(body.evidence)) {
         canonicalWork.evidence = [...canonicalWork.evidence, ...body.evidence];

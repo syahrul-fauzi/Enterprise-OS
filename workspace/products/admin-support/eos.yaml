@@ -1,0 +1,44 @@
+version: "1.0"
+workspace:
+  name: admin-support
+  display_name: Admin & Support
+  description: Kategori pekerjaan universal untuk manajemen tiket support, insiden IT, operasional HR, dan admin keuangan
+lifecycle:
+  phase: D.2
+  status: ACTIVE
+  contract:
+    stages:
+      - name: ticket_created
+        description: Tiket support baru diimpor dari platform eksternal (Zendesk/Intercom) sebagai canonical Work
+        terminal: false
+      - name: triage
+        description: Klasifikasi tiket, set prioritas, lengkapi field yang hilang
+        terminal: false
+      - name: assign
+        description: Assign tiket ke tim yang sesuai (IT/HR/Finance)
+        terminal: false
+      - name: resolve
+        description: Tim mengerjakan resolusi, dokumentasikan solusi
+        terminal: false
+      - name: verify
+        description: Requester verifikasi resolusi selesai
+        terminal: false
+      - name: complete
+        description: Semua bukti diarsipkan dan pekerjaan ditandai selesai
+        terminal: true
+  real_user_jobs:
+    - id: admin-101
+      name: Zendesk IT ticket resolution lifecycle
+      description: Full cycle resolusi tiket IT mulai dari sinkronisasi hingga penutupan tiket
+      status: active
+      requirements:
+        - req-admin-001
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 85
+    runtime_invocation_required: true
+governance:
+  baseline_locked: false
+  needs_audit: false
+  evidence_path: ./evidence

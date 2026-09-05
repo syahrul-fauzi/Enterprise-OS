@@ -1,10 +1,10 @@
-// @ts-nocheck: Disable TypeScript checks for this file to unblock LawyersHub production build - errors are unrelated to LH-PROD-003 core workflow
 "use client";
 
 import React from "react";
 import { ProductPreviewShell } from "../product-preview-shell/index.js";
-import { getProductExperience } from "@repo/presentation-experience";
-import type { ProductPreviewBinding, ProductExperience } from "@repo/presentation-types";
+import type { ProductPreviewBinding } from "@repo/presentation-experience";
+import { WorkRealityLoading, EmptyState, PermissionDenied } from "@repo/presentation-ui-system";
+import type { ProductPreviewBinding, ProductExperience } from "@repo/presentation-experience";
 
 export interface ReadinessPageProps {
   readonly productId: string;
@@ -38,16 +38,13 @@ export function ReadinessPage({ productId, binding, session, surface, releaseId,
         <div className="mx-auto max-w-7xl space-y-6">
           <ProductPreviewShell binding={binding} mode="landing" />
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-              <h1 className="text-2xl font-bold text-slate-900">Akses Ditolak</h1>
-              <p className="mt-2 text-slate-600">Anda tidak memiliki izin untuk mengakses dashboard kesiapan platform. Hanya operator dan admin yang dapat mengakses halaman ini.</p>
-              <a 
-                href={`/my-reality?productId=${productId}`}
-                className="mt-6 inline-block rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-              >
-                Kembali ke Workspace
-              </a>
-            </div>
+            <PermissionDenied
+              title="Akses Ditolak"
+              description="Anda tidak memiliki izin untuk mengakses dashboard kesiapan platform. Hanya operator dan admin yang dapat mengakses halaman ini."
+              icon="🔒"
+              backLabel="Kembali ke Workspace"
+              onBack={() => window.location.href = `/my-reality?productId=${productId}`}
+            />
           </section>
         </div>
       </main>
@@ -82,20 +79,12 @@ export function ReadinessPage({ productId, binding, session, surface, releaseId,
     fetchReadinessData();
   }, [productId, releaseId, surface]);
 
-  // Loading state
+  // Loading state - menggunakan shared WorkRealityLoading component
   if (loading) {
     return (
-      <main className="min-h-screen bg-slate-50 px-6 py-10">
-        <div className="mx-auto max-w-7xl space-y-6">
-          <ProductPreviewShell binding={binding} mode="landing" />
-          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-              <h2 className="mt-4 text-xl font-semibold text-slate-900">Memuat data kesiapan platform...</h2>
-            </div>
-          </section>
-        </div>
-      </main>
+      <ProductPreviewShell binding={binding} mode="landing">
+        <WorkRealityLoading />
+      </ProductPreviewShell>
     );
   }
 
@@ -122,17 +111,18 @@ export function ReadinessPage({ productId, binding, session, surface, releaseId,
     );
   }
 
-  // Empty state - no readiness checks configured
+  // Empty state - menggunakan shared EmptyState component (UX-UXSTATE-001 compliance)
   if (!readinessData || readinessData.length === 0) {
     return (
       <main className="min-h-screen bg-slate-50 px-6 py-10">
         <div className="mx-auto max-w-7xl space-y-6">
           <ProductPreviewShell binding={binding} mode="landing" />
           <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-              <h2 className="text-xl font-bold text-slate-900">Belum ada pengecekan kesiapan</h2>
-              <p className="mt-2 text-slate-600">Belum ada konfigurasi pengecekan kesiapan untuk produk ini. Silakan konfigurasi pengecekan terlebih dahulu.</p>
-            </div>
+            <EmptyState
+              title="Belum ada pengecekan kesiapan"
+              description="Belum ada konfigurasi pengecekan kesiapan untuk produk ini. Silakan konfigurasi pengecekan terlebih dahulu."
+              icon="✅"
+            />
           </section>
         </div>
       </main>

@@ -1,0 +1,45 @@
+{
+  "id": "2ced5277-6746-482e-b940-9724706734dc",
+  "candidateId": "1bd12e64-e32a-484e-af9f-ff35a479895c",
+  "validationRunId": "4a5094ba-7a23-4979-8d31-917588c83c0d",
+  "sourceFailureClusters": [
+    "a2e0d190-1e8c-46fa-8ce8-bc39f3895bb7"
+  ],
+  "generalizationEvidence": {
+    "totalObservations": 3,
+    "uniqueEntities": 2,
+    "coverage": 1
+  },
+  "holdoutResults": [
+    {
+      "input": "Bandingkan harga mobil A dan mobil B",
+      "matched": true,
+      "timestamp": "2026-09-03T12:10:47.474Z"
+    }
+  ],
+  "negativeResults": [
+    {
+      "input": "Saya ingin memesan tiket pesawat",
+      "falsePositive": false,
+      "timestamp": "2026-09-03T12:10:47.474Z"
+    }
+  ],
+  "complexityDelta": 1,
+  "status": "APPROVED",
+  "promotedAt": "2026-09-03T12:10:47.475Z",
+  "promotedBy": "system:pr001-p4-admission",
+  "promotionReason": "Production admission - PR-001 compliant",
+  "runtimeEnriched": false,
+  "blastRadius": {
+    "mode": "SHADOW",
+    "cohortPercentage": 0,
+    "allowedTenants": [],
+    "rolloutStartedAt": "2026-09-03T12:10:47.475Z",
+    "lastUpdatedAt": "2026-09-03T12:10:47.475Z",
+    "observations": 0,
+    "successfulApplications": 0,
+    "failures": 0
+  },
+  "promotedTo": "SEMANTIC_CONCEPT",
+  "rollbackReference": "1bd12e64-e32a-484e-af9f-ff35a479895c"
+}

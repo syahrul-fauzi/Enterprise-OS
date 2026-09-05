@@ -1,4 +1,3 @@
-// @ts-nocheck: Disable TypeScript checks to unblock production build - import paths are valid in runtime
 "use client";
 
 import React, { useState, useCallback, useEffect } from "react";
@@ -6,7 +5,7 @@ import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShel
 import { ToastContainer } from "@repo/presentation-ui-system";
 import { getProductExperience } from "@repo/presentation-experience";
 import { useWorkspaceSession, useToast } from "@repo/presentation-hooks";
-import type { ProductPreviewBinding } from "@repo/presentation-types";
+import type { ProductPreviewBinding } from "@repo/presentation-experience";
 import type { RequirementAggregate } from "@capabilities/requirement-management/implementation/contracts/requirement.contracts";
 
 export interface RequirementDetailPageProps {

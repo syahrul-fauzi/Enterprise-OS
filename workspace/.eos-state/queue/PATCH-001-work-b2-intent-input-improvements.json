@@ -1,0 +1,76 @@
+{
+  "patch_id": "PATCH-001",
+  "work_id": "work-b2-intent-new-eos-face",
+  "title": "IntentNeedInput UX Improvements for /intent/new",
+  "status": "READY_TO_APPLY",
+  "queue_position": 1,
+  "target_files": [
+    "packages/presentation/features/src/intent/IntentNeedInput.tsx",
+    "packages/presentation/experience/src/intent/IntentExperience.tsx"
+  ],
+  "changes": [
+    {
+      "file": "packages/presentation/features/src/intent/IntentNeedInput.tsx",
+      "line": 25,
+      "change_type": "update_default_prop",
+      "key": "placeholder",
+      "old_value": "Apa yang perlu Anda selesaikan?",
+      "new_value": "Contoh: Saya ingin mendirikan PT untuk startup saya. Atau: Saya perlu mengajukan merek dagang untuk produk baru. Cukup tulis apa yang Anda butuhkan."
+    },
+    {
+      "file": "packages/presentation/features/src/intent/IntentNeedInput.tsx",
+      "line": 32,
+      "change_type": "update_default_prop",
+      "key": "submitLabel",
+      "old_value": "Pahami Kebutuhan Saya",
+      "new_value": "EOS, Pahami Kebutuhan Saya"
+    },
+    {
+      "file": "packages/presentation/features/src/intent/IntentNeedInput.tsx",
+      "line": 34,
+      "change_type": "update_default_prop",
+      "key": "submittingText",
+      "old_value": "Memproses...",
+      "new_value": "EOS sedang memahami kebutuhan Anda..."
+    },
+    {
+      "file": "packages/presentation/features/src/intent/IntentNeedInput.tsx",
+      "line": 70,
+      "change_type": "update_ui_property",
+      "key": "TextArea.rows",
+      "old_value": "4",
+      "new_value": "5"
+    },
+    {
+      "file": "packages/presentation/features/src/intent/IntentNeedInput.tsx",
+      "line": 79,
+      "change_type": "update_ui_property",
+      "key": "Button.size",
+      "old_value": "lg",
+      "new_value": "xl"
+    },
+    {
+      "file": "packages/presentation/features/src/intent/IntentNeedInput.tsx",
+      "line": 84,
+      "change_type": "add_ui_property",
+      "key": "Button.className",
+      "new_value": "py-6 text-xl"
+    }
+  ],
+  "pre_application_verification": [
+    { "check": "Button size 'xl' exists in @repo/presentation-ui-system", "status": "VERIFIED", "evidence": "packages/presentation/ui-system/src/atoms/button.tsx#L25" },
+    { "check": "All props declared in IntentNeedInputProps interface", "status": "VERIFIED", "evidence": "packages/presentation/features/src/intent/IntentNeedInput.tsx#L12-L20" },
+    { "check": "No core logic modifications (presentation-only)", "status": "VERIFIED" },
+    { "check": "Thin adapter pattern maintained in page.tsx", "status": "VERIFIED", "evidence": "apps/web/app/(eos)/intent/new/page.tsx" },
+    { "check": "Architecture lock compliance (0 new primitives)", "status": "VERIFIED" }
+  ],
+  "post_application_steps": [
+    "npm run check-types",
+    "npm run build",
+    "visually verify /intent/new renders correctly",
+    "update work-b2 status to COMPLETED in L1-WORK-QUEUE.json",
+    "trigger work-b3-work-new-eos-face execution"
+  ],
+  "created_at": "2026-09-01T00:00:00Z",
+  "applied_at": null
+}

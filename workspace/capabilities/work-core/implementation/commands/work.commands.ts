@@ -3,6 +3,7 @@ import { capabilityRegistry } from "@repo/core-kernel/registry/capability-comman
 import type { WorkAggregate } from "../../contracts/work.contracts";
 import { SessionId, TenantId, ActorId } from "../../contracts/work.contracts";
 import { WorkRepositoryPostgres } from "../repository/work-postgres.repository";
+import { getWorksByInstitutionCommand } from "./get-works-by-institution.command";
 
 import { WorkModeEnum } from "../../contracts/work.contracts";
 
@@ -98,3 +99,9 @@ export const createWorkCommand = {
   execute: createCoreWork,
   schema: CreateCoreWorkRequestSchema,
 };
+
+// Register all work commands with capability registry
+export const workCoreCommands = [
+  createWorkCommand,
+  getWorksByInstitutionCommand,
+] as const;

@@ -349,11 +349,11 @@ export function RootLandingPage({
                   </span>
                 </div>
                 
-                <h1 className="mt-4">
+                <h1 className="mt-4 text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary tracking-tight leading-tight">
                   {copy.title}
                 </h1>
                 
-                <p className="text-sm sm:text-base text-text-secondary leading-relaxed mt-4">
+                <p className="text-sm sm:text-base text-text-secondary leading-relaxed mt-6 max-w-lg mx-auto">
                   {copy.subtitle}
                 </p>
               </div>
@@ -441,25 +441,28 @@ export function RootLandingPage({
                 </div>
               ) : (
                 <>
-                  <Link href="/enter" className="no-underline block">
+                  <Link href="/intent/new" className="no-underline block">
                     <Button
                       intent="primary"
-                      variant="outline"
-                      size="lg"
+                      variant="solid"
+                      size="xl"
                       block
+                      className="py-6 text-xl"
                       rightIcon={
-                        <svg className="shrink-0" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor">
-                          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        <svg className="shrink-0 w-6 h-6" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                          <path fillRule="evenodd" d="M10.293 3.293a1 1.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
                         </svg>
                       }
                     >
-                      Coba Sekarang (Tamu)
+                      Saya punya sesuatu yang perlu diselesaikan
                     </Button>
                   </Link>
 
+                  <p className="text-sm text-text-muted mt-2">atau</p>
+
                   <Button
-                    intent="primary"
-                    variant="solid"
+                    intent="neutral"
+                    variant="outline"
                     size="lg"
                     block
                     loading={oidcLoading}

@@ -1,0 +1,39 @@
+# PRODUCTION SCHEMA: Social Media Management Workflow
+# Validated for EOS work model fit (2026-09-23 11:30 WIB)
+work:
+  name: "Monthly Social Media Management (4 platforms)"
+  source: "F&B Restaurant Chains / Co-Working Space Operators"
+  buyer: "SMB business owners with established customer base"
+  trigger: "Client sends monthly content brief via email; account manager confirms receipt"
+
+production:
+  input: "Monthly business updates, promotional materials, event photos"
+  preparation: "Content calendar creation: 12 posts per platform (48 total/month)"
+  actor: "Digital marketing specialist (freelance team with social media expertise)"
+  steps:
+    - "Create content calendar aligned with client's monthly goals"
+    - "Design visuals using Canva (branding compliant)"
+    - "Write captions in Bahasa Indonesia with trending hashtags"
+    - "Schedule posts using Meta Business Suite / Instagram Scheduler"
+    - "Monitor engagement and respond to comments/DMs within 4 hours"
+    - "Compile weekly performance report"
+  qa: "Account manager reviews all posts before scheduling"
+  artifact: "Published posts + monthly performance report (PDF)"
+  evidence: "Screenshot archive of all posts + analytics dashboard exports + client approval email"
+  approval: "Client signs off on monthly report via Google Meet"
+  delivery: "Shared Google Drive folder with all assets + report presentation recording"
+
+commercial:
+  pricing_model: "Fixed-price monthly: IDR 8,500,000 (~$550) per month"
+  payment_point: "100% upfront at start of service month"
+  repeat_cycle: "85% monthly recurring service for long-term clients"
+  after_sales: "2 rounds of revisions included; additional posts IDR 500,000/post"
+
+eos:
+  intake: "Client sends brief via email → EOS operator manually creates work.order in EOS"
+  work_formation: "EOS creates work order with all calendar creation, posting, and reporting milestones"
+  actor_resolution: "EOS matches available marketing specialist with capacity based on monthly client load"
+  execution_tracking: "EOS tracks step completion: calendar → design → schedule → monitor → report"
+  evidence: "EOS operator uploads post archive, analytics, and approval recording to evidence chain"
+  outcome: "EOS marks work as COMPLETED only after client payment and report approval"
+  automation: "60% of workflow can be automated: deadline reminders, report template population, evidence aggregation"

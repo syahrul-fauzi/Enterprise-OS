@@ -22,10 +22,16 @@ export async function GET(
       productId,
     }) as { output?: unknown };
 
+    const worksResult = await capabilityRegistry.invoke("work-core", "work.getWorksByInstitution", {
+      institutionId,
+      productId,
+    }) as { output?: unknown };
+
     return NextResponse.json(
       {
         institution: memberResult.output ?? null,
         affiliatedResearchers: researchersResult.output ?? [],
+        affiliatedWorks: worksResult.output ?? [],
       },
       { status: 200 },
     );

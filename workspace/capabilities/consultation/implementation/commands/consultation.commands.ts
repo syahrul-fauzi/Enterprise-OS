@@ -189,7 +189,7 @@ function addLog(
 }
 
 const assistanceModeDefaults: Record<string, AssistanceMode> = {
-  create_legal_case: "HYBRID",
+  create_legal_case: "HUMAN", // LH-LGL-001: Require explicit user decision before legal case creation
   create_service_request: "HYBRID",
   create_observability_incident: "HYBRID",
   create_requirement: "AGENT",
@@ -591,13 +591,17 @@ export const triageConsultation: TriageConsultationCommand = {
         };
       }
       if (lowerInput.includes("sengketa") || lowerInput.includes("gugatan") ||
-          lowerInput.includes("perselisihan") || lowerInput.includes("masalah serius")) {
+          lowerInput.includes("perselisihan") || lowerInput.includes("masalah serius") ||
+          (lowerInput.includes("masalah") && lowerInput.includes("partner bisnis"))) {
+        // LH-LGL-001: Ambiguous legal/business dispute - DO NOT AUTOMATICALLY CREATE LEGAL CASE
+        // Require human legal specialist review first, then explicit user decision
         return {
-          intent: "menyelesaikan perselisihan",
-          need: "legal dispute resolution",
-          diagnosis: "Masalah membutuhkan escalasi ke senior legal counsel",
-          missingFields: ["bukti_dokumen", "tanggal_kejadian", "pihak_terlibat"],
-          recommendedAction: "escalated"
+          intent: "memahami masalah dengan partner bisnis",
+          need: "legal consultation for ambiguous business dispute",
+          diagnosis: "Masalah membutuhkan konsultasi dengan legal specialist untuk memahami opsi yang tersedia",
+          missingFields: ["detail_masalah", "komunikasi_terakhir", "ekspektasi_penyelesaian"],
+          recommendedAction: "needs_human_review", // Enforce human review before any work creation
+          requiresUserDecision: true // Explicit user decision required before any work formation
         };
       }
       // Detect datacenter/server infrastructure issues for observability incident creation

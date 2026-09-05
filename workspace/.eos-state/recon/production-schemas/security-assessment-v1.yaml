@@ -1,0 +1,39 @@
+# FOURTH PRODUCTION SCHEMA DOCUMENTED: Cybersecurity Readiness Assessment
+# Validated for EOS work model fit (2026-09-22 17:20 WIB)
+work:
+  name: "SMB Cybersecurity Readiness Assessment & Remediation Plan"
+  source: "Security ecosystem (Indonesian SMEs & startups)"
+  buyer: "Small to medium businesses handling customer data (e-commerce, fintech, SaaS)"
+  trigger: "Client submits assessment request via Google Form; payment confirmed; EOS creates work order"
+
+production:
+  input: "Client's website/IP range, employee count, current security tools list"
+  preparation: "Run automated vulnerability scans (Nessus, OpenVAS); collect domain/IP WHOIS data"
+  actor: "Security tester with CEH certification and 2+ years of SMB assessment experience"
+  steps:
+    - "Execute external vulnerability scan on all public IPs and domains"
+    - "Check for common security misconfigurations (SSL, DNS, firewall rules)"
+    - "Interview client's IT team to document current processes and controls"
+    - "Map findings to NIST cybersecurity framework to prioritize risks"
+    - "Write detailed remediation plan with step-by-step fix instructions"
+    - "Create executive summary for non-technical stakeholders"
+  qa: "Lead security engineer reviews all findings and remediation plan for accuracy"
+  artifact: "Full assessment report (PDF) + spreadsheet of vulnerabilities + executive summary"
+  evidence: "Scan logs, interview notes, client walkthrough meeting recording, report delivery timestamp"
+  approval: "Client signs off on report during 1-hour walkthrough call; confirms remediation timeline"
+  delivery: "Secure cloud download link + calendar invite for 30-day follow-up check"
+
+commercial:
+  pricing_model: "Fixed-price assessment: IDR 8,500,000 (~$545) per assessment; remediation work billed separately"
+  payment_point: "50% upfront upon booking, 50% upon report delivery"
+  repeat_cycle: "Annual reassessment for 70% of clients; quarterly vulnerability scans optional"
+  after_sales: "30 days of email support for report clarification; remediation implementation support available"
+
+eos:
+  intake: "Client submits intake form → webhook sends to EOS work.create; payment verified automatically"
+  work_formation: "EOS auto-assigns to available security tester; sets 10-day deadline for report delivery"
+  actor_resolution: "EOS matches specialist based on current assessment backlog and industry expertise"
+  execution_tracking: "EOS tracks assessment steps: scan → interview → map findings → write report → QA"
+  evidence: "EOS collects all scan data, interview recordings, report files, and client approval signatures"
+  outcome: "EOS marks work as COMPLETED after final payment; creates next year's reassessment reminder"
+  automation: "60% of workflow can be automated: initial scanning, report template population, recurring reminder creation"

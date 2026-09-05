@@ -12,7 +12,7 @@ import {
   TopicCategory,
   TopicId,
   TopicRepository,
-} from "../contracts/community.contracts.js";
+} from "../contracts/community.contracts";
 
 const now = Date.now();
 const d = (offsetDays: number, offsetHours = 0): Date =>

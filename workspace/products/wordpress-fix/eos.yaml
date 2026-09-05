@@ -1,0 +1,50 @@
+version: "1.0"
+workspace:
+  name: wordpress-fix
+  display_name: WordPress/Website Fix
+  description: Kategori pekerjaan universal untuk perbaikan website, maintenance CMS, dan resolusi insiden platform digital
+lifecycle:
+  phase: D.1
+  status: ACTIVE
+  contract:
+    stages:
+      - name: report
+        description: Pengguna melaporkan masalah website/WordPress dengan detail error
+        terminal: false
+      - name: triage
+        description: Tim engineering mengklasifikasikan dan memprioritaskan insiden
+        terminal: false
+      - name: diagnose
+        description: Root cause diidentifikasi melalui analisis log dan reproduksi masalah
+        terminal: false
+      - name: fix
+        description: Perbaikan dikembangkan di lingkungan staging
+        terminal: false
+      - name: test
+        description: Perbaikan divalidasi untuk memastikan resolusi lengkap tanpa regresi
+        terminal: false
+      - name: deploy
+        description: Perbaikan dipromosikan ke lingkungan produksi
+        terminal: false
+      - name: monitor
+        description: Kesehatan produksi dipantau selama 72 jam pasca-deploy
+        terminal: false
+      - name: complete
+        description: Semua bukti diarsipkan dan pekerjaan ditandai selesai
+        terminal: true
+  real_user_jobs:
+    - id: wpfix-101
+      name: Fix WordPress white screen of death
+      description: Full lifecycle resolusi error WSOD mulai dari laporan hingga verifikasi produksi
+      status: active
+      requirements:
+        - req-wp-001
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 80
+    runtime_invocation_required: true
+governance:
+  baseline_locked: false
+  needs_audit: false
+  evidence_path: ./evidence

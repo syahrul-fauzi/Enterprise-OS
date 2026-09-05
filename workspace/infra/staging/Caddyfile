@@ -27,9 +27,9 @@ http://localhost {
 }
 
 # WILDCARD SUBDOMAIN SUPPORT untuk multi-tenant: semua subdomain
-# LawyersHub family
+# LawyersHub family (production ACME TLS)
 https://*.lawyershub.id, https://*.academic.lawyershub.id, https://*.commsme.lawyershub.id {
-	tls /etc/caddy/certs/lawyershub-origin.pem /etc/caddy/certs/lawyershub-origin.key
+	tls ops@lawyershub.id
 	reverse_proxy web:3000 {
 		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
 		header_up -X-EOS-Tenant-Subdomain
@@ -43,9 +43,9 @@ https://*.lawyershub.id, https://*.academic.lawyershub.id, https://*.commsme.law
 	}
 }
 
-# Services-ID family
+# Services-ID family (production ACME TLS for LawyersHub primary deployment)
 https://*.services-id.com {
-	tls /etc/caddy/certs/servicesid-origin.pem /etc/caddy/certs/servicesid-origin.key
+	tls ops@lawyershub.id
 	reverse_proxy web:3000 {
 		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
 		header_up -X-EOS-Tenant-Subdomain
@@ -60,9 +60,9 @@ https://*.services-id.com {
 }
 
 # MAIN DOMAINS (root domains tanpa subdomain - WHITE LABEL APEX)
-# LawyersHub apex
+# LawyersHub apex (production ACME TLS)
 https://lawyershub.id {
-	tls /etc/caddy/certs/lawyershub-origin.pem /etc/caddy/certs/lawyershub-origin.key
+	tls ops@lawyershub.id
 	reverse_proxy web:3000 {
 		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
 		header_up -X-EOS-Tenant-Subdomain
@@ -76,9 +76,9 @@ https://lawyershub.id {
 	}
 }
 
-# Services-ID apex
+# Services-ID apex (production ACME TLS)
 https://services-id.com {
-	tls /etc/caddy/certs/servicesid-origin.pem /etc/caddy/certs/servicesid-origin.key
+	tls ops@lawyershub.id
 	reverse_proxy web:3000 {
 		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
 		header_up -X-EOS-Tenant-Subdomain
@@ -92,9 +92,9 @@ https://services-id.com {
 	}
 }
 
-# Indonesia Lawyers Club apex
+# Indonesia Lawyers Club apex (production ACME TLS)
 https://indonesialawyersclub.id {
-	tls /etc/caddy/certs/ilc-origin.pem /etc/caddy/certs/ilc-origin.key
+	tls ops@lawyershub.id
 	reverse_proxy web:3000 {
 		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
 		header_up -X-EOS-Tenant-Subdomain
@@ -108,9 +108,9 @@ https://indonesialawyersclub.id {
 	}
 }
 
-# Indonesia Lawyers Club wildcard
+# Indonesia Lawyers Club wildcard (production ACME TLS)
 https://*.indonesialawyersclub.id {
-	tls /etc/caddy/certs/ilc-origin.pem /etc/caddy/certs/ilc-origin.key
+	tls ops@lawyershub.id
 	reverse_proxy web:3000 {
 		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
 		header_up -X-EOS-Tenant-Subdomain

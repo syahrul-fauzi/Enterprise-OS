@@ -1,0 +1,47 @@
+version: "1.0"
+workspace:
+  name: ecommerce-ops
+  display_name: E-commerce Ops
+  description: Kategori pekerjaan universal untuk manajemen pesanan marketplace, pengelolaan inventory, rekonsiliasi pembayaran, dan operasional e-commerce
+lifecycle:
+  phase: D.2
+  status: ACTIVE
+  contract:
+    stages:
+      - name: order_received
+        description: Pesanan baru diterima dari marketplace dan disinkronkan ke canonical Work
+        terminal: false
+      - name: payment_verify
+        description: Pembayaran divalidasi, fraud check, rekonsiliasi transaksi
+        terminal: false
+      - name: inventory_check
+        description: Stock dicek, SKU dipesan untuk pemenuhan
+        terminal: false
+      - name: fulfill
+        description: Pesanan diproses, label shipping dibuat, serahkan ke logistik
+        terminal: false
+      - name: track
+        description: Pengiriman dipantau real-time, status sinkron balik ke marketplace
+        terminal: false
+      - name: reconcile
+        description: Rekonsiliasi biaya logistik, inventory, fee marketplace
+        terminal: false
+      - name: complete
+        description: Semua bukti diarsipkan dan pekerjaan ditandai selesai
+        terminal: true
+  real_user_jobs:
+    - id: ecom-101
+      name: Shopee order fulfillment lifecycle
+      description: Full cycle manajemen pesanan Shopee mulai dari sinkronisasi hingga penutupan pesanan
+      status: active
+      requirements:
+        - req-ecom-001
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 85
+    runtime_invocation_required: true
+governance:
+  baseline_locked: false
+  needs_audit: false
+  evidence_path: ./evidence

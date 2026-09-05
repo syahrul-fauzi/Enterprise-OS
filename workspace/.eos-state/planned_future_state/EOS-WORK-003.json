@@ -1,0 +1,31 @@
+{
+  "work_id": "EOS-WORK-003",
+  "type": "Commerce Exception Resolution",
+  "buyer_id": "COMM-004",
+  "buyer_name": "CafeKopiNusantara",
+  "problem_statement": "Salah hitung bahan baku kopi yang menyebabkan overorder dan waste 15% per bulan, mengurangi margin usaha",
+  "scope": "Hanya untuk normalisasi perhitungan stok bahan baku dan buat SOP pencegahan, tidak termasuk integrasi sistem POS baru",
+  "acceptance_criteria": [
+    "✅ stok_bahan_baku_terhitung_akurat",
+    "✅ root_cause_documented",
+    "✅ semua_perubahan_tercatat_di_immutable_ledger"
+  ],
+  "deliverables": [
+    "✅ root_cause_analysis_report",
+    "✅ standar_sop_perhitungan_stok_bahan_baku",
+    "✅ evidence_package_dengan_audit_logs",
+    "✅ template_tracking_waste_bulanan"
+  ],
+  "price_total_idr": 950000,
+  "payment_dp_received": true,
+  "payment_dp_amount": 475000,
+  "payment_final_received": true,
+  "payment_final_amount": 475000,
+  "payment_total_received": 950000,
+  "assigned_specialist": "ecommerce-specialist.001",
+  "status": "COMPLETED_PAID",
+  "created_at": "2026-09-22T10:00:00.000Z",
+  "completed_at": "2026-09-24T13:30:00.000Z",
+  "timeline_days": 2,
+  "buyer_feedback": "Waste kopi turun drastis! SOP yang diberikan sangat mudah diimplementasikan oleh tim gudang. Sangat merekomendasikan EOS untuk masalah inventory UMKM."
+}

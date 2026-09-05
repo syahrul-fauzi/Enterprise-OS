@@ -1,0 +1,47 @@
+version: "1.0"
+workspace:
+  name: dataops
+  display_name: Data/Ops Work
+  description: Kategori pekerjaan universal untuk operasi data dan beban kerja engineering yang dapat diulang
+lifecycle:
+  phase: D.1
+  status: ACTIVE
+  contract:
+    stages:
+      - name: discover
+        description: Pengguna mengidentifikasi kebutuhan pemrosesan data atau operasi sistem
+        terminal: false
+      - name: create
+        description: Pengguna mengajukan permintaan pekerjaan data/ops dengan spesifikasi lengkap
+        terminal: false
+      - name: validate
+        description: Tim memvalidasi spesifikasi dan kelayakan beban kerja
+        terminal: false
+      - name: execute
+        description: Beban kerja dijalankan pada infrastruktur yang sesuai
+        terminal: false
+      - name: monitor
+        description: Status eksekusi dan kualitas output dipantau secara berkelanjutan
+        terminal: false
+      - name: evidence
+        description: Semua log, metrik, dan bukti eksekusi dikumpulkan
+        terminal: false
+      - name: complete
+        description: Pekerjaan selesai, hasil dipromosikan ke produksi jika diperlukan
+        terminal: true
+  real_user_jobs:
+    - id: dops-101
+      name: Submit and run data processing job
+      description: Full lifecycle eksekusi pekerjaan ETL/ELT atau operasi data dari pengajuan hingga penyelesaian
+      status: active
+      requirements:
+        - req-data-001
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 85
+    runtime_invocation_required: true
+governance:
+  baseline_locked: false
+  needs_audit: false
+  evidence_path: ./evidence

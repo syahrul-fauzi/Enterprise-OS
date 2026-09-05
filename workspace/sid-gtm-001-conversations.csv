@@ -1,0 +1,5 @@
+prospectId,conversationDate,rawTranscript,outcomeClassification,nextActionDate,notes
+# RAW CONVERSATION LOG - ONLY REAL HUMAN CONVERSATIONS HERE
+# Format: Must log EXACT quotes, no interpretation, only factual observations
+# Outcome classifications: NO_WORK / POSSIBLE_WORK / REAL_WORK
+# All entries must have full raw transcript to mark provenance as REAL_VERIFIED

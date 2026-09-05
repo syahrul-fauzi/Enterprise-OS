@@ -38,6 +38,10 @@ const subcommand = args[1] ?? "";
 
 async function main(): Promise<number> {
   switch (command) {
+    case "inventory": {
+      const { runInventoryScanCommand } = await import("./rl4/commands/inventory.js");
+      return runInventoryScanCommand();
+    }
     case "status":
     case "s":
       return runStatusCommand();
@@ -254,6 +258,14 @@ async function main(): Promise<number> {
     case "query": {
       const query = args.slice(1).join(" ").trim();
       return runEnterpriseQueryCommand(query);
+    }
+    // RL4-001 Production Inventory commands (added per Reality Loop 4 mandate)
+    case "rl4":
+    case "inventory": {
+      const { runProductionInventoryScan } = await import("./rl4/production-inventory-scanner.js");
+      const rootDir = process.cwd();
+      const result = await runProductionInventoryScan(rootDir);
+      return 0;
     }
     default:
       process.stderr.write(`Unknown command: ${command}\nRun: pnpm eos help\n`);

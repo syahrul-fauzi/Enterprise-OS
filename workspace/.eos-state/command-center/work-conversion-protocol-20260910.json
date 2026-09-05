@@ -1,0 +1,65 @@
+{
+  "protocol_activated_at": "2026-09-10T14:00:00.000Z",
+  "updated_to_active_operations_at": "2026-09-10T23:55:00.000Z",
+  "current_phase": "EOS REALITY CONVERSION PHASE",
+  "purpose": "Dari passive wait menjadi active operations: proaktif memulai percakapan dengan manusia, extract Work dari realitas, dan konversi menjadi WORK_RECEIVED tanpa kehilangan momentum. Bukan menunggu response—membuat response.",
+  "work_candidate_schema": {
+    "requester": "real_person_or_organization (wajib diisi dengan nama/identitas jelas)",
+    "actual_request": "verbatim (teks percakapan asli dari manusia, tidak diedit)",
+    "desired_outcome": "confirmed (hasil konkret yang diharapkan, sudah diverifikasi)",
+    "input": "known_or_unknown (apakah semua input untuk pekerjaan tersedia)",
+    "scope": "bounded_or_unbounded (apakah ruang lingkup pekerjaan sudah terdefinisi)",
+    "acceptance": "defined_or_pending (apakah kriteria selesai sudah jelas)",
+    "deadline": "known_or_unknown (kapan pekerjaan harus selesai)",
+    "payment_path": "identified_or_unknown (cara dan besaran pembayaran)"
+  },
+  "updated_conversion_questions": [
+    "1. Apa yang sebenarnya ingin diselesaikan?",
+    "2. Untuk siapa Work ini dilakukan?",
+    "3. Apa outcome yang diinginkan?",
+    "4. Apa input yang tersedia?",
+    "5. Apa batas scope?",
+    "6. Apa acceptance condition?"
+  ],
+  "active_conversion_flow": {
+    "step1_proactive_conversation_initiation": "EOS memulai percakapan dengan human (bukan menunggu response)",
+    "step2_request_extraction": "Ekstrak semua informasi dari percakapan asli",
+    "step3_work_signal_detection": "Apakah ada Work signal di percakapan ini? (YA/TIDAK)",
+    "if_no": "Catat sebagai NO_CURRENT_WORK, proses selesai, lanjut ke candidate berikutnya",
+    "if_yes": "Lanjutkan ke verifikasi informasi",
+    "step4_missing_information_check": "Apakah ada informasi yang kurang untuk membentuk Work? (YA/TIDAK)",
+    "if_yes": "Ajukan MINIMUM pertanyaan yang diperlukan (tidak lebih dari 2 pertanyaan)",
+    "if_no": "Lanjutkan ke kualifikasi",
+    "step5_work_qualification": "Verifikasi semua field work_candidate_schema terpenuhi",
+    "step6_acceptance_decision": "Apakah EOS bisa menerima Work ini? (YA/TIDAK)",
+    "if_no": "Catat sebagai WORK_DECLINED, proses selesai",
+    "if_yes": "Tandai sebagai WORK_RECEIVED dan masuk ke production"
+  },
+  "prj002_active_outreach_readiness": {
+    "first_follow_up_scheduled": "2026-09-11 10:00 WIB",
+    "follow_up_message_template_ready": true,
+    "prepared_conversation_script": "Halo! Saya dari tim EOS. Saya ingin mengkonfirmasi kembali tentang project yang kita bahas sebelumnya—bisakah saya tanya: 1. Apa yang sebenarnya ingin diselesaikan dengan project ini? 2. Untuk siapa Work ini dilakukan? 3. Apa outcome yang diinginkan? 4. Apa input yang sudah tersedia? 5. Apa batas scope-nya? 6. Apa acceptance condition yang harus dipenuhi? Semua jawaban akan membantu kita mempersiapkan eksekusi jika project ini berlanjut.",
+    "timeout_threshold": "2026-09-12 10:00 WIB",
+    "timeout_trigger_procedure": "Otomatis catat failure_reason: 'PRJ-002 no response after follow-up', aktifkan UPW-001 dalam 1 jam tanpa vacuum",
+    "fallback_candidate_ready": "UPW-001-UpworkID",
+    "upw001_outreach_prepared": true,
+    "conversion_questions_ready": true,
+    "work_candidate_template_ready": true,
+    "executor_pre_vetted": true,
+    "notes": "SIAP UNTUK ACTIVE OUTREACH: tidak menunggu PRJ-002 merespons—EOS yang memulai follow-up besok dengan script percakapan yang sudah disiapkan. Jika timeout, otomatis pindah ke UPW-001 tanpa jeda. JADWAL HANYA TRIGGER: follow-up dikirim ≠ progress, follow-up terkirim (follow_up_sent = true) = progress. Sama untuk fallback: state transition tanpa tindakan dunia nyata tidak dihitung sebagai movement",
+  },
+  "multi_source_compatibility": [
+    "WhatsApp",
+    "Email",
+    "Upwork",
+    "Agency backlog",
+    "Tally",
+    "Spreadsheet",
+    "External form",
+    "Direct request",
+    "API",
+    "Referral",
+    "Operator"
+  ],
+  "engineering_freeze_compliance": "SEMUA PROSES KONVERSI BERJALAN SECARA MANUAL, TIDAK ADA SOFTWARE/INTEGRASI BARU YANG DIBANGUN. Fokus ke realitas, bukan platform baru. SEMUA eksperimen generik (event bus, signal platform, webhook framework, Shopify integration, MCP infrastructure) DITUNDA sampai RCP-001-RCP-005 berhasil. EOS substrate TIDAK DIBUKA, tidak ada lifecycle baru dibuat. SEMUA METRIC HANYA DIHITUNG JIKA EVENT NYATA TERJADI: follow_up_sent / human_response_received / executor_assigned = satu-satunya kemajuan yang diakui."
+}

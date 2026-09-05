@@ -1,0 +1,150 @@
+{
+  "workId": "RL4-001",
+  "scannedAt": "2026-09-04T01:06:29.138Z",
+  "totalItems": 15,
+  "classifications": {
+    "REAL": 5,
+    "PARTIALLY_REAL": 1,
+    "SIMULATED": 1,
+    "TEST_ONLY": 0,
+    "NOT_ADMITTED": 8
+  },
+  "items": [
+    {
+      "path": "/root/Enterprise-OS/workspace/packages/core/capability-registry",
+      "name": "core/capability-registry",
+      "realityTier": "REAL",
+      "isExecutable": true,
+      "isDurable": true,
+      "isProductionGradeEvidence": true,
+      "lastModified": "2026-09-04T01:06:29.137Z"
+    },
+    {
+      "path": "/root/Enterprise-OS/workspace/packages/core/constitution",
+      "name": "core/constitution",
+      "realityTier": "REAL",
+      "isExecutable": true,
+      "isDurable": true,
+      "isProductionGradeEvidence": true,
+      "lastModified": "2026-09-04T01:06:29.137Z"
+    },
+    {
+      "path": "/root/Enterprise-OS/workspace/packages/core/eir",
+      "name": "core/eir",
+      "realityTier": "NOT_ADMITTED",
+      "isExecutable": false,
+      "isDurable": false,
+      "isProductionGradeEvidence": false,
+      "lastModified": "2026-09-04T01:06:29.137Z"
+    },
+    {
+      "path": "/root/Enterprise-OS/workspace/packages/core/kernel",
+      "name": "core/kernel",
+      "realityTier": "REAL",
+      "isExecutable": true,
+      "isDurable": true,
+      "isProductionGradeEvidence": true,
+      "lastModified": "2026-09-04T01:06:29.137Z"
+    },
+    {
+      "path": "/root/Enterprise-OS/workspace/packages/core/platform",
+      "name": "core/platform",
+      "realityTier": "NOT_ADMITTED",
+      "isExecutable": false,
+      "isDurable": false,
+      "isProductionGradeEvidence": false,
+      "lastModified": "2026-09-04T01:06:29.137Z"
+    },
+    {
+      "path": "/root/Enterprise-OS/workspace/packages/core/predicate-registry",
+      "name": "core/predicate-registry",
+      "realityTier": "NOT_ADMITTED",
+      "isExecutable": false,
+      "isDurable": false,
+      "isProductionGradeEvidence": false,
+      "lastModified": "2026-09-04T01:06:29.137Z"
+    },
+    {
+      "path": "/root/Enterprise-OS/workspace/packages/core/proof-ledger",
+      "name": "core/proof-ledger",
+      "realityTier": "REAL",
+      "isExecutable": true,
+      "isDurable": true,
+      "isProductionGradeEvidence": true,
+      "lastModified": "2026-09-04T01:06:29.137Z"
+    },
+    {
+      "path": "/root/Enterprise-OS/workspace/packages/core/realtime",
+      "name": "core/realtime",
+      "realityTier": "NOT_ADMITTED",
+      "isExecutable": false,
+      "isDurable": false,
+      "isProductionGradeEvidence": false,
+      "lastModified": "2026-09-04T01:06:29.137Z"
+    },
+    {
+      "path": "/root/Enterprise-OS/workspace/packages/core/registry-resolver",
+      "name": "core/registry-resolver",
+      "realityTier": "NOT_ADMITTED",
+      "isExecutable": false,
+      "isDurable": false,
+      "isProductionGradeEvidence": false,
+      "lastModified": "2026-09-04T01:06:29.137Z"
+    },
+    {
+      "path": "/root/Enterprise-OS/workspace/packages/core/runtime",
+      "name": "core/runtime",
+      "realityTier": "REAL",
+      "isExecutable": true,
+      "isDurable": true,
+      "isProductionGradeEvidence": true,
+      "lastModified": "2026-09-04T01:06:29.137Z"
+    },
+    {
+      "path": "/root/Enterprise-OS/workspace/packages/core/transformation-registry",
+      "name": "core/transformation-registry",
+      "realityTier": "NOT_ADMITTED",
+      "isExecutable": false,
+      "isDurable": false,
+      "isProductionGradeEvidence": false,
+      "lastModified": "2026-09-04T01:06:29.138Z"
+    },
+    {
+      "path": "/root/Enterprise-OS/workspace/packages/composition",
+      "name": "composition",
+      "realityTier": "NOT_ADMITTED",
+      "isExecutable": false,
+      "isDurable": false,
+      "isProductionGradeEvidence": false,
+      "lastModified": "2026-09-04T01:06:29.138Z"
+    },
+    {
+      "path": "/root/Enterprise-OS/workspace/packages/compositions",
+      "name": "compositions",
+      "realityTier": "NOT_ADMITTED",
+      "isExecutable": false,
+      "isDurable": false,
+      "isProductionGradeEvidence": false,
+      "lastModified": "2026-09-04T01:06:29.138Z"
+    },
+    {
+      "path": "/root/Enterprise-OS/workspace/packages/presentation",
+      "name": "presentation",
+      "realityTier": "SIMULATED",
+      "isExecutable": true,
+      "isDurable": false,
+      "isProductionGradeEvidence": false,
+      "lastModified": "2026-09-04T01:06:29.138Z"
+    },
+    {
+      "path": "/root/Enterprise-OS/workspace/packages/tooling",
+      "name": "tooling",
+      "realityTier": "PARTIALLY_REAL",
+      "isExecutable": true,
+      "isDurable": false,
+      "isProductionGradeEvidence": false,
+      "lastModified": "2026-09-04T01:06:29.138Z"
+    }
+  ],
+  "reportPath": "/root/Enterprise-OS/.eos-state/recon/rl4-001-production-inventory.json"
+}

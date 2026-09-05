@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 // Fixed import per @repo/core-kernel documentation - DigestEngine must be imported directly from digest-engine subpath
-import { DigestEngine } from "@repo/core-kernel/digest-engine.js";
+import { DigestEngine } from "@repo/core-kernel/digest-engine";
 import type { CapabilityGovernanceProjection } from "./governance-runtime.js";
 import { readYamlArtifact } from "../../governance-runtime.js";
 import { EOS_ROOT } from "../../state.js";

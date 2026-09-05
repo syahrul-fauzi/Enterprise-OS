@@ -130,62 +130,120 @@ export function WorkRealitySurface({
         </Card>
 
         <Card size="lg" className="overflow-hidden">
-          <div className="space-y-8">
-            <RealityWorkHeader title={model.identity.title} perspective={currentPerspective} />
+          {/* SINGLE NARRATIVE FLOW - NO KUMPULAN CARD, SATU WORK YANG HIDUP */}
+          <div className="divide-y divide-gray-100">
+            {/* HERO SECTION - INTRO WORK UNTUK MENCIPTAKAN SINGLE ENTITY */}
+            <div className="bg-gradient-to-r from-slate-50 to-white px-6 py-8">
+              <RealityWorkHeader title={model.identity.title} perspective={currentPerspective} />
+            </div>
 
-            <RealityNow
-              description={model.state.currentState}
-              status={model.identity.status}
-              perspective={currentPerspective}
-            />
+            {/* HERO WORK REALITY SECTION - ANSWER 5 KEY QUESTIONS IN 3 SECONDS */}
+            <div className="px-6 py-8 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* KIRI: APA YANG SEDANG TERJADI + SIAPA YANG BERTANGGUNG JAWAB */}
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2">APA YANG SEDANG TERJADI?</h3>
+                    <div className="bg-white rounded-lg p-4 shadow-sm">
+                      <RealityNow
+                        description={model.state.currentState}
+                        status={model.identity.status}
+                        perspective={currentPerspective}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2">SIAPA YANG BERTANGGUNG JAWAB?</h3>
+                    <div className="bg-white rounded-lg p-4 shadow-sm">
+                      <div className="flex flex-wrap gap-2">
+                        {model.participants.map((p, i) => (
+                          <span key={i} className="inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800">
+                            {p.role === 'professional' && <span>⚖️</span>}
+                            {p.role === 'customer' && <span>👤</span>}
+                            {p.role === 'notary' && <span>📜</span>}
+                            <span className="font-medium">{p.name}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-            <RealityNext
-              nextAction={model.state.nextAction}
-              perspective={currentPerspective}
-              workId={model.identity.workId}
-              onAssignLawyer={onAssignLawyer}
-              onAddEvidence={onAddEvidence}
-              onMarkCompleted={onMarkCompleted}
-            />
+                {/* TENGAH: APA YANG HARUS SAYA LAKUKAN? (PRIMARY CTA) */}
+                 <div className="md:col-span-2">
+                   <h3 className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2">APA YANG HARUS SAYA LAKUKAN SEKARANG?</h3>
+                   <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-6 shadow-sm border-2 border-amber-300 h-full flex flex-col justify-center">
+                     <div className="text-2xl font-bold text-amber-900">{model.state.nextAction}</div>
+                     <div className="mt-4 flex flex-wrap gap-3">
+                       <button
+                         onClick={() => onExecuteAction?.('primary-action')}
+                         className="rounded-lg bg-amber-600 hover:bg-amber-700 px-6 py-3 text-white font-semibold transition-colors"
+                       >
+                         LAKSANAKAN SEKARANG
+                       </button>
+                     </div>
+                   </div>
+                 </div>
+              </div>
+            </div>
 
-            <RealityPeople
-              participants={model.participants}
-              currentPerspective={currentPerspective}
-              workId={model.identity.workId}
-              onAddParticipant={onAddParticipant}
-            />
+            {/* REMAINING SECTIONS FOR DEEPER CONTEXT */}
+            <div className="px-6 py-6">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">SEMUA PIHAK TERLIBAT</h3>
+              <RealityPeople
+                participants={model.participants}
+                currentPerspective={currentPerspective}
+                workId={model.identity.workId}
+                onAddParticipant={onAddParticipant}
+              />
+            </div>
 
-            <RealityCommunication
-              communications={model.communications}
-              perspective={currentPerspective}
-              workId={model.identity.workId}
-              onSendMessage={onSendMessage}
-            />
+            {/* COMMUNICATION - PERCAKAPAN DALAM WORK */}
+            <div className="px-6 py-6 bg-slate-50/50">
+              <RealityCommunication
+                communications={model.communications}
+                perspective={currentPerspective}
+                workId={model.identity.workId}
+                onSendMessage={onSendMessage}
+              />
+            </div>
 
-            <RealityActivity
-              activity={model.activity}
-              perspective={currentPerspective}
-              workId={model.identity.workId}
-            />
+            {/* APA YANG SUDAH TERJADI? - ACTIVITY HISTORY */}
+            <div className="px-6 py-6 bg-slate-50/30">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">APA YANG SUDAH TERJADI?</h3>
+              <RealityActivity
+                activity={model.activity}
+                perspective={currentPerspective}
+                workId={model.identity.workId}
+              />
+            </div>
 
             {(currentPerspective === 'operator' || currentPerspective === 'agent') && (
-              <RealityInspection inspections={model.inspections} perspective={currentPerspective} />
+              <div className="px-6 py-6">
+                <RealityInspection inspections={model.inspections} perspective={currentPerspective} />
+              </div>
             )}
 
-            <RealityCoordination
-              actions={model.coordination}
-              currentPerspective={currentPerspective}
-              workId={model.identity.workId}
-              onExecuteAction={onExecuteAction}
-              onSendMessage={onSendMessage}
-            />
+            {/* COORDINATION - TINDAKAN SELANJUTNYA YANG BISA DIJALANKAN */}
+            <div className="px-6 py-6 bg-blue-50/30">
+              <RealityCoordination
+                actions={model.coordination}
+                currentPerspective={currentPerspective}
+                workId={model.identity.workId}
+                onExecuteAction={onExecuteAction}
+                onSendMessage={onSendMessage}
+              />
+            </div>
 
-            <RealityEvidence
-              evidence={model.evidence}
-              perspective={currentPerspective}
-              caseId={model.identity.workId}
-              onAddEvidence={onAddEvidence}
-            />
+            {/* EVIDENCE - BUKTI YANG TERKUMPUL */}
+            <div className="px-6 py-6">
+              <RealityEvidence
+                evidence={model.evidence}
+                perspective={currentPerspective}
+                caseId={model.identity.workId}
+                onAddEvidence={onAddEvidence}
+              />
+            </div>
           </div>
         </Card>
       </div>

@@ -17,7 +17,7 @@
     "build": {
       "dependsOn": ["^build", "^arch-check"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/standalone/**", ".next/static/**"]
+      "outputs": [".next/standalone/**", ".next/static/**", "dist/**"]
     },
     "dev": {
       "cache": false,

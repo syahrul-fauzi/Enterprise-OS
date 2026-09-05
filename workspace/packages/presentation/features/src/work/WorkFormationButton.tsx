@@ -27,6 +27,8 @@ export function WorkFormationButton({
   const router = useRouter();
   const intentId = providedIntentId || intent.id;
   const [isForming, setIsForming] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [createdWorkId, setCreatedWorkId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleWorkFormation = async () => {
@@ -61,7 +63,14 @@ export function WorkFormationButton({
       const result = await response.json();
       console.log("[WorkFormationButton] Work created successfully:", result.workId);
       
-      router.push(`/work/${result.workId}`);
+      // Set success state untuk menampilkan feedback visual
+      setIsSuccess(true);
+      setCreatedWorkId(result.workId);
+      
+      // Tunggu 2 detik sebelum redirect agar user bisa melihat pesan sukses
+      setTimeout(() => {
+        router.push(`/work/${result.workId}`);
+      }, 2000);
     } catch (err) {
       const typedError = err instanceof Error ? err : new Error("Unknown error occurred");
       setError(typedError.message);
@@ -73,25 +82,43 @@ export function WorkFormationButton({
 
   return (
     <div className="space-y-3">
-      <Button
-        intent="primary"
-        variant="solid"
-        size="lg"
-        disabled={!intentId || isForming}
-        loading={isForming}
-        loadingText="Membentuk Work..."
-        onClick={handleWorkFormation}
-        className={className}
-        rightIcon={
-          <svg className="w-4 h-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 10h10m0 0l-3-3m3 3l-3 3" />
-          </svg>
-        }
-        aria-label={buttonText}
-        title="Membentuk Work dari Intent ini untuk memulai perjalanan bisnis Anda"
-      >
-        {buttonText}
-      </Button>
+      {!isSuccess ? (
+        <Button
+          intent="primary"
+          variant="solid"
+          size="lg"
+          disabled={!intentId || isForming}
+          loading={isForming}
+          loadingText="Membentuk Work..."
+          onClick={handleWorkFormation}
+          className={className}
+          rightIcon={
+            <svg className="w-4 h-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 10h10m0 0l-3-3m3 3l-3 3" />
+            </svg>
+          }
+          aria-label={buttonText}
+          title="Membentuk Work dari Intent ini untuk memulai perjalanan bisnis Anda"
+        >
+          {buttonText}
+        </Button>
+      ) : (
+        <div
+          role="status"
+          className="rounded-md border border-status-success/30 bg-status-success/5 p-4 text-sm text-status-success-fg animate-pulse"
+        >
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <p className="font-semibold text-base">Work berhasil terbentuk!</p>
+              <p className="mt-1">Work ID: {createdWorkId}</p>
+              <p className="mt-1 text-xs opacity-80">Mengalihkan ke halaman Work...</p>
+            </div>
+          </div>
+        </div>
+      )}
       {error && (
         <div
           role="alert"

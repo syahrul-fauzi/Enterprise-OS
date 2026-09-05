@@ -1,0 +1,42 @@
+{
+  "id": "5882aaec-8bfb-4a8d-88f5-7e44eda1456a",
+  "occurredAt": "2026-09-03T12:10:46.468Z",
+  "source": {
+    "interactionId": "f6b19540-1016-446f-bbed-22e9de5987c6"
+  },
+  "input": {
+    "raw": "PT dan CV itu berbeda dalam hal apa?",
+    "normalized": "pt dan cv itu berbeda dalam hal apa?"
+  },
+  "expected": {
+    "knowledgeBaseMatchFound": true,
+    "fallbackRequired": false
+  },
+  "observed": {
+    "knowledgeBaseMatchFound": false,
+    "fallbackRequired": true
+  },
+  "classification": "KNOWLEDGE.NOT_FOUND",
+  "rootCategory": "KNOWLEDGE",
+  "severity": "LOW",
+  "status": "CLUSTERED",
+  "failureFingerprint": {
+    "rootCategory": "KNOWLEDGE",
+    "semanticOperation": "COMPARE_BUSINESS_ENTITIES",
+    "entities": [
+      "PT",
+      "CV"
+    ],
+    "resolutionType": "INFORMATION",
+    "failureMode": "KNOWLEDGE_GAP"
+  },
+  "dimensions": {
+    "isUnknown": false,
+    "isSystemic": false,
+    "requiresCodeChange": false,
+    "severity": "LOW",
+    "domain": "LEGAL",
+    "recoveryAction": "ASK_CLARIFICATION"
+  },
+  "clusterId": "a2e0d190-1e8c-46fa-8ce8-bc39f3895bb7"
+}

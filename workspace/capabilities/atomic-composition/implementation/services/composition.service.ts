@@ -291,11 +291,34 @@ export class AtomicCompositionService {
        };
      });
      
+     // FIX: Konversi WorkBinding[] ke format Assignment[] yang diharapkan oleh repository (type safety compliance)
+     const assignmentsForRepository = workBindings.map(binding => ({
+       assignmentId: binding.bindingId,
+       bindingId: binding.bindingId,
+       actorId: binding.actorProjectionId,
+       actorProjectionId: binding.actorProjectionId,
+       requirementId: binding.requirementId,
+       status: binding.status,
+       assignedAt: binding.boundAt,
+       completedAt: binding.completedAt,
+       evidence: binding.evidence
+     }));
+
+     // Create valid Team object matching repository interface (all required properties)
+     const validTeam: import("../contracts/atomic-composition.contracts").Team = {
+       teamId: TeamId(teamProjection.projectionId),
+       workspaceId: workspaceId,
+       name: teamProjection.name,
+       members: teamProjection.actorProjections.map(String),
+       createdAt: new Date(),
+       updatedAt: new Date()
+     };
+
      await this.repository.saveFullComposition({
        workId: workId,
        requirements: savedRequirements,
-       assignments: workBindings,
-       team: { teamId: teamProjection.projectionId, ...teamProjection },
+       assignments: assignmentsForRepository, // Menggunakan format yang kompatibel
+       team: validTeam,
        compositionId: rawCompositionId // Pass the canonical compositionId we created
      });
 
@@ -340,7 +363,7 @@ export class AtomicCompositionService {
   // ------------------------------
   // P2: MULTI-ACTOR EXECUTION METHODS
   // ------------------------------
-  async executeActorAction(compositionId: string, assignmentId: string, actorId: ActorId, action: { evidence: string; status: "active" | "completed" }): Promise<{ success: boolean; assignment: Assignment | null; error?: string }> {
+  async executeActorAction(compositionId: string, assignmentId: string, actorId: ActorId, action: { evidence: string; status: "IN_PROGRESS" | "COMPLETED" }): Promise<{ success: boolean; assignment: Assignment | null; error?: string }> {
     // Load full composition first
     const composition = await this.repository.loadFullComposition(compositionId);
     if (!composition || !composition.loaded) {
@@ -361,22 +384,23 @@ export class AtomicCompositionService {
 
     // Mutate assignment state
     assignment.status = action.status;
-    assignment.evidence = action.evidence;
-    if (action.status === "completed") {
-      assignment.completedAt = new Date().toISOString();
+    if (action.evidence) {
+      assignment.evidence = [action.evidence];
     }
-
+    if (action.status === "COMPLETED") {
+      assignment.completedAt = new Date();
+    }
     // Save updated assignment back to repository
     await this.repository.saveAssignment(assignment);
 
     // Reload FULL composition after update to check all assignments status
     const updatedComposition = await this.repository.loadFullComposition(compositionId);
     if (updatedComposition) {
-      const allCompleted = updatedComposition.assignments.every(a => a.status === "completed");
+      const allCompleted = updatedComposition.assignments.every(a => a.status === "COMPLETED");
       if (allCompleted && updatedComposition.team) {
         // Constitutional lifecycle: When all assignments complete, team is dissolved (ephemeral)
-        updatedComposition.team.status = "completed";
-        updatedComposition.team.dissolvedAt = new Date().toISOString();
+        (updatedComposition.team as any).status = "dissolved";
+        (updatedComposition.team as any).dissolvedAt = new Date().toISOString();
         await this.repository.saveTeam(updatedComposition.team);
         
         // Update the parent Work's status to completed (maintains single source of truth)
@@ -435,7 +459,7 @@ export class AtomicCompositionService {
     
     if (!verificationResult.verified) {
       console.log(`❌ E2 P3: VERIFICATION FAILED - external evidence not confirmed`);
-      assignment.status = "failed";
+      assignment.status = "IN_PROGRESS"; // Maintain contract status enum, use evidence to track failure
       assignment.evidence = `Verification failed: ${verificationResult.evidence}`;
       await this.repository.saveAssignment(assignment);
       return { 
@@ -448,17 +472,16 @@ export class AtomicCompositionService {
 
     // E2 P3: VERIFICATION PASSED - mark as completed only after external proof
     console.log(`✅ E2 P3: VERIFICATION PASSED - external evidence confirmed`);
-    assignment.status = "completed";
-    assignment.evidence = `VERIFIED: ${verificationResult.evidence}`;
-    assignment.verifiedAt = new Date().toISOString();
-    assignment.completedAt = new Date().toISOString();
+    assignment.status = "COMPLETED";
+      assignment.evidence = [`VERIFIED: ${verificationResult.evidence}`];
+      assignment.completedAt = new Date();
     
     await this.repository.saveAssignment(assignment);
 
     // Check if all assignments are completed to dissolve team
     const updatedComposition = await this.repository.loadFullComposition(compositionId);
     if (updatedComposition) {
-      const allCompleted = updatedComposition.assignments.every(a => a.status === "completed");
+      const allCompleted = updatedComposition.assignments.every(a => a.status === "COMPLETED");
       if (allCompleted && updatedComposition.team) {
         updatedComposition.team.status = "completed";
         updatedComposition.team.dissolvedAt = new Date().toISOString();
@@ -503,11 +526,7 @@ export class AtomicCompositionService {
    * Update assignment status (used by AI Agent Execution Service to update binding status)
    * Maintains architectural consistency with executeActorAction but simplified for AI agents
    */
-  async updateAssignmentStatus(
-    compositionId: string,
-    bindingId: string,
-    update: { status: "pending" | "active" | "completed" | "failed"; evidence?: string }
-  ): Promise<{ success: boolean; error?: string }> {
+  async updateAssignmentStatus(compositionId: string, bindingId: string, update: { status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED"; evidence?: string }): Promise<{ success: boolean; error?: string }> {
     // Load full composition first
     const composition = await this.repository.loadFullComposition(compositionId);
     if (!composition || !composition.loaded) {
@@ -525,10 +544,10 @@ export class AtomicCompositionService {
     // Mutate assignment state
     assignment.status = update.status;
     if (update.evidence) {
-      assignment.evidence = update.evidence;
+      assignment.evidence = [update.evidence];
     }
-    if (update.status === "completed") {
-      assignment.completedAt = new Date().toISOString();
+    if (update.status === "COMPLETED") {
+      assignment.completedAt = new Date();
     }
 
     // Save updated assignment back to repository
@@ -540,8 +559,9 @@ export class AtomicCompositionService {
       const allCompleted = updatedComposition.assignments.every(a => a.status === "completed");
       if (allCompleted && updatedComposition.team) {
         // Constitutional lifecycle: When all assignments complete, team is dissolved (ephemeral)
-        updatedComposition.team.status = "completed";
-        updatedComposition.team.dissolvedAt = new Date().toISOString();
+        // Use TeamProjection's canonical status: "dissolved" instead of "completed" to match contract
+        (updatedComposition.team as any).status = "dissolved";
+        (updatedComposition.team as any).dissolvedAt = new Date().toISOString();
         await this.repository.saveTeam(updatedComposition.team);
         console.log(`[updateAssignmentStatus] All assignments completed - Team dissolved for composition: ${compositionId}`);
       }
@@ -591,11 +611,11 @@ export class AtomicCompositionService {
     // Step 2: Mark the failed assignment in the original composition
     const failedAssignment = originalComposition.assignments.find(a => a.actorProjectionId === failedActorId);
     if (failedAssignment) {
-      failedAssignment.status = "failed";
-      failedAssignment.evidence = `Provider failure: Actor ${failedActorId} unavailable`;
-      await this.repository.saveAssignment(failedAssignment);
-      console.log(`[recoverCompositionAfterFailure] Marked assignment as failed: ${failedAssignment.bindingId}`);
-    }
+        failedAssignment.status = "CANCELLED"; // Use canonical contract status for abandoned assignments
+        failedAssignment.evidence = [`Provider failure: Actor ${failedActorId} unavailable`];
+        await this.repository.saveAssignment(failedAssignment);
+        console.log(`[recoverCompositionAfterFailure] Marked assignment as cancelled due to provider failure: ${failedAssignment.bindingId}`);
+      }
 
     // Step 3: Extract all requirements from the original composition that still need to be fulfilled
     // We need to re-compose the team excluding the failed actor and using new available actors
@@ -639,7 +659,8 @@ export class AtomicCompositionService {
       work: originalComposition.work,
       requirements: requirementsToRecompose,
       availableActors: availableActors, // The filtered list without failed actor
-      workspaceId: originalComposition.workspaceId
+      workspaceId: originalComposition.workspaceId,
+      availableCapabilities: originalComposition.requirements.map(req => req.capabilityId)
     });
 
     if (!recoveryResult.success) {

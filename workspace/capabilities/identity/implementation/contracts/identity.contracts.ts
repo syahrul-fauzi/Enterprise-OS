@@ -149,29 +149,67 @@ export function IntentId(value: string): IntentId {
   return value as IntentId;
 }
 
-export type IntentStatus = 
-  | "DRAFT"
+export type IntentOrigin =
+  | "human"
+  | "ai_agent"
+  | "machine"
+  | "external_system"
+  | "internal_system";
+
+export type IntentStatus =
+  | "RECEIVED"
+  | "CAPTURED"
   | "UNDERSTANDING"
+  | "RESOLVING"
   | "RESOLVED"
-  | "CONVERTED_TO_WORK"
+  | "WORK_FORMED"
   | "ARCHIVED";
 
-export type IntentCategory = 
+export type IntentCategory =
   | "LEGAL_SERVICE"
   | "SERVICE_REQUEST"
   | "ACADEMIC_RESEARCH"
   | "GENERAL_INQUIRY"
   | "SUPPORT_REQUEST"
   | "PRODUCT_REQUEST"
-  | "GOVERNANCE_ACTION";
+  | "GOVERNANCE_ACTION"
+  | "TECHNICAL_INCIDENT"
+  | "MONITORING_ALERT"
+  | "SYSTEM_EVENT";
+
+export interface IntentUnderstanding {
+  objective?: string;
+  desiredOutcome?: string;
+  knownContext: unknown[];
+  unknowns: unknown[];
+  candidateDomains: string[];
+  confidence: number;
+}
+
+export interface IntentResolutionRequirement {
+  required: boolean;
+  reason?: string;
+  requiredCapabilities?: string[];
+  providerType?: "ai" | "human" | "system";
+  assignedProviderId?: string;
+}
+
+export interface IntentRawInput {
+  type: "expression" | "request" | "signal" | "event";
+  content: unknown;
+}
 
 export interface IntentAggregate {
   readonly id: IntentId;
   readonly tenantId: string;
   readonly workspaceId: string;
-  readonly actorId: string;
+  readonly actorId?: string;
+  readonly origin: IntentOrigin;
   readonly title: string;
   readonly description?: string;
+  readonly raw: IntentRawInput;
+  readonly understanding?: IntentUnderstanding;
+  readonly resolution?: IntentResolutionRequirement;
   readonly category: IntentCategory;
   readonly status: IntentStatus;
   readonly metadata?: Record<string, any>;

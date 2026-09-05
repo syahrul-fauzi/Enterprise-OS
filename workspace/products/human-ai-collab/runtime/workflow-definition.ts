@@ -1,16 +1,10 @@
 import type { WorkflowStep, WorkflowDefinition } from "@repo/core-kernel";
 
-export interface HumanAICollabWorkflowStep extends WorkflowStep {
-  readonly id: "work-created" | "requirements-defined" | "composition-executed" | "assignments-distributed" | "ai-tasks-executing" | "human-tasks-executing" | "all-completed" | "economic-report-generated" | "work-archived";
-}
+// Domain type alias only (preserves type safety without vertical-specific interface)
+export type HumanAICollabWorkflowStep = WorkflowStep;
+export type HumanAICollabWorkflowDefinition = WorkflowDefinition;
 
-export interface HumanAICollabWorkflowDefinition extends WorkflowDefinition {
-  readonly id: "human-ai-business-launch";
-  readonly productId: "human-ai-collab";
-  readonly steps: readonly HumanAICollabWorkflowStep[];
-}
-
-export const HUMAN_AI_COLLAB_WORKFLOW: HumanAICollabWorkflowDefinition = {
+export const HUMAN_AI_COLLAB_WORKFLOW: WorkflowDefinition = {
   id: "human-ai-business-launch",
   productId: "human-ai-collab",
   label: "Work Created → Requirements → Composition → AI+Human Execution → Economic Report → Archived",
@@ -102,8 +96,8 @@ export const HUMAN_AI_COLLAB_WORKFLOW: HumanAICollabWorkflowDefinition = {
   } as const
 };
 
-export function getHumanAICollabWorkflow(): HumanAICollabWorkflowDefinition {
+export function getHumanAICollabWorkflow(): WorkflowDefinition {
   return HUMAN_AI_COLLAB_WORKFLOW;
 }
 
-export type HumanAICollabWorkflowStepId = HumanAICollabWorkflowStep["id"];
+export type HumanAICollabWorkflowStepId = WorkflowStep["id"];

@@ -1,0 +1,39 @@
+# PRODUCTION SCHEMA: Compliance Assessment Workflow
+# Validated for EOS work model fit (2026-09-23 12:30 WIB)
+work:
+  name: "Regulatory Compliance Assessment (OJK/BKPM/PPATK)"
+  source: "Indonesian Fintech Startups / Financial Services Companies"
+  buyer: "Fintech compliance leads / legal department heads"
+  trigger: "Client sends scope of work email; compliance project manager confirms engagement"
+
+production:
+  input: "Current policies, procedures, system logs, and previous audit results"
+  preparation: "Map assessment scope to specific regulatory requirements (OJK/BKPM/PPATK)"
+  actor: "Compliance specialist with Indonesian financial regulatory expertise"
+  steps:
+    - "Review existing policies against regulatory requirements"
+    - "Interview key stakeholders about compliance processes"
+    - "Test system controls for data privacy and transaction monitoring"
+    - "Document gaps in current compliance posture"
+    - "Develop remediation plan with timeline and responsible parties"
+    - "Draft compliance report for regulatory submission"
+  qa: "Lead compliance auditor reviews all findings and regulatory mapping"
+  artifact: "Final compliance assessment report + remediation roadmap + regulatory submission package"
+  evidence: "Interview transcripts, control test results, stakeholder signoff documents"
+  approval: "Client's executive team approves report before regulatory submission"
+  delivery: "Secure encrypted folder with all documents + regulatory submission support call"
+
+commercial:
+  pricing_model: "Fixed-price assessment: IDR 35,000,000 (~$2,275) per assessment"
+  payment_point: "40% upfront, 60% upon report submission to regulators"
+  repeat_cycle: "100% of fintech clients undergo annual reassessments; many request quarterly check-ins"
+  after_sales: "Regulatory submission support included; additional scope extensions priced separately"
+
+eos:
+  intake: "Client sends engagement letter via email → EOS operator creates work.order"
+  work_formation: "EOS creates work order with policy review, stakeholder interview, and report deadlines"
+  actor_resolution: "EOS matches compliance specialist with specific regulatory expertise (OJK/BKPM/PPATK)"
+  execution_tracking: "EOS tracks step completion: policy review → interviews → testing → report drafting → QA"
+  evidence: "EOS operator uploads all audit artifacts, interview transcripts, and regulatory submission confirmation"
+  outcome: "EOS marks work as COMPLETED only after regulatory submission and final payment"
+  automation: "45% of workflow can be automated: gap checklist, report template, deadline reminders"

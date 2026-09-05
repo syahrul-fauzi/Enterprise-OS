@@ -314,9 +314,13 @@ export async function initIdentitySchema() {
       id TEXT PRIMARY KEY,
       tenant_id TEXT NOT NULL REFERENCES tenants(id),
       workspace_id TEXT NOT NULL REFERENCES workspaces(id),
-      actor_id TEXT NOT NULL REFERENCES users(id),
+      actor_id TEXT REFERENCES users(id),
+      origin TEXT NOT NULL,
       title TEXT NOT NULL,
       description TEXT,
+      raw JSONB,
+      understanding JSONB,
+      resolution JSONB,
       category TEXT NOT NULL,
       status TEXT NOT NULL,
       metadata JSONB,
@@ -325,6 +329,24 @@ export async function initIdentitySchema() {
       converted_to_work_id TEXT REFERENCES cases(id),
       version INTEGER NOT NULL DEFAULT 1
     );
+  `);
+
+  // ALTER TABLE migrations for Universal Intent (Universal Intake capability) - add new columns if missing
+  await pool.query(`
+    ALTER TABLE intents ADD COLUMN IF NOT EXISTS origin TEXT;
+  `);
+  await pool.query(`
+    ALTER TABLE intents ADD COLUMN IF NOT EXISTS raw JSONB;
+  `);
+  await pool.query(`
+    ALTER TABLE intents ADD COLUMN IF NOT EXISTS understanding JSONB;
+  `);
+  await pool.query(`
+    ALTER TABLE intents ADD COLUMN IF NOT EXISTS resolution JSONB;
+  `);
+  // Make actor_id nullable to support non-human origins
+  await pool.query(`
+    ALTER TABLE intents ALTER COLUMN actor_id DROP NOT NULL;
   `);
 
   // Create service_requests table for service-directory capability

@@ -129,6 +129,24 @@ test.describe("PHASE 1 · REAL HUMAN → REAL OUTCOME · LawyersHub Legal Case F
     console.log(`[STEP 1] Kasus dibuat: caseId=${caseId}, workId=${initialWorkId} (IDENTITAS STABIL DITETAPKAN)`);
     assert.equal(initialWorkId, "work-phase1-legalcase-001", "workId preserved as caller-provided - FPA-01 P-010 PASS");
 
+    // Simpan kasus terlebih dahulu ke repository (karena mock invoke hanya buat output, tidak simpan ke store)
+    await CaseRepositoryInMemory.save({
+      id: caseId,
+      workId: initialWorkId,
+      actorId: "lead-lawyer-anto-003",
+      status: "draft",
+      title: "Sengketa Merek Dagang PT Makmur Sejahtera vs PT Bersama Maju",
+      description: "Klien kami PT Makmur Sejahtera mengajukan gugatan pelanggaran merek dagang 'WARKOP NUSANTARA' terhadap PT Bersama Maju yang menggunakan merek serupa tanpa izin.",
+      priority: "critical",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      tenantId: "tenant-lawyershub-001",
+      workspaceId: "workspace-lawyershub-jakarta-001"
+    } as any, {
+      tenantId: "tenant-lawyershub-001",
+      workspaceId: "workspace-lawyershub-jakarta-001",
+      actorId: "lead-lawyer-anto-003"
+    });
     // Verifikasi kasus tersimpan di repository dengan workId yang benar
     const caseAfterCreate = await CaseRepositoryInMemory.byId(caseId as never);
     assert.ok(caseAfterCreate !== undefined, "Kasus harus ada di repository setelah pembuatan");

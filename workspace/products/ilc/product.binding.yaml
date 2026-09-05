@@ -1,0 +1,15 @@
+version: "1.0"
+status: ACTIVE
+product:
+  id: ilc
+  display_name: ILC
+experience:
+  surface: web
+  route: /products/ilc/requirements
+capabilities:
+  - requirement-management
+  - workflow-engine
+  - governance-evidence
+  - institutional-coordination
+  - document-management
+claim_boundary: Product-ACTIVE binding for the ILC identity onto the canonical apps/web professional experience surface. Institutional coordination aggregates are connected to the product reality surface while maintaining full compliance with canonical Work lifecycle primitives.

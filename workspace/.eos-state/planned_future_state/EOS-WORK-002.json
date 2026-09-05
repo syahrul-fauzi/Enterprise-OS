@@ -1,0 +1,31 @@
+{
+  "work_id": "EOS-WORK-002",
+  "type": "Commerce Exception Resolution",
+  "buyer_id": "COMM-003",
+  "buyer_name": "TokoGarmenIndonesia",
+  "problem_statement": "Selisih stok bahan baku kain antara gudang vs produksi, menyebabkan keterlambatan pengiriman pesanan pelanggan",
+  "scope": "Hanya untuk normalisasi stok dan root cause analysis, tidak termasuk integrasi sistem ERP baru",
+  "acceptance_criteria": [
+    "✅ stok_gudang == stok_produksi_tercatat",
+    "✅ root_cause_documented",
+    "✅ semua_perubahan_tercatat_di_immutable_ledger"
+  ],
+  "deliverables": [
+    "✅ root_cause_analysis_report",
+    "✅ normalisasi_stok_di_kedua_sistem",
+    "✅ evidence_package_dengan_audit_logs",
+    "✅ sop_preventif_untuk_garmen"
+  ],
+  "price_total_idr": 950000,
+  "payment_dp_received": true,
+  "payment_dp_amount": 475000,
+  "payment_final_received": true,
+  "payment_final_amount": 475000,
+  "payment_total_received": 950000,
+  "assigned_specialist": "ecommerce-specialist.001",
+  "status": "COMPLETED_ACCEPTED_PAID",
+  "created_at": "2026-09-15T10:00:00.000Z",
+  "completed_at": "2026-09-20T13:30:00.000Z",
+  "timeline_days": 5,
+  "buyer_feedback": "Waktu produksi kami kembali normal setelah stok selesai dinormalisasi. Keterlambatan pengiriman turun 80% dalam minggu pertama!"
+}

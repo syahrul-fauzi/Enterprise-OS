@@ -1,5 +1,5 @@
 // Fixed import per @repo/core-kernel documentation - DigestEngine must be imported directly from digest-engine subpath
-import { DigestEngine } from "@repo/core-kernel/digest-engine.js";
+import { DigestEngine } from "@repo/core-kernel/digest-engine";
 import {
   SUPPORTED_CONSTITUTION_ATTESTATION_EVENT_TYPES,
   type ConstitutionAttestationEventType,

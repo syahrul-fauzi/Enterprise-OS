@@ -1,4 +1,4 @@
-export type ServiceRequestStatus = "draft" | "accepted" | "in_service" | "delivered" | "verified" | "cancelled";
+export type ServiceRequestStatus = "draft" | "submitted" | "proposed" | "accepted" | "in_service" | "delivered" | "verified" | "cancelled" | "declined";
 
 export interface CreateServiceRequestInput {
   readonly title: string;
@@ -30,6 +30,8 @@ export function ServiceRequestId(value: string): ServiceRequestId {
   return value as ServiceRequestId;
 }
 
+export type SupplyStatus = "PENDING_VERIFICATION" | "VERIFIED" | "INACTIVE";
+
 export interface ServiceProviderAggregate {
   readonly id: ServiceProviderId;
   readonly name: string;
@@ -38,9 +40,14 @@ export interface ServiceProviderAggregate {
   readonly rating: number;
   readonly location?: string;
   readonly verified: boolean;
+  readonly contactEmail?: string;
+  readonly contactName?: string;
+  readonly responseHours?: string;
+  readonly supplyStatus?: SupplyStatus; // CR-004 Supply-side verification tracking
   readonly createdAt: Readonly<Date>;
   readonly tenantId: string;
   readonly workspaceId: string;
+  readonly actorId: string;
 }
 
 export interface ExternalSystemResponse {
@@ -58,7 +65,15 @@ export interface ServiceRequestAggregate {
   readonly category: ServiceProviderCategory;
   readonly status: ServiceRequestStatus;
   readonly requesterName?: string;
+  readonly requesterEmail?: string;
+  readonly requesterPhone?: string;
   readonly providerId?: ServiceProviderId;
+  readonly providerNote?: string;
+  readonly providerDecisionAt?: Readonly<Date>;
+  readonly proposedPrice?: string;
+  readonly priceAcceptedAt?: Readonly<Date>;
+  readonly paymentTransactionId?: string;
+  readonly paymentStatus?: string;
   readonly budget?: string;
   readonly deadline?: Readonly<Date>;
   readonly createdAt: Readonly<Date>;

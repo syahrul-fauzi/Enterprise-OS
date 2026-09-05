@@ -1,0 +1,17 @@
+version: "1.0"
+status: ACTIVE
+product:
+  id: wordpress-fix
+  display_name: WordPress/Website Fix
+experience:
+  surface: web
+  route: /products/wordpress-fix/requirements
+capabilities:
+  - requirement-management
+  - workflow-engine
+  - governance-evidence
+  - intent-management
+  - work-formation
+  - observability
+  - incident-management
+claim_boundary: Universal Website Maintenance Work category binding onto canonical EOS Work Runtime. Domain aggregates (WebsiteIncident, WPFixJob) connected to universal work reality surface without creating new lifecycle.

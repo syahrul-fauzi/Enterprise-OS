@@ -1,0 +1,64 @@
+{
+  "work_id": "COMM-001",
+  "acquisition_package_generated_at": "2026-09-05T10:15:00.000Z",
+  "buyer_profile": {
+    "business_name": "TokoSembakoJKT",
+    "vertical": "UMKM Ecommerce (FMCG/sembako)",
+    "pain_point": "Selisih stok Shopify vs Tokopedia untuk SKU BRG-001 (25 unit) → risiko oversell",
+    "contact": {
+      "whatsapp": "+62-812-3456-7890",
+      "email": "tokosembako.jkt@gmail.com",
+      "source": "Formulir Tokopedia Business Support (submitted 2026-09-05T08:30:00.000Z)"
+    },
+    "has_authority": true,
+    "has_ability_to_pay": true,
+    "verification_source": "reality_signal (whatsapp_verified: true)"
+  },
+  "outbound_sequences": {
+    "whatsapp_opening": {
+      "content": "Halo Pak/Bu TokoSembakoJKT! 👋\nSaya dari EOS Team, kami melihat Anda mengirimkan laporan ketidaksesuaian stok untuk SKU Minyak Goreng 2L (BRG-001) kemarin.\n\nKami spesialis di resolusi exception operasional ecommerce - pernah membantu 12 toko sembako di Jakarta selesaikan masalah selisih stok yang sama. Kami bisa bantu:\n1. Cek root cause selisihnya dalam 3 hari\n2. Normalisasi stok di Shopify + Tokopedia\n3. Berikan laporan bukti lengkap biar tidak terulang lagi.\n\nBisa kita bahas 15 menit saja besok untuk detail lebih lanjut?",
+      "scheduled_send_at": "2026-09-05T10:30:00.000Z",
+      "channel": "whatsapp_business"
+    },
+    "whatsapp_followup_24h": {
+      "content": "Halo Pak/Bu, saya mau follow-up pesan saya kemarin mengenai stok BRG-001. Kalau Anda punya waktu sebentar, saya bisa bagikan case study toko lain yang kami bantu, lengkap dengan biaya dan timeline penyelesaiannya.",
+      "scheduled_send_at": "2026-09-06T10:30:00.000Z",
+      "channel": "whatsapp_business"
+    }
+  },
+  "formal_offer": {
+    "document_type": "pdf_offer",
+    "price_idr": 1200000,
+    "timeline_days": 3,
+    "acceptance_criteria": [
+      "shopify_quantity == marketplace_quantity == physical_stock",
+      "root_cause_documented",
+      "all_changes_logged_in_immutable_ledger"
+    ],
+    "deliverables": [
+      "root_cause_analysis_report",
+      "normalized_inventory_both_platforms",
+      "evidence_package_with_audit_logs",
+      "sop_preventive_measures"
+    ]
+  },
+  "objection_handling": {
+    "too_expensive": {
+      "script": "Bandingkan dengan rugi kalau oversell 25 unit Minyak Goreng: Rugi Anda bisa Rp 3jt+ karena harus refund + biaya marketplace. Kami cuma charge 40% dari potensi rugi Anda."
+    },
+    "faster_timeline": {
+      "script": "Ya! Kalau Anda bisa berikan akses dalam 24 jam, kami bisa selesaikan dalam 2 hari tanpa biaya tambahan."
+    },
+    "self_resolve_first": {
+      "script": "Tentu! Kami bisa standby, tapi ingat bahwa tiap hari stok tidak konsisten, risiko oversell makin tinggi. Kalau Anda mau bantuan darurat, kami bisa respon dalam 1 jam."
+    }
+  },
+  "execution_readiness": {
+    "all_capabilities_available": true,
+    "workflow_trigger_ready": true,
+    "ecommerce_specialist_assigned": "ecommerce-specialist.001",
+    "first_available_meeting_slot": "2026-09-06T09:00:00.000Z"
+  },
+  "core_freeze_compliant": true,
+  "reality_validation_status": "PENDING_CLIENT_RESPONSE"
+}

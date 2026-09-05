@@ -15,8 +15,8 @@
       "types": "./dist/*.d.ts",
       "default": "./dist/*.js"
     },
-    "./implementation": null,
-    "./implementation/*": null
+    "./implementation": "./implementation/index.ts",
+    "./implementation/*": "./implementation/*"
   },
   "license": "MIT",
   "scripts": {

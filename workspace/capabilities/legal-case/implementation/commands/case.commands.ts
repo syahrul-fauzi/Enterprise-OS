@@ -41,14 +41,24 @@ const intentRepository = process.env.NODE_ENV === "production" && process.env.DA
 console.log("[case.commands.ts] Intent repository initialized for context integrity validation");
 
 const PTEstablishmentDetailsSchema = z.object({
-  namaPTLengkap: z.string().min(1),
-  alamatDomisili: z.string().min(1),
-  bidangUsaha: z.string().min(1),
+  namaPTLengkap: z.string().min(3).max(200),
+  alamatDomisili: z.string().min(10),
+  bidangUsaha: z.string().min(3),
   jumlahPendiri: z.number().int().min(1).max(100),
-  modalDasar: z.number().min(100000000), // Minimal Rp100.000.000 sesuai regulasi Indonesia
-  noNIB: z.string().min(10).max(13), // NIB number required for PT registration (Indonesian business identifier)
+  modalDasar: z.number().int().min(1000000),
+  noNIB: z.string().min(10).max(20),
   npwp: z.string().min(15).max(20), // NPWP (Tax ID) for the legal entity
   penanggungJawabNIK: z.string().length(16), // NIK of the person in charge (16 digits required)
+});
+
+// ILC Golden Slice: Training & Certification details schema (ilc-case-001)
+const TrainingDetailsSchema = z.object({
+  lokasiPelatihan: z.string().min(10),
+  tanggalMulai: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), // ISO date format YYYY-MM-DD
+  tanggalSelesai: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  kuotaPeserta: z.number().int().min(1).max(100),
+  biayaPelatihan: z.number().int().min(0),
+  kategoriPelatihan: z.string().min(3).max(100),
 });
 
 const CreateCaseWithContextSchema = z.object({
@@ -59,8 +69,10 @@ const CreateCaseWithContextSchema = z.object({
   id: z.string().regex(/^case[-_]/).optional(),
   // Work identity binding (from decision_id)
   workId: z.string().optional(),
-  // Golden work: Pendirian PT specific fields
+  // Golden work: Pendirian PT specific fields (LawyersHub lh-case-001)
   ptEstablishmentDetails: PTEstablishmentDetailsSchema.optional(),
+  // ILC Golden Slice: Training & Certification details (ilc-case-001)
+  trainingDetails: TrainingDetailsSchema.optional(),
   // Ambient execution context propagation (W4-C20-001 compliance)
   decision_id: z.string().optional(),
   last_invocation_digest: z.string().optional(),
@@ -110,7 +122,7 @@ export const createCase: CreateCaseCommand = {
     await ensureIdentitySchema();
     
     const parsed = CreateCaseWithContextSchema.parse(input);
-    const { title, description, priority, sessionId, sourceDiscussionId, id: preferredId, decision_id, last_invocation_digest, ptEstablishmentDetails, linkedIntentId } = parsed as any;
+    const { title, description, priority, sessionId, sourceDiscussionId, id: preferredId, decision_id, last_invocation_digest, ptEstablishmentDetails, trainingDetails, linkedIntentId } = parsed as any;
     
     // 1. Validate session exists and is active OR use passed tenant/workspace/actor from context (cross-capability call)
     let tenantId: string;
@@ -224,6 +236,9 @@ export const createCase: CreateCaseCommand = {
         : {}),
       ...(ptEstablishmentDetails !== undefined
         ? { ptEstablishmentDetails: ptEstablishmentDetails }
+        : {}),
+      ...(trainingDetails !== undefined
+        ? { trainingDetails: trainingDetails }
         : {}),
       status: defaultCaseStatus,
       priority: priority ?? defaultCasePriority,

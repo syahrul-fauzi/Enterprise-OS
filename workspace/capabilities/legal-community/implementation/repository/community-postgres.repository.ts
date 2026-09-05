@@ -10,7 +10,7 @@ import {
   ContentStatus,
   DiscussionStatus,
   TopicCategory,
-} from "../contracts/community.contracts.js";
+} from "../contracts/community.contracts";
 
 // PostgreSQL-backed content article repository implementation
 class ContentArticleRepositoryPostgresImpl extends PostgresRepository<any> implements ContentArticleRepository {

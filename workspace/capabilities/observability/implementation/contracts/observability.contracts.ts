@@ -42,7 +42,7 @@ export interface ObservabilitySnapshot {
 export type IncidentId = string & { __brand: "IncidentId" };
 export type IncidentStatus = "draft" | "open" | "in_progress" | "resolved" | "closed";
 export type IncidentPriority = "low" | "medium" | "high" | "critical";
-export type IncidentCategory = "Infrastructure" | "Application" | "Database" | "Network" | "Security";
+export type IncidentCategory = "Infrastructure" | "Application" | "Database" | "Network" | "Security" | "Payment";
 
 export interface IncidentAggregate {
   readonly id: IncidentId;

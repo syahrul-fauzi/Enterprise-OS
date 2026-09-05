@@ -1,0 +1,23 @@
+{
+  "id": "a2e0d190-1e8c-46fa-8ce8-bc39f3895bb7",
+  "rootCategory": "KNOWLEDGE",
+  "fingerprintPattern": {
+    "rootCategory": "KNOWLEDGE",
+    "semanticOperation": "COMPARE_BUSINESS_ENTITIES",
+    "entities": [
+      "PT",
+      "CV"
+    ],
+    "resolutionType": "INFORMATION",
+    "failureMode": "KNOWLEDGE_GAP"
+  },
+  "failureIds": [
+    "1edec2d5-27f3-4785-93a6-abe93fe08026",
+    "5882aaec-8bfb-4a8d-88f5-7e44eda1456a",
+    "185f3355-984a-44c4-80df-ca8dc83b91ec"
+  ],
+  "firstObservedAt": "2026-09-03T12:10:46.467Z",
+  "lastObservedAt": "2026-09-03T12:10:46.469Z",
+  "occurrenceCount": 3,
+  "enrichmentCandidateId": "1bd12e64-e32a-484e-af9f-ff35a479895c"
+}

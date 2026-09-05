@@ -53,6 +53,25 @@ export const BaseWorkAggregateSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string().optional(),
   completedAt: z.string().optional(),
+  
+  // RL2-001: Work Execution Reality extensions - state transition tracking
+  assignedActorId: z.string().brand<ActorId>().optional(),
+  nextAction: z.string().optional(),
+  stateHistory: z.array(z.object({
+    status: z.enum(WorkStatusEnum),
+    timestamp: z.string(),
+    actorId: z.string().brand<ActorId>(),
+    note: z.string().optional()
+  })).default([]),
+  // RL3-001: Economic Value Proof extensions - track measurable value created by work
+  economicValue: z.object({
+    amount: z.number().optional(), // Measurable monetary value
+    currency: z.string().default("IDR"),
+    valueType: z.enum(["cost_savings", "revenue_generated", "risk_mitigation", "efficiency_gain"]).optional(),
+    evidence: z.string().optional(), // Reference to value evidence in evidence registry
+    recordedAt: z.string().optional() // Timestamp when value was recorded
+  }).optional(),
+  outcomeDeliveredAt: z.string().optional(), // RL3: Timestamp when final outcome was delivered
 });
 
 export type WorkAggregate = z.infer<typeof BaseWorkAggregateSchema>;

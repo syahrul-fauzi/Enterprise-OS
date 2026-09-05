@@ -10,20 +10,20 @@ import {
 
 // Validate required environment variables in production - matches other repository patterns
 const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
-if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.POSTGRES_CONNECTION_STRING) {
-  throw new Error("[IntentRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING environment variable is required in production");
+if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.POSTGRES_CONNECTION_STRING && !process.env.DATABASE_URL) {
+  throw new Error("[IntentRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING or DATABASE_URL environment variable is required in production");
 }
 
 // Read replica configuration - matches case.postgres.repository.ts pattern
 const writePool = new Pool({
-  connectionString: process.env.POSTGRES_WRITE_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || "postgresql://localhost:5432/eos_identity",
+  connectionString: process.env.POSTGRES_WRITE_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL || "postgresql://localhost:5432/eos_identity",
   max: 10,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
 });
 
 const readPool = new Pool({
-  connectionString: process.env.POSTGRES_READ_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || "postgresql://localhost:5432/eos_identity",
+  connectionString: process.env.POSTGRES_READ_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL || "postgresql://localhost:5432/eos_identity",
   max: 30,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
@@ -61,8 +61,12 @@ class IntentRepositoryPostgresImpl extends PostgresRepository<any> implements In
       tenant_id: entity.tenantId,
       workspace_id: entity.workspaceId,
       actor_id: entity.actorId,
+      origin: entity.origin,
       title: entity.title,
       description: entity.description,
+      raw: entity.raw ? JSON.stringify(entity.raw) : null,
+      understanding: entity.understanding ? JSON.stringify(entity.understanding) : null,
+      resolution: entity.resolution ? JSON.stringify(entity.resolution) : null,
       category: entity.category,
       status: entity.status,
       metadata: entity.metadata ? JSON.stringify(entity.metadata) : null,
@@ -80,8 +84,12 @@ class IntentRepositoryPostgresImpl extends PostgresRepository<any> implements In
       tenantId: record.tenant_id,
       workspaceId: record.workspace_id,
       actorId: record.actor_id,
+      origin: record.origin,
       title: record.title,
       description: record.description,
+      raw: record.raw ? JSON.parse(record.raw) : undefined,
+      understanding: record.understanding ? JSON.parse(record.understanding) : undefined,
+      resolution: record.resolution ? JSON.parse(record.resolution) : undefined,
       category: record.category as IntentCategory,
       status: record.status as IntentStatus,
       metadata: record.metadata ? JSON.parse(record.metadata) : undefined,

@@ -28,8 +28,8 @@ export function MyRealityHeader({
   const personalizedTitle = title.includes('Selamat') ? `${title}, ${displayName}` : title;
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-      <div className="flex-1">
+    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 w-full">
+      <div className="flex-1 min-w-0">
         <h1 className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight">
           {personalizedTitle}
         </h1>
@@ -40,11 +40,12 @@ export function MyRealityHeader({
         )}
       </div>
 
-      <div className="flex items-center gap-3 flex-shrink-0">
-        {/* "Start New Work" Button - Primary action */}
+      <div className="flex items-center gap-3 flex-shrink-0 mr-4">
+        {/* "Start New Work" Button - Primary action - Extra right margin to prevent viewport clipping */}
         <a 
           href="/intent/new" 
-          className="px-4 py-2 bg-brand-primary text-white font-medium rounded-lg hover:bg-brand-primary/90 transition-colors shadow-token-sm"
+          className="px-4 py-2 bg-slate-900 text-white font-medium rounded-lg hover:bg-slate-800 transition-colors shadow-token-sm whitespace-nowrap"
+          style={{ backgroundColor: '#0f172a', color: '#ffffff' }}
         >
           + Mulai Pekerjaan Baru
         </a>

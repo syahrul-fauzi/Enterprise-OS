@@ -7,9 +7,9 @@ export {
   newContentId,
   newDiscussionId,
   readCommunityStats,
-} from "./community.repository.js";
+} from "./community.repository";
 export {
   getContentArticleRepositoryPostgres,
   getCommunityDiscussionRepositoryPostgres,
-} from "./community-postgres.repository.js";
-export type * from "./community.repository.js";
+} from "./community-postgres.repository";
+export type * from "./community.repository";

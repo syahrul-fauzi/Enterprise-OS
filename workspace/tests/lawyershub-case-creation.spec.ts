@@ -114,10 +114,11 @@ test.describe('LawyersHub Case Creation Journey (BATTLE-1B)', () => {
     await expect(createCaseButton).toBeVisible();
     console.log(`[1B-DEBUG-001] ✅ "Buat Kasus Hukum Baru" button found (LawyersHub-specific)`);
 
-    // Step 7: Click create case button and intercept API call
+    // Step 7: Click create case button and intercept API call - RL4-002 production fix: unified work creation endpoint
     console.log('\n[1B-DEBUG-001] === STEP 7: CREATE LEGAL CASE ===');
     const caseCreateRequestPromise = page.waitForResponse(resp => 
-      resp.url().includes('/api/capabilities/lawyershub/case.create') && resp.request().method() === 'POST'
+      resp.url().includes('/api/work/create') && resp.request().method() === 'POST',
+      { timeout: 60000 } // 60s timeout for real first-user execution (RL4-002 First Real Cohort requirement)
     );
     
     // Click the create case button - uses event-driven cases:refresh, NOT page reload

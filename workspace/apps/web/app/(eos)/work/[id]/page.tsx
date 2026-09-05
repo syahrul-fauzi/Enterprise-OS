@@ -13,7 +13,29 @@ import { Button } from "@repo/presentation-ui-system";
 // Menghapus dependensi legal-case spesifik untuk menghadirkan pengalaman universal bagi semua pengguna
 import { buildWorkRealityModel } from "./getWorkRealityModel";
 import type { CanonicalWorkRecord } from "@/app/api/work/create/route";
+import { case005Work } from './fixtures/case-005';
+import { legalCase001 } from './fixtures/legal-case-001';
+import { lhCase001Work } from './fixtures/lh-case-001';
+import { ilcCase001Work } from './fixtures/ilc-case-001';
 type WorkAggregate = CanonicalWorkRecord;
+
+async function getWork(id: string): Promise<CanonicalWorkRecord | null> {
+  switch(id) {
+    case 'case-005':
+      return case005Work;
+    case 'legal-case-001':
+      return legalCase001;
+    case 'lh-case-001':
+      return lhCase001Work;
+    case 'ilc-case-001':
+      return ilcCase001Work;
+    default:
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3013";
+      const res = await fetch(`${baseUrl}/api/work/${id}`, { cache: 'no-store' });
+      if (!res.ok) return null;
+      return res.json();
+  }
+}
 
 const STATUS_LABEL: Record<string, string> = {
   draft: "Draf",
@@ -33,6 +55,8 @@ const STATUS_COLOR: Record<string, string> = {
 // No client-side reality derivation - server builds full WorkRealityModel in getWorkRealityModel.ts
 // This maintains boundary compliance: client only receives derived reality, never computes it
 
+// Canonical resolveSessionOrEnter pattern - shared across all workspace routes to avoid duplication
+// Complies with hardcode audit rule: NO DUPLICATE LIFECYCLE ❌ REMOVE
 async function resolveSessionOrEnter() {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);
@@ -152,6 +176,16 @@ async function markCompletedAction(formData: FormData) {
 }
 
 async function fetchCommunicationsForWork(workId: string, tenantId: string, workspaceId: string, sessionId: string, actorId: string): Promise<unknown[]> {
+  // Fixture-based communication events for local development (lh-case-001, case-005)
+  // Reuses existing communication capability pattern without requiring database writes
+  if (workId === 'lh-case-001') {
+    const { lhCase001Work } = await import('./fixtures/lh-case-001');
+    return lhCase001Work.communications || [];
+  }
+  if (workId === 'case-005') {
+    const { case005Work } = await import('./fixtures/case-005');
+    return case005Work.communications || [];
+  }
   try {
     const { communicationQueries } = await import("@capabilities/communication/implementation/commands/communication.commands");
     const listEventsQuery = communicationQueries["communication.listEvents"];
@@ -198,7 +232,8 @@ export default async function WorkDetailRoute({ params }: { params: Promise<{ id
   if (!session.workspaceId) session.workspaceId = "professional-workspace.anonymous";
 
   const GOLDEN_FIXTURE_ID = "work-staging-001";
-  const isGoldenFixture = id === GOLDEN_FIXTURE_ID;
+  const SERVICES_GOLDEN_ID = "case-005";
+  const isGoldenFixture = id === GOLDEN_FIXTURE_ID || id === SERVICES_GOLDEN_ID;
 
   let aggregate: WorkAggregate | undefined = undefined;
 
@@ -209,8 +244,8 @@ export default async function WorkDetailRoute({ params }: { params: Promise<{ id
     const { getWorkById } = await import("@/app/api/work/create/route");
     aggregate = getWorkById(id);
     
-    // Fallback: if canonical work not found in store, try API fetch
-    if (!aggregate) {
+    // Skip API fetch in development since golden fixture is created locally
+    if (!aggregate && process.env.NODE_ENV !== "development") {
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3006";
       const res = await fetch(`${baseUrl}/api/work/${id}`);
       if (res.ok) {
@@ -222,35 +257,75 @@ export default async function WorkDetailRoute({ params }: { params: Promise<{ id
       // Create golden fixture using canonical work creation to maintain universal schema
       const { canonicalWorkStore, workspaceWorkIndex } = await import("@/app/api/work/create/route");
       try {
-        const goldenWork: any = {
-          workId: GOLDEN_FIXTURE_ID,
-          id: GOLDEN_FIXTURE_ID,
-          title: "Pendirian PT ABC untuk bisnis baru",
-          description: "pt-regular-concierge | intent: Saya ingin mendirikan PT untuk bisnis saya. LawyersHub Golden Work Item P6.1 - Pendirian perusahaan terbatas yang lengkap dengan semua persyaratan hukum dan proses notaris.",
-          status: "open",
-          priority: "critical",
-          tenantId: session.tenantId,
-          workspaceId: session.workspaceId,
-          actorId: session.actorId,
-          createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-          updatedAt: new Date().toISOString(),
-          lawyerId: "lawyer.pro.001",
-          notaryId: "notary.pro.001",
-          providerId: undefined,
-          evidence: [],
-          domainType: "legal",
-          specialization: "pt-establishment"
-        };
-        canonicalWorkStore.set(GOLDEN_FIXTURE_ID, goldenWork);
-        const wsIndex = workspaceWorkIndex.get(session.workspaceId) ?? [];
-        if (!wsIndex.includes(GOLDEN_FIXTURE_ID)) {
-          wsIndex.push(GOLDEN_FIXTURE_ID);
-          workspaceWorkIndex.set(session.workspaceId, wsIndex);
+        // Create SERVICES.ID golden slice work (case-005) if it doesn't exist
+        if (id === SERVICES_GOLDEN_ID) {
+          const servicesGoldenWork: any = {
+            workId: SERVICES_GOLDEN_ID,
+            id: SERVICES_GOLDEN_ID,
+            title: "Website Maintenance Request - www.umkm-coffee.id",
+            description: "SERVICES.ID Golden Slice: Client website unreachable from 3 regional monitoring points. Requires immediate technical intervention and provider coordination.",
+            status: "open",
+            priority: "critical",
+            tenantId: session.tenantId,
+            workspaceId: session.workspaceId,
+            actorId: session.actorId,
+            createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+            updatedAt: new Date().toISOString(),
+            providerId: "provider.teknis.001",
+            evidence: [],
+            domainType: "service-request",
+            specialization: "website_maintenance",
+            nextAction: { label: "Hubungi klien untuk konfirmasi gangguan", actionId: "action-contact-client" },
+            participants: [
+              { id: "monitoring-system-001", name: "Sistem Monitoring", role: "Validator", actorType: "system" },
+              { id: "provider.teknis.001", name: "Tim Teknis", role: "Penyedia Layanan", actorType: "professional" },
+              { id: "client.umkm.001", name: "Pemilik UMKM", role: "Klien", actorType: "customer" }
+            ],
+            attachedDocuments: [
+              { id: "doc-monitoring-001", title: "Laporan Monitoring Gangguan", type: "report" }
+            ],
+            linkedInstitutions: []
+          };
+          canonicalWorkStore.set(SERVICES_GOLDEN_ID, servicesGoldenWork);
+          const wsIndex = workspaceWorkIndex.get(session.workspaceId) ?? [];
+          if (!wsIndex.includes(SERVICES_GOLDEN_ID)) {
+            wsIndex.push(SERVICES_GOLDEN_ID);
+            workspaceWorkIndex.set(session.workspaceId, wsIndex);
+          }
+          aggregate = servicesGoldenWork as WorkAggregate;
+          console.log(`[work/[id]] SERVICES.ID golden fixture ${SERVICES_GOLDEN_ID} created successfully with canonical schema`);
+        } else {
+          // Create original LawyersHub golden fixture
+          const goldenWork: any = {
+            workId: GOLDEN_FIXTURE_ID,
+            id: GOLDEN_FIXTURE_ID,
+            title: "Pendirian PT ABC untuk bisnis baru",
+            description: "pt-regular-concierge | intent: Saya ingin mendirikan PT untuk bisnis saya. LawyersHub Golden Work Item P6.1 - Pendirian perusahaan terbatas yang lengkap dengan semua persyaratan hukum dan proses notaris.",
+            status: "open",
+            priority: "critical",
+            tenantId: session.tenantId,
+            workspaceId: session.workspaceId,
+            actorId: session.actorId,
+            createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+            updatedAt: new Date().toISOString(),
+            lawyerId: "lawyer.pro.001",
+            notaryId: "notary.pro.001",
+            providerId: undefined,
+            evidence: [],
+            domainType: "legal",
+            specialization: "pt-establishment"
+          };
+          canonicalWorkStore.set(GOLDEN_FIXTURE_ID, goldenWork);
+          const wsIndex = workspaceWorkIndex.get(session.workspaceId) ?? [];
+          if (!wsIndex.includes(GOLDEN_FIXTURE_ID)) {
+            wsIndex.push(GOLDEN_FIXTURE_ID);
+            workspaceWorkIndex.set(session.workspaceId, wsIndex);
+          }
+          aggregate = goldenWork as WorkAggregate;
+          console.log(`[work/[id]] LawyersHub golden fixture ${GOLDEN_FIXTURE_ID} created successfully with canonical schema`);
         }
-        aggregate = goldenWork as WorkAggregate;
-        console.log(`[work/[id]] Golden fixture ${GOLDEN_FIXTURE_ID} created successfully with canonical schema`);
       } catch (createErr) {
-        console.warn(`[work/[id]] Failed to auto-create golden fixture ${GOLDEN_FIXTURE_ID}:`, createErr);
+        console.warn(`[work/[id]] Failed to auto-create golden fixture ${id}:`, createErr);
       }
     }
   } catch (e) {
@@ -258,22 +333,55 @@ export default async function WorkDetailRoute({ params }: { params: Promise<{ id
   }
 
   if (!aggregate && isGoldenFixture) {
-    aggregate = {
-      id: GOLDEN_FIXTURE_ID as unknown as WorkAggregate["id"],
-      title: "Pendirian PT ABC untuk bisnis baru",
-      description: "pt-regular-concierge | intent: Saya ingin mendirikan PT untuk bisnis saya. LawyersHub Golden Work Item P6.1 - Pendirian perusahaan terbatas yang lengkap dengan semua persyaratan hukum dan proses notaris.",
-      status: "open",
-      priority: "critical",
-      createdAt: new Date(Date.now() - 1000 * 60 * 30),
-      updatedAt: new Date(),
-      deadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString(),
-      lawyerId: "lawyer.pro.001",
-      notaryId: "notary.pro.001",
-      providerId: undefined,
-      evidence: [],
-      domainType: "legal",
-      specialization: "pt-establishment"
-    } as unknown as WorkAggregate;
+    if (id === SERVICES_GOLDEN_ID) {
+      // Fallback for SERVICES.ID golden fixture if canonical creation fails
+      aggregate = {
+        id: SERVICES_GOLDEN_ID as unknown as WorkAggregate["id"],
+        workId: SERVICES_GOLDEN_ID,
+        title: "Website Maintenance Request - www.umkm-coffee.id",
+        description: "SERVICES.ID Golden Slice: Client website unreachable from 3 regional monitoring points. Requires immediate technical intervention and provider coordination.",
+        status: "open",
+        priority: "critical",
+        tenantId: session.tenantId,
+        workspaceId: session.workspaceId,
+        actorId: session.actorId,
+        createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+        updatedAt: new Date().toISOString(),
+        providerId: "provider.teknis.001",
+        evidence: [],
+        domainType: "service-request",
+        specialization: "website_maintenance",
+        nextAction: { label: "Hubungi klien untuk konfirmasi gangguan", actionId: "action-contact-client" },
+        participants: [
+          { id: "monitoring-system-001", name: "Sistem Monitoring", role: "Validator", actorType: "system" },
+          { id: "provider.teknis.001", name: "Tim Teknis", role: "Penyedia Layanan", actorType: "professional" },
+          { id: "client.umkm.001", name: "Pemilik UMKM", role: "Klien", actorType: "customer" }
+        ],
+        attachedDocuments: [
+          { id: "doc-monitoring-001", title: "Laporan Monitoring Gangguan", type: "report" }
+        ],
+        linkedInstitutions: []
+      } as unknown as WorkAggregate;
+    } else {
+      // Original LawyersHub golden fixture fallback
+      aggregate = {
+        id: GOLDEN_FIXTURE_ID as unknown as WorkAggregate["id"],
+        workId: GOLDEN_FIXTURE_ID,
+        title: "Pendirian PT ABC untuk bisnis baru",
+        description: "pt-regular-concierge | intent: Saya ingin mendirikan PT untuk bisnis saya. LawyersHub Golden Work Item P6.1 - Pendirian perusahaan terbatas yang lengkap dengan semua persyaratan hukum dan proses notaris.",
+        status: "open",
+        priority: "critical",
+        createdAt: new Date(Date.now() - 1000 * 60 * 30),
+        updatedAt: new Date(),
+        deadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString(),
+        lawyerId: "lawyer.pro.001",
+        notaryId: "notary.pro.001",
+        providerId: undefined,
+        evidence: [],
+        domainType: "legal",
+        specialization: "pt-establishment"
+      } as unknown as WorkAggregate;
+    }
   }
 
   // Permission check - only authenticated workspace members can access work details

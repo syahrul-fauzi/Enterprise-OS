@@ -158,46 +158,133 @@ export const createServiceRequest: CreateServiceRequestCommand = {
 
     await serviceRepository.save(entity);
 
+    // PROPOSE TO PROVIDER: For cybersecurity category requests, PROPOSE to CyberGuard Asia (sp-003) - NOT auto-accept
+    // This implements CR-004 Provider Reality Gate: real human must make decision, system only proposes
+    if (category === "Cybersecurity") {
+      const cyberProviders = await ServiceProviderRepositoryInMemory.listByCategory("Cybersecurity");
+      const cyberGuard = cyberProviders.find((p: ServiceProviderAggregate) => p.id === ServiceProviderId("sp-003"));
+      if (cyberGuard) {
+        const proposed: ServiceRequestAggregate = {
+          ...entity,
+          providerId: cyberGuard.id,
+          status: "proposed", // CR-004: Status = proposed, waiting for real provider decision
+          updatedAt: new Date()
+        };
+        await serviceRepository.save(proposed);
+        console.log(`[service-directory.createServiceRequest] Security audit request PROPOSED to ${cyberGuard.name} (contact: ${cyberGuard.contactName} <${cyberGuard.contactEmail}>, response: ${cyberGuard.responseHours})`);
+        console.log(`[CR-004] Provider must make real decision: accept/decline. Work ID: ${proposed.id}`);
+      }
+    }
+
     return { id: entity.id, status: entity.status };
   },
 };
 
-export const acceptServiceRequest: AcceptServiceRequestCommand = {
+// CR-004 (Provider Reality) + CR-005 (Price Reality): Extended input to support provider decision with note AND proposed price
+interface ProviderDecisionWithContextInput {
+  readonly id: string;
+  readonly providerId: string;
+  readonly decision: "accepted" | "declined";
+  readonly providerNote?: string;
+  readonly proposedPrice?: string; // CR-005: Provider proposes price to customer
+  readonly sessionId: string;
+}
+
+type ProviderDecisionWithContextOutput = {
+  readonly id: string;
+  readonly status: ServiceRequestStatus;
+  readonly providerId: string;
+  readonly providerNote?: string;
+  readonly proposedPrice?: string;
+  readonly providerDecisionAt: Date;
+};
+
+const ProviderDecisionWithContextSchema = z.object({
+  id: z.string().min(1),
+  providerId: z.string().min(1),
+  decision: z.enum(["accepted", "declined"]),
+  providerNote: z.string().optional(),
+  proposedPrice: z.string().optional(), // CR-005: Price proposal from provider
+  sessionId: z.string().min(1),
+});
+
+type ProviderDecisionCommand = CapabilityCommand<ProviderDecisionWithContextInput, Promise<ProviderDecisionWithContextOutput>>;
+
+export const providerDecisionServiceRequest: ProviderDecisionCommand = {
   kind: "command",
-  name: "service-directory.acceptServiceRequest",
+  name: "service-directory.providerDecisionServiceRequest",
   version: "2.0.0",
-  async execute(input: AcceptServiceRequestWithContextInput) {
-    const parsed = AcceptServiceRequestWithContextSchema.parse(input);
-    const { id, providerId, sessionId } = parsed;
+  async execute(input: ProviderDecisionWithContextInput) {
+    const parsed = ProviderDecisionWithContextSchema.parse(input);
+    const { id, providerId, decision, providerNote, sessionId } = parsed;
 
     // 1. Validate session exists and is active (SHARED RAIL — MIRRORS LH)
     const session = await sessionRepository.byId(sessionId as any);
     if (!session || session.revokedAt !== null) {
-      throw new Error("[service-directory.acceptServiceRequest] Invalid or revoked session - authentication violation");
+      throw new Error("[service-directory.providerDecisionServiceRequest] Invalid or revoked session - authentication violation");
     }
     // 2. Auto-populate isolation context from trusted session (SHARED RAIL — MIRRORS LH)
     const { tenantId, workspaceId, actorId } = session;
 
     const current = await serviceRepository.byId(ServiceRequestId(id));
     if (current === undefined) {
-      throw new Error(`[service-directory.acceptServiceRequest] ServiceRequest not found: ${id}`);
+      throw new Error(`[service-directory.providerDecisionServiceRequest] ServiceRequest not found: ${id}`);
     }
-    if (current.status === "delivered" || current.status === "verified") {
-      return {
-        id: current.id,
-        status: current.status,
-        providerId: current.providerId ?? ServiceProviderId(providerId),
-      };
+    // CR-004: Only allow decision on "proposed" status - prevent invalid state transitions
+    if (current.status !== "proposed") {
+      throw new Error(`[service-directory.providerDecisionServiceRequest] Cannot make decision on work with status: ${current.status}. Must be "proposed".`);
     }
+    // Verify the provider ID matches the assigned provider - security check
+    if (current.providerId !== ServiceProviderId(providerId)) {
+      throw new Error(`[service-directory.providerDecisionServiceRequest] Provider mismatch: this work is assigned to ${current.providerId}, not ${providerId}`);
+    }
+
+    const providerDecisionAt = new Date();
+    // CR-005: If provider accepts AND provides a price, set work to "proposed" with price (customer must accept)
+    // If provider declines, set status to "declined" regardless
+    const nextStatus: ServiceRequestStatus = decision === "declined" 
+      ? "declined" 
+      : (proposedPrice ? "proposed" : "accepted"); // If no price provided, proceed as before
+    
     const next: ServiceRequestAggregate = {
       ...current,
-      status: "accepted",
-      providerId: ServiceProviderId(providerId),
+      status: nextStatus,
+      providerNote,
+      proposedPrice, // CR-005: Save provider's price proposal
+      providerDecisionAt,
       actorId,
       updatedAt: new Date(),
     };
     await serviceRepository.save(next);
-    return { id: next.id, status: "accepted", providerId: next.providerId! };
+    
+    console.log(`[CR-004 + CR-005] Provider ${providerId} made decision: ${decision} for work ${id}`);
+    console.log(`[CR-005] Provider proposed price: ${proposedPrice || "(no price proposed)"}`);
+    console.log(`[CR-004] Provider note: ${providerNote || "(no note)"}`);
+    
+    return { 
+      id: next.id, 
+      status: next.status, 
+      providerId: next.providerId!,
+      providerNote: next.providerNote,
+      proposedPrice: next.proposedPrice,
+      providerDecisionAt: next.providerDecisionAt!
+    };
+  },
+};
+
+// Maintain backward compatibility for existing acceptServiceRequest calls
+export const acceptServiceRequest: AcceptServiceRequestCommand = {
+  kind: "command",
+  name: "service-directory.acceptServiceRequest",
+  version: "2.0.0",
+  async execute(input: AcceptServiceRequestWithContextInput) {
+    // Delegate to new providerDecision command for backward compatibility
+    const result = await providerDecisionServiceRequest.execute({
+      ...input,
+      decision: "accepted",
+      providerNote: "Legacy accept call - migrated to providerDecision"
+    });
+    return { id: result.id, status: result.status as ServiceRequestStatus, providerId: result.providerId };
   },
 };
 
@@ -350,13 +437,162 @@ export const updateExternalSystemStatus: UpdateExternalSystemStatusCommand = {
   }
 };
 
+// CR-005: Add customer price acceptance command to complete Price Reality flow
+interface CustomerAcceptPriceWithContextInput {
+  readonly id: string;
+  readonly sessionId: string;
+}
+
+type CustomerAcceptPriceWithContextOutput = {
+  readonly id: string;
+  readonly status: ServiceRequestStatus;
+  readonly priceAcceptedAt: Date;
+};
+
+const CustomerAcceptPriceWithContextSchema = z.object({
+  id: z.string().min(1),
+  sessionId: z.string().min(1),
+});
+
+type CustomerAcceptPriceCommand = CapabilityCommand<CustomerAcceptPriceWithContextInput, Promise<CustomerAcceptPriceWithContextOutput>>;
+
+export const customerAcceptPriceServiceRequest: CustomerAcceptPriceCommand = {
+  kind: "command",
+  name: "service-directory.customerAcceptPriceServiceRequest",
+  version: "2.0.0",
+  async execute(input: CustomerAcceptPriceWithContextInput) {
+    const parsed = CustomerAcceptPriceWithContextSchema.parse(input);
+    const { id, sessionId } = parsed;
+
+    // Validate session exists and is active (SHARED RAIL)
+    const session = await sessionRepository.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[service-directory.customerAcceptPriceServiceRequest] Invalid or revoked session - authentication violation");
+    }
+    const { tenantId, workspaceId, actorId } = session;
+
+    const current = await serviceRepository.byId(ServiceRequestId(id));
+    if (current === undefined) {
+      throw new Error(`[service-directory.customerAcceptPriceServiceRequest] ServiceRequest not found: ${id}`);
+    }
+    // CR-005: Only allow price acceptance on work with "proposed" status that has a proposed price
+    if (current.status !== "proposed" || !current.proposedPrice) {
+      throw new Error(`[service-directory.customerAcceptPriceServiceRequest] Cannot accept price on work with status: ${current.status}. Must be "proposed" with proposed price.`);
+    }
+
+    const priceAcceptedAt = new Date();
+    const next: ServiceRequestAggregate = {
+      ...current,
+      status: "accepted", // Customer accepted price - work moves to accepted for execution
+      priceAcceptedAt,
+      actorId,
+      updatedAt: new Date(),
+    };
+    await serviceRepository.save(next);
+    
+    console.log(`[CR-005] Customer ${actorId} accepted price ${current.proposedPrice} for work ${id}`);
+    console.log(`[CR-005] Work now in "accepted" status, ready for payment processing`);
+    
+    return { 
+      id: next.id, 
+      status: next.status, 
+      priceAcceptedAt: next.priceAcceptedAt!
+    };
+  },
+};
+
+// CR-006: Payment Reality command - updates service request with real payment transaction data
+// Only invoked when Midtrans sends a webhook with a real payment attempt
+interface UpdatePaymentStatusWithContextInput {
+  readonly id: string;
+  readonly paymentTransactionId: string;
+  readonly paymentStatus: string;
+  readonly grossAmount: string;
+  readonly sessionId: string;
+}
+
+type UpdatePaymentStatusWithContextOutput = {
+  readonly id: string;
+  readonly status: ServiceRequestStatus;
+  readonly paymentTransactionId: string;
+  readonly paymentStatus: string;
+  readonly paymentReceivedAt: Date;
+};
+
+const UpdatePaymentStatusWithContextSchema = z.object({
+  id: z.string().min(1),
+  paymentTransactionId: z.string().min(1),
+  paymentStatus: z.string().min(1),
+  grossAmount: z.string().min(1),
+  sessionId: z.string().min(1),
+});
+
+type UpdatePaymentStatusCommand = CapabilityCommand<UpdatePaymentStatusWithContextInput, Promise<UpdatePaymentStatusWithContextOutput>>;
+
+export const updatePaymentStatusServiceRequest: UpdatePaymentStatusCommand = {
+  kind: "command",
+  name: "service-directory.updatePaymentStatusServiceRequest",
+  version: "2.0.0",
+  async execute(input: UpdatePaymentStatusWithContextInput) {
+    const parsed = UpdatePaymentStatusWithContextSchema.parse(input);
+    const { id, paymentTransactionId, paymentStatus, grossAmount, sessionId } = parsed;
+
+    // Validate session exists and is active (SHARED RAIL - payment gateway session)
+    const session = await sessionRepository.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[service-directory.updatePaymentStatusServiceRequest] Invalid or revoked session - authentication violation");
+    }
+    const { tenantId, workspaceId, actorId } = session;
+
+    const current = await serviceRepository.byId(ServiceRequestId(id));
+    if (current === undefined) {
+      throw new Error(`[service-directory.updatePaymentStatusServiceRequest] ServiceRequest not found: ${id}`);
+    }
+    // CR-006: Only allow payment updates on work with "accepted" status (price was already accepted by customer)
+    if (current.status !== "accepted") {
+      throw new Error(`[service-directory.updatePaymentStatusServiceRequest] Cannot process payment on work with status: ${current.status}. Must be "accepted" (customer accepted price first).`);
+    }
+
+    const paymentReceivedAt = new Date();
+    // If payment is successful, move work to "in_service" so provider can start execution
+    const nextStatus: ServiceRequestStatus = paymentStatus === "success" 
+      ? "in_service" 
+      : current.status; // Keep as "accepted" if payment failed/pending for retry
+
+    const next: ServiceRequestAggregate = {
+      ...current,
+      status: nextStatus,
+      paymentTransactionId,
+      paymentStatus,
+      actorId,
+      updatedAt: new Date(),
+    };
+    await serviceRepository.save(next);
+    
+    console.log(`[CR-006] Payment processed for work ${id}`);
+    console.log(`[CR-006] Transaction ID: ${paymentTransactionId}, Status: ${paymentStatus}, Amount: ${grossAmount}`);
+    console.log(`[CR-006] Work now in ${nextStatus} status - ${nextStatus === "in_service" ? "provider can start execution" : "awaiting payment retry"}`);
+    
+    return { 
+      id: next.id, 
+      status: next.status, 
+      paymentTransactionId: next.paymentTransactionId!,
+      paymentStatus: next.paymentStatus!,
+      paymentReceivedAt
+    };
+  },
+};
+
 export const serviceDirectoryCommands: Readonly<Record<string, CapabilityCommand>> = {
   "service-directory.createServiceRequest": createServiceRequest,
+  "service-directory.providerDecisionServiceRequest": providerDecisionServiceRequest,
+  "service-directory.customerAcceptPriceServiceRequest": customerAcceptPriceServiceRequest,
   "service-directory.acceptServiceRequest": acceptServiceRequest,
   "service-directory.markServiceDelivered": markServiceDelivered,
   "service-directory.listByWorkspace": listServiceRequestsByWorkspace,
   "service-directory.getById": getServiceRequestByIdCommand,
   "service-directory.updateExternalSystemStatus": updateExternalSystemStatus,
+  "service-directory.updatePaymentStatusServiceRequest": updatePaymentStatusServiceRequest, // CR-006: Payment Reality command
 } as const;
 
 export type {

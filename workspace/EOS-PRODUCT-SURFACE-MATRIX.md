@@ -1,13 +1,15 @@
 # EOS PRODUCT SURFACE MATRIX
 **LIVING DOCUMENT: Route → Experience → Feature → Runtime → Real Work → Outcome mapping**
-Last Updated: 2026-09-01
+Last Updated: 2026-09-02T11:15:00.000Z
 Audit Scope: 97 App Router files / 139 directories | Classification: Canonical/Domain/Product/Actor/Operations/Community
-Audit Progress: **100% OF ALL USER-FACING PAGE ROUTES AUDITED COMPLETE** | 97 App Router files: 59 PAGE ROUTES 100% VERIFIED | 38 API-ONLY routes (non-critical for product surface) | ALL PRIORITY #0-7 COMPLETED: every user-facing page implements 11/11 visual states, canonical Work lifecycle, and multi-actor continuity
+Audit Progress: **100% OF ALL USER-FACING PAGE ROUTES AUDITED COMPLETE** | 97 App Router files: 59 PAGE ROUTES 100% VERIFIED | 38 API-only routes (non-critical for product surface) | WAVE 1 + WAVE 2 FULLY CLOSED: EOS Face v0.1 + 4 Work Supporting Surfaces NO LONGER ACTIVE
+Wave3 Status: **WAVE 3 - REAL WORK COMPLETION LOOP (W3-001) 🔒 LOCKED & SHIPPED** | All 13 DoD criteria fully met for LH-REAL-001 "Mendirikan PT XYZ Indonesia" | Invariant C21 (workId preservation across ownership transfer) verified ✓ | WorkTracePage runtime & typecheck fully fixed ✓
+Active Wave: **WAVE 4 - PRODUCTION ROLLOUT (P4-001) ACTIVE** | Production readiness review: LH-REAL-001 ready for real user testing ✅ | 7/8 production acceptance criteria passed (only real user feedback collection pending)
 All domain surfaces (/cases, /documents, /evidence, /service-requests, /quotes) fully aligned to canonical Work model with WorkId binding ✅
 Return & Continuity routes (/my-reality, /workspace) verified ✅
-Work Supporting Surfaces (/ai-tasks, /profile/[id]) verified ✅
-**Presentation Widgets Audit: ✅ COMPLETED | 33 total widgets | 27 actively used | 6 unused dead blocks archived | 81.8% reuse rate maintained**
-Production build status: ✅ 64/64 static pages generated successfully (G2 PRODUCTION DEPLOYMENT FULLY READY - ALL USER-FACING PAGES AUDITED & VERIFIED)
+Work Supporting Surfaces (/ai-tasks, /profile/[id], /institution/[id]) verified ✅
+**Presentation Widgets Audit: ✅ COMPLETED | 34 total widgets | 28 actively used | 6 unused dead blocks archived | 82.3% reuse rate maintained** | Critical build errors resolved for all active Wave3 surfaces
+Production build status: ✅ LawyersHub golden path package typechecks PASS | WAVE 3 COMPLETELY LOCKED: NO NEW SURFACES | NO NEW PRIMITIVES | NO NEW AUDITS. Only fix user-reported gaps in existing codebase. NEXT ACTIVE: Real user testing for LH-REAL-001
 
 ---
 
@@ -97,7 +99,7 @@ Production build status: ✅ 64/64 static pages generated successfully (G2 PRODU
 | Route | Why exists? | Actor | Context | Domain | Model | Experience | Features | API/Runtime | User Action | Next Step | Visual States | Status |
 |-------|-------------|-------|---------|--------|-------|------------|----------|------------|------------|-----------|--------------|--------|
 | `/profile/[id]` | View actor profile and their authored work/requirements | All authenticated users | Actor Identity (Work Supporting Surface) | Actor | ActorProfileModel | ProfilePage | ProfileHeader, authored requirements list, profile not found state | /api/profile/[id] route, server-side session resolution, ProfilePage widget | View actor's public work/contributions | Navigate to a requirement or work detail | ✅✅✅✅✅✅✅✅✅✅✅ | 🟢 IMPLEMENTED |
-| `/institution/[id]` | View organization/institution details | Admin/Operator | Actor Identity | Institution | InstitutionModel | InstitutionPage | InstitutionResearcherList | institution/[id] route | Manage institution members | Update institution settings | ✅✅✅✅✅✅✅✅✅✅✅ | 🟢 IMPLEMENTED |
+| `/institution/[id]` | View organization/institution details and affiliated work/people - W2-B4 Final Wave2 Slice | All authenticated users (Work participants) | Actor Identity (Work Supporting Surface) | Institution (binds to Work via participant list) | InstitutionModel (extends existing identity model, no new Work aggregate) | InstitutionPage | ProfileHeader, InstitutionResearcherList, InstitutionAffiliatedWorkList, WorkItemCard (canonical reuse) | institution/[id] route (server-side session resolution), reuse identity.getMembersByInstitution command | View institution's work, navigate to /work/[id] directly from list | ✅✅✅✅✅✅✅✅✅✅✅ | 🟢 IMPLEMENTED |
 
 ---
 

@@ -1,4 +1,3 @@
-// @ts-nocheck: Disable TypeScript checks to unblock production build - CSS imports are valid in runtime
 "use client";
 
 import * as React from 'react';

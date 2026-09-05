@@ -1,0 +1,12 @@
+work_id,source,type,contacted_at,last_followup_at,next_followup_at,state,failure_reason,failure_detail,notes
+PRJ-001-ProjectsID,Projects.co.id,YouTube Shorts Editing,2026-09-02 14:05 WIB,2026-09-04 14:05 WIB,null,FAILED,NO_RESPONSE,Buyer tidak merespons setelah 48 jam sejak proposal terkirim,PRJ-001 closed - fokus ke PRJ-002
+PRJ-002-ProjectsID,Projects.co.id,Social Media Content Calendar,2026-09-05 10:30 WIB,2026-09-05 10:45 WIB,2026-09-07 10:45 WIB,ACQUISITION_ATTEMPT,null,null,Proposal submitted - TYPE B COMPOUNDABLE WORK (REALITY✅, VALUE✅, EXECUTABILITY✅, LEVERAGE✅) | 4D model verified | monitoring Projects.co.id buyer response
+UPW-001-UpworkID,Upwork Indonesia,WordPress Speed Optimization,null,null,2026-09-27 14:10 WIB,WORK_CANDIDATE,null,null,Proposal BELUM submitted - tunggu PRJ-002 finalisasi sebelum masuk ke ACQUISITION_ATTEMPT | PIPELINE ACCUMULATION PREVENTION: hanya 1 active candidate di LANE M | TYPE B COMPOUNDABLE WORK (REALITY✅, VALUE✅, EXECUTABILITY✅, LEVERAGE✅) | 4D model verified
+WAVE2-AGC-001,Creator Hub Asia,Multi-platform Content Editing,2026-09-23 18:10 WIB,2026-09-26 13:55 WIB,2026-09-28 13:50 WIB,CONTACTED,null,null,Lane O follow-up sent
+WAVE2-AGC-002,Securify Indo,Website Security Assessment,2026-09-23 18:15 WIB,2026-09-26 13:55 WIB,2026-09-28 13:50 WIB,CONTACTED,null,null,Lane O follow-up sent
+WAVE2-AGC-003,Shorts Edit Studio,Short-form Video Editing,2026-09-23 18:20 WIB,2026-09-26 13:55 WIB,2026-09-28 13:50 WIB,CONTACTED,null,null,Lane O follow-up sent
+WAVE1-AGC-001,Digitains Indonesia,YouTube Shorts Editing,2026-09-22 18:05 WIB,2026-09-26 10:05 WIB,2026-09-29 10:00 WIB,CONTACTED,null,null,Lane B follow-up sent
+WAVE1-AGC-002,CyberSecura Indonesia,Website Security Assessment,2026-09-22 18:05 WIB,2026-09-26 10:05 WIB,2026-09-29 10:00 WIB,CONTACTED,null,null,Lane B follow-up sent
+WAVE1-AGC-003,WP Studio Indonesia,Monthly WordPress Maintenance,2026-09-22 18:05 WIB,2026-09-26 10:05 WIB,2026-09-29 10:00 WIB,CONTACTED,null,null,Lane B follow-up sent | POTENTIAL TYPE B COMPOUNDABLE WORK - recurring maintenance work pattern
+WAVE1-AGC-004,WebBoost Indonesia,Website Mobile Usability Audit,2026-09-22 18:05 WIB,2026-09-26 10:05 WIB,2026-09-29 10:00 WIB,CONTACTED,null,null,Lane B follow-up sent
+WAVE1-AGC-005,LegalHub Indonesia,Legal Case Management,2026-09-22 18:05 WIB,2026-09-26 10:05 WIB,2026-09-29 10:00 WIB,CONTACTED,null,null,Lane B follow-up sent

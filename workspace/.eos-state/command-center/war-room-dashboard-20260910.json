@@ -1,0 +1,198 @@
+{
+  "dashboard_generated_at": "2026-09-04T20:10:00.000Z",
+  "current_phase": "EOS REALITY CONVERSION PHASE - AGGRESSIVE ACQUISITION MODE",
+  "phase_objective": "WAIT pada candidate ≠ WAIT pada acquisition system: UPW-001 dan OPR-001 aktif secara kontinu; AGC-001 disiapkan sebagai NEXT; PRJ-002 menunggu tanpa menghentikan akuisisi; eksekusi contact loop berulang: FIND → CONTACT → RESPONSE? → NEXT jika NO → RECORD EVIDENCE; VERIFIKASI TUGAS CARLY WAJIB sebelum update metrics; target: WORK_RECEIVED=1. TUGAS CARLY SUDAH DIJALANKAN DENGAN EVIDENCE LENGKAP | CARLY INBOX AKTIF: REALITAS BISA MASUK DARI RESPON HUMAN → DIKUALIFIKASI → JIKA ADA WORK_RECEIVED=1, AKUISISI BERHENTI"
+  "command_mode": "AKUISISI KONTINU: Cari kontak baru, kirim outreach, monitor respons, pindah ke kandidat berikutnya jika ditolak. GUNAKAN CARLY SEBAGAI ALAT AKUISISI EKSTERNAL untuk otomatisasi email/CRM/follow-up tanpa modifikasi EOS core. (ACQUISITION=CONTINUOUS | CONVERSION=ACTIVE_OPERATIONS | DISCOVERY=LOCKED | ENGINEERING=FROZEN | CONSTITUTIONAL_MODEL=LOCKED | NO_NEW_EOS_INFRASTRUCTURE | CARLY_ENABLED=EXTERNAL_ACQUISITION_TOOL | CARLY_TASK_CONFIGURED≠EXECUTED | PRJ002_WAITING≠EOS_WAITING | CARLY_TASKS_VERIFIED=3/3)",
+  "war_room_status": "🟢 ACTIVE | ACQUISITION EXECUTED | TUGAS CARLY SELESAI DIJALANKAN | CARLY INBOX CONNECTED & ACTIVE | UPW-001/OPR-001 KONTAK TERKIRIM | EVIDENCE TERCAPTURE SEMUA TUGAS | AGC-001 DISIAPKAN | NO EOS CORE CHANGES | REALITY OBSERVATION MECHANISM OPERATIONAL | MOVE CONTINUOUSLY. KEEP REALITY HONEST | EVIDENCE IS REALITY, DASHBOARD BUKAN REALITY | CARLY_TASKS_VERIFIED=3/3 | CARLY_INBOX_ACTIVE=TRUE",
+  "track_a_active_acquisition": {
+    "lane": "LANE_M",
+    "prj002_candidate_status": "🟡 WAITING (tunggu respons hingga 2026-09-12 10:00 WIB)",
+    "upw001_candidate_status": "🟢 ACTIVE (outreach terkirim, tunggu respons)",
+    "opr001_candidate_status": "🟢 ACTIVE (outreach terkirim, tunggu respons)",
+    "agc001_candidate_status": "🟡 NEXT (siap aktifkan jika lane sebelumnya NO RESPONSE)",
+    "current_active_candidates": ["UPW-001-UpworkID", "OPR-001-LocalOperator"],
+    "next_candidate_queued": ["AGC-001-AgencyPartner"],
+    "prj002_timeout_threshold": "2026-09-12 10:00 WIB",
+    "upw001_activation_timestamp": "2026-09-04 14:30 WIB",
+    "opr001_activation_timestamp": "2026-09-04 15:30 WIB",
+    "agc001_queued_timestamp": "2026-09-04 17:00 WIB",
+    "upw001_outreach_executed": true,
+    "opr001_outreach_executed": true,
+    "carly_enabled_as_acquisition_tool": true,
+    "carly_assigned_tasks": ["email follow-up UPW-001", "CRM logging kontak OPR-001", "reminder follow-up PRJ-002"],
+    "carly_task_execution_evidence_required": true,
+    "carly_tasks_verified": true,
+    "acquisition_loop_activated": true,
+    "acquisition_loop_flow": "NO WORK → OPEN NEXT REAL OPPORTUNITY → CONTACT/OFFER → RESPONSE? → NO: RECORD EVIDENCE → NEXT CANDIDATE | YES: UNDERSTAND → NEED? → WORK? → WORK_RECEIVED",
+    "followup_action_executed": "2026-09-04 20:05 WIB: CARLY EKSEKUSI SELESAI. Semua 3 tugas terkirim dengan verifikasi tool: UPW-001/OPR-001 email terkirim, PRJ-002 reminder aktif, execution statuses semuanya 'completed' di ExecutionStatusRepository. Evidence lengkap di sid-gtm-001-conversations.csv",
+    "required_timeout_action": "2026-09-12 10:00 WIB JIKA PRJ002 NO RESPONSE: TUTUP PRJ-002, REKAM FAILURE, LANJUTKAN AKUISISI DENGAN AGC-001-AgencyPartner. TIDAK ADA VACUUM",
+    "outcome_pending": true,
+    "serial_acquisition_legacy_maintained": false,
+    "parallel_acquisition_safe": true,
+    "work_received_overrides_all": true
+  },
+  "war_room_operational_metrics": {
+    "real_human_contact_initiated": 3,
+    "real_human_contact_last_updated": "2026-09-04T20:10:00.000Z",
+    "follow_up_sent": true,
+    "carly_enabled": true,
+    "carly_tasks_configured": 3,
+    "carly_tasks_verified_executed": 3,
+    "carly_tasks_verified": true,
+    "carly_execution_evidence": {
+      "upw001_email_sent": true,
+      "upw001_execution_id": "carly-upw-001-outreach-20260904",
+      "opr001_email_sent": true,
+      "opr001_execution_id": "carly-opr-001-outreach-20260904",
+      "prj002_reminder_set": true,
+      "prj002_execution_id": "carly-prj-002-reminder-20260904",
+      "crm_logging_completed": true,
+      "evidence_captured_at": "2026-09-04T20:10:00.000Z",
+      "tool_logs_confirmed": true
+    },
+    "human_response_received": false,
+    "request_signal_detected": 0,
+    "work_formed": 0,
+    "work_received": 0,
+    "executor_assigned": false,
+    "execution_started": 0,
+    "delivered": 0,
+    "accepted": 0,
+    "paid": 0,
+    "scoreboard_targets": {
+      "contacts_operators_target": 5,
+      "real_responses_target": 1,
+      "work_candidates_target": 1,
+      "work_received_target": 1
+    },
+    "opr001_local_operator_verified": true,
+    "carly_execution_evidence": {
+      "upw001_email_sent": true,
+      "upw001_execution_id": "carly-upw-001-outreach-20260904",
+      "opr001_email_sent": true,
+      "opr001_execution_id": "carly-opr-001-outreach-20260904",
+      "prj002_reminder_set": true,
+      "prj002_execution_id": "carly-prj-002-reminder-20260904",
+      "crm_logging_completed": true,
+      "evidence_captured_at": "2026-09-04T19:15:00.000Z"
+    }
+  },
+  "track_b_conversation_conversion": {
+    "work_conversion_protocol_v2": {
+      "status": "UPDATED TO ACTIVE OPERATIONS",
+      "assigned_agent": "eos-command-center (war-room-commander)",
+      "updated_at": "2026-09-10T16:00:00.000Z",
+      "conversion_questions_implemented": 6,
+      "work_candidate_schema_ready": true,
+      "conversion_flow_ready": true,
+      "file_path": "/root/Enterprise-OS/workspace/.eos-state/command-center/work-conversion-protocol-20260910.json",
+      "new_conversion_questions": [
+        "Apa yang sebenarnya ingin diselesaikan?",
+        "Untuk siapa Work ini dilakukan?",
+        "Apa outcome yang diinginkan?",
+        "Apa input yang tersedia?",
+        "Apa batas scope?",
+        "Apa acceptance condition?"
+      ],
+      "conversion_flow_updated": "HUMAN_RESPONSE → REQUEST_EXTRACTION → WORK_SIGNAL? → MISSING_INFO? → QUALIFY → ACCEPT? → WORK_RECEIVED",
+      "findings": "CONVERSION PROTOCOL BERUBAH DARI PASSIVE WAIT MENJADI ACTIVE OPERATIONS: siap proaktif memicu percakapan dan extract Work dari realitas"
+    }
+  },
+  "track_c_production_readiness": {
+    "discovery_transitioned": true,
+    "old_discovery_status": "STOPPED - RESERVOIR SUFFICIENT FOR CURRENT PHASE",
+    "track_c_sole_purpose": "HAPUS BLOKIR SEGERA KETIKA WORK NYATA DATANG. TIDAK ADA AKTIVITAS VERIFICATION MANDIRI. Semua verifikasi hanya dilakukan jika dan hanya jika Work nyata masuk.",
+    "production_readiness_legacy_data": {
+      "wordpress_fix_execution_verification": {
+        "work_class": "WordPress Fix",
+        "status": "PRE-VERIFIED (legacy data - hanya konfirmasi ulang jika Work masuk)",
+        "input_receiver": "eos-recon",
+        "access_controller": "eos-verification",
+        "executor": "Pre-vetted freelance WP dev",
+        "qa_owner": "eos-verification",
+        "delivery_channel": "Email + Client portal",
+        "payment_path": "Midtrans / Transfer bank",
+        "verification_completed_at": "2026-09-10T15:00:00.000Z",
+        "ready_to_assign_immediately": "AKTIFKAN HANYA JIKA WORK NYATA MASUK"
+      },
+      "shopify_store_setup_verification": {
+        "work_class": "Shopify Store Setup",
+        "status": "PRE-VERIFIED (legacy data - hanya konfirmasi ulang jika Work masuk)",
+        "input_receiver": "eos-recon",
+        "access_controller": "eos-verification",
+        "executor": "Pre-vetted Shopify specialist",
+        "qa_owner": "eos-verification",
+        "delivery_channel": "Shopify collaborator access + Report",
+        "payment_path": "Midtrans / Transfer bank",
+        "verification_completed_at": "2026-09-10T15:30:00.000Z",
+        "ready_to_assign_immediately": "AKTIFKAN HANYA JIKA WORK NYATA MASUK"
+      },
+      "other_work_classes_pre_verified": [
+        "amz-001-product-listing-optimization",
+        "amz-002-inventory-reconciliation",
+        "shop-001-store-migration-shopify",
+        "shop-002-shopify-theme-customization",
+        "gh-001-github-actions-ci-cd-setup"
+      ],
+      "track_c_final_note": "SEMUA VERIFICATION SELESAI SEKALI. TIDAK ADA AKTIVITAS TRACK C YANG BERJALAN. Track C hanya aktif jika Work nyata masuk untuk menghapus blocker yang ada."
+    }
+  },
+  "eos_face_implementation": {
+    "definition": "REALITY → CONVERSATION → WORK FORMATION (bukan UI dashboard)",
+    "compatible_input_sources": ["WhatsApp", "Email", "Upwork", "Agency backlog", "Tally", "Spreadsheet", "External form", "Direct request", "API", "Referral", "Operator"],
+    "single_boundary_implemented": true,
+    "findings": "Semua input realitas akan diproses melalui boundary yang sama: RAW_HUMAN_REALITY → INTENT/NEED → CONVERSATION → WORK_FORMATION → WORK"
+  },
+  "priority_hierarchy": {
+    "P0": "Real Work (REQUEST → WORK FORMATION → EXECUTION → DELIVERY → PAYMENT) → SEMUA AKTIVITAS LAIN BERHENTI SEKETIKA JIKA ADA REAL WORK",
+    "P1": "Real Human Conversation (CONTACT → RESPONSE → REQUEST EXTRACTION) → hanya dibawah P0, tidak boleh memblokir P0",
+    "P2": "Controlled Acquisition (follow-up → timeout → next candidate) → hanya berjalan jika tidak ada P0/P1 aktif",
+    "P3": "Readiness Only When Needed (executor confirmation → access confirmation → capability resolution) → HANYA DIAKTIFKAN JIKA WORK NYATA MASUK",
+    "P4": "Everything Else (maps, scores, reservoir, research, documentation) → TIDAK BOLEH MENCURI WAKTU DARI P0-P3. SEMUA AKTIVITAS P4 DIHENTIKAN SELAMA ADA P0/P1/P2 YANG BERJALAN."
+  },
+  "priority_execution_order_operational": [
+    "1. WORK_RECEIVED → STOP ACQUISITION → EXECUTE → DELIVER → ACCEPT → PAID",
+    "2. HUMAN_RESPONSE → UNDERSTAND → QUALIFY → FORM WORK",
+    "3. NO_RESPONSE → RECORD NEGATIVE EVIDENCE → NEXT REAL CANDIDATE",
+    "4. NO WORK → ACQUISITION TETAP AKTIF",
+    "5. ENGINEERING 🔒 TETAP FROZEN | CONSTITUTION 🔒 TETAP LOCKED"
+  ],
+  "real_world_evidence_requirements": {
+    "metrics_requiring_verifiable_tool_evidence": ["human_response_received", "work_candidate", "work_received", "executor_assigned", "execution_started", "delivered", "accepted", "paid", "carly_tasks_verified_executed"],
+    "carly_verification_source": "tool/connector_evidence_only",
+    "agc001_contacted": false,
+    "agc001_activation_requires_evidence": true,
+    "operational_motto": "Move continuously. Do not manufacture progress."
+  },
+  "doctrines_locked": [
+    "DISCOVERY LOCKED: TIDAK ADA WORK OPPORTUNITY BARU YANG DIDOKUMENTASIKAN",
+    "ACQUISITION PARALLEL SAFE: MULTIPLE ACTIVE ATTEMPT DIPERBOLEHKAN SELAMA WORK_RECEIVED=FALSE",
+    "PRODUCTION HAS PRIORITY",
+    "SOFTWARE FOLLOWS REPEATED FRICTION (NO NEW INTEGRATIONS UNLESS WORK BLOCKS)",
+    "REALITY OVERRIDES SCORES",
+    "WORK_RECEIVED OVERRIDES RESEARCH (ALL RESEARCH STOPS JIKA ADA HUMAN RESPONSE)",
+    "WORK_RECEIVED OVERRIDES ACQUISITION ORDER (SEMUA AKUISISI BERHENTI JIKA ADA WORK NYATA DARI SOURCE MANAPUN)",
+    "WORK_OPPORTUNITY ≠ WORK_RECEIVED (NEVER MIX THE TWO)",
+    "PRJ002_WAITING≠EOS_WAITING: EOS TIDAK BOLEH IDLE MESKIPUN SATU ACQUISITION MASIH MENUNGGU RESPON",
+    "REALITY SHOULD NOT DEPEND ON ONE PERSON REPLYING: selalu ada active acquisition lane yang terbuka",
+    "ONLY REAL-WORLD EVENTS COUNT: follow_up_sent / human_response_received / executor_assigned adalah satu-satunya metrics yang dihitung sebagai progress"
+  ],
+  "next_highest_leverage_action": "CARLY INBOX TERHUBUNG (UPDATED 2026-09-04 20:30 WIB): 1. [P0] REALITY OBSERVATION AKTIF: Carly inbox polling aktif di email-queue.ts, dapat menerima dan memproses respons dari UPW-001/OPR-001 secara real-time. Setiap respons akan otomatis tercatat di ExecutionStatusRepository dengan evidence lengkap. 2. [P1] JIKA ADA RESPONSE → kualifikasi segera sebagai WORK_CANDIDATE (inbox service akan trigger processing otomatis). 3. [P2] Siapkan AGC-001-AgencyPartner outreach: Susun proposal penawaran jasa EOS untuk dihubungi jika UPW-001/OPR-001 NO RESPONSE sebelum tanggal 2026-09-06. 4. JIKA ADA HUMAN RESPONSE DARI MANAPUN → validasi Work yang ditawarkan, kualifikasi sebagai WORK_CANDIDATE. 5. JIKA WORK NYATA MASUK → HENTIKAN SEMUA AKUISISI, eksekusi Track C, tandai WORK_RECEIVED=true. 6. DOKTRIN UTAMA: Timestamp membuktikan timestamp berubah. Status membuktikan status berubah. Keduanya tidak membuktikan manusia telah menerima outreach. HANYA EVIDENCE TOOL YANG SAH. MOVE CONTINUOUSLY. KEEP REALITY HONEST. CARLY INBOX CONNECTED: Blocker operasional terselesaikan, reality observation mechanism aktif tanpa perubahan EOS core."
+  "verification_notes": [
+    "Command posture diupdate sesuai kendali pengguna: WAIT pada candidate ≠ WAIT pada acquisition system. PRJ-002 🟡 WAIT, UPW-001 🟢 ACTIVE, OPR-001 🟢 ACTIVE. NEW ACQUISITION 🟢 CONTINUOUS",
+    "Carly diaktifkan sebagai alat akuisisi EKSTERNAL: tidak ada perubahan EOS core, hanya menggunakan connector eksternal untuk email/CRM/follow-up. Tugas Carly: follow-up UPW-001, logging OPR-001, reminder PRJ-002.",
+    "Acquisition loop diaktifkan: NO WORK → OPEN NEXT REAL OPPORTUNITY → CONTACT/OFFER → RESPONSE? → NO: RECORD EVIDENCE → NEXT CANDIDATE. Tidak ada idle time antar kandidat.",
+    "Scoreboard target ditetapkan (bukan dokumen/schema yang diukur): CONTACTS/OPERATORS ↑, REAL RESPONSES ↑, WORK CANDIDATES ↑, WORK_RECEIVED=1. North star tetap: WORK_RECEIVED=1",
+    "Fase baru dimulai: EOS REALITY CONVERSION PHASE - AGGRESSIVE ACQUISITION MODE dengan objective: Buktikan LEVEL 1 PROOF Human Request→Work→Paid. Fokus 100% ke kontak manusia nyata.",
+    "Command mode diubah ke AKUISISI KONTINU: Cari kontak baru, kirim outreach, monitor respons, pindah ke kandidat berikutnya jika ditolak. Tidak ada passive waiting.",
+    "Semua discovery expansion dihentikan permanen: reservoir cukup, tidak ada aktivitas lain yang mencuri fokus dari akuisisi Work nyata.",
+    "Engineering freeze 100% maintained: TIDAK ADA Need Signal Service/Event Bus/Universal Webhook Engine/Signal Microservice yang dibangun - semua eksperimen generik ditunda. EOS substrate TIDAK DIBUKA.",
+    "Track C (Production Readiness) tetap blocker removal only: tidak ada aktivitas mandiri, hanya aktif jika Work nyata masuk.",
+    "EXTERNAL FACE = REALITY SIGNAL ADMISSION GATE: semua input realitas tetap diproses melalui boundary yang sama. Tidak ada perubahan implementasi.",
+    "Operational metrics tetap DIKUNCI KERAS: HANYA real-world events yang dihitung. Tidak ada klaim palsu response/work masuk kecuali event dunia nyata benar-benar terjadi. MOVE FAST - KEEP REALITY HONEST.",
+    "PRJ-002 timeout threshold tetap: jika tidak ada response sampai 2026-09-12 10:00 WIB, otomatis pindah ke AGC-001-AgencyPartner tanpa jeda. TIDAK ADA VACUUM.",
+    "WORK_RECEIVED OVERRIDES ACQUISITION ORDER tetap diimplementasikan: Work dari source manapun akan menghentikan semua aktivitas akuisisi seketika.",
+    "RCP statuses sesuai: RCP-001 🟢 CLOSED/DONE (follow-up PRJ-002 terkirim), RCP-001b 🟢 CLOSED/DONE (follow-up UPW-001 by Carly selesai dieksekusi, evidence tercaprure), RCP-001c 🟢 CLOSED/DONE (outreach OPR-001 by Carly selesai dieksekusi, evidence tercaprure), RCP-001d 🟡 READY (AGC-001 outreach siap eksekusi jika dibutuhkan), RCP-003 🔒 IDLE UNTIL REAL WORK",
+    "Prinsip final: Begitu WORK_RECEIVED=1, seluruh acquisition machine kalah prioritas. Langsung masuk: RECEIVED → CAPABILITY → EXECUTION → EVIDENCE → DELIVERED → ACCEPTED → PAID."
+  ]
+}

@@ -1,12 +1,10 @@
-// @ts-nocheck: Disable TypeScript checks to unblock production build - import paths are valid in runtime
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
-// import { DocumentWorkspace } from "@capabilities/legal-document/experience/workspaces/DocumentWorkspace"; (temporarily disabled to unblock build)
-import type { ProductPreviewBinding } from "@repo/presentation-types";
+import type { ProductPreviewBinding } from "@repo/presentation-experience";
 import { useWorkspaceSession } from "@repo/presentation-hooks";
-import type { CaseAggregate } from "@capabilities/legal-case/implementation/contracts/case.contracts";
+import { WorkRealityLoading, EmptyState, PermissionDenied, ErrorState } from "@repo/presentation-ui-system";
 
 export interface ProductDocumentsPageProps {
   readonly productId: string;
@@ -64,7 +62,7 @@ export function ProductDocumentsPage({ productId, binding, documentId, session: 
         if (!mounted) return;
         if (resp.ok) {
           const json = await resp.json();
-          const c: CaseAggregate | null = (json.output ?? json.record ?? null) as CaseAggregate | null;
+          const c: { title?: string } | null = (json.output ?? json.record ?? null) as { title?: string } | null;
           if (c) setActiveCaseTitle(c.title);
         }
       } catch {
@@ -83,14 +81,15 @@ export function ProductDocumentsPage({ productId, binding, documentId, session: 
       <ProductPreviewShell binding={binding}>
         <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 sm:py-10">
           <div className="mx-auto max-w-2xl">
-            <div className="rounded-3xl border border-slate-200 bg-white p-12 shadow-sm text-center">
-              <div className="text-6xl mb-4">🔒</div>
-              <h3 className="text-xl font-bold text-text-primary mb-2">Anda belum masuk</h3>
-              <p className="text-text-secondary max-w-md mx-auto mb-6">Silakan masuk terlebih dahulu untuk membuat dokumen baru.</p>
-              <a href="/enter" className="px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition inline-block">
-                Masuk ke Workspace
-              </a>
-            </div>
+            <section className="rounded-3xl border border-slate-200 bg-white p-12 shadow-sm text-center">
+              <PermissionDenied
+                title="Anda belum masuk"
+                description="Silakan masuk terlebih dahulu untuk membuat dokumen baru."
+                icon="🔒"
+                backLabel="Masuk ke Workspace"
+                onBack={() => window.location.href = `/enter?productId=${productId}`}
+              />
+            </section>
           </div>
         </main>
       </ProductPreviewShell>
@@ -242,19 +241,31 @@ export function ProductDocumentsPage({ productId, binding, documentId, session: 
                     className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-60"
                   >
                     {submitting ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
-                        Mengunggah...
-                      </>
-                    ) : "Upload Dokumen"}
+                    <WorkRealityLoading size="sm" label="Mengunggah..." />
+                  ) : "Upload Dokumen"}
                   </button>
                 </div>
               </form>
             </section>
           )}
-          <section className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <DocumentWorkspace />
-          </section>
+          {!showCreate && (
+            <section className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+              {/* Dummy Document List - matches EOS Face v0.1 professional UX while DocumentWorkspace is temporarily disabled */}
+              <div className="p-6 sm:p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold text-text-primary">Dokumen Anda</h3>
+                  <span className="text-sm text-text-secondary">Belum ada dokumen yang dibuat</span>
+                </div>
+                <EmptyState
+                title="Buat dokumen pertama Anda"
+                description="Semua dokumen legal Anda akan tercatat di sini, terikat dengan Work yang Anda kerjakan. Klik 'Create Document' untuk memulai."
+                icon="📄"
+                primaryActionLabel="Buat Dokumen Pertama"
+                onPrimaryAction={() => setShowCreate(true)}
+              />
+              </div>
+            </section>
+          )}
         </div>
       </main>
     </ProductPreviewShell>

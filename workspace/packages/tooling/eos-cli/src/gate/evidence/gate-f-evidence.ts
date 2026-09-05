@@ -1,5 +1,5 @@
-// Fixed import per @repo/core-kernel documentation - DigestEngine must be imported directly from digest-engine subpath
-import { DigestEngine } from "@repo/core-kernel/digest-engine.js";
+// Fixed import per @repo/core-kernel documentation - DigestEngine must be imported directly from digest-engine subpath (fixed double .js bug)
+import { DigestEngine } from "@repo/core-kernel/digest-engine";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 import {
@@ -1113,14 +1113,21 @@ export function buildGateFAcceptanceReportDocument(
 
 // Materialize status output for CLI display (matching gate-c implementation)
 export function materializeGateFStatusOutput(projection: Projection<Record<string, unknown>>): string {
-  const payload = projection.payload;
+  const payload = projection.payload as any;
+  // Fix undefined access by safely normalizing property names
+  const overallStatus = payload?.overallStatus || payload?.overall_status || "FAIL";
+  const totalPassed = payload?.total_passed || 0;
+  const totalFailed = payload?.total_failed || 0;
+  const totalBlockers = payload?.total_blockers || 0;
+  const domainsValidated = payload?.domains_validated || 0;
+  
   const lines: string[] = [
     "=== Gate F: Production Readiness Status ===",
-    `Overall Status: ${payload.overall_status || "UNKNOWN"}`,
-    `Total Passed: ${payload.total_passed || 0}`,
-    `Total Failed: ${payload.total_failed || 0}`,
-    `Total Blockers: ${payload.total_blockers || 0}`,
-    `Domains Validated: ${payload.domains_validated || 0}`,
+    `Overall Status: ${overallStatus}`,
+    `Total Passed: ${totalPassed}`,
+    `Total Failed: ${totalFailed}`,
+    `Total Blockers: ${totalBlockers}`,
+    `Domains Validated: ${domainsValidated}`,
     "",
     "Generated at UTC: " + projection.generated_at_utc,
     "=========================================",

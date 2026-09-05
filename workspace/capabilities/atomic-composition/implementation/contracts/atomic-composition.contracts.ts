@@ -32,6 +32,18 @@ export type CapabilityRequirement = z.infer<typeof CapabilityRequirementSchema>;
 export type RequirementId = string & { __brand: "RequirementId" };
 export function RequirementId(value: string): RequirementId { return value as RequirementId; }
 
+export interface Requirement {
+  requirementId: RequirementId;
+  title: string;
+  status: "PENDING" | "IN_PROGRESS" | "BLOCKED" | "COMPLETED";
+  capabilityId: string;
+  assignedActorId?: string;
+  dueDate?: Date;
+  completedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // ------------------------------
 // 2. ACTOR PROJECTION - Extended from canonical identity User + WorkActor
 // Layer 2: Composition-specific projection of core Actor/Identity
@@ -164,13 +176,35 @@ interface Assignment {
 export type TeamId = string & { __brand: 'TeamId' };
 export function TeamId(value: string): TeamId { return value as TeamId; }
 
-interface Team {
-  teamId: string;
-  actorIds: string[];
-  assembledAt: string;
+export interface Team {
+  teamId: TeamId;
+  workspaceId: string;
+  name: string;
+  members: string[]; // Array of actorIds assigned to this team
+  lead?: string; // Lead actorId if assigned
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-interface Requirement {
+export interface Assignment {
+  assignmentId: AssignmentId;
+  teamId: TeamId;
+  requirementId: RequirementId;
+  actorId: string;
+  assignedAt: Date;
+  status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+  completedAt?: Date;
+  // Add missing properties referenced in composition.service.ts (align with existing usage)
+  evidence?: string[];
+  bindingId?: string;
+  actorProjectionId?: string;
+  capabilityReference?: string;
+}
+
+export interface AssignmentId extends Brand<string, "AssignmentId"> {}
+export function AssignmentId(value: string): AssignmentId { return value as AssignmentId; }
+
+export interface Requirement {
   requirementId: string;
   title: string;
   status: string;

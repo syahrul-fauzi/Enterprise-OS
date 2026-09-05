@@ -1,98 +1,94 @@
 // @ts-nocheck
 import type { WorkflowStep, WorkflowDefinition } from "@repo/core-kernel";
 
-export interface LawyersHubWorkflowStep extends WorkflowStep {
-  readonly id: "case" | "document" | "external-response" | "inspection" | "review" | "approval" | "payment" | "completed";
-}
+// Domain type alias only (preserves type safety without vertical-specific interface)
+export type LawyersHubWorkflowStep = WorkflowStep;
+export type LawyersHubWorkflowDefinition = WorkflowDefinition;
 
-export interface LawyersHubWorkflowDefinition extends WorkflowDefinition {
-  readonly id: "lawyershub-case-to-payment";
-  readonly productId: "lawyershub";
-  readonly steps: readonly LawyersHubWorkflowStep[];
-}
-
-export const LAWYERSHUB_WORKFLOW: LawyersHubWorkflowDefinition = {
+export const LAWYERSHUB_WORKFLOW: WorkflowDefinition = {
   id: "lawyershub-case-to-payment",
   productId: "lawyershub",
-  label: "Case → Document → External Response → Inspection → Lawyer Review → Approval → Payment",
+  label: "Case Filed → Documentation → External Response → Inspection → Review → Approval → Payment → Completion",
   initialStep: "case",
   terminalStep: "completed",
   steps: [
     {
       id: "case",
-      label: "Case",
+      label: "Legal Case Opened",
       capability: "legal-case",
-      command: "case.create",
-      description: "Open a case and anchor the Work identity.",
-      requiredRoles: ["customer", "agent"]
+      command: "legal.createCase",
+      description: "Create new legal case in lawyershub workflow.",
+      requiredRoles: ["client", "attorney"]
     },
     {
       id: "document",
-      label: "Document",
+      label: "Case Documentation Complete",
       capability: "legal-document",
-      command: "document.create",
-      description: "Draft and attach all required legal documents.",
-      requiredRoles: ["lawyer", "notary"]
+      command: "legal.uploadDocuments",
+      description: "All required case documents uploaded and indexed.",
+      requiredRoles: ["paralegal", "attorney"]
     },
     {
       id: "external-response",
-      label: "External Response",
+      label: "External Parties Notified",
       capability: "legal-case",
-      description: "Wait for response from external institution (AHU, Kemenkumham).",
-      requiredRoles: ["agent"]
+      command: "legal.notifyOpposing",
+      description: "Opposing counsel or parties notified per legal requirements.",
+      requiredRoles: ["attorney"]
     },
     {
       id: "inspection",
-      label: "Inspection",
-      capability: "legal-case",
-      description: "System inspection: verify work identity, context, and all required documents.",
-      requiredRoles: ["system"]
+      label: "Evidence Inspection Complete",
+      capability: "legal-document",
+      command: "legal.inspectEvidence",
+      description: "All evidence reviewed for admissibility and completeness.",
+      requiredRoles: ["attorney", "forensic-expert"]
     },
     {
       id: "review",
-      label: "Lawyer Review",
+      label: "Case Review Complete",
       capability: "legal-case",
-      command: "case.markCompleted",
-      description: "Lawyer reviews external response and approves Work completion.",
-      requiredRoles: ["lawyer"]
+      command: "legal.reviewCase",
+      description: "Senior attorney completes case strategy review.",
+      requiredRoles: ["senior-partner"]
     },
     {
       id: "approval",
-      label: "Approval",
+      label: "Settlement/Resolution Approved",
       capability: "governance-approval",
-      command: "approval.request",
-      description: "Client approves the final Work outcome.",
-      requiredRoles: ["customer"]
+      command: "governance.approveSettlement",
+      description: "Settlement terms or court judgment approved by all parties.",
+      requiredRoles: ["client", "attorney"]
     },
     {
       id: "payment",
-      label: "Payment",
+      label: "Legal Fees Paid",
       capability: "legal-payment",
-      command: "payment.initiate",
-      description: "Settle final payment for completed Work.",
-      requiredRoles: ["customer"]
+      command: "legal.processPayment",
+      description: "Legal fees and expenses processed and reconciled.",
+      requiredRoles: ["client", "finance"]
     },
     {
       id: "completed",
-      label: "Completed",
-      capability: "legal-case",
-      description: "Work is fully completed, archived with complete evidence chain.",
+      label: "Case Completed & Archived",
+      capability: "governance-evidence",
+      description: "Case archived with full evidence chain for legal compliance.",
       requiredRoles: ["system"]
     }
   ] as const,
   transitions: {
-    "case→document": { from: "case", to: "document", requiredRoles: ["admin", "lawyer"] },
-    "document→external-response": { from: "document", to: "external-response", requiredRoles: ["notary", "agent"] },
-    "external-response→inspection": { from: "external-response", to: "inspection", requiredRoles: ["system"] },
-    "inspection→review": { from: "inspection", to: "review", requiredRoles: ["lawyer"] },
-    "review→approval": { from: "review", to: "approval", requiredRoles: ["lawyer"] },
-    "approval→payment": { from: "approval", to: "payment", requiredRoles: ["admin"] },
-    "payment→completed": { from: "payment", to: "completed", requiredRoles: ["system"] }
+    "case→document": { from: "case", to: "document", requiredRoles: ["attorney"] },
+    "document→external-response": { from: "document", to: "external-response", requiredRoles: ["attorney"] },
+    "external-response→inspection": { from: "external-response", to: "inspection", requiredRoles: ["attorney"] },
+    "inspection→review": { from: "inspection", to: "review", requiredRoles: ["forensic-expert"] },
+    "review→approval": { from: "review", to: "approval", requiredRoles: ["senior-partner"] },
+    "approval→payment": { from: "approval", to: "payment", requiredRoles: ["client"] },
+    "payment→completed": { from: "payment", to: "completed", requiredRoles: ["finance"] }
   } as const
 };
 
-export function getLawyersHubWorkflow(): LawyersHubWorkflowDefinition {
+export function getLawyersHubWorkflow(): WorkflowDefinition {
   return LAWYERSHUB_WORKFLOW;
 }
 
-export type LawyersHubWorkflowStepId = LawyersHubWorkflowStep["id"];
+export type LawyersHubWorkflowStepId = WorkflowStep["id"];

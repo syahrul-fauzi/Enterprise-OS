@@ -1,0 +1,39 @@
+# PRODUCTION SCHEMA: SaaS Cloud Security Audit Workflow
+# Validated for EOS work model fit (2026-09-23 12:15 WIB)
+work:
+  name: "SaaS Cloud Security Audit (AWS/GCP/Azure)"
+  source: "Indonesian SaaS Startup Ecosystem"
+  buyer: "Tech startup CTOs / engineering leads"
+  trigger: "Client submits audit request form; account manager schedules kickoff call"
+
+production:
+  input: "Cloud provider access credentials, architecture diagrams, current security policies"
+  preparation: "Review existing infrastructure; create audit scope checklist aligned with ISO 27001"
+  actor: "Cloud security specialist with AWS/GCP certification"
+  steps:
+    - "Set up temporary read-only access to client's cloud environment"
+    - "Run automated vulnerability scans with Nessus/OpenVAS"
+    - "Review IAM permissions and access control policies"
+    - "Check data encryption at rest and in transit configurations"
+    - "Identify compliance gaps and security risks"
+    - "Document findings with severity ratings and remediation steps"
+  qa: "Lead security auditor reviews all findings and recommendations"
+  artifact: "Comprehensive audit report (PDF) + prioritized remediation roadmap"
+  evidence: "Scan result exports, access logs, meeting minutes with client signoff"
+  approval: "Client reviews report during final presentation; approves remediation plan"
+  delivery: "Secure shared folder with encrypted report + 30-day post-audit support call"
+
+commercial:
+  pricing_model: "Fixed-price audit: IDR 22,000,000 (~$1,425) per cloud environment"
+  payment_point: "50% upfront, 50% upon report delivery"
+  repeat_cycle: "100% of clients schedule annual re-audits; many request quarterly scans"
+  after_sales: "Remediation support included; additional audits for new environments priced separately"
+
+eos:
+  intake: "Client submits request via intake form → EOS operator creates work.order manually"
+  work_formation: "EOS creates work order with scan deadlines, report draft, and final presentation date"
+  actor_resolution: "EOS matches cloud security specialist to client's specific cloud provider (AWS/GCP/Azure)"
+  execution_tracking: "EOS tracks step completion: access setup → scanning → analysis → report drafting → QA"
+  evidence: "EOS operator uploads scan results, report, and meeting recording to evidence chain"
+  outcome: "EOS marks work as COMPLETED only after final payment is received"
+  automation: "65% of workflow can be automated: scan scheduling, report template population, evidence aggregation"

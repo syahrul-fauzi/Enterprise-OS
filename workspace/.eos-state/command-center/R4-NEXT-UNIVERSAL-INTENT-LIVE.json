@@ -1,0 +1,21 @@
+{
+  "work_item_id": "EOS-R4-LIVE-INTENT-001",
+  "work_item_title": "Demo Universal Intent Pipeline dengan Machine Source (Monitoring System)",
+  "user_job": "EOS menerima alert monitoring secara otomatis dan membentuk Work incident",
+  "acceptance_criteria": [
+    "Input JSON signal dari monitoring system masuk ke Universal Intent Intake",
+    "Origin mapping ke 'internal_system' berhasil dengan actorId null",
+    "Understanding engine mendeteksi domain 'TECHNICAL_INCIDENT'",
+    "Gap analysis tidak menemukan unknowns (sufficient)",
+    "Intent status berubah otomatis dari RECEIVED → WORK_FORMED",
+    "Intent berhasil dikonversi menjadi Work incident yang valid",
+    "Semua raw signal tersimpan di JSONB column",
+    "Evidence chain terbentuk untuk audit trail"
+  ],
+  "dependencies": ["universal-intent-implementation-complete"],
+  "agent_assignment": "eos-product-slice-agent",
+  "priority": "P0 - REAL WORK BLOCKER",
+  "status": "READY_TO_START",
+  "leverage_score": 0.95,
+  "created_at": "2026-09-02T12:15:00Z"
+}

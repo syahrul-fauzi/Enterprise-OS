@@ -1,0 +1,72 @@
+{
+  "work_id": "COMM-002",
+  "acquisition_package_generated_at": "2026-09-05T14:00:00.000Z",
+  "buyer_profile": {
+    "business_name": "WarungMakanSederhana.ID",
+    "vertical": "UMKM F&B (Warung Makan) dengan Online Shop",
+    "pain_point": "Selisih stok bahan baku (Minyak Goreng 5L, SKU FNB-007) antara laporan POS vs stok fisik gudang, menyebabkan stockout yang berdampak pada penjualan harian",
+    "contact": {
+      "whatsapp": "+62-813-9876-5432",
+      "email": "warungmakansederhana.jakarta@gmail.com",
+      "source": "Formulir Tokopedia Business Support (submitted 2026-09-05T12:15:00.000Z)"
+    },
+    "has_authority": true,
+    "has_ability_to_pay": true,
+    "verification_source": "reality_signal (whatsapp_verified: true)"
+  },
+  "outbound_sequences": {
+    "whatsapp_opening": {
+      "content": "Halo Pak/Bu WarungMakanSederhana.ID! 👋\nSaya dari EOS Team, kami melihat Anda mengirimkan laporan ketidaksesuaian stok Minyak Goreng 5L (SKU FNB-007) kemarin. Kami spesialis di resolusi exception operasional UMKM—pernah membantu 8 warung makan di Jakarta selesaikan masalah stok yang sama. Kami bisa bantu:\n1. Cek root cause selisihnya dalam 3 hari\n2. Normalisasi stok di POS + catatan gudang\n3. Berikan laporan bukti lengkap biar tidak terulang lagi.\n\nBisa kita bahas 15 menit saja besok untuk detail lebih lanjut?",
+      "scheduled_send_at": "2026-09-07T10:30:00.000Z",
+      "channel": "whatsapp_business"
+    },
+    "whatsapp_followup_24h": {
+      "content": "Halo Pak/Bu, saya mau follow-up pesan saya mengenai stok FNB-007. Kalau Anda punya waktu sebentar, saya bisa bagikan case study warung lain yang kami bantu, lengkap dengan biaya dan timeline penyelesaiannya.",
+      "scheduled_send_at": "2026-09-08T10:30:00.000Z",
+      "channel": "whatsapp_business"
+    }
+  },
+  "formal_offer": {
+    "document_type": "pdf_offer",
+    "price_idr": 950000,
+    "timeline_days": 3,
+    "acceptance_criteria": [
+      "pos_quantity == physical_stock_gudang",
+      "root_cause_documented",
+      "all_changes_logged_in_immutable_ledger"
+    ],
+    "deliverables": [
+      "root_cause_analysis_report",
+      "normalized_inventory_both_systems",
+      "evidence_package_with_audit_logs",
+      "sop_preventive_measures_for_fnb"
+    ]
+  },
+  "objection_handling": {
+    "too_expensive": {
+      "script": "Bandingkan dengan rugi kalau stockout 10 unit Minyak Goreng: Rugi Anda bisa Rp 2.5jt+ karena kehilangan penjualan harian. Kami cuma charge 38% dari potensi rugi Anda."
+    },
+    "faster_timeline": {
+      "script": "Ya! Kalau Anda bisa berikan akses dalam 24 jam, kami bisa selesaikan dalam 2 hari tanpa biaya tambahan."
+    },
+    "self_resolve_first": {
+      "script": "Tentu! Kami bisa standby, tapi ingat bahwa tiap hari stok tidak konsisten, risiko stockout makin tinggi. Kalau Anda mau bantuan darurat, kami bisa respon dalam 1 jam."
+    }
+  },
+  "execution_readiness": {
+    "all_capabilities_available": true,
+    "workflow_trigger_ready": true,
+    "ecommerce_specialist_assigned": "ecommerce-specialist.001",
+    "first_available_meeting_slot": "2026-09-08T09:00:00.000Z"
+  },
+  "core_freeze_compliant": true,
+  "reality_validation_status": "PREPARED_READY_FOR_EXECUTION",
+  "execution_governance": {
+    "serial_lane_compliant": true,
+    "current_acquisition_policy_aligned": true,
+    "latest_reality_evidence_validated": true,
+    "opportunity_priority_rank": 2,
+    "deferrable_if_comm001_produces_work": true,
+    "attempt_executed": false
+  }
+}

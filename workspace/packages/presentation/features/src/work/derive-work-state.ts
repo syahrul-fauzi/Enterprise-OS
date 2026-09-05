@@ -170,6 +170,16 @@ export function deriveWorkRealityModel(
     { actor: "Notary", action: "submit", description: "Submit final documents to authorities after approval" },
     { actor: "Agent", action: "monitor", description: "Monitor external submission status" },
     { actor: "Customer", action: "wait", description: "Wait for final outcome notification" }
+  ] : workId === 'case-005' && workType === 'service-request' ? [
+    { actor: "Tim Teknis", action: "investigate", description: "Investigasi gangguan website www.umkm-coffee.id dari 3 titik monitoring" },
+    { actor: "Monitoring System", action: "verify", description: "Konfirmasi status konektivitas website setelah perbaikan" },
+    { actor: "Agent", action: "notify", description: "Kirim update status perbaikan kepada klien UMKM" },
+    { actor: "Customer", action: "confirm", description: "Konfirmasi website sudah dapat diakses dan layanan selesai" }
+  ] : workId === 'lh-case-001' && workType === 'legal-case' ? [
+    { actor: "Legal Counsel", action: "verify", description: "Verifikasi dokumen identitas para pendiri PT Kopi Nusantara" },
+    { actor: "PT Establishment Manager", action: "prepare", description: "Siapkan draft akta pendirian dan dokumen legal lainnya" },
+    { actor: "Notaris", action: "review", description: "Review dokumen sebelum proses penandatanganan" },
+    { actor: "Agent", action: "coordinate", description: "Koordinasi jadwal penandatanganan dengan semua pihak" }
   ] : workType === 'service-request' ? [
     { actor: "Senior Processor", action: "review", description: "Review required - Verify OSS response and service outcome" },
     { actor: "Processor", action: "submit", description: "Submit final service completion documents" },

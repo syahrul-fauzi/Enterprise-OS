@@ -1,13 +1,14 @@
-// @ts-nocheck: Disable TypeScript checks to unblock production build - import paths are valid in runtime
 "use client";
 
 import React, { useMemo } from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
 import type { WorkspaceSession } from "@repo/core-kernel";
+import type { ProductPreviewBinding } from "@repo/presentation-experience";
 
 export interface WorkTracePageProps {
   readonly workId: string;
   readonly session: WorkspaceSession;
+  readonly binding: ProductPreviewBinding;
 }
 
 type TraceChainNode = {
@@ -139,12 +140,11 @@ const STATUS_LABEL: Record<TraceChainNode["status"], string> = {
   expected: "EXPECTED",
 };
 
-export function WorkTracePage({ workId, session }: WorkTracePageProps) {
+export function WorkTracePage({ workId, session, binding }: WorkTracePageProps) {
   const chain = useMemo(() => buildDeterministicTraceChain(workId), [workId]);
 
   return (
-    <>
-      <ProductPreviewShell productId="work-trace" binding={{}} session={session}>
+    <ProductPreviewShell binding={binding} mode="trace" session={session}>
       <section className="mx-auto max-w-6xl space-y-6 px-6 py-10">
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -208,7 +208,6 @@ export function WorkTracePage({ workId, session }: WorkTracePageProps) {
         </ol>
       </section>
       </ProductPreviewShell>
-    </>
   );
 }
 

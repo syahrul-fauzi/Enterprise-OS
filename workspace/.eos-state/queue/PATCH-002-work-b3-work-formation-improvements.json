@@ -1,0 +1,67 @@
+{
+  "patch_id": "PATCH-002",
+  "work_id": "work-b3-work-new-eos-face",
+  "title": "WorkFormation UX Improvements for /work/new",
+  "status": "READY_TO_QUEUE",
+  "queue_position": 2,
+  "target_files": [
+    "packages/presentation/experience/src/work/WorkFormationExperience.tsx"
+  ],
+  "changes": [
+    {
+      "file": "packages/presentation/experience/src/work/WorkFormationExperience.tsx",
+      "line": 48,
+      "change_type": "update_hero_text",
+      "key": "h1",
+      "old_value": "Work sedang dibuat...",
+      "new_value": "EOS Telah Memahami Kebutuhan Anda. Ini Work Anda."
+    },
+    {
+      "file": "packages/presentation/experience/src/work/WorkFormationExperience.tsx",
+      "line": 52,
+      "change_type": "update_hero_subtext",
+      "key": "p",
+      "old_value": "Memproses kebutuhan Anda...",
+      "new_value": "Kebutuhan yang Anda sampaikan telah kami ubah menjadi Work terstruktur yang bisa dikelola, dilacak, dan diselesaikan bersama EOS."
+    },
+    {
+      "file": "packages/presentation/experience/src/work/WorkFormationExperience.tsx",
+      "line": 82,
+      "change_type": "update_button_property",
+      "key": "Button.size",
+      "old_value": "lg",
+      "new_value": "xl"
+    },
+    {
+      "file": "packages/presentation/experience/src/work/WorkFormationExperience.tsx",
+      "line": 83,
+      "change_type": "add_button_property",
+      "key": "Button.className",
+      "new_value": "py-6 text-xl"
+    },
+    {
+      "file": "packages/presentation/experience/src/work/WorkFormationExperience.tsx",
+      "line": 88,
+      "change_type": "update_button_label",
+      "key": "Button.children",
+      "old_value": "Ya, Buat Work Ini",
+      "new_value": "Ya, Mulai Work Ini"
+    }
+  ],
+  "pre_application_verification": [
+    { "check": "Button size 'xl' exists in @repo/presentation-ui-system", "status": "VERIFIED", "evidence": "packages/presentation/ui-system/src/atoms/button.tsx#L25" },
+    { "check": "All state transition logic remains intact (core untouched)", "status": "VERIFIED" },
+    { "check": "Thin adapter pattern maintained in /work/new/page.tsx", "status": "VERIFIED" },
+    { "check": "Canonical work.create capability unchanged", "status": "VERIFIED" },
+    { "check": "Architecture lock compliance (0 new primitives)", "status": "VERIFIED" }
+  ],
+  "post_application_steps": [
+    "npm run check-types",
+    "npm run build",
+    "visually verify /work/new formation moment",
+    "update work-b3 status to COMPLETED in L1-WORK-QUEUE.json",
+    "trigger work-b4-work-id-eos-face execution"
+  ],
+  "created_at": "2026-09-01T00:00:00Z",
+  "applied_at": null
+}

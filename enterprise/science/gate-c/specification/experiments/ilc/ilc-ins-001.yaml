@@ -1,0 +1,64 @@
+version: "1.0.0"
+status: EXPERIMENT_SUBJECT
+experiment_subject_id: ILC-INS-001
+domain: institutional
+operation: coordinate
+operation_label: InstitutionalCoordination
+schema_ref: specification/schemas/experiment.schema.yaml
+illustrative_source: ILC-INS-001 Reality Slice - Institutional Digitalization Initiative
+
+predicate_anchor_map:
+  pred_a_legitimate:
+    expected_value: true
+    rationale: >
+      I1: Institutional need correctly identified - not generic project, detected LEGAL/IT/FINANCE domains with KNOWN/UNKNOWN/REQUIRES_APPROVAL classification.
+    authority_path_expected: InstitutionalNeed → DomainHeads → Executive → ExecutionAuthority
+  pred_b_meaning_preserved:
+    expected_value: true
+    rationale: >
+      I2: ≥3 actors bound with observable responsibilities: Legal (document review), IT (infrastructure), Finance (budget). All actors have explicit permissions to act.
+    canonical_identity_expected: ilc-ins-001-digitalization-initiative
+  pred_c_provable:
+    expected_value: true
+    rationale: >
+      I3-I11: All gates passed: unauthorized transitions blocked, hierarchy enforced, stuck work detected, recovery successful, outcome delivered, no lifecycle fork.
+    evidence_required: stateHistory, stuckDetectionReport, recoveryActionLog, finalOutcomeEvidence
+
+input_fixtures:
+  documents:
+    - specification/fixtures/institutional/ilc-ins-001-requirement.yaml
+  policies: []
+  contracts: []
+  evidence:
+    - specification/fixtures/evidence/ilc-baseline-proofs.yaml
+
+transformation_contract:
+  id: TC-ILC-INS-001
+  name: Institutional Coordination Transformation Contract
+  reference: ILC-0001
+  preconditions:
+    - P1 Institutional need submitted and classified correctly
+    - P2 All 3 domain actors bound with explicit responsibilities
+    - P3 No prior execution attempt without proper approvals
+  postconditions:
+    - Q1 Work state transitions through full institutional lifecycle
+    - Q2 All hierarchical approvals enforced (department-head → executive)
+    - Q3 Stuck work (>24h) detected with natural language explanation
+    - Q4 Recovery action successfully resumes stuck work
+    - Q5 Institutional deliverable created and persisted
+    - Q6 Outcome observable from canonical Work Reality
+  invariants:
+    - I1 No institutional lifecycle fork - uses canonical Work Reality only
+    - I2 All state transitions recorded in immutable stateHistory
+    - I3 Unauthorized transition attempts permanently blocked and logged
+
+expected_truth_table_row_match: P1
+expected_constitutional_validity: true
+expected_predicates_ref: specification/expected/predicates/ilc-predicates.yaml#expected_predicates.ILC-INS-001
+oracle_spec_ref: specification/oracle/oracle.yaml
+expected_evaluation_ref: specification/expected/evaluations/ilc-evaluations.yaml#expected_evaluations.ILC-INS-001
+test_suite_refs:
+  - products/ilc/tests/ilc-ins-001.test.ts
+
+notes: >
+  ILC-INS-001 is the third and final cross-domain proof slice, validating that EOS canonical Work Reality primitive works for institutional coordination use cases, in addition to service execution (Services.ID) and professional judgment (LawyersHub). This completes the three-domain proof requirement.

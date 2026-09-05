@@ -1,0 +1,38 @@
+# PRODUCTION SCHEMA: Product Photo Editing Workflow
+# Validated for EOS work model fit (2026-09-23 11:45 WIB)
+work:
+  name: "E-commerce Product Photo Editing Batch (50 photos)"
+  source: "Tokopedia/Shopee Sellers / E-commerce Merchants"
+  buyer: "Online store owners selling physical products"
+  trigger: "Seller uploads raw photos to Google Drive; EOS operator receives notification"
+
+production:
+  input: "Raw product photos (unedited, varying lighting/backgrounds)"
+  preparation: "Sort photos by product category; confirm client's style requirements"
+  actor: "Photo editing specialist with e-commerce product experience"
+  steps:
+    - "Background removal (white background per marketplace standards)"
+    - "Color correction and lighting enhancement"
+    - "Shadow addition for product depth"
+    - "Resize photos to platform requirements (1080x1080px for Tokopedia/Shopee)"
+    - "Batch watermark application if requested"
+  qa: "QC specialist reviews all 50 photos for background quality and color accuracy"
+  artifact: "Zipped folder of 50 edited JPG files + upload order CSV"
+  evidence: "Before/after comparison folder + client approval Google Form submission"
+  approval: "Client reviews sample batch first, then approves full batch delivery"
+  delivery: "Shared Google Drive link + Shopify/Tokopedia bulk upload guide"
+
+commercial:
+  pricing_model: "Fixed-price batch: IDR 1,500,000 (~$95) per 50 photos"
+  payment_point: "50% upfront, 50% upon client approval of full batch"
+  repeat_cycle: "75% of sellers place new orders every 2-3 months"
+  after_sales: "1 round of revisions included; additional photos IDR 30,000/photo"
+
+eos:
+  intake: "Client sends Drive link via WhatsApp → EOS operator manually creates work.order"
+  work_formation: "EOS creates work order with editing steps, QC deadline, and delivery date"
+  actor_resolution: "EOS matches available photo editor with current capacity"
+  execution_tracking: "EOS tracks step completion: background removal → correction → resizing → QC"
+  evidence: "EOS operator uploads edited folder link, before/after examples, and approval form"
+  outcome: "EOS marks work as COMPLETED only after final payment is received"
+  automation: "70% of workflow can be automated: background removal, resizing, deadline reminders"

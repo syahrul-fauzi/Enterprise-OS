@@ -14,7 +14,10 @@
     "./regions": "./dist/regions/index.js",
     "./slots": "./dist/slots/index.js",
     "./layouts": "./dist/layouts/index.js",
-    "./navigation": "./dist/navigation/index.js",
+    "./navigation": {
+      "types": "./dist/navigation/index.d.ts",
+      "default": "./dist/navigation/index.js"
+    },
     "./orchestration": "./dist/orchestration/index.js"
   },
   "license": "MIT",

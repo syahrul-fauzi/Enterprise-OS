@@ -8,6 +8,8 @@ import { readProductBinding } from '@repo/presentation-experience/product-bindin
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
+  isAuthenticatedSession,
+  ANONYMOUS_ACTOR_ID,
 } from "@repo/core-kernel";
 import { getAllWorksForWorkspace } from "../../api/work/create/route";
 
@@ -15,22 +17,25 @@ import { getAllWorksForWorkspace } from "../../api/work/create/route";
 async function resolveSessionOrEnter() {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);
+  
+  // If no session cookie exists, redirect to login immediately
   if (!sessionCookie?.value) {
-    redirect("/");
+    redirect("/login");
   }
 
   let session;
   try {
     session = decodeWorkspaceSession(sessionCookie.value);
   } catch {
-    cookieStore.delete(WORKSPACE_SESSION_COOKIE);
-    redirect("/");
+    // Invalid session, redirect to login
+    redirect("/login");
   }
 
-  if (!session) {
-    cookieStore.delete(WORKSPACE_SESSION_COOKIE);
-    redirect("/");
+  // If session is null or not an authenticated user, redirect to login immediately
+  if (!session || !isAuthenticatedSession(session)) {
+    redirect("/login");
   }
+  
   return session;
 }
 

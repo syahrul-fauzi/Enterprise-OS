@@ -1,0 +1,40 @@
+# FIFTEENTH PRODUCTION SCHEMA DOCUMENTED: GitHub Actions CI/CD Pipeline Setup
+# Validated for EOS work model fit (2026-09-08 09:25 WIB)
+work:
+  name: "GitHub Actions CI/CD Pipeline Implementation"
+  source: "GitHub Developer ecosystem (Indonesian SaaS startups and software teams)"
+  buyer: "Engineering teams building products that lack automated testing and deployment"
+  trigger: "Team experiences manual deployment errors; wants to speed up release cycle; needs automated testing for every PR"
+
+production:
+  input: "GitHub repository access, deployment target credentials (AWS/GCP/other), tech stack documentation, testing requirements"
+  preparation: "Audit current deployment process; map required workflows; plan pipeline stages for test → build → deploy"
+  actor: "DevOps engineer with 3+ years GitHub Actions experience; portfolio of 15+ production pipelines"
+  steps:
+    - "Conduct discovery call to understand team's current deployment workflow and pain points"
+    - "Define pipeline stages: PR testing (lint, unit tests), staging build & deploy, production deployment"
+    - "Write GitHub Actions workflows in YAML for each stage; configure secrets in repository settings"
+    - "Implement environment protection rules for production deployments"
+    - "Test pipeline end-to-end with sample PR and deployment to staging"
+    - "Document pipeline usage for the engineering team; run handoff workshop"
+    - "Schedule 7-day post-implementation check to resolve any issues"
+  qa: "Senior DevOps engineer reviews workflow code for security best practices and cost efficiency"
+  artifact: "Production-ready GitHub Actions workflows, pipeline documentation, handoff recording"
+  evidence: "Workflow run logs, successful deployment screenshots, team approval email, post-implementation issue log"
+  approval: "Engineering team runs 3 test deployments to validate pipeline before full production usage"
+  delivery: "Team receives full documentation; 30-minute handoff call; access to shared troubleshooting guide"
+
+commercial:
+  pricing_model: "Fixed-price: IDR 5,500,000 (~$355) per pipeline; add-ons for custom integrations available"
+  payment_point: "60% upfront at project kickoff; 40% after successful first production deployment"
+  repeat_cycle: "75% of clients purchase ongoing DevOps support contracts; 60% add new pipelines for additional repositories"
+  after_sales: "30-day free bug fixes and pipeline adjustments; optional monthly DevOps retainer: IDR 3,000,000/month"
+
+eos:
+  intake: "Engineering team submits pipeline request → technical discovery call → scope defined → proposal sent"
+  work_formation: "EOS assigns DevOps engineer with experience in the team's tech stack and deployment targets"
+  actor_resolution: "EOS matches specialist's past pipeline success rate to project complexity (number of environments, integrations)"
+  execution_tracking: "EOS tracks milestones: discovery → workflow development → testing → handoff → post-launch check"
+  evidence: "EOS collects all workflow commits, deployment logs, client approvals, and support tickets to evidence chain"
+  outcome: "EOS marks work as COMPLETED after 7-day post-implementation check confirms no critical pipeline issues"
+  automation: "75% of workflow can be standardized and reused across projects; only custom integration logic requires new code"

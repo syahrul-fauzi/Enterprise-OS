@@ -60,6 +60,10 @@ const seedProviders = (): ServiceProviderAggregate[] => [
     rating: 4.9,
     location: "Singapore (APAC)",
     verified: true,
+    contactEmail: "security@cyberguard-asia.com",
+    contactName: "Lim Wei Ling",
+    responseHours: "24-48 hours",
+    supplyStatus: "PENDING_VERIFICATION", // Supply-side track: waiting for provider to confirm willingness
     createdAt: d(180),
     tenantId: "tenant-001",
     workspaceId: "workspace-001",
@@ -138,6 +142,28 @@ const seedRequests = (): ServiceRequestAggregate[] => [
     tenantId: "tenant-001",
     workspaceId: "workspace-001",
     actorId: "actor-003",
+  },
+  // TEST DATA: CR-006 Payment workflow test fixture - NOT a real transaction
+  // Only used to validate Midtrans webhook integration and payment processing logic
+  {
+    id: createServiceRequestId("sreq-test-payment-001"),
+    title: "[TEST] Payment Flow Validation: Security Audit for PT Digital Nusantara",
+    description: "TEST WORK ONLY - Used to validate end-to-end payment processing workflow. This is NOT a real customer transaction. Commercial Reality Integrity Rule: provenance = TEST",
+    category: "Cybersecurity",
+    status: "accepted", // Test status set to validate payment state transition
+    requesterName: "TEST: Budi Santoso (PT Digital Nusantara)",
+    requesterEmail: "test@example.com",
+    requesterPhone: "+6280000000000",
+    providerId: createServiceProviderId("sp-003"),
+    proposedPrice: "Rp 150.000.000",
+    priceAcceptedAt: new Date(),
+    budget: "Rp 150.000.000",
+    deadline: dFuture(45),
+    createdAt: new Date(Date.now() - 86400000),
+    updatedAt: new Date(),
+    tenantId: "tenant-001",
+    workspaceId: "workspace-001",
+    actorId: "actor-test-001",
   },
   {
     id: createServiceRequestId("sreq-003"),

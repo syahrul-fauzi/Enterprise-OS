@@ -1,41 +1,61 @@
-// IntentContract type definitions - canonical protocol boundary for EOS FACE Formation lifecycle
-// Implements the minimal contract specified in EOS-FACE-FORMATION-001
-// type IntentContract = { 
-//   expression: string; 
-//   source: { actorType: "human" | "agent" | "system"; entryPoint: string }; 
-//   context?: { domain?: string; organization?: string; locale?: string } 
-// };
-
+// Inline type definitions from canonical atomic-composition contract (temporary fix for module resolution)
+// Source file: /root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/contracts/intent-understanding.contracts.ts
+// We inline these types here to prevent UI build errors while the project reference build is fixed
 export type IntentActorType = "human" | "agent" | "system";
-
 export type IntentSource = {
   actorType: IntentActorType;
-  entryPoint: string; // e.g., "eos-face", "lawyershub", "ilc", "servicesid"
-  timestamp: string; // ISO 8601 timestamp when intent was captured
+  entryPoint: string;
+  timestamp: string;
 };
-
 export type IntentContext = {
-  domain?: string; // e.g., "legal", "immigration", "corporate"
-  organization?: string; // Tenant/company ID if applicable
-  locale?: string; // e.g., "id-ID", "en-US" for localization
+  domain?: string;
+  organization?: string;
+  locale?: string;
+  known?: string[];
+  unknown?: string[];
+  constraints?: string[];
 };
-
+export type DomainCandidate = {
+  domain: string;
+  confidence: number;
+};
+export type ExtractedEntity = {
+  type: string;
+  role: string;
+  value: string;
+};
+export type IntentUnderstanding = {
+  rawExpression: string;
+  interpretedObjective: string;
+  context: IntentContext;
+  domainCandidates: DomainCandidate[];
+  intentType: string;
+  entities: ExtractedEntity[];
+  unknowns: string[];
+  clarificationRequired: boolean;
+};
 export type IntentResolution = {
-  objective: string; // Clear, actionable objective extracted from expression
-  expectedOutcome: string; // What success looks like for this intent
-  context: string; // Domain/context classification
-  workType: string; // Canonical work type identifier (e.g., "pt-establishment")
-  confidence: number; // 0.0 to 1.0 - confidence in resolution accuracy
-  suggestedCapabilities?: string[]; // Capabilities that may be required for this work
+  objective: string;
+  expectedOutcome: string;
+  context: string;
+  workType: string;
+  confidence: number;
+  suggestedCapabilities?: string[];
+  dynamicUnderstanding?: IntentUnderstanding;
 };
-
 export type IntentContract = {
-  id: string; // Unique identifier for the intent contract - required for FormationConfirmation provenance
-  expression: string; // Raw user input/need
+  id: string;
+  expression: string;
   source: IntentSource;
   context?: IntentContext;
-  resolution: IntentResolution; // Resolved semantic understanding of the intent
+  resolution: IntentResolution;
+  dynamicUnderstanding?: IntentUnderstanding;
 };
+// Re-export base identity types from existing project import to maintain type safety
+import type { IntentCategory, IntentRawInput } from "@repo/capabilities-identity";
+export type { IntentCategory, IntentRawInput };
+
+// Keep only what's needed below this point - removed duplicate inline definitions that were already declared above
 
 export type FormationConfirmation = {
   intentId: string; // Unique identifier for the intent contract

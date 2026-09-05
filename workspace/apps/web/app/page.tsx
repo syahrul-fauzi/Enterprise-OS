@@ -29,12 +29,12 @@ export default async function RootPage({ searchParams }: RootRouteProps) {
     }
   }
 
-  // Tidak ada session valid, tampilkan halaman landing EOS utama
+  // Tidak ada session valid, tampilkan halaman landing EOS utama sesuai EOS Face v0.1
   return (
     <RootLandingPage
       brandName="EOS"
-      heroTitle="Pekerjaan Anda, terhubung sempurna."
-      heroSubtitle="Platform enterprise yang menghubungkan semua pihak dalam satu Workspace yang aman. Satu tempat untuk mengelola seluruh pekerjaan, dokumen, dan kolaborasi tim."
+      heroTitle="Apa yang perlu Anda selesaikan hari ini?"
+      heroSubtitle="EOS memahami apa yang Anda butuhkan, membantu Anda mengubah kebutuhan menjadi pekerjaan terstruktur, dan memastikan semua pihak selaras menyelesaikannya."
       searchParams={searchParams}
       theme={{
         primaryColor: 'blue',
