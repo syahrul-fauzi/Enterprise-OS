@@ -60,24 +60,24 @@ class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements S
   }
 
   async byId(id: SessionId): Promise<SessionAggregate | undefined> {
-    const result = await this.pool.query("SELECT * FROM sessions WHERE id = $1", [id]);
+    const result = await this.pool.query<Record<string, any>>("SELECT * FROM sessions WHERE id = $1", [id]);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }
 
   async listByUser(userId: UserId): Promise<readonly SessionAggregate[]> {
-    const result = await this.pool.query("SELECT * FROM sessions WHERE user_id = $1", [userId]);
+    const result = await this.pool.query<Record<string, any>>("SELECT * FROM sessions WHERE user_id = $1", [userId]);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
   async listActiveByUser(userId: UserId): Promise<readonly SessionAggregate[]> {
     const now = new Date();
-    const result = await this.pool.query(
+    const result = await this.pool.query<Record<string, any>>(
       "SELECT * FROM sessions WHERE user_id = $1 AND revoked_at IS NULL",
       [userId]
     );
     const aggregates = result.rows.map((row: any) => this.toAggregate(row));
-    return aggregates.filter(s => !this.isExpired(s, now));
+    return aggregates.filter((s: SessionAggregate) => !this.isExpired(s, now));
   }
 
   async isRevoked(id: SessionId): Promise<boolean> {
@@ -89,7 +89,7 @@ class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements S
 
   async revoke(id: SessionId, revokedAt?: Date): Promise<SessionAggregate> {
     const revoked = revokedAt ?? new Date();
-    const result = await this.pool.query(
+    const result = await this.pool.query<Record<string, any>>(
       "UPDATE sessions SET revoked_at = $1, updated_at = $2 WHERE id = $3 RETURNING *",
       [revoked.toISOString(), revoked.toISOString(), id]
     );
@@ -100,7 +100,7 @@ class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements S
   }
 
   async list(): Promise<readonly SessionAggregate[]> {
-    const result = await this.pool.query("SELECT * FROM sessions");
+    const result = await this.pool.query<Record<string, any>>("SELECT * FROM sessions");
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
@@ -115,7 +115,7 @@ class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements S
     
     const exists = await this.byId(entity.id);
     if (exists) {
-      await this.pool.query(
+      await this.pool.query<Record<string, any>>(
         `UPDATE sessions SET 
           user_id = $1, actor_id = $2, tenant_id = $3, workspace_id = $4, product_id = $5, actor_label = $6,
           is_agent = $7, issued_at = $8, expires_at = $9, revoked_at = $10, created_at = $11, updated_at = $12
@@ -127,7 +127,7 @@ class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements S
         ]
       );
     } else {
-      await this.pool.query(
+      await this.pool.query<Record<string, any>>(
         `INSERT INTO sessions (
           id, user_id, actor_id, tenant_id, workspace_id, product_id, actor_label, is_agent,
           issued_at, expires_at, revoked_at, created_at, updated_at
@@ -142,7 +142,7 @@ class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements S
   }
 
   async remove(id: SessionId): Promise<boolean> {
-    const result = await this.pool.query("DELETE FROM sessions WHERE id = $1 RETURNING id", [id]);
+    const result = await this.pool.query<Record<string, any>>("DELETE FROM sessions WHERE id = $1 RETURNING id", [id]);
     return result.rows.length > 0;
   }
 }

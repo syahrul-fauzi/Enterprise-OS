@@ -81,27 +81,85 @@ export type ActorId = string & { __brand: "ActorId" };
 export function ActorId(value: string): ActorId { return value as ActorId; }
 
 // ------------------------------
-// 3. WORK BINDING - Canonical Layer 2 primitive: assignment of actor projection to requirement
-// The ONLY new primitive that didn't exist in EOS Core before
+// 3. WORK BINDING - Extended to ValueReality Hyper-Relationship Participant
+// BETTER-EOS: Suports ALL participant types in the same compositionId (Actor, Capability, Resource, Work, Product)
+// Layer 2 extension only - NO core kernel changes
 // ------------------------------
+export const ParticipantTypeSchema = z.enum([
+  "actor",           // Human/AI/Machine Actor
+  "capability",      // Core Capability
+  "resource",        // Physical/Digital Resource
+  "work",            // Work Aggregate
+  "product"          // Product Experience/Identity
+]);
+export type ParticipantType = z.infer<typeof ParticipantTypeSchema>;
+
 export const WorkBindingSchema = z.object({
   id: z.string(),
   bindingId: z.string().brand<"WorkBindingId">(),
-  compositionId: z.string().brand<"CompositionId">().optional(), // links to parent composition (required for AI agent execution)
-  actorProjectionId: z.string().brand<"ActorId">(), // links to ActorProjection
-  providerType: z.enum(["human", "ai-agent", "external-service", "organization", "machine"]).optional().default("human"), // E1 Audit: Track provider type
-  workId: z.string().brand<"WorkId">(),
-  workspaceId: z.string().optional(), // For realtime notifications (Fase 1 Dashboard)
-  capabilityReference: z.string(), // links to core capability
-  requirementId: z.string().brand<"RequirementId">(), // links to CapabilityRequirement
+  compositionId: z.string().brand<"CompositionId">(), // REQUIRED for hyper-relationships: ALL participants share the same compositionId
+  participantId: z.string(), // Unified participant ID (works for ALL types)
+  participantType: ParticipantTypeSchema, // What kind of participant is this?
+  providerType: z.enum(["human", "ai-agent", "external-service", "organization", "machine", "resource", "capability", "work", "product"]).optional().default("human"),
+  // Legacy fields for backward compatibility
+  actorProjectionId: z.string().brand<"ActorId">().optional(),
+  workId: z.string().brand<"WorkId">().optional(),
+  capabilityReference: z.string().optional(),
+  requirementId: z.string().brand<"RequirementId">().optional(),
+  // Hyper-relationship metadata
+  relationshipPurpose: z.string().optional(), // The "why" of this value relationship
   role: z.string(),
   authority: z.enum(["view", "comment", "execute", "approve", "admin"]).default("execute"),
   status: z.enum(["pending", "accepted", "active", "completed", "rejected"]).default("pending"),
   boundAt: z.string(),
-  acceptedAt: z.string().optional(),
-  completedAt: z.string(),
-  evidence: z.string().optional(),
+  updatedAt: z.string().optional(), // For relationship lifecycle changes
 });
+
+// ------------------------------
+// 4. COMMAND SCHEMAS - untuk composeTeamFromRequirements command
+// ------------------------------
+export const CapabilityResolutionRequestSchema = z.object({
+  workId: z.string().optional(),
+  work: z.any(), // WorkAggregate dari work-core
+  requirements: z.array(z.string()).default([]),
+  availableActors: z.array(z.any()).default([]),
+  availableCapabilities: z.array(z.string()).default([]),
+  workspaceId: z.string().optional(),
+});
+
+export type CapabilityResolutionRequest = z.infer<typeof CapabilityResolutionRequestSchema>;
+
+export const CapabilityResolutionResultSchema = z.object({
+  teamId: z.string(),
+  compositionId: z.string(),
+  assignments: z.array(z.object({
+    actorId: z.string(),
+    capabilityId: z.string(),
+    role: z.string(),
+  })).default([]),
+  success: z.boolean().default(true),
+});
+
+export type CapabilityResolutionResult = z.infer<typeof CapabilityResolutionResultSchema>;
+
+export const CreateTeamRequestSchema = z.object({
+  workId: z.string(),
+  actorIds: z.array(z.string()),
+  actorId: z.string().optional(),
+});
+
+export type CreateTeamRequest = z.infer<typeof CreateTeamRequestSchema>;
+
+export const CreateTeamResultSchema = z.object({
+  teamId: z.string(),
+  saved: z.boolean().default(true),
+});
+
+export type CreateTeamResult = z.infer<typeof CreateTeamResultSchema>;
+
+// Fixed WorkBindingSchema definition - no duplicate export
+// The schema was already defined earlier, this block was orphaned and removed
+// Original error caused by missing opening brace that created orphaned property declarations
 
 export type WorkBinding = z.infer<typeof WorkBindingSchema>;
 export type WorkBindingId = string & { __brand: "WorkBindingId" };

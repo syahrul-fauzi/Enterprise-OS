@@ -187,6 +187,39 @@ const MIGRATIONS: DatabaseMigration[] = [
     name: "enable_rls_on_core_tables",
     description: "Enable Row Level Security on legal_cases and communication_events for tenant isolation",
     sql: `
+      -- Create works table (core Work aggregate table for DB-AUTHORITY-001)
+      CREATE TABLE IF NOT EXISTS works (
+        id VARCHAR(255) PRIMARY KEY,
+        title TEXT NOT NULL,
+        description TEXT,
+        status VARCHAR(50) NOT NULL,
+        actor_id VARCHAR(255) NOT NULL,
+        tenant_id VARCHAR(255) NOT NULL,
+        workspace_id VARCHAR(255) NOT NULL,
+        participants JSONB NOT NULL DEFAULT '[]'::JSONB,
+        state_history JSONB NOT NULL DEFAULT '[]'::JSONB,
+        composition_id VARCHAR(255),
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      -- Create indexes for works table
+      CREATE INDEX IF NOT EXISTS idx_works_tenant_id ON works(tenant_id);
+      CREATE INDEX IF NOT EXISTS idx_works_workspace_id ON works(workspace_id);
+      CREATE INDEX IF NOT EXISTS idx_works_actor_id ON works(actor_id);
+      CREATE INDEX IF NOT EXISTS idx_works_status ON works(status);
+      
+      -- Enable RLS on works table for tenant isolation
+      ALTER TABLE works ENABLE ROW LEVEL SECURITY;
+      
+      -- Policy: Users can only access rows from their own tenant/workspace
+      CREATE POLICY tenant_isolation_works ON works
+        FOR ALL USING (
+          tenant_id = current_setting('app.current_tenant', true) 
+          AND workspace_id = current_setting('app.current_workspace', true)
+        );
+      
       -- Enable RLS on legal_cases table for tenant isolation
       ALTER TABLE legal_cases ENABLE ROW LEVEL SECURITY;
       
@@ -202,6 +235,109 @@ const MIGRATIONS: DatabaseMigration[] = [
       
       -- Policy: Users can only access communication from their own tenant/workspace
       CREATE POLICY tenant_isolation_communication ON communication_events
+        FOR ALL USING (
+          tenant_id = current_setting('app.current_tenant', true) 
+          AND workspace_id = current_setting('app.current_workspace', true)
+        );
+    `
+  },
+  {
+    version: "007",
+    name: "add_knowledge_graph_tables",
+    description: "Create knowledge_graph_nodes and knowledge_graph_edges tables for BETTER EOS value-reality hyper-relationships",
+    sql: `
+      -- Knowledge Graph Nodes table (supports BETTER EOS value-reality entities)
+      CREATE TABLE IF NOT EXISTS knowledge_graph_nodes (
+        id VARCHAR(255) PRIMARY KEY,
+        type VARCHAR(100) NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        description TEXT,
+        tenant_id VARCHAR(255) NOT NULL,
+        workspace_id VARCHAR(255) NOT NULL,
+        properties JSONB NOT NULL DEFAULT '{}'::JSONB,
+        metadata JSONB,
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      -- Knowledge Graph Edges table (supports hyper-relationships between entities)
+      CREATE TABLE IF NOT EXISTS knowledge_graph_edges (
+        id VARCHAR(255) PRIMARY KEY,
+        type VARCHAR(100) NOT NULL,
+        source_node_id VARCHAR(255) NOT NULL REFERENCES knowledge_graph_nodes(id) ON DELETE CASCADE,
+        target_node_id VARCHAR(255) NOT NULL REFERENCES knowledge_graph_nodes(id) ON DELETE CASCADE,
+        tenant_id VARCHAR(255) NOT NULL,
+        workspace_id VARCHAR(255) NOT NULL,
+        properties JSONB NOT NULL DEFAULT '{}'::JSONB,
+        metadata JSONB,
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      -- Create indexes for knowledge graph queries
+      CREATE INDEX IF NOT EXISTS idx_kg_nodes_tenant_id ON knowledge_graph_nodes(tenant_id);
+      CREATE INDEX IF NOT EXISTS idx_kg_nodes_workspace_id ON knowledge_graph_nodes(workspace_id);
+      CREATE INDEX IF NOT EXISTS idx_kg_nodes_type ON knowledge_graph_nodes(type);
+      CREATE INDEX IF NOT EXISTS idx_kg_edges_source ON knowledge_graph_edges(source_node_id);
+      CREATE INDEX IF NOT EXISTS idx_kg_edges_target ON knowledge_graph_edges(target_node_id);
+      CREATE INDEX IF NOT EXISTS idx_kg_edges_tenant_id ON knowledge_graph_edges(tenant_id);
+      CREATE INDEX IF NOT EXISTS idx_kg_edges_workspace_id ON knowledge_graph_edges(workspace_id);
+      
+      -- Enable RLS on knowledge graph tables for tenant isolation
+      ALTER TABLE knowledge_graph_nodes ENABLE ROW LEVEL SECURITY;
+      ALTER TABLE knowledge_graph_edges ENABLE ROW LEVEL SECURITY;
+      
+      -- Tenant isolation policies for knowledge graph
+      CREATE POLICY tenant_isolation_kg_nodes ON knowledge_graph_nodes
+        FOR ALL USING (
+          tenant_id = current_setting('app.current_tenant', true) 
+          AND workspace_id = current_setting('app.current_workspace', true)
+        );
+      
+      CREATE POLICY tenant_isolation_kg_edges ON knowledge_graph_edges
+        FOR ALL USING (
+          tenant_id = current_setting('app.current_tenant', true) 
+          AND workspace_id = current_setting('app.current_workspace', true)
+        );
+    `
+  },
+  {
+    version: "008",
+    name: "add_external_signals_table",
+    description: "Create external_signals table for REALITY-002 inbound signal persistence",
+    sql: `
+      -- External Signals table (supports REALITY-002 inbound signal processing)
+      CREATE TABLE IF NOT EXISTS external_signals (
+        id VARCHAR(255) PRIMARY KEY,
+        source_type VARCHAR(50) NOT NULL,
+        source_metadata JSONB,
+        work_id VARCHAR(255) NOT NULL,
+        tenant_id VARCHAR(255) NOT NULL,
+        workspace_id VARCHAR(255) NOT NULL,
+        raw_input TEXT NOT NULL,
+        status VARCHAR(50) NOT NULL DEFAULT 'received',
+        observed_at TIMESTAMP WITH TIME ZONE NOT NULL,
+        processed_at TIMESTAMP WITH TIME ZONE,
+        metadata JSONB,
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      -- Create indexes for external signals queries
+      CREATE INDEX IF NOT EXISTS idx_external_signals_work_id ON external_signals(work_id);
+      CREATE INDEX IF NOT EXISTS idx_external_signals_tenant_id ON external_signals(tenant_id);
+      CREATE INDEX IF NOT EXISTS idx_external_signals_workspace_id ON external_signals(workspace_id);
+      CREATE INDEX IF NOT EXISTS idx_external_signals_source_type ON external_signals(source_type);
+      CREATE INDEX IF NOT EXISTS idx_external_signals_status ON external_signals(status);
+      
+      -- Enable RLS on external_signals table for tenant isolation
+      ALTER TABLE external_signals ENABLE ROW LEVEL SECURITY;
+      
+      -- Tenant isolation policy for external signals
+      CREATE POLICY tenant_isolation_external_signals ON external_signals
         FOR ALL USING (
           tenant_id = current_setting('app.current_tenant', true) 
           AND workspace_id = current_setting('app.current_workspace', true)

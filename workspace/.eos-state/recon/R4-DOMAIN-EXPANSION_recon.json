@@ -27,8 +27,8 @@
     "supports_r4_requirement": "Domain specialization pattern (R4-03)"
     },
     {
-      "name": "consultation.tmp specialization",
-      "location": "capabilities/consultation.tmp",
+      "name": "consultation specialization",
+      "location": "capabilities/consultation",
       "purpose": "Existing consultation work specialization that could be adapted to follow same createFromWork pattern",
     "supports_r4_requirement": "Domain specialization pattern (R4-03)"
     },

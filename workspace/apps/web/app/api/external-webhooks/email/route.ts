@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import * as crypto from "crypto";
-import { CommunicationRepository } from "@capabilities/communication/implementation/repository/index.js";
+import { CommunicationRepository, newCommunicationEventId } from "@capabilities/communication/implementation/repository/index.js";
 import { CaseRepository } from "@capabilities/legal-case/implementation/repository/index.js";
 
 // Email inbound webhook schema (follows SendGrid/Mailgun webhook format)
@@ -144,8 +144,8 @@ export async function POST(request: Request) {
     const resolvedWorkId = resolveWorkIdFromEmail(from);
     
     if (text && resolvedWorkId) {
-      const eventId = CommunicationRepositoryInMemory.newCommunicationEventId();
-      await CommunicationRepositoryInMemory.save({
+      const eventId = newCommunicationEventId();
+      await CommunicationRepository.save({
         event_id: eventId,
         work_id: resolvedWorkId, // PROPERLY GROUNDED to case-002 for REAL_WORK_014
         tenant_id: "tenant-001",
@@ -164,6 +164,10 @@ export async function POST(request: Request) {
           email_mapped: true,
           resolved_work_id: resolvedWorkId
         }
+      }, {
+        tenantId: "tenant-001",
+        workspaceId: "workspace-001",
+        actorId: from
       });
       
       console.log(`[EmailWebhook] Inbound email stored with work_id: ${resolvedWorkId} - shared reality maintained`);

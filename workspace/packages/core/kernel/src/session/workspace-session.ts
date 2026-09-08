@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { randomUUID } from "node:crypto";
+import { randomUUID, randomUUID as cryptoRandomUUID } from "node:crypto";
+const crypto = { randomUUID: cryptoRandomUUID };
 
 export const WORKSPACE_SESSION_COOKIE = "eos-workspace-session";
 
@@ -47,7 +48,9 @@ export function isAuthenticatedSession(session: WorkspaceSession | null | undefi
   if (!session) return false;
   const id = session.actorId;
   if (id === ANONYMOUS_ACTOR_ID) return false;
-  if (id.startsWith("user-")) return true;
+  // Actor-neutral authentication: supports human ("user-") AND non-human actors (ai-, iot-, machine-, eos-)
+  // MA-09 compliance: tidak mengunci EOS menjadi human-only - all authenticated actor types pass
+  if (id.startsWith("user-") || id.startsWith("ai-") || id.startsWith("iot-") || id.startsWith("machine-") || id.startsWith("eos-")) return true;
   return false;
 }
 

@@ -39,20 +39,20 @@ class UserRepositoryPostgresImpl extends PostgresRepository<any> implements User
   }
 
   async byId(id: UserId): Promise<UserAggregate | undefined> {
-    const result = await this.pool.query("SELECT * FROM users WHERE id = $1", [id]);
+    const result = await this.pool.query<Record<string, any>>("SELECT * FROM users WHERE id = $1", [id]);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }
 
   async byEmail(email: string): Promise<UserAggregate | undefined> {
     const needle = email.trim().toLowerCase();
-    const result = await this.pool.query("SELECT * FROM users WHERE LOWER(email) = $1", [needle]);
+    const result = await this.pool.query<Record<string, any>>("SELECT * FROM users WHERE LOWER(email) = $1", [needle]);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }
 
   async list(): Promise<readonly UserAggregate[]> {
-    const result = await this.pool.query("SELECT * FROM users ORDER BY created_at DESC", []);
+    const result = await this.pool.query<Record<string, any>>("SELECT * FROM users ORDER BY created_at DESC", []);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 

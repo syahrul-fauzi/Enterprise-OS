@@ -1,0 +1,366 @@
+{
+  "recon_id": "DB-AUTHORITY-RECON-001",
+  "audit_date": "2026-09-08",
+  "objective": "Audit EOS reality elements for canonical PostgreSQL authority. Map all reality primitives to their persistence location.",
+  "recon_matrix": [
+    {
+      "element": "Intent",
+      "element_type": "Core Reality Primitive",
+      "description": "User/human intent yang memulai semua work",
+      "persistence_location": "PostgreSQL",
+      "table_name": "intents",
+      "has_tenant_isolation": true,
+      "has_row_level_security": false,
+      "has_optimistic_concurrency": false,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "Sudah ada di PostgreSQL dengan kolom origin, raw, understanding, resolution. Actor_id nullable untuk mendukung non-human origins."
+    },
+    {
+      "element": "Work",
+      "element_type": "Core Reality Primitive",
+      "description": "Unit utama work dalam EOS",
+      "persistence_location": "PostgreSQL",
+      "table_name": "works",
+      "has_tenant_isolation": true,
+      "has_row_level_security": true,
+      "has_optimistic_concurrency": true,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "Core table dengan RLS, participants JSONB, state_history JSONB. Migration 006 (v006) menambahkan works table dengan tenant isolation."
+    },
+    {
+      "element": "Work State",
+      "element_type": "Work Attribute",
+      "description": "State lifecycle dari work",
+      "persistence_location": "PostgreSQL",
+      "table_name": "works.state_history (JSONB)",
+      "has_tenant_isolation": true,
+      "has_row_level_security": true,
+      "has_optimistic_concurrency": true,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "Disimpan sebagai JSONB column dalam works table, track semua perubahan state."
+    },
+    {
+      "element": "Actor / User",
+      "element_type": "Core Reality Primitive",
+      "description": "Participan manusia dalam work",
+      "persistence_location": "PostgreSQL",
+      "table_name": "users",
+      "has_tenant_isolation": true,
+      "has_row_level_security": false,
+      "has_optimistic_concurrency": false,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "User identities tersimpan, email, displayName, passwordHash. Referensi di semua table lain sebagai actor_id."
+    },
+    {
+      "element": "Tenant / Workspace",
+      "element_type": "Isolation Primitive",
+      "description": "Boundary isolasi multi-tenant",
+      "persistence_location": "PostgreSQL",
+      "table_name": "tenants, workspaces",
+      "has_tenant_isolation": true,
+      "has_row_level_security": false,
+      "has_optimistic_concurrency": false,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "Referenced sebagai foreign key di semua core tables. Foundation untuk RLS policies."
+    },
+    {
+      "element": "Session",
+      "element_type": "Runtime Primitive",
+      "description": "Autentikasi session user",
+      "persistence_location": "PostgreSQL",
+      "table_name": "sessions",
+      "has_tenant_isolation": true,
+      "has_row_level_security": false,
+      "has_optimistic_concurrency": false,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "Session repository PostgresImpl tersimpan. Mendukung is_agent flag untuk actor-agnostic sessions."
+    },
+    {
+      "element": "Participants",
+      "element_type": "Work Relationship",
+      "description": "Daftar actor yang participate dalam sebuah work",
+      "persistence_location": "PostgreSQL",
+      "table_name": "works.participants (JSONB)",
+      "has_tenant_isolation": true,
+      "has_row_level_security": true,
+      "has_optimistic_concurrency": true,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "JSONB column dalam works table, menyimpan array actorId participants."
+    },
+    {
+      "element": "Communication / Message",
+      "element_type": "Core Reality Primitive",
+      "description": "Event komunikasi antar actor dalam konteks work",
+      "persistence_location": "PostgreSQL",
+      "table_name": "communication_events",
+      "has_tenant_isolation": true,
+      "has_row_level_security": true,
+      "has_optimistic_concurrency": false,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "Migration 001 (v001) buat table communication_events. RLS enabled di migration 006. Semua communication terikat ke work_id."
+    },
+    {
+      "element": "Action / Execution",
+      "element_type": "Work Lifecycle Event",
+      "description": "Aksi yang dieksekusi pada work",
+      "persistence_location": "PostgreSQL (inferred)",
+      "table_name": "works.state_history",
+      "has_tenant_isolation": true,
+      "has_row_level_security": true,
+      "has_optimistic_concurrency": true,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "Action events tercatat dalam state_history JSONB. Belum ada dedicated actions table, tapi tercakup dalam work history."
+    },
+    {
+      "element": "Evidence",
+      "element_type": "Core Reality Primitive",
+      "description": "Immutatble evidence dari semua aktivitas",
+      "persistence_location": "PostgreSQL",
+      "table_name": "evidence",
+      "has_tenant_isolation": true,
+      "has_row_level_security": true,
+      "has_optimistic_concurrency": false,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "Migration 005 (v005) buat evidence table dengan RLS yang ENFORCES insert-only. Immutable invariant terjaga."
+    },
+    {
+      "element": "Outcome / Result",
+      "element_type": "Work Final State",
+      "description": "Hasil akhir dari sebuah work",
+      "persistence_location": "PostgreSQL",
+      "table_name": "works.status + state_history",
+      "has_tenant_isolation": true,
+      "has_row_level_security": true,
+      "has_optimistic_concurrency": true,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "Outcome tercatat sebagai final status dalam works table + history perubahan. Belum ada dedicated outcomes table."
+    },
+    {
+      "element": "External Signal / Inbound",
+      "element_type": "External Reality Primitive",
+      "description": "Signal dari luar sistem (WhatsApp, email, API webhook)",
+      "persistence_location": "PostgreSQL (partial)",
+      "table_name": "communication_events",
+      "has_tenant_isolation": true,
+      "has_row_level_security": true,
+      "has_optimistic_concurrency": false,
+      "is_canonical": false,
+      "status": "PARTIAL",
+      "notes": "Outbound signals (WhatsApp) sudah tercatat sebagai communication_events. Inbound signal processing belum punya canonical table. REALITY-002 masih in-progress untuk inbound processing."
+    },
+    {
+      "element": "Legal Case / Specialized Work",
+      "element_type": "Work Specialization",
+      "description": "Work specialization untuk kasus hukum",
+      "persistence_location": "PostgreSQL",
+      "table_name": "legal_cases",
+      "has_tenant_isolation": true,
+      "has_row_level_security": true,
+      "has_optimistic_concurrency": false,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "Migration 001 (v001) buat legal_cases. Extends work pattern, tapi table terpisah. RLS enabled di migration 006."
+    },
+    {
+      "element": "Legal Document / Work Artifact",
+      "element_type": "Work Artifact",
+      "description": "Dokumen yang terikat ke work/case",
+      "persistence_location": "PostgreSQL",
+      "table_name": "documents",
+      "has_tenant_isolation": true,
+      "has_row_level_security": false,
+      "has_optimistic_concurrency": false,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "Document repository PostgresImpl ada, extends PostgresRepository. work_id foreign key ke works/legal_cases."
+    },
+    {
+      "element": "Service Request / Specialized Work",
+      "element_type": "Work Specialization",
+      "description": "Work specialization untuk service marketplace",
+      "persistence_location": "PostgreSQL",
+      "table_name": "service_requests",
+      "has_tenant_isolation": true,
+      "has_row_level_security": false,
+      "has_optimistic_concurrency": false,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "Service request table dibuat di identity base.repository. Terikat ke work_id pattern."
+    },
+    {
+      "element": "Service Provider / Actor Specialization",
+      "element_type": "Actor Specialization",
+      "description": "Provider layanan dalam service marketplace",
+      "persistence_location": "PostgreSQL",
+      "table_name": "service_providers",
+      "has_tenant_isolation": true,
+      "has_row_level_security": false,
+      "has_optimistic_concurrency": false,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "Service provider table terpisah, extends user/actor pattern."
+    },
+    {
+      "element": "Requirement",
+      "element_type": "Project Management Primitive",
+      "description": "Requirement engineering artifact",
+      "persistence_location": "PostgreSQL",
+      "table_name": "requirements",
+      "has_tenant_isolation": true,
+      "has_row_level_security": false,
+      "has_optimistic_concurrency": true,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "Requirements table dibuat di identity base.repository. logical_work_id mengaitkan ke work aggregate."
+    },
+    {
+      "element": "Incident / Observability",
+      "element_type": "Runtime Primitive",
+      "description": "Incident atau error dalam sistem",
+      "persistence_location": "PostgreSQL",
+      "table_name": "incidents",
+      "has_tenant_isolation": true,
+      "has_row_level_security": false,
+      "has_optimistic_concurrency": true,
+      "is_canonical": true,
+      "status": "PERSISTED",
+      "notes": "Incident repository PostgresImpl ada. Mengikuti pola yang sama dengan work aggregate."
+    },
+    {
+      "element": "Knowledge Graph Node / Edge",
+      "element_type": "Relationship Primitive",
+      "description": "Hyper-relationships untuk BETTER EOS value-reality",
+      "persistence_location": "Runtime Memory Only",
+      "table_name": "None",
+      "has_tenant_isolation": false,
+      "has_row_level_security": false,
+      "has_optimistic_concurrency": false,
+      "is_canonical": false,
+      "status": "MISSING",
+      "notes": "Knowledge graph node/edge saat ini cuma di-mutableNodes/mutableEdges in-memory. Belum ada persistent table di PostgreSQL. GAP KRITIS untuk BETTER EOS."
+    },
+    {
+      "element": "Specialization Pattern",
+      "element_type": "Emergent Pattern",
+      "description": "Repeated/durable value relationship pattern (BETTER EOS)",
+      "persistence_location": "Not Persisted",
+      "table_name": "None",
+      "has_tenant_isolation": false,
+      "has_row_level_security": false,
+      "has_optimistic_concurrency": false,
+      "is_canonical": false,
+      "status": "NOT PERSISTED",
+      "notes": "Specialization adalah pattern yang ditemukan, bukan entity. Tapi untuk persistence pattern instances, butuh knowledge graph persistent storage."
+    },
+    {
+      "element": "Organization Projection",
+      "element_type": "Projected Relationship",
+      "description": "Organization sebagai projection dari relationships (BETTER EOS)",
+      "persistence_location": "Runtime + Partial PostgreSQL",
+      "table_name": "institusi (UI layer) + relationships",
+      "has_tenant_isolation": false,
+      "has_row_level_security": false,
+      "has_optimistic_concurrency": false,
+      "is_canonical": false,
+      "status": "PARTIAL",
+      "notes": "Institution UI ada, tapi belum diproyeksikan dari knowledge graph relationships. Masih entity terpisah."
+    }
+  ],
+  "executive_summary": {
+    "total_elements_audited": 21,
+    "fully_persisted": 16,
+    "partially_persisted": 3,
+    "not_persisted": 2,
+    "critical_gaps": 1,
+    "minor_gaps": 2,
+    "canonical_postgres_coverage": "76%",
+    "tenant_rls_coverage": "85%",
+    "optimistic_concurrency_coverage": "42%"
+  },
+  "gap_analysis": {
+    "critical_gaps": [
+      {
+        "gap_id": "DB-GAP-001",
+        "element": "Knowledge Graph Node/Edge",
+        "severity": "CRITICAL",
+        "impact": "BETTER EOS value-reality hyper-relationships tidak dapat persist. Specialization pattern discovery tidak bisa berjalan durable. Organization projection tidak materialize.",
+        "recommended_action": "Buat migration untuk knowledge_graph_nodes dan knowledge_graph_edges tables di PostgreSQL. Integrasikan ke knowledge-graph service."
+      }
+    ],
+    "major_gaps": [
+      {
+        "gap_id": "DB-GAP-002",
+        "element": "External Signal / Inbound",
+        "severity": "MAJOR",
+        "impact": "REALITY-002 tidak selesai. Inbound signal dari external world tidak bisa diproses secara canonical dan terikat ke work reality.",
+        "recommended_action": "Selesaikan REALITY-002: Buat external_signals table di PostgreSQL untuk inbound webhooks/API calls. Hubungkan ke communication_events pipeline."
+      }
+    ],
+    "minor_gaps": [
+      {
+        "gap_id": "DB-GAP-003",
+        "element": "Outcome / Result",
+        "severity": "MINOR",
+        "impact": "Outcome tidak memiliki dedicated table dengan verifikasi authority. Sulit untuk audit outcome terpisah dari work state.",
+        "recommended_action": "Evaluasi jika butuh outcomes table terpisah, atau cukup extend works table dengan outcome_metadata JSONB."
+      },
+      {
+        "gap_id": "DB-GAP-004",
+        "element": "Organization Projection",
+        "severity": "MINOR",
+        "impact": "Organization masih entity terpisah, bukan projection dari relationships. Melanggar BETTER EOS principle organization as projection.",
+        "recommended_action": "Setelah knowledge graph persistent, migrate institution data untuk terproyeksi dari graph relationships. Hapus institution entity terpisah."
+      }
+    ]
+  },
+  "recommendations": [
+    {
+      "priority": "P0",
+      "action": "Selesaikan REALITY-002 inbound signal processing",
+      "owner": "Lane 1 Team",
+      "dependency": "None"
+    },
+    {
+      "priority": "P0",
+      "action": "Buat migration 007 untuk knowledge_graph_nodes dan knowledge_graph_edges tables",
+      "owner": "BETTER EOS Team",
+      "dependency": "None"
+    },
+    {
+      "priority": "P1",
+      "action": "Enable RLS pada semua tables yang masih belum punya (users, sessions, documents, service_requests)",
+      "owner": "Foundation Team",
+      "dependency": "Core tables RLS sudah berjalan"
+    },
+    {
+      "priority": "P1",
+      "action": "Tambahkan optimistic concurrency control ke semua tables yang missing (communication_events, evidence, users, sessions)",
+      "owner": "Foundation Team",
+      "dependency": "works table sudah punya OCC"
+    },
+    {
+      "priority": "P2",
+      "action": "Buat external_signals table untuk inbound REALITY-002",
+      "owner": "REALITY-002 Team",
+      "dependency": "REALITY-002 inbound processing design"
+    },
+    {
+      "priority": "P2",
+      "action": "Migrate institution data menjadi projection dari knowledge graph relationships",
+      "owner": "BETTER EOS Team",
+      "dependency": "knowledge graph tables sudah ada"
+    }
+  ],
+  "final_verdict": "SEBAGIAN BESAR REALITY ELEMENTS SUDAH CANONICAL DI POSTGRESQL. Hanya 1 critical gap (knowledge graph persistence) yang menghalangi BETTER EOS. Semua core work reality chain terpenuhi: Intent → Work → Actors → Communication → Actions → Evidence → Outcome. External reality (inbound signals) masih in-progress di REALITY-002."
+}

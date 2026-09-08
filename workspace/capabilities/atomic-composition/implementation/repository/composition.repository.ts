@@ -1,6 +1,6 @@
-import { readFile, writeFile, mkdir } from 'fs/promises';
+import { readFile, writeFile, mkdir, readdir } from 'fs/promises';
 import { existsSync } from 'fs';
-import type { Team, TeamId } from '../contracts/atomic-composition.contracts';
+import type { Team, TeamId, WorkBinding } from '../contracts/atomic-composition.contracts';
 import type { Assignment, AssignmentId } from '../contracts/atomic-composition.contracts';
 import type { Requirement, RequirementId } from '../contracts/atomic-composition.contracts';
 import type { WorkId } from '@capabilities/work-core/contracts/work.contracts';
@@ -239,5 +239,188 @@ export class CompositionRepository {
       workIdMatches,
       errors
     };
+  }
+
+  // =============================================
+  // HYPER-RELATIONSHIP MUTATION: updateWorkBinding - support adding/removing participants without new compositionId
+  // Implements BETTER-EOS GAP QUESTION 2: relationship can change, gain/lose participants
+  // =============================================
+  static async updateWorkBinding(
+    compositionId: string, 
+    bindingId: string, 
+    updates: Partial<WorkBinding>
+  ): Promise<{ updated: boolean; binding: WorkBinding | null; auditLogEntry: any }> {
+    await this.initialize();
+    
+    // First load the full composition to verify we're modifying a valid binding
+    const composition = await this.loadFullComposition(compositionId);
+    if (!composition) {
+      return { updated: false, binding: null, auditLogEntry: null };
+    }
+
+    // Find the existing binding
+    const existingBinding = composition.assignments.find(a => a.bindingId === bindingId) as WorkBinding;
+    if (!existingBinding) {
+      return { updated: false, binding: null, auditLogEntry: null };
+    }
+
+    // Merge updates - only allow specific fields to be modified (immutability pattern)
+    const updatedBinding: WorkBinding = {
+      ...existingBinding,
+      ...updates,
+      // Always update the timestamp
+      updatedAt: new Date().toISOString(),
+      // compositionId can NEVER be changed - hyper-relationship identity is immutable
+      compositionId: existingBinding.compositionId
+    };
+
+    // Save the updated assignment (uses same bindingId to preserve identity)
+    await this.saveAssignment(updatedBinding);
+
+    // Create audit log entry for evidence chain (BETTER-EOS GAP QUESTION 3 requirement)
+    const auditLogEntry = {
+      auditId: `audit-${Date.now()}`,
+      compositionId,
+      bindingId,
+      previousState: existingBinding,
+      newState: updatedBinding,
+      changedFields: Object.keys(updates),
+      changedAt: new Date().toISOString(),
+      actor: updates.updatedBy || "system" // Track who made the change
+    };
+
+    // Persist audit log to .eos-state/composition/audit for evidence chain
+    const auditPath = join(STORAGE_DIR, 'audit', `${compositionId}`, `${auditLogEntry.auditId}.json`);
+    await mkdir(join(STORAGE_DIR, 'audit', `${compositionId}`), { recursive: true });
+    await writeFile(auditPath, JSON.stringify(auditLogEntry, null, 2));
+
+    console.log(`[BETTER-EOS] WorkBinding updated: compositionId=${compositionId}, bindingId=${bindingId}, changes=${Object.keys(updates).join(',')}`);
+    
+    return { updated: true, binding: updatedBinding, auditLogEntry };
+  }
+
+  // =============================================
+  // HYPER-RELATIONSHIP MUTATION: addParticipant - add new participant to existing composition
+  // =============================================
+  static async addParticipant(
+    compositionId: string,
+    newBinding: WorkBinding
+  ): Promise<{ added: boolean; binding: WorkBinding | null; auditLogEntry: any }> {
+    await this.initialize();
+    
+    const composition = await this.loadFullComposition(compositionId);
+    if (!composition) {
+      return { added: false, binding: null, auditLogEntry: null };
+    }
+
+    // Enforce that new participant shares the SAME compositionId (hyper-relationship rule)
+    if (newBinding.compositionId !== compositionId) {
+      console.error(`[BETTER-EOS] Cannot add participant with different compositionId: ${newBinding.compositionId} vs existing ${compositionId}`);
+      return { added: false, binding: null, auditLogEntry: null };
+    }
+
+    // Save the new binding
+    await this.saveAssignment(newBinding);
+
+    // Update the composition manifest to include the new assignment
+    const manifestPath = join(STORAGE_DIR, 'compositions', `${compositionId}.json`);
+    const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+    manifest.assignmentIds.push(String(newBinding.bindingId));
+    manifest.lastModifiedAt = new Date().toISOString();
+    await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
+
+    // Create audit log entry
+    const auditLogEntry = {
+      auditId: `audit-${Date.now()}`,
+      compositionId,
+      action: "ADD_PARTICIPANT",
+      newParticipant: newBinding.participantId,
+      participantType: newBinding.participantType,
+      addedAt: new Date().toISOString(),
+      actor: newBinding.updatedBy || "system"
+    };
+
+    const auditPath = join(STORAGE_DIR, 'audit', `${compositionId}`, `${auditLogEntry.auditId}.json`);
+    await mkdir(join(STORAGE_DIR, 'audit', `${compositionId}`), { recursive: true });
+    await writeFile(auditPath, JSON.stringify(auditLogEntry, null, 2));
+
+    console.log(`[BETTER-EOS] New participant added: compositionId=${compositionId}, participantId=${newBinding.participantId}, type=${newBinding.participantType}`);
+    
+    return { added: true, binding: newBinding, auditLogEntry };
+  }
+
+  // =============================================
+  // HYPER-RELATIONSHIP MUTATION: removeParticipant - remove participant from existing composition
+  // =============================================
+  static async removeParticipant(
+    compositionId: string,
+    bindingId: string,
+    removedBy: string = "system"
+  ): Promise<{ removed: boolean; auditLogEntry: any }> {
+    await this.initialize();
+    
+    const composition = await this.loadFullComposition(compositionId);
+    if (!composition) {
+      return { removed: false, auditLogEntry: null };
+    }
+
+    const existingBinding = composition.assignments.find(a => a.bindingId === bindingId) as WorkBinding;
+    if (!existingBinding) {
+      return { removed: false, auditLogEntry: null };
+    }
+
+    // Mark binding as removed (soft delete - preserve history for evidence chain)
+    await this.updateWorkBinding(compositionId, bindingId, { 
+      status: "removed",
+      updatedBy: removedBy
+    });
+
+    // Update composition manifest
+    const manifestPath = join(STORAGE_DIR, 'compositions', `${compositionId}.json`);
+    const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+    manifest.assignmentIds = manifest.assignmentIds.filter(id => id !== bindingId);
+    manifest.lastModifiedAt = new Date().toISOString();
+    await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
+
+    // Create audit log entry
+    const auditLogEntry = {
+      auditId: `audit-${Date.now()}`,
+      compositionId,
+      action: "REMOVE_PARTICIPANT",
+      removedParticipantId: existingBinding.participantId,
+      removedAt: new Date().toISOString(),
+      removedBy
+    };
+
+    const auditPath = join(STORAGE_DIR, 'audit', `${compositionId}`, `${auditLogEntry.auditId}.json`);
+    await mkdir(join(STORAGE_DIR, 'audit', `${compositionId}`), { recursive: true });
+    await writeFile(auditPath, JSON.stringify(auditLogEntry, null, 2));
+
+    console.log(`[BETTER-EOS] Participant removed: compositionId=${compositionId}, participantId=${existingBinding.participantId}`);
+    
+    return { removed: true, auditLogEntry };
+  }
+
+  // =============================================
+  // AUDIT LOG RETRIEVAL - for evidence chain verification
+  // =============================================
+  static async getCompositionAuditLog(compositionId: string): Promise<any[]> {
+    await this.initialize();
+    const auditDir = join(STORAGE_DIR, 'audit', `${compositionId}`);
+    if (!existsSync(auditDir)) return [];
+
+    const { readdir, readFile } = require('fs/promises');
+    const files = await readdir(auditDir);
+    const auditLogs: any[] = [];
+    
+    for (const file of files) {
+      if (file.endsWith('.json')) {
+        const data = await readFile(join(auditDir, file), 'utf8');
+        auditLogs.push(JSON.parse(data));
+      }
+    }
+
+    // Sort by timestamp (oldest first)
+    return auditLogs.sort((a, b) => new Date(a.changedAt || a.addedAt || a.removedAt).getTime() - new Date(b.changedAt || b.addedAt || b.removedAt).getTime());
   }
 }

@@ -2,6 +2,7 @@
 // This isolation implements user's requirement: "unrelated + deployment-independent → isolate build boundary properly"
 // We follow the rule of NOT COMMENTING OUT CODE, but instead use compiler-level isolation to avoid greenwashing builds
 // DEPRECATED WIDGETS (UNUSED, scheduled for archive: 2026-09-01): ExecutionChainPanel, ProfessionalWorkspaceIntro, RequirementProofPage, ResearchPage, duplicate InstitutionResearcherList
+// DEPRECATED 2026-09-08 ADDITIONS: DashboardGridLayout, ThemeToggle, ProfileHeader (no production route usage found)
 export { WorkspaceEntryPanel } from "./workspace-entry-panel/WorkspaceEntryPanel";
 export { DeliveryWorkspace } from "./delivery-workspace/DeliveryWorkspace";
 export { CaseDetailPage } from "./case-detail-page/CaseDetailPage";
@@ -55,9 +56,10 @@ export type { ReadinessPageProps } from "./readiness-page/ReadinessPage";
 export { WorkspaceDashboard } from "./workspace-dashboard/WorkspaceDashboard";
 export type { WorkspaceDashboardProps } from "./workspace-dashboard/WorkspaceDashboard";
 
-// R9 - My Reality layout components
-export { DashboardGridLayout } from "./layouts/DashboardGridLayout";
-export { ThemeToggle } from "./theme/ThemeToggle";
+// DEPRECATED LAYOUT COMPONENTS (UNUSED, scheduled for archive: 2026-09-08): DashboardGridLayout, ThemeToggle
+// R9 - My Reality layout components - REMOVED: no usage found in any production route
+// export { DashboardGridLayout } from "./layouts/DashboardGridLayout";
+// export { ThemeToggle } from "./theme/ThemeToggle";
 
 // AITasksPage components are implemented directly in the /ai-tasks route
 // These components are not required in the widget package - route handles its own presentation

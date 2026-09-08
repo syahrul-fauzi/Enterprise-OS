@@ -1,21 +1,65 @@
 import type { WorkAggregate } from "../../contracts/work.contracts";
 import { randomUUID } from "crypto";
 const generateId = () => randomUUID();
+import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
 import type { CapabilityRepository } from "@repo/core-kernel";
 
-export class WorkRepositoryPostgres implements CapabilityRepository<WorkAggregate> {
+export class WorkRepositoryPostgres extends PostgresRepository<WorkAggregate> implements CapabilityRepository<WorkAggregate> {
   kind: "repository" = "repository" as const;
   entityName: string = "work" as const;
-  private works: Map<string, WorkAggregate> = new Map();
 
-  async save(work: Partial<WorkAggregate>): Promise<WorkAggregate> {
-    // Check if this is an existing work (update) vs new work (create)
-    const existingWork = work.id ? this.works.get(work.id) : undefined;
-    
+  constructor() {
+    super("works"); // Table name in PostgreSQL
+  }
+
+  protected toRecord(entity: WorkAggregate): Record<string, any> {
+    // Konversi WorkAggregate ke PostgreSQL record
+    return {
+      id: entity.id,
+      title: entity.title,
+      description: entity.description,
+      status: entity.status,
+      actor_id: entity.actorId,
+      participants: JSON.stringify(entity.participants || []),
+      version: entity.version || 1,
+      state_history: JSON.stringify(entity.stateHistory || []),
+      created_at: entity.createdAt,
+      updated_at: entity.updatedAt,
+      composition_id: entity.compositionId,
+    };
+  }
+
+  protected toAggregate(record: Record<string, any>): WorkAggregate {
+    // Konversi PostgreSQL record kembali ke WorkAggregate
+    return {
+      id: record.id,
+      workId: record.id,
+      title: record.title,
+      description: record.description,
+      status: record.status,
+      actorId: record.actor_id,
+      participants: JSON.parse(record.participants || "[]"),
+      version: record.version || 1,
+      stateHistory: JSON.parse(record.state_history || "[]"),
+      createdAt: record.created_at,
+      updatedAt: record.updated_at,
+      compositionId: record.composition_id,
+    } as WorkAggregate;
+  }
+
+  // Semua method save/get/list/remove sudah di-inherit dari PostgresRepository base class!
+  // Kita hanya butuh override save untuk menambahkan logika state history seperti sebelumnya:
+  async save(work: Partial<WorkAggregate> & { id?: string }): Promise<WorkAggregate> {
+    // Handle existing work untuk state history (sesuai RL2-001)
+    let existingWork: WorkAggregate | undefined;
+    if (work.id) {
+      existingWork = await this.byId(work.id);
+    }
+
     let savedWork: WorkAggregate;
     
     if (existingWork) {
-      // RL2-001: Update existing work - maintain state history
+      // Update existing work - maintain state history
       const newStateHistory = [...existingWork.stateHistory];
       
       // If status changed, add to state history
@@ -28,19 +72,15 @@ export class WorkRepositoryPostgres implements CapabilityRepository<WorkAggregat
         });
       }
       
-      // Merge updates while preserving state history and core fields
+      // Merge updates
       savedWork = {
         ...existingWork,
         ...work,
         updatedAt: new Date().toISOString(),
         stateHistory: newStateHistory,
-        // Preserve assignedActorId if not explicitly updated
-        assignedActorId: work.assignedActorId || existingWork.assignedActorId,
-        // Preserve nextAction if not explicitly updated
-        nextAction: work.nextAction || existingWork.nextAction
-      };
+      } as WorkAggregate;
     } else {
-      // Create new work - initialize RL2-001 fields
+      // Create new work
       const id = generateId();
       const workId = `work_${id}`;
       
@@ -49,61 +89,25 @@ export class WorkRepositoryPostgres implements CapabilityRepository<WorkAggregat
         : [{ status: "draft" as const, timestamp: new Date().toISOString(), actorId: work.actorId!, note: "Work created" }];
       
       savedWork = {
-        id,
-        workId: workId as any,
-        title: work.title!,
-        description: work.description,
-        priority: work.priority || "medium",
-        linkedIntentId: work.linkedIntentId,
-        domainType: work.domainType || "generic",
-        workMode: work.workMode || "oneshot",
-        sessionId: work.sessionId!,
-        tenantId: work.tenantId!,
-        workspaceId: work.workspaceId!,
-        actorId: work.actorId!,
+        id: workId,
+        workId: workId,
+        title: work.title || "Untitled Work",
+        description: work.description || "",
         status: work.status || "draft",
-        createdAt: new Date().toISOString(),
-        requiredCapabilities: work.requiredCapabilities || [],
-        // RL2-001: Initialize state tracking fields
-        assignedActorId: work.assignedActorId,
-        nextAction: work.nextAction || "Review and assign actor",
+        actorId: work.actorId!,
+        participants: work.participants || [work.actorId!],
+        version: 1,
         stateHistory: initialStateHistory,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        compositionId: work.compositionId || null,
         ...work,
       } as WorkAggregate;
     }
 
-    this.works.set(savedWork.id, savedWork);
-    console.log(`[WorkRepository] Saved work ${savedWork.workId} - status: ${savedWork.status}, state history length: ${savedWork.stateHistory.length}`);
-    return savedWork;
-  }
-
-  async byId(id: string): Promise<WorkAggregate | undefined> {
-    return this.works.get(id);
-  }
-
-  async byWorkId(workId: string): Promise<WorkAggregate | undefined> {
-    for (const work of this.works.values()) {
-      if (work.workId === workId) return work;
-    }
-    return undefined;
-  }
-
-  async list(): Promise<readonly WorkAggregate[]> {
-    return Array.from(this.works.values());
-  }
-
-  async remove(id: string): Promise<boolean> {
-    return this.works.delete(id);
-  }
-
-  async listByWorkspace(workspaceId: string): Promise<WorkAggregate[]> {
-    return Array.from(this.works.values()).filter(w => w.workspaceId === workspaceId);
-  }
-
-  async listByInstitution(institutionId: string): Promise<WorkAggregate[]> {
-    return Array.from(this.works.values()).filter(w => 
-      (w as any).participantIds?.includes(institutionId) || 
-      (w as any).institutionId === institutionId
-    );
+    // Simpan ke PostgreSQL via base class save()
+    const finalSaved = await super.save(savedWork);
+    console.log(`[WorkRepository] Saved work ${finalSaved.id} - status: ${finalSaved.status} state history length: ${finalSaved.stateHistory.length}`);
+    return finalSaved;
   }
 }

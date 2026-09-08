@@ -98,6 +98,7 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
   async byId(id: CommunicationEventId, context?: { tenantId: string; workspaceId: string }): Promise<CommunicationEvent | undefined> {
     const query = "SELECT * FROM communication_events WHERE event_id = $1";
     const params: any[] = [id];
+    const result = await readPool.query<Record<string, any>>(query, params);
     
     // Create a mutable copy of the query to allow modifications
     let mutableQuery = query;
@@ -115,6 +116,21 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
       console.error("[CommunicationRepositoryPostgres] byId error:", error);
       throw error;
     }
+  }
+
+  async byMessageId(messageId: string, context?: { tenantId: string; workspaceId: string }): Promise<CommunicationEvent | undefined> {
+    let query = "SELECT * FROM communication_events WHERE message_id = $1";
+    const params: any[] = [messageId];
+    
+    // WORK-015: Filter by tenant/workspace if context is provided
+    if (context) {
+      query += " AND tenant_id = $2 AND workspace_id = $3";
+      params.push(context.tenantId, context.workspaceId);
+    }
+    
+    const result = await readPool.query(query, params);
+    if (result.rows.length === 0) return undefined;
+    return mapRowToCommunicationEvent(result.rows[0]);
   }
 
   async byWorkId(workId: string, context?: { tenantId: string; workspaceId: string }): Promise<readonly CommunicationEvent[]> {
@@ -197,8 +213,8 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
       entity.adapter_type,
       (entity as any).timestamp || new Date(),
       entity.status,
-      null, // message_id not in current interface
-      null, // metadata not in current interface
+      (entity as any).message_id || null, // message_id from inbound webhook events
+      (entity as any).metadata || null, // metadata from inbound webhook events
     ]);
     
     // WORK-015: Append to immutable audit ledger

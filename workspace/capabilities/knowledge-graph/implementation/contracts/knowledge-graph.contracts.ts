@@ -1,18 +1,30 @@
 export interface KnowledgeNode {
-  readonly id: string;
-  readonly type: "requirement" | "evidence" | "workflow" | "plan";
-  readonly label: string;
-  readonly attributes: Readonly<Record<string, unknown>>;
+  id: string;
+  type: "requirement" | "evidence" | "workflow" | "plan" | "actor" | "capability" | "resource" | "product" | "organization" | "specialization" | "custom";
+  label: string;
+  attributes: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
+  version?: number;
 }
 
 export interface KnowledgeEdge {
-  readonly id: string;
-  readonly from: string;
-  readonly to: string;
-  readonly relation: string;
+  id: string;
+  from: string;
+  to: string;
+  relation: string;
+  metadata?: Record<string, unknown>;
+  version?: number;
 }
 
 export interface KnowledgeGraphSnapshot {
-  readonly nodes: readonly KnowledgeNode[];
-  readonly edges: readonly KnowledgeEdge[];
+  nodes: KnowledgeNode[];
+  edges: KnowledgeEdge[];
+}
+
+export interface KnowledgeGraphRepository {
+  saveSnapshot(
+    nodes: (KnowledgeNode & { id: string; tenantId: string; workspaceId: string })[],
+    edges: (KnowledgeEdge & { id: string; tenantId: string; workspaceId: string })[]
+  ): Promise<{ savedNodes: number; savedEdges: number }>;
+  loadSnapshot(tenantId: string, workspaceId: string): Promise<{ nodes: KnowledgeNode[]; edges: KnowledgeEdge[] }>;
 }

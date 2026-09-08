@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getWorkById, type CanonicalWorkRecord } from "../create/route";
 import { WorkRepositoryPostgres } from "@capabilities/work-core/implementation/repository/work-postgres.repository";
+import { registerWorkCoreCapability } from "@capabilities/work-core/implementation/commands/work.commands";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
@@ -11,6 +13,9 @@ import {
 
 export async function GET(request: NextRequest) {
   try {
+    // Register work-core capability before invoking commands (fix for command not found error)
+    registerWorkCoreCapability();
+    
     const { pathname } = new URL(request.url);
     const workId = pathname.split('/').pop();
     
@@ -167,8 +172,11 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function PUT(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
+    // Register work-core capability before invoking commands
+    registerWorkCoreCapability();
+    
     const { pathname } = new URL(request.url);
     const workId = pathname.split('/').pop();
     

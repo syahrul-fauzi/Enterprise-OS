@@ -97,7 +97,7 @@ async function main() {
       status TEXT NOT NULL,
       tenant_id TEXT NOT NULL REFERENCES tenants(id),
       workspace_id TEXT NOT NULL REFERENCES workspaces(id),
-      actor_id TEXT NOT NULL REFERENCES users(id),
+      actor_id TEXT NOT NULL, -- Actor-agnostic: supports user-, ai-, iot-, machine-, eos-* actorId tanpa batasan human-only (MA-09 compliance)
       created_by TEXT NOT NULL REFERENCES users(id),
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL,

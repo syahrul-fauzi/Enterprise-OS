@@ -690,7 +690,63 @@ export const caseCommands: Readonly<Record<string, CapabilityCommand>> = {
   "case.listByWorkspace": listCasesByWorkspace,
   "case.addEvidence": addEvidenceToCase,
   "case.markCompleted": markCaseCompleted,
+  "case.generateInvoice": generateInvoice
 } as const;
+
+// LAWYERSHUB-BILLING-001: case.generateInvoice - Layer 2 billing command (no core changes)
+const generateInvoice: any = {
+  kind: "command",
+  name: "case.generateInvoice",
+  version: "1.0.0",
+  async execute(input: any) {
+    await ensureIdentitySchema();
+    const parsed = input;
+    const { sessionId, caseId, amount, currency = "IDR", billToActorId, billingPeriod } = parsed;
+    let tenantId: string;
+    let workspaceId: string;
+    let actorId: string;
+    if (parsed.tenantId && parsed.workspaceId && parsed.actorId) {
+      tenantId = parsed.tenantId;
+      workspaceId = parsed.workspaceId;
+      actorId = parsed.actorId;
+    } else {
+      const isAnonymous = parsed.actorId === "anonymous.user";
+      if (isAnonymous) {
+        tenantId = parsed.tenantId!;
+        workspaceId = parsed.workspaceId!;
+        actorId = parsed.actorId!;
+      } else {
+        const session = await sessionRepository.byId(sessionId as any);
+        if (!session || session.revokedAt !== null) throw new Error("[case.generateInvoice] Invalid session");
+        ({ tenantId, workspaceId, actorId } = session);
+      }
+    }
+    const current = await caseRepository.byId(caseId as any, { tenantId, workspaceId });
+    if (!current) throw new Error(`Case not found: ${caseId}`);
+    if (current.status !== "active" && current.status !== "in_progress") throw new Error(`Cannot invoice inactive case: ${caseId}`);
+    const invoiceId = `inv-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    const updatedCase = {
+      ...current,
+      economicValue: {
+        amount: input.amount,
+        currency: input.currency || "IDR",
+        valueType: "revenue_generated",
+        evidence: invoiceId,
+        recordedAt: new Date().toISOString()
+      },
+      platformMetadata: {
+        ...current.platformMetadata,
+        lastInvoiceId: invoiceId,
+        billToActorId: input.billToActorId,
+        billingPeriod: input.billingPeriod || null,
+        invoiceGeneratedAt: new Date().toISOString()
+      }
+    };
+    await caseRepository.save(updatedCase, { tenantId, workspaceId, actorId });
+    console.log(`[LAWYERSHUB-BILLING-001] Invoice ${invoiceId} generated successfully for case ${caseId}, amount: Rp ${amount.toLocaleString()}`);
+    return { invoiceId, caseId: input.caseId, amount: input.amount, currency: input.currency || "IDR", status: "generated", generatedAt: new Date().toISOString() };
+  }
+};
 
 export type { CreateCaseCommand, CloseCaseCommand, AssignLawyerCommand, AddEvidenceToCaseCommand, MarkCaseCompletedCommand };
 

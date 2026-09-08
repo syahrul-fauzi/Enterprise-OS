@@ -6,7 +6,7 @@ import {
   defaultIncidentPriority,
   IncidentRepositoryInMemory,
 } from "../repository/index.js";
-import { IncidentRepositoryPostgres } from "../repository/incident-postgres.repository.js";
+import { getIncidentRepositoryPostgres, IncidentRepositoryPostgres } from "../repository/incident-postgres.repository.js";
 import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
 import { getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository.js";
 import type {
@@ -25,10 +25,10 @@ function getSessionRepository() {
   return _sessionRepo;
 }
 const _incidentRepo = process.env.DATABASE_URL
-  ? IncidentRepositoryPostgres
+  ? getIncidentRepositoryPostgres()
   : IncidentRepositoryInMemory;
 function getIncidentRepository() {
-  return _incidentRepo as typeof IncidentRepositoryInMemory | typeof IncidentRepositoryPostgres;
+  return _incidentRepo as typeof IncidentRepositoryInMemory | InstanceType<typeof IncidentRepositoryPostgres>;
 }
 
 const CreateIncidentWithContextSchema = z.object({

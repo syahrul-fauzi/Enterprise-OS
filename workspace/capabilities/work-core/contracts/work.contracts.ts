@@ -72,6 +72,15 @@ export const BaseWorkAggregateSchema = z.object({
     recordedAt: z.string().optional() // Timestamp when value was recorded
   }).optional(),
   outcomeDeliveredAt: z.string().optional(), // RL3: Timestamp when final outcome was delivered
+  
+  // MULTI-ACTOR-001: Collaboration extensions
+  version: z.number().default(1), // Optimistic concurrency control version
+  participants: z.array(z.object({
+    actorId: z.string().brand<ActorId>(),
+    role: z.enum(["editor", "viewer", "commenter"]),
+    addedAt: z.string(),
+    addedBy: z.string().brand<ActorId>(),
+  })).default([]), // List of participants with roles
 });
 
 export type WorkAggregate = z.infer<typeof BaseWorkAggregateSchema>;

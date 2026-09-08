@@ -16,7 +16,7 @@ export interface RetryConfig {
   readonly circuit_breaker_threshold: number;
 }
 
-let capabilityCommands: Record<string, CapabilityCommand> = {};
+export let capabilityCommands: Record<string, CapabilityCommand> = {};
 
 // REALITY PATH ONLY: Eliminate all bulk capability loading - only direct imports allowed in routes
 // HAPUS SEMUA dynamic import yang menyebabkan "Failed to load ...js" errors
@@ -482,14 +482,14 @@ async function getAllKeys(): Promise<string[]> {
 
 export const capabilityRegistry = {
   async listCommandKeys(): Promise<readonly string[]> {
-    // REALITY PATH ONLY: Return empty array, no commands loaded
-    console.log("[capability-registry] REALITY_PATH_ONLY: listCommandKeys returns empty array");
-    return [];
+    // Return keys from directly added capabilityCommands (per core-kernel no dynamic import policy)
+    console.log(`[capability-registry] listCommandKeys returns ${Object.keys(capabilityCommands).length} commands:`, Object.keys(capabilityCommands));
+    return Object.keys(capabilityCommands);
   },
   async resolve(commandKey: string): Promise<CapabilityCommand | undefined> {
-      // REALITY PATH ONLY: Return undefined, no commands loaded
-      console.log(`[capability-registry] REALITY_PATH_ONLY: resolve(${commandKey}) returns undefined`);
-      return undefined;
+      // Return command from directly added capabilityCommands (per core-kernel no dynamic import policy)
+      console.log(`[capability-registry] resolve(${commandKey}) - looking in capabilityCommands:`, Object.keys(capabilityCommands));
+      return capabilityCommands[commandKey];
     },
   prefixesFor(capability: string): readonly string[] {
     const aliases = CAPABILITY_PREFIX_ALIASES[capability.toLowerCase()];
@@ -498,9 +498,9 @@ export const capabilityRegistry = {
     return [`${capability.toLowerCase()}.`, `${short}.`];
   },
   async resolveByParts(capability: string, commandName: string): Promise<{ command?: CapabilityCommand; candidates: string[]; attemptedKeys: string[] }> {
-    // REALITY PATH ONLY: Return empty commands object
-    console.log(`[capability-registry] REALITY_PATH_ONLY: resolveByParts(${capability}, ${commandName}) returns no command`);
-    const commands = {};
+    // Use directly added capabilityCommands (per core-kernel no dynamic import policy)
+    console.log(`[capability-registry] resolveByParts(${capability}, ${commandName}) - using capabilityCommands:`, Object.keys(capabilityCommands));
+    const commands = capabilityCommands;
     const attemptedKeys: string[] = [];
     const candidates: string[] = [];
     const prefixes = this.prefixesFor(capability);
@@ -741,13 +741,17 @@ export const capabilityRegistry = {
       const inputTenantId = inputAny?.tenantId ?? tenantId;
       let inputWorkspaceId = inputAny?.workspaceId ?? undefined;
       
-      if (!sessionId || !actorId) {
-        throw new Error(`[capability-registry] Authentication required - sessionId and actorId must be provided for command: ${matchedKey}`);
+      if (!sessionId || !actorId || !inputTenantId) {
+        throw new Error(`[capability-registry] Authentication required - sessionId, actorId, and tenantId must be provided for command: ${matchedKey} (got tenantId: ${inputTenantId})`);
       }
       
       // PR-004: Validate session authenticity from repository (reuse observability.commands pattern)
       // LH-PROD-003 FIX: Removed inputWorkspaceId from required guard - session has workspaceId bound.
       // If input doesn't pass workspaceId, we'll use session's workspaceId as the canonical value.
+      // PR-004: Validate session authenticity from repository (reuse observability.commands pattern)
+      // LH-PROD-003 FIX: Removed inputWorkspaceId from required guard - session has workspaceId bound.
+      // If input doesn't pass workspaceId, we'll use session's workspaceId as the canonical value.
+      // TEST ENVIRONMENT BYPASS: Skip DB-backed session validation if DATABASE_URL not set (in-memory test sessions)
       if (process.env.DATABASE_URL && sessionId && actorId && inputTenantId) {
         try {
           const sessionRepoResult = await resolveCapabilityModule("@capabilities/"+"identity/implementation/repositories/index");
@@ -903,6 +907,8 @@ export const capabilityRegistry = {
         return result;
       } catch (err) {
         lastError = err instanceof Error ? err : new Error(String(err));
+        // Print ACTUAL ERROR to debug
+        console.error(`[capability-registry] ACTUAL ERROR in invoke:`, lastError?.message, lastError?.stack);
         // PR-003: Clear concurrency state on failure to allow retry
         if (inputAny?.artifactId) {
           const concurrencyKey = this.getConcurrencyKey(tenantId, inputAny.artifactId);
@@ -912,7 +918,8 @@ export const capabilityRegistry = {
         // PR-004: Increment failed attempts on authentication failures
         if (!isPublicCommand) {
           const actorId = inputAny?.actorId ?? ambientCtx?.actor_id;
-          const securityKey = this.getSecurityKey(tenantId, actorId);
+          const errorInputTenantId = inputAny?.tenantId ?? tenantId;
+          const securityKey = this.getSecurityKey(errorInputTenantId, actorId);
           const currentState = this.securityStates.get(securityKey) ?? { failedAttempts: 0, lastFailedAt: 0 };
           const newFailedAttempts = currentState.failedAttempts + 1;
           // Block for 15 minutes after 5 failed attempts
@@ -922,7 +929,7 @@ export const capabilityRegistry = {
             lastFailedAt: Date.now(),
             blockedUntil
           });
-          console.warn(`[capability-registry] Authentication failure for actor ${actorId} (tenant ${tenantId}) - ${newFailedAttempts} failed attempts`);
+          console.warn(`[capability-registry] Command execution failure for actor ${actorId} (tenant ${errorInputTenantId}) - ${newFailedAttempts} failed attempts (actual error: ${lastError?.message})`);
         }
         const newConsecutiveFails = circuitState.consecutiveFailures + 1;
         circuitState = {

@@ -46,23 +46,23 @@ class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implement
   }
 
   async byId(id: MembershipId): Promise<MembershipAggregate | undefined> {
-    const result = await this.pool.query("SELECT * FROM memberships WHERE id = $1", [id]);
+    const result = await this.pool.query<Record<string, any>>("SELECT * FROM memberships WHERE id = $1", [id]);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }
 
   async listByUser(userId: UserId): Promise<readonly MembershipAggregate[]> {
-    const result = await this.pool.query("SELECT * FROM memberships WHERE user_id = $1 ORDER BY joined_at DESC", [userId]);
+    const result = await this.pool.query<Record<string, any>>("SELECT * FROM memberships WHERE user_id = $1 ORDER BY joined_at DESC", [userId]);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
   async listByTenant(tenantId: TenantId): Promise<readonly MembershipAggregate[]> {
-    const result = await this.pool.query("SELECT * FROM memberships WHERE tenant_id = $1 ORDER BY joined_at DESC", [tenantId]);
+    const result = await this.pool.query<Record<string, any>>("SELECT * FROM memberships WHERE tenant_id = $1 ORDER BY joined_at DESC", [tenantId]);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
   async listByWorkspace(workspaceId: WorkspaceId): Promise<readonly MembershipAggregate[]> {
-    const result = await this.pool.query("SELECT * FROM memberships WHERE workspace_id = $1 ORDER BY joined_at DESC", [workspaceId]);
+    const result = await this.pool.query<Record<string, any>>("SELECT * FROM memberships WHERE workspace_id = $1 ORDER BY joined_at DESC", [workspaceId]);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
@@ -71,7 +71,7 @@ class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implement
     tenantId: TenantId,
     workspaceId: WorkspaceId,
   ): Promise<MembershipAggregate | undefined> {
-    const result = await this.pool.query(
+    const result = await this.pool.query<Record<string, any>>(
       "SELECT * FROM memberships WHERE user_id = $1 AND tenant_id = $2 AND workspace_id = $3",
       [userId, tenantId, workspaceId]
     );
@@ -80,7 +80,7 @@ class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implement
   }
 
   async list(): Promise<readonly MembershipAggregate[]> {
-    const result = await this.pool.query("SELECT * FROM memberships ORDER BY joined_at DESC", []);
+    const result = await this.pool.query<Record<string, any>>("SELECT * FROM memberships ORDER BY joined_at DESC", []);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
@@ -90,7 +90,7 @@ class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implement
     
     const exists = await this.byId(entity.id);
     if (exists) {
-      await this.pool.query(
+      await this.pool.query<Record<string, any>>(
         `UPDATE memberships SET 
           user_id = $1, tenant_id = $2, workspace_id = $3, role = $4, joined_at = $5, created_at = $6, updated_at = $7
           WHERE id = $8`,
@@ -100,7 +100,7 @@ class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implement
         ]
       );
     } else {
-      await this.pool.query(
+      await this.pool.query<Record<string, any>>(
         `INSERT INTO memberships (
           id, user_id, tenant_id, workspace_id, role, joined_at, created_at, updated_at
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
@@ -115,7 +115,7 @@ class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implement
   }
 
   async remove(id: MembershipId): Promise<boolean> {
-    const result = await this.pool.query("DELETE FROM memberships WHERE id = $1", [id]);
+    const result = await this.pool.query<Record<string, any>>("DELETE FROM memberships WHERE id = $1", [id]);
     return (result as any).rowCount > 0;
   }
 }

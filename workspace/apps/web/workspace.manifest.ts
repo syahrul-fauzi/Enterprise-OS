@@ -191,7 +191,7 @@ const workCore: CapabilityDescriptor = Object.freeze({
 });
 
 // Consultation capability imports (REMOVED - temporarily disabled to resolve spine flow build)
-// import { consultationCommands } from "../../capabilities/consultation.tmp/implementation/commands/consultation.commands.js";
+// import { consultationCommands } from "../../capabilities/consultation/implementation/commands/consultation.commands.js";
 
 // Consultation capability implementation (DISABLED - unrelated to current spine flow)
 // const consultationImplementation: CapabilityImplementation = {
@@ -203,7 +203,7 @@ const workCore: CapabilityDescriptor = Object.freeze({
 // };
 
 // const consultation: CapabilityDescriptor = Object.freeze({
-//   id: "consultation.tmp",
+//   id: "consultation
 //   version: "0.1.0",
 //   name: "Consultation Management",
 //   experience: {},
@@ -256,7 +256,7 @@ export const registry = new StaticRegistry({
     // "evidence-registry": evidenceRegistry,
     "work-core": workCore,
     "consultation": consultation, // ENABLED for LH-LGL-001 LawyersHub Legal Consultation
-    // "consultation.tmp": consultation, (temporarily disabled to resolve build - unrelated to spine flow)
+    // "consultation": consultation, (temporarily disabled to resolve build - unrelated to spine flow)
     "legal-case": legalCase,
     // "legal-document": legalDocument, (temporarily disabled)
     // "observability": observability, (temporarily disabled)
