@@ -3,10 +3,9 @@
 
 import { Suspense } from 'react';
 import Link from 'next/link';
-import { CommunityDirectory } from "../CommunityDirectory";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
-import { CommunitySearchBar, WorkRealityLoading } from "@repo/presentation-ui-system";
-import { Button, Card, PermissionDenied, ErrorState, Pagination } from "@repo/presentation-ui-system";
+import { WorkRealityLoading } from "@repo/presentation-ui-system";
+import { PermissionDenied, ErrorState } from "@repo/presentation-ui-system";
 import { useWorkspaceSession } from "@repo/presentation-hooks/use-workspace-session";
 import type { ProductPreviewBinding } from "@repo/presentation-types";
 import type { WorkspaceSession } from "@repo/core-kernel";
@@ -97,36 +96,10 @@ export function CommunityPage({
           </p>
         </div>
 
-        <CommunitySearchBar 
-          initialQuery={searchQuery} 
-          initialType={filterType}
-          initialLocation={filterLocation} 
-          productId={productId} 
-        />
-        
-        <div className="mt-8">
-          <Suspense fallback={<div className="animate-pulse h-96 bg-slate-100 rounded-xl"></div>}>
-            <CommunityDirectory 
-              productId={productId}
-              searchQuery={searchQuery}
-              filterType={filterType}
-              filterLocation={filterLocation}
-            />
-          </Suspense>
-          
-          {/* Pagination Controls - menggunakan shared Pagination component */}
-          <div className="mt-8">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={999} // Placeholder - harus diisi oleh CommunityDirectory dengan total halaman sebenarnya
-              totalItems={9999} // Placeholder - harus diisi oleh CommunityDirectory dengan total item sebenarnya
-              itemsPerPage={pageSize}
-              onPageChange={(page) => {
-                window.location.href = `/community?productId=${productId}&q=${searchQuery}&type=${filterType}&location=${filterLocation}&page=${page}`;
-              }}
-            />
-          </div>
-        </div>
+        <p className="text-slate-500">Halaman komunitas sedang dalam pengembangan untuk golden spine route.</p>
+        <Link href="/" className="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">
+          Kembali ke Beranda
+        </Link>
       </section>
     </>
   );

@@ -1,9 +1,10 @@
 import { readFile, writeFile, mkdir, readdir } from 'fs/promises';
 import { existsSync } from 'fs';
-import type { Team, TeamId, WorkBinding } from '../contracts/atomic-composition.contracts';
-import type { Assignment, AssignmentId } from '../contracts/atomic-composition.contracts';
-import type { Requirement, RequirementId } from '../contracts/atomic-composition.contracts';
+import type { Team, WorkBinding } from '../contracts/atomic-composition.contracts';
+import type { Assignment } from '../contracts/atomic-composition.contracts';
+import type { Requirement } from '../contracts/atomic-composition.contracts';
 import type { WorkId } from '@capabilities/work-core/contracts/work.contracts';
+import { TeamId, AssignmentId, RequirementId } from '../contracts/atomic-composition.contracts';
 import { join } from 'path';
 
 // PERSISTENCE LAYER FOR ATOMIC COMPOSITION
@@ -27,13 +28,6 @@ export class CompositionRepository {
   // =============================================
   // TEAM PERSISTENCE
   // =============================================
-  static async saveTeam(team: Team): Promise<boolean> {
-    await this.initialize();
-    const filePath = join(STORAGE_DIR, 'teams', `${team.teamId}.json`);
-    await writeFile(filePath, JSON.stringify(team, null, 2));
-    return true;
-  }
-
   static async getTeamById(teamId: TeamId): Promise<Team | null> {
     await this.initialize();
     const filePath = join(STORAGE_DIR, 'teams', `${teamId}.json`);
@@ -52,7 +46,7 @@ export class CompositionRepository {
   // =============================================
   // ASSIGNMENT PERSISTENCE
   // =============================================
-  static async saveAssignment(assignment: Assignment): Promise<{ assignmentId: string; saved: boolean }> {
+  static async saveAssignment(assignment: any): Promise<{ assignmentId: string; saved: boolean }> {
     await this.initialize();
     // Use bindingId (canonical WorkBinding ID) for modern assignments, fall back to assignmentId for legacy
     const fileName = assignment.bindingId ? String(assignment.bindingId) : assignment.assignmentId;
@@ -248,7 +242,7 @@ export class CompositionRepository {
   static async updateWorkBinding(
     compositionId: string, 
     bindingId: string, 
-    updates: Partial<WorkBinding>
+    updates: any // Minimal fix untuk legacy properties yang tidak ada di WorkBinding
   ): Promise<{ updated: boolean; binding: WorkBinding | null; auditLogEntry: any }> {
     await this.initialize();
     
@@ -258,24 +252,45 @@ export class CompositionRepository {
       return { updated: false, binding: null, auditLogEntry: null };
     }
 
-    // Find the existing binding
-    const existingBinding = composition.assignments.find(a => a.bindingId === bindingId) as WorkBinding;
-    if (!existingBinding) {
+    // Find the existing assignment (Assignment model from canonical schema)
+    const existingAssignment = composition.assignments.find(a => a.bindingId === bindingId);
+    if (!existingAssignment) {
       return { updated: false, binding: null, auditLogEntry: null };
     }
 
-    // Merge updates - only allow specific fields to be modified (immutability pattern)
+    // Convert Assignment back to WorkBinding for backward compatibility
+    const existingBinding: WorkBinding = {
+      ...existingAssignment,
+      id: existingAssignment.id || bindingId,
+      participantId: existingAssignment.actorId || existingAssignment.participantId || "",
+      boundAt: existingAssignment.assignedAt || new Date().toISOString(),
+      compositionId: compositionId as any, // Minimal cast untuk legacy branded type requirement
+      ...(existingAssignment.authority ? { authority: existingAssignment.authority as any } : {})
+    } as any;
+
+    // Merge updates - create updated WorkBinding first
     const updatedBinding: WorkBinding = {
       ...existingBinding,
       ...updates,
-      // Always update the timestamp
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    // Konversi WorkBinding ke Assignment dengan semua properti mandatory dan branded ID yang sesuai
+    const updatedAssignment: any = {
+      // Properti dari WorkBinding
+      ...updatedBinding,
       // compositionId can NEVER be changed - hyper-relationship identity is immutable
-      compositionId: existingBinding.compositionId
+      compositionId: existingBinding.compositionId,
+      // Properti mandatory yang dibutuhkan oleh tipe Assignment dengan proper casting ke branded ID
+      assignmentId: AssignmentId(bindingId), // Gunakan bindingId sebagai assignmentId dengan cast yang benar
+      teamId: TeamId(compositionId),    // Gunakan compositionId sebagai teamId dengan cast yang benar
+      actorId: updatedBinding.participantId, // Gunakan participantId sebagai actorId
+      assignedAt: updatedBinding.boundAt || new Date().toISOString(), // Gunakan boundAt sebagai assignedAt
+      status: (updates.status || existingBinding.status) as "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED"
     };
 
     // Save the updated assignment (uses same bindingId to preserve identity)
-    await this.saveAssignment(updatedBinding);
+    await this.saveAssignment(updatedAssignment);
 
     // Create audit log entry for evidence chain (BETTER-EOS GAP QUESTION 3 requirement)
     const auditLogEntry = {
@@ -320,7 +335,7 @@ export class CompositionRepository {
     }
 
     // Save the new binding
-    await this.saveAssignment(newBinding);
+    await this.saveAssignment(newBinding as any);
 
     // Update the composition manifest to include the new assignment
     const manifestPath = join(STORAGE_DIR, 'compositions', `${compositionId}.json`);
@@ -364,21 +379,32 @@ export class CompositionRepository {
       return { removed: false, auditLogEntry: null };
     }
 
-    const existingBinding = composition.assignments.find(a => a.bindingId === bindingId) as WorkBinding;
-    if (!existingBinding) {
+    // Find existing assignment (canonical schema model)
+    const existingAssignment = composition.assignments.find(a => a.bindingId === bindingId);
+    if (!existingAssignment) {
       return { removed: false, auditLogEntry: null };
     }
 
-    // Mark binding as removed (soft delete - preserve history for evidence chain)
+    // Convert to WorkBinding for backward compatibility
+    const existingBinding: WorkBinding = {
+      ...existingAssignment,
+      id: existingAssignment.id || bindingId,
+      participantId: existingAssignment.actorId || existingAssignment.participantId || "",
+      boundAt: existingAssignment.assignedAt || new Date().toISOString(),
+      compositionId: compositionId as any, // Minimal cast untuk legacy branded type requirement
+      ...(existingAssignment.authority ? { authority: existingAssignment.authority as any } : {})
+    } as any;
+
+    // Mark binding as rejected (matches WorkBinding enum status - soft delete preserve history)
     await this.updateWorkBinding(compositionId, bindingId, { 
-      status: "removed",
+      status: "rejected",
       updatedBy: removedBy
-    });
+    } as any);
 
     // Update composition manifest
     const manifestPath = join(STORAGE_DIR, 'compositions', `${compositionId}.json`);
     const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
-    manifest.assignmentIds = manifest.assignmentIds.filter(id => id !== bindingId);
+    manifest.assignmentIds = manifest.assignmentIds.filter((id: string) => id !== bindingId);
     manifest.lastModifiedAt = new Date().toISOString();
     await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
 

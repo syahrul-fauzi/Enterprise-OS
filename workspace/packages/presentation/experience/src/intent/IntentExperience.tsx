@@ -22,8 +22,8 @@ export function IntentExperience({ initialContext }: IntentExperienceProps) {
   const router = useRouter();
   const { isProcessing, handleIntentCaptured } = useIntentController();
 
-  const onIntentCaptured = async (expression: string, source: IntentSource, originalContext?: IntentContext) => {
-    await handleIntentCaptured(expression, source, router);
+  const onIntentCaptured = async (expression: string, source: IntentSource, context?: IntentContext) => {
+    return await handleIntentCaptured(expression, source, router);
   };
 
   return (

@@ -34,8 +34,8 @@ export const cohort2Work007Work: CanonicalWorkRecord = {
   nextAction: { label: "Verifikasi permohonan dan assign patent lawyer + environment expert", actionId: "action-verify-assign-cohort2-007" },
   participants: [
     { id: "human-consultant-matcher", name: "Sistem Pencocokan Pakar", role: "Penyedia Layanan", actorType: "system" },
-    { id: "patent-lawyer.007", name: "Spesialis Hak Paten Kemenkumham", role: "Penyedia Layanan Hukum", actorType: "human", notification_sent: true, notification_timestamp: new Date("2026-09-10T23:00:00.000Z").toISOString(), reminder_sent: true, reminder_timestamp: new Date("2026-09-11T23:50:00.000Z").toISOString(), acceptance_pending: true, email: "patent007@eos.id" },
-    { id: "environment-permit-specialist.007", name: "Spesialis Izin Lingkungan KLHK", role: "Penyedia Layanan Lingkungan", actorType: "human", notification_sent: true, notification_timestamp: new Date("2026-09-10T23:00:00.000Z").toISOString(), reminder_sent: true, reminder_timestamp: new Date("2026-09-11T23:50:00.000Z").toISOString(), acceptance_pending: true, email: "environment007@eos.id" },
+    { id: "patent-lawyer.007", name: "Spesialis Hak Paten Kemenkumham", role: "Penyedia Layanan Hukum", actorType: "human", notification_sent: false, notification_timestamp: null, reminder_sent: false, reminder_timestamp: null, acceptance_pending: true, email: "patent007@eos.id" },
+    { id: "environment-permit-specialist.007", name: "Spesialis Izin Lingkungan KLHK", role: "Penyedia Layanan Lingkungan", actorType: "human", notification_sent: false, notification_timestamp: null, reminder_sent: false, reminder_timestamp: null, acceptance_pending: true, email: "environment007@eos.id" },
     { id: "client.teknologi.mlg.001", name: "Penemu & Pemilik Startup", role: "Klien UMKM", actorType: "customer" }
   ],
   attachedDocuments: [
@@ -49,7 +49,6 @@ export const cohort2Work007Work: CanonicalWorkRecord = {
     { id: "ppkjh", name: "PPKJH Malang", role: "Instansi Lingkungan Daerah" }
   ],
   outcomeDescription: "Target: Hak paten terdaftar + izin lingkungan terbit dalam 240 hari, untuk mengkomersilkan teknologi ke 10 pabrik di Jawa Timur",
-  external_verification: null,
   metadata: {
     serviceType: "cross-domain-certification",
     sla: "240 hari",
@@ -75,21 +74,11 @@ export const cohort2Work007Work: CanonicalWorkRecord = {
   {
     id: "comm-cohort2-007-002",
     actor_id: "system.eos-execution-engine",
-    recipient_ids: ["patent-lawyer.007"],
-    title: "Tugas Baru: Pendaftaran Hak Paten Teknologi Pengolahan Limbah Malang",
-    content: "Anda telah ditugaskan untuk menangani permohonan hak paten teknologi pengolahan limbah dari klien teknologi.mlg.001 yang ingin mengkomersilkan inovasinya. Work ID: cohort2-work-007. Silakan konfirmasi penerimaan tugas dalam 48 jam.",
-    timestamp: new Date("2026-09-10T23:00:00.000Z").toISOString(),
-    type: "notification",
-    lamport_clock: Date.now()
-  },
-  {
-    id: "comm-cohort2-007-003",
-    actor_id: "system.eos-execution-engine",
-    recipient_ids: ["environment-permit-specialist.007"],
-    title: "Tugas Baru: Izin Lingkungan Pabrik Pengolahan Limbah Malang",
-    content: "Anda telah ditugaskan untuk menangani permohonan izin lingkungan untuk pabrik pengolahan limbah klien teknologi.mlg.001 yang harus diverifikasi oleh KLHK dan PPKJH Malang. Work ID: cohort2-work-007. Silakan konfirmasi penerimaan tugas dalam 48 jam.",
-    timestamp: new Date("2026-09-10T23:00:00.000Z").toISOString(),
-    type: "notification",
+    recipient_ids: ["client.teknologi.mlg.001"],
+    title: "Konfirmasi Jalur Pembayaran untuk Pendaftaran Hak Paten & Izin Lingkungan",
+    content: "Terima kasih atas permohonan Anda. Untuk melanjutkan proses pendaftaran hak paten dan pengurusan izin lingkungan, mohon konfirmasi jalur pembayaran yang Anda pilih (transfer bank, kartu kredit, atau lainnya). Kami akan menindaklanjuti segera setelah konfirmasi diterima.",
+    timestamp: new Date("2026-09-10T23:15:00.000Z").toISOString(),
+    type: "message",
     lamport_clock: Date.now()
   }]
 } satisfies CanonicalWorkRecord;

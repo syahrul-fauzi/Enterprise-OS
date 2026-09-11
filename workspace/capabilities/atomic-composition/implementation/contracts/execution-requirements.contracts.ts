@@ -9,8 +9,8 @@ import type { CapabilityProvider } from "../services/capability-resolver.service
 // Full documentation in user's message: "Kita perlu satu abstraction baru: Execution Requirement."
 // ============================================================================
 
-// ExecutionRequirementId - follows existing ID branding pattern from atomic-composition.contracts.ts
-export type ExecutionRequirementId = string & { __brand: "ExecutionRequirementId" };
+// ExecutionRequirementId - extracted directly from Zod schema for type compatibility
+export type ExecutionRequirementId = z.infer<typeof ExecutionRequirementSchema.shape.executionRequirementId>;
 export function ExecutionRequirementId(value: string): ExecutionRequirementId { 
   return value as ExecutionRequirementId; 
 }
@@ -118,6 +118,10 @@ export const ExecutionRequirementSchema = z.object({
   assignedProviderId: z.string().optional(), // ID of assigned CapabilityProvider
   capabilityReference: z.string(), // Core capability ID to execute this requirement
   
+  // Authorization tracking (required for ER-04 check)
+  authorizationId: z.string().optional(), // ID of valid authorization for execution
+  authorizationVerified: z.boolean().default(false), // Whether authorization is verified
+  
   // Failure handling (user's requirement: all failure paths first-class)
   failureHandling: FailureHandlingSchema.default({}),
   
@@ -173,11 +177,12 @@ export const ExecutionAttemptSchema = z.object({
   startedAt: z.string(),
   completedAt: z.string().optional(),
   failureMode: ExecutionFailureModeSchema.optional(),
-  idempotencyKey: z.string() // Unique key to prevent duplicate execution
+  idempotencyKey: z.string(), // Unique key to prevent duplicate execution
+  authorizationId: z.string().optional() // Store authorization reference per audit requirement
 });
 
 export type ExecutionAttempt = z.infer<typeof ExecutionAttemptSchema>;
-export type AttemptId = string & { __brand: "AttemptId" };
+export type AttemptId = z.infer<typeof ExecutionAttemptSchema.shape.attemptId>;
 export function AttemptId(value: string): AttemptId { return value as AttemptId; }
 
 // ----------------------------------------------------------------------------
@@ -204,7 +209,7 @@ export const ActionSchema = z.object({
 });
 
 export type Action = z.infer<typeof ActionSchema>;
-export type ActionId = string & { __brand: "ActionId" };
+export type ActionId = z.infer<typeof ActionSchema.shape.actionId>;
 export function ActionId(value: string): ActionId { return value as ActionId; }
 
 // ----------------------------------------------------------------------------
@@ -220,11 +225,12 @@ export const ExternalEffectSchema = z.object({
   newState: z.string().optional(), // Serialized new state
   stateChanged: z.boolean(), // Did the change actually happen?
   observedAt: z.string(),
-  sourceAdapter: z.string().optional() // Which adapter reported this effect
+  sourceAdapter: z.string().optional(), // Which adapter reported this effect
+  verified: z.boolean().default(false) // Whether effect was independently verified
 });
 
 export type ExternalEffect = z.infer<typeof ExternalEffectSchema>;
-export type EffectId = string & { __brand: "EffectId" };
+export type EffectId = z.infer<typeof ExternalEffectSchema.shape.effectId>;
 export function EffectId(value: string): EffectId { return value as EffectId; }
 
 // ----------------------------------------------------------------------------
@@ -240,11 +246,12 @@ export const ObservationSchema = z.object({
   matchesExpected: z.boolean(), // Did the effect match what we expected?
   confidenceScore: z.number().min(0).max(1), // How sure are we about this observation?
   evidenceLink: z.string().optional(), // Link to evidence (screenshot, log, etc.)
-  observedAt: z.string()
+  observedAt: z.string(),
+  verified: z.boolean().default(false) // Whether observation was independently verified
 });
 
 export type Observation = z.infer<typeof ObservationSchema>;
-export type ObservationId = string & { __brand: "ObservationId" };
+export type ObservationId = z.infer<typeof ObservationSchema.shape.observationId>;
 export function ObservationId(value: string): ObservationId { return value as ObservationId; }
 
 // ----------------------------------------------------------------------------
@@ -268,7 +275,7 @@ export const EvidenceSchema = z.object({
 });
 
 export type Evidence = z.infer<typeof EvidenceSchema>;
-export type EvidenceId = string & { __brand: "EvidenceId" };
+export type EvidenceId = z.infer<typeof EvidenceSchema.shape.evidenceId>;
 export function EvidenceId(value: string): EvidenceId { return value as EvidenceId; }
 
 // ----------------------------------------------------------------------------

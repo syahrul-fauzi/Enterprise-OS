@@ -1,6 +1,9 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
+import { useState } from "react";
+import { createWorkspaceNavigation, type NavigationDescriptor, type NavigationItem } from "@repo/composition/navigation";
 // Import semua feature dari shared reality/ features package (semantic reusable blocks)
 import { 
   RealityIdentityHeader, 
@@ -28,6 +31,8 @@ interface WorkRealitySurfaceProps {
   readonly onExecuteAction?: (actionId: string) => Promise<void>;
   readonly onSendMessage?: (content: string) => Promise<void>;
   readonly onAddParticipant?: (name: string, role: any) => Promise<void>;
+  readonly userCapabilities?: string[]; // VF-02: Pass user capabilities for unified navigation
+  readonly productId?: string;           // VF-02: Product ID for workspace navigation
 }
 
 /**
@@ -37,6 +42,7 @@ interface WorkRealitySurfaceProps {
  * Reuse oleh SEMUA domain: LawyersHub, ILC, Services.ID — one building block, many products
  * PURE COMPOSITION ONLY: NO useState, NO business logic, hanya menerima props dari Controller
  * (Sesuai MyReality golden pattern: Experience = composition only, Controller = runtime + state)
+ * VF-02: Implements UNIFIED NAVIGATION same as /my-reality - consistent global navigation across blast radius
  */
 export function WorkRealitySurface({
   model,
@@ -48,18 +54,109 @@ export function WorkRealitySurface({
   onExecuteAction,
   onSendMessage,
   onAddParticipant,
-}: WorkRealitySurfaceProps) { return (
-    <main
-      id="work-reality-main"
-      role="main"
-      className="min-h-screen bg-surface-background px-4 sm:px-6 py-6 sm:py-10"
-    >
-      <a href="#work-reality-main" className="skip-link" aria-label="Lewati ke konten utama">
-        Lewati ke konten utama
-      </a>
+  userCapabilities = [],
+  productId = "default",
+}: WorkRealitySurfaceProps) {
+  // VF-02: Global navigation from unified source - matches human mental model: Reality > Work > Actors > Products
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigation: NavigationDescriptor = createWorkspaceNavigation(productId, userCapabilities);
+  const navItems = navigation.items;
 
-      <div className="mx-auto max-w-5xl space-y-5 sm:space-y-6">
-        <RealityIdentityHeader identity={model.identity} />
+  return (
+    <>
+      {/* UX-SHELL-001: Sticky Global Navigation Header - identical to /my-reality, ProductPreviewShell */}
+      <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            {/* Logo/Brand - EOS only per PR-VISUAL-001 requirements */}
+            <div className="flex items-center">
+              <Link href="/my-reality" className="text-xl font-bold text-slate-900 tracking-tight">
+                EOS
+              </Link>
+            </div>
+
+            {/* Desktop Navigation - hidden on mobile */}
+            <nav className="hidden md:flex items-center gap-6">
+              {navItems.map((item: NavigationItem) => {
+                // Skip separator items in desktop navigation
+                if (item.kind === "separator") return null;
+                // Hide items that require capabilities user doesn't have
+                if (item.capabilityId && !userCapabilities.includes(item.capabilityId)) return null;
+                return (
+                  <Link
+                    key={item.id}
+                    href={item.href || "/"}
+                    className="text-sm font-medium text-slate-600 transition hover:text-slate-900"
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Mobile menu button - visible only on mobile */}
+            <button
+              className="inline-flex items-center justify-center rounded-md p-2 text-slate-700 md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle navigation"
+            >
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+              >
+                {mobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 12h18M3 6h18M3 18h18" />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Navigation Menu - only visible when open on mobile */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-slate-200 bg-white">
+            <div className="container mx-auto px-4 py-4 sm:px-6">
+              <nav className="flex flex-col gap-3">
+                {navItems.map((item: NavigationItem) => {
+                  // Handle separator items in mobile navigation
+                  if (item.kind === "separator") {
+                    return <hr key={item.id} className="border-slate-200 my-1" />;
+                  }
+                  // Hide items that require capabilities user doesn't have
+                  if (item.capabilityId && !userCapabilities.includes(item.capabilityId)) return null;
+                  return (
+                    <Link
+                      key={item.id}
+                      href={item.href || "/"}
+                      className="text-base font-medium text-slate-600 transition hover:text-slate-900"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+            </div>
+          </div>
+        )}
+      </header>
+
+      <main
+        id="work-reality-main"
+        role="main"
+        className="min-h-screen bg-surface-background px-4 sm:px-6 py-6 sm:py-10"
+      >
+        <a href="#work-reality-main" className="skip-link" aria-label="Lewati ke konten utama">
+          Lewati ke konten utama
+        </a>
+
+        <div className="mx-auto max-w-5xl space-y-5 sm:space-y-6">
+          <RealityIdentityHeader identity={model.identity} />
 
         <Card size="md" aria-label="Pemilihan perspektif tampilan">
           <div className="space-y-4">
@@ -138,13 +235,14 @@ export function WorkRealitySurface({
             </div>
 
             {/* HERO WORK REALITY SECTION - ANSWER 5 KEY QUESTIONS IN 3 SECONDS */}
-            <div className="px-6 py-8 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
+            {/* PR-VISUAL-001: OPERATING ORIENTATION - MATCH /my-reality visual hierarchy */}
+            <div className="px-6 py-8 bg-gradient-to-r from-red-600 to-rose-700 border-b border-red-700 text-white">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* KIRI: APA YANG SEDANG TERJADI + SIAPA YANG BERTANGGUNG JAWAB */}
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2">APA YANG SEDANG TERJADI?</h3>
-                    <div className="bg-white rounded-lg p-4 shadow-sm">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-red-100 mb-2">APA YANG SEDANG TERJADI?</h3>
+                    <div className="bg-white/95 rounded-lg p-4 shadow-sm">
                       <RealityNow
                         description={model.state.currentState}
                         status={model.identity.status}
@@ -153,11 +251,11 @@ export function WorkRealitySurface({
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2">SIAPA YANG BERTANGGUNG JAWAB?</h3>
-                    <div className="bg-white rounded-lg p-4 shadow-sm">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-red-100 mb-2">SIAPA YANG BERTANGGUNG JAWAB?</h3>
+                    <div className="bg-white/95 rounded-lg p-4 shadow-sm">
                       <div className="flex flex-wrap gap-2">
                         {model.participants.map((p, i) => (
-                          <span key={i} className="inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800">
+                          <span key={i} className="inline-flex items-center gap-1.5 rounded-full bg-red-100 px-3 py-1 text-sm text-red-800">
                             {p.role === 'professional' && <span>⚖️</span>}
                             {p.role === 'customer' && <span>👤</span>}
                             {p.role === 'notary' && <span>📜</span>}
@@ -169,18 +267,24 @@ export function WorkRealitySurface({
                   </div>
                 </div>
 
-                {/* TENGAH: APA YANG HARUS SAYA LAKUKAN? (PRIMARY CTA) */}
+                {/* TENGAH: APA YANG HARUS SAYA LAKUKAN? (PRIMARY CTA) - OPERATING ORIENTATION */}
                  <div className="md:col-span-2">
-                   <h3 className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2">APA YANG HARUS SAYA LAKUKAN SEKARANG?</h3>
-                   <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-6 shadow-sm border-2 border-amber-300 h-full flex flex-col justify-center">
-                     <div className="text-2xl font-bold text-amber-900">{model.state.nextAction}</div>
+                   <h3 className="text-xs font-bold uppercase tracking-wider text-red-100 mb-2">APA YANG HARUS SAYA LAKUKAN SEKARANG?</h3>
+                   <div className="bg-white rounded-lg p-6 shadow-sm border-2 border-white h-full flex flex-col justify-center">
+                     <div className="text-2xl font-bold text-slate-900">{model.state.nextAction}</div>
                      <div className="mt-4 flex flex-wrap gap-3">
                        <button
                          onClick={() => onExecuteAction?.('primary-action')}
-                         className="rounded-lg bg-amber-600 hover:bg-amber-700 px-6 py-3 text-white font-semibold transition-colors"
+                         className="rounded-lg bg-red-700 hover:bg-red-800 px-6 py-3 text-white font-semibold transition-colors"
                        >
-                         LAKSANAKAN SEKARANG
+                         LANJUTKAN PEKERJAAN
                        </button>
+                       <Link href="/my-reality" className="rounded-lg bg-slate-100 hover:bg-slate-200 px-6 py-3 text-slate-700 font-semibold transition-colors flex items-center gap-2">
+                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                           <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h14" />
+                         </svg>
+                         Kembali ke Reality
+                       </Link>
                      </div>
                    </div>
                  </div>
@@ -248,5 +352,6 @@ export function WorkRealitySurface({
         </Card>
       </div>
     </main>
+    </>
   );
 }

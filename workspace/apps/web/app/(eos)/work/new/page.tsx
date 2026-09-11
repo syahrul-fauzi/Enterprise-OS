@@ -1,29 +1,42 @@
-// Thin Server Adapter for /work/new - maintains boundary compliance with MyReality reference
-// Follows golden spine pattern: Route → Server Adapter → Experience (no client-side business logic)
-// Session verification + intent fetching happens server-side, only pass resolved model to presentation
+// Server Component with client-boundary form section - separates session/intent resolution (server) from client-side submission
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import Link from "next/link";
+import { NewWorkFormClient } from "./components/NewWorkFormClient";
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
 } from "@repo/core-kernel";
-import { IntentUnderstandingPreview } from "@repo/presentation-features";
 import type { IntentContract } from "@repo/presentation-features";
 
-// Server-side intent fetching - matches canonical pattern from getWorkRealityModel
-async function fetchIntentServerSide(intentId: string): Promise<IntentContract | null> {
+// Server-side intent retrieval - uses canonical repository primitive (no internal HTTP calls)
+async function fetchIntentServerSide(intentId: string, session: any): Promise<IntentContract | null> {
   try {
-    // Reuse canonical API endpoint - server-side fetch to maintain boundary integrity
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-    const res = await fetch(`${baseUrl}/api/intent/${intentId}`, {
-      cache: "no-store", // Disable caching for fresh intent data
+    // Import canonical intent repository (lazy import to avoid circular dependencies)
+    const { getIntentRepositoryPostgres, initIdentitySchema } = await import("../../../../../../capabilities/identity/implementation/repositories/index");
+    
+    await initIdentitySchema();
+    const intentRepository = getIntentRepositoryPostgres();
+    const intentAggregate = await intentRepository.byId(intentId, {
+      tenantId: session.tenantId,
+      workspaceId: session.workspaceId,
     });
     
-    if (!res.ok) return null;
-    return await res.json();
+    if (!intentAggregate) return null;
+    
+    // Map IntentAggregate to IntentContract for presentation layer compatibility
+    return {
+      id: intentAggregate.id,
+      title: intentAggregate.title,
+      description: intentAggregate.description,
+      resolution: {
+        objective: intentAggregate.resolution?.objective || "",
+        expression: intentAggregate.resolution?.expression || "",
+      },
+      status: intentAggregate.status,
+      category: intentAggregate.category,
+    } as IntentContract;
   } catch (error) {
-    console.error("[SERVER] Error fetching intent:", error);
+    console.error("[SERVER] Error fetching intent via canonical repository:", error);
     return null;
   }
 }
@@ -54,80 +67,97 @@ export default async function NewWorkPage({
     redirect("/");
   }
 
-  // Extract intentId from searchParams server-side
+  // Extract intentId from searchParams server-side (optional)
   const { intentId } = await searchParams;
-  if (!intentId) {
-    redirect("/intent/new");
-  }
-
-  // Server-side intent fetching - eliminates client-side data fetching
-  const intent = await fetchIntentServerSide(intentId);
-  if (!intent) {
-    redirect("/intent/new");
+  let intent: IntentContract | null = null;
+  
+  // If intentId exists, fetch intent data (Mode B: Intent-derived Work)
+  if (intentId) {
+    intent = await fetchIntentServerSide(intentId, session);
+    if (!intent) {
+      redirect("/intent/new");
+    }
   }
 
   // Work creation callback executed server-side, maintains separation of concerns
-  const handleWorkCreation = async () => {
-    // Create work from intent - uses CANONICAL /api/work/create API
-    // Maintains context integrity: Intent → Work formation is consistent across all layers
+  const handleWorkCreation = async (formData: { title: string; objective: string; description: string }) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/work/create`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: intent.resolution.objective,
-          description: intent.expression,
-          linkedIntentId: intentId,
-          domain: "general",
+      // Import canonical universal expression pipeline (single canonical ingress for ALL reality sources)
+      // Implements user's requirement: ALL reality sources use same canonical ingress path
+      const { createUniversalExpression } = await import("../../../../../../capabilities/atomic-composition/implementation/services/intent-understanding.service");
+      import type { UniversalIntentInput } from "../../../../../../capabilities/atomic-composition/implementation/contracts/universal-intent.contracts";
+      
+      // Combine form data into single raw content for universal expression pipeline
+      const combinedContent = `Title: ${formData.title}\nObjective: ${formData.objective || ''}\nDescription: ${formData.description || ''}`;
+      
+      // Create UniversalIntentInput using human origin (canonical for human intake)
+      // Follows EXACT same pattern as external webhooks (ILC/WhatsApp/email) to unify all reality sources
+      const universalInput: UniversalIntentInput = {
+        origin: "human",
+        actorId: session.actorId,
+        raw: {
+          type: "work_request",
+          content: combinedContent
+        },
+        context: {
+          source: "human_intake",
+          intake_path: "/work/new",
+          linkedIntentId: intentId || undefined
+        }
+      };
+      
+      // Execute the FULL universal expression lifecycle pipeline (EOS UNIVERSAL ENTRY)
+      // This is the single canonical path for ALL reality sources:
+      // Human/External System/Event/Operator/Agent → createUniversalExpression → Understanding → Work
+      const universalExpression = await createUniversalExpression(
+        universalInput,
+        session.tenantId,
+        session.workspaceId,
+        session.actorId
+      );
+      
+      console.log(`[SERVER] Universal expression created: ${universalExpression.id}, status: ${universalExpression.status}`);
+      
+      // If work was automatically formed by the pipeline (understanding sufficient and canFormWork=true)
+      if (universalExpression.workId) {
+        console.log(`[SERVER] Work automatically created from universal expression: ${universalExpression.workId}`);
+        redirect(`/work/${universalExpression.workId}`);
+      } 
+      // Fallback: if pipeline didn't form work (insufficient understanding or info request), use direct creation
+      else {
+        console.log("[SERVER] Work not automatically formed, falling back to direct creation");
+        const { createWorkCommand } = await import("@capabilities/work-core/implementation/commands/work.commands");
+        const createWorkInput = {
+          title: formData.title,
+          description: formData.description || "",
+          linkedIntentId: intentId || undefined,
+          domainType: "generic" as const,
+          sessionId: sessionCookie.value,
           tenantId: session.tenantId,
           workspaceId: session.workspaceId,
           actorId: session.actorId
-        })
-      });
-
-      if (!response.ok) throw new Error('Failed to create work');
-      const result = await response.json();
-      
-      redirect(`/work/${result.workId}`);
+        };
+        const result = await createWorkCommand.execute(createWorkInput);
+        redirect(`/work/${result.workId}`);
+      }
     } catch (error) {
       console.error('Error creating work:', error);
+      throw new Error('Work could not be created. Your input has not been lost. Please try again.');
     }
   };
 
+  // Pass all server-resolved data to client boundary component
   return (
-    <div className="min-h-screen bg-surface-background">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
-        <header className="mb-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:justify-between">
-          <Link
-            href={`/intent/${intentId}`}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-            </svg>
-            Kembali ke Detail Kebutuhan
-          </Link>
-          <div className="inline-flex items-center gap-2 text-sm font-semibold text-brand-primary bg-brand-primary/10 border border-brand-primary/20 px-3 py-1.5 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse" aria-hidden="true" />
-            Langkah 2 dari 2: Bentuk Pekerjaan
-          </div>
-        </header>
-
-        <div className="mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight">Bentuk Pekerjaan dari Kebutuhan Anda</h1>
-          <p className="mt-2 text-text-secondary leading-relaxed">
-            Tinjau pemahaman EOS terhadap kebutuhan Anda. Jika sudah sesuai, lanjutkan untuk membentuk pekerjaan.
-          </p>
-        </div>
-
-        <main>
-          <IntentUnderstandingPreview
-            intent={intent}
-            onConfirm={handleWorkCreation}
-            onRevise={() => redirect(`/intent/${intentId}`)}
-          />
-        </main>
-      </div>
-    </div>
+    <NewWorkFormClient
+      intent={intent}
+      intentId={intentId || null}
+      sessionCookieValue={sessionCookie.value}
+      session={{
+        tenantId: session.tenantId,
+        workspaceId: session.workspaceId,
+        actorId: session.actorId
+      }}
+      handleWorkCreation={handleWorkCreation}
+    />
   );
 }

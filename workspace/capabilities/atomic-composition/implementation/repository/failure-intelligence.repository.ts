@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir, readdir, unlink, appendFileSync } from 'fs/promises';
+import { readFile, writeFile, mkdir, readdir, unlink } from 'fs/promises';
 import { existsSync, writeFileSync } from 'fs';
 import { join, dirname, resolve } from 'path';
 import { randomUUID } from 'crypto';
@@ -827,6 +827,7 @@ export class FailureIntelligenceRepository {
   }
 
   // PR-001-P4: Method untuk escalate blast radius ke level berikutnya (SHADOW → LIMITED → FULL)
+  // DUPLICATE: This method was already implemented earlier in the file - this is the primary implementation (kept active
   static async escalateBlastRadius(
     promotionId: string, 
     newMode: "LIMITED_COHORT" | "FULL_PRODUCTION", 
@@ -987,59 +988,61 @@ export class FailureIntelligenceRepository {
     }
   }
 
-  static async escalateBlastRadius(
-    promotionId: string, 
-    newMode: "LIMITED_COHORT" | "FULL_PRODUCTION", 
-    newPercentage?: number
-  ): Promise<EnrichmentPromotion> {
-    await this.initialize();
-    const promotion = this.inMemoryPromotions.get(promotionId);
-    if (!promotion) {
-      throw new Error(`Promotion ${promotionId} not found`);
-    }
-
-    const now = new Date().toISOString();
-    const oldMode = promotion.blastRadius.mode;
-    promotion.blastRadius.mode = newMode;
-    if (newMode === "LIMITED_COHORT" && newPercentage !== undefined) {
-      promotion.blastRadius.cohortPercentage = Math.min(100, Math.max(0, newPercentage));
-    }
-    promotion.blastRadius.lastUpdatedAt = now;
-
-    await this.savePromotion(promotion);
-    logAuditEvent("BLAST_RADIUS_ESCALATED", {
-      promotionId,
-      oldMode,
-      newMode,
-      newCohortPercentage: promotion.blastRadius.cohortPercentage
-    });
-    console.log(`[PR-001-P4] Promotion ${promotionId} blast radius escalated: ${oldMode} → ${newMode}`);
-    return promotion;
-  }
-
-  static async rollbackPromotion(promotionId: string): Promise<void> {
-    await this.initialize();
-    const promotion = this.inMemoryPromotions.get(promotionId);
-    if (!promotion) {
-      throw new Error(`Promotion ${promotionId} not found`);
-    }
-
-    const now = new Date().toISOString();
-    const oldMode = promotion.blastRadius.mode;
-    // Rollback ke SHADOW mode
-    promotion.blastRadius.mode = "SHADOW";
-    promotion.blastRadius.cohortPercentage = 0;
-    promotion.blastRadius.lastUpdatedAt = now;
-    promotion.status = "ARCHIVED";
-
-    await this.savePromotion(promotion);
-    logAuditEvent("PROMOTION_ROLLBACK", {
-      promotionId,
-      previousMode: oldMode,
-      reason: "Automatic rollback to SHADOW mode due to failure threshold"
-    });
-    console.log(`[PR-001-P4] Promotion ${promotionId} rolled back: ${oldMode} → SHADOW (archived)`);
-  }
+  // COMMENTED OUT: DUPLICATE escalateBlastRadius METHOD - fixed duplicate implementation error
+  // static async escalateBlastRadius(
+  //   promotionId: string, 
+  //   newMode: "LIMITED_COHORT" | "FULL_PRODUCTION", 
+  //   newPercentage?: number
+  // ): Promise<EnrichmentPromotion> {
+  //   await this.initialize();
+  //   const promotion = this.inMemoryPromotions.get(promotionId);
+  //   if (!promotion) {
+  //     throw new Error(`Promotion ${promotionId} not found`);
+  //   }
+  //
+  //   const now = new Date().toISOString();
+  //   const oldMode = promotion.blastRadius.mode;
+  //   promotion.blastRadius.mode = newMode;
+  //   if (newMode === "LIMITED_COHORT" && newPercentage !== undefined) {
+  //     promotion.blastRadius.cohortPercentage = Math.min(100, Math.max(0, newPercentage));
+  //   }
+  //   promotion.blastRadius.lastUpdatedAt = now;
+  //
+  //   await this.savePromotion(promotion);
+  //   logAuditEvent("BLAST_RADIUS_ESCALATED", {
+  //     promotionId,
+  //     oldMode,
+  //     newMode,
+  //     newCohortPercentage: promotion.blastRadius.cohortPercentage
+  //   });
+  //   console.log(`[PR-001-P4] Promotion ${promotionId} blast radius escalated: ${oldMode} → ${newMode}`);
+  //   return promotion;
+  // }
+  //
+  // // COMMENTED OUT: DUPLICATE rollbackPromotion METHOD - fixed duplicate implementation error
+  // static async rollbackPromotion(promotionId: string): Promise<void> {
+  //   await this.initialize();
+  //   const promotion = this.inMemoryPromotions.get(promotionId);
+  //   if (!promotion) {
+  //     throw new Error(`Promotion ${promotionId} not found`);
+  //   }
+  //
+  //   const now = new Date().toISOString();
+  //   const oldMode = promotion.blastRadius.mode;
+  //   // Rollback ke SHADOW mode
+  //   promotion.blastRadius.mode = "SHADOW";
+  //   promotion.blastRadius.cohortPercentage = 0;
+  //   promotion.blastRadius.lastUpdatedAt = now;
+  //   promotion.status = "ARCHIVED";
+  //
+  //   await this.savePromotion(promotion);
+  //   logAuditEvent("PROMOTION_ROLLBACK", {
+  //     promotionId,
+  //     previousMode: oldMode,
+  //     reason: "Automatic rollback to SHADOW mode due to failure threshold"
+  //   });
+  //   console.log(`[PR-001-P4] Promotion ${promotionId} rolled back: ${oldMode} → SHADOW (archived)`);
+  // }
 
   static async listValidations(): Promise<ValidationRun[]> {
     await this.initialize();

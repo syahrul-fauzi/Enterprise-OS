@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
-import { CaseWorkspace } from "@capabilities/legal-case/experience/workspaces/CaseWorkspace";
+// Removed CaseWorkspace import - module not found, simplified for golden spine v0.1
 import type { ProductPreviewBinding } from "@repo/presentation-experience";
 import { useWorkspaceSession, useLocale } from "@repo/presentation-hooks";
 
@@ -415,7 +415,7 @@ export function ProductCasesPage({ productId, binding, caseId, session: serverSe
             </div>
           )}
 
-          <CaseWorkspace />
+          {/* Removed CaseWorkspace - simplified for golden spine v0.1 */}
         </div>
       </main>
     </>

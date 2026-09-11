@@ -15,10 +15,14 @@ export interface EmptyStateProps {
   readonly description?: string;
   /** Ikon yang ditampilkan (opsional, default: 📭) */
   readonly icon?: string;
-  /** Teks tombol aksi (opsional) */
+  /** Teks tombol aksi (legacy, gunakan primaryActionLabel) */
   readonly actionLabel?: string;
-  /** Handler klik tombol aksi (opsional) */
+  /** Handler klik tombol aksi (legacy, gunakan onPrimaryAction) */
   readonly onAction?: () => void;
+  /** Teks tombol aksi utama (dukungan untuk widget yang sudah menggunakan nama baru) */
+  readonly primaryActionLabel?: string;
+  /** Handler klik tombol aksi utama (dukungan untuk widget yang sudah menggunakan nama baru) */
+  readonly onPrimaryAction?: () => void;
   /** Class tambahan untuk kustomisasi (opsional) */
   readonly className?: string;
 }
@@ -29,8 +33,13 @@ export function EmptyState({
   icon = "📭",
   actionLabel,
   onAction,
+  primaryActionLabel,
+  onPrimaryAction,
   className = "",
 }: EmptyStateProps) {
+  const finalActionLabel = primaryActionLabel || actionLabel;
+  const finalOnAction = onPrimaryAction || onAction;
+  
   return (
     <div className={`text-center py-12 ${className}`}>
       <div className="text-6xl mb-4">{icon}</div>
@@ -38,12 +47,12 @@ export function EmptyState({
       {description && (
         <p className="text-slate-600 max-w-md mx-auto mb-6">{description}</p>
       )}
-      {actionLabel && onAction && (
+      {finalActionLabel && finalOnAction && (
         <button
-          onClick={onAction}
+          onClick={finalOnAction}
           className="px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition inline-block"
         >
-          {actionLabel}
+          {finalActionLabel}
         </button>
       )}
     </div>

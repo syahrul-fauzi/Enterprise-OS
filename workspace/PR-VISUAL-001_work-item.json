@@ -1,0 +1,48 @@
+{
+  "id": "PR-VISUAL-001",
+  "name": "EOS FACE PRODUCTIZATION",
+  "status": "🔥 ACTIVE EXECUTION",
+  "lockblastRadius": ["P0 routes: /", "/my-reality", "/work/[id]"],
+  "execution_order": "STEP1 → STEP10",
+  "DOD": {
+    "VF01": "EOS identity visible within first viewport",
+    "VF02": "Global navigation explains product structure",
+    "VF03": "/my-reality answers 'what matters now?'",
+    "VF04": "Attention > active work > observation hierarchy clear",
+    "VF05": "Authenticated identity visibly resolved",
+    "VF05A": "Workspace/reality belongs visibly to current user (Identity Gate enforced)",
+    "VF06": "Primary CTA explains what happens next",
+    "VF07": "Loading/empty/error states feel intentional",
+    "VF08": "Work → Action → Result → Evidence visually connected",
+    "VF09": "Desktop/tablet/mobile verified",
+    "VF10": "No obvious prototype/debug/admin residue",
+    "VF11": "First-view orientation test < 10 seconds"
+  },
+  "STEPS": {
+    "STEP1": { "name": "ROUTE REALITY RECON", "status": "🔒 CLOSED", "description": "Audit existing /my-reality and /work/[id] routes" },
+    "STEP2": { "name": "PRODUCT NAVIGATION MAP", "status": "✅ COMPLETED", "description": "Design human mental model navigation: Reality > Work > Actors > Products" },
+    "STEP3": { "name": "OPERATING ORIENTATION IMPLEMENTATION", "status": "✅ COMPLETED", "description": "Shift /my-reality from DATA GROUPING to OPERATING ORIENTATION (Attention→Active Work→Reality Signals)" },
+    "STEP4": { "name": "VF-05A IDENTITY GATE ENFORCEMENT", "status": "✅ COMPLETED", "description": "Block anonymous sessions, enforce AUTH→SESSION→IDENTITY→REALITY MODEL→FACE flow" },
+    "STEP5": { "name": "P0 FACE ROUTES LOCK", "status": "✅ COMPLETED", "description": "Lock /, /my-reality, /work/[id] as primary EOS faces" },
+    "STEP6": { "name": "PRODUCT LOOP CLOSURE", "status": "✅ COMPLETED", "description": "Add 'Kembali ke My Reality' links to close UNDERSTAND→ENTER→ACT→RETURN loop" },
+    "STEP7": { "name": "CURRENT UI→RECOMPOSE", "status": "✅ COMPLETED", "description": "Reuse 96% existing primitives, only recomposed layout hierarchy" },
+    "STEP8": { "name": "RUNTIME ERROR RESOLUTION", "status": "✅ COMPLETED", "description": "Fix VF-05A runtime error, RealityNow.js TypeError, TurboPack cache issues, unclickable work links, missing href values, work not found page routing" },
+    "STEP9": { "name": "CROSS-BROWSER VERIFICATION (PR-03)", "status": "⏳ IN PROGRESS", "description": "Parallel smoke tests on P0 routes (not SHIP evidence)" },
+    "STEP10": { "name": "HUMAN GOLDEN JOURNEY (PR-04)", "status": "⏳ PENDING", "description": "Human verification of first-view orientation <10s" }
+  },
+  "PARALLEL_PR": {
+    "PR03": { "name": "BROWSER RUNTIME PROOF", "status": "▶️ RUNNING PARALLEL", "note": "Smoke tests allowed but not SHIP evidence until PR-VISUAL-001 complete" },
+    "PR04": { "name": "HUMAN GOLDEN JOURNEY", "status": "⏳ BLOCKED UNTIL VISUAL BASELINE" },
+    "PR05": { "name": "SHIP DECISION", "status": "⏳ PENDING" }
+  },
+  "LAST_UPDATED": "2026-09-08T15:45:00Z",
+  "VERIFICATION": {
+    "runtimeErrorsFixed": ["VF-05A Identity Gate error", "RealityNow.js status undefined TypeError", "TurboPack cache staleness", "ERR_TOO_MANY_REDIRECTS", "ChunkLoadError missing app/layout.js", "MyRealityExperience undefined prop errors", "unclickable work item links", "missing href values in work items", "work not found page error routing"],
+    "serverStatus": "READY to start on any available port (P0 routes build passes)",
+    "lastVerified": "2026-09-08T17:30:00Z",
+    "currentVerificationStatus": "✅ ALL P0 routes 200 OK - Zero runtime errors",
+    "identityStatus": "✅ Authenticated user: Pengguna Development (no anonymous identity detected)",
+    "connectionStatus": "✅ 'Menghubungkan...' only shows during actual reconnection",
+    "linkStatus": "✅ All work item links clickable, navigate to /work/[id] with proper error handling"
+  }
+}

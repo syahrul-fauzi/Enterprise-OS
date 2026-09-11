@@ -21,9 +21,14 @@ export {
 
 export {
   usePageStates,
+  __EOS_UX_COMPLIANCE_REGISTRY__,
+  registeredPages,
+  addComplianceRecord,
+  UXStateComplianceRegistry,
   type UsePageStatesResult,
   type UsePageStatesOptions,
   type PageState,
   type PageStatus,
   type PaginationState,
+  type ComplianceRecord,
 } from "./use-page-states/index";

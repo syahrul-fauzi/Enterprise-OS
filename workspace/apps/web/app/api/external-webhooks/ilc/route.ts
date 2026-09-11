@@ -7,6 +7,9 @@ import { CaseRepository, CaseRepositoryInMemory } from "legal-case/implementatio
 import { executionContext } from "../../../../../../packages/core/runtime/src/execution-context.js";
 import { recordObservedExecution } from "../../../../../../packages/core/runtime/src/execution-observability.js";
 import { startExecutionTimer, recordRuntimeInvocation } from "../../../../../../packages/core/runtime/src/invocation-evidence.js";
+// Import CANONICAL UNIVERSAL PIPELINE - MINIMAL FIX for Reality Ingress unification
+import { createUniversalExpression } from "../../../../../../capabilities/atomic-composition/implementation/services/intent-understanding.service";
+import type { UniversalIntentInput } from "../../../../../../capabilities/atomic-composition/implementation/contracts/universal-intent.contracts";
 
 // ILC community user ID to work ID mapping for WORK-018 ILC continuity
 // Maps ILC community member IDs to their respective LawyersHub work IDs
@@ -157,6 +160,40 @@ export async function POST(request: Request) {
     // 4. GROUND TO WORK - CORE EOS THESIS: ILC conversation becomes part of LawyersHub work
     // This is the critical step that implements WORK-018's success metric: conversation→Work continuity
     const resolvedWorkId = resolveWorkIdFromIlcUserId(sender_id);
+    
+    // 100% CANONICAL REALITY INGRESS: ALL ILC senders (existing + new) use universal pipeline
+    // Substrate freeze maintained: no new primitives, complete unification of ALL reality sources
+    if (message) {
+      console.log(`[ILCWebhook] 🌐 CANONICAL INGRESS: Sender ${sender_id} - piping ALL traffic through universal pipeline`);
+      
+      // Create universal intent input matching ALL other reality sources (human/system/agent/email/whatsapp)
+      const universalInput: UniversalIntentInput = {
+        origin: "external_system",
+        actorId: sender_id,
+        raw: {
+          type: "message",
+          content: message
+        },
+        metadata: {
+          source: "ilc",
+          external_id: randomUUID(),
+          discussion_topic: discussion_topic,
+          sender_role: sender_role,
+          pre_existing_mapped_work_id: resolvedWorkId // Preserve existing mapping metadata for audit
+        }
+      };
+      
+      // Execute canonical pipeline - SAME path for ALL senders, fully unifies reality ingress
+      const universalExpression = await createUniversalExpression(
+        universalInput,
+        "tenant-001",
+        "workspace-001",
+        sender_id
+      );
+      
+      console.log(`[ILCWebhook] ✅ Canonical pipeline created expression: ${universalExpression.id} for ILC sender (workId: ${universalExpression.workId || 'pending'})`);
+    }
+    
     if (!resolvedWorkId) {
       console.error(`[ILCWebhook] Could not resolve work ID for ILC user ${sender_id}`);
       

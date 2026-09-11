@@ -1,0 +1,22 @@
+{
+  "object": "whatsapp_business_account",
+  "entry": [{
+    "id": "1234567890",
+    "changes": [{
+      "value": {
+        "contacts": [{
+          "wa_id": "628999999999",
+          "profile": { "name": "Reality Test Sender" }
+        }],
+        "messages": [{
+          "from": "628999999999",
+          "id": "REALITY-002-FIRST-SIGNAL-001",
+          "timestamp": "1694000000",
+          "text": { "body": "G2-01 Test - First real reality signal to EOS fabric" },
+          "type": "text"
+        }]
+      },
+      "field": "messages"
+    }]
+  }]
+}

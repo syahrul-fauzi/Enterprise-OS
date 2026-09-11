@@ -1,0 +1,81 @@
+specification:
+  id: REQ-010
+  name: 'REQ-010: Location Filter untuk /community Page'
+  version: "1.0.0"
+  kind: ELS_LANGUAGE_SPECIFICATION
+  status: VERIFIED
+  language_spec_version: "1.0"
+  golden_reference: false
+  root_of_trust_for: null
+  identity_note: THIS_DOCUMENT_HAS_STABLE_HASH.ANY_MODIFICATION_REQUIRES_NEW_VERSION.
+  summary: 'Tambahkan filter lokasi pada halaman komunitas agar pengguna dapat menyaring anggota berdasarkan wilayah'
+  owner: 'EOS Front B'
+  linkedCapabilityIds: ['EOS-community', 'EOS-filtering', 'EOS-ui-components']
+  acceptanceCriteria:
+    - 'Filter lokasi muncul di search bar halaman /community'
+    - 'Anggota terfilter sesuai lokasi yang dipilih'
+    - 'Integrasi dengan shared BaseSearchBar'
+
+specification_metadata:
+  author: eos-frontend-b
+  created: 2026-08-15
+  governance_class: user_feature
+  change_policy: new_version_only_no_mutation
+  hash_algorithm: sha256
+  audit_note: Input hash of this document MUST be captured before and after every transformation run.
+
+ontology:
+  root_aggregate: CommunityFeature
+  axiom_4_applied: Feature identity as aggregate anchor
+  domain: EOS_Community_Frontend
+
+requirement_identity:
+  requirement_id: REQ-010
+  stable_external_id: REQ-010
+  id_policy: feature_requirement_identity_never_changes
+  derived_identity_chain:
+    - requirement_id → els_document_hash
+    - els_document_hash → eir_source_hash
+    - eir_source_hash → instruction_set_hash
+    - instruction_set_hash → capability_ref_hash
+
+business_statement:
+  title: Add location filter to /community page
+  description: >
+    Add location filter to community page to allow users to filter members by region.
+    Integrates with shared BaseSearchBar component to maintain UI consistency.
+  origin: Product requirement from EOS Frontend team
+  compliance: All frontend layers must enforce this feature through component integration.
+
+capability_refs:
+  - capability_id: CAP-EOS-COMMUNITY
+    capability_name: Community Page
+    purpose: Host the location filter UI component
+  - capability_id: CAP-EOS-FILTERING
+    capability_name: Core Filtering Engine
+    purpose: Process location-based filtering logic
+  - capability_id: CAP-EOS-UI-COMPONENTS
+    capability_name: Shared UI Components
+    purpose: Reuse BaseSearchBar component for consistent UX
+
+instruction_specification:
+  kind: FRONTEND_FEATURE_IMPLEMENTATION
+  instruction_count: 5
+
+compliance_rules:
+  - rule: Must integrate only with approved shared UI components
+    severity: BLOCKER
+    enforcement: UI linting and component audit
+  - rule: Must maintain accessibility standards for filter input
+    severity: BLOCKER
+    enforcement: Automated accessibility testing
+  - rule: Filter logic must reuse core filtering engine
+    severity: WARNING
+    enforcement: Code review
+
+traceability:
+  anchors:
+    - anchor: REQ-010
+      propagates_to: EOS-community
+    - anchor: REQ-010
+      propagates_to: EOS-ui-components

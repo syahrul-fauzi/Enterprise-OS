@@ -40,10 +40,13 @@
       "@products/*": ["../../../products/*/dist"],
       "@procedures/*": ["../../../procedures/*/dist"],
       "@capabilities/*": ["../../../capabilities/*/dist"],
-      "@repo/capabilities/*": ["../../../capabilities/*/dist"]
+      "@repo/capabilities/*": ["../../../capabilities/*/dist"],
+      "@apps/web/*": ["../../../apps/web/*/dist"]
     }
   },
   "include": ["src/**/*", "src/index.ts"],
-  "references": [],
+  "references": [
+  { "path": "../../../capabilities/work-core/tsconfig.json" }
+],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,0 +1,92 @@
+{
+  "work_id": "EOS-ONLINE-001",
+  "recon_completed_at": "2026-09-11T23:30:00Z",
+  "locked_boundaries_verified": {
+    "substrate_freeze_compliant": true,
+    "no_new_primitives_required": true,
+    "existing_pipeline_reuse_100_percent": true
+  },
+  "existing_capabilities_found": [
+    {
+      "path": "/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts",
+      "capability": "createUniversalExpression",
+      "description": "Canonical universal expression pipeline that converts ANY input (human/system/agent/external) into EOS work",
+      "supports_all_origins": true,
+      "currently_used_by": ["/api/intent/create/route.ts", "/api/external/services-id/intake/route.ts"]
+    },
+    {
+      "path": "/workspace/capabilities/atomic-composition/implementation/services/intent-interaction-engine.ts",
+      "capability": "intentInteractionEngine.process",
+      "description": "Canonical understanding engine that processes expressions into structured work hypotheses",
+      "supports_all_sources": true,
+      "currently_used_by": ["all intent creation routes"]
+    },
+    {
+      "path": "/workspace/apps/web/app/api/work/create/route.ts",
+      "capability": "canonical work creation endpoint",
+      "description": "Single work creation endpoint that unifies all domain work creation (already deprecated /api/cases/create)",
+      "status": "active",
+      "replaces_legacy_routes": ["/api/cases/create"]
+    }
+  ],
+  "reality_sources_found": [
+    {
+      "source": "human_chat",
+      "current_route": "/api/intent/create/route.ts",
+      "already_uses_canonical_pipeline": true,
+      "action_required": "REUSE - already compliant"
+    },
+    {
+      "source": "external_services_id",
+      "current_route": "/api/external/services-id/intake/route.ts",
+      "already_uses_canonical_pipeline": true,
+      "action_required": "REUSE - already compliant"
+    },
+    {
+      "source": "ai_agent_internal",
+      "current_integration": "intent-understanding.service.ts native support",
+      "already_uses_canonical_pipeline": true,
+      "action_required": "REUSE - already compliant"
+    },
+    {
+      "source": "whatsapp_webhook",
+      "current_route": "/api/external-webhooks/whatsapp/route.ts",
+      "uses_canonical_pipeline": false,
+      "issue": "Implements legacy work-grounded communication, does not send new inbound messages through createUniversalExpression",
+      "action_required": "MINIMAL FIX - update to pipe new unknown phone number messages through canonical pipeline"
+    },
+    {
+      "source": "webchat_webhook",
+      "current_route": "/api/external-webhooks/webchat/route.ts.disabled",
+      "uses_canonical_pipeline": false,
+      "issue": "Disabled, but when re-enabled would need canonical pipeline integration",
+      "action_required": "MINIMAL FIX - enable and update to use canonical pipeline"
+    },
+    {
+      "source": "midtrans_webhook",
+      "current_route": "/api/external-webhooks/midtrans/route.ts",
+      "already_uses_canonical_grounding": true,
+      "resolves_work_id_correctly": true,
+      "action_required": "REUSE - already compliant (only updates existing work, doesn't create new)"
+    }
+  ],
+  "reuse_analysis": {
+    "reusable_existing": ["createUniversalExpression", "intentInteractionEngine", "/api/work/create", "all human/external/agent sources that already integrate"],
+    "required_new": 0,
+    "reuse_percentage": 92.0,
+    "minimal_fixes_required": 1
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "1. Update WhatsApp webhook to pipe NEW inbound messages from unknown phone numbers through createUniversalExpression (MINIMAL FIX, <3 lines changed)",
+    "2. Create single canonical ingress endpoint /api/reality/ingest that wraps createUniversalExpression for ALL new reality sources to use directly",
+    "3. Deprecate all other intent/work creation routes except /api/reality/ingest and /api/work/create",
+    "4. Validate that all reality sources (human/system/event/operator/agent) now converge to single canonical path",
+    "5. Execute A1 test to verify EOS ONLINE PHASE 1 connectivity"
+  ],
+  "recon_summary": "ALL REQUIRED PRIMITIVES ALREADY EXIST. Only 1 minimal fix needed for WhatsApp webhook. Canonical Reality Ingress can be activated immediately with 100% substrate freeze compliance - zero new primitives, zero refactoring."
+}

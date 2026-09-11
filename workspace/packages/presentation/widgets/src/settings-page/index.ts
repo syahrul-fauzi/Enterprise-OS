@@ -1,2 +1,2 @@
-export { SettingsPage } from "./SettingsPage.js";
-export type { SettingsPageProps } from "./SettingsPage.js";
+export { SettingsPage } from "./SettingsPage";
+export type { SettingsPageProps } from "./SettingsPage";

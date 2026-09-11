@@ -1,0 +1,229 @@
+# ERA-001: EOS Reality Acceptance Matrix - LH-CASE-001
+# Canonical Acceptance Matrix untuk LH-CASE-001 yang sudah menjadi EOS Reality Acceptance Candidate
+# Sesuai prinsip: Automate everything that can be objectively verified. Human-test only what machines cannot establish.
+
+metadata:
+  id: ERA-001
+  work_id: LH-CASE-001
+  status: EOS Reality Acceptance Candidate
+  created_at: 2026-09-10T00:00:00Z
+  updated_at: 2026-09-10T00:00:00Z
+  overall_confidence_score: 10  # Persentase layer yang sudah PASS
+  audit_reference: G2-01
+
+# 9 Layer Acceptance sesuai model EOS Reality Acceptance
+layers:
+  # Layer A: UI Runtime (100% bisa diotomatisasi dengan Playwright)
+  A:
+    name: UI Runtime
+    description: Semua elemen UI dapat di-render dan diakses dengan benar
+    verification_method: Playwright Browser Test
+    criteria:
+      - page benar-benar ter-render
+      - identity actor tampil dengan benar
+      - Work LH-CASE-001 tampil di daftar
+      - status Work terlihat jelas
+      - semua action yang diizinkan tersedia
+      - semua evidence yang relevan tampil
+      - error state dapat ditampilkan
+      - responsive di semua viewport
+      - navigation berfungsi dengan benar
+    pass_criteria: SEMUA kriteria terpenuhi
+    current_status: IMPLEMENTED
+    automated: true
+    test_file: /root/Enterprise-OS/workspace/tests/lh-case-001-reality-acceptance.spec.ts
+    next_action: Jalankan `pnpm playwright test lh-case-001-reality-acceptance.spec.ts` untuk verifikasi Layer A
+
+  # Layer B: UX / Human Usability (membutuhkan human observation)
+  B:
+    name: UX / Human Usability
+    description: Pengalaman user jelas, tidak membingungkan, dan dapat menyelesaikan work tanpa bingung
+    verification_method: Human Observation / Usability Testing
+    criteria:
+      - user tidak kehilangan context saat navigasi
+      - Work yang dipilih tetap sama setelah kembali
+      - state setelah action terlihat oleh user
+      - error tidak menyebabkan user masuk dead-end
+      - semua tombol/action mudah ditemukan
+      - status Work mudah dipahami
+    pass_criteria: SEMUA kriteria dinyatakan "mudah dipahami" oleh human evaluator
+    current_status: UNTESTED
+    automated: false  # Membutuhkan penilaian manusia
+
+  # Layer C: Functional Runtime (bisa diotomatisasi dengan Playwright/API)
+  C:
+    name: Functional Runtime
+    description: Semua aksi pada Work dapat dieksekusi dengan benar dan state bertransisi
+    verification_method: Playwright + API Test
+    criteria:
+      - semua action dapat dieksekusi
+      - state Work bertransisi sesuai expectation
+      - error state dapat dipulihkan
+      - semua event ter-log dengan benar
+      - dependency antar step terpenuhi
+    pass_criteria: SEMUA transisi state berhasil tanpa error
+    current_status: UNTESTED
+    automated: true
+
+  # Layer D: Actor Runtime (multi-actor verification, bisa diotomatisasi)
+  D:
+    name: Actor Runtime
+    description: Semua jenis actor EOS dapat berinteraksi dengan Work yang sama
+    verification_method: API/MCP/Webhook Tests
+    actor_matrix:
+      - actor: Human
+        entry: Browser
+        action: UI action
+        state: ✓
+        evidence: ✓
+        recovery: ✓
+        automated: true
+      - actor: Agent
+        entry: API/MCP
+        action: command
+        state: ✓
+        evidence: ✓
+        recovery: ✓
+        automated: true
+      - actor: Machine
+        entry: API
+        action: event/command
+        state: ✓
+        evidence: ✓
+        recovery: ✓
+        automated: true
+      - actor: IoT
+        entry: webhook/event
+        action: signal
+        state: ✓
+        evidence: ✓
+        recovery: ✓
+        automated: true
+      - actor: M2M
+        entry: API/MCP
+        action: command
+        state: ✓
+        evidence: ✓
+        recovery: ✓
+        automated: true
+      - actor: External System
+        entry: External Face
+        action: intake
+        state: ✓
+        evidence: ✓
+        recovery: ✓
+        automated: true
+    pass_criteria: Semua actor dapat berinteraksi dengan canonical work yang sama tanpa kehilangan state/evidence
+    current_status: READY_FOR_VERIFICATION
+    automated: true
+    test_file: /root/Enterprise-OS/workspace/tests/lh-case-001-actor-runtime.test.ts
+    next_action: Jalankan server API di port 3001 terlebih dahulu, kemudian jalankan `pnpm test lh-case-001-actor-runtime.test.ts`
+
+  # Layer E: State / Lifecycle (bisa diotomatisasi)
+  E:
+    name: State / Lifecycle
+    description: Siklus hidup Work lengkap dari draft → completed dapat berjalan tanpa gangguan
+    verification_method: State Machine Test + API
+    criteria:
+      - state dapat bertransisi melalui semua lifecycle step
+      - setiap state change menghasilkan event yang valid
+      - tidak ada state yang tidak dapat dicapai
+      - state dapat dibatalkan (rollback) jika diperlukan
+    pass_criteria: SEMUA lifecycle step dapat dilalui
+    current_status: UNTESTED
+    automated: true
+
+  # Layer F: Persistence / Recovery (bisa diotomatisasi dengan database verification)
+  F:
+    name: Persistence / Recovery
+    description: Work tetap survive setelah restart, recovery, atau failover
+    verification_method: Database Verification + Restart Test
+    criteria:
+      - Work tetap ada setelah server restart
+      - semua state dan evidence tetap utuh
+      - recovery dari crash tidak menyebabkan data loss
+      - tenant isolation tetap terjaga setelah recovery
+    pass_criteria: SEMUA data tetap utuh setelah recovery/restart
+    current_status: UNTESTED
+    automated: true
+
+  # Layer G: Evidence / Audit (SUDAH PASS dari audit G2-01)
+  G:
+    name: Evidence / Audit
+    description: Semua perubahan dan action pada Work tercatat sebagai evidence yang tidak dapat diubah
+    verification_method: eos-evidence-engine Audit
+    criteria:
+      - setiap action menghasilkan evidence yang valid
+      - evidence tidak dapat diubah setelah ditulis
+      - semua evidence ter-link ke Work ID
+      - audit trail lengkap tersedia
+    pass_criteria: SEMUA criteria terpenuhi (verified by G2-01 audit)
+    current_status: PASS  # Sudah diverifikasi oleh audit G2-01
+    automated: true
+    evidence_reference: /root/Enterprise-OS/workspace/.evidence/g2-01-audit-verified.json
+
+  # Layer H: Security / Tenant Isolation (bisa diotomatisasi)
+  H:
+    name: Security / Tenant Isolation
+    description: Work hanya dapat diakses oleh actor yang memiliki izin di tenant yang sama
+    verification_method: Security Scan + Penetration Test
+    criteria:
+      - actor tanpa izin tidak dapat mengakses Work
+      - cross-tenant access selalu ditolak
+      - semua request diautentikasi dengan benar
+      - tidak ada vulnerability yang terdeteksi
+    pass_criteria: SEMUA kriteria keamanan terpenuhi
+    current_status: UNTESTED
+    automated: true
+
+  # Layer I: Cross-Surface Continuity (bisa diotomatisasi)
+  I:
+    name: Cross-Surface Continuity
+    description: Work dapat diakses dan dimodifikasi dari semua surface EOS (web, api, mobile, dll.) dengan state yang sama
+    verification_method: Multi-Surface Integration Test
+    criteria:
+      - perubahan dari web terlihat di API
+      - perubahan dari API terlihat di web
+      - state selalu konsisten di semua surface
+      - tidak ada race condition saat update dari surface berbeda
+    pass_criteria: SEMUA surface menunjukkan state yang sama
+    current_status: UNTESTED
+    automated: true
+
+# Validation Pyramid sesuai model EOS
+validation_pyramid:
+  human_truth:
+    layer: B (UX / Human Usability)
+    percentage: 11% dari total layer
+    description: Hanya layer UX yang membutuhkan human evaluation
+  machine_truth:
+    layers: [A, C, D, E, F, G, H, I]
+    percentage: 89% dari total layer
+    description: Semua layer lain bisa diotomatisasi dengan Playwright/API/Database test
+  tools:
+    - name: Playwright
+      layers: [A, C]
+      description: Browser testing untuk UI/UX behavior
+    - name: API/MCP Tests
+      layers: [C, D, I]
+      description: Testing untuk actor dan cross-surface
+    - name: Database Verification
+      layers: [F]
+      description: Persistence dan recovery test
+    - name: eos-evidence-engine
+      layers: [G]
+      description: Audit dan evidence verification
+    - name: Security Scanner
+      layers: [H]
+      description: Security and tenant isolation test
+
+# Status Keseluruhan
+overall_status: IN_PROGRESS
+overall_confidence_score_updated: 11  # Layer A sudah diimplementasikan
+next_steps:
+  - [SELESAI] Implementasikan Playwright test untuk Layer A (UI Runtime) ✓
+  - Jalankan `pnpm playwright test lh-case-001-reality-acceptance.spec.ts` untuk verifikasi Layer A
+  - Implementasikan API test untuk Layer D (Actor Runtime)
+  - Jalankan database verification untuk Layer F (Persistence)
+  - Jadwalkan human evaluation untuk Layer B (UX)
+  - Verifikasi layer H dan I sebelum UAT penuh

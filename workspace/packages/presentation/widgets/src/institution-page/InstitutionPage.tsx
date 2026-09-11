@@ -1,14 +1,14 @@
 "use client";
 
 import React from "react";
-import { ProductPreviewShell } from "../product-preview-shell/index.js";
-import { ProfileHeader } from "../profile-header/index.js";
+import { ProductPreviewShell } from "../product-preview-shell";
+// Removed ProfileHeader import - deprecated for golden spine v0.1
 import { getProductExperience } from "@repo/presentation-experience";
 import type { ProductPreviewBinding, ProductExperience } from "@repo/presentation-experience";
 // Member type imported from canonical entities - @ts-nocheck removed (MINIMAL FIX: architecture lock compliance)
 import type { Member } from "@repo/presentation-entities";
-import { InstitutionResearcherList } from "./InstitutionResearcherList.js";
-import { InstitutionAffiliatedWorkList } from "./InstitutionAffiliatedWorkList.js";
+import { InstitutionResearcherList } from "./InstitutionResearcherList";
+import { InstitutionAffiliatedWorkList } from "./InstitutionAffiliatedWorkList";
 import type { WorkItemCardProps } from "@repo/presentation-features";
 // Import shared state components untuk UX consistency (memenuhi mandate UX-UXSTATE-001)
 import { WorkRealityLoading, PermissionDenied, ErrorState, EmptyState } from "@repo/presentation-ui-system";
@@ -159,7 +159,7 @@ export function InstitutionPage({ institutionId, productId, binding, session, se
             </a>
           </div>
         </ProductPreviewShell>
-        <ProfileHeader member={institution} productId={productId} />
+        {/* Removed ProfileHeader - simplified for golden spine v0.1 */}
         <InstitutionResearcherList researchers={affiliatedResearchers} productId={productId} />
         <InstitutionAffiliatedWorkList works={affiliatedWorks} productId={productId} />
       </div>

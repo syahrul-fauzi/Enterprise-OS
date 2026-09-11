@@ -1,27 +1,54 @@
 import type { NavigationItem, NavigationDescriptor } from "./index.js";
 
 // GLOBAL_NAV_ITEMS - Navigation items that appear in ALL workspaces
+// PR-VISUAL-001: Human mental model navigation (Reality > Work > Actors > Products)
 export const GLOBAL_NAV_ITEMS: readonly NavigationItem[] = [
   {
-    id: "nav-dashboard",
-    label: "Dashboard",
+    id: "nav-reality",
+    label: "Reality",
     kind: "link",
-    href: "/workspace",
+    href: "/my-reality",
     order: 10,
   },
   {
-    id: "nav-requirements",
-    label: "Requirements",
+    id: "nav-work",
+    label: "Work",
     kind: "link",
-    href: "/requirements",
+    href: "/work",
     order: 20,
   },
   {
-    id: "nav-community",
-    label: "Community",
+    id: "nav-separator-1",
+    label: "",
+    kind: "separator",
+    order: 25,
+  },
+  {
+    id: "nav-actors",
+    label: "Actors",
     kind: "link",
-    href: "/community",
+    href: "/actors",
     order: 30,
+  },
+  {
+    id: "nav-products",
+    label: "Products",
+    kind: "link",
+    href: "/products",
+    order: 40,
+  },
+  {
+    id: "nav-separator-2",
+    label: "",
+    kind: "separator",
+    order: 800,
+  },
+  {
+    id: "nav-profile",
+    label: "Profile",
+    kind: "link",
+    href: "/profile",
+    order: 850,
   },
   {
     id: "nav-settings",

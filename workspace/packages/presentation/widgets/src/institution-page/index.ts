@@ -1,6 +1,6 @@
-export { InstitutionPage } from "./InstitutionPage.js";
-export { InstitutionAffiliatedWorkList } from "./InstitutionAffiliatedWorkList.js";
-export { InstitutionResearcherList } from "./InstitutionResearcherList.js";
-export type { InstitutionPageProps } from "./InstitutionPage.js";
-export type { InstitutionAffiliatedWorkListProps } from "./InstitutionAffiliatedWorkList.js";
-export type { InstitutionResearcherListProps } from "./InstitutionResearcherList.js";
+export { InstitutionPage } from "./InstitutionPage";
+export { InstitutionAffiliatedWorkList } from "./InstitutionAffiliatedWorkList";
+export { InstitutionResearcherList } from "./InstitutionResearcherList";
+export type { InstitutionPageProps } from "./InstitutionPage";
+export type { InstitutionAffiliatedWorkListProps } from "./InstitutionAffiliatedWorkList";
+export type { InstitutionResearcherListProps } from "./InstitutionResearcherList";

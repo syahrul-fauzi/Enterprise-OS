@@ -100,7 +100,16 @@ export interface ProductExperience {
  * Core data model untuk Work Reality Surface yang dapat digunakan oleh SEMUA domain
  * One Work → Many Perspectives (sesuai thesis EOS)
  */
-export interface WorkIdentity {
+// ============================================================
+// Formalized Sub-View Contracts with Canonical Source Tracking
+// Setiap view contract memiliki referensi jelas ke sumber canonical level 1
+// ============================================================
+/**
+ * Canonical Source: WorkAggregate.identity (Level 1 Canonical Reality)
+ * Presentation View Contract: WorkIdentityView (Level 2 Presentation Entity)
+ * Level 2 view yang menormalkan data identity untuk konsumsi UI
+ */
+export interface WorkIdentityView {
   title: string;
   description: string;
   workId: string;
@@ -110,19 +119,34 @@ export interface WorkIdentity {
   workspaceId?: string;
 }
 
-export interface WorkState {
+/**
+ * Canonical Source: WorkAggregate.state (Level 1 Canonical Reality)
+ * Presentation View Contract: WorkStateView (Level 2 Presentation Entity)
+ * Level 2 view yang menormalkan state workflow untuk UI yang konsisten
+ */
+export interface WorkStateView {
   currentState: string;
   nextAction: string;
   blockers: string[];
 }
 
-export interface WorkParticipant {
+/**
+ * Canonical Source: WorkAggregate.participants[] (Level 1 Canonical Reality)
+ * Presentation View Contract: WorkParticipantView (Level 2 Presentation Entity)
+ * Level 2 view yang menormalkan data partisipan untuk komponen avatar/profil
+ */
+export interface WorkParticipantView {
   id: string;
   role: 'customer' | 'professional' | 'operator' | 'agent' | 'notary';
   name: string;
 }
 
-export interface CommunicationEvent {
+/**
+ * Canonical Source: WorkAggregate.communicationLog[] (Level 1 Canonical Reality)
+ * Presentation View Contract: CommunicationEventView (Level 2 Presentation Entity)
+ * Level 2 view yang menormalkan event komunikasi untuk timeline chat UI
+ */
+export interface CommunicationEventView {
   id: string;
   channel: string;
   actorId: string;
@@ -132,25 +156,45 @@ export interface CommunicationEvent {
   timestamp: number;
 }
 
-export interface WorkInspection {
+/**
+ * Canonical Source: WorkAggregate.inspections[] (Level 1 Canonical Reality)
+ * Presentation View Contract: WorkInspectionView (Level 2 Presentation Entity)
+ * Level 2 view yang menormalkan hasil inspeksi untuk status banner UI
+ */
+export interface WorkInspectionView {
   label: string;
   status: 'success' | 'warning' | 'error';
   message: string;
 }
 
-export interface WorkCoordinationAction {
+/**
+ * Canonical Source: WorkAggregate.coordinationActions[] (Level 1 Canonical Reality)
+ * Presentation View Contract: WorkCoordinationActionView (Level 2 Presentation Entity)
+ * Level 2 view yang menormalkan aksi koordinasi untuk action item UI
+ */
+export interface WorkCoordinationActionView {
   actor: string;
   action: string;
   description: string;
 }
 
-export interface EvidenceArtifact {
+/**
+ * Canonical Source: EvidenceRecord[] (Level 1 Canonical Reality)
+ * Presentation View Contract: EvidenceArtifactView (Level 2 Presentation Entity)
+ * Level 2 view yang menormalkan artefak bukti untuk file gallery UI
+ */
+export interface EvidenceArtifactView {
   label: string;
   url: string;
   source: string;
 }
 
-export interface ActivityEntry {
+/**
+ * Canonical Source: WorkAggregate.activityLog[] (Level 1 Canonical Reality)
+ * Presentation View Contract: ActivityEntryView (Level 2 Presentation Entity)
+ * Level 2 view yang menormalkan log aktivitas untuk activity feed UI
+ */
+export interface ActivityEntryView {
   id: string;
   type: 'created' | 'assigned' | 'evidence' | 'status' | 'communication' | 'completed' | 'note' | 'external';
   actor: string;
@@ -160,6 +204,16 @@ export interface ActivityEntry {
   timestamp: string | number;
   metadata?: Record<string, unknown>;
 }
+
+// Backward compatibility aliases — maintain existing imports
+export type WorkIdentity = WorkIdentityView;
+export type WorkState = WorkStateView;
+export type WorkParticipant = WorkParticipantView;
+export type CommunicationEvent = CommunicationEventView;
+export type WorkInspection = WorkInspectionView;
+export type WorkCoordinationAction = WorkCoordinationActionView;
+export type EvidenceArtifact = EvidenceArtifactView;
+export type ActivityEntry = ActivityEntryView;
 
 /**
  * Community & Publication Types (formerly in @repo/presentation-types)
@@ -206,18 +260,24 @@ export type CapabilityExperienceRoutes = PresentationRoutes;
  * Core WorkRealityModel — Satu data model untuk SEMUA perspektif
  * Bukan 3 sistem berbeda untuk customer/lawyer/operator. Satu model, banyak view.
  */
+/**
+ * Core WorkRealityModel — SEBAGAI COMPOSITION ROOT (bukan God entity)
+ * Mengaggregate SEMUA sub-view contracts menjadi satu stable model untuk surface
+ * Canonical Source: Semua Level 1 entities yang di-proyeksikan ke sub-view di atas
+ * Bisa digunakan oleh SEMUA platform (Web/API/Mobile/MCP) tanpa modifikasi
+ */
 export interface WorkRealityModel {
-  identity: WorkIdentity;
-  state: WorkState;
-  participants: WorkParticipant[];
-  communications: CommunicationEvent[];
-  inspections: WorkInspection[];
-  coordination: WorkCoordinationAction[];
-  evidence: EvidenceArtifact[];
-  activity: ActivityEntry[];
+  identity: WorkIdentityView;
+  state: WorkStateView;
+  participants: WorkParticipantView[];
+  communications: CommunicationEventView[];
+  inspections: WorkInspectionView[];
+  coordination: WorkCoordinationActionView[];
+  evidence: EvidenceArtifactView[];
+  activity: ActivityEntryView[];
   actor?: {
     id: string;
-    role: WorkParticipant['role'];
+    role: WorkParticipantView['role'];
   };
 }
 

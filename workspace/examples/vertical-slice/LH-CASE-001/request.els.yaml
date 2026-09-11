@@ -1,0 +1,59 @@
+specification:
+  id: LH-CASE-001
+  name: Legal Case Creation for LawyersHub
+  version: "1.0.0"
+  kind: ELS_LANGUAGE_SPECIFICATION
+  status: DRAFT
+  language_spec_version: "1.0"
+  golden_reference: false
+  root_of_trust_for: VS-VERIFY-001
+  identity_note: THIS_DOCUMENT_HAS_STABLE_HASH.ANY_MODIFICATION_REQUIRES_NEW_VERSION.
+
+specification_metadata:
+  author: eos-lawyershub-product-manager
+  created: 2026-09-10
+  governance_class: user_feature_request
+  change_policy: iterative_update_allowed
+  hash_algorithm: sha256
+  audit_note: Input hash of this document MUST be captured in acceptance.yaml before any transformation run.
+
+ontology:
+  root_aggregate: LegalCase
+  domain: LawyersHub
+
+requirement_identity:
+  requirement_id: LH-CASE-001
+  stable_external_id: LH-CASE-001
+  id_policy: requirement_identity_is_stable_never_changes
+  derived_identity_chain:
+    - requirement_id → els_document_hash
+    - els_document_hash → eir_source_hash
+    - eir_source_hash → instruction_set_hash
+    - instruction_set_hash → capability_ref_hash
+
+business_statement:
+  title: Create Legal Case Workflow for LawyersHub Users
+  description: >
+    LawyersHub users (lawyers, notaries, clients) harus dapat membuat legal case baru di EOS dengan workflow yang terstandarisasi.
+    Case harus memiliki semua metadata hukum, pihak yang terlibat, dokumen pendukung, dan timeline yang jelas.
+    Workflow ini harus terintegrasi dengan requirement management yang sudah ada di EOS.
+  origin: lawyershub_customer_feature_request
+  compliance: [lawyershub_data_privacy, legal_industry_regulations, eos_security_requirements]
+
+capability_refs:
+  - capability_id: "CAP-LAW-CASE-CREATE"
+    capability_name: Legal Case Creation
+    purpose: Enable creation of legal cases in LawyersHub domain
+  - capability_id: "CAP-DOC-UPLOAD"
+    capability_name: Document Upload Management
+    purpose: Manage upload and storage of supporting legal documents
+  - capability_id: "CAP-PARTY-MGMT"
+    capability_name: Party Management
+    purpose: Track and manage all parties involved in a legal case
+
+acceptanceCriteria:
+  - Lawyer can create a new legal case with all required metadata
+  - All parties involved are correctly linked to the case identity
+  - Supporting documents are stored with valid access permissions
+  - Case state transitions are tracked in the EOS ledger
+  - Evidence chain is preserved from creation to closure

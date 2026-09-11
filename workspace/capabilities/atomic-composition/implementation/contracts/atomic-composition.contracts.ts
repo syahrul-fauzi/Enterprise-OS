@@ -29,7 +29,7 @@ export const CapabilityRequirementSchema = z.object({
 });
 
 export type CapabilityRequirement = z.infer<typeof CapabilityRequirementSchema>;
-export type RequirementId = string & { __brand: "RequirementId" };
+export type RequirementId = z.infer<typeof CapabilityRequirementSchema.shape.requirementId>;
 export function RequirementId(value: string): RequirementId { return value as RequirementId; }
 
 export interface Requirement {
@@ -77,8 +77,9 @@ export const ActorProjectionSchema = z.object({
 });
 
 export type ActorProjection = z.infer<typeof ActorProjectionSchema>;
-export type ActorId = string & { __brand: "ActorId" };
-export function ActorId(value: string): ActorId { return value as ActorId; }
+// Reuse canonical ActorId from work-core to maintain type consistency (MB-01: single source of truth)
+import type { ActorId } from "@capabilities/work-core/contracts/work.contracts";
+export { ActorId } from "@capabilities/work-core/contracts/work.contracts";
 
 // ------------------------------
 // 3. WORK BINDING - Extended to ValueReality Hyper-Relationship Participant
@@ -100,7 +101,7 @@ export const WorkBindingSchema = z.object({
   compositionId: z.string().brand<"CompositionId">(), // REQUIRED for hyper-relationships: ALL participants share the same compositionId
   participantId: z.string(), // Unified participant ID (works for ALL types)
   participantType: ParticipantTypeSchema, // What kind of participant is this?
-  providerType: z.enum(["human", "ai-agent", "external-service", "organization", "machine", "resource", "capability", "work", "product"]).optional().default("human"),
+  providerType: z.enum(["human", "ai-agent", "external-service", "organization", "machine", "resource", "capability", "work", "product", "system"]).optional().default("human"),
   // Legacy fields for backward compatibility
   actorProjectionId: z.string().brand<"ActorId">().optional(),
   workId: z.string().brand<"WorkId">().optional(),
@@ -113,6 +114,7 @@ export const WorkBindingSchema = z.object({
   status: z.enum(["pending", "accepted", "active", "completed", "rejected"]).default("pending"),
   boundAt: z.string(),
   updatedAt: z.string().optional(), // For relationship lifecycle changes
+  workspaceId: z.string().optional(), // Added to support workspace-specific bindings
 });
 
 // ------------------------------
@@ -129,15 +131,32 @@ export const CapabilityResolutionRequestSchema = z.object({
 
 export type CapabilityResolutionRequest = z.infer<typeof CapabilityResolutionRequestSchema>;
 
+export const AssignmentSchema = z.object({
+  assignmentId: z.string(),
+  teamId: z.string(),
+  requirementId: z.string().optional(),
+  actorId: z.string(),
+  assignedAt: z.string().optional(),
+  status: z.enum(["PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED", "pending", "accepted", "active", "completed", "rejected"]).optional(),
+  completedAt: z.string().optional(),
+  evidence: z.array(z.string()).optional(),
+  bindingId: z.string().optional(),
+  actorProjectionId: z.string().optional(),
+  capabilityReference: z.string().optional(),
+  // Pertahankan property yang sudah ada di interface Assignment
+  // Serta tambahkan role yang dibutuhkan composeTeamFromRequirements
+  role: z.string().optional(),
+  capabilityId: z.string().optional(),
+});
+
 export const CapabilityResolutionResultSchema = z.object({
   teamId: z.string(),
   compositionId: z.string(),
-  assignments: z.array(z.object({
-    actorId: z.string(),
-    capabilityId: z.string(),
-    role: z.string(),
-  })).default([]),
+  assignments: z.array(AssignmentSchema).default([]),
   success: z.boolean().default(true),
+  team: z.any().optional(), // Add optional team property for backward compatibility
+  unresolvedRequirements: z.array(z.any()).optional(),
+  resolutionTimestamp: z.union([z.date(), z.string()]).optional(),
 });
 
 export type CapabilityResolutionResult = z.infer<typeof CapabilityResolutionResultSchema>;
@@ -162,7 +181,8 @@ export type CreateTeamResult = z.infer<typeof CreateTeamResultSchema>;
 // Original error caused by missing opening brace that created orphaned property declarations
 
 export type WorkBinding = z.infer<typeof WorkBindingSchema>;
-export type WorkBindingId = string & { __brand: "WorkBindingId" };
+// Reuse canonical patterns - WorkBindingId is composition-specific but follows work-core branding
+export type WorkBindingId = z.infer<typeof WorkBindingSchema.shape.bindingId>;
 export function WorkBindingId(value: string): WorkBindingId { return value as WorkBindingId; }
 
 // ------------------------------
@@ -204,7 +224,7 @@ export const CompositionResolutionSchema = z.object({
 });
 
 export type CompositionResolution = z.infer<typeof CompositionResolutionSchema>;
-export type CompositionId = string & { __brand: "CompositionId" };
+export type CompositionId = z.infer<typeof WorkBindingSchema.shape.compositionId>;
 export function CompositionId(value: string): CompositionId { return value as CompositionId; }
 
 // ------------------------------
@@ -222,15 +242,6 @@ export function EconomicEventId(value: string): EconomicEventId { return value a
 // ============================================================================
 // Legacy types maintained for backwards compatibility with existing proof tests
 // These are NOT new primitives - only compatibility shims
-interface Assignment {
-  id: string;
-  actorId: string;
-  actorProjectionId: string; // ActorProjection ID dari WorkBinding
-  bindingId: string; // WorkBinding ID canonical dari atomic-composition
-  requirementId: string;
-  assignedAt: string;
-}
-
 export type TeamId = string & { __brand: 'TeamId' };
 export function TeamId(value: string): TeamId { return value as TeamId; }
 
@@ -240,8 +251,9 @@ export interface Team {
   name: string;
   members: string[]; // Array of actorIds assigned to this team
   lead?: string; // Lead actorId if assigned
-  createdAt: Date;
-  updatedAt: Date;
+  workId?: WorkId; // Add support for work-scoped team assignments
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Assignment {
@@ -249,24 +261,22 @@ export interface Assignment {
   teamId: TeamId;
   requirementId: RequirementId;
   actorId: string;
-  assignedAt: Date;
+  assignedAt: string;
   status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
-  completedAt?: Date;
+  completedAt?: string;
   // Add missing properties referenced in composition.service.ts (align with existing usage)
   evidence?: string[];
   bindingId?: string;
   actorProjectionId?: string;
   capabilityReference?: string;
+  // Minimal backward compatibility properties for composition.repository.ts
+  id?: string;           // Required by legacy WorkBinding→Assignment conversion
+  authority?: string;    // Required by existing binding authority model
+  participantId?: string;// Legacy property from WorkBinding for backward compatibility
 }
 
-export interface AssignmentId extends Brand<string, "AssignmentId"> {}
+export type AssignmentId = string & { __brand: "AssignmentId" };
 export function AssignmentId(value: string): AssignmentId { return value as AssignmentId; }
-
-export interface Requirement {
-  requirementId: string;
-  title: string;
-  status: string;
-}
 
 interface LegacyRequirement {
   requirementId: string;
@@ -284,7 +294,8 @@ interface LegacyActor {
   availability: boolean;
 }
 
-export interface CapabilityResolutionRequest {
+// BACKWARD COMPATIBILITY: Extend the zod-derived type for legacy usage
+export interface LegacyCapabilityResolutionRequest {
   workId: WorkId;
   work: any; // WorkAggregate from work-core
   requirements: LegacyRequirement[];
@@ -293,7 +304,7 @@ export interface CapabilityResolutionRequest {
   workspaceId?: string; // Multi-tenant context untuk AI task isolation (Fase 1)
 }
 
-export interface CapabilityResolutionResult {
+export interface LegacyCapabilityResolutionResult {
   success: boolean;
   assignments: Assignment[];
   team: Team;

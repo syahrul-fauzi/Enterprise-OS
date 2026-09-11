@@ -42,7 +42,6 @@ export function ProductServiceRequestsPage({
   const [priority, setPriority] = useState<ServiceRequestPriority>("medium");
   const [category, setCategory] = useState<ServiceRequestCategory>("IT Support");
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   
   // State management menggunakan usePageStates hook untuk standarisasi 9 UX states
   const {
@@ -61,6 +60,9 @@ export function ProductServiceRequestsPage({
   } = usePageStates<ServiceRequestAggregate[]>({
     initialPageSize: 10,
   });
+  // Gunakan error state dari usePageStates, tidak perlu deklarasi lokal useState() lagi
+  const error = hasError ? "Terjadi kesalahan" : null;
+  
   const [serviceRequests, setServiceRequests] = useState<ServiceRequestAggregate[]>([]);
 
   // Locale-based priority labels

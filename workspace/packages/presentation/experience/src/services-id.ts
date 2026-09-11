@@ -84,7 +84,7 @@ export const servicesId: ProductExperience = {
   entry: {
     primaryIntent: "Sebelum sistem Anda go-live atau menghadapi security review dari klien, kami membantu menemukan risiko keamanan yang paling penting dan menentukan apa yang harus diperbaiki terlebih dahulu.",
     primaryActionLabel: "Ceritakan Situasi Anda",
-    discoveryMode: "focused",
+    discoveryMode: "search",
     searchPlaceholder: "Saya akan meluncurkan platform baru dan butuh memahami risiko keamanan yang perlu diperbaiki...",
     categories: [
       "Security Readiness Assessment", "Go-Live Preparation", "Compliance Review", "Client Security Audit", "Penetration Testing"

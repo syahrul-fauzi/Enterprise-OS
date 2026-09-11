@@ -25,6 +25,8 @@
       "@repo/core-kernel/*": ["packages/core/kernel/src/*"],
       "@repo/core-runtime": ["packages/core/runtime/src/index.ts"],
       "@repo/core-runtime/*": ["packages/core/runtime/src/*"],
+      "@repo/core/realtime": ["packages/core/realtime/src/index.ts"],
+      "@repo/core/realtime/*": ["packages/core/realtime/src/*"],
       "@repo/core-eir": ["packages/core/eir/src/index.ts"],
       "@repo/core-eir/*": ["packages/core/eir/src/*"],
       "@repo/core-transformation-registry": ["packages/core/transformation-registry/src/index.ts"],

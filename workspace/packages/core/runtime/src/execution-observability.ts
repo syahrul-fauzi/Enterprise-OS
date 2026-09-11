@@ -408,6 +408,138 @@ export function getAllConnectionPoolMetrics(): ConnectionPoolMetrics[] {
   return Array.from(connectionPoolMetricsStore.values());
 }
 
+// --- PR-10: Real Outcome / Economic Loop Primitives ---
+// Verified work outcome with external confirmation requirement
+export interface VerifiedWorkOutcome {
+  outcome_id: string;
+  work_id: string;
+  title: string;
+  delivered_at_utc: string;
+  acceptance_status: "client-accepted" | "pending-acceptance" | "rejected";
+  total_project_cost: number;
+  project_margin: number;
+  realized_value: number; // Actual economic value realized from the work
+  verified_by: string; // Actor ID who performed external verification
+  verified_at_utc: string;
+  external_evidence_ref?: string; // Reference to external proof (payment receipt, client email)
+}
+
+// Payment status tracking for economic reconciliation
+export interface WorkPayment {
+  payment_id: string;
+  work_id: string;
+  outcome_id: string;
+  amount: number;
+  currency: string;
+  due_date_utc: string;
+  issued_at_utc: string;
+  payment_status: "pending" | "paid" | "overdue" | "failed";
+  payment_gateway?: string;
+  transaction_id?: string;
+  paid_at_utc?: string;
+  reconciliation_status: "unreconciled" | "reconciled" | "discrepancy";
+}
+
+// Work throughput metrics for operational reporting (PR-10 requirements)
+export interface WorkThroughputMetrics {
+  period_start_utc: string;
+  period_end_utc: string;
+  work_created: number;
+  work_accepted: number;
+  work_executing: number;
+  work_completed: number;
+  work_verified: number;
+  work_realized: number;
+  work_paid: number;
+  conversion_rate: number; // work_paid / work_created
+  total_realized_value: number;
+  average_fulfillment_time_days: number;
+}
+
+const verifiedOutcomesStore: Map<string, VerifiedWorkOutcome> = new Map();
+const paymentsStore: Map<string, WorkPayment> = new Map();
+
+// Record verified work outcome (requires external verification, never trust internal-only success)
+export function recordVerifiedOutcome(outcome: Omit<VerifiedWorkOutcome, "delivered_at_utc" | "verified_at_utc">): void {
+  const verified: VerifiedWorkOutcome = {
+    ...outcome,
+    delivered_at_utc: new Date().toISOString(),
+    verified_at_utc: new Date().toISOString()
+  };
+  verifiedOutcomesStore.set(verified.outcome_id, verified);
+  console.log(`[OUTCOME-VERIFIED] work=${verified.work_id} | outcome=${verified.outcome_id} | value=${verified.realized_value} | verified_by=${verified.verified_by} | acceptance=${verified.acceptance_status}`);
+}
+
+// Record payment and track reconciliation status
+export function recordWorkPayment(payment: Omit<WorkPayment, "issued_at_utc">): void {
+  const recorded: WorkPayment = {
+    ...payment,
+    issued_at_utc: new Date().toISOString()
+  };
+  paymentsStore.set(recorded.payment_id, recorded);
+  console.log(`[PAYMENT-RECORDED] work=${recorded.work_id} | payment=${recorded.payment_id} | amount=${recorded.amount} ${recorded.currency} | status=${recorded.payment_status}`);
+}
+
+// Update payment status and reconcile
+export function updatePaymentStatus(paymentId: string, newStatus: WorkPayment["payment_status"], transactionId?: string): void {
+  const payment = paymentsStore.get(paymentId);
+  if (!payment) return;
+  
+  payment.payment_status = newStatus;
+  if (transactionId) payment.transaction_id = transactionId;
+  if (newStatus === "paid") {
+    payment.paid_at_utc = new Date().toISOString();
+    payment.reconciliation_status = "reconciled";
+  }
+  
+  paymentsStore.set(paymentId, payment);
+  console.log(`[PAYMENT-UPDATED] work=${payment.work_id} | payment=${paymentId} | new_status=${newStatus} | reconciled=${payment.reconciliation_status}`);
+}
+
+// Get work throughput metrics for a specific time period (PR-10 operational reporting)
+export function calculateWorkThroughput(startDate: Date, endDate: Date): WorkThroughputMetrics {
+  const allOutcomes = Array.from(verifiedOutcomesStore.values());
+  const allPayments = Array.from(paymentsStore.values());
+  
+  const periodOutcomes = allOutcomes.filter(o => 
+    new Date(o.delivered_at_utc) >= startDate && new Date(o.delivered_at_utc) <= endDate
+  );
+  
+  const workPaid = allPayments.filter(p => 
+    p.payment_status === "paid" && p.paid_at_utc && new Date(p.paid_at_utc) >= startDate && new Date(p.paid_at_utc) <= endDate
+  ).length;
+  
+  const workCreated = periodOutcomes.length;
+  const workRealized = periodOutcomes.filter(o => o.acceptance_status === "client-accepted").length;
+  
+  const totalRealizedValue = periodOutcomes.reduce((sum, o) => sum + o.realized_value, 0);
+  
+  return {
+    period_start_utc: startDate.toISOString(),
+    period_end_utc: endDate.toISOString(),
+    work_created: workCreated,
+    work_accepted: periodOutcomes.length, // Simplified - would filter by acceptance date in production
+    work_executing: 0, // Would calculate from execution status store in production
+    work_completed: periodOutcomes.length,
+    work_verified: periodOutcomes.length,
+    work_realized: workRealized,
+    work_paid: workPaid,
+    conversion_rate: workCreated > 0 ? workPaid / workCreated : 0,
+    total_realized_value: totalRealizedValue,
+    average_fulfillment_time_days: 0 // Would calculate actual averages in production
+  };
+}
+
+// Get all verified outcomes
+export function getAllVerifiedOutcomes(): VerifiedWorkOutcome[] {
+  return Array.from(verifiedOutcomesStore.values());
+}
+
+// Get all payments
+export function getAllPayments(): WorkPayment[] {
+  return Array.from(paymentsStore.values());
+}
+
 // Core SLO definitions for production Work operations
 export const WORK_OPERATION_SLOS = {
   p95_latency_ms: 2000, // 95% of operations must complete <2s

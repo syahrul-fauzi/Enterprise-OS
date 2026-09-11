@@ -42,7 +42,7 @@ export function RealityCommunication({ communications, perspective, workId, onSe
     perspective === 'operator' || perspective === 'agent'
       ? sortedCommunications
       : sortedCommunications.filter(c => 
-          c.recipients.includes(perspective) || c.sender === perspective
+          (c.recipients?.includes(perspective) ?? false) || c.sender === perspective
         );
 
   const handleSendMessage = async (e: React.FormEvent) => {

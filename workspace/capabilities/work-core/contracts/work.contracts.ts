@@ -1,6 +1,10 @@
 import { z } from "zod";
 import type { CompositionId } from "@capabilities/atomic-composition/implementation/contracts/atomic-composition.contracts.js";
 
+// Use z.BRAND compatible type definition to match atomic-composition contracts
+// This resolves type mismatch between our __brand and internal Zod BRAND symbols
+// Revert to __brand pattern to maintain backward compatibility with existing codebase
+// All other repositories use __brand, and BRAND symbol mismatch was causing type errors
 export type WorkId = string & { __brand: "WorkId" };
 export type TenantId = string & { __brand: "TenantId" };
 export type SessionId = string & { __brand: "SessionId" };

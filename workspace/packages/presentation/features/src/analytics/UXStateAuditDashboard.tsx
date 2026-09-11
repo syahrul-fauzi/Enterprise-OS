@@ -2,16 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, Button } from '@repo/presentation-ui-system';
-import { UXStateComplianceRegistry } from "@repo/presentation-hooks";
-
-// Type imports from compliance registry
-interface ComplianceRecord {
-  timestamp: string;
-  pagePath: string;
-  status: string;
-  violationType?: string;
-  violationDetails?: string;
-}
+import { UXStateComplianceRegistry, ComplianceRecord } from "@repo/presentation-hooks";
+  
+  // Type imports from compliance registry (imported from @repo/presentation-hooks)
 
 const overviewData = {
   '7D': {
@@ -129,7 +122,7 @@ export function UXStateAuditDashboard() {
       const violationCount = UXStateComplianceRegistry.getViolationCount();
       const registeredPagesList = UXStateComplianceRegistry.getRegisteredPages();
       const allRecords = UXStateComplianceRegistry.getRecords();
-      const violations = allRecords.filter(r => r.status === "violation");
+      const violations = allRecords.filter((r: ComplianceRecord) => r.status === "violation");
 
       setLiveMetrics({
         complianceRate,

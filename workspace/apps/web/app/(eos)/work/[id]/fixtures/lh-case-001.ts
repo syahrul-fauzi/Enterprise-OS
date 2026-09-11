@@ -29,10 +29,10 @@ export const lhCase001Work: CanonicalWorkRecord = {
   specialization: "company_formation",
   nextAction: { label: "Verifikasi dokumen identitas pendiri", actionId: "action-verify-founder-docs" },
   participants: [
-    { id: "lawyer.jakarta.001", name: "Advokat Jakarta", role: "Legal Counsel", actorType: "professional" },
-    { id: "pt-establishment-manager", name: "Sistem Pendirian PT", role: "Penyedia Layanan", actorType: "system" },
-    { id: "client.kopi.001", name: "Pemilik Usaha Kopi", role: "Klien", actorType: "customer" },
-    { id: "notary.jakarta.001", name: "Notaris Pusat", role: "Notaris", actorType: "authority" }
+    { id: "lawyer.jakarta.001", name: "Advokat Jakarta", role: "Legal Counsel", actorType: "professional", email: "lawyer.jakarta.001@eos.id" },
+    { id: "pt-establishment-manager", name: "Sistem Pendirian PT", role: "Penyedia Layanan", actorType: "system", email: "system@eos.id" },
+    { id: "client.kopi.001", name: "Pemilik Usaha Kopi", role: "Klien", actorType: "customer", email: "client.kopi.001@eos.id" },
+    { id: "notary.jakarta.001", name: "Notaris Pusat", role: "Notaris", actorType: "authority", email: "notary.jakarta.001@eos.id" }
   ],
   attachedDocuments: [
     { id: "doc-ktp-founders", title: "KTP Para Pendiri", type: "identity" },

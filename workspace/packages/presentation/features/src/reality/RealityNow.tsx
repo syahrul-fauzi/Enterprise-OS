@@ -33,17 +33,21 @@ export interface RealityNowProps {
  */
 export function RealityNow({ description, status, perspective }: RealityNowProps) {
   // Hide technical status from customer perspective - show only description
-  const showStatus = perspective !== 'customer';
+  // VF-05A: Defensive check to prevent runtime errors if props are undefined
+  const safeStatus = status ?? "in_progress";
+  const safePerspective = perspective ?? "professional";
+  const safeDescription = description ?? "Pekerjaan dalam proses";
+  const showStatus = safePerspective !== 'customer';
   
   return (
     <section>
       <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">
-        {perspectiveLabels[perspective]}
+        {perspectiveLabels[safePerspective]}
       </h2>
-      <p className="text-lg text-slate-800">{description}</p>
+      <p className="text-lg text-slate-800">{safeDescription}</p>
       {showStatus && (
         <div className="mt-2 inline-flex px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
-          {statusLabels[perspective]}{status.replace("_", " ")}
+          {statusLabels[safePerspective]}{safeStatus.replace("_", " ")}
         </div>
       )}
     </section>

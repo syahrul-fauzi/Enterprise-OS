@@ -190,7 +190,7 @@ export const runT001 = (input: T001Input): T001Output => {
 
   const outputDir = join(input.goldenReferenceDir, "eir-output");
   if (!existsSync(outputDir)) mkdirSync(outputDir, { recursive: true });
-  const outputPath = join(outputDir, `${els.specification.id}.eir.json`);
+  const outputPath = join(outputDir, `${targetSlice}.eir.json`);
   writeFileSync(outputPath, outputJson, "utf8");
 
   return {
@@ -206,18 +206,20 @@ export const runT001 = (input: T001Input): T001Output => {
 const PACKAGE_SRC_DIR = dirname(decodeURIComponent(import.meta.url.replace(/^file:\/\//, "")));
 const WORKSPACE_ROOT = resolve(join(PACKAGE_SRC_DIR, "..", "..", "..", ".."));
 
+// Support both REQ-0001 (CANONICAL_SPEC) and REQ-010 (USER_FEATURE) via CLI argument
+const targetSlice = process.argv[2] || "REQ-0001";
 const DEFAULT_ELS_PATH = join(
   WORKSPACE_ROOT,
   "examples",
   "vertical-slice",
-  "REQ-0001",
-  "req-0001.els.yaml",
+  targetSlice,
+  "request.els.yaml",
 );
 const DEFAULT_GOLDEN_DIR = join(
   WORKSPACE_ROOT,
   "examples",
   "vertical-slice",
-  "REQ-0001",
+  targetSlice,
 );
 
 if (
@@ -225,8 +227,13 @@ if (
   (process.argv[1].endsWith("t001.ts") ||
     process.argv[1].includes("t001-standalone"))
 ) {
-  const elsArg = process.argv[2] ?? DEFAULT_ELS_PATH;
-  const goldenArg = process.argv[3] ?? DEFAULT_GOLDEN_DIR;
+  // When running directly as CLI, allow slice name OR full path as first argument
+  const elsArg = process.argv[2] 
+    ? (process.argv[2].startsWith("/") ? process.argv[2] : DEFAULT_ELS_PATH) 
+    : DEFAULT_ELS_PATH;
+  const goldenArg = process.argv[3] 
+    ? (process.argv[3].startsWith("/") ? process.argv[3] : DEFAULT_GOLDEN_DIR)
+    : DEFAULT_GOLDEN_DIR;
   const result = runT001({ elsYamlPath: elsArg, goldenReferenceDir: goldenArg });
   process.stdout.write(
     `T001 OK\n input_hash=${result.inputHash}\n output_hash=${result.outputHash}\n output=${result.outputPath}\n instruction_count=${result.eir.instruction_set.length}\n`,

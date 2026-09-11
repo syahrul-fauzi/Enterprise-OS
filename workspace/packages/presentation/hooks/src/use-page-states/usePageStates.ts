@@ -12,7 +12,28 @@ export interface ComplianceRecord {
 }
 
 // Global registry to track compliance across all pages (complies with invariant registry)
-export const __EOS_UX_COMPLIANCE_REGISTRY__: ComplianceRecord[] = [];
+export const __EOS_UX_COMPLIANCE_REGISTRY__ = {
+  records: [] as ComplianceRecord[],
+  getRecords(): ComplianceRecord[] { return this.records; },
+  addRecord(record: ComplianceRecord) { this.records.push(record); },
+  getComplianceRate(): number {
+    if (this.records.length === 0) return 100;
+    const violations = this.records.filter(r => r.status === "violation").length;
+    return ((this.records.length - violations) / this.records.length) * 100;
+  },
+  getViolationCount(): number {
+    return this.records.filter(r => r.status === "violation").length;
+  },
+  getRegisteredPages(): string[] {
+    return Array.from(registeredPages);
+  },
+  resetRegistry() {
+    if (process.env.NODE_ENV === "development") {
+      this.records.length = 0;
+      registeredPages.clear();
+    }
+  }
+};
 
 // Track all pages that have used usePageStates hook
 export const registeredPages = new Set<string>();
@@ -119,7 +140,7 @@ export function addComplianceRecord(record: Omit<ComplianceRecord, "timestamp">)
     ...record,
     timestamp: new Date().toISOString()
   };
-  __EOS_UX_COMPLIANCE_REGISTRY__.push(fullRecord);
+  __EOS_UX_COMPLIANCE_REGISTRY__.addRecord(fullRecord);
   
   // Log for audit dashboard consumption
   if (process.env.NODE_ENV === "development") {
@@ -366,21 +387,3 @@ export function usePageStates<T = unknown>(
     ...derived,
   };
 }
-
-// Export compliance utilities for audit dashboard
-export const UXStateComplianceRegistry = {
-  getRecords: () => [...__EOS_UX_COMPLIANCE_REGISTRY__],
-  getRegisteredPages: () => Array.from(registeredPages),
-  getViolationCount: () => __EOS_UX_COMPLIANCE_REGISTRY__.filter(r => r.status === "violation").length,
-  getComplianceRate: () => {
-    const total = __EOS_UX_COMPLIANCE_REGISTRY__.length;
-    const violations = __EOS_UX_COMPLIANCE_REGISTRY__.filter(r => r.status === "violation").length;
-    return total > 0 ? ((total - violations) / total) * 100 : 100;
-  },
-  resetRegistry: () => {
-    if (process.env.NODE_ENV === "development") {
-      __EOS_UX_COMPLIANCE_REGISTRY__.length = 0;
-      registeredPages.clear();
-    }
-  }
-};

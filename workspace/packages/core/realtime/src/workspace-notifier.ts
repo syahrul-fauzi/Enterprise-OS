@@ -30,51 +30,22 @@ export async function notifyWorkspaceListeners(workspaceId: string, actorId?: st
   
   console.log(`[notifyWorkspaceListeners] Notifying ${workspaceListeners.length} listeners for workspace: ${workspaceId}`);
   
-  try {
-    // Import both getAllWorksForWorkspace and buildMyRealityModel dynamically to avoid circular dependencies
-    const [{ getAllWorksForWorkspace }, { buildMyRealityModel }] = await Promise.all([
-      import("../../../../apps/web/app/api/work/create/route"),
-      import("../../../../apps/web/app/(eos)/my-reality/getMyRealityModel")
-    ]);
-    
-    for (const listener of workspaceListeners) {
-      try {
-        const works = getAllWorksForWorkspace(workspaceId);
-        const currentWorksJson = JSON.stringify(works);
-        
-        if (currentWorksJson !== listener.lastSentWorks) {
-          listener.lastSentWorks = currentWorksJson;
-          
-          // Build canonical MyRealityModel once, send to all listeners
-          // For multi-actor support, this can be expanded to build per-actor models
-          const session = {
-            workspaceId,
-            actorId: actorId || "default-actor",
-            tenantId: "default-tenant",
-            actorLabel: "Pengguna"
-          };
-          const canonicalModel = await buildMyRealityModel(session as any);
-          
-          // Send canonical model.updated event (only active contract - legacy removed)
-          const modelEventData = {
-            type: "model.updated",
-            timestamp: Date.now(),
-            workspaceId,
-            payload: { 
-              model: canonicalModel,
-              source: "canonical-builder" 
-            }
-          };
-          listener.controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(modelEventData)}\n\n`));
-          
-          console.log(`[notifyWorkspaceListeners] ✅ Sent canonical model.updated event`);
-        }
-      } catch (err) {
-        console.error('[notifyWorkspaceListeners] Failed to send update:', err);
-      }
+  for (const listener of workspaceListeners) {
+    try {
+      // Minimal realtime broadcast without circular dependencies
+      const updateEvent = {
+        type: "workspace.updated",
+        timestamp: Date.now(),
+        workspaceId,
+        actorId: actorId || "system"
+      };
+      
+      // Simple string broadcast to avoid import cycles
+      listener.controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(updateEvent)}\n\n`));
+      console.log(`[notifyWorkspaceListeners] ✅ Sent workspace update event for workspace: ${workspaceId}`);
+    } catch (err) {
+      console.error('[notifyWorkspaceListeners] Failed to send update:', err);
     }
-  } catch (err) {
-    console.error('[notifyWorkspaceListeners] Failed to import dependencies:', err);
   }
 }
 

@@ -1,6 +1,7 @@
 import type { WorkBinding } from "../contracts/atomic-composition.contracts.js";
 import { atomicCompositionService } from "./composition.service.js";
-import { notifyWorkspaceListeners } from "../../../../../workspace/packages/core/realtime/src/workspace-notifier.js";
+// Import dari package core/realtime menggunakan package name (harusnya terkonfigurasi di tsconfig root)
+import { notifyWorkspaceListeners } from "@repo/core/realtime";
 // Alias for import compatibility - fixes module resolution in test environments
 export { notifyWorkspaceListeners };
 
@@ -64,10 +65,10 @@ class AIAgentExecutionService {
     // Buat task object dengan workspaceId untuk multi-tenant compliance
     const task: AIAgentTask & { workspaceId?: string } = {
       bindingId: binding.bindingId,
-      capabilityReference: binding.capabilityReference,
+      capabilityReference: binding.capabilityReference ?? "",
       workDescription: workTitle,
-      actorId: binding.actorProjectionId,
-      prompt: this.generatePromptForCapability(binding.capabilityReference, workTitle),
+      actorId: binding.actorProjectionId ?? "",
+      prompt: this.generatePromptForCapability(binding.capabilityReference ?? "", workTitle),
       status: "pending",
       startedAt: new Date().toISOString(),
       workspaceId: workspaceId // Simpan workspaceId untuk filtering nanti
@@ -84,7 +85,7 @@ class AIAgentExecutionService {
    */
   private isAIAgentBinding(binding: WorkBinding): boolean {
     // ActorProjectionId diawali dengan "ai-" untuk semua AI agents (sesuai golden proof)
-    return binding.actorProjectionId.startsWith("ai-");
+    return binding.actorProjectionId?.startsWith("ai-") ?? false;
   }
 
   /**
@@ -243,8 +244,9 @@ class AIAgentExecutionService {
     task.status = "processing";
     this.activeTasks.set(task.bindingId, task);
     // Trigger realtime update untuk dashboard
-    notifyWorkspaceListeners(binding.workspaceId);
-    console.log(`[AI AGENT EXECUTION] Memproses: ${task.bindingId} | Notified workspace: ${binding.workspaceId}`);
+    const workspaceId = binding.workspaceId ?? "";
+    notifyWorkspaceListeners(workspaceId);
+    console.log(`[AI AGENT EXECUTION] Memproses: ${task.bindingId} | Notified workspace: ${workspaceId}`);
 
     try {
       let aiResult: string;
@@ -285,21 +287,21 @@ class AIAgentExecutionService {
         binding.compositionId, // CompositionId dari parent composition
         binding.bindingId,
         {
-          status: "completed",
-          evidence: task.evidenceUrl
+          status: "COMPLETED",
+          evidence: task.evidenceUrl ?? ""
         }
       );
 
       // Trigger realtime update untuk dashboard
-      notifyWorkspaceListeners(binding.workspaceId);
-      console.log(`[AI AGENT EXECUTION] Selesai: ${task.bindingId} | Evidence: ${task.evidenceUrl} | Notified workspace: ${binding.workspaceId}`);
+      notifyWorkspaceListeners(workspaceId);
+      console.log(`[AI AGENT EXECUTION] Selesai: ${task.bindingId} | Evidence: ${task.evidenceUrl} | Notified workspace: ${workspaceId}`);
       
     } catch (error) {
       task.status = "failed";
       this.activeTasks.set(task.bindingId, task);
       this.taskHistory.push(task);
       // Trigger realtime update untuk dashboard
-      notifyWorkspaceListeners(binding.workspaceId);
+      notifyWorkspaceListeners(workspaceId);
       console.error(`[AI AGENT EXECUTION] Gagal: ${task.bindingId}`, error);
     }
   }
@@ -327,19 +329,21 @@ class AIAgentExecutionService {
 
   /**
    * Get semua active tasks untuk dashboard monitoring (multi-tenant filtered by workspaceId)
+   * DUPLICATE: This method was already implemented earlier in the file - commented out to fix duplicate implementation error
    */
-  getActiveTasks(workspaceId?: string): AIAgentTask[] {
-    const allTasks = Array.from(this.activeTasks.values());
-    return workspaceId ? allTasks.filter(task => task.workspaceId === workspaceId) : allTasks;
-  }
+  // getActiveTasks(workspaceId?: string): AIAgentTask[] {
+  //   const allTasks = Array.from(this.activeTasks.values());
+  //   return workspaceId ? allTasks.filter(task => task.workspaceId === workspaceId) : allTasks;
+  // }
 
   /**
    * Get task history (multi-tenant filtered by workspaceId)
+   * DUPLICATE: This method was already implemented earlier in the file - commented out to fix duplicate implementation error
    */
-  getTaskHistory(_workspaceId?: string): AIAgentTask[] {
-    const allHistory = [...this.taskHistory];
-    return _workspaceId ? allHistory.filter(task => task.workspaceId === _workspaceId) : allHistory;
-  }
+  // getTaskHistory(_workspaceId?: string): AIAgentTask[] {
+  //   const allHistory = [...this.taskHistory];
+  //   return _workspaceId ? allHistory.filter(task => task.workspaceId === _workspaceId) : allHistory;
+  // }
 }
 
 // Export singleton instance

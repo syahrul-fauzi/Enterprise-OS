@@ -18,6 +18,13 @@ export function MyRealityWorkListItem({
   work,
   onNextActionExecute,
 }: MyRealityWorkListItemProps) {
+  // Debug: Log work properties untuk memastikan href dan workId terdefinisi
+  console.log(`[MyRealityWorkListItem] Render work item: ${work.title}, workId=${work.workId}, href=${work.href}`);
+  
+  // PASTIKAN href SELALU VALID, tidak pernah undefined
+  const workHref = work.href || `/work/${work.workId}`;
+  console.log(`[MyRealityWorkListItem] Final href: ${workHref}`);
+  
   // State color mapping for visual status indication
   const stateColors = {
     open: "bg-surface-sunken text-text-secondary",
@@ -34,13 +41,11 @@ export function MyRealityWorkListItem({
     completed: "Selesai",
   };
 
-  return (
-    <Link
-      href={work.href || '/'}
-      data-testid={`work-item-${work.workId}`}
-      className="block p-4 bg-surface-elevated rounded-xl border border-surface-border shadow-token-sm hover:shadow-token-md hover:border-surface-border-strong focus:outline-none focus:ring-4 focus:ring-status-info/30 transition-all duration-eos-fast"
-    >
-      <article className="flex items-start gap-4">
+  return (<Link
+          href={workHref}
+          data-testid={`work-item-${work.workId}`}
+          className="block p-4 bg-surface-elevated rounded-xl border border-surface-border shadow-token-sm hover:shadow-token-md hover:border-surface-border-strong focus:outline-none focus:ring-4 focus:ring-status-info/30 transition-all duration-eos-fast"
+        ><article className="flex items-start gap-4">
         {/* Work Identity & Context (PRIMARY FOCUS) */}
         <div className="flex-1 min-w-0">
           <h3 className="text-base font-medium text-text-primary truncate">
@@ -80,7 +85,8 @@ export function MyRealityWorkListItem({
         {work.nextAction && (
           <button
             onClick={(e) => {
-              e.preventDefault();
+              // HENTIKAN propagasi click agar tidak memicu Link navigasi
+              e.stopPropagation();
               if (onNextActionExecute && work.nextAction?.actionId) {
                 onNextActionExecute(work.nextAction.actionId, work.workId);
               }

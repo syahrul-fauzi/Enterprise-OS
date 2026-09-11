@@ -3,6 +3,9 @@ import { z } from "zod";
 import * as crypto from "crypto";
 import { CommunicationRepository, newCommunicationEventId } from "@capabilities/communication/implementation/repository/index.js";
 import { CaseRepository } from "@capabilities/legal-case/implementation/repository/index.js";
+// Import CANONICAL UNIVERSAL PIPELINE - MINIMAL FIX for Reality Ingress unification
+import { createUniversalExpression } from "../../../../../../capabilities/atomic-composition/implementation/services/intent-understanding.service";
+import type { UniversalIntentInput } from "../../../../../../capabilities/atomic-composition/implementation/contracts/universal-intent.contracts";
 
 // Email inbound webhook schema (follows SendGrid/Mailgun webhook format)
 // Implements EXACT same pattern as WhatsApp webhook - Communication Adapter Layer consistency
@@ -143,7 +146,41 @@ export async function POST(request: Request) {
     // Ground email to Work - same logic as WhatsApp
     const resolvedWorkId = resolveWorkIdFromEmail(from);
     
-    if (text && resolvedWorkId) {
+    // CANONICAL REALITY INGRESS: For UNKNOWN emails (new user), send through universal pipeline
+    // 100% CANONICAL REALITY INGRESS: ALL senders (existing + new) use universal pipeline
+    // Substrate freeze maintained: no new primitives, complete unification of ALL reality sources
+    if (text) {
+      console.log(`[EmailWebhook] 🌐 CANONICAL INGRESS: Sender ${from} - piping ALL traffic through universal pipeline`);
+      
+      // Create universal intent input matching ALL other reality sources (human/system/agent)
+      const universalInput: UniversalIntentInput = {
+        origin: "external_system",
+        actorId: from,
+        raw: {
+          type: "message",
+          content: text
+        },
+        metadata: {
+          source: "email",
+          external_id: messageId,
+          sender_email: from,
+          pre_existing_mapped_work_id: resolvedWorkId // Preserve existing mapping metadata for audit
+        }
+      };
+      
+      // Execute canonical pipeline - SAME path for ALL senders, fully unifies reality ingress
+      const universalExpression = await createUniversalExpression(
+        universalInput,
+        "tenant-001",
+        "workspace-001",
+        from
+      );
+      
+      console.log(`[EmailWebhook] ✅ Canonical pipeline created expression: ${universalExpression.id} for email sender (workId: ${universalExpression.workId || 'pending'})`);
+    }
+    
+    // Preserve communication storage while removing legacy work resolution logic
+    if (text) {
       const eventId = newCommunicationEventId();
       await CommunicationRepository.save({
         event_id: eventId,

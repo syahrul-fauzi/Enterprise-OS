@@ -77,23 +77,6 @@ const MIGRATIONS: DatabaseMigration[] = [
     `
   },
   {
-    version: "003",
-    name: "communication_events_workspace_id",
-    description: "Add workspace_id column to communication_events for existing databases",
-    sql: `
-      -- Add workspace_id column if it doesn't exist (for backward compatibility)
-      DO $$
-      BEGIN
-        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'communication_events' AND column_name = 'workspace_id') THEN
-          ALTER TABLE communication_events ADD COLUMN workspace_id VARCHAR(255) NOT NULL DEFAULT 'professional-workspace.anonymous';
-        END IF;
-      END $$;
-      
-      -- Add index if it doesn't exist
-      CREATE INDEX IF NOT EXISTS idx_communication_workspace_id ON communication_events(workspace_id);
-    `
-  },
-  {
     version: "004",
     name: "seed_work_staging_001_communication",
     description: "Seed golden communication events for work-staging-001 with correct tenant/workspace",
@@ -169,6 +152,7 @@ const MIGRATIONS: DatabaseMigration[] = [
       -- Create policy that only allows INSERT, never UPDATE or DELETE (enforces evidence immutability)
       -- Users can only insert new evidence, never modify or delete existing ones
       -- Allow INSERT only when tenant/workspace matches current session
+      DROP POLICY IF EXISTS evidence_insert_only ON evidence;
       CREATE POLICY evidence_insert_only ON evidence
         FOR ALL USING (false)
         WITH CHECK (
@@ -214,16 +198,18 @@ const MIGRATIONS: DatabaseMigration[] = [
       ALTER TABLE works ENABLE ROW LEVEL SECURITY;
       
       -- Policy: Users can only access rows from their own tenant/workspace
+      DROP POLICY IF EXISTS tenant_isolation_works ON works;
       CREATE POLICY tenant_isolation_works ON works
         FOR ALL USING (
           tenant_id = current_setting('app.current_tenant', true) 
-          AND workspace_id = current_setting('app.current_workspace', true)
+           AND workspace_id = current_setting('app.current_workspace', true)
         );
       
       -- Enable RLS on legal_cases table for tenant isolation
       ALTER TABLE legal_cases ENABLE ROW LEVEL SECURITY;
       
       -- Policy: Users can only access rows from their own tenant/workspace
+      DROP POLICY IF EXISTS tenant_isolation_legal_cases ON legal_cases;
       CREATE POLICY tenant_isolation_legal_cases ON legal_cases
         FOR ALL USING (
           tenant_id = current_setting('app.current_tenant', true) 
@@ -234,6 +220,7 @@ const MIGRATIONS: DatabaseMigration[] = [
       ALTER TABLE communication_events ENABLE ROW LEVEL SECURITY;
       
       -- Policy: Users can only access communication from their own tenant/workspace
+      DROP POLICY IF EXISTS tenant_isolation_communication ON communication_events;
       CREATE POLICY tenant_isolation_communication ON communication_events
         FOR ALL USING (
           tenant_id = current_setting('app.current_tenant', true) 
@@ -289,6 +276,10 @@ const MIGRATIONS: DatabaseMigration[] = [
       ALTER TABLE knowledge_graph_nodes ENABLE ROW LEVEL SECURITY;
       ALTER TABLE knowledge_graph_edges ENABLE ROW LEVEL SECURITY;
       
+      -- Drop existing policies if they exist (idempotent execution)
+      DROP POLICY IF EXISTS tenant_isolation_kg_nodes ON knowledge_graph_nodes;
+      DROP POLICY IF EXISTS tenant_isolation_kg_edges ON knowledge_graph_edges;
+      
       -- Tenant isolation policies for knowledge graph
       CREATE POLICY tenant_isolation_kg_nodes ON knowledge_graph_nodes
         FOR ALL USING (
@@ -336,12 +327,87 @@ const MIGRATIONS: DatabaseMigration[] = [
       -- Enable RLS on external_signals table for tenant isolation
       ALTER TABLE external_signals ENABLE ROW LEVEL SECURITY;
       
+      -- Drop existing policy if it exists (idempotent execution)
+      DROP POLICY IF EXISTS tenant_isolation_external_signals ON external_signals;
+      
       -- Tenant isolation policy for external signals
       CREATE POLICY tenant_isolation_external_signals ON external_signals
         FOR ALL USING (
           tenant_id = current_setting('app.current_tenant', true) 
           AND workspace_id = current_setting('app.current_workspace', true)
         );
+    `
+  },
+  {
+    version: "009",
+    name: "seed_work_001_golden_path",
+    description: "Seed WORK-001 for G2-01 Real Work → Browser golden path verification",
+    sql: `
+      INSERT INTO works (
+        id, title, description, status, actor_id, tenant_id, workspace_id, 
+        participants, state_history, version, created_at, updated_at
+      ) VALUES (
+        'work-WORK-001',
+        'WORK-001: Pendirian PT. EOS Indonesia',
+        'G2-01 Golden Path: First real canonical work flowing from PostgreSQL → CanonicalWorkRepository → buildWorkRealityModel() → WorkRealityModel → browser. No mocks, no fixtures, 100% real data.',
+        'active',
+        '+628999999999',
+        'tenant.anonymous',
+        'professional-workspace.anonymous',
+        '[{"actorId": "+628999999999", "role": "customer", "addedAt": "2026-09-09T00:00:00.000Z", "addedBy": "+628999999999"}, {"actorId": "lawyer-001", "role": "professional", "addedAt": "2026-09-09T00:30:00.000Z", "addedBy": "+628999999999"}]',
+        '[{"status": "draft", "timestamp": "2026-09-09T00:00:00.000Z", "actorId": "+628999999999", "note": "Work created - G2-01 initialization"}, {"status": "active", "timestamp": "2026-09-09T01:00:00.000Z", "actorId": "lawyer-001", "note": "Work activated - ready for client interaction"}]',
+        1,
+        '2026-09-09T00:00:00.000Z',
+        '2026-09-09T01:00:00.000Z'
+      ) ON CONFLICT (id) DO NOTHING;
+    `
+  },
+  {
+    version: "010",
+    name: "seed_work_002_lh_case",
+    description: "Seed work-WORK-002 for LawyersHub golden path testing",
+    sql: `
+      INSERT INTO works (
+        id, title, description, status, actor_id, tenant_id, workspace_id, 
+        participants, state_history, version, created_at, updated_at
+      ) VALUES (
+        'work-WORK-002',
+        'WORK-002: Pendirian PT - PT Teknologi Nusantara',
+        'Klien membutuhkan pendirian PT untuk usaha teknologi di Bandung. Memerlukan proses legal lengkap.',
+        'active',
+        '+62888888888888',
+        'tenant.anonymous',
+        'professional-workspace.anonymous',
+        '[{"actorId": "+62888888888888", "role": "customer", "addedAt": "2026-09-08T10:00:00.000Z", "addedBy": "+62888888888888"}, {"actorId": "lawyer.bandung.001", "role": "professional", "addedAt": "2026-09-08T10:15:00.000Z", "addedBy": "lawyer.bandung.001"}]',
+        '[{"status": "draft", "timestamp": "2026-09-08T10:00:00.000Z", "actorId": "+62888888888888", "note": "Work created"}, {"status": "pending_assignment", "timestamp": "2026-09-08T10:10:00.000Z", "actorId": "lawyer.bandung.001", "note": "Work assigned"}, {"status": "active", "timestamp": "2026-09-08T10:20:00.000Z", "actorId": "lawyer.bandung.001", "note": "Work activated"}]',
+        1,
+        '2026-09-08T10:00:00.000Z',
+        '2026-09-08T10:20:00.000Z'
+      ) ON CONFLICT (id) DO NOTHING;
+    `
+  },
+  {
+    version: "011",
+    name: "seed_lh_case_001_uaat_test",
+    description: "Seed LH-CASE-001 for Human UAT - PT Pendirian PT Kopi Nusantara Mandiri",
+    sql: `
+      INSERT INTO works (
+        id, title, description, status, actor_id, tenant_id, workspace_id, 
+        participants, state_history, version, created_at, updated_at
+      ) VALUES (
+        'work-LH-CASE-001',
+        'LH-CASE-001: PT Pendirian - PT Kopi Nusantara Mandiri',
+        'LawyersHub Golden Slice: Klien membutuhkan pendirian PT untuk usaha kopi retail di Jakarta. Memerlukan proses legal lengkap dari konsultasi hingga sertifikat NIB. UAT Work item untuk real human testing.',
+        'active',
+        '+62877777777777',
+        'tenant.anonymous',
+        'professional-workspace.anonymous',
+        '[{"actorId": "+62877777777777", "role": "customer", "addedAt": "2026-09-09T13:00:00.000Z", "addedBy": "+62877777777777"}, {"actorId": "lawyer.jakarta.001", "role": "professional", "addedAt": "2026-09-09T13:15:00.000Z", "addedBy": "lawyer.jakarta.001"}, {"actorId": "notary.jakarta.001", "role": "notary", "addedAt": "2026-09-09T13:30:00.000Z", "addedBy": "lawyer.jakarta.001"}]',
+        '[{"status": "draft", "timestamp": "2026-09-09T13:00:00.000Z", "actorId": "+62877777777777", "note": "Work created - UAT initialization"}, {"status": "pending_assignment", "timestamp": "2026-09-09T13:10:00.000Z", "actorId": "lawyer.jakarta.001", "note": "Work assigned to PT establishment manager"}, {"status": "active", "timestamp": "2026-09-09T13:20:00.000Z", "actorId": "lawyer.jakarta.001", "note": "Work activated - ready for human UAT"}]',
+        1,
+        '2026-09-09T13:00:00.000Z',
+        '2026-09-09T13:20:00.000Z'
+      ) ON CONFLICT (id) DO NOTHING;
     `
   }
 
@@ -446,4 +512,62 @@ export class DatabaseMigrationManager {
   static getRegisteredMigrations(): DatabaseMigration[] {
     return [...MIGRATIONS];
   }
+}
+
+// Standalone execution: run migrations directly when this file is executed with tsx
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  (async () => {
+    console.log("[MigrationManager] Starting standalone migration execution...");
+    const { Pool } = await import("pg");
+    
+    // Create pool with staging credentials from docker compose (correct port and database name)
+      const pool = new Pool({
+        host: "localhost",
+        port: 5433, // Docker compose maps container port 5432 to host port 5433
+        user: "eos_user",
+        password: "eos_pass123",
+        database: "eos_identity" // Correct database name from compose.yaml
+      });
+    
+    try {
+      // Test connection first
+      await pool.connect();
+      console.log("[MigrationManager] Successfully connected to PostgreSQL database");
+      
+      // Reset schema_migrations to re-run all migrations (fixes "works table missing" issue)
+      const client = await pool.connect();
+      try {
+        await client.query("TRUNCATE TABLE schema_migrations");
+        console.log("[MigrationManager] Reset schema_migrations table to re-run all migrations");
+      } finally {
+        client.release();
+      }
+      
+      // Run all migrations
+      const result = await DatabaseMigrationManager.runMigrations(pool);
+      console.log("\n[MigrationManager] Migration execution complete:");
+      console.log(`  Executed: ${result.executed.join(", ") || "None"}`);
+      console.log(`  Already applied: ${result.already_applied.join(", ") || "None"}`);
+      
+      if (result.errors.length > 0) {
+        console.error("\n[MigrationManager] Errors encountered:");
+        result.errors.forEach(err => console.error(`  - ${err}`));
+        process.exit(1);
+      }
+      
+      console.log("\n[MigrationManager] All migrations applied successfully!");
+      process.exit(0);
+    } catch (error) {
+      console.error("[MigrationManager] Fatal error:", error);
+      process.exit(1);
+    } finally {
+      await pool.end();
+    }
+  })();
 }

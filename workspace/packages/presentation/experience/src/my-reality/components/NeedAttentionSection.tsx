@@ -19,7 +19,7 @@ export function NeedAttentionSection({ works, onWorkClick }: NeedAttentionSectio
       </h3>
       <div className="grid gap-4">
         {works.map(work => (
-          <div key={work.workId} className="bg-surface-elevated border-2 border-status-danger/30 rounded-xl p-6 hover:border-status-danger/50 transition-colors">
+          <div key={work.workId} data-testid={`work-item-${work.workId}`} className="bg-surface-elevated border-2 border-status-danger/30 rounded-xl p-6 hover:border-status-danger/50 transition-colors">
             <div className="flex justify-between items-start mb-4">
               <h4 className="text-xl font-semibold text-text-primary">{work.title}</h4>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-status-danger/10 text-status-danger text-sm font-medium">

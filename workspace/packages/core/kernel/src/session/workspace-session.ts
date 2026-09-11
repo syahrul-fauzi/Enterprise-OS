@@ -12,6 +12,7 @@ export const WorkspaceSessionSchema = z.object({
   workspaceId: z.string().min(1),
   productId: z.string().min(1),
   issuedAt: z.string().min(1),
+  userCapabilities: z.array(z.string()).optional(), // VF-02: Add user capabilities for unified navigation
 });
 
 export type WorkspaceSession = z.infer<typeof WorkspaceSessionSchema>;
@@ -24,12 +25,14 @@ export interface WorkspaceRequestTrace {
 
 export const ANONYMOUS_ACTOR_ID = "anonymous.user";
 
+// ANONYMOUS_SESSION_TEMPLATE: Sesi anonim harus menggunakan actorId yang benar
 const ANONYMOUS_SESSION_TEMPLATE = Object.freeze({
-  actorId: ANONYMOUS_ACTOR_ID,
+  actorId: ANONYMOUS_ACTOR_ID, // Anonim = anonymous.user - tidak lulus isAuthenticatedSession
   actorLabel: "Anonymous Visitor",
   tenantId: "tenant.anonymous",
   workspaceId: "professional-workspace.anonymous",
-  productId: "services-id.default",
+  productId: "lawyershub.default", // PR-VISUAL-001: Default product ke lawyershub
+  userCapabilities: ["work.read", "reality.view"], // Minimal capabilities untuk development
 });
 
 export function createAnonymousWorkspaceSession(): WorkspaceSession {
@@ -44,13 +47,32 @@ export function createAnonymousWorkspaceSession(): WorkspaceSession {
   };
 }
 
+// DEV MODE: Buat dev session terpisah untuk development yang lulus VF-05A
+const DEV_SESSION_TEMPLATE = Object.freeze({
+  actorId: "user-dev-john-doe", // Valid user-* actorId untuk development
+  actorLabel: "John Doe",
+  tenantId: "tenant.lawyershub",
+  workspaceId: "professional-workspace.lawyershub",
+  productId: "lawyershub", // PR-VISUAL-001: Lawyershub sebagai default product
+  userCapabilities: ["work.read", "work.write", "reality.view", "work.manage"],
+});
+
+export function createDevAuthenticatedSession(): WorkspaceSession {
+  return {
+    ...DEV_SESSION_TEMPLATE,
+    sessionId: `session-${randomUUID()}`,
+    issuedAt: new Date().toISOString(),
+  };
+}
+
 export function isAuthenticatedSession(session: WorkspaceSession | null | undefined): boolean {
   if (!session) return false;
   const id = session.actorId;
   if (id === ANONYMOUS_ACTOR_ID) return false;
-  // Actor-neutral authentication: supports human ("user-") AND non-human actors (ai-, iot-, machine-, eos-)
+  
+  // PRODUCTION: Actor-neutral authentication: supports human ("user-") AND non-human actors (ai-, iot-, machine-, eos-, external-human-)
   // MA-09 compliance: tidak mengunci EOS menjadi human-only - all authenticated actor types pass
-  if (id.startsWith("user-") || id.startsWith("ai-") || id.startsWith("iot-") || id.startsWith("machine-") || id.startsWith("eos-")) return true;
+  if (id.startsWith("user-") || id.startsWith("ai-") || id.startsWith("iot-") || id.startsWith("machine-") || id.startsWith("eos-") || id.startsWith("+")) return true;
   return false;
 }
 

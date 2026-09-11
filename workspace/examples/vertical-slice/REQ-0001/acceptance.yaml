@@ -1,0 +1,79 @@
+slice:
+  id: REQ-0001
+  version: "2.0.0"
+  kind: VERTICAL_SLICE_CONTRACT
+  status: CANDIDATE
+  root_aggregate: Requirement
+  transformation_id: T001
+  source_els_hash: sha256:de2fb973f82a6f363cafc71dccac6a0394daedbda0c2d71da3f638a9f8a2d812
+  slice_type: CANONICAL_SPEC
+
+reality:
+  source: internal_architecture_declaration
+  actor: eos_enterprise_architect
+  actor_type: human
+  intent: "Define canonical root aggregate for all EOS requirements to enforce traceability"
+  request_context:
+    origin: Axiom 4 of EOS baseline
+    governance_class: canonical_frozen
+    change_policy: new_version_only_no_mutation
+
+expected:
+  work_created: true
+  work_type: REQUIREMENT_DEFINITION
+  work_id: WORK-REQ-0001
+  initial_state: draft
+  actor_bound: true
+  capabilities_attached:
+    - CAP-REQ-TRACKING
+    - CAP-RTM-GENERATION
+  compliance_rules_enforced:
+    - NO_CAPABILITY_WITHOUT_REQUIREMENT_REF
+    - NO_EIR_WITHOUT_SOURCE_ELS_HASH
+    - NO_PROOF_WITHOUT_INPUT_IDENTITY_TRACE
+  traceability_anchors_preserved:
+    - requirement_id → eir_record.source_els_id
+    - specification.version → eir_record.source_els_version
+    - specification hash → eir_record.source_els_hash
+
+acceptance:
+  # Core EOS flow validation
+  work_created: true
+  actor_bound: true
+  persisted: true
+  evidence_recorded: true
+  recoverable: true
+  outcome_achieved: true
+  # Traceability checks
+  identity_trace_complete: true
+  hash_chain_valid: true
+  # Compliance checks
+  all_blocker_rules_enforced: true
+  no_orphaned_capabilities: true
+  # Runtime checks
+  deterministic_execution: true
+  idempotent_transformation: true
+
+surfaces:
+  - api: /api/v1/requirements/REQ-0001
+  - web: /work/req-0001
+  - ledger: /evidence/requirements/REQ-0001
+
+failure_cases:
+  - duplicate_requirement_creation
+  - unauthorized_actor_modification
+  - missing_source_els_hash
+  - orphaned_capability_without_requirement
+  - hash_mismatch_after_transformation
+
+verification_harness:
+  supported_runners:
+    - api_verification
+    - persistence_verification
+    - eir_conformance_test
+    - human_acceptance
+  required_evidence:
+    - eir_output_hash_match
+    - work_state_transition_log
+    - actor_access_log
+    - compliance_predicate_results

@@ -11,7 +11,16 @@ export type {
   ProductTheme,
   ProductEntry,
   ProductExperience,
-  // Work Reality Types (existing entities)
+  // Work Reality View Contracts (new formalized sub-views with canonical sources)
+  WorkIdentityView,
+  WorkStateView,
+  WorkParticipantView,
+  CommunicationEventView,
+  WorkInspectionView,
+  WorkCoordinationActionView,
+  EvidenceArtifactView,
+  ActivityEntryView,
+  // Work Reality Core Types (composition root + legacy types)
   WorkRealityModel,
   WorkRealityPerspective,
   WorkIdentity,

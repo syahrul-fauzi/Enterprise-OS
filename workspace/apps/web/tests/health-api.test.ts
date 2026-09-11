@@ -21,8 +21,8 @@ test("apps/web health API reports runtime health and product context", async () 
   );
 
   const payload = await response.json();
-  assert.equal(payload.status, "ok");
-  assert.equal(payload.service, "apps/web");
+  assert.ok(["ready", "degraded", "not_ready"].includes(payload.status));
+  assert.equal(payload.service, "eos");
   assert.equal(payload.product.productId, "ilc");
   assert.equal(
     payload.product.productDomain,

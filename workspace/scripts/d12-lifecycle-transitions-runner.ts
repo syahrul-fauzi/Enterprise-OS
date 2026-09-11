@@ -1,4 +1,4 @@
-import { capabilityRegistry, type CommandInvocationRecord } from "../apps/web/lib/capability-command-registry";
+import { capabilityRegistry, type CommandInvocationRecord } from "../packages/core/kernel/src/registry/capability-command-registry.js";
 
 interface LifecycleResult {
   readonly evidenceId: string;

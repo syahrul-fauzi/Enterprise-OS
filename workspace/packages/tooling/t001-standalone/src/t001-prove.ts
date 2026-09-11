@@ -38,18 +38,20 @@ const BUILD_EVIDENCE = join(REPO_ROOT, "build", "evidence");
 const TRANSFORMATION_PROOFS_DIR = join(BUILD_EVIDENCE, "transformation-proofs");
 const PROOF_LEDGER_DIR = join(BUILD_EVIDENCE, "proof-ledger");
 
+// Support both REQ-0001 (CANONICAL_SPEC) and REQ-010 (USER_FEATURE) via CLI argument
+const targetSlice = process.argv[2] || "REQ-0001";
 const DEFAULT_ELS_PATH = join(
   WORKSPACE_ROOT,
   "examples",
   "vertical-slice",
-  "REQ-0001",
-  "req-0001.els.yaml",
+  targetSlice,
+  "request.els.yaml",
 );
 const DEFAULT_GOLDEN_DIR = join(
   WORKSPACE_ROOT,
   "examples",
   "vertical-slice",
-  "REQ-0001",
+  targetSlice,
 );
 const LEDGER_STATE_PATH = join(PROOF_LEDGER_DIR, "proof-ledger-state.json");
 

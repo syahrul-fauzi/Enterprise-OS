@@ -681,18 +681,6 @@ const createCaseFromWork: CapabilityCommand<{
   },
 };
 
-export const caseCommands: Readonly<Record<string, CapabilityCommand>> = {
-  "case.create": createCase,
-  "case.createFromWork": createCaseFromWork,
-  "case.close": closeCase,
-  "case.assignLawyer": assignLawyer,
-  "case.getById": getCaseByIdCommand,
-  "case.listByWorkspace": listCasesByWorkspace,
-  "case.addEvidence": addEvidenceToCase,
-  "case.markCompleted": markCaseCompleted,
-  "case.generateInvoice": generateInvoice
-} as const;
-
 // LAWYERSHUB-BILLING-001: case.generateInvoice - Layer 2 billing command (no core changes)
 const generateInvoice: any = {
   kind: "command",
@@ -747,6 +735,18 @@ const generateInvoice: any = {
     return { invoiceId, caseId: input.caseId, amount: input.amount, currency: input.currency || "IDR", status: "generated", generatedAt: new Date().toISOString() };
   }
 };
+
+export const caseCommands: Readonly<Record<string, CapabilityCommand>> = {
+  "case.create": createCase,
+  "case.createFromWork": createCaseFromWork,
+  "case.close": closeCase,
+  "case.assignLawyer": assignLawyer,
+  "case.getById": getCaseByIdCommand,
+  "case.listByWorkspace": listCasesByWorkspace,
+  "case.addEvidence": addEvidenceToCase,
+  "case.markCompleted": markCaseCompleted,
+  "case.generateInvoice": generateInvoice
+} as const;
 
 export type { CreateCaseCommand, CloseCaseCommand, AssignLawyerCommand, AddEvidenceToCaseCommand, MarkCaseCompletedCommand };
 

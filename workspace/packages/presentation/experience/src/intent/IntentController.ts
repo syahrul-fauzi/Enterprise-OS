@@ -19,7 +19,7 @@ export function useIntentController() {
     source: IntentSource,
     router: { push: (path: string) => void },
     onError?: (error: Error) => void
-  ) => {
+  ): Promise<{ success: boolean; intentId?: string; error?: string }> => {
     setIsProcessing(true);
     console.log("[INTENT-CONTROLLER] 📥 Raw intent captured, sending to server for resolution:", expression);
     
@@ -42,12 +42,15 @@ export function useIntentController() {
       console.log("[INTENT-CONTROLLER] 💾 Intent resolved by server:", result.intentId);
       
       router.push(`/intent/${result.intentId}`);
+      return { success: true, intentId: result.intentId };
     } catch (error) {
       console.error("[INTENT-CONTROLLER] ❌ Error handling intent:", error);
       setIsProcessing(false);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
       if (onError) onError(error as Error);
+      return { success: false, error: errorMessage };
     } finally {
-      if (isProcessing === false) return;
+      if (isProcessing === false) return { success: false };
       setIsProcessing(false);
     }
   }, []);

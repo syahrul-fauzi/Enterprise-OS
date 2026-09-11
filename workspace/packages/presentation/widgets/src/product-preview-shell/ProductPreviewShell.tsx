@@ -427,24 +427,30 @@ export function ProductPreviewShell({
       <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            {/* Logo/Brand */}
+            {/* Logo/Brand - PR-VISUAL-001: Simplified to EOS only */}
             <div className="flex items-center">
-              <Link href="/" className="text-lg font-bold text-slate-900">
-                EOS Workspace
+              <Link href="/my-reality" className="text-xl font-bold text-slate-900 tracking-tight">
+                EOS
               </Link>
             </div>
 
             {/* Desktop Navigation - hidden on mobile */}
             <nav className="hidden md:flex items-center gap-6">
-              {navItems.map((item: NavigationItem) => (
-                <Link
-                  key={item.id}
-                  href={item.href || "/"}
-                  className="text-sm font-medium text-slate-600 transition hover:text-slate-900"
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {navItems.map((item: NavigationItem) => {
+                // Skip separator items in desktop navigation
+                if (item.kind === "separator") return null;
+                // Hide items that require capabilities user doesn't have
+                if (item.capabilityId && !userCapabilities.includes(item.capabilityId)) return null;
+                return (
+                  <Link
+                    key={item.id}
+                    href={item.href || "/"}
+                    className="text-sm font-medium text-slate-600 transition hover:text-slate-900"
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Mobile menu button - visible only on mobile */}
@@ -474,17 +480,25 @@ export function ProductPreviewShell({
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-slate-200 bg-white">
             <div className="container mx-auto px-4 py-4 sm:px-6">
-              <nav className="flex flex-col gap-4">
-                {navItems.map((item: NavigationItem) => (
-                  <Link
-                    key={item.id}
-                    href={item.href || "/"}
-                    className="text-base font-medium text-slate-600 transition hover:text-slate-900"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
+              <nav className="flex flex-col gap-3">
+                {navItems.map((item: NavigationItem) => {
+                  // Handle separator items in mobile navigation
+                  if (item.kind === "separator") {
+                    return <hr key={item.id} className="border-slate-200 my-1" />;
+                  }
+                  // Hide items that require capabilities user doesn't have
+                  if (item.capabilityId && !userCapabilities.includes(item.capabilityId)) return null;
+                  return (
+                    <Link
+                      key={item.id}
+                      href={item.href || "/"}
+                      className="text-base font-medium text-slate-600 transition hover:text-slate-900"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
               </nav>
             </div>
           </div>

@@ -23,7 +23,7 @@ export function CompletedSection({ works, onWorkClick, limit = 4 }: CompletedSec
       <p className="text-lg text-text-secondary mb-4">{works.length} pekerjaan selesai</p>
       <div className="grid gap-3 md:grid-cols-2">
         {displayedWorks.map(work => (
-          <div key={work.workId} className="bg-surface-sunken border border-surface-border rounded-lg p-4 opacity-80">
+          <div key={work.workId} data-testid={`work-item-${work.workId}`} className="bg-surface-sunken border border-surface-border rounded-lg p-4 opacity-80">
             <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-status-completed/10 text-status-completed text-xs font-medium mb-2">
               <span className="w-1.5 h-1.5 bg-status-completed rounded-full"></span>
               SELESAI

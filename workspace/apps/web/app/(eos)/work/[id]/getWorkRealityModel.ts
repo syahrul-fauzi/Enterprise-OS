@@ -1,7 +1,34 @@
 // Canonical server-side WorkRealityModel builder - aligns with EOS Presentation Architecture
 // Runtime owns meaning: Only server may build WorkRealityModel from raw canonical work data
 // Eliminates client-side reality reconstruction - presentation layer receives only canonical model
-import type { CanonicalWorkRecord } from "@/app/api/work/create/route";
+export interface CanonicalWorkRecord {
+  workId: string;
+  id: string;
+  title: string;
+  description: string;
+  linkedIntentId?: string;
+  domainType: string;
+  specialization: string;
+  status: string;
+  tenantId: string;
+  workspaceId: string;
+  actorId: string;
+  createdAt: string;
+  updatedAt: string;
+  priority?: "low" | "medium" | "high" | "critical";
+  lawyerId?: string;
+  providerId?: string;
+  platformSource?: string;
+  platformMetadata?: Record<string, unknown>;
+  hasBottleneck?: boolean;
+  nextAction?: { label: string; actionId: string };
+  evidence: Array<{ id?: string; type: string; title: string; content?: string; uploadedAt?: string; metadata?: Record<string, unknown> }>;
+  participants?: Array<{ id: string; name: string; role: string; actorType: string; email?: string; notification_sent?: boolean; notification_timestamp?: string; reminder_sent?: boolean; reminder_timestamp?: string; acceptance_pending?: boolean }>;
+  linkedInstitutions?: Array<{ id: string; name: string; role: string }>;
+  attachedDocuments?: Array<{ id: string; title: string; type: string }>;
+  outcomeDescription?: string;
+  communications?: unknown[];
+}
 import type { WorkRealityModel } from "@repo/presentation-entities";
 
 export interface SessionContext {
@@ -10,6 +37,7 @@ export interface SessionContext {
   workspaceId: string;
   tenantId: string;
   sessionId?: string;
+  userCapabilities?: string[]; // VF-02: Add user capabilities for unified navigation (matches WorkspaceSession)
 }
 
 /**
@@ -78,6 +106,7 @@ export async function buildWorkRealityModel(
   }));
   
   // Merge communication participants with canonical work participants (avoid duplicates)
+  // Matches WorkParticipant type from @repo/presentation-entities
   const mergedParticipants = [
     ...participantIds.map(id => ({
       id,
@@ -114,32 +143,33 @@ export async function buildWorkRealityModel(
       source: e.actor_id
     }));
 
-  // Activity log creation - server-side only
+  // Activity log creation - server-side only (matches ActivityEntry type from @repo/presentation-entities)
   const activity = (communications as any[]).map(e => ({
     id: e.id || `activity-${Date.now()}`,
-    type: "communication",
-    actor: { id: e.actor_id, name: e.actor_id.replace(/-001$/, "") },
+    type: "communication" as const,
+    actor: e.actor_id || "system",
     title: "Pesan terkirim",
     description: e.content || "",
     timestamp: e.createdAt || new Date().toISOString()
   }));
 
   // Add linked institutions from canonical work record to coordination section (Wave 3 requirement: institution linking)
+  // Matches WorkCoordinationAction type from @repo/presentation-entities
   const linkedInstitutions = (work.linkedInstitutions ?? []).map(i => ({
     id: i.id,
-    actor: { id: i.id, name: i.name },
+    actor: i.id,
     title: "Institusi Terkait",
     description: `${i.name} terlibat dalam pekerjaan ini sebagai ${i.role}`,
-    timestamp: work.createdAt
+    timestamp: work.createdAt || new Date().toISOString()
   }));
 
   // Build and return canonical WorkRealityModel - single source of truth for presentation layer
   return {
     identity: {
-      title: work.title,
+      title: work.title || "Untitled Work",
       description: work.description || "",
-      workId: work.workId,
-      status: work.status,
+      workId: work.workId || work.id,
+      status: work.status || "in_progress",
       linkedIntentId: work.linkedIntentId,
       specialization: work.specialization
     },

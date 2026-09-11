@@ -27,7 +27,7 @@
     "lint": "eslint src --max-warnings 0"
   },
   "dependencies": {
-    "@repo/composition": "workspace:*",
+    "@repo/composition-legal-workspace": "workspace:*",
     "@types/ioredis": "^5.0.0",
     "ioredis": "^5.11.1",
     "react": "^19"

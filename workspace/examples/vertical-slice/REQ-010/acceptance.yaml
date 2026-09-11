@@ -1,0 +1,89 @@
+slice:
+  id: REQ-010
+  version: "2.0.0"
+  kind: VERTICAL_SLICE_CONTRACT
+  status: CANDIDATE
+  root_aggregate: CommunityFeatureRequirement
+  transformation_id: T010-community-location-filter
+  source_els_hash: sha256:df10cc519aaa4eeee9bea913d3b087eb6534786d2b8b69556ab467e35504d172
+  slice_type: USER_FEATURE
+
+reality:
+  source: community_platform_feature_request
+  actor: eos_frontend_engineer
+  actor_type: human
+  intent: "Tambahkan filter lokasi pada halaman komunitas agar pengguna dapat menyaring anggota berdasarkan wilayah"
+  request_context:
+    origin: Community platform UX improvement request
+    governance_class: user_feature_request
+    change_policy: iterative_update_allowed
+    owner: EOS Front B
+
+expected:
+  work_created: true
+  work_type: FRONTEND_FEATURE_IMPLEMENTATION
+  work_id: WORK-REQ-010
+  initial_state: verified
+  actor_bound: true
+  capabilities_attached:
+    - EOS-community
+    - EOS-filtering
+    - EOS-ui-components
+  compliance_rules_enforced:
+    - NO_COMPONENT_INTEGRATION_WITHOUT_SHARED_REFERENCE
+    - NO_UI_FEATURE_WITHOUT_ACCEPTANCE_CRITERIA
+    - NO_PROOF_WITHOUT_SOURCE_REQUIREMENT_HASH
+  traceability_anchors_preserved:
+    - requirement_id → eir_record.registryRequirementRefs[0]
+    - feature.owner → work.assigned_actor
+    - linked_capabilities → work.attached_capabilities
+
+acceptance:
+  # Core EOS flow validation
+  work_created: true
+  actor_bound: true
+  persisted: true
+  evidence_recorded: true
+  recoverable: true
+  outcome_achieved: true
+  # Acceptance criteria from ELS
+  filter_appears_in_searchbar: true
+  members_filtered_by_location: true
+  integrated_with_shared_base_searchbar: true
+  # Traceability checks
+  identity_trace_complete: true
+  hash_chain_valid: true
+  # Compliance checks
+  all_blocker_rules_enforced: true
+  no_orphaned_capabilities: true
+  # Runtime checks
+  deterministic_execution: true
+  idempotent_transformation: true
+
+surfaces:
+  - api: /api/v1/community/members?location=
+  - web: /community
+  - ledger: /evidence/requirements/REQ-010
+
+failure_cases:
+  - filter_not_rendered_in_searchbar
+  - incorrect_member_filtering
+  - missing_shared_component_integration
+  - missing_source_requirement_hash
+  - orphaned_capability_without_requirement
+  - hash_mismatch_after_transformation
+
+verification_harness:
+  supported_runners:
+    - ui_component_verification
+    - persistence_verification
+    - eir_conformance_test
+    - user_acceptance
+    - playwright_e2e_test
+  required_evidence:
+    - eir_output_hash_match
+    - work_state_transition_log
+    - actor_access_log
+    - compliance_predicate_results
+    - component_screenshot_evidence
+    - playwright_test_results

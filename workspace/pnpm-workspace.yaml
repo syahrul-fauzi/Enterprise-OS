@@ -1,6 +1,7 @@
 packages:
   - apps/*
   - packages/core/*
+  - packages/composition/*
   - packages/compositions/*
   - packages/presentation/*
   - config/*

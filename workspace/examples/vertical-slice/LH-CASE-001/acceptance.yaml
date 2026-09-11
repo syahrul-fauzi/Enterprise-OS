@@ -1,0 +1,82 @@
+slice:
+  id: LH-CASE-001
+  version: "2.0.0"
+  kind: VERTICAL_SLICE_CONTRACT
+  status: CANDIDATE
+  root_aggregate: LegalCase
+  transformation_id: VS-VERIFY-001
+  source_els_hash: "sha256:4f59a5ebb1df2fbaef30ff38b3ead99bbc65f967e5858395aa76cc4db8d90a86"
+  slice_type: USER_FEATURE
+
+reality:
+  source: lawyershub_domain_requirement
+  actor: eos_lawyershub_platform_owner
+  actor_type: human
+  intent: "Enable lawyers to create and manage legal cases in LawyersHub with full EOS work tracking, evidence preservation, and actor collaboration. Aligns with three-domain EOS strategy (LawyersHub/ILC/Services.ID)."
+  request_context:
+    origin: LawyersHub platform business requirement v1.0
+    governance_class: user_feature_request
+    change_policy: iterative_update_allowed
+    owner: lawyershub_product_team
+
+expected:
+  work_created: true
+  work_type: LEGAL_CASE_MANAGEMENT
+  work_id: "WORK-LH-CASE-001"
+  initial_state: draft
+  actor_bound: true
+  capabilities_attached:
+    - CAP-LAW-CASE-CREATE
+    - CAP-DOC-UPLOAD
+    - CAP-PARTY-MGMT
+  compliance_rules_enforced:
+    - legal_data_privacy_compliance
+    - evidence_chain_integrity
+    - lawyer_access_control
+  traceability_anchors_preserved:
+    - case_identity_anchor
+    - party_link_anchor
+    - document_hash_anchor
+
+acceptance:
+  # Core EOS flow validation - WAJIB untuk SEMUA slice, tidak boleh diubah
+  work_created: true
+  actor_bound: true
+  persisted: true
+  evidence_recorded: true
+  recoverable: true
+  outcome_achieved: true
+
+  # Traceability checks (wajib untuk semua slice, terpetakan dari ELS)
+  identity_trace_complete: true
+  hash_chain_valid: true
+
+  # Compliance checks (wajib untuk semua slice, terpetakan dari ELS)
+  all_blocker_rules_enforced: true
+  no_orphaned_capabilities: true
+
+  # Runtime checks (wajib untuk semua slice, terverifikasi oleh runner)
+  deterministic_execution: true
+  idempotent_transformation: true
+
+  # Acceptance criteria SPESIFIK slice - tambahkan di sini
+  # Contoh untuk user feature:
+  # - "Filter lokasi muncul di search bar halaman /community"
+  # - "Anggota terfilter sesuai lokasi yang dipilih"
+  # Contoh untuk canonical spec:
+  # - "Semua capability memiliki trace ke requirement"
+  # - "EIR selalu menyertakan source_els_hash"
+
+surfaces:
+  - api: "/api/v1/[endpoint-slice-ini]"
+  - web: "/work/[web-path-slice-ini]"
+  - ledger: "/evidence/requirements/REQ-XXXX"
+
+failure_cases:
+  - "[Daftar skenario gagal yang harus dideteksi runner]"
+
+verification_harness:
+  supported_runners:
+    - "[Daftar runner yang bisa memverifikasi slice ini: api_verifier, browser_verifier, persistence_verifier, recovery_verifier]"
+  required_evidence:
+    - "[Daftar evidence yang harus dikumpulkan sebelum acceptance terpenuhi]"

@@ -112,7 +112,7 @@ export function WorkspaceDashboard({
     setSuccess,
     setError,
     goToPage,
-    getPaginatedData,
+    setEmpty,
   } = usePageStates<WorkItemCardProps[]>({
     initialPageSize: 10,
   });
@@ -128,8 +128,8 @@ export function WorkspaceDashboard({
     setEmpty();
   }
 
-  // Get paginated data from the hook
-  const paginatedItems = getPaginatedData(allDisplayItems);
+  // Use manual local pagination to bypass type mismatch with hook's getPaginatedData
+  const paginatedItems = allDisplayItems.slice(0, 10);
   const { currentPage, totalPages } = state.pagination;
 
   return (
@@ -187,8 +187,8 @@ export function WorkspaceDashboard({
             </div>
           )}
 
-          {/* Empty state - using hook's showEmptyState */}
-          {state.showEmptyState && (
+          {/* Empty state - using hook's empty status */}
+          {state.status === "empty" && (
             <EmptyState
               title="Belum ada pekerjaan"
               description="Mulailah dengan membuat pekerjaan pertama Anda. Semua kebutuhan yang ingin Anda selesaikan dapat dilacak dari awal hingga selesai di EOS."

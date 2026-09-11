@@ -1,0 +1,51 @@
+{
+  "evidenceId": "EVID-LHCASE001-UAT-20260909",
+  "workId": "work-LH-CASE-001",
+  "type": "UAT_PREPARATION_COMPLETE",
+  "actorId": "system.eos",
+  "tenantId": "tenant.anonymous",
+  "workspaceId": "professional-workspace.anonymous",
+  "content": "LH-CASE-001 is fully prepared for Human UAT testing. All technical prerequisites completed, database seeded, server stable, and verification artifacts archived.",
+  "metadata": {
+    "databaseSeeded": true,
+    "serverUrl": "http://localhost:3001",
+    "myRealityEndpoint": "/my-reality",
+    "workEndpoint": "/work/work-LH-CASE-001",
+    "uatCheckpoints": [
+      "UAT-01 Entry: User can login and find their Reality",
+      "UAT-02 Understanding: User knows what is happening",
+      "UAT-03 Actor/Context: Clear who the work belongs to and workspace",
+      "UAT-04 Action: User knows what to do next",
+      "UAT-05 State: Status changes make sense after action",
+      "UAT-06 Evidence: Results leave visible proof",
+      "UAT-07 Recovery: User can recover from issues",
+      "UAT-08 Completion: User understands when work is done"
+    ],
+    "technicalPreconditions": [
+      "PostgreSQL connection stable",
+      "CanonicalWorkRepository functional",
+      "buildWorkRealityModel() passes all G2-01 audits",
+      "/work/[id] page renders mock-free",
+      "State transition API functional",
+      "Session authentication working",
+      "Server stable on port 3001",
+      "LH-CASE-001 seeded with correct participants and state history"
+    ],
+    "verificationArtifacts": [
+      "/.evidence/g2-01-audit-verified.json",
+      "/PR-VISUAL-001_verification.json",
+      "/.eos-state/recon/LH-CASE-001_recon.json"
+    ],
+    "gate2Status": {
+      "G2-01": "CLOSED",
+      "G2-02": "PENDING_UAT",
+      "G2-03": "PENDING_UAT",
+      "G2-04": "PENDING_UAT",
+      "G2-05": "PENDING_RUNTIME_PROOF",
+      "overall": "STILL_OPEN"
+    },
+    "instructionsForUAT": "Provide real human tester with minimal instruction: 'Silakan gunakan sistem ini untuk melihat pekerjaan yang sedang berjalan dan lanjutkan pekerjaan tersebut.' Do not guide step-by-step. Observe natural understanding."
+  },
+  "createdAt": "2026-09-09T14:30:00.000Z",
+  "updatedAt": "2026-09-09T14:30:00.000Z"
+}

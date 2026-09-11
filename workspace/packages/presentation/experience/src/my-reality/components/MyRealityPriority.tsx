@@ -9,7 +9,7 @@ interface MyRealityPriorityProps {
 
 const PRIORITY_STYLES = {
   now: {
-    label: "NOW",
+    label: "SAAT INI",
     subtitle: "Butuh perhatian dan tindakan Anda SEKARANG",
     labelBg: "bg-status-danger text-status-dangerForeground border-status-danger/70 ring-2 ring-status-danger/20 ring-offset-1 ring-offset-surface shadow-token-sm",
     accentBorder: "border-l-status-danger",
@@ -23,7 +23,7 @@ const PRIORITY_STYLES = {
     counterText: "text-status-danger",
   },
   next: {
-    label: "NEXT",
+    label: "LANJUTAN",
     subtitle: "Kelanjutan penting segera",
     labelBg: "bg-status-info/10 text-status-info border-status-info/40 ring-2 ring-status-info/10 ring-offset-1 ring-offset-surface",
     accentBorder: "border-l-status-info",
@@ -162,7 +162,7 @@ export function MyRealityPriority({ model }: MyRealityPriorityProps) {
   return (
     <div className="space-y-6 w-full" role="region" aria-label="Prioritas pekerjaan">
       <section aria-labelledby="priority-now-heading" className={`border-2 ${PRIORITY_STYLES.now.headerBg} ${PRIORITY_STYLES.now.headerShadow} rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-7 w-full min-w-0 relative overflow-hidden border-l-4 ${PRIORITY_STYLES.now.accentBorder}`}>
-        <span id="priority-now-heading" className="sr-only">Pekerjaan prioritas tinggi NOW — butuh perhatian dan tindakan Anda SEKARANG</span>
+        <span id="priority-now-heading" className="sr-only">Pekerjaan prioritas tinggi SAAT INI — butuh perhatian dan tindakan Anda SEKARANG</span>
         <div className="mb-3 sm:mb-4">
           <PrioritySectionHeader priority="now" count={now.length} countAriaLabel={`${now.length} pekerjaan membutuhkan tindakan segera`} />
         </div>

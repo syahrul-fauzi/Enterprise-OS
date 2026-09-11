@@ -4,7 +4,7 @@ const generateId = () => randomUUID();
 import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
 import type { CapabilityRepository } from "@repo/core-kernel";
 
-export class WorkRepositoryPostgres extends PostgresRepository<WorkAggregate> implements CapabilityRepository<WorkAggregate> {
+class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements CapabilityRepository<WorkAggregate> {
   kind: "repository" = "repository" as const;
   entityName: string = "work" as const;
 
@@ -13,7 +13,7 @@ export class WorkRepositoryPostgres extends PostgresRepository<WorkAggregate> im
   }
 
   protected toRecord(entity: WorkAggregate): Record<string, any> {
-    // Konversi WorkAggregate ke PostgreSQL record
+    // pg library memerlukan JSON.stringify untuk kolom jsonb agar PostgreSQL bisa parse dengan benar
     return {
       id: entity.id,
       title: entity.title,
@@ -30,7 +30,18 @@ export class WorkRepositoryPostgres extends PostgresRepository<WorkAggregate> im
   }
 
   protected toAggregate(record: Record<string, any>): WorkAggregate {
-    // Konversi PostgreSQL record kembali ke WorkAggregate
+          // Konversi PostgreSQL record kembali ke WorkAggregate
+          console.log("[WorkRepository.toAggregate] Raw database record:", JSON.stringify(record, null, 2));
+          console.log("[WorkRepository.toAggregate] record.participants type:", typeof record.participants);
+          console.log("[WorkRepository.toAggregate] record.participants value:", record.participants);
+          console.log("[WorkRepository.toAggregate] record.state_history type:", typeof record.state_history);
+          console.log("[WorkRepository.toAggregate] record.state_history value:", record.state_history);
+          
+          // Kolom participants dan state_history sudah bertipe jsonb di PostgreSQL, jadi sudah menjadi objek JS
+          // Tidak perlu JSON.parse() lagi!
+          const participants = Array.isArray(record.participants) ? record.participants : [];
+          const stateHistory = Array.isArray(record.state_history) ? record.state_history : [];
+    
     return {
       id: record.id,
       workId: record.id,
@@ -38,9 +49,9 @@ export class WorkRepositoryPostgres extends PostgresRepository<WorkAggregate> im
       description: record.description,
       status: record.status,
       actorId: record.actor_id,
-      participants: JSON.parse(record.participants || "[]"),
+      participants,
       version: record.version || 1,
-      stateHistory: JSON.parse(record.state_history || "[]"),
+      stateHistory,
       createdAt: record.created_at,
       updatedAt: record.updated_at,
       compositionId: record.composition_id,
@@ -111,3 +122,28 @@ export class WorkRepositoryPostgres extends PostgresRepository<WorkAggregate> im
     return finalSaved;
   }
 }
+
+// Lazy initialization pattern that matches all other repository implementations in the codebase
+let workRepositoryPostgresInstance: WorkRepositoryPostgresImpl | null = null;
+
+export function getWorkRepositoryPostgres(): WorkRepositoryPostgres {
+  if (!workRepositoryPostgresInstance) {
+    workRepositoryPostgresInstance = new WorkRepositoryPostgresImpl();
+  }
+  return workRepositoryPostgresInstance;
+}
+
+// Export the proxy instance that matches the imported WorkRepositoryPostgres type everywhere
+const _lazyPgWorkRepo: WorkRepositoryPostgres = new Proxy({} as WorkRepositoryPostgres, {
+  get(_target: any, prop: string | symbol) {
+    const real = getWorkRepositoryPostgres();
+    const method = (real as any)[prop];
+    if (typeof method === "function") {
+      return method.bind(real);
+    }
+    return method;
+  },
+});
+
+export const WorkRepositoryPostgres = _lazyPgWorkRepo;
+export type WorkRepositoryPostgres = CapabilityRepository<WorkAggregate>;

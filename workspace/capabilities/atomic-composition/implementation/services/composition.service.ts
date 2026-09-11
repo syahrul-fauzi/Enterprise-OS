@@ -93,7 +93,7 @@ export class AtomicCompositionService {
 
   constructor() {
     // Initialize repository on service creation
-    this.repository.initialize().catch(err => {
+    this.repository.initialize().catch((err: unknown) => {
       console.error("Failed to initialize composition repository:", err);
     });
   }
@@ -180,15 +180,15 @@ export class AtomicCompositionService {
 
     // 4. Add all CAPABILITIES as participants
     if (availableCapabilities && availableCapabilities.length > 0) {
-      availableCapabilities.forEach((cap, index) => {
+      availableCapabilities.forEach((capId, index) => {
         const capBinding: WorkBinding = {
-          id: `binding-capability-${cap.id}`,
+          id: `binding-capability-${capId}`,
           bindingId: WorkBindingId(`wb-${rawCompositionId}-cap-${index}`),
           compositionId: compositionId,
-          participantId: cap.id,
+          participantId: capId,
           participantType: "capability",
-          providerType: "software",
-          role: cap.role || "Enabler",
+          providerType: "system",
+          role: "Enabler",
           authority: "execute",
           status: "active",
           boundAt: new Date().toISOString(),
@@ -211,7 +211,14 @@ export class AtomicCompositionService {
     return {
       teamId,
       compositionId: rawCompositionId,
-      assignments: workBindings.map(b => ({ bindingId: b.bindingId, participantId: b.participantId })),
+      assignments: workBindings.map(b => ({ 
+        actorId: b.participantId || "", 
+        role: "participant", 
+        capabilityId: b.capabilityReference || "",
+        bindingId: b.id || "",
+        assignmentId: `assignment_${crypto.randomUUID()}`,
+        teamId: teamId
+      })),
       team: { teamId, totalBindings: workBindings.length, compositionId: rawCompositionId },
       unresolvedRequirements: [],
       success: true,
@@ -384,32 +391,32 @@ export class AtomicCompositionService {
   // };
   // } // END OF ORIGINAL LEGACY composeTeamFromRequirements METHOD - fully commented out
 
-  // RENAMED composeTeamFromRequirements METHOD - avoids duplicate method definition (fixed syntax error)
-  async composeTeamFromRequirements(
-    input: { workId: string; work: any; requirements: any[]; availableActors: any[]; availableCapabilities: any[]; workspaceId: string }
-  ): Promise<{ success: boolean; compositionId: string; assignments: any[]; team: any; unresolvedRequirements: any[]; resolutionTimestamp: string }> {
-    const rawCompositionId = `composition-${input.workId.substring(0, 8)}-${Date.now()}`;
-    
-    // Create simple formattedAssignments
-    const formattedAssignments = [];
-    
-    // Create valid formattedTeam
-    const formattedTeam = {
-      teamId: rawCompositionId,
-      actorIds: input.availableActors.map(a => String(a.actorId)),
-      assembledAt: new Date().toISOString()
-    };
-
-    // Return minimal valid response - all legacy logic removed to avoid syntax errors
-    return {
-      success: true,
-      compositionId: rawCompositionId,
-      assignments: formattedAssignments,
-      team: formattedTeam,
-      unresolvedRequirements: [],
-      resolutionTimestamp: new Date().toISOString(),
-    };
-  } // END OF NEW SIMPLIFIED composeTeamFromRequirements METHOD
+  // COMMENTED OUT: DUPLICATE composeTeamFromRequirements METHOD - fixed duplicate implementation error
+  // async composeTeamFromRequirements(
+  //   input: { workId: string; work: any; requirements: any[]; availableActors: any[]; availableCapabilities: any[]; workspaceId: string }
+  // ): Promise<{ success: boolean; compositionId: string; assignments: any[]; team: any; unresolvedRequirements: any[]; resolutionTimestamp: string }> {
+  //   const rawCompositionId = `composition-${input.workId.substring(0, 8)}-${Date.now()}`;
+  //   
+  //   // Create simple formattedAssignments
+  //   const formattedAssignments = [];
+  //   
+  //   // Create valid formattedTeam
+  //   const formattedTeam = {
+  //     teamId: rawCompositionId,
+  //     actorIds: input.availableActors.map(a => String(a.actorId)),
+  //     assembledAt: new Date().toISOString()
+  //   };
+  //
+  //   // Return minimal valid response - all legacy logic removed to avoid syntax errors
+  //   return {
+  //     success: true,
+  //     compositionId: rawCompositionId,
+  //     assignments: formattedAssignments,
+  //     team: formattedTeam,
+  //     unresolvedRequirements: [],
+  //     resolutionTimestamp: new Date().toISOString(),
+  //   };
+  // } // END OF NEW SIMPLIFIED composeTeamFromRequirements METHOD
 
   /**
    * P1.5: RE-ENTRY CAPABILITY - Load a previous composition
@@ -438,7 +445,7 @@ export class AtomicCompositionService {
     }
 
     // Find the specific assignment (support both bindingId and assignmentId for compatibility)
-    const assignment = composition.assignments.find(a => (a.assignmentId && a.assignmentId === assignmentId) || (a.bindingId && a.bindingId === assignmentId));
+    const assignment = composition.assignments.find((a: any) => (a.assignmentId && a.assignmentId === assignmentId) || (a.bindingId && a.bindingId === assignmentId));
     if (!assignment) {
       return { success: false, assignment: null, error: "Assignment not found" };
     }
@@ -463,7 +470,7 @@ export class AtomicCompositionService {
     // Reload FULL composition after update to check all assignments status
     const updatedComposition = await this.repository.loadFullComposition(compositionId);
     if (updatedComposition) {
-      const allCompleted = updatedComposition.assignments.every(a => a.status === "COMPLETED");
+      const allCompleted = updatedComposition.assignments.every((a: any) => a.status === "COMPLETED");
       if (allCompleted && updatedComposition.team) {
         // Constitutional lifecycle: When all assignments complete, team is dissolved (ephemeral)
         (updatedComposition.team as any).status = "dissolved";
@@ -506,10 +513,8 @@ export class AtomicCompositionService {
     }
 
     // Find assignment
-    const assignment = composition.assignments.find(a => 
-      (a.assignmentId && a.assignmentId === assignmentId) || 
-      (a.bindingId && a.bindingId === assignmentId)
-    );
+    const assignment = composition.assignments.find((a: any) => 
+      (a.assignmentId && a.assignmentId === assignmentId) || (a.bindingId && a.bindingId === assignmentId));
     if (!assignment) {
       return { success: false, assignment: null, error: "Assignment not found", verified: false };
     }
@@ -548,7 +553,7 @@ export class AtomicCompositionService {
     // Check if all assignments are completed to dissolve team
     const updatedComposition = await this.repository.loadFullComposition(compositionId);
     if (updatedComposition) {
-      const allCompleted = updatedComposition.assignments.every(a => a.status === "COMPLETED");
+      const allCompleted = updatedComposition.assignments.every((a: any) => a.status === "COMPLETED");
       if (allCompleted && updatedComposition.team) {
         updatedComposition.team.status = "completed";
         updatedComposition.team.dissolvedAt = new Date().toISOString();
@@ -602,7 +607,7 @@ export class AtomicCompositionService {
     }
 
     // Find the specific assignment by bindingId (used by AI agents)
-    const assignment = composition.assignments.find(a => a.bindingId === bindingId);
+    const assignment = composition.assignments.find((a: any) => a.bindingId === bindingId);
     if (!assignment) {
       console.error(`[updateAssignmentStatus] Assignment not found for binding: ${bindingId}`);
       return { success: false, error: "Assignment not found" };
@@ -623,7 +628,7 @@ export class AtomicCompositionService {
     // Reload FULL composition after update to check all assignments status
     const updatedComposition = await this.repository.loadFullComposition(compositionId);
     if (updatedComposition) {
-      const allCompleted = updatedComposition.assignments.every(a => a.status === "completed");
+      const allCompleted = updatedComposition.assignments.every((a: any) => a.status === "completed");
       if (allCompleted && updatedComposition.team) {
         // Constitutional lifecycle: When all assignments complete, team is dissolved (ephemeral)
         // Use TeamProjection's canonical status: "dissolved" instead of "completed" to match contract
@@ -676,7 +681,7 @@ export class AtomicCompositionService {
     console.log(`[recoverCompositionAfterFailure] Recovering composition ${compositionId}, failed actor: ${failedActorId}`);
     
     // Step 2: Mark the failed assignment in the original composition
-    const failedAssignment = originalComposition.assignments.find(a => a.actorProjectionId === failedActorId);
+    const failedAssignment = originalComposition.assignments.find((a: Assignment) => a.actorProjectionId === failedActorId);
     if (failedAssignment) {
         failedAssignment.status = "CANCELLED"; // Use canonical contract status for abandoned assignments
         failedAssignment.evidence = [`Provider failure: Actor ${failedActorId} unavailable`];
@@ -686,9 +691,9 @@ export class AtomicCompositionService {
 
     // Step 3: Extract all requirements from the original composition that still need to be fulfilled
     // We need to re-compose the team excluding the failed actor and using new available actors
-    const failedRequirements = originalComposition.requirements.filter(req => {
+    const failedRequirements = originalComposition.requirements.filter((req: any) => {
       const assignmentForReq = originalComposition.assignments.find(
-        a => a.requirementId === req.requirementId && a.actorProjectionId === failedActorId
+        (a: any) => a.requirementId === req.requirementId && a.actorProjectionId === failedActorId
       );
       return !!assignmentForReq;
     });
@@ -704,10 +709,10 @@ export class AtomicCompositionService {
     }
 
     // Step 4: Format requirements for re-composition (matches composeTeamFromRequirements input format)
-    const requirementsToRecompose = failedRequirements.map(req => {
-      const originalReq = originalComposition.requirements.find(r => r.requirementId === req.requirementId);
+    const requirementsToRecompose = failedRequirements.map((req: { requirementId: string }) => {
+      const originalReq = originalComposition.requirements.find((r: { requirementId: string }) => r.requirementId === req.requirementId);
       // Find the original requirement details to maintain capability, trust, authority constraints
-      const originalAssignment = originalComposition.assignments.find(a => a.requirementId === req.requirementId);
+      const originalAssignment = originalComposition.assignments.find((a: Assignment) => a.requirementId === req.requirementId);
       return {
         requirementId: req.requirementId,
         // Extract original capability requirements to maintain constraints
@@ -727,7 +732,7 @@ export class AtomicCompositionService {
       requirements: requirementsToRecompose,
       availableActors: availableActors, // The filtered list without failed actor
       workspaceId: originalComposition.workspaceId,
-      availableCapabilities: originalComposition.requirements.map(req => req.capabilityId)
+      availableCapabilities: originalComposition.requirements.map((req: { capabilityId: string }) => req.capabilityId)
     });
 
     if (!recoveryResult.success) {
@@ -746,7 +751,7 @@ export class AtomicCompositionService {
       compositionId: recoveryResult.compositionId,
       recoveredFrom: compositionId, // Add recovery link for traceability
       recoveredAt: new Date().toISOString()
-    });
+    } as any);
 
     return {
       success: true,

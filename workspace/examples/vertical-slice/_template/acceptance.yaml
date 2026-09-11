@@ -1,0 +1,76 @@
+slice:
+  id: REQ-XXXX
+  version: "2.0.0"
+  kind: VERTICAL_SLICE_CONTRACT
+  status: DRAFT
+  root_aggregate: "[Root aggregate dari slice ini, contoh: Requirement/CommunityFeature/etc]"
+  transformation_id: "[T001 untuk canonical spec, VS-VERIFY-001 untuk user feature]"
+  source_els_hash: "[Hash dari file request.els.yaml yang sebenarnya - wajib diisi sebelum verifikasi: gunakan `sha256sum request.els.yaml`]"
+  slice_type: "[CANONICAL_SPEC / USER_FEATURE - wajib pilih salah satu sesuai tipe slice]"
+
+reality:
+  source: "[Sumber request, contoh: internal_architecture_declaration/community_platform_feature_request]"
+  actor: "[Nama actor yang membuat request, contoh: eos_enterprise_architect/eos_frontend_engineer]"
+  actor_type: "[human/agent/machine]"
+  intent: "[Deskripsi intent actor membuat requirement ini - harus jelas alasan bisnis]"
+  request_context:
+    origin: "[Asal usul request, contoh: Axiom 4 of EOS baseline/Community platform UX improvement request]"
+    governance_class: "[canonical_frozen/user_feature_request]"
+    change_policy: "[new_version_only_no_mutation/iterative_update_allowed]"
+    owner: "[Tim/actor yang bertanggung jawab]"
+
+expected:
+  work_created: true
+  work_type: "[REQUIREMENT_DEFINITION/FRONTEND_FEATURE_IMPLEMENTATION/CAPABILITY_ENHANCEMENT]"
+  work_id: "WORK-REQ-XXXX"
+  initial_state: draft
+  actor_bound: true
+  capabilities_attached:
+    - "[Daftar capability yang terhubung, sesuai linkedCapabilityIds di ELS]"
+  compliance_rules_enforced:
+    - "[Daftar aturan compliance yang harus dipenuhi, dari ELS compliance_rules]"
+  traceability_anchors_preserved:
+    - "[Daftar anchor traceability yang harus terjaga, dari ELS traceability.anchors]"
+
+acceptance:
+  # Core EOS flow validation - WAJIB untuk SEMUA slice, tidak boleh diubah
+  work_created: true
+  actor_bound: true
+  persisted: true
+  evidence_recorded: true
+  recoverable: true
+  outcome_achieved: true
+
+  # Traceability checks (wajib untuk semua slice, terpetakan dari ELS)
+  identity_trace_complete: true
+  hash_chain_valid: true
+
+  # Compliance checks (wajib untuk semua slice, terpetakan dari ELS)
+  all_blocker_rules_enforced: true
+  no_orphaned_capabilities: true
+
+  # Runtime checks (wajib untuk semua slice, terverifikasi oleh runner)
+  deterministic_execution: true
+  idempotent_transformation: true
+
+  # Acceptance criteria SPESIFIK slice - tambahkan di sini
+  # Contoh untuk user feature:
+  # - "Filter lokasi muncul di search bar halaman /community"
+  # - "Anggota terfilter sesuai lokasi yang dipilih"
+  # Contoh untuk canonical spec:
+  # - "Semua capability memiliki trace ke requirement"
+  # - "EIR selalu menyertakan source_els_hash"
+
+surfaces:
+  - api: "/api/v1/[endpoint-slice-ini]"
+  - web: "/work/[web-path-slice-ini]"
+  - ledger: "/evidence/requirements/REQ-XXXX"
+
+failure_cases:
+  - "[Daftar skenario gagal yang harus dideteksi runner]"
+
+verification_harness:
+  supported_runners:
+    - "[Daftar runner yang bisa memverifikasi slice ini: api_verifier, browser_verifier, persistence_verifier, recovery_verifier]"
+  required_evidence:
+    - "[Daftar evidence yang harus dikumpulkan sebelum acceptance terpenuhi]"

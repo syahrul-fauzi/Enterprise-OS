@@ -1,0 +1,83 @@
+procedure:
+  id: PROC-ATTRIBUTION-001
+  version: "1.0.0"
+  kind: EOS_PROCEDURE_CONTRACT
+  status: CANDIDATE
+  root_aggregate: Attribution
+  procedure_type: UTILITY_FOUNDATIONAL
+  source_hash: sha256:$(cd /root/Enterprise-OS/workspace/procedures/attribution && sha256sum contracts.ts implementation.ts index.ts | sha256sum | awk '{print $1}')
+
+trigger:
+  event_type: procedure_execution_completed
+  actor: eos_internal_system
+  actor_type: system
+  authority: internal
+  preconditions:
+    - executionId_must_be_valid
+    - procedure_name_must_exist
+    - canonicalSubject_must_be_defined
+
+input:
+  required:
+    - executionId
+    - procedure
+    - canonicalSubject
+    - input
+    - output
+    - evaluatedAt
+  optional: []
+
+output:
+  expected_states:
+    - success: record_written
+    - failed: invalid_input
+  required_fields:
+    - version
+    - executionId
+    - procedure
+    - canonicalSubject
+    - evaluatedAt
+    - inputDigest
+    - resultDigest
+
+evidence:
+  generation: mandatory
+  schema: ATTRIBUTION_V1
+  required_fields:
+    - 7_canonical_fields_present
+    - executionId_invariant
+    - inputDigest_deterministic
+    - resultDigest_deterministic
+  replayable: true
+  idempotent: true
+
+acceptance:
+  # Core utility validation
+  executable: true
+  repeatable: true
+  deterministic: true
+  filesystem_safe: true
+  all_inputs_validated: true
+  # EOS compliance
+  executionId_invariant_holds: true
+  canonicalization_works: true
+  digest_consistent_across_runs: true
+  # Audit checks
+  audit_conformance_passed: true
+  all_7_fields_serialized: true
+
+failure_cases:
+  - missing_executionId
+  - invalid_canonicalSubject
+  - filesystem_permission_error
+  - input_canonicalization_failed
+
+verification_harness:
+  existing_tests:
+    - attribution-v1.test.ts
+    - execution-identity.test.ts
+  required_evidence:
+    - attribution_record_written_to_filesystem
+    - all_audit_checks_passed
+    - inputDigest_consistent_for_identical_input
+    - executionId_never_parsed_from_string

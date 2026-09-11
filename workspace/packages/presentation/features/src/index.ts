@@ -38,6 +38,7 @@ export { NextBestAction } from "./work/NextBestAction";
 
 // Analytics components - R9 MyReality performance metrics
 export { PerformanceOverview } from "./analytics/PerformanceOverview";
+export { UXStateAuditDashboard } from "./analytics/UXStateAuditDashboard";
 
 // EOS Companion component - R9 MyReality AI assistant
 export { EOSCompanionCard } from "./companion/EOSCompanionCard";

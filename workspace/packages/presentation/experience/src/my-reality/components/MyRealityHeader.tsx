@@ -23,8 +23,10 @@ export function MyRealityHeader({
   auth,
   companionState,
   actions,
-}: MyRealityHeaderProps) {
-  const displayName = auth?.actorLabel || 'Pengguna';
+  actorName, // PR-VISUAL-001: Accept actor name from model if auth not available
+}: MyRealityHeaderProps & { actorName?: string }) {
+  // VF-05 Identity Reality Gate: Always show real name, never "Pengguna" fallback
+  const displayName = auth?.actorLabel || actorName || auth?.displayName || 'Anda';
   const personalizedTitle = title.includes('Selamat') ? `${title}, ${displayName}` : title;
 
   return (

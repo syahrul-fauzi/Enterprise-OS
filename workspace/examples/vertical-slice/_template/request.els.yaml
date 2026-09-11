@@ -1,0 +1,52 @@
+specification:
+  id: REQ-XXXX
+  name: "[Nama requirement yang jelas]"
+  version: "1.0.0"
+  kind: ELS_LANGUAGE_SPECIFICATION
+  status: DRAFT
+  language_spec_version: "1.0"
+  golden_reference: false
+  root_of_trust_for: "[Transformation ID yang menggunakan spec ini: T001 untuk canonical, VS-VERIFY-001 untuk user feature]"
+  identity_note: THIS_DOCUMENT_HAS_STABLE_HASH.ANY_MODIFICATION_REQUIRES_NEW_VERSION.
+
+specification_metadata:
+  author: "[Nama author yang membuat ELS: eos_architect/eos_developer]"
+  created: 2026-XX-XX
+  governance_class: "[canonical_frozen / user_feature_request]"
+  change_policy: "[new_version_only_no_mutation / iterative_update_allowed]"
+  hash_algorithm: sha256
+  audit_note: Input hash of this document MUST be captured in acceptance.yaml before any transformation run.
+
+ontology:
+  root_aggregate: "[Root aggregate yang diimplementasikan slice ini: Requirement/CommunityFeature/WorkflowStep/etc]"
+  domain: "[Domain slice: EOS_Core_Kernel / Community_Features / ILC_Services / LawyersHub]"
+
+requirement_identity:
+  requirement_id: REQ-XXXX
+  stable_external_id: REQ-XXXX
+  id_policy: requirement_identity_is_stable_never_changes
+  derived_identity_chain:
+    - requirement_id → els_document_hash
+    - els_document_hash → eir_source_hash
+    - eir_source_hash → instruction_set_hash
+    - instruction_set_hash → capability_ref_hash
+
+business_statement:
+  title: "[Judul bisnis yang jelas]"
+  description: >
+    [Deskripsi lengkap tentang tujuan dan alasan bisnis requirement ini dibuat]
+  origin: "[Asal usul requirement: internal_architecture_declaration / customer_feature_request / platform_improvement]"
+  compliance: [Semua aturan compliance yang harus dipenuhi oleh slice ini]
+
+capability_refs:
+  - capability_id: "[CAP-XXXX-1]"
+    capability_name: "[Nama capability yang terhubung]"
+    purpose: "[Fungsi capability ini untuk slice ini]"
+  - capability_id: "[CAP-XXXX-2]"
+    capability_name: "[Nama capability kedua yang terhubung]"
+    purpose: "[Fungsi capability kedua untuk slice ini]"
+
+acceptanceCriteria:
+  - "[Kriteria acceptansi 1 yang terukur]"
+  - "[Kriteria acceptansi 2 yang terukur]"
+  - "[Kriteria acceptansi 3 yang terukur]"

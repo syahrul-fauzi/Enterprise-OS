@@ -204,56 +204,56 @@ export const ILC_INS_001_InstitutionalWorkflow: WorkflowDefinition = {
       id: "requirements-analyzed",
       label: "Requirements Analyzed",
       capability: "requirement-management",
-      command: "requirement.analyze",
-      description: "Institutional needs broken down into actionable requirements",
+      command: "requirement.update",
+      description: "Institutional needs broken down into actionable requirements (uses existing update command - evolutionary fix to avoid new commands)",
       requiredRoles: ["system", "automated"]
     },
     {
       id: "actors-composed",
       label: "Multi-Actor Team Composed",
-      capability: "atomic-composition",
-      command: "composition.create",
-      description: "Capability-based team formed with all required authority roles",
-      requiredRoles: ["system", "automated"]
+      capability: "requirement-management",
+      command: "requirement.update",
+      description: "Cross-role actor matrix assigned to execute work (uses existing update command - evolutionary fix)",
+      requiredRoles: ["institutional-representative", "project-manager"]
     },
     {
       id: "first-approval",
       label: "Departmental Approval",
-      capability: "governance-evidence",
-      command: "approval.record",
-      description: "First-level departmental authority signs off",
+      capability: "requirement-management",
+      command: "requirement.approve",
+      description: "First-level departmental authority signs off (uses existing approve command - evolutionary fix)",
       requiredRoles: ["department-head", "authorized-approver"]
     },
     {
       id: "second-approval",
       label: "Executive Approval",
-      capability: "governance-evidence",
-      command: "approval.record",
-      description: "Executive-level institutional approval obtained",
+      capability: "requirement-management",
+      command: "requirement.approve",
+      description: "Executive-level institutional approval obtained (uses existing approve command - evolutionary fix)",
       requiredRoles: ["executive", "institutional-authority"]
     },
     {
       id: "execution-initiated",
       label: "Execution Initiated",
-      capability: "workflow-engine",
-      command: "workflow.start",
-      description: "Formal execution phase begins after all approvals",
+      capability: "requirement-management",
+      command: "requirement.startDelivery",
+      description: "Formal execution phase begins after all approvals (uses existing startDelivery command - evolutionary fix)",
       requiredRoles: ["project-manager", "execution-lead"]
     },
     {
       id: "outcome-delivered",
       label: "Institutional Outcome Delivered",
-      capability: "workflow-engine",
-      command: "workflow.complete",
-      description: "All execution tasks completed, institutional objective achieved",
+      capability: "requirement-management",
+      command: "requirement.markImplemented",
+      description: "All execution tasks completed, institutional objective achieved (uses existing markImplemented command - evolutionary fix)",
       requiredRoles: ["project-manager", "execution-lead"]
     },
     {
       id: "institutional-work-closed",
       label: "Work Closed & Archived",
-      capability: "work-core",
-      command: "work.close",
-      description: "Institutional work formally closed with complete evidence chain",
+      capability: "requirement-management",
+      command: "requirement.verify",
+      description: "Institutional work formally closed with complete evidence chain (uses existing verify command - evolutionary fix)",
       requiredRoles: ["institutional-representative", "system"]
     }
   ],
@@ -300,6 +300,7 @@ export const ILC_INS_001_InstitutionalWorkflow: WorkflowDefinition = {
 
 // Generic workflow orchestrator that executes transitions using existing capability commands
 // REUSE: Uses capabilityRegistry.invoke() - no new command execution infrastructure
+// ENFORCES: Idempotency state propagation (PREPARED/DISPATCHED/ACKNOWLEDGED) + automated actor assignment
 export async function executeWorkflowTransition(
   workflow: WorkflowDefinition,
   currentStepId: string,
@@ -310,47 +311,69 @@ export async function executeWorkflowTransition(
     tenantId: string;
     workspaceId: string;
     result?: string;
+    executionState?: "PREPARED" | "DISPATCHED" | "ACKNOWLEDGED" | "COMPLETED";
   }
 ): Promise<{
   success: boolean;
   nextStep?: WorkflowStep;
   error?: string;
   evidenceAdded: boolean;
+  assignedActors?: string[];
+  newExecutionState: "PREPARED" | "DISPATCHED" | "ACKNOWLEDGED" | "COMPLETED";
 }> {
-  // 1. Validate workflow definition first
-  if (!isValidWorkflowDefinition(workflow)) {
-    return { success: false, error: "Invalid workflow definition", evidenceAdded: false };
+  // Initialize execution state if not provided - idempotency baseline
+  const currentExecutionState = context.executionState || "PREPARED";
+  
+  // 1. Idempotency guard: Prevent re-execution of completed/acknowledged steps
+  if (currentExecutionState === "COMPLETED" || currentExecutionState === "ACKNOWLEDGED") {
+    return { 
+      success: true, 
+      nextStep: workflow.steps.find(s => s.id === currentStepId), 
+      evidenceAdded: false, 
+      newExecutionState: currentExecutionState 
+    };
   }
 
-  // 2. Find current step in workflow
+  // 2. Validate workflow definition first
+  if (!isValidWorkflowDefinition(workflow)) {
+    return { success: false, error: "Invalid workflow definition", evidenceAdded: false, newExecutionState: currentExecutionState };
+  }
+
+  // 3. Find current step in workflow
   const currentStep = workflow.steps.find(s => s.id === currentStepId);
   if (!currentStep) {
-    return { success: false, error: `Current step not found: ${currentStepId}`, evidenceAdded: false };
+    return { success: false, error: `Current step not found: ${currentStepId}`, evidenceAdded: false, newExecutionState: currentExecutionState };
   }
 
-  // 3. Validate actor has required roles for this step
-  if (!currentStep.requiredRoles.some(role => actorId.includes(role) || actorId.endsWith(role.replace(/[^a-zA-Z0-9]/g, '-001')))) {
-    return { success: false, error: `Actor ${actorId} lacks required roles for step ${currentStepId}`, evidenceAdded: false };
+  // 4. Validate actor has required roles for this step (capability execution authorization check)
+  const hasRequiredRole = currentStep.requiredRoles.some(role => 
+    actorId.includes(role) || actorId.endsWith(role.replace(/[^a-zA-Z0-9]/g, '-001'))
+  );
+  if (!hasRequiredRole) {
+    return { success: false, error: `Actor ${actorId} lacks required roles for step ${currentStepId}`, evidenceAdded: false, newExecutionState: currentExecutionState };
   }
 
-  // 4. Find all transitions FROM current step
+  // 5. Find all transitions FROM current step
   const possibleTransitions = Object.values(workflow.transitions).filter(t => t.from === currentStepId);
   if (possibleTransitions.length === 0) {
     if (currentStepId === workflow.terminalStep) {
-      return { success: true, nextStep: undefined, evidenceAdded: false };
+      return { success: true, nextStep: undefined, evidenceAdded: false, newExecutionState: "COMPLETED" };
     }
-    return { success: false, error: `No transitions found from step ${currentStepId}`, evidenceAdded: false };
+    return { success: false, error: `No transitions found from step ${currentStepId}`, evidenceAdded: false, newExecutionState: currentExecutionState };
   }
 
-  // 5. Take first valid transition (single path enforcement for Wave C)
+  // 6. Take first valid transition (single path enforcement for Wave C)
   const transition = possibleTransitions[0];
   const nextStep = workflow.steps.find(s => s.id === transition.to);
   if (!nextStep) {
-    return { success: false, error: `Next step not found: ${transition.to}`, evidenceAdded: false };
+    return { success: false, error: `Next step not found: ${transition.to}`, evidenceAdded: false, newExecutionState: currentExecutionState };
   }
 
-  // 6. Execute the current step's command if it exists (uses EXISTING commands - no new capabilities)
-  if (currentStep.command) {
+  // 7. Automate next actor assignment: Generate actor IDs from next step's required roles
+  const assignedActors = nextStep.requiredRoles.map(r => `${r}-001`);
+
+  // 8. Execute the current step's command if it exists (uses EXISTING commands - no new capabilities)
+  if (currentStep.command && currentExecutionState === "PREPARED") {
     try {
       const { capabilityRegistry } = await import("../index.js");
       const commonInput = {
@@ -360,34 +383,53 @@ export async function executeWorkflowTransition(
         workspaceId: context.workspaceId,
         actorId: actorId,
         outcomeDescription: context.result === 'approved' ? `Step ${currentStepId} completed by ${actorId}` : undefined,
-        externalReferenceId: `ref-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
+        externalReferenceId: `ref-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+        executionState: "DISPATCHED" // Propagate idempotency state to command
       };
 
       // Invoke EXISTING capability command - case.markCompleted, request.create, etc.
       await capabilityRegistry.invoke(currentStep.capability, currentStep.command, commonInput);
       
-      // 7. Trigger communication notification (existing capability, maintains evidence chain)
+      // 9. Trigger communication notification (existing capability, maintains evidence chain)
       await capabilityRegistry.invoke("communication", "agenticNotify", {
         work_id: context.workId,
         trigger: "state_transition",
         old_state: currentStepId,
         new_state: transition.to,
-        recipient_ids: nextStep.requiredRoles.map(r => `${r}-001`),
+        recipient_ids: assignedActors,
         adapter_type: "whatsapp",
         sessionId: context.sessionId,
         tenantId: context.tenantId,
-        workspaceId: context.workspaceId
+        workspaceId: context.workspaceId,
+        executionState: "DISPATCHED"
       });
 
-      return { success: true, nextStep, evidenceAdded: true };
+      return { 
+        success: true, 
+        nextStep, 
+        evidenceAdded: true, 
+        assignedActors, 
+        newExecutionState: "DISPATCHED" 
+      };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error executing command";
-      return { success: false, error: errorMessage, evidenceAdded: false };
+      return { success: false, error: errorMessage, evidenceAdded: false, newExecutionState: currentExecutionState };
     }
   }
 
-  // If no command to execute, just return next step
-  return { success: true, nextStep, evidenceAdded: false };
+  // If PREPARED but no command, or already DISPATCHED - advance to ACKNOWLEDGED
+  if (currentExecutionState === "DISPATCHED" || !currentStep.command) {
+    return { 
+      success: true, 
+      nextStep, 
+      evidenceAdded: !currentStep.command, 
+      assignedActors, 
+      newExecutionState: "ACKNOWLEDGED" 
+    };
+  }
+
+  // Default return (shouldn't reach here)
+  return { success: true, nextStep, evidenceAdded: false, assignedActors, newExecutionState: currentExecutionState };
 }
 
 // Type guard to validate any product's workflow definition complies with shared interface
@@ -481,6 +523,16 @@ async function getAllKeys(): Promise<string[]> {
 }
 
 export const capabilityRegistry = {
+  registerCommand(capability: string, commandName: string, command: CapabilityCommand): void {
+    const key = `${capability}.${commandName}`;
+    capabilityCommands[key] = command;
+    console.log(`[capability-registry] Registered command: ${key} (total: ${Object.keys(capabilityCommands).length})`);
+  },
+  registerQuery(capability: string, queryName: string, query: unknown): void {
+    const key = `${capability}.${queryName}`;
+    capabilityCommands[key] = query as CapabilityCommand;
+    console.log(`[capability-registry] Registered query: ${key} (total: ${Object.keys(capabilityCommands).length})`);
+  },
   async listCommandKeys(): Promise<readonly string[]> {
     // Return keys from directly added capabilityCommands (per core-kernel no dynamic import policy)
     console.log(`[capability-registry] listCommandKeys returns ${Object.keys(capabilityCommands).length} commands:`, Object.keys(capabilityCommands));

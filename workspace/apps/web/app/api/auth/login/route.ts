@@ -74,29 +74,28 @@ export async function POST(request: Request) {
     const workspaceRepository = getWorkspaceRepositoryPostgres();
     
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
-    const DATA_DIR = path.resolve(__dirname, "../../../../../../../data");
+    const DATA_DIR = path.resolve(__dirname, "../../../../../../data"); // FIX: reduced one level of ../ to point to correct workspace/data directory
 
     const usersData = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "users.json"), "utf8"));
     const tenantsData = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "tenants.json"), "utf8"));
     const workspacesData = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "workspaces.json"), "utf8"));
     const membershipsData = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "memberships.json"), "utf8"));
 
-    // Seed users if empty
-    const existingUsers = await userRepository.list();
-    console.log("[SEED] Existing users count:", existingUsers.length);
-    if (existingUsers.length === 0) {
-      console.log("[SEED] Inserting users...");
-      for (const u of usersData) {
-        await userRepository.save({
-          id: u.id,
-          email: u.email,
-          displayName: u.displayName,
-          passwordHash: u.passwordHash,
-          createdAt: new Date(u.createdAt),
-          updatedAt: new Date(u.updatedAt),
-        });
-      }
-    }
+    // Seed users - Skip delete (userRepository.delete tidak tersedia), langsung save (upsert)
+     const existingUsers = await userRepository.list();
+     console.log("[SEED] Existing users count:", existingUsers.length);
+     // Insert ulang semua users dari users.json (save akan melakukan upsert)
+     for (const u of usersData) {
+       await userRepository.save({
+         id: u.id,
+         email: u.email,
+         displayName: u.displayName,
+         passwordHash: u.passwordHash,
+         createdAt: new Date(u.createdAt),
+         updatedAt: new Date(u.updatedAt),
+       });
+     }
+     console.log("[SEED] Users re-seeded successfully (upsert, no delete)");
     // Seed tenants if empty
     const existingTenants = await tenantRepository.list();
     console.log("[SEED] Existing tenants count:", existingTenants.length);
@@ -218,6 +217,8 @@ export async function POST(request: Request) {
       productId: effectiveProductId,
       issuedAt: new Date().toISOString(),
       userId: user.id,
+      // G2-02: Add user capabilities for navigation and access control (VF-02 compliance)
+      userCapabilities: ["work.read", "work.write", "reality.view", "communications.read", "evidence.view"],
     } as WorkspaceSession;
 
     const response = NextResponse.json(
@@ -231,7 +232,7 @@ export async function POST(request: Request) {
         workspaceId: workspace.id,
         productId: session.productId,
         sessionId: sessionId,
-        redirectUrl: "/workspace",
+        redirectUrl: "/my-reality",
       },
       { status: 200 },
     );

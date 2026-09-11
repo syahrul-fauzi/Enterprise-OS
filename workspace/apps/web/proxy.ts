@@ -79,6 +79,38 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // PR-01 ROUTE RECONCILIATION: Redirect ALL duplicate routes to canonical golden spine paths
+  // 1. Settings duplicates: /work/settings, /actors/settings → canonical /settings (dari (eos)/settings)
+  if (request.nextUrl.pathname.startsWith('/work/settings') || 
+      request.nextUrl.pathname.startsWith('/actors/settings')) {
+    return NextResponse.redirect(new URL('/settings', request.url));
+  }
+  // 2. Institution duplicates: /work/institution/[id], /actors/institution/[id] → canonical /institution/[id]
+  if (request.nextUrl.pathname.startsWith('/work/institution/') || 
+      request.nextUrl.pathname.startsWith('/actors/institution/')) {
+    return NextResponse.redirect(
+      new URL(request.nextUrl.pathname.replace('/work/institution/', '/institution/').replace('/actors/institution/', '/institution/'), request.url)
+    );
+  }
+  // 3. All other (work) group routes: /work/cases/*, /work/documents/*, /work/people/* → redirect to canonical (eos)/work/*
+  if (request.nextUrl.pathname.startsWith('/cases/') || 
+      request.nextUrl.pathname.startsWith('/documents/') ||
+      request.nextUrl.pathname.startsWith('/people/') ||
+      request.nextUrl.pathname.startsWith('/service-requests/')) {
+    return NextResponse.redirect(
+      new URL(request.nextUrl.pathname.replace('/cases/', '/work/').replace('/documents/', '/work/documents/').replace('/people/', '/work/people/'), request.url)
+    );
+  }
+  // Legacy /work/* redirect (jika masih ada yang akses langsung)
+  // FIXED: Allow dynamic work IDs AND subroutes like /work/REALITY-002, /work/REALITY-002/trace, /work/default-work-1, etc.
+  // Hanya redirect jika path dimulai dengan /work/ tapi bukan work detail route atau subroute
+  const isWorkDetailRoute = /^\/work\/[\w-]+(\/.*)*$/.test(request.nextUrl.pathname);
+  if (request.nextUrl.pathname.startsWith('/work/') && request.nextUrl.pathname !== '/work/new' && request.nextUrl.pathname !== '/work/' && !isWorkDetailRoute) {
+    return NextResponse.redirect(
+      new URL(request.nextUrl.pathname, request.url)
+    );
+  }
+
   // Handle anonymous session jika belum ada cookie
   const sessionCookie = request.cookies.get(WORKSPACE_SESSION_COOKIE)?.value;
   if (sessionCookie) {

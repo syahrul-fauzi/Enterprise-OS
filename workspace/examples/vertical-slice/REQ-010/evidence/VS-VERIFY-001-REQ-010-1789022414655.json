@@ -1,0 +1,93 @@
+{
+  "executedAt": "2026-09-10T06:40:14.674Z",
+  "slice": {
+    "id": "REQ-010",
+    "version": "2.0.0",
+    "kind": "VERTICAL_SLICE_CONTRACT",
+    "status": "CANDIDATE",
+    "root_aggregate": "CommunityFeatureRequirement",
+    "transformation_id": "T010-community-location-filter",
+    "source_els_hash": "sha256:df10cc519aaa4eeee9bea913d3b087eb6534786d2b8b69556ab467e35504d172",
+    "slice_type": "USER_FEATURE"
+  },
+  "records": [
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:14.670Z",
+      "inputSize": 405,
+      "ok": true
+    },
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:14.670Z",
+      "inputSize": 405,
+      "ok": true
+    },
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:14.670Z",
+      "inputSize": 405,
+      "ok": true
+    },
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:14.670Z",
+      "inputSize": 405,
+      "ok": true
+    },
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:14.670Z",
+      "inputSize": 405,
+      "ok": true
+    },
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:14.670Z",
+      "inputSize": 405,
+      "ok": true
+    },
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:14.670Z",
+      "inputSize": 405,
+      "ok": true
+    },
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:14.670Z",
+      "inputSize": 405,
+      "ok": true
+    }
+  ],
+  "workflowResult": {
+    "initialStep": "institutional-need-submitted",
+    "finalStep": "institutional-work-closed",
+    "allStepsPassed": true,
+    "workId": "requirement-oc9rn7",
+    "finalStatus": "completed"
+  },
+  "acceptanceCriteria": {
+    "work_created": true,
+    "actor_bound": true,
+    "persisted": true,
+    "evidence_recorded": true,
+    "outcome_achieved": true
+  }
+}

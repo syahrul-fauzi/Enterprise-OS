@@ -80,7 +80,8 @@ export function deriveWorkRealityModel(
   const workId = work.id as string;
   const workType = workId.startsWith('case-') ? 'case' :
                    workId.startsWith('requirement-') ? 'requirement' :
-                   workId.startsWith('request-') ? 'service-request' : 'work';
+                   workId.startsWith('request-') ? 'service-request' :
+                   workId.startsWith('lh-case-') ? 'legal-case' : 'work';
 
   const participantIds = Array.from(new Set(communications.flatMap(e => [e.actor_id, ...(e.recipient_ids ?? [])]))).filter(Boolean);
   const participants = participantIds.map(id => ({
@@ -175,7 +176,7 @@ export function deriveWorkRealityModel(
     { actor: "Monitoring System", action: "verify", description: "Konfirmasi status konektivitas website setelah perbaikan" },
     { actor: "Agent", action: "notify", description: "Kirim update status perbaikan kepada klien UMKM" },
     { actor: "Customer", action: "confirm", description: "Konfirmasi website sudah dapat diakses dan layanan selesai" }
-  ] : workId === 'lh-case-001' && workType === 'legal-case' ? [
+  ] : (workId === 'lh-case-001' && workType === 'legal-case') ? [
     { actor: "Legal Counsel", action: "verify", description: "Verifikasi dokumen identitas para pendiri PT Kopi Nusantara" },
     { actor: "PT Establishment Manager", action: "prepare", description: "Siapkan draft akta pendirian dan dokumen legal lainnya" },
     { actor: "Notaris", action: "review", description: "Review dokumen sebelum proses penandatanganan" },

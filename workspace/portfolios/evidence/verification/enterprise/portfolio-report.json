@@ -25,6 +25,14 @@
       "product_id": "services-id",
       "app_manifest_exists": true,
       "evidence_complete": true,
+      "lifecycle_status": {
+        "implemented": true,
+        "verified": true,
+        "shipped": false,
+        "accepted": false,
+        "realized": false,
+        "paid": false
+      },
       "capabilities": [
         "requirement-management"
       ],
@@ -38,6 +46,14 @@
       "product_id": "lawyershub",
       "app_manifest_exists": true,
       "evidence_complete": true,
+      "lifecycle_status": {
+        "implemented": true,
+        "verified": true,
+        "shipped": true,
+        "accepted": true,
+        "realized": false,
+        "paid": false
+      },
       "capabilities": [
         "requirement-management"
       ],
@@ -51,6 +67,14 @@
       "product_id": "ilc",
       "app_manifest_exists": true,
       "evidence_complete": true,
+      "lifecycle_status": {
+        "implemented": true,
+        "verified": true,
+        "shipped": false,
+        "accepted": false,
+        "realized": false,
+        "paid": false
+      },
       "capabilities": [
         "requirement-management"
       ],

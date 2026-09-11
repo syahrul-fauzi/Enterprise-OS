@@ -524,7 +524,7 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
             headers: { "content-type": "application/json" },
             body: JSON.stringify({
               work_id: caseId,
-              sessionId: currentSession.id,
+              sessionId: currentSession.sessionId,
               tenantId: currentSession.tenantId,
               workspaceId: currentSession.workspaceId
             }),
@@ -1076,7 +1076,7 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
                       recipient_ids: caseData?.participants?.map(p => p.actorId) || [],
                       adapter_type: "whatsapp", // First adapter implemented
                       content: message,
-                      sessionId: currentSession.id,
+                      sessionId: currentSession.sessionId,
                       tenantId: currentSession.tenantId,
                       workspaceId: currentSession.workspaceId
                     }),

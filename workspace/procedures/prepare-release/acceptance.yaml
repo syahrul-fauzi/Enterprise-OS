@@ -1,0 +1,83 @@
+procedure:
+  id: PROC-PREPARE-RELEASE-001
+  version: "1.0.0"
+  kind: EOS_PROCEDURE_CONTRACT
+  status: CANDIDATE
+  root_aggregate: Release
+  procedure_type: END_TO_END_OPERATIONAL
+  source_hash: sha256:$(cd /root/Enterprise-OS/workspace/procedures/prepare-release && sha256sum contracts.ts implementation.ts index.ts | sha256sum | awk '{print $1}')
+
+trigger:
+  event_type: release_candidate_ready
+  actor: release_manager
+  actor_type: human
+  authority: operator
+  preconditions:
+    - release_id_must_exist
+    - all_requirements_must_be_loaded
+    - no_pending_critical_security_issues
+
+input:
+  required:
+    - releaseId
+  optional:
+    - limit
+
+output:
+  expected_states:
+    - ready: all_checks_passed
+    - blocked: blockers_found
+    - intelligence_required: ambiguous_requirements_detected
+  required_fields:
+    - executionId
+    - readiness.status
+    - requirements.total
+    - requirements.verified
+    - traceability.complete
+    - evidence.complete
+    - blockers
+    - steps
+
+evidence:
+  generation: mandatory
+  schema: ATTRIBUTION_V1
+  required_fields:
+    - executionId
+    - inputDigest
+    - resultDigest
+    - evaluatedAt
+  replayable: true
+  idempotent: true
+
+acceptance:
+  # Core procedure validation
+  executable: true
+  repeatable: true
+  deterministic: true
+  evidence_recorded: true
+  all_inputs_validated: true
+  # EOS compliance
+  executionId_invariant_holds: true
+  canonical_input_projection_complete: true
+  canonical_result_projection_complete: true
+  # Audit checks
+  audit_conformance_passed: true
+  all_invariants_verified: true
+
+failure_cases:
+  - missing_releaseId
+  - verification_not_passed
+  - traceability_incomplete
+  - evidence_incomplete
+  - ambiguous_requirements
+
+verification_harness:
+  existing_tests:
+    - attribution-v1.test.ts
+    - execution-identity.test.ts
+    - audit-conformance.ts
+  required_evidence:
+    - attribution_record_created
+    - all_audit_checks_passed
+    - executionId_consistent_across_reruns
+    - inputDigest_matches_for_same_input

@@ -13,7 +13,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@repo/composition": "workspace:*",
+    "@repo/composition-legal-workspace": "workspace:*",
     "@repo/core-capability-registry": "workspace:*",
     "@repo/core-constitution": "workspace:*",
     "@repo/core-kernel": "workspace:*",

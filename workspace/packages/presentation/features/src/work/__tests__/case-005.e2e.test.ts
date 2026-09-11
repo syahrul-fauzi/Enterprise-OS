@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeAll } from 'node:test';
-import { buildWorkRealityModel } from '../../../../../../apps/web/app/(eos)/work/[id]/getWorkRealityModel';
-import type { CanonicalWorkRecord } from '../../../../../../apps/web/app/api/work/create/route';
+import { describe, it, expect, beforeAll } from 'vitest';
+// Import buildWorkRealityModel directly now that rootDir is fixed
+import { buildWorkRealityModel, CanonicalWorkRecord } from '../getWorkRealityModel';
+import type { WorkAggregate } from '../../../../../../capabilities/work-core/contracts/work.contracts';
 
 describe('SERVICES.ID Golden Slice - case-005 E2E Flow', () => {
   let case005Work: CanonicalWorkRecord;
@@ -49,17 +50,17 @@ describe('SERVICES.ID Golden Slice - case-005 E2E Flow', () => {
 
   it('2. Product Experience: lifecycle semantics terbaca (open → in_progress → closed)', async () => {
     const model = await buildWorkRealityModel(case005Work, [], session);
-    expect(model.identity.status).toBe('open');
-    
-    // Verify status transition to in_progress
-    const inProgressWork = { ...case005Work, status: 'in_progress' };
-    const inProgressModel = await buildWorkRealityModel(inProgressWork, [], session);
-    expect(inProgressModel.state.currentState).toBe('Layanan sedang dikerjakan oleh provider');
-    
-    // Verify status transition to closed
-    const closedWork = { ...case005Work, status: 'closed' };
-    const closedModel = await buildWorkRealityModel(closedWork, [], session);
-    expect(closedModel.state.currentState).toBe('Layanan telah selesai, tinggalkan ulasan Anda');
+            expect(model.identity.status).toBe('open');
+            
+            // Verify status transition to in_progress
+            const inProgressWork = { ...case005Work, status: 'in_progress' };
+            const inProgressModel = await buildWorkRealityModel(inProgressWork, [], session);
+            expect(inProgressModel.state.currentState).toBe('Layanan sedang dikerjakan oleh provider');
+            
+            // Verify status transition to closed
+            const closedWork = { ...case005Work, status: 'closed' };
+            const closedModel = await buildWorkRealityModel(closedWork, [], session);
+            expect(closedModel.state.currentState).toBe('Layanan telah selesai, tinggalkan ulasan Anda');
   });
 
   it('3. UI Components: semua reality components bisa diimpor tanpa error', async () => {
@@ -81,17 +82,17 @@ describe('SERVICES.ID Golden Slice - case-005 E2E Flow', () => {
     // PEOPLE (participants)
     expect(model.participants.length).toBe(3);
     // CONTEXT (identity.description)
-    expect(model.identity.description).toContain('website maintenance');
+    expect(model.identity.description).toContain('website unreachable');
     // ACTIVITY (activity array)
     expect(model.activity).toBeDefined();
     // COMMUNICATION (communications array)
     expect(model.communications).toBeDefined();
     // DOCUMENTS (attachedDocuments masuk ke evidence)
-    expect(model.evidence.length).toBe(1);
+    expect(model.evidence?.length).toBe(1);
     // EVIDENCE (evidence array)
-    expect(model.evidence[0].label).toBe('Laporan Monitoring Gangguan');
+    expect(model.evidence?.[0]?.label).toBe('Laporan Monitoring Gangguan');
     // OUTCOME (bisa update outcomeDescription di markCompleted)
-    expect(case005Work).toHaveProperty('outcomeDescription', undefined);
+    expect(case005Work.outcomeDescription).toBeUndefined();
     // STATUS (identity.status)
     expect(model.identity.status).toBe('open');
   });

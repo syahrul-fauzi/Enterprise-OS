@@ -8,7 +8,7 @@
  * 4. All state properties map correctly to RealityWorkItem interface
  */
 
-import { MyRealityModel, RealityWorkItem } from "./packages/presentation/experience/src/my-reality/contracts/my-reality.contracts";
+import { MyRealityModel, RealityWorkItem } from "./packages/presentation/experience/src/my-reality/contracts/my-reality.contracts.js";
 import { CaseRepositoryInMemory } from "./capabilities/legal-case/implementation/repository/case.repository";
 import { createCase } from "./capabilities/legal-case/implementation/commands/case.commands";
 import { assignLawyer } from "./capabilities/legal-case/implementation/commands/case.commands";

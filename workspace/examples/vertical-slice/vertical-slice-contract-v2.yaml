@@ -1,0 +1,95 @@
+# Vertical Slice Contract v2 — Continuous Executable Reality Examples
+# Audit 4 artefacts selesai: REQ-0001, REQ-010, template, existing contracts
+# Berdasarkan artefak nyata bukan desain asumsi: "contract + executable proof"
+
+contract:
+  id: VERTICAL-SLICE-CONTRACT-v2
+  version: "2.0.0"
+  status: CANDIDATE
+  kind: GOVERNANCE_SPECIFICATION
+  governance_class: canonical_frozen
+  created_at: "2026-09-10T00:00:00.000Z"
+  author: eos-command-center
+  purpose: "Elevate examples/vertical-slice from sample files to continuous executable reality examples: contract + executable proof"
+
+# Audit temuan dari 4 artefak yang diminta user:
+# 1. REQ-0001/request.els.yaml (Root Aggregate Canonical)
+# 2. REQ-0001/eir-output/REQ-0001.eir.json (EIR Instruction Record)
+# 3. REQ-010/request.els.yaml (User Feature Filter)
+# 4. REQ-010/eir-output/REQ-010.eir.json (EIR Instruction Record)
+audit_findings:
+  existing_patterns_verified:
+    - ELS (Enterprise Language Specification) → deklarasi requirement dengan identity, capability_refs, compliance
+    - EIR (Enterprise Instruction Record) → eksekusi instruksi dengan determinism_context, traceability
+    - acceptance.yaml per slice → kontrak vertikal dengan reality/expected/acceptance/surfaces/verification_harness
+    - Struktur folder per requirement: {REQ-ID}/request.els.yaml, {REQ-ID}/eir-output/{REQ-ID}.eir.json, {REQ-ID}/acceptance.yaml, {REQ-ID}/evidence/
+    - Transformation ID yang unik per slice (T001, T010)
+    - Compliance rules dengan severity BLOCKER/WARNING dan enforcement mechanism
+    - Traceability anchors yang propagate ke runtime artefak
+
+# Prinsip kontrak v2 (evolutionary, tidak bikin framework baru, tidak ganggu core locked):
+core_principles:
+  - "Setiap vertical slice HARUS mengikuti alur EOS penuh: Reality (input) → EOS execution → Evidence → Outcome (verified)"
+  - "Tidak hanya input (ELS) dan output (EIR), tapi executable proof bahwa slice bisa berjalan end-to-end"
+  - "Reuse semua pola yang sudah ada dari 4 artefak — tidak reinvent wheel"
+  - "Setiap slice harus memiliki verification harness yang terintegrasi dengan Playwright/EOS test suite"
+  - "Tidak ada hardcode, mock, atau fixture — semua bukti harus berasal dari runtime nyata"
+  - "Arsip semua evidence ke EOS Evidence Engine sesuai mandate G2-01 audit"
+
+# Struktur folder yang dipertahankan dan ditingkatkan (tidak ubah tree existing):
+directory_structure:
+  root: "/examples/vertical-slice/"
+  per_slice_template:
+    path: "{REQ-ID}/"
+    mandatory_files:
+      - request.els.yaml: "ELS: Deklarasi requirement (canonical format dari REQ-0001/010)"
+      - acceptance.yaml: "Kontrak vertikal v2: reality/expected/acceptance/surfaces/verification_harness"
+      - eir-output/{REQ-ID}.eir.json: "EIR: Hasil eksekusi instruksi dari transformation"
+      - evidence/: "Folder semua bukti runtime: test results, screenshot, logs, hash chain"
+      - tests/: "Test spesifik slice: Layer A (Playwright UI), Layer D (Actor Runtime) sesuai ERA-001"
+  shared_template:
+    path: "_template/"
+    purpose: "Template untuk slice baru, copy-paste dan modifikasi sesuai kebutuhan"
+    mandatory_files:
+      - acceptance.yaml (v2)
+      - request.els.yaml (canonical)
+      - expected.eir.json (contoh output)
+      - test-template.spec.ts (Playwright Layer A)
+      - test-template.test.ts (Vitest Layer D)
+
+# Mandat verifikasi untuk setiap slice (sesuai ERA-001 9-layer matrix):
+verification_mandate:
+  mandatory_layers:
+    - A: "UI Runtime Verification (Playwright)"
+    - B: "API Contract Verification"
+    - C: "Persistence Verification"
+    - D: "Actor Runtime Verification (Vitest)"
+    - E: "Compliance Rules Enforcement"
+    - F: "Traceability Chain Validation"
+    - G: "Determinism & Idempotency Check"
+    - H: "Evidence Archiving Verification"
+    - I: "Outcome Achievement Verification"
+  required_evidence:
+    - "eir_output_hash_match: Hash EIR harus sama dengan hash yang diharapkan di kontrak"
+    - "work_state_transition_log: Semua transisi state Work tercatat di ledger"
+    - "actor_access_log: Semua akses actor tercatat dengan identity yang jelas"
+    - "compliance_predicate_results: Semua aturan BLOCKER terpenuhi"
+    - "playwright_test_results: Semua UI test pass (Layer A)"
+    - "vitest_test_results: Semua actor runtime test pass (Layer D)"
+    - "full_hash_chain_valid: Semua hash dari ELS → EIR → evidence terhubung"
+
+# Slice yang akan diupgrade ke v2 pertama (sesuai urutan):
+slices_to_upgrade:
+  - REQ-0001: "Root aggregate canonical — sudah 90% compliant, tinggal tambahkan tests/ dan evidence lengkap"
+  - REQ-010: "User feature filter — sudah memiliki playwright support di acceptance.yaml, tinggal integrasikan ke test suite"
+  - LH-CASE-001: "LawyersHub case yang sedang dijalankan — buat slice baru dengan struktur v2 untuk EOS Reality Acceptance"
+
+# Langkah eksekusi selanjutnya (sesuai user gate: audit → define contract → ubah tree):
+next_actions:
+  - "1. Validasi kontrak v2 ini dengan stakeholder (user)"
+  - "2. Upgrade _template/ dengan file test template (Layer A/D)"
+  - "3. Tambahkan tests/ dan evidence lengkap ke REQ-0001 dan REQ-010"
+  - "4. Buat slice LH-CASE-001 di vertical-slice/ dengan struktur v2"
+  - "5. Integrasikan semua test slice ke EOS test suite utama (Playwright + Vitest)"
+  - "6. Selesaikan Docker build error yang masih block port 3001 activation"
+  - "7. Jalankan verifikasi semua slice sesuai ERA-001 matrix"

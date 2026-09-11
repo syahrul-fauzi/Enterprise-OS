@@ -19,7 +19,7 @@ export function ActiveWorkSection({ works, onWorkClick }: ActiveWorkSectionProps
       </h3>
       <div className="grid gap-4">
         {works.map(work => (
-          <div key={work.workId} className="bg-surface-sunken border border-surface-border rounded-lg p-5 hover:border-surface-border-hover transition-colors">
+          <div key={work.workId} data-testid={`work-item-${work.workId}`} className="bg-surface-sunken border border-surface-border rounded-lg p-5 hover:border-surface-border-hover transition-colors">
             <div className="flex justify-between items-start mb-3">
               <h4 className="text-lg font-medium text-text-primary">{work.title}</h4>
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-status-progress/10 text-status-progress text-xs font-medium">

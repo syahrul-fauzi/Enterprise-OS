@@ -1,0 +1,93 @@
+{
+  "executedAt": "2026-09-10T06:40:38.235Z",
+  "slice": {
+    "id": "REQ-0001",
+    "version": "2.0.0",
+    "kind": "VERTICAL_SLICE_CONTRACT",
+    "status": "CANDIDATE",
+    "root_aggregate": "Requirement",
+    "transformation_id": "T001",
+    "source_els_hash": "sha256:de2fb973f82a6f363cafc71dccac6a0394daedbda0c2d71da3f638a9f8a2d812",
+    "slice_type": "CANONICAL_SPEC"
+  },
+  "records": [
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:38.231Z",
+      "inputSize": 405,
+      "ok": true
+    },
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:38.231Z",
+      "inputSize": 405,
+      "ok": true
+    },
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:38.231Z",
+      "inputSize": 405,
+      "ok": true
+    },
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:38.231Z",
+      "inputSize": 405,
+      "ok": true
+    },
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:38.231Z",
+      "inputSize": 405,
+      "ok": true
+    },
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:38.231Z",
+      "inputSize": 405,
+      "ok": true
+    },
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:38.231Z",
+      "inputSize": 405,
+      "ok": true
+    },
+    {
+      "commandKey": "requirement-management.requirement.create",
+      "capability": "requirement-management",
+      "commandName": "requirement.create",
+      "invokedAt": "2026-09-10T06:40:38.231Z",
+      "inputSize": 405,
+      "ok": true
+    }
+  ],
+  "workflowResult": {
+    "initialStep": "institutional-need-submitted",
+    "finalStep": "institutional-work-closed",
+    "allStepsPassed": true,
+    "workId": "requirement-0ecxet",
+    "finalStatus": "completed"
+  },
+  "acceptanceCriteria": {
+    "work_created": true,
+    "actor_bound": true,
+    "persisted": true,
+    "evidence_recorded": true,
+    "outcome_achieved": true
+  }
+}

@@ -1,9 +1,10 @@
 export { usePageStates, __EOS_UX_COMPLIANCE_REGISTRY__, registeredPages, addComplianceRecord } from "./usePageStates";
 export type { 
   UsePageStatesResult, 
-  UsePageStatesOptions, 
+  PageStatus, 
   PageState, 
-  PageStatus,
   PaginationState,
-  ComplianceRecord
+  ComplianceRecord,
+  UsePageStatesOptions
 } from "./usePageStates";
+export { __EOS_UX_COMPLIANCE_REGISTRY__ as UXStateComplianceRegistry } from "./usePageStates";

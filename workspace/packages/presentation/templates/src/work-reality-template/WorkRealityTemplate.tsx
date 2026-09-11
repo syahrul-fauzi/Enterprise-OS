@@ -6,11 +6,13 @@ import { WorkRealityLoading, Card, Button } from "@repo/presentation-ui-system";
 import Link from "next/link";
 import type { WorkRealityModel, WorkRealityPerspective } from "@repo/presentation-entities";
 
-interface WorkRealityTemplateProps {
+export interface WorkRealityTemplateProps {
   initialModel: WorkRealityModel | null;
   perspective?: WorkRealityPerspective;
   permissionDenied?: boolean;
   error?: string | null;
+  userCapabilities?: string[]; // VF-02: Pass user capabilities for unified navigation
+  productId?: string;           // VF-02: Product ID for workspace navigation
 }
 
 /**
@@ -27,7 +29,9 @@ export function WorkRealityTemplate({
   initialModel, 
   perspective,
   permissionDenied = false,
-  error = null
+  error = null,
+  userCapabilities = [], // VF-02: Default empty capabilities
+  productId = "default"  // VF-02: Default product ID
 }: WorkRealityTemplateProps) {
   // Loading State (11 visual states: loading) - show if no initial model provided
   if (!initialModel) {

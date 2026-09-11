@@ -1,0 +1,44 @@
+{
+  "audit_id": "G2-01-20240909-001",
+  "requirement": "Real Work → Browser Binding Compliance",
+  "executed_at": "2024-09-09T00:00:00.000Z",
+  "evidence": [
+    {
+      "type": "postgresql_verification",
+      "source": "PostgreSQL database",
+      "verdict": "PASS",
+      "details": "work-WORK-001 exists with source=postgres, status=active, no fixtures",
+      "timestamp": "2024-09-09T00:00:00.000Z"
+    },
+    {
+      "type": "api_verification",
+      "source": "/api/work/work-WORK-001",
+      "verdict": "PASS",
+      "details": "API returned canonical record from work-repository-postgres, all fields matched database",
+      "timestamp": "2024-09-09T00:00:00.000Z"
+    },
+    {
+      "type": "browser_flow_verification",
+      "source": "/work/[id]/page.tsx",
+      "verdict": "PASS",
+      "details": "buildWorkRealityModel() executed successfully, no mock/fixture data used, full flow verified",
+      "timestamp": "2024-09-09T00:00:00.000Z"
+    },
+    {
+      "type": "compliance_verification",
+      "source": "verify-work-002.ts",
+      "verdict": "PASS",
+      "details": "All forbidden patterns excluded: no mockWorkData, no fixtures, no hardcoded work, no alternate semantic models",
+      "timestamp": "2024-09-09T00:00:00.000Z"
+    }
+  ],
+  "confidence_score": 100,
+  "final_verdict": "FULL_PASS",
+  "entity_boundary_map_version": "v1",
+  "archived_by": "eos-evidence-engine",
+  "related_closed_gates": ["EG-01", "G2-01"],
+  "officially_closed": true,
+  "closed_at": "2024-09-09T00:00:00Z",
+  "next_pending_gates": ["G2-02 IDENTITY", "G2-03 LIFECYCLE", "G2-04 FAILURE/RECOVERY", "G2-05 TENANT"],
+  "next_active_work": "PR-VISUAL-001 STEP 10 (Human UAT)"
+}
