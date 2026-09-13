@@ -24,10 +24,10 @@ export interface RealityWorkHeaderProps {
 export function RealityWorkHeader({ title, perspective }: RealityWorkHeaderProps) {
   return (
     <section>
-      <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">
+      <h2 className="text-xs font-semibold uppercase tracking-wider text-text-secondary mb-3">
         {perspectiveLabels[perspective]}
       </h2>
-      <p className="text-xl font-semibold text-slate-900">{title}</p>
+      <p className="text-xl font-semibold text-text-primary">{title}</p>
     </section>
   );
 }

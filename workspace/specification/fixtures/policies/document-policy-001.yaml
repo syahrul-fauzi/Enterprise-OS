@@ -1,0 +1,23 @@
+version: "1.0.0"
+kind: FIXTURE_POLICY_DOCUMENT_MANAGEMENT
+fixture_id: FIX-POL-DOC-001
+status: IMMUTABLE_FIXTURE
+policy:
+  policy_id: DocPol-001
+  name: Document Management Operational Policy
+  derives_authority_from_requirement_ref: DocReq-001
+  epoch: Sprint0
+  classification_rules:
+    default_classification: internal
+  retention:
+    default_retention_period_days: 3650
+    retention_trigger_events: [retention_period_elapsed, legal_case_closed]
+    archive_allowed: true
+    retrieve_allowed_after_archive: true
+  access_control:
+    roles_allowed_propose: [role-document-proposer-001]
+    roles_allowed_approve: [role-document-approver-001]
+    roles_allowed_archive: [role-document-archivist-001]
+    roles_allowed_retrieve: [role-document-reader-001, role-document-proposer-001, role-document-approver-001, role-document-archivist-001]
+  approval_delegation_allowed: true
+  legal_hold_suspends_archive: true

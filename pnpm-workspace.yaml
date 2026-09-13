@@ -1,2 +1,14 @@
+packages:
+  - 'workspace/apps/*'
+  - 'workspace/packages/*'
+  - 'workspace/packages/core/*'
+  - 'workspace/packages/presentation/*'
+  - 'workspace/packages/tooling/*'
+  - 'workspace/packages/compositions/*'
+  - 'workspace/config/*'
+  - 'workspace/capabilities/*'
+  - 'workspace/products/*'
 allowBuilds:
+  '@parcel/watcher': false
   esbuild: false
+  sharp: false

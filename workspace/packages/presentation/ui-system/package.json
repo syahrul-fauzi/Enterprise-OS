@@ -39,7 +39,7 @@
     "@repo/config-eslint": "workspace:*",
     "@repo/config-tailwind": "workspace:*",
     "@repo/config-typescript": "workspace:*",
-    "@tailwindcss/cli": "^4.1.5",
+    "@tailwindcss/cli": "^4.3.3",
     "@types/react": "^19.1.0",
     "eslint": "^9.39.1",
     "tailwindcss": "^4.1.5",

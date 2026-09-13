@@ -1,5 +1,5 @@
-// Fixed import per @repo/core-kernel documentation - DigestEngine must be imported directly from digest-engine subpath (fixed double .js bug)
-import { DigestEngine } from "@repo/core-kernel/digest-engine";
+// Kembali ke package path karena core-kernel sudah terlink dan export subpath tersedia
+import { DigestEngine } from "../../../../../core/kernel/src/digest-engine.js";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 import {

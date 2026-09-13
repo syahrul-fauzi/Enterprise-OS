@@ -10,6 +10,9 @@ interface UseMyRealityControllerProps {
 
 export function useMyRealityController({ initialModel }: UseMyRealityControllerProps) {
   const [model, setModel] = useState<MyRealityModel>(initialModel);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hasError, setHasError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
   
   // Extract workspace context from model
   const firstWork = model.priority.now[0] || model.priority.next[0] || model.priority.watching[0];
@@ -72,26 +75,32 @@ export function useMyRealityController({ initialModel }: UseMyRealityControllerP
 
   // Manual refresh - requests canonical model from server
   const refreshModel = useCallback(async () => {
+    setIsLoading(true);
+    setHasError(false);
+    setErrorMessage("");
     try {
       const response = await fetch('/api/my-reality/refresh');
-      if (!response.ok) throw new Error('Failed to refresh model');
+      if (!response.ok) throw new Error('Gagal memuat model realitas');
       
       const canonicalModel = await response.json() as MyRealityModel;
       setModel(canonicalModel);
+      setIsLoading(false);
     } catch (error) {
       console.error('[MyRealityController] Model refresh failed:', error);
+      setHasError(true);
+      setErrorMessage(error instanceof Error ? error.message : "Gagal memuat daftar pekerjaan");
+      setIsLoading(false);
     }
   }, []);
 
-  // Derived human-centric work collections - simple projections ONLY, no transformation
-  const needAttention = model.priority.now.filter(work => work.bottleneck);
-  const activeWorks = model.priority.next.filter(work => work.state === "in_progress");
-  const waitingWorks = model.priority.watching;
-  const allWorks = [...model.priority.now, ...model.priority.next, ...model.priority.watching];
-  const completedWorks = allWorks.filter(work => work.state === 'completed');
+  const categorizedWorks = {
+    needsAttention: model.priority.now.filter(work => work.state === "blocked" || work.bottleneck),
+    active: model.priority.next.filter(work => work.state === "in_progress"),
+    completed: [...model.priority.now, ...model.priority.next, ...model.priority.watching].filter(work => work.state === 'completed')
+  };
   
   // Simple summary - calculated from canonical model, no reconstruction
-  const simpleSummary = `${model.summary.totalWork} pekerjaan · ${model.summary.inProgress} sedang berjalan · ${needAttention.length} menunggu Anda`;
+  const simpleSummary = `${model.summary.totalWork} pekerjaan · ${model.summary.inProgress} sedang berjalan · ${categorizedWorks.needsAttention.length} menunggu Anda`;
   
   // Check if companion has any insights to display
   const hasCompanionInsights = model.companion.insights.length > 0;
@@ -101,14 +110,14 @@ export function useMyRealityController({ initialModel }: UseMyRealityControllerP
     isConnected,
     pendingEvents,
     workspaceId,
-    needAttention,
-    activeWorks,
-    waitingWorks,
-    completedWorks,
+    categorizedWorks,
     simpleSummary,
     hasCompanionInsights,
     dispatchAction,
     refreshModel,
     handleCanonicalModelUpdate,
+    isLoading,
+    hasError,
+    errorMessage,
   };
 }

@@ -6,7 +6,7 @@ import {
   createAnonymousWorkspaceSession,
   encodeWorkspaceSession,
 } from "@repo/core-kernel";
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 // Import removed - local implementation declared below to avoid duplicate declaration
 
 export interface CanonicalWorkRecord {
@@ -279,7 +279,7 @@ export async function POST(request: Request) {
     let workId: string;
     let outputDomainType: string;
     try {
-      const result = await capabilityRegistry.invokeAsync("work-core", "work.create", {
+      const result = await capabilityRegistry.invoke("work-core", "work.create", {
         title,
         description,
         linkedIntentId,

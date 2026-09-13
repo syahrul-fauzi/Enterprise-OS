@@ -1,0 +1,28 @@
+canonical_identity_preserved: true
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:6219a24dee3f1671c7c92c76a3c482f916b67bd4132429863f8cc0e978bc3470
+  locked_at: 2026-09-12T04:19:10.541Z
+operation: procure
+result: PASS
+semantic_input_hash: sha256:892a20fab03b67bac1b83acb611ca03a5e7a7768ee570e1ac42acdcc98c7e6ef
+semantic_output_hash: sha256:892a20fab03b67bac1b83acb611ca03a5e7a7768ee570e1ac42acdcc98c7e6ef
+semantic_projection_fields:
+  - body
+  - classification
+  - proposer_identity_ref
+  - retention_period_days
+  - title
+subject_id: SAGE-LINEN-001-NEG-001
+version: 1.0.0
+witness_id: NEG-001-witness-b
+witness_type: MEANING

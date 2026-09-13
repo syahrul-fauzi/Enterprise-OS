@@ -46,6 +46,8 @@ export interface MyRealityActivityProps {
   isLive?: boolean;
 }
 
+import type { BreadcrumbItem } from "@repo/presentation-ui-system";
+
 export interface MyRealityExperienceProps {
   initialModel: MyRealityModel;
   actions?: React.ReactNode;
@@ -54,6 +56,7 @@ export interface MyRealityExperienceProps {
   onNextActionExecute?: (actionId: string, workId?: string) => void | Promise<void>;
   showActivity?: boolean;
   showWorkList?: boolean;
+  breadcrumbItems?: readonly BreadcrumbItem[]; // P2: Breadcrumb navigation for work hierarchy (UX-SHELL-002)
 }
 
 export interface PlatformReference {
@@ -170,4 +173,14 @@ export interface MyRealityModel {
   activity: RealityActivity[];
 
   platformDistribution: PlatformDistribution[];
+}
+
+export interface WorkListItem {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  createdAt: string;
+  lawyerId?: string;
+  evidence?: any[];
 }

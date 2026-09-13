@@ -1,0 +1,40 @@
+authority_chain:
+  - node_id: DocReq-001
+    relation: ROOT_REQUIREMENT
+  - node_id: MfgPol-001
+    relation: DERIVES_AUTHORITY_FROM_REQUIREMENT
+  - node_id: C-MFG-001
+    relation: DERIVES_AUTHORITY_FROM_POLICY
+conditions:
+  actual_outcome: AUTHORIZATION_DENIED
+  boundary_triggered: role_unauthorized
+  contract_operation_present: true
+  evidence_generated: true
+  expected_outcome: AUTHORIZATION_APPROVED
+  max_auto_approved_limit: 500
+  mutation_blocked: true
+  mutation_performed: false
+  policy_chain_matches_contract: true
+  proposer_role_allowed: false
+  total_procurement_amount: 0
+cycle_detected: false
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:91ceff445e6f70a58053f4db66c191d58a3a9d290f8bbe98b4d80b91023d172b
+  locked_at: 2026-09-12T16:16:52.760Z
+operation: procure
+result: FAIL
+role_attested: ROLE_PROCUREMENT_AGENT
+subject_id: SAGE-CANVAS-001-NEG-001
+version: 1.0.0
+witness_id: run-SAGE-CANVAS-001-NEG-001-v1-witness-a
+witness_type: AUTHORITY

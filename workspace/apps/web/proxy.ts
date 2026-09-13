@@ -1,10 +1,11 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import {
-  WORKSPACE_SESSION_COOKIE,
-  createAnonymousWorkspaceSession,
+  decodeWorkspaceSession,
   encodeWorkspaceSession,
-} from "../../packages/core/kernel/src/session/workspace-session.js";
+  createAnonymousWorkspaceSession,
+  WORKSPACE_SESSION_COOKIE,
+} from "@repo/core-kernel";
 import { getTenantRepositoryPostgres } from "@repo/capabilities-identity";
 
 export async function proxy(request: NextRequest) {

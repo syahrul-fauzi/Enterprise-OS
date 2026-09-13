@@ -1,0 +1,22 @@
+document:
+  title: "Negative Test 001: Procurement Over Budget (Canvas)"
+  classification: "INTERNAL_TEST_FIXTURE"
+  proposer_identity_ref: "actor:ai:procurement-agent-01"  # decision_actor = AI
+  body: "Request to procure canvas for $700, which is over the $500 budget."
+  retention_period_days: 365
+  metadata:
+    # 11 reusable parameters fully implemented
+    inventory_before: 120        # inventory_before
+    color: "white"               # color
+    # Actor parameters (enforce economic_principal≠decision_actor invariant)
+    initiator: "actor:human:factory-manager-02"
+    decision_actor: "actor:ai:procurement-agent-01"
+    execution_actor: "actor:business:supplier-canvas-ltd"
+    economic_principal: "actor:human:company-owner-01"
+    # Policy parameters
+    approved_categories: ["linen", "canvas", "cotton"]
+    auto_approval_limit: 500
+  procurement_request:
+    asset_ref: "SAGE-CANVAS-001"  # material = canvas
+    quantity_kg: 17.5             # quantity = 17.5kg
+    price_usd_per_kg: 40          # price_per_unit = $40 → total $700

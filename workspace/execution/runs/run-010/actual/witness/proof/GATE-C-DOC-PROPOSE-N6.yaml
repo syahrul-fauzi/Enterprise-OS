@@ -1,0 +1,27 @@
+constructive_entailment_complete: false
+evidence_items:
+  - EVI-PRO-N4-001
+  - EVI-PRO-N4-002
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:5ba6366094385bee35e435a9e2daaba06cbea42ebfa75339c603cc1eb494cc59
+  locked_at: 2026-08-01T05:52:55.819Z
+operation: propose
+postconditions:
+  q1_status_recorded: false
+  q2_proposer_identity_recorded: true
+  q3_audit_trail_recorded: true
+result: FAIL
+subject_id: GATE-C-DOC-PROPOSE-N6
+version: 1.0.0
+witness_id: run-010-witness-c
+witness_type: PROOF

@@ -1,0 +1,4 @@
+contract:
+  contract_id: C-PLACEHOLDER-001
+  derives_authority_from_policy_ref: P-PLACEHOLDER-001
+  operations: {}

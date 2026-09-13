@@ -34,8 +34,7 @@ export async function POST(request: Request) {
     }
 
     // Execute document search via capability registry (server-side only)
-    // @ts-ignore - Use standard capability registry invocation pattern
-    const result = await capabilityRegistry.invokeAsync("documents", "document.list", { 
+    const result = await capabilityRegistry.invoke("documents", "document.list", { 
       limit, 
       offset, 
       tenantId, 

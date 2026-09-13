@@ -1,0 +1,10 @@
+evidence_items:
+  - id: "EVI-PRO-001"
+    data:
+      recorded_status: "PROPOSED"
+  - id: "EVI-PRO-002"
+    data:
+      role_attested: "actor:ai:procurement-agent-01"
+  - id: "EVI-PRO-003"
+    data:
+      proposer_identity_recorded: "actor:ai:procurement-agent-01"

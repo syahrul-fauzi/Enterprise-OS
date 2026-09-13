@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/my-reality',
+        permanent: true,
+      },
+    ]
+  },
   transpilePackages: [
     "@repo/core-kernel",
     "@repo/core-runtime",

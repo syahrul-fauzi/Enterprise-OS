@@ -3,8 +3,8 @@ import { cookies } from 'next/headers';
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
-} from "@repo/core-kernel";
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
+} from "@repo/core-kernel/registry";
+import { capabilityRegistry } from "@repo/core-kernel/registry";
 
 export async function POST(request: Request) {
   try {

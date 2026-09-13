@@ -1,0 +1,12 @@
+document:
+  title: "Negative Test 002: Unauthorized Material Procurement"
+  id: "SAGE-CANVAS-001-NEG-002"
+  classification: "INTERNAL_TEST_FIXTURE"
+  proposer_identity_ref: "actor:human:owner-01"
+  body: "Request to procure a material not on the approved list."
+  retention_period_days: 365
+  metadata: {}
+  procurement_request:
+    material: "unobtanium" # This is the invalid part
+    quantity_kg: 5
+    price_usd_per_kg: 100

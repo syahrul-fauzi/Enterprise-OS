@@ -1,0 +1,7 @@
+evidence_items:
+  - id: "EV-PLACEHOLDER-001"
+    data:
+      recorded_status: "STATUS_PLACEHOLDER"
+  - id: "EV-PLACEHOLDER-002"
+    data:
+      role_attested: "ROLE_PLACEHOLDER"

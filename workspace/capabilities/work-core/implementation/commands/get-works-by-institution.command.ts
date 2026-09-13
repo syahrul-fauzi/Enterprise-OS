@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { WorkRepositoryPostgres } from "../repository/work-postgres.repository";
+import { getWorkRepositoryPostgres } from "../repository/work-postgres.repository";
 import type { WorkAggregate } from "../../contracts/work.contracts";
 
 export const GetWorksByInstitutionInputSchema = z.object({
@@ -26,7 +26,7 @@ export const getWorksByInstitutionCommand: CapabilityCommand = {
     const parsed = GetWorksByInstitutionInputSchema.parse(input);
     const { institutionId } = parsed;
 
-    const workRepository = new WorkRepositoryPostgres();
+    const workRepository = getWorkRepositoryPostgres();
     const institutionWorks = await workRepository.listByInstitution(institutionId);
 
     // Map WorkAggregate to WorkItemCardProps compatible format
@@ -34,9 +34,9 @@ export const getWorksByInstitutionCommand: CapabilityCommand = {
       workId: work.workId,
       title: work.title,
       description: work.description,
-      state: work.status === "draft" ? "open" as const : 
-              work.status === "in_progress" ? "in_progress" as const :
-              work.status === "blocked" ? "blocked" as const : "completed" as const,
+      state: work.status === "draft" ? "open" :
+             work.status === "active" ? "in_progress" :
+             work.status === "suspended" ? "blocked" : "completed",
       updatedAt: work.createdAt,
     }));
   },

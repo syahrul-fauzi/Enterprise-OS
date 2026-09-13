@@ -1,12 +1,12 @@
 {
-  "extends": "@repo/config-typescript/react-library.json",
+  "extends": "@repo/config-typescript/react.json",
   "compilerOptions": {
     "outDir": "dist",
-    "strictNullChecks": false,
-    "module": "Node16",
-    "moduleResolution": "Node16",
-    "skipLibCheck": true,
     "rootDir": "src",
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "strictNullChecks": true,
+    "skipLibCheck": true,
     "composite": true
   },
   "include": ["src/**/*"],

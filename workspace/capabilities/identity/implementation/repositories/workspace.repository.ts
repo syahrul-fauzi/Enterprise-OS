@@ -1,10 +1,10 @@
-import { PostgresRepository } from "./base.repository";
+import { PostgresRepository } from "./base.repository.js";
 import {
   WorkspaceId,
   TenantId,
   type WorkspaceAggregate,
   type WorkspaceRepository,
-} from "../contracts/index";
+} from "../contracts/index.js";
 
 // PostgreSQL-backed workspace repository implementation
 class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements WorkspaceRepository {

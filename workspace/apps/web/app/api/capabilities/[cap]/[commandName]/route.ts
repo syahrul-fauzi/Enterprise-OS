@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
+// Force re-check
 import {
+  capabilityRegistry,
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
 } from "@repo/core-kernel";
@@ -85,7 +86,7 @@ export async function POST(
       actorId: session.actorId,
     };
 
-    const result = await capabilityRegistry.invokeAsync(capability, commandName, authenticatedPayload);
+    const result = await capabilityRegistry.invoke(capability, commandName, authenticatedPayload);
     return NextResponse.json(
       {
         ok: true,

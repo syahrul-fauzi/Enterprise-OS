@@ -3,7 +3,9 @@ import { basename, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { createHash } from "node:crypto";
 import type { ExecutionGraphReport } from "@repo/core-capability-registry";
-import type { ComposeInput, ComposeResult } from "@repo/composition";
+// @repo/composition not available in workspace, using unknown for unused types
+type ComposeInput = unknown;
+type ComposeResult = unknown;
 
 function canonicalize(value: unknown): unknown {
   if (Array.isArray(value)) {

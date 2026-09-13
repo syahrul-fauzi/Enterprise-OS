@@ -1,0 +1,65 @@
+run_id: run-009
+subject_id: GATE-C-DOC-PROPOSE-N5
+transformation_contract_id: TC-DOC-PROPOSE-N5
+transformation_contract_name: Document Proposal Negative Control N5 Authority Broken and Proof Gap
+strategy_id: ts-reference-runtime/v1
+oracle_id: GATE-C-ORACLE-001
+science_kernel:
+  bundle_id: SC-KERNEL-001
+  bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+measurement_apparatus:
+  oracle:
+    certificate_id: SC-ORACLE-001
+    artifact_hash: sha256:cd39a4024c8f84a6d117890f1298f1690dc6f47f2734b090f63e35d5455efcda
+    instrument_hash: sha256:b92cfef11330bee312b23d0d5409703e61729bacc96d7c8fba41da7cdac1157f
+  witness:
+    certificate_id: SC-WITNESS-001
+    artifact_hash: sha256:674ea467df0ed0e219e143e780a24610cbf26d0ff61798659cf6d72a12dc7d34
+    instrument_hash: sha256:fbaa8738223d97884669d2b6fbdfc2e00015b40c5489712754bb4efd0e755a9f
+  dataset:
+    certificate_id: SC-DATASET-001
+    artifact_hash: sha256:577d034f086a5fcf3fb9f1c5a4a8d4e9b12573c45b98973ce5af4bfedab373d9
+    instrument_hash: sha256:2184fa695220d5d9306b66c61074a88692c73e57e9448bfea32321003ab85fbb
+input_identity:
+  document_semantic_hash: sha256:78fb6ccd3f4a9e24055e7838eef4437542441f68e4342120d8e05aeb67e088bc
+  subject_hash: sha256:d0f9f714b4b547e662b04e4eb1e66e9bd293403f4c3659fd4bfd3bb25f20f107
+  document_fixture_hash: sha256:412b187195feb41ce1249ee8484a9743ece6ff0bad267cb1d83309cd1f428994
+  policy_fixture_hash: sha256:6c51d8e797f568c02e99b089686436b902e9d5b14ffe99e15545f0f9d4d26a2c
+  contract_fixture_hash: sha256:eccb3570afe636ef4cdbe73103294e6a23ca09b37bc8d3a986dc887d7c453b07
+  evidence_fixture_hash: sha256:ce9dcfd724ad9847db8bfb10088367debc37116a8c07534dd83ff487ee3430bd
+predicate_vector:
+  pred_a_legitimate: false
+  pred_b_meaning_preserved: true
+  pred_c_provable: false
+verdict: FAIL
+constitutional_validity: false
+truth_table_row: N5
+witness_payloads:
+  authority:
+    authority_chain:
+      - node_id: DocReq-001
+        relation: ROOT_REQUIREMENT
+      - node_id: DocPol-001
+        relation: DERIVES_AUTHORITY_FROM_REQUIREMENT
+      - node_id: DocCon-001
+        relation: DERIVES_AUTHORITY_FROM_POLICY
+    conditions:
+      contract_operation_present: true
+      policy_chain_matches_contract: false
+      proposer_role_allowed: true
+    result: FAIL
+  meaning:
+    semantic_input_hash: sha256:78fb6ccd3f4a9e24055e7838eef4437542441f68e4342120d8e05aeb67e088bc
+    semantic_output_hash: sha256:78fb6ccd3f4a9e24055e7838eef4437542441f68e4342120d8e05aeb67e088bc
+    canonical_identity_preserved: true
+    result: PASS
+  proof:
+    evidence_items:
+      - EVI-PRO-N4-001
+      - EVI-PRO-N4-002
+    postconditions:
+      q1_status_recorded: false
+      q2_proposer_identity_recorded: true
+      q3_audit_trail_recorded: true
+    constructive_entailment_complete: false
+    result: FAIL

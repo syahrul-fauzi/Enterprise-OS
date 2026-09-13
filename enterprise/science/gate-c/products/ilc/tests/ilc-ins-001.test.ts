@@ -110,7 +110,8 @@ describe('ILC-INS-001: Institutional Coordination Reality Slice', () => {
     expect(assignedActors.length).toBeGreaterThanOrEqual(3);
     expect(assignedActors.some((a: any) => a.id.includes("legal"))).toBe(true);
     expect(assignedActors.some((a: any) => a.id.includes("it"))).toBe(true);
-    expect(assignedActors.some((a: any) => a.id.includes("finance"))).toBe(true);
+          expect(assignedActors.some((a: any) => a.id.includes("finance"))).toBe(true);
+        });
     
     // Verify responsibilities are observable
     const actorResponsibilities = assignedActors.map((a: any) => a.responsibility);

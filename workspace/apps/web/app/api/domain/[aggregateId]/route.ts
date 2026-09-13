@@ -102,18 +102,7 @@ export async function GET(
 
       try {
         const commandInput = parsed.data;
-        const output = await capabilityRegistry.invokeAsync<{
-          readonly type: "lawyershub.case";
-          readonly id: string;
-          readonly displayTitle: string;
-          readonly displaySubtitle: string;
-          readonly rawStatus: string;
-          readonly owner: string | undefined;
-          readonly createdAt: string;
-          readonly updatedAt: string;
-          readonly evidenceCount: number;
-          readonly priority: string;
-        } | undefined>("case", "getById", commandInput);
+        const output = await capabilityRegistry.invoke("case", "getById", commandInput);
         
         const result = output.output;
         if (result === undefined) {
@@ -169,7 +158,7 @@ export async function GET(
       
       let result: any;
       if (!parsed.success) {
-        const fallbackOutput = await capabilityRegistry.invokeAsync<any>("service-directory", "listByWorkspace", {
+        const fallbackOutput = await capabilityRegistry.invoke("service-directory", "listByWorkspace", {
           sessionId: sessionContext.sessionId,
           limit: 100,
           offset: 0
@@ -182,21 +171,8 @@ export async function GET(
         result = matches[0];
       } else {
         const commandInput = parsed.data;
-        const output = await capabilityRegistry.invokeAsync<{
-          readonly type: "services-id.request";
-          readonly id: string;
-          readonly displayTitle: string;
-          readonly displaySubtitle: string;
-          readonly rawStatus: string;
-          readonly owner: string | undefined;
-          readonly createdAt: string;
-          readonly updatedAt: string;
-          readonly evidenceCount: number;
-          readonly category: string | undefined;
-          readonly budget: number | undefined;
-          readonly providerId: string | undefined;
-        } | undefined>("service-directory", "getById", commandInput).catch(async () => {
-          const alt = await capabilityRegistry.invokeAsync<any>("service-directory", "listByWorkspace", {
+        const output = await capabilityRegistry.invoke("service-directory", "getById", commandInput).catch(async () => {
+          const alt = await capabilityRegistry.invoke("service-directory", "listByWorkspace", {
             sessionId: sessionContext.sessionId,
             limit: 100,
             offset: 0
@@ -261,22 +237,7 @@ export async function GET(
 
       try {
         const commandInput = parsed.data;
-        const output = await capabilityRegistry.invokeAsync<{
-          readonly type: "ilc.article";
-          readonly id: string;
-          readonly displayTitle: string;
-          readonly displaySubtitle: string;
-          readonly rawStatus: string;
-          readonly owner: string | undefined;
-          readonly createdAt: string;
-          readonly updatedAt: string;
-          readonly evidenceCount: number;
-          readonly topicLabel: string | undefined;
-          readonly authorAffiliation: string | undefined;
-          readonly readCount: number;
-          readonly engagementCount: number;
-          readonly replyCount: number;
-        } | undefined>("contentArticle", "getById", commandInput);
+        const output = await capabilityRegistry.invoke("contentArticle", "getById", commandInput);
         
         const result = output.output;
         if (result === undefined) {
@@ -335,21 +296,7 @@ export async function GET(
 
       try {
         const commandInput = parsed.data;
-        const output = await capabilityRegistry.invokeAsync<{
-          readonly type: "ilc.discussion";
-          readonly id: string;
-          readonly displayTitle: string;
-          readonly displaySubtitle: string;
-          readonly rawStatus: string;
-          readonly owner: string | undefined;
-          readonly createdAt: string;
-          readonly updatedAt: string;
-          readonly evidenceCount: number;
-          readonly topicLabel: string | undefined;
-          readonly startedByAffiliation: string | undefined;
-          readonly replyCount: number;
-          readonly viewCount: number;
-        } | undefined>("communityDiscussion", "getById", commandInput);
+        const output = await capabilityRegistry.invoke("communityDiscussion", "getById", commandInput);
         
         const result = output.output;
         if (result === undefined) {

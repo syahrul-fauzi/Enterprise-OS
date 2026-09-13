@@ -1,0 +1,24 @@
+version: 1.0.0
+observation_id: BE003-20260913-094209-SAGE-LINEN-001-NEG-002.experiment-original-observation-001
+subject_id: SAGE-LINEN-001-NEG-002
+transformation_contract_id: TC-MFG-GOV-002
+strategy_id: ts-reference-runtime/v1
+execution_mode: ORIGINAL
+input_fixture_hashes:
+  document: sha256:77f795905a040de78c31ea44829ef52a8011d06de3a15b41bc8a967a8ff80cf3
+  policy: sha256:b8a73e41f9fa034a32b0840ff863bd8433ed4c2a3df79ac55e3a22266409526a
+  contract: sha256:3299d85ffc72eccad8eb1128e87eac341fd44014630c4dd602a057c4c22bd0cb
+  evidence: sha256:39874124efe7bed6f7407182ac0440af8e32ee062514c627918a1874f96d1332
+transformation_output:
+  title: "Negative Test 002: Unauthorized Material Procurement"
+  classification: INTERNAL_TEST_FIXTURE
+  retention_period_days: 365
+  proposer_identity_ref: actor:human:owner-01
+  body: Request to procure a material not on the approved list.
+  metadata:
+    recorded_status: PROPOSED
+    proposal_recorded_by: TS-REFERENCE-RUNTIME-001
+    proposal_evidence_ids:
+      - EVI-PRO-001
+      - EVI-PRO-002
+      - EVI-PRO-003

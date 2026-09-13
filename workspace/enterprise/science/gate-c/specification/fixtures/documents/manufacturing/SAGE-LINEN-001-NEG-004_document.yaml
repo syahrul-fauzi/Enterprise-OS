@@ -1,0 +1,8 @@
+document:
+  title: "Negative Test 004: Intent as Procurement"
+  classification: "INTERNAL_TEST_FIXTURE"
+  proposer_identity_ref: "actor:human:owner-01"
+  body: "This document represents an intent to procure, not the procurement itself."
+  retention_period_days: 365
+  metadata: {}
+  intent_only: true

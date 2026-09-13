@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { getWorkspaceRepositoryPostgres, getMembershipRepositoryPostgres, getTenantRepositoryPostgres } from "../repositories/index";
-import { WorkspaceId, UserId, TenantId, MembershipId } from "../contracts/identity.contracts";
+import { getWorkspaceRepositoryPostgres, getMembershipRepositoryPostgres, getTenantRepositoryPostgres } from "../repositories/index.js";
+import { WorkspaceId, UserId, TenantId, MembershipId } from "../contracts/identity.contracts.js";
 
 export const CreateWorkspaceFlowInputSchema = z.object({
   name: z.string().min(1),

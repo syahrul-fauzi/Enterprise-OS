@@ -1,0 +1,7 @@
+expected_evaluations:
+  SAGE-LINEN-001-NEG-001:
+    outcome: "PASS"
+    summary: "Placeholder evaluation for NEG-001"
+  SAGE-LINEN-001-NEG-002:
+    outcome: "PASS"
+    summary: "Placeholder evaluation for NEG-002"

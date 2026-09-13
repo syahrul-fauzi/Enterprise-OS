@@ -11,13 +11,17 @@
     "skipLibCheck": true,
     "noEmit": false,
     "rootDir": ".",
+    "baseUrl": "../../..",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "paths": {
-      "@repo/core-kernel": ["../../packages/core/kernel/dist/index.d.ts", "../../packages/core/kernel/src/index.ts"],
-      "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*.d.ts", "../../packages/core/kernel/src/*"]
+      "@repo/core-kernel": ["packages/core/kernel/dist"],
+      "@repo/core-kernel/*": ["packages/core/kernel/dist/*"]
     }
   },
+  "references": [
+    { "path": "../../packages/core/kernel" }
+  ],
   "include": ["index.ts", "implementation/**/*.ts"],
   "exclude": ["dist", "build", "node_modules"]
 }

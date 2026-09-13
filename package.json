@@ -3,6 +3,7 @@
   "version": "1.6.0",
   "description": "Enterprise OS — Evidence-Driven Product Learning Platform (Kernel + Engines)",
   "private": true,
+  "packageManager": "pnpm@11.13.1",
   "scripts": {
     "eos:observe": "PYTHONPATH=implementation python3 implementation/eos/engines/observer/engine.py",
     "eos:validate": "PYTHONPATH=implementation python3 implementation/eos/engines/validator/engine.py",
@@ -24,5 +25,9 @@
     "@types/node": "^26.1.2",
     "tsx": "^4.23.12",
     "turbo": "^2.10.11"
+  },
+  "dependencies": {
+    "@parcel/watcher": "^2.6.0",
+    "sharp": "^0.35.4"
   }
 }

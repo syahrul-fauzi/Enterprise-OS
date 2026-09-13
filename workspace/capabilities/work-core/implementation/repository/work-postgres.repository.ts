@@ -1,10 +1,16 @@
 import type { WorkAggregate } from "../../contracts/work.contracts";
 import { randomUUID } from "crypto";
 const generateId = () => randomUUID();
-import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
+import { PostgresRepository } from "@repo/capabilities-identity/dist/implementation/repositories/base.repository";
 import type { CapabilityRepository } from "@repo/core-kernel";
 
-class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements CapabilityRepository<WorkAggregate> {
+export type WorkRepositoryPostgres = CapabilityRepository<WorkAggregate> & {
+  listByInstitution(institutionId: string): Promise<readonly WorkAggregate[]>;
+  update(id: string, patch: Partial<WorkAggregate>): Promise<WorkAggregate>;
+  delete(id: string): Promise<void>;
+};
+
+class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements WorkRepositoryPostgres {
   kind: "repository" = "repository" as const;
   entityName: string = "work" as const;
 
@@ -12,8 +18,23 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Capa
     super("works"); // Table name in PostgreSQL
   }
 
+  async byId(id: string): Promise<WorkAggregate | undefined> {
+    return super.byId(id);
+  }
+
+  async list(): Promise<readonly WorkAggregate[]> {
+    return super.list();
+  }
+
+  async byWorkId(workId: string): Promise<WorkAggregate | undefined> {
+    return this.byId(workId);
+  }
+
+  async listByInstitution(institutionId: string): Promise<readonly WorkAggregate[]> {
+    return super.find({ composition_id: institutionId } as any);
+  }
+
   protected toRecord(entity: WorkAggregate): Record<string, any> {
-    // pg library memerlukan JSON.stringify untuk kolom jsonb agar PostgreSQL bisa parse dengan benar
     return {
       id: entity.id,
       title: entity.title,
@@ -30,15 +51,6 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Capa
   }
 
   protected toAggregate(record: Record<string, any>): WorkAggregate {
-          // Konversi PostgreSQL record kembali ke WorkAggregate
-          console.log("[WorkRepository.toAggregate] Raw database record:", JSON.stringify(record, null, 2));
-          console.log("[WorkRepository.toAggregate] record.participants type:", typeof record.participants);
-          console.log("[WorkRepository.toAggregate] record.participants value:", record.participants);
-          console.log("[WorkRepository.toAggregate] record.state_history type:", typeof record.state_history);
-          console.log("[WorkRepository.toAggregate] record.state_history value:", record.state_history);
-          
-          // Kolom participants dan state_history sudah bertipe jsonb di PostgreSQL, jadi sudah menjadi objek JS
-          // Tidak perlu JSON.parse() lagi!
           const participants = Array.isArray(record.participants) ? record.participants : [];
           const stateHistory = Array.isArray(record.state_history) ? record.state_history : [];
     
@@ -58,22 +70,17 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Capa
     } as WorkAggregate;
   }
 
-  // Semua method save/get/list/remove sudah di-inherit dari PostgresRepository base class!
-  // Kita hanya butuh override save untuk menambahkan logika state history seperti sebelumnya:
-  async save(work: Partial<WorkAggregate> & { id?: string }): Promise<WorkAggregate> {
-    // Handle existing work untuk state history (sesuai RL2-001)
+  async save(work: Partial<WorkAggregate>): Promise<WorkAggregate> {
     let existingWork: WorkAggregate | undefined;
-    if (work.id) {
-      existingWork = await this.byId(work.id);
+    if (work.id || work.workId) {
+      existingWork = await this.byId(work.id || work.workId!);
     }
 
     let savedWork: WorkAggregate;
     
     if (existingWork) {
-      // Update existing work - maintain state history
       const newStateHistory = [...existingWork.stateHistory];
       
-      // If status changed, add to state history
       if (work.status && work.status !== existingWork.status) {
         newStateHistory.push({
           status: work.status,
@@ -83,7 +90,6 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Capa
         });
       }
       
-      // Merge updates
       savedWork = {
         ...existingWork,
         ...work,
@@ -91,7 +97,6 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Capa
         stateHistory: newStateHistory,
       } as WorkAggregate;
     } else {
-      // Create new work
       const id = generateId();
       const workId = `work_${id}`;
       
@@ -116,34 +121,23 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Capa
       } as WorkAggregate;
     }
 
-    // Simpan ke PostgreSQL via base class save()
     const finalSaved = await super.save(savedWork);
-    console.log(`[WorkRepository] Saved work ${finalSaved.id} - status: ${finalSaved.status} state history length: ${finalSaved.stateHistory.length}`);
-    return finalSaved;
+    return finalSaved as WorkAggregate;
+  }
+
+  async update(id: string, patch: Partial<WorkAggregate>): Promise<WorkAggregate> {
+    const workToUpdate = { ...patch, id };
+    return this.save(workToUpdate);
+  }
+
+  async delete(id: string): Promise<void> {
+    await super.remove(id);
   }
 }
 
-// Lazy initialization pattern that matches all other repository implementations in the codebase
-let workRepositoryPostgresInstance: WorkRepositoryPostgresImpl | null = null;
+// Simplified Singleton Pattern
+const workRepositoryPostgresInstance = new WorkRepositoryPostgresImpl();
 
 export function getWorkRepositoryPostgres(): WorkRepositoryPostgres {
-  if (!workRepositoryPostgresInstance) {
-    workRepositoryPostgresInstance = new WorkRepositoryPostgresImpl();
-  }
   return workRepositoryPostgresInstance;
 }
-
-// Export the proxy instance that matches the imported WorkRepositoryPostgres type everywhere
-const _lazyPgWorkRepo: WorkRepositoryPostgres = new Proxy({} as WorkRepositoryPostgres, {
-  get(_target: any, prop: string | symbol) {
-    const real = getWorkRepositoryPostgres();
-    const method = (real as any)[prop];
-    if (typeof method === "function") {
-      return method.bind(real);
-    }
-    return method;
-  },
-});
-
-export const WorkRepositoryPostgres = _lazyPgWorkRepo;
-export type WorkRepositoryPostgres = CapabilityRepository<WorkAggregate>;

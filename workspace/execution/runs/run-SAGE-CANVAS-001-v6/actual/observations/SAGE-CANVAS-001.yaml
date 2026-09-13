@@ -1,0 +1,39 @@
+version: 1.0.0
+observation_id: run-SAGE-CANVAS-001-v6-original-observation-001
+subject_id: SAGE-CANVAS-001
+transformation_contract_id: TC-MFG-GOV-000
+strategy_id: ts-reference-runtime/v1
+execution_mode: ORIGINAL
+input_fixture_hashes:
+  document: sha256:d8d4a24774ea36ff9c159f4f417dc6038a32b0d17261f9df8b9b8e961eb67285
+  policy: sha256:3815ae47b6488d50adf55e0c3efcd0a6b07529a45ff81084745ea3e18c82589d
+  contract: sha256:3299d85ffc72eccad8eb1128e87eac341fd44014630c4dd602a057c4c22bd0cb
+  evidence: sha256:98a09b97d5ebc3e2d8f39227f19450b596b2730824cb5c6c81115ec4624c13d7
+transformation_output:
+  title: "Positive Test: Procure Canvas (SAGE-CANVAS-001)"
+  classification: INTERNAL_TEST_FIXTURE
+  retention_period_days: 365
+  proposer_identity_ref: actor:ai:procurement-agent-01
+  body: Request to procure canvas for $400, which is within the $500 auto-approval budget.
+  metadata:
+    approved_categories:
+      - linen
+      - canvas
+      - cotton
+    auto_approval_limit: 500
+    color: white
+    decision_actor: actor:ai:procurement-agent-01
+    economic_principal: actor:business:sage-canvas-factory-node-01
+    execution_actor: actor:business:procurement-node-03
+    initiator: actor:human:sage-factory-owner-01
+    inventory_before: 120
+    procurement_request:
+      asset_ref: SAGE-CANVAS-001
+      price_usd_per_kg: 40
+      quantity_kg: 10
+    recorded_status: PROPOSED
+    proposal_recorded_by: TS-REFERENCE-RUNTIME-001
+    proposal_evidence_ids:
+      - EVI-PRO-001
+      - EVI-PRO-002
+      - EVI-PRO-003

@@ -5,7 +5,7 @@ import {
   TenantId,
   WorkspaceId,
   type MembershipRepository,
-} from "../contracts/index";
+} from "../contracts/index.js";
 
 function clone<T extends MembershipAggregate>(entity: T): T {
   return {
@@ -26,7 +26,7 @@ const MembershipRepositoryInMemory: MembershipRepository = {
   kind: "repository",
   entityName: "Membership",
 
-  async find(userId: UserId, tenantId: TenantId, workspaceId: WorkspaceId): Promise<MembershipAggregate | undefined> {
+  async findByUserTenantAndWorkspace(userId: UserId, tenantId: TenantId, workspaceId: WorkspaceId): Promise<MembershipAggregate | undefined> {
     return Array.from(STORE.values()).find(m => m.userId === (userId as string) && m.tenantId === (tenantId as string) && m.workspaceId === (workspaceId as string));
   },
 

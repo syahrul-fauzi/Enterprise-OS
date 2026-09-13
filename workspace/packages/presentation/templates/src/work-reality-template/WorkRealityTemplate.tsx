@@ -2,89 +2,127 @@
 
 import React from 'react';
 import { useWorkRealityController, WorkRealitySurface } from "@repo/presentation-experience";
-import { WorkRealityLoading, Card, Button } from "@repo/presentation-ui-system";
+import { WorkRealityLoading, Card, Button, type BreadcrumbItem, EmptyState, WorkList, type WorkItemCardProps } from "@repo/presentation-ui-system";
+import { GlobalNavigation } from "@repo/presentation-ui-system/layouts";
+import { PageHeader } from "@repo/presentation-ui-system/components/page-header";
 import Link from "next/link";
 import type { WorkRealityModel, WorkRealityPerspective } from "@repo/presentation-entities";
 
 export interface WorkRealityTemplateProps {
-  initialModel: WorkRealityModel | null;
+  initialModel?: WorkRealityModel | null;
+  workItems?: WorkItemCardProps[];
   perspective?: WorkRealityPerspective;
   permissionDenied?: boolean;
   error?: string | null;
-  userCapabilities?: string[]; // VF-02: Pass user capabilities for unified navigation
-  productId?: string;           // VF-02: Product ID for workspace navigation
+  userCapabilities?: string[];
+  productId?: string;
+  breadcrumbItems?: readonly BreadcrumbItem[];
 }
 
-/**
- * WorkRealityTemplate — Template for all work detail pages across all domains
- * Reusable template that wraps the core WorkRealitySurface experience
- * Can be imported by any page in pages/ directory to create consistent work views
- * Eliminates duplicate page composition across LawyersHub, ILC, Services.ID
- * Follows MyReality golden pattern: Template initializes Controller → which drives Surface
- * NO domain logic, NO runtime interpretation - pure composition + controller delegation
- * Implements ALL 11 visual states per user requirement:
- * ✅ Desktop, ✅ Tablet, ✅ Mobile, ✅ Loading, ✅ Empty, ✅ Error, ✅ Success, ✅ Long content, ✅ No data, ✅ Pagination, ✅ Permission denied
- */
 export function WorkRealityTemplate({ 
   initialModel, 
+  workItems,
   perspective,
   permissionDenied = false,
   error = null,
-  userCapabilities = [], // VF-02: Default empty capabilities
-  productId = "default"  // VF-02: Default product ID
+  userCapabilities = [],
+  productId = "default",
+  breadcrumbItems
 }: WorkRealityTemplateProps) {
-  // Loading State (11 visual states: loading) - show if no initial model provided
+
+  // Work List View
+  if (workItems) {
+    const pageActions = (
+      <div className="flex items-center gap-2">
+        <Link href="/work/new">
+          <Button intent="primary">Pekerjaan Baru</Button>
+        </Link>
+      </div>
+    );
+
+    return (
+      <GlobalNavigation
+        userCapabilities={userCapabilities}
+        productId={productId}
+        breadcrumbItems={breadcrumbItems}
+      >
+        <main className="py-6 px-4 sm:px-6 lg:px-8">
+          <PageHeader
+            title="Daftar Pekerjaan"
+            description="Semua pekerjaan yang Anda terlibat di dalamnya."
+            actions={pageActions}
+          />
+          <div className="mt-6">
+            {workItems.length > 0 ? (
+              <WorkList workItems={workItems} />
+            ) : (
+              <EmptyState
+                title="Tidak Ada Pekerjaan"
+                message="Anda belum memiliki pekerjaan. Buat pekerjaan baru untuk memulai."
+                icon="📭"
+                primaryActionLabel="Buat Pekerjaan Baru"
+                onPrimaryAction={() => window.location.href = '/work/new'}
+              />
+            )}
+          </div>
+        </main>
+      </GlobalNavigation>
+    );
+  }
+
+  // Work Detail View
   if (!initialModel) {
     return <WorkRealityLoading />;
   }
 
-  // Permission Denied State (11 visual states: permission denied)
   if (permissionDenied) {
     return (
-      <main className="min-h-screen bg-surface-background px-6 py-12">
-        <a href="#content" className="skip-link">Lewati ke konten</a>
-        <div id="content" className="w-full max-w-5xl mx-auto flex-1 flex flex-col items-center justify-center min-h-[80vh]">
-          <Card size="lg" className="w-full max-w-lg text-center">
-            <div className="text-6xl mb-6" aria-hidden="true">🚫</div>
-            <h1 className="text-2xl font-bold text-text-primary mb-3">Akses Ditolak</h1>
-            <p className="text-text-secondary mb-6">Anda tidak memiliki izin untuk mengakses pekerjaan ini. Silakan hubungi administrator jika Anda membutuhkan akses.</p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link href="/my-reality" className="no-underline">
-                <Button intent="neutral" variant="outline">
-                  Kembali ke Daftar Pekerjaan
-                </Button>
-              </Link>
-            </div>
-          </Card>
-        </div>
-      </main>
+        <GlobalNavigation userCapabilities={userCapabilities} productId={productId} breadcrumbItems={breadcrumbItems}>
+            <main className="min-h-screen bg-surface-background px-6 py-12">
+                <a href="#content" className="skip-link">Lewati ke konten</a>
+                <div id="content" className="w-full max-w-5xl mx-auto flex-1 flex flex-col items-center justify-center min-h-[80vh]">
+                <Card size="lg" className="w-full max-w-lg text-center">
+                    <div className="text-6xl mb-6" aria-hidden="true">🚫</div>
+                    <h1 className="text-2xl font-bold text-text-primary mb-3">Akses Ditolak</h1>
+                    <p className="text-text-secondary mb-6">Anda tidak memiliki izin untuk mengakses pekerjaan ini. Silakan hubungi administrator jika Anda membutuhkan akses.</p>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Link href="/my-reality" className="no-underline">
+                        <Button intent="neutral" variant="outline">
+                        Kembali ke Daftar Pekerjaan
+                        </Button>
+                    </Link>
+                    </div>
+                </Card>
+                </div>
+            </main>
+        </GlobalNavigation>
     );
   }
 
-  // Error State (11 visual states: error)
   if (error) {
     return (
-      <main className="min-h-screen bg-surface-background px-6 py-12">
-        <a href="#content" className="skip-link">Lewati ke konten</a>
-        <div id="content" className="w-full max-w-2xl mx-auto">
-          <div className="rounded-3xl border border-status-danger/20 bg-status-danger/5 p-12 shadow-sm text-center">
-            <div className="text-6xl mb-4" aria-hidden="true">⚠️</div>
-            <h3 className="text-xl font-bold text-text-primary mb-2">Gagal Memuat Pekerjaan</h3>
-            <p className="text-text-secondary max-w-md mx-auto mb-6">{error}</p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link href="/my-reality" className="no-underline">
-                <Button intent="primary" variant="solid">
-                  Kembali ke Daftar Pekerjaan
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </main>
+        <GlobalNavigation userCapabilities={userCapabilities} productId={productId} breadcrumbItems={breadcrumbItems}>
+            <main className="min-h-screen bg-surface-background px-6 py-12">
+                <a href="#content" className="skip-link">Lewati ke konten</a>
+                <div id="content" className="w-full max-w-2xl mx-auto">
+                <div className="rounded-3xl border border-status-danger/20 bg-status-danger/5 p-12 shadow-sm text-center">
+                    <div className="text-6xl mb-4" aria-hidden="true">⚠️</div>
+                    <h3 className="text-xl font-bold text-text-primary mb-2">Gagal Memuat Pekerjaan</h3>
+                    <p className="text-text-secondary max-w-md mx-auto mb-6">{error}</p>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Link href="/my-reality" className="no-underline">
+                        <Button intent="primary" variant="solid">
+                        Kembali ke Daftar Pekerjaan
+                        </Button>
+                    </Link>
+                    </div>
+                </div>
+                </div>
+            </main>
+        </GlobalNavigation>
     );
   }
 
-  // Initialize controller with canonical initial model from server
   const {
     model,
     currentPerspective,
@@ -97,40 +135,6 @@ export function WorkRealityTemplate({
     perspective: perspective || 'operator'
   });
 
-  // Empty/No Data State (11 visual states: empty, no data) - handle case where model has no data
-  const hasNoData = !model.participants.length && !model.communications.length && !model.evidence.length;
-  if (hasNoData) {
-    return (
-      <main className="min-h-screen bg-surface-background px-4 sm:px-6 py-6 sm:py-10">
-        <a href="#empty-content" className="skip-link" aria-label="Lewati ke konten utama">
-          Lewati ke konten utama
-        </a>
-        <div id="empty-content" className="mx-auto max-w-5xl space-y-5 sm:space-y-6">
-          <header className="py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900">{model.identity.title}</h1>
-                <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 border border-gray-300 rounded-full">
-                    <span className="text-gray-700 font-medium">{model.identity.status}</span>
-                    <span className="text-gray-600 text-xs font-mono" data-testid="work-id">ID: {model.identity.workId}</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </header>
-
-          <Card size="md" className="p-12 text-center">
-            <div className="text-6xl mb-4" aria-hidden="true">📭</div>
-            <h2 className="text-xl font-bold text-text-primary mb-2">Belum Ada Aktivitas</h2>
-            <p className="text-text-secondary max-w-md mx-auto">Pekerjaan ini baru saja dibuat. Mulai tambahkan partisipan, komunikasi, atau bukti untuk memulai.</p>
-          </Card>
-        </div>
-      </main>
-    );
-  }
-
-  // Map controller's generic dispatchAction to surface-specific handlers
   const handleSwitchPerspective = switchPerspective;
   const handleAssignLawyer = async (formData: FormData) => dispatchAction('assignLawyer', formData);
   const handleAddEvidence = async (formData: FormData) => dispatchAction('addEvidence', formData);
@@ -139,18 +143,53 @@ export function WorkRealityTemplate({
   const handleSendMessage = async (content: string) => dispatchAction('send-message', content);
   const handleAddParticipant = async (name: string, role: any) => dispatchAction('addParticipant', { name, role });
 
-  // Debug log to verify template receives model and renders surface
   console.log('[WorkRealityTemplate] Rendering with model identity:', model.identity, 'realtime connected:', isConnected);
   
-  return <WorkRealitySurface 
-    model={model} 
-    currentPerspective={currentPerspective}
-    onSwitchPerspective={handleSwitchPerspective}
-    onAssignLawyer={handleAssignLawyer}
-    onAddEvidence={handleAddEvidence}
-    onMarkCompleted={handleMarkCompleted}
-    onExecuteAction={handleExecuteAction}
-    onSendMessage={handleSendMessage}
-    onAddParticipant={handleAddParticipant}
-  />;
+  const pageActions = (
+    <div className="flex items-center gap-2">
+      <Button intent="secondary" variant="outline" onClick={refreshModel}>Refresh</Button>
+    </div>
+  );
+
+  const hasNoData = !model.participants.length && !model.communications.length && !model.evidence.length;
+
+  return (
+    <GlobalNavigation
+      userCapabilities={userCapabilities}
+      productId={productId}
+      breadcrumbItems={breadcrumbItems}
+    >
+      <main className="py-6 px-4 sm:px-6 lg:px-8">
+        <PageHeader
+          title={model.identity.title}
+          description={`ID: ${model.identity.workId}`}
+          status={model.identity.status}
+          actions={pageActions}
+        />
+        <div className="mt-6">
+          {hasNoData ? (
+            <EmptyState
+                title="Belum Ada Aktivitas"
+                message="Pekerjaan ini baru saja dibuat. Mulai tambahkan partisipan, komunikasi, atau bukti untuk memulai."
+                icon="📭"
+            />
+          ) : (
+            <WorkRealitySurface 
+              model={model} 
+              currentPerspective={currentPerspective}
+              onSwitchPerspective={handleSwitchPerspective}
+              onAssignLawyer={handleAssignLawyer}
+              onAddEvidence={handleAddEvidence}
+              onMarkCompleted={handleMarkCompleted}
+              onExecuteAction={handleExecuteAction}
+              onSendMessage={handleSendMessage}
+              onAddParticipant={handleAddParticipant}
+              userCapabilities={userCapabilities}
+              productId={productId}
+            />
+          )}
+        </div>
+      </main>
+    </GlobalNavigation>
+  );
 }

@@ -28,11 +28,11 @@ export async function GET(
         // Import canonical model builder to send initial canonical model
         const { buildMyRealityModel } = await import("../../../../(eos)/my-reality/getMyRealityModel");
         // Send initial state with canonical MyRealityModel
-        const initialWorks = getAllWorksForWorkspace(params.workspaceId);
+        const initialWorks = getAllWorksForWorkspace(workspaceId);
         
         // Build canonical model for initial connection
         const session = {
-          workspaceId: params.workspaceId,
+          workspaceId: workspaceId,
           actorId: "default-actor",
           tenantId: "default-tenant",
           actorLabel: "Pengguna"
@@ -43,7 +43,7 @@ export async function GET(
         const initialModelEvent = {
           type: "model.updated",
           timestamp: Date.now(),
-          workspaceId: params.workspaceId,
+          workspaceId: workspaceId,
           payload: { 
             model: canonicalModel,
             source: "initial-connection",
@@ -53,11 +53,11 @@ export async function GET(
         };
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(initialModelEvent)}\n\n`));
         
-        console.log(`[SSE Route] ✅ Initial canonical model sent to new client for workspace:`, params.workspaceId);
+        console.log(`[SSE Route] ✅ Initial canonical model sent to new client for workspace:`, workspaceId);
 
         // Register this listener in global registry
         registerWorkspaceListener(listenerId, {
-          workspaceId: params.workspaceId,
+          workspaceId: workspaceId,
           controller,
           lastSentWorks: JSON.stringify(initialWorks)
         });

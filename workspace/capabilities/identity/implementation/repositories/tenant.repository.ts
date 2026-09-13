@@ -1,10 +1,10 @@
-import { PostgresRepository } from "./base.repository";
+import { PostgresRepository } from "./base.repository.js";
 import {
   TenantId,
   UserId,
   type TenantAggregate,
   type TenantRepository,
-} from "../contracts/index";
+} from "../contracts/index.js";
 
 // PostgreSQL-backed tenant repository implementation
 class TenantRepositoryPostgresImpl extends PostgresRepository<any> implements TenantRepository {

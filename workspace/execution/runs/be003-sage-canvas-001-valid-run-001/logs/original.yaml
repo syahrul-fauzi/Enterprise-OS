@@ -1,0 +1,9 @@
+version: 1.0.0
+run_id: be003-sage-canvas-001-valid-run-001
+execution_mode: ORIGINAL
+reference_runtime_id: TS-REFERENCE-RUNTIME-001
+strategy_id: ts-reference-runtime/v1
+execution_timestamp_utc: 2026-09-13T07:58:28.925Z
+commands:
+  - pnpm eos gate-c genesis-evidence
+  - original execution materialization

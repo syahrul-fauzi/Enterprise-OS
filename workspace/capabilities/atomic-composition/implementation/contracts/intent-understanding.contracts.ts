@@ -181,6 +181,7 @@ export type ExpressionPattern = {
 export type AbstractionLevel = "INSTANCE" | "PATTERN" | "SEMANTIC_OPERATION" | "UNIVERSAL";
 export type GeneralizationStatus = "HYPOTHESIS" | "EVALUATING" | "VALIDATED" | "PROMOTED" | "REJECTED";
 
+// CORRECTED GeneralizationCandidate
 export type GeneralizationCandidate = {
   id: string;
   sourceObservations: string[];
@@ -205,7 +206,15 @@ export type GeneralizationCandidate = {
   status: GeneralizationStatus;
   createdAt: string;
   updatedAt: string;
-  // Backward compatibility untuk field yang masih dibutuhkan oleh pipeline lama
+  sourceClusterId?: string;
+  generalizationEvidence?: any;
+  semanticPattern: string;
+  suggestedEnrichment?: { 
+    enrichmentId: string;
+    type: "KNOWLEDGE_GRAPH_UPDATE" | "CAPABILITY_SCHEMA_EXTENSION" | "INTERACTION_MODEL_UPDATE";
+    payload: any;
+    complexityImpact: number;
+  };
   trigger: { failureId: string; triggerClusterId?: string };
   target: "knowledge" | "understanding" | "resolution" | "capability" | "interaction" | "provider";
   proposedChange: unknown;
@@ -215,12 +224,13 @@ export type GeneralizationCandidate = {
   regressionRisk: number;
   validationRequired: boolean;
   promotionStatus: "CANDIDATE" | "VALIDATING" | "PROMOTED" | "REJECTED";
+  sourceFailureIds: string[];
 };
 
 // Backward compatibility: EnrichmentCandidate remains as alias for GeneralizationCandidate
 export type EnrichmentCandidate = GeneralizationCandidate;
 
-// AE-FIC v1: FailureCluster - semantic grouping dari failure serupa (AE-003)
+// CORRECTED FailureCluster
 export type FailureCluster = {
   id: string;
   rootCategory: FailureRootCategory;
@@ -229,38 +239,52 @@ export type FailureCluster = {
   firstObservedAt: string;
   lastObservedAt: string;
   occurrenceCount: number;
-  systemicGapHypothesis?: string;
   enrichmentCandidateId?: string;
+  systemicGapHypothesis?: { 
+    hypothesis: string;
+    confidence: number;
+    evidence: string[];
+  };
+  generalization?: {
+    status: "PENDING" | "SUCCESS" | "FAILED";
+    generalizationId?: string;
+    lastAttemptedAt?: string;
+  };
 };
 
-// AE-FIC v1: ValidationRun - replay validation terhadap reality corpus (AE-005)
+// CORRECTED ValidationRun
 export type ValidationRun = {
   id: string;
   candidateId: string;
-  triggeredAt: string;
-  startedAt: string;
+  status: "PENDING" | "RUNNING" | "COMPLETED" | "FAILED";
+  result?: {
+    passed: boolean;
+    confidence: number;
+    coverage: number;
+    regression: number;
+  };
+  createdAt: string;
   completedAt?: string;
-  corpusSize: number;
-  passedTests: number;
-  failedTests: number;
-  regressionDetected: boolean;
-  coverageImprovement: number;
-  verdict: "PENDING" | "PASSED" | "FAILED" | "BLOCKED";
-  overallStatus: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "STOPPED";
-  evidenceRef?: string;
+  runAt: string;
+  passed: boolean;
+  holdoutResults?: any;
+  negativeResults?: any;
+  generalizationMetrics?: {
+    complexityCost: number;
+  };
+  overallScore?: number;
 };
 
-// AE-FIC v1: EnrichmentPromotion - final promotion gate decision (AE-006)
+// CORRECTED EnrichmentPromotion
 export type EnrichmentPromotion = {
   id: string;
   candidateId: string;
   validationRunId: string;
-  promotedAt?: string;
-  promotedBy?: string;
-  promotionReason?: string;
+  promotedAt: string;
+  promotedBy: string;
+  promotionReason: string;
   status: "PENDING_VALIDATION" | "APPROVED" | "REJECTED" | "ARCHIVED";
   runtimeEnriched: boolean;
-  // PR-001-P4: Promotion blast radius controls (shadow mode, limited cohort, rollout)
   blastRadius: {
     mode: "SHADOW" | "LIMITED_COHORT" | "FULL_PRODUCTION";
     cohortPercentage: number;
@@ -272,6 +296,8 @@ export type EnrichmentPromotion = {
     failures: number;
   };
   rollbackReference: string;
+  sourceFailureClusters: string[];
+  generalizationEvidence?: any;
 };
 
 // AE-FIC v1: Extended FailureIntelligenceData with observation and clustering support

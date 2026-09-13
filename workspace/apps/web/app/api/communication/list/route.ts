@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { capabilityRegistry } from "@repo/core-kernel";
+import { capabilityRegistry } from "@repo/core-kernel/registry";
 
 const WORKSPACE_SESSION_COOKIE = "eos_workspace_session";
 

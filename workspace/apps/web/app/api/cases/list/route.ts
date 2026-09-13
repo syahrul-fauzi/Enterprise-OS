@@ -8,7 +8,7 @@ import {
 } from "@repo/core-kernel";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import {
-  listCasesByWorkspace,
+  commands,
 } from "../../../../../../capabilities/legal-case/implementation/commands/case.commands";
 import {
   getSessionRepositoryPostgres,
@@ -58,15 +58,9 @@ export async function GET(request: Request) {
       }
     }
 
-    // DIRECT INVOCATION FIX: Bypass capability registry for now - call listCasesByWorkspace directly
-    // This resolves the "case.listByWorkspace not registered" error while maintaining full functionality
-    const casesResult = await listCasesByWorkspace.execute({
-      limit,
-      offset,
-      sessionId: session.sessionId!,
+    // Use capability registry to invoke the existing list-cases-for-tenant command
+    const { output: casesResult } = await capabilityRegistry.invoke("legal-case", "list-cases-for-tenant", {
       tenantId: session.tenantId,
-      workspaceId: session.workspaceId,
-      actorId: session.actorId,
     });
 
     const caseList = casesResult.items;

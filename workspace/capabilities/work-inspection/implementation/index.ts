@@ -4,7 +4,7 @@
  * All operations are grounded in Work ID to maintain work-as-boundary principle
  */
 
-export { WorkInspectionAgent, workInspectionAgent } from "./services/inspection.agent.service.js";
+export { WorkInspectionAgent, workInspectionAgent } from "./services/inspection.agent.service";
 export type {
   WorkId,
   WorkContext,
@@ -12,7 +12,8 @@ export type {
   DetectedBottleneck,
   MissingAction,
   InspectionRecommendation,
-} from "./contracts/work-inspection.contracts.js";
+  WorkActor,
+} from "./contracts/work-inspection.contracts";
 export {
   DEFAULT_INSPECTION_CONFIG,
-} from "./contracts/work-inspection.contracts.js";
+} from "./contracts/work-inspection.contracts";

@@ -1,0 +1,69 @@
+version: 1.0.0
+run_id: run-004
+comparison_target: run-003 (Positive Control P1 replay with frozen 47c758)
+comparison_purpose: C3 Measurement Correctness pairwise proof — apparatus identical, only fixtures differ
+apparatus_comparison:
+  pairwise_kernel_bundle_hash_identical:
+    run_003: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    run_004: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    match: true
+  pairwise_oracle_certificate_identical:
+    run_003_id: SC-ORACLE-001
+    run_004_id: SC-ORACLE-001
+    run_003_artifact_hash: sha256:cd39a4024c8f84a6d117890f1298f1690dc6f47f2734b090f63e35d5455efcda
+    run_004_artifact_hash: sha256:cd39a4024c8f84a6d117890f1298f1690dc6f47f2734b090f63e35d5455efcda
+    match: true
+  pairwise_witness_certificate_identical:
+    run_003_id: SC-WITNESS-001
+    run_004_id: SC-WITNESS-001
+    run_003_artifact_hash: sha256:674ea467df0ed0e219e143e780a24610cbf26d0ff61798659cf6d72a12dc7d34
+    run_004_artifact_hash: sha256:674ea467df0ed0e219e143e780a24610cbf26d0ff61798659cf6d72a12dc7d34
+    match: true
+  pairwise_dataset_certificate_identical:
+    run_003_id: SC-DATASET-001
+    run_004_id: SC-DATASET-001
+    run_003_artifact_hash: sha256:577d034f086a5fcf3fb9f1c5a4a8d4e9b12573c45b98973ce5af4bfedab373d9
+    run_004_artifact_hash: sha256:577d034f086a5fcf3fb9f1c5a4a8d4e9b12573c45b98973ce5af4bfedab373d9
+    match: true
+  pairwise_oracle_instrument_identical:
+    run_003_oracle_instrument_hash: sha256:b92cfef11330bee312b23d0d5409703e61729bacc96d7c8fba41da7cdac1157f
+    run_004_oracle_instrument_hash: sha256:b92cfef11330bee312b23d0d5409703e61729bacc96d7c8fba41da7cdac1157f
+    match: true
+  pairwise_witness_instrument_identical:
+    run_003_witness_integrity_hash: sha256:fbaa8738223d97884669d2b6fbdfc2e00015b40c5489712754bb4efd0e755a9f
+    run_004_witness_integrity_hash: sha256:fbaa8738223d97884669d2b6fbdfc2e00015b40c5489712754bb4efd0e755a9f
+    match: true
+  pairwise_dataset_instrument_identical:
+    run_003_dataset_instrument_hash: sha256:2184fa695220d5d9306b66c61074a88692c73e57e9448bfea32321003ab85fbb
+    run_004_dataset_instrument_hash: sha256:2184fa695220d5d9306b66c61074a88692c73e57e9448bfea32321003ab85fbb
+    match: true
+  pairwise_calibration_report_identical:
+    run_003_calibration_report_id: GATE-C0-CALIBRATION-REPORT-001
+    run_004_calibration_report_id: GATE-C0-CALIBRATION-REPORT-001
+    match: true
+apparatus_match_count: 8_of_8
+apparatus_pairwise_match: true
+verdict_difference_expected: >
+  run-003 verdict PASS (P1) vs run-004 verdict FAIL (N2). This is the EXPECTED outcome of a controlled falsification experiment.
+  The difference is explained SOLELY by the experimental fixtures (propose-n2.yaml + document-contract-n2.yaml + proposal-draft-n2.yaml),
+  NOT by any difference in the measurement apparatus. Hence the verdict difference is scientifically attributable to
+  the Predicate B meaning drift induced in the N2 fixture set.
+predicate_vector_delta:
+  pred_a_legitimate:
+    run_003: true
+    run_004: true
+    delta: NO_DELTA
+  pred_b_meaning_preserved:
+    run_003: true
+    run_004: false
+    delta: DELTA (EXPECTED — N2 is designed to falsify B)
+  pred_c_provable:
+    run_003: true
+    run_004: true
+    delta: NO_DELTA
+delta_count: 1_of_3
+delta_explanation: >
+  Exactly 1 predicate differs between P1 (run-003) and N2 (run-004): Pred B = MeaningPreserved. All else held constant.
+  This satisfies the requirement for an individually-controlled single-predicate Negative Control.
+  The verdict FAIL (vs PASS) is therefore diagnostically attributable to Pred B alone, under the controlled experiment assumption.
+c3_measurement_correctness_status: PASS

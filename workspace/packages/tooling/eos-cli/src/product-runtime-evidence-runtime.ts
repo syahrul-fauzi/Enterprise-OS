@@ -1,5 +1,5 @@
 // Fixed import per @repo/core-kernel documentation - DigestEngine must be imported directly from digest-engine subpath
-import { DigestEngine } from "@repo/core-kernel/digest-engine";
+import { DigestEngine } from "../../../core/kernel/src/digest-engine.js";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import {

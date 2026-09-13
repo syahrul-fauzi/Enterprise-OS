@@ -1,7 +1,7 @@
-import "@repo/presentation-ui-system/styles.css";
+import "@repo/presentation-ui-system/index.css";
 import "./globals.css";
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font";
+import { GeistSans } from "geist/font/sans";
 
 export const metadata: Metadata = {
   title: "EOS — Ruang Kerja Profesional",

@@ -5,7 +5,7 @@ import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShel
 import { useWorkspaceSession, useLocale, usePageStates } from "@repo/presentation-hooks";
 import { WorkRealityLoading, ErrorState, PermissionDenied } from "@repo/presentation-ui-system";
 import type { ProductPreviewBinding } from "@repo/presentation-experience";
-import type { ServiceRequestAggregate, ServiceRequestStatus, ServiceRequestPriority } from "@capabilities/services-id/implementation/contracts/service-request.contracts";
+import type { ServiceRequestAggregate, ServiceRequestStatus, ServiceRequestPriority } from "@repo/presentation-entities";
 
 const SRV_WORKFLOW = {
   steps: [
@@ -272,7 +272,7 @@ export function ServiceRequestDetailPage({ productId, requestId, binding, sessio
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                    {loading ? "Memuat Permintaan…" : requestData ? requestData.title : "Permintaan tidak ditemukan"}
+                    {isLoading ? "Memuat Permintaan…" : requestData ? requestData.title : "Permintaan tidak ditemukan"}
                   </h1>
                   <div className="flex gap-4 font-mono text-xs tracking-wide text-slate-500">
                     <span>SRV-{requestId}</span>
@@ -302,7 +302,7 @@ export function ServiceRequestDetailPage({ productId, requestId, binding, sessio
               )}
 
               {/* Status update actions */}
-              {!loading && requestData && requestData.status !== "closed" && (
+              {!isLoading && requestData && requestData.status !== "closed" && (
                 <div className="mt-6 flex gap-3">
                   {requestData.status === "draft" && (
                     <button

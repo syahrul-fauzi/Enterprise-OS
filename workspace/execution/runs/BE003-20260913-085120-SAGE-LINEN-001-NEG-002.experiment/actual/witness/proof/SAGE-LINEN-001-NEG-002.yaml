@@ -1,0 +1,28 @@
+constructive_entailment_complete: false
+evidence_items:
+  - EVI-PRO-001
+  - EVI-PRO-002
+  - EVI-PRO-003
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:11d835369c699f86ffb412d2320970c1ef8016876a37ce657e1d23e716c22356
+  locked_at: 2026-09-13T08:51:21.388Z
+operation: procure
+postconditions:
+  q1_status_recorded: true
+  q2_proposer_identity_recorded: false
+  q3_audit_trail_recorded: true
+result: FAIL
+subject_id: SAGE-LINEN-001-NEG-002
+version: 1.0.0
+witness_id: BE003-20260913-085120-SAGE-LINEN-001-NEG-002.experiment-witness-c
+witness_type: PROOF

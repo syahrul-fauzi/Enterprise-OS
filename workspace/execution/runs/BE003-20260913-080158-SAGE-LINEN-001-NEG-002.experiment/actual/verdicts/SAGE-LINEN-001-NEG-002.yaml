@@ -1,0 +1,6 @@
+version: 1.0.0
+verdict_id: BE003-20260913-080158-SAGE-LINEN-001-NEG-002.experiment-original-verdict-001
+subject_id: SAGE-LINEN-001-NEG-002
+verdict: FAIL
+constitutional_validity: false
+truth_table_row_matched: N4

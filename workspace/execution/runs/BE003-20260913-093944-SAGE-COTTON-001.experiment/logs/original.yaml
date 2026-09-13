@@ -1,0 +1,9 @@
+version: 1.0.0
+run_id: BE003-20260913-093944-SAGE-COTTON-001.experiment
+execution_mode: ORIGINAL
+reference_runtime_id: TS-REFERENCE-RUNTIME-001
+strategy_id: ts-reference-runtime/v1
+execution_timestamp_utc: 2026-09-13T09:39:44.514Z
+commands:
+  - pnpm eos gate-c genesis-evidence
+  - original execution materialization

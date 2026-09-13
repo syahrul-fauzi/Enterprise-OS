@@ -1,0 +1,19 @@
+version: "1.0.0"
+kind: FIXTURE_POLICY_MANUFACTURING_PROCUREMENT
+fixture_id: FIX-POL-MFG-001
+status: IMMUTABLE_FIXTURE
+policy:
+  policy_id: MfgPol-001
+  name: Manufacturing Procurement Operational Policy
+  derives_authority_from_requirement_ref: DocReq-001
+  epoch: Sprint0
+  access_control:
+    roles_allowed_propose: [actor:ai:procurement-agent-01, actor:human:sage-factory-owner-01]
+    roles_allowed_approve: [actor:human:sage-factory-owner-01]
+  rules:
+    max_auto_approved_settlement: 500
+    approved_categories:
+      - linen
+      - canvas
+      - cotton
+    require_inventory_validation: true

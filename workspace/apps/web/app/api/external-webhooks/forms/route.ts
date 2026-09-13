@@ -6,7 +6,7 @@ import {
   encodeWorkspaceSession, 
   decodeWorkspaceSession 
 } from "@repo/core-kernel";
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import { canonicalWorkStore, workspaceWorkIndex, notifyWorkspaceListeners } from "../../work/create/route.js";
 
 // Tally/Typeform webhook payload schema (matches no-code form standard)
@@ -142,7 +142,7 @@ export async function POST(request: Request) {
     // Invoke canonical work creation - REUSES EXACT SAME logic as native EOS work creation
     let workId: string;
     try {
-      const result = await capabilityRegistry.invokeAsync("work-core", "work.create", {
+      const result = await capabilityRegistry.invoke("work-core", "work.create", {
         title,
         description,
         domain: "services", // Maps to service-request domain type

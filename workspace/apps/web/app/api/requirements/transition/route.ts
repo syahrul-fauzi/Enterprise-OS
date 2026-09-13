@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
@@ -116,7 +116,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: `Unsupported transition: ${action}` }, { status: 400 });
     }
 
-    const resultObj = await capabilityRegistry.invokeAsync("requirement-management", commandName, commandInput);
+    const resultObj = await capabilityRegistry.invoke("requirement-management", commandName, commandInput);
 
     return NextResponse.json({
       success: true,

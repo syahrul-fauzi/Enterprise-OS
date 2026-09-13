@@ -1,0 +1,79 @@
+version: 1.0.0
+run_id: run-004
+genesis_evidence: EXISTS (run-001)
+execution_mode: NEGATIVE_CONTROL_N2_PRED_B_MEANING_DRIFT
+negative_control_truth_table_row: N2
+replay_goal: Execute N2 Negative Control (A=T, B=F, C=T) using frozen 47c758 apparatus identical to P1 replay (run-003) to verify Pred B falsification.
+verification_spine:
+  - step: VERIFY_FROZEN_INSTRUMENT_HASHES_MATCH_ISOLATION_SNAPSHOT
+    status: PASS
+    note: >
+      8 frozen_instrument_hashes from coverage-matrix isolation_check_snapshot all matched:
+      oracle_yaml=b92cfef1, oracle_cert=cd39a402, witness_integrity=fbaa8738, witness_cert=674ea467,
+      run_manifest_schema=77075fb, reproducibility_manifest_schema=a9187d46, dataset_cert=577d034,
+      kernel_bundle_sha=47c7582d. NO instrument changes. ISOLATION OK.
+  - step: LOAD_FROZEN_KERNEL_47C758
+    status: PASS
+  - step: VERIFY_APPARATUS_HASHES_MATCH_RUN_003
+    status: PASS
+    note: >
+      Pairwise identical vs run-003 (Positive Control P1 replay):
+      oracle_cert=SC-ORACLE-001, witness_cert=SC-WITNESS-001, dataset_cert=SC-DATASET-001,
+      kernel_sha256=47c7582d, oracle_instr_hash=b92cfef1, witness_instr_hash=fbaa8738, dataset_instr_hash=2184fa69.
+  - step: FIXTURE_VALIDITY_CHECK_N2
+    status: PASS
+    note: >
+      STEP_1_FIXTURE first diagnosis check PASSED: Contract N2 uses DocPol-001 (authority OK),
+      Doc N2 input fields identical to P1 (meaning OK as INPUT), Evidence N2 uses baseline PROPOSED+role (proof OK).
+      The ONLY induced failure mode is via transformation_contract TC-DOC-PROPOSE-N2 Q-N2-SIDE-EFFECT:
+      classification internal→confidential and body append.
+  - step: WIRE_MEASUREMENT_APPARATUS
+    status: PASS
+  - step: NEGATIVE_CONTROL_RUN_004_N2
+    status: FAIL
+    expected_status_for_negative_control: FAIL
+    note: >
+      Expected verdict FAIL for N2 truth table row. Actual verdict FAIL. Functional correctness OK.
+      Witness B FAIL is the DIAGNOSTIC failure source. Witnesses A and C PASS.
+  - step: CAPTURE_WITNESS
+    status: PASS
+  - step: VERIFY_DIAGNOSTIC_CORRECTNESS_N2
+    status: PASS
+    note: >
+      Diagnostic predicate = pred_b_meaning_preserved (NEG B) EXACT match expected N2 diagnostic.
+      Witness B explicit: canonical_identity_preserved=false, semantic_input_hash≠semantic_output_hash,
+      semantic_drift_details: classification_changed+body_appended.
+      NOT a runtime exception; NOT syntax error; NOT OOM.
+      Witness A PASS (policy_chain_matches_contract=true) and Witness C PASS (constructive_entailment_complete=true).
+      Exactly truth table row N2 = (A=T, B=F, C=T).
+  - step: GENERATE_MANIFEST
+    status: PASS
+  - step: WRITE_PROOF_LEDGER
+    status: PASS
+  - step: VERIFY_PAIRWISE_MEASUREMENT_APPARATUS_RUN_004_VS_RUN_003
+    status: PASS
+  - step: N2_C3_MEASUREMENT_CORRECTNESS_SATISFIED
+    status: PASS
+  - step: N2_C5_ISOLATION_CORRECTNESS_SATISFIED
+    status: PASS
+    note: >
+      Oracle.yaml, witness-integrity.yaml, manifest schemas, predicate evaluator definitions,
+      science-kernel bundle.sha256 — ALL UNCHANGED during run-004 lifecycle vs run-002/003 baseline.
+definition_of_done:
+  execution: true
+  apparatus_identity: true
+  integrity: true
+  replay: true
+  convergence: true
+  clean_environment: true
+  diagnostic_correctness: true
+  c3_pairwise_measurement_identical_to_positive_control: true
+  c5_isolation_instrument_unchanged: true
+remaining_blocker: Gate C1 requires N4 plus N3, N5, N6, N7 Negative Controls for full 8/8 truth table coverage.
+N2_negative_control_exit_criteria_check:
+  C1_FUNCTIONAL_CORRECTNESS: PASS
+  C2_DIAGNOSTIC_CORRECTNESS: PASS
+  C3_MEASUREMENT_CORRECTNESS: PASS
+  C4_REPLAY_CORRECTNESS: PASS
+  C5_ISOLATION_CORRECTNESS: PASS
+  n_pass_of_5: 5_of_5

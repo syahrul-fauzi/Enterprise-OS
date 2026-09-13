@@ -3,7 +3,7 @@ import { existsSync } from 'fs';
 import type { Team, WorkBinding } from '../contracts/atomic-composition.contracts';
 import type { Assignment } from '../contracts/atomic-composition.contracts';
 import type { Requirement } from '../contracts/atomic-composition.contracts';
-import type { WorkId } from '@capabilities/work-core/contracts/work.contracts';
+import type { WorkId } from '@capabilities/work-core';
 import { TeamId, AssignmentId, RequirementId } from '../contracts/atomic-composition.contracts';
 import { join } from 'path';
 
@@ -222,7 +222,7 @@ export class CompositionRepository {
     const allRequirementsLoaded = composition.requirements.length > 0;
     if (!allRequirementsLoaded) errors.push("Not all requirements loaded");
 
-    const workIdMatches = composition.team.workId === composition.workId;
+    const workIdMatches = String(composition.team.workId) === String(composition.workId);
     if (!workIdMatches) errors.push("Work ID mismatch between team and composition");
 
     return {

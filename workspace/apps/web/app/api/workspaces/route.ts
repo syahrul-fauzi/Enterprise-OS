@@ -1,7 +1,7 @@
 "use server";
 
 import { NextResponse } from "next/server";
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
@@ -26,7 +26,7 @@ export async function GET(request: Request) {
     }
 
     // Single canonical capability invocation - all workspace listing logic in identity capability
-    const { output } = await capabilityRegistry.invokeAsync("identity", "getWorkspacesByTenant", {
+    const { output } = await capabilityRegistry.invoke("identity", "getWorkspacesByTenant", {
       tenantId: session.tenantId,
       actorId: session.actorId,
       sessionId: session.sessionId,

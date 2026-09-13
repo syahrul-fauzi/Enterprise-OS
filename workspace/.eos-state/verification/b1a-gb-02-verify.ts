@@ -4,7 +4,7 @@
  */
 import { Pool } from "pg";
 import { randomUUID } from "node:crypto";
-import { capabilityRegistry } from "@repo/core-kernel";
+import { capabilityRegistry } from "@repo/core-kernel/registry";
 
 // Initialize database connection
 function getPool(): Pool {

@@ -1,0 +1,11 @@
+document:
+  title: "Negative Test 001: Procurement Over Budget"
+  classification: "INTERNAL_TEST_FIXTURE"
+  proposer_identity_ref: "actor:human:owner-01"
+  body: "Request to procure linen for $600, which is over the $500 budget."
+  retention_period_days: 365
+  metadata: {}
+  procurement_request:
+    asset_ref: "SAGE-LINEN-001"
+    quantity_kg: 15
+    price_usd_per_kg: 40 # 15 * 40 = $600

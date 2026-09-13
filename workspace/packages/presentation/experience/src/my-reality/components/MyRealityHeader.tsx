@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from "react";
 
-interface MyRealityHeaderProps {
+export interface PageHeaderProps {
   title: string;
   description?: string;
   auth?: any;
@@ -11,20 +11,25 @@ interface MyRealityHeaderProps {
     label: string;
   };
   actions?: ReactNode;
+  status?: string;
+  message?: string;
+  icon?: ReactNode;
 }
 
 /**
- * MyRealityHeader - Top header for the My Reality experience
+ * PageHeader - Unified top header component for all Golden Spine routes
+ * P2 compliant: responsive behavior, semantic tokens, no hardcoded styles
+ * Reused across /my-reality, /work, /work/new, /work/[id] to ensure visual consistency
  * Maintains EOS design principles: calm, operational, contextual
  */
-export function MyRealityHeader({
+export function PageHeader({
   title,
   description,
   auth,
   companionState,
   actions,
   actorName, // PR-VISUAL-001: Accept actor name from model if auth not available
-}: MyRealityHeaderProps & { actorName?: string }) {
+}: PageHeaderProps & { actorName?: string }) {
   // VF-05 Identity Reality Gate: Always show real name, never "Pengguna" fallback
   const displayName = auth?.actorLabel || actorName || auth?.displayName || 'Anda';
   const personalizedTitle = title.includes('Selamat') ? `${title}, ${displayName}` : title;
@@ -36,22 +41,13 @@ export function MyRealityHeader({
           {personalizedTitle}
         </h1>
         {description && (
-          <p className="mt-2 text-base text-text-secondary max-w-2xl">
+          <p className="mt-2 text-base text-text-muted max-w-2xl">
             {description}
           </p>
         )}
       </div>
 
       <div className="flex items-center gap-3 flex-shrink-0 mr-4">
-        {/* "Start New Work" Button - Primary action - Extra right margin to prevent viewport clipping */}
-        <a 
-          href="/intent/new" 
-          className="px-4 py-2 bg-slate-900 text-white font-medium rounded-lg hover:bg-slate-800 transition-colors shadow-token-sm whitespace-nowrap"
-          style={{ backgroundColor: '#0f172a', color: '#ffffff' }}
-        >
-          + Mulai Pekerjaan Baru
-        </a>
-        
         {/* Additional Actions (e.g., Theme Toggle, Settings) */}
         {actions && (
           <div className="flex items-center gap-2">
@@ -62,3 +58,6 @@ export function MyRealityHeader({
     </div>
   );
 }
+
+// Maintain backward compatibility for existing usages
+export { PageHeader as MyRealityHeader };

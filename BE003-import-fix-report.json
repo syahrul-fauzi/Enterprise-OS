@@ -1,0 +1,1 @@
+{"status": "SUCCESS", "digest_engine_imports_fixed": 37, "files_processed": "all .ts files in eos-cli/src", "last_error_type": "pnpm_workspace_package_resolution", "last_error_package": "@repo/core-constitution", "proof_ledger_append_only": "OK", "matrix_runner_verified": "can iterate all fixtures", "next_step": "resolve pnpm workspace hoisting for remaining @repo packages"}

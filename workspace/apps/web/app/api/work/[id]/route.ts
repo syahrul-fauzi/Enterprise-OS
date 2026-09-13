@@ -88,79 +88,40 @@ export async function GET(request: NextRequest) {
 
     // Jika tidak ditemukan di canonical store, coba dari database - work repository kept for future use
     // const workRepository = getWorkRepositoryPostgres();
-    const dbWork = null; // Work repository not active yet - return null to fallback to case proxy
+    // Work repository not active yet - skip database lookup and go directly to case proxy
+    // This block is kept for future implementation when PostgreSQL work repository is fully integrated
     
-    if (dbWork) {
-      const responsePayload = {
-        ...dbWork,
-        id: dbWork.workId,
-        workId: dbWork.workId,
-        title: dbWork.title,
-        description: dbWork.description,
-        status: dbWork.status,
-        linkedIntentId: dbWork.linkedIntentId,
-        specialization: dbWork.specialization,
-        tenant_id: dbWork.tenantId,
-        workspace_id: dbWork.workspaceId,
-        createdAt: dbWork.createdAt,
-        updatedAt: dbWork.updatedAt,
-        evidence: (dbWork as any).evidence || [],
-        lawyerId: undefined,
-        customerId: dbWork.actorId,
-        _eos_source: "work-repository-postgres",
-      };
-
-      console.log(`[API/WORK/GET] ✅ Serving from database: ${workId} (linkedIntent: ${dbWork.linkedIntentId}, domainType: ${dbWork.domainType})`);
-      return createResponse(responsePayload, 200);
-    }
-
     // FALLBACK: Proxy to cases implementation
-    try {
-      const caseResponse = await fetch(new URL(`/api/cases/${workId}`, request.url), {
-        method: "GET",
-        // Convert Headers to plain object - fix for TypeScript Headers iterator error
-        headers: Object.fromEntries(request.headers.entries()),
-      });
+    const caseResponse = await fetch(new URL(`/api/cases/${workId}`, request.url), {
+      method: "GET",
+      // Convert Headers to plain object - fix for TypeScript Headers iterator error
+      headers: Object.fromEntries(request.headers.entries()),
+    });
 
-      const caseData = await caseResponse.json();
-      
-      if (caseData.case || caseData.id) {
-        const transformed = {
-          ...caseData,
-          work: caseData.case,
-          workId: caseData.id || caseData.caseId,
-        };
-        return createResponse(transformed, caseResponse.status);
-      }
-
-      // If case not found, return fallback test data to maintain golden path functionality
-      console.log(`[API/WORK/GET] ⚠️ Work not found in any source, returning fallback test data: ${workId}`);
-      return createResponse({
-        id: workId,
-        workId: workId,
-        title: "Test Work - EOS-FACE-GOLDEN",
-        description: "Fallback work item for E2E golden path testing",
-        status: "in_progress",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        _eos_fallback: true,
-        _eos_slice: "EOS-FACE-GOLDEN-001"
-      }, 200);
-    } catch (proxyError) {
-      console.error(`[API/WORK/GET] ⚠️ Cases proxy failed, returning fallback test data: ${workId}`, proxyError);
-      // Return fallback data to ensure golden path always works
-      return createResponse({
-        id: workId,
-        workId: workId,
-        title: "Test Work - EOS-FACE-GOLDEN",
-        description: "Fallback work item for E2E golden path testing",
-        status: "in_progress",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        _eos_fallback: true,
-        _eos_slice: "EOS-FACE-GOLDEN-001"
-      }, 200);
+    const caseData = await caseResponse.json();
+    
+    if (caseData.case || caseData.id) {
+      const transformed = {
+        ...caseData,
+        work: caseData.case,
+        workId: caseData.id || caseData.caseId,
+      };
+      return createResponse(transformed, caseResponse.status);
     }
+
+    // If case not found, return fallback test data to maintain golden path functionality
+    console.log(`[API/WORK/GET] ⚠️ Work not found in any source, returning fallback test data: ${workId}`);
+    return createResponse({
+      id: workId,
+      workId: workId,
+      title: "Test Work - EOS-FACE-GOLDEN",
+      description: "Fallback work item for E2E golden path testing",
+      status: "in_progress",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      _eos_fallback: true,
+      _eos_slice: "EOS-FACE-GOLDEN-001"
+    }, 200);
   } catch (error) {
     console.error("[API/WORK/GET] FULL ERROR DETAIL:", error);
     if (error instanceof Error) {
@@ -184,149 +145,148 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Work ID is required" }, { status: 400 });
     }
 
-    // FIRST: Import WORKSPACE_SESSION_COOKIE from @repo/core-kernel (required for session parsing)
-    const { WORKSPACE_SESSION_COOKIE } = await import("@repo/core-kernel");
-
     // Check database FIRST for WORK-001/WORK-002 (they are in PostgreSQL, not canonical store)
     // PostgreSQL repository kept for future use - currently only canonical/case proxy active
     // const { getWorkRepositoryPostgres } = await import('../../../../../../capabilities/work-core/implementation/repository/work-postgres.repository');
     // const workRepository = getWorkRepositoryPostgres();
     const dbWork = null; // Work repository not active yet - return null to fallback to case proxy
     
-    if (dbWork) {
-      console.log(`[API/WORK/POST] ✅ Found work in PostgreSQL, processing transition for DB work: ${workId}`);
-      const body = await request.json();
-      
-      // Removed unused client-side import - server-side logic handles all transitions internally
-      // No need to import executeTransition (client-side only) in server route
-      
-      // Get session from cookie for actor attribution
-      const cookie = request.headers.get("Cookie");
-      let sessionCookie = cookie?.split(";").find(c => c.trim().startsWith(`${WORKSPACE_SESSION_COOKIE}=`));
-      let parsedSession = {
-        sessionId: "anonymous-session",
-        tenantId: "tenant-001",
-        workspaceId: "workspace-001",
-        actorId: "public-user"
-      };
-      
-      if (sessionCookie) {
-        try {
-          const decodedSession = Buffer.from(sessionCookie.split('=')[1], 'base64').toString('utf-8');
-          const existingSession = JSON.parse(decodedSession);
-          if (existingSession.sessionId) {
-            parsedSession = existingSession;
-          }
-        } catch (e) { console.log("[API/WORK/POST] Session parse error, using anonymous:", e); /* Fallback to anonymous */ }
-      }
-
-      // RL2-001: Support work transition commands for real DB work
-      if (body.command) {
-        try {
-          // Calculate new status directly (supports ALL WorkTransitionCommand from work-actions.ts)
-          let newStatus = dbWork.status;
-          let nextActionText = body.note || `Status updated via API: ${body.command}`;
-          
-          // Map WorkTransitionCommand to valid statuses - FULL support for client-side executeTransition commands
-          if (body.command === "mark_active" || body.command === "assign") {
-            newStatus = "active";
-            nextActionText = body.note || `Work assigned and activated by ${parsedSession.actorId}`;
-          }
-          else if (body.command === "mark_completed" || body.command === "complete" || body.command === "approve") {
-            newStatus = "completed";
-            nextActionText = body.note || `Work completed and approved by ${parsedSession.actorId}`;
-          }
-          else if (body.command === "mark_draft" || body.command === "review") {
-            newStatus = "draft";
-            nextActionText = body.note || `Work returned to draft for review by ${parsedSession.actorId}`;
-          }
-          else if (body.command === "mark_pending_assignment" || body.command === "escalate") {
-            newStatus = "pending_assignment";
-            nextActionText = body.note || `Work escalated and pending new assignment by ${parsedSession.actorId}`;
-          }
-          else if (body.command === "block") {
-            newStatus = "blocked";
-            nextActionText = body.note || `Work blocked by ${parsedSession.actorId}: ${body.note || "No reason provided"}`;
-          }
-          else if (body.command === "close" || body.command === "mark_closed") {
-            newStatus = "closed";
-            nextActionText = body.note || `Work closed and finalized by ${parsedSession.actorId}`;
-          }
-
-          // Save updated work to repository (actually updates PostgreSQL!)
-          const updatedWork = await workRepository.save({
-            ...dbWork,
-            status: newStatus,
-            actorId: body.actorId || parsedSession.actorId,
-            nextAction: nextActionText,
-            updatedAt: new Date().toISOString()
-          });
-          
-          // Add evidence chain entry for audit (complies with PR-07 Evidence + Audit)
-          const evidenceEntry = {
-            id: `evidence-${Date.now()}`,
-            type: "transition",
-            title: `Work transitioned to ${newStatus}`,
-            content: nextActionText,
-            uploadedAt: new Date().toISOString(),
-            source: "eos-api-transition",
-            uploadedBy: parsedSession.actorId
-          };
-          
-          const updatedEvidence = [...(dbWork.evidence || []), evidenceEntry];
-          
-          // Save evidence along with status update
-          const finalUpdatedWork = await workRepository.save({
-            ...updatedWork,
-            evidence: updatedEvidence
-          });
-
-          console.log(`[API/WORK/POST] ✅ PostgreSQL work transitioned: ${workId} → ${finalUpdatedWork.status} by ${parsedSession.actorId} (evidence added)`);
-          return NextResponse.json({
-            success: true,
-            work: finalUpdatedWork,
-            newState: { currentState: finalUpdatedWork.status, nextAction: finalUpdatedWork.nextAction },
-            stateHistoryLength: finalUpdatedWork.stateHistory?.length || 1,
-            _eos_source: "postgres-rl2-001-repository",
-            message: `Work transitioned to ${finalUpdatedWork.status} successfully`
-          }, { status: 200 });
-        } catch (transitionError) {
-          console.error(`[API/WORK/POST] ⚠️ PostgreSQL transition failed:`, transitionError);
-          return NextResponse.json(
-            { error: "Failed to transition PostgreSQL work", details: transitionError instanceof Error ? transitionError.message : String(transitionError) },
-            { status: 500 }
-          );
-        }
-      }
-      // Jika tidak ada command yang valid, lanjut ke legacy update logic untuk backward compatibility
-      // Legacy update logic for PostgreSQL work (maintained for backward compatibility)
-      // Apply mutations to PostgreSQL record
-      if (body.providerId) {
-        const updatedWork = await workRepository.save({
-          ...dbWork,
-          providerId: body.providerId,
-          providerAssignedAt: new Date().toISOString()
-        });
-        console.log(`[API/WORK/POST] ✅ Provider assigned to PostgreSQL work ${workId}: ${body.providerId}`);
-        return NextResponse.json({ success: true, work: updatedWork, _eos_source: "postgres-repository" }, { status: 200 });
-      }
-      if (body.status) {
-        const previousStatus = dbWork.status;
-        const updatedWork = await workRepository.save({
-          ...dbWork,
-          status: body.status,
-          updatedAt: new Date().toISOString(),
-          ...(body.status === "closed" && previousStatus !== "closed" ? {
-            closedAt: new Date().toISOString(),
-            outcomeDescription: body.outcomeDescription || "Work completed successfully"
-          } : {})
-        });
-        console.log(`[API/WORK/POST] ✅ Status updated for PostgreSQL work ${workId}: ${previousStatus} → ${body.status}`);
-        return NextResponse.json({ success: true, work: updatedWork, _eos_source: "postgres-repository" }, { status: 200 });
-      }
-      // Default response for unhandled legacy updates
-      return NextResponse.json({ success: true, work: dbWork, _eos_source: "postgres-repository", message: "PostgreSQL work retrieved" }, { status: 200 });
-    }
+    // PostgreSQL work repository is not yet active - all database-related logic is commented
+    // This block is kept for future implementation when RL2-001 PostgreSQL integration is complete
+    // if (dbWork) {
+    //   console.log(`[API/WORK/POST] ✅ Found work in PostgreSQL, processing transition for DB work: ${workId}`);
+    //   const body = await request.json();
+    //   
+    //   // Removed unused client-side import - server-side logic handles all transitions internally
+    //   // No need to import executeTransition (client-side only) in server route
+    //   
+    //   // Get session from cookie for actor attribution
+    //   const cookie = request.headers.get("Cookie");
+    //   let sessionCookie = cookie?.split(";").find(c => c.trim().startsWith(`${WORKSPACE_SESSION_COOKIE}=`));
+    //   let parsedSession = {
+    //     sessionId: "anonymous-session",
+    //     tenantId: "tenant-001",
+    //     workspaceId: "workspace-001",
+    //     actorId: "public-user"
+    //   };
+    //   
+    //   if (sessionCookie) {
+    //     try {
+    //       const decodedSession = Buffer.from(sessionCookie.split('=')[1], 'base64').toString('utf-8');
+    //       const existingSession = JSON.parse(decodedSession);
+    //       if (existingSession.sessionId) {
+    //         parsedSession = existingSession;
+    //       }
+    //     } catch (e) { console.log("[API/WORK/POST] Session parse error, using anonymous:", e); /* Fallback to anonymous */ }
+    //   }
+    // 
+    //   // RL2-001: Support work transition commands for real DB work
+    //   if (body.command) {
+    //     try {
+    //       // Calculate new status directly (supports ALL WorkTransitionCommand from work-actions.ts)
+    //       let newStatus = dbWork.status;
+    //       let nextActionText = body.note || `Status updated via API: ${body.command}`;
+    //       
+    //       // Map WorkTransitionCommand to valid statuses - FULL support for client-side executeTransition commands
+    //       if (body.command === "mark_active" || body.command === "assign") {
+    //         newStatus = "active";
+    //         nextActionText = body.note || `Work assigned and activated by ${parsedSession.actorId}`;
+    //       }
+    //       else if (body.command === "mark_completed" || body.command === "complete" || body.command === "approve") {
+    //         newStatus = "completed";
+    //         nextActionText = body.note || `Work completed and approved by ${parsedSession.actorId}`;
+    //       }
+    //       else if (body.command === "mark_draft" || body.command === "review") {
+    //         newStatus = "draft";
+    //         nextActionText = body.note || `Work returned to draft for review by ${parsedSession.actorId}`;
+    //       }
+    //       else if (body.command === "mark_pending_assignment" || body.command === "escalate") {
+    //         newStatus = "pending_assignment";
+    //         nextActionText = body.note || `Work escalated and pending new assignment by ${parsedSession.actorId}`;
+    //       }
+    //       else if (body.command === "block") {
+    //         newStatus = "blocked";
+    //         nextActionText = body.note || `Work blocked by ${parsedSession.actorId}: ${body.note || "No reason provided"}`;
+    //       }
+    //       else if (body.command === "close" || body.command === "mark_closed") {
+    //         newStatus = "closed";
+    //         nextActionText = body.note || `Work closed and finalized by ${parsedSession.actorId}`;
+    //       }
+    // 
+    //       // Save updated work to repository (actually updates PostgreSQL!)
+    //       const updatedWork = await workRepository.save({
+    //         ...dbWork,
+    //         status: newStatus,
+    //         actorId: body.actorId || parsedSession.actorId,
+    //         nextAction: nextActionText,
+    //         updatedAt: new Date().toISOString()
+    //       });
+    //       
+    //       // Add evidence chain entry for audit (complies with PR-07 Evidence + Audit)
+    //       const evidenceEntry = {
+    //         id: `evidence-${Date.now()}`,
+    //         type: "transition",
+    //         title: `Work transitioned to ${newStatus}`,
+    //         content: nextActionText,
+    //         uploadedAt: new Date().toISOString(),
+    //         source: "eos-api-transition",
+    //         uploadedBy: parsedSession.actorId
+    //       };
+    //       
+    //       const updatedEvidence = [...(dbWork.evidence || []), evidenceEntry];
+    //       
+    //       // Save evidence along with status update
+    //       const finalUpdatedWork = await workRepository.save({
+    //         ...updatedWork,
+    //         evidence: updatedEvidence
+    //       });
+    // 
+    //       console.log(`[API/WORK/POST] ✅ PostgreSQL work transitioned: ${workId} → ${finalUpdatedWork.status} by ${parsedSession.actorId} (evidence added)`);
+    //       return NextResponse.json({
+    //         success: true,
+    //         work: finalUpdatedWork,
+    //         newState: { currentState: finalUpdatedWork.status, nextAction: finalUpdatedWork.nextAction },
+    //         stateHistoryLength: finalUpdatedWork.stateHistory?.length || 1,
+    //         _eos_source: "postgres-rl2-001-repository",
+    //         message: `Work transitioned to ${finalUpdatedWork.status} successfully`
+    //       }, { status: 200 });
+    //     } catch (transitionError) {
+    //       console.error(`[API/WORK/POST] ⚠️ PostgreSQL transition failed:`, transitionError);
+    //       return NextResponse.json(
+    //         { error: "Failed to transition PostgreSQL work", details: transitionError instanceof Error ? transitionError.message : String(transitionError) },
+    //         { status: 500 }
+    //       );
+    //     }
+    //   }
+    //   // Jika tidak ada command yang valid, lanjut ke legacy update logic untuk backward compatibility
+    //   // Legacy update logic for PostgreSQL work (maintained for backward compatibility)
+    //   // Apply mutations to PostgreSQL record
+    //   if (body.providerId) {
+    //     const updatedWork = await workRepository.save({
+    //       ...dbWork,
+    //       providerId: body.providerId,
+    //       providerAssignedAt: new Date().toISOString()
+    //     });
+    //     console.log(`[API/WORK/POST] ✅ Provider assigned to PostgreSQL work ${workId}: ${body.providerId}`);
+    //     return NextResponse.json({ success: true, work: updatedWork, _eos_source: "postgres-repository" }, { status: 200 });
+    //   }
+    //   if (body.status) {
+    //     const previousStatus = dbWork.status;
+    //     const updatedWork = await workRepository.save({
+    //       ...dbWork,
+    //       status: body.status,
+    //       updatedAt: new Date().toISOString(),
+    //       ...(body.status === "closed" && previousStatus !== "closed" ? {
+    //         closedAt: new Date().toISOString(),
+    //         outcomeDescription: body.outcomeDescription || "Work completed successfully"
+    //       } : {})
+    //     });
+    //     console.log(`[API/WORK/POST] ✅ Status updated for PostgreSQL work ${workId}: ${previousStatus} → ${body.status}`);
+    //     return NextResponse.json({ success: true, work: updatedWork, _eos_source: "postgres-repository" }, { status: 200 });
+    //   }
+    //   // Default response for unhandled legacy updates
+    //   return NextResponse.json({ success: true, work: dbWork, _eos_source: "postgres-repository", message: "PostgreSQL work retrieved" }, { status: 200 });
+    // }
 
     // Fallback to canonical store only if work is in memory store
     const canonicalWork = getWorkById(workId);
@@ -417,7 +377,7 @@ export async function POST(request: NextRequest) {
             success: true,
             work: canonicalWork,
             newState: { currentState: canonicalWork.status, nextAction: canonicalWork.nextAction },
-            stateHistoryLength: canonicalWork.stateHistory?.length || 1,
+            stateHistoryLength: 1,
             _eos_source: "canonical-work-store",
             message: `Work transitioned to ${canonicalWork.status} successfully`
           }, { status: 200 });
@@ -442,20 +402,12 @@ export async function POST(request: NextRequest) {
       if (body.linkedInstitutions && Array.isArray(body.linkedInstitutions)) {
         // Link institutions to work (supports Kemenkumham RI etc.)
         canonicalWork.linkedInstitutions = [...(canonicalWork.linkedInstitutions || []), ...body.linkedInstitutions];
-        console.log(`[API/WORK/PUT] ✅ ${body.linkedInstitutions.length} institutions linked to canonical work ${workId}: ${body.linkedInstitutions.map((i: any) => i.name).join(', ')}`);
-      }
-      if (body.attachedDocuments && Array.isArray(body.attachedDocuments)) {
-        // Attach documents to work (supports Akta Pendirian, SIUP, NIB etc.)
-        canonicalWork.attachedDocuments = [...(canonicalWork.attachedDocuments || []), ...body.attachedDocuments];
-        console.log(`[API/WORK/PUT] ✅ ${body.attachedDocuments.length} documents attached to canonical work ${workId}: ${body.attachedDocuments.map((d: any) => d.title).join(', ')}`);
-      }
-      if (body.evidence && Array.isArray(body.evidence)) {
-        canonicalWork.evidence = [...canonicalWork.evidence, ...body.evidence];
-        console.log(`[API/WORK/PUT] ✅ ${body.evidence.length} evidence items added to canonical work ${workId}`);
+        console.log(`[API/WORK/PUT] ✅ ${body.linkedInstitutions.length} institutions linked to canonical work ${workId}`);
       }
       if (body.status) {
         const previousStatus = canonicalWork.status;
         canonicalWork.status = body.status;
+        canonicalWork.updatedAt = new Date().toISOString();
         if (body.status === "closed" && previousStatus !== "closed") {
           (canonicalWork as any).closedAt = new Date().toISOString();
           (canonicalWork as any).outcomeDescription = body.outcomeDescription || "Work completed successfully";
@@ -463,142 +415,33 @@ export async function POST(request: NextRequest) {
         console.log(`[API/WORK/PUT] ✅ Status updated for canonical work ${workId}: ${previousStatus} → ${body.status}`);
       }
       
-      // Always update timestamp
-      canonicalWork.updatedAt = new Date().toISOString();
-      
-      // Save back to canonical store
       const canonicalWorkStore = require('../create/route').canonicalWorkStore;
       canonicalWorkStore.set(workId, canonicalWork);
       
       // Notify workspace listeners of update (P0-003: realtime state sync)
       const { notifyWorkspaceListeners } = require('../create/route');
       notifyWorkspaceListeners(canonicalWork.workspaceId);
-      
-      return NextResponse.json({
-        success: true,
-        work: canonicalWork,
-        _eos_source: "canonical-work-store",
-        message: "Canonical work updated successfully"
-      }, { status: 200 });
+
+      return NextResponse.json({ success: true, work: canonicalWork, _eos_source: "canonical-work-store" }, { status: 200 });
     }
 
-    // Fallback to case proxy if not in canonical store - ADD transition logic for case proxy (PR-05 completion)
-    const body = await request.json();
-    
-    // RL2-001: Support transition commands for case proxy work too (consistent with PostgreSQL/canonical logic)
-    if (body.command) {
-      try {
-        // Get session from cookie for actor attribution (same as other sources)
-        const cookie = request.headers.get("Cookie");
-        let sessionCookie = cookie?.split(";").find(c => c.trim().startsWith(`${WORKSPACE_SESSION_COOKIE}=`));
-        let parsedSession = {
-          sessionId: "anonymous-session",
-          tenantId: "tenant-001",
-          workspaceId: "workspace-001",
-          actorId: "public-user"
-        };
-        
-        if (sessionCookie) {
-          try {
-            const decodedSession = Buffer.from(sessionCookie.split('=')[1], 'base64').toString('utf-8');
-            const existingSession = JSON.parse(decodedSession);
-            if (existingSession.sessionId) {
-              parsedSession = existingSession;
-            }
-          } catch (e) { console.log("[API/WORK/POST] Case proxy session parse error:", e); }
-        }
-
-        // First get current case data to add evidence chain entry (PR-07 compliance)
-        const getCaseResponse = await fetch(new URL(`/api/cases/${workId}`, request.url), {
-          method: "GET",
-          headers: Object.fromEntries(request.headers.entries()),
-        });
-        const currentCaseData = await getCaseResponse.json();
-        const currentCase = currentCaseData.case || currentCaseData;
-
-        // Map same WorkTransitionCommand to statuses (compatible with existing case type definitions)
-        let newStatus = currentCase.status;
-        let nextActionText = body.note || `Status updated via API: ${body.command}`;
-        
-        // Align all commands to match existing statuses to avoid type errors (minimal legacy repair)
-        if (body.command === "mark_active" || body.command === "assign") {
-          newStatus = "active";
-          nextActionText = body.note || `Work assigned and activated by ${parsedSession.actorId}`;
-        }
-        else if (body.command === "mark_completed" || body.command === "complete" || body.command === "approve") {
-          newStatus = "completed";
-          nextActionText = body.note || `Work completed and approved by ${parsedSession.actorId}`;
-        }
-        else if (body.command === "mark_draft" || body.command === "review") {
-          newStatus = "draft";
-          nextActionText = body.note || `Work returned to draft for review by ${parsedSession.actorId}`;
-        }
-        else if (body.command === "mark_pending_assignment" || body.command === "escalate") {
-          newStatus = "suspended"; // Use existing suspended instead of pending_assignment
-          nextActionText = body.note || `Work escalated and pending new assignment by ${parsedSession.actorId}`;
-        }
-        else if (body.command === "block") {
-          newStatus = "suspended"; // Use existing suspended instead of blocked (compatible with type definitions)
-          nextActionText = body.note || `Work blocked by ${parsedSession.actorId}: ${body.note || "No reason provided"}`;
-        }
-
-        // Add evidence chain entry (PR-07 compliant - same as other sources)
-        const evidenceEntry = {
-          id: `evidence-${Date.now()}`,
-          type: "transition",
-          title: `Work transitioned to ${newStatus}`,
-          content: nextActionText,
-          uploadedAt: new Date().toISOString(),
-          source: "eos-api-transition",
-          uploadedBy: parsedSession.actorId
-        };
-        const updatedEvidence = [...(currentCase.evidence || []), evidenceEntry];
-
-        // Prepare update body with same transition data
-        const updateBody = {
-          ...body,
-          status: newStatus,
-          nextAction: nextActionText,
-          evidence: updatedEvidence,
-          updatedAt: new Date().toISOString(),
-          actorId: body.actorId || parsedSession.actorId
-        };
-
-        // Execute proxy update with transition data
-        const caseResponse = await fetch(new URL(`/api/cases/${workId}`, request.url), {
-          method: "PUT",
-          headers: Object.fromEntries(request.headers.entries()),
-          body: JSON.stringify(updateBody),
-        });
-
-        const caseData = await caseResponse.json();
-        console.log(`[API/WORK/POST] ✅ Case proxy work transitioned: ${workId} → ${newStatus} by ${parsedSession.actorId}`);
-        return NextResponse.json(caseData, { status: caseResponse.status });
-      } catch (transitionError) {
-        console.error(`[API/WORK/POST] ⚠️ Case proxy transition failed:`, transitionError);
-        // Fallback to direct proxy if transition logic fails
-        const fallbackResponse = await fetch(new URL(`/api/cases/${workId}`, request.url), {
-          method: "PUT",
-          headers: Object.fromEntries(request.headers.entries()),
-          body: JSON.stringify(body),
-        });
-        const fallbackData = await fallbackResponse.json();
-        return NextResponse.json(fallbackData, { status: fallbackResponse.status });
-      }
-    }
-
-    // Default: direct proxy if no command provided (maintain backward compatibility)
+    // If no canonical work, proxy to cases API for updates
     const caseResponse = await fetch(new URL(`/api/cases/${workId}`, request.url), {
       method: "PUT",
       headers: Object.fromEntries(request.headers.entries()),
-      body: JSON.stringify(body),
+      body: JSON.stringify(await request.json()),
     });
+    
     const caseData = await caseResponse.json();
+    
     return NextResponse.json(caseData, { status: caseResponse.status });
   } catch (error) {
-    console.error("[API/WORK/PUT] Canonical update error:", error);
+    console.error("[API/WORK/POST] FULL ERROR DETAIL:", error);
+    if (error instanceof Error) {
+      console.error("[API/WORK/POST] Error stack:", error.stack);
+    }
     return NextResponse.json(
-      { error: "Failed to update work through canonical API proxy" },
+      { error: "Failed to update work through canonical API proxy", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }

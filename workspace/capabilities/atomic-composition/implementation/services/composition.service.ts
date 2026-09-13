@@ -11,7 +11,7 @@ try {
     saveTeam: async () => true
   };
 }
-import { capabilityRegistry } from "../../../../packages/core/kernel/src/registry/capability-command-registry.js";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import type {
   ActorProjection,
   CapabilityRequirement,

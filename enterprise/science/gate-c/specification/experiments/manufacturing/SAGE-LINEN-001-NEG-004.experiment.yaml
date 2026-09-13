@@ -1,0 +1,45 @@
+version: "1.0.0"
+status: EXPERIMENT_SUBJECT
+experiment_subject_id: SAGE-LINEN-001-NEG-004
+domain: manufacturing
+operation: procure
+operation_label: ProcureMaterialGovernance
+schema_ref: ../../schemas/experiment.schema.yaml
+
+predicate_anchor_map:
+  pred_a_legitimate:
+    expected_value: false
+    rationale: "The document is an intent, not a valid procurement request. It must be rejected."
+  pred_b_meaning_preserved:
+    expected_value: true
+    rationale: "The intent is clear, but it is not a procurement document."
+  pred_c_provable:
+    expected_value: false
+    rationale: "Execution must be blocked. The system must prove that authorization was denied."
+
+input_fixtures:
+  documents:
+    - "specification/fixtures/documents/manufacturing/SAGE-LINEN-001-NEG-004_document.yaml"
+  policies:
+    - "specification/fixtures/policy/manufacturing-policy.yaml"
+  contracts:
+    - "specification/fixtures/contract/placeholder-contract.yaml"
+  evidence:
+    - "specification/fixtures/evidence/placeholder-evidence.yaml"
+
+transformation_contract:
+  id: TC-MFG-GOV-004
+  name: Manufacturing Procurement Governance Contract - Intent as Procurement
+  preconditions:
+    - P1 Document is flagged as intent_only
+  postconditions:
+    - Q1 Authorization is DENIED
+    - Q2 State does NOT transition to AUTHORIZED
+  invariants:
+    - I1 Intent cannot be used for procurement
+    - I2 economic_principal≠decision_actor AND economic authority is explicit
+
+expected_truth_table_row_match: N4
+expected_predicates_ref: "../expected/predicates/manufacturing-predicates.yaml#expected_predicates.SAGE-LINEN-001-NEG-004"
+oracle_spec_ref: ../oracle/oracle.yaml
+expected_evaluation_ref: "../expected/evaluations/manufacturing-evaluations.yaml#expected_evaluations.SAGE-LINEN-001-NEG-004"

@@ -104,7 +104,7 @@ interface MultiActorTestLedger {
 }
 
 // Import isAuthenticatedSession untuk verifikasi actor-neutral authentication
-import { isAuthenticatedSession } from "./packages/core/kernel/src/session/workspace-session.js";
+import { isAuthenticatedSession } from "./packages/core/kernel/src/session/workspace-session";
 
 async function runMultiActorE2E(): Promise<MultiActorTestLedger> {
   const records: CommandInvocationRecord[] = [];

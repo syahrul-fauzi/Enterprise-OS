@@ -2,8 +2,8 @@ import { z } from "zod";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import type { WorkAggregate } from "../../contracts/work.contracts";
 import { SessionId, TenantId, ActorId } from "../../contracts/work.contracts";
-import { WorkRepositoryPostgres } from "../repository/work-postgres.repository";
-import { getMembershipRepositoryPostgres, type MembershipRepository } from "../../../identity/implementation/repositories/membership.repository";
+import { getWorkRepositoryPostgres, WorkRepositoryPostgres } from "../repository/work-postgres.repository";
+import { getMembershipRepositoryPostgres, type MembershipRepository } from "@repo/capabilities-identity";
 import { getWorksByInstitutionCommand } from "./get-works-by-institution.command";
 
 import { WorkModeEnum } from "../../contracts/work.contracts";
@@ -29,7 +29,7 @@ export type CreateCoreWorkRequest = z.infer<typeof CreateCoreWorkRequestSchema>;
 
 // Core Work aggregate implementation
 async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: string; workId: string; domainType: string }> {
-  const workRepository = new WorkRepositoryPostgres();
+  const workRepository = getWorkRepositoryPostgres();
   
   // 1. Create core Work primitive first (EOS substrate)
   const coreWork: Partial<WorkAggregate> = {
@@ -47,7 +47,7 @@ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: strin
     createdAt: new Date().toISOString(),
   };
   
-  const savedWork = await workRepository.save(coreWork);
+  const savedWork = await workRepository.save(coreWork as WorkAggregate);
   
   // Panggil atomic-composition untuk compose tim dari requirements
   const compositionResult = await capabilityRegistry.invokeAsync(
@@ -144,11 +144,11 @@ export type UpdateWorkRequest = z.infer<typeof UpdateWorkRequestSchema>;
 
 // MULTI-ACTOR-001: addParticipant implementation - owner only, permission checked
 async function addParticipant(input: AddParticipantRequest): Promise<{ success: boolean; participants: string[] }> {
-  const workRepository = new WorkRepositoryPostgres();
-  const work = await workRepository.byWorkId(input.workId);
+  const workRepository = getWorkRepositoryPostgres();
+  const work = await workRepository.byId(input.workId);
   
   if (!work) {
-    throw new Error("work_not_found: Work does not exist");
+    throw new Error(`work_not_found: Work with id ${input.workId} does not exist`);
   }
 
   // Permission check: only owner (original creator) can add participants
@@ -158,12 +158,12 @@ async function addParticipant(input: AddParticipantRequest): Promise<{ success: 
 
   // Add participant to work's participants array
   const currentParticipants = work.participants || [];
-  if (!currentParticipants.find(p => p.actorId === input.actorId)) {
+  if (!currentParticipants.find((p: any) => p.actorId === input.actorId)) {
     currentParticipants.push({
-      actorId: input.actorId,
+      actorId: input.actorId as ActorId,
       role: input.role,
       addedAt: new Date().toISOString(),
-      addedBy: input.requesterActorId,
+      addedBy: input.requesterActorId as ActorId,
     });
   }
 
@@ -175,14 +175,14 @@ async function addParticipant(input: AddParticipantRequest): Promise<{ success: 
 
   return {
     success: true,
-    participants: updatedWork.participants?.map(p => p.actorId) || [],
+    participants: updatedWork.participants?.map((p: any) => p.actorId) || [],
   };
 }
 
 // MULTI-ACTOR-001: getWork implementation - permission checked for all actors
 async function getWork(input: GetWorkRequest): Promise<WorkAggregate> {
-  const workRepository = new WorkRepositoryPostgres();
-  const work = await workRepository.byWorkId(input.workId);
+  const workRepository = getWorkRepositoryPostgres();
+  const work = await workRepository.byId(input.workId);
   
   if (!work) {
     throw new Error("work_not_found: Work does not exist");
@@ -190,7 +190,7 @@ async function getWork(input: GetWorkRequest): Promise<WorkAggregate> {
 
   // Permission check: actor must be owner OR in participants list
   const isOwner = work.actorId === input.actorId;
-  const isParticipant = work.participants?.some(p => p.actorId === input.actorId);
+  const isParticipant = work.participants?.some((p: any) => p.actorId === input.actorId);
   
   if (!isOwner && !isParticipant) {
     throw new Error("permission_denied: Actor does not have access to this work");
@@ -201,8 +201,8 @@ async function getWork(input: GetWorkRequest): Promise<WorkAggregate> {
 
 // MULTI-ACTOR-001: updateWork implementation - optimistic concurrency + permission check
 async function updateWork(input: UpdateWorkRequest): Promise<{ success: boolean; version: number }> {
-  const workRepository = new WorkRepositoryPostgres();
-  const work = await workRepository.byWorkId(input.workId);
+  const workRepository = getWorkRepositoryPostgres();
+  const work = await workRepository.byId(input.workId);
   
   if (!work) {
     throw new Error("work_not_found: Work does not exist");
@@ -211,34 +211,35 @@ async function updateWork(input: UpdateWorkRequest): Promise<{ success: boolean;
   // Permission check: only editor or owner can update work (integrated role validation from capability-command-registry)
   // Validate against both work-level participant roles AND workspace-level membership roles
   const isOwner = work.actorId === input.actorId;
-  const workParticipant = work.participants?.find(p => p.actorId === input.actorId);
+  const workParticipant = work.participants?.find((p: any) => p.actorId === input.actorId);
   const membershipRepo = getMembershipRepositoryPostgres();
    // Find membership by workspaceId and actorId (list all in workspace then filter for actor)
-   const workspaceMemberships = await membershipRepo.listByWorkspace(input.workspaceId);
-   const workspaceMembership = workspaceMemberships.find(m => m.userId === input.actorId);
+   const workspaceMemberships = await membershipRepo.listByWorkspace(input.workspaceId as any);
+   const workspaceMembership = workspaceMemberships.find((m: any) => m.userId === input.actorId);
   const canEdit = isOwner || (workParticipant?.role === "editor") || workspaceMembership?.role === "owner";
   
   if (!canEdit) {
-    throw new Error("permission_denied: Actor does not have edit permissions");
+    throw new Error("permission_denied: Actor does not have permission to update this work");
   }
 
-  // Optimistic concurrency control: version check
-  const currentVersion = work.version || 1;
-  if (currentVersion !== input.version) {
-    throw new Error("concurrent_modification: Work was updated by another actor - please refresh");
+  // Optimistic concurrency check
+  if (work.version !== input.version) {
+    throw new Error("conflict: Work has been updated by another actor. Please refresh and try again.");
   }
 
   // Apply updates
-  const updatedWork = await workRepository.save({
+  const updatedWorkData = {
     ...work,
     ...input.updates,
-    version: currentVersion + 1,
+    version: (work.version || 1) + 1,
     updatedAt: new Date().toISOString(),
-  });
+  } as WorkAggregate;
+
+  const updatedWork = await workRepository.save(updatedWorkData);
 
   return {
     success: true,
-    version: updatedWork.version || currentVersion + 1,
+    version: updatedWork.version!,
   };
 }
 

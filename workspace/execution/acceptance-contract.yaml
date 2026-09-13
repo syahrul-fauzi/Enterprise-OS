@@ -1,0 +1,37 @@
+version: 1.0.0
+contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+status: FROZEN
+scope: GATE-C1_ACCEPTANCE_DECISION
+authority_model: APPEND_ONLY_ACCEPTANCE_DECISION
+decision_semantics:
+  statement: Acceptance is not a free-form command. Acceptance is the result of invariant evaluation.
+  invariant_expression: >
+    Accepted(run) = EvidenceExists AND ReplayPass AND WitnessValid AND ManifestValid AND
+    NoInstrumentDrift AND ExpectedVerdictAchieved AND ExpectedPredicateAchieved AND
+    CanonicalConvergence AND LedgerAppended
+preconditions:
+  - id: evidence_exists
+    description: Run manifest, report, evaluation, verdict, witness bundle, and canonical evidence artifacts exist.
+  - id: replay_pass
+    description: Replay completed successfully under the frozen apparatus.
+  - id: witness_valid
+    description: Witness bundle is structurally valid and auditable; validity does not require all witness results to PASS.
+  - id: manifest_valid
+    description: Run manifest is consistent with the run id, subject, and output layout.
+  - id: no_instrument_drift
+    description: Frozen oracle, witness, dataset, and science kernel hashes remain unchanged.
+  - id: expected_verdict_achieved
+    description: Actual verdict matches the expected evaluation outcome for the truth-table row.
+  - id: expected_predicate_achieved
+    description: Actual predicate vector and diagnostic predicate attribution match the expected row semantics.
+  - id: canonical_convergence
+    description: Canonical replay converges on the same evidence outcome.
+postconditions:
+  - id: ledger_appended
+    description: Proof Ledger contains the accepted run as part of the official evidence corpus.
+rejection_rule:
+  status: REJECT
+  condition: Any precondition fails.
+notes:
+  - Proof Ledger is the acceptance authority for official evidence corpus membership.
+  - Historical run artifacts remain immutable; only append-only acceptance decisions and projections may evolve.

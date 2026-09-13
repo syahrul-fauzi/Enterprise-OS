@@ -5,7 +5,7 @@ import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShel
 import type { ProductPreviewBinding } from "@repo/presentation-experience";
 import { useWorkspaceSession, useLocale, usePageStates } from "@repo/presentation-hooks";
 import { WorkRealityLoading, EmptyState, ErrorState, PermissionDenied, Pagination } from "@repo/presentation-ui-system";
-import type { ServiceRequestAggregate, ServiceRequestPriority, ServiceRequestStatus } from "@capabilities/services-id/implementation/contracts/service-request.contracts";
+import type { ServiceRequestAggregate, ServiceRequestPriority, ServiceRequestStatus } from "@repo/presentation-entities";
 
 export interface ProductServiceRequestsPageProps {
   readonly productId: string;
@@ -33,7 +33,6 @@ export function ProductServiceRequestsPage({
   const { t } = useLocale();
   const currentSession = session ?? cachedSession;
   const isAuthenticated = Boolean(currentSession?.actorId && currentSession?.actorId !== "anonymous.user") || authenticated;
-  console.debug("[ProductServiceRequestsPage] Session check:", { authenticated, currentSession, isAuthenticated });
 
   // State management for create form
   const [showCreate, setShowCreate] = useState(false);
@@ -57,13 +56,13 @@ export function ProductServiceRequestsPage({
     setPermissionDenied,
     goToPage,
     getPaginatedData,
-  } = usePageStates<ServiceRequestAggregate[]>({
+  } = usePageStates<ServiceRequestAggregate[]>({ // 1. Fix: Correct generic type to represent a list of items
     initialPageSize: 10,
   });
   // Gunakan error state dari usePageStates, tidak perlu deklarasi lokal useState() lagi
   const error = hasError ? "Terjadi kesalahan" : null;
-  
-  const [serviceRequests, setServiceRequests] = useState<ServiceRequestAggregate[]>([]);
+
+
 
   // Locale-based priority labels
   const PRIORITY_LABEL: Record<ServiceRequestPriority, string> = {
@@ -111,13 +110,9 @@ export function ProductServiceRequestsPage({
         if (resp.ok) {
           const json = await resp.json();
           const requests = json.output || [];
-          setServiceRequests(requests);
           
           if (requests.length === 0) {
             setEmpty();
-          } else if (requests.length > 50) {
-            setLongContent();
-            setSuccess(requests, requests.length);
           } else {
             setSuccess(requests, requests.length);
           }
@@ -161,8 +156,7 @@ export function ProductServiceRequestsPage({
 
       const json = await resp.json();
       
-      // Add new service request to local state
-      setServiceRequests(prev => [...prev, {
+      const newRequest = {
         id: json.id,
         title: title.trim(),
         description: description.trim() || undefined,
@@ -171,7 +165,10 @@ export function ProductServiceRequestsPage({
         category,
         createdAt: new Date(),
         updatedAt: new Date(),
-      }]);
+      };
+      // 2. Fix: Pass the complete, updated array to setSuccess
+      const updatedData = [...(state.data || []), newRequest];
+      setSuccess(updatedData, updatedData.length);
 
       // Reset form and close create modal
       setTitle("");
@@ -236,7 +233,7 @@ export function ProductServiceRequestsPage({
   }
 
   // Empty state (menggunakan shared component)
-  if (showEmptyState || serviceRequests.length === 0) {
+  if (showEmptyState) {
     return (
       <ProductPreviewShell binding={binding}>
         <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 sm:py-10">
@@ -330,8 +327,11 @@ export function ProductServiceRequestsPage({
     );
   }
 
-  // Get paginated data dari usePageStates hook
-  const paginatedRequests = getPaginatedData(serviceRequests);
+  // 3. Fix: Manually paginate data based on the working example from WorkspaceDashboard
+  const { currentPage, itemsPerPage } = state.pagination;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedRequests = state.data ? state.data.slice(startIndex, endIndex) : [];
 
   // Main content state with all requests and pagination
   return (
@@ -396,11 +396,15 @@ export function ProductServiceRequestsPage({
               <Pagination
                 currentPage={state.pagination.currentPage}
                 totalPages={state.pagination.totalPages}
+                totalItems={state.pagination.totalItems}
+                itemsPerPage={state.pagination.itemsPerPage} // 4. Fix: Use correct itemsPerPage property from state
                 onPageChange={goToPage}
-                previousLabel="Sebelumnya"
-                nextLabel="Selanjutnya"
-                pageLabel="Halaman"
-                ofLabel="dari"
+                labels={{
+                  previous: "Sebelumnya",
+                  next: "Selanjutnya",
+                  showing: "Menampilkan",
+                  of: "dari",
+                }}
               />
             </div>
           )}

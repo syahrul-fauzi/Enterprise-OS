@@ -1,0 +1,11 @@
+version: "1.0.0"
+kind: FIXTURE_EVIDENCE_APPROVAL_AUDIT
+fixture_id: FIX-EVI-APP-AUD
+status: IMMUTABLE_FIXTURE
+evidence_items:
+  - id: EVI-APP-AUD-002
+    type: verdict_record_placeholder
+    description: "Approval verdict record reference placeholder (to be filled during experiment run)"
+    data:
+      present_in_ledger: true
+      verdict_status_placeholder: APPROVAL_VERDICT_PASS

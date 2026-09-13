@@ -1,0 +1,9 @@
+version: 1.0.0
+run_id: run-SAGE-LINEN-001-NEG-001-v20260913013645
+execution_mode: ORIGINAL
+reference_runtime_id: TS-REFERENCE-RUNTIME-001
+strategy_id: ts-reference-runtime/v1
+execution_timestamp_utc: 2026-09-13T01:36:46.069Z
+commands:
+  - pnpm eos gate-c genesis-evidence
+  - original execution materialization

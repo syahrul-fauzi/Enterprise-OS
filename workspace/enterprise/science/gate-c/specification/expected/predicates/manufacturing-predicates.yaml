@@ -1,0 +1,21 @@
+expected_predicates:
+  SAGE-LINEN-001-NEG-001:
+    pred_a_legitimate: true
+    pred_b_meaning_preserved: true
+    pred_c_provable: false
+  SAGE-LINEN-001-NEG-002:
+    pred_a_legitimate: false
+    pred_b_meaning_preserved: true
+    pred_c_provable: false
+  SAGE-LINEN-001-NEG-003:
+    pred_a_legitimate: true
+    pred_b_meaning_preserved: true
+    pred_c_provable: false
+  SAGE-LINEN-001-NEG-004:
+    pred_a_legitimate: true
+    pred_b_meaning_preserved: false
+    pred_c_provable: false
+  SAGE-CANVAS-001:
+    pred_a_legitimate: true
+    pred_b_meaning_preserved: true
+    pred_c_provable: true

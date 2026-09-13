@@ -2,7 +2,7 @@ import {
   TenantAggregate,
   TenantId,
   type TenantRepository,
-} from "../contracts/index";
+} from "../contracts/index.js";
 
 function clone<T extends TenantAggregate>(entity: T): T {
   return {

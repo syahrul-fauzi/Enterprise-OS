@@ -11,10 +11,12 @@ import type { ReactNode } from "react";
 export interface EmptyStateProps {
   /** Judul untuk state kosong */
   readonly title: string;
+  /** Pesan tambahan (alias description, kompatibilitas) */
+  readonly message?: string;
   /** Deskripsi tambahan (opsional) */
   readonly description?: string;
   /** Ikon yang ditampilkan (opsional, default: 📭) */
-  readonly icon?: string;
+  readonly icon?: ReactNode;
   /** Teks tombol aksi (legacy, gunakan primaryActionLabel) */
   readonly actionLabel?: string;
   /** Handler klik tombol aksi (legacy, gunakan onPrimaryAction) */
@@ -30,6 +32,7 @@ export interface EmptyStateProps {
 export function EmptyState({
   title,
   description,
+  message,
   icon = "📭",
   actionLabel,
   onAction,
@@ -39,18 +42,19 @@ export function EmptyState({
 }: EmptyStateProps) {
   const finalActionLabel = primaryActionLabel || actionLabel;
   const finalOnAction = onPrimaryAction || onAction;
+  const finalDescription = description || message;
   
   return (
     <div className={`text-center py-12 ${className}`}>
       <div className="text-6xl mb-4">{icon}</div>
-      <h3 className="text-xl font-bold text-slate-900 mb-2">{title}</h3>
-      {description && (
-        <p className="text-slate-600 max-w-md mx-auto mb-6">{description}</p>
+      <h3 className="text-xl font-bold text-text-primary mb-2">{title}</h3>
+      {finalDescription && (
+        <p className="text-text-muted max-w-md mx-auto mb-6">{finalDescription}</p>
       )}
       {finalActionLabel && finalOnAction && (
         <button
           onClick={finalOnAction}
-          className="px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition inline-block"
+          className="px-6 py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition inline-block"
         >
           {finalActionLabel}
         </button>

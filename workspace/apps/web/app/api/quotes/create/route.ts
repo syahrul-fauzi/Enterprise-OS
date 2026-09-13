@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     const { title, description, category, budget } = body;
 
     // Single canonical capability invocation - all service request creation logic in service-directory capability
-    const { output } = await capabilityRegistry.invokeAsync("service-directory", "service-directory.createServiceRequest", {
+    const { output } = await capabilityRegistry.invoke("service-directory", "createServiceRequest", {
       title,
       description,
       category,

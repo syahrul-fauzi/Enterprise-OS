@@ -1,0 +1,36 @@
+version: 1.0.0
+run_id: run-010
+science_kernel_bundle_id: SC-KERNEL-001
+science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+original:
+  verdict: FAIL
+  canonical_evidence_hash: sha256:7caf6e734990a2b8132b2c226b97680cef7437d1161630972191f4723207f125
+  witness_artifact_hashes:
+    authority: sha256:c5eeb928fd3682dc1a620c795f9ed6c6d9b032ea4df00609269af7c8d8907b89
+    meaning: sha256:b869c45dc271defaf7b70df7f902a1bcf6f2795f9ecb12891acfed1c33a1fe74
+    proof: sha256:aad16463590e1e0b4403d89dd37e93185d03adc982a4645f3320a3dab2e051f7
+  canonical_witness_hashes:
+    authority: sha256:8a4d003d9ac7bc85b33df89ddcad606d5e3af8de221b7ecaad5a867c74dab7ff
+    meaning: sha256:96fdc5ebff4be6b2ce7a82d849038ed7cf882bc8bb162066bc34408eb1694a72
+    proof: sha256:f297cb3ab7edc8474c002bdd8a1fdb07ac8d28f9e59184d999b802bd758de81b
+replay:
+  verdict: FAIL
+  canonical_evidence_hash: sha256:7caf6e734990a2b8132b2c226b97680cef7437d1161630972191f4723207f125
+  witness_artifact_hashes:
+    authority: sha256:56b89c5bb18ccc12e56b5e7185bcae9e8fa8bb498763b24058b5c706d37ce00b
+    meaning: sha256:0439c9c2c7ea9dd5a1cd8a54a9d004bae6743330c1984514df70b7dda13852c9
+    proof: sha256:78ae115f75d9e551ad6a66b95feebbad7b6f15506bf2126780a61eedcd9d8cc4
+  canonical_witness_hashes:
+    authority: sha256:8a4d003d9ac7bc85b33df89ddcad606d5e3af8de221b7ecaad5a867c74dab7ff
+    meaning: sha256:96fdc5ebff4be6b2ce7a82d849038ed7cf882bc8bb162066bc34408eb1694a72
+    proof: sha256:f297cb3ab7edc8474c002bdd8a1fdb07ac8d28f9e59184d999b802bd758de81b
+comparison:
+  same_verdict: true
+  same_canonical_evidence: true
+  same_canonical_witness_hashes: true
+  converged: true
+ignored_runtime_metadata:
+  - execution_timestamp_utc
+  - locked_at
+  - log timestamps
+  - temporary replay directory

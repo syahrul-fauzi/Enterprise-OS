@@ -36,8 +36,8 @@ function logAuditEvent(eventType: string, details: Record<string, unknown>): voi
     timestamp,
     version: AUDIT_CONFIG.AUDIT_ENTRY_VERSION,
     eventType,
-    actor: executionContext?.actor_id || "system:unknown-actor",
-    tenantId: executionContext?.tenant_id || "unknown-tenant",
+    actor: executionContext.get()?.actor_id || "system:unknown-actor",
+  tenantId: executionContext.get()?.tenant_id || "unknown-tenant",
     details
   };
   
@@ -224,11 +224,13 @@ export class FailureIntelligenceRepository {
     await this.initialize();
     let observations = Array.from(this.inMemoryObservations.values());
     
-    if (filters?.rootCategory) {
-      observations = observations.filter(o => o.rootCategory === filters.rootCategory);
-    }
-    if (filters?.classification) {
-      observations = observations.filter(o => o.classification?.startsWith(filters.classification));
+    if (filters) {
+        if (filters.rootCategory) {
+          observations = observations.filter(o => o.rootCategory === filters.rootCategory);
+        }
+        if (filters.classification) {
+          observations = observations.filter(o => o.classification?.startsWith(filters.classification as string));
+        }
     }
     
     return observations;
@@ -385,11 +387,13 @@ export class FailureIntelligenceRepository {
     await this.initialize();
     let clusters = Array.from(this.inMemoryClusters.values());
     
-    if (filters?.rootCategory) {
-      clusters = clusters.filter(c => c.rootCategory === filters.rootCategory);
-    }
-    if (filters?.minOccurrences) {
-      clusters = clusters.filter(c => c.occurrenceCount >= filters.minOccurrences);
+    if (filters) {
+        if (filters.rootCategory) {
+          clusters = clusters.filter(c => c.rootCategory === filters.rootCategory);
+        }
+        if (filters.minOccurrences) {
+          clusters = clusters.filter(c => c.occurrenceCount >= (filters.minOccurrences as number));
+        }
     }
     
     return clusters;
@@ -468,27 +472,7 @@ export class FailureIntelligenceRepository {
     };
   }
 
-  // Pure function: Update evidence counters (GRL-008 Change 3 - immutable-safe)
-  private static updateCandidateEvidence(
-    candidate: GeneralizationCandidate,
-    result: { type: "OBSERVED" | "HOLDOUT_PASS" | "COUNTEREXAMPLE"; passed: boolean }
-  ): GeneralizationCandidate {
-    const updated = { ...candidate, updatedAt: new Date().toISOString() };
-    
-    switch(result.type) {
-      case 'OBSERVED':
-        if (result.passed) updated.evidence.observedCount += 1;
-        break;
-      case 'HOLDOUT_PASS':
-        if (result.passed) updated.evidence.holdoutPassCount += 1;
-        break;
-      case 'COUNTEREXAMPLE':
-        if (result.passed) updated.evidence.counterexampleCount += 1;
-        break;
-    }
-    
-    return updated;
-  }
+
 
   private static async generateEnrichmentCandidate(cluster: FailureCluster, sourceObservation: FailureObservation): Promise<void> {
     console.log(`[DEBUG] generateEnrichmentCandidate: dimulai untuk cluster ${cluster.id}`);
@@ -553,12 +537,14 @@ export class FailureIntelligenceRepository {
       // Legacy EnrichmentCandidate fields untuk compatibility
       sourceClusterId: cluster.id,
       sourceFailureIds: cluster.failureIds,
-      rootCategory: cluster.rootCategory,
-      semanticPattern: semanticOp,
+
+      semanticPattern: semanticOp || 'unknown',
       suggestedEnrichment: {
-        type: "KNOWLEDGE_GAP",
-        target: "SEMANTIC_UNDERSTANDING",
-        description: invariant.description,
+        enrichmentId: randomUUID(),
+        type: "KNOWLEDGE_GRAPH_UPDATE",
+        payload: {
+          new_knowledge_node: `pattern:${semanticOp}`
+        },
         complexityImpact: 1
       },
       generalizationEvidence: {
@@ -604,8 +590,10 @@ export class FailureIntelligenceRepository {
 
     // Cek apakah ini GeneralizationCandidate (punya field abstraction)
     if ('abstraction' in candidate) {
-      const updated = this.updateCandidateEvidence(candidate as GeneralizationCandidate, result);
+      const updated = await this.updateCandidateEvidence(candidate.id, result);
+    if (updated) {
       await this.saveCandidate(updated);
+    }
       console.log(`[DEBUG] updateCandidateEvidence: ${candidateId} updated - ${result.type} ${result.passed ? 'success' : 'fail'}`);
       return updated;
     } else {
@@ -702,18 +690,20 @@ export class FailureIntelligenceRepository {
       semanticPatternsAdded: 0, // GRL-010: NO NEW SEMANTIC PATTERNS ADDED - reuse existing semantic primitive
       policiesAdded: 0,
       providerMappingsAdded: 0,
-      complexityCost: candidate.suggestedEnrichment.complexityImpact,
-      learningLeverageRatio: (candidate.sourceFailureIds.length + holdoutPassed) / candidate.suggestedEnrichment.complexityImpact
+      complexityCost: candidate.suggestedEnrichment?.complexityImpact ?? 1,
+      learningLeverageRatio: (candidate.sourceFailureIds.length + holdoutPassed) / (candidate.suggestedEnrichment?.complexityImpact ?? 1)
     };
 
     const validationRun: ValidationRun = {
       id: randomUUID(),
       candidateId,
+      status: "COMPLETED",
+      createdAt: new Date().toISOString(),
       runAt: new Date().toISOString(),
       holdoutResults,
       negativeResults,
       generalizationMetrics,
-      overallScore: (holdoutCoverage * precision) / generalizationMetrics.complexityCost,
+      overallScore: (holdoutCoverage * precision) / (generalizationMetrics.complexityCost || 1),
       passed: holdoutCoverage >= 0.8 && precision >= 0.95
     };
 
@@ -759,11 +749,9 @@ export class FailureIntelligenceRepository {
       id: randomUUID(),
       candidateId,
       validationRunId: latestValidation.id,
-      sourceFailureClusters: [candidate.sourceClusterId],
+      sourceFailureClusters: candidate.sourceClusterId ? [candidate.sourceClusterId] : [],
       generalizationEvidence: candidate.generalizationEvidence,
-      holdoutResults: latestValidation.holdoutResults,
-      negativeResults: latestValidation.negativeResults,
-      complexityDelta: latestValidation.generalizationMetrics.complexityCost,
+
       status: "APPROVED",
       promotedAt: now,
       promotedBy: "system:pr001-p4-admission",
@@ -780,7 +768,6 @@ export class FailureIntelligenceRepository {
         successfulApplications: 0,
         failures: 0
       },
-      promotedTo: "SEMANTIC_CONCEPT", // G4: Only explicit allowed target
       rollbackReference: candidate.id
     };
 

@@ -1,0 +1,16 @@
+version: "1.0.0"
+kind: FIXTURE_EVIDENCE_ARCHIVE_RETENTION_CHECK
+fixture_id: FIX-EVI-ARC-RET
+status: IMMUTABLE_FIXTURE
+evidence_items:
+  - id: EVI-ARC-RET-001
+    type: retention_trigger_elapsed
+    description: "Retention period elapsed check"
+    data:
+      retention_elapsed: true
+      trigger_reason: retention_period_elapsed
+  - id: EVI-ARC-NO-HOLD
+    type: no_legal_hold_in_effect
+    description: "No legal hold preventing archive"
+    data:
+      active_legal_holds_count: 0

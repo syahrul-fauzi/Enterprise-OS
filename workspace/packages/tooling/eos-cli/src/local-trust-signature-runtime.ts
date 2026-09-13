@@ -1,5 +1,5 @@
-// Fixed import per @repo/core-kernel documentation - DigestEngine must be imported directly from digest-engine subpath
-import { DigestEngine } from "@repo/core-kernel/digest-engine";
+// Fixed import to use correct relative source path (packages/tooling/eos-cli/src → packages/core/kernel/src)
+import { DigestEngine } from "../../../core/kernel/src/digest-engine.js";
 
 export const LOCAL_TRUST_SIGNATURE_PROVIDER_ID = "signature-provider:local";
 export const LOCAL_TRUST_SIGNATURE_PROVIDER_KIND = "Local";

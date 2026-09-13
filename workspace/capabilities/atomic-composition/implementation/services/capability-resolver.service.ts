@@ -1176,12 +1176,73 @@ const registerDefaultCapabilities = () => {
     execute: async () => ({ success: true })
   });
 
+  // SAGE-LINEN-001: Manufacturing capabilities (EXPLORE_MATERIAL_OPPORTUNITY)
+  globalRegistry.registerCapability({
+    id: "explore-material-opportunity",
+    name: "Explore Material Market Opportunity",
+    description: "Menganalisis potensi pasar material baru untuk manufaktur",
+    providerTypes: ["ai", "human"],
+    domainRestrictions: ["manufacturing"],
+    requiredAuthorizations: ["market-analysis-access", "workspace-read"],
+    riskLevel: "low",
+    severity: "LOW",
+    isAvailable: async () => true
+  });
+
+  // SAGE-LINEN-001: Manufacturing capabilities (PROCURE_MATERIAL)
+  globalRegistry.registerCapability({
+    id: "procure-material",
+    name: "Procure Raw Material Inventory",
+    description: "Melakukan pengadaan bahan baku untuk produksi",
+    providerTypes: ["business", "system"],
+    domainRestrictions: ["manufacturing"],
+    requiredAuthorizations: ["procurement-access", "financial-authorization", "workspace-write"],
+    riskLevel: "medium",
+    severity: "MEDIUM",
+    isAvailable: async () => true
+  });
+
+  // Register provider for explore-material-opportunity capability
+  globalRegistry.registerProvider({
+    id: "provider.ai.market-analyzer-07",
+    capabilityId: "explore-material-opportunity",
+    name: "AI Market Analyzer Bot 07",
+    description: "Spesialis analisis peluang pasar material manufaktur",
+    providerType: "ai",
+    availabilityScore: 0.98,
+    authorizations: ["market-analysis-access", "workspace-read"],
+    authorityLevel: 3,
+    costPerExecution: 0.0,
+    severity: "LOW",
+    canHandle: async () => true,
+    isAvailable: async () => true,
+    execute: async () => ({ success: true })
+  });
+
+  // Register provider for procure-material capability
+  globalRegistry.registerProvider({
+    id: "provider.business.procurement-node-03",
+    capabilityId: "procure-material",
+    name: "Procurement Node 03",
+    description: "Node bisnis resmi untuk pengadaan bahan baku",
+    providerType: "business",
+    availabilityScore: 0.95,
+    authorizations: ["procurement-access", "financial-authorization", "workspace-write"],
+    authorityLevel: 5,
+    costPerExecution: 450.0,
+    severity: "MEDIUM",
+    canHandle: async () => true,
+    isAvailable: async () => true,
+    execute: async () => ({ success: true })
+  });
+
   // ILC Golden Slice: Education Capability (reuse human-consultant-matcher with education domain)
   // EOS-PROD-003: Add services.id domain to human-consultant-matcher for 3-domain cross-case support
   // COHORT2 Extension: Add health-case, agriculture-case for Cohort2 cross-domain cases
+  // SAGE-LINEN-001: Add manufacturing domain to cross-domain capabilities
   const crossDomainCapability = globalRegistry.getCapability("human-consultant-matcher");
   if (crossDomainCapability) {
-    crossDomainCapability.domainRestrictions = [...(crossDomainCapability.domainRestrictions || []), "education", "services-id", "health-case", "agriculture-case"];
+    crossDomainCapability.domainRestrictions = [...(crossDomainCapability.domainRestrictions || []), "education", "services-id", "health-case", "agriculture-case", "manufacturing"];
   }
 };
 

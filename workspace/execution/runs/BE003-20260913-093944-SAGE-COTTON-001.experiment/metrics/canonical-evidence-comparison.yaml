@@ -1,0 +1,41 @@
+version: 1.0.0
+run_id: BE003-20260913-093944-SAGE-COTTON-001.experiment
+science_kernel_bundle_id: SC-KERNEL-001
+science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+original:
+  verdict: PASS
+  canonical_evidence_hash: sha256:be26d31e05ad77c6a2cddc8ef0e3b2a6c9595ba512d159cbad5dd06ca359d545
+  canonical_witness_digest: sha256:062966b216270bd256a829435a5909363b65e1be0a8ae8cf0a5c230a543dc4b7
+  canonical_run_manifest_hash: sha256:c3384e17cb2699764ebd168c1570c320049c4ee9bfcd96962aa0871c2170ce3c
+  witness_artifact_hashes:
+    authority: sha256:0290875c0d4396d59582cad6cc8c44b0614a7214e73e0dbb4069ca5505794ca0
+    meaning: sha256:cdbc2fcf5bb958f9e31b3e1d7b6fce8d18d094322aeb329fcb5084de8c0d92ae
+    proof: sha256:257e088bf2ab7eb1bf1de6369f21997e4070c968f6f50b2554c5ce2cdd3fe356
+  canonical_witness_hashes:
+    authority: sha256:145071a87f77da428bd0ffa74a8e0decc7b4269535bbcaf2aff7b2fd7965d430
+    meaning: sha256:97c6c21acf9f69da60ea4e610a2a6a359f58a617d54f4d71fc3bb20c0195d44b
+    proof: sha256:d14b8bd102d6a9d7b7dddab57465276d74816c4ad78771b85dfd69abe33845be
+replay:
+  verdict: PASS
+  canonical_evidence_hash: sha256:be26d31e05ad77c6a2cddc8ef0e3b2a6c9595ba512d159cbad5dd06ca359d545
+  canonical_witness_digest: sha256:062966b216270bd256a829435a5909363b65e1be0a8ae8cf0a5c230a543dc4b7
+  canonical_run_manifest_hash: sha256:c3384e17cb2699764ebd168c1570c320049c4ee9bfcd96962aa0871c2170ce3c
+  witness_artifact_hashes:
+    authority: sha256:0db320ef36a5e4fcfaeda545aee9ae547abbbd74a94dba0312b39eb5808f3105
+    meaning: sha256:a4e78a85c6d733bf37e2f8dac355954222d8073c3230711d23ba31e0b9b564e0
+    proof: sha256:da2e276ab3686e019cb1a966c6ba921913052058802467bdf9a4941ea52edc86
+  canonical_witness_hashes:
+    authority: sha256:145071a87f77da428bd0ffa74a8e0decc7b4269535bbcaf2aff7b2fd7965d430
+    meaning: sha256:97c6c21acf9f69da60ea4e610a2a6a359f58a617d54f4d71fc3bb20c0195d44b
+    proof: sha256:d14b8bd102d6a9d7b7dddab57465276d74816c4ad78771b85dfd69abe33845be
+comparison:
+  same_verdict: true
+  same_canonical_evidence: true
+  same_canonical_witness_hashes: true
+  same_canonical_run_manifest: true
+  converged: true
+ignored_runtime_metadata:
+  - execution_timestamp_utc
+  - locked_at
+  - log timestamps
+  - temporary replay directory

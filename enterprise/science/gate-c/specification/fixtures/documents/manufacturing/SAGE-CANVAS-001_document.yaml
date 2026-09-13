@@ -1,0 +1,84 @@
+version: "1.0.0"
+status: BE003_POSITIVE_CONTROL
+experiment_subject_id: BE003-SAGE-CANVAS-001
+domain: manufacturing
+operation: procure
+operation_label: ProcureManufacturingMaterial
+schema_ref: specification/schemas/experiment.schema.yaml
+illustrative_source: BE-003 Positive Control Fixture
+
+predicate_anchor_map:
+  pred_a_legitimate:
+    expected_value: true
+    rationale: >
+      Authority originates from valid initiator, decision_actor, and economic_principal separation.
+      All actors are properly distinct and compliant with EOS actor model invariants.
+    authority_path_expected: Initiator → Policy → Contract → Constitution
+  pred_b_meaning_preserved:
+    expected_value: true
+    rationale: >
+      Canonical identity of the procurement request remains identical before and after execution.
+      No normative content is mutated; only execution metadata is appended.
+    canonical_identity_expected: sha256 sage-canvas-001-canonical-id
+  pred_c_provable:
+    expected_value: true
+    rationale: >
+      Evidence of procurement plus audit trail entries SHALL exist in fixtures evidence sufficient to
+      constructively entail postconditions below.
+
+input_fixtures:
+  documents:
+    - specification/fixtures/documents/manufacturing/SAGE-CANVAS-001_document.yaml
+  policies:
+    - specification/fixtures/policy/manufacturing-policy.yaml
+  contracts:
+    - specification/fixtures/contracts/document-contract.yaml
+  evidence:
+    - specification/fixtures/evidence/proposal-baseline-proofs.yaml
+
+transformation_contract:
+  id: TC-MANUFACTURING-PROCURE
+  name: Manufacturing Procurement Transformation Contract
+  reference: LEX-MANUF-001
+  preconditions:
+    - P1 procurement request present and well formed
+    - P2 material category is in approved_categories (linen, canvas, cotton)
+    - P3 total cost ≤ auto_approval_limit ($500)
+    - P4 all actor roles are properly defined and distinct
+  postconditions:
+    - Q1 procurement recorded with status APPROVED
+    - Q2 all actor identities recorded with procurement request
+    - Q3 procurement plus audit trail recorded in proof ledger
+  invariants:
+    - I1 CanonicalIdentity of procurement request SHALL NOT BE ALTERED by procurement operation
+
+expected_truth_table_row_match: P1
+expected_constitutional_validity: true
+expected_predicates_ref: specification/expected/predicates/manufacturing-predicates.yaml#expected_predicates.BE003-SAGE-CANVAS-001
+oracle_spec_ref: specification/oracle/oracle.yaml
+expected_evaluation_ref: specification/expected/evaluations/manufacturing-evaluations.yaml#expected_evaluations.BE003-SAGE-CANVAS-001
+test_suite_refs:
+  - specification/tests/positive/suite.yaml
+
+# Original document content retained as document fixture (single YAML document, no ---)
+document:
+  title: "Positive Test: Procure Canvas (SAGE-CANVAS-001)"
+  classification: "INTERNAL_TEST_FIXTURE"
+  proposer_identity_ref: "actor:ai:procurement-agent-01"  # decision_actor
+  body: "Request to procure canvas for $400, which is within the $500 auto-approval budget."
+  retention_period_days: 365
+  metadata:
+    inventory_before: 120  # inventory_before parameter
+    color: "white"         # color parameter
+    # Actor parameters (maintain economic_principal≠decision_actor invariant)
+    initiator: "actor:human:sage-factory-owner-01"
+    decision_actor: "actor:ai:procurement-agent-01"
+    execution_actor: "actor:business:procurement-node-03"
+    economic_principal: "actor:business:sage-canvas-factory-node-01"
+    # Policy parameters
+    approved_categories: ["linen", "canvas", "cotton"]
+    auto_approval_limit: 500
+    procurement_request:
+      asset_ref: "SAGE-CANVAS-001"      # material = canvas
+      quantity_kg: 10                   # quantity = 10kg
+      price_usd_per_kg: 40              # price_per_unit = $40 → total $400

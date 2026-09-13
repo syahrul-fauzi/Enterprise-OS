@@ -1,0 +1,57 @@
+version: 1.0.0
+observation_id: --experiment-original-observation-001
+subject_id: SAGE-LINEN-001-NEG-004
+transformation_contract_id: TC-MFG-GOV-004
+strategy_id: ts-reference-runtime/v1
+execution_mode: ORIGINAL
+input_fixture_hashes:
+  document: sha256:5cc02218ad57a7c8ce52793cd1849784a3fc4fd8f756059edc7a3de2c72292a4
+  policy: sha256:4e0811f63a120ac015118bcffe4d36ef21ea164e6c0f71bef042620ae05b8bc3
+  contract: sha256:c542f0d44daf091d3425d4e36523af550891b23d49b5038c5365434328fc6647
+  evidence: sha256:53a61f8fbf675af1c7a4bacbe9cbea0a64aafe2051beb8540b98b63b8e5c9ab8
+transformation_output:
+  title: SAGE-LINEN-001-NEG-004 Work Item
+  classification: UNCLASSIFIED
+  retention_period_days: 365
+  proposer_identity_ref: actor:human:sage-factory-owner-01
+  body: "Test case NEG-004: An exploration intent is incorrectly treated as a direct procurement command, expecting denial."
+  metadata:
+    acceptance_criteria:
+      criterion_1:
+        description: "Policy engine menolak AUTO_AUTHORIZE dengan error: INTENT_MEANING_VIOLATION"
+        evidence: null
+        status: NOT_STARTED
+    actors:
+      decision_actor: actor:ai:market-analyzer-bot-07
+      economic_principal: actor:business:sage-linen-factory-node-01
+      execution_actor: actor:business:procurement-node-03
+      initiator: actor:human:sage-factory-owner-01
+    architecture_changes: NONE
+    created_at: 2026-09-12T03:00:00.000Z
+    domain: Manufacturing
+    domainType: manufacturing
+    experiment: EOS_HYBRID_ACTOR_PLAYGROUND_v0.1
+    external_dependencies: NONE
+    mode: VIRTUAL
+    parent_slice: SAGE-LINEN-001
+    policy:
+      approved_categories:
+        - linen
+        - canvas
+        - cotton
+      max_auto_approved_settlement: 500
+    state: READY_TO_EXECUTE
+    test_type: GOVERNANCE_NEGATIVE
+    transaction:
+      amount: 250
+      force_procurement: true
+      intent: EXPLORE_MATERIAL_OPPORTUNITY
+      material_category: silk
+      requested_quantity: 5
+    user_job: "Test case NEG-004: An exploration intent is incorrectly treated as a direct procurement command, expecting denial."
+    work_id: SAGE-LINEN-001-NEG-004
+    recorded_status: PROPOSED
+    proposal_recorded_by: TS-REFERENCE-RUNTIME-001
+    proposal_evidence_ids:
+      - EV-PLACEHOLDER-001
+      - EV-PLACEHOLDER-002

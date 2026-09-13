@@ -5,8 +5,8 @@ import {
   type CreateMembershipInput,
   type MembershipAggregate,
   type Role,
-} from "../contracts/identity.contracts";
-import { MembershipRepositoryPostgres } from "../repositories/index";
+} from "../contracts/identity.contracts.js";
+import { MembershipRepositoryPostgres } from "../repositories/index.js";
 
 function newMembershipId(): MembershipId {
   return MembershipId(`membership-${randomUUID()}`);
@@ -29,7 +29,7 @@ export const createMembershipCommand: CreateMembershipCommand = {
   version: "2.0.0", // Postgres-backed persistence
 
   async execute(input: CreateMembershipInput) {
-    const existing = await MembershipRepositoryPostgres.find(
+    const existing = await MembershipRepositoryPostgres.findByUserTenantAndWorkspace(
       input.userId,
       input.tenantId,
       input.workspaceId,

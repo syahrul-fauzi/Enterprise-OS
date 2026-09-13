@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
@@ -33,7 +33,7 @@ export async function GET(request: Request) {
 
     // Single canonical capability invocation - all service request listing logic in service-directory capability
     // SHARED RAIL: sessionId ONLY - tenant/workspace/actor derived from trusted session (MIRRORS LH pattern)
-    const { output } = await capabilityRegistry.invokeAsync("service-directory", "listByWorkspace", {
+    const { output } = await capabilityRegistry.invoke("service-directory", "listByWorkspace", {
       query,
       status,
       category,

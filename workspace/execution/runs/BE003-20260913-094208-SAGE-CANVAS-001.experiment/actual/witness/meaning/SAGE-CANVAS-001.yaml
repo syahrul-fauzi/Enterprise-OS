@@ -1,0 +1,28 @@
+canonical_identity_preserved: true
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:066099da843a85ffadca2a07e398c0d24cbed09b01e27b8f4839662781e8670a
+  locked_at: 2026-09-13T09:42:09.128Z
+operation: procure
+result: PASS
+semantic_input_hash: sha256:d423501547d685c34a113130f2500971c8286b386ddf61db12ffc6024134b0e9
+semantic_output_hash: sha256:d423501547d685c34a113130f2500971c8286b386ddf61db12ffc6024134b0e9
+semantic_projection_fields:
+  - body
+  - classification
+  - proposer_identity_ref
+  - retention_period_days
+  - title
+subject_id: SAGE-CANVAS-001
+version: 1.0.0
+witness_id: BE003-20260913-094208-SAGE-CANVAS-001.experiment-witness-b
+witness_type: MEANING

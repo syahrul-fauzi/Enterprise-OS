@@ -1,0 +1,21 @@
+document:
+  title: "Positive Test: Procure Canvas (SAGE-CANVAS-001)"
+  classification: "INTERNAL_TEST_FIXTURE"
+  proposer_identity_ref: "actor:ai:procurement-agent-01"  # decision_actor
+  body: "Request to procure canvas for $400, which is within the $500 auto-approval budget."
+  retention_period_days: 365
+  metadata:
+    inventory_before: 120  # inventory_before parameter
+    color: "white"         # color parameter
+  # Actor parameters (maintain economic_principal≠decision_actor invariant)
+  initiator: "actor:human:sage-factory-owner-01"
+  decision_actor: "actor:ai:procurement-agent-01"
+  execution_actor: "actor:business:procurement-node-03"
+  economic_principal: "actor:business:sage-canvas-factory-node-01"
+  # Policy parameters
+  approved_categories: ["linen", "canvas", "cotton"]
+  auto_approval_limit: 500
+  procurement_request:
+    asset_ref: "SAGE-CANVAS-001"      # material = canvas
+    quantity_kg: 10                   # quantity = 10kg
+    price_usd_per_kg: 40              # price_per_unit = $40 → total $400

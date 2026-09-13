@@ -1,20 +1,13 @@
 "use client";
 
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback } from "react";
+import { Loader2, FileText } from "lucide-react";
 import type { MyRealityModel } from "./contracts/my-reality.contracts";
-import { 
-  RealityNow, 
-  RealityNext, 
-  RealityWatching, 
-  RealityCompanion, 
-  RealityActivity 
-} from "@repo/presentation-features/reality";
+import { Card, Button } from "@repo/presentation-ui-system";
 
 import { MyRealityLayout } from "./components/MyRealityLayout";
 import { MyRealityHeader } from "./components/MyRealityHeader";
-import { NeedAttentionSection } from "./components/NeedAttentionSection";
-import { ActiveWorkSection } from "./components/ActiveWorkSection";
-import { CompletedSection } from "./components/CompletedSection";
+import { WorkSection } from "./components/WorkSection";
 import { useMyRealityController } from "./MyRealityController";
 
 interface MyRealityExperienceProps {
@@ -23,9 +16,8 @@ interface MyRealityExperienceProps {
   actions?: React.ReactNode;
   onInsightAction?: (insightId: string) => void;
   showActivity?: boolean;
+  breadcrumbItems?: readonly any[]; // Align with contracts BreadcrumbItem type
 }
-
-"use client";
 
 export function MyRealityExperience({ 
   initialModel, 
@@ -33,6 +25,7 @@ export function MyRealityExperience({
   actions,
   onInsightAction,
   showActivity = true,
+  breadcrumbItems,
 }: MyRealityExperienceProps) {
   // Controller owns ALL business logic, realtime, and state management
   // Experience = pure composition of building blocks (PRESENTATION CONSTITUTION #8)
@@ -41,22 +34,14 @@ export function MyRealityExperience({
     isConnected,
     pendingEvents,
     dispatchAction,
+    categorizedWorks,
+    isLoading,
+    hasError,
+    errorMessage,
+    refreshModel,
   } = useMyRealityController({ initialModel });
   
-  // Greeting based on time of day - calculate client-side only to prevent hydration mismatch
-  const [greeting, setGreeting] = useState("Selamat pagi");
-  
-  useEffect(() => {
-    const hour = new Date().getHours();
-    const timeGreeting = hour < 12 ? "Selamat pagi" : hour < 18 ? "Selamat siang" : "Selamat malam";
-    setGreeting(timeGreeting);
-  }, []);
-  
-  // Menghitung jumlah pekerjaan yang butuh perhatian sekarang untuk personalisasi
-  const urgentWorks = model.priority.now.length;
-  const headerDescription = urgentWorks > 0 
-    ? `Ada ${urgentWorks} pekerjaan yang membutuhkan perhatianmu sekarang. Semuanya sudah terorganisir di sini.`
-    : "Semua pekerjaanmu teratur. Kamu bisa memeriksa daftar berikut atau mulai pekerjaan baru.";
+  const headerDescription = "A summary of your work items that require action or are in progress.";
 
   // Handle work click navigation - only navigation, no business logic
   const handleWorkClick = useCallback((workId: string) => {
@@ -77,7 +62,7 @@ export function MyRealityExperience({
     <>
       {/* VF-01: EOS identity in first viewport, VF-05: Authenticated identity visibly resolved */}
       <MyRealityHeader 
-        title={`${greeting}, ${model.actor?.displayName || 'Pengguna'}`} 
+        title="What needs your attention" 
         description={headerDescription}
         actions={actions}
         auth={auth}
@@ -105,35 +90,123 @@ export function MyRealityExperience({
       </div>
     </>
   );
-  
-  // PR-VISUAL-001: OPERATING ORIENTATION HIERARCHY (Attention → Active Work → Reality Signals)
-  // 1. NEEDS ATTENTION (highest priority first) - exactly as requested in OPERATING ORIENTATION
-  // Add state field to all works to match RealityNow/RealityNext expected props - prevents undefined errors
-  const normalizedNow = model.priority.now.map(w => ({...w, state: w.state || "blocked"}));
-  const normalizedNext = model.priority.next.map(w => ({...w, state: w.state || "in_progress"}));
-  const normalizedWatching = model.priority.watching.map(w => ({...w, state: w.state || "open"}));
-  
-  const needsAttention = normalizedNow.filter(work => work.state === "blocked" || work.bottleneck);
-  // 2. ACTIVE WORK - in progress items
-  const activeWorks = normalizedNext.filter(work => work.state === "in_progress");
-  // 3. REALITY SIGNALS - completed and recent activity
-  const completedWorks = normalizedWatching.filter(work => work.state === "completed");
 
-  // Extract single most important work (the ONE thing that needs attention now) - VF-03: What matters now?
-  const topPriorityWork = needsAttention[0] || normalizedNow[0];
+  // Determine the top priority work item for the header
+  const topPriorityWork = categorizedWorks.needsAttention[0] || model.priority.now[0];
 
-  // VF-04: Clear hierarchy: Attention > Active Work > Reality Signals
-  const attentionSection = needsAttention.length > 0 ? (
-    <NeedAttentionSection works={needsAttention} onWorkClick={handleWorkClick} />
-  ) : null;
-  
-  const activeWorkSection = activeWorks.length > 0 ? (
-    <ActiveWorkSection works={activeWorks} onWorkClick={handleWorkClick} />
-  ) : null;
-  
-  const realitySignalsSection = completedWorks.length > 0 ? (
-    <CompletedSection works={completedWorks} onWorkClick={handleWorkClick} />
-  ) : null;
+  const attentionSection = (
+    <WorkSection
+      title="What needs your attention"
+      works={categorizedWorks.needsAttention}
+      onWorkClick={handleWorkClick}
+    />
+  );
+
+  const activeWorkSection = (
+    <WorkSection
+      title="Active Work"
+      works={categorizedWorks.active}
+      onWorkClick={handleWorkClick}
+    />
+  );
+
+  const realitySignalsSection = (
+    <WorkSection
+      title="Completed"
+      works={categorizedWorks.completed}
+      onWorkClick={handleWorkClick}
+    />
+  );
+
+  // Sama persis dengan /work/page.tsx untuk konsistensi loading/error/empty states
+  const mainContent = isLoading ? (
+    <Card size="lg" className="text-center py-16">
+      <div className="flex flex-col items-center gap-4">
+        <Loader2 className="h-10 w-10 animate-spin text-status-info" />
+        <p className="text-text-secondary">Memuat realitas pekerjaan Anda...</p>
+      </div>
+    </Card>
+  ) : hasError ? (
+    <Card size="lg" className="text-center py-16">
+      <div className="flex flex-col items-center gap-4">
+        <div className="h-16 w-16 bg-status-error/10 rounded-full flex items-center justify-center">
+          <svg className="h-8 w-8 text-status-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-semibold text-text-primary">Gagal memuat realitas</h3>
+        <p className="text-text-secondary max-w-md">{errorMessage}</p>
+        <Button intent="primary" variant="outline" onClick={refreshModel}>
+          Coba Lagi
+        </Button>
+      </div>
+    </Card>
+  ) : categorizedWorks.needsAttention.length === 0 && categorizedWorks.active.length === 0 && categorizedWorks.completed.length === 0 ? (
+    <Card size="lg" className="text-center py-16">
+      <div className="flex flex-col items-center gap-4">
+        <div className="mx-auto h-20 w-20 bg-surface-muted rounded-full flex items-center justify-center">
+          <FileText className="h-10 w-10 text-text-muted" />
+        </div>
+        <h3 className="mt-4 text-2xl font-semibold text-text-primary">Belum ada pekerjaan</h3>
+        <p className="mt-2 text-base text-text-secondary max-w-lg mx-auto leading-relaxed">
+          Semua pekerjaan Anda akan muncul di sini. Mulailah dengan membuat pekerjaan pertama untuk memulai perjalanan di EOS.
+        </p>
+        <a href="/work/new" className="mt-4">
+          <Button intent="primary" variant="solid" size="lg">
+            Buat Pekerjaan Pertama
+          </Button>
+        </a>
+      </div>
+    </Card>
+  ) : (
+    <>
+      {attentionSection}
+      {activeWorkSection}
+      {realitySignalsSection}
+    </>
+  );
+
+  if (isLoading) {
+    return (
+      <MyRealityLayout
+        header={header}
+        userCapabilities={auth?.userCapabilities || []}
+        productId="lawyershub"
+        breadcrumbItems={breadcrumbItems}
+        attention={mainContent}
+        active={null}
+        signals={null}
+      />
+    );
+  }
+
+  if (hasError) {
+    return (
+      <MyRealityLayout
+        header={header}
+        userCapabilities={auth?.userCapabilities || []}
+        productId="lawyershub"
+        breadcrumbItems={breadcrumbItems}
+        attention={mainContent}
+        active={null}
+        signals={null}
+      />
+    );
+  }
+
+  if (categorizedWorks.needsAttention.length === 0 && categorizedWorks.active.length === 0 && categorizedWorks.completed.length === 0) {
+    return (
+      <MyRealityLayout
+        header={header}
+        userCapabilities={auth?.userCapabilities || []}
+        productId="lawyershub"
+        breadcrumbItems={breadcrumbItems}
+        attention={mainContent}
+        active={null}
+        signals={null}
+      />
+    );
+  }
 
   return (
     <MyRealityLayout
@@ -141,38 +214,13 @@ export function MyRealityExperience({
       // VF-02: Pass auth capabilities to unified navigation system
       userCapabilities={auth?.userCapabilities || []}
       productId="lawyershub"
+      breadcrumbItems={breadcrumbItems}
       // 1. HIGHEST PRIORITY: NEEDS ATTENTION - what matters RIGHT NOW
       attention={attentionSection}
       // 2. SECONDARY: ACTIVE WORK - items currently in progress
       active={activeWorkSection}
       // 3. TERTIARY: REALITY SIGNALS - recent updates and completed items
       signals={realitySignalsSection}
-      now={
-        // Hero card with single primary CTA that explains what happens next (VF-06)
-        topPriorityWork ? (
-          <div className="bg-gradient-to-r from-rose-500 to-red-600 rounded-2xl p-8 text-white shadow-xl">
-            <h2 className="text-2xl font-bold mb-2">{needsAttention.length} hal membutuhkan perhatianmu</h2>
-            <p className="text-rose-100 mb-6">{topPriorityWork.title}</p>
-            <button 
-              onClick={() => handleWorkClick(topPriorityWork.workId)}
-              className="bg-white text-rose-600 px-6 py-3 rounded-lg font-semibold hover:bg-rose-50 transition-colors"
-            >
-              Lanjutkan Pekerjaan →
-            </button>
-          </div>
-        ) : (
-          <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-8 text-white shadow-xl">
-            <h2 className="text-2xl font-bold mb-2">Semua pekerjaan teratur</h2>
-            <p className="text-emerald-100 mb-6">Tidak ada pekerjaan yang membutuhkan perhatianmu sekarang.</p>
-            <button 
-              onClick={() => window.location.href = "/work"}
-              className="bg-white text-emerald-600 px-6 py-3 rounded-lg font-semibold hover:bg-emerald-50 transition-colors"
-            >
-              Lihat Semua Pekerjaan →
-            </button>
-          </div>
-        )
-      }
     />
   );
 }

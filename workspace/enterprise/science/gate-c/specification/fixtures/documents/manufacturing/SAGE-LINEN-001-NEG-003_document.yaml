@@ -1,0 +1,8 @@
+document:
+  title: "Negative Test 003: AI as Economic Principal"
+  classification: "INTERNAL_TEST_FIXTURE"
+  proposer_identity_ref: "actor:ai:market-analyzer-bot-07"
+  body: "AI attempts to set itself as the economic principal for a procurement."
+  retention_period_days: 365
+  metadata: {}
+  economic_principal: "actor:ai:market-analyzer-bot-07" # This is the invalid part

@@ -1,0 +1,39 @@
+version: 1.0.0
+observation_id: BE003-20260913-094208-SAGE-COTTON-001.experiment-original-observation-001
+subject_id: SAGE-COTTON-001
+transformation_contract_id: TC-MFG-GOV-000
+strategy_id: ts-reference-runtime/v1
+execution_mode: ORIGINAL
+input_fixture_hashes:
+  document: sha256:d30849c73e890e6d20ac6d94da5f639042c6a804747ec122e5554e5b97a02862
+  policy: sha256:b8a73e41f9fa034a32b0840ff863bd8433ed4c2a3df79ac55e3a22266409526a
+  contract: sha256:3299d85ffc72eccad8eb1128e87eac341fd44014630c4dd602a057c4c22bd0cb
+  evidence: sha256:39874124efe7bed6f7407182ac0440af8e32ee062514c627918a1874f96d1332
+transformation_output:
+  title: "Positive Test: Procure Cotton (SAGE-COTTON-001)"
+  classification: INTERNAL_TEST_FIXTURE
+  retention_period_days: 365
+  proposer_identity_ref: actor:ai:procurement-agent-01
+  body: Request to procure cotton for $150, which is within the $500 auto-approval budget.
+  metadata:
+    approved_categories:
+      - linen
+      - canvas
+      - cotton
+    auto_approval_limit: 500
+    color: beige
+    decision_actor: actor:ai:procurement-agent-01
+    economic_principal: actor:human:company-owner-01
+    execution_actor: actor:business:supplier-cotton-ltd
+    initiator: actor:human:factory-manager-03
+    inventory_before: 75
+    procurement_request:
+      asset_ref: SAGE-COTTON-001
+      price_usd_per_kg: 30
+      quantity_kg: 5
+    recorded_status: PROPOSED
+    proposal_recorded_by: TS-REFERENCE-RUNTIME-001
+    proposal_evidence_ids:
+      - EVI-PRO-001
+      - EVI-PRO-002
+      - EVI-PRO-003

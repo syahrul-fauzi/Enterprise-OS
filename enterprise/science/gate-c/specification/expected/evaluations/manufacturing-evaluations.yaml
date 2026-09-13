@@ -1,0 +1,76 @@
+version: "1.0.0"
+kind: EXPECTED_EVALUATIONS
+status: REFERENCE_IMMUTABLE
+expected_evaluations:
+  SAGE-LINEN-001-NEG-001:
+    outcome: "PASS"
+    truth_table_row_matched: "N1"
+    acceptance_audit:
+      economic_principal_is_not_decision_actor: true
+      boundary_enforced: true
+      ia20_constitutional_validity: true
+      constitutionally_valid: true
+      independence_test_required: true
+      invariance_test_required: true
+      diagnostic_predicate_failure_required: "pred_c_provable"
+      summary: "NEG-001 passed: autonomous actor cannot bypass governance boundary"
+  SAGE-LINEN-001-NEG-002:
+    outcome: "PASS"
+    truth_table_row_matched: "N2"
+    acceptance_audit:
+      economic_principal_is_not_decision_actor: true
+      boundary_enforced: true
+      ia20_constitutional_validity: true
+      constitutionally_valid: true
+      independence_test_required: true
+      invariance_test_required: true
+      diagnostic_predicate_failure_required: "pred_a_legitimate"
+      summary: "NEG-002 passed: actor cannot act without legitimate authority"
+  SAGE-LINEN-001-NEG-003:
+    outcome: "PASS"
+    truth_table_row_matched: "N3"
+    acceptance_audit:
+      economic_principal_is_not_decision_actor: true
+      boundary_enforced: true
+      ia20_constitutional_validity: true
+      constitutionally_valid: true
+      independence_test_required: true
+      invariance_test_required: true
+      diagnostic_predicate_failure_required: "pred_c_provable"
+      summary: "NEG-003 passed: AI actor cannot become economic principal"
+  SAGE-LINEN-001-NEG-004:
+    outcome: "PASS"
+    truth_table_row_matched: "N4"
+    acceptance_audit:
+      economic_principal_is_not_decision_actor: true
+      boundary_enforced: true
+      ia20_constitutional_validity: true
+      constitutionally_valid: true
+      independence_test_required: true
+      invariance_test_required: true
+      diagnostic_predicate_failure_required: "pred_b_meaning_preserved"
+      summary: "NEG-004 passed: Intent cannot be used as a procurement document"
+  SAGE-CANVAS-001:
+    outcome: "PASS"
+    truth_table_row_matched: "P1"
+    acceptance_audit:
+      economic_principal_is_not_decision_actor: true
+      boundary_maintained: true
+      ia20_constitutional_validity: true
+      constitutionally_valid: true
+      independence_test_passed: true
+      invariance_test_passed: true
+      all_predicates_achieved: true
+      summary: "SAGE-CANVAS-001 passed: Valid procurement request approved per policy"
+  SAGE-COTTON-001:
+    outcome: "PASS"
+    truth_table_row_matched: "P1"
+    acceptance_audit:
+      economic_principal_is_not_decision_actor: true
+      boundary_maintained: true
+      ia20_constitutional_validity: true
+      constitutionally_valid: true
+      independence_test_passed: true
+      invariance_test_passed: true
+      all_predicates_achieved: true
+      summary: "SAGE-COTTON-001 passed: Valid cotton procurement request approved per policy"

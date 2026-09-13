@@ -1,0 +1,10 @@
+version: "1.0.0"
+kind: FIXTURE_DOCUMENT_APPROVAL_METADATA
+fixture_id: FIX-DOC-META-APPROVAL-001
+status: IMMUTABLE_FIXTURE
+approval:
+  approver_role_ref: role-document-approver-001
+  approver_identity_ref: identity-document-approver-contract-001
+  approves_canonical_doc_id_placeholder: sha256:proposal-draft-001-canonical-id
+  approval_type: approve-as-is
+  rationale: "Approved by role document approver. Signature ledger proof in fixtures/evidence/approval-signatures.yaml."

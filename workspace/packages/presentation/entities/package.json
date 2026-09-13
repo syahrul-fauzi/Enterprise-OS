@@ -6,13 +6,17 @@
   "files": [
     "dist"
   ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
-    "./*": "./dist/*.js"
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
   },
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build --force",
     "check-types": "tsc --noEmit",
     "dev": "tsc --watch",
     "lint": "eslint src --max-warnings 0"

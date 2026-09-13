@@ -1,0 +1,41 @@
+canonical_identity_preserved: false
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:2a9771f3c4b6e8d09128af3c7e01b462d9a624f84c0e72ba915354efd6bc2091
+  locked_at: 2026-08-01T03:00:00.000Z
+operation: propose
+result: FAIL
+semantic_input_hash: sha256:78fb6ccd3f4a9e24055e7838eef4437542441f68e4342120d8e05aeb67e088bc
+semantic_output_hash: sha256:48d7a22fbe3965c3f069937d2c2b2c9a4d99e95a11bd5ab75a3c01847d3e8fb1
+semantic_projection_fields:
+  - body
+  - classification
+  - proposer_identity_ref
+  - retention_period_days
+  - title
+semantic_drift_details:
+  classification_changed: true
+  classification_from: internal
+  classification_to: confidential
+  body_appended_sentence: true
+  body_appended_text: " approved-with-non-normative-addendum"
+  total_fields_different: 2
+subject_id: GATE-C-DOC-PROPOSE-N2
+version: 1.0.0
+witness_id: run-004-witness-b
+witness_type: MEANING
+diagnostic_note: >
+  N2 Predicate B = FAIL with EXPLICIT semantic drift attribution.
+  canonical_identity_preserved=false because (1) classification internal→confidential and
+  (2) body appended sentence. semantic_input_hash ≠ semantic_output_hash.
+  This is the EXPECTED diagnostic failure mode for N2 truth table row (A=T, B=F, C=T).
+  NOT a runtime crash; NOT a syntax error.

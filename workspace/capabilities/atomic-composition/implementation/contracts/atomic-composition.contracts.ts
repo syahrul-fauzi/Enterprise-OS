@@ -1,7 +1,11 @@
 import { z } from "zod";
-import type { WorkId } from "@capabilities/work-core/contracts/work.contracts.js";
-import type { WorkActor } from "@capabilities/work-inspection/implementation/contracts/work-inspection.contracts.js";
-import type { UserId, UserAggregate } from "@capabilities/identity/implementation/contracts/identity.contracts.js";
+import type { WorkActor } from "@capabilities/work-inspection";
+import type { UserId, UserAggregate } from "@repo/capabilities-identity";
+
+// E1-P2-N1: Break circular dependency between atomic-composition and work-core
+// Define ID types locally instead of importing
+export type WorkId = string & z.BRAND<"WorkId">;
+export type ActorId = string & z.BRAND<"ActorId">;
 
 // ============================================================================
 // ATOMIC WORK COMPOSITION - PRIMITIVE DEFINITIONS
@@ -77,9 +81,7 @@ export const ActorProjectionSchema = z.object({
 });
 
 export type ActorProjection = z.infer<typeof ActorProjectionSchema>;
-// Reuse canonical ActorId from work-core to maintain type consistency (MB-01: single source of truth)
-import type { ActorId } from "@capabilities/work-core/contracts/work.contracts";
-export { ActorId } from "@capabilities/work-core/contracts/work.contracts";
+
 
 // ------------------------------
 // 3. WORK BINDING - Extended to ValueReality Hyper-Relationship Participant
@@ -115,6 +117,7 @@ export const WorkBindingSchema = z.object({
   boundAt: z.string(),
   updatedAt: z.string().optional(), // For relationship lifecycle changes
   workspaceId: z.string().optional(), // Added to support workspace-specific bindings
+  updatedBy: z.string().optional(),
 });
 
 // ------------------------------
@@ -269,6 +272,8 @@ export interface Assignment {
   bindingId?: string;
   actorProjectionId?: string;
   capabilityReference?: string;
+  role?: string;
+  capabilityId?: string;
   // Minimal backward compatibility properties for composition.repository.ts
   id?: string;           // Required by legacy WorkBinding→Assignment conversion
   authority?: string;    // Required by existing binding authority model

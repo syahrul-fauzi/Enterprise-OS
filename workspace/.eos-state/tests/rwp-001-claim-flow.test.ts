@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { capabilityRegistry } from "@repo/core-kernel";
+import { capabilityRegistry } from "@repo/core-kernel/registry";
 import type { CommandInvocationRecord } from "@repo/core-kernel";
 
 describe("RWP-001: Klaim Asuransi Kendaraan Flow", () => {
@@ -8,7 +8,7 @@ describe("RWP-001: Klaim Asuransi Kendaraan Flow", () => {
 
   it("AC1: Uses ≥3 existing capabilities", async () => {
     // 1. Client (klien asuransi) login
-    const authResult = await capabilityRegistry.invokeAsync({
+    const authResult = await capabilityRegistry.invoke({
       commandKey: "identity.authenticateUser",
       input: { email: "client@asuransi.co.id", password: "secure123" },
       decisionId,
@@ -18,7 +18,7 @@ describe("RWP-001: Klaim Asuransi Kendaraan Flow", () => {
     allRecords.push(authResult);
 
     // 2. Buat kasus klaim di legal-case
-    const createCaseResult = await capabilityRegistry.invokeAsync({
+    const createCaseResult = await capabilityRegistry.invoke({
       commandKey: "legal-case.create",
       input: { title: "Klaim Kecelakaan Kendaraan XYZ", type: "insurance-claim" },
       decisionId,
@@ -29,7 +29,7 @@ describe("RWP-001: Klaim Asuransi Kendaraan Flow", () => {
     allRecords.push(createCaseResult);
 
     // 3. Buat dokumen klaim di legal-document
-    const createDocResult = await capabilityRegistry.invokeAsync({
+    const createDocResult = await capabilityRegistry.invoke({
       commandKey: "legal-document.create",
       input: { caseId: createCaseResult.data.caseId, title: "Dokumen Klaim Awal", type: "claim-document" },
       decisionId,
@@ -46,7 +46,7 @@ describe("RWP-001: Klaim Asuransi Kendaraan Flow", () => {
 
   it("AC2: ≥2 actors interact with the same work", async () => {
     // Adjuster login dan verifikasi dokumen
-    const adjusterAuth = await capabilityRegistry.invokeAsync({
+    const adjusterAuth = await capabilityRegistry.invoke({
       commandKey: "identity.authenticateUser",
       input: { email: "adjuster@asuransi.co.id", password: "adjuster123" },
       decisionId,
@@ -57,7 +57,7 @@ describe("RWP-001: Klaim Asuransi Kendaraan Flow", () => {
     allRecords.push(adjusterAuth);
 
     // Update dokumen sebagai adjuster
-    const updateDoc = await capabilityRegistry.invokeAsync({
+    const updateDoc = await capabilityRegistry.invoke({
       commandKey: "legal-document.update",
       input: { documentId: allRecords[2].data.documentId, status: "verified", notes: "Dokumen diverifikasi adjuster" },
       decisionId,
@@ -74,7 +74,7 @@ describe("RWP-001: Klaim Asuransi Kendaraan Flow", () => {
 
   it("AC3: ≥1 artifact crosses capability boundary", async () => {
     // Dokumen klaim (dari legal-document) dikirim ke approval-workflow
-    const submitApproval = await capabilityRegistry.invokeAsync({
+    const submitApproval = await capabilityRegistry.invoke({
       commandKey: "approval-workflow.submit",
       input: { documentId: allRecords[2].data.documentId, workflowType: "payment-approval" },
       decisionId,
@@ -92,7 +92,7 @@ describe("RWP-001: Klaim Asuransi Kendaraan Flow", () => {
 
   it("AC4: ≥1 revision occurs", async () => {
     // Manager approve dan tambah revisi dokumen
-    const managerAuth = await capabilityRegistry.invokeAsync({
+    const managerAuth = await capabilityRegistry.invoke({
       commandKey: "identity.authenticateUser",
       input: { email: "manager@asuransi.co.id", password: "manager123" },
       decisionId,

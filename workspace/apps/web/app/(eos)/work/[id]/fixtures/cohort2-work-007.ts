@@ -34,8 +34,8 @@ export const cohort2Work007Work: CanonicalWorkRecord = {
   nextAction: { label: "Verifikasi permohonan dan assign patent lawyer + environment expert", actionId: "action-verify-assign-cohort2-007" },
   participants: [
     { id: "human-consultant-matcher", name: "Sistem Pencocokan Pakar", role: "Penyedia Layanan", actorType: "system" },
-    { id: "patent-lawyer.007", name: "Spesialis Hak Paten Kemenkumham", role: "Penyedia Layanan Hukum", actorType: "human", notification_sent: false, notification_timestamp: null, reminder_sent: false, reminder_timestamp: null, acceptance_pending: true, email: "patent007@eos.id" },
-    { id: "environment-permit-specialist.007", name: "Spesialis Izin Lingkungan KLHK", role: "Penyedia Layanan Lingkungan", actorType: "human", notification_sent: false, notification_timestamp: null, reminder_sent: false, reminder_timestamp: null, acceptance_pending: true, email: "environment007@eos.id" },
+    { id: "patent-lawyer.007", name: "Spesialis Hak Paten Kemenkumham", role: "Penyedia Layanan Hukum", actorType: "human", notification_sent: false, notification_timestamp: undefined, reminder_sent: false, reminder_timestamp: undefined, acceptance_pending: true, email: "patent007@eos.id" },
+    { id: "environment-permit-specialist.007", name: "Spesialis Izin Lingkungan KLHK", role: "Penyedia Layanan Lingkungan", actorType: "human", notification_sent: false, notification_timestamp: undefined, reminder_sent: false, reminder_timestamp: undefined, acceptance_pending: true, email: "environment007@eos.id" },
     { id: "client.teknologi.mlg.001", name: "Penemu & Pemilik Startup", role: "Klien UMKM", actorType: "customer" }
   ],
   attachedDocuments: [
@@ -49,18 +49,6 @@ export const cohort2Work007Work: CanonicalWorkRecord = {
     { id: "ppkjh", name: "PPKJH Malang", role: "Instansi Lingkungan Daerah" }
   ],
   outcomeDescription: "Target: Hak paten terdaftar + izin lingkungan terbit dalam 240 hari, untuk mengkomersilkan teknologi ke 10 pabrik di Jawa Timur",
-  metadata: {
-    serviceType: "cross-domain-certification",
-    sla: "240 hari",
-    estimated_resolution_time: "200 hari",
-    cross_domain: true,
-    domains: ["legal-case", "services-case"],
-    primitive_reuse_expected: 98.7,
-    ambiguity_monitoring_maintained: true,
-    human_in_the_loop_active: true,
-    core_freeze_compliant: true,
-    cohort_assignment: "COHORT_2"
-  },
   communications: [{
     id: "comm-cohort2-007-001",
     actor_id: "client.teknologi.mlg.001",
@@ -69,7 +57,7 @@ export const cohort2Work007Work: CanonicalWorkRecord = {
     content: "Assalamualaikum, saya ingin mendaftarkan hak paten untuk teknologi pengolahan limbah yang saya temukan dan mengurus izin lingkungan untuk pabrik rencana kami. Mohon bimbingannya.",
     timestamp: new Date("2026-09-10T17:30:00.000Z").toISOString(),
     type: "message",
-    lamport_clock: Date.now()
+    lamport_clock: 1725989400000
   },
   {
     id: "comm-cohort2-007-002",
@@ -79,6 +67,6 @@ export const cohort2Work007Work: CanonicalWorkRecord = {
     content: "Terima kasih atas permohonan Anda. Untuk melanjutkan proses pendaftaran hak paten dan pengurusan izin lingkungan, mohon konfirmasi jalur pembayaran yang Anda pilih (transfer bank, kartu kredit, atau lainnya). Kami akan menindaklanjuti segera setelah konfirmasi diterima.",
     timestamp: new Date("2026-09-10T23:15:00.000Z").toISOString(),
     type: "message",
-    lamport_clock: Date.now()
+    lamport_clock: 1726010100000
   }]
 } satisfies CanonicalWorkRecord;

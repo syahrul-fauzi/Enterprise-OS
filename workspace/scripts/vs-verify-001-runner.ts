@@ -4,7 +4,7 @@ import { join } from "path";
 import { parse } from "yaml";
 // Import requirement commands and register them BEFORE executing workflow
 import { requirementCommands } from "../capabilities/requirement-management/implementation/commands/requirement.commands";
-import { capabilityRegistry, type CommandInvocationRecord, ILC_INS_001_InstitutionalWorkflow } from "../packages/core/kernel/src/registry/capability-command-registry";
+import { capabilityRegistry, type CommandInvocationRecord, ILC_INS_001_InstitutionalWorkflow } from "@repo/core-kernel";
 
 interface VSVerifyAcceptance {
   slice: {

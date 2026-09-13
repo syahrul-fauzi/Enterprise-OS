@@ -2,36 +2,38 @@ import {
   SessionId,
   UserId,
   type SessionAggregate,
-} from "../contracts/identity.contracts";
-import { SessionRepositoryPostgres } from "../repositories/index";
+} from "../contracts/identity.contracts.js";
+import { getSessionRepositoryPostgres } from "../repositories/index.js";
+
+const sessionRepository = getSessionRepositoryPostgres();
 
 export const sessionQueries = Object.freeze({
   async byId(id: string): Promise<SessionAggregate | undefined> {
-    return SessionRepositoryPostgres.byId(SessionId(id));
+    return sessionRepository.byId(SessionId(id));
   },
 
   async listByUser(userId: string): Promise<readonly SessionAggregate[]> {
-    return SessionRepositoryPostgres.listByUser(UserId(userId));
+    return sessionRepository.listByUser(UserId(userId));
   },
 
   async listActiveByUser(userId: string): Promise<readonly SessionAggregate[]> {
-    return SessionRepositoryPostgres.listActiveByUser(UserId(userId));
+    return sessionRepository.listActiveByUser(UserId(userId));
   },
 
   async isRevoked(id: string): Promise<boolean> {
-    return SessionRepositoryPostgres.isRevoked(SessionId(id));
+    return sessionRepository.isRevoked(SessionId(id));
   },
 
   async isValid(id: string): Promise<boolean> {
-    return !(await SessionRepositoryPostgres.isRevoked(SessionId(id)));
+    return !(await sessionRepository.isRevoked(SessionId(id)));
   },
 
   async list(): Promise<readonly SessionAggregate[]> {
-    return SessionRepositoryPostgres.list();
+    return sessionRepository.list();
   },
 
   async count(): Promise<number> {
-    const list = await SessionRepositoryPostgres.list();
+    const list = await sessionRepository.list();
     return list.length;
   },
 });

@@ -1,0 +1,28 @@
+canonical_identity_preserved: true
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:8fbef7b1b4d89f76b77dfbb9c30f5f6cc0ebff5f8961d8949f7439c02b6d9c2c
+  locked_at: 2026-09-13T08:05:40.744Z
+operation: procure
+result: PASS
+semantic_input_hash: sha256:58683bbf46ee23a169cc5c870ee076a9594a6335141386bcb66db0cdab40025e
+semantic_output_hash: sha256:58683bbf46ee23a169cc5c870ee076a9594a6335141386bcb66db0cdab40025e
+semantic_projection_fields:
+  - body
+  - classification
+  - proposer_identity_ref
+  - retention_period_days
+  - title
+subject_id: SAGE-COTTON-001
+version: 1.0.0
+witness_id: BE003-20260913-080540-SAGE-COTTON-001.experiment-witness-b
+witness_type: MEANING

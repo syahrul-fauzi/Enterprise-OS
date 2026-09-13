@@ -3,7 +3,8 @@ import { cookies } from "next/headers";
 // Ikuti SERVER-ONLY BOUNDARY requirement dari core-kernel index.ts:
 // - capabilityRegistry HARUS diimport langsung dari submodule (server-side only)
 // - Type dan fungsi lainnya (executeWorkflowTransition, WorkflowDefinition) dari main barrel
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
+import { capabilityRegistry } from "@repo/core-kernel/registry";
+import { WORKSPACE_SESSION_COOKIE } from "@repo/core-kernel/registry";
 //import { executeWorkflowTransition, WorkflowDefinition } from "@repo/core-kernel";
 //// Import SEMUA PRODUK dari @products/* (path alias resmi di base.json)
 //import { LAWYERSHUB_WORKFLOW } from "@products/lawyershub/runtime/workflow-definition";
@@ -16,8 +17,6 @@ import { capabilityRegistry } from "@repo/core-kernel/registry/capability-comman
 //  // ilc: ILC_LEGAL_AID_WORKFLOW
 //  // "services-id": SERVICESID_BUSINESS_WORKFLOW
 //} as const;
-
-const WORKSPACE_SESSION_COOKIE = "eos_workspace_session";
 
 export async function POST(request: Request) {
   try {

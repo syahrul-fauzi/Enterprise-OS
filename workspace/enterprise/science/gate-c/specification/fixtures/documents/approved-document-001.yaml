@@ -1,0 +1,18 @@
+version: "1.0.0"
+kind: FIXTURE_DOCUMENT_APPROVED
+fixture_id: FIX-DOC-APPROVED-001
+status: IMMUTABLE_FIXTURE
+document:
+  canonical_id_placeholder: sha256:approved-document-001-canonical-id
+  same_as_proposal_canonical_id: sha256:proposal-draft-001-canonical-id
+  title: "Sprint0 Document: Document Management Operational Proposal"
+  classification: internal
+  retention_period_days: 3650
+  status: APPROVED
+  approved_by_role_ref: role-document-approver-001
+  approved_at_utc_placeholder: 2026-07-31T00:00:00Z
+  body: |
+    Identical normative body content to proposal-draft-001.
+    Only administrative status changed from PROPOSED → APPROVED.
+  metadata:
+    created_for_experiment: [GATE-C-DOC-ARCHIVE, GATE-C-DOC-RETRIEVE]

@@ -41,12 +41,12 @@ export function RealityNow({ description, status, perspective }: RealityNowProps
   
   return (
     <section>
-      <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">
+      <h2 className="text-xs font-semibold uppercase tracking-wider text-text-secondary mb-3">
         {perspectiveLabels[safePerspective]}
       </h2>
-      <p className="text-lg text-slate-800">{safeDescription}</p>
+      <p className="text-lg text-text-primary">{safeDescription}</p>
       {showStatus && (
-        <div className="mt-2 inline-flex px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
+        <div className="mt-2 inline-flex px-3 py-1 bg-status-info-subtle text-status-info rounded-full text-sm font-medium">
           {statusLabels[safePerspective]}{safeStatus.replace("_", " ")}
         </div>
       )}

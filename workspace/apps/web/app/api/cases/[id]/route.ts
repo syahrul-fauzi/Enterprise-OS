@@ -5,7 +5,7 @@ import {
   decodeWorkspaceSession,
   createAnonymousWorkspaceSession,
   encodeWorkspaceSession
-} from "@repo/core-kernel";
+} from "@repo/core-kernel/registry";
 import type { CaseId } from "../../../../../../capabilities/legal-case/contracts/case.contracts.js";
 
 // Reuse the same session handling pattern from /api/cases/list/route.ts to maintain consistency

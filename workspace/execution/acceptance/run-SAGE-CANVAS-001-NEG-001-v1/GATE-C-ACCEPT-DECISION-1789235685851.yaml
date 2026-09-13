@@ -1,0 +1,139 @@
+version: 1.0.0
+run_id: run-SAGE-CANVAS-001-NEG-001-v1
+acceptance_decision_id: GATE-C-ACCEPT-DECISION-1789235685851
+subject_id: SAGE-CANVAS-001-NEG-001
+truth_table_row: EXPERIMENT
+accepted_by: eos-cli
+acceptance_time_utc: 2026-09-12T17:54:45.851Z
+contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+contract_ref: ../../../workspace/execution/acceptance-contract.yaml
+decision: REJECTED
+accepted: false
+run_refs:
+  manifest_ref: execution/runs/run-SAGE-CANVAS-001-NEG-001-v1/run-manifest.yaml
+  report_ref: execution/runs/run-SAGE-CANVAS-001-NEG-001-v1/report.yaml
+  comparison_ref: execution/runs/run-SAGE-CANVAS-001-NEG-001-v1/metrics/canonical-evidence-comparison.yaml
+criteria:
+  invariant_results:
+    canonical_convergence: true
+    evidence_exists: true
+    expected_predicate_achieved: true
+    expected_verdict_achieved: true
+    ledger_appended: false
+    manifest_valid: true
+    no_instrument_drift: true
+    replay_pass: true
+    witness_valid: true
+  checklist:
+    canonical_evidence_convergence: true
+    fixture_canonical: true
+    manifest_valid: true
+    predicates_match_experiment_expectation: true
+    proof_ledger_appended: false
+    replay_pass: true
+    science_kernel_unchanged: true
+    transformation_deterministic: false
+    verdict_is_fail: true
+    witness_valid: true
+  blocking_conditions:
+    - transformation_deterministic
+    - proof_ledger_appended
+governance_gate:
+  status: PASS
+  blocking_conditions: []
+  snapshot:
+    architecture_fitness:
+      evidence_ref: workspace/foundation/evidence/verification/architecture-fitness.json
+      status: PASS
+      violated_metric_count: 0
+    capability_governance:
+      compatibility_score: 100
+      compatibility_status: PASS
+      contract_drift_count: 0
+      evidence_ref: workspace/foundation/evidence/verification/capability-governance-index.json
+      migration_required_count: 0
+      status: PASS
+      unknown_dependency_class_count: 0
+      verification_ref: workspace/foundation/evidence/verification/capability-governance-verification.json
+    constitution:
+      evidence_ref: workspace/foundation/evidence/verification/constitution-summary.json
+      law_profile: enterprise
+      status: PASS
+    contract_governance:
+      ambiguous_provider_bindings: 0
+      evidence_ref: workspace/foundation/evidence/verification/contract-version-registry.json
+      evolution_ref: workspace/foundation/evidence/verification/contract-version-evolution.json
+      evolution_status: PASS
+      ready_contracts: 3
+      status: PASS
+      unbounded_consumer_requirements: 0
+    dependency_graph:
+      boundary_violations: 0
+      dependency_cycles: 0
+      dependency_policy_violations: 0
+      evidence_ref: workspace/foundation/evidence/verification/capability-dependency-constitution.json
+      status: PASS
+    governance_catalog:
+      evidence_ref: workspace/foundation/evidence/verification/governance-catalog.json
+      report_type_count: 8
+      status: PASS
+      verification_ref: workspace/foundation/evidence/verification/governance-catalog-verification.json
+    incremental_materialization:
+      delta_mode: SESSION_DELTA
+      delta_scope_status: METADATA_ONLY
+      evidence_ref: workspace/foundation/evidence/verification/governance-incremental-materialization.json
+      full_rebuild_required: false
+      reusable_node_count: 16
+      status: PASS
+      verification_ref: workspace/foundation/evidence/verification/governance-incremental-materialization-verification.json
+    provenance:
+      evidence_ref: workspace/foundation/evidence/verification/governance-session.json
+      execution_scope: verify-foundation
+      read_model_count: 5
+      session_id: governance-session:a8b570e4c753419a
+      status: COMPLETED
+      verification_ref: workspace/foundation/evidence/verification/governance-session-verification.json
+      verification_status: PASS
+    trust_framework:
+      attestation_lifecycle_materialization_ref: workspace/foundation/evidence/verification/attestation-lifecycle-materialization.json
+      attestation_lifecycle_ref: workspace/foundation/evidence/verification/attestation-lifecycle-verification.json
+      attestation_lifecycle_status: PASS
+      attestation_terminal_event_count: 0
+      attestation_terminal_event_readiness_status: PASS
+      attestation_terminal_materialization_status: PASS
+      attestation_terminal_materialized_sample_count: 3
+      evidence_ref: workspace/foundation/evidence/verification/trust-framework.json
+      framework_count: 4
+      signature_provider_spi: TrustSignatureProviderSPI
+      status: PASS
+    verification_run:
+      evidence_ref: workspace/foundation/evidence/verification/verification-run.json
+      readiness_status: PASS
+      run_id: verification-run:e3fa3bedd684618d
+      status: PASS
+      verification_ref: workspace/foundation/evidence/verification/verification-run-verification.json
+  note: "Gate C acceptance is allowed only when repository governance evidence remains healthy: constitution PASS, dependency constitution PASS, contract registry PASS, governance session COMPLETED, and trust framework DECLARED."
+replay:
+  same_verdict: true
+  same_canonical_evidence: true
+  same_canonical_witness_hashes: true
+  converged: true
+proof_ledger:
+  ref: ../../../workspace/execution/proof-ledger.yaml
+  entry_count_before: 25
+  entry_count_after: 25
+  last_entry_hash_before: sha256:363acc99735cd82ce18d7ef4d472a91ab19a2bb7d10eea4ccd3b5cf266bbe549
+  last_entry_hash_after: sha256:363acc99735cd82ce18d7ef4d472a91ab19a2bb7d10eea4ccd3b5cf266bbe549
+  appended_in_this_attempt: false
+  proof_ledger_entry_id: null
+acceptance_decision_log:
+  ref: ../../../workspace/execution/acceptance-decisions.yaml
+  entry_count_before: 36
+  entry_count_after: 37
+  last_decision_hash_before: sha256:70f7ee656fb4d880dd41c1a9f6c4dd5e189f606ceb49533f5ac577da97f97239
+  last_decision_hash_after: sha256:9f79223381c76e4a596a74646ea4bf32454d53c6eecdbdeb9e0c5dc3c9e3cb34
+  decision_id: GATE-C-ACCEPT-DECISION-1789235685851
+  decision_entry_hash: sha256:9f79223381c76e4a596a74646ea4bf32454d53c6eecdbdeb9e0c5dc3c9e3cb34
+integrity:
+  hash_basis: sha256(canonical_json(acceptance_report_excluding_integrity.report_hash))
+  report_hash: sha256:42fc6e2a531c600137f23b86aa9e5b3474cc3ee03cc8d8a825741df662c42463

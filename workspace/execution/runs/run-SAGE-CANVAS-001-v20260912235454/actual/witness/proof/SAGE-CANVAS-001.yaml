@@ -1,0 +1,28 @@
+constructive_entailment_complete: true
+evidence_items:
+  - EVI-PRO-001
+  - EVI-PRO-002
+  - EVI-PRO-003
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:5b4edf5ac819761baf66ee36eb961edf0173a9d3d5386fa41f66737e2911063c
+  locked_at: 2026-09-12T23:54:55.104Z
+operation: procure
+postconditions:
+  q1_status_recorded: true
+  q2_proposer_identity_recorded: true
+  q3_audit_trail_recorded: true
+result: PASS
+subject_id: SAGE-CANVAS-001
+version: 1.0.0
+witness_id: run-SAGE-CANVAS-001-v20260912235454-witness-c
+witness_type: PROOF

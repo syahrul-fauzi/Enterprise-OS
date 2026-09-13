@@ -1,0 +1,9 @@
+version: 1.0.0
+verdict_id: run-003-replay-verdict-001
+subject_id: GATE-C-DOC-PROPOSE
+verdict: PASS
+constitutional_validity: true
+truth_table_row_matched: P1
+replay_of: run-001-original-verdict-001
+original_verdict_match: true
+kernel_used: 47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782

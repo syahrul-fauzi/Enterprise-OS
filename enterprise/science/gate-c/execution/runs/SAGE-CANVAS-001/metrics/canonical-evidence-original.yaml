@@ -1,0 +1,73 @@
+run_id: SAGE-CANVAS-001
+subject_id: SAGE-CANVAS-001
+transformation_contract_id: TC-MFG-GOV-000
+transformation_contract_name: Manufacturing Procurement Governance Contract - Positive Case
+strategy_id: ts-reference-runtime/v1
+oracle_id: GATE-C-ORACLE-001
+science_kernel:
+  bundle_id: SC-KERNEL-001
+  bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+measurement_apparatus:
+  oracle:
+    certificate_id: SC-ORACLE-001
+    artifact_hash: sha256:cd39a4024c8f84a6d117890f1298f1690dc6f47f2734b090f63e35d5455efcda
+    instrument_hash: sha256:b92cfef11330bee312b23d0d5409703e61729bacc96d7c8fba41da7cdac1157f
+  witness:
+    certificate_id: SC-WITNESS-001
+    artifact_hash: sha256:674ea467df0ed0e219e143e780a24610cbf26d0ff61798659cf6d72a12dc7d34
+    instrument_hash: sha256:fbaa8738223d97884669d2b6fbdfc2e00015b40c5489712754bb4efd0e755a9f
+  dataset:
+    certificate_id: SC-DATASET-001
+    artifact_hash: sha256:577d034f086a5fcf3fb9f1c5a4a8d4e9b12573c45b98973ce5af4bfedab373d9
+    instrument_hash: sha256:2184fa695220d5d9306b66c61074a88692c73e57e9448bfea32321003ab85fbb
+input_identity:
+  document_semantic_hash: sha256:d423501547d685c34a113130f2500971c8286b386ddf61db12ffc6024134b0e9
+  subject_hash: sha256:064773f7d889fbc35788f7bb5149a505ecb6c6343f3b532c01f05a2a3bc58204
+  document_fixture_hash: sha256:a62d57033df47f9e053d1d948893d08a8f969760e2cba9dca83e59c2d38cba27
+  policy_fixture_hash: sha256:3815ae47b6488d50adf55e0c3efcd0a6b07529a45ff81084745ea3e18c82589d
+  contract_fixture_hash: sha256:3299d85ffc72eccad8eb1128e87eac341fd44014630c4dd602a057c4c22bd0cb
+  evidence_fixture_hash: sha256:53a61f8fbf675af1c7a4bacbe9cbea0a64aafe2051beb8540b98b63b8e5c9ab8
+predicate_vector:
+  pred_a_legitimate: false
+  pred_b_meaning_preserved: true
+  pred_c_provable: false
+verdict: FAIL
+constitutional_validity: false
+truth_table_row: N5
+witness_payloads:
+  authority:
+    authority_chain:
+      - node_id: DocReq-001
+        relation: ROOT_REQUIREMENT
+      - node_id: MfgPol-001
+        relation: DERIVES_AUTHORITY_FROM_REQUIREMENT
+      - node_id: C-MFG-001
+        relation: DERIVES_AUTHORITY_FROM_POLICY
+    conditions:
+      actual_outcome: AUTHORIZATION_DENIED
+      boundary_triggered: role_unauthorized
+      contract_operation_present: false
+      evidence_generated: true
+      expected_outcome: AUTHORIZATION_APPROVED
+      max_auto_approved_limit: 500
+      mutation_blocked: true
+      mutation_performed: false
+      policy_chain_matches_contract: true
+      proposer_role_allowed: false
+      total_procurement_amount: 0
+    result: FAIL
+  meaning:
+    semantic_input_hash: sha256:d423501547d685c34a113130f2500971c8286b386ddf61db12ffc6024134b0e9
+    semantic_output_hash: sha256:d423501547d685c34a113130f2500971c8286b386ddf61db12ffc6024134b0e9
+    canonical_identity_preserved: true
+    result: PASS
+  proof:
+    evidence_items:
+      - EV-PLACEHOLDER-001
+      - EV-PLACEHOLDER-002
+    postconditions:
+      q1_status_recorded: false
+      q2_proposer_identity_recorded: false
+      q3_audit_trail_recorded: true
+    constructive_entailment_complete: false
+    result: FAIL

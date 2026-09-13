@@ -19,12 +19,7 @@
       "@repo/presentation-config/*": [
         "../config/dist/*"
       ],
-      "@repo/presentation-entities": [
-        "../entities/dist"
-      ],
-      "@repo/presentation-entities/*": [
-        "../entities/dist/*"
-      ],
+
       "@repo/presentation-pages": [
         "../pages/dist"
       ],
@@ -64,6 +59,9 @@
   },
   "include": [
     "src/**/*"
+  ],
+  "references": [
+    { "path": "../entities" }
   ],
   "exclude": ["dist", "build", "node_modules", "../../../products/**/*"]
 }

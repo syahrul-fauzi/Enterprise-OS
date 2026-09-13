@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { encodeWorkspaceSession, WORKSPACE_SESSION_COOKIE, type WorkspaceSession } from "@repo/core-kernel";
+// Removed unused core-kernel imports as they were no longer needed for the implementation
 // Import from canonical package entry point
 import { SignupAndSessionInputSchema, signupAndSessionCommand } from "@repo/capabilities-identity";
 

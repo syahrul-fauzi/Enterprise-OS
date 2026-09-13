@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { encodeWorkspaceSession, createAnonymousWorkspaceSession, WORKSPACE_SESSION_COOKIE } from "@repo/core-kernel";
+import { encodeWorkspaceSession, createAnonymousWorkspaceSession, WORKSPACE_SESSION_COOKIE } from "@repo/core-kernel/registry";
 import { NextResponse } from "next/server";
 
 export async function GET() {

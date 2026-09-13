@@ -1,0 +1,28 @@
+constructive_entailment_complete: true
+evidence_items:
+  - EVI-PRO-001
+  - EVI-PRO-002
+  - EVI-PRO-003
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:68dc9f9c317532561acf303b889f2309093d7c03c90307262a1399d36687bf03
+  locked_at: 2026-09-13T09:39:44.514Z
+operation: procure
+postconditions:
+  q1_status_recorded: true
+  q2_proposer_identity_recorded: true
+  q3_audit_trail_recorded: true
+result: PASS
+subject_id: SAGE-COTTON-001
+version: 1.0.0
+witness_id: BE003-20260913-093944-SAGE-COTTON-001.experiment-witness-c
+witness_type: PROOF

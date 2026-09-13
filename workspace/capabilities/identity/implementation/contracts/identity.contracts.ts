@@ -1,3 +1,4 @@
+import type { CapabilityRepository } from "@repo/core-kernel";
 import { z } from "zod";
 
 export type Role = "owner" | "admin" | "member";
@@ -115,14 +116,14 @@ export type WorkspaceRepository = {
   remove(id: WorkspaceId): Promise<boolean>;
 };
 
-export type MembershipRepository = {
+export type MembershipRepository = CapabilityRepository<MembershipAggregate> & {
   readonly entityName: "Membership";
   readonly kind: "repository";
   byId(id: MembershipId): Promise<MembershipAggregate | undefined>;
   listByUser(userId: UserId): Promise<readonly MembershipAggregate[]>;
   listByTenant(tenantId: TenantId): Promise<readonly MembershipAggregate[]>;
   listByWorkspace(workspaceId: WorkspaceId): Promise<readonly MembershipAggregate[]>;
-  find(userId: UserId, tenantId: TenantId, workspaceId: WorkspaceId): Promise<MembershipAggregate | undefined>;
+  findByUserTenantAndWorkspace(userId: UserId, tenantId: TenantId, workspaceId: WorkspaceId): Promise<MembershipAggregate | undefined>;
   list(): Promise<readonly MembershipAggregate[]>;
   save(entity: MembershipAggregate): Promise<MembershipAggregate>;
   remove(id: MembershipId): Promise<boolean>;
@@ -201,9 +202,9 @@ export interface IntentRawInput {
 
 export interface IntentAggregate {
   readonly id: IntentId;
-  readonly tenantId: string;
-  readonly workspaceId: string;
-  readonly actorId?: string;
+  readonly tenantId: TenantId;
+  readonly workspaceId: WorkspaceId;
+  readonly actorId?: UserId;
   readonly origin: IntentOrigin;
   readonly title: string;
   readonly description?: string;
@@ -222,11 +223,11 @@ export interface IntentAggregate {
 export type IntentRepository = {
   readonly entityName: "Intent";
   readonly kind: "repository";
-  byId(id: string, context?: { tenantId: string; workspaceId: string }): Promise<IntentAggregate | undefined>;
+  byId(id: IntentId, context?: { tenantId: TenantId; workspaceId: WorkspaceId }): Promise<IntentAggregate | undefined>;
   list(): Promise<readonly IntentAggregate[]>;
   save(entity: IntentAggregate): Promise<IntentAggregate>;
-  remove(id: string): Promise<boolean>;
-  markAsConverted(intentId: string, workId: string): Promise<boolean>;
+  remove(id: IntentId): Promise<boolean>;
+  markAsConverted(intentId: IntentId, workId: string): Promise<boolean>;
 };
 
 export const RegisterUserInputSchema = z.object({

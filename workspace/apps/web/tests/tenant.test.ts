@@ -13,7 +13,7 @@ import {
   MembershipRepositoryInMemory,
   UserRepositoryInMemory,
 } from "../../../capabilities/identity/implementation/repositories/index.js";
-import { capabilityRegistry } from "../lib/capability-command-registry.js";
+import { capabilityRegistry } from "@repo/core-kernel";
 
 function jsonRequest<T = unknown>(url: string, body: T): Request {
   return new Request(url, {

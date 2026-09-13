@@ -1,0 +1,11 @@
+version: "1.0.0"
+id: ILCREQ-001
+type: institutional-initiative
+title: "Inisiatif digitalisasi dokumen hukum yang melibatkan departemen legal, IT, dan keuangan"
+description: "Kita perlu memulai inisiatif digitalisasi dokumen hukum yang melibatkan departemen legal, IT, dan keuangan."
+domain_tags: ["LEGAL", "IT", "FINANCE"]
+classification:
+  known: true
+  unknown: false
+  requires_approval: true
+created_at: "2026-09-03T00:00:00.000Z"

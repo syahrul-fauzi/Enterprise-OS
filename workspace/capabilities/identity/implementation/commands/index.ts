@@ -1,8 +1,8 @@
-import type { CapabilityCommand } from "@repo/core-kernel";
+import type { CapabilityCommand } from "../../../../packages/core/kernel/src/index.js";
 // REALITY PATH ONLY - Export required commands only, avoid broken imports
-import { loginFlowCommand } from "./login-flow.command";
-import { oidcLoginFlowCommand } from "./oidc-login-flow.command";
-import { signupAndSessionCommand, SignupAndSessionInputSchema } from "./signup-and-session.command";
+import { loginFlowCommand } from "./login-flow.command.js";
+import { oidcLoginFlowCommand } from "./oidc-login-flow.command.js";
+import { signupAndSessionCommand, SignupAndSessionInputSchema } from "./signup-and-session.command.js";
 
 export const identityCommands: Readonly<Record<string, CapabilityCommand>> = {
   "identity.loginFlow": loginFlowCommand,
@@ -10,6 +10,6 @@ export const identityCommands: Readonly<Record<string, CapabilityCommand>> = {
   "identity.signupAndCreateSession": signupAndSessionCommand,
 } as const;
 
-export * from "./login-flow.command";
-export * from "./oidc-login-flow.command";
-export * from "./signup-and-session.command";
+export * from "./login-flow.command.js";
+export * from "./oidc-login-flow.command.js";
+export * from "./signup-and-session.command.js";

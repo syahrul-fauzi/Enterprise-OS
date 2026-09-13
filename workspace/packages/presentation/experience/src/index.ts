@@ -42,6 +42,8 @@ export type {
   WorkRealityPerspective
 } from '@repo/presentation-entities';
 
+export { WorkListExperience } from './work-list/WorkListExperience';
+
 export { WORK_PERSPECTIVES } from '@repo/presentation-entities';
 
 // ============================================================

@@ -25,45 +25,78 @@ export function MyRealityWorkListItem({
   const workHref = work.href || `/work/${work.workId}`;
   console.log(`[MyRealityWorkListItem] Final href: ${workHref}`);
   
-  // State color mapping for visual status indication
-  const stateColors = {
-    open: "bg-surface-sunken text-text-secondary",
-    in_progress: "bg-status-info/10 text-status-info",
-    blocked: "bg-status-danger/10 text-status-danger",
-    completed: "bg-status-success/10 text-status-success",
+  // SAMA PERSIS DENGAN BENCHMARK /work/[id] untuk KONSISTENSI VISUAL
+  const STATUS_LABELS: Record<string, string> = {
+    "draft": "Draf",
+    "open": "Terbuka",
+    "in_progress": "Sedang Diproses",
+    "closed": "Selesai",
+    "completed": "Selesai",
+    "blocked": "Tertunda"
   };
 
-  // State label mapping (Indonesian for local context)
-  const stateLabels = {
-    open: "Dibuka",
-    in_progress: "Diproses",
-    blocked: "Terhambat",
-    completed: "Selesai",
+  const STATUS_COLORS: Record<string, string> = {
+    "draft": "bg-gray-100 text-gray-800 border-gray-300",
+    "open": "bg-blue-100 text-blue-800 border-blue-300",
+    "in_progress": "bg-amber-100 text-amber-800 border-amber-300",
+    "closed": "bg-emerald-100 text-emerald-800 border-emerald-300",
+    "completed": "bg-emerald-100 text-emerald-800 border-emerald-300",
+    "blocked": "bg-red-100 text-red-800 border-red-300"
   };
 
   return (<Link
           href={workHref}
           data-testid={`work-item-${work.workId}`}
-          className="block p-4 bg-surface-elevated rounded-xl border border-surface-border shadow-token-sm hover:shadow-token-md hover:border-surface-border-strong focus:outline-none focus:ring-4 focus:ring-status-info/30 transition-all duration-eos-fast"
-        ><article className="flex items-start gap-4">
+          className="block transition-transform hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-status-info focus:ring-offset-2 rounded-xl"
+          aria-label={`Lihat detail pekerjaan: ${work.title}`}
+        ><article className="p-6 bg-surface-elevated rounded-xl border border-surface-border shadow-sm hover:shadow-md transition-all duration-eos-fast">
+        <div className="flex items-start justify-between gap-6">
         {/* Work Identity & Context (PRIMARY FOCUS) */}
         <div className="flex-1 min-w-0">
-          <h3 className="text-base font-medium text-text-primary truncate">
-            {work.title}
-          </h3>
+          <div className="flex flex-wrap items-center gap-3">
+            <h3 className="text-xl font-semibold text-text-primary truncate">
+              {work.title}
+            </h3>
+            {/* Work State - SAMA PERSIS DENGAN BENCHMARK */}
+            <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold border ${STATUS_COLORS[work.state] || "bg-surface-muted text-text-secondary border-surface-muted"}`}>
+              {STATUS_LABELS[work.state] || work.state}
+            </span>
+          </div>
           
           {work.description && (
-            <p className="mt-1 text-sm text-text-secondary line-clamp-2">
+            <p className="mt-3 text-base text-text-secondary line-clamp-2 leading-relaxed">
               {work.description}
             </p>
           )}
 
-          {/* Meta line: State + Platform + Bottleneck (secondary context) */}
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            {/* Work State */}
-            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${stateColors[work.state]}`}>
-              {stateLabels[work.state]}
-            </span>
+          {/* Meta line: Created date + Platform + Bottleneck (secondary context) */}
+          <div className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-2 text-sm text-text-muted">
+            {work.createdAt && (
+              <span className="flex items-center gap-1.5">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Dibuat: {new Date(work.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </span>
+            )}
+            {/* Platform Reference (WHERE this work exists - only context) */}
+            {work.platform && (
+              <span className="flex items-center gap-1.5">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                {work.platform.name}
+              </span>
+            )}
+            {/* Evidence count if present */}
+            {work.evidence?.length > 0 && (
+              <span className="flex items-center gap-1.5">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Dokumen: {work.evidence.length}
+              </span>
+            )}
 
             {/* Platform Reference (WHERE this work exists - only context) */}
             {work.platform && (
@@ -98,6 +131,7 @@ export function MyRealityWorkListItem({
             {work.nextAction.label}
           </button>
         )}
+        </div>
       </article>
     </Link>
   );

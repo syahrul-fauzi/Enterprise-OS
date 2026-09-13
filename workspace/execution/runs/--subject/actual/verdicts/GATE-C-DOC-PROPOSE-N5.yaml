@@ -1,0 +1,6 @@
+version: 1.0.0
+verdict_id: --subject-original-verdict-001
+subject_id: GATE-C-DOC-PROPOSE-N5
+verdict: FAIL
+constitutional_validity: false
+truth_table_row_matched: N5

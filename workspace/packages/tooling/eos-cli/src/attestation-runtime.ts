@@ -1,5 +1,5 @@
-// Fixed import per @repo/core-kernel documentation - DigestEngine must be imported directly from digest-engine subpath
-import { DigestEngine } from "@repo/core-kernel/digest-engine";
+// Fixed import to use correct relative source path (packages/tooling/eos-cli/src → packages/core/kernel/src)
+import { DigestEngine } from "../../../core/kernel/src/digest-engine.js";
 import type { ConstitutionLawCertificate } from "./certificate-runtime.js";
 import { materializeLocalTrustSignatureReference } from "./local-trust-signature-runtime.js";
 import {

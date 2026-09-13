@@ -6,37 +6,43 @@ import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
 } from "@repo/core-kernel";
-import type { IntentContract } from "@repo/presentation-features";
+import { GlobalNavigation } from "@repo/presentation-ui-system/layouts";
+import type { BreadcrumbItem } from "@repo/presentation-ui-system/molecules";
 
 // Server-side intent retrieval - uses canonical repository primitive (no internal HTTP calls)
-async function fetchIntentServerSide(intentId: string, session: any): Promise<IntentContract | null> {
+async function fetchIntentServerSide(
+  intentId: string,
+  session: any,
+): Promise<any | null> {
   try {
     // Import canonical intent repository (lazy import to avoid circular dependencies)
-    const { getIntentRepositoryPostgres, initIdentitySchema } = await import("../../../../../../capabilities/identity/implementation/repositories/index");
-    
+    const { getIntentRepositoryPostgres, initIdentitySchema } = await import(
+      "@repo/identity-capability/repositories"
+    );
+
     await initIdentitySchema();
     const intentRepository = getIntentRepositoryPostgres();
     const intentAggregate = await intentRepository.byId(intentId, {
       tenantId: session.tenantId,
       workspaceId: session.workspaceId,
     });
-    
+
     if (!intentAggregate) return null;
-    
-    // Map IntentAggregate to IntentContract for presentation layer compatibility
+
+    // Map IntentAggregate to a presentation-compatible object
     return {
       id: intentAggregate.id,
-      title: intentAggregate.title,
-      description: intentAggregate.description,
-      resolution: {
-        objective: intentAggregate.resolution?.objective || "",
-        expression: intentAggregate.resolution?.expression || "",
-      },
+      resolution: intentAggregate.resolution,
       status: intentAggregate.status,
       category: intentAggregate.category,
-    } as IntentContract;
+      createdAt: intentAggregate.createdAt.toISOString(),
+      updatedAt: intentAggregate.updatedAt.toISOString(),
+    };
   } catch (error) {
-    console.error("[SERVER] Error fetching intent via canonical repository:", error);
+    console.error(
+      "[SERVER] Error fetching intent via canonical repository:",
+      error,
+    );
     return null;
   }
 }
@@ -44,7 +50,7 @@ async function fetchIntentServerSide(intentId: string, session: any): Promise<In
 export default async function NewWorkPage({
   searchParams,
 }: {
-  searchParams: Promise<{ intentId?: string }>;
+  searchParams: { intentId?: string };
 }) {
   // Server-side session check - identical pattern to MyReality reference
   const cookieStore = await cookies();
@@ -68,9 +74,9 @@ export default async function NewWorkPage({
   }
 
   // Extract intentId from searchParams server-side (optional)
-  const { intentId } = await searchParams;
-  let intent: IntentContract | null = null;
-  
+  const { intentId } = searchParams;
+  let intent: any | null = null;
+
   // If intentId exists, fetch intent data (Mode B: Intent-derived Work)
   if (intentId) {
     intent = await fetchIntentServerSide(intentId, session);
@@ -80,32 +86,40 @@ export default async function NewWorkPage({
   }
 
   // Work creation callback executed server-side, maintains separation of concerns
-  const handleWorkCreation = async (formData: { title: string; objective: string; description: string }) => {
+  const handleWorkCreation = async (formData: {
+    title: string;
+    objective: string;
+    description: string;
+  }) => {
+    "use server";
     try {
       // Import canonical universal expression pipeline (single canonical ingress for ALL reality sources)
       // Implements user's requirement: ALL reality sources use same canonical ingress path
-      const { createUniversalExpression } = await import("../../../../../../capabilities/atomic-composition/implementation/services/intent-understanding.service");
-      import type { UniversalIntentInput } from "../../../../../../capabilities/atomic-composition/implementation/contracts/universal-intent.contracts";
-      
+      const { createUniversalExpression } = await import(
+        "@repo/atomic-composition-capability/intent-understanding"
+      );
+
       // Combine form data into single raw content for universal expression pipeline
-      const combinedContent = `Title: ${formData.title}\nObjective: ${formData.objective || ''}\nDescription: ${formData.description || ''}`;
-      
+      const combinedContent = `Title: ${formData.title}\nObjective: ${
+        formData.objective || ""
+      }\nDescription: ${formData.description || ""}`;
+
       // Create UniversalIntentInput using human origin (canonical for human intake)
       // Follows EXACT same pattern as external webhooks (ILC/WhatsApp/email) to unify all reality sources
-      const universalInput: UniversalIntentInput = {
+      const universalInput: any = {
         origin: "human",
         actorId: session.actorId,
         raw: {
           type: "work_request",
-          content: combinedContent
+          content: combinedContent,
         },
         context: {
           source: "human_intake",
           intake_path: "/work/new",
-          linkedIntentId: intentId || undefined
-        }
+          linkedIntentId: intentId ? intentId : undefined,
+        },
       };
-      
+
       // Execute the FULL universal expression lifecycle pipeline (EOS UNIVERSAL ENTRY)
       // This is the single canonical path for ALL reality sources:
       // Human/External System/Event/Operator/Agent → createUniversalExpression → Understanding → Work
@@ -113,51 +127,75 @@ export default async function NewWorkPage({
         universalInput,
         session.tenantId,
         session.workspaceId,
-        session.actorId
+        session.actorId,
       );
-      
-      console.log(`[SERVER] Universal expression created: ${universalExpression.id}, status: ${universalExpression.status}`);
-      
+
+      console.log(
+        `[SERVER] Universal expression created: ${universalExpression.id}, status: ${universalExpression.status}`,
+      );
+
       // If work was automatically formed by the pipeline (understanding sufficient and canFormWork=true)
       if (universalExpression.workId) {
-        console.log(`[SERVER] Work automatically created from universal expression: ${universalExpression.workId}`);
+        console.log(
+          `[SERVER] Work automatically created from universal expression: ${universalExpression.workId}`,
+        );
         redirect(`/work/${universalExpression.workId}`);
-      } 
+      }
       // Fallback: if pipeline didn't form work (insufficient understanding or info request), use direct creation
       else {
-        console.log("[SERVER] Work not automatically formed, falling back to direct creation");
-        const { createWorkCommand } = await import("@capabilities/work-core/implementation/commands/work.commands");
+        console.log(
+          "[SERVER] Work not automatically formed, falling back to direct creation",
+        );
+        const { createWorkCommand } = await import(
+          "@repo/work-core/commands"
+        );
         const createWorkInput = {
           title: formData.title,
           description: formData.description || "",
-          linkedIntentId: intentId || undefined,
+          linkedIntentId: intentId ? intentId : undefined,
           domainType: "generic" as const,
+          workMode: "project" as const, // Added missing workMode
           sessionId: sessionCookie.value,
           tenantId: session.tenantId,
           workspaceId: session.workspaceId,
-          actorId: session.actorId
+          actorId: session.actorId,
         };
         const result = await createWorkCommand.execute(createWorkInput);
         redirect(`/work/${result.workId}`);
       }
     } catch (error) {
-      console.error('Error creating work:', error);
-      throw new Error('Work could not be created. Your input has not been lost. Please try again.');
+      console.error("Error creating work:", error);
+      throw new Error(
+        "Work could not be created. Your input has not been lost. Please try again.",
+      );
     }
   };
 
+  // P2: Breadcrumb navigation items untuk /work/new (UX-SHELL-002) - konsisten dengan semua route lain
+  const breadcrumbItems: BreadcrumbItem[] = [
+    { label: "Home", href: "/my-reality" },
+    { label: "My Work", href: "/work" },
+    {
+      label: intent ? "Mulai Pekerjaan dari Kebutuhan" : "Buat Pekerjaan Baru",
+      current: true,
+    },
+  ];
+  const userCapabilities = session.userCapabilities || [];
+
   // Pass all server-resolved data to client boundary component
   return (
-    <NewWorkFormClient
-      intent={intent}
-      intentId={intentId || null}
-      sessionCookieValue={sessionCookie.value}
-      session={{
-        tenantId: session.tenantId,
-        workspaceId: session.workspaceId,
-        actorId: session.actorId
-      }}
-      handleWorkCreation={handleWorkCreation}
-    />
+    <GlobalNavigation
+      productId="default"
+      userCapabilities={userCapabilities}
+      breadcrumbItems={breadcrumbItems}
+    >
+      <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <NewWorkFormClient
+          intent={intent}
+          intentId={intentId || null}
+          handleWorkCreation={handleWorkCreation}
+        />
+      </div>
+    </GlobalNavigation>
   );
 }

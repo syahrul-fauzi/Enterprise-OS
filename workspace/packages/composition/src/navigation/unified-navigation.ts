@@ -56,6 +56,7 @@ export const GLOBAL_NAV_ITEMS: readonly NavigationItem[] = [
     kind: "link",
     href: "/settings",
     order: 900, // Always last in global navigation
+    capabilityId: "operations:admin"
   },
 ] as const;
 

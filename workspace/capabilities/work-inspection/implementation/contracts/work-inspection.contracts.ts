@@ -7,10 +7,25 @@
 // Temporarily commented out to unblock build - missing communication/legal-case implementation files
 // import type { CommunicationEvent } from "@capabilities/communication/implementation/contracts/communication.contracts.js";
 // import type { CaseAggregate } from "@capabilities/legal-case/implementation/contracts/case.contracts.js";
-import type { WorkAggregate, WorkId } from "@capabilities/work-core/contracts/work.contracts.js";
+export type WorkId = string & { __brand: "WorkId" };
+export type WorkStatus = "draft" | "active" | "suspended" | "completed" | "cancelled";
+export type WorkAggregate = {
+  id: string;
+  workId: WorkId;
+  status: WorkStatus;
+  externalId?: string;
+  platformMetadata?: Record<string, any>;
+  updatedAt?: string | Date;
+  createdAt?: string | Date;
+  platformSource?: string;
+  domainType?: string;
+  stateHistory?: any[];
+  assignedActorId?: string;
+  nextAction?: string;
+  workMode?: string;
+};
 
-// Core Work identifier - reuse canonical WorkId from work-core
-export type { WorkId };
+
 
 // Work context aggregate - contains everything the inspector needs to observe
 // Updated to support ALL Work types (legal, service, consultation, generic)

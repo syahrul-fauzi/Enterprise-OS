@@ -2,8 +2,12 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
 import {
   TenantId,
-} from "../contracts/identity.contracts";
-import { TenantRepositoryPostgres } from "../repositories/index";
+} from "../contracts/index.js";
+import { getTenantRepositoryPostgres, TenantRepositoryInMemory } from "../repositories/index.js";
+
+const tenantRepository = process.env.DATABASE_URL
+  ? getTenantRepositoryPostgres()
+  : TenantRepositoryInMemory;
 
 export const GetTenantByIdInputSchema = z.object({
   tenantId: z.string().min(1),
@@ -30,7 +34,7 @@ export const getTenantByIdCommand: GetTenantByIdCommand = {
 
   async execute(input: GetTenantByIdInput) {
     const parsed = GetTenantByIdInputSchema.parse(input);
-    const tenant = await TenantRepositoryPostgres.byId(TenantId(parsed.tenantId));
+    const tenant = await tenantRepository.byId(TenantId(parsed.tenantId));
     
     if (!tenant) {
       return undefined;

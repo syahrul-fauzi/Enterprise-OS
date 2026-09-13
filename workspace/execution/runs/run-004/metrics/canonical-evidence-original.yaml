@@ -1,0 +1,81 @@
+run_id: run-004
+subject_id: GATE-C-DOC-PROPOSE-N2
+transformation_contract_id: TC-DOC-PROPOSE-N2
+transformation_contract_name: Document Proposal Negative Control N2 Meaning Drift
+strategy_id: ts-reference-runtime/v1
+oracle_id: GATE-C-ORACLE-001
+execution_mode: NEGATIVE_CONTROL_N2_PRED_B_MEANING_DRIFT
+science_kernel:
+  bundle_id: SC-KERNEL-001
+  bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+measurement_apparatus:
+  oracle:
+    certificate_id: SC-ORACLE-001
+    artifact_hash: sha256:cd39a4024c8f84a6d117890f1298f1690dc6f47f2734b090f63e35d5455efcda
+    instrument_hash: sha256:b92cfef11330bee312b23d0d5409703e61729bacc96d7c8fba41da7cdac1157f
+  witness:
+    certificate_id: SC-WITNESS-001
+    artifact_hash: sha256:674ea467df0ed0e219e143e780a24610cbf26d0ff61798659cf6d72a12dc7d34
+    instrument_hash: sha256:fbaa8738223d97884669d2b6fbdfc2e00015b40c5489712754bb4efd0e755a9f
+  dataset:
+    certificate_id: SC-DATASET-001
+    artifact_hash: sha256:577d034f086a5fcf3fb9f1c5a4a8d4e9b12573c45b98973ce5af4bfedab373d9
+    instrument_hash: sha256:2184fa695220d5d9306b66c61074a88692c73e57e9448bfea32321003ab85fbb
+input_identity:
+  document_semantic_input_hash: sha256:78fb6ccd3f4a9e24055e7838eef4437542441f68e4342120d8e05aeb67e088bc
+  subject_hash: sha256:2a40e8a07fc79729c7769a3d0f8f2b972c38a9139b55d26c4f2551a29048f7c0
+  document_fixture_hash: sha256:fa3b72c4e9d13a245571406476e619f1dd2770e1a02fb6311c6d4a2a60f10eb8
+  policy_fixture_hash: sha256:6c51d8e797f568c02e99b089686436b902e9d5b14ffe99e15545f0f9d4d26a2c
+  contract_fixture_hash: sha256:8a90d1f3c7e2b4a695048dcbe7c1a9327f84e0b5d1a9726c4081f2763be5941d
+  evidence_fixture_hash: sha256:a1d41566bf23cff1f7918cce48a764fc6f0bfdb0027763e280b6910c746ad0a2
+predicate_vector:
+  pred_a_legitimate: true
+  pred_b_meaning_preserved: false
+  pred_c_provable: true
+verdict: FAIL
+constitutional_validity: false
+truth_table_row: N2
+expected_diagnostic_predicate_failure: pred_b_meaning_preserved
+actual_diagnostic_predicate_failure: pred_b_meaning_preserved
+diagnostic_match: true
+witness_payloads:
+  authority:
+    authority_chain:
+      - node_id: DocReq-001
+        relation: ROOT_REQUIREMENT
+      - node_id: DocPol-001
+        relation: DERIVES_AUTHORITY_FROM_REQUIREMENT
+      - node_id: DocCon-001
+        relation: DERIVES_AUTHORITY_FROM_POLICY
+    conditions:
+      contract_operation_present: true
+      policy_chain_matches_contract: true
+      proposer_role_allowed: true
+    result: PASS
+  meaning:
+    semantic_input_hash: sha256:78fb6ccd3f4a9e24055e7838eef4437542441f68e4342120d8e05aeb67e088bc
+    semantic_output_hash: sha256:48d7a22fbe3965c3f069937d2c2b2c9a4d99e95a11bd5ab75a3c01847d3e8fb1
+    canonical_identity_preserved: false
+    semantic_drift_fields:
+      - classification
+      - body
+    result: FAIL
+  proof:
+    evidence_items:
+      - EVI-PRO-001
+      - EVI-PRO-002
+    postconditions:
+      q1_status_recorded: true
+      q2_proposer_identity_recorded: true
+      q3_audit_trail_recorded: true
+    constructive_entailment_complete: true
+    result: PASS
+pairwise_apparatus_identical_to_run_003_positive_control:
+  oracle: true
+  witness: true
+  dataset: true
+  science_kernel_bundle: true
+  calibration_report: true
+  summary: "run-004 (Negative Control N2 Pred B) uses IDENTICAL measurement apparatus as run-003 (Positive Control P1 replay). C3 Measurement Correctness for N2 VERIFIABLE by direct comparison."
+replay_canonical_evidence_stable: true
+replay_note: "Re-run with same run-004 fixtures + kernel 47c758 produces identical predicate vector, identical witness lock_hashes, identical verdict. Only execution_timestamp differs. C4 Replay Correctness SATISFIED."

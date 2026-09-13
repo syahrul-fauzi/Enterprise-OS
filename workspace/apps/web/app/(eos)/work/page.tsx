@@ -1,174 +1,109 @@
+
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { ChevronRight, ArrowLeft, FileText } from "lucide-react";
 import {
   WORKSPACE_SESSION_COOKIE,
-  decodeWorkspaceSession,
+  decodeWorkspaceSession
 } from "@repo/core-kernel";
-import { getAllWorksForWorkspace } from "../../api/work/create/route";
-import { Card, Button } from "@repo/presentation-ui-system";
+import { GlobalNavigation } from "@repo/presentation-ui-system/layouts";
+import { PageHeader } from "@repo/presentation-ui-system/components/page-header";
+import { Button } from "@repo/presentation-ui-system";
+import { WorkList } from '../../../components/work/WorkList';
+import type { WorkItemCardProps } from '../../../components/work/WorkItemCard';
 
-// Generic work status labels (universal for all work types)
-const STATUS_LABELS: Record<string, string> = {
-  "draft": "Draf",
-  "open": "Terbuka",
-  "in_progress": "Sedang Diproses",
-  "closed": "Selesai",
-  "completed": "Selesai"
-};
+const mockWorkItems: WorkItemCardProps[] = [
+  {
+    workId: "W-001",
+    tags: [
+      { label: "LEGAL", color: "bg-blue-100 text-blue-800" },
+      { label: "CONTRACT REVIEW", color: "bg-gray-100 text-gray-800" },
+    ],
+    title: "Review & Analisis Risiko Kontrak Perjanjian",
+    intent: "Select 'Mulai Analisis' untuk memulai...",
+    reality: "Contract copy identified with narrative modifications and executive legal summary.",
+    nextStep: "Upload temuan awal (preliminary-diligence) atau konfirmasi cakupan pekerjaan yang ingin dilakukan."
+  },
+  {
+    workId: "W-004",
+    tags: [
+      { label: "LEGAL", color: "bg-blue-100 text-blue-800" },
+      { label: "PT SIGNATURE", color: "bg-purple-100 text-purple-800" },
+    ],
+    title: "Pendirian PT Bisnis Software",
+    intent: "Select 'Mulai' untuk verifikasi software legal...",
+    reality: "Progeny imagery cross-matched with satellite terrain/subsurface, rock, and soil type registration.",
+    nextStep: "Review individual programs and verify external dependencies."
+  },
+  {
+    workId: "W-005",
+    tags: [
+      { label: "HIRING", color: "bg-green-100 text-green-800" },
+      { label: "TECHNICAL RECRUITMENT", color: "bg-gray-100 text-gray-800" },
+    ],
+    title: "Recruitment Backend Developer (Node.js/Go)",
+    intent: "Select 'Mulai' untuk melihat daftar kandidat yang sudah di-shortlist...",
+    reality: "Candidate funnel sourced from multiple boards, matched with agency offer letter and agreed start date.",
+    nextStep: "Review candidate history, offer letter, or begin onboarding."
+  },
+];
 
-// Work status colors (menyesuaikan dengan design tokens UI system)
-const STATUS_COLORS: Record<string, string> = {
-  "draft": "bg-surface-muted text-text-secondary",
-  "open": "bg-status-info/10 text-status-info",
-  "in_progress": "bg-status-warning/10 text-status-warning",
-  "closed": "bg-status-success/10 text-status-success",
-  "completed": "bg-status-success/10 text-status-success"
-};
-
-export default async function WorkListPage() {
+export default async function WorkPage() {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);
   
   if (!sessionCookie?.value) {
-    redirect("/login");
+    return (
+      <main className="p-6">
+        <p>Sesi tidak valid. Silakan login kembali.</p>
+      </main>
+    );
   }
 
-  let session;
-  try {
-    session = decodeWorkspaceSession(sessionCookie.value);
-  } catch {
-    cookieStore.delete(WORKSPACE_SESSION_COOKIE);
-    redirect("/login");
+  const session = decodeWorkspaceSession(sessionCookie.value);
+  if (!session || !session.tenantId || !session.workspaceId || !session.actorId) {
+    return (
+      <main className="p-6">
+        <p>Sesi tidak valid. Silakan login kembali.</p>
+      </main>
+    );
   }
 
-  // Double-check session is valid
-  if (!session) {
-    cookieStore.delete(WORKSPACE_SESSION_COOKIE);
-    redirect("/login");
-  }
-
-  // Fetch all canonical work items for this user - uses unified EOS Work store
-  let workList: any[] = [];
-  try {
-    const canonicalWorks = getAllWorksForWorkspace(session!.workspaceId);
-    workList = canonicalWorks.map(cw => ({
-      id: cw.workId,
-      title: cw.title ?? 'Untitled Work',
-      description: cw.description ?? '',
-      status: cw.status ?? 'open',
-      createdAt: cw.createdAt,
-    }));
-  } catch (error) {
-    console.error("[WorkListPage] Failed to fetch works:", error);
-    workList = [];
-  }
+  const breadcrumbItems = [
+    { label: "EOS", href: "/" },
+    { label: "Work", href: "/work" },
+  ];
 
   return (
-    <div className="min-h-screen bg-surface-background">
-      {/* Primary Navigation - menggunakan design tokens */}
-      <header className="bg-surface border-b border-surface-border shadow-token-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-4">
-            <div className="flex items-center gap-8">
-              <h1 className="text-xl font-bold text-text-primary">EOS</h1>
-              <nav className="flex items-center gap-6">
-                <Link 
-                  href="/work" 
-                  className="text-sm font-medium text-brand-primary hover:text-brand-primary/80 transition-colors"
-                >
-                  Pekerjaan Saya
-                </Link>
-                <Link href="/work/new">
-                  <Button intent="primary" variant="solid" size="sm">
-                    + Mulai Pekerjaan Baru
-                  </Button>
-                </Link>
-                <Link 
-                  href="/profile" 
-                  className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
-                >
-                  Orang
-                </Link>
-              </nav>
+    <GlobalNavigation
+      userCapabilities={session.userCapabilities || []}
+      productId="EOS-WORK"
+      breadcrumbItems={breadcrumbItems}
+    >
+      <main className="py-6 px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-text-primary">My Work</h1>
+            <p className="text-sm text-text-muted">Registry of provided facts aligned to coordinated-across-domain expression and actors.</p>
+          </div>
+          <Button>Start Work</Button>
+        </div>
+
+        <div className="mb-4">
+          {/* TODO: Implement Filters and Search */}
+          <div className="flex items-center justify-between">
+            <div className="flex space-x-1">
+              <Button variant="ghost">All (27)</Button>
+              <Button variant="ghost">Active (7)</Button>
+              <Button variant="ghost">Completed (18)</Button>
             </div>
-            <div className="text-sm text-text-muted">
-              {session!.actorLabel || "User"}
+            <div className="w-64">
+              {/* Search Input */}
             </div>
           </div>
         </div>
-      </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back to workspace link */}
-        <Link
-          href="/workspace"
-          className="inline-flex items-center text-sm font-medium text-text-secondary hover:text-text-primary mb-6"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Kembali ke Workspace
-        </Link>
+        <WorkList workItems={mockWorkItems} />
 
-        {workList.length === 0 ? (
-          /* Empty state menggunakan Card standar */
-          <Card size="lg" className="text-center">
-            <div className="p-6">
-              <div className="mx-auto h-16 w-16 bg-surface-muted rounded-full flex items-center justify-center">
-                <FileText className="h-8 w-8 text-text-muted" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-text-primary">Belum ada pekerjaan</h3>
-              <p className="mt-2 text-sm text-text-secondary max-w-md mx-auto">
-                Mulailah dengan membuat pekerjaan pertama Anda. Semua kebutuhan yang ingin Anda selesaikan dapat dilacak dari awal hingga selesai di EOS.
-              </p>
-              <Link href="/work/new" className="mt-6 inline-block">
-                <Button intent="primary" variant="solid">
-                  Buat Pekerjaan Pertama
-                </Button>
-              </Link>
-            </div>
-          </Card>
-        ) : (
-          /* Work list menggunakan Card standar untuk setiap item */
-          <div className="grid gap-4">
-            {workList.map((work: any) => (
-              <Link key={work.id} href={`/work/${work.id}`}>
-                <Card 
-                  size="md" 
-                  hoverable 
-                  className="transition-all"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <h3 className="text-lg font-semibold text-text-primary">{work.title}</h3>
-                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[work.status] || "bg-surface-muted text-text-secondary"}`}>
-                          {STATUS_LABELS[work.status] || work.status}
-                        </span>
-                      </div>
-                      {work.description && (
-                        <p className="mt-2 text-sm text-text-secondary line-clamp-2">{work.description}</p>
-                      )}
-                      <div className="mt-4 flex items-center gap-6 text-xs text-text-muted">
-                        <span>Dibuat: {new Date(work.createdAt).toLocaleDateString('id-ID')}</span>
-                        {work.lawyerId && (
-                          <span>Advokat: {work.lawyerId}</span>
-                        )}
-                        {Array.isArray(work.evidence) && work.evidence.length > 0 && (
-                          <span>Dokumen: {work.evidence.length}</span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="ml-4">
-                      <ChevronRight className="h-5 w-5 text-text-muted" />
-                    </div>
-                  </div>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        )}
       </main>
-    </div>
+    </GlobalNavigation>
   );
 }

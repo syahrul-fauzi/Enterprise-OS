@@ -1,0 +1,20 @@
+version: "1.0.0"
+kind: FIXTURE_DOCUMENT_PROPOSAL_DRAFT
+fixture_id: FIX-DOC-DRAFT-001
+status: IMMUTABLE_FIXTURE
+note: >
+  Fixtures are PURE DATA. No logic, no transformation contract, no strategy.
+  The purpose of fixtures is to serve as reference data inputs for experiments.
+  This file intentionally contains ONLY document data; authority/meaning/proof are evaluated by the experiment, NOT claimed here.
+document:
+  canonical_id_placeholder: sha256:proposal-draft-001-canonical-id
+  title: "Sprint0 Document: Document Management Operational Proposal"
+  classification: internal
+  retention_period_days: 3650
+  proposer_identity_ref: role-document-proposer-001
+  body: |
+    This document proposes the initial operational procedure for Document Management domain of EOS during Gate C guinea-pig evaluation.
+    It is a reference proposal fixture. No normative authority is claimed by the fixture itself; authority evaluation occurs via Predicate A in the experiment context.
+  metadata:
+    created_for_experiment: GATE-C-DOC-PROPOSE
+    epoch_bound: Sprint0

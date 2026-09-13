@@ -6,28 +6,27 @@ export type {
   CapabilityRepository,
   CapabilityImplementation,
   WorkspaceAggregateBinding,
-} from "./types";
+} from "./types.js";
 
 // SHARED WORKFLOW DEFINITION PRIMITIVES - Earned abstractions from Wave B implementation
 export type {
   WorkflowStep,
   WorkflowTransition,
   WorkflowDefinition,
-} from "./registry/capability-command-registry";
+} from "./registry/capability-command-registry.js";
 export {
   isValidWorkflowDefinition,
   executeWorkflowTransition,
-  capabilityRegistry,
-} from "./registry/capability-command-registry";
+} from "./registry/capability-command-registry.js";
 
 export {
   CapabilityManifestSchema,
   CapabilityAggregateBindingSchema,
-} from "./schemas";
+} from "./schemas.js";
 export type {
   CapabilityManifest,
   CapabilityAggregateBindingManifest,
-} from "./schemas";
+} from "./schemas.js";
 
 // ============================================================================
 // SERVER-ONLY BOUNDARY - DigestEngine module excluded from shared barrel
@@ -40,20 +39,20 @@ export type {
 //   "UnhandledSchemeError: Reading from 'node:crypto' is not handled by plugins"
 //
 // Server-side consumers that NEED these primitives MUST import them directly:
-//   import { createDigestEngine, DigestEngine } from "@repo/core-kernel/digest-engine.js";
+//   import { createDigestEngine, DigestEngine } from "@repo/core-kernel/digest-engine";
 // ============================================================================
 export type {
   DigestCanonicalizer,
   DigestComputation,
   DigestEngineContract,
   DigestHashAlgorithm,
-} from "./digest-engine";
+} from "./digest-engine.js";
 
 // Session exports (moved from apps/web/lib)
 export type {
   WorkspaceSession,
   WorkspaceRequestTrace,
-} from "./session/workspace-session";
+} from "./session/workspace-session.js";
 export {
   WORKSPACE_SESSION_COOKIE,
   WorkspaceSessionSchema,
@@ -66,7 +65,7 @@ export {
   readWorkspaceSessionFromRequest,
   createWorkspaceRequestTrace,
   createWorkspaceContextHeaders,
-} from "./session/workspace-session";
+} from "./session/workspace-session.js";
 
 // ============================================================================
 // SERVER-ONLY BOUNDARY - capabilityRegistry excluded from shared barrel
@@ -81,22 +80,22 @@ export {
 //
 // Server-side consumers (API routes, capability impls, scripts) MUST import
 // directly:
-//   import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
+//   import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 // ============================================================================
 export type {
   CommandInvocationRecord,
-} from "./registry/capability-command-registry";
+} from "./registry/capability-command-registry.js";
 
 // Golden Kernel Invariant Registry (Trust Boundary)
 export type {
   KernelInvariant,
-} from "./invariant.registry";
+} from "./invariant.registry.js";
 export {
   GOLDEN_KERNEL_INVARIANTS,
   validateInvariant,
   getInvariant,
   getAllInvariants,
-} from "./invariant.registry";
+} from "./invariant.registry.js";
 
 // Core runtime mediation layer (ARCH-04 compliant - capabilities access core-runtime ONLY via core-kernel)
 //

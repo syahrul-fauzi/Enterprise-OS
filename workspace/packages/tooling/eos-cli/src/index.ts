@@ -94,12 +94,29 @@ async function main(): Promise<number> {
           return runGateCRegenerateCommand();
         }
       if (subcommand === "accept") {
-        const runId = args[2];
-        const prefix = args[3];
+        let runId: string | undefined;
+        let prefix: string | undefined;
+
+        for (let i = 2; i < args.length; i++) {
+          if (args[i] === "--run-id") {
+            runId = args[i + 1];
+            i++; // Skip next arg
+          } else if (args[i] === "--prefix") {
+            prefix = args[i + 1];
+            i++; // Skip next arg
+          } else if (!runId) {
+            // For backward compatibility with positional arg
+            runId = args[i];
+          } else if (!prefix) {
+            // For backward compatibility with positional arg
+            prefix = args[i];
+          }
+        }
+
         if (!runId) {
           process.stderr.write(
-            "Usage: pnpm eos gate-c accept <run-id> [ledger-entry-prefix]\n" +
-              "Example: pnpm eos gate-c accept run-004 GATE-C1-ACCEPT\n",
+            "Usage: pnpm eos gate-c accept --run-id <run-id> [--prefix <ledger-entry-prefix>]\n" +
+              "Example: pnpm eos gate-c accept --run-id run-004 --prefix GATE-C1-ACCEPT\n",
           );
           return 1;
         }
@@ -118,12 +135,23 @@ async function main(): Promise<number> {
         return runGateCCoverageCommand();
       }
       if (subcommand === "run-case") {
-        const runId = args[2];
-        const subjectRelPath = args[3];
+        let runId: string | undefined;
+        let subjectRelPath: string | undefined;
+
+        for (let i = 2; i < args.length; i++) {
+          if (args[i] === "--run-id") {
+            runId = args[i + 1];
+            i++; // Skip next arg
+          } else if (args[i] === "--subject-rel-path") {
+            subjectRelPath = args[i + 1];
+            i++; // Skip next arg
+          }
+        }
+
         if (!runId || !subjectRelPath) {
           process.stderr.write(
-            "Usage: pnpm eos gate-c run-case <run-id> <subject-rel-path>\n" +
-              "Example: pnpm eos gate-c run-case run-006 specification/experiments/document/propose-n4.yaml\n",
+            "Usage: pnpm eos gate-c run-case --run-id <run-id> --subject-rel-path <path>\n" +
+              "Example: pnpm eos gate-c run-case --run-id run-006 --subject-rel-path specification/experiments/document/propose-n4.yaml\n",
           );
           return 1;
         }

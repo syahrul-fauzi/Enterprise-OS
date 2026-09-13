@@ -79,6 +79,20 @@ export abstract class PostgresRepository<T extends { id: string }> {
     return result.rows.map(row => this.toAggregate(row));
   }
 
+  async find(criteria: Partial<T>): Promise<readonly T[]> {
+    const keys = Object.keys(criteria);
+    if (keys.length === 0) {
+      return [];
+    }
+    const whereClause = keys.map((key, i) => `"${key}" = $${i + 1}`).join(" AND ");
+    const values = Object.values(criteria);
+    const result = await this.pool.query<Record<string, any>>(
+      `SELECT * FROM ${this.tableName} WHERE ${whereClause}`,
+      values
+    );
+    return result.rows.map(row => this.toAggregate(row));
+  }
+
   async save(entity: T & { version?: number }): Promise<T> {
     console.log(`[base.repository.ts] save() called for table: ${this.tableName}, entity ID: ${entity.id}`);
     // Convert domain entity to database record (camelCase → snake_case)

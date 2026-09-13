@@ -1,6 +1,6 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
-import { TenantId, UserId, SessionId, type MembershipAggregate, type WorkspaceAggregate } from "../contracts/identity.contracts";
+import { TenantId, UserId, SessionId, type MembershipAggregate, type WorkspaceAggregate } from "../contracts/identity.contracts.js";
 import { 
   getTenantRepositoryPostgres, 
   getWorkspaceRepositoryPostgres, 
@@ -10,7 +10,7 @@ import {
   WorkspaceRepositoryInMemory,
   MembershipRepositoryInMemory,
   SessionRepositoryInMemory,
-} from "../repositories/index";
+} from "../repositories/index.js";
 
 const tenantRepository = process.env.DATABASE_URL
   ? getTenantRepositoryPostgres()

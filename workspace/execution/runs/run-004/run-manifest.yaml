@@ -1,0 +1,79 @@
+version: 1.0.0
+run_id: run-004
+gate: GATE-C
+gate_stage: GATE-C1
+evidence_class: CLASS_II_EXPERIMENTAL
+execution_timestamp_utc: 2026-08-01T03:00:00.000Z
+operator_id: eos-cli
+execution_mode: NEGATIVE_CONTROL_N2_PRED_B_MEANING_DRIFT
+negative_control_truth_table_row: N2
+negative_control_scientific_role: Individually falsifies Predicate B (MeaningPreserved=false). A=true, C=true held constant.
+strategy_ids:
+  - ts-reference-runtime/v1
+oracle_id: GATE-C-ORACLE-001
+dataset_version: 1.0.0
+truth_table_version: 1.0.0
+protocol_version: 1.0.0
+reproducibility_manifest_ref: specification/manifests/reproducibility-manifest.yaml
+subjects:
+  - experiment_subject_id: GATE-C-DOC-PROPOSE-N2
+    subject_ref: specification/experiments/document/propose-n2.yaml
+    operation: propose
+    expected_predicates_ref: specification/expected/predicates/document-predicates.yaml#expected_predicates.GATE-C-DOC-PROPOSE-N2
+    expected_evaluation_ref: specification/expected/evaluations/document-evaluations.yaml#expected_evaluations.GATE-C-DOC-PROPOSE-N2
+measurement_apparatus:
+  calibration_report_id: GATE-C0-CALIBRATION-REPORT-001
+  calibration_report_ref: specification/calibration/calibration-report.yaml
+  oracle_certificate_id: SC-ORACLE-001
+  oracle_certificate_ref: specification/calibration/oracle-certificate.yaml
+  witness_certificate_id: SC-WITNESS-001
+  witness_certificate_ref: specification/calibration/witness-certificate.yaml
+  dataset_certificate_id: SC-DATASET-001
+  dataset_certificate_ref: specification/calibration/dataset-certificate.yaml
+  kernel_status_ref: specification/manifests/kernel-status.yaml
+  oracle:
+    certificate_id: SC-ORACLE-001
+    certificate_ref: specification/calibration/oracle-certificate.yaml
+    artifact_hash: sha256:cd39a4024c8f84a6d117890f1298f1690dc6f47f2734b090f63e35d5455efcda
+    instrument_ref: specification/oracle/oracle.yaml
+    instrument_hash: sha256:b92cfef11330bee312b23d0d5409703e61729bacc96d7c8fba41da7cdac1157f
+  witness:
+    certificate_id: SC-WITNESS-001
+    certificate_ref: specification/calibration/witness-certificate.yaml
+    artifact_hash: sha256:674ea467df0ed0e219e143e780a24610cbf26d0ff61798659cf6d72a12dc7d34
+    instrument_ref: specification/witness-integrity.yaml
+    instrument_hash: sha256:fbaa8738223d97884669d2b6fbdfc2e00015b40c5489712754bb4efd0e755a9f
+  dataset:
+    certificate_id: SC-DATASET-001
+    certificate_ref: specification/calibration/dataset-certificate.yaml
+    artifact_hash: sha256:577d034f086a5fcf3fb9f1c5a4a8d4e9b12573c45b98973ce5af4bfedab373d9
+    instrument_ref: specification/dataset/reference-dataset.yaml
+    instrument_hash: sha256:2184fa695220d5d9306b66c61074a88692c73e57e9448bfea32321003ab85fbb
+  science_kernel:
+    bundle_id: SC-KERNEL-001
+    bundle_ref: science-kernel/bundle.manifest.yaml
+    bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+pairwise_comparison_with_positive_control_run_003:
+  measurement_apparatus_pairwise_identical: true
+  oracle_certificate_id_match: true
+  witness_certificate_id_match: true
+  dataset_certificate_id_match: true
+  oracle_artifact_hash_match: true
+  oracle_instrument_hash_match: true
+  witness_artifact_hash_match: true
+  witness_instrument_hash_match: true
+  dataset_artifact_hash_match: true
+  dataset_instrument_hash_match: true
+  science_kernel_bundle_hash_match: true
+  same_calibration_report_ref: true
+  note: >
+    C3 Measurement Correctness satisfied between run-004 (Negative Control N2 Pred B) and run-003
+    (Positive Control P1 replay): all measurement apparatus hashes IDENTICAL.
+    Only the fixture set (proposal-draft-n2 + contract-n2) differs.
+    Exactly as required for a controlled falsification experiment.
+output_layout:
+  actual_dir: execution/runs/run-004/actual
+  witness_dir: execution/runs/run-004/actual/witness
+  logs_dir: execution/runs/run-004/logs
+  metrics_dir: execution/runs/run-004/metrics
+  report_ref: execution/runs/run-004/report.yaml

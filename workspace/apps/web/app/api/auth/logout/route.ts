@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import {
   WORKSPACE_SESSION_COOKIE,
   readWorkspaceSessionFromRequest,
@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const sessionId = session?.sessionId;
 
     if (sessionId) {
-      await capabilityRegistry.invokeAsync("identity", "logoutUser", { sessionId });
+      await capabilityRegistry.invoke("identity", "logoutUser", { sessionId });
     }
 
     const response = NextResponse.json({

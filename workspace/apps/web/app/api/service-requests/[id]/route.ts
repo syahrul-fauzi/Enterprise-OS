@@ -4,7 +4,7 @@ import {
   decodeWorkspaceSession,
   createAnonymousWorkspaceSession,
   encodeWorkspaceSession
-} from "@repo/core-kernel";
+} from "@repo/core-kernel/registry";
 
 // CANONICAL API PROXY: /api/service-requests/[id] memforward ke /api/work/[id]
 // Menyelesaikan context break: ServiceRequest = Work specialization untuk domain services.id

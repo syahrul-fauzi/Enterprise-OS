@@ -24,10 +24,7 @@
     "resolveJsonModule": true,
     "strict": true,
     "target": "ES2022",
-    "paths": {
-      "@repo/core-kernel": ["../../packages/core/kernel/dist/index.d.ts", "../../packages/core/kernel/src/index.ts"],
-      "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*.d.ts", "../../packages/core/kernel/src/*"]
-    }
+
   },
   "references": [
     { "path": "../../packages/core/kernel/tsconfig.json" },

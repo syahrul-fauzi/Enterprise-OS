@@ -28,7 +28,12 @@
       "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*.d.ts", "../../packages/core/kernel/src/*"],
       "@repo/capability-identity": ["../../capabilities/identity/dist/index.d.ts", "../../capabilities/identity/src/index.ts"],
       "@repo/capability-shared": ["../../capabilities/shared/dist/index.d.ts", "../../capabilities/shared/src/index.ts"],
-      "@repo/capability-work-core": ["../../capabilities/work-core/dist/index.d.ts", "../../capabilities/work-core/src/index.ts"]
+      "@repo/capability-work-core": ["../../capabilities/work-core/dist/index.d.ts", "../../capabilities/work-core/src/index.ts"],
+      "@repo/capability-legal-case/contracts": ["./contracts/index.ts"],
+      "@repo/capability-legal-case/repository": ["./implementation/repository/index.ts"],
+      "@repo/capability-identity/repositories/base": ["../identity/implementation/repositories/base.repository.ts"],
+      "@repo/capability-identity/repositories": ["../identity/implementation/repositories/index.ts"],
+      "@repo/capability-identity/contracts": ["../identity/implementation/contracts/index.ts"] // Force re-check
     }
   },
   "references": [

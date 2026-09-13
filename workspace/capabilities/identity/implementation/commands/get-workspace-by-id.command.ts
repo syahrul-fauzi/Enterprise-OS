@@ -1,13 +1,18 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { 
-  WorkspaceRepositoryPostgres, 
-  MembershipRepositoryPostgres, 
-  TenantRepositoryPostgres,
-  SessionRepositoryPostgres
-} from "../repositories/index";
-import { WorkspaceId, UserId, TenantId, MembershipId, SessionId } from "../contracts/identity.contracts";
-import { initIdentitySchema } from "../repositories/base.repository";
+import {
+  getWorkspaceRepositoryPostgres,
+  getMembershipRepositoryPostgres,
+  getTenantRepositoryPostgres,
+  getSessionRepositoryPostgres,
+} from "../repositories/index.js";
+import { WorkspaceId, UserId, TenantId, SessionId } from "../contracts/index.js";
+
+// Instantiate repositories
+const sessionRepository = getSessionRepositoryPostgres();
+const workspaceRepository = getWorkspaceRepositoryPostgres();
+const membershipRepository = getMembershipRepositoryPostgres();
+const tenantRepository = getTenantRepositoryPostgres();
 
 export const GetWorkspaceByIdInputSchema = z.object({
   workspaceId: z.string().min(1),
@@ -43,14 +48,11 @@ export const getWorkspaceByIdCommand: CapabilityCommand = {
   name: "identity.getWorkspaceById",
   version: "2.0.0", // Postgres-backed persistence
   async execute(input: unknown) {
-    // Initialize database schema
-    await initIdentitySchema();
-    
     const parsed = GetWorkspaceByIdInputSchema.parse(input);
     const { workspaceId, actorId, sessionId } = parsed;
 
     // 1. Validate session exists and is valid (tenant isolation check)
-    const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
+    const session = await sessionRepository.byId(SessionId(sessionId));
     const sessionExpiresAt = session?.expiresAt ?? new Date(0);
     if (!session || session.revokedAt !== null || sessionExpiresAt < new Date()) {
       return undefined;
@@ -62,7 +64,7 @@ export const getWorkspaceByIdCommand: CapabilityCommand = {
     }
 
     // 3. Get workspace from PostgreSQL
-    const workspace = await WorkspaceRepositoryPostgres.byId(WorkspaceId(workspaceId));
+    const workspace = await workspaceRepository.byId(WorkspaceId(workspaceId));
     if (!workspace) {
       return undefined;
     }
@@ -74,22 +76,30 @@ export const getWorkspaceByIdCommand: CapabilityCommand = {
 
     // 5. Get membership and tenant
     const userId = UserId(actorId);
-    const membership = await MembershipRepositoryPostgres.find(userId, workspace.tenantId, workspace.id);
-    const tenant = await TenantRepositoryPostgres.byId(TenantId(workspace.tenantId));
+    const membership = await membershipRepository.findByUserTenantAndWorkspace(
+      userId,
+      workspace.tenantId,
+      workspace.id,
+    );
+    const tenant = await tenantRepository.byId(TenantId(workspace.tenantId));
 
     const workspaceCreatedAt = workspace.createdAt ?? new Date();
     const workspaceUpdatedAt = workspace.updatedAt ?? new Date();
-    const tenantResult = tenant ? {
-      id: tenant.id,
-      name: tenant.name,
-      slug: tenant.slug,
-    } : null;
-    const membershipResult = membership ? {
-      id: membership.id,
-      role: membership.role,
-      joinedAt: (membership.joinedAt ?? new Date()).toISOString(),
-    } : null;
-    
+    const tenantResult = tenant
+      ? {
+          id: tenant.id,
+          name: tenant.name,
+          slug: tenant.slug,
+        }
+      : null;
+    const membershipResult = membership
+      ? {
+          id: membership.id,
+          role: membership.role,
+          joinedAt: (membership.joinedAt ?? new Date()).toISOString(),
+        }
+      : null;
+
     return {
       workspace: {
         id: workspace.id,

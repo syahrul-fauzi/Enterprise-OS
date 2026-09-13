@@ -3,9 +3,8 @@ import { z } from "zod";
 import {
   TenantId,
   type TenantAggregate,
-} from "../contracts/identity.contracts";
-import { TenantRepositoryPostgres } from "../repositories/index";
-import { initIdentitySchema } from "../repositories/base.repository";
+} from "../contracts/identity.contracts.js";
+import { getTenantRepositoryPostgres } from "../repositories/index.js";
 
 export const GetTenantByIdInputSchema = z.object({
   tenantId: z.string().min(1),
@@ -31,11 +30,10 @@ export const getTenantByIdQuery: GetTenantByIdQuery = {
   version: "2.0.0", // Postgres-backed persistence
 
   async execute(input: GetTenantByIdInput) {
-    // Initialize database schema
-    await initIdentitySchema();
+    const tenantRepository = getTenantRepositoryPostgres();
     
     const parsed = GetTenantByIdInputSchema.parse(input);
-    const tenant = await TenantRepositoryPostgres.byId(TenantId(parsed.tenantId));
+    const tenant = await tenantRepository.byId(TenantId(parsed.tenantId));
     
     if (!tenant) {
       return undefined;

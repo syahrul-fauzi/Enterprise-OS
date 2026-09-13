@@ -1,0 +1,21 @@
+document:
+  title: "Negative Test 001: Procurement Over Budget"
+  classification: "INTERNAL_TEST_FIXTURE"
+  proposer_identity_ref: "actor:ai:procurement-agent-01"  # decision_actor
+  body: "Request to procure linen for $600, which is over the $500 budget."
+  retention_period_days: 365
+  metadata:
+    inventory_before: 100  # inventory_before parameter
+    color: "white"         # color parameter
+    # Actor parameters (maintain economic_principal≠decision_actor invariant)
+    initiator: "actor:human:factory-manager-01"
+    decision_actor: "actor:ai:procurement-agent-01"
+    execution_actor: "actor:business:supplier-linen-ltd"
+    economic_principal: "actor:human:company-owner-01"
+    # Policy parameters
+    approved_categories: ["linen", "canvas", "cotton"]
+    auto_approval_limit: 500
+    procurement_request:
+      asset_ref: "SAGE-LINEN-001"      # material = linen
+      quantity_kg: 15                   # quantity = 15kg
+      price_usd_per_kg: 40              # price_per_unit = $40 → total $600 (over limit!)

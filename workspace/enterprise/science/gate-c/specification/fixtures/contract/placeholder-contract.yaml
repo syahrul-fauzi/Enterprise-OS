@@ -1,0 +1,14 @@
+version: "1.0.0"
+kind: FIXTURE_CONTRACT_MANUFACTURING_PROCUREMENT
+fixture_id: FIX-CON-MFG-001
+status: IMMUTABLE_FIXTURE
+contract:
+  contract_id: C-MFG-001
+  name: Manufacturing Procurement Operational Contract
+  derives_authority_from_policy_ref: MfgPol-001
+  epoch: Sprint0
+  operations:
+    procure:
+      required_fields: ["asset_ref", "quantity_kg", "price_usd_per_kg"]
+      preconditions: ["procurement_amount_within_limit", "category_approved"]
+      postconditions: ["authorization_granted", "inventory_updated"]

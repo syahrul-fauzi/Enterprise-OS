@@ -1,0 +1,12 @@
+evidence_items:
+  - id: "EV-SAGE-CANVAS-001-001"
+    data:
+      recorded_status: "PROPOSED"
+      economic_principal: "actor:human:owner-01"  # economic_principal = human (owner)
+  - id: "EV-SAGE-CANVAS-001-002"
+    data:
+      role_attested: "ROLE_PROCUREMENT_AGENT"     # decision_actor = AI agent
+      decision_actor_ref: "actor:ai:procurement-agent-01"
+  - id: "EV-SAGE-CANVAS-001-003"
+    data:
+      execution_actor_ref: "actor:business:supplier-node-01"  # execution_actor terdefinisi

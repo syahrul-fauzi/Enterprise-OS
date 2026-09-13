@@ -1,0 +1,65 @@
+run_id: SAGE-LINEN-001-NEG-001
+subject_id: SAGE-LINEN-001-NEG-001
+transformation_contract_id: TC-MFG-GOV-001
+transformation_contract_name: Manufacturing Procurement Governance Contract
+strategy_id: ts-reference-runtime/v1
+oracle_id: GATE-C-ORACLE-001
+science_kernel:
+  bundle_id: SC-KERNEL-001
+  bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+measurement_apparatus:
+  oracle:
+    certificate_id: SC-ORACLE-001
+    artifact_hash: sha256:cd39a4024c8f84a6d117890f1298f1690dc6f47f2734b090f63e35d5455efcda
+    instrument_hash: sha256:b92cfef11330bee312b23d0d5409703e61729bacc96d7c8fba41da7cdac1157f
+  witness:
+    certificate_id: SC-WITNESS-001
+    artifact_hash: sha256:674ea467df0ed0e219e143e780a24610cbf26d0ff61798659cf6d72a12dc7d34
+    instrument_hash: sha256:fbaa8738223d97884669d2b6fbdfc2e00015b40c5489712754bb4efd0e755a9f
+  dataset:
+    certificate_id: SC-DATASET-001
+    artifact_hash: sha256:577d034f086a5fcf3fb9f1c5a4a8d4e9b12573c45b98973ce5af4bfedab373d9
+    instrument_hash: sha256:2184fa695220d5d9306b66c61074a88692c73e57e9448bfea32321003ab85fbb
+input_identity:
+  document_semantic_hash: sha256:0427c92ac3cd24ee766e0d80da649641e88e7a24d6f63a66cb673d7486dcb7ad
+  subject_hash: sha256:224db1f885d7ef70db4648e2c34fcd901e23eddee29ec16c354826d5ef508c2e
+  document_fixture_hash: sha256:c7938773e954363892d1a548260dbfee85083c6ec992df56fffcc9ea1814c73a
+  policy_fixture_hash: sha256:4e0811f63a120ac015118bcffe4d36ef21ea164e6c0f71bef042620ae05b8bc3
+  contract_fixture_hash: sha256:c542f0d44daf091d3425d4e36523af550891b23d49b5038c5365434328fc6647
+  evidence_fixture_hash: sha256:53a61f8fbf675af1c7a4bacbe9cbea0a64aafe2051beb8540b98b63b8e5c9ab8
+predicate_vector:
+  pred_a_legitimate: false
+  pred_b_meaning_preserved: true
+  pred_c_provable: false
+verdict: FAIL
+constitutional_validity: false
+truth_table_row: N5
+witness_payloads:
+  authority:
+    authority_chain:
+      - node_id: DocReq-001
+        relation: ROOT_REQUIREMENT
+      - node_id: MANUFACTURING_PROCUREMENT_POLICY_V1
+        relation: DERIVES_AUTHORITY_FROM_REQUIREMENT
+      - node_id: C-PLACEHOLDER-001
+        relation: DERIVES_AUTHORITY_FROM_POLICY
+    conditions:
+      contract_operation_present: false
+      policy_chain_matches_contract: false
+      proposer_role_allowed: true
+    result: FAIL
+  meaning:
+    semantic_input_hash: sha256:0427c92ac3cd24ee766e0d80da649641e88e7a24d6f63a66cb673d7486dcb7ad
+    semantic_output_hash: sha256:0427c92ac3cd24ee766e0d80da649641e88e7a24d6f63a66cb673d7486dcb7ad
+    canonical_identity_preserved: true
+    result: PASS
+  proof:
+    evidence_items:
+      - EV-PLACEHOLDER-001
+      - EV-PLACEHOLDER-002
+    postconditions:
+      q1_status_recorded: false
+      q2_proposer_identity_recorded: false
+      q3_audit_trail_recorded: true
+    constructive_entailment_complete: false
+    result: FAIL

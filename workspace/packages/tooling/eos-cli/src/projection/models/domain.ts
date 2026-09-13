@@ -1,5 +1,5 @@
-// Fixed import per @repo/core-kernel documentation - DigestEngine must be imported directly from digest-engine subpath
-import { DigestEngine } from "@repo/core-kernel/digest-engine";
+// Kembali ke package path karena core-kernel sudah terlink dan export subpath tersedia
+import { DigestEngine } from "../../../../../core/kernel/src/digest-engine.js";
 
 export type ProjectionGeneratedFrom = {
   readonly source_type: string;

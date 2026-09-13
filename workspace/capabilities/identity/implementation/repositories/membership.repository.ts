@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository";
+import { PostgresRepository } from "./base.repository.js";
 import {
   MembershipId,
   TenantId,
@@ -6,10 +6,10 @@ import {
   WorkspaceId,
   type MembershipAggregate,
   type MembershipRepository,
-} from "../contracts/index";
+} from "../contracts/index.js";
 
 // PostgreSQL-backed membership repository implementation
-class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implements MembershipRepository {
+export class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implements MembershipRepository {
   readonly entityName = "Membership" as const;
   readonly kind = "repository" as const;
 
@@ -66,11 +66,7 @@ class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implement
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
-  async find(
-    userId: UserId,
-    tenantId: TenantId,
-    workspaceId: WorkspaceId,
-  ): Promise<MembershipAggregate | undefined> {
+  async findByUserTenantAndWorkspace(userId: UserId, tenantId: TenantId, workspaceId: WorkspaceId): Promise<MembershipAggregate | undefined> {
     const result = await this.pool.query<Record<string, any>>(
       "SELECT * FROM memberships WHERE user_id = $1 AND tenant_id = $2 AND workspace_id = $3",
       [userId, tenantId, workspaceId]

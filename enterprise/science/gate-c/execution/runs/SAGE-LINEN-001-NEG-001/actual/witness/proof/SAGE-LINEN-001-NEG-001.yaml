@@ -1,0 +1,27 @@
+constructive_entailment_complete: false
+evidence_items:
+  - EV-PLACEHOLDER-001
+  - EV-PLACEHOLDER-002
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:08425dc18fa50cefbfd58fec36f17c46cca44be56d4ddbcbf23f9ba878a0c3d9
+  locked_at: 2026-09-12T09:59:14.126Z
+operation: procure
+postconditions:
+  q1_status_recorded: false
+  q2_proposer_identity_recorded: false
+  q3_audit_trail_recorded: true
+result: FAIL
+subject_id: SAGE-LINEN-001-NEG-001
+version: 1.0.0
+witness_id: SAGE-LINEN-001-NEG-001-witness-c
+witness_type: PROOF

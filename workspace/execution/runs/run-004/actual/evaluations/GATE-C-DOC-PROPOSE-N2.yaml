@@ -1,0 +1,18 @@
+version: 1.0.0
+subject_id: GATE-C-DOC-PROPOSE-N2
+oracle_id: GATE-C-ORACLE-001
+predicates:
+  pred_a_legitimate: true
+  pred_b_meaning_preserved: false
+  pred_c_provable: true
+ia20_constitutional_validity: false
+truth_table_row_matched: N2
+expected_vector_match: true
+expected_evaluation_match: true
+independence_test_result: PASS
+evaluation_result: FAIL
+diagnostic_summary: >
+  N2 row match: (A=T ∧ B=F ∧ C=T). Constitutional Validity = F (conjunction of 3).
+  Diagnostic predicate failure = pred_b_meaning_preserved — matches expected_diagnostic_predicate_failure_required for N2.
+  Witness B: canonical_identity_preserved=false, classification internal→confidential, body appended sentence → semantic_input_hash ≠ semantic_output_hash.
+  NOT a runtime crash; diagnostic attribution correct for the negative control.

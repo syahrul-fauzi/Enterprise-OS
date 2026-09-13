@@ -1,6 +1,7 @@
 {
   "name": "@repo/core-kernel",
   "version": "0.1.0",
+  "type": "module",
   "sideEffects": false,
   "files": [
     "dist"
@@ -11,9 +12,21 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./*": {
-      "types": "./dist/*.d.ts",
-      "default": "./dist/*.js"
+    "./digest-engine": {
+      "types": "./dist/digest-engine.d.ts",
+      "default": "./dist/digest-engine.js"
+    },
+    "./digest-engine.js": {
+      "types": "./dist/digest-engine.d.ts",
+      "default": "./dist/digest-engine.js"
+    },
+    "./session/workspace-session": {
+      "types": "./dist/session/workspace-session.d.ts",
+      "default": "./dist/session/workspace-session.js"
+    },
+    "./registry/capability-command-registry": {
+      "types": "./dist/registry/capability-command-registry.d.ts",
+      "default": "./dist/registry/capability-command-registry.js"
     }
   },
   "license": "MIT",

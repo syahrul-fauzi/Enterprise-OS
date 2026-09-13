@@ -8,8 +8,10 @@ packages:
   - packages/tooling/*
   - products/*
   - capabilities/*
-
-ignoredBuiltDependencies:
-  - '@parcel/watcher'
-  - esbuild
-  - sharp
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: false
+  sharp: false
+overrides:
+  '@repo/core-kernel': link:packages/core/kernel
+  core-capability-registry: link:packages/core-capability-registry

@@ -1,0 +1,23 @@
+version: 1.0.0
+observation_id: run-018-original-observation-001
+subject_id: SAGE-LINEN-001-NEG-004
+transformation_contract_id: TC-MFG-GOV-004
+strategy_id: ts-reference-runtime/v1
+execution_mode: ORIGINAL
+input_fixture_hashes:
+  document: sha256:426ec0764d40721a9b8f4d6cb7cc82749776c16edfec77aa8293a99fe58cfb9d
+  policy: sha256:21e34e388a4137b73115c5d95a5b16abe33afce1bb8255c3ec8ebdedd7574247
+  contract: sha256:c542f0d44daf091d3425d4e36523af550891b23d49b5038c5365434328fc6647
+  evidence: sha256:53a61f8fbf675af1c7a4bacbe9cbea0a64aafe2051beb8540b98b63b8e5c9ab8
+transformation_output:
+  title: "Negative Test 004: Intent as Procurement"
+  classification: INTERNAL_TEST_FIXTURE
+  retention_period_days: 365
+  proposer_identity_ref: actor:human:owner-01
+  body: This document represents an intent to procure, not the procurement itself.
+  metadata:
+    recorded_status: PROPOSED
+    proposal_recorded_by: TS-REFERENCE-RUNTIME-001
+    proposal_evidence_ids:
+      - EV-PLACEHOLDER-001
+      - EV-PLACEHOLDER-002

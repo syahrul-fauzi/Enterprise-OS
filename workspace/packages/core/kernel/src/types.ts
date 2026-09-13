@@ -29,7 +29,9 @@ export interface CapabilityRepository<TEntity = unknown, TId = string> {
   byId(id: TId): Promise<TEntity | undefined> | TEntity | undefined;
   list(): Promise<readonly TEntity[]> | readonly TEntity[];
   save(entity: TEntity): Promise<TEntity> | TEntity;
-  remove(id: TId): Promise<boolean> | boolean;
+  remove?(id: TId): Promise<boolean> | boolean;
+  delete?(id: TId): Promise<void>;
+  update?(id: TId, patch: Partial<TEntity>): Promise<TEntity>;
 }
 
 export interface CapabilityImplementation {
@@ -60,5 +62,3 @@ export interface WorkspaceAggregateBinding {
   readonly id: string;
   readonly capabilities: readonly string[];
 }
-
-

@@ -1,0 +1,131 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:eos:science:gate-c:schema:experiment:v1"
+title: EOS Experiment Subject Schema
+description: >
+  Machine-readable contract for every experimental subject artifact (specification/experiments/<domain>/*.yaml).
+  Aligned with CC-001 Constitutional Predicate Model.
+  Every experiment subject SHALL validate against this schema before PREPARE phase (protocol.yaml PHASE-01).
+type: object
+additionalProperties: false
+required:
+  - version
+  - status
+  - experiment_subject_id
+  - domain
+  - operation
+  - operation_label
+  - schema_ref
+  - predicate_anchor_map
+  - input_fixtures
+  - transformation_contract
+  - expected_truth_table_row_match
+  - expected_constitutional_validity
+  - expected_predicates_ref
+  - oracle_spec_ref
+  - expected_evaluation_ref
+
+properties:
+  version:
+    type: string
+    pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+  status:
+    type: string
+    enum: [EXPERIMENT_SUBJECT, PROPOSED, RETIRED]
+  experiment_subject_id:
+    type: string
+    pattern: "^GATE-C-[A-Z0-9-]+$"
+  domain:
+    type: string
+    description: >
+      The experimental domain (e.g. document, procurement, identity, service).
+      Does NOT appear in the theory (hypothesis.yaml) because the theory is substrate-independent.
+    minLength: 1
+  operation:
+    type: string
+    minLength: 1
+  operation_label:
+    type: string
+  schema_ref:
+    type: string
+  illustrative_source:
+    type: string
+
+  predicate_anchor_map:
+    type: object
+    additionalProperties: false
+    required: [pred_a_legitimate, pred_b_meaning_preserved, pred_c_provable]
+    properties:
+      pred_a_legitimate:
+        type: object
+        required: [expected_value, rationale]
+        additionalProperties: false
+        properties:
+          expected_value: { type: boolean }
+          rationale: { type: string }
+          authority_path_expected: { type: string }
+      pred_b_meaning_preserved:
+        type: object
+        required: [expected_value, rationale]
+        additionalProperties: false
+        properties:
+          expected_value: { type: boolean }
+          rationale: { type: string }
+          canonical_identity_expected: { type: string }
+      pred_c_provable:
+        type: object
+        required: [expected_value, rationale]
+        additionalProperties: false
+        properties:
+          expected_value: { type: boolean }
+          rationale: { type: string }
+
+  input_fixtures:
+    type: object
+    additionalProperties: false
+    properties:
+      documents:
+        type: array
+        items: { type: string }
+      policies:
+        type: array
+        items: { type: string }
+      contracts:
+        type: array
+        items: { type: string }
+      evidence:
+        type: array
+        items: { type: string }
+
+  transformation_contract:
+    type: object
+    additionalProperties: false
+    required: [id, name, reference, preconditions, postconditions, invariants]
+    properties:
+      id:
+        type: string
+        pattern: "^TC-[A-Z0-9-]+$"
+      name: { type: string }
+      reference:
+        const: "LEX-0000H"
+      preconditions:
+        type: array
+        items: { type: string }
+      postconditions:
+        type: array
+        items: { type: string }
+      invariants:
+        type: array
+        items: { type: string }
+
+  expected_truth_table_row_match:
+    type: string
+    enum: [P1, N1, N2, N3, N4, N5, N6, N7]
+  expected_constitutional_validity: { type: boolean }
+
+  expected_predicates_ref: { type: string }
+  oracle_spec_ref: { type: string }
+  expected_evaluation_ref: { type: string }
+  test_suite_refs:
+    type: array
+    items: { type: string }
+  notes: { type: string }

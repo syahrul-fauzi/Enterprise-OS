@@ -1,0 +1,47 @@
+version: "1.0.0"
+status: EXPERIMENT_SUBJECT
+experiment_subject_id: SAGE-CANVAS-001-NEG-001
+domain: manufacturing
+operation: procure
+operation_label: ProcureMaterialGovernance
+schema_ref: ../../schemas/experiment.schema.yaml
+
+predicate_anchor_map:
+  pred_a_legitimate:
+    expected_value: false
+    rationale: "The procurement violates policy (over budget), therefore the action is correctly identified as not legitimate."
+  pred_b_meaning_preserved:
+    expected_value: true
+    rationale: "The core intent (procure canvas) is clear, but the governance layer must intervene."
+  pred_c_provable:
+    expected_value: false
+    rationale: "Execution must be blocked. The system must prove that authorization was denied due to policy violation."
+
+input_fixtures:
+  documents:
+    - "specification/fixtures/documents/manufacturing/SAGE-CANVAS-001-NEG-001_document.yaml"
+  policies:
+    - "specification/fixtures/policy/manufacturing-policy.yaml"
+  contracts:
+    - "specification/fixtures/contract/placeholder-contract.yaml"
+  evidence:
+    - "specification/fixtures/evidence/SAGE-CANVAS-001-NEG-001_evidence.yaml"
+
+transformation_contract:
+  id: TC-MFG-GOV-001
+  name: Manufacturing Procurement Governance Contract
+  preconditions:
+    - P1 Procurement request submitted with amount > max_auto_approved_settlement
+  postconditions:
+    - Q1 Authorization is DENIED
+    - Q2 State does NOT transition to AUTHORIZED
+    - Q3 An AUTHORIZATION_REQUIRED event is logged in the evidence ledger
+  invariants:
+    - I1 The economic boundary is not breached
+    - I2 economic_principal != decision_actor  # invariant tetap terjaga!
+    - I3 economic authority is explicit
+
+expected_truth_table_row_match: P1
+expected_predicates_ref: "../expected/predicates/manufacturing-predicates.yaml#expected_predicates.SAGE-LINEN-001-NEG-001"
+oracle_spec_ref: ../oracle/oracle.yaml
+expected_evaluation_ref: "../expected/evaluations/manufacturing-evaluations.yaml#expected_evaluations.SAGE-LINEN-001-NEG-001"

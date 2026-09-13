@@ -4,7 +4,7 @@
  * PT-004: Context propagation tetap terjaga selama pergantian actor (decision_id sama, parentContextTraceId terhubung)
  * Substrate Freeze: Hanya reuse existing commands, tidak ada primitive baru
  */
-import { capabilityRegistry } from "@repo/core-kernel";
+import { capabilityRegistry } from "@repo/core-kernel/registry";
 import { executionContext } from "@repo/core-runtime";
 
 describe('RWP-004: Pro Bono High Actor Turnover Flow', () => {

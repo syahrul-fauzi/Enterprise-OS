@@ -4,7 +4,7 @@ import {
   type IntentRepository,
   IntentStatus,
   IntentCategory,
-} from "../contracts/index";
+} from "../contracts/index.js";
 
 // In-memory intent repository for development - matches pattern of all other in-memory repositories
 export class IntentRepositoryInMemory implements IntentRepository {

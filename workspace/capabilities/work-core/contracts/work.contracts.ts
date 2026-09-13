@@ -1,24 +1,25 @@
 import { z } from "zod";
-import type { CompositionId } from "@capabilities/atomic-composition/implementation/contracts/atomic-composition.contracts.js";
 
 // Use z.BRAND compatible type definition to match atomic-composition contracts
 // This resolves type mismatch between our __brand and internal Zod BRAND symbols
 // Revert to __brand pattern to maintain backward compatibility with existing codebase
 // All other repositories use __brand, and BRAND symbol mismatch was causing type errors
+export type CompositionId = string & { __brand: "CompositionId" };
 export type WorkId = string & { __brand: "WorkId" };
 export type TenantId = string & { __brand: "TenantId" };
 export type SessionId = string & { __brand: "SessionId" };
-export type ActorId = string & { __brand: "ActorId" }; // Canonical actor ID from identity layer
+export const ActorIdSchema = z.string().brand("ActorId");
+export type ActorId = z.infer<typeof ActorIdSchema>;
 
 export function WorkId(value: string): WorkId { return value as WorkId; }
 export function TenantId(value: string): TenantId { return value as TenantId; }
 export function SessionId(value: string): SessionId { return value as SessionId; }
 export function ActorId(value: string): ActorId { return value as ActorId; }
 
-export const WorkStatusEnum = ["draft", "active", "suspended", "completed", "cancelled"] as const;
+export const WorkStatusEnum = ["draft", "active", "suspended", "completed", "cancelled", "observed", "explored", "evaluated", "authorized", "procured", "settled"] as const;
 export type WorkStatus = typeof WorkStatusEnum[number];
 
-export const WorkDomainTypeEnum = ["legal-case", "service-request", "consultation", "ecommerce-order", "software-development", "generic"] as const;
+export const WorkDomainTypeEnum = ["legal-case", "service-request", "consultation", "ecommerce-order", "software-development", "manufacturing", "generic"] as const;
 export type WorkDomainType = typeof WorkDomainTypeEnum[number];
 
 export const WorkModeEnum = ["oneshot", "project", "continuous", "monitoring", "inspection", "investigation", "operation", "assistance"] as const;

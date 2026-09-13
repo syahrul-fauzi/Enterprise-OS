@@ -1,16 +1,26 @@
 {
-  "extends": "../../../config/typescript/base.json",
+  "extends": "@repo/config-typescript/base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "strictNullChecks": false,
-    "declaration": true,
-
+    "rootDir": "src",
     "composite": true,
+    "declaration": true,
+    "declarationMap": true,
     "incremental": true,
+    "strictNullChecks": true,
     "skipLibCheck": true,
-    "noEmit": false,
-    "rootDir": "src"
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+            "noUncheckedIndexedAccess": true,
+            "resolveJsonModule": true,
+            "strict": true,
+            "target": "ES2022",
+            "noEmit": false
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "**/capabilities/**/*", "**/composition/src/arch15-determinism", "**/composition/src/arch16-boundary", "**/composition/src/certification", "**/composition/src/graph", "**/composition/src/normalizer", "**/composition/src/plan", "**/composition/src/resolver"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
