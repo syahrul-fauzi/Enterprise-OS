@@ -9,4 +9,4 @@ export {
   registerWorkspaceListener,
   unregisterWorkspaceListener,
   type WorkspaceListener
-} from './workspace-notifier';
+} from './workspace-notifier.js';

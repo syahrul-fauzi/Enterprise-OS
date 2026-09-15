@@ -1,0 +1,31 @@
+version: "1.0.0"
+kind: FIXTURE_DOCUMENT_CROSS_TENANT_PROCUREMENT
+fixture_id: FIX-CROSS-TENANT-DENY-003-NEG-003
+status: IMMUTABLE_FIXTURE
+note: >
+  Cross-tenant procurement request fixture for BE-004 negative experiment (dual-actor violation).
+  Serves as reference data input for cross-domain governance denial validation.
+document:
+  canonical_id_placeholder: sha256:cross-tenant-deny-003-canonical-id
+  title: "Invalid Cross-Tenant Procurement Request: Dual-Actor Invariant Violation"
+  classification: internal-cross-tenant
+  retention_period_days: 3650
+  proposer_identity_ref: role-tenant-a-single-actor-01
+  body: |
+    This document submits a cross-tenant procurement request that violates the economic_principal≠decision_actor invariant.
+    Same actor is both initiator and decision_actor; request will be denied due to authority separation violation.
+  metadata:
+    created_for_experiment: GATE-C-CROSS-TENANT-DENY-003
+    epoch_bound: Sprint1
+    initiator: "actor:human:tenant-a-single-actor-01"
+    decision_actor: "actor:human:tenant-a-single-actor-01"
+    economic_principal: "actor:human:company-owner-01"
+    source_tenant_id: "tenant-a-001"
+    target_tenant_id: "tenant-b-002"
+    cross_tenant_approval_id: "FAKE-SELF-APPROVAL-001"
+    auto_approval_limit: 500
+    cross_tenant_procurement_request:
+      total_price_usd: 350
+      material_type: "cotton"
+      quantity: 100
+      purpose: "Single actor initiator=decision_actor violation"

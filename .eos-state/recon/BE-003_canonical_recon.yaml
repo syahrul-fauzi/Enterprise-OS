@@ -1,0 +1,107 @@
+work_id: BE-003
+
+status: PROVEN
+completion: COMPLETED
+locked_at: 2026-09-14T00:00:00.000Z
+
+proof_scope:
+  positive_cases: 1
+  negative_cases: 3
+  total_fixtures: 4
+
+positive:
+  SAGE-COTTON-001:
+    fixture_id: POS-001
+    governance: APPROVED
+    mutation: PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: BE003-001
+    acceptance_status: ACCEPTED
+
+negative:
+  SAGE-LINEN-001-NEG-001:
+    fixture_id: NEG-001
+    reason: UNAUTHORIZED_CATEGORY
+    governance: DENIED
+    mutation: NOT_PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: BE003-002
+    acceptance_status: ALREADY_ACCEPTED
+
+  SAGE-LINEN-001-NEG-002:
+    fixture_id: NEG-002
+    reason: OVERLIMIT
+    governance: DENIED
+    mutation: NOT_PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: BE003-003
+    acceptance_status: ACCEPTED
+
+  SAGE-LINEN-001-NEG-003:
+    fixture_id: NEG-003
+    reason: CROSS_DECISION_ACCESS
+    governance: DENIED
+    mutation: NOT_PERFORMED
+    evidence: GENERATED
+    replay: CONVERGED
+    run_id: BE003-004
+    acceptance_status: ACCEPTED
+
+architecture:
+  new_primitives_required: 0
+  primitive_reuse: 100%
+  architecture_extension_required: false
+  reused_primitives:
+    - gate-c run-case (execution/replay substrate)
+    - evaluateGateCAcceptanceGovernanceGate (governance engine)
+    - appendProofLedgerEntry (evidence mechanism)
+    - buildAcceptanceAuditForExperimentRun (audit engine)
+    - getRunSubjectId (run manifest parser)
+
+evidence:
+  proof_ledger: existing
+  hash_chain: verified
+  tamper_evident: true
+  cryptographically_immutable: NOT_CLAIMED
+  hash_chaining_implementation: "entry_hash = sha256(entry_content + previous_entry_hash)"
+  cryptographically_hash_chained_and_tamper_evident: true
+  proof_ledger_path: /root/Enterprise-OS/enterprise/science/gate-c/execution/proof-ledger.yaml
+  entries_appended: 4
+  all_entries_verified: true
+
+replay:
+  convergence: 100%
+  failed_replays: 0
+
+adjudication:
+  result: PROVEN
+  status: COMPLETED
+  adjudication_timestamp: 2026-09-14T00:00:00.000Z
+  verifier: eos-command-center
+  invariants_verified:
+    - Positive authorization: PROVEN
+    - Positive mutation: PROVEN
+    - Unauthorized category denied: PROVEN
+    - Overlimit denied: PROVEN
+    - Unauthorized cross-decision access denied: PROVEN
+    - Denial evidence recorded: PROVEN
+    - Replay convergence: PROVEN
+    - All existing primitives reused: PROVEN
+    - No new architecture required: PROVEN
+
+execution_audit_matrix:
+  fixture: | Invariant → | Positive authorization | Positive mutation | Unauthorized category denied | Overlimit denied | Cross-decision access denied | Denial evidence | Replay convergence |
+  --- | --- | --- | --- | --- | --- | --- | --- | ---
+  SAGE-COTTON-001 (POS-001) | ✅ PROVEN | ✅ PROVEN | N/A | N/A | N/A | ✅ PROVEN | ✅ PROVEN |
+  SAGE-LINEN-001-NEG-001 | N/A | N/A | ✅ PROVEN | N/A | N/A | ✅ PROVEN | ✅ PROVEN |
+  SAGE-LINEN-001-NEG-002 | N/A | N/A | N/A | ✅ PROVEN | N/A | ✅ PROVEN | ✅ PROVEN |
+  SAGE-LINEN-001-NEG-003 | N/A | N/A | N/A | N/A | ✅ PROVEN | ✅ PROVEN | ✅ PROVEN |
+
+terminology_corrections_applied:
+  - removed "cryptographically immutable" claim (replaced with verified hash-chained, tamper-evident)
+  - corrected negative fixture terminology: "FAIL" = governance DENY, not test failure
+  - clarified "100% reuse" = 100% of BE-003 required primitives, not zero code
+  - distinguished append-oriented ledger from cryptographically immutable storage

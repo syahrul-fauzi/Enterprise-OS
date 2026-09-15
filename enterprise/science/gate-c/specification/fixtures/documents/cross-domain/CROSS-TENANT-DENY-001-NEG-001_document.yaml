@@ -1,0 +1,31 @@
+version: "1.0.0"
+kind: FIXTURE_DOCUMENT_CROSS_TENANT_PROCUREMENT
+fixture_id: FIX-CROSS-TENANT-DENY-001-NEG-001
+status: IMMUTABLE_FIXTURE
+note: >
+  Cross-tenant procurement request fixture for BE-004 negative experiment (unauthorized tenant).
+  Serves as reference data input for cross-domain governance denial validation.
+document:
+  canonical_id_placeholder: sha256:cross-tenant-deny-001-canonical-id
+  title: "Invalid Cross-Tenant Procurement Request: Unauthorized Tenant Access"
+  classification: internal-cross-tenant
+  retention_period_days: 3650
+  proposer_identity_ref: role-unauthorized-tenant-requester-01
+  body: |
+    This document submits an invalid cross-tenant procurement request from an unauthorized tenant ID.
+    Request will be denied due to missing source tenant authorization.
+  metadata:
+    created_for_experiment: GATE-C-CROSS-TENANT-DENY-001
+    epoch_bound: Sprint1
+    initiator: "actor:human:unauthorized-tenant-requester-01"
+    decision_actor: "actor:ai:cross-tenant-governance-agent-01"
+    economic_principal: "actor:human:company-owner-01"
+    source_tenant_id: "unauthorized-tenant-999"
+    target_tenant_id: "tenant-b-002"
+    cross_tenant_approval_id: "INVALID-CT-APPROVAL-001"
+    auto_approval_limit: 500
+    cross_tenant_procurement_request:
+      total_price_usd: 400
+      material_type: "cotton"
+      quantity: 100
+      purpose: "Unauthorized cross-tenant request"

@@ -1,0 +1,73 @@
+run_id: BE004-NEG-001
+subject_id: GATE-C-CROSS-TENANT-DENY-001-NEG-001
+transformation_contract_id: TC-CROSS-GOV-001
+transformation_contract_name: Cross-Tenant Procurement Governance Contract - Unauthorized Tenant
+strategy_id: ts-reference-runtime/v1
+oracle_id: GATE-C-ORACLE-001
+science_kernel:
+  bundle_id: SC-KERNEL-001
+  bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+measurement_apparatus:
+  oracle:
+    certificate_id: SC-ORACLE-001
+    artifact_hash: sha256:cd39a4024c8f84a6d117890f1298f1690dc6f47f2734b090f63e35d5455efcda
+    instrument_hash: sha256:b92cfef11330bee312b23d0d5409703e61729bacc96d7c8fba41da7cdac1157f
+  witness:
+    certificate_id: SC-WITNESS-001
+    artifact_hash: sha256:674ea467df0ed0e219e143e780a24610cbf26d0ff61798659cf6d72a12dc7d34
+    instrument_hash: sha256:fbaa8738223d97884669d2b6fbdfc2e00015b40c5489712754bb4efd0e755a9f
+  dataset:
+    certificate_id: SC-DATASET-001
+    artifact_hash: sha256:577d034f086a5fcf3fb9f1c5a4a8d4e9b12573c45b98973ce5af4bfedab373d9
+    instrument_hash: sha256:2184fa695220d5d9306b66c61074a88692c73e57e9448bfea32321003ab85fbb
+input_identity:
+  document_semantic_hash: sha256:9d9e070b68095d4da85fd939ff575e35da99556f7b367841ddacdcead6e4f97f
+  subject_hash: sha256:b886f7cf92b2f6db1f087eafc4fa91c11e014379d57db6d66720be465d6d58dd
+  document_fixture_hash: sha256:0d6d00998cd60a5795d8e86362d46c80bec56bfd064d72094c65a22ab82636bb
+  policy_fixture_hash: sha256:6c51d8e797f568c02e99b089686436b902e9d5b14ffe99e15545f0f9d4d26a2c
+  contract_fixture_hash: sha256:eccb3570afe636ef4cdbe73103294e6a23ca09b37bc8d3a986dc887d7c453b07
+  evidence_fixture_hash: sha256:ce9dcfd724ad9847db8bfb10088367debc37116a8c07534dd83ff487ee3430bd
+predicate_vector:
+  pred_a_legitimate: false
+  pred_b_meaning_preserved: true
+  pred_c_provable: false
+verdict: FAIL
+constitutional_validity: false
+truth_table_row: N5
+witness_payloads:
+  authority:
+    authority_chain:
+      - node_id: DocReq-001
+        relation: ROOT_REQUIREMENT
+      - node_id: DocPol-001
+        relation: DERIVES_AUTHORITY_FROM_REQUIREMENT
+      - node_id: DocCon-001
+        relation: DERIVES_AUTHORITY_FROM_POLICY
+    conditions:
+      actual_outcome: AUTHORIZATION_DENIED
+      boundary_triggered: authority_chain_invalid
+      contract_operation_present: true
+      evidence_generated: true
+      expected_outcome: AUTHORIZATION_APPROVED
+      max_auto_approved_limit: 500
+      mutation_blocked: true
+      mutation_performed: false
+      policy_chain_matches_contract: false
+      proposer_role_allowed: true
+      total_procurement_amount: 0
+    result: FAIL
+  meaning:
+    semantic_input_hash: sha256:9d9e070b68095d4da85fd939ff575e35da99556f7b367841ddacdcead6e4f97f
+    semantic_output_hash: sha256:9d9e070b68095d4da85fd939ff575e35da99556f7b367841ddacdcead6e4f97f
+    canonical_identity_preserved: true
+    result: PASS
+  proof:
+    evidence_items:
+      - EVI-PRO-N4-001
+      - EVI-PRO-N4-002
+    postconditions:
+      q1_status_recorded: false
+      q2_proposer_identity_recorded: false
+      q3_audit_trail_recorded: true
+    constructive_entailment_complete: false
+    result: FAIL

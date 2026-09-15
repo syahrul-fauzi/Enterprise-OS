@@ -1,0 +1,20 @@
+version: 1.0.0
+document_id: DOC-MFG-VIOLATION-001
+document_type: procurement_request
+title: "SAGE-LINEN VIOLATION: Procurement Request for Leather Material ($600)"
+metadata:
+  created_at: "2026-09-14T10:00:00Z"
+  created_by: "actor:human:sage-factory-owner-01"
+  tenant_id: "tenant:sage-manufacturing"
+  workspace_id: "workspace:production-planning"
+  procurement_request:
+    quantity_kg: 600
+    price_usd_per_kg: 1.0
+    total_amount: 600.00
+    category: "leather" # Melanggar approved_categories: [linen, canvas, cotton]
+    supplier: "actor:business:leather-supplier-001"
+    delivery_date: "2026-10-01"
+description: "Test procurement request yang intentionally melanggar 2 policy:
+1. Melebihi max_auto_approved_settlement = $500 (total $600)
+2. Menggunakan kategori yang tidak diizinkan (leather)
+Expected outcome: mutation blocked, evidence recorded, human escalation required"

@@ -100,11 +100,11 @@ This document is the master list of all routes in the EOS FACE application. It s
 ### /api/auth
 | Route | Decision | Notes |
 |---|---|---|
-| `/api/auth/callback` | | |
-| `/api/auth/login` | | |
-| `/api/auth/logout` | | |
-| `/api/auth/oidc-login` | | |
-| `/api/auth/signup` | | |
+| `/api/auth/callback` | KEEP | FACE-bound OAuth callback route for browser authentication, sets encrypted workspace session cookies. |
+| `/api/auth/login` | KEEP | FACE-bound credential login route for browser users, creates authenticated workspace session. |
+| `/api/auth/logout` | KEEP | FACE-bound logout route, invalidates session cookie and clears user context. |
+| `/api/auth/oidc-login` | KEEP | FACE-bound OIDC login initiation route for SSO authentication flows in browser. |
+| `/api/auth/signup` | KEEP | FACE-bound account creation route for new users registering via browser. |
 
 ### /api/capabilities
 | Route | Decision | Notes |
@@ -135,8 +135,8 @@ This document is the master list of all routes in the EOS FACE application. It s
 ### /api/communications
 | Route | Decision | Notes |
 |---|---|---|
-| `/api/communications/add` | | |
-| `/api/communications/by-work-id` | | |
+| `/api/communications/add` | KEEP | FACE-bound route for browser/UI consumers, uses cookie session authentication to support anonymous workspace users. Required for collaboration features on the Work Reality Surface. |
+| `/api/communications/by-work-id` | KEEP | FACE-bound route for browser/UI consumers, uses cookie session to retrieve work-related communications. |
 
 ### /api/community
 | Route | Decision | Notes |
@@ -164,20 +164,20 @@ This document is the master list of all routes in the EOS FACE application. It s
 ### /api/external
 | Route | Decision | Notes |
 |---|---|---|
-| `/api/external/services-id/intake` | | |
+| `/api/external/services-id/intake` | MIGRATE | Moved to canonical System Surface: `apps/api/app/api/(integration)/integrations/external/services-id/intake/route.ts`. Current `apps/web` route is legacy - disable after migration. This is a programmatic external intake endpoint, belongs to SYSTEM SURFACE, not FACE.
 
 ### /api/external-webhooks
 | Route | Decision | Notes |
 |---|---|---|
-| `/api/external-webhooks/commsme/government` | | |
-| `/api/external-webhooks/email` | | |
-| `/api/external-webhooks/forms` | | |
-| `/api/external-webhooks/ilc` | | |
-| `/api/external-webhooks/midtrans` | | |
-| `/api/external-webhooks/servicesid` | | |
-| `/api/external-webhooks/slack` | | (disabled) |
-| `/api/external-webhooks/webchat` | | (disabled) |
-| `/api/external-webhooks/whatsapp` | | |
+| `/api/external-webhooks/commsme/government` | MIGRATE | All webhooks are programmatic external integration points - belong to SYSTEM SURFACE `apps/api`. Current `apps/web` routes are legacy. |
+| `/api/external-webhooks/email` | MIGRATE | All webhooks are programmatic external integration points - belong to SYSTEM SURFACE `apps/api`. Current `apps/web` routes are legacy. |
+| `/api/external-webhooks/forms` | MIGRATE | All webhooks are programmatic external integration points - belong to SYSTEM SURFACE `apps/api`. Current `apps/web` routes are legacy. |
+| `/api/external-webhooks/ilc` | MIGRATE | All webhooks are programmatic external integration points - belong to SYSTEM SURFACE `apps/api`. Current `apps/web` routes are legacy. |
+| `/api/external-webhooks/midtrans` | MIGRATE | All webhooks are programmatic external integration points - belong to SYSTEM SURFACE `apps/api`. Current `apps/web` routes are legacy. |
+| `/api/external-webhooks/servicesid` | MIGRATE | All webhooks are programmatic external integration points - belong to SYSTEM SURFACE `apps/api`. Current `apps/web` routes are legacy. |
+| `/api/external-webhooks/slack` | MIGRATE | (disabled) All webhooks are programmatic external integration points - belong to SYSTEM SURFACE `apps/api`. |
+| `/api/external-webhooks/webchat` | MIGRATE | (disabled) All webhooks are programmatic external integration points - belong to SYSTEM SURFACE `apps/api`. |
+| `/api/external-webhooks/whatsapp` | MIGRATE | All webhooks are programmatic external integration points - belong to SYSTEM SURFACE `apps/api`. Current `apps/web` routes are legacy. |
 
 ### /api/governance
 | Route | Decision | Notes |
@@ -272,7 +272,7 @@ This document is the master list of all routes in the EOS FACE application. It s
 ### /api/session
 | Route | Decision | Notes |
 |---|---|---|
-| `/api/session` | | |
+| `/api/session` | KEEP | FACE-bound session initialization route for browser users, creates anonymous or authenticated workspace session. Critical for first-light mode support. |
 
 ### /api/status
 | Route | Decision | Notes |

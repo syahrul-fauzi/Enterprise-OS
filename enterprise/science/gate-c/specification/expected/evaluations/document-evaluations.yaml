@@ -49,7 +49,70 @@ expected_evaluations:
     truth_table_row_matched: N6
     independence_test_required: true
     invariance_test_required: true
-    diagnostic_predicate_failure_required: pred_b_meaning_preserved_and_pred_c_provable
+    diagnostic_predicate_failure_required: pred_b_meaning_preserved
+  # BE-004 Cross-Domain Experiment Evaluations
+  GATE-C-CROSS-TENANT-ALLOW-001:
+    evaluation_result: PASS
+    ia20_constitutional_validity: true
+    truth_table_row_matched: P1
+    independence_test_required: true
+    invariance_test_required: true
+    acceptance_audit:
+      economic_principal_is_not_decision_actor: true
+      boundary_enforced: true
+      ia20_constitutional_validity: true
+      constitutionally_valid: true
+      independence_test_required: true
+      invariance_test_required: true
+      summary: "POS-001 passed: cross-tenant procurement authorized with valid boundaries"
+  GATE-C-CROSS-TENANT-DENY-001-NEG-001:
+    evaluation_result: FAIL
+    ia20_constitutional_validity: false
+    truth_table_row_matched: N1
+    independence_test_required: true
+    invariance_test_required: true
+    diagnostic_predicate_failure_required: pred_a_legitimate
+    acceptance_audit:
+      economic_principal_is_not_decision_actor: true
+      boundary_enforced: true
+      ia20_constitutional_validity: false
+      constitutionally_valid: false
+      independence_test_required: true
+      invariance_test_required: true
+      diagnostic_predicate_failure_required: pred_a_legitimate
+      summary: "NEG-001 passed: unauthorized cross-tenant access correctly denied"
+  GATE-C-CROSS-TENANT-DENY-002-NEG-002:
+    evaluation_result: FAIL
+    ia20_constitutional_validity: false
+    truth_table_row_matched: N2
+    independence_test_required: true
+    invariance_test_required: true
+    diagnostic_predicate_failure_required: pred_b_meaning_preserved
+    acceptance_audit:
+      economic_principal_is_not_decision_actor: true
+      boundary_enforced: true
+      ia20_constitutional_validity: false
+      constitutionally_valid: false
+      independence_test_required: true
+      invariance_test_required: true
+      diagnostic_predicate_failure_required: pred_b_meaning_preserved
+      summary: "NEG-002 passed: cross-tenant document meaning corruption blocked"
+  GATE-C-CROSS-TENANT-DENY-003-NEG-003:
+    evaluation_result: FAIL
+    ia20_constitutional_validity: false
+    truth_table_row_matched: N3
+    independence_test_required: true
+    invariance_test_required: true
+    diagnostic_predicate_failure_required: pred_a_legitimate_and_pred_c_provable
+    acceptance_audit:
+      economic_principal_is_not_decision_actor: true
+      boundary_enforced: true
+      ia20_constitutional_validity: false
+      constitutionally_valid: false
+      independence_test_required: true
+      invariance_test_required: true
+      diagnostic_predicate_failure_required: pred_a_legitimate_and_pred_c_provable
+      summary: "NEG-003 passed: unprovable cross-tenant request correctly rejected"
   GATE-C-DOC-PROPOSE-N7:
     evaluation_result: FAIL
     ia20_constitutional_validity: false

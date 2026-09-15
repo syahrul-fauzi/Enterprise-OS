@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
-import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository";
+import { PostgresRepository } from "@repo/capabilities-identity/implementation/repositories/base.repository";
 import {
   RequirementAggregate,
   RequirementId,

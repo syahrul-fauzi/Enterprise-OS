@@ -13,6 +13,22 @@ governance:
   rules_version: "1.0"
   contract: "/governance/agent-contract.md"
 
+proof_slices:
+  completed:
+    - work_id: BE-002
+      status: CLOSED
+      completion: COMPLETED
+    - work_id: BE-003
+      status: PROVEN
+      completion: COMPLETED
+      description: "Single-domain governance execution audit - 100% primitive reuse"
+      canonical_record: "/.eos-state/recon/BE-003_canonical_recon.yaml"
+    - work_id: BE-004
+      status: PROVEN
+      completion: COMPLETED
+      description: "Cross-tenant/cross-domain governance enforcement proof - 100% primitive reuse"
+      canonical_record: "/.eos-state/recon/BE-004_canonical_recon.yaml"
+
 product:
   primary: "lawyershub"
   primary_status: "LIVE — Matter Lifecycle E2E executed (case-101 draft→open→closed, 2 transition commands, terminal closedAt stamped)"

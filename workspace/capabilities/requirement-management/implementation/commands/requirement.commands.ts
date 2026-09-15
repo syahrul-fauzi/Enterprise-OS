@@ -26,9 +26,9 @@ import {
 import { getRequirementsByOwnerCommand } from "./get-requirements-by-owner.command";
 import { getAllRequirementsCommand } from "./get-all-requirements.command";
 import { getRequirementByIdCommand } from "./get-requirement-by-id.command";
-import { getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
-import { SessionRepositoryInMemory } from "../../../identity/implementation/repositories/index";
+import { getSessionRepositoryPostgres } from "@repo/capabilities-identity/implementation/repositories/session.repository";
+import { initIdentitySchema } from "@repo/capabilities-identity/implementation/repositories/base.repository";
+import { SessionRepositoryInMemory } from "@repo/capabilities-identity/implementation/repositories/index";
 
 // Toggle session repository based on environment — same pattern as legal-case.commands.ts
 const sessionRepository = process.env.DATABASE_URL

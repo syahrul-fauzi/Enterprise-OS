@@ -1,0 +1,14 @@
+{
+  "title": "SAGE-LINEN-002-VIOLATION: Konsultasi nilai melebihi maxAutoApproved",
+  "description": "Test REAL-002-E: External invocation via apps/api memicu governance primitive yang sama dengan REAL-002-C. Nilai permintaan melebihi batas $500, seharusnya terblokir.",
+  "domainType": "consultation",
+  "specialization": "business-consultation",
+  "tenantId": "tenant.sage-linen-002",
+  "workspaceId": "workspace.sage-linen.production",
+  "actorId": "actor.external.customer-001",
+  "metadata": {
+    "requestedValue": 1250,
+    "maxAutoApproved": 500,
+    "category": "linen"
+  }
+}

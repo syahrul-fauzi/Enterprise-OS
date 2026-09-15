@@ -1,0 +1,45 @@
+version: "1.0.0"
+status: EXPERIMENT_SUBJECT
+experiment_subject_id: GATE-C-CROSS-TENANT-ALLOW-001
+domain: cross-domain
+operation: cross-tenant-procure
+operation_label: CrossTenantProcurementRun
+schema_ref: ../../schemas/experiment.schema.yaml
+
+transformation_contract:
+  id: TC-CROSS-TENANT-GOV-001
+  name: Cross-Tenant Procurement Governance Contract
+  preconditions:
+    - P1 Cross-tenant procurement request submitted with valid inter-tenant authorization
+  postconditions:
+    - Q1 Authorization is ALLOWED
+    - Q2 State transitions to AUTHORIZED
+    - Q3 A CROSS-TENANT_AUTHORIZED event is logged in the evidence ledger
+  invariants:
+    - I1 The cross-tenant boundary is respected
+    - I2 source_tenant≠target_tenant AND inter-tenant authority is explicit
+
+predicate_anchor_map:
+  pred_a_legitimate:
+    expected_value: true
+    rationale: "Cross-tenant document is legitimate and contains valid actor role assignment from source tenant"
+  pred_b_meaning_preserved:
+    expected_value: true
+    rationale: "Document meaning remains intact during cross-tenant processing"
+  pred_c_provable:
+    expected_value: true
+    rationale: "Execution should be approved because all cross-tenant policy requirements are met."
+expected_truth_table_row_match: P1
+expected_predicates_ref: ../../expected/predicates/document-predicates.yaml#expected_predicates.GATE-C-CROSS-TENANT-ALLOW-001
+oracle_spec_ref: ../../oracle/oracle.yaml
+expected_evaluation_ref: ../../expected/evaluations/document-evaluations.yaml#expected_evaluations.GATE-C-CROSS-TENANT-ALLOW-001
+
+input_fixtures:
+  documents:
+    - "specification/fixtures/documents/cross-domain/CROSS-TENANT-ALLOW-001_document.yaml"
+  policies:
+    - "specification/fixtures/policies/document-policy-001.yaml"
+  contracts:
+    - "specification/fixtures/contracts/document-contract-p1.yaml"
+  evidence:
+    - "specification/fixtures/evidence/proposal-p4-proof-valid-evidence.yaml"

@@ -4,7 +4,7 @@
     "outDir": "dist",
     "composite": true
   },
-  "references": [{ "path": "../work-inspection" }],
+  "references": [{ "path": "../work-inspection" }, { "path": "../../packages/core/realtime" }],
   "include": ["implementation/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

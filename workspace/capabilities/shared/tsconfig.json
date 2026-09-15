@@ -12,7 +12,7 @@
     "skipLibCheck": true,
     "composite": true,
     "noEmit": false,
-    "emitDeclarationOnly": true,
+    "emitDeclarationOnly": false,
     "esModuleInterop": true,
     "isolatedModules": true,
     "lib": ["es2022", "DOM", "DOM.Iterable"],

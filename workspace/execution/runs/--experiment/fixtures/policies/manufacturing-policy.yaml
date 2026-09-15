@@ -1,0 +1,13 @@
+# Manufacturing Procurement Policy
+policy:
+  policy_id: "MANUFACTURING_PROCUREMENT_POLICY_V1"
+  access_control:
+    roles_allowed_propose:
+      - "ROLE_PLACEHOLDER"
+  rules:
+    max_auto_approved_settlement: 500
+    approved_categories:
+      - linen
+      - canvas
+      - cotton
+    require_inventory_validation: true

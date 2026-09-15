@@ -1,0 +1,27 @@
+constructive_entailment_complete: false
+evidence_items:
+  - EVI-PRO-N4-001
+  - EVI-PRO-N4-002
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:008a52593a944032540b968e3cf534b0299ce17edba3a22614a5ffd2397ee56e
+  locked_at: 2026-09-14T16:34:08.314Z
+operation: cross-tenant-procure
+postconditions:
+  q1_status_recorded: false
+  q2_proposer_identity_recorded: false
+  q3_audit_trail_recorded: true
+result: FAIL
+subject_id: GATE-C-CROSS-TENANT-DENY-001-NEG-001
+version: 1.0.0
+witness_id: BE004-NEG-001-witness-c
+witness_type: PROOF

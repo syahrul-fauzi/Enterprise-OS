@@ -10,7 +10,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-
+    "@capabilities/work-core": "workspace:*"
   },
   "devDependencies": {
     "@repo/config-typescript": "workspace:*",

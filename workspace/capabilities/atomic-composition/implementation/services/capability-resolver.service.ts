@@ -1225,7 +1225,7 @@ const registerDefaultCapabilities = () => {
     capabilityId: "procure-material",
     name: "Procurement Node 03",
     description: "Node bisnis resmi untuk pengadaan bahan baku",
-    providerType: "business",
+    providerType: "system",
     availabilityScore: 0.95,
     authorizations: ["procurement-access", "financial-authorization", "workspace-write"],
     authorityLevel: 5,

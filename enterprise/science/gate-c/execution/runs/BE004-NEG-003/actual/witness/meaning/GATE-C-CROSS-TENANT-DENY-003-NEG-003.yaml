@@ -1,0 +1,28 @@
+canonical_identity_preserved: true
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:d36f7f2b646845660fc152a33f40486c181f3f25762d51f7dfde2cb55f88a303
+  locked_at: 2026-09-14T16:34:40.644Z
+operation: cross-tenant-authorize
+result: PASS
+semantic_input_hash: sha256:782960c46e65dba023b2b92b703caf0fc30b34508c6e5db968427ebc00913df9
+semantic_output_hash: sha256:782960c46e65dba023b2b92b703caf0fc30b34508c6e5db968427ebc00913df9
+semantic_projection_fields:
+  - body
+  - classification
+  - proposer_identity_ref
+  - retention_period_days
+  - title
+subject_id: GATE-C-CROSS-TENANT-DENY-003-NEG-003
+version: 1.0.0
+witness_id: BE004-NEG-003-witness-b
+witness_type: MEANING

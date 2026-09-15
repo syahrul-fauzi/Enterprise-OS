@@ -1,0 +1,87 @@
+version: 1.0.0
+experimentSubjectId: SAGE-LINEN-002-VIOLATION
+observation_id: --experiment-original-observation-002
+subject_id: SAGE-LINEN-002-VIOLATION
+operation: "procurement.request"
+operationLabel: "Procurement Request Violation Test"
+subjectRef: "fixtures/SAGE-LINEN-002-VIOLATION.yaml"
+expectedPredicatesRef: "#expected_predicates.SAGE-LINEN-002-VIOLATION"
+expectedEvaluationRef: "#expected_evaluations.SAGE-LINEN-002-VIOLATION"
+truthTableRow: "N2"
+transformation_contract_id: TC-MFG-GOV-004
+transformationContractId: "PROC-PROCURE-001"
+transformationContractName: "Manufacturing Procurement Contract"
+transformationPreconditions: ["active_session", "valid_tenant", "valid_workspace"]
+transformationPostconditions: ["mutation_blocked", "evidence_recorded", "escalation_triggered"]
+transformationInvariants: ["work_state_unchanged", "no_database_mutation"]
+strategy_id: ts-reference-runtime/v1
+execution_mode: ORIGINAL
+input_fixture_hashes:
+  document: sha256:9c6847d0f6756be77a7d39a9407f63c34076194a7ff64693b0bff3d9894e58d7
+  policy: sha256:21e34e388a4137b73115c5d95a5b16abe33afce1bb8255c3ec8ebdedd7574247
+  contract: sha256:c542f0d44daf091d3425d4e36523af550891b23d49b5038c5365434328fc6647
+  evidence: sha256:53a61f8fbf675af1c7a4bacbe9cbea0a64aafe2051beb8540b98b63b8e5c9ab8
+documentFixtureRefs: ["./documents/sage-linen-violation-001.yaml"]
+policyFixtureRefs: ["./policies/manufacturing-policy.yaml"]
+contractFixtureRefs: []
+evidenceFixtureRefs: []
+transformation_output:
+  title: SAGE-LINEN-002-VIOLATION Work Item
+  classification: UNCLASSIFIED
+  retention_period_days: 365
+  proposer_identity_ref: actor:human:sage-factory-owner-01
+  body: "Test case VIOLATION: Procurement melebihi max_auto_approved_settlement dan kategori tidak diizinkan, expecting mutation blocked + human escalation."
+  metadata:
+    acceptance_criteria:
+      criterion_1:
+        description: "Policy engine menolak AUTO_AUTHORIZE dengan error: SETTLEMENT_LIMIT_EXCEEDED + CATEGORY_PROHIBITED"
+        evidence: null
+        status: NOT_STARTED
+      criterion_2:
+        description: "mutation_blocked = true (state tidak berubah, negative proof terbukti)"
+        evidence: null
+        status: NOT_STARTED
+      criterion_3:
+        description: "assistanceMode di-set ke 'escalated' → membutuhkan persetujuan manusia (approveRequirement)"
+        evidence: null
+        status: NOT_STARTED
+      criterion_4:
+        description: "Evidence tercatat di evidence-registry dengan semua detail violation"
+        evidence: null
+        status: NOT_STARTED
+    actors:
+      decision_actor: actor:ai:procurement-bot-01
+      economic_principal: actor:business:sage-linen-factory-node-01
+      execution_actor: actor:business:procurement-node-03
+      initiator: actor:human:sage-factory-owner-01
+    architecture_changes: NONE
+    created_at: 2026-09-14T00:00:00.000Z
+    domain: Manufacturing
+    domainType: manufacturing
+    experiment: EOS_HYBRID_ACTOR_PLAYGROUND_v0.1
+    external_dependencies: NONE
+    mode: VIRTUAL
+    parent_slice: SAGE-LINEN-002
+    policy:
+      approved_categories:
+        - linen
+        - canvas
+        - cotton
+      max_auto_approved_settlement: 500
+    state: READY_TO_EXECUTE
+    test_type: GOVERNANCE_NEGATIVE
+    transaction:
+      amount: 600
+      force_procurement: false
+      intent: PROCURE_MATERIALS
+      material_category: leather
+      requested_quantity: 600
+      price_usd_per_kg: 1.0
+      total_amount: 600.00
+    user_job: "Test case VIOLATION: Over-budget procurement ($600 > $500) + prohibited category (leather) → mutation blocked, evidence recorded, human escalation triggered."
+    work_id: SAGE-LINEN-002-VIOLATION
+    recorded_status: PROPOSED
+    proposal_recorded_by: TS-REFERENCE-RUNTIME-001
+    proposal_evidence_ids:
+      - EV-PLACEHOLDER-003
+      - EV-PLACEHOLDER-004

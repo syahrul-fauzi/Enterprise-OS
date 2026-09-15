@@ -1,0 +1,39 @@
+version: 1.0.0
+observation_id: BE004-NEG-002-original-observation-001
+subject_id: GATE-C-CROSS-TENANT-DENY-002-NEG-002
+transformation_contract_id: TC-CROSS-GOV-002
+strategy_id: ts-reference-runtime/v1
+execution_mode: ORIGINAL
+input_fixture_hashes:
+  document: sha256:e3d0c50c81034693f8b7bdb403e466a5030993981570ebf9a357eefa94e0584a
+  policy: sha256:6c51d8e797f568c02e99b089686436b902e9d5b14ffe99e15545f0f9d4d26a2c
+  contract: sha256:eccb3570afe636ef4cdbe73103294e6a23ca09b37bc8d3a986dc887d7c453b07
+  evidence: sha256:ce9dcfd724ad9847db8bfb10088367debc37116a8c07534dd83ff487ee3430bd
+transformation_output:
+  title: "Invalid Cross-Tenant Procurement Request: Unauthorized Mutation of Approved Request"
+  classification: internal-cross-tenant
+  retention_period_days: 3650
+  proposer_identity_ref: role-tenant-a-mutator-01
+  body: |
+    This document submits a cross-tenant procurement request that was previously approved but has been unauthorizedly mutated.
+    Price was increased beyond approval limits; request will be denied.
+  metadata:
+    auto_approval_limit: 500
+    created_for_experiment: GATE-C-CROSS-TENANT-DENY-002
+    cross_tenant_approval_id: CT-APPROVAL-2026-Q3-0001
+    cross_tenant_procurement_request:
+      material_type: cotton
+      purpose: Unauthorized mutation of approved request (price increased)
+      quantity: 100
+      total_price_usd: 1200
+    decision_actor: actor:ai:cross-tenant-governance-agent-01
+    economic_principal: actor:human:company-owner-01
+    epoch_bound: Sprint1
+    initiator: actor:human:tenant-a-mutator-01
+    source_tenant_id: tenant-a-001
+    target_tenant_id: tenant-b-002
+    recorded_status: PROPOSED
+    proposal_recorded_by: TS-REFERENCE-RUNTIME-001
+    proposal_evidence_ids:
+      - EVI-PRO-N4-001
+      - EVI-PRO-N4-002

@@ -1,0 +1,44 @@
+{
+  "extends": "../../config/typescript/nextjs.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      // Core-only paths (removed all presentation/UI packages for API standalone)
+      "@repo/core-kernel": ["../../packages/core/kernel/dist"],
+      "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*"],
+      "@repo/core-runtime": ["../../packages/core/runtime/dist"],
+      "@repo/core-runtime/*": ["../../packages/core/runtime/dist/*"],
+      "@repo/core-runtime/src/*": ["../../packages/core/runtime/dist/src/*"],
+      "@repo/core-runtime/execution-status.js": ["../../packages/core/runtime/dist/src/execution-status.js"],
+      "@repo/core-capability-registry": ["../../packages/core/capability-registry/dist"],
+      "@repo/core-capability-registry/*": ["../../packages/core/capability-registry/dist/*"],
+      "@repo/composition": ["../../packages/composition/dist"],
+      "@repo/composition/*": ["../../packages/composition/dist/*"],
+      "@repo/capabilities-identity": ["../../capabilities/identity/dist"],
+      "@repo/capabilities-identity/*": ["../../capabilities/identity/dist/*"],
+      "@repo/capabilities-identity/repositories": ["../../capabilities/identity/dist/repositories"],
+      "@capabilities/*": ["../../capabilities/*/dist"],
+      "@capabilities/shared/*": ["../../capabilities/shared/implementation/*"],
+      "@capabilities/communication/*": ["../../capabilities/communication/dist/*"],
+      "@capabilities/legal-case/*": ["../../capabilities/legal-case/dist/*"],
+      "@capabilities/atomic-composition/*": ["../../capabilities/atomic-composition/dist/*"],
+      "@capabilities/consultation/*": ["../../capabilities/consultation/dist/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "next.config.js",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": ["node_modules"]
+}

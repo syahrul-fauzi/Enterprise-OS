@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"name": "Enterprise-OS",
+			"path": "."
+		}
+	],
+	"settings": {
+		"sqltools.connections": [
+			{
+				"ssh": "Disabled",
+				"previewLimit": 50,
+				"server": "localhost",
+				"port": 5432,
+				"driver": "PostgreSQL",
+				"database": "eos_identity",
+				"username": "eos_user",
+				"password": "eos_password",
+				"name": "eos"
+			}
+		]
+	}
+}

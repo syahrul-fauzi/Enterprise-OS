@@ -8,6 +8,7 @@ export interface CapabilityContracts {
 export interface CapabilityCommand<TInput = unknown, TOutput = unknown> {
   readonly kind: "command";
   readonly name: string;
+  readonly capability?: string;
   readonly version?: string;
   readonly input?: TInput;
   readonly output?: TOutput;
@@ -17,6 +18,7 @@ export interface CapabilityCommand<TInput = unknown, TOutput = unknown> {
 export interface CapabilityQuery<TInput = unknown, TOutput = unknown> {
   readonly kind: "query";
   readonly name: string;
+  readonly capability?: string;
   readonly version?: string;
   readonly input?: TInput;
   readonly output?: TOutput;

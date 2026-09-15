@@ -2980,8 +2980,46 @@ export const createObservabilityIncident: CreateObservabilityIncidentCommand = {
   }
 };
 
+const createConsultationFromWork: CapabilityCommand<{
+  workId: string;
+  coreWork: any;
+  domainSpecificData?: any;
+}, Promise<{ id: string; workId: string; domainType: string }>> = {
+  kind: "command",
+  name: "consultation.createFromWork",
+  version: "1.0.0",
+  async execute(input) {
+    await ensureIdentitySchema();
+    
+    const result = await createConsultation.execute({
+      title: input.coreWork.title,
+      description: input.coreWork.description || "",
+      userNeed: input.domainSpecificData?.userNeed || input.coreWork.title,
+      priority: input.coreWork.priority,
+      founder: input.domainSpecificData?.founder,
+      ownership: input.domainSpecificData?.ownership,
+      businessType: input.domainSpecificData?.businessType,
+      domicile: input.domainSpecificData?.domicile,
+      kbli: input.domainSpecificData?.kbli,
+      sessionId: input.coreWork.sessionId,
+      tenantId: input.coreWork.tenantId,
+      workspaceId: input.coreWork.workspaceId,
+      actorId: input.coreWork.actorId,
+      linkedWorkItemId: input.workId,
+      ...(input.domainSpecificData || {}),
+    });
+    
+    return {
+      id: result.id,
+      workId: input.workId,
+      domainType: "consultation",
+    };
+  },
+};
+
 export const consultationCommands: Readonly<Record<string, CapabilityCommand>> = {
   "consultation.create": createConsultation,
+  "consultation.createFromWork": createConsultationFromWork,
   "consultation.triage": triageConsultation,
   "consultation.listByWorkspace": listConsultationsByWorkspace,
   "consultation.resolve": resolveConsultation,

@@ -1,12 +1,12 @@
 import { z } from "zod";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
-import type { WorkAggregate } from "../../contracts/work.contracts";
-import { SessionId, TenantId, ActorId } from "../../contracts/work.contracts";
-import { getWorkRepositoryPostgres, WorkRepositoryPostgres } from "../repository/work-postgres.repository";
+import type { WorkAggregate } from "../../contracts/work.contracts.ts";
+import { SessionId, TenantId, ActorId } from "../../contracts/work.contracts.ts";
+import { getWorkRepositoryPostgres, WorkRepositoryPostgres } from "../repository/work-postgres.repository.ts";
 import { getMembershipRepositoryPostgres, type MembershipRepository } from "@repo/capabilities-identity";
-import { getWorksByInstitutionCommand } from "./get-works-by-institution.command";
+import { getWorksByInstitutionCommand } from "./get-works-by-institution.command.ts";
 
-import { WorkModeEnum } from "../../contracts/work.contracts";
+import { WorkModeEnum } from "../../contracts/work.contracts.ts";
 
 // Core Work schema - EOS primitive continuity substrate
 export const CreateCoreWorkRequestSchema = z.object({
@@ -14,7 +14,7 @@ export const CreateCoreWorkRequestSchema = z.object({
   description: z.string().optional(),
   priority: z.enum(["low", "medium", "high", "critical"]).optional(),
   linkedIntentId: z.string().optional(),
-  domainType: z.enum(["legal-case", "service-request", "consultation", "generic"]).default("generic"),
+  domainType: z.enum(["legal-case", "service-request", "consultation"]).default("legal-case"),
   workMode: z.enum(WorkModeEnum).default("oneshot"),
   domainSpecificData: z.record(z.string(), z.any()).optional(),
   
@@ -50,7 +50,7 @@ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: strin
   const savedWork = await workRepository.save(coreWork as WorkAggregate);
   
   // Panggil atomic-composition untuk compose tim dari requirements
-  const compositionResult = await capabilityRegistry.invokeAsync(
+  const compositionResult = await capabilityRegistry.invoke(
           "atomic-composition",
            "composeTeamFromRequirements",
            {
@@ -85,7 +85,7 @@ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: strin
   
   const domainConfig = domainCapabilityMap[input.domainType];
   if (domainConfig) {
-    await capabilityRegistry.invokeAsync(domainConfig.capability, domainConfig.command, {
+    await capabilityRegistry.invoke(domainConfig.capability, domainConfig.command, {
       workId: savedWork.workId,
       coreWork: updatedWork, // Pass the updated work with ONLY compositionId (teamId removed)
       domainSpecificData: input.domainSpecificData,

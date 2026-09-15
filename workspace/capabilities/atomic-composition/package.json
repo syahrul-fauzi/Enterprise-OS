@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@repo/core-kernel": "workspace:*",
+    "@repo/core-realtime": "workspace:*",
     "@repo/capabilities-identity": "workspace:*",
     "@capabilities/work-inspection": "workspace:*",
     "@capabilities/work-core": "workspace:*",

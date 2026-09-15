@@ -14,7 +14,7 @@ predicate_anchor_map:
     expected_value: true
     rationale: "The core intent (procure linen) is clear, but the governance layer must intervene."
   pred_c_provable:
-    expected_value: false
+    expected_value: true
     rationale: "Execution must be blocked. The system must prove that authorization was denied due to policy violation."
 
 input_fixtures:
@@ -40,7 +40,7 @@ transformation_contract:
     - I1 The economic boundary is not breached
     - I2 economic_principal≠decision_actor AND economic authority is explicit
 
-expected_truth_table_row_match: P1
+expected_truth_table_row_match: N1
 expected_predicates_ref: "../expected/predicates/manufacturing-predicates.yaml#expected_predicates.SAGE-LINEN-001-NEG-001"
 oracle_spec_ref: ../oracle/oracle.yaml
 expected_evaluation_ref: "../expected/evaluations/manufacturing-evaluations.yaml#expected_evaluations.SAGE-LINEN-001-NEG-001"

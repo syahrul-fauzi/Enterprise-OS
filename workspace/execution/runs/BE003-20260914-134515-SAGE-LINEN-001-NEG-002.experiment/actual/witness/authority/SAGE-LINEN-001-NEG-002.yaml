@@ -1,0 +1,40 @@
+authority_chain:
+  - node_id: DocReq-001
+    relation: ROOT_REQUIREMENT
+  - node_id: MfgPol-001
+    relation: DERIVES_AUTHORITY_FROM_REQUIREMENT
+  - node_id: C-MFG-001
+    relation: DERIVES_AUTHORITY_FROM_POLICY
+conditions:
+  actual_outcome: AUTHORIZATION_APPROVED
+  boundary_triggered: null
+  contract_operation_present: true
+  evidence_generated: true
+  expected_outcome: AUTHORIZATION_APPROVED
+  max_auto_approved_limit: 500
+  mutation_blocked: false
+  mutation_performed: true
+  policy_chain_matches_contract: true
+  proposer_role_allowed: true
+  total_procurement_amount: 0
+cycle_detected: false
+integrity:
+  chain_of_custody:
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: OBSERVED
+    - actor: TS-REFERENCE-RUNTIME-001
+      state: STORED
+    - actor: GATE-C-ORACLE-001
+      state: VERIFIED
+    - actor: GATE-C-ORACLE-001
+      state: CONSUMED_BY_ORACLE
+  hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
+  lock_hash: sha256:f1f01b8ae6f96616bff8bf83bc44c6e2bbf4fb17f83e921e84dd6b5bb1d7f50c
+  locked_at: 2026-09-14T13:45:16.111Z
+operation: procure
+result: PASS
+role_attested: actor:ai:procurement-agent-01
+subject_id: SAGE-LINEN-001-NEG-002
+version: 1.0.0
+witness_id: BE003-20260914-134515-SAGE-LINEN-001-NEG-002.experiment-witness-a
+witness_type: AUTHORITY

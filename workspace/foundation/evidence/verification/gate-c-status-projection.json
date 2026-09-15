@@ -1,8 +1,8 @@
 {
-  "projection_id": "GateCStatusProjection:8e9ee928afd44f62",
+  "projection_id": "GateCStatusProjection:4409bea27bbb1203",
   "projection_type": "GateCStatusProjection",
   "schema_version": "1.0.0",
-  "projection_digest": "8e9ee928afd44f62afb719bfa22470815f135de1704e78da5255615b382da02a",
+  "projection_digest": "4409bea27bbb12033744e6fbc018fa18a3bbf5c8274d25a28f381f8676247401",
   "generated_from": [
     {
       "source_type": "gate_c_coverage_matrix",
@@ -17,32 +17,32 @@
     {
       "source_type": "gate_c_proof_ledger",
       "source_ref": "enterprise/science/gate-c/execution/proof-ledger.yaml",
-      "source_digest": "e81f39146c02d9ec0e30477a94147c1c039bbed0ff02e3d150c4a3e138164777"
+      "source_digest": "ddd765f604e227d9b1dc6648bc8e4e018d052bdcdc21da89164b20097d97de6d"
     },
     {
       "source_type": "gate_c_acceptance_decisions",
       "source_ref": "enterprise/science/gate-c/execution/acceptance-decisions.yaml",
-      "source_digest": "243739ab649dbe04aebc5fa799e80d6b646ba7635174237bbb51b23f60634003"
+      "source_digest": "b3631e0b7fdfaf4cf352730fc329688313f8296bc6e7a7c02629fca19e9de147"
     }
   ],
-  "generated_at_utc": "2026-09-13T09:48:37.842Z",
+  "generated_at_utc": "2026-09-14T18:22:38.564Z",
   "version": "1.0.0",
   "status_projection_id": "GATE-C-STATUS-001",
   "kind": "OPERATIONAL_READ_MODEL",
   "status": "ACTIVE",
-  "projection_basis_hash": "sha256:35510eb0a162718155b7a2c16a198cdab6664f8695cdd0cd179d271cb17bda19",
+  "projection_basis_hash": "sha256:0a7120736752f24a156e70b74fd45b4d7c8e3c7482d06f99dbbfd0cd70b993be",
   "source_artifacts": {
     "coverage_matrix_ref": "execution/coverage-matrix.yaml",
     "coverage_matrix_hash": "sha256:1f74c4b0363d720ff699b7a2aac2fc63b32d0d29cae7749f6afaa91af56676e6",
     "proof_ledger_ref": "execution/proof-ledger.yaml",
-    "proof_ledger_hash": "sha256:223e7827037076dc8ee192cefcc3878bd2eac5b7f7e20c1346baf797f768203c",
+    "proof_ledger_hash": "sha256:d33a4849fe2299593f02a1d93bcae70800b656a34f6c3ef70c83823a85af7864",
     "acceptance_contract_ref": "execution/acceptance-contract.yaml",
     "acceptance_contract_hash": "sha256:82ff1a602b09b2ff917b31540b033ed7d5910eb707352aa06078d929cfdffc4b",
     "acceptance_decisions_ref": "execution/acceptance-decisions.yaml",
-    "acceptance_decisions_hash": "sha256:60f3d9d898628e5c504b6f56bcb45257293126a79daed21fbcd7897c5a399325",
+    "acceptance_decisions_hash": "sha256:b3d0f009ef4341bdecf3b1ea23503d2da806e98e103ea2e6f5b97f65e63b7461",
     "acceptance_reports_dir_ref": "execution/acceptance",
-    "acceptance_evidence_file_count": 37,
-    "acceptance_evidence_inventory_hash": "sha256:099fa8efddb5ff0a1ec49a30f00a2859e2f2ad3249e6256eba25c282896949bc",
+    "acceptance_evidence_file_count": 66,
+    "acceptance_evidence_inventory_hash": "sha256:df3e18bb43ebecaf20f61b8bad44815e6299b8fe34faf3817a315c8bdda459f5",
     "constitution_summary_ref": "workspace/foundation/evidence/verification/constitution-summary.json",
     "constitution_summary_hash": "sha256:1441a828c9bfcaba2dfbabfa5161b15d6af6e77376c7800c79193a5743553a4d",
     "capability_dependency_constitution_ref": "workspace/foundation/evidence/verification/capability-dependency-constitution.json",
@@ -68,8 +68,8 @@
     "n2_run_ref": "execution/runs/run-004",
     "n4_run_ref": "execution/runs/run-007",
     "append_only_proof_ledger_enforced": true,
-    "proof_ledger_entry_count": 26,
-    "last_entry_hash": "GENESIS_HASH"
+    "proof_ledger_entry_count": 34,
+    "last_entry_hash": "sha256:fb060d92440643ba2a8a785f307e8982b61a3f4b0c14e6698ac2456ea4b96542"
   },
   "operational_rule": {
     "evidence_immutability": "HISTORICAL_EXECUTION_EVIDENCE_IMMUTABLE",
@@ -84,7 +84,7 @@
     },
     "projection_regeneration": {
       "status": "DETERMINISTIC_REBUILD_CAPABLE",
-      "basis_hash": "sha256:35510eb0a162718155b7a2c16a198cdab6664f8695cdd0cd179d271cb17bda19",
+      "basis_hash": "sha256:0a7120736752f24a156e70b74fd45b4d7c8e3c7482d06f99dbbfd0cd70b993be",
       "note": "Projection content is derived only from historical evidence, acceptance evidence, decision log, and proof ledger snapshot hashes."
     },
     "platform_governance_snapshot": {
@@ -855,8 +855,8 @@
       "acceptance_integrity": {
         "formula": "Accepted Evidence / Acceptance Attempts",
         "numerator": 10,
-        "denominator": 26,
-        "value": 0.38461538461538464,
+        "denominator": 49,
+        "value": 0.20408163265306123,
         "status": "ACTIVE",
         "note": "Counts append-only acceptance decisions recorded under the frozen acceptance contract."
       }

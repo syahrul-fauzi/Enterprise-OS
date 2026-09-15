@@ -1,0 +1,47 @@
+work_id: MONITOR-PRODUCTION-HEALTH-001
+product: EOS Production Operations
+user_job: "Monitor production reality to detect evidence gaps and failures"
+acceptance_criteria:
+  - Minimal observation surface tracked for production-proven path /api/integrations/external/services-id/intake
+  - Every check captures E-07 database read-back proof
+  - No speculative architecture changes created for monitoring
+  - All observations documented in evidence trail
+  - Incident gate followed if anomaly detected: Capture → Verify → Classify → Change → Reprove → Freeze
+status: CLOSED / STABLE
+created_at: 2026-09-15T00:00:00.000Z
+updated_at: 2026-09-15T02:50:00.000Z
+assignee: commander-agent
+observation_surface:
+  - api_availability: check every cycle
+  - request_execution: validate full path execution
+  - authorization: verify API key enforcement
+  - mutation: confirm only authorized changes persist
+  - persistence: validate PostgreSQL write durability
+  - evidence: verify evidence chain integrity
+  - read_back: E-07 compliant state verification
+current_cycle: 6
+last_verification:
+  timestamp: 2026-09-15T01:25:00.000Z
+  path: /api/integrations/external/services-id/intake
+  result: PASS
+  e07_verified: true
+  anomalies: 0
+stability_summary:
+  total_cycles: 6
+  all_passed: true
+  zero_incidents: true
+  zero_drift: true
+  zero_evidence_gaps: true
+  arch_delta: 0
+next_campaign: PRODUCTION-OPERATE-001 (PO001-MULTI-ACTOR)
+evidence_trail:
+  - "/root/Enterprise-OS/.eos-state/evidence/PRODUCTION-E2E-001-POS_evidence.json"
+  - "/root/Enterprise-OS/.eos-state/evidence/PRODUCTION-E2E-001-NEG_evidence.json"
+  - "/root/Enterprise-OS/.eos-state/evidence/MONITOR-PRODUCTION-HEALTH-001-CYCLE2_evidence.json"
+  - "/root/Enterprise-OS/.eos-state/evidence/MONITOR-PRODUCTION-HEALTH-001-CYCLE3_evidence.json"
+  - "/root/Enterprise-OS/.eos-state/evidence/MONITOR-PRODUCTION-HEALTH-001-CYCLE4_evidence.json"
+  - "/root/Enterprise-OS/.eos-state/evidence/MONITOR-PRODUCTION-HEALTH-001-CYCLE5_evidence.json"
+  - "/root/Enterprise-OS/.eos-state/evidence/MONITOR-PRODUCTION-HEALTH-001-CYCLE6_evidence.json"
+  - "/root/Enterprise-OS/.eos-state/verification/PO001-MULTI-ACTOR_execution.log"
+  - "/root/Enterprise-OS/.eos-state/verification/PO001-MULTI-ACTOR_arch-check.log"
+  - "/root/Enterprise-OS/.eos-state/governance/PO001-MULTI-ACTOR_decision.json"

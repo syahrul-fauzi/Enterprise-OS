@@ -8,7 +8,7 @@
 // Removed unused communication/legal-case imports to fix module resolution errors
 // import { CommunicationRepositoryPostgres } from "@capabilities/communication/implementation/repository/communication.postgres.repository.js";
 // import { CaseRepositoryPostgres } from "@capabilities/legal-case/implementation/repository/case.postgres.repository.js";
-import { getWorkRepositoryPostgres } from "../../../work-core/implementation/repository/work-postgres.repository";
+import { getWorkRepositoryPostgres } from "@capabilities/work-core/implementation/repository/work-postgres.repository";
 import type { WorkAggregate } from "../contracts/work-inspection.contracts";
 import {
   WorkContext,
@@ -87,7 +87,7 @@ export class WorkInspectionAgent {
     
     // Get ALL active works from core Work repository (not just legal cases)
     const allWorks = await workRepository.list();
-    const activeWorks = allWorks.filter((w: WorkAggregate) => w.status !== "completed" && w.status !== "cancelled");
+    const activeWorks = allWorks.filter(w => w.status !== "completed" && w.status !== "cancelled");
     
     for (const workItem of activeWorks) {
       const workId = workItem.workId as unknown as WorkId;

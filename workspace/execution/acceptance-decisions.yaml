@@ -1188,5 +1188,27 @@ entries:
     entry_hash: sha256:89e607d87f7709f900389ef324405c59c58d3a700f75400de4010a8e144a2ab0
     decision: REJECTED
     counted_as_attempt: true
-count: 58
-last_decision_hash: sha256:89e607d87f7709f900389ef324405c59c58d3a700f75400de4010a8e144a2ab0
+  - decision_id: GATE-C-ACCEPT-DECISION-1789393532486
+    decided_at_utc: 2026-09-14T13:45:32.486Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-134515-SAGE-LINEN-001-NEG-001.experiment
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: false
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+      - proof_ledger_appended
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:700d5ee81084509fe8a36123c32271e625d4663bcd94327a1a96ef3be7aea860
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+count: 59
+last_decision_hash: sha256:700d5ee81084509fe8a36123c32271e625d4663bcd94327a1a96ef3be7aea860

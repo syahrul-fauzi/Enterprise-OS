@@ -17,8 +17,8 @@
     "module": "NodeNext",
     "moduleDetection": "force",
     "moduleResolution": "NodeNext",
-    "emitDeclarationOnly": true,
-    "allowImportingTsExtensions": true,
+    "emitDeclarationOnly": false,
+    "allowImportingTsExtensions": false,
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "strict": true,
@@ -26,6 +26,8 @@
     "paths": {
       "@repo/core-kernel": ["../../packages/core/kernel/dist/index.d.ts", "../../packages/core/kernel/src/index.ts"],
       "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*.d.ts", "../../packages/core/kernel/src/*"],
+      "@repo/core-runtime": ["../../packages/core/runtime/dist/index.d.ts", "../../packages/core/runtime/src/index.ts"],
+      "@repo/core-realtime": ["../../packages/core/realtime/dist/index.d.ts", "../../packages/core/realtime/src/index.ts"],
       "@repo/capability-identity": ["../../capabilities/identity/dist/index.d.ts", "../../capabilities/identity/src/index.ts"],
       "@repo/capability-shared": ["../../capabilities/shared/dist/index.d.ts", "../../capabilities/shared/src/index.ts"],
       "@repo/capability-work-core": ["../../capabilities/work-core/dist/index.d.ts", "../../capabilities/work-core/src/index.ts"],
@@ -38,9 +40,10 @@
   },
   "references": [
     { "path": "../../packages/core/kernel/tsconfig.json" },
-    { "path": "../../packages/core/runtime/tsconfig.json" },
+    { "path": "../../packages/core/realtime/tsconfig.json" },
     { "path": "../identity/tsconfig.json" },
-    { "path": "../shared/tsconfig.json" }
+    { "path": "../shared/tsconfig.json" },
+    { "path": "../../packages/core/runtime/tsconfig.json" }
   ],
   "include": ["implementation/**/*.ts", "contracts/**/*.ts"],
   "exclude": ["dist", "node_modules", "**/*.d.ts"]

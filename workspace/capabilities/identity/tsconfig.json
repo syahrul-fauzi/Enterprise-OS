@@ -11,12 +11,11 @@
     "skipLibCheck": true,
     "noEmit": false,
     "rootDir": ".",
-    "baseUrl": "../../..",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "paths": {
-      "@repo/core-kernel": ["packages/core/kernel/dist"],
-      "@repo/core-kernel/*": ["packages/core/kernel/dist/*"]
+      "@repo/core-kernel": ["../../packages/core/kernel/dist"],
+      "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*"]
     }
   },
   "references": [

@@ -1,4 +1,4 @@
-import type { CapabilityExperienceRoutes } from "@repo/presentation-entities";
+import type { CapabilityExperienceRoutes } from "../../../../packages/presentation/entities/dist/index.js";
 
 export type CapabilityRouteId =
   | "list"

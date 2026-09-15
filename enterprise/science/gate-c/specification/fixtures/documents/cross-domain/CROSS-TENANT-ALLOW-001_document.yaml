@@ -1,0 +1,31 @@
+version: "1.0.0"
+kind: FIXTURE_DOCUMENT_CROSS_TENANT_PROCUREMENT
+fixture_id: FIX-CROSS-TENANT-ALLOW-001
+status: IMMUTABLE_FIXTURE
+note: >
+  Cross-tenant procurement request fixture for BE-004 positive experiment.
+  Serves as reference data input for cross-domain governance validation.
+document:
+  canonical_id_placeholder: sha256:cross-tenant-allow-001-canonical-id
+  title: "Cross-Tenant Procurement Request: Tenant-A to Tenant-B Cotton Shipment"
+  classification: internal-cross-tenant
+  retention_period_days: 3650
+  proposer_identity_ref: role-tenant-a-procurement-manager-01
+  body: |
+    This document submits a cross-tenant procurement request for shared production materials between Tenant-A and Tenant-B.
+    All required cross-tenant approvals are attached; request is within auto-approval limits.
+  metadata:
+    created_for_experiment: GATE-C-CROSS-TENANT-ALLOW
+    epoch_bound: Sprint1
+    initiator: "actor:human:tenant-a-procurement-manager-01"
+    decision_actor: "actor:ai:cross-tenant-governance-agent-01"
+    economic_principal: "actor:human:company-owner-01"
+    source_tenant_id: "tenant-a-001"
+    target_tenant_id: "tenant-b-002"
+    cross_tenant_approval_id: "CT-APPROVAL-2026-Q3-0001"
+    auto_approval_limit: 500
+    cross_tenant_procurement_request:
+      total_price_usd: 350
+      material_type: "cotton"
+      quantity: 100
+      purpose: "Shared production batch"

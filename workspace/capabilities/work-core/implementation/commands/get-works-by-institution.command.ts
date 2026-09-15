@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { getWorkRepositoryPostgres } from "../repository/work-postgres.repository";
-import type { WorkAggregate } from "../../contracts/work.contracts";
+import { getWorkRepositoryPostgres } from "../repository/work-postgres.repository.ts";
+import type { WorkAggregate } from "../../contracts/work.contracts.ts";
 
 export const GetWorksByInstitutionInputSchema = z.object({
   institutionId: z.string().min(1),

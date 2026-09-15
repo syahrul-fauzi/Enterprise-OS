@@ -102,4 +102,7 @@ export type CaseRepository = {
     listByWorkspace(workspaceId: string): Promise<readonly CaseAggregate[]>;
     save(entity: CaseAggregate, context?: { tenantId: string; workspaceId: string; actorId: string }): Promise<CaseAggregate>;
     remove(id: CaseId, context?: { tenantId: string; workspaceId: string }): Promise<boolean>;
+    clear?(): void; // Optional method for in-memory repository testing
+    stopScanner?(): void; // Optional method for in-memory repository testing
+    loadFromDisk?(filePath: string): Promise<void>; // Optional method for in-memory repository testing
 }

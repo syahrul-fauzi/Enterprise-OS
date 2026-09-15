@@ -3,15 +3,24 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
-    "strictNullChecks": false,
-    "declaration": true,
     "composite": true,
-    "noEmitOnError": true,
-    "emitDeclarationOnly": false,
-    "module": "preserve",
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "strictNullChecks": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleDetection": "force",
     "moduleResolution": "bundler",
-    "skipLibCheck": true
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "ES2022",
+    "noEmit": false
   },
   "include": ["src/**/*"],
-  "exclude": ["dist", "build", "node_modules"]
+  "exclude": ["node_modules", "dist"]
 }

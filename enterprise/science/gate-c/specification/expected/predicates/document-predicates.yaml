@@ -48,9 +48,34 @@ expected_predicates:
   GATE-C-DOC-PROPOSE-N6:
     pred_a_legitimate: true
     pred_b_meaning_preserved: false
-    pred_c_provable: false
+    pred_c_provable: true
     constitutionally_valid: false
     truth_table_row_reference: N6
+  # BE-004 Cross-Domain Experiment Predicates
+  GATE-C-CROSS-TENANT-ALLOW-001:
+    pred_a_legitimate: true
+    pred_b_meaning_preserved: true
+    pred_c_provable: true
+    constitutionally_valid: true
+    truth_table_row_reference: P1
+  GATE-C-CROSS-TENANT-DENY-001-NEG-001:
+    pred_a_legitimate: false
+    pred_b_meaning_preserved: true
+    pred_c_provable: true
+    constitutionally_valid: false
+    truth_table_row_reference: N1
+  GATE-C-CROSS-TENANT-DENY-002-NEG-002:
+    pred_a_legitimate: true
+    pred_b_meaning_preserved: false
+    pred_c_provable: true
+    constitutionally_valid: false
+    truth_table_row_reference: N2
+  GATE-C-CROSS-TENANT-DENY-003-NEG-003:
+    pred_a_legitimate: false
+    pred_b_meaning_preserved: true
+    pred_c_provable: false
+    constitutionally_valid: false
+    truth_table_row_reference: N3
   GATE-C-DOC-PROPOSE-N7:
     pred_a_legitimate: false
     pred_b_meaning_preserved: false

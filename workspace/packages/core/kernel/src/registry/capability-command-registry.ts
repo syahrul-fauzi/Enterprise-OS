@@ -53,7 +53,9 @@ export const capabilityRegistry = {
   },
 
   register(command: CapabilityCommand): void {
-    const commandKey = `${command.capability}.${command.name}`;
+    const commandKey = command.capability 
+      ? `${command.capability}.${command.name}` 
+      : command.name;
     if (capabilityCommands[commandKey]) {
       console.warn(`[capabilityRegistry] Overwriting existing command: ${commandKey}`);
     }

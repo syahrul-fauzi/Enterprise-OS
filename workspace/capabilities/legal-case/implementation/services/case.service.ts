@@ -10,10 +10,10 @@ import {
   GetCaseOutput,
   SearchCasesInput,
   SearchCasesOutput,
-} from "../../contracts/index";
-import { createCase, closeCase, assignLawyer } from "../commands/index";
-import { getCase, searchCases } from "../queries/index";
-import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index";
+} from "../../contracts/index.js";
+import { createCase, closeCase, assignLawyer } from "../commands/index.js";
+import { getCase, searchCases } from "../queries/index.js";
+import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
 
 // Match the same environment-based repository toggle as commands/case.commands.ts
 const caseRepository = process.env.DATABASE_URL 
@@ -23,14 +23,28 @@ const caseRepository = process.env.DATABASE_URL
 export class CaseService {
   readonly repositories = { Case: caseRepository } as const;
 
-  async createCase(input: CreateCaseInput): Promise<CreateCaseOutput> {
-    return await createCase.execute(input) as CreateCaseOutput;
+  async createCase(input: CreateCaseInput & { linkedIntentId: string }): Promise<CreateCaseOutput> {
+    // Map contract input to command schema that requires linkedIntentId
+    const commandInput = {
+      ...input,
+      linkedIntentId: input.linkedIntentId,
+    };
+    return await createCase.execute(commandInput) as CreateCaseOutput;
   }
   async closeCase(input: CloseCaseInput): Promise<CloseCaseOutput> {
-    return await closeCase.execute(input) as CloseCaseOutput;
+    // Map contract input (with id) to command schema that requires caseId
+    const commandInput = {
+      caseId: input.id,
+    };
+    return await closeCase.execute(commandInput) as CloseCaseOutput;
   }
   async assignLawyer(input: AssignLawyerInput): Promise<AssignLawyerOutput> {
-    return await assignLawyer.execute(input) as AssignLawyerOutput;
+    // Map contract input (with id) to command schema that requires caseId
+    const commandInput = {
+      caseId: input.id,
+      lawyerId: input.lawyerId,
+    };
+    return await assignLawyer.execute(commandInput) as AssignLawyerOutput;
   }
   async getCase(input: GetCaseInput): Promise<GetCaseOutput> {
     return await getCase.execute(input) as GetCaseOutput;

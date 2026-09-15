@@ -1,13 +1,13 @@
 import { Pool } from "pg";
-import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository";
-import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager";
+import { PostgresRepository } from "../../../identity/dist/implementation/repositories/base.repository.js";
+import { DatabaseMigrationManager } from "../../../shared/dist/database/migrations/migration.manager.js";
 import {
   CaseId,
   type CaseAggregate,
   type CaseRepository,
   CaseStatus,
   CasePriority,
-} from "../../contracts/case.contracts";
+} from "../../contracts/index.js";
 
 // Validate required environment variables in production - matches communication.postgres.repository.ts pattern
 // EXCEPTION: Skip during Next.js build phase (phase-production-build) because build-time static analysis runs in "production" NODE_ENV but has no DB connection
@@ -50,7 +50,7 @@ if (!isBuildPhase) {
   initializeDatabase().catch(err => console.error("[CaseRepositoryPostgres] Failed to initialize database:", err));
 }
 
-import { recordRuntimeInvocation } from "@repo/core-runtime";
+import { recordRuntimeInvocation } from "../../../../packages/core/runtime/dist/src/index.js";
 
 // PostgreSQL-backed case repository implementation
 class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements CaseRepository {

@@ -25,6 +25,7 @@
     "@repo/config-eslint": "workspace:*",
     "@repo/config-typescript": "workspace:*",
     "@types/node": "^22.15.30",
+    "@types/yaml": "^1.9.7",
     "eslint": "^9.39.1",
     "typescript": "5.9.2"
   }

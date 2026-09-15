@@ -827,5 +827,616 @@ entries:
     entry_hash: sha256:f071a16b4fb1049b933127927665c2031647449b38ca948d3cf1b526f616da99
     decision: REJECTED
     counted_as_attempt: true
-count: 42
-last_decision_hash: sha256:f071a16b4fb1049b933127927665c2031647449b38ca948d3cf1b526f616da99
+  - decision_id: GATE-C-ACCEPT-DECISION-1789391605012
+    decided_at_utc: 2026-09-14T13:13:25.012Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260913-094208-SAGE-COTTON-001.experiment
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: true
+      expected_verdict_achieved: false
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - verdict_is_fail
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:b68edb8285949c1b18057e062fdc1aeb3774b451c2411f6d4b84a85d744a3071
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789392383162
+    decided_at_utc: 2026-09-14T13:26:23.162Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260913-094208-SAGE-COTTON-001.experiment
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: true
+      expected_verdict_achieved: false
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - verdict_is_fail
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:8a33b1ff57415a43d7f02edf89ca9532f8629ad2572e8318e719940dc72fca56
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789392660422
+    decided_at_utc: 2026-09-14T13:31:00.422Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260913-094208-SAGE-COTTON-001.experiment
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: true
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions: []
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:67cb3aaebf371a6b017c14cc70328564549330a939d1b584e70f81b034d11d8f
+    decision: ALREADY_ACCEPTED
+    counted_as_attempt: false
+    proof_ledger_entry_id: GATE-C-BE003-ACCEPT-027
+  - decision_id: GATE-C-ACCEPT-DECISION-1789392869836
+    decided_at_utc: 2026-09-14T13:34:29.836Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-100000-SAGE-CANVAS-001.experiment
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: true
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions: []
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:e1571eb8563a17d93b899b092d0901c2f713705060ace6c71c33f34ca3b0219f
+    decision: ALREADY_ACCEPTED
+    counted_as_attempt: false
+    proof_ledger_entry_id: GATE-C-BE003-ACCEPT-028
+  - decision_id: GATE-C-ACCEPT-DECISION-1789393723645
+    decided_at_utc: 2026-09-14T13:48:43.645Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-134813-SAGE-LINEN-001-NEG-001.experiment
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: false
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+      - proof_ledger_appended
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:c5fe3aa0721f395ff84c2584925c2d142e52aa00a24008a4cafe05ebd06ef6e5
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789394239629
+    decided_at_utc: 2026-09-14T13:57:19.629Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-134813-SAGE-LINEN-001-NEG-001.experiment
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:a077539a7ab920fb7330c0e3fb7775b437e000e99020f41eb50297bf4376581d
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789394519850
+    decided_at_utc: 2026-09-14T14:01:59.850Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-134813-SAGE-LINEN-001-NEG-001.experiment
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:a4e9b79280407be9ef3cba930f72f03eea2eaf0b8ccca70bb2c8b316a69b8ce8
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789394530269
+    decided_at_utc: 2026-09-14T14:02:10.269Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-134813-SAGE-LINEN-001-NEG-001.experiment
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:5d2962e99628f2278abcf9166f4ca70cafe7cbdb75832c8d5d351ad78c080d5d
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789394541439
+    decided_at_utc: 2026-09-14T14:02:21.439Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-134813-SAGE-LINEN-001-NEG-001.experiment
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:48b5ae162e8b67e4210efe01c3e2ebe43f8f1dd79e42d79d8483b08a4d60787d
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789394695718
+    decided_at_utc: 2026-09-14T14:04:55.718Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-134813-SAGE-LINEN-001-NEG-001.experiment
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:3f049c08aececa5d0955f666ea2f98d0a3095eedb6cad1852e81cb4a86873f7c
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789394713220
+    decided_at_utc: 2026-09-14T14:05:13.220Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-134813-SAGE-LINEN-001-NEG-001.experiment
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:ddd29a1bba9aa85412456d2633e92a79e6054041a1414a0524155bda87e053ba
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789394751825
+    decided_at_utc: 2026-09-14T14:05:51.825Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-134813-SAGE-LINEN-001-NEG-001.experiment
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:79461de213f4ebd9e40174a176393dcf3516bdf13bede784365cb6968cd6292b
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789396260047
+    decided_at_utc: 2026-09-14T14:31:00.047Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260913-094208-SAGE-COTTON-001.experiment
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: true
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions: []
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:9442f5b4c8588e4ff452a46e3143f80761eb8bc9e9de8ccfc9e04331a4499be6
+    decision: ALREADY_ACCEPTED
+    counted_as_attempt: false
+    proof_ledger_entry_id: GATE-C-BE003-ACCEPT-027
+  - decision_id: GATE-C-ACCEPT-DECISION-1789396297875
+    decided_at_utc: 2026-09-14T14:31:37.875Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-134813-SAGE-LINEN-001-NEG-001.experiment
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:7f444842e1957abcd570c440090db390b3a15a60e9557adcd5f6daccbee742b4
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789396791752
+    decided_at_utc: 2026-09-14T14:39:51.752Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-150000-SAGE-LINEN-001-NEG-001
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: false
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+      - expected_verdict_achieved
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:a8bedf489a9b2ec37f253dba1e72119cabdb17081fafd5d3b8dd51ced888c7d6
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789397665239
+    decided_at_utc: 2026-09-14T14:54:25.239Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-153000-SAGE-LINEN-001-NEG-001
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:dd222cd5622010d70804dc7b874295a16566d4c2bc1a21d0e3cb8e4c26aaf191
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789397969794
+    decided_at_utc: 2026-09-14T14:59:29.794Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-153000-SAGE-LINEN-001-NEG-001
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:ca45e0cab18c21d00af07f66ad4d5b962b54ca241df808f60164cc1876bba569
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789398544303
+    decided_at_utc: 2026-09-14T15:09:04.303Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-153000-SAGE-LINEN-001-NEG-001
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:bf87c39800a1244f4796ed7497596e0aa93499b3ca18ba91f21d3cd252bec691
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789398702067
+    decided_at_utc: 2026-09-14T15:11:42.067Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-153000-SAGE-LINEN-001-NEG-001
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:f40713ca5c039b19f427a02a2c66363291749365da16bca8922d4efd589311aa
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789398880005
+    decided_at_utc: 2026-09-14T15:14:40.005Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-153000-SAGE-LINEN-001-NEG-001
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:95905e2cfefb9692013ff755c635ecb3fe4d56a62e3f27f0d03b2c526443e513
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789398890362
+    decided_at_utc: 2026-09-14T15:14:50.362Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-153000-SAGE-LINEN-001-NEG-001
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:08991a1110d8a003f6731eda69da56df26f89a6aeb00f0c191faa8d49eb74c24
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789398920941
+    decided_at_utc: 2026-09-14T15:15:20.941Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-153000-SAGE-LINEN-001-NEG-001
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:adcc407d65aadcbd0824ae0fe54555668783488b5c4fc371b17d5689c02cb2fd
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789399024698
+    decided_at_utc: 2026-09-14T15:17:04.698Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-153000-SAGE-LINEN-001-NEG-001
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: true
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions: []
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:631fad396d40a5581d15f57c662eba2a9eb7e1a85d60fec6c6f2abeaea1efc34
+    decision: ALREADY_ACCEPTED
+    counted_as_attempt: false
+    proof_ledger_entry_id: GATE-C-BE003-ACCEPT-031
+  - decision_id: GATE-C-ACCEPT-DECISION-1789399189367
+    decided_at_utc: 2026-09-14T15:19:49.367Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE003-20260914-153000-SAGE-LINEN-001-NEG-001
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: true
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions: []
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:2abf66541893f73b9c969d542ce6d0ff2e1a95aa42d8884a3522ef48d1360084
+    decision: ALREADY_ACCEPTED
+    counted_as_attempt: false
+    proof_ledger_entry_id: GATE-C-BE003-ACCEPT-031
+  - decision_id: GATE-C-ACCEPT-DECISION-1789407808019
+    decided_at_utc: 2026-09-14T17:43:28.019Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE004-POS-001
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: false
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - fixture_canonical
+      - predicates_match_experiment_expectation
+      - transformation_deterministic
+      - expected_verdict_achieved
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:bd9afc9b08d589a8d37121e0c9c0d3d7e7c315193c548cadf19608abe2ec89b4
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789409329580
+    decided_at_utc: 2026-09-14T18:08:49.580Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE004-POS-001
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: false
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - fixture_canonical
+      - predicates_match_experiment_expectation
+      - transformation_deterministic
+      - expected_verdict_achieved
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:218c862c77dfde2f3c91fcd42efada129d09e2051b8ef6a108af8df4d199b22f
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789409712016
+    decided_at_utc: 2026-09-14T18:15:12.016Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE004-NEG-001
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:9b8643cfabe84da00e9a551c5d842a23a297778edecf15f33f59c4dbc93e920d
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+  - decision_id: GATE-C-ACCEPT-DECISION-1789410156237
+    decided_at_utc: 2026-09-14T18:22:36.237Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE004-NEG-001
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: true
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions: []
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:e0208557bbbaba5dbd31172846e5503736658f1babdb9f302ce0db6942756704
+    decision: ALREADY_ACCEPTED
+    counted_as_attempt: false
+    proof_ledger_entry_id: GATE-C-BE003-ACCEPT-033
+  - decision_id: GATE-C-ACCEPT-DECISION-1789410158272
+    decided_at_utc: 2026-09-14T18:22:38.272Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: BE004-NEG-002
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: false
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions:
+      - predicates_match_experiment_expectation
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:8602bce6c4c2447180c20f8af235c2b469e62c9347cb9358e074b0730a4a9b63
+    decision: REJECTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: null
+count: 71
+last_decision_hash: sha256:8602bce6c4c2447180c20f8af235c2b469e62c9347cb9358e074b0730a4a9b63

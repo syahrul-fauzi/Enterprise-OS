@@ -1,16 +1,17 @@
 import { z } from "zod";
-import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types";
-import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index";
-import { SessionRepositoryInMemory, SessionRepositoryPostgres } from "../../../identity/implementation/repositories/index";
-import type { CaseId, CaseAggregate } from "../../contracts/index";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
+import type { CapabilityCommand } from "../../../../packages/core/kernel/dist/types.js";
+import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
+import { SessionRepositoryInMemory, SessionRepositoryPostgres } from "../../../identity/dist/implementation/repositories/index.js";
+import type { CaseId, CaseAggregate } from "../../contracts/index.js";
+import { initIdentitySchema } from "../../../identity/dist/implementation/repositories/base.repository.js";
 
 // FORCE IN-MEMORY FOR DEVELOPMENT - ignore DATABASE_URL to fix "Work not found" errors
 // Only use Postgres in NODE_ENV=production
-const caseRepository = process.env.NODE_ENV === "production" && process.env.DATABASE_URL
+// Export repositories for test access to ensure same instance
+export const caseRepository = process.env.NODE_ENV === "production" && process.env.DATABASE_URL
   ? CaseRepositoryPostgres 
   : CaseRepositoryInMemory;
-const sessionRepository = process.env.NODE_ENV === "production" && process.env.DATABASE_URL
+export const sessionRepository = process.env.NODE_ENV === "production" && process.env.DATABASE_URL
   ? SessionRepositoryPostgres 
   : SessionRepositoryInMemory;
 
@@ -41,6 +42,7 @@ export type GetCaseByIdOutput = {
 export const getCaseByIdCommand: CapabilityCommand<GetCaseByIdInput, Promise<GetCaseByIdOutput>> = {
   kind: "command",
   name: "case.getById",
+  capability: "legal-case",
   version: "2.0.0",
   async execute(input: unknown) {
     // Initialize Postgres schema only when in production mode

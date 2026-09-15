@@ -7,6 +7,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "node16",
+    "module": "node16",
     "paths": {
       "*": ["./*"],
       "@repo/core-transformation-registry": ["../transformation-registry/dist"],

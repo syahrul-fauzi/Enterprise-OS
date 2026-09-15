@@ -2,7 +2,7 @@
 // Tetap menggunakan existing primitive tanpa membuat baru (substrate freeze compliance)
 let CompositionRepository: any = null;
 try {
-  CompositionRepository = require("../repository/composition.repository.js").CompositionRepository;
+  CompositionRepository = require("../repository/composition.repository").CompositionRepository;
 } catch (e) {
   // Fallback untuk test environment - tetap fungsional tanpa persistence layer
   console.warn("[composition.service.ts] CompositionRepository tidak terload - menggunakan in-memory fallback");
@@ -797,7 +797,7 @@ export function registerAtomicCompositionCapability() {
     return;
   }
   Object.entries(atomicCompositionCommands).forEach(([name, command]) => {
-    capabilityRegistry.registerCommand("atomic-composition", name, command);
+    capabilityRegistry.register(command);
   });
   console.log("[Atomic-Composition] Capability registered successfully - all commands added to capability registry");
 }

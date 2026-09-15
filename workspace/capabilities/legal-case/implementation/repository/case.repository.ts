@@ -1,7 +1,8 @@
-import { recordRuntimeInvocation } from "@repo/core-runtime";
-import { CaseId, type CaseRepository, type CaseAggregate, type CaseId as CaseIdType, CaseStatus, CasePriority } from "../../contracts/index";
+import { recordRuntimeInvocation } from "../../../../packages/core/runtime/dist/src/index.js";
+import { CaseId, type CaseRepository, type CaseAggregate, type CaseId as CaseIdType, CaseStatus, CasePriority } from "../../contracts/index.js";
 // Import canonical realtime notifier from core package (D1 architecture compliance)
-import { notifyWorkspaceListeners } from "../../../../packages/core/realtime/src/workspace-notifier";
+// @ts-ignore - Temporary fix for module declaration issue
+import { notifyWorkspaceListeners } from "../../../../packages/core/realtime/dist/index.js";
 
 // In-memory store for cases - isolated to this module
 const STORE = new Map<string, CaseAggregate>();
@@ -296,8 +297,12 @@ export const CaseRepositoryInMemory: CaseRepository = {
       });
     }
     return deleted;
-  },
+  }
 };
+
+export function getCaseRepositoryInMemory(): CaseRepository {
+  return CaseRepositoryInMemory;
+}
 
 export const newCaseId = (() => {
   // FIX CONTINUITY BREAK-001: Generate alphanumeric case IDs that match the universal work_id pattern

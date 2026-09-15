@@ -62,3 +62,15 @@ expected_evaluations:
       invariance_test_passed: true
       all_predicates_achieved: true
       summary: "SAGE-CANVAS-001 passed: Valid procurement request approved per policy"
+  SAGE-LINEN-002-VIOLATION:
+    outcome: "PASS"
+    truth_table_row_matched: "N2"
+    acceptance_audit:
+      economic_principal_is_not_decision_actor: false
+      boundary_enforced: true
+      ia20_constitutional_validity: false
+      constitutionally_valid: false
+      independence_test_required: true
+      invariance_test_required: true
+      diagnostic_predicate_failure_required: "pred_a_legitimate"
+      summary: "SAGE-LINEN-002-VIOLATION passed: Policy violation detected, mutation blocked, human escalation triggered"

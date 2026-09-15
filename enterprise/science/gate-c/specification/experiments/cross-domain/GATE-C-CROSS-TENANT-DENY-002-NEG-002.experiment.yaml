@@ -1,0 +1,48 @@
+version: "1.0.0"
+status: EXPERIMENT_SUBJECT
+experiment_subject_id: GATE-C-CROSS-TENANT-DENY-002-NEG-002
+domain: cross-domain
+operation: cross-tenant-mutate
+operation_label: CrossTenantResourceMutation
+schema_ref: ../../schemas/experiment.schema.yaml
+
+predicate_anchor_map:
+  pred_a_legitimate:
+    expected_value: false
+    rationale: "The cross-tenant mutation violates policy (no written approval for state change), therefore the action is correctly identified as not legitimate."
+  pred_b_meaning_preserved:
+    expected_value: true
+    rationale: "The core intent (modify target tenant resource) is clear, but the governance layer must intervene."
+  pred_c_provable:
+    expected_value: false
+    rationale: "Execution is blocked. The system generates denial evidence but cannot complete the full proof chain for unauthorized mutation attempts, resulting in pred_c_provable = false as expected for negative controls."
+
+input_fixtures:
+  documents:
+    - "specification/fixtures/documents/cross-domain/CROSS-TENANT-DENY-002-NEG-002_document.yaml"
+  policies:
+    - "specification/fixtures/policies/document-policy-001.yaml"
+  contracts:
+    - "specification/fixtures/contracts/document-contract-n1.yaml"
+  evidence:
+    - "specification/fixtures/evidence/proposal-n4-proof-gap-evidence.yaml"
+
+transformation_contract:
+  id: TC-CROSS-GOV-002
+  name: Cross-Tenant Mutation Governance Contract - Unauthorized Modification
+  preconditions:
+    - P1 Cross-tenant resource modification requested without source tenant written approval
+  postconditions:
+    - Q1 Authorization is DENIED
+    - Q2 State does NOT transition to MUTATED
+    - Q3 An UNAUTHORIZED_MUTATION_ATTEMPT event is logged in the evidence ledger
+  invariants:
+    - I1 The cross-tenant data boundary is not breached
+    - I2 economic_principal≠decision_actor AND economic authority is explicit
+    - I3 Target tenant resource state remains unchanged
+
+expected_truth_table_row_match: N2
+expected_constitutional_validity: false
+expected_predicates_ref: "../../expected/predicates/document-predicates.yaml#expected_predicates.GATE-C-CROSS-TENANT-DENY-002-NEG-002"
+expected_evaluation_ref: "../../expected/evaluations/document-evaluations.yaml#expected_evaluations.GATE-C-CROSS-TENANT-DENY-002-NEG-002"
+oracle_spec_ref: ../oracle/oracle.yaml

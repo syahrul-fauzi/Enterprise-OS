@@ -2,7 +2,7 @@ version: 1.0.0
 ledger_id: GATE-C-PROOF-LEDGER-001
 status: ACTIVE
 append_only_enforced: true
-last_entry_hash: "GENESIS_HASH"
+last_entry_hash: sha256:fb060d92440643ba2a8a785f307e8982b61a3f4b0c14e6698ac2456ea4b96542
 entries:
   - entry_id: GATE-C-GENESIS-001
     run_id: run-001
@@ -51,7 +51,7 @@ entries:
     science_kernel_bundle_id: SC-KERNEL-001
   - entry_id: BE-006-ADJUDICATION-001
     run_id: BE-006-GENERALIZATION-ADJUDICATION-v1
-    subject_id: "BE-006"
+    subject_id: BE-006
     manifest_ref: execution/runs/BE-006/run-manifest.yaml
     report_ref: execution/runs/BE-006/report.yaml
     science_kernel_bundle_id: SC-KERNEL-001
@@ -60,14 +60,14 @@ entries:
     replay_canonical_evidence_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
     convergence: true
     verdict: PASS
-    summary: "Semua Better EOS Milestone BE-001 sampai BE-006 telah terpenuhi 100%. Parameterisasi 11 field berhasil menghasilkan 10x coverage dari satu execution contract, invariant economic_principal≠decision_actor terjaga di semua test case, replay proof compliance terpenuhi, dan tidak ada arsitektur baru yang ditambahkan. Governance matrix runner BE-003 berhasil mengautomasi seluruh test case manufacturing (linen, canvas, cotton) tanpa script duplication."
+    summary: Semua Better EOS Milestone BE-001 sampai BE-006 telah terpenuhi 100%. Parameterisasi 11 field berhasil menghasilkan 10x coverage dari satu execution contract, invariant economic_principal≠decision_actor terjaga di semua test case, replay proof compliance terpenuhi, dan tidak ada arsitektur baru yang ditambahkan. Governance matrix runner BE-003 berhasil mengautomasi seluruh test case manufacturing (linen, canvas, cotton) tanpa script duplication.
     acceptance_audit:
-      be001_positive_proof: "PASS"
-      be002_proof_to_product: "PASS"
-      be003_governance_matrix: "PASS"
-      be004_replay_proof: "PASS"
-      be005_second_scenario: "PASS"
-      be006_generalization: "PASS"
+      be001_positive_proof: PASS
+      be002_proof_to_product: PASS
+      be003_governance_matrix: PASS
+      be004_replay_proof: PASS
+      be005_second_scenario: PASS
+      be006_generalization: PASS
       invariant_enforced: true
       economic_principal_boundary_maintained: true
       no_new_architecture: true
@@ -337,18 +337,18 @@ entries:
     entry_hash: sha256:d178f101507d3acb4936812314d9e73df2db8f6005a982b7f737cd389e238513
   - entry_id: GATE-C-BE003-ACCEPT-001
     timestamp: 2026-09-13T09:00:00Z
-    run_id: "BE-006-GENERALIZATION-ADJUDICATION-v1"
-    subject_id: "BE-006"
-    outcome: "PASS"
-    verdict: "ALL_MILESTONES_COMPLETED"
-    summary: "Semua Better EOS Milestone BE-001 sampai BE-006 telah terpenuhi 100%. Parameterisasi 11 field berhasil menghasilkan 10x coverage dari satu execution contract, invariant economic_principal≠decision_actor terjaga di semua test case, replay proof compliance terpenuhi, dan tidak ada arsitektur baru yang ditambahkan. Governance matrix runner BE-003 berhasil mengautomasi seluruh test case manufacturing (linen, canvas, cotton) tanpa script duplication."
+    run_id: BE-006-GENERALIZATION-ADJUDICATION-v1
+    subject_id: BE-006
+    outcome: PASS
+    verdict: ALL_MILESTONES_COMPLETED
+    summary: Semua Better EOS Milestone BE-001 sampai BE-006 telah terpenuhi 100%. Parameterisasi 11 field berhasil menghasilkan 10x coverage dari satu execution contract, invariant economic_principal≠decision_actor terjaga di semua test case, replay proof compliance terpenuhi, dan tidak ada arsitektur baru yang ditambahkan. Governance matrix runner BE-003 berhasil mengautomasi seluruh test case manufacturing (linen, canvas, cotton) tanpa script duplication.
     acceptance_audit:
-      be001_positive_proof: "PASS"
-      be002_proof_to_product: "PASS"
-      be003_governance_matrix: "PASS"
-      be004_replay_proof: "PASS"
-      be005_second_scenario: "PASS"
-      be006_generalization: "PASS"
+      be001_positive_proof: PASS
+      be002_proof_to_product: PASS
+      be003_governance_matrix: PASS
+      be004_replay_proof: PASS
+      be005_second_scenario: PASS
+      be006_generalization: PASS
       invariant_enforced: true
       economic_principal_boundary_maintained: true
       no_new_architecture: true
@@ -356,3 +356,116 @@ entries:
       ten_x_coverage_achieved: true
     hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
     entry_hash: sha256:placeholder_hash_for_be006
+  - entry_id: GATE-C-BE003-ACCEPT-027
+    run_id: BE003-20260913-094208-SAGE-COTTON-001.experiment
+    subject_id: SAGE-COTTON-001
+    manifest_ref: execution/runs/BE003-20260913-094208-SAGE-COTTON-001.experiment/run-manifest.yaml
+    report_ref: execution/runs/BE003-20260913-094208-SAGE-COTTON-001.experiment/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:427a8e68c4f4313edbc13933760361bfa4ee36e33f264076dfba8e55ac9c978b
+    replay_canonical_evidence_hash: sha256:427a8e68c4f4313edbc13933760361bfa4ee36e33f264076dfba8e55ac9c978b
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:05d826dfb7fea6da22ae14a5125c696e3c651ed433eee6662405c2e7c592169f
+    previous_entry_hash: GENESIS_HASH
+  - entry_id: GATE-C-BE003-ACCEPT-028
+    run_id: BE003-20260914-100000-SAGE-CANVAS-001.experiment
+    subject_id: SAGE-CANVAS-001
+    manifest_ref: execution/runs/BE003-20260914-100000-SAGE-CANVAS-001.experiment/run-manifest.yaml
+    report_ref: execution/runs/BE003-20260914-100000-SAGE-CANVAS-001.experiment/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:b78fc157f8f2e08754821fdaf37b2ad77f829f2dc63e44745a4805552b8a26ce
+    replay_canonical_evidence_hash: sha256:b78fc157f8f2e08754821fdaf37b2ad77f829f2dc63e44745a4805552b8a26ce
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:41b36f26c8da7b8775102c8c09d6fded39dd907b036ed6b6d0a91cbe37ed45fa
+    previous_entry_hash: sha256:05d826dfb7fea6da22ae14a5125c696e3c651ed433eee6662405c2e7c592169f
+  - entry_id: GATE-C-BE003-ACCEPT-029
+    run_id: BE003-20260914-134813-SAGE-LINEN-001-NEG-001.experiment
+    subject_id: SAGE-LINEN-001-NEG-001
+    manifest_ref: execution/runs/BE003-20260914-134813-SAGE-LINEN-001-NEG-001.experiment/run-manifest.yaml
+    report_ref: execution/runs/BE003-20260914-134813-SAGE-LINEN-001-NEG-001.experiment/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:4ec1a20d3f75dfcf4ac91145e02b4ce526ce5db892c23ecdc25d709716676255
+    replay_canonical_evidence_hash: sha256:4ec1a20d3f75dfcf4ac91145e02b4ce526ce5db892c23ecdc25d709716676255
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:6f7894f5409c12cbfa45d448fe720e1107472c4808606d2a952a07e3ca63cc4f
+    previous_entry_hash: sha256:41b36f26c8da7b8775102c8c09d6fded39dd907b036ed6b6d0a91cbe37ed45fa
+  - entry_id: GATE-C-BE003-ACCEPT-030
+    run_id: BE003-20260914-150000-SAGE-LINEN-001-NEG-001
+    subject_id: SAGE-LINEN-001-NEG-001
+    manifest_ref: execution/runs/BE003-20260914-150000-SAGE-LINEN-001-NEG-001/run-manifest.yaml
+    report_ref: execution/runs/BE003-20260914-150000-SAGE-LINEN-001-NEG-001/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:0def9f510c6b65233d6f5cdd65008fc4e435f248f92dcedcb4aabdaaddd1e60f
+    replay_canonical_evidence_hash: sha256:0def9f510c6b65233d6f5cdd65008fc4e435f248f92dcedcb4aabdaaddd1e60f
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:cf9cc8e34c89288da02ac9c359625e16ed84854134b995d957075f2b73c47060
+    previous_entry_hash: sha256:6f7894f5409c12cbfa45d448fe720e1107472c4808606d2a952a07e3ca63cc4f
+  - entry_id: GATE-C-BE003-ACCEPT-031
+    run_id: BE003-20260914-153000-SAGE-LINEN-001-NEG-001
+    subject_id: SAGE-LINEN-001-NEG-001
+    manifest_ref: execution/runs/BE003-20260914-153000-SAGE-LINEN-001-NEG-001/run-manifest.yaml
+    report_ref: execution/runs/BE003-20260914-153000-SAGE-LINEN-001-NEG-001/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:b44129f5d0aa86cf83bb3f146fdb63c2a06bfb96e8095bf9224e119baac73161
+    replay_canonical_evidence_hash: sha256:b44129f5d0aa86cf83bb3f146fdb63c2a06bfb96e8095bf9224e119baac73161
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:be832bc9b55b6b1be40fe11e766a43fb99d7f1c8b79b6e4a80e0b377c2502901
+    previous_entry_hash: sha256:cf9cc8e34c89288da02ac9c359625e16ed84854134b995d957075f2b73c47060
+  - entry_id: GATE-C-BE003-ACCEPT-032
+    run_id: BE004-POS-001
+    subject_id: GATE-C-CROSS-TENANT-ALLOW-001
+    manifest_ref: execution/runs/BE004-POS-001/run-manifest.yaml
+    report_ref: execution/runs/BE004-POS-001/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:6f907010bf2269f7dcfc8832145b6be1835b92eec59ef6faad5750c26220bed5
+    replay_canonical_evidence_hash: sha256:6f907010bf2269f7dcfc8832145b6be1835b92eec59ef6faad5750c26220bed5
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:59bd7a1f3eecc688ade269df00f9ee105575edbcf217ee52746ff9210f896e91
+    previous_entry_hash: sha256:be832bc9b55b6b1be40fe11e766a43fb99d7f1c8b79b6e4a80e0b377c2502901
+  - entry_id: GATE-C-BE003-ACCEPT-033
+    run_id: BE004-NEG-001
+    subject_id: GATE-C-CROSS-TENANT-DENY-001-NEG-001
+    manifest_ref: execution/runs/BE004-NEG-001/run-manifest.yaml
+    report_ref: execution/runs/BE004-NEG-001/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:3d721bdb9b5b412674129254808d66e861222ec990f7cc307568b86a3738a8b0
+    replay_canonical_evidence_hash: sha256:3d721bdb9b5b412674129254808d66e861222ec990f7cc307568b86a3738a8b0
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:bb5e6c3876492bcf308b11cf58408ec4ed5b771d5962259c93ded4d068d780ad
+    previous_entry_hash: sha256:59bd7a1f3eecc688ade269df00f9ee105575edbcf217ee52746ff9210f896e91
+  - entry_id: GATE-C-BE003-ACCEPT-034
+    run_id: BE004-NEG-002
+    subject_id: GATE-C-CROSS-TENANT-DENY-002-NEG-002
+    manifest_ref: execution/runs/BE004-NEG-002/run-manifest.yaml
+    report_ref: execution/runs/BE004-NEG-002/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:9d4910cd49af1e8a5ac57df3261b7379e7472499ce0b99d63db7588f85a50ad6
+    replay_canonical_evidence_hash: sha256:9d4910cd49af1e8a5ac57df3261b7379e7472499ce0b99d63db7588f85a50ad6
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:fb060d92440643ba2a8a785f307e8982b61a3f4b0c14e6698ac2456ea4b96542
+    previous_entry_hash: sha256:bb5e6c3876492bcf308b11cf58408ec4ed5b771d5962259c93ded4d068d780ad
+count: 34

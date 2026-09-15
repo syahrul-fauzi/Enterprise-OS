@@ -1,0 +1,31 @@
+version: "1.0.0"
+kind: FIXTURE_DOCUMENT_CROSS_TENANT_PROCUREMENT
+fixture_id: FIX-CROSS-TENANT-DENY-002-NEG-002
+status: IMMUTABLE_FIXTURE
+note: >
+  Cross-tenant procurement request fixture for BE-004 negative experiment (unauthorized mutation).
+  Serves as reference data input for cross-domain governance denial validation.
+document:
+  canonical_id_placeholder: sha256:cross-tenant-deny-002-canonical-id
+  title: "Invalid Cross-Tenant Procurement Request: Unauthorized Mutation of Approved Request"
+  classification: internal-cross-tenant
+  retention_period_days: 3650
+  proposer_identity_ref: role-tenant-a-mutator-01
+  body: |
+    This document submits a cross-tenant procurement request that was previously approved but has been unauthorizedly mutated.
+    Price was increased beyond approval limits; request will be denied.
+  metadata:
+    created_for_experiment: GATE-C-CROSS-TENANT-DENY-002
+    epoch_bound: Sprint1
+    initiator: "actor:human:tenant-a-mutator-01"
+    decision_actor: "actor:ai:cross-tenant-governance-agent-01"
+    economic_principal: "actor:human:company-owner-01"
+    source_tenant_id: "tenant-a-001"
+    target_tenant_id: "tenant-b-002"
+    cross_tenant_approval_id: "CT-APPROVAL-2026-Q3-0001"
+    auto_approval_limit: 500
+    cross_tenant_procurement_request:
+      total_price_usd: 1200
+      material_type: "cotton"
+      quantity: 100
+      purpose: "Unauthorized mutation of approved request (price increased)"

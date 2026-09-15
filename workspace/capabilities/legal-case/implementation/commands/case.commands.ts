@@ -1,43 +1,44 @@
 import { z } from "zod";
-import type { CapabilityCommand } from "@repo/core-kernel";
+import type { CapabilityCommand } from "../../../../packages/core/kernel/dist/types.js";
 import { getCaseByIdCommand } from "./get-case-by-id.command.js";
 import {
-	CaseRepositoryInMemory,
-	CaseRepositoryPostgres,
-	newCaseId,
-	defaultCasePriority,
-	defaultCaseStatus,
-} from "@repo/capability-legal-case/repository";
+  getCaseRepositoryInMemory,
+  getCaseRepositoryPostgres,
+  newCaseId,
+  defaultCasePriority,
+  defaultCaseStatus,
+} from "../repository/index.js";
 import {
 	getIntentRepositoryPostgres,
 	IntentRepositoryInMemory,
-} from "@repo/capability-identity/repositories";
+} from "../../../identity/dist/implementation/repositories/index.js";
 import {
 	TenantId as TenantIdFactory,
 	WorkspaceId as WorkspaceIdFactory,
 	IntentId as IntentIdFactory,
-} from "@repo/capability-identity/contracts";
+} from "../../../identity/dist/implementation/contracts/index.js";
 
 import {
 	type CaseAggregate,
 	CaseId,
-} from "@repo/capability-legal-case/contracts";
+} from "../../contracts/index.js";
 
 const caseRepository =
-	process.env.NODE_ENV === "development"
-		? new CaseRepositoryInMemory()
-		: new CaseRepositoryPostgres();
+  process.env.NODE_ENV === "development"
+    ? getCaseRepositoryInMemory()
+    : getCaseRepositoryPostgres();
 
 
 
-const intentRepository =
+// Export intentRepository for test access to ensure same instance
+export const intentRepository =
 	process.env.NODE_ENV === "development"
 		? new IntentRepositoryInMemory()
 		: getIntentRepositoryPostgres();
 
 const CreateCaseWithContextSchema = z.object({
 	title: z.string(),
-	description: z.string(),
+	description: z.string().optional(),
 	tenantId: z.string(),
 	workspaceId: z.string(),
 	linkedIntentId: z.string(),
@@ -49,6 +50,7 @@ const createCase: CapabilityCommand<
 > = {
 	kind: "command",
 	name: "create-case",
+	capability: "legal-case",
 	execute: async (input) => {
 		const { title, description, tenantId, workspaceId } =
 			CreateCaseWithContextSchema.parse(input);
@@ -93,6 +95,7 @@ const addEvidenceToCase: CapabilityCommand<
 > = {
 	kind: "command",
 	name: "add-evidence-to-case",
+	capability: "legal-case",
 	execute: async (input) => {
 		const { caseId, evidence } = AddEvidenceToCaseSchema.parse(input);
 		const caseExists = await caseRepository.byId(CaseId(caseId));
@@ -114,6 +117,7 @@ const assignLawyerToCase: CapabilityCommand<
 > = {
 	kind: "command",
 	name: "assign-lawyer-to-case",
+	capability: "legal-case",
 	execute: async (input) => {
 		const { caseId, lawyerId } = AssignLawyerToCaseSchema.parse(input);
 		const caseExists = await caseRepository.byId(CaseId(caseId));
@@ -132,6 +136,7 @@ const CloseCaseSchema = z.object({
 const closeCase: CapabilityCommand<z.infer<typeof CloseCaseSchema>> = {
 	kind: "command",
 	name: "close-case",
+	capability: "legal-case",
 	execute: async (input) => {
 		const { caseId } = CloseCaseSchema.parse(input);
 		const caseExists = await caseRepository.byId(CaseId(caseId));
@@ -153,15 +158,16 @@ const listCasesForTenant: CapabilityCommand<
 > = {
 	kind: "command",
 	name: "list-cases-for-tenant",
+	capability: "legal-case",
 	execute: async (input) => {
 		const { tenantId } = ListCasesForTenantSchema.parse(input);
-		return caseRepository.listByTenant(TenantIdFactory(tenantId));
+		return caseRepository.listByTenant(TenantIdFactory(tenantId)) as Promise<CaseAggregate[]>;
 	},
 };
 
 export const commands = {
 	"create-case": createCase,
-	"get-case-by-id": getCaseByIdCommand,
+	"get-case-by-id": { ...getCaseByIdCommand, capability: "legal-case" },
 	"add-evidence-to-case": addEvidenceToCase,
 	"assign-lawyer-to-case": assignLawyerToCase,
 	"close-case": closeCase,

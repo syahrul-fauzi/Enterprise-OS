@@ -1,18 +1,18 @@
 {
-  "artifact_id": "gate-c-status-evidence:435003d63b73675a",
+  "artifact_id": "gate-c-status-evidence:89ec4bce2eb98a5d",
   "artifact_type": "gate-c-status-evidence",
   "schema_version": "1.0.0",
-  "generated_at_utc": "2026-09-13T09:48:37.842Z",
+  "generated_at_utc": "2026-09-14T18:22:38.564Z",
   "subject": {
     "subject_ref": "enterprise/science/gate-c/execution/gate-c-status.yaml",
     "subject_type": "gate-c-status",
-    "subject_digest": "f9ff482c22988348f6e5e9c32b05030f6623390cdb1fbd070e5586eabb540804"
+    "subject_digest": "ba425c59c1c7b56593ff7865cd5ca92be4edee9af9f5dcd066c3c0c0f12ff53f"
   },
   "projection": {
     "projection_ref": "workspace/foundation/evidence/verification/gate-c-status-projection.json",
-    "projection_id": "GateCStatusProjection:8e9ee928afd44f62",
+    "projection_id": "GateCStatusProjection:4409bea27bbb1203",
     "projection_type": "GateCStatusProjection",
-    "projection_digest": "8e9ee928afd44f62afb719bfa22470815f135de1704e78da5255615b382da02a"
+    "projection_digest": "4409bea27bbb12033744e6fbc018fa18a3bbf5c8274d25a28f381f8676247401"
   },
   "summary": {
     "gate_c1_status": "RATIFIABLE",
@@ -1016,8 +1016,8 @@
         "acceptance_integrity": {
           "formula": "Accepted Evidence / Acceptance Attempts",
           "numerator": 10,
-          "denominator": 26,
-          "value": 0.38461538461538464,
+          "denominator": 49,
+          "value": 0.20408163265306123,
           "status": "ACTIVE",
           "note": "Counts append-only acceptance decisions recorded under the frozen acceptance contract."
         }
@@ -1031,7 +1031,7 @@
     },
     "projection_payload_ref": "workspace/foundation/evidence/verification/gate-c-status-projection.json"
   },
-  "digest": "435003d63b73675acc7f40c2db149866e7f439496e2cdf4be1c27d74e588d80e",
+  "digest": "89ec4bce2eb98a5d9cb907ef5546b8c4b91c9316e06b7fe7c61381f34c2dac60",
   "signature": {
     "status": "UNSIGNED",
     "key_id": null,

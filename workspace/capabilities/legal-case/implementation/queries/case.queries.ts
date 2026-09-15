@@ -4,9 +4,9 @@ import {
   type GetCaseOutput,
   type SearchCasesInput,
   type SearchCasesOutput,
-} from "../../contracts/index";
-import type { CapabilityQuery } from "@repo/core-kernel";
-import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index";
+} from "../../contracts/index.js";
+import type { CapabilityQuery } from "../../../../packages/core/kernel/dist/types.js";
+import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
 
 // Match the same environment-based repository toggle as commands/case.commands.ts
 const caseRepository = process.env.DATABASE_URL 
@@ -19,6 +19,7 @@ type SearchCasesQuery = CapabilityQuery<SearchCasesInput, SearchCasesOutput>;
 export const getCase: GetCaseQuery = {
   kind: "query",
   name: "case.get",
+  capability: "legal-case",
   version: "0.1.0",
   execute(input) {
     return caseRepository.byId(input.id);
@@ -28,6 +29,7 @@ export const getCase: GetCaseQuery = {
 export const searchCases: SearchCasesQuery = {
   kind: "query",
   name: "case.search",
+  capability: "legal-case",
   version: "0.1.0",
   async execute(input) {
     const all = await caseRepository.list();

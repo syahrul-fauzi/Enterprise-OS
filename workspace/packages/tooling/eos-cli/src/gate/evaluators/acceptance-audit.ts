@@ -469,17 +469,30 @@ export function buildAcceptanceAuditForExperimentRun(input: {
     return null; // Not an experiment run with valid subject ID
   }
   
-  const experimentPath = join(
+  // BE-004 Support: Check cross-domain directory first for CROSS-TENANT experiments, then fall back to manufacturing
+  let experimentPath = join(
     input.deps.gateCDir,
     "specification",
     "experiments",
-    "manufacturing",
+    "cross-domain",
     `${subjectId}.experiment.yaml`,
   );
-  console.log("[buildAcceptanceAuditForExperimentRun] experimentPath:", experimentPath, "| exists:", existsSync(experimentPath));
+  console.log("[buildAcceptanceAuditForExperimentRun] checking cross-domain experiment path:", experimentPath, "| exists:", existsSync(experimentPath));
+  
   if (!existsSync(experimentPath)) {
-    console.log("[buildAcceptanceAuditForExperimentRun] experimentPath doesn't exist, returning null");
-    return null; // Not a manufacturing experiment run
+    experimentPath = join(
+      input.deps.gateCDir,
+      "specification",
+      "experiments",
+      "manufacturing",
+      `${subjectId}.experiment.yaml`,
+    );
+    console.log("[buildAcceptanceAuditForExperimentRun] checking manufacturing experiment path:", experimentPath, "| exists:", existsSync(experimentPath));
+  }
+  
+  if (!existsSync(experimentPath)) {
+    console.log("[buildAcceptanceAuditForExperimentRun] experimentPath doesn't exist in any directory, returning null");
+    return null; // Not a valid experiment run
   }
 
   const experiment = input.deps.readYamlRecordIfExists(experimentPath) as any;
@@ -525,10 +538,11 @@ export function buildAcceptanceAuditForExperimentRun(input: {
     };
   }
 
+  // BE-003 Fix: Extract actual runtime predicate values from witness results (use witness.result, not integrity.passes)
   const predicateVector = {
-    pred_a_legitimate: experiment.predicate_anchor_map.pred_a_legitimate.expected_value as boolean,
-    pred_b_meaning_preserved: experiment.predicate_anchor_map.pred_b_meaning_preserved.expected_value as boolean,
-    pred_c_provable: experiment.predicate_anchor_map.pred_c_provable.expected_value as boolean,
+    pred_a_legitimate: witnessA.result === "PASS", // Actual runtime result from authority witness
+    pred_b_meaning_preserved: witnessB.result === "PASS", // Actual runtime result from meaning witness
+    pred_c_provable: witnessC.result === "PASS", // Actual runtime result from proof witness
   };
 
   const witnessResults = {
@@ -557,15 +571,29 @@ export function buildAcceptanceAuditForExperimentRun(input: {
     ...subject.evidenceFixtureRefs,
   ].every((ref) => existsSync(join(input.deps.gateCDir, ref)));
 
+  // BE-003 Fix: Create expected predicate vector from experiment.yaml
+  const expectedPredicateVector = {
+    pred_a_legitimate: experiment.predicate_anchor_map.pred_a_legitimate.expected_value as boolean,
+    pred_b_meaning_preserved: experiment.predicate_anchor_map.pred_b_meaning_preserved.expected_value as boolean,
+    pred_c_provable: experiment.predicate_anchor_map.pred_c_provable.expected_value as boolean,
+  };
+  // Debug predicates for BE-003 negative fixtures
+  console.log("[buildAcceptanceAuditForExperimentRun] runSubjectId:", runSubjectId, "| actual runtime predicates (witness):", JSON.stringify(predicateVector), "| expected predicates (experiment):", JSON.stringify(expectedPredicateVector), "| evaluationPredicates:", JSON.stringify(evaluationPredicates));
   const predicatesMatchExpected =
-    evaluationPredicates.pred_a_legitimate === predicateVector.pred_a_legitimate &&
-    evaluationPredicates.pred_b_meaning_preserved === predicateVector.pred_b_meaning_preserved &&
-    evaluationPredicates.pred_c_provable === predicateVector.pred_c_provable;
+    predicateVector.pred_a_legitimate === expectedPredicateVector.pred_a_legitimate &&
+    predicateVector.pred_b_meaning_preserved === expectedPredicateVector.pred_b_meaning_preserved &&
+    predicateVector.pred_c_provable === expectedPredicateVector.pred_c_provable;
+  console.log("[buildAcceptanceAuditForExperimentRun] predicatesMatchExpected:", predicatesMatchExpected);
 
   // Allow any subject ending with -NEG-001 or -NEG-002 (all manufacturing negative experiments)
   const subjectIsNegative = runSubjectId?.endsWith("-NEG-001") || runSubjectId?.endsWith("-NEG-002");
+  console.log("[buildAcceptanceAuditForExperimentRun] subjectIsNegative:", subjectIsNegative);
   const transformationDeterministic = (subjectIsNegative && definitionOfDone.integrity === true) || (definitionOfDone.execution === true && definitionOfDone.integrity === true);
   const verdictIsFail = verdict.verdict === "FAIL";
+  // BE-003 Fix: Calculate expected_verdict_achieved based on experiment's expected_truth_table_row_match (P1 = expected PASS, Nx = expected FAIL)
+  const isPositiveExperiment = experiment.expected_truth_table_row_match === "P1";
+  const expectedVerdict = isPositiveExperiment ? "PASS" : "FAIL";
+  const expectedVerdictAchieved = verdict.verdict === expectedVerdict;
 
   // Hanya cek bahwa semua witness punya integrity object (basic validity)
   // Result PASS/FAIL sudah sesuai experiment.yaml, tidak perlu hardcode check
@@ -577,7 +605,6 @@ export function buildAcceptanceAuditForExperimentRun(input: {
   const manifestValid =
     manifest.run_id === input.runId &&
     subjectRecord.experiment_subject_id === subjectId;
-
   const proofLedgerAppended = input.deps.hasProofLedgerEntryForRun(input.proofLedgerEntries, input.runId);
   const replayPass = definitionOfDone.replay === true && comparisonNode.same_verdict === true;
   const canonicalEvidenceConvergence =
@@ -591,7 +618,7 @@ export function buildAcceptanceAuditForExperimentRun(input: {
     fixture_canonical: fixtureCanonical,
     predicates_match_experiment_expectation: predicatesMatchExpected,
     transformation_deterministic: transformationDeterministic,
-    verdict_is_fail: verdictIsFail,
+    expected_verdict_achieved: expectedVerdictAchieved,
     witness_valid: witnessValid,
     manifest_valid: manifestValid,
     proof_ledger_appended: proofLedgerAppended,
@@ -619,7 +646,7 @@ export function buildAcceptanceAuditForExperimentRun(input: {
       witness_valid: witnessValid,
       manifest_valid: manifestValid,
       no_instrument_drift: scienceKernelUnchanged,
-      expected_verdict_achieved: verdictIsFail,
+      expected_verdict_achieved: expectedVerdictAchieved,
       expected_predicate_achieved: predicatesMatchExpected,
       canonical_convergence: canonicalEvidenceConvergence,
       ledger_appended: proofLedgerAppended,

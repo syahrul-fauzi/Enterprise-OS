@@ -1,4 +1,4 @@
-import type { WorkAggregate } from "../../contracts/work.contracts";
+import type { WorkAggregate } from "../../contracts/work.contracts.ts";
 import { randomUUID } from "crypto";
 const generateId = () => randomUUID();
 import { PostgresRepository } from "@repo/capabilities-identity/dist/implementation/repositories/base.repository";
@@ -47,6 +47,9 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       created_at: entity.createdAt,
       updated_at: entity.updatedAt,
       composition_id: entity.compositionId,
+      tenant_id: (entity as any).tenantId,
+      workspace_id: (entity as any).workspaceId,
+      session_id: (entity as any).sessionId,
     };
   }
 

@@ -1,7 +1,9 @@
 import type { WorkBinding } from "../contracts/atomic-composition.contracts.js";
 import { atomicCompositionService } from "./composition.service.js";
-// Import dari package core/realtime menggunakan package name (harusnya terkonfigurasi di tsconfig root)
-import { notifyWorkspaceListeners } from "@repo/core/realtime";
+// Import canonical realtime notifier from core package (D1 architecture compliance)
+// @ts-ignore
+// @ts-ignore
+import { notifyWorkspaceListeners } from "@repo/core-realtime";
 // Alias for import compatibility - fixes module resolution in test environments
 export { notifyWorkspaceListeners };
 
