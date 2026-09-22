@@ -1,17 +1,9 @@
-import { loadCapabilityCommands } from "./packages/core/kernel/src/registry/capability-command-registry.js";
-
+// loadCapabilityCommands has been REMOVED from capability-command-registry.ts per REALITY PATH requirements
+// All commands are now imported directly in their respective route files - no bulk loading
 async function debug() {
-  console.log("Loading capability commands...");
-  const commands = await loadCapabilityCommands();
-  console.log("✅ Capability commands loaded!");
-  console.log("Total registered commands:", Object.keys(commands).length);
-  console.log("\nAll command keys (first 50):", Object.keys(commands).slice(0, 50));
-  console.log("\nLooking for case.* commands:");
-  Object.keys(commands).filter(k => k.includes("case")).forEach(k => console.log("  -", k));
-  console.log("\nLooking for document.* commands:");
-  Object.keys(commands).filter(k => k.includes("document")).forEach(k => console.log("  -", k));
-  console.log("\nLooking for requirement.* commands:");
-  Object.keys(commands).filter(k => k.includes("requirement")).forEach(k => console.log("  -", k));
+  console.log("ℹ️ Debug mode: loadCapabilityCommands is deprecated (removed per REALITY PATH requirements)");
+  console.log("ℹ️ All capability commands are now imported directly in their respective route files");
+  console.log("ℹ️ Debug mode completed - no bulk capability loading available");
 }
 
 debug().catch(err => console.error("❌ Debug failed:", err));

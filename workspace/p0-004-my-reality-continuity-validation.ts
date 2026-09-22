@@ -9,11 +9,8 @@
  */
 
 import { MyRealityModel, RealityWorkItem } from "./packages/presentation/experience/src/my-reality/contracts/my-reality.contracts.js";
-import { CaseRepositoryInMemory } from "./capabilities/legal-case/implementation/repository/case.repository";
-import { createCase } from "./capabilities/legal-case/implementation/commands/case.commands";
-import { assignLawyer } from "./capabilities/legal-case/implementation/commands/case.commands";
-import { addEvidenceToCase } from "./capabilities/legal-case/implementation/commands/case.commands";
-import { markCaseCompleted } from "./capabilities/legal-case/implementation/commands/case.commands";
+// Removed unused legal-case imports (P5 uses existing golden work from work-core PostgreSQL)
+import { mapCaseToRealityWorkItem } from "./mappings/reality-work-mapping.js"; // Reuse canonical mapping instead of local function
 
 // P0-004 Acceptance Criteria (must all pass)
 const ACCEPTANCE_CRITERIA = [
@@ -116,32 +113,23 @@ async function runP004Validation() {
     return originalInvoke(capability, commandName, input);
   };
 
-  // Clear in-memory store for isolation
-  const caseRepo = new CaseRepositoryInMemory();
-  caseRepo.clear();
-  console.log("[TestSetup] In-memory store cleared for test isolation");
+  // Use PostgreSQL repository for post-restart verification (P5-Requirement)
+  const { getWorkRepositoryPostgres } = await import("./capabilities/work-core/implementation/repository/work-postgres.repository.js");
+  const caseRepo = getWorkRepositoryPostgres();
+  console.log("[TestSetup] PostgreSQL repository initialized for persistence verification");
 
-  // Use valid test identities matching session repository
+  // Use valid test identities from golden work ID (P5-Durability baseline)
   const sessionId = "session-test-001";
-  const tenantId = "tenant-001";
-  const workspaceId = "workspace-001";
-  const actorAId = "user-001"; // Actor A (creator, matches session-test-001)
-  const actorBId = "user-002"; // Actor B (second user, matches session-test-002)
+  const tenantId = "tenant-test-1789570305396"; // Matches golden work's tenant
+  const workspaceId = "workspace-test-1789570305396"; // Matches golden work's workspace
+  const actorAId = "user-test-1789570305396"; // Actor A (creator of golden work)
+  const actorBId = "user-test-002"; // Actor B (second user, matches session-test-002)
 
   // ============================================================================
-  // STEP 1: Create baseline case and map to My Reality model
+  // STEP 1: Load GOLDEN WORK instead of creating new case (P5-Reconstruction)
   // ============================================================================
-  console.log("\n📋 STEP 1: Establish baseline UI model");
-  const createResult = await createCase.execute({
-    title: "P0-004 My Reality Test Case",
-    description: "Validate UI continuity across work state mutations",
-    priority: "high",
-    sessionId,
-    tenantId,
-    workspaceId,
-    actorId: actorAId
-  });
-  const workId = createResult.id;
+  console.log("\n📋 STEP 1: Load golden work from PostgreSQL for baseline");
+  const workId = process.env.GOLDEN_WORK_ID || "golden-work-1789717782066"; // Use existing golden work
   const baselineCase = await caseRepo.byId(workId, { tenantId, workspaceId });
   
   // Map to RealityWorkItem and validate required fields

@@ -1,0 +1,61 @@
+{
+  "lock_id": "FACE-001",
+  "version": "1.0.0",
+  "locked_at": "2026-09-16T00:00:00.000Z",
+  "one_eos_reality": true,
+  "core_freeze": {
+    "enforced": true,
+    "constraints": [
+      "No new core packages",
+      "Only extend existing core-kernel files",
+      "WorkId/ActionId/EffectId standardized in @repo/core-kernel"
+    ]
+  },
+  "face_model_lock": {
+    "model_version": "v1.0.0",
+    "surfaces": [
+      {
+        "name": "/work",
+        "status": "FUNCTIONAL",
+        "activation_task": "FACE-001",
+        "completion_status": "COMPLETED"
+      }
+    ],
+    "reuse_primitives_enforced": true,
+    "no_siloed_reality": true
+  },
+  "release_tracks": {
+    "core": "frozen",
+    "capabilities": "active",
+    "presentation": "active"
+  },
+  "evaluation_dimensions": [
+    "end_to_end_usability",
+    "governed_core_reality",
+    "primitive_reuse",
+    "core_freeze_compliance"
+  ],
+  "test_requirements": {
+    "success_path": true,
+    "failure_paths": ["NO_RESPONSE", "TIMEOUT", "AUTHORIZATION_DENIED"],
+    "mandatory": true
+  },
+  "composite_projects": {
+    "verified": true,
+    "packages": ["@repo/core-kernel", "work-core", "atomic-composition"]
+  },
+  "changelog": [
+    {
+      "task": "FACE-001",
+      "changes": [
+        "Standardized WorkId/ActionId/EffectId in core-kernel/types.ts",
+        "Resolved import errors in capability-resolver.service.ts",
+        "Restored WorkAggregate exports in work.contracts.ts",
+        "Added backward compatibility fields to WorkAggregate",
+        "Extended WorkModeEnum with 'oneshot'",
+        "Eliminated all duplicate identifier errors"
+      ],
+      "verified_by": "type_check"
+    }
+  ]
+}
