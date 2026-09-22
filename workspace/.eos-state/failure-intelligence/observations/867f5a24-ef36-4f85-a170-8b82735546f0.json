@@ -1,0 +1,82 @@
+{
+  "id": "867f5a24-ef36-4f85-a170-8b82735546f0",
+  "occurredAt": "2026-09-15T10:17:18.541Z",
+  "source": {
+    "interactionId": "test-interaction-1"
+  },
+  "input": {
+    "raw": "Apa bedanya PT dan CV?",
+    "normalized": "apa bedanya pt dan cv"
+  },
+  "expected": {
+    "knowledgeBaseMatchFound": true,
+    "fallbackRequired": false
+  },
+  "observed": {
+    "knowledgeBaseMatchFound": false,
+    "fallbackRequired": true
+  },
+  "classification": "KNOWLEDGE.NOT_FOUND",
+  "rootCategory": "KNOWLEDGE",
+  "severity": "LOW",
+  "status": "CLUSTERED",
+  "failureFingerprint": {
+    "rootCategory": "KNOWLEDGE",
+    "semanticOperation": "COMPARE_BUSINESS_ENTITIES",
+    "entities": [
+      "PT",
+      "CV"
+    ],
+    "resolutionType": "INFORMATION",
+    "failureMode": "NOT_FOUND"
+  },
+  "dimensions": {
+    "where": {
+      "pipelineStage": "KNOWLEDGE_RETRIEVAL",
+      "component": "intent-understanding.service",
+      "capabilityId": "atomic-composition"
+    },
+    "whatFailed": {
+      "expectedOutcome": "Knowledge base entry ditemukan",
+      "actualOutcome": "Tidak ada match",
+      "rawMessage": "Tidak ada match untuk PT vs CV"
+    },
+    "severity": {
+      "impact": "LOCAL",
+      "recoverability": "RECOVERABLE_WITH_INTERACTION"
+    },
+    "expectationGap": {
+      "gapType": "INFORMATION_MISSING",
+      "gapMagnitude": 0.6,
+      "canRecover": true
+    },
+    "isUnknown": false,
+    "isFailure": false,
+    "understandingState": {
+      "confidence": 0.6,
+      "knownEntities": [
+        "PT",
+        "CV"
+      ],
+      "unknownEntities": [],
+      "resolutionPath": "fallback",
+      "state": "UNCERTAIN"
+    },
+    "recoveryAttempts": [
+      {
+        "strategy": "GENERIC_FALLBACK",
+        "timestamp": "2026-09-15T10:17:18.541Z",
+        "succeeded": true,
+        "notes": "Fallback applied"
+      }
+    ],
+    "learning": {
+      "hypothesis": "Missing comparison capability",
+      "evidence": [
+        "PT vs CV"
+      ],
+      "proposedFix": "Add COMPARE_BUSINESS_ENTITIES"
+    }
+  },
+  "clusterId": "6f0f841d-2806-414e-a2a9-a123a20f3c69"
+}

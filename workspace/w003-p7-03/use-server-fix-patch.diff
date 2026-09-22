@@ -1,0 +1,12 @@
+diff --git a/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts b/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+index 827bfc8..bfb75c7 100644
+--- a/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
++++ b/workspace/capabilities/atomic-composition/implementation/services/intent-understanding.service.ts
+@@ -2,6 +2,7 @@
+  * IntentUnderstandingService - EOS-INTELLIGENCE-001: Dynamic Intent Understanding Pipeline
+  * Replaces hardcoded semantic resolver with AI-powered interpretation while maintaining
+  * deterministic fallback for production reliability.
++ * 'use server';
+  * 
+  * Architecture:
+  * - AI Interpreter Provider (OpenAI/Anthropic) for dynamic semantic understanding

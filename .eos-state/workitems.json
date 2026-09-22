@@ -113,18 +113,8 @@
     },
     "execution_plan": {
       "strategy": "Satu vertical experiment P0-PT-001 dengan empat seams (F2/F3/F4/F5) sebagai thin projections; tripartite truth framework untuk memisahkan engineering/operational/world claim; semua pembangunan terikat pada real-work friction; tidak ada speculative build",
-      "allowed_activities": ["B4 observation untuk reality signal", "P0 execution preparation verifikasi", "F2/F3/F4 projection testing terhadap data P0", "F5 baseline instrumentation tanpa paksa target", "minimal blocker fixes jika ada aktual"],
-      "frozen_activities": ["capability baru apapun", "horizontal context engine", "generic execution engine", "generic handoff platform", "speculative Services.ID work", "refactor besar", "klaim world truth sebelum external verification"],
-      "tasks": [
-        "Brief B4 human observer (prioritas #1) untuk capture tripartite truth data: engineering state vs operational execution vs world outcome",
-        "Jalankan F2/F3/F4 projection testing terhadap P0 data mock untuk verifikasi thin artifacts bekerja tanpa jadi platform",
-        "Pertahankan F5 instrumentation sebagai baseline-only: tidak set target sebelum world data terkumpul",
-        "Isi context-loss-map-template.json dengan real context loss data dari B4 observation",
-        "Isi execution-contract-observation-template.json dengan ambiguity score 1-10 tiap step dari B4",
-        "Isi professional-handoff-record-template.json dengan operational usability data ketika handoff pertama",
-        "Update leverage-measurement-template.json dengan baseline operational metrics (bukan engineering reuse) setelah P0 selesai",
-        "Jika real friction muncul → ikuti urutan: Observe → Localize → Classify → Smallest Fix (<=15 lines) → Verify → Evidence",
-        "Jalankan work kedua dengan machinery yang sama, bandingkan penurunan reconstruction/human repetition/TNA sebagai bukti EOS leverage",
+      "allowed_activities": ["B4 observation untuk capture tripartite truth data: engineering state vs operational execution vs world outcome", "P0 execution preparation verifikasi", "F2/F3/F4 projection testing terhadap data P0", "F5 baseline instrumentation tanpa paksa target sebelum baseline world data", "minimal blocker fixes jika ada aktual"],
+        "Jalankan work kedua dengan machinery yang sama, bandingkan marginal effort",
         "Mark status ONLY jika world_truth semua criteria terpenuhi: real professional acts + external outcome verified"
       ],
       "started_at": "2026-08-17T00:00:00.000Z",
@@ -133,6 +123,125 @@
     },
     "verification_report": null,
     "dependencies": ["SRV-PROD-001", "LH-CASE-001", "FIRST-LIGHT-001"],
+    "is_next_highest_leverage": false
+  },
+  "CA-RES-001": {
+    "work_id": "CA-RES-001",
+    "product": "EOS Customer Acquisition Reservoir",
+    "user_job": "Sell bounded b2b_prospect_research work to real buyers, execute manually first, capture friction only after repeat use",
+    "outcome": "Buyer nyata memberikan Work kepada EOS untuk b2b_prospect_research; Work diselesaikan secara manual; friction tercatat sebelum engineering dipertimbangkan; pipeline WORK_RECEIVED→DELIVERED→ACCEPTED→PAID terpenuhi untuk Work pertama.",
+    "constraints": {
+      "architecture_locked": true,
+      "reuse_existing_capabilities": true,
+      "no_new_framework": true,
+      "no_schema_changes": true,
+      "thin_app_strategy": true,
+      "single_truth_source": true,
+      "no_horizontal_platforms": true,
+      "speculative_building_banned": true
+    },
+    "acceptance": [
+      "Buyer pertama (target-011) menerima work offer untuk 100 qualified B2B prospects",
+      "WORK_RECEIVED tercapai untuk reservoir pertama",
+      "Work dieksekusi secara manual tanpa code baru",
+      "Friction tercatat jika terjadi selama manual execution",
+      "Engineering hanya diaktifkan jika friction berulang minimal 2x",
+      "Deliverable (spreadsheet terverifikasi) diterima buyer",
+      "Pembayaran dikonfirmasi (PAID status)",
+      "REPEAT signal diterima dari buyer yang sama",
+      "evidence artifact JSON permanen tersimpan di .eos-state/",
+      "regression: seluruh test suite semua produk ALL PASS, zero failures"
+    ],
+    "status": "🔴 ACTIVE",
+    "created_at": "2026-09-17T17:30:00.000Z",
+    "updated_at": "2026-09-17T17:30:00.000Z",
+    "world_truth_scoreboard": {
+      "human_started_work": "🟢 COMPLETE",
+      "work_item_created": "🟢 COMPLETE",
+      "work_completed": "🔄 PENDING",
+      "professional_received_usable_handoff": "🔄 PENDING",
+      "professional_acted": "🔄 PENDING",
+      "external_action_occurred": "🔄 PENDING",
+      "external_response_received": "🔄 PENDING",
+      "outcome_verified": "🔄 PENDING"
+    },
+    "assigned_agents": {
+      "commander": "eos-command-center",
+      "recon": "eos-recon",
+      "product_slice": "eos-product-slice",
+      "human_executor": "human.acquisition.001",
+      "evidence": "eos-evidence-engine"
+    },
+    "vertical_integration": "CA-RES-001 sebagai ONE REAL WORK reservoir pertama; semua manual execution sampai friction terbukti",
+    "battle_map_version": "2026-09-17 tripartite truth framework (engineering/operational/world)",
+    "truth_classification": {
+      "engineering_truth": {
+        "status": "✅ VERIFIED - NO CHANGES NEEDED",
+        "criteria": ["0 code changes required", "reuse existing acquisition queue state", "reuse existing evidence pipeline", "no_new_capabilities: 0", "primitive reuse 100%", "engineering lock maintained"],
+        "evidence_link": ".eos-state/acquisition-queue-state.json"
+      },
+      "operational_truth": {
+        "status": "🔄 IN_PROGRESS",
+        "criteria": ["target-011 outreach executed & recorded", "first buyer identified", "manual execution plan prepared", "next_scheduled_action aligned", "2 additional ICP buyers identification in progress"],
+        "evidence_link": ".eos-state/acquisition-queue-state.json",
+        "last_updated_at": "2026-09-18T10:10:00.000Z"
+      },
+      "world_truth": {
+        "status": "🔄 PENDING",
+        "criteria": ["buyer nyata memberikan Work", "manual execution completed", "pembayaran diterima", "repeat request received"],
+        "evidence_link": null
+      }
+    },
+    "five_fronts": {
+      "F1_Reality": { "name": "CA-RES-001 + target-011", "status": "🔴 ACTIVE", "description": "Medan utama: pekerjaan nyata reservoir customer acquisition — reality signal dari buyer" },
+      "F2_Context": { "name": "Context continuity seam", "status": "🟢 NOT NEEDED - MANUAL EXECUTION", "description": "Tidak butuh projection untuk manual execution; context disimpan di acquisition-queue-state.json" },
+      "F3_Execution": { "name": "Authority + action boundary seam", "status": "🟢 NOT NEEDED - MANUAL EXECUTION", "description": "Manual execution tidak butuh adapter; semua action dilakukan human.acquisition.001" },
+      "F4_Handoff": { "name": "Professional handoff seam", "status": "🟢 NOT NEEDED - MANUAL EXECUTION", "description": "Tidak butuh handoff automation; work dieksekusi internal oleh tim EOS" },
+      "F5_Leverage": { "name": "Measurement seam", "status": "🟢 ACTIVE - INSTRUMENTED", "description": "Capture friction selama manual execution; ukur waktu dan usaha untuk setiap step" }
+    },
+    "evidence": {
+      "artifact_path": ".eos-state/evidence/CA-RES-001_evidence.json",
+      "primitive_reuse_pct": 100.0,
+      "shared_primitives_reused": ["Acquisition Queue State Management", "Evidence Chain Tracking", "Canonical Work Record Format", "Human Executor Assignment Pattern"],
+      "thin_artifacts_only": true,
+      "doctrine_compliance": {
+        "no_new_capabilities": true,
+        "no_horizontal_platforms": true,
+        "measurement_theater_avoided": true,
+        "vertical_experiment_maintained": true
+      }
+    },
+    "recon_report": {
+      "recon_completed_at": "2026-09-17T17:25:00.000Z",
+      "locked_boundaries_verified": ["IDENTITY_SESSION_RAIL", "POSTGRES_RAIL", "THIN_APP_BOUNDARY", "REPLAY_EVIDENCE_RAIL", "RULE_OF_TWO_COMPLIANCE"],
+      "existing_capabilities_found": ["acquisition queue management", "evidence engine", "command center work tracking", "canonical work record schema"],
+      "reuse_percentage": 100.0,
+      "blocked": false,
+      "can_proceed": true,
+      "report_path": ".eos-state/recon/CA-RES-001_recon.json"
+    },
+    "execution_plan": {
+      "strategy": "Manual execution of first customer acquisition reservoir work; no code changes; capture friction only after repeat use; engineering lock fully maintained",
+      "allowed_activities": ["Kirim followup pembayaran target-001 (P0 work utama)", "Kirim outreach ke target-011 pada 18/09 10:00 WIB", "Identifikasi 2 buyer tambahan untuk reservoir", "Monitor reconciliation progress target-003", "Kirim mass outreach target-004-010 pada 20/09", "Capture friction selama manual prospect research execution"],
+      "frozen_activities": ["semua code changes apapun", "membuat lead generation platform", "membuat automation apapun sebelum friction terbukti", "speculative build apapun"],
+      "tasks": [
+        "Execute P0 work: Kirim followup pembayaran down payment ke Ahmad Rizky (FashionHub ID / target-001) SEKARANG (17/09 17:00 WIB)",
+        "Prepare outreach message untuk target-011 (Digitalsolusi ID) sesuai ICP yang ditentukan",
+        "Kirim outreach ke target-011 pada 18/09 10:00 WIB",
+        "Identifikasi 2 buyer tambahan yang sesuai ICP sebelum 19/09 EOD",
+        "Monitor progress reconciliation target-003 dan update status di acquisition-queue-state.json",
+        "Kirim mass outreach ke target-004-010 pada 20/09 sesuai jadwal",
+        "Jika target-011 menerima work, eksekusi prospect research secara manual",
+        "Catat semua friction yang ditemukan selama manual execution",
+        "Update status work item ketika WORK_RECEIVED, DELIVERED, ACCEPTED, PAID tercapai",
+        "Only jika friction berulang ≥2x, ajukan engineering change"
+      ],
+      "started_at": "2026-09-17T17:30:00.000Z",
+      "estimated_completion": "2026-09-30T00:00:00.000Z",
+      "completed_at": null
+    },
+    "verification_report": null,
+    "dependencies": ["inventory-discrepancy-001", "acquisition-queue-state-v1"],
     "is_next_highest_leverage": true
   },
   "REQ-1D-001": {

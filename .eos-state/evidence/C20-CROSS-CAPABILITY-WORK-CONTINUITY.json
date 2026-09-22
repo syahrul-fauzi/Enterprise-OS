@@ -1,18 +1,18 @@
 {
   "decision_id": "C20-CROSS-CAPABILITY-WORK-CONTINUITY",
   "work_id": "W1-C20-TEST-001",
-  "executed_at": "2026-08-20T09:03:39.292Z",
+  "executed_at": "2026-09-17T12:22:34.245Z",
   "artifacts": {
     "legalCase": {
-      "id": "case-101",
+      "id": "case-l480ri",
       "workId": "W1-C20-TEST-001"
     },
     "legalDocument": {
-      "id": "doc-101",
+      "id": "document-r4oxd1",
       "workId": "W1-C20-TEST-001"
     },
     "requirement": {
-      "id": {},
+      "id": "requirement-jme6nb",
       "workId": "W1-C20-TEST-001"
     }
   },
@@ -22,33 +22,33 @@
       "executionId": "exec-c20-case-created",
       "success": true,
       "logicalWorkId": "W1-C20-TEST-001",
-      "context_trace_id": "1e00ac3d-c7c3-474f-9e11-eeb67abc085e",
+      "context_trace_id": "c3cd14a5-08e4-4c66-975a-72e2df86125e",
       "is_reentry": false,
       "parent_context_trace_id": null,
-      "idempotency_key": "cc75d240-37a2-4099-aba7-252ce2fa007b",
-      "timestamp_utc": "2026-08-20T09:03:39.293Z"
+      "idempotency_key": "cfab0c09-a8da-4574-81cc-c1adbcf1501e",
+      "timestamp_utc": "2026-09-17T12:22:34.247Z"
     },
     {
       "decision_id": "C20-CROSS-CAPABILITY-WORK-CONTINUITY",
       "executionId": "exec-c20-document-created",
       "success": true,
       "logicalWorkId": "W1-C20-TEST-001",
-      "context_trace_id": "ba6e6871-8835-4d1a-90fc-e81cf7bd63f6",
+      "context_trace_id": "298365f3-63c6-41b1-b8d6-0fba05a47f54",
       "is_reentry": false,
       "parent_context_trace_id": null,
-      "idempotency_key": "c075140d-6ad0-4025-96ff-3330e6e61e88",
-      "timestamp_utc": "2026-08-20T09:03:39.294Z"
+      "idempotency_key": "ef9cf331-5ef6-41fd-863b-8283009f2a38",
+      "timestamp_utc": "2026-09-17T12:22:34.247Z"
     },
     {
       "decision_id": "C20-CROSS-CAPABILITY-WORK-CONTINUITY",
       "executionId": "exec-c20-requirement-created",
       "success": true,
       "logicalWorkId": "W1-C20-TEST-001",
-      "context_trace_id": "13427422-a6a6-4144-a3d9-56f366d7c630",
+      "context_trace_id": "989f5ab7-a1d9-42c3-a667-174d943f86bc",
       "is_reentry": false,
       "parent_context_trace_id": null,
-      "idempotency_key": "e37e725f-f5c4-4b47-8a3e-e8ced8972e95",
-      "timestamp_utc": "2026-08-20T09:03:39.295Z"
+      "idempotency_key": "256c1465-d4ff-4d2c-aa02-9bbe621c79a5",
+      "timestamp_utc": "2026-09-17T12:22:34.248Z"
     }
   ],
   "criteria": [

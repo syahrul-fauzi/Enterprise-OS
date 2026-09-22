@@ -1,0 +1,66 @@
+{
+  "id": "d850937b-4a01-4e66-97eb-8b0d4bc8dfab",
+  "sourceObservations": [
+    "867f5a24-ef36-4f85-a170-8b82735546f0",
+    "ddd1d747-cb54-44f2-b382-ed635a0d31a1",
+    "1fe1b12a-5a76-49e8-a43b-5179455a92a6"
+  ],
+  "abstraction": {
+    "primitive": "COMPARE_BUSINESS_ENTITIES",
+    "level": "SEMANTIC_OPERATION"
+  },
+  "invariant": {
+    "description": "Generalized pattern: User is requesting comparison between multiple business entities",
+    "preservedFeatures": [
+      "semanticOperation",
+      "rootCategory"
+    ],
+    "variableFeatures": [
+      "entities",
+      "inputExpression"
+    ]
+  },
+  "applicability": {
+    "domains": "ANY",
+    "origins": "ANY"
+  },
+  "evidence": {
+    "observedCount": 3,
+    "holdoutPassCount": 0,
+    "counterexampleCount": 0
+  },
+  "status": "PROMOTED",
+  "createdAt": "2026-09-15T10:17:18.546Z",
+  "updatedAt": "2026-09-15T10:17:18.546Z",
+  "trigger": {
+    "failureId": "1fe1b12a-5a76-49e8-a43b-5179455a92a6",
+    "triggerClusterId": "6f0f841d-2806-414e-a2a9-a123a20f3c69"
+  },
+  "target": "understanding",
+  "proposedChange": null,
+  "rationale": "Generated from cluster 6f0f841d-2806-414e-a2a9-a123a20f3c69 with 3 observations",
+  "confidence": 0.7,
+  "expectedCoverage": [],
+  "regressionRisk": 0.1,
+  "validationRequired": true,
+  "promotionStatus": "CANDIDATE",
+  "sourceClusterId": "6f0f841d-2806-414e-a2a9-a123a20f3c69",
+  "sourceFailureIds": [
+    "867f5a24-ef36-4f85-a170-8b82735546f0",
+    "ddd1d747-cb54-44f2-b382-ed635a0d31a1",
+    "1fe1b12a-5a76-49e8-a43b-5179455a92a6"
+  ],
+  "rootCategory": "KNOWLEDGE",
+  "semanticPattern": "COMPARE_BUSINESS_ENTITIES",
+  "suggestedEnrichment": {
+    "type": "KNOWLEDGE_GAP",
+    "target": "SEMANTIC_UNDERSTANDING",
+    "description": "Generalized pattern: User is requesting comparison between multiple business entities",
+    "complexityImpact": 1
+  },
+  "generalizationEvidence": {
+    "totalObservations": 3,
+    "uniqueEntities": 2,
+    "coverage": 1
+  }
+}

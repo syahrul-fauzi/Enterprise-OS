@@ -1,0 +1,26 @@
+{
+  "compositionId": "composition-work-online-business-launch-2026-001-1789467436100",
+  "workId": "work-online-business-launch-2026-001",
+  "teamId": "team-work-online-business-launch-2026-001-1789467436101",
+  "requirementIds": [
+    "req-business-strategy-001",
+    "req-brand-design-001",
+    "req-market-research-001",
+    "req-content-creation-001",
+    "req-web-development-001",
+    "req-cloud-deployment-001",
+    "req-payment-setup-001"
+  ],
+  "assignmentIds": [
+    "wb-work-online-business-launch-2026-001-req-business-strategy-001-0-1789467436101",
+    "wb-work-online-business-launch-2026-001-req-brand-design-001-0-1789467436101",
+    "wb-work-online-business-launch-2026-001-req-market-research-001-0-1789467436101",
+    "wb-work-online-business-launch-2026-001-req-content-creation-001-0-1789467436101",
+    "wb-work-online-business-launch-2026-001-req-content-creation-001-1-1789467436101",
+    "wb-work-online-business-launch-2026-001-req-web-development-001-0-1789467436101",
+    "wb-work-online-business-launch-2026-001-req-cloud-deployment-001-0-1789467436101",
+    "wb-work-online-business-launch-2026-001-req-payment-setup-001-0-1789467436101"
+  ],
+  "persistedAt": "2026-09-15T10:17:16.114Z",
+  "version": "1.0.0"
+}

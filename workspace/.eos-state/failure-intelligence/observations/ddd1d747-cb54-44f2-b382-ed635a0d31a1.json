@@ -1,0 +1,82 @@
+{
+  "id": "ddd1d747-cb54-44f2-b382-ed635a0d31a1",
+  "occurredAt": "2026-09-15T10:17:18.541Z",
+  "source": {
+    "interactionId": "test-interaction-2"
+  },
+  "input": {
+    "raw": "Apa perbedaan CV dan Firma?",
+    "normalized": "apa perbedaan cv dan firma"
+  },
+  "expected": {
+    "knowledgeBaseMatchFound": true,
+    "fallbackRequired": false
+  },
+  "observed": {
+    "knowledgeBaseMatchFound": false,
+    "fallbackRequired": true
+  },
+  "classification": "KNOWLEDGE.NOT_FOUND",
+  "rootCategory": "KNOWLEDGE",
+  "severity": "LOW",
+  "status": "CLUSTERED",
+  "failureFingerprint": {
+    "rootCategory": "KNOWLEDGE",
+    "semanticOperation": "COMPARE_BUSINESS_ENTITIES",
+    "entities": [
+      "CV",
+      "FIRMA"
+    ],
+    "resolutionType": "INFORMATION",
+    "failureMode": "NOT_FOUND"
+  },
+  "dimensions": {
+    "where": {
+      "pipelineStage": "KNOWLEDGE_RETRIEVAL",
+      "component": "intent-understanding.service",
+      "capabilityId": "atomic-composition"
+    },
+    "whatFailed": {
+      "expectedOutcome": "Knowledge base entry ditemukan",
+      "actualOutcome": "Tidak ada match",
+      "rawMessage": "Tidak ada match untuk CV vs Firma"
+    },
+    "severity": {
+      "impact": "LOCAL",
+      "recoverability": "RECOVERABLE_WITH_INTERACTION"
+    },
+    "expectationGap": {
+      "gapType": "INFORMATION_MISSING",
+      "gapMagnitude": 0.6,
+      "canRecover": true
+    },
+    "isUnknown": false,
+    "isFailure": false,
+    "understandingState": {
+      "confidence": 0.6,
+      "knownEntities": [
+        "CV",
+        "FIRMA"
+      ],
+      "unknownEntities": [],
+      "resolutionPath": "fallback",
+      "state": "UNCERTAIN"
+    },
+    "recoveryAttempts": [
+      {
+        "strategy": "GENERIC_FALLBACK",
+        "timestamp": "2026-09-15T10:17:18.541Z",
+        "succeeded": true,
+        "notes": "Fallback applied"
+      }
+    ],
+    "learning": {
+      "hypothesis": "Missing comparison capability",
+      "evidence": [
+        "CV vs Firma"
+      ],
+      "proposedFix": "Add COMPARE_BUSINESS_ENTITIES"
+    }
+  },
+  "clusterId": "6f0f841d-2806-414e-a2a9-a123a20f3c69"
+}

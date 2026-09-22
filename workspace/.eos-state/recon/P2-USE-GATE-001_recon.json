@@ -1,0 +1,73 @@
+{
+  "work_id": "P2-USE-GATE-001",
+  "recon_completed_at": "2026-09-18T10:15:00Z",
+  "locked_boundaries_verified": {
+    "CORE_FROZEN": true,
+    "CANONICAL_WORK_LOCKED": true,
+    "REALITY_MODEL_LOCKED": true,
+    "ARCHITECTURE_FROZEN": true
+  },
+  "existing_capabilities_found": [
+    {
+      "primitive": "P2-MyReality-SSR",
+      "location": "apps/web/app/(eos)/my-reality/page.tsx + getMyRealityModel.ts",
+      "evidence": "HTTP 200, actor identity anonymous.user mapped, cookie created",
+      "classification": "REUSE"
+    },
+    {
+      "primitive": "P2-Intent-Create",
+      "location": "apps/web/app/api/intent/create/route.ts",
+      "evidence": "Universal intent pipeline via atomic-composition/intent-understanding.service, auto anonymous session handling, source field required",
+      "classification": "REUSE"
+    },
+    {
+      "primitive": "P2-Work-Create",
+      "location": "apps/web/app/api/work/create/route.ts",
+      "evidence": "CanonicalWorkRecord schema + WorkRepositoryPostgres backed durable store + capabilityRegistry integration",
+      "classification": "REUSE (import path unverified — akan diverify via curl runtime)"
+    },
+    {
+      "primitive": "P2-Work-Get-By-ID",
+      "location": "apps/web/app/api/work/[id]/route.ts",
+      "evidence": "Route exists, getWorkById imported from create/route",
+      "classification": "REUSE"
+    },
+    {
+      "primitive": "P2-Action-Create",
+      "location": "capabilities/atomic-composition/implementation/services/capability-resolver.service.ts createActionForRequirement L755",
+      "evidence": "Function exported, input ExecutionRequirement + providerId, output ActionIdType Promise",
+      "classification": "REUSE (service level, invoked via chain - bukan direct HTTP endpoint, acceptable per MINIMAL SCOPE)"
+    },
+    {
+      "primitive": "P2-Communication-Send",
+      "location": "apps/web/app/api/communication/send/route.ts",
+      "evidence": "POST endpoint, payload work_id+content, calls capabilityRegistry.invoke(communication.send, params)",
+      "classification": "MINIMAL-FIX (cookie name inconsistency underscore→hypensudah applied L4 import @repo/core-kernel replace hardcoded)"
+    },
+    {
+      "primitive": "P2-Communication-List",
+      "location": "apps/web/app/api/communication/list/route.ts",
+      "evidence": "Route exists (read-back)",
+      "classification": "REUSE"
+    }
+  ],
+  "reuse_analysis": {
+    "reusable_existing": ["MyReality-SSR","Intent-Create","Work-Create","Work-Get-By-ID","Action-Create-Service","Communication-List"],
+    "required_new": [],
+    "fixed_minimal": ["Communication-Send cookie-name (1 line)"],
+    "reuse_percentage": 100.0
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Lakukan EXEC-P2a curl /my-reality dulu untuk capture session cookie eos-workspace-session",
+    "Gunakan cookie tersebut untuk chain POST /api/intent/create (source.actorType=human + expression=text)",
+    "Dari intent response (linked workId atau work-create baru), POST /api/work/create",
+    "Lalu POST /api/communication/send dengan work_id + content payload",
+    "Jika HTTP 500 module-not-found pada work/create, lakukan LOCATE sub-root-cause import path pattern (kemungkinan @capabilities/work-core vs @repo/capabilities-work-core prefix mismatch) — MINIMAL FIX, bukan refactor.",
+    "JANGAN execute speculative build/fix sebelum bukti runtime error terlihat."
+  ]
+}

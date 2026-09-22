@@ -1,0 +1,103 @@
+{
+  "version": "1.2.0",
+  "definition": "EOS FACE = seluruh pengalaman eksternal yang membuat manusia dapat masuk, memahami, berinteraksi, dan menggunakan kemampuan EOS.",
+  "architecture": {
+    "eos_layers": {
+      "FACE": "apps/web — external human experience",
+      "SYSTEM_API": "apps/api — programmatic/system surface",
+      "CORE": "packages/core — shared runtime authority"
+    },
+    "one_eos_reality": true,
+    "reality_alignment_requirement": "FACE reality = API reality = Core reality — NO siloed state"
+  },
+  "locked_principles": {
+    "CORE_FROZEN": true,
+    "FACE_IS_NOT_A_DASHBOARD": true,
+    "MY_REALITY_IS_CANONICAL_ENTRY_POINT": true,
+    "MEASURE_INTERACTION_QUALITY_NOT_ROUTE_COUNT": true,
+    "SEPARATE_FACE_MAP_FROM_WORK_LOOP": true,
+    "AGGRESSIVE_EXECUTION_CONSERVATIVE_ARCHITECTURE": true,
+    "NO_EVIDENCE_GAP_NO_ARCHITECTURE_CHANGE": true,
+    "WORK_IS_CONTINUITY_PRIMITIVE_NOT_ONLY_SURFACE": true
+  },
+  "apps_web_app_tree_verified": {
+    "(actors)": "ACTOR / PEOPLE EXPERIENCE",
+    "(auth)": "ENTRY / IDENTITY EXPERIENCE",
+    "(community)": "COMMUNITY / NETWORK EXPERIENCE",
+    "(marketing)": "DISCOVERY / PRODUCT ENTRY",
+    "(operations)": "OPERATIONAL EXPERIENCE",
+    "(product)": "PRODUCT EXPERIENCE",
+    "(eos)": "EOS CORE EXPERIENCE",
+    "(work)": "WORK_EXPERIENCE",
+    "api": "SYSTEM/API SURFACE (independent from FACE)",
+    "providers": "APPLICATION RUNTIME SUPPORT"
+  },
+  "evaluation_dimensions": [
+    "SURFACE_COMPLETENESS — semua pengalaman penting tersedia",
+    "RUNTIME_INTEGRITY — surface terhubung ke CORE → authorization → mutation → persistence → evidence → reality"
+  ],
+  "surface_status_definitions": {
+    "SURFACE_EXISTS": "Route/UI tersedia",
+    "SURFACE_FUNCTIONAL": "User dapat menyelesaikan intended interaction",
+    "SURFACE_E2E_PROVEN": "Interaction melewati runtime authority dan menghasilkan/read-back Reality yang terverifikasi"
+  },
+  "release_completeness_matrix": {
+    "Marketing": { "exists": false, "functional": false, "runtime_connected": false, "e2e_proven": false },
+    "Auth": { "exists": true, "functional": true, "runtime_connected": true, "e2e_proven": true },
+    "Actors": { "exists": false, "functional": false, "runtime_connected": false, "e2e_proven": false },
+    "MyReality": { "exists": true, "functional": true, "runtime_connected": true, "e2e_proven": false },
+    "Intent": { "exists": true, "functional": false, "runtime_connected": false, "e2e_proven": false },
+    "Work": { "exists": true, "functional": true, "runtime_connected": true, "e2e_proven": false },
+    "AITasks": { "exists": true, "functional": false, "runtime_connected": false, "e2e_proven": false },
+    "Products": { "exists": false, "functional": false, "runtime_connected": false, "e2e_proven": false },
+    "Operations": { "exists": false, "functional": false, "runtime_connected": false, "e2e_proven": false },
+    "Communication": { "exists": true, "functional": true, "runtime_connected": true, "e2e_proven": false },
+    "Community": { "exists": false, "functional": false, "runtime_connected": false, "e2e_proven": false },
+    "Evidence": { "exists": false, "functional": false, "runtime_connected": false, "e2e_proven": false },
+    "Settings": { "exists": false, "functional": false, "runtime_connected": false, "e2e_proven": false }
+  },
+  "release_tracks": {
+    "TRACK_A_FACE": "Complete and connect the product experience",
+    "TRACK_B_SYSTEM_API": "Make apps/api independently production-operational",
+    "TRACK_C_RUNTIME_PROOF": "Prove critical journeys end-to-end",
+    "TRACK_D_OPERATIONS": "Monitor, verify, recover, release, and maintain"
+  },
+  "release_gate_requirements": [
+    "FACE",
+    "API",
+    "CORE",
+    "GOVERNANCE",
+    "PERSISTENCE",
+    "EVIDENCE",
+    "E2E",
+    "OPERATIONS"
+  ],
+  "face_functions": [
+    "Discover",
+    "Enter",
+    "Identify",
+    "Understand",
+    "Intend",
+    "Work",
+    "Act",
+    "Collaborate",
+    "Operate",
+    "Inspect",
+    "Configure",
+    "Continue"
+  ],
+  "release_targets": [
+    "EOS IS RUNNING",
+    "EOS IS USABLE",
+    "EOS IS GOVERNED",
+    "EOS IS PERSISTENT",
+    "EOS IS PROVABLE",
+    "EOS IS OPERABLE",
+    "EOS IS RELEASEABLE"
+  ],
+  "golden_spine_verified": "8/8",
+  "last_updated": "2025-09-16T02:00:00Z",
+  "timestamp": "2025-09-16T00:00:00Z",
+  "adjudicated_by": "actor:human:owner",
+  "status": "LOCKED"
+}

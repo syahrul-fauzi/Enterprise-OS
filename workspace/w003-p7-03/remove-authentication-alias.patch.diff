@@ -1,0 +1,30 @@
+diff --git a/workspace/apps/web/tsconfig.json b/workspace/apps/web/tsconfig.json
+index ca4e506..4ef6ae2 100644
+--- a/workspace/apps/web/tsconfig.json
++++ b/workspace/apps/web/tsconfig.json
+@@ -15,8 +15,6 @@
+       "@/*": ["./*"],
+       "@repo/presentation-hooks": ["../../packages/presentation/hooks/dist"],
+       "@repo/presentation-hooks/*": ["../../packages/presentation/hooks/dist/*"],
+-      "@repo/presentation-templates": ["../../packages/presentation/templates/dist"],
+-      "@repo/presentation-templates/*": ["../../packages/presentation/templates/dist/*"],
+       "@repo/capabilities-identity": ["../../capabilities/identity/implementation/index.ts"],
+       "@repo/capabilities-identity/*": ["../../capabilities/identity/implementation/*"],
+       "@repo/capabilities-requirement-management": ["../../capabilities/requirement-management/implementation/index.ts"],
+@@ -26,9 +24,16 @@
+       "@repo/presentation-ui-system": ["../../packages/presentation/ui-system/dist"],
+       "@repo/presentation-ui-system/*": ["../../packages/presentation/ui-system/dist/*"],
+       "@repo/composition": ["../../packages/composition/dist"],
++      "@repo/composition/navigation": ["../../packages/composition/dist/navigation/index.js"],
+       "@repo/composition/*": ["../../packages/composition/dist/*"],
++      "@repo/presentation-features": ["../../packages/presentation/features/dist"],
++      "@repo/presentation-features/ai": ["../../packages/presentation/features/dist/ai/index.js"],
++      "@repo/presentation-features/work": ["../../packages/presentation/features/dist/work/index.js"],
++      "@repo/presentation-features/reality": ["../../packages/presentation/features/dist/reality/index.js"],
+       "@repo/presentation-widgets": ["../../packages/presentation/widgets/dist"],
+       "@repo/presentation-widgets/*": ["../../packages/presentation/widgets/dist/*"],
++      "@repo/presentation-templates": ["../../packages/presentation/templates/dist"],
++      "@repo/presentation-templates/*": ["../../packages/presentation/templates/dist/*"],
+       "@repo/capabilities-shared/*": ["../../capabilities/shared/implementation/*"],
+       "@repo/capabilities-communication/*": ["../../capabilities/communication/implementation/*"],
+       "@repo/capabilities-legal-case/*": ["../../capabilities/legal-case/implementation/*"],

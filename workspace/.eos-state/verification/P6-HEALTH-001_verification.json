@@ -1,0 +1,43 @@
+{
+  "work_id": "P6-HEALTH-001",
+  "verified_at": "2026-09-18T00:00:00.000Z",
+  "acceptance_criteria": {
+    "c1_database_health_module_exists": {
+      "passed": true,
+      "evidence": "DatabaseHealthChecker class loaded successfully. All methods available: initializePoolTracking, getBackoffDelay, isStaleConnection, attemptReconnection, checkPool, checkAll, toKubernetesFormat. Node execution exit code: 0"
+    },
+    "c2_readiness_api_route_exists": {
+      "passed": true,
+      "evidence": "Found /root/Enterprise-OS/workspace/apps/web/app/api/ready/route.ts implementing core readiness probe logic. Verifies database connectivity, isolates non-core modules per minimal fix policy"
+    },
+    "c3_health_check_script_exists": {
+      "passed": true,
+      "evidence": "Found staging health-check.sh at /root/Enterprise-OS/workspace/infra/staging/cloudflare/health-check.sh. Implements tunnel, origin, and multi-domain health verification with curl/ss/systemctl"
+    },
+    "c4_eos_cli_verification_exists": {
+      "passed": true,
+      "evidence": "Found portfolio verification CLI at /root/Enterprise-OS/workspace/packages/tooling/eos-cli/src/commands/verify-portfolio.ts. Implements product health evidence collection and reporting"
+    },
+    "c5_architecture_lock_compliance": {
+      "passed": true,
+      "evidence": "No locked CORE/ARCHITECTURE files modified for this verification. All health checks reuse existing primitives. Compliance with MAP→REUSE→VERIFY principle"
+    },
+    "c6_evidence_directory_structure": {
+      "passed": true,
+      "evidence": "Created required directories: .eos-state/verification and .eos-state/evidence/P6-OPERATE-001. Structure matches EOS evidence chain requirements"
+    }
+  },
+  "all_passed": true,
+  "total_passed": 6,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": ["c1_database_health_module_exists", "c2_readiness_api_route_exists", "c3_health_check_script_exists", "c4_eos_cli_verification_exists", "c5_architecture_lock_compliance", "c6_evidence_directory_structure"],
+  "security_scan": {
+    "passed": true,
+    "vulnerabilities_found": 0
+  },
+  "architecture_verification": {
+    "passed": true,
+    "locked_files_modified": []
+  }
+}

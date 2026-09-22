@@ -1,0 +1,66 @@
+{
+  "id": "3212d849-ffc4-4300-89a3-a87d4ad5c396",
+  "occurredAt": "2026-09-20T16:08:10.409Z",
+  "source": {},
+  "input": {
+    "raw": "saya ingin ekspansi bisnis ke Indonesia",
+    "normalized": "saya ingin ekspansi bisnis ke indonesia"
+  },
+  "expected": {
+    "knowledgeBaseMatchFound": true,
+    "fallbackRequired": false
+  },
+  "observed": {
+    "knowledgeBaseMatchFound": false,
+    "fallbackRequired": true
+  },
+  "classification": "KNOWLEDGE.NOT_FOUND",
+  "rootCategory": "KNOWLEDGE",
+  "severity": "LOW",
+  "status": "OBSERVED",
+  "dimensions": {
+    "where": {
+      "pipelineStage": "KNOWLEDGE_RETRIEVAL",
+      "component": "intent-understanding.service",
+      "capabilityId": "atomic-composition"
+    },
+    "whatFailed": {
+      "expectedOutcome": "Knowledge base entry ditemukan untuk query pengguna",
+      "actualOutcome": "Tidak ada knowledge base match, fallback diperlukan",
+      "rawMessage": "Tidak ada knowledge match untuk input: saya ingin ekspansi bisnis ke Indonesia"
+    },
+    "severity": {
+      "impact": "LOCAL",
+      "recoverability": "RECOVERABLE_WITH_INTERACTION"
+    },
+    "expectationGap": {
+      "gapType": "INFORMATION_MISSING",
+      "gapMagnitude": 0.6,
+      "canRecover": true
+    },
+    "isUnknown": true,
+    "isFailure": false,
+    "understandingState": {
+      "confidence": 0.6,
+      "knownEntities": [],
+      "unknownEntities": [],
+      "resolutionPath": "fallback-generic-response",
+      "state": "UNCERTAIN"
+    },
+    "recoveryAttempts": [
+      {
+        "strategy": "GENERIC_FALLBACK",
+        "timestamp": "2026-09-20T16:08:10.409Z",
+        "succeeded": true,
+        "notes": "Menerapkan generic information response fallback"
+      }
+    ],
+    "learning": {
+      "hypothesis": "Missing capability untuk membandingkan business entities",
+      "evidence": [
+        "Query: saya ingin ekspansi bisnis ke Indonesia"
+      ],
+      "proposedFix": "Tambahkan BusinessEntityComparison knowledge concept"
+    }
+  }
+}

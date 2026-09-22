@@ -1,0 +1,108 @@
+{
+  "evidence_id": "RELEASE-P0-RUNTIME-SNAPSHOT_20260917",
+  "eos_version": "D1.4",
+  "timestamp_utc": "2026-09-17T11:55:00Z",
+  "evidence_type": "config_snapshot",
+  "work_item": "RELEASE-P0-ONLINE",
+  "runtime_ports": {
+    "apps_web_face": 3001,
+    "apps_api_system": 3002,
+    "caddy_reverse_proxy": 3000,
+    "postgresql": 5433,
+    "postgres_container": "docker-proxy 5433→5432 internal"
+  },
+  "runtimes": {
+    "apps_web_nextjs_16": {
+      "status": "RUNNING",
+      "port": 3001,
+      "startup_ms": 478,
+      "env_files_loaded": [".env.local"],
+      "startup_log_tail_ok": true,
+      "turbo_mode": true
+    },
+    "apps_api_nextjs_16": {
+      "status": "RUNNING",
+      "port": 3002,
+      "startup_ms": 459,
+      "env_files_loaded": [".env.local"],
+      "startup_log_tail_ok": true,
+      "turbo_mode": true
+    },
+    "postgresql_15": {
+      "status": "ACCEPTING_CONNECTIONS",
+      "host": "localhost",
+      "port": 5433,
+      "dbname": "eos_identity",
+      "pg_isready": true,
+      "health_verified_via_pool_query": true
+    }
+  },
+  "pools_verified_healthy": [
+    "eos_communication_primary (UP 39ms)",
+    "eos_communication_replica (UP 37ms)",
+    "eos_legal_primary (UP 37ms)",
+    "eos_legal_replica (UP 35ms)"
+  ],
+  "env_vars_present_non_sensitive": [
+    "DATABASE_URL",
+    "POSTGRES_CONNECTION_STRING",
+    "POSTGRES_USER",
+    "POSTGRES_PASSWORD",
+    "SERVICES_ID_EXTERNAL_API_KEY"
+  ],
+  "package_versions_critical": {
+    "next": "16.2.0",
+    "react": "^19.2.0",
+    "pg": "^8.23.0",
+    "zod": "^3.24.1",
+    "turbopack": "builtin-nextjs-16"
+  },
+  "monorepo_workspaces": [
+    "apps/web",
+    "apps/api",
+    "apps/docs",
+    "packages/core-kernel",
+    "packages/core-runtime",
+    "packages/core-eir",
+    "packages/composition",
+    "packages/presentation-core",
+    "packages/presentation-experience",
+    "packages/presentation-legal-workspace",
+    "packages/tooling-typescript",
+    "packages/tooling-eslint",
+    "capabilities/identity",
+    "capabilities/shared",
+    "capabilities/communication",
+    "capabilities/legal-case",
+    "capabilities/legal-document",
+    "capabilities/work-core",
+    "capabilities/knowledge-graph",
+    "capabilities/requirements",
+    "capabilities/governance",
+    "capabilities/community",
+    "capabilities/commercial"
+  ],
+  "minimal_fixes_applied_this_phase": 5,
+  "fixes": [
+    "workspace/apps/web/proxy.ts:9 — remove /dist suffix from capabilities/identity import",
+    "workspace/capabilities/legal-case/implementation/repository/case-postgres.repository.ts:2 — replace identity/dist → identity",
+    "workspace/capabilities/legal-case/implementation/repository/case-postgres.repository.ts:3 — replace shared/dist → shared",
+    "workspace/capabilities/legal-case/implementation/repository/case-postgres.repository.ts:53 — replace core/runtime/dist path with @repo/core-runtime",
+    "workspace/apps/web/.env.local + workspace/apps/api/.env.local — add POSTGRES_CONNECTION_STRING to prevent SASL SCRAM password undefined on legal pools"
+  ],
+  "deferred_items_not_blocking_p0": [
+    "P1-ENTER my-reality 500 (requires @repo/capabilities-identity/dist path cleanup + @repo/presentation-experience/my-reality module)",
+    "13+ remaining /dist import patterns in commands/queries/work-core repos (affects P2+ slices only)",
+    "Duplicate page warnings (route.js vs route.ts) — non-fatal, deferred to P6 OPERATIONS",
+    "Caddy upstream 502 → docker service name mismatch with bare-metal dev mode; defer to deploy config P0-redeploy"
+  ],
+  "evidence_references": [
+    ".eos-state/evidence/RELEASE-P0-HEALTH_20260917.json",
+    ".eos-state/evidence/RELEASE-P0-READY_20260917.json",
+    "/tmp/eos-web-3001-v4.log",
+    "/tmp/eos-api-3002-v1.log"
+  ],
+  "executed_by": "EOS-COMMANDER-AGENT",
+  "verification_method": "Cold curl + runtime log correlation + pool query latency evidence",
+  "status_upgrade_from": "TARGET → IMPLEMENTED → RUNNING → VERIFIED"
+}

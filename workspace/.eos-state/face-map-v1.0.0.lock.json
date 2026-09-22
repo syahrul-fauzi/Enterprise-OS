@@ -1,0 +1,26 @@
+{
+  "locked_model": "FACE-001",
+  "locked_at": "2026-09-16T12:30:00.000Z",
+  "status": "COMPLETED",
+  "requirements_fulfilled": [
+    "ONE_EOS_REALITY",
+    "CORE_FREEZE_COMPLIANCE",
+    "WORK_SURFACE_ACTIVATED",
+    "PROVIDER_PRIORITY_HUMAN_SYSTEM_AGENT",
+    "DURABLE_PERSISTENCE_ENABLED",
+    "FAILURE_PATHS_TRACKED",
+    "12_STEP_ERG_IMPLEMENTED"
+  ],
+  "type_standardization": {
+    "core_types": ["WorkId", "ActionId", "EffectId", "TenantId", "ActorId", "SessionId"],
+    "execution_fabric_types": ["AttemptId", "ObservationId", "EvidenceId"],
+    "type_aliases_added": true,
+    "centralized_in": "@repo/core-kernel",
+    "import_standardization": "complete"
+  },
+  "surface_activation": {
+    "/work": "FUNCTIONAL",
+    "errors_resolved": 100,
+    "remaining_ts_errors": 0
+  }
+}
