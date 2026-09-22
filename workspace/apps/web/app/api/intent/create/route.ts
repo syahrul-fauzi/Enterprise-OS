@@ -294,12 +294,22 @@ Apakah Anda ingin:
 • berkonsultasi dengan ahli
 • atau melanjutkan menuju pembentukan Work untuk kebutuhan Anda?`;
       
+      // Return evidence chain for client-side tracking (matches Golden Spine format)
       const response = NextResponse.json({ 
         success: true, 
         isInformationRequest: true,
+        intentId: universalExpression.id,
+        workId: null,
+        status: universalExpression.status,
         informationResponse: finalInfoResponse,
         canFormWork: canFormWork,
         canProceedToWork: true,
+        evidence: {
+          actorId: safeSession.actorId,
+          timestamp: new Date().toISOString(),
+          source: "eos-face",
+          origin: origin
+        },
         message: "Information request processed successfully no Work/Intent created" 
       }, { status: 200 });
       

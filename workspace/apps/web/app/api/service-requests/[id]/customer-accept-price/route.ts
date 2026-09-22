@@ -37,8 +37,8 @@ export async function POST(request: Request, { params }: { params: { id: string 
 
     if (accept) {
       // Execute customerAcceptPrice command
-      const result = await capabilityRegistry.executeCommand(
-        "service-directory.customerAcceptPriceServiceRequest",
+      const result = await capabilityRegistry.invoke(
+        "service-directory", "customerAcceptPriceServiceRequest",
         {
           id: workId,
           sessionId: session.sessionId,
@@ -60,8 +60,8 @@ export async function POST(request: Request, { params }: { params: { id: string 
     } else {
       // If customer rejects price, set work to declined
       // Reuse providerDecision command with decline to maintain consistent state transitions
-      const result = await capabilityRegistry.executeCommand(
-        "service-directory.providerDecisionServiceRequest",
+      const result = await capabilityRegistry.invoke(
+        "service-directory", "providerDecisionServiceRequest",
         {
           id: workId,
           providerId: session.actorId, // Customer is the one rejecting

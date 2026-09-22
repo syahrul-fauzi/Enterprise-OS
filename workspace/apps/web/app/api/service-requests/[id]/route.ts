@@ -1,13 +1,14 @@
-import { NextResponse } from "next/server";
-import {
-  WORKSPACE_SESSION_COOKIE,
-  decodeWorkspaceSession,
-  createAnonymousWorkspaceSession,
-  encodeWorkspaceSession
-} from "@repo/core-kernel/registry";
+// NON-GOLDEN-SPINE ROUTE - DISABLED TO PREVENT NEXT.JS COMPILATION
+// import { NextResponse } from "next/server";
+// import {
+//   WORKSPACE_SESSION_COOKIE,
+//   decodeWorkspaceSession,
+//   createAnonymousWorkspaceSession,
+//   encodeWorkspaceSession
+// } from "@repo/core-kernel/registry";
 
-// CANONICAL API PROXY: /api/service-requests/[id] memforward ke /api/work/[id]
-// Menyelesaikan context break: ServiceRequest = Work specialization untuk domain services.id
+// // CANONICAL API PROXY: /api/service-requests/[id] memforward ke /api/work/[id]
+// // Menyelesaikan context break: ServiceRequest = Work specialization untuk domain services.id
 // Satu Work primitive inti, dengan spesialisasi domain di atasnya
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

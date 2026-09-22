@@ -93,6 +93,130 @@ export function useMyRealityController({ initialModel }: UseMyRealityControllerP
     }
   }, []);
 
+  // Golden Spine Journey: MyReality → Work → Communication (E2E PROOF ORCHESTRATOR)
+  // Tracks failure paths: SUCCESS/NO_RESPONSE/TIMEOUT/AUTHORIZATION_DENIED
+  // Reuses existing primitives ONLY (no new core packages, architecture freeze compliant)
+  const runGoldenSpineJourney = useCallback(async (journeyParams: {
+    workTitle: string;
+    workDescription: string;
+    communicationContent: string;
+    timeoutMs?: number;
+  }) => {
+    const { workTitle, workDescription, communicationContent, timeoutMs = 30000 } = journeyParams;
+    setIsLoading(true);
+    setHasError(false);
+    setErrorMessage("");
+    
+    const withTimeout = <T,>(promise: Promise<T>, ms: number, errorMsg: string): Promise<T> => {
+      return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error(`TIMEOUT: ${errorMsg}`)), ms);
+        promise.then(resolve).catch(reject).finally(() => clearTimeout(timer));
+      });
+    };
+
+    try {
+      console.log('[GoldenSpine] 🚀 Memulai journey MyReality→Work→Communication...');
+      
+      // Step 1: Create Work (MyReality → Work) - real API invocation
+      console.log('[GoldenSpine] 📝 Step 1: Membuat work baru...');
+      const workResponse = await withTimeout(
+        fetch('/api/work/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: workTitle,
+            description: workDescription,
+            actorId: model.actor.id,
+            workspaceId: workspaceId || 'default-workspace'
+          })
+        }),
+        timeoutMs,
+        'Work creation'
+      );
+
+      if (!workResponse.ok) {
+        if (workResponse.status === 401 || workResponse.status === 403) {
+          throw new Error('AUTHORIZATION_DENIED: Tidak memiliki izin membuat work');
+        }
+        throw new Error(`NO_RESPONSE: Work creation gagal dengan status ${workResponse.status}`);
+      }
+
+      const workResult = await workResponse.json();
+      const createdWorkId = workResult.workId;
+      console.log('[GoldenSpine] ✅ Work berhasil dibuat:', createdWorkId);
+
+      // Step 2: Create Communication linked to Work (Work → Communication)
+      console.log('[GoldenSpine] 💬 Step 2: Menambahkan komunikasi ke work...');
+      const commResponse = await withTimeout(
+        fetch('/api/communications/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            workId: createdWorkId,
+            content: communicationContent,
+            actorId: model.actor.id
+          })
+        }),
+        timeoutMs,
+        'Communication creation'
+      );
+
+      if (!commResponse.ok) {
+        if (commResponse.status === 401 || commResponse.status === 403) {
+          throw new Error('AUTHORIZATION_DENIED: Tidak memiliki izin menambahkan komunikasi');
+        }
+        throw new Error(`NO_RESPONSE: Communication creation gagal dengan status ${commResponse.status}`);
+      }
+
+      const commResult = await commResponse.json();
+      console.log('[GoldenSpine] ✅ Komunikasi berhasil ditambahkan:', commResult.communicationId);
+
+      // Step 3: Refresh MyReality model untuk membaca kembali state terbaru (real read-back)
+      console.log('[GoldenSpine] 🔄 Step 3: Refresh MyReality model untuk read-back...');
+      await refreshModel();
+
+      // Final: Journey complete dengan full chain terbukti
+      console.log('[GoldenSpine] 🎉 E2E Journey SUCCESS - MyReality→Work→Communication terbukti bekerja!');
+      console.log('[GoldenSpine] 📊 Evidence chain:', {
+        workId: createdWorkId,
+        communicationId: commResult.communicationId,
+        actorId: model.actor.id,
+        timestamp: new Date().toISOString(),
+        status: 'SUCCESS'
+      });
+
+      setIsLoading(false);
+      return {
+        status: 'SUCCESS',
+        workId: createdWorkId,
+        communicationId: commResult.communicationId,
+        evidence: {
+          actorId: model.actor.id,
+          timestamp: new Date().toISOString()
+        }
+      };
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "UNKNOWN_ERROR";
+      console.error('[GoldenSpine] ❌ Journey gagal:', errorMessage);
+      setHasError(true);
+      setErrorMessage(errorMessage);
+      setIsLoading(false);
+      
+      // Track failure path untuk observabilitas
+      console.log('[GoldenSpine] 📉 Failure status:', errorMessage.includes('TIMEOUT') ? 'TIMEOUT' : 
+                                        errorMessage.includes('AUTHORIZATION') ? 'AUTHORIZATION_DENIED' : 
+                                        errorMessage.includes('NO_RESPONSE') ? 'NO_RESPONSE' : 'UNKNOWN');
+      
+      return {
+        status: errorMessage.includes('TIMEOUT') ? 'TIMEOUT' : 
+               errorMessage.includes('AUTHORIZATION') ? 'AUTHORIZATION_DENIED' : 
+               errorMessage.includes('NO_RESPONSE') ? 'NO_RESPONSE' : 'UNKNOWN',
+        error: errorMessage
+      };
+    }
+  }, [model.actor.id, workspaceId, refreshModel]);
+
   const categorizedWorks = {
     needsAttention: model.priority.now.filter(work => work.state === "blocked" || work.bottleneck),
     active: model.priority.next.filter(work => work.state === "in_progress"),
@@ -116,6 +240,7 @@ export function useMyRealityController({ initialModel }: UseMyRealityControllerP
     dispatchAction,
     refreshModel,
     handleCanonicalModelUpdate,
+    runGoldenSpineJourney,
     isLoading,
     hasError,
     errorMessage,

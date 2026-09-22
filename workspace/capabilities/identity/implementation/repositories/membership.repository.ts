@@ -6,7 +6,7 @@ import {
   WorkspaceId,
   type MembershipAggregate,
   type MembershipRepository,
-} from "../contracts/index.js";
+} from "../contracts/index.ts";
 
 // PostgreSQL-backed membership repository implementation
 export class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implements MembershipRepository {

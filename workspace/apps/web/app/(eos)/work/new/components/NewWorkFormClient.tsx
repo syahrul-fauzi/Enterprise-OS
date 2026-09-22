@@ -5,13 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { 
   Card, 
-  Form, 
   Input, 
-  Textarea, 
+  TextArea, 
   Button,
-  ErrorState,
-  Loader2
+  ErrorState
 } from "@repo/presentation-ui-system";
+import { Loader2 } from "lucide-react";
 import type { NewWorkFormClientProps } from "./types";
 
 export function NewWorkFormClient({
@@ -53,14 +52,14 @@ export function NewWorkFormClient({
     <>
       <div className="min-h-screen bg-surface-background px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="mx-auto max-w-3xl">
-          {error && <ErrorState message={error} />}
+          {error && <ErrorState title="Gagal membuat pekerjaan" description={error} />}
           
           <Card className="p-6 sm:p-8">
             <h1 className="text-2xl font-bold text-text-primary mb-6">
               {intent ? `Mulai Pekerjaan: ${intent.title}` : "Buat Pekerjaan Baru"}
             </h1>
 
-            <Form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <Input
                 id="title"
                 name="title"
@@ -72,7 +71,7 @@ export function NewWorkFormClient({
                 className="w-full"
               />
 
-              <Textarea
+              <TextArea
                 id="objective"
                 name="objective"
                 label="Tujuan Utama"
@@ -84,7 +83,7 @@ export function NewWorkFormClient({
                 className="w-full resize-none"
               />
 
-              <Textarea
+              <TextArea
                 id="description"
                 name="description"
                 label="Deskripsi / Konteks Tambahan"
@@ -115,7 +114,7 @@ export function NewWorkFormClient({
                   {isSubmitting ? "Membuat Pekerjaan..." : "Buat Pekerjaan"}
                 </Button>
               </div>
-            </Form>
+            </form>
           </Card>
         </div>
       </div>

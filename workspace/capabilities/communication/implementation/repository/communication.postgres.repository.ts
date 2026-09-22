@@ -1,48 +1,67 @@
 import { Pool } from "pg";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
-import { CommunicationEvent, CommunicationEventId, CommunicationEventStatus } from "../contracts/communication.contracts";
-import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager";
+import { CommunicationEvent, CommunicationEventId, CommunicationEventStatus } from "../contracts/communication.contracts.js";
+import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager.js";
 
 // Validate required environment variables in production
 // EXCEPTION: Skip during Next.js build phase (phase-production-build) because build-time static analysis runs in "production" NODE_ENV but has no DB connection
 const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
-if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.POSTGRES_CONNECTION_STRING) {
-  throw new Error("[CommunicationRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING environment variable is required in production");
+if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.DATABASE_URL && !process.env.POSTGRES_CONNECTION_STRING) {
+  throw new Error("[CommunicationRepositoryPostgres] FATAL: DATABASE_URL or POSTGRES_CONNECTION_STRING environment variable is required in production");
 }
 
-// Read replica configuration for horizontal scaling of read-heavy queries
-// Separate write primary from read replicas to distribute load
-const writePool = new Pool({
-  connectionString: process.env.POSTGRES_WRITE_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || "postgresql://localhost:5432/eos_communication",
-  max: 10, // Smaller pool for writes (fewer write operations)
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
-
-const readPool = new Pool({
-  connectionString: process.env.POSTGRES_READ_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || "postgresql://localhost:5432/eos_communication",
-  max: 30, // Larger pool for read-heavy communication queries
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
-
-// Run migrations on initialization - ensures schema is always up-to-date
+// Shared module-level state for both build and non-build phases
 let migrationsInitialized = false;
-async function initializeDatabase() {
-  if (migrationsInitialized) return;
-  const result = await DatabaseMigrationManager.runMigrations(writePool);
-  if (result.errors.length > 0) {
-    console.error("[CommunicationRepositoryPostgres] Database initialization failed:", result.errors);
-    throw new Error(`Database migration failed: ${result.errors.join(", ")}`);
+// Create shared mock pool implementation for build phase
+const mockPool = { query: async () => ({ rows: [] }) } as any;
+async function mockInitializeDatabase() { return; }
+
+// Initialize real pools only in non-build phase
+let writePool: any = isBuildPhase ? mockPool : null;
+let readPool: any = isBuildPhase ? mockPool : null;
+let initializeDatabase: () => Promise<void> = isBuildPhase ? mockInitializeDatabase : async () => {};
+
+if (!isBuildPhase) {
+  // Read replica configuration for horizontal scaling of read-heavy queries
+  // Separate write primary from read replicas to distribute load
+  // Align with base.repository.ts pattern: support both DATABASE_URL (modern) and POSTGRES_CONNECTION_STRING (legacy)
+  const writeConnectionString = process.env.POSTGRES_WRITE_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL || "postgresql://localhost:5432/eos_communication";
+  const readConnectionString = process.env.POSTGRES_READ_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL || "postgresql://localhost:5432/eos_communication";
+
+  writePool = new Pool({
+    connectionString: writeConnectionString,
+    max: 10, // Smaller pool for writes (fewer write operations)
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  });
+
+  readPool = new Pool({
+    connectionString: readConnectionString,
+    max: 30, // Larger pool for read-heavy communication queries
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  });
+
+  // Run migrations on initialization - ensures schema is always up-to-date
+  initializeDatabase = async () => {
+    if (migrationsInitialized) return;
+    const result = await DatabaseMigrationManager.runMigrations(writePool);
+    if (result.errors.length > 0) {
+      console.error("[CommunicationRepositoryPostgres] Database initialization failed:", result.errors);
+      throw new Error(`Database migration failed: ${result.errors.join(", ")}`);
+    }
+    console.log(`[CommunicationRepositoryPostgres] Database initialized: ${result.executed.length} migrations executed, ${result.already_applied.length} already applied`);
+    migrationsInitialized = true;
   }
-  console.log(`[CommunicationRepositoryPostgres] Database initialized: ${result.executed.length} migrations executed, ${result.already_applied.length} already applied`);
-  migrationsInitialized = true;
+
+  // Initialize on module load only in non-build phase
+  initializeDatabase().catch(err => console.error("[CommunicationRepositoryPostgres] Failed to initialize database:", err));
 }
 
-// Initialize on module load
-initializeDatabase().catch(err => console.error("[CommunicationRepositoryPostgres] Failed to initialize database:", err));
+// Export once at module level (consistent API regardless of build phase)
+export { writePool, readPool, initializeDatabase };
 
-// Initialize database schema if not exists
+// Initialize database schema if not exists - only used by legacy code (migrations handle schema now)
 async function initializeSchema(): Promise<void> {
   if (migrationsInitialized) return;
   const createTableQuery = `

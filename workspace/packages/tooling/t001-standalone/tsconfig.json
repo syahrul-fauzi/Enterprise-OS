@@ -5,8 +5,16 @@
     "strictNullChecks": true,
     "declaration": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@repo/core-eir": ["../../core/eir/dist/src/index.d.ts"],
+      "@repo/core-predicate-registry": ["../../core/predicate-registry/dist/src/index.d.ts"],
+      "@repo/core-transformation-registry": ["../../core/transformation-registry/dist/src/index.d.ts"],
+      "@repo/core-proof-ledger": ["../../core/proof-ledger/dist/src/index.d.ts"],
+      "@repo/core-kernel/*": ["../../core/kernel/dist/src/*"]
+    }
   },
-  "include": ["src"],
+  "include": ["src/**/*"],
   "exclude": ["dist", "build", "node_modules"]
 }

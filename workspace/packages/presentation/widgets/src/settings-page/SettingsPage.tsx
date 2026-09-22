@@ -19,15 +19,161 @@ export interface SettingsPageProps {
     readonly workspaceId: string;
     readonly productId: string;
     readonly actorLabel: string;
+    readonly userCapabilities?: string[];
   };
   readonly productId: string;
   readonly binding: ProductPreviewBinding;
-  readonly activeTab: "profile" | "account" | "preferences" | "notifications" | "security" | "session";
+  readonly activeTab: "profile" | "account" | "preferences" | "notifications" | "security" | "session" | "governance";
 }
 
-// Simplified tabs for golden spine v0.1 - only basic settings available
+// Governance tab component - minimal implementation to connect DeliveryDecisionGatewayService
+function GovernanceTab() {
+  const [decisions, setDecisions] = React.useState<any[]>([]);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [formData, setFormData] = React.useState({
+    requirementId: "",
+    decisionType: "delivery_approval",
+    decision: "approve",
+    rationale: ""
+  });
+
+  // Load existing decisions on mount
+  React.useEffect(() => {
+    const loadDecisions = async () => {
+      try {
+        const res = await fetch(`/api/governance/decisions?productId=default`);
+        if (res.ok) {
+          const data = await res.json();
+          setDecisions(data.decisions || []);
+        }
+      } catch (error) {
+        console.error("Failed to load governance decisions:", error);
+      }
+    };
+    loadDecisions();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/governance/decisions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+      if (res.ok) {
+        const newDecision = await res.json();
+        setDecisions(prev => [newDecision, ...prev]);
+        setFormData({ requirementId: "", decisionType: "delivery_approval", decision: "approve", rationale: "" });
+      }
+    } catch (error) {
+      console.error("Failed to submit decision:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="space-y-8">
+      {/* Decision submission form */}
+      <form onSubmit={handleSubmit} className="space-y-6 p-6 border border-slate-200 rounded-xl bg-white">
+        <h3 className="text-lg font-semibold text-slate-900">Submit Governance Decision</h3>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Requirement ID</label>
+            <input
+              type="text"
+              value={formData.requirementId}
+              onChange={(e) => setFormData({...formData, requirementId: e.target.value})}
+              required
+              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="req-001"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Decision Type</label>
+            <select
+              value={formData.decisionType}
+              onChange={(e) => setFormData({...formData, decisionType: e.target.value})}
+              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="delivery_approval">Delivery Approval</option>
+              <option value="delivery_review">Delivery Review</option>
+              <option value="escalation">Escalation</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Decision</label>
+            <select
+              value={formData.decision}
+              onChange={(e) => setFormData({...formData, decision: e.target.value})}
+              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="approve">Approve</option>
+              <option value="reject">Reject</option>
+              <option value="request_changes">Request Changes</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Rationale</label>
+          <textarea
+            value={formData.rationale}
+            onChange={(e) => setFormData({...formData, rationale: e.target.value})}
+            required
+            rows={3}
+            className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Explain the rationale for this decision..."
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? "Submitting..." : "Submit Decision"}
+        </button>
+      </form>
+
+      {/* Decision history */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-slate-900">Decision History</h3>
+        {decisions.length === 0 ? (
+          <div className="p-6 text-center border border-slate-200 rounded-xl bg-slate-50">
+            <p className="text-slate-500">No governance decisions yet.</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {decisions.map((decision) => (
+              <div key={decision.decision_id} className="p-4 border border-slate-200 rounded-xl bg-white">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="font-medium text-slate-900">{decision.requirement_id}</p>
+                    <p className="text-sm text-slate-600">{decision.actor.label} • {new Date(decision.timestamp_utc).toLocaleString()}</p>
+                  </div>
+                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                    decision.decision === "approve" ? "bg-emerald-100 text-emerald-800" :
+                    decision.decision === "reject" ? "bg-red-100 text-red-800" :
+                    "bg-amber-100 text-amber-800"
+                  }`}>
+                    {decision.decision}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm text-slate-700">{decision.rationale}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Simplified tabs for golden spine v0.1 - added governance tab
 const TABS = [
   { id: "basic", label: "Basic Settings", component: () => <div>Settings coming soon</div> },
+  { id: "governance", label: "Governance", component: GovernanceTab },
 ] as const;
 
 export function SettingsPage({ session, productId, binding, activeTab }: SettingsPageProps) {
@@ -88,6 +234,13 @@ export function SettingsPage({ session, productId, binding, activeTab }: Setting
       </ProductPreviewShell>
     );
   }
+
+  // Set initial active tab based on prop if it's governance (from /govern route)
+  React.useEffect(() => {
+    if (activeTab === "governance") {
+      setActiveTabState("governance");
+    }
+  }, [activeTab]);
 
   // Find the active tab component
   const currentTab = TABS.find(tab => tab.id === activeTabState) || TABS[0];

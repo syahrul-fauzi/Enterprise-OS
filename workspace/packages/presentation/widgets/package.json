@@ -11,7 +11,14 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./*": "./dist/*.js"
+    "./settings-page": {
+      "types": "./dist/settings-page/index.d.ts",
+      "default": "./dist/settings-page/index.js"
+    },
+    "./notifications-page": {
+      "types": "./dist/notifications-page/index.d.ts",
+      "default": "./dist/notifications-page/index.js"
+    }
   },
   "license": "MIT",
  "scripts": {
@@ -24,6 +31,7 @@
     "@repo/presentation-entities": "workspace:*",
     "@repo/presentation-ui-system": "workspace:*",
     "@repo/presentation-foundation": "workspace:*",
+    "@repo/presentation-experience": "workspace:*",
     "lucide-react": "^0.411.0",
     "react-grid-layout": "^1.4.4"
   },

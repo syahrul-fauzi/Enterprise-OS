@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { capabilityRegistry } from "@repo/core-kernel/registry";
-
-const WORKSPACE_SESSION_COOKIE = "eos_workspace_session";
+import { WORKSPACE_SESSION_COOKIE } from "@repo/core-kernel";
+import { communicationQueries } from "@repo/capabilities-communication/commands";
 
 export async function GET(request: Request) {
   try {
@@ -39,18 +38,17 @@ export async function GET(request: Request) {
     // 4. Invoke communication.listEvents query
     console.log(`[GET /api/communication/list] Listing communications for work ${work_id}`);
     
-    const result = await capabilityRegistry.invoke("communication", "communication.listEvents", {
+    const output = await communicationQueries["communication.listEvents"].execute({
       work_id,
       sessionId: sessionId,
-      tenantId: tenantId,
-      workspaceId: workspaceId,
-      actorId: actorId
+      tenantId,
+      workspaceId,
+      actorId
     });
 
-    // 5. Return success response
     return NextResponse.json({
       success: true,
-      data: result.output
+      data: output
     });
 
   } catch (error) {

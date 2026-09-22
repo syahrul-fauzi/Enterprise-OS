@@ -8,6 +8,7 @@
   "src/product-service-requests-page/**/*",
   "src/product-preview-shell/**/*",
   "src/settings-page/**/*",
+  "src/notifications-page/**/*",
   "src/institution-page/**/*",
   "src/error-boundary/**/*",
   "src/workspace-dashboard/**/*"

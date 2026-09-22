@@ -6,10 +6,10 @@ const OIDCLoginRequestSchema = z.object({
 });
 
 // Hydra configuration from docker-compose.yml
-const HYDRA_PUBLIC_URL = process.env.HYDRA_PUBLIC_URL || "http://127.0.0.1:4444";
-const HYDRA_ADMIN_URL = process.env.HYDRA_ADMIN_URL || "http://127.0.0.1:4445";
+const HYDRA_PUBLIC_URL = process.env.HYDRA_PUBLIC_URL || "http://0.0.0.0:4444";
+const HYDRA_ADMIN_URL = process.env.HYDRA_ADMIN_URL || "http://0.0.0.0:4445";
 const CLIENT_ID = process.env.OIDC_CLIENT_ID || "lawyershub-client";
-const REDIRECT_URI = process.env.OIDC_REDIRECT_URI || "http://127.0.0.1:3007/api/auth/callback";
+const REDIRECT_URI = process.env.OIDC_REDIRECT_URI || "http://0.0.0.0:3000/api/auth/callback";
 
 export async function POST(request: Request) {
   let payload: unknown;

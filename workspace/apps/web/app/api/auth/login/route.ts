@@ -91,6 +91,7 @@ export async function POST(request: Request) {
          email: u.email,
          displayName: u.displayName,
          passwordHash: u.passwordHash,
+         isExternal: false,
          createdAt: new Date(u.createdAt),
          updatedAt: new Date(u.updatedAt),
        });

@@ -6,7 +6,7 @@ import {
   type IntentRepository,
   IntentStatus,
   IntentCategory,
-} from "../contracts/index.js";
+} from "../contracts/index.ts";
 
 // Validate required environment variables in production - matches other repository patterns
 const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';

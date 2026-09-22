@@ -21,8 +21,8 @@ import {
   LearningCandidate,
   LearningCandidateStatus,
 } from "../contracts/consultation.contracts.js";
-import { executionContext } from "@repo/core-runtime";
-import type { CapabilityCommand } from "@repo/core-kernel";
+import { executionContext } from "../../../../packages/core/runtime/src/index.js";
+import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
 import { newConsultationId, newConsultationSeriesId, newConsultationEpisodeId, defaultConsultationStatus, defaultConsultationPriority, ConsultationRepositoryInMemory } from "../repository/index.js";
 import { initIdentitySchema, getSessionRepositoryPostgres, SessionRepositoryInMemory } from "../../../identity/implementation/repositories/index.js";
 import { SessionId } from "../../../identity/implementation/contracts/identity.contracts.js";
@@ -602,7 +602,7 @@ export const triageConsultation: TriageConsultationCommand = {
           missingFields: ["detail_masalah", "komunikasi_terakhir", "ekspektasi_penyelesaian"],
           recommendedAction: "needs_human_review", // Enforce human review before any work creation
           requiresUserDecision: true // Explicit user decision required before any work formation
-        };
+        } as any;
       }
       // Detect datacenter/server infrastructure issues for observability incident creation
       const infrastructureKeywords = [
@@ -1555,7 +1555,7 @@ export const triageConsultation: TriageConsultationCommand = {
         // Hanya sufficient jika BOTH field terisi DAN SEMUA assessment kritis sudah ada
         isOutcomeSufficient = hasAllRequiredFields && hasAllCriticalAssessments;
         sufficiencyRationale = isOutcomeSufficient 
-          ? `SUFFICIENT: Semua field dan critical assessments untuk AMDAL terpenuhi, composed outcome confidence=${composedEvidence.confidence}` 
+          ? `SUFFICIENT: Semua field dan critical assessments untuk AMDAL terpenuhi, composed outcome confidence=${(composedEvidence as any).confidence}` 
           : `INSUFFICIENT: ${!hasAllRequiredFields ? `Missing fields - ${(mutable.missingFields || []).filter(f => requiredFields.includes(f)).join(", ")}; ` : ''}${!hasAllCriticalAssessments ? 'Butuh assessment lingkungan/hukum/tata-ruang/sosial/teknis dulu' : ''}`;
       } else if (currentIntent.includes("rumah sakit") || currentIntent.includes("operasional dan akreditasi") || currentIntent.includes("akreditasi kemenkes") || currentIntent.includes("izin operasional rumah sakit")) {
         // Target Outcome: HOSPITAL_COMPLIANCE_COORDINATED - sesuai Case MSO-004 (MANY→MANY orchestration)

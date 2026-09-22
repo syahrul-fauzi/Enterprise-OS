@@ -4,6 +4,10 @@
 // import { requirementsTraceabilityMatrixService } from "../../../requirements-traceability-matrix/implementation/service.js";
 // import { evidenceRegistryService } from "../../../evidence-registry/implementation/service.js";
 // import { workflowEngineService } from "../../../workflow-engine/implementation/service.js";
+export type RequirementId = string & { readonly __requirementId: unique symbol };
+export function RequirementId(value: string): RequirementId {
+  return value as RequirementId;
+}
 import type {
   ApiPlatformDescriptor,
   ApiPlatformEndpoint,
@@ -13,6 +17,12 @@ import type {
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import { governanceReadGatewayService } from "./governance-read-gateway.service.js";
 import { requirementDeliveryGatewayService } from "./requirement-delivery-gateway.service.js";
+import { workflowReadGatewayService } from "./workflow-read-gateway.service.js";
+import { intentReadGatewayService } from "./intent-read-gateway.service.js";
+// B6.11: Use intent read gateway to avoid compile-time coupling with atomic-composition
+// Canonical intentUnderstandingService is accessed via runtime globalThis binding
+// Circular dependency removed - atomic-composition imports from api-platform, not the reverse
+// import { intentUnderstandingService } from "../../../atomic-composition/implementation/services/intent-understanding.service.js";
 
 const ENDPOINTS: readonly ApiPlatformEndpoint[] = Object.freeze([
   {
@@ -31,6 +41,14 @@ const ENDPOINTS: readonly ApiPlatformEndpoint[] = Object.freeze([
     operation: "search",
     authRequired: true,
   },
+  {
+    id: "intent-execution",
+    method: "POST",
+    path: "/api/intent/execute",
+    resource: "workflows", // Use existing supported resource to comply with ApiPlatformResource type
+    operation: "execute",
+    authRequired: true,
+  } as unknown as ApiPlatformEndpoint,
   {
     id: "governance-summary",
     method: "GET",
@@ -247,8 +265,36 @@ export class ApiPlatformService {
     return result;
   }
 
-  executeQuery(input: ApiPlatformQueryInput): ApiPlatformQueryOutput {
-    const result =
+  async executeQuery(input: ApiPlatformQueryInput): Promise<ApiPlatformQueryOutput> {
+    // Handle intent/execute mapped to workflows/execute to comply with existing API taxonomy
+    // Detect if this is an intent execution request (contains transaction data instead of workflowId)
+    if (input.resource === "workflows" && input.operation === "execute") {
+      // Check if this is a transaction intent (has amount and material_category) instead of workflow execution
+      const params = input.params ?? {};
+      if (params.amount && params.material_category) {
+        // Correctly call the interpret method via intent read gateway to avoid compile errors
+        const intentResult = await intentReadGatewayService.interpret({
+          type: 'transaction',
+          content: params,
+        });
+        const output = {
+          resource: input.resource,
+          operation: input.operation,
+          result: intentResult,
+        };
+        recordRuntimeInvocation({
+          capabilityId: "api-platform",
+          operationId: "execute-query",
+          sourceRef: "ApiPlatformService.executeQuery",
+          success: true,
+          input,
+          result: output,
+        });
+        return output;
+      }
+    }
+
+        const result =
       input.resource === "governance" && input.operation === "get"
         ? governanceReadGatewayService.selectReadModel(input.params.readModel)
         : input.resource === "constitution" && input.operation === "get"
@@ -258,7 +304,7 @@ export class ApiPlatformService {
 
               return input.resource === "requirements" &&
                 input.operation === "search"
-                ? requirementService.searchRequirements({
+                ? requirementDeliveryGatewayService.searchRequirements({
                     query:
                       typeof params.query === "string"
                         ? params.query
@@ -293,11 +339,11 @@ export class ApiPlatformService {
                         : undefined,
                   })
                 : input.resource === "requirements" && input.operation === "get"
-                  ? requirementService.getRequirement({
-                      id: RequirementId(String(params.id ?? "")),
+                  ? requirementDeliveryGatewayService.getRequirement({
+                      id: String(params.id ?? ""),
                     })
                   : input.resource === "rtm" && input.operation === "search"
-                    ? requirementsTraceabilityMatrixService.searchTraceabilityMatrix(
+                    ? requirementDeliveryGatewayService.searchTraceabilityMatrix(
                         {
                           requirementId:
                             typeof params.requirementId === "string"
@@ -318,13 +364,13 @@ export class ApiPlatformService {
                         },
                       )
                     : input.resource === "rtm" && input.operation === "get"
-                      ? requirementsTraceabilityMatrixService.getTraceabilityRow(
-                          {
-                            requirementId: RequirementId(
-                              String(params.requirementId ?? ""),
-                            ),
-                          },
-                        )
+                       ? requirementDeliveryGatewayService.getTraceabilityRow(
+                            {
+                              requirementId: RequirementId(
+                                String(params.requirementId ?? ""),
+                              ),
+                            },
+                          )
                       : input.resource === "delivery" &&
                           input.operation === "search"
                         ? requirementDeliveryGatewayService.search({
@@ -353,86 +399,86 @@ export class ApiPlatformService {
                                 ? params.offset
                                 : undefined,
                           })
-                      : input.resource === "evidence" &&
-                          input.operation === "search"
-                        ? evidenceRegistryService.searchEvidenceRegistry({
-                            q:
-                              typeof params.q === "string"
-                                ? params.q
-                                : undefined,
-                            kind:
-                              typeof params.kind === "string"
-                                ? (params.kind as never)
-                                : undefined,
-                            scope:
-                              typeof params.scope === "string"
-                                ? (params.scope as never)
-                                : undefined,
-                            runId:
-                              typeof params.runId === "string"
-                                ? params.runId
-                                : undefined,
-                            requirementRef:
-                              typeof params.requirementRef === "string"
-                                ? params.requirementRef
-                                : undefined,
-                            tag:
-                              typeof params.tag === "string"
-                                ? params.tag
-                                : undefined,
-                            limit:
-                              typeof params.limit === "number"
-                                ? params.limit
-                                : undefined,
-                            offset:
-                              typeof params.offset === "number"
-                                ? params.offset
-                                : undefined,
-                          })
                         : input.resource === "evidence" &&
-                            input.operation === "get"
-                          ? evidenceRegistryService.getEvidenceRecord({
-                              id: String(params.id ?? ""),
+                            input.operation === "search"
+                          ? requirementDeliveryGatewayService.searchEvidenceRegistry({
+                              q:
+                                typeof params.q === "string"
+                                  ? params.q
+                                  : undefined,
+                              kind:
+                                typeof params.kind === "string"
+                                  ? (params.kind as never)
+                                  : undefined,
+                              scope:
+                                typeof params.scope === "string"
+                                  ? (params.scope as never)
+                                  : undefined,
+                              runId:
+                                typeof params.runId === "string"
+                                  ? params.runId
+                                  : undefined,
+                              requirementRef:
+                                typeof params.requirementRef === "string"
+                                  ? params.requirementRef
+                                  : undefined,
+                              tag:
+                                typeof params.tag === "string"
+                                  ? params.tag
+                                  : undefined,
+                              limit:
+                                typeof params.limit === "number"
+                                  ? params.limit
+                                  : undefined,
+                              offset:
+                                typeof params.offset === "number"
+                                  ? params.offset
+                                  : undefined,
                             })
-                          : input.resource === "workflows" &&
-                              input.operation === "list"
-                            ? workflowEngineService.listWorkflowDefinitions()
+                          : input.resource === "evidence" &&
+                              input.operation === "get"
+                            ? requirementDeliveryGatewayService.getEvidenceRecord({
+                                id: String(params.id ?? ""),
+                              })
                             : input.resource === "workflows" &&
-                                input.operation === "get"
-                              ? workflowEngineService.getWorkflowDefinition({
-                                  workflowId: String(params.workflowId ?? ""),
-                                })
+                                input.operation === "list"
+                              ? workflowReadGatewayService.listWorkflowDefinitions()
                               : input.resource === "workflows" &&
-                                  input.operation === "execute"
-                                ? workflowEngineService.executeWorkflow({
+                                  input.operation === "get"
+                                ? workflowReadGatewayService.getWorkflowDefinition({
                                     workflowId: String(params.workflowId ?? ""),
-                                    requirementId:
-                                      typeof params.requirementId === "string"
-                                        ? params.requirementId
-                                        : undefined,
-                                    runId:
-                                      typeof params.runId === "string"
-                                        ? params.runId
-                                        : undefined,
-                                    limit:
-                                      typeof params.limit === "number"
-                                        ? params.limit
-                                        : undefined,
-                                    decision_id:
-                                      typeof params.decision_id === "string"
-                                        ? params.decision_id
-                                        : undefined,
-                                    productId:
-                                      typeof params.productId === "string"
-                                        ? params.productId
-                                        : process.env.EOS_RUNTIME_INVOCATION_PRODUCT_ID,
                                   })
                                 : input.resource === "workflows" &&
-                                  input.operation === "trace"
-                                ? workflowEngineService.traceExecutionsByDecision({
-                                    decision_id: String(params.decision_id ?? ""),
-                                  })
-                                : undefined;
+                                    input.operation === "execute"
+                                  ? workflowReadGatewayService.executeWorkflow({
+                                      workflowId: String(params.workflowId ?? ""),
+                                      requirementId:
+                                        typeof params.requirementId === "string"
+                                          ? params.requirementId
+                                          : undefined,
+                                      runId:
+                                        typeof params.runId === "string"
+                                          ? params.runId
+                                          : undefined,
+                                      limit:
+                                        typeof params.limit === "number"
+                                          ? params.limit
+                                          : undefined,
+                                      decision_id:
+                                        typeof params.decision_id === "string"
+                                          ? params.decision_id
+                                          : undefined,
+                                      productId:
+                                        typeof params.productId === "string"
+                                          ? params.productId
+                                          : process.env.EOS_RUNTIME_INVOCATION_PRODUCT_ID,
+                                    })
+                                  : input.resource === "workflows" &&
+                                    input.operation === "trace"
+                                  ? workflowReadGatewayService.traceExecutionsByDecision({
+                                      decision_id: String(params.decision_id ?? ""),
+                                    })
+                                  : undefined;
             })();
 
     if (result === undefined) {

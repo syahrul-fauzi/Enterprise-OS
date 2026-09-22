@@ -4,7 +4,7 @@ import {
   TenantId,
   type WorkspaceAggregate,
   type WorkspaceRepository,
-} from "../contracts/index.js";
+} from "../contracts/index.ts";
 
 // PostgreSQL-backed workspace repository implementation
 class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements WorkspaceRepository {

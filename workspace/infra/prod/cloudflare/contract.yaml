@@ -1,0 +1,60 @@
+tunnel:
+  name: eos-staging
+  connector:
+    systemd_unit: /etc/systemd/system/eos-staging-cloudflared.service
+    starter_script: /usr/local/bin/eos-staging-cloudflared-start
+    secret_env_file: /etc/eos-staging/cloudflared.env
+    secret_env_key: EOS_STAGING_TUNNEL_TOKEN
+    secret_in_git: false
+
+origin:
+  bridge:
+    listener: http://127.0.0.1:3005
+    implementation: caddy
+    live_caddyfile: /root/eos-staging-origin.Caddyfile
+  upstream:
+    listener: https://127.0.0.1:443
+    runtime: eos-staging-caddy
+
+public:
+  - hostname: services-id.com
+    origin: http://127.0.0.1:3005
+    product: services-id
+    product_preview_path: /products/services-id
+    requirement_preview_path: /products/services-id/requirements
+    workspace_path: /requirements
+
+  - hostname: lawyershub.id
+    origin: http://127.0.0.1:3005
+    product: lawyershub
+    product_preview_path: /products/lawyershub
+    requirement_preview_path: /products/lawyershub/requirements
+    workspace_path: /requirements
+
+  - hostname: indonesialawyersclub.id
+    origin: http://127.0.0.1:3005
+    product: ilc
+    product_preview_path: /products/ilc
+    requirement_preview_path: /products/ilc/requirements
+    workspace_path: /requirements
+
+acceptance:
+  connector_health:
+    - systemd active
+    - tunnel logs show connected and healthy environment
+  origin_health:
+    - bridge listener on :3005
+    - product host header routes resolve correctly
+  public_health:
+    - HTTPS reachable
+    - valid product identity rendered
+    - Requirement Preview rendered
+    - /requirements reachable
+    - no 5xx
+    - no timeout
+
+legacy:
+  tunnel:
+    name: lawyers-hub-intake-mvp
+    status: deprecated
+    removal: not_authorized_in_this_contract

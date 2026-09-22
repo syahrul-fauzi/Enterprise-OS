@@ -1,0 +1,18 @@
+{
+  "name": "@capabilities/workflow-engine",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc --build",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/core-kernel": "workspace:*",
+    "@repo/core-runtime": "workspace:*",
+    "@repo/capabilities-requirement-management": "workspace:*",
+    "@repo/capabilities-evidence-registry": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "5.9.2"
+  }
+}

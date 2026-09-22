@@ -1,1 +1,1 @@
-export * from "./identity.contracts.js";
+export * from "./identity.contracts";

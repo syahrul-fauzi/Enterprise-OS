@@ -1,1 +1,40 @@
-{'extends': '../../config/typescript/base.json', 'compilerOptions': {'outDir': './dist', 'rootDir': './', 'strictNullChecks': True, 'declaration': True, 'declarationMap': True, 'incremental': True, 'ignoreDeprecations': '5.0', 'types': ['node'], 'skipLibCheck': True, 'composite': True, 'noEmit': False, 'esModuleInterop': True, 'isolatedModules': True, 'lib': ['es2022', 'DOM', 'DOM.Iterable'], 'module': 'NodeNext', 'moduleDetection': 'force', 'moduleResolution': 'NodeNext', 'emitDeclarationOnly': True, 'allowImportingTsExtensions': True, 'noUncheckedIndexedAccess': True, 'resolveJsonModule': True, 'strict': True, 'target': 'ES2022'}, 'references': [{'path': '../../packages/core/kernel/tsconfig.json'}, {'path': '../../packages/core/runtime/tsconfig.json'}, {'path': '../identity/tsconfig.json'}], 'include': ['implementation/**/*.ts', 'contracts/**/*.ts'], 'exclude': ['dist', 'node_modules', '**/*.d.ts']}
+{
+  "extends": "../../config/typescript/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strictNullChecks": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "ignoreDeprecations": "5.0",
+    "types": ["node"],
+    "skipLibCheck": true,
+    "composite": true,
+    "noEmit": false,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "module": "NodeNext",
+    "moduleDetection": "force",
+    "moduleResolution": "NodeNext",
+    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": true,
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "ES2022",
+    "paths": {
+      "@repo/core-runtime": ["../../packages/core/runtime/src/index.ts"],
+      "@repo/core-runtime/*": ["../../packages/core/runtime/src/*"]
+    }
+  },
+  "references": [
+    { "path": "../../packages/core/kernel/tsconfig.json" },
+    { "path": "../../packages/core/runtime/tsconfig.json" },
+    { "path": "../identity/tsconfig.json" },
+    { "path": "../shared/tsconfig.json" }
+  ],
+  "include": ["implementation/**/*.ts", "contracts/**/*.ts"],
+  "exclude": ["dist", "node_modules", "**/*.d.ts"]
+}

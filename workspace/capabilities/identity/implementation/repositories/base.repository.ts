@@ -18,7 +18,7 @@ class MockPool implements Queryable {
 // Use interface instead of union to avoid callable signature mismatch - minimal fix
 type AnyPool = Pool & Queryable;
 
-function getPool(): AnyPool {
+export function getPool(): AnyPool {
   if (!pool) {
     const connectionString = process.env.DATABASE_URL;
     if (!connectionString) {

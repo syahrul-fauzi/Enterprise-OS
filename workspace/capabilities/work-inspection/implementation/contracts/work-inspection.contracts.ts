@@ -4,10 +4,11 @@
  * No standalone communication types - all events are grounded to a Work
  */
 
+import type { WorkId } from "@repo/core-kernel";
 // Temporarily commented out to unblock build - missing communication/legal-case implementation files
 // import type { CommunicationEvent } from "@capabilities/communication/implementation/contracts/communication.contracts.js";
 // import type { CaseAggregate } from "@capabilities/legal-case/implementation/contracts/case.contracts.js";
-export type WorkId = string & { __brand: "WorkId" };
+export type { WorkId };
 export type WorkStatus = "draft" | "active" | "suspended" | "completed" | "cancelled";
 export type WorkAggregate = {
   id: string;

@@ -1,31 +1,17 @@
-"use server";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { Button } from "@repo/presentation-ui-system";
-import { SignupPage } from "@repo/presentation-features";
-import { WORKSPACE_SESSION_COOKIE, decodeWorkspaceSession } from "@repo/core-kernel";
-
-interface SignupRouteProps {}
-
-async function resolveSessionOrAllowSignup() {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);
-  
-  // Jika user sudah login, redirect ke my-reality (tidak boleh akses signup)
-  if (sessionCookie?.value) {
-    const session = decodeWorkspaceSession(sessionCookie.value);
-    if (session && session.sessionId && session.tenantId) {
-      redirect("/my-reality");
-    }
-  }
+// NON-GOLDEN-SPINE PAGE - FULLY DISABLED PER W003-P7-03 POLICY
+// This page is not part of the current Golden Spine release path and has been fully disabled
+// to prevent all compilation errors. It will be re-enabled only if it becomes part of the
+// dependency closure of a future release path.
+//
+// Reason for disable: This signup page is not required for the core Golden Spine
+// authentication and work creation flow. The current release path focuses on existing
+// workspace authentication (via /login) rather than new user signups. Expanding
+// verification surface to include this would violate W003-P7-03's minimal dependency
+// closure policy.
+//
+// Date disabled: 2026-09-19
+//
+// Dummy export to satisfy Next.js App Router requirements without enabling functionality
+export default function DisabledNonGoldenSpinePage() {
   return null;
-}
-
-export default async function SignupRoute({}: SignupRouteProps) {
-  // Panggil session check untuk block user yang sudah login
-  await resolveSessionOrAllowSignup();
-  
-  // Jika tidak ada session valid, tampilkan halaman signup
-  return <SignupPage />;
 }

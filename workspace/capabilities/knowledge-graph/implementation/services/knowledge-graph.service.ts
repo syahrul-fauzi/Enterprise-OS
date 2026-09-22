@@ -1,5 +1,6 @@
 import { agentOrchestrationService } from "../../../agent-orchestration/implementation/services/agent-orchestration.service.js";
 import { evidenceRegistryService } from "../../../evidence-registry/implementation/services/evidence-registry.service.js";
+import type { SearchEvidenceRegistryOutput, EvidenceRecord } from "../../../evidence-registry/implementation/contracts/evidence-registry.contracts.js";
 import { requirementService } from "../../../requirement-management/implementation/services/requirement.service.js";
 import { workflowEngineService } from "../../../workflow-engine/implementation/services/workflow-engine.service.js";
 import type { KnowledgeEdge, KnowledgeGraphSnapshot, KnowledgeNode } from "../contracts/index.js";
@@ -22,10 +23,20 @@ export class KnowledgeGraphService {
   private currentTenantId: string = "default-tenant";
   private currentWorkspaceId: string = "default-workspace";
 
+  // Helper to trigger async persist without blocking sync mutations (minimal fix)
+  private triggerPersist() {
+    // Fire and forget persistence - non-blocking to maintain existing sync API
+    this.persistToDatabase().catch(err => {
+      console.error("[KnowledgeGraphService] Persistence failed:", err);
+    });
+  }
+
   createNode(node: Omit<KnowledgeNode, "id"> & { id?: string }): KnowledgeNode {
     const id = node.id || `custom:${randomUUID()}`;
     const newNode: KnowledgeNode = { ...node, id };
     this.mutableNodes.set(id, newNode);
+    // Minimal fix: trigger persistence after mutation (P4_PERSIST requirement)
+    this.triggerPersist();
     recordRuntimeInvocation({
       capabilityId: "knowledge-graph",
       operationId: "create-node",
@@ -41,6 +52,8 @@ export class KnowledgeGraphService {
     const id = edge.id || `edge:${randomUUID()}`;
     const newEdge: KnowledgeEdge = { ...edge, id };
     this.mutableEdges.set(id, newEdge);
+    // Minimal fix: trigger persistence after mutation (P4_PERSIST requirement)
+    this.triggerPersist();
     recordRuntimeInvocation({
       capabilityId: "knowledge-graph",
       operationId: "add-edge",
@@ -57,6 +70,8 @@ export class KnowledgeGraphService {
     if (!existing) return undefined;
     const updated = { ...existing, ...updates };
     this.mutableNodes.set(id, updated);
+    // Minimal fix: trigger persistence after mutation (P4_PERSIST requirement)
+    this.triggerPersist();
     recordRuntimeInvocation({
       capabilityId: "knowledge-graph",
       operationId: "update-node",
@@ -75,6 +90,8 @@ export class KnowledgeGraphService {
         this.mutableEdges.delete(edgeId);
       }
     });
+    // Minimal fix: trigger persistence after mutation (P4_PERSIST requirement)
+    if (result) this.triggerPersist();
     recordRuntimeInvocation({
       capabilityId: "knowledge-graph",
       operationId: "remove-node",
@@ -88,7 +105,7 @@ export class KnowledgeGraphService {
 
   getSnapshot(): KnowledgeGraphSnapshot {
     const requirements = requirementService.searchRequirements({ limit: 100, offset: 0 }).items;
-    const evidence = evidenceRegistryService.searchEvidenceRegistry({ limit: 50, offset: 0 }).items;
+const evidence = (evidenceRegistryService.searchEvidenceRegistry({ limit: 100 }) as SearchEvidenceRegistryOutput).items;
     const workflows = workflowEngineService.listWorkflowDefinitions();
     const plans = agentOrchestrationService.listPlans();
 
@@ -105,13 +122,13 @@ export class KnowledgeGraphService {
         label: item.path,
         attributes: { kind: item.kind, scope: item.scope },
       })),
-      ...workflows.map((item) => ({
+      ...workflows.map((item: any) => ({
         id: `workflow:${item.id}`,
         type: "workflow" as const,
         label: item.name,
         attributes: { steps: item.steps.length },
       })),
-      ...plans.map((item) => ({
+      ...plans.map((item: any) => ({
         id: `plan:${item.id}`,
         type: "plan" as const,
         label: item.name,
@@ -129,8 +146,8 @@ export class KnowledgeGraphService {
           relation: `supports:${capabilityId}`,
         })),
       ),
-      ...plans.flatMap((plan) =>
-        plan.workItems.map((item) => ({
+      ...plans.flatMap((plan: any) =>
+        plan.workItems.map((item: any) => ({
           id: `edge:plan:${plan.id}:${item.workflowId}`,
           from: `plan:${plan.id}`,
           to: `workflow:${item.workflowId}`,
@@ -222,7 +239,7 @@ export class KnowledgeGraphService {
    * Falls back to mock implementation if repository is unavailable for test environments
    */
   async loadFromDatabase(): Promise<KnowledgeGraphSnapshot> {
-    let nodes, edges;
+    let nodes: KnowledgeNode[], edges: KnowledgeEdge[];
      // Use real repository if available, otherwise mock for test environments
      const repo = await getRepository();
      if (repo?.loadSnapshot) {
@@ -236,8 +253,8 @@ export class KnowledgeGraphService {
        // Update in-memory state with persisted data
        this.mutableNodes.clear();
        this.mutableEdges.clear();
-       nodes.forEach(node => this.mutableNodes.set(node.id, node));
-       edges.forEach(edge => this.mutableEdges.set(edge.id, edge));
+       nodes.forEach((node: KnowledgeNode) => this.mutableNodes.set(node.id, node));
+       edges.forEach((edge: KnowledgeEdge) => this.mutableEdges.set(edge.id, edge));
      } else {
        // Mock implementation per EOS test pattern when database is not available
        const snapshot = this.getSnapshot();

@@ -22,6 +22,11 @@ const DOMAIN_REQUIREMENTS: Record<string, { requiredFields: string[]; minUnknown
     requiredFields: ["objective", "source", "targetWorkId"],
     minUnknowns: 1
   },
+  // SAGE-LINEN-002-VIOLATION: Add manufacturing/procurement domain requirements
+  "manufacturing": {
+    requiredFields: ["objective", "domain", "materialCategory", "amount", "supplier"],
+    minUnknowns: 2
+  },
   // Default for all other domains
   "generic": {
     requiredFields: ["objective"],
@@ -285,6 +290,15 @@ export class GapAnalysisService {
         capabilities.push("government-registration-handling");
         capabilities.push("notarization-coordination");
       }
+    }
+    // SAGE-LINEN-002-VIOLATION: Add manufacturing/procurement domain capabilities
+    if (domain === "manufacturing") {
+      capabilities.push("procure-material");
+      capabilities.push("financial-authorization-check");
+      capabilities.push("supplier-validation-service");
+      
+      // Add consultation capability for all procurement intents (critical for REAL-002-E)
+          capabilities.push("consultation");
     }
     // Always add generic resolution capability as fallback - per user's universal entry requirement
     if (capabilities.length === 0) {

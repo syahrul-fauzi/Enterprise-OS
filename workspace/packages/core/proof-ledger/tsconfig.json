@@ -1,15 +1,1 @@
-{
-  "extends": "../../../config/typescript/base.json",
-  "compilerOptions": {
-    "outDir": "dist",
-    "strictNullChecks": true,
-    "declaration": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "moduleResolution": "NodeNext",
-    "module": "NodeNext",
-    "types": ["node"]
-  },
-  "include": ["src"],
-  "exclude": ["dist", "build", "node_modules", "tests"]
-}
+{"extends": "../../../config/typescript/base.json","compilerOptions":{"outDir":"dist","strictNullChecks":true,"declaration":true,"resolveJsonModule":true,"esModuleInterop":true,"moduleResolution":"NodeNext","module":"NodeNext","types":["node"],"paths":{"@repo/core-kernel/*":["../../core/kernel/dist/src/*"]}},"include":["src"],"exclude":["dist","build","node_modules","tests"]}

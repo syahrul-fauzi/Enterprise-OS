@@ -6,6 +6,7 @@ export type IntentSource = {
   actorType: IntentActorType;
   entryPoint: string;
   timestamp: string;
+  actorId?: string;
 };
 export type IntentContext = {
   domain?: string;

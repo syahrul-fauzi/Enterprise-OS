@@ -5,7 +5,8 @@
     "strictNullChecks": false,
     "declaration": true,
     "declarationMap": true,
-
+    "allowImportingTsExtensions": true,
+    "emitDeclarationOnly": true,
     "composite": true,
     "incremental": true,
     "skipLibCheck": true,
@@ -15,12 +16,16 @@
     "moduleResolution": "NodeNext",
     "paths": {
       "@repo/core-kernel": ["../../packages/core/kernel/dist"],
-      "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*"]
+      "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*"],
+      "@repo/core-runtime": ["../../packages/core/runtime/dist"],
+              "@repo/core-runtime/*": ["../../packages/core/runtime/dist/*"],
+      "@capabilities/*": ["../../capabilities/*"]
     }
   },
   "references": [
-    { "path": "../../packages/core/kernel" }
+    { "path": "../../packages/core/kernel/tsconfig.json" },
+    { "path": "../../packages/core/runtime/tsconfig.json" }
   ],
   "include": ["index.ts", "implementation/**/*.ts"],
-  "exclude": ["dist", "build", "node_modules"]
+  "exclude": ["dist", "build", "node_modules", "**/*.d.ts"]
 }

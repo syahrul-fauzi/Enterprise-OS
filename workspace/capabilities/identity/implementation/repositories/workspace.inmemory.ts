@@ -3,7 +3,7 @@ import {
   WorkspaceId,
   TenantId,
   type WorkspaceRepository,
-} from "../contracts/index.js";
+} from "../contracts/index.ts";
 
 function clone<T extends WorkspaceAggregate>(entity: T): T {
   return {

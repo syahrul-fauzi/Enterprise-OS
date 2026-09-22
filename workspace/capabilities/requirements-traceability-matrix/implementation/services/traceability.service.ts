@@ -30,8 +30,8 @@ export class RequirementsTraceabilityMatrixService {
     return result;
   }
 
-  searchTraceabilityMatrix(input: SearchTraceabilityMatrixInput): SearchTraceabilityMatrixOutput {
-    const result = traceabilityQueries["traceability.search"].execute(input);
+  async searchTraceabilityMatrix(input: SearchTraceabilityMatrixInput): Promise<SearchTraceabilityMatrixOutput> {
+    const result = await traceabilityQueries["traceability.search"].execute(input);
     recordRuntimeInvocation({
       capabilityId: "requirements-traceability-matrix",
       operationId: "search-traceability-matrix",
@@ -47,8 +47,8 @@ export class RequirementsTraceabilityMatrixService {
     return result;
   }
 
-  assess(input: AssessTraceabilityInput): AssessTraceabilityOutput {
-    const requirements = requirementService.getRequirementsByRelease(input.releaseId);
+  async assess(input: AssessTraceabilityInput): Promise<AssessTraceabilityOutput> {
+    const requirements = await requirementService.getRequirementsByRelease(input.releaseId);
     
     // Happy path: all traceability checks pass for 12.3-happy release
     if (input.releaseId === "12.3-happy") {

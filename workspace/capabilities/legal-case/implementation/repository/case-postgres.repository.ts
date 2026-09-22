@@ -1,6 +1,6 @@
 import { Pool } from "pg";
-import { PostgresRepository } from "../../../identity/dist/implementation/repositories/base.repository.js";
-import { DatabaseMigrationManager } from "../../../shared/dist/database/migrations/migration.manager.js";
+import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
+import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager.js";
 import {
   CaseId,
   type CaseAggregate,
@@ -50,7 +50,7 @@ if (!isBuildPhase) {
   initializeDatabase().catch(err => console.error("[CaseRepositoryPostgres] Failed to initialize database:", err));
 }
 
-import { recordRuntimeInvocation } from "../../../../packages/core/runtime/dist/src/index.js";
+import { recordRuntimeInvocation } from "@repo/core-runtime";
 
 // PostgreSQL-backed case repository implementation
 class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements CaseRepository {

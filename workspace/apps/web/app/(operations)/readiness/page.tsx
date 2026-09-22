@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { ProductPreviewShell, ReadinessPage } from '@repo/presentation-widgets';
+// import { ProductPreviewShell, ReadinessPage } from '@repo/presentation-widgets'; // Deprecated package - golden spine only
 import { readProductBinding } from '@repo/presentation-experience/product-binding.js';
 import {
   WORKSPACE_SESSION_COOKIE,

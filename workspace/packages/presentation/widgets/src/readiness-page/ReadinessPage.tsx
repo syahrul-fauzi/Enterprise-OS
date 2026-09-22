@@ -2,9 +2,8 @@
 
 import React from "react";
 import { ProductPreviewShell } from "../product-preview-shell/index.js";
-import type { ProductPreviewBinding } from "@repo/presentation-experience";
 import { WorkRealityLoading, EmptyState, PermissionDenied } from "@repo/presentation-ui-system";
-import type { ProductPreviewBinding, ProductExperience } from "@repo/presentation-experience";
+import { getProductExperience, type ProductPreviewBinding, type ProductExperience } from "@repo/presentation-experience";
 
 export interface ReadinessPageProps {
   readonly productId: string;

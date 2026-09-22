@@ -63,7 +63,7 @@ export function WorkListExperience({ workspaceId }: WorkListExperienceProps) {
             {hasError && (
               <ErrorState
                 title="Gagal Memuat Daftar Pekerjaan"
-                message={errorMessage || "Terjadi kesalahan saat mengambil data. Silakan coba lagi."}
+                description={errorMessage || "Terjadi kesalahan saat mengambil data. Silakan coba lagi."}
                 onRetry={refresh}
               />
             )}

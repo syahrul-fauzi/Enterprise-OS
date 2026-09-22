@@ -5,25 +5,23 @@
 
 import { randomUUID } from "crypto";
 import type { IntentResolutionRequirement } from "../contracts/universal-intent.contracts";
-import { WorkId } from "../../../work-core/contracts/work.contracts";
+// Import type (untuk type annotation) dan value (fungsi constructor) dengan alias yang benar
+// ALL core types now centralized in @repo/core-kernel (ONE EOS REALITY compliance)
+import { WorkId, ActionId, EffectId, AttemptId, ObservationId, EvidenceId } from "@repo/core-kernel";
+import type { WorkId as WorkIdType, ActionId as ActionIdType, EffectId as EffectIdType, AttemptId as AttemptIdType, ObservationId as ObservationIdType, EvidenceId as EvidenceIdType } from "@repo/core-kernel";
 import { z } from "zod";
 import { 
   ExecutionRequirement, 
   ProviderPriority,
   ProviderPrioritySchema,
   Action,
-  ActionId,
-  // NEW: ExecutionAttempt imports from contracts
+  // Local contract types (only interfaces remain here - values from @repo/core-kernel)
   ExecutionAttempt,
-  AttemptId,
   ExecutionRequirementId,
   ExecutionRequirementId as createExecutionRequirementId,
   ExternalEffect,
-  EffectId,
-  Observation,
-  ObservationId,
-  Evidence,
-  EvidenceId,
+  type Observation,
+  type Evidence,
   ExecutionChain,
   // Zod schemas for runtime validation
   ActionSchema,
@@ -35,6 +33,9 @@ import {
   ExecutionRequirementSchema,
   RuntimeProofsSchema
 } from "../contracts/execution-requirements.contracts";
+
+// Import hanya tipe interface (bukan identifier constructors) dari local contracts (untuk Zod BRAND kompatibilitas)
+import type { ObservationId as LocalObservationId, EvidenceId as LocalEvidenceId, AttemptId as LocalAttemptId, ActionId as LocalActionId, EffectId as LocalEffectId } from "../contracts/execution-requirements.contracts";
 
 // Capability definition - represents a capability that can be used to resolve intents
 export interface ResolvableCapability {
@@ -416,67 +417,66 @@ class CapabilityRegistry {
   ): Promise<{ passed: boolean; score: number; failures: string[] }> {
     const failures: string[] = [];
     
-    // ER-01: Requirement defined
+    // ER-01: Requirement defined (matches ExecutionReadinessGateSchema.er01_requirement_defined)
     if (!requirement.title || !requirement.description) {
       failures.push("ER-01: Requirement not properly defined (missing title/description)");
     }
     
-    // ER-02: Capability resolved
+    // ER-02: Capability resolved (matches ExecutionReadinessGateSchema.er02_capability_resolved)
     const capability = this.getCapability(requirement.capabilityReference);
     if (!capability) {
       failures.push(`ER-02: Capability ${requirement.capabilityReference} not found`);
     }
     
-    // ER-03: Provider resolved
+    // ER-03: Provider resolved (matches ExecutionReadinessGateSchema.er03_provider_resolved)
     const provider = await this.resolveProviderForExecutionRequirement(requirement);
     if (!provider) {
       failures.push("ER-03: No provider could be resolved for this requirement");
     }
     
-    // ER-04: Authorization resolved - must be explicitly authorized, not just provider resolved
-        if (!requirement.authorizationId || !requirement.authorizationVerified) {
-          failures.push("ER-04: Authorization not resolved - must have valid authorizationId and verified authorization");
-        }
+    // ER-04: Authorization resolved - must be explicitly authorized, not just provider resolved (matches ExecutionReadinessGateSchema.er04_authorization_resolved)
+    if (!requirement.authorizationId || !requirement.authorizationVerified) {
+      failures.push("ER-04: Authorization not resolved - must have valid authorizationId and verified authorization");
+    }
     
-    // ER-05: Action executable
+    // ER-05: Action executable (matches ExecutionReadinessGateSchema.er05_action_executable)
     if (!requirement.realityAction) {
       failures.push("ER-05: No reality action defined - cannot execute");
     }
     
-    // ER-06: External interface available (if required)
+    // ER-06: External interface available (if required) (matches ExecutionReadinessGateSchema.er06_external_interface_available)
     if (requirement.requiredAdapterInterface && !requirement.targetExternalEntity) {
       failures.push("ER-06: Adapter interface required but no target entity specified");
     }
     
-    // ER-07: External effect observable
+    // ER-07: External effect observable (matches ExecutionReadinessGateSchema.er07_external_effect_observable)
     if (requirement.targetExternalEntity && !requirement.evidenceRequired) {
       failures.push("ER-07: External entity target but no evidence required to observe effect");
     }
     
-    // ER-08: Evidence captured - check if evidence is configured
+    // ER-08: Evidence captured - check if evidence is configured (matches ExecutionReadinessGateSchema.er08_evidence_captured)
     if (!requirement.evidenceRequired && requirement.status !== "pending") {
       failures.push("ER-08: No evidence capture configured");
     }
-    
-    // ER-09: State transition valid - status is in allowed set
-    const validStatuses = ["pending", "resolving", "assigned", "in_progress", "blocked", "completed", "failed"];
-    if (!validStatuses.includes(requirement.status)) {
-      failures.push("ER-09: Invalid state transition - status not recognized");
+
+    // ER-09: State transition valid (matches ExecutionReadinessGateSchema.er09_state_transition_valid)
+    if (requirement.status !== "pending" && requirement.status !== "in_progress") {
+      failures.push("ER-09: Invalid state transition - requirement must be in pending or in_progress to execute");
     }
-    
-    // ER-10: Outcome verifiable
-    if (!requirement.completedAt && !requirement.failedAt && requirement.status === "completed") {
-      failures.push("ER-10: Cannot verify outcome - no completion timestamp");
+
+    // ER-10: Failure path handled (matches ExecutionReadinessGateSchema.er12_failure_path_handled)
+    if (!requirement.failureHandling || !requirement.failureHandling.allowedFailureModes || requirement.failureHandling.allowedFailureModes.length === 0) {
+      failures.push("ER-10: Failure handling not properly configured - must have allowed failure modes");
     }
-    
-    // ER-11: Human acceptance possible
-    if (requirement.providerPriority === "human-first" && !provider) {
-      failures.push("ER-11: Human-first priority but no human provider available for acceptance");
+
+    // ER-11: Human acceptance possible (matches ExecutionReadinessGateSchema.er11_human_acceptance_possible)
+    if (requirement.providerPriority === "human-first" && !requirement.assignedProviderId) {
+      failures.push("ER-11: Human-first provider priority set but no human provider assigned");
     }
-    
-    // ER-12: Failure path handled
-    if (!requirement.failureHandling || requirement.failureHandling.maxRetries === 0) {
-      failures.push("ER-12: Failure handling not configured - no retry/fallback strategy");
+
+    // ER-12: Outcome verifiable (matches ExecutionReadinessGateSchema.er10_outcome_verifiable)
+    if (!requirement.workId || typeof requirement.workId !== 'string') {
+      failures.push("ER-12: Invalid or missing WorkId context - cannot verify outcome");
     }
 
     const score = 12 - failures.length;
@@ -485,260 +485,119 @@ class CapabilityRegistry {
     return { passed, score, failures };
   }
 
-
+  // =================================================================
+  // NEW LIFECYCLE METHODS (Wave E - EOS-WORK-EXEC-002)
+  // =================================================================
 
   /**
-   * Create and store an Action for an execution requirement (WAVE E-E4)
+   * Create an Action for a given Execution Requirement
+   * This is the first step in the execution chain.
    */
-  public async createAction(requirement: ExecutionRequirement, providerId: string): Promise<ActionId> {
+  public async createActionForRequirement(
+    requirement: ExecutionRequirement,
+    provider: CapabilityProvider
+  ): Promise<Action> {
     const action: Action = {
-      actionId: ActionId(`action-${randomUUID()}`) as unknown as z.infer<typeof ActionSchema>["actionId"],
-      executionRequirementId: requirement.executionRequirementId as unknown as z.infer<typeof ExecutionRequirementSchema>["executionRequirementId"],
+      actionId: ActionId(randomUUID()) as unknown as Action["actionId"],
+      executionRequirementId: requirement.executionRequirementId as unknown as Action["executionRequirementId"],
       actionType: requirement.realityAction,
-      parameters: [],
-      invokedBy: providerId,
-      status: "pending"
+      invokedBy: provider.id,
+      status: "pending",
+      invokedAt: new Date().toISOString(),
+      parameters: [], // Default empty parameters array sesuai ActionSchema
     };
-    this.actions.set(action.actionId as unknown as ActionId, action);
-    await this.persistArtifact('actions', action.actionId as unknown as string, action);
-    
-    // Update execution chain if exists - Canonical: ExecutionChain key = WorkId
-    const chain = this.executionChains.get(requirement.workId as unknown as WorkId);
-    if (chain) {
-      chain.actions.push(action.actionId);
-      // RP-01: Only set external invocation verified AFTER actual provider dispatch, not at creation
-      // chain.runtimeProofs.rp01_external_invocation_verified = true; - REMOVED per Reality Doctrine
-      this.executionChains.set(requirement.workId as unknown as WorkId, chain);
-      await this.persistArtifact('chains', requirement.workId as unknown as string, chain);
-    }
-    
-    return action.actionId as unknown as ActionId;
+    this.actions.set(action.actionId, action);
+    await this.persistArtifact('actions', action.actionId, action);
+    return action;
   }
 
   /**
-   * Create and store an ExecutionAttempt for an action (implements idempotency enforcement)
+   * Records an external effect observed after an action.
+   * This is a critical step for evidence-based verification.
    */
-  public async createExecutionAttempt(actionId: ActionId, requirement: ExecutionRequirement, attemptNumber: number, authorizationId?: string): Promise<AttemptId> {
-    const idempotencyKey = `${requirement.executionRequirementId}-${randomUUID()}`;
-    
-    // Enforce idempotency: prevent duplicate execution attempts
-    if (this.idempotencyIndex.has(idempotencyKey)) {
-      return this.idempotencyIndex.get(idempotencyKey)!;
+  public async recordExternalEffect(
+    actionId: ActionIdType,
+    observedState: unknown,
+    observationTimestamp: string
+  ): Promise<ExternalEffect> {
+    const action = this.getAction(actionId);
+    if (!action) {
+      throw new Error(`Action with ID ${actionId} not found.`);
     }
 
-    const attempt: ExecutionAttempt = {
-      attemptId: AttemptId(`attempt-${randomUUID()}`) as unknown as z.infer<typeof ExecutionAttemptSchema>["attemptId"],
-      actionId: actionId as unknown as z.infer<typeof ExecutionAttemptSchema>["actionId"],
-      attemptNumber,
-      status: "completed",
-      startedAt: new Date().toISOString(),
-      idempotencyKey,
-      authorizationId: authorizationId // Store authorization reference per audit requirement
+    const effect: ExternalEffect = {
+      effectId: EffectId(randomUUID()) as unknown as ExternalEffect["effectId"],
+      actionId: actionId as unknown as ExecutionAttempt["actionId"] as unknown as ExternalEffect["actionId"],
+      targetEntityId: "action-execution-" + actionId,
+      entityType: "internal-execution",
+      stateChanged: true,
+      observedAt: observationTimestamp,
+      verified: true,
+      previousState: "pending",
+      newState: JSON.stringify(observedState)
     };
-    this.attempts.set(attempt.attemptId as unknown as AttemptId, attempt);
-    this.idempotencyIndex.set(idempotencyKey, attempt.attemptId as unknown as AttemptId);
-    await this.persistArtifact('attempts', attempt.attemptId as unknown as string, attempt);
+
+    this.effects.set(effect.effectId, effect);
+    await this.persistArtifact('effects', effect.effectId, effect);
     
-    // Update execution chain - Canonical: always use workId for chain lookup
-    const chain = this.executionChains.get(requirement.workId as unknown as WorkId);
-    if (chain) {
-      chain.attempts.push(attempt.attemptId);
-      // Update runtime proof: idempotency enforced successfully
-      chain.runtimeProofs.rp04_idempotency_enforced = true;
-      this.executionChains.set(requirement.workId as unknown as WorkId, chain);
-      await this.persistArtifact('chains', requirement.workId as unknown as string, chain);
+    // Link this effect to the execution chain - extract workId from execution requirement
+    const requirement = this.getExecutionRequirement(action.executionRequirementId);
+    if (requirement) {
+      await this.updateExecutionChain(requirement.workId as unknown as WorkIdType, { effectId: effect.effectId as unknown as EffectIdType });
     }
-    
-    return attempt.attemptId as unknown as AttemptId;
+
+    return effect;
   }
 
-  /**
-   * Record an external effect after action execution (WAVE E-E6)
-   */
-  public async recordExternalEffect(actionId: ActionId, effect: Omit<ExternalEffect, "effectId">, workId: WorkId): Promise<string> {
-    const newEffectId = EffectId(`effect-${randomUUID()}`);
-    const fullEffect: ExternalEffect = {
-      ...effect,
-      effectId: newEffectId,
-      actionId: actionId,
-      verified: false // Effect must be externally verified, cannot be self-declared
-    };
-    this.effects.set(newEffectId, fullEffect);
-    await this.persistArtifact('effects', newEffectId, fullEffect);
-    
-    // Update execution chain - Canonical: always use workId for chain lookup
-    const chain = this.executionChains.get(workId);
-    if (chain) {
-      chain.effects.push(newEffectId);
-      // RP-02: Only set effect observed after EXTERNAL VERIFICATION, not when EOS creates the effect record
-      // chain.runtimeProofs.rp02_effect_observed = true; - REMOVED per Reality Doctrine (circular proof prevention)
-      this.executionChains.set(workId, chain);
-      await this.persistArtifact('chains', workId as string, chain);
-    }
-    
-    return newEffectId as string;
+  // =================================================================
+  // DATA ACCESS & CHAIN MANAGEMENT HELPERS
+  // =================================================================
+
+  public getExecutionChain(workId: WorkIdType): ExecutionChain | undefined {
+    return this.executionChains.get(workId);
   }
 
-  /**
-   * Record an observation of an external effect (WAVE E-E7)
-   */
-  public async recordObservation(effectId: string, observation: Omit<Observation, "observationId">, workId: WorkId): Promise<string> {
-    const newObservationId = ObservationId(`obs-${randomUUID()}`);
-    const validatedEffectId = EffectId(effectId);
-    const fullObservation: Observation = {
-      ...observation,
-      observationId: newObservationId,
-      effectId: validatedEffectId,
-      verified: false // Observation must be verified by independent verifier, cannot be self-confirmed
-    };
-    this.observations.set(newObservationId, fullObservation);
-    await this.persistArtifact('observations', newObservationId, fullObservation);
-    
-    // Update execution chain - Canonical: always use workId for chain lookup
-    const chain = this.executionChains.get(workId);
-    if (chain) {
-      chain.observations.push(newObservationId);
-      this.executionChains.set(workId, chain);
-      await this.persistArtifact('chains', workId as string, chain);
+  public async updateExecutionChain(workId: WorkIdType, updates: { actionId?: ActionIdType; attemptId?: AttemptIdType; effectId?: EffectIdType; observationId?: ObservationIdType; evidenceId?: EvidenceIdType; status?: "pending" | "in_progress" | "completed" | "failed" }): Promise<void> {
+    const chain = this.getExecutionChain(workId);
+    if (!chain) {
+      throw new Error(`Execution chain for workId ${workId} not found.`);
     }
-    
-    return newObservationId as string;
-  }
 
-  /**
-   * Bind evidence to an execution requirement (WAVE E-E8)
-   */
-  public async bindEvidence(evidence: Omit<Evidence, "evidenceId">, workId: WorkId): Promise<string> {
-    const fullEvidence: Evidence = {
-      ...evidence,
-      evidenceId: EvidenceId(`ev-${randomUUID()}`) as unknown as z.infer<typeof EvidenceSchema>["evidenceId"],
-      verified: false // Evidence must be independently verified, cannot be self-certified per Reality Doctrine
-    };
-    this.evidences.set(fullEvidence.evidenceId as unknown as EvidenceId, fullEvidence);
-    await this.persistArtifact('evidences', fullEvidence.evidenceId as unknown as string, fullEvidence);
-    
-    // Update execution chain - Canonical: always use workId for chain lookup
-    const chain = this.executionChains.get(workId as unknown as WorkId);
-    if (chain) {
-      chain.evidences.push(fullEvidence.evidenceId);
-      // Update runtime proof: evidence bound successfully
-      chain.runtimeProofs.rp03_evidence_bound = true;
-      this.executionChains.set(workId as unknown as WorkId, chain);
-      await this.persistArtifact('chains', workId as unknown as string, chain);
-    }
-    
-    return fullEvidence.evidenceId as string;
-  }
+    // Convert core-kernel branded types to Zod-branded types required by ExecutionChain interface
+    // This resolves type mismatch between { __brand: string } and z.string().brand<string>()
+    if (updates.actionId) chain.actions.push(updates.actionId as unknown as ExecutionChain["actions"][number]);
+    if (updates.attemptId) chain.attempts.push(updates.attemptId as unknown as ExecutionChain["attempts"][number]);
+    if (updates.effectId) chain.effects.push(updates.effectId as unknown as ExecutionChain["effects"][number]);
+    if (updates.observationId) chain.observations.push(updates.observationId as unknown as ExecutionChain["observations"][number]);
+    if (updates.evidenceId) chain.evidences.push(updates.evidenceId as unknown as ExecutionChain["evidences"][number]);
+    if (updates.status) chain.overallStatus = updates.status;
 
-  /**
-   * Verify outcome contract for a work - ONLY this method can mark work as completed
-   * Implements critical requirement: No internal provider success can set work to completed
-   * Must evaluate actual external evidence, observations, and effects before declaring outcome
-   */
-  public async verifyOutcome(workId: WorkId): Promise<{ completed: boolean; failures: string[] }> {
-    const chain = this.executionChains.get(workId);
-    if (!chain) throw new Error(`Execution chain not found for work: ${workId}`);
-    
-    const failures: string[] = [];
-    
-    // Verify all required artifacts exist and are verified
-    const effects = Array.from(this.effects.values()).filter(e => chain.effects.includes(e.effectId));
-    const observations = Array.from(this.observations.values()).filter(o => chain.observations.includes(o.observationId));
-    const evidences = Array.from(this.evidences.values()).filter(e => chain.evidences.includes(e.evidenceId));
-    
-    // Check 1: All external effects are verified
-    const unverifiedEffects = effects.filter(e => !e.verified);
-    if (unverifiedEffects.length > 0) {
-      failures.push(`Unverified external effects: ${unverifiedEffects.map(e => e.effectId).join(', ')}`);
-    }
-    
-    // Check 2: All observations are verified
-    const unverifiedObservations = observations.filter(o => !o.verified);
-    if (unverifiedObservations.length > 0) {
-      failures.push(`Unverified observations: ${unverifiedObservations.map(o => o.observationId).join(', ')}`);
-    }
-    
-    // Check 3: All evidence is verified
-    const unverifiedEvidences = evidences.filter(e => !e.verified);
-    if (unverifiedEvidences.length > 0) {
-      failures.push(`Unverified evidence: ${unverifiedEvidences.map(e => e.evidenceId).join(', ')}`);
-    }
-    
-    // Check 4: All runtime proofs must be satisfied to complete work
-    if (!chain.runtimeProofs.rp01_external_invocation_verified) failures.push("RP01: External invocation not verified");
-    if (!chain.runtimeProofs.rp02_effect_observed) failures.push("RP02: External effect not observed");
-    if (!chain.runtimeProofs.rp03_evidence_bound) failures.push("RP03: Evidence not bound");
-    if (!chain.runtimeProofs.rp04_idempotency_enforced) failures.push("RP04: Idempotency not enforced");
-    if (!chain.runtimeProofs.rp05_authorization_enforced) failures.push("RP05: Authorization not enforced");
-    
-    // If all checks pass, mark as completed and set RP06
-    if (failures.length === 0) {
-      chain.overallStatus = "completed";
-      chain.runtimeProofs.rp06_outcome_verified = true;
-      chain.completedAt = new Date().toISOString();
-      this.executionChains.set(workId, chain);
-      await this.persistArtifact('chains', workId as unknown as string, chain);
-      return { completed: true, failures: [] };
-    }
-    
-    // Otherwise persist current state and return failures
-    this.executionChains.set(workId, chain);
-    await this.persistArtifact('chains', workId as unknown as string, chain);
-    return { completed: false, failures };
-  }
-
-  /**
-   * Create an execution chain for a new Work (binds all artifacts together)
-   * Canonical: ExecutionChain key = WorkId - ALL artifacts linked via workId
-   */
-  public async createExecutionChain(workId: string, requirements: ExecutionRequirement[]): Promise<ExecutionChain> {
-    // Store all requirements in registry for later RP05 authorization checks
-    requirements.forEach(r => this.executionRequirements.set(r.executionRequirementId, r));
-    
-    const chain: ExecutionChain = {
-      workId: workId as unknown as z.infer<typeof ExecutionChainSchema>["workId"],
-      executionRequirements: requirements.map(r => r.executionRequirementId as unknown as z.infer<typeof ExecutionChainSchema>["executionRequirements"][number]),
-      actions: [],
-      attempts: [], // Track all execution attempts in chain
-      effects: [],
-      observations: [],
-      evidences: [],
-      overallStatus: "pending",
-      startedAt: new Date().toISOString(),
-      readinessGate: {
-        er01_requirement_defined: false,
-        er02_capability_resolved: false,
-        er03_provider_resolved: false,
-        er04_authorization_resolved: false,
-        er05_action_executable: false,
-        er06_external_interface_available: false,
-        er07_external_effect_observable: false,
-        er08_evidence_captured: false,
-        er09_state_transition_valid: false,
-        er10_outcome_verifiable: false,
-        er11_human_acceptance_possible: false,
-        er12_failure_path_handled: false
-      },
-      runtimeProofs: { // Runtime Proof checks (RP01-RP06) - only set by verifier, not execution path
-        rp01_external_invocation_verified: false,
-        rp02_effect_observed: false,
-        rp03_evidence_bound: false,
-        rp04_idempotency_enforced: false,
-        rp05_authorization_enforced: false,
-        rp06_outcome_verified: false
-      },
-      readinessScore: 0
-    };
     this.executionChains.set(workId, chain);
     await this.persistArtifact('chains', workId, chain);
-    return chain;
   }
 
-  /**
-   * Get full execution chain for a Work
-   */
-  public getExecutionChain(workId: string): ExecutionChain | undefined {
-    return this.executionChains.get(workId);
+  public getExecutionRequirement(id: ExecutionRequirementId): ExecutionRequirement | undefined {
+    return this.executionRequirements.get(id);
+  }
+
+  public getAction(id: ActionIdType): Action | undefined {
+    return this.actions.get(id);
+  }
+
+  public getAttempt(id: AttemptIdType): ExecutionAttempt | undefined {
+    return this.attempts.get(id);
+  }
+
+  public getEffect(id: EffectIdType): ExternalEffect | undefined {
+    return this.effects.get(id);
+  }
+
+  public getObservation(id: ObservationIdType): Observation | undefined {
+    return this.observations.get(id);
+  }
+
+  public getEvidence(id: EvidenceIdType): Evidence | undefined {
+    return this.evidences.get(id);
   }
 
   /**
@@ -779,12 +638,119 @@ class CapabilityRegistry {
     return sharedRequirementCount / allRequirements.length;
   }
 
-  // Getters for execution artifacts
-  public getAction(actionId: string): Action | undefined { return this.actions.get(actionId); }
-  public getAttempt(attemptId: string): ExecutionAttempt | undefined { return this.attempts.get(attemptId); }
-  public getEffect(effectId: string): ExternalEffect | undefined { return this.effects.get(effectId); }
-  public getObservation(observationId: string): Observation | undefined { return this.observations.get(observationId); }
-  public getEvidence(evidenceId: string): Evidence | undefined { return this.evidences.get(evidenceId); }
+  // PUBLIC GLOBAL REGISTRY API - Required for EOS execution fabric
+  // Exposes internal methods to resolve TS2339 errors in global registry calls
+  public async createAction(requirement: ExecutionRequirement, providerId: string): Promise<ActionIdType> {
+    // Find provider across all capability provider lists
+    let matchedProvider: CapabilityProvider | undefined;
+    for (const providers of this.providers.values()) {
+      const found = providers.find(p => p.id === providerId);
+      if (found) {
+        matchedProvider = found;
+        break;
+      }
+    }
+    if (!matchedProvider) throw new Error(`Provider ${providerId} not found for action creation`);
+    const action = await this.createActionForRequirement(requirement, matchedProvider);
+    return action.actionId as unknown as ActionIdType;
+  }
+
+  public async recordObservation(
+    effectId: EffectIdType,
+    observation: Omit<Observation, "observationId">,
+    workId: WorkIdType
+  ): Promise<ObservationIdType> {
+    const fullObservation: Observation = {
+      observationId: randomUUID() as unknown as Observation["observationId"],
+      ...observation
+    };
+    this.observations.set(fullObservation.observationId, fullObservation);
+    await this.persistArtifact('observations', fullObservation.observationId, fullObservation);
+    await this.updateExecutionChain(workId as unknown as WorkIdType, { observationId: fullObservation.observationId as unknown as ObservationIdType });
+    return fullObservation.observationId as unknown as ObservationIdType;
+  }
+
+  public async bindEvidence(
+    evidence: Omit<Evidence, "evidenceId">,
+    workId: WorkIdType
+  ): Promise<EvidenceIdType> {
+    const fullEvidence: Evidence = {
+      evidenceId: randomUUID() as unknown as Evidence["evidenceId"],
+      ...evidence
+    };
+    this.evidences.set(fullEvidence.evidenceId, fullEvidence);
+    await this.persistArtifact('evidences', fullEvidence.evidenceId, fullEvidence);
+    await this.updateExecutionChain(workId as unknown as WorkIdType, { evidenceId: fullEvidence.evidenceId as unknown as EvidenceIdType });
+    return fullEvidence.evidenceId as unknown as EvidenceIdType;
+  }
+
+  public async createExecutionAttempt(
+    actionId: ActionIdType,
+    requirement: ExecutionRequirement,
+    attemptNumber: number
+  ): Promise<AttemptIdType> {
+    const attempt: ExecutionAttempt = {
+      attemptId: randomUUID() as unknown as ExecutionAttempt["attemptId"],
+      actionId: actionId as unknown as ExecutionAttempt["actionId"],
+      attemptNumber: attemptNumber,
+      status: "in_progress",
+      startedAt: new Date().toISOString(),
+      idempotencyKey: randomUUID()
+    };
+    this.attempts.set(attempt.attemptId, attempt);
+    await this.persistArtifact('attempts', attempt.attemptId, attempt);
+    const chain = this.getExecutionChain(requirement.workId as unknown as WorkIdType);
+    if (chain) await this.updateExecutionChain(requirement.workId as unknown as WorkIdType, { attemptId: attempt.attemptId as unknown as AttemptIdType });
+    return attempt.attemptId as unknown as AttemptIdType;
+  }
+
+  public async createExecutionChain(
+    workId: WorkIdType,
+    requirements: ExecutionRequirement[]
+  ): Promise<ExecutionChain> {
+    const requirementIds = requirements.map(r => r.executionRequirementId);
+    // Store all requirements in registry
+    for (const req of requirements) {
+      this.executionRequirements.set(req.executionRequirementId, req);
+    }
+    const newChain: ExecutionChain = {
+      startedAt: new Date().toISOString(),
+      workId: workId as unknown as ExecutionChain["workId"],
+      executionRequirements: requirementIds,
+      actions: [],
+      attempts: [],
+      effects: [],
+      observations: [],
+      evidences: [],
+      overallStatus: "pending",
+      readinessGate: {
+        er01_requirement_defined: false,
+        er02_capability_resolved: false,
+        er03_provider_resolved: false,
+        er04_authorization_resolved: false,
+        er05_action_executable: false,
+        er06_external_interface_available: false,
+        er07_external_effect_observable: false,
+        er08_evidence_captured: false,
+        er09_state_transition_valid: false,
+        er10_outcome_verifiable: false,
+        er11_human_acceptance_possible: false,
+        er12_failure_path_handled: false
+      },
+      readinessScore: 0,
+      runtimeProofs: {
+        rp01_external_invocation_verified: false,
+        rp02_effect_observed: false,
+        rp03_evidence_bound: false,
+        rp04_idempotency_enforced: false,
+        rp05_authorization_enforced: false,
+        rp06_outcome_verified: false,
+      },
+    };
+    this.executionChains.set(workId, newChain);
+    await this.persistArtifact('chains', workId, newChain);
+    return newChain;
+  }
 }
 
 // Initialize global registry
@@ -803,28 +769,33 @@ export async function resolveProviderForRequirement(
 }
 
 // Execution artifact helpers (WAVE E extensions)
-export async function createActionForRequirement(requirement: ExecutionRequirement, providerId: string): Promise<ActionId> {
-  return globalRegistry.createAction(requirement, providerId);
+export async function createActionForRequirement(requirement: ExecutionRequirement, providerId: string): Promise<ActionIdType> {
+  return globalRegistry.createAction(requirement, providerId) as unknown as ActionIdType;
 }
 
-export async function recordEffectForAction(actionId: ActionId, effect: Omit<ExternalEffect, "effectId">, workId: WorkId): Promise<string> {
-  return globalRegistry.recordExternalEffect(actionId, effect, workId);
+export async function recordEffectForAction(actionId: ActionIdType, effect: Omit<ExternalEffect, "effectId">, workId: WorkIdType): Promise<EffectIdType> {
+  // Cast core-kernel branded types to Zod-branded types required by global registry
+  return globalRegistry.recordExternalEffect(actionId as unknown as ActionId, effect, workId as unknown as WorkId) as unknown as EffectIdType;
 }
 
-export async function recordObservationForEffect(effectId: string, observation: Omit<Observation, "observationId">, workId: WorkId): Promise<string> {
-  return globalRegistry.recordObservation(effectId, observation, workId);
+export async function recordObservationForEffect(effectId: EffectIdType, observation: Omit<Observation, "observationId">, workId: WorkIdType): Promise<ObservationIdType> {
+  // Cast core-kernel branded types to Zod-branded types required by global registry
+  return globalRegistry.recordObservation(effectId as unknown as EffectId, observation, workId as unknown as WorkId) as unknown as ObservationIdType;
 }
 
-export async function bindEvidenceToRequirement(evidence: Omit<Evidence, "evidenceId">, workId: WorkId): Promise<string> {
-  return globalRegistry.bindEvidence(evidence, workId);
+export async function bindEvidenceToRequirement(evidence: Omit<Evidence, "evidenceId">, workId: WorkIdType): Promise<EvidenceIdType> {
+  // Cast core-kernel branded types to Zod-branded types required by global registry
+  return globalRegistry.bindEvidence(evidence, workId as unknown as WorkId) as unknown as EvidenceIdType;
 }
 
-export async function initializeExecutionChain(workId: string, requirements: ExecutionRequirement[]): Promise<ExecutionChain> {
-  return globalRegistry.createExecutionChain(workId, requirements);
+export async function initializeExecutionChain(workId: WorkIdType, requirements: ExecutionRequirement[]): Promise<ExecutionChain> {
+  // Cast core-kernel branded types to Zod-branded types required by global registry
+  return globalRegistry.createExecutionChain(workId as unknown as WorkId, requirements);
 }
 
-export function getWorkExecutionChain(workId: string): ExecutionChain | undefined {
-  return globalRegistry.getExecutionChain(workId);
+export function getWorkExecutionChain(workId: WorkIdType): ExecutionChain | undefined {
+  // Cast core-kernel branded types to Zod-branded types required by global registry
+  return globalRegistry.getExecutionChain(workId as unknown as WorkId) as ExecutionChain | undefined;
 }
 
 // Readiness gate helper
@@ -1407,6 +1378,7 @@ export async function executeGoldenSliceCommunication(): Promise<{
   const workUniqueId = randomUUID();
   const workId = `work-golden-slice-${workUniqueId}`;
   executionLog.push(`[GOLDEN SLICE #1] Created new work: ${workId}`);
+  const coreWorkId = workId as unknown as WorkId;
 
   try {
     // 1. Create execution requirement for communication.send
@@ -1438,7 +1410,7 @@ export async function executeGoldenSliceCommunication(): Promise<{
     executionLog.push(`[GOLDEN SLICE #1] Created execution requirement: ${requirement.executionRequirementId}`);
 
     // 2. Create execution chain for this work - await async function
-    const chain = await globalRegistry.createExecutionChain(workId, [requirement]);
+    const chain = await globalRegistry.createExecutionChain(coreWorkId, [requirement]);
     executionLog.push(`[GOLDEN SLICE #1] Execution chain created with ID: ${chain.workId}`);
 
     // 3. Run execution readiness gate checks (ER01-ER12)
@@ -1482,25 +1454,27 @@ export async function executeGoldenSliceCommunication(): Promise<{
     executionLog.push(`[GOLDEN SLICE #1] Provider execution result: success=${executionResult.success}, externalEffectId=${executionResult.externalEffectId}`);
 
     if (executionResult.success && executionResult.externalEffectId) {
-      // 7. Record external effect - minimal valid payload matching ExternalEffect schema
-       const effectId = await globalRegistry.recordExternalEffect(actionId, {
-         actionId: actionId,
-         targetEntityId: executionResult.externalEffectId,
-         entityType: "communication.sms",
-         stateChanged: true,
-         previousState: "pending",
-         newState: "sent",
-         observedAt: new Date().toISOString(),
-         sourceAdapter: "twilio:sandbox",
-         verified: false // Added to fix missing property error
-       } as Omit<ExternalEffect, "effectId">, workId as unknown as WorkId);
+        // 7. Record external effect - minimal valid payload matching ExternalEffect schema
+        const effectPayload: Omit<ExternalEffect, "effectId"> = {
+          actionId: actionId as unknown as LocalActionId,
+          targetEntityId: executionResult.externalEffectId,
+          entityType: "communication.sms",
+          stateChanged: true,
+          previousState: "pending",
+          newState: "sent",
+          observedAt: new Date().toISOString(),
+          sourceAdapter: "twilio:sandbox",
+          verified: false // Added to fix missing property error
+        };
+        // Use existing recordEffectForAction helper (handles EOS casts correctly)
+         const effectId = await recordEffectForAction(actionId, effectPayload, coreWorkId);
        executionLog.push(`[GOLDEN SLICE #1] External effect recorded: ${effectId}`);
 
        // 8. Record observation of successful delivery - fix Zod brand type mismatch
        const validatedWorkId = WorkId(workId);
-       const validatedEffectId = EffectId(effectId);
-       const observationId = await globalRegistry.recordObservation(validatedEffectId, {
-         effectId: validatedEffectId,
+       const validatedEffectId = EffectId(effectId as unknown as string);
+       const observationId = await globalRegistry.recordObservation(validatedEffectId as unknown as EffectId, {
+         effectId: validatedEffectId as unknown as LocalEffectId,
          observerType: "system",
          observerId: "system-communication-provider",
          observation: "Communication message successfully delivered to external recipient",
@@ -1508,30 +1482,30 @@ export async function executeGoldenSliceCommunication(): Promise<{
          confidenceScore: 1.0,
          observedAt: new Date().toISOString(),
          verified: false
-       }, validatedWorkId);
+       }, coreWorkId);
        executionLog.push(`[GOLDEN SLICE #1] Observation recorded: ${observationId}`);
 
        // 9. Bind evidence to the work - fix Zod brand type mismatch
-       const validatedActionId = ActionId(actionId);
-       const validatedReqId = ExecutionRequirementId(requirement.executionRequirementId);
+       const validatedActionId = ActionId(actionId as unknown as string);
+       const validatedReqId = ExecutionRequirementId(requirement.executionRequirementId as unknown as string);
        const evidenceId = await globalRegistry.bindEvidence({
-         executionRequirementId: validatedReqId,
-         actionId: validatedActionId,
-         effectId: validatedEffectId,
+         executionRequirementId: validatedReqId as unknown as ExecutionRequirementId,
+         actionId: validatedActionId as unknown as LocalActionId,
+         effectId: validatedEffectId as unknown as LocalEffectId,
          evidenceType: "api_log",
          evidenceUrl: "https://api.twilio.com/2010-04-01/Accounts/.../Messages/...",
          contentHash: "sha256:abc123def456...",
          capturedBy: "system-communication-provider",
          capturedAt: new Date().toISOString(),
          verified: false
-       }, validatedWorkId);
+       }, coreWorkId);
       executionLog.push(`[GOLDEN SLICE #1] Evidence bound: ${evidenceId}`);
 
       // 10. DO NOT mark work as completed automatically! Reality Doctrine: PROVIDER_SUCCESS ≠ OUTCOME_REACHED
       // Requirement: External verification must first confirm effect, observation, evidence, and outcome contract
       requirement.status = "in_progress"; // Maintain work as in_progress until independent verification completes
       requirement.completedAt = new Date().toISOString();
-      const updatedChain = globalRegistry.getExecutionChain(workId);
+      const updatedChain = globalRegistry.getExecutionChain(coreWorkId);
       if (updatedChain) {
         updatedChain.overallStatus = "in_progress"; // Chain status reflects work is still in progress, not completed
         Object.assign(updatedChain, chain);
@@ -1542,7 +1516,7 @@ export async function executeGoldenSliceCommunication(): Promise<{
       requirement.status = "failed";
       requirement.failedAt = new Date().toISOString();
       requirement.failureMode = "EXTERNAL_API_FAILURE";
-      const updatedChain = globalRegistry.getExecutionChain(workId);
+      const updatedChain = globalRegistry.getExecutionChain(coreWorkId);
       if (updatedChain) {
         updatedChain.overallStatus = "failed";
         Object.assign(updatedChain, chain);

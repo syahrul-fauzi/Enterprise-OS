@@ -1,10 +1,8 @@
 import { z } from "zod";
+import type { WorkId, ActorId, TenantId } from "@repo/core-kernel";
 
 // Branded types for type safety
 export type CommunicationEventId = string & { __brand: "CommunicationEventId" };
-export type WorkId = string & { __brand: "WorkId" };
-export type ActorId = string & { __brand: "ActorId" };
-export type TenantId = string & { __brand: "TenantId" };
 export type SessionId = string & { __brand: "SessionId" };
 
 // Supported communication adapter types - follows connector ecosystem pattern
@@ -51,7 +49,13 @@ export const BaseCommunicationEventSchema = z.object({
   session_id: z.string().describe("Session ID for tracing"),
   workspace_id: z.string().describe("Workspace ID for organization"),
   // External message tracking ID (for webhook reconciliation)
-  message_id: z.string().optional().describe("External platform message ID for webhook tracking")
+  message_id: z.string().optional().describe("External platform message ID for webhook tracking"),
+  // Extended metadata fields for work response events
+  response_type: z.string().optional().describe("Type of work response (accept/reject)"),
+  response_reason: z.string().optional().describe("Reason for work response"),
+  responder_verified: z.boolean().optional().describe("Whether responder was authenticated via session"),
+  source: z.string().optional().describe("Source of the communication event"),
+  event_subtype: z.string().optional().describe("Subtype of communication event for internal classification")
 });
 
 export type CommunicationEvent = z.infer<typeof BaseCommunicationEventSchema>;

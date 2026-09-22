@@ -1,3 +1,6 @@
+// Re-enabled for W004-P3-01 real work execution (added to Golden Spine)
+// Date re-enabled: 2026-09-20
+// Minimal change: uncommented full file to activate work detail route
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -12,7 +15,7 @@ import { GlobalNavigation } from "@repo/presentation-ui-system/layouts";
 import { buildWorkRealityModel } from "./getWorkRealityModel";
 import type { CanonicalWorkRecord } from "@/app/api/work/create/route";
 // Import PostgreSQL repository to eliminate all fixtures (G2-01 compliance: no mocks/fixtures)
-import { getWorkRepositoryPostgres } from "@repo/work-core/repository";
+import { getWorkRepositoryPostgres } from "@repo/capabilities-work-core/repository/work-postgres.repository";
 import type { WorkAggregate } from "../../../../../../capabilities/work-core/contracts/work.contracts.js";
 
 async function getWork(id: string, cookieHeader?: string): Promise<CanonicalWorkRecord | null> {
@@ -65,11 +68,11 @@ async function getWork(id: string, cookieHeader?: string): Promise<CanonicalWork
   }
   
   // Direct PostgreSQL retrieval for ALL work (G2-01: 100% real data, no fixtures)
-          try {
-            const workRepo = getWorkRepositoryPostgres();
-            const work = await workRepo.byId(id);
-            console.log("[getWork] Canonical work loaded directly from PostgreSQL:", id, work?.id);
-    
+  try {
+    const workRepo = getWorkRepositoryPostgres();
+    const work = await workRepo.byId(id);
+    console.log("[getWork] Canonical work loaded directly from PostgreSQL:", id, work?.id);
+
     if (!work) {
       console.log("[getWork] Work not found in PostgreSQL:", id);
       return null;
@@ -100,51 +103,62 @@ async function getWork(id: string, cookieHeader?: string): Promise<CanonicalWork
   }
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function WorkDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);
-  if (!sessionCookie) {
-    return redirect("/login");
+
+  if (!sessionCookie?.value) {
+    redirect("/");
   }
 
-  const session = await decodeWorkspaceSession(sessionCookie.value);
-  if (!session) {
-    return redirect("/login");
+  let session;
+  try {
+    session = decodeWorkspaceSession(sessionCookie.value);
+  } catch {
+    cookieStore.delete(WORKSPACE_SESSION_COOKIE);
+    redirect("/");
   }
 
-  const work = await getWork(params.id, sessionCookie?.value);
+  if (!session || !session.tenantId || !session.workspaceId || !session.actorId) {
+    cookieStore.delete(WORKSPACE_SESSION_COOKIE);
+    redirect("/");
+  }
 
+  const work = await getWork(params.id, sessionCookie.value);
   if (!work) {
     return (
-      <div className="p-4">
-        <p>Work not found.</p>
-        <Link href="/work">
-          <Button>Back to Work List</Button>
+      <main className="p-6">
+        <p>Pekerjaan tidak ditemukan. Silakan kembali ke daftar pekerjaan.</p>
+        <Link href="/work" className="mt-4 inline-block">
+          <Button>Kembali ke My Work</Button>
         </Link>
-      </div>
+      </main>
     );
   }
 
-  const model = await buildWorkRealityModel(work, [], session);
+  // Build canonical WorkRealityModel (server-side only, sesuai EOS architecture)
+  const workRealityModel = await buildWorkRealityModel(work, [], session);
 
-  async function handleStateChange(
-    workId: string,
-    actionId: string,
-    parameters: Record<string, unknown>
-  ) {
-    "use server";
-    console.log(
-      `Executing state change for work ${workId} with action ${actionId}`
-    );
-    // In a real scenario, you would invoke the capability core here
-    // For now, we just revalidate the path to refresh the data
-    revalidatePath(`/work/${workId}`);
-    return { success: true, message: "State changed successfully" };
-  }
+  // Breadcrumb navigation
+  const breadcrumbItems = [
+    { label: "Home", href: "/my-reality" },
+    { label: "My Work", href: "/work" },
+    { label: work.title.slice(0, 30) + "...", href: `/work/${params.id}`, current: true },
+  ];
 
   return (
-    <WorkRealityTemplate
-      initialModel={model}
-    />
+    <GlobalNavigation
+      userCapabilities={session.userCapabilities || []}
+      productId="default"
+      breadcrumbItems={breadcrumbItems}
+    >
+      <main className="py-6 px-4 sm:px-6 lg:px-8">
+        <WorkRealityTemplate model={workRealityModel} workId={params.id} />
+      </main>
+    </GlobalNavigation>
   );
 }

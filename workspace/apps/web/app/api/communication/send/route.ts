@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { capabilityRegistry } from "@repo/core-kernel/registry";
-
-const WORKSPACE_SESSION_COOKIE = "eos_workspace_session";
+import { WORKSPACE_SESSION_COOKIE } from "@repo/core-kernel";
+import { communicationCommands } from "@repo/capabilities-communication/commands";
 
 export async function POST(request: Request) {
   try {
@@ -39,22 +38,21 @@ export async function POST(request: Request) {
     // 4. Invoke communication.send command
     console.log(`[POST /api/communication/send] Sending message on work ${work_id} from actor ${actorId}`);
     
-    const result = await capabilityRegistry.invoke("communication", "communication.send", {
+    const output = await communicationCommands["communication.send"].execute({
       work_id,
       actor_id: actorId,
-      recipient_ids: recipient_ids.length > 0 ? recipient_ids : [actorId], // Default to self if no recipients
-      adapter_type: "in_app_chat", // Use in-app chat for web interface
+      recipient_ids: recipient_ids.length > 0 ? recipient_ids : [actorId],
+      adapter_type: "in_app_chat",
       content,
       session_id: sessionId,
       tenant_id: tenantId,
       workspace_id: workspaceId
     });
 
-    // 5. Return success response
     return NextResponse.json({
       success: true,
       message: "Communication sent successfully",
-      data: result.output
+      data: output
     });
 
   } catch (error) {

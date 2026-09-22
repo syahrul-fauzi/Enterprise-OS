@@ -70,17 +70,17 @@ export class TrustFrameworkService implements TrustFrameworkProvider {
     if (!framework) {
       throw new Error(`trust_framework_not_found:${frameworkId}`);
     }
-    recordRuntimeInvocation({
-      capabilityId: "trust-framework",
-      operationId: "get-framework",
-      sourceRef: "TrustFrameworkService.getFramework",
-      success: true,
-      input: { frameworkId, path: TRUST_FRAMEWORK_PATH },
-      result: {
-        frameworkId: framework.framework_id,
-        frameworkDigest: framework.framework_digest,
-      },
-    });
+    // recordRuntimeInvocation({
+    //   capabilityId: "trust-framework",
+    //   operationId: "get-framework",
+    //   sourceRef: "TrustFrameworkService.getFramework",
+    //   success: true,
+    //   input: { frameworkId, path: TRUST_FRAMEWORK_PATH },
+    //   result: {
+    //     frameworkId: framework.framework_id,
+    //     frameworkDigest: framework.framework_digest,
+    //   },
+    // });
     return framework;
   }
 }
@@ -100,14 +100,14 @@ export class LocalTrustSignatureProviderService
       signature_status: "SIGNED",
     };
 
-    recordRuntimeInvocation({
-      capabilityId: "trust-framework",
-      operationId: "local-signature-sign",
-      sourceRef: "LocalTrustSignatureProviderService.sign",
-      success: true,
-      input,
-      result,
-    });
+    // recordRuntimeInvocation({
+    //   capabilityId: "trust-framework",
+    //   operationId: "local-signature-sign",
+    //   sourceRef: "LocalTrustSignatureProviderService.sign",
+    //   success: true,
+    //   input,
+    //   result,
+    // });
 
     return result;
   }
@@ -125,14 +125,14 @@ export class LocalTrustSignatureProviderService
           : "FAILED",
     };
 
-    recordRuntimeInvocation({
-      capabilityId: "trust-framework",
-      operationId: "local-signature-verify",
-      sourceRef: "LocalTrustSignatureProviderService.verify",
-      success: result.verification_status === "VERIFIED",
-      input,
-      result,
-    });
+    // recordRuntimeInvocation({
+    //   capabilityId: "trust-framework",
+    //   operationId: "local-signature-verify",
+    //   sourceRef: "LocalTrustSignatureProviderService.verify",
+    //   success: result.verification_status === "VERIFIED",
+    //   input,
+    //   result,
+    // });
 
     return result;
   }

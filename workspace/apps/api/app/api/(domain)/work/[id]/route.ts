@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getWorkById, type CanonicalWorkRecord } from "../create/route";
 // WorkRepositoryPostgres is available in the repository, currently using canonical store only (postgreSQL fallback pending)
-import { WorkRepositoryPostgres, getWorkRepositoryPostgres } from "@capabilities/work-core/implementation/repository/work-postgres.repository.js";
+import { WorkRepositoryPostgres, getWorkRepositoryPostgres } from "@capabilities/work-core/repository/work-postgres.repository.js";
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,

@@ -94,8 +94,62 @@ export const createIncident: CreateIncidentCommand = {
   },
 };
 
+const AcknowledgeIncidentSchema = z.object({ incidentId: z.string(), sessionId: z.string(), tenantId: z.string(), workspaceId: z.string(), actorId: z.string() });
+type AcknowledgeIncidentCommand = CapabilityCommand<z.infer<typeof AcknowledgeIncidentSchema>, Promise<{id: string, status: string}>>;
+export const acknowledgeIncident: AcknowledgeIncidentCommand = {
+  kind: "command",
+  name: "incident.acknowledge",
+  version: "1.0.0",
+  async execute(input) {
+    const parsed = AcknowledgeIncidentSchema.parse(input);
+    const IncidentRepo = getIncidentRepository();
+    const incident = await IncidentRepo.byId(parsed.incidentId as any);
+    if (!incident) throw new Error("[incident.acknowledge] Incident not found");
+    const updated = { ...incident, status: "in_progress" as const, updatedAt: new Date() };
+    await IncidentRepo.save(updated);
+    return { id: updated.id, status: updated.status };
+  },
+};
+
+const ResolveIncidentSchema = z.object({ incidentId: z.string(), sessionId: z.string(), tenantId: z.string(), workspaceId: z.string(), actorId: z.string() });
+type ResolveIncidentCommand = CapabilityCommand<z.infer<typeof ResolveIncidentSchema>, Promise<{id: string, status: string}>>;
+export const resolveIncident: ResolveIncidentCommand = {
+  kind: "command",
+  name: "incident.resolve",
+  version: "1.0.0",
+  async execute(input) {
+    const parsed = ResolveIncidentSchema.parse(input);
+    const IncidentRepo = getIncidentRepository();
+    const incident = await IncidentRepo.byId(parsed.incidentId as any);
+    if (!incident) throw new Error("[incident.resolve] Incident not found");
+    const updated = { ...incident, status: "resolved" as const, updatedAt: new Date() };
+    await IncidentRepo.save(updated);
+    return { id: updated.id, status: updated.status };
+  },
+};
+
+const CloseIncidentSchema = z.object({ incidentId: z.string(), sessionId: z.string(), tenantId: z.string(), workspaceId: z.string(), actorId: z.string() });
+type CloseIncidentCommand = CapabilityCommand<z.infer<typeof CloseIncidentSchema>, Promise<{id: string, status: string}>>;
+export const closeIncident: CloseIncidentCommand = {
+  kind: "command",
+  name: "incident.close",
+  version: "1.0.0",
+  async execute(input) {
+    const parsed = CloseIncidentSchema.parse(input);
+    const IncidentRepo = getIncidentRepository();
+    const incident = await IncidentRepo.byId(parsed.incidentId as any);
+    if (!incident) throw new Error("[incident.close] Incident not found");
+    const updated = { ...incident, status: "closed" as const, updatedAt: new Date() };
+    await IncidentRepo.save(updated);
+    return { id: updated.id, status: updated.status };
+  },
+};
+
 export const observabilityCommands: Readonly<Record<string, CapabilityCommand>> = {
   "incident.create": createIncident,
+  "incident.acknowledge": acknowledgeIncident,
+  "incident.resolve": resolveIncident,
+  "incident.close": closeIncident,
 } as const;
 
 export function nextIncidentId(): string {

@@ -17,6 +17,7 @@ interface MyRealityExperienceProps {
   onInsightAction?: (insightId: string) => void;
   showActivity?: boolean;
   breadcrumbItems?: readonly any[]; // Align with contracts BreadcrumbItem type
+  productId?: string;
 }
 
 export function MyRealityExperience({ 
@@ -26,6 +27,7 @@ export function MyRealityExperience({
   onInsightAction,
   showActivity = true,
   breadcrumbItems,
+  productId = "default",
 }: MyRealityExperienceProps) {
   // Controller owns ALL business logic, realtime, and state management
   // Experience = pure composition of building blocks (PRESENTATION CONSTITUTION #8)
@@ -41,7 +43,7 @@ export function MyRealityExperience({
     refreshModel,
   } = useMyRealityController({ initialModel });
   
-  const headerDescription = "A summary of your work items that require action or are in progress.";
+  // const headerDescription = "A summary of your work items that require action or are in progress.";
 
   // Handle work click navigation - only navigation, no business logic
   const handleWorkClick = useCallback((workId: string) => {
@@ -58,38 +60,7 @@ export function MyRealityExperience({
     onInsightAction?.(insightId);
   }, [model.companion.insights, onInsightAction, dispatchAction]);
 
-  const header = (
-    <>
-      {/* VF-01: EOS identity in first viewport, VF-05: Authenticated identity visibly resolved */}
-      <MyRealityHeader 
-        title="What needs your attention" 
-        description={headerDescription}
-        actions={actions}
-        auth={auth}
-        actorName={model.actor?.displayName}
-      />
-      {/* Realtime connection status indicator only shows "Menghubungkan..." if actually connecting - VF-07: intentional states */}
-      <div className="flex items-center justify-end gap-2 mt-2">
-        {!isConnected && (
-          <>
-            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-            <span className="text-xs text-gray-500">Terhubung ke EOS...</span>
-          </>
-        )}
-        {isConnected && (
-          <>
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span className="text-xs text-gray-500">Terhubung</span>
-          </>
-        )}
-        {isConnected && pendingEvents.length > 0 && (
-          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
-            {pendingEvents.length} pembaruan baru
-          </span>
-        )}
-      </div>
-    </>
-  );
+  const header: null = null;
 
   // Determine the top priority work item for the header
   const topPriorityWork = categorizedWorks.needsAttention[0] || model.priority.now[0];
@@ -151,9 +122,9 @@ export function MyRealityExperience({
         <p className="mt-2 text-base text-text-secondary max-w-lg mx-auto leading-relaxed">
           Semua pekerjaan Anda akan muncul di sini. Mulailah dengan membuat pekerjaan pertama untuk memulai perjalanan di EOS.
         </p>
-        <a href="/work/new" className="mt-4">
+        <a href="/enter" className="mt-4">
           <Button intent="primary" variant="solid" size="lg">
-            Buat Pekerjaan Pertama
+            Mulai Kebutuhan Pertama
           </Button>
         </a>
       </div>
@@ -171,7 +142,7 @@ export function MyRealityExperience({
       <MyRealityLayout
         header={header}
         userCapabilities={auth?.userCapabilities || []}
-        productId="lawyershub"
+        productId={productId}
         breadcrumbItems={breadcrumbItems}
         attention={mainContent}
         active={null}
@@ -185,7 +156,7 @@ export function MyRealityExperience({
       <MyRealityLayout
         header={header}
         userCapabilities={auth?.userCapabilities || []}
-        productId="lawyershub"
+        productId={productId}
         breadcrumbItems={breadcrumbItems}
         attention={mainContent}
         active={null}
@@ -199,7 +170,7 @@ export function MyRealityExperience({
       <MyRealityLayout
         header={header}
         userCapabilities={auth?.userCapabilities || []}
-        productId="lawyershub"
+        productId={productId}
         breadcrumbItems={breadcrumbItems}
         attention={mainContent}
         active={null}
@@ -213,7 +184,7 @@ export function MyRealityExperience({
       header={header}
       // VF-02: Pass auth capabilities to unified navigation system
       userCapabilities={auth?.userCapabilities || []}
-      productId="lawyershub"
+      productId={productId}
       breadcrumbItems={breadcrumbItems}
       // 1. HIGHEST PRIORITY: NEEDS ATTENTION - what matters RIGHT NOW
       attention={attentionSection}

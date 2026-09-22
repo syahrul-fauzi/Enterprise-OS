@@ -31,7 +31,7 @@ export interface NavigationDescriptor {
 }
 
 // Re-export unified navigation implementation (UX-SHELL-001 single source of truth)
-export { 
+export {
   createWorkspaceNavigation,
   GLOBAL_NAV_ITEMS,
   VERTICAL_NAV_ITEMS

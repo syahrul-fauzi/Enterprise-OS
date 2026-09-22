@@ -1,3 +1,14 @@
+// NON-GOLDEN-SPINE ROUTE - DISABLED PER W003-P7-03 POLICY
+// This route is not part of the current Golden Spine release path and has been disabled
+// to prevent compilation errors from unresolvable imports. It will be re-enabled only
+// if it becomes part of the dependency closure of a future release path.
+//
+// Reason for disable: Contains import path error "@repo/capabilities-identity/repositories"
+// which would cause Docker build to fail.
+//
+// Date disabled: 2026-09-19
+//
+// /*
 // Server Component with client-boundary form section - separates session/intent resolution (server) from client-side submission
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -17,7 +28,7 @@ async function fetchIntentServerSide(
   try {
     // Import canonical intent repository (lazy import to avoid circular dependencies)
     const { getIntentRepositoryPostgres, initIdentitySchema } = await import(
-      "@repo/identity-capability/repositories"
+      "@repo/capabilities-identity/repositories"
     );
 
     await initIdentitySchema();
@@ -95,6 +106,7 @@ export default async function NewWorkPage({
     try {
       // Import canonical universal expression pipeline (single canonical ingress for ALL reality sources)
       // Implements user's requirement: ALL reality sources use same canonical ingress path
+      // Re-enabled for W004-P3-01 real work execution (added to Golden Spine)
       const { createUniversalExpression } = await import(
         "@repo/atomic-composition-capability/intent-understanding"
       );
@@ -146,9 +158,7 @@ export default async function NewWorkPage({
         console.log(
           "[SERVER] Work not automatically formed, falling back to direct creation",
         );
-        const { createWorkCommand } = await import(
-          "@repo/work-core/commands"
-        );
+        const { createWorkCommand } = await import("../../../../../../capabilities/work-core/implementation/commands/work.commands");
         const createWorkInput = {
           title: formData.title,
           description: formData.description || "",

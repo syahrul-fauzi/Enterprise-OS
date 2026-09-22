@@ -3,7 +3,7 @@
 import { NextResponse } from "next/server";
 import { DatabaseHealthChecker } from "@capabilities/shared/database/health.check";
 import { getCommunicationRepositoryPostgres } from "@capabilities/communication/repository/communication.postgres.repository";
-import { getCaseRepositoryPostgres } from "@capabilities/legal-case/implementation/repository/case-postgres.repository";
+import { getCaseRepositoryPostgres } from "@capabilities/legal-case/repository/case-postgres.repository";
 
 export async function GET() {
   try {

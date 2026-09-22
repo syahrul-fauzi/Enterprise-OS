@@ -17,6 +17,8 @@ export type { ProductCasesPageProps } from "./product-cases-page/ProductCasesPag
 export { ProductPreviewShell } from "./product-preview-shell/ProductPreviewShell";
 export { SettingsPage } from "./settings-page/SettingsPage";
 export type { SettingsPageProps } from "./settings-page/SettingsPage";
+export { NotificationsPage } from "./notifications-page/NotificationsPage";
+export type { NotificationsPageProps } from "./notifications-page/NotificationsPage";
 export { InstitutionPage } from "./institution-page/InstitutionPage";
 export type { InstitutionPageProps } from "./institution-page/InstitutionPage";
 
@@ -55,6 +57,10 @@ export type { WorkTracePageProps } from "./work-trace-page/WorkTracePage";
 // export type { ReadinessPageProps } from "./readiness-page/ReadinessPage";
 export { WorkspaceDashboard } from "./workspace-dashboard/WorkspaceDashboard";
 export type { WorkspaceDashboardProps } from "./workspace-dashboard/WorkspaceDashboard";
+export { ReadinessPage } from "./readiness-page/ReadinessPage";
+export type { ReadinessPageProps } from "./readiness-page/ReadinessPage";
+export { ProductDeliveryPage } from "./product-delivery-page/ProductDeliveryPage";
+export type { ProductDeliveryPageProps } from "./product-delivery-page/ProductDeliveryPage"
 // DEPRECATED LAYOUT COMPONENTS (UNUSED, scheduled for archive: 2026-09-08): DashboardGridLayout, ThemeToggle
 // R9 - My Reality layout components - REMOVED: no usage found in any production route
 // export { DashboardGridLayout } from "./layouts/DashboardGridLayout";

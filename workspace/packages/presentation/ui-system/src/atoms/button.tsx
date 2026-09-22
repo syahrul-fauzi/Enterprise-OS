@@ -140,5 +140,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   );
 });
 
+export type SpinnerSize = ButtonSize;
 export { Spinner };
 export default Button;

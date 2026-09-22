@@ -6,24 +6,60 @@
     "dist"
   ],
   "exports": {
-    ".": "./dist/index.js",
-    "./tokens": "./dist/tokens/index.js",
-    "./tokens/colors": "./dist/tokens/colors.js",
-    "./tokens/spacing": "./dist/tokens/spacing.js",
-    "./tokens/radius": "./dist/tokens/radius.js",
-    "./tokens/elevation": "./dist/tokens/elevation.js",
-    "./tokens/semantic": "./dist/tokens/semantic.js",
-    "./typography": "./dist/typography/index.js",
-    "./motion": "./dist/motion/index.js",
-    "./icons": "./dist/icons/index.js",
-    "./themes": "./dist/themes/index.js"
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./tokens": {
+      "import": "./dist/tokens/index.js",
+      "types": "./dist/tokens/index.d.ts"
+    },
+    "./tokens/colors": {
+      "import": "./dist/tokens/colors.js",
+      "types": "./dist/tokens/colors.d.ts"
+    },
+    "./tokens/spacing": {
+      "import": "./dist/tokens/spacing.js",
+      "types": "./dist/tokens/spacing.d.ts"
+    },
+    "./tokens/radius": {
+      "import": "./dist/tokens/radius.js",
+      "types": "./dist/tokens/radius.d.ts"
+    },
+    "./tokens/elevation": {
+      "import": "./dist/tokens/elevation.js",
+      "types": "./dist/tokens/elevation.d.ts"
+    },
+    "./tokens/semantic": {
+      "import": "./dist/tokens/semantic.js",
+      "types": "./dist/tokens/semantic.d.ts"
+    },
+    "./typography": {
+      "import": "./dist/typography/index.js",
+      "types": "./dist/typography/index.d.ts"
+    },
+    "./motion": {
+      "import": "./dist/motion/index.js",
+      "types": "./dist/motion/index.d.ts"
+    },
+    "./icons": {
+      "import": "./dist/icons/index.js",
+      "types": "./dist/icons/index.d.ts"
+    },
+    "./themes": {
+      "import": "./dist/themes/index.js",
+      "types": "./dist/themes/index.d.ts"
+    }
   },
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build",
     "check-types": "tsc --noEmit",
     "dev": "tsc --watch",
     "lint": "eslint src --max-warnings 0"
+  },
+  "dependencies": {
+    "@repo/presentation-entities": "workspace:*"
   },
   "devDependencies": {
     "@repo/config-eslint": "workspace:*",

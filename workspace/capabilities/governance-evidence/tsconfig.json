@@ -1,0 +1,16 @@
+{
+  "extends": "@repo/config-typescript/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "composite": true
+  },
+  "references": [
+    { "path": "../trust-framework" }
+  ],
+  "include": ["implementation/**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.spec.ts"
+  ]
+}

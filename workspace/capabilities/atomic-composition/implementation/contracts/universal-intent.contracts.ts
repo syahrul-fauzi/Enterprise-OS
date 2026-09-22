@@ -99,6 +99,7 @@ export interface UnderstandingRequirement {
 export interface RawContent {
   type: RawContentType;
   content: unknown; // Can be string, JSON, signal data, or any other format
+  sessionId?: string; // Add sessionId to RawContent
   // Preserve original encoding/metadata if needed for audit
   metadata?: Record<string, unknown>;
 }
@@ -131,6 +132,7 @@ export interface RawContent {
       currentHypothesisId?: string; // The currently leading hypothesis
       context?: Record<string, unknown>; // Top-level context for domain derivation & context preservation
       canFormWork?: boolean; // Whether this understanding is sufficient to form a Work (false for pure info requests)
+      interpretedObjective?: string; // Extracted need statement from raw intent
     };
 
     // Resolution layer - only entered when understanding is sufficient

@@ -5,10 +5,32 @@ import {
   encodeWorkspaceSession,
   createAnonymousWorkspaceSession,
   WORKSPACE_SESSION_COOKIE,
+  readWorkspaceSessionFromRequest,
+  isAuthenticatedSession,
 } from "@repo/core-kernel";
-import { getTenantRepositoryPostgres } from "@repo/capabilities-identity";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
+import { getTenantRepositoryPostgres } from "../../capabilities/identity";
 
-export async function proxy(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
+  // AUTHENTICATION CHECK: Protect routes that require login
+  const session = readWorkspaceSessionFromRequest(request);
+  const isAuthenticated = session ? isAuthenticatedSession(session) : false;
+  const { pathname } = request.nextUrl;
+
+  // Define protected routes that require authentication
+  const PROTECTED_ROUTES = ["/my-reality", "/work", "/intent", "/profile"];
+  const isProtectedRoute = PROTECTED_ROUTES.some((route) => pathname.startsWith(route));
+
+  // If user is authenticated and trying to access login, redirect to my-reality
+  if (isAuthenticated && pathname === "/login") {
+    return NextResponse.redirect(new URL("/my-reality", request.url));
+  }
+
+  // If route is protected and user is not authenticated, redirect to login
+  if (isProtectedRoute && !isAuthenticated) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
   // DEFENSE-IN-DEPTH: Hapus semua client-sent X-EOS-* headers untuk double security
   // Kita tidak pernah menggunakan header X-EOS-* yang dikirim client, hanya header yang DISET OLEH CADDY upstream
   // Caddy sudah menghapus semua client headers di reverse_proxy, ini tambahan safety net
@@ -21,6 +43,28 @@ export async function proxy(request: NextRequest) {
   // Dapatkan header dari Caddy (hanya yang set oleh reverse_proxy upstream)
   const tenantSubdomain = request.headers.get("X-EOS-Tenant-Subdomain");
   const response = NextResponse.next();
+
+  // P3-GOVERN: Minimal capability check for protected routes (reuse existing identity.getSessionById)
+  if (isProtectedRoute && isAuthenticated && session?.sessionId) {
+    try {
+      // Get full session details with actorId from identity capability
+      const { output: sessionDetails } = await capabilityRegistry.invoke("identity", "getSessionById", { 
+        sessionId: session.sessionId 
+      });
+      
+      if (!sessionDetails?.authenticated) {
+        console.warn("[proxy] Session invalid for protected route access");
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
+      
+      // Set verified actorId header for downstream services (tenant-isolated)
+      response.headers.set("X-EOS-Actor-ID", sessionDetails.session.actorId);
+      console.log(`[proxy] Actor ${sessionDetails.session.actorId} authenticated for ${pathname}`);
+    } catch (err) {
+      console.error("[proxy] Capability-based verification failed:", err);
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+  }
 
   // Jika ada subdomain tenant, lookup tenant dari slug
   if (tenantSubdomain) {

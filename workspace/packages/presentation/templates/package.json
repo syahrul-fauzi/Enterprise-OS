@@ -8,6 +8,7 @@
   ],
   "exports": {
     ".": "./dist/index.js",
+    "./authentication": "./dist/authentication-template/index.js",
     "./my-reality": "./dist/my-reality/index.js"
   },
   "license": "MIT",

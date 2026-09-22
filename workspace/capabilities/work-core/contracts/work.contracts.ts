@@ -1,91 +1,65 @@
 import { z } from "zod";
+// Re-export types from core-kernel for backward compatibility with existing code
+// ONE EOS REALITY: Semua definisi type aslinya tetap di core-kernel, ini hanya alias
+export { type WorkId, type TenantId, type ActorId, type SessionId } from "@repo/core-kernel";
+// Import ONLY types from core-kernel (ONE EOS REALITY - centralized type definitions)
+// Constructor functions tidak dibutuhkan di contracts layer, hanya type definitions
+import { type WorkId, type TenantId, type ActorId, type SessionId } from "@repo/core-kernel";
 
 // Use z.BRAND compatible type definition to match atomic-composition contracts
-// This resolves type mismatch between our __brand and internal Zod BRAND symbols
-// Revert to __brand pattern to maintain backward compatibility with existing codebase
-// All other repositories use __brand, and BRAND symbol mismatch was causing type errors
+// Only CompositionId remains in work-core (domain-specific composition identifier)
 export type CompositionId = string & { __brand: "CompositionId" };
-export type WorkId = string & { __brand: "WorkId" };
-export type TenantId = string & { __brand: "TenantId" };
-export type SessionId = string & { __brand: "SessionId" };
-export const ActorIdSchema = z.string().brand("ActorId");
-export type ActorId = z.infer<typeof ActorIdSchema>;
-
-export function WorkId(value: string): WorkId { return value as WorkId; }
-export function TenantId(value: string): TenantId { return value as TenantId; }
-export function SessionId(value: string): SessionId { return value as SessionId; }
-export function ActorId(value: string): ActorId { return value as ActorId; }
+export function CompositionId(value: string): CompositionId { return value as CompositionId; }
 
 export const WorkStatusEnum = ["draft", "active", "suspended", "completed", "cancelled", "observed", "explored", "evaluated", "authorized", "procured", "settled"] as const;
 export type WorkStatus = typeof WorkStatusEnum[number];
-
-export const WorkDomainTypeEnum = ["legal-case", "service-request", "consultation", "ecommerce-order", "software-development", "manufacturing", "generic"] as const;
-export type WorkDomainType = typeof WorkDomainTypeEnum[number];
-
-export const WorkModeEnum = ["oneshot", "project", "continuous", "monitoring", "inspection", "investigation", "operation", "assistance"] as const;
+export const WorkModeEnum = ["core", "domain", "federation", "oneshot"] as const;
 export type WorkMode = typeof WorkModeEnum[number];
 
-export const BaseWorkAggregateSchema = z.object({
-  id: z.string(),
-  workId: z.string().brand<WorkId>(),
-  title: z.string(),
-  description: z.string().optional(),
-  priority: z.enum(["low", "medium", "high", "critical"]).default("medium"),
-  linkedIntentId: z.string().optional(),
-  domainType: z.enum(WorkDomainTypeEnum).default("generic"),
-  workMode: z.enum(WorkModeEnum).default("oneshot"),
-  
-  // External system integration (R5-C Platform Specialization)
-  externalId: z.string().optional(), // ID from external system to preserve identity
-  platformSource: z.string().optional(), // Which external platform this work originated from
-  platformMetadata: z.record(z.string(), z.any()).optional(), // Platform-specific metadata (repository name, etc.)
-  
-  // Session context primitives
-  sessionId: z.string().brand<SessionId>(),
-  tenantId: z.string().brand<TenantId>(),
-  workspaceId: z.string(),
-  actorId: z.string().brand<ActorId>(),
-  
-  // ATOMIC WORK COMPOSITION - CANONICAL INTEGRATION
-  // CONSTITUTIONAL DECISION: Work.teamId REMOVED - only compositionId remains
-  // To reconstruct team: load TeamProjection from composition using compositionId
-  // Team is NEVER a first-class relation - always derived projection from composition
-  requiredCapabilities: z.array(z.string()).default([]), // core capability references
-  compositionId: z.string().brand<CompositionId>().optional(), // ONLY canonical link
-  
-  // Lifecycle
-  status: z.enum(WorkStatusEnum).default("draft"),
-  createdAt: z.string(),
-  updatedAt: z.string().optional(),
-  completedAt: z.string().optional(),
-  
-  // RL2-001: Work Execution Reality extensions - state transition tracking
-  assignedActorId: z.string().brand<ActorId>().optional(),
-  nextAction: z.string().optional(),
-  stateHistory: z.array(z.object({
-    status: z.enum(WorkStatusEnum),
-    timestamp: z.string(),
-    actorId: z.string().brand<ActorId>(),
-    note: z.string().optional()
-  })).default([]),
-  // RL3-001: Economic Value Proof extensions - track measurable value created by work
-  economicValue: z.object({
-    amount: z.number().optional(), // Measurable monetary value
-    currency: z.string().default("IDR"),
-    valueType: z.enum(["cost_savings", "revenue_generated", "risk_mitigation", "efficiency_gain"]).optional(),
-    evidence: z.string().optional(), // Reference to value evidence in evidence registry
-    recordedAt: z.string().optional() // Timestamp when value was recorded
-  }).optional(),
-  outcomeDeliveredAt: z.string().optional(), // RL3: Timestamp when final outcome was delivered
-  
-  // MULTI-ACTOR-001: Collaboration extensions
-  version: z.number().default(1), // Optimistic concurrency control version
-  participants: z.array(z.object({
-    actorId: z.string().brand<ActorId>(),
-    role: z.enum(["editor", "viewer", "commenter"]),
-    addedAt: z.string(),
-    addedBy: z.string().brand<ActorId>(),
-  })).default([]), // List of participants with roles
-});
+export interface WorkAggregate {
+  id: WorkId;
+  workId?: WorkId; // Alias untuk backward compatibility dengan repository yang menggunakan workId
+  linkedExpressionId?: string; // Link ke source intent (universal expression) untuk traceability
+  title: string;
+  description?: string;
+  status: WorkStatus;
+  mode?: WorkMode;
+  workMode?: WorkMode; // Add workMode property required by createCoreWork function (both mode and workMode supported)
+  tenantId?: TenantId;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  createdBy?: ActorId;
+  updatedBy?: ActorId;
+  actorId?: ActorId; // Backward compatibility dengan repository schema
+  domainId?: string;
+  domainType?: string; // Add missing domainType property required by createCoreWork function
+  parentWorkId?: WorkId;
+  childWorkIds?: WorkId[]; // Changed from readonly to mutable to fix assignment error
+  participants?: string[]; // Changed from readonly to mutable to fix assignment error
+  version?: number; // Backward compatibility dengan repository schema
+  stateHistory?: unknown[]; // Changed from readonly to mutable to fix assignment error
+  compositionId?: string; // Backward compatibility dengan repository schema
+  sessionId?: string; // Add for evidence recording context
+  workspaceId?: string; // Add for evidence recording context
+}
 
-export type WorkAggregate = z.infer<typeof BaseWorkAggregateSchema>;
+export const ActorIdSchema = z.string().brand("ActorId");
+export const TenantIdSchema = z.string().brand("TenantId");
+export const SessionIdSchema = z.string().brand("SessionId");
+export const WorkIdSchema = z.string().brand("WorkId");
+
+export const WorkSchema = z.object({
+  id: WorkIdSchema,
+  title: z.string().min(1),
+  description: z.string().optional(),
+  status: z.enum(WorkStatusEnum),
+  mode: z.enum(WorkModeEnum),
+  tenantId: TenantIdSchema,
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  createdBy: ActorIdSchema,
+  updatedBy: ActorIdSchema.optional(),
+  domainId: z.string().optional(),
+  parentWorkId: WorkIdSchema.optional(),
+  childWorkIds: z.array(WorkIdSchema),
+});

@@ -1,21 +1,32 @@
 {
-  "extends": "@repo/config-typescript/react-library.json",
+  "extends": "../../config/typescript/base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
-    "declaration": true,
-    "incremental": false,
-    "composite": false,
     "rootDir": "src",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "strictNullChecks": true,
     "skipLibCheck": true,
-    "noUncheckedIndexedAccess": false,
     "esModuleInterop": true,
+    "isolatedModules": true,
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "ES2022",
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "allowImportingTsExtensions": false,
     "jsx": "react-jsx",
     "paths": {
       "@repo/core-capability-registry": ["../core/capability-registry/dist"]
     }
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -409,6 +409,44 @@ const MIGRATIONS: DatabaseMigration[] = [
         '2026-09-09T13:20:00.000Z'
       ) ON CONFLICT (id) DO NOTHING;
     `
+  },
+  {
+    version: "012",
+    name: "add-occ-to-core-tables",
+    description: "Add optimistic concurrency control version column to communication_events, evidence, users, sessions tables",
+    sql: `
+      -- Add version column to communication_events (idempotent - IF NOT EXISTS)
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'communication_events' AND column_name = 'version') THEN
+          ALTER TABLE communication_events ADD COLUMN version INTEGER NOT NULL DEFAULT 1;
+        END IF;
+      END $$;
+
+      -- Add version column to evidence
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'evidence' AND column_name = 'version') THEN
+          ALTER TABLE evidence ADD COLUMN version INTEGER NOT NULL DEFAULT 1;
+        END IF;
+      END $$;
+
+      -- Add version column to users
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'users' AND column_name = 'version') THEN
+          ALTER TABLE users ADD COLUMN version INTEGER NOT NULL DEFAULT 1;
+        END IF;
+      END $$;
+
+      -- Add version column to sessions
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'sessions' AND column_name = 'version') THEN
+          ALTER TABLE sessions ADD COLUMN version INTEGER NOT NULL DEFAULT 1;
+        END IF;
+      END $$;
+    `
   }
 
 ];

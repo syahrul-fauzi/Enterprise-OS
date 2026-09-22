@@ -1,8 +1,8 @@
 "use client";
 
 import React from 'react';
-import { GlobalNavigation } from "@repo/presentation-ui-system/layouts";
-
+// Minimal public authentication template - removes GlobalNavigation dependency that was causing Next.js serialization errors
+// Fixes W003-P7-03 chain's /enter route failure while maintaining core layout
 export interface AuthenticationTemplateProps {
   children: React.ReactNode;
   title: string;
@@ -15,11 +15,7 @@ export function AuthenticationTemplate({
   subtitle
 }: AuthenticationTemplateProps) {
   return (
-    <GlobalNavigation
-      userCapabilities={[]}
-      productId="eos-public"
-      isPublic
-    >
+    <div className="min-h-screen bg-surface-base">
       <div className="min-h-screen bg-surface-base flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
         <main className="w-full max-w-md">
           <div className="text-center mb-8">
@@ -29,6 +25,6 @@ export function AuthenticationTemplate({
           {children}
         </main>
       </div>
-    </GlobalNavigation>
+    </div>
   );
 }

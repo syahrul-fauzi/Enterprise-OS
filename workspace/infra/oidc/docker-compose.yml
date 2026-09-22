@@ -54,5 +54,38 @@ services:
       - "3003:3000"
     command: sh -c 'npm install && node index.js'
 
+  web:
+    build:
+      context: ../../
+      dockerfile: ./apps/web/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_OIDC_ISSUER=http://0.0.0.0:4444
+      - HYDRA_PUBLIC_URL=http://0.0.0.0:4444
+      - HYDRA_ADMIN_URL=http://0.0.0.0:4445
+      - OIDC_REDIRECT_URI=http://0.0.0.0:3000/api/auth/callback
+      - DATABASE_URL=postgres://eos:eos-password@app-db:5432/eos-db
+      - POSTGRES_CONNECTION_STRING=postgres://eos:eos-password@app-db:5432/eos-db
+      - POSTGRES_WRITE_CONNECTION_STRING=postgres://eos:eos-password@app-db:5432/eos-db
+      - POSTGRES_READ_CONNECTION_STRING=postgres://eos:eos-password@app-db:5432/eos-db
+    depends_on:
+      - hydra
+      - app-db
+    command: pnpm --filter web start --port 3000 --hostname 0.0.0.0
+
+  app-db:
+    image: postgres:13
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=eos
+      - POSTGRES_PASSWORD=eos-password
+      - POSTGRES_DB=eos-db
+    volumes:
+      - app-db-data:/var/lib/postgresql/data
+
 volumes:
   hydra-db-data:
+  app-db-data:

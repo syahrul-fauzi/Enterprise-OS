@@ -1,11 +1,11 @@
 import { z } from "zod";
-import type { CapabilityCommand } from "@repo/core-kernel";
-import { executionContext } from "@repo/core-runtime";
+import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
+import { executionContext } from "../../../../packages/core/runtime/src/index.js";
 import {
   newCommunicationEventId,
   defaultCommunicationStatus,
   CommunicationRepositoryInMemory,
-} from "../repository/communication.repository";
+} from "../repository/communication.repository.js";
 
 // Local invokeCapability implementation following the same pattern as other capabilities
 async function invokeCapability<Output = unknown>(
@@ -43,8 +43,8 @@ import {
   type SendCommunicationOutput,
   type CommunicationEvent,
 } from "../contracts/communication.contracts.js";
-import { getSessionRepositoryPostgres, SessionRepositoryInMemory } from "@capabilities/identity/implementation/repositories/index";
-import { SessionId } from "@capabilities/identity/implementation/contracts/identity.contracts";
+import { getSessionRepositoryPostgres, SessionRepositoryInMemory } from "../../../identity/implementation/repositories/index.js";
+import { SessionId } from "../../../identity/implementation/contracts/identity.contracts.js";
 
 const SessionRepositoryPostgres = process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()

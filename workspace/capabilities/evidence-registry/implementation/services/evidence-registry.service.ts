@@ -1,6 +1,4 @@
-import {
-  requirementService,
-} from "../../../requirement-management/implementation/service";
+import { requirementService } from "../../../requirement-management/implementation/index.js";
 import type {
   AssessEvidenceInput,
   AssessEvidenceOutput,
@@ -8,22 +6,30 @@ import type {
   GetEvidenceRecordOutput,
   SearchEvidenceRegistryInput,
   SearchEvidenceRegistryOutput,
+  ListEvidenceByWorkIdInput,
+  ListEvidenceByWorkIdOutput,
   L1CohortMetricsInput,
   L1CohortMetricsOutput,
 } from "../contracts/index.js";
 import { evidenceRegistryQueries } from "../queries/index.js";
-import { EvidenceRegistryRepositoryFileSystem } from "../repository/index.js";
+import { EvidenceRegistryRepositoryFileSystem, getEvidenceRepositoryPostgres } from "../repository/index.js";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 // notifyWorkspaceListeners is dynamically imported only when needed to avoid TypeScript rootDir issues
 // This maintains the same realtime notification pattern while complying with project structure rules
 
+// Conditionally use PostgreSQL repository if database is available, maintain backward compatibility
+let evidenceRepository: any = EvidenceRegistryRepositoryFileSystem;
+if (process.env.DATABASE_URL) {
+  evidenceRepository = getEvidenceRepositoryPostgres();
+}
+
 export class EvidenceRegistryService {
   readonly repositories = {
-    EvidenceRecord: EvidenceRegistryRepositoryFileSystem,
+    EvidenceRecord: evidenceRepository,
   } as const;
 
-  getEvidenceRecord(input: GetEvidenceRecordInput): GetEvidenceRecordOutput {
-    const result = evidenceRegistryQueries["evidence.get"].execute(input);
+  async getEvidenceRecord(input: GetEvidenceRecordInput): Promise<GetEvidenceRecordOutput> {
+    const result = await evidenceRegistryQueries["evidence.get"].execute(input);
     recordRuntimeInvocation({
       capabilityId: "evidence-registry",
       operationId: "get-evidence-record",
@@ -52,6 +58,24 @@ export class EvidenceRegistryService {
       },
       decision_id: input.decision_id ?? undefined,
       productId: input.productId ?? undefined,
+    });
+    return result;
+  }
+
+  async listEvidenceByWorkId(
+    input: ListEvidenceByWorkIdInput,
+  ): Promise<ListEvidenceByWorkIdOutput> {
+    const result = await evidenceRegistryQueries["evidence.listByWorkId"].execute(input);
+    recordRuntimeInvocation({
+      capabilityId: "evidence-registry",
+      operationId: "list-evidence-by-workid",
+      sourceRef: "EvidenceRegistryService.listEvidenceByWorkId",
+      success: true,
+      input,
+      result: {
+        matched: result.matched,
+        returned: result.items.length,
+      },
     });
     return result;
   }
@@ -116,7 +140,7 @@ export class EvidenceRegistryService {
     return result;
   }
 
-  calculateL1CohortMetrics(input: L1CohortMetricsInput): L1CohortMetricsOutput {
+  async calculateL1CohortMetrics(input: L1CohortMetricsInput): Promise<L1CohortMetricsOutput> {
     // Search for all works in this cohort using tag filter
     const cohortEvidence = evidenceRegistryQueries["evidence.search"].execute({
       tag: `cohort:${input.cohortId}`,
@@ -160,7 +184,7 @@ export class EvidenceRegistryService {
     let crossCategoryReuseCount = 0;
 
     // Process each work item to calculate metrics
-    workItems.forEach(work => {
+    for (const work of workItems) {
       // Extract work category from tags
       const workCategory = work.tags.find(tag => tag.startsWith("category:"))?.split(":")[1];
       if (workCategory && categoryBreakdown[workCategory]) {
@@ -172,8 +196,8 @@ export class EvidenceRegistryService {
       providerTags.forEach(p => uniqueProviders.add(p));
 
       // L1.5 Extract diversity metadata from work preview
-      const workDetail = this.getEvidenceRecord({ id: work.id });
-      if (workDetail?.preview) {
+      const workDetail = await this.getEvidenceRecord({ id: work.id });
+      if (workDetail && "preview" in workDetail && workDetail.preview) {
         try {
           const workData: {
             valueCreated?: number;
@@ -261,7 +285,7 @@ export class EvidenceRegistryService {
       if (work.tags.includes("evidence:recovered")) {
         evidenceRecoveries++;
       }
-    });
+    }
 
     // Calculate final metrics (avoid division by zero)
     const compositionMetrics = {
@@ -414,7 +438,7 @@ async function startCohortObservationScanner(): Promise<void> {
           console.log(`[EvidenceRegistryService] Observation gate triggered for cohort ${cohort.id}`);
           
           // 1. Calculate metrics snapshot
-          const metrics = service.calculateL1CohortMetrics({
+          const metrics = await service.calculateL1CohortMetrics({
             cohortId: cohort.id,
             workCategories: cohort.workCategories
           });

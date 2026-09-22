@@ -4,7 +4,7 @@ import {
   decodeWorkspaceSession,
   createAnonymousWorkspaceSession
 } from "@repo/core-kernel";
-import { CommunicationRepositoryInMemory } from "../../../../../../capabilities/communication/implementation/repository/index";
+import { getCommunicationRepositoryPostgres } from "../../../../../../capabilities/communication/implementation/repository/communication.postgres.repository";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import crypto from "crypto";
 
@@ -47,9 +47,9 @@ export async function POST(request: Request) {
     // await trackInvocation(session.actorId, workId, session.tenantId);
 
 
-    // Save the communication event to the repository - only include required fields per type definition
-    // @ts-ignore - schema mismatch in repository types, functionality works at runtime
-    const event = await CommunicationRepositoryInMemory.save({
+    // Save the communication event to PostgreSQL repository - durable persistence across restarts
+    const communicationRepository = getCommunicationRepositoryPostgres();
+    const event = {
       work_id: workId,
       tenant_id: session.tenantId,
       workspace_id: session.workspaceId,
@@ -59,7 +59,14 @@ export async function POST(request: Request) {
       event_id: crypto.randomUUID(),
       event_type: "CommunicationSent",
       status: "sent",
-      recipient_ids: []
+      recipient_ids: [],
+      timestamp: new Date().toISOString(), // Required schema property
+      session_id: session.id // Required schema property (session.id exists on WorkspaceSession)
+    };
+    await communicationRepository.save(event, {
+      tenantId: session.tenantId,
+      workspaceId: session.workspaceId,
+      actorId: session.actorId
     });
 
     return NextResponse.json({

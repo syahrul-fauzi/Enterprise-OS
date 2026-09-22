@@ -14,7 +14,7 @@ export interface MyRealityModel {
   actor: {
     id: string;
     displayName: string;
-    email: string | null;
+    email?: string;
   };
   summary: {
     totalWork: number;
@@ -61,13 +61,13 @@ export async function buildMyRealityModel(
 
   // === UAT LH-CASE-001: PRELOAD FIXTURE FOR ANONYMOUS USERS - AVOID GLOBAL IMPORT ERRORS ===
   let canonicalWorks: CanonicalWorkRecord[] = [];
-  let currentActorEmail: string | null = null;
+  let currentActorEmail: string | undefined = undefined;
   if (isAnonymousActor && session.workspaceId === "professional-workspace.anonymous") {
     const { lhCase001Work } = await import("../work/[id]/fixtures/lh-case-001");
     canonicalWorks.push(lhCase001Work);
     console.log("[buildMyRealityModel/UAT] Preloaded LH-CASE-001 fixture exclusively for anonymous workspace:", lhCase001Work.workId);
     // Find matching participant email for current actor (client.kopi.001 is the primary UAT tester)
-    const matchingParticipant = lhCase001Work.participants.find(p => p.id === session.actorId || (session.actorId === "anonymous.user" && p.actorType === "customer"));
+    const matchingParticipant = lhCase001Work.participants?.find(p => p.id === session.actorId || (session.actorId === "anonymous.user" && p.actorType === "customer"));
     if (matchingParticipant && 'email' in matchingParticipant) {
       currentActorEmail = matchingParticipant.email as string;
       console.log(`[buildMyRealityModel/UAT] Mapped actor email from fixture participant: ${currentActorEmail}`);

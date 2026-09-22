@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { ProfilePage } from '@repo/presentation-widgets';
+// import { ProfilePage } from '@repo/presentation-widgets'; // Deprecated package - golden spine only
 import { readProductBinding } from '@repo/presentation-experience/product-binding.js';
 import {
   WORKSPACE_SESSION_COOKIE,
@@ -43,12 +43,7 @@ async function resolveSessionOrEnter() {
 // apps/web ONLY handles Next.js route params - NO presentation ownership
 // All business logic, data fetching, and UI composition in canonical widget
 // Boundary compliance: Session resolved server-side, no client-side auth logic
-export default async function ProfileRoute({ params, searchParams }: ProfilePageProps) {
-  // Resolve session FIRST - canonical pattern from golden spine
-  const session = await resolveSessionOrEnter();
-  const { id: profileId } = await params;
-  const sp = await searchParams;
-  const productId = sp?.productId || 'academic';
-  const binding = readProductBinding(productId);
-  return <ProfilePage session={session} profileId={profileId} productId={productId} binding={binding} />;
+// NON-GOLDEN-SPINE PAGE - TEMPORARILY ISOLATED PER W003-P7-03 POLICY
+export default async function DisabledNonGoldenSpinePage() {
+  return null;
 }

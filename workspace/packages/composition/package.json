@@ -10,19 +10,34 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./workspace": "./dist/workspace/index.js",
-    "./regions": "./dist/regions/index.js",
-    "./slots": "./dist/slots/index.js",
-    "./layouts": "./dist/layouts/index.js",
+    "./workspace": {
+      "types": "./dist/workspace/index.d.ts",
+      "default": "./dist/workspace/index.js"
+    },
+    "./regions": {
+      "types": "./dist/regions/index.d.ts",
+      "default": "./dist/regions/index.js"
+    },
+    "./slots": {
+      "types": "./dist/slots/index.d.ts",
+      "default": "./dist/slots/index.js"
+    },
+    "./layouts": {
+      "types": "./dist/layouts/index.d.ts",
+      "default": "./dist/layouts/index.js"
+    },
     "./navigation": {
       "types": "./dist/navigation/index.d.ts",
       "default": "./dist/navigation/index.js"
     },
-    "./orchestration": "./dist/orchestration/index.js"
+    "./orchestration": {
+      "types": "./dist/orchestration/index.d.ts",
+      "default": "./dist/orchestration/index.js"
+    }
   },
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build",
     "check-types": "tsc --noEmit",
     "dev": "tsc --watch",
     "lint": "eslint src --max-warnings 0"

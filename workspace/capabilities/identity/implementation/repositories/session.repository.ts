@@ -6,7 +6,7 @@ import {
   WorkspaceId,
   type SessionAggregate,
   type SessionRepository,
-} from "../contracts/index.js";
+} from "../contracts/index.ts";
 
 // PostgreSQL-backed session repository implementation
 class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements SessionRepository {

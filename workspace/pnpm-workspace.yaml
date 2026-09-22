@@ -1,7 +1,7 @@
 packages:
   - apps/*
   - packages/core/*
-  - packages/composition/*
+  - packages/composition
   - packages/compositions/*
   - packages/presentation/*
   - config/*
@@ -14,4 +14,5 @@ allowBuilds:
   sharp: false
 overrides:
   '@repo/core-kernel': link:packages/core/kernel
+  '@repo/core-runtime': link:packages/core/runtime
   core-capability-registry: link:packages/core-capability-registry

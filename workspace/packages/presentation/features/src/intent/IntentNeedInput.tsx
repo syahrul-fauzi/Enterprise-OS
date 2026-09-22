@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import type { IntentSource, IntentContext } from './types';
 import { TextArea, Button } from "@repo/presentation-ui-system";
+import { ANONYMOUS_ACTOR_ID } from "@repo/core-kernel/session/workspace-session";
 
 interface IntentNeedInputProps {
   onIntentCaptured: (expression: string, source: IntentSource, context?: IntentContext) => Promise<{
@@ -15,6 +16,8 @@ interface IntentNeedInputProps {
     error?: string;
   }>;
   defaultValue?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   placeholder?: string;
   disabled?: boolean;
   className?: string;
@@ -23,11 +26,14 @@ interface IntentNeedInputProps {
   submitLabel?: string;
   submitting?: boolean;
   submittingText?: string;
+  actorId?: string;
 }
 
 export const IntentNeedInput: React.FC<IntentNeedInputProps> = ({
   onIntentCaptured,
   defaultValue = '',
+  value,
+  onChange,
   placeholder = 'Saya ingin mendirikan PT XYZ Indonesia untuk usaha ekspor kopi',
   disabled = false,
   className = '',
@@ -36,21 +42,25 @@ export const IntentNeedInput: React.FC<IntentNeedInputProps> = ({
   submitLabel = '✨ Bantu EOS memahami →',
   submitting: externalSubmitting,
   submittingText = 'EOS sedang memahami kebutuhan Anda...',
+  actorId,
 }) => {
-  const [expression, setExpression] = useState<string>(defaultValue);
+  const [internalExpression, setInternalExpression] = useState<string>(defaultValue);
   const [internalSubmitting, setInternalSubmitting] = useState<boolean>(false);
   const [informationResponse, setInformationResponse] = useState<string | null>(null);
 
   const isSubmitting = externalSubmitting ?? internalSubmitting;
+  const currentExpression = value ?? internalExpression;
+  const handleExpressionChange = onChange ?? ((e) => setInternalExpression(e.target.value));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!expression.trim() || disabled || isSubmitting) return;
+    if (!currentExpression.trim() || disabled || isSubmitting) return;
     
     const source: IntentSource = {
       actorType: "human",
       entryPoint: "eos-face",
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      actorId: actorId || ANONYMOUS_ACTOR_ID
     };
 
     const context: IntentContext = {
@@ -62,12 +72,13 @@ export const IntentNeedInput: React.FC<IntentNeedInputProps> = ({
     setInformationResponse(null);
     
     try {
-      const result = await onIntentCaptured(expression.trim(), source, context);
+      const result = await onIntentCaptured(currentExpression.trim(), source, context);
       if (result?.isInformationRequest && result?.informationResponse) {
         setInformationResponse(result.informationResponse);
       }
     } catch (error) {
       console.error("Failed to process expression:", error);
+      setInformationResponse("Terjadi kesalahan saat memproses kebutuhan Anda. Silakan coba lagi dalam beberapa saat.");
     } finally {
       setInternalSubmitting(false);
     }
@@ -78,8 +89,8 @@ export const IntentNeedInput: React.FC<IntentNeedInputProps> = ({
       <TextArea
         label={label}
         helperText={helperText}
-        value={expression}
-        onChange={(e) => setExpression(e.target.value)}
+        value={currentExpression}
+        onChange={handleExpressionChange}
         placeholder={placeholder}
         disabled={disabled || isSubmitting}
         required

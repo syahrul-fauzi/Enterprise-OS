@@ -23,15 +23,14 @@
       "@repo/core-capability-registry/*": ["../../packages/core/capability-registry/dist/*"],
       "@repo/composition": ["../../packages/composition/dist"],
       "@repo/composition/*": ["../../packages/composition/dist/*"],
-      "@repo/capabilities-identity": ["../../capabilities/identity/dist"],
-      "@repo/capabilities-identity/*": ["../../capabilities/identity/dist/*"],
-      "@repo/capabilities-identity/repositories": ["../../capabilities/identity/dist/repositories"],
-      "@capabilities/*": ["../../capabilities/*/dist"],
+      "@repo/capabilities-identity": ["../../capabilities/identity/implementation/index.ts"],
+      "@repo/capabilities-identity/*": ["../../capabilities/identity/implementation/*"],
+      "@repo/capabilities-identity/repositories": ["../../capabilities/identity/implementation/repositories/index.ts"],
       "@capabilities/shared/*": ["../../capabilities/shared/implementation/*"],
-      "@capabilities/communication/*": ["../../capabilities/communication/dist/*"],
-      "@capabilities/legal-case/*": ["../../capabilities/legal-case/dist/*"],
-      "@capabilities/atomic-composition/*": ["../../capabilities/atomic-composition/dist/*"],
-      "@capabilities/consultation/*": ["../../capabilities/consultation/dist/*"]
+      "@capabilities/communication/*": ["../../capabilities/communication/implementation/*"],
+      "@capabilities/legal-case/*": ["../../capabilities/legal-case/implementation/*"],
+      "@capabilities/atomic-composition/*": ["../../capabilities/atomic-composition/implementation/*"],
+      "@capabilities/consultation/*": ["../../capabilities/consultation/implementation/*"]
     }
   },
   "include": [

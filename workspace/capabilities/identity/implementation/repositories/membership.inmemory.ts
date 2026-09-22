@@ -5,7 +5,7 @@ import {
   TenantId,
   WorkspaceId,
   type MembershipRepository,
-} from "../contracts/index.js";
+} from "../contracts/index.ts";
 
 function clone<T extends MembershipAggregate>(entity: T): T {
   return {

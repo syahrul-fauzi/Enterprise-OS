@@ -69,7 +69,21 @@ export interface GetEvidenceRecordInput {
   readonly id: string;
 }
 
-export type GetEvidenceRecordOutput = EvidenceRecordDetail | undefined;
+export type GetEvidenceRecordOutput = EvidenceRecordDetail | { error: string; id: string } | undefined;
+
+export interface ListEvidenceByWorkIdInput {
+  readonly workId: string;
+  readonly limit?: number;
+  readonly offset?: number;
+}
+
+export interface ListEvidenceByWorkIdOutput {
+  readonly items: readonly EvidenceRecord[];
+  readonly total: number;
+  readonly matched: number;
+  readonly offset: number;
+  readonly limit: number;
+}
 
 export interface AssessEvidenceInput {
   readonly releaseId: string;

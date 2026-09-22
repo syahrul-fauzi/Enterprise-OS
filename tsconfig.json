@@ -1,25 +1,26 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
+      "*": ["./*"],
       "@repo/*": [
-        "workspace/packages/*/src",
-        "workspace/packages/core/*/src",
-        "workspace/packages/presentation/*/src",
-        "workspace/packages/tooling/*/src",
-        "workspace/packages/compositions/*/src",
-        "workspace/packages/*/dist",
-        "workspace/packages/core/*/dist/src",
-        "workspace/packages/presentation/*/dist",
-        "workspace/packages/tooling/*/dist"
+        "./workspace/packages/*/src",
+        "./workspace/packages/core/*/src",
+        "./workspace/packages/presentation/*/src",
+        "./workspace/packages/tooling/*/src",
+        "./workspace/packages/compositions/*/src",
+        "./workspace/packages/*/dist",
+        "./workspace/packages/core/*/dist/src",
+        "./workspace/packages/presentation/*/dist",
+        "./workspace/packages/tooling/*/dist"
       ],
-      "@apps/*": ["workspace/apps/*/src"],
+      "@apps/*": ["./workspace/apps/*/src"],
       "@capabilities/*": [
-        "workspace/capabilities/*/src",
-        "workspace/capabilities/*/dist"
+        "./workspace/capabilities/*/src",
+        "./workspace/capabilities/*/dist"
       ],
-      "@products/*": ["workspace/products/*/src"],
-      "@config/*": ["workspace/config/*/src"]
+      "@products/*": ["./workspace/products/*/src"],
+      "@config/*": ["./workspace/config/*/src"]
     }
   }
 }

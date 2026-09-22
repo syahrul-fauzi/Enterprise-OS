@@ -9,6 +9,7 @@ export const GLOBAL_NAV_ITEMS: readonly NavigationItem[] = [
     kind: "link",
     href: "/my-reality",
     order: 10,
+    iconName: "home",
   },
   {
     id: "nav-work",
@@ -16,6 +17,7 @@ export const GLOBAL_NAV_ITEMS: readonly NavigationItem[] = [
     kind: "link",
     href: "/work",
     order: 20,
+    iconName: "briefcase",
   },
   {
     id: "nav-separator-1",
@@ -29,6 +31,7 @@ export const GLOBAL_NAV_ITEMS: readonly NavigationItem[] = [
     kind: "link",
     href: "/actors",
     order: 30,
+    iconName: "users",
   },
   {
     id: "nav-products",
@@ -36,6 +39,7 @@ export const GLOBAL_NAV_ITEMS: readonly NavigationItem[] = [
     kind: "link",
     href: "/products",
     order: 40,
+    iconName: "cube",
   },
   {
     id: "nav-separator-2",
@@ -49,6 +53,7 @@ export const GLOBAL_NAV_ITEMS: readonly NavigationItem[] = [
     kind: "link",
     href: "/profile",
     order: 850,
+    iconName: "user",
   },
   {
     id: "nav-settings",
@@ -56,7 +61,8 @@ export const GLOBAL_NAV_ITEMS: readonly NavigationItem[] = [
     kind: "link",
     href: "/settings",
     order: 900, // Always last in global navigation
-    capabilityId: "operations:admin"
+    capabilityId: "operations:admin",
+    iconName: "settings",
   },
 ] as const;
 
@@ -70,6 +76,7 @@ export const VERTICAL_NAV_ITEMS: Record<string, readonly NavigationItem[]> = {
       href: "/products/services-id/intake",
       capabilityId: "requirement-management:create",
       order: 25,
+      iconName: "inbox",
     },
   ],
   "lawyershub": [
@@ -80,6 +87,7 @@ export const VERTICAL_NAV_ITEMS: Record<string, readonly NavigationItem[]> = {
       href: "/products/lawyershub/cases",
       capabilityId: "legal-case-management:view",
       order: 25,
+      iconName: "document",
     },
   ],
   "ilc": [
@@ -90,6 +98,7 @@ export const VERTICAL_NAV_ITEMS: Record<string, readonly NavigationItem[]> = {
       href: "/products/ilc/research",
       capabilityId: "research-management:view",
       order: 25,
+      iconName: "search",
     },
   ],
   "dataops": [
@@ -100,6 +109,7 @@ export const VERTICAL_NAV_ITEMS: Record<string, readonly NavigationItem[]> = {
       href: "/products/dataops/tasks",
       capabilityId: "data-ops:execute",
       order: 25,
+      iconName: "server",
     },
   ],
 } as const;

@@ -31,17 +31,18 @@ export type { UploadEvidenceRequest, UploadEvidenceResult } from "./work/evidenc
 
 // Work Reality UI Components - MyReality capabilities
 export { WorkSummaryCards } from "./work/WorkSummaryCards";
+export { AITaskCard } from "./ai/AITaskCard";
 export { PriorityWorkList } from "./work/PriorityWorkList";
 export { WorkItemCard } from "./work/WorkItemCard";
 export type { WorkItemCardProps } from "./work/WorkItemCard";
 export { NextBestAction } from "./work/NextBestAction";
 
-// Analytics components - R9 MyReality performance metrics
-export { PerformanceOverview } from "./analytics/PerformanceOverview";
-export { UXStateAuditDashboard } from "./analytics/UXStateAuditDashboard";
+// Analytics components - TEMPORARILY DISABLED per W004 real human session prioritization
+// export { PerformanceOverview } from "./analytics/PerformanceOverview";
+// export { UXStateAuditDashboard } from "./analytics/UXStateAuditDashboard";
 
-// EOS Companion component - R9 MyReality AI assistant
-export { EOSCompanionCard } from "./companion/EOSCompanionCard";
+// EOS Companion component - TEMPORARILY DISABLED per W004 real human session prioritization
+// export { EOSCompanionCard } from "./companion/EOSCompanionCard";
 
 // NextAction - R9 Canonical action execution UI for Work (intent-to-act only)
 export { NextAction } from "./work/NextAction.js";

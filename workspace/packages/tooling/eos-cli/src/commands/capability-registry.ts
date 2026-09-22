@@ -1,18 +1,20 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import {
-  buildArtifactRegistryModel,
-  buildCapabilityCertificationReport,
-  buildCapabilityDiscoveryReportFromExecutionGraph,
-  buildCapabilityDependencyConstitutionReport,
-  buildCapabilityPlanningReportFromExecutionGraph,
-  buildCapabilityRegistryModel,
-  buildContractVersionRegistryReport,
-  buildExecutionGraphModel,
-  type ArtifactRegistryReport,
-  type ExecutionGraphReport,
-} from "@repo/core-capability-registry";
+import { fileURLToPath } from "node:url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = resolve(__filename, "..");
+const EOS_ROOT_GLOBAL = resolve(__dirname, "../../../../../");
+const CORE_CAPABILITY_REGISTRY_PATH = resolve(EOS_ROOT_GLOBAL, "packages", "core", "capability-registry", "dist", "src", "index.js");
 import { EOS_ROOT } from "../state.js";
+
+// Dynamically import core capability registry to avoid path resolution issues
+let coreCapabilityModule: any;
+async function getCoreCapabilityRegistry() {
+  if (!coreCapabilityModule) {
+    coreCapabilityModule = await import(CORE_CAPABILITY_REGISTRY_PATH);
+  }
+  return coreCapabilityModule;
+}
 
 const WORKSPACE_ROOT = resolve(EOS_ROOT, "workspace");
 const ENTERPRISE_ROOT = resolve(EOS_ROOT, "enterprise");

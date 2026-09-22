@@ -2,6 +2,7 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "declaration": true,
+    "composite": true,
     "declarationMap": true,
     "esModuleInterop": true,
     "incremental": true,
@@ -9,21 +10,23 @@
     "ignoreDeprecations": "5.0",
     "lib": ["es2022", "DOM", "DOM.Iterable"],
     "types": ["node"],
-    "module": "ESNext",
+    "module": "NodeNext",
     "moduleDetection": "force",
-    "moduleResolution": "bundler",
+    "moduleResolution": "NodeNext",
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2022",
     "allowImportingTsExtensions": false,
+    "emitDeclarationOnly": false,
     "verbatimModuleSyntax": false,
     "paths": {
-      "@repo/core-kernel": ["./workspace/core/kernel/src"],
-      "@repo/core-kernel/*": ["./workspace/core/kernel/src/*"],
-      "@repo/core-nest": ["./workspace/core/nest/src"],
-      "@repo/core-nest/*": ["./workspace/core/nest/src/*"]
+      "@repo/core-kernel": ["../../packages/core/kernel/src"],
+      "@repo/core-kernel/*": ["../../packages/core/kernel/src/*"],
+      "@repo/core-runtime": ["../../packages/core/runtime/src"],
+      "@repo/core-runtime/*": ["../../packages/core/runtime/src/*"],
+      "@capabilities/*": ["../../capabilities/*"]
     }
   }
 }

@@ -528,6 +528,7 @@ export function DeliveryWorkspace({
             <p className="mt-2 text-slate-600">
               {copy?.workspaceDescription ?? "Pantau progres penyelesaian pekerjaan beserta seluruh catatan bukti pendukung secara lengkap."}
             </p>
+
           </div>
         </div>
 

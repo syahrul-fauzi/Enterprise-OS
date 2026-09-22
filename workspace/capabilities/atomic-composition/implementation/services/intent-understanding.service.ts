@@ -994,19 +994,19 @@ Apakah Anda ingin:
       }
       
       // Step 3 input: "Saya ingin mendirikan PT di Indonesia" - C-001 case
-      if (lowerExpression.includes("mendirikan pt") && lowerExpression.includes("indonesia")) {
+      if ((lowerExpression.includes("mendirikan pt") || lowerExpression.includes("buat pt")) && lowerExpression.includes("indonesia")) {
         confidence = 0.92; // 0.4 → 0.6 → 0.92: gradual confidence increase!
         domain = "legal-business";
-        known.push("Pengguna ingin mendirikan PT di Indonesia");
+        known.push("Pengguna ingin mendirikan/buat PT di Indonesia");
         // Set unknowns to empty to achieve SUFFICIENT state (for C-001 vertical slice end-to-end testing)
         // This simulates all required information already collected from user
         unknowns = []; 
       }
       // Tambahkan deteksi untuk "mendirikan CV" - RL1-004 case
-      else if (lowerExpression.includes("mendirikan cv")) {
+      else if ((lowerExpression.includes("mendirikan cv") || lowerExpression.includes("buat cv")) && lowerExpression.includes("indonesia")) {
         confidence = 0.90; // High confidence untuk permintaan mendirikan CV
         domain = "legal-business";
-        known.push("Pengguna ingin mendirikan CV untuk bisnis");
+        known.push("Pengguna ingin mendirikan/buat CV di Indonesia");
         unknowns = []; // Semua informasi yang diperlukan sudah terkumpul
       }
 
@@ -1698,7 +1698,7 @@ export async function processConversationTurn(
     
     // Automatically trigger work formation just like the initial flow
     try {
-      const { createCanonicalWorkFromIntent } = await import("./work-formation.service");
+      const { createCanonicalWorkFromIntent } = await import("./work-formation.service.js");
       const workResult = await createCanonicalWorkFromIntent(
         userExpression as any, 
         userExpression.tenantId, 
@@ -1825,7 +1825,8 @@ export async function createUniversalExpression(
       history: history,
       currentHypothesisId: intentHypothesis.id,
       context: understandingResult.dynamicUnderstanding.context, // Preserve full context from understanding results
-      canFormWork: understandingResult.dynamicUnderstanding.canFormWork // Preserve the canFormWork flag from understanding results
+      canFormWork: understandingResult.dynamicUnderstanding.canFormWork, // Preserve the canFormWork flag from understanding results
+      interpretedObjective: understandingResult.dynamicUnderstanding.interpretedObjective // Preserve extracted need statement
     };
     
     // Update expression status based on sufficiency check (per user's lifecycle: SUFFICIENT/INSUFFICIENT)
@@ -1899,7 +1900,7 @@ export async function createUniversalExpression(
       if (expression.understanding?.canFormWork) {
         try {
           // Import the canonical work creation function to avoid circular dependencies
-          const { createCanonicalWorkFromIntent } = await import("./work-formation.service");
+          const { createCanonicalWorkFromIntent } = await import("./work-formation.service.js");
           const workResult = await createCanonicalWorkFromIntent(expression as any, tenantId, workspaceId, actorId);
           
           // Update expression to WORK_FORMED status - lifecycle complete!
@@ -1983,6 +1984,10 @@ export async function createUniversalExpression(
 IntentUnderstandingService.initialize();
 // Export a singleton instance - the service is meant to be reused across requests
 export const intentUnderstandingService = IntentUnderstandingService.getInstance();
+
+// B6.11: Register canonical intent service to globalThis for cross-boundary runtime access
+// Mengikuti pola yang sama dengan workflow-engine untuk konsistensi arsitektur EOS
+(globalThis as any).__EOS_CANONICAL_INTENT_UNDERSTANDING_SERVICE__ = intentUnderstandingService;
 
 // Removed backward compatibility alias - all consumers now use createUniversalExpression
 // Deprecated createUniversalIntent function removed per migration completion

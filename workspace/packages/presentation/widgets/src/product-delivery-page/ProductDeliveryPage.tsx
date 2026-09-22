@@ -4,7 +4,7 @@ import React from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
 import { DeliveryWorkspace } from "../delivery-workspace/DeliveryWorkspace";
 import { getProductExperience } from "@repo/presentation-experience";
-import type { ProductPreviewBinding } from "@repo/presentation-experience";
+import type { ProductPreviewBinding, ProductDeliveryCopy } from "@repo/presentation-experience";
 import type { WorkspaceSession } from "@repo/core-kernel";
 
 export interface ProductDeliveryPageProps {
@@ -25,7 +25,13 @@ export function ProductDeliveryPage({ productId, binding, session }: ProductDeli
           requirementId={null}
           displayName={`Delivery: ${productId}`}
           copy={{
-            workspaceDescription: "Pantau progres penyelesaian produk beserta seluruh catatan bukti pendukung secara lengkap."
+            workspaceDescription: "Pantau progres penyelesaian produk beserta seluruh catatan bukti pendukung secara lengkap.",
+            requirementCountLabel: "Persyaratan",
+            artifactCountLabel: "Artifact",
+            evidenceCountLabel: "Bukti",
+            inProgressLabel: "Dalam Proses",
+            completedLabel: "Selesai",
+            blockedLabel: "Terblokir"
           }}
         />
       </div>

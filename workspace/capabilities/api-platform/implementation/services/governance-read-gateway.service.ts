@@ -7,6 +7,9 @@ import type {
   GovernanceSummaryView,
 } from "../../../governance-read-model/implementation/service.js";
 import { governanceReadModelService } from "../../../governance-read-model/implementation/service.js";
+// Circular dependency imports disabled - these capabilities import from api-platform
+// import { governanceEvidenceService } from "../../../governance-evidence/implementation/services/governance-evidence.service.js";
+// import { trustFrameworkService } from "../../../trust-framework/implementation/services/trust-framework.service.js";
 
 export class GovernanceReadGatewayService {
   constructor(

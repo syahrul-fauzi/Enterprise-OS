@@ -2,9 +2,20 @@
   "extends": "@repo/config-typescript/base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "composite": true
+    "composite": true,
+    "types": ["jest", "node"],
+    "paths": {
+      "@api-platform/*": ["../api-platform/implementation/*"],
+      "@governance-read-model/*": ["../governance-read-model/implementation/*"],
+      "@evidence-registry/*": ["../evidence-registry/implementation/*"]
+    }
   },
-  "references": [{ "path": "../work-inspection" }, { "path": "../../packages/core/realtime" }],
+  "references": [
+    { "path": "../work-inspection" }, 
+    { "path": "../../packages/core/realtime" },
+    { "path": "../api-platform" },
+    { "path": "../governance-read-model" },
+  ],
   "include": ["implementation/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

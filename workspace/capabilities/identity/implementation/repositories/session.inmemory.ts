@@ -5,7 +5,7 @@ import {
   WorkspaceId,
   type SessionAggregate,
   type SessionRepository,
-} from "../contracts/index.js";
+} from "../contracts/index.ts";
 
 function clone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj)) as T;

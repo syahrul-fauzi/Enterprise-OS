@@ -1,52 +1,53 @@
-import { NextResponse } from "next/server";
-import { z } from "zod";
-import * as crypto from "crypto";
-import { randomUUID } from "node:crypto";
-import { CommunicationRepository, CommunicationRepositoryInMemory, newCommunicationEventId } from "communication/implementation/repository/index";
-import { CaseRepository, CaseRepositoryInMemory } from "legal-case/implementation/repository/index";
-import { executionContext } from "../../../../../../packages/core/runtime/src/execution-context.js";
-import { recordObservedExecution } from "../../../../../../packages/core/runtime/src/execution-observability.js";
-import { startExecutionTimer, recordRuntimeInvocation } from "../../../../../../packages/core/runtime/src/invocation-evidence.js";
-// Import CANONICAL UNIVERSAL PIPELINE - MINIMAL FIX for Reality Ingress unification
-import { createUniversalExpression } from "../../../../../../capabilities/atomic-composition/implementation/services/intent-understanding.service";
-import type { UniversalIntentInput } from "../../../../../../capabilities/atomic-composition/implementation/contracts/universal-intent.contracts";
-
-// ILC community user ID to work ID mapping for WORK-018 ILC continuity
-// Maps ILC community member IDs to their respective LawyersHub work IDs
-// This implements the core ILC → LawyersHub bridging requirement
-const ILC_TO_LAWYERSHUB_WORK_MAPPING: Record<string, string> = {
-  // ILC Community members mapped to active LawyersHub cases
-  "ilc-community-member-001": "case-003", // ILC discussion about corporate law reform → LawyersHub case
-  "ilc-community-member-002": "case-003",
-  "ilc-academic-001": "case-003",
-  "ilc-practitioner-001": "case-003",
-  "ilc-institution-001": "case-003",
-  // Additional ILC community members can be mapped to other cases as needed
-  "ilc-community-member-003": "case-004",
-};
-
-// Resolve work ID from ILC community user ID - implements conversation→Work grounding
-function resolveWorkIdFromIlcUserId(userId: string): string | null {
-  // First check exact match
-  const workId = ILC_TO_LAWYERSHUB_WORK_MAPPING[userId.toLowerCase()];
-  if (workId) {
-    return workId;
-  }
-  
-  // For WORK-018 prototype, default to case-003 if user not found - maintains shared reality
-  console.log(`[ILCWebhook] Unknown ILC user ${userId}, defaulting to case-003 for WORK-018 continuity`);
-  return "case-003";
-}
-
-// ILC Webhook payload schema - follows same validation pattern as WhatsApp/Email/Webchat
-// ILC platform sends community discussion events to this webhook
-const IlcWebhookPayloadSchema = z.object({
-  sender_id: z.string().describe("ILC community user ID"),
-  message: z.string().describe("Discussion message content from ILC platform"),
-  discussion_topic: z.string().describe("ILC discussion topic this message belongs to"),
-  timestamp: z.string().optional(),
-  sender_role: z.enum(["community_member", "academic", "practitioner", "institution", "moderator"]).optional()
-});
+// NON-GOLDEN-SPINE ROUTE - DISABLED TO PREVENT NEXT.JS COMPILATION
+// // import { NextResponse } from "next/server";
+// // import { z } from "zod";
+// // import * as crypto from "crypto";
+// // import { randomUUID } from "node:crypto";
+// // import { CommunicationRepository, CommunicationRepositoryInMemory, newCommunicationEventId } from "communication/implementation/repository/index";
+// // import { CaseRepository, CaseRepositoryInMemory } from "legal-case/implementation/repository/index";
+// // import { executionContext } from "../../../../../../packages/core/runtime/src/execution-context.js";
+// // import { recordObservedExecution } from "../../../../../../packages/core/runtime/src/execution-observability.js";
+// // import { startExecutionTimer, recordRuntimeInvocation } from "../../../../../../packages/core/runtime/src/invocation-evidence.js";
+// // // Import CANONICAL UNIVERSAL PIPELINE - MINIMAL FIX for Reality Ingress unification
+// // import { createUniversalExpression } from "../../../../../../capabilities/atomic-composition/implementation/services/intent-understanding.service";
+// // import type { UniversalIntentInput } from "../../../../../../capabilities/atomic-composition/implementation/contracts/universal-intent.contracts";
+// // 
+// // // ILC community user ID to work ID mapping for WORK-018 ILC continuity
+// // // Maps ILC community member IDs to their respective LawyersHub work IDs
+// // // This implements the core ILC → LawyersHub bridging requirement
+// // const ILC_TO_LAWYERSHUB_WORK_MAPPING: Record<string, string> = {
+// //   // ILC Community members mapped to active LawyersHub cases
+// //   "ilc-community-member-001": "case-003", // ILC discussion about corporate law reform → LawyersHub case
+// //   "ilc-community-member-002": "case-003",
+// //   "ilc-academic-001": "case-003",
+// //   "ilc-practitioner-001": "case-003",
+// //   "ilc-institution-001": "case-003",
+//   // Additional ILC community members can be mapped to other cases as needed
+// //   "ilc-community-member-003": "case-004",
+// // };
+// // 
+// // // Resolve work ID from ILC community user ID - implements conversation→Work grounding
+// // function resolveWorkIdFromIlcUserId(userId: string): string | null {
+// //   // First check exact match
+// //   const workId = ILC_TO_LAWYERSHUB_WORK_MAPPING[userId.toLowerCase()];
+// //   if (workId) {
+// //     return workId;
+// //   }
+// //   
+// //   // For WORK-018 prototype, default to case-003 if user not found - maintains shared reality
+// //   console.log(`[ILCWebhook] Unknown ILC user ${userId}, defaulting to case-003 for WORK-018 continuity`);
+// //   return "case-003";
+// // }
+// // 
+// // // ILC Webhook payload schema - follows same validation pattern as WhatsApp/Email/Webchat
+// // // ILC platform sends community discussion events to this webhook
+// // const IlcWebhookPayloadSchema = z.object({
+// //   sender_id: z.string().describe("ILC community user ID"),
+// //   message: z.string().describe("Discussion message content from ILC platform"),
+// //   discussion_topic: z.string().describe("ILC discussion topic this message belongs to"),
+// //   timestamp: z.string().optional(),
+// //   sender_role: z.enum(["community_member", "academic", "practitioner", "institution", "moderator"]).optional()
+// // });
 
 // ILC platform official IP ranges (as of 2024) - in production, these would be official ILC IPs
 const ILC_ALLOWED_IPS = new Set([

@@ -636,6 +636,10 @@ export class RequirementService {
 
 export const requirementService = new RequirementService();
 
+// B6.12: Register canonical requirement service to globalThis for cross-boundary runtime access
+// Mengikuti pola yang sama dengan workflow-engine dan intent-understanding untuk konsistensi arsitektur EOS
+(globalThis as any).__EOS_CANONICAL_REQUIREMENT_SERVICE__ = requirementService;
+
 export * from "../contracts/index.js";
 export * from "../commands/index.js";
 export * from "../queries/index.js";

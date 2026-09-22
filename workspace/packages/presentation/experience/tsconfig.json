@@ -5,7 +5,7 @@
     "rootDir": "src",
     "strictNullChecks": false,
     "declaration": true,
-    "emitDeclarationOnly": false,
+    "emitDeclarationOnly": true,
     "noEmitOnError": true,
     "composite": true,
     "incremental": true,

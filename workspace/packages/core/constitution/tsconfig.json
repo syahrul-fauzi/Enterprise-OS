@@ -19,7 +19,10 @@
     "resolveJsonModule": true,
     "strict": true,
     "target": "ES2022",
-    "noEmit": false
+    "noEmit": false,
+    "paths": {
+      "@repo/core-kernel/*": ["../../core/kernel/dist/src/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

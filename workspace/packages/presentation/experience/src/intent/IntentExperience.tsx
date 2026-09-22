@@ -1,8 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useIntentController } from "./IntentController";
-import { IntentNeedInput } from "@repo/presentation-features";
-import type { IntentSource, IntentContext } from "@repo/presentation-features";
+import { IntentNeedInput } from "@repo/presentation-features/intent";
+import type { IntentSource, IntentContext } from "@repo/presentation-features/intent/types";
 
 /**
  * INTENT EXPERIENCE
@@ -15,15 +16,34 @@ import type { IntentSource, IntentContext } from "@repo/presentation-features";
  * Presentation Composition Invariant maintained: Never interprets raw runtime reality
  */
 interface IntentExperienceProps {
-  initialContext?: IntentContext;
+  initialContext?: IntentContext & {
+    actorId: string;
+    tenantId: string;
+    workspaceId: string;
+  };
 }
 
 export function IntentExperience({ initialContext }: IntentExperienceProps) {
   const router = useRouter();
+  const [expression, setExpression] = useState<string>('');
   const { isProcessing, handleIntentCaptured } = useIntentController();
 
+  const setExpressionPrefix = (prefix: string) => {
+    setExpression(prefix);
+  };
+
   const onIntentCaptured = async (expression: string, source: IntentSource, context?: IntentContext) => {
-    return await handleIntentCaptured(expression, source, router);
+    // Merge server-provided session context with any client context to pass full session metadata
+    const mergedContext = {
+      ...initialContext,
+      ...context
+    };
+    // Pass router as 3rd argument to match handleIntentCaptured signature per IntentController contract
+    return await handleIntentCaptured(expression, {
+      ...source,
+      actorId: initialContext?.actorId,
+      entryPoint: "eos-face"
+    }, router, mergedContext);
   };
 
   return (
@@ -35,10 +55,32 @@ export function IntentExperience({ initialContext }: IntentExperienceProps) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456L16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
             </svg>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary tracking-tight leading-tight mb-6">Ceritakan pada EOS apa yang perlu Anda selesaikan.</h1>
-          <p className="text-sm sm:text-base text-text-secondary max-w-lg mx-auto leading-relaxed">
-            Anda tidak perlu memformat, mengkategorikan, atau mempersiapkan apapun. Cukup tuliskan apa yang ingin Anda wujudkan, EOS akan mengurus sisanya.
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary tracking-tight leading-tight mb-6">Apa yang Anda butuhkan hari ini?</h1>
+          <p className="text-sm sm:text-base text-text-secondary max-w-lg mx-auto leading-relaxed mb-8">
+            Pilih atau ketikkan apa yang ingin Anda wujudkan, EOS akan mengurus sisanya.
           </p>
+          
+          {/* Universal command surface: two primary intent choices */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-6">
+            <button
+              type="button"
+              onClick={() => setExpressionPrefix("Saya butuh ")}
+              className="p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-brand-primary hover:shadow-lg transition-all text-left group"
+            >
+              <span className="text-2xl mb-3 block">🛠️</span>
+              <h3 className="text-xl font-semibold text-text-primary group-hover:text-brand-primary mb-2">Saya butuh...</h3>
+              <p className="text-sm text-text-secondary">Bantuan menyelesaikan sesuatu yang membutuhkan resources, orang, atau dokumen</p>
+            </button>
+            <button
+              type="button"
+              onClick={() => setExpressionPrefix("Saya ingin ")}
+              className="p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-brand-primary hover:shadow-lg transition-all text-left group"
+            >
+              <span className="text-2xl mb-3 block">🚀</span>
+              <h3 className="text-xl font-semibold text-text-primary group-hover:text-brand-primary mb-2">Saya ingin...</h3>
+              <p className="text-sm text-text-secondary">Mewujudkan sesuatu yang baru, mendirikan usaha, atau mencapai target</p>
+            </button>
+          </div>
         </header>
 
         <main>
@@ -46,6 +88,9 @@ export function IntentExperience({ initialContext }: IntentExperienceProps) {
             onIntentCaptured={onIntentCaptured}
             disabled={isProcessing}
             submitting={isProcessing}
+            actorId={initialContext?.actorId}
+            value={expression}
+            onChange={(e) => setExpression(e.target.value)}
           />
         </main>
 

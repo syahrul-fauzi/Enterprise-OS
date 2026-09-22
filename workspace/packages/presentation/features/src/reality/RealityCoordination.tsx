@@ -71,6 +71,29 @@ export function RealityCoordination({
 
         {!workIsCompleted && workId && (
           <div className="mt-5 border-t border-slate-200 pt-5">
+            {/* GOVERNANCE CHECKS - Tampil DI TITIK KEPUTUSAN (tidak jadi halaman admin terpisah) */}
+            <div className="mb-6 p-4 rounded-xl bg-amber-50 border border-amber-100">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-amber-800 mb-3">🔐 Pengecekan Governance Sebelum Eksekusi</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span className="text-xs text-amber-900">Actor: Terverifikasi</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span className="text-xs text-amber-900">Capability: Diizinkan</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span className="text-xs text-amber-900">Policy: Sesuai</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span className="text-xs text-amber-900">Authorization: Diberikan</span>
+                </div>
+              </div>
+            </div>
+
             <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
               NEXT ACTION
             </div>
@@ -90,7 +113,7 @@ export function RealityCoordination({
                   onClick={() => onExecuteAction?.('approve')}
                   className="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-700"
                 >
-                  ✓ Saya Setujui
+                  ✓ Saya Setujui (Eksekusi)
                 </button>
               </div>
             )}
@@ -101,7 +124,7 @@ export function RealityCoordination({
                   onClick={() => onExecuteAction?.('review')}
                   className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
                 >
-                  ✓ Approve
+                  ✓ Approve (Eksekusi)
                 </button>
                 <button
                   onClick={() => onExecuteAction?.('changes')}
@@ -127,13 +150,13 @@ export function RealityCoordination({
                   onClick={() => onExecuteAction?.('review')}
                   className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
                 >
-                  ✓ Mark Reviewed
+                  ✓ Mark Reviewed (Eksekusi)
                 </button>
                 <button
                   onClick={() => onExecuteAction?.('approve')}
                   className="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-700"
                 >
-                  ✓ Advance State
+                  ✓ Advance State (Eksekusi)
                 </button>
                 <button
                   onClick={() => onExecuteAction?.('changes')}

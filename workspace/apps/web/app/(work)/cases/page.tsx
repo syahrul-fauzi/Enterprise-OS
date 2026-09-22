@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { ProductCasesPage } from "@repo/presentation-widgets";
+// import { ProductCasesPage } from "@repo/presentation-widgets"; // Deprecated package - golden spine only
 import { readProductBinding } from "@repo/presentation-experience/product-binding.js";
 import { readProductRouteMetadata } from "@repo/presentation-experience/catalog.js";
 import {

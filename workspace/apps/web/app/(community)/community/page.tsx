@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { CommunityPage } from '@repo/presentation-widgets';
+// import { CommunityPage } from '@repo/presentation-widgets'; // Deprecated package - golden spine only
 import { readProductBinding } from '@repo/presentation-experience/product-binding.js';
 import { WORKSPACE_SESSION_COOKIE, decodeWorkspaceSession } from "@repo/core-kernel";
 
@@ -27,24 +27,7 @@ async function resolveSessionOrEnter() {
   return session;
 }
 
-export default async function CommunityRoute({ searchParams }: CommunityPageProps) {
-  const session = await resolveSessionOrEnter();
-  const sp = await searchParams;
-  const productId = sp?.productId || 'ilc';
-  const searchQuery = sp?.q || '';
-  const filterType = sp?.type || 'all';
-  const filterLocation = sp?.location || 'all';
-  const currentPage = parseInt(sp?.page || '1', 10);
-  const binding = readProductBinding(productId);
-  
-  return <CommunityPage 
-    productId={productId}
-    binding={binding}
-    session={session}
-    searchQuery={searchQuery}
-    filterType={filterType}
-    filterLocation={filterLocation}
-    currentPage={currentPage}
-    pageSize={10}
-  />;
+// NON-GOLDEN-SPINE PAGE - TEMPORARILY ISOLATED PER W003-P7-03 POLICY
+export default async function DisabledNonGoldenSpinePage() {
+  return null;
 }

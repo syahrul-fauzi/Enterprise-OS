@@ -35,8 +35,6 @@ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: strin
   const coreWork: Partial<WorkAggregate> = {
     title: input.title,
     description: input.description,
-    priority: input.priority || "medium",
-    linkedIntentId: input.linkedIntentId,
     domainType: input.domainType,
     workMode: input.workMode,
     sessionId: input.sessionId as any,
@@ -94,8 +92,8 @@ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: strin
   
   // 3. Return canonical Work response to presentation layer
   return {
-    id: savedWork.workId, // Return workId yang dimulai dengan work- untuk kompatibel test
-    workId: savedWork.workId,
+    id: savedWork.workId ?? "", // Return workId yang dimulai dengan work- untuk kompatibel test
+    workId: savedWork.workId ?? "",
     domainType: input.domainType,
   };
 }
@@ -156,15 +154,10 @@ async function addParticipant(input: AddParticipantRequest): Promise<{ success: 
     throw new Error("permission_denied: Only work owner can add participants");
   }
 
-  // Add participant to work's participants array
-  const currentParticipants = work.participants || [];
-  if (!currentParticipants.find((p: any) => p.actorId === input.actorId)) {
-    currentParticipants.push({
-      actorId: input.actorId as ActorId,
-      role: input.role,
-      addedAt: new Date().toISOString(),
-      addedBy: input.requesterActorId as ActorId,
-    });
+  // Add participant to work's participants array (now a string array)
+  const currentParticipants = [...(work.participants || [])];
+  if (!currentParticipants.includes(input.actorId)) {
+    currentParticipants.push(input.actorId);
   }
 
   const updatedWork = await workRepository.save({
@@ -175,7 +168,7 @@ async function addParticipant(input: AddParticipantRequest): Promise<{ success: 
 
   return {
     success: true,
-    participants: updatedWork.participants?.map((p: any) => p.actorId) || [],
+    participants: updatedWork.participants || [],
   };
 }
 
@@ -190,7 +183,7 @@ async function getWork(input: GetWorkRequest): Promise<WorkAggregate> {
 
   // Permission check: actor must be owner OR in participants list
   const isOwner = work.actorId === input.actorId;
-  const isParticipant = work.participants?.some((p: any) => p.actorId === input.actorId);
+  const isParticipant = work.participants?.includes(input.actorId);
   
   if (!isOwner && !isParticipant) {
     throw new Error("permission_denied: Actor does not have access to this work");
@@ -211,12 +204,13 @@ async function updateWork(input: UpdateWorkRequest): Promise<{ success: boolean;
   // Permission check: only editor or owner can update work (integrated role validation from capability-command-registry)
   // Validate against both work-level participant roles AND workspace-level membership roles
   const isOwner = work.actorId === input.actorId;
-  const workParticipant = work.participants?.find((p: any) => p.actorId === input.actorId);
+  const isParticipant = work.participants?.includes(input.actorId);
   const membershipRepo = getMembershipRepositoryPostgres();
    // Find membership by workspaceId and actorId (list all in workspace then filter for actor)
    const workspaceMemberships = await membershipRepo.listByWorkspace(input.workspaceId as any);
    const workspaceMembership = workspaceMemberships.find((m: any) => m.userId === input.actorId);
-  const canEdit = isOwner || (workParticipant?.role === "editor") || workspaceMembership?.role === "owner";
+  // Role logic removed as `participants` is now string[]. A participant is considered an editor.
+  const canEdit = isOwner || isParticipant || workspaceMembership?.role === "owner";
   
   if (!canEdit) {
     throw new Error("permission_denied: Actor does not have permission to update this work");

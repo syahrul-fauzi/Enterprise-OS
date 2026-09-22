@@ -14,22 +14,58 @@
   "exports": {
     "./styles.css": "./dist/index.css",
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/src/index.js",
+      "types": "./dist/src/index.d.ts"
     },
-    "./*": "./dist/*.js"
+    "./layouts": {
+      "import": "./dist/src/layouts/index.js",
+      "types": "./dist/src/layouts/index.d.ts"
+    },
+    "./molecules": {
+      "import": "./dist/src/molecules/index.js",
+      "types": "./dist/src/molecules/index.d.ts"
+    },
+    "./organisms": {
+      "import": "./dist/src/organisms/index.js",
+      "types": "./dist/src/organisms/index.d.ts"
+    },
+    "./patterns": {
+      "import": "./dist/src/patterns/index.js",
+      "types": "./dist/src/patterns/index.d.ts"
+    },
+    "./atoms": {
+      "import": "./dist/src/atoms/index.js",
+      "types": "./dist/src/atoms/index.d.ts"
+    },
+    "./atoms/button": {
+      "import": "./dist/src/atoms/button.js",
+      "types": "./dist/src/atoms/button.d.ts"
+    },
+    "./atoms/input": {
+      "import": "./dist/src/atoms/input.js",
+      "types": "./dist/src/atoms/input.d.ts"
+    },
+    "./atoms/card": {
+      "import": "./dist/src/atoms/card.js",
+      "types": "./dist/src/atoms/card.d.ts"
+    },
+    "./components/page-header": {
+      "import": "./dist/src/components/page-header/index.js",
+      "types": "./dist/src/components/page-header/index.d.ts"
+    }
   },
   "license": "MIT",
   "scripts": {
     "build": "pnpm run build:styles && tsc",
-    "build:styles": "tailwindcss -i ./src/styles.css -o ./dist/index.css",
+    "build:styles": "pnpm exec tailwindcss -i ./src/styles.css -o ./dist/index.css --config ../../../apps/web/tailwind.config.js",
     "check-types": "tsc --noEmit",
     "dev:styles": "tailwindcss -i ./src/styles.css -o ./dist/index.css --watch",
     "dev:components": "tsc --watch",
     "lint": "eslint src --max-warnings 0"
   },
   "dependencies": {
-    "@repo/presentation-foundation": "workspace:*"
+    "@repo/presentation-foundation": "workspace:*",
+    "@repo/presentation-hooks": "workspace:*"
   },
   "peerDependencies": {
     "next": "^14.2.8",

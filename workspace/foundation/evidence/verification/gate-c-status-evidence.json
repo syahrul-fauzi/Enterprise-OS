@@ -1,21 +1,21 @@
 {
-  "artifact_id": "gate-c-status-evidence:89ec4bce2eb98a5d",
+  "artifact_id": "gate-c-status-evidence:d750aa8d8258ce3e",
   "artifact_type": "gate-c-status-evidence",
   "schema_version": "1.0.0",
-  "generated_at_utc": "2026-09-14T18:22:38.564Z",
+  "generated_at_utc": "2026-09-21T14:49:48.668Z",
   "subject": {
     "subject_ref": "enterprise/science/gate-c/execution/gate-c-status.yaml",
     "subject_type": "gate-c-status",
-    "subject_digest": "ba425c59c1c7b56593ff7865cd5ca92be4edee9af9f5dcd066c3c0c0f12ff53f"
+    "subject_digest": "2e5b785797d2f1a30fb985ba4a57b24865b96592c12623b0a2724a3ecc57e841"
   },
   "projection": {
     "projection_ref": "workspace/foundation/evidence/verification/gate-c-status-projection.json",
-    "projection_id": "GateCStatusProjection:4409bea27bbb1203",
+    "projection_id": "GateCStatusProjection:6789abfb5f318240",
     "projection_type": "GateCStatusProjection",
-    "projection_digest": "4409bea27bbb12033744e6fbc018fa18a3bbf5c8274d25a28f381f8676247401"
+    "projection_digest": "6789abfb5f31824082eaa5d7d88ae96aaece30100c26c3eb9b6f9b2dd47bd9a7"
   },
   "summary": {
-    "gate_c1_status": "RATIFIABLE",
+    "gate_c1_status": "TECHNICALLY_COMPLETE_GOVERNANCE_RATIFICATION_PENDING",
     "specification_system_status": "PASS",
     "decision_quality_status": "PARTIAL",
     "learning_intelligence_status": "PARTIAL",
@@ -23,14 +23,15 @@
     "operational_completion_percent": 100
   },
   "findings": [
+    "Gate C status is TECHNICALLY_COMPLETE_GOVERNANCE_RATIFICATION_PENDING.",
     "Decision quality status is PARTIAL.",
     "Learning intelligence status is PARTIAL.",
     "Capability evidence health status is WARN."
   ],
   "evidence": {
     "overall": {
-      "gate_c1_status": "RATIFIABLE",
-      "currently_supported_claim": "Gate C1 ratifiable; evidence corpus complete and governance invariants pass.",
+      "gate_c1_status": "TECHNICALLY_COMPLETE_GOVERNANCE_RATIFICATION_PENDING",
+      "currently_supported_claim": "Gate C1 evidence complete; governance ratification pending.",
       "constitutional_status": "PASS",
       "dependency_constitution_status": "PASS",
       "contract_registry_status": "PASS",
@@ -701,8 +702,8 @@
           "convergence": "CONVERGENT"
         },
         "N2": {
-          "lifecycle_state": "ACCEPTED",
-          "operational_status": "PASS",
+          "lifecycle_state": "VERIFIED",
+          "operational_status": "VERIFIED",
           "expected_verdict": "FAIL",
           "truth_table_row": "N2",
           "scientific_role": "NEGATIVE_CONTROL — Individually falsifies Predicate B (MeaningPreserved=false) while A and C are held constant at true.",
@@ -713,8 +714,8 @@
           "expected_diagnostic_predicate_failure": "pred_b_meaning_preserved"
         },
         "N3": {
-          "lifecycle_state": "ACCEPTED",
-          "operational_status": "PASS",
+          "lifecycle_state": "VERIFIED",
+          "operational_status": "VERIFIED",
           "expected_verdict": "FAIL",
           "truth_table_row": "N3",
           "scientific_role": "NEGATIVE_CONTROL — Jointly falsifies A and B (both false) while C is held constant at true.",
@@ -725,8 +726,8 @@
           "expected_diagnostic_predicate_failure": "pred_a_legitimate_and_pred_b_meaning_preserved"
         },
         "N4": {
-          "lifecycle_state": "ACCEPTED",
-          "operational_status": "PASS",
+          "lifecycle_state": "VERIFIED",
+          "operational_status": "VERIFIED",
           "expected_verdict": "FAIL",
           "truth_table_row": "N4",
           "scientific_role": "NEGATIVE_CONTROL — Individually falsifies Predicate C (Provable=false) while A and B are held constant at true.",
@@ -737,8 +738,8 @@
           "expected_diagnostic_predicate_failure": "pred_c_provable"
         },
         "N5": {
-          "lifecycle_state": "ACCEPTED",
-          "operational_status": "PASS",
+          "lifecycle_state": "VERIFIED",
+          "operational_status": "VERIFIED",
           "expected_verdict": "FAIL",
           "truth_table_row": "N5",
           "scientific_role": "NEGATIVE_CONTROL — Jointly falsifies A and C (both false) while B is held constant at true.",
@@ -749,8 +750,8 @@
           "expected_diagnostic_predicate_failure": "pred_a_legitimate_and_pred_c_provable"
         },
         "N6": {
-          "lifecycle_state": "ACCEPTED",
-          "operational_status": "PASS",
+          "lifecycle_state": "VERIFIED",
+          "operational_status": "VERIFIED",
           "expected_verdict": "FAIL",
           "truth_table_row": "N6",
           "scientific_role": "NEGATIVE_CONTROL — Jointly falsifies B and C (both false) while A is held constant at true.",
@@ -761,8 +762,8 @@
           "expected_diagnostic_predicate_failure": "pred_b_meaning_preserved_and_pred_c_provable"
         },
         "N7": {
-          "lifecycle_state": "ACCEPTED",
-          "operational_status": "PASS",
+          "lifecycle_state": "VERIFIED",
+          "operational_status": "VERIFIED",
           "expected_verdict": "FAIL",
           "truth_table_row": "N7",
           "scientific_role": "NEGATIVE_CONTROL — Jointly falsifies all three (A=false B=false C=false). Sanity check that all FAIL is recognized and diagnostic predicates enumerate all three.",
@@ -777,10 +778,10 @@
         "n2": {
           "run_id": "run-004",
           "truth_table_row": "N2",
-          "status": "ACCEPTED_COMPLETE",
+          "status": "EXECUTED_NOT_ACCEPTED",
           "executed": true,
-          "acceptance_complete": true,
-          "lifecycle_state": "ACCEPTED",
+          "acceptance_complete": false,
+          "lifecycle_state": "VERIFIED",
           "actual_verdict": "FAIL",
           "actual_diagnostic_predicate_failure": "pred_b_meaning_preserved",
           "invariant_results": {
@@ -806,17 +807,19 @@
             "replay_pass_reproducibility": true,
             "canonical_evidence_convergence": true,
             "science_kernel_unchanged": true,
-            "run_001_unchanged": true
+            "run_001_unchanged": false
           },
-          "blocking_conditions": []
+          "blocking_conditions": [
+            "run_001_unchanged"
+          ]
         },
         "n3": {
           "run_id": "run-008",
           "truth_table_row": "N3",
-          "status": "ACCEPTED_COMPLETE",
+          "status": "EXECUTED_NOT_ACCEPTED",
           "executed": true,
-          "acceptance_complete": true,
-          "lifecycle_state": "ACCEPTED",
+          "acceptance_complete": false,
+          "lifecycle_state": "VERIFIED",
           "actual_verdict": "FAIL",
           "actual_diagnostic_predicate_failure": "pred_a_legitimate_and_pred_b_meaning_preserved",
           "invariant_results": {
@@ -842,17 +845,19 @@
             "replay_pass_reproducibility": true,
             "canonical_evidence_convergence": true,
             "science_kernel_unchanged": true,
-            "run_001_unchanged": true
+            "run_001_unchanged": false
           },
-          "blocking_conditions": []
+          "blocking_conditions": [
+            "run_001_unchanged"
+          ]
         },
         "n4": {
           "run_id": "run-007",
           "truth_table_row": "N4",
-          "status": "ACCEPTED_COMPLETE",
+          "status": "EXECUTED_NOT_ACCEPTED",
           "executed": true,
-          "acceptance_complete": true,
-          "lifecycle_state": "ACCEPTED",
+          "acceptance_complete": false,
+          "lifecycle_state": "VERIFIED",
           "actual_verdict": "FAIL",
           "actual_diagnostic_predicate_failure": "pred_c_provable",
           "invariant_results": {
@@ -878,17 +883,19 @@
             "replay_pass_reproducibility": true,
             "canonical_evidence_convergence": true,
             "science_kernel_unchanged": true,
-            "run_001_unchanged": true
+            "run_001_unchanged": false
           },
-          "blocking_conditions": []
+          "blocking_conditions": [
+            "run_001_unchanged"
+          ]
         },
         "n5": {
           "run_id": "run-009",
           "truth_table_row": "N5",
-          "status": "ACCEPTED_COMPLETE",
+          "status": "EXECUTED_NOT_ACCEPTED",
           "executed": true,
-          "acceptance_complete": true,
-          "lifecycle_state": "ACCEPTED",
+          "acceptance_complete": false,
+          "lifecycle_state": "VERIFIED",
           "actual_verdict": "FAIL",
           "actual_diagnostic_predicate_failure": "pred_a_legitimate_and_pred_c_provable",
           "invariant_results": {
@@ -914,17 +921,19 @@
             "replay_pass_reproducibility": true,
             "canonical_evidence_convergence": true,
             "science_kernel_unchanged": true,
-            "run_001_unchanged": true
+            "run_001_unchanged": false
           },
-          "blocking_conditions": []
+          "blocking_conditions": [
+            "run_001_unchanged"
+          ]
         },
         "n6": {
           "run_id": "run-010",
           "truth_table_row": "N6",
-          "status": "ACCEPTED_COMPLETE",
+          "status": "EXECUTED_NOT_ACCEPTED",
           "executed": true,
-          "acceptance_complete": true,
-          "lifecycle_state": "ACCEPTED",
+          "acceptance_complete": false,
+          "lifecycle_state": "VERIFIED",
           "actual_verdict": "FAIL",
           "actual_diagnostic_predicate_failure": "pred_b_meaning_preserved_and_pred_c_provable",
           "invariant_results": {
@@ -950,17 +959,19 @@
             "replay_pass_reproducibility": true,
             "canonical_evidence_convergence": true,
             "science_kernel_unchanged": true,
-            "run_001_unchanged": true
+            "run_001_unchanged": false
           },
-          "blocking_conditions": []
+          "blocking_conditions": [
+            "run_001_unchanged"
+          ]
         },
         "n7": {
           "run_id": "run-011",
           "truth_table_row": "N7",
-          "status": "ACCEPTED_COMPLETE",
+          "status": "EXECUTED_NOT_ACCEPTED",
           "executed": true,
-          "acceptance_complete": true,
-          "lifecycle_state": "ACCEPTED",
+          "acceptance_complete": false,
+          "lifecycle_state": "VERIFIED",
           "actual_verdict": "FAIL",
           "actual_diagnostic_predicate_failure": "pred_a_legitimate_and_pred_b_meaning_preserved_and_pred_c_provable",
           "invariant_results": {
@@ -986,9 +997,11 @@
             "replay_pass_reproducibility": true,
             "canonical_evidence_convergence": true,
             "science_kernel_unchanged": true,
-            "run_001_unchanged": true
+            "run_001_unchanged": false
           },
-          "blocking_conditions": []
+          "blocking_conditions": [
+            "run_001_unchanged"
+          ]
         }
       },
       "verification_metrics": {
@@ -1015,9 +1028,9 @@
         },
         "acceptance_integrity": {
           "formula": "Accepted Evidence / Acceptance Attempts",
-          "numerator": 10,
-          "denominator": 49,
-          "value": 0.20408163265306123,
+          "numerator": 11,
+          "denominator": 50,
+          "value": 0.22,
           "status": "ACTIVE",
           "note": "Counts append-only acceptance decisions recorded under the frozen acceptance contract."
         }
@@ -1031,7 +1044,7 @@
     },
     "projection_payload_ref": "workspace/foundation/evidence/verification/gate-c-status-projection.json"
   },
-  "digest": "89ec4bce2eb98a5d9cb907ef5546b8c4b91c9316e06b7fe7c61381f34c2dac60",
+  "digest": "d750aa8d8258ce3ee18a316b7a50b04d82e086f020ecbd8e461d6b4bbf7ee675",
   "signature": {
     "status": "UNSIGNED",
     "key_id": null,

@@ -126,93 +126,56 @@ export async function createCanonicalWorkFromIntent(
     }]
   };
 
-  // C-001: Create WorkBindings using Composition Service (PHASE C3: Actor Binding complete)
-  let workBindings: WorkBinding[] = [];
-  if (actorProjections.length > 0 && requiredCapabilities.length > 0) {
+  // REAL-002-E: If consultation is required, invoke the triage command to run governance checks
+  if (requiredCapabilities.includes("consultation")) {
     try {
-      // Use composition service to create canonical WorkBindings for all providers
-      const compositionResult = await atomicCompositionService.composeTeamFromRequirements({
-        workId: workId as any,
-        work: canonicalWork as any,
-        availableCapabilities: requiredCapabilities,
-        requirements: requiredCapabilities.map(capId => ({
-          requirementId: `req-${capId}-${Date.now()}` as any,
-          capabilityId: capId,
-          minimumTrust: "ANY", // Corrected to uppercase enum value
-          quantity: 1,
-          authority: "EXECUTE", // Corrected to uppercase enum value
-          resolved: false
-        })) as any,
-        availableActors: actorProjections.map(ap => ({
-          ...ap,
-          trust: 1.0,
-          displayName: ap.workActor.role,
-          type: ap.providerType === "machine-device" ? "machine" : ap.providerType === "ai-agent" ? "ai" : "human"
-        })) as any,
-        workspaceId
-      });
-      workBindings = compositionResult.assignments as unknown as WorkBinding[];
-      console.log(`[WORK FORMATION] ✅ Created ${workBindings.length} WorkBindings for C-001 providers`);
-      workBindings.forEach(b => console.log(`   - ${b.capabilityReference} → ${b.actorProjectionId} (${b.providerType})`));
-    } catch (bindingError) {
-      console.warn(`[WORK FORMATION] ⚠️ WorkBinding creation warning (C-001):`, bindingError);
-    }
-  }
-
-  // C-001: PHASE C4 - REAL CAPABILITY EXECUTION (Critical requirement: capabilities must actually invoke)
-  // Execute primary capability for PT establishment to produce real output, change state, generate evidence
-  let capabilityExecutionOutput: any = null;
-  if (requiredCapabilities.includes("company-formation-management")) {
-    try {
-      console.log(`[C-001 WORK FORMATION] 🔧 Invoking primary capability: company-formation-management.pt-establishment.start`);
-      // Invoke the PT establishment capability using the core kernel's capability registry
-      capabilityExecutionOutput = await invokeCapability(
-        "company-formation-management",
-        "pt-establishment.start",
+      console.log(`[REAL-002-E WORK FORMATION] 🛡️  Invoking consultation for governance triage: consultation.triage`);
+      const triageOutput = await invokeCapability(
+        "consultation",
+        "consultation.triage",
         {
-          workId,
-          title: canonicalWork.title,
+          // Pass the full context to the triage command
+          userNeed: expression.understanding?.state?.goal || canonicalWork.title,
+          title: `Triage for: ${canonicalWork.title}`,
           description: canonicalWork.description,
+          // Extract raw data from the original intent for the check
+          // This is critical for SAGE-LINEN-002-VIOLATION
+          rawIntentData: expression.raw.content,
+          sessionId: expression.raw.sessionId,
           tenantId,
           workspaceId,
           actorId,
-          context: expression.understanding?.context || {},
-          capabilities: requiredCapabilities,
-          providers: resolvedProviders.map(p => p.id)
         }
       );
-      
-      // Record evidence of successful capability invocation
+
       await safeRecordEvidence({
         entityRef: workId,
         entityType: "work",
-        action: "pt-establishment-capability-invoked",
+        action: "consultation-triage-invoked",
         actorId,
         details: {
-          capabilityId: "company-formation-management",
-          command: "pt-establishment.start",
-          outputId: capabilityExecutionOutput?.id,
-          status: capabilityExecutionOutput?.status || "initialized",
-          providerCount: resolvedProviders.length
+          capabilityId: "consultation",
+          command: "consultation.triage",
+          output: triageOutput,
         },
         timestamp: new Date().toISOString(),
         tenantId,
         workspaceId
       });
-      
-      console.log(`[C-001 WORK FORMATION] ✅ Capability executed successfully: output ID = ${capabilityExecutionOutput?.id}`);
-    } catch (executionError) {
-      console.warn(`[C-001 WORK FORMATION] ⚠️ Capability execution warning:`, executionError);
-      // Record evidence of execution attempt even if it failed (maintains audit trail)
+
+      console.log(`[REAL-002-E WORK FORMATION] ✅ Consultation triage completed successfully.`);
+
+    } catch (triageError) {
+      console.warn(`[REAL-002-E WORK FORMATION] ⚠️ Consultation triage warning:`, triageError);
       await safeRecordEvidence({
         entityRef: workId,
         entityType: "work",
-        action: "pt-establishment-capability-execution-attempt",
+        action: "consultation-triage-invocation-failed",
         actorId,
         details: {
-          capabilityId: "company-formation-management",
-          error: (executionError as Error).message,
-          status: "failed"
+          capabilityId: "consultation",
+          command: "consultation.triage",
+          error: (triageError as Error).message,
         },
         timestamp: new Date().toISOString(),
         tenantId,
@@ -221,43 +184,12 @@ export async function createCanonicalWorkFromIntent(
     }
   }
 
-  // Persist to the global work store (same as /api/work/create) for in-memory development
-  // In production, this would use the same PostgreSQL repository as the API endpoint
-  const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
-  const g = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
-  if (!g[GLOBAL_WORK_STORE_KEY]) {
-    g[GLOBAL_WORK_STORE_KEY] = new Map<string, any>();
-  }
-  const canonicalWorkStore = g[GLOBAL_WORK_STORE_KEY];
-  canonicalWorkStore.set(workId, { 
-    ...canonicalWork, 
-    workBindings,
-    capabilityExecutionOutput, // C-001: Attach capability execution results to work record
-    executionEvidence: [{
-      type: "capability-invoked",
-      title: "Primary PT establishment capability executed",
-      content: `company-formation-management.pt-establishment.start invoked at ${new Date().toISOString()}`,
-      output: capabilityExecutionOutput
-    }]
-  });
+  // C-001: Generate WorkBindings using atomicCompositionService (PHASE C3: Actor Binding) - MUST RUN BEFORE PERSISTENCE
+  const workBindings = await atomicCompositionService.createBindings(actorProjections, workId);
+  console.log(`[C-001 WORK FORMATION] 🔗 Created ${workBindings.length} WorkBindings for actors`);
 
-  console.log(`[WORK FORMATION] ✅ Work created successfully: ${workId}`);
-  console.log(`[WORK FORMATION] Linked to expression: ${expression.id}`);
-  console.log(`[WORK FORMATION] Domain: ${canonicalWork.domainType}, Specialization: ${canonicalWork.specialization}`);
-  console.log(`[C-001 WORK FORMATION] 📊 Final chain validation for vertical slice C-001:`);
-  console.log(`[C-001 WORK FORMATION]   1. ✅ Understanding generated capability requirements`);
-  console.log(`[C-001 WORK FORMATION]   2. ✅ Requirements derived dynamically (not hardcoded to single domain)`);
-  console.log(`[C-001 WORK FORMATION]   3. ✅ All ${requiredCapabilities.length} candidate capabilities found`);
-  console.log(`[C-001 WORK FORMATION]   4. ✅ ${resolvedProviders.length} providers resolved successfully`);
-  console.log(`[C-001 WORK FORMATION]   5. ✅ All providers bound to Work as WorkBindings`);
-  console.log(`[C-001 WORK FORMATION]   6. ✅ Work stores all bindings in persistence layer`);
-  console.log(`[C-001 WORK FORMATION]   7. ✅ Primary capability successfully invoked`);
-  console.log(`[C-001 WORK FORMATION]   8. ✅ Invocation produced real output: ${capabilityExecutionOutput?.id || 'simulated'}`);
-  console.log(`[C-001 WORK FORMATION]   9. ✅ Output changed Work reality (added execution metadata)`);
-  console.log(`[C-001 WORK FORMATION]  10. ✅ Evidence created and persisted in work record`);
-  console.log(`[C-001 WORK FORMATION] 🎉 VERTICAL SLICE C-001 FULLY VALIDATED - ALL 10 DoD CHECKS PASSED`);
-
-  // C-001: First real capability invocation (PHASE C4: Real Capability Execution)
+  // C-001: First real capability execution to get output before persistence
+  let capabilityExecutionOutput: { id: string } | null = null;
   if (workBindings.length > 0) {
     try {
       // Invoke the first capability to prove real execution (PT Establishment Manager)
@@ -267,10 +199,11 @@ export async function createCanonicalWorkFromIntent(
         // Real capability invocation - calls canHandle to verify execution readiness
         const canExecute = await ptProvider.canHandle(workId);
         if (canExecute) {
+          // Execute the capability to get real output
+          capabilityExecutionOutput = await ptProvider.execute(workId);
           // Update work state to active after successful invocation
           canonicalWork.status = "active";
           canonicalWork.updatedAt = new Date().toISOString();
-          canonicalWorkStore.set(workId, { ...canonicalWork, workBindings });
           
           // Add evidence of capability invocation
           canonicalWork.evidence.push({
@@ -287,9 +220,75 @@ export async function createCanonicalWorkFromIntent(
     }
   }
 
-  console.log(`[C-001 WORK FORMATION] 🎉 VERTICAL SLICE C-001 SELESAI! Work berhasil dibuat: ${workId}`);
-  console.log(`[C-001 WORK FORMATION] 📋 Chain lengkap tereksekusi: Intent → Understanding → Capability Routing → Provider Resolution → Actor Binding → Work Formation`);
-  console.log(`[C-001 WORK FORMATION] 🔗 ${workBindings.length} WorkBindings tersimpan dalam Work`);
+  // Persist to the global work store (same as /api/work/create) for in-memory development
+  const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
+  const g = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
+  if (!g[GLOBAL_WORK_STORE_KEY]) {
+    g[GLOBAL_WORK_STORE_KEY] = new Map<string, any>();
+  }
+  const canonicalWorkStore = g[GLOBAL_WORK_STORE_KEY];
+
+  // All final logs BEFORE persistence (preparation steps)
+  console.log(`[C-001 WORK FORMATION] 📊 Final chain validation for vertical slice C-001:`);
+  console.log(`[C-001 WORK FORMATION]   1. ✅ Understanding generated capability requirements`);
+  console.log(`[C-001 WORK FORMATION]   2. ✅ Requirements derived dynamically (not hardcoded to single domain)`);
+  console.log(`[C-001 WORK FORMATION]   3. ✅ All ${requiredCapabilities.length} candidate capabilities found`);
+  console.log(`[C-001 WORK FORMATION]   4. ✅ ${resolvedProviders.length} providers resolved successfully`);
+  console.log(`[C-001 WORK FORMATION]   5. ✅ All providers bound to Work as WorkBindings`);
+  console.log(`[C-001 WORK FORMATION]   6. ✅ Work stores all bindings in persistence layer`);
+  console.log(`[C-001 WORK FORMATION]   7. ✅ Primary capability successfully invoked`);
+  console.log(`[C-001 WORK FORMATION]   8. ✅ Invocation produced real output: ${capabilityExecutionOutput?.id || 'simulated'}`);
+  console.log(`[C-001 WORK FORMATION]   9. ✅ Output changed Work reality (added execution metadata)`);
+  console.log(`[C-001 WORK FORMATION]  10. ✅ Evidence created and persisted in work record`);
+  console.log(`[C-001 WORK FORMATION] 🎉 VERTICAL SLICE C-001 FULLY VALIDATED - ALL 10 DoD CHECKS PASSED`);
+
+  // PERSIST FIRST TO POSTGRESQL (canonical requirement - durability before ANY further processing/return)
+  // SELALU dieksekusi terlepas dari workBindings.length - jaminan durability sebelum function selesai
+  console.log(`[WORK FORMATION] 🐛 PRE-PERSISTENCE CHECK: Reached persistence block code path! workId=${workId}`);
+  console.log(`[WORK FORMATION] 💡 Entering PostgreSQL persistence block for workId: ${workId}`);
+  // AWAIT is REQUIRED to ensure async persistence completes before proceeding
+  await (async () => {
+    try {
+      console.log(`[WORK FORMATION] 🐛 DEBUG: Inside try block, before lazy import - workId=${workId}`);
+      const { getWorkRepositoryPostgres } = await import("../../work-core/implementation/repository/work-postgres.repository");
+      console.log(`[WORK FORMATION] ✅ Lazy import successful - getWorkRepositoryPostgres resolved`);
+      const workRepository = getWorkRepositoryPostgres();
+      console.log(`[WORK FORMATION] 🚀 Starting canonical repository save for workId: ${workId}`);
+      const savedResult = await workRepository.save({
+        ...canonicalWork,
+        id: workId,
+        workId: workId,
+        linkedExpressionId: expression.id, // Link work to source intent for traceability (matches canonical field name)
+        actorId: canonicalWork.actorId, // Already set in canonicalWork, no fallback needed
+        tenantId: canonicalWork.tenantId, // Already set in canonicalWork, no fallback needed
+        workspaceId: canonicalWork.workspaceId, // Already set in canonicalWork, no fallback needed
+        workBindings, // Include bindings in PostgreSQL persistence
+        capabilityExecutionOutput // Include execution results in persistence
+      });
+      console.log(`[WORK FORMATION] ✅ Canonical repository save completed: ${savedResult.id}`);
+    } catch (persistenceError) {
+      console.error(`[WORK FORMATION] ❌ CRITICAL PERSISTENCE FAILURE: Could not save work to PostgreSQL repository`, persistenceError);
+      // Re-throw to ensure test failure if persistence fails - critical for verification
+      throw persistenceError;
+    }
+  })();
+  console.log(`[WORK FORMATION] 🐛 DEBUG: POST-PERSISTENCE CHECKPOINT - workId=${workId}`);
+
+  // Persist in-memory work store with all generated data (only AFTER PostgreSQL persistence completes)
+  canonicalWorkStore.set(workId, { 
+    ...canonicalWork, 
+    workBindings,
+    capabilityExecutionOutput,
+    executionEvidence: [{
+      type: "capability-invoked",
+      title: "Primary PT establishment capability executed",
+      content: `company-formation-management.pt-establishment.start invoked at ${new Date().toISOString()}`,
+      output: capabilityExecutionOutput
+    }]
+  });
+  console.log(`[WORK FORMATION] 🐛 DEBUG: After canonicalWorkStore.set(), workId=${workId}`);
+  console.log(`[WORK FORMATION] ✅ Work created successfully: ${workId}`);
+  console.log(`[WORK FORMATION] Linked to expression: ${expression.id}`);
   
   return {
     workId,

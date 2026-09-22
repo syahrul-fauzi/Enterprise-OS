@@ -1,7 +1,6 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { GlobalNavigation } from "@repo/presentation-ui-system/layouts";
 import { Breadcrumb, type BreadcrumbItem } from "@repo/presentation-ui-system";
 
 interface MyRealityLayoutProps {
@@ -38,7 +37,7 @@ export function MyRealityLayout({
   productId = "default",
 }: MyRealityLayoutProps) {
   return (
-    <GlobalNavigation userCapabilities={userCapabilities} productId={productId}>
+    <>
       {/* Main content area with preserved MyReality layout structure */}
 
       {/* RL4-UX-001 fix: proper container constraints with mobile-first padding to prevent horizontal squeeze */}
@@ -102,6 +101,6 @@ export function MyRealityLayout({
           </svg>
         </a>
       </div>
-    </GlobalNavigation>
+    </>
   );
 }

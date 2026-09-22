@@ -18,6 +18,7 @@ const nextConfig = {
     "@repo/composition",
     "@repo/composition-legal-workspace",
     "@repo/core-platform",
+    "capabilities",
   ],
   productionBrowserSourceMaps: false,
   typescript: {

@@ -13,6 +13,7 @@
   "dependencies": {
     "@repo/capabilities-identity": "workspace:*",
     "@repo/core-kernel": "workspace:*",
+    "@repo/core-runtime": "workspace:*",
     "@capabilities/work-core": "workspace:*"
   },
   "devDependencies": {

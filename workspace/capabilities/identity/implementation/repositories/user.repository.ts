@@ -3,7 +3,7 @@ import {
   UserId,
   type UserAggregate,
   type UserRepository,
-} from "../contracts/index.js";
+} from "../contracts/index.ts";
 
 // PostgreSQL-backed user repository implementation
 class UserRepositoryPostgresImpl extends PostgresRepository<any> implements UserRepository {

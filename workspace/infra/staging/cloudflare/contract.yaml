@@ -18,21 +18,21 @@ origin:
 
 public:
   - hostname: services-id.com
-    origin: http://127.0.0.1:3005
+    origin: http://127.0.0.1:3000
     product: services-id
     product_preview_path: /products/services-id
     requirement_preview_path: /products/services-id/requirements
     workspace_path: /requirements
 
   - hostname: lawyershub.id
-    origin: http://127.0.0.1:3005
+    origin: http://127.0.0.1:3000
     product: lawyershub
     product_preview_path: /products/lawyershub
     requirement_preview_path: /products/lawyershub/requirements
     workspace_path: /requirements
 
   - hostname: indonesialawyersclub.id
-    origin: http://127.0.0.1:3005
+    origin: http://127.0.0.1:3000
     product: ilc
     product_preview_path: /products/ilc
     requirement_preview_path: /products/ilc/requirements

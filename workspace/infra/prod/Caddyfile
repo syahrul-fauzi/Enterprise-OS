@@ -1,0 +1,155 @@
+{
+	admin off
+	log {
+		output stdout
+		format console
+		level INFO
+	}
+	auto_https disable_redirects
+}
+
+# Konfigurasi asli yang pernah berjalan: Akses localhost HTTP, domain publik dengan TLS internal
+http://localhost {
+	reverse_proxy web:3000 {
+		# HAPUS SEMUA X-EOS-* headers dari client sebelum overwrites
+		header_down -X-EOS-Tenant-Subdomain
+		header_down -X-EOS-Is-White-Label
+		header_down -X-EOS-Tenant-ID
+		header_down -X-EOS-Tenant-Brand-Name
+
+		header_up Host {host}
+		# Bersihkan headers upstream juga
+		header_up -X-EOS-Tenant-Subdomain
+		header_up -X-EOS-Is-White-Label
+		header_up -X-EOS-Tenant-ID
+		header_up -X-EOS-Tenant-Brand-Name
+	}
+}
+
+# WILDCARD SUBDOMAIN SUPPORT untuk multi-tenant: semua subdomain
+# LawyersHub family (production ACME TLS)
+https://*.lawyershub.id, https://*.academic.lawyershub.id, https://*.commsme.lawyershub.id {
+	tls ops@lawyershub.id
+	reverse_proxy web:3000 {
+		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
+		header_up -X-EOS-Tenant-Subdomain
+		header_up -X-EOS-Is-White-Label
+		header_up -X-EOS-Tenant-ID
+		header_up -X-EOS-Tenant-Brand-Name
+
+		header_up Host {host}
+		# SET TRUSTED HEADER - hanya Caddy yang boleh set ini
+		header_up X-EOS-Tenant-Subdomain {labels.0}
+	}
+}
+
+# Services-ID family (production ACME TLS for LawyersHub primary deployment)
+https://*.services-id.com {
+	tls ops@lawyershub.id
+	reverse_proxy web:3000 {
+		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
+		header_up -X-EOS-Tenant-Subdomain
+		header_up -X-EOS-Is-White-Label
+		header_up -X-EOS-Tenant-ID
+		header_up -X-EOS-Tenant-Brand-Name
+
+		header_up Host {host}
+		# SET TRUSTED HEADER - hanya Caddy yang boleh set ini
+		header_up X-EOS-Tenant-Subdomain {labels.0}
+	}
+}
+
+# MAIN DOMAINS (root domains tanpa subdomain - WHITE LABEL APEX)
+# LawyersHub apex (production ACME TLS)
+https://lawyershub.id {
+	tls ops@lawyershub.id
+	reverse_proxy web:3000 {
+		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
+		header_up -X-EOS-Tenant-Subdomain
+		header_up -X-EOS-Is-White-Label
+		header_up -X-EOS-Tenant-ID
+		header_up -X-EOS-Tenant-Brand-Name
+
+		header_up Host {host}
+		# SET TRUSTED HEADER - hanya Caddy yang boleh set ini
+		header_up X-EOS-Is-White-Label "true"
+	}
+}
+
+# Services-ID apex (production ACME TLS)
+https://services-id.com {
+	tls ops@lawyershub.id
+	reverse_proxy web:3000 {
+		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
+		header_up -X-EOS-Tenant-Subdomain
+		header_up -X-EOS-Is-White-Label
+		header_up -X-EOS-Tenant-ID
+		header_up -X-EOS-Tenant-Brand-Name
+
+		header_up Host {host}
+		# SET TRUSTED HEADER - hanya Caddy yang boleh set ini
+		header_up X-EOS-Is-White-Label "true"
+	}
+}
+
+# Indonesia Lawyers Club apex (production ACME TLS)
+https://indonesialawyersclub.id {
+	tls ops@lawyershub.id
+	reverse_proxy web:3000 {
+		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
+		header_up -X-EOS-Tenant-Subdomain
+		header_up -X-EOS-Is-White-Label
+		header_up -X-EOS-Tenant-ID
+		header_up -X-EOS-Tenant-Brand-Name
+
+		header_up Host {host}
+		# SET TRUSTED HEADER - hanya Caddy yang boleh set ini
+		header_up X-EOS-Is-White-Label "true"
+	}
+}
+
+# Indonesia Lawyers Club wildcard (production ACME TLS)
+https://*.indonesialawyersclub.id {
+	tls ops@lawyershub.id
+	reverse_proxy web:3000 {
+		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
+		header_up -X-EOS-Tenant-Subdomain
+		header_up -X-EOS-Is-White-Label
+		header_up -X-EOS-Tenant-ID
+		header_up -X-EOS-Tenant-Brand-Name
+
+		header_up Host {host}
+		# SET TRUSTED HEADER - hanya Caddy yang boleh set ini
+		header_up X-EOS-Tenant-Subdomain {labels.0}
+	}
+}
+
+# WHITE LABEL SUPPORT: Tambahkan custom domain klien di sini
+# Contoh untuk client alice.firmahukum.com:
+# https://alice.firmahukum.com {
+#   # AUTO-HTTPS SETUP: Untuk VPS/production, uncomment line di bawah dan ganti email
+#   # tls ops@your-domain.tld
+#   # Untuk staging/local: gunakan internal TLS
+#   tls internal
+#   reverse_proxy web:3000 {
+#     # HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
+#     header_up -X-EOS-Tenant-Subdomain
+#     header_up -X-EOS-Is-White-Label
+#     header_up -X-EOS-Tenant-ID
+#     header_up -X-EOS-Tenant-Brand-Name
+#     
+#     header_up Host {host}
+#     # SET TRUSTED WHITE LABEL HEADER - hanya Caddy yang boleh set ini
+#     header_up X-EOS-Is-White-Label "true"
+#   }
+# }
+
+# HTTP -> HTTPS Redirect ditangani oleh Cloudflare Tunnel (Origin SSL + Always Use HTTPS)
+# Hanya listen on HTTP untuk healthcheck saja
+http://localhost:80 {
+	handle /api/health {
+		respond 200 "OK"
+	}
+}
+
+# End of Caddyfile

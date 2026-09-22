@@ -2272,7 +2272,7 @@ export async function runGateCAcceptCommand(opts: GateCAcceptOptions): Promise<n
       return 0;
     } // Tutup block if (opts.runId.startsWith("BE003-"))
     // Kode untuk non-BE003 runs dimulai di sini
-    if (acceptanceAudit && (opts.runId === "run-004" || opts.runId.startsWith("N4") || opts.runId.startsWith("N3") || opts.runId.startsWith("N5"))) {
+    if (acceptanceAudit && (opts.runId === "run-004" || opts.runId === "run-006" || opts.runId.startsWith("N4") || opts.runId.startsWith("N3") || opts.runId.startsWith("N5"))) {
       const ledgerEntry = appendAcceptedRunToProofLedger(opts.runId, opts.entryPrefix ?? "GATE-C1-ACCEPT");
       const proofLedgerAfter = readYamlRecord(RUN_PROOF_LEDGER_PATH);
       const proofLedgerAfterEntries = asArray(proofLedgerAfter.entries, "proof_ledger_after.entries");
@@ -2358,7 +2358,7 @@ export async function runGateCAcceptCommand(opts: GateCAcceptOptions): Promise<n
     // Jika tidak ada kondisi yang terpenuhi, tampilkan error unsupported
     process.stderr.write(
       `Unsupported Gate C acceptance target: ${opts.runId}\n` +
-           "Currently supported: run-004, N4, N3, N5, and BE003-* experiment runs.\n",
+           "Currently supported: run-004, run-006, N4, N3, N5, and BE003-* experiment runs.\n",
     );
     return 1;
   }

@@ -11,7 +11,7 @@
     "composite": true,
     "incremental": true,
     "types": ["node", "react"],
-    "typeRoots": ["./node_modules/@types", "/root/Enterprise-OS/workspace/node_modules/@types"],
+    "typeRoots": ["./node_modules/@types", "../../../node_modules/@types"],
     "paths": {
       "@repo/core-kernel": ["../../core/kernel/dist"],
       "@repo/core-kernel/*": ["../../core/kernel/dist/*"],

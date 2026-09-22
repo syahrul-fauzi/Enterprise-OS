@@ -25,15 +25,15 @@ const EmailWebhookSchema = z.object({
 // Proves Work is the universal boundary regardless of adapter
 const REAL_WORK_014_EMAIL_MAPPING: Record<string, string> = {
   // Customer email
-  "dian.permatasari@example.com": "case-002",
+  "dian.permatasari@example.com": "REALITY-002",
   // Lawyer email
-  "surya.wijaya.advokat@example.com": "case-002",
+  "surya.wijaya.advokat@example.com": "REALITY-002",
   // Operator email
-  "siti.aminah@eos.example.com": "case-002",
+  "siti.aminah@eos.example.com": "REALITY-002",
   // Auditor email
-  "ahmad.hidayat@audit.example.com": "case-002",
+  "ahmad.hidayat@audit.example.com": "REALITY-002",
   // Notary email
-  "ratna.sari@notaris.example.com": "case-002"
+  "ratna.sari@notaris.example.com": "REALITY-002"
 };
 
 // Resolve work ID from email address - same function pattern as WhatsApp
@@ -44,9 +44,9 @@ function resolveWorkIdFromEmail(email: string): string | null {
     return mappedId;
   }
   
-  // For REAL_WORK_014, default to case-002 to maintain shared reality
-  console.log(`[EmailWebhook] Unknown email ${email}, defaulting to case-002 for REAL_WORK_014`);
-  return "case-002";
+  // For REAL_WORK_014, default to REALITY-002 to maintain shared reality
+  console.log(`[EmailWebhook] Unknown email ${email}, defaulting to REALITY-002 for REAL_WORK_014`);
+  return "REALITY-002";
 }
 
 // SendGrid official IP ranges (as of 2024)

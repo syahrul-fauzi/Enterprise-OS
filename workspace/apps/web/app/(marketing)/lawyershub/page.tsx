@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { RootLandingPage } from '@repo/presentation-widgets';
+// import { RootLandingPage } from '@repo/presentation-widgets'; // Deprecated package - golden spine only
 import { WORKSPACE_SESSION_COOKIE, decodeWorkspaceSession } from "@repo/core-kernel";
 
 interface RootRouteProps {

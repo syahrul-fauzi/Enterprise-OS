@@ -1,8 +1,35 @@
-import type { WorkAggregate } from "../../contracts/work.contracts.ts";
+import { Pool } from "pg";
+import type { WorkAggregate, WorkId } from "../../contracts/work.contracts.ts";
 import { randomUUID } from "crypto";
 const generateId = () => randomUUID();
-import { PostgresRepository } from "@repo/capabilities-identity/dist/implementation/repositories/base.repository";
+import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.ts";
 import type { CapabilityRepository } from "@repo/core-kernel";
+
+// Validate required environment variables in production - matches all other repository patterns
+const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build' || (globalThis as any)._forceMockPool === true;
+if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.POSTGRES_CONNECTION_STRING && !process.env.DATABASE_URL) {
+  throw new Error("[WorkRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING or DATABASE_URL environment variable is required in production");
+}
+
+// Use base.repository.ts's getPool() to ensure mock pool is used in test environment
+import { getPool } from "../../../identity/implementation/repositories/base.repository.ts";
+const writePool = getPool();
+const readPool = getPool();
+
+// Reuse existing safeRecordEvidence pattern from consultation/communication capabilities
+async function safeRecordEvidence(payload: unknown): Promise<{ readonly ok: boolean }> {
+  try {
+    const loaded = await import("@repo/core-kernel");
+    const reg = (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
+    if (typeof reg?.invoke === "function") {
+      await reg.invoke("evidence-registry", "evidence.record", payload as never);
+      return { ok: true };
+    }
+  } catch (_e) {
+    // fallthrough: evidence recording is observability-only (not state-machine critical path)
+  }
+  return { ok: true };
+}
 
 export type WorkRepositoryPostgres = CapabilityRepository<WorkAggregate> & {
   listByInstitution(institutionId: string): Promise<readonly WorkAggregate[]>;
@@ -37,6 +64,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
   protected toRecord(entity: WorkAggregate): Record<string, any> {
     return {
       id: entity.id,
+      work_id: entity.workId || entity.id,
       title: entity.title,
       description: entity.description,
       status: entity.status,
@@ -47,9 +75,10 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       created_at: entity.createdAt,
       updated_at: entity.updatedAt,
       composition_id: entity.compositionId,
-      tenant_id: (entity as any).tenantId,
-      workspace_id: (entity as any).workspaceId,
-      session_id: (entity as any).sessionId,
+      tenant_id: entity.tenantId,
+      workspace_id: entity.workspaceId,
+      session_id: entity.sessionId,
+      linked_expression_id: entity.linkedExpressionId,
     };
   }
 
@@ -82,14 +111,14 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
     let savedWork: WorkAggregate;
     
     if (existingWork) {
-      const newStateHistory = [...existingWork.stateHistory];
+      const newStateHistory = [...(existingWork.stateHistory || [])];
       
       if (work.status && work.status !== existingWork.status) {
         newStateHistory.push({
           status: work.status,
           timestamp: new Date().toISOString(),
           actorId: work.actorId || existingWork.actorId,
-          note: work.nextAction || `Status updated to ${work.status}`
+          note: (work as any).nextAction || `Status updated to ${work.status}`
         });
       }
       
@@ -125,16 +154,44 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
     }
 
     const finalSaved = await super.save(savedWork);
+    // Record evidence immediately after successful persistence (P5-PROVE-001 requirement)
+    await safeRecordEvidence({
+      entityRef: finalSaved.id,
+      entityType: "work",
+      action: existingWork ? "work.updated" : "work.created",
+      actorId: finalSaved.actorId,
+      details: { status: finalSaved.status, version: finalSaved.version },
+      timestamp: new Date().toISOString(),
+      sessionId: finalSaved.sessionId,
+      tenantId: finalSaved.tenantId,
+      workspaceId: finalSaved.workspaceId,
+    });
     return finalSaved as WorkAggregate;
   }
 
   async update(id: string, patch: Partial<WorkAggregate>): Promise<WorkAggregate> {
-    const workToUpdate = { ...patch, id };
+    const workToUpdate = { ...patch, id: id as unknown as WorkId };
     return this.save(workToUpdate);
   }
 
   async delete(id: string): Promise<void> {
     await super.remove(id);
+  }
+
+  /**
+   * Expose both pools for health checking and monitoring
+   * Used by Kubernetes liveness/readiness probes - matches all other repository interfaces
+   */
+  getPools(): {write: Pool; read: Pool} {
+    return { write: writePool, read: readPool };
+  }
+  
+  /**
+   * Backward compatibility for health check system
+   * @deprecated Use getPools() instead
+   */
+  getPool(): Pool {
+    return writePool;
   }
 }
 

@@ -4,6 +4,7 @@
  * Real invocation, NO MOCKS - implements the product slice requirement
  */
 
+/// <reference types="vitest" />
 import { describe, it } from 'vitest';
 import assert from 'node:assert';
 import { createUniversalExpression, processConversationTurn } from '../implementation/services/intent-understanding.service';
@@ -51,6 +52,7 @@ describe('UNIVERSAL INTENT PIPELINE - E2E VERTICAL SLICE', () => {
     
     // Verify hypotheses were generated (core user requirement: IntentHypothesis dibuat bukan diasumsikan)
     const firstHypothesis = expression.understanding.hypotheses[0];
+    assert.ok(firstHypothesis, 'First hypothesis must exist');
     assert.ok(firstHypothesis.confidence > 0, 'Hypothesis harus memiliki skor confidence');
     assert.equal(firstHypothesis.status, "proposed", 'Hypothesis awal harus berstatus proposed');
 
@@ -132,13 +134,15 @@ describe('UNIVERSAL INTENT PIPELINE - E2E VERTICAL SLICE', () => {
 
     assert.ok(capabilities.length > 0, 'Harus menemukan capabilities yang tersedia');
     assert.ok(capabilities.some(c => c.capabilityId === "generic-intent-resolution"), 'Harus menemukan generic-intent-resolution capability');
-    assert.ok(capabilities[0].availableProviders.length > 0, 'Setiap capability harus memiliki providers yang tersedia');
+    const firstCapability = capabilities[0];
+    assert.ok(firstCapability, 'First capability must exist');
+    assert.ok(firstCapability.availableProviders.length > 0, 'Setiap capability harus memiliki providers yang tersedia');
     
-    const providerTypes = capabilities[0].availableProviders.map(p => p.providerType);
+    const providerTypes = firstCapability.availableProviders.map(p => p.providerType);
     assert.ok(providerTypes.includes("system") || providerTypes.includes("ai"), 'Harus memiliki system/AI provider sebagai opsi');
 
     console.log('[TEST PASSED] ✅ Found', capabilities.length, 'capabilities');
-    console.log('[TEST PASSED] ✅ Available providers for first capability:', capabilities[0].availableProviders.map(p => p.name));
+    console.log('[TEST PASSED] ✅ Available providers for first capability:', firstCapability.availableProviders.map(p => p.name));
   });
 
   it('processes conversation delta correctly - UNDERSTANDING_INSUFFICIENT → UNDERSTANDING_SUFFICIENT when providing clarifying info', async () => {
@@ -180,8 +184,10 @@ describe('UNIVERSAL INTENT PIPELINE - E2E VERTICAL SLICE', () => {
     // Add small delay to ensure async turn addition completes before assertion (fixes test timing issue)
     await new Promise(resolve => setTimeout(resolve, 10));
     console.log('[TEST] Conversation turns after delay:', expression.conversation?.turns.length);
-    assert.ok(expression.conversation?.turns.length >= 1, 'Conversation history should have at least 1 turn (user clarifying response added)');
+    assert.ok(expression.conversation, 'Conversation must exist');
+    assert.ok(expression.conversation.turns.length >= 1, 'Conversation history should have at least 1 turn (user clarifying response added)');
     const userTurn = expression.conversation.turns[1]; // Second turn is the user's clarifying input
+    assert.ok(userTurn, 'User turn must exist');
     assert.ok(userTurn.delta.resolvedUnknowns?.length >= 0, 'Conversation turn should track resolved unknowns');
     assert.ok(userTurn.delta.newKnownFacts?.length >= 0, 'Conversation turn should track new known facts');
     console.log('[TEST] Resolved unknowns from conversation:', userTurn.delta.resolvedUnknowns);

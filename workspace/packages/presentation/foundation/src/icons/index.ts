@@ -35,6 +35,11 @@ export const iconNameList = [
   "chevron-up",
   "chevron-left",
   "chevron-right",
+  "users",
+  "cube",
+  "inbox",
+  "document",
+  "server",
 ] as const;
 
 export type IconName = (typeof iconNameList)[number];
@@ -76,6 +81,11 @@ export const iconRegistry: IconRegistry = {
   "chevron-up": I("chevron-up", "navigation", VB, ["caret-up", "collapse", "close"]),
   "chevron-left": I("chevron-left", "navigation", VB, ["caret-left", "back"]),
   "chevron-right": I("chevron-right", "navigation", VB, ["caret-right", "forward"]),
+  "users": I("users", "generic", VB, ["people", "actors", "team"]),
+  "cube": I("cube", "generic", VB, ["products", "capabilities", "package"]),
+  "inbox": I("inbox", "action", VB, ["intake", "requests", "incoming"]),
+  "document": I("document", "file", VB, ["cases", "files", "paperwork"]),
+  "server": I("server", "generic", VB, ["admin", "operations", "data-tasks"]),
 } as const;
 
 export const defaultIcons: IconRegistry = iconRegistry;

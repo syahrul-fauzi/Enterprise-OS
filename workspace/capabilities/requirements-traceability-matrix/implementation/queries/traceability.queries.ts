@@ -192,9 +192,9 @@ export const getTraceabilityRow = {
 
 export const searchTraceabilityMatrix = {
   id: "traceability.search",
-  execute(input: SearchTraceabilityMatrixInput): SearchTraceabilityMatrixOutput {
-    const rows = requirementService
-      .listRequirements()
+  async execute(input: SearchTraceabilityMatrixInput): Promise<SearchTraceabilityMatrixOutput> {
+    const requirements = await requirementService.listRequirements();
+    const rows = requirements
       .filter((requirement) =>
         input.requirementId !== undefined ? requirement.id === input.requirementId : true,
       )

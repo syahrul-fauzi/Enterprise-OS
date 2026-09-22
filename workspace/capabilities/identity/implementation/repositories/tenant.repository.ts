@@ -1,15 +1,16 @@
-import { PostgresRepository } from "./base.repository.js";
+import { PostgresRepository } from "./base.repository";
 import {
   TenantId,
   UserId,
   type TenantAggregate,
   type TenantRepository,
-} from "../contracts/index.js";
+} from "../contracts/index.ts";
 
 // PostgreSQL-backed tenant repository implementation
 class TenantRepositoryPostgresImpl extends PostgresRepository<any> implements TenantRepository {
   readonly entityName = "Tenant" as const;
   readonly kind = "repository" as const;
+  declare pool: any;
 
   constructor() {
     super("tenants");

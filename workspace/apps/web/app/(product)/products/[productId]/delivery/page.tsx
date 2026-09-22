@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@repo/presentation-ui-system";
-import { ProductDeliveryPage } from '@repo/presentation-widgets';
+// import { ProductDeliveryPage } from '@repo/presentation-widgets'; // Deprecated package - golden spine only
 import { readProductBinding } from '@repo/presentation-experience/product-binding.js';
 import { readProductRouteMetadata } from '@repo/presentation-experience';
 import {
