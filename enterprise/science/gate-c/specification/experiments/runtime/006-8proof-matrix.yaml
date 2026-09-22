@@ -1,0 +1,105 @@
+version: 1.0.0
+run_id: run-006
+gate: GATE-C
+gate_stage: GATE-C1-RUNTIME-VERIFICATION
+evidence_class: CLASS_I_ENGINEERING_PROOF
+release_category: ENGINEERING_PROOF
+execution_timestamp_utc: 2026-09-21T00:00:00.000Z
+operator_id: eos-cli
+strategy_ids:
+  - runtime-verification/v1
+oracle_id: GATE-C-ORACLE-001
+dataset_version: 1.0.0
+truth_table_version: 1.0.0
+protocol_version: 1.0.0
+reproducibility_manifest_ref: specification/manifests/reproducibility-manifest.yaml
+subjects:
+  - experiment_subject_id: RUNTM-006-8PROOF-MATRIX
+    subject_ref: specification/experiments/runtime/006-8proof-matrix.yaml
+    operation: verify-runtime-behavior
+    expected_predicates_ref: specification/expected/predicates/runtime-predicates.yaml#expected_predicates.RUNTM-006
+    expected_evaluation_ref: specification/expected/evaluations/runtime-evaluations.yaml#expected_evaluations.RUNTM-006
+    proof_matrix:
+      - proof_id: 001
+        name: Metrics Capture
+        description: execution benar-benar menghasilkan metrics
+        required_primitives:
+          - recordWorkExecutionMetrics
+          - getWorkMetrics
+      - proof_id: 002
+        name: Anomaly Detection
+        description: anomaly dapat terdeteksi dari runtime signal
+        required_primitives:
+          - detectMetricAnomalies
+      - proof_id: 003
+        name: Incident Creation
+        description: incident benar-benar tercipta
+        required_primitives:
+          - incident.create
+      - proof_id: 004
+        name: Acknowledge
+        description: lifecycle transition tersimpan
+        required_primitives:
+          - incident.acknowledge
+      - proof_id: 005
+        name: Recovery
+        description: recovery/circuit-breaker behavior benar-benar berjalan (verifikasi circuit breaker state dari execution context)
+        required_primitives:
+          - shouldOpenCircuitBreaker
+          - shouldResetCircuitBreaker
+          - recordObservedExecution
+      - proof_id: 006
+        name: Resolve
+        description: incident dapat diselesaikan
+        required_primitives:
+          - incident.resolve
+      - proof_id: 007
+        name: Close
+        description: lifecycle dapat ditutup secara canonical
+        required_primitives:
+          - incident.close
+      - proof_id: 008
+        name: Evidence / Isolation / Read-back
+        description: tenant isolation + evidence + durable read-back terbukti
+        required_primitives:
+          - recordRuntimeInvocation
+          - traceExecutionByDecision (tenant isolation filtering)
+          - getTraceForDecision (read-back evidence)
+measurement_apparatus:
+  calibration_report_id: GATE-C0-CALIBRATION-REPORT-001
+  calibration_report_ref: specification/calibration/calibration-report.yaml
+  oracle_certificate_id: SC-ORACLE-001
+  oracle_certificate_ref: specification/calibration/oracle-certificate.yaml
+  witness_certificate_id: SC-WITNESS-001
+  witness_certificate_ref: specification/calibration/witness-certificate.yaml
+  dataset_certificate_id: SC-DATASET-001
+  dataset_certificate_ref: specification/calibration/dataset-certificate.yaml
+  kernel_status_ref: specification/manifests/kernel-status.yaml
+  oracle:
+    certificate_id: SC-ORACLE-001
+    certificate_ref: specification/calibration/oracle-certificate.yaml
+    artifact_hash: sha256:cd39a4024c8f84a6d117890f1298f1690dc6f47f2734b090f63e35d5455efcda
+    instrument_ref: specification/oracle/oracle.yaml
+    instrument_hash: sha256:b92cfef11330bee312b23d0d5409703e61729bacc96d7c8fba41da7cdac1157f
+  witness:
+    certificate_id: SC-WITNESS-001
+    certificate_ref: specification/calibration/witness-certificate.yaml
+    artifact_hash: sha256:674ea467df0ed0e219e143e780a24610cbf26d0ff61798659cf6d72a12dc7d34
+    instrument_ref: specification/witness-integrity.yaml
+    instrument_hash: sha256:fbaa8738223d97884669d2b6fbdfc2e00015b40c5489712754bb4efd0e755a9f
+  dataset:
+    certificate_id: SC-DATASET-001
+    certificate_ref: specification/calibration/dataset-certificate.yaml
+    artifact_hash: sha256:577d034f086a5fcf3fb9f1c5a4a8d4e9b12573c45b98973ce5af4bfedab373d
+    instrument_ref: specification/dataset/reference-dataset.yaml
+    instrument_hash: sha256:2184fa695220d5d9306b66c61074a88692c73e57e9448bfea32321003ab85fbb
+  science_kernel:
+    bundle_id: SC-KERNEL-001
+    bundle_ref: science-kernel/bundle.manifest.yaml
+    bundle_hash: sha256:38c397c7feb52187e1108cdb8dd3db0d064b4bbd13e7c9801ef84114ab5c48a7
+output_layout:
+  actual_dir: execution/runs/run-006/actual
+  witness_dir: execution/runs/run-006/actual/witness
+  logs_dir: execution/runs/run-006/logs
+  metrics_dir: execution/runs/run-006/metrics
+  report_ref: execution/runs/run-006/report.yaml

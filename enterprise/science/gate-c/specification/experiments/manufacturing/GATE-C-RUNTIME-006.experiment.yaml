@@ -1,0 +1,83 @@
+version: "1.0.0"
+status: EXPERIMENT_SUBJECT
+experiment_subject_id: GATE-C-RUNTIME-006
+domain: runtime
+operation: verify-runtime-behavior
+operation_label: VerifyRuntimeBehavior8ProofMatrix
+schema_ref: specification/schemas/experiment.schema.yaml
+illustrative_source: specification/hypothesis.yaml empirical_content_gate_c domain guinea pig Runtime verification row
+
+predicate_anchor_map:
+  pred_a_runtime_metrics_captured:
+    expected_value: true
+    rationale: >
+      Execution harus benar-benar menghasilkan metrics yang valid dari runtime.
+      recordWorkExecutionMetrics dan getWorkMetrics harus berjalan sesuai spesifikasi.
+  pred_b_anomalies_detected:
+    expected_value: true
+    rationale: >
+      Anomaly dapat terdeteksi dari runtime signal menggunakan detectMetricAnomalies.
+      Tidak ada false negative dalam deteksi anomali.
+  pred_c_incident_created:
+    expected_value: true
+    rationale: >
+      Incident benar-benar tercipta ketika anomali terdeteksi. Lifecycle incident dimulai dengan benar.
+  pred_d_acknowledge_recorded:
+    expected_value: true
+    rationale: >
+      Lifecycle transition acknowledge tersimpan dengan benar di execution context.
+  pred_e_circuit_breaker_works:
+    expected_value: true
+    rationale: >
+      Recovery dan circuit-breaker behavior berjalan: shouldOpenCircuitBreaker dan shouldResetCircuitBreaker bekerja sesuai kondisi.
+  pred_f_incident_resolved:
+    expected_value: true
+    rationale: >
+      Incident dapat diselesaikan dan status berubah menjadi RESOLVED.
+  pred_g_incident_closed:
+    expected_value: true
+    rationale: >
+      Lifecycle incident dapat ditutup secara canonical tanpa state yang tersisa.
+  pred_h_tenant_isolation_works:
+    expected_value: true
+    rationale: >
+      Tenant isolation + evidence + durable read-back terbukti: traceExecutionByDecision dan getTraceForDecision memfilter tenantId dengan benar.
+
+input_fixtures:
+  documents:
+    - specification/fixtures/documents/proposal-draft-001.yaml
+  policies:
+    - specification/fixtures/policies/document-policy-001.yaml
+  contracts:
+    - specification/fixtures/contracts/document-contract.yaml
+  evidence:
+    - specification/fixtures/evidence/proposal-baseline-proofs.yaml
+
+transformation_contract:
+  id: TC-RUNTIME-VERIFY-006
+  name: Runtime 8-Proof Matrix Transformation Contract
+  reference: LEX-000RT
+  preconditions:
+    - P1 Semua runtime primitives ter-export dan dapat diimport
+    - P2 Core/B6 boundary terjaga, tidak ada perubahan core source
+    - P3 Semua dependency closure terpenuhi
+  postconditions:
+    - Q1 Semua 8 proof dalam matrix terverifikasi dengan status PASS
+    - Q2 Semua primitive dieksekusi (bukan hanya ada)
+    - Q3 Runtime behavior terbukti sesuai spesifikasi
+  invariants:
+    - I1 Tidak ada cross-tenant contamination dalam trace execution
+    - I2 Semua evidence append-only, tidak ada mutasi state yang tidak tercatat
+
+expected_truth_table_row_match: P1
+expected_constitutional_validity: true
+expected_predicates_ref: specification/expected/predicates/document-predicates.yaml#expected_predicates.GATE-C-DOC-PROPOSE
+oracle_spec_ref: specification/oracle/oracle.yaml
+expected_evaluation_ref: specification/expected/evaluations/document-evaluations.yaml#expected_evaluations.GATE-C-DOC-PROPOSE
+test_suite_refs:
+  - specification/tests/runtime/positive/suite.yaml
+
+notes: >
+  Experiment subject untuk RUNTIME-006 8-proof matrix verification.
+  Membuktikan bahwa semua runtime behavior berjalan sesuai spesifikasi, bukan hanya primitive yang ada.
+  Fokus pada execution dan behavior, bukan hanya existence.

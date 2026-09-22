@@ -1,10 +1,10 @@
 version: 1.0.0
 run_id: run-006
-control_type: NEGATIVE_CONTROL
-truth_table_row: N4
-expected_verdict: FAIL
-actual_verdict: FAIL
-replay_verdict: FAIL
+control_type: POSITIVE_CONTROL
+truth_table_row: P1
+expected_verdict: PASS
+actual_verdict: PASS
+replay_verdict: PASS
 genesis_evidence: EXISTS
 verification_spine:
   - step: VERIFY
@@ -25,6 +25,8 @@ verification_spine:
     status: PENDING
   - step: CLEAN_ENV_REPLAY
     status: PASS
+  - step: IDENTICAL_MANIFEST
+    status: PASS
   - step: IDENTICAL_EVIDENCE
     status: PASS
 definition_of_done:
@@ -32,6 +34,9 @@ definition_of_done:
   apparatus_identity: true
   integrity: true
   replay: true
+  witness_digest: true
+  manifest_digest: true
+  evidence_digest: true
   convergence: true
   clean_environment: true
-remaining_blocker: Negative Control N4 converged under frozen apparatus. Acceptance remains pending until 'pnpm eos gate-c accept run-006' evaluates the frozen acceptance contract and appends the proof ledger.
+remaining_blocker: Negative Control P1 converged under frozen apparatus. Acceptance remains pending until 'pnpm eos gate-c accept run-006' evaluates the frozen acceptance contract and appends the proof ledger.

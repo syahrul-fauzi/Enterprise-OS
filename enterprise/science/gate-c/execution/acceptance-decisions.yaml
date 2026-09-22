@@ -1438,5 +1438,25 @@ entries:
     decision: REJECTED
     counted_as_attempt: true
     proof_ledger_entry_id: null
-count: 71
-last_decision_hash: sha256:8602bce6c4c2447180c20f8af235c2b469e62c9347cb9358e074b0730a4a9b63
+  - decision_id: GATE-C-ACCEPT-DECISION-1790002188367
+    decided_at_utc: 2026-09-21T14:49:48.367Z
+    contract_id: GATE-C-ACCEPTANCE-CONTRACT-001
+    run_id: run-006
+    invariant_results:
+      canonical_convergence: true
+      evidence_exists: true
+      expected_predicate_achieved: true
+      expected_verdict_achieved: true
+      ledger_appended: true
+      manifest_valid: true
+      no_instrument_drift: true
+      replay_pass: true
+      witness_valid: true
+    blocking_conditions: []
+    hash_basis: sha256(canonical_json(decision_excluding_entry_hash))
+    entry_hash: sha256:b8d748a82583bcb60f54757e49e1ab88084b461e28ba074217589e36a2f46019
+    decision: ACCEPTED
+    counted_as_attempt: true
+    proof_ledger_entry_id: --subject-rel-path-035
+count: 72
+last_decision_hash: sha256:b8d748a82583bcb60f54757e49e1ab88084b461e28ba074217589e36a2f46019

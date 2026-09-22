@@ -1,12 +1,12 @@
 run_id: run-006
-subject_id: GATE-C-DOC-PROPOSE-N4
-transformation_contract_id: TC-DOC-PROPOSE-N4
-transformation_contract_name: Document Proposal Negative Control N4 Proof Gap
+subject_id: GATE-C-RUNTIME-006
+transformation_contract_id: TC-RUNTIME-VERIFY-006
+transformation_contract_name: Runtime 8-Proof Matrix Transformation Contract
 strategy_id: ts-reference-runtime/v1
 oracle_id: GATE-C-ORACLE-001
 science_kernel:
   bundle_id: SC-KERNEL-001
-  bundle_hash: sha256:a362389836b54a264631afb0613f37313d4371e55e5feacd304b3818166a50e8
+  bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
 measurement_apparatus:
   oracle:
     certificate_id: SC-ORACLE-001
@@ -22,18 +22,18 @@ measurement_apparatus:
     instrument_hash: sha256:2184fa695220d5d9306b66c61074a88692c73e57e9448bfea32321003ab85fbb
 input_identity:
   document_semantic_hash: sha256:78fb6ccd3f4a9e24055e7838eef4437542441f68e4342120d8e05aeb67e088bc
-  subject_hash: sha256:d2cb73161b872a65b494d2205d05064e1e634ac153b0d8211dc526f5fa9224c8
+  subject_hash: sha256:d08e6ba7fff36e69c77790badcdb9a9c0616a7731e937f884effa7787d44b67e
   document_fixture_hash: sha256:412b187195feb41ce1249ee8484a9743ece6ff0bad267cb1d83309cd1f428994
   policy_fixture_hash: sha256:6c51d8e797f568c02e99b089686436b902e9d5b14ffe99e15545f0f9d4d26a2c
-  contract_fixture_hash: sha256:e2242cba23c76062b9802b291f35eea52860c1fdbdc95f073bbbb4792faa051d
-  evidence_fixture_hash: sha256:ce9dcfd724ad9847db8bfb10088367debc37116a8c07534dd83ff487ee3430bd
+  contract_fixture_hash: sha256:bae20b825782cedf957649133e0d03ea42c24190439051c93f801e7f3a055de7
+  evidence_fixture_hash: sha256:a1d41566bf23cff1f7918cce48a764fc6f0bfdb0027763e280b6910c746ad0a2
 predicate_vector:
   pred_a_legitimate: true
   pred_b_meaning_preserved: true
-  pred_c_provable: false
-verdict: FAIL
-constitutional_validity: false
-truth_table_row: N4
+  pred_c_provable: true
+verdict: PASS
+constitutional_validity: true
+truth_table_row: P1
 witness_payloads:
   authority:
     authority_chain:
@@ -44,9 +44,17 @@ witness_payloads:
       - node_id: DocCon-001
         relation: DERIVES_AUTHORITY_FROM_POLICY
     conditions:
+      actual_outcome: AUTHORIZATION_APPROVED
+      boundary_triggered: null
       contract_operation_present: true
+      evidence_generated: true
+      expected_outcome: AUTHORIZATION_APPROVED
+      max_auto_approved_limit: 500
+      mutation_blocked: false
+      mutation_performed: true
       policy_chain_matches_contract: true
       proposer_role_allowed: true
+      total_procurement_amount: 0
     result: PASS
   meaning:
     semantic_input_hash: sha256:78fb6ccd3f4a9e24055e7838eef4437542441f68e4342120d8e05aeb67e088bc
@@ -55,11 +63,11 @@ witness_payloads:
     result: PASS
   proof:
     evidence_items:
-      - EVI-PRO-N4-001
-      - EVI-PRO-N4-002
+      - EVI-PRO-001
+      - EVI-PRO-002
     postconditions:
-      q1_status_recorded: false
+      q1_status_recorded: true
       q2_proposer_identity_recorded: true
       q3_audit_trail_recorded: true
-    constructive_entailment_complete: false
-    result: FAIL
+    constructive_entailment_complete: true
+    result: PASS

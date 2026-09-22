@@ -6,9 +6,17 @@ authority_chain:
   - node_id: DocCon-001
     relation: DERIVES_AUTHORITY_FROM_POLICY
 conditions:
+  actual_outcome: AUTHORIZATION_APPROVED
+  boundary_triggered: null
   contract_operation_present: true
+  evidence_generated: true
+  expected_outcome: AUTHORIZATION_APPROVED
+  max_auto_approved_limit: 500
+  mutation_blocked: false
+  mutation_performed: true
   policy_chain_matches_contract: true
   proposer_role_allowed: true
+  total_procurement_amount: 0
 cycle_detected: false
 integrity:
   chain_of_custody:
@@ -21,12 +29,12 @@ integrity:
     - actor: GATE-C-ORACLE-001
       state: CONSUMED_BY_ORACLE
   hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
-  lock_hash: sha256:4082fc2d4513a3a961fc8ab75b9d1c8370a8e9e3de11c536eaef7f7d8279dfed
-  locked_at: 2026-08-01T04:20:37.283Z
-operation: propose
+  lock_hash: sha256:f56f4fcc3b15858b6cdc7d3706f03bfaf80f9f0a5114f75f9349f954ee353ef3
+  locked_at: 2026-09-21T13:37:32.135Z
+operation: verify-runtime-behavior
 result: PASS
 role_attested: role-document-proposer-001
-subject_id: GATE-C-DOC-PROPOSE-N4
+subject_id: GATE-C-RUNTIME-006
 version: 1.0.0
 witness_id: run-006-witness-a
 witness_type: AUTHORITY

@@ -10,8 +10,8 @@ integrity:
     - actor: GATE-C-ORACLE-001
       state: CONSUMED_BY_ORACLE
   hash_basis: sha256(canonical_json(witness_excluding_integrity.lock_hash))
-  lock_hash: sha256:0dfee9ee6b28480da75e95a83fef7760e80434337bbc25f4d7f4064afb5333b0
-  locked_at: 2026-08-02T01:39:28.588Z
+  lock_hash: sha256:e6b899d53579b76d2f5573cc66468911beecba83c5400d94affb0e3e6537adb7
+  locked_at: 2026-09-21T13:28:26.893Z
 operation: propose
 result: PASS
 semantic_input_hash: sha256:78fb6ccd3f4a9e24055e7838eef4437542441f68e4342120d8e05aeb67e088bc

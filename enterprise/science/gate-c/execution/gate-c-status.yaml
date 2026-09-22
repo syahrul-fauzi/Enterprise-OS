@@ -2,19 +2,19 @@ version: 1.0.0
 status_projection_id: GATE-C-STATUS-001
 kind: OPERATIONAL_READ_MODEL
 status: ACTIVE
-projection_basis_hash: sha256:0a7120736752f24a156e70b74fd45b4d7c8e3c7482d06f99dbbfd0cd70b993be
+projection_basis_hash: sha256:972517e2983614835fbb20ef86af3bc18f6aae603ea916604cbf7ec029fa9522
 source_artifacts:
   coverage_matrix_ref: execution/coverage-matrix.yaml
   coverage_matrix_hash: sha256:1f74c4b0363d720ff699b7a2aac2fc63b32d0d29cae7749f6afaa91af56676e6
   proof_ledger_ref: execution/proof-ledger.yaml
-  proof_ledger_hash: sha256:d33a4849fe2299593f02a1d93bcae70800b656a34f6c3ef70c83823a85af7864
+  proof_ledger_hash: sha256:7c73d16d056880ee345d6e8ab2cba90da048447a2557545bd3a8b10352f7dccb
   acceptance_contract_ref: execution/acceptance-contract.yaml
   acceptance_contract_hash: sha256:82ff1a602b09b2ff917b31540b033ed7d5910eb707352aa06078d929cfdffc4b
   acceptance_decisions_ref: execution/acceptance-decisions.yaml
-  acceptance_decisions_hash: sha256:b3d0f009ef4341bdecf3b1ea23503d2da806e98e103ea2e6f5b97f65e63b7461
+  acceptance_decisions_hash: sha256:e4aa7e2474a71b5ea5dffa8b6648f6e94378e328be8fcdd9a6cb808029602362
   acceptance_reports_dir_ref: execution/acceptance
-  acceptance_evidence_file_count: 66
-  acceptance_evidence_inventory_hash: sha256:df3e18bb43ebecaf20f61b8bad44815e6299b8fe34faf3817a315c8bdda459f5
+  acceptance_evidence_file_count: 67
+  acceptance_evidence_inventory_hash: sha256:ef499b80d5d402c86acbfc66f467d40dbfb0759862511a78a32171cb23ea2f02
   constitution_summary_ref: workspace/foundation/evidence/verification/constitution-summary.json
   constitution_summary_hash: sha256:1441a828c9bfcaba2dfbabfa5161b15d6af6e77376c7800c79193a5743553a4d
   capability_dependency_constitution_ref: workspace/foundation/evidence/verification/capability-dependency-constitution.json
@@ -40,8 +40,8 @@ source_artifacts:
   n2_run_ref: execution/runs/run-004
   n4_run_ref: execution/runs/run-007
   append_only_proof_ledger_enforced: true
-  proof_ledger_entry_count: 34
-  last_entry_hash: sha256:fb060d92440643ba2a8a785f307e8982b61a3f4b0c14e6698ac2456ea4b96542
+  proof_ledger_entry_count: 35
+  last_entry_hash: sha256:6cfbd51dd780ba6092f591755baa2e5cd35daa67b628c9692cbcad2df514acc1
 operational_rule:
   evidence_immutability: HISTORICAL_EXECUTION_EVIDENCE_IMMUTABLE
   projection_mutability: READ_MODELS_AND_STATUS_AGGREGATIONS_MUTABLE
@@ -53,7 +53,7 @@ governance_capabilities:
     note: Acceptance reports are written once per acceptance decision id and cannot be overwritten in place.
   projection_regeneration:
     status: DETERMINISTIC_REBUILD_CAPABLE
-    basis_hash: sha256:0a7120736752f24a156e70b74fd45b4d7c8e3c7482d06f99dbbfd0cd70b993be
+    basis_hash: sha256:972517e2983614835fbb20ef86af3bc18f6aae603ea916604cbf7ec029fa9522
     note: Projection content is derived only from historical evidence, acceptance evidence, decision log, and proof ledger snapshot hashes.
   platform_governance_snapshot:
     status: HEALTHY
@@ -442,8 +442,8 @@ coverage:
       actual_diagnostic_predicate_failure: pred_a_legitimate
       convergence: CONVERGENT
     N2:
-      lifecycle_state: ACCEPTED
-      operational_status: PASS
+      lifecycle_state: VERIFIED
+      operational_status: VERIFIED
       expected_verdict: FAIL
       truth_table_row: N2
       scientific_role: NEGATIVE_CONTROL — Individually falsifies Predicate B (MeaningPreserved=false) while A and C are held constant at true.
@@ -453,8 +453,8 @@ coverage:
       actual_diagnostic_predicate_failure: pred_b_meaning_preserved
       expected_diagnostic_predicate_failure: pred_b_meaning_preserved
     N3:
-      lifecycle_state: ACCEPTED
-      operational_status: PASS
+      lifecycle_state: VERIFIED
+      operational_status: VERIFIED
       expected_verdict: FAIL
       truth_table_row: N3
       scientific_role: NEGATIVE_CONTROL — Jointly falsifies A and B (both false) while C is held constant at true.
@@ -464,8 +464,8 @@ coverage:
       actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_b_meaning_preserved
       expected_diagnostic_predicate_failure: pred_a_legitimate_and_pred_b_meaning_preserved
     N4:
-      lifecycle_state: ACCEPTED
-      operational_status: PASS
+      lifecycle_state: VERIFIED
+      operational_status: VERIFIED
       expected_verdict: FAIL
       truth_table_row: N4
       scientific_role: NEGATIVE_CONTROL — Individually falsifies Predicate C (Provable=false) while A and B are held constant at true.
@@ -475,8 +475,8 @@ coverage:
       actual_diagnostic_predicate_failure: pred_c_provable
       expected_diagnostic_predicate_failure: pred_c_provable
     N5:
-      lifecycle_state: ACCEPTED
-      operational_status: PASS
+      lifecycle_state: VERIFIED
+      operational_status: VERIFIED
       expected_verdict: FAIL
       truth_table_row: N5
       scientific_role: NEGATIVE_CONTROL — Jointly falsifies A and C (both false) while B is held constant at true.
@@ -486,8 +486,8 @@ coverage:
       actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_c_provable
       expected_diagnostic_predicate_failure: pred_a_legitimate_and_pred_c_provable
     N6:
-      lifecycle_state: ACCEPTED
-      operational_status: PASS
+      lifecycle_state: VERIFIED
+      operational_status: VERIFIED
       expected_verdict: FAIL
       truth_table_row: N6
       scientific_role: NEGATIVE_CONTROL — Jointly falsifies B and C (both false) while A is held constant at true.
@@ -497,8 +497,8 @@ coverage:
       actual_diagnostic_predicate_failure: pred_b_meaning_preserved_and_pred_c_provable
       expected_diagnostic_predicate_failure: pred_b_meaning_preserved_and_pred_c_provable
     N7:
-      lifecycle_state: ACCEPTED
-      operational_status: PASS
+      lifecycle_state: VERIFIED
+      operational_status: VERIFIED
       expected_verdict: FAIL
       truth_table_row: N7
       scientific_role: NEGATIVE_CONTROL — Jointly falsifies all three (A=false B=false C=false). Sanity check that all FAIL is recognized and diagnostic predicates enumerate all three.
@@ -511,10 +511,10 @@ coverage:
     n2:
       run_id: run-004
       truth_table_row: N2
-      status: ACCEPTED_COMPLETE
+      status: EXECUTED_NOT_ACCEPTED
       executed: true
-      acceptance_complete: true
-      lifecycle_state: ACCEPTED
+      acceptance_complete: false
+      lifecycle_state: VERIFIED
       actual_verdict: FAIL
       actual_diagnostic_predicate_failure: pred_b_meaning_preserved
       invariant_results:
@@ -539,15 +539,16 @@ coverage:
         replay_pass_reproducibility: true
         canonical_evidence_convergence: true
         science_kernel_unchanged: true
-        run_001_unchanged: true
-      blocking_conditions: []
+        run_001_unchanged: false
+      blocking_conditions:
+        - run_001_unchanged
     n3:
       run_id: run-008
       truth_table_row: N3
-      status: ACCEPTED_COMPLETE
+      status: EXECUTED_NOT_ACCEPTED
       executed: true
-      acceptance_complete: true
-      lifecycle_state: ACCEPTED
+      acceptance_complete: false
+      lifecycle_state: VERIFIED
       actual_verdict: FAIL
       actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_b_meaning_preserved
       invariant_results:
@@ -572,15 +573,16 @@ coverage:
         replay_pass_reproducibility: true
         canonical_evidence_convergence: true
         science_kernel_unchanged: true
-        run_001_unchanged: true
-      blocking_conditions: []
+        run_001_unchanged: false
+      blocking_conditions:
+        - run_001_unchanged
     n4:
       run_id: run-007
       truth_table_row: N4
-      status: ACCEPTED_COMPLETE
+      status: EXECUTED_NOT_ACCEPTED
       executed: true
-      acceptance_complete: true
-      lifecycle_state: ACCEPTED
+      acceptance_complete: false
+      lifecycle_state: VERIFIED
       actual_verdict: FAIL
       actual_diagnostic_predicate_failure: pred_c_provable
       invariant_results:
@@ -605,15 +607,16 @@ coverage:
         replay_pass_reproducibility: true
         canonical_evidence_convergence: true
         science_kernel_unchanged: true
-        run_001_unchanged: true
-      blocking_conditions: []
+        run_001_unchanged: false
+      blocking_conditions:
+        - run_001_unchanged
     n5:
       run_id: run-009
       truth_table_row: N5
-      status: ACCEPTED_COMPLETE
+      status: EXECUTED_NOT_ACCEPTED
       executed: true
-      acceptance_complete: true
-      lifecycle_state: ACCEPTED
+      acceptance_complete: false
+      lifecycle_state: VERIFIED
       actual_verdict: FAIL
       actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_c_provable
       invariant_results:
@@ -638,15 +641,16 @@ coverage:
         replay_pass_reproducibility: true
         canonical_evidence_convergence: true
         science_kernel_unchanged: true
-        run_001_unchanged: true
-      blocking_conditions: []
+        run_001_unchanged: false
+      blocking_conditions:
+        - run_001_unchanged
     n6:
       run_id: run-010
       truth_table_row: N6
-      status: ACCEPTED_COMPLETE
+      status: EXECUTED_NOT_ACCEPTED
       executed: true
-      acceptance_complete: true
-      lifecycle_state: ACCEPTED
+      acceptance_complete: false
+      lifecycle_state: VERIFIED
       actual_verdict: FAIL
       actual_diagnostic_predicate_failure: pred_b_meaning_preserved_and_pred_c_provable
       invariant_results:
@@ -671,15 +675,16 @@ coverage:
         replay_pass_reproducibility: true
         canonical_evidence_convergence: true
         science_kernel_unchanged: true
-        run_001_unchanged: true
-      blocking_conditions: []
+        run_001_unchanged: false
+      blocking_conditions:
+        - run_001_unchanged
     n7:
       run_id: run-011
       truth_table_row: N7
-      status: ACCEPTED_COMPLETE
+      status: EXECUTED_NOT_ACCEPTED
       executed: true
-      acceptance_complete: true
-      lifecycle_state: ACCEPTED
+      acceptance_complete: false
+      lifecycle_state: VERIFIED
       actual_verdict: FAIL
       actual_diagnostic_predicate_failure: pred_a_legitimate_and_pred_b_meaning_preserved_and_pred_c_provable
       invariant_results:
@@ -704,8 +709,9 @@ coverage:
         replay_pass_reproducibility: true
         canonical_evidence_convergence: true
         science_kernel_unchanged: true
-        run_001_unchanged: true
-      blocking_conditions: []
+        run_001_unchanged: false
+      blocking_conditions:
+        - run_001_unchanged
   verification_metrics:
     diagnostic_accuracy:
       formula: Correct Diagnostic Verdict / Executed Negative-Control Scenarios With Diagnostic Expectation
@@ -727,14 +733,14 @@ coverage:
       note: Counts observed drift against the frozen isolation snapshot across the P1 baseline and executed negative controls.
     acceptance_integrity:
       formula: Accepted Evidence / Acceptance Attempts
-      numerator: 10
-      denominator: 49
-      value: 0.20408163265306123
+      numerator: 11
+      denominator: 50
+      value: 0.22
       status: ACTIVE
       note: Counts append-only acceptance decisions recorded under the frozen acceptance contract.
 overall:
-  gate_c1_status: RATIFIABLE
-  currently_supported_claim: Gate C1 ratifiable; evidence corpus complete and governance invariants pass.
+  gate_c1_status: TECHNICALLY_COMPLETE_GOVERNANCE_RATIFICATION_PENDING
+  currently_supported_claim: Gate C1 evidence complete; governance ratification pending.
   constitutional_status: PASS
   dependency_constitution_status: PASS
   contract_registry_status: PASS

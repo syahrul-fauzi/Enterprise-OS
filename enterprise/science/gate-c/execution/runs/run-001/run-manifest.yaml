@@ -3,7 +3,7 @@ run_id: run-001
 gate: GATE-C
 gate_stage: GATE-C1
 evidence_class: CLASS_II_EXPERIMENTAL
-execution_timestamp_utc: 2026-08-02T01:39:28.588Z
+execution_timestamp_utc: 2026-09-21T13:28:26.893Z
 operator_id: eos-cli
 strategy_ids:
   - ts-reference-runtime/v1

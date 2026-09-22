@@ -2,7 +2,7 @@ version: 1.0.0
 ledger_id: GATE-C-PROOF-LEDGER-001
 status: ACTIVE
 append_only_enforced: true
-last_entry_hash: sha256:fb060d92440643ba2a8a785f307e8982b61a3f4b0c14e6698ac2456ea4b96542
+last_entry_hash: sha256:6cfbd51dd780ba6092f591755baa2e5cd35daa67b628c9692cbcad2df514acc1
 entries:
   - entry_id: GATE-C-GENESIS-001
     run_id: run-001
@@ -468,4 +468,18 @@ entries:
     hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
     entry_hash: sha256:fb060d92440643ba2a8a785f307e8982b61a3f4b0c14e6698ac2456ea4b96542
     previous_entry_hash: sha256:bb5e6c3876492bcf308b11cf58408ec4ed5b771d5962259c93ded4d068d780ad
-count: 34
+  - entry_id: --subject-rel-path-035
+    run_id: run-006
+    subject_id: GATE-C-RUNTIME-006
+    manifest_ref: execution/runs/run-006/run-manifest.yaml
+    report_ref: execution/runs/run-006/report.yaml
+    science_kernel_bundle_id: SC-KERNEL-001
+    science_kernel_bundle_hash: sha256:47c7582d04d56d7431d124b261d0a4460451a61a538afb68558454dce4add782
+    original_canonical_evidence_hash: sha256:a27bd1b91679c2f270c5f224777b19ec6683c7e56effeb78aa8fe5651da56a58
+    replay_canonical_evidence_hash: sha256:a27bd1b91679c2f270c5f224777b19ec6683c7e56effeb78aa8fe5651da56a58
+    convergence: true
+    verdict: PASS
+    hash_basis: sha256(canonical_json(entry_excluding_entry_hash))
+    entry_hash: sha256:6cfbd51dd780ba6092f591755baa2e5cd35daa67b628c9692cbcad2df514acc1
+    previous_entry_hash: sha256:fb060d92440643ba2a8a785f307e8982b61a3f4b0c14e6698ac2456ea4b96542
+count: 35

@@ -1,6 +1,6 @@
 version: 1.0.0
-verdict_id: run-001-original-verdict-001
-subject_id: GATE-C-DOC-PROPOSE
+verdict_id: run-006-original-verdict-001
+subject_id: GATE-C-RUNTIME-006
 verdict: PASS
 constitutional_validity: true
 truth_table_row_matched: P1
