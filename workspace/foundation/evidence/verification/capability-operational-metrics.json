@@ -1,8 +1,8 @@
 {
   "metrics_version": "1.0.0",
-  "metrics_digest": "3306cacbc25965ab4a0a3a5a2a933c114cd360ce33a6a55ab1aaa53d725622b5",
+  "metrics_digest": "39f4bb3706f865d42ede8a530b3c2d08951647cee02ceb34f528b888fa54c654",
   "summary": {
-    "total_capabilities": 16,
+    "total_capabilities": 22,
     "observed_capabilities": 13,
     "verified_capabilities": 13,
     "reproducible_capabilities": 8,
@@ -16,10 +16,8 @@
       "success_count": 7,
       "failure_count": 0,
       "reproducible_operation_count": 7,
-      "observed_products": [
-        "lawyershub"
-      ],
-      "metrics_digest": "1db630b2961be93c8f581bcfa51ff8b939dfbca3062f3fee16df69aa91cf6703"
+      "observed_products": [],
+      "metrics_digest": "84d0d151a5ad542d0ae926f36937b2f95158dc1300b501e8abb6329eec5e20d1"
     },
     {
       "capability_id": "api-platform",
@@ -28,10 +26,28 @@
       "success_count": 4,
       "failure_count": 0,
       "reproducible_operation_count": 4,
-      "observed_products": [
-        "lawyershub"
-      ],
-      "metrics_digest": "719b7beefab99d2a4f5351dbb6cc9f2cfc32fad1225b3cce71e4f03a1dc27d74"
+      "observed_products": [],
+      "metrics_digest": "37605abe122b467a36d5435a4b324a5b6b653b1c9baa8cb3e8d30b24696b4d0c"
+    },
+    {
+      "capability_id": "atomic-composition",
+      "execution_status": "DECLARED",
+      "invocation_count": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "reproducible_operation_count": 0,
+      "observed_products": [],
+      "metrics_digest": "babda110a0d0a80bdc8a5e4018e1804926c36faeb29df713bda577d2c22c4cc0"
+    },
+    {
+      "capability_id": "communication",
+      "execution_status": "DECLARED",
+      "invocation_count": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "reproducible_operation_count": 0,
+      "observed_products": [],
+      "metrics_digest": "3dd4715774062b3356c71fb9ff42b4a45066bc554f1d1a680ad29b7691de05ce"
     },
     {
       "capability_id": "connector-ecosystem",
@@ -40,10 +56,18 @@
       "success_count": 2,
       "failure_count": 0,
       "reproducible_operation_count": 0,
-      "observed_products": [
-        "lawyershub"
-      ],
-      "metrics_digest": "82a0a1fe93f7b30c52b86860b7744184c912b720bb3cd4d792918fdb9a583c5f"
+      "observed_products": [],
+      "metrics_digest": "2d3962849f20a661aefcfe9e011232ccf8b77a5d2f1b4622be5835801b0bddf6"
+    },
+    {
+      "capability_id": "consultation",
+      "execution_status": "DECLARED",
+      "invocation_count": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "reproducible_operation_count": 0,
+      "observed_products": [],
+      "metrics_digest": "4efdda5b78689fcfa5810438e4b42e657538c2d05fcebac52bb2b0bc7dac347b"
     },
     {
       "capability_id": "evidence-registry",
@@ -52,10 +76,8 @@
       "success_count": 10,
       "failure_count": 0,
       "reproducible_operation_count": 10,
-      "observed_products": [
-        "lawyershub"
-      ],
-      "metrics_digest": "876e275f5d97ab70aa83c42d1c51c722b3358946e3da2983e06b0da3337b2b4a"
+      "observed_products": [],
+      "metrics_digest": "5667a50557ef730145ec0511f4cc3e57a6c7e3520ef68da60c1eb743a4c0bdb7"
     },
     {
       "capability_id": "governance-evidence",
@@ -94,10 +116,8 @@
       "success_count": 3,
       "failure_count": 0,
       "reproducible_operation_count": 3,
-      "observed_products": [
-        "lawyershub"
-      ],
-      "metrics_digest": "3f67445ca02a100db9f011c4e7c9cc34dceb0445abd2b12c85832724fe9cf120"
+      "observed_products": [],
+      "metrics_digest": "493280343df13a7168569e7d3af9dec529bb7421fcabd0fdcbbb6d02be9d0155"
     },
     {
       "capability_id": "legal-case",
@@ -106,10 +126,8 @@
       "success_count": 0,
       "failure_count": 0,
       "reproducible_operation_count": 0,
-      "observed_products": [
-        "lawyershub"
-      ],
-      "metrics_digest": "db98369d6e77426e61fc5567d5e57972429f378fd804afe195d55a8251e1ea82"
+      "observed_products": [],
+      "metrics_digest": "f9e45b30779fd3e8c597641fd5ff01c0e07d76067e2fc93e62f48be4fb927684"
     },
     {
       "capability_id": "legal-document",
@@ -118,10 +136,8 @@
       "success_count": 0,
       "failure_count": 0,
       "reproducible_operation_count": 0,
-      "observed_products": [
-        "lawyershub"
-      ],
-      "metrics_digest": "f46d6914bb767d03cb58dcf1bf5e6045338b33538e5b14548a0c29692c06729e"
+      "observed_products": [],
+      "metrics_digest": "a07a4d6b9cb73d8546a8faebb3a22bcd713622319a03f160f9de6e218fd8ab68"
     },
     {
       "capability_id": "observability",
@@ -130,10 +146,8 @@
       "success_count": 3,
       "failure_count": 0,
       "reproducible_operation_count": 0,
-      "observed_products": [
-        "lawyershub"
-      ],
-      "metrics_digest": "0958ccb9b466a0e14d8956c750fbf568ab8124555ad7cb65b8829d751cb8c858"
+      "observed_products": [],
+      "metrics_digest": "c0fd63686fe814bfdd4b75d24f871c64a5ea887bed52ac2eca401bff5cb0b9ba"
     },
     {
       "capability_id": "requirement-management",
@@ -142,10 +156,8 @@
       "success_count": 11,
       "failure_count": 0,
       "reproducible_operation_count": 11,
-      "observed_products": [
-        "lawyershub"
-      ],
-      "metrics_digest": "d9fe15dd27a341be09f696bfc533777f1daddfd95e3d440804a2985258fe39bc"
+      "observed_products": [],
+      "metrics_digest": "e14511eb3e3137add872778509d10309269b2d017d9a820a908cac6ab4842e4d"
     },
     {
       "capability_id": "requirements-traceability-matrix",
@@ -154,10 +166,8 @@
       "success_count": 5,
       "failure_count": 0,
       "reproducible_operation_count": 5,
-      "observed_products": [
-        "lawyershub"
-      ],
-      "metrics_digest": "b58300c60ea0a1a054fae6a591f47aec0ee5970c803fb8209308c48830a89eb2"
+      "observed_products": [],
+      "metrics_digest": "622080124d318611a4d0415a5ea183cce46ef450a1d0a18b4dc47100f8628bd6"
     },
     {
       "capability_id": "security-hardening",
@@ -166,10 +176,28 @@
       "success_count": 19,
       "failure_count": 0,
       "reproducible_operation_count": 19,
-      "observed_products": [
-        "lawyershub"
-      ],
-      "metrics_digest": "4f37ecbdda0b79a65c445bcaa8e184bdaadeca1648698658a2cd855513298cb7"
+      "observed_products": [],
+      "metrics_digest": "3362285faf94e9efb03b8b871fd5e06ed39b181bf1536518deb55ebeab178667"
+    },
+    {
+      "capability_id": "service-directory",
+      "execution_status": "DECLARED",
+      "invocation_count": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "reproducible_operation_count": 0,
+      "observed_products": [],
+      "metrics_digest": "3a9da9eee32e689613d1528648b209767d49f44285515b2ce300357140c5964c"
+    },
+    {
+      "capability_id": "services-id",
+      "execution_status": "DECLARED",
+      "invocation_count": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "reproducible_operation_count": 0,
+      "observed_products": [],
+      "metrics_digest": "86b8c8be23fede63d33a3124c50cf66562434b5aa96ed426a5b26e2d16d70c23"
     },
     {
       "capability_id": "trust-framework",
@@ -182,16 +210,24 @@
       "metrics_digest": "6057a3984a4d32a73b14f661b1de47dc7c53428745183ec184cb91e9b58b9184"
     },
     {
+      "capability_id": "Work Inspection Agent",
+      "execution_status": "DECLARED",
+      "invocation_count": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "reproducible_operation_count": 0,
+      "observed_products": [],
+      "metrics_digest": "50e2eea85facde30c9184af44371789320556e17012b507c8ce3f8e4dd1aef82"
+    },
+    {
       "capability_id": "workflow-engine",
       "execution_status": "REPRODUCIBLE",
       "invocation_count": 8,
       "success_count": 8,
       "failure_count": 0,
       "reproducible_operation_count": 8,
-      "observed_products": [
-        "lawyershub"
-      ],
-      "metrics_digest": "a5460e6be56657d2d204bafee08d632e65aff9e4f50a695cb7b7de4c5e483623"
+      "observed_products": [],
+      "metrics_digest": "00a552ca16cf6e78abcc09c8d27bbd46d0a11a9c8895993bdf3d909e109085b6"
     }
   ],
   "claim_boundary": "Capability operational metrics summarize runtime invocation evidence observed during verified product execution. They provide operational certification input without changing capability contracts or artifact ownership boundaries."

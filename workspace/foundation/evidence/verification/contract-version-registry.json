@@ -1,24 +1,171 @@
 {
   "registry_version": "1.1.0",
-  "registry_digest": "1a7526f62ca3be837d2f70480e8be2fd289e9f10179c6645350dab01d517d7c8",
+  "registry_digest": "a1a531445860c7cc9a55b2cd0572e885eb880739a0a98d2215c9d83c9dbeb604",
   "summary": {
-    "total_contracts": 3,
-    "provider_bindings": 3,
-    "consumer_requirements": 3,
+    "total_contracts": 11,
+    "provider_bindings": 7,
+    "consumer_requirements": 12,
     "satisfied_requirements": 3,
-    "unsatisfied_requirements": 0,
+    "unsatisfied_requirements": 9,
     "multi_major_contracts": 0,
     "pinned_consumer_requirements": 3,
     "unbounded_consumer_requirements": 0,
     "ambiguous_provider_bindings": 0,
     "stable_contracts_with_multi_major": 0,
-    "overall_status": "PASS"
+    "overall_status": "FAIL"
   },
   "contracts": [
     {
+      "contract_name": "CommunicationService",
+      "provider_count": 1,
+      "consumer_count": 0,
+      "declared_versions": [
+        "1.0.0"
+      ],
+      "declared_major_versions": [
+        1
+      ],
+      "stable_provider_count": 1,
+      "pinned_consumer_count": 0,
+      "unbounded_consumer_count": 0,
+      "ambiguous_consumer_count": 0,
+      "providers": [
+        {
+          "capability_id": "communication",
+          "version": "1.0.0",
+          "manifest_ref": "workspace/capabilities/communication/definition/capability.yaml",
+          "stability": "stable"
+        }
+      ],
+      "consumers": [],
+      "overall_status": "PASS"
+    },
+    {
+      "contract_name": "ConnectorEcosystemProvider",
+      "provider_count": 0,
+      "consumer_count": 1,
+      "declared_versions": [],
+      "declared_major_versions": [],
+      "stable_provider_count": 0,
+      "pinned_consumer_count": 0,
+      "unbounded_consumer_count": 0,
+      "ambiguous_consumer_count": 0,
+      "providers": [],
+      "consumers": [
+        {
+          "capability_id": "communication",
+          "range": ">=0.1 <0.2",
+          "declared_dependency_ids": [
+            "connector-ecosystem",
+            "core-runtime",
+            "evidence-registry",
+            "governance-evidence",
+            "identity",
+            "security-hardening"
+          ],
+          "compatible_providers": [],
+          "compatible_provider_count": 0,
+          "provider_resolution_status": "UNRESOLVED",
+          "range_policy_status": "BOUNDED",
+          "range_policy_detail": "Range \">=0.1 <0.2\" is bounded, but not to a single major-version lane.",
+          "status": "FAIL"
+        }
+      ],
+      "overall_status": "FAIL"
+    },
+    {
+      "contract_name": "ConsultationService",
+      "provider_count": 1,
+      "consumer_count": 0,
+      "declared_versions": [
+        "1.0.0"
+      ],
+      "declared_major_versions": [
+        1
+      ],
+      "stable_provider_count": 0,
+      "pinned_consumer_count": 0,
+      "unbounded_consumer_count": 0,
+      "ambiguous_consumer_count": 0,
+      "providers": [
+        {
+          "capability_id": "consultation",
+          "version": "1.0.0",
+          "manifest_ref": "workspace/capabilities/consultation/definition/capability.yaml",
+          "stability": "experimental"
+        }
+      ],
+      "consumers": [],
+      "overall_status": "PASS"
+    },
+    {
+      "contract_name": "CoreRuntimeProvider",
+      "provider_count": 0,
+      "consumer_count": 1,
+      "declared_versions": [],
+      "declared_major_versions": [],
+      "stable_provider_count": 0,
+      "pinned_consumer_count": 0,
+      "unbounded_consumer_count": 0,
+      "ambiguous_consumer_count": 0,
+      "providers": [],
+      "consumers": [
+        {
+          "capability_id": "communication",
+          "range": ">=0.1 <0.2",
+          "declared_dependency_ids": [
+            "connector-ecosystem",
+            "core-runtime",
+            "evidence-registry",
+            "governance-evidence",
+            "identity",
+            "security-hardening"
+          ],
+          "compatible_providers": [],
+          "compatible_provider_count": 0,
+          "provider_resolution_status": "UNRESOLVED",
+          "range_policy_status": "BOUNDED",
+          "range_policy_detail": "Range \">=0.1 <0.2\" is bounded, but not to a single major-version lane.",
+          "status": "FAIL"
+        }
+      ],
+      "overall_status": "FAIL"
+    },
+    {
+      "contract_name": "EvidenceRegistryProvider",
+      "provider_count": 0,
+      "consumer_count": 1,
+      "declared_versions": [],
+      "declared_major_versions": [],
+      "stable_provider_count": 0,
+      "pinned_consumer_count": 0,
+      "unbounded_consumer_count": 0,
+      "ambiguous_consumer_count": 0,
+      "providers": [],
+      "consumers": [
+        {
+          "capability_id": "consultation",
+          "range": ">=0.1 <0.2",
+          "declared_dependency_ids": [
+            "core-runtime",
+            "evidence-registry",
+            "legal-case",
+            "workflow-engine"
+          ],
+          "compatible_providers": [],
+          "compatible_provider_count": 0,
+          "provider_resolution_status": "UNRESOLVED",
+          "range_policy_status": "BOUNDED",
+          "range_policy_detail": "Range \">=0.1 <0.2\" is bounded, but not to a single major-version lane.",
+          "status": "FAIL"
+        }
+      ],
+      "overall_status": "FAIL"
+    },
+    {
       "contract_name": "GovernanceEvidenceProvider",
       "provider_count": 1,
-      "consumer_count": 1,
+      "consumer_count": 4,
       "declared_versions": [
         "1.0.0"
       ],
@@ -60,9 +207,56 @@
           "range_policy_status": "PINNED_MAJOR",
           "range_policy_detail": "Range \">=1 <2\" is pinned to major 1 with upper bound <2.",
           "status": "PASS"
+        },
+        {
+          "capability_id": "communication",
+          "range": ">=0.1 <0.2",
+          "declared_dependency_ids": [
+            "connector-ecosystem",
+            "core-runtime",
+            "evidence-registry",
+            "governance-evidence",
+            "identity",
+            "security-hardening"
+          ],
+          "compatible_providers": [],
+          "compatible_provider_count": 0,
+          "provider_resolution_status": "UNRESOLVED",
+          "range_policy_status": "BOUNDED",
+          "range_policy_detail": "Range \">=0.1 <0.2\" is bounded, but not to a single major-version lane.",
+          "status": "FAIL"
+        },
+        {
+          "capability_id": "requirement-management",
+          "range": ">=0.1 <0.2",
+          "declared_dependency_ids": [
+            "core-runtime",
+            "governance-evidence",
+            "workflow-engine"
+          ],
+          "compatible_providers": [],
+          "compatible_provider_count": 0,
+          "provider_resolution_status": "UNRESOLVED",
+          "range_policy_status": "BOUNDED",
+          "range_policy_detail": "Range \">=0.1 <0.2\" is bounded, but not to a single major-version lane.",
+          "status": "FAIL"
+        },
+        {
+          "capability_id": "workflow-engine",
+          "range": ">=0.1 <0.2",
+          "declared_dependency_ids": [
+            "core-runtime",
+            "governance-evidence"
+          ],
+          "compatible_providers": [],
+          "compatible_provider_count": 0,
+          "provider_resolution_status": "UNRESOLVED",
+          "range_policy_status": "BOUNDED",
+          "range_policy_detail": "Range \">=0.1 <0.2\" is bounded, but not to a single major-version lane.",
+          "status": "FAIL"
         }
       ],
-      "overall_status": "PASS"
+      "overall_status": "FAIL"
     },
     {
       "contract_name": "GovernanceReadModelProvider",
@@ -114,6 +308,62 @@
       "overall_status": "PASS"
     },
     {
+      "contract_name": "LegalCaseProvider",
+      "provider_count": 0,
+      "consumer_count": 1,
+      "declared_versions": [],
+      "declared_major_versions": [],
+      "stable_provider_count": 0,
+      "pinned_consumer_count": 0,
+      "unbounded_consumer_count": 0,
+      "ambiguous_consumer_count": 0,
+      "providers": [],
+      "consumers": [
+        {
+          "capability_id": "consultation",
+          "range": ">=0.1 <0.2",
+          "declared_dependency_ids": [
+            "core-runtime",
+            "evidence-registry",
+            "legal-case",
+            "workflow-engine"
+          ],
+          "compatible_providers": [],
+          "compatible_provider_count": 0,
+          "provider_resolution_status": "UNRESOLVED",
+          "range_policy_status": "BOUNDED",
+          "range_policy_detail": "Range \">=0.1 <0.2\" is bounded, but not to a single major-version lane.",
+          "status": "FAIL"
+        }
+      ],
+      "overall_status": "FAIL"
+    },
+    {
+      "contract_name": "RequirementService",
+      "provider_count": 1,
+      "consumer_count": 0,
+      "declared_versions": [
+        "1.0.0"
+      ],
+      "declared_major_versions": [
+        1
+      ],
+      "stable_provider_count": 1,
+      "pinned_consumer_count": 0,
+      "unbounded_consumer_count": 0,
+      "ambiguous_consumer_count": 0,
+      "providers": [
+        {
+          "capability_id": "requirement-management",
+          "version": "1.0.0",
+          "manifest_ref": "workspace/capabilities/requirement-management/definition/capability.yaml",
+          "stability": "stable"
+        }
+      ],
+      "consumers": [],
+      "overall_status": "PASS"
+    },
+    {
       "contract_name": "TrustFrameworkProvider",
       "provider_count": 1,
       "consumer_count": 1,
@@ -157,6 +407,63 @@
         }
       ],
       "overall_status": "PASS"
+    },
+    {
+      "contract_name": "WorkflowEngineProvider",
+      "provider_count": 1,
+      "consumer_count": 2,
+      "declared_versions": [
+        "1.0.0"
+      ],
+      "declared_major_versions": [
+        1
+      ],
+      "stable_provider_count": 1,
+      "pinned_consumer_count": 0,
+      "unbounded_consumer_count": 0,
+      "ambiguous_consumer_count": 0,
+      "providers": [
+        {
+          "capability_id": "workflow-engine",
+          "version": "1.0.0",
+          "manifest_ref": "workspace/capabilities/workflow-engine/definition/capability.yaml",
+          "stability": "stable"
+        }
+      ],
+      "consumers": [
+        {
+          "capability_id": "consultation",
+          "range": ">=0.1 <0.2",
+          "declared_dependency_ids": [
+            "core-runtime",
+            "evidence-registry",
+            "legal-case",
+            "workflow-engine"
+          ],
+          "compatible_providers": [],
+          "compatible_provider_count": 0,
+          "provider_resolution_status": "UNRESOLVED",
+          "range_policy_status": "BOUNDED",
+          "range_policy_detail": "Range \">=0.1 <0.2\" is bounded, but not to a single major-version lane.",
+          "status": "FAIL"
+        },
+        {
+          "capability_id": "requirement-management",
+          "range": ">=0.1 <0.2",
+          "declared_dependency_ids": [
+            "core-runtime",
+            "governance-evidence",
+            "workflow-engine"
+          ],
+          "compatible_providers": [],
+          "compatible_provider_count": 0,
+          "provider_resolution_status": "UNRESOLVED",
+          "range_policy_status": "BOUNDED",
+          "range_policy_detail": "Range \">=0.1 <0.2\" is bounded, but not to a single major-version lane.",
+          "status": "FAIL"
+        }
+      ],
+      "overall_status": "FAIL"
     }
   ],
   "claim_boundary": "Contract Version Registry is the audit projection of capability contract providers, consumer version ranges, and compatibility resolved through declared capability dependencies. It also classifies whether consumer ranges are major-pinned or open-ended and whether provider resolution remains deterministic as contracts evolve."

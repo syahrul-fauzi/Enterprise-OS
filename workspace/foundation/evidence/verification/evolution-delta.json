@@ -5,7 +5,7 @@
     {
       "product_id": "lawyershub",
       "capability_new": 0,
-      "capability_shared": 1,
+      "capability_shared": 2,
       "core_delta": "UNVERIFIED",
       "experience_module_delta": "UNVERIFIED",
       "policy_delta": "UNVERIFIED",
@@ -14,7 +14,7 @@
     {
       "product_id": "ilc",
       "capability_new": 0,
-      "capability_shared": 1,
+      "capability_shared": 2,
       "core_delta": "UNVERIFIED",
       "experience_module_delta": "UNVERIFIED",
       "policy_delta": "UNVERIFIED",

@@ -1,15 +1,15 @@
 {
-  "session_id": "governance-session:a8b570e4c753419a",
-  "session_digest": "a8b570e4c753419a6e324c50abd093353a83e76f924b0634d275e4ebb60198ef",
+  "session_id": "governance-session:f7bdbdd2174ecc70",
+  "session_digest": "f7bdbdd2174ecc70abf8a2918d8dad9a6e076f075aeeaed6337c88112ab62135",
   "session_status": "COMPLETED",
   "execution_scope": "verify-foundation",
-  "started_at_utc": "2026-08-05T04:29:06.623Z",
-  "completed_at_utc": "2026-08-05T04:29:08.057Z",
+  "started_at_utc": "2026-09-24T13:26:12.511Z",
+  "completed_at_utc": "2026-09-24T13:26:14.316Z",
   "constitution": {
     "constitution_version": "1.0.0",
     "law_profile": "enterprise",
-    "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
-    "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856"
+    "constitutional_digest": "e1678cdf052a59c44ef39ded05f2c568566fa10a86d4518d2144d6bf9bd3e02c",
+    "proof_digest": "8d6fd92b168104c5c35eff6e7ec22531401090bcb700c2e7e5c6c603239208fe"
   },
   "trust_context": {
     "attestation_profile": "local_signed",
@@ -24,9 +24,9 @@
     }
   },
   "inputs": {
-    "constitution_report_digest": "a1a858b63f6f950c6bbaa77303f9549534a3693b7b9eb8affa622e67bb187e7e",
+    "constitution_report_digest": "091e222e8d82be3eda7a5a550a4a4d937fc67b64ee55d834efe12caf8d5375ba",
     "constitutional_fingerprint": {
-      "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
+      "declared_graph_digest": "3d027cfd003b4b8693c1810c0b727be1c52223cd81e1113a83c82b155ccc60a8",
       "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
       "projection_api_version": "1.0.0",
       "constitution_version": "1.0.0"
@@ -34,19 +34,19 @@
   },
   "law_results": {
     "count": 8,
-    "digest": "b4af5462cc01133d767945fcee9b5b159979b3fd282869dfed4dec351759eccf"
+    "digest": "8369acebe3dfc4040780c7dc46bb34350e61467b07d1e4e1a6b32ba841cc3757"
   },
   "evidence_packages": {
     "count": 8,
-    "digest": "a1ddc5ef2b676b5348c6d988bb0d7bb8b2256e49a84cea99b3528a42d6aa9712"
+    "digest": "60f62edb49b66de97dd7684ad3e2410cbb41fe45f786350c2f81d9e2e467e9cb"
   },
   "certificates": {
     "count": 8,
-    "digest": "27f214ab3eca9caff87ed1e02bec70cd95044987beaf4c2c78a4e9a870069621"
+    "digest": "02ac6fc09dec20afead8f0938c1ca9aedb4eac95cd67b246183e239893dffa85"
   },
   "attestations": {
     "event_count": 16,
-    "digest": "33bdd059f7f858850fa8771ece85c5a38012f962c4cfc81c3d532267b2c55295",
+    "digest": "6322a96f19adf88bd936d31036d5e3b3a1e80536eba99e04644b041bfa0f4773",
     "event_types": [
       "AttestationCreated",
       "AttestationVerified"
@@ -61,23 +61,23 @@
     "terminal_event_count": 0
   },
   "reports": {
-    "claims_digest": "b54a66476fbf88e4207c392f70689bd9dbe15237d78e5ed262345f8ef9778c5f",
-    "summary_digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf",
-    "proof_bundle_id": "constitution-proof-bundle:2f9cdceb22189118",
-    "proof_bundle_digest": "2f9cdceb221891184a7488a49b8cfc5bb34c807acb5b339b5ad9ddff5320a42e"
+    "claims_digest": "995f1509b5daf6a47240d1b493deea3d06a9a9b2e23f95b8df568d705196aec0",
+    "summary_digest": "92614f877c9f719cf66f74b16cea10e94e99ef06c22c51ed9b528e4fdf43754e",
+    "proof_bundle_id": "constitution-proof-bundle:f8e6adc8922f987b",
+    "proof_bundle_digest": "f8e6adc8922f987b95b45756e58c85935e0e366bf4b3c34dfab58039108b05d1"
   },
   "session_boundary": "Governance session is the provenance aggregate for a single governance verification execution. Read models are projected from the stable session provenance and then attached as session outputs without changing the session identity.",
-  "session_projection_digest": "75aa53f0c0028af7b203fc158ebfe53a79b49e3184fd840d310390465429b94d",
+  "session_projection_digest": "7fbd72f2a843fc84f894b0bb0d468e42a629e516d389030dc1b57f1232b17620",
   "read_models": {
-    "summary_view_id": "governance-view:summary:f127c130ae2f9c9f",
-    "summary_view_digest": "f127c130ae2f9c9ff99c25dbb1cdd30961ec12059625b72ce1b1414add4d9d86",
-    "claims_view_id": "governance-view:claims:2ffabc8b18da7a95",
-    "claims_view_digest": "2ffabc8b18da7a958cc1b2f7c6cbed5bb05959c58d75747b5304544981165c9f",
-    "health_view_id": "governance-view:health:8f022484e2cba657",
-    "health_view_digest": "8f022484e2cba6572aa6d9567204a9c5ea54554433bec1a44eaa650d7299b0a3",
-    "dashboard_view_id": "governance-view:dashboard:6b10083300237f77",
-    "dashboard_view_digest": "6b10083300237f77202f497ce2a9fe638e023460ee5c380a022c76c79d057383",
-    "metrics_id": "governance-read-model-metrics:b9c3ea2becf0cc06",
-    "metrics_digest": "b9c3ea2becf0cc064f82989bc611956c7d6ebb2e906d582e9c4f97644e8af30b"
+    "summary_view_id": "governance-view:summary:4eb69eea3b47f509",
+    "summary_view_digest": "4eb69eea3b47f509630d3100cb33ab7f28c3e94766ae3e27cd453020f895e1fc",
+    "claims_view_id": "governance-view:claims:51b70578d901f565",
+    "claims_view_digest": "51b70578d901f56539b4b1980acf297fe921cff1a5381ed715975120808fdce7",
+    "health_view_id": "governance-view:health:9b9e53d132fb9a8d",
+    "health_view_digest": "9b9e53d132fb9a8dc4ea7933d48b922a8c8a7c378993a5ab8ad785ea4d5390fc",
+    "dashboard_view_id": "governance-view:dashboard:8beecb4bafdae12c",
+    "dashboard_view_digest": "8beecb4bafdae12c1fa6b499721a0d66b379945b75bca3058d59400ad1898c7f",
+    "metrics_id": "governance-read-model-metrics:80a36c440a9209a2",
+    "metrics_digest": "80a36c440a9209a28b514c69a79c32b7dffd7813ab49c4923473659f654f2ff5"
   }
 }

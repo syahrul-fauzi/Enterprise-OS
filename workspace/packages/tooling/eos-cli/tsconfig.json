@@ -13,6 +13,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "types": ["node"],
+    "ignoreDeprecations": "6.0",
     "baseUrl": "./",
     "paths": {
       "@repo/core-capability-registry": ["../../packages/core/capability-registry/dist/src/index.js"]

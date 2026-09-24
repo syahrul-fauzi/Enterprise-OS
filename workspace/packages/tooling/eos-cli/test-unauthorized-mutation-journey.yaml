@@ -1,0 +1,19 @@
+work_id: EOS-JOURNEY-007
+milestone: NEXUS-staging-test
+completed_at: ""
+verdict: UNVERIFIED
+evidence_artifacts: []
+checks_passed: []
+checks_failed: []
+next_work_id: EOS-JOURNEY-007-W02
+next_work_technical_id: TEST-006
+next_work_title: "NEXUS testing: unauthorized state mutation test"
+next_work_description: "NEXUS testing: mencoba mutasi state dengan actor yang tidak terotorisasi - verifikasi mutation ditolak"
+next_work_milestones:
+  - dispatch_initiated: ""
+  - execution_completed: ""
+  - proof_written: ""
+  - state_transitioned: ""
+next_milestone: verify_nexus_pipeline
+phase2_complete: false
+phase3_complete: false

@@ -11,8 +11,8 @@
       "id": "product:lawyershub",
       "type": "product",
       "label": "lawyershub",
-      "manifest_ref": "workspace/apps/lawyershub/workspace.manifest.ts",
-      "governance_status": "UNVERIFIED"
+      "manifest_ref": null,
+      "governance_status": "INVALID"
     },
     {
       "id": "product:ilc",
@@ -36,6 +36,20 @@
       "governance_status": "VALID"
     },
     {
+      "id": "capability:atomic-composition",
+      "type": "capability",
+      "label": "Atomic Work Composition",
+      "manifest_ref": "workspace/capabilities/atomic-composition/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
+      "id": "capability:communication",
+      "type": "capability",
+      "label": "Communication Adapter Layer",
+      "manifest_ref": "workspace/capabilities/communication/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
       "id": "capability:connector-ecosystem",
       "type": "capability",
       "label": "Connector Ecosystem",
@@ -43,11 +57,18 @@
       "governance_status": "VALID"
     },
     {
+      "id": "capability:consultation",
+      "type": "capability",
+      "label": "Consultation Management",
+      "manifest_ref": "workspace/capabilities/consultation/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
       "id": "capability:evidence-registry",
       "type": "capability",
       "label": "Evidence Registry",
       "manifest_ref": "workspace/capabilities/evidence-registry/definition/capability.yaml",
-      "governance_status": "INVALID"
+      "governance_status": "VALID"
     },
     {
       "id": "capability:governance-evidence",
@@ -75,7 +96,7 @@
       "type": "capability",
       "label": "Knowledge Graph",
       "manifest_ref": "workspace/capabilities/knowledge-graph/definition/capability.yaml",
-      "governance_status": "INVALID"
+      "governance_status": "VALID"
     },
     {
       "id": "capability:legal-case",
@@ -103,7 +124,7 @@
       "type": "capability",
       "label": "Requirement Management",
       "manifest_ref": "workspace/capabilities/requirement-management/definition/capability.yaml",
-      "governance_status": "INVALID"
+      "governance_status": "VALID"
     },
     {
       "id": "capability:requirements-traceability-matrix",
@@ -120,10 +141,31 @@
       "governance_status": "VALID"
     },
     {
+      "id": "capability:service-directory",
+      "type": "capability",
+      "label": "Service Directory",
+      "manifest_ref": "workspace/capabilities/service-directory/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
+      "id": "capability:services-id",
+      "type": "capability",
+      "label": "Service Request Management",
+      "manifest_ref": "workspace/capabilities/services-id/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
       "id": "capability:trust-framework",
       "type": "capability",
       "label": "Trust Framework",
       "manifest_ref": "workspace/capabilities/trust-framework/definition/capability.yaml",
+      "governance_status": "VALID"
+    },
+    {
+      "id": "capability:Work Inspection Agent",
+      "type": "capability",
+      "label": "Work Inspection Agent",
+      "manifest_ref": "workspace/capabilities/work-inspection/definition/capability.yaml",
       "governance_status": "VALID"
     },
     {
@@ -136,21 +178,6 @@
   ],
   "edges": [
     {
-      "from": "product:lawyershub",
-      "to": "capability:legal-case",
-      "relation": "uses"
-    },
-    {
-      "from": "product:lawyershub",
-      "to": "capability:legal-document",
-      "relation": "uses"
-    },
-    {
-      "from": "product:lawyershub",
-      "to": "capability:requirement-management",
-      "relation": "uses"
-    },
-    {
       "from": "product:services-id",
       "to": "capability:requirement-management",
       "relation": "declares"
@@ -204,6 +231,11 @@
       "from": "product:ilc",
       "to": "capability:evidence-registry",
       "relation": "declares"
+    },
+    {
+      "from": "capability:agent-orchestration",
+      "to": "capability:workflow-engine",
+      "relation": "depends_on"
     },
     {
       "from": "capability:api-platform",
@@ -236,20 +268,185 @@
       "relation": "depends_on"
     },
     {
+      "from": "capability:communication",
+      "to": "capability:connector-ecosystem",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:communication",
+      "to": "capability:evidence-registry",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:communication",
+      "to": "capability:governance-evidence",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:communication",
+      "to": "capability:identity",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:communication",
+      "to": "capability:security-hardening",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:connector-ecosystem",
+      "to": "capability:api-platform",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:connector-ecosystem",
+      "to": "capability:security-hardening",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:consultation",
+      "to": "capability:evidence-registry",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:consultation",
+      "to": "capability:legal-case",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:consultation",
+      "to": "capability:workflow-engine",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:evidence-registry",
+      "to": "capability:governance-evidence",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:evidence-registry",
+      "to": "capability:trust-framework",
+      "relation": "depends_on"
+    },
+    {
       "from": "capability:governance-evidence",
       "to": "capability:trust-framework",
       "relation": "depends_on"
     },
     {
       "from": "capability:governance-read-model",
+      "to": "capability:evidence-registry",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:governance-read-model",
+      "to": "capability:governance-evidence",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:knowledge-graph",
+      "to": "capability:evidence-registry",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:legal-case",
+      "to": "capability:knowledge-graph",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:legal-case",
+      "to": "capability:legal-document",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:legal-case",
+      "to": "capability:workflow-engine",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:legal-document",
+      "to": "capability:knowledge-graph",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:legal-document",
+      "to": "capability:security-hardening",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:observability",
+      "to": "capability:evidence-registry",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:observability",
+      "to": "capability:governance-evidence",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:requirement-management",
+      "to": "capability:governance-evidence",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:requirement-management",
+      "to": "capability:workflow-engine",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:requirements-traceability-matrix",
+      "to": "capability:evidence-registry",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:requirements-traceability-matrix",
+      "to": "capability:knowledge-graph",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:requirements-traceability-matrix",
+      "to": "capability:requirement-management",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:security-hardening",
+      "to": "capability:identity",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:security-hardening",
+      "to": "capability:trust-framework",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:service-directory",
+      "to": "capability:identity",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:service-directory",
+      "to": "capability:workflow-engine",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:services-id",
+      "to": "capability:service-directory",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:services-id",
+      "to": "capability:workflow-engine",
+      "relation": "depends_on"
+    },
+    {
+      "from": "capability:workflow-engine",
       "to": "capability:governance-evidence",
       "relation": "depends_on"
     }
   ],
   "summary": {
-    "node_count": 19,
-    "edge_count": 22,
+    "node_count": 25,
+    "edge_count": 53,
     "product_nodes": 3,
-    "capability_nodes": 16
+    "capability_nodes": 22
   }
 }

@@ -1,0 +1,292 @@
+{
+  "schema": "eos-artifacts.v1",
+  "repository": "Enterprise-OS",
+  "discovery": {
+    "root": true,
+    "workspace": true
+  },
+  "artifacts": [
+    {
+      "path": ".eos-state",
+      "scope": "root",
+      "classification": "STATE",
+      "runtime_dependency": "REQUIRED",
+      "source_of_truth": "VERIFIED",
+      "persistence_required": true,
+      "portable_required": true,
+      "generated": false,
+      "secret": false,
+      "submodule_candidate": false,
+      "action": "GATEC_COMPLETE",
+      "gateb_persistence": {
+        "persist": true,
+        "why": ".eos-state root berisi operational memory dan journey state EOS yang menjadi sumber tunggal progres journey, current-journey.yaml, dan proof artefak yang harus dipertahankan antar instance.",
+        "source_of_truth": "EOS Self-Execution Engine (satu-satunya actor yang authorized menulis ke root state)",
+        "portable": true,
+        "runtime_required": true,
+        "git_strategy": "TRACK_IN_MAIN_REPO"
+      },
+      "gateb_trace": [
+        "/root/Enterprise-OS/rl4-standalone-inventory.ts",
+        "/root/Enterprise-OS/run-c20-verification.ts",
+        "/root/Enterprise-OS/run-c19-verification.ts",
+        "/root/Enterprise-OS/workspace/verify-ilc-p0-t3.ts",
+        "/root/Enterprise-OS/workspace/packages/tooling/eos-cli/src/commands/verify-portfolio.ts",
+        "/root/Enterprise-OS/workspace/packages/tooling/eos-cli/src/evidence-artifact-runtime.ts",
+        "/root/Enterprise-OS/workspace/packages/tooling/eos-cli/src/capability/runtime/graph-runtime.ts"
+      ],
+      "gateb_writers": ["system/standalone-tools", "recon/audit-agents", "eos-verification/verification-engine", "eos-cli/command-execution"],
+      "gateb_readers": ["command-center/reporting", "recon/analysis", "eos-cli/portfolio-verification", "eos-cli/graph-runtime", "governance-catalog/runtime"],
+      "gatec_data_classification": {
+        "contains_secrets": false,
+        "data_types": ["work-items", "recon-reports", "evidence", "verification-results"],
+        "sensitivity_level": "INTERNAL",
+        "compliant": true
+      }
+    },
+    {
+      "path": "workspace/.eos-state",
+      "scope": "workspace",
+      "classification": "STATE",
+      "runtime_dependency": "CORE_RUNTIME_REQUIRED",
+      "source_of_truth": "VERIFIED",
+      "persistence_required": true,
+      "portable_required": true,
+      "generated": false,
+      "secret": false,
+      "submodule_candidate": true,
+      "action": "VERIFIED",
+      "gateb_persistence": {
+          "persist": true,
+          "why": "workspace/.eos-state berisi state runtime inti workspace yang digunakan oleh composition.repository.ts, failure-intelligence.repository.ts, dan eos-cli execution engine untuk menyimpan artefak komposisi, work item command center, dan hasil benchmark.",
+          "source_of_truth": "eos-cli/execution-engine + eos-verification/replay-engine (author writer actors)",
+          "portable": true,
+          "runtime_required": true,
+          "git_strategy": "SEPARATE_REPOSITORY_SUBMODULE",
+          "implementation_status": "IMPLEMENTED",
+          "git_evidence": "git ls-files --stage workspace/.eos-state mengembalikan mode 160000 (Gitlink submodule terverifikasi), entri tercatat di .gitmodules. Remote repository: https://github.com/syahrul-fauzi/Enterprise-OS-State.git (name: Enterprise-OS-State, owner: syahrul-fauzi, visibility: private). Git commit hash submodule: 5e3ea5d3d2e19929b10b79dfde694f1459f53521. Semua 879 object state berhasil dimigrasikan ke repository independen."
+        },
+      "gateb_trace": [
+        "/root/Enterprise-OS/workspace/capabilities/atomic-composition/implementation/repository/composition.repository.ts",
+        "/root/Enterprise-OS/workspace/capabilities/failure-intelligence/implementation/repository/failure-intelligence.repository.ts",
+        "/root/Enterprise-OS/workspace/packages/tooling/eos-cli/src/commands/execution.ts",
+        "/root/Enterprise-OS/workspace/packages/tooling/eos-cli/src/gate/runtime/readers/governance-platform-reader.ts",
+        "/root/Enterprise-OS/workspace/packages/tooling/eos-cli/src/gate/runtime/readers/projection-source-reader.ts"
+      ],
+      "gateb_writers": ["atomic-composition/composition-repository", "failure-intelligence/failure-repository", "eos-cli/execution-engine", "eos-verification/replay-engine"],
+      "gateb_readers": ["atomic-composition/composition-service", "failure-intelligence/analysis-service", "eos-cli/governance-readers", "eos-cli/projection-source-readers"],
+      "gatec_inspection_criteria": {
+        "read_actors_verified": true,
+        "write_actors_verified": true,
+        "runtime_dependency_verified": true,
+        "data_types_identified": ["composition-artifacts", "command-center-workitems", "acquisition-packages", "benchmark-results"],
+        "generated_status": "GENERATED_AT_RUNTIME",
+        "state_scope": "WORKSPACE_INSTANCE_LOCAL",
+        "portability_required": true,
+        "git_lifecycle_independent": true,
+        "remaining_inspection": "COMPLETE - semua kriteria telah diverifikasi dari kode sumber"
+      },
+      "gatec_data_classification": {
+        "contains_secrets": false,
+        "data_types": ["composition-artifacts", "command-center-workitems", "acquisition-packages", "benchmark-results"],
+        "sensitivity_level": "INTERNAL",
+        "compliant": true
+      }
+    },
+    {
+      "path": "workspace/capabilities/atomic-composition/.eos-state",
+      "scope": "workspace-capability",
+      "classification": "STATE",
+      "runtime_dependency": "NONE",
+      "source_of_truth": "VERIFIED",
+      "persistence_required": false,
+      "portable_required": false,
+      "generated": false,
+      "secret": false,
+      "submodule_candidate": false,
+      "action": "REMOVED",
+      "reason": "UNUSED_DUPLICATE_DIRECTORY",
+      "data_state": "NONE",
+      "gateb_trace": [],
+      "gateb_writers": [],
+      "gateb_readers": [],
+      "gatec_inspection_criteria": {
+        "read_actors_verified": true,
+        "write_actors_verified": true,
+        "runtime_dependency_verified": true,
+        "data_types_identified": [],
+        "generated_status": "UNUSED_DUPLICATE",
+        "state_scope": "NONE",
+        "portability_required": false,
+        "git_lifecycle_independent": true,
+        "remaining_inspection": "DIRECTORY DELETED - semua kriteria inspeksi terpenuhi, merupakan struktur duplikat yang tidak terpakai dari workspace/.eos-state/failure-intelligence"
+      },
+      "gatec_data_classification": {
+        "contains_secrets": false,
+        "data_types": [],
+        "sensitivity_level": "CAPABILITY_INTERNAL",
+        "compliant": true
+      }
+    },
+    {
+      "path": "scripts",
+      "scope": "root",
+      "classification": "GENERATED",
+      "runtime_dependency": "DEVELOPMENT_ONLY",
+      "source_of_truth": "CODEBASE",
+      "persistence_required": false,
+      "portable_required": false,
+      "generated": true,
+      "secret": false,
+      "submodule_candidate": false,
+      "action": "ORGANIZED",
+      "gatec_data_classification": {
+        "contains_secrets": false,
+        "data_types": ["verification-scripts", "debug-scripts", "standalone-tools"],
+        "sensitivity_level": "DEVELOPMENT_ONLY",
+        "compliant": true,
+        "gitignore_added": false
+      },
+      "script_organization": {
+        "verification": ["run-c17-verification.js", "run-c18-verification.js", "run-c19-verification.js", "run-c20-verification.js", "test-canonical.js", "eos-p1-verification-test.js", "eos-p2-verification-test.js", "rl4-standalone-inventory.js", "rl4-standalone-inventory.ts"],
+        "debug": ["debug-path.js", "debug-path.ts", "original.commands.js", "original.commands.ts", "test-import.js"]
+      }
+    },
+    {
+      "path": ".eos-map",
+      "scope": "root",
+      "classification": "CONFIG",
+      "runtime_dependency": "OBSERVABILITY_REQUIRED",
+      "source_of_truth": "eos-recon/mapping-engine",
+      "persistence_required": true,
+      "portable_required": true,
+      "generated": false,
+      "secret": false,
+      "submodule_candidate": false,
+      "action": "GATEC_COMPLETE",
+      "gateb_persistence": {
+        "persist": true,
+        "why": ".eos-map adalah observation substrate EOS yang berisi semua inventory artefak, eos-artifacts.v1.json, dan discovery evidence yang menjadi dasar semua observabilitas sistem.",
+        "source_of_truth": "eos-recon/mapping-engine (satu-satunya actor yang authorized menulis ke .eos-map)",
+        "portable": true,
+        "runtime_required": true,
+        "git_strategy": "TRACK_IN_MAIN_REPO"
+      },
+      "gateb_trace": [
+        "/root/Enterprise-OS/workspace/run-p9-experiment.ts",
+        "/root/Enterprise-OS/workspace/run-ilc-rt-004-t4-http.ts"
+      ],
+      "gateb_writers": ["experimentation/engine", "command-center/batch-processor"],
+      "gateb_readers": ["experimentation/runner", "command-center/execution"],
+      "gatec_data_classification": {
+        "contains_secrets": false,
+        "data_types": ["experiment-contracts", "command-center-work-items"],
+        "sensitivity_level": "INTERNAL",
+        "compliant": true
+      }
+    },
+    {
+      "path": ".eos-venv",
+      "scope": "root",
+      "classification": "ENV",
+      "runtime_dependency": "LOCAL_ONLY",
+      "source_of_truth": "LOCAL",
+      "persistence_required": false,
+      "portable_required": false,
+      "generated": true,
+      "secret": false,
+      "submodule_candidate": false,
+      "action": "VERIFIED",
+      "gateb_trace": [
+        "/root/Enterprise-OS/workspace/capabilities/legal-case/scripts/validate-document.py",
+        "/root/Enterprise-OS/scripts/python/fix-imports.py"
+      ],
+      "gateb_writers": ["python/virtualenv", "pip/package-manager"],
+      "gateb_readers": ["python/interpreter", "pip/package-manager"],
+      "gateb_persistence": {
+        "persist": false,
+        "why": ".eos-venv adalah virtual environment Python yang dihasilkan lokal selama development, berisi dependency yang bisa diinstall ulang via requirements.txt, bukan artefak yang perlu dipertahankan.",
+        "source_of_truth": "local development environment only",
+        "portable": false,
+        "runtime_required": true,
+        "git_strategy": "LOCAL_IGNORED"
+      },
+      "gatec_inspection_criteria": {
+        "virtual_environment_verified": true,
+        "generated_dependency_environment": true,
+        "runtime_dependency_verified": true,
+        "portability_required": false,
+        "git_lifecycle_independent": true,
+        "remaining_inspection": "COMPLETE - terverifikasi sebagai Python virtual environment yang dihasilkan selama development"
+      },
+      "gatec_data_classification": {
+        "contains_secrets": false,
+        "data_types": ["python-virtual-environment"],
+        "sensitivity_level": "LOCAL_ONLY",
+        "compliant": true,
+        "gitignore_added": true
+      }
+    },
+    {
+      "path": "workspace/artifacts",
+      "scope": "workspace",
+      "classification": "GENERATED",
+      "runtime_dependency": "BUILD_TIME",
+      "source_of_truth": "GENERATED",
+      "persistence_required": false,
+      "portable_required": false,
+      "generated": true,
+      "secret": false,
+      "submodule_candidate": false,
+      "action": "GATEC_COMPLETE",
+      "gatec_data_classification": {
+        "contains_secrets": false,
+        "data_types": ["build-artifacts", "deployment-bundles"],
+        "sensitivity_level": "LOCAL_ONLY",
+        "compliant": true,
+        "gitignore_verified": true
+      }
+    },
+    {
+      "path": "workspace/evidence",
+      "scope": "workspace",
+      "classification": "EVIDENCE",
+      "runtime_dependency": "VERIFICATION_ONLY",
+      "source_of_truth": "PERSISTED",
+      "persistence_required": true,
+      "portable_required": true,
+      "generated": false,
+      "secret": false,
+      "submodule_candidate": true,
+      "action": "GATED_PENDING",
+      "gatec_data_classification": {
+        "contains_secrets": false,
+        "data_types": ["runtime-evidence", "verification-results"],
+        "sensitivity_level": "INTERNAL",
+        "compliant": true
+      },
+      "gateb_trace": [],
+      "gateb_writers": ["verification/e2e", "proof-ledger/collector"],
+      "gateb_readers": ["command-center/audit", "recon/analysis"]
+    },
+    {
+      "path": "workspace/experiments",
+      "scope": "workspace",
+      "classification": "CONFIG",
+      "runtime_dependency": "EXPERIMENTATION_ONLY",
+      "source_of_truth": "PERSISTED",
+      "persistence_required": true,
+      "portable_required": true,
+      "generated": false,
+      "secret": false,
+      "submodule_candidate": false,
+      "action": "GATEC_COMPLETE",
+      "gatec_data_classification": {
+        "contains_secrets": false,
+        "data_types": ["experiment-definitions", "test-configs"],
+        "sensitivity_level": "INTERNAL",
+        "compliant": true
+      }
+    }
+  ]
+}

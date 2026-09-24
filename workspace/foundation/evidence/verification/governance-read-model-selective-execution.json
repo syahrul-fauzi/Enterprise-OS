@@ -1,12 +1,12 @@
 {
   "report_version": "1.0.0",
-  "report_digest": "6de9055453f907a62ec09712c3c3c8397cf37ef36f5ea2674f0a2234764a5410",
+  "report_digest": "a9b1acac37852d24cf855551eb01830adbf9a02d7a174ace51b0fcf6e69f4bf7",
   "execution_scope": "verify-foundation",
   "planner_status": "APPLIED",
   "delta_basis": {
     "basis_version": "1.0.0",
-    "previous_source_session_digest": "1c31e03c66257b2ef7d88a17173a6a1ae5b9d438f587818a2d393085019473b7",
-    "previous_source_session_lineage_digest": "d57bcd995675feb1faab68c7362c20a9a4d826d5c994d8b0e7bdbbc9f207f5d9",
+    "previous_source_session_digest": "b5230c1993cbf4021af771fa840197bfc43ffbf96aaf3095c2bb8ee2bdce5436",
+    "previous_source_session_lineage_digest": "a2356b016565508db2c1b6bb72ea9f1f00f87995c431fc197b2f2d5d7f0db1e8",
     "source_session_digest_changed": true,
     "source_session_lineage_changed": false,
     "delta_scope_status": "METADATA_ONLY"
@@ -30,41 +30,41 @@
     {
       "node_id": "summary_view",
       "action": "REUSE",
-      "lineage_digest": "a6538d48fca2377e44e8de72bb894a8d1ffb89f8544985e91d0d21a164574288",
-      "previous_output_digest": "c76aae07de06c57a62efbdaf72ae606850769fc6f04788d8df1001e6ece332cc",
-      "current_output_digest": "f127c130ae2f9c9ff99c25dbb1cdd30961ec12059625b72ce1b1414add4d9d86",
+      "lineage_digest": "d6b2e5402942820a70c8d9ce65dcba168fc628769696cc13694cbb21883c3c4a",
+      "previous_output_digest": "226fb55a9e2e3b4e4462fba28074859dca9342bc9aefbc239c6fe9ee235fe54b",
+      "current_output_digest": "4eb69eea3b47f509630d3100cb33ab7f28c3e94766ae3e27cd453020f895e1fc",
       "reason": "Summary view lineage is unchanged and the session delta is metadata-only, so the prior projection is rebound without semantic rematerialization."
     },
     {
       "node_id": "claims_view",
       "action": "REUSE",
-      "lineage_digest": "0b9c9c82f3b2641e66480c1c66b94b009b5ec5b5f7cfa9e4543aa822dca9930c",
-      "previous_output_digest": "dbebb515996512714a2a74ed4678e5c7bd808515cd05de3792a823be4d5dc370",
-      "current_output_digest": "2ffabc8b18da7a958cc1b2f7c6cbed5bb05959c58d75747b5304544981165c9f",
+      "lineage_digest": "f5d65003d984fbc2a21ed9bb8c210ede288ec535a72ebb82a1d2a56c58265ae0",
+      "previous_output_digest": "85b1955fbfcaa189e8f054c489137297ddddf91d745f3079578ef8cc8b8cf4fe",
+      "current_output_digest": "51b70578d901f56539b4b1980acf297fe921cff1a5381ed715975120808fdce7",
       "reason": "Claims view lineage is unchanged and the session delta is metadata-only, so the prior projection is rebound without semantic rematerialization."
     },
     {
       "node_id": "health_view",
       "action": "REUSE",
-      "lineage_digest": "f2da072e9b67c4694e0da75d9fa3cb7bdedf1e7c0d87fa13f3a0dad1b1afe651",
-      "previous_output_digest": "d8f09076ae2c5e0a63c80c4f05aaa783a21e28c9d32dcf00dc685e7927fd4a8d",
-      "current_output_digest": "8f022484e2cba6572aa6d9567204a9c5ea54554433bec1a44eaa650d7299b0a3",
+      "lineage_digest": "bc6ff44cd63448f48aff684fa2641303cf7af08ce8e2bdb7cb0d84c0ea8bacb7",
+      "previous_output_digest": "ebe1773706846c857837a2e93c52a53be2fa22c8e292d0585a7476d6424be5d4",
+      "current_output_digest": "9b9e53d132fb9a8dc4ea7933d48b922a8c8a7c378993a5ab8ad785ea4d5390fc",
       "reason": "Health view lineage is unchanged and the session delta is metadata-only, so the prior projection is rebound without semantic rematerialization."
     },
     {
       "node_id": "dashboard_view",
       "action": "REUSE",
-      "lineage_digest": "2ad41825e16a30de7025e8795606f3347b6d37d420e386c31e585a1c365cd613",
-      "previous_output_digest": "822ff1cbddd348642c4ae9e8bff180777b998a7917535eda0bc9293b30a73025",
-      "current_output_digest": "6b10083300237f77202f497ce2a9fe638e023460ee5c380a022c76c79d057383",
+      "lineage_digest": "ce8968848c299dbb13c9ba6b3f8cbfe2dda7e347560438d83e5627a3b738dae3",
+      "previous_output_digest": "f6537fc34ce1a428716608b4596f9d71914fdb8d7d3e6cd97375af70ffe1a0d8",
+      "current_output_digest": "8beecb4bafdae12c1fa6b499721a0d66b379945b75bca3058d59400ad1898c7f",
       "reason": "Dashboard view lineage is unchanged and the session delta is metadata-only, so the prior projection is rebound without semantic rematerialization."
     },
     {
       "node_id": "read_model_metrics",
       "action": "REMATERIALIZE",
-      "lineage_digest": "891dc62ec380e5488799745174826213db7744e77c3d21d0b34e0ddbc42ecc22",
-      "previous_output_digest": "ffbe74b93dfce660f9ff81a4cc055a4165c83093afc5f97d26d2ce52e8a9162f",
-      "current_output_digest": "b9c3ea2becf0cc064f82989bc611956c7d6ebb2e906d582e9c4f97644e8af30b",
+      "lineage_digest": "90b0dfb1e2626b21013f8f04498d0b151da015c226acfff13e994b1662e3b875",
+      "previous_output_digest": "65b706ed63a8b7edb8bfdb4500c477b230c5828c3a298019d0e26474e0d2a7a4",
+      "current_output_digest": "80a36c440a9209a28b514c69a79c32b7dffd7813ab49c4923473659f654f2ff5",
       "reason": "Read-model metrics remain freshly materialized even for metadata-only session deltas so timing and freshness evidence stay execution-accurate while semantic projections are reused."
     }
   ],

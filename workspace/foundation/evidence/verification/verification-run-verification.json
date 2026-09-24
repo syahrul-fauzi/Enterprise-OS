@@ -1,21 +1,21 @@
 {
   "report_version": "1.0.0",
-  "report_digest": "bec2405f61e4bd952e1170fa4015da6082b81ac65d8ba8d3ca12921731bf281c",
+  "report_digest": "4c8016664c4ccd9eccdef5835d3de204a4d1ee81b0375001abeae3757b488216",
   "summary": {
     "chronology_status": "PASS",
     "session_binding_status": "PASS",
     "output_completeness_status": "PASS",
-    "readiness_projection_status": "PASS",
-    "overall_status": "PASS"
+    "readiness_projection_status": "FAIL",
+    "overall_status": "FAIL"
   },
   "run": {
-    "run_id": "verification-run:e3fa3bedd684618d",
+    "run_id": "verification-run:a33d5655bd06b029",
     "run_scope": "verify-foundation",
     "run_status": "COMPLETED",
-    "governance_session_id": "governance-session:a8b570e4c753419a",
+    "governance_session_id": "governance-session:f7bdbdd2174ecc70",
     "read_model_count": 5,
     "report_count": 9,
-    "readiness_status": "PASS"
+    "readiness_status": "FAIL"
   },
   "claim_boundary": "Verification run verification proves that the operational governance execution aggregate is chronologically valid, bound to a verified GovernanceSession, complete in its evidence and read-model outputs, and ready according to platform governance controls."
 }

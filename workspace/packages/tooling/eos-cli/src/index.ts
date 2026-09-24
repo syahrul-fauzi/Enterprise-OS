@@ -31,6 +31,7 @@ import { runVerifyPortfolioCommand } from "./commands/verify-portfolio.js";
 import { runVerifyProductBindingCommand } from "./commands/verify-product-binding.js";
 import { runVerifyProductCommand } from "./commands/verify-product.js";
 import { runEnterpriseQueryCommand } from "./commands/query.js";
+import { runNexusDispatchCommand } from "./commands/nexus-dispatch.js";
 
 const args = process.argv.slice(2);
 const command = args[0] ?? "help";
@@ -212,6 +213,7 @@ async function main(): Promise<number> {
           "  pnpm eos verify-foundation    Hasilkan evidence verifikasi lintas produk dan audit executable SSOT",
           "  pnpm eos verify-constitution    Verifikasi hukum konstitusional projection dan graph purity",
           "  pnpm eos query '<DSL>'    Jalankan query deterministik di atas enterprise control graph + Gate C snapshot",
+          "  pnpm eos nexus dispatch    Jalankan State→Dispatch→Execute→Prove→Reset pipeline berdasarkan .eos-state",
           "  pnpm eos help      Tampilkan bantuan ini",
           "",
           "Prinsip:",
@@ -287,6 +289,15 @@ async function main(): Promise<number> {
       const query = args.slice(1).join(" ").trim();
       return runEnterpriseQueryCommand(query);
     }
+    case "nexus":
+      if (subcommand === "dispatch") {
+        return runNexusDispatchCommand();
+      }
+      process.stderr.write(
+        `Unknown nexus subcommand: ${subcommand || "(missing)"}\n` +
+        "Run: pnpm eos help\n",
+      );
+      return 1;
     // RL4-001 Production Inventory commands (added per Reality Loop 4 mandate)
     case "rl4":
     case "inventory": {

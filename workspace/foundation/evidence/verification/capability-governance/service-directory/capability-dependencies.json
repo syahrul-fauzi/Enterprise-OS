@@ -1,0 +1,56 @@
+{
+  "capability_id": "service-directory",
+  "declared_dependencies": [
+    {
+      "capability_id": "identity",
+      "version": "1.0.0",
+      "manifest_ref": "workspace/capabilities/identity/capability.yaml",
+      "governance_status": "VALID",
+      "stability": "experimental",
+      "lifecycle_stage": "core"
+    },
+    {
+      "capability_id": "workflow-engine",
+      "version": "0.1.0",
+      "manifest_ref": "workspace/capabilities/workflow-engine/definition/capability.yaml",
+      "governance_status": "VALID",
+      "stability": "stable",
+      "lifecycle_stage": "core"
+    }
+  ],
+  "system_dependencies": [],
+  "dependency_classification": {
+    "policy_version": "1.0.0",
+    "entries": [
+      {
+        "dependency_id": "identity",
+        "dependency_class": "bounded_context_capability",
+        "resolution_status": "RESOLVED_CAPABILITY",
+        "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
+      },
+      {
+        "dependency_id": "workflow-engine",
+        "dependency_class": "bounded_context_capability",
+        "resolution_status": "RESOLVED_CAPABILITY",
+        "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
+      }
+    ]
+  },
+  "unresolved_dependencies": [],
+  "dependency_policy": {
+    "allowed_dependencies": [],
+    "forbidden_dependencies": []
+  },
+  "declared_consumers": [],
+  "consumers": [
+    "services-id"
+  ],
+  "empirically_verified_products": [],
+  "product_reach_ratio": 0.3333,
+  "reachable_from_products": [
+    "api",
+    "web"
+  ],
+  "reachability_status": "REACHABLE",
+  "artifact_boundary": "Capability dependency projection freezes dependency intent, consumer relationships, and product reachability so capability evolution can be audited without reading raw manifests directly."
+}

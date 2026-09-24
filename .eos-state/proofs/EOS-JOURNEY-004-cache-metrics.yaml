@@ -1,0 +1,38 @@
+loadCalls: 2
+cacheHits: 0
+cacheMisses: 2
+parseCount: 2
+totalParseTimeMs: 23.95957900000002
+lastParseTimeMs: 4.560077000000007
+averageParseTimeMs: 11.97978950000001
+saveCalls: 0
+write_latency:
+  min_ms: 0
+  avg_ms: 0
+  p95_ms: 0
+  max_ms: 0
+  last_ms: 0
+read_latency:
+  min_ms: 4.560077000000007
+  avg_ms: 2.2800385000000034
+  ewma_ms: 0.22800385000000034
+  max_ms: 4.560077000000007
+  last_ms: 4.560077000000007
+payload_size:
+  total_bytes: 0
+  last_bytes: 0
+  average_bytes: 0
+concurrency:
+  current_concurrent: 0
+  max_concurrent_observed: 0
+mutation_frequency:
+  average_interval_ms: 0
+  total_mutations: 0
+cache:
+  hit_rate: 0
+  miss_rate: 1
+stat_overhead:
+  last_ms: 0
+exported_at: 2026-09-24T07:31:48.402Z
+work_id: EOS-JOURNEY-004
+milestone: implement_metrics_export

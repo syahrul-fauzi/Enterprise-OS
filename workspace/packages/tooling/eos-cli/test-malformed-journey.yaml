@@ -1,0 +1,20 @@
+work_id: EOS-JOURNEY-007
+milestone: NEXUS-staging-test
+# Field wajib 'completed_at' sengaja dihapus untuk membuat malformed state
+verdict: UNVERIFIED
+evidence_artifacts: []
+checks_passed: []
+checks_failed: []
+# Format next_work_id salah (bukan string)
+next_work_id: 12345
+next_work_technical_id: TEST-004
+next_work_title: "NEXUS testing: malformed state test"
+next_work_description: "NEXUS testing: state memiliki field yang hilang dan tipe data salah - verifikasi NEXUS berhenti dengan aman"
+next_work_milestones:
+  - dispatch_initiated: ""
+  - execution_completed: ""
+  - proof_written: ""
+  - state_transitioned: ""
+next_milestone: verify_nexus_pipeline
+phase2_complete: false
+phase3_complete: false

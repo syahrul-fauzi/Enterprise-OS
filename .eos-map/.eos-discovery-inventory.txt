@@ -1,0 +1,8 @@
+=== FILES ===
+./.eos-map/.eos-discovery-inventory.txt
+
+=== DIRECTORIES ===
+./.eos-venv
+./.eos-state
+./.eos-map
+./workspace/.eos-state

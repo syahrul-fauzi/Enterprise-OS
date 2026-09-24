@@ -4,14 +4,17 @@
   "manifest_version": "1.0.0",
   "capability_version": "0.1.0",
   "stability": "experimental",
-  "lifecycle_stage": "experimental",
+  "lifecycle_stage": "reusable",
   "governance_status": "VALID",
-  "owner": null,
-  "owner_requirement_status": "OPTIONAL",
+  "owner": "ai-orchestration-domain",
+  "owner_requirement_status": "REQUIRED_PRESENT",
   "runtime_ref": "workspace/capabilities/agent-orchestration/implementation/service.ts",
   "planner_ref": null,
   "composer_ref": null,
   "verification_ref": "workspace/capabilities/agent-orchestration/tests",
-  "declared_exports": [],
+  "declared_exports": [
+    "AgentOrchestrationProvider",
+    "OrchestrationPlanRepository"
+  ],
   "artifact_boundary": "Capability manifest projection freezes the capability identity, ownership, lifecycle, and implementation entrypoints as governance-readable evidence without changing the canonical capability manifest."
 }

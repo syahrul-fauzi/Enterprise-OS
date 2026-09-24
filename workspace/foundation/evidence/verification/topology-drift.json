@@ -1,8 +1,8 @@
 {
-  "projection_id": "TopologyDriftProjection:9264733347c84038",
+  "projection_id": "TopologyDriftProjection:010da89de42998e1",
   "projection_type": "TopologyDriftProjection",
   "schema_version": "1.0.0",
-  "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
+  "projection_digest": "010da89de42998e12cac241eee1777ca9372194dacd19660a4d4924f9d017b50",
   "generated_from": [
     {
       "source_type": "execution_chain",
@@ -20,29 +20,31 @@
       "source_digest": "UNVERIFIED"
     }
   ],
-  "generated_at_utc": "2026-08-05T04:29:06.737Z",
+  "generated_at_utc": "2026-09-24T13:26:12.856Z",
   "drift_status": "DRIFT",
   "summary": {
     "total_products": 3,
     "aligned_products": 0,
     "drifted_products": 3,
     "undeclared_observed_edges": 12,
-    "unobserved_declared_edges": 4,
+    "unobserved_declared_edges": 6,
     "unmodeled_observed_requirements": 5,
     "unmodeled_observed_workflows": 6,
     "unmodeled_observed_plans": 3,
-    "canonical_topology_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d"
+    "canonical_topology_digest": "010da89de42998e12cac241eee1777ca9372194dacd19660a4d4924f9d017b50"
   },
   "products": [
     {
       "product_id": "services-id",
       "declared_capabilities": [
+        "legal-case",
         "requirement-management"
       ],
       "observed_capabilities": [],
       "aligned_capabilities": [],
       "undeclared_observed_capabilities": [],
       "unobserved_declared_capabilities": [
+        "legal-case",
         "requirement-management"
       ],
       "observed_requirement_node_ids": [],
@@ -118,12 +120,14 @@
     {
       "product_id": "ilc",
       "declared_capabilities": [
+        "legal-case",
         "requirement-management"
       ],
       "observed_capabilities": [],
       "aligned_capabilities": [],
       "undeclared_observed_capabilities": [],
       "unobserved_declared_capabilities": [
+        "legal-case",
         "requirement-management"
       ],
       "observed_requirement_node_ids": [],

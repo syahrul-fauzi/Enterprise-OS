@@ -1,0 +1,62 @@
+{
+  "capability_id": "services-id",
+  "declared_dependencies": [
+    {
+      "capability_id": "service-directory",
+      "version": "0.1.0",
+      "manifest_ref": "workspace/capabilities/service-directory/definition/capability.yaml",
+      "governance_status": "VALID",
+      "stability": "stable",
+      "lifecycle_stage": "experimental"
+    },
+    {
+      "capability_id": "workflow-engine",
+      "version": "0.1.0",
+      "manifest_ref": "workspace/capabilities/workflow-engine/definition/capability.yaml",
+      "governance_status": "VALID",
+      "stability": "stable",
+      "lifecycle_stage": "core"
+    }
+  ],
+  "system_dependencies": [],
+  "dependency_classification": {
+    "policy_version": "1.0.0",
+    "entries": [
+      {
+        "dependency_id": "human-operations",
+        "dependency_class": "unknown_external",
+        "resolution_status": "UNRESOLVED",
+        "rationale": "Dependency does not resolve to a governed capability and is not classified by the current dependency class policy."
+      },
+      {
+        "dependency_id": "service-directory",
+        "dependency_class": "bounded_context_capability",
+        "resolution_status": "RESOLVED_CAPABILITY",
+        "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
+      },
+      {
+        "dependency_id": "workflow-engine",
+        "dependency_class": "bounded_context_capability",
+        "resolution_status": "RESOLVED_CAPABILITY",
+        "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
+      }
+    ]
+  },
+  "unresolved_dependencies": [
+    "human-operations"
+  ],
+  "dependency_policy": {
+    "allowed_dependencies": [],
+    "forbidden_dependencies": []
+  },
+  "declared_consumers": [],
+  "consumers": [
+    "ilc",
+    "services.id"
+  ],
+  "empirically_verified_products": [],
+  "product_reach_ratio": 0.6667,
+  "reachable_from_products": [],
+  "reachability_status": "REACHABLE",
+  "artifact_boundary": "Capability dependency projection freezes dependency intent, consumer relationships, and product reachability so capability evolution can be audited without reading raw manifests directly."
+}

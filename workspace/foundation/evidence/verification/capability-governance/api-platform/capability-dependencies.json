@@ -5,9 +5,9 @@
       "capability_id": "evidence-registry",
       "version": "0.1.0",
       "manifest_ref": "workspace/capabilities/evidence-registry/definition/capability.yaml",
-      "governance_status": "INVALID",
-      "stability": "experimental",
-      "lifecycle_stage": "reusable"
+      "governance_status": "VALID",
+      "stability": "stable",
+      "lifecycle_stage": "core"
     },
     {
       "capability_id": "governance-evidence",
@@ -15,7 +15,7 @@
       "manifest_ref": "workspace/capabilities/governance-evidence/definition/capability.yaml",
       "governance_status": "VALID",
       "stability": "stable",
-      "lifecycle_stage": "experimental"
+      "lifecycle_stage": "core"
     },
     {
       "capability_id": "governance-read-model",
@@ -23,14 +23,14 @@
       "manifest_ref": "workspace/capabilities/governance-read-model/definition/capability.yaml",
       "governance_status": "VALID",
       "stability": "stable",
-      "lifecycle_stage": "experimental"
+      "lifecycle_stage": "core"
     },
     {
       "capability_id": "requirement-management",
       "version": "0.1.0",
       "manifest_ref": "workspace/capabilities/requirement-management/definition/capability.yaml",
-      "governance_status": "INVALID",
-      "stability": "experimental",
+      "governance_status": "VALID",
+      "stability": "stable",
       "lifecycle_stage": "core"
     },
     {
@@ -38,16 +38,16 @@
       "version": "0.1.0",
       "manifest_ref": "workspace/capabilities/requirements-traceability-matrix/definition/capability.yaml",
       "governance_status": "VALID",
-      "stability": "experimental",
-      "lifecycle_stage": "experimental"
+      "stability": "stable",
+      "lifecycle_stage": "core"
     },
     {
       "capability_id": "workflow-engine",
       "version": "0.1.0",
       "manifest_ref": "workspace/capabilities/workflow-engine/definition/capability.yaml",
       "governance_status": "VALID",
-      "stability": "experimental",
-      "lifecycle_stage": "experimental"
+      "stability": "stable",
+      "lifecycle_stage": "core"
     }
   ],
   "system_dependencies": [],
@@ -107,14 +107,13 @@
       "trust-framework"
     ]
   },
-  "declared_consumers": [],
+  "declared_consumers": [
+    "ilc"
+  ],
   "consumers": [],
   "empirically_verified_products": [],
   "product_reach_ratio": 0,
-  "reachable_from_products": [
-    "lawyershub",
-    "web"
-  ],
-  "reachability_status": "REACHABLE",
+  "reachable_from_products": [],
+  "reachability_status": "UNREACHABLE",
   "artifact_boundary": "Capability dependency projection freezes dependency intent, consumer relationships, and product reachability so capability evolution can be audited without reading raw manifests directly."
 }

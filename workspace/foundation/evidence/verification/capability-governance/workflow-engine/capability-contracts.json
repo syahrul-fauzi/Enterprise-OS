@@ -1,16 +1,30 @@
 {
   "capability_id": "workflow-engine",
-  "provided_contract_versions": [],
-  "required_contract_ranges": [],
+  "provided_contract_versions": [
+    {
+      "contract_name": "WorkflowEngineProvider",
+      "version": "1.0.0"
+    }
+  ],
+  "required_contract_ranges": [
+    {
+      "contract_name": "GovernanceEvidenceProvider",
+      "range": ">=0.1 <0.2",
+      "compatible_providers": [],
+      "provider_resolution_status": "UNRESOLVED",
+      "range_policy_status": "BOUNDED",
+      "status": "FAIL"
+    }
+  ],
   "compatibility": {
-    "total_required_contract_count": 0,
+    "total_required_contract_count": 1,
     "compatible_required_contract_count": 0,
-    "unresolved_required_contract_count": 0,
+    "unresolved_required_contract_count": 1,
     "ambiguous_required_contract_count": 0,
     "unbounded_required_contract_count": 0,
-    "compatibility_status": "PASS",
-    "contract_drift_status": "NONE",
-    "migration_required": false
+    "compatibility_status": "FAIL",
+    "contract_drift_status": "MIGRATION_REQUIRED",
+    "migration_required": true
   },
   "artifact_boundary": "Capability contracts projection freezes the provided and required contract surface together with resolved provider compatibility so capability evolution remains auditable and deterministic."
 }

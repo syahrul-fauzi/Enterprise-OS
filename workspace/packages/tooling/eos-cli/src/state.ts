@@ -8,8 +8,8 @@ import { GovernanceStateSchema, GovernanceState, RepositoryState, CurrentJourney
 // Untuk ES Modules, kita perlu hitung __filename/__dirname secara manual menggunakan import.meta.url
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-// state.ts is at: /workspace/packages/tooling/eos-cli/src/ → need 5 levels up to /root/Enterprise-OS/
-const REPOSITORY_ROOT = resolve(__dirname, "../../../../../"); // src/ → eos-cli/ → tooling/ → packages/ → workspace/ → /root/Enterprise-OS/ (5 levels up: ../ five times, verified)
+// state.ts is at: /workspace/packages/tooling/eos-cli/src/ → need 5 levels up to /root/Enterprise-OS/ (root repository, all enterprise/governance files are here)
+const REPOSITORY_ROOT = resolve(__dirname, "../../../../../"); // src/ → eos-cli/ → tooling/ → packages/ → workspace/ → /root/Enterprise-OS/ (5 levels up: ../ five times, core path restored for dependency resolution)
 const EOS_STATE_DIR = resolve(REPOSITORY_ROOT, ".eos-state");
 const PROOFS_DIR = resolve(EOS_STATE_DIR, "proofs");
 // Canonical state file paths (fixed: GOVERNANCE_STATE is at root/governance/ not .eos-state)
@@ -261,6 +261,14 @@ export function loadCurrentJourney(): CurrentJourney {
   // Handle multiple YAML documents (current-journey.yaml has --- separators)
   const parsedDocs = parseAllDocuments(raw);
   let parsed: unknown;
+  // DEBUG LOG: Tambahkan logging untuk jumlah dokumen dan isi yang ditemukan
+  console.log(`[state.ts] DEBUG: loadCurrentJourney() found ${parsedDocs.length} YAML documents in ${CURRENT_JOURNEY_PATH}`);
+  parsedDocs.forEach((doc, idx) => {
+    if (doc && typeof doc.toJSON === 'function') {
+      const json = doc.toJSON();
+      console.log(`[state.ts] DEBUG: Doc ${idx} work_id: ${json?.work_id}, next_work_id: ${json?.next_work_id}`);
+    }
+  });
   // Iterate through documents with explicit non-null checks untuk TypeScript strict mode
   for (let i = parsedDocs.length - 1; i >= 0; i--) {
     const doc = parsedDocs[i];
@@ -268,6 +276,7 @@ export function loadCurrentJourney(): CurrentJourney {
       const json = doc.toJSON() as unknown;
       if (isPlainObject(json) && 'work_id' in json && 'next_work_id' in json) {
         parsed = json;
+        console.log(`[state.ts] DEBUG: Selected doc ${i} with work_id: ${json.work_id}`);
         break;
       }
     }

@@ -45,19 +45,19 @@
     {
       "product_id": "ilc",
       "capability_reuse": {
-        "actual": 1,
+        "actual": null,
         "threshold": ">= 0.80",
-        "status": "PASS"
+        "status": "UNVERIFIED"
       },
       "experience_reuse": {
-        "actual": 1,
+        "actual": null,
         "threshold": ">= 0.70",
-        "status": "PASS"
+        "status": "UNVERIFIED"
       },
       "clr": {
-        "actual": "FULL_REUSE",
+        "actual": null,
         "threshold": ">= 0.75",
-        "status": "PASS"
+        "status": "UNVERIFIED"
       }
     }
   ],

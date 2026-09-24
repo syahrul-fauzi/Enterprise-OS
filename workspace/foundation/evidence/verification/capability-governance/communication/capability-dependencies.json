@@ -1,0 +1,115 @@
+{
+  "capability_id": "communication",
+  "declared_dependencies": [
+    {
+      "capability_id": "connector-ecosystem",
+      "version": "0.1.0",
+      "manifest_ref": "workspace/capabilities/connector-ecosystem/definition/capability.yaml",
+      "governance_status": "VALID",
+      "stability": "stable",
+      "lifecycle_stage": "core"
+    },
+    {
+      "capability_id": "evidence-registry",
+      "version": "0.1.0",
+      "manifest_ref": "workspace/capabilities/evidence-registry/definition/capability.yaml",
+      "governance_status": "VALID",
+      "stability": "stable",
+      "lifecycle_stage": "core"
+    },
+    {
+      "capability_id": "governance-evidence",
+      "version": "0.1.0",
+      "manifest_ref": "workspace/capabilities/governance-evidence/definition/capability.yaml",
+      "governance_status": "VALID",
+      "stability": "stable",
+      "lifecycle_stage": "core"
+    },
+    {
+      "capability_id": "identity",
+      "version": "1.0.0",
+      "manifest_ref": "workspace/capabilities/identity/capability.yaml",
+      "governance_status": "VALID",
+      "stability": "experimental",
+      "lifecycle_stage": "core"
+    },
+    {
+      "capability_id": "security-hardening",
+      "version": "0.1.0",
+      "manifest_ref": "workspace/capabilities/security-hardening/definition/capability.yaml",
+      "governance_status": "VALID",
+      "stability": "stable",
+      "lifecycle_stage": "core"
+    }
+  ],
+  "system_dependencies": [
+    {
+      "dependency_id": "core-runtime",
+      "dependency_kind": "system_runtime",
+      "rationale": "Shared runtime instrumentation is treated as infrastructure/system dependency rather than bounded-context capability dependency."
+    }
+  ],
+  "dependency_classification": {
+    "policy_version": "1.0.0",
+    "entries": [
+      {
+        "dependency_id": "connector-ecosystem",
+        "dependency_class": "bounded_context_capability",
+        "resolution_status": "RESOLVED_CAPABILITY",
+        "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
+      },
+      {
+        "dependency_id": "core-runtime",
+        "dependency_class": "system_runtime",
+        "resolution_status": "SYSTEM_DEPENDENCY",
+        "rationale": "Shared runtime instrumentation is treated as infrastructure/system dependency rather than bounded-context capability dependency."
+      },
+      {
+        "dependency_id": "evidence-registry",
+        "dependency_class": "bounded_context_capability",
+        "resolution_status": "RESOLVED_CAPABILITY",
+        "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
+      },
+      {
+        "dependency_id": "governance-evidence",
+        "dependency_class": "bounded_context_capability",
+        "resolution_status": "RESOLVED_CAPABILITY",
+        "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
+      },
+      {
+        "dependency_id": "identity",
+        "dependency_class": "bounded_context_capability",
+        "resolution_status": "RESOLVED_CAPABILITY",
+        "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
+      },
+      {
+        "dependency_id": "security-hardening",
+        "dependency_class": "bounded_context_capability",
+        "resolution_status": "RESOLVED_CAPABILITY",
+        "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
+      }
+    ]
+  },
+  "unresolved_dependencies": [],
+  "dependency_policy": {
+    "allowed_dependencies": [],
+    "forbidden_dependencies": []
+  },
+  "declared_consumers": [],
+  "consumers": [
+    "commsme",
+    "ilc",
+    "lawyershub",
+    "services-id"
+  ],
+  "empirically_verified_products": [
+    "lawyershub"
+  ],
+  "product_reach_ratio": 1.3333,
+  "reachable_from_products": [
+    "api",
+    "web"
+  ],
+  "reachability_status": "REACHABLE",
+  "artifact_boundary": "Capability dependency projection freezes dependency intent, consumer relationships, and product reachability so capability evolution can be audited without reading raw manifests directly."
+}

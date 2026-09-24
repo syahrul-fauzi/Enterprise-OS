@@ -45,14 +45,19 @@
       "governance-read-model"
     ]
   },
-  "declared_consumers": [
+  "declared_consumers": [],
+  "consumers": [
     "api-platform",
-    "governance-read-model"
+    "governance-read-model",
+    "ilc",
+    "lawyershub",
+    "services-id"
   ],
-  "consumers": [],
-  "empirically_verified_products": [],
-  "product_reach_ratio": 0,
+  "empirically_verified_products": [
+    "lawyershub"
+  ],
+  "product_reach_ratio": 1.6667,
   "reachable_from_products": [],
-  "reachability_status": "UNREACHABLE",
+  "reachability_status": "REACHABLE",
   "artifact_boundary": "Capability dependency projection freezes dependency intent, consumer relationships, and product reachability so capability evolution can be audited without reading raw manifests directly."
 }

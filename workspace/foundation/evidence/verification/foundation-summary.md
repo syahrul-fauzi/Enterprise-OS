@@ -10,17 +10,17 @@
 - implementation coverage: 100%
 - verified products: 0/3
 - portfolio coverage: 0%
-- registry health: BLOCKED
+- registry health: PARTIAL
 - graph integrity: PARTIAL
-- owner coverage ratio: 0.0625
-- reachability ratio: 0.8125
-- orphan artifacts: 4
+- owner coverage ratio: 0.8636
+- reachability ratio: 0.8636
+- orphan artifacts: 2
 - dead capabilities: 3
-- orphan active_waiting_composition: 4
-- orphan planned: 0
+- orphan active_waiting_composition: 1
+- orphan planned: 1
 - orphan retired: 0
 - fitness status: STABLE
-- declared capabilities: 3
+- declared capabilities: 9
 - observed capabilities: 13
 - verified capabilities: 13
 - reproducible capabilities: 8
@@ -38,16 +38,16 @@
 - aligned products: 0
 - drifted products: 3
 - undeclared observed edges: 12
-- unobserved declared edges: 4
+- unobserved declared edges: 6
 - unmodeled observed requirements: 5
 - unmodeled observed workflows: 6
 - unmodeled observed plans: 3
-- architecture trend: REGRESSING
-- latest epoch: epoch-047
-- total epochs: 47
-- governance read model freshness ms: 7
+- architecture trend: IMPROVING
+- latest epoch: epoch-048
+- total epochs: 48
+- governance read model freshness ms: 10
 - governance read model generation duration ms: 1
-- governance read model consumer count: 1
+- governance read model consumer count: 0
 - incremental materialization status: PARTIAL
 - incremental changed nodes: 0
 - incremental impacted nodes: 0
@@ -60,16 +60,16 @@
 - capability operational verified: 13
 - capability operational reproducible: 8
 - capability operational invocations: 83
-- capability certification status: PASS
-- certified capabilities: 4
+- capability certification status: FAIL
+- certified capabilities: 2
 - partial capabilities: 12
-- failed capabilities: 0
+- failed capabilities: 8
 - performance-evaluated capabilities: 4
-- graph fitness: PARTIAL
-- graph connectivity ratio: 0.9884
+- graph fitness: BLOCKED
+- graph connectivity ratio: 0.9917
 - planner coverage ratio: 1
-- runtime coverage ratio: 0.8125
-- verification coverage ratio: 0.8125
+- runtime coverage ratio: 0.5909
+- verification coverage ratio: 0.5909
 - replay stability ratio: 1
 - specification system status: PASS
 - specification registry artifacts: 50

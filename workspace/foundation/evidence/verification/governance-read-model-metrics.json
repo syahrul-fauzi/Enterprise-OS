@@ -1,54 +1,54 @@
 {
-  "metrics_id": "governance-read-model-metrics:b9c3ea2becf0cc06",
-  "metrics_digest": "b9c3ea2becf0cc064f82989bc611956c7d6ebb2e906d582e9c4f97644e8af30b",
+  "metrics_id": "governance-read-model-metrics:80a36c440a9209a2",
+  "metrics_digest": "80a36c440a9209a28b514c69a79c32b7dffd7813ab49c4923473659f654f2ff5",
   "capability_id": "governance-read-model",
-  "source_session_id": "governance-session:a8b570e4c753419a",
-  "source_session_digest": "a8b570e4c753419a6e324c50abd093353a83e76f924b0634d275e4ebb60198ef",
-  "source_session_lineage_digest": "d57bcd995675feb1faab68c7362c20a9a4d826d5c994d8b0e7bdbbc9f207f5d9",
-  "generated_at_utc": "2026-08-05T04:29:08.062Z",
-  "source_generated_at_utc": "2026-08-05T04:29:08.055Z",
-  "source_digest": "cad87112bd6a28530339124ef9b7f0d1ee3e0a36fe2f74739d92765399998c88",
-  "generation_digest": "553d442b1d3a9395c4b20940874a27b243e8d9b273fc470b2f52e7e7bc17f530",
-  "freshness_ms": 7,
+  "source_session_id": "governance-session:f7bdbdd2174ecc70",
+  "source_session_digest": "f7bdbdd2174ecc70abf8a2918d8dad9a6e076f075aeeaed6337c88112ab62135",
+  "source_session_lineage_digest": "a2356b016565508db2c1b6bb72ea9f1f00f87995c431fc197b2f2d5d7f0db1e8",
+  "generated_at_utc": "2026-09-24T13:26:14.322Z",
+  "source_generated_at_utc": "2026-09-24T13:26:14.312Z",
+  "source_digest": "8aacfb11d85dc0cfd22500bcdc36e6c99f6765b313c02e9d00487a1435a63633",
+  "generation_digest": "65f909752f8e3ff04d162900e81e59349f1fbce29728072baaeb7cfb24435943",
+  "freshness_ms": 10,
   "materialization_latency_ms": 0,
   "generation_duration_ms": 1,
-  "consumer_count": 1,
+  "consumer_count": 0,
   "read_models": [
     {
       "view_kind": "summary",
-      "source_digest": "8dc7f9a389181605492f07d4cb1e22dc6d3c9359fbf6cad0d2003d5a0b1319ec",
-      "generation_digest": "f127c130ae2f9c9ff99c25dbb1cdd30961ec12059625b72ce1b1414add4d9d86",
+      "source_digest": "83c49a1ebbf10869aac7448bcbb5ad34d0e3498b57d9e83395473e75aff0f704",
+      "generation_digest": "4eb69eea3b47f509630d3100cb33ab7f28c3e94766ae3e27cd453020f895e1fc",
       "materialization_latency_ms": 0,
       "generation_duration_ms": 0,
-      "freshness_ms": 7,
-      "consumer_count": 1
+      "freshness_ms": 10,
+      "consumer_count": 0
     },
     {
       "view_kind": "claims",
-      "source_digest": "7f7e6fe1468fc79e311ab1502dca1820efaf617f44f29d601e2b88878f63af5d",
-      "generation_digest": "2ffabc8b18da7a958cc1b2f7c6cbed5bb05959c58d75747b5304544981165c9f",
+      "source_digest": "9d804f6ca52d16101e3a81d6c803dc24642488373f61d1c281eb906a6ed98589",
+      "generation_digest": "51b70578d901f56539b4b1980acf297fe921cff1a5381ed715975120808fdce7",
       "materialization_latency_ms": 0,
       "generation_duration_ms": 0,
-      "freshness_ms": 7,
-      "consumer_count": 1
+      "freshness_ms": 10,
+      "consumer_count": 0
     },
     {
       "view_kind": "health",
-      "source_digest": "8fd602f840b79baf50810e071909aa243147c2ad00733a21dc3b9140c0868903",
-      "generation_digest": "8f022484e2cba6572aa6d9567204a9c5ea54554433bec1a44eaa650d7299b0a3",
+      "source_digest": "9f322052868a89255ce8a307758c510d6c81a3d2c45e03ff87fa5b3a3640a6d5",
+      "generation_digest": "9b9e53d132fb9a8dc4ea7933d48b922a8c8a7c378993a5ab8ad785ea4d5390fc",
       "materialization_latency_ms": 0,
       "generation_duration_ms": 0,
-      "freshness_ms": 7,
-      "consumer_count": 1
+      "freshness_ms": 10,
+      "consumer_count": 0
     },
     {
       "view_kind": "dashboard",
-      "source_digest": "8dc7f9a389181605492f07d4cb1e22dc6d3c9359fbf6cad0d2003d5a0b1319ec",
-      "generation_digest": "6b10083300237f77202f497ce2a9fe638e023460ee5c380a022c76c79d057383",
+      "source_digest": "83c49a1ebbf10869aac7448bcbb5ad34d0e3498b57d9e83395473e75aff0f704",
+      "generation_digest": "8beecb4bafdae12c1fa6b499721a0d66b379945b75bca3058d59400ad1898c7f",
       "materialization_latency_ms": 0,
       "generation_duration_ms": 0,
-      "freshness_ms": 7,
-      "consumer_count": 1
+      "freshness_ms": 10,
+      "consumer_count": 0
     }
   ],
   "claim_boundary": "Governance read model metrics capture materialization freshness, generation timing, source digests, output digests, and consumer exposure for the governance-read-model capability. They evaluate projection quality without inspecting governance evidence internals."

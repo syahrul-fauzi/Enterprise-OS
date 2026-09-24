@@ -36,4 +36,4 @@ capability:
   evidence_required:
     - r4-validation
     - user-adoption
-stability: prototype
+stability: experimental

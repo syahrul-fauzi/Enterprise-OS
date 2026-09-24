@@ -1,10 +1,54 @@
 {
   "capability_id": "requirements-traceability-matrix",
-  "declared_dependencies": [],
+  "declared_dependencies": [
+    {
+      "capability_id": "evidence-registry",
+      "version": "0.1.0",
+      "manifest_ref": "workspace/capabilities/evidence-registry/definition/capability.yaml",
+      "governance_status": "VALID",
+      "stability": "stable",
+      "lifecycle_stage": "core"
+    },
+    {
+      "capability_id": "knowledge-graph",
+      "version": "0.1.0",
+      "manifest_ref": "workspace/capabilities/knowledge-graph/definition/capability.yaml",
+      "governance_status": "VALID",
+      "stability": "stable",
+      "lifecycle_stage": "core"
+    },
+    {
+      "capability_id": "requirement-management",
+      "version": "0.1.0",
+      "manifest_ref": "workspace/capabilities/requirement-management/definition/capability.yaml",
+      "governance_status": "VALID",
+      "stability": "stable",
+      "lifecycle_stage": "core"
+    }
+  ],
   "system_dependencies": [],
   "dependency_classification": {
     "policy_version": "1.0.0",
-    "entries": []
+    "entries": [
+      {
+        "dependency_id": "evidence-registry",
+        "dependency_class": "bounded_context_capability",
+        "resolution_status": "RESOLVED_CAPABILITY",
+        "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
+      },
+      {
+        "dependency_id": "knowledge-graph",
+        "dependency_class": "bounded_context_capability",
+        "resolution_status": "RESOLVED_CAPABILITY",
+        "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
+      },
+      {
+        "dependency_id": "requirement-management",
+        "dependency_class": "bounded_context_capability",
+        "resolution_status": "RESOLVED_CAPABILITY",
+        "rationale": "Dependency resolves to a governed capability boundary declared in the repository registry."
+      }
+    ]
   },
   "unresolved_dependencies": [],
   "dependency_policy": {
@@ -12,12 +56,16 @@
     "forbidden_dependencies": []
   },
   "declared_consumers": [],
-  "consumers": [],
-  "empirically_verified_products": [],
-  "product_reach_ratio": 0,
-  "reachable_from_products": [
+  "consumers": [
+    "governance-read-model",
+    "lawyershub",
+    "services-id"
+  ],
+  "empirically_verified_products": [
     "lawyershub"
   ],
+  "product_reach_ratio": 1,
+  "reachable_from_products": [],
   "reachability_status": "REACHABLE",
   "artifact_boundary": "Capability dependency projection freezes dependency intent, consumer relationships, and product reachability so capability evolution can be audited without reading raw manifests directly."
 }

@@ -1,17 +1,17 @@
 {
   "report_version": "1.0.0",
-  "report_digest": "54b452f55d4d7df331882a191dba0311214b4bc46854725224a70f586521134e",
+  "report_digest": "b281a2f72ed91a4cd7d69e9f57d78b8a653fca8ae6f1210eb046719f23233564",
   "execution_scope": "verify-foundation",
-  "session_id": "governance-session:a8b570e4c753419a",
-  "session_digest": "a8b570e4c753419a6e324c50abd093353a83e76f924b0634d275e4ebb60198ef",
-  "session_projection_digest": "75aa53f0c0028af7b203fc158ebfe53a79b49e3184fd840d310390465429b94d",
-  "previous_report_digest": "fdb113a10d635b6bc79d4e7057d7e499f53a14c8c4232e7d08210469503425be",
+  "session_id": "governance-session:f7bdbdd2174ecc70",
+  "session_digest": "f7bdbdd2174ecc70abf8a2918d8dad9a6e076f075aeeaed6337c88112ab62135",
+  "session_projection_digest": "7fbd72f2a843fc84f894b0bb0d468e42a629e516d389030dc1b57f1232b17620",
+  "previous_report_digest": "b3c04b457d5fe51704bfb68b5c90d09ce86a21bf261ad2dea3b84f2f18c34cc6",
   "invalidation_lineage_status": "EXPLICIT",
   "selective_execution_status": "APPLIED",
   "delta_basis": {
     "basis_version": "1.0.0",
-    "previous_session_digest": "1c31e03c66257b2ef7d88a17173a6a1ae5b9d438f587818a2d393085019473b7",
-    "previous_session_projection_digest": "bd99305189417193fec4bcaa38d5399303a42875b449c5bce1fd32d291d15c62",
+    "previous_session_digest": "b5230c1993cbf4021af771fa840197bfc43ffbf96aaf3095c2bb8ee2bdce5436",
+    "previous_session_projection_digest": "8a5ba5a6ee59b2d08e50923e949a448ca7cce6f48cff858c8178818c9e4cc216",
     "session_digest_changed": true,
     "session_projection_digest_changed": true,
     "delta_mode": "SESSION_DELTA",
@@ -283,15 +283,15 @@
     {
       "node_id": "law_results",
       "artifact_kind": "evidence",
-      "output_digest": "b4af5462cc01133d767945fcee9b5b159979b3fd282869dfed4dec351759eccf",
+      "output_digest": "8369acebe3dfc4040780c7dc46bb34350e61467b07d1e4e1a6b32ba841cc3757",
       "source_digests": [
         {
           "source_id": "constitution_report",
-          "digest": "a1a858b63f6f950c6bbaa77303f9549534a3693b7b9eb8affa622e67bb187e7e"
+          "digest": "091e222e8d82be3eda7a5a550a4a4d937fc67b64ee55d834efe12caf8d5375ba"
         }
       ],
       "rematerialization_reason": "Law results change when constitutional evidence or law evaluation inputs change.",
-      "invalidation_digest": "6e9cd14102d6e33afe11a6bdd54eb96221f103410b77a51aac6b4fce44efdb22",
+      "invalidation_digest": "ea978212f12ea3ee3f0f6d2080fd94aaf159e33ad7a489013c3031b568cf023f",
       "directly_invalidates": [
         "claims",
         "evidence_packages",
@@ -305,19 +305,19 @@
     {
       "node_id": "evidence_packages",
       "artifact_kind": "evidence",
-      "output_digest": "a1ddc5ef2b676b5348c6d988bb0d7bb8b2256e49a84cea99b3528a42d6aa9712",
+      "output_digest": "60f62edb49b66de97dd7684ad3e2410cbb41fe45f786350c2f81d9e2e467e9cb",
       "source_digests": [
         {
           "source_id": "law_results",
-          "digest": "b4af5462cc01133d767945fcee9b5b159979b3fd282869dfed4dec351759eccf"
+          "digest": "8369acebe3dfc4040780c7dc46bb34350e61467b07d1e4e1a6b32ba841cc3757"
         },
         {
           "source_id": "proof_fragments",
-          "digest": "4d59c01848e24a0ffb13524367b9624793a5ef617040a9009ece94ca9d533c29"
+          "digest": "0447f5052b0bead04c97602e4eea548cc682bfd04bd59b67f5fde02cbb5112da"
         }
       ],
       "rematerialization_reason": "Evidence packages are invalidated by law-result or proof-fragment changes.",
-      "invalidation_digest": "3a7d25236c5f803aa3d82e74e5a6ecdcaa9a4e0438b98ffb6420a8f715bd8793",
+      "invalidation_digest": "e4c070488110270e8bfa5e5e68f9fdf9e237ce5f798a825034c3bc25adf631a3",
       "directly_invalidates": [
         "law_certificates",
         "proof_bundle",
@@ -330,15 +330,15 @@
     {
       "node_id": "law_certificates",
       "artifact_kind": "evidence",
-      "output_digest": "27f214ab3eca9caff87ed1e02bec70cd95044987beaf4c2c78a4e9a870069621",
+      "output_digest": "02ac6fc09dec20afead8f0938c1ca9aedb4eac95cd67b246183e239893dffa85",
       "source_digests": [
         {
           "source_id": "evidence_packages",
-          "digest": "a1ddc5ef2b676b5348c6d988bb0d7bb8b2256e49a84cea99b3528a42d6aa9712"
+          "digest": "60f62edb49b66de97dd7684ad3e2410cbb41fe45f786350c2f81d9e2e467e9cb"
         }
       ],
       "rematerialization_reason": "Certificates are reissued only when immutable evidence package digests change.",
-      "invalidation_digest": "61d68e828479ccca24e30ee131725f0e7498d8a09c4f23cc4928c6c3148ccd84",
+      "invalidation_digest": "9524dd15578e86c899d1dd07a9228c660ab2b6ef25af58cf5d50cb2a34037fca",
       "directly_invalidates": [
         "law_attestations",
         "proof_bundle",
@@ -351,11 +351,11 @@
     {
       "node_id": "law_attestations",
       "artifact_kind": "trust_event_stream",
-      "output_digest": "33bdd059f7f858850fa8771ece85c5a38012f962c4cfc81c3d532267b2c55295",
+      "output_digest": "6322a96f19adf88bd936d31036d5e3b3a1e80536eba99e04644b041bfa0f4773",
       "source_digests": [
         {
           "source_id": "law_certificates",
-          "digest": "27f214ab3eca9caff87ed1e02bec70cd95044987beaf4c2c78a4e9a870069621"
+          "digest": "02ac6fc09dec20afead8f0938c1ca9aedb4eac95cd67b246183e239893dffa85"
         },
         {
           "source_id": "attestation_policy",
@@ -363,7 +363,7 @@
         }
       ],
       "rematerialization_reason": "Attestation event stream is invalidated by certificate or trust-policy changes.",
-      "invalidation_digest": "59d5632b75df6bf00fe6a44f04d9e28efb21aeee5028c341f14b8426b0fc2798",
+      "invalidation_digest": "0f76d30e37fed5a3395a1ca4326e1160acfaca74ca5e947822eda887fa690a7c",
       "directly_invalidates": [
         "proof_bundle",
         "session_provenance"
@@ -375,15 +375,15 @@
     {
       "node_id": "claims",
       "artifact_kind": "report",
-      "output_digest": "b54a66476fbf88e4207c392f70689bd9dbe15237d78e5ed262345f8ef9778c5f",
+      "output_digest": "995f1509b5daf6a47240d1b493deea3d06a9a9b2e23f95b8df568d705196aec0",
       "source_digests": [
         {
           "source_id": "law_results",
-          "digest": "b4af5462cc01133d767945fcee9b5b159979b3fd282869dfed4dec351759eccf"
+          "digest": "8369acebe3dfc4040780c7dc46bb34350e61467b07d1e4e1a6b32ba841cc3757"
         }
       ],
       "rematerialization_reason": "Claims are recomputed when law-result outcomes change.",
-      "invalidation_digest": "ed2ccad73f8bf6289c9ca38099bb15c27e8085bffd666a99622d9556d0fb8d1f",
+      "invalidation_digest": "63b15a633c8ffb7cc3b1adafb64b44ef4b817cd50edcdf4223709a13102a8515",
       "directly_invalidates": [
         "claims_view",
         "dashboard_view",
@@ -399,15 +399,15 @@
     {
       "node_id": "summary",
       "artifact_kind": "report",
-      "output_digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf",
+      "output_digest": "92614f877c9f719cf66f74b16cea10e94e99ef06c22c51ed9b528e4fdf43754e",
       "source_digests": [
         {
           "source_id": "claims",
-          "digest": "b54a66476fbf88e4207c392f70689bd9dbe15237d78e5ed262345f8ef9778c5f"
+          "digest": "995f1509b5daf6a47240d1b493deea3d06a9a9b2e23f95b8df568d705196aec0"
         }
       ],
       "rematerialization_reason": "Summary is a downstream projection of claims status.",
-      "invalidation_digest": "3b3861c71fb44304a6592114cd8e06386ab51452a1ac03152f694fabceb53b3d",
+      "invalidation_digest": "225167113f4090e99adcedb3617195c1571626acebcff30297c44a605e2b8e17",
       "directly_invalidates": [
         "dashboard_view",
         "health_view",
@@ -422,35 +422,35 @@
     {
       "node_id": "proof_bundle",
       "artifact_kind": "report",
-      "output_digest": "2f9cdceb221891184a7488a49b8cfc5bb34c807acb5b339b5ad9ddff5320a42e",
+      "output_digest": "f8e6adc8922f987b95b45756e58c85935e0e366bf4b3c34dfab58039108b05d1",
       "source_digests": [
         {
           "source_id": "law_results",
-          "digest": "b4af5462cc01133d767945fcee9b5b159979b3fd282869dfed4dec351759eccf"
+          "digest": "8369acebe3dfc4040780c7dc46bb34350e61467b07d1e4e1a6b32ba841cc3757"
         },
         {
           "source_id": "evidence_packages",
-          "digest": "a1ddc5ef2b676b5348c6d988bb0d7bb8b2256e49a84cea99b3528a42d6aa9712"
+          "digest": "60f62edb49b66de97dd7684ad3e2410cbb41fe45f786350c2f81d9e2e467e9cb"
         },
         {
           "source_id": "law_certificates",
-          "digest": "27f214ab3eca9caff87ed1e02bec70cd95044987beaf4c2c78a4e9a870069621"
+          "digest": "02ac6fc09dec20afead8f0938c1ca9aedb4eac95cd67b246183e239893dffa85"
         },
         {
           "source_id": "law_attestations",
-          "digest": "33bdd059f7f858850fa8771ece85c5a38012f962c4cfc81c3d532267b2c55295"
+          "digest": "6322a96f19adf88bd936d31036d5e3b3a1e80536eba99e04644b041bfa0f4773"
         },
         {
           "source_id": "claims",
-          "digest": "b54a66476fbf88e4207c392f70689bd9dbe15237d78e5ed262345f8ef9778c5f"
+          "digest": "995f1509b5daf6a47240d1b493deea3d06a9a9b2e23f95b8df568d705196aec0"
         },
         {
           "source_id": "summary",
-          "digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf"
+          "digest": "92614f877c9f719cf66f74b16cea10e94e99ef06c22c51ed9b528e4fdf43754e"
         }
       ],
       "rematerialization_reason": "Proof bundle snapshots the full governance evidence chain and must move with any upstream digest change.",
-      "invalidation_digest": "c6a6ec8deb2248ac6de9c250da4275be017003dc31d9094ee5259b3a7dec6318",
+      "invalidation_digest": "0624a2c45d426beca663f25b6891bbcb881dd17ef90a07839166a2ddeade30fe",
       "directly_invalidates": [
         "session_provenance"
       ],
@@ -461,7 +461,7 @@
     {
       "node_id": "session_provenance",
       "artifact_kind": "session",
-      "output_digest": "a8b570e4c753419a6e324c50abd093353a83e76f924b0634d275e4ebb60198ef",
+      "output_digest": "f7bdbdd2174ecc70abf8a2918d8dad9a6e076f075aeeaed6337c88112ab62135",
       "source_digests": [
         {
           "source_id": "trust_framework_catalog",
@@ -473,35 +473,35 @@
         },
         {
           "source_id": "law_results",
-          "digest": "b4af5462cc01133d767945fcee9b5b159979b3fd282869dfed4dec351759eccf"
+          "digest": "8369acebe3dfc4040780c7dc46bb34350e61467b07d1e4e1a6b32ba841cc3757"
         },
         {
           "source_id": "evidence_packages",
-          "digest": "a1ddc5ef2b676b5348c6d988bb0d7bb8b2256e49a84cea99b3528a42d6aa9712"
+          "digest": "60f62edb49b66de97dd7684ad3e2410cbb41fe45f786350c2f81d9e2e467e9cb"
         },
         {
           "source_id": "law_certificates",
-          "digest": "27f214ab3eca9caff87ed1e02bec70cd95044987beaf4c2c78a4e9a870069621"
+          "digest": "02ac6fc09dec20afead8f0938c1ca9aedb4eac95cd67b246183e239893dffa85"
         },
         {
           "source_id": "law_attestations",
-          "digest": "33bdd059f7f858850fa8771ece85c5a38012f962c4cfc81c3d532267b2c55295"
+          "digest": "6322a96f19adf88bd936d31036d5e3b3a1e80536eba99e04644b041bfa0f4773"
         },
         {
           "source_id": "claims",
-          "digest": "b54a66476fbf88e4207c392f70689bd9dbe15237d78e5ed262345f8ef9778c5f"
+          "digest": "995f1509b5daf6a47240d1b493deea3d06a9a9b2e23f95b8df568d705196aec0"
         },
         {
           "source_id": "summary",
-          "digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf"
+          "digest": "92614f877c9f719cf66f74b16cea10e94e99ef06c22c51ed9b528e4fdf43754e"
         },
         {
           "source_id": "proof_bundle",
-          "digest": "2f9cdceb221891184a7488a49b8cfc5bb34c807acb5b339b5ad9ddff5320a42e"
+          "digest": "f8e6adc8922f987b95b45756e58c85935e0e366bf4b3c34dfab58039108b05d1"
         }
       ],
       "rematerialization_reason": "Session provenance is the stable lifecycle aggregate that binds evidence, trust, and report digests.",
-      "invalidation_digest": "4a6a7cc9a8b784592bdb03fb438ab200345db6ca8faa9b96be181cc5d5722bd2",
+      "invalidation_digest": "516d5ceff1badc0c93c33d9d15435c45b9518251c79e6ff66613c747c799265b",
       "directly_invalidates": [
         "claims_view",
         "dashboard_view",
@@ -516,23 +516,23 @@
     {
       "node_id": "summary_view",
       "artifact_kind": "read_model",
-      "output_digest": "f127c130ae2f9c9ff99c25dbb1cdd30961ec12059625b72ce1b1414add4d9d86",
+      "output_digest": "4eb69eea3b47f509630d3100cb33ab7f28c3e94766ae3e27cd453020f895e1fc",
       "source_digests": [
         {
           "source_id": "session_provenance_lineage",
-          "digest": "327d43ee525351e49aa8d7239b795abc9f9af751c7c0b451ba5cf6f1e623e0d0"
+          "digest": "addc38366a1414acd1b6ab11a2908a0217636d822ea95839eff31860160cbd1b"
         },
         {
           "source_id": "claims",
-          "digest": "b54a66476fbf88e4207c392f70689bd9dbe15237d78e5ed262345f8ef9778c5f"
+          "digest": "995f1509b5daf6a47240d1b493deea3d06a9a9b2e23f95b8df568d705196aec0"
         },
         {
           "source_id": "summary",
-          "digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf"
+          "digest": "92614f877c9f719cf66f74b16cea10e94e99ef06c22c51ed9b528e4fdf43754e"
         }
       ],
       "rematerialization_reason": "Summary view is invalidated only by session provenance, claims, or summary digest changes.",
-      "invalidation_digest": "7a51a4a91a5102efecf6903baf855fc5c09c8190c5454e55549ce434c900911b",
+      "invalidation_digest": "0fbe23734a9204928a81fa6cd5747e3e32ca4d8c0a1ba57b9ab2d700d2e3446d",
       "directly_invalidates": [
         "governance_session",
         "read_model_metrics"
@@ -544,19 +544,19 @@
     {
       "node_id": "claims_view",
       "artifact_kind": "read_model",
-      "output_digest": "2ffabc8b18da7a958cc1b2f7c6cbed5bb05959c58d75747b5304544981165c9f",
+      "output_digest": "51b70578d901f56539b4b1980acf297fe921cff1a5381ed715975120808fdce7",
       "source_digests": [
         {
           "source_id": "session_provenance_lineage",
-          "digest": "327d43ee525351e49aa8d7239b795abc9f9af751c7c0b451ba5cf6f1e623e0d0"
+          "digest": "addc38366a1414acd1b6ab11a2908a0217636d822ea95839eff31860160cbd1b"
         },
         {
           "source_id": "claims",
-          "digest": "b54a66476fbf88e4207c392f70689bd9dbe15237d78e5ed262345f8ef9778c5f"
+          "digest": "995f1509b5daf6a47240d1b493deea3d06a9a9b2e23f95b8df568d705196aec0"
         }
       ],
       "rematerialization_reason": "Claims view is invalidated by session provenance or claims digest changes.",
-      "invalidation_digest": "74359cc4851781ee6c242d374bf861248f5f65b98ecfeada52a2a9e2db7e9b72",
+      "invalidation_digest": "5ebf75036526543f3d445e6677bfa851b0a3d759c8f5fc839c3413cd3c6450a1",
       "directly_invalidates": [
         "governance_session",
         "read_model_metrics"
@@ -568,19 +568,19 @@
     {
       "node_id": "health_view",
       "artifact_kind": "read_model",
-      "output_digest": "8f022484e2cba6572aa6d9567204a9c5ea54554433bec1a44eaa650d7299b0a3",
+      "output_digest": "9b9e53d132fb9a8dc4ea7933d48b922a8c8a7c378993a5ab8ad785ea4d5390fc",
       "source_digests": [
         {
           "source_id": "session_provenance_lineage",
-          "digest": "327d43ee525351e49aa8d7239b795abc9f9af751c7c0b451ba5cf6f1e623e0d0"
+          "digest": "addc38366a1414acd1b6ab11a2908a0217636d822ea95839eff31860160cbd1b"
         },
         {
           "source_id": "summary",
-          "digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf"
+          "digest": "92614f877c9f719cf66f74b16cea10e94e99ef06c22c51ed9b528e4fdf43754e"
         }
       ],
       "rematerialization_reason": "Health view is invalidated by session provenance or summary digest changes.",
-      "invalidation_digest": "c7038abb8c30f37384588029742fe4af1d721e1dc1be7061c0a71512533af642",
+      "invalidation_digest": "57c0ef0a594725f40bf34f203fad8011d369254fe37cb6deeaad00e5cdfea438",
       "directly_invalidates": [
         "governance_session",
         "read_model_metrics"
@@ -592,23 +592,23 @@
     {
       "node_id": "dashboard_view",
       "artifact_kind": "read_model",
-      "output_digest": "6b10083300237f77202f497ce2a9fe638e023460ee5c380a022c76c79d057383",
+      "output_digest": "8beecb4bafdae12c1fa6b499721a0d66b379945b75bca3058d59400ad1898c7f",
       "source_digests": [
         {
           "source_id": "session_provenance_lineage",
-          "digest": "327d43ee525351e49aa8d7239b795abc9f9af751c7c0b451ba5cf6f1e623e0d0"
+          "digest": "addc38366a1414acd1b6ab11a2908a0217636d822ea95839eff31860160cbd1b"
         },
         {
           "source_id": "claims",
-          "digest": "b54a66476fbf88e4207c392f70689bd9dbe15237d78e5ed262345f8ef9778c5f"
+          "digest": "995f1509b5daf6a47240d1b493deea3d06a9a9b2e23f95b8df568d705196aec0"
         },
         {
           "source_id": "summary",
-          "digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf"
+          "digest": "92614f877c9f719cf66f74b16cea10e94e99ef06c22c51ed9b528e4fdf43754e"
         }
       ],
       "rematerialization_reason": "Dashboard view is invalidated by session provenance, claims, or summary digest changes.",
-      "invalidation_digest": "acd47391afa65ea75dce72b05214b522830f10ecb0010f79695780ef3cac50d3",
+      "invalidation_digest": "16285ab71ea132fef417b945774e6942957f4241d36bf73d83a5f11e006ae38c",
       "directly_invalidates": [
         "governance_session",
         "read_model_metrics"
@@ -620,27 +620,27 @@
     {
       "node_id": "read_model_metrics",
       "artifact_kind": "metrics",
-      "output_digest": "b9c3ea2becf0cc064f82989bc611956c7d6ebb2e906d582e9c4f97644e8af30b",
+      "output_digest": "80a36c440a9209a28b514c69a79c32b7dffd7813ab49c4923473659f654f2ff5",
       "source_digests": [
         {
           "source_id": "summary_view_lineage",
-          "digest": "2cb42a6035b33e570bb7f31db5ba57777d18dc083bf50751506fd1525e801719"
+          "digest": "302eb6c229078a42ab8f4a8001dda93a0f21546be4e5ac29fb3c7ec49d1cdc4d"
         },
         {
           "source_id": "claims_view_lineage",
-          "digest": "1282bd60e6b1bddf4cbccf43b6ce2ec82ab430900c0be8708d73baa5c4dcd704"
+          "digest": "c28e6e070d4448678ec53c01c177f481f081f267848073373ead8a0adbedfc01"
         },
         {
           "source_id": "health_view_lineage",
-          "digest": "0abe5abec953183934780f642c18c4230e3d348945ad9f3f141a8fafc53887a5"
+          "digest": "da03b536ca5ae49cd606af5fd0a8be1cfea7ca086a7a78eddaff328e04f315b8"
         },
         {
           "source_id": "dashboard_view_lineage",
-          "digest": "2cb42a6035b33e570bb7f31db5ba57777d18dc083bf50751506fd1525e801719"
+          "digest": "302eb6c229078a42ab8f4a8001dda93a0f21546be4e5ac29fb3c7ec49d1cdc4d"
         }
       ],
       "rematerialization_reason": "Read-model metrics move when any projected governance view changes.",
-      "invalidation_digest": "4c6a21ba1048536d92ebd14d0da70ae3f6df68f8f238de88d5c1334c46184295",
+      "invalidation_digest": "76fc18049ba67035e4e6672600e3690792ef8ba9b698fdfbad9c23b645e5367b",
       "directly_invalidates": [
         "governance_session"
       ],
@@ -651,35 +651,35 @@
     {
       "node_id": "governance_session",
       "artifact_kind": "session",
-      "output_digest": "75aa53f0c0028af7b203fc158ebfe53a79b49e3184fd840d310390465429b94d",
+      "output_digest": "7fbd72f2a843fc84f894b0bb0d468e42a629e516d389030dc1b57f1232b17620",
       "source_digests": [
         {
           "source_id": "session_provenance_lineage",
-          "digest": "327d43ee525351e49aa8d7239b795abc9f9af751c7c0b451ba5cf6f1e623e0d0"
+          "digest": "addc38366a1414acd1b6ab11a2908a0217636d822ea95839eff31860160cbd1b"
         },
         {
           "source_id": "summary_view_lineage",
-          "digest": "2cb42a6035b33e570bb7f31db5ba57777d18dc083bf50751506fd1525e801719"
+          "digest": "302eb6c229078a42ab8f4a8001dda93a0f21546be4e5ac29fb3c7ec49d1cdc4d"
         },
         {
           "source_id": "claims_view_lineage",
-          "digest": "1282bd60e6b1bddf4cbccf43b6ce2ec82ab430900c0be8708d73baa5c4dcd704"
+          "digest": "c28e6e070d4448678ec53c01c177f481f081f267848073373ead8a0adbedfc01"
         },
         {
           "source_id": "health_view_lineage",
-          "digest": "0abe5abec953183934780f642c18c4230e3d348945ad9f3f141a8fafc53887a5"
+          "digest": "da03b536ca5ae49cd606af5fd0a8be1cfea7ca086a7a78eddaff328e04f315b8"
         },
         {
           "source_id": "dashboard_view_lineage",
-          "digest": "2cb42a6035b33e570bb7f31db5ba57777d18dc083bf50751506fd1525e801719"
+          "digest": "302eb6c229078a42ab8f4a8001dda93a0f21546be4e5ac29fb3c7ec49d1cdc4d"
         },
         {
           "source_id": "read_model_metrics_lineage",
-          "digest": "d5031fd9bb9ba249a81da9ee6af4cf7bd3ed120ef997d842a31f14d4a1c4e79d"
+          "digest": "6bcd58b94fcf27aadc376268ea6c00fbc026f5d4c215aec3cc9f772a7cbf0d7b"
         }
       ],
       "rematerialization_reason": "Governance session final projection changes only when provenance or attached read-model outputs change.",
-      "invalidation_digest": "283c2a423530b71e844c7c630191aefc44fd850d36991a0bb51aebe75c2dacc0",
+      "invalidation_digest": "dbf7a8e9f508de30fe8e07fdeb21f9bb098f1bf2e964bbe9c0244aa99fdc38c5",
       "directly_invalidates": [],
       "changed_since_previous": false,
       "impacted_by_changes": false,

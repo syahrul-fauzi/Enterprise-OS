@@ -1,13 +1,13 @@
 {
   "certification_version": "1.0.0",
-  "certification_digest": "e7abfde8550c584eb5340bd6b85358c214fd78ec2b7e4cce52116d5b3c08a1f4",
+  "certification_digest": "da559043fad72af2e27acd0d9c371ed96c5665d52a4dee4913af4579b9396bb6",
   "summary": {
-    "total_capabilities": 16,
-    "certified_capabilities": 4,
+    "total_capabilities": 22,
+    "certified_capabilities": 2,
     "partial_capabilities": 12,
-    "failed_capabilities": 0,
+    "failed_capabilities": 8,
     "performance_evaluated_capabilities": 4,
-    "overall_status": "PASS"
+    "overall_status": "FAIL"
   },
   "capabilities": [
     {
@@ -40,10 +40,10 @@
       "capability_id": "api-platform",
       "manifest_ref": "workspace/capabilities/api-platform/definition/capability.yaml",
       "stability": "stable",
-      "certification_status": "CERTIFIED",
+      "certification_status": "FAILED",
       "dependency_valid": {
-        "status": "PASS",
-        "detail": "No dependency constitution violations found for \"api-platform\"."
+        "status": "FAIL",
+        "detail": "API capability \"api-platform\" declares consumer \"ilc\". API boundaries must remain terminal consumers and cannot be depended on by other capabilities. Declared consumer \"ilc\" does not resolve to a capability manifest. Dependency \"api-platform\" declares consumed_by=[ilc], but consumer \"connector-ecosystem\" is missing from that list."
       },
       "contract_valid": {
         "status": "PASS",
@@ -63,13 +63,65 @@
       }
     },
     {
-      "capability_id": "connector-ecosystem",
-      "manifest_ref": "workspace/capabilities/connector-ecosystem/definition/capability.yaml",
+      "capability_id": "atomic-composition",
+      "manifest_ref": "workspace/capabilities/atomic-composition/definition/capability.yaml",
       "stability": "experimental",
       "certification_status": "PARTIAL",
       "dependency_valid": {
         "status": "PASS",
-        "detail": "No dependency constitution violations found for \"connector-ecosystem\"."
+        "detail": "No dependency constitution violations found for \"atomic-composition\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"atomic-composition\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"atomic-composition\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"atomic-composition\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"atomic-composition\"."
+      }
+    },
+    {
+      "capability_id": "communication",
+      "manifest_ref": "workspace/capabilities/communication/definition/capability.yaml",
+      "stability": "stable",
+      "certification_status": "FAILED",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"communication\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"communication\"."
+      },
+      "provider_valid": {
+        "status": "PASS",
+        "detail": "All provided contracts for \"communication\" are registered and versioned."
+      },
+      "compatibility_valid": {
+        "status": "FAIL",
+        "detail": "Contract range \">=0.1 <0.2\" for \"communication\" has no compatible provider. Contract range \">=0.1 <0.2\" for \"communication\" has no compatible provider. Contract range \">=0.1 <0.2\" for \"communication\" has no compatible provider."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"communication\"."
+      }
+    },
+    {
+      "capability_id": "connector-ecosystem",
+      "manifest_ref": "workspace/capabilities/connector-ecosystem/definition/capability.yaml",
+      "stability": "stable",
+      "certification_status": "FAILED",
+      "dependency_valid": {
+        "status": "FAIL",
+        "detail": "Capability \"connector-ecosystem\" depends on API boundary capability \"api-platform\". API remains the outer consumer boundary and must not be used as an inward dependency."
       },
       "contract_valid": {
         "status": "PASS",
@@ -89,9 +141,35 @@
       }
     },
     {
+      "capability_id": "consultation",
+      "manifest_ref": "workspace/capabilities/consultation/definition/capability.yaml",
+      "stability": "experimental",
+      "certification_status": "FAILED",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"consultation\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"consultation\"."
+      },
+      "provider_valid": {
+        "status": "PASS",
+        "detail": "All provided contracts for \"consultation\" are registered and versioned."
+      },
+      "compatibility_valid": {
+        "status": "FAIL",
+        "detail": "Contract range \">=0.1 <0.2\" for \"consultation\" has no compatible provider. Contract range \">=0.1 <0.2\" for \"consultation\" has no compatible provider. Contract range \">=0.1 <0.2\" for \"consultation\" has no compatible provider."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"consultation\"."
+      }
+    },
+    {
       "capability_id": "evidence-registry",
       "manifest_ref": "workspace/capabilities/evidence-registry/definition/capability.yaml",
-      "stability": "experimental",
+      "stability": "stable",
       "certification_status": "PARTIAL",
       "dependency_valid": {
         "status": "PASS",
@@ -163,7 +241,7 @@
       },
       "performance_valid": {
         "status": "PASS",
-        "detail": "Materialization evidence recorded for \"governance-read-model\" with freshness=7ms duration=1ms consumers=1."
+        "detail": "Materialization evidence recorded for \"governance-read-model\" with freshness=10ms duration=1ms consumers=0."
       }
     },
     {
@@ -195,7 +273,7 @@
     {
       "capability_id": "knowledge-graph",
       "manifest_ref": "workspace/capabilities/knowledge-graph/definition/capability.yaml",
-      "stability": "experimental",
+      "stability": "stable",
       "certification_status": "PARTIAL",
       "dependency_valid": {
         "status": "PASS",
@@ -221,7 +299,7 @@
     {
       "capability_id": "legal-case",
       "manifest_ref": "workspace/capabilities/legal-case/definition/capability.yaml",
-      "stability": "experimental",
+      "stability": "stable",
       "certification_status": "PARTIAL",
       "dependency_valid": {
         "status": "PASS",
@@ -247,7 +325,7 @@
     {
       "capability_id": "legal-document",
       "manifest_ref": "workspace/capabilities/legal-document/definition/capability.yaml",
-      "stability": "experimental",
+      "stability": "stable",
       "certification_status": "PARTIAL",
       "dependency_valid": {
         "status": "PASS",
@@ -273,7 +351,7 @@
     {
       "capability_id": "observability",
       "manifest_ref": "workspace/capabilities/observability/definition/capability.yaml",
-      "stability": "experimental",
+      "stability": "stable",
       "certification_status": "PARTIAL",
       "dependency_valid": {
         "status": "PASS",
@@ -299,8 +377,8 @@
     {
       "capability_id": "requirement-management",
       "manifest_ref": "workspace/capabilities/requirement-management/definition/capability.yaml",
-      "stability": "experimental",
-      "certification_status": "PARTIAL",
+      "stability": "stable",
+      "certification_status": "FAILED",
       "dependency_valid": {
         "status": "PASS",
         "detail": "No dependency constitution violations found for \"requirement-management\"."
@@ -310,12 +388,12 @@
         "detail": "Contract declarations are syntactically valid for \"requirement-management\"."
       },
       "provider_valid": {
-        "status": "NOT_APPLICABLE",
-        "detail": "Capability \"requirement-management\" does not provide versioned contracts."
+        "status": "PASS",
+        "detail": "All provided contracts for \"requirement-management\" are registered and versioned."
       },
       "compatibility_valid": {
-        "status": "NOT_APPLICABLE",
-        "detail": "Capability \"requirement-management\" does not require versioned contracts."
+        "status": "FAIL",
+        "detail": "Contract range \">=0.1 <0.2\" for \"requirement-management\" has no compatible provider. Contract range \">=0.1 <0.2\" for \"requirement-management\" has no compatible provider."
       },
       "performance_valid": {
         "status": "UNVERIFIED",
@@ -325,7 +403,7 @@
     {
       "capability_id": "requirements-traceability-matrix",
       "manifest_ref": "workspace/capabilities/requirements-traceability-matrix/definition/capability.yaml",
-      "stability": "experimental",
+      "stability": "stable",
       "certification_status": "PARTIAL",
       "dependency_valid": {
         "status": "PASS",
@@ -351,7 +429,7 @@
     {
       "capability_id": "security-hardening",
       "manifest_ref": "workspace/capabilities/security-hardening/definition/capability.yaml",
-      "stability": "experimental",
+      "stability": "stable",
       "certification_status": "PARTIAL",
       "dependency_valid": {
         "status": "PASS",
@@ -375,13 +453,65 @@
       }
     },
     {
+      "capability_id": "service-directory",
+      "manifest_ref": "workspace/capabilities/service-directory/definition/capability.yaml",
+      "stability": "stable",
+      "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"service-directory\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"service-directory\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"service-directory\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"service-directory\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"service-directory\"."
+      }
+    },
+    {
+      "capability_id": "services-id",
+      "manifest_ref": "workspace/capabilities/services-id/definition/capability.yaml",
+      "stability": "experimental",
+      "certification_status": "FAILED",
+      "dependency_valid": {
+        "status": "FAIL",
+        "detail": "Declared dependency \"human-operations\" does not resolve to a capability manifest or known workspace package."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"services-id\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"services-id\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"services-id\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"services-id\"."
+      }
+    },
+    {
       "capability_id": "trust-framework",
       "manifest_ref": "workspace/capabilities/trust-framework/definition/capability.yaml",
       "stability": "stable",
-      "certification_status": "CERTIFIED",
+      "certification_status": "FAILED",
       "dependency_valid": {
-        "status": "PASS",
-        "detail": "No dependency constitution violations found for \"trust-framework\"."
+        "status": "FAIL",
+        "detail": "Dependency \"trust-framework\" declares consumed_by=[governance-evidence], but consumer \"evidence-registry\" is missing from that list. Dependency \"trust-framework\" declares consumed_by=[governance-evidence], but consumer \"security-hardening\" is missing from that list."
       },
       "contract_valid": {
         "status": "PASS",
@@ -401,10 +531,36 @@
       }
     },
     {
-      "capability_id": "workflow-engine",
-      "manifest_ref": "workspace/capabilities/workflow-engine/definition/capability.yaml",
+      "capability_id": "Work Inspection Agent",
+      "manifest_ref": "workspace/capabilities/work-inspection/definition/capability.yaml",
       "stability": "experimental",
       "certification_status": "PARTIAL",
+      "dependency_valid": {
+        "status": "PASS",
+        "detail": "No dependency constitution violations found for \"Work Inspection Agent\"."
+      },
+      "contract_valid": {
+        "status": "PASS",
+        "detail": "Contract declarations are syntactically valid for \"Work Inspection Agent\"."
+      },
+      "provider_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"Work Inspection Agent\" does not provide versioned contracts."
+      },
+      "compatibility_valid": {
+        "status": "NOT_APPLICABLE",
+        "detail": "Capability \"Work Inspection Agent\" does not require versioned contracts."
+      },
+      "performance_valid": {
+        "status": "UNVERIFIED",
+        "detail": "No materialization or runtime performance evidence is currently registered for \"Work Inspection Agent\"."
+      }
+    },
+    {
+      "capability_id": "workflow-engine",
+      "manifest_ref": "workspace/capabilities/workflow-engine/definition/capability.yaml",
+      "stability": "stable",
+      "certification_status": "FAILED",
       "dependency_valid": {
         "status": "PASS",
         "detail": "No dependency constitution violations found for \"workflow-engine\"."
@@ -414,12 +570,12 @@
         "detail": "Contract declarations are syntactically valid for \"workflow-engine\"."
       },
       "provider_valid": {
-        "status": "NOT_APPLICABLE",
-        "detail": "Capability \"workflow-engine\" does not provide versioned contracts."
+        "status": "PASS",
+        "detail": "All provided contracts for \"workflow-engine\" are registered and versioned."
       },
       "compatibility_valid": {
-        "status": "NOT_APPLICABLE",
-        "detail": "Capability \"workflow-engine\" does not require versioned contracts."
+        "status": "FAIL",
+        "detail": "Contract range \">=0.1 <0.2\" for \"workflow-engine\" has no compatible provider."
       },
       "performance_valid": {
         "status": "UNVERIFIED",

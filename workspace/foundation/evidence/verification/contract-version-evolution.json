@@ -1,18 +1,100 @@
 {
   "report_version": "1.0.0",
-  "report_digest": "0c5b1912b2695d9d696bd485d8b89ed1513d812fb9f40dd277562142c2bdb265",
+  "report_digest": "7cb17a56b5892974b313851ef002e917b84df672b58011d0ec6e514b4da96497",
   "summary": {
-    "deterministic_resolution_status": "PASS",
-    "consumer_pinning_status": "PASS",
-    "parallel_major_evolution_readiness_status": "PASS",
-    "overall_status": "PASS",
-    "total_contracts": 3,
-    "ready_contracts": 3,
-    "blocked_contracts": 0
+    "deterministic_resolution_status": "FAIL",
+    "consumer_pinning_status": "FAIL",
+    "parallel_major_evolution_readiness_status": "FAIL",
+    "overall_status": "FAIL",
+    "total_contracts": 11,
+    "ready_contracts": 5,
+    "blocked_contracts": 6
   },
   "contracts": [
     {
+      "contract_name": "CommunicationService",
+      "provider_count": 1,
+      "consumer_count": 0,
+      "deterministic_resolution_status": "PASS",
+      "consumer_pinning_status": "PASS",
+      "parallel_major_evolution_readiness_status": "PASS",
+      "major_versions_declared": [
+        1
+      ],
+      "blocked_reasons": []
+    },
+    {
+      "contract_name": "ConnectorEcosystemProvider",
+      "provider_count": 0,
+      "consumer_count": 1,
+      "deterministic_resolution_status": "FAIL",
+      "consumer_pinning_status": "FAIL",
+      "parallel_major_evolution_readiness_status": "FAIL",
+      "major_versions_declared": [],
+      "blocked_reasons": [
+        "non_deterministic_provider_resolution",
+        "consumer_range_not_major_pinned",
+        "parallel_major_upgrade_not_ready"
+      ]
+    },
+    {
+      "contract_name": "ConsultationService",
+      "provider_count": 1,
+      "consumer_count": 0,
+      "deterministic_resolution_status": "PASS",
+      "consumer_pinning_status": "PASS",
+      "parallel_major_evolution_readiness_status": "PASS",
+      "major_versions_declared": [
+        1
+      ],
+      "blocked_reasons": []
+    },
+    {
+      "contract_name": "CoreRuntimeProvider",
+      "provider_count": 0,
+      "consumer_count": 1,
+      "deterministic_resolution_status": "FAIL",
+      "consumer_pinning_status": "FAIL",
+      "parallel_major_evolution_readiness_status": "FAIL",
+      "major_versions_declared": [],
+      "blocked_reasons": [
+        "non_deterministic_provider_resolution",
+        "consumer_range_not_major_pinned",
+        "parallel_major_upgrade_not_ready"
+      ]
+    },
+    {
+      "contract_name": "EvidenceRegistryProvider",
+      "provider_count": 0,
+      "consumer_count": 1,
+      "deterministic_resolution_status": "FAIL",
+      "consumer_pinning_status": "FAIL",
+      "parallel_major_evolution_readiness_status": "FAIL",
+      "major_versions_declared": [],
+      "blocked_reasons": [
+        "non_deterministic_provider_resolution",
+        "consumer_range_not_major_pinned",
+        "parallel_major_upgrade_not_ready"
+      ]
+    },
+    {
       "contract_name": "GovernanceEvidenceProvider",
+      "provider_count": 1,
+      "consumer_count": 4,
+      "deterministic_resolution_status": "FAIL",
+      "consumer_pinning_status": "FAIL",
+      "parallel_major_evolution_readiness_status": "FAIL",
+      "major_versions_declared": [
+        1
+      ],
+      "blocked_reasons": [
+        "non_deterministic_provider_resolution",
+        "consumer_range_not_major_pinned",
+        "parallel_major_upgrade_not_ready"
+      ]
+    },
+    {
+      "contract_name": "GovernanceReadModelProvider",
       "provider_count": 1,
       "consumer_count": 1,
       "deterministic_resolution_status": "PASS",
@@ -24,9 +106,23 @@
       "blocked_reasons": []
     },
     {
-      "contract_name": "GovernanceReadModelProvider",
-      "provider_count": 1,
+      "contract_name": "LegalCaseProvider",
+      "provider_count": 0,
       "consumer_count": 1,
+      "deterministic_resolution_status": "FAIL",
+      "consumer_pinning_status": "FAIL",
+      "parallel_major_evolution_readiness_status": "FAIL",
+      "major_versions_declared": [],
+      "blocked_reasons": [
+        "non_deterministic_provider_resolution",
+        "consumer_range_not_major_pinned",
+        "parallel_major_upgrade_not_ready"
+      ]
+    },
+    {
+      "contract_name": "RequirementService",
+      "provider_count": 1,
+      "consumer_count": 0,
       "deterministic_resolution_status": "PASS",
       "consumer_pinning_status": "PASS",
       "parallel_major_evolution_readiness_status": "PASS",
@@ -46,6 +142,22 @@
         1
       ],
       "blocked_reasons": []
+    },
+    {
+      "contract_name": "WorkflowEngineProvider",
+      "provider_count": 1,
+      "consumer_count": 2,
+      "deterministic_resolution_status": "FAIL",
+      "consumer_pinning_status": "FAIL",
+      "parallel_major_evolution_readiness_status": "FAIL",
+      "major_versions_declared": [
+        1
+      ],
+      "blocked_reasons": [
+        "non_deterministic_provider_resolution",
+        "consumer_range_not_major_pinned",
+        "parallel_major_upgrade_not_ready"
+      ]
     }
   ],
   "claim_boundary": "Contract version evolution verification proves that declared contract consumers are major-pinned and provider resolution remains deterministic, so the repository can introduce future provider major versions without silently rebinding consumers. It operationalizes contract versioning as an upgrade-safety control rather than a passive registry snapshot."

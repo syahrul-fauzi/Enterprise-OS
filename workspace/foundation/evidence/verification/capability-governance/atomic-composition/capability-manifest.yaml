@@ -1,0 +1,18 @@
+capability_id: atomic-composition
+manifest_ref: workspace/capabilities/atomic-composition/definition/capability.yaml
+manifest_version: 1.0.0
+capability_version: 1.0.0
+stability: experimental
+lifecycle_stage: core
+governance_status: VALID
+owner: composition-domain
+owner_requirement_status: REQUIRED_PRESENT
+runtime_ref: null
+planner_ref: null
+composer_ref: null
+verification_ref: workspace/capabilities/atomic-composition/tests
+declared_exports: []
+artifact_boundary: Capability manifest projection freezes the capability
+  identity, ownership, lifecycle, and implementation entrypoints as
+  governance-readable evidence without changing the canonical capability
+  manifest.

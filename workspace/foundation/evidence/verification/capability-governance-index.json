@@ -1,12 +1,12 @@
 {
   "projection_version": "1.0.0",
-  "projection_digest": "f63bc9c3d6c474f2c8500b0dc3d335f84e1527ff5179fd3d0ed166214e90f4ac",
+  "projection_digest": "5685e7c755c051f3122ea95a5e95eccf975e8bc127f3b9d8b77d2eb737c05fb5",
   "summary": {
-    "capability_count": 16,
-    "capabilities_with_manifest_ref": 16,
-    "capabilities_with_dependency_surface": 16,
-    "capabilities_with_contract_surface": 16,
-    "overall_status": "PASS"
+    "capability_count": 22,
+    "capabilities_with_manifest_ref": 22,
+    "capabilities_with_dependency_surface": 22,
+    "capabilities_with_contract_surface": 22,
+    "overall_status": "FAIL"
   },
   "capabilities": [
     {
@@ -32,6 +32,28 @@
       "contracts_projection_ref": "workspace/foundation/evidence/verification/capability-governance/api-platform/capability-contracts.json"
     },
     {
+      "capability_id": "atomic-composition",
+      "manifest_ref": "workspace/capabilities/atomic-composition/definition/capability.yaml",
+      "governance_status": "VALID",
+      "artifact_directory": "workspace/foundation/evidence/verification/capability-governance/atomic-composition",
+      "manifest_projection_ref": "workspace/foundation/evidence/verification/capability-governance/atomic-composition/capability-manifest.yaml",
+      "manifest_projection_json_ref": "workspace/foundation/evidence/verification/capability-governance/atomic-composition/capability-manifest.json",
+      "dependencies_projection_ref": "workspace/foundation/evidence/verification/capability-governance/atomic-composition/capability-dependencies.json",
+      "version_projection_ref": "workspace/foundation/evidence/verification/capability-governance/atomic-composition/capability-version.json",
+      "contracts_projection_ref": "workspace/foundation/evidence/verification/capability-governance/atomic-composition/capability-contracts.json"
+    },
+    {
+      "capability_id": "communication",
+      "manifest_ref": "workspace/capabilities/communication/definition/capability.yaml",
+      "governance_status": "VALID",
+      "artifact_directory": "workspace/foundation/evidence/verification/capability-governance/communication",
+      "manifest_projection_ref": "workspace/foundation/evidence/verification/capability-governance/communication/capability-manifest.yaml",
+      "manifest_projection_json_ref": "workspace/foundation/evidence/verification/capability-governance/communication/capability-manifest.json",
+      "dependencies_projection_ref": "workspace/foundation/evidence/verification/capability-governance/communication/capability-dependencies.json",
+      "version_projection_ref": "workspace/foundation/evidence/verification/capability-governance/communication/capability-version.json",
+      "contracts_projection_ref": "workspace/foundation/evidence/verification/capability-governance/communication/capability-contracts.json"
+    },
+    {
       "capability_id": "connector-ecosystem",
       "manifest_ref": "workspace/capabilities/connector-ecosystem/definition/capability.yaml",
       "governance_status": "VALID",
@@ -43,9 +65,20 @@
       "contracts_projection_ref": "workspace/foundation/evidence/verification/capability-governance/connector-ecosystem/capability-contracts.json"
     },
     {
+      "capability_id": "consultation",
+      "manifest_ref": "workspace/capabilities/consultation/definition/capability.yaml",
+      "governance_status": "VALID",
+      "artifact_directory": "workspace/foundation/evidence/verification/capability-governance/consultation",
+      "manifest_projection_ref": "workspace/foundation/evidence/verification/capability-governance/consultation/capability-manifest.yaml",
+      "manifest_projection_json_ref": "workspace/foundation/evidence/verification/capability-governance/consultation/capability-manifest.json",
+      "dependencies_projection_ref": "workspace/foundation/evidence/verification/capability-governance/consultation/capability-dependencies.json",
+      "version_projection_ref": "workspace/foundation/evidence/verification/capability-governance/consultation/capability-version.json",
+      "contracts_projection_ref": "workspace/foundation/evidence/verification/capability-governance/consultation/capability-contracts.json"
+    },
+    {
       "capability_id": "evidence-registry",
       "manifest_ref": "workspace/capabilities/evidence-registry/definition/capability.yaml",
-      "governance_status": "INVALID",
+      "governance_status": "VALID",
       "artifact_directory": "workspace/foundation/evidence/verification/capability-governance/evidence-registry",
       "manifest_projection_ref": "workspace/foundation/evidence/verification/capability-governance/evidence-registry/capability-manifest.yaml",
       "manifest_projection_json_ref": "workspace/foundation/evidence/verification/capability-governance/evidence-registry/capability-manifest.json",
@@ -89,7 +122,7 @@
     {
       "capability_id": "knowledge-graph",
       "manifest_ref": "workspace/capabilities/knowledge-graph/definition/capability.yaml",
-      "governance_status": "INVALID",
+      "governance_status": "VALID",
       "artifact_directory": "workspace/foundation/evidence/verification/capability-governance/knowledge-graph",
       "manifest_projection_ref": "workspace/foundation/evidence/verification/capability-governance/knowledge-graph/capability-manifest.yaml",
       "manifest_projection_json_ref": "workspace/foundation/evidence/verification/capability-governance/knowledge-graph/capability-manifest.json",
@@ -133,7 +166,7 @@
     {
       "capability_id": "requirement-management",
       "manifest_ref": "workspace/capabilities/requirement-management/definition/capability.yaml",
-      "governance_status": "INVALID",
+      "governance_status": "VALID",
       "artifact_directory": "workspace/foundation/evidence/verification/capability-governance/requirement-management",
       "manifest_projection_ref": "workspace/foundation/evidence/verification/capability-governance/requirement-management/capability-manifest.yaml",
       "manifest_projection_json_ref": "workspace/foundation/evidence/verification/capability-governance/requirement-management/capability-manifest.json",
@@ -164,6 +197,28 @@
       "contracts_projection_ref": "workspace/foundation/evidence/verification/capability-governance/security-hardening/capability-contracts.json"
     },
     {
+      "capability_id": "service-directory",
+      "manifest_ref": "workspace/capabilities/service-directory/definition/capability.yaml",
+      "governance_status": "VALID",
+      "artifact_directory": "workspace/foundation/evidence/verification/capability-governance/service-directory",
+      "manifest_projection_ref": "workspace/foundation/evidence/verification/capability-governance/service-directory/capability-manifest.yaml",
+      "manifest_projection_json_ref": "workspace/foundation/evidence/verification/capability-governance/service-directory/capability-manifest.json",
+      "dependencies_projection_ref": "workspace/foundation/evidence/verification/capability-governance/service-directory/capability-dependencies.json",
+      "version_projection_ref": "workspace/foundation/evidence/verification/capability-governance/service-directory/capability-version.json",
+      "contracts_projection_ref": "workspace/foundation/evidence/verification/capability-governance/service-directory/capability-contracts.json"
+    },
+    {
+      "capability_id": "services-id",
+      "manifest_ref": "workspace/capabilities/services-id/definition/capability.yaml",
+      "governance_status": "VALID",
+      "artifact_directory": "workspace/foundation/evidence/verification/capability-governance/services-id",
+      "manifest_projection_ref": "workspace/foundation/evidence/verification/capability-governance/services-id/capability-manifest.yaml",
+      "manifest_projection_json_ref": "workspace/foundation/evidence/verification/capability-governance/services-id/capability-manifest.json",
+      "dependencies_projection_ref": "workspace/foundation/evidence/verification/capability-governance/services-id/capability-dependencies.json",
+      "version_projection_ref": "workspace/foundation/evidence/verification/capability-governance/services-id/capability-version.json",
+      "contracts_projection_ref": "workspace/foundation/evidence/verification/capability-governance/services-id/capability-contracts.json"
+    },
+    {
       "capability_id": "trust-framework",
       "manifest_ref": "workspace/capabilities/trust-framework/definition/capability.yaml",
       "governance_status": "VALID",
@@ -173,6 +228,17 @@
       "dependencies_projection_ref": "workspace/foundation/evidence/verification/capability-governance/trust-framework/capability-dependencies.json",
       "version_projection_ref": "workspace/foundation/evidence/verification/capability-governance/trust-framework/capability-version.json",
       "contracts_projection_ref": "workspace/foundation/evidence/verification/capability-governance/trust-framework/capability-contracts.json"
+    },
+    {
+      "capability_id": "Work Inspection Agent",
+      "manifest_ref": "workspace/capabilities/work-inspection/definition/capability.yaml",
+      "governance_status": "VALID",
+      "artifact_directory": "workspace/foundation/evidence/verification/capability-governance/work-inspection-agent",
+      "manifest_projection_ref": "workspace/foundation/evidence/verification/capability-governance/work-inspection-agent/capability-manifest.yaml",
+      "manifest_projection_json_ref": "workspace/foundation/evidence/verification/capability-governance/work-inspection-agent/capability-manifest.json",
+      "dependencies_projection_ref": "workspace/foundation/evidence/verification/capability-governance/work-inspection-agent/capability-dependencies.json",
+      "version_projection_ref": "workspace/foundation/evidence/verification/capability-governance/work-inspection-agent/capability-version.json",
+      "contracts_projection_ref": "workspace/foundation/evidence/verification/capability-governance/work-inspection-agent/capability-contracts.json"
     },
     {
       "capability_id": "workflow-engine",

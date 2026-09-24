@@ -1,0 +1,19 @@
+work_id: EOS-JOURNEY-007
+milestone: NEXUS-staging-test
+completed_at: ""
+verdict: UNVERIFIED
+evidence_artifacts: []
+checks_passed: []
+checks_failed: []
+next_work_id: EOS-JOURNEY-007-W03
+next_work_technical_id: TEST-002
+next_work_title: "NEXUS testing: valid format command failure test"
+next_work_description: "NEXUS testing: command tidak ada tapi work ID sesuai format - verifikasi state transition diblokir tapi proof tercatat"
+next_work_milestones:
+  - dispatch_initiated: ""
+  - execution_completed: ""
+  - proof_written: ""
+  - state_transitioned: ""
+next_milestone: verify_nexus_pipeline
+phase2_complete: false
+phase3_complete: false

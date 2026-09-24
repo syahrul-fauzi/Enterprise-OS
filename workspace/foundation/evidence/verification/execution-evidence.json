@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total_capabilities": 16,
-    "declared_capabilities": 3,
+    "total_capabilities": 22,
+    "declared_capabilities": 9,
     "observed_capabilities": 13,
     "verified_capabilities": 13,
     "reproducible_capabilities": 8
@@ -10,19 +10,23 @@
     {
       "capability_id": "agent-orchestration",
       "capability_name": "Agent Orchestration",
-      "provided_capabilities": [],
-      "lifecycle_stage": "experimental",
+      "provided_capabilities": [
+        "agent-scheduling",
+        "task-execution",
+        "workflow-orchestration"
+      ],
+      "lifecycle_stage": "reusable",
       "governance_status": "VALID",
       "declared_products": [],
       "mapped_products": [],
-      "runtime_products": [
+      "runtime_products": [],
+      "empirically_verified_products": [
         "lawyershub"
       ],
-      "empirically_verified_products": [],
       "execution_reachability": {
         "product": false,
         "composition": false,
-        "runtime": true,
+        "runtime": false,
         "observed": true,
         "verified": true,
         "reproducible": true,
@@ -43,7 +47,7 @@
           "product_id": "lawyershub",
           "declared_in_product": false,
           "composition_mapped": false,
-          "runtime_referenced": true,
+          "runtime_referenced": false,
           "verification_evidence": false,
           "functional_tests_passed": false,
           "replay_verified": false,
@@ -679,14 +683,12 @@
       "governance_status": "VALID",
       "declared_products": [],
       "mapped_products": [],
-      "runtime_products": [
-        "lawyershub"
-      ],
+      "runtime_products": [],
       "empirically_verified_products": [],
       "execution_reachability": {
         "product": false,
         "composition": false,
-        "runtime": true,
+        "runtime": false,
         "observed": true,
         "verified": true,
         "reproducible": true,
@@ -707,7 +709,7 @@
           "product_id": "lawyershub",
           "declared_in_product": false,
           "composition_mapped": false,
-          "runtime_referenced": true,
+          "runtime_referenced": false,
           "verification_evidence": false,
           "functional_tests_passed": false,
           "replay_verified": false,
@@ -918,21 +920,99 @@
       "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
     },
     {
-      "capability_id": "connector-ecosystem",
-      "capability_name": "Connector Ecosystem",
-      "provided_capabilities": [],
-      "lifecycle_stage": "experimental",
+      "capability_id": "atomic-composition",
+      "capability_name": "Atomic Work Composition",
+      "provided_capabilities": [
+        "actor-management",
+        "assignment-system",
+        "capability-registry",
+        "organization-evolution",
+        "team-composition",
+        "work-requirements"
+      ],
+      "lifecycle_stage": "core",
       "governance_status": "VALID",
       "declared_products": [],
       "mapped_products": [],
-      "runtime_products": [
+      "runtime_products": [],
+      "empirically_verified_products": [
         "lawyershub"
       ],
+      "execution_reachability": {
+        "product": false,
+        "composition": false,
+        "runtime": false,
+        "observed": false,
+        "verified": false,
+        "reproducible": false,
+        "evidence": false,
+        "replay": false,
+        "status": "DECLARED"
+      },
+      "runtime_invocations": {
+        "total": 0,
+        "observed_products": [],
+        "claim_boundary": "Runtime invocation telemetry is captured from actual capability service execution during product verification tests. Coverage is limited to currently verified products and exercised operations."
+      },
+      "stewardship_gap": "NONE",
+      "per_product": [],
+      "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
+    },
+    {
+      "capability_id": "communication",
+      "capability_name": "Communication Adapter Layer",
+      "provided_capabilities": [
+        "communication-event",
+        "cross-party-coordination",
+        "message-adapter",
+        "work-grounded-messaging"
+      ],
+      "lifecycle_stage": "core",
+      "governance_status": "VALID",
+      "declared_products": [],
+      "mapped_products": [],
+      "runtime_products": [],
+      "empirically_verified_products": [
+        "lawyershub"
+      ],
+      "execution_reachability": {
+        "product": false,
+        "composition": false,
+        "runtime": false,
+        "observed": false,
+        "verified": false,
+        "reproducible": false,
+        "evidence": false,
+        "replay": false,
+        "status": "DECLARED"
+      },
+      "runtime_invocations": {
+        "total": 0,
+        "observed_products": [],
+        "claim_boundary": "Runtime invocation telemetry is captured from actual capability service execution during product verification tests. Coverage is limited to currently verified products and exercised operations."
+      },
+      "stewardship_gap": "NONE",
+      "per_product": [],
+      "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
+    },
+    {
+      "capability_id": "connector-ecosystem",
+      "capability_name": "Connector Ecosystem",
+      "provided_capabilities": [
+        "api-integration",
+        "external-connector",
+        "third-party-bridge"
+      ],
+      "lifecycle_stage": "core",
+      "governance_status": "VALID",
+      "declared_products": [],
+      "mapped_products": [],
+      "runtime_products": [],
       "empirically_verified_products": [],
       "execution_reachability": {
         "product": false,
         "composition": false,
-        "runtime": true,
+        "runtime": false,
         "observed": true,
         "verified": true,
         "reproducible": false,
@@ -947,13 +1027,13 @@
         ],
         "claim_boundary": "Runtime invocation telemetry is captured from actual capability service execution during product verification tests. Coverage is limited to currently verified products and exercised operations."
       },
-      "stewardship_gap": "NONE",
+      "stewardship_gap": "Declared consumer exists without executable product verification evidence.",
       "per_product": [
         {
           "product_id": "lawyershub",
           "declared_in_product": false,
           "composition_mapped": false,
-          "runtime_referenced": true,
+          "runtime_referenced": false,
           "verification_evidence": false,
           "functional_tests_passed": false,
           "replay_verified": false,
@@ -1223,23 +1303,62 @@
       "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
     },
     {
-      "capability_id": "evidence-registry",
-      "capability_name": "Evidence Registry",
-      "provided_capabilities": [],
-      "lifecycle_stage": "reusable",
-      "governance_status": "INVALID",
+      "capability_id": "consultation",
+      "capability_name": "Consultation Management",
+      "provided_capabilities": [
+        "consultation-capture",
+        "consultation-lifecycle",
+        "triage-workflow",
+        "workitem-generation"
+      ],
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
       "declared_products": [],
       "mapped_products": [],
-      "runtime_products": [
-        "lawyershub"
-      ],
+      "runtime_products": [],
       "empirically_verified_products": [
         "lawyershub"
       ],
       "execution_reachability": {
         "product": false,
         "composition": false,
-        "runtime": true,
+        "runtime": false,
+        "observed": false,
+        "verified": false,
+        "reproducible": false,
+        "evidence": false,
+        "replay": false,
+        "status": "DECLARED"
+      },
+      "runtime_invocations": {
+        "total": 0,
+        "observed_products": [],
+        "claim_boundary": "Runtime invocation telemetry is captured from actual capability service execution during product verification tests. Coverage is limited to currently verified products and exercised operations."
+      },
+      "stewardship_gap": "NONE",
+      "per_product": [],
+      "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
+    },
+    {
+      "capability_id": "evidence-registry",
+      "capability_name": "Evidence Registry",
+      "provided_capabilities": [
+        "evidence-aggregation",
+        "evidence-retrieval",
+        "evidence-storage"
+      ],
+      "lifecycle_stage": "core",
+      "governance_status": "VALID",
+      "declared_products": [],
+      "mapped_products": [],
+      "runtime_products": [],
+      "empirically_verified_products": [
+        "lawyershub"
+      ],
+      "execution_reachability": {
+        "product": false,
+        "composition": false,
+        "runtime": false,
         "observed": true,
         "verified": true,
         "reproducible": true,
@@ -1260,7 +1379,7 @@
           "product_id": "lawyershub",
           "declared_in_product": false,
           "composition_mapped": false,
-          "runtime_referenced": true,
+          "runtime_referenced": false,
           "verification_evidence": false,
           "functional_tests_passed": false,
           "replay_verified": false,
@@ -1814,13 +1933,19 @@
     {
       "capability_id": "governance-evidence",
       "capability_name": "Governance Evidence",
-      "provided_capabilities": [],
-      "lifecycle_stage": "experimental",
+      "provided_capabilities": [
+        "decision-recording",
+        "evidence-traceability",
+        "governed-delivery"
+      ],
+      "lifecycle_stage": "core",
       "governance_status": "VALID",
       "declared_products": [],
       "mapped_products": [],
       "runtime_products": [],
-      "empirically_verified_products": [],
+      "empirically_verified_products": [
+        "lawyershub"
+      ],
       "execution_reachability": {
         "product": false,
         "composition": false,
@@ -2867,8 +2992,12 @@
     {
       "capability_id": "governance-read-model",
       "capability_name": "Governance Read Model",
-      "provided_capabilities": [],
-      "lifecycle_stage": "experimental",
+      "provided_capabilities": [
+        "analytics",
+        "governance-dashboards",
+        "read-model-projections"
+      ],
+      "lifecycle_stage": "core",
       "governance_status": "VALID",
       "declared_products": [],
       "mapped_products": [],
@@ -2892,7 +3021,7 @@
         ],
         "claim_boundary": "Runtime invocation telemetry is captured from actual capability service execution during product verification tests. Coverage is limited to currently verified products and exercised operations."
       },
-      "stewardship_gap": "NONE",
+      "stewardship_gap": "Declared consumer exists without executable product verification evidence.",
       "per_product": [
         {
           "product_id": "lawyershub",
@@ -3206,21 +3335,23 @@
     {
       "capability_id": "knowledge-graph",
       "capability_name": "Knowledge Graph",
-      "provided_capabilities": [],
+      "provided_capabilities": [
+        "entity-relation",
+        "graph-storage",
+        "knowledge-query"
+      ],
       "lifecycle_stage": "core",
-      "governance_status": "INVALID",
+      "governance_status": "VALID",
       "declared_products": [],
       "mapped_products": [],
-      "runtime_products": [
-        "lawyershub"
-      ],
+      "runtime_products": [],
       "empirically_verified_products": [
         "lawyershub"
       ],
       "execution_reachability": {
         "product": false,
         "composition": false,
-        "runtime": true,
+        "runtime": false,
         "observed": true,
         "verified": true,
         "reproducible": true,
@@ -3241,7 +3372,7 @@
           "product_id": "lawyershub",
           "declared_in_product": false,
           "composition_mapped": false,
-          "runtime_referenced": true,
+          "runtime_referenced": false,
           "verification_evidence": false,
           "functional_tests_passed": false,
           "replay_verified": false,
@@ -3564,23 +3695,29 @@
     {
       "capability_id": "legal-case",
       "capability_name": "Case Management",
-      "provided_capabilities": [],
-      "lifecycle_stage": "experimental",
+      "provided_capabilities": [
+        "case-lifecycle",
+        "case-permissions",
+        "case-workspace"
+      ],
+      "lifecycle_stage": "reusable",
       "governance_status": "VALID",
-      "declared_products": [],
+      "declared_products": [
+        "services-id",
+        "lawyershub",
+        "ilc"
+      ],
       "mapped_products": [
         "lawyershub"
       ],
-      "runtime_products": [
-        "lawyershub"
-      ],
+      "runtime_products": [],
       "empirically_verified_products": [
         "lawyershub"
       ],
       "execution_reachability": {
-        "product": false,
+        "product": true,
         "composition": true,
-        "runtime": true,
+        "runtime": false,
         "observed": false,
         "verified": false,
         "reproducible": false,
@@ -3596,13 +3733,47 @@
       "stewardship_gap": "NONE",
       "per_product": [
         {
+          "product_id": "services-id",
+          "declared_in_product": true,
+          "composition_mapped": false,
+          "runtime_referenced": false,
+          "verification_evidence": false,
+          "functional_tests_passed": false,
+          "replay_verified": false,
+          "runtime_invocation_count": 0,
+          "runtime_observed": false,
+          "runtime_verified": false,
+          "runtime_reproducible": false,
+          "execution_chain_digests": [],
+          "stable_chain_ids": [],
+          "execution_chains": [],
+          "execution_status": "DECLARED"
+        },
+        {
           "product_id": "lawyershub",
-          "declared_in_product": false,
+          "declared_in_product": true,
           "composition_mapped": true,
-          "runtime_referenced": true,
+          "runtime_referenced": false,
           "verification_evidence": false,
           "functional_tests_passed": false,
           "replay_verified": true,
+          "runtime_invocation_count": 0,
+          "runtime_observed": false,
+          "runtime_verified": false,
+          "runtime_reproducible": false,
+          "execution_chain_digests": [],
+          "stable_chain_ids": [],
+          "execution_chains": [],
+          "execution_status": "DECLARED"
+        },
+        {
+          "product_id": "ilc",
+          "declared_in_product": true,
+          "composition_mapped": false,
+          "runtime_referenced": false,
+          "verification_evidence": false,
+          "functional_tests_passed": false,
+          "replay_verified": false,
           "runtime_invocation_count": 0,
           "runtime_observed": false,
           "runtime_verified": false,
@@ -3618,23 +3789,25 @@
     {
       "capability_id": "legal-document",
       "capability_name": "Legal Documents",
-      "provided_capabilities": [],
-      "lifecycle_stage": "experimental",
+      "provided_capabilities": [
+        "document-lifecycle",
+        "document-permissions",
+        "document-versioning"
+      ],
+      "lifecycle_stage": "core",
       "governance_status": "VALID",
       "declared_products": [],
       "mapped_products": [
         "lawyershub"
       ],
-      "runtime_products": [
-        "lawyershub"
-      ],
+      "runtime_products": [],
       "empirically_verified_products": [
         "lawyershub"
       ],
       "execution_reachability": {
         "product": false,
         "composition": true,
-        "runtime": true,
+        "runtime": false,
         "observed": false,
         "verified": false,
         "reproducible": false,
@@ -3653,7 +3826,7 @@
           "product_id": "lawyershub",
           "declared_in_product": false,
           "composition_mapped": true,
-          "runtime_referenced": true,
+          "runtime_referenced": false,
           "verification_evidence": false,
           "functional_tests_passed": false,
           "replay_verified": true,
@@ -3672,19 +3845,21 @@
     {
       "capability_id": "observability",
       "capability_name": "Observability",
-      "provided_capabilities": [],
-      "lifecycle_stage": "experimental",
+      "provided_capabilities": [
+        "logging",
+        "metrics-collection",
+        "tracing"
+      ],
+      "lifecycle_stage": "core",
       "governance_status": "VALID",
       "declared_products": [],
       "mapped_products": [],
-      "runtime_products": [
-        "lawyershub"
-      ],
+      "runtime_products": [],
       "empirically_verified_products": [],
       "execution_reachability": {
         "product": false,
         "composition": false,
-        "runtime": true,
+        "runtime": false,
         "observed": true,
         "verified": true,
         "reproducible": false,
@@ -3699,13 +3874,13 @@
         ],
         "claim_boundary": "Runtime invocation telemetry is captured from actual capability service execution during product verification tests. Coverage is limited to currently verified products and exercised operations."
       },
-      "stewardship_gap": "NONE",
+      "stewardship_gap": "Declared consumer exists without executable product verification evidence.",
       "per_product": [
         {
           "product_id": "lawyershub",
           "declared_in_product": false,
           "composition_mapped": false,
-          "runtime_referenced": true,
+          "runtime_referenced": false,
           "verification_evidence": false,
           "functional_tests_passed": false,
           "replay_verified": false,
@@ -4102,9 +4277,14 @@
     {
       "capability_id": "requirement-management",
       "capability_name": "Requirement Management",
-      "provided_capabilities": [],
+      "provided_capabilities": [
+        "lifecycle-tracking",
+        "requirement-capture",
+        "search-discovery",
+        "verification-management"
+      ],
       "lifecycle_stage": "core",
-      "governance_status": "INVALID",
+      "governance_status": "VALID",
       "declared_products": [
         "services-id",
         "lawyershub",
@@ -4113,16 +4293,14 @@
       "mapped_products": [
         "lawyershub"
       ],
-      "runtime_products": [
-        "lawyershub"
-      ],
+      "runtime_products": [],
       "empirically_verified_products": [
         "lawyershub"
       ],
       "execution_reachability": {
         "product": true,
         "composition": true,
-        "runtime": true,
+        "runtime": false,
         "observed": true,
         "verified": true,
         "reproducible": true,
@@ -4160,7 +4338,7 @@
           "product_id": "lawyershub",
           "declared_in_product": true,
           "composition_mapped": true,
-          "runtime_referenced": true,
+          "runtime_referenced": false,
           "verification_evidence": false,
           "functional_tests_passed": false,
           "replay_verified": true,
@@ -4716,19 +4894,23 @@
     {
       "capability_id": "requirements-traceability-matrix",
       "capability_name": "Requirements Traceability Matrix",
-      "provided_capabilities": [],
-      "lifecycle_stage": "experimental",
+      "provided_capabilities": [
+        "delivery-readiness",
+        "impact-analysis",
+        "requirement-tracing"
+      ],
+      "lifecycle_stage": "core",
       "governance_status": "VALID",
       "declared_products": [],
       "mapped_products": [],
-      "runtime_products": [
+      "runtime_products": [],
+      "empirically_verified_products": [
         "lawyershub"
       ],
-      "empirically_verified_products": [],
       "execution_reachability": {
         "product": false,
         "composition": false,
-        "runtime": true,
+        "runtime": false,
         "observed": true,
         "verified": true,
         "reproducible": true,
@@ -4749,7 +4931,7 @@
           "product_id": "lawyershub",
           "declared_in_product": false,
           "composition_mapped": false,
-          "runtime_referenced": true,
+          "runtime_referenced": false,
           "verification_evidence": false,
           "functional_tests_passed": false,
           "replay_verified": false,
@@ -5745,19 +5927,21 @@
     {
       "capability_id": "security-hardening",
       "capability_name": "Security Hardening",
-      "provided_capabilities": [],
-      "lifecycle_stage": "experimental",
+      "provided_capabilities": [
+        "access-control",
+        "compliance-enforcement",
+        "threat-protection"
+      ],
+      "lifecycle_stage": "core",
       "governance_status": "VALID",
       "declared_products": [],
       "mapped_products": [],
-      "runtime_products": [
-        "lawyershub"
-      ],
+      "runtime_products": [],
       "empirically_verified_products": [],
       "execution_reachability": {
         "product": false,
         "composition": false,
-        "runtime": true,
+        "runtime": false,
         "observed": true,
         "verified": true,
         "reproducible": true,
@@ -5772,13 +5956,13 @@
         ],
         "claim_boundary": "Runtime invocation telemetry is captured from actual capability service execution during product verification tests. Coverage is limited to currently verified products and exercised operations."
       },
-      "stewardship_gap": "NONE",
+      "stewardship_gap": "Declared consumer exists without executable product verification evidence.",
       "per_product": [
         {
           "product_id": "lawyershub",
           "declared_in_product": false,
           "composition_mapped": false,
-          "runtime_referenced": true,
+          "runtime_referenced": false,
           "verification_evidence": false,
           "functional_tests_passed": false,
           "replay_verified": false,
@@ -6517,6 +6701,74 @@
       "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
     },
     {
+      "capability_id": "service-directory",
+      "capability_name": "Service Directory",
+      "provided_capabilities": [
+        "service-catalog",
+        "service-request-lifecycle",
+        "vendor-management"
+      ],
+      "lifecycle_stage": "experimental",
+      "governance_status": "VALID",
+      "declared_products": [],
+      "mapped_products": [],
+      "runtime_products": [],
+      "empirically_verified_products": [],
+      "execution_reachability": {
+        "product": false,
+        "composition": false,
+        "runtime": false,
+        "observed": false,
+        "verified": false,
+        "reproducible": false,
+        "evidence": false,
+        "replay": false,
+        "status": "DECLARED"
+      },
+      "runtime_invocations": {
+        "total": 0,
+        "observed_products": [],
+        "claim_boundary": "Runtime invocation telemetry is captured from actual capability service execution during product verification tests. Coverage is limited to currently verified products and exercised operations."
+      },
+      "stewardship_gap": "Declared consumer exists without executable product verification evidence.",
+      "per_product": [],
+      "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
+    },
+    {
+      "capability_id": "services-id",
+      "capability_name": "Service Request Management",
+      "provided_capabilities": [
+        "service-permissions",
+        "service-request-lifecycle",
+        "service-workspace"
+      ],
+      "lifecycle_stage": "reusable",
+      "governance_status": "VALID",
+      "declared_products": [],
+      "mapped_products": [],
+      "runtime_products": [],
+      "empirically_verified_products": [],
+      "execution_reachability": {
+        "product": false,
+        "composition": false,
+        "runtime": false,
+        "observed": false,
+        "verified": false,
+        "reproducible": false,
+        "evidence": false,
+        "replay": false,
+        "status": "DECLARED"
+      },
+      "runtime_invocations": {
+        "total": 0,
+        "observed_products": [],
+        "claim_boundary": "Runtime invocation telemetry is captured from actual capability service execution during product verification tests. Coverage is limited to currently verified products and exercised operations."
+      },
+      "stewardship_gap": "Declared consumer exists without executable product verification evidence.",
+      "per_product": [],
+      "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
+    },
+    {
       "capability_id": "trust-framework",
       "capability_name": "Trust Framework",
       "provided_capabilities": [],
@@ -6695,21 +6947,55 @@
       "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
     },
     {
-      "capability_id": "workflow-engine",
-      "capability_name": "Workflow Engine",
+      "capability_id": "Work Inspection Agent",
+      "capability_name": "Work Inspection Agent",
       "provided_capabilities": [],
       "lifecycle_stage": "experimental",
       "governance_status": "VALID",
       "declared_products": [],
       "mapped_products": [],
-      "runtime_products": [
-        "lawyershub"
-      ],
+      "runtime_products": [],
       "empirically_verified_products": [],
       "execution_reachability": {
         "product": false,
         "composition": false,
-        "runtime": true,
+        "runtime": false,
+        "observed": false,
+        "verified": false,
+        "reproducible": false,
+        "evidence": false,
+        "replay": false,
+        "status": "DECLARED"
+      },
+      "runtime_invocations": {
+        "total": 0,
+        "observed_products": [],
+        "claim_boundary": "Runtime invocation telemetry is captured from actual capability service execution during product verification tests. Coverage is limited to currently verified products and exercised operations."
+      },
+      "stewardship_gap": "NONE",
+      "per_product": [],
+      "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
+    },
+    {
+      "capability_id": "workflow-engine",
+      "capability_name": "Workflow Engine",
+      "provided_capabilities": [
+        "delivery-orchestration",
+        "state-tracking",
+        "workflow-execution"
+      ],
+      "lifecycle_stage": "core",
+      "governance_status": "VALID",
+      "declared_products": [],
+      "mapped_products": [],
+      "runtime_products": [],
+      "empirically_verified_products": [
+        "lawyershub"
+      ],
+      "execution_reachability": {
+        "product": false,
+        "composition": false,
+        "runtime": false,
         "observed": true,
         "verified": true,
         "reproducible": true,
@@ -6730,7 +7016,7 @@
           "product_id": "lawyershub",
           "declared_in_product": false,
           "composition_mapped": false,
-          "runtime_referenced": true,
+          "runtime_referenced": false,
           "verification_evidence": false,
           "functional_tests_passed": false,
           "replay_verified": false,

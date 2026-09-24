@@ -1,0 +1,11 @@
+{
+  "work_id": "TEST-FAIL-001",
+  "next_work_id": "FAIL-COMMAND",
+  "executed_command": "eos non-existent-command-that-will-never-exist",
+  "execution_timestamp": "2026-09-24T12:53:18.250Z",
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "Unknown command: non-existent-command-that-will-never-exist\nRun: pnpm eos help\n",
+  "actor": "nexus-dispatch",
+  "authorization_used": "journey-engine"
+}

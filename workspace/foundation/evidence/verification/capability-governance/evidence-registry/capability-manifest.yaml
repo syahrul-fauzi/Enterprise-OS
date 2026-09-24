@@ -2,16 +2,19 @@ capability_id: evidence-registry
 manifest_ref: workspace/capabilities/evidence-registry/definition/capability.yaml
 manifest_version: 1.0.0
 capability_version: 0.1.0
-stability: experimental
-lifecycle_stage: reusable
-governance_status: INVALID
-owner: null
-owner_requirement_status: REQUIRED_MISSING
+stability: stable
+lifecycle_stage: core
+governance_status: VALID
+owner: governance-domain
+owner_requirement_status: REQUIRED_PRESENT
 runtime_ref: workspace/capabilities/evidence-registry/implementation/service.ts
 planner_ref: null
 composer_ref: null
 verification_ref: workspace/capabilities/evidence-registry/tests
-declared_exports: []
+declared_exports:
+  - EvidenceQueries
+  - EvidenceRegistryProvider
+  - EvidenceRepository
 artifact_boundary: Capability manifest projection freezes the capability
   identity, ownership, lifecycle, and implementation entrypoints as
   governance-readable evidence without changing the canonical capability

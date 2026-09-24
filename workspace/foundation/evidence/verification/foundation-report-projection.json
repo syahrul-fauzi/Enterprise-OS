@@ -1,8 +1,8 @@
 {
-  "projection_id": "FoundationReportProjection:7f713d31c4dde43a",
+  "projection_id": "FoundationReportProjection:a9c0cc19c65c8736",
   "projection_type": "FoundationReportProjection",
   "schema_version": "1.0.0",
-  "projection_digest": "7f713d31c4dde43a7a90f6d1c2ab7c7145164845626b1fd00a8e8fc1344ad037",
+  "projection_digest": "a9c0cc19c65c8736291d849542258a3aac06f751f294655ff919ec917b856826",
   "generated_from": [
     {
       "source_type": "product_portfolio",
@@ -20,7 +20,7 @@
       "source_digest": "4989ad45f58c8a2040339caf20b672bc7eddb05cd5dc2c6f10062d585fbedaa8"
     }
   ],
-  "generated_at_utc": "2026-08-05T04:29:08.429Z",
+  "generated_at_utc": "2026-09-24T13:26:14.898Z",
   "verification_result": {
     "command_status": "PASS",
     "foundation_status": "UNVERIFIED_BASELINE",
@@ -76,11 +76,11 @@
     ],
     "claim_boundary": "Foundation verification uses ACTIVE products as the execution baseline and still reports declared portfolio backlog separately. A declared PLANNED product without a workspace manifest is roadmap scope, while an ACTIVE product without evidence is a verification gap."
   },
-  "registry_health": "BLOCKED",
+  "registry_health": "PARTIAL",
   "graph_integrity_status": "PARTIAL",
   "execution_evidence_summary": {
-    "total_capabilities": 16,
-    "declared_capabilities": 3,
+    "total_capabilities": 22,
+    "declared_capabilities": 9,
     "observed_capabilities": 13,
     "verified_capabilities": 13,
     "reproducible_capabilities": 8
@@ -104,10 +104,10 @@
     "chain_projection_digest": "3fc68bb4491b9b7025f27029dbd680b269a63c13ab9423daf8ee2a660c5a12f7"
   },
   "topology_drift": {
-    "projection_id": "TopologyDriftProjection:9264733347c84038",
+    "projection_id": "TopologyDriftProjection:010da89de42998e1",
     "projection_type": "TopologyDriftProjection",
     "schema_version": "1.0.0",
-    "projection_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d",
+    "projection_digest": "010da89de42998e12cac241eee1777ca9372194dacd19660a4d4924f9d017b50",
     "generated_from": [
       {
         "source_type": "execution_chain",
@@ -125,29 +125,31 @@
         "source_digest": "UNVERIFIED"
       }
     ],
-    "generated_at_utc": "2026-08-05T04:29:06.737Z",
+    "generated_at_utc": "2026-09-24T13:26:12.856Z",
     "drift_status": "DRIFT",
     "summary": {
       "total_products": 3,
       "aligned_products": 0,
       "drifted_products": 3,
       "undeclared_observed_edges": 12,
-      "unobserved_declared_edges": 4,
+      "unobserved_declared_edges": 6,
       "unmodeled_observed_requirements": 5,
       "unmodeled_observed_workflows": 6,
       "unmodeled_observed_plans": 3,
-      "canonical_topology_digest": "9264733347c840381d2009d2e0097c51d450a3549f36ac338ab8c943702a037d"
+      "canonical_topology_digest": "010da89de42998e12cac241eee1777ca9372194dacd19660a4d4924f9d017b50"
     },
     "products": [
       {
         "product_id": "services-id",
         "declared_capabilities": [
+          "legal-case",
           "requirement-management"
         ],
         "observed_capabilities": [],
         "aligned_capabilities": [],
         "undeclared_observed_capabilities": [],
         "unobserved_declared_capabilities": [
+          "legal-case",
           "requirement-management"
         ],
         "observed_requirement_node_ids": [],
@@ -223,12 +225,14 @@
       {
         "product_id": "ilc",
         "declared_capabilities": [
+          "legal-case",
           "requirement-management"
         ],
         "observed_capabilities": [],
         "aligned_capabilities": [],
         "undeclared_observed_capabilities": [],
         "unobserved_declared_capabilities": [
+          "legal-case",
           "requirement-management"
         ],
         "observed_requirement_node_ids": [],
@@ -240,9 +244,9 @@
     "claim_boundary": "Topology drift currently compares declared product-to-capability topology against observed capability execution chains. Requirement, workflow, and plan nodes are reported as unmodeled observed topology until they become first-class declared contracts in the registry."
   },
   "architecture_trend": {
-    "trend_status": "REGRESSING",
-    "latest_epoch": "epoch-047",
-    "total_epochs": 47
+    "trend_status": "IMPROVING",
+    "latest_epoch": "epoch-048",
+    "total_epochs": 48
   },
   "governance_summary": {
     "status": "PASS",
@@ -250,17 +254,17 @@
     "violated_law_count": 0,
     "laws_passed": 8,
     "laws_failed": 0,
-    "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+    "constitutional_digest": "e1678cdf052a59c44ef39ded05f2c568566fa10a86d4518d2144d6bf9bd3e02c",
     "law_profile": "enterprise",
     "proof_strength": "proof-centric",
     "summary_boundary": "Constitution summary is the presentation-safe governance read model for reporting and dashboards. It intentionally omits per-law proof payloads and individual claim entries."
   },
   "governance_read_model_metrics": {
-    "freshness_ms": 7,
+    "freshness_ms": 10,
     "generation_duration_ms": 1,
-    "consumer_count": 1,
-    "generation_digest": "553d442b1d3a9395c4b20940874a27b243e8d9b273fc470b2f52e7e7bc17f530",
-    "source_digest": "cad87112bd6a28530339124ef9b7f0d1ee3e0a36fe2f74739d92765399998c88"
+    "consumer_count": 0,
+    "generation_digest": "65f909752f8e3ff04d162900e81e59349f1fbce29728072baaeb7cfb24435943",
+    "source_digest": "8aacfb11d85dc0cfd22500bcdc36e6c99f6765b313c02e9d00487a1435a63633"
   },
   "governance_incremental_materialization": {
     "node_count": 16,
@@ -309,11 +313,11 @@
     "total_invocations": 83
   },
   "capability_certification": {
-    "certified_capabilities": 4,
+    "certified_capabilities": 2,
     "partial_capabilities": 12,
-    "failed_capabilities": 0,
+    "failed_capabilities": 8,
     "performance_evaluated_capabilities": 4,
-    "overall_status": "PASS"
+    "overall_status": "FAIL"
   },
   "producers": {
     "specification": {
@@ -332,8 +336,8 @@
     "capability": {
       "producer_id": "capability",
       "producer_class": "capability",
-      "status": "PASS",
-      "health": "PASS",
+      "status": "FAIL",
+      "health": "FAIL",
       "coverage_ratio": 1,
       "subject": {
         "subject_ref": "workspace/foundation/evidence/verification/capability-governance",
@@ -408,10 +412,10 @@
     "average_coverage_ratio": 1.0833
   },
   "health": {
-    "status": "WARN",
-    "pass_count": 3,
+    "status": "FAIL",
+    "pass_count": 2,
     "warn_count": 1,
-    "fail_count": 0,
+    "fail_count": 1,
     "partial_count": 2
   },
   "coverage": {
@@ -473,223 +477,281 @@
   },
   "decision_quality": {
     "status": "PARTIAL",
-    "decision_count": 23,
+    "decision_count": 61,
     "decision_traceability_coverage": 1,
     "decision_outcome_coverage": 1,
-    "decision_learning_closure": 1.0952380952380953,
+    "decision_learning_closure": 1.0338983050847457,
     "decision_reproducibility": 1,
     "decision_reversibility": 1,
     "decision_impact_graph_completeness": 1,
     "engineering_leverage_measurement_coverage": 0,
-    "decision_effectiveness": 0.8571,
-    "decision_success_rate": 0.7143,
+    "decision_effectiveness": 0.7034,
+    "decision_success_rate": 0.4068,
     "false_decision_rate": 0,
-    "decision_reversal_rate": 0.9565,
+    "decision_reversal_rate": 0.9836,
     "evidence_utilization_rate": 1,
-    "knowledge_reuse_rate": 0.4091,
+    "knowledge_reuse_rate": 0.7333,
     "evidence_strength_index": 1,
-    "outcome_improvement_rate": 0.4444,
+    "outcome_improvement_rate": 0.2273,
     "mean_time_to_outcome_ms": 0,
     "learning_velocity_ms": 0,
-    "decision_confidence_index": 0.9783,
+    "decision_confidence_index": 0.9456,
     "decision_confidence_growth": 0,
-    "knowledge_weighted_quality_index": 0.1779,
+    "knowledge_weighted_quality_index": 0.1576,
     "report_ref": "workspace/foundation/evidence/verification/decision-quality-report.json"
   },
   "learning_intelligence": {
     "status": "PARTIAL",
-    "decision_count": 23,
-    "outcome_count": 23,
+    "decision_count": 61,
+    "outcome_count": 61,
     "outcome_registry_coverage": 1,
-    "decision_quality_index": 0.1779,
-    "learning_velocity_ms": 421846.625,
-    "knowledge_gain_units": 39,
-    "knowledge_gain": 1.6957,
-    "knowledge_object_count": 9,
-    "operationalized_knowledge_count": 9,
+    "decision_quality_index": 0.1576,
+    "learning_velocity_ms": 170603822.1154,
+    "knowledge_gain_units": 100,
+    "knowledge_gain": 1.6393,
+    "knowledge_object_count": 19,
+    "operationalized_knowledge_count": 19,
     "knowledge_availability_rate": 1,
-    "knowledge_reuse_rate": 0.3913,
-    "reused_knowledge_object_count": 6,
-    "improved_knowledge_object_count": 2,
-    "knowledge_lineage_count": 9,
+    "knowledge_reuse_rate": 0.7213,
+    "reused_knowledge_object_count": 17,
+    "improved_knowledge_object_count": 5,
+    "knowledge_lineage_count": 19,
     "knowledge_lineage_preview": [
       {
-        "knowledge_id": "knowledge:30fd3dec86d769a4",
+        "knowledge_id": "knowledge:599295c578191afa",
+        "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+        "evolution_stage": "IMPROVED",
+        "source_learning_count": 17,
+        "reuse_count": 17,
+        "improved_outcome_count": 4,
+        "source_learning_ids": [
+          "decision-learning-gate-c-acceptance:e6f8f9573521bf2f",
+          "decision-learning-gate-c-acceptance:158050332c0003d0",
+          "decision-learning-gate-c-acceptance:a91224e225189685",
+          "decision-learning-gate-c-acceptance:0793b0defddc1cfe",
+          "decision-learning-gate-c-acceptance:ea07c882775028ae",
+          "decision-learning-gate-c-acceptance:e6b18f0b6722fe5a",
+          "decision-learning-gate-c-acceptance:4c98a0414ba54068",
+          "decision-learning-gate-c-acceptance:c1b4b8ce163c81e7",
+          "decision-learning-gate-c-acceptance:4e46cfb17deca550",
+          "decision-learning-gate-c-acceptance:ee837d5d4638cfd4",
+          "decision-learning-gate-c-acceptance:e009c2654f52a17b",
+          "decision-learning-gate-c-acceptance:3eef6dcb45d3b555",
+          "decision-learning-gate-c-acceptance:d639587e8c3485cc",
+          "decision-learning-gate-c-acceptance:76e428d37ecd9b6d",
+          "decision-learning-gate-c-acceptance:f6477d0e8f9e914e",
+          "decision-learning-gate-c-acceptance:150312ecf6a49a62",
+          "decision-learning-gate-c-acceptance:d42ebe4a68a13a87"
+        ],
+        "reused_by_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:3ca912ea5ba14f00",
+          "decision-entry-gate-c-acceptance:bedb64e25cad0508",
+          "decision-entry-gate-c-acceptance:e9be4b72e07ac127",
+          "decision-entry-gate-c-acceptance:4a40e8b155a56065",
+          "decision-entry-gate-c-acceptance:00439e0c2cf4042e",
+          "decision-entry-gate-c-acceptance:34716c2a21f24b31",
+          "decision-entry-gate-c-acceptance:07dbc9ed10464d70",
+          "decision-entry-gate-c-acceptance:4a9f8263d3dca2ad",
+          "decision-entry-gate-c-acceptance:7b55d1cd72b129db",
+          "decision-entry-gate-c-acceptance:d95b10a5486ea7eb",
+          "decision-entry-gate-c-acceptance:2c6188f8c90177d6",
+          "decision-entry-gate-c-acceptance:af7d8bf0fd10ab3a",
+          "decision-entry-gate-c-acceptance:af97508d33f96574",
+          "decision-entry-gate-c-acceptance:8332ecead8172e6d",
+          "decision-entry-gate-c-acceptance:4316062f86f9098b",
+          "decision-entry-gate-c-acceptance:f9f53625e6a292e9",
+          "decision-entry-gate-c-acceptance:05038a42e0f6f9a3"
+        ]
+      },
+      {
+        "knowledge_id": "knowledge:7d54ba2baf5f54f5",
         "knowledge_key": "knowledge-key:bd73d427916ceb94",
         "evolution_stage": "IMPROVED",
         "source_learning_count": 4,
         "reuse_count": 4,
         "improved_outcome_count": 3,
         "source_learning_ids": [
-          "decision-learning-gate-c-acceptance:e4d7eb821549f4aa",
-          "decision-learning-gate-c-acceptance:9372300c12082315",
-          "decision-learning-gate-c-acceptance:229dda074bc3ac5b",
-          "decision-learning-gate-c-acceptance:94098861278de1c6"
+          "decision-learning-gate-c-acceptance:9807288fc17fb7b5",
+          "decision-learning-gate-c-acceptance:79235ea7e73854d0",
+          "decision-learning-gate-c-acceptance:b2c247a9ebc94ca4",
+          "decision-learning-gate-c-acceptance:7e34f630119d05b0"
         ],
         "reused_by_decision_entry_ids": [
-          "decision-entry-gate-c-acceptance:0efff3ac64f2f606",
-          "decision-entry-gate-c-acceptance:560d27d4f27c41f4",
-          "decision-entry-gate-c-acceptance:318edcdab70d8c49",
-          "decision-entry-gate-c-acceptance:ba853bccaf44d3a1"
+          "decision-entry-gate-c-acceptance:afaf8c79e191d9f0",
+          "decision-entry-gate-c-acceptance:8c197f988df7b80e",
+          "decision-entry-gate-c-acceptance:215cc261cd375531",
+          "decision-entry-gate-c-acceptance:fdf6366e7f5520db"
         ]
       },
       {
-        "knowledge_id": "knowledge:303dcdb243410f76",
+        "knowledge_id": "knowledge:faeeebc6267ad883",
+        "knowledge_key": "knowledge-key:9eb87a14649601bd",
+        "evolution_stage": "IMPROVED",
+        "source_learning_count": 2,
+        "reuse_count": 2,
+        "improved_outcome_count": 1,
+        "source_learning_ids": [
+          "decision-learning-gate-c-acceptance:c12355d432e8785c",
+          "decision-learning-gate-c-acceptance:8a12d400b86b49db"
+        ],
+        "reused_by_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:6dd91edca2c5052d",
+          "decision-entry-gate-c-acceptance:1f18496097c4a113"
+        ]
+      },
+      {
+        "knowledge_id": "knowledge:7362c64fcee5b2d1",
+        "knowledge_key": "knowledge-key:4b7bcb859b981bd8",
+        "evolution_stage": "IMPROVED",
+        "source_learning_count": 1,
+        "reuse_count": 1,
+        "improved_outcome_count": 1,
+        "source_learning_ids": [
+          "decision-learning-gate-c-acceptance:a4cd257bbb01a6de"
+        ],
+        "reused_by_decision_entry_ids": [
+          "decision-entry-gate-c-acceptance:6b63847588a15c07"
+        ]
+      },
+      {
+        "knowledge_id": "knowledge:6f172fc5118a0f02",
         "knowledge_key": "knowledge-key:f631537605a94365",
         "evolution_stage": "IMPROVED",
         "source_learning_count": 1,
         "reuse_count": 1,
         "improved_outcome_count": 1,
         "source_learning_ids": [
-          "decision-learning-gate-c-acceptance:6ca4700a64e15453"
+          "decision-learning-gate-c-acceptance:f43ab096a9f3b901"
         ],
         "reused_by_decision_entry_ids": [
-          "decision-entry-gate-c-acceptance:e7a2f10dbea3c24a"
-        ]
-      },
-      {
-        "knowledge_id": "knowledge:b393fba7c6e53e95",
-        "knowledge_key": "knowledge-key:6cf9c100ad81dff6",
-        "evolution_stage": "REUSED",
-        "source_learning_count": 3,
-        "reuse_count": 1,
-        "improved_outcome_count": 0,
-        "source_learning_ids": [
-          "decision-learning-gate-c-acceptance:f52c81fb5bf2b435",
-          "decision-learning-gate-c-acceptance:f2c7473865477496",
-          "decision-learning-gate-c-acceptance:9224b5c9ccda85b0"
-        ],
-        "reused_by_decision_entry_ids": [
-          "decision-entry-gate-c-acceptance:2dfc47af1d3a8683"
-        ]
-      },
-      {
-        "knowledge_id": "knowledge:9a1309ecf584e3f4",
-        "knowledge_key": "knowledge-key:ae416ad88ecec5a2",
-        "evolution_stage": "REUSED",
-        "source_learning_count": 3,
-        "reuse_count": 1,
-        "improved_outcome_count": 0,
-        "source_learning_ids": [
-          "decision-learning-gate-c-acceptance:f8957bdb86a16916",
-          "decision-learning-gate-c-acceptance:93bf9ffaaf5a26d6",
-          "decision-learning-gate-c-acceptance:7556db60aa2cc378"
-        ],
-        "reused_by_decision_entry_ids": [
-          "decision-entry-gate-c-acceptance:f9e259c89fac05b3"
-        ]
-      },
-      {
-        "knowledge_id": "knowledge:cd55bcdbb43f42fe",
-        "knowledge_key": "knowledge-key:88a18dea5332811f",
-        "evolution_stage": "REUSED",
-        "source_learning_count": 2,
-        "reuse_count": 1,
-        "improved_outcome_count": 0,
-        "source_learning_ids": [
-          "decision-learning-gate-c-acceptance:a59ad53b9570757b",
-          "decision-learning-gate-c-acceptance:2ba781ed6252f5c4"
-        ],
-        "reused_by_decision_entry_ids": [
-          "decision-entry-gate-c-acceptance:80f2bca33232992d"
+          "decision-entry-gate-c-acceptance:d0c5d3a88697e8f8"
         ]
       }
     ],
-    "knowledge_used_rate": 0.4091,
+    "knowledge_used_rate": 0.7333,
     "evidence_strength_index": 1,
-    "outcome_improvement_rate": 0.4444,
-    "decision_confidence_index": 0.9783,
+    "outcome_improvement_rate": 0.2273,
+    "decision_confidence_index": 0.9456,
     "recommendation_effectiveness_rate": 0,
-    "decision_pattern_change_rate": 0.4,
-    "recommendation_acceptance_rate": 0.3333,
-    "behavior_change_rate": 0.4,
+    "decision_pattern_change_rate": 0.4483,
+    "recommendation_acceptance_rate": 0.6857,
+    "behavior_change_rate": 0.4483,
     "engineering_leverage_ratio": null,
-    "repeated_mistake_count": 13,
-    "future_decision_improvement_rate": 0.5,
+    "repeated_mistake_count": 16,
+    "future_decision_improvement_rate": 0.3846,
     "report_ref": "workspace/foundation/evidence/verification/learning-intelligence-report.json",
     "learning_registry_ref": "workspace/foundation/evidence/verification/learning-registry.json",
     "knowledge_registry_ref": "workspace/foundation/evidence/verification/knowledge-registry.json"
   },
   "knowledge_lineage_preview": [
     {
-      "knowledge_id": "knowledge:30fd3dec86d769a4",
+      "knowledge_id": "knowledge:599295c578191afa",
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "evolution_stage": "IMPROVED",
+      "source_learning_count": 17,
+      "reuse_count": 17,
+      "improved_outcome_count": 4,
+      "source_learning_ids": [
+        "decision-learning-gate-c-acceptance:e6f8f9573521bf2f",
+        "decision-learning-gate-c-acceptance:158050332c0003d0",
+        "decision-learning-gate-c-acceptance:a91224e225189685",
+        "decision-learning-gate-c-acceptance:0793b0defddc1cfe",
+        "decision-learning-gate-c-acceptance:ea07c882775028ae",
+        "decision-learning-gate-c-acceptance:e6b18f0b6722fe5a",
+        "decision-learning-gate-c-acceptance:4c98a0414ba54068",
+        "decision-learning-gate-c-acceptance:c1b4b8ce163c81e7",
+        "decision-learning-gate-c-acceptance:4e46cfb17deca550",
+        "decision-learning-gate-c-acceptance:ee837d5d4638cfd4",
+        "decision-learning-gate-c-acceptance:e009c2654f52a17b",
+        "decision-learning-gate-c-acceptance:3eef6dcb45d3b555",
+        "decision-learning-gate-c-acceptance:d639587e8c3485cc",
+        "decision-learning-gate-c-acceptance:76e428d37ecd9b6d",
+        "decision-learning-gate-c-acceptance:f6477d0e8f9e914e",
+        "decision-learning-gate-c-acceptance:150312ecf6a49a62",
+        "decision-learning-gate-c-acceptance:d42ebe4a68a13a87"
+      ],
+      "reused_by_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:3ca912ea5ba14f00",
+        "decision-entry-gate-c-acceptance:bedb64e25cad0508",
+        "decision-entry-gate-c-acceptance:e9be4b72e07ac127",
+        "decision-entry-gate-c-acceptance:4a40e8b155a56065",
+        "decision-entry-gate-c-acceptance:00439e0c2cf4042e",
+        "decision-entry-gate-c-acceptance:34716c2a21f24b31",
+        "decision-entry-gate-c-acceptance:07dbc9ed10464d70",
+        "decision-entry-gate-c-acceptance:4a9f8263d3dca2ad",
+        "decision-entry-gate-c-acceptance:7b55d1cd72b129db",
+        "decision-entry-gate-c-acceptance:d95b10a5486ea7eb",
+        "decision-entry-gate-c-acceptance:2c6188f8c90177d6",
+        "decision-entry-gate-c-acceptance:af7d8bf0fd10ab3a",
+        "decision-entry-gate-c-acceptance:af97508d33f96574",
+        "decision-entry-gate-c-acceptance:8332ecead8172e6d",
+        "decision-entry-gate-c-acceptance:4316062f86f9098b",
+        "decision-entry-gate-c-acceptance:f9f53625e6a292e9",
+        "decision-entry-gate-c-acceptance:05038a42e0f6f9a3"
+      ]
+    },
+    {
+      "knowledge_id": "knowledge:7d54ba2baf5f54f5",
       "knowledge_key": "knowledge-key:bd73d427916ceb94",
       "evolution_stage": "IMPROVED",
       "source_learning_count": 4,
       "reuse_count": 4,
       "improved_outcome_count": 3,
       "source_learning_ids": [
-        "decision-learning-gate-c-acceptance:e4d7eb821549f4aa",
-        "decision-learning-gate-c-acceptance:9372300c12082315",
-        "decision-learning-gate-c-acceptance:229dda074bc3ac5b",
-        "decision-learning-gate-c-acceptance:94098861278de1c6"
+        "decision-learning-gate-c-acceptance:9807288fc17fb7b5",
+        "decision-learning-gate-c-acceptance:79235ea7e73854d0",
+        "decision-learning-gate-c-acceptance:b2c247a9ebc94ca4",
+        "decision-learning-gate-c-acceptance:7e34f630119d05b0"
       ],
       "reused_by_decision_entry_ids": [
-        "decision-entry-gate-c-acceptance:0efff3ac64f2f606",
-        "decision-entry-gate-c-acceptance:560d27d4f27c41f4",
-        "decision-entry-gate-c-acceptance:318edcdab70d8c49",
-        "decision-entry-gate-c-acceptance:ba853bccaf44d3a1"
+        "decision-entry-gate-c-acceptance:afaf8c79e191d9f0",
+        "decision-entry-gate-c-acceptance:8c197f988df7b80e",
+        "decision-entry-gate-c-acceptance:215cc261cd375531",
+        "decision-entry-gate-c-acceptance:fdf6366e7f5520db"
       ]
     },
     {
-      "knowledge_id": "knowledge:303dcdb243410f76",
+      "knowledge_id": "knowledge:faeeebc6267ad883",
+      "knowledge_key": "knowledge-key:9eb87a14649601bd",
+      "evolution_stage": "IMPROVED",
+      "source_learning_count": 2,
+      "reuse_count": 2,
+      "improved_outcome_count": 1,
+      "source_learning_ids": [
+        "decision-learning-gate-c-acceptance:c12355d432e8785c",
+        "decision-learning-gate-c-acceptance:8a12d400b86b49db"
+      ],
+      "reused_by_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:6dd91edca2c5052d",
+        "decision-entry-gate-c-acceptance:1f18496097c4a113"
+      ]
+    },
+    {
+      "knowledge_id": "knowledge:7362c64fcee5b2d1",
+      "knowledge_key": "knowledge-key:4b7bcb859b981bd8",
+      "evolution_stage": "IMPROVED",
+      "source_learning_count": 1,
+      "reuse_count": 1,
+      "improved_outcome_count": 1,
+      "source_learning_ids": [
+        "decision-learning-gate-c-acceptance:a4cd257bbb01a6de"
+      ],
+      "reused_by_decision_entry_ids": [
+        "decision-entry-gate-c-acceptance:6b63847588a15c07"
+      ]
+    },
+    {
+      "knowledge_id": "knowledge:6f172fc5118a0f02",
       "knowledge_key": "knowledge-key:f631537605a94365",
       "evolution_stage": "IMPROVED",
       "source_learning_count": 1,
       "reuse_count": 1,
       "improved_outcome_count": 1,
       "source_learning_ids": [
-        "decision-learning-gate-c-acceptance:6ca4700a64e15453"
+        "decision-learning-gate-c-acceptance:f43ab096a9f3b901"
       ],
       "reused_by_decision_entry_ids": [
-        "decision-entry-gate-c-acceptance:e7a2f10dbea3c24a"
-      ]
-    },
-    {
-      "knowledge_id": "knowledge:b393fba7c6e53e95",
-      "knowledge_key": "knowledge-key:6cf9c100ad81dff6",
-      "evolution_stage": "REUSED",
-      "source_learning_count": 3,
-      "reuse_count": 1,
-      "improved_outcome_count": 0,
-      "source_learning_ids": [
-        "decision-learning-gate-c-acceptance:f52c81fb5bf2b435",
-        "decision-learning-gate-c-acceptance:f2c7473865477496",
-        "decision-learning-gate-c-acceptance:9224b5c9ccda85b0"
-      ],
-      "reused_by_decision_entry_ids": [
-        "decision-entry-gate-c-acceptance:2dfc47af1d3a8683"
-      ]
-    },
-    {
-      "knowledge_id": "knowledge:9a1309ecf584e3f4",
-      "knowledge_key": "knowledge-key:ae416ad88ecec5a2",
-      "evolution_stage": "REUSED",
-      "source_learning_count": 3,
-      "reuse_count": 1,
-      "improved_outcome_count": 0,
-      "source_learning_ids": [
-        "decision-learning-gate-c-acceptance:f8957bdb86a16916",
-        "decision-learning-gate-c-acceptance:93bf9ffaaf5a26d6",
-        "decision-learning-gate-c-acceptance:7556db60aa2cc378"
-      ],
-      "reused_by_decision_entry_ids": [
-        "decision-entry-gate-c-acceptance:f9e259c89fac05b3"
-      ]
-    },
-    {
-      "knowledge_id": "knowledge:cd55bcdbb43f42fe",
-      "knowledge_key": "knowledge-key:88a18dea5332811f",
-      "evolution_stage": "REUSED",
-      "source_learning_count": 2,
-      "reuse_count": 1,
-      "improved_outcome_count": 0,
-      "source_learning_ids": [
-        "decision-learning-gate-c-acceptance:a59ad53b9570757b",
-        "decision-learning-gate-c-acceptance:2ba781ed6252f5c4"
-      ],
-      "reused_by_decision_entry_ids": [
-        "decision-entry-gate-c-acceptance:80f2bca33232992d"
+        "decision-entry-gate-c-acceptance:d0c5d3a88697e8f8"
       ]
     }
   ],
@@ -706,7 +768,7 @@
       "decision": {
         "status": "PASS",
         "metric_name": "decision_count",
-        "metric": 23,
+        "metric": 61,
         "evidence_ref": "workspace/foundation/evidence/verification/decision-quality-report.json"
       },
       "outcome": {
@@ -718,7 +780,7 @@
       "learning": {
         "status": "PASS",
         "metric_name": "decision_learning_closure",
-        "metric": 1.0952380952380953,
+        "metric": 1.0338983050847457,
         "evidence_ref": "workspace/foundation/evidence/verification/learning-intelligence-report.json"
       },
       "knowledge": {
@@ -730,13 +792,13 @@
       "better_decision": {
         "status": "PASS",
         "metric_name": "knowledge_weighted_quality_index",
-        "metric": 0.1779,
+        "metric": 0.1576,
         "evidence_ref": "workspace/foundation/evidence/verification/decision-quality-report.json"
       },
       "better_outcome": {
         "status": "PASS",
         "metric_name": "outcome_improvement_rate",
-        "metric": 0.4444,
+        "metric": 0.2273,
         "evidence_ref": "workspace/foundation/evidence/verification/learning-intelligence-report.json"
       }
     },
@@ -757,11 +819,11 @@
   },
   "execution_graph": {
     "constitutional_version": "1.0.0",
-    "proof_digest": "6ce25627f1345ea5c620cfdd7e0efaf41a6da920319ff48b809f3f5c81d73856",
+    "proof_digest": "8d6fd92b168104c5c35eff6e7ec22531401090bcb700c2e7e5c6c603239208fe",
     "proof_determinism_status": "PASS",
-    "declared_graph_digest": "a9f2a80f8f4d008743ec6e793f0d89536cb4d509f6a246ec35c80ab5ee1b7730",
+    "declared_graph_digest": "3d027cfd003b4b8693c1810c0b727be1c52223cd81e1113a83c82b155ccc60a8",
     "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
-    "constitutional_digest": "e715f434615c931ebb7cb6e9811d30741539905307bcab73681f32992adbaf3e",
+    "constitutional_digest": "e1678cdf052a59c44ef39ded05f2c568566fa10a86d4518d2144d6bf9bd3e02c",
     "constitutional_claims": {
       "deterministic": true,
       "immutable": true,
@@ -770,17 +832,17 @@
     },
     "graph_version": "1.0.0",
     "projection_version": "1.0.0",
-    "projection_digest": "481a23525d81f8de19f273c6fc336aee3116d5ea6e07a8d7baac2f4bc66b37de",
+    "projection_digest": "3d326b58dc8fb0ae140eda208b34435d76284846b857aac87f3d3fdf7e7f0977",
     "generated_from": [
       {
         "source_type": "artifact_registry",
         "source_ref": "artifact_registry:artifacts",
-        "source_digest": "65440aab9cb4061c2fbd12f010d49dde08342fa0290cb766fc6b349bbf762428"
+        "source_digest": "ad2adbe73597e79338f550d289ffe499e86ac7d609654953ee5aeb0e64e24a3b"
       },
       {
         "source_type": "execution_evidence",
         "source_ref": "artifact_registry:execution_evidence",
-        "source_digest": "9447f14ebb00121902fd9919c1eada6a752f37cd6016acb5f3b09249fa69c45f"
+        "source_digest": "b22f8bd8fef809f7022b7ebf7d3e13a821ac10d354755d3cd21b517ffb049d15"
       },
       {
         "source_type": "execution_chain",
@@ -790,27 +852,27 @@
       {
         "source_type": "planner_signature",
         "source_ref": "artifact_registry:planner_signatures",
-        "source_digest": "67c1fd991d43ed16682f0b8be01d7abefab93fc4b58d63275a35fd186582ab1d"
+        "source_digest": "72d60c881118087225101fbef260e5d15ba7a3c818baa0cfaa2048aa44ef8de8"
       }
     ],
-    "generated_at_utc": "2026-08-05T04:29:06.764Z",
-    "total_nodes": 173,
-    "total_edges": 381,
-    "declared_edges": 33,
+    "generated_at_utc": "2026-09-24T13:26:12.885Z",
+    "total_nodes": 242,
+    "total_edges": 482,
+    "declared_edges": 134,
     "observed_edges": 348,
     "claim_boundary": "Execution Graph is an immutable constitutional projection with two layers: declared topology from Artifact Registry and observed operational topology from explicit Execution Chain projected edges. The graph must not infer operational adjacency from evidence, replay, verification, summaries, or registry booleans; if chains do not carry projected edges, no operational edges may be materialized. The graph must be regenerated from upstream declared contracts and execution chains and must not be edited directly."
   },
   "graph_fitness": {
-    "fitness_status": "PARTIAL",
-    "connectivity_ratio": 0.9884,
-    "execution_reachability_ratio": 0.8125,
+    "fitness_status": "BLOCKED",
+    "connectivity_ratio": 0.9917,
+    "execution_reachability_ratio": 0.5909,
     "orphan_nodes": 2,
-    "dead_nodes": 3,
+    "dead_nodes": 9,
     "dependency_cycles": 0,
-    "duplicate_capability_candidates": 0,
+    "duplicate_capability_candidates": 2,
     "planner_coverage_ratio": 1,
-    "runtime_coverage_ratio": 0.8125,
-    "verification_coverage_ratio": 0.8125,
+    "runtime_coverage_ratio": 0.5909,
+    "verification_coverage_ratio": 0.5909,
     "replay_stability_ratio": 1,
     "core_delta_status": "UNVERIFIED",
     "claim_boundary": "Graph fitness is computed from the shared Execution Graph view. Core delta remains unverified until substrate-diff evidence is materialized."
@@ -840,7 +902,8 @@
         "verification-summary.md"
       ],
       "capabilities": [
-        "requirement-management"
+        "requirement-management",
+        "legal-case"
       ],
       "mapped_capabilities": [],
       "verification_summary_exists": false,
@@ -865,7 +928,8 @@
         "product-verification-projection.json"
       ],
       "capabilities": [
-        "requirement-management"
+        "requirement-management",
+        "legal-case"
       ],
       "mapped_capabilities": [
         "legal-case",
@@ -8286,6 +8350,8 @@
       "app_manifest_exists": true,
       "evidence_complete": false,
       "missing_evidence": [
+        "functional-test-report.json",
+        "clr-report.json",
         "capability-mapping-matrix.csv",
         "composition-tree.txt",
         "composition-replay.json",
@@ -8299,7 +8365,8 @@
         "verification-summary.md"
       ],
       "capabilities": [
-        "requirement-management"
+        "requirement-management",
+        "legal-case"
       ],
       "mapped_capabilities": [],
       "verification_summary_exists": false,
@@ -8310,11 +8377,11 @@
       "execution_timeline_summary": null,
       "execution_chains": [],
       "execution_plan_summary": null,
-      "functional_tests_passed": 4,
-      "functional_tests_total": 4,
-      "capability_reuse_ratio": 1,
-      "experience_reuse_ratio": 1,
-      "clr": "FULL_REUSE"
+      "functional_tests_passed": 0,
+      "functional_tests_total": 0,
+      "capability_reuse_ratio": null,
+      "experience_reuse_ratio": null,
+      "clr": null
     }
   ],
   "product_portfolio_source": "enterprise/specifications/PRODUCT-PORTFOLIO.yaml",

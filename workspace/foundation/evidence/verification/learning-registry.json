@@ -1,20 +1,20 @@
 {
   "registry_version": "1.0.0",
-  "generated_at_utc": "2026-08-05T04:29:08.369Z",
+  "generated_at_utc": "2026-09-24T13:26:14.813Z",
   "summary": {
-    "learning_record_count": 23,
-    "captured_learning_count": 21,
+    "learning_record_count": 61,
+    "captured_learning_count": 59,
     "applied_learning_count": 0,
-    "knowledge_candidate_count": 9,
-    "reused_learning_count": 9,
-    "decision_pattern_change_count": 8
+    "knowledge_candidate_count": 19,
+    "reused_learning_count": 44,
+    "decision_pattern_change_count": 26
   },
   "entries": [
     {
-      "learning_id": "decision-learning-gate-c-acceptance:f8957bdb86a16916",
+      "learning_id": "decision-learning-gate-c-acceptance:4bed758e671cb318",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:4de2d332f32be45d",
-      "outcome_tracking_id": "decision-outcome:04ced52cc386484c",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:d0b4fc2eb67f4b57",
+      "outcome_tracking_id": "decision-outcome:16830a281d609e10",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T04:12:40.443Z",
@@ -28,7 +28,7 @@
       "hypotheses_invalidated": [],
       "recommendation_accepted": null,
       "behavior_changed": true,
-      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:f9e259c89fac05b3",
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:43f05ba191b9a787",
       "future_decision_improved": false,
       "evidence_ref_count": 6,
       "capability_ref_count": 3,
@@ -37,10 +37,10 @@
       "decision_pattern_changed": true
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:88a5be87e9ed9287",
+      "learning_id": "decision-learning-gate-c-acceptance:18e75dd6edc44fbc",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:f9e259c89fac05b3",
-      "outcome_tracking_id": "decision-outcome:6b3371e0ce753ba1",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:43f05ba191b9a787",
+      "outcome_tracking_id": "decision-outcome:b434805cfd16980e",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T04:31:19.388Z",
@@ -56,7 +56,7 @@
       "hypotheses_invalidated": [],
       "recommendation_accepted": true,
       "behavior_changed": true,
-      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:7aa74259cab42622",
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:d79c2adb889b1026",
       "future_decision_improved": false,
       "evidence_ref_count": 6,
       "capability_ref_count": 3,
@@ -65,10 +65,10 @@
       "decision_pattern_changed": true
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:e4d7eb821549f4aa",
+      "learning_id": "decision-learning-gate-c-acceptance:9807288fc17fb7b5",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:7aa74259cab42622",
-      "outcome_tracking_id": "decision-outcome:b994ee3702aefa97",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:d79c2adb889b1026",
+      "outcome_tracking_id": "decision-outcome:3ec46167de73f68e",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T04:36:18.424Z",
@@ -82,7 +82,7 @@
       "hypotheses_invalidated": [],
       "recommendation_accepted": false,
       "behavior_changed": true,
-      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:0efff3ac64f2f606",
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:afaf8c79e191d9f0",
       "future_decision_improved": true,
       "evidence_ref_count": 6,
       "capability_ref_count": 3,
@@ -91,10 +91,10 @@
       "decision_pattern_changed": true
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:6aba29fbdbfda871",
+      "learning_id": "decision-learning-gate-c-acceptance:dbe5589a26cb3cb1",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:0efff3ac64f2f606",
-      "outcome_tracking_id": "decision-outcome:56d0ad248263c6e9",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:afaf8c79e191d9f0",
+      "outcome_tracking_id": "decision-outcome:3d217475258ed9ea",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T04:37:36.699Z",
@@ -117,10 +117,10 @@
       "decision_pattern_changed": false
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:050ab95e3ae6d400",
+      "learning_id": "decision-learning-gate-c-acceptance:d5280fcf00c7b242",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:5bf89752066e1371",
-      "outcome_tracking_id": "decision-outcome:f939833b3b88514b",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:563f5c90b88cbdae",
+      "outcome_tracking_id": "decision-outcome:dc01c633c9a1cb7e",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T04:53:36.546Z",
@@ -143,10 +143,10 @@
       "decision_pattern_changed": false
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:e4be5be060b3bb84",
+      "learning_id": "decision-learning-gate-c-acceptance:6b2ff45d5c72e4b4",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:4462807dba4aaff6",
-      "outcome_tracking_id": "decision-outcome:f0b1a6f5c9acb14f",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:f359ca9b7807fff7",
+      "outcome_tracking_id": "decision-outcome:d39ef0bd9c3caf1d",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T04:59:35.971Z",
@@ -169,10 +169,10 @@
       "decision_pattern_changed": false
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:1efd236e9e650124",
+      "learning_id": "decision-learning-gate-c-acceptance:6a4c4e53225128ce",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:1fff7a00d428ce45",
-      "outcome_tracking_id": "decision-outcome:cf7d5a90ba399d36",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:e14344e4619e433a",
+      "outcome_tracking_id": "decision-outcome:3129646a579ea222",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "OPEN",
       "created_at_utc": "2026-08-01T05:20:09.778Z",
@@ -193,10 +193,10 @@
       "decision_pattern_changed": null
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:d0556f44b34c1dc9",
+      "learning_id": "decision-learning-gate-c-acceptance:8a919cd761f51dae",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:2317429287ef5ba1",
-      "outcome_tracking_id": "decision-outcome:ebaccd2397410f6c",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:138da9004f354b1c",
+      "outcome_tracking_id": "decision-outcome:8047153feecb0faf",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "OPEN",
       "created_at_utc": "2026-08-01T05:20:50.241Z",
@@ -217,10 +217,10 @@
       "decision_pattern_changed": null
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:9372300c12082315",
+      "learning_id": "decision-learning-gate-c-acceptance:79235ea7e73854d0",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:d24ef09aed98d6cd",
-      "outcome_tracking_id": "decision-outcome:012ece6655ce9714",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:a88da2c23c1f14bd",
+      "outcome_tracking_id": "decision-outcome:d482c449e6a17f55",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T05:40:43.872Z",
@@ -234,7 +234,7 @@
       "hypotheses_invalidated": [],
       "recommendation_accepted": false,
       "behavior_changed": true,
-      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:560d27d4f27c41f4",
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:8c197f988df7b80e",
       "future_decision_improved": true,
       "evidence_ref_count": 6,
       "capability_ref_count": 3,
@@ -243,10 +243,10 @@
       "decision_pattern_changed": true
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:f52c81fb5bf2b435",
+      "learning_id": "decision-learning-gate-c-acceptance:744fa711bc5f6166",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:560d27d4f27c41f4",
-      "outcome_tracking_id": "decision-outcome:5e18c7e862d542ce",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:8c197f988df7b80e",
+      "outcome_tracking_id": "decision-outcome:f91e36c9fc5a6577",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T05:47:43.122Z",
@@ -260,7 +260,7 @@
       "hypotheses_invalidated": [],
       "recommendation_accepted": null,
       "behavior_changed": true,
-      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:2dfc47af1d3a8683",
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:882519feb3feb0b7",
       "future_decision_improved": false,
       "evidence_ref_count": 6,
       "capability_ref_count": 3,
@@ -269,10 +269,10 @@
       "decision_pattern_changed": true
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:229dda074bc3ac5b",
+      "learning_id": "decision-learning-gate-c-acceptance:b2c247a9ebc94ca4",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:2dfc47af1d3a8683",
-      "outcome_tracking_id": "decision-outcome:51b6114c10c01037",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:882519feb3feb0b7",
+      "outcome_tracking_id": "decision-outcome:84cc1c6c8ea929d6",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T05:53:44.424Z",
@@ -286,7 +286,7 @@
       "hypotheses_invalidated": [],
       "recommendation_accepted": true,
       "behavior_changed": false,
-      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:318edcdab70d8c49",
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:215cc261cd375531",
       "future_decision_improved": null,
       "evidence_ref_count": 6,
       "capability_ref_count": 3,
@@ -295,10 +295,10 @@
       "decision_pattern_changed": false
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:94098861278de1c6",
+      "learning_id": "decision-learning-gate-c-acceptance:7e34f630119d05b0",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:318edcdab70d8c49",
-      "outcome_tracking_id": "decision-outcome:03c5819ccdb308c4",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:215cc261cd375531",
+      "outcome_tracking_id": "decision-outcome:f22f7477ba638ea5",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T05:53:46.453Z",
@@ -312,7 +312,7 @@
       "hypotheses_invalidated": [],
       "recommendation_accepted": false,
       "behavior_changed": true,
-      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:ba853bccaf44d3a1",
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:fdf6366e7f5520db",
       "future_decision_improved": true,
       "evidence_ref_count": 6,
       "capability_ref_count": 3,
@@ -321,10 +321,10 @@
       "decision_pattern_changed": true
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:1a4ed54affd04399",
+      "learning_id": "decision-learning-gate-c-acceptance:aba7f898cd87ba28",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:ba853bccaf44d3a1",
-      "outcome_tracking_id": "decision-outcome:cc15d9ac9cf79a35",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:fdf6366e7f5520db",
+      "outcome_tracking_id": "decision-outcome:dd3162cbc9150572",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T06:10:24.574Z",
@@ -347,10 +347,10 @@
       "decision_pattern_changed": false
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:f2c7473865477496",
+      "learning_id": "decision-learning-gate-c-acceptance:7522501c52b15708",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:6f584c452a0d44f6",
-      "outcome_tracking_id": "decision-outcome:98bc1f51c45b032b",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:233e4c387b57bef1",
+      "outcome_tracking_id": "decision-outcome:c6224706db40fa07",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T06:10:25.154Z",
@@ -373,10 +373,10 @@
       "decision_pattern_changed": false
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:08fa0640b32e6eb5",
+      "learning_id": "decision-learning-gate-c-acceptance:6b8b251b24f19a2e",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:bc886689da85d6c6",
-      "outcome_tracking_id": "decision-outcome:be0cf3d8b18fe194",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:17445cedff40f830",
+      "outcome_tracking_id": "decision-outcome:a90d1688992f43e9",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T06:10:25.592Z",
@@ -399,10 +399,10 @@
       "decision_pattern_changed": false
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:a59ad53b9570757b",
+      "learning_id": "decision-learning-gate-c-acceptance:fae8c3c49a77ef53",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:aa9cd3acbb1056cd",
-      "outcome_tracking_id": "decision-outcome:88e9978b0c601f73",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:415a424ee0801986",
+      "outcome_tracking_id": "decision-outcome:e27311b17ce2afbc",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T06:10:26.049Z",
@@ -416,7 +416,7 @@
       "hypotheses_invalidated": [],
       "recommendation_accepted": null,
       "behavior_changed": true,
-      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:80f2bca33232992d",
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:364bb9ace742ffef",
       "future_decision_improved": false,
       "evidence_ref_count": 6,
       "capability_ref_count": 3,
@@ -425,10 +425,10 @@
       "decision_pattern_changed": true
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:6ca4700a64e15453",
+      "learning_id": "decision-learning-gate-c-acceptance:f43ab096a9f3b901",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:80f2bca33232992d",
-      "outcome_tracking_id": "decision-outcome:e412529de6df942d",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:364bb9ace742ffef",
+      "outcome_tracking_id": "decision-outcome:c57c7ac90dabc893",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T06:11:45.884Z",
@@ -442,7 +442,7 @@
       "hypotheses_invalidated": [],
       "recommendation_accepted": false,
       "behavior_changed": true,
-      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:e7a2f10dbea3c24a",
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:d0c5d3a88697e8f8",
       "future_decision_improved": true,
       "evidence_ref_count": 6,
       "capability_ref_count": 3,
@@ -451,10 +451,10 @@
       "decision_pattern_changed": true
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:1b8d400467a3f5ce",
+      "learning_id": "decision-learning-gate-c-acceptance:626b1ace6dbfe8ae",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:e7a2f10dbea3c24a",
-      "outcome_tracking_id": "decision-outcome:03081212108136d2",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:d0c5d3a88697e8f8",
+      "outcome_tracking_id": "decision-outcome:dfb2dffe148a2268",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T06:12:05.893Z",
@@ -477,10 +477,10 @@
       "decision_pattern_changed": false
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:9224b5c9ccda85b0",
+      "learning_id": "decision-learning-gate-c-acceptance:89b64ea90852c5f0",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:46e636dda886f8ba",
-      "outcome_tracking_id": "decision-outcome:496038b6774b4f21",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:3fe3cb6822a67d1b",
+      "outcome_tracking_id": "decision-outcome:e49a95d4e46f10db",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T06:12:54.362Z",
@@ -503,10 +503,10 @@
       "decision_pattern_changed": false
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:93e2a9881665deb7",
+      "learning_id": "decision-learning-gate-c-acceptance:523e299646b6af82",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:6f7673c375616e48",
-      "outcome_tracking_id": "decision-outcome:4fe55d7677e6bf49",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:89ca06e2c8784264",
+      "outcome_tracking_id": "decision-outcome:f7e926417d4d03eb",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T06:12:54.944Z",
@@ -529,10 +529,10 @@
       "decision_pattern_changed": false
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:2ba781ed6252f5c4",
+      "learning_id": "decision-learning-gate-c-acceptance:f08f18d6e3195215",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:5b7e9cd9be5a8815",
-      "outcome_tracking_id": "decision-outcome:857aea7da4f04d05",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:04f702e167142bb3",
+      "outcome_tracking_id": "decision-outcome:5b9666396b342ef7",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T06:12:55.430Z",
@@ -555,10 +555,10 @@
       "decision_pattern_changed": false
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:93bf9ffaaf5a26d6",
+      "learning_id": "decision-learning-gate-c-acceptance:995f6e773abe4895",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:bfc9f0318ab5b4e8",
-      "outcome_tracking_id": "decision-outcome:2503cb59e9aef2b7",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:23b669dc795d8098",
+      "outcome_tracking_id": "decision-outcome:886f17fec9821fa2",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T06:17:21.076Z",
@@ -581,10 +581,10 @@
       "decision_pattern_changed": false
     },
     {
-      "learning_id": "decision-learning-gate-c-acceptance:7556db60aa2cc378",
+      "learning_id": "decision-learning-gate-c-acceptance:77082e641077a84d",
       "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
-      "decision_entry_id": "decision-entry-gate-c-acceptance:be4ba35f9099f7a2",
-      "outcome_tracking_id": "decision-outcome:fbda7bb200f75937",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:47c35a0aac098a7b",
+      "outcome_tracking_id": "decision-outcome:6649404ab09850b9",
       "decision_type": "gate-c-acceptance-decision",
       "learning_status": "CAPTURED",
       "created_at_utc": "2026-08-01T06:18:14.110Z",
@@ -597,12 +597,1028 @@
       ],
       "hypotheses_invalidated": [],
       "recommendation_accepted": null,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:cd99b31026bb56f1",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:ae416ad88ecec5a2",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:a4cd257bbb01a6de",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:cd99b31026bb56f1",
+      "outcome_tracking_id": "decision-outcome:a2f9e850367678cc",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-12T10:17:55.145Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved.",
+        "Acceptance remained blocked until witness valid was resolved.",
+        "Acceptance remained blocked until proof ledger appended was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation",
+        "gate-c-action:witness-valid",
+        "gate-c-action:proof-ledger-appended"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": false,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:6b63847588a15c07",
+      "future_decision_improved": true,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:4b7bcb859b981bd8",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:c623707064fa34d4",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:6b63847588a15c07",
+      "outcome_tracking_id": "decision-outcome:aa0bd3000da49886",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-12T10:18:21.044Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N3 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:090c66c81b3da723",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:00e4ff3385398811",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:ea18a136c9ccc03f",
+      "outcome_tracking_id": "decision-outcome:593429d1559a8c95",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-12T10:18:37.182Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N4 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:ecaec1aeb063cd24",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:82fcb0c3723b8d1c",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:4a19cf11bf8899d4",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:ecaec1aeb063cd24",
+      "outcome_tracking_id": "decision-outcome:59eb6ee22e358d13",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-12T14:49:26.541Z",
+      "lessons": [
+        "Acceptance remained blocked until witness valid was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:witness-valid"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": false,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:7c64cd957883a62f",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:0f82b3922d9ce7b8",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:997a0d7d9fa41cfa",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:7c64cd957883a62f",
+      "outcome_tracking_id": "decision-outcome:7735e4ca79f6e92a",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-13T09:43:25.770Z",
+      "lessons": [
+        "Acceptance remained blocked until verdict is fail was resolved.",
+        "Acceptance remained blocked until proof ledger appended was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:verdict-is-fail",
+        "gate-c-action:proof-ledger-appended"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:58135e0f7d362654",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:08e3680395b06f36",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:789a8a76e3ae8ced",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:58135e0f7d362654",
+      "outcome_tracking_id": "decision-outcome:4d6fbafe1f867034",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-13T09:46:38.569Z",
+      "lessons": [
+        "Acceptance remained blocked until verdict is fail was resolved.",
+        "Acceptance remained blocked until proof ledger appended was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:verdict-is-fail",
+        "gate-c-action:proof-ledger-appended"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:0861a376d3634cee",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:08e3680395b06f36",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:cf69c36dd64481cb",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:0861a376d3634cee",
+      "outcome_tracking_id": "decision-outcome:c6b95dd07413299a",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-13T09:48:06.752Z",
+      "lessons": [
+        "Acceptance remained blocked until verdict is fail was resolved.",
+        "Acceptance remained blocked until proof ledger appended was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:verdict-is-fail",
+        "gate-c-action:proof-ledger-appended"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:9ed06befcc058626",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:08e3680395b06f36",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:a7905c386f21fb20",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:9ed06befcc058626",
+      "outcome_tracking_id": "decision-outcome:89d8cb046c047d4d",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-13T09:48:37.595Z",
+      "lessons": [
+        "Acceptance remained blocked until verdict is fail was resolved.",
+        "Acceptance remained blocked until proof ledger appended was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:verdict-is-fail",
+        "gate-c-action:proof-ledger-appended"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:337518c7e53a5175",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:08e3680395b06f36",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:c12355d432e8785c",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:337518c7e53a5175",
+      "outcome_tracking_id": "decision-outcome:65b000e6178b647b",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T13:13:25.012Z",
+      "lessons": [
+        "Acceptance remained blocked until verdict is fail was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:verdict-is-fail"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:6dd91edca2c5052d",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:9eb87a14649601bd",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:8a12d400b86b49db",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:6dd91edca2c5052d",
+      "outcome_tracking_id": "decision-outcome:be2579faaa51166b",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T13:26:23.162Z",
+      "lessons": [
+        "Acceptance remained blocked until verdict is fail was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:verdict-is-fail"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": false,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:1f18496097c4a113",
+      "future_decision_improved": true,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:9eb87a14649601bd",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:f50a7a2723b0d37a",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:1f18496097c4a113",
+      "outcome_tracking_id": "decision-outcome:d0c65add72189e3f",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T13:31:00.422Z",
+      "lessons": [
+        "Frozen acceptance contract converged for P1 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:7ad6fe408dbe1ede",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:c45659428c687d2d",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:2963359cb07f4e3e",
+      "outcome_tracking_id": "decision-outcome:9a63b9e0f6c3d1b9",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T13:34:29.836Z",
+      "lessons": [
+        "Frozen acceptance contract converged for P1 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:6c5e58af3b2f493a",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:7ad6fe408dbe1ede",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:68607d11f186ee32",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:6c5e58af3b2f493a",
+      "outcome_tracking_id": "decision-outcome:6b7578a0867920fc",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T13:48:43.645Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved.",
+        "Acceptance remained blocked until proof ledger appended was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation",
+        "gate-c-action:proof-ledger-appended"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:7463eb9dd9975610",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:5206e13dec451206",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:e6f8f9573521bf2f",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:7463eb9dd9975610",
+      "outcome_tracking_id": "decision-outcome:33918139929f6678",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T13:57:19.629Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:3ca912ea5ba14f00",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:158050332c0003d0",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:3ca912ea5ba14f00",
+      "outcome_tracking_id": "decision-outcome:0993b1da202ff3ff",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T14:01:59.850Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:bedb64e25cad0508",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:a91224e225189685",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:bedb64e25cad0508",
+      "outcome_tracking_id": "decision-outcome:0946ccd03ca9a4e3",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T14:02:10.269Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:e9be4b72e07ac127",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:0793b0defddc1cfe",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:e9be4b72e07ac127",
+      "outcome_tracking_id": "decision-outcome:d3ac09955332315c",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T14:02:21.439Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:4a40e8b155a56065",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:ea07c882775028ae",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:4a40e8b155a56065",
+      "outcome_tracking_id": "decision-outcome:224349662c51e310",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T14:04:55.718Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:00439e0c2cf4042e",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:e6b18f0b6722fe5a",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:00439e0c2cf4042e",
+      "outcome_tracking_id": "decision-outcome:d0695040bc1da873",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T14:05:13.220Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:34716c2a21f24b31",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:4c98a0414ba54068",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:34716c2a21f24b31",
+      "outcome_tracking_id": "decision-outcome:8c6f45db2dafa514",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T14:05:51.825Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": false,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:07dbc9ed10464d70",
+      "future_decision_improved": true,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:e9c2c0ea7fae8c10",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:07dbc9ed10464d70",
+      "outcome_tracking_id": "decision-outcome:0dfae978e2db9a00",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T14:31:00.047Z",
+      "lessons": [
+        "Frozen acceptance contract converged for P1 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:de82010ddb126db5",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:7ad6fe408dbe1ede",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:c1b4b8ce163c81e7",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:de82010ddb126db5",
+      "outcome_tracking_id": "decision-outcome:1d0fc523e750baeb",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T14:31:37.875Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:4a9f8263d3dca2ad",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:f03303280f1f5d32",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:4a9f8263d3dca2ad",
+      "outcome_tracking_id": "decision-outcome:b8abc6b0f5e4b943",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T14:39:51.752Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved.",
+        "Acceptance remained blocked until expected verdict achieved was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation",
+        "gate-c-action:expected-verdict-achieved"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:ad3a9cab5c75bcab",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:858f80b2b56ca3ac",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:4e46cfb17deca550",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:ad3a9cab5c75bcab",
+      "outcome_tracking_id": "decision-outcome:de2e1d79f349ff24",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T14:54:25.239Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:7b55d1cd72b129db",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:ee837d5d4638cfd4",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:7b55d1cd72b129db",
+      "outcome_tracking_id": "decision-outcome:50d1a8c6b9439a18",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T14:59:29.794Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:d95b10a5486ea7eb",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:e009c2654f52a17b",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:d95b10a5486ea7eb",
+      "outcome_tracking_id": "decision-outcome:3325726107aa652d",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T15:09:04.303Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:2c6188f8c90177d6",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:3eef6dcb45d3b555",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:2c6188f8c90177d6",
+      "outcome_tracking_id": "decision-outcome:822689762dadf178",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T15:11:42.067Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:af7d8bf0fd10ab3a",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:d639587e8c3485cc",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:af7d8bf0fd10ab3a",
+      "outcome_tracking_id": "decision-outcome:fa7c95a830f1caea",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T15:14:40.005Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:af97508d33f96574",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:76e428d37ecd9b6d",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:af97508d33f96574",
+      "outcome_tracking_id": "decision-outcome:b96657a34421a156",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T15:14:50.362Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:8332ecead8172e6d",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:f6477d0e8f9e914e",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:8332ecead8172e6d",
+      "outcome_tracking_id": "decision-outcome:d1c9fde18e3f7008",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T15:15:20.941Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": false,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:4316062f86f9098b",
+      "future_decision_improved": true,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:877e739049185e38",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:4316062f86f9098b",
+      "outcome_tracking_id": "decision-outcome:0599e5f907273742",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T15:17:04.698Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N1 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": null,
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:32348eaca7b1788c",
+      "reused_by_next_decision": false,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:fecedb815bb26499",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:f1572cea75758af6",
+      "outcome_tracking_id": "decision-outcome:f9bec023b1ff88e6",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T15:19:49.367Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N1 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:7f48eda8007b6071",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:32348eaca7b1788c",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:dce8ec1fb8ac330d",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:7f48eda8007b6071",
+      "outcome_tracking_id": "decision-outcome:41d3df0456222328",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T17:43:28.019Z",
+      "lessons": [
+        "Acceptance remained blocked until fixture canonical was resolved.",
+        "Acceptance remained blocked until predicates match experiment expectation was resolved.",
+        "Acceptance remained blocked until transformation deterministic was resolved.",
+        "Acceptance remained blocked until expected verdict achieved was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:fixture-canonical",
+        "gate-c-action:predicates-match-experiment-expectation",
+        "gate-c-action:transformation-deterministic",
+        "gate-c-action:expected-verdict-achieved"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": false,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:c410f3b1296b32df",
+      "future_decision_improved": null,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:cf0939cc8584837c",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": false
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:43dfaf5953bbf2d5",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:c410f3b1296b32df",
+      "outcome_tracking_id": "decision-outcome:5e6cbbb0a2e8eeba",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T18:08:49.580Z",
+      "lessons": [
+        "Acceptance remained blocked until fixture canonical was resolved.",
+        "Acceptance remained blocked until predicates match experiment expectation was resolved.",
+        "Acceptance remained blocked until transformation deterministic was resolved.",
+        "Acceptance remained blocked until expected verdict achieved was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:fixture-canonical",
+        "gate-c-action:predicates-match-experiment-expectation",
+        "gate-c-action:transformation-deterministic",
+        "gate-c-action:expected-verdict-achieved"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": true,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:13a1dfc6f64df01b",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:cf0939cc8584837c",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:150312ecf6a49a62",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:13a1dfc6f64df01b",
+      "outcome_tracking_id": "decision-outcome:fb91d20ff39fa76e",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T18:15:12.016Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": false,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:f9f53625e6a292e9",
+      "future_decision_improved": true,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:648ea40c265a3da7",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:f9f53625e6a292e9",
+      "outcome_tracking_id": "decision-outcome:81c3793965a58ca9",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T18:22:36.237Z",
+      "lessons": [
+        "Frozen acceptance contract converged for N1 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:6c011eb892214300",
+      "future_decision_improved": false,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:32348eaca7b1788c",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:d42ebe4a68a13a87",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:6c011eb892214300",
+      "outcome_tracking_id": "decision-outcome:6f8c3588d4e97836",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-14T18:22:38.272Z",
+      "lessons": [
+        "Acceptance remained blocked until predicates match experiment expectation was resolved."
+      ],
+      "follow_up_actions": [
+        "gate-c-action:predicates-match-experiment-expectation"
+      ],
+      "hypotheses_validated": [],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": false,
+      "behavior_changed": true,
+      "reused_by_decision_entry_id": "decision-entry-gate-c-acceptance:05038a42e0f6f9a3",
+      "future_decision_improved": true,
+      "evidence_ref_count": 6,
+      "capability_ref_count": 3,
+      "knowledge_key": "knowledge-key:54f1bdb7f6211fe1",
+      "reused_by_next_decision": true,
+      "decision_pattern_changed": true
+    },
+    {
+      "learning_id": "decision-learning-gate-c-acceptance:f6bee4b4881fcf37",
+      "decision_id": "decision:gate-c-acceptance:gate-c-acceptance-contract-001",
+      "decision_entry_id": "decision-entry-gate-c-acceptance:05038a42e0f6f9a3",
+      "outcome_tracking_id": "decision-outcome:c93c8fd7a091e403",
+      "decision_type": "gate-c-acceptance-decision",
+      "learning_status": "CAPTURED",
+      "created_at_utc": "2026-09-21T14:49:48.367Z",
+      "lessons": [
+        "Frozen acceptance contract converged for P1 and preserved official evidence corpus integrity."
+      ],
+      "follow_up_actions": [],
+      "hypotheses_validated": [
+        "A Gate C run with complete frozen acceptance invariants should enter the official evidence corpus and preserve canonical convergence."
+      ],
+      "hypotheses_invalidated": [],
+      "recommendation_accepted": null,
       "behavior_changed": null,
       "reused_by_decision_entry_id": null,
       "future_decision_improved": null,
       "evidence_ref_count": 6,
       "capability_ref_count": 3,
-      "knowledge_key": "knowledge-key:ae416ad88ecec5a2",
+      "knowledge_key": "knowledge-key:7ad6fe408dbe1ede",
       "reused_by_next_decision": false,
       "decision_pattern_changed": null
     }

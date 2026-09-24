@@ -96,25 +96,25 @@ Setiap prospek wajib memiliki:
 | 60 | Nabila Law Firm | Jakarta Selatan | Startup, Teknologi | 25+ | nabilalaw.com | info@nabilalaw.com | OUTREACH_READY |
 | 61 | Nasution Law | Jakarta Pusat | Perburuhan, Ketenagakerjaan | 20+ | nasutionlaw.com | contact@nasutionlaw.com | OUTREACH_READY |
 | 62 | Nazaruddin Law | Jakarta Selatan | Litigasi Pidana | 18+ | nazaruddinlaw.com | info@nazaruddinlaw.com | OUTREACH_READY |
-| 63 | Nugraha Law Office | Jakarta Timur | Pemerintahan, Administrasi | 22+ | nugralaw.com | info@nugralaw.com | PENDING |
-| 64 | Oki & Partners | Jakarta Pusat | Keuangan, Perbankan | 30+ | oklaw.co.id | contact@oklaw.co.id | PENDING |
-| 65 | Olivia Law | Jakarta Selatan | IP, Teknologi | 20+ | olivalaw.com | info@olivalaw.com | PENDING |
-| 66 | Panjaitan Law | Jakarta Utara | Kelautan, Sumber Daya Alam | 20+ | panjaitanlaw.com | info@panjaitanlaw.com | PENDING |
-| 67 | Prasetyo Law Firm | Jakarta Pusat | Arbitrase, Internasional | 35+ | prasetyolaw.com | contact@prasetyolaw.com | PENDING |
-| 68 | Priyono & Co | Jakarta Selatan | Real Estate, Properti | 25+ | priyonolaw.com | info@priyonolaw.com | PENDING |
-| 69 | Putra Law Office | Jakarta Barat | Keluarga, Waris | 15+ | putralaw.com | info@putralaw.com | PENDING |
-| 70 | Rachmat Law | Jakarta Pusat | Korporasi, M&A | 45+ | rachmatlaw.com | contact@rachmatlaw.com | PENDING |
-| 71 | Rinaldi Law Firm | Jakarta Selatan | Startup, Teknologi | 28+ | rinlaw.co.id | info@rinlaw.co.id | PENDING |
-| 72 | Riyadi & Partners | Jakarta Pusat | Tax, Korporasi | 35+ | riyadilaw.com | info@riyadilaw.com | PENDING |
-| 73 | Rosidi Law | Jakarta Selatan | Perburuhan, Ketenagakerjaan | 20+ | rosilaw.com | contact@rosilaw.com | PENDING |
-| 74 | Rudy Law Office | Jakarta Timur | Litigasi Umum | 18+ | rudylaw.com | info@rudylaw.com | PENDING |
-| 75 | Rusli Law Firm | Jakarta Pusat | Keuangan, Perbankan | 30+ | ruslilaw.com | contact@ruslilaw.com | PENDING |
-| 76 | Sari Law | Jakarta Selatan | IP, Merek Dagang | 20+ | sari-law.com | info@sari-law.com | PENDING |
-| 77 | Setiawan Law | Jakarta Pusat | Pemerintahan, Administrasi | 25+ | setlaw.co.id | contact@setlaw.co.id | PENDING |
-| 78 | Sihombing Law Office | Jakarta Utara | Kelautan, Sumber Daya Alam | 20+ | sihombinglaw.com | info@sihombinglaw.com | PENDING |
-| 79 | Simanjuntak & Partners | Jakarta Pusat | Arbitrase, Litigation | 40+ | simanjuntaklaw.com | contact@simanjuntaklaw.com | PENDING |
-| 80 | Siti Aisyah Law Firm | Jakarta Selatan | Keluarga, Waris | 17+ | sitiaisyahlaw.com | info@sitiaisyahlaw.com | PENDING |
-| 81 | Sjahrial Law | Jakarta Pusat | Korporasi, Komersial | 35+ | sjahriallaw.com | contact@sjahriallaw.com | PENDING |
+| 63 | Nugraha Law Office | Jakarta Timur | Pemerintahan, Administrasi | 22+ | nugralaw.com | info@nugralaw.com | OUTREACH_READY |
+| 64 | Oki & Partners | Jakarta Pusat | Keuangan, Perbankan | 30+ | oklaw.co.id | contact@oklaw.co.id | OUTREACH_READY |
+| 65 | Olivia Law | Jakarta Selatan | IP, Teknologi | 20+ | olivalaw.com | info@olivalaw.com | OUTREACH_READY |
+| 66 | Panjaitan Law | Jakarta Utara | Kelautan, Sumber Daya Alam | 20+ | panjaitanlaw.com | info@panjaitanlaw.com | OUTREACH_READY |
+| 67 | Prasetyo Law Firm | Jakarta Pusat | Arbitrase, Internasional | 35+ | prasetyolaw.com | contact@prasetyolaw.com | OUTREACH_READY |
+| 68 | Priyono & Co | Jakarta Selatan | Real Estate, Properti | 25+ | priyonolaw.com | info@priyonolaw.com | OUTREACH_READY |
+| 69 | Putra Law Office | Jakarta Barat | Keluarga, Waris | 15+ | putralaw.com | info@putralaw.com | OUTREACH_READY |
+| 70 | Rachmat Law | Jakarta Pusat | Korporasi, M&A | 45+ | rachmatlaw.com | contact@rachmatlaw.com | OUTREACH_READY |
+| 71 | Rinaldi Law Firm | Jakarta Selatan | Startup, Teknologi | 28+ | rinlaw.co.id | info@rinlaw.co.id | OUTREACH_READY |
+| 72 | Riyadi & Partners | Jakarta Pusat | Tax, Korporasi | 35+ | riyadilaw.com | info@riyadilaw.com | OUTREACH_READY |
+| 73 | Rosidi Law | Jakarta Selatan | Perburuhan, Ketenagakerjaan | 20+ | rosilaw.com | contact@rosilaw.com | OUTREACH_READY |
+| 74 | Rudy Law Office | Jakarta Timur | Litigasi Umum | 18+ | rudylaw.com | info@rudylaw.com | OUTREACH_READY |
+| 75 | Rusli Law Firm | Jakarta Pusat | Keuangan, Perbankan | 30+ | ruslilaw.com | contact@ruslilaw.com | OUTREACH_READY |
+| 76 | Sari Law | Jakarta Selatan | IP, Merek Dagang | 20+ | sari-law.com | info@sari-law.com | OUTREACH_READY |
+| 77 | Setiawan Law | Jakarta Pusat | Pemerintahan, Administrasi | 25+ | setlaw.co.id | contact@setlaw.co.id | OUTREACH_READY |
+| 78 | Sihombing Law Office | Jakarta Utara | Kelautan, Sumber Daya Alam | 20+ | sihombinglaw.com | info@sihombinglaw.com | OUTREACH_READY |
+| 79 | Simanjuntak & Partners | Jakarta Pusat | Arbitrase, Litigation | 40+ | simanjuntaklaw.com | contact@simanjuntaklaw.com | OUTREACH_READY |
+| 80 | Siti Aisyah Law Firm | Jakarta Selatan | Keluarga, Waris | 17+ | sitiaisyahlaw.com | info@sitiaisyahlaw.com | OUTREACH_READY |
+| 81 | Sjahrial Law | Jakarta Pusat | Korporasi, Komersial | 35+ | sjahriallaw.com | contact@sjahriallaw.com | OUTREACH_READY |
 | 82 | Slamet Law Firm | Jakarta Timur | Litigasi Pidana | 20+ | slametlaw.com | info@slametlaw.com | PENDING |
 | 83 | Soeharto Law | Jakarta Selatan | Real Estate, Properti | 28+ | soehartolaw.com | contact@soehartolaw.com | PENDING |
 | 84 | Sugianto Law Office | Jakarta Barat | Perburuhan, Ketenagakerjaan | 18+ | sugianlaw.com | info@sugianlaw.com | PENDING |

@@ -1,7 +1,7 @@
 {
   "catalog_version": "1.0.0",
-  "catalog_id": "governance-catalog:4959a83a18d04f28",
-  "catalog_digest": "4959a83a18d04f28bbccb37d4cac825bbaac01be2fc2f1ac0c044433c0862c5b",
+  "catalog_id": "governance-catalog:a9284f11dbfcd3c2",
+  "catalog_digest": "a9284f11dbfcd3c228522dc887ca9a512208d7a62b1915c8d9055ab0bbb01751",
   "evidence_types": [
     {
       "type_id": "evidence-type:law-result-evidence-artifact",
@@ -241,17 +241,17 @@
     }
   ],
   "supporting_digests": {
-    "law_results_digest": "b4af5462cc01133d767945fcee9b5b159979b3fd282869dfed4dec351759eccf",
-    "evidence_packages_digest": "a1ddc5ef2b676b5348c6d988bb0d7bb8b2256e49a84cea99b3528a42d6aa9712",
-    "law_certificates_digest": "27f214ab3eca9caff87ed1e02bec70cd95044987beaf4c2c78a4e9a870069621",
-    "law_proofs_digest": "fa5b354dcc9c729e7cb899d908daf5cf934a9430a66df8cff18998c6fcf4c88a",
-    "claims_digest": "b54a66476fbf88e4207c392f70689bd9dbe15237d78e5ed262345f8ef9778c5f",
-    "constitution_summary_digest": "e54eef2309990c8f67248651c5dcf0175a64680f01c15aecbd39179454a57ddf",
-    "proof_bundle_digest": "2f9cdceb221891184a7488a49b8cfc5bb34c807acb5b339b5ad9ddff5320a42e",
-    "governance_session_digest": "a8b570e4c753419a6e324c50abd093353a83e76f924b0634d275e4ebb60198ef",
-    "governance_session_verification_digest": "faeb3086bcad80875b438aa98b6bed6ac59c86fc1b1cf004015238c0848d4871",
-    "verification_run_digest": "e3fa3bedd684618d9d3c64b810568120dece10c5d96ac0dd8568a35641ce967b",
-    "verification_run_verification_digest": "bec2405f61e4bd952e1170fa4015da6082b81ac65d8ba8d3ca12921731bf281c"
+    "law_results_digest": "8369acebe3dfc4040780c7dc46bb34350e61467b07d1e4e1a6b32ba841cc3757",
+    "evidence_packages_digest": "60f62edb49b66de97dd7684ad3e2410cbb41fe45f786350c2f81d9e2e467e9cb",
+    "law_certificates_digest": "02ac6fc09dec20afead8f0938c1ca9aedb4eac95cd67b246183e239893dffa85",
+    "law_proofs_digest": "21c27804b772bc8132178a3bf8483c0983f7122f78be154e6bbd13eedca24713",
+    "claims_digest": "995f1509b5daf6a47240d1b493deea3d06a9a9b2e23f95b8df568d705196aec0",
+    "constitution_summary_digest": "92614f877c9f719cf66f74b16cea10e94e99ef06c22c51ed9b528e4fdf43754e",
+    "proof_bundle_digest": "f8e6adc8922f987b95b45756e58c85935e0e366bf4b3c34dfab58039108b05d1",
+    "governance_session_digest": "f7bdbdd2174ecc70abf8a2918d8dad9a6e076f075aeeaed6337c88112ab62135",
+    "governance_session_verification_digest": "67c26f3b63a5612417d469917ce839cade32896c5c0b97c407dcb083c3cdac01",
+    "verification_run_digest": "a33d5655bd06b02965486b54020ac9d6315096960187bdc356ed78552295d430",
+    "verification_run_verification_digest": "4c8016664c4ccd9eccdef5835d3de204a4d1ee81b0375001abeae3757b488216"
   },
   "claim_boundary": "Governance catalog is the semantic registry for core governance vocabulary. It freezes canonical type identities for laws, evidence packages, certificates, policies, read models, and reports so the platform can evolve without naming drift."
 }

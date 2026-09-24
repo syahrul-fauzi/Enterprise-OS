@@ -3,15 +3,17 @@ manifest_ref: workspace/capabilities/governance-evidence/definition/capability.y
 manifest_version: 1.0.0
 capability_version: 0.1.0
 stability: stable
-lifecycle_stage: experimental
+lifecycle_stage: core
 governance_status: VALID
-owner: null
-owner_requirement_status: OPTIONAL
+owner: governance-domain
+owner_requirement_status: REQUIRED_PRESENT
 runtime_ref: workspace/capabilities/governance-evidence/implementation/service.ts
 planner_ref: null
 composer_ref: null
 verification_ref: null
 declared_exports:
+  - DeliveryDecisionGatewayService
+  - GovernanceDecisionRecord
   - GovernanceEvidenceArtifactCatalog
   - GovernanceEvidenceArtifactKind
   - GovernanceEvidenceProvider

@@ -32,4 +32,4 @@ capability:
   evidence_required:
     - production_usage
     - cross_product_uniformity
-stability: active
+stability: experimental

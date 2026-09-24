@@ -1,56 +1,57 @@
 {
-  "registry_health": "BLOCKED",
-  "artifact_coverage_ratio": 0.8947,
-  "owner_coverage_ratio": 0.0625,
-  "reachability_ratio": 0.8125,
+  "registry_health": "PARTIAL",
+  "artifact_coverage_ratio": 0.88,
+  "owner_coverage_ratio": 0.8636,
+  "reachability_ratio": 0.8636,
   "graph_integrity_status": "PARTIAL",
   "dependency_cycles": 0,
   "dangling_references": [],
   "orphan_artifacts": [
-    "capability:agent-orchestration",
-    "capability:connector-ecosystem",
-    "capability:observability",
-    "capability:security-hardening"
+    "capability:Work Inspection Agent",
+    "capability:atomic-composition"
   ],
   "orphan_capability_classification": [
     {
-      "capability_id": "agent-orchestration",
+      "capability_id": "atomic-composition",
       "classification": "ACTIVE_WAITING_COMPOSITION",
-      "reason": "Capability is referenced by product runtime/tests (lawyershub) but not yet declared in composition graph."
+      "reason": "Capability is referenced by product runtime/tests (api, web) but not yet declared in composition graph."
     },
     {
-      "capability_id": "connector-ecosystem",
-      "classification": "ACTIVE_WAITING_COMPOSITION",
-      "reason": "Capability is referenced by product runtime/tests (lawyershub) but not yet declared in composition graph."
-    },
-    {
-      "capability_id": "observability",
-      "classification": "ACTIVE_WAITING_COMPOSITION",
-      "reason": "Capability is referenced by product runtime/tests (lawyershub) but not yet declared in composition graph."
-    },
-    {
-      "capability_id": "security-hardening",
-      "classification": "ACTIVE_WAITING_COMPOSITION",
-      "reason": "Capability is referenced by product runtime/tests (lawyershub) but not yet declared in composition graph."
+      "capability_id": "Work Inspection Agent",
+      "classification": "PLANNED",
+      "reason": "Capability has implementation artifacts but no observed product reachability or composition edge."
     }
   ],
   "dead_capabilities": [
-    "governance-evidence",
-    "governance-read-model",
+    "Work Inspection Agent",
+    "api-platform",
     "trust-framework"
   ],
   "unused_capabilities": [
+    "Work Inspection Agent",
     "agent-orchestration",
-    "api-platform",
-    "connector-ecosystem",
+    "atomic-composition",
+    "communication",
+    "consultation",
     "observability",
-    "security-hardening"
+    "services-id"
   ],
   "unreachable_capabilities": [
-    "governance-evidence",
-    "governance-read-model",
+    "Work Inspection Agent",
+    "api-platform",
     "trust-framework"
   ],
-  "duplicate_signatures": [],
+  "duplicate_signatures": [
+    {
+      "left": "legal-case",
+      "right": "services-id",
+      "similarity": 0.6923
+    },
+    {
+      "left": "service-directory",
+      "right": "services-id",
+      "similarity": 0.5
+    }
+  ],
   "claim_boundary": "Graph health currently covers product and capability manifests, including declared capability dependency edges, plus direct runtime/test reachability from product code. Workflow, policy, integration, and surface artifacts are not yet ingested as first-class nodes."
 }

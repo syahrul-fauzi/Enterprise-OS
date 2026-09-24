@@ -1,0 +1,19 @@
+capability_id: communication
+manifest_ref: workspace/capabilities/communication/definition/capability.yaml
+manifest_version: 1.0.0
+capability_version: 0.1.0
+stability: stable
+lifecycle_stage: core
+governance_status: VALID
+owner: integration-domain
+owner_requirement_status: REQUIRED_PRESENT
+runtime_ref: workspace/capabilities/communication/implementation/service.ts
+planner_ref: null
+composer_ref: null
+verification_ref: workspace/capabilities/communication/tests
+declared_exports:
+  - CommunicationProvider
+artifact_boundary: Capability manifest projection freezes the capability
+  identity, ownership, lifecycle, and implementation entrypoints as
+  governance-readable evidence without changing the canonical capability
+  manifest.

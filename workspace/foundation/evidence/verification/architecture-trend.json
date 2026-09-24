@@ -1,25 +1,25 @@
 {
-  "projection_id": "TrendProjection:6d4f182c851f5db9",
+  "projection_id": "TrendProjection:91f2418fd774857b",
   "projection_type": "TrendProjection",
   "schema_version": "1.0.0",
-  "projection_digest": "6d4f182c851f5db915525ad745ad09a14f0160526345df38ea528f3b1ce9a073",
+  "projection_digest": "91f2418fd774857b86c5cb031aba03901eec05b56678f93c0274f6730a9529d4",
   "generated_from": [
+    {
+      "source_type": "foundation_metrics",
+      "source_ref": "epoch-048",
+      "source_digest": "58a4344ea27581ae380633821aed2683fa1698b31af0c0310f0e4b5eeecc9a95"
+    },
     {
       "source_type": "foundation_metrics",
       "source_ref": "epoch-047",
       "source_digest": "ff3ff25019cfca8c16028842a59fbb2b7e505f8578ab704168126fb047986e5c"
-    },
-    {
-      "source_type": "foundation_metrics",
-      "source_ref": "epoch-046",
-      "source_digest": "236469f669106caeea2c1541ca17e0bc39de71478dcdc403c683078471427bc5"
     }
   ],
-  "generated_at_utc": "2026-08-05T04:29:06.741Z",
-  "trend_status": "REGRESSING",
-  "latest_epoch": "epoch-047",
-  "previous_epoch": "epoch-046",
-  "total_epochs": 47,
+  "generated_at_utc": "2026-09-24T13:26:12.858Z",
+  "trend_status": "IMPROVING",
+  "latest_epoch": "epoch-048",
+  "previous_epoch": "epoch-047",
+  "total_epochs": 48,
   "snapshots": [
     {
       "epoch": "epoch-001",
@@ -2160,6 +2160,66 @@
           "lawyershub:fdd19e71531bf9f67da663583167c70644a0b24c0d8aa8878a3dd85818c71114:VERIFIED"
         ]
       }
+    },
+    {
+      "epoch": "epoch-048",
+      "recorded_at_utc": "2026-09-24T11:20:02.138Z",
+      "snapshot_hash": "58a4344ea27581ae380633821aed2683fa1698b31af0c0310f0e4b5eeecc9a95",
+      "metrics": {
+        "foundation_status": "UNVERIFIED_BASELINE",
+        "verified_products": 0,
+        "declared_products": 3,
+        "owner_coverage_ratio": 0.8636,
+        "reachability_ratio": 0.8636,
+        "orphan_artifacts": 2,
+        "documentation_only_specs": 19,
+        "weighted_clr_normalized": 1,
+        "total_artifacts": 25,
+        "observed_capabilities": 13,
+        "verified_capabilities": 13,
+        "reproducible_capabilities": 8,
+        "products_with_execution_plan": 1,
+        "total_chain_invocations": 83,
+        "unique_chain_digests": 32,
+        "chains_with_requirement": 5,
+        "reproducible_chains": 13,
+        "stable_chains": 13,
+        "chain_projection_digest": "3fc68bb4491b9b7025f27029dbd680b269a63c13ab9423daf8ee2a660c5a12f7",
+        "chain_status_fingerprints": [
+          "lawyershub:05ca0fe2bf38b46f7bf98d895178cd86ff44cb84b098fbc12fc7279ca29bcaad:VERIFIED",
+          "lawyershub:0b5d5c82050535278a2c617d18f75497904328e8700fe96a74ee2824c726af4d:REPRODUCIBLE",
+          "lawyershub:0dc1867df8694120361e934e6b1e85a8ce05511a432ef2ca4a3aa52421b2c3d5:REPRODUCIBLE",
+          "lawyershub:200e216e798ad502cab1d692548690b27ca8c35c40d216958f8121cbc781314a:REPRODUCIBLE",
+          "lawyershub:291128b72342f7531e0d6da28663efd7b85fd3fc4b93d339124a1f5ee972d139:VERIFIED",
+          "lawyershub:2dcfd6c91d23d930dbb1aec907f666aae2d1bfa97b09290c8e9cfd5f540b1038:VERIFIED",
+          "lawyershub:38485732e63823f2ba25ca99805b931f6cec1645c2e7e4d34e74c7dda3231933:VERIFIED",
+          "lawyershub:3bec47bae230533101fb8d91d5a1762e6553070d03af188ebca9b880ad507125:REPRODUCIBLE",
+          "lawyershub:4dc3524477464c6432066ca8ea6762051cc868ad41d0272b5001c5dff32914dc:REPRODUCIBLE",
+          "lawyershub:52548272e5e8dd8f93ceb4c5631b14947cca73bef5e7b4bdbeff5fff9526f6b5:VERIFIED",
+          "lawyershub:53554b64429d064fc938eafa9af6fe7f35e298df4ec9a018c4125aadcf10cdfd:REPRODUCIBLE",
+          "lawyershub:54673fcdea0e9f2d3573faeaf475754413ef5a697f3db75823ec49e26177633a:REPRODUCIBLE",
+          "lawyershub:5d05dca327636a9b774f75897121d636742895aaa46a27357e1331cb48748471:VERIFIED",
+          "lawyershub:604005600305e24a8c9e62f0b9d9122859b6b0f3f4c6c7962628f6ba2d4a55ad:VERIFIED",
+          "lawyershub:6eef497f1b4c0dfcd53e01e3f54b126d4c8f088b9c7c1db301432d1747c565fa:REPRODUCIBLE",
+          "lawyershub:796980ed575e0dd8a1bcc02840d6a75a73464cfa621fa5ca84a34c327c34c56d:VERIFIED",
+          "lawyershub:7d65d2ddf4b8d6b0b6056ad427029a873d3c2c7fb9fb17ebba7f13ebcb75305f:REPRODUCIBLE",
+          "lawyershub:9151cbf309badfa1c51a18552e2f8bfac202ebfcdc036d033e18e3dade0fa360:VERIFIED",
+          "lawyershub:940660eec0b4d607014c3bbedda7dcf5cc870af9127511c8ae71e60626dba3af:VERIFIED",
+          "lawyershub:a04dd21099897ea873bd1d7f00f7822bf936959aa2385c51844d8e6e146c69c2:REPRODUCIBLE",
+          "lawyershub:a3faacb4c9c59b66d03772319b7e372aff4bd736a088c7b9f9707e5074961e38:VERIFIED",
+          "lawyershub:a7bd4da27ec99bcd7c511d93e4564229e6da57909a674e29faa237eb6dac6b4d:VERIFIED",
+          "lawyershub:b00970770ba0709ac01cebd84011cf01a5f46e54b626cb5360aff275de8551c0:VERIFIED",
+          "lawyershub:bb7621f705cd2db7a9a4a9ac3d885ccbeb0ede2abace0c9ccbdabf2dcd1a3cb8:REPRODUCIBLE",
+          "lawyershub:c310a8f6517c28dfdf97ae1f373e1e97f8303e27f3c5ae90bfda3e4f40347fed:VERIFIED",
+          "lawyershub:d16f9af11f917bd79c669fbda4de670adfc9bb9a272daeb64d22ff69fc4c29ba:REPRODUCIBLE",
+          "lawyershub:dc617cf3b0bbc6b0bd4bde2b76aea44a323f790b7eaf1f4bc1763150b10098b8:REPRODUCIBLE",
+          "lawyershub:ddaf8a39a938d25692a43c4d80f149f4a24f202e106a3bcbc38103bfeb5ff427:VERIFIED",
+          "lawyershub:e110ae74a228f37b32c030fc540fab1675dc9e2f0aea1702cc436ad62e31d6f1:VERIFIED",
+          "lawyershub:e3b64c79ac54cf0fca05d9732423780f243ff631c34f967f0ab1c5bf086427e9:VERIFIED",
+          "lawyershub:e75c85d8f1fdb35bd3a4bddc8cd465878539dfdfd31905f117e66a45ce7301f6:VERIFIED",
+          "lawyershub:fdd19e71531bf9f67da663583167c70644a0b24c0d8aa8878a3dd85818c71114:VERIFIED"
+        ]
+      }
     }
   ],
   "chain_delta": {
@@ -2171,9 +2231,11 @@
     "reproduced": 13,
     "regressed": 0
   },
-  "improvements": [],
-  "regressions": [
-    "verified_products regressed"
+  "improvements": [
+    "owner_coverage_ratio improved",
+    "reachability_ratio improved",
+    "orphan_artifacts reduced"
   ],
+  "regressions": [],
   "claim_boundary": "Architecture trend now tracks longitudinal foundation metrics plus stable execution-chain fingerprints and chain delta counts. Substrate LOC delta and full temporal proof-graph lineage are not yet included."
 }
