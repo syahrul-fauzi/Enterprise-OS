@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "@repo/presentation-experience": "workspace:*",
-    "@repo/presentation-entities": "workspace:*"
+    "@repo/presentation-entities": "workspace:*",
+    "@repo/presentation-ui-system": "workspace:*"
   },
   "devDependencies": {
     "@repo/config-eslint": "workspace:*",

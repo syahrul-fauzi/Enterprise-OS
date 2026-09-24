@@ -26,7 +26,8 @@ export function useWorkListController({ workspaceId }: UseWorkListControllerProp
         throw new Error('Failed to fetch work list from API');
       }
       const data = await response.json();
-      setWorkList(data);
+      // Pastikan data dari API selalu array sebelum diset ke state
+      setWorkList(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("[WorkListController] Failed to fetch works:", error);
       setHasError(true);
@@ -42,7 +43,9 @@ export function useWorkListController({ workspaceId }: UseWorkListControllerProp
   }, [fetchWorkList]);
 
   const sortedWorkList = useMemo(() => {
-    const sorted = [...workList];
+    // Guard clause: pastikan workList selalu iterable array
+    const safeWorkList = Array.isArray(workList) ? workList : [];
+    const sorted = [...safeWorkList];
     switch (sortOrder) {
       case "oldest":
         sorted.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());

@@ -9,7 +9,7 @@ export {
   Select,
 } from "./atoms/index";
 export type { CardProps, CardSize, ButtonProps, ButtonIntent, ButtonVariant, ButtonSize, InputProps, TextAreaProps, SelectProps } from "./atoms/index";
-export { BaseSearchBar, CommunitySearchBar, ResearchSearchBar, WorkRealityLoading, Breadcrumb, EmptyState, ErrorState, PermissionDenied, Pagination, WorkItemCard, WorkList } from "./molecules/index";
+export { BaseSearchBar, CommunitySearchBar, ResearchSearchBar, WorkRealityLoading, Breadcrumb, EmptyState, ErrorState, PermissionDenied, Pagination, WorkItemCard, WorkList, DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "./molecules/index";
 export * from "./components/index";
 export { ErrorBoundary } from "./components/feedback/ErrorBoundary";
 export type { BreadcrumbProps, BreadcrumbItem, EmptyStateProps, ErrorStateProps, PermissionDeniedProps, PaginationProps, WorkRealityLoadingProps, WorkItemCardProps } from "./molecules/index";

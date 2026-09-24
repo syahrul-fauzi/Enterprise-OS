@@ -6,9 +6,11 @@
 import { randomUUID } from "crypto";
 import type { IntentResolutionRequirement } from "../contracts/universal-intent.contracts";
 // Import type (untuk type annotation) dan value (fungsi constructor) dengan alias yang benar
-// ALL core types now centralized in @repo/core-kernel (ONE EOS REALITY compliance)
-import { WorkId, ActionId, EffectId, AttemptId, ObservationId, EvidenceId } from "@repo/core-kernel";
-import type { WorkId as WorkIdType, ActionId as ActionIdType, EffectId as EffectIdType, AttemptId as AttemptIdType, ObservationId as ObservationIdType, EvidenceId as EvidenceIdType } from "@repo/core-kernel";
+// FIXED: Direct import sesuai server-only boundary @repo/core-kernel (ONE EOS REALITY compliance)
+import { WorkId } from "../../../identity/implementation/contracts/identity.contracts";
+import type { WorkId as WorkIdType } from "../../../identity/implementation/contracts/identity.contracts";
+import { ActionId, EffectId, AttemptId, ObservationId, EvidenceId } from "../contracts/execution-requirements.contracts";
+import type { ActionId as ActionIdType, EffectId as EffectIdType, AttemptId as AttemptIdType, ObservationId as ObservationIdType, EvidenceId as EvidenceIdType } from "../contracts/execution-requirements.contracts";
 import { z } from "zod";
 import { 
   ExecutionRequirement, 
@@ -928,7 +930,7 @@ const registerDefaultCapabilities = () => {
           name: "Legal Document Preparation",
           description: "Preparation of legal documents required for business entity registration in Indonesia",
           providerTypes: ["system", "ai", "human"],
-          domainRestrictions: ["legal-business", "document-management"],
+          domainRestrictions: ["legal-business", "document-management", "commercial-trademark"],
           requiredAuthorizations: ["legal-documentation-access", "workspace-write"],
           riskLevel: "medium",
           severity: "MEDIUM",
@@ -1185,8 +1187,35 @@ const registerDefaultCapabilities = () => {
     authorityLevel: 3,
     costPerExecution: 0.0,
     severity: "LOW",
+  });
+
+  // EJ006-W03: Midtrans Payment Processing Capability (menggunakan existing pattern)
+  globalRegistry.registerCapability({
+    id: "payment-processing",
+    name: "Payment Gateway Processing",
+    description: "Process payment transactions via Midtrans gateway for commercial integrations",
+    providerTypes: ["system", "ai"],
+    domainRestrictions: ["commercial-integration", "payment-gateway"],
+    requiredAuthorizations: ["payment-gateway-access", "workspace-write"],
+    riskLevel: "medium",
+    severity: "MEDIUM",
+    isAvailable: async () => !!process.env.MIDTRANS_SERVER_KEY
+  });
+
+  // Register provider untuk payment-processing capability
+  globalRegistry.registerProvider({
+    id: "midtrans-payment-provider",
+    capabilityId: "payment-processing",
+    name: "Midtrans Payment Gateway Provider",
+    description: "System provider untuk memproses transaksi payment via Midtrans API",
+    providerType: "system",
+    availabilityScore: 0.99,
+    authorizations: ["payment-gateway-api-access", "workspace-write", "transaction-logging"],
+    authorityLevel: 7,
+    costPerExecution: 0.5,
+    severity: "MEDIUM",
     canHandle: async () => true,
-    isAvailable: async () => true,
+    isAvailable: async () => !!process.env.MIDTRANS_SERVER_KEY,
     execute: async () => ({ success: true })
   });
 

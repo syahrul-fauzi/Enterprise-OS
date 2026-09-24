@@ -1,17 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { Button, Card, Input } from "@repo/presentation-ui-system";
 
 export function EnterForm() {
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [touched, setTouched] = useState({ email: false, password: false });
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null; // Hindari hydration mismatch dengan tidak merender apapun sampai client ter-mount
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,24 +59,7 @@ export function EnterForm() {
   };
 
   return (
-    <Card
-      footer={
-        <div className="text-center">
-          <p className="text-sm text-text-secondary">
-            Don't have an account?{" "}
-            <a 
-              href="/signup" 
-              className="font-medium text-status-info hover:text-status-info/80 focus:outline-none focus:ring-2 focus:ring-status-info focus:ring-offset-2 rounded transition-colors"
-            >
-              Sign up for free
-            </a>
-          </p>
-          <p className="mt-2 text-xs text-text-muted">
-            Demo credentials: alice@eos.dev / DemoPass123!
-          </p>
-        </div>
-      }
-    >
+    <>
       <form className="space-y-6" onSubmit={handleSubmit}>
         {/* P2: error states with proper accessibility */}
         {error && (
@@ -127,6 +119,21 @@ export function EnterForm() {
           ) : "Sign in to EOS"}
         </Button>
       </form>
-    </Card>
+      {/* Footer section moved outside Card to work with new glassmorphism template */}
+      <div className="mt-6 text-center border-t border-slate-700/50 pt-6">
+        <p className="text-sm text-slate-400">
+          Don't have an account?{" "}
+          <a 
+            href="/signup" 
+            className="font-medium text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded transition-colors"
+          >
+            Sign up for free
+          </a>
+        </p>
+        <p className="mt-3 text-xs text-slate-500">
+          Demo credentials: alice@eos.dev / DemoPass123!
+        </p>
+      </div>
+    </>
   );
 }

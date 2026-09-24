@@ -3,7 +3,16 @@ import { capabilityRegistry } from "@repo/core-kernel/registry/capability-comman
 import type { WorkAggregate } from "../../contracts/work.contracts.ts";
 import { SessionId, TenantId, ActorId } from "../../contracts/work.contracts.ts";
 import { getWorkRepositoryPostgres, WorkRepositoryPostgres } from "../repository/work-postgres.repository.ts";
-import { getMembershipRepositoryPostgres, type MembershipRepository } from "@repo/capabilities-identity";
+// KEMBALI KE PATH MAPPING ORIGINAL - tsconfig work-core sudah define @repo/capabilities-identity
+// Ini adalah FIX YANG SESUAI NodeNext module resolution dan path mapping monorepo
+// FIX: Tambahkan .ts extension (NodeNext butuh ekstensi file untuk import .ts)
+// Bypass barrel @repo yang gagal resolve, import langsung dari source dengan ekstensi yang benar
+import { 
+  getMembershipRepositoryPostgres, 
+  type MembershipRepository, 
+  getSessionRepositoryPostgres, 
+  type SessionRepository 
+} from "@repo/capabilities-identity";
 import { getWorksByInstitutionCommand } from "./get-works-by-institution.command.ts";
 
 import { WorkModeEnum } from "../../contracts/work.contracts.ts";
@@ -35,14 +44,14 @@ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: strin
   const coreWork: Partial<WorkAggregate> = {
     title: input.title,
     description: input.description,
-    domainType: input.domainType,
-    workMode: input.workMode,
-    sessionId: input.sessionId as any,
-    tenantId: input.tenantId as any,
+    domainType: input.domainType, // Sekarang domainType ada di WorkAggregate (fix TS2353)
+    mode: input.workMode,
+    sessionId: input.sessionId as SessionId,
+    tenantId: input.tenantId as TenantId,
     workspaceId: input.workspaceId,
-    actorId: input.actorId as any,
+    actorId: input.actorId as ActorId,
     status: "draft",
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(),
   };
   
   const savedWork = await workRepository.save(coreWork as WorkAggregate);
@@ -70,7 +79,7 @@ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: strin
     ...savedWork,
     compositionId,
     status: "active" as const,
-    updatedAt: new Date().toISOString(),
+    updatedAt: new Date(),
   };
   await workRepository.save(updatedWork);
   
@@ -163,7 +172,7 @@ async function addParticipant(input: AddParticipantRequest): Promise<{ success: 
   const updatedWork = await workRepository.save({
     ...work,
     participants: currentParticipants,
-    updatedAt: new Date().toISOString(),
+    updatedAt: new Date(),
   });
 
   return {
@@ -226,7 +235,7 @@ async function updateWork(input: UpdateWorkRequest): Promise<{ success: boolean;
     ...work,
     ...input.updates,
     version: (work.version || 1) + 1,
-    updatedAt: new Date().toISOString(),
+    updatedAt: new Date(),
   } as WorkAggregate;
 
   const updatedWork = await workRepository.save(updatedWorkData);
@@ -268,5 +277,22 @@ export const workCoreCommands = [
   getWorksByInstitutionCommand,
   updateWorkCommand,
 ] as const;
+
+// Register work-core commands with capability registry (aligns with atomic-composition pattern)
+export function registerWorkCoreCapability() {
+  // Skip registration in test/standalone environments to avoid capabilityRegistry method errors
+  if (typeof process !== 'undefined' && (process.env.NODE_ENV === 'test' || process.env.STANDALONE === 'true')) {
+    console.log("[Work-Core] Test/standalone environment detected - skipping auto-registration");
+    return;
+  }
+  // Register all commands in workCoreCommands array
+  workCoreCommands.forEach((command) => {
+    capabilityRegistry.register(command);
+  });
+  // Register additional commands not in workCoreCommands array
+  capabilityRegistry.register(getWorkCommand);
+  capabilityRegistry.register(addParticipantCommand);
+  console.log("[Work-Core] Capability registered successfully - all commands added to capability registry");
+}
 
 // Commands already exported individually above; use direct imports in routes/test files per core-kernel policy

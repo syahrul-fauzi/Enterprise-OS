@@ -1,18 +1,23 @@
 {
-  "extends": "@repo/config-typescript/base.json",
   "compilerOptions": {
-    "rootDir": "../../../",
-    "outDir": "dist",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "strict": true,
     "strictNullChecks": true,
     "declaration": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "types": ["node"],
     "baseUrl": "./",
     "paths": {
       "@repo/core-capability-registry": ["../../packages/core/capability-registry/dist/src/index.js"]
     }
   },
-  "include": ["src"],
+  "include": ["src/**/*"],
   "exclude": ["dist", "build", "node_modules"]
 }

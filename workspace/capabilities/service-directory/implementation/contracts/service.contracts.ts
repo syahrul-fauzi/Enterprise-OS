@@ -16,7 +16,9 @@ export type ServiceProviderCategory =
   | "Cybersecurity"
   | "Software Development"
   | "Managed Services"
-  | "Data & Analytics";
+  | "Data & Analytics"
+  | "Payment Processing"
+  | "Trademark Registration";
 
 export type ServiceProviderId = string & { readonly __serviceProviderId: unique symbol };
 

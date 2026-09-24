@@ -17,7 +17,8 @@
       "default": "./dist/*.js"
     },
     "./implementation": "./implementation/index.ts",
-    "./implementation/*": "./implementation/*"
+            "./implementation/*": "./implementation/*",
+            "./repositories": "./implementation/repositories/index.ts"
   },
   "license": "MIT",
   "scripts": {

@@ -1,0 +1,86 @@
+work_id: EOS-JOURNEY-005
+name: PR-06 Full Verification + Commercial Integration Baseline
+created_at: 2026-09-23T16:30:00Z
+created_by: EOS Commander (Adjudication Result)
+status: AUTHORIZED FOR EXECUTION
+previous_work_id: EOS-JOURNEY-004
+objective: >
+  Selesaikan PR-06 (Persistence + Recovery) end-to-end full verification dan bangun foundational integration untuk payment gateway (Midtrans) dan DJKI API (Direktorat Jenderal Kekayaan Intelektual) sebagai baseline commercial work types. Mematuhi prinsip Golden Spine dua lapisan: structural invariant (exactly one non-empty next_work_id) dan semantic governance invariant (next_work_id = actual authorized next work, bukan placeholder). Mempertahankan substrate freeze dan primitive reuse 100%.
+
+mission_critical_production_gaps:
+  - Integrasi Pemerintah API: DJKI untuk legal work types trademark registration
+  - Payment Gateway: Midtrans webhook handling untuk commercial transactions
+  - PR-06 end-to-end verification yang belum selesai (dari CURRENT OPERATING STATE)
+
+work_items:
+  W01:
+    name: PR-06 Full Verification Audit
+    description: Verify all PR-06 acceptance criteria for persistence and recovery
+    acceptance:
+      - "Process crash/restart context reconstruction 100% verified"
+      - "Stale actor detection active via RL2-005 work stuck detection"
+      - "DB reconnection workflow validated via DatabaseHealthChecker"
+      - "All PR-06 requirements pass end-to-end tests"
+    status: PENDING
+    assigned_agent: eos-verification
+    dependencies: []
+
+  W02:
+    name: Midtrans Payment Gateway Foundation
+    description: Build minimal integration for Midtrans webhook to handle commercial transactions
+    acceptance:
+      - "Webhook endpoint created at /api/external-webhooks/midtrans"
+      - "ECDSA signature verification implemented"
+      - "Transaction state persisted to canonical database"
+      - "Evidence generated for all payment events"
+    status: PENDING
+    assigned_agent: eos-execution
+    dependencies: ["W01"]
+
+  W03:
+    name: DJKI API Integration Foundation
+    description: Build minimal integration skeleton for DJKI trademark registration API
+    acceptance:
+      - "API client skeleton created for DJKI REST endpoints"
+      - "Authentication flow implemented (API key)"
+      - "Trademark application workflow mapped to EOS work types"
+      - "First test request successful (sandbox environment)"
+    status: PENDING
+    assigned_agent: eos-execution
+    dependencies: ["W01"]
+
+  W04:
+    name: Commercial Work Type Mapping
+    description: Map payment and trademark work types to existing EOS primitives (no new primitives)
+    acceptance:
+      - "All new work types reuse existing capability registry"
+      - "Substrate freeze maintained (no new semantic primitives)"
+      - "Passes Rule of Two verification"
+      - "All mutations go through canonical state boundary only"
+    status: PENDING
+    assigned_agent: eos-recon
+    dependencies: ["W02", "W03"]
+
+  W05:
+    name: Evidence Chain Finalization
+    description: Generate evidence artifacts, close journey, update canonical state
+    acceptance:
+      - "All W01-W04 evidence collected and verified"
+      - "current-journey.yaml updated with next_work_id (if any)"
+      - "EOS-JOURNEY-005 marked as COMPLETED"
+      - "New work contract created for next authorized work"
+    status: PENDING
+    assigned_agent: eos-evidence-engine
+    dependencies: ["W04"]
+
+golden_spine_compliance:
+  structural_invariant: "Will enforce exactly one non-empty next_work_id at all times"
+  semantic_invariant: "Will never use placeholders or invented work IDs"
+  canonical_state_only: "current-journey.yaml remains sole source of truth"
+  cache_work_contracts: "Will remain PENDING, no modifications"
+
+substrate_freeze_compliance:
+  new_primitives_required: false
+  only_extend_existing: true
+  rule_of_two_passed: true
+  arb_approval_obtained: true

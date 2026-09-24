@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  turbopack: {
+    root: '/root/Enterprise-OS/workspace'
+  },
   async redirects() {
     return [
       {
@@ -35,7 +38,9 @@ const nextConfig = {
     "@repo/tooling-t001-standalone",
     "@repo/core-platform",
     "capabilities",
-    "products",
+    "@capabilities/identity",
+          "@capabilities/work-core",
+          "products",
   ],
   productionBrowserSourceMaps: false,
   typescript: {
@@ -43,7 +48,7 @@ const nextConfig = {
     // Dangerously allow production builds to successfully complete even if
     // your project has type errors.
     // !! WARN !!
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
 
   // Fix node: prefix import error - mark node built-ins as server-only external packages (Next.js 16+)

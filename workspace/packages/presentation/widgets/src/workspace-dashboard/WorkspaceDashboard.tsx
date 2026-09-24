@@ -191,10 +191,10 @@ export function WorkspaceDashboard({
           {state.status === "empty" && (
             <EmptyState
               title="Belum ada pekerjaan"
-              description="Mulailah dengan membuat pekerjaan pertama Anda. Semua kebutuhan yang ingin Anda selesaikan dapat dilacak dari awal hingga selesai di EOS."
+              description="Mulailah dengan membuat kebutuhan pertama Anda. Semua kebutuhan yang ingin Anda selesaikan dapat dilacak dari awal hingga selesai di EOS."
               icon="📋"
-              primaryActionLabel="Buat Pekerjaan Pertama"
-              onPrimaryAction={() => window.location.href = "/work/new"}
+              primaryActionLabel="Mulai Kebutuhan Pertama"
+              onPrimaryAction={() => window.location.href = "/enter"}
               className="py-16 border border-dashed border-slate-200 rounded-2xl"
             />
           )}

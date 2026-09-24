@@ -1,15 +1,15 @@
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
 import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "@repo/core-kernel";
-import { slugifyForTenant } from "../services/password.service.js";
+import { slugifyForTenant } from "../services/password.service.ts";
 import {
   UserId,
   TenantId,
   WorkspaceId,
   MembershipId,
   SessionId,
-} from "../contracts/identity.contracts.js";
-import { passwordService } from "../services/password.service.js";
+} from "../contracts/identity.contracts.ts";
+import { passwordService } from "../services/password.service.ts";
 import {
   getUserRepositoryPostgres,
   getTenantRepositoryPostgres,
@@ -22,7 +22,7 @@ import {
   TenantRepositoryInMemory,
   WorkspaceRepositoryInMemory,
   MembershipRepositoryInMemory,
-} from "../repositories/index.js";
+} from "../repositories/index.ts";
 
 const DEFAULT_SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 

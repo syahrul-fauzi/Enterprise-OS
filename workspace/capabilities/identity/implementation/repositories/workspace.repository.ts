@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository.js";
+import { PostgresRepository } from "./base.repository.ts";
 import {
   WorkspaceId,
   TenantId,

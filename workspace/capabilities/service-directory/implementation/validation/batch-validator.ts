@@ -8,6 +8,8 @@ const VALID_SERVICE_CATEGORIES: readonly ServiceProviderCategory[] = [
   "Software Development",
   "Managed Services",
   "Data & Analytics",
+  "Payment Processing",
+  "Trademark Registration",
 ];
 
 interface BatchValidationResult {

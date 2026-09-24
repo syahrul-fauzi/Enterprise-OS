@@ -29,9 +29,9 @@ import {
   startRequirementDelivery,
   updateRequirement,
   verifyRequirement,
-} from "../commands/index.js";
-import { getRequirement, searchRequirements } from "../queries/index.js";
-import { RequirementRepositoryCurrent } from "../repository/index.js";
+} from "../commands/index";
+import { getRequirement, searchRequirements } from "../queries/index";
+import { RequirementRepositoryCurrent } from "../repository/index";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 
 function digestCanonicalize(value: unknown): unknown {

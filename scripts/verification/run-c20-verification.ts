@@ -6,15 +6,15 @@
  * Falsification target: Jika B harus mengetahui internal private state A → Work belum menjadi substrate.
  */
 
-import { executionContext, ExecutionContext } from './workspace/packages/core/runtime/src/execution-context.js';
-import { recordObservedExecution, getTraceForDecision, verifyWorkIdCorrelation } from './workspace/packages/core/runtime/src/execution-observability.js';
-import { recordRuntimeInvocation } from './workspace/packages/core/runtime/src/invocation-evidence.js';
-import { CaseRepositoryInMemory, newCaseId } from './workspace/capabilities/legal-case/implementation/repository/case.repository.js';
-import { DocumentRepositoryInMemory, newDocumentId } from './workspace/capabilities/legal-document/implementation/repository/document.repository.js';
-import { RequirementRepositoryInMemory, newRequirementId } from './workspace/capabilities/requirement-management/implementation/repository/requirement.repository.js';
-import type { CreateCaseInput, CaseAggregate } from './workspace/capabilities/legal-case/implementation/contracts/case.contracts.js';
-import type { CreateDocumentInput, DocumentAggregate } from './workspace/capabilities/legal-document/implementation/contracts/document.contracts.js';
-import type { CreateRequirementInput, RequirementAggregate } from './workspace/capabilities/requirement-management/implementation/contracts/requirement.contracts.js';
+import { executionContext, ExecutionContext } from '../../workspace/packages/core/runtime/src/execution-context.js';
+import { recordObservedExecution, getTraceForDecision, verifyWorkIdCorrelation } from '../../workspace/packages/core/runtime/src/execution-observability.js';
+import { recordRuntimeInvocation } from '../../workspace/packages/core/runtime/src/invocation-evidence.js';
+import { CaseRepositoryInMemory, newCaseId } from '../../workspace/capabilities/legal-case/implementation/repository/case.repository.js';
+import { DocumentRepositoryInMemory, newDocumentId } from '../../workspace/capabilities/legal-document/implementation/repository/document.repository.js';
+import { RequirementRepositoryInMemory, newRequirementId } from '../../workspace/capabilities/requirement-management/implementation/repository/requirement.repository.js';
+import type { CreateCaseInput, CaseAggregate } from '../../workspace/capabilities/legal-case/implementation/contracts/case.contracts.js';
+import type { CreateDocumentInput, DocumentAggregate } from '../../workspace/capabilities/legal-document/implementation/contracts/document.contracts.js';
+import type { CreateRequirementInput, RequirementAggregate } from '../../workspace/capabilities/requirement-management/implementation/contracts/requirement.contracts.js';
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';

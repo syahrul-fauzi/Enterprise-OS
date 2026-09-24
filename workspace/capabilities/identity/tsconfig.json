@@ -13,14 +13,7 @@
     "noEmit": false,
     "rootDir": ".",
     "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "paths": {
-      "@repo/core-kernel": ["../../packages/core/kernel/dist"],
-      "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*"],
-      "@repo/core-runtime": ["../../packages/core/runtime/dist"],
-              "@repo/core-runtime/*": ["../../packages/core/runtime/dist/*"],
-      "@capabilities/*": ["../../capabilities/*"]
-    }
+    "moduleResolution": "NodeNext"
   },
   "references": [
     { "path": "../../packages/core/kernel/tsconfig.json" },

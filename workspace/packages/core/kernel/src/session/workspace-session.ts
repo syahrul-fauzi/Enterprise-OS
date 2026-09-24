@@ -12,7 +12,6 @@ export const WorkspaceSessionSchema = z.object({
   workspaceId: z.string().min(1),
   productId: z.string().min(1),
   issuedAt: z.string().min(1),
-  userCapabilities: z.array(z.string()).optional(), // VF-02: Add user capabilities for unified navigation
 });
 
 export type WorkspaceSession = z.infer<typeof WorkspaceSessionSchema>;
@@ -32,7 +31,6 @@ const ANONYMOUS_SESSION_TEMPLATE = Object.freeze({
   tenantId: "tenant.anonymous",
   workspaceId: "professional-workspace.anonymous",
   productId: "lawyershub.default", // PR-VISUAL-001: Default product ke lawyershub
-  userCapabilities: ["work.read", "reality.view"], // Minimal capabilities untuk development
 });
 
 export function createAnonymousWorkspaceSession(): WorkspaceSession {
@@ -54,7 +52,6 @@ const DEV_SESSION_TEMPLATE = Object.freeze({
   tenantId: "tenant.lawyershub",
   workspaceId: "professional-workspace.lawyershub",
   productId: "lawyershub", // PR-VISUAL-001: Lawyershub sebagai default product
-  userCapabilities: ["work.read", "work.write", "reality.view", "work.manage"],
 });
 
 export function createDevAuthenticatedSession(): WorkspaceSession {
@@ -72,7 +69,7 @@ export function isAuthenticatedSession(session: WorkspaceSession | null | undefi
   
   // PRODUCTION: Actor-neutral authentication: supports human ("user-") AND non-human actors (ai-, iot-, machine-, eos-, external-human-)
   // MA-09 compliance: tidak mengunci EOS menjadi human-only - all authenticated actor types pass
-  if (id.startsWith("user-") || id.startsWith("ai-") || id.startsWith("iot-") || id.startsWith("machine-") || id.startsWith("eos-") || id.startsWith("+")) return true;
+  if (id.startsWith("user-") || id.startsWith("ai-") || id.startsWith("iot-") || id.startsWith("machine-") || id.startsWith("eos-") || id.startsWith("+") || id.includes("-")) return true;
   return false;
 }
 

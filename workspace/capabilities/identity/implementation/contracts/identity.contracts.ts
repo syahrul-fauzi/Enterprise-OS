@@ -28,6 +28,16 @@ export function SessionId(value: string): SessionId {
   return value as SessionId;
 }
 
+export type WorkId = string & { readonly __workId: unique symbol };
+export function WorkId(value: string): WorkId {
+  return value as WorkId;
+}
+
+export type ActorId = string & { readonly __actorId: unique symbol };
+export function ActorId(value: string): ActorId {
+  return value as ActorId;
+}
+
 export interface UserAggregate {
   readonly id: UserId;
   readonly email: string;

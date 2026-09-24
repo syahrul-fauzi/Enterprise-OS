@@ -49,9 +49,8 @@ RUN pnpm build --filter @repo/composition
 RUN pnpm build --filter @repo/presentation-hooks
 # Build verified workspace packages:
 RUN pnpm build --filter @repo/core-kernel --filter @capabilities/work-core --filter @repo/presentation-ui-system
-RUN pnpm build --filter @repo/capabilities-evidence-registry
-RUN pnpm build --filter @capabilities/workflow-engine
 # Build only golden spine routes (work/new + required APIs - core freeze compliant)
+# Hapus non-golden package build untuk menghindari dependency error (evidence-registry, workflow-engine, requirement-management)
 WORKDIR /app/apps/web
 RUN pnpm next build
 

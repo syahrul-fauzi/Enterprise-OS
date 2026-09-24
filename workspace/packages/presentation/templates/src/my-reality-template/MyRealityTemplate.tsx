@@ -141,16 +141,11 @@ export function MyRealityTemplate({
   });
 
   return (
-    <GlobalNavigation
-      userCapabilities={userCapabilities}
-      productId={productId}
-      breadcrumbItems={breadcrumbItems}
-    >
-      {/* PAGE HEADER - sesuai spesifikasi */}
+    <>
+      {/* PAGE HEADER - Hapus duplikasi judul "My Reality" karena sudah ada di sidebar GlobalNavigation */}
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-text-primary tracking-tight">My Reality</h1>
             <p className="text-sm text-text-muted mt-1">Selamat datang, {model.actor.displayName}. {currentDate}</p>
             <p className="mt-1 text-sm text-text-muted">
               Everything that needs your attention across work, intent, and execution.
@@ -389,6 +384,6 @@ export function MyRealityTemplate({
           <p className="text-sm text-text-muted">No upcoming actions</p>
         </div>
       </div>
-    </GlobalNavigation>
+    </>
   );
 }

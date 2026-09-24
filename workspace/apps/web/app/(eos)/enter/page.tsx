@@ -24,7 +24,6 @@ export default async function EnterPage() {
 
   return (
     <GlobalNavigation
-      userCapabilities={session.userCapabilities || []}
       productId="default"
       breadcrumbItems={breadcrumbItems}
     >

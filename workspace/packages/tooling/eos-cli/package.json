@@ -7,6 +7,7 @@
     "eos": "./src/index.ts"
   },
   "scripts": {
+    "build": "tsc",
     "status": "node --import tsx ./src/index.ts status",
     "test": "node --import tsx --test ./tests/*.test.ts",
     "lint": "eslint src --max-warnings 0",
@@ -25,7 +26,7 @@
     "@repo/config-typescript": "workspace:*",
     "@types/node": "^22.15.30",
     "eslint": "^9.39.1",
-    "tsx": "^4.19.2",
+    "tsx": "^4.23.13",
     "typescript": "5.9.2"
   }
 }

@@ -14,11 +14,18 @@ export default async function LoginPage() {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);
   
-  // Jika sudah ada session valid, redirect ke /my-reality sesuai flow EOS P2-USE-001
+  // Hanya redirect jika session BENAR-BENAR valid, jika tidak - selalu tampilkan login page
+  // Ini menghindari semua kemungkinan redirect loop, karena server component tidak pernah melakukan redirect kecuali session 100% valid
   if (sessionCookie?.value) {
-    const session = decodeWorkspaceSession(sessionCookie.value);
-    if (session && session.tenantId && session.workspaceId && session.actorId) {
-      redirect("/my-reality");
+    try {
+      const session = decodeWorkspaceSession(sessionCookie.value);
+      if (session && session.tenantId && session.workspaceId && session.actorId) {
+        redirect("/my-reality");
+      }
+      // Jika decode gagal atau session tidak lengkap - TIDAK ADA ACTION, lanjutkan render login page
+    } catch (e) {
+      // Jika terjadi error apapun saat decode session - TIDAK ADA ACTION, lanjutkan render login page
+      console.error("Invalid session cookie, showing login page");
     }
   }
 

@@ -1,12 +1,12 @@
-// NON-GOLDEN-SPINE ROUTE - DISABLED PER W003-P7-03 POLICY
+// NON-GOLDEN-SPINE ROUTE - DISABLED PER W004-P3-03 POLICY
 // This route is not part of the current Golden Spine release path and has been disabled
 // to prevent compilation errors from unresolvable imports. It will be re-enabled only
 // if it becomes part of the dependency closure of a future release path.
 //
-// Reason for disable: Contains import path error "@repo/capabilities-identity/repositories"
+// Reason for disable: Contains additional import path errors (@repo/atomic-composition-capability/intent-understanding)
 // which would cause Docker build to fail.
 //
-// Date disabled: 2026-09-19
+// Date disabled: 2026-09-22
 //
 // /*
 // Server Component with client-boundary form section - separates session/intent resolution (server) from client-side submission

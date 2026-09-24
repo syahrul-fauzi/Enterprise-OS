@@ -26,7 +26,9 @@ type ServiceProviderCategory =
   | "Cybersecurity"
   | "Software Development"
   | "Managed Services"
-  | "Data & Analytics";
+  | "Data & Analytics"
+  | "Payment Processing"
+  | "Trademark Registration";
 
 type TopicCategory =
   | "Hukum Perusahaan"

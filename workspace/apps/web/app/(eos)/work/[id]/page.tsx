@@ -152,7 +152,6 @@ export default async function WorkDetailPage({
 
   return (
     <GlobalNavigation
-      userCapabilities={session.userCapabilities || []}
       productId="default"
       breadcrumbItems={breadcrumbItems}
     >

@@ -22,21 +22,7 @@
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "strict": true,
-    "target": "ES2022",
-    "paths": {
-      "@repo/core-kernel": ["../../packages/core/kernel/dist/index.d.ts", "../../packages/core/kernel/src/index.ts"],
-      "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*.d.ts", "../../packages/core/kernel/src/*"],
-      "@repo/core-runtime": ["../../packages/core/runtime/dist/index.d.ts", "../../packages/core/runtime/src/index.ts"],
-      "@repo/core-realtime": ["../../packages/core/realtime/dist/index.d.ts", "../../packages/core/realtime/src/index.ts"],
-      "@repo/capability-identity": ["../../capabilities/identity/dist/index.d.ts", "../../capabilities/identity/src/index.ts"],
-      "@repo/capability-shared": ["../../capabilities/shared/dist/index.d.ts", "../../capabilities/shared/src/index.ts"],
-      "@repo/capability-work-core": ["../../capabilities/work-core/dist/index.d.ts", "../../capabilities/work-core/src/index.ts"],
-      "@repo/capability-legal-case/contracts": ["./contracts/index.ts"],
-      "@repo/capability-legal-case/repository": ["./implementation/repository/index.ts"],
-      "@repo/capability-identity/repositories/base": ["../identity/implementation/repositories/base.repository.ts"],
-      "@repo/capability-identity/repositories": ["../identity/implementation/repositories/index.ts"],
-      "@repo/capability-identity/contracts": ["../identity/implementation/contracts/index.ts"] // Force re-check
-    }
+    "target": "ES2022"
   },
   "references": [
     { "path": "../../packages/core/kernel/tsconfig.json" },

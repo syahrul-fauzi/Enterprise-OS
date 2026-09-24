@@ -15,6 +15,7 @@
     "status": "node --import tsx ./packages/tooling/eos-cli/src/index.ts status",
     "eos": "node --import tsx ./packages/tooling/eos-cli/src/index.ts",
     "staging:up": "bash ./scripts/staging-up.sh",
+    "staging:local": "bash ./scripts/staging-local.sh",
     "staging:down": "bash ./scripts/staging-down.sh",
     "staging:check": "bash ./scripts/staging-check.sh",
     "staging:convergence": "node ./scripts/public-convergence-check.mjs",
@@ -23,12 +24,15 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.10",
     "@repo/core-kernel": "link:packages/core/kernel",
     "@repo/core-runtime": "link:packages/core/runtime",
     "@types/pg": "^8.21.0",
     "core-capability-registry": "link:packages/core-capability-registry",
+    "lucide-react": "^1.47.0",
     "pg": "^8.23.0",
-    "zod": "^3.24.1"
+    "yaml": "^2.9.1",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -40,7 +44,7 @@
     "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.9",
     "@types/next": "^9.0.0",
-    "@types/node": "^26.3.0",
+    "@types/node": "^26.6.2",
     "@types/node-fetch": "^2.6.13",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.1",
@@ -62,9 +66,10 @@
     "react": "^19.2.0",
     "react-dom": "^19.1.0",
     "tailwindcss": "^4.1.5",
+    "ts-node": "^10.9.2",
     "tsx": "^4.23.12",
     "turbo": "^2.10.6",
-    "typescript": "^6.0.0",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.39.0",
     "vitest": "^3.2.7"
   },

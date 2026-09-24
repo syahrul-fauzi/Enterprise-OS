@@ -7,6 +7,10 @@ import type { ProductPreviewBinding } from "@repo/presentation-experience";
 // Import canonical perspectives dari shared work-reality types (eliminates duplication)
 import type { WorkRealityPerspective as WorkPerspective, WorkRealityModel } from "@repo/presentation-entities";
 import { WORK_PERSPECTIVES } from "@repo/presentation-entities";
+// Import shared state components from presentation-ui-system (FACE-RECON-002 reuse mandate - matches all other widget imports)
+import { WorkRealityLoading, ErrorState, EmptyState, PermissionDenied, Pagination } from "@repo/presentation-ui-system";
+// Import usePageStates hook untuk standarisasi state management (FACE-RECON-002 compliance mandate)
+import { usePageStates } from "@repo/presentation-hooks";
 
 // Rehydrate session from localStorage + cookie for guaranteed persistence across refresh (SSR-safe)
 function hydrateSessionState(caseId: string) {
@@ -409,12 +413,39 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
   // Hydrate saved state from localStorage first - instant continuity across refresh
   const savedState = hydrateSessionState(caseId);
   
-  const [caseData, setCaseData] = useState<CaseAggregate | null>(savedState?.caseData ?? null);
+  // Migrasikan state management ke usePageStates untuk compliance tracking (FACE-RECON-002 mandate)
+  // Contoh penggunaan yang benar dari ProductServiceRequestsPage.tsx (sesuai implementasi canonical)
+  const {
+    state,
+    isLoading,
+    hasError,
+    setLoading,
+    setSuccess,
+    setError,
+    setEmpty,
+    setPermissionDenied,
+    // Pagination controls from usePageStates (shared with ProductServiceRequestsPage)
+    goToPage,
+    getPaginatedData,
+  } = usePageStates<CaseAggregate>({
+    initialData: savedState?.caseData ?? null,
+    // Set initial page size for activity timeline pagination
+    initialPageSize: 5,
+  });
+  
+  // Alias untuk maintain compatibility dengan existing codebase
+  const loading = isLoading;
+  const error = hasError ? state.error : null;
+  const caseData = state.data;
+  
+  // Derived permission denied flag (menggunakan state.status canonical dari usePageStates, bukan destructured variable)
+  const showPermissionDenied = state.status === "permission-denied";
+  
+  // Hapus setCaseData lokal karena kita sudah pakai setSuccess dari usePageStates
+  // const [caseData, setCaseData] = useState<CaseAggregate | null>(savedState?.caseData ?? null);
   const [documents, setDocuments] = useState<DocumentAggregate[]>(savedState?.documents ?? []);
   const [evidenceCount, setEvidenceCount] = useState<number>(savedState?.evidenceCount ?? 0);
   const [decisionsCount, setDecisionsCount] = useState<number>(savedState?.decisionsCount ?? 0);
-  const [loading, setLoading] = useState<boolean>(true); // Start with loading state to ensure proper UX
-  const [error, setError] = useState<string | null>(null);
   const [showAssignLawyer, setShowAssignLawyer] = useState<boolean>(savedState?.showAssignLawyer ?? false);
   const [submittingAssign, setSubmittingAssign] = useState(false);
   // Work Reality Surface: perspective selector - persists to localStorage for continuity
@@ -425,6 +456,32 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
   // Use cached session if API session not yet loaded - preserve state across refresh
   const currentSession = session ?? cachedSession;
   const isAuthenticated = authenticated || Boolean(currentSession?.actorId && currentSession.actorId !== "anonymous.user");
+  
+  // Render permission denied component jika status adalah permission-denied (menggunakan shared component)
+  if (showPermissionDenied) {
+    return (
+      <ProductPreviewShell binding={binding}>
+        <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 sm:py-10">
+          <div className="mx-auto max-w-2xl">
+            <PermissionDenied
+              title="Anda belum masuk"
+              description="Silakan masuk terlebih dahulu untuk melihat detail kasus."
+              icon="🔒"
+              backLabel="Masuk ke Workspace"
+              onBack={() => window.location.href = "/enter"}
+            />
+          </div>
+        </main>
+      </ProductPreviewShell>
+    );
+  }
+
+  // Cek authorization dan set permission denied jika perlu (FACE-RECON-002 compliance)
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setPermissionDenied();
+    }
+  }, [isAuthenticated, setPermissionDenied]);
   
   // Locale-aware status labels
   const STATUS_LABEL: Record<CaseStatus, string> = {
@@ -462,7 +519,12 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
         const caseJson = await caseResp.json();
         caseAggregate = (caseJson.output ?? caseJson.record ?? null) as CaseAggregate | null;
       }
-      setCaseData(caseAggregate);
+      // Gunakan setSuccess dari usePageStates untuk update canonical state (FACE-RECON-002 compliance)
+      if (caseAggregate) {
+        setSuccess(caseAggregate);
+      } else {
+        setEmpty();
+      }
 
       const workId = caseAggregate?.workId;
       const matterId = caseId;
@@ -542,9 +604,10 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
         }
       }
     } catch (raw) {
+      // Gunakan setError dari usePageStates untuk canonical error state (FACE-RECON-002 compliance)
       setError(raw instanceof Error ? raw.message : String(raw));
     } finally {
-      setLoading(false);
+      // setLoading(false) tidak perlu dipanggil karena setError/setSuccess sudah mengupdate status
     }
   }, [caseId]);
 
@@ -560,7 +623,8 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
   // State to hold communication events from communication capability
   const [communicationEvents, setCommunicationEvents] = useState<CommunicationEvent[]>([]);
   
-  const activity = useMemo(() => {
+  // Combine all activity entries and apply pagination via usePageStates (FACE-RECON-002 reuse mandate)
+  const allActivity = useMemo(() => {
     // Get system activity from deriveActivity
     const systemActivity = deriveActivity(caseData, documents);
     
@@ -573,9 +637,19 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
     
     // Merge both activity streams and sort by newest first
     return [...systemActivity, ...commActivity]
-      .sort((a, b) => b.at.getTime() - a.at.getTime())
-      .slice(0, 20); // Show last 20 combined events
+      .sort((a, b) => b.at.getTime() - a.at.getTime());
   }, [caseData, documents, communicationEvents]);
+
+  // Get paginated subset of activity entries using shared usePageStates pagination
+  const paginatedActivity = useMemo(() => {
+    return getPaginatedData(allActivity);
+  }, [allActivity, getPaginatedData]);
+
+  // Calculate total pages for pagination component
+  const totalActivityPages = useMemo(() => {
+    const itemsPerPage = state.pagination.itemsPerPage;
+    return Math.ceil(allActivity.length / itemsPerPage);
+  }, [allActivity.length, state.pagination.itemsPerPage]);
 
   const workIdLabel = caseData?.workId ?? (caseId ? caseId.substring(0, 12) : "case-xxx"); // Fixed: added null check and ensure comma in substring
   const actorLabel = currentSession?.actorLabel ?? "You";
@@ -626,6 +700,11 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
     { label: "Klien", role: isOwner ? "Kontak klien" : "—", highlight: false },
     { label: "Pengulas", role: "Pengulas Kasus", highlight: false }
   );
+
+  // Handle page change for activity timeline pagination
+  const handleActivityPageChange = (page: number) => {
+    goToPage(page);
+  };
 
   return (
     <>
@@ -709,31 +788,28 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
                     ← Kembali ke Semua Pekerjaan
                   </a>
                   {loading ? (
-                    <div className="p-12 text-center border rounded flex flex-col items-center gap-4">
-                      <div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
-                      <p className="text-lg font-medium text-text-primary">Memuat detail kasus...</p>
-                    </div>
+                    <WorkRealityLoading 
+                      size="lg" 
+                      label="Memuat detail kasus..." 
+                      className="p-0 m-0"
+                    />
                   ) : error ? (
-                    <div className="p-12 text-center border border-red-200 bg-red-50 rounded flex flex-col items-center gap-4">
-                      <div className="text-6xl" aria-hidden="true">⚠️</div>
-                      <h3 className="text-xl font-bold text-red-800">Gagal memuat kasus</h3>
-                      <p className="text-red-700 max-w-md">{error}</p>
-                      <button 
-                        onClick={() => { setLoading(true); setError(null); loadAll(); }}
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-                      >
-                        Coba Lagi
-                      </button>
-                    </div>
+                    <ErrorState
+                      title="Gagal memuat kasus"
+                      description={error}
+                      icon="⚠️"
+                      retryLabel="Coba Lagi"
+                      onRetry={() => { setLoading(true); setError(null); loadAll(); }}
+                      fatal={false}
+                    />
                   ) : !caseData ? (
-                    <div className="p-12 text-center border border-dashed rounded flex flex-col items-center gap-4">
-                      <div className="text-6xl" aria-hidden="true">📭</div>
-                      <h3 className="text-xl font-bold text-text-primary">Kasus tidak ditemukan</h3>
-                      <p className="text-text-secondary max-w-md">Kasus yang Anda cari tidak ada atau Anda tidak memiliki akses untuk melihatnya.</p>
-                      <a href="/cases" className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition">
-                        Kembali ke Daftar Kasus
-                      </a>
-                    </div>
+                    <EmptyState
+                      title="Kasus tidak ditemukan"
+                      description="Kasus yang Anda cari tidak ada atau Anda tidak memiliki akses untuk melihatnya."
+                      icon="📭"
+                      actionLabel="Kembali ke Daftar Kasus"
+                      onAction={() => window.location.href = "/cases"}
+                    />
                   ) : (
                     <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
                       {caseData.title}
@@ -1028,7 +1104,7 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
                 Komunikasi
               </div>
               <div className="text-[10px] uppercase tracking-[0.14em] text-slate-400">
-                {activity.length} pesan
+                {allActivity.length} pesan
               </div>
             </div>
             
@@ -1036,12 +1112,12 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
             <ol className="mt-4 mb-6 space-y-4">
               {loading ? (
                 <li className="text-sm opacity-60">Memuat komunikasi…</li>
-              ) : activity.length === 0 ? (
+              ) : paginatedActivity.length === 0 ? (
                 <li className="rounded-2xl border border-dashed border-slate-200 px-4 py-3 text-center text-sm text-slate-500">
                   Belum ada komunikasi — kirim pesan pertama ke tim.
                 </li>
               ) : (
-                activity.map((e) => (
+                paginatedActivity.map((e) => (
                   <li key={e.id} className="flex items-start gap-3">
                     <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-slate-300" />
                     <div className="min-w-0 flex-1">
@@ -1054,6 +1130,26 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
                 ))
               )}
             </ol>
+
+            {/* Shared Pagination Component - FACE-RECON-002 reuse mandate */}
+            {allActivity.length > state.pagination.itemsPerPage && (
+              <div className="mt-6 border-t border-slate-100 pt-4">
+                <Pagination
+                  currentPage={state.pagination.currentPage}
+                  totalPages={totalActivityPages}
+                  totalItems={allActivity.length}
+                  itemsPerPage={state.pagination.itemsPerPage}
+                  onPageChange={handleActivityPageChange}
+                  className="mx-auto w-fit"
+                  labels={{
+                    previous: "Sebelumnya",
+                    next: "Selanjutnya",
+                    showing: "Menampilkan",
+                    of: "dari"
+                  }}
+                />
+              </div>
+            )}
 
             {/* Send New Communication Form - invokes communication.send command */}
             <form 

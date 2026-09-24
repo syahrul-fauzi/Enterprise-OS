@@ -4,8 +4,8 @@ import type { NavigationItem, NavigationDescriptor } from "./index.js";
 // PR-VISUAL-001: Human mental model navigation (Reality > Work > Actors > Products)
 export const GLOBAL_NAV_ITEMS: readonly NavigationItem[] = [
   {
-    id: "nav-reality",
-    label: "Reality",
+    id: "nav-my-reality",
+    label: "My Reality",
     kind: "link",
     href: "/my-reality",
     order: 10,
@@ -18,51 +18,6 @@ export const GLOBAL_NAV_ITEMS: readonly NavigationItem[] = [
     href: "/work",
     order: 20,
     iconName: "briefcase",
-  },
-  {
-    id: "nav-separator-1",
-    label: "",
-    kind: "separator",
-    order: 25,
-  },
-  {
-    id: "nav-actors",
-    label: "Actors",
-    kind: "link",
-    href: "/actors",
-    order: 30,
-    iconName: "users",
-  },
-  {
-    id: "nav-products",
-    label: "Products",
-    kind: "link",
-    href: "/products",
-    order: 40,
-    iconName: "cube",
-  },
-  {
-    id: "nav-separator-2",
-    label: "",
-    kind: "separator",
-    order: 800,
-  },
-  {
-    id: "nav-profile",
-    label: "Profile",
-    kind: "link",
-    href: "/profile",
-    order: 850,
-    iconName: "user",
-  },
-  {
-    id: "nav-settings",
-    label: "Settings",
-    kind: "link",
-    href: "/settings",
-    order: 900, // Always last in global navigation
-    capabilityId: "operations:admin",
-    iconName: "settings",
   },
 ] as const;
 
@@ -129,7 +84,7 @@ export function createWorkspaceNavigation(
   const verticalItems = VERTICAL_NAV_ITEMS[productId] || [];
   
   // Combine global and vertical items
-  const allItems = [...GLOBAL_NAV_ITEMS, ...verticalItems];
+  const allItems = [...GLOBAL_NAV_ITEMS];
   
   // Filter items based on user capabilities (only show items user has access to)
   const filteredItems = allItems.filter(item => {

@@ -26,7 +26,7 @@ type TopicCategory =
   | "Hukum Tata Negara";
 
 function readServiceProviderCategories(): readonly ServiceProviderCategory[] {
-  return ["Cloud Services", "IT Support", "Infrastructure", "Cybersecurity", "Software Development"];
+  return ["Cloud Services", "IT Support", "Infrastructure", "Cybersecurity", "Software Development", "Payment Processing", "Trademark Registration"];
 }
 
 export interface ProductCreateFormProps {

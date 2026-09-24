@@ -65,6 +65,27 @@ export const GovernanceStateSchema = z.object({
   }),
 });
 
+// Current Journey Schema - for .eos-state/current-journey.yaml EOS journey tracking
+// ENFORCES SINGLE NEXT WORK PRINCIPLE: hanya satu next_work_id yang diizinkan (SATU NEXT WORK SAJA)
+export const CurrentJourneySchema = z.object({
+  work_id: z.string().min(1),
+  milestone: z.string().min(1),
+  completed_at: z.string().datetime().or(z.literal("")).default(""), // Only set to ISO timestamp when journey is COMPLETED/PASS
+  verdict: z.enum(["PASS", "FAIL", "BLOCKED", "OUT_OF_SCOPE", "UNVERIFIED", "UNKNOWN"]),
+  evidence_artifacts: z.array(z.string()),
+  checks_passed: z.array(z.string()),
+  checks_failed: z.array(z.string()),
+  next_work_id: z.string().min(1).or(z.literal("")).default(""), // Allow empty string only when journey is complete
+  next_work_technical_id: z.string().min(1).or(z.literal("")).default(""), // Bound actual repository technical ID (work_<UUID>) to journey tracking ID
+  next_work_title: z.string().min(1).or(z.literal("")).default(""),
+  next_work_description: z.string().min(1).or(z.literal("")).default(""),
+  next_work_milestones: z.array(z.record(z.string(), z.string())),
+  next_milestone: z.string().optional(),
+  phase2_complete: z.boolean().optional(),
+  phase3_complete: z.boolean().optional(),
+});
+
 export type RepositoryState = z.infer<typeof RepositoryStateSchema>;
 export type RepositoryProofOutputPointer = z.infer<typeof RepositoryProofOutputPointerSchema>;
 export type GovernanceState = z.infer<typeof GovernanceStateSchema>;
+export type CurrentJourney = z.infer<typeof CurrentJourneySchema>;

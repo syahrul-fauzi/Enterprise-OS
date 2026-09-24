@@ -21,12 +21,6 @@
     "allowImportingTsExtensions": false,
     "emitDeclarationOnly": false,
     "verbatimModuleSyntax": false,
-    "paths": {
-      "@repo/core-kernel": ["../../packages/core/kernel/src"],
-      "@repo/core-kernel/*": ["../../packages/core/kernel/src/*"],
-      "@repo/core-runtime": ["../../packages/core/runtime/src"],
-      "@repo/core-runtime/*": ["../../packages/core/runtime/src/*"],
-      "@capabilities/*": ["../../capabilities/*"]
-    }
+
   }
 }

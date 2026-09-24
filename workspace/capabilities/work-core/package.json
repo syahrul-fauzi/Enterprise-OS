@@ -5,6 +5,19 @@
   "private": true,
   "main": "./dist/implementation/index.js",
   "types": "./dist/implementation/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/implementation/index.d.ts",
+      "default": "./dist/implementation/index.js"
+    },
+    "./dist/*": {
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
+    },
+    "./implementation": "./implementation/index.ts",
+    "./implementation/*": "./implementation/*",
+    "./repository/*": "./implementation/repository/*"
+  },
   "scripts": {
     "build": "tsc",
     "lint": "eslint .",

@@ -4,9 +4,7 @@ import {
   decodeWorkspaceSession,
 } from "@repo/core-kernel";
 import { buildMyRealityModel } from "./getMyRealityModel";
-import { MyRealityExperience } from "@repo/presentation-experience/my-reality";
-import { IntentExperience } from "@repo/presentation-experience/intent";
-import { GlobalNavigation } from "@repo/presentation-ui-system/layouts";
+import { MyRealityTemplate } from "@repo/presentation-templates/my-reality-template/MyRealityTemplate";
 
 export default async function MyRealityPage() {
   const cookieStore = await cookies();
@@ -20,7 +18,18 @@ export default async function MyRealityPage() {
     );
   }
 
-  const session = decodeWorkspaceSession(sessionCookie.value);
+  let session;
+  try {
+    session = decodeWorkspaceSession(sessionCookie.value);
+  } catch (e) {
+    console.error("Failed to decode session cookie, showing invalid session message");
+    return (
+      <main className="p-6">
+        <p>Sesi tidak valid. Silakan login kembali.</p>
+      </main>
+    );
+  }
+  
   if (!session || !session.tenantId || !session.workspaceId || !session.actorId) {
     return (
       <main className="p-6">
@@ -41,25 +50,10 @@ export default async function MyRealityPage() {
   ];
 
   return (
-    <GlobalNavigation
-      userCapabilities={session.userCapabilities || []}
-      productId="default"
+    <MyRealityTemplate 
+      initialModel={model}
+      auth={session}
       breadcrumbItems={breadcrumbItems}
-    >
-      <main className="py-6 px-4 sm:px-6 lg:px-8">
-        <MyRealityExperience 
-          initialModel={model} 
-          auth={session}
-          actions={
-            <a 
-              href="/enter"
-              className="inline-flex items-center px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-primary/90 transition-colors"
-            >
-              Mulai Kebutuhan Baru
-            </a>
-          }
-        />
-      </main>
-    </GlobalNavigation>
+    />
   );
 }

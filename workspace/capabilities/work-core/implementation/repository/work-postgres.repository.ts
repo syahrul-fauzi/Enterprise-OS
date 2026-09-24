@@ -125,7 +125,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       savedWork = {
         ...existingWork,
         ...work,
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date(),
         stateHistory: newStateHistory,
       } as WorkAggregate;
     } else {
@@ -146,8 +146,8 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
         participants: work.participants || [work.actorId!],
         version: 1,
         stateHistory: initialStateHistory,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
         compositionId: work.compositionId || null,
         ...work,
       } as WorkAggregate;

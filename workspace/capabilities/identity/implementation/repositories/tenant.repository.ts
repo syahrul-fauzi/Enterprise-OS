@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository";
+import { PostgresRepository } from "./base.repository.ts";
 import {
   TenantId,
   UserId,
@@ -43,27 +43,27 @@ class TenantRepositoryPostgresImpl extends PostgresRepository<any> implements Te
   }
 
   async byId(id: TenantId): Promise<TenantAggregate | undefined> {
-    const result = await this.pool.query<Record<string, any>>("SELECT * FROM tenants WHERE id = $1", [id]);
+    const result = await this.pool.query("SELECT * FROM tenants WHERE id = $1", [id]);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }
 
   async bySlug(slug: string): Promise<TenantAggregate | undefined> {
     const needle = slug.trim().toLowerCase();
-    const result = await this.pool.query<Record<string, any>>("SELECT * FROM tenants WHERE LOWER(slug) = $1", [needle]);
+    const result = await this.pool.query("SELECT * FROM tenants WHERE LOWER(slug) = $1", [needle]);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }
 
   async byCustomDomain(domain: string): Promise<TenantAggregate | undefined> {
     const needle = domain.trim().toLowerCase();
-    const result = await this.pool.query<Record<string, any>>("SELECT * FROM tenants WHERE LOWER(custom_domain) = $1", [needle]);
+    const result = await this.pool.query("SELECT * FROM tenants WHERE LOWER(custom_domain) = $1", [needle]);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }
 
   async list(): Promise<readonly TenantAggregate[]> {
-    const result = await this.pool.query<Record<string, any>>("SELECT * FROM tenants ORDER BY created_at DESC", []);
+    const result = await this.pool.query("SELECT * FROM tenants ORDER BY created_at DESC", []);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 

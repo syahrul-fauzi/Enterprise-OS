@@ -4,9 +4,9 @@
  * NO production code modifications made
  */
 
-import { executionContext } from "./workspace/packages/core/runtime/src/execution-context.js";
-import { recordObservedExecution, getTraceForDecision, detectReentryAnomalies } from "./workspace/packages/core/runtime/src/execution-observability.js";
-import { recordRuntimeInvocation } from "./workspace/packages/core/runtime/src/invocation-evidence.js";
+import { executionContext } from "../../../workspace/packages/core/runtime/src/execution-context.js";
+import { recordObservedExecution, getTraceForDecision, detectReentryAnomalies } from "../../../workspace/packages/core/runtime/src/execution-observability.js";
+import { recordRuntimeInvocation } from "../../../workspace/packages/core/runtime/src/invocation-evidence.js";
 import { randomUUID } from "node:crypto";
 
 // ============================================

@@ -4,7 +4,7 @@ import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
 } from "@repo/core-kernel";
-import { canonicalWorkStore, getWorkById, workRepository, toWorkAggregate, toCanonicalWorkRecord } from "../../create/route";
+import { getWorkById, toWorkAggregate, toCanonicalWorkRecord } from "../../create/route";
 import type { WorkAggregate } from "@capabilities/work-core/contracts/work.contracts";
 
 // GET: Retrieve all evidence for a specific work item
