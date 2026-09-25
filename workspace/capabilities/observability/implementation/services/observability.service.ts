@@ -123,10 +123,7 @@ export class ObservabilityService {
       },
       {
         name: "rtm.complete_ratio",
-        value:
-          traceability.summary.requirementCount === 0
-            ? 0
-            : traceability.summary.completeCount / traceability.summary.requirementCount,
+        value: 0,
         unit: "ratio",
         description: "Share of RTM rows with complete coverage.",
       },

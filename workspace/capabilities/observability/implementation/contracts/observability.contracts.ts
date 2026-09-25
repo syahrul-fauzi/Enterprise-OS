@@ -28,8 +28,8 @@ export interface ObservableTraceSpan {
   readonly id: string;
   readonly parentId?: string;
   readonly name: string;
-  readonly kind: "capability" | "workflow" | "evidence" | "api";
-  readonly status: "ok" | "warning";
+  readonly kind: "capability" | "workflow" | "evidence" | "api" | "execution" | "reentry";
+  readonly status: "ok" | "warning" | "error";
   readonly attributes: Readonly<Record<string, unknown>>;
 }
 
@@ -51,6 +51,10 @@ export interface IncidentAggregate {
   readonly category: IncidentCategory;
   readonly status: IncidentStatus;
   readonly priority: IncidentPriority;
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
+  readonly version?: number;
   readonly createdAt: Date;
   readonly updatedAt: Date;
 }

@@ -216,7 +216,7 @@ export const providerDecisionServiceRequest: ProviderDecisionCommand = {
   version: "2.0.0",
   async execute(input: ProviderDecisionWithContextInput) {
     const parsed = ProviderDecisionWithContextSchema.parse(input);
-    const { id, providerId, decision, providerNote, sessionId } = parsed;
+    const { id, providerId, decision, providerNote, proposedPrice, sessionId } = parsed;
 
     // 1. Validate session exists and is active (SHARED RAIL — MIRRORS LH)
     const session = await sessionRepository.byId(sessionId as any);
@@ -284,7 +284,11 @@ export const acceptServiceRequest: AcceptServiceRequestCommand = {
       decision: "accepted",
       providerNote: "Legacy accept call - migrated to providerDecision"
     });
-    return { id: result.id, status: result.status as ServiceRequestStatus, providerId: result.providerId };
+    return { 
+      id: ServiceRequestId(result.id), 
+      status: result.status as ServiceRequestStatus, 
+      providerId: ServiceProviderId(result.providerId) 
+    };
   },
 };
 
@@ -388,7 +392,6 @@ import { getServiceRequestByIdCommand } from "./get-service-request-by-id.comman
 
 // Minimal command to handle external system webhook responses - only what's needed for P0-PT-001
 type UpdateExternalSystemStatusCommand = CapabilityCommand<
-  "service-directory.updateExternalSystemStatus",
   UpdateExternalSystemStatusInput,
   UpdateExternalSystemStatusOutput
 >;

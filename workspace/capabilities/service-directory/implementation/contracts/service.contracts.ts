@@ -1,6 +1,6 @@
 export type ServiceRequestStatus = "draft" | "submitted" | "proposed" | "accepted" | "in_service" | "delivered" | "verified" | "cancelled" | "declined";
 
-export interface CreateServiceRequestInput {
+export interface CreateServiceRequestInputLegacy {
   readonly title: string;
   readonly description: string;
   readonly category: ServiceProviderCategory;

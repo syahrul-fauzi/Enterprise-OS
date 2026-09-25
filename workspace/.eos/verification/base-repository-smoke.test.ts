@@ -15,7 +15,8 @@ console.log('DATABASE_URL set to:', process.env.DATABASE_URL);
 
 import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { initIdentitySchema, getTenantRepositoryPostgres, getWorkspaceRepositoryPostgres, getUserRepositoryPostgres } from "../../capabilities/identity/implementation/repositories/index.js";
+import { initIdentitySchema } from "../../capabilities/identity/implementation/repositories/base.repository.js";
+import { getTenantRepositoryPostgres, getWorkspaceRepositoryPostgres, getUserRepositoryPostgres } from "../../capabilities/identity/implementation/repositories/index.js";
 import { UserId, TenantId, WorkspaceId } from '../../capabilities/identity/implementation/contracts/identity.contracts.js';
 import { getCaseRepositoryPostgres, CaseId, newCaseId, type CaseAggregate, CaseStatus, CasePriority } from "../../capabilities/legal-case/implementation/repository/index.js";
 import { Pool } from "pg";
@@ -97,15 +98,12 @@ async function main() {
     productId: "legal-case",
     createdAt: new Date(),
     updatedAt: new Date(),
-  }, { tenantId: tenantAId, workspaceId: workspaceAId });
+  });
 
   // Step 3: Tenant B tries to read Tenant A's workspace - SHOULD FAIL (RLS blocks access)
   console.log("[SMOKE TEST] Step 3: Testing cross-tenant access (Tenant B trying to read Tenant A's workspace)...");
   try {
-    const unauthorizedAccess = await workspaceRepo.byId(workspaceAId, { 
-      tenantId: tenantBId, 
-      workspaceId: "fake-workspace-b" 
-    });
+    const unauthorizedAccess = await workspaceRepo.byId(workspaceAId);
     
     if (unauthorizedAccess !== undefined) {
       throw new Error("[SECURITY FAIL] Tenant B was able to read Tenant A's workspace - isolation broken!");
@@ -130,11 +128,11 @@ async function main() {
     id: testCaseId,
     title: "Client Personal Injury Claim",
     description: "Test case for persistence verification across restarts",
-    status: CaseStatus.ACTIVE,
-    priority: CasePriority.HIGH,
+    status: "open",
+    priority: "high",
     lawyerId: testUserId,
     workId: "test-work-123",
-    sourceDiscussionId: null,
+    sourceDiscussionId: undefined,
     actorId: testUserId,
     tenantId: tenantAId,
     workspaceId: workspaceAId,

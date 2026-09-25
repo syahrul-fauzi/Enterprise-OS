@@ -1,8 +1,7 @@
 import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
 import type { IncidentAggregate, IncidentId } from "../contracts/observability.contracts.js";
-import type { CapabilityRepository } from "../../../../packages/core/kernel/src/types/index.js";
 
-export class IncidentRepositoryPostgres extends PostgresRepository<IncidentAggregate> implements CapabilityRepository<IncidentAggregate> {
+export class IncidentRepositoryPostgres extends PostgresRepository<IncidentAggregate> {
   kind: "repository" = "repository" as const;
   entityName: string = "incident" as const;
 
