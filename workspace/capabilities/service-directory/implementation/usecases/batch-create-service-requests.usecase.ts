@@ -1,6 +1,7 @@
-import type { ServiceProviderCategory, CreateServiceRequestInput } from "../contracts/service.contracts.js";
+import type { ServiceProviderCategory, CreateServiceRequestInputLegacy as CreateServiceRequestInput } from "../contracts/service.contracts.js";
 import { ServiceRequestRepositoryInMemory as ServiceRequestRepository } from "../repository/service.repository.js";
 import { validateBatchItems } from "../validation/batch-validator.js";
+import { getServiceRequestRepositoryPostgres } from "../repository/index.js";
 
 interface BatchCreateInput {
   items: Array<{
@@ -24,12 +25,8 @@ export async function createServiceRequestBatch(input: BatchCreateInput): Promis
     throw new Error(`Batch validation failed: ${validationResult.errors.join(', ')}`);
   }
 
-  // 2. Initialize repository with tenant isolation
-  const repository = new ServiceRequestRepository({
-    product: input.context.product,
-    tenantId: input.context.tenantId,
-    workspaceId: input.context.workspaceId,
-  });
+  // 2. Initialize repository with tenant isolation (gunakan factory function yang terdaftar)
+  const repository = getServiceRequestRepositoryPostgres();
 
   // 3. Map batch items to individual create inputs
   const createInputs: CreateServiceRequestInput[] = input.items.map(item => ({

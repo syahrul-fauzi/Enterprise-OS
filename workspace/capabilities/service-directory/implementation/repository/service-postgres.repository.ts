@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
+import { PostgresRepository, getPool, initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
 import {
   ServiceRequestId,
   ServiceProviderId,
@@ -7,11 +7,18 @@ import {
   type ServiceProviderAggregate,
   type ServiceRequestRepository,
   type ServiceProviderRepository,
-  type CreateServiceRequestInput,
+  type CreateServiceRequestInputLegacy as CreateServiceRequestInput,
   ServiceRequestStatus,
   ServiceProviderCategory,
 } from "../contracts/service.contracts.js";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
+
+// SHARED RAIL: Initialize identity schema if Postgres is active (MIRRORS service.commands.ts pattern)
+if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
+  initIdentitySchema();
+}
+
+// Initialize connection pool with unified connection string
+const pool = getPool();
 
 // PostgreSQL-backed service request repository implementation
 class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> implements ServiceRequestRepository {
@@ -23,7 +30,7 @@ class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> imple
   }
 
   // Convert database record to domain aggregate
-  private toAggregate(record: any): ServiceRequestAggregate {
+  toAggregate(record: any): ServiceRequestAggregate {
     return {
       id: ServiceRequestId(record.id),
       title: record.title,
@@ -46,7 +53,7 @@ class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> imple
   }
 
   // Convert domain aggregate to database record
-  private toRecord(entity: ServiceRequestAggregate): any {
+  toRecord(entity: ServiceRequestAggregate): any {
     return {
       id: entity.id,
       title: entity.title,
@@ -197,7 +204,7 @@ class ServiceProviderRepositoryPostgresImpl extends PostgresRepository<any> impl
   }
 
   // Convert database record to domain aggregate
-  private toAggregate(record: any): ServiceProviderAggregate {
+  toAggregate(record: any): ServiceProviderAggregate {
     return {
       id: ServiceProviderId(record.id),
       name: record.name,
@@ -214,7 +221,7 @@ class ServiceProviderRepositoryPostgresImpl extends PostgresRepository<any> impl
   }
 
   // Convert domain aggregate to database record
-  private toRecord(entity: ServiceProviderAggregate): any {
+  toRecord(entity: ServiceProviderAggregate): any {
     return {
       id: entity.id,
       name: entity.name,
@@ -271,6 +278,29 @@ class ServiceProviderRepositoryPostgresImpl extends PostgresRepository<any> impl
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
+  listCategories(): readonly ServiceProviderCategory[] {
+    // Return all supported categories as defined in contract to match in-memory implementation
+    return [
+      "Cloud Services",
+      "IT Support",
+      "Infrastructure",
+      "Cybersecurity",
+      "Software Development",
+      "Managed Services",
+      "Data & Analytics",
+      "Payment Processing",
+      "Trademark Registration"
+    ];
+  }
+
+  async listByLocation(location: string): Promise<readonly ServiceProviderAggregate[]> {
+    const result = await this.pool.query(
+      "SELECT * FROM service_providers WHERE location ILIKE $1",
+      [`%${location}%`]
+    );
+    return result.rows.map((row: any) => this.toAggregate(row));
+  }
+
   async save(entity: ServiceProviderAggregate): Promise<ServiceProviderAggregate> {
     const exists = await this.byId(entity.id);
     const record = this.toRecord(entity);
@@ -309,20 +339,10 @@ class ServiceProviderRepositoryPostgresImpl extends PostgresRepository<any> impl
   }
 }
 
-// Lazy initialization functions to avoid eager Postgres pool creation
-let serviceRequestRepositoryPostgresInstance: ServiceRequestRepositoryPostgresImpl | null = null;
-let serviceProviderRepositoryPostgresInstance: ServiceProviderRepositoryPostgresImpl | null = null;
-
-export function getServiceRequestRepositoryPostgres(): ServiceRequestRepository {
-  if (!serviceRequestRepositoryPostgresInstance) {
-    serviceRequestRepositoryPostgresInstance = new ServiceRequestRepositoryPostgresImpl();
-  }
-  return serviceRequestRepositoryPostgresInstance;
+export function getServiceRequestRepositoryPostgres() {
+  return new ServiceRequestRepositoryPostgresImpl();
 }
 
-export function getServiceProviderRepositoryPostgres(): ServiceProviderRepository {
-  if (!serviceProviderRepositoryPostgresInstance) {
-    serviceProviderRepositoryPostgresInstance = new ServiceProviderRepositoryPostgresImpl();
-  }
-  return serviceProviderRepositoryPostgresInstance;
+export function getServiceProviderRepositoryPostgres() {
+  return new ServiceProviderRepositoryPostgresImpl();
 }
