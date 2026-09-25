@@ -1,3 +1,11 @@
 [submodule "workspace/.eos-state"]
 	path = workspace/.eos-state
 	url = https://github.com/syahrul-fauzi/Enterprise-OS-State.git
+	branch = main
+	sparse-checkout = workspace/
+
+[submodule ".eos-state"]
+	path = .eos-state
+	url = https://github.com/syahrul-fauzi/Enterprise-OS-State.git
+	branch = main
+	sparse-checkout = root/

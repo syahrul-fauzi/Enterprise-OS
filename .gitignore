@@ -83,6 +83,18 @@ yarn.lock
 pnpm-lock.yaml
 
 # ------------------------------
+# EOS System Generated Files
+**/.eos-state/  # Uncomment only after full submodule adjudication
+# **/evidence/
+# **/artifacts/
+.eos-venv/  # Generated Python virtual environment - never commit
+*.log
+*.tmp
+*.bak
+run-*.js
+debug-*.js
+
+# ------------------------------
 # Environment variables
 # ------------------------------
 .env

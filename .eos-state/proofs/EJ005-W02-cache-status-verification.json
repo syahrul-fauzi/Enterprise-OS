@@ -1,1 +1,0 @@
-{'cache_work_contracts_status': 'PENDING', 'last_verified': '2026-09-23T14:30:00.000Z', 'verification_actor': 'eos-dependency-engine', 'location': '.eos-state/contracts/context-anchor-v1.yaml', 'line_number': 82, 'status_unchanged_since': '2026-09-05T17:00:00Z', 'modifications_detected': False, 'overall_cache_status': 'PASS'}
