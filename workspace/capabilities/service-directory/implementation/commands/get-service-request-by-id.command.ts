@@ -5,12 +5,12 @@ import { ServiceRequestRepositoryInMemory, getServiceRequestRepositoryPostgres }
 import type { ServiceRequestId, ServiceRequestAggregate } from "../contracts/service.contracts";
 import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../identity/implementation/repositories/index";
 
-const sessionRepository = process.env.DATABASE_URL
+const sessionRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()
   : SessionRepositoryInMemory;
 
 // Toggle repository based on environment (minimal fix for production rail)
-const serviceRepository = process.env.DATABASE_URL 
+const serviceRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL 
   ? getServiceRequestRepositoryPostgres() 
   : ServiceRequestRepositoryInMemory;
 
@@ -46,7 +46,7 @@ export const getServiceRequestByIdCommand: CapabilityCommand<GetServiceRequestBy
   version: "2.0.0",
   async execute(input: unknown) {
     // Initialize Postgres schema if using production database
-    if (process.env.DATABASE_URL) {
+    if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       await initIdentitySchema();
     }
     

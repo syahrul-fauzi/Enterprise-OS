@@ -40,6 +40,8 @@ class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> imple
       tenantId: record.tenant_id,
       workspaceId: record.workspace_id,
       actorId: record.actor_id,
+      paymentTransactionId: record.payment_transaction_id,
+      paymentStatus: record.payment_status,
     } as ServiceRequestAggregate;
   }
 
@@ -61,6 +63,8 @@ class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> imple
       tenant_id: entity.tenantId,
       workspace_id: entity.workspaceId,
       actor_id: (entity as any).actorId,
+      payment_transaction_id: entity.paymentTransactionId,
+      payment_status: entity.paymentStatus,
     };
   }
 

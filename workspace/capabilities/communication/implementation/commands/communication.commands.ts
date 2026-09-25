@@ -46,7 +46,7 @@ import {
 import { getSessionRepositoryPostgres, SessionRepositoryInMemory } from "../../../identity/implementation/repositories/index.js";
 import { SessionId } from "../../../identity/implementation/contracts/identity.contracts.js";
 
-const SessionRepositoryPostgres = process.env.DATABASE_URL
+const SessionRepositoryPostgres = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()
   : SessionRepositoryInMemory;
 

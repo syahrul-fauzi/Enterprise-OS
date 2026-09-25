@@ -20,7 +20,7 @@ import {
   getDocumentRepositoryPostgres,
 } from "../repository/index.js";
 // Environment-based repository toggle (match identity production rail)
-const documentRepository = process.env.DATABASE_URL 
+const documentRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL 
   ? getDocumentRepositoryPostgres() 
   : DocumentRepositoryInMemory;
 
@@ -33,7 +33,7 @@ type UpdateDocumentCommand = CapabilityCommand<UpdateDocumentInput, UpdateDocume
 // WORK-015: Schema initialized via core database migration manager
 let schemaInitialized = false;
 async function ensureSchema() {
-  if (!schemaInitialized && process.env.DATABASE_URL) {
+  if (!schemaInitialized && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
     schemaInitialized = true;
   }
 }

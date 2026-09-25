@@ -10,10 +10,10 @@ import type { DiscussionId } from "../contracts/community.contracts";
 import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
 
 // Environment-based repository toggle (production rail pattern)
-const discussionRepository = process.env.DATABASE_URL 
+const discussionRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL 
   ? getCommunityDiscussionRepositoryPostgres() 
   : CommunityDiscussionRepositoryInMemory;
-const sessionRepository = process.env.DATABASE_URL 
+const sessionRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL 
   ? getSessionRepositoryPostgres() 
   : SessionRepositoryInMemory;
 
@@ -46,7 +46,7 @@ export const getCommunityDiscussionByIdCommand: CapabilityCommand<GetCommunityDi
   version: "2.0.0",
   async execute(input: unknown) {
     // Initialize Postgres schema only when in production mode
-    if (process.env.DATABASE_URL) {
+    if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       await initIdentitySchema();
     }
     

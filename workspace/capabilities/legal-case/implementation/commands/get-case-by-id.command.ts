@@ -8,10 +8,10 @@ import { initIdentitySchema } from "../../../identity/dist/implementation/reposi
 // FORCE IN-MEMORY FOR DEVELOPMENT - ignore DATABASE_URL to fix "Work not found" errors
 // Only use Postgres in NODE_ENV=production
 // Export repositories for test access to ensure same instance
-export const caseRepository = process.env.NODE_ENV === "production" && process.env.DATABASE_URL
+export const caseRepository = process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
   ? CaseRepositoryPostgres 
   : CaseRepositoryInMemory;
-export const sessionRepository = process.env.NODE_ENV === "production" && process.env.DATABASE_URL
+export const sessionRepository = process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
   ? SessionRepositoryPostgres 
   : SessionRepositoryInMemory;
 
@@ -46,7 +46,7 @@ export const getCaseByIdCommand: CapabilityCommand<GetCaseByIdInput, Promise<Get
   version: "2.0.0",
   async execute(input: unknown) {
     // Initialize Postgres schema only when in production mode
-    if (process.env.DATABASE_URL) {
+    if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       await initIdentitySchema();
     }
     
@@ -87,7 +87,7 @@ export const getCaseByIdCommand: CapabilityCommand<GetCaseByIdInput, Promise<Get
     }
 
     // Only enforce tenant isolation when using Postgres (production)
-    if (process.env.DATABASE_URL) {
+    if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       if ((c as any).tenantId !== tenantId || (c as any).workspaceId !== workspaceId) {
         throw new Error("[case.getById] Case does not belong to the current tenant/workspace - access denied");
       }

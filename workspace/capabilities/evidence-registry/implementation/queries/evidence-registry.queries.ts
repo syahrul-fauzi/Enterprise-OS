@@ -13,7 +13,7 @@ import { EvidenceRegistryRepositoryFileSystem, getEvidenceRepositoryPostgres } f
 
 // Conditionally use PostgreSQL repository if database is available, maintain backward compatibility
 let evidenceRepository: any = EvidenceRegistryRepositoryFileSystem;
-if (process.env.DATABASE_URL) {
+if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
   const pgRepo = getEvidenceRepositoryPostgres();
   if (typeof pgRepo.saveEvidence === "function") {
     evidenceRepository = pgRepo;
@@ -91,7 +91,7 @@ export const listEvidenceByWorkId = {
   id: "evidence.listByWorkId",
   async execute(input: ListEvidenceByWorkIdInput): Promise<ListEvidenceByWorkIdOutput> {
     // Use PostgreSQL repository for work-specific queries if available
-    if (process.env.DATABASE_URL && typeof evidenceRepository.listByWorkId === "function") {
+    if ((process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && typeof evidenceRepository.listByWorkId === "function") {
       const records = await evidenceRepository.listByWorkId(input.workId);
       return {
         items: records,

@@ -15,16 +15,16 @@ import type {
   IncidentAggregate,
 } from "../contracts/observability.contracts.js";
 
-const _sessionRepo = process.env.DATABASE_URL
+const _sessionRepo = process.env.POSTGRES_CONNECTION_STRING
   ? getSessionRepositoryPostgres()
   : null;
 function getSessionRepository() {
   if (_sessionRepo === null) {
-    throw new Error("[observability] DATABASE_URL required for session authentication in Postgres mode");
+    throw new Error("[observability] POSTGRES_CONNECTION_STRING required for session authentication in Postgres mode");
   }
   return _sessionRepo;
 }
-const _incidentRepo = process.env.DATABASE_URL
+const _incidentRepo = process.env.POSTGRES_CONNECTION_STRING
   ? getIncidentRepositoryPostgres()
   : IncidentRepositoryInMemory;
 function getIncidentRepository() {
@@ -51,12 +51,12 @@ export const createIncident: CreateIncidentCommand = {
   name: "incident.create",
   version: "2.0.0",
   async execute(input) {
-    if (process.env.DATABASE_URL) await initIdentitySchema();
+    if (process.env.POSTGRES_CONNECTION_STRING) await initIdentitySchema();
 
     const parsed = CreateIncidentWithContextSchema.parse(input);
     const { title, description, priority, category, tenantId, workspaceId, sessionId, actorId } = parsed;
 
-    if (process.env.DATABASE_URL) {
+    if (process.env.POSTGRES_CONNECTION_STRING) {
       const SessionRepo = getSessionRepository();
       const session = await SessionRepo.byId(sessionId);
       if (!session || session.revokedAt !== null) {

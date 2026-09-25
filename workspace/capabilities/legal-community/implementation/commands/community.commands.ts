@@ -26,14 +26,14 @@ import {
   getCommunityDiscussionRepositoryPostgres,
 } from "../repository/index.js";
 
-const sessionRepository = process.env.DATABASE_URL
+const sessionRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()
   : SessionRepositoryInMemory;
 
-const ContentArticleStore = process.env.DATABASE_URL 
+const ContentArticleStore = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL 
   ? getContentArticleRepositoryPostgres() 
   : ContentArticleRepositoryInMemory;
-const CommunityDiscussionStore = process.env.DATABASE_URL
+const CommunityDiscussionStore = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getCommunityDiscussionRepositoryPostgres()
   : CommunityDiscussionRepositoryInMemory;
 
@@ -47,7 +47,7 @@ export const createContentArticle: CreateContentArticleCommand = {
   version: "2.0.0",
   async execute(input: any) {
     // Initialize Postgres schema if using production database
-    if (process.env.DATABASE_URL) {
+    if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       await initIdentitySchema();
     }
     
@@ -85,7 +85,7 @@ export const publishContent: PublishContentCommand = {
   name: "legal-community.publishContent",
   version: "2.0.0",
   async execute(input: any) {
-    if (process.env.DATABASE_URL) {
+    if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       await initIdentitySchema();
     }
     const { id, sessionId } = input;
@@ -121,7 +121,7 @@ export const createCommunityDiscussion: CreateCommunityDiscussionCommand = {
   name: "legal-community.createCommunityDiscussion",
   version: "2.0.0",
   async execute(input: any) {
-    if (process.env.DATABASE_URL) {
+    if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       await initIdentitySchema();
     }
     const { sessionId, ...discussionInput } = input;
@@ -158,7 +158,7 @@ export const archiveContent: ArchiveContentCommand = {
   name: "legal-community.archiveContent",
   version: "2.0.0",
   async execute(input) {
-    if (process.env.DATABASE_URL) {
+    if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       await initIdentitySchema();
     }
     const { id, sessionId } = input;

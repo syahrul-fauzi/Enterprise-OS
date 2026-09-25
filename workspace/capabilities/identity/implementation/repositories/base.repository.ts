@@ -20,9 +20,10 @@ type AnyPool = Pool & Queryable;
 
 export function getPool(): AnyPool {
   if (!pool) {
-    const connectionString = process.env.DATABASE_URL;
+    // Use unified POSTGRES_CONNECTION_STRING first, with fallback to DATABASE_URL for backward compatibility
+    const connectionString = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL;
     if (!connectionString) {
-      console.warn("[PostgreSQL] DATABASE_URL not set - using in-memory mock pool for tests");
+      console.warn("[PostgreSQL] POSTGRES_CONNECTION_STRING/DATABASE_URL not set - using in-memory mock pool for tests");
       pool = new MockPool() as AnyPool;
     } else {
       pool = new Pool({

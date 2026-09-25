@@ -9,7 +9,7 @@ import type { CapabilityQuery } from "../../../../packages/core/kernel/dist/type
 import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
 
 // Match the same environment-based repository toggle as commands/case.commands.ts
-const caseRepository = process.env.DATABASE_URL 
+const caseRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL 
   ? CaseRepositoryPostgres 
   : CaseRepositoryInMemory;
 

@@ -10,10 +10,10 @@ import type { ContentId } from "../contracts/community.contracts";
 import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
 
 // Environment-based repository toggle (production rail pattern)
-const contentRepository = process.env.DATABASE_URL 
+const contentRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL 
   ? getContentArticleRepositoryPostgres() 
   : ContentArticleRepositoryInMemory;
-const sessionRepository = process.env.DATABASE_URL 
+const sessionRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL 
   ? getSessionRepositoryPostgres() 
   : SessionRepositoryInMemory;
 
@@ -46,7 +46,7 @@ export const getContentArticleByIdCommand: CapabilityCommand<GetContentArticleBy
   version: "2.0.0",
   async execute(input: unknown) {
     // Initialize Postgres schema only when in production mode
-    if (process.env.DATABASE_URL) {
+    if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       await initIdentitySchema();
     }
     

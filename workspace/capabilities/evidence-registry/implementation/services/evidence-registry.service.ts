@@ -19,7 +19,7 @@ import { recordRuntimeInvocation } from "@repo/core-runtime";
 
 // Conditionally use PostgreSQL repository if database is available, maintain backward compatibility
 let evidenceRepository: any = EvidenceRegistryRepositoryFileSystem;
-if (process.env.DATABASE_URL) {
+if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
   evidenceRepository = getEvidenceRepositoryPostgres();
 }
 

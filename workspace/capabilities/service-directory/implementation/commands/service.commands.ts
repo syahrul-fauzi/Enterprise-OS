@@ -23,22 +23,22 @@ import {
 import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../identity/implementation/repositories/index.js";
 
 // SHARED RAIL: Initialize identity schema if Postgres is active (MIRRORS ILC pattern)
-if (process.env.DATABASE_URL) {
+if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
   initIdentitySchema();
 }
 
 // SHARED RAIL: Toggle session repository based on environment (MIRRORS LH pattern)
-const sessionRepository = process.env.DATABASE_URL
+const sessionRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()
   : SessionRepositoryInMemory;
 
 // SHARED RAIL: Toggle repository based on environment (MIRRORS LH pattern)
-const serviceRepository = process.env.DATABASE_URL
+const serviceRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getServiceRequestRepositoryPostgres()
   : ServiceRequestRepositoryInMemory;
 
 // SHARED RAIL: Toggle service provider repository based on environment
-const providerRepository = process.env.DATABASE_URL
+const providerRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getServiceProviderRepositoryPostgres()
   : ServiceProviderRepositoryInMemory;
 

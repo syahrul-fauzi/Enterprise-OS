@@ -31,14 +31,14 @@ import { initIdentitySchema } from "@repo/capabilities-identity/implementation/r
 import { SessionRepositoryInMemory } from "@repo/capabilities-identity/implementation/repositories/index";
 
 // Toggle session repository based on environment — same pattern as legal-case.commands.ts
-const sessionRepository = process.env.DATABASE_URL
+const sessionRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()
   : SessionRepositoryInMemory;
 
 // Initialize schema only in production Postgres mode, not per invocation
 let schemaInitialized = false;
 async function ensureIdentitySchema() {
-  if (!schemaInitialized && process.env.DATABASE_URL) {
+  if (!schemaInitialized && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
     await initIdentitySchema();
     schemaInitialized = true;
   }

@@ -125,7 +125,7 @@ export const CaseRepositoryInMemory: CaseRepository = {
     
     // Only enforce tenant isolation in production (when NODE_ENV=production AND DATABASE_URL is set)
     // In development (in-memory), bypass isolation to fix "Work not found" errors
-    if (process.env.NODE_ENV === "production" && process.env.DATABASE_URL && context) {
+    if (process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && context) {
       const caseTenantId = (raw as any).tenantId;
       const caseWorkspaceId = (raw as any).workspaceId;
     
@@ -154,7 +154,7 @@ export const CaseRepositoryInMemory: CaseRepository = {
     let cases = Array.from(STORE.values()) as CaseAggregate[];
     
     // Tenant isolation filtering (same production-only rule)
-    if (process.env.NODE_ENV === "production" && process.env.DATABASE_URL && context) {
+    if (process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && context) {
       cases = cases.filter(c => {
         const caseTenantId = (c as any).tenantId;
         const caseWorkspaceId = (c as any).workspaceId;
@@ -172,7 +172,7 @@ export const CaseRepositoryInMemory: CaseRepository = {
 
   async listByWorkspace(workspaceId: string): Promise<readonly CaseAggregate[]> {
     let cases: CaseAggregate[];
-    if (process.env.NODE_ENV === "production" && process.env.DATABASE_URL) {
+    if (process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
       cases = Array.from(STORE.values()).filter(c => (c as any).workspaceId === workspaceId) as CaseAggregate[];
     } else {
       // In development, return all cases to match existing behavior
@@ -186,7 +186,7 @@ export const CaseRepositoryInMemory: CaseRepository = {
     const updated = { ...entity, updatedAt: new Date() };
     
     // Enforce tenant isolation on save
-    if (process.env.NODE_ENV === "production" && process.env.DATABASE_URL && context) {
+    if (process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && context) {
       if (existing) {
         const caseTenantId = (existing as any).tenantId;
         const caseWorkspaceId = (existing as any).workspaceId;
@@ -251,7 +251,7 @@ export const CaseRepositoryInMemory: CaseRepository = {
     if (!existing) return false;
     
     // WORK-015: Enforce tenant isolation before deletion
-    if (process.env.NODE_ENV === "production" && process.env.DATABASE_URL && context) {
+    if (process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && context) {
       const caseTenantId = (existing as any).tenantId;
       const caseWorkspaceId = (existing as any).workspaceId;
       if (caseTenantId && caseWorkspaceId) {

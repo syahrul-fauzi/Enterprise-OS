@@ -10,13 +10,13 @@ import { newServiceRequestId, defaultServiceRequestStatus, defaultServiceRequest
 import { initIdentitySchema, getSessionRepositoryPostgres, SessionRepositoryInMemory } from "../../../../identity/implementation/repositories/index.js";
 import { SessionId } from "../../../../identity/implementation/contracts/identity.contracts.js";
 
-const SessionRepositoryPostgres = process.env.DATABASE_URL
+const SessionRepositoryPostgres = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()
   : SessionRepositoryInMemory;
 
 let schemaInitialized = false;
 async function ensureIdentitySchema() {
-  if (!schemaInitialized && process.env.DATABASE_URL) {
+  if (!schemaInitialized && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
     await initIdentitySchema();
     schemaInitialized = true;
   }
