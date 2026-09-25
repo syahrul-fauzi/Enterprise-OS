@@ -7,5 +7,5 @@ export type {
   CreateIncidentInput,
   CreateIncidentOutput,
 } from "./contracts/index.ts";
-export { observabilityCommands } from "./commands/observability.commands.ts";
-export * from "./services/index.ts";
+export { observabilityCommands } from "./commands/observability.commands.js";
+export * from "./services/index.js";
