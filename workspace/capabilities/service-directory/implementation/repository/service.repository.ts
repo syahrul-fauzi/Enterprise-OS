@@ -7,7 +7,7 @@ import type {
   ServiceProviderCategory, 
   ServiceRequestRepository, 
   ServiceProviderRepository,
-  CreateServiceRequestInput
+  CreateServiceRequestInputLegacy as CreateServiceRequestInput
 } from "../contracts/service.contracts.js";
 import { ServiceRequestId as createServiceRequestId, ServiceProviderId as createServiceProviderId } from "../contracts/service.contracts.js";
 
@@ -354,9 +354,10 @@ export const ServiceProviderRepositoryInMemory: ServiceProviderRepository = {
   async remove(id: ServiceProviderId) {
     return PROVIDER_STORE.delete(id);
   },
-  async delete(id: ServiceProviderId) {
-    return this.remove(id);
-  },
+  // Gunakan method remove() yang sudah terdefinisi di interface untuk kompatibilitas
+  // async delete(id: ServiceProviderId) {
+  //   return this.remove(id);
+  // },
 };
 
 // Statistics for dashboard
