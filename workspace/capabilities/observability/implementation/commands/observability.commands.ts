@@ -15,7 +15,7 @@ import type {
   IncidentAggregate,
 } from "../contracts/observability.contracts.js";
 
-const _sessionRepo = process.env.POSTGRES_CONNECTION_STRING
+const _sessionRepo = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()
   : null;
 function getSessionRepository() {
@@ -24,7 +24,7 @@ function getSessionRepository() {
   }
   return _sessionRepo;
 }
-const _incidentRepo = process.env.POSTGRES_CONNECTION_STRING
+const _incidentRepo = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getIncidentRepositoryPostgres()
   : IncidentRepositoryInMemory;
 function getIncidentRepository() {
@@ -51,12 +51,12 @@ export const createIncident: CreateIncidentCommand = {
   name: "incident.create",
   version: "2.0.0",
   async execute(input) {
-    if (process.env.POSTGRES_CONNECTION_STRING) await initIdentitySchema();
+    if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) await initIdentitySchema();
 
     const parsed = CreateIncidentWithContextSchema.parse(input);
     const { title, description, priority, category, tenantId, workspaceId, sessionId, actorId } = parsed;
 
-    if (process.env.POSTGRES_CONNECTION_STRING) {
+    if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       const SessionRepo = getSessionRepository();
       const session = await SessionRepo.byId(sessionId);
       if (!session || session.revokedAt !== null) {
