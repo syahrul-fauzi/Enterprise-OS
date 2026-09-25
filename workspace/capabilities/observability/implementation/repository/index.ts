@@ -7,7 +7,7 @@ import type { IncidentAggregate, IncidentId, IncidentStatus, IncidentPriority } 
 // Determine which repository implementation to use based on environment
 // EOS PROD-006: Use PostgreSQL persistence whenever connection string is available (all environments)
 // Maintain in-memory fallback for public demo deployment when no POSTGRES_CONNECTION_STRING set
-const USE_POSTGRES = !!(process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && (process.env.POSTGRES_CONNECTION_STRING?.length > 0 || process.env.DATABASE_URL?.length > 0);
+const USE_POSTGRES = !!(process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && ((process.env.POSTGRES_CONNECTION_STRING?.length ?? 0) > 0 || (process.env.DATABASE_URL?.length ?? 0) > 0);
 
 // Export the repository that matches the environment, with 100% identical interface
 export const IncidentRepository = USE_POSTGRES 
