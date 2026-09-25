@@ -88,6 +88,9 @@ export interface ContentArticleAggregate {
   readonly topicLabel?: TopicCategory;
   readonly author?: string;
   readonly authorAffiliation?: string;
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
   readonly status: ContentStatus;
   readonly readCount: number;
   readonly engagementCount: number;
@@ -103,6 +106,9 @@ export interface CommunityDiscussionAggregate {
   readonly topicLabel?: TopicCategory;
   readonly startedBy?: string;
   readonly startedByAffiliation?: string;
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
   readonly status: DiscussionStatus;
   readonly replyCount: number;
   readonly viewCount: number;
