@@ -32,19 +32,25 @@ function newWorkspaceId(): WorkspaceId { return WorkspaceId(`workspace-${randomU
 function newMembershipId(): MembershipId { return MembershipId(`membership-${randomUUID()}`); }
 function newSessionId(): SessionId { return SessionId(`session-${randomUUID()}`); }
 
-const userRepo = process.env.DATABASE_URL
+// EOS PROD-005 (SCALE-001 mandate): Enforce PostgreSQL persistence in production
+// In-memory repositories only allowed for isolated development/testing
+if (process.env.NODE_ENV === "production" && !(process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
+  throw new Error("[IdentityService] PRODUCTION SAFETY VIOLATION: In-memory repositories cannot be used in production. POSTGRES_CONNECTION_STRING or DATABASE_URL must be set to activate PostgreSQL persistence with RLS tenant isolation.");
+}
+
+const userRepo = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
   ? getUserRepositoryPostgres()
   : UserRepositoryInMemory;
-const tenantRepo = process.env.DATABASE_URL
+const tenantRepo = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
   ? getTenantRepositoryPostgres()
   : TenantRepositoryInMemory;
-const workspaceRepo = process.env.DATABASE_URL
+const workspaceRepo = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
   ? getWorkspaceRepositoryPostgres()
   : WorkspaceRepositoryInMemory;
-const membershipRepo = process.env.DATABASE_URL
+const membershipRepo = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
   ? getMembershipRepositoryPostgres()
   : MembershipRepositoryInMemory;
-const sessionRepo = process.env.DATABASE_URL
+const sessionRepo = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
   ? getSessionRepositoryPostgres()
   : SessionRepositoryInMemory;
 
@@ -95,7 +101,7 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
   version: "2.0.0",
 
   async execute(input: SignupAndSessionInput) {
-    if (process.env.DATABASE_URL) {
+    if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       await initIdentitySchema();
     }
 

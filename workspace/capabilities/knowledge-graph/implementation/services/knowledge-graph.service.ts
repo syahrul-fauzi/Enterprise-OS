@@ -10,7 +10,7 @@ import { randomUUID } from "crypto";
 // Conditionally import repository only when needed (avoids startup errors in test env)
 let knowledgeGraphRepository: any = null;
 async function getRepository() {
-  if (!knowledgeGraphRepository && process.env.DATABASE_URL) {
+  if (!knowledgeGraphRepository && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
     const { getKnowledgeGraphRepositoryPostgres } = await import("../repository/knowledge-graph.postgres.repository.js");
     knowledgeGraphRepository = getKnowledgeGraphRepositoryPostgres();
   }

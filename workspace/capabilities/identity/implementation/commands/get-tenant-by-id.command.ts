@@ -5,7 +5,7 @@ import {
 } from "../contracts/index.js";
 import { getTenantRepositoryPostgres, TenantRepositoryInMemory } from "../repositories/index.js";
 
-const tenantRepository = process.env.DATABASE_URL
+const tenantRepository = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
   ? getTenantRepositoryPostgres()
   : TenantRepositoryInMemory;
 

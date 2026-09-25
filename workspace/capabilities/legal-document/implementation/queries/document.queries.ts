@@ -11,7 +11,7 @@ import type { CapabilityQuery } from "../../../../packages/core/kernel/src/index
 import { DocumentRepositoryInMemory, getDocumentRepositoryPostgres } from "../repository/index.js";
 
 // Environment-based repository toggle (production-ready Postgres persistence)
-const documentRepository = process.env.DATABASE_URL 
+const documentRepository = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
   ? getDocumentRepositoryPostgres() 
   : DocumentRepositoryInMemory;
 

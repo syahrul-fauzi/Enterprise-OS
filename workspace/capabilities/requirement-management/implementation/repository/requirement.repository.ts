@@ -850,7 +850,7 @@ const _lazyPgRequirementRepo: RequirementRepository = new Proxy({} as Requiremen
 export const RequirementRepositoryPostgres = _lazyPgRequirementRepo;
 
 export const RequirementRepositoryCurrent: RequirementRepository =
-  process.env.DATABASE_URL !== undefined
+  (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) !== undefined
     ? RequirementRepositoryPostgres
     : resolveRequirementStoragePath() !== undefined
     ? RequirementRepositoryFileBacked

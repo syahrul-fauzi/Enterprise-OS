@@ -8,7 +8,7 @@ import {
   SessionRepositoryInMemory,
 } from "../repositories/index.js";
 
-const sessionRepository = process.env.DATABASE_URL
+const sessionRepository = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
   ? getSessionRepositoryPostgres()
   : SessionRepositoryInMemory;
 

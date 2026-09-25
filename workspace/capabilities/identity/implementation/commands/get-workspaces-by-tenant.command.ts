@@ -12,16 +12,16 @@ import {
   SessionRepositoryInMemory,
 } from "../repositories/index.js";
 
-const tenantRepository = process.env.DATABASE_URL
+const tenantRepository = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
   ? getTenantRepositoryPostgres()
   : TenantRepositoryInMemory;
-const workspaceRepository = process.env.DATABASE_URL
+const workspaceRepository = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
   ? getWorkspaceRepositoryPostgres()
   : WorkspaceRepositoryInMemory;
-const membershipRepository = process.env.DATABASE_URL
+const membershipRepository = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
   ? getMembershipRepositoryPostgres()
   : MembershipRepositoryInMemory;
-const sessionRepository = process.env.DATABASE_URL
+const sessionRepository = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
   ? getSessionRepositoryPostgres()
   : SessionRepositoryInMemory;
 
