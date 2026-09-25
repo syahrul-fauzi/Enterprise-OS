@@ -7,7 +7,7 @@ import type { CaseAggregate, CaseId, CaseStatus, CasePriority } from "../../cont
 // EOS PROD-005 (SCALE-001 mandate): Production deployments MUST use PostgreSQL persistence
 // In-memory fallback only allowed for isolated development/testing environments
 // NO PRODUCTION DEPLOYMENT MAY USE in-memory repository (violates production safety boundary)
-const USE_POSTGRES = !!process.env.POSTGRES_CONNECTION_STRING && process.env.POSTGRES_CONNECTION_STRING.length > 0;
+const USE_POSTGRES = !!(process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && (process.env.POSTGRES_CONNECTION_STRING?.length > 0 || process.env.DATABASE_URL?.length > 0);
 
 // Enforce mandatory PostgreSQL in production to comply with SCALE-001 failure boundary
 if (process.env.NODE_ENV === "production" && !USE_POSTGRES) {

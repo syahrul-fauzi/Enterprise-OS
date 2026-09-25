@@ -8,8 +8,8 @@ import { isBuildPhase } from "../../../shared/implementation/database/health.che
 import type { KnowledgeNode, KnowledgeEdge, KnowledgeGraphRepository } from "../contracts/knowledge-graph.contracts.js";
 
 // Validate required environment variables in production - matches existing repository pattern
-if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.POSTGRES_CONNECTION_STRING) {
-  throw new Error("[KnowledgeGraphRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING environment variable is required in production");
+if (process.env.NODE_ENV === "production" && !isBuildPhase && !(process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
+  throw new Error("[KnowledgeGraphRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING or DATABASE_URL environment variable is required in production");
 }
 
 // Initialize connection pools - matches read/write pool pattern from other repositories

@@ -12,21 +12,21 @@ import {
 
 // Validate required environment variables in production - matches communication.postgres.repository.ts pattern
 // EXCEPTION: Skip during Next.js build phase (phase-production-build) because build-time static analysis runs in "production" NODE_ENV but has no DB connection
-if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.POSTGRES_CONNECTION_STRING) {
-  throw new Error("[CaseRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING environment variable is required in production");
+if (process.env.NODE_ENV === "production" && !isBuildPhase && !(process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
+  throw new Error("[CaseRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING or DATABASE_URL environment variable is required in production");
 }
 
 // Read replica configuration for horizontal scaling of read-heavy legal case queries
 // Separate write primary from read replicas to distribute load - matches communication.postgres.repository.ts pattern
 const writePool = new Pool({
-  connectionString: process.env.POSTGRES_WRITE_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || "postgresql://localhost:5432/eos_identity",
+  connectionString: process.env.POSTGRES_WRITE_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL || "postgresql://localhost:5432/eos_identity",
   max: 10, // Smaller pool for writes (fewer write operations)
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
 });
 
 const readPool = new Pool({
-  connectionString: process.env.POSTGRES_READ_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || "postgresql://localhost:5432/eos_identity",
+  connectionString: process.env.POSTGRES_READ_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL || "postgresql://localhost:5432/eos_identity",
   max: 30, // Larger pool for read-heavy case queries
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
