@@ -48,7 +48,7 @@
       "path": "../requirement-management/tsconfig.json"
     },
     {
-      "path": "../requirements-traceability-matrix/tsconfig.json"
+      "path": "../requirements-traceability-matrix/implementation/tsconfig.json"
     }
   ],
   "include": [
