@@ -9,11 +9,12 @@ import {
 import { getIncidentRepositoryPostgres, IncidentRepositoryPostgres } from "../repository/incident-postgres.repository.js";
 import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
 import { getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository.js";
-import type {
+import {
   CreateIncidentInput,
   CreateIncidentOutput,
   IncidentAggregate,
 } from "../contracts/observability.contracts.js";
+import { SessionId } from "../../../identity/implementation/contracts/identity.contracts.js";
 
 const _sessionRepo = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()
@@ -58,7 +59,7 @@ export const createIncident: CreateIncidentCommand = {
 
     if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       const SessionRepo = getSessionRepository();
-      const session = await SessionRepo.byId(sessionId);
+      const session = await SessionRepo.byId(SessionId(sessionId));
       if (!session || session.revokedAt !== null) {
         throw new Error("[incident.create] Invalid or revoked session - authentication violation");
       }
