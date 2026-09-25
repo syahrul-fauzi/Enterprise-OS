@@ -20,7 +20,7 @@ const _sessionRepo = process.env.POSTGRES_CONNECTION_STRING || process.env.DATAB
   : null;
 function getSessionRepository() {
   if (_sessionRepo === null) {
-    throw new Error("[observability] POSTGRES_CONNECTION_STRING required for session authentication in Postgres mode");
+    throw new Error("[observability] POSTGRES_CONNECTION_STRING or DATABASE_URL required for session authentication in Postgres mode");
   }
   return _sessionRepo;
 }
