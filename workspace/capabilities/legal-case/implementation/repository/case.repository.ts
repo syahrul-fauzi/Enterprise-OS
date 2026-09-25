@@ -321,7 +321,7 @@ export const newCaseId = (() => {
 // Initialize scanner only AFTER repository is fully exported to avoid initialization order issues
 // NEVER start any background processes in test environment - causes hangs and resource leaks
 // Also skip during Next.js build (phase-production-build) to prevent static-build side effects
-const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
+import { isBuildPhase } from "../../../shared/implementation/database/health.check.js";
 const isTestEnvironment = process.env.NODE_ENV === 'test' || process.argv.some(arg => arg.includes('node:test') || arg.includes('test/'));
 if (!isTestEnvironment && !isBuildPhase) {
   startDeadlineDetectionScanner().catch(err => {

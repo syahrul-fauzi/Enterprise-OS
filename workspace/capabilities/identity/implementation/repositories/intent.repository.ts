@@ -1,5 +1,6 @@
 import { Pool } from "pg";
 import { PostgresRepository } from "./base.repository.ts";
+import { isBuildPhase } from "../../../shared/implementation/database/health.check.js";
 import {
   IntentId,
   type IntentAggregate,
@@ -9,7 +10,6 @@ import {
 } from "../contracts/index.ts";
 
 // Validate required environment variables in production - matches other repository patterns
-const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
 if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.POSTGRES_CONNECTION_STRING && !process.env.DATABASE_URL) {
   throw new Error("[IntentRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING or DATABASE_URL environment variable is required in production");
 }

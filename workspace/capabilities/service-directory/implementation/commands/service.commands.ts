@@ -553,6 +553,18 @@ export const updatePaymentStatusServiceRequest: UpdatePaymentStatusCommand = {
       throw new Error(`[service-directory.updatePaymentStatusServiceRequest] Cannot process payment on work with status: ${current.status}. Must be "accepted" (customer accepted price first).`);
     }
 
+    // PAY-03: Idempotency check - skip duplicate payment events with same transaction ID
+    if (current.paymentTransactionId === paymentTransactionId) {
+      console.log(`[CR-006] Duplicate payment event detected: ${paymentTransactionId}, skipping processing`);
+      return {
+        id: current.id,
+        status: current.status,
+        paymentTransactionId: current.paymentTransactionId!,
+        paymentStatus: current.paymentStatus!,
+        paymentReceivedAt: new Date()
+      };
+    }
+
     const paymentReceivedAt = new Date();
     // If payment is successful, move work to "in_service" so provider can start execution
     const nextStatus: ServiceRequestStatus = paymentStatus === "success" 

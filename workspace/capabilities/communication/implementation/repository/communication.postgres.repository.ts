@@ -2,10 +2,10 @@ import { Pool } from "pg";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import { CommunicationEvent, CommunicationEventId, CommunicationEventStatus } from "../contracts/communication.contracts.js";
 import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager.js";
+import { isBuildPhase } from "../../../shared/implementation/database/health.check.js";
 
 // Validate required environment variables in production
 // EXCEPTION: Skip during Next.js build phase (phase-production-build) because build-time static analysis runs in "production" NODE_ENV but has no DB connection
-const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
 if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.DATABASE_URL && !process.env.POSTGRES_CONNECTION_STRING) {
   throw new Error("[CommunicationRepositoryPostgres] FATAL: DATABASE_URL or POSTGRES_CONNECTION_STRING environment variable is required in production");
 }

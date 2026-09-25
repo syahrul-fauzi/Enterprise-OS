@@ -4,10 +4,10 @@
 import { Pool } from "pg";
 import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
 import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager.js";
+import { isBuildPhase } from "../../../shared/implementation/database/health.check.js";
 import type { KnowledgeNode, KnowledgeEdge, KnowledgeGraphRepository } from "../contracts/knowledge-graph.contracts.js";
 
 // Validate required environment variables in production - matches existing repository pattern
-const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
 if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.POSTGRES_CONNECTION_STRING) {
   throw new Error("[KnowledgeGraphRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING environment variable is required in production");
 }

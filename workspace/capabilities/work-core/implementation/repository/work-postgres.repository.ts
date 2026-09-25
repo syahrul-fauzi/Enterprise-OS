@@ -3,11 +3,12 @@ import type { WorkAggregate, WorkId } from "../../contracts/work.contracts.ts";
 import { randomUUID } from "crypto";
 const generateId = () => randomUUID();
 import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.ts";
+import { isBuildPhase } from "../../../shared/implementation/database/health.check.js";
 import type { CapabilityRepository } from "@repo/core-kernel";
 
 // Validate required environment variables in production - matches all other repository patterns
-const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build' || (globalThis as any)._forceMockPool === true;
-if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.POSTGRES_CONNECTION_STRING && !process.env.DATABASE_URL) {
+const extendedIsBuildPhase = isBuildPhase || (globalThis as any)._forceMockPool === true;
+if (process.env.NODE_ENV === "production" && !extendedIsBuildPhase && !process.env.POSTGRES_CONNECTION_STRING && !process.env.DATABASE_URL) {
   throw new Error("[WorkRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING or DATABASE_URL environment variable is required in production");
 }
 

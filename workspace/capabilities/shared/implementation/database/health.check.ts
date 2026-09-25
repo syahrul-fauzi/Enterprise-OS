@@ -4,6 +4,13 @@
 import { Pool } from "pg";
 import { updateConnectionPoolMetrics, getConnectionPoolMetrics } from "@repo/core-runtime/execution-observability";
 import { observabilityCommands } from "../../../observability/implementation/service.js";
+
+/**
+ * Shared utility: Detect if we're in Next.js production build phase to skip DB connection checks
+ * Used across all PostgreSQL repositories to avoid build-time database requirements
+ */
+export const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
+
 // Reuse safeRecordEvidence pattern from work-postgres.repository.ts to log recovery actions
 async function safeRecordEvidence(payload: unknown): Promise<{ readonly ok: boolean }> {
   try {
