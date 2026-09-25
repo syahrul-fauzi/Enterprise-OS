@@ -6,7 +6,7 @@ import { isBuildPhase } from "../../../shared/implementation/database/health.che
 
 // Validate required environment variables in production
 // EXCEPTION: Skip during Next.js build phase (phase-production-build) because build-time static analysis runs in "production" NODE_ENV but has no DB connection
-if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.DATABASE_URL && !process.env.POSTGRES_CONNECTION_STRING) {
+if (process.env.NODE_ENV === "production" && !isBuildPhase && !(process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
   throw new Error("[CommunicationRepositoryPostgres] FATAL: DATABASE_URL or POSTGRES_CONNECTION_STRING environment variable is required in production");
 }
 

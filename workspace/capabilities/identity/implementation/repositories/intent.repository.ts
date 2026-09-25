@@ -10,7 +10,7 @@ import {
 } from "../contracts/index.ts";
 
 // Validate required environment variables in production - matches other repository patterns
-if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.POSTGRES_CONNECTION_STRING && !process.env.DATABASE_URL) {
+if (process.env.NODE_ENV === "production" && !isBuildPhase && !(process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
   throw new Error("[IntentRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING or DATABASE_URL environment variable is required in production");
 }
 
