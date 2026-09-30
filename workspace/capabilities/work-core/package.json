@@ -16,6 +16,8 @@
     },
     "./implementation": "./implementation/index.ts",
     "./implementation/*": "./implementation/*",
+    "./contracts": "./contracts/work.contracts.ts",
+    "./contracts/work.contracts": "./contracts/work.contracts.ts",
     "./repository/*": "./implementation/repository/*"
   },
   "scripts": {

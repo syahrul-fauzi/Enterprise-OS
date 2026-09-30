@@ -7,15 +7,29 @@
     "paths": {
       "@api-platform/*": ["../api-platform/implementation/*"],
       "@governance-read-model/*": ["../governance-read-model/implementation/*"],
-      "@evidence-registry/*": ["../evidence-registry/implementation/*"]
+      "@evidence-registry/*": ["../evidence-registry/implementation/*"],
+      "@repo/capabilities-identity": ["../identity/implementation/index.ts"],
+      "@repo/capabilities-identity/*": ["../identity/implementation/*"],
+      "@repo/capabilities-work-core": ["../work-core/contracts/work.contracts.ts"],
+      "@repo/capabilities-work-core/*": ["../work-core/*"]
     }
   },
   "references": [
+    { "path": "../work-core" },
     { "path": "../work-inspection" }, 
     { "path": "../../packages/core/realtime" },
     { "path": "../api-platform" },
     { "path": "../governance-read-model" },
   ],
-  "include": ["implementation/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "implementation/**/*.ts",
+    "../work-core/contracts/**/*.ts",
+    "../work-core/implementation/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "../work-core/**/*.test.ts",
+    "../work-core/**/*.falsification.test.ts"
+  ]
 }

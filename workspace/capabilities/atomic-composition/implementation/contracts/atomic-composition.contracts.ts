@@ -1,11 +1,13 @@
 import { z } from "zod";
 import type { WorkActor } from "@capabilities/work-inspection";
-import type { UserId, UserAggregate } from "@repo/capabilities-identity";
-
-// E1-P2-N1: Break circular dependency between atomic-composition and work-core
-// Define ID types locally instead of importing
-export type WorkId = string & z.BRAND<"WorkId">;
-export type ActorId = string & z.BRAND<"ActorId">;
+// Mengimport SEMUA canonical types dari work-core (sesuai dependency chain: identity→work-core→capabilities)
+import type { 
+  WorkId, 
+  ActorId, 
+  UserId, 
+  UserAggregate,
+  CompositionId 
+} from "@repo/capabilities-work-core";
 
 // ============================================================================
 // ATOMIC WORK COMPOSITION - PRIMITIVE DEFINITIONS
@@ -100,7 +102,7 @@ export type ParticipantType = z.infer<typeof ParticipantTypeSchema>;
 export const WorkBindingSchema = z.object({
   id: z.string(),
   bindingId: z.string().brand<"WorkBindingId">(),
-  compositionId: z.string().brand<"CompositionId">(), // REQUIRED for hyper-relationships: ALL participants share the same compositionId
+  compositionId: z.custom<CompositionId>(), // Gunakan canonical CompositionId dari work-core untuk menghindari brand mismatch
   participantId: z.string(), // Unified participant ID (works for ALL types)
   participantType: ParticipantTypeSchema, // What kind of participant is this?
   providerType: z.enum(["human", "ai-agent", "external-service", "organization", "machine", "resource", "capability", "work", "product", "system"]).optional().default("human"),
@@ -130,6 +132,10 @@ export const CapabilityResolutionRequestSchema = z.object({
   availableActors: z.array(z.any()).default([]),
   availableCapabilities: z.array(z.string()).default([]),
   workspaceId: z.string().optional(),
+  tenantId: z.string().optional(), // Tambahkan tenantId untuk authentication guard
+  sessionId: z.string().optional(), // Tambahkan sessionId
+  actorId: z.string().optional(), // Tambahkan actorId
+  compositionPackageId: z.string().optional(), // W-COMP-001: ID package composition untuk reuse template
 });
 
 export type CapabilityResolutionRequest = z.infer<typeof CapabilityResolutionRequestSchema>;
@@ -183,6 +189,14 @@ export type CreateTeamResult = z.infer<typeof CreateTeamResultSchema>;
 // The schema was already defined earlier, this block was orphaned and removed
 // Original error caused by missing opening brace that created orphaned property declarations
 
+export type ProductCompositionManifest = {
+  readonly id: string;
+  readonly extends?: readonly string[];
+  readonly patterns?: readonly string[];
+  readonly capabilities?: readonly string[];
+  readonly surfaces?: readonly string[];
+};
+
 export type WorkBinding = z.infer<typeof WorkBindingSchema>;
 // Reuse canonical patterns - WorkBindingId is composition-specific but follows work-core branding
 export type WorkBindingId = z.infer<typeof WorkBindingSchema.shape.bindingId>;
@@ -215,7 +229,7 @@ export function TeamProjectionId(value: string): TeamProjectionId { return value
 // ------------------------------
 export const CompositionResolutionSchema = z.object({
   id: z.string(),
-  compositionId: z.string().brand<"CompositionId">(),
+  compositionId: z.custom<CompositionId>(),
   workId: z.string().brand<"WorkId">(),
   requirements: z.array(z.string().brand<"RequirementId">()).default([]), // CapabilityRequirements
   actorProjections: z.array(z.string().brand<"ActorId">()).default([]),
@@ -227,8 +241,9 @@ export const CompositionResolutionSchema = z.object({
 });
 
 export type CompositionResolution = z.infer<typeof CompositionResolutionSchema>;
-export type CompositionId = z.infer<typeof WorkBindingSchema.shape.compositionId>;
-export function CompositionId(value: string): CompositionId { return value as CompositionId; }
+// Removed duplicate CompositionId export - already imported from @repo/capabilities-work-core
+// This was causing TS2395: Individual declarations in merged declaration 'CompositionId' must be all exported or all local
+// Canonical CompositionId is used exclusively from work-core to maintain primitive sovereignty
 
 // ------------------------------
 // ECONOMIC EVENT - Layer 3: Derived/Product Semantics (NOT EOS Core)

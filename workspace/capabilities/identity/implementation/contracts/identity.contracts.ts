@@ -32,6 +32,11 @@ export type WorkId = string & { readonly __workId: unique symbol };
 export function WorkId(value: string): WorkId {
   return value as WorkId;
 }
+// Helper untuk generate WorkId baru (sesuai pola newXxxId yang sudah ada di identity capability)
+import { randomUUID } from "node:crypto";
+export function newWorkId(): WorkId {
+  return WorkId(`work-${randomUUID()}`);
+}
 
 export type ActorId = string & { readonly __actorId: unique symbol };
 export function ActorId(value: string): ActorId {
@@ -81,7 +86,7 @@ export interface MembershipAggregate {
 export interface SessionAggregate {
   readonly id: SessionId;
   readonly userId: UserId;
-  readonly actorId: UserId;
+  readonly actorId: ActorId;
   readonly tenantId: TenantId;
   readonly workspaceId: WorkspaceId;
   readonly productId: string;

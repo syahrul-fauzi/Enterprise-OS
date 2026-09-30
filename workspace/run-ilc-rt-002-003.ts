@@ -16,11 +16,13 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 
 const BASE_URL = "http://localhost:3004";
+import { TenantId, WorkspaceId, SessionId, ActorId } from "./capabilities/identity/implementation/contracts/identity.contracts.js";
+
 const SESSION = {
-  sessionId: "session-test-001",
-  tenantId: "tenant-001",
-  workspaceId: "workspace-001",
-  actorId: "user-001",
+  sessionId: SessionId("session-test-001"),
+  tenantId: TenantId("tenant-001"),
+  workspaceId: WorkspaceId("workspace-001"),
+  actorId: ActorId("user-001"),
 };
 
 const TARGET_DISCUSSION_ID = "disc_01HABC123456789";

@@ -15,6 +15,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import YAML from "yaml";
+import type { GateCAcceptanceAuditRuntimeDeps } from "../evaluators/acceptance-audit.js";
 import {
   buildGateCAcceptanceReportDocument,
   writeGateCAcceptanceReport,
@@ -2643,7 +2644,7 @@ export function buildGateCStatusProjection(): Record<string, JsonValue> {
       .frozen_instrument_hashes,
     "coverage.isolation_check_snapshot.frozen_instrument_hashes",
   );
-    const auditRuntimeDeps = buildAcceptanceAuditRuntimeDeps();
+  const auditRuntimeDeps: GateCAcceptanceAuditRuntimeDeps = buildAcceptanceAuditRuntimeDeps();
   const n2RunId = findLatestRunIdForSubject("GATE-C-DOC-PROPOSE-N2") ?? "run-007";
   const n2SubjectId = "GATE-C-DOC-PROPOSE-N2";
     const n2AcceptanceAudit = buildN2AcceptanceAuditRuntime({

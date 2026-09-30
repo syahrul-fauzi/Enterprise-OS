@@ -1,7 +1,7 @@
 import { Pool } from "pg";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
-import { PostgresRepository } from "@capabilities/identity/implementation/repositories/base.repository.js";
+import { PostgresRepository } from "../../../work-core/index.js";
 import {
   DocumentId,
   type DocumentAggregate,

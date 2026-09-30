@@ -22,10 +22,12 @@ export function getPool(): AnyPool {
   if (!pool) {
     // Use unified POSTGRES_CONNECTION_STRING first, with fallback to DATABASE_URL for backward compatibility
     const connectionString = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL;
+    console.log(`[base.repository.ts] getPool() called - connectionString found: ${!!connectionString}, value: ${connectionString?.substring(0,30)}...`);
     if (!connectionString) {
       console.warn("[PostgreSQL] POSTGRES_CONNECTION_STRING/DATABASE_URL not set - using in-memory mock pool for tests");
       pool = new MockPool() as AnyPool;
     } else {
+      console.log("[PostgreSQL] Initializing REAL PostgreSQL pool!");
       pool = new Pool({
         connectionString,
         max: 10, // Connection pool limit
@@ -266,168 +268,7 @@ export async function initIdentitySchema() {
     ADD COLUMN IF NOT EXISTS is_agent BOOLEAN NOT NULL DEFAULT FALSE;
   `);
 
-  // Create requirements table for requirement-management capability (PRODUCTION SCHEMA)
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS requirements (
-      id TEXT PRIMARY KEY,
-      title TEXT NOT NULL,
-      summary TEXT NOT NULL,
-      description TEXT,
-      status TEXT NOT NULL,
-      priority TEXT NOT NULL,
-      owner TEXT NOT NULL,
-      source TEXT NOT NULL,
-      actor_id TEXT REFERENCES users(id),
-      tenant_id TEXT NOT NULL REFERENCES tenants(id),
-      workspace_id TEXT NOT NULL REFERENCES workspaces(id),
-      logical_work_id TEXT,
-      linked_capability_ids TEXT[] NOT NULL DEFAULT '{}',
-      acceptance_criteria TEXT[] NOT NULL DEFAULT '{}',
-      verification_status TEXT NOT NULL,
-      depends_on TEXT[] NOT NULL DEFAULT '{}',
-      version INTEGER NOT NULL DEFAULT 1,
-      created_by TEXT,
-      created_at TIMESTAMP NOT NULL,
-      updated_at TIMESTAMP NOT NULL,
-      approved_at TIMESTAMP,
-      implemented_at TIMESTAMP,
-      verified_at TIMESTAMP
-    );
-  `);
-
-  // Create cases table for legal-case capability
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS cases (
-      id TEXT PRIMARY KEY,
-      title TEXT NOT NULL,
-      description TEXT,
-      status TEXT NOT NULL,
-      priority TEXT NOT NULL,
-      lawyer_id TEXT,
-      tenant_id TEXT NOT NULL REFERENCES tenants(id),
-      workspace_id TEXT NOT NULL REFERENCES workspaces(id),
-      actor_id TEXT REFERENCES users(id),
-      source_discussion_id TEXT,
-      work_id TEXT,
-      version INTEGER NOT NULL DEFAULT 1,
-      created_at TIMESTAMP NOT NULL,
-      updated_at TIMESTAMP NOT NULL,
-      closed_at TIMESTAMP
-    );
-  `);
-  
-  // Migrations for existing tables (add columns that may be missing)
-  await pool.query(`
-    ALTER TABLE cases 
-    ADD COLUMN IF NOT EXISTS work_id TEXT;
-  `);
-  await pool.query(`
-    ALTER TABLE cases 
-    ADD COLUMN IF NOT EXISTS actor_id TEXT REFERENCES users(id);
-  `);
-  await pool.query(`
-    ALTER TABLE cases 
-    ADD COLUMN IF NOT EXISTS source_discussion_id TEXT;
-  `);
-  await pool.query(`
-    ALTER TABLE cases 
-    ADD COLUMN IF NOT EXISTS version INTEGER NOT NULL DEFAULT 1;
-  `);
-  await pool.query(`
-    ALTER TABLE cases 
-    ADD COLUMN IF NOT EXISTS intent JSONB;
-  `);
-
-  // Create intents table for Intent primitive (first-class EOS primitive)
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS intents (
-      id TEXT PRIMARY KEY,
-      tenant_id TEXT NOT NULL REFERENCES tenants(id),
-      workspace_id TEXT NOT NULL REFERENCES workspaces(id),
-      actor_id TEXT REFERENCES users(id),
-      origin TEXT NOT NULL,
-      title TEXT NOT NULL,
-      description TEXT,
-      raw JSONB,
-      understanding JSONB,
-      resolution JSONB,
-      category TEXT NOT NULL,
-      status TEXT NOT NULL,
-      metadata JSONB,
-      created_at TIMESTAMP NOT NULL,
-      updated_at TIMESTAMP NOT NULL,
-      converted_to_work_id TEXT REFERENCES cases(id),
-      version INTEGER NOT NULL DEFAULT 1
-    );
-  `);
-
-  // ALTER TABLE migrations for Universal Intent (Universal Intake capability) - add new columns if missing
-  await pool.query(`
-    ALTER TABLE intents ADD COLUMN IF NOT EXISTS origin TEXT;
-  `);
-  await pool.query(`
-    ALTER TABLE intents ADD COLUMN IF NOT EXISTS raw JSONB;
-  `);
-  await pool.query(`
-    ALTER TABLE intents ADD COLUMN IF NOT EXISTS understanding JSONB;
-  `);
-  await pool.query(`
-    ALTER TABLE intents ADD COLUMN IF NOT EXISTS resolution JSONB;
-  `);
-  // Make actor_id nullable to support non-human origins
-  await pool.query(`
-    ALTER TABLE intents ALTER COLUMN actor_id DROP NOT NULL;
-  `);
-
-  // Create service_requests table for service-directory capability
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS service_requests (
-      id TEXT PRIMARY KEY,
-      title TEXT NOT NULL,
-      description TEXT,
-      category TEXT NOT NULL,
-      status TEXT NOT NULL,
-      requester_name TEXT,
-      provider_id TEXT,
-      budget TEXT,
-      deadline TIMESTAMP,
-      tenant_id TEXT NOT NULL REFERENCES tenants(id),
-      workspace_id TEXT NOT NULL REFERENCES workspaces(id),
-      created_at TIMESTAMP NOT NULL,
-      updated_at TIMESTAMP NOT NULL,
-      delivered_at TIMESTAMP
-    );
-  `);
-
-  // Create requirements table for requirement-management capability
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS requirements (
-      id TEXT PRIMARY KEY,
-      tenant_id TEXT NOT NULL REFERENCES tenants(id),
-      workspace_id TEXT NOT NULL REFERENCES workspaces(id),
-      actor_id TEXT NOT NULL, -- Actor-agnostic: supports user-, ai-, iot-, machine-, eos-* actorId tanpa batasan human-only (MA-09 compliance)
-      logical_work_id TEXT,
-      title TEXT NOT NULL,
-      summary TEXT,
-      description TEXT,
-      status TEXT NOT NULL,
-      priority TEXT NOT NULL,
-      owner TEXT,
-      source TEXT,
-      linked_capability_ids TEXT[],
-      acceptance_criteria TEXT[],
-      verification_status TEXT,
-      depends_on TEXT[],
-      created_by TEXT REFERENCES users(id),
-      created_at TIMESTAMP NOT NULL,
-      updated_at TIMESTAMP NOT NULL,
-      approved_at TIMESTAMP,
-      implemented_at TIMESTAMP,
-      verified_at TIMESTAMP,
-      version INTEGER NOT NULL DEFAULT 1
-    );
-  `);
-
-  console.log("[PostgreSQL] Identity + Legal Case + Service Directory + Requirement Management schema initialized successfully");
+  // Only identity-native tables are created here - cross-capability tables belong to their respective capabilities
+  console.log("[PostgreSQL] Identity schema (users, tenants, workspaces, sessions, memberships) initialized successfully");
   schemaInitialized = true;
 }

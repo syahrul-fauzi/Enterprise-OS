@@ -32,6 +32,13 @@ import { runVerifyProductBindingCommand } from "./commands/verify-product-bindin
 import { runVerifyProductCommand } from "./commands/verify-product.js";
 import { runEnterpriseQueryCommand } from "./commands/query.js";
 import { runNexusDispatchCommand } from "./commands/nexus-dispatch.js";
+import { 
+  runDoctorCommand, 
+  runEnvCheckCommand, 
+  runCapabilityListCommand, 
+  runCapabilityCheckCommand,
+  runWorkCommand 
+} from "./commands/doctor.js";
 
 const args = process.argv.slice(2);
 const command = args[0] ?? "help";
@@ -42,6 +49,10 @@ async function main(): Promise<number> {
     case "inventory": {
       const { runInventoryScanCommand } = await import("./rl4/commands/inventory.js");
       return runInventoryScanCommand();
+    }
+    case "canonical-handoff": {
+      const { runCanonicalHandoff } = await import("./canonical-handoff.js");
+      return runCanonicalHandoff();
     }
     case "status":
     case "s":
@@ -180,6 +191,50 @@ async function main(): Promise<number> {
       );
       return 1;
     }
+    case "doctor":
+      return runDoctorCommand();
+    case "env":
+      if (subcommand === "check") {
+        return runEnvCheckCommand();
+      }
+      process.stderr.write(
+        `Unknown env subcommand: ${subcommand || "(missing)"}\n` +
+          "Usage: pnpm eos env check\n" +
+          "Run: pnpm eos help\n",
+      );
+      return 1;
+    case "capability":
+      if (subcommand === "list") {
+        return runCapabilityListCommand();
+      }
+      if (subcommand === "check") {
+        const capabilityId = args[2];
+        if (!capabilityId) {
+          process.stderr.write(
+            "Usage: pnpm eos capability check <capability-id>\n" +
+              "Example: pnpm eos capability check database.read\n",
+          );
+          return 1;
+        }
+        return runCapabilityCheckCommand(capabilityId);
+      }
+      process.stderr.write(
+        `Unknown capability subcommand: ${subcommand || "(missing)"}\n` +
+          "Usage: pnpm eos capability list\n" +
+          "       pnpm eos capability check <capability-id>\n" +
+          "Run: pnpm eos help\n",
+      );
+      return 1;
+    case "work":
+      const workId = args[1];
+      if (!workId) {
+        process.stderr.write(
+          "Usage: pnpm eos work <work-id>\n" +
+            "Example: pnpm eos work W-002\n",
+        );
+        return 1;
+      }
+      return runWorkCommand(workId);
     case "help":
     case "-h":
     case "--help":
@@ -214,7 +269,12 @@ async function main(): Promise<number> {
           "  pnpm eos verify-constitution    Verifikasi hukum konstitusional projection dan graph purity",
           "  pnpm eos query '<DSL>'    Jalankan query deterministik di atas enterprise control graph + Gate C snapshot",
           "  pnpm eos nexus dispatch    Jalankan State→Dispatch→Execute→Prove→Reset pipeline berdasarkan .eos-state",
-          "  pnpm eos help      Tampilkan bantuan ini",
+          "  pnpm eos doctor           Cek status environment dan capability gateway (Development Environment Capability Gateway)",
+          "  pnpm eos env check        Verifikasi variabel environment yang dibutuhkan",
+          "  pnpm eos capability list  Daftar semua capability yang tersedia di environment",
+          "  pnpm eos capability check <capability-id>  Machine-readable handshake untuk agent: verifikasi akses capability",
+          "  pnpm eos work <work-id>    Jalankan Work melalui gateway capability yang terotorisasi",
+          "  pnpm eos help             Tampilkan bantuan ini",
           "",
           "Prinsip:",
           "  CLI TIDAK menghitung status sendiri.",
@@ -305,6 +365,37 @@ async function main(): Promise<number> {
       const rootDir = process.cwd();
       const result = await runProductionInventoryScan(rootDir);
       return 0;
+    }
+    // Minimal EOS CLI commands (Development Environment Capability Gateway)
+    case "doctor":
+      return runDoctorCommand();
+    case "env":
+      if (subcommand === "check") {
+        return runEnvCheckCommand();
+      }
+      process.stderr.write(`Unknown env subcommand: ${subcommand || "(missing)"}\nRun: pnpm eos help\n`);
+      return 1;
+    case "capability":
+      if (subcommand === "list") {
+        return runCapabilityListCommand();
+      }
+      if (subcommand === "check") {
+        const capabilityId = args[2];
+        if (!capabilityId) {
+          process.stderr.write("Usage: pnpm eos capability check <capability-id>\nExample: pnpm eos capability check database.read\n");
+          return 1;
+        }
+        return runCapabilityCheckCommand(capabilityId);
+      }
+      process.stderr.write(`Unknown capability subcommand: ${subcommand || "(missing)"}\nRun: pnpm eos help\n`);
+      return 1;
+    case "work": {
+      const workId = args[1];
+      if (!workId) {
+        process.stderr.write("Usage: pnpm eos work <work-id>\nExample: pnpm eos work W-003\n");
+        return 1;
+      }
+      return runWorkCommand(workId);
     }
     default:
       process.stderr.write(`Unknown command: ${command}\nRun: pnpm eos help\n`);

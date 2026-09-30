@@ -8,6 +8,17 @@ export type ILCWorkflowDefinition = WorkflowDefinition;
 export const ILC_WORKFLOW: WorkflowDefinition = {
   id: "ilc-institutional-coordination",
   productId: "ilc",
+  // 5 BOUNDARY MAPPINGS (mandat EOS High-Value Work - aligned with core-kernel definition)
+  tenantId: "tenant-ilc-001",              // ① Identity Boundary: Tenant ownership
+  domain: "academic",                      // ② Semantic Boundary: Domain classification
+  executionFrame: "proxy",                 // ④ Execution Boundary: CMBCD mechanism
+  presentationConfig: {                    // ⑤ Presentation Boundary: FACE projection
+    supportedFaces: ["human", "agent", "api"],
+    defaultLayout: "institutional-dashboard"
+  },
+  // High-Value Work Graph Semantic References
+  productRef: "product-ilc-001",           // Product node reference
+  caseRef: "case-institutional-coordination-template", // Case template reference
   label: "Institutional Need → Submission → Review → Authorization → Execution → Delivery → Completion",
   initialStep: "institutional-need-submitted",
   terminalStep: "institutional-outcome-delivered",

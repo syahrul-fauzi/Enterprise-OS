@@ -3,8 +3,9 @@
 // Preserved original location in atomic-composition (the capability that implements the pipeline)
 // Replicated in presentation-features for UI type safety - MUST be kept in sync with this source file
 
-// Import base types from identity capability to avoid duplication
-import { IntentCategory, type IntentRawInput } from "@repo/capabilities-identity";
+// Import canonical types dari work-core (sesuai dependency chain: identity→work-core→capabilities)
+// Anti-drift enforcement - semua capability harus import dari @repo/capabilities-work-core
+import type { IntentCategory, IntentRawInput } from "@repo/capabilities-work-core";
 
 // Base actor type definitions
 export type IntentActorType = "human" | "agent" | "system";

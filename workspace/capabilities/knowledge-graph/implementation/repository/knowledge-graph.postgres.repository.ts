@@ -2,9 +2,10 @@
 // Implements PostgresRepository pattern for knowledge_graph_nodes and knowledge_graph_edges tables
 // Follows existing patterns from case-postgres.repository.ts and communication.postgres.repository.ts
 import { Pool } from "pg";
-import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
+import { PostgresRepository } from "../../../work-core/index.js";
 import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager.js";
 import { isBuildPhase } from "../../../shared/implementation/database/health.check.js";
+import type { TenantId } from "@repo/capabilities-work-core";
 import type { KnowledgeNode, KnowledgeEdge, KnowledgeGraphRepository } from "../contracts/knowledge-graph.contracts.js";
 
 // Validate required environment variables in production - matches existing repository pattern
@@ -41,7 +42,7 @@ async function initializeDatabase() {
 }
 
 // Knowledge Node Repository - implements PostgresRepository for knowledge_graph_nodes
-class KnowledgeNodeRepositoryPostgresImpl extends PostgresRepository<KnowledgeNode & { id: string; tenantId: string; workspaceId: string }> {
+class KnowledgeNodeRepositoryPostgresImpl extends PostgresRepository<KnowledgeNode & { id: string; tenantId: TenantId; workspaceId: string }> {
   readonly entityName = "KnowledgeNode" as const;
   readonly kind = "repository" as const;
 
@@ -69,7 +70,7 @@ class KnowledgeNodeRepositoryPostgresImpl extends PostgresRepository<KnowledgeNo
    * Convert domain aggregate (KnowledgeNode) to database record (camelCase → snake_case)
    * Implements abstract toRecord method from PostgresRepository base class
    */
-  protected toRecord(entity: KnowledgeNode & { id: string; tenantId: string; workspaceId: string; version?: number }): Record<string, any> {
+  protected toRecord(entity: KnowledgeNode & { id: string; tenantId: TenantId; workspaceId: string; version?: number }): Record<string, any> {
     return {
       id: entity.id,
       type: entity.type,
@@ -87,7 +88,7 @@ class KnowledgeNodeRepositoryPostgresImpl extends PostgresRepository<KnowledgeNo
    * Convert database record to domain aggregate (snake_case → camelCase)
    * Implements abstract toAggregate method from PostgresRepository base class
    */
-  protected toAggregate(record: Record<string, any>): KnowledgeNode & { id: string; tenantId: string; workspaceId: string } {
+  protected toAggregate(record: Record<string, any>): KnowledgeNode & { id: string; tenantId: TenantId; workspaceId: string } {
     return {
       id: record.id,
       type: record.type,
@@ -103,7 +104,7 @@ class KnowledgeNodeRepositoryPostgresImpl extends PostgresRepository<KnowledgeNo
    * Override save() to set RLS session context before database operation
    * Ensures tenant isolation is enforced for all knowledge node writes
    */
-  async save(entity: KnowledgeNode & { id: string; tenantId: string; workspaceId: string; version?: number }): Promise<KnowledgeNode & { id: string; tenantId: string; workspaceId: string; }> {
+  async save(entity: KnowledgeNode & { id: string; tenantId: TenantId; workspaceId: string; version?: number }): Promise<KnowledgeNode & { id: string; tenantId: TenantId; workspaceId: string; }> {
     await this.setSessionContext(entity.tenantId, entity.workspaceId);
     const result = await super.save(entity);
     await this.clearSessionContext();
@@ -114,7 +115,7 @@ class KnowledgeNodeRepositoryPostgresImpl extends PostgresRepository<KnowledgeNo
    * Get all nodes for a specific tenant/workspace
    * Adds RLS context to list() operation
    */
-  async listForTenant(tenantId: string, workspaceId: string): Promise<readonly (KnowledgeNode & { id: string })[]> {
+  async listForTenant(tenantId: TenantId, workspaceId: string): Promise<readonly (KnowledgeNode & { id: string })[]> {
     await this.setSessionContext(tenantId, workspaceId);
     const nodes = await this.list();
     await this.clearSessionContext();
@@ -123,7 +124,7 @@ class KnowledgeNodeRepositoryPostgresImpl extends PostgresRepository<KnowledgeNo
 }
 
 // Knowledge Edge Repository - implements PostgresRepository for knowledge_graph_edges
-class KnowledgeEdgeRepositoryPostgresImpl extends PostgresRepository<KnowledgeEdge & { id: string; tenantId: string; workspaceId: string }> {
+class KnowledgeEdgeRepositoryPostgresImpl extends PostgresRepository<KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId: string }> {
   readonly entityName = "KnowledgeEdge" as const;
   readonly kind = "repository" as const;
 
@@ -135,7 +136,7 @@ class KnowledgeEdgeRepositoryPostgresImpl extends PostgresRepository<KnowledgeEd
   /**
    * Convert domain aggregate (KnowledgeEdge) to database record (camelCase → snake_case)
    */
-  protected toRecord(entity: KnowledgeEdge & { id: string; tenantId: string; workspaceId: string; version?: number }): Record<string, any> {
+  protected toRecord(entity: KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId: string; version?: number }): Record<string, any> {
     return {
       id: entity.id,
       type: entity.relation,
@@ -152,7 +153,7 @@ class KnowledgeEdgeRepositoryPostgresImpl extends PostgresRepository<KnowledgeEd
   /**
    * Convert database record to domain aggregate (snake_case → camelCase)
    */
-  protected toAggregate(record: Record<string, any>): KnowledgeEdge & { id: string; tenantId: string; workspaceId: string } {
+  protected toAggregate(record: Record<string, any>): KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId: string } {
     return {
       id: record.id,
       from: record.source_node_id,
@@ -167,7 +168,7 @@ class KnowledgeEdgeRepositoryPostgresImpl extends PostgresRepository<KnowledgeEd
   /**
    * Override save() to set RLS session context before database operation
    */
-  async save(entity: KnowledgeEdge & { id: string; tenantId: string; workspaceId: string; version?: number }): Promise<KnowledgeEdge & { id: string; tenantId: string; workspaceId: string; }> {
+  async save(entity: KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId: string; version?: number }): Promise<KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId: string; }> {
     await this.setSessionContext(entity.tenantId, entity.workspaceId);
     const result = await super.save(entity);
     await this.clearSessionContext();
@@ -177,7 +178,7 @@ class KnowledgeEdgeRepositoryPostgresImpl extends PostgresRepository<KnowledgeEd
   /**
    * Get all edges for a specific tenant/workspace
    */
-  async listForTenant(tenantId: string, workspaceId: string): Promise<readonly (KnowledgeEdge & { id: string })[]> {
+  async listForTenant(tenantId: TenantId, workspaceId: string): Promise<readonly (KnowledgeEdge & { id: string })[]> {
     await this.setSessionContext(tenantId, workspaceId);
     const edges = await this.list();
     await this.clearSessionContext();
@@ -213,8 +214,8 @@ class KnowledgeGraphRepositoryPostgresImpl implements KnowledgeGraphRepository {
    * Implements atomic persistence of the entire graph state for a tenant/workspace
    */
   async saveSnapshot(
-    nodes: (KnowledgeNode & { id: string; tenantId: string; workspaceId: string })[],
-    edges: (KnowledgeEdge & { id: string; tenantId: string; workspaceId: string })[]
+    nodes: (KnowledgeNode & { id: string; tenantId: TenantId; workspaceId: string })[],
+    edges: (KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId: string })[]
   ): Promise<{ savedNodes: number; savedEdges: number }> {
     let savedNodes = 0;
     let savedEdges = 0;
@@ -237,7 +238,7 @@ class KnowledgeGraphRepositoryPostgresImpl implements KnowledgeGraphRepository {
   /**
    * Load complete knowledge graph snapshot from PostgreSQL for a tenant/workspace
    */
-  async loadSnapshot(tenantId: string, workspaceId: string): Promise<{ nodes: KnowledgeNode[]; edges: KnowledgeEdge[] }> {
+  async loadSnapshot(tenantId: TenantId, workspaceId: string): Promise<{ nodes: KnowledgeNode[]; edges: KnowledgeEdge[] }> {
     const existingNodes = await this.nodeRepo.listForTenant(tenantId, workspaceId);
     const existingEdges = await this.edgeRepo.listForTenant(tenantId, workspaceId);
     // Fix readonly array processing to create mutable node/edge maps

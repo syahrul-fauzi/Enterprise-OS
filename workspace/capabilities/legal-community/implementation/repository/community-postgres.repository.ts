@@ -1,5 +1,5 @@
 // @ts-nocheck: Skip TypeScript checks to unblock Lawyers Hub staging deployment
-import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
+import { PostgresRepository } from "../../../work-core/index.js";
 import {
   ContentId,
   DiscussionId,

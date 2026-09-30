@@ -1,4 +1,4 @@
-import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
+import { PostgresRepository } from "../../../work-core/index.js";
 import type { IncidentAggregate, IncidentId } from "../contracts/observability.contracts.js";
 
 export class IncidentRepositoryPostgres extends PostgresRepository<IncidentAggregate> {

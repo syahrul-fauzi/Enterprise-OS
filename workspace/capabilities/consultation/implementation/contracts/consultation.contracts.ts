@@ -1,3 +1,5 @@
+import type { TenantId, WorkspaceId, ActorId, SessionId, WorkId, UserId } from "@repo/capabilities-work-core";
+
 export type ConsultationStatus = 
   | "OPEN" 
   | "UNDERSTANDING" 
@@ -262,7 +264,7 @@ export const EOS_CONSULTATION_CONTROLS: Readonly<Record<EosConsultationControlId
 
 export type DecisionLogEntry = {
   readonly decision: string;
-  readonly by: string;
+  readonly by: ActorId;
   readonly at: Date;
   readonly reason: string;
   readonly controlIds?: readonly EosConsultationControlId[];
@@ -271,7 +273,7 @@ export type DecisionLogEntry = {
 export interface ConsultationRiskAssessment {
   readonly level: RiskLevel;
   readonly rationale: string;
-  readonly assessedBy: string;
+  readonly assessedBy: ActorId;
   readonly assessedAt: Date;
   readonly controlIds?: readonly EosConsultationControlId[];
 }
@@ -280,14 +282,14 @@ export interface ConsultationAutonomyProfile {
   readonly level: AutonomyLevel;
   readonly allowedActions: readonly string[];
   readonly prohibitedActions: readonly string[];
-  readonly setBy: string;
+  readonly setBy: ActorId;
   readonly setAt: Date;
   readonly controlIds?: readonly EosConsultationControlId[];
 }
 
 export interface ConsultationAssistanceAssignment {
   readonly mode: AssistanceMode;
-  readonly actor: string;
+  readonly actor: ActorId;
   readonly capabilities: readonly string[];
   readonly assignedAt: Date;
   readonly controlIds?: readonly EosConsultationControlId[];
@@ -309,7 +311,7 @@ export type DecisionEvidenceStage =
 export interface ConsultationStageEvidence {
   readonly stage: DecisionEvidenceStage;
   readonly recordedAt: Date;
-  readonly recordedBy: string;
+  readonly recordedBy: ActorId;
   readonly summary: string;
   readonly details?: Readonly<Record<string, unknown>>;
   readonly controlIds?: readonly EosConsultationControlId[];
@@ -353,7 +355,7 @@ export interface ConsultationFact {
   readonly value: unknown;
   readonly epistemicStatus: EpistemicStatus;
   readonly recordedAt: Date;
-  readonly recordedBy: string;
+  readonly recordedBy: ActorId;
   readonly sourceEpisodeId?: ConsultationEpisodeId;
 }
 
@@ -390,7 +392,7 @@ export interface LearningCandidate {
   readonly pattern: string;
   readonly confidence: number;
   readonly status: LearningCandidateStatus;
-  readonly reviewedBy?: string;
+  readonly reviewedBy?: ActorId;
   readonly reviewedAt?: Date;
   readonly controlIds?: readonly EosConsultationControlId[];
   readonly createdAt: Date;

@@ -3,6 +3,7 @@ import {
   UserId,
   TenantId,
   WorkspaceId,
+  ActorId,
   type SessionAggregate,
   type SessionRepository,
 } from "../contracts/index.ts";
@@ -18,7 +19,7 @@ const hydrate = (): Map<string, SessionAggregate> => {
   const testSession1: SessionAggregate = {
     id: SessionId("session-test-001"),
     userId: UserId("user-001"),
-    actorId: UserId("user-001"),
+    actorId: ActorId("user-001"),
     tenantId: TenantId("tenant-001"),
     workspaceId: WorkspaceId("workspace-001"),
     productId: "lawyershub",
@@ -34,7 +35,7 @@ const hydrate = (): Map<string, SessionAggregate> => {
   const testSession2: SessionAggregate = {
     id: SessionId("session-test-002"),
     userId: UserId("user-002"),
-    actorId: UserId("user-002"),
+    actorId: ActorId("user-002"),
     tenantId: TenantId("tenant-001"),
     workspaceId: WorkspaceId("workspace-001"),
     productId: "services-id",

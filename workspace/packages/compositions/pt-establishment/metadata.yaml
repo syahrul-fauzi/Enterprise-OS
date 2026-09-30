@@ -1,0 +1,8 @@
+name: PT Establishment Workspace
+version: 1.0.0
+owner: eos-composition-team
+reuse_targets:
+  - services-id
+  - ilc
+  - lawyershub
+description: Reusable workspace composition for Indonesian Limited Liability Company (PT) establishment process, supporting end-to-end registration, notarization, and government licensing workflows. Reusable across W-SVC-001, W-SVC-002, and all legal entity formation use cases.

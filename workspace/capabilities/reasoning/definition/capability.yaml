@@ -1,0 +1,40 @@
+id: reasoning
+name: Reasoning Capability
+version: 0.1.0
+owner: ai-reasoning-domain
+status: ACTIVE
+introduced: "2026-09-28"
+provides:
+  - work-decompose
+  - work-plan
+  - work-route
+  - work-summarize
+  - work-classify
+purpose: Provide interchangeable reasoning capabilities (SLM/LLM/human/planner) for Work operations while maintaining EOS semantic authority.
+manifest_version: 1.0.0
+exports:
+  - ReasoningProvider
+  - ReasoningContractRepository
+implementation:
+  entry: implementation/service.ts
+depends_on:
+  - work-core
+  - core-runtime
+  - policy-engine
+capability:
+  name: reasoning
+  owner: ai-reasoning-domain
+  purpose: Interchangeable reasoning actuator layer operating under EOS semantic authority, never a source of semantic authority.
+  consumers:
+    - agent-orchestration
+    - requirement-management
+    - workflow-engine
+  maturity:
+    level: core
+  lifecycle:
+    state: active
+  evidence_required:
+    - model-interchangeability
+    - semantic-authority-enforcement
+    - cross-protocol-compatibility
+stability: experimental

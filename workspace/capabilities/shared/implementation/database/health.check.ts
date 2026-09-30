@@ -2,7 +2,7 @@
 // Can be exposed via API endpoint for orchestration systems to verify database connectivity
 // PR-06: Added reconnection logic, stale connection detection, and failover support
 import { Pool } from "pg";
-import { updateConnectionPoolMetrics, getConnectionPoolMetrics } from "@repo/core-runtime/execution-observability";
+import { updateConnectionPoolMetrics, getConnectionPoolMetrics } from "@repo/core-runtime/execution-observability.js";
 import { observabilityCommands } from "../../../observability/implementation/service.js";
 
 /**

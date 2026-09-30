@@ -7,14 +7,26 @@ import {
   IncidentRepositoryInMemory,
 } from "../repository/index.js";
 import { getIncidentRepositoryPostgres, IncidentRepositoryPostgres } from "../repository/incident-postgres.repository.js";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
-import { getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository.js";
+// Import SEMUA canonical types dan factories dari SINGLE-SOURCE work-core (anti-drift - TENANT-ISOLATION-001)
+// Sesuai dengan aturan: Semua capability harus import dari @repo/capabilities-work-core, bukan langsung dari identity
+import { 
+  type SessionId, 
+  type TenantId,
+  type WorkspaceId,
+  type ActorId,
+  createSessionId,
+  createTenantId,
+  createWorkspaceId,
+  createActorId,
+  initIdentitySchema, 
+  getSessionRepositoryPostgres 
+} from "../../../work-core/index.js";
 import {
   CreateIncidentInput,
   CreateIncidentOutput,
   IncidentAggregate,
+  IncidentId,
 } from "../contracts/observability.contracts.js";
-import { SessionId } from "../../../identity/implementation/contracts/identity.contracts.js";
 
 const _sessionRepo = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()
@@ -59,17 +71,17 @@ export const createIncident: CreateIncidentCommand = {
 
     if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       const SessionRepo = getSessionRepository();
-      const session = await SessionRepo.byId(SessionId(sessionId));
+      const session = await SessionRepo.byId(createSessionId(sessionId));
       if (!session || session.revokedAt !== null) {
         throw new Error("[incident.create] Invalid or revoked session - authentication violation");
       }
-      if (session.actorId !== actorId) {
+      if (session.actorId !== createActorId(actorId)) {
         throw new Error("[incident.create] Session actor mismatch - authentication violation");
       }
-      if (session.tenantId !== tenantId) {
+      if (session.tenantId !== createTenantId(tenantId)) {
         throw new Error("[incident.create] Cross-tenant access attempt blocked - security violation");
       }
-      if (session.workspaceId !== workspaceId) {
+      if (session.workspaceId !== createWorkspaceId(workspaceId)) {
         throw new Error("[incident.create] Cross-workspace access attempt blocked - security violation");
       }
     }
@@ -83,11 +95,12 @@ export const createIncident: CreateIncidentCommand = {
       category: category || "Infrastructure",
       status: defaultIncidentStatus,
       priority: priority ?? defaultIncidentPriority,
+      tenantId: createTenantId(tenantId),
+      workspaceId: createWorkspaceId(workspaceId),
+      actorId: createActorId(actorId),
       createdAt: new Date(),
       updatedAt: new Date(),
-    } as any;
-    (entity as any).tenantId = tenantId;
-    (entity as any).workspaceId = workspaceId;
+    };
 
     const IncidentRepo = getIncidentRepository();
     await IncidentRepo.save(entity);
@@ -104,7 +117,7 @@ export const acknowledgeIncident: AcknowledgeIncidentCommand = {
   async execute(input) {
     const parsed = AcknowledgeIncidentSchema.parse(input);
     const IncidentRepo = getIncidentRepository();
-    const incident = await IncidentRepo.byId(parsed.incidentId as any);
+    const incident = await IncidentRepo.byId(parsed.incidentId as IncidentId);
     if (!incident) throw new Error("[incident.acknowledge] Incident not found");
     const updated = { ...incident, status: "in_progress" as const, updatedAt: new Date() };
     await IncidentRepo.save(updated);
@@ -121,7 +134,7 @@ export const resolveIncident: ResolveIncidentCommand = {
   async execute(input) {
     const parsed = ResolveIncidentSchema.parse(input);
     const IncidentRepo = getIncidentRepository();
-    const incident = await IncidentRepo.byId(parsed.incidentId as any);
+    const incident = await IncidentRepo.byId(parsed.incidentId as IncidentId);
     if (!incident) throw new Error("[incident.resolve] Incident not found");
     const updated = { ...incident, status: "resolved" as const, updatedAt: new Date() };
     await IncidentRepo.save(updated);
@@ -138,7 +151,7 @@ export const closeIncident: CloseIncidentCommand = {
   async execute(input) {
     const parsed = CloseIncidentSchema.parse(input);
     const IncidentRepo = getIncidentRepository();
-    const incident = await IncidentRepo.byId(parsed.incidentId as any);
+    const incident = await IncidentRepo.byId(parsed.incidentId as IncidentId);
     if (!incident) throw new Error("[incident.close] Incident not found");
     const updated = { ...incident, status: "closed" as const, updatedAt: new Date() };
     await IncidentRepo.save(updated);

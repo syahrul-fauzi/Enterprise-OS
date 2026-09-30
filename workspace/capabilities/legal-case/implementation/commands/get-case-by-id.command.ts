@@ -1,9 +1,8 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/dist/types.js";
 import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
-import { SessionRepositoryInMemory, SessionRepositoryPostgres } from "../../../identity/dist/implementation/repositories/index.js";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core/index.js";
 import type { CaseId, CaseAggregate } from "../../contracts/index.js";
-import { initIdentitySchema } from "../../../identity/dist/implementation/repositories/base.repository.js";
 
 // FORCE IN-MEMORY FOR DEVELOPMENT - ignore DATABASE_URL to fix "Work not found" errors
 // Only use Postgres in NODE_ENV=production
@@ -12,7 +11,7 @@ export const caseRepository = process.env.NODE_ENV === "production" && (process.
   ? CaseRepositoryPostgres 
   : CaseRepositoryInMemory;
 export const sessionRepository = process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
-  ? SessionRepositoryPostgres 
+  ? getSessionRepositoryPostgres()
   : SessionRepositoryInMemory;
 
 export const GetCaseByIdInputSchema = z.object({

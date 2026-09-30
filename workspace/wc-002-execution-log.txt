@@ -1,0 +1,127 @@
+
+🚀 MEMULAI MULTI-PROCESS FALSIFICATION (WC-002)
+==========================================================================================
+EOS WORK CLAIM — MULTI-PROCESS FALSIFICATION
+══════════════════════════════════════════════
+[test] Using PostgreSQL connection string (redacted): postgresql://eos_user:eos_pass...
+[test] REAL PostgreSQL pool initialized successfully!
+
+📋 MEMULAI MIGRASI DATABASE...
+✅ MIGRASI SELESAI: 0 migration(s) dijalankan, 11 sudah terapkan sebelumnya
+
+🔄 ROUND 1/1 - Memulai proses...
+[test] Creating test work with ID: work_0d5ac28b-61f1-4bd9-a4c6-d1993ae45f25
+✅ Round 1: Test Work created: work_0d5ac28b-61f1-4bd9-a4c6-d1993ae45f25, version=1
+✅ Round 1: Test Work verified in database, ready for claims
+🔧 Spawning 100 worker processes...
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+📤 Sent initialization to worker for actor actor-000-fe254cb5
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig
+Error: write EPIPE
+    at ChildProcess.target._send (node:internal/child_process:900:20)
+    at ChildProcess.target.send (node:internal/child_process:775:19)
+    at Timeout._onTimeout (file:///root/Enterprise-OS/workspace/work-claim-realdb-falsification.test.ts:166:15)
+    at listOnTimeout (node:internal/timers:605:17)
+    at processTimers (node:internal/timers:541:7) {
+  errno: -32,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+/root/.nvm/versions/node/v24.16.0/bin/node: bad option: --tsconfig

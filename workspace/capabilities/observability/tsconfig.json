@@ -26,7 +26,11 @@
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "strict": true,
-    "target": "ES2022"
+    "target": "ES2022",
+    "paths": {
+      "@repo/capabilities-work-core": ["../work-core/contracts/work.contracts.ts"],
+      "@repo/capabilities-work-core/*": ["../work-core/*"]
+    }
   },
   "references": [
     {
@@ -46,6 +50,9 @@
     },
     {
       "path": "../requirement-management/tsconfig.json"
+    },
+    {
+      "path": "../work-core/tsconfig.json"
     },
     {
       "path": "../requirements-traceability-matrix/implementation/tsconfig.json"

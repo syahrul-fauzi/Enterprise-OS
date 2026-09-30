@@ -1,0 +1,29 @@
+{
+  "post_work_count": 3,
+  "timestamp": "2026-09-29T05:14:05.013Z",
+  "sample_work_anchors": [
+    {
+      "id": "W-001",
+      "title": "Cuti Tahunan 2026",
+      "status": "SUBMITTED",
+      "created_at": "2026-09-29T05:07:20.128Z"
+    },
+    {
+      "id": "W-002",
+      "title": "Review Contract Legal",
+      "status": "IN_PROGRESS",
+      "created_at": "2026-09-29T05:07:20.129Z"
+    },
+    {
+      "id": "W-003",
+      "title": "Perbaikan Bug Dashboard",
+      "status": "APPROVED",
+      "created_at": "2026-09-29T05:07:20.129Z"
+    }
+  ],
+  "all_work_ids": [
+    "W-001",
+    "W-002",
+    "W-003"
+  ]
+}

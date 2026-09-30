@@ -6,6 +6,8 @@ import {
   createAnonymousWorkspaceSession,
   encodeWorkspaceSession,
 } from "@repo/core-kernel";
+// FACE-001: Import product context to extract productId from request headers for dynamic session creation
+import { readProductContextFromRequest } from "@repo/presentation/experience/src/product-context";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 // EOS-PROD-004-P1: Import authorization primitive (REUSE existing security-hardening capability) - correct relative path from web app to capability
 import { SecurityHardeningService } from "../../../../../../capabilities/security-hardening/implementation/service";
@@ -25,6 +27,7 @@ export interface CanonicalWorkRecord {
   tenantId: string;
   workspaceId: string;
   actorId: string;
+  workflowId: string; // FACE-001: Link canonical work to its workflow definition for presentationConfig routing
   createdAt: string;
   updatedAt: string;
   priority?: "low" | "medium" | "high" | "critical";
@@ -43,7 +46,7 @@ export interface CanonicalWorkRecord {
   external_verification?: null;
   metadata?: Record<string, unknown>;
   communications?: unknown[]; // VF-02: Add missing communications property for fixture data
-}
+ }
 
 // In-memory canonical work store only (PostgreSQL repository disabled to fix unused import errors)
 const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
@@ -133,6 +136,7 @@ if (!canonicalWorkStore.has("lh-case-001")) {
     tenantId: "tenant.anonymous",
     workspaceId: "professional-workspace.anonymous",
     actorId: "anonymous.user",
+    workflowId: "lh-lgl-001-legal-consultation", // FACE-001: Link LawyersHub workflow (LH_LGL_001_ConsultationWorkflow)
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     priority: "high",
@@ -341,7 +345,11 @@ export async function POST(request: Request) {
     
     if (!sessionCookie) {
       console.log(`[POST /api/work/create] No existing session - creating anonymous session`);
-      const anonymousSession = createAnonymousWorkspaceSession();
+      // FACE-001: Extract productId from request headers to set correct product boundary for new sessions
+      const productContext = readProductContextFromRequest(request);
+      console.log(`[POST /api/work/create] 🏷️ Extracted product context for new session: productId=${productContext.productId}, requestHost=${productContext.requestHost}`);
+      
+      const anonymousSession = createAnonymousWorkspaceSession(productContext.productId || undefined);
       const encodedSession = encodeWorkspaceSession(anonymousSession);
       sessionCookie = `${WORKSPACE_SESSION_COOKIE}=${encodedSession}`;
       createdNewSession = true;

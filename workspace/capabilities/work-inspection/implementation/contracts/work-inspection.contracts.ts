@@ -4,27 +4,10 @@
  * No standalone communication types - all events are grounded to a Work
  */
 
-import type { WorkId } from "@repo/core-kernel";
-// Temporarily commented out to unblock build - missing communication/legal-case implementation files
-// import type { CommunicationEvent } from "@capabilities/communication/implementation/contracts/communication.contracts.js";
-// import type { CaseAggregate } from "@capabilities/legal-case/implementation/contracts/case.contracts.js";
-export type { WorkId };
-export type WorkStatus = "draft" | "active" | "suspended" | "completed" | "cancelled";
-export type WorkAggregate = {
-  id: string;
-  workId: WorkId;
-  status: WorkStatus;
-  externalId?: string;
-  platformMetadata?: Record<string, any>;
-  updatedAt?: string | Date;
-  createdAt?: string | Date;
-  platformSource?: string;
-  domainType?: string;
-  stateHistory?: any[];
-  assignedActorId?: string;
-  nextAction?: string;
-  workMode?: string;
-};
+import type { WorkAggregate, WorkId, WorkStatus, TenantId, ActorId, SessionId } from "@repo/capabilities-work-core";
+// Re-export SEMUA canonical types dari work-core - TIDAK ADA definisi lokal WorkAggregate (semantic boundary consolidation selesai)
+export type { WorkId, WorkStatus, WorkAggregate, TenantId, ActorId, SessionId } from "@repo/capabilities-work-core";
+// All value exports already handled by @repo/capabilities-work-core - removed duplicate export to fix TS2300
 
 
 

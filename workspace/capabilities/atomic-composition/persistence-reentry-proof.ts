@@ -172,8 +172,20 @@ async function runPersistenceReentryProof() {
     availableCapabilities
   });
 
-  if (!compositionResult.success) {
+  if (!compositionResult || !compositionResult.success) {
     console.error("❌ Team composition failed!");
+    process.exit(1);
+  }
+  if (!compositionResult.team) {
+    console.error("❌ Team composition result missing team object!");
+    process.exit(1);
+  }
+  if (!compositionResult.team.actorIds) {
+    console.error("❌ Team composition result missing actorIds array!");
+    process.exit(1);
+  }
+  if (!compositionResult.assignments) {
+    console.error("❌ Team composition result missing assignments array!");
     process.exit(1);
   }
   console.log(`   ✅ Team composed successfully: ${compositionResult.team.teamId}`);

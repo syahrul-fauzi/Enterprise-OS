@@ -33,7 +33,7 @@ export type GateCAcceptanceAuditRuntimeDeps = Readonly<{
   readYamlRecordIfExists: (path: string) => Record<string, unknown> | null;
   loadSubjectDefinition: (subjectRelPath?: string) => SubjectDefinition;
   hasProofLedgerEntryForRun: (
-    proofLedgerEntries: readonly unknown[],
+    proofLedgerEntries: readonly JsonValue[],
     runId: string,
   ) => boolean;
   getExpectedDiagnosticFailure: (

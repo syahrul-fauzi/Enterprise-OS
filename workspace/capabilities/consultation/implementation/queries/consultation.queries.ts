@@ -12,15 +12,14 @@ import {
 } from "../contracts/consultation.contracts.js";
 import type { CapabilityQuery } from "@repo/core-kernel";
 import { ConsultationRepositoryInMemory } from "../repository/consultation.repository.js";
-import { initIdentitySchema, SessionRepositoryPostgres } from "../../../identity/implementation/repositories/index.js";
-import { SessionId } from "../../../identity/implementation/contracts/identity.contracts.js";
+import { initIdentitySchema, SessionRepositoryInMemory, getSessionRepositoryPostgres, SessionId, TenantId, WorkspaceId, ActorId } from "../../../work-core/index.js";
 
 type GetConsultationQuery = CapabilityQuery<GetConsultationInput, GetConsultationOutput>;
 type SearchConsultationsQuery = CapabilityQuery<SearchConsultationsInput, SearchConsultationsOutput>;
-type GetConsultationSeriesQuery = CapabilityQuery<{ id: string; sessionId: string; tenantId: string; workspaceId: string; actorId: string }, ConsultationSeries | undefined>;
-type ListConsultationSeriesQuery = CapabilityQuery<{ workspaceId: string; sessionId: string; tenantId: string; actorId: string }, readonly ConsultationSeries[]>;
-type GetConsultationEpisodeQuery = CapabilityQuery<{ id: string; sessionId: string; tenantId: string; workspaceId: string; actorId: string }, ConsultationEpisode | undefined>;
-type ListConsultationEpisodesQuery = CapabilityQuery<{ seriesId: string; sessionId: string; tenantId: string; workspaceId: string; actorId: string }, readonly ConsultationEpisode[]>;
+type GetConsultationSeriesQuery = CapabilityQuery<{ id: string; sessionId: SessionId; tenantId: TenantId; workspaceId: WorkspaceId; actorId: ActorId }, ConsultationSeries | undefined>;
+type ListConsultationSeriesQuery = CapabilityQuery<{ workspaceId: WorkspaceId; sessionId: SessionId; tenantId: TenantId; actorId: ActorId }, readonly ConsultationSeries[]>;
+type GetConsultationEpisodeQuery = CapabilityQuery<{ id: string; sessionId: SessionId; tenantId: TenantId; workspaceId: WorkspaceId; actorId: ActorId }, ConsultationEpisode | undefined>;
+type ListConsultationEpisodesQuery = CapabilityQuery<{ seriesId: string; sessionId: SessionId; tenantId: TenantId; workspaceId: WorkspaceId; actorId: ActorId }, readonly ConsultationEpisode[]>;
 
 export const getConsultation: GetConsultationQuery = {
   kind: "query",
@@ -30,7 +29,10 @@ export const getConsultation: GetConsultationQuery = {
     await initIdentitySchema();
     const { id, sessionId, tenantId, workspaceId, actorId } = input;
     
-    const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
+    const sessionRepository = process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
+      ? getSessionRepositoryPostgres()
+      : SessionRepositoryInMemory;
+    const session = await sessionRepository.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.get] Invalid or revoked session - authentication violation");
     }
@@ -50,7 +52,8 @@ export const searchConsultations: SearchConsultationsQuery = {
     await initIdentitySchema();
     const { sessionId, tenantId, workspaceId, actorId, query, status, priority, limit, offset } = input;
     
-    const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
+    const sessionRepo = getSessionRepositoryPostgres();
+    const session = await sessionRepo.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.search] Invalid or revoked session - authentication violation");
     }
@@ -96,7 +99,8 @@ export const getConsultationSeries: GetConsultationSeriesQuery = {
     await initIdentitySchema();
     const { id, sessionId, tenantId, workspaceId, actorId } = input;
     
-    const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
+    const sessionRepo = getSessionRepositoryPostgres();
+    const session = await sessionRepo.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.getSeries] Invalid or revoked session - authentication violation");
     }
@@ -116,7 +120,8 @@ export const listConsultationSeriesByWorkspace: ListConsultationSeriesQuery = {
     await initIdentitySchema();
     const { workspaceId, sessionId, tenantId, actorId } = input;
     
-    const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
+    const sessionRepo = getSessionRepositoryPostgres();
+    const session = await sessionRepo.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.listSeries] Invalid or revoked session - authentication violation");
     }
@@ -133,10 +138,10 @@ export const getConsultationEpisode: GetConsultationEpisodeQuery = {
   name: "consultation.getEpisode",
   version: "1.0.0",
   async execute(input) {
-    await initIdentitySchema();
     const { id, sessionId, tenantId, workspaceId, actorId } = input;
     
-    const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
+    const sessionRepo = getSessionRepositoryPostgres();
+    const session = await sessionRepo.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.getEpisode] Invalid or revoked session - authentication violation");
     }
@@ -156,7 +161,8 @@ export const listConsultationEpisodesBySeries: ListConsultationEpisodesQuery = {
     await initIdentitySchema();
     const { seriesId, sessionId, tenantId, workspaceId, actorId } = input;
     
-    const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
+    const sessionRepo = getSessionRepositoryPostgres();
+    const session = await sessionRepo.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.listEpisodes] Invalid or revoked session - authentication violation");
     }

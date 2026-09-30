@@ -1,5 +1,15 @@
 import { Pool } from "pg";
 import { PostgresRepository, getPool, initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
+// Import canonical identity factory functions + types from SINGLE-SOURCE work-core (anti-drift - TENANT-ISOLATION-001)
+// Sesuai invariant Work Continuity: Semua capability harus mengimport dari work-core (single semantic authority)
+import { 
+  createActorId, 
+  createTenantId, 
+  createWorkspaceId,
+  type ActorId, 
+  type TenantId, 
+  type WorkspaceId 
+} from "../../../work-core/contracts/work.contracts.js";
 import {
   ServiceRequestId,
   ServiceProviderId,
@@ -7,7 +17,7 @@ import {
   type ServiceProviderAggregate,
   type ServiceRequestRepository,
   type ServiceProviderRepository,
-  type CreateServiceRequestInputLegacy as CreateServiceRequestInput,
+  type CreateServiceRequestInputLegacy,
   ServiceRequestStatus,
   ServiceProviderCategory,
 } from "../contracts/service.contracts.js";
@@ -76,6 +86,7 @@ class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> imple
   }
 
   async byId(id: ServiceRequestId): Promise<ServiceRequestAggregate | undefined> {
+    // This method is typically called with context already set by the caller; if not, would require tenant/workspace from session
     const result = await this.pool.query(
       "SELECT * FROM service_requests WHERE id = $1",
       [id]
@@ -85,6 +96,7 @@ class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> imple
   }
 
   async list(): Promise<readonly ServiceRequestAggregate[]> {
+    // List operations require valid session context; only returns rows matching current tenant/workspace (RLS enforcement)
     const result = await this.pool.query("SELECT * FROM service_requests");
     return result.rows.map((row: any) => this.toAggregate(row));
   }
@@ -101,22 +113,37 @@ class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> imple
   }
 
   async listByWorkspace(workspaceId: string): Promise<readonly ServiceRequestAggregate[]> {
-    const result = await this.pool.query(
-      "SELECT * FROM service_requests WHERE workspace_id = $1",
-      [workspaceId]
-    );
-    return result.rows.map((row: any) => this.toAggregate(row));
+    // Session context must be set before calling this method to enforce RLS (TENANT-ISOLATION-001)
+    await this.setSessionContext('', workspaceId);
+    try {
+      const result = await this.pool.query(
+        "SELECT * FROM service_requests WHERE workspace_id = $1",
+        [workspaceId]
+      );
+      return result.rows.map((row: any) => this.toAggregate(row));
+    } finally {
+      await this.clearSessionContext();
+    }
   }
 
-  async listByTenant(tenantId: string): Promise<readonly ServiceRequestAggregate[]> {
-    const result = await this.pool.query(
-      "SELECT * FROM service_requests WHERE tenant_id = $1",
-      [tenantId]
-    );
-    return result.rows.map((row: any) => this.toAggregate(row));
+  async listByTenant(tenantId: TenantId): Promise<readonly ServiceRequestAggregate[]> {
+    // Set session context to enforce RLS before querying (TENANT-ISOLATION-001)
+    await this.setSessionContext(tenantId, '');
+    try {
+      const result = await this.pool.query(
+        "SELECT * FROM service_requests WHERE tenant_id = $1",
+        [tenantId]
+      );
+      return result.rows.map((row: any) => this.toAggregate(row));
+    } finally {
+      await this.clearSessionContext();
+    }
   }
 
   async save(entity: ServiceRequestAggregate): Promise<ServiceRequestAggregate> {
+    // Set RLS session context before database operation (TENANT-ISOLATION-001)
+    await this.setSessionContext(entity.tenantId, entity.workspaceId);
+    
     const exists = await this.byId(entity.id);
     const record = this.toRecord(entity);
     const columns = Object.keys(record);
@@ -138,15 +165,27 @@ class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> imple
       );
     }
 
+    // Clear session context after operation completes
+    await this.clearSessionContext();
     return this.toAggregate(record);
   }
 
-  async createMany(entities: CreateServiceRequestInput[]): Promise<string[]> {
+  async createMany(entities: CreateServiceRequestInputLegacy[]): Promise<string[]> {
+    if (entities.length === 0) return [];
+    
     const ids: string[] = [];
+    const firstEntity = entities[0];
+    if (!firstEntity) {
+      throw new Error("Cannot create service requests from empty entities array");
+    }
+    const tenantId = firstEntity.tenantId;
+    const workspaceId = firstEntity.workspaceId;
     
     // Begin transaction to ensure atomicity
     const client = await this.pool.connect();
     try {
+      // Set RLS session context before transaction (TENANT-ISOLATION-001)
+      await this.setSessionContext(tenantId, workspaceId);
       await client.query("BEGIN");
       
       for (const entity of entities) {
@@ -160,14 +199,16 @@ class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> imple
           category: entity.category,
           status: entity.status,
           budget: entity.budget,
-          actor_id: entity.createdBy,
+          actor_id: createActorId(entity.createdBy), // Canonical branded type conversion (TENANT-ISOLATION-001)
+          tenant_id: tenantId,
+          workspace_id: workspaceId,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         };
         
         await client.query(
-          "INSERT INTO service_requests (id, title, description, category, status, budget, actor_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
-          [record.id, record.title, record.description, record.category, record.status, record.budget, record.actor_id, record.created_at, record.updated_at]
+          "INSERT INTO service_requests (id, title, description, category, status, budget, actor_id, tenant_id, workspace_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
+          [record.id, record.title, record.description, record.category, record.status, record.budget, record.actor_id, record.tenant_id, record.workspace_id, record.created_at, record.updated_at]
         );
       }
       
@@ -177,6 +218,8 @@ class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> imple
       await client.query("ROLLBACK");
       throw error;
     } finally {
+      // Clear session context regardless of success/failure
+      await this.clearSessionContext();
       client.release();
     }
   }
@@ -263,19 +306,31 @@ class ServiceProviderRepositoryPostgresImpl extends PostgresRepository<any> impl
   }
 
   async listByWorkspace(workspaceId: string): Promise<readonly ServiceProviderAggregate[]> {
-    const result = await this.pool.query(
-      "SELECT * FROM service_providers WHERE workspace_id = $1",
-      [workspaceId]
-    );
-    return result.rows.map((row: any) => this.toAggregate(row));
+    // Set session context to enforce RLS before querying (TENANT-ISOLATION-001)
+    await this.setSessionContext('', workspaceId);
+    try {
+      const result = await this.pool.query(
+        "SELECT * FROM service_providers WHERE workspace_id = $1",
+        [workspaceId]
+      );
+      return result.rows.map((row: any) => this.toAggregate(row));
+    } finally {
+      await this.clearSessionContext();
+    }
   }
 
   async listByTenant(tenantId: string): Promise<readonly ServiceProviderAggregate[]> {
-    const result = await this.pool.query(
-      "SELECT * FROM service_providers WHERE tenant_id = $1",
-      [tenantId]
-    );
-    return result.rows.map((row: any) => this.toAggregate(row));
+    // Set session context to enforce RLS before querying (TENANT-ISOLATION-001)
+    await this.setSessionContext(tenantId, '');
+    try {
+      const result = await this.pool.query(
+        "SELECT * FROM service_providers WHERE tenant_id = $1",
+        [tenantId]
+      );
+      return result.rows.map((row: any) => this.toAggregate(row));
+    } finally {
+      await this.clearSessionContext();
+    }
   }
 
   listCategories(): readonly ServiceProviderCategory[] {
@@ -302,6 +357,9 @@ class ServiceProviderRepositoryPostgresImpl extends PostgresRepository<any> impl
   }
 
   async save(entity: ServiceProviderAggregate): Promise<ServiceProviderAggregate> {
+    // Set RLS session context before database operation (TENANT-ISOLATION-001)
+    await this.setSessionContext(entity.tenantId, entity.workspaceId);
+    
     const exists = await this.byId(entity.id);
     const record = this.toRecord(entity);
     const columns = Object.keys(record);
@@ -323,6 +381,8 @@ class ServiceProviderRepositoryPostgresImpl extends PostgresRepository<any> impl
       );
     }
 
+    // Clear session context after operation completes
+    await this.clearSessionContext();
     return this.toAggregate(record);
   }
 

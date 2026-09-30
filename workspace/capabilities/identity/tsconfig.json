@@ -5,8 +5,6 @@
     "strictNullChecks": false,
     "declaration": true,
     "declarationMap": true,
-    "allowImportingTsExtensions": true,
-    "emitDeclarationOnly": true,
     "composite": true,
     "incremental": true,
     "skipLibCheck": true,

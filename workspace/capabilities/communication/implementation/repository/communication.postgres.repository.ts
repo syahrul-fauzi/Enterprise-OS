@@ -1,6 +1,7 @@
 import { Pool } from "pg";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import { CommunicationEvent, CommunicationEventId, CommunicationEventStatus } from "../contracts/communication.contracts.js";
+import type { TenantId } from "@repo/capabilities-work-core";
 import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager.js";
 import { isBuildPhase } from "../../../shared/implementation/database/health.check.js";
 
@@ -17,8 +18,8 @@ const mockPool = { query: async () => ({ rows: [] }) } as any;
 async function mockInitializeDatabase() { return; }
 
 // Initialize real pools only in non-build phase
-let writePool: any = isBuildPhase ? mockPool : null;
-let readPool: any = isBuildPhase ? mockPool : null;
+let writePool: Pool = isBuildPhase ? mockPool as unknown as Pool : null as unknown as Pool;
+let readPool: Pool = isBuildPhase ? mockPool as unknown as Pool : null as unknown as Pool;
 let initializeDatabase: () => Promise<void> = isBuildPhase ? mockInitializeDatabase : async () => {};
 
 if (!isBuildPhase) {
@@ -45,7 +46,11 @@ if (!isBuildPhase) {
   // Run migrations on initialization - ensures schema is always up-to-date
   initializeDatabase = async () => {
     if (migrationsInitialized) return;
-    const result = await DatabaseMigrationManager.runMigrations(writePool);
+    const result = await (DatabaseMigrationManager.runMigrations as (pool: Pool) => Promise<{
+    executed: string[];
+    already_applied: string[];
+    errors: string[];
+  }>)(writePool);
     if (result.errors.length > 0) {
       console.error("[CommunicationRepositoryPostgres] Database initialization failed:", result.errors);
       throw new Error(`Database migration failed: ${result.errors.join(", ")}`);
@@ -99,6 +104,22 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
   readonly kind = "repository" as const;
 
   /**
+   * Set current tenant and workspace for RLS (Row Level Security) enforcement
+   * Reused from base.repository.ts pattern (TENANT-ISOLATION-001)
+   */
+  protected async setSessionContext(tenantId: string, workspaceId: string): Promise<void> {
+    await writePool.query(`SELECT set_config('app.current_tenant', $1, false), set_config('app.current_workspace', $2, false)`, [tenantId, workspaceId]);
+  }
+
+  /**
+   * Clear session context after operation completes
+   * Reused from base.repository.ts pattern (TENANT-ISOLATION-001)
+   */
+  protected async clearSessionContext(): Promise<void> {
+    await writePool.query(`SELECT set_config('app.current_tenant', '', false), set_config('app.current_workspace', '', false)`);
+  }
+
+  /**
    * Expose both pools for health checking and monitoring
    * Used by Kubernetes liveness/readiness probes
    */
@@ -114,59 +135,75 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
     return writePool;
   }
 
-  async byId(id: CommunicationEventId, context?: { tenantId: string; workspaceId: string }): Promise<CommunicationEvent | undefined> {
+  async byId(id: CommunicationEventId, context?: { tenantId: TenantId; workspaceId: string }): Promise<CommunicationEvent | undefined> {
     const query = "SELECT * FROM communication_events WHERE event_id = $1";
     const params: any[] = [id];
-    const result = await readPool.query<Record<string, any>>(query, params);
     
-    // Create a mutable copy of the query to allow modifications
-    let mutableQuery = query;
     try {
-      // Development: Always filter explicitly by tenant/workspace (RLS not used in dev)
+      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001)
       if (context) {
-        mutableQuery += " AND tenant_id = $2 AND workspace_id = $3";
-        params.push(context.tenantId, context.workspaceId);
+        await this.setSessionContext(context.tenantId, context.workspaceId);
       }
       
-      const result = await readPool.query(mutableQuery, params);
+      const result = await readPool.query(query, params);
       if (result.rows.length === 0) return undefined;
       return mapRowToCommunicationEvent(result.rows[0]);
     } catch (error) {
       console.error("[CommunicationRepositoryPostgres] byId error:", error);
       throw error;
+    } finally {
+      if (context) {
+        await this.clearSessionContext();
+      }
     }
   }
 
-  async byMessageId(messageId: string, context?: { tenantId: string; workspaceId: string }): Promise<CommunicationEvent | undefined> {
-    let query = "SELECT * FROM communication_events WHERE message_id = $1";
+  async byMessageId(messageId: string, context?: { tenantId: TenantId; workspaceId: string }): Promise<CommunicationEvent | undefined> {
+    const query = "SELECT * FROM communication_events WHERE message_id = $1";
     const params: any[] = [messageId];
     
-    // WORK-015: Filter by tenant/workspace if context is provided
-    if (context) {
-      query += " AND tenant_id = $2 AND workspace_id = $3";
-      params.push(context.tenantId, context.workspaceId);
+    try {
+      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001)
+      if (context) {
+        await this.setSessionContext(context.tenantId, context.workspaceId);
+      }
+      
+      const result = await readPool.query(query, params);
+      if (result.rows.length === 0) return undefined;
+      return mapRowToCommunicationEvent(result.rows[0]);
+    } catch (error) {
+      console.error("[CommunicationRepositoryPostgres] byMessageId error:", error);
+      throw error;
+    } finally {
+      if (context) {
+        await this.clearSessionContext();
+      }
     }
-    
-    const result = await readPool.query(query, params);
-    if (result.rows.length === 0) return undefined;
-    return mapRowToCommunicationEvent(result.rows[0]);
   }
 
-  async byWorkId(workId: string, context?: { tenantId: string; workspaceId: string }): Promise<readonly CommunicationEvent[]> {
-    let query = "SELECT * FROM communication_events WHERE work_id = $1 ORDER BY timestamp ASC";
+  async byWorkId(workId: string, context?: { tenantId: TenantId; workspaceId: string }): Promise<readonly CommunicationEvent[]> {
+    const query = "SELECT * FROM communication_events WHERE work_id = $1 ORDER BY timestamp ASC";
     const params: any[] = [workId];
     
-    // WORK-015: Filter by tenant/workspace if context is provided
-    if (context) {
-      query += " AND tenant_id = $2 AND workspace_id = $3";
-      params.push(context.tenantId, context.workspaceId);
+    try {
+      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001)
+      if (context) {
+        await this.setSessionContext(context.tenantId, context.workspaceId);
+      }
+      
+      const result = await readPool.query(query, params);
+      return result.rows.map(mapRowToCommunicationEvent);
+    } catch (error) {
+      console.error("[CommunicationRepositoryPostgres] byWorkId error:", error);
+      throw error;
+    } finally {
+      if (context) {
+        await this.clearSessionContext();
+      }
     }
-    
-    const result = await readPool.query(query, params);
-    return result.rows.map(mapRowToCommunicationEvent);
   }
 
-  async byTenantId(tenantId: string): Promise<readonly CommunicationEvent[]> {
+  async byTenantId(tenantId: TenantId): Promise<readonly CommunicationEvent[]> {
     const result = await readPool.query(
       "SELECT * FROM communication_events WHERE tenant_id = $1 ORDER BY timestamp ASC",
       [tenantId]
@@ -175,136 +212,182 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
     return result.rows.map(mapRowToCommunicationEvent);
   }
 
-  async list(context?: { tenantId: string; workspaceId: string }): Promise<readonly CommunicationEvent[]> {
-    let query = "SELECT * FROM communication_events ORDER BY timestamp ASC";
+  async list(context?: { tenantId: TenantId; workspaceId: string }): Promise<readonly CommunicationEvent[]> {
+    const query = "SELECT * FROM communication_events ORDER BY timestamp ASC";
     const params: any[] = [];
     
-    // WORK-015: Filter by tenant/workspace if context is provided
-    if (context) {
-      query += " WHERE tenant_id = $1 AND workspace_id = $2";
-      params.push(context.tenantId, context.workspaceId);
+    try {
+      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001)
+      if (context) {
+        await this.setSessionContext(context.tenantId, context.workspaceId);
+      }
+      
+      const result = await readPool.query(query, params);
+      return result.rows.map(mapRowToCommunicationEvent);
+    } catch (error) {
+      console.error("[CommunicationRepositoryPostgres] list error:", error);
+      throw error;
+    } finally {
+      if (context) {
+        await this.clearSessionContext();
+      }
     }
-    
-    const result = await readPool.query(query, params);
-    return result.rows.map(mapRowToCommunicationEvent);
   }
 
-  async save(entity: CommunicationEvent, context?: { tenantId: string; workspaceId: string; actorId: string }): Promise<void> {
-    // WORK-015: Enforce tenant isolation - ensure entity always has tenant/workspace context
-    if (context) {
-      (entity as any).tenant_id = context.tenantId;
-      (entity as any).workspace_id = context.workspaceId;
-      (entity as any).actor_id = context.actorId;
+  async save(entity: CommunicationEvent, context?: { tenantId: TenantId; workspaceId: string; actorId: string }): Promise<void> {
+    const client = await writePool.connect();
+    try {
+      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001)
+      if (context) {
+        await this.setSessionContext(context.tenantId, context.workspaceId);
+        (entity as any).tenant_id = context.tenantId;
+        (entity as any).workspace_id = context.workspaceId;
+        (entity as any).actor_id = context.actorId;
+      }
+      
+      await client.query("BEGIN");
+      
+      const upsertQuery = `
+        INSERT INTO communication_events (
+          event_id, work_id, tenant_id, workspace_id, actor_id, sender_id, recipient_ids, event_type, 
+          content, adapter_type, timestamp, status, message_id, metadata, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW())
+        ON CONFLICT (event_id) DO UPDATE SET
+          work_id = EXCLUDED.work_id,
+          tenant_id = EXCLUDED.tenant_id,
+          workspace_id = EXCLUDED.workspace_id,
+          actor_id = EXCLUDED.actor_id,
+          sender_id = EXCLUDED.sender_id,
+          recipient_ids = EXCLUDED.recipient_ids,
+          event_type = EXCLUDED.event_type,
+          content = EXCLUDED.content,
+          adapter_type = EXCLUDED.adapter_type,
+          timestamp = EXCLUDED.timestamp,
+          status = EXCLUDED.status,
+          message_id = EXCLUDED.message_id,
+          metadata = EXCLUDED.metadata,
+          updated_at = NOW()
+      `;
+      
+      await client.query(upsertQuery, [
+        entity.event_id,
+        entity.work_id,
+        entity.tenant_id,
+        (entity as any).workspace_id || null,
+        entity.actor_id,
+        entity.actor_id, // Map sender_id to actor_id for database schema compatibility
+        entity.recipient_ids,
+        entity.event_type,
+        entity.content,
+        entity.adapter_type,
+        (entity as any).timestamp || new Date(),
+        entity.status,
+        (entity as any).message_id || null, // message_id from inbound webhook events
+        (entity as any).metadata || null, // metadata from inbound webhook events
+      ]);
+      
+      await client.query("COMMIT");
+      
+      // WORK-015: Append to immutable audit ledger
+      recordRuntimeInvocation({
+        capabilityId: "communication",
+        operationId: "repository.save",
+        sourceRef: "CommunicationRepositoryPostgres.save",
+        success: true,
+        input: { eventId: entity.event_id, workId: entity.work_id },
+        result: { persisted: true },
+        tenant_id: context?.tenantId || null,
+        decision_id: entity.work_id || null,
+        inputRefs: [entity.event_id],
+        outputRefs: [entity.event_id]
+      });
+    } catch (error) {
+      await client.query("ROLLBACK");
+      console.error("[CommunicationRepositoryPostgres] save error:", error);
+      throw error;
+    } finally {
+      if (context) {
+        await this.clearSessionContext();
+      }
+      client.release();
     }
-    
-    const upsertQuery = `
-      INSERT INTO communication_events (
-        event_id, work_id, tenant_id, workspace_id, actor_id, sender_id, recipient_ids, event_type, 
-        content, adapter_type, timestamp, status, message_id, metadata, updated_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW())
-      ON CONFLICT (event_id) DO UPDATE SET
-        work_id = EXCLUDED.work_id,
-        tenant_id = EXCLUDED.tenant_id,
-        workspace_id = EXCLUDED.workspace_id,
-        actor_id = EXCLUDED.actor_id,
-        sender_id = EXCLUDED.sender_id,
-        recipient_ids = EXCLUDED.recipient_ids,
-        event_type = EXCLUDED.event_type,
-        content = EXCLUDED.content,
-        adapter_type = EXCLUDED.adapter_type,
-        timestamp = EXCLUDED.timestamp,
-        status = EXCLUDED.status,
-        message_id = EXCLUDED.message_id,
-        metadata = EXCLUDED.metadata,
-        updated_at = NOW()
-    `;
-    
-    await writePool.query(upsertQuery, [
-      entity.event_id,
-      entity.work_id,
-      entity.tenant_id,
-      (entity as any).workspace_id || null,
-      entity.actor_id,
-      entity.actor_id, // Map sender_id to actor_id for database schema compatibility
-      entity.recipient_ids,
-      entity.event_type,
-      entity.content,
-      entity.adapter_type,
-      (entity as any).timestamp || new Date(),
-      entity.status,
-      (entity as any).message_id || null, // message_id from inbound webhook events
-      (entity as any).metadata || null, // metadata from inbound webhook events
-    ]);
-    
-    // WORK-015: Append to immutable audit ledger
-    recordRuntimeInvocation({
-      capabilityId: "communication",
-      operationId: "repository.save",
-      sourceRef: "CommunicationRepositoryPostgres.save",
-      success: true,
-      input: { eventId: entity.event_id, workId: entity.work_id },
-      result: { persisted: true },
-      tenant_id: context?.tenantId || null,
-      decision_id: entity.work_id || null,
-      inputRefs: [entity.event_id],
-      outputRefs: [entity.event_id]
-    });
   }
 
-  async updateStatus(id: CommunicationEventId, status: CommunicationEventStatus, context?: { tenantId: string; workspaceId: string }): Promise<boolean> {
-    let query = "UPDATE communication_events SET status = $1, updated_at = NOW() WHERE event_id = $2";
+  async updateStatus(id: CommunicationEventId, status: CommunicationEventStatus, context?: { tenantId: TenantId; workspaceId: string }): Promise<boolean> {
+    const query = "UPDATE communication_events SET status = $1, updated_at = NOW() WHERE event_id = $2";
     const params: any[] = [status, id];
     
-    // WORK-015: Enforce tenant isolation before allowing status update
-    if (context) {
-      query += " AND tenant_id = $3 AND workspace_id = $4";
-      params.push(context.tenantId, context.workspaceId);
+    const client = await writePool.connect();
+    try {
+      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001)
+      if (context) {
+        await this.setSessionContext(context.tenantId, context.workspaceId);
+      }
+      
+      await client.query("BEGIN");
+      const result = await client.query(query, params);
+      await client.query("COMMIT");
+      
+      return (result.rowCount ?? 0) > 0;
+    } catch (error) {
+      await client.query("ROLLBACK");
+      console.error("[CommunicationRepositoryPostgres] updateStatus error:", error);
+      throw error;
+    } finally {
+      if (context) {
+        await this.clearSessionContext();
+      }
+      client.release();
     }
-    
-    const result = await writePool.query(query, params);
-    return (result.rowCount ?? 0) > 0;
   }
 
-  async remove(id: CommunicationEventId, context?: { tenantId: string; workspaceId: string }): Promise<boolean> {
-    let query = "DELETE FROM communication_events WHERE event_id = $1";
+  async remove(id: CommunicationEventId, context?: { tenantId: TenantId; workspaceId: string }): Promise<boolean> {
+    const query = "DELETE FROM communication_events WHERE event_id = $1 RETURNING event_id";
     const params: any[] = [id];
     
-    // WORK-015: Enforce tenant isolation before allowing deletion
-    if (context) {
-      query += " AND tenant_id = $2 AND workspace_id = $3";
-      params.push(context.tenantId, context.workspaceId);
+    const client = await writePool.connect();
+    try {
+      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001)
+      if (context) {
+        await this.setSessionContext(context.tenantId, context.workspaceId);
+      }
+      
+      await client.query("BEGIN");
+      const result = await client.query(query, params);
+      await client.query("COMMIT");
+      
+      const deleted = result.rows.length > 0;
+      
+      // WORK-015: Log deletion attempt in audit ledger
+      if (deleted) {
+        // Success - entity was deleted
+        recordRuntimeInvocation({
+          capabilityId: "communication",
+          operationId: "repository.remove",
+          sourceRef: "CommunicationRepositoryPostgres.remove",
+          success: true,
+          input: { eventId: id },
+          result: { deleted: true },
+          tenant_id: context?.tenantId || null,
+          inputRefs: [id]
+        });
+      } else {
+        // Failure - entity not found or cross-tenant
+        recordRuntimeInvocation({
+          capabilityId: "communication",
+          operationId: "repository.remove",
+          sourceRef: "CommunicationRepositoryPostgres.remove",
+          success: false,
+          input: { eventId: id, attemptedTenantId: context?.tenantId || null },
+          result: { reason: "entity_not_found_or_isolation_violation" },
+          tenant_id: context?.tenantId || null
+        });
+      }
+      
+      return deleted;
+    } finally {
+      client.release();
     }
-    
-    const result = await writePool.query(`${query} RETURNING event_id`, params);
-    const deleted = result.rows.length > 0;
-    
-    // WORK-015: Log deletion attempt in audit ledger
-    if (deleted) {
-      // Success - entity was deleted
-      recordRuntimeInvocation({
-        capabilityId: "communication",
-        operationId: "repository.remove",
-        sourceRef: "CommunicationRepositoryPostgres.remove",
-        success: true,
-        input: { eventId: id },
-        result: { deleted: true },
-        tenant_id: context?.tenantId || null,
-        inputRefs: [id]
-      });
-    } else {
-      // Failure - entity not found or cross-tenant
-      recordRuntimeInvocation({
-        capabilityId: "communication",
-        operationId: "repository.remove",
-        sourceRef: "CommunicationRepositoryPostgres.remove",
-        success: false,
-        input: { eventId: id, attemptedTenantId: context?.tenantId || null },
-        result: { reason: "entity_not_found_or_isolation_violation" },
-        tenant_id: context?.tenantId || null
-      });
-    }
-    
-    return deleted;
   }
 
   async clear(): Promise<void> {

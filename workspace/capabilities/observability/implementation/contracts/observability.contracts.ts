@@ -1,3 +1,6 @@
+// Import canonical identity types dari work-core (single source of truth - anti-drift)
+import type { TenantId } from "@repo/capabilities-work-core";
+
 export interface RuntimeInvocation {
   readonly capability_id: string;
   readonly operation_id: string;
@@ -51,7 +54,7 @@ export interface IncidentAggregate {
   readonly category: IncidentCategory;
   readonly status: IncidentStatus;
   readonly priority: IncidentPriority;
-  readonly tenantId: string;
+  readonly tenantId: TenantId;
   readonly workspaceId: string;
   readonly actorId: string;
   readonly version?: number;
@@ -65,7 +68,7 @@ export interface CreateIncidentInput {
   readonly priority?: IncidentPriority;
   readonly category?: IncidentCategory;
   readonly sessionId: string;
-  readonly tenantId: string;
+  readonly tenantId: TenantId;
   readonly workspaceId: string;
   readonly actorId: string;
 }

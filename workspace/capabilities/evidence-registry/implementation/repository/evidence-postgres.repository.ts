@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 const generateId = () => randomUUID();
-import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
+import { PostgresRepository } from "../../../work-core/index.js";
 import type { CapabilityRepository } from "@repo/core-kernel";
 import type { EvidenceRecord, EvidenceRecordDetail, EvidenceRecordKind, EvidenceRecordScope } from "../contracts/evidence-registry.contracts.js";
 

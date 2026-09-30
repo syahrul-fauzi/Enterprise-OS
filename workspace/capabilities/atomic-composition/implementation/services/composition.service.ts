@@ -11,6 +11,10 @@ try {
     saveTeam: async () => true
   };
 }
+// W-COMP-001: Import fs/path untuk load composition packages dari packages/compositions
+import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
+import yaml from "yaml";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import type {
   ActorProjection,
@@ -21,13 +25,12 @@ import type {
   CapabilityResolutionResult,
   CompositionResolution,
   CompositionLog,
-  ProviderType
+  ProviderType,
+  ProductCompositionManifest // Reuse type dari product-composition-runtime
 } from "../contracts/atomic-composition.contracts";
 import {
   TeamProjectionId,
   WorkBindingId,
-  ActorId,
-  CompositionId,
   RequirementId,
   TeamId,
   CapabilityResolutionRequestSchema,
@@ -35,7 +38,64 @@ import {
   CreateTeamResultSchema,
   CapabilityResolutionResultSchema
 } from "../contracts/atomic-composition.contracts";
+// Import canonical ActorId, CompositionId type AND factory function from work-core to maintain primitive sovereignty
+// Pakai createCompositionId (alias dari work-core's CompositionId function) untuk menghindari type/value conflict
+import type { ActorId, CompositionId } from "@repo/capabilities-work-core";
+import { CompositionId as createCompositionId } from "@repo/capabilities-work-core";
 import { aiAgentExecutionService } from "./ai-agent.service.js";
+
+// W-COMP-001: Helper function untuk load composition package dari packages/compositions
+// 10× Leverage compliance: Recursively load extended packages untuk avoid duplicate code
+function loadCompositionPackage(packageId: string, processedPackages: Set<string> = new Set()): ProductCompositionManifest | null {
+  // Prevent circular dependencies
+  if (processedPackages.has(packageId)) {
+    console.warn(`[composition.service.ts] Skipping already processed composition package: ${packageId} (circular dependency prevented)`);
+    return null;
+  }
+  processedPackages.add(packageId);
+
+  const basePath = join(process.cwd(), 'workspace', 'packages', 'compositions', packageId);
+  const manifestPath = join(basePath, 'manifest.yaml');
+  
+  if (!existsSync(manifestPath)) {
+    console.warn(`[composition.service.ts] Composition package not found: ${packageId} (missing manifest.yaml) - falling back to empty manifest`);
+    return { id: packageId, patterns: [], capabilities: [], surfaces: [], extends: [] };
+  }
+  
+  try {
+    const manifestContent = readFileSync(manifestPath, 'utf8');
+    const manifest = yaml.parse(manifestContent) as ProductCompositionManifest;
+    
+    // Recursively load and merge capabilities dari semua extended packages (MAP→REUSE→VERIFY→EXTEND)
+    if (manifest.extends && manifest.extends.length > 0) {
+      const mergedCapabilities = new Set<string>(manifest.capabilities || []);
+      const mergedPatterns = new Set<string>(manifest.patterns || []);
+      const mergedSurfaces = new Set<string>(manifest.surfaces || []);
+      
+      manifest.extends.forEach((extendedPackageId) => {
+        const extendedManifest = loadCompositionPackage(extendedPackageId, processedPackages);
+        if (extendedManifest) {
+          // Merge capabilities/patterns/surfaces tanpa duplikasi
+          extendedManifest.capabilities?.forEach(cap => mergedCapabilities.add(cap));
+          extendedManifest.patterns?.forEach(pat => mergedPatterns.add(pat));
+          extendedManifest.surfaces?.forEach(sur => mergedSurfaces.add(sur));
+          console.log(`[composition.service.ts] Merged capabilities from extended package: ${extendedPackageId} (total: ${mergedCapabilities.size})`);
+        }
+      });
+      
+      // Update manifest dengan merged values
+      (manifest as any).capabilities = Array.from(mergedCapabilities);
+      (manifest as any).patterns = Array.from(mergedPatterns);
+      (manifest as any).surfaces = Array.from(mergedSurfaces);
+    }
+    
+    console.log(`[composition.service.ts] Successfully loaded composition package: ${packageId} (final patterns: ${manifest.patterns?.length || 0}, capabilities: ${manifest.capabilities?.length || 0}, surfaces: ${manifest.surfaces?.length || 0})`);
+    return manifest;
+  } catch (e) {
+    console.error(`[composition.service.ts] Failed to parse composition package ${packageId}:`, e);
+    return { id: packageId, patterns: [], capabilities: [], surfaces: [], extends: [] };
+  }
+}
 
 // Define local interfaces for internal use (not exported from contracts)
 interface Assignment {
@@ -107,19 +167,46 @@ export class AtomicCompositionService {
   async composeTeamFromRequirements(
     request: CapabilityResolutionRequest
   ): Promise<CapabilityResolutionResult> {
-    const { workId: legacyWorkId, work, requirements, availableActors, availableCapabilities, workspaceId } = request;
+    const { workId: legacyWorkId, work, requirements, availableActors, availableCapabilities, workspaceId, compositionPackageId } = request;
     // Support both formats: legacy workId directly, or modern work aggregate
     const workId = work ? work.workId : legacyWorkId;
     // Log workspace context untuk audit multi-tenant compliance
     if (workspaceId) {
       console.log(`[ATOMIC COMPOSITION] Running in workspace context: ${workspaceId}`);
     }
+    // W-COMP-001: Load composition package jika ada untuk tracking reuse dan apply capabilities/patterns
+    let loadedComposition: ProductCompositionManifest | null = null;
+    if (compositionPackageId) {
+      loadedComposition = loadCompositionPackage(compositionPackageId);
+    }
 
     // BETTER EOS HYPER-RELATIONSHIP IMPLEMENTATION - Layer 2 extension (no fabric changes)
     // Create SINGLE compositionId for ALL participants in this value reality
     const rawCompositionId = `composition-${workId.substring(0, 8)}-${Date.now()}`;
-    const compositionId = CompositionId(rawCompositionId);
+    const compositionId = createCompositionId(rawCompositionId);
     const workBindings: WorkBinding[] = [];
+
+    // W-COMP-001: Add all capabilities dari composition package sebagai participants jika composition terload
+    if (loadedComposition?.capabilities) {
+      loadedComposition.capabilities.forEach((capId, index) => {
+        const capBinding: WorkBinding = {
+          id: `binding-capability-${capId}-${index}`,
+          bindingId: WorkBindingId(`wb-${rawCompositionId}-cap-${index}`),
+          compositionId: compositionId,
+          participantId: capId,
+          participantType: "capability",
+          providerType: "system",
+          role: "Enabler",
+          authority: "execute",
+          status: "active",
+          boundAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          workspaceId: workspaceId
+        };
+        workBindings.push(capBinding);
+        console.log(`[ATOMIC COMPOSITION] Added composition capability: ${capId} (from ${compositionPackageId})`);
+      });
+    }
 
     // 1. Add PRODUCT as first participant (LawyersHub) - participantType: "product"
     const lawyershubProductBinding: WorkBinding = {

@@ -1,0 +1,34 @@
+id: gov-api-standard
+name: Government API Standard Composition
+description: Reusable composition for Indonesian government API integrations, supporting DJKI, Kemendagri, OSS, and DJP government bodies. Enables standardized government service submissions, status tracking, and webhook handling for all legal and business work types.
+version: "1.0.0"
+domain: government-services
+industry: cross-industry
+jurisdictions:
+  - ID-ID  # Indonesia
+tags:
+  - government-api
+  - djki-integration
+  - kemendagri
+  - oss-system
+  - pajak-djp
+  - indonesian-government
+reuseCount: 0
+firstIntroduced: "2026-09-29"
+maintainers:
+  - eos-composition-team
+dependencies:
+  - work-template-core@>=1.0.0
+  - workspace-standard@>=1.0.0
+  - legal-workspace@>=1.0.0
+reuse_targets:
+  - LAW-002 (Pendaftaran Merek Dagang)
+  - LAW-004 (Sertifikasi Domisili Perusahaan)
+  - LAW-003 (Pengurusan Izin Usaha)
+  - LAW-005 (Pengurusan NPWP Perusahaan)
+compliance:
+  work_invariant_preserved: true
+  architecture_freeze_compliant: true
+  no_new_core_primitives: true
+  rule_of_two_satisfied: true  # Reused by pt-establishment + can support 3+ additional work types
+  dependency_violations: 0

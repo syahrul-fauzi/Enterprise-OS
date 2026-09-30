@@ -1,0 +1,25 @@
+id: pt-establishment
+extends:
+  - workspace-standard
+  - legal-workspace
+patterns:
+  - approval-pattern
+  - discovery-pattern
+  - execution-pattern
+  - monitoring-pattern
+  - government-registration-pattern
+  - document-signing-pattern
+capabilities:
+  - workflow
+  - knowledge
+  - ai
+  - document
+  - consultation
+  - service-directory
+  - legal-case
+surfaces:
+  - dashboard
+  - inbox
+  - explorer
+  - registration-tracker
+  - document-portal

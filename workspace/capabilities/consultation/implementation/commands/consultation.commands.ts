@@ -24,8 +24,14 @@ import {
 import { executionContext } from "../../../../packages/core/runtime/src/index.js";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
 import { newConsultationId, newConsultationSeriesId, newConsultationEpisodeId, defaultConsultationStatus, defaultConsultationPriority, ConsultationRepositoryInMemory } from "../repository/index.js";
-import { initIdentitySchema, getSessionRepositoryPostgres, SessionRepositoryInMemory } from "../../../identity/implementation/repositories/index.js";
-import { SessionId } from "../../../identity/implementation/contracts/identity.contracts.js";
+// Import SEMUA canonical types dan repositories dari SINGLE-SOURCE work-core (anti-drift - TENANT-ISOLATION-001)
+// Sesuai dengan aturan: Semua capability harus import dari @repo/capabilities-work-core, bukan langsung dari identity
+import { 
+  type SessionId, 
+  initIdentitySchema, 
+  getSessionRepositoryPostgres, 
+  SessionRepositoryInMemory 
+} from "../../../work-core/index.js";
 import { ConsultationStatus } from "../contracts/consultation.contracts.js";
 
 const SessionRepositoryPostgres = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL

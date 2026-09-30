@@ -1,0 +1,14 @@
+{
+  "name": "@repo/composition-pt-establishment",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "manifest.yaml",
+    "metadata.yaml",
+    "workspace.ts"
+  ],
+  "scripts": {
+    "validate": "node --import tsx ../../composition/src/scripts/validate-composition-package.ts ."
+  }
+}

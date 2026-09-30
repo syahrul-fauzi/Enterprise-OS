@@ -8,6 +8,17 @@ export type LawyersHubWorkflowDefinition = WorkflowDefinition;
 export const LAWYERSHUB_WORKFLOW: WorkflowDefinition = {
   id: "lawyershub-case-to-payment",
   productId: "lawyershub",
+  // 5 BOUNDARY MAPPINGS (mandat EOS High-Value Work - aligned with core-kernel definition)
+  tenantId: "tenant-lawyershub-001",       // ① Identity Boundary: Tenant ownership
+  domain: "legal",                         // ② Semantic Boundary: Domain classification
+  executionFrame: "direct",                // ④ Execution Boundary: CMBCD mechanism
+  presentationConfig: {                     // ⑤ Presentation Boundary: FACE projection
+    supportedFaces: ["human", "agent", "api", "web"],
+    defaultLayout: "consultation-dashboard"
+  },
+  // High-Value Work Graph Semantic References
+  productRef: "product-lawyershub-001",    // Product node reference
+  caseRef: "case-legal-consultation-template", // Case template reference
   label: "Case Filed → Documentation → External Response → Inspection → Review → Approval → Payment → Completion",
   initialStep: "case",
   terminalStep: "completed",

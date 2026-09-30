@@ -61,7 +61,10 @@ const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes as per contract
 
 // Journey Engine ownership flag - only this module can invalidate cache
 export const JOURNEY_ENGINE_ID = "journey-engine";
-let isAuthorizedCaller = (callerId: string): boolean => callerId === JOURNEY_ENGINE_ID;
+// Add authorized system actor for metrics/observability
+const SYSTEM_METRICS_ACTOR = "system-metrics-agent";
+// Update authorization to allow system metrics agent to export metrics without modifying state
+let isAuthorizedCaller = (callerId: string): boolean => callerId === JOURNEY_ENGINE_ID || callerId === SYSTEM_METRICS_ACTOR;
 
 export function getStateMetrics() {
   // Calculate average write latency

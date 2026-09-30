@@ -23,7 +23,9 @@
       "@repo/tooling-eos-cli": ["../packages/tooling/eos-cli/src/index.ts"],
       "@repo/tooling-arch-tests": ["../packages/tooling/arch-tests/src/index.ts"],
       "@repo/tooling-t001-standalone": ["../packages/tooling/t001-standalone/src/index.ts"],
-      "@repo/composition-legal-workspace": ["../packages/compositions/legal-workspace/src/index.ts"]
+      "@repo/composition-legal-workspace": ["../packages/compositions/legal-workspace/src/index.ts"],
+      "@repo/capabilities-identity": ["../capabilities/identity/implementation/index.ts"],
+      "@repo/capabilities-identity/*": ["../capabilities/identity/implementation/*"]
     }
   }
 }

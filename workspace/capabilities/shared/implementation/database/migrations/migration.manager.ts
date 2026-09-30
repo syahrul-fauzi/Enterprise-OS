@@ -340,6 +340,49 @@ const MIGRATIONS: DatabaseMigration[] = [
   },
   {
     version: "009",
+    name: "add_service_directory_rls_policies",
+    description: "Add RLS policies for service_requests and service_providers tables (TENANT-ISOLATION-001)",
+    sql: `
+      -- Enable RLS on service_requests and service_providers tables
+      ALTER TABLE service_requests ENABLE ROW LEVEL SECURITY;
+      ALTER TABLE service_providers ENABLE ROW LEVEL SECURITY;
+      
+      -- Drop existing policies if they exist (idempotent execution)
+      DROP POLICY IF EXISTS tenant_isolation_service_requests ON service_requests;
+      DROP POLICY IF EXISTS tenant_isolation_service_providers ON service_providers;
+      
+      -- Tenant isolation policies for service directory tables
+      CREATE POLICY tenant_isolation_service_requests ON service_requests
+        FOR ALL USING (
+          tenant_id = current_setting('app.current_tenant', true) 
+          AND workspace_id = current_setting('app.current_workspace', true)
+        );
+      
+      CREATE POLICY tenant_isolation_service_providers ON service_providers
+        FOR ALL USING (
+          tenant_id = current_setting('app.current_tenant', true) 
+          AND workspace_id = current_setting('app.current_workspace', true)
+        );
+    `
+  },
+  {
+    version: "010",
+    name: "add_communication_rls_policies",
+    description: "Add RLS policies for communication_events table (TENANT-ISOLATION-001)",
+    sql: `
+      ALTER TABLE communication_events ENABLE ROW LEVEL SECURITY;
+      
+      DROP POLICY IF EXISTS tenant_isolation_communication_events ON communication_events;
+      
+      CREATE POLICY tenant_isolation_communication_events ON communication_events
+        FOR ALL USING (
+          tenant_id = current_setting('app.current_tenant', true) 
+          AND workspace_id = current_setting('app.current_workspace', true)
+        );
+    `
+  },
+  {
+    version: "011",
     name: "seed_work_001_golden_path",
     description: "Seed WORK-001 for G2-01 Real Work → Browser golden path verification",
     sql: `
@@ -363,7 +406,7 @@ const MIGRATIONS: DatabaseMigration[] = [
     `
   },
   {
-    version: "010",
+    version: "011",
     name: "seed_work_002_lh_case",
     description: "Seed work-WORK-002 for LawyersHub golden path testing",
     sql: `
@@ -431,21 +474,72 @@ const MIGRATIONS: DatabaseMigration[] = [
         END IF;
       END $$;
 
-      -- Add version column to users
+      -- Add version column to users (idempotent - IF NOT EXISTS)
       DO $$ 
       BEGIN 
-        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'users' AND column_name = 'version') THEN
+        IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'users') AND NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'users' AND column_name = 'version') THEN
           ALTER TABLE users ADD COLUMN version INTEGER NOT NULL DEFAULT 1;
         END IF;
       END $$;
 
-      -- Add version column to sessions
+      -- Add version column to sessions (idempotent - IF NOT EXISTS)
       DO $$ 
       BEGIN 
-        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'sessions' AND column_name = 'version') THEN
+        IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'sessions') AND NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'sessions' AND column_name = 'version') THEN
           ALTER TABLE sessions ADD COLUMN version INTEGER NOT NULL DEFAULT 1;
         END IF;
       END $$;
+    `
+  },
+  {
+    version: "013",
+    name: "add-work-claim-columns-to-works",
+    description: "Add WORK CLAIM v0.1 columns to works table: claim_status, lease_until, active_execution_id, previous_execution_ids, session_id",
+    sql: `
+      -- Add claim_status column (idempotent - IF NOT EXISTS)
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'claim_status') THEN
+          ALTER TABLE works ADD COLUMN claim_status VARCHAR(50) NOT NULL DEFAULT 'UNCLAIMED';
+        END IF;
+      END $$;
+
+      -- Add lease_until column (timestamp for execution lease expiry)
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'lease_until') THEN
+          ALTER TABLE works ADD COLUMN lease_until TIMESTAMP WITH TIME ZONE;
+        END IF;
+      END $$;
+
+      -- Add active_execution_id column (current execution session ID)
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'active_execution_id') THEN
+          ALTER TABLE works ADD COLUMN active_execution_id VARCHAR(255);
+        END IF;
+      END $$;
+
+      -- Add previous_execution_ids column (execution lineage history)
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'previous_execution_ids') THEN
+          ALTER TABLE works ADD COLUMN previous_execution_ids JSONB NOT NULL DEFAULT '[]'::JSONB;
+        END IF;
+      END $$;
+
+      -- Add session_id column (current session ID)
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'session_id') THEN
+          ALTER TABLE works ADD COLUMN session_id VARCHAR(255);
+        END IF;
+      END $$;
+
+      -- Create indexes for claim-related queries
+      CREATE INDEX IF NOT EXISTS idx_works_claim_status ON works(claim_status);
+      CREATE INDEX IF NOT EXISTS idx_works_active_execution_id ON works(active_execution_id);
+      CREATE INDEX IF NOT EXISTS idx_works_lease_until ON works(lease_until);
     `
   }
 

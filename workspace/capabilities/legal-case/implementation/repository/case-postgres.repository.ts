@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
+import { PostgresRepository } from "../../../work-core/index.js";
 import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager.js";
 import { isBuildPhase } from "../../../shared/implementation/database/health.check.js";
 import {

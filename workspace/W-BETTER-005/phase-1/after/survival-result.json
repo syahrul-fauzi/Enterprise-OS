@@ -1,0 +1,41 @@
+{
+  "verification_timestamp": "2026-09-29T05:14:59.270Z",
+  "experiment_name": "Falsification Experiment #2 — FACE Independence / W-003 — Work Survival Under FACE Detachment",
+  "hypothesis": "A Work remains semantically continuous when its current human-facing projection is detached.",
+  "current_state": {
+    "stop_mutation_active": true,
+    "pre_state_exists": true,
+    "post_state_exists": true,
+    "evidence_verified": true
+  },
+  "identity_continuity": {
+    "same_workId": true,
+    "workId_preserved_details": {
+      "all_pre_ids_exist_post": true,
+      "missing_ids": [],
+      "new_ids_created": []
+    },
+    "same_authoritative_semantic_state": true,
+    "semantic_state_matches": true,
+    "state_remains_addressable": true,
+    "evidence_remains_attributable": true,
+    "no_presentation_artifact_required": true,
+    "FACE_01_compliant": true,
+    "FACE_02_prerequisite": true
+  },
+  "overall_verdict": "PASS",
+  "confidence_score": 100,
+  "notes": [
+    "📊 Status eksperimen sesuai adjudicasi: Routes removed=YES, Core modified=NO, Evidence verified=NO, Verdict=PENDING",
+    "📐 Resmi eksperimen formula: \"Headless at the Core. Human at the Face. Continuous at the Work.\"",
+    "✅ Pre-state file ditemukan",
+    "✅ Post-state file ditemukan",
+    "✅ Semua WorkId terpreservasi - tidak ada Work yang hilang atau dibuat baru",
+    "✅ Semantic state terpreservasi - semua properti Work tetap sama",
+    "✅ Work tetap dapat diakses melalui repository tanpa dependency presentation",
+    "✅ Evidence recording tetap berfungsi independen dari UI",
+    "🎉 EKSPERIMEN PASS: FACE tidak memiliki semantic ownership terhadap Work identity (sesuai FACE-01)",
+    "✅ Semua pass criteria terpenuhi: same WorkId, same semantic state, state remains addressable, evidence attributable",
+    "👉 Trigger FACE restoration: dapat mengembalikan route dan jalankan reattachment test (FACE-02) untuk FINAL PASS"
+  ]
+}

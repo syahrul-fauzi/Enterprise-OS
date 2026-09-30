@@ -3,6 +3,17 @@ import type { WorkflowStep, WorkflowDefinition } from "@repo/core-kernel";
 export const SERVICESID_BUSINESS_WORKFLOW: WorkflowDefinition = {
   id: "services-id-business-fulfillment",
   productId: "services-id",
+  // 5 BOUNDARY MAPPINGS (mandat EOS High-Value Work - aligned with core-kernel definition)
+  tenantId: "tenant-services-id-001",        // ① Identity Boundary: Tenant ownership
+  domain: "government-services",             // ② Semantic Boundary: Domain classification
+  executionFrame: "constrained-gui",         // ④ Execution Boundary: CMBCD mechanism
+  presentationConfig: {                       // ⑤ Presentation Boundary: FACE projection
+    supportedFaces: ["human", "agent", "api", "web"],
+    defaultLayout: "service-portal-dashboard"
+  },
+  // High-Value Work Graph Semantic References
+  productRef: "product-services-id-001",     // Product node reference
+  caseRef: "case-business-registration-template", // Case template reference
   label: "Request → Document → Verification → External Response → Inspection → Review → Approval → Payment → Completed",
   initialStep: "request",
   terminalStep: "completed",

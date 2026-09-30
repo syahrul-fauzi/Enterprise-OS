@@ -13,12 +13,16 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "types": ["node"],
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
     "baseUrl": "./",
     "paths": {
       "@repo/core-capability-registry": ["../../packages/core/capability-registry/dist/src/index.js"]
     }
   },
+  "references": [
+    {"path": "../../../capabilities/agent-orchestration"},
+    {"path": "../../../capabilities/api-platform"}
+  ],
   "include": ["src/**/*"],
   "exclude": ["dist", "build", "node_modules"]
 }

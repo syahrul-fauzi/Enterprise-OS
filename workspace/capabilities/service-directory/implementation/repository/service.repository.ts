@@ -1,3 +1,16 @@
+// Import canonical identity factory functions + types from SINGLE-SOURCE work-core (anti-drift - TENANT-ISOLATION-001)
+// Sesuai invariant Work Continuity: Semua capability harus mengimport dari @repo/capabilities-work-core
+// Factory functions sekarang menggunakan prefix 'create' untuk menghindari duplicate identifier
+import { 
+  createTenantId, 
+  createWorkspaceId, 
+  createActorId
+} from "../../../work-core/contracts/work.contracts.js";
+import type {
+  TenantId,
+  WorkspaceId,
+  ActorId
+} from "../../../work-core/contracts/work.contracts.js";
 import type { 
   ServiceRequestAggregate, 
   ServiceProviderAggregate, 
@@ -35,9 +48,9 @@ const seedProviders = (): ServiceProviderAggregate[] => [
     location: "Jakarta",
     verified: true,
     createdAt: d(365),
-    tenantId: "tenant-001",
-    workspaceId: "workspace-001",
-    actorId: "actor-001",
+    tenantId: createTenantId("tenant-001"),
+    workspaceId: createWorkspaceId("workspace-001"),
+      actorId: createActorId("actor-001"),
   },
   {
     id: createServiceProviderId("sp-002"),
@@ -48,9 +61,9 @@ const seedProviders = (): ServiceProviderAggregate[] => [
     location: "Bandung",
     verified: true,
     createdAt: d(270),
-    tenantId: "tenant-001",
-    workspaceId: "workspace-001",
-    actorId: "actor-001",
+    tenantId: createTenantId("tenant-001"),
+    workspaceId: createWorkspaceId("workspace-001"),
+    actorId: createActorId("actor-001"),
   },
   {
     id: createServiceProviderId("sp-003"),
@@ -65,9 +78,9 @@ const seedProviders = (): ServiceProviderAggregate[] => [
     responseHours: "24-48 hours",
     supplyStatus: "PENDING_VERIFICATION", // Supply-side track: waiting for provider to confirm willingness
     createdAt: d(180),
-    tenantId: "tenant-001",
-    workspaceId: "workspace-001",
-    actorId: "actor-001",
+    tenantId: createTenantId("tenant-001"),
+    workspaceId: createWorkspaceId("workspace-001"),
+    actorId: createActorId("actor-001"),
   },
   {
     id: createServiceProviderId("sp-004"),
@@ -78,9 +91,9 @@ const seedProviders = (): ServiceProviderAggregate[] => [
     location: "Surabaya",
     verified: true,
     createdAt: d(120),
-    tenantId: "tenant-001",
-    workspaceId: "workspace-001",
-    actorId: "actor-001",
+    tenantId: createTenantId("tenant-001"),
+    workspaceId: createWorkspaceId("workspace-001"),
+    actorId: createActorId("actor-001"),
   },
   {
     id: createServiceProviderId("sp-005"),
@@ -91,9 +104,9 @@ const seedProviders = (): ServiceProviderAggregate[] => [
     location: "Cikarang",
     verified: true,
     createdAt: d(360),
-    tenantId: "tenant-001",
-    workspaceId: "workspace-001",
-    actorId: "actor-001",
+    tenantId: createTenantId("tenant-001"),
+    workspaceId: createWorkspaceId("workspace-001"),
+    actorId: createActorId("actor-001"),
   },
   {
     id: createServiceProviderId("sp-006"),
@@ -104,9 +117,9 @@ const seedProviders = (): ServiceProviderAggregate[] => [
     location: "Yogyakarta",
     verified: true,
     createdAt: d(90),
-    tenantId: "tenant-001",
-    workspaceId: "workspace-001",
-    actorId: "actor-001",
+    tenantId: createTenantId("tenant-001"),
+    workspaceId: createWorkspaceId("workspace-001"),
+    actorId: createActorId("actor-001"),
   },
 ];
 
@@ -123,9 +136,9 @@ const seedRequests = (): ServiceRequestAggregate[] => [
     deadline: dFuture(14),
     createdAt: d(12),
     updatedAt: d(1),
-    tenantId: "tenant-001",
-    workspaceId: "workspace-001",
-    actorId: "actor-002",
+    tenantId: createTenantId("tenant-001"),
+      workspaceId: createWorkspaceId("workspace-001"),
+      actorId: createActorId("actor-002"),
   },
   {
     id: createServiceRequestId("sreq-002"),
@@ -139,9 +152,9 @@ const seedRequests = (): ServiceRequestAggregate[] => [
     deadline: dFuture(30),
     createdAt: d(7),
     updatedAt: d(2),
-    tenantId: "tenant-001",
-    workspaceId: "workspace-001",
-    actorId: "actor-003",
+    tenantId: createTenantId("tenant-001"),
+      workspaceId: createWorkspaceId("workspace-001"),
+      actorId: createActorId("actor-003"),
   },
   // TEST DATA: CR-006 Payment workflow test fixture - NOT a real transaction
   // Only used to validate Midtrans webhook integration and payment processing logic
@@ -161,9 +174,9 @@ const seedRequests = (): ServiceRequestAggregate[] => [
     deadline: dFuture(45),
     createdAt: new Date(Date.now() - 86400000),
     updatedAt: new Date(),
-    tenantId: "tenant-001",
-    workspaceId: "workspace-001",
-    actorId: "actor-test-001",
+    tenantId: createTenantId("tenant-001"),
+      workspaceId: createWorkspaceId("workspace-001"),
+      actorId: createActorId("actor-test-001"),
   },
   {
     id: createServiceRequestId("sreq-003"),
@@ -177,9 +190,9 @@ const seedRequests = (): ServiceRequestAggregate[] => [
     createdAt: d(90),
     updatedAt: d(5),
     deliveredAt: d(5),
-    tenantId: "tenant-002",
-    workspaceId: "workspace-002",
-    actorId: "actor-004",
+    tenantId: createTenantId("tenant-002"),
+      workspaceId: createWorkspaceId("workspace-002"),
+      actorId: createActorId("actor-004"),
   },
   {
     id: createServiceRequestId("sreq-004"),
@@ -192,9 +205,9 @@ const seedRequests = (): ServiceRequestAggregate[] => [
     deadline: dFuture(60),
     createdAt: d(2),
     updatedAt: d(1),
-    tenantId: "tenant-002",
-    workspaceId: "workspace-002",
-    actorId: "actor-005",
+    tenantId: createTenantId("tenant-002"),
+    workspaceId: createWorkspaceId("workspace-002"),
+    actorId: createActorId("actor-005"),
   },
 ];
 
@@ -301,12 +314,12 @@ export const ServiceRequestRepositoryInMemory: ServiceRequestRepository = {
         category: entity.category,
         status: entity.status,
         requesterName: "System Batch Creator",
-        actorId: entity.createdBy,
+        actorId: createActorId(entity.createdBy),
         budget: entity.budget,
         createdAt: new Date(),
         updatedAt: new Date(),
-        tenantId: "default-tenant",
-        workspaceId: "default-workspace",
+        tenantId: createTenantId("default-tenant"),
+        workspaceId: createWorkspaceId("default-workspace"),
       };
       
       REQUEST_STORE.set(id, aggregate);

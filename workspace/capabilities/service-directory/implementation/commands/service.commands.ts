@@ -21,6 +21,56 @@ import {
   getServiceProviderRepositoryPostgres,
 } from "../repository/index.js";
 import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../identity/implementation/repositories/index.js";
+import { 
+  createActorId, 
+  createWorkspaceId, 
+  createUserId,
+  type ActorId, 
+  type WorkspaceId, 
+  type UserId 
+} from "../../../work-core/contracts/work.contracts.js";
+// W-SVC-001: Import capabilityRegistry untuk integrasi createCoreWork (EOS core Work primitive)
+async function getCapabilityRegistry() {
+  const loaded = await import("../../../../packages/core/kernel/src/index.js");
+  return (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
+}
+
+// STANDALONE EVIDENCE & REALTIME UTILITIES - moved to module scope for global access (MIRRORS all other EOS capabilities)
+// W-SVC-001: Reuse standard safeRecordEvidence pattern from work-template-core, communication, consultation capabilities
+async function safeRecordEvidence(payload: unknown): Promise<{ readonly ok: boolean }> {
+  try {
+    const loaded = await import("../../../../packages/core/kernel/src/index.js");
+    const reg = (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
+    if (typeof reg?.invoke === "function") {
+      await reg.invoke("evidence-registry", "evidence.record", payload as never);
+      return { ok: true };
+    }
+  } catch (_e) {
+    // fallthrough: evidence recording is observability-only (not state-machine critical path)
+  }
+  return { ok: true };
+}
+
+// STANDALONE REALTIME UTILITY - safeNotifyWorkspaceListeners (MIRRORS ILC pattern from W-ILC-002)
+async function safeNotifyWorkspaceListeners(workspaceId: WorkspaceId, actorId: ActorId, workId: string): Promise<{ readonly ok: boolean }> {
+  try {
+    const loaded = await import("../../../../packages/core/kernel/src/index.js");
+    const reg = (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
+    if (typeof reg?.invoke === "function") {
+      await reg.invoke("core-realtime", "workspace.broadcast", {
+        workspaceId,
+        actorId,
+        workId,
+        event: "service_request.updated",
+        timestamp: new Date().toISOString()
+      });
+      return { ok: true };
+    }
+  } catch (_e) {
+    // fallthrough: realtime notifications are non-critical for state persistence
+  }
+  return { ok: true };
+}
 
 // SHARED RAIL: Initialize identity schema if Postgres is active (MIRRORS ILC pattern)
 if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
@@ -135,12 +185,43 @@ export const createServiceRequest: CreateServiceRequestCommand = {
     }
 
     // 2. Auto-populate isolation context from trusted session (SHARED RAIL — MIRRORS LH minimal fix)
-    const { tenantId, workspaceId, actorId } = session;
+    const { tenantId, workspaceId: sessionWorkspaceId, actorId: sessionActorId } = session;
+    // Enforce canonical branded types from single source (anti-drift)
+    const workspaceId: WorkspaceId = createWorkspaceId(sessionWorkspaceId as unknown as string);
+    const actorId: ActorId = createActorId(sessionActorId as unknown as string);
     // Enforce security via session's already verified isolation guarantees
     // No need for additional checks - session is cryptographically bound to tenant/workspace
 
+    // W-SVC-001: FIRST create core Work primitive (EOS = Headless Semantic Continuity Substrate for Accountable Work)
+    // Integrasi dengan createCoreWork dari work-core - Work adalah satu-satunya economic primitive
+    const capabilityRegistry = await getCapabilityRegistry();
+    let coreWorkResult: { id: string; workId: string; domainType: string } | undefined;
+    if (capabilityRegistry?.invoke) {
+      try {
+        coreWorkResult = await capabilityRegistry.invoke("work-core", "create", {
+          title: title.trim(),
+          description: description || undefined,
+          domainType: "service-request", // Gunakan domainType yang sudah terdaftar di domainCapabilityMap
+          sessionId,
+          tenantId,
+          workspaceId: sessionWorkspaceId,
+          actorId: sessionActorId,
+          domainSpecificData: {
+            category,
+            budget,
+            requesterName
+          }
+        }) as { id: string; workId: string; domainType: string };
+        console.log(`[W-SVC-001] ✅ Core Work created successfully: ${coreWorkResult.workId}`);
+      } catch (coreWorkError) {
+        console.error("[W-SVC-001] Core Work creation failed (continuing with service request only):", coreWorkError);
+      }
+    }
+
+    // Create service request dengan workId dari core Work (link lineage - accountable continuity)
     const entity: ServiceRequestAggregate = {
       id: newServiceRequestId(),
+      workId: coreWorkResult?.workId, // Bind service request ke core Work ID (critical untuk lineage)
       title: title.trim(),
       ...(description !== undefined && description !== ""
         ? { description }
@@ -154,9 +235,25 @@ export const createServiceRequest: CreateServiceRequestCommand = {
       tenantId,
       workspaceId,
       actorId,
+      executionFrame: "direct", // Default execution frame untuk human actor (CMBCD boundary)
     };
 
     await serviceRepository.save(entity);
+
+    // Catat evidence integrasi core Work dengan service request
+    if (coreWorkResult) {
+      await safeRecordEvidence({
+        capability: "service-directory",
+        command: "service-request.linked-to-core-work",
+        work_id: coreWorkResult.workId,
+        service_request_id: entity.id,
+        tenant_id: tenantId,
+        workspace_id: workspaceId,
+        actor_id: actorId,
+        timestamp: new Date().toISOString(),
+        integration_note: "W-SVC-001: Service request created as domain extension of core Work primitive"
+      });
+    }
 
     // PROPOSE TO PROVIDER: For cybersecurity category requests, PROPOSE to CyberGuard Asia (sp-003) - NOT auto-accept
     // This implements CR-004 Provider Reality Gate: real human must make decision, system only proposes
@@ -224,7 +321,10 @@ export const providerDecisionServiceRequest: ProviderDecisionCommand = {
       throw new Error("[service-directory.providerDecisionServiceRequest] Invalid or revoked session - authentication violation");
     }
     // 2. Auto-populate isolation context from trusted session (SHARED RAIL — MIRRORS LH)
-    const { tenantId, workspaceId, actorId } = session;
+    const { tenantId, workspaceId: sessionWorkspaceId, actorId: sessionActorId } = session;
+    // Enforce canonical branded types from single source (anti-drift)
+    const workspaceId: WorkspaceId = createWorkspaceId(sessionWorkspaceId as unknown as string);
+    const actorId: ActorId = createActorId(sessionActorId as unknown as string);
 
     const current = await serviceRepository.byId(ServiceRequestId(id));
     if (current === undefined) {
@@ -292,6 +392,47 @@ export const acceptServiceRequest: AcceptServiceRequestCommand = {
   },
 };
 
+// W-SVC-001: Mark service verified command - customer verifies work delivery before settlement
+interface MarkServiceVerifiedInput {
+  readonly id: ServiceRequestId;
+}
+interface MarkServiceVerifiedOutput {
+  readonly id: ServiceRequestId;
+  readonly status: "verified";
+  readonly verifiedAt: Date;
+}
+
+// SHARED RAIL: Mark service verified with sessionId ONLY (MIRRORS LH minimal context pattern)
+const MarkServiceVerifiedWithContextSchema = z.object({
+  id: z.string().min(1),
+  // SHARED RAIL: Only sessionId required - auto-populate tenantId/workspaceId/actorId from session (MIRRORS LH)
+  sessionId: z.string().min(1),
+  verificationProof: z.string().min(1), // W-SVC-001: Customer must provide verification proof
+});
+
+type MarkServiceVerifiedWithContextInput = z.infer<typeof MarkServiceVerifiedWithContextSchema>;
+type MarkServiceVerifiedCommand = CapabilityCommand<MarkServiceVerifiedWithContextInput, Promise<MarkServiceVerifiedOutput>>;
+
+// W-SVC-001: CMBCD execution frame switching helper - reuse canonical mapping from workspace-standard
+async function switchExecutionFrameForActor(actorId: string, currentFrame?: string): Promise<{ newFrame: string; switched: boolean }> {
+  // Canonical actor→execution frame mapping (same as workspace-standard, no duplicate logic)
+  const actorTypeToExecutionFrame: Record<string, string> = {
+    "human": "direct", "customer": "direct", "professional": "direct", "officer": "direct",
+    "agent": "proxy", "general-service-agent": "proxy", "dispute-resolution-manager": "proxy",
+    "external-system": "mcp", "api": "mcp", "robot": "mcp",
+    "vendor": "constrained-gui", "contractor": "constrained-gui", "supplier": "constrained-gui"
+  };
+  
+  const assignedActorId = actorId.replace("actor:", "");
+  const newExecutionFrame = actorTypeToExecutionFrame[assignedActorId] || "proxy";
+  const previousExecutionFrame = currentFrame || "direct";
+  
+  return {
+    newFrame: newExecutionFrame,
+    switched: previousExecutionFrame !== newExecutionFrame
+  };
+}
+
 export const markServiceDelivered: MarkServiceDeliveredCommand = {
   kind: "command",
   name: "service-directory.markServiceDelivered",
@@ -319,16 +460,109 @@ export const markServiceDelivered: MarkServiceDeliveredCommand = {
         deliveredAt: current.deliveredAt ?? new Date(),
       };
     }
+
+    // W-SVC-001: CMBCD execution frame switching - sesuai mandate "CMBCD menjadi execution boundary mechanism di dalam Work"
+    // Ketika actor berganti (provider → customer untuk verifikasi), Work tidak berubah, hanya execution frame yang berubah
+    const { newFrame: newExecutionFrame, switched: frameSwitched } = await switchExecutionFrameForActor(
+      actorId, 
+      current.executionFrame
+    );
+
     const deliveredAt = new Date();
     const next: ServiceRequestAggregate = {
       ...current,
       status: "delivered",
       deliveredAt,
       actorId,
+      executionFrame: newExecutionFrame as any,
       updatedAt: new Date()
     };
     await serviceRepository.save(next);
+
+    // Catat bukti perubahan execution frame ke evidence ledger (audit trail compliance)
+    if (frameSwitched) {
+      await safeRecordEvidence({
+        capability: "service-directory",
+        command: "cmbcd.execution-frame-switched",
+        work_id: id,
+        tenant_id: tenantId,
+        workspace_id: workspaceId,
+        actor_id: actorId,
+        previous_execution_frame: current.executionFrame || "direct",
+        new_execution_frame: newExecutionFrame,
+        timestamp: deliveredAt.toISOString(),
+        transition_reason: "Actor changed to customer for verification - CMBCD boundary switch"
+      });
+      console.log(`[W-SVC-001] CMBCD execution frame switched for work ${id}: ${current.executionFrame || "direct"} → ${newExecutionFrame}`);
+    }
+
     return { id: next.id, status: "delivered", deliveredAt };
+  },
+};
+
+export const markServiceVerified: MarkServiceVerifiedCommand = {
+  kind: "command",
+  name: "service-directory.markServiceVerified",
+  version: "2.0.0",
+  async execute(input: MarkServiceVerifiedWithContextInput) {
+    const parsed = MarkServiceVerifiedWithContextSchema.parse(input);
+    const { id, sessionId, verificationProof } = parsed;
+
+    // 1. Validate session exists and is active (SHARED RAIL — MIRRORS LH)
+    const session = await sessionRepository.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[service-directory.markServiceVerified] Invalid or revoked session - authentication violation");
+    }
+    // 2. Auto-populate isolation context from trusted session (SHARED RAIL — MIRRORS LH)
+    const { tenantId, workspaceId, actorId } = session;
+
+    const current = await serviceRepository.byId(ServiceRequestId(id));
+    if (current === undefined) {
+      throw new Error(`[service-directory.markServiceVerified] ServiceRequest not found: ${id}`);
+    }
+    // W-SVC-001: Reality Gate 1 - Only allow verification on work with "delivered" status (undelivered work cannot be verified)
+    if (current.status !== "delivered") {
+      throw new Error(`[service-directory.markServiceVerified] Cannot verify work with status: ${current.status}. Must be "delivered".`);
+    }
+    // Handle idempotency: if already verified/settled, return existing state
+    const status = current.status as ServiceRequestStatus;
+    if (status === "verified" || status === "settled") {
+      return {
+        id: current.id,
+        status: "verified",
+        verifiedAt: current.verifiedAt ?? new Date(),
+      };
+    }
+
+    const verifiedAt = new Date();
+    const next: ServiceRequestAggregate = {
+      ...current,
+      status: "verified",
+      verifiedAt,
+      actorId,
+      updatedAt: new Date()
+    };
+    await serviceRepository.save(next);
+
+    // Record verification evidence - use module-level safeRecordEvidence (MIRRORS all other EOS capabilities)
+    await safeRecordEvidence({
+      capability: "service-directory",
+      command: "markServiceVerified",
+      work_id: id,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      actor_id: actorId,
+      verification_proof: verificationProof,
+      verified_at: verifiedAt.toISOString(),
+    });
+
+    // Notify workspace listeners of verification - use module-level safeNotifyWorkspaceListeners (MIRRORS W-ILC-002)
+    await safeNotifyWorkspaceListeners(workspaceId, actorId, id);
+    
+    console.log(`[W-SVC-001] Customer ${actorId} verified work ${id} with proof: ${verificationProof}`);
+    console.log(`[W-SVC-001] Work now in "verified" status - ready for settlement`);
+    
+    return { id: next.id, status: "verified", verifiedAt };
   },
 };
 
@@ -430,7 +664,7 @@ export const updateExternalSystemStatus: UpdateExternalSystemStatusCommand = {
           receivedAt: new Date(receivedAt)
         }
       ],
-      actorId,
+      actorId: createActorId(actorId as unknown as string),
       updatedAt: new Date(),
     };
 
@@ -598,16 +832,99 @@ export const updatePaymentStatusServiceRequest: UpdatePaymentStatusCommand = {
   },
 };
 
+// W-SVC-001: Settlement command - finalize work after verification, move to settled state
+interface SettleServiceRequestWithContextInput {
+  readonly id: string;
+  readonly settlementProof: string;
+  readonly sessionId: string;
+}
+
+type SettleServiceRequestWithContextOutput = {
+  readonly id: string;
+  readonly status: ServiceRequestStatus;
+  readonly settledAt: Date;
+};
+
+const SettleServiceRequestWithContextSchema = z.object({
+  id: z.string().min(1),
+  settlementProof: z.string().min(1),
+  sessionId: z.string().min(1),
+});
+
+type SettleServiceRequestCommand = CapabilityCommand<SettleServiceRequestWithContextInput, Promise<SettleServiceRequestWithContextOutput>>;
+
+export const settleServiceRequest: SettleServiceRequestCommand = {
+  kind: "command",
+  name: "service-directory.settleServiceRequest",
+  version: "2.0.0",
+  async execute(input: SettleServiceRequestWithContextInput) {
+    const parsed = SettleServiceRequestWithContextSchema.parse(input);
+    const { id, settlementProof, sessionId } = parsed;
+
+    // Validate session exists and is active (SHARED RAIL)
+    const session = await sessionRepository.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[service-directory.settleServiceRequest] Invalid or revoked session - authentication violation");
+    }
+    const { tenantId, workspaceId, actorId } = session;
+
+    const current = await serviceRepository.byId(ServiceRequestId(id));
+    if (current === undefined) {
+      throw new Error(`[service-directory.settleServiceRequest] ServiceRequest not found: ${id}`);
+    }
+    // W-SVC-001: Only allow settlement on work with "verified" status - all work must be verified before settlement
+    if (current.status !== "verified") {
+      throw new Error(`[service-directory.settleServiceRequest] Cannot settle work with status: ${current.status}. Must be "verified".`);
+    }
+
+    const settledAt = new Date();
+    const next: ServiceRequestAggregate = {
+      ...current,
+      status: "settled",
+      settledAt,
+      actorId,
+      updatedAt: new Date(),
+    };
+    await serviceRepository.save(next);
+    
+    // Record settlement evidence
+    await safeRecordEvidence({
+      capability: "service-directory",
+      command: "settleServiceRequest",
+      work_id: id,
+      tenant_id: tenantId,
+      workspace_id: workspaceId,
+      actor_id: actorId,
+      settlement_proof: settlementProof,
+      settled_at: settledAt.toISOString(),
+    });
+
+    // Notify workspace listeners of settlement (reuse ILC pattern from W-ILC-002)
+    await safeNotifyWorkspaceListeners(workspaceId, actorId, id);
+    
+    console.log(`[W-SVC-001] Customer ${actorId} settled work ${id} with proof: ${settlementProof}`);
+    console.log(`[W-SVC-001] Work now in "settled" status - Accountable Work Continuity complete`);
+    
+    return { 
+      id: next.id, 
+      status: next.status, 
+      settledAt: next.settledAt!
+    };
+  }
+};
+
 export const serviceDirectoryCommands: Readonly<Record<string, CapabilityCommand>> = {
   "service-directory.createServiceRequest": createServiceRequest,
   "service-directory.providerDecisionServiceRequest": providerDecisionServiceRequest,
   "service-directory.customerAcceptPriceServiceRequest": customerAcceptPriceServiceRequest,
   "service-directory.acceptServiceRequest": acceptServiceRequest,
   "service-directory.markServiceDelivered": markServiceDelivered,
+  "service-directory.markServiceVerified": markServiceVerified, // W-SVC-001: Verification command before settlement
   "service-directory.listByWorkspace": listServiceRequestsByWorkspace,
   "service-directory.getById": getServiceRequestByIdCommand,
   "service-directory.updateExternalSystemStatus": updateExternalSystemStatus,
   "service-directory.updatePaymentStatusServiceRequest": updatePaymentStatusServiceRequest, // CR-006: Payment Reality command
+  "service-directory.settleServiceRequest": settleServiceRequest, // W-SVC-001: Settlement command for High-Value Resolution Work
 } as const;
 
 export type {

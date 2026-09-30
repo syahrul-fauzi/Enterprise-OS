@@ -1,0 +1,30 @@
+id: workspace-standard
+extends: []
+patterns:
+  - core-workflow-pattern
+  - state-transition-pattern
+  - evidence-capture-pattern
+  - actor-assignment-pattern
+  - authorization-check-pattern
+capabilities:
+  - work-core
+  - persistence
+  - identity
+  - authorization
+  - evidence
+surfaces:
+  - core-dashboard
+  - work-inbox
+  - activity-log
+  - settings-panel
+schemas:
+  - WorkCoreSchema
+  - ActorIdentitySchema
+  - EvidenceChainSchema
+leverage_metrics:
+  potential_work_types: 1000+
+  industries_supported: ["all"]
+  core_changes_required: 0
+  primitive_reuse_percentage: 100
+  used_by_all_compositions: true
+  base_composition: true

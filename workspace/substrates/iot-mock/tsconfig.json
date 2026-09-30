@@ -1,0 +1,37 @@
+{
+  "extends": "../../config/typescript/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strictNullChecks": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "ignoreDeprecations": "5.0",
+    "types": ["node"],
+    "skipLibCheck": true,
+    "composite": true,
+    "noEmit": false,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "module": "NodeNext",
+    "moduleDetection": "force",
+    "moduleResolution": "NodeNext",
+    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": true,
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "ES2022",
+    "paths": {
+      "@repo/capabilities-work-core": ["../../capabilities/work-core/contracts/work.contracts.ts"],
+      "@repo/capabilities-work-core/*": ["../../capabilities/work-core/*"]
+    }
+  },
+  "references": [
+    { "path": "../../capabilities/work-core/tsconfig.json" }
+  ],
+  "include": ["*.ts"],
+  "exclude": ["dist", "node_modules", "**/*.d.ts"]
+}

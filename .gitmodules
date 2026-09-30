@@ -1,3 +1,7 @@
 [submodule ".eos-state"]
 	path = .eos-state
 	url = https://github.com/syahrul-fauzi/Enterprise-OS-State.git
+
+# [submodule "workspace/.eos-state"]
+# 	path = workspace/.eos-state
+# 	url = https://github.com/syahrul-fauzi/Enterprise-OS-Workspace-State.git

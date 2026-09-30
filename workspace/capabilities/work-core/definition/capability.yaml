@@ -1,0 +1,41 @@
+id: work-core
+name: Work Core
+version: 0.1.0
+owner: work-domain
+status: ACTIVE
+introduced: "2026-07-12"
+provides:
+  - work-identity
+  - work-state
+  - work-continuity
+  - work-evidence
+purpose: Menjaga identity, context, authority, state, evidence, dan outcome dari Work sebagai semantic object yang persistent — inti dari EOS Work Continuity thesis.
+manifest_version: 1.0.0
+exports:
+  - WorkAggregate
+  - WorkRepository
+  - WorkCommands
+implementation:
+  entry: implementation/service.ts
+depends_on:
+  - core-runtime
+  - security-hardening
+  - persistence-layer
+capability:
+  name: work-core
+  owner: work-domain
+  purpose: Semantic authority untuk domain Work — mendefinisikan makna, identity, dan continuity invariants dari semua Work di EOS.
+  consumers:
+    - legal-workspace
+    - composition-core
+    - proof-ledger
+    - presentation-entities
+  maturity:
+    level: core
+  lifecycle:
+    state: active
+  evidence_required:
+    - cross_substrate_work_persistence
+    - continuity_across_execution_changes
+    - semantic_identity_preservation
+  stability: stable

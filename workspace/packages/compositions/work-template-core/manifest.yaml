@@ -1,0 +1,11 @@
+id: work-template-core
+extends: ["workspace-standard"]
+patterns: ["template-loading-pattern", "work-creation-pattern", "customization-hook-pattern", "validation-pattern"]
+capabilities: ["workflow", "template", "persistence", "validation"]
+surfaces: ["template-explorer", "work-creator", "customization-panel"]
+schemas: ["WorkTemplateSchema"]
+leverage_metrics:
+  potential_work_types: 100+
+  industries_supported: ["legal", "government", "healthcare", "construction", "finance", "education", "logistics"]
+  core_changes_required: 0
+  primitive_reuse_percentage: 92

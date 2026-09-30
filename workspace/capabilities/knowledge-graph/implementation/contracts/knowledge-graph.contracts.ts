@@ -21,10 +21,12 @@ export interface KnowledgeGraphSnapshot {
   edges: KnowledgeEdge[];
 }
 
+import type { TenantId } from "@repo/capabilities-work-core";
+
 export interface KnowledgeGraphRepository {
   saveSnapshot(
-    nodes: (KnowledgeNode & { id: string; tenantId: string; workspaceId: string })[],
-    edges: (KnowledgeEdge & { id: string; tenantId: string; workspaceId: string })[]
+    nodes: (KnowledgeNode & { id: string; tenantId: TenantId; workspaceId: string })[],
+    edges: (KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId: string })[]
   ): Promise<{ savedNodes: number; savedEdges: number }>;
-  loadSnapshot(tenantId: string, workspaceId: string): Promise<{ nodes: KnowledgeNode[]; edges: KnowledgeEdge[] }>;
+  loadSnapshot(tenantId: TenantId, workspaceId: string): Promise<{ nodes: KnowledgeNode[]; edges: KnowledgeEdge[] }>;
 }

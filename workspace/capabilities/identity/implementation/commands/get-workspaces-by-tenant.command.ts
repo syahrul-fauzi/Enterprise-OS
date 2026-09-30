@@ -1,6 +1,6 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
-import { TenantId, UserId, SessionId, type MembershipAggregate, type WorkspaceAggregate } from "../contracts/identity.contracts.js";
+import { TenantId, ActorId, UserId, SessionId, type MembershipAggregate, type WorkspaceAggregate } from "@repo/capabilities-work-core";
 import { 
   getTenantRepositoryPostgres, 
   getWorkspaceRepositoryPostgres, 
@@ -26,9 +26,9 @@ const sessionRepository = (process.env.POSTGRES_CONNECTION_STRING || process.env
   : SessionRepositoryInMemory;
 
 export const GetWorkspacesByTenantInputSchema = z.object({
-  tenantId: z.string().min(1),
-  actorId: z.string().min(1),
-  sessionId: z.string().min(1),
+  tenantId: z.string().min(1).transform(TenantId),
+  actorId: z.string().min(1).transform(ActorId),
+  sessionId: z.string().min(1).transform(SessionId),
 });
 
 export type GetWorkspacesByTenantInput = z.infer<typeof GetWorkspacesByTenantInputSchema>;
@@ -66,7 +66,7 @@ export const getWorkspacesByTenantCommand: GetWorkspacesByTenantCommand = {
     const parsed = GetWorkspacesByTenantInputSchema.parse(input);
     
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await sessionRepository.byId(SessionId(parsed.sessionId));
+    const session = await sessionRepository.byId(parsed.sessionId);
     if (!session || session.revokedAt !== null) {
       throw new Error("[identity.getWorkspacesByTenant] Invalid or revoked session - authentication violation");
     }
@@ -82,16 +82,16 @@ export const getWorkspacesByTenantCommand: GetWorkspacesByTenantCommand = {
     }
 
     // 4. Get tenant from repository
-    const tenant = await tenantRepository.byId(TenantId(parsed.tenantId));
+    const tenant = await tenantRepository.byId(parsed.tenantId);
     if (!tenant) {
       return undefined;
     }
 
     // 5. Get all workspaces for this tenant only
-    const workspaces = await workspaceRepository.listByTenant(TenantId(parsed.tenantId));
+    const workspaces = await workspaceRepository.listByTenant(parsed.tenantId);
     
     // 6. Get all memberships for this user in this tenant only
-    const memberships = await membershipRepository.listByTenant(TenantId(parsed.tenantId));
+    const memberships = await membershipRepository.listByTenant(parsed.tenantId);
     const userMemberships = memberships.filter((m: MembershipAggregate) => m.userId === UserId(parsed.actorId));
     
     // 7. Map workspaces with their membership details (enforce only workspaces user is member of)

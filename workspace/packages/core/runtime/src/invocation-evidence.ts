@@ -21,6 +21,7 @@ export type RuntimeInvocationEvent = {
   readonly result: unknown;
   readonly decision_id: string | null;
   readonly tenant_id: string | null;
+  readonly actor_id: string | null;
   readonly inputRefs?: readonly string[];
   readonly outputRefs?: readonly string[];
   readonly parentInvocationIds?: readonly string[];
@@ -97,6 +98,7 @@ export function recordRuntimeInvocation(input: {
   readonly productId?: string;
   readonly decision_id?: string | null;
   readonly tenant_id?: string | null;
+  readonly actor_id?: string | null;
   readonly inputRefs?: readonly string[];
   readonly outputRefs?: readonly string[];
   readonly parentInvocationIds?: readonly string[];
@@ -115,6 +117,7 @@ export function recordRuntimeInvocation(input: {
   const resolved_product_id = input.productId ?? ambient?.product_id ?? process.env.EOS_RUNTIME_INVOCATION_PRODUCT_ID?.trim() ?? "unknown";
   const resolved_decision_id = input.decision_id ?? ambient?.decision_id ?? null;
   const resolved_tenant_id = input.tenant_id ?? ambient?.tenant_id ?? null;
+  const resolved_actor_id = input.actor_id ?? ambient?.actor_id ?? null;
   
   // Ambil parent invocation IDs dari ambient context jika tersedia
   const resolved_parentInvocationIds = input.parentInvocationIds ?? 
@@ -142,6 +145,7 @@ export function recordRuntimeInvocation(input: {
         result: canonicalize({ error: "UNAUTHORIZED_ARTIFACT_ACCESS", invalid_refs: authCheck.invalidRefs }),
         decision_id: resolved_decision_id,
         tenant_id: resolved_tenant_id,
+        actor_id: resolved_actor_id,
         inputRefs: input.inputRefs,
         outputRefs: input.outputRefs,
         parentInvocationIds: resolved_parentInvocationIds,
@@ -191,6 +195,7 @@ export function recordRuntimeInvocation(input: {
     result: canonicalize(input.result),
     decision_id: resolved_decision_id,
     tenant_id: resolved_tenant_id,
+    actor_id: resolved_actor_id,
     inputRefs: input.inputRefs,
     outputRefs: input.outputRefs,
     parentInvocationIds: resolved_parentInvocationIds,
@@ -222,6 +227,7 @@ export function traceExecutionByDecision(decisionId: string, tenantId?: string |
     readonly success: boolean;
     readonly decision_id: string | null;
     readonly tenant_id: string | null;
+    readonly actor_id: string | null;
     readonly product_id: string;
     readonly inputRefs?: readonly string[];
     readonly outputRefs?: readonly string[];
@@ -288,6 +294,7 @@ export function traceExecutionByDecision(decisionId: string, tenantId?: string |
           success: event.success,
           decision_id: event.decision_id,
           tenant_id: event.tenant_id,
+          actor_id: event.actor_id,
           product_id: event.product_id,
           inputRefs: event.inputRefs,
           outputRefs: event.outputRefs,

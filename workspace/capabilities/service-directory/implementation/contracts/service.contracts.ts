@@ -1,4 +1,12 @@
-export type ServiceRequestStatus = "draft" | "submitted" | "proposed" | "accepted" | "in_service" | "delivered" | "verified" | "cancelled" | "declined";
+// Import canonical identity types dari work-core (sesuai dependency chain: identity→work-core→capabilities)
+// Anti-drift enforcement - semua capability harus import dari @repo/capabilities-work-core
+import type {
+  TenantId,
+  WorkspaceId,
+  ActorId
+} from "@repo/capabilities-work-core";
+
+export type ServiceRequestStatus = "draft" | "submitted" | "proposed" | "accepted" | "in_service" | "delivered" | "verified" | "settled" | "cancelled" | "declined";
 
 export interface CreateServiceRequestInputLegacy {
   readonly title: string;
@@ -7,6 +15,8 @@ export interface CreateServiceRequestInputLegacy {
   readonly budget?: string;
   readonly createdBy: string;
   readonly status: ServiceRequestStatus;
+  readonly tenantId: TenantId;
+  readonly workspaceId: WorkspaceId;
 }
 
 export type ServiceProviderCategory =
@@ -47,9 +57,9 @@ export interface ServiceProviderAggregate {
   readonly responseHours?: string;
   readonly supplyStatus?: SupplyStatus; // CR-004 Supply-side verification tracking
   readonly createdAt: Readonly<Date>;
-  readonly tenantId: string;
-  readonly workspaceId: string;
-  readonly actorId: string;
+  readonly tenantId: TenantId;
+  readonly workspaceId: WorkspaceId;
+  readonly actorId: ActorId;
 }
 
 export interface ExternalSystemResponse {
@@ -62,6 +72,7 @@ export interface ExternalSystemResponse {
 
 export interface ServiceRequestAggregate {
   readonly id: ServiceRequestId;
+  readonly workId: string; // CORE-001: Mandatory link to core Work primitive ID (only source of truth for boundary metadata)
   readonly title: string;
   readonly description?: string;
   readonly category: ServiceProviderCategory;
@@ -81,9 +92,8 @@ export interface ServiceRequestAggregate {
   readonly createdAt: Readonly<Date>;
   readonly updatedAt: Readonly<Date>;
   readonly deliveredAt?: Readonly<Date>;
-  readonly tenantId: string;
-  readonly workspaceId: string;
-  readonly actorId?: string;
+  readonly verifiedAt?: Readonly<Date>;
+  readonly settledAt?: Readonly<Date>;
   readonly externalResponses?: readonly ExternalSystemResponse[];
 }
 
@@ -136,8 +146,8 @@ export type ServiceRequestRepository = {
   byId(id: ServiceRequestId): Promise<ServiceRequestAggregate | undefined>;
   list(): Promise<readonly ServiceRequestAggregate[]>;
   listByStatus(status: ServiceRequestStatus | "all"): Promise<readonly ServiceRequestAggregate[]>;
-  listByWorkspace(workspaceId: string): Promise<readonly ServiceRequestAggregate[]>;
-  listByTenant(tenantId: string): Promise<readonly ServiceRequestAggregate[]>;
+  listByWorkspace(workspaceId: WorkspaceId): Promise<readonly ServiceRequestAggregate[]>;
+  listByTenant(tenantId: TenantId): Promise<readonly ServiceRequestAggregate[]>;
   save(entity: ServiceRequestAggregate): Promise<ServiceRequestAggregate>;
   createMany(entities: CreateServiceRequestInput[]): Promise<string[]>;
   remove(id: ServiceRequestId): Promise<boolean>;

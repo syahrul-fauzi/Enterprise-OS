@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { ServiceRequestRepositoryInMemory, getServiceRequestRepositoryPostgres } from "../repository/index";
 import type { ServiceRequestId, ServiceRequestAggregate } from "../contracts/service.contracts";
-import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../identity/implementation/repositories/index";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core/index.js";
 
 const sessionRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()

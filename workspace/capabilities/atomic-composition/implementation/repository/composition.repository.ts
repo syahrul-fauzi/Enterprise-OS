@@ -3,7 +3,7 @@ import { existsSync } from 'fs';
 import type { Team, WorkBinding } from '../contracts/atomic-composition.contracts';
 import type { Assignment } from '../contracts/atomic-composition.contracts';
 import type { Requirement } from '../contracts/atomic-composition.contracts';
-import type { WorkId } from "@repo/core-kernel";
+import type { WorkId } from "@repo/capabilities-work-core";
 import { TeamId, AssignmentId, RequirementId } from '../contracts/atomic-composition.contracts';
 import { join } from 'path';
 

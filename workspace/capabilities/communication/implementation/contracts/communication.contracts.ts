@@ -1,9 +1,10 @@
 import { z } from "zod";
-import type { WorkId, ActorId, TenantId } from "@repo/core-kernel";
+// Import canonical identity types dari work-core (sesuai dependency chain: identity→work-core→capabilities)
+// Anti-drift enforcement - semua capability harus import dari @repo/capabilities-work-core
+import type { WorkId, ActorId, TenantId, SessionId } from "@repo/capabilities-work-core";
 
-// Branded types for type safety
+// Branded types for type safety (hanya CommunicationEventId yang spesifik ke capability communication)
 export type CommunicationEventId = string & { __brand: "CommunicationEventId" };
-export type SessionId = string & { __brand: "SessionId" };
 
 // Supported communication adapter types - follows connector ecosystem pattern
 export const CommunicationAdapterTypes = [
@@ -81,13 +82,13 @@ export interface SendCommunicationOutput {
 export interface CommunicationRepository {
   readonly entityName: "CommunicationEvent";
   readonly kind: "repository";
-  byId(id: CommunicationEventId, context?: { tenantId: string; workspaceId: string }): Promise<CommunicationEvent | undefined>;
-  byWorkId(workId: string, context?: { tenantId: string; workspaceId: string }): Promise<readonly CommunicationEvent[]>;
-  byTenantId(tenantId: string): Promise<readonly CommunicationEvent[]>;
-  list(context?: { tenantId: string; workspaceId: string }): Promise<readonly CommunicationEvent[]>;
-  save(entity: CommunicationEvent, context?: { tenantId: string; workspaceId: string; actorId: string }): Promise<void>;
-  updateStatus(id: CommunicationEventId, status: CommunicationEventStatus, context?: { tenantId: string; workspaceId: string }): Promise<boolean>;
-  remove(id: CommunicationEventId, context?: { tenantId: string; workspaceId: string }): Promise<boolean>;
+  byId(id: CommunicationEventId, context?: { tenantId: TenantId; workspaceId: string }): Promise<CommunicationEvent | undefined>;
+  byWorkId(workId: string, context?: { tenantId: TenantId; workspaceId: string }): Promise<readonly CommunicationEvent[]>;
+  byTenantId(tenantId: TenantId): Promise<readonly CommunicationEvent[]>;
+  list(context?: { tenantId: TenantId; workspaceId: string }): Promise<readonly CommunicationEvent[]>;
+  save(entity: CommunicationEvent, context?: { tenantId: TenantId; workspaceId: string; actorId: string }): Promise<void>;
+  updateStatus(id: CommunicationEventId, status: CommunicationEventStatus, context?: { tenantId: TenantId; workspaceId: string }): Promise<boolean>;
+  remove(id: CommunicationEventId, context?: { tenantId: TenantId; workspaceId: string }): Promise<boolean>;
   clear(): Promise<void> | void;
 }
 

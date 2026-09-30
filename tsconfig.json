@@ -8,7 +8,7 @@
         "./workspace/packages/core/*/src",
         "./workspace/packages/presentation/*/src",
         "./workspace/packages/tooling/*/src",
-        "./workspace/packages/compositions/*/src",
+        "./workspace/packages/compositions/*",
         "./workspace/packages/*/dist",
         "./workspace/packages/core/*/dist/src",
         "./workspace/packages/presentation/*/dist",

@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index.js";
 import type { CommunicationEvent, CommunicationEventId, CommunicationAdapterType, CommunicationEventStatus } from "../contracts/communication.contracts.js";
 import type { LamportCommunicationEvent } from "../grounding/converter.js";
+import type { TenantId } from "@repo/capabilities-work-core";
 import { 
   newCommunicationEventId
 } from "../contracts/communication.contracts.js";
@@ -122,7 +123,7 @@ class CommunicationRepositoryInMemoryImpl implements CommunicationRepository {
   readonly entityName = "CommunicationEvent" as const;
   readonly kind = "repository" as const;
 
-  async byId(id: CommunicationEventId, context?: { tenantId: string; workspaceId: string }): Promise<CommunicationEvent | undefined> {
+  async byId(id: CommunicationEventId, context?: { tenantId: TenantId; workspaceId: string }): Promise<CommunicationEvent | undefined> {
     const event = inMemoryEvents.find(e => e.event_id === id);
     if (!event) return undefined;
     
@@ -137,7 +138,7 @@ class CommunicationRepositoryInMemoryImpl implements CommunicationRepository {
     return event;
   }
 
-  async byWorkId(workId: string, context?: { tenantId: string; workspaceId: string }): Promise<readonly CommunicationEvent[]> {
+  async byWorkId(workId: string, context?: { tenantId: TenantId; workspaceId: string }): Promise<readonly CommunicationEvent[]> {
     let events = inMemoryEvents.filter(e => e.work_id === workId);
     
     // WORK-015: Filter by tenant/workspace if context is provided
@@ -159,11 +160,11 @@ class CommunicationRepositoryInMemoryImpl implements CommunicationRepository {
     return sortedEvents;
   }
 
-  async byTenantId(tenantId: string): Promise<readonly CommunicationEvent[]> {
+  async byTenantId(tenantId: TenantId): Promise<readonly CommunicationEvent[]> {
     return [...inMemoryEvents.filter(e => e.tenant_id === tenantId)];
   }
 
-  async list(context?: { tenantId: string; workspaceId: string }): Promise<readonly CommunicationEvent[]> {
+  async list(context?: { tenantId: TenantId; workspaceId: string }): Promise<readonly CommunicationEvent[]> {
     let events = [...inMemoryEvents];
     
     // WORK-015: Filter by tenant/workspace if context is provided
@@ -186,7 +187,7 @@ class CommunicationRepositoryInMemoryImpl implements CommunicationRepository {
     return events;
   }
 
-  async save(entity: CommunicationEvent | LamportCommunicationEvent, context?: { tenantId: string; workspaceId: string; actorId: string }): Promise<void> {
+  async save(entity: CommunicationEvent | LamportCommunicationEvent, context?: { tenantId: TenantId; workspaceId: string; actorId: string }): Promise<void> {
     // WORK-015: Enforce tenant isolation at save - VALIDATE sebelum overwrite!
     if (context) {
       // Jika entity sudah punya tenant_id yang berbeda dengan context, TOLAK!
@@ -252,7 +253,7 @@ class CommunicationRepositoryInMemoryImpl implements CommunicationRepository {
     });
   }
 
-  async remove(id: CommunicationEventId, context?: { tenantId: string; workspaceId: string }): Promise<boolean> {
+  async remove(id: CommunicationEventId, context?: { tenantId: TenantId; workspaceId: string }): Promise<boolean> {
     const event = inMemoryEvents.find(e => e.event_id === id);
     if (!event) {
       // WORK-015: Log failed deletion attempt
@@ -308,7 +309,7 @@ class CommunicationRepositoryInMemoryImpl implements CommunicationRepository {
     return false;
   }
 
-  async updateStatus(id: CommunicationEventId, status: CommunicationEventStatus, context?: { tenantId: string; workspaceId: string }): Promise<boolean> {
+  async updateStatus(id: CommunicationEventId, status: CommunicationEventStatus, context?: { tenantId: TenantId; workspaceId: string }): Promise<boolean> {
     const event = inMemoryEvents.find(e => e.event_id === id);
     if (!event) return false;
     

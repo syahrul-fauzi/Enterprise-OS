@@ -1,3 +1,6 @@
+// Import canonical identity types dari work-core (single source of truth - anti-drift)
+import type { TenantId } from "@repo/capabilities-work-core";
+
 export type ContentStatus =
   | "proposed"
   | "accepted"
@@ -88,7 +91,7 @@ export interface ContentArticleAggregate {
   readonly topicLabel?: TopicCategory;
   readonly author?: string;
   readonly authorAffiliation?: string;
-  readonly tenantId: string;
+  readonly tenantId: TenantId;
   readonly workspaceId: string;
   readonly actorId: string;
   readonly status: ContentStatus;
@@ -106,7 +109,7 @@ export interface CommunityDiscussionAggregate {
   readonly topicLabel?: TopicCategory;
   readonly startedBy?: string;
   readonly startedByAffiliation?: string;
-  readonly tenantId: string;
+  readonly tenantId: TenantId;
   readonly workspaceId: string;
   readonly actorId: string;
   readonly status: DiscussionStatus;

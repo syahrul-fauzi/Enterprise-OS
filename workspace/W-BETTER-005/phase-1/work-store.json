@@ -1,0 +1,44 @@
+{
+  "W-001": {
+    "id": "W-001",
+    "workId": "W-001",
+    "title": "Cuti Tahunan 2026",
+    "status": "SUBMITTED",
+    "actorId": "actor-001",
+    "created_at": "2026-09-29T05:07:20.128Z",
+    "tenantId": "tenant-001",
+    "workspaceId": "workspace-001",
+    "compositionId": "comp-001",
+    "sessionId": "session-001",
+    "createdAt": "2026-09-29T05:07:20.129Z",
+    "updatedAt": "2026-09-29T05:07:20.129Z"
+  },
+  "W-002": {
+    "id": "W-002",
+    "workId": "W-002",
+    "title": "Review Contract Legal",
+    "status": "IN_PROGRESS",
+    "actorId": "actor-002",
+    "created_at": "2026-09-29T05:07:20.129Z",
+    "tenantId": "tenant-001",
+    "workspaceId": "workspace-001",
+    "compositionId": "comp-001",
+    "sessionId": "session-001",
+    "createdAt": "2026-09-29T05:07:20.129Z",
+    "updatedAt": "2026-09-29T05:07:20.131Z"
+  },
+  "W-003": {
+    "id": "W-003",
+    "workId": "W-003",
+    "title": "Perbaikan Bug Dashboard",
+    "status": "APPROVED",
+    "actorId": "actor-003",
+    "created_at": "2026-09-29T05:07:20.129Z",
+    "tenantId": "tenant-001",
+    "workspaceId": "workspace-001",
+    "compositionId": "comp-001",
+    "sessionId": "session-001",
+    "createdAt": "2026-09-29T05:07:20.129Z",
+    "updatedAt": "2026-09-29T05:07:20.131Z"
+  }
+}

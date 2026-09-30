@@ -10,14 +10,13 @@ import type { CapabilityDescriptor, CapabilityImplementation } from "@repo/core-
 // import * as RequirementServiceImplModule from "@repo/capabilities-requirement-management"; // Package not yet registered
 import { identityCommands } from "@repo/capabilities-identity";
 import {
-  UserRepositoryPostgres,
-  TenantRepositoryPostgres,
-  WorkspaceRepositoryPostgres,
-  MembershipRepositoryPostgres,
-  SessionRepositoryPostgres,
+  getUserRepositoryPostgres,
+  getTenantRepositoryPostgres,
+  getWorkspaceRepositoryPostgres,
+  getMembershipRepositoryPostgres,
+  getSessionRepositoryPostgres,
   passwordService
 } from "@repo/capabilities-identity";
-// import * as EvidenceRegistryServiceImplModule from "../../capabilities/evidence-registry/implementation/service.js";
 import * as ConsultationServiceImplModule from "../../capabilities/consultation/implementation/service.js";
 import { 
   createConsultation, 
@@ -45,20 +44,45 @@ import {
 //   implementation: requirementImplementation
 // });
 
+// Import requirement management modules
+import { requirementCommands } from "../../capabilities/requirement-management/implementation/commands/index.js";
+import { requirementQueries } from "../../capabilities/requirement-management/implementation/queries/index.js";
+import { requirementService } from "../../capabilities/requirement-management/implementation/services/requirement.service.js";
+import { getRequirementRepositoryPostgres } from "../../capabilities/requirement-management/implementation/repository/requirement.repository.js";
+// Requirement View import
+import RequirementView from "../../capabilities/requirement-management/experience/views/RequirementView.js";
+
 // Identity capability implementation
 const identityImplementation: CapabilityImplementation = {
   commands: identityCommands,
   queries: {},
   repositories: {
-    UserRepository: UserRepositoryPostgres,
-    TenantRepository: TenantRepositoryPostgres,
-    WorkspaceRepository: WorkspaceRepositoryPostgres,
-    MembershipRepository: MembershipRepositoryPostgres,
-    SessionRepository: SessionRepositoryPostgres,
+    UserRepository: getUserRepositoryPostgres(),
+    TenantRepository: getTenantRepositoryPostgres(),
+    WorkspaceRepository: getWorkspaceRepositoryPostgres(),
+    MembershipRepository: getMembershipRepositoryPostgres(),
+    SessionRepository: getSessionRepositoryPostgres(),
   },
   services: { passwordService },
   entry: {},
 };
+
+// Requirement Management capability implementation - BATTLE-1D
+const requirementImplementation: CapabilityImplementation = {
+  commands: requirementCommands,
+  queries: requirementQueries,
+  repositories: { RequirementRepository: getRequirementRepositoryPostgres() },
+  services: { RequirementService: requirementService },
+  entry: {},
+};
+
+const requirementManagement: CapabilityDescriptor = Object.freeze({
+  id: "requirement-management",
+  version: "1.0.0",
+  name: "Requirement Management",
+  experience: { view: RequirementView },
+  implementation: requirementImplementation
+});
 
 const identity: CapabilityDescriptor = Object.freeze({
   id: "identity",
@@ -69,27 +93,28 @@ const identity: CapabilityDescriptor = Object.freeze({
 });
 
 // Import evidence registry queries dengan properti lengkap
-// import { getEvidenceRecord, searchEvidenceRegistry } from "../../capabilities/evidence-registry/implementation/queries/evidence-registry.queries.js";
+import { getEvidenceRecord, searchEvidenceRegistry } from "../../capabilities/evidence-registry/implementation/queries/evidence-registry.queries.js";
+import * as EvidenceRegistryServiceImplModule from "../../capabilities/evidence-registry/implementation/service.js";
 
 // Evidence Registry capability implementation
-// const evidenceRegistryImplementation: CapabilityImplementation = {
-//   commands: EvidenceRegistryServiceImplModule.evidenceRegistryCommands,
-//   queries: {
-//     "evidence.get": { ...getEvidenceRecord, kind: "query", name: "evidence.get" },
-//     "evidence.search": { ...searchEvidenceRegistry, kind: "query", name: "evidence.search" },
-//   },
-//   repositories: { EvidenceRegistryRepository: EvidenceRegistryServiceImplModule.EvidenceRegistryRepositoryFileSystem },
-//   services: {},
-//   entry: EvidenceRegistryServiceImplModule,
-// };
+const evidenceRegistryImplementation: CapabilityImplementation = {
+  commands: EvidenceRegistryServiceImplModule.evidenceRegistryCommands,
+  queries: {
+    "evidence.get": { ...getEvidenceRecord, kind: "query", name: "evidence.get" },
+    "evidence.search": { ...searchEvidenceRegistry, kind: "query", name: "evidence.search" },
+  },
+  repositories: { EvidenceRegistryRepository: EvidenceRegistryServiceImplModule.EvidenceRegistryRepositoryFileSystem },
+  services: {},
+  entry: EvidenceRegistryServiceImplModule,
+};
 
-// const evidenceRegistry: CapabilityDescriptor = Object.freeze({
-//   id: "evidence-registry",
-//   version: "0.1.0",
-//   name: "Evidence Registry",
-//   experience: {},
-//   implementation: evidenceRegistryImplementation,
-// });
+const evidenceRegistry: CapabilityDescriptor = Object.freeze({
+  id: "evidence-registry",
+  version: "0.1.0",
+  name: "Evidence Registry",
+  experience: {},
+  implementation: evidenceRegistryImplementation,
+});
 
 // Consultation capability implementation
 const consultationImplementation: CapabilityImplementation = {
@@ -251,15 +276,12 @@ const workCore: CapabilityDescriptor = Object.freeze({
 
 export const registry = new StaticRegistry({
   entries: {
-    // "requirement-management": requirementManagement, // Temporarily disabled - package not registered
+    "requirement-management": requirementManagement,
     "identity": identity,
-    // "evidence-registry": evidenceRegistry,
+    "evidence-registry": evidenceRegistry,
     "work-core": workCore,
-    "consultation": consultation, // ENABLED for LH-LGL-001 LawyersHub Legal Consultation
-    // "consultation": consultation, (temporarily disabled to resolve build - unrelated to spine flow)
+    "consultation": consultation,
     "legal-case": legalCase,
-    // "legal-document": legalDocument, (temporarily disabled)
-    // "observability": observability, (temporarily disabled)
     "communication": communication,
   },
 });

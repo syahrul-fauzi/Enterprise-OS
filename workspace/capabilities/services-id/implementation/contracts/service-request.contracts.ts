@@ -1,4 +1,4 @@
-export type ServiceRequestStatus = "draft" | "open" | "in_progress" | "closed";
+export type ServiceRequestStatus = "draft" | "submitted" | "accepted" | "in_service" | "delivered" | "verified" | "settled" | "cancelled";
 export type ServiceRequestPriority = "low" | "medium" | "high" | "critical";
 export type ServiceRequestId = string & {
     readonly __serviceRequestId: unique symbol;
@@ -24,6 +24,7 @@ export interface ServiceRequestAggregate {
     readonly createdAt: Readonly<Date>;
     readonly updatedAt: Readonly<Date>;
     readonly closedAt?: Readonly<Date>;
+    readonly settledAt?: Readonly<Date>;
     readonly executionContext?: ExecutionContextMetadata;
     readonly evidence?: readonly any[];
     readonly tenantId?: string;
@@ -95,9 +96,26 @@ export interface SearchServiceRequestsOutput {
     readonly offset: number;
     readonly limit: number;
 }
+export interface SettleServiceRequestInput {
+    readonly id: ServiceRequestId;
+    readonly settlementProof?: string;
+    readonly sessionId: string;
+    readonly tenantId: string;
+    readonly workspaceId: string;
+    readonly actorId: string;
+}
+export interface SettleServiceRequestOutput {
+    readonly id: ServiceRequestId;
+    readonly status: "settled";
+    readonly settledAt: Date;
+}
+
 export type ServiceRequestRepository = {
     readonly entityName: "ServiceRequest";
     readonly kind: "repository";
     byId(id: ServiceRequestId, context?: { tenantId: string; workspaceId: string }): Promise<ServiceRequestAggregate | undefined>;
     list(context?: { tenantId: string; workspaceId: string }): Promise<readonly ServiceRequestAggregate[]>;
+    byWorkId(workId: string, context?: { tenantId: string; workspaceId: string }): Promise<ServiceRequestAggregate | undefined>;
+    save(input: CreateServiceRequestInput): Promise<CreateServiceRequestOutput>;
+    settle(input: SettleServiceRequestInput): Promise<SettleServiceRequestOutput>;
 };

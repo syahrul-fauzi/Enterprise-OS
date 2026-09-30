@@ -14,7 +14,7 @@ import {
   TopicCategory,
 } from "../contracts/community.contracts.js";
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../identity/implementation/repositories/index.js";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core/index.js";
 import {
   CommunityDiscussionRepositoryInMemory,
   ContentArticleRepositoryInMemory,

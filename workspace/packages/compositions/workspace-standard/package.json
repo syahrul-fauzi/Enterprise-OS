@@ -1,0 +1,25 @@
+{
+  "name": "@repo/composition-workspace-standard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "manifest.yaml",
+    "metadata.yaml",
+    "workspace.ts"
+  ],
+  "scripts": {
+    "validate": "node --import tsx ../../composition/src/scripts/validate-composition-package.ts ."
+  },
+  "dependencies": {
+    "@capabilities/work-core": "workspace:*"
+  },
+  "keywords": [
+    "eos",
+    "base-composition",
+    "core-primitives",
+    "work-continuity"
+  ],
+  "author": "EOS Core Team",
+  "license": "UNLICENSED"
+}

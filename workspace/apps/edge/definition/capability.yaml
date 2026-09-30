@@ -1,0 +1,44 @@
+id: apps-edge
+name: EOS Edge Runtime
+version: 0.1.0
+owner: edge-domain
+status: ACTIVE
+introduced: "2026-09-26"
+provides:
+  - edge-runtime
+  - device-context
+  - local-execution
+  - offline-continuity
+  - state-hydration
+purpose: Device-side runtime surface yang memperluas Work Continuity dari EOS Core ke lingkungan eksekusi lokal perangkat.
+manifest_version: 1.0.0
+exports:
+  - EdgeRuntime
+  - ContextAcquisition
+  - StateHydration
+  - NativeExecution
+implementation:
+  entry: src/index.ts
+depends_on:
+  - work-core
+  - core-runtime
+  - security-hardening
+  - persistence-layer
+capability:
+  name: apps-edge
+  owner: edge-domain
+  purpose: Execution surface untuk perangkat lokal — mengimplementasikan Work Continuity di sisi perangkat tanpa mendefinisikan ulang Work semantics.
+  consumers:
+    - apps-web
+    - apps-api
+    - agent-orchestration
+  maturity:
+    level: experimental
+  lifecycle:
+    state: active
+  evidence_required:
+    - cross_surface_work_persistence
+    - offline_state_reconciliation
+    - device_context_normalization
+    - native_execution_evidence_tracking
+  stability: experimental

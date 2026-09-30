@@ -27,7 +27,9 @@
     "paths": {
       "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
       "@repo/capabilities-identity": ["../identity/implementation/index.ts"],
-      "@repo/capabilities-identity/*": ["../identity/implementation/*"]
+      "@repo/capabilities-identity/*": ["../identity/implementation/*"],
+      "@repo/capabilities-work-core": ["./contracts/work.contracts.ts"],
+      "@repo/capabilities-work-core/*": ["./*"]
     }
   },
   "references": [

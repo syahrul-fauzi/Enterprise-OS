@@ -33,13 +33,13 @@ const ANONYMOUS_SESSION_TEMPLATE = Object.freeze({
   productId: "lawyershub.default", // PR-VISUAL-001: Default product ke lawyershub
 });
 
-export function createAnonymousWorkspaceSession(): WorkspaceSession {
+export function createAnonymousWorkspaceSession(customProductId?: string): WorkspaceSession {
   return {
     actorId: ANONYMOUS_SESSION_TEMPLATE.actorId,
     actorLabel: ANONYMOUS_SESSION_TEMPLATE.actorLabel,
     tenantId: ANONYMOUS_SESSION_TEMPLATE.tenantId,
     workspaceId: ANONYMOUS_SESSION_TEMPLATE.workspaceId,
-    productId: ANONYMOUS_SESSION_TEMPLATE.productId,
+    productId: customProductId || ANONYMOUS_SESSION_TEMPLATE.productId, // FACE-001: Allow dynamic productId override
     sessionId: `session-${randomUUID()}`,
     issuedAt: new Date().toISOString(),
   };

@@ -6,7 +6,7 @@ import {
   getTenantRepositoryPostgres,
   getSessionRepositoryPostgres,
 } from "../repositories/index.js";
-import { WorkspaceId, UserId, TenantId, SessionId } from "../contracts/index.js";
+import { WorkspaceId, UserId, TenantId, ActorId, SessionId } from "@repo/capabilities-work-core";
 
 // Instantiate repositories
 const sessionRepository = getSessionRepositoryPostgres();
@@ -15,9 +15,9 @@ const membershipRepository = getMembershipRepositoryPostgres();
 const tenantRepository = getTenantRepositoryPostgres();
 
 export const GetWorkspaceByIdInputSchema = z.object({
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
-  sessionId: z.string().min(1),
+  workspaceId: z.string().min(1).transform(WorkspaceId),
+  actorId: z.string().min(1).transform(ActorId),
+  sessionId: z.string().min(1).transform(SessionId),
 });
 
 export type GetWorkspaceByIdInput = z.infer<typeof GetWorkspaceByIdInputSchema>;
@@ -52,7 +52,7 @@ export const getWorkspaceByIdCommand: CapabilityCommand = {
     const { workspaceId, actorId, sessionId } = parsed;
 
     // 1. Validate session exists and is valid (tenant isolation check)
-    const session = await sessionRepository.byId(SessionId(sessionId));
+    const session = await sessionRepository.byId(sessionId);
     const sessionExpiresAt = session?.expiresAt ?? new Date(0);
     if (!session || session.revokedAt !== null || sessionExpiresAt < new Date()) {
       return undefined;
@@ -64,7 +64,7 @@ export const getWorkspaceByIdCommand: CapabilityCommand = {
     }
 
     // 3. Get workspace from PostgreSQL
-    const workspace = await workspaceRepository.byId(WorkspaceId(workspaceId));
+    const workspace = await workspaceRepository.byId(workspaceId);
     if (!workspace) {
       return undefined;
     }
@@ -81,7 +81,7 @@ export const getWorkspaceByIdCommand: CapabilityCommand = {
       workspace.tenantId,
       workspace.id,
     );
-    const tenant = await tenantRepository.byId(TenantId(workspace.tenantId));
+    const tenant = await tenantRepository.byId(workspace.tenantId);
 
     const workspaceCreatedAt = workspace.createdAt ?? new Date();
     const workspaceUpdatedAt = workspace.updatedAt ?? new Date();

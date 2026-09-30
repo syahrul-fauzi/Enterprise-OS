@@ -5,9 +5,7 @@ import {
   CommunityDiscussionRepositoryInMemory,
   getCommunityDiscussionRepositoryPostgres,
 } from "../repository/index";
-import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index";
-import type { DiscussionId } from "../contracts/community.contracts";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core/index.js";
 
 // Environment-based repository toggle (production rail pattern)
 const discussionRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL 

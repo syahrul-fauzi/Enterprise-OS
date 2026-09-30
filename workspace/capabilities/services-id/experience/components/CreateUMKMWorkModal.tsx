@@ -69,7 +69,7 @@ export function CreateUMKMWorkModal({
     
     setLoading(true);
     try {
-      // Invoke core work.create command with L1 cohort compliant data
+      // Invoke core work.create command with PT Establishment composition (W-COMP-001 reuse mandate)
       await capabilityRegistry.invokeAsync("work-core", "work.create", {
         title,
         description,
@@ -78,13 +78,15 @@ export function CreateUMKMWorkModal({
         tenantId,
         workspaceId,
         actorId,
-        // Layer3 UMKM-specific data stored in domainSpecificData (core supports this field)
+        // Layer3 UMKM-specific data + PT Establishment composition metadata
         domainSpecificData: {
           nib,
           umkmCategory,
           umkmSubcategory: subcategory,
           bankAccountVerified: true, // In production this would be verified via API
           cohortTag: "l1-cohort-001", // Tag for evidence-registry metrics collection
+          // W-COMP-001: Reuse PT Establishment composition for PT/UMKM business registration
+          compositionPackageId: "pt-establishment", // Tells atomic-composition to load pt-establishment patterns/capabilities/surfaces
         },
       });
 
@@ -140,7 +142,9 @@ export function CreateUMKMWorkModal({
               bankAccountVerified: true,
               cohortTag: "l1-cohort-001",
               bulk_imported: true,
-              import_timestamp: new Date().toISOString()
+              import_timestamp: new Date().toISOString(),
+              // W-COMP-001: Reuse PT Establishment composition for bulk UMKM registrations
+              compositionPackageId: "pt-establishment",
             },
           });
           console.log(`[CreateUMKMWorkModal] Bulk import success: ${umkm.name} (${umkm.nib})`);

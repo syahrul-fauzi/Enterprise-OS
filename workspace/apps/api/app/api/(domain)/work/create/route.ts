@@ -9,6 +9,8 @@ import {
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 // Import work-core commands and register them directly in this route (REALITY PATH ONLY - no dynamic loading)
 import { workCoreCommands } from "../../../../../../../capabilities/work-core/implementation/commands/work.commands";
+// Import workspace-standard hooks and register them directly (W-SVC-002 requirement - dispute resolution hooks)
+import { registerWorkspaceStandardHooks } from "../../../../../../../packages/compositions/workspace-standard/workspace";
 
 // Register work-core commands at route initialization to resolve capabilityRegistry command not found error
 // This follows the existing reality-driven pattern where all commands are imported and registered locally
@@ -22,6 +24,11 @@ for (const command of workCoreCommands) {
   });
   console.log(`[api/work/create] ✅ Registered command: work-core.${fullCommandName}`);
 }
+
+// Register workspace-standard hooks at route initialization to enable W-SVC-002 customer support dispute resolution
+// Reuse the same REALITY PATH pattern for all capabilities to avoid dynamic import failures
+registerWorkspaceStandardHooks();
+console.log(`[api/work/create] ✅ Registered all workspace-standard hooks (W-SVC-002 enabled)`);
 
 // Lazy load atomic-composition and consultation commands saat first request untuk menghindari module resolution error di Next.js
 // Ini tetap 100% primitive reuse, tidak ada perubahan arsitektur - hanya perubahan cara loading di apps/api

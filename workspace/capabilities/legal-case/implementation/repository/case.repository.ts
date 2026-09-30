@@ -1,5 +1,7 @@
 import { recordRuntimeInvocation } from "../../../../packages/core/runtime/dist/src/index.js";
 import { CaseId, type CaseRepository, type CaseAggregate, type CaseId as CaseIdType, CaseStatus, CasePriority } from "../../contracts/index.js";
+// Import canonical Work repository dari work-core (CORE-001: satu-satunya sumber truth boundary metadata)
+import { getWorkRepositoryPostgres } from "../../../work-core/implementation/repository/work-postgres.repository.js";
 // Import canonical realtime notifier from core package (D1 architecture compliance)
 // @ts-ignore - Temporary fix for module declaration issue
 import { notifyWorkspaceListeners } from "../../../../packages/core/realtime/dist/index.js";
@@ -119,19 +121,39 @@ export const CaseRepositoryInMemory: CaseRepository = {
   },
 
   // WORK-015: Enforce tenant isolation at repository layer - defense-in-depth
+  // CORE-001: Ambil semua boundary metadata dari core Work repository, tidak lagi dari case itu sendiri
   async byId(id: string, context?: { tenantId: string; workspaceId: string }) {
     const raw = STORE.get(id);
     if (!raw) return undefined;
     
+    // Fetch core Work aggregate untuk mendapatkan boundary metadata yang otoritatif
+    const workRepository = getWorkRepositoryPostgres();
+    const coreWork = await workRepository.byWorkId(raw.workId);
+    
+    if (!coreWork) {
+      console.error(`[CaseRepositoryInMemory] Core Work not found for case ${id}: workId ${raw.workId}`);
+      recordRuntimeInvocation({
+        capabilityId: "legal-case",
+        operationId: "repository.byId",
+        sourceRef: "CaseRepositoryInMemory.byId",
+        success: false,
+        input: { caseId: id, workId: raw.workId },
+        result: { reason: "core_work_not_found" },
+        ...(context?.tenantId ? { tenant_id: context.tenantId } : {}),
+        inputRefs: [id, raw.workId]
+      });
+      return undefined;
+    }
+    
     // Only enforce tenant isolation in production (when NODE_ENV=production AND DATABASE_URL is set)
     // In development (in-memory), bypass isolation to fix "Work not found" errors
     if (process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && context) {
-      const caseTenantId = (raw as any).tenantId;
-      const caseWorkspaceId = (raw as any).workspaceId;
+      const caseTenantId = coreWork.tenantId;
+      const caseWorkspaceId = coreWork.workspaceId;
     
       if (caseTenantId && caseWorkspaceId) {
         if (caseTenantId !== context.tenantId || caseWorkspaceId !== context.workspaceId) {
-          console.error(`[CaseRepositoryInMemory] Cross-tenant access attempt blocked: case ${id} belongs to tenant ${caseTenantId}, requested tenant ${context.tenantId}`);
+          console.error(`[CaseRepositoryInMemory] Cross-tenant access attempt blocked: case ${id} (work ${raw.workId}) belongs to tenant ${caseTenantId}, requested tenant ${context.tenantId}`);
           recordRuntimeInvocation({
             capabilityId: "legal-case",
             operationId: "repository.byId",
@@ -140,7 +162,7 @@ export const CaseRepositoryInMemory: CaseRepository = {
             input: { caseId: id },
             result: { reason: "cross_tenant_isolation_violation", caseTenantId, requestedTenantId: context.tenantId },
             tenant_id: context.tenantId,
-            inputRefs: [id]
+            inputRefs: [id, raw.workId]
           });
           return undefined;
         }
@@ -209,6 +231,7 @@ export const CaseRepositoryInMemory: CaseRepository = {
         (updated as any).tenantId = context.tenantId;
         (updated as any).workspaceId = context.workspaceId;
         (updated as any).actorId = context.actorId;
+        (updated as any).lawyerId = null;
       }
     }
     

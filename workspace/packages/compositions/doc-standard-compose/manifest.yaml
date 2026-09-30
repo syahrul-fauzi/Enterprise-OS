@@ -1,0 +1,40 @@
+id: doc-standard-compose
+extends:
+  - work-template-core
+  - gov-api-standard
+  - workspace-standard
+patterns:
+  - document-generation-pattern
+  - template-rendering-pattern
+  - review-workflow-pattern
+  - version-control-pattern
+capabilities:
+  - document-generation
+  - template-rendering
+  - legal-document
+  - workflow
+  - versioning
+surfaces:
+  - document-builder
+  - template-editor
+  - review-portal
+  - document-history
+schemas:
+  - DocumentTemplateSchema
+  - WorkTemplateSchema
+  - GovernmentApiSchema
+leverage_metrics:
+  potential_work_types: 100+
+  industries_supported: ["legal", "government", "finance", "construction", "healthcare", "education", "logistics"]
+  core_changes_required: 0
+  primitive_reuse_percentage: 96
+  supported_legal_works:
+    - LAW-001 (Pembuatan Kontrak Kerja Karyawan)
+    - LAW-002 (Pendaftaran Merek Dagang - membutuhkan dokumen permohonan)
+    - LAW-004 (Sertifikasi Domisili - membutuhkan dokumen kelurahan)
+    - LAW-007 (Pembuatan Perjanjian Kemitraan)
+  document_templates_available:
+    - Kontrak Kerja Karyawan (ID-ID)
+    - Permohonan Merek Dagang (DJKI)
+    - Sertifikasi Domisili (Kemendagri)
+    - Perjanjian Kemitraan (Kemenkumham)

@@ -1,8 +1,7 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
-import { SessionRepositoryPostgres } from "../../../identity/implementation/repositories/session.repository.js";
-import { initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
+import { getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core/index.js";
 
 const RecordEvidenceWithContextSchema = z.object({
   entityRef: z.string().min(1),
@@ -35,7 +34,8 @@ export const recordEvidence: RecordEvidenceCommand = {
     
     if (!isAnonymous) {
       // 1. Validate session exists and is active for authenticated users (enforce authentication - foundation rail)
-      const session = await SessionRepositoryPostgres.byId(sessionId as any);
+      const sessionRepo = getSessionRepositoryPostgres();
+      const session = await sessionRepo.byId(sessionId as any);
       if (!session || session.revokedAt !== null) {
         throw new Error("[evidence.record] Invalid or revoked session - authentication violation");
       }

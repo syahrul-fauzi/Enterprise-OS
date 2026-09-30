@@ -3,9 +3,45 @@ import { basename, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { createHash } from "node:crypto";
 import type { ExecutionGraphReport } from "@repo/core-capability-registry";
-// @repo/composition not available in workspace, using unknown for unused types
+
+// Import semua type dari package composition yang sudah ada (reuse primitive sesuai 10× leverage)
+import type { WorkspaceId } from "@repo/composition/src/normalizer/types.js";
+import type { ValidationIssue, FallbackNeededReport } from "@repo/composition/src/plan/types.js";
+
+// Definisikan ComposeResult yang sesuai dengan output compose() function dari compose/index.ts
+// Semua properti yang digunakan di artifact berasal dari sini, tidak ada type unknown lagi
+type ComposeResult = {
+  readonly normalized: {
+    readonly id: WorkspaceId;
+    readonly capabilitiesReferenced: readonly string[];
+    readonly permissions: {
+      readonly requireCapabilities: readonly string[];
+      readonly requireRoles: readonly string[];
+    };
+    readonly canonicalJson: string;
+  };
+  readonly plan: {
+    readonly workspaceId: WorkspaceId;
+    readonly id: string;
+    readonly canonicalHash: string;
+    readonly capabilitiesRequiredOrder: readonly string[];
+    readonly dependenciesOrder: readonly string[];
+    readonly permissions: {
+      readonly requireCapabilities: readonly string[];
+      readonly requireRoles: readonly string[];
+    };
+    readonly validation: {
+      readonly missingRequiredSlots: readonly string[];
+      readonly fatalIssues: readonly ValidationIssue[];
+      readonly warnings: readonly ValidationIssue[];
+    };
+    readonly fallbacksNeeded: readonly FallbackNeededReport[];
+  };
+  readonly graphId: string;
+  readonly graphHash: string;
+};
+
 type ComposeInput = unknown;
-type ComposeResult = unknown;
 
 function canonicalize(value: unknown): unknown {
   if (Array.isArray(value)) {
@@ -70,7 +106,7 @@ const composed = compose({
     executionGraph: executionGraph ?? undefined,
     requestId: `verify-product:${productIdArg}:execution-plan`,
   },
-});
+}) as ComposeResult;
 
 const expectedEvidence = [
   "composition-replay.json",

@@ -1,6 +1,14 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
 import { executionContext } from "../../../../packages/core/runtime/src/index.js";
+// Import SEMUA canonical types dan factory functions dari SINGLE-SOURCE work-core (anti-drift - TENANT-ISOLATION-001)
+// Sesuai dengan aturan: Semua capability harus import dari @repo/capabilities-work-core, bukan langsung dari identity
+import { 
+  type TenantId, 
+  WorkspaceId,
+  createTenantId,
+  createWorkspaceId
+} from "@repo/capabilities-work-core";
 import {
   newCommunicationEventId,
   defaultCommunicationStatus,
@@ -54,10 +62,10 @@ const SessionRepositoryPostgres = process.env.POSTGRES_CONNECTION_STRING || proc
 // Integrates with Meta WhatsApp Business Cloud API (v18.0)
 class WhatsAppAdapter {
   // Load configuration from environment (tenant-isolated credentials stored securely)
-  private static getApiConfig(tenantId: string) {
-    const apiKey = process.env[`WHATSAPP_API_KEY_${tenantId.toUpperCase()}`] || process.env.WHATSAPP_API_KEY;
-    const phoneNumberId = process.env[`WHATSAPP_PHONE_NUMBER_ID_${tenantId.toUpperCase()}`] || process.env.WHATSAPP_PHONE_NUMBER_ID;
-    const businessAccountId = process.env[`WHATSAPP_BUSINESS_ACCOUNT_ID_${tenantId.toUpperCase()}`] || process.env.WHATSAPP_BUSINESS_ACCOUNT_ID;
+  private static getApiConfig(tenantId: TenantId) {
+    const apiKey = process.env[`WHATSAPP_API_KEY_${tenantId.toString().toUpperCase()}`] || process.env.WHATSAPP_API_KEY;
+    const phoneNumberId = process.env[`WHATSAPP_PHONE_NUMBER_ID_${tenantId.toString().toUpperCase()}`] || process.env.WHATSAPP_PHONE_NUMBER_ID;
+    const businessAccountId = process.env[`WHATSAPP_BUSINESS_ACCOUNT_ID_${tenantId.toString().toUpperCase()}`] || process.env.WHATSAPP_BUSINESS_ACCOUNT_ID;
     
     if (!apiKey || !phoneNumberId) {
       return { 
@@ -77,8 +85,9 @@ class WhatsAppAdapter {
     };
   }
 
-  static async send(event: CommunicationEvent): Promise<{ success: boolean; receipt?: unknown; error?: string }> {
-    const config = WhatsAppAdapter.getApiConfig(event.tenant_id);
+  static async send(event: CommunicationEvent & { tenant_id: string }): Promise<{ success: boolean; receipt?: unknown; error?: string }> {
+    const canonicalTenantId = createTenantId(event.tenant_id);
+    const config = WhatsAppAdapter.getApiConfig(canonicalTenantId);
     
     // Fall back to mock if credentials not configured (development mode)
     if (!config.configured) {
@@ -236,12 +245,16 @@ const SendCommunicationCommand: CapabilityCommand = {
       session_id, tenant_id, workspace_id
     } = parsed;
 
-    // 1. Session validation (follows security pattern from consultation.commands.ts with anonymous support)
+    // 1. Convert input strings to canonical identity primitives (anti-drift enforcement)
+    const canonicalTenantId = createTenantId(tenant_id);
+    const canonicalWorkspaceId = createWorkspaceId(workspace_id);
+    
+    // 2. Session validation (follows security pattern from consultation.commands.ts with anonymous support)
     const isAnonymous = actor_id === "anonymous.user";
     if (!isAnonymous) {
       const session = await SessionRepositoryPostgres.byId(SessionId(session_id));
       if (!session || session.revokedAt !== null) throw new Error("[communication.send] Invalid session");
-      if (session.actorId !== actor_id || session.tenantId !== tenant_id || session.workspaceId !== workspace_id) {
+      if (session.actorId !== actor_id || session.tenantId !== canonicalTenantId || session.workspaceId !== canonicalWorkspaceId) {
         throw new Error("[communication.send] Session mismatch - security violation");
       }
     }
@@ -267,15 +280,15 @@ const SendCommunicationCommand: CapabilityCommand = {
       // Propagate ambient context exactly as done in consultation.commands.ts
       decision_id: ambient?.decision_id ?? undefined,
       last_invocation_digest: ambient?.last_invocation_digest ?? undefined,
-      tenant_id: tenant_id,
+      tenant_id: canonicalTenantId,
       session_id: session_id,
-      workspace_id: workspace_id
+      workspace_id: canonicalWorkspaceId
     };
 
     // 4. Save event to repository
     await CommunicationRepositoryInMemory.save(communicationEvent, {
-      tenantId: tenant_id,
-      workspaceId: workspace_id,
+      tenantId: canonicalTenantId,
+      workspaceId: canonicalWorkspaceId,
       actorId: actor_id
     });
 
@@ -286,13 +299,13 @@ const SendCommunicationCommand: CapabilityCommand = {
     // 6. Update event status based on send result
     if (sendResult.success) {
       await CommunicationRepositoryInMemory.updateStatus(eventId, "sent", {
-        tenantId: tenant_id,
-        workspaceId: workspace_id
+        tenantId: canonicalTenantId,
+        workspaceId: canonicalWorkspaceId
       });
     } else {
       await CommunicationRepositoryInMemory.updateStatus(eventId, "failed", {
-        tenantId: tenant_id,
-        workspaceId: workspace_id
+        tenantId: canonicalTenantId,
+        workspaceId: canonicalWorkspaceId
       });
       throw new Error(`[communication.send] Failed to send: ${sendResult.error}`);
     }
@@ -349,19 +362,21 @@ const ListCommunicationEventsQuery: CapabilityQuery = {
   version: "1.0.0",
   async execute(input: ListCommunicationEventsInput): Promise<ListCommunicationEventsOutput> {
     // Session validation same as send command with anonymous support
+    const canonicalTenantId = createTenantId(input.tenantId);
+    const canonicalWorkspaceId = createWorkspaceId(input.workspaceId);
     const isAnonymous = input.actorId === "anonymous.user";
     if (!isAnonymous) {
       const session = await SessionRepositoryPostgres.byId(SessionId(input.sessionId));
       if (!session || session.revokedAt !== null) throw new Error("[communication.listEvents] Invalid session");
-      if (session.tenantId !== input.tenantId || session.workspaceId !== input.workspaceId) {
+      if (session.tenantId !== canonicalTenantId || session.workspaceId !== canonicalWorkspaceId) {
         throw new Error("[communication.listEvents] Session mismatch - security violation");
       }
     }
 
     // Get events from communication repository (follows repository pattern)
     const events = await CommunicationRepositoryInMemory.byWorkId(input.work_id, {
-      tenantId: input.tenantId,
-      workspaceId: input.workspaceId
+      tenantId: canonicalTenantId,
+      workspaceId: canonicalWorkspaceId
     });
     return {
       events,
@@ -404,13 +419,17 @@ const AgenticNotifyCommand: CapabilityCommand = {
       sessionId, tenantId, workspaceId
     } = parsed;
 
+    // Convert input strings to canonical identity primitives (anti-drift enforcement)
+    const canonicalTenantId = createTenantId(tenantId);
+    const canonicalWorkspaceId = createWorkspaceId(workspaceId);
+
     // 1. Session validation (same security pattern as send command with anonymous support)
     // agenticNotify is only called by system agents, so we don't need anonymous support here
     // but we add the check for consistency with other commands
     const isAnonymous = false; // System agent messages are never anonymous
     const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) throw new Error("[communication.agenticNotify] Invalid session");
-    if (session.tenantId !== tenantId || session.workspaceId !== workspaceId) {
+    if (session.tenantId !== canonicalTenantId || session.workspaceId !== canonicalWorkspaceId) {
       throw new Error("[communication.agenticNotify] Session mismatch - security violation");
     }
 
@@ -449,15 +468,15 @@ const AgenticNotifyCommand: CapabilityCommand = {
       status: "queued",
       decision_id: ambient?.decision_id ?? undefined,
       last_invocation_digest: ambient?.last_invocation_digest ?? undefined,
-      tenant_id: tenantId,
+      tenant_id: canonicalTenantId,
       session_id: sessionId,
-      workspace_id: workspaceId
+      workspace_id: canonicalWorkspaceId
     };
 
     // 5. Save event to repository
     await CommunicationRepositoryInMemory.save(communicationEvent, {
-      tenantId: tenantId,
-      workspaceId: workspaceId,
+      tenantId: canonicalTenantId,
+      workspaceId: canonicalWorkspaceId,
       actorId: SYSTEM_AGENT_ACTOR_ID
     });
 
@@ -471,19 +490,19 @@ const AgenticNotifyCommand: CapabilityCommand = {
       if (firstMessage?.message_id) {
         communicationEvent.message_id = firstMessage.message_id;
         await CommunicationRepositoryInMemory.save(communicationEvent, {
-          tenantId: tenantId,
-          workspaceId: workspaceId,
+          tenantId: canonicalTenantId,
+          workspaceId: canonicalWorkspaceId,
           actorId: SYSTEM_AGENT_ACTOR_ID
         });
       }
       await CommunicationRepositoryInMemory.updateStatus(eventId, "sent", {
-        tenantId: tenantId,
-        workspaceId: workspaceId
+        tenantId: canonicalTenantId,
+        workspaceId: canonicalWorkspaceId
       });
     } else {
       await CommunicationRepositoryInMemory.updateStatus(eventId, "failed", {
-        tenantId: tenantId,
-        workspaceId: workspaceId
+        tenantId: canonicalTenantId,
+        workspaceId: canonicalWorkspaceId
       });
       throw new Error(`[communication.agenticNotify] Failed to send: ${sendResult.error}`);
     }

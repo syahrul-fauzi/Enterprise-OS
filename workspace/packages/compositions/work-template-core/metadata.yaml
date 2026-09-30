@@ -1,0 +1,17 @@
+name: Work Template Core
+version: 1.0.0
+owner: eos-platform
+reuse_targets: ["lawyershub", "pt-establishment", "government-digital", "healthcare-hub", "construction-link", "finance-hub", "education-platform", "logistics-network"]
+description: |
+  Generic Work Template Engine (10× Leverage) — create 100+ work types from one core template without any changes to EOS core primitives.
+  Aligns with 5 control principles:
+  1. Primitive-first (build once, use many times)
+  2. Pattern-based work generation (not individual use cases)
+  3. Workspace is context (not core)
+  4. Industry as package (not core)
+  5. Identity/authority/capability security model (not Actor Type)
+compliance:
+  work_invariant_preserved: true
+  architecture_freeze_compliant: true
+  no_new_core_primitives: true
+  rule_of_two_satisfied: true # Reused by legal-workspace + pt-establishment already

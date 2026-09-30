@@ -1,0 +1,14 @@
+{
+  "capture_timestamp": "2026-09-29T05:13:12.416Z",
+  "routes_existed": [
+    "/",
+    "/my-reality",
+    "/work/[id]"
+  ],
+  "routes_deleted_timestamp": "2026-09-28T16:32:04.330Z",
+  "deleted_files": [
+    "/apps/web/app/page.tsx",
+    "/apps/web/app/(eos)/my-reality/page.tsx",
+    "/apps/web/app/(eos)/work/[id]/page.tsx"
+  ]
+}

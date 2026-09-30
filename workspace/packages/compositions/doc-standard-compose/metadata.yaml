@@ -1,0 +1,37 @@
+id: doc-standard-compose
+name: Document Standard Composition
+description: Reusable document generation composition that standardizes template-based creation of legal and government documents across all industries. Extends work-template-core and gov-api-standard to enable automated document generation, review workflows, and version control for any document type.
+version: "1.0.0"
+domain: document-services
+industry: cross-industry
+jurisdictions:
+  - ID-ID  # Indonesia
+tags:
+  - document-template
+  - legal-document
+  - government-form
+  - document-generation
+  - indonesian-law
+  - template-rendering
+reuseCount: 0
+firstIntroduced: "2026-09-29"
+maintainers:
+  - eos-composition-team
+dependencies:
+  - work-template-core@>=1.0.0
+  - gov-api-standard@>=1.0.0
+  - workspace-standard@>=1.0.0
+  - legal-document@>=0.1.0
+reuse_targets:
+  - LAW-001 (Pembuatan Kontrak Kerja Karyawan)
+  - LAW-002 (Pendaftaran Merek Dagang)
+  - LAW-004 (Sertifikasi Domisili Perusahaan)
+  - LAW-007 (Pembuatan Perjanjian Kemitraan)
+  - PT-Establishment (akta pendirian perusahaan)
+compliance:
+  work_invariant_preserved: true
+  architecture_freeze_compliant: true
+  no_new_core_primitives: true
+  rule_of_two_satisfied: true  # Reused by lawyershub + pt-establishment already, supports 4+ additional work types
+  dependency_violations: 0
+  work_continuity_strengthened: true  # Document lineage preserved with work identity binding

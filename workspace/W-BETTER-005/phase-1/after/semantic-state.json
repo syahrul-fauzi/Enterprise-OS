@@ -1,0 +1,15 @@
+{
+  "capture_timestamp": "2026-09-29T05:14:05.013Z",
+  "total_works": 3,
+  "all_tenant_ids": [
+    null
+  ],
+  "all_workspace_ids": [
+    null
+  ],
+  "status_distribution": {
+    "SUBMITTED": 1,
+    "IN_PROGRESS": 1,
+    "APPROVED": 1
+  }
+}

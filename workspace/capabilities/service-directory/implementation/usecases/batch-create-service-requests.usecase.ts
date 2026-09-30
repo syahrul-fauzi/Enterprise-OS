@@ -1,4 +1,6 @@
 import type { ServiceProviderCategory, CreateServiceRequestInputLegacy as CreateServiceRequestInput } from "../contracts/service.contracts.js";
+import type { TenantId, WorkspaceId } from "@repo/capabilities-work-core";
+import { createTenantId, createWorkspaceId } from "../../../work-core/contracts/work.contracts.js";
 import { ServiceRequestRepositoryInMemory as ServiceRequestRepository } from "../repository/service.repository.js";
 import { validateBatchItems } from "../validation/batch-validator.js";
 import { getServiceRequestRepositoryPostgres } from "../repository/index.js";
@@ -12,7 +14,7 @@ interface BatchCreateInput {
   }>;
   context: {
     product: string;
-    tenantId: string;
+    tenantId: TenantId;
     workspaceId: string;
     actorId: string;
   };
@@ -28,14 +30,17 @@ export async function createServiceRequestBatch(input: BatchCreateInput): Promis
   // 2. Initialize repository with tenant isolation (gunakan factory function yang terdaftar)
   const repository = getServiceRequestRepositoryPostgres();
 
-  // 3. Map batch items to individual create inputs
+  // 3. Map batch items to individual create inputs (tambahkan tenantId/workspaceId dari input context - W-SVC-001 tenant isolation)
+  // Reuse createWorkspaceId/createTenantId factory functions to match branded type requirements
   const createInputs: CreateServiceRequestInput[] = input.items.map(item => ({
     title: item.title,
     description: item.description,
     category: item.category,
     budget: item.budget,
     createdBy: input.context.actorId,
-    status: "draft", // Default status for new requests
+    status: "draft",
+    tenantId: createTenantId(input.context.tenantId as unknown as string),
+    workspaceId: createWorkspaceId(input.context.workspaceId as unknown as string),
   }));
 
   // 4. Execute batch creation in transaction (atomicity maintained)

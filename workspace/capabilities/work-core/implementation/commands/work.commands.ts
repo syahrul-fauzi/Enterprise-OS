@@ -1,18 +1,9 @@
 import { z } from "zod";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import type { WorkAggregate } from "../../contracts/work.contracts.ts";
-import { SessionId, TenantId, ActorId } from "../../contracts/work.contracts.ts";
+import { getMembershipRepositoryPostgres, getSessionRepositoryPostgres } from "../../contracts/work.contracts.ts";
+import type { SessionId, TenantId, ActorId, MembershipRepository, SessionRepository, WorkspaceId } from "../../contracts/work.contracts.ts";
 import { getWorkRepositoryPostgres, WorkRepositoryPostgres } from "../repository/work-postgres.repository.ts";
-// KEMBALI KE PATH MAPPING ORIGINAL - tsconfig work-core sudah define @repo/capabilities-identity
-// Ini adalah FIX YANG SESUAI NodeNext module resolution dan path mapping monorepo
-// FIX: Tambahkan .ts extension (NodeNext butuh ekstensi file untuk import .ts)
-// Bypass barrel @repo yang gagal resolve, import langsung dari source dengan ekstensi yang benar
-import { 
-  getMembershipRepositoryPostgres, 
-  type MembershipRepository, 
-  getSessionRepositoryPostgres, 
-  type SessionRepository 
-} from "@repo/capabilities-identity";
 import { getWorksByInstitutionCommand } from "./get-works-by-institution.command.ts";
 
 import { WorkModeEnum } from "../../contracts/work.contracts.ts";
@@ -23,7 +14,7 @@ export const CreateCoreWorkRequestSchema = z.object({
   description: z.string().optional(),
   priority: z.enum(["low", "medium", "high", "critical"]).optional(),
   linkedIntentId: z.string().optional(),
-  domainType: z.enum(["legal-case", "service-request", "consultation"]).default("legal-case"),
+  domainType: z.enum(["legal-case", "service-request", "consultation", "employee-leave"]).default("legal-case"),
   workMode: z.enum(WorkModeEnum).default("oneshot"),
   domainSpecificData: z.record(z.string(), z.any()).optional(),
   
@@ -48,7 +39,7 @@ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: strin
     mode: input.workMode,
     sessionId: input.sessionId as SessionId,
     tenantId: input.tenantId as TenantId,
-    workspaceId: input.workspaceId,
+    workspaceId: input.workspaceId as WorkspaceId,
     actorId: input.actorId as ActorId,
     status: "draft",
     createdAt: new Date(),
@@ -56,7 +47,10 @@ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: strin
   
   const savedWork = await workRepository.save(coreWork as WorkAggregate);
   
-  // Panggil atomic-composition untuk compose tim dari requirements
+  // Extract compositionPackageId dari domainSpecificData jika ada (W-COMP-001: reuse PT Establishment template)
+  const compositionPackageId = input.domainSpecificData?.compositionPackageId;
+  
+  // Panggil atomic-composition untuk compose tim dari requirements, sertakan compositionPackageId
   const compositionResult = await capabilityRegistry.invoke(
           "atomic-composition",
            "composeTeamFromRequirements",
@@ -69,7 +63,8 @@ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: strin
              workspaceId: input.workspaceId,
              tenantId: input.tenantId, // Tambahkan tenantId untuk memenuhi authentication guard requirement
              sessionId: input.sessionId, // Tambahkan sessionId
-             actorId: input.actorId // Tambahkan actorId
+             actorId: input.actorId, // Tambahkan actorId
+             compositionPackageId // W-COMP-001: Pass composition package ID untuk load template yang sesuai
            }
         );
   
@@ -88,6 +83,7 @@ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: strin
     "legal-case": { capability: "legal-case", command: "case.createFromWork" },
     "service-request": { capability: "services-id", command: "service-request.createFromWork" },
     "consultation": { capability: "consultation", command: "consultation.createFromWork" },
+    "employee-leave": { capability: "work-core", command: "createCoreWork" }, // Reuse work-core without new domain capability
   };
   
   const domainConfig = domainCapabilityMap[input.domainType];
@@ -144,6 +140,7 @@ export const UpdateWorkRequestSchema = z.object({
     description: z.string().optional(),
     status: z.enum(["draft", "active", "paused", "completed", "archived"]).optional(),
     priority: z.enum(["low", "medium", "high", "critical"]).optional(),
+    execution_frame: z.enum(["direct", "proxy", "mcp", "constrained-gui"]).optional(),
   }).partial(),
 });
 
@@ -263,6 +260,56 @@ export const getWorkCommand = {
   schema: GetWorkRequestSchema,
 };
 
+// WORK CLAIM command schema and implementation
+export const ClaimWorkRequestSchema = z.object({
+  workId: z.string(),
+  actorId: z.string(),
+  workspaceId: z.string(),
+  tenantId: z.string(),
+  executionId: z.string(),
+  expectedVersion: z.number(),
+  expectedStatuses: z.array(z.string()),
+  allowReclaim: z.boolean().optional().default(false),
+});
+
+export type ClaimWorkRequest = z.infer<typeof ClaimWorkRequestSchema>;
+
+async function claimWork(input: ClaimWorkRequest): Promise<{ success: boolean; version: number; executionId: string }> {
+  const workRepository = getWorkRepositoryPostgres();
+  const membershipRepo = getMembershipRepositoryPostgres();
+  
+  // Verify actor is a member of the workspace (authorization check)
+  const workspaceMemberships = await membershipRepo.listByWorkspace(input.workspaceId as any);
+  const member = workspaceMemberships.find((m: any) => m.userId === input.actorId);
+  if (!member) {
+    throw new Error("permission_denied: Actor is not a member of the workspace");
+  }
+  
+  // Execute atomic claim
+  const updatedWork = await workRepository.atomicClaim(
+    input.workId as any,
+    input.actorId as any,
+    input.executionId as any,
+    input.expectedVersion,
+    input.expectedStatuses,
+    input.allowReclaim
+  );
+  
+  return {
+    success: true,
+    version: updatedWork.version!,
+    executionId: updatedWork.activeExecutionId!
+  };
+}
+
+export const claimWorkCommand = {
+  kind: "command" as const,
+  name: "claim" as const,
+  version: "1.0.0" as const,
+  execute: claimWork,
+  schema: ClaimWorkRequestSchema,
+};
+
 export const updateWorkCommand = {
   kind: "command" as const,
   name: "update" as const,
@@ -272,10 +319,14 @@ export const updateWorkCommand = {
 };
 
 // Export commands for capability registry resolution (no manual registration needed)
+import { syncWorkCommand } from "./work-sync.command.ts";
+
 export const workCoreCommands = [
   createWorkCommand,
   getWorksByInstitutionCommand,
   updateWorkCommand,
+  syncWorkCommand,
+  claimWorkCommand, // WORK CLAIM command
 ] as const;
 
 // Register work-core commands with capability registry (aligns with atomic-composition pattern)

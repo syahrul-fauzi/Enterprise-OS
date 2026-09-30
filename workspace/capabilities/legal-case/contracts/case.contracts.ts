@@ -1,3 +1,6 @@
+// Import canonical identity types dari work-core (single source of truth - anti-drift)
+import type { TenantId, WorkspaceId } from "@repo/capabilities-work-core";
+
 export type CaseStatus = "draft" | "open" | "in_progress" | "closed";
 export type CasePriority = "low" | "medium" | "high" | "critical";
 export type CaseId = string & {
@@ -13,7 +16,7 @@ export interface ExecutionContextMetadata {
 }
 export interface CaseAggregate {
     readonly id: CaseId;
-    readonly workId?: string;
+    readonly workId: string; // CORE-001: WAJIB link ke core Work primitive ID (satu-satunya sumber truth untuk semua boundary metadata)
     readonly title: string;
     readonly description?: string;
     readonly status: CaseStatus;
@@ -24,11 +27,9 @@ export interface CaseAggregate {
     readonly createdAt: Readonly<Date>;
     readonly updatedAt: Readonly<Date>;
     readonly closedAt?: Readonly<Date>;
+    readonly executionFrame?: "direct" | "proxy" | "mcp" | "constrained-gui"; // LH-LEGAL-001: CMBCD execution frame
     readonly executionContext?: ExecutionContextMetadata;
     readonly evidence?: readonly any[];
-    readonly tenantId?: string;
-    readonly workspaceId?: string;
-    readonly actorId?: string;
 }
 export interface CreateCaseInput {
     readonly title: string;

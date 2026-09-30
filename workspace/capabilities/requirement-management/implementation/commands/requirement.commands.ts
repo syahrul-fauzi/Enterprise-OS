@@ -26,17 +26,25 @@ import {
 import { getRequirementsByOwnerCommand } from "./get-requirements-by-owner.command";
 import { getAllRequirementsCommand } from "./get-all-requirements.command";
 import { getRequirementByIdCommand } from "./get-requirement-by-id.command";
-import { getSessionRepositoryPostgres } from "@repo/capabilities-identity/implementation/repositories/session.repository";
-import { initIdentitySchema } from "@repo/capabilities-identity/implementation/repositories/base.repository";
-import { SessionRepositoryInMemory } from "@repo/capabilities-identity/implementation/repositories/index";
+// Import hanya type, inisialisasi dilakukan di dalam fungsi async untuk menghindari circular dependency
+import type { SessionRepository } from "../../../work-core";
+import { getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core";
 
-// Toggle session repository based on environment — same pattern as legal-case.commands.ts
-const sessionRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
-  ? getSessionRepositoryPostgres()
-  : SessionRepositoryInMemory;
+// Inisialisasi session repository hanya saat dibutuhkan (lazy init) untuk menghindari ReferenceError
+let sessionRepository: SessionRepository;
+let schemaInitialized = false;
+
+async function getSessionRepository() {
+  if (!sessionRepository) {
+    const { SessionRepositoryInMemory } = await import("../../../work-core");
+    sessionRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
+      ? getSessionRepositoryPostgres()
+      : SessionRepositoryInMemory;
+  }
+  return sessionRepository;
+}
 
 // Initialize schema only in production Postgres mode, not per invocation
-let schemaInitialized = false;
 async function ensureIdentitySchema() {
   if (!schemaInitialized && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
     await initIdentitySchema();

@@ -11,7 +11,9 @@ type ServiceProviderCategory =
   | "Cybersecurity"
   | "Software Development"
   | "Managed Services"
-  | "Data & Analytics";
+  | "Data & Analytics"
+  | "Payment Processing"
+  | "Trademark Registration";
 
 type CasePriority = "low" | "medium" | "high" | "critical";
 
@@ -87,6 +89,21 @@ export function ProductCreateForm({ productId, onCreated }: ProductCreateFormPro
     "Hukum Tata Negara",
   ];
 
+  // SLICE-009: Persistence readback - ambil work data dari API setelah dibuat (Work identity continuity preserved)
+  const fetchWorkById = async (workId: string) => {
+    try {
+      const resp = await fetch(`/api/work/${encodeURIComponent(workId)}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!resp.ok) throw new Error(`Failed to fetch work: ${resp.status}`);
+      return await resp.json();
+    } catch (err) {
+      console.warn("[Persistence Readback] Could not fetch work for display:", err);
+      return null;
+    }
+  };
+
   const commonSubmit = async (endpoint: string, body: Record<string, unknown>) => {
     state.setError(null);
     state.setResult(null);
@@ -95,7 +112,10 @@ export function ProductCreateForm({ productId, onCreated }: ProductCreateFormPro
       const resp = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          ...body,
+          domain: productId // Sertakan domain sesuai dengan productId untuk mapping domainType yang benar
+        }),
       });
       const json = await resp.json();
       state.setSubmitting(false);
@@ -103,8 +123,18 @@ export function ProductCreateForm({ productId, onCreated }: ProductCreateFormPro
         state.setError(json.error ?? `HTTP ${resp.status}`);
         return;
       }
-      state.setResult({ output: json.output, record: json.record });
-      onCreated?.({ output: json.output, record: json.record });
+      
+      // SLICE-009: Persistence readback execution - fetch stored work untuk verifikasi continuity
+      const createdWorkId = json.output?.workId || (json.record?.output?.workId);
+      const persistedWork = createdWorkId ? await fetchWorkById(createdWorkId) : null;
+      
+      // Simpan result + data yang terbaca dari persistence (bukan hanya response API)
+      state.setResult({ 
+        output: json.output, 
+        record: json.record,
+        persistedWork: persistedWork // Work identity yang terverifikasi dari database
+      });
+      onCreated?.({ output: json.output, record: json.record, persistedWork });
     } catch (err) {
       state.setSubmitting(false);
       state.setError(err instanceof Error ? err.message : String(err));
@@ -119,7 +149,7 @@ export function ProductCreateForm({ productId, onCreated }: ProductCreateFormPro
         return (
           <LawyersHubCreateForm
             submitting={state.submitting}
-            onSubmit={(body) => commonSubmit("/api/capabilities/legal-case/case.create", body)}
+            onSubmit={(body) => commonSubmit("/api/work/create", body)}
           />
         );
       case "services-id":
@@ -127,14 +157,14 @@ export function ProductCreateForm({ productId, onCreated }: ProductCreateFormPro
           <ServicesCreateForm
             submitting={state.submitting}
             categories={serviceCategories}
-            onSubmit={(body) => commonSubmit("/api/capabilities/service-directory/service-directory.createServiceRequest", body)}
+            onSubmit={(body) => commonSubmit("/api/work/create", body)}
           />
         );
       case "ilc":
         return (
           <ILCTrainingCreateForm
             submitting={state.submitting}
-            onSubmit={(body) => commonSubmit("/api/capabilities/human-consultant-matcher/match-experts", body)}
+            onSubmit={(body) => commonSubmit("/api/work/create", body)}
           />
         );
       case "academic":
@@ -142,7 +172,7 @@ export function ProductCreateForm({ productId, onCreated }: ProductCreateFormPro
           <ILCArticleCreateForm
             submitting={state.submitting}
             topics={ilcTopicLabels}
-            onSubmit={(body) => commonSubmit("/api/capabilities/academic/createContentArticle", body)}
+            onSubmit={(body) => commonSubmit("/api/work/create", body)}
           />
         );
     }
@@ -191,6 +221,17 @@ export function ProductCreateForm({ productId, onCreated }: ProductCreateFormPro
                 <pre className="whitespace-pre-wrap text-xs bg-status-success/10 rounded-lg p-3 mt-2 overflow-x-auto border border-status-success/20">
 {JSON.stringify(state.result.output, null, 2)}
                 </pre>
+                
+                {/* SLICE-009: Persistence Readback Verification - tampilkan data dari database */}
+                {state.result.persistedWork && (
+                  <div className="mt-3 pt-3 border-t border-status-success/20">
+                    <div className="font-medium mb-2">✅ Data terverifikasi dari persistence (Work identity terjaga):</div>
+                    <pre className="whitespace-pre-wrap text-xs bg-status-success/10 rounded-lg p-3 overflow-x-auto border border-status-success/20">
+{JSON.stringify(state.result.persistedWork, null, 2)}
+                    </pre>
+                  </div>
+                )}
+                
                 {(state.result.record as { invokedAt?: string } | null)?.invokedAt && (
                   <div className="mt-2 text-xs text-status-success-fg/90">
                     Executed at: {(state.result.record as { invokedAt: string }).invokedAt}

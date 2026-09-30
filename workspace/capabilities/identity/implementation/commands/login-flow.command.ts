@@ -114,7 +114,7 @@ export const loginFlowCommand: LoginFlowCommand = {
     const session = await sessionRepository.create({
       id: sessionId,
       userId: user.id,
-      actorId: user.id,
+      actorId: ActorId(user.id as unknown as string),
       workspaceId: workspace.id,
       tenantId: tenant.id,
       productId: "services-id.default",

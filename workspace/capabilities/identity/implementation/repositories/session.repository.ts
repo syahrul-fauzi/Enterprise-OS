@@ -19,22 +19,22 @@ class SessionRepositoryPostgresImpl extends PostgresRepository<any> implements S
 
   // Convert database record to domain aggregate - implements base.repository.ts abstract protected method
   protected toAggregate(record: any): SessionAggregate {
-    return {
-      id: SessionId(record.id),
-      userId: UserId(record.user_id),
-      actorId: UserId(record.actor_id),
-      tenantId: TenantId(record.tenant_id),
-      workspaceId: WorkspaceId(record.workspace_id),
-      productId: record.product_id,
-      actorLabel: record.actor_label,
-      isAgent: record.is_agent ?? false,
-      issuedAt: new Date(record.issued_at),
-      expiresAt: new Date(record.expires_at),
-      revokedAt: record.revoked_at ? new Date(record.revoked_at) : null,
-      createdAt: new Date(record.created_at),
-      updatedAt: new Date(record.updated_at),
-    } as SessionAggregate;
-  }
+          return {
+            id: SessionId(record.id),
+            userId: UserId(record.user_id),
+            actorId: ActorId(record.actor_id),
+            tenantId: TenantId(record.tenant_id),
+            workspaceId: WorkspaceId(record.workspace_id),
+            productId: record.product_id,
+            actorLabel: record.actor_label,
+            isAgent: record.is_agent ?? false,
+            issuedAt: new Date(record.issued_at),
+            expiresAt: new Date(record.expires_at),
+            revokedAt: record.revoked_at ? new Date(record.revoked_at) : null,
+            createdAt: new Date(record.created_at),
+            updatedAt: new Date(record.updated_at),
+          } as SessionAggregate;
+        }
 
   // Convert domain aggregate to database record - implements base.repository.ts abstract protected method
   protected toRecord(entity: SessionAggregate): any {

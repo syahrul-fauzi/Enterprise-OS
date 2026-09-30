@@ -4,6 +4,7 @@ import type { SearchEvidenceRegistryOutput, EvidenceRecord } from "../../../evid
 import { requirementService } from "../../../requirement-management/implementation/services/requirement.service.js";
 import { workflowEngineService } from "../../../workflow-engine/implementation/services/workflow-engine.service.js";
 import type { KnowledgeEdge, KnowledgeGraphSnapshot, KnowledgeNode } from "../contracts/index.js";
+import type { TenantId } from "@repo/capabilities-work-core";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import { randomUUID } from "crypto";
 
@@ -278,7 +279,7 @@ const evidence = (evidenceRegistryService.searchEvidenceRegistry({ limit: 100 })
    * Update current tenant/workspace context for persistence operations
    * Ensures data is isolated per tenant/workspace as required by RLS
    */
-  setContext(tenantId: string, workspaceId: string): void {
+  setContext(tenantId: TenantId, workspaceId: string): void {
     this.currentTenantId = tenantId;
     this.currentWorkspaceId = workspaceId;
     recordRuntimeInvocation({

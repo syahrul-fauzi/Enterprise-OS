@@ -1,9 +1,10 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, beforeEach } from 'node:test';
+import assert from 'node:assert';
 import { executeWorkflowTransition } from '@repo/core-kernel';
 import { ILC_WORKFLOW } from '../runtime/workflow-definition.js';
 import { WorkInspectionAgent } from '@capabilities/work-inspection/implementation/services/inspection.agent.service';
 import { getWorkRepositoryPostgres, type WorkRepositoryPostgres } from '@capabilities/work-core/implementation/repository/work-postgres.repository';
-import { BaseWorkAggregateSchema, WorkId, ActorId } from '@capabilities/work-core/contracts/work.contracts';
+import type { BaseWorkAggregateSchema, WorkId, ActorId } from '@capabilities/work-core/contracts/work.contracts';
 import { InspectionRecommendation } from '@capabilities/work-inspection/implementation/contracts/work-inspection.contracts';
 
 // Test actors with roles matching ILC workflow requirements
@@ -46,10 +47,10 @@ describe('ILC-INS-001: Institutional Coordination Reality Slice', () => {
       TEST_CONTEXT
     );
 
-    expect(result.success).toBe(true);
-    expect(result.nextStep?.id).toBe('review-initiated');
-    expect(result.nextStep?.id).not.toBe('project-created');
-    expect(result.nextStep?.id).not.toBe('project-execution');
+    assert.ok(result.success === true);
+    assert.ok(result.nextStep?.id === 'review-initiated');
+    assert.ok(result.nextStep?.id !== 'project-created');
+    assert.ok(result.nextStep?.id !== 'project-execution');
 
     await recordEvidence("I1_PASS", {
       initialTransitionCorrect: true,
@@ -65,16 +66,16 @@ describe('ILC-INS-001: Institutional Coordination Reality Slice', () => {
       TEST_CONTEXT
     );
 
-    expect(result.success).toBe(true);
-    expect(result.nextStep?.id).toBe('review-initiated');
+    assert.ok(result.success === true);
+    assert.ok(result.nextStep?.id === 'review-initiated');
     
     // Verify that the next step requires at least 3 roles (as per ILC workflow)
     const reviewStep = ILC_WORKFLOW.steps.find(s => s.id === 'review-initiated');
-    expect(reviewStep?.requiredRoles.length).toBeGreaterThanOrEqual(2);
+    assert.ok(reviewStep?.requiredRoles.length >= 2);
 
     // Verify that the transition result includes assigned actors
-    expect(result.assignedActors).toBeDefined();
-    expect(result.assignedActors?.length).toBeGreaterThanOrEqual(2);
+    assert.ok(result.assignedActors !== undefined);
+    assert.ok(result.assignedActors?.length >= 2);
     
     await recordEvidence("I2_PASS", {
       multiActorBindingVerified: true,
@@ -90,8 +91,8 @@ describe('ILC-INS-001: Institutional Coordination Reality Slice', () => {
       TEST_CONTEXT
     );
 
-    expect(result.success).toBe(false);
-    expect(result.error).toBeDefined();
+    assert.ok(result.success === false);
+    assert.ok(result.error !== undefined);
     expect(result.error).toContain(`Actor ${ACTORS.unauthorizedActor} lacks required roles`);
 
     await recordEvidence("I3_PASS", {
@@ -177,16 +178,16 @@ describe('ILC-INS-001: Institutional Coordination Reality Slice', () => {
     const inspectionResult = await inspectionAgent.inspectWork(WorkId(TEST_CONTEXT.workId));
     
     // Verify bottleneck detected
-    expect(inspectionResult.bottlenecks.length).toBeGreaterThan(0);
+    assert.ok(inspectionResult.bottlenecks.length > 0);
     const stuckBottleneck = inspectionResult.bottlenecks.find(b => b.type === "HANDOFF_DELAY");
-    expect(stuckBottleneck).toBeDefined();
-    expect(stuckBottleneck?.delayHours).toBeGreaterThan(24);
+    assert.ok(stuckBottleneck !== undefined);
+    assert.ok(stuckBottleneck?.delayHours > 24);
     expect(stuckBottleneck?.severity).toBe("HIGH"); // >24h = HIGH per RL2-005 logic
 
     // Verify recommendation message answers ALL user's required questions:
     // Apa yang terjadi? Mengapa Work tidak bergerak? Siapa yang dibutuhkan? Apa yang belum diketahui? Apa next decision?
     const recommendation = inspectionResult.recommendations.find((r: InspectionRecommendation) => r.message.includes("RL2-005"));
-    expect(recommendation).toBeDefined();
+    assert.ok(recommendation !== undefined);
     const message = recommendation?.message || "";
     expect(message).toContain("Sudah 25 jam tidak ada perubahan status"); // Apa yang terjadi?
     expect(message).toContain("Tidak ada state transition tercatat"); // Mengapa tidak bergerak?
@@ -231,7 +232,7 @@ describe('ILC-INS-001: Institutional Coordination Reality Slice', () => {
 
     // Detect stuck work
     const inspectionResult = await inspectionAgent.inspectWork(WorkId(TEST_CONTEXT.workId));
-    expect(inspectionResult.bottlenecks.length).toBeGreaterThan(0);
+    assert.ok(inspectionResult.bottlenecks.length > 0);
 
     // Execute recovery: reassign to new finance actor
     const newFinanceActor = "department-head-finance-backup-001";

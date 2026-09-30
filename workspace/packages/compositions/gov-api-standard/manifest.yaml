@@ -1,0 +1,32 @@
+id: gov-api-standard
+extends:
+  - work-template-core
+  - workspace-standard
+patterns:
+  - api-integration-pattern
+  - government-submission-pattern
+  - status-tracking-pattern
+  - webhook-handler-pattern
+capabilities:
+  - api-client
+  - webhook
+  - status-tracking
+  - government-integration
+  - legal-case
+surfaces:
+  - gov-portal
+  - status-dashboard
+  - submission-tracker
+  - webhook-logger
+schemas:
+  - GovernmentApiSchema
+  - WorkTemplateSchema
+leverage_metrics:
+  potential_work_types: 50+
+  industries_supported: ["legal", "government", "finance", "construction"]
+  core_changes_required: 0
+  primitive_reuse_percentage: 94
+  supported_government_works:
+    - LAW-002 (Pendaftaran Merek Dagang - DJKI)
+    - LAW-004 (Sertifikasi Domisili - Kemendagri)
+    - LAW-003 (Pengurusan Izin Usaha - OSS)
