@@ -3,6 +3,7 @@ import type { CanonicalWorkRecord } from "@/app/api/work/create/route";
 export const lhCase001Work: CanonicalWorkRecord = {
   workId: "lh-case-001",
   id: "lh-case-001",
+  workflowId: "lh-lgl-001-legal-consultation", // FACE-001: Link to LawyersHub legal consultation workflow
   title: "PT Pendirian - PT Kopi Nusantara Mandiri",
   description: "LawyersHub Golden Slice: Klien membutuhkan pendirian PT untuk usaha kopi retail di Jakarta. Memerlukan proses legal lengkap dari konsultasi hingga sertifikat NIB.",
   status: "formed",

@@ -1,7 +1,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import YAML from "yaml";
+import * as YAML from "yaml";
 import type { PredicateDeclaration } from "../interfaces.js";
 
 const __filename = fileURLToPath(import.meta.url);

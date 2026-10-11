@@ -1,7 +1,7 @@
 import {
   TenantId,
   type TenantAggregate,
-} from "../contracts/identity.contracts.js";
+} from "@repo/contracts-core";
 import { getTenantRepositoryPostgres } from "../repositories/index.js";
 
 const tenantRepository = getTenantRepositoryPostgres();

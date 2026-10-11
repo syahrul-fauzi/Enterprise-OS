@@ -3,56 +3,54 @@
   "version": "0.1.0",
   "sideEffects": false,
   "type": "module",
-  "types": "./dist/src/index.d.ts",
-  "main": "./dist/src/index.js",
-  "module": "./dist/src/index.js",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "files": [
     "dist"
   ],
   "exports": {
     ".": {
-      "types": "./dist/src/index.d.ts",
-      "default": "./dist/src/index.js"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./email-queue.js": {
-      "types": "./dist/src/email-queue.d.ts",
-      "default": "./dist/src/email-queue.js"
+      "types": "./dist/email-queue.d.ts",
+      "default": "./dist/email-queue.js"
     },
     "./execution-context.js": {
-      "types": "./dist/src/execution-context.d.ts",
-      "default": "./dist/src/execution-context.js"
+      "types": "./dist/execution-context.d.ts",
+      "default": "./dist/execution-context.js"
     },
     "./execution-observability.js": {
-      "types": "./dist/src/execution-observability.d.ts",
-      "default": "./dist/src/execution-observability.js"
+      "types": "./dist/execution-observability.d.ts",
+      "default": "./dist/execution-observability.js"
     },
     "./execution-status.js": {
-      "types": "./dist/src/execution-status.d.ts",
-      "default": "./dist/src/execution-status.js"
+      "types": "./dist/execution-status.d.ts",
+      "default": "./dist/execution-status.js"
     },
     "./invocation-evidence.js": {
-      "types": "./dist/src/invocation-evidence.d.ts",
-      "default": "./dist/src/invocation-evidence.js"
+      "types": "./dist/invocation-evidence.d.ts",
+      "default": "./dist/invocation-evidence.js"
     },
     "./runtime.js": {
-      "types": "./dist/src/runtime.d.ts",
-      "default": "./dist/src/runtime.js"
+      "types": "./dist/runtime.d.ts",
+      "default": "./dist/runtime.js"
     },
     "./types.js": {
-      "types": "./dist/src/types.d.ts",
-      "default": "./dist/src/types.js"
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
     }
   },
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build --force",
     "check-types": "tsc --noEmit",
     "dev": "tsc --watch",
     "lint": "eslint src --max-warnings 0"
   },
   "dependencies": {
-    "@repo/composition-legal-workspace": "workspace:*",
-    "@types/ioredis": "^5.0.0",
     "ioredis": "^5.11.1",
     "react": "^19"
   },

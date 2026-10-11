@@ -1,15 +1,15 @@
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
 import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "@repo/core-kernel";
-import { slugifyForTenant } from "../services/password.service.ts";
+import { slugifyForTenant } from "../services/password.service.js";
 import {
   UserId,
   TenantId,
   WorkspaceId,
   MembershipId,
   SessionId,
-} from "../contracts/identity.contracts.ts";
-import { passwordService } from "../services/password.service.ts";
+} from "@repo/contracts-core";
+import { passwordService } from "../services/password.service.js";
 import {
   getUserRepositoryPostgres,
   getTenantRepositoryPostgres,
@@ -22,7 +22,7 @@ import {
   TenantRepositoryInMemory,
   WorkspaceRepositoryInMemory,
   MembershipRepositoryInMemory,
-} from "../repositories/index.ts";
+} from "../repositories/index.js";
 
 const DEFAULT_SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 
@@ -33,24 +33,25 @@ function newMembershipId(): MembershipId { return MembershipId(`membership-${ran
 function newSessionId(): SessionId { return SessionId(`session-${randomUUID()}`); }
 
 // EOS PROD-005 (SCALE-001 mandate): Enforce PostgreSQL persistence in production
-// In-memory repositories only allowed for isolated development/testing
-if (process.env.NODE_ENV === "production" && !(process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
+// In-memory repositories only allowed for isolated development/testing or when EOS_SANDBOX_MODE is enabled
+if (process.env.NODE_ENV === "production" && !(process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && process.env.EOS_SANDBOX_MODE !== "true") {
   throw new Error("[IdentityService] PRODUCTION SAFETY VIOLATION: In-memory repositories cannot be used in production. POSTGRES_CONNECTION_STRING or DATABASE_URL must be set to activate PostgreSQL persistence with RLS tenant isolation.");
 }
 
-const userRepo = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
+const hasDbConnection = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL;
+const userRepo = hasDbConnection
   ? getUserRepositoryPostgres()
   : UserRepositoryInMemory;
-const tenantRepo = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
+const tenantRepo = hasDbConnection
   ? getTenantRepositoryPostgres()
   : TenantRepositoryInMemory;
-const workspaceRepo = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
+const workspaceRepo = hasDbConnection
   ? getWorkspaceRepositoryPostgres()
   : WorkspaceRepositoryInMemory;
-const membershipRepo = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
+const membershipRepo = hasDbConnection
   ? getMembershipRepositoryPostgres()
   : MembershipRepositoryInMemory;
-const sessionRepo = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
+const sessionRepo = hasDbConnection
   ? getSessionRepositoryPostgres()
   : SessionRepositoryInMemory;
 

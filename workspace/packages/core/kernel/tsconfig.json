@@ -19,8 +19,12 @@
             "resolveJsonModule": true,
             "strict": true,
             "target": "ES2022",
-            "noEmit": false
+            "noEmit": false,
+    "ignoreDeprecations": "5.0"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist"],
+  "references": [
+    { "path": "../runtime/tsconfig.json" }
+  ]
 }

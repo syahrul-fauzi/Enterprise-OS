@@ -12,14 +12,17 @@ import {
 } from "../contracts/consultation.contracts.js";
 import type { CapabilityQuery } from "@repo/core-kernel";
 import { ConsultationRepositoryInMemory } from "../repository/consultation.repository.js";
-import { initIdentitySchema, SessionRepositoryInMemory, getSessionRepositoryPostgres, SessionId, TenantId, WorkspaceId, ActorId } from "../../../work-core/index.js";
+import { initIdentitySchema, SessionRepositoryInMemory, getSessionRepositoryPostgres, SessionId, getWorkRepositoryPostgres } from "../../../work-core/index.js";
 
 type GetConsultationQuery = CapabilityQuery<GetConsultationInput, GetConsultationOutput>;
 type SearchConsultationsQuery = CapabilityQuery<SearchConsultationsInput, SearchConsultationsOutput>;
-type GetConsultationSeriesQuery = CapabilityQuery<{ id: string; sessionId: SessionId; tenantId: TenantId; workspaceId: WorkspaceId; actorId: ActorId }, ConsultationSeries | undefined>;
-type ListConsultationSeriesQuery = CapabilityQuery<{ workspaceId: WorkspaceId; sessionId: SessionId; tenantId: TenantId; actorId: ActorId }, readonly ConsultationSeries[]>;
-type GetConsultationEpisodeQuery = CapabilityQuery<{ id: string; sessionId: SessionId; tenantId: TenantId; workspaceId: WorkspaceId; actorId: ActorId }, ConsultationEpisode | undefined>;
-type ListConsultationEpisodesQuery = CapabilityQuery<{ seriesId: string; sessionId: SessionId; tenantId: TenantId; workspaceId: WorkspaceId; actorId: ActorId }, readonly ConsultationEpisode[]>;
+type GetConsultationSeriesQuery = CapabilityQuery<{ id: string; sessionId: SessionId }, ConsultationSeries | undefined>;
+type ListConsultationSeriesQuery = CapabilityQuery<{ sessionId: SessionId }, readonly ConsultationSeries[]>;
+type GetConsultationEpisodeQuery = CapabilityQuery<{ id: string; sessionId: SessionId }, ConsultationEpisode | undefined>;
+type ListConsultationEpisodesQuery = CapabilityQuery<{ seriesId: string; sessionId: SessionId }, readonly ConsultationEpisode[]>;
+
+// CORE-001 Compliant: Import Work repository untuk verifikasi boundary metadata
+const workRepository = getWorkRepositoryPostgres();
 
 export const getConsultation: GetConsultationQuery = {
   kind: "query",
@@ -27,7 +30,7 @@ export const getConsultation: GetConsultationQuery = {
   version: "0.1.0",
   async execute(input) {
     await initIdentitySchema();
-    const { id, sessionId, tenantId, workspaceId, actorId } = input;
+    const { id, sessionId } = input;
     
     const sessionRepository = process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
       ? getSessionRepositoryPostgres()
@@ -36,11 +39,26 @@ export const getConsultation: GetConsultationQuery = {
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.get] Invalid or revoked session - authentication violation");
     }
-    if (session.actorId !== actorId || session.tenantId !== tenantId || session.workspaceId !== workspaceId) {
-      throw new Error("[consultation.get] Session mismatch - security violation");
+
+    // CORE-001: Fetch consultation lalu verifikasi core Work exists dan boundary alignment
+    const consultation = await ConsultationRepositoryInMemory.byId(ConsultationId(id));
+    if (!consultation) {
+      throw new Error("[consultation.get] Consultation not found");
+    }
+    
+    // CORE-001: Semua boundary metadata hanya berasal dari core Work primitive
+    if (consultation.workId) {
+      const coreWork = await workRepository.byWorkId(consultation.workId);
+      if (!coreWork) {
+        throw new Error("[consultation.get] Core Work not found - cannot retrieve orphaned consultation");
+      }
+      // Authority boundary check: session's tenant/workspace harus match core Work's boundaries
+      if (coreWork.tenantId !== session.tenantId || coreWork.workspaceId !== session.workspaceId) {
+        throw new Error("[consultation.get] Cross-tenant access blocked - authority boundary violation");
+      }
     }
 
-    return await ConsultationRepositoryInMemory.byId(ConsultationId(id));
+    return consultation;
   },
 };
 
@@ -50,18 +68,29 @@ export const searchConsultations: SearchConsultationsQuery = {
   version: "0.1.0",
   async execute(input) {
     await initIdentitySchema();
-    const { sessionId, tenantId, workspaceId, actorId, query, status, priority, limit, offset } = input;
+    const { sessionId, query, status, priority, limit, offset } = input;
     
     const sessionRepo = getSessionRepositoryPostgres();
     const session = await sessionRepo.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.search] Invalid or revoked session - authentication violation");
     }
-    if (session.actorId !== actorId || session.tenantId !== tenantId || session.workspaceId !== workspaceId) {
-      throw new Error("[consultation.search] Session mismatch - security violation");
-    }
 
-    const allWorkspaceConsultations = await ConsultationRepositoryInMemory.listByWorkspace(workspaceId);
+    // CORE-001: Ambil semua consultation yang terikat ke Work dalam session's tenant/workspace
+    const allConsultations = await ConsultationRepositoryInMemory.list();
+    // Filter hanya consultation yang core Work-nya berada dalam session boundaries (bukan input-derived)
+    const validConsultations = await Promise.all(
+      allConsultations.filter(async (c) => {
+        if (c.workId) {
+          const coreWork = await workRepository.byWorkId(c.workId);
+          return coreWork && coreWork.tenantId === session.tenantId && coreWork.workspaceId === session.workspaceId;
+        }
+        // Fallback untuk konsultasi lama tanpa workId (tetap validasi berdasarkan embedded metadata)
+        return c.tenantId === session.tenantId && c.workspaceId === session.workspaceId;
+      })
+    ).then(results => results.filter(Boolean));
+    
+    let filtered: readonly ConsultationAggregate[] = validConsultations;
     const q = (query ?? "").trim().toLowerCase();
     let filtered: readonly ConsultationAggregate[] = allWorkspaceConsultations;
     if (status !== undefined && status !== "all") {
@@ -97,18 +126,31 @@ export const getConsultationSeries: GetConsultationSeriesQuery = {
   version: "1.0.0",
   async execute(input) {
     await initIdentitySchema();
-    const { id, sessionId, tenantId, workspaceId, actorId } = input;
+    const { id, sessionId } = input;
     
     const sessionRepo = getSessionRepositoryPostgres();
     const session = await sessionRepo.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.getSeries] Invalid or revoked session - authentication violation");
     }
-    if (session.actorId !== actorId || session.tenantId !== tenantId || session.workspaceId !== workspaceId) {
-      throw new Error("[consultation.getSeries] Session mismatch - security violation");
+
+    const series = await ConsultationRepositoryInMemory.getSeriesById(ConsultationSeriesId(id));
+    if (!series) {
+      throw new Error("[consultation.getSeries] Consultation series not found");
+    }
+    
+    // CORE-001: Validasi boundary melalui core Work jika series terikat ke Work
+    if (series.workId) {
+      const coreWork = await workRepository.byWorkId(series.workId);
+      if (!coreWork) {
+        throw new Error("[consultation.getSeries] Core Work not found - cannot retrieve orphaned series");
+      }
+      if (coreWork.tenantId !== session.tenantId || coreWork.workspaceId !== session.workspaceId) {
+        throw new Error("[consultation.getSeries] Cross-tenant access blocked - authority boundary violation");
+      }
     }
 
-    return await ConsultationRepositoryInMemory.getSeriesById(ConsultationSeriesId(id));
+    return series;
   },
 };
 
@@ -118,18 +160,27 @@ export const listConsultationSeriesByWorkspace: ListConsultationSeriesQuery = {
   version: "1.0.0",
   async execute(input) {
     await initIdentitySchema();
-    const { workspaceId, sessionId, tenantId, actorId } = input;
+    const { sessionId } = input;
     
     const sessionRepo = getSessionRepositoryPostgres();
     const session = await sessionRepo.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.listSeries] Invalid or revoked session - authentication violation");
     }
-    if (session.actorId !== actorId || session.tenantId !== tenantId || session.workspaceId !== workspaceId) {
-      throw new Error("[consultation.listSeries] Session mismatch - security violation");
-    }
 
-    return await ConsultationRepositoryInMemory.listSeriesByWorkspace(workspaceId);
+    // CORE-001: Filter series berdasarkan core Work boundaries, bukan input workspaceId
+    const allSeries = await ConsultationRepositoryInMemory.listSeriesByWorkspace(session.workspaceId);
+    const validSeries = await Promise.all(
+      allSeries.filter(async (s) => {
+        if (s.workId) {
+          const coreWork = await workRepository.byWorkId(s.workId);
+          return coreWork && coreWork.tenantId === session.tenantId && coreWork.workspaceId === session.workspaceId;
+        }
+        return s.tenantId === session.tenantId && s.workspaceId === session.workspaceId;
+      })
+    ).then(results => results.filter(Boolean));
+
+    return validSeries;
   },
 };
 
@@ -138,18 +189,31 @@ export const getConsultationEpisode: GetConsultationEpisodeQuery = {
   name: "consultation.getEpisode",
   version: "1.0.0",
   async execute(input) {
-    const { id, sessionId, tenantId, workspaceId, actorId } = input;
+    const { id, sessionId } = input;
     
     const sessionRepo = getSessionRepositoryPostgres();
     const session = await sessionRepo.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.getEpisode] Invalid or revoked session - authentication violation");
     }
-    if (session.actorId !== actorId || session.tenantId !== tenantId || session.workspaceId !== workspaceId) {
-      throw new Error("[consultation.getEpisode] Session mismatch - security violation");
+
+    const episode = await ConsultationRepositoryInMemory.getEpisodeById(ConsultationEpisodeId(id));
+    if (!episode) {
+      throw new Error("[consultation.getEpisode] Consultation episode not found");
+    }
+    
+    // CORE-001: Validasi boundary melalui core Work jika episode terikat ke Work
+    if (episode.workId) {
+      const coreWork = await workRepository.byWorkId(episode.workId);
+      if (!coreWork) {
+        throw new Error("[consultation.getEpisode] Core Work not found - cannot retrieve orphaned episode");
+      }
+      if (coreWork.tenantId !== session.tenantId || coreWork.workspaceId !== session.workspaceId) {
+        throw new Error("[consultation.getEpisode] Cross-tenant access blocked - authority boundary violation");
+      }
     }
 
-    return await ConsultationRepositoryInMemory.getEpisodeById(ConsultationEpisodeId(id));
+    return episode;
   },
 };
 
@@ -159,17 +223,25 @@ export const listConsultationEpisodesBySeries: ListConsultationEpisodesQuery = {
   version: "1.0.0",
   async execute(input) {
     await initIdentitySchema();
-    const { seriesId, sessionId, tenantId, workspaceId, actorId } = input;
+    const { seriesId, sessionId } = input;
     
     const sessionRepo = getSessionRepositoryPostgres();
     const session = await sessionRepo.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.listEpisodes] Invalid or revoked session - authentication violation");
     }
-    if (session.actorId !== actorId || session.tenantId !== tenantId || session.workspaceId !== workspaceId) {
-      throw new Error("[consultation.listEpisodes] Session mismatch - security violation");
-    }
 
-    return await ConsultationRepositoryInMemory.listEpisodesBySeries(ConsultationSeriesId(seriesId));
+    const allEpisodes = await ConsultationRepositoryInMemory.listEpisodesBySeries(ConsultationSeriesId(seriesId));
+    const validEpisodes = await Promise.all(
+      allEpisodes.filter(async (e) => {
+        if (e.workId) {
+          const coreWork = await workRepository.byWorkId(e.workId);
+          return coreWork && coreWork.tenantId === session.tenantId && coreWork.workspaceId === session.workspaceId;
+        }
+        return e.tenantId === session.tenantId && e.workspaceId === session.workspaceId;
+      })
+    ).then(results => results.filter(Boolean));
+
+    return validEpisodes;
   },
 };

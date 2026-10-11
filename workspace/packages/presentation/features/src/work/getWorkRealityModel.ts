@@ -85,13 +85,13 @@ export async function buildWorkRealityModel(
     }
   };
 
-  const workId = work.id as string;
+  const workId = work.id ? (work.id as string) : '';
   const workType = work.domainType === 'community-discussion' ? 'community-discussion' :
                    work.domainType === 'service-request' ? 'service-request' :
-                   workId.startsWith('lh-case-') ? 'legal-case' :
-                   workId.startsWith('case-') ? 'case' :
-                   workId.startsWith('requirement-') ? 'requirement' :
-                   workId.startsWith('request-') ? 'service-request' : 'work';
+                   workId && workId.startsWith('lh-case-') ? 'legal-case' :
+                   workId && workId.startsWith('case-') ? 'case' :
+                   workId && workId.startsWith('requirement-') ? 'requirement' :
+                   workId && workId.startsWith('request-') ? 'service-request' : 'work';
 
   // Participant derivation - server-side only, includes canonical work participants
   const participantIds = Array.from(new Set(
@@ -179,11 +179,17 @@ export async function buildWorkRealityModel(
                 [] // Ensure empty array instead of undefined/null to prevent .includes() errors
   }));
 
+  // Isi actor field sesuai session.actorId (wajib untuk WorkRealityModel)
+  const actor = {
+    id: session.actorId,
+    role: participants[0]?.role || 'operator' as const
+  };
+
   // Build and return canonical WorkRealityModel - single source of truth for presentation layer
   return {
     identity: {
       title: work.title || "Untitled Work",
-      description: work.description || "website unreachable",
+      description: work.description || "",
       workId: work.workId || work.id,
       status: work.status || "in_progress",
       linkedIntentId: work.linkedIntentId,
@@ -195,10 +201,11 @@ export async function buildWorkRealityModel(
       blockers: []
     },
     participants,
-    communications: normalizedCommunications,
+    communications: communications as any[],
     inspections: [],
-    coordination,
+    coordination: [...linkedInstitutions],
     evidence: [...caseEvidence, ...attachedDocuments, ...communicationEvidence],
-    activity
+    activity,
+    actor
   };
 }

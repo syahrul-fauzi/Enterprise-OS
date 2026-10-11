@@ -1,7 +1,7 @@
 import {
   UserId,
   type UserAggregate,
-} from "../contracts/identity.contracts.js";
+} from "@repo/contracts-core";
 import { getUserRepositoryPostgres } from "../repositories/index.js";
 
 const userRepository = getUserRepositoryPostgres();

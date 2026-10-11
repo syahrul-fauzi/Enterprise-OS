@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 // Import buildWorkRealityModel directly now that rootDir is fixed
 import { buildWorkRealityModel, CanonicalWorkRecord } from '../getWorkRealityModel';
-import type { WorkAggregate } from '../../../../../../capabilities/work-core/contracts/work.contracts';
+import type { WorkFaceProjection } from '../../../../../../capabilities/work-core/contracts/work.contracts';
 
 describe('SERVICES.ID Golden Slice - case-005 E2E Flow', () => {
   let case005Work: CanonicalWorkRecord;

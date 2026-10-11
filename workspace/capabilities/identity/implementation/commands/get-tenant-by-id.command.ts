@@ -2,7 +2,7 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
 import {
   TenantId,
-} from "../contracts/index.js";
+} from "@repo/contracts-core";
 import { getTenantRepositoryPostgres, TenantRepositoryInMemory } from "../repositories/index.js";
 
 const tenantRepository = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)

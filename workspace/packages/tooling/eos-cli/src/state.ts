@@ -266,7 +266,7 @@ export function loadCurrentJourney(): CurrentJourney {
   let parsed: unknown;
   // DEBUG LOG: Tambahkan logging untuk jumlah dokumen dan isi yang ditemukan
   console.log(`[state.ts] DEBUG: loadCurrentJourney() found ${parsedDocs.length} YAML documents in ${CURRENT_JOURNEY_PATH}`);
-  parsedDocs.forEach((doc, idx) => {
+  parsedDocs.forEach((doc: any, idx: number) => {
     if (doc && typeof doc.toJSON === 'function') {
       const json = doc.toJSON();
       console.log(`[state.ts] DEBUG: Doc ${idx} work_id: ${json?.work_id}, next_work_id: ${json?.next_work_id}`);

@@ -1,8 +1,27 @@
 import { z } from "zod";
-import type { CapabilityCommand } from "../../../../packages/core/kernel/dist/types.js";
+import type { CapabilityCommand } from "../../../../packages/core/kernel/src/index.js";
 import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
-import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core/index.js";
+import { getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core/index.js";
 import type { CaseId, CaseAggregate } from "../../contracts/index.js";
+
+// Lazy session repository initialization to unify test/prod storage (same pattern as case.commands.ts)
+let _sessionRepo: any = null;
+async function getSessionRepositoryLazy() {
+  if (!_sessionRepo) {
+    const isTestEnvironment = process.env.NODE_ENV === 'test' || (globalThis as any)._forceMockPool === true;
+    const hasConnectionString = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL;
+    
+    if (isTestEnvironment && !hasConnectionString) {
+      const { SessionRepositoryInMemory } = await import("../../../identity/implementation/repositories/session.inmemory.js");
+      _sessionRepo = SessionRepositoryInMemory;
+      console.log("[legal-case][getCaseById] 🔧 Using IN-MEMORY session repository for TEST environment");
+    } else {
+      _sessionRepo = getSessionRepositoryPostgres();
+      console.log("[legal-case][getCaseById] 🐘 Using POSTGRESQL session repository");
+    }
+  }
+  return _sessionRepo;
+}
 
 // FORCE IN-MEMORY FOR DEVELOPMENT - ignore DATABASE_URL to fix "Work not found" errors
 // Only use Postgres in NODE_ENV=production
@@ -10,16 +29,14 @@ import type { CaseId, CaseAggregate } from "../../contracts/index.js";
 export const caseRepository = process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
   ? CaseRepositoryPostgres 
   : CaseRepositoryInMemory;
-export const sessionRepository = process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
-  ? getSessionRepositoryPostgres()
-  : SessionRepositoryInMemory;
 
 export const GetCaseByIdInputSchema = z.object({
   caseId: z.string().min(1).startsWith("case-"),
   sessionId: z.string().min(1),
   // Support anonymous sessions with caller-passed context (same as other commands)
-  tenantId: z.string().optional(),
-  workspaceId: z.string().optional(),
+  tenantId: z.string().min(1),
+  workId: z.string().min(1).optional(), // Primary continuity ID (workId-first pattern)
+  workspaceId: z.string().optional(),  // Fallback execution boundary only if workId not provided
   actorId: z.string().optional(),
 });
 
@@ -64,7 +81,8 @@ export const getCaseByIdCommand: CapabilityCommand<GetCaseByIdInput, Promise<Get
       workspaceId = rawInput.workspaceId;
       actorId = rawInput.actorId;
     } else {
-      // Validate session exists and is active
+      // Validate session exists and is active (uses lazy repository for unified test/prod storage)
+      const sessionRepository = await getSessionRepositoryLazy();
       const session = await sessionRepository.byId(sessionId as any);
       if (!session || session.revokedAt !== null) {
         throw new Error("[case.getById] Invalid or revoked session - authentication violation");
@@ -75,8 +93,9 @@ export const getCaseByIdCommand: CapabilityCommand<GetCaseByIdInput, Promise<Get
     // Session is already verified during creation - no need for redundant checks
 
     console.log("[getCaseByIdCommand] Looking for case:", caseId, "with context:", { tenantId, workspaceId });
-    // Debug: List ALL cases in store to verify case-ijjyua exists
-    const allCases = await caseRepository.listByWorkspace(workspaceId);
+    // CORE-001: Fetch cases via work-centric query - listByWorkspace is deprecated (workspace is execution boundary only)
+    // In production, we would fetch workIds from session and use listByWorkIds(workIds)
+    const allCases = await caseRepository.list();
     console.log("[getCaseByIdCommand] ALL CASES IN STORE:", allCases.map((c: any) => c.id));
     // Bypass tenant isolation for in-memory repository (development mode) to fix "Work not found"
     const c = await caseRepository.byId(caseId as unknown as CaseId);

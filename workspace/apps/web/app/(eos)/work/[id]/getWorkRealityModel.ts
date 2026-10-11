@@ -28,6 +28,7 @@ export interface CanonicalWorkRecord {
   attachedDocuments?: Array<{ id: string; title: string; type: string }>;
   outcomeDescription?: string;
   communications?: unknown[];
+  workflowId?: string; // Make workflowId optional to maintain backward compatibility with existing fixtures
 }
 import type { WorkRealityModel } from "@repo/presentation-entities";
 
@@ -38,6 +39,7 @@ export interface SessionContext {
   tenantId: string;
   sessionId?: string;
   userCapabilities?: string[]; // VF-02: Add user capabilities for unified navigation (matches WorkspaceSession)
+  productId?: string; // FACE-001: Add productId to session for product-specific filtering (consistent with MyReality model)
 }
 
 /**
@@ -163,6 +165,16 @@ export async function buildWorkRealityModel(
     timestamp: work.createdAt || new Date().toISOString()
   }));
 
+  // SIG-NEXT-001-W8: Add cross-product handoff action to coordination array (minimal addition, no new primitives)
+  // Aligns with RealityCoordination.tsx's action button pattern for operators
+  const handoffAction = {
+    id: "handoff-to-ilc",
+    actor: "operator",
+    title: "Handoff ke ILC",
+    description: "Transfer pekerjaan ini ke Institutional Legal Coordination (ILC) workspace",
+    timestamp: new Date().toISOString()
+  };
+
   // Build and return canonical WorkRealityModel - single source of truth for presentation layer
   return {
     identity: {
@@ -181,7 +193,7 @@ export async function buildWorkRealityModel(
     participants,
     communications: communications as any[],
     inspections: [],
-    coordination: [...linkedInstitutions],
+    coordination: [...linkedInstitutions, handoffAction],
     evidence: [...caseEvidence, ...attachedDocuments, ...communicationEvidence],
     activity
   };

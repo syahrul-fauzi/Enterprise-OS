@@ -2,7 +2,7 @@ import {
   SessionId,
   UserId,
   type SessionAggregate,
-} from "../contracts/identity.contracts.js";
+} from "@repo/contracts-core";
 import { getSessionRepositoryPostgres } from "../repositories/index.js";
 
 const sessionRepository = getSessionRepositoryPostgres();

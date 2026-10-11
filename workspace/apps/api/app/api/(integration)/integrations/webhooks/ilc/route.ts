@@ -2,16 +2,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import * as crypto from "crypto";
 import { randomUUID } from "node:crypto";
-import { CommunicationRepository, CommunicationRepositoryInMemory, newCommunicationEventId } from "@capabilities/communication/repository/index";
-import { CaseRepository, CaseRepositoryInMemory } from "@capabilities/legal-case/repository/index";
-import { executionContext } from "@repo/core-runtime/src/execution-context";
-import { recordObservedExecution } from "@repo/core-runtime/src/execution-observability";
-import { startExecutionTimer, recordRuntimeInvocation } from "@repo/core-runtime/src/invocation-evidence";
-// Import CANONICAL UNIVERSAL PIPELINE - MINIMAL FIX for Reality Ingress unification
-import { createUniversalExpression } from "@capabilities/atomic-composition/services/intent-understanding.service";
-import type { UniversalIntentInput } from "@capabilities/atomic-composition/contracts/universal-intent.contracts";
-// Import ILC webhook handler - REUSES Midtrans pattern (Rule of Two compliant, 2nd slice after Midtrans)
-import { handleIlcWebhookUpdate } from "../../../../../../../../capabilities/connector-ecosystem/implementation/services/connector-ecosystem.service.js";
+
+// Dynamic imports will be used inside handler to resolve initialization order issues
 
 // ILC platform official IP ranges (production + sandbox + development) - from ILC developer documentation
 const ILC_ALLOWED_IPS = new Set([
@@ -368,7 +360,6 @@ export async function POST(request: Request) {
     
     // WORK-PROD-010: Always record WorkRealityMetrics even on failure - critical for observability
     if (failedWorkId) {
-      const { recordWorkExecutionMetrics } = require("../../../../../../packages/core/runtime/src/execution-observability.js");
       recordWorkExecutionMetrics(failedWorkId, Date.now() - parseInt(failureExecutionId.slice(0, 8), 16), false);
     }
     

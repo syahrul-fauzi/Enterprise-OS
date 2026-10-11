@@ -4,7 +4,7 @@ import {
   TenantId,
   type CreateTenantInput,
   type TenantAggregate,
-} from "../contracts/identity.contracts.js";
+} from "@repo/contracts-core";
 import { TenantRepositoryPostgres } from "../repositories/index.js";
 import { initIdentitySchema } from "../repositories/base.repository.js";
 

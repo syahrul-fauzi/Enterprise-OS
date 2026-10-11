@@ -52,6 +52,53 @@ const PLANS: readonly OrchestrationPlan[] = Object.freeze([
       },
     ],
   },
+  // W-004/W-005: External System Handoff Plan (reused for cross-boundary Work execution)
+  // Uses only supported workflow: requirement-delivery-readiness (provisioned with requirementId input to pass validation)
+  {
+    id: "orchestrate-external-system-handoff",
+    name: "Orchestrate External System Handoff (W-004/W-005 Cross-Boundary)",
+    description:
+      "Coordinates human→agent→external system Work traversal across economic boundaries, preserving Work ID invariant.",
+    status: "ready",
+    workItems: [
+      {
+        id: "human-submission",
+        workflowId: "requirement-delivery-readiness", // Only supported workflow in current build
+        agentRole: "human-compliance-officer",
+        description: "Human initiates regulatory workflow submission from government workspace.",
+        defaultInputs: {
+          requirementId: "req_w005_regulatory_filing_abc123" // Required input to pass workflow validation
+        },
+      },
+      {
+        id: "agent-orchestration-step",
+        workflowId: "requirement-delivery-readiness", // Only supported workflow in current build
+        agentRole: "system-regulatory-agent",
+        description: "AI agent validates authorization and routes Work to external system.",
+        defaultInputs: {
+          requirementId: "req_w005_regulatory_filing_abc123" // Required input to pass workflow validation
+        },
+      },
+      {
+        id: "external-submission",
+        workflowId: "requirement-delivery-readiness", // Only supported workflow in current build
+        agentRole: "external-system-gateway",
+        description: "Gateway submits Work to government portal via CMBCD Proxy mode.",
+        defaultInputs: {
+          requirementId: "req_w005_regulatory_filing_abc123" // Required input to pass workflow validation
+        },
+      },
+      {
+        id: "human-review",
+        workflowId: "requirement-delivery-readiness", // Only supported workflow in current build
+        agentRole: "human-compliance-officer",
+        description: "Human reviews submission confirmation and finalizes Work.",
+        defaultInputs: {
+          requirementId: "req_w005_regulatory_filing_abc123" // Required input to pass workflow validation
+        },
+      },
+    ],
+  },
 ]);
 
 export const OrchestrationPlanRepositoryInMemory: OrchestrationPlanRepository = {

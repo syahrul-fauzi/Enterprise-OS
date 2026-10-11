@@ -30,6 +30,7 @@ export function ServiceRequestCard({ item }: ServiceRequestCardProps) {
   const { t } = useLocale();
 
   return (
+    <div data-work-id={item.workId}>
     <Card
       title={
         <h3 className="font-semibold leading-tight" style={{ color: "inherit" }}>
@@ -56,6 +57,7 @@ export function ServiceRequestCard({ item }: ServiceRequestCardProps) {
         </div>
       </div>
     </Card>
+    </div>
   );
 }
 

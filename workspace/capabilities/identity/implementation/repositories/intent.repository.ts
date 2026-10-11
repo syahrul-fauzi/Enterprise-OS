@@ -1,30 +1,30 @@
 import { Pool } from "pg";
 import { PostgresRepository } from "./base.repository.ts";
-import { isBuildPhase } from "../../../shared/implementation/database/health.check.js";
 import {
   IntentId,
   type IntentAggregate,
   type IntentRepository,
-  IntentStatus,
-  IntentCategory,
-} from "../contracts/index.ts";
+  type IntentStatus,
+  type IntentCategory,
+} from "@repo/contracts-core";
 
 // Validate required environment variables in production - matches other repository patterns
-if (process.env.NODE_ENV === "production" && !isBuildPhase && !(process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
-  throw new Error("[IntentRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING or DATABASE_URL environment variable is required in production");
+// Allow sandbox mode for isolated testing in production
+if (process.env.NODE_ENV === "production" && !(process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && process.env.EOS_SANDBOX_MODE !== "true") {
+  throw new Error("[IntentRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING or DATABASE_URL environment variable is required in production unless EOS_SANDBOX_MODE is enabled");
 }
 
 // Read replica configuration - matches case.postgres.repository.ts pattern
 const writePool = new Pool({
   connectionString: process.env.POSTGRES_WRITE_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL || "postgresql://localhost:5432/eos_identity",
-  max: 10,
+  max: 150, // DEL-001: Increased pool size to 150 to match target TPS of 150
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
 });
 
 const readPool = new Pool({
   connectionString: process.env.POSTGRES_READ_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL || "postgresql://localhost:5432/eos_identity",
-  max: 30,
+  max: 100, // DEL-001: Increased read pool size to support higher throughput
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
 });
@@ -60,6 +60,7 @@ class IntentRepositoryPostgresImpl extends PostgresRepository<any> implements In
       id: entity.id,
       tenant_id: entity.tenantId,
       workspace_id: entity.workspaceId,
+      work_id: entity.workId,
       actor_id: entity.actorId,
       origin: entity.origin,
       title: entity.title,
@@ -83,6 +84,7 @@ class IntentRepositoryPostgresImpl extends PostgresRepository<any> implements In
       id: IntentId(record.id),
       tenantId: record.tenant_id,
       workspaceId: record.workspace_id,
+      workId: record.work_id,
       actorId: record.actor_id,
       origin: record.origin,
       title: record.title,
@@ -101,20 +103,90 @@ class IntentRepositoryPostgresImpl extends PostgresRepository<any> implements In
   }
 
   /**
-   * Find intent by ID with tenant/workspace context for isolation
+   * Find intent by ID with tenant/work/workspace context for isolation (CORE-001: workId priority)
    */
-  async byId(id: string, context?: { tenantId: string; workspaceId: string }): Promise<IntentAggregate | undefined> {
+  async byId(id: string, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<IntentAggregate | undefined> {
     let query = "SELECT * FROM intents WHERE id = $1";
     const params: any[] = [id];
+    let paramIndex = 2;
 
-    if (context?.tenantId && context?.workspaceId) {
-      query += " AND tenant_id = $2 AND workspace_id = $3";
-      params.push(context.tenantId, context.workspaceId);
+    if (context?.tenantId) {
+      query += ` AND tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+      
+      if (context?.workId) {
+        query += ` AND work_id = $${paramIndex}`;
+        params.push(context.workId);
+        paramIndex++;
+      } else if (context?.workspaceId) {
+        query += ` AND workspace_id = $${paramIndex}`;
+        params.push(context.workspaceId);
+        paramIndex++;
+      }
     }
 
     const result = await readPool.query(query, params);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
+  }
+
+  /**
+   * List all intents with tenant/work/workspace context for isolation (CORE-001: workId priority)
+   */
+  async list(context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<readonly IntentAggregate[]> {
+    let query = "SELECT * FROM intents";
+    const params: any[] = [];
+    let paramIndex = 1;
+    let hasWhere = false;
+
+    if (context?.tenantId) {
+      query += ` WHERE tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+      hasWhere = true;
+      
+      if (context?.workId) {
+        query += ` AND work_id = $${paramIndex}`;
+        params.push(context.workId);
+        paramIndex++;
+      } else if (context?.workspaceId) {
+        query += ` AND workspace_id = $${paramIndex}`;
+        params.push(context.workspaceId);
+        paramIndex++;
+      }
+    }
+
+    const result = await readPool.query(query, params);
+    return result.rows.map(row => this.toAggregate(row));
+  }
+
+  /**
+   * Remove intent with tenant/work/workspace context for isolation (CORE-001: workId priority)
+   */
+  async remove(id: string, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<boolean> {
+    let query = "DELETE FROM intents WHERE id = $1";
+    const params: any[] = [id];
+    let paramIndex = 2;
+
+    if (context?.tenantId) {
+      query += ` AND tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+      
+      if (context?.workId) {
+        query += ` AND work_id = $${paramIndex}`;
+        params.push(context.workId);
+        paramIndex++;
+      } else if (context?.workspaceId) {
+        query += ` AND workspace_id = $${paramIndex}`;
+        params.push(context.workspaceId);
+        paramIndex++;
+      }
+    }
+
+    const result = await writePool.query(query, params);
+    return result.rowCount > 0;
   }
 
   /**

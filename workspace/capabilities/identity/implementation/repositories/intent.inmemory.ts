@@ -1,10 +1,13 @@
 import {
-  IntentId,
+  type IntentId,
   type IntentAggregate,
   type IntentRepository,
   IntentStatus,
   IntentCategory,
-} from "../contracts/index.ts";
+  type TenantId,
+  type WorkspaceId,
+  type WorkId,
+} from "@repo/contracts-core";
 
 // In-memory intent repository for development - matches pattern of all other in-memory repositories
 export class IntentRepositoryInMemory implements IntentRepository {
@@ -13,13 +16,13 @@ export class IntentRepositoryInMemory implements IntentRepository {
   readonly entityName = "Intent" as const;
   readonly kind = "repository" as const;
 
-  async byId(id: string, context?: { tenantId: string; workspaceId: string }): Promise<IntentAggregate | undefined> {
-    const intent = this.intents.get(id);
+  async byId(id: IntentId, context?: { tenantId: TenantId; workspaceId?: WorkspaceId; workId?: WorkId; }): Promise<IntentAggregate | undefined> {
+    const intent = this.intents.get(id as string);
     if (!intent) return undefined;
     
     // Apply tenant/workspace filtering if context is provided
     if (context?.tenantId && context?.workspaceId) {
-      if (intent.tenantId !== context.tenantId || intent.workspaceId !== context.workspaceId) {
+      if (intent.tenantId !== (context.tenantId as string) || intent.workspaceId !== (context.workspaceId as string)) {
         return undefined;
       }
     }

@@ -6,7 +6,27 @@ import { ToastContainer } from "@repo/presentation-ui-system";
 import { getProductExperience } from "@repo/presentation-experience";
 import { useWorkspaceSession, useToast } from "@repo/presentation-hooks";
 import type { ProductPreviewBinding } from "@repo/presentation-experience";
-import type { RequirementAggregate } from "@capabilities/requirement-management/implementation/contracts/requirement.contracts";
+import type { WorkFaceProjection } from "../../../../../capabilities/work-core/contracts/work.contracts";
+
+// FACE-CLEAN-001 COMPLIANT: Semua requirement adalah bagian dari core Work primitive
+// Requirement tidak perlu aggregate terpisah, semua data diambil dari WorkFaceProjection
+export type RequirementAggregate = never; // DEPRECATED: Tidak boleh digunakan lagi di presentation layer
+
+export interface RequirementFaceProjection {
+  readonly requirementId: string;
+  readonly workId: string;
+  readonly title: string;
+  readonly summary?: string;
+  readonly status: string;
+  readonly priority: string;
+  readonly owner?: string;
+  readonly linkedCapabilityIds: readonly string[];
+  readonly acceptanceCriteria: readonly string[];
+  readonly verificationStatus: string;
+  readonly createdAt: Readonly<Date>;
+  readonly updatedAt: Readonly<Date>;
+  readonly sourceWorkProjection: WorkFaceProjection; // Semua data berasal dari core WorkFaceProjection
+}
 
 export interface RequirementDetailPageProps {
   readonly productId: string;
@@ -24,7 +44,8 @@ export function RequirementDetailPage({ productId, requirementId, binding }: Req
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [requirementData, setRequirementData] = useState<RequirementAggregate | null>(savedState?.requirementData ?? null);
+  // FACE-CLEAN-001 COMPLIANT: Gunakan RequirementFaceProjection yang berasal dari WorkFaceProjection
+  const [requirementData, setRequirementData] = useState<RequirementFaceProjection | null>(savedState?.requirementData ?? null);
   const [showRequestReview, setShowRequestReview] = useState<boolean>(savedState?.showRequestReview ?? false);
 
 // Rehydrate session from localStorage + cookie for guaranteed persistence across refresh
@@ -88,8 +109,8 @@ function persistSessionState(requirementId: string, state: unknown) {
         throw new Error("Invalid session - please re-authenticate to view this requirement");
       }
       
-      // Load requirement data to check status
-      const response = await fetch(`/api/capabilities/requirement-management/requirement.getById`, {
+      // FACE-CLEAN-001 COMPLIANT: Ambil RequirementFaceProjection dari server yang berasal dari WorkFaceProjection
+      const response = await fetch(`/api/capabilities/requirement-management/requirement.getProjectionById`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -100,7 +121,7 @@ function persistSessionState(requirementId: string, state: unknown) {
           actorId: session.actorId,
         }),
       });
-      if (!response.ok) throw new Error("Failed to load requirement");
+      if (!response.ok) throw new Error("Failed to load requirement projection");
       const data = await response.json();
       setRequirementData(data.output);
     } catch (raw) {

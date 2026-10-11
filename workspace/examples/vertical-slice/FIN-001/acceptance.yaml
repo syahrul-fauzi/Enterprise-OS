@@ -1,0 +1,111 @@
+slice:
+  id: FIN-001
+  version: "2.0.0"
+  kind: VERTICAL_SLICE_CONTRACT
+  status: ACTIVE
+  root_aggregate: "CrossBorderSettlementWork"
+  transformation_id: "VS-VERIFY-002"
+  source_els_hash: "[sha256sum request.els.yaml untuk diisi sebelum verifikasi]"
+  slice_type: "COMMERCIAL_VALIDATION_SLICE"
+
+reality:
+  source: "phase4_commercial_validation_mandate"
+  actor: "eos_phase4_architect"
+  actor_type: "human"
+  intent: "Validate EOS as continuity/resolution substrate for cross-border settlement Work that cannot stay inside one organization, provider, or system. Verify that EOS creates repeatable economic value outside test environments."
+  request_context:
+    origin: "EOS Phase 4 RESOLUTION ERA Mandate"
+    governance_class: "commercial_validation_slice"
+    change_policy: "iterative_update_allowed"
+    owner: "eos_commercial_implementation_team"
+
+expected:
+  work_created: true
+  work_type: "CROSS_BORDER_SETTLEMENT_RESOLUTION"
+  work_id: "WORK-FIN-001"
+  initial_state: draft
+  actor_bound: true
+  capabilities_attached:
+    - "payment-processing"
+    - "work-boundary-validation"
+    - "midtrans-webhook-handler"
+    - "evidence-management"
+  compliance_rules_enforced:
+    - "0 new core primitive"
+    - "0 new platform layer"
+    - "0 duplicate primitive"
+    - "single active production slice rule"
+  traceability_anchors_preserved:
+    - "Work identity preserved across all boundary changes"
+    - "Evidence chain linked to all external provider interactions"
+    - "Settlement state derived only from verified external outcomes"
+
+acceptance:
+  # Core EOS flow validation (WAJIB untuk SEMUA slice)
+  work_created: true
+  actor_bound: true
+  persisted: true
+  evidence_recorded: true
+  recoverable: true
+  outcome_achieved: false # Menunggu L3 commercial proof
+
+  # Traceability checks
+  identity_trace_complete: true
+  hash_chain_valid: true
+
+  # Compliance checks
+  all_blocker_rules_enforced: true
+  no_orphaned_capabilities: true
+
+  # Runtime checks
+  deterministic_execution: true
+  idempotent_transformation: true
+
+  # Acceptance criteria SPESIFIK FIN-001 (3 tingkat evidence sesuai user mandate)
+  # L1 - EOS proof (bisa dibuktikan di repository)
+  - "L1_EOS_PROOF_Work_identity_verified"
+  - "L1_EOS_PROOF_Authority_boundaries_validated"
+  - "L1_EOS_PROOF_Continuity_preserved_across_context_changes"
+  - "L1_EOS_PROOF_Evidence_lineage_complete"
+  - "L1_EOS_PROOF_Resolution_chain_intact"
+  - "L1_EOS_PROOF_Replayability_verified"
+
+  # L2 - External execution proof (bisa dibuktikan di repository)
+  - "L2_EXTERNAL_PROOF_Provider_invoked_successfully"
+  - "L2_EXTERNAL_PROOF_Provider_response_captured"
+  - "L2_EXTERNAL_PROOF_Response_bound_to_Work"
+  - "L2_EXTERNAL_PROOF_No_duplicate_mutation"
+  - "L2_EXTERNAL_PROOF_External_status_reconciled"
+
+  # L3 - Commercial proof (memerlukan real-world evidence, belum terpenuhi)
+  - "L3_COMMERCIAL_PROOF_Real_organization_participating"
+  - "L3_COMMERCIAL_PROOF_Real_authorized_actor_executing"
+  - "L3_COMMERCIAL_PROOF_Real_operational_Work_in_progress"
+  - "L3_COMMERCIAL_PROOF_Real_external_transaction_executed"
+  - "L3_COMMERCIAL_PROOF_Real_economic_consequence_achieved"
+  - "L3_COMMERCIAL_PROOF_Willingness_to_pay_signal_received"
+
+surfaces:
+  - api: "/api/v1/cross-border-settlement"
+  - web: "/work/fin-001-settlement"
+  - ledger: "/evidence/commercial-validation/FIN-001"
+
+failure_cases:
+  - "Cross-border adapter currency conversion fails"
+  - "Customs reference ID not bound to payment transaction"
+  - "External provider webhook not received within timeout"
+  - "Duplicate payment mutation detected"
+  - "Evidence chain broken between EOS Work and external transaction"
+
+verification_harness:
+  supported_runners:
+    - "api_verifier"
+    - "persistence_verifier"
+    - "recovery_verifier"
+    - "actor_runtime_verifier"
+  required_evidence:
+    - "vitest_test_results: Layer D actor runtime tests pass"
+    - "cross_border_adapter_implementation: MINIMAL FIX applied successfully"
+    - "primitive_reuse_report: 91.67% reuse verified"
+    - "single_active_slice_confirmation: HV-008 archived, only FIN-001 active"
+    - "eos_core_differentiator_log: Evidence≠truth, Execution≠outcome, Outcome≠finality preserved"

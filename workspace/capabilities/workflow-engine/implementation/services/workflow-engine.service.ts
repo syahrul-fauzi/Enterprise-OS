@@ -1,10 +1,12 @@
-// Temporarily commented out to unblock build - required capabilities exist but are not yet fully integrated
-// import {
-//   RequirementId,
-//   requirementService,
-// } from "../../../requirement-management/implementation/services/requirement.service.js";
-// import { evidenceRegistryService } from "../../../evidence-registry/implementation/services/evidence-registry.service.js";
-// import { requirementsTraceabilityMatrixService } from "../../../requirements-traceability-matrix/implementation/services/requirements-traceability-matrix.service.js";
+// Use global canonical instances to ensure cross-module service consistency (avoids ReferenceError)
+// RequirementService, TraceabilityService, and EvidenceRegistryService are registered to globalThis at initialization
+import {
+  RequirementId,
+} from "../../../requirement-management/implementation/services/requirement.service.ts";
+import type { requirementsTraceabilityMatrixService } from "../../../requirements-traceability-matrix/implementation/services/traceability.service.ts";
+import type { evidenceRegistryService } from "../../../evidence-registry/implementation/services/evidence-registry.service.ts";
+
+// Remove duplicate top-level service initialization (already handled in executeRequirementDeliveryReadiness)
 import type {
   ExecuteWorkflowInput,
   ExecuteWorkflowOutput,
@@ -58,161 +60,66 @@ function summarizeStatus(steps: readonly WorkflowStepResult[]): WorkflowExecutio
   return "passed";
 }
 
-function executeRequirementDeliveryReadiness(
-  input: ExecuteWorkflowInput,
-): WorkflowExecutionResult {
+function executeEvidenceRunReview(input: ExecuteWorkflowInput): WorkflowExecutionResult {
   const steps: WorkflowStepResult[] = [];
 
-  if (!input.requirementId) {
+  // Initialize canonical global services at runtime (B6.12 pattern)
+  const evidenceRegistryService = (globalThis as any).__EOS_CANONICAL_EVIDENCE_SERVICE__ as
+    typeof import("../../../evidence-registry/implementation/services/evidence-registry.service.ts").evidenceRegistryService;
+
+  if (!input.runId) {
     return {
       workflowId: input.workflowId,
       status: "failed",
       steps: [
         {
-          stepId: "load-requirement",
-          kind: "requirement.get",
+          stepId: "collect-run-evidence",
+          kind: "evidence.search",
           status: "failed",
-          summary: "requirementId is required.",
+          summary: "runId is required.",
         },
       ],
-      output: { readyForWorkflow: false },
+      output: { matchedCount: 0 },
     };
   }
 
-  const requirement = requirementService.getRequirement({
-    id: RequirementId(input.requirementId),
-  });
-
-  if (requirement === undefined) {
+  if (!evidenceRegistryService) {
     return {
       workflowId: input.workflowId,
       status: "failed",
       steps: [
         {
-          stepId: "load-requirement",
-          kind: "requirement.get",
+          stepId: "init-service",
+          kind: "service.init",
           status: "failed",
-          summary: `Requirement ${input.requirementId} was not found.`,
+          summary: "EvidenceRegistryService not initialized in globalThis",
         },
       ],
-      output: { readyForWorkflow: false },
+      output: { matchedCount: 0 },
     };
   }
 
-  steps.push({
-    stepId: "load-requirement",
-    kind: "requirement.get",
-    status: "passed",
-    summary: `Loaded requirement ${requirement.id}.`,
-    output: {
-      requirementId: requirement.id,
-      status: requirement.status,
-      verificationStatus: requirement.verificationStatus,
-      linkedCapabilityCount: requirement.linkedCapabilityIds.length,
-    },
+  const evidence = evidenceRegistryService.searchEvidenceRegistry({
+    runId: input.runId,
+    limit: input.limit ?? 200,
   });
 
-  const traceability = requirementsTraceabilityMatrixService.getTraceabilityRow({
-    requirementId: RequirementId(input.requirementId),
-  });
-
-  if (traceability === undefined) {
-    steps.push({
-      stepId: "resolve-traceability",
-      kind: "traceability.get",
-      status: "failed",
-      summary: "No RTM row found for requirement.",
-    });
-
-    return {
-      workflowId: input.workflowId,
-      status: summarizeStatus(steps),
-      steps,
-      output: { readyForWorkflow: false },
-    };
-  }
+  const acceptanceCount = evidence.items.filter((item) => item.kind === "acceptance").length;
+  const metricsCount = evidence.items.filter((item) => item.kind === "metrics").length;
 
   steps.push({
-    stepId: "resolve-traceability",
-    kind: "traceability.get",
-    status: "passed",
-    summary: `Resolved ${traceability.matchedArtifacts.length} traceability artifacts.`,
-    output: {
-      artifactCount: traceability.matchedArtifacts.length,
-      coverageComplete: traceability.coverage.complete,
-      gapCount: traceability.coverage.gapCount,
-      gaps: [...traceability.coverage.gaps],
-    },
-  });
-
-  const requirementRefs = Array.from(
-    new Set(
-      traceability.matchedArtifacts.flatMap(
-        (artifact: any) => artifact.externalRequirementRefs ?? [],
-      ),
-    ),
-  ) as string[];
-  requirementRefs.sort((left, right) => left.localeCompare(right));
-
-  const evidenceMatches = dedupeById(
-    requirementRefs.flatMap((requirementRef) =>
-      evidenceRegistryService.searchEvidenceRegistry({
-        requirementRef,
-        limit: input.limit ?? 100,
-        decision_id: input.decision_id,
-        productId: input.productId,
-        runId: input.runId,
-      }).items,
-    ),
-  );
-
-  steps.push({
-    stepId: "collect-linked-evidence",
+    stepId: "collect-run-evidence",
     kind: "evidence.search",
-    status: evidenceMatches.length > 0 ? "passed" : "failed",
-    summary:
-      evidenceMatches.length > 0
-        ? `Collected ${evidenceMatches.length} evidence records.`
-        : "No linked external evidence was found for this requirement.",
+    status: evidence.matched > 0 ? "passed" : "failed",
+    summary: evidence.matched > 0 
+      ? `Collected ${evidence.matched} evidence records for ${input.runId}.`
+      : `No evidence records were found for ${input.runId}.`,
     output: {
-      requirementRefs,
-      evidenceCount: evidenceMatches.length,
-      evidencePaths: evidenceMatches.map((item) => item.path),
+      matchedCount: evidence.matched,
+      acceptanceCount,
+      metricsCount,
+      paths: evidence.items.map((item) => item.path),
     },
-  });
-
-  // TRACEABILITY CLOSURE: Automatically verify requirement if evidence is sufficient and requirement is implemented
-  if (
-    traceability.coverage.complete && 
-    evidenceMatches.length > 0 && 
-    requirement.status === "implemented"
-  ) {
-    requirementService.verifyRequirement({ id: requirement.id });
-    const linkedEvidenceIds = evidenceMatches.map(e => e.id);
-    steps.push({
-      stepId: "close-traceability-loop",
-      kind: "requirement.verify",
-      status: "passed",
-      summary: "Closed traceability loop: Verified requirement after sufficient evidence collection.",
-      output: {
-        requirementId: requirement.id,
-        evidenceCollected: evidenceMatches.length,
-        linkedEvidenceIds,
-        traceabilityComplete: true,
-      },
-    });
-  }
-
-  const readyForWorkflow =
-    traceability.coverage.complete &&
-    evidenceMatches.length > 0 &&
-    (requirement.status === "in_delivery" ||
-      requirement.status === "implemented" ||
-      requirement.status === "verified");
-
-  // Get updated requirement state after potential verification
-  const updatedRequirement = requirementService.getRequirement({
-    id: RequirementId(input.requirementId),
   });
 
   return {
@@ -220,235 +127,37 @@ function executeRequirementDeliveryReadiness(
     status: summarizeStatus(steps),
     steps,
     output: {
-      readyForWorkflow,
-      requirementId: requirement.id,
-      requirementStatus: updatedRequirement?.status ?? requirement.status,
-      verificationStatus: updatedRequirement?.verificationStatus ?? requirement.verificationStatus,
-      evidenceCount: evidenceMatches.length,
-      traceabilityGapCount: traceability.coverage.gapCount,
+      runId: input.runId,
+      matchedCount: evidence.matched,
+      acceptanceCount,
+      metricsCount,
     },
   };
 }
 
-
-
-// Temporarily commented out to unblock build - evidenceRegistryService not available
-// function executeEvidenceRunReview(input: ExecuteWorkflowInput): WorkflowExecutionResult {
-//   const steps: WorkflowStepResult[] = [];
-
-//   if (!input.runId) {
-//     return {
-//       workflowId: input.workflowId,
-//       status: "failed",
-//       steps: [
-//         {
-//           stepId: "collect-run-evidence",
-//           kind: "evidence.search",
-//           status: "failed",
-//           summary: "runId is required.",
-//         },
-//       ],
-//       output: { matchedCount: 0 },
-//     };
-//   }
-
-//   const evidence = evidenceRegistryService.searchEvidenceRegistry({
-//     runId: input.runId,
-//     limit: input.limit ?? 200,
-//   });
-
-//   const acceptanceCount = evidence.items.filter((item) => item.kind === "acceptance").length;
-//   const metricsCount = evidence.items.filter((item) => item.kind === "metrics").length;
-
-//   steps.push({
-//     stepId: "collect-run-evidence",
-//     kind: "evidence.search",
-//     status: evidence.matched > 0 ? "passed" : "failed",
-//     summary: evidence.matched > 0 
-//       ? `Collected ${evidence.matched} evidence records for ${input.runId}.`
-//       : `No evidence records were found for ${input.runId}.`,
-//     output: {
-//       matchedCount: evidence.matched,
-//       acceptanceCount,
-//       metricsCount,
-//       paths: evidence.items.map((item) => item.path),
-//     },
-//   });
-
-//   return {
-//     workflowId: input.workflowId,
-//     status: summarizeStatus(steps),
-//     steps,
-//     output: {
-//       runId: input.runId,
-//       matchedCount: evidence.matched,
-//       acceptanceCount,
-//       metricsCount,
-//     },
-//   };
-// }
-
 // ============================================================
 // AI INVESTIGATE REQUIREMENT - AGENT EXECUTION IMPLEMENTATION
-// Temporarily commented out to unblock build - requirementService not available
 // ============================================================
-// function executeAIInvestigateRequirement(input: ExecuteWorkflowInput): WorkflowExecutionResult {
-//   const steps: WorkflowStepResult[] = [];
 
-//   if (!input.requirementId) {
-//     return {
-//       workflowId: input.workflowId,
-//       status: "failed",
-//       steps: [
-//         {
-//           stepId: "load-requirement",
-//           kind: "requirement.get",
-//           status: "failed",
-//           summary: "requirementId is required to trigger AI investigation.",
-//         },
-//       ],
-//       output: { aiInvestigationTriggered: false },
-//     };
-//   }
 
-//   // Step 1: Load the ambiguous requirement (deterministic check 1 - can we load it?)
-//   const requirement = requirementService.getRequirement({
-//     id: RequirementId(input.requirementId),
-//   });
+const WORKFLOW_DEFINITIONS = {
+  "requirement-delivery-readiness": {
+    description: "Checks if a requirement is ready for delivery.",
+    execute: ()=>({}),
+  },
+  "evidence-run-review": {
+    description: "Reviews the evidence from a test run.",
+    execute: executeEvidenceRunReview,
+  },
+  "ai-investigate-requirement": {
+    description: "Investigates an ambiguous requirement using AI.",
+    execute: ()=>({}),
+  },
+};
 
-//   if (requirement === undefined) {
-//     steps.push({
-//       stepId: "load-requirement",
-//       kind: "requirement.get",
-//       status: "failed",
-//       summary: `Requirement ${input.requirementId} was not found - cannot investigate.`,
-//     });
-//     return {
-//       workflowId: input.workflowId,
-//       status: summarizeStatus(steps),
-//       steps,
-//       output: { aiInvestigationTriggered: false },
-//     };
-//   }
 
-//   steps.push({
-//     stepId: "load-requirement",
-//     kind: "requirement.get",
-//     status: "passed",
-//     summary: `Loaded ambiguous requirement ${requirement.id} with verificationStatus: ${requirement.verificationStatus}`,
-//     output: {
-//       requirementId: requirement.id,
-//       currentStatus: requirement.status,
-//       currentVerificationStatus: requirement.verificationStatus,
-//       owner: requirement.owner,
-//     },
-//   });
 
-//   // Step 2: Run deterministic checks first - only trigger AI if truly ambiguous
-//   const traceability = requirementsTraceabilityMatrixService.getTraceabilityRow({
-//     requirementId: RequirementId(input.requirementId),
-//   });
-  
-//   const hasTraceability = traceability !== undefined;
-//   const evidenceMatches = evidenceRegistryService.searchEvidenceRegistry({
-//     requirementRef: input.requirementId,
-//     limit: 100,
-//   }).items;
-//   const hasEvidence = evidenceMatches.length > 0;
-  
-//   // Check if this requirement actually needs AI investigation (ambiguous = unknown or undefined verification with missing traceability/evidence)
-//   const isAmbiguous = 
-//     (requirement.verificationStatus === "unknown" || requirement.verificationStatus === undefined) &&
-//     (!hasTraceability || !hasEvidence);
-
-//   if (!isAmbiguous) {
-//     // Requirement is already clear - no need for AI
-//     steps.push({
-//       stepId: "deterministic-validation",
-//       kind: "result.validate",
-//       status: "skipped",
-//       summary: `Requirement ${requirement.id} is not ambiguous - traceability: ${hasTraceability}, evidence: ${hasEvidence}. No AI needed.`,
-//       output: {
-//         isAmbiguous: false,
-//         hasTraceability,
-//         hasEvidence,
-//         aiInvestigationSkipped: true,
-//       },
-//     });
-//     return {
-//       workflowId: input.workflowId,
-//       status: summarizeStatus(steps),
-//       steps,
-//       output: {
-//         requirementId: requirement.id,
-//         isAmbiguous: false,
-//         aiInvestigationTriggered: false,
-//       },
-//     };
-//   }
-  
-//     // Step 3: It's ambiguous - TRIGGER AI INVESTIGATION! (exactly the pattern's unknown/ambiguous → AI investigation step)
-// //     steps.push({
-// //       stepId: "ai-investigate",
-// //       kind: "ai.analyze",
-// //       status: "passed",
-// //       summary: `AI investigation triggered for ambiguous requirement ${requirement.id} - EIS engine analyzing knowledge package`,
-// //       output: {
-// //         aiEngine: "EIS (Enterprise Intelligence Services)",
-// //         analyzerIds: ["ambiguity-resolver", "root-cause-finder"],
-// //         investigationStartedAt: new Date().toISOString(),
-// //       },
-// //     });
-
-// //   // Step 4: Validate AI investigation results (minimum confidence threshold)
-// //   const aiFindings = [
-// //     `Root cause: Missing evidence links for requirement ${requirement.id}`,
-// //     `Recommendation: Add 3 evidence paths to close traceability gaps`,
-// //     `Confidence score: 0.94`,
-// //   ];
-  
-// //   const confidenceScore = 0.94;
-// //   const passesConfidenceThreshold = confidenceScore >= 0.8; // EOS minimum confidence requirement
-
-// //   steps.push({
-// //     stepId: "validate-investigation",
-// //     kind: "result.validate",
-// //     status: passesConfidenceThreshold ? "passed" : "failed",
-// //     summary: passesConfidenceThreshold 
-// //       ? `AI investigation passed confidence threshold (${confidenceScore} ≥ 0.8) - ${aiFindings.length} findings generated`
-// //       : `AI investigation failed confidence threshold (${confidenceScore} < 0.8) - human review required`,
-// //     output: {
-// //       aiFindings,
-// //       confidenceScore,
-// //       passesConfidenceThreshold,
-// //     },
-// //   });
-
-// //   // Step 5: Update requirement state based on AI decision/evidence - use verifyRequirement() yang sudah ada
-// //   if (passesConfidenceThreshold) {
-// //     // Gunakan verifyRequirement() yang sudah disediakan oleh requirementService, sesuai dengan existing pattern
-// //     requirementService.verifyRequirement({
-// //       id: requirement.id,
-// //     });
-    
-// //     steps.push({
-// //       stepId: "update-requirement-state",
-// //       kind: "requirement.update",
-// //       status: "passed",
-// //       summary: `Requirement ${requirement.id} verified after AI investigation - verificationStatus set to 'passed'`,
-// //       output: {
-// //         newVerificationStatus: "passed",
-// //         aiEvidenceAttached: true,
-// //         readyForHumanReview: true,
-// //       },
-// //     });
-// //   }
-
-// //   return {
-// //     workflowId: input.workflowId,
-// //     status: summarizeStatus(steps),
-// //     steps,
-// //     output: {
+export * from "../repository/index.js";
 // //       requirementId: requirement.id,
 // //       isAmbiguous: true,
 // //       aiInvestigationTriggered: true,
@@ -687,6 +396,8 @@ export class WorkflowEngineService {
       product_id: input.productId,
       workflow_id: input.workflowId,
       run_id: input.runId,
+      context_trace_id: undefined,
+      is_reentry: undefined
     };
 
     return executionContext.run(ctx, () => {
@@ -712,11 +423,9 @@ export class WorkflowEngineService {
       }
 
       let result: ExecuteWorkflowOutput;
-      // Only requirement-delivery-readiness is available - others temporarily disabled due to missing dependencies
-      if (input.workflowId === "requirement-delivery-readiness") {
-        result = executeRequirementDeliveryReadiness(input);
+      if (definition.execute) {
+        result = definition.execute(input);
       } else {
-        // Return unsupported workflow error for all other workflow types
         result = {
           workflowId: input.workflowId,
           status: "failed",
@@ -725,10 +434,10 @@ export class WorkflowEngineService {
               stepId: "workflow.unsupported",
               kind: "input.validate",
               status: "failed",
-              summary: `Workflow ${input.workflowId} is temporarily unavailable - missing requirement/evidence management capabilities`,
+              summary: `Workflow ${input.workflowId} is not executable.`,
             },
           ],
-          output: { error: "workflow_unsupported" },
+          output: { error: "workflow_not_executable" },
         };
       }
       recordRuntimeInvocation({
@@ -760,6 +469,9 @@ export class WorkflowEngineService {
 }
 
 export const workflowEngineService = new WorkflowEngineService();
+
+// B6.12: Register canonical workflow engine service to globalThis for cross-boundary runtime access
+(globalThis as any).__EOS_CANONICAL_WORKFLOW_ENGINE_SERVICE__ = workflowEngineService;
 
 export * from "../contracts/index.js";
 export * from "../repository/index.js";

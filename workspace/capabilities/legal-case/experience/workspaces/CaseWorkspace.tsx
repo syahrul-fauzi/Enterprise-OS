@@ -3,6 +3,8 @@
 import React, { useMemo, useState, useEffect } from "react";
 import type { CaseAggregate, CasePriority, CaseStatus } from "../../contracts/index";
 import { CaseCard } from "../components/CaseCard";
+import { CreateCaseModal } from "../components/CreateCaseModal";
+import { createDevAuthenticatedSession } from "../../../../../packages/core/kernel/src/session/workspace-session";
 
 type StatusFilter = CaseStatus | "all";
 type PriorityFilter = CasePriority | "all";
@@ -22,6 +24,9 @@ export function CaseWorkspace() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("all");
   const [query, setQuery] = useState("");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  // CORE-001: Session terpercaya dari workspace-session (tidak input dari user)
+  const [session] = useState(createDevAuthenticatedSession());
 
   // Fetch cases from canonical API endpoint (maintains tenant/workspace isolation)
   useEffect(() => {
@@ -56,7 +61,13 @@ export function CaseWorkspace() {
     };
 
     window.addEventListener('cases:refresh', handleRefresh);
-    return () => window.removeEventListener('cases:refresh', handleRefresh);
+    // Listen for create event from any UI element to open modal
+    const handleCreate = () => setIsCreateModalOpen(true);
+    window.addEventListener('cases:create', handleCreate);
+    return () => {
+      window.removeEventListener('cases:refresh', handleRefresh);
+      window.removeEventListener('cases:create', handleCreate);
+    };
   }, []);
 
   // Client-side filtering (matching capability layer logic)
@@ -110,10 +121,19 @@ export function CaseWorkspace() {
     <div className="p-4 border rounded-lg bg-white shadow-sm space-y-3">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <h2 className="text-xl font-bold">Legal Cases</h2>
-        <div className="flex items-center gap-2 text-sm opacity-70">
-          <span>
-            showing {filtered.length} of {allCount} (matched {result.matched})
-          </span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+            data-testid="create-new-case-cta"
+          >
+            + Buat Kasus Baru
+          </button>
+          <div className="flex items-center gap-2 text-sm opacity-70">
+            <span>
+              showing {filtered.length} of {allCount} (matched {result.matched})
+            </span>
+          </div>
         </div>
       </div>
 
@@ -197,6 +217,38 @@ export function CaseWorkspace() {
           ))}
         </div>
       )}
+
+      <CreateCaseModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={async (data) => {
+          // Panggil unified work creation endpoint (Layer 4 API - CORE-001 compliant)
+          const resp = await fetch("/api/work/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              title: data.title,
+              description: data.description,
+              linkedIntentId: data.linkedIntentId,
+              domainType: "legal-case",
+              domainSpecificData: {
+                ...data,
+                sourceDiscussionId: data.sourceDiscussionId,
+                lawyerId: data.lawyerId
+              },
+              sessionId: session.sessionId,
+              tenantId: session.tenantId,
+              workspaceId: session.workspaceId,
+              actorId: session.actorId
+            }),
+          });
+          if (!resp.ok) throw new Error("Gagal membuat kasus baru");
+          // Trigger refresh untuk menampilkan kasus baru (fix F003)
+          window.dispatchEvent(new CustomEvent('cases:refresh'));
+          setIsCreateModalOpen(false);
+        }}
+        sessionId={session.sessionId}
+      />
     </div>
   );
 }

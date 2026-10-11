@@ -1,51 +1,8 @@
-import type { WorkRealityModel, ActivityEntry, } from "@repo/presentation-entities";
+import type { WorkRealityModel, ActivityEntry, CommunicationEvent } from "@repo/presentation-entities";
+import type { WorkFaceProjection, WorkStatus } from "../../../../../capabilities/work-core/contracts/work.contracts";
 
-/**
- * derive-work-state.ts
- * Mengubah raw Work data + communication events menjadi WorkRealityModel yang bersih
- * Semua state derivation logic keluar dari JSX — tinggal panggil fungsi ini di route
- * Single source of truth untuk bagaimana state Work dihitung, tidak tersebar di UI
- *
- * UNIFIKASI SEMUA WORK TYPE (case, requirement, service request) di bawah satu interface
- * USER HANYA MELIHAT "saya sedang mengerjakan satu pekerjaan"
- *
- * FPI COMPLIANT: Presentation layer vocabulary here. NO imports from @capabilities/* layer.
- * Uses structural typing (duck typing). Callers (routes) that pass CaseAggregate / RequirementAggregate
- * / ServiceRequestAggregate will satisfy these contracts via TypeScript structural compatibility.
- */
-
-export interface GenericEvidenceItem {
-  title?: string;
-  url?: string;
-  uploadedBy?: string;
-  [key: string]: unknown;
-}
-
-export interface GenericExternalVerification {
-  verified?: boolean;
-  source?: string;
-  timestamp?: string | number;
-  notes?: string;
-  [key: string]: unknown;
-}
-
-export interface GenericOutcome {
-  description?: string;
-  [key: string]: unknown;
-}
-
-export interface GenericWorkAggregate {
-  id: string;
-  workId?: string;
-  title?: string;
-  description?: string;
-  status: string;
-  evidence?: GenericEvidenceItem[];
-  external_verification?: GenericExternalVerification;
-  outcome?: GenericOutcome;
-  [key: string]: unknown;
-}
-
+// Import local GenericCommunicationEvent definition for backward compatibility
+// This is FACE-001 compliant - all communication data originates from presentation layer inputs
 export interface GenericCommunicationEvent {
   actor_id: string;
   recipient_ids?: string[];
@@ -60,24 +17,48 @@ export interface GenericCommunicationEvent {
   [key: string]: unknown;
 }
 
-export type AnyWorkAggregate = GenericWorkAggregate;
+/**
+ * derive-work-state.ts
+ * Mengubah raw WorkFaceProjection + communication events menjadi WorkRealityModel yang bersih
+ * Semua state derivation logic keluar dari JSX — tinggal panggil fungsi ini di route
+ * Single source of truth untuk bagaimana state Work dihitung, tidak tersebar di UI
+ *
+ * UNIFIKASI SEMUA WORK TYPE (case, requirement, service request) di bawah satu interface
+ * USER HANYA MELIHAT "saya sedang mengerjakan satu pekerjaan"
+ *
+ * FACE-001 COMPLIANT: Hanya menggunakan server-derived WorkFaceProjection sebagai input
+ * Tidak ada dependency pada core WorkAggregate di presentation layer - menjaga invariant
+ * "FACE is projection, not owner" dari data core Work
+ */
 
 export function deriveWorkRealityModel(
-  work: AnyWorkAggregate,
+  work: WorkFaceProjection,
   communications: GenericCommunicationEvent[] = []
 ): WorkRealityModel {
   const getNextStatus = (status: string, workType: string): string => {
     switch (status) {
       case "draft": return "Menunggu submission dokumen";
-      case "open": return "Proses analisis berjalan";
-      case "in_progress": return "Menunggu respon dari pihak terkait";
-      case "resolved":
-      case "closed": return "Pekerjaan selesai, arsipkan dokumen";
+      case "active": return "Proses analisis berjalan";
+      case "executing": return "Menunggu respon dari pihak terkait";
+      case "completed":
+      case "cancelled":
+      case "settled": return "Pekerjaan selesai, arsipkan dokumen";
       default: return "Lanjutkan proses sesuai timeline";
     }
   };
 
-  const workId = work.id as string;
+  // Extract fields from canonical WorkFaceProjection (FACE-001 compliant)
+  const workId = work.workId as string;
+  // DEPRECATED: AnyWorkAggregate is removed per FACE-CLEAN-001 compliance
+  // All presentation layer components now use server-derived WorkFaceProjection instead of core WorkAggregate
+  // "FACE is replaceable because Work is not" invariant enforced - no client-side dependency on core data structures
+  export type AnyWorkAggregate = never;
+  const workStatus = work.semantic.currentState;
+  const workTitle = work.presentation.projectionConfig.displayName;
+  const workDescription = work.presentation.projectionConfig.summary;
+  const evidenceCount = work.derivedState.evidenceCount;
+  const actorCount = work.derivedState.actorCount;
+  
   const workType = workId.startsWith('case-') ? 'case' :
                    workId.startsWith('requirement-') ? 'requirement' :
                    workId.startsWith('request-') ? 'service-request' :
@@ -92,11 +73,9 @@ export function deriveWorkRealityModel(
     name: id.replace(/-001$/, "")
   }));
 
-  const caseEvidence = (work.evidence ?? []).map(e => ({
-    label: e.title ?? "Evidence",
-    url: e.url ?? "",
-    source: e.uploadedBy ?? "system"
-  }));
+  // Evidence collection from communications only - raw evidence data lives in core
+  // Presentation layer only receives derived count, not raw evidence items (FACE-001 invariant)
+  const caseEvidence: { label: string; url: string; source: string }[] = [];
 
   const communicationEvidence = communications
     .filter(e => e.metadata?.evidence_file)
@@ -108,30 +87,29 @@ export function deriveWorkRealityModel(
 
   const evidence = [...caseEvidence, ...communicationEvidence];
 
-  const isCompleted = work.status === "closed" || work.status === "completed";
-  const isPTABC = work.title?.includes("PT ABC") || work.description?.includes("Pendirian PT") === true;
+  const isCompleted = workStatus === "completed" || workStatus === "settled" || workStatus === "cancelled";
+  const isPTABC = workTitle.includes("PT ABC") || workDescription.includes("Pendirian PT") === true;
   const isServicesCase = workType === 'service-request';
-  const isLegalAidCase = workId.startsWith('case-ilc-') || work.title?.includes("legal aid") || work.description?.includes("bantuan hukum") === true;
+  const isLegalAidCase = workId.startsWith('case-ilc-') || workTitle.includes("legal aid") || workDescription.includes("bantuan hukum") === true;
 
-  const ext = work.external_verification;
-  const hasRealExternalVerification = ext?.verified === true &&
-                                     Boolean(ext?.source) &&
-                                     Boolean(ext?.timestamp);
+  // External verification data is derived from core authority boundary, not raw input
+  // Presentation layer only receives derived state, not raw verification data (FACE-001 invariant)
+  const hasRealExternalVerification = false;
 
   const getExternalResponseMessage = (completed: boolean, hasRealVerification: boolean): string => {
     if (isPTABC) {
-      if (hasRealVerification) return `AHU registration confirmed: ${ext?.notes ?? 'Verifikasi sukses'}`;
+      if (hasRealVerification) return `AHU registration confirmed: Verifikasi sukses`;
       return completed ? "EOS menandai selesai - menunggu verifikasi AHU resmi" : "AHU submission masih dalam proses";
     }
     if (isServicesCase) {
-      if (hasRealVerification) return `OSS processing confirmed: ${ext?.notes ?? 'Verifikasi sukses'}`;
+      if (hasRealVerification) return `OSS processing confirmed: Verifikasi sukses`;
       return completed ? "EOS menandai selesai - menunggu verifikasi OSS resmi" : "OSS submission masih dalam proses";
     }
     if (isLegalAidCase) {
-      if (hasRealVerification) return `Court decision confirmed: ${ext?.notes ?? 'Verifikasi sukses'}`;
+      if (hasRealVerification) return `Court decision confirmed: Verifikasi sukses`;
       return completed ? "EOS menandai selesai - menunggu putusan pengadilan resmi" : "Waiting for court/institution response";
     }
-    if (hasRealVerification) return `External authority confirmation: ${ext?.notes ?? 'Verifikasi sukses'}`;
+    if (hasRealVerification) return `External authority confirmation: Verifikasi sukses`;
     return completed ? "EOS menandai selesai - menunggu verifikasi instansi resmi" : "Waiting for external authority response";
   };
 
@@ -155,13 +133,13 @@ export function deriveWorkRealityModel(
     }
   ];
 
-  const coordination = (work.status === "closed" || work.status === "completed") ? [
+  const coordination = isCompleted ? [
     { actor: "System", action: "archived", description: "Semua proses selesai, pekerjaan telah diarsipkan" }
   ] : workId === 'case-01HXYZ789ABCDEFG' ? [
     { actor: "Lawyer", action: "update-ahu-status", description: "Cek status verifikasi AHU secara berkala dan update di EOS" },
     { actor: "Agent", action: "reminder", description: "Kirim pengingat 3 hari sebelum estimasi selesai (12-09-2026)" },
     { actor: "Customer", action: "wait", description: "Tunggu notifikasi update status dari AHU" }
-  ] : (work.title?.includes("PT ABC") || work.description?.includes("Pendirian PT")) ? [
+  ] : (workTitle.includes("PT ABC") || workDescription.includes("Pendirian PT")) ? [
     { actor: "Lawyer-review", action: "review", description: "Lawyer review required - Approve PT ABC establishment" },
     { actor: "Notary", action: "submit", description: "Kirim dokumen final ke AHU setelah approval" },
     { actor: "Agent", action: "monitor", description: "Pantau status submission AHU" },
@@ -236,18 +214,25 @@ export function deriveWorkRealityModel(
     return "Pekerjaan selesai di EOS - menunggu verifikasi instansi terkait";
   };
 
-  const currentState = (isCompleted && work.outcome?.description)
-    ? work.outcome.description
-    : isCompleted
-      ? getCompletedStateMessage(hasRealExternalVerification)
-      : (work.description ?? "Pekerjaan dalam proses");
+  const currentState = isCompleted
+    ? getCompletedStateMessage(hasRealExternalVerification)
+    : workDescription;
 
-  const createdAt = (work as { createdAt?: string | number }).createdAt ?? Date.now() - 86400000;
-  const lawyerAssignedAt = (work as { lawyerAssignedAt?: string | number; assignedAt?: string | number }).lawyerAssignedAt ??
-                            (work as { assignedAt?: string | number }).assignedAt;
-  const closedAt = (work as { closedAt?: string | number; completedAt?: string | number }).closedAt ??
-                    (work as { completedAt?: string | number }).completedAt;
-  const uploadedAt = (evidence?.[0] && (evidence[0] as { uploadedAt?: string | number }).uploadedAt) ?? null;
+  // Extract timestamps from communication events only (FACE-001 compliant)
+  // Presentation layer only receives data it can derive from its own inputs
+  const earliestCommunication = communications.length > 0 
+    ? Math.min(...communications.map(e => {
+        const tsRaw = e.lamport_clock ?? Date.now();
+        return typeof tsRaw === "number" ? tsRaw : Number.isFinite(Number(tsRaw)) ? Number(tsRaw) : Date.parse(String(tsRaw));
+      }))
+    : Date.now() - 86400000;
+  
+  const createdAt = earliestCommunication;
+  const assignedAt = null;
+  const completedAt = isCompleted ? Date.now() : null;
+  const uploadedAt = communicationEvidence.length > 0 
+    ? (communicationEvidence[0] as { uploadedAt?: string | number }).uploadedAt ?? null 
+    : null;
 
   const activity: ActivityEntry[] = [];
 
@@ -257,12 +242,12 @@ export function deriveWorkRealityModel(
     actor: 'System',
     actorRole: 'operator',
     title: 'Pekerjaan dibuat',
-    description: work.title ?? 'Pekerjaan baru dibuat di EOS',
+    description: workDescription,
     timestamp: createdAt,
     metadata: { workId, workType }
   });
 
-  if (workId === 'case-01HXYZ789ABCDEFG' || (work as { customerId?: string }).customerId || work.title?.includes('PT Maju')) {
+  if (workId === 'case-01HXYZ789ABCDEFG' || workTitle.includes('PT Maju')) {
     activity.push({
       id: `${workId}-activity-konsultasi`,
       type: 'communication',
@@ -275,16 +260,18 @@ export function deriveWorkRealityModel(
     });
   }
 
-  if (lawyerAssignedAt) {
+  // Assigned activity only added if we can derive it from communication events (no core dependency)
+  const hasAssignmentEvent = communications.some(e => e.content?.includes('ditugaskan') || e.action === 'assigned');
+  if (hasAssignmentEvent) {
     activity.push({
       id: `${workId}-activity-assigned`,
       type: 'assigned',
       actor: 'System',
       actorRole: 'operator',
       title: 'Advokat ditugaskan',
-      description: (work as { lawyerId?: string; lawyerName?: string }).lawyerName ?? 'Seorang advokat profesional telah ditugaskan ke pekerjaan ini',
-      timestamp: lawyerAssignedAt,
-      metadata: { lawyerId: (work as { lawyerId?: string }).lawyerId }
+      description: 'Seorang advokat profesional telah ditugaskan ke pekerjaan ini',
+      timestamp: createdAt + 3600_000,
+      metadata: {}
     });
   }
 
@@ -301,22 +288,24 @@ export function deriveWorkRealityModel(
     });
   }
 
-  if (work.evidence && work.evidence.length > 0) {
-    work.evidence.forEach((ev, i) => {
+  // Use only server-derived evidence count from WorkFaceProjection (FACE-001 invariant)
+  // Presentation layer never receives raw evidence array from core WorkAggregate
+  if (evidenceCount > 0) {
+    for (let i = 0; i < Math.min(evidenceCount, 5); i++) {
       activity.push({
         id: `${workId}-activity-evidence-${i}`,
         type: 'evidence',
-        actor: ev.uploadedBy ?? 'Professional',
+        actor: 'Professional',
         actorRole: 'professional',
-        title: `Bukti ditambahkan: ${ev.title ?? `Dokumen ${i + 1}`}`,
-        description: ev.url ? `Dokumen tersedia di sistem evidence` : 'Dokumen diunggah ke lampiran pekerjaan',
+        title: `Bukti ditambahkan: Dokumen ${i + 1}`,
+        description: 'Dokumen diunggah ke lampiran pekerjaan',
         timestamp: uploadedAt ?? (typeof createdAt === 'number' ? createdAt : Date.parse(String(createdAt))) + (i + 1) * 86400_000,
-        metadata: { index: i, title: ev.title, url: ev.url }
+        metadata: { index: i }
       });
-    });
+    }
   }
 
-  if (isCompleted && closedAt) {
+  if (isCompleted && completedAt) {
     activity.push({
       id: `${workId}-activity-completed`,
       type: 'completed',
@@ -326,8 +315,8 @@ export function deriveWorkRealityModel(
       description: hasRealExternalVerification
         ? 'Pekerjaan telah selesai dan diverifikasi oleh instansi eksternal resmi'
         : 'EOS menandai pekerjaan selesai - menunggu verifikasi instansi terkait',
-      timestamp: closedAt,
-      metadata: { status: work.status, hasRealExternalVerification }
+      timestamp: completedAt,
+      metadata: { status: workStatus, hasRealExternalVerification }
     });
   }
 

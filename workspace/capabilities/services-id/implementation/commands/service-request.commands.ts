@@ -3,17 +3,22 @@ import {
   CreateServiceRequestOutput,
   ServiceRequestId,
   ServiceRequestAggregate,
+  ServiceRequestStatus,
 } from "../contracts/service-request.contracts";
 import { executionContext } from "@repo/core-runtime";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { newServiceRequestId, defaultServiceRequestStatus, defaultServiceRequestPriority, ServiceRequestRepositoryInMemory } from "../repository/index";
 // Import SEMUA canonical types dan repositories dari SINGLE-SOURCE work-core (anti-drift - TENANT-ISOLATION-001)
-// Sesuai dengan aturan: Semua capability harus import dari @repo/capabilities-work-core, bukan langsung dari identity
+// Sesuai dengan aturan: Semua capability harus import dari @capabilities/work-core, bukan langsung dari identity
 import { 
-  type SessionId, 
+  type SessionId,
+  type WorkId,
+  type ProductNode, 
   initIdentitySchema, 
   getSessionRepositoryPostgres, 
-  SessionRepositoryInMemory 
+  getWorkRepositoryPostgres,
+  SessionRepositoryInMemory,
+  safeRecordEvidence
 } from "../../../work-core/index.js";
 
 const SessionRepositoryPostgres = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
@@ -73,10 +78,7 @@ const CreateServiceRequestSchema = z.object({
   priority: z.enum(["low", "medium", "high", "critical"]).optional(),
   category: z.string().optional(),
   sessionId: z.string(),
-  tenantId: z.string(),
-  workspaceId: z.string(),
-  actorId: z.string(),
-  linkedWorkItemId: z.string().optional(),
+  linkedWorkItemId: z.string(),
 });
 
 const STORE = new Map<string, ServiceRequestAggregate>();
@@ -93,17 +95,20 @@ const createServiceRequest: CapabilityCommand<
     const validated = CreateServiceRequestSchema.parse(input);
     
     const id = newServiceRequestId();
+    
+    // CORE-001: Validasi coreWorkResult untuk memastikan workId selalu terhubung ke core Work primitive
+    if (!validated.linkedWorkItemId) {
+      throw new Error("[services-id.create-service-request] Failed to link to core Work primitive - CORE-001 violation: workId cannot be empty");
+    }
+    
     const aggregate: ServiceRequestAggregate = {
       id,
-      workId: validated.linkedWorkItemId,
+      workId: validated.linkedWorkItemId, // WAJIB: Semua boundary metadata hanya ada di core Work primitive (CORE-001)
       title: validated.title,
       description: validated.description,
       status: "draft",
       priority: validated.priority || "medium",
       category: validated.category,
-      tenantId: validated.tenantId,
-      workspaceId: validated.workspaceId,
-      actorId: validated.actorId,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -123,17 +128,24 @@ const createServiceRequest: CapabilityCommand<
   },
 };
 
-// THE CRITICAL R4 COMMAND: createServiceRequestFromWork - follows the exact createFromWork pattern
+// THE CRITICAL R4 COMMAND: createServiceRequestFromWork - SID-003: High-Value Work Graph Integration
+// Follows EXACT same pattern as ILC-003 (ILC) dan LH-003 (LawyersHub) untuk Rule of Two compliance
 const createServiceRequestFromWork: CapabilityCommand<{
   workId: string;
   coreWork: any;
   domainSpecificData?: any;
-}, Promise<{ id: string; workId: string; domainType: string }>> = {
+}, Promise<{ id: string; workId: string; domainType: string; graphMetadata: { productId: string; productName: string } | null }>> = {
   kind: "command",
   name: "service-request.createFromWork",
   version: "1.0.0",
   async execute(input) {
     await ensureIdentitySchema();
+    
+    // HIGH-VALUE WORK GRAPH TRAVERSAL (SID-003) - Dapatkan Product node yang terhubung ke Work ini
+    const workRepository = getWorkRepositoryPostgres();
+    const linkedProduct: ProductNode | undefined = input.workId 
+      ? await workRepository.getProductForWork(input.workId as WorkId)
+      : undefined;
     
     // Reuse existing service-request.create logic but pass through the core Work's context
     const result = await createServiceRequest.execute({
@@ -143,18 +155,34 @@ const createServiceRequestFromWork: CapabilityCommand<{
       priority: input.coreWork.priority,
       category: input.domainSpecificData?.category || "technical-support",
       sessionId: input.coreWork.sessionId,
-      tenantId: input.coreWork.tenantId,
-      workspaceId: input.coreWork.workspaceId,
-      actorId: input.coreWork.actorId,
       linkedWorkItemId: input.workId, // Bind service request to the core Work's ID (CRITICAL FOR R4 LINEAGE)
       // Pass through any domain-specific data from the original request
       ...(input.domainSpecificData || {}),
     });
+
+    // CANONICAL EVIDENCE RECORDING (sesuai work-core schema) - SID-003 compliance
+    await safeRecordEvidence({
+      work_id: input.workId,
+      tenant_id: input.coreWork.tenantId,
+      actor_id: input.coreWork.actorId,
+      capability: "services-id",
+      command: "service-request.createFromWork",
+      workspace_id: input.coreWork.execution?.workspaceId || null,
+      timestamp: new Date().toISOString(),
+      graph_link_created: true,
+      linked_product_id: linkedProduct?.id || null,
+      graph_traversal_success: !!linkedProduct
+    });
     
+    // FACE PROJECTION: Server-derived graphMetadata (tidak state-owned) - compliance dengan "FACE adalah projection, bukan owner"
     return {
       id: result.id,
       workId: input.workId,
       domainType: "service-request",
+      graphMetadata: linkedProduct ? {
+        productId: linkedProduct.id,
+        productName: linkedProduct.name
+      } : null
     };
   },
 };
@@ -164,9 +192,6 @@ const UpdateServiceRequestSchema = z.object({
   id: z.string(),
   status: z.enum(["draft", "open", "in_progress", "closed"]).optional(),
   sessionId: z.string(),
-  tenantId: z.string(),
-  workspaceId: z.string(),
-  actorId: z.string(),
 });
 
 const updateServiceRequest: CapabilityCommand<

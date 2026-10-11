@@ -19,7 +19,7 @@ export type GovernanceEvidenceArtifact =
   | "attestations"
   | "proofBundle";
 
-export type GovernanceReadModel = "summary" | "claims" | "health" | "dashboard";
+export type GovernanceReadModel = "summary" | "claims" | "health" | "dashboard" | "history";
 
 export type ConstitutionArtifactSelector = GovernanceEvidenceArtifact;
 export type ConstitutionPresentationArtifactSelector = GovernanceReadModel;
@@ -49,6 +49,13 @@ export type ApiPlatformQueryInput =
   | {
       readonly resource: "governance";
       readonly operation: "get";
+      readonly params: {
+        readonly readModel: GovernanceReadModel;
+      };
+    }
+  | {
+      readonly resource: "governance";
+      readonly operation: "list";
       readonly params: {
         readonly readModel: GovernanceReadModel;
       };

@@ -12,6 +12,7 @@ export const WorkspaceSessionSchema = z.object({
   workspaceId: z.string().min(1),
   productId: z.string().min(1),
   issuedAt: z.string().min(1),
+  userCapabilities: z.array(z.string()).optional(),
 });
 
 export type WorkspaceSession = z.infer<typeof WorkspaceSessionSchema>;
@@ -33,7 +34,7 @@ const ANONYMOUS_SESSION_TEMPLATE = Object.freeze({
   productId: "lawyershub.default", // PR-VISUAL-001: Default product ke lawyershub
 });
 
-export function createAnonymousWorkspaceSession(customProductId?: string): WorkspaceSession {
+export function createAnonymousWorkspaceSession(customProductId?: string, capabilities?: string[]): WorkspaceSession {
   return {
     actorId: ANONYMOUS_SESSION_TEMPLATE.actorId,
     actorLabel: ANONYMOUS_SESSION_TEMPLATE.actorLabel,
@@ -42,6 +43,7 @@ export function createAnonymousWorkspaceSession(customProductId?: string): Works
     productId: customProductId || ANONYMOUS_SESSION_TEMPLATE.productId, // FACE-001: Allow dynamic productId override
     sessionId: `session-${randomUUID()}`,
     issuedAt: new Date().toISOString(),
+    userCapabilities: capabilities || [],
   };
 }
 
@@ -54,11 +56,12 @@ const DEV_SESSION_TEMPLATE = Object.freeze({
   productId: "lawyershub", // PR-VISUAL-001: Lawyershub sebagai default product
 });
 
-export function createDevAuthenticatedSession(): WorkspaceSession {
+export function createDevAuthenticatedSession(capabilities?: string[]): WorkspaceSession {
   return {
     ...DEV_SESSION_TEMPLATE,
     sessionId: `session-${randomUUID()}`,
     issuedAt: new Date().toISOString(),
+    userCapabilities: capabilities || ["work:read", "work:write", "work:manage", "user:profile"],
   };
 }
 

@@ -1,7 +1,7 @@
 import { z } from "zod";
 // Import canonical identity types dari work-core (sesuai dependency chain: identity→work-core→capabilities)
-// Anti-drift enforcement - semua capability harus import dari @repo/capabilities-work-core
-import type { WorkId, ActorId, TenantId, SessionId } from "@repo/capabilities-work-core";
+// Anti-drift enforcement - semua capability harus import dari @capabilities/work-core
+import type { WorkId, ActorId, TenantId, SessionId } from "@capabilities/work-core";
 
 // Branded types for type safety (hanya CommunicationEventId yang spesifik ke capability communication)
 export type CommunicationEventId = string & { __brand: "CommunicationEventId" };
@@ -13,8 +13,7 @@ export const CommunicationAdapterTypes = [
   "in_app_chat",
   "api_webhook",
   "sms",
-  "slack",
-  "teams"
+  "mobile_push"
 ] as const;
 
 export type CommunicationAdapterType = typeof CommunicationAdapterTypes[number];

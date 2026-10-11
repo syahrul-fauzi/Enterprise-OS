@@ -1,0 +1,79 @@
+specification:
+  id: HV-008
+  name: "Cross-Boundary Economic Dispute Resolution Slice"
+  version: "1.0.0"
+  kind: ELS_LANGUAGE_SPECIFICATION
+  status: ACTIVE
+  language_spec_version: "1.0"
+  golden_reference: false
+  root_of_trust_for: "VS-VERIFY-002"
+  identity_note: THIS_DOCUMENT_HAS_STABLE_HASH.ANY_MODIFICATION_REQUIRES_NEW_VERSION.
+
+specification_metadata:
+  author: "eos_enterprise_architect"
+  created: 2026-10-04
+  governance_class: "user_feature_request"
+  change_policy: "iterative_update_allowed"
+  hash_algorithm: sha256
+  audit_note: Input hash of this document MUST be captured in acceptance.yaml before any transformation run.
+
+ontology:
+  root_aggregate: "CrossBoundaryEconomicDisputeResolution"
+  domain: "EOS_Economic_Resolution_Slices"
+
+requirement_identity:
+  requirement_id: HV-008
+  stable_external_id: HV-008
+  id_policy: requirement_identity_is_stable_never_changes
+  derived_identity_chain:
+    - requirement_id → els_document_hash
+    - els_document_hash → eir_source_hash
+    - eir_source_hash → instruction_set_hash
+    - instruction_set_hash → capability_ref_hash
+
+business_statement:
+  title: "$2.4M Cross-Org Supply Chain Dispute Resolution"
+  description: >
+    Menyelesaikan Work disputasi barang ekspor bernilai $2.4M yang melibatkan 6 pihak dari organisasi berbeda:
+    1. Buyer (importir di Jerman)
+    2. Supplier (produsen di Indonesia)
+    3. Logistics (perusahaan pengiriman internasional)
+    4. Customs (bea cukai kedua negara)
+    5. Insurer (perusahaan asuransi barang)
+    Work ini harus melewati 6 boundary yang berbeda (organization, domain, authority, execution_provider, settlement, surface)
+    namun Work W-003 harus tetap coherent dengan identity, authority, evidence, dan continuity yang terjaga.
+    Ini adalah bukti pertama EOS sebagai economic resolution substrate di era RESOLUTION.
+  origin: "eos_war_room_strategic_directive"
+  compliance:
+    - "primitive_reuse_100_percent"
+    - "no_duplicate_work"
+    - "architecture_freeze_compliance"
+    - "evidence_truth_separation"
+    - "all_transitions_require_valid_authorization"
+
+capability_refs:
+  - capability_id: "CAP-WORK-001"
+    capability_name: "work-identity-preservation"
+    purpose: "Menjaga ID W-003 tetap invariant sepanjang semua transisi boundary"
+  - capability_id: "CAP-AUTH-004"
+    capability_name: "cross-boundary-authority-transfer"
+    purpose: "Memastikan setiap perubahan actor memiliki otoritas yang valid dari semua pihak"
+  - capability_id: "CAP-EVID-002"
+    capability_name: "evidence-chain-compilation"
+    purpose: "Menyusun rantai evidence lengkap dari setiap keputusan dan transisi"
+  - capability_id: "CAP-SETTLE-001"
+    capability_name: "settlement-execution"
+    purpose: "Menjalankan settlement akhir sesuai keputusan bersama semua pihak"
+  - capability_id: "CAP-VERIFY-003"
+    capability_name: "economic-outcome-verification"
+    purpose: "Memverifikasi outcome ekonomi dapat diterima oleh semua stakeholder"
+
+acceptanceCriteria:
+  - "economic_resolution_loop_fully_functional"
+  - "settlement_outcomes_verifiable_by_all_parties"
+  - "primitive_reuse_remains_100_percent"
+  - "no_duplicate_work_implementation"
+  - "cross_boundary_continuity_preserved"
+  - "all_transitions_have_valid_actor_authority"
+  - "economic_gravity_verified_2_4M_usd"
+  - "replayability_produces_identical_outcome"

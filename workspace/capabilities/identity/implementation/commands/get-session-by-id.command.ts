@@ -3,7 +3,7 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import {
   SessionId,
   type SessionAggregate,
-} from "../contracts/index.js";
+} from "@repo/contracts-core";
 import {
   SessionRepositoryInMemory,
   getSessionRepositoryPostgres,

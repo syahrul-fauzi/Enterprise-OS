@@ -1,0 +1,66 @@
+[base.repository.ts] getPool() called - connectionString found: false, value: undefined...
+[PostgreSQL] POSTGRES_CONNECTION_STRING/DATABASE_URL not set - using in-memory mock pool for tests
+[WorkRepositoryPostgres] Constructor initialized - pools will be initialized on first use
+[workflowRegistry] Registered workflow: lh-lgl-001-legal-consultation (product: lawyershub)
+[workflowRegistry] Registered workflow: ilc-ins-001-institutional-coordination (product: ilc)
+[workflowRegistry] Registered workflow: bpjs-kshtn-001-healthcare-claim (product: bpjs-kesehatan)
+[workflowRegistry] Registered workflow: svc-id-001-technical-service (product: services-id)
+[workflowRegistry] All workflows registered. Total: 4
+
+🔧 Using IN-MEMORY repository for W2-B test
+
+=== W2-B PRESSURE TEST: Authority Substitution Under Failure ===
+Scenario: Human A → AI → Human B, AI attempts unauthorized mutation (rejected)
+
+✅ Step 1: Initial work created with explicit actor authorizations
+   Work ID: work-w2b-001 (I1: workId invariant initialized)
+   Initial actor: human-actor-a-001 (Human A with full authority)
+[work-inmemory.repository] ✅ Atomic claim successful: work-w2b-001 → actor human-actor-a-001
+
+✅ Step 2: Human A successfully claimed work (I3: A authority verified)
+   Claim status: CLAIMED
+   Active execution ID: session-a-001
+[work-core] 🐘 Using POSTGRESQL work repository
+[EvidenceRegistryService] Cohort observation gate scanner started
+[safeRecordEvidence] ✅ Evidence recorded locally with checksum: work.claimed for work work-w2b-001
+[work-inmemory.repository] ✅ Marked 1 stale claims
+[work-inmemory.repository] ✅ Atomic claim successful: work-w2b-001 → actor ai-assistant-001
+
+✅ Step 3: AI successfully claimed work with limited authority (I4: AI authority verified)
+   New actor: ai-assistant-001 (AI with only observe/suggest)
+   New active execution ID: session-ai-001
+   Previous execution IDs: ["session-a-001"]
+[safeRecordEvidence] ✅ Evidence recorded locally with checksum: authority.transferred for work work-w2b-001
+
+⚠️  Step 4: AI attempts unauthorized mutation...
+   Work state before mutation attempt:
+   - Current actorId: ai-assistant-001
+   - AI actorId (attempted): ai-assistant-001
+   - Version: 4
+❌ Mutation succeeded - security violation!
+[work-inmemory.repository] ✅ Marked 1 stale claims
+[work-inmemory.repository] ✅ Atomic claim successful: work-w2b-001 → actor human-actor-b-002
+
+✅ Step 5: Human B successfully reclaimed work (I6: B authority verified)
+   New actor: human-actor-b-002 (Human B with edit authority)
+   New active execution ID: session-b-002
+   Previous execution IDs: ["session-a-001","session-ai-001"]
+[safeRecordEvidence] ✅ Evidence recorded locally with checksum: authority.transferred for work work-w2b-001
+
+✅ I1 PASSED: Work ID preserved (work-w2b-001 unchanged through all transitions)
+✅ I2 PASSED: Authority changed without Work replacement
+✅ I7 PASSED: Execution lineage maintained (all sessions preserved)
+
+✅ I8/I9 PASSED: All authority transitions have complete evidence
+   Total evidence entries: 9
+
+=====================================
+❌ W2-B PRESSURE TEST: FAILED
+   Errors: [
+  'AI successfully performed unauthorized mutation - security violation!',
+  'Unauthorized mutation was not rejected - invariant I5/I10 failed',
+  'Unauthorized mutation was not rejected - invariant I5/I10 failed',
+  'I8 FAILED: Expected 3 authority events, found 0'
+]
+=====================================
+

@@ -4,8 +4,13 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ProductPreviewShell } from "../product-preview-shell/ProductPreviewShell";
 import { useWorkspaceSession } from "@repo/presentation-hooks";
 import type { ProductPreviewBinding } from "@repo/presentation-experience";
-// DocumentAggregate/Status types imported from canonical legal document contracts - @ts-nocheck removed (MINIMAL FIX: architecture lock compliance)
-import type { DocumentAggregate, DocumentStatus } from "@capabilities/legal-document/implementation/contracts/document.contracts";
+// FACE-001 COMPLIANT: Use only server-derived WorkFaceProjection, no core aggregates
+import type { WorkFaceProjection, WorkStatus } from "../../../../../capabilities/work-core/contracts/work.contracts";
+
+// DEPRECATED: DocumentAggregate is removed per FACE-CLEAN-001 compliance
+// All presentation layer components now use server-derived WorkFaceProjection instead of domain-specific aggregates
+export type DocumentAggregate = never;
+export type DocumentStatus = WorkStatus;
 
 const LAWYERSHUB_DOC_WORKFLOW = {
   steps: [
@@ -42,18 +47,41 @@ interface DocActivityEntry {
   readonly text: string;
 }
 
-const DOC_STATUS_LABEL: Record<DocumentStatus, string> = {
+// Map canonical WorkStatus to lawyershub document status labels
+const DOC_STATUS_LABEL: Record<WorkStatus, string> = {
   draft: "Draft",
-  review: "In Review",
-  signed: "Signed",
-  archived: "Archived",
+  active: "In Review",
+  completed: "Signed",
+  settled: "Archived",
+  // Default mappings for all other WorkStatus values to maintain type safety
+  executing: "In Progress",
+  suspended: "Suspended",
+  cancelled: "Cancelled",
+  observed: "Reviewed",
+  explored: "Analyzed",
+  evaluated: "Evaluated",
+  authorized: "Approved",
+  procured: "Processed",
+  SUBMITTED: "Submitted",
+  APPROVED: "Approved"
 };
 
-const DOC_STATUS_DOT: Record<DocumentStatus, string> = {
+const DOC_STATUS_DOT: Record<WorkStatus, string> = {
   draft: "bg-slate-400",
-  review: "bg-amber-500",
-  signed: "bg-emerald-500",
-  archived: "bg-slate-700",
+  active: "bg-amber-500",
+  completed: "bg-emerald-500",
+  settled: "bg-slate-700",
+  // Default mappings for all other WorkStatus values
+  executing: "bg-blue-500",
+  suspended: "bg-red-500",
+  cancelled: "bg-gray-500",
+  observed: "bg-purple-500",
+  explored: "bg-indigo-500",
+  evaluated: "bg-cyan-500",
+  authorized: "bg-green-500",
+  procured: "bg-teal-500",
+  SUBMITTED: "bg-yellow-500",
+  APPROVED: "bg-green-600"
 };
 
 function fmtDocAt(d: Date): string {
@@ -77,20 +105,22 @@ function fmtDocAt(d: Date): string {
   return `${at.toLocaleDateString()} ${hh}:${mm}`;
 }
 
-function deriveDocSteps(d: DocumentAggregate | null): readonly DocCapabilityStep[] {
+function deriveDocSteps(work: WorkFaceProjection | null): readonly DocCapabilityStep[] {
   const rawStates = LAWYERSHUB_DOC_WORKFLOW.steps.map((s): DocStepState => {
-    if (!d) return s.id === "draft" ? "current" : "pending";
-    switch (d.status) {
+    if (!work) return s.id === "draft" ? "current" : "pending";
+    // Map canonical WorkStatus (from semantic.currentState) to lawyershub document workflow states
+    // FACE-001 COMPLIANT: Use only valid fields from WorkFaceProjection interface
+    switch (work.semantic.currentState) {
       case "draft":
         return s.id === "draft" ? "current" : "pending";
-      case "review":
+      case "active": // Active = in review
         if (s.id === "draft") return "done";
         if (s.id === "review") return "current";
         return "pending";
-      case "signed":
+      case "completed": // Completed = signed
         if (s.id === "draft" || s.id === "review" || s.id === "sign") return "done";
         return "pending";
-      case "archived":
+      case "settled": // Settled = archived
         return "done";
       default:
         return "pending";
@@ -101,8 +131,9 @@ function deriveDocSteps(d: DocumentAggregate | null): readonly DocCapabilityStep
   });
 }
 
-function deriveDocArtifacts(d: DocumentAggregate | null, relatedCaseCount: number): DocArtifactCounts {
-  const signatures = d?.signedAt ? 1 : 0;
+function deriveDocArtifacts(work: WorkFaceProjection | null, relatedCaseCount: number): DocArtifactCounts {
+  // Use server-derived evidenceCount from WorkFaceProjection instead of local signedAt flag
+  const signatures = work?.derivedState.evidenceCount ? 1 : 0;
   return {
     versions: 1,
     signatures,
@@ -110,39 +141,48 @@ function deriveDocArtifacts(d: DocumentAggregate | null, relatedCaseCount: numbe
   };
 }
 
-function deriveDocActivity(doc: DocumentAggregate | null): readonly DocActivityEntry[] {
+function deriveDocActivity(work: WorkFaceProjection | null): readonly DocActivityEntry[] {
   const entries: DocActivityEntry[] = [];
-  if (doc) {
+  if (work) {
+    // Derive timestamps from evidence boundary metadata (FACE-001 COMPLIANT: Use only valid WorkFaceProjection fields)
+    const createdAt = work.evidence.evidenceChain.length > 0 
+      ? new Date(work.evidence.evidenceChain[0].timestamp) 
+      : new Date();
+    const lastEvidence = work.evidence.evidenceChain[work.evidence.evidenceChain.length - 1];
+    const updatedAt = lastEvidence ? new Date(lastEvidence.timestamp) : createdAt;
+    
     entries.push({
-      id: `doc-created-${doc.id}`,
-      at: new Date(doc.createdAt),
+      id: `doc-created-${work.workId}`,
+      at: createdAt,
       text: "Document created",
     });
-    if (doc.updatedAt.getTime() !== doc.createdAt.getTime()) {
+    if (updatedAt.getTime() !== createdAt.getTime()) {
       entries.push({
-        id: `doc-updated-${doc.id}`,
-        at: new Date(doc.updatedAt),
+        id: `doc-updated-${work.workId}`,
+        at: updatedAt,
         text: "Document revised",
       });
     }
-    if (doc.status === "review") {
+    if (work.semantic.currentState === "active") {
+      const author = work.identity.ownerIds[0] || "";
       entries.push({
-        id: `doc-review-${doc.id}`,
-        at: new Date(doc.updatedAt),
-        text: `Review requested${doc.author ? ` by ${doc.author}` : ""}`,
+        id: `doc-review-${work.workId}`,
+        at: updatedAt,
+        text: `Review requested${author ? ` by ${author}` : ""}`,
       });
     }
-    if (doc.status === "signed" && doc.signedAt) {
+    if (work.semantic.currentState === "completed" && work.derivedState.evidenceCount > 0) {
+      const signer = lastEvidence?.actorId || "";
       entries.push({
-        id: `doc-signed-${doc.id}`,
-        at: new Date(doc.signedAt),
-        text: `Document signed${doc.author ? ` by ${doc.author}` : ""}`,
+        id: `doc-signed-${work.workId}`,
+        at: updatedAt,
+        text: `Document signed${signer ? ` by ${signer}` : ""}`,
       });
     }
-    if (doc.status === "archived" && doc.archivedAt) {
+    if (work.semantic.currentState === "settled" && lastEvidence) {
       entries.push({
-        id: `doc-archived-${doc.id}`,
-        at: new Date(doc.archivedAt),
+        id: `doc-archived-${work.workId}`,
+        at: new Date(lastEvidence.timestamp),
         text: "Document archived",
       });
     }
@@ -155,7 +195,8 @@ function deriveDocActivity(doc: DocumentAggregate | null): readonly DocActivityE
 export function DocumentDetailPage({ productId, documentId, binding }: DocumentDetailPageProps) {
   void productId;
   const { session, authenticated } = useWorkspaceSession();
-  const [doc, setDoc] = useState<DocumentAggregate | null>(null);
+  // FACE-001 COMPLIANT: Use only server-derived WorkFaceProjection, no domain aggregates
+  const [workProjection, setWorkProjection] = useState<WorkFaceProjection | null>(null);
   const [relatedCasesCount, setRelatedCasesCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -164,20 +205,23 @@ export function DocumentDetailPage({ productId, documentId, binding }: DocumentD
     setLoading(true);
     setError(null);
     try {
-      const docResp = await fetch("/api/capabilities/lawyershub/document.getById", {
+      // Fetch server-derived WorkFaceProjection instead of core DocumentAggregate
+      const workResp = await fetch("/api/work/getProjection", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ id: documentId }),
+        body: JSON.stringify({ documentId: documentId }),
       });
-      let docAggregate: DocumentAggregate | null = null;
-      if (docResp.ok) {
-        const docJson = await docResp.json();
-        docAggregate = (docJson.output ?? docJson.record ?? null) as DocumentAggregate | null;
+      let projection: WorkFaceProjection | null = null;
+      if (workResp.ok) {
+        const workJson = await workResp.json();
+        projection = (workJson.output ?? workJson.projection ?? null) as WorkFaceProjection | null;
       }
-      setDoc(docAggregate);
+      setWorkProjection(projection);
 
-      const matterId = docAggregate?.matterId;
-      const workId = docAggregate?.workId;
+      // FACE-001 COMPLIANT: Use only valid WorkFaceProjection fields to find related cases
+      const workId = projection?.workId;
+      const semanticRequirements = projection?.semantic.requirements ?? [];
+      const matterId = semanticRequirements.find(r => r.startsWith("matter:"))?.split(":")[1];
 
       let casesCount = 0;
       if (matterId || workId) {
@@ -211,18 +255,18 @@ export function DocumentDetailPage({ productId, documentId, binding }: DocumentD
     void loadAll();
   }, [loadAll]);
 
-  const steps = useMemo(() => deriveDocSteps(doc), [doc]);
+  const steps = useMemo(() => deriveDocSteps(workProjection), [workProjection]);
   const artifacts = useMemo(
-    () => deriveDocArtifacts(doc, relatedCasesCount),
-    [doc, relatedCasesCount],
+    () => deriveDocArtifacts(workProjection, relatedCasesCount),
+    [workProjection, relatedCasesCount],
   );
-  const activity = useMemo(() => deriveDocActivity(doc), [doc]);
+  const activity = useMemo(() => deriveDocActivity(workProjection), [workProjection]);
 
-  const workIdLabel = doc?.workId ?? documentId.substring(0, 12);
+  const workIdLabel = workProjection?.workId ?? documentId.substring(0, 12);
   const actorLabel = session?.actorLabel ?? "You";
   const people = [
     { label: "You", role: actorLabel, highlight: true },
-    { label: "Author", role: doc?.author ?? "—", highlight: false },
+    { label: "Author", role: workProjection?.identity.actors?.[0]?.name ?? "—", highlight: false },
     { label: "Reviewer", role: "Document Reviewer", highlight: false },
     { label: "Signer", role: authenticated ? "Authorized Signer" : "—", highlight: false },
   ];
@@ -253,26 +297,26 @@ export function DocumentDetailPage({ productId, documentId, binding }: DocumentD
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                    {loading ? "Loading Document…" : doc ? doc.title : "Document not found"}
+                    {loading ? "Loading Document…" : workProjection ? workProjection.presentation.projectionConfig.displayName : "Document not found"}
                   </h1>
                   <div className="font-mono text-xs tracking-wide text-slate-500">
                     D-{workIdLabel}
                   </div>
                 </div>
-                {doc ? (
+                {workProjection ? (
                   <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5">
                     <span
-                      className={`h-2.5 w-2.5 rounded-full ${DOC_STATUS_DOT[doc.status]}`}
+                      className={`h-2.5 w-2.5 rounded-full ${DOC_STATUS_DOT[workProjection.execution.status]}`}
                     />
                     <span className="text-xs font-semibold text-slate-900">
-                      {DOC_STATUS_LABEL[doc.status]}
+                      {DOC_STATUS_LABEL[workProjection.execution.status]}
                     </span>
                   </div>
                 ) : null}
               </div>
-              {doc?.description ? (
+              {workProjection?.description ? (
                 <p className="max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-                  {doc.description}
+                  {workProjection.description}
                 </p>
               ) : null}
             </div>

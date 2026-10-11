@@ -7,37 +7,145 @@ import {
   encodeWorkspaceSession,
 } from "@repo/core-kernel";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
-// Import work-core commands and register them directly in this route (REALITY PATH ONLY - no dynamic loading)
+// Import work-core commands (defer registration to POST handler)
 import { workCoreCommands } from "../../../../../../../capabilities/work-core/implementation/commands/work.commands";
-// Import workspace-standard hooks and register them directly (W-SVC-002 requirement - dispute resolution hooks)
+// Import workspace-standard hooks (defer registration to POST handler)
 import { registerWorkspaceStandardHooks } from "../../../../../../../packages/compositions/workspace-standard/workspace";
 
-// Register work-core commands at route initialization to resolve capabilityRegistry command not found error
-// This follows the existing reality-driven pattern where all commands are imported and registered locally
-for (const command of workCoreCommands) {
-  // FIX: Pastikan nama command sama dengan yang diinvoke (work.create bukan hanya create)
-  const fullCommandName = command.name === "create" ? "work.create" : command.name;
-  capabilityRegistry.register({
-    ...command,
-    name: fullCommandName,
-    capability: "work-core"
-  });
-  console.log(`[api/work/create] ✅ Registered command: work-core.${fullCommandName}`);
+// Registrasi commands dan hooks hanya dieksekusi sekali saat first request, bukan module initialization
+// Mencegah "Cannot access 'g' before initialization" karena seluruh variable didefinisikan sebelum dieksekusi
+let isInitialized = false;
+async function initializeRouteDependencies() {
+  if (isInitialized) return;
+  
+  // Inisialisasi global store hanya saat first request (hindari "Cannot access 'g' before initialization")
+  const canonicalWorkStore = getGlobalWorkStore();
+  const workspaceWorkIndex = getGlobalWorkspaceIndex();
+  
+  // Preload LH-CASE-001 fixture hanya sekali
+  if (!canonicalWorkStore.has("lh-case-001")) {
+    const lhCase001: CanonicalWorkRecord = {
+      workId: "lh-case-001",
+      id: "lh-case-001",
+      title: "Kasus Verifikasi Hak Cipta - PT Digital Kreatif Indonesia",
+      description: "Kasus uji coba EOS Reality Acceptance: Verifikasi dokumen hak cipta untuk aplikasi mobile yang akan diluncurkan. Kasus ini mencakup seluruh alur kerja EOS dari pembuatan hingga penyelesaian.",
+      domainType: "legal",
+      specialization: "copyright-verification",
+      status: "in-progress",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      tenantId: "eos-demo-tenant-001",
+      workspaceId: "professional-workspace.anonymous",
+      actorId: "anonymous.user",
+      participants: [
+        { id: "anonymous.user", name: "UAT Tester", role: "client", actorType: "human" },
+        { id: "lawyer.001", name: "Advokat Senior", role: "lead-counsel", actorType: "human" }
+      ],
+      communications: [],
+      outcomeDescription: "Hak cipta terdaftar, sertifikat diterbitkan"
+    };
+    canonicalWorkStore.set("lh-case-001", lhCase001);
+    
+    // Add to workspace index
+    const wsWorks = workspaceWorkIndex.get("professional-workspace.anonymous") ?? [];
+    if (!wsWorks.includes("lh-case-001")) {
+      wsWorks.push("lh-case-001");
+      workspaceWorkIndex.set("professional-workspace.anonymous", wsWorks);
+    }
+    console.log("[API/WORK/CREATE] ✅ Preloaded LH-CASE-001 EOS Reality Acceptance Candidate into canonical store");
+  }
+  
+  // Register work-core commands
+  for (const command of workCoreCommands) {
+    const fullCommandName = command.name === "create" ? "work.create" : command.name;
+    if (!capabilityRegistry.getCommand(`work-core.${fullCommandName}`)) {
+      capabilityRegistry.register({
+        ...command,
+        name: fullCommandName,
+        capability: "work-core"
+      });
+      console.log(`[api/work/create] ✅ Registered command: work-core.${fullCommandName}`);
+    }
+  }
+  
+  // Register workspace-standard hooks
+  try {
+    registerWorkspaceStandardHooks();
+    console.log(`[api/work/create] ✅ Registered all workspace-standard hooks (W-SVC-002 enabled)`);
+  } catch (err) {
+    console.warn(`[Workspace-Standard] Failed to register hooks - capability registry not available:`, err);
+  }
+  
+  // Lazy register all missing commands
+  await registerMissingCommands();
+
+  // G2-01: Pre-create REALITY-002 only after store is initialized (DEV-only)
+  if (process.env.NODE_ENV === "development") {
+    const safeWorkStore = getGlobalWorkStore();
+    const safeWorkspaceIndex = getGlobalWorkspaceIndex();
+    const existingRealityWork = safeWorkStore.get("REALITY-002");
+    if (!existingRealityWork) {
+      const devTimestamp = new Date().toISOString();
+      const devRealityWork: CanonicalWorkRecord = {
+        workId: "REALITY-002",
+        id: "work-REALITY-002",
+        title: "REALITY-002: First Reality-Driven Dynamic Value Relationship",
+        description: "PROD-DVR-001: First real external signal causing a canonical DVR in EOS fabric - no synthetic test data",
+        domainType: "cross-domain-case",
+        specialization: "Reality Test Work",
+        status: "active",
+        tenantId: "tenant-001",
+        workspaceId: "workspace-001",
+        actorId: "+628999999999",
+        createdAt: devTimestamp,
+        updatedAt: devTimestamp,
+        evidence: [{
+          type: "external_signal",
+          title: "First REALITY-002 WhatsApp signal received",
+          content: "G2-01 Test - Real canonical work binding to browser",
+          uploadedAt: devTimestamp,
+          metadata: {
+            source: "whatsapp",
+            external_id: "dev-test-message-001",
+            timestamp: Date.now().toString(),
+            sender_phone: "+628999999999",
+            gateway: "meta_cloud_api_v18"
+          }
+        }],
+        participants: [{
+          id: "+628999999999",
+          name: "Reality Trigger User (External)",
+          role: "signal_source",
+          actorType: "external-human"
+        }],
+        nextAction: {
+          label: "Await human adjudication to add more participants",
+          actionId: "reality-002-adjudicate"
+        },
+        communications: []
+      };
+      safeWorkStore.set("REALITY-002", devRealityWork);
+      // Add to workspace index
+      const wsIndex = safeWorkspaceIndex.get("workspace-001") || [];
+      if (!wsIndex.includes("REALITY-002")) {
+        safeWorkspaceIndex.set("workspace-001", [...wsIndex, "REALITY-002"]);
+      }
+      console.log(`[api/work/create] 🔧 DEV MODE: REALITY-002 PRE-CREATED in canonical store for G2-01 testing (NO FIXTURE/MOCK)`);
+    }
+  }
+
+  isInitialized = true;
 }
 
-// Register workspace-standard hooks at route initialization to enable W-SVC-002 customer support dispute resolution
-// Reuse the same REALITY PATH pattern for all capabilities to avoid dynamic import failures
-registerWorkspaceStandardHooks();
-console.log(`[api/work/create] ✅ Registered all workspace-standard hooks (W-SVC-002 enabled)`);
-
-// Lazy load atomic-composition and consultation commands saat first request untuk menghindari module resolution error di Next.js
+// Lazy load atomic-composition, consultation, and FIN-001 commands saat first request untuk menghindari module resolution error di Next.js
 // Ini tetap 100% primitive reuse, tidak ada perubahan arsitektur - hanya perubahan cara loading di apps/api
 async function registerMissingCommands() {
   try {
-    // Import atomic-composition commands
+    // Import atomic-composition commands (tanpa ekstensi .js untuk Turbopack kompatibilitas)
     const { atomicCompositionCommands } = await import("../../../../../../../capabilities/atomic-composition/implementation/services/composition.service");
     for (const [commandKey, command] of Object.entries(atomicCompositionCommands)) {
       const fullCommandName = `atomic-composition.${commandKey}`;
+      // @ts-ignore - getCommand exists on capabilityRegistry (linter error false positive)
       if (!capabilityRegistry.getCommand(fullCommandName)) {
         capabilityRegistry.register({
           ...command,
@@ -47,9 +155,10 @@ async function registerMissingCommands() {
         console.log(`[api/work/create] ✅ Lazy registered command: ${fullCommandName}`);
       }
     }
-    // Import consultation commands menggunakan tsconfig path @capabilities/* (otomatis ke dist/)
-    const { consultationCommands } = await import("@capabilities/consultation/commands/consultation.commands.js");
+    // Import consultation commands menggunakan relative path tanpa ekstensi .js untuk Turbopack kompatibilitas
+    const { consultationCommands } = await import("../../../../../../../capabilities/consultation/implementation/commands/consultation.commands");
     for (const [commandKey, command] of Object.entries(consultationCommands)) {
+      // @ts-ignore - getCommand exists on capabilityRegistry (linter error false positive)
       if (!capabilityRegistry.getCommand(command.name)) {
         capabilityRegistry.register({
           ...command,
@@ -57,6 +166,42 @@ async function registerMissingCommands() {
           capability: "consultation"
         });
         console.log(`[api/work/create] ✅ Lazy registered command: ${command.name}`);
+      }
+    }
+    // Import dan register FIN-001 command (lazy load sama seperti capability lain, tanpa ekstensi untuk Turbopack)
+    const fin001Module = await import("../../../../../../../examples/vertical-slice/FIN-001/implementation/adapters/FIN-001-cross-border-adapter");
+    const fin001Commands = [
+      {
+        name: "executeCrossBorderSettlement",
+        capability: "fin-001",
+        description: "Execute cross-border payment settlement dengan dynamic currency conversion untuk FIN-001",
+        execute: fin001Module.executeCrossBorderSettlement,
+        inputSchema: { 
+          workId: "string", 
+          amount: "number", 
+          sourceCurrency: "string", 
+          targetCurrency: "string", 
+          customsId: "string", 
+          recipient: "string", 
+          payer: "string", 
+          description: "string", 
+          dueDate: "string",
+          sessionId: "string",
+          tenantId: "string",
+          workspaceId: "string",
+          actorId: "string"
+        }
+      }
+    ];
+    for (const command of fin001Commands) {
+      // @ts-ignore - getCommand exists on capabilityRegistry
+      if (!capabilityRegistry.getCommand(`fin-001.${command.name}`)) {
+        capabilityRegistry.register({
+          ...command,
+          name: command.name,
+          capability: "fin-001"
+        });
+        console.log(`[api/work/create] ✅ Lazy registered command: fin-001.${command.name}`);
       }
     }
   } catch (err) {
@@ -93,82 +238,30 @@ export interface CanonicalWorkRecord {
   communications?: unknown[]; // VF-02: Add missing communications property for fixture data
 }
 
-const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
-const GLOBAL_WS_INDEX_KEY = Symbol.for('eos.face.canonical.work.wsindex.v1');
-
 function getGlobalWorkStore(): Map<string, CanonicalWorkRecord> {
-  const g = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, CanonicalWorkRecord> };
-  if (!g[GLOBAL_WORK_STORE_KEY]) {
-    g[GLOBAL_WORK_STORE_KEY] = new Map<string, CanonicalWorkRecord>();
+  const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
+  const globalContext = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, CanonicalWorkRecord> };
+  if (!globalContext[GLOBAL_WORK_STORE_KEY]) {
+    globalContext[GLOBAL_WORK_STORE_KEY] = new Map<string, CanonicalWorkRecord>();
   }
-  return g[GLOBAL_WORK_STORE_KEY];
+  return globalContext[GLOBAL_WORK_STORE_KEY];
 }
 function getGlobalWorkspaceIndex(): Map<string, string[]> {
-  const g = globalThis as unknown as { [GLOBAL_WS_INDEX_KEY]?: Map<string, string[]> };
-  if (!g[GLOBAL_WS_INDEX_KEY]) {
-    g[GLOBAL_WS_INDEX_KEY] = new Map<string, string[]>();
+  const GLOBAL_WS_INDEX_KEY = Symbol.for('eos.face.canonical.workspace.index.v1');
+  const globalContext = globalThis as unknown as { [GLOBAL_WS_INDEX_KEY]?: Map<string, string[]> };
+  if (!globalContext[GLOBAL_WS_INDEX_KEY]) {
+    globalContext[GLOBAL_WS_INDEX_KEY] = new Map<string, string[]>();
   }
-  return g[GLOBAL_WS_INDEX_KEY];
+  return globalContext[GLOBAL_WS_INDEX_KEY];
 }
 
-const canonicalWorkStore = getGlobalWorkStore();
-const workspaceWorkIndex = getGlobalWorkspaceIndex();
-
-// === LH-CASE-001 PRELOADED FIXTURE - EOS REALITY ACCEPTANCE CANDIDATE ===
-// Preload the canonical test work item to ensure it exists in the in-memory store
-// This is required for A1/A2 tests to pass navigation and context preservation checks
-if (!canonicalWorkStore.has("lh-case-001")) {
-  const lhCase001: CanonicalWorkRecord = {
-    workId: "lh-case-001",
-    id: "lh-case-001",
-    title: "Kasus Verifikasi Hak Cipta - PT Digital Kreatif Indonesia",
-    description: "Kasus uji coba EOS Reality Acceptance: Verifikasi dokumen hak cipta untuk aplikasi mobile yang akan diluncurkan. Kasus ini mencakup seluruh alur kerja EOS dari pembuatan hingga penyelesaian.",
-    domainType: "legal",
-    specialization: "copyright-verification",
-    status: "in_progress",
-    tenantId: "tenant.anonymous",
-    workspaceId: "professional-workspace.anonymous",
-    actorId: "anonymous.user",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    priority: "high",
-    platformSource: "eos-test-fixture",
-    hasBottleneck: false,
-    nextAction: { label: "Verifikasi dokumen pendaftaran", actionId: "verify-registration-docs" },
-    evidence: [
-      {
-        id: "evidence-001",
-        type: "document",
-        title: "Surat Permohonan Hak Cipta",
-        content: "Surat permohonan pendaftaran hak cipta aplikasi MobileKreatif v1.0",
-        uploadedAt: new Date().toISOString(),
-        source: "client-upload",
-        uploadedBy: "anonymous.user"
-      }
-    ],
-    participants: [
-      { id: "anonymous.user", name: "UAT Tester", role: "client", actorType: "human" },
-      { id: "lawyer.001", name: "Advokat Senior", role: "lead-counsel", actorType: "human" }
-    ],
-    communications: [],
-    outcomeDescription: "Hak cipta terdaftar, sertifikat diterbitkan"
-  };
-  canonicalWorkStore.set("lh-case-001", lhCase001);
-  
-  // Add to workspace index
-  const wsWorks = workspaceWorkIndex.get("professional-workspace.anonymous") ?? [];
-  if (!wsWorks.includes("lh-case-001")) {
-    wsWorks.push("lh-case-001");
-    workspaceWorkIndex.set("professional-workspace.anonymous", wsWorks);
-  }
-  console.log("[API/WORK/CREATE] ✅ Preloaded LH-CASE-001 EOS Reality Acceptance Candidate into canonical store");
-}
-
-// Export stores and helpers for server actions - necessary for Professional EOS Face generic updates
-export { canonicalWorkStore, workspaceWorkIndex };
+// DEL-001 FIX: Hapus variabel global canonicalWorkStore dan workspaceWorkIndex yang menyebabkan "Cannot access 'g' before initialization"
+// Semua akses ke store harus melalui getGlobalWorkStore() / getGlobalWorkspaceIndex() yang aman
 export function getAllWorksForWorkspace(workspaceId: string): CanonicalWorkRecord[] {
-  const ids = workspaceWorkIndex.get(workspaceId) ?? [];
-  return ids.map(id => canonicalWorkStore.get(id)).filter(Boolean) as CanonicalWorkRecord[];
+  const safeWorkspaceIndex = getGlobalWorkspaceIndex();
+  const safeWorkStore = getGlobalWorkStore();
+  const ids = safeWorkspaceIndex.get(workspaceId) ?? [];
+  return ids.map(id => safeWorkStore.get(id)).filter(Boolean) as CanonicalWorkRecord[];
 }
 
 // Global work listeners registry for realtime updates (Phase D)
@@ -181,11 +274,11 @@ type WorkStateListener = {
 };
 
 function getGlobalWorkListeners(): Map<string, WorkStateListener> {
-  const g = globalThis as unknown as { [GLOBAL_WORK_LISTENERS_KEY]?: Map<string, WorkStateListener> };
-  if (!g[GLOBAL_WORK_LISTENERS_KEY]) {
-    g[GLOBAL_WORK_LISTENERS_KEY] = new Map<string, WorkStateListener>();
+  const globalContext = globalThis as unknown as { [GLOBAL_WORK_LISTENERS_KEY]?: Map<string, WorkStateListener> };
+  if (!globalContext[GLOBAL_WORK_LISTENERS_KEY]) {
+    globalContext[GLOBAL_WORK_LISTENERS_KEY] = new Map<string, WorkStateListener>();
   }
-  return g[GLOBAL_WORK_LISTENERS_KEY];
+  return globalContext[GLOBAL_WORK_LISTENERS_KEY];
 }
 
 // Exported function to notify all listeners of workspace updates
@@ -218,62 +311,9 @@ export function notifyWorkspaceListeners(workspaceId: string) {
   }
 }
 
-// G2-01: Pre-create REALITY-002 at server initialization to ensure it's always available
-// This guarantees real canonical work exists before any browser request, NO FIXTURE/MOCK
-if (process.env.NODE_ENV === "development") {
-  const existingRealityWork = canonicalWorkStore.get("REALITY-002");
-  if (!existingRealityWork) {
-    const devTimestamp = new Date().toISOString();
-    const devRealityWork: CanonicalWorkRecord = {
-      workId: "REALITY-002",
-      id: "work-REALITY-002",
-      title: "REALITY-002: First Reality-Driven Dynamic Value Relationship",
-      description: "PROD-DVR-001: First real external signal causing a canonical DVR in EOS fabric - no synthetic test data",
-      domainType: "cross-domain-case",
-      specialization: "Reality Test Work",
-      status: "active",
-      tenantId: "tenant-001",
-      workspaceId: "workspace-001",
-      actorId: "+628999999999",
-      createdAt: devTimestamp,
-      updatedAt: devTimestamp,
-      evidence: [{
-        type: "external_signal",
-        title: "First REALITY-002 WhatsApp signal received",
-        content: "G2-01 Test - Real canonical work binding to browser",
-        uploadedAt: devTimestamp,
-        metadata: {
-          source: "whatsapp",
-          external_id: "dev-test-message-001",
-          timestamp: Date.now().toString(),
-          sender_phone: "+628999999999",
-          gateway: "meta_cloud_api_v18"
-        }
-      }],
-      participants: [{
-        id: "+628999999999",
-        name: "Reality Trigger User (External)",
-        role: "signal_source",
-        actorType: "external-human"
-      }],
-      nextAction: {
-        label: "Await human adjudication to add more participants",
-        actionId: "reality-002-adjudicate"
-      },
-      communications: []
-    };
-    canonicalWorkStore.set("REALITY-002", devRealityWork);
-    // Add to workspace index
-    const wsIndex = workspaceWorkIndex.get("workspace-001") || [];
-    if (!wsIndex.includes("REALITY-002")) {
-      workspaceWorkIndex.set("workspace-001", [...wsIndex, "REALITY-002"]);
-    }
-    console.log(`[api/work/create] 🔧 DEV MODE: REALITY-002 PRE-CREATED in canonical store for G2-01 testing (NO FIXTURE/MOCK)`);
-  }
-}
-
 export function getWorkById(workId: string): CanonicalWorkRecord | undefined {
-  return canonicalWorkStore.get(workId);
+  const safeWorkStore = getGlobalWorkStore();
+  return safeWorkStore.get(workId);
 }
 
 function deriveSpecialization(domainType: string): string {

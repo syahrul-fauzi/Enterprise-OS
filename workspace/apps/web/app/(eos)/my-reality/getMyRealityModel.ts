@@ -1,12 +1,16 @@
 // Import CanonicalWorkRecord type from canonical API to maintain type safety
 import type { CanonicalWorkRecord } from "@/app/api/work/create/route";
 import { getAllWorksForWorkspace } from "@/app/api/work/create/route";
+// Import workflowRegistry to retrieve workflow definitions for FACE routing
+import { workflowRegistry } from "@repo/core-kernel/registry/capability-command-registry";
+import { detectCurrentSurface, isSurfaceSupported } from "@repo/presentation-shared";
 // Define local interface since SessionContext is not exported from core-kernel (maintains core freeze)
 export interface SessionContext {
   actorId: string;
   actorLabel?: string;
   workspaceId: string;
   tenantId: string;
+  productId?: string; // FACE-001: Add productId to session for product-specific filtering
   userCapabilities?: string[];
 }
 // Define minimal local type to resolve @repo/presentation-types missing import
@@ -91,35 +95,106 @@ export async function buildMyRealityModel(
       canonicalWorks = [];
     }
   }
+  // FACE-001: Filter works to only those that belong to current product/surface using workflow presentationConfig
   let userWorks = canonicalWorks.filter(
-    (w: any) => w.actorId === session.actorId || (session.actorId === "anonymous.user" && w.workId === "lh-case-001")
+    (w: CanonicalWorkRecord) => {
+      // Basic actor filter first
+      const actorMatch = w.actorId === session.actorId || (session.actorId === "anonymous.user" && w.workId === "lh-case-001");
+      if (!actorMatch) return false;
+      
+      // If no productId in session, allow all works (fallback to previous behavior)
+      if (!session.productId) return true;
+      
+      // Get workflow definition for this work to check presentationConfig
+      const workflow = workflowRegistry.get(w.workflowId);
+      if (!workflow) {
+        console.warn(`[buildMyRealityModel] Workflow not found for work ${w.workId}, workflowId: ${w.workflowId}`);
+        return false; // Hide works with unknown workflows to prevent cross-surface leaks
+      }
+      
+      // Verify workflow is associated with current product (strict product boundary enforcement)
+      const productMatch = workflow.productId === session.productId;
+      // Verify current surface is in supportedFaces (FACE projection boundary enforcement)
+            const currentSurface = detectCurrentSurface(); // Use standardized surface detection
+            const faceSupported = isSurfaceSupported(workflow.presentationBoundary?.supportedFaces, currentSurface);
+            
+            console.log(`[buildMyRealityModel] Work ${w.workId} (workflow: ${w.workflowId}) productMatch: ${productMatch}, faceSupported: ${faceSupported} (product: ${session.productId}, surface: ${currentSurface})`);
+            
+            return productMatch && faceSupported;
+    }
   );
-  console.log(`[buildMyRealityModel] Filtered to ${userWorks.length} user works for actor ${session.actorId}:`, userWorks.map(w => w.workId));
+  console.log(`[buildMyRealityModel] Filtered to ${userWorks.length} user works for actor ${session.actorId}, product ${session.productId}:`, userWorks.map(w => w.workId));
   // Fallback to mock seed data if no works found, for all pages to load without dependencies
   if (userWorks.length === 0) {
-    userWorks = [
-      {
-        workId: `lh-case-001`,
-        id: `lh-case-001`,
-        title: "PT Pendirian - PT Kopi Nusantara Mandiri",
-        description: "LawyersHub Golden Slice: Klien membutuhkan pendirian PT untuk usaha kopi retail di Jakarta. Memerlukan proses legal lengkap dari konsultasi hingga sertifikat NIB.",
-        status: "formed",
-        actorId: session.actorId,
-        workspaceId: session.workspaceId,
-        tenantId: session.tenantId,
-        platformSource: "eos-core",
-        domainType: "legal-case",
-        specialization: "company_formation",
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-        updatedAt: new Date().toISOString(),
-        platformMetadata: {},
-        evidence: [],
-        hasBottleneck: false,
-        nextAction: { label: "Verifikasi dokumen identitas pendiri", actionId: `/work/lh-case-001` }
-      },
-      {
+    userWorks = [];
+    // Hanya tambahkan fallback work jika productId dan surface cocok dengan workflow-nya
+    // Ini memastikan fallback tidak melewati boundary filtering FACE-001
+    const lhWorkflow = workflowRegistry.get("lh-lgl-001-legal-consultation");
+    const ilcWorkflow = workflowRegistry.get("ilc-ins-001-investment-workflow");
+    const currentSurface = detectCurrentSurface(); // Use standardized surface detection
+    
+    // Tambahkan LawyersHub fallback hanya jika productId = lawyershub
+    if (lhWorkflow && session.productId === "lawyershub") {
+      const lhProductMatch = lhWorkflow.productId === session.productId;
+      const lhFaceSupported = isSurfaceSupported(lhWorkflow.presentationBoundary?.supportedFaces, currentSurface);
+      if (lhProductMatch && lhFaceSupported) {
+        userWorks.push({
+          workId: `lh-case-001`,
+          id: `lh-case-001`,
+          workflowId: "lh-lgl-001-legal-consultation",
+          title: "PT Pendirian - PT Kopi Nusantara Mandiri",
+          description: "LawyersHub Golden Slice: Klien membutuhkan pendirian PT untuk usaha kopi retail di Jakarta. Memerlukan proses legal lengkap dari konsultasi hingga sertifikat NIB.",
+          status: "formed",
+          actorId: session.actorId,
+          workspaceId: session.workspaceId,
+          tenantId: session.tenantId,
+          platformSource: "eos-core",
+          domainType: "legal-case",
+          specialization: "company_formation",
+          createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+          updatedAt: new Date().toISOString(),
+          platformMetadata: {},
+          evidence: [],
+          hasBottleneck: false,
+          nextAction: { label: "Verifikasi dokumen identitas pendiri", actionId: `/work/lh-case-001` }
+        });
+      }
+    }
+    
+    // Tambahkan ILC fallback hanya jika productId = ilc
+    if (ilcWorkflow && session.productId === "ilc") {
+      const ilcProductMatch = ilcWorkflow.productId === session.productId;
+      const ilcFaceSupported = isSurfaceSupported(ilcWorkflow.presentationBoundary?.supportedFaces, currentSurface);
+      if (ilcProductMatch && ilcFaceSupported) {
+        userWorks.push({
+          workId: `ilc-inv-001`,
+          id: `ilc-inv-001`,
+          workflowId: "ilc-ins-001-investment-workflow",
+          title: "Investasi Startup - PT Tech Startup Indonesia",
+          description: "ILC Golden Slice: Klien membutuhkan analisis investasi untuk startup teknologi di Jakarta. Memerlukan proses due diligence hingga closing.",
+          status: "in_progress",
+          actorId: session.actorId,
+          workspaceId: session.workspaceId,
+          tenantId: session.tenantId,
+          platformSource: "eos-core",
+          domainType: "investment-case",
+          specialization: "venture_capital",
+          createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
+          updatedAt: new Date().toISOString(),
+          platformMetadata: {},
+          evidence: [],
+          hasBottleneck: false,
+          nextAction: { label: "Review laporan due diligence", actionId: `/work/ilc-inv-001` }
+        });
+      }
+    }
+    
+    // Fallback global jika tidak ada product-specific yang cocok (untuk backward compatibility)
+    if (userWorks.length === 0 && !session.productId) {
+      userWorks.push({
         workId: `legal-case-001`,
         id: `legal-case-001`,
+        workflowId: "lh-lgl-001-legal-consultation",
         title: "Verifikasi Dokumen Legal",
         description: "Dokumen perjanjian kerjasama perlu diverifikasi sebelum dapat dilanjutkan ke tahap berikutnya.",
         status: "blocked",
@@ -135,8 +210,8 @@ export async function buildMyRealityModel(
         evidence: [],
         hasBottleneck: true,
         nextAction: { label: "Periksa dokumen dan verifikasi", actionId: `/work/legal-case-001` }
-      }
-    ];
+      });
+    }
   }
   // Build model yang sesuai dengan OPERATING ORIENTATION yang diinstruksikan
   return {

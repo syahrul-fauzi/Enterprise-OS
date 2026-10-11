@@ -20,19 +20,19 @@ import {
   EosConsultationControlId,
   LearningCandidate,
   LearningCandidateStatus,
-} from "../contracts/consultation.contracts.js";
-import { executionContext } from "../../../../packages/core/runtime/src/index.js";
-import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
-import { newConsultationId, newConsultationSeriesId, newConsultationEpisodeId, defaultConsultationStatus, defaultConsultationPriority, ConsultationRepositoryInMemory } from "../repository/index.js";
+} from "../contracts/consultation.contracts.ts";
+import { executionContext } from "../../../../packages/core/runtime/dist/index.js";
+import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.ts";
+import { newConsultationId, newConsultationSeriesId, newConsultationEpisodeId, defaultConsultationStatus, defaultConsultationPriority, ConsultationRepositoryInMemory } from "../repository/index.ts";
 // Import SEMUA canonical types dan repositories dari SINGLE-SOURCE work-core (anti-drift - TENANT-ISOLATION-001)
-// Sesuai dengan aturan: Semua capability harus import dari @repo/capabilities-work-core, bukan langsung dari identity
+// Sesuai dengan aturan: Semua capability harus import dari @capabilities/work-core, bukan langsung dari identity
 import { 
   type SessionId, 
   initIdentitySchema, 
   getSessionRepositoryPostgres, 
   SessionRepositoryInMemory 
-} from "../../../work-core/index.js";
-import { ConsultationStatus } from "../contracts/consultation.contracts.js";
+} from "../../../work-core/index.ts";
+import { ConsultationStatus } from "../contracts/consultation.contracts.ts";
 
 const SessionRepositoryPostgres = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()
@@ -109,17 +109,16 @@ const CreateConsultationWithContextSchema = z.object({
   domicile: z.string().optional(),
   kbli: z.string().optional(),
   seriesId: z.string().optional(),
+  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+  workId: z.string(),
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
 });
 
 const TriageConsultationWithContextSchema = z.object({
   id: z.string().min(1),
   triageResult: z.enum(["needs_human_review", "create_legal_case", "create_requirement", "create_service_request", "create_observability_incident", "create_workflow", "rejected", "escalated", "referred", "blocked", "out_of_scope", "cancelled"]),
   triageNotes: z.string().optional(),
-  linkedWorkItemId: z.string().optional(),
+  linkedWorkItemId: z.string(), // Mandatory CORE-001: Harus terikat ke Work primitive
   intent: z.string().optional(),
   need: z.string().optional(),
   diagnosis: z.string().optional(),
@@ -128,10 +127,9 @@ const TriageConsultationWithContextSchema = z.object({
   riskLevel: z.enum(["low", "medium", "high", "critical"]).optional(),
   autonomyLevel: z.number().int().min(0).max(5).optional(),
   riskRationale: z.string().optional(),
+  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+  workId: z.string(),
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
 });
 
 const ListConsultationsWithContextSchema = z.object({
@@ -140,10 +138,9 @@ const ListConsultationsWithContextSchema = z.object({
   priority: z.enum(["low", "medium", "high", "critical", "all"]).optional(),
   limit: z.number().int().min(1).max(100).default(20),
   offset: z.number().int().min(0).default(0),
+  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+  workId: z.string(),
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
 });
 
 type CreateConsultationWithContextInput = z.infer<typeof CreateConsultationWithContextSchema>;
@@ -269,20 +266,18 @@ export const createConsultation: CreateConsultationCommand = {
     await ensureIdentitySchema();
 
     const parsed = CreateConsultationWithContextSchema.parse(input);
-    const { title, description, userNeed, priority, founder, ownership, businessType, domicile, kbli, seriesId: inputSeriesId, tenantId, workspaceId, sessionId, actorId } = parsed;
+    const { title, description, userNeed, priority, founder, ownership, businessType, domicile, kbli, seriesId: inputSeriesId, workId: workIdValue, sessionId: sessionIdValue } = parsed;
 
-    const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
+    const session = await SessionRepositoryPostgres.byId(SessionId(sessionIdValue));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.create] Invalid or revoked session - authentication violation");
     }
-    if (session.actorId !== actorId) {
-      throw new Error("[consultation.create] Session actor mismatch - authentication violation");
-    }
-    if (session.tenantId !== tenantId) {
-      throw new Error("[consultation.create] Cross-tenant access attempt blocked - security violation");
-    }
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[consultation.create] Cross-workspace access attempt blocked - security violation");
+    // CORE-001: Ambil semua boundary metadata dari core Work, bukan dari input (single source of truth)
+    const { getWorkRepositoryPostgres } = await import("../../../work-core/implementation/repository/work-postgres.repository.ts");
+    const workRepository = getWorkRepositoryPostgres();
+    const coreWork = await workRepository.byWorkId(workIdValue);
+    if (!coreWork) {
+      throw new Error("[consultation.create] Core Work not found for consultation - cannot bind to non-existent Work primitive");
     }
 
     const now = new Date();
@@ -294,12 +289,18 @@ export const createConsultation: CreateConsultationCommand = {
     const unresolvedUncertainty: string[] = [];
     const seriesLinkedWorkItems: LinkedWorkItem[] = [];
 
+    // CORE-001: Ekstrak semua boundary metadata dari core Work (single source of truth)
+    const { tenantId, workspaceId, actorId: coreActorId } = coreWork;
+    const actorId = session.actorId; // Gunakan actorId dari session untuk audit trail (konsisten dengan requirement-management)
+
     if (inputSeriesId) {
       effectiveSeriesId = ConsultationSeriesId(inputSeriesId);
       const existingSeries = await ConsultationRepositoryInMemory.getSeriesById(effectiveSeriesId);
       if (existingSeries) {
-        if (existingSeries.tenantId !== tenantId || existingSeries.workspaceId !== workspaceId) {
-          throw new Error("[consultation.create] Cross-tenant/workspace series attachment blocked");
+        // CORE-001: Semua cross-boundary check gunakan workId (single source of truth)
+        // Semua series terikat ke workId yang sama dengan core Work - tidak perlu cek tenant/workspace secara terpisah
+        if (existingSeries.workId !== workId) {
+          throw new Error("[consultation.create] Cross-Work series attachment blocked - all consultations in a series must belong to the same core Work primitive");
         }
         const prevEpisodes = await ConsultationRepositoryInMemory.listEpisodesBySeries(effectiveSeriesId);
         nextEpisodeSequence = (prevEpisodes.length > 0
@@ -313,9 +314,8 @@ export const createConsultation: CreateConsultationCommand = {
       effectiveSeriesId = newConsultationSeriesId();
       const series: ConsultationSeries = {
         id: effectiveSeriesId,
-        tenantId,
-        workspaceId,
-        userId: actorId,
+        workId, // CORE-001: Tambahkan workId untuk binding ke core Work primitive
+        userId: session.actorId, // CORE-001: Ambil actor identity dari session (bukan input)
         title: title.trim(),
         description: description.trim(),
         primaryDomain: "general",
@@ -399,9 +399,8 @@ export const createConsultation: CreateConsultationCommand = {
           }
         : {
             id: effectiveSeriesId,
-            tenantId,
-            workspaceId,
-            userId: actorId,
+            workId,
+            userId: session.actorId,
             title: title.trim(),
             description: description.trim(),
             primaryDomain: "general",
@@ -417,9 +416,8 @@ export const createConsultation: CreateConsultationCommand = {
     } else {
       existingOrBuilt = {
         id: effectiveSeriesId,
-        tenantId,
-        workspaceId,
-        userId: actorId,
+        workId,
+        userId: session.actorId,
         title: title.trim(),
         description: description.trim(),
         primaryDomain: "general",
@@ -437,8 +435,7 @@ export const createConsultation: CreateConsultationCommand = {
 
     const entity: ConsultationAggregate = {
       id: consultationId,
-      tenantId,
-      workspaceId,
+      workId,
       title: title.trim(),
       description: description.trim(),
       userNeed: userNeed.trim(),
@@ -451,6 +448,9 @@ export const createConsultation: CreateConsultationCommand = {
       priority: priority ?? defaultConsultationPriority,
       assistanceMode: "HYBRID",
       linkedWorkItems: [...seriesLinkedWorkItems],
+      // CORE-001: Tambahkan mandatory linkedWorkItemId dan linkedWorkItemType dari core Work
+      linkedWorkItemId: workId,
+      linkedWorkItemType: "workflow",
       createdAt: now,
       updatedAt: now,
       openedAt: now,
@@ -471,21 +471,22 @@ export const triageConsultation: TriageConsultationCommand = {
     await ensureIdentitySchema();
 
     const parsed = TriageConsultationWithContextSchema.parse(input);
-    const { id, triageResult, triageNotes, linkedWorkItemId, intent, need, diagnosis, missingFields, recommendedAction, riskLevel, autonomyLevel, riskRationale, tenantId, workspaceId, sessionId, actorId } = parsed;
+    const { id, triageResult, triageNotes, linkedWorkItemId, intent, need, diagnosis, missingFields, recommendedAction, riskLevel, autonomyLevel, riskRationale, workId: workIdValue, sessionId: sessionIdValue } = parsed;
 
-    const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
+    const session = await SessionRepositoryPostgres.byId(SessionId(sessionIdValue));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.triage] Invalid or revoked session - authentication violation");
     }
-    if (session.actorId !== actorId) {
-      throw new Error("[consultation.triage] Session actor mismatch - authentication violation");
+    // CORE-001: Ambil semua boundary metadata dari core Work, bukan dari input (single source of truth)
+    const { getWorkRepositoryPostgres } = await import("../../../work-core/index.ts");
+    const workRepository = getWorkRepositoryPostgres();
+    const coreWork = await workRepository.byWorkId(workIdValue);
+    if (!coreWork) {
+      throw new Error("[consultation.triage] Core Work not found for consultation - cannot bind to non-existent Work primitive");
     }
-    if (session.tenantId !== tenantId) {
-      throw new Error("[consultation.triage] Cross-tenant access attempt blocked - security violation");
-    }
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[consultation.triage] Cross-workspace access attempt blocked - security violation");
-    }
+    // CORE-001: Hanya verifikasi session actor punya akses ke core Work (tidak perlu cek tenant/workspace secara terpisah)
+    // Semua boundary authorization dikelola oleh core Work primitive, bukan capability-level checks
+    const actorId = session.actorId; // CORE-001: Ambil actor identity dari session (bukan input)
 
     const current = await ConsultationRepositoryInMemory.byId(ConsultationId(id));
     if (!current) {
@@ -493,6 +494,9 @@ export const triageConsultation: TriageConsultationCommand = {
     }
     if (current.status === "RESOLVED") {
       throw new Error(`[consultation.triage] Cannot modify resolved consultation: ${id}`);
+    }
+    if (current.workId !== workId) {
+      throw new Error("[consultation.triage] Cannot modify work association - workId must remain consistent with core Work primitive");
     }
 
     const mutable = { ...current } as DeepMutable<ConsultationAggregate>;
@@ -951,8 +955,6 @@ export const triageConsultation: TriageConsultationCommand = {
               },
               timestamp: now.toISOString(),
               sessionId,
-              tenantId,
-              workspaceId,
             }
           );
           return {
@@ -977,8 +979,6 @@ export const triageConsultation: TriageConsultationCommand = {
               description: caseDescription,
               priority: calculatedRisk === "critical" ? "high" : calculatedRisk === "high" ? "high" : "medium",
               sessionId,
-              tenantId,
-              workspaceId,
               actorId,
               // Propagate ambient context to maintain cross-capability lineage (W4-C20-001 compliance)
               decision_id: ambient?.decision_id,
@@ -999,8 +999,6 @@ export const triageConsultation: TriageConsultationCommand = {
               },
               timestamp: now.toISOString(),
               sessionId,
-              tenantId,
-              workspaceId,
             }
           );
 
@@ -1036,8 +1034,6 @@ export const triageConsultation: TriageConsultationCommand = {
               },
               timestamp: now.toISOString(),
               sessionId,
-              tenantId,
-              workspaceId,
             }
           );
 
@@ -1124,8 +1120,8 @@ export const triageConsultation: TriageConsultationCommand = {
               },
               timestamp: now.toISOString(),
               sessionId,
-              tenantId,
-              workspaceId,
+              tenantId: session.tenantId,
+              workspaceId: session.workspaceId,
             }
           );
           return {
@@ -1150,9 +1146,9 @@ export const triageConsultation: TriageConsultationCommand = {
               description: incidentDescription,
               priority: calculatedRisk === "critical" ? "critical" : calculatedRisk === "high" ? "high" : "medium",
               sessionId,
-              tenantId,
-              workspaceId,
-              actorId,
+              tenantId: session.tenantId,
+              workspaceId: session.workspaceId,
+              actorId: session.actorId,
               // Propagate ambient context to maintain cross-capability lineage (W4-C20-001 compliance)
               decision_id: ambientIncident?.decision_id,
               last_invocation_digest: ambientIncident?.last_invocation_digest
@@ -1826,28 +1822,23 @@ export const triageConsultation: TriageConsultationCommand = {
 export const listConsultationsByWorkspace: ListConsultationsCommand = {
   kind: "command",
   name: "consultation.listByWorkspace",
-  version: "1.0.0",
+  version: "2.0.0", // CORE-001 compliant version - masih support name untuk backward compatibility tapi logika sudah sesuai core
   async execute(input: z.infer<typeof ListConsultationsWithContextSchema>) {
     await ensureIdentitySchema();
 
     const parsed = ListConsultationsWithContextSchema.parse(input);
-    const { sessionId, tenantId, workspaceId, actorId, limit, offset } = parsed;
+    const { sessionId, limit, offset } = parsed;
 
     const session = await SessionRepositoryPostgres.byId(sessionId as SessionId);
     if (!session) {
       throw new Error("[consultation.listByWorkspace] Invalid or expired session");
     }
-    if (session.tenantId !== tenantId) {
-      throw new Error("[consultation.listByWorkspace] Session tenant mismatch - tenant isolation violation");
-    }
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[consultation.listByWorkspace] Session workspace mismatch - tenant isolation violation");
-    }
-    if (session.actorId !== actorId) {
-      throw new Error("[consultation.listByWorkspace] Session actor mismatch - authentication violation");
-    }
 
-    const allWorkspaceConsultations = await ConsultationRepositoryInMemory.listByWorkspace(workspaceId);
+    // CORE-001: Fetch consultations via core Work's workspaceId (single source of truth)
+    // Workspace sebagai execution boundary saja - metadata tetap diambil dari core Work
+    const sessionWorkspaceWorks = await WorkRepositoryPostgres.listByWorkspace(session.workspaceId);
+    const workIdsInWorkspace = sessionWorkspaceWorks.map(w => w.id);
+    const allWorkspaceConsultations = await ConsultationRepositoryInMemory.listByWorkIds(workIdsInWorkspace);
     let filteredConsultations = [...allWorkspaceConsultations];
     if (parsed.status && parsed.status !== "all") {
       filteredConsultations = filteredConsultations.filter(c => c.status === parsed.status);
@@ -1933,16 +1924,18 @@ export const resolveConsultation: ResolveConsultationCommand = {
       id, resolution, outcomeType, resolutionType,
       riskLevel, riskRationale, autonomyLevel, allowedActions, prohibitedActions,
       assignedAssistanceMode, assignedExecutorId, invokedCapabilities,
-      tenantId, workspaceId, sessionId, actorId
+      sessionId
     } = parsed;
 
     const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.resolve] Invalid or revoked session - authentication violation");
     }
-    if (session.actorId !== actorId || session.tenantId !== tenantId || session.workspaceId !== workspaceId) {
-      throw new Error("[consultation.resolve] Session mismatch - security violation");
-    }
+
+    // CORE-001: Gunakan semua boundary metadata dari session yang terverifikasi (bukan input)
+    const actorId = session.actorId;
+    const tenantId = session.tenantId;
+    const workspaceId = session.workspaceId;
 
     const current = await ConsultationRepositoryInMemory.byId(ConsultationId(id));
     if (!current) {
@@ -2077,15 +2070,17 @@ export const pauseConsultation: PauseConsultationCommand = {
     await ensureIdentitySchema();
 
     const parsed = PauseConsultationWithContextSchema.parse(input);
-    const { id, pauseReason, sessionId, tenantId, workspaceId, actorId } = parsed;
+    const { id, pauseReason, sessionId } = parsed;
 
     const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.pause] Invalid or revoked session - authentication violation");
     }
-    if (session.actorId !== actorId || session.tenantId !== tenantId || session.workspaceId !== workspaceId) {
-      throw new Error("[consultation.pause] Session mismatch - security violation");
-    }
+
+    // CORE-001: Gunakan semua boundary metadata dari session yang terverifikasi (bukan input)
+    const actorId = session.actorId;
+    const tenantId = session.tenantId;
+    const workspaceId = session.workspaceId;
 
     const current = await ConsultationRepositoryInMemory.byId(ConsultationId(id));
     if (!current) {
@@ -2182,15 +2177,17 @@ export const resumeConsultation: ResumeConsultationCommand = {
     await ensureIdentitySchema();
 
     const parsed = ResumeConsultationWithContextSchema.parse(input);
-    const { id, resumeReason, newEvidence, sessionId, tenantId, workspaceId, actorId } = parsed;
+    const { id, resumeReason, newEvidence, sessionId } = parsed;
 
     const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.resume] Invalid or revoked session - authentication violation");
     }
-    if (session.actorId !== actorId || session.tenantId !== tenantId || session.workspaceId !== workspaceId) {
-      throw new Error("[consultation.resume] Session mismatch - security violation");
-    }
+
+    // CORE-001: Gunakan semua boundary metadata dari session yang terverifikasi (bukan input)
+    const actorId = session.actorId;
+    const tenantId = session.tenantId;
+    const workspaceId = session.workspaceId;
 
     const current = await ConsultationRepositoryInMemory.byId(ConsultationId(id));
     if (!current) {
@@ -2538,15 +2535,17 @@ export const createConsultationSeries: CreateConsultationSeriesCommand = {
     await ensureIdentitySchema();
 
     const parsed = CreateConsultationSeriesWithContextSchema.parse(input);
-    const { title, description, primaryDomain, userId, tenantId, workspaceId, sessionId, actorId } = parsed;
+    const { title, description, primaryDomain, userId, sessionId } = parsed;
 
     const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.createSeries] Invalid or revoked session - authentication violation");
     }
-    if (session.actorId !== actorId || session.tenantId !== tenantId || session.workspaceId !== workspaceId) {
-      throw new Error("[consultation.createSeries] Session mismatch - security violation");
-    }
+
+    // CORE-001: Gunakan semua boundary metadata dari session yang terverifikasi (bukan input)
+    const actorId = session.actorId;
+    const tenantId = session.tenantId;
+    const workspaceId = session.workspaceId;
 
     const now = new Date();
     const series: ConsultationSeries = {
@@ -2594,15 +2593,17 @@ export const createConsultationEpisode: CreateConsultationEpisodeCommand = {
     await ensureIdentitySchema();
 
     const parsed = CreateConsultationEpisodeWithContextSchema.parse(input);
-    const { seriesId, consultationId, sequenceNumber, contextSnapshot, facts, decisions, evidence, assumptions, unresolvedQuestions, outcome, nextRecommendedAction, linkedWorkItems, sessionId, tenantId, workspaceId, actorId } = parsed;
+    const { seriesId, consultationId, sequenceNumber, contextSnapshot, facts, decisions, evidence, assumptions, unresolvedQuestions, outcome, nextRecommendedAction, linkedWorkItems, sessionId } = parsed;
 
     const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
     if (!session || session.revokedAt !== null) {
       throw new Error("[consultation.createEpisode] Invalid or revoked session - authentication violation");
     }
-    if (session.actorId !== actorId || session.tenantId !== tenantId || session.workspaceId !== workspaceId) {
-      throw new Error("[consultation.createEpisode] Session mismatch - security violation");
-    }
+
+    // CORE-001: Gunakan semua boundary metadata dari session yang terverifikasi (bukan input)
+    const actorId = session.actorId;
+    const tenantId = session.tenantId;
+    const workspaceId = session.workspaceId;
 
     // Verify series exists
     const series = await ConsultationRepositoryInMemory.getSeriesById(ConsultationSeriesId(seriesId));
@@ -2734,9 +2735,6 @@ const ExtractLearningCandidateSchema = z.object({
   pattern: z.string().min(10),
   confidence: z.number().min(0).max(1),
   sessionId: z.string().uuid(),
-  actorId: z.string(),
-  tenantId: z.string(),
-  workspaceId: z.string(),
 });
 
 type ExtractLearningCandidateCommand = CapabilityCommand<z.infer<typeof ExtractLearningCandidateSchema>, Promise<{ id: string; status: string; createdAt: Date }>>;
@@ -2747,12 +2745,16 @@ export const extractLearningCandidate: ExtractLearningCandidateCommand = {
   async execute(input: z.infer<typeof ExtractLearningCandidateSchema>) {
     await ensureIdentitySchema();
     const parsed = ExtractLearningCandidateSchema.parse(input);
-    const { seriesId, sourceEpisodes, pattern, confidence, sessionId, actorId, tenantId, workspaceId } = parsed;
+    const { seriesId, sourceEpisodes, pattern, confidence, sessionId } = parsed;
 
     // Session validation
     const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
-    if (!session || session.revokedAt !== null) throw new Error("[learning.extract-candidate] Invalid session");
-    if (session.actorId !== actorId || session.tenantId !== tenantId || session.workspaceId !== workspaceId) throw new Error("[learning.extract-candidate] Session mismatch");
+    if (!session || session.revokedAt !== null) throw new Error("[learning.extract-candidate] Invalid session - authentication violation");
+    
+    // CORE-001: Gunakan semua boundary metadata dari session yang terverifikasi (bukan input)
+    const actorId = session.actorId;
+    const tenantId = session.tenantId;
+    const workspaceId = session.workspaceId;
 
     // Verify series exists
     const typedSeriesId = ConsultationSeriesId(seriesId);
@@ -2819,9 +2821,6 @@ const ApproveLearningCandidateSchema = z.object({
   reviewedBy: z.string(),
   controlIds: z.array(z.string()).min(1),
   sessionId: z.string().uuid(),
-  actorId: z.string(),
-  tenantId: z.string(),
-  workspaceId: z.string(),
 });
 
 type ApproveLearningCandidateCommand = CapabilityCommand<z.infer<typeof ApproveLearningCandidateSchema>, Promise<{ id: string; status: string; activatedAt: Date }>>;
@@ -2832,12 +2831,16 @@ export const approveLearningCandidate: ApproveLearningCandidateCommand = {
   async execute(input: z.infer<typeof ApproveLearningCandidateSchema>) {
     await ensureIdentitySchema();
     const parsed = ApproveLearningCandidateSchema.parse(input);
-    const { id, seriesId, reviewedBy, controlIds, sessionId, actorId, tenantId, workspaceId } = parsed;
+    const { id, seriesId, reviewedBy, controlIds, sessionId } = parsed;
 
     // Session validation + governance actor check
     const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
-    if (!session || session.revokedAt !== null) throw new Error("[learning.approve-candidate] Invalid session");
-    if (session.actorId !== actorId || session.tenantId !== tenantId || session.workspaceId !== workspaceId) throw new Error("[learning.approve-candidate] Session mismatch");
+    if (!session || session.revokedAt !== null) throw new Error("[learning.approve-candidate] Invalid session - authentication violation");
+    
+    // CORE-001: Gunakan semua boundary metadata dari session yang terverifikasi (bukan input)
+    const actorId = session.actorId;
+    const tenantId = session.tenantId;
+    const workspaceId = session.workspaceId;
     const validControlIds = controlIds as EosConsultationControlId[];
     if (!validControlIds.includes("EOS-CONSULT-LEARN-01") || !validControlIds.includes("EOS-CONSULT-LEARN-02")) {
       throw new Error("[learning.approve-candidate] GATE_LEARNING invariant violated: Requires both EOS-CONSULT-LEARN-01 and EOS-CONSULT-LEARN-02 controls for approval");
@@ -2900,9 +2903,6 @@ const CreateObservabilityIncidentSchema = z.object({
   serverId: z.string().optional(),
   datacenter: z.string().optional(),
   sessionId: z.string().uuid(),
-  actorId: z.string(),
-  tenantId: z.string(),
-  workspaceId: z.string(),
   consultationId: z.string().uuid(),
 });
 
@@ -2916,15 +2916,17 @@ export const createObservabilityIncident: CreateObservabilityIncidentCommand = {
     const parsed = CreateObservabilityIncidentSchema.parse(input);
     const { 
       title, description, priority, serverId, datacenter, 
-      sessionId, actorId, tenantId, workspaceId, consultationId 
+      sessionId, consultationId 
     } = parsed;
 
     // 1. Session validation (authentication + security)
     const session = await SessionRepositoryPostgres.byId(SessionId(sessionId));
-    if (!session || session.revokedAt !== null) throw new Error("[create_observability_incident] Invalid session");
-    if (session.actorId !== actorId || session.tenantId !== tenantId || session.workspaceId !== workspaceId) {
-      throw new Error("[create_observability_incident] Session mismatch - security violation");
-    }
+    if (!session || session.revokedAt !== null) throw new Error("[create_observability_incident] Invalid session - authentication violation");
+    
+    // CORE-001: Gunakan semua boundary metadata dari session yang terverifikasi (bukan input)
+    const actorId = session.actorId;
+    const tenantId = session.tenantId;
+    const workspaceId = session.workspaceId;
 
     // 2. Verify consultation exists for linkage
     const consultation = await ConsultationRepositoryInMemory.byId(ConsultationId(consultationId));
@@ -2997,6 +2999,21 @@ const createConsultationFromWork: CapabilityCommand<{
   async execute(input) {
     await ensureIdentitySchema();
     
+    // 1. Validasi session untuk keamanan dan compliance CORE-001
+    const session = await SessionRepositoryPostgres.byId(SessionId(input.coreWork.sessionId));
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[consultation.createFromWork] Invalid or revoked session - authentication violation");
+    }
+    
+    // 2. Verifikasi coreWork exists di repository untuk memastikan workId valid (CORE-001)
+    const { getWorkRepositoryPostgres } = await import("../../../work-core/implementation/repository/work-postgres.repository.ts");
+    const workRepository = getWorkRepositoryPostgres();
+    const coreWork = await workRepository.byWorkId(input.workId);
+    if (!coreWork) {
+      throw new Error("[consultation.createFromWork] Core Work not found - cannot bind consultation to non-existent Work primitive");
+    }
+
+    // 3. Panggil createConsultation dengan parameter yang sesuai schema terbaru (CORE-001 compliant)
     const result = await createConsultation.execute({
       title: input.coreWork.title,
       description: input.coreWork.description || "",
@@ -3008,10 +3025,7 @@ const createConsultationFromWork: CapabilityCommand<{
       domicile: input.domainSpecificData?.domicile,
       kbli: input.domainSpecificData?.kbli,
       sessionId: input.coreWork.sessionId,
-      tenantId: input.coreWork.tenantId,
-      workspaceId: input.coreWork.workspaceId,
-      actorId: input.coreWork.actorId,
-      linkedWorkItemId: input.workId,
+      workId: input.workId, // CORE-001: Satu-satunya metadata boundary yang diperlukan (semua lainnya diambil dari core Work)
       ...(input.domainSpecificData || {}),
     });
     

@@ -1,5 +1,5 @@
 // Import canonical identity types dari work-core (single source of truth - anti-drift)
-import type { TenantId } from "@repo/capabilities-work-core";
+import type { TenantId } from "@capabilities/work-core";
 
 export type ContentStatus =
   | "proposed"

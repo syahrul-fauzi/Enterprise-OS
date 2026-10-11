@@ -15,11 +15,11 @@ import { WorkId, newWorkId, ActorId, SessionId, TenantId } from "../capabilities
 // Reuse WorkRepositoryInMemory dari verify-web-001.ts - 100% reuse
 const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
 function getGlobalWorkStore(): Map<string, any> {
-  const g = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
-  if (!g[GLOBAL_WORK_STORE_KEY]) {
-    g[GLOBAL_WORK_STORE_KEY] = new Map<string, any>();
+  const globalContext = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
+  if (!globalContext[GLOBAL_WORK_STORE_KEY]) {
+    globalContext[GLOBAL_WORK_STORE_KEY] = new Map<string, any>();
   }
-  return g[GLOBAL_WORK_STORE_KEY];
+  return globalContext[GLOBAL_WORK_STORE_KEY];
 }
 const WorkRepositoryInMemory = {
   async save(work: any): Promise<any> {

@@ -3,6 +3,12 @@ import { z } from "zod";
 import * as crypto from "crypto";
 import { handleMidtransWebhookUpdate } from "../../services/connector-ecosystem.service.js";
 
+// Lazy load capabilityRegistry sesuai pattern yang digunakan di semua command/service EOS
+async function getCapabilityRegistry() {
+  const loaded = await import("../../../../../packages/core/kernel/src/registry/capability-command-registry.js");
+  return (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
+}
+
 // Reuse the same schema and security controls from existing implementations
 // but centralized in the canonical connector-ecosystem location
 const MidtransWebhookPayloadSchema = z.object({
@@ -109,8 +115,41 @@ export async function POST(request: Request) {
   // Delegate to canonical service handler that preserves Work Continuity
   const result = await handleMidtransWebhookUpdate(validated.data);
   
-  if (result.success) {
-    return NextResponse.json({ success: true, workId: result.workId }, { status: 200 });
+  if (result.success && validated.data.transaction_status === "success") {
+    // Trigger work-core.update capability untuk memastikan state mutation melalui canonical boundary
+    // Sama seperti implementasi di sig-net-001 webhook - reuse work-core state update contract
+    const registry = await getCapabilityRegistry();
+    if (!registry?.invoke) {
+      console.error("[MidtransWebhook] capabilityRegistry unavailable, cannot update work state");
+      return NextResponse.json({ success: false, error: "Internal server error: capability registry unavailable" }, { status: 500 });
+    }
+    
+    const { output: updateResult } = await registry.invoke("work-core", "update", {
+      workId: result.workId,
+      actorId: "payment-gateway:midtrans",
+      workspaceId: "fin-001-merchant-workspace",
+      sessionId: (global as any).currentSessionId || "fin-001-session-001",
+      tenantId: "default-tenant",
+      version: 0,
+      updates: {
+        status: "COMPLETED",
+        platformMetadata: {
+          lastTransactionId: validated.data.transaction_id,
+          lastTransactionStatus: validated.data.transaction_status,
+          paymentCompletedAt: validated.data.settlement_time || validated.data.transaction_time
+        }
+      }
+    });
+
+    console.log(`[MidtransWebhook] work-core.state.update triggered successfully for workId: ${result.workId}, update success: ${updateResult?.success}`);
+    return NextResponse.json({ 
+      success: true, 
+      workId: result.workId,
+      canonicalUpdateTriggered: updateResult?.success,
+      message: "Payment completed and canonical work state updated" 
+    }, { status: 200 });
+  } else if (result.success) {
+    return NextResponse.json({ success: true, workId: result.workId, message: "Payment event processed, waiting for completion" }, { status: 200 });
   } else {
     console.error(`[MidtransWebhook] Processing failed: ${result.error}`);
     return NextResponse.json({ error: result.error }, { status: 500 });

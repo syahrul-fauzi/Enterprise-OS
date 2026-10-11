@@ -1,9 +1,9 @@
 import { Pool } from "pg";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import { CommunicationEvent, CommunicationEventId, CommunicationEventStatus } from "../contracts/communication.contracts.js";
-import type { TenantId } from "@repo/capabilities-work-core";
+import type { TenantId } from "@capabilities/work-core";
 import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager.js";
-import { isBuildPhase } from "../../../shared/implementation/database/health.check.js";
+import { isBuildPhase, updateConnectionPoolMetrics } from "../../../shared/implementation/database/health.check.js";
 
 // Validate required environment variables in production
 // EXCEPTION: Skip during Next.js build phase (phase-production-build) because build-time static analysis runs in "production" NODE_ENV but has no DB connection
@@ -30,18 +30,18 @@ if (!isBuildPhase) {
   const readConnectionString = process.env.POSTGRES_READ_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL || "postgresql://localhost:5432/eos_communication";
 
   writePool = new Pool({
-    connectionString: writeConnectionString,
-    max: 10, // Smaller pool for writes (fewer write operations)
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
-  });
+  connectionString: writeConnectionString,
+  max: 50, // DEL-001: Increased pool size from 10 to 50 to address database bottleneck
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
 
-  readPool = new Pool({
-    connectionString: readConnectionString,
-    max: 30, // Larger pool for read-heavy communication queries
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
-  });
+readPool = new Pool({
+  connectionString: readConnectionString,
+  max: 30, // Larger pool for read-heavy communication queries
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
 
   // Run migrations on initialization - ensures schema is always up-to-date
   initializeDatabase = async () => {
@@ -61,6 +61,12 @@ if (!isBuildPhase) {
 
   // Initialize on module load only in non-build phase
   initializeDatabase().catch(err => console.error("[CommunicationRepositoryPostgres] Failed to initialize database:", err));
+
+  // Start pool metrics collection - DEL-001 telemetry requirement
+  setInterval(() => {
+    updateConnectionPoolMetrics("communication-write", writePool);
+    updateConnectionPoolMetrics("communication-read", readPool);
+  }, 5000); // Collect metrics every 5 seconds
 }
 
 // Export once at module level (consistent API regardless of build phase)
@@ -104,11 +110,35 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
   readonly kind = "repository" as const;
 
   /**
-   * Set current tenant and workspace for RLS (Row Level Security) enforcement
-   * Reused from base.repository.ts pattern (TENANT-ISOLATION-001)
+   * Set current tenant and context for RLS (Row Level Security) enforcement
+   * CORE-001: Work-centric model - prioritize workId over workspaceId, workspace is optional execution boundary
+   * Reused from base.repository.ts pattern (TENANT-ISOLATION-001, CORE-001)
    */
-  protected async setSessionContext(tenantId: string, workspaceId: string): Promise<void> {
-    await writePool.query(`SELECT set_config('app.current_tenant', $1, false), set_config('app.current_workspace', $2, false)`, [tenantId, workspaceId]);
+  protected async setSessionContext(tenantId: string, options?: { workspaceId?: string; workId?: string }): Promise<void> {
+    let query = `SELECT set_config('app.current_tenant', $1, false)`;
+    const params: any[] = [tenantId];
+    let paramIndex = 2;
+    if (options?.workId) {
+        // Work as primary execution boundary (per mandate: Work is continuity object, workspace is just context)
+        query += `, set_config('app.current_work', $${paramIndex}, false)`;
+        params.push(options.workId);
+        paramIndex++;
+        // Clear workspace when work is set to enforce precedence
+        query += `, set_config('app.current_workspace', '', false)`;
+    }
+    else if (options?.workspaceId) {
+        // Fallback to workspace only when work is not specified
+        query += `, set_config('app.current_workspace', $${paramIndex}, false)`;
+        params.push(options.workspaceId);
+        paramIndex++;
+        // Clear work when workspace is set
+        query += `, set_config('app.current_work', '', false)`;
+    }
+    else {
+        // Clear both if no context provided
+        query += `, set_config('app.current_workspace', '', false), set_config('app.current_work', '', false)`;
+    }
+    await writePool.query(query, params);
   }
 
   /**
@@ -135,14 +165,30 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
     return writePool;
   }
 
-  async byId(id: CommunicationEventId, context?: { tenantId: TenantId; workspaceId: string }): Promise<CommunicationEvent | undefined> {
-    const query = "SELECT * FROM communication_events WHERE event_id = $1";
+  async byId(id: CommunicationEventId, context?: { tenantId: TenantId; workspaceId?: string; workId?: string }): Promise<CommunicationEvent | undefined> {
+    let query = "SELECT * FROM communication_events WHERE event_id = $1";
     const params: any[] = [id];
+    let paramIndex = 2;
+    
+    // CORE-001: Enforce tenant and work isolation in query
+    if (context) {
+      query += ` AND tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+      if (context?.workId) {
+        query += ` AND work_id = $${paramIndex}`;
+        params.push(context.workId);
+      } else if (context?.workspaceId) {
+        // Fallback to workspace only when workId is not provided (maintain backward compatibility)
+        query += ` AND workspace_id = $${paramIndex}`;
+        params.push(context.workspaceId);
+      }
+    }
     
     try {
-      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001)
+      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001, CORE-001)
       if (context) {
-        await this.setSessionContext(context.tenantId, context.workspaceId);
+        await this.setSessionContext(context.tenantId, { workspaceId: context.workspaceId, workId: context.workId });
       }
       
       const result = await readPool.query(query, params);
@@ -158,14 +204,14 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
     }
   }
 
-  async byMessageId(messageId: string, context?: { tenantId: TenantId; workspaceId: string }): Promise<CommunicationEvent | undefined> {
+  async byMessageId(messageId: string, context?: { tenantId: TenantId; workspaceId?: string; workId?: string }): Promise<CommunicationEvent | undefined> {
     const query = "SELECT * FROM communication_events WHERE message_id = $1";
     const params: any[] = [messageId];
     
     try {
-      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001)
+      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001, CORE-001)
       if (context) {
-        await this.setSessionContext(context.tenantId, context.workspaceId);
+        await this.setSessionContext(context.tenantId, { workspaceId: context.workspaceId, workId: context.workId });
       }
       
       const result = await readPool.query(query, params);
@@ -181,14 +227,15 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
     }
   }
 
-  async byWorkId(workId: string, context?: { tenantId: TenantId; workspaceId: string }): Promise<readonly CommunicationEvent[]> {
+  async byWorkId(workId: string, context?: { tenantId: TenantId; workspaceId?: string; workId?: string }): Promise<readonly CommunicationEvent[]> {
     const query = "SELECT * FROM communication_events WHERE work_id = $1 ORDER BY timestamp ASC";
     const params: any[] = [workId];
     
     try {
       // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001)
+      // Work-centric model: use workId as primary context, workspaceId as fallback context
       if (context) {
-        await this.setSessionContext(context.tenantId, context.workspaceId);
+        await this.setSessionContext(context.tenantId, { workspaceId: context.workspaceId, workId: context.workId });
       }
       
       const result = await readPool.query(query, params);
@@ -212,14 +259,29 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
     return result.rows.map(mapRowToCommunicationEvent);
   }
 
-  async list(context?: { tenantId: TenantId; workspaceId: string }): Promise<readonly CommunicationEvent[]> {
-    const query = "SELECT * FROM communication_events ORDER BY timestamp ASC";
+  async list(context?: { tenantId: TenantId; workspaceId?: string; workId?: string }): Promise<readonly CommunicationEvent[]> {
+    let query = "SELECT * FROM communication_events ORDER BY timestamp ASC";
     const params: any[] = [];
+    let paramIndex = 1;
     
     try {
-      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001)
+      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001, CORE-001)
       if (context) {
-        await this.setSessionContext(context.tenantId, context.workspaceId);
+        // Add tenant isolation to query
+        query += ` WHERE tenant_id = $${paramIndex}`;
+        params.push(context.tenantId);
+        paramIndex++;
+        
+        if (context?.workId) {
+          query += ` AND work_id = $${paramIndex}`;
+          params.push(context.workId);
+        } else if (context?.workspaceId) {
+          // Fallback to workspace only when workId is not provided (maintain backward compatibility)
+          query += ` AND workspace_id = $${paramIndex}`;
+          params.push(context.workspaceId);
+        }
+        
+        await this.setSessionContext(context.tenantId, { workspaceId: context.workspaceId, workId: context.workId });
       }
       
       const result = await readPool.query(query, params);
@@ -234,15 +296,19 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
     }
   }
 
-  async save(entity: CommunicationEvent, context?: { tenantId: TenantId; workspaceId: string; actorId: string }): Promise<void> {
+  async save(entity: CommunicationEvent, context?: { tenantId: TenantId; workspaceId?: string; workId?: string; actorId: string }): Promise<void> {
     const client = await writePool.connect();
     try {
-      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001)
+      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001, CORE-001)
       if (context) {
-        await this.setSessionContext(context.tenantId, context.workspaceId);
+        await this.setSessionContext(context.tenantId, { workspaceId: context.workspaceId, workId: context.workId });
         (entity as any).tenant_id = context.tenantId;
-        (entity as any).workspace_id = context.workspaceId;
+        (entity as any).workspace_id = context.workspaceId; // Optional, only set if provided
         (entity as any).actor_id = context.actorId;
+        // Enforce workId as primary key (CORE-001)
+        if (context?.workId) {
+          (entity as any).work_id = context.workId;
+        }
       }
       
       await client.query("BEGIN");
@@ -313,15 +379,28 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
     }
   }
 
-  async updateStatus(id: CommunicationEventId, status: CommunicationEventStatus, context?: { tenantId: TenantId; workspaceId: string }): Promise<boolean> {
-    const query = "UPDATE communication_events SET status = $1, updated_at = NOW() WHERE event_id = $2";
+  async updateStatus(id: CommunicationEventId, status: CommunicationEventStatus, context?: { tenantId: TenantId; workspaceId?: string; workId?: string }): Promise<boolean> {
+    let query = "UPDATE communication_events SET status = $1, updated_at = NOW() WHERE event_id = $2";
     const params: any[] = [status, id];
+    let paramIndex = 3;
     
     const client = await writePool.connect();
     try {
-      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001)
+      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001, CORE-001)
       if (context) {
-        await this.setSessionContext(context.tenantId, context.workspaceId);
+        await this.setSessionContext(context.tenantId, { workspaceId: context.workspaceId, workId: context.workId });
+        // CORE-001: Enforce tenant and work isolation in query
+        query += ` AND tenant_id = $${paramIndex}`;
+        params.push(context.tenantId);
+        paramIndex++;
+        if (context?.workId) {
+          query += ` AND work_id = $${paramIndex}`;
+          params.push(context.workId);
+        } else if (context?.workspaceId) {
+          // Fallback to workspace only when workId is not provided (maintain backward compatibility)
+          query += ` AND workspace_id = $${paramIndex}`;
+          params.push(context.workspaceId);
+        }
       }
       
       await client.query("BEGIN");
@@ -341,15 +420,28 @@ class CommunicationRepositoryPostgresImpl implements CommunicationRepository {
     }
   }
 
-  async remove(id: CommunicationEventId, context?: { tenantId: TenantId; workspaceId: string }): Promise<boolean> {
-    const query = "DELETE FROM communication_events WHERE event_id = $1 RETURNING event_id";
+  async remove(id: CommunicationEventId, context?: { tenantId: TenantId; workspaceId?: string; workId?: string }): Promise<boolean> {
+    let query = "DELETE FROM communication_events WHERE event_id = $1 RETURNING event_id";
     const params: any[] = [id];
+    let paramIndex = 2;
     
     const client = await writePool.connect();
     try {
-      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001)
+      // Enforce RLS by setting session context if context is provided (TENANT-ISOLATION-001, CORE-001)
       if (context) {
-        await this.setSessionContext(context.tenantId, context.workspaceId);
+        await this.setSessionContext(context.tenantId, { workspaceId: context.workspaceId, workId: context.workId });
+        // CORE-001: Enforce tenant and work isolation in query
+        query += ` AND tenant_id = $${paramIndex}`;
+        params.push(context.tenantId);
+        paramIndex++;
+        if (context?.workId) {
+          query += ` AND work_id = $${paramIndex}`;
+          params.push(context.workId);
+        } else if (context?.workspaceId) {
+          // Fallback to workspace only when workId is not provided (maintain backward compatibility)
+          query += ` AND workspace_id = $${paramIndex}`;
+          params.push(context.workspaceId);
+        }
       }
       
       await client.query("BEGIN");

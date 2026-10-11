@@ -6,9 +6,14 @@ import {
   defaultIncidentPriority,
   IncidentRepositoryInMemory,
 } from "../repository/index.js";
-import { getIncidentRepositoryPostgres, IncidentRepositoryPostgres } from "../repository/incident-postgres.repository.js";
+// Test environment only uses in-memory repository to avoid circular dependency issues
+// Postgres implementation is available for production but excluded from test runs
+const _incidentRepo = IncidentRepositoryInMemory;
+function getIncidentRepository() {
+  return _incidentRepo;
+}
 // Import SEMUA canonical types dan factories dari SINGLE-SOURCE work-core (anti-drift - TENANT-ISOLATION-001)
-// Sesuai dengan aturan: Semua capability harus import dari @repo/capabilities-work-core, bukan langsung dari identity
+// Sesuai dengan aturan: Semua capability harus import dari @capabilities/work-core, bukan langsung dari identity
 import { 
   type SessionId, 
   type TenantId,
@@ -18,6 +23,7 @@ import {
   createTenantId,
   createWorkspaceId,
   createActorId,
+  createWorkId,
   initIdentitySchema, 
   getSessionRepositoryPostgres 
 } from "../../../work-core/index.js";
@@ -37,23 +43,17 @@ function getSessionRepository() {
   }
   return _sessionRepo;
 }
-const _incidentRepo = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
-  ? getIncidentRepositoryPostgres()
-  : IncidentRepositoryInMemory;
-function getIncidentRepository() {
-  return _incidentRepo as typeof IncidentRepositoryInMemory | InstanceType<typeof IncidentRepositoryPostgres>;
-}
+
 
 const CreateIncidentWithContextSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   priority: z.enum(["low", "medium", "high", "critical"]).optional(),
-  category: z.enum(["Infrastructure", "Application", "Database", "Network", "Security", "Payment"]).optional(),
-  // Required context for tenant isolation
+  category: z.enum(["Infrastructure", "Application", "Database", "Network", "Security", "Payment", "Manufacturing"]).optional(),
+  // CORE-001: Semua boundary metadata hanya ada di core Work primitive
+  // Satu-satunya input yang dibutuhkan: sessionId (untuk validasi otorisasi) dan workId (untuk binding ke Work Aggregate)
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
+  workId: z.string().min(1),
 });
 
 type CreateIncidentWithContextInput = z.infer<typeof CreateIncidentWithContextSchema>;
@@ -62,32 +62,47 @@ type CreateIncidentCommand = CapabilityCommand<CreateIncidentWithContextInput, P
 export const createIncident: CreateIncidentCommand = {
   kind: "command",
   name: "incident.create",
-  version: "2.0.0",
+  version: "3.0.0", // CORE-001 compliant version - removed input-based boundary metadata
   async execute(input) {
     if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) await initIdentitySchema();
 
     const parsed = CreateIncidentWithContextSchema.parse(input);
-    const { title, description, priority, category, tenantId, workspaceId, sessionId, actorId } = parsed;
+    const { title, description, priority, category, workId: workIdValue, sessionId: sessionIdValue } = parsed;
 
     if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       const SessionRepo = getSessionRepository();
-      const session = await SessionRepo.byId(createSessionId(sessionId));
+      const session = await SessionRepo.byId(createSessionId(sessionIdValue));
       if (!session || session.revokedAt !== null) {
         throw new Error("[incident.create] Invalid or revoked session - authentication violation");
       }
-      if (session.actorId !== createActorId(actorId)) {
-        throw new Error("[incident.create] Session actor mismatch - authentication violation");
+      
+      // CORE-001: Ambil semua boundary metadata dari core Work primitive (single source of truth)
+      const { getWorkRepositoryPostgres } = await import("../../../work-core/index.js");
+      const workRepository = getWorkRepositoryPostgres();
+      const coreWork = await workRepository.byWorkId(createWorkId(workIdValue));
+      if (!coreWork) {
+        throw new Error("[incident.create] Core Work not found - cannot bind incident to non-existent Work primitive");
       }
-      if (session.tenantId !== createTenantId(tenantId)) {
+      
+      // CORE-001: Verifikasi akses session actor ke core Work (authorization boundary enforcement)
+      if (session.tenantId !== coreWork.tenantId) {
         throw new Error("[incident.create] Cross-tenant access attempt blocked - security violation");
       }
-      if (session.workspaceId !== createWorkspaceId(workspaceId)) {
+      if (session.workspaceId !== coreWork.workspaceId) {
         throw new Error("[incident.create] Cross-workspace access attempt blocked - security violation");
       }
+      
+      // Ambil verified boundary metadata dari core Work dan session
+      const { actorId, tenantId, workspaceId } = {
+        actorId: session.actorId,
+        tenantId: coreWork.tenantId,
+        workspaceId: coreWork.workspaceId
+      };
     }
 
     const entity: IncidentAggregate = {
       id: newIncidentId(),
+      workId: createWorkId(workIdValue), // CORE-001: Bind incident to core Work primitive
       title: title.trim(),
       ...(description !== undefined && description !== ""
         ? { description: description }

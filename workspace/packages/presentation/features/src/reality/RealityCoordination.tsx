@@ -1,14 +1,21 @@
 "use client";
 
 import React from 'react';
-import type { WorkCoordinationAction, WorkRealityPerspective } from '@repo/presentation-entities';
+import type { WorkCoordinationAction, WorkRealityPerspective, RealityWorkItem } from '@repo/presentation-entities';
+import { NextAction } from '../work/NextAction';
 
 export interface RealityCoordinationProps {
   actions: WorkCoordinationAction[];
   currentPerspective: WorkRealityPerspective;
   workId?: string;
+  work?: {
+    workId: string;
+    title: string;
+    nextAction?: RealityWorkItem["nextAction"];
+  };
   onExecuteAction?: (actionId: string, formData?: FormData) => Promise<void>;
   onSendMessage?: (content: string) => Promise<void>;
+  onInitiateSignature?: (formData: FormData) => Promise<void>;
 }
 
 const perspectiveLabels: Record<WorkRealityPerspective, string> = {
@@ -22,10 +29,18 @@ const perspectiveLabels: Record<WorkRealityPerspective, string> = {
 export function RealityCoordination({ 
   actions, 
   currentPerspective, 
-  workId, 
+  workId,
+  work,
   onExecuteAction,
-  onSendMessage 
+  onSendMessage,
+  onInitiateSignature
 }: RealityCoordinationProps) {
+  // Create adapter to map NextAction's onExecute signature to existing onExecuteAction
+  const handleNextActionExecute = async (actionId: string, workId?: string) => {
+    if (onExecuteAction) {
+      await onExecuteAction(actionId);
+    }
+  };
   // Hanya filter visible actions berdasarkan perspective (PURE RENDERING)
   // TIDAK ADA state, TIDAK ADA API calls, TIDAK ADA business logic
   // Semua action execution didelegasikan ke Controller via props (sesuai MyReality pattern)
@@ -45,6 +60,7 @@ export function RealityCoordination({
   const isProfessional = currentPerspective === 'professional';
   const isOperator = currentPerspective === 'operator';
   const isAgent = currentPerspective === 'agent';
+  const isNotary = currentPerspective === 'notary';
 
   const workIsCompleted = visibleActions.some(a => a.description.includes('selesai') || a.description.includes('arsip'));
 
@@ -120,27 +136,65 @@ export function RealityCoordination({
 
             {isProfessional && (
               <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => onExecuteAction?.('review')}
-                  className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
-                >
-                  ✓ Approve (Eksekusi)
-                </button>
-                <button
-                  onClick={() => onExecuteAction?.('changes')}
-                  className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-800 transition hover:bg-amber-100"
-                >
-                  ⚠ Request Changes
-                </button>
-                <button
-                  onClick={() => {
-                    setAskMessage('Mohon kelengkapan dokumen/informasi tambahan untuk melanjutkan proses.');
-                    setShowAskInput(true);
-                  }}
-                  className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-800 transition hover:bg-slate-100"
-                >
-                  💬 Ask Customer
-                </button>
+                {/* Use NextAction component if work has a defined nextAction (like HIGH-VALUE-001's action-generate-invoice) */}
+                {work?.nextAction ? (
+                  <NextAction
+                    action={work.nextAction}
+                    work={work}
+                    onExecute={handleNextActionExecute}
+                    size="md"
+                    variant="primary"
+                  />
+                ) : (
+                  <>
+                    {/* Maintain backward compatibility with existing static action buttons */}
+                    {onInitiateSignature && (
+                      <button
+                        onClick={() => {
+                          const formData = new FormData();
+                          formData.append('workId', workId || '');
+                          onInitiateSignature?.(formData);
+                        }}
+                        className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+                      >
+                        ✍️ Initiate Signature
+                      </button>
+                    )}
+                    <button
+                      onClick={() => onExecuteAction?.('review')}
+                      className="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
+                    >
+                      ✓ Approve (Eksekusi)
+                    </button>
+                    <button
+                      onClick={() => onExecuteAction?.('changes')}
+                      className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-800 transition hover:bg-amber-100"
+                    >
+                      ⚠ Request Changes
+                    </button>
+                    <button
+                      onClick={() => {
+                        setAskMessage('Mohon kelengkapan dokumen/informasi tambahan untuk melanjutkan proses.');
+                        setShowAskInput(true);
+                      }}
+                      className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-800 transition hover:bg-slate-100"
+                    >
+                      💬 Ask Customer
+                    </button>
+                    {onInitiateSignature && (
+                      <button
+                        onClick={() => {
+                          const formData = new FormData();
+                          formData.append('workId', workId || '');
+                          onInitiateSignature?.(formData);
+                        }}
+                        className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+                      >
+                        ✍️ Initiate Signature
+                      </button>
+                    )}
+                  </>
+                )}
               </div>
             )}
 
@@ -192,6 +246,29 @@ export function RealityCoordination({
                   className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-800 transition hover:bg-slate-100"
                 >
                   📝 Post Inspection Report
+                </button>
+              </div>
+            )}
+
+            {isNotary && (
+              <div className="flex flex-wrap gap-2">
+                {onInitiateSignature && (
+                  <button
+                    onClick={() => {
+                      const formData = new FormData();
+                      formData.append('workId', workId || '');
+                      onInitiateSignature?.(formData);
+                    }}
+                    className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-700"
+                  >
+                    ✍️ Initiate Notarial Signature
+                  </button>
+                )}
+                <button
+                  onClick={() => onExecuteAction?.('notarize')}
+                  className="rounded-xl bg-slate-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700"
+                >
+                  🔏 Notarize Document
                 </button>
               </div>
             )}

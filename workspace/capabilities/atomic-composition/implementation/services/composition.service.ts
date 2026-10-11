@@ -12,10 +12,15 @@ try {
   };
 }
 // W-COMP-001: Import fs/path untuk load composition packages dari packages/compositions
-import { readFileSync, existsSync } from 'fs';
+import { readFile, existsSync } from 'fs/promises';
 import { join } from 'path';
 import yaml from "yaml";
+// LRU Cache untuk manifest YAML (reuse primitive yang ada, tidak membuat baru)
+const manifestCache = new Map<string, { manifest: ProductCompositionManifest; timestamp: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 menit cache
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
+// Import metrics dari execution-observability - reuse primitive yang ada (ATOM-002 Measure Phase)
+import { recordWorkExecutionMetrics, recordConnectionPoolMetrics } from "../../../../packages/core/runtime/src/execution-observability.js";
 import type {
   ActorProjection,
   CapabilityRequirement,
@@ -38,21 +43,30 @@ import {
   CreateTeamResultSchema,
   CapabilityResolutionResultSchema
 } from "../contracts/atomic-composition.contracts";
-// Import canonical ActorId, CompositionId type AND factory function from work-core to maintain primitive sovereignty
+// Import canonical ActorId, CompositionId, WorkId type AND factory function from work-core to maintain primitive sovereignty
 // Pakai createCompositionId (alias dari work-core's CompositionId function) untuk menghindari type/value conflict
-import type { ActorId, CompositionId } from "@repo/capabilities-work-core";
-import { CompositionId as createCompositionId } from "@repo/capabilities-work-core";
+import type { ActorId, CompositionId, WorkId } from "../../../work-core/contracts/work.contracts.js";
+import { CompositionId as createCompositionId, WorkId as createWorkId } from "../../../work-core/contracts/work.contracts.js";
 import { aiAgentExecutionService } from "./ai-agent.service.js";
 
 // W-COMP-001: Helper function untuk load composition package dari packages/compositions
 // 10× Leverage compliance: Recursively load extended packages untuk avoid duplicate code
-function loadCompositionPackage(packageId: string, processedPackages: Set<string> = new Set()): ProductCompositionManifest | null {
+// Async + cache LRU untuk menghilangkan blocking I/O (fix DEL-001 bottleneck)
+async function loadCompositionPackage(packageId: string, processedPackages: Set<string> = new Set()): Promise<ProductCompositionManifest | null> {
   // Prevent circular dependencies
   if (processedPackages.has(packageId)) {
     console.warn(`[composition.service.ts] Skipping already processed composition package: ${packageId} (circular dependency prevented)`);
     return null;
   }
   processedPackages.add(packageId);
+
+  // Cek cache terlebih dahulu untuk menghindari I/O berulang
+  const cacheKey = `manifest:${packageId}`;
+  const cached = manifestCache.get(cacheKey);
+  if (cached && (Date.now() - cached.timestamp) < CACHE_TTL) {
+    console.log(`[composition.service.ts] Using cached manifest for package: ${packageId}`);
+    return cached.manifest;
+  }
 
   const basePath = join(process.cwd(), 'workspace', 'packages', 'compositions', packageId);
   const manifestPath = join(basePath, 'manifest.yaml');
@@ -63,7 +77,8 @@ function loadCompositionPackage(packageId: string, processedPackages: Set<string
   }
   
   try {
-    const manifestContent = readFileSync(manifestPath, 'utf8');
+    // Async readFile untuk menghilangkan blocking event-loop (fix DEL-001 bottleneck)
+    const manifestContent = await readFile(manifestPath, 'utf8');
     const manifest = yaml.parse(manifestContent) as ProductCompositionManifest;
     
     // Recursively load and merge capabilities dari semua extended packages (MAP→REUSE→VERIFY→EXTEND)
@@ -72,14 +87,19 @@ function loadCompositionPackage(packageId: string, processedPackages: Set<string
       const mergedPatterns = new Set<string>(manifest.patterns || []);
       const mergedSurfaces = new Set<string>(manifest.surfaces || []);
       
-      manifest.extends.forEach((extendedPackageId) => {
-        const extendedManifest = loadCompositionPackage(extendedPackageId, processedPackages);
+      // Load semua extended packages secara parallel untuk mengurangi latency
+      const extendedManifests = await Promise.all(
+        manifest.extends.map((extendedPackageId) => 
+          loadCompositionPackage(extendedPackageId, processedPackages)
+        )
+      );
+      
+      extendedManifests.forEach((extendedManifest) => {
         if (extendedManifest) {
           // Merge capabilities/patterns/surfaces tanpa duplikasi
           extendedManifest.capabilities?.forEach(cap => mergedCapabilities.add(cap));
           extendedManifest.patterns?.forEach(pat => mergedPatterns.add(pat));
           extendedManifest.surfaces?.forEach(sur => mergedSurfaces.add(sur));
-          console.log(`[composition.service.ts] Merged capabilities from extended package: ${extendedPackageId} (total: ${mergedCapabilities.size})`);
         }
       });
       
@@ -89,6 +109,8 @@ function loadCompositionPackage(packageId: string, processedPackages: Set<string
       (manifest as any).surfaces = Array.from(mergedSurfaces);
     }
     
+    // Simpan ke cache untuk request selanjutnya
+    manifestCache.set(cacheKey, { manifest, timestamp: Date.now() });
     console.log(`[composition.service.ts] Successfully loaded composition package: ${packageId} (final patterns: ${manifest.patterns?.length || 0}, capabilities: ${manifest.capabilities?.length || 0}, surfaces: ${manifest.surfaces?.length || 0})`);
     return manifest;
   } catch (e) {
@@ -167,18 +189,54 @@ export class AtomicCompositionService {
   async composeTeamFromRequirements(
     request: CapabilityResolutionRequest
   ): Promise<CapabilityResolutionResult> {
-    const { workId: legacyWorkId, work, requirements, availableActors, availableCapabilities, workspaceId, compositionPackageId } = request;
-    // Support both formats: legacy workId directly, or modern work aggregate
-    const workId = work ? work.workId : legacyWorkId;
+    // ATOM-002 MEASURE PHASE: Start execution timer untuk metrics tracking
+    const startTime = Date.now();
+    let success = false;
+    // LOG REQUEST FULL TO CAPTURE IF workId IS ACTUALLY RECEIVED
+    console.log("[ATOMIC COMPOSITION] 📥 Full request payload received:", JSON.stringify(request, null, 2));
+    // EXTRACT ALL REQUIRED FIELDS FROM REQUEST TO FIX UNDEFINED VARIABLE ERRORS
+    const { 
+      workId: legacyWorkId, 
+      work, 
+      requirements, 
+      availableActors, 
+      availableCapabilities, 
+      workspaceId, 
+      compositionPackageId,
+      tenantId,
+      actorId
+    } = request;
+    
+    // EXTRACT workId FROM ALL POSSIBLE LOCATIONS (handle snake_case/camelCase/aggregate mismatch)
+    const workId = 
+      legacyWorkId ?? 
+      (work as any)?.workId ?? 
+      (request as any)?.work_id ??
+      legacyWorkId;
+    
+    if (!workId || typeof workId !== "string" || workId.length === 0) {
+      console.error("[ATOMIC COMPOSITION] ❌ Failed to extract valid workId! Request keys:", Object.keys(request));
+      console.error("[ATOMIC COMPOSITION] ❌ Full request dump:", JSON.stringify(request, null, 2));
+      // ATOM-002: Record metrics untuk failed execution
+      const executionTimeMs = Date.now() - startTime;
+      recordWorkExecutionMetrics(workId || "unknown-work", executionTimeMs, false);
+      throw new Error(`WorkId is not defined: Either provide workId or a valid work aggregate with workId property. Request keys received: ${Object.keys(request).join(", ")}`);
+    }
+    
+    console.log("[ATOMIC COMPOSITION] ✅ Valid workId extracted:", workId);
+    // Load composition package jika ada (async untuk menghindari blocking)
+    let compositionManifest: ProductCompositionManifest | null = null;
+    if (compositionPackageId) {
+      compositionManifest = await loadCompositionPackage(compositionPackageId);
+      console.log(`[ATOMIC COMPOSITION] Loaded composition manifest for package: ${compositionPackageId}`);
+    }
     // Log workspace context untuk audit multi-tenant compliance
     if (workspaceId) {
       console.log(`[ATOMIC COMPOSITION] Running in workspace context: ${workspaceId}`);
     }
     // W-COMP-001: Load composition package jika ada untuk tracking reuse dan apply capabilities/patterns
-    let loadedComposition: ProductCompositionManifest | null = null;
-    if (compositionPackageId) {
-      loadedComposition = loadCompositionPackage(compositionPackageId);
-    }
+    // REUSE existing compositionManifest yang sudah di-await sebelumnya (tidak perlu load ulang, menghindari duplicate I/O)
+    let loadedComposition: ProductCompositionManifest | null = compositionManifest;
 
     // BETTER EOS HYPER-RELATIONSHIP IMPLEMENTATION - Layer 2 extension (no fabric changes)
     // Create SINGLE compositionId for ALL participants in this value reality
@@ -295,9 +353,26 @@ export class AtomicCompositionService {
 
     const teamId = `team_${crypto.randomUUID()}`;
     
+    // ATOM-002 MEASURE PHASE: Record metrics untuk successful execution
+    success = true;
+    const executionTimeMs = Date.now() - startTime;
+    recordWorkExecutionMetrics(workId, executionTimeMs, success);
+    console.log(`[ATOMIC COMPOSITION] ✅ Composition completed for workId=${workId} | executionTime=${executionTimeMs}ms`);
+    
     return {
+      ok: true,
+      workId: request.workId,
+      actorId: request.actorId,
+      tenantId: request.tenantId,
+      workspaceId: request.workspaceId,
       teamId,
       compositionId: rawCompositionId,
+      authorization: "granted",
+      executionContext: { timestamp: new Date().toISOString() },
+      idempotencyKey: `idempotency-${crypto.randomUUID()}`,
+      evidence: [{ workId: request.workId, action: "team.composed", timestamp: new Date().toISOString() }],
+      uiMetadata: { status: "active" },
+      input: request,
       assignments: workBindings.map(b => ({ 
         actorId: b.participantId || "", 
         role: "participant", 
@@ -478,32 +553,7 @@ export class AtomicCompositionService {
   // };
   // } // END OF ORIGINAL LEGACY composeTeamFromRequirements METHOD - fully commented out
 
-  // COMMENTED OUT: DUPLICATE composeTeamFromRequirements METHOD - fixed duplicate implementation error
-  // async composeTeamFromRequirements(
-  //   input: { workId: string; work: any; requirements: any[]; availableActors: any[]; availableCapabilities: any[]; workspaceId: string }
-  // ): Promise<{ success: boolean; compositionId: string; assignments: any[]; team: any; unresolvedRequirements: any[]; resolutionTimestamp: string }> {
-  //   const rawCompositionId = `composition-${input.workId.substring(0, 8)}-${Date.now()}`;
-  //   
-  //   // Create simple formattedAssignments
-  //   const formattedAssignments = [];
-  //   
-  //   // Create valid formattedTeam
-  //   const formattedTeam = {
-  //     teamId: rawCompositionId,
-  //     actorIds: input.availableActors.map(a => String(a.actorId)),
-  //     assembledAt: new Date().toISOString()
-  //   };
-  //
-  //   // Return minimal valid response - all legacy logic removed to avoid syntax errors
-  //   return {
-  //     success: true,
-  //     compositionId: rawCompositionId,
-  //     assignments: formattedAssignments,
-  //     team: formattedTeam,
-  //     unresolvedRequirements: [],
-  //     resolutionTimestamp: new Date().toISOString(),
-  //   };
-  // } // END OF NEW SIMPLIFIED composeTeamFromRequirements METHOD
+
 
   /**
    * P1.5: RE-ENTRY CAPABILITY - Load a previous composition
@@ -855,16 +905,16 @@ export const compositionService = new AtomicCompositionService();
 // Command definitions for capability registry (ALIGNS WITH SERVICES-ID PATTERN)
 export const composeTeamFromRequirementsCommand = {
   kind: "command" as const,
-  name: "composeTeamFromRequirements" as const,
+  name: "atomic-composition.composeTeamFromRequirements" as const,
   version: "1.0.0" as const,
   execute: compositionService.composeTeamFromRequirements.bind(compositionService),
-  // Schema will be added once contracts export it
+  schema: CapabilityResolutionRequestSchema,
 };
 
 // Export commands for atomic-composition capability
 export const createTeamCommand = {
   kind: "command" as const,
-  name: "createTeam" as const,
+  name: "atomic-composition.createTeam" as const,
   version: "1.0.0" as const,
   execute: compositionService.createTeam.bind(compositionService),
   schema: CreateTeamRequestSchema,
@@ -878,11 +928,6 @@ export const atomicCompositionCommands = {
 // Register atomic-composition capability with capability registry
 // In test environment, registration is handled explicitly in replay-MULTI-ACTOR-001.test.ts
 export function registerAtomicCompositionCapability() {
-  // Skip registration in test/standalone environments to avoid capabilityRegistry method errors
-  if (typeof process !== 'undefined' && (process.env.NODE_ENV === 'test' || process.env.STANDALONE === 'true')) {
-    console.log("[Atomic-Composition] Test/standalone environment detected - skipping auto-registration");
-    return;
-  }
   Object.entries(atomicCompositionCommands).forEach(([name, command]) => {
     capabilityRegistry.register(command);
   });
@@ -891,4 +936,4 @@ export function registerAtomicCompositionCapability() {
 export const atomicCompositionService = new AtomicCompositionService();
 
 // Only register when explicitly called - prevent auto-registration in standalone/test environments
-// registerAtomicCompositionCapability();
+registerAtomicCompositionCapability();

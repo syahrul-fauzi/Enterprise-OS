@@ -111,6 +111,10 @@ export class RequirementsTraceabilityMatrixService {
 export const requirementsTraceabilityMatrixService =
   new RequirementsTraceabilityMatrixService();
 
+// B6.12: Register canonical traceability service to globalThis for cross-boundary runtime access
+// Mengikuti pola yang sama dengan requirement.service.ts, evidence-registry.service.ts, dan intent-understanding.service.ts
+(globalThis as any).__EOS_CANONICAL_TRACEABILITY_SERVICE__ = requirementsTraceabilityMatrixService;
+
 export * from "../contracts/index.js";
 export * from "../queries/index.js";
 export * from "../repository/index.js";

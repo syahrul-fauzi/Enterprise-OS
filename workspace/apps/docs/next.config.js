@@ -1,10 +1,9 @@
-import path from "node:path";
 const nextConfig = {
     typescript: {
         ignoreBuildErrors: true,
     },
     turbopack: {
-        root: path.resolve(import.meta.dirname, "../.."),
+        root: '/root/Enterprise-OS/workspace',
     },
 };
 export default nextConfig;

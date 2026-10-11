@@ -10,7 +10,7 @@ import {
   type TenantAggregate,
   type WorkspaceAggregate,
   type MembershipAggregate,
-} from "../contracts/identity.contracts.js";
+} from "@repo/contracts-core";
 import { passwordService, slugifyForTenant } from "../services/password.service.js";
 import {
   getUserRepositoryPostgres,
@@ -86,12 +86,14 @@ export const signupFlowCommand: SignupFlowCommand = {
 
     // Transactional creation with cleanup on failure
     try {
+      const tenantId = newTenantId();
       // 1. Create User
       userEntity = {
         id: newUserId(),
         email: trimmedEmail,
         displayName: displayName.trim(),
         passwordHash: passwordService.hash(password),
+        tenantId: tenantId,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -111,7 +113,7 @@ export const signupFlowCommand: SignupFlowCommand = {
         }
         
         tenantEntity = {
-          id: newTenantId(),
+          id: tenantId,
           name: `${displayName} Personal`,
           slug: slug,
           ownerId: userEntity.id,

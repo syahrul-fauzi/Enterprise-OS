@@ -88,6 +88,12 @@ export function startExecutionTimer(executionId: string): void {
   executionStartTimes.set(executionId, Date.now());
 }
 
+export function computeDigest(value: unknown): string {
+  return createHash("sha256")
+    .update(JSON.stringify(canonicalize(value)))
+    .digest("hex");
+}
+
 export function recordRuntimeInvocation(input: {
   readonly capabilityId: string;
   readonly operationId: string;

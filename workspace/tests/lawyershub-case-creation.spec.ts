@@ -114,11 +114,11 @@ test.describe('LawyersHub Case Creation Journey (BATTLE-1B)', () => {
     await expect(createCaseButton).toBeVisible();
     console.log(`[1B-DEBUG-001] ✅ "Buat Kasus Hukum Baru" button found (LawyersHub-specific)`);
 
-    // Step 7: Click create case button and intercept API call - RL4-002 production fix: unified work creation endpoint
-    console.log('\n[1B-DEBUG-001] === STEP 7: CREATE LEGAL CASE ===');
+    // Step 7: Click create case button and intercept API call - CORE-003-01: Work-first creation (workId > workspaceId)
+    console.log('\n[1B-DEBUG-001] === STEP 7: CREATE LEGAL CASE (WORK-FIRST) ===');
     const caseCreateRequestPromise = page.waitForResponse(resp => 
-      resp.url().includes('/api/work/create') && resp.request().method() === 'POST',
-      { timeout: 60000 } // 60s timeout for real first-user execution (RL4-002 First Real Cohort requirement)
+      resp.url().includes('/api/capabilities/legal-case/create-case') && resp.request().method() === 'POST',
+      { timeout: 60000 } // 60s timeout for real first-user execution
     );
     
     // Click the create case button - uses event-driven cases:refresh, NOT page reload
@@ -127,16 +127,21 @@ test.describe('LawyersHub Case Creation Journey (BATTLE-1B)', () => {
     // Capture API response - page does NOT navigate, so we can safely read body
     let caseCreateStatus = 0;
     let createdCaseId = null;
+    let capturedWorkId = null; // CORE-003-01: Capture workId dari respons API (mandat workId precedence)
     const caseCreateResponse = await caseCreateRequestPromise;
     caseCreateStatus = caseCreateResponse.status();
     const caseData = await caseCreateResponse.json();
     createdCaseId = caseData.id;
+    capturedWorkId = caseData.workId; // CORE-003-01: Ekstrak workId dari respons canonical
     (globalThis as any).createdCaseId = createdCaseId;
-    console.log(`[1B-DEBUG-001] POST /api/cases/create STATUS: ${caseCreateStatus}`);
-    console.log(`[1B-DEBUG-001] ✅ Case created with ID: ${(globalThis as any).createdCaseId}`);
+    (globalThis as any).capturedWorkId = capturedWorkId;
+    console.log(`[1B-DEBUG-001] POST /api/capabilities/legal-case/create-case STATUS: ${caseCreateStatus}`);
+    console.log(`[1B-DEBUG-001] ✅ Case created with ID: ${createdCaseId}`);
+    console.log(`[1B-DEBUG-001] ✅ Bound to core Work primitive: ${capturedWorkId} (workId > workspaceId compliant)`);
     
-    // Verify the API call succeeded
+    // Verify the API call succeeded dan workId tidak null (CORE-003 invariant)
     expect(caseCreateStatus).toBe(201);
+    expect(capturedWorkId).toBeTruthy("workId harus ada pada setiap domain object yang terikat ke core Work primitive");
     
     // Step 7.1: Verify case appears immediately in list (before browser refresh)
         console.log('\n[1B-DEBUG-001] === STEP 7.1: VERIFY CASE APPEARS IN LIST (BEFORE REFRESH) ===');
@@ -149,8 +154,8 @@ test.describe('LawyersHub Case Creation Journey (BATTLE-1B)', () => {
         expect(caseBeforeRefresh).toBe(true);
         console.log(`[1B-DEBUG-001] ✅ Case ${createdCaseId} visible in list before refresh`);
 
-    // Step 8: Verify case survives refresh
-    console.log('\n[1B-DEBUG-001] === STEP 8: VERIFY PERSISTENCE ACROSS REFRESH ===');
+    // Step 8: Verify case survives refresh + CORE-003-02: Verify workId persists across reload
+    console.log('\n[1B-DEBUG-001] === STEP 8: VERIFY PERSISTENCE ACROSS REFRESH + WORKID CONTINUITY ===');
     await page.reload();
     await page.waitForSelector('[data-testid="workspace-id"]', { timeout: 10000 });
     
@@ -160,15 +165,37 @@ test.describe('LawyersHub Case Creation Journey (BATTLE-1B)', () => {
     console.log(`[1B-DEBUG-001] ✅ Same workspace persists after refresh: ${workspaceIdAfterRefresh}`);
     
     // Step 8.1: Verify case is still visible after refresh
-        console.log('\n[1B-DEBUG-001] === STEP 8.1: VERIFY CASE PERSISTS AFTER BROWSER REFRESH ===');
-        // Wait for loading state to disappear after page refresh
-        await page.waitForSelector('text/Loading cases...', { state: 'detached', timeout: 15000 });
-        // Simple, reliable locator - font-mono spans are rare and always contain case IDs in CaseCard
-        const caseIdSpanAfterRefresh = page.locator('span.font-mono').filter({ hasText: (globalThis as any).createdCaseId });
-        await caseIdSpanAfterRefresh.waitFor({ timeout: 15000 });
-        const caseAfterRefresh = await caseIdSpanAfterRefresh.isVisible();
-        expect(caseAfterRefresh).toBe(true);
-        console.log(`[1B-DEBUG-001] ✅ Case ${(globalThis as any).createdCaseId} visible in list after refresh - persistence verified!`);
+    console.log('\n[1B-DEBUG-001] === STEP 8.1: VERIFY CASE PERSISTS AFTER BROWSER REFRESH ===');
+    // Wait for loading state to disappear after page refresh
+    await page.waitForSelector('text/Loading cases...', { state: 'detached', timeout: 15000 });
+    // Simple, reliable locator - font-mono spans are rare and always contain case IDs in CaseCard
+    const caseIdSpanAfterRefresh = page.locator('span.font-mono').filter({ hasText: (globalThis as any).createdCaseId });
+    await caseIdSpanAfterRefresh.waitFor({ timeout: 15000 });
+    const caseAfterRefresh = await caseIdSpanAfterRefresh.isVisible();
+    expect(caseAfterRefresh).toBe(true);
+    console.log(`[1B-DEBUG-001] ✅ Case ${(globalThis as any).createdCaseId} visible in list after refresh`);
+    
+    // CORE-003-02: Verify workId persists and is visible in FACE (FACE continuity requirement)
+    console.log('\n[1B-DEBUG-001] === STEP 8.2: VERIFY WORKID CONTINUITY AFTER REFRESH (FACE-PROJECTION COMPLIANT) ===');
+    const workIdInCaseCard = page.locator(`[data-work-id="${capturedWorkId}"]`);
+    await workIdInCaseCard.waitFor({ timeout: 15000 });
+    const workIdVisible = await workIdInCaseCard.isVisible();
+    expect(workIdVisible).toBe(true, "workId harus terlihat di FACE layer setelah refresh (projection invariant)");
+    console.log(`[1B-DEBUG-001] ✅ workId ${capturedWorkId} masih terasosiasikan dengan case setelah refresh`);
+    
+    // FACE-CONTINUITY-001: Verify work exists di /my-reality (cross-workspace visibility)
+    await page.goto('/my-reality');
+    await page.waitForURL(/.*\/my-reality/, { timeout: 10000 });
+    const workInRealityList = page.locator(`[data-work-id="${capturedWorkId}"]`);
+    await workInRealityList.waitFor({ timeout: 15000 });
+    const workInRealityVisible = await workInRealityList.isVisible();
+    expect(workInRealityVisible).toBe(true, "work harus muncul di /my-reality sebagai continuity primitive (bukan terikat workspace)");
+    console.log(`[1B-DEBUG-001] ✅ workId ${capturedWorkId} muncul di /my-reality - High-Value Work Graph compliant`);
+    
+    // Kembali ke workspace page untuk menyelesaikan test
+    await page.goto(`/workspace/${workspaceIdAfterRefresh}`);
+    await page.waitForSelector('[data-testid="workspace-id"]', { timeout: 10000 });
+    console.log(`[1B-DEBUG-001] ✅ Work continuity fully verified - persistence + workId precedence terpenuhi!`);
     
     await page.screenshot({ path: 'artifacts/lawyershub-after-case-creation.png', fullPage: true });
 

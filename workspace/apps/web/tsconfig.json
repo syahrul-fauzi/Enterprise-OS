@@ -1,7 +1,7 @@
 {
   "extends": "../../config/typescript/nextjs.json",
   "compilerOptions": {
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "plugins": [
       {
         "name": "next"
@@ -38,9 +38,12 @@
       "@repo/capabilities-shared/*": ["../../capabilities/shared/implementation/*"],
       "@repo/capabilities-communication/*": ["../../capabilities/communication/implementation/*"],
       "@repo/capabilities-legal-case/*": ["../../capabilities/legal-case/implementation/*"],
-      "@repo/capabilities-work-core/*": ["../../capabilities/work-core/implementation/*"],
+      "@repo/capabilities-work-core": ["../../capabilities/work-core/contracts/work.contracts.ts"],
+      "@repo/capabilities-work-core/*": ["../../capabilities/work-core/*"],
       "@repo/core-kernel": ["../../packages/core/kernel/dist"],
-      "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*"]
+      "@repo/core-kernel/*": ["../../packages/core/kernel/dist/*"],
+      "@repo/presentation/pages/src": ["../../packages/presentation/pages/src"],
+      "@repo/presentation/pages/src/*": ["../../packages/presentation/pages/src/*"]
     }
   },
   "include": [
@@ -52,6 +55,8 @@
     "../../packages/presentation/experience/src/**/*.tsx",
     "../../packages/presentation/templates/src/**/*.ts",
     "../../packages/presentation/templates/src/**/*.tsx",
+    "../../packages/presentation/pages/src/**/*.ts",
+    "../../packages/presentation/pages/src/**/*.tsx",
     "../../capabilities/**/*.ts",
     "../../capabilities/**/*.tsx",
     "../../packages/core/**/*.ts",

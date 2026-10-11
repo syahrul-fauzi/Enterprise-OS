@@ -78,6 +78,43 @@ const MIGRATIONS: DatabaseMigration[] = [
   },
   {
     version: "004",
+    name: "add_deliveries_table",
+    description: "Create deliveries table for DEL-001 product-delivery persistence",
+    sql: `
+      -- Deliveries table (v004 - DEL-001 persistence)
+      CREATE TABLE IF NOT EXISTS deliveries (
+        id VARCHAR(255) PRIMARY KEY,
+        work_id VARCHAR(255) NOT NULL,
+        title TEXT NOT NULL,
+        description TEXT,
+        customer_need TEXT NOT NULL,
+        status VARCHAR(50) NOT NULL,
+        priority VARCHAR(50) NOT NULL,
+        category VARCHAR(100) NOT NULL,
+        session_id VARCHAR(255) NOT NULL,
+        linked_work_item_id VARCHAR(255) NOT NULL,
+        scheduled_delivery_date TIMESTAMP WITH TIME ZONE,
+        customer_id VARCHAR(255),
+        handler_id VARCHAR(255),
+        tracking_number VARCHAR(255),
+        tenant_id VARCHAR(255) NOT NULL,
+        workspace_id VARCHAR(255) NOT NULL,
+        actor_id VARCHAR(255) NOT NULL,
+        actual_delivery_date TIMESTAMP WITH TIME ZONE,
+        metadata JSONB,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      -- Indexes untuk query performance dan join dengan works table
+      CREATE INDEX IF NOT EXISTS idx_deliveries_work_id ON deliveries(work_id);
+      CREATE INDEX IF NOT EXISTS idx_deliveries_tenant_id ON deliveries(tenant_id);
+      CREATE INDEX IF NOT EXISTS idx_deliveries_status ON deliveries(status);
+      CREATE INDEX IF NOT EXISTS idx_deliveries_handler_id ON deliveries(handler_id);
+    `
+  },
+  {
+    version: "005",
     name: "seed_work_staging_001_communication",
     description: "Seed golden communication events for work-staging-001 with correct tenant/workspace",
     sql: `
@@ -129,7 +166,7 @@ const MIGRATIONS: DatabaseMigration[] = [
     `
   },
   {
-    version: "005",
+    version: "006",
     name: "add_evidence_table_rls",
     description: "Enable Row Level Security on evidence table to enforce evidence-immutable invariant",
     sql: `
@@ -166,70 +203,86 @@ const MIGRATIONS: DatabaseMigration[] = [
       CREATE INDEX IF NOT EXISTS idx_evidence_workspace_id ON evidence(workspace_id);
     `
   },
-  {
-    version: "006",
-    name: "enable_rls_on_core_tables",
-    description: "Enable Row Level Security on legal_cases and communication_events for tenant isolation",
-    sql: `
-      -- Create works table (core Work aggregate table for DB-AUTHORITY-001)
-      CREATE TABLE IF NOT EXISTS works (
-        id VARCHAR(255) PRIMARY KEY,
-        title TEXT NOT NULL,
-        description TEXT,
-        status VARCHAR(50) NOT NULL,
-        actor_id VARCHAR(255) NOT NULL,
-        tenant_id VARCHAR(255) NOT NULL,
-        workspace_id VARCHAR(255) NOT NULL,
-        participants JSONB NOT NULL DEFAULT '[]'::JSONB,
-        state_history JSONB NOT NULL DEFAULT '[]'::JSONB,
-        composition_id VARCHAR(255),
-        version INTEGER NOT NULL DEFAULT 1,
-        created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
-      );
-      
-      -- Create indexes for works table
-      CREATE INDEX IF NOT EXISTS idx_works_tenant_id ON works(tenant_id);
-      CREATE INDEX IF NOT EXISTS idx_works_workspace_id ON works(workspace_id);
-      CREATE INDEX IF NOT EXISTS idx_works_actor_id ON works(actor_id);
-      CREATE INDEX IF NOT EXISTS idx_works_status ON works(status);
-      
-      -- Enable RLS on works table for tenant isolation
-      ALTER TABLE works ENABLE ROW LEVEL SECURITY;
-      
-      -- Policy: Users can only access rows from their own tenant/workspace
-      DROP POLICY IF EXISTS tenant_isolation_works ON works;
-      CREATE POLICY tenant_isolation_works ON works
-        FOR ALL USING (
-          tenant_id = current_setting('app.current_tenant', true) 
-           AND workspace_id = current_setting('app.current_workspace', true)
-        );
-      
-      -- Enable RLS on legal_cases table for tenant isolation
-      ALTER TABLE legal_cases ENABLE ROW LEVEL SECURITY;
-      
-      -- Policy: Users can only access rows from their own tenant/workspace
-      DROP POLICY IF EXISTS tenant_isolation_legal_cases ON legal_cases;
-      CREATE POLICY tenant_isolation_legal_cases ON legal_cases
-        FOR ALL USING (
-          tenant_id = current_setting('app.current_tenant', true) 
-          AND workspace_id = current_setting('app.current_workspace', true)
-        );
-      
-      -- Enable RLS on communication_events table for tenant isolation
-      ALTER TABLE communication_events ENABLE ROW LEVEL SECURITY;
-      
-      -- Policy: Users can only access communication from their own tenant/workspace
-      DROP POLICY IF EXISTS tenant_isolation_communication ON communication_events;
-      CREATE POLICY tenant_isolation_communication ON communication_events
-        FOR ALL USING (
-          tenant_id = current_setting('app.current_tenant', true) 
-          AND workspace_id = current_setting('app.current_workspace', true)
-        );
-    `
-  },
+  // Add work_id column to works table (007 migration - backward compatibility)
   {
     version: "007",
+    name: "add_work_id_column_to_works_table",
+    up: `
+        -- Create works table (core Work aggregate table for DB-AUTHORITY-001)
+         CREATE TABLE IF NOT EXISTS works (
+           id VARCHAR(255) PRIMARY KEY,
+           work_id VARCHAR(255),
+           title TEXT NOT NULL,
+           description TEXT,
+           status VARCHAR(50) NOT NULL,
+           actor_id VARCHAR(255) NOT NULL,
+           tenant_id VARCHAR(255) NOT NULL,
+           workspace_id VARCHAR(255) NOT NULL,
+           participants JSONB NOT NULL DEFAULT '[]'::JSONB,
+           state_history JSONB NOT NULL DEFAULT '[]'::JSONB,
+           composition_id VARCHAR(255),
+           version INTEGER NOT NULL DEFAULT 1,
+           created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+           updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+           session_id VARCHAR(255),
+           linked_expression_id VARCHAR(255),
+           active_execution_id VARCHAR(255),
+           lease_until TIMESTAMP WITH TIME ZONE,
+           claim_status VARCHAR(50) DEFAULT 'unclaimed',
+           previous_execution_ids JSONB NOT NULL DEFAULT '[]'::JSONB,
+           boundaries_crossed JSONB NOT NULL DEFAULT '[]'::JSONB
+         );
+         
+         -- Add missing columns idempotently for existing databases
+         DO $$ 
+         BEGIN 
+           -- Add work_id column
+           IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'works') AND NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'work_id') THEN 
+             ALTER TABLE works ADD COLUMN work_id VARCHAR(255);
+           END IF;
+           -- Add session_id column
+           IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'works') AND NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'session_id') THEN 
+             ALTER TABLE works ADD COLUMN session_id VARCHAR(255);
+           END IF;
+           -- Add linked_expression_id column
+           IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'works') AND NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'linked_expression_id') THEN 
+             ALTER TABLE works ADD COLUMN linked_expression_id VARCHAR(255);
+           END IF;
+           -- Add active_execution_id column
+           IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'works') AND NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'active_execution_id') THEN 
+             ALTER TABLE works ADD COLUMN active_execution_id VARCHAR(255);
+           END IF;
+           -- Add lease_until column
+           IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'works') AND NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'lease_until') THEN 
+             ALTER TABLE works ADD COLUMN lease_until TIMESTAMP WITH TIME ZONE;
+           END IF;
+           -- Add claim_status column
+           IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'works') AND NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'claim_status') THEN 
+             ALTER TABLE works ADD COLUMN claim_status VARCHAR(50) DEFAULT 'unclaimed';
+           END IF;
+           -- Add previous_execution_ids column
+           IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'works') AND NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'previous_execution_ids') THEN 
+             ALTER TABLE works ADD COLUMN previous_execution_ids JSONB NOT NULL DEFAULT '[]'::JSONB;
+           END IF;
+           -- Add boundaries_crossed column
+           IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'works') AND NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'boundaries_crossed') THEN 
+             ALTER TABLE works ADD COLUMN boundaries_crossed JSONB NOT NULL DEFAULT '[]'::JSONB;
+           END IF;
+         END $$;
+    `,
+    down: `
+        -- Revert work_id column addition - idempotent rollback
+        DO $$
+        BEGIN
+          IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'works') AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'work_id') THEN
+            ALTER TABLE works DROP COLUMN IF EXISTS work_id;
+          END IF;
+        END $$;
+    `
+  },
+
+  {
+    version: "008",
     name: "add_knowledge_graph_tables",
     description: "Create knowledge_graph_nodes and knowledge_graph_edges tables for BETTER EOS value-reality hyper-relationships",
     sql: `
@@ -295,7 +348,7 @@ const MIGRATIONS: DatabaseMigration[] = [
     `
   },
   {
-    version: "008",
+    version: "010",
     name: "add_external_signals_table",
     description: "Create external_signals table for REALITY-002 inbound signal persistence",
     sql: `
@@ -339,7 +392,7 @@ const MIGRATIONS: DatabaseMigration[] = [
     `
   },
   {
-    version: "009",
+    version: "011",
     name: "add_service_directory_rls_policies",
     description: "Add RLS policies for service_requests and service_providers tables (TENANT-ISOLATION-001)",
     sql: `
@@ -366,7 +419,7 @@ const MIGRATIONS: DatabaseMigration[] = [
     `
   },
   {
-    version: "010",
+    version: "012",
     name: "add_communication_rls_policies",
     description: "Add RLS policies for communication_events table (TENANT-ISOLATION-001)",
     sql: `
@@ -382,7 +435,55 @@ const MIGRATIONS: DatabaseMigration[] = [
     `
   },
   {
-    version: "011",
+    version: "013",
+    name: "create_compliance_cases_table",
+    description: "Create compliance_cases table for investment-compliance (ILC) vertical slice",
+    sql: `
+      -- Create compliance_cases table (v012) for ILC vertical slice - matches legal_cases pattern with work-centric schema
+      CREATE TABLE IF NOT EXISTS compliance_cases (
+        id VARCHAR(255) PRIMARY KEY,
+        work_id VARCHAR(255) NOT NULL,
+        tenant_id VARCHAR(255) NOT NULL,
+        workspace_id VARCHAR(255),
+        title TEXT NOT NULL,
+        description TEXT,
+        status VARCHAR(50) NOT NULL,
+        priority VARCHAR(50) NOT NULL,
+        auditor_id VARCHAR(255),
+        investment_amount NUMERIC NOT NULL,
+        sector VARCHAR(255) NOT NULL,
+        risk_rating VARCHAR(50) NOT NULL,
+        source_discussion_id VARCHAR(255),
+        deadline_at TIMESTAMP WITH TIME ZONE,
+        closed_at TIMESTAMP WITH TIME ZONE,
+        created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+        updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
+        execution_frame VARCHAR(50),
+        metadata JSONB
+      );
+      
+      -- Indexes for work-centric queries (workId > workspaceId precedence per EOS mandate)
+      CREATE INDEX IF NOT EXISTS idx_compliance_cases_work_id ON compliance_cases(work_id);
+      CREATE INDEX IF NOT EXISTS idx_compliance_cases_tenant_id ON compliance_cases(tenant_id);
+      CREATE INDEX IF NOT EXISTS idx_compliance_cases_status ON compliance_cases(status);
+      
+      -- Enable RLS for tenant isolation (TENANT-ISOLATION-001 compliance)
+      ALTER TABLE compliance_cases ENABLE ROW LEVEL SECURITY;
+      
+      -- Create RLS policy with work_id support (same pattern as service_requests/legal_cases)
+      DROP POLICY IF EXISTS tenant_isolation_compliance_cases ON compliance_cases;
+      CREATE POLICY tenant_isolation_compliance_cases ON compliance_cases
+        FOR ALL USING (
+          tenant_id = current_setting('app.current_tenant', true) 
+          AND (
+            workspace_id = current_setting('app.current_workspace', true) 
+            OR work_id = current_setting('app.current_work', true)
+          )
+        );
+    `
+  },
+  {
+    version: "014",
     name: "seed_work_001_golden_path",
     description: "Seed WORK-001 for G2-01 Real Work → Browser golden path verification",
     sql: `
@@ -406,7 +507,7 @@ const MIGRATIONS: DatabaseMigration[] = [
     `
   },
   {
-    version: "011",
+    version: "015",
     name: "seed_work_002_lh_case",
     description: "Seed work-WORK-002 for LawyersHub golden path testing",
     sql: `
@@ -430,7 +531,7 @@ const MIGRATIONS: DatabaseMigration[] = [
     `
   },
   {
-    version: "011",
+    version: "016",
     name: "seed_lh_case_001_uaat_test",
     description: "Seed LH-CASE-001 for Human UAT - PT Pendirian PT Kopi Nusantara Mandiri",
     sql: `
@@ -454,7 +555,7 @@ const MIGRATIONS: DatabaseMigration[] = [
     `
   },
   {
-    version: "012",
+    version: "017",
     name: "add-occ-to-core-tables",
     description: "Add optimistic concurrency control version column to communication_events, evidence, users, sessions tables",
     sql: `
@@ -492,7 +593,7 @@ const MIGRATIONS: DatabaseMigration[] = [
     `
   },
   {
-    version: "013",
+    version: "018",
     name: "add-work-claim-columns-to-works",
     description: "Add WORK CLAIM v0.1 columns to works table: claim_status, lease_until, active_execution_id, previous_execution_ids, session_id",
     sql: `
@@ -540,6 +641,252 @@ const MIGRATIONS: DatabaseMigration[] = [
       CREATE INDEX IF NOT EXISTS idx_works_claim_status ON works(claim_status);
       CREATE INDEX IF NOT EXISTS idx_works_active_execution_id ON works(active_execution_id);
       CREATE INDEX IF NOT EXISTS idx_works_lease_until ON works(lease_until);
+    `
+  },
+  {
+    version: "019",
+    name: "add-work-id-to-core-tables-mandatory-workcentric",
+    description: "MANDATORY: Add work_id column to service_requests, communication_events, evidence_records (legal_cases already has work_id), make workspace_id optional, enforce workId > workspaceId precedence per EOS Work Continuity mandate",
+    sql: `
+      -- 1. Update knowledge_graph_nodes: add work_id, make workspace_id optional (supports High-Value Work Graph)
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'knowledge_graph_nodes' AND column_name = 'work_id') THEN
+          ALTER TABLE knowledge_graph_nodes ADD COLUMN work_id VARCHAR(255);
+        END IF;
+      END $$;
+      
+      -- Make workspace_id optional in knowledge_graph_nodes
+      DO $$ 
+      BEGIN 
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'knowledge_graph_nodes' AND column_name = 'workspace_id' AND is_nullable = 'NO') THEN
+          ALTER TABLE knowledge_graph_nodes ALTER COLUMN workspace_id DROP NOT NULL;
+        END IF;
+      END $$;
+
+      -- 2. Update knowledge_graph_edges: add work_id, make workspace_id optional
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'knowledge_graph_edges' AND column_name = 'work_id') THEN
+          ALTER TABLE knowledge_graph_edges ADD COLUMN work_id VARCHAR(255);
+        END IF;
+      END $$;
+      
+      DO $$ 
+      BEGIN 
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'knowledge_graph_edges' AND column_name = 'workspace_id' AND is_nullable = 'NO') THEN
+          ALTER TABLE knowledge_graph_edges ALTER COLUMN workspace_id DROP NOT NULL;
+        END IF;
+      END $$;
+
+      -- 3. Add work_id to service_requests (MIGRATION 014 CORE REQUIREMENT)
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'service_requests' AND column_name = 'work_id') THEN
+          ALTER TABLE service_requests ADD COLUMN work_id VARCHAR(255) NOT NULL;
+        END IF;
+      END $$;
+      
+      -- Make workspace_id optional in service_requests
+      DO $$ 
+      BEGIN 
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'service_requests' AND column_name = 'workspace_id' AND is_nullable = 'NO') THEN
+          ALTER TABLE service_requests ALTER COLUMN workspace_id DROP NOT NULL;
+        END IF;
+      END $$;
+
+      -- 4. Update evidence table: ensure work_id is present, make workspace_id optional
+      DO $$ 
+      BEGIN 
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'evidence' AND column_name = 'workspace_id' AND is_nullable = 'NO') THEN
+          ALTER TABLE evidence ALTER COLUMN workspace_id DROP NOT NULL;
+        END IF;
+      END $$;
+
+      -- 5. Update legal_cases: make workspace_id optional (already has work_id from v001)
+      DO $$ 
+      BEGIN 
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'legal_cases' AND column_name = 'workspace_id' AND is_nullable = 'NO') THEN
+          ALTER TABLE legal_cases ALTER COLUMN workspace_id DROP NOT NULL;
+        END IF;
+      END $$;
+
+      -- 6. Add work_id indexes for all tables to support work-centric RLS queries
+      CREATE INDEX IF NOT EXISTS idx_kg_nodes_work_id ON knowledge_graph_nodes(work_id);
+      CREATE INDEX IF NOT EXISTS idx_kg_edges_work_id ON knowledge_graph_edges(work_id);
+      CREATE INDEX IF NOT EXISTS idx_service_requests_work_id ON service_requests(work_id);
+      
+      -- 7. Update RLS policies to support work_id filtering (app.current_work)
+      -- Update service_requests RLS policy to allow work_id-based access (workId > workspaceId precedence)
+      DROP POLICY IF EXISTS tenant_isolation_service_requests ON service_requests;
+      CREATE POLICY tenant_isolation_service_requests ON service_requests
+        FOR ALL USING (
+          tenant_id = current_setting('app.current_tenant', true) 
+          AND (
+            workspace_id = current_setting('app.current_workspace', true) 
+            OR work_id = current_setting('app.current_work', true)
+          )
+        );
+      
+      -- Update knowledge_graph_nodes RLS policy
+      DROP POLICY IF EXISTS tenant_isolation_kg_nodes ON knowledge_graph_nodes;
+      CREATE POLICY tenant_isolation_kg_nodes ON knowledge_graph_nodes
+        FOR ALL USING (
+          tenant_id = current_setting('app.current_tenant', true) 
+          AND (
+            workspace_id = current_setting('app.current_workspace', true) 
+            OR work_id = current_setting('app.current_work', true)
+          )
+        );
+      
+      -- Update knowledge_graph_edges RLS policy
+      DROP POLICY IF EXISTS tenant_isolation_kg_edges ON knowledge_graph_edges;
+      CREATE POLICY tenant_isolation_kg_edges ON knowledge_graph_edges
+        FOR ALL USING (
+          tenant_id = current_setting('app.current_tenant', true) 
+          AND (
+            workspace_id = current_setting('app.current_workspace', true) 
+            OR work_id = current_setting('app.current_work', true)
+          )
+        );
+    `
+  },
+  {
+    version: "020",
+    name: "add-high-value-work-graph-tables",
+    description: "Create products, requirements, outcomes tables for High-Value Work Graph implementation (CORE-002 mandate)",
+    sql: `
+      -- 1. Create products table (core High-Value Work Graph node)
+      CREATE TABLE IF NOT EXISTS products (
+        id VARCHAR(255) PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        owner_id VARCHAR(255) NOT NULL,
+        tenant_id VARCHAR(255) NOT NULL,
+        linked_requirement_ids TEXT[] NOT NULL DEFAULT '{}',
+        linked_work_ids TEXT[] NOT NULL DEFAULT '{}',
+        created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- Create indexes for products table
+      CREATE INDEX IF NOT EXISTS idx_products_tenant_id ON products(tenant_id);
+      CREATE INDEX IF NOT EXISTS idx_products_owner_id ON products(owner_id);
+
+      -- 2. Create requirements table (connected to products and work)
+      CREATE TABLE IF NOT EXISTS requirements (
+        id VARCHAR(255) PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        status VARCHAR(50) NOT NULL DEFAULT 'draft',
+        priority VARCHAR(50) NOT NULL DEFAULT 'medium',
+        owner_id VARCHAR(255) NOT NULL,
+        tenant_id VARCHAR(255) NOT NULL,
+        product_id VARCHAR(255) REFERENCES products(id),
+        linked_work_ids TEXT[] NOT NULL DEFAULT '{}',
+        created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- Create indexes for requirements table
+      CREATE INDEX IF NOT EXISTS idx_requirements_tenant_id ON requirements(tenant_id);
+      CREATE INDEX IF NOT EXISTS idx_requirements_product_id ON requirements(product_id);
+      CREATE INDEX IF NOT EXISTS idx_requirements_status ON requirements(status);
+
+      -- 3. Create outcomes table (connected to work, captures work results)
+      CREATE TABLE IF NOT EXISTS outcomes (
+        id VARCHAR(255) PRIMARY KEY,
+        work_id VARCHAR(255) NOT NULL REFERENCES works(id),
+        type VARCHAR(50) NOT NULL,
+        description TEXT NOT NULL,
+        evidence_ids TEXT[] NOT NULL DEFAULT '{}',
+        actor_id VARCHAR(255) NOT NULL,
+        tenant_id VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- Create indexes for outcomes table
+      CREATE INDEX IF NOT EXISTS idx_outcomes_work_id ON outcomes(work_id);
+      CREATE INDEX IF NOT EXISTS idx_outcomes_tenant_id ON outcomes(tenant_id);
+      CREATE INDEX IF NOT EXISTS idx_outcomes_type ON outcomes(type);
+
+      -- 4. Add foreign key constraints to enforce graph integrity
+      -- Ensure all linked_work_ids in products reference valid works
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE constraint_name = 'fk_products_linked_work_ids') THEN
+          -- PostgreSQL doesn't support array foreign keys directly, so we add a trigger to validate
+          CREATE OR REPLACE FUNCTION validate_product_work_ids() RETURNS TRIGGER AS $$
+          BEGIN
+            IF NEW.linked_work_ids IS NOT NULL AND array_length(NEW.linked_work_ids, 1) > 0 THEN
+              IF NOT EXISTS (
+                SELECT 1 FROM works WHERE id = ANY(NEW.linked_work_ids)
+              ) THEN
+                RAISE EXCEPTION 'Invalid work_id in linked_work_ids for product %', NEW.id;
+              END IF;
+            END IF;
+            RETURN NEW;
+          END $$ LANGUAGE plpgsql;
+
+          CREATE TRIGGER trigger_validate_product_work_ids BEFORE INSERT OR UPDATE ON products
+            FOR EACH ROW EXECUTE FUNCTION validate_product_work_ids();
+        END IF;
+      END $$;
+
+      -- 5. Add indexes to support HighValueWorkGraphQuery methods
+      -- Support getWorksForProduct: query works linked to a product
+      CREATE INDEX IF NOT EXISTS idx_products_linked_work_ids_gin ON products USING GIN(linked_work_ids);
+      -- Support getProductForWork: query products linked to a work
+      CREATE INDEX IF NOT EXISTS idx_products_linked_work_ids ON products(linked_work_ids);
+      -- Support getOutcomesForWork: query outcomes linked to a work (already has work_id index)
+    `
+  },
+  {
+    version: "021",
+    name: "add-boundaries-crossed-to-works-table",
+    description: "Add boundaries_crossed JSONB column to works table for W-002 High-Value Work boundary tracking mandate",
+    sql: `
+      -- Add boundaries_crossed column (JSONB for storing array of boundary crossing events)
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'boundaries_crossed') THEN
+          ALTER TABLE works ADD COLUMN boundaries_crossed JSONB NOT NULL DEFAULT '[]'::JSONB;
+        END IF;
+      END $$;
+
+      -- Create GIN index for efficient querying of boundaries_crossed array
+      CREATE INDEX IF NOT EXISTS idx_works_boundaries_crossed ON works USING GIN (boundaries_crossed);
+    `
+  },
+  {
+    version: "022",
+    name: "add-rls-audit-policy",
+    description: "Add audit policy for RLS compliance logging and traceability",
+    sql: `
+      -- Create RLS audit policy for all core tables to enforce compliance logging
+      CREATE OR REPLACE FUNCTION audit_rls_access() RETURNS TRIGGER AS $$
+      BEGIN
+        INSERT INTO audit_logs (
+          resource_type, 
+          resource_id, 
+          actor_id, 
+          tenant_id, 
+          workspace_id,
+          access_timestamp,
+          access_type
+        ) VALUES (
+          TG_TABLE_NAME,
+          NEW.id,
+          current_setting('app.current_actor', true),
+          current_setting('app.current_tenant', true),
+          current_setting('app.current_workspace', true),
+          NOW(),
+          TG_OP
+        );
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql;
     `
   }
 

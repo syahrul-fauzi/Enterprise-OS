@@ -27,6 +27,13 @@ export const casePermissions: CasePermissionRule[] = [
     scope: "tenant",
   },
   {
+    action: "approve-ruling",
+    resource: "case",
+    grantedByDefault: false,
+    scope: "tenant",
+    allowedActors: ["judge.test.001", "ai.judge.001"], // AI-001: AI judge actor authorized for approval
+  },
+  {
     action: "close",
     resource: "case",
     grantedByDefault: false,

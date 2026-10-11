@@ -1,6 +1,6 @@
 {
+  "extends": "../../../tsconfig.json",
   "compilerOptions": {
-    "rootDir": "./src",
     "outDir": "./dist",
     "strict": true,
     "strictNullChecks": true,
@@ -15,14 +15,19 @@
     "types": ["node"],
     "ignoreDeprecations": "5.0",
     "baseUrl": "./",
+    "rootDirs": ["./src", "../../../capabilities/"],
     "paths": {
-      "@repo/core-capability-registry": ["../../packages/core/capability-registry/dist/src/index.js"]
+      "@repo/core-runtime/work-continuity": ["../../packages/core/runtime/dist/src/work-continuity.js"]
     }
   },
   "references": [
     {"path": "../../../capabilities/agent-orchestration"},
-    {"path": "../../../capabilities/api-platform"}
+    {"path": "../../../capabilities/api-platform"},
+    {"path": "../../../capabilities/communication"},
+    {"path": "../../../capabilities/connector-ecosystem"},
+    {"path": "../../../capabilities/trust-framework"},
+    {"path": "../../../capabilities/work-core"}
   ],
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/yaml.d.ts"],
   "exclude": ["dist", "build", "node_modules"]
 }

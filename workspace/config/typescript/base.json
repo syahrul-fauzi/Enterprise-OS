@@ -18,6 +18,11 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2022",
+    "baseUrl": ".",
+    "paths": {
+      "@repo/*": ["./packages/*", "./packages/core/*"],
+      "@capabilities/*": ["./capabilities/*"]
+    },
     "allowImportingTsExtensions": false,
     "emitDeclarationOnly": false,
     "verbatimModuleSyntax": false,

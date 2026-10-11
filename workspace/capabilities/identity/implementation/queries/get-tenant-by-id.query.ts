@@ -3,7 +3,7 @@ import { z } from "zod";
 import {
   TenantId,
   type TenantAggregate,
-} from "../contracts/identity.contracts.js";
+} from "@repo/contracts-core";
 import { getTenantRepositoryPostgres } from "../repositories/index.js";
 
 export const GetTenantByIdInputSchema = z.object({

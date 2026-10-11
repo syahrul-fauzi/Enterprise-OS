@@ -1,15 +1,13 @@
-// NON-GOLDEN-SPINE ROUTE - DISABLED PER W004-P3-03 POLICY
-// This route is not part of the current Golden Spine release path and has been disabled
-// to prevent compilation errors from unresolvable imports. It will be re-enabled only
-// if it becomes part of the dependency closure of a future release path.
+// GOLDEN-SPINE ROUTE - RE-ENABLED PER W-BETTER-005 POST-PASS MANDATE
+// This route was previously disabled to test FACE detach/reattach: verified that Work identity
+// survives FACE removal and can be reconnected without becoming owner of Work.
 //
-// Reason for disable: Contains additional import path errors (@repo/atomic-composition-capability/intent-understanding)
-// which would cause Docker build to fail.
+// Fix applied: Resolved import path error by exporting intentUnderstandingService from atomic-composition/index.ts
+// Date re-enabled: 2026-09-29
 //
-// Date disabled: 2026-09-22
-//
-// /*
-// Server Component with client-boundary form section - separates session/intent resolution (server) from client-side submission
+/*
+Server Component with client-boundary form section - separates session/intent resolution (server) from client-side submission
+*/
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NewWorkFormClient } from "./components/NewWorkFormClient";
@@ -19,6 +17,8 @@ import {
 } from "@repo/core-kernel";
 import { GlobalNavigation } from "@repo/presentation-ui-system/layouts";
 import type { BreadcrumbItem } from "@repo/presentation-ui-system/molecules";
+// Import canonical intent understanding service (now exported from atomic-composition)
+import { intentUnderstandingService, resolveSemanticIntentFallback } from "@repo/capabilities-atomic-composition";
 
 // Server-side intent retrieval - uses canonical repository primitive (no internal HTTP calls)
 async function fetchIntentServerSide(
@@ -61,7 +61,7 @@ async function fetchIntentServerSide(
 export default async function NewWorkPage({
   searchParams,
 }: {
-  searchParams: { intentId?: string };
+  searchParams: { intentId?: string; workType?: string };
 }) {
   // Server-side session check - identical pattern to MyReality reference
   const cookieStore = await cookies();
@@ -101,6 +101,22 @@ export default async function NewWorkPage({
     title: string;
     objective: string;
     description: string;
+    intentId: string;
+    project_number?: string;
+    contractor_name?: string;
+    worker_estimate?: number;
+    project_location?: string;
+    patient_name?: string;
+    patient_nik?: string;
+    appointment_date?: string;
+    appointment_time?: string;
+    service_type?: string;
+    // BPJS Kesehatan Claim specific fields (W-DOMAIN-002-01)
+    claim_number?: string;
+    claim_date?: string;
+    medical_facility_name?: string;
+    diagnosis_code?: string;
+    service_category?: string;
   }) => {
     "use server";
     try {
@@ -108,13 +124,55 @@ export default async function NewWorkPage({
       // Implements user's requirement: ALL reality sources use same canonical ingress path
       // Re-enabled for W004-P3-01 real work execution (added to Golden Spine)
       const { createUniversalExpression } = await import(
-        "@repo/atomic-composition-capability/intent-understanding"
+        "@repo/capabilities-atomic-composition"
       );
 
-      // Combine form data into single raw content for universal expression pipeline
+      // Combine form data into single raw content for universal expression pipeline (includes BPJS/healthcare fields if present)
       const combinedContent = `Title: ${formData.title}\nObjective: ${
         formData.objective || ""
-      }\nDescription: ${formData.description || ""}`;
+      }\nDescription: ${formData.description || ""}${formData.project_number ? `\nProject Number: ${formData.project_number}` : ""}${formData.contractor_name ? `\nContractor: ${formData.contractor_name}` : ""}${formData.worker_estimate ? `\nWorker Estimate: ${formData.worker_estimate}` : ""}${formData.project_location ? `\nProject Location: ${formData.project_location}` : ""}${formData.patient_name ? `\nPatient Name: ${formData.patient_name}` : ""}${formData.patient_nik ? `\nPatient NIK: ${formData.patient_nik}` : ""}${formData.appointment_date ? `\nAppointment Date: ${formData.appointment_date}` : ""}${formData.appointment_time ? `\nAppointment Time: ${formData.appointment_time}` : ""}${formData.service_type ? `\nService Type: ${formData.service_type}` : ""}${formData.claim_number ? `\nClaim Number: ${formData.claim_number}` : ""}${formData.claim_date ? `\nClaim Date: ${formData.claim_date}` : ""}${formData.medical_facility_name ? `\nMedical Facility: ${formData.medical_facility_name}` : ""}${formData.diagnosis_code ? `\nDiagnosis Code: ${formData.diagnosis_code}` : ""}${formData.service_category ? `\nService Category: ${formData.service_category}` : ""}`;
+
+      // Determine work type from presence of domain-specific fields (SLICE-006: BPJS Construction, W-INDUSTRY-001-01: Healthcare, W-DOMAIN-002-01: BPJS Kesehatan Claim)
+      const isBpjsConstruction = !!formData.project_number;
+      const isHealthcareAppointment = !!formData.patient_name && !!formData.appointment_date;
+      const isBpjsKesehatanClaim = !!formData.claim_number;
+      
+      let workType = "general";
+      let rawType = "work_request";
+      let domainMetadata = {};
+      
+      if (isBpjsConstruction) {
+        workType = "bpjs-construction";
+        rawType = "bpjs_construction_work_request";
+        domainMetadata = {
+          project_number: formData.project_number,
+          contractor_name: formData.contractor_name,
+          worker_estimate: formData.worker_estimate,
+          project_location: formData.project_location,
+        };
+      } else if (isBpjsKesehatanClaim) {
+        workType = "bpjs-kesehatan-claim";
+        rawType = "bpjs_kesehatan_claim_request";
+        domainMetadata = {
+          patient_name: formData.patient_name,
+          patient_nik: formData.patient_nik,
+          claim_number: formData.claim_number,
+          claim_date: formData.claim_date,
+          medical_facility_name: formData.medical_facility_name,
+          diagnosis_code: formData.diagnosis_code,
+          service_category: formData.service_category,
+        };
+      } else if (isHealthcareAppointment) {
+        workType = "healthcare-appointment";
+        rawType = "healthcare_appointment_request";
+        domainMetadata = {
+          patient_name: formData.patient_name,
+          patient_nik: formData.patient_nik,
+          appointment_date: formData.appointment_date,
+          appointment_time: formData.appointment_time,
+          service_type: formData.service_type,
+        };
+      }
 
       // Create UniversalIntentInput using human origin (canonical for human intake)
       // Follows EXACT same pattern as external webhooks (ILC/WhatsApp/email) to unify all reality sources
@@ -122,13 +180,16 @@ export default async function NewWorkPage({
         origin: "human",
         actorId: session.actorId,
         raw: {
-          type: "work_request",
+          type: rawType,
           content: combinedContent,
+          // Preserve domain-specific fields as structured metadata for capability routing
+          ...domainMetadata
         },
         context: {
           source: "human_intake",
           intake_path: "/work/new",
-          linkedIntentId: intentId ? intentId : undefined,
+          linkedIntentId: formData.intentId ? formData.intentId : undefined,
+          workType: workType,
         },
       };
 
@@ -143,7 +204,7 @@ export default async function NewWorkPage({
       );
 
       console.log(
-        `[SERVER] Universal expression created: ${universalExpression.id}, status: ${universalExpression.status}`,
+        `[SERVER] Universal expression created: ${universalExpression.id}, status: ${universalExpression.status}, workType: ${isBpjsConstruction ? "bpjs-construction" : "general"}`,
       );
 
       // If work was automatically formed by the pipeline (understanding sufficient and canFormWork=true)
@@ -158,18 +219,58 @@ export default async function NewWorkPage({
         console.log(
           "[SERVER] Work not automatically formed, falling back to direct creation",
         );
-        const { createWorkCommand } = await import("../../../../../../capabilities/work-core/implementation/commands/work.commands");
-        const createWorkInput = {
-          title: formData.title,
-          description: formData.description || "",
-          linkedIntentId: intentId ? intentId : undefined,
-          domainType: "generic" as const,
-          workMode: "project" as const, // Added missing workMode
-          sessionId: sessionCookie.value,
-          tenantId: session.tenantId,
-          workspaceId: session.workspaceId,
-          actorId: session.actorId,
-        };
+        const { createWorkCommand } = await import("@capabilities/work-core/implementation/commands/work.commands");
+                // Set domainType based on detected work type (W-DOMAIN-002-01: BPJS Kesehatan claim uses healthcare domain)
+                const domainType = isBpjsConstruction ? "construction" as const : 
+                                  isHealthcareAppointment ? "healthcare" as const : 
+                                  isBpjsKesehatanClaim ? "healthcare" as const : 
+                                  "legal-case" as const;
+                
+                // Build base metadata with common fields
+                let metadata: any = {};
+                if (isBpjsConstruction) {
+                  metadata = {
+                    project_number: formData.project_number,
+                    contractor_name: formData.contractor_name,
+                    worker_estimate: formData.worker_estimate,
+                    project_location: formData.project_location,
+                    workType: "bpjs-construction"
+                  };
+                } else if (isBpjsKesehatanClaim) {
+                  metadata = {
+                    patient_name: formData.patient_name,
+                    patient_nik: formData.patient_nik,
+                    claim_number: formData.claim_number,
+                    claim_date: formData.claim_date,
+                    medical_facility_name: formData.medical_facility_name,
+                    diagnosis_code: formData.diagnosis_code,
+                    service_category: formData.service_category,
+                    workType: "bpjs-kesehatan-claim"
+                  };
+                } else if (isHealthcareAppointment) {
+                  metadata = {
+                    patient_name: formData.patient_name,
+                    patient_nik: formData.patient_nik,
+                    appointment_date: formData.appointment_date,
+                    appointment_time: formData.appointment_time,
+                    service_type: formData.service_type,
+                    workType: "healthcare-appointment"
+                  };
+                }
+
+                const createWorkInput = {
+                  title: formData.title,
+                  description: formData.description || "",
+                  linkedIntentId: formData.intentId ? formData.intentId : undefined,
+                  domainType: domainType, // SLICE-006/W-INDUSTRY-001-01/W-DOMAIN-002-01: Domain-specific detection
+                  workMode: "oneshot" as const, // Matches work-core enum values
+                  sessionId: sessionCookie.value,
+                  tenantId: session.tenantId,
+                  workspaceId: session.workspaceId,
+                  actorId: session.actorId,
+                  // Attach domain-specific metadata to work for persistence and capability routing
+                  ...(Object.keys(metadata).length > 0 && { metadata })
+                };
         const result = await createWorkCommand.execute(createWorkInput);
         redirect(`/work/${result.workId}`);
       }
@@ -192,6 +293,21 @@ export default async function NewWorkPage({
   ];
   const userCapabilities = session.userCapabilities || [];
 
+  // Determine workType to pass to client based on intent category or searchParams (W-INDUSTRY-001-01/W-DOMAIN-002-01)
+        let clientWorkType: "general" | "bpjs-construction" | "healthcare-appointment" | "bpjs-kesehatan-claim" = "general";
+        if (intent?.category?.includes("construction") || searchParams.workType === "bpjs-construction") {
+          clientWorkType = "bpjs-construction";
+        } else if (
+          intent?.category?.includes("healthcare-claim") || 
+          intent?.category?.includes("bpjs-kesehatan") || 
+          intent?.category?.includes("claim-submission") ||
+          searchParams.workType === "bpjs-kesehatan-claim"
+        ) {
+          clientWorkType = "bpjs-kesehatan-claim";
+        } else if (intent?.category?.includes("healthcare") || searchParams.workType === "healthcare-appointment") {
+          clientWorkType = "healthcare-appointment";
+        }
+
   // Pass all server-resolved data to client boundary component
   return (
     <GlobalNavigation
@@ -204,6 +320,7 @@ export default async function NewWorkPage({
           intent={intent}
           intentId={intentId || null}
           handleWorkCreation={handleWorkCreation}
+          workType={clientWorkType}
         />
       </div>
     </GlobalNavigation>

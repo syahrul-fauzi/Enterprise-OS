@@ -5,6 +5,6 @@
     "strictNullChecks": true,
     "types": ["node"]
   },
-  "include": ["src"],
+  "include": ["src", "src/yaml.d.ts"],
   "exclude": ["node_modules"]
 }

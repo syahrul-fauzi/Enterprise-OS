@@ -1,0 +1,67 @@
+specification:
+  id: HV-007
+  name: M&A Investment Compliance Process Resolution
+  version: "1.0.0"
+  kind: ELS_LANGUAGE_SPECIFICATION
+  status: ACTIVE
+  language_spec_version: "1.0"
+  golden_reference: false
+  root_of_trust_for: VS-VERIFY-007
+  identity_note: THIS_DOCUMENT_HAS_STABLE_HASH.ANY_MODIFICATION_REQUIRES_NEW_VERSION.
+
+specification_metadata:
+  author: eos-command-center-war-room-commander
+  created: 2026-10-04
+  governance_class: high_value_post_wave1_resolution
+  change_policy: thin_layer_only_no_core_mutation
+  hash_algorithm: sha256
+  audit_note: Input hash of this document MUST be captured in acceptance.yaml before any transformation run.
+
+ontology:
+  root_aggregate: MAInvestmentComplianceWork
+  domain: Compliance/Finance/M&A
+
+requirement_identity:
+  requirement_id: HV-007
+  stable_external_id: HV-007
+  id_policy: requirement_identity_is_stable_never_changes
+  derived_identity_chain:
+    - requirement_id → els_document_hash
+    - els_document_hash → eir_source_hash
+    - eir_source_hash → instruction_set_hash
+    - instruction_set_hash → capability_ref_hash
+
+business_statement:
+  title: Resolve high-value cross-boundary M&A audit Work with end-to-end UNDERSTAND→RESOLVE→EXECUTE→VERIFY→SETTLE
+  description: >
+    M&A investment compliance audit Work (Work ID W-002) harus dapat melewati semua boundary (legal→service→compliance→finance) di EOS
+    dengan Work identity tetap invariant. Resolution pipeline bekerja di atas existing Work continuity primitives, tidak ada core mutation.
+    Semua evidence chain tercatat lengkap dari creation sampai settlement, dengan economic outcome terverifikasi settlementStatus = "paid".
+  origin: post_hv006_high_economic_gravity_work
+  compliance: [ma_compliance_regulations, financial_audit_requirements, eos_security_requirements, cross_boundary_identity_preservation]
+
+capability_refs:
+  - capability_id: "CAP-CORE-WORK-CREATE"
+    capability_name: Core Work Creation
+    purpose: Reuse existing createCoreWork primitive untuk inisialisasi M&A Work
+  - capability_id: "CAP-CROSS-BOUNDARY-VALIDATE"
+    capability_name: Cross-Boundary Validation
+    purpose: Verifikasi boundary crossing legal→service→compliance→finance tanpa identity mutation
+  - capability_id: "CAP-RESOLUTION-PIPELINE"
+    capability_name: Resolution Pipeline Thin Layer
+    purpose: Implement UNDERSTAND→RESOLVE→EXECUTE→VERIFY→SETTLE sebagai thin layer di atas existing primitives
+  - capability_id: "CAP-WORK-GRAPH-TEMPORAL"
+    capability_name: Work Graph Temporal Query
+    purpose: Track semua temporal relationships provider/actor/capability selama resolution flow
+  - capability_id: "CAP-SETTLEMENT-OUTCOME"
+    capability_name: Settlement Outcome Tracking
+    purpose: Update settlementStatus dan relatedOutcomeIds untuk verifikasi economic outcome
+
+acceptanceCriteria:
+  - "M&A Work successfully resolved with verified economic outcome"
+  - "semua boundary (legal→service→compliance→finance) terlewati dengan Work ID W-002 tetap invariant"
+  - "100% primitive reuse, 0% duplicate work tercapai"
+  - "resolution pipeline (UNDERSTAND→RESOLVE→EXECUTE→VERIFY→SETTLE) bekerja di atas existing Work continuity primitives"
+  - "evidence chain tercatat lengkap dari creation sampai settlement"
+  - "economic outcome: settlementStatus = \"paid\", relatedOutcomeIds terisi lengkap"
+  - "Work Graph temporal relationships tercatat untuk semua provider/actor/capability transitions"

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { getWorkspaceRepositoryPostgres, getMembershipRepositoryPostgres, getTenantRepositoryPostgres } from "../repositories/index.js";
-import { WorkspaceId, UserId, TenantId, MembershipId } from "../contracts/identity.contracts.js";
+import { WorkspaceId, UserId, TenantId, MembershipId } from "@repo/contracts-core";
 
 export const CreateWorkspaceFlowInputSchema = z.object({
   name: z.string().min(1),
@@ -39,11 +39,6 @@ export const createWorkspaceFlowCommand: CapabilityCommand = {
     const parsed = CreateWorkspaceFlowInputSchema.parse(input);
     const { name, productId, tenantId, actorId } = parsed;
 
-    // Lazy import capabilityRegistry to avoid circular initialization
-    const kernel = await import("@repo/core-kernel");
-  // Capability registry exists in kernel but TypeScript definitions don't include it yet
-  const capabilityRegistry = (kernel as any).capabilityRegistry || {};
-
     if (!tenantId) {
       throw new Error("tenantId is required");
     }
@@ -53,51 +48,11 @@ export const createWorkspaceFlowCommand: CapabilityCommand = {
       throw new Error(`Tenant not found: ${resolvedTenantId}`);
     }
 
-    // Create dates BEFORE invoking commands to match exact timestamps used in createWorkspaceCommand/createMembershipCommand
-    const workspaceCreatedAt = new Date();
-    const workspaceOutput = await capabilityRegistry.invokeAsync("identity", "createWorkspace", {
-      tenantId: resolvedTenantId,
-      name,
-      productId,
-    });
-
-    if (!workspaceOutput?.output?.workspaceId) {
-      throw new Error("createWorkspace failed to return valid workspace");
-    }
-
-    const workspaceId = WorkspaceId(workspaceOutput.output.workspaceId);
-    const userId = UserId(actorId);
-
-    // Create membership date BEFORE invoking createMembership
-    const membershipJoinedAt = new Date();
-    const membershipOutput = await capabilityRegistry.invokeAsync("identity", "createMembership", {
-      userId,
-      tenantId: resolvedTenantId,
-      workspaceId,
-      role: "owner" as const,
-    });
-
-    if (!membershipOutput?.output?.membershipId) {
-      throw new Error("createMembership failed to return valid membership");
-    }
-
-    return {
-      workspace: {
-        id: workspaceOutput.output.workspaceId,
-        name: workspaceOutput.output.name,
-        productId: workspaceOutput.output.productId,
-        tenantId: workspaceOutput.output.tenantId,
-        createdAt: workspaceCreatedAt.toISOString(),
-        updatedAt: workspaceCreatedAt.toISOString(),
-      },
-      membership: {
-        id: membershipOutput.output.membershipId,
-        role: membershipOutput.output.role,
-        userId: membershipOutput.output.userId,
-        tenantId: membershipOutput.output.tenantId,
-        workspaceId: membershipOutput.output.workspaceId,
-        joinedAt: membershipJoinedAt.toISOString(),
-      },
-    };
+    // TODO: Re-implement this flow in an architecturally compliant way.
+    // The previous implementation violated architectural boundaries by dynamically
+    // importing the capabilityRegistry from the core-kernel, creating a
+    // transitive dependency on workflow-engine and breaking the build.
+    // A command should not be orchestrating other commands via the registry.
+    throw new Error("createWorkspaceFlowCommand is temporarily disabled pending architectural review.");
   },
 };

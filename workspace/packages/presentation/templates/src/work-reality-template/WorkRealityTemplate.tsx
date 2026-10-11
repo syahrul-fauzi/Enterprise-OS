@@ -17,6 +17,13 @@ export interface WorkRealityTemplateProps {
   userCapabilities?: string[];
   productId?: string;
   breadcrumbItems?: readonly BreadcrumbItem[];
+  onAssignLawyer?: (formData: FormData) => Promise<void>;
+  onAddEvidence?: (formData: FormData) => Promise<void>;
+  onMarkCompleted?: (formData: FormData) => Promise<void>;
+  onExecuteAction?: (actionId: string, formData?: FormData) => Promise<void>;
+  onSendMessage?: (content: string) => Promise<void>;
+  onAddParticipant?: (name: string, role: any) => Promise<void>;
+  onInitiateSignature?: (formData: FormData) => Promise<void>;
 }
 
 export function WorkRealityTemplate({ 
@@ -27,7 +34,14 @@ export function WorkRealityTemplate({
   error = null,
   userCapabilities = [],
   productId = "default",
-  breadcrumbItems
+  breadcrumbItems,
+  onAssignLawyer,
+  onAddEvidence,
+  onMarkCompleted,
+  onExecuteAction,
+  onSendMessage,
+  onAddParticipant,
+  onInitiateSignature
 }: WorkRealityTemplateProps) {
 
   // Work List View
@@ -139,9 +153,23 @@ export function WorkRealityTemplate({
   const handleAssignLawyer = async (formData: FormData) => dispatchAction('assignLawyer', formData);
   const handleAddEvidence = async (formData: FormData) => dispatchAction('addEvidence', formData);
   const handleMarkCompleted = async (formData: FormData) => dispatchAction('markCompleted', formData);
-  const handleExecuteAction = async () => dispatchAction('execute-action');
+  // Align with RealityCoordination's handleNextActionExecute adapter: pass actionId/formData to prop if provided, otherwise dispatch
+  const handleExecuteAction = async (actionId: string, formData?: FormData) => {
+    if (onExecuteAction) {
+      await onExecuteAction(actionId, formData);
+    } else {
+      await dispatchAction('execute-action', { actionId, formData });
+    }
+  };
   const handleSendMessage = async (content: string) => dispatchAction('send-message', content);
   const handleAddParticipant = async (name: string, role: any) => dispatchAction('addParticipant', { name, role });
+  const handleInitiateSignature = async (formData: FormData) => {
+    if (onInitiateSignature) {
+      await onInitiateSignature(formData);
+    } else {
+      await dispatchAction('initiate-signature', formData);
+    }
+  };
 
   console.log('[WorkRealityTemplate] Rendering with model identity:', model.identity, 'realtime connected:', isConnected);
   
@@ -184,6 +212,7 @@ export function WorkRealityTemplate({
               onExecuteAction={handleExecuteAction}
               onSendMessage={handleSendMessage}
               onAddParticipant={handleAddParticipant}
+              onInitiateSignature={handleInitiateSignature}
               userCapabilities={userCapabilities}
               productId={productId}
             />

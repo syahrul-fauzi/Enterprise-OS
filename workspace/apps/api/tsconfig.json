@@ -29,6 +29,7 @@
       "@capabilities/shared/*": ["../../capabilities/shared/implementation/*"],
       "@capabilities/communication/*": ["../../capabilities/communication/implementation/*"],
       "@capabilities/legal-case/*": ["../../capabilities/legal-case/implementation/*"],
+      "@capabilities/work-core/*": ["../../capabilities/work-core/*"],
       "@capabilities/atomic-composition/*": ["../../capabilities/atomic-composition/implementation/*"],
       "@capabilities/consultation/*": ["../../capabilities/consultation/implementation/*"]
     }

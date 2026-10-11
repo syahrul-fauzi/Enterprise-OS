@@ -45,7 +45,7 @@ function isIpAllowed(clientIp: string, allowedIps: Set<string>): boolean {
     if (allowedIp.includes('/')) {
       // For CIDR ranges, basic prefix matching (production would use full CIDR check)
       const ipPrefix = allowedIp.split('/')[0];
-      if (clientIp.startsWith(ipPrefix.split('.').slice(0, 3).join('.'))) {
+      if (ipPrefix && clientIp.startsWith(ipPrefix.split('.').slice(0, 3).join('.'))) {
         return true;
       }
     } else if (clientIp === allowedIp) {

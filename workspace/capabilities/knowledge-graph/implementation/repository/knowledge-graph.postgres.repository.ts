@@ -5,7 +5,7 @@ import { Pool } from "pg";
 import { PostgresRepository } from "../../../work-core/index.js";
 import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager.js";
 import { isBuildPhase } from "../../../shared/implementation/database/health.check.js";
-import type { TenantId } from "@repo/capabilities-work-core";
+import type { TenantId } from "@capabilities/work-core";
 import type { KnowledgeNode, KnowledgeEdge, KnowledgeGraphRepository } from "../contracts/knowledge-graph.contracts.js";
 
 // Validate required environment variables in production - matches existing repository pattern
@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === "production" && !isBuildPhase && !(process.env.POST
 // Initialize connection pools - matches read/write pool pattern from other repositories
 const writePool = new Pool({
   connectionString: process.env.POSTGRES_WRITE_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL || "postgresql://localhost:5432/eos_identity",
-  max: 10,
+  max: 50, // DEL-001: Increased pool size from 10 to 50 to address database bottleneck
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
 });
@@ -42,7 +42,7 @@ async function initializeDatabase() {
 }
 
 // Knowledge Node Repository - implements PostgresRepository for knowledge_graph_nodes
-class KnowledgeNodeRepositoryPostgresImpl extends PostgresRepository<KnowledgeNode & { id: string; tenantId: TenantId; workspaceId: string }> {
+class KnowledgeNodeRepositoryPostgresImpl extends PostgresRepository<KnowledgeNode & { id: string; tenantId: TenantId; workspaceId?: string; workId?: string; contextType?: string; contextId?: string }> {
   readonly entityName = "KnowledgeNode" as const;
   readonly kind = "repository" as const;
 
@@ -69,15 +69,19 @@ class KnowledgeNodeRepositoryPostgresImpl extends PostgresRepository<KnowledgeNo
   /**
    * Convert domain aggregate (KnowledgeNode) to database record (camelCase → snake_case)
    * Implements abstract toRecord method from PostgresRepository base class
+   * Supports optional workspaceId (execution boundary) and mandatory workId (continuity object)
    */
-  protected toRecord(entity: KnowledgeNode & { id: string; tenantId: TenantId; workspaceId: string; version?: number }): Record<string, any> {
+  protected toRecord(entity: KnowledgeNode & { id: string; tenantId: TenantId; workspaceId?: string; workId?: string; contextType?: string; contextId?: string; version?: number }): Record<string, any> {
     return {
       id: entity.id,
       type: entity.type,
       name: entity.label,
       description: null,
       tenant_id: entity.tenantId,
-      workspace_id: entity.workspaceId,
+      workspace_id: entity.workspaceId || null,
+      work_id: entity.workId || null,
+      context_type: entity.contextType || null,
+      context_id: entity.contextId || null,
       properties: entity.attributes,
       metadata: entity.metadata || null,
       version: entity.version || 1
@@ -88,7 +92,7 @@ class KnowledgeNodeRepositoryPostgresImpl extends PostgresRepository<KnowledgeNo
    * Convert database record to domain aggregate (snake_case → camelCase)
    * Implements abstract toAggregate method from PostgresRepository base class
    */
-  protected toAggregate(record: Record<string, any>): KnowledgeNode & { id: string; tenantId: TenantId; workspaceId: string } {
+  protected toAggregate(record: Record<string, any>): KnowledgeNode & { id: string; tenantId: TenantId; workspaceId?: string; workId?: string; contextType?: string; contextId?: string } {
     return {
       id: record.id,
       type: record.type,
@@ -96,35 +100,62 @@ class KnowledgeNodeRepositoryPostgresImpl extends PostgresRepository<KnowledgeNo
       attributes: record.properties || {},
       metadata: record.metadata || undefined,
       tenantId: record.tenant_id,
-      workspaceId: record.workspace_id
+      workspaceId: record.workspace_id || undefined,
+      workId: record.work_id || undefined,
+      contextType: record.context_type || undefined,
+      contextId: record.context_id || undefined
     };
   }
 
   /**
    * Override save() to set RLS session context before database operation
    * Ensures tenant isolation is enforced for all knowledge node writes
+   * Supports both workspaceId and workId context parameters
    */
-  async save(entity: KnowledgeNode & { id: string; tenantId: TenantId; workspaceId: string; version?: number }): Promise<KnowledgeNode & { id: string; tenantId: TenantId; workspaceId: string; }> {
-    await this.setSessionContext(entity.tenantId, entity.workspaceId);
+  async save(entity: KnowledgeNode & { id: string; tenantId: TenantId; workspaceId?: string; workId?: string; contextType?: string; contextId?: string; version?: number }): Promise<KnowledgeNode & { id: string; tenantId: TenantId; workspaceId?: string; workId?: string; contextType?: string; contextId?: string; }> {
+    // Set session context with precedence: workId > workspaceId (Work as primary continuity object)
+    await this.setSessionContext(entity.tenantId, { workspaceId: entity.workspaceId, workId: entity.workId });
     const result = await super.save(entity);
     await this.clearSessionContext();
     return result;
   }
 
   /**
-   * Get all nodes for a specific tenant/workspace
-   * Adds RLS context to list() operation
+   * Get all nodes for a specific tenant with flexible filtering
+   * Supports filtering by workspaceId OR workId OR contextType/contextId
+   * Maintains RLS tenant isolation while enabling cross-workspace High-Value Work Graph
    */
-  async listForTenant(tenantId: TenantId, workspaceId: string): Promise<readonly (KnowledgeNode & { id: string })[]> {
-    await this.setSessionContext(tenantId, workspaceId);
-    const nodes = await this.list();
+  async listForTenant(tenantId: TenantId, options?: { workspaceId?: string; workId?: string; contextType?: string; contextId?: string }): Promise<readonly (KnowledgeNode & { id: string; workspaceId?: string; workId?: string; contextType?: string; contextId?: string })[]> {
+          await this.setSessionContext(tenantId, { workspaceId: options?.workspaceId, workId: options?.workId });
+    
+    // Build query with optional filters
+    let query = `SELECT * FROM knowledge_graph_nodes WHERE tenant_id = $1`;
+    const params: string[] = [tenantId];
+    let paramIndex = 2;
+    
+    if (options?.workId) {
+      query += ` AND work_id = $${paramIndex}`;
+      params.push(options.workId);
+      paramIndex++;
+    } else if (options?.workspaceId) {
+      query += ` AND workspace_id = $${paramIndex}`;
+      params.push(options.workspaceId);
+      paramIndex++;
+    } else if (options?.contextType && options?.contextId) {
+      query += ` AND context_type = $${paramIndex} AND context_id = $${paramIndex+1}`;
+      params.push(options.contextType, options.contextId);
+    }
+    
+    const result = await this.client.query(query, params);
+    const nodes = result.rows.map(row => this.toAggregate(row));
+    
     await this.clearSessionContext();
     return nodes;
   }
 }
 
 // Knowledge Edge Repository - implements PostgresRepository for knowledge_graph_edges
-class KnowledgeEdgeRepositoryPostgresImpl extends PostgresRepository<KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId: string }> {
+class KnowledgeEdgeRepositoryPostgresImpl extends PostgresRepository<KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId?: string; workId?: string; contextType?: string; contextId?: string }> {
   readonly entityName = "KnowledgeEdge" as const;
   readonly kind = "repository" as const;
 
@@ -135,15 +166,19 @@ class KnowledgeEdgeRepositoryPostgresImpl extends PostgresRepository<KnowledgeEd
 
   /**
    * Convert domain aggregate (KnowledgeEdge) to database record (camelCase → snake_case)
+   * Supports optional workspaceId (execution boundary) and workId (continuity object)
    */
-  protected toRecord(entity: KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId: string; version?: number }): Record<string, any> {
+  protected toRecord(entity: KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId?: string; workId?: string; contextType?: string; contextId?: string; version?: number }): Record<string, any> {
     return {
       id: entity.id,
       type: entity.relation,
       source_node_id: entity.from,
       target_node_id: entity.to,
       tenant_id: entity.tenantId,
-      workspace_id: entity.workspaceId,
+      workspace_id: entity.workspaceId || null,
+      work_id: entity.workId || null,
+      context_type: entity.contextType || null,
+      context_id: entity.contextId || null,
       properties: {},
       metadata: entity.metadata || null,
       version: entity.version || 1
@@ -153,7 +188,7 @@ class KnowledgeEdgeRepositoryPostgresImpl extends PostgresRepository<KnowledgeEd
   /**
    * Convert database record to domain aggregate (snake_case → camelCase)
    */
-  protected toAggregate(record: Record<string, any>): KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId: string } {
+  protected toAggregate(record: Record<string, any>): KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId?: string; workId?: string; contextType?: string; contextId?: string } {
     return {
       id: record.id,
       from: record.source_node_id,
@@ -161,26 +196,56 @@ class KnowledgeEdgeRepositoryPostgresImpl extends PostgresRepository<KnowledgeEd
       relation: record.type,
       metadata: record.metadata || undefined,
       tenantId: record.tenant_id,
-      workspaceId: record.workspace_id
+      workspaceId: record.workspace_id || undefined,
+      workId: record.work_id || undefined,
+      contextType: record.context_type || undefined,
+      contextId: record.context_id || undefined
     };
   }
 
   /**
    * Override save() to set RLS session context before database operation
+   * Supports both workspaceId and workId context parameters
    */
-  async save(entity: KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId: string; version?: number }): Promise<KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId: string; }> {
-    await this.setSessionContext(entity.tenantId, entity.workspaceId);
+  async save(entity: KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId?: string; workId?: string; contextType?: string; contextId?: string; version?: number }): Promise<KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId?: string; workId?: string; contextType?: string; contextId?: string; }> {
+    // Set session context with precedence: workId > workspaceId (Work as primary continuity object)
+    const sessionWorkspace = entity.workId ? null : entity.workspaceId;
+    await this.setSessionContext(entity.tenantId, sessionWorkspace || '');
     const result = await super.save(entity);
     await this.clearSessionContext();
     return result;
   }
 
   /**
-   * Get all edges for a specific tenant/workspace
+   * Get all edges for a specific tenant with flexible filtering
+   * Supports filtering by workspaceId OR workId OR contextType/contextId
+   * Maintains RLS tenant isolation while enabling cross-workspace High-Value Work Graph
    */
-  async listForTenant(tenantId: TenantId, workspaceId: string): Promise<readonly (KnowledgeEdge & { id: string })[]> {
-    await this.setSessionContext(tenantId, workspaceId);
-    const edges = await this.list();
+  async listForTenant(tenantId: TenantId, options?: { workspaceId?: string; workId?: string; contextType?: string; contextId?: string }): Promise<readonly (KnowledgeEdge & { id: string; workspaceId?: string; workId?: string; contextType?: string; contextId?: string })[]> {
+    const sessionWorkspace = options?.workId ? null : (options?.workspaceId || '');
+    await this.setSessionContext(tenantId, sessionWorkspace);
+    
+    // Build query with optional filters
+    let query = `SELECT * FROM knowledge_graph_edges WHERE tenant_id = $1`;
+    const params: string[] = [tenantId];
+    let paramIndex = 2;
+    
+    if (options?.workId) {
+      query += ` AND work_id = $${paramIndex}`;
+      params.push(options.workId);
+      paramIndex++;
+    } else if (options?.workspaceId) {
+      query += ` AND workspace_id = $${paramIndex}`;
+      params.push(options.workspaceId);
+      paramIndex++;
+    } else if (options?.contextType && options?.contextId) {
+      query += ` AND context_type = $${paramIndex} AND context_id = $${paramIndex+1}`;
+      params.push(options.contextType, options.contextId);
+    }
+    
+    const result = await this.client.query(query, params);
+    const edges = result.rows.map(row => this.toAggregate(row));
+    
     await this.clearSessionContext();
     return edges;
   }
@@ -211,11 +276,12 @@ class KnowledgeGraphRepositoryPostgresImpl implements KnowledgeGraphRepository {
 
   /**
    * Save a complete knowledge graph snapshot (nodes + edges) to PostgreSQL
-   * Implements atomic persistence of the entire graph state for a tenant/workspace
+   * Implements atomic persistence of the entire graph state supporting multi-context Work model
+   * Workspace is now just an execution/context boundary; workId is the primary continuity object
    */
   async saveSnapshot(
-    nodes: (KnowledgeNode & { id: string; tenantId: TenantId; workspaceId: string })[],
-    edges: (KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId: string })[]
+    nodes: (KnowledgeNode & { id: string; tenantId: TenantId; workspaceId?: string; workId?: string; contextType?: string; contextId?: string })[],
+    edges: (KnowledgeEdge & { id: string; tenantId: TenantId; workspaceId?: string; workId?: string; contextType?: string; contextId?: string })[]
   ): Promise<{ savedNodes: number; savedEdges: number }> {
     let savedNodes = 0;
     let savedEdges = 0;
@@ -236,11 +302,12 @@ class KnowledgeGraphRepositoryPostgresImpl implements KnowledgeGraphRepository {
   }
 
   /**
-   * Load complete knowledge graph snapshot from PostgreSQL for a tenant/workspace
+   * Load complete knowledge graph snapshot from PostgreSQL supporting multi-context Work model
+   * Can load by workspaceId (legacy) or workId (primary continuity object)
    */
-  async loadSnapshot(tenantId: TenantId, workspaceId: string): Promise<{ nodes: KnowledgeNode[]; edges: KnowledgeEdge[] }> {
-    const existingNodes = await this.nodeRepo.listForTenant(tenantId, workspaceId);
-    const existingEdges = await this.edgeRepo.listForTenant(tenantId, workspaceId);
+  async loadSnapshot(tenantId: TenantId, options?: { workspaceId?: string; workId?: string; contextType?: string; contextId?: string }): Promise<{ nodes: KnowledgeNode[]; edges: KnowledgeEdge[] }> {
+    const existingNodes = await this.nodeRepo.listForTenant(tenantId, options);
+    const existingEdges = await this.edgeRepo.listForTenant(tenantId, options);
     // Fix readonly array processing to create mutable node/edge maps
     const mutableNodes = new Map(existingNodes.map(node => [node.id, node]));
     const mutableEdges = new Map(existingEdges.map(edge => [edge.id, edge]));

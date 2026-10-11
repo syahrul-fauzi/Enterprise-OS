@@ -1,4 +1,5 @@
 import { getRepositoryState, loadGovernanceState } from "../state.js";
+import { parseArgs } from "node:util";
 
 const GATE_LABELS: Record<string, string> = {
   A: "Governance",
@@ -40,12 +41,27 @@ function colorizeProofEmitStatus(stat: string): string {
   }
 }
 
-export async function runStatusCommand(): Promise<number> {
+export async function runStatusCommand(args: string[]): Promise<number> {
+  const { values } = parseArgs({
+    args,
+    options: {
+      output: { type: "string", short: "o" },
+    },
+    allowPositionals: true,
+  });
+
   const full = loadGovernanceState();
   const state = getRepositoryState();
   const outputs = state.outputs.repository_proof;
   const baseline = full.baseline;
 
+  // Jika output json, kembalikan data terstruktur tanpa formatting
+  if (values.output === "json") {
+    process.stdout.write(`${JSON.stringify({ full, state, outputs, baseline })}\n`);
+    return 0;
+  }
+
+  // Jika tidak, tampilkan human-readable output seperti biasa
   console.log(SEP);
   console.log("EOS  ·  Repository Status  ·  SSOT Stack v1.0 (FROZEN)");
   console.log(SEP);

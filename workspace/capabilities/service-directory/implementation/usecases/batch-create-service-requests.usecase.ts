@@ -1,5 +1,5 @@
 import type { ServiceProviderCategory, CreateServiceRequestInputLegacy as CreateServiceRequestInput } from "../contracts/service.contracts.js";
-import type { TenantId, WorkspaceId } from "@repo/capabilities-work-core";
+import type { TenantId, WorkspaceId } from "@capabilities/work-core";
 import { createTenantId, createWorkspaceId } from "../../../work-core/contracts/work.contracts.js";
 import { ServiceRequestRepositoryInMemory as ServiceRequestRepository } from "../repository/service.repository.js";
 import { validateBatchItems } from "../validation/batch-validator.js";

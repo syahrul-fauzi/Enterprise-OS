@@ -15,6 +15,6 @@
       "@repo/core-kernel/*": ["../../core/kernel/dist/src/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/yaml.d.ts"],
   "exclude": ["dist", "build", "node_modules"]
 }

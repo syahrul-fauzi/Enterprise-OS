@@ -1,0 +1,175 @@
+{
+    "metrics": {
+        "vus_max": {
+            "max": 1,
+            "value": 1,
+            "min": 1
+        },
+        "http_req_receiving": {
+            "p(95)": 5.2307989999999975,
+            "avg": 2.3466210021141647,
+            "min": 0.074699,
+            "med": 1.475489,
+            "max": 70.114562,
+            "p(90)": 3.1411958
+        },
+        "checks": {
+            "passes": 0,
+            "fails": 946,
+            "value": 0
+        },
+        "vus": {
+            "min": 1,
+            "max": 1,
+            "value": 1
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "http_req_connecting": {
+            "p(95)": 0,
+            "avg": 0.0002247357293868922,
+            "min": 0,
+            "med": 0,
+            "max": 0.1063,
+            "p(90)": 0
+        },
+        "data_sent": {
+            "count": 298720,
+            "rate": 9937.512710163837
+        },
+        "data_received": {
+            "count": 6039264,
+            "rate": 200908.08369052925
+        },
+        "http_req_waiting": {
+            "avg": 60.748875494714596,
+            "min": 24.84131,
+            "med": 45.028355,
+            "max": 2096.283992,
+            "p(90)": 83.2606298,
+            "p(95)": 98.22690019999997
+        },
+        "http_req_blocked": {
+            "avg": 0.004769940803382655,
+            "min": 0.0024,
+            "med": 0.003,
+            "max": 0.503796,
+            "p(90)": 0.0035,
+            "p(95)": 0.0039
+        },
+        "iterations": {
+            "count": 473,
+            "rate": 15.735282243932428
+        },
+        "http_req_failed": {
+            "fails": 0,
+            "passes": 473,
+            "thresholds": {
+                "rate<0.001": true
+            },
+            "value": 1
+        },
+        "http_reqs": {
+            "rate": 15.735282243932428,
+            "count": 473
+        },
+        "http_req_sending": {
+            "avg": 0.04275273995771671,
+            "min": 0.0151,
+            "med": 0.0172,
+            "max": 6.412948,
+            "p(90)": 0.0243,
+            "p(95)": 0.027479599999999996
+        },
+        "group_duration": {
+            "avg": 63.375336828752566,
+            "min": 26.564896,
+            "med": 46.736548,
+            "max": 2110.427485,
+            "p(90)": 85.8939616,
+            "p(95)": 103.2681592
+        },
+        "fin001_cross_border_latency_ms": {
+            "min": 27,
+            "med": 47,
+            "max": 2110,
+            "p(90)": 86,
+            "p(95)": 103,
+            "avg": 63.245243128964056,
+            "thresholds": {
+                "p(95)<500": false
+            }
+        },
+        "http_req_duration": {
+            "med": 46.503249,
+            "max": 2110.215487,
+            "p(90)": 85.678023,
+            "p(95)": 103.0415612,
+            "avg": 63.13824923678646,
+            "min": 26.347998
+        },
+        "fin001_midtrans_webhook_latency_ms": {
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "thresholds": {
+                "p(95)<500": false
+            }
+        },
+        "fin001_error_rate": {
+            "passes": 0,
+            "fails": 0,
+            "thresholds": {
+                "rate<0.001": false
+            },
+            "value": 0
+        },
+        "iteration_duration": {
+            "p(95)": 103.35011879999999,
+            "avg": 63.46779045243134,
+            "min": 26.645696,
+            "med": 46.848247,
+            "max": 2110.512884,
+            "p(90)": 85.9764618
+        }
+    },
+    "root_group": {
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {
+            "FIN-001 Cross-Border Settlement Flow": {
+                "path": "::FIN-001 Cross-Border Settlement Flow",
+                "id": "428baf50fc1b8bbd1ebb286701207dbd",
+                "groups": {},
+                "checks": {
+                        "cross-border settlement successful": {
+                            "name": "cross-border settlement successful",
+                            "path": "::FIN-001 Cross-Border Settlement Flow::cross-border settlement successful",
+                            "id": "2773594e0656006544e1e4867109f3b1",
+                            "passes": 0,
+                            "fails": 473
+                        },
+                        "workId preserved in response": {
+                            "name": "workId preserved in response",
+                            "path": "::FIN-001 Cross-Border Settlement Flow::workId preserved in response",
+                            "id": "42e57059a4fd8172897a9123c9352892",
+                            "passes": 0,
+                            "fails": 473
+                        }
+                    },
+                "name": "FIN-001 Cross-Border Settlement Flow"
+            }
+        },
+        "checks": {},
+        "name": ""
+    }
+}

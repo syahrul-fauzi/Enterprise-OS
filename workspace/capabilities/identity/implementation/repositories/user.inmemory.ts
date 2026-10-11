@@ -1,12 +1,14 @@
 import {
-  UserAggregate,
+  type UserAggregate,
   UserId,
+  TenantId,
   type UserRepository,
-} from "../contracts/index.ts";
+} from "@repo/contracts-core";
 
 const seed = (): UserAggregate[] => [
   {
     id: UserId("user-001"),
+    tenantId: TenantId("tenant-001"),
     email: "demo@lawyershub.example",
     displayName: "Demo User",
     passwordHash: "$2a$10$...", // Placeholder - never store real passwords in seed

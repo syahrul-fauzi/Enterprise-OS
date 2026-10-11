@@ -4,6 +4,9 @@ export interface KnowledgeNode {
   label: string;
   attributes: Record<string, unknown>;
   metadata?: Record<string, unknown>;
+  // Mandatory CORE-001: Semua domain objects/projections di High-Value Work Graph terikat ke Work primitive
+  // workId adalah primary continuity object, workspaceId hanya execution boundary
+  workId?: string;
   version?: number;
 }
 
@@ -21,7 +24,7 @@ export interface KnowledgeGraphSnapshot {
   edges: KnowledgeEdge[];
 }
 
-import type { TenantId } from "@repo/capabilities-work-core";
+import type { TenantId } from "@capabilities/work-core";
 
 export interface KnowledgeGraphRepository {
   saveSnapshot(

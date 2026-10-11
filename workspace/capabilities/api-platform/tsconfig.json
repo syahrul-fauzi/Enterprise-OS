@@ -1,16 +1,36 @@
 {
-  "extends": "@repo/config-typescript/base.json",
+  "extends": "../../config/typescript/base.json",
   "compilerOptions": {
-    "outDir": "dist",
+    "rootDir": "./",
+    "outDir": "./dist",
+    "strictNullChecks": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "types": ["node"],
+    "skipLibCheck": true,
     "composite": true,
-    "rootDir": "./"
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "lib": ["es2022"],
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "ES2022",
+    "ignoreDeprecations": "5.0"
   },
-  "include": ["implementation/**/*.ts"],
-  "exclude": ["node_modules", "dist"],
   "references": [
-    {"path": "../../packages/core/kernel"},
-    {"path": "../../packages/core/runtime"},
-    {"path": "../governance-read-model"},
-    {"path": "../governance-evidence"}
-  ]
+    {"path": "../../packages/core/kernel/tsconfig.json"},
+    {"path": "../../packages/core/runtime/tsconfig.json"},
+    {"path": "../governance-read-model/tsconfig.json"},
+    {"path": "../governance-evidence/tsconfig.json"}
+  ],
+  "include": ["implementation/**/*.ts", "contracts/**/*.ts"],
+  "exclude": ["dist", "node_modules", "**/*.d.ts"]
 }

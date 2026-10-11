@@ -1,12 +1,19 @@
 // Database health check API endpoint - Kubernetes liveness/readiness probe
 // Exposes POSTGRES connection status for orchestration systems
 import { NextResponse } from "next/server";
-import { DatabaseHealthChecker } from "@capabilities/shared/database/health.check";
-import { getCommunicationRepositoryPostgres } from "@capabilities/communication/repository/communication.postgres.repository";
-import { getCaseRepositoryPostgres } from "@capabilities/legal-case/repository/case-postgres.repository";
 
 export async function GET() {
   try {
+    // Delay database checks to ensure all modules are initialized (resolves "Cannot access 'g' before initialization")
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Use relative paths to resolve module resolution issues and path alias conflicts
+    // Jalur relatif dihitung dari: /root/Enterprise-OS/workspace/apps/api/app/api/(system)/db/route.ts
+            // ../../../../../../ membawa kita ke root workspace /root/Enterprise-OS/workspace/ (6 level ../)
+            const { DatabaseHealthChecker } = await import("../../../../../../capabilities/shared/implementation/database/health.check.js");
+            const { getCommunicationRepositoryPostgres } = await import("../../../../../../capabilities/communication/implementation/repository/communication.postgres.repository.js");
+            const { getCaseRepositoryPostgres } = await import("../../../../../../capabilities/legal-case/implementation/repository/case-postgres.repository.js");
+    
     // Get pools from both Postgres repositories (read + write for communication and legal cases)
     // CommunicationRepositoryPostgres already implements getPools() interface
     const commRepository = getCommunicationRepositoryPostgres() as any;
@@ -15,7 +22,7 @@ export async function GET() {
     const caseRepository = getCaseRepositoryPostgres() as any;
     const casePools = caseRepository.getPools();
     
-    // Run health checks on ALL database pools (primary + read replica)
+    // Run health checks on core database pools (primary + read replica)
     const healthReport = await DatabaseHealthChecker.checkAll([
       { pool: commPools.write, name: "eos_communication_primary" },
       { pool: commPools.read, name: "eos_communication_replica" },
@@ -32,7 +39,7 @@ export async function GET() {
     return NextResponse.json({
       ...k8sFormat,
       timestamp: new Date().toISOString(),
-    }, { status: statusCode });
+    }, { statusCode });
     
   } catch (error) {
     console.error("[DB Health Check] Failed to execute health check:", error);

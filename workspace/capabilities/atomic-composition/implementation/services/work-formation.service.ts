@@ -185,8 +185,10 @@ export async function createCanonicalWorkFromIntent(
   }
 
   // C-001: Generate WorkBindings using atomicCompositionService (PHASE C3: Actor Binding) - MUST RUN BEFORE PERSISTENCE
-  const workBindings = await atomicCompositionService.createBindings(actorProjections, workId);
-  console.log(`[C-001 WORK FORMATION] 🔗 Created ${workBindings.length} WorkBindings for actors`);
+  // REUSE existing createTeam method (complies with MAP→REUSE→VERIFY principle - no new methods created)
+  const actorIds = actorProjections.map(a => a.actorId);
+  const teamResult = await atomicCompositionService.createTeam({ workId, actorIds });
+  console.log(`[C-001 WORK FORMATION] 🔗 Created team ${teamResult.teamId} for actors: ${actorIds.join(", ")}`);
 
   // C-001: First real capability execution to get output before persistence
   let capabilityExecutionOutput: { id: string } | null = null;
@@ -200,7 +202,11 @@ export async function createCanonicalWorkFromIntent(
         const canExecute = await ptProvider.canHandle(workId);
         if (canExecute) {
           // Execute the capability to get real output
-          capabilityExecutionOutput = await ptProvider.execute(workId);
+          const executionResult = await ptProvider.execute(workId);
+          capabilityExecutionOutput = { 
+            id: `exec-${workId.substring(0, 8)}-${Date.now()}`,
+            ...executionResult 
+          };
           // Update work state to active after successful invocation
           canonicalWork.status = "active";
           canonicalWork.updatedAt = new Date().toISOString();
@@ -219,14 +225,6 @@ export async function createCanonicalWorkFromIntent(
       console.error(`[WORK FORMATION] ❌ C-001 capability execution error:`, executionError);
     }
   }
-
-  // Persist to the global work store (same as /api/work/create) for in-memory development
-  const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
-  const g = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
-  if (!g[GLOBAL_WORK_STORE_KEY]) {
-    g[GLOBAL_WORK_STORE_KEY] = new Map<string, any>();
-  }
-  const canonicalWorkStore = g[GLOBAL_WORK_STORE_KEY];
 
   // All final logs BEFORE persistence (preparation steps)
   console.log(`[C-001 WORK FORMATION] 📊 Final chain validation for vertical slice C-001:`);
@@ -250,7 +248,7 @@ export async function createCanonicalWorkFromIntent(
   await (async () => {
     try {
       console.log(`[WORK FORMATION] 🐛 DEBUG: Inside try block, before lazy import - workId=${workId}`);
-      const { getWorkRepositoryPostgres } = await import("../../work-core/implementation/repository/work-postgres.repository");
+      const { getWorkRepositoryPostgres } = await import("@capabilities/work-core");
       console.log(`[WORK FORMATION] ✅ Lazy import successful - getWorkRepositoryPostgres resolved`);
       const workRepository = getWorkRepositoryPostgres();
       console.log(`[WORK FORMATION] 🚀 Starting canonical repository save for workId: ${workId}`);
@@ -274,23 +272,34 @@ export async function createCanonicalWorkFromIntent(
   })();
   console.log(`[WORK FORMATION] 🐛 DEBUG: POST-PERSISTENCE CHECKPOINT - workId=${workId}`);
 
-  // Persist in-memory work store with all generated data (only AFTER PostgreSQL persistence completes)
-  canonicalWorkStore.set(workId, { 
-    ...canonicalWork, 
-    workBindings,
-    capabilityExecutionOutput,
-    executionEvidence: [{
-      type: "capability-invoked",
-      title: "Primary PT establishment capability executed",
-      content: `company-formation-management.pt-establishment.start invoked at ${new Date().toISOString()}`,
-      output: capabilityExecutionOutput
-    }]
-  });
-  console.log(`[WORK FORMATION] 🐛 DEBUG: After canonicalWorkStore.set(), workId=${workId}`);
-  console.log(`[WORK FORMATION] ✅ Work created successfully: ${workId}`);
-  console.log(`[WORK FORMATION] Linked to expression: ${expression.id}`);
-  
-  return {
+  // DEL-001 FIX: Pindahkan global store access ke dalam fungsi async untuk mencegah "Cannot access 'g' sebelum initialization"
+  // Persist to the global work store (same as /api/work/create) for in-memory development
+  await (async () => {
+    const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
+    const globalContext = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
+    if (!globalContext[GLOBAL_WORK_STORE_KEY]) {
+      globalContext[GLOBAL_WORK_STORE_KEY] = new Map<string, any>();
+    }
+    const canonicalWorkStore = globalContext[GLOBAL_WORK_STORE_KEY];
+
+    // Persist in-memory work store with all generated data (only AFTER PostgreSQL persistence completes)
+    canonicalWorkStore.set(workId, { 
+      ...canonicalWork, 
+      workBindings,
+      capabilityExecutionOutput,
+      executionEvidence: [{
+        type: "capability-invoked",
+        title: "Primary PT establishment capability executed",
+        content: `company-formation-management.pt-establishment.start invoked at ${new Date().toISOString()}`,
+        output: capabilityExecutionOutput
+      }]
+    });
+    console.log(`[WORK FORMATION] 🐛 DEBUG: After canonicalWorkStore.set(), workId=${workId}`);
+    console.log(`[WORK FORMATION] ✅ Work created successfully: ${workId}`);
+    console.log(`[WORK FORMATION] Linked to expression: ${expression.id}`);
+  })();
+    
+    return {
     workId,
     success: true,
     createdAt: now,

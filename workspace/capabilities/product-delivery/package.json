@@ -1,0 +1,23 @@
+{
+  "name": "@capabilities/product-delivery",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "main": "./implementation/service.ts",
+  "types": "./dist/implementation/service.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint .",
+    "check-types": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@capabilities/work-core": "workspace:*",
+    "@repo/core-kernel": "workspace:*",
+    "@repo/core-runtime": "workspace:*"
+  },
+  "devDependencies": {
+    "@repo/config-typescript": "workspace:*",
+    "typescript": "^5.9.2"
+  }
+}

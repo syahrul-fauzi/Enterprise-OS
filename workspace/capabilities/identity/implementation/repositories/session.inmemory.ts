@@ -6,7 +6,7 @@ import {
   ActorId,
   type SessionAggregate,
   type SessionRepository,
-} from "../contracts/index.ts";
+} from "@repo/contracts-core";
 
 function clone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj)) as T;
@@ -51,7 +51,7 @@ const hydrate = (): Map<string, SessionAggregate> => {
   const testSession3: SessionAggregate = {
     id: SessionId("session-test-003"),
     userId: UserId("user-003"),
-    actorId: UserId("user-003"),
+    actorId: ActorId("user-003"),
     tenantId: TenantId("tenant-001"),
     workspaceId: WorkspaceId("workspace-001"),
     productId: "lawyershub.default",
@@ -68,7 +68,7 @@ const hydrate = (): Map<string, SessionAggregate> => {
   const testAgentSession: SessionAggregate = {
     id: SessionId("session-agent-001"),
     userId: UserId("agent-001"),
-    actorId: UserId("agent-001"),
+    actorId: ActorId("agent-001"),
     tenantId: TenantId("tenant-001"),
     workspaceId: WorkspaceId("workspace-001"),
     productId: "lawyershub.default",

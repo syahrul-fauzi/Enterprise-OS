@@ -4,14 +4,16 @@ import {
   TenantId,
   UserId,
   WorkspaceId,
+  type WorkId,
   type MembershipAggregate,
   type MembershipRepository,
-} from "../contracts/index.ts";
+} from "@repo/contracts-core";
 
 // PostgreSQL-backed membership repository implementation
 export class MembershipRepositoryPostgresImpl extends PostgresRepository<any> implements MembershipRepository {
   readonly entityName = "Membership" as const;
   readonly kind = "repository" as const;
+  declare pool: any;
 
   constructor() {
     super("memberships");
@@ -23,7 +25,8 @@ export class MembershipRepositoryPostgresImpl extends PostgresRepository<any> im
       id: MembershipId(record.id),
       userId: UserId(record.user_id),
       tenantId: TenantId(record.tenant_id),
-      workspaceId: WorkspaceId(record.workspace_id),
+      workspaceId: record.workspace_id ? WorkspaceId(record.workspace_id) : undefined,
+      workId: record.work_id,
       role: record.role,
       joinedAt: new Date(record.joined_at),
       createdAt: new Date(record.created_at),
@@ -38,6 +41,7 @@ export class MembershipRepositoryPostgresImpl extends PostgresRepository<any> im
       user_id: entity.userId,
       tenant_id: entity.tenantId,
       workspace_id: entity.workspaceId,
+      work_id: entity.workId,
       role: entity.role,
       joined_at: entity.joinedAt.toISOString(),
       created_at: entity.createdAt.toISOString(),
@@ -45,38 +49,129 @@ export class MembershipRepositoryPostgresImpl extends PostgresRepository<any> im
     };
   }
 
-  async byId(id: MembershipId): Promise<MembershipAggregate | undefined> {
-    const result = await this.pool.query<Record<string, any>>("SELECT * FROM memberships WHERE id = $1", [id]);
+  async byId(id: MembershipId, context?: { tenantId: TenantId; workspaceId?: WorkspaceId; workId?: WorkId }): Promise<MembershipAggregate | undefined> {
+    let query = "SELECT * FROM memberships WHERE id = $1";
+    const params: any[] = [id];
+    let paramIndex = 2;
+
+    if (context?.tenantId) {
+      query += ` AND tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+      
+      if (context?.workId) {
+        query += ` AND work_id = $${paramIndex}`;
+        params.push(context.workId);
+        paramIndex++;
+      } else if (context?.workspaceId) {
+        query += ` AND workspace_id = $${paramIndex}`;
+        params.push(context.workspaceId);
+        paramIndex++;
+      }
+    }
+
+    const result = await this.pool.query(query, params);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }
 
-  async listByUser(userId: UserId): Promise<readonly MembershipAggregate[]> {
-    const result = await this.pool.query<Record<string, any>>("SELECT * FROM memberships WHERE user_id = $1 ORDER BY joined_at DESC", [userId]);
+  async listByUser(userId: UserId, context?: { workId?: WorkId }): Promise<readonly MembershipAggregate[]> {
+    let query = "SELECT * FROM memberships WHERE user_id = $1";
+    const params: any[] = [userId];
+    let paramIndex = 2;
+
+    if (context?.workId) {
+      query += ` AND work_id = $${paramIndex}`;
+      params.push(context.workId);
+      paramIndex++;
+    }
+
+    query += " ORDER BY joined_at DESC";
+    const result = await this.pool.query(query, params);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
-  async listByTenant(tenantId: TenantId): Promise<readonly MembershipAggregate[]> {
-    const result = await this.pool.query<Record<string, any>>("SELECT * FROM memberships WHERE tenant_id = $1 ORDER BY joined_at DESC", [tenantId]);
+  async listByTenant(tenantId: TenantId, context?: { workId?: WorkId }): Promise<readonly MembershipAggregate[]> {
+    let query = "SELECT * FROM memberships WHERE tenant_id = $1";
+    const params: any[] = [tenantId];
+    let paramIndex = 2;
+
+    if (context?.workId) {
+      query += ` AND work_id = $${paramIndex}`;
+      params.push(context.workId);
+      paramIndex++;
+    }
+
+    query += " ORDER BY joined_at DESC";
+    const result = await this.pool.query(query, params);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
-  async listByWorkspace(workspaceId: WorkspaceId): Promise<readonly MembershipAggregate[]> {
-    const result = await this.pool.query<Record<string, any>>("SELECT * FROM memberships WHERE workspace_id = $1 ORDER BY joined_at DESC", [workspaceId]);
+  async listByWorkspace(workspaceId: WorkspaceId, context?: { tenantId?: TenantId; workId?: WorkId }): Promise<readonly MembershipAggregate[]> {
+    let query = "SELECT * FROM memberships WHERE workspace_id = $1";
+    const params: any[] = [workspaceId];
+    let paramIndex = 2;
+
+    if (context?.tenantId) {
+      query += ` AND tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+    }
+
+    if (context?.workId) {
+      query += ` AND work_id = $${paramIndex}`;
+      params.push(context.workId);
+      paramIndex++;
+    }
+
+    query += " ORDER BY joined_at DESC";
+    const result = await this.pool.query(query, params);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
-  async findByUserTenantAndWorkspace(userId: UserId, tenantId: TenantId, workspaceId: WorkspaceId): Promise<MembershipAggregate | undefined> {
-    const result = await this.pool.query<Record<string, any>>(
-      "SELECT * FROM memberships WHERE user_id = $1 AND tenant_id = $2 AND workspace_id = $3",
-      [userId, tenantId, workspaceId]
-    );
+  async findByUserTenantAndWorkspace(userId: UserId, tenantId: TenantId, context?: { workspaceId?: WorkspaceId; workId?: WorkId }): Promise<MembershipAggregate | undefined> {
+    let query = "SELECT * FROM memberships WHERE user_id = $1 AND tenant_id = $2";
+    const params: any[] = [userId, tenantId];
+    let paramIndex = 3;
+
+    if (context?.workId) {
+      query += ` AND work_id = $${paramIndex}`;
+      params.push(context.workId);
+      paramIndex++;
+    } else if (context?.workspaceId) {
+      query += ` AND workspace_id = $${paramIndex}`;
+      params.push(context.workspaceId);
+      paramIndex++;
+    }
+
+    const result = await this.pool.query(query, params);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }
 
-  async list(): Promise<readonly MembershipAggregate[]> {
-    const result = await this.pool.query<Record<string, any>>("SELECT * FROM memberships ORDER BY joined_at DESC", []);
+  async list(context?: { tenantId: TenantId; workspaceId?: WorkspaceId; workId?: WorkId }): Promise<readonly MembershipAggregate[]> {
+    let query = "SELECT * FROM memberships WHERE 1=1";
+    const params: any[] = [];
+    let paramIndex = 1;
+
+    if (context?.tenantId) {
+      query += ` AND tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+    }
+
+    if (context?.workId) {
+      query += ` AND work_id = $${paramIndex}`;
+      params.push(context.workId);
+      paramIndex++;
+    } else if (context?.workspaceId) {
+      query += ` AND workspace_id = $${paramIndex}`;
+      params.push(context.workspaceId);
+      paramIndex++;
+    }
+
+    query += " ORDER BY joined_at DESC";
+    const result = await this.pool.query(query, params);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
@@ -86,22 +181,22 @@ export class MembershipRepositoryPostgresImpl extends PostgresRepository<any> im
     
     const exists = await this.byId(entity.id);
     if (exists) {
-      await this.pool.query<Record<string, any>>(
+      await this.pool.query(
         `UPDATE memberships SET 
-          user_id = $1, tenant_id = $2, workspace_id = $3, role = $4, joined_at = $5, created_at = $6, updated_at = $7
-          WHERE id = $8`,
+          user_id = $1, tenant_id = $2, workspace_id = $3, work_id = $4, role = $5, joined_at = $6, created_at = $7, updated_at = $8
+          WHERE id = $9`,
         [
-          record.user_id, record.tenant_id, record.workspace_id, record.role,
+          record.user_id, record.tenant_id, record.workspace_id, record.work_id, record.role,
           record.joined_at, record.created_at, record.updated_at, record.id
         ]
       );
     } else {
-      await this.pool.query<Record<string, any>>(
+      await this.pool.query(
         `INSERT INTO memberships (
-          id, user_id, tenant_id, workspace_id, role, joined_at, created_at, updated_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+          id, user_id, tenant_id, workspace_id, work_id, role, joined_at, created_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
         [
-          record.id, record.user_id, record.tenant_id, record.workspace_id, record.role,
+          record.id, record.user_id, record.tenant_id, record.workspace_id, record.work_id, record.role,
           record.joined_at, record.created_at, record.updated_at
         ]
       );
@@ -110,8 +205,28 @@ export class MembershipRepositoryPostgresImpl extends PostgresRepository<any> im
     return this.byId(entity.id) as Promise<MembershipAggregate>;
   }
 
-  async remove(id: MembershipId): Promise<boolean> {
-    const result = await this.pool.query<Record<string, any>>("DELETE FROM memberships WHERE id = $1", [id]);
+  async remove(id: MembershipId, context?: { tenantId: TenantId; workspaceId?: WorkspaceId; workId?: WorkId }): Promise<boolean> {
+    let query = "DELETE FROM memberships WHERE id = $1";
+    const params: any[] = [id];
+    let paramIndex = 2;
+
+    if (context?.tenantId) {
+      query += ` AND tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+      
+      if (context?.workId) {
+        query += ` AND work_id = $${paramIndex}`;
+        params.push(context.workId);
+        paramIndex++;
+      } else if (context?.workspaceId) {
+        query += ` AND workspace_id = $${paramIndex}`;
+        params.push(context.workspaceId);
+        paramIndex++;
+      }
+    }
+
+    const result = await this.pool.query(query, params);
     return (result as any).rowCount > 0;
   }
 }

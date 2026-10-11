@@ -203,7 +203,10 @@ export function RequirementWorkspace({
   const [acceptanceCriteria, setAcceptanceCriteria] = useState(
     copy.defaultSuccessCriteria.join("\n") || DEFAULT_ACCEPTANCE_CRITERIA,
   );
+  // High-Value Work Graph integration: linkedIntentId untuk menghubungkan requirement ke intent
+  const [linkedIntentId, setLinkedIntentId] = useState("");
   const [editingRequirementId, setEditingRequirementId] = useState<string | null>(null);
+  const [workId, setWorkId] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
 
   const refresh = useMemo(
@@ -234,6 +237,18 @@ export function RequirementWorkspace({
     void refresh();
   }, [refresh]);
 
+  // Parse workId from URL path client-side (follows DocumentWorkspace pattern)
+  useEffect(() => {
+    const parsePath = () => {
+      const path = window.location.pathname;
+      const match = path.match(/\/work\/([^/]+)\/requirements/);
+      if (match && match[1]) {
+        setWorkId(match[1]);
+      }
+    };
+    parsePath();
+  }, []);
+
   function resetForm() {
     setTitle("");
     setSummary("");
@@ -241,6 +256,7 @@ export function RequirementWorkspace({
     setPriority("medium");
     setLinkedCapabilities(copy.capabilityIds.join(", ") || DEFAULT_LINKED_CAPABILITIES);
     setAcceptanceCriteria(copy.defaultSuccessCriteria.join("\n") || DEFAULT_ACCEPTANCE_CRITERIA);
+    setLinkedIntentId("");
     setEditingRequirementId(null);
   }
 
@@ -252,6 +268,7 @@ export function RequirementWorkspace({
     setPriority(item.priority);
     setLinkedCapabilities(item.linkedCapabilityIds.join(", "));
     setAcceptanceCriteria(item.acceptanceCriteria.join("\n"));
+    setLinkedIntentId(item.linkedIntentId ?? "");
     setError(null);
   }
 
@@ -281,6 +298,9 @@ export function RequirementWorkspace({
                     .split("\n")
                     .map((item) => item.trim())
                     .filter(Boolean),
+                  linkedIntentId: linkedIntentId || undefined,
+                  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+                  workId: workId,
                 }
               : {
                   title,
@@ -295,6 +315,9 @@ export function RequirementWorkspace({
                     .split("\n")
                     .map((item) => item.trim())
                     .filter(Boolean),
+                  linkedIntentId: linkedIntentId || undefined,
+                  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+                  workId: workId,
                 },
           ),
         },
@@ -419,6 +442,23 @@ export function RequirementWorkspace({
               </option>
             ))}
           </select>
+          {/* High-Value Work Graph: Dropdown Intent untuk menghubungkan requirement ke core intent */}
+          <label className="space-y-2">
+            <span className="text-sm font-medium text-slate-900">Dasar Intent</span>
+            <select
+              className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+              onChange={(event) => setLinkedIntentId(event.target.value)}
+              value={linkedIntentId}
+              data-testid="requirement-intent-select"
+            >
+              <option value="">Pilih intent utama requirement</option>
+              <option value="intent-product-development">Pengembangan Produk Baru</option>
+              <option value="intent-feature-enhancement">Peningkatan Fitur Eksisting</option>
+              <option value="intent-bug-fix">Perbaikan Bug Kritis</option>
+              <option value="intent-compliance-update">Update Compliance & Regulasi</option>
+              <option value="intent-infrastructure">Infrastruktur & Scale</option>
+            </select>
+          </label>
           <label className="space-y-2 md:col-span-2">
             <span className="text-sm font-medium text-slate-900">{copy.successLabel}</span>
             <textarea

@@ -1,4 +1,4 @@
-import { WorkId, newWorkId, ActorId, SessionId, TenantId, AccountId } from "../capabilities/identity/implementation/contracts/identity.contracts.ts";
+import { WorkId, newWorkId, ActorId, SessionId, TenantId, AccountId } from "@repo/contracts-core/src/identity.contracts.ts";
 import { WorkAggregate } from "../capabilities/work-core/contracts/work.contracts.ts";
 import * as fs from "fs";
 

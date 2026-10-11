@@ -1,6 +1,7 @@
 packages:
   - apps/*
   - packages/core/*
+  - packages/contracts-core
   - packages/composition
   - packages/compositions/*
   - packages/presentation/*
@@ -16,4 +17,5 @@ allowBuilds:
 overrides:
   '@repo/core-kernel': link:packages/core/kernel
   '@repo/core-runtime': link:packages/core/runtime
-  core-capability-registry: link:packages/core-capability-registry
+  '@repo/core-capability-registry': link:packages/core/capability-registry
+  '@repo/contracts-core': link:packages/contracts-core

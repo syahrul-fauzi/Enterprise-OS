@@ -2,9 +2,10 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import { randomUUID } from "node:crypto";
 import {
   UserId,
+  TenantId,
   type RegisterUserInput,
   type UserAggregate,
-} from "../contracts/identity.contracts.js";
+} from "@repo/contracts-core";
 import { passwordService } from "../services/password.service.js";
 import { UserRepositoryPostgres } from "../repositories/index.js";
 
@@ -38,6 +39,7 @@ export const createUserCommand: RegisterUserCommand = {
       email: trimmedEmail,
       displayName: input.displayName.trim(),
       passwordHash: passwordService.hash(input.password),
+      tenantId: TenantId(input.tenantId), // Explicitly cast to TenantId
       createdAt: new Date(),
       updatedAt: new Date(),
     };

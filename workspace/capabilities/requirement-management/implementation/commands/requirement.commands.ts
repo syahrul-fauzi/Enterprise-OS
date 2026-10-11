@@ -15,20 +15,20 @@ import {
   type UpdateRequirementOutput,
   type VerifyRequirementInput,
   type VerifyRequirementOutput,
-} from "../contracts/index";
+} from "../contracts/index.ts";
 import {
   defaultRequirementPriority,
   defaultRequirementStatus,
   defaultRequirementVerificationStatus,
   newRequirementId,
   RequirementRepositoryCurrent,
-} from "../repository/index";
-import { getRequirementsByOwnerCommand } from "./get-requirements-by-owner.command";
-import { getAllRequirementsCommand } from "./get-all-requirements.command";
-import { getRequirementByIdCommand } from "./get-requirement-by-id.command";
+} from "../repository/index.js";
+import { getRequirementsByOwnerCommand } from "./get-requirements-by-owner.command.ts";
+import { getAllRequirementsCommand } from "./get-all-requirements.command.ts";
+import { getRequirementByIdCommand } from "./get-requirement-by-id.command.ts";
 // Import hanya type, inisialisasi dilakukan di dalam fungsi async untuk menghindari circular dependency
-import type { SessionRepository } from "../../../work-core";
-import { getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core";
+import type { SessionRepository } from "../../../work-core/index.js";
+import { getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core/index.js";
 
 // Inisialisasi session repository hanya saat dibutuhkan (lazy init) untuk menghindari ReferenceError
 let sessionRepository: SessionRepository;
@@ -36,7 +36,7 @@ let schemaInitialized = false;
 
 async function getSessionRepository() {
   if (!sessionRepository) {
-    const { SessionRepositoryInMemory } = await import("../../../work-core");
+    const { SessionRepositoryInMemory } = await import("../../../work-core/index.js");
     sessionRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
       ? getSessionRepositoryPostgres()
       : SessionRepositoryInMemory;
@@ -61,13 +61,11 @@ const CreateRequirementWithContextSchema = z.object({
   source: z.string().optional(),
   linkedCapabilityIds: z.array(z.string()).optional(),
   acceptanceCriteria: z.array(z.string()).optional(),
-  // Work identity binding (from decision_id)
-  workId: z.string().optional(),
-  // Required context for tenant isolation
+  // High-Value Work Graph integration
+  linkedIntentId: z.string().optional(),
+  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+  workId: z.string(),
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
 });
 
 const UpdateRequirementWithContextSchema = z.object({
@@ -80,11 +78,11 @@ const UpdateRequirementWithContextSchema = z.object({
   source: z.string().optional(),
   linkedCapabilityIds: z.array(z.string()).optional(),
   acceptanceCriteria: z.array(z.string()).optional(),
-  // Required context for tenant isolation
+  // High-Value Work Graph integration
+  linkedIntentId: z.string().optional(),
+  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+  workId: z.string(),
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
 });
 
 type CreateRequirementCommand = CapabilityCommand<
@@ -128,28 +126,13 @@ export const createRequirement: CreateRequirementCommand = {
     const parsed = CreateRequirementWithContextSchema.parse(input);
     const { 
       title, summary, description, priority, owner, source, linkedCapabilityIds, acceptanceCriteria,
-      tenantId, workspaceId, sessionId, actorId 
+      linkedIntentId, workId: workIdValue, sessionId: sessionIdValue 
     } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await sessionRepository.byId(sessionId as any);
+    const session = await sessionRepository.byId(sessionIdValue as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.create] Invalid or revoked session - authentication violation");
-    }
-
-    // 2. Enforce actor match - session actor must match request actor
-    if (session.actorId !== actorId) {
-      throw new Error("[requirement.create] Session actor mismatch - authentication violation");
-    }
-
-    // 3. Enforce tenant isolation - requested tenant must match session's tenant
-    if (session.tenantId !== tenantId) {
-      throw new Error("[requirement.create] Cross-tenant access attempt blocked - security violation");
-    }
-
-    // 4. Enforce workspace isolation - requested workspace must match session's workspace
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[requirement.create] Cross-workspace access attempt blocked - security violation");
     }
 
     const cleanTitle = title.trim();
@@ -160,8 +143,9 @@ export const createRequirement: CreateRequirementCommand = {
     const entityId = newRequirementId();
     const entity: RequirementAggregate = {
       id: entityId,
+      // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+      workId: workIdValue,
       title: cleanTitle,
-      ...(input.workId ? { workId: input.workId } : {}),
       ...(trimOptional(summary) !== undefined ? { summary: trimOptional(summary) } : {}),
       ...(trimOptional(description) !== undefined
         ? { description: trimOptional(description) }
@@ -170,6 +154,7 @@ export const createRequirement: CreateRequirementCommand = {
       priority: priority ?? defaultRequirementPriority,
       ...(trimOptional(owner) !== undefined ? { owner: trimOptional(owner) } : {}),
       ...(trimOptional(source) !== undefined ? { source: trimOptional(source) } : {}),
+      ...(linkedIntentId ? { linkedIntentId } : {}), // High-Value Work Graph integration
       linkedCapabilityIds: [...(linkedCapabilityIds ?? [])],
       acceptanceCriteria: [...(acceptanceCriteria ?? [])].map((item) => item.trim()).filter(Boolean),
       verificationStatus: defaultRequirementVerificationStatus,
@@ -177,9 +162,6 @@ export const createRequirement: CreateRequirementCommand = {
       createdAt: now,
       updatedAt: now,
     };
-    // Add tenant/workspace context for isolation
-    (entity as any).tenantId = tenantId;
-    (entity as any).workspaceId = workspaceId;
     await RequirementRepositoryCurrent.save(entity);
     return {
       id: entity.id,
@@ -200,37 +182,22 @@ export const updateRequirement: UpdateRequirementCommand = {
     const parsed = UpdateRequirementWithContextSchema.parse(input);
     const { 
       id, title, summary, description, priority, owner, source, linkedCapabilityIds, acceptanceCriteria,
-      tenantId, workspaceId, sessionId, actorId 
+      linkedIntentId, workId: workIdValue, sessionId: sessionIdValue 
     } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await sessionRepository.byId(sessionId as any);
+    const session = await sessionRepository.byId(sessionIdValue as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.update] Invalid or revoked session - authentication violation");
-    }
-
-    // 2. Enforce actor match - session actor must match request actor
-    if (session.actorId !== actorId) {
-      throw new Error("[requirement.update] Session actor mismatch - authentication violation");
-    }
-
-    // 3. Enforce tenant isolation - requested tenant must match session's tenant
-    if (session.tenantId !== tenantId) {
-      throw new Error("[requirement.update] Cross-tenant access attempt blocked - security violation");
-    }
-
-    // 4. Enforce workspace isolation - requested workspace must match session's workspace
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[requirement.update] Cross-workspace access attempt blocked - security violation");
     }
 
     const current = await RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
       throw new Error(`[requirement.update] Requirement not found: ${id}`);
     }
-    // 5. Enforce requirement belongs to the same tenant/workspace
-    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
-      throw new Error("[requirement.update] Requirement not found in workspace - security violation");
+    // 2. Enforce workId consistency - cannot modify work association
+    if (current.workId !== workIdValue) {
+      throw new Error("[requirement.update] Cannot modify work association - workId must remain consistent");
     }
     const next: RequirementAggregate = {
       ...current,
@@ -242,6 +209,7 @@ export const updateRequirement: UpdateRequirementCommand = {
       ...(priority !== undefined ? { priority: priority } : {}),
       ...(owner !== undefined ? { owner: trimOptional(owner) } : {}),
       ...(source !== undefined ? { source: trimOptional(source) } : {}),
+      ...(linkedIntentId !== undefined ? { linkedIntentId } : {}), // High-Value Work Graph integration
       ...(linkedCapabilityIds !== undefined
         ? { linkedCapabilityIds: [...linkedCapabilityIds] }
         : {}),
@@ -262,53 +230,39 @@ export const updateRequirement: UpdateRequirementCommand = {
 
 const ApproveRequirementWithContextSchema = z.object({
   id: z.string().min(1),
-  // PT-004 non-linear flow support (RWP-003)
-  workId: z.string().optional(),
+  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+  workId: z.string(),
   parentContextTraceId: z.string().optional(),
-  // Required context for tenant isolation
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
 });
 
 const StartRequirementDeliveryWithContextSchema = z.object({
   id: z.string().min(1),
-  // Required context for tenant isolation
+  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+  workId: z.string(),
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
 });
 
 const MarkRequirementImplementedWithContextSchema = z.object({
   id: z.string().min(1),
-  // Required context for tenant isolation
+  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+  workId: z.string(),
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
 });
 
 const RequestRequirementReviewWithContextSchema = z.object({
   id: z.string().min(1),
   reviewerIds: z.array(z.string().min(1)).min(1),
-  // Required context for tenant isolation
+  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+  workId: z.string().min(1),
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
-  // Work identity persistence (C12 invariant)
-  workId: z.string().optional(),
 });
 
 const VerifyRequirementWithContextSchema = z.object({
   id: z.string().min(1),
-  // Required context for tenant isolation
+  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
+  workId: z.string().min(1),
 });
 
 
@@ -321,36 +275,21 @@ export const approveRequirement: ApproveRequirementCommand = {
     await ensureIdentitySchema();
     
     const parsed = ApproveRequirementWithContextSchema.parse(input);
-    const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
+    const { id, sessionId: sessionIdValue, workId: workIdValue } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await sessionRepository.byId(sessionId as any);
+    const session = await sessionRepository.byId(sessionIdValue as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.approve] Invalid or revoked session - authentication violation");
-    }
-
-    // 2. Enforce actor match - session actor must match request actor
-    if (session.actorId !== actorId) {
-      throw new Error("[requirement.approve] Session actor mismatch - authentication violation");
-    }
-
-    // 3. Enforce tenant isolation - requested tenant must match session's tenant
-    if (session.tenantId !== tenantId) {
-      throw new Error("[requirement.approve] Cross-tenant access attempt blocked - security violation");
-    }
-
-    // 4. Enforce workspace isolation - requested workspace must match session's workspace
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[requirement.approve] Cross-workspace access attempt blocked - security violation");
     }
 
     const current = await RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
       throw new Error(`[requirement.approve] Requirement not found: ${id}`);
     }
-    // 5. Enforce requirement belongs to the same tenant/workspace
-    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
-      throw new Error("[requirement.approve] Requirement not found in workspace - security violation");
+    // 2. Enforce workId consistency - cannot modify work association
+    if (current.workId !== workId) {
+      throw new Error("[requirement.approve] Cannot modify work association - workId must remain consistent");
     }
     // C14 Precondition: Requirement must be in review_completed status to approve (post-review workflow)
     if (current.status !== "review_completed") {
@@ -359,17 +298,16 @@ export const approveRequirement: ApproveRequirementCommand = {
       );
     }
     // C14-X: Wrong Actor Rejection - ONLY original owner can approve after review
-    if (current.owner !== actorId) {
-      throw new Error(`[requirement.approve] Only original owner can approve requirement: ${id} (actor: ${actorId}, owner: ${current.owner})`);
+    if (current.owner !== session.actorId) {
+      throw new Error(`[requirement.approve] Only original owner can approve requirement: ${id} (actor: ${session.actorId}, owner: ${current.owner})`);
     }
     // C14 Invariant: Preserve work identity (W1 remains intact)
-    const workId = current.workId!;
     const approvedAt = new Date();
     const next: RequirementAggregate = {
       ...current,
       status: "approved",
       verificationStatus: "not_ready",
-      approvedBy: actorId,
+      approvedBy: session.actorId,
       approvedAt,
       workId,
     };
@@ -386,36 +324,21 @@ export const startRequirementDelivery: StartRequirementDeliveryCommand = {
     await ensureIdentitySchema();
     
     const parsed = StartRequirementDeliveryWithContextSchema.parse(input);
-    const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
+    const { id, sessionId: sessionIdValue, workId: workIdValue } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await sessionRepository.byId(sessionId as any);
+    const session = await sessionRepository.byId(sessionIdValue as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.startDelivery] Invalid or revoked session - authentication violation");
-    }
-
-    // 2. Enforce actor match - session actor must match request actor
-    if (session.actorId !== actorId) {
-      throw new Error("[requirement.startDelivery] Session actor mismatch - authentication violation");
-    }
-
-    // 3. Enforce tenant isolation - requested tenant must match session's tenant
-    if (session.tenantId !== tenantId) {
-      throw new Error("[requirement.startDelivery] Cross-tenant access attempt blocked - security violation");
-    }
-
-    // 4. Enforce workspace isolation - requested workspace must match session's workspace
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[requirement.startDelivery] Cross-workspace access attempt blocked - security violation");
     }
 
     const current = await RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
       throw new Error(`[requirement.startDelivery] Requirement not found: ${id}`);
     }
-    // 5. Enforce requirement belongs to the same tenant/workspace
-    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
-      throw new Error("[requirement.startDelivery] Requirement not found in workspace - security violation");
+    // 2. Enforce workId consistency - cannot modify work association
+    if (current.workId !== workId) {
+      throw new Error("[requirement.startDelivery] Cannot modify work association - workId must remain consistent");
     }
     if (current.status !== "approved") {
       throw new Error(
@@ -441,36 +364,21 @@ export const markRequirementImplemented: MarkRequirementImplementedCommand = {
     await ensureIdentitySchema();
     
     const parsed = MarkRequirementImplementedWithContextSchema.parse(input);
-    const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
+    const { id, sessionId: sessionIdValue, workId: workIdValue } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await sessionRepository.byId(sessionId as any);
+    const session = await sessionRepository.byId(sessionIdValue as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.markImplemented] Invalid or revoked session - authentication violation");
-    }
-
-    // 2. Enforce actor match - session actor must match request actor
-    if (session.actorId !== actorId) {
-      throw new Error("[requirement.markImplemented] Session actor mismatch - authentication violation");
-    }
-
-    // 3. Enforce tenant isolation - requested tenant must match session's tenant
-    if (session.tenantId !== tenantId) {
-      throw new Error("[requirement.markImplemented] Cross-tenant access attempt blocked - security violation");
-    }
-
-    // 4. Enforce workspace isolation - requested workspace must match session's workspace
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[requirement.markImplemented] Cross-workspace access attempt blocked - security violation");
     }
 
     const current = await RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
       throw new Error(`[requirement.markImplemented] Requirement not found: ${id}`);
     }
-    // 5. Enforce requirement belongs to the same tenant/workspace
-    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
-      throw new Error("[requirement.markImplemented] Requirement not found in workspace - security violation");
+    // 2. Enforce workId consistency - cannot modify work association
+    if (current.workId !== workId) {
+      throw new Error("[requirement.markImplemented] Cannot modify work association - workId must remain consistent");
     }
     if (current.status !== "in_delivery") {
       throw new Error(
@@ -506,12 +414,12 @@ type RequestRequirementReviewCommand = CapabilityCommand<
 export const requestRequirementReview: RequestRequirementReviewCommand = {
   kind: "command",
   name: "requirement.requestReview",
-  version: "2.0.0",
+  version: "3.0.0", // CORE-001 compliant version
   async execute(input: z.infer<typeof RequestRequirementReviewWithContextSchema>) {
     await ensureIdentitySchema();
     
     const parsed = RequestRequirementReviewWithContextSchema.parse(input);
-    const { id, sessionId, tenantId, workspaceId, actorId, reviewerIds } = parsed;
+    const { id, sessionId, workId, reviewerIds } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
     const session = await sessionRepository.byId(sessionId as any);
@@ -519,28 +427,13 @@ export const requestRequirementReview: RequestRequirementReviewCommand = {
       throw new Error("[requirement.requestReview] Invalid or revoked session - authentication violation");
     }
 
-    // 2. Enforce actor match - session actor must match request actor
-    if (session.actorId !== actorId) {
-      throw new Error("[requirement.requestReview] Session actor mismatch - authentication violation");
-    }
-
-    // 3. Enforce tenant isolation - requested tenant must match session's tenant
-    if (session.tenantId !== tenantId) {
-      throw new Error("[requirement.requestReview] Cross-tenant access attempt blocked - security violation");
-    }
-
-    // 4. Enforce workspace isolation - requested workspace must match session's workspace
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[requirement.requestReview] Cross-workspace access attempt blocked - security violation");
-    }
-
     const current = await RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
       throw new Error(`[requirement.requestReview] Requirement not found: ${id}`);
     }
-    // 5. Enforce requirement belongs to the same tenant/workspace
-    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
-      throw new Error("[requirement.requestReview] Requirement not found in workspace - security violation");
+    // 2. Enforce workId consistency - cannot modify work association
+    if (current.workId !== workId) {
+      throw new Error("[requirement.requestReview] Cannot modify work association - workId must remain consistent");
     }
     // C12 Precondition: Requirement must be in draft status to request review
     if (current.status !== "draft") {
@@ -548,15 +441,13 @@ export const requestRequirementReview: RequestRequirementReviewCommand = {
         `[requirement.requestReview] Requirement must be in draft status to request review: ${id} (current status: ${current.status})`,
       );
     }
-    // Prevent requesting review to self (C18: check all reviewers)
-    if (reviewerIds.includes(actorId)) {
+    // Prevent requesting review to self (C18: check all reviewers against session actor)
+    if (reviewerIds.includes(session.actorId)) {
       throw new Error(
         `[requirement.requestReview] Cannot request review from yourself: ${id}`,
       );
     }
 
-    // C12 Invariant: Preserve work identity
-    const workId = (input as any).workId || current.workId;
     const requestedAt = new Date();
     // Initialize version if not exists (repository will increment automatically)
     const currentVersion = (current as any).version ?? 0;
@@ -565,9 +456,9 @@ export const requestRequirementReview: RequestRequirementReviewCommand = {
       ...current,
       status: "in_review",
       reviewerIds,
-      reviewRequestedBy: actorId,
+      reviewRequestedBy: session.actorId,
       requestedAt,
-      workId,
+      workId: current.workId,
       version: currentVersion,
     };
     const saved = await RequirementRepositoryCurrent.save(next);
@@ -592,26 +483,27 @@ export const verifyRequirement: VerifyRequirementCommand = {
     await ensureIdentitySchema();
     
     const parsed = VerifyRequirementWithContextSchema.parse(input);
-    const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
+    const { id, sessionId: sessionIdValue, workId: workIdValue } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await sessionRepository.byId(sessionId as any);
+    const session = await sessionRepository.byId(sessionIdValue as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.verify] Invalid or revoked session - authentication violation");
     }
 
-    // 2. Enforce actor match - session actor must match request actor
-    if (session.actorId !== actorId) {
-      throw new Error("[requirement.verify] Session actor mismatch - authentication violation");
+    // CORE-001: Ambil semua boundary metadata dari core Work primitive (single source of truth)
+    const { getWorkRepositoryPostgres } = await import("../../../work-core/index.js");
+    const workRepository = getWorkRepositoryPostgres();
+    const coreWork = await workRepository.byWorkId(workIdValue as any);
+    if (!coreWork) {
+      throw new Error("[requirement.verify] Core Work not found - cannot bind verification to non-existent Work primitive");
     }
 
-    // 3. Enforce tenant isolation - requested tenant must match session's tenant
-    if (session.tenantId !== tenantId) {
+    // CORE-001: Verifikasi akses session actor ke core Work (authorization boundary enforcement)
+    if (session.tenantId !== coreWork.tenantId) {
       throw new Error("[requirement.verify] Cross-tenant access attempt blocked - security violation");
     }
-
-    // 4. Enforce workspace isolation - requested workspace must match session's workspace
-    if (session.workspaceId !== workspaceId) {
+    if (session.workspaceId !== coreWork.workspaceId) {
       throw new Error("[requirement.verify] Cross-workspace access attempt blocked - security violation");
     }
 
@@ -619,9 +511,9 @@ export const verifyRequirement: VerifyRequirementCommand = {
     if (current === undefined) {
       throw new Error(`[requirement.verify] Requirement not found: ${id}`);
     }
-    // 5. Enforce requirement belongs to the same tenant/workspace
-    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
-      throw new Error("[requirement.verify] Requirement not found in workspace - security violation");
+    // 5. Enforce requirement belongs to the same Work (CORE-001 consistency check)
+    if (current.workId !== workId) {
+      throw new Error("[requirement.verify] Requirement does not belong to the specified Work - workId mismatch");
     }
     if (current.status !== "implemented") {
       throw new Error(
@@ -648,11 +540,10 @@ export const verifyRequirement: VerifyRequirementCommand = {
 
 // C13: Complete requirement review (reviewer only)
 const CompleteRequirementReviewWithContextSchema = z.object({
-  id: z.string(),
-  sessionId: z.string(),
-  tenantId: z.string(),
-  workspaceId: z.string(),
-  actorId: z.string(),
+  id: z.string().min(1),
+  sessionId: z.string().min(1),
+  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+  workId: z.string().min(1),
 });
 
 type CompleteRequirementReviewCommand = CapabilityCommand<
@@ -670,47 +561,31 @@ type CompleteRequirementReviewCommand = CapabilityCommand<
 export const completeRequirementReview: CompleteRequirementReviewCommand = {
   kind: "command",
   name: "requirement.completeReview",
-  version: "1.0.0",
+  version: "3.0.0", // CORE-001 compliant version
   async execute(input: z.infer<typeof CompleteRequirementReviewWithContextSchema>) {
     await ensureIdentitySchema();
     
     const parsed = CompleteRequirementReviewWithContextSchema.parse(input);
-    const { id, sessionId, tenantId, workspaceId, actorId } = parsed;
+    const { id, sessionId: sessionIdValue, workId: workIdValue } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
-    const session = await sessionRepository.byId(sessionId as any);
+    const session = await sessionRepository.byId(sessionIdValue as any);
     if (!session || session.revokedAt !== null) {
       throw new Error("[requirement.completeReview] Invalid or revoked session - authentication violation");
-    }
-
-    // 2. Enforce actor match - session actor must match request actor
-    if (session.actorId !== actorId) {
-      throw new Error("[requirement.completeReview] Session actor mismatch - authentication violation");
-    }
-
-    // 3. Enforce tenant isolation - requested tenant must match session's tenant
-    if (session.tenantId !== tenantId) {
-      throw new Error("[requirement.completeReview] Cross-tenant access attempt blocked - security violation");
-    }
-
-    // 4. Enforce workspace isolation - requested workspace must match session's workspace
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[requirement.completeReview] Cross-workspace access attempt blocked - security violation");
     }
 
     const current = await RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
       throw new Error(`[requirement.completeReview] Requirement not found: ${id}`);
     }
-
-    // 5. Enforce requirement belongs to the same tenant/workspace
-    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
-      throw new Error("[requirement.completeReview] Requirement not found in workspace - security violation");
+    // 2. Enforce workId consistency - cannot modify work association
+    if (current.workId !== workId) {
+      throw new Error("[requirement.completeReview] Cannot modify work association - workId must remain consistent");
     }
 
     // C13-X/C18: Core Wrong Actor Rejection - ONLY assigned reviewers can complete review
-    if (!current.reviewerIds?.includes(actorId)) {
-      throw new Error(`[requirement.completeReview] Only assigned reviewer can complete review: ${id} (actor: ${actorId}, reviewers: ${current.reviewerIds?.join(', ') || 'none'})`);
+    if (!current.reviewerIds?.includes(session.actorId)) {
+      throw new Error(`[requirement.completeReview] Only assigned reviewer can complete review: ${id} (actor: ${session.actorId}, reviewers: ${current.reviewerIds?.join(', ') || 'none'})`);
     }
 
     // 6. Enforce state transition: only in_review can become review_completed
@@ -723,7 +598,7 @@ export const completeRequirementReview: CompleteRequirementReviewCommand = {
     const next: RequirementAggregate = {
       ...current,
       status: "review_completed",
-      reviewCompletedBy: actorId,
+      reviewCompletedBy: session.actorId,
       reviewCompletedAt,
       workId: current.workId!,
       version: currentVersion,
@@ -741,27 +616,11 @@ export const completeRequirementReview: CompleteRequirementReviewCommand = {
   },
 };
 
-export const requirementCommands: Readonly<Record<string, CapabilityCommand>> = {
-  "requirement.create": createRequirement,
-  "requirement.update": updateRequirement,
-  "requirement.approve": approveRequirement,
-  "requirement.startDelivery": startRequirementDelivery,
-  "requirement.markImplemented": markRequirementImplemented,
-  "requirement.verify": verifyRequirement,
-  "requirement.requestReview": requestRequirementReview,
-  "requirement.completeReview": completeRequirementReview,
-  // "requirement.rejectReview": rejectRequirementReview, // Temporary disabled: initialization order error - Cannot access 'rejectRequirementReview' before initialization
-  "requirement.getByOwner": getRequirementsByOwnerCommand,
-  "requirement.getAll": getAllRequirementsCommand,
-  "requirement.getById": getRequirementByIdCommand,
-} as const;
 // C17: Reject requirement review (reviewer only, same C13-X pattern)
 const RejectRequirementReviewWithContextSchema = z.object({
   id: z.string().min(1),
   sessionId: z.string().min(1),
-  tenantId: z.string().min(1),
-  workspaceId: z.string().min(1),
-  actorId: z.string().min(1),
+  workId: z.string().min(1),
   rejectionReason: z.string().optional(),
 });
 
@@ -780,12 +639,12 @@ type RejectRequirementReviewCommand = CapabilityCommand<
 export const rejectRequirementReview: RejectRequirementReviewCommand = {
   kind: "command",
   name: "requirement.rejectReview",
-  version: "1.0.0",
+  version: "3.0.0", // CORE-001 compliant version
   async execute(input: z.infer<typeof RejectRequirementReviewWithContextSchema>) {
     await ensureIdentitySchema();
     
     const parsed = RejectRequirementReviewWithContextSchema.parse(input);
-    const { id, sessionId, tenantId, workspaceId, actorId, rejectionReason } = parsed;
+    const { id, sessionId, workId, rejectionReason } = parsed;
 
     // 1. Validate session exists and is active (enforce authentication)
     const session = await sessionRepository.byId(sessionId as any);
@@ -793,34 +652,19 @@ export const rejectRequirementReview: RejectRequirementReviewCommand = {
       throw new Error("[requirement.rejectReview] Invalid or revoked session - authentication violation");
     }
 
-    // 2. Enforce actor match - session actor must match request actor
-    if (session.actorId !== actorId) {
-      throw new Error("[requirement.rejectReview] Session actor mismatch - authentication violation");
-    }
-
-    // 3. Enforce tenant isolation - requested tenant must match session's tenant
-    if (session.tenantId !== tenantId) {
-      throw new Error("[requirement.rejectReview] Cross-tenant access attempt blocked - security violation");
-    }
-
-    // 4. Enforce workspace isolation - requested workspace must match session's workspace
-    if (session.workspaceId !== workspaceId) {
-      throw new Error("[requirement.rejectReview] Cross-workspace access attempt blocked - security violation");
-    }
-
     const current = await RequirementRepositoryCurrent.byId(id as any);
     if (current === undefined) {
       throw new Error(`[requirement.rejectReview] Requirement not found: ${id}`);
     }
 
-    // 5. Enforce requirement belongs to the same tenant/workspace
-    if ((current as any).tenantId !== tenantId || (current as any).workspaceId !== workspaceId) {
-      throw new Error("[requirement.rejectReview] Requirement not found in workspace - security violation");
+    // 2. Enforce workId consistency - cannot modify work association
+    if (current.workId !== workId) {
+      throw new Error("[requirement.rejectReview] Cannot modify work association - workId must remain consistent");
     }
 
     // C17-X/C18: Extend C13-X - ONLY assigned reviewers can reject review
-    if (!current.reviewerIds?.includes(actorId)) {
-      throw new Error(`[requirement.rejectReview] Only assigned reviewer can reject review: ${id} (actor: ${actorId}, reviewers: ${current.reviewerIds?.join(', ') || 'none'})`);
+    if (!current.reviewerIds?.includes(session.actorId)) {
+      throw new Error(`[requirement.rejectReview] Only assigned reviewer can reject review: ${id} (actor: ${session.actorId}, reviewers: ${current.reviewerIds?.join(', ') || 'none'})`);
     }
 
     // 6. Enforce state transition: only in_review can become review_rejected
@@ -833,7 +677,7 @@ export const rejectRequirementReview: RejectRequirementReviewCommand = {
     const next: RequirementAggregate = {
       ...current,
       status: "review_rejected",
-      reviewRejectedBy: actorId,
+      reviewRejectedBy: session.actorId,
       reviewRejectedAt,
       rejectionReason,
       workId: current.workId!,
@@ -851,3 +695,18 @@ export const rejectRequirementReview: RejectRequirementReviewCommand = {
     };
   },
 };
+
+export const requirementCommands: Readonly<Record<string, CapabilityCommand>> = {
+  "requirement.create": createRequirement,
+  "requirement.update": updateRequirement,
+  "requirement.approve": approveRequirement,
+  "requirement.startDelivery": startRequirementDelivery,
+  "requirement.markImplemented": markRequirementImplemented,
+  "requirement.verify": verifyRequirement,
+  "requirement.requestReview": requestRequirementReview,
+  "requirement.completeReview": completeRequirementReview,
+  "requirement.rejectReview": rejectRequirementReview,
+  "requirement.getByOwner": getRequirementsByOwnerCommand,
+  "requirement.getAll": getAllRequirementsCommand,
+  "requirement.getById": getRequirementByIdCommand,
+} as const;

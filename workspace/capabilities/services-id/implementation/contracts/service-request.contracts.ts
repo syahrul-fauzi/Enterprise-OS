@@ -13,7 +13,7 @@ export interface ExecutionContextMetadata {
 }
 export interface ServiceRequestAggregate {
     readonly id: ServiceRequestId;
-    readonly workId?: string;
+    readonly workId: string; // Mandatory CORE-001: WorkAggregate sebagai single source of truth boundary metadata
     readonly title: string;
     readonly description?: string;
     readonly status: ServiceRequestStatus;
@@ -27,9 +27,6 @@ export interface ServiceRequestAggregate {
     readonly settledAt?: Readonly<Date>;
     readonly executionContext?: ExecutionContextMetadata;
     readonly evidence?: readonly any[];
-    readonly tenantId?: string;
-    readonly workspaceId?: string;
-    readonly actorId?: string;
     readonly category?: string;
 }
 export interface CreateServiceRequestInput {
@@ -38,11 +35,8 @@ export interface CreateServiceRequestInput {
     readonly priority?: ServiceRequestPriority;
     readonly sourceDiscussionId?: string;
     readonly assigneeId?: string;
-    readonly workId?: string;
+    readonly workId: string; // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
     readonly sessionId: string;
-    readonly tenantId: string;
-    readonly workspaceId: string;
-    readonly actorId: string;
     readonly category?: string;
 }
 export interface CreateServiceRequestOutput {
@@ -50,12 +44,9 @@ export interface CreateServiceRequestOutput {
     readonly status: ServiceRequestStatus;
 }
 export interface CloseServiceRequestInput {
-    readonly id: ServiceRequestId;
+    readonly id: string;
     readonly reason?: string;
     readonly sessionId: string;
-    readonly tenantId: string;
-    readonly workspaceId: string;
-    readonly actorId: string;
 }
 export interface CloseServiceRequestOutput {
     readonly id: ServiceRequestId;
@@ -69,9 +60,6 @@ export interface AssignAssigneeInput {
     readonly workId?: string;
     readonly parentContextTraceId?: string;
     readonly sessionId: string;
-    readonly tenantId: string;
-    readonly workspaceId: string;
-    readonly actorId: string;
 }
 export interface AssignAssigneeOutput {
     readonly id: ServiceRequestId;
@@ -101,8 +89,8 @@ export interface SettleServiceRequestInput {
     readonly settlementProof?: string;
     readonly sessionId: string;
     readonly tenantId: string;
-    readonly workspaceId: string;
-    readonly actorId: string;
+    readonly workspaceId?: string;
+    readonly workId?: string;
 }
 export interface SettleServiceRequestOutput {
     readonly id: ServiceRequestId;
@@ -113,9 +101,9 @@ export interface SettleServiceRequestOutput {
 export type ServiceRequestRepository = {
     readonly entityName: "ServiceRequest";
     readonly kind: "repository";
-    byId(id: ServiceRequestId, context?: { tenantId: string; workspaceId: string }): Promise<ServiceRequestAggregate | undefined>;
-    list(context?: { tenantId: string; workspaceId: string }): Promise<readonly ServiceRequestAggregate[]>;
-    byWorkId(workId: string, context?: { tenantId: string; workspaceId: string }): Promise<ServiceRequestAggregate | undefined>;
+    byId(id: ServiceRequestId, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<ServiceRequestAggregate | undefined>;
+    list(context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<readonly ServiceRequestAggregate[]>;
+    byWorkId(workId: string, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<ServiceRequestAggregate | undefined>;
     save(input: CreateServiceRequestInput): Promise<CreateServiceRequestOutput>;
     settle(input: SettleServiceRequestInput): Promise<SettleServiceRequestOutput>;
 };

@@ -22,7 +22,8 @@
     "lint": "eslint src --max-warnings 0"
   },
   "dependencies": {
-    "@repo/core-kernel": "workspace:*"
+    "@repo/core-kernel": "workspace:*",
+    "@repo/presentation-entities": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19"

@@ -6,15 +6,15 @@
     "declaration": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "moduleResolution": "node16",
-    "module": "node16",
-    "paths": {
-      "*": ["./*"],
-      "@repo/core-transformation-registry": ["../transformation-registry/dist"],
-      "@repo/core-predicate-registry": ["../predicate-registry/dist"],
-      "@repo/core-proof-ledger": ["../proof-ledger/dist"]
-    }
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext"
   },
-  "include": ["src"],
-  "exclude": ["dist", "build", "node_modules", "tests", "../transformation-registry", "../predicate-registry", "../proof-ledger"]
+  "references": [
+    { "path": "../transformation-registry/tsconfig.json" },
+    { "path": "../predicate-registry/tsconfig.json" },
+    { "path": "../proof-ledger/tsconfig.json" },
+    { "path": "../eir/tsconfig.json" }
+  ],
+  "include": ["src", "src/yaml.d.ts"],
+  "exclude": ["dist", "build", "node_modules", "tests"]
 }

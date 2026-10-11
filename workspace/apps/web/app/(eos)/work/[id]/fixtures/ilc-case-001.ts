@@ -3,6 +3,7 @@ import type { CanonicalWorkRecord } from "@/app/api/work/create/route";
 export const ilcCase001Work: CanonicalWorkRecord = {
   workId: "ilc-case-001",
   id: "ilc-case-001",
+  workflowId: "ilc-ins-001-institutional-coordination", // FACE-001: Link to ILC institutional workflow
   title: "Pendidikan Vokasi - Sertifikasi Teknisi Digital untuk UMKM",
   description: "ILC Golden Slice: Pelatihan dan sertifikasi teknisi digital untuk UMKM di Jawa Tengah. Memerlukan proses dari pendaftaran peserta hingga sertifikasi kompetensi yang diakui oleh Kementerian Ketenagakerjaan.",
   status: "in_progress",

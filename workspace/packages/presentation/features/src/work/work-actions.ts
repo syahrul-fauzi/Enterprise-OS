@@ -8,7 +8,9 @@ import type { WorkIdentity, WorkState } from '@repo/presentation-entities';
 // MB-01 compliant: use relative paths from src/work to root (src/work is 4 levels deep: packages/presentation/features/src/work)
 // ../../../../../ goes up 4 levels to workspace root (packages/presentation/features/src/work → go up 4 times: packages/ → workspace root), then into capabilities/work-core
 // HAPUS IMPOR SERVER-SIDE DARI CLIENT COMPONENT - hanya boleh import types saja!
-import type { ActorId, WorkAggregate, WorkStatusEnum } from "../../../../../capabilities/work-core/contracts/work.contracts";
+// Ganti WorkAggregate dengan WorkFaceProjection (canonical FACE projection type, bukan core Work aggregate)
+// FACE-001 compliance: client components ONLY depend on server-derived projection, never core Work data
+import type { ActorId, WorkFaceProjection, WorkStatusEnum } from "../../../../../capabilities/work-core/contracts/work.contracts";
 // Jangan import WorkRepositoryPostgres (server-side) ke client component!
 // import { WorkRepositoryPostgres, getWorkRepositoryPostgres } from "../../../../../capabilities/work-core/implementation/repository/work-postgres.repository";
 
@@ -50,7 +52,7 @@ export interface EconomicValue {
 }
 
 export async function executeTransition(
-  work: WorkIdentity,
+  workProjection: WorkFaceProjection, // FACE-001: use only server-derived projection as input
   currentState: WorkState,
   request: WorkTransitionRequest
 ): Promise<WorkTransitionResult> {

@@ -2,9 +2,10 @@
   "extends": "../../../config/typescript/base.json",
   "compilerOptions": {
     "outDir": "dist",
+    "rootDir": "src",
     "strictNullChecks": false,
     "declaration": true
   },
-  "include": ["src"],
+  "include": ["src", "src/yaml.d.ts"],
   "exclude": ["dist", "build", "node_modules"]
 }

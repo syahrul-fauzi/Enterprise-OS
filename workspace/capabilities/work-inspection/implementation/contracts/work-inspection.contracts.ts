@@ -4,10 +4,10 @@
  * No standalone communication types - all events are grounded to a Work
  */
 
-import type { WorkAggregate, WorkId, WorkStatus, TenantId, ActorId, SessionId } from "@repo/capabilities-work-core";
+import type { WorkAggregate, WorkId, WorkStatus, TenantId, ActorId, SessionId } from "@capabilities/work-core/contracts";
 // Re-export SEMUA canonical types dari work-core - TIDAK ADA definisi lokal WorkAggregate (semantic boundary consolidation selesai)
-export type { WorkId, WorkStatus, WorkAggregate, TenantId, ActorId, SessionId } from "@repo/capabilities-work-core";
-// All value exports already handled by @repo/capabilities-work-core - removed duplicate export to fix TS2300
+export type { WorkId, WorkStatus, WorkAggregate, TenantId, ActorId, SessionId } from "@capabilities/work-core/contracts";
+// All value exports already handled by @capabilities/work-core - removed duplicate export to fix TS2300
 
 
 

@@ -10,7 +10,11 @@
     "eos:status": "PYTHONPATH=implementation python3 implementation/eos/kernel/cli/status-reader.py",
     "eos:pattern": "PYTHONPATH=implementation python3 implementation/eos/engines/pattern/engine.py",
     "eos:doctor": "PYTHONPATH=implementation python3 implementation/eos/engines/doctor/engine.py lawyershub",
-    "eos": "pnpm --dir ./workspace eos"
+    "eos": "pnpm --dir ./workspace eos",
+    "test": "cd workspace && pnpm vitest run capabilities/product-delivery/test/delivery.test.ts",
+    "test:del001": "cd workspace && pnpm vitest run capabilities/product-delivery/test/delivery.test.ts",
+    "test:ret001": "cd workspace && pnpm vitest run capabilities/retail-inventory/test/retail-inventory.test.ts",
+    "test:watch": "cd workspace && pnpm vitest capabilities/product-delivery/test/delivery.test.ts"
   },
   "keywords": [
     "enterprise-os",
@@ -23,8 +27,10 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^26.1.2",
+    "k6": "^0.0.0",
     "tsx": "^4.23.12",
     "turbo": "^2.10.11",
+    "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^3.2.7",
     "zod": "^3.25.76"
   },

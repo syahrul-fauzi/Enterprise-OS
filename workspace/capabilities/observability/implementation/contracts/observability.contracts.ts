@@ -1,5 +1,5 @@
 // Import canonical identity types dari work-core (single source of truth - anti-drift)
-import type { TenantId } from "@repo/capabilities-work-core";
+import type { TenantId, WorkId } from "@capabilities/work-core";
 
 export interface RuntimeInvocation {
   readonly capability_id: string;
@@ -49,6 +49,7 @@ export type IncidentCategory = "Infrastructure" | "Application" | "Database" | "
 
 export interface IncidentAggregate {
   readonly id: IncidentId;
+  readonly workId: WorkId; // CORE-001: Bind incident ke core Work primitive (single source of truth)
   readonly title: string;
   readonly description?: string;
   readonly category: IncidentCategory;
@@ -67,10 +68,9 @@ export interface CreateIncidentInput {
   readonly description?: string;
   readonly priority?: IncidentPriority;
   readonly category?: IncidentCategory;
+  // CORE-001: Hanya sessionId dan workId yang diperlukan sebagai input - semua metadata lain diambil dari core Work
   readonly sessionId: string;
-  readonly tenantId: TenantId;
-  readonly workspaceId: string;
-  readonly actorId: string;
+  readonly workId: string;
 }
 
 export interface CreateIncidentOutput {

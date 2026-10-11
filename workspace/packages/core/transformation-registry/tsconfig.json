@@ -5,8 +5,9 @@
     "strictNullChecks": true,
     "declaration": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "composite": true
   },
-  "include": ["src"],
+  "include": ["src", "src/yaml.d.ts"],
   "exclude": ["dist", "build", "node_modules", "tests"]
 }

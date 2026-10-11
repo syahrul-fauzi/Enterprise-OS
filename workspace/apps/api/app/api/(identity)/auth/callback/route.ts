@@ -142,126 +142,131 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
   const state = searchParams.get("state");
   const error = searchParams.get("error");
+  
+  // Pindahkan semua operasi async terlebih dahulu untuk menghindari error Turbopack
+  const cookieStore = await cookies();
+  
+  let redirectUrl = "/login?error=unknown_error";
+  let shouldRedirect = true;
+  let finalResponse: Response | null = null;
 
   if (error) {
     console.error("[OIDC] Callback error:", error);
-    return NextResponse.redirect("/login?error=oidc_auth_failed");
-  }
+    redirectUrl = "/login?error=oidc_auth_failed";
+  } else if (!code || !state) {
+    redirectUrl = "/login?error=invalid_oidc_callback";
+  } else {
+    // Validate state and code verifier from cookies
+    const storedState = cookieStore.get("oidc_state")?.value;
+    const codeVerifier = cookieStore.get("oidc_code_verifier")?.value;
 
-  if (!code || !state) {
-    return NextResponse.redirect("/login?error=invalid_oidc_callback");
-  }
+    if (state !== storedState) {
+      redirectUrl = "/login?error=invalid_state_mismatch";
+    } else if (!codeVerifier) {
+      redirectUrl = "/login?error=missing_code_verifier";
+    } else {
+      try {
+        // Initialize identity schema
+        await initIdentitySchema();
 
-  // Validate state and code verifier from cookies
-  const cookieStore = await cookies();
-  const storedState = cookieStore.get("oidc_state")?.value;
-  const codeVerifier = cookieStore.get("oidc_code_verifier")?.value;
+        // Exchange authorization code for tokens
+        const tokenResponse = await fetch(`${HYDRA_PUBLIC_URL}/oauth2/token`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `Basic ${Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64')}`,
+          },
+          body: new URLSearchParams({
+            grant_type: "authorization_code",
+            code: code,
+            redirect_uri: REDIRECT_URI,
+            code_verifier: codeVerifier,
+          }),
+        });
 
-  if (state !== storedState) {
-    return NextResponse.redirect("/login?error=invalid_state_mismatch");
-  }
+        if (!tokenResponse.ok) {
+          const tokenError = await tokenResponse.text();
+          console.error("[OIDC] Token exchange failed:", tokenError);
+          throw new Error(`Token exchange failed: ${tokenError}`);
+        }
 
-  if (!codeVerifier) {
-    return NextResponse.redirect("/login?error=missing_code_verifier");
-  }
+        const tokenData = await tokenResponse.json();
+        const { id_token, access_token } = tokenData;
 
-  try {
-    // Initialize identity schema
-    await initIdentitySchema();
+        // Decode ID token to get user claims (simplified - in production verify signature)
+        const [, payloadB64] = id_token.split(".");
+        const payload = JSON.parse(Buffer.from(payloadB64, "base64").toString());
+        console.log("[OIDC] User claims:", payload);
 
-    // Exchange authorization code for tokens
-    const tokenResponse = await fetch(`${HYDRA_PUBLIC_URL}/oauth2/token`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64')}`,
-      },
-      body: new URLSearchParams({
-        grant_type: "authorization_code",
-        code: code,
-        redirect_uri: REDIRECT_URI,
-        code_verifier: codeVerifier,
-      }),
-    });
+        // Find or create user in our system
+        const user = await findOrCreateUser(payload);
+        console.log("[OIDC] User resolved:", user.id);
 
-    if (!tokenResponse.ok) {
-      const tokenError = await tokenResponse.text();
-      console.error("[OIDC] Token exchange failed:", tokenError);
-      throw new Error(`Token exchange failed: ${tokenError}`);
+        // Ensure user has tenant/workspace membership
+        const { tenant, workspace } = await ensureUserMembership(user.id);
+        if (!tenant || !workspace) {
+          throw new Error("Failed to resolve tenant/workspace for user");
+        }
+
+        // Create session in database
+        const sessionRepository = getSessionRepositoryPostgres();
+        const sessionId = newSessionId();
+        const now = new Date();
+        const expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+        const session: SessionAggregate = {
+          id: sessionId,
+          userId: user.id,
+          workspaceId: workspace.id,
+          tenantId: tenant.id,
+          actorId: user.id,
+          productId: "lawyershub",
+          actorLabel: user.displayName,
+          isAgent: false,
+          revokedAt: null,
+          issuedAt: now,
+          createdAt: now,
+          updatedAt: now,
+          expiresAt: expiresAt,
+        };
+
+        await sessionRepository.create(session);
+        console.log("[OIDC] Session created:", sessionId);
+
+        // Create workspace session cookie (same as regular login flow)
+        const workspaceSession: WorkspaceSession = {
+          sessionId: sessionId,
+          tenantId: tenant.id,
+          workspaceId: workspace.id,
+          actorId: user.id,
+          actorLabel: user.displayName,
+          productId: "lawyershub",
+          issuedAt: now.toISOString(),
+        };
+
+        // Clear OIDC cookies
+        const response = NextResponse.redirect("/workspace");
+        cookieStore.delete("oidc_state");
+        cookieStore.delete("oidc_code_verifier");
+
+        // Set workspace session cookie
+        response.cookies.set(WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession(workspaceSession), {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+          maxAge: 7 * 24 * 60 * 60, // 7 days
+        });
+
+        return response;
+
+      } catch (error) {
+        console.error("[OIDC] Callback processing failed:", error);
+        return NextResponse.redirect("/login?error=oidc_processing_failed");
+      }
     }
-
-    const tokenData = await tokenResponse.json();
-    const { id_token, access_token } = tokenData;
-
-    // Decode ID token to get user claims (simplified - in production verify signature)
-    const [, payloadB64] = id_token.split(".");
-    const payload = JSON.parse(Buffer.from(payloadB64, "base64").toString());
-    console.log("[OIDC] User claims:", payload);
-
-    // Find or create user in our system
-    const user = await findOrCreateUser(payload);
-    console.log("[OIDC] User resolved:", user.id);
-
-    // Ensure user has tenant/workspace membership
-    const { tenant, workspace } = await ensureUserMembership(user.id);
-    if (!tenant || !workspace) {
-      throw new Error("Failed to resolve tenant/workspace for user");
-    }
-
-    // Create session in database
-    const sessionRepository = getSessionRepositoryPostgres();
-    const sessionId = newSessionId();
-    const now = new Date();
-    const expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days
-
-    const session: SessionAggregate = {
-      id: sessionId,
-      userId: user.id,
-      workspaceId: workspace.id,
-      tenantId: tenant.id,
-      actorId: user.id,
-      productId: "lawyershub",
-      actorLabel: user.displayName,
-      isAgent: false,
-      revokedAt: null,
-      issuedAt: now,
-      createdAt: now,
-      expiresAt: expiresAt,
-      updatedAt: now,
-    };
-
-    await sessionRepository.create(session);
-    console.log("[OIDC] Session created:", sessionId);
-
-    // Create workspace session cookie (same as regular login flow)
-    const workspaceSession: WorkspaceSession = {
-      sessionId: sessionId,
-      tenantId: tenant.id,
-      workspaceId: workspace.id,
-      actorId: user.id,
-      actorLabel: user.displayName,
-      productId: "lawyershub",
-      issuedAt: now.toISOString(),
-    };
-
-    // Clear OIDC cookies
-    const response = NextResponse.redirect("/workspace");
-    cookieStore.delete("oidc_state");
-    cookieStore.delete("oidc_code_verifier");
-
-    // Set workspace session cookie
-    response.cookies.set(WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession(workspaceSession), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 7 * 24 * 60 * 60, // 7 days
-    });
-
-    return response;
-
-  } catch (error) {
-    console.error("[OIDC] Callback processing failed:", error);
-    return NextResponse.redirect("/login?error=oidc_processing_failed");
   }
+
+  // If we reach here, redirect with error
+  return NextResponse.redirect(redirectUrl);
 }

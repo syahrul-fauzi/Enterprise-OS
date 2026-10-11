@@ -2,10 +2,10 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import { randomUUID } from "node:crypto";
 import {
   MembershipId,
-  type CreateMembershipInput,
   type MembershipAggregate,
   type Role,
-} from "../contracts/identity.contracts.js";
+  type CreateMembershipInput,
+} from "@repo/contracts-core";
 import { MembershipRepositoryPostgres } from "../repositories/index.js";
 
 function newMembershipId(): MembershipId {
@@ -32,7 +32,7 @@ export const createMembershipCommand: CreateMembershipCommand = {
     const existing = await MembershipRepositoryPostgres.findByUserTenantAndWorkspace(
       input.userId,
       input.tenantId,
-      input.workspaceId,
+      { workspaceId: input.workspaceId },
     );
     if (existing !== undefined) {
       return {

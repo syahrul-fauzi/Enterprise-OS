@@ -49,26 +49,22 @@ export interface CanonicalWorkRecord {
  }
 
 // In-memory canonical work store only (PostgreSQL repository disabled to fix unused import errors)
-const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
-const GLOBAL_WS_INDEX_KEY = Symbol.for('eos.face.canonical.work.wsindex.v1');
-
 function getGlobalWorkStore(): Map<string, CanonicalWorkRecord> {
-  const g = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, CanonicalWorkRecord> };
-  if (!g[GLOBAL_WORK_STORE_KEY]) {
-    g[GLOBAL_WORK_STORE_KEY] = new Map<string, CanonicalWorkRecord>();
+  const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
+  const globalContext = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, CanonicalWorkRecord> };
+  if (!globalContext[GLOBAL_WORK_STORE_KEY]) {
+    globalContext[GLOBAL_WORK_STORE_KEY] = new Map<string, CanonicalWorkRecord>();
   }
-  return g[GLOBAL_WORK_STORE_KEY];
+  return globalContext[GLOBAL_WORK_STORE_KEY];
 }
 function getGlobalWorkspaceIndex(): Map<string, string[]> {
-  const g = globalThis as unknown as { [GLOBAL_WS_INDEX_KEY]?: Map<string, string[]> };
-  if (!g[GLOBAL_WS_INDEX_KEY]) {
-    g[GLOBAL_WS_INDEX_KEY] = new Map<string, string[]>();
+  const GLOBAL_WS_INDEX_KEY = Symbol.for('eos.face.canonical.work.wsindex.v1');
+  const globalContext = globalThis as unknown as { [GLOBAL_WS_INDEX_KEY]?: Map<string, string[]> };
+  if (!globalContext[GLOBAL_WS_INDEX_KEY]) {
+    globalContext[GLOBAL_WS_INDEX_KEY] = new Map<string, string[]>();
   }
-  return g[GLOBAL_WS_INDEX_KEY];
+  return globalContext[GLOBAL_WS_INDEX_KEY];
 }
-
-const canonicalWorkStore = getGlobalWorkStore();
-const workspaceWorkIndex = getGlobalWorkspaceIndex();
 
 // MAPPING LAYER: CanonicalWorkRecord <-> WorkAggregate (disabled, WorkAggregate import removed to fix TS errors, only in-memory store used)
 function toWorkAggregate(record: CanonicalWorkRecord): Partial<Record<string, unknown>> {
@@ -124,57 +120,67 @@ function toCanonicalWorkRecord(aggregate: Record<string, any>): CanonicalWorkRec
 // === LH-CASE-001 PRELOADED FIXTURE - EOS REALITY ACCEPTANCE CANDIDATE ===
 // Preload the canonical test work item to ensure it exists in the in-memory store
 // This is required for A1/A2 tests to pass navigation and context preservation checks
-if (!canonicalWorkStore.has("lh-case-001")) {
-  const lhCase001: CanonicalWorkRecord = {
-    workId: "lh-case-001",
-    id: "lh-case-001",
-    title: "Kasus Verifikasi Hak Cipta - PT Digital Kreatif Indonesia",
-    description: "Kasus uji coba EOS Reality Acceptance: Verifikasi dokumen hak cipta untuk aplikasi mobile yang akan diluncurkan. Kasus ini mencakup seluruh alur kerja EOS dari pembuatan hingga penyelesaian.",
-    domainType: "legal",
-    specialization: "copyright-verification",
-    status: "in_progress",
-    tenantId: "tenant.anonymous",
-    workspaceId: "professional-workspace.anonymous",
-    actorId: "anonymous.user",
-    workflowId: "lh-lgl-001-legal-consultation", // FACE-001: Link LawyersHub workflow (LH_LGL_001_ConsultationWorkflow)
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    priority: "high",
-    platformSource: "eos-test-fixture",
-    hasBottleneck: false,
-    nextAction: { label: "Verifikasi dokumen pendaftaran", actionId: "verify-registration-docs" },
-    evidence: [
-      {
-        id: "evidence-001",
-        type: "document",
-        title: "Surat Permohonan Hak Cipta",
-        content: "Surat permohonan pendaftaran hak cipta aplikasi MobileKreatif v1.0",
-        uploadedAt: new Date().toISOString(),
-        source: "client-upload",
-        uploadedBy: "anonymous.user"
-      }
-    ],
-    participants: [
-      { id: "anonymous.user", name: "UAT Tester", role: "client", actorType: "human" },
-      { id: "lawyer.001", name: "Advokat Senior", role: "lead-counsel", actorType: "human" }
-    ],
-    communications: [],
-    outcomeDescription: "Hak cipta terdaftar, sertifikat diterbitkan"
-  };
-  canonicalWorkStore.set("lh-case-001", lhCase001);
+async function preloadFixtures() {
+  const canonicalWorkStore = getGlobalWorkStore();
+  const workspaceWorkIndex = getGlobalWorkspaceIndex();
   
-  // Add to workspace index
-  const wsWorks = workspaceWorkIndex.get("professional-workspace.anonymous") ?? [];
-  if (!wsWorks.includes("lh-case-001")) {
-    wsWorks.push("lh-case-001");
-    workspaceWorkIndex.set("professional-workspace.anonymous", wsWorks);
+  if (!canonicalWorkStore.has("lh-case-001")) {
+    const lhCase001: CanonicalWorkRecord = {
+      workId: "lh-case-001",
+      id: "lh-case-001",
+      title: "Kasus Verifikasi Hak Cipta - PT Digital Kreatif Indonesia",
+      description: "Kasus uji coba EOS Reality Acceptance: Verifikasi dokumen hak cipta untuk aplikasi mobile yang akan diluncurkan. Kasus ini mencakup seluruh alur kerja EOS dari pembuatan hingga penyelesaian.",
+      domainType: "legal",
+      specialization: "copyright-verification",
+      status: "in_progress",
+      tenantId: "tenant.anonymous",
+      workspaceId: "professional-workspace.anonymous",
+      actorId: "anonymous.user",
+      workflowId: "lh-lgl-001-legal-consultation", // FACE-001: Link LawyersHub workflow (LH_LGL_001_ConsultationWorkflow)
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      priority: "high",
+      platformSource: "eos-test-fixture",
+      hasBottleneck: false,
+      nextAction: { label: "Verifikasi dokumen pendaftaran", actionId: "verify-registration-docs" },
+      evidence: [
+        {
+          id: "evidence-001",
+          type: "document",
+          title: "Surat Permohonan Hak Cipta",
+          content: "Surat permohonan pendaftaran hak cipta aplikasi MobileKreatif v1.0",
+          uploadedAt: new Date().toISOString(),
+          source: "client-upload",
+          uploadedBy: "anonymous.user"
+        }
+      ],
+      participants: [
+        { id: "anonymous.user", name: "UAT Tester", role: "client", actorType: "human" },
+        { id: "lawyer.001", name: "Advokat Senior", role: "lead-counsel", actorType: "human" }
+      ],
+      communications: [],
+      outcomeDescription: "Hak cipta terdaftar, sertifikat diterbitkan"
+    };
+    canonicalWorkStore.set("lh-case-001", lhCase001);
+    
+    // Add to workspace index
+    const wsWorks = workspaceWorkIndex.get("professional-workspace.anonymous") ?? [];
+    if (!wsWorks.includes("lh-case-001")) {
+      wsWorks.push("lh-case-001");
+      workspaceWorkIndex.set("professional-workspace.anonymous", wsWorks);
+    }
+    console.log("[API/WORK/CREATE] ✅ Preloaded LH-CASE-001 EOS Reality Acceptance Candidate into canonical store");
   }
-  console.log("[API/WORK/CREATE] ✅ Preloaded LH-CASE-001 EOS Reality Acceptance Candidate into canonical store");
 }
 
+// Initialize fixtures on first module load (async but safe - won't block request handling)
+preloadFixtures().catch(err => console.error("[API/WORK/CREATE] ❌ Failed to preload fixtures:", err));
+
 // Export stores and helpers for server actions - necessary for Professional EOS Face generic updates
-export { canonicalWorkStore, workspaceWorkIndex };
+export { getGlobalWorkStore as canonicalWorkStoreAccessor, getGlobalWorkspaceIndex as workspaceWorkIndexAccessor };
 export function getAllWorksForWorkspace(workspaceId: string): CanonicalWorkRecord[] {
+  const workspaceWorkIndex = getGlobalWorkspaceIndex();
+  const canonicalWorkStore = getGlobalWorkStore();
   const ids = workspaceWorkIndex.get(workspaceId) ?? [];
   return ids.map(id => canonicalWorkStore.get(id)).filter(Boolean) as CanonicalWorkRecord[];
 }
@@ -189,11 +195,11 @@ type WorkStateListener = {
 };
 
 function getGlobalWorkListeners(): Map<string, WorkStateListener> {
-  const g = globalThis as unknown as { [GLOBAL_WORK_LISTENERS_KEY]?: Map<string, WorkStateListener> };
-  if (!g[GLOBAL_WORK_LISTENERS_KEY]) {
-    g[GLOBAL_WORK_LISTENERS_KEY] = new Map<string, WorkStateListener>();
+  const globalContext = globalThis as unknown as { [GLOBAL_WORK_LISTENERS_KEY]?: Map<string, WorkStateListener> };
+  if (!globalContext[GLOBAL_WORK_LISTENERS_KEY]) {
+    globalContext[GLOBAL_WORK_LISTENERS_KEY] = new Map<string, WorkStateListener>();
   }
-  return g[GLOBAL_WORK_LISTENERS_KEY];
+  return globalContext[GLOBAL_WORK_LISTENERS_KEY];
 }
 
 // Exported function to notify all listeners of workspace updates
@@ -228,8 +234,13 @@ export function notifyWorkspaceListeners(workspaceId: string) {
 
 // G2-01: Pre-create REALITY-002 at server initialization to ensure it's always available
 // This guarantees real canonical work exists before any browser request, NO FIXTURE/MOCK
-if (process.env.NODE_ENV === "development") {
+async function preloadRealityWork() {
+  if (process.env.NODE_ENV !== "development") return;
+  
+  const canonicalWorkStore = getGlobalWorkStore();
+  const workspaceWorkIndex = getGlobalWorkspaceIndex();
   const existingRealityWork = canonicalWorkStore.get("REALITY-002");
+  
   if (!existingRealityWork) {
     const devTimestamp = new Date().toISOString();
     const devRealityWork: CanonicalWorkRecord = {
@@ -300,8 +311,12 @@ if (process.env.NODE_ENV === "development") {
   }
 }
 
+// Initialize REALITY-002 alongside other fixtures
+preloadRealityWork().catch(err => console.error("[API/WORK/CREATE] ❌ Failed to preload REALITY-002:", err));
+
 export async function getWorkById(workId: string): Promise<CanonicalWorkRecord | undefined> {
   // First check in-memory cache
+  const canonicalWorkStore = getGlobalWorkStore();
   const cached = canonicalWorkStore.get(workId);
   if (cached) return cached;
   
@@ -480,6 +495,9 @@ export async function POST(request: Request) {
     };
     // If in fallback mode (capabilityRegistry unavailable), only save to in-memory store
     // This prevents PostgreSQL connection errors when database is not running
+    const canonicalWorkStore = getGlobalWorkStore();
+    const workspaceWorkIndex = getGlobalWorkspaceIndex();
+    
     if (isFallback) {
       // In-memory only persistence for fallback mode
       canonicalWorkStore.set(workId, record);

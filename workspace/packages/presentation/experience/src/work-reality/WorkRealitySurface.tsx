@@ -32,6 +32,7 @@ interface WorkRealitySurfaceProps {
   readonly onExecuteAction?: (actionId: string) => Promise<void>;
   readonly onSendMessage?: (content: string) => Promise<void>;
   readonly onAddParticipant?: (name: string, role: any) => Promise<void>;
+  readonly onInitiateSignature?: (formData: FormData) => Promise<void>;
   readonly userCapabilities?: string[]; // VF-02: Pass user capabilities for unified navigation
   readonly productId?: string;           // VF-02: Product ID for workspace navigation
   readonly breadcrumbItems?: readonly BreadcrumbItem[]; // P2: Breadcrumb navigation for work hierarchy (UX-SHELL-002)
@@ -57,6 +58,7 @@ export function WorkRealitySurface({
   onExecuteAction,
   onSendMessage,
   onAddParticipant,
+  onInitiateSignature,
   userCapabilities = [],
   productId = "default",
   breadcrumbItems,
@@ -305,19 +307,28 @@ export function WorkRealitySurface({
 
             {/* ACTIONS TAB PANEL - Next Actions */}
             {activeTab === 'actions' && (
-              <div role="tabpanel" id="execution-panel-actions" aria-labelledby="execution-tab-actions" className="divide-y divide-gray-100">
-                <div className="px-6 py-6 bg-blue-50/30">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">TINDAKAN SELANJUTNYA</h3>
-                  <RealityCoordination
-                    actions={model.coordination}
-                    currentPerspective={currentPerspective}
-                    workId={model.identity.workId}
-                    onExecuteAction={onExecuteAction}
-                    onSendMessage={onSendMessage}
-                  />
-                </div>
-              </div>
-            )}
+                  <div role="tabpanel" id="execution-panel-actions" aria-labelledby="execution-tab-actions" className="divide-y divide-gray-100">
+                    <div className="px-6 py-6 bg-blue-50/30">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">TINDAKAN SELANJUTNYA</h3>
+                      <RealityCoordination
+                        actions={model.coordination}
+                        currentPerspective={currentPerspective}
+                        workId={model.identity.workId}
+                        work={{
+                          workId: model.identity.workId,
+                          title: model.identity.title,
+                          nextAction: model.state.nextAction ? {
+                            label: model.state.nextAction,
+                            actionId: `action-${model.state.nextAction.toLowerCase().replace(/\s+/g, '-')}`
+                          } : undefined
+                        }}
+                        onExecuteAction={onExecuteAction}
+                        onSendMessage={onSendMessage}
+                        onInitiateSignature={onInitiateSignature}
+                      />
+                    </div>
+                  </div>
+                )}
 
             {/* EVIDENCE TAB PANEL - Collected Proof */}
             {activeTab === 'evidence' && (
@@ -547,8 +558,434 @@ export function WorkRealitySurface({
                     </div>
                   )}
 
+                  {/* GitHub Platform (External Provider Domain) - Context untuk issue GitHub */}
+                  {productId === 'github-platform' && (
+                    <div className="space-y-6">
+                      {/* PRODUCT LIFECYCLE - Product spine untuk platform GitHub */}
+                      <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+                        <h4 className="text-sm font-semibold text-slate-100 mb-4">🔗 Product Lifecycle GitHub Platform</h4>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium border border-slate-600 bg-slate-700 text-slate-200">Issue Created</span>
+                          <div className="h-px w-4 bg-slate-600"></div>
+                          <span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium border border-slate-600 bg-slate-700 text-slate-200">Assigned</span>
+                          <div className="h-px w-4 bg-slate-600"></div>
+                          <span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium border border-brand-primary bg-brand-primary text-white">{model.identity.status === 'in_progress' ? 'In Progress' : model.identity.status === 'completed' ? 'Completed' : 'Open'}</span>
+                          <div className="h-px w-4 bg-slate-600"></div>
+                          <span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium border border-slate-600 bg-slate-700 text-slate-200">Closed</span>
+                        </div>
+                        <div className="mt-4">
+                          <Link 
+                            href={`/products/github-platform/issues`}
+                            className="inline-flex text-xs font-medium text-slate-400 hover:text-slate-200"
+                          >
+                            Lihat semua issue GitHub →
+                          </Link>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
+                          <h4 className="text-sm font-semibold text-slate-100 mb-3">📋 Detail Issue GitHub</h4>
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-xs text-slate-400">Status Issue:</span>
+                              <span className="text-xs font-medium text-slate-100">{model.identity.status === 'in_progress' ? 'Dalam Review' : model.identity.status === 'completed' ? 'Selesai' : 'Terbuka'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-xs text-slate-400">Tipe Issue:</span>
+                              <span className="text-xs font-medium text-slate-100">Pull Request Review</span>
+                            </div>
+                            {/* Tombol Handoff ke Tim Backend (hanya tampil jika work in_progress dan productId = github-platform) */}
+                            {model.identity.status === 'in_progress' && (
+                              <button
+                                onClick={async () => {
+                                  const targetWorkspaceId = "backend-team-eos.anonymous";
+                                  const response = await fetch("/api/work/link-existing", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({
+                                      workId: model.identity.workId,
+                                      domainType: "software-development-backend",
+                                      sessionId: (document.cookie.match(/(?:^|;\s*)sessionId=([^;]*)/) || [])[1],
+                                      tenantId: (document.cookie.match(/(?:^|;\s*)tenantId=([^;]*)/) || [])[1],
+                                      workspaceId: "github-platform",
+                                      actorId: (document.cookie.match(/(?:^|;\s*)actorId=([^;]*)/) || [])[1],
+                                      targetWorkspaceId: targetWorkspaceId,
+                                      domainSpecificData: {
+                                        handoffSource: "github-platform",
+                                        handoffTarget: "backend-eos",
+                                        newNextAction: "Review PR #123 untuk Shopify connector",
+                                        handoffTimestamp: new Date().toISOString()
+                                      }
+                                    }),
+                                  });
+                                  if (response.ok) {
+                                    alert("Handoff ke tim backend berhasil! Work sekarang berada di workspace backend-team-eos.");
+                                    window.location.reload();
+                                  } else {
+                                    alert("Gagal melakukan handoff. Silakan coba lagi.");
+                                  }
+                                }}
+                                className="mt-4 w-full rounded-lg bg-brand-primary hover:bg-brand-primary-hover px-4 py-2.5 text-sm font-semibold text-white transition"
+                              >
+                                Serahkan ke Tim Backend →
+                              </button>
+                            )}
+                            <Link 
+                              href={`/github/issues/${model.identity.workId}`}
+                              className="inline-flex mt-3 text-xs font-medium text-slate-400 hover:text-slate-200"
+                            >
+                              Lihat detail lengkap issue di GitHub →
+                            </Link>
+                          </div>
+                        </div>
+                        <div className="bg-slate-50 rounded-xl p-5 border border-slate-200">
+                          <h4 className="text-sm font-semibold text-slate-900 mb-3">📄 File Terkait PR</h4>
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs">📎</span>
+                              <span className="text-xs text-slate-700">shopify-connector.ts</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs">📎</span>
+                              <span className="text-xs text-slate-700">payment-gateway.test.ts</span>
+                            </div>
+                            <Link 
+                              href={`/documents?workId=${model.identity.workId}`}
+                              className="inline-flex mt-3 text-xs font-medium text-slate-600 hover:text-slate-800"
+                            >
+                              Lihat semua file PR →
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Default Context untuk product lain */}
-                  {!['lawyershub', 'services-id', 'ilc', 'academic', 'commsme'].includes(productId) && (
+                  {productId === 'ecommerce-platform' && (
+                    <div className="space-y-6">
+                      {/* PRODUCT LIFECYCLE - Product spine untuk platform E-Commerce */}
+                      <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+                        <h4 className="text-sm font-semibold text-slate-100 mb-4">🔗 Product Lifecycle E-Commerce Platform</h4>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium border border-slate-600 bg-slate-700 text-slate-200">Inventory Alert Created</span>
+                          <div className="h-px w-4 bg-slate-600"></div>
+                          <span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium border border-slate-600 bg-slate-700 text-slate-200">Assigned to E-Commerce Team</span>
+                          <div className="h-px w-4 bg-slate-600"></div>
+                          <span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium border border-brand-primary bg-brand-primary text-white">{model.identity.status === 'in_progress' ? 'In Progress' : model.identity.status === 'completed' ? 'Completed' : 'Open'}</span>
+                          <div className="h-px w-4 bg-slate-600"></div>
+                          <span className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium border border-slate-600 bg-slate-700 text-slate-200">Inventory Synced</span>
+                        </div>
+                        <div className="mt-4">
+                          <Link 
+                            href={`/products/ecommerce-platform/inventory-alerts`}
+                            className="inline-flex text-xs font-medium text-slate-400 hover:text-slate-200"
+                          >
+                            Lihat semua alert inventory →
+                          </Link>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
+                          <h4 className="text-sm font-semibold text-slate-100 mb-3">📋 Detail Inventory Discrepancy</h4>
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-xs text-slate-400">Status Alert:</span>
+                              <span className="text-xs font-medium text-slate-100">{model.identity.status === 'in_progress' ? 'Dalam Investigasi' : model.identity.status === 'completed' ? 'Selesai' : 'Terbuka'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-xs text-slate-400">Tipe Issue:</span>
+                              <span className="text-xs font-medium text-slate-100">Inventory Discrepancy</span>
+                            </div>
+                            {/* Tombol Handoff ke Tim Inventory Specialist (hanya tampil jika work in_progress dan productId = ecommerce-platform) */}
+                            {model.identity.status === 'in_progress' && (
+                              <button
+                                onClick={async () => {
+                                  const targetWorkspaceId = "inventory-specialist-eos.anonymous";
+                                  const response = await fetch("/api/work/link-existing", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({
+                                      workId: model.identity.workId,
+                                      domainType: "ecommerce-inventory-management",
+                                      sessionId: (document.cookie.match(/(?:^|;\s*)sessionId=([^;]*)/) || [])[1],
+                                      tenantId: (document.cookie.match(/(?:^|;\s*)tenantId=([^;]*)/) || [])[1],
+                                      workspaceId: "ecommerce-platform",
+                                      actorId: (document.cookie.match(/(?:^|;\s*)actorId=([^;]*)/) || [])[1],
+                                      targetWorkspaceId: targetWorkspaceId,
+                                      domainSpecificData: {
+                                        handoffSource: "ecommerce-platform",
+                                        handoffTarget: "inventory-specialist-eos",
+                                        newNextAction: "Investigasi root cause discrepancy stok SKU BRG-001, normalisasi stok antar platform",
+                                        handoffTimestamp: new Date().toISOString()
+                                      }
+                                    }),
+                                  });
+                                  if (response.ok) {
+                                    alert("Handoff ke tim inventory specialist berhasil! Work sekarang berada di workspace inventory-specialist-eos.");
+                                    window.location.reload();
+                                  } else {
+                                    alert("Gagal melakukan handoff. Silakan coba lagi.");
+                                  }
+                                }}
+                                className="mt-4 w-full rounded-lg bg-brand-primary hover:bg-brand-primary-hover px-4 py-2.5 text-sm font-semibold text-white transition"
+                              >
+                                Serahkan ke Tim Inventory Specialist →
+                              </button>
+                            )}
+                            {/* Tombol Handoff untuk candidate_contactable_pending (work yang masih menunggu kontak klien, cohort1-work-comm-001) */}
+                            {model.identity.status === 'candidate_contactable_pending' && model.identity.specialization === 'inventory-discrepancy-resolution' && (
+                              <button
+                                onClick={async () => {
+                                  const targetWorkspaceId = "ecommerce-client-outreach-team.anonymous";
+                                  const response = await fetch("/api/work/link-existing", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({
+                                      workId: model.identity.workId,
+                                      domainType: "ecommerce-client-outreach",
+                                      sessionId: (document.cookie.match(/(?:^|;\s*)sessionId=([^;]*)/) || [])[1],
+                                      tenantId: (document.cookie.match(/(?:^|;\s*)tenantId=([^;]*)/) || [])[1],
+                                      workspaceId: "cohort1-ecommerce-workspace",
+                                      actorId: (document.cookie.match(/(?:^|;\s*)actorId=([^;]*)/) || [])[1],
+                                      targetWorkspaceId: targetWorkspaceId,
+                                      domainSpecificData: {
+                                        handoffSource: "tokopedia-marketplace",
+                                        handoffTarget: "ecommerce-client-outreach-team",
+                                        newNextAction: "Hubungi klien TokoSembakoJKT via WhatsApp, mulai investigasi discrepancy stok SKU BRG-001",
+                                        handoffTimestamp: new Date().toISOString()
+                                      }
+                                    }),
+                                  });
+                                  if (response.ok) {
+                                    alert("Handoff ke tim outreach klien berhasil! Work sekarang berada di workspace ecommerce-client-outreach-team.");
+                                    window.location.reload();
+                                  } else {
+                                    alert("Gagal melakukan handoff. Silakan coba lagi.");
+                                  }
+                                }}
+                                className="mt-4 w-full rounded-lg bg-amber-600 hover:bg-amber-700 px-4 py-2.5 text-sm font-semibold text-white transition"
+                              >
+                                Serahkan ke Tim Outreach Klien →
+                              </button>
+                            )}
+                            {/* TOMBOL P0 CANDIDATE #2 - RES-001-001-W1: cohort1-work-comm-001.ts inventory-discrepancy-resolution */}
+                            {model.identity.status === 'candidate_contactable_pending' && model.identity.specialization === 'inventory-discrepancy-resolution' && (
+                              <button
+                                onClick={async () => {
+                                  const targetWorkspaceId = "ecommerce-inventory-specialist-team.anonymous";
+                                  const response = await fetch("/api/work/link-existing", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({
+                                      workId: model.identity.workId,
+                                      domainType: "ecommerce-inventory-investigation",
+                                      sessionId: (document.cookie.match(/(?:^|;\s*)sessionId=([^;]*)/) || [])[1],
+                                      tenantId: (document.cookie.match(/(?:^|;\s*)tenantId=([^;]*)/) || [])[1],
+                                      workspaceId: "cohort1-ecommerce-workspace",
+                                      actorId: (document.cookie.match(/(?:^|;\s*)actorId=([^;]*)/) || [])[1],
+                                      targetWorkspaceId: targetWorkspaceId,
+                                      domainSpecificData: {
+                                        handoffSource: "tokopedia-marketplace",
+                                        handoffTarget: "ecommerce-inventory-specialist-team",
+                                        newNextAction: "Mulai investigasi root cause discrepancy stok SKU BRG-001 antara Shopify dan Tokopedia, siapkan laporan normalisasi stok",
+                                        handoffTimestamp: new Date().toISOString()
+                                      }
+                                    }),
+                                  });
+                                  if (response.ok) {
+                                    alert("Handoff ke tim inventory specialist berhasil! Work sekarang berada di workspace ecommerce-inventory-specialist-team.");
+                                    window.location.reload();
+                                  } else {
+                                    alert("Gagal melakukan handoff. Silakan coba lagi.");
+                                  }
+                                }}
+                                className="mt-4 w-full rounded-lg bg-blue-600 hover:bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white transition"
+                              >
+                                Serahkan ke Tim Inventory Specialist →
+                              </button>
+                            )}
+                            <Link 
+                              href={`/ecommerce/inventory-alerts/${model.identity.workId}`}
+                              className="inline-flex mt-3 text-xs font-medium text-slate-400 hover:text-slate-200"
+                            >
+                              Lihat detail lengkap discrepancy di dashboard E-Commerce →
+                            </Link>
+
+                            {/* TOMBOL P1 CANDIDATE #1 - RES-001-001-W1: cohort1-work-002.ts legal+education-certification */}
+                            {model.identity.status === 'received' && model.identity.specialization === 'legal+education-certification' && (
+                              <button
+                                onClick={async () => {
+                                  const targetWorkspaceId = "ilc-lawyershub-cross-team.anonymous";
+                                  const response = await fetch("/api/work/link-existing", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({
+                                      workId: model.identity.workId,
+                                      domainType: "cross-domain-certification",
+                                      sessionId: (document.cookie.match(/(?:^|;\s*)sessionId=([^;]*)/) || [])[1],
+                                      tenantId: (document.cookie.match(/(?:^|;\s*)tenantId=([^;]*)/) || [])[1],
+                                      workspaceId: "cohort1-production-workspace",
+                                      actorId: (document.cookie.match(/(?:^|;\s*)actorId=([^;]*)/) || [])[1],
+                                      targetWorkspaceId: targetWorkspaceId,
+                                      domainSpecificData: {
+                                        handoffSource: "cohort1-production-workspace",
+                                        handoffTarget: "ilc-lawyershub-cross-team",
+                                        newNextAction: "Koordinasikan tim LawyersHub untuk pendaftaran merek dan tim ILC untuk pelatihan digital marketing bagi UMKM Fashion Bandung",
+                                        handoffTimestamp: new Date().toISOString()
+                                      }
+                                    }),
+                                  });
+                                  if (response.ok) {
+                                    alert("Handoff ke tim ILC+LawyersHub berhasil! Work sekarang berada di workspace cross-domain.");
+                                    window.location.reload();
+                                  } else {
+                                    alert("Gagal melakukan handoff. Silakan coba lagi.");
+                                  }
+                                }}
+                                className="mt-4 w-full rounded-lg bg-teal-600 hover:bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white transition"
+                              >
+                                Serahkan ke Tim ILC+LawyersHub →
+                              </button>
+                            )}
+
+                            {/* TOMBOL P1 CANDIDATE #2 - RES-001-001-W1: cohort1-work-003.ts legal+services-certification */}
+                            {model.identity.status === 'received' && model.identity.specialization === 'legal+services-certification' && (
+                              <button
+                                onClick={async () => {
+                                  const targetWorkspaceId = "services-id-lawyershub-cross-team.anonymous";
+                                  const response = await fetch("/api/work/link-existing", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({
+                                      workId: model.identity.workId,
+                                      domainType: "cross-domain-certification",
+                                      sessionId: (document.cookie.match(/(?:^|;\s*)sessionId=([^;]*)/) || [])[1],
+                                      tenantId: (document.cookie.match(/(?:^|;\s*)tenantId=([^;]*)/) || [])[1],
+                                      workspaceId: "cohort1-production-workspace",
+                                      actorId: (document.cookie.match(/(?:^|;\s*)actorId=([^;]*)/) || [])[1],
+                                      targetWorkspaceId: targetWorkspaceId,
+                                      domainSpecificData: {
+                                        handoffSource: "cohort1-production-workspace",
+                                        handoffTarget: "services-id-lawyershub-cross-team",
+                                        newNextAction: "Koordinasikan tim LawyersHub untuk legalitas perusahaan dan tim Services.ID untuk sertifikasi ISO bagi pabrik minuman Yogyakarta",
+                                        handoffTimestamp: new Date().toISOString()
+                                      }
+                                    }),
+                                  });
+                                  if (response.ok) {
+                                    alert("Handoff ke tim Services.ID+LawyersHub berhasil! Work sekarang berada di workspace cross-domain.");
+                                    window.location.reload();
+                                  } else {
+                                    alert("Gagal melakukan handoff. Silakan coba lagi.");
+                                  }
+                                }}
+                                className="mt-4 w-full rounded-lg bg-orange-600 hover:bg-orange-700 px-4 py-2.5 text-sm font-semibold text-white transition"
+                              >
+                                Serahkan ke Tim Services.ID+LawyersHub →
+                              </button>
+                            )}
+
+                            {/* TOMBOL P1 CANDIDATE #3 - RES-001-001-W1: cohort1-work-004.ts legal+services-certification */}
+                            {model.identity.status === 'received' && model.identity.specialization === 'legal+services-certification' && (
+                              <button
+                                onClick={async () => {
+                                  const targetWorkspaceId = "k3-compliance-team.anonymous";
+                                  const response = await fetch("/api/work/link-existing", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({
+                                      workId: model.identity.workId,
+                                      domainType: "cross-domain-certification",
+                                      sessionId: (document.cookie.match(/(?:^|;\s*)sessionId=([^;]*)/) || [])[1],
+                                      tenantId: (document.cookie.match(/(?:^|;\s*)tenantId=([^;]*)/) || [])[1],
+                                      workspaceId: "cohort1-production-workspace",
+                                      actorId: (document.cookie.match(/(?:^|;\s*)actorId=([^;]*)/) || [])[1],
+                                      targetWorkspaceId: targetWorkspaceId,
+                                      domainSpecificData: {
+                                        handoffSource: "cohort1-production-workspace",
+                                        handoffTarget: "k3-compliance-team",
+                                        newNextAction: "Proses sertifikasi K3 dan pendirian PT untuk tambak udang di Sumatra Utara, koordinasikan dengan Kemnaker dan Kemenkumham",
+                                        handoffTimestamp: new Date().toISOString()
+                                      }
+                                    }),
+                                  });
+                                  if (response.ok) {
+                                    alert("Handoff ke tim K3 Compliance berhasil! Work sekarang berada di workspace compliance.");
+                                    window.location.reload();
+                                  } else {
+                                    alert("Gagal melakukan handoff. Silakan coba lagi.");
+                                  }
+                                }}
+                                className="mt-4 w-full rounded-lg bg-sky-600 hover:bg-sky-700 px-4 py-2.5 text-sm font-semibold text-white transition"
+                              >
+                                Serahkan ke Tim K3 Compliance →
+                              </button>
+                            )}
+
+                            {/* TOMBOL P1 CANDIDATE #4 - RES-001-001-W1: cohort1-work-005.ts legal+education-certification */}
+                            {model.identity.status === 'received' && model.identity.specialization === 'legal+education-certification' && (
+                              <button
+                                onClick={async () => {
+                                  const targetWorkspaceId = "bali-umkm-development-team.anonymous";
+                                  const response = await fetch("/api/work/link-existing", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({
+                                      workId: model.identity.workId,
+                                      domainType: "cross-domain-certification",
+                                      sessionId: (document.cookie.match(/(?:^|;\s*)sessionId=([^;]*)/) || [])[1],
+                                      tenantId: (document.cookie.match(/(?:^|;\s*)tenantId=([^;]*)/) || [])[1],
+                                      workspaceId: "cohort1-production-workspace",
+                                      actorId: (document.cookie.match(/(?:^|;\s*)actorId=([^;]*)/) || [])[1],
+                                      targetWorkspaceId: targetWorkspaceId,
+                                      domainSpecificData: {
+                                        handoffSource: "cohort1-production-workspace",
+                                        handoffTarget: "bali-umkm-development-team",
+                                        newNextAction: "Dukung pengrajin kerajinan tangan Bali dengan pendaftaran merek dan pelatihan produksi, koordinasikan dengan ILC Bali dan Kemenkumham",
+                                        handoffTimestamp: new Date().toISOString()
+                                      }
+                                    }),
+                                  });
+                                  if (response.ok) {
+                                    alert("Handoff ke tim Bali UMKM Development berhasil! Work sekarang berada di workspace Bali.");
+                                    window.location.reload();
+                                  } else {
+                                    alert("Gagal melakukan handoff. Silakan coba lagi.");
+                                  }
+                                }}
+                                className="mt-4 w-full rounded-lg bg-emerald-600 hover:bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white transition"
+                              >
+                                Serahkan ke Tim Bali UMKM Development →
+                              </button>
+                            )}
+
+                          </div>
+                        </div>
+                        <div className="bg-slate-50 rounded-xl p-5 border border-slate-200">
+                          <h4 className="text-sm font-semibold text-slate-900 mb-3">📄 SKU Terkait dengan Discrepancy</h4>
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs">📎</span>
+                              <span className="text-xs text-slate-700">SKU BRG-001 (Minyak Goreng 2L)</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs">📊</span>
+                              <span className="text-xs text-slate-700">Shopify: 120 unit | Tokopedia: 95 unit</span>
+                            </div>
+                            <Link 
+                              href={`/inventory/reports?workId=${model.identity.workId}`}
+                              className="inline-flex mt-3 text-xs font-medium text-slate-600 hover:text-slate-800"
+                            >
+                              Lihat laporan inventory lengkap →
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {!['lawyershub', 'services-id', 'ilc', 'academic', 'commsme', 'github-platform', 'ecommerce-platform'].includes(productId) && (
                     <div className="bg-slate-50 rounded-xl p-5 border border-slate-200">
                       <h4 className="text-sm font-semibold text-slate-900 mb-3">ℹ️ Konteks Umum Work</h4>
                       <p className="text-xs text-slate-600">Work ini berjalan di domain produk: {productId}. Semua konteks spesifik domain akan tampil di sini sesuai dengan tipe work Anda.</p>

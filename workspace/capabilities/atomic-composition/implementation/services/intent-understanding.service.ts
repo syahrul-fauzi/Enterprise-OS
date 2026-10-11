@@ -27,7 +27,7 @@ import type {
   FailureObservation,
   FailureFingerprint
 } from "../contracts/intent-understanding.contracts";
-import { FailureIntelligenceRepository } from '../repository/failure-intelligence.repository.js';
+import { FailureIntelligenceRepository } from '../repository/failure-intelligence.repository';
 import type {
   UniversalExpression,
   UniversalIntentInput,

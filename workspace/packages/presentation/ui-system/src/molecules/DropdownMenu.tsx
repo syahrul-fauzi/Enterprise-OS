@@ -28,7 +28,7 @@ export function DropdownMenuTrigger({ children, asChild }: { children: React.Rea
     return React.cloneElement(child, {
       onClick: (e: React.MouseEvent) => {
         // Call existing onClick if present
-        if (child.props.onClick) {
+        if (React.isValidElement(child) && child.props.onClick) {
           child.props.onClick(e);
         }
         setIsOpen(prev => !prev);

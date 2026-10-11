@@ -1,3 +1,4 @@
+import { type WorkId, createWorkId } from "../../../work-core/contracts/work.contracts.ts";
 import {
   ConsultationAggregate,
   ConsultationId,
@@ -9,7 +10,7 @@ import {
   ConsultationStatus,
   ConsultationPriority,
   AssistanceMode,
-} from "../contracts/consultation.contracts.js";
+} from "../contracts/consultation.contracts.ts";
 
 const seed = (): ConsultationAggregate[] => {
   const now = new Date();
@@ -19,8 +20,7 @@ const seed = (): ConsultationAggregate[] => {
   return [
     {
       id: ConsultationId("consultation-001"),
-      tenantId: "tenant-seed-001",
-      workspaceId: "workspace-seed-001",
+      workId: createWorkId("work-seed-legal-pt-establishment-001"),
       title: "PT Establishment Inquiry",
       description: "User wants to establish a new PT (Perseroan Terbatas) in Indonesia",
       userNeed: "Need help starting a new company",
@@ -129,8 +129,9 @@ export function isValidStatusTransition(from: ConsultationStatus, to: Consultati
 
 // Extended repository interface to support series and episode operations
 export interface ConsultationRepositoryExtended extends ConsultationRepository {
+  listByWorkIds(workIds: string[]): Promise<readonly ConsultationAggregate[]>;
   getSeriesById(id: ConsultationSeriesId): Promise<ConsultationSeries | undefined>;
-  listSeriesByWorkspace(workspaceId: string): Promise<readonly ConsultationSeries[]>;
+  listSeriesByWorkIds(workIds: string[]): Promise<readonly ConsultationSeries[]>;
   saveSeries(entity: ConsultationSeries): Promise<ConsultationSeries>;
   getEpisodeById(id: ConsultationEpisodeId): Promise<ConsultationEpisode | undefined>;
   listEpisodesBySeries(seriesId: ConsultationSeriesId): Promise<readonly ConsultationEpisode[]>;
@@ -146,11 +147,8 @@ export const ConsultationRepositoryInMemory: ConsultationRepositoryExtended = {
   async list(): Promise<readonly ConsultationAggregate[]> {
     return Array.from(CONSULTATION_STORE.values());
   },
-  async listByTenant(tenantId: string): Promise<readonly ConsultationAggregate[]> {
-    return Array.from(CONSULTATION_STORE.values()).filter(item => item.tenantId === tenantId);
-  },
-  async listByWorkspace(workspaceId: string): Promise<readonly ConsultationAggregate[]> {
-    return Array.from(CONSULTATION_STORE.values()).filter(item => item.workspaceId === workspaceId);
+  async listByWorkIds(workIds: string[]): Promise<readonly ConsultationAggregate[]> {
+    return Array.from(CONSULTATION_STORE.values()).filter(item => workIds.includes(item.workId));
   },
   async save(entity: ConsultationAggregate): Promise<ConsultationAggregate> {
     CONSULTATION_STORE.set(entity.id, entity);
@@ -164,8 +162,8 @@ export const ConsultationRepositoryInMemory: ConsultationRepositoryExtended = {
   async getSeriesById(id: ConsultationSeriesId): Promise<ConsultationSeries | undefined> {
     return SERIES_STORE.get(id);
   },
-  async listSeriesByWorkspace(workspaceId: string): Promise<readonly ConsultationSeries[]> {
-    return Array.from(SERIES_STORE.values()).filter(item => item.workspaceId === workspaceId);
+  async listSeriesByWorkIds(workIds: string[]): Promise<readonly ConsultationSeries[]> {
+    return Array.from(SERIES_STORE.values()).filter(item => workIds.includes(item.workId));
   },
   async saveSeries(entity: ConsultationSeries): Promise<ConsultationSeries> {
     SERIES_STORE.set(entity.id, entity);

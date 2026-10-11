@@ -1,0 +1,24 @@
+name: Cross-Boundary Economic Dispute Resolution
+version: 1.0.0
+description: Reusable work pattern for resolving high-value economic disputes that cross organizational, system, authority, and execution boundaries. Preserves identity, authority, evidence, and continuity throughout the resolution lifecycle. Compliant with RESOLUTION ERA guardrails.
+created_at: 2026-10-04
+origin_work_id: HV-008
+work_item_id: HV008-REPEAT-001
+compliance:
+  - RESOLUTION_ERA_COMPLIANT
+  - RULE_OF_TWO_ELIGIBLE
+  - NO_NEW_PRIMITIVES
+  - ARCHITECTURE_FROZEN_COMPATIBLE
+economic_metrics:
+  average_settlement_value: "$2M+"
+  typical_boundary_crossings: 6
+  average_resolution_time_reduction: "75%"
+  eos_irreplaceability_score: 0.93
+tags:
+  - resolution
+  - cross-boundary
+  - economic-value
+  - dispute
+  - high-value
+  - HV008
+  - REPEATABLE

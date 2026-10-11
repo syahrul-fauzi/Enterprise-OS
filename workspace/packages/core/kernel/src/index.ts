@@ -6,27 +6,18 @@ export type {
   CapabilityRepository,
   CapabilityImplementation,
   WorkspaceAggregateBinding,
-} from "./types.js";
+} from "./types";
 
-// SHARED WORKFLOW DEFINITION PRIMITIVES - Earned abstractions from Wave B implementation
-export type {
-  WorkflowStep,
-  WorkflowTransition,
-  WorkflowDefinition,
-} from "./registry/capability-command-registry.js";
-export {
-  isValidWorkflowDefinition,
-  executeWorkflowTransition,
-} from "./registry/capability-command-registry.js";
+
 
 export {
   CapabilityManifestSchema,
   CapabilityAggregateBindingSchema,
-} from "./schemas.js";
+} from "./schemas";
 export type {
   CapabilityManifest,
   CapabilityAggregateBindingManifest,
-} from "./schemas.js";
+} from "./schemas";
 
 // ============================================================================
 // SERVER-ONLY BOUNDARY - DigestEngine module excluded from shared barrel
@@ -46,13 +37,13 @@ export type {
   DigestComputation,
   DigestEngineContract,
   DigestHashAlgorithm,
-} from "./digest-engine.js";
+} from "./digest-engine";
 
 // Session exports (moved from apps/web/lib)
 export type {
   WorkspaceSession,
   WorkspaceRequestTrace,
-} from "./session/workspace-session.js";
+} from "./session/workspace-session";
 export {
   WORKSPACE_SESSION_COOKIE,
   WorkspaceSessionSchema,
@@ -65,7 +56,7 @@ export {
   readWorkspaceSessionFromRequest,
   createWorkspaceRequestTrace,
   createWorkspaceContextHeaders,
-} from "./session/workspace-session.js";
+} from "./session/workspace-session";
 
 // ============================================================================
 // SERVER-ONLY BOUNDARY - capabilityRegistry excluded from shared barrel
@@ -89,13 +80,13 @@ export type {
 // Golden Kernel Invariant Registry (Trust Boundary)
 export type {
   KernelInvariant,
-} from "./invariant.registry.js";
+} from "./invariant.registry";
 export {
   GOLDEN_KERNEL_INVARIANTS,
   validateInvariant,
   getInvariant,
   getAllInvariants,
-} from "./invariant.registry.js";
+} from "./invariant.registry";
 
 // Core runtime mediation layer (ARCH-04 compliant - capabilities access core-runtime ONLY via core-kernel)
 //
@@ -117,4 +108,4 @@ export {
 export type {
   RuntimeInvocationEvent,
   ExecutionContext,
-} from "../../runtime/dist/src/index.js";
+} from "../../runtime/src/index.js";

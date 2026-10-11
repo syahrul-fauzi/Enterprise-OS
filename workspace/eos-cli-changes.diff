@@ -1,0 +1,107 @@
+diff --git a/workspace/packages/tooling/eos-cli/src/commands/doctor.ts b/workspace/packages/tooling/eos-cli/src/commands/doctor.ts
+index 9b088f0..5bf07cd 100644
+--- a/workspace/packages/tooling/eos-cli/src/commands/doctor.ts
++++ b/workspace/packages/tooling/eos-cli/src/commands/doctor.ts
+@@ -3,8 +3,9 @@ import { existsSync, readdirSync, writeFileSync } from 'fs';
+ import { join, resolve } from 'path';
+ import { parseArgs } from 'node:util';
+ import { loadCurrentJourney, PROOFS_ROOT, loadGovernanceState } from '../state.js';
+-import { continue_work } from '../../../../capabilities/core-runtime/work-continuity.js';
+-import { WorkInspectionAgent } from '../../../../capabilities/work-inspection/implementation/services/inspection.agent.service.js';
++// Gunakan package workspace imports yang sudah didefinisikan di pnpm-workspace.yaml
++import { continue_work } from '@repo/core-runtime/work-continuity';
++import { WorkInspectionAgent } from '@repo/work-inspection/inspection.agent.service';
+ import {
+   validateAllBoundaries,
+   type WorkStatus,
+@@ -17,11 +18,11 @@ import {
+   type ExecutionBoundary,
+   type EvidenceBoundary,
+   type PresentationBoundary
+-} from '../../../../capabilities/work-core/contracts/work.contracts.js';
+-import { safeRecordEvidence } from '../../../../capabilities/work-core/implementation/index.js';
+-import { localTrustSignatureProvider } from '../../../../capabilities/trust-framework/implementation/services/trust-framework.service.js';
+-import { connectorEcosystemService } from '../../../../capabilities/connector-ecosystem/implementation/services/connector-ecosystem.service.js';
+-import { communicationService } from '../../../../capabilities/communication/implementation/services/communication.service.js';
++} from '@repo/work-core/work.contracts';
++import { safeRecordEvidence } from '@repo/work-core';
++import { localTrustSignatureProvider } from '@repo/trust-framework/trust-framework.service';
++import { connectorEcosystemService } from '@repo/connector-ecosystem/connector-ecosystem.service';
++import { communicationService } from '@repo/communication/communication.service';
+ import type { CurrentJourney } from '../schema.js';
+ import { CAPABILITY_GOVERNANCE_DEBT_BUDGET } from '../runtime/capability-registry-schemas.js';
+ 
+@@ -361,7 +362,7 @@ export async function runWorkContinueCommand(workId: string, args: string[] = []
+       process.stderr.write(JSON.stringify({ error: "Boundary validation failed", errors: boundaryValidation.allErrors, success: false }) + "\n");
+     } else {
+       process.stderr.write("\n❌ Work execution BLOCKED: Boundary validation failed\n");
+-      boundaryValidation.allErrors.forEach(err => process.stderr.write(`  - ${err}\n`));
++      boundaryValidation.allErrors.forEach((err: string) => process.stderr.write(`  - ${err}\n`));
+     }
+     return 1;
+   }
+@@ -449,7 +450,7 @@ export async function runWorkContinueCommand(workId: string, args: string[] = []
+ export async function runWorkRemoteSyncCommand(connectorId: string, args: string[] = []): Promise<number> {
+   const { values } = parseArgs({ args, options: { output: { type: "string" } }, allowPositionals: true });
+   if (!connectorId) {
+-    const availableConnectors = connectorEcosystemService.listConnectors().map(c => c.id);
++    const availableConnectors = connectorEcosystemService.listConnectors().map((c: {id: string}) => c.id);
+     if (values.output === "json") {
+       process.stderr.write(JSON.stringify({ error: "Missing connector ID", available_connectors: availableConnectors }) + "\n");
+     } else {
+@@ -487,7 +488,7 @@ export async function runWorkRemoteSyncCommand(connectorId: string, args: string
+       process.stderr.write(JSON.stringify({ error: "Boundary validation failed", errors: boundaryValidation.allErrors, success: false }) + "\n");
+     } else {
+       process.stderr.write("\n❌ Remote sync BLOCKED: Boundary validation failed\n");
+-      boundaryValidation.allErrors.forEach(err => process.stderr.write(`  - ${err}\n`));
++      boundaryValidation.allErrors.forEach((err: string) => process.stderr.write(`  - ${err}\n`));
+     }
+     return 1;
+   }
+diff --git a/workspace/packages/tooling/eos-cli/src/commands/execution.ts b/workspace/packages/tooling/eos-cli/src/commands/execution.ts
+index 36a4f17..412569e 100644
+--- a/workspace/packages/tooling/eos-cli/src/commands/execution.ts
++++ b/workspace/packages/tooling/eos-cli/src/commands/execution.ts
+@@ -6,6 +6,9 @@ import { EOS_ROOT } from "../state.js";
+ import {
+   CapabilityRegistrySchema,
+   type CapabilityRegistry,
++  type CapabilityPriority,
++  type CapabilityDefinition,
++  type EffectiveStatus,
+   type ComputedCapability,
+   type NextTransition,
+ } from "../runtime/execution-schemas.js";
+diff --git a/workspace/packages/tooling/eos-cli/src/state.ts b/workspace/packages/tooling/eos-cli/src/state.ts
+index 65426d6..6650394 100644
+--- a/workspace/packages/tooling/eos-cli/src/state.ts
++++ b/workspace/packages/tooling/eos-cli/src/state.ts
+@@ -266,7 +266,7 @@ export function loadCurrentJourney(): CurrentJourney {
+   let parsed: unknown;
+   // DEBUG LOG: Tambahkan logging untuk jumlah dokumen dan isi yang ditemukan
+   console.log(`[state.ts] DEBUG: loadCurrentJourney() found ${parsedDocs.length} YAML documents in ${CURRENT_JOURNEY_PATH}`);
+-  parsedDocs.forEach((doc, idx) => {
++  parsedDocs.forEach((doc: any, idx: number) => {
+     if (doc && typeof doc.toJSON === 'function') {
+       const json = doc.toJSON();
+       console.log(`[state.ts] DEBUG: Doc ${idx} work_id: ${json?.work_id}, next_work_id: ${json?.next_work_id}`);
+diff --git a/workspace/packages/tooling/eos-cli/tsconfig.json b/workspace/packages/tooling/eos-cli/tsconfig.json
+index a1b2ba7..4db9780 100644
+--- a/workspace/packages/tooling/eos-cli/tsconfig.json
++++ b/workspace/packages/tooling/eos-cli/tsconfig.json
+@@ -16,7 +16,14 @@
+     "baseUrl": "./",
+     "rootDirs": ["./src", "../../../capabilities/"],
+     "paths": {
+-      "@repo/core-capability-registry": ["../../packages/core/capability-registry/dist/src/index.js"]
++      "@repo/core-capability-registry": ["../../packages/core/capability-registry/dist/src/index.js"],
++      "@repo/core-realtime/*": ["../../packages/core/realtime/dist/src/*"],
++      "@repo/core-runtime/*": ["../../packages/core/runtime/dist/src/*"],
++      "@repo/work-core/*": ["../../../capabilities/work-core/dist/*"],
++      "@repo/trust-framework/*": ["../../../capabilities/trust-framework/dist/*"],
++      "@repo/work-inspection/*": ["../../../capabilities/work-inspection/dist/*"],
++      "@repo/connector-ecosystem/*": ["../../../capabilities/connector-ecosystem/dist/*"],
++      "@repo/communication/*": ["../../../capabilities/communication/dist/*"]
+     }
+   },
+   "references": [

@@ -1,9 +1,9 @@
 import {
-  WorkspaceAggregate,
-  WorkspaceId,
-  TenantId,
+  type WorkspaceAggregate,
+  type WorkspaceId,
+  type TenantId,
   type WorkspaceRepository,
-} from "../contracts/index.ts";
+} from "@repo/contracts-core";
 
 function clone<T extends WorkspaceAggregate>(entity: T): T {
   return {

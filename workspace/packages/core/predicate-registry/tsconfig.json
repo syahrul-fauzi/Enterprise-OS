@@ -5,7 +5,9 @@
     "strictNullChecks": true,
     "declaration": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "typeRoots": ["./node_modules/@types", "../../../node_modules/@types"],
+    "composite": true
   },
   "include": ["src"],
   "exclude": ["dist", "build", "node_modules", "tests"]

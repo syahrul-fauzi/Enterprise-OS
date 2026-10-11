@@ -58,14 +58,24 @@ class DocumentRepositoryPostgresImpl extends PostgresRepository<any> implements 
     };
   }
 
-  async byId(id: DocumentId, context?: { tenantId: string; workspaceId: string }): Promise<DocumentAggregate | undefined> {
+  async byId(id: DocumentId, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<DocumentAggregate | undefined> {
     let query = "SELECT * FROM documents WHERE id = $1";
     const params: any[] = [id];
+    let paramIndex = 2;
     
-    // WORK-015: Enforce tenant isolation - always filter by tenant/workspace if context is provided
+    // CORE-001: Enforce tenant isolation - prioritize workId over workspaceId, workspace is optional execution boundary
     if (context) {
-      query += " AND tenant_id = $2 AND workspace_id = $3";
-      params.push(context.tenantId, context.workspaceId);
+      query += " AND tenant_id = $2";
+      params.push(context.tenantId);
+      paramIndex++;
+      if (context?.workId) {
+        query += " AND work_id = $3";
+        params.push(context.workId);
+      } else if (context?.workspaceId) {
+        // Fallback to workspace only when workId is not provided (maintain backward compatibility)
+        query += " AND workspace_id = $3";
+        params.push(context.workspaceId);
+      }
     }
     
     const result = await this.pool.query(query, params);
@@ -73,17 +83,37 @@ class DocumentRepositoryPostgresImpl extends PostgresRepository<any> implements 
     return this.toAggregate(result.rows[0]);
   }
 
-  async list(context?: { tenantId: string; workspaceId: string }): Promise<readonly DocumentAggregate[]> {
+  async list(context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<readonly DocumentAggregate[]> {
     let query = "SELECT * FROM documents";
     const params: any[] = [];
+    let paramIndex = 1;
     
-    // WORK-015: Filter by tenant/workspace if context is provided
+    // CORE-001: Filter by tenant/work/workspace - workId as primary boundary, workspace is optional
     if (context) {
-      query += " WHERE tenant_id = $1 AND workspace_id = $2";
-      params.push(context.tenantId, context.workspaceId);
+      query += " WHERE tenant_id = $1";
+      params.push(context.tenantId);
+      paramIndex++;
+      if (context?.workId) {
+        query += " AND work_id = $2";
+        params.push(context.workId);
+      } else if (context?.workspaceId) {
+        // Fallback to workspace only when workId is not provided
+        query += " AND workspace_id = $2";
+        params.push(context.workspaceId);
+      }
     }
     
     const result = await this.pool.query(query, params);
+    return result.rows.map((row: any) => this.toAggregate(row));
+  }
+
+  async listByWorkIds(workIds: string[], tenantId: string): Promise<readonly DocumentAggregate[]> {
+    // CORE-001: Canonical work-centric query pattern - primary method for cross-domain continuity
+    const placeholders = workIds.map((_, i) => `$${i + 2}`).join(", ");
+    const result = await this.pool.query(
+      `SELECT * FROM documents WHERE tenant_id = $1 AND work_id IN (${placeholders})`,
+      [tenantId, ...workIds]
+    );
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
@@ -117,12 +147,18 @@ class DocumentRepositoryPostgresImpl extends PostgresRepository<any> implements 
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
-  async save(entity: DocumentAggregate & { tenantId?: string; workspaceId?: string; actorId?: string; version?: number }, context?: { tenantId: string; workspaceId: string; actorId: string }): Promise<DocumentAggregate> {
+  async save(entity: DocumentAggregate & { tenantId?: string; workspaceId?: string; actorId?: string; version?: number }, context?: { tenantId: string; workspaceId?: string; workId?: string; actorId: string }): Promise<DocumentAggregate> {
     try {
-      // WORK-015: Enforce tenant isolation - ensure entity always has tenant/workspace context
+      // CORE-001: Enforce tenant isolation - prioritize workId over workspaceId, workspace is optional
       if (context) {
         entity.tenantId = context.tenantId;
-        entity.workspaceId = context.workspaceId;
+        if (context?.workId) {
+          entity.workId = context.workId;
+        }
+        if (context?.workspaceId) {
+          // Only set workspace if explicitly provided (optional execution boundary)
+          entity.workspaceId = context.workspaceId;
+        }
         entity.actorId = context.actorId;
       }
       
@@ -225,7 +261,7 @@ class DocumentRepositoryPostgresImpl extends PostgresRepository<any> implements 
     }
   }
 
-  async remove(id: DocumentId, context?: { tenantId: string; workspaceId: string }): Promise<boolean> {
+  async remove(id: DocumentId, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<boolean> {
     const entity = await this.byId(id, context);
     if (!entity) {
       // WORK-015: Log failed deletion attempt
@@ -244,11 +280,21 @@ class DocumentRepositoryPostgresImpl extends PostgresRepository<any> implements 
     
     let query = "DELETE FROM documents WHERE id = $1";
     const params: any[] = [id];
+    let paramIndex = 2;
     
-    // WORK-015: Enforce tenant isolation - only allow deletion within tenant/workspace context
+    // CORE-001: Enforce tenant isolation - prioritize workId over workspaceId, workspace is optional execution boundary
     if (context) {
-      query += " AND tenant_id = $2 AND workspace_id = $3";
-      params.push(context.tenantId, context.workspaceId);
+      query += " AND tenant_id = $2";
+      params.push(context.tenantId);
+      paramIndex++;
+      if (context?.workId) {
+        query += " AND work_id = $3";
+        params.push(context.workId);
+      } else if (context?.workspaceId) {
+        // Fallback to workspace only when workId is not provided (maintain backward compatibility)
+        query += " AND workspace_id = $3";
+        params.push(context.workspaceId);
+      }
     }
     
     const result = await this.pool.query(`${query} RETURNING id`, params);

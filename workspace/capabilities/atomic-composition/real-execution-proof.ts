@@ -4,13 +4,13 @@
 import { AtomicCompositionService } from './implementation/services/composition.service';
 import { ActorId } from './implementation/contracts/atomic-composition.contracts';
 import { ServiceProviderRepositoryInMemory } from "../service-directory/implementation/repository/service.repository";
-import { WorkId, WorkAggregate as Work } from '@capabilities/work-core/contracts/work.contracts';
+import { createWorkId, type WorkId, WorkAggregate as Work } from '@capabilities/work-core/contracts/work.contracts';
 
 // ------------------------------
 // E2 P3: REAL USER NEED - UMKM Batik Jaya ingin meluncurkan bisnis online
 // ------------------------------
 const businessLaunchWork: Work = {
-  workId: WorkId("work-batik-jaya-launch-003"),
+  workId: createWorkId("work-batik-jaya-launch-003"),
   title: "Launch Online Business UMKM Batik Jaya",
   description: "Meluncurkan bisnis online batik asli Pekalongan dengan website dan payment gateway",
   createdAt: new Date().toISOString(),

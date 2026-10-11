@@ -13,7 +13,7 @@ import {
   getTraceForDecision, 
   verifyWorkIdCorrelation,
   type ObservedExecution 
-} from "../../../../packages/core/runtime/src/execution-observability.js";
+} from "../../../../packages/core/runtime/dist/execution-observability.js";
 import {createIncident, resolveIncident } from "../commands/observability.commands.js";
 import type {
   ObservableLogEntry,

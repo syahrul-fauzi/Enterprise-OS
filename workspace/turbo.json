@@ -2,7 +2,7 @@
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
   "globalEnv": ["EOS_CONSTITUTION_ATTESTATION_PROFILE"],
-  "concurrency": "32",
+  "concurrency": "40",
   "tasks": {
     "arch-check": {
       "inputs": ["$TURBO_DEFAULT$"],
@@ -16,7 +16,7 @@
     },
     "build": {
       "dependsOn": ["^build", "^arch-check"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "inputs": ["$TURBO_DEFAULT$", "tsconfig.json", ".env*"],
       "outputs": [".next/standalone/**", ".next/static/**", "dist/**"]
     },
     "dev": {

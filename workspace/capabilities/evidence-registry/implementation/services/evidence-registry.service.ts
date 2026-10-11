@@ -567,6 +567,10 @@ if (process.env.NODE_ENV !== 'test' && !process.argv.some(arg => arg.includes('n
 
 export const evidenceRegistryService = new EvidenceRegistryService();
 
+// B6.12: Register canonical evidence service to globalThis for cross-boundary runtime access
+// Mengikuti pola yang sama dengan requirement.service.ts dan intent-understanding.service.ts
+(globalThis as any).__EOS_CANONICAL_EVIDENCE_SERVICE__ = evidenceRegistryService;
+
 export * from "../contracts/index.js";
 export * from "../queries/index.js";
 export * from "../repository/index.js";

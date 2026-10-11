@@ -8,5 +8,7 @@ export {
   notifyWorkspaceListeners,
   registerWorkspaceListener,
   unregisterWorkspaceListener,
+  suspendWorkspaceListener,
+  resumeWorkspaceListener,
   type WorkspaceListener
 } from './workspace-notifier.js';

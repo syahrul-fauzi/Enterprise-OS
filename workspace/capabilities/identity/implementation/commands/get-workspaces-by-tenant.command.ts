@@ -1,6 +1,7 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
-import { TenantId, ActorId, UserId, SessionId, type MembershipAggregate, type WorkspaceAggregate } from "@repo/capabilities-work-core";
+// Import shared identity types from contracts-core to avoid dependency cycles
+import { TenantId, ActorId, UserId, SessionId, WorkId, type MembershipAggregate, type WorkspaceAggregate } from "@repo/contracts-core";
 import { 
   getTenantRepositoryPostgres, 
   getWorkspaceRepositoryPostgres, 
@@ -25,11 +26,12 @@ const sessionRepository = (process.env.POSTGRES_CONNECTION_STRING || process.env
   ? getSessionRepositoryPostgres()
   : SessionRepositoryInMemory;
 
+// Workaround for TS2527: explicitly type schema as any to avoid unique symbol inference issue
 export const GetWorkspacesByTenantInputSchema = z.object({
   tenantId: z.string().min(1).transform(TenantId),
   actorId: z.string().min(1).transform(ActorId),
   sessionId: z.string().min(1).transform(SessionId),
-});
+}) as any;
 
 export type GetWorkspacesByTenantInput = z.infer<typeof GetWorkspacesByTenantInputSchema>;
 

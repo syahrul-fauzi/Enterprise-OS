@@ -1,4 +1,3 @@
-import { workflowEngineService } from "../../../workflow-engine/implementation/services/workflow-engine.service.js";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import type {
   DispatchOrchestrationInput,
@@ -60,6 +59,28 @@ export class AgentOrchestrationService {
   }
 
   dispatch(input: DispatchOrchestrationInput): OrchestrationDispatchResult {
+    // Initialize canonical global services at runtime (B6.12 pattern)
+    const workflowEngineService = (globalThis as any).__EOS_CANONICAL_WORKFLOW_ENGINE_SERVICE__ as 
+      typeof import("../../../workflow-engine/implementation/services/workflow-engine.service.ts").workflowEngineService;
+
+    if (!workflowEngineService) {
+      const result: OrchestrationDispatchResult = {
+        planId: input.planId,
+        status: "failed",
+        steps: [],
+        output: { error: "workflow_engine_not_initialized" },
+      };
+      recordRuntimeInvocation({
+        capabilityId: "agent-orchestration",
+        operationId: "dispatch",
+        sourceRef: "AgentOrchestrationService.dispatch",
+        success: false,
+        input,
+        result,
+      });
+      return result;
+    }
+
     const plan = OrchestrationPlanRepositoryInMemory.byId(input.planId);
     if (plan === undefined) {
       const result: OrchestrationDispatchResult = {
@@ -84,6 +105,8 @@ export class AgentOrchestrationService {
       .sort((left, right) => left.id.localeCompare(right.id))
       .map<OrchestrationDispatchStep>((item) => {
         const mergedInputs = mergeInputs(item.defaultInputs, input.inputs);
+        // Explicitly extract and preserve workId to maintain Work invariance (HIGH-VALUE-002 requirement)
+        const workId = typeof mergedInputs.workId === "string" ? mergedInputs.workId : "unknown-work-id";
         const result = workflowEngineService.executeWorkflow({
           workflowId: item.workflowId,
           requirementId:
@@ -92,6 +115,7 @@ export class AgentOrchestrationService {
               : undefined,
           runId: typeof mergedInputs.runId === "string" ? mergedInputs.runId : undefined,
           limit: typeof mergedInputs.limit === "number" ? mergedInputs.limit : undefined,
+          inputs: { ...mergedInputs, workId }, // Ensure workId is always defined (never undefined)
         });
 
         return {
@@ -107,15 +131,20 @@ export class AgentOrchestrationService {
         };
       });
 
-    const result: OrchestrationDispatchResult = {
-      planId: plan.id,
-      status: summarizeStatus(steps),
-      steps,
-      output: {
-        totalSteps: steps.length,
-        passedSteps: steps.filter((step) => step.status === "passed").length,
-        failedSteps: steps.filter((step) => step.status === "failed").length,
-      },
+    // Extract Work ID from inputs to preserve invariant across all boundaries
+          const workId = typeof input.inputs?.workId === "string" ? input.inputs.workId : 
+                         typeof mergedInputs?.workId === "string" ? mergedInputs.workId : undefined;
+          
+          const result: OrchestrationDispatchResult = {
+            planId: plan.id,
+            status: summarizeStatus(steps),
+            steps,
+            output: {
+              totalSteps: steps.length,
+              passedSteps: steps.filter((step) => step.status === "passed").length,
+              failedSteps: steps.filter((step) => step.status === "failed").length,
+              workId: workId, // Pass through Work ID to verify invariant in tests
+            },
     };
     recordRuntimeInvocation({
       capabilityId: "agent-orchestration",

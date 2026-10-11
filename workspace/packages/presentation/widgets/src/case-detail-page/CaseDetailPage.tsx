@@ -506,7 +506,7 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
   }, [caseId, caseData, documents, evidenceCount, decisionsCount, showAssignLawyer, currentPerspective, currentSession?.actorId, currentSession?.tenantId]);
 
   const loadAll = useCallback(async () => {
-    setLoading(true);
+    setLoading();
     setError(null);
     try {
       const caseResp = await fetch("/api/capabilities/legal-case/case.getById", {
@@ -799,7 +799,7 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
                       description={error}
                       icon="⚠️"
                       retryLabel="Coba Lagi"
-                      onRetry={() => { setLoading(true); setError(null); loadAll(); }}
+                      onRetry={() => { setLoading(); setError(null); loadAll(); }}
                       fatal={false}
                     />
                   ) : !caseData ? (
@@ -1225,12 +1225,61 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
               <div className="flex flex-wrap gap-2">
                 {/* Tampilkan action button yang sesuai perspektif */}
                 {currentPerspective === "professional" && (
-                  <a
-                    href={`/documents/create?caseId=${caseId}`}
-                    className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-slate-100"
-                  >
-                    Buat Dokumen →
-                  </a>
+                  <>
+                    <a
+                      href={`/documents/create?caseId=${caseId}`}
+                      className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-slate-100"
+                    >
+                      Buat Dokumen →
+                    </a>
+                    {/* RES-001-001-W1: Handoff to Paralegal button untuk LawyersHub legal cases (cross-actor handoff) */}
+                    {caseData?.productId === "lawyershub" && caseData?.status === "in_progress" && (
+                      <button
+                        onClick={async () => {
+                          try {
+                            // Target paralegal workspace - same tenant, paralegal workspace ID
+                            const targetWorkspaceId = "paralegal-workspace.anonymous";
+                            const response = await fetch("/api/work/link-existing", {
+                              method: "POST",
+                              headers: {
+                                "Content-Type": "application/json",
+                              },
+                              body: JSON.stringify({
+                                workId: caseData.workId,
+                                domainType: "legal-case-paralegal",
+                                sessionId: currentSession?.sessionId,
+                                tenantId: currentSession?.tenantId,
+                                workspaceId: currentSession?.workspaceId, // Source workspace (lawyer's)
+                                actorId: currentSession?.actorId,
+                                targetWorkspaceId: targetWorkspaceId,
+                                domainSpecificData: {
+                                  handoffSource: "lawyer-workspace",
+                                  handoffTarget: "paralegal-workspace",
+                                  newNextAction: "File trademark documents",
+                                  handoffTimestamp: new Date().toISOString()
+                                }
+                              }),
+                            });
+
+                            const result = await response.json();
+                            if (result.success) {
+                              // Refresh page to show updated work state in paralegal workspace
+                              window.location.href = `/work/${caseData.workId}?workspace=${targetWorkspaceId}`;
+                            } else {
+                              console.error("[Handoff to Paralegal] Failed:", result.error);
+                              alert(`Gagal melakukan handoff ke Paralegal: ${result.error}`);
+                            }
+                          } catch (error) {
+                            console.error("[Handoff to Paralegal] Error:", error);
+                            alert("Terjadi kesalahan saat melakukan handoff ke Paralegal. Silakan coba lagi.");
+                          }
+                        }}
+                        className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                      >
+                        Serahkan ke Paralegal →
+                      </button>
+                    )}
+                  </>
                 )}
                 {currentPerspective === "operator" && (
                   <a

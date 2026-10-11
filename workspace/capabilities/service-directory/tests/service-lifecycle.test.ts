@@ -23,15 +23,17 @@ registerServiceDirectoryCapability();
 
 // Create test session BEFORE running tests (matches pattern from session.inmemory.ts test sessions)
 const SRV_SESSION_ID = "session-test-002";
+const TEST_WORK_ID = "work-test-001"; // CORE-003-02: Work primitive atomic continuity ID
 async function setupTestSession() {
   const existingSession = await SessionRepositoryInMemory.byId(SessionId(SRV_SESSION_ID));
   if (!existingSession) {
-    const testSession: SessionAggregate = {
+    const testSession: SessionAggregate & { workId: string } = {
       id: SessionId(SRV_SESSION_ID),
       userId: UserId("user-002"),
       actorId: ActorId("user-002"),
       tenantId: TenantId("tenant-001"),
       workspaceId: WorkspaceId("workspace-001"),
+      workId: TEST_WORK_ID, // CORE-003-02: Enforce workId precedence over workspaceId
       productId: "services-id.default",
       actorLabel: "Service Directory Test User",
       isAgent: false,
@@ -42,7 +44,7 @@ async function setupTestSession() {
       updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 2),
     };
     await SessionRepositoryInMemory.save(testSession);
-    console.log("[Test Setup] Created test session:", SRV_SESSION_ID);
+    console.log("[Test Setup] Created test session:", SRV_SESSION_ID, "with workId:", TEST_WORK_ID);
   }
 }
 
@@ -79,7 +81,7 @@ async function runLifecycleSvcE2E(
 ): Promise<SvcLifecycleLedger> {
   const records: CommandInvocationRecord[] = [];
 
-  // Step 1: Create service request (draft status)
+  // Step 1: Create service request (draft status) - CORE-003-02: Add workId to enforce continuity
   const createResult = await capabilityRegistry.invoke(
     "service-directory",
     "createServiceRequest",
@@ -90,6 +92,7 @@ async function runLifecycleSvcE2E(
       requesterName,
       budget: budget.toString(),
       sessionId: SRV_SESSION_ID,
+      workId: TEST_WORK_ID, // CORE-003-02: Bind service request to core Work primitive
     },
   ) as { readonly record: CommandInvocationRecord; readonly output: { readonly id: string; readonly status: ServiceRequestStatus } };
   records.push(createResult.record);
@@ -98,10 +101,16 @@ async function runLifecycleSvcE2E(
   assert.equal(createResult.output.status, "draft", "createServiceRequest initial status = draft");
 
   const id = createResult.output.id as string;
-  const pAfterCreate = await ServiceRequestRepositoryInMemory.byId(ServiceRequestId(id));
-  assert.ok(pAfterCreate !== undefined, `sreq ${id} retrievable dari repository setelah create`);
-  assert.equal(pAfterCreate.title, title.trim(), "persisted title match input");
-  assert.equal(pAfterCreate.status, "draft", "persisted status after create = draft");
+    const pAfterCreate = await ServiceRequestRepositoryInMemory.byId(ServiceRequestId(id));
+    assert.ok(pAfterCreate !== undefined, `sreq ${id} retrievable dari repository setelah create`);
+    assert.equal(pAfterCreate.title, title.trim(), "persisted title match input");
+    assert.equal(pAfterCreate.status, "draft", "persisted status after create = draft");
+    assert.equal(pAfterCreate.workId, TEST_WORK_ID, "workId persisted correctly for service request");
+
+    // CORE-003-02: Validate listByWork method returns correct results (C21 invariant test)
+    const workRequests = await ServiceRequestRepositoryInMemory.listByWork(TEST_WORK_ID);
+    assert.ok(workRequests.some(r => r.id === id), "listByWork returns newly created service request");
+    assert.equal(workRequests.length, 1, "only one service request bound to test workId");
 
   // Step 2: Accept service request (accepted status)
   const acceptResult = await capabilityRegistry.invoke(

@@ -2,11 +2,12 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
 import * as crypto from "node:crypto";
 import {
-  UserId,
-  TenantId,
-  WorkspaceId,
-} from "../contracts/identity.contracts.js";
-import { UserId as UserIdValue, TenantId as TenantIdValue, WorkspaceId as WorkspaceIdValue } from "../contracts/identity.contracts.js";
+  type UserId,
+  type TenantId,
+  type WorkspaceId,
+  ActorId,
+} from "@repo/contracts-core";
+import { UserId as UserIdValue, TenantId as TenantIdValue, WorkspaceId as WorkspaceIdValue, ActorId as ActorIdValue } from "@repo/contracts-core";
 import { randomUUID } from "node:crypto";
 
 // REALITY PATH ONLY - Import repository Postgres yang dibutuhkan

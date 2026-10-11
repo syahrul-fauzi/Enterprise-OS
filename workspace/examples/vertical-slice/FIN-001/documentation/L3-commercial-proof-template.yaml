@@ -1,0 +1,89 @@
+# FIN-001 L3 Commercial Proof Request Template
+# Mandatory for real-world execution of cross-border settlement Work
+# Aligns with EOS Phase 4 RESOLUTION ERA mandate: Commercial validation requires real economic value verification
+
+---
+## Template Metadata
+template_id: L3-REQ-FIN-001-v1
+template_version: 1.0.0
+purpose: "Capture all required L3 commercial proof criteria for FIN-001 cross-border settlement execution"
+last_updated: 2026-10-05
+maintainer: eos-commercial-validation-team
+
+---
+## L3 Mandatory Criteria (All must be satisfied to execute)
+### 1. Real Organization (REQUIRED)
+organization:
+  legal_name: "[Full legal name of participating organization]"
+  registration_number: "[Government/regulatory registration ID]"
+  jurisdiction: "[Country/region of legal incorporation]"
+  economic_principal: true # Organization must be the economic principal bearing transaction risk
+  authorization_letter_provided: [boolean] # Must attach signed letter authorizing EOS to coordinate settlement Work
+  contact:
+    name: "[Primary contact full name]"
+    role: "[Authorized role (e.g., CFO, Head of Treasury)]"
+    email: "[Official business email]"
+
+### 2. Real Authorized Actor (REQUIRED)
+authorized_actor:
+  actor_id: "[Unique EOS actor ID for the individual]"
+  full_name: "[Individual's full legal name]"
+  government_id_hash: "[Redacted hash of government-issued ID (never store raw ID)]"
+  authority_level: "signatory" # Must have financial signing authority for the organization
+  authority_document_hash: "[Hash of official authorization document from organization]"
+  kyc_verified_by_external_provider: [boolean] # AML/KYC verification must be completed by external provider (EOS does not own KYC truth)
+
+### 3. Real Operational Work (REQUIRED)
+operational_work:
+  work_id: "[EOS Work ID (must be created in EOS system first)]"
+  work_type: "CROSS_BORDER_SETTLEMENT_RESOLUTION"
+  description: "[Detailed description of the actual business Work requiring cross-border settlement]"
+  business_origin: "[Internal business context that created this Work (e.g., import shipment, supplier payment)]"
+  existing_systems_failed: "[Explanation why existing organizational systems cannot resolve this Work across boundaries - mandatory to answer War Room question]"
+  work_owner: "[Internal organization owner of this Work]"
+  due_date: "[Real business due date for settlement]"
+
+### 4. Real External Transaction (REQUIRED)
+external_transaction:
+  source_currency: "[ISO 4217 source currency code]"
+  target_currency: "[ISO 4217 target currency code]"
+  original_amount: [numeric] # Real amount in source currency
+  converted_amount: [numeric] # Real amount in target currency (after exchange rate)
+  external_provider: "[Name of real payment provider/exchange used (EOS does not own payment rails)]"
+  provider_transaction_id: "[Transaction ID from external provider (to be captured post-execution)]"
+  recipient_details:
+    legal_name: "[Recipient's full legal name]"
+    bank_account_hash: "[Redacted hash of recipient's bank account]"
+    jurisdiction: "[Recipient's country/region]"
+  customs_reference_id: "[Real customs declaration ID (if applicable)]"
+
+### 5. Real Economic Consequence (REQUIRED)
+economic_consequence:
+  actual_funds_transferred: [boolean] # Must be verified via external provider statement
+  eos_service_fee_applied: [numeric] # EOS fee for Work resolution (to prove economic value)
+  fee_payment_transaction_id: "[Transaction ID of EOS fee payment]"
+  business_outcome_achieved: "[Description of the real business outcome enabled by this settlement]"
+  stakeholder_confirmation:
+    payer_confirmed: [boolean] # Payer confirms funds were sent correctly
+    recipient_confirmed: [boolean] # Recipient confirms funds were received correctly
+    work_owner_confirmed: [boolean] # Internal work owner confirms Work is resolved
+
+### 6. Willingness-to-Pay Signal (REQUIRED)
+willingness_to_pay:
+  eos_fee_accepted: [boolean] # Organization explicitly agrees to pay EOS service fee
+  fee_payment_initiated: [boolean] # Fee payment has been processed
+  repeat_service_interest: "[Yes/No/Maybe - does organization want to use EOS for future cross-border settlements?]"
+  feedback_provided: "[Optional: Organization's feedback on EOS Work resolution value]"
+  reference_provided: "[boolean] # Organization agrees to be a reference for other potential customers
+
+---
+## EOS Verification Checklist (To be completed by eos-verification agent post-execution)
+verification:
+  all_criteria_satisfied: [boolean]
+  evidence_chain_complete: [boolean] # All L1/L2/L3 evidence linked to EOS Work ID
+  external_provider_confirmation_received: [boolean] # Payment provider confirms transaction success
+  economic_value_demonstrated: [boolean] # Real economic value created for the organization
+  l3_commercial_proof_passed: [boolean] # Final L3 verification verdict (PASS/FAIL)
+  verifier_actor_id: "[EOS actor ID of the verification agent]"
+  verification_timestamp: "[ISO 8601 timestamp of final verification]"
+  notes: "[Any additional observations or issues identified during verification]"

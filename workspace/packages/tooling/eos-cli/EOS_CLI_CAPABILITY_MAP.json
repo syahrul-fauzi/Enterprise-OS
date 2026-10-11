@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "status": "draft",
+    "owner": "Enterprise Architecture / Tooling",
+    "scope": "workspace/packages/tooling/eos-cli",
+    "last_updated": "2026-10-10",
+    "version": "1.0.0"
+  },
+  "taxonomy": [
+    "Readout",
+    "Verification",
+    "Operation",
+    "Query",
+    "Materialization",
+    "Planning"
+  ],
+  "current_capabilities": {
+    "Readout": [
+      "Status",
+      "Gate Status",
+      "Execution Status",
+      "Coverage Readout"
+    ],
+    "Verification": [
+      "Verify Foundation",
+      "Verify Constitution",
+      "Verify Product",
+      "Verify Portfolio",
+      "Verify Capability Registry",
+      "Verify Genesis Baseline"
+    ],
+    "Operation": [
+      "Gate Accept",
+      "Gate Run Case",
+      "Gate Refresh Status",
+      "Execution Advance",
+      "Execution Complete DoD"
+    ],
+    "Query": [
+      "Enterprise Query"
+    ],
+    "Materialization": [
+      "Gate Genesis Evidence",
+      "Gate Regenerate"
+    ],
+    "Planning": [
+      "Discover Capability",
+      "Plan Capability"
+    ]
+  },
+  "target_capabilities": {
+    "Knowledge Readout": {
+      "capabilities": [
+        "konsumsi KnowledgeProjection",
+        "tampilkan preview, maturity, lineage, dan reuse"
+      ],
+      "boundaries": [
+        "eos-cli hanya consume",
+        "ownership tetap di bounded context knowledge"
+      ]
+    },
+    "Decision Readout": {
+      "capabilities": [
+        "konsumsi decision artifact / decision ledger output",
+        "tampilkan decision state dan reason trail secara operasional"
+      ],
+      "boundaries": [
+        "bukan decision engine"
+      ]
+    },
+    "Foundation Certification Surface": {
+      "capabilities": [
+        "readout dan verification surface yang lebih eksplisit untuk certification evidence"
+      ],
+      "boundaries": [
+        "CLI tetap consumer/operator, bukan owner certification model"
+      ]
+    },
+    "Enterprise Control Query": {
+      "capabilities": [
+        "query resmi di atas control-plane outputs",
+        "membantu WHY, TRACE, IMPACT, PATH jika kontrak resmi tersedia"
+      ],
+      "boundaries": [
+        "query harus berakar pada output/runtime resmi, bukan traversal logic liar di consumer"
+      ]
+    },
+    "Deterministic Replay & Audit": {
+      "capabilities": [
+        "replay",
+        "comparison",
+        "audit readout"
+      ],
+      "boundaries": [
+        "tetap berbasis decision/evidence/projection resmi"
+      ]
+    }
+  },
+  "out_of_scope_capabilities": [
+    "generic storage framework",
+    "generic source abstraction framework",
+    "policy engine baru",
+    "graph truth owner",
+    "knowledge lifecycle owner",
+    "decision synthesis engine"
+  ],
+  "valid_capability_progression": [
+    "Readout",
+    "Verification",
+    "Operation",
+    "Query",
+    "Deterministic Replay / Audit"
+  ],
+  "invalid_progression": [
+    "CLI",
+    "framework",
+    "runtime platform",
+    "domain owner"
+  ]
+}

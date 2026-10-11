@@ -4,8 +4,8 @@
 // Replicated in presentation-features for UI type safety - MUST be kept in sync with this source file
 
 // Import canonical types dari work-core (sesuai dependency chain: identity→work-core→capabilities)
-// Anti-drift enforcement - semua capability harus import dari @repo/capabilities-work-core
-import type { IntentCategory, IntentRawInput } from "@repo/capabilities-work-core";
+// Anti-drift enforcement - semua capability harus import dari @capabilities/work-core
+import type { IntentCategory, IntentRawInput } from "@capabilities/work-core";
 
 // Base actor type definitions
 export type IntentActorType = "human" | "agent" | "system";

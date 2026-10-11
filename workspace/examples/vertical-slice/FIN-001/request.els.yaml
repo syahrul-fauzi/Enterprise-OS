@@ -1,0 +1,66 @@
+specification:
+  id: FIN-001
+  name: "Cross-Border Settlement Resolution Commercial Validation Slice"
+  version: "1.0.0"
+  kind: ELS_LANGUAGE_SPECIFICATION
+  status: DRAFT
+  language_spec_version: "1.0"
+  golden_reference: false
+  root_of_trust_for: "VS-VERIFY-002"
+  identity_note: THIS_DOCUMENT_HAS_STABLE_HASH.ANY_MODIFICATION_REQUIRES_NEW_VERSION.
+
+specification_metadata:
+  author: "eos_commercial_validation_team"
+  created: 2026-10-05
+  governance_class: "commercial_validation_slice"
+  change_policy: "iterative_update_allowed"
+  hash_algorithm: sha256
+  audit_note: Input hash of this document MUST be captured in acceptance.yaml before any transformation run.
+
+ontology:
+  root_aggregate: "CrossBorderSettlementWork"
+  domain: "Commercial_Validation_Cross_Border"
+
+requirement_identity:
+  requirement_id: FIN-001
+  stable_external_id: FIN-001
+  id_policy: requirement_identity_is_stable_never_changes
+  derived_identity_chain:
+    - requirement_id → els_document_hash
+    - els_document_hash → eir_source_hash
+    - eir_source_hash → instruction_set_hash
+    - instruction_set_hash → capability_ref_hash
+
+business_statement:
+  title: "Cross-Border Settlement Resolution Commercial Validation"
+  description: >
+    FIN-001 is the first commercial validation slice for EOS Phase 4: test whether EOS can resolve economically consequential cross-border settlement Work across external provider boundaries while preserving core continuity/resolution lineage. EOS owns Work identity, continuity, resolution lineage, authority context, evidence lineage, execution coordination, outcome linkage, and settlement state as derived/verified fact — but does NOT own bank, payment rail, FX truth, AML/KYC truth, customs truth, legal truth, fund custody, or regulatory authority.
+  origin: "Phase 4 Commercial Validation Mandate"
+  compliance:
+    - "0 new core primitive allowed"
+    - "0 new platform layer allowed"
+    - "0 duplicate primitive allowed"
+    - "only domain adapter/provider adapter/projection/validation logic may be added"
+    - "Rule of Two enforced for any candidate primitive"
+
+capability_refs:
+  - capability_id: "CAP-ATOMIC-003"
+    capability_name: "payment-processing"
+    purpose: "Reuse existing Midtrans payment processing capability for cross-border settlement execution"
+  - capability_id: "CAP-WORK-CORE-001"
+    capability_name: "work-boundary-validation"
+    purpose: "Reuse work-core boundary validation utilities for L1 EOS proof checks"
+  - capability_id: "CAP-CONNECTOR-007"
+    capability_name: "midtrans-webhook-handler"
+    purpose: "Reuse connector-ecosystem Midtrans webhook handler for external status reconciliation"
+  - capability_id: "CAP-PRODUCT-002"
+    capability_name: "evidence-management"
+    purpose: "Reuse product-delivery evidence management functions for outcome verification"
+
+acceptanceCriteria:
+  - "L1 EOS proof passes: Work identity, Authority, Continuity, Evidence lineage, Resolution chain, Replayability all verified"
+  - "L2 External execution proof passes: External provider invoked, response captured, bound to Work, no duplicate mutation, external status reconciled"
+  - "L3 Commercial proof requirements identified: Real organization, Real authorized actor, Real operational Work, Real external transaction, Real economic consequence, Willingness-to-pay signal"
+  - "Single active production slice rule enforced: HV-008 archived, FIN-001 only active slice"
+  - "91.67% primitive reuse achieved with only 1 MINIMAL FIX required"
+  - "EOS core differentiator preserved: Evidence ≠ truth, Execution ≠ outcome, Outcome ≠ finality"

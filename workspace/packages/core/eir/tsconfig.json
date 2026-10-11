@@ -7,6 +7,6 @@
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "include": ["src"],
+  "include": ["src", "src/yaml.d.ts"],
   "exclude": ["dist", "build", "node_modules", "tests"]
 }

@@ -2,9 +2,12 @@ import { PostgresRepository } from "./base.repository.ts";
 import {
   TenantId,
   UserId,
+  WorkspaceId,
+  type WorkId,
+  createWorkId,
   type TenantAggregate,
   type TenantRepository,
-} from "../contracts/index.ts";
+} from "@repo/contracts-core";
 
 // PostgreSQL-backed tenant repository implementation
 class TenantRepositoryPostgresImpl extends PostgresRepository<any> implements TenantRepository {
@@ -24,6 +27,8 @@ class TenantRepositoryPostgresImpl extends PostgresRepository<any> implements Te
       slug: record.slug,
       customDomain: record.custom_domain,
       ownerId: UserId(record.owner_id),
+      workId: record.work_id ? createWorkId(record.work_id) : undefined,
+      workspaceId: record.workspace_id ? WorkspaceId(record.workspace_id) : undefined,
       createdAt: new Date(record.created_at),
       updatedAt: new Date(record.updated_at),
     } as TenantAggregate;
@@ -37,67 +42,173 @@ class TenantRepositoryPostgresImpl extends PostgresRepository<any> implements Te
       slug: entity.slug,
       custom_domain: entity.customDomain,
       owner_id: entity.ownerId,
+      work_id: entity.workId,
+      workspace_id: entity.workspaceId,
       created_at: entity.createdAt.toISOString(),
       updated_at: entity.updatedAt.toISOString(),
     };
   }
 
-  async byId(id: TenantId): Promise<TenantAggregate | undefined> {
-    const result = await this.pool.query("SELECT * FROM tenants WHERE id = $1", [id]);
+  // WorkId-first pattern implementation - sesuai model 5 boundary
+  async byId(id: TenantId, context?: { tenantId: TenantId; workspaceId?: WorkspaceId; workId?: WorkId }): Promise<TenantAggregate | undefined> {
+    let query = "SELECT * FROM tenants WHERE id = $1";
+    const params: any[] = [id];
+    let paramIndex = 2;
+
+    if (context?.tenantId) {
+      query += ` AND tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+      
+      if (context?.workId) {
+        query += ` AND work_id = $${paramIndex}`;
+        params.push(context.workId);
+        paramIndex++;
+      } else if (context?.workspaceId) {
+        query += ` AND workspace_id = $${paramIndex}`;
+        params.push(context.workspaceId);
+        paramIndex++;
+      }
+    }
+
+    const result = await this.pool.query(query, params);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }
 
-  async bySlug(slug: string): Promise<TenantAggregate | undefined> {
+  async bySlug(slug: string, context?: { tenantId: TenantId; workspaceId?: WorkspaceId; workId?: WorkId }): Promise<TenantAggregate | undefined> {
     const needle = slug.trim().toLowerCase();
-    const result = await this.pool.query("SELECT * FROM tenants WHERE LOWER(slug) = $1", [needle]);
+    let query = "SELECT * FROM tenants WHERE LOWER(slug) = $1";
+    const params: any[] = [needle];
+    let paramIndex = 2;
+
+    if (context?.tenantId) {
+      query += ` AND tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+      
+      if (context?.workId) {
+        query += ` AND work_id = $${paramIndex}`;
+        params.push(context.workId);
+        paramIndex++;
+      } else if (context?.workspaceId) {
+        query += ` AND workspace_id = $${paramIndex}`;
+        params.push(context.workspaceId);
+        paramIndex++;
+      }
+    }
+
+    const result = await this.pool.query(query, params);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }
 
-  async byCustomDomain(domain: string): Promise<TenantAggregate | undefined> {
+  async byCustomDomain(domain: string, context?: { tenantId: TenantId; workspaceId?: WorkspaceId; workId?: WorkId }): Promise<TenantAggregate | undefined> {
     const needle = domain.trim().toLowerCase();
-    const result = await this.pool.query("SELECT * FROM tenants WHERE LOWER(custom_domain) = $1", [needle]);
+    let query = "SELECT * FROM tenants WHERE LOWER(custom_domain) = $1";
+    const params: any[] = [needle];
+    let paramIndex = 2;
+
+    if (context?.tenantId) {
+      query += ` AND tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+      
+      if (context?.workId) {
+        query += ` AND work_id = $${paramIndex}`;
+        params.push(context.workId);
+        paramIndex++;
+      } else if (context?.workspaceId) {
+        query += ` AND workspace_id = $${paramIndex}`;
+        params.push(context.workspaceId);
+        paramIndex++;
+      }
+    }
+
+    const result = await this.pool.query(query, params);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }
 
-  async list(): Promise<readonly TenantAggregate[]> {
-    const result = await this.pool.query("SELECT * FROM tenants ORDER BY created_at DESC", []);
+  async list(context?: { tenantId: TenantId; workspaceId?: WorkspaceId; workId?: WorkId }): Promise<readonly TenantAggregate[]> {
+    let query = "SELECT * FROM tenants ORDER BY created_at DESC";
+    const params: any[] = [];
+    let paramIndex = 1;
+
+    if (context?.tenantId) {
+      query += ` WHERE tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+      
+      if (context?.workId) {
+        query += ` AND work_id = $${paramIndex}`;
+        params.push(context.workId);
+        paramIndex++;
+      } else if (context?.workspaceId) {
+        query += ` AND workspace_id = $${paramIndex}`;
+        params.push(context.workspaceId);
+        paramIndex++;
+      }
+    }
+
+    const result = await this.pool.query(query, params);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
   async save(entity: TenantAggregate): Promise<TenantAggregate> {
+    if (!entity.id) {
+      throw new Error("TenantAggregate must have id");
+    }
     const updated = { ...entity, updatedAt: new Date() };
     const record = this.toRecord(updated);
     
-    const exists = await this.byId(entity.id);
+    const exists = await this.byId(entity.id, { tenantId: entity.id, workId: entity.workId, workspaceId: entity.workspaceId });
     if (exists) {
       await this.pool.query(
         `UPDATE tenants SET 
-          name = $1, slug = $2, owner_id = $3, created_at = $4, updated_at = $5
-          WHERE id = $6`,
+          name = $1, slug = $2, owner_id = $3, work_id = $4, workspace_id = $5, created_at = $6, updated_at = $7
+          WHERE id = $8`,
         [
-          record.name, record.slug, record.owner_id, record.created_at, record.updated_at,
+          record.name, record.slug, record.owner_id, record.workId, record.workspaceId, record.created_at, record.updated_at,
           record.id
         ]
       );
     } else {
       await this.pool.query(
         `INSERT INTO tenants (
-          id, name, slug, owner_id, created_at, updated_at
-        ) VALUES ($1, $2, $3, $4, $5, $6)`,
+          id, name, slug, owner_id, work_id, workspace_id, created_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
         [
-          record.id, record.name, record.slug, record.owner_id, record.created_at, record.updated_at
+          record.id, record.name, record.slug, record.owner_id, record.workId, record.workspaceId, record.created_at, record.updated_at
         ]
       );
     }
 
-    return this.byId(entity.id) as Promise<TenantAggregate>;
+    return this.byId(entity.id, { tenantId: entity.id, workId: entity.workId, workspaceId: entity.workspaceId }) as Promise<TenantAggregate>;
   }
 
-  async remove(id: TenantId): Promise<boolean> {
-    const result = await this.pool.query("DELETE FROM tenants WHERE id = $1", [id]);
+  async remove(id: TenantId, context?: { tenantId: TenantId; workspaceId?: WorkspaceId; workId?: WorkId }): Promise<boolean> {
+    let query = "DELETE FROM tenants WHERE id = $1";
+    const params: any[] = [id];
+    let paramIndex = 2;
+
+    if (context?.tenantId) {
+      query += ` AND tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+      
+      if (context?.workId) {
+        query += ` AND work_id = $${paramIndex}`;
+        params.push(context.workId);
+        paramIndex++;
+      } else if (context?.workspaceId) {
+        query += ` AND workspace_id = $${paramIndex}`;
+        params.push(context.workspaceId);
+        paramIndex++;
+      }
+    }
+
+    const result = await this.pool.query(query, params);
     return (result as any).rowCount > 0;
   }
 }

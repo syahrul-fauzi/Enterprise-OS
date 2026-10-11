@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { jwtVerify, createRemoteJWKSet } from "jose";
 // import { recordRuntimeInvocation } from "@repo/core-runtime"; // Commented out for governance-evidence standalone execution
 import type {
   TrustFramework,
@@ -135,6 +136,38 @@ export class LocalTrustSignatureProviderService
     // });
 
     return result;
+  }
+
+  // CAND-002 Verify step: JWT token validation with issuer/audience/expiry checks (per Commander requirements)
+  async verifyJwtToken(jwt: string, issuer: string, audience: string, jwksUri: string): Promise<TrustVerificationResult> {
+    try {
+      // Create remote JWK set for government IDP signature verification
+      const jwks = createRemoteJWKSet(new URL(jwksUri));
+      
+      // Verify JWT signature, issuer, audience, and expiry (all mandatory per CAND-002 gate)
+      const { payload } = await jwtVerify(jwt, jwks, {
+        issuer: issuer,
+        audience: audience,
+        maxTokenAge: "1h", // Enforce maximum token lifetime (3600 seconds)
+      });
+
+      console.log(`[CAND-002] JWT verified successfully for issuer: ${issuer}, subject: ${payload.sub}`);
+      
+      // Compute trust signature reference for evidence chain
+      const payloadDigest = JSON.stringify(payload);
+      const signatureReference = computeLocalSignatureReference(payloadDigest);
+      
+      return {
+        provider_id: "signature-provider:local",
+        verification_status: "VERIFIED",
+      };
+    } catch (error) {
+      console.error(`[CAND-002] JWT verification failed: ${(error as Error).message}`);
+      return {
+        provider_id: "signature-provider:local",
+        verification_status: "FAILED",
+      };
+    }
   }
 }
 

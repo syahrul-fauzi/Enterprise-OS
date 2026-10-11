@@ -1,0 +1,93 @@
+slice:
+  id: HV-008
+  version: "2.0.0"
+  kind: VERTICAL_SLICE_CONTRACT
+  status: SHIPPED / ARCHIVED
+  root_aggregate: "CrossBoundaryEconomicDisputeResolution"
+  transformation_id: "VS-VERIFY-002"
+  source_els_hash: "a4d1c99eb23b69bd77f2de9b0b4e52f4c55a54f724fb8925a534fb26f48bb2ce"
+  slice_type: "ENGINEERING_PROOF_COMPLETED"
+  archive_note: "HV-008 closed as generality/engineering proof per Phase 4 lock; FIN-001 (Cross-Border Settlement Validation Slice) is now the only active production slice per SINGLE ACTIVE PRODUCTION SLICE guardrail"
+
+reality:
+  source: "eos_war_room_resolution_era_strategic_directive"
+  actor: "eos_enterprise_architect"
+  actor_type: "human"
+  intent: "Buktikan EOS dapat menyelesaikan Work bernilai ekonomi ($2.4M dispute) yang berpindah antar 6 boundary (organisasi, domain, authority, execution_provider, settlement, surface) tanpa kehilangan continuity, identity, authority, dan evidence. Ini adalah economic proof gate untuk RESOLUTION ERA."
+  request_context:
+    origin: "Post-HV-007 adjudication strategic directive - EOS RESOLUTION ERA activation"
+    governance_class: "user_feature_request"
+    change_policy: "iterative_update_allowed"
+    owner: "eos-war-room-command-center"
+
+expected:
+  work_created: true
+  work_type: "ECONOMIC_DISPUTE_RESOLUTION"
+  work_id: "W-003"
+  initial_state: draft
+  actor_bound: true
+  capabilities_attached:
+    - "work-identity-preservation"
+    - "cross-boundary-authority-transfer"
+    - "evidence-chain-compilation"
+    - "settlement-execution"
+    - "economic-outcome-verification"
+  compliance_rules_enforced:
+    - "primitive_reuse_100_percent"
+    - "no_duplicate_work"
+    - "architecture_freeze_compliance"
+    - "evidence_truth_separation"
+  traceability_anchors_preserved:
+    - "work_identity_invariant"
+    - "all_transition_authorized"
+    - "semantic_continuity_preserved"
+    - "execution_independence_maintained"
+    - "evidence_lineage_intact"
+    - "economic_finality_achieved"
+    - "replayability_verified"
+
+acceptance:
+  # Core EOS flow validation - WAJIB untuk SEMUA slice, tidak boleh diubah
+  work_created: true
+  actor_bound: true
+  persisted: true
+  evidence_recorded: true
+  recoverable: true
+  outcome_achieved: true
+
+  # Traceability checks (wajib untuk semua slice, terpetakan dari ELS)
+  identity_trace_complete: true
+  hash_chain_valid: true
+
+  # Compliance checks (wajib untuk semua slice, terpetakan dari ELS)
+  all_blocker_rules_enforced: true
+  no_orphaned_capabilities: true
+
+  # Runtime checks (wajib untuk semua slice, terverifikasi oleh runner)
+  deterministic_execution: true
+  idempotent_transformation: true
+
+surfaces:
+  - api: "/api/v1/economic-dispute/W-003"
+  - web: "/work/economic-dispute/W-003"
+  - ledger: "/evidence/economic-resolution/HV-008"
+
+failure_cases:
+  - "work_identity_changed: W-003 berubah ID saat melewati boundary"
+  - "unauthorized_transition: ada transisi boundary tanpa otoritas yang valid"
+  - "evidence_chain_broken: lineage evidence terputus selama proses resolusi"
+  - "settlement_not_verifiable: outcome tidak dapat diverifikasi oleh semua pihak"
+  - "primitive_reuse_below_100: ada primitive baru yang dibuat tanpa 2+ real Works proof"
+
+verification_harness:
+  supported_runners:
+    - "api_verifier"
+    - "persistence_verifier"
+    - "recovery_verifier"
+    - "economic_verifier"
+  required_evidence:
+    - "eir-chain-HV-008-full.json"
+    - "actor-authority-log-all-transitions.json"
+    - "settlement-verification-signatures.json"
+    - "replay-execution-outcome.json"
+    - "primitive-reuse-audit-report.json"

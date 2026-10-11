@@ -2,102 +2,22 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import yaml from "yaml";
-import { z } from "zod";
 import { EOS_ROOT } from "../state.js";
+import {
+  CapabilityRegistrySchema,
+  type CapabilityRegistry,
+  type CapabilityPriority,
+  type CapabilityDefinition,
+  type EffectiveStatus,
+  type ComputedCapability,
+  type NextTransition,
+} from "../runtime/execution-schemas.js";
 
 const EXECUTION_DIR = resolve(EOS_ROOT, "enterprise/execution");
 const CAPABILITY_REGISTRY_PATH = resolve(EXECUTION_DIR, "CAPABILITY-REGISTRY.yaml");
 const EXECUTION_STATUS_PATH = resolve(EXECUTION_DIR, "EXECUTION-STATUS.yaml");
 
 const SEP = "=".repeat(72);
-
-const CapabilityPrioritySchema = z.enum(["P0", "P1", "P2", "P3"]);
-const CapabilityStatusSchema = z.enum([
-  "TODO",
-  "READY",
-  "READY_FOR_IMPLEMENTATION",
-  "IMPLEMENTING",
-  "TESTING",
-  "INTEGRATING",
-  "DONE",
-]);
-
-const CapabilityDefinitionSchema = z.object({
-  name: z.string().min(1),
-  priority: CapabilityPrioritySchema,
-  status: CapabilityStatusSchema,
-  owner: z.string().min(1).default("unassigned"),
-  depends_on: z.array(z.string().min(1)).default([]),
-  unlocks: z.array(z.string().min(1)).default([]),
-  definition_of_done: z.array(z.string().min(1)).min(1),
-  completed_definition_of_done: z.array(z.string().min(1)).default([]),
-  outcome: z.string().min(1),
-});
-
-const CapabilityRegistrySchema = z.object({
-  version: z.string().min(1),
-  status: z.string().min(1),
-  ssot: z.literal("CAPABILITY_REGISTRY"),
-  mission: z.object({
-    target: z.string().min(1),
-    phase: z.string().min(1),
-  }),
-  execution: z.object({
-    default_agent_state: z.enum(["RUNNING", "WAITING"]),
-    auto_continue: z.boolean(),
-    stop_on_hard_blocker_only: z.boolean(),
-  }),
-  state_machine: z.object({
-    states: z.array(z.string().min(1)).min(1),
-    auto_transition_after_done: z.string().min(1),
-  }),
-  capabilities: z.record(z.string().min(1), CapabilityDefinitionSchema),
-});
-
-type CapabilityPriority = z.infer<typeof CapabilityPrioritySchema>;
-type CapabilityStatus = z.infer<typeof CapabilityStatusSchema>;
-type CapabilityDefinition = z.infer<typeof CapabilityDefinitionSchema>;
-type CapabilityRegistry = z.infer<typeof CapabilityRegistrySchema>;
-
-type EffectiveStatus =
-  | "READY"
-  | "READY_FOR_IMPLEMENTATION"
-  | "IMPLEMENTING"
-  | "TESTING"
-  | "INTEGRATING"
-  | "DONE"
-  | "BLOCKED_BY_DEPENDENCIES"
-  | "INVALID_DONE";
-
-type NextTransition =
-  | "IMPLEMENTING"
-  | "TESTING"
-  | "INTEGRATING"
-  | "DONE"
-  | "UNLOCK_NEXT"
-  | "WAIT_FOR_DEPENDENCIES"
-  | "FIX_DEFINITION_OF_DONE";
-
-type ComputedCapability = {
-  readonly id: string;
-  readonly name: string;
-  readonly priority: CapabilityPriority;
-  readonly rawStatus: CapabilityStatus;
-  readonly effectiveStatus: EffectiveStatus;
-  readonly owner: string;
-  readonly dependsOn: readonly string[];
-  readonly unlocks: readonly string[];
-  readonly outcome: string;
-  readonly definitionOfDone: readonly string[];
-  readonly completedDefinitionOfDone: readonly string[];
-  readonly definitionOfDoneCompletedCount: number;
-  readonly definitionOfDoneTotalCount: number;
-  readonly progressPercent: number;
-  readonly dependenciesSatisfied: boolean;
-  readonly blockedBy: readonly string[];
-  readonly readyForExecution: boolean;
-  readonly nextTransition: NextTransition;
-};
 
 type ExecutionStatusReadModel = {
   readonly version: string;

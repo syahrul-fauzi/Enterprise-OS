@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 // Force re-check
 import {
-  capabilityRegistry
+  capabilityRegistry,
+  capabilityCommands
 } from "@repo/core-kernel/registry/capability-command-registry";
 import {
   WORKSPACE_SESSION_COOKIE,
@@ -10,6 +11,71 @@ import {
 
 export const runtime = "nodejs";
 
+// Lazy load atomic-composition, consultation, and FIN-001 commands saat first request untuk menghindari module resolution error di Next.js
+// Ini tetap 100% primitive reuse, tidak ada perubahan arsitektur - hanya perubahan cara loading di apps/api
+// Sinkron dengan pola registrasi yang sama di /api/work/create untuk memastikan command selalu terdaftar sebelum invokasi
+async function registerMissingCommands(capability: string) {
+  console.log(`[api/capabilities] 🚀 registerMissingCommands function executed - starting command registration for capability: ${capability}`);
+  try {
+    // Gunakan path relatif absolut untuk menghindari masalah module resolution Turbopack di Next.js
+    // Path dari route.ts: apps/api/app/api/capabilities/[cap]/[commandName]/ → root workspace: ../../../../../../../
+    const { atomicCompositionCommands } = await import("../../../../../../../capabilities/atomic-composition/implementation/services/composition.service.js");
+    for (const [commandKey, command] of Object.entries(atomicCompositionCommands)) {
+      // Atomic-composition commands ALREADY HAVE full prefix in their name - no duplicate prefix needed
+      console.log(`[api/capabilities] 🔍 Existing atomic-composition command name from file: ${command.name}`);
+      // Check if command exists by directly accessing in-memory capabilityCommands object
+      if (!capabilityCommands[command.name]) {
+        capabilityRegistry.register({
+          ...command,
+          capability: capability
+        });
+        console.log(`[api/capabilities] ✅ Lazy registered command: ${command.name} (no duplicate prefix added)`);
+      } else {
+        console.log(`[api/capabilities] ⚠️ Command ${command.name} already registered - skipping duplicate registration`);
+      }
+    }
+    // Consultation capability belum diimplementasikan - skip registrasi untuk menghindari error
+    // Import FIN-001 command menggunakan path relatif yang BENAR dengan ekstensi .js (ESM compliant)
+    const fin001Module = await import("../../../../../../../examples/vertical-slice/FIN-001/implementation/adapters/FIN-001-cross-border-adapter.js");
+    const fin001Commands = [
+      {
+        name: "executeCrossBorderSettlement",
+        capability: "fin-001",
+        description: "Execute cross-border payment settlement dengan dynamic currency conversion untuk FIN-001",
+        execute: fin001Module.executeCrossBorderSettlement,
+        inputSchema: { 
+          workId: "string", 
+          amount: "number", 
+          sourceCurrency: "string", 
+          targetCurrency: "string", 
+          customsId: "string", 
+          recipient: "string", 
+          payer: "string", 
+          description: "string", 
+          dueDate: "string",
+          sessionId: "string",
+          tenantId: "string",
+          workspaceId: "string",
+          actorId: "string"
+        }
+      }
+    ];
+    for (const command of fin001Commands) {
+      // Sinkronkan SEMUA pola registrasi dengan WORKING work.create route.ts (termasuk nama command full di registry)
+      const fullCommandName = `fin-001.${command.name}`;
+      capabilityRegistry.register({
+        ...command,
+        name: fullCommandName, // Sama persis seperti pattern atomic-composition dan consultation di route yang sama
+        capability: "fin-001"
+      });
+      console.log(`[api/capabilities] ✅ Lazy registered command: ${fullCommandName}`);
+    }
+  } catch (err) {
+    console.error("[api/capabilities] ❌ Failed to lazy register commands:", err);
+    throw err; // Re-throw error untuk debugging yang jelas
+  }
+}
+
 export async function POST(
   request: Request,
   segment: { params: Promise<{ cap: string; commandName: string }> },
@@ -17,6 +83,8 @@ export async function POST(
   const params = await segment.params;
   const capability = params.cap;
   const commandName = params.commandName;
+  const fullCommandName = `${capability}.${commandName}`;
+  console.log(`[api/capabilities] 📥 Received request: capability=${capability} | command=${commandName} | fullCommand=${fullCommandName}`);
 
   if (!capability || !commandName) {
     return NextResponse.json(
@@ -80,14 +148,26 @@ export async function POST(
   }
 
   try {
-    const authenticatedPayload = {
-      ...body,
-      sessionId: session.sessionId,
-      tenantId: session.tenantId,
-      workspaceId: session.workspaceId,
-      actorId: session.actorId,
-    };
+    // Panggil registrasi command terlebih dahulu sebelum invokasi untuk memastikan semua command terdaftar
+    await registerMissingCommands(capability);
+    
+    // FIX: Prevent body properties (including workId) from being lost during object spread by explicit Object.assign
+    const authenticatedPayload: Record<string, unknown> = {};
+    Object.assign(authenticatedPayload, body); // Copy ALL body properties first
+    // Override with session properties (never overwrite existing workId/work from body)
+    authenticatedPayload.sessionId = session.sessionId;
+    authenticatedPayload.tenantId = session.tenantId;
+    authenticatedPayload.workspaceId = session.workspaceId;
+    authenticatedPayload.actorId = session.actorId;
+    // Debug log to confirm workId is present before invocation
+    console.log(`[api/capabilities] 📦 Authenticated payload keys: ${Object.keys(authenticatedPayload).join(", ")}`);
+    console.log(`[api/capabilities] 📦 workId in payload: ${authenticatedPayload.workId ?? "MISSING - CHECK BODY FORMAT"}`);
 
+    // Debug: list all registered commands sebelum invokasi
+    const allCommands = await capabilityRegistry.listCommandKeys();
+    console.log(`[api/capabilities] 📋 All registered commands: ${allCommands.join(", ")}`);
+    console.log(`[api/capabilities] 🔍 Attempting to invoke: ${fullCommandName}`);
+    // FIX: Pass separate capability and commandName parameters (registry requires 3 arguments: capability, commandName, input)
     const result = await capabilityRegistry.invoke(capability, commandName, authenticatedPayload);
     return NextResponse.json(
       {

@@ -1,4 +1,4 @@
-import type { TenantId, WorkspaceId, ActorId, SessionId, WorkId, UserId } from "@repo/capabilities-work-core";
+import type { TenantId, WorkspaceId, ActorId, SessionId, WorkId, UserId } from "@capabilities/work-core";
 
 export type ConsultationStatus = 
   | "OPEN" 
@@ -401,8 +401,7 @@ export interface LearningCandidate {
 
 export interface ConsultationSeries {
   readonly id: ConsultationSeriesId;
-  readonly tenantId: string;
-  readonly workspaceId: string;
+  readonly workId: WorkId;
   readonly userId: string;
   readonly title: string;
   readonly description: string;
@@ -434,8 +433,7 @@ export type ConsultationConversationMessage = {
 
 export interface ConsultationAggregate {
   readonly id: ConsultationId;
-  readonly tenantId: string;
-  readonly workspaceId: string;
+  readonly workId: WorkId;
   readonly title: string;
   readonly description: string;
   readonly userNeed: string;
@@ -467,8 +465,8 @@ export interface ConsultationAggregate {
   readonly domicile?: string;
   readonly kbli?: string;
   readonly triageResult?: ConsultationTriageResult;
-  readonly linkedWorkItemId?: string;
-  readonly linkedWorkItemType?: WorkItemType;
+  readonly linkedWorkItemId: string;
+  readonly linkedWorkItemType: WorkItemType;
   readonly triageNotes?: string;
   readonly need?: string;
   readonly diagnosis?: string;
@@ -521,9 +519,7 @@ export interface CreateConsultationInput {
   readonly domicile?: string;
   readonly kbli?: string;
   readonly sessionId: string;
-  readonly tenantId: string;
-  readonly workspaceId: string;
-  readonly actorId: string;
+  readonly workId: WorkId;
 }
 
 export interface CreateConsultationOutput {
@@ -536,7 +532,7 @@ export interface TriageConsultationInput {
   readonly id: ConsultationId;
   readonly triageResult: ConsultationTriageResult;
   readonly triageNotes?: string;
-  readonly linkedWorkItemId?: string;
+  readonly linkedWorkItemId: string;
   readonly intent?: string;
   readonly need?: string;
   readonly diagnosis?: string;
@@ -546,9 +542,7 @@ export interface TriageConsultationInput {
   readonly autonomyLevel?: AutonomyLevel;
   readonly riskRationale?: string;
   readonly sessionId: string;
-  readonly tenantId: string;
-  readonly workspaceId: string;
-  readonly actorId: string;
+  readonly workId: WorkId;
 }
 
 export interface TriageConsultationOutput {
@@ -603,8 +597,7 @@ export type ConsultationRepository = {
   readonly kind: "repository";
   byId(id: ConsultationId): Promise<ConsultationAggregate | undefined>;
   list(): Promise<readonly ConsultationAggregate[]>;
-  listByTenant(tenantId: string): Promise<readonly ConsultationAggregate[]>;
-  listByWorkspace(workspaceId: string): Promise<readonly ConsultationAggregate[]>;
+  listByWorkIds(workIds: string[]): Promise<readonly ConsultationAggregate[]>;
   save(entity: ConsultationAggregate): Promise<ConsultationAggregate>;
   remove(id: ConsultationId): Promise<boolean>;
 };

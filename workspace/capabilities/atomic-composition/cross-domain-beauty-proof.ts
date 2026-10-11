@@ -4,13 +4,14 @@
  * Hanya: Requirements, Capabilities, Actors yang berubah
  */
 
-import { WorkId, Work } from '@capabilities/work-core/contracts/work.contracts';
+import { newWorkId, type WorkId, type Work, createActorId, type ActorId } from '../work-core/contracts/work.contracts.js';
 import { 
-  Actor, ActorId, 
-  Requirement, RequirementId
+  type Actor, 
+  type Requirement, 
+  RequirementId as createRequirementId
 } from './implementation/contracts/atomic-composition.contracts';
 import { CompositionRepository } from './implementation/repository/composition.repository';
-import { AtomicCompositionService } from './implementation/services/composition.service';
+import { AtomicCompositionService } from './implementation/services/composition.service.js';
 
 // Inisialisasi repository
 await CompositionRepository.initialize();
@@ -22,7 +23,7 @@ console.log("==================================================");
 
 // STEP 1: Create Work (Beauty Domain - Launch New Salon Branch)
 const salonLaunchWork: Work = {
-  workId: WorkId("work-salon-bandung-001"),
+  workId: newWorkId(),
   title: "Launch New Salon Branch in Bandung",
   description: "Open new beauty salon location with full services",
   createdAt: new Date().toISOString(),
@@ -34,36 +35,36 @@ console.log("📋 Step 1: Create Work -", salonLaunchWork.title);
 // STEP 2: Beauty Domain Requirements (BERBEDA dari website launch sebelumnya)
 const beautyRequirements: Requirement[] = [
   {
-    requirementId: "req-beauty-001" as RequirementId,
-    description: "Salon location setup & interior design",
+    requirementId: createRequirementId("req-beauty-001"),
+    title: "Salon location setup & interior design",
+    status: "PENDING",
     capabilityId: "interior-design",
-    minimumTrust: 0.8,
-    authority: ["approve:design", "spend:budget"],
-    resolved: false
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
-    requirementId: "req-beauty-002" as RequirementId,
-    description: "Staff recruitment & training (beauticians)",
+    requirementId: createRequirementId("req-beauty-002"),
+    title: "Staff recruitment & training (beauticians)",
+    status: "PENDING",
     capabilityId: "hr-training",
-    minimumTrust: 0.8,
-    authority: ["approve:hire", "schedule:training"],
-    resolved: false
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
-    requirementId: "req-beauty-003" as RequirementId,
-    description: "Beauty product inventory & supply chain",
+    requirementId: createRequirementId("req-beauty-003"),
+    title: "Beauty product inventory & supply chain",
+    status: "PENDING",
     capabilityId: "inventory-management",
-    minimumTrust: 0.7,
-    authority: ["order:stock", "manage:warehouse"],
-    resolved: false
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
-    requirementId: "req-beauty-004" as RequirementId,
-    description: "Marketing & grand opening event",
+    requirementId: createRequirementId("req-beauty-004"),
+    title: "Marketing & grand opening event",
+    status: "PENDING",
     capabilityId: "event-marketing",
-    minimumTrust: 0.7,
-    authority: ["book:venue", "promote:event"],
-    resolved: false
+    createdAt: new Date(),
+    updatedAt: new Date()
   }
 ];
 console.log("📋 Step 2: Created", beautyRequirements.length, "Beauty Domain requirements");
@@ -71,7 +72,7 @@ console.log("📋 Step 2: Created", beautyRequirements.length, "Beauty Domain re
 // STEP 3: Beauty Domain Actors & Capabilities (BERBEDA)
 const beautyActors: Actor[] = [
   {
-    actorId: ActorId("actor-siti-001"),
+    actorId: createActorId("actor-siti-001"),
     name: "Siti - Interior Designer",
     capabilities: ["interior-design", "space-planning"],
     organizationId: "beauty-vendor-001",
@@ -79,7 +80,7 @@ const beautyActors: Actor[] = [
     availability: true
   },
   {
-    actorId: ActorId("actor-andi-001"),
+    actorId: createActorId("actor-andi-001"),
     name: "Andi - HR Manager",
     capabilities: ["hr-training", "recruitment"],
     organizationId: "salon-hq-001",
@@ -87,7 +88,7 @@ const beautyActors: Actor[] = [
     availability: true
   },
   {
-    actorId: ActorId("actor-lina-001"),
+    actorId: createActorId("actor-lina-001"),
     name: "Lina - Supply Chain Manager",
     capabilities: ["inventory-management", "logistics"],
     organizationId: "beauty-supplies-001",
@@ -95,7 +96,7 @@ const beautyActors: Actor[] = [
     availability: true
   },
   {
-    actorId: ActorId("actor-riko-001"),
+    actorId: createActorId("actor-riko-001"),
     name: "Riko - Marketing Specialist",
     capabilities: ["event-marketing", "digital-marketing"],
     organizationId: "salon-marketing-001",
@@ -109,10 +110,12 @@ console.log("📋 Step 3: Beauty Domain actors & capabilities ready");
 
 // STEP 4: Compose Team - MENGGUNAKAN ENGINE YANG SAMA PERSIS!
 const compositionResult = await service.composeTeamFromRequirements({
+  workId: salonLaunchWork.workId,
   work: salonLaunchWork,
   requirements: beautyRequirements,
   availableCapabilities,
-  availableActors: beautyActors
+  availableActors: beautyActors,
+  workspaceId: "workspace-beauty-001"
 });
 
 console.log("✅ Step 4: Team composed for Beauty Domain -", compositionResult.team?.teamId);

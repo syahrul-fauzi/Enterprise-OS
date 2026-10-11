@@ -1,9 +1,6 @@
 // Readiness probe API endpoint - PR-01 EOS Online & Ready requirement
 // Minimal legacy repair: isolated non-core module errors, only critical database checks
 import { NextResponse } from "next/server";
-import { DatabaseHealthChecker } from "../../../../../../capabilities/shared/implementation/database/health.check";
-import { getCommunicationRepositoryPostgres } from "../../../../../../capabilities/communication/implementation/repository/communication.postgres.repository";
-import { getCaseRepositoryPostgres } from "../../../../../../capabilities/legal-case/implementation/repository/case-postgres.repository";
 
 export async function GET(request: Request) {
   // PR-01 requirement: correlation ID tracking for audit and observability
@@ -14,22 +11,48 @@ export async function GET(request: Request) {
   let isDatabaseReady = true;
   let databaseDetails: any = null;
   try {
-    const commRepository = getCommunicationRepositoryPostgres() as any;
-    const commPools = commRepository.getPools();
-    const caseRepository = getCaseRepositoryPostgres() as any;
-    const casePools = caseRepository.getPools();
+    // Delay database checks to ensure all modules are initialized (resolves "Cannot access 'g' before initialization")
+    await new Promise(resolve => setTimeout(resolve, 100));
     
-    const healthReport = await DatabaseHealthChecker.checkAll([
-      { pool: commPools.write, name: "eos_communication_primary" },
-      { pool: casePools.write, name: "eos_legal_primary" },
-    ]);
+    // Use relative paths to resolve module resolution issues and path alias conflicts
+    // Jalur relatif dihitung dari: /root/Enterprise-OS/workspace/apps/api/app/api/(system)/infrastructure/route.ts
+            // ../../../../../../ membawa kita ke root workspace /root/Enterprise-OS/workspace/ (6 level ../)
+            const { DatabaseHealthChecker, getConnectionPoolMetrics } = await import("../../../../../../capabilities/shared/implementation/database/health.check.js");
+            const { getCommunicationRepositoryPostgres } = await import("../../../../../../capabilities/communication/implementation/repository/communication.postgres.repository.js");
+            const { getCaseRepositoryPostgres } = await import("../../../../../../capabilities/legal-case/implementation/repository/case-postgres.repository.js");
+            
+            const commRepository = getCommunicationRepositoryPostgres() as any;
+            const commPools = commRepository.getPools();
+            const caseRepository = getCaseRepositoryPostgres() as any;
+            const casePools = caseRepository.getPools();
+            
+            // Run health checks on core database pools (primary + read replica)
+            const healthReport = await DatabaseHealthChecker.checkAll([
+              { pool: commPools.write, name: "eos_communication_primary" },
+              { pool: commPools.read, name: "eos_communication_replica" },
+              { pool: casePools.write, name: "eos_legal_primary" },
+              { pool: casePools.read, name: "eos_legal_replica" },
+            ]);
+    
+            // Expose additional pool telemetry metrics (DEL-001 requirement: utilization, idle/waiting clients)
+            const poolTelemetry = {
+              communication_write: getConnectionPoolMetrics("communication-write"),
+              communication_read: getConnectionPoolMetrics("communication-read"),
+              legal_write: getConnectionPoolMetrics("legal-write"),
+              legal_read: getConnectionPoolMetrics("legal-read")
+            };
     
     isDatabaseReady = healthReport.overall_healthy;
     const k8sFormat = DatabaseHealthChecker.toKubernetesFormat(healthReport.databases);
-    databaseDetails = k8sFormat.details;
+    databaseDetails = { ...k8sFormat.details, telemetry: poolTelemetry };
   } catch (error) {
     isDatabaseReady = false;
-    databaseDetails = { error: error instanceof Error ? error.message : "Unknown database error" };
+    // Log full error stack to server console for root cause analysis
+    console.error("[API/INFRASTRUCTURE] Database check failed with error:", error);
+    databaseDetails = { 
+      error: error instanceof Error ? error.message : "Unknown database error",
+      stack: error instanceof Error ? error.stack : "No stack trace available"
+    };
   }
 
   // ISOLATED NON-CORE CHECKS (marked as down for operational isolation, not blocking boot)

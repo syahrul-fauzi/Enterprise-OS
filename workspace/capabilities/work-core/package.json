@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "main": "./dist/implementation/index.js",
+  "main": "./implementation/index.ts",
   "types": "./dist/implementation/index.d.ts",
   "exports": {
     ".": {
@@ -23,10 +23,11 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint .",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@repo/capabilities-identity": "workspace:*",
+    "@repo/contracts-core": "workspace:*",
     "@repo/core-kernel": "workspace:*"
   },
   "devDependencies": {

@@ -1,23 +1,21 @@
-// Import canonical identity types dari work-core (sesuai dependency chain: identity→work-core→capabilities)
-// Anti-drift enforcement - semua capability harus import dari @repo/capabilities-work-core
+// Import canonical identity + CMBCD types dari work-core (single source of truth - anti-drift)
+// Semua CMBCD core types (ActorMetadata, AuthorizationScope, ContextMetadata, RiskAssessment, WorkFaceProjection)
+// didefinisikan sekali di work-core untuk menghindari duplikasi antar vertical slices (Rule of Two compliance)
 import type {
   TenantId,
   WorkspaceId,
-  ActorId
-} from "@repo/capabilities-work-core";
+  ActorId,
+  ExecutionFrame,
+  ActorMetadata,
+  AuthorizationScope,
+  ContextMetadata,
+  RiskAssessment,
+  WorkFaceProjection
+} from "../../../work-core/contracts/work.contracts.js";
 
 export type ServiceRequestStatus = "draft" | "submitted" | "proposed" | "accepted" | "in_service" | "delivered" | "verified" | "settled" | "cancelled" | "declined";
-
-export interface CreateServiceRequestInputLegacy {
-  readonly title: string;
-  readonly description: string;
-  readonly category: ServiceProviderCategory;
-  readonly budget?: string;
-  readonly createdBy: string;
-  readonly status: ServiceRequestStatus;
-  readonly tenantId: TenantId;
-  readonly workspaceId: WorkspaceId;
-}
+export type ServiceRequestPriority = "low" | "medium" | "high" | "critical";
+export type RiskLevel = "low" | "medium" | "high" | "critical";
 
 export type ServiceProviderCategory =
   | "Cloud Services"
@@ -31,21 +29,39 @@ export type ServiceProviderCategory =
   | "Trademark Registration";
 
 export type ServiceProviderId = string & { readonly __serviceProviderId: unique symbol };
-
 export function ServiceProviderId(value: string): ServiceProviderId {
   return value as ServiceProviderId;
 }
 
 export type ServiceRequestId = string & { readonly __serviceRequestId: unique symbol };
-
 export function ServiceRequestId(value: string): ServiceRequestId {
   return value as ServiceRequestId;
 }
 
 export type SupplyStatus = "PENDING_VERIFICATION" | "VERIFIED" | "INACTIVE";
 
+// Service-directory specific extensions of canonical CMBCD types
+// Hanya menambahkan field khusus domain service yang tidak ada di work-core ContextMetadata
+export interface ServiceRequestContextMetadata extends ContextMetadata {
+    readonly requestCategory: string; // Domain-specific request category hanya untuk service-directory
+}
+
+export interface RiskAssessment extends RiskAssessment {
+    readonly mitigationSteps?: readonly string[]; // Domain-specific risk mitigation hanya untuk service-directory
+}
+
+export interface AuthorizationScope extends AuthorizationScope {
+    readonly expiryTimestamp?: string; // Domain-specific auth expiry hanya untuk service-directory
+    readonly delegatedBy?: ActorId; // Domain-specific delegation trace hanya untuk service-directory
+}
+
+// Import canonical CMBCD execution frame calculator dari shared work-core substrate
+// Implements user mandate: Reuse existing primitives (Rule of Two compliance)
+import { calculateExecutionFrame } from "../../../work-core/implementation/utils/index.js";
+
 export interface ServiceProviderAggregate {
   readonly id: ServiceProviderId;
+  readonly workId: string; // CORE-001: Mandatory link to core Work primitive ID
   readonly name: string;
   readonly category: ServiceProviderCategory;
   readonly description: string;
@@ -57,9 +73,14 @@ export interface ServiceProviderAggregate {
   readonly responseHours?: string;
   readonly supplyStatus?: SupplyStatus; // CR-004 Supply-side verification tracking
   readonly createdAt: Readonly<Date>;
-  readonly tenantId: TenantId;
-  readonly workspaceId: WorkspaceId;
-  readonly actorId: ActorId;
+  readonly updatedAt: Readonly<Date>;
+  
+  // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (sama dengan ServiceRequestAggregate - Rule of Two compliance)
+  readonly actorMetadata: ActorMetadata;
+  readonly allowedCapabilities: readonly string[];
+  readonly authorization: AuthorizationScope;
+  readonly context: ServiceRequestContextMetadata;
+  readonly risk: RiskAssessment;
 }
 
 export interface ExternalSystemResponse {
@@ -70,6 +91,13 @@ export interface ExternalSystemResponse {
   readonly receivedAt: Readonly<Date>;
 }
 
+export interface ExecutionContextMetadata {
+    readonly decision_id?: string | null;
+    readonly last_invocation_digest?: string | null;
+    readonly propagated_from: "cross-capability" | "direct-api";
+    readonly calculatedExecutionFrame?: ExecutionFrame; // Dynamically computed from CMBCD
+}
+
 export interface ServiceRequestAggregate {
   readonly id: ServiceRequestId;
   readonly workId: string; // CORE-001: Mandatory link to core Work primitive ID (only source of truth for boundary metadata)
@@ -77,6 +105,7 @@ export interface ServiceRequestAggregate {
   readonly description?: string;
   readonly category: ServiceProviderCategory;
   readonly status: ServiceRequestStatus;
+  readonly priority: ServiceRequestPriority;
   readonly requesterName?: string;
   readonly requesterEmail?: string;
   readonly requesterPhone?: string;
@@ -95,6 +124,16 @@ export interface ServiceRequestAggregate {
   readonly verifiedAt?: Readonly<Date>;
   readonly settledAt?: Readonly<Date>;
   readonly externalResponses?: readonly ExternalSystemResponse[];
+  
+  // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (actor-capability-authority-context-risk-evidence)
+  readonly actorMetadata: ActorMetadata; // Current responsible actor metadata
+  readonly allowedCapabilities: readonly string[]; // List of capabilities authorized for this request
+  readonly authorization: AuthorizationScope; // Granular authorization boundaries
+  readonly context: ServiceRequestContextMetadata; // 5-boundary compliant context metadata
+  readonly risk: RiskAssessment; // Dynamic risk assessment per actor/context changes
+  readonly executionFrame?: ExecutionFrame; // SRV-SERVICE-001: CMBCD execution frame (canonical type from work-core)
+  readonly executionContext?: ExecutionContextMetadata;
+  readonly evidence?: readonly any[]; // Immutable evidence trail for all state transitions
 }
 
 export interface CreateServiceRequestInput {
@@ -103,11 +142,17 @@ export interface CreateServiceRequestInput {
   readonly category: ServiceProviderCategory;
   readonly requesterName?: string;
   readonly budget?: string;
+  readonly workId: string; // CORE-001: Mandatory link to core Work primitive ID
+  // W-012: HIGH-VALUE WORK GRAPH CORE LINKS (sesuai W-011 extension di work-core)
+  readonly relatedProductIds?: readonly string[]; // Produk yang terkait dengan service request ini
+  readonly relatedRequirementIds?: readonly string[]; // Requirement yang harus dipenuhi service request ini
 }
 
 export interface CreateServiceRequestOutput {
   readonly id: ServiceRequestId;
   readonly status: ServiceRequestStatus;
+  readonly workId: string; // W-012: Mandatory core Work ID link (complies with Work-centric architecture)
+  readonly faceProjection: WorkFaceProjection; // W-012: Server-derived FACE projection (complies with "FACE is projection, not owner" mandate)
 }
 
 export interface UpdateExternalSystemStatusInput {
@@ -135,6 +180,7 @@ export type ServiceProviderRepository = {
   list(): Promise<readonly ServiceProviderAggregate[]>;
   listByCategory(category: ServiceProviderCategory): Promise<readonly ServiceProviderAggregate[]>;
   listByLocation(location: string): Promise<readonly ServiceProviderAggregate[]>;
+  listByWorkIds(workIds: readonly string[]): Promise<readonly ServiceProviderAggregate[]>; // CORE-001: Work-centric batch query untuk High-Value Work Graph
   listCategories(): readonly ServiceProviderCategory[];
   save(entity: ServiceProviderAggregate): Promise<ServiceProviderAggregate>;
   remove(id: ServiceProviderId): Promise<boolean>;
@@ -143,13 +189,13 @@ export type ServiceProviderRepository = {
 export type ServiceRequestRepository = {
   readonly entityName: "ServiceRequest";
   readonly kind: "repository";
-  byId(id: ServiceRequestId): Promise<ServiceRequestAggregate | undefined>;
-  list(): Promise<readonly ServiceRequestAggregate[]>;
+  byId(id: ServiceRequestId, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<ServiceRequestAggregate | undefined>;
+  list(context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<readonly ServiceRequestAggregate[]>;
   listByStatus(status: ServiceRequestStatus | "all"): Promise<readonly ServiceRequestAggregate[]>;
-  listByWorkspace(workspaceId: WorkspaceId): Promise<readonly ServiceRequestAggregate[]>;
-  listByTenant(tenantId: TenantId): Promise<readonly ServiceRequestAggregate[]>;
+  listByWork(workId: string): Promise<readonly ServiceRequestAggregate[]>; // CORE-001: Single work query
+  listByWorkIds(workIds: readonly string[]): Promise<readonly ServiceRequestAggregate[]>; // CORE-001: Batch work query for High-Value Work Graph
+  listByWorkspace(workspaceId: string, tenantId: string): Promise<readonly ServiceRequestAggregate[]>; // CORE-001: Optional execution boundary fallback
   save(entity: ServiceRequestAggregate): Promise<ServiceRequestAggregate>;
   createMany(entities: CreateServiceRequestInput[]): Promise<string[]>;
   remove(id: ServiceRequestId): Promise<boolean>;
-  delete(id: ServiceRequestId): Promise<boolean>;
 };

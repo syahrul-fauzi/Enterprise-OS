@@ -1,5 +1,13 @@
 import { NextResponse } from 'next/server';
-import { EmailQueueRepository } from '@repo/core-runtime/email-queue.js';
+import { EmailQueueRepository, startQueueProcessors } from '@repo/core-runtime/email-queue.js';
+
+// Initialize email queue processors once when route is first loaded
+let queueInitialized = false;
+if (!queueInitialized) {
+  startQueueProcessors();
+  queueInitialized = true;
+  console.log('[API /queue/email] Email queue processors initialized');
+}
 
 export async function POST(
   request: Request

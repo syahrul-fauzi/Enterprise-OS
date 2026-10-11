@@ -414,6 +414,147 @@ export async function validateDisputeInput(input: {
   return input.work;
 }
 
+// Pre-creation validation hook untuk vendor-onboarding-request template (HV-007-SLICE-001)
+// Validasi khusus proses onboarding vendor dengan PO creation
+export async function validateVendorOnboardingInput(input: { 
+  work: WorkAggregate; 
+  template: { template_id: string } 
+}): Promise<WorkAggregate> {
+  // Validasi dasar yang sama dengan semua service request
+  if (!input.work.title || input.work.title.trim().length < 10) {
+    throw new Error("validation_failed: Vendor onboarding title must be at least 10 characters long");
+  }
+  if (!input.work.description || input.work.description.trim().length < 30) {
+    throw new Error("validation_failed: Vendor onboarding description must be at least 30 characters long to provide sufficient business context");
+  }
+  if (!input.work.requesterId) {
+    throw new Error("validation_failed: RequesterId (procurement manager) is required for all vendor onboarding requests");
+  }
+  
+  // Validasi khusus vendor onboarding: data vendor harus lengkap
+  const vendorWork = input.work as any;
+  // Wajib ada legal name vendor
+  if (!vendorWork.vendorLegalName || vendorWork.vendorLegalName.trim().length < 5) {
+    throw new Error("validation_failed: Vendor legal name is required and must be at least 5 characters long");
+  }
+  // Wajib ada NPWP/TAX ID untuk compliance
+  if (!vendorWork.vendorTaxId || vendorWork.vendorTaxId.trim().length < 10) {
+    throw new Error("validation_failed: Valid vendor tax ID (NPWP) is required for compliance");
+  }
+  // Wajib ada bank info untuk pembayaran PO
+  if (!vendorWork.vendorBankDetails || !vendorWork.vendorBankDetails.accountNumber) {
+    throw new Error("validation_failed: Vendor bank account details are required for PO payment processing");
+  }
+  // Wajib ada category vendor untuk klasifikasi procurement
+  const allowedVendorCategories = ["goods", "services", "technology", "logistics", "consulting"];
+  if (!vendorWork.vendorCategory || !allowedVendorCategories.includes(vendorWork.vendorCategory)) {
+    throw new Error(`validation_failed: Vendor must have valid category: ${allowedVendorCategories.join(", ")}`);
+  }
+  // Wajib ada initial PO value untuk financial planning
+  if (!vendorWork.initialPoValue || typeof vendorWork.initialPoValue !== "number" || vendorWork.initialPoValue <= 0) {
+    throw new Error("validation_failed: Valid initial PO value (positive number) is required");
+  }
+  
+  // Log validasi berhasil ke evidence ledger untuk audit trail
+  await safeRecordEvidence({
+    capability: "workspace-standard",
+    command: "validate-vendor-onboarding-input.success",
+    work_id: input.work.id,
+    template_id: input.template.template_id,
+    vendor_name: vendorWork.vendorLegalName,
+    po_value: vendorWork.initialPoValue,
+    timestamp: new Date().toISOString(),
+    tenant_id: input.work.tenantId,
+    workspace_id: input.work.workspaceId,
+  });
+  
+  // Work identity tetap immutable, hanya validasi input
+  return input.work;
+}
+
+// Implementasi hook assign-vendor-manager untuk HV-007-SLICE-001 Vendor Onboarding
+// Reuse pola actor-assignment-pattern dari workspace-standard, assign procurement specialist berdasarkan PO value
+export async function assignVendorManager(input: { 
+  work: WorkAggregate; 
+  template: { template_id: string } 
+}): Promise<WorkAggregate> {
+  // Logic assignment vendor manager berdasarkan nilai PO:
+  // - PO value > $100k → assign senior-procurement-manager
+  // - PO value > $10k → assign procurement-specialist
+  // - Default → assign junior-procurement-officer
+  const vendorWork = input.work as any;
+  const poValue = vendorWork.initialPoValue || 0;
+  let assignedActorId = "junior-procurement-officer";
+  
+  if (poValue > 100000) {
+    assignedActorId = "senior-procurement-manager";
+  } else if (poValue > 10000) {
+    assignedActorId = "procurement-specialist";
+  }
+
+  // Reuse canonical ActorId factory function dari work-core (tidak membuat dependency baru)
+  const resolvedActorId = createActorId(assignedActorId);
+  
+  // Log assignment berhasil ke evidence ledger
+  await safeRecordEvidence({
+    capability: "workspace-standard",
+    command: "assign-vendor-manager.success",
+    work_id: input.work.id,
+    template_id: input.template.template_id,
+    assigned_actor: assignedActorId,
+    po_value: poValue,
+    timestamp: new Date().toISOString(),
+    tenant_id: input.work.tenantId,
+    workspace_id: input.work.workspaceId,
+  });
+
+  // Hanya update participants dan actorId, TIDAK mengubah Work identity (immutability preserved)
+  return {
+    ...input.work,
+    actorId: input.work.actorId || resolvedActorId,
+    participants: [...new Set([...(input.work.participants || []), assignedActorId, "procurement-department", "vendor-credential-validation"])],
+  };
+}
+
+// Implementasi hook initialize-payment-connector untuk HV-007-SLICE-001
+// Inisialisasi koneksi payment processor sesuai vendor's region/currency
+export async function initializePaymentConnector(input: { 
+  work: WorkAggregate; 
+  template: { template_id: string } 
+}): Promise<WorkAggregate> {
+  const vendorWork = input.work as any;
+  const vendorRegion = vendorWork.vendorRegion || "id-id"; // Default ke Indonesia
+  const vendorCurrency = vendorWork.vendorCurrency || "IDR";
+  
+  // Pilih payment processor berdasarkan region (contoh sederhana)
+  let paymentProcessor = "midtrans"; // Default untuk Indonesia
+  if (vendorRegion.includes("us") || vendorCurrency === "USD") {
+    paymentProcessor = "stripe";
+  } else if (vendorRegion.includes("eu") || vendorCurrency === "EUR") {
+    paymentProcessor = "adyen";
+  }
+  
+  // Log inisialisasi berhasil ke evidence ledger
+  await safeRecordEvidence({
+    capability: "workspace-standard",
+    command: "initialize-payment-connector.success",
+    work_id: input.work.id,
+    template_id: input.template.template_id,
+    payment_processor: paymentProcessor,
+    vendor_region: vendorRegion,
+    timestamp: new Date().toISOString(),
+    tenant_id: input.work.tenantId,
+    workspace_id: input.work.workspaceId,
+  });
+
+  // Update work dengan payment processor yang dipilih
+  return {
+    ...input.work,
+    paymentProcessor: paymentProcessor,
+    participants: [...new Set([...(input.work.participants || []), paymentProcessor, "payment-processing-core"])],
+  };
+}
+
 // Implementasi hook assign-escalation-actor untuk W-SVC-002 Customer Support Dispute
 // Reuse pola actor-assignment-pattern dari workspace-standard, tambahkan escalation logic
 export async function assignEscalationActor(input: { 
@@ -453,16 +594,21 @@ export const compositionPackage = {
     "evidence-capture-pattern",
     "actor-assignment-pattern",
     "authorization-check-pattern",
-    "escalation-pattern" // Reuse escalation pattern for PT Establishment + W-SVC-002
+    "escalation-pattern", // Reuse escalation pattern for PT Establishment + W-SVC-002
+    "payment-execution-pattern" // HV-007: Reuse payment processing pattern for vendor onboarding
   ],
-  capabilities: ["work-core", "persistence", "identity", "authorization", "evidence", "escalation-engine"],
-  surfaces: ["core-dashboard", "work-inbox", "activity-log", "settings-panel", "dispute-submission-form", "support-tracker"],
-  schemas: ["WorkCoreSchema", "ActorIdentitySchema", "EvidenceChainSchema"],
+  capabilities: ["work-core", "persistence", "identity", "authorization", "evidence", "escalation-engine", "payment-processing-core", "connector-ecosystem"],
+  surfaces: ["core-dashboard", "work-inbox", "activity-log", "settings-panel", "dispute-submission-form", "support-tracker", "vendor-onboarding-form", "vendor-portal", "po-dashboard"],
+  schemas: ["WorkCoreSchema", "ActorIdentitySchema", "EvidenceChainSchema", "VendorOnboardingSchema"],
   hooks: {
     "assign-default-service-actor": assignDefaultServiceActor,
     "validate-service-request-input": validateServiceRequestInput,
     "assign-escalation-actor": assignEscalationActor,
     "validate-dispute-input": validateDisputeInput,
+    // HV-007: New hooks for vendor onboarding workflow (economic resolution first slice)
+    "validate-vendor-onboarding-input": validateVendorOnboardingInput,
+    "assign-vendor-manager": assignVendorManager,
+    "initialize-payment-connector": initializePaymentConnector
   }
 } as const;
 
@@ -492,6 +638,26 @@ export function registerWorkspaceStandardHooks() {
       execute: assignEscalationActor,
     });
 
+    // HV-007: Register new vendor onboarding hooks for economic resolution workflow
+    // First high-value Work resolution slice - payment processing + vendor onboarding
+    capabilityRegistry.register({
+      capability: "workspace-standard",
+      name: "validate-vendor-onboarding-input",
+      execute: validateVendorOnboardingInput,
+    });
+    
+    capabilityRegistry.register({
+      capability: "workspace-standard",
+      name: "assign-vendor-manager",
+      execute: assignVendorManager,
+    });
+    
+    capabilityRegistry.register({
+      capability: "workspace-standard",
+      name: "initialize-payment-connector",
+      execute: initializePaymentConnector,
+    });
+
     // Register existing hooks for backward compatibility
     capabilityRegistry.register({
       capability: "workspace-standard",
@@ -505,7 +671,7 @@ export function registerWorkspaceStandardHooks() {
       execute: validateServiceRequestInput,
     });
 
-    console.log("[Workspace-Standard] All hooks registered successfully with capability registry");
+    console.log("[Workspace-Standard] All hooks registered successfully with capability registry (including HV-007 vendor onboarding hooks)");
   } catch (error) {
     console.warn("[Workspace-Standard] Failed to register hooks - capability registry not available:", error);
   }

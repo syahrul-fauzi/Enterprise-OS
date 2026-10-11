@@ -1,0 +1,49 @@
+policy:
+  id: HV008-DISPUTE-RESOLUTION-POLICY
+  version: "1.0.0"
+  kind: DISPUTE_RESOLUTION_POLICY
+  status: ACTIVE
+  economic_principal: "actor-buyer-001" # Economic principal tetap buyer (Jerman) sesuai request.els.yaml
+  authority_transition_sequence:
+    - from: "actor-buyer-001"
+      to: "actor-supplier-002"
+      allowed_actions: ["transfer_dispute_authority", "verify_claim"]
+      max_duration_days: 7
+    - from: "actor-supplier-002"
+      to: "actor-logistics-003"
+      allowed_actions: ["transfer_dispute_authority", "confirm_shipment_status"]
+      max_duration_days: 7
+    - from: "actor-logistics-003"
+      to: "actor-customs-id-004"
+      allowed_actions: ["transfer_dispute_authority", "verify_export_docs"]
+      max_duration_days: 7
+    - from: "actor-customs-id-004"
+      to: "actor-customs-de-005"
+      allowed_actions: ["transfer_dispute_authority", "verify_import_docs"]
+      max_duration_days: 7
+    - from: "actor-customs-de-005"
+      to: "actor-insurer-006"
+      allowed_actions: ["transfer_dispute_authority", "process_insurance_claim"]
+      max_duration_days: 7
+    - from: "actor-insurer-006"
+      to: null # Final actor dalam sequence
+      allowed_actions: ["finalize_settlement", "execute_payment"]
+      max_duration_days: 14
+  boundary_validation_requirements:
+    - setiap_transisi_wajib_panggil_validateAllBoundaries (work.contracts.ts)
+    - principalId_tidak_pernah_berubah_sepanjang_siklus_Work
+    - semua_evidence_chain_entry_memiliki_actorId_action_timestamp
+    - tidak_ada_delegasi_mundur_atau_lompat_urutan
+    - semua_actor_dalam_sequence_memiliki_authorization_yang_benar
+  compliance_rules:
+    - primitive_reuse_100_percent
+    - no_duplicate_work
+    - architecture_freeze_compliance
+    - evidence_truth_separation
+    - all_transitions_require_valid_authorization
+  dispute_metadata:
+    work_value_usd: 2400000
+    number_of_boundaries: 6
+    number_of_actors: 6
+    origin: "cross-org-supply-chain"
+    north_star_alignment: "EOS does not own the world around Work. EOS makes Work resolvable across it."

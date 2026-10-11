@@ -1,1 +1,39 @@
-{"extends": "../../../tsconfig.json", "compilerOptions": {"rootDir": "./", "outDir": "./dist", "strictNullChecks": true, "declaration": true, "declarationMap": true, "incremental": true, "ignoreDeprecations": "6.0", "types": ["node"], "skipLibCheck": true, "composite": true, "esModuleInterop": true, "isolatedModules": true, "lib": ["es2022", "DOM", "DOM.Iterable"], "module": "ESNext", "moduleDetection": "force", "moduleResolution": "bundler", "allowImportingTsExtensions": true, "rewriteRelativeImportExtensions": true, "noUncheckedIndexedAccess": true, "resolveJsonModule": true, "strict": true, "target": "ES2022"}, "references": [{"path": "../../packages/core/kernel/tsconfig.json"}, {"path": "../../packages/core/runtime/tsconfig.json"}, {"path": "../work-core/tsconfig.json"}, {"path": "../evidence-registry/tsconfig.json"}, {"path": "../shared/tsconfig.json"}, {"path": "../communication/tsconfig.json"}, {"path": "../identity/tsconfig.json"}], "include": ["implementation/**/*.ts", "contracts/**/*.ts"], "exclude": ["dist", "node_modules", "**/*.d.ts", "tests/**", "../atomic-composition/**/*"]}
+{
+  "extends": "../../config/typescript/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strictNullChecks": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "ignoreDeprecations": "5.0",
+    "types": ["node"],
+    "skipLibCheck": true,
+    "composite": true,
+    "noEmit": false,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "module": "NodeNext",
+    "moduleDetection": "force",
+    "moduleResolution": "NodeNext",
+    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": true,
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "ES2022"
+  },
+  "references": [
+    { "path": "../../packages/core/kernel/tsconfig.json" },
+    { "path": "../../packages/core/runtime/tsconfig.json" },
+    { "path": "../work-core/tsconfig.json" },
+    { "path": "../shared/tsconfig.json" },
+    { "path": "../communication/tsconfig.json" },
+    { "path": "../identity/tsconfig.json" },
+    { "path": "../agent-orchestration/tsconfig.json" }
+  ],
+  "include": ["./index.ts", "./implementation/**/*.ts", "./contracts/**/*.ts"],
+  "exclude": ["dist", "node_modules", "**/*.d.ts", "../*/**/*", "!../../packages/core/**/*", "!../work-core/**/*", "!../shared/**/*", "!../communication/**/*", "!../identity/**/*", "!../agent-orchestration/**/*"]
+}

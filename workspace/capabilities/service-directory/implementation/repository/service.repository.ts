@@ -1,16 +1,16 @@
 // Import canonical identity factory functions + types from SINGLE-SOURCE work-core (anti-drift - TENANT-ISOLATION-001)
-// Sesuai invariant Work Continuity: Semua capability harus mengimport dari @repo/capabilities-work-core
+// Sesuai invariant Work Continuity: Semua capability harus mengimport dari @capabilities/work-core
 // Factory functions sekarang menggunakan prefix 'create' untuk menghindari duplicate identifier
 import { 
   createTenantId, 
   createWorkspaceId, 
   createActorId
-} from "../../../work-core/contracts/work.contracts.js";
+} from "../../../work-core/contracts/work.contracts.ts";
 import type {
   TenantId,
   WorkspaceId,
   ActorId
-} from "../../../work-core/contracts/work.contracts.js";
+} from "../../../work-core/contracts/work.contracts.ts";
 import type { 
   ServiceRequestAggregate, 
   ServiceProviderAggregate, 
@@ -20,9 +20,9 @@ import type {
   ServiceProviderCategory, 
   ServiceRequestRepository, 
   ServiceProviderRepository,
-  CreateServiceRequestInputLegacy as CreateServiceRequestInput
-} from "../contracts/service.contracts.js";
-import { ServiceRequestId as createServiceRequestId, ServiceProviderId as createServiceProviderId } from "../contracts/service.contracts.js";
+  CreateServiceRequestInput
+} from "../contracts/service.contracts.ts";
+import { ServiceRequestId as createServiceRequestId, ServiceProviderId as createServiceProviderId } from "../contracts/service.contracts.ts";
 
 // Date helpers
 function d(daysAgo: number) {
@@ -37,10 +37,51 @@ function dFuture(daysFromNow: number) {
   return date;
 }
 
+// Shared canonical CMBCD seed values (reused from legal-case patterns - Rule of Two compliance)
+const defaultTenantId = createTenantId("tenant-services-id-main");
+const defaultWorkspaceId = createWorkspaceId("workspace-services-id-cloud-team");
+const defaultAdminActorId = createActorId("actor-admin-services-id-001");
+
+// Base actor metadata (canonical CMBCD pattern, restored to fix ReferenceError)
+const baseActorMetadata = {
+  actorId: defaultAdminActorId,
+  displayName: "EOS Service Directory Admin",
+  email: "admin@services-id.eos.co.id",
+  role: "service-admin" as const
+};
+
+const baseAllowedCapabilities = ["service-provider:read", "service-provider:update", "service-provider:verify"];
+const baseAuthorization = {
+  allowedActions: ["read", "update", "verify"],
+  expiryTimestamp: "2026-12-31T23:59:59Z",
+  delegatedBy: defaultAdminActorId,
+  restrictedFields: []
+};
+const baseContext = {
+  tenantId: defaultTenantId,
+  workspaceId: defaultWorkspaceId,
+  jurisdiction: "ID-JAKARTA",
+  requestCategory: "cloud-services",
+  sensitivityLevel: "internal" as const,
+  relatedWorkIds: ["work-001-services-id-cloud-migration"]
+};
+const baseRisk = {
+  level: "low" as const,
+  rationale: "Verified enterprise service provider with established track record",
+  assessedBy: defaultAdminActorId,
+  assessedAt: new Date(),
+  mitigationSteps: []
+};
+
+// All canonical seed values defined above (lines 41-68) - no duplicate definitions to avoid compilation errors
+
+// Removed duplicate baseRisk definition (lines 75-81) - using canonical definition from line 62
+
 // Seed data for in-memory repository
 const seedProviders = (): ServiceProviderAggregate[] => [
   {
     id: createServiceProviderId("sp-001"),
+    workId: "work-001-services-id-cloud-migration", // CORE-001: Work binding sesuai canonical pattern
     name: "CloudFirst Indonesia",
     category: "Cloud Services",
     description: "AWS, Azure, GCP migration and managed cloud services for enterprise.",
@@ -48,12 +89,17 @@ const seedProviders = (): ServiceProviderAggregate[] => [
     location: "Jakarta",
     verified: true,
     createdAt: d(365),
-    tenantId: createTenantId("tenant-001"),
-    workspaceId: createWorkspaceId("workspace-001"),
-      actorId: createActorId("actor-001"),
+    updatedAt: d(7),
+    // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (non-entity-centric per user mandate)
+    actorMetadata: { ...baseActorMetadata },
+    allowedCapabilities: [...baseAllowedCapabilities],
+    authorization: { ...baseAuthorization },
+    context: { ...baseContext },
+    risk: { ...baseRisk }
   },
   {
     id: createServiceProviderId("sp-002"),
+    workId: "work-002-services-id-infra-deployment",
     name: "InfraCore Solutions",
     category: "Infrastructure",
     description: "Data center buildout, network infrastructure, and hardware maintenance.",
@@ -61,12 +107,17 @@ const seedProviders = (): ServiceProviderAggregate[] => [
     location: "Bandung",
     verified: true,
     createdAt: d(270),
-    tenantId: createTenantId("tenant-001"),
-    workspaceId: createWorkspaceId("workspace-001"),
-    actorId: createActorId("actor-001"),
+    updatedAt: d(10),
+    // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (non-entity-centric per user mandate)
+    actorMetadata: { ...baseActorMetadata, displayName: "EOS Infrastructure Admin" },
+    allowedCapabilities: [...baseAllowedCapabilities],
+    authorization: { ...baseAuthorization },
+    context: { ...baseContext, workspaceId: createWorkspaceId("workspace-services-id-infra-team") },
+    risk: { ...baseRisk }
   },
   {
     id: createServiceProviderId("sp-003"),
+    workId: "work-003-services-id-security-audit",
     name: "CyberGuard Asia",
     category: "Cybersecurity",
     description: "Penetration testing, vulnerability assessment, and security compliance.",
@@ -76,14 +127,19 @@ const seedProviders = (): ServiceProviderAggregate[] => [
     contactEmail: "security@cyberguard-asia.com",
     contactName: "Lim Wei Ling",
     responseHours: "24-48 hours",
-    supplyStatus: "PENDING_VERIFICATION", // Supply-side track: waiting for provider to confirm willingness
+    supplyStatus: "PENDING_VERIFICATION",
     createdAt: d(180),
-    tenantId: createTenantId("tenant-001"),
-    workspaceId: createWorkspaceId("workspace-001"),
-    actorId: createActorId("actor-001"),
+    updatedAt: d(5),
+    // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (non-entity-centric per user mandate)
+    actorMetadata: { ...baseActorMetadata, actorType: "organization" as const, role: "security-audit-provider", trustLevel: "certified" as const },
+    allowedCapabilities: [...baseAllowedCapabilities, "service-provider:verify"],
+    authorization: { ...baseAuthorization, allowedActions: [...baseAuthorization.allowedActions, "service-provider:verify"] },
+    context: { ...baseContext, jurisdiction: "SG-SINGAPORE", workspaceId: createWorkspaceId("workspace-services-id-security-team") },
+    risk: { ...baseRisk, level: "medium" as const, rationale: "Security services require enhanced risk assessment" }
   },
   {
     id: createServiceProviderId("sp-004"),
+    workId: "work-004-services-id-it-support",
     name: "Nusa IT Support",
     category: "IT Support",
     description: "On-site and remote IT support for enterprise and branch offices across Indonesia.",
@@ -91,25 +147,35 @@ const seedProviders = (): ServiceProviderAggregate[] => [
     location: "Surabaya",
     verified: true,
     createdAt: d(120),
-    tenantId: createTenantId("tenant-001"),
-    workspaceId: createWorkspaceId("workspace-001"),
-    actorId: createActorId("actor-001"),
+    updatedAt: d(14),
+    // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (non-entity-centric per user mandate)
+    actorMetadata: { ...baseActorMetadata, displayName: "EOS IT Support Admin" },
+    allowedCapabilities: [...baseAllowedCapabilities],
+    authorization: { ...baseAuthorization },
+    context: { ...baseContext, workspaceId: createWorkspaceId("workspace-services-id-support-team"), jurisdiction: "ID-SURABAYA" },
+    risk: { ...baseRisk }
   },
   {
     id: createServiceProviderId("sp-005"),
-    name: "PT Infrastruktur Data Persada",
+    workId: "work-005-services-id-network-deployment",
+    name: "PT InfrastrukturData Persada",
     category: "Infrastructure",
     description: "Data center, networking, and server rack deployment with SLA 99.95%.",
     rating: 4.6,
     location: "Cikarang",
     verified: true,
     createdAt: d(360),
-    tenantId: createTenantId("tenant-001"),
-    workspaceId: createWorkspaceId("workspace-001"),
-    actorId: createActorId("actor-001"),
+    updatedAt: d(3),
+    // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (non-entity-centric per user mandate)
+    actorMetadata: { ...baseActorMetadata, actorType: "organization" as const, role: "network-deployment-provider" },
+    allowedCapabilities: [...baseAllowedCapabilities],
+    authorization: { ...baseAuthorization },
+    context: { ...baseContext, workspaceId: createWorkspaceId("workspace-services-id-infra-team") },
+    risk: { ...baseRisk }
   },
   {
     id: createServiceProviderId("sp-006"),
+    workId: "work-006-services-id-software-dev",
     name: "Kodeku Studio",
     category: "Software Development",
     description: "Custom web, mobile, and enterprise application development with agile delivery.",
@@ -117,53 +183,86 @@ const seedProviders = (): ServiceProviderAggregate[] => [
     location: "Yogyakarta",
     verified: true,
     createdAt: d(90),
-    tenantId: createTenantId("tenant-001"),
-    workspaceId: createWorkspaceId("workspace-001"),
-    actorId: createActorId("actor-001"),
+    updatedAt: d(2),
+    // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (non-entity-centric per user mandate)
+    actorMetadata: { ...baseActorMetadata, actorType: "organization" as const, role: "software-development-provider" },
+    allowedCapabilities: [...baseAllowedCapabilities],
+    authorization: { ...baseAuthorization },
+    context: { ...baseContext, workspaceId: createWorkspaceId("workspace-services-id-dev-team"), jurisdiction: "ID-YOGYAKARTA" },
+    risk: { ...baseRisk }
   },
 ];
+
+// Request-specific CMBCD base values (reused across all seed requests - Rule of Two compliance)
+const requestBaseActorMetadata = {
+  actorId: createActorId("actor-requester-arief-001"),
+  actorType: "human" as const,
+  role: "client-requester",
+  displayName: "Arief Rahman",
+  trustLevel: "verified" as const
+};
+
+const requestBaseAllowedCapabilities = ["service-request:read", "service-request:update"];
+
+const requestBaseAuthorization = {
+  allowedActions: ["service-request:read", "service-request:update"],
+  expiryTimestamp: "2026-12-31T23:59:59Z",
+  delegatedBy: defaultAdminActorId,
+  restrictedFields: [] as string[]
+};
 
 const seedRequests = (): ServiceRequestAggregate[] => [
   {
     id: createServiceRequestId("sreq-001"),
+    workId: "work-001-services-id-cloud-migration", // CORE-001: Work binding sesuai canonical pattern
     title: "Cloud Migration — Office 365 + AWS",
     description: "Migrate 250 mailboxes and file server to AWS + Office 365 hybrid.",
     category: "Cloud Services",
     status: "in_service",
+    priority: "medium", // CORE-001: Mandatory priority field per ServiceRequestAggregate requirements
     requesterName: "Arief Rahman — PT Maju Jaya",
     providerId: createServiceProviderId("sp-001"),
     budget: "Rp 450.000.000",
     deadline: dFuture(14),
     createdAt: d(12),
     updatedAt: d(1),
-    tenantId: createTenantId("tenant-001"),
-      workspaceId: createWorkspaceId("workspace-001"),
-      actorId: createActorId("actor-002"),
+    // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (non-entity-centric per user mandate)
+    actorMetadata: { ...requestBaseActorMetadata },
+    allowedCapabilities: [...requestBaseAllowedCapabilities],
+    authorization: { ...requestBaseAuthorization },
+    context: { ...baseContext, requestCategory: "cloud-migration" },
+    risk: { ...baseRisk }
   },
   {
     id: createServiceRequestId("sreq-002"),
+    workId: "work-003-services-id-security-audit",
     title: "Annual Security Penetration Test",
     description: "Black-box + white-box pentest on web apps and internal network, with ISO 27001 report.",
     category: "Cybersecurity",
     status: "accepted",
+    priority: "high", // CORE-001: Mandatory priority field - security audit requires high priority
     requesterName: "Dian Sari — Group Finance",
     providerId: createServiceProviderId("sp-003"),
     budget: "Rp 180.000.000",
     deadline: dFuture(30),
     createdAt: d(7),
     updatedAt: d(2),
-    tenantId: createTenantId("tenant-001"),
-      workspaceId: createWorkspaceId("workspace-001"),
-      actorId: createActorId("actor-003"),
+    // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (non-entity-centric per user mandate)
+    actorMetadata: { ...requestBaseActorMetadata, actorId: createActorId("actor-requester-dian-001"), displayName: "Dian Sari" },
+    allowedCapabilities: [...requestBaseAllowedCapabilities],
+    authorization: { ...requestBaseAuthorization },
+    context: { ...baseContext, workspaceId: createWorkspaceId("workspace-services-id-security-team"), jurisdiction: "SG-SINGAPORE", requestCategory: "security-audit" },
+    risk: { ...baseRisk, level: "medium" as const, rationale: "Security audit involves sensitive client data" }
   },
   // TEST DATA: CR-006 Payment workflow test fixture - NOT a real transaction
-  // Only used to validate Midtrans webhook integration and payment processing logic
   {
     id: createServiceRequestId("sreq-test-payment-001"),
+    workId: "work-test-001-services-id-payment-flow",
     title: "[TEST] Payment Flow Validation: Security Audit for PT Digital Nusantara",
     description: "TEST WORK ONLY - Used to validate end-to-end payment processing workflow. This is NOT a real customer transaction. Commercial Reality Integrity Rule: provenance = TEST",
     category: "Cybersecurity",
-    status: "accepted", // Test status set to validate payment state transition
+    status: "accepted",
+    priority: "low", // CORE-001: Mandatory priority field - test request with low priority
     requesterName: "TEST: Budi Santoso (PT Digital Nusantara)",
     requesterEmail: "test@example.com",
     requesterPhone: "+6280000000000",
@@ -174,40 +273,53 @@ const seedRequests = (): ServiceRequestAggregate[] => [
     deadline: dFuture(45),
     createdAt: new Date(Date.now() - 86400000),
     updatedAt: new Date(),
-    tenantId: createTenantId("tenant-001"),
-      workspaceId: createWorkspaceId("workspace-001"),
-      actorId: createActorId("actor-test-001"),
+    // PROD-002-10: TEST DATA - CMBCD fields for test validation
+    actorMetadata: { ...requestBaseActorMetadata, actorId: createActorId("actor-test-budi-001"), displayName: "TEST: Budi Santoso", trustLevel: "unverified" as const },
+    allowedCapabilities: ["test:read", "test:execute"],
+    authorization: { ...requestBaseAuthorization, allowedActions: ["test:read", "test:execute"] },
+    context: { ...baseContext, sensitivityLevel: "public" as const },
+    risk: { ...baseRisk, level: "low" as const, rationale: "Test request with no production data" }
   },
   {
     id: createServiceRequestId("sreq-003"),
+    workId: "work-004-services-id-it-support",
     title: "Annual IT Support Package — 50 Users",
     description: "On-site support for HQ + 3 branch offices with SLA response ≤ 2 hours.",
     category: "IT Support",
     status: "delivered",
+    priority: "medium", // CORE-001: Mandatory priority field - IT support with ongoing operational priority
     requesterName: "Budi Hartono — Retail Chain",
     providerId: createServiceProviderId("sp-004"),
     budget: "Rp 320.000.000 / year",
     createdAt: d(90),
     updatedAt: d(5),
     deliveredAt: d(5),
-    tenantId: createTenantId("tenant-002"),
-      workspaceId: createWorkspaceId("workspace-002"),
-      actorId: createActorId("actor-004"),
+    // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (non-entity-centric per user mandate)
+    actorMetadata: { ...requestBaseActorMetadata, actorId: createActorId("actor-requester-budi-001"), displayName: "Budi Hartono" },
+    allowedCapabilities: [...requestBaseAllowedCapabilities],
+    authorization: { ...requestBaseAuthorization },
+    context: { ...baseContext, workspaceId: createWorkspaceId("workspace-services-id-support-team"), jurisdiction: "ID-SURABAYA", requestCategory: "it-support" },
+    risk: { ...baseRisk }
   },
   {
     id: createServiceRequestId("sreq-004"),
+    workId: "work-005-services-id-network-deployment", // CORE-001: Mandatory workId binding
     title: "New Branch Network Infrastructure",
     description: "Deploy network racks, firewall, switches for 3 new branches in Sumatra.",
     category: "Infrastructure",
     status: "draft",
+    priority: "high", // CORE-001: Mandatory priority field - expansion project requires high priority
     requesterName: "Siti Nurhaliza — Expansion Project",
     budget: "Rp 780.000.000",
     deadline: dFuture(60),
     createdAt: d(2),
     updatedAt: d(1),
-    tenantId: createTenantId("tenant-002"),
-    workspaceId: createWorkspaceId("workspace-002"),
-    actorId: createActorId("actor-005"),
+    // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (non-entity-centric per user mandate)
+    actorMetadata: { ...requestBaseActorMetadata, actorId: createActorId("actor-requester-siti-001"), displayName: "Siti Nurhaliza" },
+    allowedCapabilities: [...requestBaseAllowedCapabilities],
+    authorization: { ...requestBaseAuthorization },
+    context: { ...baseContext, workspaceId: createWorkspaceId("workspace-services-id-infra-team"), jurisdiction: "ID-MEDAN", requestCategory: "network-deployment" },
+    risk: { ...baseRisk }
   },
 ];
 
@@ -288,13 +400,21 @@ export const ServiceRequestRepositoryInMemory: ServiceRequestRepository = {
     if (status === "all") return all;
     return all.filter((r) => r.status === status);
   },
-  async listByWorkspace(workspaceId: string) {
-    const all = await this.list();
-    return all.filter((r) => r.workspaceId === workspaceId);
+  // CORE-001: listByWorkIds implements canonical batch work-centric query pattern
+  // Replaces legacy listByWorkspace/listByTenant yang sudah tidak digunakan
+  async listByWorkIds(workIds: readonly string[]): Promise<readonly ServiceRequestAggregate[]> {
+    if (workIds.length === 0) return [];
+    
+    const matchingRequests = Array.from(REQUEST_STORE.values()).filter(request => 
+      workIds.includes(request.workId)
+    );
+    
+    console.log(`[ServiceRequestRepositoryInMemory] listByWorkIds found ${matchingRequests.length} requests for workIds: ${workIds.join(", ")}`);
+    return matchingRequests.map(cloneRequest);
   },
-  async listByTenant(tenantId: string) {
+  async listByWork(workId: string) {
     const all = await this.list();
-    return all.filter((r) => r.tenantId === tenantId);
+    return all.filter((r) => r.workId === workId);
   },
   async save(entity: ServiceRequestAggregate) {
     const updated: ServiceRequestAggregate = { ...cloneRequest(entity), updatedAt: new Date() };
@@ -307,19 +427,25 @@ export const ServiceRequestRepositoryInMemory: ServiceRequestRepository = {
       const id = newServiceRequestId();
       ids.push(id);
       
+      // PROD-002-10: Reuse base CMBCD values for batch-created requests (Rule of Two compliance)
       const aggregate: ServiceRequestAggregate = {
         id,
+        workId: entity.workId, // CORE-001: Mandatory workId dari input
         title: entity.title,
         description: entity.description,
         category: entity.category,
-        status: entity.status,
+        status: "draft", // Default status sesuai defaultServiceRequestStatus
+        priority: "low", // Default priority for batch-created requests
         requesterName: "System Batch Creator",
-        actorId: createActorId(entity.createdBy),
         budget: entity.budget,
         createdAt: new Date(),
         updatedAt: new Date(),
-        tenantId: createTenantId("default-tenant"),
-        workspaceId: createWorkspaceId("default-workspace"),
+        // PROD-002-10: CMBCD fields mandatory for all ServiceRequestAggregate instances
+        actorMetadata: { ...requestBaseActorMetadata },
+        allowedCapabilities: [...requestBaseAllowedCapabilities],
+        authorization: { ...requestBaseAuthorization },
+        context: { ...baseContext, requestCategory: entity.category.toLowerCase().replace(/\s+/g, "-") },
+        risk: { ...baseRisk }
       };
       
       REQUEST_STORE.set(id, aggregate);
@@ -358,6 +484,19 @@ export const ServiceProviderRepositoryInMemory: ServiceProviderRepository = {
   async listByLocation(location: string) {
     const all = await this.list();
     return all.filter((p) => p.location?.toLowerCase().includes(location.toLowerCase()));
+  },
+  // CORE-001: listByWorkIds implements canonical work-centric query pattern
+  // Same pattern used in legal-case, investment-compliance (ILC) repositories
+  async listByWorkIds(workIds: readonly string[]): Promise<readonly ServiceProviderAggregate[]> {
+    if (workIds.length === 0) return [];
+    
+    // In-memory filter untuk ServiceProvider domain, mengikuti pola yang sama dengan legal-case/ILC
+    const matchingProviders = Array.from(PROVIDER_STORE.values()).filter(provider => 
+      workIds.includes(provider.workId)
+    );
+    
+    console.log(`[ServiceProviderRepositoryInMemory] listByWorkIds found ${matchingProviders.length} providers for workIds: ${workIds.join(", ")}`);
+    return matchingProviders.map(cloneProvider);
   },
   async save(entity: ServiceProviderAggregate) {
     const updated = cloneProvider(entity);

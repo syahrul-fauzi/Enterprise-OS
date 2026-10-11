@@ -1,0 +1,233 @@
+{
+    "root_group": {
+        "groups": {},
+        "checks": {
+                "status is 200/201": {
+                    "id": "ae3e32b04122810fc95a4144a32b2160",
+                    "passes": 9001,
+                    "fails": 0,
+                    "name": "status is 200/201",
+                    "path": "::status is 200/201"
+                },
+                "workId is unique (check_1_workid_unique)": {
+                    "name": "workId is unique (check_1_workid_unique)",
+                    "path": "::workId is unique (check_1_workid_unique)",
+                    "id": "705c04e5092870aa5fc540b54fc2f720",
+                    "passes": 9001,
+                    "fails": 0
+                },
+                "actor identity is valid (check_2_actor_identity_verified)": {
+                    "name": "actor identity is valid (check_2_actor_identity_verified)",
+                    "path": "::actor identity is valid (check_2_actor_identity_verified)",
+                    "id": "7a743a4a16bbae6a0a0344475515b1ae",
+                    "passes": 9001,
+                    "fails": 0
+                },
+                "work semantics preserved (check_3_work_semantics_preserved)": {
+                    "passes": 9001,
+                    "fails": 0,
+                    "name": "work semantics preserved (check_3_work_semantics_preserved)",
+                    "path": "::work semantics preserved (check_3_work_semantics_preserved)",
+                    "id": "4db526d4589528fc7dea854ceba02db4"
+                },
+                "request accepted (check_4_state_transition_valid)": {
+                    "name": "request accepted (check_4_state_transition_valid)",
+                    "path": "::request accepted (check_4_state_transition_valid)",
+                    "id": "2000d9cbfb43aebfef04b23914a14af1",
+                    "passes": 9001,
+                    "fails": 0
+                },
+                "authorization granted (check_5_authorization_enforced)": {
+                    "name": "authorization granted (check_5_authorization_enforced)",
+                    "path": "::authorization granted (check_5_authorization_enforced)",
+                    "id": "bbb0f536cde875a35df2662dd260418b",
+                    "passes": 9001,
+                    "fails": 0
+                },
+                "workspace isolation maintained (check_6_workspace_isolation_maintained)": {
+                    "fails": 0,
+                    "name": "workspace isolation maintained (check_6_workspace_isolation_maintained)",
+                    "path": "::workspace isolation maintained (check_6_workspace_isolation_maintained)",
+                    "id": "380f3732cccbe8597cc63a1273133f44",
+                    "passes": 9001
+                },
+                "request processed without crash (check_7_execution_context_valid)": {
+                    "name": "request processed without crash (check_7_execution_context_valid)",
+                    "path": "::request processed without crash (check_7_execution_context_valid)",
+                    "id": "5de3cef2c7eb5402e2b8ede7616bf2f8",
+                    "passes": 9001,
+                    "fails": 0
+                },
+                "request rate maintained (check_8_idempotency_preserved)": {
+                    "name": "request rate maintained (check_8_idempotency_preserved)",
+                    "path": "::request rate maintained (check_8_idempotency_preserved)",
+                    "id": "eaff6b992e2419a00d8dea15d2490e4b",
+                    "passes": 9001,
+                    "fails": 0
+                },
+                "server processed request successfully (check_9_evidence_chain_complete)": {
+                    "fails": 0,
+                    "name": "server processed request successfully (check_9_evidence_chain_complete)",
+                    "path": "::server processed request successfully (check_9_evidence_chain_complete)",
+                    "id": "6e4dbc01947de91259567dd24f08bc4a",
+                    "passes": 9001
+                },
+                "workId was transmitted correctly (check_10_workId_preserved_in_evidence)": {
+                    "path": "::workId was transmitted correctly (check_10_workId_preserved_in_evidence)",
+                    "id": "14445bdbb647c5b6251709b29a79abee",
+                    "passes": 9001,
+                    "fails": 0,
+                    "name": "workId was transmitted correctly (check_10_workId_preserved_in_evidence)"
+                },
+                "server returned valid JSON (check_11_face_projection_valid)": {
+                    "passes": 9001,
+                    "fails": 0,
+                    "name": "server returned valid JSON (check_11_face_projection_valid)",
+                    "path": "::server returned valid JSON (check_11_face_projection_valid)",
+                    "id": "ff1af635f03e5826f17a6b3ca65a48a7"
+                },
+                "input schema complete (check_12_input_schema_complete)": {
+                    "name": "input schema complete (check_12_input_schema_complete)",
+                    "path": "::input schema complete (check_12_input_schema_complete)",
+                    "id": "1243a5f84bc69c80f1c4ad8be48ee946",
+                    "passes": 9001,
+                    "fails": 0
+                }
+            },
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "metrics": {
+        "unique_workids": {
+            "count": 9001,
+            "rate": 149.746625586805
+        },
+        "vus": {
+            "value": 15,
+            "min": 15,
+            "max": 16
+        },
+        "http_req_tls_handshaking": {
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0
+        },
+        "work_processing_duration": {
+            "avg": 2.732807465837129,
+            "min": 1,
+            "med": 2,
+            "max": 240,
+            "p(90)": 3,
+            "p(95)": 3
+        },
+        "checks": {
+            "passes": 117013,
+            "fails": 0,
+            "value": 1
+        },
+        "http_req_duration{expected_response:true}": {
+            "min": 1.506692,
+            "med": 1.825691,
+            "max": 238.958921,
+            "p(90)": 2.321688,
+            "p(95)": 2.694486,
+            "avg": 2.6273129561159783
+        },
+        "http_req_sending": {
+            "max": 0.528097,
+            "p(90)": 0.0215,
+            "p(95)": 0.0226,
+            "avg": 0.01979175836018232,
+            "min": 0.0107,
+            "med": 0.0194
+        },
+        "http_req_blocked": {
+            "avg": 0.005214860237751506,
+            "min": 0.0017,
+            "med": 0.0029,
+            "max": 7.362562,
+            "p(90)": 0.0035,
+            "p(95)": 0.0038
+        },
+        "http_req_duration": {
+            "avg": 2.6273129561159783,
+            "min": 1.506692,
+            "med": 1.825691,
+            "max": 238.958921,
+            "p(90)": 2.321688,
+            "p(95)": 2.694486,
+            "thresholds": {
+                "p(95)<600": false
+            }
+        },
+        "total_requests": {
+            "count": 9001,
+            "rate": 149.746625586805
+        },
+        "http_reqs": {
+            "count": 9001,
+            "rate": 149.746625586805
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 9001,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "http_req_receiving": {
+            "min": 0.0195,
+            "med": 0.0499,
+            "max": 5.201274,
+            "p(90)": 0.0843,
+            "p(95)": 0.1001,
+            "avg": 0.05990199177869103
+        },
+        "iteration_duration": {
+            "min": 101.816582,
+            "med": 102.58768,
+            "max": 339.910124,
+            "p(90)": 103.24559,
+            "p(95)": 103.689279,
+            "avg": 103.35123074525077
+        },
+        "http_req_connecting": {
+            "avg": 0.0009747199200088878,
+            "min": 0,
+            "med": 0,
+            "max": 0.687697,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "iterations": {
+            "count": 9001,
+            "rate": 149.746625586805
+        },
+        "data_sent": {
+            "count": 9557143,
+            "rate": 158998.9906122158
+        },
+        "http_req_waiting": {
+            "p(90)": 2.228389,
+            "p(95)": 2.589087,
+            "avg": 2.5476192059771092,
+            "min": 1.442892,
+            "med": 1.750091,
+            "max": 238.579324
+        },
+        "data_received": {
+            "count": 2439271,
+            "rate": 40581.33553402416
+        },
+        "vus_max": {
+            "min": 80,
+            "max": 80,
+            "value": 80
+        }
+    }
+}

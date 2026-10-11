@@ -29,7 +29,8 @@ export interface RequirementDependency {
 
 export interface RequirementAggregate {
   readonly id: RequirementId;
-  readonly workId?: string;
+  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+  readonly workId: string;
   readonly title: string;
   readonly summary?: string;
   readonly description?: string;
@@ -37,6 +38,7 @@ export interface RequirementAggregate {
   readonly priority: RequirementPriority;
   readonly owner?: string;
   readonly source?: string;
+  readonly linkedIntentId?: string; // High-Value Work Graph integration
   readonly linkedCapabilityIds: readonly string[];
   readonly acceptanceCriteria: readonly string[];
   readonly verificationStatus: RequirementVerificationStatus;
@@ -69,13 +71,10 @@ export interface CreateRequirementInput {
   readonly source?: string;
   readonly linkedCapabilityIds?: readonly string[];
   readonly acceptanceCriteria?: readonly string[];
-  // Work identity binding (from decision_id)
-  readonly workId?: string;
-  // Required context for tenant isolation
+  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+  readonly linkedIntentId?: string; // High-Value Work Graph integration
+  readonly workId: string;
   readonly sessionId: string;
-  readonly tenantId: string;
-  readonly workspaceId: string;
-  readonly actorId: string;
 }
 
 export interface CreateRequirementOutput {
@@ -95,11 +94,7 @@ export interface UpdateRequirementInput {
   readonly source?: string;
   readonly linkedCapabilityIds?: readonly string[];
   readonly acceptanceCriteria?: readonly string[];
-  // Required context for tenant isolation
   readonly sessionId: string;
-  readonly tenantId: string;
-  readonly workspaceId: string;
-  readonly actorId: string;
 }
 
 export interface UpdateRequirementOutput {
@@ -110,11 +105,8 @@ export interface UpdateRequirementOutput {
 
 export interface ApproveRequirementInput {
   readonly id: RequirementId;
-  // Required context for tenant isolation
+  readonly workId: string; // CORE-001: Mandatory workId from core WorkAggregate
   readonly sessionId: string;
-  readonly tenantId: string;
-  readonly workspaceId: string;
-  readonly actorId: string;
 }
 
 export interface ApproveRequirementOutput {
@@ -125,11 +117,8 @@ export interface ApproveRequirementOutput {
 
 export interface StartRequirementDeliveryInput {
   readonly id: RequirementId;
-  // Required context for tenant isolation
+  readonly workId: string; // CORE-001: Mandatory workId from core WorkAggregate
   readonly sessionId: string;
-  readonly tenantId: string;
-  readonly workspaceId: string;
-  readonly actorId: string;
 }
 
 export interface StartRequirementDeliveryOutput {
@@ -139,11 +128,8 @@ export interface StartRequirementDeliveryOutput {
 
 export interface MarkRequirementImplementedInput {
   readonly id: RequirementId;
-  // Required context for tenant isolation
+  readonly workId: string; // CORE-001: Mandatory workId from core WorkAggregate
   readonly sessionId: string;
-  readonly tenantId: string;
-  readonly workspaceId: string;
-  readonly actorId: string;
 }
 
 export interface MarkRequirementImplementedOutput {
@@ -154,11 +140,8 @@ export interface MarkRequirementImplementedOutput {
 
 export interface VerifyRequirementInput {
   readonly id: RequirementId;
-  // Required context for tenant isolation
+  readonly workId: string; // CORE-001: Mandatory workId from core WorkAggregate
   readonly sessionId: string;
-  readonly tenantId: string;
-  readonly workspaceId: string;
-  readonly actorId: string;
 }
 
 export interface VerifyRequirementOutput {
@@ -181,6 +164,8 @@ export interface SearchRequirementsInput {
   readonly verificationStatus?: RequirementVerificationStatus | "all";
   readonly linkedCapabilityId?: string;
   readonly owner?: string;
+  // CORE-001: workId sebagai primary filter untuk High-Value Work Graph
+  readonly workId?: string;
   readonly limit?: number;
   readonly offset?: number;
 }
@@ -211,7 +196,19 @@ export interface RequirementRepository {
   readonly entityName: "Requirement";
   readonly kind: "repository";
   byId(id: RequirementId): Promise<RequirementAggregate | undefined>;
-  list(): Promise<readonly RequirementAggregate[]>;
-  save(entity: RequirementAggregate): Promise<RequirementAggregate>;
-  remove(id: RequirementId): Promise<boolean>;
+  list(context?: {
+    tenantId: string;
+    workspaceId: string;
+  }): Promise<readonly RequirementAggregate[]>;
+  listByWorkIds(workIds: readonly string[]): Promise<readonly RequirementAggregate[]>;
+  save(entity: RequirementAggregate, context?: {
+    tenantId: string;
+    workspaceId: string;
+    actorId: string;
+  }): Promise<RequirementAggregate>;
+  remove(id: RequirementId, context?: {
+    tenantId: string;
+    workspaceId: string;
+    actorId: string;
+  }): Promise<boolean>;
 }

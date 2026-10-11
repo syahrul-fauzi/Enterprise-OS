@@ -15,7 +15,6 @@
     }
   },
   "references": [
-    { "path": "../work-core" },
     { "path": "../work-inspection" }, 
     { "path": "../../packages/core/realtime" },
     { "path": "../api-platform" },

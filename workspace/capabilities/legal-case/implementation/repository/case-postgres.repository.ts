@@ -1,4 +1,3 @@
-import { Pool } from "pg";
 import { PostgresRepository } from "../../../work-core/index.js";
 import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager.js";
 import { isBuildPhase } from "../../../shared/implementation/database/health.check.js";
@@ -10,47 +9,11 @@ import {
   CasePriority,
 } from "../../contracts/index.js";
 
-// Validate required environment variables in production - matches communication.postgres.repository.ts pattern
-// EXCEPTION: Skip during Next.js build phase (phase-production-build) because build-time static analysis runs in "production" NODE_ENV but has no DB connection
-if (process.env.NODE_ENV === "production" && !isBuildPhase && !(process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
-  throw new Error("[CaseRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING or DATABASE_URL environment variable is required in production");
-}
+// Reuse base class pool from PostgresRepository - no need to create separate write/read pools
+// All database connections are managed by the base class getPool() implementation
 
-// Read replica configuration for horizontal scaling of read-heavy legal case queries
-// Separate write primary from read replicas to distribute load - matches communication.postgres.repository.ts pattern
-const writePool = new Pool({
-  connectionString: process.env.POSTGRES_WRITE_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL || "postgresql://localhost:5432/eos_identity",
-  max: 10, // Smaller pool for writes (fewer write operations)
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
 
-const readPool = new Pool({
-  connectionString: process.env.POSTGRES_READ_CONNECTION_STRING || process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL || "postgresql://localhost:5432/eos_identity",
-  max: 30, // Larger pool for read-heavy case queries
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
-
-// Run migrations on initialization - ensures schema is always up-to-date
-let migrationsInitialized = false;
-async function initializeDatabase() {
-  if (migrationsInitialized) return;
-  const result = await DatabaseMigrationManager.runMigrations(writePool);
-  if (result.errors.length > 0) {
-    console.error("[CaseRepositoryPostgres] Database initialization failed:", result.errors);
-    throw new Error(`Database migration failed: ${result.errors.join(", ")}`);
-  }
-  console.log(`[CaseRepositoryPostgres] Database initialized: ${result.executed.length} migrations executed, ${result.already_applied.length} already applied`);
-  migrationsInitialized = true;
-}
-
-// Initialize on module load - only when not in build phase to prevent build failures
-if (!isBuildPhase) {
-  initializeDatabase().catch(err => console.error("[CaseRepositoryPostgres] Failed to initialize database:", err));
-}
-
-import { recordRuntimeInvocation } from "@repo/core-runtime";
+import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index.js";
 
 // PostgreSQL-backed case repository implementation
 class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements CaseRepository {
@@ -62,22 +25,21 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
   }
 
   /**
-   * Expose both pools for health checking and monitoring
-   * Used by Kubernetes liveness/readiness probes - matches communication.postgres.repository.ts interface
+   * Expose base pool for health checking (reuse base class pool property)
+   * Backward compatible with existing health check system
    */
-  getPools(): {write: Pool; read: Pool} {
-    return { write: writePool, read: readPool };
+  getPool(): any {
+    return (this as any).pool;
   }
-  
-  /**
-   * Backward compatibility for health check system
-   * @deprecated Use getPools() instead
-   */
-  getPool(): Pool {
-    return writePool;
+
+  // Implement required save method from CaseRepository interface
+  // Reuse base PostgresRepository.save() yang sudah mengimplementasikan upsert logic dengan optimistic concurrency
+  async save(caseAggregate: CaseAggregate): Promise<CaseAggregate> {
+    return super.save(caseAggregate);
   }
 
   // Convert database record to domain aggregate - implements base.repository.ts abstract protected method
+  // PROD-002-10: Full CMBCD fields deserialization from database
   protected toAggregate(record: any): CaseAggregate {
     return {
       id: CaseId(record.id),
@@ -86,21 +48,36 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
       status: record.status as CaseStatus,
       priority: record.priority as CasePriority,
       lawyerId: record.lawyer_id,
-      workId: record.work_id,
+      workId: record.work_id, // CORE-001: workId adalah satu-satunya sumber truth untuk boundary metadata
       sourceDiscussionId: record.source_discussion_id,
-      actorId: record.actor_id,
-      tenantId: record.tenant_id,
-      workspaceId: record.workspace_id,
-      // Load intent dari database jika ada (Intent primitive integration)
-      ...(record.intent && { intent: record.intent }),
       createdAt: new Date(record.created_at),
       updatedAt: new Date(record.updated_at),
       ...(record.closed_at && { closedAt: new Date(record.closed_at) }),
+      // PROD-002-10: CMBCD fields deserialized from JSONB columns
+      actorMetadata: record.actor_metadata ? JSON.parse(record.actor_metadata) : undefined,
+      allowedCapabilities: record.allowed_capabilities ? JSON.parse(record.allowed_capabilities) : [],
+      authorization: record.authorization ? JSON.parse(record.authorization) : undefined,
+      context: record.case_context ? JSON.parse(record.case_context) : undefined,
+      risk: record.risk_assessment ? JSON.parse(record.risk_assessment) : undefined,
+      executionFrame: record.execution_frame,
+      executionContext: record.execution_context ? JSON.parse(record.execution_context) : undefined,
+      evidence: record.evidence ? JSON.parse(record.evidence) : [],
+      // Load intent dari database jika ada (Intent primitive integration)
+      ...(record.intent && { intent: record.intent }),
     } as CaseAggregate;
   }
 
   // Convert domain aggregate to database record - implements base.repository.ts abstract protected method
+  // PROD-002-10: Full CMBCD fields serialization to database
   protected toRecord(entity: CaseAggregate): any {
+    // CORE-001: workId WAJIB diisi - tidak boleh fallback ke entity.id
+    if (!entity.workId) {
+      throw new Error("[CaseRepositoryPostgres] CaseAggregate must have workId set (CORE-001 mandate)");
+    }
+    // PROD-002-10: CMBCD fields wajib diisi pada save (enforce non-entity-centric initialization)
+    if (!entity.actorMetadata || !entity.authorization || !entity.context || !entity.risk) {
+      throw new Error("[CaseRepositoryPostgres] CaseAggregate must have all CMBCD fields set (PROD-002-10 mandate)");
+    }
     return {
       id: entity.id,
       title: entity.title,
@@ -108,11 +85,21 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
       status: entity.status,
       priority: entity.priority,
       lawyer_id: entity.lawyerId,
-      work_id: (entity as any).workId || entity.id,
+      work_id: entity.workId,
       source_discussion_id: entity.sourceDiscussionId,
-      tenant_id: entity.tenantId,
-      workspace_id: entity.workspaceId,
-      actor_id: entity.actorId,
+      // Extract tenantId/workspaceId dari CMBCD context (sumber truth terpusat)
+      tenant_id: entity.context.tenantId,
+      workspace_id: entity.context.workspaceId,
+      actor_id: entity.actorMetadata.actorId,
+      // PROD-002-10: Serialize CMBCD fields ke JSONB columns untuk queryability
+      actor_metadata: JSON.stringify(entity.actorMetadata),
+      allowed_capabilities: JSON.stringify(entity.allowedCapabilities),
+      authorization: JSON.stringify(entity.authorization),
+      case_context: JSON.stringify(entity.context),
+      risk_assessment: JSON.stringify(entity.risk),
+      execution_frame: entity.executionFrame,
+      execution_context: entity.executionContext ? JSON.stringify(entity.executionContext) : null,
+      evidence: entity.evidence ? JSON.stringify(entity.evidence) : JSON.stringify([]),
       created_at: entity.createdAt,
       updated_at: entity.updatedAt,
       // Simpan intent JSON jika ada (Intent primitive integration)
@@ -121,13 +108,24 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
     };
   }
 
-  async byId(id: CaseId, context?: { tenantId: string; workspaceId: string }): Promise<CaseAggregate | undefined> {
+  async byId(id: CaseId, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<CaseAggregate | undefined> {
     let query = "SELECT * FROM cases WHERE id = $1";
     const params: any[] = [id];
+    let paramIndex = 2;
     
+    // CORE-001: Enforce tenant isolation - prioritize workId over workspaceId, workspace is optional execution boundary
     if (context) {
-      query += " AND tenant_id = $2 AND workspace_id = $3";
-      params.push(context.tenantId, context.workspaceId);
+      query += " AND tenant_id = $2";
+      params.push(context.tenantId);
+      paramIndex++;
+      if (context?.workId) {
+        query += " AND work_id = $3";
+        params.push(context.workId);
+      } else if (context?.workspaceId) {
+        // Fallback to workspace only when workId is not provided (maintain backward compatibility)
+        query += " AND workspace_id = $3";
+        params.push(context.workspaceId);
+      }
     }
     
     const result = await this.pool.query(query, params);
@@ -135,45 +133,68 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
     return this.toAggregate(result.rows[0]);
   }
 
-  async list(context?: { tenantId: string; workspaceId: string }): Promise<readonly CaseAggregate[]> {
+  async list(context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<readonly CaseAggregate[]> {
     let query = "SELECT * FROM cases";
     const params: any[] = [];
+    let paramIndex = 1;
     
     if (context) {
-      query += " WHERE tenant_id = $1 AND workspace_id = $2";
-      params.push(context.tenantId, context.workspaceId);
+      query += " WHERE tenant_id = $1";
+      params.push(context.tenantId);
+      paramIndex++;
+      if (context?.workId) {
+        query += " AND work_id = $2";
+        params.push(context.workId);
+      } else if (context?.workspaceId) {
+        // Fallback to workspace only when workId is not provided
+        query += " AND workspace_id = $2";
+        params.push(context.workspaceId);
+      }
     }
     
     const result = await this.pool.query(query, params);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
-  async listByTenant(tenantId: string): Promise<readonly CaseAggregate[]> {
-    const result = await this.pool.query(
-      "SELECT * FROM cases WHERE tenant_id = $1",
-      [tenantId]
-    );
-    return result.rows.map((row: any) => this.toAggregate(row));
-  }
-
-  async listByWorkspace(workspaceId: string): Promise<readonly CaseAggregate[]> {
-    const result = await this.pool.query(
-      "SELECT * FROM cases WHERE workspace_id = $1",
-      [workspaceId]
-    );
-    return result.rows.map((row: any) => this.toAggregate(row));
+  // CORE-001: listByWorkIds menggantikan listByTenant/listByWorkspace - hanya fetch cases yang terikat ke Work yang diizinkan
+  // Enforces Work-centric model precedence: workId > workspaceId per EOS architectural mandate
+  // PROD-002-10: Signature aligned dengan CaseRepository interface (hanya workIds sebagai parameter, tenantId diambil dari context CMBCD)
+  async listByWorkIds(workIds: readonly string[]): Promise<readonly CaseAggregate[]> {
+    if (workIds.length === 0) return [];
+    
+    // PostgreSQL IN clause dengan parameterized queries untuk mencegah SQL injection
+    const placeholders = workIds.map((_, i) => `$${i + 1}`).join(", ");
+    const query = `SELECT * FROM cases WHERE work_id IN (${placeholders})`;
+    
+    try {
+      const result = await this.pool.query(query, [...workIds]);
+      return result.rows.map((row: any) => this.toAggregate(row));
+    } catch (error) {
+      console.error("[CaseRepositoryPostgres] listByWorkIds failed:", error);
+      throw error;
+    }
   }
 
   // Use base.repository.ts's save() method which implements the abstract protected toRecord()/toAggregate() pattern
   // This ensures consistent camelCase→snake_case mapping across all repositories
 
-  async remove(id: CaseId, context?: { tenantId: string; workspaceId: string }): Promise<boolean> {
+  async remove(id: CaseId, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<boolean> {
     let query = "DELETE FROM cases WHERE id = $1 RETURNING id";
     const params: any[] = [id];
+    let paramIndex = 2;
     
     if (context) {
-      query += " AND tenant_id = $2 AND workspace_id = $3";
-      params.push(context.tenantId, context.workspaceId);
+      query += " AND tenant_id = $2";
+      params.push(context.tenantId);
+      paramIndex++;
+      if (context?.workId) {
+        query += " AND work_id = $3";
+        params.push(context.workId);
+      } else if (context?.workspaceId) {
+        // Fallback to workspace only when workId is not provided
+        query += " AND workspace_id = $3";
+        params.push(context.workspaceId);
+      }
     }
     
     const result = await this.pool.query(query, params);
@@ -187,7 +208,7 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
         success: true,
         input: { caseId: id },
         result: { deleted: true },
-        tenant_id: context?.tenantId || null,
+        tenant_id: context?.tenantId || undefined,
         inputRefs: [id]
       });
     } else {
@@ -198,7 +219,7 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
         success: false,
         input: { caseId: id },
         result: { reason: "entity_not_found_or_isolation_violation" },
-        tenant_id: context?.tenantId || null
+        tenant_id: context?.tenantId || undefined
       });
     }
     

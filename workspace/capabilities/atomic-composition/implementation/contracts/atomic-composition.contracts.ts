@@ -7,7 +7,7 @@ import type {
   UserId, 
   UserAggregate,
   CompositionId 
-} from "@repo/capabilities-work-core";
+} from "@capabilities/work-core";
 
 // ============================================================================
 // ATOMIC WORK COMPOSITION - PRIMITIVE DEFINITIONS
@@ -126,8 +126,8 @@ export const WorkBindingSchema = z.object({
 // 4. COMMAND SCHEMAS - untuk composeTeamFromRequirements command
 // ------------------------------
 export const CapabilityResolutionRequestSchema = z.object({
-  workId: z.string().optional(),
-  work: z.any(), // WorkAggregate dari work-core
+  workId: z.string(),
+  work: z.any().optional(), // WorkAggregate dari work-core (opsional jika workId disediakan)
   requirements: z.array(z.string()).default([]),
   availableActors: z.array(z.any()).default([]),
   availableCapabilities: z.array(z.string()).default([]),
@@ -159,8 +159,27 @@ export const AssignmentSchema = z.object({
 });
 
 export const CapabilityResolutionResultSchema = z.object({
+  ok: z.boolean().default(true),
+  workId: z.string(),
+  actorId: z.string().optional(),
+  tenantId: z.string().optional(),
+  workspaceId: z.string().optional(),
   teamId: z.string(),
   compositionId: z.string(),
+  authorization: z.string().default("granted"),
+  executionContext: z.object({
+    timestamp: z.string()
+  }).optional(),
+  idempotencyKey: z.string().optional(),
+  evidence: z.array(z.object({
+    workId: z.string(),
+    action: z.string(),
+    timestamp: z.string()
+  })).default([]),
+  uiMetadata: z.object({
+    status: z.string()
+  }).optional(),
+  input: z.any().optional(),
   assignments: z.array(AssignmentSchema).default([]),
   success: z.boolean().default(true),
   team: z.any().optional(), // Add optional team property for backward compatibility
@@ -241,7 +260,7 @@ export const CompositionResolutionSchema = z.object({
 });
 
 export type CompositionResolution = z.infer<typeof CompositionResolutionSchema>;
-// Removed duplicate CompositionId export - already imported from @repo/capabilities-work-core
+// Removed duplicate CompositionId export - already imported from @capabilities/work-core
 // This was causing TS2395: Individual declarations in merged declaration 'CompositionId' must be all exported or all local
 // Canonical CompositionId is used exclusively from work-core to maintain primitive sovereignty
 

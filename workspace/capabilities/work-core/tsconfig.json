@@ -18,25 +18,17 @@
     "module": "NodeNext",
     "moduleDetection": "force",
     "moduleResolution": "NodeNext",
-    "emitDeclarationOnly": true,
-    "allowImportingTsExtensions": true,
+    "emitDeclarationOnly": false,
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "strict": true,
-    "target": "ES2022",
-    "paths": {
-      "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
-      "@repo/capabilities-identity": ["../identity/implementation/index.ts"],
-      "@repo/capabilities-identity/*": ["../identity/implementation/*"],
-      "@repo/capabilities-work-core": ["./contracts/work.contracts.ts"],
-      "@repo/capabilities-work-core/*": ["./*"]
-    }
+    "target": "ES2022"
   },
   "references": [
     { "path": "../../packages/core/kernel/tsconfig.json" },
     { "path": "../../packages/core/runtime/tsconfig.json" },
     { "path": "../identity/tsconfig.json" }
   ],
-  "include": ["implementation/**/*.ts", "contracts/**/*.ts"],
-  "exclude": ["dist", "node_modules", "**/*.d.ts"]
+  "include": ["./index.ts", "./implementation/**/*.ts", "./contracts/**/*.ts"],
+  "exclude": ["dist", "node_modules", "**/*.d.ts", "../*/**/*", "!../../packages/core/**/*", "!../identity/**/*"]
 }

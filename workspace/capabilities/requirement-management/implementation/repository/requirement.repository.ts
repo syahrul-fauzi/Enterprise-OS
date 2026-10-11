@@ -1,6 +1,8 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
-import { PostgresRepository } from "../../../work-core";
+import { type WorkId } from "../../../work-core/contracts/work.contracts.js";
+import { PostgresRepository } from "../../../identity/implementation/repositories/base.repository";
+import { newWorkId } from "../../../work-core/index.ts";
 import {
   RequirementAggregate,
   RequirementId,
@@ -9,14 +11,21 @@ import {
   type RequirementStatus,
   type RequirementVerificationStatus,
   type RequirementDependency,
-} from "../contracts/index";
+} from "../contracts/index.ts";
 
 const seed = (): RequirementAggregate[] => {
   const now = Date.now();
   const d = (offsetDays: number): Date => new Date(now - 1000 * 60 * 60 * 24 * offsetDays);
+  // Generate canonical Work IDs untuk PROD-001 Product Requirements Work Continuity
+  const coreRequirementsWorkId = newWorkId();
+   const lawyershubWorkId = newWorkId();
+   const servicesidWorkId = newWorkId();
+   const ilcWorkId = newWorkId();
+
   return [
     {
       id: RequirementId("req-001"),
+      workId: coreRequirementsWorkId,
       title: "Workspace can capture requirements as first-class records",
       summary: "Users need a canonical requirement register inside LawyersHub.",
       description:
@@ -38,9 +47,11 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(8),
       implementedAt: d(2),
       verifiedAt: d(0),
+      version: 1,
     },
     {
       id: RequirementId("req-002"),
+      workId: coreRequirementsWorkId,
       title: "Requirement status must follow delivery progression",
       summary: "The platform needs visible requirement progression to manage delivery risk.",
       status: "verified",
@@ -59,9 +70,11 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(5),
       implementedAt: d(3),
       verifiedAt: d(0),
+      version: 1,
     },
     {
       id: RequirementId("req-003"),
+      workId: coreRequirementsWorkId,
       title: "Verified requirements unlock downstream traceability work",
       summary: "Requirement verification should prepare the system for RTM and evidence registry.",
       status: "verified",
@@ -80,9 +93,11 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(18),
       implementedAt: d(10),
       verifiedAt: d(3),
+      version: 1,
     },
     {
       id: RequirementId("req-009"),
+      workId: coreRequirementsWorkId,
       title: "BaseSearchBar Shared Component Refactor",
       summary: "Refactor komponen search bar menjadi BaseSearchBar yang reusable untuk menghilangkan duplikasi kode",
       description: "Membuat komponen BaseSearchBar shared yang dapat digunakan oleh semua halaman search (Community, Research) dengan dukungan filter dinamis.",
@@ -103,10 +118,12 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(3),
       implementedAt: d(2),
       verifiedAt: d(1),
+      version: 1,
     },
 
     {
       id: RequirementId("req-010"),
+      workId: coreRequirementsWorkId,
       title: "Location Filter untuk /community Page",
       summary: "Tambahkan filter lokasi pada halaman komunitas agar pengguna dapat menyaring anggota berdasarkan wilayah",
       status: "verified",
@@ -128,9 +145,11 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(1),
       implementedAt: d(2),
       verifiedAt: d(3),
+      version: 1,
     },
     {
       id: RequirementId("req-011"),
+      workId: coreRequirementsWorkId,
       title: "Visible Proof Panel untuk Requirements Page",
       summary: "Tampilkan traceability dan proof status requirement secara end-to-end agar manusia dapat melihat bukti verifikasi",
       description:
@@ -155,9 +174,11 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(0),
       implementedAt: d(0),
       verifiedAt: d(0),
+      version: 1,
     },
     {
       id: RequirementId("req-042"),
+      workId: coreRequirementsWorkId,
       title: "REQ-0042: Ambiguous verification state requirement",
       summary: "Test requirement with unknown verification status to trigger AI investigation",
       description: "Requirement created specifically to test the AI-on-demand path for ambiguous UNKNOWN verification status",
@@ -178,12 +199,14 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(1),
       implementedAt: d(0),
       verifiedAt: d(0),
+      version: 1,
     },
     // ============================================================
     // LAWYERSHUB - REAL USER JOB REQUIREMENTS
     // ============================================================
     {
       id: RequirementId("req-lh-001"),
+      workId: lawyershubWorkId,
       title: "Create and manage corporate litigation matter",
       summary: "First real legal matter: PT Maju Bersama vs PT Teknologi Nusantara - corporate litigation dispute",
       description: "Real client matter for corporate litigation case with document management, timeline tracking, and client approval workflow.",
@@ -205,9 +228,11 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(5),
       implementedAt: d(2),
       verifiedAt: undefined,
+      version: 1,
     },
     {
       id: RequirementId("req-lh-002"),
+      workId: lawyershubWorkId,
       title: "Client profile management for corporate clients",
       summary: "Manage PT Maju Bersama client profile with complete corporate information",
       description: "Client onboarding workflow for corporate legal clients with KYC verification and contact management.",
@@ -229,9 +254,11 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(10),
       implementedAt: d(5),
       verifiedAt: d(1),
+      version: 1,
     },
     {
       id: RequirementId("req-lh-003"),
+      workId: lawyershubWorkId,
       title: "Document version control for case materials",
       summary: "Track pleading document versions for PT Maju Bersama litigation case",
       description: "Version control system for legal documents with audit trail of all changes and approvals.",
@@ -253,9 +280,11 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(4),
       implementedAt: d(1),
       verifiedAt: undefined,
+      version: 1,
     },
     {
       id: RequirementId("req-lh-004"),
+      workId: lawyershubWorkId,
       title: "Court deadline tracking system",
       summary: "Track all filing deadlines for PT Maju Bersama vs PT Teknologi Nusantara case",
       description: "Automated deadline tracking with reminders for court filings, hearings, and client submissions.",
@@ -277,12 +306,14 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(3),
       implementedAt: d(1),
       verifiedAt: undefined,
+      version: 1,
     },
     // ============================================================
     // SERVICES.ID - REAL USER JOB REQUIREMENTS
     // ============================================================
     {
       id: RequirementId("req-svc-001"),
+      workId: servicesidWorkId,
       title: "Find and request corporate legal services",
       summary: "User request: Find corporate lawyer for contract review in Jakarta",
       description: "First real service request - user searches for and engages a corporate lawyer to review IT service contract.",
@@ -304,9 +335,11 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(4),
       implementedAt: d(2),
       verifiedAt: undefined,
+      version: 1,
     },
     {
       id: RequirementId("req-svc-002"),
+      workId: servicesidWorkId,
       title: "Provider profile verification for legal services",
       summary: "Verify corporate law firm profiles listed on Services.ID platform",
       description: "Verification workflow for service providers to confirm credentials, licenses, and professional liability insurance.",
@@ -328,9 +361,11 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(8),
       implementedAt: d(4),
       verifiedAt: d(2),
+      version: 1,
     },
     {
       id: RequirementId("req-svc-003"),
+      workId: servicesidWorkId,
       title: "Secure payment escrow for service delivery",
       summary: "Implement escrow payment system for IT contract review engagement",
       description: "Secure payment handling where funds are held in escrow until service is satisfactorily completed.",
@@ -352,12 +387,14 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(3),
       implementedAt: d(1),
       verifiedAt: undefined,
+      version: 1,
     },
     // ============================================================
     // ILC - REAL USER JOB REQUIREMENTS
     // ============================================================
     {
       id: RequirementId("req-ilc-001"),
+      workId: ilcWorkId,
       title: "Publish Constitutional Law analysis",
       summary: "Article: Judicial Review in Indonesian Constitutional Court - 2024 Update",
       description: "First community contributed content analyzing recent constitutional court decisions on digital rights and internet regulation.",
@@ -372,6 +409,7 @@ const seed = (): RequirementAggregate[] => {
         "Content is discoverable via topic search",
         "Community can comment and discuss the article"
       ],
+      version: 1,
       verificationStatus: "passed",
       dependsOn: [],
       createdAt: d(7),
@@ -382,6 +420,7 @@ const seed = (): RequirementAggregate[] => {
     },
     {
       id: RequirementId("req-ilc-002"),
+      workId: ilcWorkId,
       title: "International Trade Law discussion thread",
       summary: "Community discussion: ASEAN Digital Trade Agreement legal implications",
       description: "Engage community members in discussion about new ASEAN digital trade rules and their impact on Indonesian businesses.",
@@ -403,9 +442,11 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(1),
       implementedAt: d(0),
       verifiedAt: undefined,
+      version: 1,
     },
     {
       id: RequirementId("req-ilc-003"),
+      workId: ilcWorkId,
       title: "Human Rights Law webinar series",
       summary: "Upcoming webinar: Digital Privacy Rights after the 2024 Personal Data Protection Act",
       description: "Organize community webinar featuring speakers from Kominfo, civil society, and private sector on PDP implementation.",
@@ -427,9 +468,11 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(2),
       implementedAt: d(0),
       verifiedAt: undefined,
+      version: 1,
     },
     {
       id: RequirementId("req-ilc-004"),
+      workId: ilcWorkId,
       title: "Digital Law resource repository",
       summary: "Collection of Indonesian digital legislation and regulatory guidance",
       description: "Curated repository of all Indonesian laws related to digital technology, data protection, and e-commerce with annotations.",
@@ -451,9 +494,11 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(5),
       implementedAt: d(2),
       verifiedAt: undefined,
+      version: 1,
     },
     {
       id: RequirementId("req-012"),
+      workId: coreRequirementsWorkId,
       title: "Causal Trace untuk Requirement Dependencies",
       summary: "Tampilkan hubungan sebab-akibat antar requirement sehingga manusia dapat memahami mengapa sebuah requirement ada",
       description:
@@ -479,6 +524,7 @@ const seed = (): RequirementAggregate[] => {
       approvedAt: d(0),
       implementedAt: d(0),
       verifiedAt: d(0),
+      version: 1,
     },
   ];
 };
@@ -487,6 +533,7 @@ type Store = Map<string, RequirementAggregate>;
 
 interface RequirementRecord {
   readonly id: string;
+  readonly workId: string; // CORE-001: Mandatory workId from core WorkAggregate
   readonly title: string;
   readonly summary?: string;
   readonly description?: string;
@@ -494,12 +541,14 @@ interface RequirementRecord {
   readonly priority: RequirementPriority;
   readonly owner?: string;
   readonly source?: string;
+  readonly linkedIntentId?: string; // High-Value Work Graph integration
   readonly linkedCapabilityIds: readonly string[];
   readonly acceptanceCriteria: readonly string[];
   readonly verificationStatus: RequirementVerificationStatus;
   readonly dependsOn?: readonly RequirementDependency[];
   readonly createdAt: string;
   readonly updatedAt: string;
+  readonly approvedBy?: string;
   readonly approvedAt?: string;
   readonly implementedAt?: string;
   readonly verifiedAt?: string;
@@ -564,6 +613,8 @@ function clone(entity: RequirementAggregate): RequirementAggregate {
 function toRecord(entity: RequirementAggregate): RequirementRecord {
   return {
     id: entity.id,
+    workId: entity.workId, // CORE-001: Mandatory workId from core WorkAggregate
+    ...(entity.linkedIntentId !== undefined ? { linkedIntentId: entity.linkedIntentId } : {}), // High-Value Work Graph
     title: entity.title,
     ...(entity.summary !== undefined ? { summary: entity.summary } : {}),
     ...(entity.description !== undefined ? { description: entity.description } : {}),
@@ -592,6 +643,7 @@ function toRecord(entity: RequirementAggregate): RequirementRecord {
 function fromRecord(record: RequirementRecord): RequirementAggregate {
   return {
     id: RequirementId(record.id),
+    workId: record.workId, // CORE-001: Mandatory workId from core WorkAggregate
     title: record.title,
     ...(record.summary !== undefined ? { summary: record.summary } : {}),
     ...(record.description !== undefined ? { description: record.description } : {}),
@@ -599,12 +651,14 @@ function fromRecord(record: RequirementRecord): RequirementAggregate {
     priority: record.priority,
     ...(record.owner !== undefined ? { owner: record.owner } : {}),
     ...(record.source !== undefined ? { source: record.source } : {}),
+    ...(record.linkedIntentId !== undefined ? { linkedIntentId: record.linkedIntentId } : {}), // High-Value Work Graph
     linkedCapabilityIds: [...record.linkedCapabilityIds],
     acceptanceCriteria: [...record.acceptanceCriteria],
     verificationStatus: record.verificationStatus,
     dependsOn: (record.dependsOn ?? []).map((d) => ({ ...d })),
     createdAt: new Date(record.createdAt),
     updatedAt: new Date(record.updatedAt),
+    ...(record.approvedBy !== undefined ? { approvedBy: record.approvedBy } : {}),
     ...(record.approvedAt !== undefined ? { approvedAt: new Date(record.approvedAt) } : {}),
     ...(record.implementedAt !== undefined
       ? { implementedAt: new Date(record.implementedAt) }
@@ -622,6 +676,11 @@ export const RequirementRepositoryInMemory: RequirementRepository = {
   },
   async list() {
     return Array.from(STORE.values()).map(clone);
+  },
+  async listByWorkIds(workIds: readonly string[]) {
+    // CORE-001: Work-centric query pattern - filter requirements by their bound workId
+    const filtered = Array.from(STORE.values()).filter(item => workIds.includes(item.workId));
+    return filtered.map(clone);
   },
   async save(entity) {
     // PR-003: Optimistic concurrency control for in-memory repository with audit logging
@@ -746,6 +805,23 @@ class RequirementRepositoryPostgresImpl extends PostgresRepository<RequirementAg
     return records.map(record => this.toAggregate(record));
   }
 
+  // CORE-001: Work-centric query pattern - filter requirements by their bound workId
+  async listByWorkIds(workIds: readonly string[]): Promise<readonly RequirementAggregate[]> {
+    if (workIds.length === 0) return [];
+    
+    // PostgreSQL IN clause with parameterized queries to prevent SQL injection
+    const placeholders = workIds.map((_, i) => `$${i + 1}`).join(", ");
+    const query = `SELECT * FROM requirements WHERE work_id IN (${placeholders})`;
+    
+    try {
+      const result = await this.pool.query(query, [...workIds]);
+      return result.rows.map((row: any) => this.toAggregate(row));
+    } catch (error) {
+      console.error("[RequirementRepositoryPostgres] listByWorkIds failed:", error);
+      throw error;
+    }
+  }
+
   async save(entity: RequirementAggregate): Promise<RequirementAggregate> {
     // Let base.repository.ts handle all version logic (increment, optimistic concurrency) - don't override
     const dbRecord = this.toRecord(entity);
@@ -798,13 +874,10 @@ class RequirementRepositoryPostgresImpl extends PostgresRepository<RequirementAg
   }
 
   toAggregate(record: Record<string, any>): RequirementAggregate {
-    // Convert snake_case database record back to camelCase domain aggregate (matches session.repository.ts pattern)
+    // Convert snake_case database record back to camelCase domain aggregate (CORE-001 compliant: workId as primary identifier)
     return {
       id: RequirementId(record.id),
-      tenantId: record.tenant_id,
-      workspaceId: record.workspace_id,
-      actorId: record.actor_id,
-      logicalWorkId: record.logical_work_id,
+      workId: record.work_id, // CORE-001: Mandatory workId from core WorkAggregate
       title: record.title,
       summary: record.summary,
       description: record.description,
@@ -812,13 +885,14 @@ class RequirementRepositoryPostgresImpl extends PostgresRepository<RequirementAg
       priority: record.priority,
       owner: record.created_by, // Map created_by (DB) to owner (domain) for consistency
       source: record.source,
-      linkedCapabilityIds: record.linked_capability_ids,
-      acceptanceCriteria: record.acceptance_criteria,
+      linkedIntentId: record.linked_intent_id, // High-Value Work Graph integration
+      linkedCapabilityIds: record.linked_capability_ids || [],
+      acceptanceCriteria: record.acceptance_criteria || [],
       verificationStatus: record.verification_status,
-      dependsOn: record.depends_on,
-      createdBy: record.created_by,
+      dependsOn: record.depends_on || [],
       createdAt: record.created_at,
       updatedAt: record.updated_at,
+      approvedBy: record.approved_by,
       approvedAt: record.approved_at,
       implementedAt: record.implemented_at,
       verifiedAt: record.verified_at,

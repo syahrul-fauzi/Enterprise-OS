@@ -49,11 +49,18 @@ RUN pnpm build --filter @repo/composition
 RUN pnpm build --filter @repo/presentation-hooks
 # Build verified workspace packages:
 RUN pnpm build --filter @repo/core-kernel --filter @capabilities/work-core --filter @repo/presentation-ui-system
-# Build only golden spine routes (work/new + required APIs - core freeze compliant)
-# Hapus non-golden package build untuk menghindari dependency error (evidence-registry, workflow-engine, requirement-management)
+# Build apps/api terlebih dahulu (Core Fabric)
+WORKDIR /app/apps/api
+RUN pnpm next build
+# Build apps/web (FACE) setelah core siap
 WORKDIR /app/apps/web
 RUN pnpm next build
 
+# Install pm2 untuk menjalankan kedua server dalam satu container
+RUN npm install -g pm2
+# Buat ecosystem.config.js untuk pm2
+RUN echo "module.exports = {apps: [{name: 'eos-api', script: '/app/apps/api/.next/standalone/server.js', instances: 1, exec_mode: 'fork', env: {PORT: 3001}}, {name: 'eos-web', script: '/app/apps/web/.next/standalone/server.js', instances: 1, exec_mode: 'fork', env: {PORT: 3000, NEXT_PUBLIC_API_URL: 'http://localhost:3001'}}]};" > /app/ecosystem.config.js
+
 EXPOSE 3000
 
-CMD ["node", ".next/standalone/server.js"]
+CMD ["pm2-runtime", "start", "/app/ecosystem.config.js"]

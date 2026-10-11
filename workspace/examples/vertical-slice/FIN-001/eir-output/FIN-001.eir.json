@@ -1,0 +1,35 @@
+{
+  "eir_version": "1.0",
+  "work_id": "FIN-001",
+  "slice_type": "commercial-validation",
+  "user_job": "Cross-border settlement resolution for high-value supply chain work",
+  "execution_chain": [
+    "work-understanding",
+    "authority-verification",
+    "resolution-execution",
+    "external-provider-invocation",
+    "outcome-verification",
+    "settlement-recording"
+  ],
+  "actors": [
+    {
+      "actor_id": "system.fin-001-cross-border-adapter",
+      "capabilities": ["payment-processing", "evidence-recording"],
+      "tenant_id": "eos-fin-001-tenant",
+      "workspace_id": "eos-fin-001-workspace"
+    }
+  ],
+  "dependencies": [
+    "capabilities/atomic-composition/economic-proof.ts",
+    "capabilities/work-core/implementation/utils/evidence.utils.ts"
+  ],
+  "evidence_requirements": {
+    "l1": "repository-verified",
+    "l2": "external-provider-captured",
+    "l3": "commercial-validation-pending"
+  },
+  "primitive_reuse": 0.97,
+  "phase": "EOS RESOLUTION ERA - COMMERCIAL VALIDATION GATE",
+  "created_at": "2026-10-05T03:15:00.000Z",
+  "status": "READY_FOR_EXECUTION"
+}

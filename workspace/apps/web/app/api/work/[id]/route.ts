@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getWorkById, type CanonicalWorkRecord } from "../create/route";
 // WorkRepositoryPostgres is available in the repository, currently using canonical store only (postgreSQL fallback pending)
-import { WorkRepositoryPostgres, getWorkRepositoryPostgres } from "@repo/capabilities-work-core/repository/work-postgres.repository.js";
+import { WorkRepositoryPostgres, getWorkRepositoryPostgres } from "@capabilities/work-core/repository/work-postgres.repository.js";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import { CommunicationRepository, newCommunicationEventId } from "@repo/capabilities-communication/repository/index.js";
 import {
@@ -145,8 +145,8 @@ export async function GET(request: NextRequest) {
 
     // PRIMARY: Check canonical work store first from globalThis (same as create/route.ts)
     const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
-    const g = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
-    const canonicalWorkStore = g[GLOBAL_WORK_STORE_KEY] || new Map();
+    const globalContext = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
+    const canonicalWorkStore = globalContext[GLOBAL_WORK_STORE_KEY] || new Map();
     const canonicalWork = canonicalWorkStore.get(workId);
     if (canonicalWork) {
       // GET ALL COMMUNICATIONS FROM TEMPORARY IN-MEMORY REPO FOR TEST B EVIDENCE CHAIN
@@ -556,11 +556,11 @@ export async function POST(request: NextRequest) {
         const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
         // Convert to arrow function to resolve TypeScript block function declaration error
         const getGlobalWorkStore = (): Map<string, any> => {
-          const g = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
-          if (!g[GLOBAL_WORK_STORE_KEY]) {
-            g[GLOBAL_WORK_STORE_KEY] = new Map<string, any>();
+          const globalContext = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
+          if (!globalContext[GLOBAL_WORK_STORE_KEY]) {
+            globalContext[GLOBAL_WORK_STORE_KEY] = new Map<string, any>();
           }
-          return g[GLOBAL_WORK_STORE_KEY];
+          return globalContext[GLOBAL_WORK_STORE_KEY];
         };
         const canonicalWorkStore = getGlobalWorkStore();
         // SAVE UPDATED CANONICAL WORK TO GLOBAL STORE (fixes "read-only" canonical store issue)
@@ -573,11 +573,11 @@ export async function POST(request: NextRequest) {
         const GLOBAL_WORK_LISTENERS_KEY = Symbol.for('eos.face.canonical.work.listeners.v1');
         // Convert to arrow function to resolve TypeScript block function declaration error
         const getGlobalListenersStore = (): Map<string, Set<() => void>> => {
-          const g = globalThis as unknown as { [GLOBAL_WORK_LISTENERS_KEY]?: Map<string, Set<() => void>> };
-          if (!g[GLOBAL_WORK_LISTENERS_KEY]) {
-            g[GLOBAL_WORK_LISTENERS_KEY] = new Map<string, Set<() => void>>();
+          const globalContext = globalThis as unknown as { [GLOBAL_WORK_LISTENERS_KEY]?: Map<string, Set<() => void>> };
+          if (!globalContext[GLOBAL_WORK_LISTENERS_KEY]) {
+            globalContext[GLOBAL_WORK_LISTENERS_KEY] = new Map<string, Set<() => void>>();
           }
-          return g[GLOBAL_WORK_LISTENERS_KEY];
+          return globalContext[GLOBAL_WORK_LISTENERS_KEY];
         };
         const listenersStore = getGlobalListenersStore();
         const workspaceListeners = listenersStore.get(canonicalWork.workspaceId) ?? new Set<() => void>();
@@ -872,11 +872,11 @@ export async function POST(request: NextRequest) {
                canonicalWork.status = newStatus;
                canonicalWork.updatedAt = new Date().toISOString();
                const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
-               const g = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
-               if (!g[GLOBAL_WORK_STORE_KEY]) {
-                 g[GLOBAL_WORK_STORE_KEY] = new Map<string, any>();
+               const globalContext = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
+               if (!globalContext[GLOBAL_WORK_STORE_KEY]) {
+                 globalContext[GLOBAL_WORK_STORE_KEY] = new Map<string, any>();
                }
-               const canonicalWorkStore = g[GLOBAL_WORK_STORE_KEY];
+               const canonicalWorkStore = globalContext[GLOBAL_WORK_STORE_KEY];
                canonicalWorkStore.set(workId, canonicalWork);
                console.log("[API/WORK/PUT] ✅ B2: record_outcome processed, canonical work updated to outcome_achieved");
             } catch (execError) {
@@ -910,11 +910,11 @@ export async function POST(request: NextRequest) {
           // Access canonicalWorkStore from globalThis
           const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
           function getGlobalWorkStore(): Map<string, any> {
-            const g = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
-            if (!g[GLOBAL_WORK_STORE_KEY]) {
-              g[GLOBAL_WORK_STORE_KEY] = new Map<string, any>();
+            const globalContext = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
+            if (!globalContext[GLOBAL_WORK_STORE_KEY]) {
+              globalContext[GLOBAL_WORK_STORE_KEY] = new Map<string, any>();
             }
-            return g[GLOBAL_WORK_STORE_KEY];
+            return globalContext[GLOBAL_WORK_STORE_KEY];
           }
           const canonicalWorkStore = getGlobalWorkStore();
           canonicalWorkStore.set(workId, canonicalWork);
@@ -922,11 +922,11 @@ export async function POST(request: NextRequest) {
           // Notify workspace listeners from globalThis
           const GLOBAL_WORK_LISTENERS_KEY = Symbol.for('eos.face.canonical.work.listeners.v1');
           function getGlobalListenersStore(): Map<string, Set<() => void>> {
-            const g = globalThis as unknown as { [GLOBAL_WORK_LISTENERS_KEY]?: Map<string, Set<() => void>> };
-            if (!g[GLOBAL_WORK_LISTENERS_KEY]) {
-              g[GLOBAL_WORK_LISTENERS_KEY] = new Map<string, Set<() => void>>();
+            const globalContext = globalThis as unknown as { [GLOBAL_WORK_LISTENERS_KEY]?: Map<string, Set<() => void>> };
+            if (!globalContext[GLOBAL_WORK_LISTENERS_KEY]) {
+              globalContext[GLOBAL_WORK_LISTENERS_KEY] = new Map<string, Set<() => void>>();
             }
-            return g[GLOBAL_WORK_LISTENERS_KEY];
+            return globalContext[GLOBAL_WORK_LISTENERS_KEY];
           }
           const listenersStore = getGlobalListenersStore();
           const workspaceListeners = listenersStore.get(canonicalWork.workspaceId) ?? new Set<() => void>();
@@ -982,11 +982,11 @@ export async function POST(request: NextRequest) {
       // Access canonicalWorkStore from globalThis (same way create/route.ts stores it)
       const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
       function getGlobalWorkStore(): Map<string, any> {
-        const g = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
-        if (!g[GLOBAL_WORK_STORE_KEY]) {
-          g[GLOBAL_WORK_STORE_KEY] = new Map<string, any>();
+        const globalContext = globalThis as unknown as { [GLOBAL_WORK_STORE_KEY]?: Map<string, any> };
+        if (!globalContext[GLOBAL_WORK_STORE_KEY]) {
+          globalContext[GLOBAL_WORK_STORE_KEY] = new Map<string, any>();
         }
-        return g[GLOBAL_WORK_STORE_KEY];
+        return globalContext[GLOBAL_WORK_STORE_KEY];
       }
       const canonicalWorkStore = getGlobalWorkStore();
       console.log("[API/WORK/POST] canonicalWorkStore size:", canonicalWorkStore.size);
@@ -995,11 +995,11 @@ export async function POST(request: NextRequest) {
       // Notify workspace listeners of update (P0-003: realtime state sync) - implement locally to avoid import issues
       const GLOBAL_WORK_LISTENERS_KEY = Symbol.for('eos.face.canonical.work.listeners.v1');
       function getGlobalListenersStore(): Map<string, Set<() => void>> {
-        const g = globalThis as unknown as { [GLOBAL_WORK_LISTENERS_KEY]?: Map<string, Set<() => void>> };
-        if (!g[GLOBAL_WORK_LISTENERS_KEY]) {
-          g[GLOBAL_WORK_LISTENERS_KEY] = new Map<string, Set<() => void>>();
+        const globalContext = globalThis as unknown as { [GLOBAL_WORK_LISTENERS_KEY]?: Map<string, Set<() => void>> };
+        if (!globalContext[GLOBAL_WORK_LISTENERS_KEY]) {
+          globalContext[GLOBAL_WORK_LISTENERS_KEY] = new Map<string, Set<() => void>>();
         }
-        return g[GLOBAL_WORK_LISTENERS_KEY];
+        return globalContext[GLOBAL_WORK_LISTENERS_KEY];
       }
       const listenersStore = getGlobalListenersStore();
       const workspaceListeners = listenersStore.get(canonicalWork.workspaceId) ?? new Set<() => void>();

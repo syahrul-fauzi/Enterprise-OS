@@ -4,7 +4,7 @@ import {
   type WorkAggregate,
   type WorkId,
   newWorkId,
-} from "@repo/capabilities-work-core";
+} from "@capabilities/work-core";
 import { 
   createTenantId, 
   createActorId, 

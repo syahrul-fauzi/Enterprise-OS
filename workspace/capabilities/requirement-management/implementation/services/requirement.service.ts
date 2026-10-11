@@ -29,9 +29,10 @@ import {
   startRequirementDelivery,
   updateRequirement,
   verifyRequirement,
-} from "../commands/index";
-import { getRequirement, searchRequirements } from "../queries/index";
-import { RequirementRepositoryCurrent } from "../repository/index";
+} from "../commands/index.js";
+import { getRequirement, searchRequirements, getRequirementProjection } from "../queries/index.js";
+import { type GetRequirementProjectionInput, type RequirementFaceProjection } from "../queries/requirement.queries.js";
+import { RequirementRepositoryCurrent } from "../repository/index.js";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 
 function digestCanonicalize(value: unknown): unknown {
@@ -262,7 +263,7 @@ export class RequirementService {
   }
 
   async approveRequirement(input: ApproveRequirementInput): Promise<ApproveRequirementOutput> {
-    const result = await approveRequirement.execute(input) as ApproveRequirementOutput;
+    const result = await approveRequirement.execute({...input, workId: input.workId} as any) as ApproveRequirementOutput;
     recordRuntimeInvocation({
       capabilityId: "requirement-management",
       operationId: "approve-requirement",
@@ -277,7 +278,7 @@ export class RequirementService {
   async startRequirementDelivery(
     input: StartRequirementDeliveryInput,
   ): Promise<StartRequirementDeliveryOutput> {
-    const result = await startRequirementDelivery.execute(input) as StartRequirementDeliveryOutput;
+    const result = await startRequirementDelivery.execute({...input, workId: input.workId} as any) as StartRequirementDeliveryOutput;
     recordRuntimeInvocation({
       capabilityId: "requirement-management",
       operationId: "start-requirement-delivery",
@@ -292,7 +293,7 @@ export class RequirementService {
   async markRequirementImplemented(
     input: MarkRequirementImplementedInput,
   ): Promise<MarkRequirementImplementedOutput> {
-    const result = await markRequirementImplemented.execute(input) as MarkRequirementImplementedOutput;
+    const result = await markRequirementImplemented.execute({...input, workId: input.workId} as any) as MarkRequirementImplementedOutput;
     recordRuntimeInvocation({
       capabilityId: "requirement-management",
       operationId: "mark-requirement-implemented",
@@ -494,7 +495,7 @@ export class RequirementService {
       throw error;
     }
 
-    const result = await verifyRequirement.execute(input) as VerifyRequirementOutput;
+    const result = await verifyRequirement.execute({...input, workId: input.workId} as any) as VerifyRequirementOutput;
     recordRuntimeInvocation({
       capabilityId: "requirement-management",
       operationId: "verify-requirement",
@@ -544,6 +545,19 @@ export class RequirementService {
       success: result !== undefined,
       input,
       result: result ?? { error: "requirement_not_found", id: input.id },
+    });
+    return result;
+  }
+
+  async getRequirementProjection(input: GetRequirementProjectionInput): Promise<RequirementFaceProjection | undefined> {
+    const result = await getRequirementProjection.execute(input);
+    recordRuntimeInvocation({
+      capabilityId: "requirement-management",
+      operationId: "get-requirement-projection",
+      sourceRef: "RequirementService.getRequirementProjection",
+      success: result !== undefined,
+      input,
+      result: result ?? { error: "requirement_projection_not_found", id: input.id },
     });
     return result;
   }

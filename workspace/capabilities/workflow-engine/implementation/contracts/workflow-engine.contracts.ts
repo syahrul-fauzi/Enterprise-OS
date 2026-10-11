@@ -4,6 +4,7 @@ export type WorkflowExecutionStatus = "passed" | "failed" | "skipped";
 export type WorkflowStepStatus = WorkflowExecutionStatus | "requires_human";
 
 export type WorkflowStepKind =
+  | "service.init"
   | "input.validate"
   | "requirement.get"
   | "requirement.assess"

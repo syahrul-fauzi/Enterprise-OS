@@ -2,9 +2,11 @@ import { PostgresRepository } from "./base.repository.ts";
 import {
   WorkspaceId,
   TenantId,
+  type WorkId,
+  createWorkId,
   type WorkspaceAggregate,
   type WorkspaceRepository,
-} from "../contracts/index.ts";
+} from "@repo/contracts-core";
 
 // PostgreSQL-backed workspace repository implementation
 class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements WorkspaceRepository {
@@ -20,6 +22,7 @@ class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements
     return {
       id: WorkspaceId(record.id),
       tenantId: TenantId(record.tenant_id),
+      workId: record.work_id ? createWorkId(record.work_id) : undefined,
       name: record.name,
       slug: record.slug,
       productId: record.product_id,
@@ -33,6 +36,7 @@ class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements
     return {
       id: entity.id,
       tenant_id: entity.tenantId,
+      work_id: entity.workId,
       name: entity.name,
       slug: entity.slug,
       product_id: entity.productId,
@@ -41,19 +45,68 @@ class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements
     };
   }
 
-  async byId(id: WorkspaceId): Promise<WorkspaceAggregate | undefined> {
-    const result = await this.pool.query<Record<string, any>>("SELECT * FROM workspaces WHERE id = $1", [id]);
+  async byId(id: WorkspaceId, context?: { tenantId: TenantId; workId?: WorkId }): Promise<WorkspaceAggregate | undefined> {
+    let query = "SELECT * FROM workspaces WHERE id = $1";
+    const params: any[] = [id];
+    let paramIndex = 2;
+
+    if (context?.tenantId) {
+      query += ` AND tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+      
+      if (context?.workId) {
+        query += ` AND work_id = $${paramIndex}`;
+        params.push(context.workId);
+        paramIndex++;
+      }
+    }
+
+    const result = await this.pool.query<Record<string, any>>(query, params);
     if (result.rows.length === 0) return undefined;
     return this.toAggregate(result.rows[0]);
   }
 
-  async listByTenant(tenantId: TenantId): Promise<readonly WorkspaceAggregate[]> {
-    const result = await this.pool.query<Record<string, any>>("SELECT * FROM workspaces WHERE tenant_id = $1 ORDER BY created_at DESC", [tenantId]);
+  async listByTenant(tenantId: TenantId, context?: { workId?: WorkId }): Promise<readonly WorkspaceAggregate[]> {
+    let query = "SELECT * FROM workspaces WHERE tenant_id = $1";
+    const params: any[] = [tenantId];
+    let paramIndex = 2;
+
+    if (context?.workId) {
+      query += ` AND work_id = $${paramIndex}`;
+      params.push(context.workId);
+      paramIndex++;
+    }
+    query += " ORDER BY created_at DESC";
+
+    const result = await this.pool.query<Record<string, any>>(query, params);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
-  async list(): Promise<readonly WorkspaceAggregate[]> {
-    const result = await this.pool.query<Record<string, any>>("SELECT * FROM workspaces ORDER BY created_at DESC", []);
+  async list(context?: { tenantId: TenantId; workId?: WorkId }): Promise<readonly WorkspaceAggregate[]> {
+    let query = "SELECT * FROM workspaces";
+    const params: any[] = [];
+    let paramIndex = 1;
+    const conditions: string[] = [];
+
+    if (context?.tenantId) {
+      conditions.push(`tenant_id = $${paramIndex}`);
+      params.push(context.tenantId);
+      paramIndex++;
+      
+      if (context?.workId) {
+        conditions.push(`work_id = $${paramIndex}`);
+        params.push(context.workId);
+        paramIndex++;
+      }
+    }
+
+    if (conditions.length > 0) {
+      query += ` WHERE ${conditions.join(" AND ")}`;
+    }
+    query += " ORDER BY created_at DESC";
+
+    const result = await this.pool.query<Record<string, any>>(query, params);
     return result.rows.map((row: any) => this.toAggregate(row));
   }
 
@@ -65,20 +118,20 @@ class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements
     if (exists) {
       await this.pool.query<Record<string, any>>(
         `UPDATE workspaces SET 
-          tenant_id = $1, name = $2, slug = $3, product_id = $4, created_at = $5, updated_at = $6
-          WHERE id = $7`,
+          tenant_id = $1, work_id = $2, name = $3, slug = $4, product_id = $5, created_at = $6, updated_at = $7
+          WHERE id = $8`,
         [
-          record.tenant_id, record.name, record.slug, record.product_id,
+          record.tenant_id, record.work_id, record.name, record.slug, record.product_id,
           record.created_at, record.updated_at, record.id
         ]
       );
     } else {
       await this.pool.query<Record<string, any>>(
         `INSERT INTO workspaces (
-          id, tenant_id, name, slug, product_id, created_at, updated_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          id, tenant_id, work_id, name, slug, product_id, created_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
         [
-          record.id, record.tenant_id, record.name, record.slug, record.product_id,
+          record.id, record.tenant_id, record.work_id, record.name, record.slug, record.product_id,
           record.created_at, record.updated_at
         ]
       );
@@ -87,8 +140,24 @@ class WorkspaceRepositoryPostgresImpl extends PostgresRepository<any> implements
     return this.byId(entity.id) as Promise<WorkspaceAggregate>;
   }
 
-  async remove(id: WorkspaceId): Promise<boolean> {
-    const result = await this.pool.query<Record<string, any>>("DELETE FROM workspaces WHERE id = $1", [id]);
+  async remove(id: WorkspaceId, context?: { tenantId: TenantId; workId?: WorkId }): Promise<boolean> {
+    let query = "DELETE FROM workspaces WHERE id = $1";
+    const params: any[] = [id];
+    let paramIndex = 2;
+
+    if (context?.tenantId) {
+      query += ` AND tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+      
+      if (context?.workId) {
+        query += ` AND work_id = $${paramIndex}`;
+        params.push(context.workId);
+        paramIndex++;
+      }
+    }
+
+    const result = await this.pool.query<Record<string, any>>(query, params);
     return result.rowCount > 0;
   }
 }

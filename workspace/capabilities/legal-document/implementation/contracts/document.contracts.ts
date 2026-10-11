@@ -1,4 +1,4 @@
-import type { TenantId, WorkspaceId, ActorId, SessionId, WorkId, UserId } from "@repo/capabilities-work-core";
+import type { TenantId, WorkspaceId, ActorId, SessionId, WorkId, UserId } from "@capabilities/work-core";
 
 export type DocumentStatus = 
   | "draft" 
@@ -39,7 +39,7 @@ export interface CreateDocumentInput {
   readonly author?: UserId;
   // Work identity binding (from decision_id)
   readonly workId?: WorkId;
-  // Required context for tenant isolation (canonical branded types from @repo/capabilities-work-core)
+  // Required context for tenant isolation (canonical branded types from @capabilities/work-core)
   readonly sessionId: SessionId;
   readonly tenantId: TenantId;
   readonly workspaceId: WorkspaceId;
@@ -55,7 +55,7 @@ export interface CreateDocumentOutput {
 export interface SignDocumentInput {
   readonly id: DocumentId;
   readonly signer?: UserId;
-  // Required context for tenant isolation (canonical branded types from @repo/capabilities-work-core)
+  // Required context for tenant isolation (canonical branded types from @capabilities/work-core)
   readonly tenantId: TenantId;
   readonly workspaceId: WorkspaceId;
   readonly actorId: ActorId;
@@ -71,7 +71,7 @@ export interface SignDocumentOutput {
 export interface ArchiveDocumentInput {
   readonly id: DocumentId;
   readonly reason?: string;
-  // Required context for tenant isolation (canonical branded types from @repo/capabilities-work-core)
+  // Required context for tenant isolation (canonical branded types from @capabilities/work-core)
   readonly tenantId: TenantId;
   readonly workspaceId: WorkspaceId;
   readonly actorId: ActorId;
@@ -94,7 +94,7 @@ export interface UpdateDocumentInput {
   readonly parentArtifactId?: string;
   readonly workId?: WorkId;
   readonly parentContextTraceId?: string;
-  // Required context for tenant isolation (canonical branded types from @repo/capabilities-work-core)
+  // Required context for tenant isolation (canonical branded types from @capabilities/work-core)
   readonly tenantId: TenantId;
   readonly workspaceId: WorkspaceId;
   readonly actorId: ActorId;
@@ -112,7 +112,7 @@ export interface ReviewDocumentInput {
   readonly reviewer?: UserId;
   readonly approval: boolean;
   readonly comments?: string;
-  // Required context for tenant isolation (canonical branded types from @repo/capabilities-work-core)
+  // Required context for tenant isolation (canonical branded types from @capabilities/work-core)
   readonly tenantId: TenantId;
   readonly workspaceId: WorkspaceId;
   readonly actorId: ActorId;
@@ -130,7 +130,7 @@ export interface ReviewDocumentOutput {
 
 export interface GetDocumentInput {
   readonly id: DocumentId;
-  // Required context for tenant isolation (canonical branded types from @repo/capabilities-work-core)
+  // Required context for tenant isolation (canonical branded types from @capabilities/work-core)
   readonly tenantId: TenantId;
   readonly workspaceId: WorkspaceId;
   readonly context?: { tenantId: TenantId; workspaceId: WorkspaceId };
@@ -145,7 +145,7 @@ export interface SearchDocumentsInput {
   readonly author?: UserId;
   readonly limit?: number;
   readonly offset?: number;
-  // Required context for tenant isolation (canonical branded types from @repo/capabilities-work-core)
+  // Required context for tenant isolation (canonical branded types from @capabilities/work-core)
   readonly tenantId: TenantId;
   readonly workspaceId: WorkspaceId;
   readonly context?: { tenantId: TenantId; workspaceId: WorkspaceId };
@@ -161,7 +161,7 @@ export interface SearchDocumentsOutput {
 
 export interface ListDocumentsByStatusInput {
   readonly status: DocumentStatus;
-  // Required context for tenant isolation (canonical branded types from @repo/capabilities-work-core)
+  // Required context for tenant isolation (canonical branded types from @capabilities/work-core)
   readonly tenantId: TenantId;
   readonly workspaceId: WorkspaceId;
   readonly context?: { tenantId: TenantId; workspaceId: WorkspaceId };

@@ -3,6 +3,7 @@ import type { CanonicalWorkRecord } from "@/app/api/work/create/route";
 export const case005Work: CanonicalWorkRecord = {
   workId: "case-005",
   id: "case-005",
+  workflowId: "svc-id-001-technical-service", // FACE-001: Link to Services.ID technical service workflow
   title: "Website Maintenance Request - www.umkm-coffee.id",
   description: "SERVICES.ID Golden Slice: Client website unreachable from 3 regional monitoring points. Requires immediate technical intervention and provider coordination.",
   status: "closed",

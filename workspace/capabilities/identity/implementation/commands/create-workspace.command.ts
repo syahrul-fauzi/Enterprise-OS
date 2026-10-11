@@ -4,7 +4,7 @@ import {
   WorkspaceId,
   type CreateWorkspaceInput,
   type WorkspaceAggregate,
-} from "../contracts/identity.contracts.js";
+} from "@repo/contracts-core";
 import { WorkspaceRepositoryPostgres } from "../repositories/index.js";
 import { slugifyForTenant } from "../services/password.service.js";
 

@@ -15,10 +15,32 @@ export function useWorkRealityController({
 }: UseWorkRealityControllerProps) {
   const [model, setModel] = useState<WorkRealityModel>(initialModel);
   const [currentPerspective, setCurrentPerspective] = useState<WorkRealityPerspective>(perspective);
+  const [pendingOfflineActions, setPendingOfflineActions] = useState<Array<{actionId: string; payload: any; timestamp: number}>>([]);
   
   // Extract workspace context from model's identity
   const workId = model.identity.workId;
   const workspaceId = model.identity.workspaceId || "";
+
+  // Load pending offline actions from localStorage on initialization (RET-001 offline sync support)
+  useEffect(() => {
+    const saved = localStorage.getItem(`offline-queue-${workId}`);
+    if (saved) {
+      try {
+        setPendingOfflineActions(JSON.parse(saved));
+      } catch (e) {
+        console.error('[WorkRealityController] Failed to load offline queue:', e);
+      }
+    }
+  }, [workId]);
+
+  // Save pending actions to localStorage whenever queue changes
+  useEffect(() => {
+    if (pendingOfflineActions.length > 0) {
+      localStorage.setItem(`offline-queue-${workId}`, JSON.stringify(pendingOfflineActions));
+    } else {
+      localStorage.removeItem(`offline-queue-${workId}`);
+    }
+  }, [pendingOfflineActions, workId]);
 
   // Handle canonical model updates from server - NO client-side ontology reconstruction
   const handleCanonicalModelUpdate = useCallback((canonicalModel: WorkRealityModel) => {
@@ -51,10 +73,43 @@ export function useWorkRealityController({
     }, [workId])
   });
 
-  // Generic action dispatcher - handles ALL work-related actions (assign, evidence, complete, coordination)
-  const dispatchAction = useCallback(async (
+  // When connection is restored, process offline queue (RET-001 offline sync trigger)
+  useEffect(() => {
+    if (isConnected && pendingOfflineActions.length > 0) {
+      console.log('[WorkRealityController] Connection restored - processing offline queue:', pendingOfflineActions.length);
+      void processOfflineQueue();
+    }
+  }, [isConnected, pendingOfflineActions.length, processOfflineQueue]);
+
+  // Function to process offline queue - replays pending actions in order when connection is restored (RET-001 offline sync)
+  const processOfflineQueue = useCallback(async () => {
+    if (pendingOfflineActions.length === 0 || !navigator.onLine) return;
+    
+    // Sort actions by timestamp to maintain execution order
+    const sorted = [...pendingOfflineActions].sort((a,b) => a.timestamp - b.timestamp);
+    const successful: number[] = [];
+
+    for (const [index, action] of sorted.entries()) {
+      try {
+        // Re-invoke the action with saved payload
+        await dispatchActionInternal(action.actionId, action.payload, true);
+        successful.push(index);
+      } catch (e) {
+        console.error('[WorkRealityController] Failed to replay offline action:', action.actionId, e);
+        // Keep failed actions in queue to retry next reconnection
+        break;
+      }
+    }
+
+    // Remove successfully processed actions from queue
+    setPendingOfflineActions(prev => prev.filter((_, idx) => !successful.includes(idx)));
+  }, [pendingOfflineActions, workId]);
+
+  // Internal dispatch implementation that supports offline queueing
+  const dispatchActionInternal = useCallback(async (
     actionId: string,
-    payload?: FormData | string | { name: string; role: string; type?: string; title?: string; content?: string; outcomeDescription?: string }
+    payload?: FormData | string | { name: string; role: string; type?: string; title?: string; content?: string; outcomeDescription?: string },
+    isReplay: boolean = false
   ) => {
     try {
       // Map client action names to server capabilities (MyReality pattern - generic capability executor)
@@ -180,17 +235,33 @@ export function useWorkRealityController({
         body
       });
       
-      if (!response.ok) {
-        throw new Error(`Action execution failed: ${actionId}`);
-      }
+      if (!response.ok) throw new Error(`Action execution failed: ${actionId}`);
       
       console.log('[WorkRealityController] Action executed successfully:', actionId);
-      window.location.reload();
+      if (!isReplay) window.location.reload();
     } catch (error) {
+      // If offline and this is not a replay, add to offline queue (RET-001 offline queueing)
+      if (!navigator.onLine && !isReplay) {
+        console.log('[WorkRealityController] Device offline - adding action to queue:', actionId);
+        setPendingOfflineActions(prev => [...prev, {
+          actionId,
+          payload,
+          timestamp: Date.now()
+        }]);
+        return; // Don't throw error when offline - action queued
+      }
       console.error('[WorkRealityController] Action execution error:', error);
       throw error;
     }
   }, [workId]);
+
+  // Public dispatchAction that adds offline queue support
+  const dispatchAction = useCallback(async (
+    actionId: string,
+    payload?: FormData | string | { name: string; role: string; type?: string; title?: string; content?: string; outcomeDescription?: string }
+  ) => {
+    await dispatchActionInternal(actionId, payload);
+  }, [dispatchActionInternal]);
 
   // Manual refresh - requests canonical model from server
   const refreshModel = useCallback(async () => {

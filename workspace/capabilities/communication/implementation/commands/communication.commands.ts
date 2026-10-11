@@ -2,13 +2,13 @@ import { z } from "zod";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
 import { executionContext } from "../../../../packages/core/runtime/src/index.js";
 // Import SEMUA canonical types dan factory functions dari SINGLE-SOURCE work-core (anti-drift - TENANT-ISOLATION-001)
-// Sesuai dengan aturan: Semua capability harus import dari @repo/capabilities-work-core, bukan langsung dari identity
+// Sesuai dengan aturan: Semua capability harus import dari @capabilities/work-core, bukan langsung dari identity
 import { 
   type TenantId, 
-  WorkspaceId,
+  type WorkspaceId,
   createTenantId,
   createWorkspaceId
-} from "@repo/capabilities-work-core";
+} from "../../../work-core/contracts/work.contracts.ts";
 import {
   newCommunicationEventId,
   defaultCommunicationStatus,
@@ -52,7 +52,7 @@ import {
   type CommunicationEvent,
 } from "../contracts/communication.contracts.js";
 import { getSessionRepositoryPostgres, SessionRepositoryInMemory } from "../../../identity/implementation/repositories/index.js";
-import { SessionId } from "../../../identity/implementation/contracts/identity.contracts.js";
+import { type SessionId } from "../../../identity/implementation/repositories/session.repository.js";
 
 const SessionRepositoryPostgres = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()
@@ -221,6 +221,98 @@ const EmailAdapter = {
   }
 };
 
+// MobilePushAdapter - follows EXACT same pattern as WhatsApp/EmailAdapter (Rule of Three satisfied)
+// Implements Communication Adapter Layer architecture for mobile push notifications
+// Only sent to driver actors (AUTHORITY boundary compliance - driver-* prefix only)
+const MobilePushAdapter = {
+  async send(event: CommunicationEvent, config: any) {
+    try {
+      const receipts: any[] = [];
+      
+      // Mobile Push pattern for production delivery via Firebase Cloud Messaging/APNs
+      // Uses tenant-isolated push credentials (matches WhatsApp/Email tenant isolation)
+      // ENFORCES AUTHORITY BOUNDARY: only sends to driver actors (prefix 'driver-')
+      for (const recipient of event.recipient_ids) {
+        // Skip non-driver actors - mobile_push is EXCLUSIVE to delivery drivers
+        // DEL-001 FIX: Update prefix untuk kompatibel dengan actorId format "actor.driver.001" (identity boundary compliance)
+        if (!recipient.startsWith("actor.driver")) {
+          console.warn(`[MobilePushAdapter] Blocked push to non-driver recipient ${recipient} (AUTHORITY boundary violation)`);
+          continue;
+        }
+        
+        console.log(`[MobilePushAdapter] Sending mobile push to driver ${recipient} for work_id: ${event.work_id}`);
+        
+        // In production: Use Firebase Admin SDK with tenant-specific FCM credentials
+        // For development: Log and store as sent
+        receipts.push({
+          recipient: recipient,
+          message_id: `mobilepush-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          sent_at: new Date().toISOString()
+        });
+      }
+      
+      console.log(`[MobilePushAdapter] All messages sent for work_id: ${event.work_id}`);
+      return {
+        success: true,
+        receipt: {
+          work_id: event.work_id,
+          tenant_id: event.tenant_id,
+          messages: receipts,
+          total_sent: receipts.length
+        }
+      };
+    } catch (err) {
+      console.error(`[MobilePushAdapter] Failed to send mobile push:`, err);
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : "Unknown error sending mobile push"
+      };
+    }
+  }
+};
+
+// SmsAdapter - follows EXACT same pattern as WhatsApp/Email/MobilePushAdapter (Rule of Three satisfied)
+// Implements Communication Adapter Layer architecture for SMS notifications
+const SmsAdapter = {
+  async send(event: CommunicationEvent, config: any) {
+    try {
+      const receipts: any[] = [];
+      
+      // SMS pattern for production delivery via Twilio/Plivo
+      // Uses tenant-isolated SMS credentials (matches all other adapters' tenant isolation)
+      for (const recipient of event.recipient_ids) {
+        // Can be sent to any human actor (customer, driver, merchant) - no actor restriction
+        console.log(`[SmsAdapter] Sending SMS to ${recipient} for work_id: ${event.work_id}`);
+        
+        // In production: Use Twilio SDK with tenant-specific account credentials
+        // For development: Log and store as sent
+        receipts.push({
+          recipient: recipient,
+          message_id: `sms-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          sent_at: new Date().toISOString()
+        });
+      }
+      
+      console.log(`[SmsAdapter] All messages sent for work_id: ${event.work_id}`);
+      return {
+        success: true,
+        receipt: {
+          work_id: event.work_id,
+          tenant_id: event.tenant_id,
+          messages: receipts,
+          total_sent: receipts.length
+        }
+      };
+    } catch (err) {
+      console.error(`[SmsAdapter] Failed to send SMS:`, err);
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : "Unknown error sending SMS"
+      };
+    }
+  }
+};
+
 // Adapter factory to resolve the right adapter for the event
 function getAdapter(adapterType: string) {
   switch (adapterType) {
@@ -228,6 +320,10 @@ function getAdapter(adapterType: string) {
       return WhatsAppAdapter;
     case "email":
       return EmailAdapter;
+    case "mobile_push":
+      return MobilePushAdapter;
+    case "sms":
+      return SmsAdapter;
     default:
       throw new Error(`[communication.send] Unsupported adapter type: ${adapterType}`);
   }
@@ -388,11 +484,11 @@ const ListCommunicationEventsQuery: CapabilityQuery = {
 // Agentic notification command - COM-002: Integrasi Agentic Loop dengan Communication Adapter
 const AgenticNotifyInputSchema = z.object({
   work_id: z.string().describe("Work ID this communication is grounded to"),
-  trigger: z.enum(["state_transition", "deadline_approaching", "assignment_updated"]).describe("What triggered this agentic notification"),
+  trigger: z.enum(["state_transition", "deadline_approaching", "assignment_updated", "gap_detected"]).describe("What triggered this agentic notification"),
   old_state: z.string().optional().describe("Previous state if state transition"),
   new_state: z.string().optional().describe("New state if state transition"),
   recipient_ids: z.array(z.string()).describe("All recipients of this message"),
-  adapter_type: z.enum(["whatsapp", "email", "in_app_chat"]).default("whatsapp"),
+  adapter_type: z.enum(["whatsapp", "email", "in_app_chat", "mobile_push", "sms"]).default("whatsapp"),
   sessionId: z.string().describe("Session ID for authentication"),
   tenantId: z.string().describe("Tenant ID for isolation"),
   workspaceId: z.string().describe("Workspace ID for organization")
@@ -407,6 +503,7 @@ type AgenticNotifyOutput = {
 
 // System agent actor ID - preserves audit trail for automated communications
 const SYSTEM_AGENT_ACTOR_ID = "agent-eos-communication-system";
+export const COMMANDER_ACTOR_ID = "actor-eos-command-center-commander-main-001";
 
 const AgenticNotifyCommand: CapabilityCommand = {
   kind: "command",
@@ -444,6 +541,9 @@ const AgenticNotifyCommand: CapabilityCommand = {
         break;
       case "assignment_updated":
         content = `👤 PENUGASAN BARU: Anda telah ditambahkan sebagai partisipan pada kasus #${work_id.substring(0, 8)}. Silakan tinjau detail kasus.`;
+        break;
+      case "gap_detected":
+        content = `🚨 GAP TERDETEKSI: Kasus #${work_id.substring(0, 8)} membutuhkan adjudicasi commander. Eksekusi dihentikan hingga status ditetapkan. Silakan tinjau evidence gap segera di timeline Work.`;
         break;
       default:
         content = `Update pada kasus #${work_id.substring(0, 8)}. Silakan cek timeline untuk detail.`;

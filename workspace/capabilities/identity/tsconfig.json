@@ -8,15 +8,21 @@
     "composite": true,
     "incremental": true,
     "skipLibCheck": true,
-    "noEmit": false,
+    "emitDeclarationOnly": true,
     "rootDir": ".",
     "module": "NodeNext",
-    "moduleResolution": "NodeNext"
+    "moduleResolution": "NodeNext",
+    "allowImportingTsExtensions": true,
+    "ignoreDeprecations": "5.0",
+    "paths": {
+      "@repo/*": ["../../packages/*"]
+    }
   },
   "references": [
     { "path": "../../packages/core/kernel/tsconfig.json" },
-    { "path": "../../packages/core/runtime/tsconfig.json" }
+    { "path": "../../packages/core/runtime/tsconfig.json" },
+    { "path": "../../packages/contracts-core/tsconfig.json" }
   ],
-  "include": ["index.ts", "implementation/**/*.ts"],
-  "exclude": ["dist", "build", "node_modules", "**/*.d.ts"]
+  "include": ["implementation/**/*.ts", "contracts/**/*.ts"],
+  "exclude": ["dist", "build", "node_modules", "**/*.d.ts", "../requirement-management", "../requirements-traceability-matrix"]
 }

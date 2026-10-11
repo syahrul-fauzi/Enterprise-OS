@@ -21,11 +21,11 @@ import type { UniversalIntentInput } from "../../../../../../capabilities/atomic
 
 const GLOBAL_INTENT_STORE_KEY = Symbol.for('eos.face.intent.store.v1');
 function getGlobalIntentStore(): Map<string, IntentContract> {
-  const g = globalThis as unknown as { [GLOBAL_INTENT_STORE_KEY]?: Map<string, IntentContract> };
-  if (!g[GLOBAL_INTENT_STORE_KEY]) {
-    g[GLOBAL_INTENT_STORE_KEY] = new Map<string, IntentContract>();
+  const globalContext = globalThis as unknown as { [GLOBAL_INTENT_STORE_KEY]?: Map<string, IntentContract> };
+  if (!globalContext[GLOBAL_INTENT_STORE_KEY]) {
+    globalContext[GLOBAL_INTENT_STORE_KEY] = new Map<string, IntentContract>();
   }
-  return g[GLOBAL_INTENT_STORE_KEY];
+  return globalContext[GLOBAL_INTENT_STORE_KEY];
 }
 const intentStore = getGlobalIntentStore();
 

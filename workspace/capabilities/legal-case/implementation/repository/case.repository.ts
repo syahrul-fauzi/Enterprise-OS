@@ -1,10 +1,10 @@
-import { recordRuntimeInvocation } from "../../../../packages/core/runtime/dist/src/index.js";
+import { recordRuntimeInvocation } from "../../../../packages/core/runtime/dist/index.js";
 import { CaseId, type CaseRepository, type CaseAggregate, type CaseId as CaseIdType, CaseStatus, CasePriority } from "../../contracts/index.js";
 // Import canonical Work repository dari work-core (CORE-001: satu-satunya sumber truth boundary metadata)
 import { getWorkRepositoryPostgres } from "../../../work-core/implementation/repository/work-postgres.repository.js";
 // Import canonical realtime notifier from core package (D1 architecture compliance)
 // @ts-ignore - Temporary fix for module declaration issue
-import { notifyWorkspaceListeners } from "../../../../packages/core/realtime/dist/index.js";
+import { notifyWorkspaceListeners } from "../../../../packages/core/realtime/src/index.js";
 
 // In-memory store for cases - isolated to this module
 const STORE = new Map<string, CaseAggregate>();
@@ -120,13 +120,12 @@ export const CaseRepositoryInMemory: CaseRepository = {
     }
   },
 
-  // WORK-015: Enforce tenant isolation at repository layer - defense-in-depth
-  // CORE-001: Ambil semua boundary metadata dari core Work repository, tidak lagi dari case itu sendiri
-  async byId(id: string, context?: { tenantId: string; workspaceId: string }) {
+  // CORE-001: Hanya byId/list/listByWorkIds - semua boundary metadata dari core Work
+  async byId(id: string): Promise<CaseAggregate | undefined> {
     const raw = STORE.get(id);
     if (!raw) return undefined;
     
-    // Fetch core Work aggregate untuk mendapatkan boundary metadata yang otoritatif
+    // Fetch core Work aggregate untuk mendapatkan boundary metadata yang otoritatif (CORE-001 requirement)
     const workRepository = getWorkRepositoryPostgres();
     const coreWork = await workRepository.byWorkId(raw.workId);
     
@@ -139,67 +138,22 @@ export const CaseRepositoryInMemory: CaseRepository = {
         success: false,
         input: { caseId: id, workId: raw.workId },
         result: { reason: "core_work_not_found" },
-        ...(context?.tenantId ? { tenant_id: context.tenantId } : {}),
         inputRefs: [id, raw.workId]
       });
       return undefined;
     }
     
-    // Only enforce tenant isolation in production (when NODE_ENV=production AND DATABASE_URL is set)
-    // In development (in-memory), bypass isolation to fix "Work not found" errors
-    if (process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && context) {
-      const caseTenantId = coreWork.tenantId;
-      const caseWorkspaceId = coreWork.workspaceId;
-    
-      if (caseTenantId && caseWorkspaceId) {
-        if (caseTenantId !== context.tenantId || caseWorkspaceId !== context.workspaceId) {
-          console.error(`[CaseRepositoryInMemory] Cross-tenant access attempt blocked: case ${id} (work ${raw.workId}) belongs to tenant ${caseTenantId}, requested tenant ${context.tenantId}`);
-          recordRuntimeInvocation({
-            capabilityId: "legal-case",
-            operationId: "repository.byId",
-            sourceRef: "CaseRepositoryInMemory.byId",
-            success: false,
-            input: { caseId: id },
-            result: { reason: "cross_tenant_isolation_violation", caseTenantId, requestedTenantId: context.tenantId },
-            tenant_id: context.tenantId,
-            inputRefs: [id, raw.workId]
-          });
-          return undefined;
-        }
-      }
-    }
-    
     return clone(raw);
   },
 
-  async list(context?: { tenantId: string; workspaceId: string }): Promise<readonly CaseAggregate[]> {
-    let cases = Array.from(STORE.values()) as CaseAggregate[];
-    
-    // Tenant isolation filtering (same production-only rule)
-    if (process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && context) {
-      cases = cases.filter(c => {
-        const caseTenantId = (c as any).tenantId;
-        const caseWorkspaceId = (c as any).workspaceId;
-        return caseTenantId === context.tenantId && caseWorkspaceId === context.workspaceId;
-      });
-    }
-    
+  async list(): Promise<readonly CaseAggregate[]> {
+    const cases = Array.from(STORE.values()) as CaseAggregate[];
     return cases.map(clone);
   },
 
-  async listByTenant(tenantId: string): Promise<readonly CaseAggregate[]> {
-    const cases = Array.from(STORE.values()).filter(c => (c as any).tenantId === tenantId) as CaseAggregate[];
-    return cases.map(clone);
-  },
-
-  async listByWorkspace(workspaceId: string): Promise<readonly CaseAggregate[]> {
-    let cases: CaseAggregate[];
-    if (process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
-      cases = Array.from(STORE.values()).filter(c => (c as any).workspaceId === workspaceId) as CaseAggregate[];
-    } else {
-      // In development, return all cases to match existing behavior
-      cases = Array.from(STORE.values()) as CaseAggregate[];
-    }
+  // CORE-001: listByWorkIds menggantikan listByTenant/listByWorkspace - hanya fetch cases yang terikat ke Work yang diizinkan
+  async listByWorkIds(workIds: readonly string[]): Promise<readonly CaseAggregate[]> {
+    const cases = Array.from(STORE.values()).filter(c => workIds.includes(c.workId)) as CaseAggregate[];
     return cases.map(clone);
   },
 

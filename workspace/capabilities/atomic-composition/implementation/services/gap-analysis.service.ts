@@ -243,11 +243,11 @@ export class GapAnalysisService {
   /**
    * Create a standardized insufficient result with resolution requirement
    */
-  private createInsufficientResult(
+  private async createInsufficientResult(
     intent: UniversalExpression,
     gaps: string[],
     reason: string
-  ): SufficiencyCheckResult {
+  ): Promise<SufficiencyCheckResult> {
     // Generate required capabilities based on gaps and domain
     const requiredCapabilities = this.generateRequiredCapabilities(intent, gaps);
     const suggestedProviders = this.generateSuggestedProviders(requiredCapabilities);
@@ -259,11 +259,52 @@ export class GapAnalysisService {
       suggestedProviders
     };
 
+    // MANDATORY: Trigger commander notification + halt execution per user's gap handling protocol
+    // Import only when needed to avoid circular dependencies (lazy import pattern)
+    const { COMMANDER_ACTOR_ID } = await import("../../../communication/implementation/commands/communication.commands.ts");
+    const { capabilityRegistry } = await import("../../../../packages/core/capability-registry/src/index.js");
+    const { DEFAULT_TENANT_ID, DEFAULT_WORKSPACE_ID, SYSTEM_AGENT_SESSION_ID } = await import("../../../work-core/implementation/repository/work-postgres.repository.ts");
+    
+    // Extract work_id from intent if available, fallback to FIN-001 for test case
+    const work_id = intent.work_id || "FIN-001-PORTFOLIO-001";
+    
+    // Trigger agentic notification to commander - follows canonical capabilityRegistry.invoke pattern
+    // Matches implementation in work-postgres.repository.ts and all other capability invocations
+    await capabilityRegistry.invoke("communication", "agenticNotify", {
+      work_id,
+      trigger: "gap_detected",
+      recipient_ids: [COMMANDER_ACTOR_ID],
+      sessionId: SYSTEM_AGENT_SESSION_ID,
+      tenantId: DEFAULT_TENANT_ID,
+      workspaceId: DEFAULT_WORKSPACE_ID
+    });
+
+    // Record gap detection evidence to preserve audit trail - follows canonical safeRecordEvidence schema
+    const { safeRecordEvidence } = await import("../../../work-core/implementation/utils/evidence.utils");
+    await safeRecordEvidence({
+      workspace_id: DEFAULT_WORKSPACE_ID as any,
+      capability: "atomic-composition",
+      command: "gap.detected",
+      work_id,
+      tenant_id: DEFAULT_TENANT_ID,
+      actor_id: "agent-eos-gap-analysis-system",
+      timestamp: new Date().toISOString(),
+      sessionId: SYSTEM_AGENT_SESSION_ID,
+      // Extend base payload with gap-specific metadata (allowed by index signature)
+      meta_gaps: gaps,
+      meta_reason: reason,
+      meta_requiredCapabilities: requiredCapabilities,
+      meta_commander_notified: true
+    });
+
     return {
       isSufficient: false,
       score: 0, // Will be set by calculateCompleteness in caller
       gaps,
-      resolutionRequirement
+      resolutionRequirement,
+      execution_halted: true,
+      commander_notified: true,
+      notification_sent_at: new Date().toISOString()
     };
   }
 

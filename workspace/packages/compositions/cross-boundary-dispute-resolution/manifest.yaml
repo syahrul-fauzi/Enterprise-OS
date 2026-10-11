@@ -1,0 +1,16 @@
+id: cross-boundary-dispute-resolution
+extends: ["work-template-core", "workspace-standard", "cmbcd-boundary-base"]
+patterns: ["multi-actor-authority-transition", "evidence-chain-immutable", "cross-boundary-context-preservation", "economic-finality-verification"]
+capabilities: ["work-core", "evidence-registry", "execute-transition", "validate-boundaries", "cmbcd-execution-controller"]
+surfaces: ["dispute-dashboard", "actor-transition-portal", "settlement-verification-ui"]
+schemas: ["crossBoundaryDisputeTemplate"]
+leverage_metrics:
+  potential_work_types: 50+
+  industries_supported: ["logistics", "manufacturing", "retail", "finance", "construction", "energy"]
+  core_changes_required: 0
+  primitive_reuse_percentage: 100
+  economic_gravity: high
+  boundary_density: high
+  resolution_pain: high
+  repeatability: high
+  origin: "HV-008 $2.4M cross-org supply chain dispute implementation"

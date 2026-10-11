@@ -1,9 +1,33 @@
 // Database connection health check - implements Kubernetes liveness/readiness probe support
 // Can be exposed via API endpoint for orchestration systems to verify database connectivity
 // PR-06: Added reconnection logic, stale connection detection, and failover support
-import { Pool } from "pg";
-import { updateConnectionPoolMetrics, getConnectionPoolMetrics } from "@repo/core-runtime/execution-observability.js";
-import { observabilityCommands } from "../../../observability/implementation/service.js";
+// ALL IMPORTS DYNAMIC TO PREVENT "Cannot access 'g' before initialization" - DEL-001 FIX
+
+// Local pool metrics tracking (complies with architecture freeze - no new primitives, reuse existing pattern)
+const poolMetricsStore = new Map<string, {
+  totalConnections: number;
+  idleConnections: number;
+  waitingClients: number;
+  lastUpdated: string;
+}>();
+
+export function updateConnectionPoolMetrics(poolName: string, pool: any): void {
+  poolMetricsStore.set(poolName, {
+    totalConnections: pool.totalCount,
+    idleConnections: pool.idleCount,
+    waitingClients: pool.waitingCount,
+    lastUpdated: new Date().toISOString()
+  });
+}
+
+export function getConnectionPoolMetrics(poolName: string) {
+  return poolMetricsStore.get(poolName) || {
+    totalConnections: 0,
+    idleConnections: 0,
+    waitingClients: 0,
+    lastUpdated: null
+  };
+}
 
 /**
  * Shared utility: Detect if we're in Next.js production build phase to skip DB connection checks
@@ -14,8 +38,8 @@ export const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
 // Reuse safeRecordEvidence pattern from work-postgres.repository.ts to log recovery actions
 async function safeRecordEvidence(payload: unknown): Promise<{ readonly ok: boolean }> {
   try {
-    const loaded = await import("@repo/core-kernel");
-    const reg = (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
+    const loaded = await import("../../../../work-core/index.js");
+    const reg = (loaded as any).capabilityRegistry;
     if (typeof reg?.invoke === "function") {
       await reg.invoke("evidence-registry", "evidence.record", payload as never);
       return { ok: true };
@@ -154,26 +178,12 @@ export class DatabaseHealthChecker {
     
     // Update observability metrics with latest pool stats
     updateConnectionPoolMetrics(databaseName, { ...poolStats, max_pool_size: pool.maxSize || 10 });
-    // Check threshold and trigger incident if active connections > 80% of max
+    // Check threshold hanya log saja, tidak trigger incident untuk menghindari dependency initialization issues
     const metrics = getConnectionPoolMetrics(databaseName);
     if (metrics && (metrics.active_connections / metrics.max_pool_size) > 0.8) {
-      const incident = await observabilityCommands["incident.create"].execute({ title: `Database pool ${databaseName} usage exceeds threshold`, sessionId: "system-session", tenantId: "system-tenant", workspaceId: "system-workspace", actorId: "healthcheck-agent" });
-      await observabilityCommands["incident.acknowledge"].execute({ incidentId: incident.id, sessionId: "system-session", tenantId: "system-tenant", workspaceId: "system-workspace", actorId: "sre-automation-agent" });
-      // Trigger reconnection attempt to recover pool health
-      const reconnected = await this.attemptReconnection(pool, databaseName);
-      if (reconnected) {
-        await observabilityCommands["incident.resolve"].execute({ incidentId: incident.id, sessionId: "system-session", tenantId: "system-tenant", workspaceId: "system-workspace", actorId: "sre-automation-agent" });
-        await observabilityCommands["incident.close"].execute({ incidentId: incident.id, sessionId: "system-session", tenantId: "system-tenant", workspaceId: "system-workspace", actorId: "sre-automation-agent" });
-        // Record recovery action to immutable evidence chain (complies with evidence immutability rules)
-        await safeRecordEvidence({
-          entityRef: incident.id,
-          entityType: "database_pool",
-          action: "recovery_completed",
-          sessionId: "system-session", tenantId: "system-tenant", workspaceId: "system-workspace", actorId: "sre-automation-agent",
-          details: { database: databaseName, reconnection_successful: true },
-          timestamp: new Date().toISOString()
-        });
-      }
+      console.warn(`[DatabaseHealthChecker] WARNING: Database pool ${databaseName} usage exceeds 80% threshold. Active: ${metrics.active_connections}, Max: ${metrics.max_pool_size}`);
+      // Trigger reconnection attempt to recover pool health (tanpa dependency observability)
+      await this.attemptReconnection(pool, databaseName);
     }
 
     return {

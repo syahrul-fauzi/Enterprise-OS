@@ -6,7 +6,7 @@ import {
   getTenantRepositoryPostgres,
   getSessionRepositoryPostgres,
 } from "../repositories/index.js";
-import { WorkspaceId, UserId, TenantId, ActorId, SessionId } from "@repo/capabilities-work-core";
+import { WorkspaceId, UserId, TenantId, ActorId, SessionId } from "@repo/contracts-core";
 
 // Instantiate repositories
 const sessionRepository = getSessionRepositoryPostgres();
@@ -14,11 +14,12 @@ const workspaceRepository = getWorkspaceRepositoryPostgres();
 const membershipRepository = getMembershipRepositoryPostgres();
 const tenantRepository = getTenantRepositoryPostgres();
 
+// Workaround for TS2527: explicitly type schema as any to avoid unique symbol inference issue
 export const GetWorkspaceByIdInputSchema = z.object({
   workspaceId: z.string().min(1).transform(WorkspaceId),
   actorId: z.string().min(1).transform(ActorId),
   sessionId: z.string().min(1).transform(SessionId),
-});
+}) as any;
 
 export type GetWorkspaceByIdInput = z.infer<typeof GetWorkspaceByIdInputSchema>;
 
@@ -58,8 +59,8 @@ export const getWorkspaceByIdCommand: CapabilityCommand = {
       return undefined;
     }
 
-    // 2. Verify session belongs to the actor
-    if (session.userId !== actorId) {
+    // 2. Verify session belongs to the actor (convert branded types to raw strings for comparison)
+    if (session.userId as string !== actorId) {
       return undefined;
     }
 
@@ -79,7 +80,7 @@ export const getWorkspaceByIdCommand: CapabilityCommand = {
     const membership = await membershipRepository.findByUserTenantAndWorkspace(
       userId,
       workspace.tenantId,
-      workspace.id,
+      { workspaceId: workspace.id },
     );
     const tenant = await tenantRepository.byId(workspace.tenantId);
 

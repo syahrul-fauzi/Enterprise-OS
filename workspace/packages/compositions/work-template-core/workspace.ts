@@ -130,6 +130,69 @@ export const customerSupportDisputeTemplate: WorkTemplateSchema = {
   post_creation_hook: "assign-escalation-actor,cmbcd-frame-initializer",
 };
 
+// HV008-REPEAT-001: Cross-Organizational Supply Chain Dispute Template
+// Reusable work pattern for $2.4M+ cross-org supply chain disputes (HV-008 proof extracted)
+// Follows 6-actor authority transition: buyer → supplier → logistics → customs_id → customs_de → insurer
+export const crossOrgSupplyChainDisputeTemplate: WorkTemplateSchema = {
+  ...customerSupportDisputeTemplate,
+  template_id: "cross-org-supply-chain-dispute",
+  template_version: "1.0.0",
+  extends: [...customerSupportDisputeTemplate.extends, "hv008-boundary-core"],
+  capabilities: [...customerSupportDisputeTemplate.capabilities, "supply-chain-integration", "customs-connector", "insurance-claim-processor", "economic-finity-verifier"],
+  surfaces: [...customerSupportDisputeTemplate.surfaces, "supply-chain-dispute-dashboard", "customs-verification-portal", "insurance-claim-submission"],
+  patterns: [...customerSupportDisputeTemplate.patterns, "6-actor-authority-chain-pattern", "cross-border-resolution-pattern", "economic-settlement-verification-pattern"],
+  // HV-008 specific actor execution frame mapping (sesuai urutan authority transition)
+  actor_execution_frame_map: {
+    ...customerSupportDisputeTemplate.actor_execution_frame_map,
+    "buyer": "direct",
+    "supplier": "constrained-gui",
+    "logistics-provider": "mcp",
+    "customs-id-officer": "proxy",
+    "customs-de-officer": "proxy",
+    "insurer-adjuster": "constrained-gui"
+  },
+  // Enforce HV-007 invariants: Economic finality, Evidence lineage, Execution independence
+  frame_access_policies: {
+    ...customerSupportDisputeTemplate.frame_access_policies,
+    "mcp": [...customerSupportDisputeTemplate.frame_access_policies.mcp, "supply-chain-system", "customs-system", "insurance-system"],
+    "constrained-gui": [...customerSupportDisputeTemplate.frame_access_policies["constrained-gui"], "verified-supplier", "approved-insurer"]
+  },
+  // Validasi sebelum create: Economic gravity minimal sesuai EOS-grade Work criteria
+  pre_creation_hook: "validate-dispute-input,validate-economic-gravity-minimum",
+  // Assign actor sesuai urutan authority transition HV-008, inisialisasi boundary check
+  post_creation_hook: "assign-escalation-actor,cmbcd-frame-initializer,initialize-hv008-authority-chain"
+};
+
+// HV-007: Vendor Onboarding Work Template (reuses serviceRequestTemplateBase)
+// First economic resolution slice - implements vendor onboarding + PO creation workflow
+export const vendorOnboardingTemplate: WorkTemplateSchema = {
+  ...serviceRequestTemplateBase,
+  template_id: "vendor-onboarding-request",
+  extends: [...serviceRequestTemplateBase.extends, "service-request-base", "connector-ecosystem", "payment-processing-core"],
+  capabilities: [...serviceRequestTemplateBase.capabilities, "vendor-credential-validation", "po-creation", "connector-ecosystem", "payment-processing"],
+  surfaces: [...serviceRequestTemplateBase.surfaces, "vendor-onboarding-form", "vendor-portal", "po-dashboard", "payment-processor-configurator"],
+  patterns: [...serviceRequestTemplateBase.patterns, "payment-execution-pattern", "vendor-actor-verification-pattern"],
+  default_execution_frame: "constrained-gui",
+  allowed_execution_frames: ["direct", "proxy", "mcp", "constrained-gui"],
+  actor_execution_frame_map: {
+    "human": "direct",
+    "procurement-manager": "direct",
+    "vendor-account-manager": "direct",
+    "financial-auditor": "proxy",
+    "compliance-officer": "proxy",
+    "api": "mcp",
+    "external-vendor-system": "mcp",
+    "automation-robot": "mcp",
+    "vendor": "constrained-gui"
+  },
+  frame_access_policies: {
+    "mcp": ["tenant-admin", "system-operator", "payment-processor"],
+    "constrained-gui": ["verified-vendor", "procurement-staff", "contract-manager"]
+  },
+  pre_creation_hook: "validate-vendor-onboarding-input",
+  post_creation_hook: "assign-vendor-manager,initialize-payment-connector",
+};
+
 // Reuse existing actor assignment pattern from workspace-standard's actor-assignment-pattern
 async function invokeHook(hookName: string | undefined, work: WorkAggregate, template: WorkTemplateSchema): Promise<WorkAggregate> {
   if (!hookName) return work;

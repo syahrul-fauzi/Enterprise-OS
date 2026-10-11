@@ -22,7 +22,7 @@ const PRIORITY_LABEL: Record<CaseAggregate["priority"], string> = {
 
 export function CaseCard({ item }: CaseCardProps) {
   return (
-    <a href={`/cases/${item.id}`} className="block transition-transform hover:scale-[1.02]">
+    <a href={`/cases/${item.id}`} className="block transition-transform hover:scale-[1.02]" data-work-id={item.workId}>
       <Card
         title={
           <h3 className="font-semibold leading-tight" style={{ color: "inherit" }}>

@@ -8,10 +8,11 @@
     "composite": true,
 
     "noEmit": false,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "rootDir": "src",
     "types": ["node"],
-    "paths": {
-      "@repo/composition": ["../../composition/dist/index.d.ts", "../../composition/src/index.ts"]
-    }
+    "ignoreDeprecations": "5.0"
   },
   "include": ["src"],
   "exclude": ["dist", "build", "node_modules"]

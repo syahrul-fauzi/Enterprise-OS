@@ -1,8 +1,8 @@
 import {
-  TenantAggregate,
-  TenantId,
+  type TenantAggregate,
+  type TenantId,
   type TenantRepository,
-} from "../contracts/index.ts";
+} from "@repo/contracts-core";
 
 function clone<T extends TenantAggregate>(entity: T): T {
   return {

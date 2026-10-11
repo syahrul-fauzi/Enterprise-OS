@@ -1,0 +1,97 @@
+slice:
+  id: HV-007
+  version: "2.0.0"
+  kind: VERTICAL_SLICE_CONTRACT
+  status: IN_PROGRESS
+  root_aggregate: MAInvestmentComplianceWork
+  transformation_id: VS-RESOLVE-001
+  source_els_hash: "sha256:f46be253ebafb15f8c31845245f1d7c2f78a0acb58ee7b983159d2c5328c05db"
+  slice_type: HIGH_VALUE_RESOLUTION_WORK
+
+reality:
+  source: post-wave1-economic-resolution-mandate
+  actor: eos_war_room_commander
+  actor_type: agent
+  intent: "Resolve high-value cross-boundary M&A audit Work with end-to-end UNDERSTAND→RESOLVE→EXECUTE→VERIFY→SETTLE pipeline. Enforces core EOS principle: maximize boundaries crossed while preserving identity, authority, evidence, and outcome."
+  request_context:
+    origin: User post-HV-006 mandate to shift from generality proof to economic resolution
+    governance_class: high_value_resolution_request
+    change_policy: thin_layer_only_no_core_mutation
+    owner: eos_product_implementation_team
+
+expected:
+  work_created: true
+  work_type: M&A_INVESTMENT_COMPLIANCE_AUDIT
+  work_id: "W-002"
+  initial_state: created
+  actor_bound: true
+  capabilities_attached:
+    - CAP-WORK-CORE-PERSIST
+    - CAP-EVIDENCE-CHAIN-TRACK
+    - CAP-CMBCD-EXECUTION-POLICY
+    - CAP-IDENTITY-BOUNDARY-VALIDATE
+    - CAP-AUTHORITY-BOUNDARY-VALIDATE
+    - CAP-SETTLEMENT-OUTCOME-RECORD
+  compliance_rules_enforced:
+    - zero_duplicate_work_policy
+    - 100_percent_primitive_reuse
+    - cross_boundary_identity_preservation
+    - economic_outcome_verification
+  traceability_anchors_preserved:
+    - work_identity_anchor
+    - cross_boundary_timeline_anchor
+    - evidence_chain_integrity_anchor
+    - settlement_outcome_anchor
+
+acceptance:
+  # Core EOS flow validation - WAJIB untuk SEMUA slice, tidak boleh diubah
+  work_created: true
+  actor_bound: true
+  persisted: true
+  evidence_recorded: true
+  recoverable: true
+  outcome_achieved: true
+
+  # Traceability checks (wajib untuk semua slice, terpetakan dari ELS)
+  identity_trace_complete: true
+  hash_chain_valid: true
+
+  # Compliance checks (wajib untuk semua slice, terpetakan dari ELS)
+  all_blocker_rules_enforced: true
+  no_orphaned_capabilities: true
+
+  # Runtime checks (wajib untuk semua slice, terverifikasi oleh runner)
+  deterministic_execution: true
+  idempotent_transformation: true
+
+  # Acceptance criteria SPESIFIK HV-007 (dari user mandate dan dashboard)
+  - "M&A Work successfully resolved with verified economic outcome"
+  - "semua boundary (legal→service→compliance→finance) terlewati dengan Work ID W-002 tetap invariant"
+  - "100% primitive reuse, 0% duplicate work tercapai"
+  - "resolution pipeline (UNDERSTAND→RESOLVE→EXECUTE→VERIFY→SETTLE) bekerja di atas existing Work continuity primitives"
+  - "evidence chain tercatat lengkap dari creation sampai settlement"
+  - "economic outcome: settlementStatus = \"paid\", relatedOutcomeIds terisi lengkap"
+  - "Work Graph temporal relationships tercatat untuk semua provider/actor/capability transitions"
+
+surfaces:
+  - api: "/api/v1/resolution/ma-compliance"
+  - web: "/work/W-002/ma-investment-compliance"
+  - ledger: "/.eos-state/evidence/HV-007_evidence.json"
+
+failure_cases:
+  - "Work ID W-002 berubah selama cross-boundary traversal"
+  - "settlementStatus tidak mencapai 'paid' di akhir pipeline"
+  - "evidence chain terputus selama state transition"
+  - "authority boundary dilanggar saat finance domain entry"
+
+verification_harness:
+  supported_runners:
+    - api_verifier
+    - persistence_verifier
+    - recovery_verifier
+    - resolution_pipeline_verifier
+  required_evidence:
+    - "HV-007_evidence.json dengan semua command invocation records"
+    - "work_repository_byId_return.json untuk W-002"
+    - "settlement_status_verification.json"
+    - "cross_boundary_audit_log.json"

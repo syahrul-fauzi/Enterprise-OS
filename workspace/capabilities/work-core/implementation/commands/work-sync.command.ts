@@ -2,7 +2,7 @@ import { z } from "zod";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import type { WorkAggregate } from "../../contracts/work.contracts.ts";
 import { getWorkRepositoryPostgres } from "../repository/work-postgres.repository.ts";
-import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/invocation-evidence.ts";
+import { recordRuntimeInvocation } from "../../../../packages/core/runtime/dist/invocation-evidence.js";
 
 // Schema untuk sync request - minimal sesuai kebutuhan edge-runtime
 export const SyncWorkRequestSchema = z.object({

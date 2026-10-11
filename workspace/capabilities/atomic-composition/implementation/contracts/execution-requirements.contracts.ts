@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { WorkId } from "../../../work-core/contracts/work.contracts";
+import type { WorkId, ActorId, WorkspaceId, TenantId, ActorMetadata, AuthorizationScope, ContextMetadata, RiskAssessment } from "../../../work-core/contracts/work.contracts";
 import type { CapabilityProvider } from "../services/capability-resolver.service.js";
 
 // ============================================================================
@@ -121,6 +121,34 @@ export const ExecutionRequirementSchema = z.object({
   // Authorization tracking (required for ER-04 check)
   authorizationId: z.string().optional(), // ID of valid authorization for execution
   authorizationVerified: z.boolean().default(false), // Whether authorization is verified
+  
+  // CMBCD execution context (required for execution-boundary policy enforcement)
+  // Reuses canonical types from work-core to ensure cross-slice consistency
+  actorMetadata: z.object({
+    actorId: z.custom<ActorId>(),
+    actorType: z.enum(["human", "ai-agent", "external-service", "organization", "machine"]),
+    role: z.string(),
+    displayName: z.string(),
+    trustLevel: z.enum(["verified", "certified", "unverified"])
+  }).optional(),
+  authorizationScope: z.object({
+    allowedActions: z.array(z.string()),
+    restrictedFields: z.array(z.string())
+  }).optional(),
+  contextMetadata: z.object({
+    tenantId: z.custom<TenantId>(),
+    workspaceId: z.custom<WorkspaceId>().optional(),
+    jurisdiction: z.string(),
+    requestCategory: z.string(),
+    sensitivityLevel: z.enum(["public", "internal", "confidential", "restricted"]),
+    relatedWorkIds: z.array(z.string())
+  }).optional(),
+  riskAssessment: z.object({
+    level: z.enum(["low", "medium", "high", "critical"]),
+    rationale: z.string(),
+    assessedBy: z.custom<ActorId>(),
+    assessedAt: z.date()
+  }).optional(),
   
   // Failure handling (user's requirement: all failure paths first-class)
   failureHandling: FailureHandlingSchema.default({}),

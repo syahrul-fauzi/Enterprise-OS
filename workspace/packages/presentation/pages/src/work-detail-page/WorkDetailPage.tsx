@@ -4,16 +4,21 @@ import React, { useState, useEffect } from 'react';
 import { WorkRealityTemplate } from "@repo/presentation-templates";
 import { WorkRealityLoading, Card, Button } from "@repo/presentation-ui-system";
 import type { WorkRealityModel, WorkRealityPerspective } from "@repo/presentation-entities";
-import type { AnyWorkAggregate, GenericCommunicationEvent } from "@repo/presentation-features";
+// FACE-001 compliance: Replace core WorkAggregate with server-derived WorkFaceProjection
+// Client components only consume projection, never core Work data directly
+import type { WorkFaceProjection, GenericCommunicationEvent } from "@repo/presentation-features";
 
 interface WorkDetailPageCallbackProps {
   workId: string;
-  fetchWork: (id: string) => Promise<AnyWorkAggregate>;
+  fetchWork: (id: string) => Promise<WorkFaceProjection>; // FACE-001: fetch server-derived projection only
   fetchCommunications: (workId: string) => Promise<GenericCommunicationEvent[]>;
   defaultPerspective?: WorkRealityPerspective;
   onAssignLawyer?: (formData: FormData) => Promise<void>;
   onAddEvidence?: (formData: FormData) => Promise<void>;
   onMarkCompleted?: (formData: FormData) => Promise<void>;
+  onExecuteAction?: (actionId: string, formData?: FormData) => Promise<void>;
+  onInitiateSignature?: (formData: FormData) => Promise<void>;
+  eSignEnabled?: boolean;
   initialWork?: undefined;
   initialCommunications?: undefined;
 }
@@ -27,6 +32,9 @@ interface WorkDetailPagePrefetchProps {
   onAssignLawyer?: (formData: FormData) => Promise<void>;
   onAddEvidence?: (formData: FormData) => Promise<void>;
   onMarkCompleted?: (formData: FormData) => Promise<void>;
+  onExecuteAction?: (actionId: string, formData?: FormData) => Promise<void>;
+  onInitiateSignature?: (formData: FormData) => Promise<void>;
+  eSignEnabled?: boolean;
   fetchWork?: undefined;
   fetchCommunications?: undefined;
 }
@@ -51,7 +59,7 @@ function isCallbackProps(props: WorkDetailPageProps): props is WorkDetailPageCal
  * Reusable across all domains: LawyersHub, ILC, Services.ID.
  */
 export function WorkDetailPage(props: WorkDetailPageProps) {
-  const { workId, defaultPerspective = 'operator', onAssignLawyer, onAddEvidence, onMarkCompleted } = props;
+  const { workId, defaultPerspective = 'operator', onAssignLawyer, onAddEvidence, onMarkCompleted, onExecuteAction, onInitiateSignature, eSignEnabled } = props;
 
   const prefetchedModel = ((): WorkRealityModel | null => {
     if (isCallbackProps(props)) return null;
@@ -139,5 +147,10 @@ export function WorkDetailPage(props: WorkDetailPageProps) {
   return <WorkRealityTemplate 
     initialModel={model} 
     perspective={defaultPerspective}
+    onAssignLawyer={onAssignLawyer}
+    onAddEvidence={onAddEvidence}
+    onMarkCompleted={onMarkCompleted}
+    onExecuteAction={onExecuteAction}
+    onInitiateSignature={eSignEnabled ? onInitiateSignature : undefined}
   />;
 }
