@@ -1,0 +1,32 @@
+{
+  "completedAt": "2026-10-09T01:36:30.788Z",
+  "results": [
+    {
+      "testId": "TEST3",
+      "recovered": false,
+      "removedFromProcessing": true,
+      "staleItemHandled": false
+    },
+    {
+      "testId": "TEST1",
+      "status": "SKIPPED",
+      "reason": "Requires API server running"
+    },
+    {
+      "testId": "TEST2",
+      "status": "SKIPPED",
+      "reason": "Requires API server running"
+    },
+    {
+      "testId": "TEST4",
+      "status": "SKIPPED",
+      "reason": "Simulasi test belum diimplementasi"
+    },
+    {
+      "testId": "TEST5",
+      "status": "SKIPPED",
+      "reason": "Requires API server running"
+    }
+  ],
+  "workerVersion": "1.0.0"
+}

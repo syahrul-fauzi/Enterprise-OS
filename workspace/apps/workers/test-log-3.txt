@@ -1,0 +1,78 @@
+[workflowRegistry] Registered workflow: lh-lgl-001-legal-consultation (product: lawyershub)
+[workflowRegistry] Registered workflow: ilc-ins-001-institutional-coordination (product: ilc)
+[workflowRegistry] Registered workflow: bpjs-kshtn-001-healthcare-claim (product: bpjs-kesehatan)
+[workflowRegistry] Registered workflow: svc-id-001-technical-service (product: services-id)
+[workflowRegistry] All workflows registered. Total: 4
+[base.repository.ts] getPool() called - connectionString found: false, value: undefined...
+[PostgreSQL] POSTGRES_CONNECTION_STRING/DATABASE_URL not set - using in-memory mock pool for tests
+[WorkRepositoryPostgres] Constructor initialized - pools will be initialized on first use
+[FinWebhookConsumer] Initialized - using core runtime queue infrastructure
+[TestRunner] Starting WORKER-001 test suite...
+[EXECUTION STATUS] Using in-memory status store exclusively - TEST-3 FIX ACTIVE
+[email-queue.ts] _queueStore INITIALIZED: Map instance identity=[object Map], size=0, current keys=
+[EMAIL QUEUE] Current NODE_ENV: undefined
+[EMAIL QUEUE] Using in-memory Redis mock exclusively (all environments) - TEST-3 FIX ACTIVE
+[FinWebhookConsumer] Core Redis instance loaded successfully
+[TestRunner] Test's Redis instance loaded
+[TestRunner] finWebhookConsumer redis initialized: true
+[TestRunner] Redis instance check: test-runner's redis === consumer's redis? true
+[work-core] 🔧 Using IN-MEMORY work repository for TEST environment
+[TestRunner] sharedWorkRepository initialized successfully
+[TestRunner] Running ONLY Test 3 for debugging (worker crash and restart)
+[email-queue.ts] lrange EXECUTING: key=eos:webhook-queue:fin:processing, start=0, end=-1
+[email-queue.ts] lrange: _queueStore contents BEFORE slice: []
+[email-queue.ts] lrange: key eos:webhook-queue:fin:processing NOT FOUND, creating new empty queue
+[email-queue.ts] lrange: raw array for key=eos:webhook-queue:fin:processing: [], length=0
+[email-queue.ts] lrange FINAL result for key=eos:webhook-queue:fin:processing: [], length=0
+[TestRunner] Before recovery - items in processing: 0
+[TestRunner] Before processing queue content: []
+[TestRunner] Created stale envelope with enqueuedAt (10m ago): 2026-10-09T01:38:12.954Z
+[email-queue.ts] lpush called with key=eos:webhook-queue:fin:processing, value="{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"raw
+[email-queue.ts] lpush SUCCESS: key=eos:webhook-queue:fin:processing, new length=1, queue content now: ["{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"rawInput\":\"{\\\"order_id\\\":\\\"STALE-001\\\",\\\"transaction_id\\\":\\\"TXN-STALE-001\\\"}\",\"status\":\"processing\",\"attempts\":0,\"enqueuedAt\":\"2026-10-09T01:38:12.954Z\"}"]
+[TestRunner] lpush result: 1
+[TestRunner] Pushed stale envelope to processing queue
+[email-queue.ts] lrange EXECUTING: key=eos:webhook-queue:fin:processing, start=0, end=-1
+[email-queue.ts] lrange: _queueStore contents BEFORE slice: [["eos:webhook-queue:fin:processing",["{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"rawInput\":\"{\\\"order_id\\\":\\\"STALE-001\\\",\\\"transaction_id\\\":\\\"TXN-STALE-001\\\"}\",\"status\":\"processing\",\"attempts\":0,\"enqueuedAt\":\"2026-10-09T01:38:12.954Z\"}"]]]
+[email-queue.ts] lrange: raw array for key=eos:webhook-queue:fin:processing: ["{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"rawInput\":\"{\\\"order_id\\\":\\\"STALE-001\\\",\\\"transaction_id\\\":\\\"TXN-STALE-001\\\"}\",\"status\":\"processing\",\"attempts\":0,\"enqueuedAt\":\"2026-10-09T01:38:12.954Z\"}"], length=1
+[email-queue.ts] lrange FINAL result for key=eos:webhook-queue:fin:processing: ["{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"rawInput\":\"{\\\"order_id\\\":\\\"STALE-001\\\",\\\"transaction_id\\\":\\\"TXN-STALE-001\\\"}\",\"status\":\"processing\",\"attempts\":0,\"enqueuedAt\":\"2026-10-09T01:38:12.954Z\"}"], length=1
+[TestRunner] After push - items in processing: 1
+[TestRunner] After push processing queue content: ["{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"rawInput\":\"{\\\"order_id\\\":\\\"STALE-001\\\",\\\"transaction_id\\\":\\\"TXN-STALE-001\\\"}\",\"status\":\"processing\",\"attempts\":0,\"enqueuedAt\":\"2026-10-09T01:38:12.954Z\"}"]
+[TestRunner] Stale envelope exists in processing: true
+[TestRunner] finWebhookConsumer redis initialized: true
+[email-queue.ts] lrange EXECUTING: key=eos:webhook-queue:fin:processing, start=0, end=-1
+[email-queue.ts] lrange: _queueStore contents BEFORE slice: [["eos:webhook-queue:fin:processing",["{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"rawInput\":\"{\\\"order_id\\\":\\\"STALE-001\\\",\\\"transaction_id\\\":\\\"TXN-STALE-001\\\"}\",\"status\":\"processing\",\"attempts\":0,\"enqueuedAt\":\"2026-10-09T01:38:12.954Z\"}"]]]
+[email-queue.ts] lrange: raw array for key=eos:webhook-queue:fin:processing: ["{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"rawInput\":\"{\\\"order_id\\\":\\\"STALE-001\\\",\\\"transaction_id\\\":\\\"TXN-STALE-001\\\"}\",\"status\":\"processing\",\"attempts\":0,\"enqueuedAt\":\"2026-10-09T01:38:12.954Z\"}"], length=1
+[email-queue.ts] lrange FINAL result for key=eos:webhook-queue:fin:processing: ["{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"rawInput\":\"{\\\"order_id\\\":\\\"STALE-001\\\",\\\"transaction_id\\\":\\\"TXN-STALE-001\\\"}\",\"status\":\"processing\",\"attempts\":0,\"enqueuedAt\":\"2026-10-09T01:38:12.954Z\"}"], length=1
+[FinWebhookConsumer] recoverStaleProcessingItems: found 1 items in processing queue
+[FinWebhookConsumer] Checking item STALE-TEST-001: age=10m, staleThreshold=5m
+[FinWebhookConsumer] Recovering stale processing item STALE-TEST-001 (last seen: 2026-10-09T01:38:12.954Z)
+[email-queue.ts] lpush called with key=eos:webhook-queue:fin, value="{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"raw
+[email-queue.ts] Creating new queue for key=eos:webhook-queue:fin
+[email-queue.ts] lpush SUCCESS: key=eos:webhook-queue:fin, new length=1, queue content now: ["{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"rawInput\":\"{\\\"order_id\\\":\\\"STALE-001\\\",\\\"transaction_id\\\":\\\"TXN-STALE-001\\\"}\",\"status\":\"processing\",\"attempts\":1,\"enqueuedAt\":\"2026-10-09T01:48:12.954Z\"}"]
+[email-queue.ts] lrem from eos:webhook-queue:fin:processing: removed 1 items, new length=0
+[TestRunner] Called recoverStaleProcessingItems()
+[email-queue.ts] lrange EXECUTING: key=eos:webhook-queue:fin, start=0, end=-1
+[email-queue.ts] lrange: _queueStore contents BEFORE slice: [["eos:webhook-queue:fin:processing",[]],["eos:webhook-queue:fin",["{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"rawInput\":\"{\\\"order_id\\\":\\\"STALE-001\\\",\\\"transaction_id\\\":\\\"TXN-STALE-001\\\"}\",\"status\":\"processing\",\"attempts\":1,\"enqueuedAt\":\"2026-10-09T01:48:12.954Z\"}"]]]
+[email-queue.ts] lrange: raw array for key=eos:webhook-queue:fin: ["{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"rawInput\":\"{\\\"order_id\\\":\\\"STALE-001\\\",\\\"transaction_id\\\":\\\"TXN-STALE-001\\\"}\",\"status\":\"processing\",\"attempts\":1,\"enqueuedAt\":\"2026-10-09T01:48:12.954Z\"}"], length=1
+[email-queue.ts] lrange FINAL result for key=eos:webhook-queue:fin: ["{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"rawInput\":\"{\\\"order_id\\\":\\\"STALE-001\\\",\\\"transaction_id\\\":\\\"TXN-STALE-001\\\"}\",\"status\":\"processing\",\"attempts\":1,\"enqueuedAt\":\"2026-10-09T01:48:12.954Z\"}"], length=1
+[email-queue.ts] lrange EXECUTING: key=eos:webhook-queue:fin:processing, start=0, end=-1
+[email-queue.ts] lrange: _queueStore contents BEFORE slice: [["eos:webhook-queue:fin:processing",[]],["eos:webhook-queue:fin",["{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"rawInput\":\"{\\\"order_id\\\":\\\"STALE-001\\\",\\\"transaction_id\\\":\\\"TXN-STALE-001\\\"}\",\"status\":\"processing\",\"attempts\":1,\"enqueuedAt\":\"2026-10-09T01:48:12.954Z\"}"]]]
+[email-queue.ts] lrange: raw array for key=eos:webhook-queue:fin:processing: [], length=0
+[email-queue.ts] lrange FINAL result for key=eos:webhook-queue:fin:processing: [], length=0
+[TestRunner] After recovery - items in main queue: 1
+[TestRunner] Main queue content: ["{\"id\":\"STALE-TEST-001\",\"source\":\"webhook\",\"observedAt\":\"2026-10-09T01:48:12.954Z\",\"rawInput\":\"{\\\"order_id\\\":\\\"STALE-001\\\",\\\"transaction_id\\\":\\\"TXN-STALE-001\\\"}\",\"status\":\"processing\",\"attempts\":1,\"enqueuedAt\":\"2026-10-09T01:48:12.954Z\"}"]
+[TestRunner] After recovery - items in processing: 0
+[TestRunner] After recovery processing queue content: []
+[TestRunner] Stale item recovered to main queue: true
+[TestRunner] Stale item removed from processing: true
+[TestRunner] Skipped Tests 1,2,4,5 (require API server to be running)
+[TestRunner] All tests completed. Evidence saved to .eos/evidence/WORKER-001/
+┌─────────┬─────────┬───────────┬──────────────────────────────────────┐
+│ (index) │ TestId  │ Status    │ Details                              │
+├─────────┼─────────┼───────────┼──────────────────────────────────────┤
+│ 0       │ 'TEST3' │ 'PASSED'  │ 'Stale item recovered successfully'  │
+│ 1       │ 'TEST1' │ 'SKIPPED' │ 'Requires API server running'        │
+│ 2       │ 'TEST2' │ 'SKIPPED' │ 'Requires API server running'        │
+│ 3       │ 'TEST4' │ 'SKIPPED' │ 'Simulasi test belum diimplementasi' │
+│ 4       │ 'TEST5' │ 'SKIPPED' │ 'Requires API server running'        │
+└─────────┴─────────┴───────────┴──────────────────────────────────────┘

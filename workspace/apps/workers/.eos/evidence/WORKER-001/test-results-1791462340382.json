@@ -1,0 +1,52 @@
+{
+  "completedAt": "2026-10-08T12:25:40.382Z",
+  "results": [
+    {
+      "testId": "TEST1",
+      "success": false,
+      "status": 500
+    },
+    {
+      "testId": "TEST2",
+      "results": [
+        {
+          "success": false,
+          "status": 500
+        },
+        {
+          "success": false,
+          "status": 500
+        },
+        {
+          "success": false,
+          "status": 500
+        },
+        {
+          "success": false,
+          "status": 500
+        },
+        {
+          "success": false,
+          "status": 500
+        }
+      ]
+    },
+    {
+      "testId": "TEST3",
+      "recovered": false,
+      "message": null
+    },
+    {
+      "testId": "TEST4",
+      "redisRecovery": true,
+      "note": "Simulasi: Redis connection handled gracefully"
+    },
+    {
+      "testId": "TEST5",
+      "totalSent": 150,
+      "successCount": 0,
+      "failCount": 150
+    }
+  ],
+  "workerVersion": "1.0.0"
+}

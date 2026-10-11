@@ -1,0 +1,61 @@
+[workflowRegistry] Registered workflow: lh-lgl-001-legal-consultation (product: lawyershub)
+[workflowRegistry] Registered workflow: ilc-ins-001-institutional-coordination (product: ilc)
+[workflowRegistry] Registered workflow: bpjs-kshtn-001-healthcare-claim (product: bpjs-kesehatan)
+[workflowRegistry] Registered workflow: svc-id-001-technical-service (product: services-id)
+[workflowRegistry] All workflows registered. Total: 4
+[base.repository.ts] getPool() called - connectionString found: false, value: undefined...
+[PostgreSQL] POSTGRES_CONNECTION_STRING/DATABASE_URL not set - using in-memory mock pool for tests
+[WorkRepositoryPostgres] Constructor initialized - pools will be initialized on first use
+[FinWebhookConsumer] Initialized - using core runtime queue infrastructure
+[TestRunner] Starting WORKER-001 test suite...
+[EXECUTION STATUS] Using in-memory status store exclusively - TEST-3 FIX ACTIVE
+[EMAIL QUEUE] Current NODE_ENV: undefined
+[EMAIL QUEUE] Using in-memory Redis mock exclusively (all environments) - TEST-3 FIX ACTIVE
+[FinWebhookConsumer] Core Redis instance loaded successfully
+[TestRunner] Test's Redis instance loaded
+[TestRunner] finWebhookConsumer redis initialized: true
+[TestRunner] Redis instance check: test-runner's redis === consumer's redis? true
+[work-core] 🔧 Using IN-MEMORY work repository for TEST environment
+[TestRunner] sharedWorkRepository initialized successfully
+[TestRunner] Running ONLY Test 3 for debugging (worker crash and restart)
+[email-queue.ts] lrange from eos:webhook-queue:fin:processing: _queueStore has key? false, size=0
+[email-queue.ts] Creating new key eos:webhook-queue:fin:processing in _queueStore
+[email-queue.ts] lrange result: []
+[TestRunner] Before recovery - items in processing: 0
+[TestRunner] Before processing queue content: []
+[TestRunner] Created stale envelope with enqueuedAt (10m ago): 2026-10-09T01:37:27.835Z
+[email-queue.ts] lpush to eos:webhook-queue:fin:processing: added value, new length=1
+[TestRunner] lpush result: 1
+[TestRunner] Pushed stale envelope to processing queue
+[email-queue.ts] lrange from eos:webhook-queue:fin:processing: _queueStore has key? true, size=1
+[email-queue.ts] lrange result: []
+[TestRunner] After push - items in processing: 0
+[TestRunner] After push processing queue content: []
+[TestRunner] Stale envelope exists in processing: false
+[TestRunner] finWebhookConsumer redis initialized: true
+[email-queue.ts] lrange from eos:webhook-queue:fin:processing: _queueStore has key? true, size=1
+[email-queue.ts] lrange result: []
+[FinWebhookConsumer] recoverStaleProcessingItems: found 0 items in processing queue
+[TestRunner] Called recoverStaleProcessingItems()
+[email-queue.ts] lrange from eos:webhook-queue:fin: _queueStore has key? false, size=0
+[email-queue.ts] Creating new key eos:webhook-queue:fin in _queueStore
+[email-queue.ts] lrange result: []
+[email-queue.ts] lrange from eos:webhook-queue:fin:processing: _queueStore has key? true, size=1
+[email-queue.ts] lrange result: []
+[TestRunner] After recovery - items in main queue: 0
+[TestRunner] Main queue content: []
+[TestRunner] After recovery - items in processing: 0
+[TestRunner] After recovery processing queue content: []
+[TestRunner] Stale item recovered to main queue: false
+[TestRunner] Stale item removed from processing: true
+[TestRunner] Skipped Tests 1,2,4,5 (require API server to be running)
+[TestRunner] All tests completed. Evidence saved to .eos/evidence/WORKER-001/
+┌─────────┬─────────┬───────────┬──────────────────────────────────────┐
+│ (index) │ TestId  │ Status    │ Details                              │
+├─────────┼─────────┼───────────┼──────────────────────────────────────┤
+│ 0       │ 'TEST3' │ 'FAILED'  │ 'Stale item recovery failed'         │
+│ 1       │ 'TEST1' │ 'SKIPPED' │ 'Requires API server running'        │
+│ 2       │ 'TEST2' │ 'SKIPPED' │ 'Requires API server running'        │
+│ 3       │ 'TEST4' │ 'SKIPPED' │ 'Simulasi test belum diimplementasi' │
+│ 4       │ 'TEST5' │ 'SKIPPED' │ 'Requires API server running'        │
+└─────────┴─────────┴───────────┴──────────────────────────────────────┘

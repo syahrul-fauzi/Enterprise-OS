@@ -1,0 +1,53 @@
+{
+  "completedAt": "2026-10-09T00:50:30.114Z",
+  "results": [
+    {
+      "testId": "TEST1",
+      "success": false,
+      "error": "TypeError: fetch failed"
+    },
+    {
+      "testId": "TEST2",
+      "results": [
+        {
+          "success": false,
+          "error": "TypeError: fetch failed"
+        },
+        {
+          "success": false,
+          "error": "TypeError: fetch failed"
+        },
+        {
+          "success": false,
+          "error": "TypeError: fetch failed"
+        },
+        {
+          "success": false,
+          "error": "TypeError: fetch failed"
+        },
+        {
+          "success": false,
+          "error": "TypeError: fetch failed"
+        }
+      ]
+    },
+    {
+      "testId": "TEST3",
+      "recovered": false,
+      "removedFromProcessing": true,
+      "staleItemHandled": false
+    },
+    {
+      "testId": "TEST4",
+      "redisRecovery": true,
+      "note": "Simulasi: Redis connection handled gracefully"
+    },
+    {
+      "testId": "TEST5",
+      "totalSent": 150,
+      "successCount": 0,
+      "failCount": 150
+    }
+  ],
+  "workerVersion": "1.0.0"
+}

@@ -9,5 +9,27 @@
     "details": {
       "experiment": "W-BETTER-003"
     }
+  },
+  {
+    "test": "identity_verification_executed",
+    "timestamp": "2026-10-01T15:03:35.775Z",
+    "entityRef": "verification-process",
+    "entityType": "experiment",
+    "action": "work.identity.verification.executed",
+    "actorId": "eos-evidence-engine",
+    "details": {
+      "experiment": "W-BETTER-003"
+    }
+  },
+  {
+    "test": "identity_verification_executed",
+    "timestamp": "2026-10-01T15:14:04.828Z",
+    "entityRef": "verification-process",
+    "entityType": "experiment",
+    "action": "work.identity.verification.executed",
+    "actorId": "eos-evidence-engine",
+    "details": {
+      "experiment": "W-BETTER-003"
+    }
   }
 ]

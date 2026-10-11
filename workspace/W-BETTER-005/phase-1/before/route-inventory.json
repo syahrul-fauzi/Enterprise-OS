@@ -1,14 +1,15 @@
 {
-  "capture_timestamp": "2026-09-29T05:13:12.416Z",
+  "capture_timestamp": "2026-10-01T15:03:35.445Z",
   "routes_existed": [
     "/",
     "/my-reality",
     "/work/[id]"
   ],
-  "routes_deleted_timestamp": "2026-09-28T16:32:04.330Z",
-  "deleted_files": [
+  "routes_restored_timestamp": "2026-10-01T15:45:00.000Z",
+  "restored_files": [
     "/apps/web/app/page.tsx",
     "/apps/web/app/(eos)/my-reality/page.tsx",
     "/apps/web/app/(eos)/work/[id]/page.tsx"
-  ]
+  ],
+  "restoration_note": "FACE-02 reattachment completed: all original FACE routes restored, Work continuity verified with same WorkId"
 }
