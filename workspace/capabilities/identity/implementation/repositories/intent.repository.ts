@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import { PostgresRepository } from "./base.repository.ts";
+import { PostgresRepository } from "./base.repository.js";
 import {
   IntentId,
   type IntentAggregate,

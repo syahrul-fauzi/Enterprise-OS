@@ -1,17 +1,43 @@
 import { NextResponse } from "next/server";
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import {
   WORKSPACE_SESSION_COOKIE,
-  readWorkspaceSessionFromRequest,
+  decodeWorkspaceSession,
+  type WorkspaceSession,
 } from "@repo/core-kernel";
+// Import 6-boundary validation function dari package kanonis (Tahap B mandate)
+import { validateBoundaryAccess } from "@repo/capabilities-work-core/contracts/work.contracts.js";
+
+// Lazy load capabilityRegistry sesuai pattern yang digunakan di semua route EOS (hindari module cycle)
+async function getCapabilityRegistry() {
+  const loaded = await import("@repo/core-kernel/registry/capability-command-registry.js");
+  return (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
+}
 
 export async function POST(request: Request) {
   try {
-    const session = readWorkspaceSessionFromRequest(request);
+    // 1. Validasi 6-boundary compliance TERLEBIH DAHULU (Tahap B mandate)
+    if (!validateBoundaryAccess("api-gateway", "identity")) {
+      console.error("[logout-api] BOUNDARY ACCESS DENIED: api-gateway cannot access identity domain directly");
+      return NextResponse.json({ error: "Boundary access violation" }, { status: 403 });
+    }
+
+    // Canonical auth validation: gunakan decodeWorkspaceSession untuk memproses request context
+    const session = await decodeWorkspaceSession(request);
     const sessionId = session?.sessionId;
 
+    // Dapatkan capability registry untuk invoke canonical identity capability
+    const capabilityRegistry = await getCapabilityRegistry();
+
     if (sessionId) {
-      await capabilityRegistry.invoke("identity", "logoutUser", { sessionId });
+      await capabilityRegistry.invoke<{ ok: true }>("identity.logoutUser", {
+        sessionId,
+        // Tambahkan actorContext untuk audit dan tracing sesuai pola yang diterapkan di semua command
+        actorContext: {
+          tenantId: session?.tenantId || "",
+          workspaceId: session?.workspaceId || "",
+          actorId: session?.actorId || ""
+        }
+      });
     }
 
     const response = NextResponse.json({

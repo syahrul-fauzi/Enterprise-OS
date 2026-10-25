@@ -42,7 +42,11 @@ export function NewWorkFormClient({
     claim_date: "",
     medical_facility_name: "",
     diagnosis_code: "",
-    service_category: ""
+    service_category: "",
+    // ACaaS Compliance Check specific fields (ACaaS-COMMERCIAL-001) - only used when workType = "acaas-compliance-check"
+    documentType: "",
+    documentData: "",
+    compliancePolicies: []
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -244,6 +248,47 @@ export function NewWorkFormClient({
                     value={formData.service_category}
                     onChange={(e) => setFormData({...formData, service_category: e.target.value})}
                     placeholder="Kategori layanan (rawat inap/rawat jalan/kontingen)"
+                    className="w-full"
+                  />
+                </div>
+              )}
+
+              {/* ACaaS-COMMERCIAL-001: ACaaS Compliance Check specific form fields - only rendered for compliance work */}
+              {workType === "acaas-compliance-check" && (
+                <div className="border-t border-border-subtle pt-6 mt-6 space-y-6">
+                  <h3 className="text-lg font-semibold text-text-primary">Detail Pemeriksaan Kepatuhan (ACaaS)</h3>
+                  
+                  <Input
+                    id="documentType"
+                    name="documentType"
+                    label="Tipe Dokumen"
+                    required
+                    value={formData.documentType}
+                    onChange={(e) => setFormData({...formData, documentType: e.target.value})}
+                    placeholder="Pilih tipe dokumen (pph21, ppn, bpjs, dll.)..."
+                    className="w-full"
+                  />
+
+                  <TextArea
+                    id="documentData"
+                    name="documentData"
+                    label="Data Dokumen (JSON)"
+                    rows={5}
+                    required
+                    value={formData.documentData}
+                    onChange={(e) => setFormData({...formData, documentData: e.target.value})}
+                    placeholder="Masukkan data dokumen dalam format JSON..."
+                    className="w-full resize-none font-mono text-sm"
+                  />
+
+                  <Input
+                    id="compliancePolicies"
+                    name="compliancePolicies"
+                    label="Kebijakan Kepatuhan (pisahkan dengan koma)"
+                    required
+                    value={formData.compliancePolicies.join(", ")}
+                    onChange={(e) => setFormData({...formData, compliancePolicies: e.target.value.split(",").map(s => s.trim())})}
+                    placeholder="pajak-indonesia-2024, bpjs-2024, dll."
                     className="w-full"
                   />
                 </div>

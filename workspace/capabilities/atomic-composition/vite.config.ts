@@ -3,4 +3,9 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   plugins: [tsconfigPaths()],
+  resolve: {
+    alias: {
+      "@capabilities": "/root/Enterprise-OS/workspace/capabilities"
+    }
+  }
 });

@@ -1,18 +1,12 @@
 import { z } from "zod";
+// Gunakan alias canonical @repo/core-kernel sesuai package exports yang didefinisikan (dist path tanpa src/.ts)
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
-import type { WorkAggregate, WorkId } from "../../contracts/work.contracts.ts";
-import { getWorkRepositoryPostgres, WorkRepositoryPostgres } from "../repository/work-postgres.repository.ts";
-// Import membership/session repositories dari identity capability (tempat yang benar)
-import { getMembershipRepositoryPostgres, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index.ts";
-// Import identity contracts dari canonical source (bukan dari identity capability yang .js missing)
-import { newActorId, newWorkspaceId, newTenantId } from "@repo/contracts-core";
-import type { SessionId, TenantId, ActorId, MembershipRepository, SessionRepository, WorkspaceId } from "../../contracts/work.contracts.ts";
-import { WorkRepositoryInMemory } from "../repository/work-inmemory.repository.ts"; // Import in-memory implementation dari work-core
-import { getWorksByInstitutionCommand } from "./get-works-by-institution.command.ts";
-// Import factory functions untuk generate ID canonical dari contracts-core (single source of truth)
-import { newWorkId } from "@repo/contracts-core";
-
-import { WorkModeEnum } from "../../contracts/work.contracts.ts";
+import { validateAllBoundaries, type IdentityBoundary, type SemanticBoundary, type AuthorityBoundary, type ExecutionBoundary, type EvidenceBoundary, type PresentationBoundary, type WorkAggregate, WorkId, SessionId, TenantId, ActorId, WorkspaceId, WorkModeEnum, newActorId, newWorkspaceId, newTenantId, newWorkId } from "@capabilities/work-core/contracts/work.contracts";
+// Gunakan relative imports untuk file internal work-core (tanpa .ts extension - NodeNext requires .js)
+import { getWorkRepositoryPostgres, WorkRepositoryPostgres } from "../repository/work-postgres.repository.js";
+// Import membership/session repositories dari identity capability (tempat yang benar) - gunakan dynamic import untuk test environment untuk menghindari path issues
+import { WorkRepositoryInMemory } from "../repository/work-inmemory.repository.js"; // Import in-memory implementation dari work-core
+import { getWorksByInstitutionCommand } from "./get-works-by-institution.command.js";
 
 // Import in-memory repository hanya jika dibutuhkan (hindari circular import)
 
@@ -26,7 +20,7 @@ export async function getWorkRepositoryLazy() {
     if (isTestEnvironment && !hasConnectionString) {
       // GUNAKAN IN-MEMORY REPOSITORY SAAT TEST (sesuai SessionRepositoryInMemory pattern)
       // Gunakan async import() untuk menghindari ERR_REQUIRE_ESM_RACE_CONDITION
-      const { WorkRepositoryInMemory } = await import("../repository/work-inmemory.repository.ts");
+      const { WorkRepositoryInMemory } = await import("../repository/work-inmemory.repository.js");
       _workRepo = new WorkRepositoryInMemory();
       console.log("[work-core] 🔧 Using IN-MEMORY work repository for TEST environment");
     } else {
@@ -47,14 +41,14 @@ export async function getMembershipRepositoryLazy() {
     
     if (isTestEnvironment && !hasConnectionString) {
       // GUNAKAN IN-MEMORY REPOSITORY SAAT TEST (reuse pattern dari identity capability)
-      // Import dari index.ts identity capability (sesuai pola yang digunakan di work.contracts.ts)
-      // Gunakan async import() untuk menghindari ERR_REQUIRE_ESM_RACE_CONDITION
-      const { MembershipRepositoryInMemory } = await import("../../../identity/implementation/repositories/index.ts");
+      // Import dari index.js identity capability dengan alias canonical untuk menghindari path issues
+      const { MembershipRepositoryInMemory } = await import("../../../identity/implementation/repositories/index.js");
       // MembershipRepositoryInMemory is an object, not a class - assign directly
       _membershipRepo = MembershipRepositoryInMemory;
       console.log("[work-core] 🔧 Using IN-MEMORY membership repository for TEST environment");
     } else {
-      // GUNAKAN POSTGRESQL REPOSITORY SAAT PRODUCTION/DEV
+      // Import dari alias canonical untuk production/non-test environment
+      const { getMembershipRepositoryPostgres } = await import("../../../identity/implementation/repositories/index.js");
       _membershipRepo = getMembershipRepositoryPostgres();
       console.log("[work-core] 🐘 Using POSTGRESQL membership repository");
     }
@@ -63,13 +57,14 @@ export async function getMembershipRepositoryLazy() {
 }
 
 // Core Work schema - EOS primitive continuity substrate
+// P0 WAR ROOM FIX: Perbaiki ReferenceError WorkModeEnum sebelum inisialisasi - gunakan tuple literal langsung
 export const CreateCoreWorkRequestSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   priority: z.enum(["low", "medium", "high", "critical"]).optional(),
   linkedIntentId: z.string().optional(),
-  domainType: z.enum(["legal-case", "service-request", "consultation", "employee-leave", "retail-inventory"]).default("legal-case"),
-  workMode: z.enum(WorkModeEnum).default("oneshot"),
+  domainType: z.enum(["legal-case", "service-request", "consultation", "employee-leave", "retail-inventory", "acaas", "healthcare", "construction"]).default("legal-case"),
+  workMode: z.enum(["core", "domain", "federation", "oneshot"]).default("oneshot"),
   domainSpecificData: z.record(z.string(), z.any()).optional(),
   
   // Mandatory session context for all Work creations
@@ -82,8 +77,82 @@ export const CreateCoreWorkRequestSchema = z.object({
 export type CreateCoreWorkRequest = z.infer<typeof CreateCoreWorkRequestSchema>;
 
 // Core Work aggregate implementation
-async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: string; workId: string; domainType: string }> {
+async function createCoreWork(input: CreateCoreWorkRequest & { actorContext?: { tenantId: string; workspaceId: string; actorId: string } }): Promise<{ id: string; workId: string; domainType: string }> {
   const workRepository = await getWorkRepositoryLazy();
+  
+  // 0. Validate 6 boundaries (CAPABILITY_MISMATCH fix - canonical pattern dari create-tenant.command.ts)
+  const requestTenantId = input.actorContext?.tenantId || input.tenantId || "unknown-tenant";
+  const workspaceId = input.actorContext?.workspaceId || input.workspaceId || "unknown-workspace";
+  const actorId = input.actorContext?.actorId || input.actorId || "unknown-actor";
+  
+  const identityBoundary: IdentityBoundary = {
+    tenantId: requestTenantId,
+    organizationId: "work-core.enterprise-os",
+    principalId: actorId,
+    ownerIds: [actorId]
+  };
+  
+  const semanticBoundary: SemanticBoundary = {
+    domain: "work-core",
+    intent: "create-core-work",
+    currentState: "draft",
+    requirements: [],
+    constraints: [],
+    decisions: []
+  };
+  
+  const authorityBoundary: AuthorityBoundary = {
+    actorCapabilities: new Map([[actorId, ["create-core-work"]]]),
+    policyEnforcements: ["work-creation-policy"],
+    authorizations: new Map([[actorId, ["create"]]]),
+    delegations: []
+  };
+  
+  const executionBoundary: ExecutionBoundary = {
+    workspaceId,
+    runtimeEnvironment: "web",
+    executorIds: [actorId],
+    executionFrame: "direct"
+  };
+  
+  const evidenceBoundary: EvidenceBoundary = {
+    evidenceIds: [`work-init-${Date.now()}`],
+    evidenceChain: [{
+      actorId,
+      action: "initiate-work-creation",
+      timestamp: new Date(),
+      workspaceId
+    }],
+    outcomeVerified: false
+  };
+  
+  const presentationBoundary: PresentationBoundary = {
+    supportedFaces: ["web", "api"],
+    defaultLayout: "work-list",
+    mobileEnabled: true,
+    apiEnabled: true,
+    projectionConfig: {
+      displayName: input.title,
+      summary: input.description || "New core work created",
+      priority: "high",
+      uiFilters: ["id", "workId", "title", "domainType", "status", "createdAt"],
+      hideFromSurfaces: []
+    }
+  };
+  
+  const boundaryValidation = validateAllBoundaries({
+    identity: identityBoundary,
+    semantic: semanticBoundary,
+    authority: authorityBoundary,
+    execution: executionBoundary,
+    evidence: evidenceBoundary,
+    presentation: presentationBoundary
+  });
+  
+  if (!boundaryValidation.valid) {
+    console.error("[work-core.createCoreWork] BOUNDARY VALIDATION FAILED:", boundaryValidation.allErrors);
+    throw new Error(`Boundary validation failed: ${boundaryValidation.allErrors.join(", ")}`);
+  }
   
   // 1. Create core Work primitive first (EOS substrate) - Generate workId sebelum save untuk kompatibel in-memory repository
   const generatedWorkId = newWorkId();
@@ -145,23 +214,26 @@ async function createCoreWork(input: CreateCoreWorkRequest): Promise<{ id: strin
   };
   await workRepository.save(updatedWork);
   
-  // 4. Delegate to domain specialization capability based on domainType (NONAKTIF untuk RET-001 karena command createCoreWork tidak perlu diinvoke ulang)
-  // const domainCapabilityMap: Record<string, { capability: string; command: string }> = {
-  //   "legal-case": { capability: "legal-case", command: "case.createFromWork" },
-  //   "service-request": { capability: "services-id", command: "service-request.createFromWork" },
-  //   "consultation": { capability: "consultation", command: "consultation.createFromWork" },
-  //   "employee-leave": { capability: "work-core", command: "createCoreWork" }, // Reuse work-core without new domain capability
-  //   "retail-inventory": { capability: "work-core", command: "createCoreWork" }, // Reuse work-core untuk retail domain
-  // };
+  // 4. Delegate to domain specialization capability based on domainType (HANYA diaktifkan kembali untuk domain yang membutuhkan post-creation processing)
+  const domainCapabilityMap: Record<string, { capability: string; command: string }> = {
+    "legal-case": { capability: "legal-case", command: "case.createFromWork" },
+    "service-request": { capability: "services-id", command: "service-request.createFromWork" },
+    "consultation": { capability: "consultation", command: "consultation.createFromWork" },
+    "employee-leave": { capability: "work-core", command: "createCoreWork" }, // Reuse work-core without new domain capability
+    "retail-inventory": { capability: "work-core", command: "createCoreWork" }, // Reuse work-core untuk retail domain
+    "acaas": { capability: "services-id", command: "service-request.createFromWork" }, // ACaaS menggunakan services-id untuk post-creation processing
+    "healthcare": { capability: "services-id", command: "service-request.createFromWork" }, // Healthcare menggunakan services-id
+    "construction": { capability: "services-id", command: "service-request.createFromWork" }, // Construction menggunakan services-id
+  };
   
-  // const domainConfig = domainCapabilityMap[input.domainType];
-  // if (domainConfig) {
-  //   await capabilityRegistry.invoke(domainConfig.capability, domainConfig.command, {
-  //     workId: savedWork.workId,
-  //     coreWork: updatedWork, // Pass the updated work with ONLY compositionId (teamId removed)
-  //     domainSpecificData: input.domainSpecificData,
-  //   });
-  // }
+  const domainConfig = domainCapabilityMap[input.domainType];
+  if (domainConfig) {
+    await capabilityRegistry.invoke(domainConfig.capability, domainConfig.command, {
+      workId: savedWork.workId,
+      coreWork: updatedWork, // Pass the updated work with ONLY compositionId (teamId removed)
+      domainSpecificData: input.domainSpecificData, // Pass ACaaS/metadata dari API route sebagai domainSpecificData
+    });
+  }
   
   // 3. Return canonical Work response to presentation layer
   return {
@@ -253,6 +325,83 @@ async function linkExistingWork(input: {
     ...(linkedProductId && { linkedToProduct: linkedProductId })
   };
 }
+
+// Close work command export - canonical work closure logic
+export const CloseCoreWorkRequestSchema = z.object({
+  workId: z.string(),
+  outcomeDescription: z.string().optional(),
+  sessionId: z.string(),
+  tenantId: z.string(),
+  workspaceId: z.string(),
+  actorId: z.string(),
+});
+
+export type CloseCoreWorkRequest = z.infer<typeof CloseCoreWorkRequestSchema>;
+
+async function closeCoreWork(input: CloseCoreWorkRequest): Promise<{ id: string; workId: string; status: string; closedAt: string }> {
+  const workRepository = await getWorkRepositoryLazy();
+  
+  // 1. Cari Work yang sudah ada berdasarkan workId
+  const existingWork = await workRepository.byWorkId(input.workId);
+  if (!existingWork) {
+    throw new Error(`[work-core.close] Work with workId ${input.workId} not found - cannot close non-existent work`);
+  }
+  
+  // 2. Verify authority boundary - cross-tenant access blocked
+  if (existingWork.tenantId !== input.tenantId) {
+    throw new Error(`[work-core.close] Cross-tenant access blocked - authority boundary violation`);
+  }
+  
+  // 3. Verify actor authorization - only work owner or assigned participant can close
+  const isOwner = existingWork.actorId === input.actorId;
+  const isParticipant = existingWork.participants?.some((p: any) => p.id === input.actorId);
+  if (!isOwner && !isParticipant) {
+    throw new Error(`[work-core.close] Unauthorized: actor ${input.actorId} is not authorized to close work ${input.workId}`);
+  }
+  
+  // 4. Update work status to closed
+  const closedAt = new Date().toISOString();
+  const updatedWork = {
+    ...existingWork,
+    status: "closed" as const,
+    closedAt,
+    outcomeDescription: input.outcomeDescription || "Work completed successfully",
+    updatedAt: closedAt,
+  };
+  await workRepository.save(updatedWork);
+  
+  // 5. Record evidence untuk penutupan work (EVIDENCE BOUNDARY compliance)
+  const evidence = {
+    type: "work_closed",
+    timestamp: closedAt,
+    actorId: input.actorId,
+    sessionId: input.sessionId,
+    workspace_id: input.workspaceId,
+    tenant_id: input.tenantId,
+    changes: { 
+      status: "closed",
+      outcomeDescription: input.outcomeDescription
+    }
+  };
+  
+  await workRepository.addEvidence(input.workId, evidence);
+  
+  // 6. Return canonical response
+  return {
+    id: updatedWork.workId,
+    workId: updatedWork.workId,
+    status: "closed",
+    closedAt,
+  };
+}
+
+export const closeWorkCommand = {
+  kind: "command" as const,
+  name: "close" as const,
+  version: "1.0.0" as const,
+  execute: closeCoreWork,
+  schema: CloseCoreWorkRequestSchema,
+};
 
 // Link existing work command export
 export const linkExistingWorkCommand = {
@@ -613,7 +762,7 @@ export async function claimWorkAuthority(input: ClaimWorkAuthorityRequest): Prom
   });
   
   // 5. Record evidence with safeRecordEvidence (extends existing payload with W2-B specific fields)
-  const { safeRecordEvidence } = await import("../utils/index");
+  const { safeRecordEvidence } = await import("../utils/index.js");
   await safeRecordEvidence({
     workspace_id: targetWorkspaceId as any,
     capability: "work-core",
@@ -761,10 +910,11 @@ export const getEvidenceByWorkIdCommand = {
 };
 
 // Export commands for capability registry resolution (no manual registration needed)
-import { syncWorkCommand } from "./work-sync.command.ts";
+import { syncWorkCommand } from "./work-sync.command.js";
 
 export const workCoreCommands = [
   createWorkCommand,
+  closeWorkCommand,
   linkExistingWorkCommand, // CROSS-DOMAIN WORK LINKING command (IDENTITY boundary invariant)
   getWorksByInstitutionCommand,
   updateWorkCommand,

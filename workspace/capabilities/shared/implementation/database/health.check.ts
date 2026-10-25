@@ -35,20 +35,11 @@ export function getConnectionPoolMetrics(poolName: string) {
  */
 export const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
 
-// Reuse safeRecordEvidence pattern from work-postgres.repository.ts to log recovery actions
-async function safeRecordEvidence(payload: unknown): Promise<{ readonly ok: boolean }> {
-  try {
-    const loaded = await import("../../../../work-core/index.js");
-    const reg = (loaded as any).capabilityRegistry;
-    if (typeof reg?.invoke === "function") {
-      await reg.invoke("evidence-registry", "evidence.record", payload as never);
-      return { ok: true };
-    }
-  } catch (_e) { /* fallthrough: evidence recording is non-critical */ }
-  return { ok: true };
-}
+// Hapus duplikat safeRecordEvidence - gunakan canonical dari work-core (Gate A requirement: reuse primitive yang sudah ada)
+// Import canonical safeRecordEvidence yang menangani SHA-256, fallback storage, dan semua durability policy
+import { safeRecordEvidence } from "../../../work-core/implementation/utils/evidence.utils.js";
 
-interface DatabaseHealthReport {
+export interface DatabaseHealthReport {
   database: string;
   connected: boolean;
   latency_ms: number;

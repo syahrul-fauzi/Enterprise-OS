@@ -1,21 +1,29 @@
 {
   "constitutional_version": "1.2.0",
-  "constitutional_digest": "791946a8fe3a4b6b7537b674762d11386315339c42c80df246843d911911a95c",
+  "constitutional_digest": "59f058b48e28a1e49b37ca3cccd23f187ee81b422140db5ba31e65984b9b2cd8",
   "summary": {
-    "total_capabilities": 16,
-    "internal_dependencies": 8,
-    "external_dependencies": 3,
-    "missing_dependencies": 0,
+    "total_capabilities": 24,
+    "internal_dependencies": 58,
+    "external_dependencies": 4,
+    "missing_dependencies": 3,
     "api_runtime_violations": 0,
-    "consumer_mismatches": 0,
+    "consumer_mismatches": 4,
     "satisfied_contract_requirements": 3,
-    "unsatisfied_contract_requirements": 0,
-    "dependency_cycles": 0,
-    "boundary_violations": 0,
+    "unsatisfied_contract_requirements": 9,
+    "dependency_cycles": 3,
+    "boundary_violations": 2,
     "dependency_policy_violations": 0,
-    "overall_status": "PASS"
+    "overall_status": "FAIL"
   },
   "internal_dependency_edges": [
+    {
+      "from": "agent-orchestration",
+      "to": "work-core"
+    },
+    {
+      "from": "agent-orchestration",
+      "to": "workflow-engine"
+    },
     {
       "from": "api-platform",
       "to": "evidence-registry"
@@ -41,37 +49,234 @@
       "to": "workflow-engine"
     },
     {
+      "from": "communication",
+      "to": "connector-ecosystem"
+    },
+    {
+      "from": "communication",
+      "to": "evidence-registry"
+    },
+    {
+      "from": "communication",
+      "to": "governance-evidence"
+    },
+    {
+      "from": "communication",
+      "to": "identity"
+    },
+    {
+      "from": "communication",
+      "to": "security-hardening"
+    },
+    {
+      "from": "communication",
+      "to": "work-core"
+    },
+    {
+      "from": "connector-ecosystem",
+      "to": "api-platform"
+    },
+    {
+      "from": "connector-ecosystem",
+      "to": "security-hardening"
+    },
+    {
+      "from": "connector-ecosystem",
+      "to": "work-core"
+    },
+    {
+      "from": "consultation",
+      "to": "evidence-registry"
+    },
+    {
+      "from": "consultation",
+      "to": "legal-case"
+    },
+    {
+      "from": "consultation",
+      "to": "work-core"
+    },
+    {
+      "from": "consultation",
+      "to": "workflow-engine"
+    },
+    {
+      "from": "evidence-registry",
+      "to": "governance-evidence"
+    },
+    {
+      "from": "evidence-registry",
+      "to": "trust-framework"
+    },
+    {
+      "from": "evidence-registry",
+      "to": "work-core"
+    },
+    {
       "from": "governance-evidence",
       "to": "trust-framework"
     },
     {
+      "from": "governance-evidence",
+      "to": "work-core"
+    },
+    {
+      "from": "governance-read-model",
+      "to": "evidence-registry"
+    },
+    {
       "from": "governance-read-model",
       "to": "governance-evidence"
+    },
+    {
+      "from": "governance-read-model",
+      "to": "work-core"
+    },
+    {
+      "from": "knowledge-graph",
+      "to": "evidence-registry"
+    },
+    {
+      "from": "knowledge-graph",
+      "to": "work-core"
+    },
+    {
+      "from": "legal-case",
+      "to": "knowledge-graph"
+    },
+    {
+      "from": "legal-case",
+      "to": "legal-document"
+    },
+    {
+      "from": "legal-case",
+      "to": "workflow-engine"
+    },
+    {
+      "from": "legal-document",
+      "to": "knowledge-graph"
+    },
+    {
+      "from": "legal-document",
+      "to": "security-hardening"
+    },
+    {
+      "from": "legal-document",
+      "to": "work-core"
+    },
+    {
+      "from": "observability",
+      "to": "evidence-registry"
+    },
+    {
+      "from": "observability",
+      "to": "governance-evidence"
+    },
+    {
+      "from": "observability",
+      "to": "work-core"
+    },
+    {
+      "from": "reasoning",
+      "to": "work-core"
+    },
+    {
+      "from": "requirement-management",
+      "to": "governance-evidence"
+    },
+    {
+      "from": "requirement-management",
+      "to": "work-core"
+    },
+    {
+      "from": "requirement-management",
+      "to": "workflow-engine"
+    },
+    {
+      "from": "requirements-traceability-matrix",
+      "to": "evidence-registry"
+    },
+    {
+      "from": "requirements-traceability-matrix",
+      "to": "knowledge-graph"
+    },
+    {
+      "from": "requirements-traceability-matrix",
+      "to": "requirement-management"
+    },
+    {
+      "from": "security-hardening",
+      "to": "identity"
+    },
+    {
+      "from": "security-hardening",
+      "to": "trust-framework"
+    },
+    {
+      "from": "security-hardening",
+      "to": "work-core"
+    },
+    {
+      "from": "service-directory",
+      "to": "identity"
+    },
+    {
+      "from": "service-directory",
+      "to": "workflow-engine"
+    },
+    {
+      "from": "services-id",
+      "to": "service-directory"
+    },
+    {
+      "from": "services-id",
+      "to": "workflow-engine"
+    },
+    {
+      "from": "trust-framework",
+      "to": "work-core"
+    },
+    {
+      "from": "work-core",
+      "to": "security-hardening"
+    },
+    {
+      "from": "workflow-engine",
+      "to": "governance-evidence"
+    },
+    {
+      "from": "workflow-engine",
+      "to": "work-core"
     }
   ],
   "external_dependencies": [
     {
-      "capability_id": "governance-evidence",
+      "capability_id": "reasoning",
+      "dependency_id": "policy-engine",
+      "classification": "unknown_repository_dependency"
+    },
+    {
+      "capability_id": "services-id",
+      "dependency_id": "human-operations",
+      "classification": "unknown_repository_dependency"
+    },
+    {
+      "capability_id": "work-core",
       "dependency_id": "core-runtime",
       "classification": "core_package"
     },
     {
-      "capability_id": "governance-read-model",
-      "dependency_id": "core-runtime",
-      "classification": "core_package"
-    },
-    {
-      "capability_id": "trust-framework",
-      "dependency_id": "core-runtime",
-      "classification": "core_package"
+      "capability_id": "work-core",
+      "dependency_id": "persistence-layer",
+      "classification": "unknown_repository_dependency"
     }
   ],
   "law_results": [
     {
       "law_id": "DependencyExistenceLaw",
-      "status": "PASS",
-      "passed": 11,
-      "failed": 0,
+      "status": "FAIL",
+      "passed": 59,
+      "failed": 3,
       "claim_boundary": "Every declared dependency must resolve either to an internal capability or a known workspace package. Unknown dependency identifiers are architecturally invalid."
     },
     {
@@ -83,41 +288,73 @@
     },
     {
       "law_id": "ConsumerDeclarationLaw",
-      "status": "PASS",
-      "passed": 8,
-      "failed": 0,
+      "status": "FAIL",
+      "passed": 2,
+      "failed": 4,
       "claim_boundary": "When a capability declares consumed_by, each declared consumer must exist and reciprocate the relationship through depends_on."
     },
     {
       "law_id": "ContractCompatibilityLaw",
-      "status": "PASS",
+      "status": "FAIL",
       "passed": 3,
-      "failed": 0,
+      "failed": 9,
       "claim_boundary": "Required capability contracts must be satisfied by at least one declared dependency that provides a compatible contract version."
     },
     {
       "law_id": "DependencyCycleLaw",
-      "status": "PASS",
-      "passed": 16,
-      "failed": 0,
+      "status": "FAIL",
+      "passed": 21,
+      "failed": 3,
       "claim_boundary": "Capability dependency graphs must remain acyclic. Any cycle between declared capability manifests blocks clean composition and deterministic evolution."
     },
     {
       "law_id": "CapabilityBoundaryLaw",
-      "status": "PASS",
-      "passed": 13,
-      "failed": 0,
+      "status": "FAIL",
+      "passed": 58,
+      "failed": 2,
       "claim_boundary": "Capability boundaries must preserve provider-consumer direction. Capabilities must not depend on API consumer boundaries, and providers must not depend back on their declared consumers."
     },
     {
       "law_id": "DependencyPolicyLaw",
       "status": "PASS",
-      "passed": 23,
+      "passed": 35,
       "failed": 0,
       "claim_boundary": "When a capability declares allowed_dependencies or forbidden_dependencies, every declared dependency must comply with that manifest-level policy. This turns dependency intent into an auditable governance contract."
     }
   ],
   "findings": [
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "agent-orchestration",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"work-core\" resolves to internal capability \"work-core\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "agent-orchestration",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"agent-orchestration\" -> \"work-core\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "agent-orchestration",
+      "dependency_id": "workflow-engine",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"workflow-engine\" resolves to internal capability \"workflow-engine\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "agent-orchestration",
+      "dependency_id": "workflow-engine",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"agent-orchestration\" -> \"workflow-engine\" stays within non-API capability boundaries."
+    },
     {
       "law_id": "DependencyPolicyLaw",
       "capability_id": "agent-orchestration",
@@ -159,14 +396,6 @@
       "detail": "Dependency \"api-platform\" -> \"governance-evidence\" stays within non-API capability boundaries."
     },
     {
-      "law_id": "ConsumerDeclarationLaw",
-      "capability_id": "governance-evidence",
-      "dependency_id": "api-platform",
-      "contract_name": null,
-      "status": "PASS",
-      "detail": "Consumer \"api-platform\" is declared by dependency \"governance-evidence\" and reciprocated through depends_on."
-    },
-    {
       "law_id": "DependencyExistenceLaw",
       "capability_id": "api-platform",
       "dependency_id": "governance-read-model",
@@ -181,14 +410,6 @@
       "contract_name": null,
       "status": "PASS",
       "detail": "Dependency \"api-platform\" -> \"governance-read-model\" stays within non-API capability boundaries."
-    },
-    {
-      "law_id": "ConsumerDeclarationLaw",
-      "capability_id": "governance-read-model",
-      "dependency_id": "api-platform",
-      "contract_name": null,
-      "status": "PASS",
-      "detail": "Consumer \"api-platform\" is declared by dependency \"governance-read-model\" and reciprocated through depends_on."
     },
     {
       "law_id": "DependencyExistenceLaw",
@@ -289,10 +510,18 @@
     {
       "law_id": "CapabilityBoundaryLaw",
       "capability_id": "api-platform",
-      "dependency_id": null,
+      "dependency_id": "ilc",
       "contract_name": null,
-      "status": "PASS",
-      "detail": "API capability \"api-platform\" remains an outer boundary and does not declare downstream capability consumers."
+      "status": "FAIL",
+      "detail": "API capability \"api-platform\" declares consumer \"ilc\". API boundaries must remain terminal consumers and cannot be depended on by other capabilities."
+    },
+    {
+      "law_id": "ConsumerDeclarationLaw",
+      "capability_id": "api-platform",
+      "dependency_id": "ilc",
+      "contract_name": null,
+      "status": "FAIL",
+      "detail": "Declared consumer \"ilc\" does not resolve to a capability manifest."
     },
     {
       "law_id": "ContractCompatibilityLaw",
@@ -312,11 +541,355 @@
     },
     {
       "law_id": "DependencyPolicyLaw",
+      "capability_id": "atomic-composition",
+      "dependency_id": null,
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Capability \"atomic-composition\" does not declare manifest-level dependency policy yet."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "communication",
+      "dependency_id": "connector-ecosystem",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"connector-ecosystem\" resolves to internal capability \"connector-ecosystem\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "communication",
+      "dependency_id": "connector-ecosystem",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"communication\" -> \"connector-ecosystem\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "communication",
+      "dependency_id": "evidence-registry",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"evidence-registry\" resolves to internal capability \"evidence-registry\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "communication",
+      "dependency_id": "evidence-registry",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"communication\" -> \"evidence-registry\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "communication",
+      "dependency_id": "governance-evidence",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"governance-evidence\" resolves to internal capability \"governance-evidence\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "communication",
+      "dependency_id": "governance-evidence",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"communication\" -> \"governance-evidence\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "communication",
+      "dependency_id": "identity",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"identity\" resolves to internal capability \"identity\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "communication",
+      "dependency_id": "identity",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"communication\" -> \"identity\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "communication",
+      "dependency_id": "security-hardening",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"security-hardening\" resolves to internal capability \"security-hardening\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "communication",
+      "dependency_id": "security-hardening",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"communication\" -> \"security-hardening\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "communication",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"work-core\" resolves to internal capability \"work-core\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "communication",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"communication\" -> \"work-core\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyPolicyLaw",
+      "capability_id": "communication",
+      "dependency_id": null,
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Capability \"communication\" does not declare manifest-level dependency policy yet."
+    },
+    {
+      "law_id": "ContractCompatibilityLaw",
+      "capability_id": "communication",
+      "dependency_id": null,
+      "contract_name": "ConnectorEcosystemProvider",
+      "status": "FAIL",
+      "detail": "No declared dependency provides contract \"ConnectorEcosystemProvider\" required by \"communication\"."
+    },
+    {
+      "law_id": "ContractCompatibilityLaw",
+      "capability_id": "communication",
+      "dependency_id": "governance-evidence",
+      "contract_name": "GovernanceEvidenceProvider",
+      "status": "FAIL",
+      "detail": "Contract \"GovernanceEvidenceProvider\" range \">=0.1 <0.2\" is not satisfied by available provider versions [governance-evidence@1.0.0]."
+    },
+    {
+      "law_id": "ContractCompatibilityLaw",
+      "capability_id": "communication",
+      "dependency_id": null,
+      "contract_name": "WorkCoreProvider",
+      "status": "FAIL",
+      "detail": "No declared dependency provides contract \"WorkCoreProvider\" required by \"communication\"."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "connector-ecosystem",
+      "dependency_id": "api-platform",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"api-platform\" resolves to internal capability \"api-platform\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "connector-ecosystem",
+      "dependency_id": "api-platform",
+      "contract_name": null,
+      "status": "FAIL",
+      "detail": "Capability \"connector-ecosystem\" depends on API boundary capability \"api-platform\". API remains the outer consumer boundary and must not be used as an inward dependency."
+    },
+    {
+      "law_id": "ConsumerDeclarationLaw",
+      "capability_id": "api-platform",
+      "dependency_id": "connector-ecosystem",
+      "contract_name": null,
+      "status": "FAIL",
+      "detail": "Dependency \"api-platform\" declares consumed_by=[ilc], but consumer \"connector-ecosystem\" is missing from that list."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "connector-ecosystem",
+      "dependency_id": "security-hardening",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"security-hardening\" resolves to internal capability \"security-hardening\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "connector-ecosystem",
+      "dependency_id": "security-hardening",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"connector-ecosystem\" -> \"security-hardening\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "connector-ecosystem",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"work-core\" resolves to internal capability \"work-core\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "connector-ecosystem",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"connector-ecosystem\" -> \"work-core\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyPolicyLaw",
       "capability_id": "connector-ecosystem",
       "dependency_id": null,
       "contract_name": null,
       "status": "PASS",
       "detail": "Capability \"connector-ecosystem\" does not declare manifest-level dependency policy yet."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "consultation",
+      "dependency_id": "evidence-registry",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"evidence-registry\" resolves to internal capability \"evidence-registry\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "consultation",
+      "dependency_id": "evidence-registry",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"consultation\" -> \"evidence-registry\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "consultation",
+      "dependency_id": "legal-case",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"legal-case\" resolves to internal capability \"legal-case\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "consultation",
+      "dependency_id": "legal-case",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"consultation\" -> \"legal-case\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "consultation",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"work-core\" resolves to internal capability \"work-core\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "consultation",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"consultation\" -> \"work-core\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "consultation",
+      "dependency_id": "workflow-engine",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"workflow-engine\" resolves to internal capability \"workflow-engine\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "consultation",
+      "dependency_id": "workflow-engine",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"consultation\" -> \"workflow-engine\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyPolicyLaw",
+      "capability_id": "consultation",
+      "dependency_id": null,
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Capability \"consultation\" does not declare manifest-level dependency policy yet."
+    },
+    {
+      "law_id": "ContractCompatibilityLaw",
+      "capability_id": "consultation",
+      "dependency_id": null,
+      "contract_name": "EvidenceRegistryProvider",
+      "status": "FAIL",
+      "detail": "No declared dependency provides contract \"EvidenceRegistryProvider\" required by \"consultation\"."
+    },
+    {
+      "law_id": "ContractCompatibilityLaw",
+      "capability_id": "consultation",
+      "dependency_id": null,
+      "contract_name": "LegalCaseProvider",
+      "status": "FAIL",
+      "detail": "No declared dependency provides contract \"LegalCaseProvider\" required by \"consultation\"."
+    },
+    {
+      "law_id": "ContractCompatibilityLaw",
+      "capability_id": "consultation",
+      "dependency_id": "workflow-engine",
+      "contract_name": "WorkflowEngineProvider",
+      "status": "FAIL",
+      "detail": "Contract \"WorkflowEngineProvider\" range \">=0.1 <0.2\" is not satisfied by available provider versions [workflow-engine@1.0.0]."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "evidence-registry",
+      "dependency_id": "governance-evidence",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"governance-evidence\" resolves to internal capability \"governance-evidence\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "evidence-registry",
+      "dependency_id": "governance-evidence",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"evidence-registry\" -> \"governance-evidence\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "evidence-registry",
+      "dependency_id": "trust-framework",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"trust-framework\" resolves to internal capability \"trust-framework\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "evidence-registry",
+      "dependency_id": "trust-framework",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"evidence-registry\" -> \"trust-framework\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "ConsumerDeclarationLaw",
+      "capability_id": "trust-framework",
+      "dependency_id": "evidence-registry",
+      "contract_name": null,
+      "status": "FAIL",
+      "detail": "Dependency \"trust-framework\" declares consumed_by=[governance-evidence], but consumer \"evidence-registry\" is missing from that list."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "evidence-registry",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"work-core\" resolves to internal capability \"work-core\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "evidence-registry",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"evidence-registry\" -> \"work-core\" stays within non-API capability boundaries."
     },
     {
       "law_id": "DependencyPolicyLaw",
@@ -325,14 +898,6 @@
       "contract_name": null,
       "status": "PASS",
       "detail": "Capability \"evidence-registry\" does not declare manifest-level dependency policy yet."
-    },
-    {
-      "law_id": "DependencyExistenceLaw",
-      "capability_id": "governance-evidence",
-      "dependency_id": "core-runtime",
-      "contract_name": null,
-      "status": "PASS",
-      "detail": "Declared dependency \"core-runtime\" resolves to workspace package classification \"core_package\"."
     },
     {
       "law_id": "DependencyExistenceLaw",
@@ -359,12 +924,20 @@
       "detail": "Consumer \"governance-evidence\" is declared by dependency \"trust-framework\" and reciprocated through depends_on."
     },
     {
-      "law_id": "DependencyPolicyLaw",
+      "law_id": "DependencyExistenceLaw",
       "capability_id": "governance-evidence",
-      "dependency_id": "core-runtime",
+      "dependency_id": "work-core",
       "contract_name": null,
       "status": "PASS",
-      "detail": "Dependency \"core-runtime\" complies with manifest dependency policy for capability \"governance-evidence\"."
+      "detail": "Declared dependency \"work-core\" resolves to internal capability \"work-core\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "governance-evidence",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"governance-evidence\" -> \"work-core\" stays within non-API capability boundaries."
     },
     {
       "law_id": "DependencyPolicyLaw",
@@ -375,36 +948,12 @@
       "detail": "Dependency \"trust-framework\" complies with manifest dependency policy for capability \"governance-evidence\"."
     },
     {
-      "law_id": "CapabilityBoundaryLaw",
+      "law_id": "DependencyPolicyLaw",
       "capability_id": "governance-evidence",
-      "dependency_id": "api-platform",
+      "dependency_id": "work-core",
       "contract_name": null,
       "status": "PASS",
-      "detail": "Capability \"governance-evidence\" does not depend on declared consumer \"api-platform\", preserving provider-consumer direction."
-    },
-    {
-      "law_id": "ConsumerDeclarationLaw",
-      "capability_id": "governance-evidence",
-      "dependency_id": "api-platform",
-      "contract_name": null,
-      "status": "PASS",
-      "detail": "Declared consumer \"api-platform\" reciprocates dependency on \"governance-evidence\"."
-    },
-    {
-      "law_id": "CapabilityBoundaryLaw",
-      "capability_id": "governance-evidence",
-      "dependency_id": "governance-read-model",
-      "contract_name": null,
-      "status": "PASS",
-      "detail": "Capability \"governance-evidence\" does not depend on declared consumer \"governance-read-model\", preserving provider-consumer direction."
-    },
-    {
-      "law_id": "ConsumerDeclarationLaw",
-      "capability_id": "governance-evidence",
-      "dependency_id": "governance-read-model",
-      "contract_name": null,
-      "status": "PASS",
-      "detail": "Declared consumer \"governance-read-model\" reciprocates dependency on \"governance-evidence\"."
+      "detail": "Dependency \"work-core\" complies with manifest dependency policy for capability \"governance-evidence\"."
     },
     {
       "law_id": "ContractCompatibilityLaw",
@@ -417,10 +966,18 @@
     {
       "law_id": "DependencyExistenceLaw",
       "capability_id": "governance-read-model",
-      "dependency_id": "core-runtime",
+      "dependency_id": "evidence-registry",
       "contract_name": null,
       "status": "PASS",
-      "detail": "Declared dependency \"core-runtime\" resolves to workspace package classification \"core_package\"."
+      "detail": "Declared dependency \"evidence-registry\" resolves to internal capability \"evidence-registry\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "governance-read-model",
+      "dependency_id": "evidence-registry",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"governance-read-model\" -> \"evidence-registry\" stays within non-API capability boundaries."
     },
     {
       "law_id": "DependencyExistenceLaw",
@@ -439,20 +996,28 @@
       "detail": "Dependency \"governance-read-model\" -> \"governance-evidence\" stays within non-API capability boundaries."
     },
     {
-      "law_id": "ConsumerDeclarationLaw",
-      "capability_id": "governance-evidence",
-      "dependency_id": "governance-read-model",
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "governance-read-model",
+      "dependency_id": "work-core",
       "contract_name": null,
       "status": "PASS",
-      "detail": "Consumer \"governance-read-model\" is declared by dependency \"governance-evidence\" and reciprocated through depends_on."
+      "detail": "Declared dependency \"work-core\" resolves to internal capability \"work-core\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "governance-read-model",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"governance-read-model\" -> \"work-core\" stays within non-API capability boundaries."
     },
     {
       "law_id": "DependencyPolicyLaw",
       "capability_id": "governance-read-model",
-      "dependency_id": "core-runtime",
+      "dependency_id": "evidence-registry",
       "contract_name": null,
       "status": "PASS",
-      "detail": "Dependency \"core-runtime\" complies with manifest dependency policy for capability \"governance-read-model\"."
+      "detail": "Dependency \"evidence-registry\" complies with manifest dependency policy for capability \"governance-read-model\"."
     },
     {
       "law_id": "DependencyPolicyLaw",
@@ -463,20 +1028,12 @@
       "detail": "Dependency \"governance-evidence\" complies with manifest dependency policy for capability \"governance-read-model\"."
     },
     {
-      "law_id": "CapabilityBoundaryLaw",
+      "law_id": "DependencyPolicyLaw",
       "capability_id": "governance-read-model",
-      "dependency_id": "api-platform",
+      "dependency_id": "work-core",
       "contract_name": null,
       "status": "PASS",
-      "detail": "Capability \"governance-read-model\" does not depend on declared consumer \"api-platform\", preserving provider-consumer direction."
-    },
-    {
-      "law_id": "ConsumerDeclarationLaw",
-      "capability_id": "governance-read-model",
-      "dependency_id": "api-platform",
-      "contract_name": null,
-      "status": "PASS",
-      "detail": "Declared consumer \"api-platform\" reciprocates dependency on \"governance-read-model\"."
+      "detail": "Dependency \"work-core\" complies with manifest dependency policy for capability \"governance-read-model\"."
     },
     {
       "law_id": "DependencyPolicyLaw",
@@ -487,12 +1044,92 @@
       "detail": "Capability \"identity\" does not declare manifest-level dependency policy yet."
     },
     {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "knowledge-graph",
+      "dependency_id": "evidence-registry",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"evidence-registry\" resolves to internal capability \"evidence-registry\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "knowledge-graph",
+      "dependency_id": "evidence-registry",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"knowledge-graph\" -> \"evidence-registry\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "knowledge-graph",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"work-core\" resolves to internal capability \"work-core\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "knowledge-graph",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"knowledge-graph\" -> \"work-core\" stays within non-API capability boundaries."
+    },
+    {
       "law_id": "DependencyPolicyLaw",
       "capability_id": "knowledge-graph",
       "dependency_id": null,
       "contract_name": null,
       "status": "PASS",
       "detail": "Capability \"knowledge-graph\" does not declare manifest-level dependency policy yet."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "legal-case",
+      "dependency_id": "knowledge-graph",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"knowledge-graph\" resolves to internal capability \"knowledge-graph\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "legal-case",
+      "dependency_id": "knowledge-graph",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"legal-case\" -> \"knowledge-graph\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "legal-case",
+      "dependency_id": "legal-document",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"legal-document\" resolves to internal capability \"legal-document\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "legal-case",
+      "dependency_id": "legal-document",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"legal-case\" -> \"legal-document\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "legal-case",
+      "dependency_id": "workflow-engine",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"workflow-engine\" resolves to internal capability \"workflow-engine\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "legal-case",
+      "dependency_id": "workflow-engine",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"legal-case\" -> \"workflow-engine\" stays within non-API capability boundaries."
     },
     {
       "law_id": "DependencyPolicyLaw",
@@ -503,12 +1140,108 @@
       "detail": "Capability \"legal-case\" does not declare manifest-level dependency policy yet."
     },
     {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "legal-document",
+      "dependency_id": "knowledge-graph",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"knowledge-graph\" resolves to internal capability \"knowledge-graph\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "legal-document",
+      "dependency_id": "knowledge-graph",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"legal-document\" -> \"knowledge-graph\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "legal-document",
+      "dependency_id": "security-hardening",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"security-hardening\" resolves to internal capability \"security-hardening\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "legal-document",
+      "dependency_id": "security-hardening",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"legal-document\" -> \"security-hardening\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "legal-document",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"work-core\" resolves to internal capability \"work-core\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "legal-document",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"legal-document\" -> \"work-core\" stays within non-API capability boundaries."
+    },
+    {
       "law_id": "DependencyPolicyLaw",
       "capability_id": "legal-document",
       "dependency_id": null,
       "contract_name": null,
       "status": "PASS",
       "detail": "Capability \"legal-document\" does not declare manifest-level dependency policy yet."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "observability",
+      "dependency_id": "evidence-registry",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"evidence-registry\" resolves to internal capability \"evidence-registry\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "observability",
+      "dependency_id": "evidence-registry",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"observability\" -> \"evidence-registry\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "observability",
+      "dependency_id": "governance-evidence",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"governance-evidence\" resolves to internal capability \"governance-evidence\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "observability",
+      "dependency_id": "governance-evidence",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"observability\" -> \"governance-evidence\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "observability",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"work-core\" resolves to internal capability \"work-core\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "observability",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"observability\" -> \"work-core\" stays within non-API capability boundaries."
     },
     {
       "law_id": "DependencyPolicyLaw",
@@ -519,12 +1252,172 @@
       "detail": "Capability \"observability\" does not declare manifest-level dependency policy yet."
     },
     {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "reasoning",
+      "dependency_id": "policy-engine",
+      "contract_name": null,
+      "status": "FAIL",
+      "detail": "Declared dependency \"policy-engine\" does not resolve to a capability manifest or known workspace package."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "reasoning",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"work-core\" resolves to internal capability \"work-core\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "reasoning",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"reasoning\" -> \"work-core\" stays within non-API capability boundaries."
+    },
+    {
       "law_id": "DependencyPolicyLaw",
-      "capability_id": "requirement-management",
+      "capability_id": "reasoning",
       "dependency_id": null,
       "contract_name": null,
       "status": "PASS",
-      "detail": "Capability \"requirement-management\" does not declare manifest-level dependency policy yet."
+      "detail": "Capability \"reasoning\" does not declare manifest-level dependency policy yet."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "requirement-management",
+      "dependency_id": "governance-evidence",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"governance-evidence\" resolves to internal capability \"governance-evidence\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "requirement-management",
+      "dependency_id": "governance-evidence",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"requirement-management\" -> \"governance-evidence\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "requirement-management",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"work-core\" resolves to internal capability \"work-core\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "requirement-management",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"requirement-management\" -> \"work-core\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "requirement-management",
+      "dependency_id": "workflow-engine",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"workflow-engine\" resolves to internal capability \"workflow-engine\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "requirement-management",
+      "dependency_id": "workflow-engine",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"requirement-management\" -> \"workflow-engine\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyPolicyLaw",
+      "capability_id": "requirement-management",
+      "dependency_id": "governance-evidence",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"governance-evidence\" complies with manifest dependency policy for capability \"requirement-management\"."
+    },
+    {
+      "law_id": "DependencyPolicyLaw",
+      "capability_id": "requirement-management",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"work-core\" complies with manifest dependency policy for capability \"requirement-management\"."
+    },
+    {
+      "law_id": "DependencyPolicyLaw",
+      "capability_id": "requirement-management",
+      "dependency_id": "workflow-engine",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"workflow-engine\" complies with manifest dependency policy for capability \"requirement-management\"."
+    },
+    {
+      "law_id": "ContractCompatibilityLaw",
+      "capability_id": "requirement-management",
+      "dependency_id": "governance-evidence",
+      "contract_name": "GovernanceEvidenceProvider",
+      "status": "FAIL",
+      "detail": "Contract \"GovernanceEvidenceProvider\" range \">=0.1 <0.2\" is not satisfied by available provider versions [governance-evidence@1.0.0]."
+    },
+    {
+      "law_id": "ContractCompatibilityLaw",
+      "capability_id": "requirement-management",
+      "dependency_id": "workflow-engine",
+      "contract_name": "WorkflowEngineProvider",
+      "status": "FAIL",
+      "detail": "Contract \"WorkflowEngineProvider\" range \">=0.1 <0.2\" is not satisfied by available provider versions [workflow-engine@1.0.0]."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "requirements-traceability-matrix",
+      "dependency_id": "evidence-registry",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"evidence-registry\" resolves to internal capability \"evidence-registry\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "requirements-traceability-matrix",
+      "dependency_id": "evidence-registry",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"requirements-traceability-matrix\" -> \"evidence-registry\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "requirements-traceability-matrix",
+      "dependency_id": "knowledge-graph",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"knowledge-graph\" resolves to internal capability \"knowledge-graph\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "requirements-traceability-matrix",
+      "dependency_id": "knowledge-graph",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"requirements-traceability-matrix\" -> \"knowledge-graph\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "requirements-traceability-matrix",
+      "dependency_id": "requirement-management",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"requirement-management\" resolves to internal capability \"requirement-management\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "requirements-traceability-matrix",
+      "dependency_id": "requirement-management",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"requirements-traceability-matrix\" -> \"requirement-management\" stays within non-API capability boundaries."
     },
     {
       "law_id": "DependencyPolicyLaw",
@@ -533,6 +1426,62 @@
       "contract_name": null,
       "status": "PASS",
       "detail": "Capability \"requirements-traceability-matrix\" does not declare manifest-level dependency policy yet."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "security-hardening",
+      "dependency_id": "identity",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"identity\" resolves to internal capability \"identity\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "security-hardening",
+      "dependency_id": "identity",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"security-hardening\" -> \"identity\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "security-hardening",
+      "dependency_id": "trust-framework",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"trust-framework\" resolves to internal capability \"trust-framework\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "security-hardening",
+      "dependency_id": "trust-framework",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"security-hardening\" -> \"trust-framework\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "ConsumerDeclarationLaw",
+      "capability_id": "trust-framework",
+      "dependency_id": "security-hardening",
+      "contract_name": null,
+      "status": "FAIL",
+      "detail": "Dependency \"trust-framework\" declares consumed_by=[governance-evidence], but consumer \"security-hardening\" is missing from that list."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "security-hardening",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"work-core\" resolves to internal capability \"work-core\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "security-hardening",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"security-hardening\" -> \"work-core\" stays within non-API capability boundaries."
     },
     {
       "law_id": "DependencyPolicyLaw",
@@ -544,19 +1493,115 @@
     },
     {
       "law_id": "DependencyExistenceLaw",
-      "capability_id": "trust-framework",
-      "dependency_id": "core-runtime",
+      "capability_id": "service-directory",
+      "dependency_id": "identity",
       "contract_name": null,
       "status": "PASS",
-      "detail": "Declared dependency \"core-runtime\" resolves to workspace package classification \"core_package\"."
+      "detail": "Declared dependency \"identity\" resolves to internal capability \"identity\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "service-directory",
+      "dependency_id": "identity",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"service-directory\" -> \"identity\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "service-directory",
+      "dependency_id": "workflow-engine",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"workflow-engine\" resolves to internal capability \"workflow-engine\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "service-directory",
+      "dependency_id": "workflow-engine",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"service-directory\" -> \"workflow-engine\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyPolicyLaw",
+      "capability_id": "service-directory",
+      "dependency_id": null,
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Capability \"service-directory\" does not declare manifest-level dependency policy yet."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "services-id",
+      "dependency_id": "human-operations",
+      "contract_name": null,
+      "status": "FAIL",
+      "detail": "Declared dependency \"human-operations\" does not resolve to a capability manifest or known workspace package."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "services-id",
+      "dependency_id": "service-directory",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"service-directory\" resolves to internal capability \"service-directory\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "services-id",
+      "dependency_id": "service-directory",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"services-id\" -> \"service-directory\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "services-id",
+      "dependency_id": "workflow-engine",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"workflow-engine\" resolves to internal capability \"workflow-engine\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "services-id",
+      "dependency_id": "workflow-engine",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"services-id\" -> \"workflow-engine\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyPolicyLaw",
+      "capability_id": "services-id",
+      "dependency_id": null,
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Capability \"services-id\" does not declare manifest-level dependency policy yet."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "trust-framework",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"work-core\" resolves to internal capability \"work-core\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "trust-framework",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"trust-framework\" -> \"work-core\" stays within non-API capability boundaries."
     },
     {
       "law_id": "DependencyPolicyLaw",
       "capability_id": "trust-framework",
-      "dependency_id": "core-runtime",
+      "dependency_id": "work-core",
       "contract_name": null,
       "status": "PASS",
-      "detail": "Dependency \"core-runtime\" complies with manifest dependency policy for capability \"trust-framework\"."
+      "detail": "Dependency \"work-core\" complies with manifest dependency policy for capability \"trust-framework\"."
     },
     {
       "law_id": "CapabilityBoundaryLaw",
@@ -575,12 +1620,108 @@
       "detail": "Declared consumer \"governance-evidence\" reciprocates dependency on \"trust-framework\"."
     },
     {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "work-core",
+      "dependency_id": "core-runtime",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"core-runtime\" resolves to workspace package classification \"core_package\"."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "work-core",
+      "dependency_id": "persistence-layer",
+      "contract_name": null,
+      "status": "FAIL",
+      "detail": "Declared dependency \"persistence-layer\" does not resolve to a capability manifest or known workspace package."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "work-core",
+      "dependency_id": "security-hardening",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"security-hardening\" resolves to internal capability \"security-hardening\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "work-core",
+      "dependency_id": "security-hardening",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"work-core\" -> \"security-hardening\" stays within non-API capability boundaries."
+    },
+    {
       "law_id": "DependencyPolicyLaw",
-      "capability_id": "workflow-engine",
+      "capability_id": "work-core",
       "dependency_id": null,
       "contract_name": null,
       "status": "PASS",
-      "detail": "Capability \"workflow-engine\" does not declare manifest-level dependency policy yet."
+      "detail": "Capability \"work-core\" does not declare manifest-level dependency policy yet."
+    },
+    {
+      "law_id": "DependencyPolicyLaw",
+      "capability_id": "Work Inspection Agent",
+      "dependency_id": null,
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Capability \"Work Inspection Agent\" does not declare manifest-level dependency policy yet."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "workflow-engine",
+      "dependency_id": "governance-evidence",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"governance-evidence\" resolves to internal capability \"governance-evidence\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "workflow-engine",
+      "dependency_id": "governance-evidence",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"workflow-engine\" -> \"governance-evidence\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyExistenceLaw",
+      "capability_id": "workflow-engine",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Declared dependency \"work-core\" resolves to internal capability \"work-core\"."
+    },
+    {
+      "law_id": "CapabilityBoundaryLaw",
+      "capability_id": "workflow-engine",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"workflow-engine\" -> \"work-core\" stays within non-API capability boundaries."
+    },
+    {
+      "law_id": "DependencyPolicyLaw",
+      "capability_id": "workflow-engine",
+      "dependency_id": "governance-evidence",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"governance-evidence\" complies with manifest dependency policy for capability \"workflow-engine\"."
+    },
+    {
+      "law_id": "DependencyPolicyLaw",
+      "capability_id": "workflow-engine",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Dependency \"work-core\" complies with manifest dependency policy for capability \"workflow-engine\"."
+    },
+    {
+      "law_id": "ContractCompatibilityLaw",
+      "capability_id": "workflow-engine",
+      "dependency_id": "governance-evidence",
+      "contract_name": "GovernanceEvidenceProvider",
+      "status": "FAIL",
+      "detail": "Contract \"GovernanceEvidenceProvider\" range \">=0.1 <0.2\" is not satisfied by available provider versions [governance-evidence@1.0.0]."
     },
     {
       "law_id": "DependencyCycleLaw",
@@ -600,11 +1741,35 @@
     },
     {
       "law_id": "DependencyCycleLaw",
+      "capability_id": "atomic-composition",
+      "dependency_id": null,
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Capability \"atomic-composition\" does not participate in any declared capability dependency cycle."
+    },
+    {
+      "law_id": "DependencyCycleLaw",
+      "capability_id": "communication",
+      "dependency_id": null,
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Capability \"communication\" does not participate in any declared capability dependency cycle."
+    },
+    {
+      "law_id": "DependencyCycleLaw",
       "capability_id": "connector-ecosystem",
       "dependency_id": null,
       "contract_name": null,
       "status": "PASS",
       "detail": "Capability \"connector-ecosystem\" does not participate in any declared capability dependency cycle."
+    },
+    {
+      "law_id": "DependencyCycleLaw",
+      "capability_id": "consultation",
+      "dependency_id": null,
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Capability \"consultation\" does not participate in any declared capability dependency cycle."
     },
     {
       "law_id": "DependencyCycleLaw",
@@ -672,6 +1837,14 @@
     },
     {
       "law_id": "DependencyCycleLaw",
+      "capability_id": "reasoning",
+      "dependency_id": null,
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Capability \"reasoning\" does not participate in any declared capability dependency cycle."
+    },
+    {
+      "law_id": "DependencyCycleLaw",
       "capability_id": "requirement-management",
       "dependency_id": null,
       "contract_name": null,
@@ -689,18 +1862,50 @@
     {
       "law_id": "DependencyCycleLaw",
       "capability_id": "security-hardening",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "FAIL",
+      "detail": "Capability \"security-hardening\" participates in dependency cycle work-core -> security-hardening -> work-core."
+    },
+    {
+      "law_id": "DependencyCycleLaw",
+      "capability_id": "service-directory",
       "dependency_id": null,
       "contract_name": null,
       "status": "PASS",
-      "detail": "Capability \"security-hardening\" does not participate in any declared capability dependency cycle."
+      "detail": "Capability \"service-directory\" does not participate in any declared capability dependency cycle."
+    },
+    {
+      "law_id": "DependencyCycleLaw",
+      "capability_id": "services-id",
+      "dependency_id": null,
+      "contract_name": null,
+      "status": "PASS",
+      "detail": "Capability \"services-id\" does not participate in any declared capability dependency cycle."
     },
     {
       "law_id": "DependencyCycleLaw",
       "capability_id": "trust-framework",
+      "dependency_id": "work-core",
+      "contract_name": null,
+      "status": "FAIL",
+      "detail": "Capability \"trust-framework\" participates in dependency cycle work-core -> security-hardening -> trust-framework -> work-core."
+    },
+    {
+      "law_id": "DependencyCycleLaw",
+      "capability_id": "work-core",
+      "dependency_id": "security-hardening",
+      "contract_name": null,
+      "status": "FAIL",
+      "detail": "Capability \"work-core\" participates in dependency cycle work-core -> security-hardening -> work-core."
+    },
+    {
+      "law_id": "DependencyCycleLaw",
+      "capability_id": "Work Inspection Agent",
       "dependency_id": null,
       "contract_name": null,
       "status": "PASS",
-      "detail": "Capability \"trust-framework\" does not participate in any declared capability dependency cycle."
+      "detail": "Capability \"Work Inspection Agent\" does not participate in any declared capability dependency cycle."
     },
     {
       "law_id": "DependencyCycleLaw",

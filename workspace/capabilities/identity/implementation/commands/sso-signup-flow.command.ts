@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
-import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "@repo/core-kernel";
+import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "../../../../packages/core/kernel/src/index.js";
 import { slugifyForTenant } from "../services/password.service.js";
 import {
   UserId,
@@ -30,6 +30,7 @@ import {
 } from "../repositories/index.js";
 import { oidcLoginFlowCommand } from "./oidc-login-flow.command.js";
 import * as jose from "jose";
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
 
 const DEFAULT_SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 
@@ -44,22 +45,7 @@ if (process.env.NODE_ENV === "production" && !(process.env.POSTGRES_CONNECTION_S
   throw new Error("[IdentityService] PRODUCTION SAFETY VIOLATION: In-memory repositories cannot be used in production unless EOS_SANDBOX_MODE is enabled.");
 }
 
-const hasDbConnection = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL;
-const userRepo = hasDbConnection
-  ? getUserRepositoryPostgres()
-  : UserRepositoryInMemory;
-const tenantRepo = hasDbConnection
-  ? getTenantRepositoryPostgres()
-  : TenantRepositoryInMemory;
-const workspaceRepo = hasDbConnection
-  ? getWorkspaceRepositoryPostgres()
-  : WorkspaceRepositoryInMemory;
-const membershipRepo = hasDbConnection
-  ? getMembershipRepositoryPostgres()
-  : MembershipRepositoryInMemory;
-const sessionRepo = hasDbConnection
-  ? getSessionRepositoryPostgres()
-  : SessionRepositoryInMemory;
+
 
 // CAND-002 VERTICAL SLICE INPUT SCHEMA (thin wrapper, extend existing patterns)
 export const SsoSignupFlowInputSchema = z.object({
@@ -116,6 +102,14 @@ export const ssoSignupFlowCommand: SsoSignupFlowCommand = {
   version: "1.0.0",
 
   async execute(input: SsoSignupFlowInput): Promise<SsoSignupFlowOutput> {
+    // P1-CAP-018: 6-boundary compliance validation - identity domain can only access itself
+    if (!validateBoundaryAccess("identity", "identity")) {
+      console.error("[sso-signup-flow] BOUNDARY ACCESS DENIED: cannot access identity domain with invalid boundary");
+      throw new Error("Boundary access violation");
+    }
+    
+    const { userRepo, tenantRepo, workspaceRepo, membershipRepo, sessionRepo } = getRepositories();
+    
     if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       await initIdentitySchema();
     }
@@ -385,3 +379,15 @@ export const ssoSignupFlowCommand: SsoSignupFlowCommand = {
     };
   },
 };
+
+// P1-CAP-018: Lazy repository initialization untuk menghindari module cycle dan kompatibel Edge Runtime
+function getRepositories() {
+  const hasDbConnection = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL;
+  return {
+    userRepo: hasDbConnection ? getUserRepositoryPostgres() : UserRepositoryInMemory,
+    tenantRepo: hasDbConnection ? getTenantRepositoryPostgres() : TenantRepositoryInMemory,
+    workspaceRepo: hasDbConnection ? getWorkspaceRepositoryPostgres() : WorkspaceRepositoryInMemory,
+    membershipRepo: hasDbConnection ? getMembershipRepositoryPostgres() : MembershipRepositoryInMemory,
+    sessionRepo: hasDbConnection ? getSessionRepositoryPostgres() : SessionRepositoryInMemory,
+  };
+}

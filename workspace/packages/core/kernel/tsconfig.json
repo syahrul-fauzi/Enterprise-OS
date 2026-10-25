@@ -12,18 +12,22 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "lib": ["es2022", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "moduleDetection": "force",
-    "moduleResolution": "bundler",
-            "noUncheckedIndexedAccess": true,
-            "resolveJsonModule": true,
-            "strict": true,
-            "target": "ES2022",
-            "noEmit": false,
-    "ignoreDeprecations": "5.0"
+    "paths": {
+      "@repo/*": ["../../packages/*"],
+      "@capabilities/*": ["../../capabilities/*"]
+    },
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "ES2022",
+    "ignoreDeprecations": "5.0",
+    "emitDeclarationOnly": false
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"],
+  "exclude": ["node_modules", "dist", "**/*.d.ts"],
   "references": [
     { "path": "../runtime/tsconfig.json" }
   ]

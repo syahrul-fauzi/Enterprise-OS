@@ -1,13 +1,19 @@
 import { NextResponse } from 'next/server';
+import { readWorkspaceSessionFromRequest } from '@repo/core-kernel/src/session/workspace-session.js';
 import { getAllWorksForWorkspace } from './create/route'; // Re-using the server-side logic
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const workspaceId = searchParams.get('workspaceId');
-
-  if (!workspaceId) {
-    return NextResponse.json({ error: 'Workspace ID is required' }, { status: 400 });
+  const session = readWorkspaceSessionFromRequest(request);
+  
+  // Canonical auth enforcement: only accept workspaceId from validated session
+  if (!session?.workspaceId) {
+    return NextResponse.json({ 
+      error: 'Unauthorized: Invalid or missing workspace session',
+      status: 'AUTH_INCONSISTENCY_RESOLVED'
+    }, { status: 401 });
   }
+
+  const { workspaceId, tenantId, actorId } = session;
 
   try {
     const canonicalWorks = getAllWorksForWorkspace(workspaceId);

@@ -20,6 +20,7 @@ import { governanceReadGatewayService } from "./governance-read-gateway.service.
 import { requirementDeliveryGatewayService } from "./requirement-delivery-gateway.service.js";
 import { workflowReadGatewayService } from "./workflow-read-gateway.service.js";
 import { intentReadGatewayService } from "./intent-read-gateway.service.js";
+import { registerApiPlatformCapability } from "../commands/index.js";
 // B6.11: Use intent read gateway to avoid compile-time coupling with atomic-composition
 // Canonical intentUnderstandingService is accessed via runtime globalThis binding
 // Circular dependency removed - atomic-composition imports from api-platform, not the reverse
@@ -104,6 +105,47 @@ const ENDPOINTS: readonly ApiPlatformEndpoint[] = Object.freeze([
     path: "/api/governance/attestation-policy",
     resource: "governance",
     operation: "get",
+    authRequired: true,
+  },
+  // ACaaS-COMMERCIAL-001: Tambahkan endpoint ACaaS untuk compliance check (sesuai kontrak gateway Zuplo)
+  {
+    id: "acaas-compliance-create",
+    method: "POST",
+    path: "/api/v1/acaas/compliance/create",
+    resource: "acaas",
+    operation: "acaas.complianceCheck.create",
+    authRequired: true,
+  },
+  {
+    id: "acaas-compliance-getresult",
+    method: "GET",
+    path: "/api/v1/acaas/compliance/:id/result",
+    resource: "acaas",
+    operation: "acaas.complianceCheck.getResult",
+    authRequired: true,
+  },
+  {
+    id: "acaas-compliance-markprocessing",
+    method: "POST",
+    path: "/api/v1/acaas/compliance/:id/processing",
+    resource: "acaas",
+    operation: "acaas.complianceCheck.markProcessing",
+    authRequired: true,
+  },
+  {
+    id: "acaas-compliance-markcompleted",
+    method: "POST",
+    path: "/api/v1/acaas/compliance/:id/completed",
+    resource: "acaas",
+    operation: "acaas.complianceCheck.markCompleted",
+    authRequired: true,
+  },
+  {
+    id: "acaas-compliance-markfailed",
+    method: "POST",
+    path: "/api/v1/acaas/compliance/:id/failed",
+    resource: "acaas",
+    operation: "acaas.complianceCheck.markFailed",
     authRequired: true,
   },
   {
@@ -514,5 +556,8 @@ export class ApiPlatformService {
 }
 
 export const apiPlatformService = new ApiPlatformService();
+
+// Inisialisasi dan daftarkan semua command ACaaS ke capabilityRegistry saat service dimuat
+registerApiPlatformCapability();
 
 export * from "../contracts/index.js";

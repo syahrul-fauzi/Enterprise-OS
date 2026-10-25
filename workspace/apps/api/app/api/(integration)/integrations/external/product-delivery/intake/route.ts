@@ -2,8 +2,23 @@ import { NextResponse } from "next/server";
 import {
   initIdentitySchema,
 } from "@repo/capabilities-identity";
-import { randomUUID } from "crypto";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
+
+// Lazy initialization untuk Node.js crypto module (hindari Edge Runtime static analysis warning)
+// Gunakan globalThis.crypto.randomUUID() untuk kompatibilitas Edge yang sudah tersedia
+let randomUUID: () => string;
+
+async function initNodeRuntime() {
+  if (!randomUUID) {
+    // Jika di Node.js, gunakan node:crypto, jika di Edge, gunakan globalThis.crypto
+    if (typeof EdgeRuntime !== "undefined") {
+      randomUUID = () => globalThis.crypto.randomUUID();
+    } else {
+      const { randomUUID: nodeRandomUUID } = await import("node:crypto");
+      randomUUID = nodeRandomUUID;
+    }
+  }
+}
 
 // PROD-EXT-001: External Work Intake API untuk Product Delivery (PROD-001.1)
 // Hanya menerima input external, memproses ke canonical Intent/Work pipeline EOS
@@ -12,6 +27,9 @@ import { capabilityRegistry } from "@repo/core-kernel/registry/capability-comman
 
 export async function POST(request: Request) {
   try {
+    // Inisialisasi Node.js modules terlebih dahulu
+    await initNodeRuntime();
+    
     // Validasi signature API key untuk keamanan external call (System Surface requirement)
     const apiKey = request.headers.get("x-product-delivery-api-key");
     if (!apiKey || process.env.PRODUCT_DELIVERY_EXTERNAL_API_KEY !== apiKey) {

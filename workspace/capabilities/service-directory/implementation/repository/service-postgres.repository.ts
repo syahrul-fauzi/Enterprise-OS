@@ -35,6 +35,21 @@ class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> imple
   readonly entityName = "ServiceRequest" as const;
   readonly kind = "repository" as const;
 
+  // ACaaS-COMMERCIAL-001: Add byExternalId to support idempotency checks (PostgreSQL implementation)
+  async byExternalId(externalId: string, tenantId: string, workspaceId: string) {
+    const result = await this.pool.query(
+      `SELECT * FROM service_requests 
+       WHERE external_id = $1 
+       AND request_context->>'tenantId' = $2 
+       AND request_context->>'workspaceId' = $3 
+       LIMIT 1`,
+      [externalId, tenantId, workspaceId]
+    );
+    return result.rows[0] ? this.toAggregate(result.rows[0]) : undefined;
+  }
+
+
+
   constructor() {
     super("service_requests");
   }
@@ -96,6 +111,7 @@ class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> imple
       requester_name: entity.requesterName,
       provider_id: entity.providerId,
       budget: entity.budget,
+      external_id: entity.externalId,
       deadline: entity.deadline?.toISOString(),
       created_at: entity.createdAt.toISOString(),
       updated_at: entity.updatedAt.toISOString(),
@@ -347,6 +363,64 @@ class ServiceRequestRepositoryPostgresImpl extends PostgresRepository<any> imple
       throw error;
     } finally {
       // Clear session context regardless of success/failure
+      await this.clearSessionContext();
+      client.release();
+    }
+  }
+
+  // ACaaS-002: Implement update method untuk menyimpan hasil evaluasi compliance dengan tenant isolation (PostgreSQL)
+  async update(id: ServiceRequestId, tenantId: string, workspaceId: string, updates: Partial<ServiceRequestAggregate>): Promise<ServiceRequestAggregate> {
+    const client = await this.pool.connect();
+    try {
+      await this.setSessionContext(tenantId, workspaceId);
+      
+      // Cari record yang ada untuk verifikasi tenant ownership
+      const existingRecord = await client.query(
+        `SELECT * FROM service_requests WHERE id = $1`,
+        [id]
+      );
+      if (existingRecord.rows.length === 0) {
+        throw new Error(`[ServiceRequestRepositoryPostgres] Service request ${id} not found`);
+      }
+      const record = existingRecord.rows[0];
+      // Verifikasi tenant isolation
+      if (record.request_context?.tenantId !== tenantId || record.request_context?.workspaceId !== workspaceId) {
+        throw new Error(`[ServiceRequestRepositoryPostgres] Tenant/workspace mismatch for update on request ${id}`);
+      }
+      
+      // Bangun query update secara dinamis
+      const updateFields: string[] = [];
+      const updateValues: any[] = [];
+      let paramIndex = 1;
+      
+      // Handle executionContext (merge jika ada)
+      if (updates.executionContext) {
+        updateFields.push(`execution_context = execution_context || $${paramIndex}`);
+        updateValues.push(JSON.stringify(updates.executionContext));
+        paramIndex++;
+      }
+      // Handle status jika diupdate
+      if (updates.status) {
+        updateFields.push(`status = $${paramIndex}`);
+        updateValues.push(updates.status);
+        paramIndex++;
+      }
+      // Selalu update updated_at
+      updateFields.push(`updated_at = NOW()`);
+      
+      if (updateFields.length === 0) {
+        return this.toAggregate(record);
+      }
+      
+      const updateQuery = `UPDATE service_requests SET ${updateFields.join(", ")} WHERE id = $${paramIndex} RETURNING *`;
+      updateValues.push(id);
+      
+      const result = await client.query(updateQuery, updateValues);
+      return this.toAggregate(result.rows[0]);
+    } catch (error) {
+      await client.query("ROLLBACK");
+      throw error;
+    } finally {
       await this.clearSessionContext();
       client.release();
     }

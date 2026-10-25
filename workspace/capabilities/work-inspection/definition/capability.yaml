@@ -17,3 +17,4 @@ capability:
     eos_thesis: "Implements the core vision of Work-grounded communication-and-coordination substrate"
     agentic_loop: "Fully implements the grounded agentic loop as defined in architectural thesis"
     experiment_ilc_lawyershub: "Critical component to validate ILC→LawyersHub conversation→execution continuity"
+evidence_required: true

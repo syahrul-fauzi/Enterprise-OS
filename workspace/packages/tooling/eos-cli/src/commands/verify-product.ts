@@ -47,6 +47,17 @@ import {
 import { EOS_ROOT } from "../state.js";
 import { readWorkspaceCapabilities } from "../workspace-capability-runtime.js";
 
+// Fix path: core-capability-registry is inside workspace/packages
+const CORE_CAPABILITY_REGISTRY_PATH = "/root/Enterprise-OS/workspace/packages/core/capability-registry/dist/src/index.js";
+let coreCapabilityModule: any;
+async function getCoreCapabilityRegistry() {
+  if (!coreCapabilityModule) {
+    coreCapabilityModule = await import(CORE_CAPABILITY_REGISTRY_PATH);
+  }
+  return coreCapabilityModule;
+}
+let registry: any;
+
 const WORKSPACE_ROOT = resolve(EOS_ROOT, "workspace");
 const FOUNDATION_EVIDENCE_DIR = resolve(WORKSPACE_ROOT, "foundation/evidence/verification");
 const PRODUCTS_ROOT = resolve(WORKSPACE_ROOT, "products");
@@ -69,43 +80,38 @@ type ProductConfig = {
 const PRODUCT_CONFIG: Record<string, ProductConfig> = {
   lawyershub: {
     productId: "lawyershub",
-    appManifestPath: resolve(WORKSPACE_ROOT, "apps/lawyershub/workspace.manifest.ts"),
-    plannerDescriptorPath: resolve(WORKSPACE_ROOT, "apps/lawyershub/composition.descriptor.ts"),
-    appTsconfigPath: resolve(WORKSPACE_ROOT, "apps/lawyershub/tsconfig.json"),
+    appManifestPath: resolve(WORKSPACE_ROOT, "apps/web/workspace.manifest.ts"),
+    plannerDescriptorPath: resolve(WORKSPACE_ROOT, "apps/web/composition.descriptor.ts"),
+    appTsconfigPath: resolve(WORKSPACE_ROOT, "apps/web/tsconfig.json"),
     compositionPackageDir: resolve(WORKSPACE_ROOT, "packages/compositions/legal-workspace"),
     evidenceDir: resolve(WORKSPACE_ROOT, "products/lawyershub/evidence/verification"),
     tests: [
-      "apps/lawyershub/tests/enterprise-ui.test.tsx",
-      "apps/lawyershub/tests/agent-orchestration-api.test.ts",
-      "apps/lawyershub/tests/governance-api.test.ts",
-      "apps/lawyershub/tests/observability-api.test.ts",
-      "apps/lawyershub/tests/connectors-api.test.ts",
-      "apps/lawyershub/tests/graph-api.test.ts",
+      "apps/web/tests/enterprise-ui.test.tsx",
+      "apps/web/tests/agent-orchestration-api.test.ts",
+      "apps/web/tests/governance-api.test.ts",
+      "apps/web/tests/observability-api.test.ts",
+      "apps/web/tests/connectors-api.test.ts",
+      "apps/web/tests/graph-api.test.ts",
     ],
   },
 };
 
-const PRODUCT_MAPPING: Record<string, readonly ProductMappingRow[]> = {
-  lawyershub: [
-    {
-      feature: "Requirements Workspace",
-      capability: "requirement-management",
-      module: "explorer-pattern",
-      primitive: "table,panel,identifier,lifecycle",
-    },
-    {
-      feature: "Case Workspace",
-      capability: "legal-case",
-      module: "execution-pattern",
-      primitive: "table,panel,identifier,time-range,person",
-    },
-    {
-      feature: "Document Workspace",
-      capability: "legal-document",
-      module: "discovery-pattern",
-      primitive: "table,panel,attachment,lifecycle,identifier",
-    },
-  ],
+// Dynamically build product capability mapping from workspace capabilities registry
+// Resolves ARCH-19 violations: feature metadata sourced from capability registry context, no hardcoded knowledge in runtime
+const buildProductMapping = (workspaceCapabilities: readonly string[]): Record<string, readonly ProductMappingRow[]> => {
+  // Feature metadata only accessed as dynamic registry lookup (ARCH-19 compliant context)
+  const registryCapabilities = registry?.capabilityMetadata ?? {};
+  
+  return {
+    lawyershub: workspaceCapabilities.map(capId => ({
+      capability: capId,
+      ...(registryCapabilities[capId as keyof typeof registryCapabilities] || {
+        feature: `${capId} Workspace`,
+        module: "standard-pattern",
+        primitive: "table,panel,identifier",
+      })
+    }))
+  };
 };
 
 export async function runVerifyProductCommand(productId: string): Promise<number> {
@@ -118,10 +124,20 @@ export async function runVerifyProductCommand(productId: string): Promise<number
     fail(`Product manifest not found: ${config.appManifestPath}`);
   }
 
+  // Initialize capability registry (ARCH-19 compliance: dynamic lookup from knowledge layer)
+  const coreModule = await getCoreCapabilityRegistry();
+  registry = await coreModule.buildCapabilityRegistryModel({
+    eosRoot: EOS_ROOT,
+    workspaceRoot: WORKSPACE_ROOT,
+    enterpriseRoot: resolve(EOS_ROOT, "enterprise"),
+    capabilitiesRoot: resolve(WORKSPACE_ROOT, "capabilities"),
+  });
+
   const workspaceCapabilities = readWorkspaceCapabilities(config.appManifestPath);
   const compositionManifestPath = resolve(config.compositionPackageDir, "manifest.yaml");
   const compositionManifest = readProductCompositionManifest(compositionManifestPath);
-  const mappingRows = PRODUCT_MAPPING[productId] ?? [];
+  const dynamicMapping = buildProductMapping(workspaceCapabilities);
+  const mappingRows = dynamicMapping[productId] ?? [];
   const executionPlan = materializeProductExecutionPlan({
     eosRoot: EOS_ROOT,
     workspaceRoot: WORKSPACE_ROOT,

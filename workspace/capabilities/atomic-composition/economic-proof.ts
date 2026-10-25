@@ -5,6 +5,7 @@
  */
 
 import { type WorkId, createWorkId } from '../../capabilities/work-core/contracts/work.contracts.ts';
+// Gunakan alias canonical @repo/capabilities-atomic-composition untuk import dari internal contracts (sesuai Gate A requirements)
 import { 
   ActorId, 
   RequirementId,
@@ -12,7 +13,7 @@ import {
   CapabilityRequirement as Requirement,
   CapabilityResolutionRequest,
   CapabilityResolutionResult
-} from './implementation/contracts/atomic-composition.contracts';
+} from "@repo/capabilities-atomic-composition/implementation/contracts/atomic-composition.contracts.js";
 import { CompositionRepository } from './implementation/repository/composition.repository';
 import { AtomicCompositionService } from './implementation/services/composition.service';
 

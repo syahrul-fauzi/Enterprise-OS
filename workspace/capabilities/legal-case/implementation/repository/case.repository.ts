@@ -152,8 +152,36 @@ export const CaseRepositoryInMemory: CaseRepository = {
   },
 
   // CORE-001: listByWorkIds menggantikan listByTenant/listByWorkspace - hanya fetch cases yang terikat ke Work yang diizinkan
-  async listByWorkIds(workIds: readonly string[]): Promise<readonly CaseAggregate[]> {
-    const cases = Array.from(STORE.values()).filter(c => workIds.includes(c.workId)) as CaseAggregate[];
+  // SLIC-003: Menambahkan context untuk workspace/tenant boundary enforcement (defense-in-depth)
+  async listByWorkIds(workIds: readonly string[], context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<readonly CaseAggregate[]> {
+    let cases = Array.from(STORE.values()).filter(c => workIds.includes(c.workId)) as CaseAggregate[];
+    
+    // WORK-015: Enforce tenant isolation jika context disediakan (sama pola dengan byId/list)
+    if (context) {
+      cases = cases.filter(c => {
+        const caseTenantId = (c as any).tenantId;
+        const caseWorkspaceId = (c as any).workspaceId;
+        const caseWorkId = (c as any).workId;
+        
+        // First check tenant isolation (always required)
+        if (caseTenantId !== context.tenantId) {
+          console.error(`[CaseRepositoryInMemory] Cross-tenant access attempt blocked: case ${c.id} belongs to tenant ${caseTenantId}, requested tenant ${context.tenantId}`);
+          return false;
+        }
+        
+        // Then check workId (highest priority) if provided
+        if (context?.workId) {
+          if (caseWorkId !== context.workId) return false;
+        } 
+        // Fallback to workspaceId if workId not provided
+        else if (context?.workspaceId) {
+          if (caseWorkspaceId !== context.workspaceId) return false;
+        }
+        
+        return true;
+      });
+    }
+    
     return cases.map(clone);
   },
 

@@ -26,3 +26,8 @@ export {
   governanceEvidenceArtifactCatalog,
   governanceEvidenceService,
 } from "./services/governance-evidence.service.js";
+
+export {
+  registerGovernanceEvidenceCapability,
+  governanceEvidenceCommands
+} from "./commands/index.js";

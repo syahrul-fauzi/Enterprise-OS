@@ -20,9 +20,9 @@ exports:
 depends_on:
   - governance-evidence
   - evidence-registry
-  - core-runtime
+  - work-core
 allowed_dependencies:
-  - core-runtime
+  - work-core
   - governance-evidence
   - evidence-registry
 forbidden_dependencies:
@@ -45,6 +45,7 @@ capability:
   evidence_required:
     - production_usage
     - dashboard_usage
+evidence_required: true
 stability: stable
 contracts:
   provides:

@@ -8,7 +8,7 @@ import { governanceEvidenceService } from "../../../governance-evidence/implemen
 
 export class GovernanceEvidenceGatewayService {
   constructor(
-    private readonly provider: GovernanceEvidenceProvider = governanceEvidenceService,
+    private readonly provider: GovernanceEvidenceProvider = governanceEvidenceService as unknown as GovernanceEvidenceProvider,
   ) {}
 
   getReport(): JsonRecord {

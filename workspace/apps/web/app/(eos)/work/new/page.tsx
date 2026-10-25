@@ -117,6 +117,10 @@ export default async function NewWorkPage({
     medical_facility_name?: string;
     diagnosis_code?: string;
     service_category?: string;
+    // ACaaS Compliance Check specific fields (ACaaS-COMMERCIAL-001)
+    documentType?: string;
+    documentData?: string;
+    compliancePolicies?: string[];
   }) => {
     "use server";
     try {
@@ -132,10 +136,11 @@ export default async function NewWorkPage({
         formData.objective || ""
       }\nDescription: ${formData.description || ""}${formData.project_number ? `\nProject Number: ${formData.project_number}` : ""}${formData.contractor_name ? `\nContractor: ${formData.contractor_name}` : ""}${formData.worker_estimate ? `\nWorker Estimate: ${formData.worker_estimate}` : ""}${formData.project_location ? `\nProject Location: ${formData.project_location}` : ""}${formData.patient_name ? `\nPatient Name: ${formData.patient_name}` : ""}${formData.patient_nik ? `\nPatient NIK: ${formData.patient_nik}` : ""}${formData.appointment_date ? `\nAppointment Date: ${formData.appointment_date}` : ""}${formData.appointment_time ? `\nAppointment Time: ${formData.appointment_time}` : ""}${formData.service_type ? `\nService Type: ${formData.service_type}` : ""}${formData.claim_number ? `\nClaim Number: ${formData.claim_number}` : ""}${formData.claim_date ? `\nClaim Date: ${formData.claim_date}` : ""}${formData.medical_facility_name ? `\nMedical Facility: ${formData.medical_facility_name}` : ""}${formData.diagnosis_code ? `\nDiagnosis Code: ${formData.diagnosis_code}` : ""}${formData.service_category ? `\nService Category: ${formData.service_category}` : ""}`;
 
-      // Determine work type from presence of domain-specific fields (SLICE-006: BPJS Construction, W-INDUSTRY-001-01: Healthcare, W-DOMAIN-002-01: BPJS Kesehatan Claim)
+      // Determine work type from presence of domain-specific fields (SLICE-006: BPJS Construction, W-INDUSTRY-001-01: Healthcare, W-DOMAIN-002-01: BPJS Kesehatan Claim, ACaaS-COMMERCIAL-001: ACaaS Compliance Check)
       const isBpjsConstruction = !!formData.project_number;
       const isHealthcareAppointment = !!formData.patient_name && !!formData.appointment_date;
       const isBpjsKesehatanClaim = !!formData.claim_number;
+      const isAcaasComplianceCheck = !!formData.documentType && !!formData.documentData;
       
       let workType = "general";
       let rawType = "work_request";
@@ -171,6 +176,14 @@ export default async function NewWorkPage({
           appointment_date: formData.appointment_date,
           appointment_time: formData.appointment_time,
           service_type: formData.service_type,
+        };
+      } else if (isAcaasComplianceCheck) {
+        workType = "acaas-compliance-check";
+        rawType = "acaas_compliance_check_request";
+        domainMetadata = {
+          documentType: formData.documentType,
+          documentData: formData.documentData,
+          compliancePolicies: formData.compliancePolicies,
         };
       }
 
@@ -224,6 +237,7 @@ export default async function NewWorkPage({
                 const domainType = isBpjsConstruction ? "construction" as const : 
                                   isHealthcareAppointment ? "healthcare" as const : 
                                   isBpjsKesehatanClaim ? "healthcare" as const : 
+                                  isAcaasComplianceCheck ? "acaas" as const : 
                                   "legal-case" as const;
                 
                 // Build base metadata with common fields
@@ -247,6 +261,13 @@ export default async function NewWorkPage({
                     service_category: formData.service_category,
                     workType: "bpjs-kesehatan-claim"
                   };
+                } else if (isAcaasComplianceCheck) {
+                  metadata = {
+                    documentType: formData.documentType,
+                    documentData: formData.documentData,
+                    compliancePolicies: formData.compliancePolicies,
+                    workType: "acaas-compliance-check"
+                  };
                 } else if (isHealthcareAppointment) {
                   metadata = {
                     patient_name: formData.patient_name,
@@ -262,14 +283,15 @@ export default async function NewWorkPage({
                   title: formData.title,
                   description: formData.description || "",
                   linkedIntentId: formData.intentId ? formData.intentId : undefined,
-                  domainType: domainType, // SLICE-006/W-INDUSTRY-001-01/W-DOMAIN-002-01: Domain-specific detection
+                  domainType: domainType, // SLICE-006/W-INDUSTRY-001-01/W-DOMAIN-002-01/ACaaS-COMMERCIAL-001: Domain-specific detection
                   workMode: "oneshot" as const, // Matches work-core enum values
                   sessionId: sessionCookie.value,
                   tenantId: session.tenantId,
                   workspaceId: session.workspaceId,
                   actorId: session.actorId,
-                  // Attach domain-specific metadata to work for persistence and capability routing
-                  ...(Object.keys(metadata).length > 0 && { metadata })
+                  // Attach domain-specific metadata as domainSpecificData (required by work-core domain delegation)
+                  // ACaaS-COMMERCIAL-001: Pass documentType/documentData/compliancePolicies to work-core for ACaaS processing
+                  ...(Object.keys(metadata).length > 0 && { domainSpecificData: metadata, metadata })
                 };
         const result = await createWorkCommand.execute(createWorkInput);
         redirect(`/work/${result.workId}`);
@@ -294,7 +316,7 @@ export default async function NewWorkPage({
   const userCapabilities = session.userCapabilities || [];
 
   // Determine workType to pass to client based on intent category or searchParams (W-INDUSTRY-001-01/W-DOMAIN-002-01)
-        let clientWorkType: "general" | "bpjs-construction" | "healthcare-appointment" | "bpjs-kesehatan-claim" = "general";
+        let clientWorkType: "general" | "bpjs-construction" | "healthcare-appointment" | "bpjs-kesehatan-claim" | "acaas-compliance-check" = "general";
         if (intent?.category?.includes("construction") || searchParams.workType === "bpjs-construction") {
           clientWorkType = "bpjs-construction";
         } else if (
@@ -306,6 +328,8 @@ export default async function NewWorkPage({
           clientWorkType = "bpjs-kesehatan-claim";
         } else if (intent?.category?.includes("healthcare") || searchParams.workType === "healthcare-appointment") {
           clientWorkType = "healthcare-appointment";
+        } else if (intent?.category?.includes("compliance") || intent?.category?.includes("acaas") || searchParams.workType === "acaas-compliance-check") {
+          clientWorkType = "acaas-compliance-check";
         }
 
   // Pass all server-resolved data to client boundary component

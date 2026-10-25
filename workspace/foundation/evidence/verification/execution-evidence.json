@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total_capabilities": 22,
-    "declared_capabilities": 9,
+    "total_capabilities": 24,
+    "declared_capabilities": 11,
     "observed_capabilities": 13,
     "verified_capabilities": 13,
     "reproducible_capabilities": 8
@@ -4275,6 +4275,42 @@
       "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
     },
     {
+      "capability_id": "reasoning",
+      "capability_name": "Reasoning Capability",
+      "provided_capabilities": [
+        "work-classify",
+        "work-decompose",
+        "work-plan",
+        "work-route",
+        "work-summarize"
+      ],
+      "lifecycle_stage": "core",
+      "governance_status": "VALID",
+      "declared_products": [],
+      "mapped_products": [],
+      "runtime_products": [],
+      "empirically_verified_products": [],
+      "execution_reachability": {
+        "product": false,
+        "composition": false,
+        "runtime": false,
+        "observed": false,
+        "verified": false,
+        "reproducible": false,
+        "evidence": false,
+        "replay": false,
+        "status": "DECLARED"
+      },
+      "runtime_invocations": {
+        "total": 0,
+        "observed_products": [],
+        "claim_boundary": "Runtime invocation telemetry is captured from actual capability service execution during product verification tests. Coverage is limited to currently verified products and exercised operations."
+      },
+      "stewardship_gap": "Declared consumer exists without executable product verification evidence.",
+      "per_product": [],
+      "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
+    },
+    {
       "capability_id": "requirement-management",
       "capability_name": "Requirement Management",
       "provided_capabilities": [
@@ -6944,6 +6980,41 @@
           "execution_status": "VERIFIED"
         }
       ],
+      "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
+    },
+    {
+      "capability_id": "work-core",
+      "capability_name": "Work Core",
+      "provided_capabilities": [
+        "work-continuity",
+        "work-evidence",
+        "work-identity",
+        "work-state"
+      ],
+      "lifecycle_stage": "core",
+      "governance_status": "VALID",
+      "declared_products": [],
+      "mapped_products": [],
+      "runtime_products": [],
+      "empirically_verified_products": [],
+      "execution_reachability": {
+        "product": false,
+        "composition": false,
+        "runtime": false,
+        "observed": false,
+        "verified": false,
+        "reproducible": false,
+        "evidence": false,
+        "replay": false,
+        "status": "DECLARED"
+      },
+      "runtime_invocations": {
+        "total": 0,
+        "observed_products": [],
+        "claim_boundary": "Runtime invocation telemetry is captured from actual capability service execution during product verification tests. Coverage is limited to currently verified products and exercised operations."
+      },
+      "stewardship_gap": "Declared consumer exists without executable product verification evidence.",
+      "per_product": [],
       "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
     },
     {

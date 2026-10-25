@@ -7,12 +7,13 @@ import {
   RESOLVER_ID,
   type ProofLevel,
 } from "./types.js";
+// Direct relative imports to avoid @repo path resolution issues (AUDIT-001-006 compliance)
 import {
   TransformationIdSchema,
   TransformationStatusSchema,
   TransformationPrecedenceSchema,
-} from "@repo/core-transformation-registry";
-import { PredicateDeclarationSchema } from "@repo/core-predicate-registry";
+} from "../../transformation-registry/src/schema.js";
+import { PredicateDeclarationSchema } from "../../predicate-registry/src/schema.js";
 
 const _f: [string, ...string[]] = [...FAILURE_STRATEGIES];
 export const FailureStrategySchema = z.enum(_f);

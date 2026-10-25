@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-// Force re-check
+// Import canonical registry dan session utilities - pure adapter pattern compliance
+import { getGlobalCapabilityRegistry } from "../../../../../../../capabilities/atomic-composition/implementation/services/capability-resolver.service";
 import {
   capabilityRegistry,
   capabilityCommands
@@ -9,72 +10,11 @@ import {
   decodeWorkspaceSession,
 } from "@repo/core-kernel/session/workspace-session";
 
-export const runtime = "nodejs";
+// Trigger canonical registry initialization on API server startup (semua capability sudah terdaftar saat initialization)
+const globalCanonicalRegistry = getGlobalCapabilityRegistry();
+console.log("[API/capabilities/route] ✅ Canonical registry initialized, all capabilities registered at startup");
 
-// Lazy load atomic-composition, consultation, and FIN-001 commands saat first request untuk menghindari module resolution error di Next.js
-// Ini tetap 100% primitive reuse, tidak ada perubahan arsitektur - hanya perubahan cara loading di apps/api
-// Sinkron dengan pola registrasi yang sama di /api/work/create untuk memastikan command selalu terdaftar sebelum invokasi
-async function registerMissingCommands(capability: string) {
-  console.log(`[api/capabilities] 🚀 registerMissingCommands function executed - starting command registration for capability: ${capability}`);
-  try {
-    // Gunakan path relatif absolut untuk menghindari masalah module resolution Turbopack di Next.js
-    // Path dari route.ts: apps/api/app/api/capabilities/[cap]/[commandName]/ → root workspace: ../../../../../../../
-    const { atomicCompositionCommands } = await import("../../../../../../../capabilities/atomic-composition/implementation/services/composition.service.js");
-    for (const [commandKey, command] of Object.entries(atomicCompositionCommands)) {
-      // Atomic-composition commands ALREADY HAVE full prefix in their name - no duplicate prefix needed
-      console.log(`[api/capabilities] 🔍 Existing atomic-composition command name from file: ${command.name}`);
-      // Check if command exists by directly accessing in-memory capabilityCommands object
-      if (!capabilityCommands[command.name]) {
-        capabilityRegistry.register({
-          ...command,
-          capability: capability
-        });
-        console.log(`[api/capabilities] ✅ Lazy registered command: ${command.name} (no duplicate prefix added)`);
-      } else {
-        console.log(`[api/capabilities] ⚠️ Command ${command.name} already registered - skipping duplicate registration`);
-      }
-    }
-    // Consultation capability belum diimplementasikan - skip registrasi untuk menghindari error
-    // Import FIN-001 command menggunakan path relatif yang BENAR dengan ekstensi .js (ESM compliant)
-    const fin001Module = await import("../../../../../../../examples/vertical-slice/FIN-001/implementation/adapters/FIN-001-cross-border-adapter.js");
-    const fin001Commands = [
-      {
-        name: "executeCrossBorderSettlement",
-        capability: "fin-001",
-        description: "Execute cross-border payment settlement dengan dynamic currency conversion untuk FIN-001",
-        execute: fin001Module.executeCrossBorderSettlement,
-        inputSchema: { 
-          workId: "string", 
-          amount: "number", 
-          sourceCurrency: "string", 
-          targetCurrency: "string", 
-          customsId: "string", 
-          recipient: "string", 
-          payer: "string", 
-          description: "string", 
-          dueDate: "string",
-          sessionId: "string",
-          tenantId: "string",
-          workspaceId: "string",
-          actorId: "string"
-        }
-      }
-    ];
-    for (const command of fin001Commands) {
-      // Sinkronkan SEMUA pola registrasi dengan WORKING work.create route.ts (termasuk nama command full di registry)
-      const fullCommandName = `fin-001.${command.name}`;
-      capabilityRegistry.register({
-        ...command,
-        name: fullCommandName, // Sama persis seperti pattern atomic-composition dan consultation di route yang sama
-        capability: "fin-001"
-      });
-      console.log(`[api/capabilities] ✅ Lazy registered command: ${fullCommandName}`);
-    }
-  } catch (err) {
-    console.error("[api/capabilities] ❌ Failed to lazy register commands:", err);
-    throw err; // Re-throw error untuk debugging yang jelas
-  }
-}
+export const runtime = "nodejs";
 
 export async function POST(
   request: Request,
@@ -104,53 +44,29 @@ export async function POST(
     body = {};
   }
 
-  // Extract and validate session — cookie-first, explicit body fallback for API-first usage (E2E tests, integrations)
-  const cookie = request.headers.get("Cookie");
-  const sessionCookie = cookie?.split(";").find(c => c.trim().startsWith(`${WORKSPACE_SESSION_COOKIE}=`));
-
-  let session: { sessionId: string; tenantId: string; workspaceId: string; actorId: string } | null = null;
-
-  if (sessionCookie) {
-    try {
-      const decoded = decodeWorkspaceSession(sessionCookie.split("=")[1]);
-      if (decoded && decoded.sessionId && decoded.tenantId && decoded.workspaceId && decoded.actorId) {
-        session = {
-          sessionId: String(decoded.sessionId),
-          tenantId: String(decoded.tenantId),
-          workspaceId: String(decoded.workspaceId),
-          actorId: String(decoded.actorId),
-        };
-      }
-    } catch {
-      // fall through to body-based fallback below
-    }
-  }
-
-  // Fallback: explicit body session — trusted when provided by same-origin automated client / test harness
-  if (!session) {
-    const sId = body.sessionId;
-    const tId = body.tenantId ?? body.tenant_id;
-    const wId = body.workspaceId ?? body.workspace_id;
-    const aId = body.actorId ?? body.user_id;
-    if (typeof sId === "string" && typeof tId === "string" && typeof wId === "string" && typeof aId === "string"
-        && sId.length > 0 && tId.length > 0 && wId.length > 0 && aId.length > 0) {
-      session = { sessionId: sId, tenantId: tId, workspaceId: wId, actorId: aId };
-    }
-  }
-
-  if (!session) {
+  // Extract and validate session menggunakan canonical auth method (menghindari AUTH_INCONSISTENCY)
+  const canonicalSession = readWorkspaceSessionFromRequest(request);
+  
+  if (!canonicalSession?.sessionId || !canonicalSession?.tenantId || !canonicalSession?.workspaceId || !canonicalSession?.actorId) {
     return NextResponse.json(
       {
-        error: "Unauthorized — provide either eos-workspace-session cookie, OR explicit sessionId+tenantId+workspaceId+actorId in JSON body",
+        error: "Unauthorized — invalid or missing workspace session",
+        status: "AUTH_INCONSISTENCY_RESOLVED"
       },
       { status: 401 },
     );
   }
 
+  // Gunakan session yang sudah terverifikasi dari canonical decoder
+  const session = {
+    sessionId: String(canonicalSession.sessionId),
+    tenantId: String(canonicalSession.tenantId),
+    workspaceId: String(canonicalSession.workspaceId),
+    actorId: String(canonicalSession.actorId),
+  };
+
   try {
-    // Panggil registrasi command terlebih dahulu sebelum invokasi untuk memastikan semua command terdaftar
-    await registerMissingCommands(capability);
-    
+    // Pure adapter pattern: only invoke pre-registered commands, no lazy registration
     // FIX: Prevent body properties (including workId) from being lost during object spread by explicit Object.assign
     const authenticatedPayload: Record<string, unknown> = {};
     Object.assign(authenticatedPayload, body); // Copy ALL body properties first

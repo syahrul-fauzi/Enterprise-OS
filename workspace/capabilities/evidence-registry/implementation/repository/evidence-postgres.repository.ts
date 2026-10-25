@@ -1,6 +1,7 @@
 import type { CapabilityRepository } from "@repo/core-kernel";
 import type { EvidenceRecord, EvidenceRecordDetail } from "../contracts/evidence-registry.contracts.js";
-import { getPool } from "../../../../identity/dist/implementation/repositories/base.repository.js";
+// Perbaikan Gate A requirement: import dari work-core, bukan langsung dari identity
+import { getPool } from "../../../work-core/implementation/repository/work-postgres.repository.js";
 
 // Reuse base Pool interface dari identity repository (Rule of Two compliance - sudah dipakai di work-postgres.repository)
 interface Queryable {

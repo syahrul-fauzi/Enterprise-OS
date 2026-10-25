@@ -1,6 +1,6 @@
 import { z } from "zod";
-import type { CapabilityCommand } from "@repo/core-kernel";
-import { recordRuntimeInvocation } from "@repo/core-runtime";
+import type { CapabilityCommand } from "../../../../packages/core/kernel/src/index.js";
+import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index.js";
 import { getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core/index.js";
 
 const RecordEvidenceWithContextSchema = z.object({
@@ -21,7 +21,8 @@ type RecordEvidenceCommand = CapabilityCommand<RecordEvidenceWithContextInput, P
 
 export const recordEvidence: RecordEvidenceCommand = {
   kind: "command",
-  name: "evidence.record",
+  name: "record",
+  capability: "evidence-registry",
   version: "1.1.0",
   async execute(input) {
     await initIdentitySchema();
@@ -84,5 +85,5 @@ export const recordEvidence: RecordEvidenceCommand = {
 
 // Export commands object for registry registration
 export const evidenceRegistryCommands = {
-  "evidence.record": recordEvidence,
+  "record": recordEvidence,
 };

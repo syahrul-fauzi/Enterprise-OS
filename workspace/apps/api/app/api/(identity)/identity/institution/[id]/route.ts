@@ -1,16 +1,26 @@
 import { NextResponse } from "next/server";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
+import { validateBoundaryAccess, decodeWorkspaceSession } from "@repo/capabilities-work-core/contracts/work.contracts.js";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   segment: { params: Promise<{ id: string }> },
 ) {
   try {
+    // Validasi boundary access sesuai 6-boundary compliance (identity -> work-core)
+    if (!validateBoundaryAccess("identity", "work-core")) {
+      console.error("[Institution Detail] Boundary access denied: identity domain cannot access work-core");
+      return NextResponse.json({ error: "Boundary access denied" }, { status: 403 });
+    }
+    
+    // Gunakan canonical session decoder untuk validasi request yang masuk
+    const sessionContext = await decodeWorkspaceSession(request);
+    
     const params = await segment.params;
     const institutionId = params.id;
-    const { searchParams } = new URL(_request.url);
+    const { searchParams } = new URL(request.url);
     const productId = searchParams.get("productId") || "academic";
 
     const memberResult = await capabilityRegistry.invoke("identity", "getMemberById", {

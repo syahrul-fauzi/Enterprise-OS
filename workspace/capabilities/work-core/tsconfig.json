@@ -22,13 +22,20 @@
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "strict": true,
-    "target": "ES2022"
+    "target": "ES2022",
+    "baseUrl": "../..",
+    "paths": {
+      "@repo/*": ["../../packages/*"],
+      "@repo/capabilities-identity": ["../identity/index.ts"],
+      "@repo/capabilities-identity/*": ["../identity/*"],
+      "@capabilities/*": ["../*"]
+    }
   },
   "references": [
     { "path": "../../packages/core/kernel/tsconfig.json" },
     { "path": "../../packages/core/runtime/tsconfig.json" },
     { "path": "../identity/tsconfig.json" }
   ],
-  "include": ["./index.ts", "./implementation/**/*.ts", "./contracts/**/*.ts"],
-  "exclude": ["dist", "node_modules", "**/*.d.ts", "../*/**/*", "!../../packages/core/**/*", "!../identity/**/*"]
+  "include": ["./index.ts", "./implementation/**/*.ts", "./contracts/**/*.ts", "../shared/implementation/database/health.check.ts"],
+  "exclude": ["dist", "node_modules", "**/*.d.ts"]
 }

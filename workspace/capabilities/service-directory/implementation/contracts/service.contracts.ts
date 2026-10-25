@@ -96,6 +96,11 @@ export interface ExecutionContextMetadata {
     readonly last_invocation_digest?: string | null;
     readonly propagated_from: "cross-capability" | "direct-api";
     readonly calculatedExecutionFrame?: ExecutionFrame; // Dynamically computed from CMBCD
+    readonly metadata?: Record<string, unknown>; // ACaaS-001: Support custom metadata storage for compliance evaluation
+    readonly evaluationResult?: any; // ACaaS-001: Store compliance evaluation results
+    readonly actorId?: string; // ACaaS-001: Store actor who initiated the evaluation
+    readonly createdAt?: string; // ACaaS-001: Evaluation creation timestamp
+    readonly billed?: boolean; // ACaaS-004: Track if the evaluation has been billed
 }
 
 export interface ServiceRequestAggregate {
@@ -117,6 +122,7 @@ export interface ServiceRequestAggregate {
   readonly paymentTransactionId?: string;
   readonly paymentStatus?: string;
   readonly budget?: string;
+  readonly externalId?: string;
   readonly deadline?: Readonly<Date>;
   readonly createdAt: Readonly<Date>;
   readonly updatedAt: Readonly<Date>;
@@ -186,16 +192,19 @@ export type ServiceProviderRepository = {
   remove(id: ServiceProviderId): Promise<boolean>;
 };
 
-export type ServiceRequestRepository = {
+export interface ServiceRequestRepository {
   readonly entityName: "ServiceRequest";
   readonly kind: "repository";
   byId(id: ServiceRequestId, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<ServiceRequestAggregate | undefined>;
+  // ACaaS-COMMERCIAL-001: Add byExternalId to support idempotency checks
+  byExternalId(externalId: string, tenantId: string, workspaceId: string): Promise<ServiceRequestAggregate | undefined>;
   list(context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<readonly ServiceRequestAggregate[]>;
   listByStatus(status: ServiceRequestStatus | "all"): Promise<readonly ServiceRequestAggregate[]>;
   listByWork(workId: string): Promise<readonly ServiceRequestAggregate[]>; // CORE-001: Single work query
   listByWorkIds(workIds: readonly string[]): Promise<readonly ServiceRequestAggregate[]>; // CORE-001: Batch work query for High-Value Work Graph
   listByWorkspace(workspaceId: string, tenantId: string): Promise<readonly ServiceRequestAggregate[]>; // CORE-001: Optional execution boundary fallback
   save(entity: ServiceRequestAggregate): Promise<ServiceRequestAggregate>;
+  update(id: ServiceRequestId, tenantId: string, workspaceId: string, updates: Partial<ServiceRequestAggregate>): Promise<ServiceRequestAggregate>;
   createMany(entities: CreateServiceRequestInput[]): Promise<string[]>;
   remove(id: ServiceRequestId): Promise<boolean>;
 };

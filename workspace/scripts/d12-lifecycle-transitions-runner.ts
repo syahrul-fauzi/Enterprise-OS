@@ -99,7 +99,7 @@ interface ContentCreateOutput {
 
   // 3. ILC: create community discussion → disc-101
   section("3/4  ILC  ·  legal-community.createCommunityDiscussion  →  disc-101");
-  const createDisc = capabilityRegistry.invoke<DiscussionCreateOutput>("ilc", "createCommunityDiscussion", {
+  const createDisc = capabilityRegistry.invoke<DiscussionCreateOutput>("legal-community", "createCommunityDiscussion", {
     title: "UU PDP Pasal 26 Cross-Border Transfer: Tantangan Praktis?",
     summary:
       "Pasal 26 UU PDP mensyaratkan adequacy assessment atau SCC untuk transfer lintas batas. Apa hambatan implementasi di lapangan untuk perusahaan dengan user base ASEAN+?",

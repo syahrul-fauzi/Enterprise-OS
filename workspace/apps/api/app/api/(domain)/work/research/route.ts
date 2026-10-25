@@ -1,9 +1,19 @@
 import { NextResponse } from "next/server";
+import { readWorkspaceSessionFromRequest } from '@repo/core-kernel/src/session/workspace-session.js';
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
+  const session = readWorkspaceSessionFromRequest(request);
+  if (!session?.workspaceId) {
+    return NextResponse.json({ 
+      error: 'Unauthorized: Invalid or missing workspace session',
+      status: 'AUTH_INCONSISTENCY_RESOLVED'
+    }, { status: 401 });
+  }
+  const { workspaceId, tenantId, actorId } = session;
+
   try {
     const { searchParams } = new URL(request.url);
     const productId = searchParams.get("productId") || "academic";

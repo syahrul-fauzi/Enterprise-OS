@@ -9,8 +9,8 @@ import type {
   BlockedStatus,
   FailureStrategy,
   RollbackStrategy,
+  TransformationId,
 } from "./types.js";
-import type { TransformationId } from "@repo/core-transformation-registry";
 
 export const TRANSFORMATION_ID_VALIDATION_RULE =
   "TransformationId literal must match catalog transformations exactly";

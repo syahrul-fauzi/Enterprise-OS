@@ -410,7 +410,7 @@ async function runIlc(): Promise<JourneyResult> {
   stageLabel(n, "ACTION", "Author publish article → art-* created, draft");
   try {
     const invoke = await capabilityRegistry.invokeAsync<{ id: string; status: string }>(
-      "ilc", "createContentArticle",
+      "legal-community", "createContentArticle",
       { title: ARTICLE_TITLE, topicLabel: ARTICLE_TOPIC, author: ARTICLE_AUTHOR, summary: "Analisis mendalam mengenai putusan MK yang mengatur batasan kewenangan presiden dalam menetapkan kebijakan luar negeri.", sessionId: "session-test-001", tenantId: "tenant-001", workspaceId: "workspace-001", actorId: "user-005" },
     );
     ledger.push(invoke.record);
@@ -426,7 +426,7 @@ async function runIlc(): Promise<JourneyResult> {
   n += 1;
   stageLabel(n, "EXECUTE", "Editor curate article → published");
   try {
-    const inv = await capabilityRegistry.invokeAsync<ContentArticleAggregate>("ilc", "publishContent", { id: ContentId(createdId), sessionId: "session-test-001", tenantId: "tenant-001", workspaceId: "workspace-001", actorId: "user-006" });
+    const inv = await capabilityRegistry.invokeAsync<ContentArticleAggregate>("legal-community", "publishContent", { id: ContentId(createdId), sessionId: "session-test-001", tenantId: "tenant-001", workspaceId: "workspace-001", actorId: "user-006" });
     ledger.push(inv.record);
     const ok = inv.record.ok === true && inv.output.status === "published";
     console.log(`    status=${inv.output.status}, articleId=${inv.output.id as unknown as string}`);
@@ -439,7 +439,7 @@ async function runIlc(): Promise<JourneyResult> {
   n += 1;
   stageLabel(n, "STATE", "Editor archive article → terminal archivedAt");
   try {
-    const inv = await capabilityRegistry.invokeAsync<ContentArticleAggregate>("ilc", "archiveContent", { id: ContentId(createdId), reason: "Pemeliharaan arsip ilmiah", sessionId: "session-test-001", tenantId: "tenant-001", workspaceId: "workspace-001", actorId: "user-006" });
+    const inv = await capabilityRegistry.invokeAsync<ContentArticleAggregate>("legal-community", "archiveContent", { id: ContentId(createdId), reason: "Pemeliharaan arsip ilmiah", sessionId: "session-test-001", tenantId: "tenant-001", workspaceId: "workspace-001", actorId: "user-006" });
     ledger.push(inv.record);
     const ok = inv.record.ok === true && inv.output.status === "archived";
     console.log(`    status=${inv.output.status}`);

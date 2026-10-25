@@ -17,12 +17,12 @@ import {
   getTenantRepositoryPostgres,
   getWorkspaceRepositoryPostgres,
   getMembershipRepositoryPostgres,
+  UserRepositoryInMemory,
+  TenantRepositoryInMemory,
+  WorkspaceRepositoryInMemory,
+  MembershipRepositoryInMemory,
 } from "../repositories/index.js";
-
-const userRepository = getUserRepositoryPostgres();
-const tenantRepository = getTenantRepositoryPostgres();
-const workspaceRepository = getWorkspaceRepositoryPostgres();
-const membershipRepository = getMembershipRepositoryPostgres();
+import { validateBoundaryAccess } from '../../../../work-core/implementation/contracts/work.contracts.js';
 
 function newUserId(): UserId {
   return UserId(`user-${randomUUID()}`);
@@ -68,6 +68,14 @@ export const signupFlowCommand: SignupFlowCommand = {
   version: "1.0.0",
 
   async execute(input: z.infer<typeof SignupFlowInputSchema>) {
+    // P1-CAP-017: 6-boundary compliance validation - identity domain can only access itself
+    if (!validateBoundaryAccess("identity", "identity")) {
+      console.error("[signup-flow] BOUNDARY ACCESS DENIED: cannot access identity domain with invalid boundary");
+      throw new Error("Boundary access violation");
+    }
+    
+    const { userRepository, tenantRepository, workspaceRepository, membershipRepository } = getRepositories();
+    
     const parsed = SignupFlowInputSchema.parse(input);
     const { email, password, displayName, productId } = parsed;
 
@@ -182,3 +190,14 @@ export const signupFlowCommand: SignupFlowCommand = {
     };
   },
 };
+
+// P1-CAP-017: Lazy repository initialization untuk menghindari module cycle dan kompatibel Edge Runtime
+function getRepositories() {
+  const hasDbConnection = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL;
+  return {
+    userRepository: hasDbConnection ? getUserRepositoryPostgres() : UserRepositoryInMemory,
+    tenantRepository: hasDbConnection ? getTenantRepositoryPostgres() : TenantRepositoryInMemory,
+    workspaceRepository: hasDbConnection ? getWorkspaceRepositoryPostgres() : WorkspaceRepositoryInMemory,
+    membershipRepository: hasDbConnection ? getMembershipRepositoryPostgres() : MembershipRepositoryInMemory,
+  };
+}

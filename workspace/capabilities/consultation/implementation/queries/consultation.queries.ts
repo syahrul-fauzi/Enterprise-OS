@@ -12,7 +12,8 @@ import {
 } from "../contracts/consultation.contracts.js";
 import type { CapabilityQuery } from "@repo/core-kernel";
 import { ConsultationRepositoryInMemory } from "../repository/consultation.repository.js";
-import { initIdentitySchema, SessionRepositoryInMemory, getSessionRepositoryPostgres, SessionId, getWorkRepositoryPostgres } from "../../../work-core/index.js";
+import { initIdentitySchema, SessionRepositoryInMemory, getSessionRepositoryPostgres, getWorkRepositoryPostgres } from "../../../work-core/index.js";
+import { SessionId } from "../../../packages/contracts-core/src/identity.contracts.js";
 
 type GetConsultationQuery = CapabilityQuery<GetConsultationInput, GetConsultationOutput>;
 type SearchConsultationsQuery = CapabilityQuery<SearchConsultationsInput, SearchConsultationsOutput>;

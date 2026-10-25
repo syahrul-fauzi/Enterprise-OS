@@ -17,7 +17,7 @@ implementation:
   entry: implementation/service.ts
 depends_on:
   - workflow-engine
-  - core-runtime
+  - work-core
 capability:
   name: agent-orchestration
   owner: ai-orchestration-domain

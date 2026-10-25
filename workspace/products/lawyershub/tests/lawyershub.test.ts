@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import * as yaml from "js-yaml";
 import { capabilityRegistry, type CommandInvocationRecord } from "../../../packages/core/kernel/src/index.js";
 import { CaseRepositoryInMemory } from "../../../capabilities/legal-case/implementation/repository/case.repository.js";
@@ -9,6 +10,8 @@ import type { CaseAggregate, CaseStatus } from "../../../capabilities/legal-case
 import { DocumentRepositoryInMemory } from "../../../capabilities/legal-document/implementation/repository/index.js";
 import { DocumentId } from "../../../capabilities/legal-document/implementation/contracts/index.js";
 import type { DocumentAggregate, DocumentStatus } from "../../../capabilities/legal-document/implementation/contracts/index.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const loadEosManifest = () => {
   const manifestPath = path.resolve(__dirname, "..", "eos.yaml");

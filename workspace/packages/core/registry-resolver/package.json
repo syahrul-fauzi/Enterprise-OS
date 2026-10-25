@@ -21,7 +21,6 @@
     "@repo/core-eir": "workspace:*",
     "@repo/core-predicate-registry": "workspace:*",
     "@repo/core-transformation-registry": "workspace:*",
-    "@repo/core-proof-ledger": "workspace:*",
     "yaml": "^2.7.0",
     "zod": "^3.24.1"
   },

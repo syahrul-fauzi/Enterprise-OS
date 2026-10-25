@@ -10,7 +10,8 @@ import {
 import {
   getSessionRepositoryPostgres,
   initIdentitySchema,
-} from "@repo/capabilities-identity";
+} from "@repo/capabilities/identity";
+import { validateBoundaryAccess } from "@repo/capabilities/work-core/contracts/work.contracts.js";
 
 export async function POST(request: Request) {
   try {
@@ -26,6 +27,19 @@ export async function POST(request: Request) {
     const session = decodeWorkspaceSession(sessionCookie.value);
     if (!session || !session.tenantId || !session.workspaceId || !session.actorId || !session.sessionId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
+    }
+
+    // Canonical actorContext for audit tracing and identity/workspace separation (includes sessionId for full audit)
+    const actorContext = {
+      tenantId: session.tenantId,
+      actorId: session.actorId,
+      workspaceId: session.workspaceId,
+      sessionId: session.sessionId
+    };
+
+    // Enforce boundary access validation (6-boundary compliance)
+    if (!validateBoundaryAccess('api-gateway', 'requirement-management')) {
+      return NextResponse.json({ error: "Forbidden: Domain access not allowed" }, { status: 403 });
     }
 
     const isAnonymous = session.actorId === "anonymous.user";
@@ -47,14 +61,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing required fields: workId/id and action/transition are required" }, { status: 400 });
     }
 
-    console.log(`[POST /api/requirements/transition] Executing ${action} on ${workId} by ${session.actorId}`);
+    console.log(`[POST /api/requirements/transition] Executing ${action} on ${workId} by ${actorContext.actorId}`);
 
     const commonInput = {
       id: workId,
       sessionId: session.sessionId,
-      tenantId: session.tenantId,
-      workspaceId: session.workspaceId,
-      actorId: session.actorId,
+      tenantId: actorContext.tenantId,
+      workspaceId: actorContext.workspaceId,
+      actorId: actorContext.actorId,
     };
 
     let commandName: string;
@@ -110,6 +124,11 @@ export async function POST(request: Request) {
       case "close":
       case "markCompleted":
         commandName = "requirement.markImplemented";
+        commandInput = { ...commonInput };
+        break;
+      case "archive":
+      case "archived":
+        commandName = "requirement.archive";
         commandInput = { ...commonInput };
         break;
       default:

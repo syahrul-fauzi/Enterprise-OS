@@ -1,20 +1,8 @@
-import type { WorkAggregate, ActorId, ExecutionFrame } from "../../../capabilities/work-core/contracts/work.contracts";
-import { createActorId } from "../../../capabilities/work-core/contracts/work.contracts";
-
-// Reuse safeRecordEvidence dari work-template-core untuk consistent evidence logging
-async function safeRecordEvidence(payload: unknown): Promise<{ readonly ok: boolean }> {
-  try {
-    const loaded = await import("@repo/core-kernel");
-    const reg = (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
-    if (typeof reg?.invoke === "function") {
-      await reg.invoke("evidence-registry", "evidence.record", payload as never);
-      return { ok: true };
-    }
-  } catch (_e) {
-    // fallthrough: evidence recording is observability-only, graceful degradation
-  }
-  return { ok: true };
-}
+import type { WorkAggregate, ActorId, ExecutionFrame, WorkTemplateSchema } from "../../../capabilities/work-core/contracts/work.contracts.js";
+import { createActorId } from "../../../capabilities/work-core/contracts/work.contracts.js";
+// Add cmbcdFrameInitializer hook to core imports
+// Import canonical safeRecordEvidence dari work-core (Gate A reuse requirement - hanya gunakan implementasi tunggal)
+import { safeRecordEvidence } from "../../../capabilities/work-core/implementation/utils/evidence.utils.js";
 
 // Implementasi hook assign-default-service-actor sesuai mandate Work sebagai primitive utama
 // Reuse pola actor-assignment-pattern yang sudah ada di workspace-standard

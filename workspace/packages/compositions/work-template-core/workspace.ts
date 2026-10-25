@@ -1,19 +1,6 @@
-import { WorkAggregate, WorkSemanticContract, ExecutionFrame } from "../../../capabilities/work-core/contracts/work.contracts";
-
-// Reuse existing safeRecordEvidence pattern from services-id/work-core (EOS evidence collection standard)
-async function safeRecordEvidence(payload: unknown): Promise<{ readonly ok: boolean }> {
-  try {
-    const loaded = await import("@repo/core-kernel");
-    const reg = (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
-    if (typeof reg?.invoke === "function") {
-      await reg.invoke("evidence-registry", "evidence.record", payload as never);
-      return { ok: true };
-    }
-  } catch (_e) {
-    // fallthrough: evidence recording is observability-only, graceful degradation
-  }
-  return { ok: true };
-}
+import { WorkAggregate, WorkSemanticContract, ExecutionFrame } from "../../../capabilities/work-core/contracts/work.contracts.js";
+// Import canonical safeRecordEvidence dari work-core (Gate A reuse requirement - hanya gunakan implementasi tunggal)
+import { safeRecordEvidence } from "../../../capabilities/work-core/implementation/utils/evidence.utils.js";
 
 export interface WorkTemplateSchema {
   template_id: string;

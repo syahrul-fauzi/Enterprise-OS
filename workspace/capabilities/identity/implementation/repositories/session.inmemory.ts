@@ -81,22 +81,31 @@ const hydrate = (): Map<string, SessionAggregate> => {
     updatedAt: new Date(Date.now() - 1000 * 60 * 30),
   };
   
-  store.set(testSession1.id, testSession1);
-  store.set(testSession2.id, testSession2);
-  store.set(testSession3.id, testSession3);
-  store.set(testAgentSession.id, testAgentSession);
+  // Simpan SEMUA session dengan string key yang konsisten (fix key type mismatch)
+  store.set(String(testSession1.id), testSession1);
+  store.set(String(testSession2.id), testSession2);
+  store.set(String(testSession3.id), testSession3);
+  store.set(String(testAgentSession.id), testAgentSession);
   return store;
 };
 
 type Store = Map<string, SessionAggregate>;
 const STORE: Store = (globalThis as any).__EOS_IDENTITY_SESSION_STORE__ ??= hydrate();
 
-export const SessionRepositoryInMemory: SessionRepository = {
+export const SessionRepositoryInMemory: SessionRepository & { reset: () => Promise<void> } = {
   kind: "repository",
   entityName: "Session",
-  async byId(id: SessionId) {
-    const raw = STORE.get(id);
-    return raw !== undefined ? clone(raw) : undefined;
+  async byId(id: SessionId | string) {
+    const sessionIdStr = typeof id === 'string' ? id : String(id);
+    let session: SessionAggregate | undefined;
+    for (const [key, value] of STORE.entries()) {
+      const keyStr = String(key);
+      if (keyStr === sessionIdStr) {
+        session = value;
+        break;
+      }
+    }
+    return session !== undefined ? clone(session) : undefined;
   },
   async listByUser(userId: UserId) {
     return Array.from(STORE.values())
@@ -108,10 +117,35 @@ export const SessionRepositoryInMemory: SessionRepository = {
       .filter(s => s.userId === userId && !s.revokedAt)
       .map(clone);
   },
-  async isRevoked(id: SessionId): Promise<boolean> {
-    const session = await this.byId(id);
-    return !session || !!session.revokedAt;
-  },
+  async isRevoked(id: SessionId | string): Promise<boolean> {
+          // Handle baik SessionId object maupun string ID (fix untuk edge device test yang menggunakan string sessionId)
+          const sessionIdStr = typeof id === 'string' ? id : String(id);
+          console.log(`[SESSION] 🔍 DEBUG: isRevoked dipanggil dengan id=${id}, typeof id=${typeof id}, sessionIdStr=${sessionIdStr}`);
+          
+          // Cari di STORE dengan string ID yang konsisten
+          let session: SessionAggregate | undefined;
+          console.log(`[SESSION] 🔍 DEBUG: STORE size=${STORE.size}, iterasi semua entry di STORE:`);
+          for (const [key, value] of STORE.entries()) {
+            const keyStr = String(key);
+            console.log(`[SESSION] 🔍 DEBUG: key=${key}, typeof key=${typeof key}, keyStr=${keyStr}, value.id=${value.id}, value.revokedAt=${value.revokedAt}`);
+            if (keyStr === sessionIdStr) {
+              session = value;
+              console.log(`[SESSION] 🔍 DEBUG: MATCH! session ditemukan`);
+              break;
+            }
+          }
+          
+          if (!session) {
+            console.log(`[SESSION] ⚠️ Session tidak ditemukan: ${sessionIdStr} - list semua session yang tersedia:`);
+            for (const [key, value] of STORE.entries()) {
+              console.log(`[SESSION]   - ${String(key)} (actor: ${value.actorId}, revokedAt: ${value.revokedAt})`);
+            }
+            return true; // Anggap dicabut jika tidak ada
+          }
+          const revoked = !!session.revokedAt;
+          console.log(`[SESSION] 🔍 Cek status session ${sessionIdStr}: isRevoked=${revoked}, revokedAt=${session.revokedAt}`);
+          return revoked;
+        },
   async revoke(id: SessionId, revokedAt?: Date): Promise<SessionAggregate> {
     const existing = await this.byId(id);
     if (!existing) throw new Error(`Cannot revoke unknown session: ${id}`);
@@ -125,17 +159,36 @@ export const SessionRepositoryInMemory: SessionRepository = {
   },
   async create(entity: SessionAggregate): Promise<SessionAggregate> {
     const updated: SessionAggregate = { ...clone(entity), updatedAt: new Date() };
-    STORE.set(updated.id, updated);
+    // Simpan dengan string key yang konsisten (String(id)) untuk pencarian yang andal
+    STORE.set(String(updated.id), updated);
+    console.log(`[SESSION] ✅ Session dibuat: ${String(updated.id)} disimpan di STORE, STORE size sekarang=${STORE.size}`);
     return clone(updated);
   },
   async save(entity: SessionAggregate): Promise<SessionAggregate> {
     const updated: SessionAggregate = { ...clone(entity), updatedAt: new Date() };
-    STORE.set(updated.id, updated);
+    // Simpan dengan string key yang konsisten
+    STORE.set(String(updated.id), updated);
+    console.log(`[SESSION] ✅ Session disimpan: ${String(updated.id)} diperbarui di STORE`);
     return clone(updated);
   },
 
-  async remove(id: SessionId): Promise<boolean> {
-    return STORE.delete(id);
+  async remove(id: SessionId | string): Promise<boolean> {
+    const sessionIdStr = typeof id === 'string' ? id : String(id);
+    console.log(`[SESSION] 🗑️ Menghapus session: ${sessionIdStr}`);
+    return STORE.delete(sessionIdStr);
+  },
+  
+  // Method reset untuk test isolation (EDGE-DEVICE-001: align dengan work-core repository pattern)
+  async reset(): Promise<void> {
+    STORE.clear();
+    // Re-seed default test sessions setelah reset dengan string key yang KONSISTEN (String(session.id))
+    const hydrated = hydrate();
+    hydrated.forEach((session) => STORE.set(String(session.id), session));
+    console.log(`[SessionRepositoryInMemory] ✅ Store telah di-reset ke kondisi awal: ${STORE.size} session default tersedia`);
+    // Debug: list semua session setelah reset untuk verifikasi key
+    for (const [key, value] of STORE.entries()) {
+      console.log(`[SessionRepositoryInMemory] 🔍 Post-reset session key=${key}, value.id=${value.id}`);
+    }
   },
 } as const;
 
@@ -146,3 +199,8 @@ export const newSessionId = (() => {
     return SessionId(`session-${String(seq).padStart(3, "0")}`);
   };
 })();
+
+// Export standalone reset function untuk import mudah di test files
+export const resetSessionRepository = async (): Promise<void> => {
+  await SessionRepositoryInMemory.reset();
+};

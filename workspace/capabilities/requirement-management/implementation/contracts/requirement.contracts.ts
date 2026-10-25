@@ -6,7 +6,8 @@ export type RequirementStatus =
   | "approved"
   | "in_delivery"
   | "implemented"
-  | "verified";
+  | "verified"
+  | "archived";
 export type RequirementPriority = "low" | "medium" | "high" | "critical";
 
 export type RequirementVerificationStatus =
@@ -49,6 +50,7 @@ export interface RequirementAggregate {
   readonly approvedAt?: Readonly<Date>;
   readonly implementedAt?: Readonly<Date>;
   readonly verifiedAt?: Readonly<Date>;
+  readonly archivedAt?: Readonly<Date>;
   // C12/C13/C18 review metadata (C18: support multiple parallel reviewers)
   readonly reviewerIds?: string[];
   readonly reviewRequestedBy?: string;
@@ -149,6 +151,19 @@ export interface VerifyRequirementOutput {
   readonly status: "verified";
   readonly verificationStatus: "passed";
   readonly verifiedAt: Date;
+}
+
+export interface ArchiveRequirementInput {
+  readonly id: RequirementId;
+  readonly workId: string; // CORE-001: Mandatory workId from core WorkAggregate
+  readonly sessionId: string;
+  readonly archiverId?: string;
+}
+
+export interface ArchiveRequirementOutput {
+  readonly id: RequirementId;
+  readonly status: "archived";
+  readonly archivedAt: Date;
 }
 
 export interface GetRequirementInput {

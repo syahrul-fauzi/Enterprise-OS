@@ -15,3 +15,8 @@ export {
   localTrustSignatureProvider,
   trustFrameworkService,
 } from "./services/trust-framework.service.js";
+
+export {
+  registerTrustFrameworkCapability,
+  trustFrameworkCommands
+} from "./commands/index.js";

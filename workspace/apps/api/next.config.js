@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   // Removed FACE-related redirect (API-only root serves health check)
   async redirects() {
     return [];
@@ -31,7 +32,8 @@ const nextConfig = {
   turbopack: {},
   // Fix node: prefix import error - mark node built-ins as server-only external packages (Next.js 16+)
   serverExternalPackages: ['async_hooks', 'fs', 'path', 'url', 'stream', 'http', 'https', 'net', 'tls', 'zlib', 'buffer', 'util', 'events', 'crypto'],
-  outputFileTracingRoot: '/root/Enterprise-OS',
+  // outputFileTracingRoot: '/app' - Hanya untuk Docker/production, dinonaktifkan untuk development
+          // outputFileTracingRoot: process.env.NODE_ENV === 'production' ? '/app' : undefined,
   webpack: (config) => {
     config.module.rules.push({
       test: /@repo\/.*/,

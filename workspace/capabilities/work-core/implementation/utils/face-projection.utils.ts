@@ -15,7 +15,7 @@ import type {
   PresentationBoundary,
   WorkProjectionConfig,
   WorkFaceProjection
-} from "../../contracts/work.contracts";
+} from "@capabilities/work-core/contracts/work.contracts";
 
 /**
  * buildWorkFaceProjection - SERVER-ONLY utility to construct canonical WorkFaceProjection

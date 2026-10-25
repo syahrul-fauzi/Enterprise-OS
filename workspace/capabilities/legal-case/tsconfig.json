@@ -18,7 +18,7 @@
     "moduleDetection": "force",
     "moduleResolution": "NodeNext",
     "emitDeclarationOnly": false,
-    "allowImportingTsExtensions": false,
+    "allowImportingTsExtensions": true,
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "strict": true,

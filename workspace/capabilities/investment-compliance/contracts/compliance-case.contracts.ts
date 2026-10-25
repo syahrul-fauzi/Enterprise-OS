@@ -24,6 +24,9 @@ export interface ExecutionContextMetadata {
 export interface ComplianceCaseAggregate {
     readonly id: ComplianceCaseId;
     readonly workId: string; // CORE-001: WAJIB link ke core Work primitive ID (satu-satunya sumber truth untuk semua boundary metadata)
+    readonly actorId: ActorId; // Canonical actor identity from work-core
+    readonly tenantId: TenantId; // Canonical tenant isolation from work-core
+    readonly workspaceId: WorkspaceId; // Canonical workspace context from work-core
     readonly title: string;
     readonly description?: string;
     readonly status: ComplianceCaseStatus;
@@ -107,4 +110,5 @@ export type ComplianceCaseRepository = {
     readonly kind: "repository";
     byId(id: ComplianceCaseId, context?: { tenantId: string; workspaceId: string }): Promise<ComplianceCaseAggregate | undefined>;
     listByWorkIds(workIds: readonly string[]): Promise<readonly ComplianceCaseAggregate[]>;
+    save(entity: ComplianceCaseAggregate, context?: { tenantId: string; workspaceId: string; actorId: string }): Promise<ComplianceCaseAggregate>;
 };

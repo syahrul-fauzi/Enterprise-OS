@@ -21,7 +21,7 @@ implementation:
 depends_on:
   - knowledge-graph
   - security-hardening
-  - core-runtime
+  - work-core
 capability:
   name: legal-document
   owner: legal-domain
@@ -37,4 +37,5 @@ capability:
   evidence_required:
     - production_usage
     - user-adoption
+evidence_required: true
 stability: stable

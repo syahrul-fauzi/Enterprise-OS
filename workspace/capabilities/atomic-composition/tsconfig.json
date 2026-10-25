@@ -1,13 +1,21 @@
 {
   "extends": "@repo/config-typescript/base.json",
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strictNullChecks": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
     "composite": true,
+    "noEmit": false,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "moduleResolution": "NodeNext",
     "types": ["jest", "node"],
+    "skipLibCheck": true,
+    "ignoreDeprecations": "5.0",
     "paths": {
-      "@api-platform/*": ["../api-platform/implementation/*"],
-      "@governance-read-model/*": ["../governance-read-model/implementation/*"],
-      "@evidence-registry/*": ["../evidence-registry/implementation/*"],
       "@repo/capabilities-identity": ["../identity/implementation/index.ts"],
       "@repo/capabilities-identity/*": ["../identity/implementation/*"],
       "@repo/capabilities-work-core": ["../work-core/contracts/work.contracts.ts"],
@@ -15,20 +23,26 @@
     }
   },
   "references": [
-    { "path": "../work-inspection" }, 
-    { "path": "../../packages/core/realtime" },
-    { "path": "../api-platform" },
-    { "path": "../governance-read-model" },
+    { "path": "../../packages/core/kernel/tsconfig.json" },
+    { "path": "../../packages/core/realtime/tsconfig.json" },
+    { "path": "../../packages/core/capability-registry/tsconfig.json" },
+    { "path": "../identity/tsconfig.json" },
+    { "path": "../work-core/tsconfig.json" },
+    { "path": "../governance-evidence/tsconfig.json" },
+    { "path": "../legal-case/tsconfig.json" }
   ],
   "include": [
     "implementation/**/*.ts",
-    "../work-core/contracts/**/*.ts",
-    "../work-core/implementation/**/*.ts"
+    "economic-proof.ts"
   ],
   "exclude": [
     "node_modules",
     "dist",
-    "../work-core/**/*.test.ts",
-    "../work-core/**/*.falsification.test.ts"
+    "../*/**/*",
+    "!../identity/**/*",
+    "!../work-core/**/*",
+    "!../governance-evidence/**/*",
+    "!../legal-case/**/*",
+    "!../../packages/core/**/*"
   ]
 }

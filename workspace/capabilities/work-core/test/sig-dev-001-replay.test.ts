@@ -7,7 +7,8 @@ import { randomUUID } from "crypto";
 import { WorkRepositoryInMemory } from "../implementation/repository/work-inmemory.repository.js";
 import { getWorkRepositoryLazy, updateWork } from "../implementation/commands/work.commands.js";
 import { safeRecordEvidence } from "../implementation/utils/evidence.utils.js";
-import type { WorkId, TenantId, WorkspaceId, ActorId, SessionId } from "../contracts/work.contracts.js";
+import type { WorkId, TenantId, WorkspaceId, ActorId, SessionId, IdentityBoundary, AuthorityBoundary } from "../contracts/work.contracts.js";
+import { validateIdentityBoundary, validateAuthorityBoundary, validateNoCircularDependencies } from "../contracts/work.contracts.js";
 
 // Test Constants
 const TEST_TENANT_ID = "tenant-test-001" as TenantId;
@@ -269,4 +270,85 @@ describe("SIG-DEV-001: External Commitment → Work Continuity", () => {
     // Jika test ini bisa berjalan, berarti semua primitive yang dibutuhkan sudah ada
     assert.ok(true, "Semua primitive yang dipakai sudah ada di codebase");
   });
-});
+})
+
+// ==============================================
+// WF-02 TESTS: Architecture Fitness Rules (WORK-013)
+// Semua rule aktif di architecture-fitness-checks.ts memiliki test yang menguji lulus dan pelanggarannya
+// ==============================================
+describe("WORK-013 WF-02: Architecture Fitness Rules Validation", () => {
+  describe("validateIdentityBoundary (identity boundary rule)", () => {
+    it("1. IdentityBoundary valid: semua field terisi dan tidak mengandung workspaceId", () => {
+      const validIdentity: IdentityBoundary = {
+        tenantId: "tenant-test-001" as any,
+        organizationId: "org-test-001" as any,
+        principalId: "actor-test-001" as any
+      };
+      const result = validateIdentityBoundary(validIdentity);
+      assert.ok(result.valid, "Identity boundary yang valid harus lulus");
+      assert.strictEqual(result.errors.length, 0, "Tidak boleh ada error untuk input valid");
+    });
+
+    it("2. IdentityBoundary invalid: mengandung workspaceId (violates 'Workspace bukan identitas')", () => {
+      const invalidIdentity: any = {
+        tenantId: "tenant-test-001" as any,
+        organizationId: "org-test-001" as any,
+        principalId: "actor-test-001" as any,
+        workspaceId: "ws-test-001" as any // Ini yang melanggar aturan
+      };
+      const result = validateIdentityBoundary(invalidIdentity);
+      assert.ok(!result.valid, "Identity boundary yang mengandung workspaceId harus gagal");
+      assert.ok(result.errors.some(e => e.includes("workspaceId")), "Error harus menyebutkan pelanggaran workspaceId");
+    });
+
+    it("3. IdentityBoundary invalid: missing required field tenantId", () => {
+      const invalidIdentity: any = {
+        organizationId: "org-test-001" as any,
+        principalId: "actor-test-001" as any
+      };
+      const result = validateIdentityBoundary(invalidIdentity);
+      assert.ok(!result.valid, "Identity boundary yang kurang field harus gagal");
+      assert.ok(result.errors.some(e => e.includes("tenantId")), "Error harus menyebutkan field yang hilang");
+    });
+  });
+
+  describe("validateAuthorityBoundary (authority boundary rule)", () => {
+    it("1. AuthorityBoundary valid: semua capabilities/authorizations diberikan ke actor", () => {
+      const validAuthority: AuthorityBoundary = {
+        actorCapabilities: new Map([["actor-test-001" as any, ["read", "write"]]]),
+        authorizations: new Map([["actor-test-001" as any, ["update", "delete"]]]),
+        delegations: [{ from: "actor-a" as any, to: "actor-b" as any }]
+      };
+      const result = validateAuthorityBoundary(validAuthority);
+      assert.ok(result.valid, "Authority boundary yang valid harus lulus");
+      assert.strictEqual(result.errors.length, 0, "Tidak boleh ada error untuk input valid");
+    });
+
+    it("2. AuthorityBoundary invalid: assign capabilities ke workspace (violates 'Workspace bukan authority')", () => {
+      const invalidAuthority: any = {
+        actorCapabilities: new Map([["workspace" as any, ["read", "write"]]]), // Melanggar aturan
+        authorizations: new Map(),
+        delegations: []
+      };
+      const result = validateAuthorityBoundary(invalidAuthority);
+      assert.ok(!result.valid, "Authority boundary yang memberikan capabilities ke workspace harus gagal");
+      assert.ok(result.errors.some(e => e.includes("workspace")), "Error harus menyebutkan pelanggaran workspace sebagai authority");
+    });
+  });
+
+  describe("validateNoCircularDependencies (circular dependency rule)", () => {
+    it("1. Dependencies valid: tidak ada sirkularitas antar core domains", () => {
+      const validDeps = ["work-core", "identity", "evidence-governance", "commerce-product"];
+      const result = validateNoCircularDependencies(validDeps);
+      assert.ok(result.valid, "Dependencies yang tidak sirkular harus lulus");
+      assert.strictEqual(result.errors.length, 0, "Tidak boleh ada error untuk dependencies valid");
+    });
+
+    it("2. Dependencies invalid: terdapat sirkularitas (work-core muncul dua kali)", () => {
+      const invalidDeps = ["work-core", "identity", "work-core"]; // Sengaja duplikat work-core (sirkular)
+      const result = validateNoCircularDependencies(invalidDeps);
+      assert.ok(!result.valid, "Dependencies yang sirkular harus gagal");
+      assert.ok(result.errors.some(e => e.includes("Circular dependency detected")), "Error harus mendeteksi circular dependency");
+    });
+  });
+});;

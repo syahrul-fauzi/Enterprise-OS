@@ -1,4 +1,5 @@
-import { PostgresRepository } from "../../../work-core/index.js";
+import { PostgresRepository, getWORK_REPO, safeRecordEvidence } from "../../../work-core/implementation/index.js";
+import { createDeviceId, newDeviceId } from "../../../../packages/contracts-core/src/index.js";
 import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager.js";
 import { isBuildPhase } from "../../../shared/implementation/database/health.check.js";
 import {
@@ -158,16 +159,34 @@ class CaseRepositoryPostgresImpl extends PostgresRepository<any> implements Case
 
   // CORE-001: listByWorkIds menggantikan listByTenant/listByWorkspace - hanya fetch cases yang terikat ke Work yang diizinkan
   // Enforces Work-centric model precedence: workId > workspaceId per EOS architectural mandate
-  // PROD-002-10: Signature aligned dengan CaseRepository interface (hanya workIds sebagai parameter, tenantId diambil dari context CMBCD)
-  async listByWorkIds(workIds: readonly string[]): Promise<readonly CaseAggregate[]> {
+  // SLIC-003: Menambahkan context untuk workspace/tenant boundary enforcement (defense-in-depth)
+  async listByWorkIds(workIds: readonly string[], context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<readonly CaseAggregate[]> {
     if (workIds.length === 0) return [];
     
     // PostgreSQL IN clause dengan parameterized queries untuk mencegah SQL injection
     const placeholders = workIds.map((_, i) => `$${i + 1}`).join(", ");
-    const query = `SELECT * FROM cases WHERE work_id IN (${placeholders})`;
+    let query = `SELECT * FROM cases WHERE work_id IN (${placeholders})`;
+    const params: any[] = [...workIds];
+    let paramIndex = workIds.length + 1;
+    
+    // SLIC-003: Enforce tenant isolation - prioritize workId over workspaceId, same pattern as byId/list
+    if (context) {
+      query += ` AND tenant_id = $${paramIndex}`;
+      params.push(context.tenantId);
+      paramIndex++;
+      
+      if (context?.workId) {
+        query += ` AND work_id = $${paramIndex}`;
+        params.push(context.workId);
+      } else if (context?.workspaceId) {
+        // Fallback to workspace only when workId is not provided (maintain backward compatibility)
+        query += ` AND workspace_id = $${paramIndex}`;
+        params.push(context.workspaceId);
+      }
+    }
     
     try {
-      const result = await this.pool.query(query, [...workIds]);
+      const result = await this.pool.query(query, params);
       return result.rows.map((row: any) => this.toAggregate(row));
     } catch (error) {
       console.error("[CaseRepositoryPostgres] listByWorkIds failed:", error);

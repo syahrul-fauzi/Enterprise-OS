@@ -1,10 +1,24 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import * as crypto from "crypto";
 import { handleMidtransWebhookUpdate } from "@capabilities/connector-ecosystem/implementation/services/connector-ecosystem.service";
+import {
+  decodeWorkspaceSession,
+  type WorkspaceSession,
+} from "@repo/core-kernel";
+import { validateBoundaryAccess } from "@repo/capabilities/work-core/contracts/work.contracts";
 // Gunakan lazy import Redis di dalam POST handler untuk berbagi instance yang sama dengan test-runner
 // Solusi masalah dual instance karena Next.js SSR/edge runtime memisahkan import top-level dengan test process
 // Ini penting untuk TEST-004 agar simulateUnavailable berfungsi dengan benar (satu instance Redis di globalThis)
+
+// Lazy initialization untuk Node.js crypto module (hindari Edge Runtime static analysis warning)
+let crypto: typeof import("node:crypto");
+
+async function initNodeRuntime() {
+  if (!crypto) {
+    const nodeCrypto = await import("node:crypto");
+    crypto = nodeCrypto;
+  }
+}
   
   // Lazy load capabilityRegistry sesuai pattern yang digunakan di semua command/service EOS
   async function getCapabilityRegistry() {
@@ -90,6 +104,25 @@ export async function GET(request: Request) {
 
 // POST handler for webhook events - delegates to canonical service handler
 export async function POST(request: Request) {
+  // Inisialisasi Node.js modules terlebih dahulu
+  await initNodeRuntime();
+
+  // 6-boundary compliance: Verifikasi integrations domain dapat mengakses external domain
+  if (!validateBoundaryAccess("integrations", "external")) {
+    console.error("[MidtransWebhook] BOUNDARY ACCESS DENIED: integrations cannot access external domain directly");
+    return NextResponse.json({ error: "Boundary access violation" }, { status: 403 });
+  }
+
+  // Canonical session validation - wajib gunakan decodeWorkspaceSession (Tahap B compliance)
+  const session = await decodeWorkspaceSession(request);
+  
+  // actorContext untuk audit tracing - memisahkan identity dari workspace (invariant: Workspace bukan identitas/authority)
+  const actorContext = {
+    tenantId: session?.tenantId || "",
+    workspaceId: session?.workspaceId || "",
+    actorId: session?.actorId || "payment-gateway:midtrans"
+  };
+  
   const xForwardedFor = request.headers.get("x-forwarded-for");
   let clientIp = "unknown";
   if (xForwardedFor) {
@@ -138,9 +171,9 @@ export async function POST(request: Request) {
           status: "pending",
           attempts: 0,
           enqueuedAt: new Date().toISOString(),
-          actorId: "payment-gateway:midtrans",
-          workspaceId: "fin-001-merchant-workspace",
-          tenantId: "default-tenant"
+          actorId: actorContext.actorId,
+          workspaceId: actorContext.workspaceId,
+          tenantId: actorContext.tenantId
         };
 
         // HANYA lakukan enqueue Redis - JANGAN import work repository di production API thread

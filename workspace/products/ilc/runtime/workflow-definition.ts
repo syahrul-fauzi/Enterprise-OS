@@ -10,20 +10,43 @@ export type ACAWorkflowDefinition = WorkflowDefinition;
 export const ILC_WORKFLOW: WorkflowDefinition = {
   id: "ilc-institutional-coordination",
   productId: "ilc",
-  // 5 BOUNDARY MAPPINGS (mandat EOS High-Value Work - aligned with core-kernel definition)
-  tenantId: "tenant-ilc-001",              // ① Identity Boundary: Tenant ownership
-  domain: "institutional",                // ② Semantic Boundary: Domain classification
-  executionFrame: "proxy",                 // ④ Execution Boundary: CMBCD mechanism
-  presentationConfig: {                    // ⑤ Presentation Boundary: FACE projection
+  // 5 EXPLICIT BOUNDARIES (ALIGNED WITH CORE-KERNEL STANDARD)
+  identityBoundary: {
+    tenantId: "tenant-ilc-001",
+    organizationId: "org-ilc-institutional-001",
+    authorizedActors: ["institutional-representative", "department-head", "executive", "project-manager", "system"]
+  },
+  semanticBoundary: {
+    domain: "institutional",
+    primaryIntent: "Coordinate and execute institutional initiatives with dual approval workflow",
+    workType: "institutional-coordination",
+    requirements: ["departmental-approval", "executive-approval", "evidence-preservation", "work-continuity"]
+  },
+  authorityBoundary: {
+    requiredCapabilities: ["requirement-management.create", "requirement-management.approve", "requirement-management.startDelivery", "requirement-management.markImplemented", "requirement-management.verify"],
+    policyIds: ["ilc-institutional-governance-policy", "evidence-chain-integrity-policy"],
+    delegable: true,
+    approvalThreshold: 2
+  },
+  executionBoundary: {
+    workspaceId: "workspace-ilc-institutional.anonymous",
+    runtimeEnvironment: "production",
+    assignedActors: ["system", "institutional-representative", "project-manager"],
+    externalSystemIds: [],
+    executionFrame: "constrained-gui"
+  },
+  presentationBoundary: {
     supportedFaces: ["human", "agent", "api"],
-    defaultLayout: "institutional-dashboard"
+    defaultLayout: "institutional-dashboard",
+    mobileEnabled: true,
+    apiEnabled: true
   },
   // High-Value Work Graph Semantic References
-  productRef: "product-ilc-001",           // Product node reference
-  caseRef: "case-institutional-coordination-template", // Case template reference
-  label: "Institutional Need → Submission → Review → Authorization → Execution → Delivery → Completion",
+  productRef: "product-ilc-001",
+  caseRef: "case-institutional-coordination-template",
+  label: "Institutional Need → Requirements Analyzed → Actors Composed → First Approval → Second Approval → Execution Initiated → Outcome Delivered → Work Closed",
   initialStep: "institutional-need-submitted",
-  terminalStep: "institutional-outcome-delivered",
+  terminalStep: "institutional-work-closed",
   steps: [
     {
       id: "institutional-need-submitted",
@@ -34,52 +57,98 @@ export const ILC_WORKFLOW: WorkflowDefinition = {
       requiredRoles: ["institutional-representative", "authorized-user"]
     },
     {
-      id: "review-initiated",
-      label: "Departmental Review Initiated",
-      capability: "workflow-engine",
-      command: "workflow.transition",
-      description: "Departmental heads begin review of the institutional initiative.",
-      requiredRoles: ["department-head", "executive-authority"]
+      id: "requirements-analyzed",
+      label: "Requirements Analysis Complete",
+      capability: "requirement-management",
+      command: "requirement.update",
+      description: "All institutional requirements analyzed and documented (core-kernel aligned).",
+      requiredRoles: ["system", "automated"]
     },
     {
-      id: "authorized-for-execution",
-      label: "Executive Authorization Granted",
-      capability: "governance-evidence",
-      command: "evidence.recordApproval",
-      description: "Executive authority has approved execution of the institutional initiative.",
-      requiredRoles: ["executive-authority"]
+      id: "actors-composed",
+      label: "Multi-Actor Team Composed",
+      capability: "requirement-management",
+      command: "requirement.update",
+      description: "Cross-role actor matrix assigned to execute work (core-kernel aligned).",
+      requiredRoles: ["institutional-representative", "project-manager"]
     },
     {
-      id: "project-execution",
-      label: "Project Execution Active",
-      capability: "workflow-engine",
-      command: "workflow.updateStatus",
-      description: "Project team is executing on the approved institutional initiative.",
-      requiredRoles: ["project-manager", "authorized-executor"]
+      id: "first-approval",
+      label: "Departmental Approval",
+      capability: "requirement-management",
+      command: "requirement.approve",
+      description: "First-level departmental authority signs off (core-kernel aligned).",
+      requiredRoles: ["department-head", "authorized-approver"]
     },
     {
-      id: "outcome-documented",
-      label: "Institutional Outcome Documented",
-      capability: "document-management",
-      command: "document.uploadOutcome",
-      description: "All deliverables and outcomes have been documented and archived.",
-      requiredRoles: ["project-manager", "institutional-representative"]
+      id: "second-approval",
+      label: "Executive Approval",
+      capability: "requirement-management",
+      command: "requirement.approve",
+      description: "Executive-level institutional approval obtained (core-kernel aligned).",
+      requiredRoles: ["executive", "institutional-authority"]
     },
     {
-      id: "institutional-outcome-delivered",
+      id: "execution-initiated",
+      label: "Execution Initiated",
+      capability: "requirement-management",
+      command: "requirement.startDelivery",
+      description: "Formal execution phase begins after all approvals (core-kernel aligned).",
+      requiredRoles: ["project-manager", "execution-lead"]
+    },
+    {
+      id: "outcome-delivered",
       label: "Institutional Outcome Delivered",
-      capability: "governance-evidence",
-      command: "evidence.finalize",
-      description: "The institutional initiative has been successfully completed and all evidence is preserved.",
-      requiredRoles: ["executive-authority", "institutional-representative"]
+      capability: "requirement-management",
+      command: "requirement.markImplemented",
+      description: "All execution tasks completed, institutional objective achieved (core-kernel aligned).",
+      requiredRoles: ["project-manager", "execution-lead"]
+    },
+    {
+      id: "institutional-work-closed",
+      label: "Work Closed & Archived",
+      capability: "requirement-management",
+      command: "requirement.verify",
+      description: "Institutional work formally closed with complete evidence chain (core-kernel aligned).",
+      requiredRoles: ["institutional-representative", "system"]
     }
   ],
   transitions: {
-    "need-submitted→review": { from: "institutional-need-submitted", to: "review-initiated", requiredRoles: ["institutional-representative", "department-head"] },
-    "review→authorized": { from: "review-initiated", to: "authorized-for-execution", requiredRoles: ["executive-authority"] },
-    "authorized→execution": { from: "authorized-for-execution", to: "project-execution", requiredRoles: ["project-manager", "executive-authority"] },
-    "execution→documented": { from: "project-execution", to: "outcome-documented", requiredRoles: ["project-manager"] },
-    "documented→delivered": { from: "outcome-documented", to: "institutional-outcome-delivered", requiredRoles: ["executive-authority", "institutional-representative"] }
+    "submitted-to-analyzed": {
+      requiredRoles: ["system", "automated"],
+      from: "institutional-need-submitted",
+      to: "requirements-analyzed"
+    },
+    "analyzed-to-composed": {
+      requiredRoles: ["system", "automated"],
+      from: "requirements-analyzed",
+      to: "actors-composed"
+    },
+    "composed-to-first-approval": {
+      requiredRoles: ["department-head", "authorized-approver"],
+      from: "actors-composed",
+      to: "first-approval"
+    },
+    "first-to-second-approval": {
+      requiredRoles: ["executive", "institutional-authority"],
+      from: "first-approval",
+      to: "second-approval"
+    },
+    "approved-to-execution": {
+      requiredRoles: ["project-manager", "execution-lead"],
+      from: "second-approval",
+      to: "execution-initiated"
+    },
+    "execution-to-outcome": {
+      requiredRoles: ["project-manager", "execution-lead"],
+      from: "execution-initiated",
+      to: "outcome-delivered"
+    },
+    "outcome-to-closed": {
+      requiredRoles: ["institutional-representative", "system"],
+      from: "outcome-delivered",
+      to: "institutional-work-closed"
+    }
   }
 };
 

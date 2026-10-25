@@ -68,3 +68,56 @@ export const commands = {
   provision,
   updateStatus,
 };
+
+// Register iot-container-tracking commands with canonical capability registry (aligns with work-core pattern)
+export function registerIotContainerTrackingCapability() {
+	// Enable command registration even in test/standalone environments to support test execution
+	if (typeof process !== 'undefined' && (process.env.NODE_ENV === 'test' || process.env.STANDALONE === 'true')) {
+		console.log("[IoT-Container-Tracking] Test/standalone environment detected - enabling safe auto-registration");
+		// Register all commands in commands array for test environment
+		import("@repo/core-kernel/registry/capability-command-registry").then(({ capabilityRegistry }) => {
+			if (capabilityRegistry) {
+				Object.values(commands).forEach((command) => {
+					capabilityRegistry.register(command);
+				});
+				// Register iot-container-tracking capability
+				capabilityRegistry.registerCapability({
+					id: "iot-container-tracking",
+					name: "IoT Container Tracking",
+					description: "Real-time tracking and provisioning for shipping containers via IoT sensors",
+					providerTypes: ["system", "edge"],
+					domainRestrictions: ["logistics", "supply-chain"],
+					requiredAuthorizations: ["iot:provision", "tenant:iot_enabled"],
+					riskLevel: "low",
+					severity: "LOW",
+					isAvailable: async () => true
+				});
+				console.log("[IoT-Container-Tracking] All test commands registered successfully");
+			}
+		});
+		return;
+	}
+	// Register all commands in production environment - REUSE canonical @repo/core-kernel registry
+	import("@repo/core-kernel/registry/capability-command-registry").then(({ capabilityRegistry }) => {
+		if (capabilityRegistry) {
+			Object.values(commands).forEach((command) => {
+				capabilityRegistry.register(command);
+			});
+			// Register iot-container-tracking capability
+			capabilityRegistry.registerCapability({
+				id: "iot-container-tracking",
+				name: "IoT Container Tracking",
+				description: "Real-time tracking and provisioning for shipping containers via IoT sensors",
+				providerTypes: ["system", "edge"],
+				domainRestrictions: ["logistics", "supply-chain"],
+				requiredAuthorizations: ["iot:provision", "tenant:iot_enabled"],
+				riskLevel: "low",
+				severity: "LOW",
+				isAvailable: async () => true
+			});
+			console.log("[IoT-Container-Tracking] IoT Container Tracking capability registered successfully - all commands added to canonical capability registry");
+		}
+	}).catch(err => {
+		console.error("[IoT-Container-Tracking] Failed to register iot-container-tracking capability:", err);
+	});
+}

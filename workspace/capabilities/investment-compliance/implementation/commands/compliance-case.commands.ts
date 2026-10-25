@@ -11,16 +11,16 @@ import {
 	calculateExecutionFrame,
 	safeRecordEvidence,
 	safeNotifyWorkspaceListeners,
-	getIntentRepositoryPostgres,
-	getWorkRepositoryPostgres,
 	buildWorkFaceProjection,
 	validateAllBoundaries,
-	IntentRepositoryInMemory,
-	type TenantId,
-	type WorkspaceId,
 	createTenantId,
 	createWorkspaceId,
 	createActorId,
+} from "../../../work-core/implementation/utils/index.js";
+// Import semua type dari work.contracts (canonical source)
+import {
+	type TenantId,
+	type WorkspaceId,
 	type ActorId,
 	type ActorMetadata,
 	type AuthorizationScope,
@@ -30,9 +30,14 @@ import {
 	type SemanticBoundary,
 	type AuthorityBoundary,
 	type ExecutionBoundary,
+	type EvidenceBoundary,
 	type PresentationBoundary,
-} from "../../../work-core/implementation/utils/index.js";
-import { type WorkId, type ProductNode, type HighValueWorkGraphQuery } from "../../../work-core/contracts/work.contracts.js";
+	type WorkId,
+	type ProductNode,
+	type HighValueWorkGraphQuery
+} from "../../../work-core/contracts/work.contracts.js";
+// Import repository getters dari canonical work-core entry point
+import { getWorkRepositoryPostgres } from "../../../work-core/index.js";
 import { SessionRepositoryInMemory, getSessionRepositoryPostgres } from "../../../identity/implementation/repositories/index.js";
 import {
 	type ComplianceCaseAggregate,
@@ -74,90 +79,103 @@ const createComplianceCase: CapabilityCommand<
   execute: async (input) => {
     const parsed = CreateComplianceCaseSchema.parse(input);
     const { title, description, investmentAmount, sector, riskRating, sessionId: sessionIdValue, linkedIntentId, workId: workIdValue } = parsed;
-    
-    // ILC-001: Validasi session sebelum create case (authentication boundary)
-    const session = await sessionRepository.byId(sessionIdValue as any);
-    if (!session || session.revokedAt !== null) {
-      throw new Error("[investment-compliance.create-case] Invalid or revoked session - authentication violation");
-    }
+            
+            // ILC-001: Validasi session sebelum create case (authentication boundary)
+            const session = await sessionRepository.byId(sessionIdValue as any);
+            if (!session || session.revokedAt !== null) {
+              throw new Error("[investment-compliance.create-case] Invalid or revoked session - authentication violation");
+            }
 
-    // ILC-001: Integrasi createCoreWork dari work-core (Work sebagai continuity primitive)
-    const capabilityRegistry = await getCapabilityRegistry();
-    let coreWorkResult: { id: string; workId: string; domainType: string } | undefined;
-    if (capabilityRegistry?.invoke) {
-      try {
-        coreWorkResult = await capabilityRegistry.invoke("work-core", "create", {
-          title: title.trim(),
-          description: description || undefined,
-          domainType: "investment-compliance",
-          sessionId,
-          tenantId: session.tenantId,
-          workspaceId: session.workspaceId,
-          actorId: session.actorId,
-          domainSpecificData: { 
-            linkedIntentId,
-            investmentAmount,
-            sector,
-            riskRating
-          }
-        }) as { id: string; workId: string; domainType: string };
-      } catch (coreWorkError) {
-        console.error("[ILC-001] Core Work creation failed (continuing with compliance case only):", coreWorkError);
-      }
-    }
+            // ILC-001: Integrasi createCoreWork dari work-core (Work sebagai continuity primitive)
+            const capabilityRegistry = await getCapabilityRegistry();
+            let coreWorkResult: { id: string; workId: string; domainType: string } | undefined;
+            if (capabilityRegistry?.invoke) {
+              try {
+                coreWorkResult = await capabilityRegistry.invoke("work-core", "create", {
+                  title: title.trim(),
+                  description: description || undefined,
+                  domainType: "investment-compliance",
+                  sessionId: sessionIdValue,
+                  tenantId: session.tenantId,
+                  workspaceId: session.workspaceId,
+                  actorId: session.actorId,
+                  domainSpecificData: { 
+                    linkedIntentId,
+                    investmentAmount,
+                    sector,
+                    riskRating
+                  }
+                }) as { id: string; workId: string; domainType: string };
+              } catch (coreWorkError) {
+                console.error("[ILC-001] Core Work creation failed (continuing with compliance case only):", coreWorkError);
+              }
+            }
 
-    // W-015: ENFORCE 5-BOUNDARY MODEL COMPLIANCE (sesuai Services.ID pattern)
-    // Hanya jalanin validation jika coreWorkResult berhasil dibuat
-    if (coreWorkResult?.workId) {
-      // Konstruksi semua 5 boundary sesuai EOS architecture
-      const identityBoundary: IdentityBoundary = {
-        tenantId: session.tenantId,
-        organizationId: session.organizationId,
-        principalId: session.actorId,
-        ownerIds: [session.actorId]
-      };
-      const semanticBoundary: SemanticBoundary = {
-        domain: "investment-compliance",
-        intent: "investment-risk-compliance-review",
-        currentState: "draft",
-        requirements: [],
-        constraints: [],
-        decisions: []
-      };
-      const authorityBoundary: AuthorityBoundary = {
-        actorCapabilities: new Map([[session.actorId, ["create-compliance-case", "assign-auditor", "close-case"]]]),
-        policyEnforcements: ["investment-compliance-2026", "data-protection-global"],
-        authorizations: new Map([[session.actorId, ["create", "read", "update"]]]),
-        delegations: []
-      };
-      const executionBoundary: ExecutionBoundary = {
-        workspaceId: session.workspaceId,
-        runtimeEnvironment: "web",
-        executorIds: [session.actorId],
-        executionFrame: calculateExecutionFrame(session.actorType)
-      };
-      const presentationBoundary: PresentationBoundary = {
-        supportedFaces: ["web", "api", "mobile"],
-        defaultLayout: "compliance-case-overview",
-        mobileEnabled: true,
-        apiEnabled: true,
-        projectionConfig: {
-          displayName: title,
-          summary: description || "Investment compliance risk review case",
-          priority: riskRating === "high" || riskRating === "critical" ? "critical" : "medium",
-          uiFilters: ["status", "sector", "riskRating", "createdAt"],
-          hideFromSurfaces: []
-        }
-      };
+            // W-015: ENFORCE 5-BOUNDARY MODEL COMPLIANCE (sesuai Services.ID pattern)
+            // Hanya jalanin validation jika coreWorkResult berhasil dibuat
+            if (coreWorkResult?.workId) {
+              // Konstruksi semua 5 boundary sesuai EOS architecture
+              const identityBoundary: IdentityBoundary = {
+                tenantId: session.tenantId,
+                organizationId: session.tenantId, // Gunakan tenantId sebagai organizationId (sesuai SessionAggregate interface yang tidak memiliki organizationId)
+                principalId: session.actorId,
+                ownerIds: [session.actorId]
+              };
+              const semanticBoundary: SemanticBoundary = {
+                domain: "investment-compliance",
+                intent: "investment-risk-compliance-review",
+                currentState: "draft",
+                requirements: [],
+                constraints: [],
+                decisions: []
+              };
+              const authorityBoundary: AuthorityBoundary = {
+                actorCapabilities: new Map([[session.actorId, ["create-compliance-case", "assign-auditor", "close-case"]]]),
+                policyEnforcements: ["investment-compliance-2026", "data-protection-global"],
+                authorizations: new Map([[session.actorId, ["create", "read", "update"]]]),
+                delegations: []
+              };
+              const executionBoundary: ExecutionBoundary = {
+                workspaceId: session.workspaceId,
+                runtimeEnvironment: "web",
+                executorIds: [session.actorId],
+                executionFrame: "direct" // Hardcode executionFrame karena session.actorType tidak tersedia di SessionAggregate
+              };
+              const presentationBoundary: PresentationBoundary = {
+                supportedFaces: ["web", "api", "mobile"],
+                defaultLayout: "compliance-case-overview",
+                mobileEnabled: true,
+                apiEnabled: true,
+                projectionConfig: {
+                  displayName: title,
+                  summary: description || "Investment compliance risk review case",
+                  priority: riskRating === "high" || riskRating === "critical" ? "critical" : "medium",
+                  uiFilters: ["status", "sector", "riskRating", "createdAt"],
+                  hideFromSurfaces: []
+                }
+              };
 
-      // Jalankan validasi boundary terpusat dari work-core
-      const boundaryValidation = validateAllBoundaries({
-        identity: identityBoundary,
-        semantic: semanticBoundary,
-        authority: authorityBoundary,
-        execution: executionBoundary,
-        presentation: presentationBoundary
-      });
+              // Konstruksi EvidenceBoundary dengan semua field yang diperlukan sesuai interface work-core
+              const evidenceBoundary: EvidenceBoundary = {
+                evidenceIds: [],
+                evidenceChain: [{
+                  actorId: session.actorId,
+                  action: "compliance-case-created",
+                  timestamp: new Date(),
+                  workspaceId: session.workspaceId
+                }],
+                outcomeVerified: false
+              };
+
+              // Jalankan validasi boundary terpusat dari work-core
+              const boundaryValidation = validateAllBoundaries({
+                identity: identityBoundary,
+                semantic: semanticBoundary,
+                authority: authorityBoundary,
+                execution: executionBoundary,
+                evidence: evidenceBoundary,
+                presentation: presentationBoundary
+              });
 
       if (!boundaryValidation.valid) {
         console.error("[W-015] BOUNDARY VALIDATION FAILED:", boundaryValidation.allErrors);
@@ -196,6 +214,7 @@ const createComplianceCase: CapabilityCommand<
           sector: linkedProduct.sector
         } : null
       });
+    }
 
     // CORE-001: Hapus semua duplikat boundary metadata (tenantId/workspaceId/actorId)
     const newCaseId = newComplianceCaseId();
@@ -291,7 +310,7 @@ const createComplianceCase: CapabilityCommand<
 
     console.log(`[ILC-001] ✅ Compliance case created ${newCase.id} (work: ${coreWorkResult?.workId})`);
     return { ...newCase, faceProjection };
-  },
+  }
 };
 
 const AssignAuditorToCaseSchema = z.object({
@@ -393,7 +412,9 @@ const closeComplianceCase: CapabilityCommand<z.infer<typeof CloseComplianceCaseS
   capability: "investment-compliance",
   version: "1.0.0",
   execute: async (input) => {
-    const { caseId, sessionId } = CloseComplianceCaseSchema.parse(input);
+    const { caseId, sessionId } = CloseComplianceCaseSchema.extend({
+      sessionId: z.string().min(1)
+    }).parse(input);
     
     // Validasi session sebelum melanjutkan (authentication boundary)
     const session = await sessionRepository.byId(sessionId as any);
@@ -410,6 +431,12 @@ const closeComplianceCase: CapabilityCommand<z.infer<typeof CloseComplianceCaseS
       throw new Error("Compliance case not found");
     }
 
+    // Idempotent check: jika case sudah closed, kembalikan state yang ada
+    if (caseExists.status === "closed") {
+      console.log(`[ILC-004] ✅ Compliance case ${caseId} already closed (work: ${caseExists.workId})`);
+      return { ...caseExists };
+    }
+
     // CORE-001: Fetch core WorkAggregate untuk final boundary verification
     const workRepository = getWorkRepositoryPostgres();
     const coreWork = await workRepository.byWorkId(caseExists.workId);
@@ -423,11 +450,12 @@ const closeComplianceCase: CapabilityCommand<z.infer<typeof CloseComplianceCaseS
     }
 
     // Update case status menjadi closed
+    const closedAt = new Date();
     const updatedCase = {
       ...caseExists,
       status: "closed" as const,
-      closedAt: new Date(),
-      updatedAt: new Date()
+      closedAt,
+      updatedAt: closedAt
     };
     await complianceCaseRepository.save(updatedCase);
 
@@ -447,7 +475,7 @@ const closeComplianceCase: CapabilityCommand<z.infer<typeof CloseComplianceCaseS
           capability: "investment-compliance",
           command: "compliance-case.close",
           requirement_id: requirementId,
-          timestamp: new Date().toISOString(),
+          timestamp: closedAt.toISOString(),
           outcome_bound: true,
           outcome_type: "compliance_case_resolved",
           graph_metadata_updated: true
@@ -461,10 +489,10 @@ const closeComplianceCase: CapabilityCommand<z.infer<typeof CloseComplianceCaseS
         id: `outcome-${caseId}`,
         type: "compliance_case_closed",
         workId: caseExists.workId,
-        timestamp: new Date().toISOString(),
+        timestamp: closedAt.toISOString(),
         metadata: {
           caseId: caseId,
-          closedAt: new Date()
+          closedAt: closedAt
         }
       });
     }
@@ -476,7 +504,7 @@ const closeComplianceCase: CapabilityCommand<z.infer<typeof CloseComplianceCaseS
         await capabilityRegistry.invoke("work-core", "update", {
           workId: caseExists.workId,
           status: "completed",
-          closedAt: new Date().toISOString()
+          closedAt: closedAt.toISOString()
         });
       } catch (workUpdateError) {
         console.warn("[investment-compliance.close-case] Core Work update failed, but case closed locally:", workUpdateError);
@@ -492,7 +520,7 @@ const closeComplianceCase: CapabilityCommand<z.infer<typeof CloseComplianceCaseS
       actor_id: session.actorId,
       tenant_id: session.tenantId,
       workspace_id: coreWork.execution?.workspaceId || null,
-      timestamp: new Date().toISOString(),
+      timestamp: closedAt.toISOString(),
       graph_traversal_success: !!linkedCase,
       linked_case_id: linkedCase?.id || null,
       linked_requirement_ids: linkedRequirements,
@@ -519,7 +547,7 @@ const closeComplianceCase: CapabilityCommand<z.infer<typeof CloseComplianceCaseS
     });
 
     console.log(`[ILC-001] ✅ Compliance case ${caseId} closed successfully (work: ${caseExists.workId})`);
-    return { ...updatedCase, faceProjection: finalFaceProjection };
+    return { ...updatedCase, faceProjection: finalFaceProjection, coreWorkStatus: "completed" };
   },
 };
 

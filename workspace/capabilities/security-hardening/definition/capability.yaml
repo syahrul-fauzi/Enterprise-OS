@@ -17,7 +17,7 @@ implementation:
 depends_on:
   - identity
   - trust-framework
-  - core-runtime
+  - work-core
 capability:
   name: security-hardening
   owner: security-domain
@@ -35,3 +35,4 @@ capability:
     - production_usage
     - security_validation
 stability: stable
+evidence_required: true

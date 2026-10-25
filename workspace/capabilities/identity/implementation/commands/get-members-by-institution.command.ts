@@ -2,6 +2,8 @@ import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { UserRepositoryPostgres } from "../repositories/index.js";
 import type { TenantId } from "@repo/contracts-core";
+// Import canonical boundary validation utilities from work-core (Rule of Two compliance)
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
 
 export const GetMembersByInstitutionInputSchema = z.object({
   institutionId: z.string().min(1),
@@ -27,6 +29,12 @@ export const getMembersByInstitutionCommand: CapabilityCommand = {
   async execute(input: unknown) {
     const parsed = GetMembersByInstitutionInputSchema.parse(input);
     const { institutionId } = parsed;
+
+    // Validasi akses lintas domain terlebih dahulu (6-boundary compliance - identity -> work-core)
+    if (!validateBoundaryAccess("identity", "work-core")) {
+      console.error("[identity.getMembersByInstitution] BOUNDARY ACCESS DENIED: identity domain cannot access work-core directly");
+      throw new Error("Boundary access violation: domain identity tidak diizinkan mengakses domain work-core");
+    }
 
     // Get all users affiliated with this institution
     const allUsers = await UserRepositoryPostgres.list();

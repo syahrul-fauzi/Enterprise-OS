@@ -1,0 +1,14 @@
+name: Architecture Fitness Checks
+on: [pull_request]
+jobs:
+  fitness-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run legacy architecture fitness checks
+        run: pnpm exec tsx capabilities/work-core/implementation/utils/architecture-fitness-checks.ts
+      - name: Run EOS canonical architecture checks (pnpm arch-check)
+        working-directory: packages/tooling/arch-tests
+        run: pnpm run arch-check

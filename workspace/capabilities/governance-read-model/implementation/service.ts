@@ -13,4 +13,5 @@ export {
   GovernanceReadModelService,
   governanceReadModelCatalog,
   governanceReadModelService,
+  recordRuntimeInvocation,
 } from "./services/governance-read-model.service.js";

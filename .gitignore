@@ -88,8 +88,8 @@ test-results/
 
 # ------------------------------
 # EOS System Generated Files
-**/.eos-state/  # Uncomment only after full submodule adjudication
-*/.eos-state/
+# **/.eos-state/  # Uncomment only after full submodule adjudication
+# */.eos-state/
 */evidence/
 */artifacts/
 .eos-state-temp/

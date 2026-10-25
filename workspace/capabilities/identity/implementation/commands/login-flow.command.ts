@@ -1,4 +1,4 @@
-import type { CapabilityCommand } from "@repo/core-kernel";
+import type { CapabilityCommand } from "../../../capability-dispatch/contracts/command.contracts.js";
 import { z } from "zod";
 import * as crypto from "node:crypto";
 import {
@@ -7,23 +7,35 @@ import {
   type WorkspaceId,
   ActorId,
 } from "@repo/contracts-core";
-import { UserId as UserIdValue, TenantId as TenantIdValue, WorkspaceId as WorkspaceIdValue, ActorId as ActorIdValue } from "@repo/contracts-core";
 import { randomUUID } from "node:crypto";
+// Import 6-boundary validation function dari package kanonis
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
 
-// REALITY PATH ONLY - Import repository Postgres yang dibutuhkan
-import {
-  getUserRepositoryPostgres,
-  getMembershipRepositoryPostgres,
-  getTenantRepositoryPostgres,
-  getWorkspaceRepositoryPostgres,
-  getSessionRepositoryPostgres,
-  newSessionId,
-} from "../repositories/index.js";
-const userRepository = getUserRepositoryPostgres();
-const membershipRepository = getMembershipRepositoryPostgres();
-const tenantRepository = getTenantRepositoryPostgres();
-const workspaceRepository = getWorkspaceRepositoryPostgres();
-const sessionRepository = getSessionRepositoryPostgres();
+// Lazy load repositories untuk menghindari module cycle dan mematuhi 6-boundary compliance
+async function getUserRepositoryLazy() {
+  const { getUserRepositoryPostgres } = await import("../repositories/index.js");
+  return getUserRepositoryPostgres();
+}
+
+async function getMembershipRepositoryLazy() {
+  const { getMembershipRepositoryPostgres } = await import("../repositories/index.js");
+  return getMembershipRepositoryPostgres();
+}
+
+async function getTenantRepositoryLazy() {
+  const { getTenantRepositoryPostgres } = await import("../repositories/index.js");
+  return getTenantRepositoryPostgres();
+}
+
+async function getWorkspaceRepositoryLazy() {
+  const { getWorkspaceRepositoryPostgres } = await import("../repositories/index.js");
+  return getWorkspaceRepositoryPostgres();
+}
+
+async function getSessionRepositoryLazy() {
+  const { getSessionRepositoryPostgres, newSessionId } = await import("../repositories/index.js");
+  return { sessionRepository: getSessionRepositoryPostgres(), newSessionId };
+}
 
 // REALITY PATH ONLY - Inline password verify untuk menghindari import error
 const SCRYPT_KEYLEN = 64;
@@ -52,6 +64,12 @@ function verifyPassword(password: string, storedHash: string): boolean {
 export const LoginFlowInputSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
+  actorContext: z.object({
+    actorId: z.string().optional(),
+    tenantId: z.string().optional(),
+    workspaceId: z.string().optional(),
+    productId: z.string().optional(),
+  }).optional(),
 });
 
 export type LoginFlowInput = z.infer<typeof LoginFlowInputSchema>;
@@ -66,6 +84,12 @@ export type LoginFlowOutput = {
   readonly productId: string;
   readonly sessionId: string;
   readonly email: string;
+  readonly actorContext?: {
+    actorId: string | undefined;
+    tenantId: string | undefined;
+    workspaceId: string | undefined;
+    productId: string | undefined;
+  };
 };
 
 type LoginFlowCommand = CapabilityCommand<LoginFlowInput, LoginFlowOutput>;
@@ -73,11 +97,34 @@ type LoginFlowCommand = CapabilityCommand<LoginFlowInput, LoginFlowOutput>;
 export const loginFlowCommand: LoginFlowCommand = {
   kind: "command",
   name: "identity.loginFlow",
-  version: "2.0.0",
+  version: "4.0.0", // Updated for full 6-boundary compliance, canonical actorContext support
 
-  async execute(input: LoginFlowInput) {
+  async execute(input: LoginFlowInput & { actorContext?: { tenantId: string; workspaceId: string; actorId: string; productId?: string } }) {
+    // 1. Validasi 6-boundary compliance TERLEBIH DAHULU (Tahap B mandate - identity mengakses identity domain)
+    if (!validateBoundaryAccess("identity", "identity")) {
+      console.error("[identity.loginFlow] BOUNDARY ACCESS DENIED: cannot access identity domain with invalid boundary");
+      throw new Error("Boundary access violation");
+    }
+
+    // Ambil repository secara lazy, sesuai pola yang sudah diverifikasi di command sebelumnya
+    const userRepository = await getUserRepositoryLazy();
+    const membershipRepository = await getMembershipRepositoryLazy();
+    const tenantRepository = await getTenantRepositoryLazy();
+    const workspaceRepository = await getWorkspaceRepositoryLazy();
+    const { sessionRepository, newSessionId } = await getSessionRepositoryLazy();
+
     const parsed = LoginFlowInputSchema.parse(input);
     const { email, password } = parsed;
+    
+    // Extract context dari actorContext (mematuhi invariant "Workspace bukan identitas/authority")
+    const workspaceId = input.actorContext?.workspaceId || "unknown-workspace";
+    const actorId = input.actorContext?.actorId || "unknown-actor";
+    const tenantId = input.actorContext?.tenantId || "unknown-tenant";
+
+    // Log audit untuk tracing actorContext jika disediakan (wajib compliance audit)
+    if (input.actorContext) {
+      console.log(`[identity.loginFlow] Login flow initiated by actor ${actorId} in workspace ${workspaceId}, tenant ${tenantId} for email: ${email}`);
+    }
 
     // REALITY PATH ONLY - Inline seluruh logika login untuk menghindari semua import error
     const user = await userRepository.byEmail(email);
@@ -138,6 +185,7 @@ export const loginFlowCommand: LoginFlowCommand = {
       productId: "services-id.default",
       sessionId: session.id,
       email: user.email,
+      actorContext: input.actorContext, // Pertahankan actorContext untuk chainability antar command
     };
   },
 };

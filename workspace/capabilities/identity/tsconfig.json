@@ -9,13 +9,14 @@
     "incremental": true,
     "skipLibCheck": true,
     "emitDeclarationOnly": true,
-    "rootDir": ".",
+    "rootDirs": [".", "../../capabilities"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "allowImportingTsExtensions": true,
     "ignoreDeprecations": "5.0",
     "paths": {
-      "@repo/*": ["../../packages/*"]
+      "@repo/*": ["../../packages/*"],
+      "@capabilities/*": ["../../capabilities/*"]
     }
   },
   "references": [

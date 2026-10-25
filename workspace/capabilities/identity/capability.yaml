@@ -27,3 +27,4 @@ capability:
     - production_usage
     - security_validation
     - multiple_consumers
+evidence_required: true

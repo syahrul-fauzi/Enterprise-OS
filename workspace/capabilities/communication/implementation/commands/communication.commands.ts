@@ -30,20 +30,9 @@ async function invokeCapability<Output = unknown>(
   return res.output;
 }
 
-// Local safeRecordEvidence implementation following consultation.commands.ts pattern
-async function safeRecordEvidence(payload: unknown): Promise<{ readonly ok: boolean }> {
-  try {
-    const loaded = await import("@repo/core-kernel");
-    const reg = (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
-    if (typeof reg?.invoke === "function") {
-      await reg.invoke("evidence-registry", "evidence.record", payload as never);
-      return { ok: true };
-    }
-  } catch (_e) {
-    // fallthrough: evidence recording is observability-only (not state-machine critical path)
-  }
-  return { ok: true };
-}
+// Hapus duplikat safeRecordEvidence - gunakan canonical dari work-core (Gate A requirement: reuse primitive yang sudah ada)
+// Import canonical safeRecordEvidence yang menangani SHA-256, fallback storage, dan semua durability policy
+import { safeRecordEvidence } from "../../../work-core/implementation/utils/evidence.utils.js";
 
 import {
   SendCommunicationInputSchema,
@@ -406,21 +395,24 @@ const SendCommunicationCommand: CapabilityCommand = {
       throw new Error(`[communication.send] Failed to send: ${sendResult.error}`);
     }
 
-    // 7. Record governance evidence (follows safeRecordEvidence pattern from all capabilities)
+    // 7. Record governance evidence (gunakan canonical safeRecordEvidence dari work-core)
     await safeRecordEvidence({
-      entityRef: eventId,
-      entityType: "communication_event",
-      action: "communication_sent",
-      actorId: actor_id,
+      workspace_id: canonicalWorkspaceId,
+      capability: "eos.communication",
+      command: "communication.send",
+      work_id: work_id,
+      tenant_id: tenant_id,
+      actor_id: actor_id,
+      timestamp: now,
+      sessionId: session_id,
       details: {
-        work_id,
+        eventId: eventId,
+        entityType: "communication_event",
         adapter_type,
         recipient_count: recipient_ids.length,
         spinePreserved: true, // Critical: Work context preserved across communication
         ambient_context_propagated: !!ambient
-      },
-      timestamp: now,
-      sessionId: session_id, tenantId: tenant_id, workspaceId: workspace_id
+      }
     });
 
     // 8. Return output with adapter receipt
@@ -607,23 +599,26 @@ const AgenticNotifyCommand: CapabilityCommand = {
       throw new Error(`[communication.agenticNotify] Failed to send: ${sendResult.error}`);
     }
 
-    // 8. Record governance evidence - agentic communication preserved audit trail
+    // 8. Record governance evidence - agentic communication preserved audit trail (gunakan canonical safeRecordEvidence dari work-core)
     await safeRecordEvidence({
-      entityRef: eventId,
-      entityType: "agentic_communication_event",
-      action: "agentic_notification_sent",
-      actorId: SYSTEM_AGENT_ACTOR_ID,
+      workspace_id: canonicalWorkspaceId,
+      capability: "eos.communication",
+      command: "communication.agenticNotify",
+      work_id: work_id,
+      tenant_id: tenantId,
+      actor_id: SYSTEM_AGENT_ACTOR_ID,
+      timestamp: now,
+      sessionId: sessionId,
       details: {
-        work_id,
+        eventId: eventId,
+        entityType: "agentic_communication_event",
         trigger,
         adapter_type,
         recipient_count: recipient_ids.length,
         spinePreserved: true,
         ambient_context_propagated: !!ambient,
         agentic_loop_grounded: true
-      },
-      timestamp: now,
-      sessionId, tenantId, workspaceId
+      }
     });
 
     return {

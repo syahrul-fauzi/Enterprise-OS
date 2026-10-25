@@ -1,13 +1,14 @@
 import { describe, it, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { executionContext } from "../packages/core/runtime/src/execution-context.js";
-import { recordObservedExecution, getTraceForDecision, executionTraces, recordWorkExecutionMetrics, getWorkMetrics } from "../packages/core/runtime/src/execution-observability.js";
+import { recordObservedExecution, getTraceForDecision, executionTraces, recordWorkExecutionMetrics, getWorkMetrics, resetWorkMetricsStore } from "../packages/core/runtime/src/execution-observability.js";
 import { randomUUID } from "node:crypto";
 
 describe("WORK-PROD-010 - CROSS-DOMAIN OBSERVABILITY: Verify BOTH success AND failure paths for ILC and Services.ID", () => {
   beforeEach(() => {
     // Reset traces dan metrics sebelum setiap test
     executionTraces.clear();
+    resetWorkMetricsStore(); // Reset metrics store untuk mencegah double-counting antar test
   });
 
   // ==============================

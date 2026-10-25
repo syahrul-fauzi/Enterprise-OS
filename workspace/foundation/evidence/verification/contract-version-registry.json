@@ -1,6 +1,6 @@
 {
   "registry_version": "1.1.0",
-  "registry_digest": "a1a531445860c7cc9a55b2cd0572e885eb880739a0a98d2215c9d83c9dbeb604",
+  "registry_digest": "1b11656228ad9e7150de24d36ac61d05882902f6672c5ba5132d63c03332cfb5",
   "summary": {
     "total_contracts": 11,
     "provider_bindings": 7,
@@ -57,11 +57,11 @@
           "range": ">=0.1 <0.2",
           "declared_dependency_ids": [
             "connector-ecosystem",
-            "core-runtime",
             "evidence-registry",
             "governance-evidence",
             "identity",
-            "security-hardening"
+            "security-hardening",
+            "work-core"
           ],
           "compatible_providers": [],
           "compatible_provider_count": 0,
@@ -99,39 +99,6 @@
       "overall_status": "PASS"
     },
     {
-      "contract_name": "CoreRuntimeProvider",
-      "provider_count": 0,
-      "consumer_count": 1,
-      "declared_versions": [],
-      "declared_major_versions": [],
-      "stable_provider_count": 0,
-      "pinned_consumer_count": 0,
-      "unbounded_consumer_count": 0,
-      "ambiguous_consumer_count": 0,
-      "providers": [],
-      "consumers": [
-        {
-          "capability_id": "communication",
-          "range": ">=0.1 <0.2",
-          "declared_dependency_ids": [
-            "connector-ecosystem",
-            "core-runtime",
-            "evidence-registry",
-            "governance-evidence",
-            "identity",
-            "security-hardening"
-          ],
-          "compatible_providers": [],
-          "compatible_provider_count": 0,
-          "provider_resolution_status": "UNRESOLVED",
-          "range_policy_status": "BOUNDED",
-          "range_policy_detail": "Range \">=0.1 <0.2\" is bounded, but not to a single major-version lane.",
-          "status": "FAIL"
-        }
-      ],
-      "overall_status": "FAIL"
-    },
-    {
       "contract_name": "EvidenceRegistryProvider",
       "provider_count": 0,
       "consumer_count": 1,
@@ -147,9 +114,9 @@
           "capability_id": "consultation",
           "range": ">=0.1 <0.2",
           "declared_dependency_ids": [
-            "core-runtime",
             "evidence-registry",
             "legal-case",
+            "work-core",
             "workflow-engine"
           ],
           "compatible_providers": [],
@@ -213,11 +180,11 @@
           "range": ">=0.1 <0.2",
           "declared_dependency_ids": [
             "connector-ecosystem",
-            "core-runtime",
             "evidence-registry",
             "governance-evidence",
             "identity",
-            "security-hardening"
+            "security-hardening",
+            "work-core"
           ],
           "compatible_providers": [],
           "compatible_provider_count": 0,
@@ -230,8 +197,8 @@
           "capability_id": "requirement-management",
           "range": ">=0.1 <0.2",
           "declared_dependency_ids": [
-            "core-runtime",
             "governance-evidence",
+            "work-core",
             "workflow-engine"
           ],
           "compatible_providers": [],
@@ -245,8 +212,8 @@
           "capability_id": "workflow-engine",
           "range": ">=0.1 <0.2",
           "declared_dependency_ids": [
-            "core-runtime",
-            "governance-evidence"
+            "governance-evidence",
+            "work-core"
           ],
           "compatible_providers": [],
           "compatible_provider_count": 0,
@@ -323,9 +290,9 @@
           "capability_id": "consultation",
           "range": ">=0.1 <0.2",
           "declared_dependency_ids": [
-            "core-runtime",
             "evidence-registry",
             "legal-case",
+            "work-core",
             "workflow-engine"
           ],
           "compatible_providers": [],
@@ -390,8 +357,8 @@
           "capability_id": "governance-evidence",
           "range": ">=1 <2",
           "declared_dependency_ids": [
-            "core-runtime",
-            "trust-framework"
+            "trust-framework",
+            "work-core"
           ],
           "compatible_providers": [
             {
@@ -407,6 +374,39 @@
         }
       ],
       "overall_status": "PASS"
+    },
+    {
+      "contract_name": "WorkCoreProvider",
+      "provider_count": 0,
+      "consumer_count": 1,
+      "declared_versions": [],
+      "declared_major_versions": [],
+      "stable_provider_count": 0,
+      "pinned_consumer_count": 0,
+      "unbounded_consumer_count": 0,
+      "ambiguous_consumer_count": 0,
+      "providers": [],
+      "consumers": [
+        {
+          "capability_id": "communication",
+          "range": ">=0.1 <0.2",
+          "declared_dependency_ids": [
+            "connector-ecosystem",
+            "evidence-registry",
+            "governance-evidence",
+            "identity",
+            "security-hardening",
+            "work-core"
+          ],
+          "compatible_providers": [],
+          "compatible_provider_count": 0,
+          "provider_resolution_status": "UNRESOLVED",
+          "range_policy_status": "BOUNDED",
+          "range_policy_detail": "Range \">=0.1 <0.2\" is bounded, but not to a single major-version lane.",
+          "status": "FAIL"
+        }
+      ],
+      "overall_status": "FAIL"
     },
     {
       "contract_name": "WorkflowEngineProvider",
@@ -435,9 +435,9 @@
           "capability_id": "consultation",
           "range": ">=0.1 <0.2",
           "declared_dependency_ids": [
-            "core-runtime",
             "evidence-registry",
             "legal-case",
+            "work-core",
             "workflow-engine"
           ],
           "compatible_providers": [],
@@ -451,8 +451,8 @@
           "capability_id": "requirement-management",
           "range": ">=0.1 <0.2",
           "declared_dependency_ids": [
-            "core-runtime",
             "governance-evidence",
+            "work-core",
             "workflow-engine"
           ],
           "compatible_providers": [],

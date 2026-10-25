@@ -319,17 +319,17 @@ export class GapAnalysisService {
     const domain = contextDomain || "generic";
 
     // Base on domain (uses registered capability IDs per capability-resolver.service.ts)
-    if (domain === "legal") {
+    if (domain === "legal" || domain === "legal-business") {
       capabilities.push("legal-clarification-flow");
       capabilities.push("ai-legal-consultant");
       
-      // C-001: Add PT establishment capabilities for company formation intents
-      const intentText = (typeof intent.raw?.content === 'string' ? intent.raw.content : JSON.stringify(intent.raw?.content || '')).toLowerCase();
-      if (intentText.includes("mendirikan pt") || intentText.includes("buat pt") || intentText.includes("pendirian perusahaan")) {
+      // Rule-based provider exclusively handles company formation detection (no hardcoded patterns)
+      // User mandate: "Hentikan: if (text.includes("mendirikan pt")) { return LEGAL } — gunakan rule-based provider langsung"
+      if (understanding?.intentType === "company-formation" || understanding?.intentType === "company-formation-prep") {
         capabilities.push("company-formation-management");
         capabilities.push("legal-document-preparation");
-        capabilities.push("government-registration-handling");
-        capabilities.push("notarization-coordination");
+        // Only add non-core capabilities if they're activated in capability-registry
+        // government-registration-handling and notarization-coordination are currently commented out per AUDIT-001-006
       }
     }
     // SAGE-LINEN-002-VIOLATION: Add manufacturing/procurement domain capabilities

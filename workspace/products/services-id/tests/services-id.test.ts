@@ -2,7 +2,11 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import * as yaml from "js-yaml";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 import { capabilityRegistry, type CommandInvocationRecord } from "@repo/core-kernel";
 import {
   ServiceProviderRepositoryInMemory,

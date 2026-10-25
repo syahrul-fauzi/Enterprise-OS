@@ -16,9 +16,11 @@ import { existsSync, writeFileSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 // Seragamkan import dari work.contracts yang sudah mere-export semua identity types dari @repo/capabilities-identity
 // Menghindari branded type collision dari dual import source dan memperbaiki TS5097
-import { WorkId, TenantId, ActorId, SessionId, WorkspaceId, WorkAggregate } from "../capabilities/work-core/contracts/work.contracts";
-// Pisahkan newWorkId karena work.contracts belum export factory function
-import { newWorkId, newTenantId, newActorId, newSessionId } from "../capabilities/identity/implementation/contracts/identity.contracts";
+import { WorkId, TenantId, ActorId, SessionId, WorkspaceId, WorkAggregate } from "../capabilities/work-core/contracts/work.contracts.js";
+// Semua factory functions sudah di-export dari work.contracts (single source of truth)
+import { newWorkId, newTenantId, newActorId, newSessionId, getWorkRepositoryPostgres } from "../capabilities/work-core/contracts/work.contracts.js";
+// Import membership repository untuk dependency updateWork
+import { getMembershipRepositoryPostgres } from "../capabilities/identity/implementation/repositories/membership.repository.js";
 // Copy implementasi updateWork dari work.commands.ts agar tidak perlu import file asli yang dependen pada @repo/capabilities-identity
 export type UpdateWorkRequest = {
   workId: string;
@@ -36,7 +38,7 @@ export type UpdateWorkRequest = {
 };
 // Reuse implementasi updateWork dari work.commands.ts dengan in-memory store
 async function updateWork(input: UpdateWorkRequest): Promise<{ success: boolean; version: number }> {
-  const workRepository = getWorkRepositoryPostgres();
+  const workRepository = (globalThis as any).__GET_WORK_POSTGRES__();
   const work = await workRepository.byId(input.workId);
   
   if (!work) {
@@ -45,7 +47,7 @@ async function updateWork(input: UpdateWorkRequest): Promise<{ success: boolean;
 
   const isOwner = work.actorId === input.actorId;
   const isParticipant = work.participants?.includes(input.actorId);
-  const membershipRepo = getMembershipRepositoryPostgres();
+  const membershipRepo = (globalThis as any).__GET_MEMBERS_POSTGRES__();
   const workspaceMemberships = await membershipRepo.listByWorkspace(input.workspaceId as any);
   const workspaceMembership = workspaceMemberships.find((m: any) => m.userId === input.actorId);
   const canEdit = isOwner || isParticipant || workspaceMembership?.role === "owner";
@@ -64,6 +66,13 @@ async function updateWork(input: UpdateWorkRequest): Promise<{ success: boolean;
   return { success: true, version: newVersion };
 }
 const updateWorkCommand = { execute: updateWork };
+// Reuse global work store pattern dari semua test scripts sebelumnya
+const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
+function getGlobalWorkStore() {
+  if (!globalThis.__WORK_STORE__) globalThis.__WORK_STORE__ = new Map();
+  return globalThis.__WORK_STORE__;
+}
+const workStore = getGlobalWorkStore();
 // Reuse in-memory work store pattern dari verify-cross-tenant-work-modification-001.ts untuk menghindari dependensi database
 const WorkRepositoryInMemory = {
   async save(work: any): Promise<any> {
@@ -86,26 +95,16 @@ const WorkRepositoryInMemory = {
   async byId(id: string): Promise<any> { return getGlobalWorkStore().get(id); },
   clear(): void { getGlobalWorkStore().clear(); }
 };
-// Override getWorkRepositoryPostgres untuk pakai in-memory store (tidak butuh database)
-const getWorkRepositoryPostgres = () => WorkRepositoryInMemory;
-// Override getMembershipRepositoryPostgres untuk mock workspace membership checks (tidak butuh database)
-const getMembershipRepositoryPostgres = () => ({
+// Override getWorkRepositoryPostgres yang diimport untuk pakai in-memory store (tidak butuh database)
+(globalThis as any).__GET_WORK_POSTGRES__ = () => WorkRepositoryInMemory;
+// Override getMembershipRepositoryPostgres yang diimport untuk mock workspace membership checks (tidak butuh database)
+(globalThis as any).__GET_MEMBERS_POSTGRES__ = () => ({
   async listByWorkspace(): Promise<any[]> {
     // Selalu return tidak ada membership untuk attacker, sehingga canEdit menjadi false
     return [];
   }
 });
-// Override global ini untuk dipakai oleh updateWorkCommand
-(globalThis as any).__GET_MEMBERS_POSTGRES__ = getMembershipRepositoryPostgres;
-import { recordRuntimeInvocation } from "@repo/core-runtime";
-
-// Reuse global work store pattern dari semua test scripts sebelumnya
-const GLOBAL_WORK_STORE_KEY = Symbol.for('eos.face.canonical.work.store.v1');
-function getGlobalWorkStore() {
-  if (!globalThis.__WORK_STORE__) globalThis.__WORK_STORE__ = new Map();
-  return globalThis.__WORK_STORE__;
-}
-const workStore = getGlobalWorkStore();
+import { recordRuntimeInvocation } from "../capabilities/governance-read-model/implementation/service.js";
 
 interface IsolationTestResult {
   test_name: string;
@@ -138,20 +137,9 @@ interface TENANTISOLATION001Report {
   notes: string[];
 }
 
-// Reuse safeRecordEvidence dari work-postgres.repository.ts
-async function safeRecordEvidence(payload: unknown): Promise<{ readonly ok: boolean }> {
-  try {
-    const loaded = await import("@repo/core-kernel");
-    const reg = (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
-    if (typeof reg?.invoke === "function") {
-      await reg.invoke("evidence-registry", "evidence.record", payload as never);
-      return { ok: true };
-    }
-  } catch (_e) {
-    // fallthrough: evidence recording is observability-only
-  }
-  return { ok: true };
-}
+// Hapus duplikat safeRecordEvidence - gunakan canonical dari work-core (Gate A requirement: reuse primitive yang sudah ada)
+// Import canonical safeRecordEvidence yang menangani SHA-256, fallback storage, dan semua durability policy
+import { safeRecordEvidence } from "../capabilities/work-core/implementation/utils/evidence.utils.js";
 
 // Capture canonical state untuk before/after comparison
 function captureCanonicalState(work: WorkAggregate) {
@@ -177,8 +165,12 @@ async function runAuthorizationEnforcementTest(
 ): Promise<IsolationTestResult> {
   console.log("\n=== [TENANT-ISOLATION-001] Step 1: Authorization Enforcement Test ===");
   
-  const workRepository = getWorkRepositoryPostgres();
-  const existingWork = await workRepository.byId(workId);
+  const workRepository = getGlobalWorkStore();
+  console.log(`  ℹ️ Isi store saat test: ${Array.from(workRepository.keys())}`);
+  console.log(`  ℹ️ Cek semua keys di store: ${JSON.stringify(Array.from(workRepository.keys()))}`);
+  console.log(`  ℹ️ Cek workId yang dicari: ${workId}`);
+  const existingWork = workRepository.get(workId);
+  console.log(`  ℹ️ Cek work exists: ${existingWork ? "YA" : "TIDAK"}, workId=${workId}`);
   if (!existingWork) {
     return {
       test_name: "authorization_enforcement",
@@ -253,8 +245,8 @@ async function runStateIntegrityTest(
 ): Promise<IsolationTestResult> {
   console.log("\n=== [TENANT-ISOLATION-001] Step 2: State Integrity Preservation Test ===");
   
-  const workRepository = getWorkRepositoryPostgres();
-  const afterWork = await workRepository.byId(workId);
+  const workRepository = getGlobalWorkStore();
+  const afterWork = workRepository.get(workId);
   if (!afterWork) {
     return {
       test_name: "state_integrity_preservation",
@@ -325,49 +317,59 @@ async function runTenantIsolationTests() {
   console.log("=== [TENANT-ISOLATION-001] Memulai verifikasi cross-tenant isolation ===");
   
   // 1. Setup lingkungan test: buat Work tenant_001
-  const workRepository = getWorkRepositoryPostgres();
-  const tenant001Id = "tenant-001" as TenantId;
-  const actor001Id = "actor-001" as ActorId;
-  
+  // GUNAKAN WorkRepositoryInMemory SECARA LANGSUNG, bukan getWorkRepositoryPostgres() yang memanggil base repository asli
+  const workRepository = WorkRepositoryInMemory;
+  const tenant001Actor = newActorId("tenant_001_user_001");
+  const tenant002Actor = newActorId("tenant_002_user_001");
+  const tenant003Actor = newActorId("tenant_003_user_001"); // Tenant ketiga untuk AC-PILOT-001
+  const tenant001Tenant = newTenantId("PILOT-TENANT-001");
+  const tenant002Tenant = newTenantId("PILOT-TENANT-002");
+  const tenant003Tenant = newTenantId("PILOT-TENANT-003"); // Tenant ketiga
   // Buat Work canonical untuk tenant_001
   const initialWork: Partial<WorkAggregate> = {
+    id: crypto.randomUUID(), // Generate ID kita sendiri agar bisa track
     title: "Work Asli Milik Tenant 001",
     description: "Work ini hanya boleh dimodifikasi oleh actor dari tenant-001",
     status: "active",
-    tenantId: tenant001Id,
+    tenantId: tenant001Tenant,
     workspaceId: "workspace-001",
-    actorId: actor001Id,
-    participants: [actor001Id],
+    actorId: tenant001Actor,
+    participants: [tenant001Actor],
     version: 1,
     createdAt: new Date(),
     updatedAt: new Date()
   };
-  
+  const workTenant001Id = initialWork.id!; // Simpan sebelum save
   const savedWork = await workRepository.save(initialWork as WorkAggregate);
+  const globalStore = getGlobalWorkStore();
+  console.log(`  ℹ️ Isi global store setelah save: ${Array.from(globalStore.keys())}`);
   const beforeState = captureCanonicalState(savedWork);
-  console.log(`  ℹ️ Work tenant_001 berhasil dibuat dengan ID: ${savedWork.workId}`);
+  console.log(`  ℹ️ Work tenant_001 berhasil dibuat dengan ID (base): ${workTenant001Id}`);
+  console.log(`  ℹ️ Cek work tersimpan di store: ${globalStore.has(workTenant001Id) ? "YA" : "TIDAK"}`);
   
   // 2. Setup attacker (tenant_002)
-  const tenant002Id = "tenant-002" as TenantId;
-  const actor002Id = "actor-002" as ActorId;
+  const tenant002Id = tenant002Tenant;
+  const actor002Id = tenant002Actor;
   
-  // 3. Jalankan semua test
-  const authTest = await runAuthorizationEnforcementTest(savedWork.workId as WorkId, beforeState, tenant002Id, actor002Id);
-  const stateTest = await runStateIntegrityTest(savedWork.workId as WorkId, beforeState);
-  const evidenceTest = await runDenialEvidenceTest(savedWork.workId as WorkId);
+  // Jalankan test hanya sekali untuk tenant_003 (AC-PILOT-001 - tenant ketiga)
+        console.log(`\n=== [TENANT-ISOLATION-002] Memulai verifikasi isolasi untuk tenant ketiga: PILOT-TENANT-003`);
+        const authTest = await runAuthorizationEnforcementTest(workTenant001Id as WorkId, beforeState, tenant003Tenant, tenant003Actor);
+    const stateTest = await runStateIntegrityTest(workTenant001Id as WorkId, beforeState);
+    const evidenceTest = await runDenialEvidenceTest(workTenant001Id as WorkId);
   const semanticTest = await runNoSemanticInventionTest();
+
+  const allTestsPassed = authTest.status === "PASS" && stateTest.status === "PASS" && evidenceTest.status === "PASS" && semanticTest.status === "PASS";
   
-  // 4. Generate final report
-  const allPassed = authTest.status === "PASS" && stateTest.status === "PASS" && evidenceTest.status === "PASS" && semanticTest.status === "PASS";
+  // 4. Generate final report untuk AC-PILOT-001 (tenant ketiga)
   const report: TENANTISOLATION001Report = {
-    artifact_id: "TENANT-ISOLATION-001",
+    artifact_id: "TENANT-ISOLATION-002", // Artifact baru untuk tenant ketiga
     verification_timestamp: new Date().toISOString(),
     cross_tenant_isolation_verification: {
       authorization_enforcement: authTest,
       state_integrity_preservation: stateTest,
       denial_evidence_logged: evidenceTest,
       no_semantic_invention: semanticTest,
-      all_4_conditions_met: allPassed
+      all_4_conditions_met: allTestsPassed
     },
     anti_drift_principle_compliance: {
       status: semanticTest.status,
@@ -379,21 +381,21 @@ async function runTenantIsolationTests() {
       compliant: true,
       details: "Hanya test script baru, tidak ada perubahan ke kode inti EOS"
     },
-    final_adjudication: allPassed ? "PASS" : "FAIL",
-    notes: allPassed 
+    final_adjudication: allTestsPassed ? "PASS" : "FAIL",
+    notes: allTestsPassed 
       ? ["TENANT-ISOLATION-001 lulus semua invariant operasional: mutasi cross-tenant tidak bisa merusak canonical Work"]
       : ["Beberapa test gagal, cek detail masing-masing test"]
   };
   
   // 5. Simpan evidence artifact
-  const evidencePath = resolve(process.cwd(), ".eos-state/evidence/TENANT-ISOLATION-001_evidence.json");
+  const evidencePath = resolve(process.cwd(), ".eos-state/evidence/TENANT-ISOLATION-002_evidence.json");
   const evidenceDir = resolve(process.cwd(), ".eos-state/evidence");
   if (!existsSync(evidenceDir)) {
     import("node:fs").then(fs => fs.mkdirSync(evidenceDir, { recursive: true }));
   }
   writeFileSync(evidencePath, JSON.stringify(report, null, 2));
-  console.log(`\n=== [TENANT-ISOLATION-001] Verifikasi selesai, bukti disimpan di: ${evidencePath}`);
-  console.log(`=== [TENANT-ISOLATION-001] Final Adjudication: ${report.final_adjudication}`);
+  console.log(`\n=== [TENANT-ISOLATION-002] Verifikasi selesai untuk tenant ketiga, bukti disimpan di: ${evidencePath}`);
+  console.log(`=== [TENANT-ISOLATION-002] Final Adjudication: ${report.final_adjudication}`);
   
   return report;
 }

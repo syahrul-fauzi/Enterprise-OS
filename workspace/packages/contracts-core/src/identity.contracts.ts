@@ -7,25 +7,34 @@ export function UserId(value: string): UserId {
   return value as UserId;
 }
 
+// Backward-compatible aliases for existing capabilities: maintain both createXxx and Xxx factory patterns
 export type TenantId = string & { readonly __tenantId: unique symbol };
 export function TenantId(value: string): TenantId {
   return value as TenantId;
 }
+export const createTenantId = TenantId;
+export const newTenantId = TenantId;
 
 export type WorkspaceId = string & { readonly __workspaceId: unique symbol };
 export function WorkspaceId(value: string): WorkspaceId {
   return value as WorkspaceId;
 }
+export const createWorkspaceId = WorkspaceId;
+export const newWorkspaceId = WorkspaceId;
 
 export type MembershipId = string & { readonly __membershipId: unique symbol };
 export function MembershipId(value: string): MembershipId {
   return value as MembershipId;
 }
+export const createMembershipId = MembershipId;
+export const newMembershipId = MembershipId;
 
 export type SessionId = string & { readonly __sessionId: unique symbol };
 export function SessionId(value: string): SessionId {
   return value as SessionId;
 }
+export const createSessionId = SessionId;
+export const newSessionId = SessionId;
 
 export type WorkId = string & { readonly __workId: unique symbol };
 export function createWorkId(value: string): WorkId {
@@ -40,6 +49,41 @@ export function newWorkId(): WorkId {
 export type ActorId = string & { readonly __actorId: unique symbol };
 export function ActorId(value: string): ActorId {
   return value as ActorId;
+}
+export const createActorId = ActorId;
+export const newActorId = ActorId;
+
+// Interface untuk abstraksi hardware sensor (resolusi P1 gap: Local safety check verifikasi fisik)
+export interface DeviceHardwareAbstraction {
+  readonly readSensors: () => Promise<{
+    currentTemperature: number;
+    currentJoules: number;
+    emergencyStopActive: boolean;
+    maxTemperature: number;
+    maxJoules: number;
+  }>;
+  readonly checkLocalSafety: (safetyData: any) => boolean;
+  readonly readTemperature: () => Promise<number>;
+  readonly readEnergyConsumption: () => Promise<number>;
+  readonly isEmergencyStopActive: () => Promise<boolean>;
+  readonly maxTemperature: number;
+  readonly maxJoules: number;
+}
+
+export type DeviceId = { readonly id: string } & { readonly __deviceId: unique symbol, hardware?: DeviceHardwareAbstraction };
+export function createDeviceId(value: string, hardware?: DeviceHardwareAbstraction): DeviceId {
+  console.log(`[createDeviceId] Membuat DeviceId dengan value=${value}, hardware=${!!hardware}`);
+  const deviceId: any = { id: value };
+  // Lampirkan abstraksi hardware ke DeviceId untuk pembacaan sensor nyata
+  if (hardware) {
+    Object.assign(deviceId, { hardware });
+    console.log(`[createDeviceId] Hardware ditambahkan, deviceId.hardware=${!!deviceId.hardware}`);
+  }
+  console.log(`[createDeviceId] DeviceId yang dikembalikan: id=${deviceId.id}, hardware=${!!deviceId.hardware}`);
+  return deviceId as DeviceId;
+}
+export function newDeviceId(hardware?: DeviceHardwareAbstraction): DeviceId {
+  return createDeviceId(`device-${randomUUID()}`, hardware);
 }
 
 export interface RegisterUserInputInterface {
@@ -69,6 +113,13 @@ export interface TenantAggregate {
   readonly ownerId?: UserId;
   readonly workId?: WorkId;   // Semantic boundary: optional, binds tenant to a work
   readonly workspaceId?: WorkspaceId; // Execution boundary: optional, fallback if workId not present
+  readonly metadata?: { // JSONB field untuk metadata tambahan tenant (minimal fix: ACaaS policy assignment)
+    readonly compliancePolicies?: readonly {
+      readonly policyId: string;
+      readonly version: string;
+      readonly documentType: string;
+    }[];
+  };
   readonly createdAt: Readonly<Date>;
   readonly updatedAt: Readonly<Date>;
 }
@@ -226,6 +277,7 @@ export interface IntentResolutionRequirement {
 export interface IntentRawInput {
   type: "expression" | "request" | "signal" | "event";
   content: unknown;
+  transcript?: string; // Mendukung EDGE-VOICE-001: hasil transkripsi suara untuk intent ekspresi
 }
 
 export interface IntentAggregate {
@@ -277,6 +329,13 @@ export type LoginInput = z.infer<typeof LoginInputSchema>;
 export interface CreateTenantInput {
   readonly name: string;
   readonly slug: string;
+  readonly metadata?: {
+    readonly compliancePolicies?: readonly {
+      readonly policyId: string;
+      readonly version: string;
+      readonly documentType: string;
+    }[];
+  };
 }
 
 export interface CreateMembershipInput {

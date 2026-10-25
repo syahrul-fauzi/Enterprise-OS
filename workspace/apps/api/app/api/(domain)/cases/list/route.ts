@@ -1,76 +1,77 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import {
-  WORKSPACE_SESSION_COOKIE,
-  decodeWorkspaceSession,
-  createAnonymousWorkspaceSession,
-  encodeWorkspaceSession
-} from "@repo/core-kernel";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
-import {
-  commands,
-} from "../../../../../../../capabilities/legal-case/implementation/commands/case.commands";
-import {
-  getSessionRepositoryPostgres,
-  initIdentitySchema,
-} from "../../../../../../../capabilities/identity/implementation/repositories/index";
+import { readWorkspaceSessionFromRequest } from "@repo/core-kernel";
+import { validateBoundaryAccess } from "@repo/capabilities/work-core/contracts/work.contracts";
 
 // P0: MAKE EOS VISIBLE - API to list all cases for current session's workspace
-// Allows anonymous users to see the work they've created (Work Reality Surface)
+// Pure adapter pattern: route only invokes canonical capability, no direct repository access
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit")!) : 50;
     const offset = searchParams.get("offset") ? parseInt(searchParams.get("offset")!) : 0;
 
-    const cookie = request.headers.get("Cookie");
-    console.log(`[GET /api/cases/list] Cookie header received: ${cookie ? cookie.substring(0, 200) + "..." : "MISSING"}`);
-    let sessionCookie = cookie?.split(";").find(c => c.trim().startsWith(`${WORKSPACE_SESSION_COOKIE}=`));
-    
-    // If no session cookie exists, create an anonymous session (consistent pattern with create route)
-    if (!sessionCookie) {
-      console.log(`[GET /api/cases/list] No existing session - creating anonymous session for visitor`);
-      const anonymousSession = createAnonymousWorkspaceSession();
-      const encodedSession = encodeWorkspaceSession(anonymousSession);
-      sessionCookie = `${WORKSPACE_SESSION_COOKIE}=${encodedSession}`;
+    // Use canonical session reader (P1 Reorganize: fix AUTH_INCONSISTENCY)
+    const session = readWorkspaceSessionFromRequest(request);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized: Invalid or missing workspace session" }, { status: 401 });
     }
 
-    const sessionValue = sessionCookie.split("=")[1];
-    if (!sessionValue) {
-      return NextResponse.json({ error: "Invalid session cookie" }, { status: 401 });
-    }
-    const session = decodeWorkspaceSession(sessionValue);
-    console.log(`[GET /api/cases/list] Decoded session: ${JSON.stringify(session)}`);
-    
     // Validate session has required context (both authenticated and anonymous sessions work)
-    if (!session || !session.tenantId || !session.workspaceId || !session.actorId) {
-      return NextResponse.json({ error: "Invalid session" }, { status: 401 });
+    if (!session.tenantId || !session.workspaceId || !session.actorId || !session.sessionId) {
+      return NextResponse.json({ error: "Invalid session: missing required context" }, { status: 401 });
     }
 
-    // Only validate session in DB for authenticated users (non-anonymous)
-    const isAnonymous = session.actorId === "anonymous.user";
-    if (!isAnonymous) {
-      await initIdentitySchema();
-      const sessionRepository = getSessionRepositoryPostgres();
-      const dbSession = await sessionRepository.byId(session.sessionId as any);
-      if (!dbSession || dbSession.revokedAt !== null) {
-        return NextResponse.json({ error: "Session revoked - please re-login" }, { status: 401 });
-      }
-    }
-
-    // Use capability registry to invoke the existing list-cases-for-tenant command
-    const { output: casesResult } = await capabilityRegistry.invoke("legal-case", "list-cases-for-tenant", {
+    // Create canonical actorContext for audit tracing and identity/workspace separation
+    const actorContext = {
       tenantId: session.tenantId,
-    });
+      actorId: session.actorId,
+      workspaceId: session.workspaceId
+    };
 
-    const caseList = casesResult.items;
-    console.log(`[GET /api/cases/list] Returned ${caseList.length} cases for workspace ${session.workspaceId}`);
+    // Enforce 6-boundary compliance: validate api-gateway can access legal-case domain
+    if (!validateBoundaryAccess('api-gateway', 'legal-case')) {
+      return NextResponse.json({ error: "Forbidden: Domain access not allowed" }, { status: 403 });
+    }
+
+    // Invoke canonical query capability to list cases (pure adapter pattern, menggunakan invoke seperti route lain)
+    const listResult = await capabilityRegistry.invoke("legal-case", "listCasesByWorkspace", {
+      tenantId: actorContext.tenantId,
+      workspaceId: actorContext.workspaceId,
+      actorId: actorContext.actorId,
+      sessionId: session.sessionId,
+      limit,
+      offset
+    }) as {
+      success: boolean;
+      cases?: Array<{
+        caseId: string;
+        workId: string;
+        title: string;
+        description: string;
+        status: string;
+        createdAt: string;
+        tenantId: string;
+        workspaceId: string;
+        actorId: string;
+      }>;
+      total?: number;
+      error?: string;
+    };
+
+    if (!listResult.success || !listResult.cases) {
+      console.error("[CASES LIST FAIL] Case listing failed:", listResult.error);
+      return NextResponse.json({ error: listResult.error || "Failed to list cases" }, { status: 400 });
+    }
+
+    console.log(`[CASES LIST SUCCESS] ${listResult.cases.length} cases retrieved via canonical capability for workspace ${actorContext.workspaceId} by actor ${actorContext.actorId}`);
     return NextResponse.json({
-      cases: caseList,
-      total: casesResult.total,
+      cases: listResult.cases,
+      total: listResult.total || listResult.cases.length,
       limit,
       offset
     }, { status: 200 });
+
   } catch (error) {
     console.error("[GET /api/cases/list] Error:", error);
     const errorMessage = error instanceof Error ? error.message : "Failed to list cases";

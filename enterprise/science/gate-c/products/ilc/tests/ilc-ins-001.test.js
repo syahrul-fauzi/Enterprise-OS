@@ -1,3 +1,14 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * ILC-INS-001: Institutional Coordination Reality E2E Test
  * Verifies all 11 reality gates:
@@ -13,10 +24,10 @@
  * I10: Outcome observable from canonical Work Reality
  * I11: No institutional lifecycle fork (uses canonical Work)
  */
-import { describe, it, expect, beforeEach } from '@jest/globals';
-import { ILC_INS_001_InstitutionalWorkflow, executeWorkflowTransition } from '../../../../packages/core/kernel/src/registry/capability-command-registry.js';
-import { WorkInspectionAgent } from '../../../../capabilities/work-inspection/implementation/services/inspection.agent.service.js';
-import { WorkRepositoryPostgres } from '../../../../capabilities/work-core/implementation/repository/work-postgres.repository.js';
+const globals_1 = require("@jest/globals");
+const capability_command_registry_js_1 = require("../../../../packages/core/kernel/src/registry/capability-command-registry.js");
+const inspection_agent_service_js_1 = require("../../../../capabilities/work-inspection/implementation/services/inspection.agent.service.js");
+const work_postgres_repository_js_1 = require("../../../../capabilities/work-core/implementation/repository/work-postgres.repository.js");
 // Test actors with roles matching ILC workflow requirements
 const ACTORS = {
     institutionalRepresentative: "institutional-representative-ilc-001",
@@ -35,135 +46,130 @@ const TEST_CONTEXT = {
     workspaceId: "workspace-headquarters-001"
 };
 // Initialize shared services
-const workRepository = new WorkRepositoryPostgres();
-const inspectionAgent = new WorkInspectionAgent({
+const workRepository = new work_postgres_repository_js_1.WorkRepositoryPostgres();
+const inspectionAgent = new inspection_agent_service_js_1.WorkInspectionAgent({
     handoffThresholdHours: 24, // Exact threshold from user's I5 requirement
     enableAutomaticNotifications: false
 });
-describe('ILC-INS-001: Institutional Coordination Reality Slice', () => {
-    beforeEach(async () => {
+(0, globals_1.describe)('ILC-INS-001: Institutional Coordination Reality Slice', () => {
+    (0, globals_1.beforeEach)(() => __awaiter(void 0, void 0, void 0, function* () {
         // Reset work state before each test
-        await workRepository.delete(TEST_CONTEXT.workId);
-    });
-    it('I1 - Institutional Need correctly understood, not immediately PROJECT CREATED', async () => {
+        yield workRepository.delete(TEST_CONTEXT.workId);
+    }));
+    (0, globals_1.it)('I1 - Institutional Need correctly understood, not immediately PROJECT CREATED', () => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
         // 1. Submit institutional need: "Kita perlu memulai inisiatif digitalisasi dokumen hukum yang melibatkan departemen legal, IT, dan keuangan."
-        const initialTransition = await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "institutional-need-submitted", // Initial step = institutional need, not project created
-        ACTORS.institutionalRepresentative, {
-            ...TEST_CONTEXT,
-            result: "Inisiatif digitalisasi dokumen hukum diajukan oleh pimpinan institusi"
-        });
-        expect(initialTransition.success).toBe(true);
-        expect(initialTransition.nextStep?.id).toBe("requirements-analyzed");
+        const initialTransition = yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "institutional-need-submitted", // Initial step = institutional need, not project created
+        ACTORS.institutionalRepresentative, Object.assign(Object.assign({}, TEST_CONTEXT), { result: "Inisiatif digitalisasi dokumen hukum diajukan oleh pimpinan institusi" }));
+        (0, globals_1.expect)(initialTransition.success).toBe(true);
+        (0, globals_1.expect)((_a = initialTransition.nextStep) === null || _a === void 0 ? void 0 : _a.id).toBe("requirements-analyzed");
         // 2. Verify work state shows institutional need, not generic project
-        const work = await workRepository.getById(TEST_CONTEXT.workId);
-        expect(work?.type).toBe("institutional-initiative");
-        expect(work?.title).toContain("digitalisasi dokumen hukum");
-        expect(work?.domainTags).toEqual(expect.arrayContaining(["LEGAL", "IT", "FINANCE"]));
-        expect(work?.status).toBe("active");
-        await recordEvidence("I1_PASS", {
+        const work = yield workRepository.getById(TEST_CONTEXT.workId);
+        (0, globals_1.expect)(work === null || work === void 0 ? void 0 : work.type).toBe("institutional-initiative");
+        (0, globals_1.expect)(work === null || work === void 0 ? void 0 : work.title).toContain("digitalisasi dokumen hukum");
+        (0, globals_1.expect)(work === null || work === void 0 ? void 0 : work.domainTags).toEqual(globals_1.expect.arrayContaining(["LEGAL", "IT", "FINANCE"]));
+        (0, globals_1.expect)(work === null || work === void 0 ? void 0 : work.status).toBe("active");
+        yield recordEvidence("I1_PASS", {
             institutionalNeedDetected: true,
             domainTagsIdentified: ["LEGAL", "IT", "FINANCE"],
             notProjectCreated: true
         });
-    });
-    it('I2 - Multi-actor binding with observable responsibilities (≥3 actors)', async () => {
+    }));
+    (0, globals_1.it)('I2 - Multi-actor binding with observable responsibilities (≥3 actors)', () => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
         // Execute first two transitions to reach actors-composed state
-        await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "institutional-need-submitted", ACTORS.institutionalRepresentative, TEST_CONTEXT);
-        const composedTransition = await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "requirements-analyzed", "system-automated-001", {
-            ...TEST_CONTEXT,
-            result: "Legal, IT, Finance actors composed with clear responsibilities"
-        });
-        expect(composedTransition.success).toBe(true);
-        expect(composedTransition.nextStep?.id).toBe("actors-composed");
+        yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "institutional-need-submitted", ACTORS.institutionalRepresentative, TEST_CONTEXT);
+        const composedTransition = yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "requirements-analyzed", "system-automated-001", Object.assign(Object.assign({}, TEST_CONTEXT), { result: "Legal, IT, Finance actors composed with clear responsibilities" }));
+        (0, globals_1.expect)(composedTransition.success).toBe(true);
+        (0, globals_1.expect)((_a = composedTransition.nextStep) === null || _a === void 0 ? void 0 : _a.id).toBe("actors-composed");
         // Verify actors are bound with responsibilities
-        const work = await workRepository.getById(TEST_CONTEXT.workId);
-        const assignedActors = work?.assignedActors || [];
-        expect(assignedActors.length).toBeGreaterThanOrEqual(3);
-        expect(assignedActors.some((a) => a.id.includes("legal"))).toBe(true);
-        expect(assignedActors.some((a) => a.id.includes("it"))).toBe(true);
-        expect(assignedActors.some((a) => a.id.includes("finance"))).toBe(true);
-    });
+        const work = yield workRepository.getById(TEST_CONTEXT.workId);
+        const assignedActors = (work === null || work === void 0 ? void 0 : work.assignedActors) || [];
+        (0, globals_1.expect)(assignedActors.length).toBeGreaterThanOrEqual(3);
+        (0, globals_1.expect)(assignedActors.some((a) => a.id.includes("legal"))).toBe(true);
+        (0, globals_1.expect)(assignedActors.some((a) => a.id.includes("it"))).toBe(true);
+        (0, globals_1.expect)(assignedActors.some((a) => a.id.includes("finance"))).toBe(true);
+    }));
     // Verify responsibilities are observable
     const actorResponsibilities = assignedActors.map((a) => a.responsibility);
-    expect(actorResponsibilities).toContain("Legal document review & compliance");
-    expect(actorResponsibilities).toContain("Technical infrastructure planning");
-    expect(actorResponsibilities).toContain("Budget allocation & approval");
-    await recordEvidence("I2_PASS", {
+    (0, globals_1.expect)(actorResponsibilities).toContain("Legal document review & compliance");
+    (0, globals_1.expect)(actorResponsibilities).toContain("Technical infrastructure planning");
+    (0, globals_1.expect)(actorResponsibilities).toContain("Budget allocation & approval");
+    yield recordEvidence("I2_PASS", {
         actorCount: assignedActors.length,
         allRolesBound: true,
         responsibilitiesObservable: true
     });
 });
-it('I3 - Unauthorized transition attempts blocked by hierarchical role validation', async () => {
+(0, globals_1.it)('I3 - Unauthorized transition attempts blocked by hierarchical role validation', () => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c;
     // 1. Reach actors-composed state first
-    await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "institutional-need-submitted", ACTORS.institutionalRepresentative, TEST_CONTEXT);
-    await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "requirements-analyzed", "system-automated-001", TEST_CONTEXT);
+    yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "institutional-need-submitted", ACTORS.institutionalRepresentative, TEST_CONTEXT);
+    yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "requirements-analyzed", "system-automated-001", TEST_CONTEXT);
     // 2. Try to jump directly to execution (unauthorized actor) - MUST BE BLOCKED
-    const unauthorizedJump = await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "actors-composed", ACTORS.unauthorizedActor, TEST_CONTEXT);
-    expect(unauthorizedJump.success).toBe(false);
-    expect(unauthorizedJump.error).toContain("lacks required roles");
+    const unauthorizedJump = yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "actors-composed", ACTORS.unauthorizedActor, TEST_CONTEXT);
+    (0, globals_1.expect)(unauthorizedJump.success).toBe(false);
+    (0, globals_1.expect)(unauthorizedJump.error).toContain("lacks required roles");
     // 3. Get department head approval (allowed - department-head role)
-    const firstApproval = await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "actors-composed", ACTORS.legalDepartmentHead, // Has required department-head role
-    { ...TEST_CONTEXT, result: "Legal department approves initiative" });
-    expect(firstApproval.success).toBe(true);
-    expect(firstApproval.nextStep?.id).toBe("first-approval");
+    const firstApproval = yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "actors-composed", ACTORS.legalDepartmentHead, Object.assign(Object.assign({}, TEST_CONTEXT), { result: "Legal department approves initiative" }));
+    (0, globals_1.expect)(firstApproval.success).toBe(true);
+    (0, globals_1.expect)((_a = firstApproval.nextStep) === null || _a === void 0 ? void 0 : _a.id).toBe("first-approval");
     // 4. Try to jump to execution with only department head approval - STILL BLOCKED (needs executive)
-    const prematureExecution = await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "first-approval", ACTORS.projectManager, // Lacks required executive/institutional-authority role
+    const prematureExecution = yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "first-approval", ACTORS.projectManager, // Lacks required executive/institutional-authority role
     TEST_CONTEXT);
-    expect(prematureExecution.success).toBe(false);
-    expect(prematureExecution.error).toContain("lacks required roles");
+    (0, globals_1.expect)(prematureExecution.success).toBe(false);
+    (0, globals_1.expect)(prematureExecution.error).toContain("lacks required roles");
     // 5. Get executive approval (allowed - executive role)
-    const secondApproval = await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "first-approval", ACTORS.executiveAuthority, // Has required executive role
-    { ...TEST_CONTEXT, result: "Executive leadership approves budget and resources" });
-    expect(secondApproval.success).toBe(true);
-    expect(secondApproval.nextStep?.id).toBe("second-approval");
+    const secondApproval = yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "first-approval", ACTORS.executiveAuthority, Object.assign(Object.assign({}, TEST_CONTEXT), { result: "Executive leadership approves budget and resources" }));
+    (0, globals_1.expect)(secondApproval.success).toBe(true);
+    (0, globals_1.expect)((_b = secondApproval.nextStep) === null || _b === void 0 ? void 0 : _b.id).toBe("second-approval");
     // 6. Now project manager can start execution (allowed - has project-manager role)
-    const executionStart = await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "second-approval", ACTORS.projectManager, { ...TEST_CONTEXT, result: "Execution phase formally initiated" });
-    expect(executionStart.success).toBe(true);
-    expect(executionStart.nextStep?.id).toBe("execution-initiated");
-    await recordEvidence("I3_PASS", {
+    const executionStart = yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "second-approval", ACTORS.projectManager, Object.assign(Object.assign({}, TEST_CONTEXT), { result: "Execution phase formally initiated" }));
+    (0, globals_1.expect)(executionStart.success).toBe(true);
+    (0, globals_1.expect)((_c = executionStart.nextStep) === null || _c === void 0 ? void 0 : _c.id).toBe("execution-initiated");
+    yield recordEvidence("I3_PASS", {
         unauthorizedBlocked: true,
         prematureBlocked: true,
         hierarchicalApprovalEnforced: true,
         executiveApprovalRequired: true
     });
-});
-it('I4 - Real coordination events change Work state (Legal→IT→Finance dependency chain)', async () => {
+}));
+(0, globals_1.it)('I4 - Real coordination events change Work state (Legal→IT→Finance dependency chain)', () => __awaiter(void 0, void 0, void 0, function* () {
     // Reach execution-initiated state
-    await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "institutional-need-submitted", ACTORS.institutionalRepresentative, TEST_CONTEXT);
-    await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "requirements-analyzed", "system-automated-001", TEST_CONTEXT);
-    await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "actors-composed", ACTORS.legalDepartmentHead, { ...TEST_CONTEXT, result: "Legal submits requirements" });
-    await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "first-approval", ACTORS.executiveAuthority, { ...TEST_CONTEXT, result: "Executive approves" });
-    await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "second-approval", ACTORS.projectManager, TEST_CONTEXT);
+    yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "institutional-need-submitted", ACTORS.institutionalRepresentative, TEST_CONTEXT);
+    yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "requirements-analyzed", "system-automated-001", TEST_CONTEXT);
+    yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "actors-composed", ACTORS.legalDepartmentHead, Object.assign(Object.assign({}, TEST_CONTEXT), { result: "Legal submits requirements" }));
+    yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "first-approval", ACTORS.executiveAuthority, Object.assign(Object.assign({}, TEST_CONTEXT), { result: "Executive approves" }));
+    yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "second-approval", ACTORS.projectManager, TEST_CONTEXT);
     // Real coordination event 1: Legal submits requirements
-    const legalSubmit = await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "execution-initiated", ACTORS.legalDepartmentHead, { ...TEST_CONTEXT, result: "Legal: Semua dokumen hukum sudah di-review dan disetujui untuk IT" });
-    expect(legalSubmit.success).toBe(true);
+    const legalSubmit = yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "execution-initiated", ACTORS.legalDepartmentHead, Object.assign(Object.assign({}, TEST_CONTEXT), { result: "Legal: Semua dokumen hukum sudah di-review dan disetujui untuk IT" }));
+    (0, globals_1.expect)(legalSubmit.success).toBe(true);
     // Real coordination event 2: IT responds with technical dependencies
-    const itRespond = await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "execution-initiated", // Work state updates after legal's action
-    ACTORS.itDepartmentHead, { ...TEST_CONTEXT, result: "IT: Technical dependencies identified - cloud storage API, access control system" });
-    expect(itRespond.success).toBe(true);
+    const itRespond = yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "execution-initiated", // Work state updates after legal's action
+    ACTORS.itDepartmentHead, Object.assign(Object.assign({}, TEST_CONTEXT), { result: "IT: Technical dependencies identified - cloud storage API, access control system" }));
+    (0, globals_1.expect)(itRespond.success).toBe(true);
     // Real coordination event 3: Finance evaluates budget implications
-    const financeEvaluate = await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "execution-initiated", ACTORS.financeDepartmentHead, { ...TEST_CONTEXT, result: "Finance: Budget Rp 750M approved, cloud resources allocated Q3 2026" });
-    expect(financeEvaluate.success).toBe(true);
+    const financeEvaluate = yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "execution-initiated", ACTORS.financeDepartmentHead, Object.assign(Object.assign({}, TEST_CONTEXT), { result: "Finance: Budget Rp 750M approved, cloud resources allocated Q3 2026" }));
+    (0, globals_1.expect)(financeEvaluate.success).toBe(true);
     // Verify Work can answer all 5 coordination questions: WHO? WHAT? WHICH? WHO has authority? WHAT next?
-    const work = await workRepository.getById(TEST_CONTEXT.workId);
-    const stateHistory = work?.stateHistory || [];
-    expect(stateHistory.length).toBeGreaterThanOrEqual(6); // All transition events recorded
+    const work = yield workRepository.getById(TEST_CONTEXT.workId);
+    const stateHistory = (work === null || work === void 0 ? void 0 : work.stateHistory) || [];
+    (0, globals_1.expect)(stateHistory.length).toBeGreaterThanOrEqual(6); // All transition events recorded
     // Extract last three coordination events
     const coordinationEvents = stateHistory.slice(-3).map((e) => e.note);
-    expect(coordinationEvents.some((n) => n.includes("Legal: Semua dokumen"))).toBe(true);
-    expect(coordinationEvents.some((n) => n.includes("IT: Technical dependencies"))).toBe(true);
-    expect(coordinationEvents.some((n) => n.includes("Finance: Budget Rp 750M"))).toBe(true);
-    await recordEvidence("I4_PASS", {
+    (0, globals_1.expect)(coordinationEvents.some((n) => n.includes("Legal: Semua dokumen"))).toBe(true);
+    (0, globals_1.expect)(coordinationEvents.some((n) => n.includes("IT: Technical dependencies"))).toBe(true);
+    (0, globals_1.expect)(coordinationEvents.some((n) => n.includes("Finance: Budget Rp 750M"))).toBe(true);
+    yield recordEvidence("I4_PASS", {
         realCoordinationEvents: 3,
         allQuestionsAnswerable: true,
         stateHistoryMaintained: true
     });
-});
-it('I5 - Stuck work (>24h) detected with natural language explanation that answers all user questions', async () => {
+}));
+(0, globals_1.it)('I5 - Stuck work (>24h) detected with natural language explanation that answers all user questions', () => __awaiter(void 0, void 0, void 0, function* () {
     // Create work in active state with last update >24h ago
     const twentyFiveHoursAgo = new Date(Date.now() - (25 * 60 * 60 * 1000));
-    await workRepository.save({
+    yield workRepository.save({
         workId: TEST_CONTEXT.workId,
         status: "active",
         assignedActorId: ACTORS.financeDepartmentHead,
@@ -177,33 +183,34 @@ it('I5 - Stuck work (>24h) detected with natural language explanation that answe
             }]
     });
     // Trigger inspection - RL2-005 must detect stuck work
-    const inspectionResult = await inspectionAgent.inspectWork(TEST_CONTEXT.workId);
+    const inspectionResult = yield inspectionAgent.inspectWork(TEST_CONTEXT.workId);
     // Verify bottleneck detected
-    expect(inspectionResult.bottlenecks.length).toBeGreaterThan(0);
+    (0, globals_1.expect)(inspectionResult.bottlenecks.length).toBeGreaterThan(0);
     const stuckBottleneck = inspectionResult.bottlenecks.find(b => b.type === "HANDOFF_DELAY");
-    expect(stuckBottleneck).toBeDefined();
-    expect(stuckBottleneck?.delayHours).toBeGreaterThan(24);
-    expect(stuckBottleneck?.severity).toBe("HIGH"); // >24h = HIGH per RL2-005 logic
+    (0, globals_1.expect)(stuckBottleneck).toBeDefined();
+    (0, globals_1.expect)(stuckBottleneck === null || stuckBottleneck === void 0 ? void 0 : stuckBottleneck.delayHours).toBeGreaterThan(24);
+    (0, globals_1.expect)(stuckBottleneck === null || stuckBottleneck === void 0 ? void 0 : stuckBottleneck.severity).toBe("HIGH"); // >24h = HIGH per RL2-005 logic
     // Verify recommendation message answers ALL user's required questions:
     // Apa yang terjadi? Mengapa Work tidak bergerak? Siapa yang dibutuhkan? Apa yang belum diketahui? Apa next decision?
     const recommendation = inspectionResult.recommendations.find(r => r.message.includes("RL2-005"));
-    expect(recommendation).toBeDefined();
-    const message = recommendation?.message || "";
-    expect(message).toContain("Sudah 25 jam tidak ada perubahan status"); // Apa yang terjadi?
-    expect(message).toContain("Tidak ada state transition tercatat"); // Mengapa tidak bergerak?
-    expect(message).toContain(`Actor ${ACTORS.financeDepartmentHead}`); // Siapa yang dibutuhkan?
-    expect(message).toContain("Approve budget allocation"); // Apa yang harus dilakukan (next decision)
-    await recordEvidence("I5_PASS", {
+    (0, globals_1.expect)(recommendation).toBeDefined();
+    const message = (recommendation === null || recommendation === void 0 ? void 0 : recommendation.message) || "";
+    (0, globals_1.expect)(message).toContain("Sudah 25 jam tidak ada perubahan status"); // Apa yang terjadi?
+    (0, globals_1.expect)(message).toContain("Tidak ada state transition tercatat"); // Mengapa tidak bergerak?
+    (0, globals_1.expect)(message).toContain(`Actor ${ACTORS.financeDepartmentHead}`); // Siapa yang dibutuhkan?
+    (0, globals_1.expect)(message).toContain("Approve budget allocation"); // Apa yang harus dilakukan (next decision)
+    yield recordEvidence("I5_PASS", {
         stuckWorkDetected: true,
         naturalLanguageExplanation: true,
         allQuestionsAnswered: true,
-        delayHours: stuckBottleneck?.delayHours
+        delayHours: stuckBottleneck === null || stuckBottleneck === void 0 ? void 0 : stuckBottleneck.delayHours
     });
     0;
-    it('I6 - Stuck work recovery: Actor reassignment resumes work progression', async () => {
+    (0, globals_1.it)('I6 - Stuck work recovery: Actor reassignment resumes work progression', () => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
         // First create stuck work (same as I5)
         const twentyFiveHoursAgo = new Date(Date.now() - (25 * 60 * 60 * 1000));
-        await workRepository.save({
+        yield workRepository.save({
             workId: TEST_CONTEXT.workId,
             status: "active",
             assignedActorId: ACTORS.financeDepartmentHead, // Original actor unresponsive
@@ -217,15 +224,15 @@ it('I5 - Stuck work (>24h) detected with natural language explanation that answe
                 }]
         });
         // Detect stuck work
-        const inspectionResult = await inspectionAgent.inspectWork(TEST_CONTEXT.workId);
-        expect(inspectionResult.bottlenecks.length).toBeGreaterThan(0);
+        const inspectionResult = yield inspectionAgent.inspectWork(TEST_CONTEXT.workId);
+        (0, globals_1.expect)(inspectionResult.bottlenecks.length).toBeGreaterThan(0);
         // Execute recovery: reassign to new finance actor
         const newFinanceActor = "department-head-finance-backup-001";
-        const reassignmentResult = await workRepository.update(TEST_CONTEXT.workId, {
+        const reassignmentResult = yield workRepository.update(TEST_CONTEXT.workId, {
             assignedActorId: newFinanceActor,
             nextAction: "Review and approve budget allocation within 48h",
             stateHistory: [
-                ...((await workRepository.getById(TEST_CONTEXT.workId))?.stateHistory || []),
+                ...(((_a = (yield workRepository.getById(TEST_CONTEXT.workId))) === null || _a === void 0 ? void 0 : _a.stateHistory) || []),
                 {
                     timestamp: new Date().toISOString(),
                     note: `Work reassigned to new finance actor ${newFinanceActor} due to inactivity`,
@@ -233,51 +240,52 @@ it('I5 - Stuck work (>24h) detected with natural language explanation that answe
                 }
             ]
         });
-        expect(reassignmentResult.ok).toBe(true);
+        (0, globals_1.expect)(reassignmentResult.ok).toBe(true);
         // New actor completes approval - work resumes
-        const resumeResult = await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "execution-initiated", newFinanceActor, { ...TEST_CONTEXT, result: "New finance actor approves budget, work resumes" });
-        expect(resumeResult.success).toBe(true);
+        const resumeResult = yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "execution-initiated", newFinanceActor, Object.assign(Object.assign({}, TEST_CONTEXT), { result: "New finance actor approves budget, work resumes" }));
+        (0, globals_1.expect)(resumeResult.success).toBe(true);
         // Verify work is no longer stuck in next inspection
-        const postRecoveryInspection = await inspectionAgent.inspectWork(TEST_CONTEXT.workId);
+        const postRecoveryInspection = yield inspectionAgent.inspectWork(TEST_CONTEXT.workId);
         const newBottlenecks = postRecoveryInspection.bottlenecks.filter(b => b.type === "HANDOFF_DELAY");
-        expect(newBottlenecks.length).toBe(0); // No longer stuck
-        await recordEvidence("I6_PASS", {
+        (0, globals_1.expect)(newBottlenecks.length).toBe(0); // No longer stuck
+        yield recordEvidence("I6_PASS", {
             actorReassignmentSuccessful: true,
             workResumed: true,
             postRecoveryNoBottlenecks: true
         });
-    });
-    it('I7-I11 - Full lifecycle completion: outcome delivered, evidence persists, no lifecycle fork', async () => {
+    }));
+    (0, globals_1.it)('I7-I11 - Full lifecycle completion: outcome delivered, evidence persists, no lifecycle fork', () => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
         // Execute full workflow to institutional-work-closed
-        await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "institutional-need-submitted", ACTORS.institutionalRepresentative, TEST_CONTEXT);
-        await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "requirements-analyzed", "system-automated-001", TEST_CONTEXT);
-        await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "actors-composed", ACTORS.legalDepartmentHead, { ...TEST_CONTEXT, result: "Legal approves" });
-        await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "first-approval", ACTORS.executiveAuthority, { ...TEST_CONTEXT, result: "Executive approves" });
-        await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "second-approval", ACTORS.projectManager, TEST_CONTEXT);
-        await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "execution-initiated", ACTORS.itDepartmentHead, { ...TEST_CONTEXT, result: "Technical implementation completed" });
+        yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "institutional-need-submitted", ACTORS.institutionalRepresentative, TEST_CONTEXT);
+        yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "requirements-analyzed", "system-automated-001", TEST_CONTEXT);
+        yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "actors-composed", ACTORS.legalDepartmentHead, Object.assign(Object.assign({}, TEST_CONTEXT), { result: "Legal approves" }));
+        yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "first-approval", ACTORS.executiveAuthority, Object.assign(Object.assign({}, TEST_CONTEXT), { result: "Executive approves" }));
+        yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "second-approval", ACTORS.projectManager, TEST_CONTEXT);
+        yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "execution-initiated", ACTORS.itDepartmentHead, Object.assign(Object.assign({}, TEST_CONTEXT), { result: "Technical implementation completed" }));
         // I7: Outcome delivered - institutional deliverable exists
-        const outcomeResult = await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "execution-initiated", ACTORS.projectManager, { ...TEST_CONTEXT, result: "Digital document management system deployed, all legal records migrated" });
-        expect(outcomeResult.success).toBe(true);
-        expect(outcomeResult.nextStep?.id).toBe("outcome-delivered");
+        const outcomeResult = yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "execution-initiated", ACTORS.projectManager, Object.assign(Object.assign({}, TEST_CONTEXT), { result: "Digital document management system deployed, all legal records migrated" }));
+        (0, globals_1.expect)(outcomeResult.success).toBe(true);
+        (0, globals_1.expect)((_a = outcomeResult.nextStep) === null || _a === void 0 ? void 0 : _a.id).toBe("outcome-delivered");
         // I8: Execution produces institutional deliverable
-        const workAfterOutcome = await workRepository.getById(TEST_CONTEXT.workId);
-        const deliverables = workAfterOutcome?.artifacts || [];
-        expect(deliverables).toContainEqual(expect.objectContaining({
+        const workAfterOutcome = yield workRepository.getById(TEST_CONTEXT.workId);
+        const deliverables = (workAfterOutcome === null || workAfterOutcome === void 0 ? void 0 : workAfterOutcome.artifacts) || [];
+        (0, globals_1.expect)(deliverables).toContainEqual(globals_1.expect.objectContaining({
             type: "institutional-deliverable",
             name: "Digital Document Management System Deployment Report",
             url: "/artifacts/ilc-dms-deployment-report.pdf"
         }));
         // I9 & I11: Close work, verify evidence persists and uses canonical work lifecycle
-        const closeResult = await executeWorkflowTransition(ILC_INS_001_InstitutionalWorkflow, "outcome-delivered", ACTORS.institutionalRepresentative, { ...TEST_CONTEXT, result: "Institutional work formally closed" });
-        expect(closeResult.success).toBe(true);
-        expect(closeResult.nextStep).toBeUndefined(); // Terminal step reached
+        const closeResult = yield (0, capability_command_registry_js_1.executeWorkflowTransition)(capability_command_registry_js_1.ILC_INS_001_InstitutionalWorkflow, "outcome-delivered", ACTORS.institutionalRepresentative, Object.assign(Object.assign({}, TEST_CONTEXT), { result: "Institutional work formally closed" }));
+        (0, globals_1.expect)(closeResult.success).toBe(true);
+        (0, globals_1.expect)(closeResult.nextStep).toBeUndefined(); // Terminal step reached
         // I10: Outcome observable from canonical Work Reality
-        const closedWork = await workRepository.getById(TEST_CONTEXT.workId);
-        expect(closedWork?.status).toBe("closed");
-        expect(closedWork?.stateHistory.length).toBeGreaterThan(10); // All transitions recorded
-        expect(closedWork?.type).toBe("institutional-initiative"); // Still canonical work type, no fork
-        expect(closedWork?.closedAt).toBeDefined();
-        await recordEvidence("I7-I11_PASS", {
+        const closedWork = yield workRepository.getById(TEST_CONTEXT.workId);
+        (0, globals_1.expect)(closedWork === null || closedWork === void 0 ? void 0 : closedWork.status).toBe("closed");
+        (0, globals_1.expect)(closedWork === null || closedWork === void 0 ? void 0 : closedWork.stateHistory.length).toBeGreaterThan(10); // All transitions recorded
+        (0, globals_1.expect)(closedWork === null || closedWork === void 0 ? void 0 : closedWork.type).toBe("institutional-initiative"); // Still canonical work type, no fork
+        (0, globals_1.expect)(closedWork === null || closedWork === void 0 ? void 0 : closedWork.closedAt).toBeDefined();
+        yield recordEvidence("I7-I11_PASS", {
             outcomeDelivered: true,
             institutionalDeliverableExists: true,
             evidencePersisted: true,
@@ -285,21 +293,18 @@ it('I5 - Stuck work (>24h) detected with natural language explanation that answe
             noLifecycleFork: true,
             canonicalWorkReused: true
         });
-    });
-});
+    }));
+}));
 /**
  * Helper to persist evidence to the verification ledger
  */
-async function recordEvidence(gateId, data) {
-    const fs = await import('fs/promises');
-    const path = await import('path');
-    const evidenceDir = path.join('/root/Enterprise-OS/.eos-state/evidence/ilc-ins-001');
-    await fs.mkdir(evidenceDir, { recursive: true });
-    await fs.writeFile(path.join(evidenceDir, `${gateId}_evidence.json`), JSON.stringify({
-        gateId,
-        recordedAt: new Date().toISOString(),
-        workId: TEST_CONTEXT.workId,
-        ...data
-    }, null, 2));
-    console.log(`[EVIDENCE] ${gateId} PASSED - evidence saved`);
+function recordEvidence(gateId, data) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const fs = yield import('fs/promises');
+        const path = yield import('path');
+        const evidenceDir = path.join('/root/Enterprise-OS/.eos-state/evidence/ilc-ins-001');
+        yield fs.mkdir(evidenceDir, { recursive: true });
+        yield fs.writeFile(path.join(evidenceDir, `${gateId}_evidence.json`), JSON.stringify(Object.assign({ gateId, recordedAt: new Date().toISOString(), workId: TEST_CONTEXT.workId }, data), null, 2));
+        console.log(`[EVIDENCE] ${gateId} PASSED - evidence saved`);
+    });
 }

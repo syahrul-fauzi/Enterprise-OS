@@ -1,5 +1,57 @@
-import { AsyncLocalStorage } from "node:async_hooks";
-import { randomUUID } from "node:crypto";
+// Deklarasi tipe untuk EdgeRuntime (hanya untuk type checking)
+declare const EdgeRuntime: unknown;
+
+// Edge-compatible async local storage polyfill + Web Crypto API
+const isEdgeRuntime = typeof EdgeRuntime !== 'undefined';
+
+// Polyfill AsyncLocalStorage untuk Edge Runtime (sederhana, cukup untuk use case kita)
+class EdgeAsyncLocalStorage<T> {
+  private store: T | undefined;
+  run<R>(store: T, fn: () => R): R {
+    this.store = store;
+    return fn();
+  }
+  getStore(): T | undefined {
+    return this.store;
+  }
+  enterWith(store: T): void {
+    this.store = store;
+  }
+}
+
+// Import tipe AsyncLocalStorage asli untuk Node.js
+type NodeAsyncLocalStorage<T> = {
+  new(): {
+    run<R>(store: T, fn: () => R): R;
+    getStore(): T | undefined;
+    enterWith(store: T): void;
+  };
+};
+
+// Inisialisasi lazy untuk menghindari top-level require Node.js modules yang terdeteksi Next.js
+let asyncLocalStorage: any;
+let randomUUID: () => string;
+
+function ensureExecutionContext(): void {
+  if (!asyncLocalStorage) {
+    if (isEdgeRuntime) {
+      asyncLocalStorage = new EdgeAsyncLocalStorage();
+    } else {
+      try {
+        const { AsyncLocalStorage: NodeAsyncLocalStorage } = require("node:async_hooks");
+        asyncLocalStorage = new NodeAsyncLocalStorage();
+      } catch {
+        asyncLocalStorage = new EdgeAsyncLocalStorage();
+      }
+    }
+    randomUUID = () => {
+      if (typeof globalThis.crypto?.randomUUID === "function") {
+        return globalThis.crypto.randomUUID();
+      }
+      return Math.random().toString(36).substring(2) + Date.now().toString(36);
+    };
+  }
+}
 
 export type CircuitBreakerState = {
   readonly consecutiveFailures: number;
@@ -38,15 +90,16 @@ export type ExecutionContext = {
 // Track active stores per decision_id+tenant_id untuk re-entry continuity
 const activeContextStores = new Map<string, ExecutionContext>();
 
-const asyncLocalStorage = new AsyncLocalStorage<ExecutionContext>();
-
 function getStoreKey(decision_id: string, tenant_id: string): string {
   return `${tenant_id}:${decision_id}`;
 }
 
 export const executionContext = {
   run<R>(ctx: ExecutionContext & { context_trace_id?: string; is_reentry?: boolean }, fn: () => R): R {
-    const currentStore = asyncLocalStorage.getStore();
+    // Inisialisasi context jika belum diinisialisasi
+    ensureExecutionContext();
+    
+    const currentStore = asyncLocalStorage?.getStore();
     
     // PR-007: Auto-set logicalWorkId from workflow_id jika tidak disediakan (backward compatibility)
     const resolved_logicalWorkId = ctx.logicalWorkId ?? ctx.workflow_id ?? undefined;
@@ -64,7 +117,7 @@ export const executionContext = {
       const existingStore = activeContextStores.get(key);
       
       // Hanya auto-detect jika tidak ada override manual dari test - FIX: Only re-enter if we're inside an existing asyncLocalStorage stack (not just async parallel execution)
-      const currentAmbientStore = asyncLocalStorage.getStore();
+      const currentAmbientStore = asyncLocalStorage?.getStore();
       if (existingStore && existingStore.context_trace_id !== context_trace_id && !ctx.is_reentry && !ctx.parent_context_trace_id && currentAmbientStore) {
         // Ini adalah RE-ENTRY: work yang sama, execution context baru (only if we're inside an existing execution context stack)
         is_reentry = true;
@@ -96,11 +149,13 @@ export const executionContext = {
   },
   
   get(): ExecutionContext | undefined {
-    return asyncLocalStorage.getStore();
+    ensureExecutionContext();
+    return asyncLocalStorage?.getStore?.();
   },
 
   setLastInvocationDigest(digest: string): void {
-    const store = asyncLocalStorage.getStore();
+    ensureExecutionContext();
+    const store = asyncLocalStorage?.getStore?.();
     if (store && store.last_invocation_digest !== digest) {
       // Buat konteks BARU untuk child executions - MENYELESAIKAN RACE CONDITION PADA SIBLING ASYNC STACKS
       // Perubahan ini hanya mempengaruhi child async stacks, bukan sibling yang berjalan paralel

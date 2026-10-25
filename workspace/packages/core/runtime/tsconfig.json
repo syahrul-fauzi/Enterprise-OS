@@ -6,14 +6,19 @@
     "declaration": true,
     "incremental": true,
     "composite": true,
-
     "noEmit": false,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "module": "NodeNext",
+    "moduleDetection": "force",
+    "moduleResolution": "NodeNext",
     "rootDir": "src",
     "types": ["node"],
-    "ignoreDeprecations": "5.0"
+    "ignoreDeprecations": "5.0",
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "target": "ES2022"
   },
   "include": ["src"],
-  "exclude": ["dist", "build", "node_modules"]
+  "exclude": ["dist", "build", "node_modules", "../../../capabilities/"]
 }

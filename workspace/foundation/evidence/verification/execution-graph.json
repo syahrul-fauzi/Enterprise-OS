@@ -1,11 +1,11 @@
 {
-  "projection_id": "ExecutionGraphProjection:3d326b58dc8fb0ae",
+  "projection_id": "ExecutionGraphProjection:65ddbc7c7749fe7a",
   "projection_type": "ExecutionGraphProjection",
   "schema_version": "1.0.0",
   "constitutional_version": "1.0.0",
-  "declared_graph_digest": "3d027cfd003b4b8693c1810c0b727be1c52223cd81e1113a83c82b155ccc60a8",
+  "declared_graph_digest": "49ba2736dc16abb055081c2bab581d4ccc672a8cfd92c1f2761fd0f9ef16a9f2",
   "execution_chain_digest": "12b0998228cbfb4f50dc057a4098d3dd29852730c8f37f16b96c6985a9f44e16",
-  "constitutional_digest": "e1678cdf052a59c44ef39ded05f2c568566fa10a86d4518d2144d6bf9bd3e02c",
+  "constitutional_digest": "f4c8b68e8a6c26a02365e2291d4e6b4165513eed2dfb47c884a4d0b97217295e",
   "constitutional_claims": {
     "deterministic": true,
     "immutable": true,
@@ -14,17 +14,17 @@
   },
   "graph_version": "1.0.0",
   "projection_version": "1.0.0",
-  "projection_digest": "3d326b58dc8fb0ae140eda208b34435d76284846b857aac87f3d3fdf7e7f0977",
+  "projection_digest": "65ddbc7c7749fe7a8547c05435472b2e1f0972473a9b6dfbc15065b369f9c04e",
   "generated_from": [
     {
       "source_type": "artifact_registry",
       "source_ref": "artifact_registry:artifacts",
-      "source_digest": "ad2adbe73597e79338f550d289ffe499e86ac7d609654953ee5aeb0e64e24a3b"
+      "source_digest": "f191e472c4aafad450ded0910033efd14f91eb3fe3f889c1ebcd57efd2b7ae0b"
     },
     {
       "source_type": "execution_evidence",
       "source_ref": "artifact_registry:execution_evidence",
-      "source_digest": "b22f8bd8fef809f7022b7ebf7d3e13a821ac10d354755d3cd21b517ffb049d15"
+      "source_digest": "d764c3305cfa7215d011a2c981d0ef13c29d563bd9457355cac6067a0068d553"
     },
     {
       "source_type": "execution_chain",
@@ -34,10 +34,10 @@
     {
       "source_type": "planner_signature",
       "source_ref": "artifact_registry:planner_signatures",
-      "source_digest": "72d60c881118087225101fbef260e5d15ba7a3c818baa0cfaa2048aa44ef8de8"
+      "source_digest": "ddd3c0aaf2f9bebb4246ccfe44d1b6f3b70b6ba6e8c70607463ae3ce0d935704"
     }
   ],
-  "generated_at_utc": "2026-09-24T13:26:12.885Z",
+  "generated_at_utc": "2026-10-20T10:14:12.605Z",
   "nodes": [
     {
       "id": "CAP:agent-orchestration",
@@ -1180,6 +1180,66 @@
       "execution_status": null
     },
     {
+      "id": "capability_contract:work-classify",
+      "artifact_type": "capability_contract",
+      "label": "work-classify",
+      "governance_status": "DERIVED",
+      "owner": null,
+      "lifecycle_stage": null,
+      "discovery_signature": [],
+      "planner_edges": [],
+      "runtime_edges": [],
+      "verification_edges": [],
+      "composition_edges": [],
+      "evidence_edges": [],
+      "execution_status": null
+    },
+    {
+      "id": "capability_contract:work-continuity",
+      "artifact_type": "capability_contract",
+      "label": "work-continuity",
+      "governance_status": "DERIVED",
+      "owner": null,
+      "lifecycle_stage": null,
+      "discovery_signature": [],
+      "planner_edges": [],
+      "runtime_edges": [],
+      "verification_edges": [],
+      "composition_edges": [],
+      "evidence_edges": [],
+      "execution_status": null
+    },
+    {
+      "id": "capability_contract:work-decompose",
+      "artifact_type": "capability_contract",
+      "label": "work-decompose",
+      "governance_status": "DERIVED",
+      "owner": null,
+      "lifecycle_stage": null,
+      "discovery_signature": [],
+      "planner_edges": [],
+      "runtime_edges": [],
+      "verification_edges": [],
+      "composition_edges": [],
+      "evidence_edges": [],
+      "execution_status": null
+    },
+    {
+      "id": "capability_contract:work-evidence",
+      "artifact_type": "capability_contract",
+      "label": "work-evidence",
+      "governance_status": "DERIVED",
+      "owner": null,
+      "lifecycle_stage": null,
+      "discovery_signature": [],
+      "planner_edges": [],
+      "runtime_edges": [],
+      "verification_edges": [],
+      "composition_edges": [],
+      "evidence_edges": [],
+      "execution_status": null
+    },
+    {
       "id": "capability_contract:work-grounded-messaging",
       "artifact_type": "capability_contract",
       "label": "work-grounded-messaging",
@@ -1195,9 +1255,84 @@
       "execution_status": null
     },
     {
+      "id": "capability_contract:work-identity",
+      "artifact_type": "capability_contract",
+      "label": "work-identity",
+      "governance_status": "DERIVED",
+      "owner": null,
+      "lifecycle_stage": null,
+      "discovery_signature": [],
+      "planner_edges": [],
+      "runtime_edges": [],
+      "verification_edges": [],
+      "composition_edges": [],
+      "evidence_edges": [],
+      "execution_status": null
+    },
+    {
+      "id": "capability_contract:work-plan",
+      "artifact_type": "capability_contract",
+      "label": "work-plan",
+      "governance_status": "DERIVED",
+      "owner": null,
+      "lifecycle_stage": null,
+      "discovery_signature": [],
+      "planner_edges": [],
+      "runtime_edges": [],
+      "verification_edges": [],
+      "composition_edges": [],
+      "evidence_edges": [],
+      "execution_status": null
+    },
+    {
       "id": "capability_contract:work-requirements",
       "artifact_type": "capability_contract",
       "label": "work-requirements",
+      "governance_status": "DERIVED",
+      "owner": null,
+      "lifecycle_stage": null,
+      "discovery_signature": [],
+      "planner_edges": [],
+      "runtime_edges": [],
+      "verification_edges": [],
+      "composition_edges": [],
+      "evidence_edges": [],
+      "execution_status": null
+    },
+    {
+      "id": "capability_contract:work-route",
+      "artifact_type": "capability_contract",
+      "label": "work-route",
+      "governance_status": "DERIVED",
+      "owner": null,
+      "lifecycle_stage": null,
+      "discovery_signature": [],
+      "planner_edges": [],
+      "runtime_edges": [],
+      "verification_edges": [],
+      "composition_edges": [],
+      "evidence_edges": [],
+      "execution_status": null
+    },
+    {
+      "id": "capability_contract:work-state",
+      "artifact_type": "capability_contract",
+      "label": "work-state",
+      "governance_status": "DERIVED",
+      "owner": null,
+      "lifecycle_stage": null,
+      "discovery_signature": [],
+      "planner_edges": [],
+      "runtime_edges": [],
+      "verification_edges": [],
+      "composition_edges": [],
+      "evidence_edges": [],
+      "execution_status": null
+    },
+    {
+      "id": "capability_contract:work-summarize",
+      "artifact_type": "capability_contract",
+      "label": "work-summarize",
       "governance_status": "DERIVED",
       "owner": null,
       "lifecycle_stage": null,
@@ -1788,6 +1923,39 @@
       "execution_status": "VERIFIED"
     },
     {
+      "id": "capability:reasoning",
+      "artifact_type": "capability",
+      "label": "Reasoning Capability",
+      "governance_status": "VALID",
+      "owner": "ai-reasoning-domain",
+      "lifecycle_stage": "core",
+      "discovery_signature": [
+        "authority",
+        "eos",
+        "for",
+        "human",
+        "interchangeable",
+        "llm",
+        "maintaining",
+        "operation",
+        "planner",
+        "provide",
+        "reasoning",
+        "semantic",
+        "slm",
+        "while",
+        "work"
+      ],
+      "planner_edges": [
+        "capability:reasoning"
+      ],
+      "runtime_edges": [],
+      "verification_edges": [],
+      "composition_edges": [],
+      "evidence_edges": [],
+      "execution_status": "DECLARED"
+    },
+    {
       "id": "capability:requirement-management",
       "artifact_type": "capability",
       "label": "Requirement Management",
@@ -2018,6 +2186,44 @@
       ],
       "planner_edges": [
         "capability:Work Inspection Agent"
+      ],
+      "runtime_edges": [],
+      "verification_edges": [],
+      "composition_edges": [],
+      "evidence_edges": [],
+      "execution_status": "DECLARED"
+    },
+    {
+      "id": "capability:work-core",
+      "artifact_type": "capability",
+      "label": "Work Core",
+      "governance_status": "VALID",
+      "owner": "work-domain",
+      "lifecycle_stage": "core",
+      "discovery_signature": [
+        "authority",
+        "context",
+        "continuity",
+        "core",
+        "dan",
+        "dari",
+        "eos",
+        "evidence",
+        "identity",
+        "inti",
+        "menjaga",
+        "object",
+        "outcome",
+        "persistent",
+        "sebagai",
+        "semantic",
+        "state",
+        "thesi",
+        "work",
+        "yang"
+      ],
+      "planner_edges": [
+        "capability:work-core"
       ],
       "runtime_edges": [],
       "verification_edges": [],
@@ -4635,6 +4841,23 @@
       "evidence_ref": "workspace/capabilities/api-platform/definition/capability.yaml"
     },
     {
+      "edge_id": "EDGE:1150b36bbec29bcc",
+      "edge_digest": "d2f684e366b3b4fa6c516abe2858e1d1001c3693d3185a5ca3597da4f0d6772f",
+      "from": "capability:trust-framework",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/trust-framework/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/trust-framework/definition/capability.yaml"
+    },
+    {
       "edge_id": "EDGE:11b3de9bff620ac8",
       "edge_digest": "0a3ee93576609719ce5405f0a7fd43ba938d54f542f8b33ce9e67f35584a9ce4",
       "from": "capability:legal-document",
@@ -5077,6 +5300,23 @@
       "evidence_ref": "chain:a04dd21099897ea8"
     },
     {
+      "edge_id": "EDGE:22e083726ac7c7f9",
+      "edge_digest": "57cd07510b9488ace051f31a902cd90494d5c822fa7bfb68dc9ccbbdef4f7d61",
+      "from": "capability:work-core",
+      "to": "capability_contract:work-evidence",
+      "topology_layer": "declared",
+      "edge_type": "provides",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/work-core/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/work-core/definition/capability.yaml"
+    },
+    {
       "edge_id": "EDGE:2354f7766a75b075",
       "edge_digest": "8487b7e8a623606a18ad56208d1b5f906ad821c7a2fb1fed7fa31f73df2f73e2",
       "from": "capability:communication",
@@ -5091,6 +5331,23 @@
       "plan_instance_id": null,
       "source_kind": "planner_signature",
       "source_ref": "capability:communication",
+      "evidence_ref": null
+    },
+    {
+      "edge_id": "EDGE:23aaaac70533d86b",
+      "edge_digest": "b935899540bae39d4720baa7ef551b5e24d836f3754ca46ccdb073209ad33291",
+      "from": "capability:work-core",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "planner",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "planner_signature",
+      "source_ref": "capability:work-core",
       "evidence_ref": null
     },
     {
@@ -5245,6 +5502,23 @@
       "source_kind": "execution_chain",
       "source_ref": "lawyershub:chain:4dc3524477464c64",
       "evidence_ref": "chain:4dc3524477464c64"
+    },
+    {
+      "edge_id": "EDGE:29774b7a901fbabe",
+      "edge_digest": "2504cbfeeb8f6c7613ea93895d87e740940246f9e55fba9db2010cb50366e766",
+      "from": "capability:reasoning",
+      "to": "capability_contract:work-plan",
+      "topology_layer": "declared",
+      "edge_type": "provides",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/reasoning/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/reasoning/definition/capability.yaml"
     },
     {
       "edge_id": "EDGE:2b0d437cf41c513f",
@@ -5451,6 +5725,23 @@
       "evidence_ref": "chain:dc617cf3b0bbc6b0"
     },
     {
+      "edge_id": "EDGE:325b62f3c90d6b9b",
+      "edge_digest": "4babc21b672d3ff6cc4fcc1888d5a93eea42c91e7b3e15c16ae5eeada2b74041",
+      "from": "capability:work-core",
+      "to": "capability:security-hardening",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/work-core/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/work-core/definition/capability.yaml"
+    },
+    {
       "edge_id": "EDGE:326e58c634c876a2",
       "edge_digest": "dce272ef2d03414c9d330d9c1a066c2bd39d1b1d313e43ff7cf9a4b8ec31b6ce",
       "from": "capability:atomic-composition",
@@ -5500,6 +5791,23 @@
       "source_kind": "artifact_registry",
       "source_ref": "workspace/capabilities/observability/definition/capability.yaml",
       "evidence_ref": "workspace/capabilities/observability/definition/capability.yaml"
+    },
+    {
+      "edge_id": "EDGE:332f8c2d2fc59d0c",
+      "edge_digest": "96f0e507c03ebc014e6bac1345ce85eff72f0908afb88cd39dece75c05920589",
+      "from": "capability:reasoning",
+      "to": "capability_contract:work-route",
+      "topology_layer": "declared",
+      "edge_type": "provides",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/reasoning/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/reasoning/definition/capability.yaml"
     },
     {
       "edge_id": "EDGE:3376bb9331f41c53",
@@ -5721,6 +6029,23 @@
       "source_kind": "planner_signature",
       "source_ref": "capability:governance-read-model",
       "evidence_ref": null
+    },
+    {
+      "edge_id": "EDGE:3d1b68e5b8d92edf",
+      "edge_digest": "076c87b7cec3020aa11bd71906a1cd2ff9d8b0a6f25f2a0034e2c0b0abb98648",
+      "from": "capability:agent-orchestration",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/agent-orchestration/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/agent-orchestration/definition/capability.yaml"
     },
     {
       "edge_id": "EDGE:3d41cabe9e4d7fe0",
@@ -5961,6 +6286,23 @@
       "evidence_ref": "workspace/capabilities/atomic-composition/definition/capability.yaml"
     },
     {
+      "edge_id": "EDGE:3ecdb81589912a37",
+      "edge_digest": "eb75e0a24e6709e6f74c0db518699c2e48fd3a41e4e356310d49ec22a51d5b3e",
+      "from": "capability:communication",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/communication/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/communication/definition/capability.yaml"
+    },
+    {
       "edge_id": "EDGE:3ef9a3ec25be5bc1",
       "edge_digest": "d12af77367ccc247e1107fa00047be17869f83b3adaa715b32eb1ae0ca410670",
       "from": "INV:lawyershub:2026-08-02T12:04:55.072Z:64790218040806852035c3d6dec4beef3211c8c5647afac329809854a60d58f7",
@@ -5993,6 +6335,23 @@
       "source_kind": "execution_chain",
       "source_ref": "lawyershub:chain:dc617cf3b0bbc6b0",
       "evidence_ref": "chain:dc617cf3b0bbc6b0"
+    },
+    {
+      "edge_id": "EDGE:3f55529ab7d66362",
+      "edge_digest": "ad990327b84859906221e89dffb17c363a12405f17c6bed2f99ff0d6ad0ebe85",
+      "from": "capability:governance-read-model",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/governance-read-model/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/governance-read-model/definition/capability.yaml"
     },
     {
       "edge_id": "EDGE:4011f196436dff60",
@@ -6267,6 +6626,23 @@
       "evidence_ref": "chain:53554b64429d064f"
     },
     {
+      "edge_id": "EDGE:48c413a9b22bc4e3",
+      "edge_digest": "40499d051c65661635c567fec5334845e70747cc927e75593d43910b374d2916",
+      "from": "capability:reasoning",
+      "to": "capability_contract:work-summarize",
+      "topology_layer": "declared",
+      "edge_type": "provides",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/reasoning/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/reasoning/definition/capability.yaml"
+    },
+    {
       "edge_id": "EDGE:49a0a56cca5eedfb",
       "edge_digest": "271522de36c61c405394d9b59e9ebc2770a3d5423af75d31d39c852d0a22a4f6",
       "from": "capability:observability",
@@ -6505,6 +6881,23 @@
       "evidence_ref": "workspace/capabilities/workflow-engine/definition/capability.yaml"
     },
     {
+      "edge_id": "EDGE:4f7eaae671e31059",
+      "edge_digest": "6ab02bfb8b9ab935066c5bae32cddab2ed7c0b0bc7e8baa206a6da02027a212e",
+      "from": "capability:reasoning",
+      "to": "capability_contract:work-classify",
+      "topology_layer": "declared",
+      "edge_type": "provides",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/reasoning/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/reasoning/definition/capability.yaml"
+    },
+    {
       "edge_id": "EDGE:4fecb0f262dede1e",
       "edge_digest": "32f507b66af95ff8cd1a855ae64e2ccbfd9c8ff764c46d5e7ae2d2d092861f95",
       "from": "INV:lawyershub:2026-08-02T12:04:55.319Z:7cd07791b59c4ecd9f65460b3a3a763bff15da325be3c4814b9b76fa9437cc0b",
@@ -6537,6 +6930,23 @@
       "source_kind": "execution_chain",
       "source_ref": "lawyershub:chain:54673fcdea0e9f2d",
       "evidence_ref": "chain:54673fcdea0e9f2d"
+    },
+    {
+      "edge_id": "EDGE:50d0aae9cf18f887",
+      "edge_digest": "dbce872dc4003a648965bfe6dbb1ec66caf6177fb054febe12d2b619fbdc2dc7",
+      "from": "capability:knowledge-graph",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/knowledge-graph/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/knowledge-graph/definition/capability.yaml"
     },
     {
       "edge_id": "EDGE:50d4fda43b1887a6",
@@ -7117,6 +7527,23 @@
       "evidence_ref": "chain:54673fcdea0e9f2d"
     },
     {
+      "edge_id": "EDGE:6c04d6f49fb7cb12",
+      "edge_digest": "b788a81467ec8da00d6aa0121ffcc9e11803cdda71d0a81f2e2faa206601c768",
+      "from": "capability:reasoning",
+      "to": "capability_contract:work-decompose",
+      "topology_layer": "declared",
+      "edge_type": "provides",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/reasoning/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/reasoning/definition/capability.yaml"
+    },
+    {
       "edge_id": "EDGE:6c6ab675af154fd6",
       "edge_digest": "a89dcf215b2cbcdb08f1a914057c9cb87bb7a98124d10d820ed178348a9c1dca",
       "from": "OP:workflow-engine:execute-workflow",
@@ -7234,6 +7661,23 @@
       "source_kind": "execution_chain",
       "source_ref": "lawyershub:chain:54673fcdea0e9f2d",
       "evidence_ref": "chain:54673fcdea0e9f2d"
+    },
+    {
+      "edge_id": "EDGE:6eff9f8004e6b201",
+      "edge_digest": "44839f98cfec5973cfab4b3505b1ebb7d96599521a6ebe508196023db296e7dd",
+      "from": "capability:work-core",
+      "to": "capability_contract:work-state",
+      "topology_layer": "declared",
+      "edge_type": "provides",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/work-core/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/work-core/definition/capability.yaml"
     },
     {
       "edge_id": "EDGE:711d6b3cf93e68ab",
@@ -7355,6 +7799,23 @@
       "evidence_ref": "workspace/capabilities/atomic-composition/definition/capability.yaml"
     },
     {
+      "edge_id": "EDGE:76c52f53f805d1c5",
+      "edge_digest": "6d9c34a90ccab0e3d89d049e40d176e7e9c6fbc3eed124ce50c0eb3ba93e230a",
+      "from": "capability:workflow-engine",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/workflow-engine/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/workflow-engine/definition/capability.yaml"
+    },
+    {
       "edge_id": "EDGE:7745555c44adee25",
       "edge_digest": "711bd4635d8234a4939f4f72b13fbf06630ddae1e19e1e59227279d3c7c72977",
       "from": "EVID:workspace/examples/vertical-slice/REQ-0001/eir-output/REQ-0001.eir.json",
@@ -7455,6 +7916,23 @@
       "source_kind": "artifact_registry",
       "source_ref": "workspace/capabilities/agent-orchestration/definition/capability.yaml",
       "evidence_ref": "workspace/capabilities/agent-orchestration/definition/capability.yaml"
+    },
+    {
+      "edge_id": "EDGE:7a2ef1988b09d32b",
+      "edge_digest": "92911c732893bc460b39e52b24f3ad964d7e162cf815600ae3c2dab70b1a88f2",
+      "from": "capability:reasoning",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/reasoning/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/reasoning/definition/capability.yaml"
     },
     {
       "edge_id": "EDGE:7a84c39633e29f08",
@@ -8392,6 +8870,23 @@
       "evidence_ref": "chain:dc617cf3b0bbc6b0"
     },
     {
+      "edge_id": "EDGE:98ba300698f270bd",
+      "edge_digest": "e1a74e210914b80ba04c67494589fa07ef64372329034836c6daf2931b0e4238",
+      "from": "capability:requirement-management",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/requirement-management/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/requirement-management/definition/capability.yaml"
+    },
+    {
       "edge_id": "EDGE:9cf4277321a2515f",
       "edge_digest": "c330369c1a3c8b3093a70310edf6e35d6f1c4a1b5f7a5370f81fdad1a7cd950b",
       "from": "PI:pi:9249964e7236032f",
@@ -8560,6 +9055,23 @@
       "source_kind": "planner_signature",
       "source_ref": "capability:knowledge-graph",
       "evidence_ref": null
+    },
+    {
+      "edge_id": "EDGE:a051c34575c1df8c",
+      "edge_digest": "0cc4d28674c19b3e145677c3032b4d81ef6e719219ada70789566c42ff5a4126",
+      "from": "capability:work-core",
+      "to": "capability_contract:work-continuity",
+      "topology_layer": "declared",
+      "edge_type": "provides",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/work-core/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/work-core/definition/capability.yaml"
     },
     {
       "edge_id": "EDGE:a18047723903b44e",
@@ -8815,6 +9327,23 @@
       "source_kind": "artifact_registry",
       "source_ref": "workspace/capabilities/connector-ecosystem/definition/capability.yaml",
       "evidence_ref": "workspace/capabilities/connector-ecosystem/definition/capability.yaml"
+    },
+    {
+      "edge_id": "EDGE:aadce19e9d9fc759",
+      "edge_digest": "c79b381558b90be1cfddfdcb97a9659b39fe151e62a02ab65c22270feb2adc49",
+      "from": "capability:observability",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/observability/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/observability/definition/capability.yaml"
     },
     {
       "edge_id": "EDGE:ab7da98fac6e02b3",
@@ -9735,6 +10264,23 @@
       "evidence_ref": "chain:3bec47bae2305331"
     },
     {
+      "edge_id": "EDGE:be9afdb143ecb9f5",
+      "edge_digest": "1e2ccaade170367118cc71542c3b4b441258fd1f582a34277ac7c0c5def6bd89",
+      "from": "capability:reasoning",
+      "to": "capability:reasoning",
+      "topology_layer": "declared",
+      "edge_type": "planner",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "planner_signature",
+      "source_ref": "capability:reasoning",
+      "evidence_ref": null
+    },
+    {
       "edge_id": "EDGE:be9b57f01d5752e2",
       "edge_digest": "b32df191c7005eaae5682e1abf1d4bbbc9d8b7ce0f5bb3bc7a8debd88a0ab1d7",
       "from": "capability:atomic-composition",
@@ -10090,6 +10636,23 @@
       "source_kind": "execution_chain",
       "source_ref": "lawyershub:chain:3bec47bae2305331",
       "evidence_ref": "chain:3bec47bae2305331"
+    },
+    {
+      "edge_id": "EDGE:c6be51f389741720",
+      "edge_digest": "0731f56a1eebacbd75dfdf34c688a51c24386eca7fb195cf2d2dfca3f4380313",
+      "from": "capability:consultation",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/consultation/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/consultation/definition/capability.yaml"
     },
     {
       "edge_id": "EDGE:c7b2d3f69523ee53",
@@ -10481,6 +11044,23 @@
       "source_kind": "execution_chain",
       "source_ref": "lawyershub:chain:e75c85d8f1fdb35b",
       "evidence_ref": "chain:e75c85d8f1fdb35b"
+    },
+    {
+      "edge_id": "EDGE:cfe5b32ca229c363",
+      "edge_digest": "c46bf64c1f8de562b4c4ce57e90b30eacea52ecff4715e76bc3c48c9815eb899",
+      "from": "capability:evidence-registry",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/evidence-registry/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/evidence-registry/definition/capability.yaml"
     },
     {
       "edge_id": "EDGE:d017586768477ae9",
@@ -11229,6 +11809,23 @@
       "source_kind": "execution_chain",
       "source_ref": "lawyershub:chain:796980ed575e0dd8",
       "evidence_ref": "chain:796980ed575e0dd8"
+    },
+    {
+      "edge_id": "EDGE:d3ef7e3428fc782a",
+      "edge_digest": "ff75d2e40af842b6478c430d4cb678904ce8bd9c2285da5cd4db580dc0309665",
+      "from": "capability:security-hardening",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/security-hardening/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/security-hardening/definition/capability.yaml"
     },
     {
       "edge_id": "EDGE:d4213b5fa051de49",
@@ -12217,6 +12814,23 @@
       "evidence_ref": "workspace/capabilities/communication/definition/capability.yaml"
     },
     {
+      "edge_id": "EDGE:f6ee6d0133a8dc64",
+      "edge_digest": "0bf962ab7bab967b865053ef4f4bd0dd306f1d5af594ea05e179c4056a878249",
+      "from": "capability:governance-evidence",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/governance-evidence/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/governance-evidence/definition/capability.yaml"
+    },
+    {
       "edge_id": "EDGE:f736e58395b7f734",
       "edge_digest": "04aa71c01464c913877258eff8316e76f0436a3be41e366f062f78ea576fe7e2",
       "from": "OP:observability:get-logs",
@@ -12232,6 +12846,23 @@
       "source_kind": "execution_chain",
       "source_ref": "lawyershub:chain:c310a8f6517c28df",
       "evidence_ref": "chain:c310a8f6517c28df"
+    },
+    {
+      "edge_id": "EDGE:f8bfec1b0e4c6846",
+      "edge_digest": "e4d28df4d87437cd1d182b907bf9050180cfd9d17eb42437f2f81b01f9bcfd6b",
+      "from": "capability:legal-document",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/legal-document/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/legal-document/definition/capability.yaml"
     },
     {
       "edge_id": "EDGE:f94c1f73c46d08b4",
@@ -12266,6 +12897,40 @@
       "source_kind": "execution_chain",
       "source_ref": "lawyershub:chain:2dcfd6c91d23d930",
       "evidence_ref": "chain:2dcfd6c91d23d930"
+    },
+    {
+      "edge_id": "EDGE:fa0ae2f4a9860f5c",
+      "edge_digest": "867af36920a456768cdce8c7418143b10f596a742e669cc576debece4f8d1e79",
+      "from": "capability:connector-ecosystem",
+      "to": "capability:work-core",
+      "topology_layer": "declared",
+      "edge_type": "composition",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/connector-ecosystem/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/connector-ecosystem/definition/capability.yaml"
+    },
+    {
+      "edge_id": "EDGE:fb780b4ad5b2e892",
+      "edge_digest": "223eaf17cb713b4f2291fe1cd58bf910043db77f5faf14b45a1c8ffcc36257bc",
+      "from": "capability:work-core",
+      "to": "capability_contract:work-identity",
+      "topology_layer": "declared",
+      "edge_type": "provides",
+      "claim_status": "DECLARED",
+      "lifecycle_state": "DECLARED",
+      "declared": true,
+      "observed": false,
+      "created_by_chain": null,
+      "plan_instance_id": null,
+      "source_kind": "artifact_registry",
+      "source_ref": "workspace/capabilities/work-core/definition/capability.yaml",
+      "evidence_ref": "workspace/capabilities/work-core/definition/capability.yaml"
     },
     {
       "edge_id": "EDGE:fbf0bc16249ff99d",
@@ -12337,17 +13002,17 @@
     }
   ],
   "summary": {
-    "total_nodes": 242,
-    "total_edges": 482,
-    "declared_edges": 134,
+    "total_nodes": 253,
+    "total_edges": 509,
+    "declared_edges": 161,
     "observed_edges": 348,
-    "capability_nodes": 22,
+    "capability_nodes": 24,
     "product_nodes": 3,
     "evidence_nodes": 148,
-    "planner_edges": 22,
+    "planner_edges": 24,
     "runtime_edges": 235,
     "verification_edges": 4,
-    "composition_edges": 42,
+    "composition_edges": 58,
     "evidence_edges": 109
   },
   "claim_boundary": "Execution Graph is an immutable constitutional projection with two layers: declared topology from Artifact Registry and observed operational topology from explicit Execution Chain projected edges. The graph must not infer operational adjacency from evidence, replay, verification, summaries, or registry booleans; if chains do not carry projected edges, no operational edges may be materialized. The graph must be regenerated from upstream declared contracts and execution chains and must not be edited directly."

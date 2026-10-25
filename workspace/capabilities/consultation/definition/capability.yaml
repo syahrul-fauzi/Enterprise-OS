@@ -20,7 +20,7 @@ presentation:
 implementation:
   entry: implementation/service.ts
 depends_on:
-  - core-runtime
+  - work-core
   - workflow-engine
   - legal-case
   - evidence-registry

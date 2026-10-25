@@ -1,11 +1,11 @@
 
 import { NextResponse } from 'next/server';
 import { capabilityRegistry } from '@repo/core-kernel/registry/capability-command-registry';
-import { commands } from '../../../../../../../../workspace/capabilities/iot-container-tracking/implementation/commands/tracking.commands';
+import { registerIotContainerTrackingCapability } from '../../../../../../../../workspace/capabilities/iot-container-tracking/implementation/commands/tracking.commands';
 import { ProvisionContainerInputSchema } from '../../../../../../../../workspace/capabilities/iot-container-tracking/implementation/contracts/tracking.contracts';
 
-// Register the command on-demand when the route is first accessed
-capabilityRegistry.register(commands.provision);
+// Register capability once at startup (canonical pattern)
+registerIotContainerTrackingCapability();
 
 export async function POST(request: Request) {
   try {

@@ -169,6 +169,9 @@ const trustLevels: Record<string, number> = {
   "certified": 3
 };
 
+// Import polyfill untuk crypto jika diperlukan (reuse primitive yang ada)
+import { randomUUID } from 'crypto';
+
 export class AtomicCompositionService {
   private logs: CompositionLog[] = [];
   private repository: typeof CompositionRepository = CompositionRepository;
@@ -259,7 +262,7 @@ export class AtomicCompositionService {
           status: "active",
           boundAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          workspaceId: workspaceId
+          workspaceId: workspaceId || ""
         };
         workBindings.push(capBinding);
         console.log(`[ATOMIC COMPOSITION] Added composition capability: ${capId} (from ${compositionPackageId})`);
@@ -279,7 +282,7 @@ export class AtomicCompositionService {
       status: "active",
       boundAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      workspaceId: workspaceId
+      workspaceId: workspaceId || ""
     };
     workBindings.push(lawyershubProductBinding);
 
@@ -297,9 +300,9 @@ export class AtomicCompositionService {
         status: "active",
         boundAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        workspaceId: workspaceId
-      };
-      workBindings.push(workBinding);
+        workspaceId: workspaceId || ""
+    };
+    workBindings.push(workBinding);
     }
 
     // 3. Add all ACTORS (client + lawyer) as participants
@@ -317,9 +320,9 @@ export class AtomicCompositionService {
           status: "active",
           boundAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          workspaceId: workspaceId
-        };
-        workBindings.push(actorBinding);
+          workspaceId: workspaceId || ""
+    };
+    workBindings.push(actorBinding);
       });
     }
 
@@ -351,7 +354,7 @@ export class AtomicCompositionService {
     console.log(`[BETTER-EOS] Hyper-relationship created: compositionId=${rawCompositionId}, totalBindings=${workBindings.length}`);
     console.log(`[BETTER-EOS] All participants share the same compositionId - Layer 2 extension compliance`);
 
-    const teamId = `team_${crypto.randomUUID()}`;
+    const teamId = `team_${randomUUID()}`;
     
     // ATOM-002 MEASURE PHASE: Record metrics untuk successful execution
     success = true;
@@ -369,16 +372,16 @@ export class AtomicCompositionService {
       compositionId: rawCompositionId,
       authorization: "granted",
       executionContext: { timestamp: new Date().toISOString() },
-      idempotencyKey: `idempotency-${crypto.randomUUID()}`,
+      idempotencyKey: `idempotency-${randomUUID()}`,
       evidence: [{ workId: request.workId, action: "team.composed", timestamp: new Date().toISOString() }],
       uiMetadata: { status: "active" },
       input: request,
       assignments: workBindings.map(b => ({ 
         actorId: b.participantId || "", 
         role: "participant", 
-        capabilityId: b.capabilityReference || "",
+        capabilityId: (b as any).capabilityReference || "",
         bindingId: b.id || "",
-        assignmentId: `assignment_${crypto.randomUUID()}`,
+        assignmentId: `assignment_${randomUUID()}`,
         teamId: teamId
       })),
       team: { teamId, totalBindings: workBindings.length, compositionId: rawCompositionId },
@@ -394,7 +397,7 @@ export class AtomicCompositionService {
   async createTeam(
     request: { workId: string; actorIds: string[]; [key: string]: any }
   ): Promise<{ teamId: string; saved: boolean }> {
-    const teamId = `team_${crypto.randomUUID()}`;
+    const teamId = `team_${randomUUID()}`;
     console.log(`[ATOMIC COMPOSITION] Created team ${teamId} for work ${request.workId} with actors: ${request.actorIds.join(", ")}`);
     return {
       teamId,

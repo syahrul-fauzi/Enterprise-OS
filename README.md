@@ -92,6 +92,32 @@ What we measure (not counts of assets):
 
 ---
 
+## EOS WAR ROOM (DELIVERY)
+
+**Objective:** Execute `Phase D — Product Execution Mode` by delivering complete, verifiable vertical slices of user value.
+
+| Metric            | Value | Status |
+| ----------------- | ----- | ------ |
+| **ACTIVE SLICES** | 1     | 🔥     |
+| **BLOCKED**       | 0     | ✅     |
+| **IN REVIEW**     | 0     | ⚪     |
+| **READY**         | 1     | 🔵     |
+| **SHIPPED**       | 1     | ✅     |
+
+**NEXT HIGHEST LEVERAGE:** `ARCH-001`
+
+---
+
+### Active & Ready Work
+
+| ID                | Title                                   | Status        | Product  | Priority    |
+| ----------------- | --------------------------------------- | ------------- | -------- | ----------- |
+| **`ARCH-001`**     | **Reconcile Workflow Definitions**      | 🔥 **ACTIVE** | EOS Core | 1 (Highest) |
+| `SLICE-001-W05`    | Implement ILC Article Approval FACE     | ✅ **SHIPPED**| ILC      | ✓ COMPLETED |
+| `AUDIT-001-W02`    | Standardize ILC Capability Calls        | ✅ **SHIPPED**| ILC      | ✓ COMPLETED |
+
+---
+
 ## Main Hypothesis (Falsifiable!)
 > **Evidence-driven extraction produces higher engineering leverage than speculative capability design.**
 
@@ -457,10 +483,103 @@ Every command invocation (success or failure) returns and tracks:
 
 ---
 
-## Get Started
+## 🚀 EOS Canonical Getting Started (Terverifikasi Clean-Start Test, 2026-10-11)
+Panduan resmi untuk menyiapkan EOS dari repository bersih — semua langkah sudah diuji di environment bersih dan berjalan tanpa error.
+
+### Prerequisites (Wajib Terpenuhi)
+- Node.js 20.x LTS
+- pnpm 8.x
+- PostgreSQL 15+
+- Redis 7+
+- build-essential (Linux) atau XCode Command Line Tools (MacOS) untuk node-gyp
+
+### Langkah 1: Clone Repository
+```bash
+git clone <repository-url>
+cd Enterprise-OS/workspace
+```
+
+### Langkah 2: Install Semua Dependencies
+```bash
+pnpm install
+```
+**Troubleshooting**: Jika ada error saat mengkompilasi better-sqlite3, pastikan build-essential sudah terinstall:
+```bash
+# Ubuntu/Debian
+sudo apt-get update && sudo apt-get install -y build-essential node-gyp
+```
+
+### Langkah 3: Konfigurasi Environment
+```bash
+cp .env.example .env
+# Isi nilai berikut sesuai environment Anda:
+# - DATABASE_URL (PostgreSQL)
+# - REDIS_URL (Redis)
+# - OIDC_ISSUER (Identitas)
+```
+
+### Langkah 4: Jalankan Semua Service Development
+```bash
+pnpm dev
+```
+Setelah kompilasi selesai (±120 detik), akses service di:
+- **API**: http://localhost:3001 (health check: `/api/health`)
+- **Web/FACE**: http://localhost:3005
+- **Dokumentasi**: http://localhost:3006
+
+### Langkah 5: Verifikasi Instalasi
+Jalankan Doctor Decision Engine untuk memeriksa semua komponen:
 ```bash
 npm run eos:doctor  # Run Doctor Decision Engine on LawyersHub
 npm run eos         # Run full Evidence Loop (Observer → Validator → Pattern → Doctor)
+```
+Hasil yang diharapkan: semua check berstatus `PASS`.
+
+### Troubleshooting Umum
+1. **Error Turbopack "Invalid distDirRoot"**: Pastikan tidak ada hardcoded root path di `next.config.js` aplikasi Anda
+2. **TypeScript error di compliance-case.commands.ts**: Pastikan file sesuai dengan canonical source di `/workspace/capabilities/investment-compliance/implementation/commands/`
+3. **Service tidak bisa start**: Periksa apakah port 3001, 3005, 3006 sudah digunakan oleh proses lain
+
+---
+
+## 🗺️ EOS Runtime & Application Map (Production & Staging)
+Peta lengkap semua service, port, dan routing di environment production dan staging — semua konfigurasi berasal dari file canonical yang sudah ada di repository.
+
+### Staging Environment (Docker Compose)
+Jalankan staging dengan script yang sudah tersedia:
+```bash
+cd workspace
+./scripts/staging-up.sh  # Build dan start semua service staging
+./scripts/staging-down.sh  # Stop semua service staging
+```
+
+#### Service Mapping (Staging)
+| Service          | Container Port | Host Port (Docker Map) | Health Check Endpoint          | Domain (Caddy Routing)                          |
+|------------------|----------------|-------------------------|--------------------------------|-------------------------------------------------|
+| PostgreSQL       | 5432           | 5433                    | `pg_isready -U eos_user`       | Internal (hanya akses Docker network)            |
+| Redis            | 6379           | 6379                    | `redis-cli ping`               | Internal (hanya akses Docker network)            |
+| API (apps/api)   | 3001           | Tidak di-expose         | `http://127.0.0.1:3001/api/health` | Internal (diproyeksi Caddy ke web service)      |
+| Web/FACE (apps/web) | 3000        | 3000                    | `http://127.0.0.1:3000/`       | -                                               |
+| Caddy (Reverse Proxy) | 80/443    | 80/443                  | `http://127.0.0.1:80/api/health` | staging.lawyershub.id, staging.services-id.com, staging.ilc.id |
+
+#### Caddy Reverse Proxy Routing
+Caddy mengarahkan traffic berdasarkan hostname ke aplikasi yang sama (EOS runtime shared):
+- `staging.lawyershub.id` → LawyersHub product context
+- `staging.services-id.com` → Services.ID product context  
+- `staging.ilc.id` → Indonesian Lawyers Club (ILC) context
+
+### Production Environment
+Semua konfigurasi production tersedia di `/workspace/infra/prod/` dengan spesifikasi yang sama dengan staging, namun dengan:
+- TLS ACME otomatis (Let's Encrypt)
+- Postgres backup harian (1AM, 30 hari retensi)
+- Health check yang lebih ketat (interval 10s, retries 15)
+- OIDC Hydra untuk identitas production
+- Semua secret terpisah di file `.env` yang tidak di-commit
+
+### Deployment Command Production
+```bash
+cd workspace/infra/prod
+docker compose --env-file .env up -d --build
 ```
 
 ---

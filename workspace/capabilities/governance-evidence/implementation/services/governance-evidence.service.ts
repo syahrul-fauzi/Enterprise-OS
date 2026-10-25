@@ -103,6 +103,23 @@ export class GovernanceEvidenceService implements GovernanceEvidenceProvider {
     private readonly catalog: GovernanceEvidenceArtifactCatalog = new GovernanceEvidenceArtifactCatalogFileSystem(),
   ) {}
 
+  hasPermission(action: string, resource: string, actorPermissions: string[], actorRoles: string[]): boolean {
+    const required = `${resource}:${action}`;
+    for (const p of actorPermissions) if (p === required || p === `${resource}:*` || p === "*") return true;
+    return actorRoles.includes("admin") || actorRoles.includes("owner");
+  }
+
+  async addEvidence(workId: string, entry: any): Promise<void> {
+    // Reuse existing work-core addEvidence implementation via lazy import to maintain single source of truth
+    const { getWORK_REPO } = await import("@capabilities/work-core");
+    const workRepo = getWORK_REPO();
+    if (workRepo?.addEvidence) {
+      await workRepo.addEvidence(workId, entry);
+    } else {
+      console.warn(`[GovernanceEvidenceService] workRepository.addEvidence not available, evidence not persisted: ${workId}`);
+    }
+  }
+
   getAuditReport(): JsonRecord {
     const location = this.catalog.resolve("report");
     const result = asJsonRecord(

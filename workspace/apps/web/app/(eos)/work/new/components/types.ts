@@ -9,7 +9,7 @@ export interface NewWorkFormClientProps {
     title: string;
   } | null;
   intentId: string;
-  workType?: "general" | "bpjs-construction" | "healthcare-appointment" | "bpjs-kesehatan-claim"; // Support W-INDUSTRY-001/W-DOMAIN-002 work forms
+  workType?: "general" | "bpjs-construction" | "healthcare-appointment" | "bpjs-kesehatan-claim" | "acaas-compliance-check"; // Support W-INDUSTRY-001/W-DOMAIN-002/ACaaS-COMMERCIAL-001 work forms
   handleWorkCreation: (data: {
     title: string;
     objective: string;
@@ -30,5 +30,9 @@ export interface NewWorkFormClientProps {
     medical_facility_name?: string;
     diagnosis_code?: string;
     service_category?: string;
+    // ACaaS Compliance Check specific fields (ACaaS-COMMERCIAL-001)
+    documentType?: string;
+    documentData?: string;
+    compliancePolicies?: string[];
   }) => Promise<{ workId: string } | undefined>;
 }

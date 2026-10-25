@@ -19,7 +19,6 @@ implementation:
   entry: implementation/service.ts
 depends_on:
   - work-core
-  - core-runtime
   - policy-engine
 capability:
   name: reasoning

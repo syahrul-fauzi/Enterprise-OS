@@ -1,9 +1,11 @@
 {
   "name": "@repo/capabilities-atomic-composition",
   "version": "0.1.0",
+  "type": "module",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "implementation"
   ],
   "types": "./dist/index.d.ts",
   "exports": {
@@ -15,8 +17,7 @@
       "types": "./dist/*.d.ts",
       "default": "./dist/*.js"
     },
-    "./implementation": null,
-    "./implementation/*": null
+    "./implementation/*": "./implementation/*"
   },
   "license": "MIT",
   "scripts": {

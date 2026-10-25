@@ -98,11 +98,38 @@ export type FailureHandling = z.infer<typeof FailureHandlingSchema>;
 // EXECUTION REQUIREMENT SCHEMA - Core abstraction user requested
 // Wraps everything into a single, reusable primitive that can decompose ANY Work
 // ----------------------------------------------------------------------------
-export const ExecutionRequirementSchema = z.object({
+export const ExecutionRequirementSchema: z.ZodObject<{
+  id: z.ZodString;
+  executionRequirementId: z.ZodString;
+  workId: z.ZodString;
+  title: z.ZodString;
+  description: z.ZodString;
+  realityAction: z.ZodEnum<[string, string, string, string, string, string, string, string, string, string]>;
+  targetExternalEntity: z.ZodOptional<z.ZodString>;
+  requiredAdapterInterface: z.ZodOptional<z.ZodString>;
+  providerPriority: z.ZodDefault<z.ZodEnum<[string, string, string, string]>>;
+  assignedProviderId: z.ZodOptional<z.ZodString>;
+  capabilityReference: z.ZodString;
+  authorizationId: z.ZodOptional<z.ZodString>;
+  authorizationVerified: z.ZodDefault<z.ZodBoolean>;
+  actorMetadata: z.ZodOptional<z.ZodObject<any>>;
+  authorizationScope: z.ZodOptional<z.ZodObject<any>>;
+  contextMetadata: z.ZodOptional<z.ZodObject<any>>;
+  riskAssessment: z.ZodOptional<z.ZodObject<any>>;
+  failureHandling: z.ZodDefault<z.ZodObject<any>>;
+  priority: z.ZodDefault<z.ZodEnum<[string, string, string, string]>>;
+  status: z.ZodDefault<z.ZodEnum<[string, string, string, string, string, string]>>;
+  evidenceRequired: z.ZodOptional<z.ZodString>;
+  completedAt: z.ZodOptional<z.ZodString>;
+  failedAt: z.ZodOptional<z.ZodString>;
+  failureMode: z.ZodOptional<z.ZodEnum<[string, ...string[]]>>;
+  createdAt: z.ZodString;
+  updatedAt: z.ZodString;
+}> = z.object({
   // Identity fields - follows existing patterns from CapabilityRequirementSchema
   id: z.string(),
-  executionRequirementId: z.string().brand<"ExecutionRequirementId">(),
-  workId: z.string().brand<"WorkId">(), // Links to parent Work (always)
+  executionRequirementId: z.string(),
+  workId: z.string(), // Links to parent Work (always) - menggunakan string biasa untuk kompatibilitas, brand hanya untuk type-level
   
   // What must be done
   title: z.string(),

@@ -448,6 +448,20 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
   const [decisionsCount, setDecisionsCount] = useState<number>(savedState?.decisionsCount ?? 0);
   const [showAssignLawyer, setShowAssignLawyer] = useState<boolean>(savedState?.showAssignLawyer ?? false);
   const [submittingAssign, setSubmittingAssign] = useState(false);
+  // State untuk tracking loading command (FACE UI flow untuk legal-case)
+  const [executingCommand, setExecutingCommand] = useState<string | null>(null);
+  // State untuk tracking hasil eksekusi command (success/error) - User readiness requirement
+  const [commandResult, setCommandResult] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  // Auto-dismiss command result banner setelah 5 detik (improve user experience)
+  useEffect(() => {
+    if (commandResult) {
+      const timer = setTimeout(() => {
+        setCommandResult(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [commandResult]);
   // Work Reality Surface: perspective selector - persists to localStorage for continuity
   const [currentPerspective, setCurrentPerspective] = useState<WorkPerspective>(
     savedState?.currentPerspective ?? "customer"
@@ -456,6 +470,60 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
   // Use cached session if API session not yet loaded - preserve state across refresh
   const currentSession = session ?? cachedSession;
   const isAuthenticated = authenticated || Boolean(currentSession?.actorId && currentSession.actorId !== "anonymous.user");
+
+  // Fungsi untuk mengeksekusi transition command ke endpoint API legal-case (FACE UI flow)
+  const executeCaseTransition = useCallback(async (transition: string, additionalPayload?: Record<string, unknown>) => {
+    if (!caseId || !currentSession?.sessionId || executingCommand) return;
+    
+    setExecutingCommand(transition);
+    setError(null);
+    setCommandResult(null);
+    try {
+      const response = await fetch("/api/capabilities/legal-case/transition", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          caseId,
+          sessionId: currentSession.sessionId,
+          transition,
+          ...additionalPayload
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        // Handle 401/403 specifically for authorization errors
+        if (response.status === 401 || response.status === 403) {
+          throw new Error("Anda tidak memiliki otoritas untuk menjalankan tindakan ini. Silakan hubungi administrator.");
+        }
+        throw new Error(errorData.message || `Gagal menjalankan command: ${transition}`);
+      }
+
+      // Transisi berhasil - set success state untuk user feedback
+      const successMessages: Record<string, string> = {
+        "submit": "Kasus berhasil dikirim! Tim hukum kami akan segera memprosesnya.",
+        "review": "Kasus masuk dalam tahap review. Hasil review akan segera dikirimkan.",
+        "approve": "Kasus berhasil disetujui! Silakan lanjutkan ke tahap pembayaran.",
+        "mark-under-review": "Proses pembayaran dimulai! Silakan selesaikan pembayaran untuk melanjutkan kasus."
+      };
+      setCommandResult({
+        type: "success",
+        message: successMessages[transition] || "Tindakan berhasil dijalankan."
+      });
+
+      // Refresh case data setelah transisi berhasil
+      await loadAll();
+    } catch (raw) {
+      const errorMessage = raw instanceof Error ? raw.message : String(raw);
+      setError(errorMessage);
+      setCommandResult({
+        type: "error",
+        message: errorMessage
+      });
+    } finally {
+      setExecutingCommand(null);
+    }
+  }, [caseId, currentSession, executingCommand, loadAll, setError]);
   
   // Render permission denied component jika status adalah permission-denied (menggunakan shared component)
   if (showPermissionDenied) {
@@ -763,6 +831,16 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
                 ))}
               </div>
               
+              {/* Command execution result banner (success/error) - User readiness requirement */}
+              {commandResult && (
+                <div className={`rounded-xl p-4 border ${commandResult.type === "success" ? "bg-emerald-50 border-emerald-200" : "bg-rose-50 border-rose-200"}`}>
+                  <p className={`text-sm ${commandResult.type === "success" ? "text-emerald-900" : "text-rose-900"}`}>
+                    <span className="font-semibold">{commandResult.type === "success" ? "✅ Berhasil" : "❌ Gagal"}</span><br />
+                    <span className={`mt-1 block ${commandResult.type === "success" ? "text-emerald-700" : "text-rose-700"}`}>{commandResult.message}</span>
+                  </p>
+                </div>
+              )}
+
               {/* Perspective-specific context banner */}
               <div className="rounded-xl bg-white p-4 border border-indigo-100">
                 <p className="text-sm text-indigo-900">
@@ -1223,8 +1301,28 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
-                {/* Tampilkan action button yang sesuai perspektif */}
-                {currentPerspective === "professional" && (
+                {/* Tampilkan action button yang sesuai status kasus dan perspektif */}
+                {currentPerspective === "customer" && caseData?.status === "draft" && (
+                  <button
+                    onClick={() => executeCaseTransition("submit")}
+                    disabled={!!executingCommand}
+                    className="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {executingCommand === "submit" ? "Memproses..." : "Kirim Kasus →"}
+                  </button>
+                )}
+
+                {currentPerspective === "professional" && caseData?.status === "open" && (
+                  <button
+                    onClick={() => executeCaseTransition("review")}
+                    disabled={!!executingCommand}
+                    className="rounded-xl bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {executingCommand === "review" ? "Memproses..." : "Tinjau Kasus →"}
+                  </button>
+                )}
+
+                {currentPerspective === "professional" && caseData?.status === "in_progress" && (
                   <>
                     <a
                       href={`/documents/create?caseId=${caseId}`}
@@ -1233,7 +1331,7 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
                       Buat Dokumen →
                     </a>
                     {/* RES-001-001-W1: Handoff to Paralegal button untuk LawyersHub legal cases (cross-actor handoff) */}
-                    {caseData?.productId === "lawyershub" && caseData?.status === "in_progress" && (
+                    {caseData?.productId === "lawyershub" && (
                       <button
                         onClick={async () => {
                           try {
@@ -1281,6 +1379,36 @@ export function CaseDetailPage({ productId, caseId, binding, session: routeSessi
                     )}
                   </>
                 )}
+
+                {/* Tombol untuk menyetujui kasus setelah review */}
+                {currentPerspective === "professional" && caseData?.status === "in_progress" && documents.some(d => d.status === "signed") && (
+                  <button
+                    onClick={() => executeCaseTransition("approve")}
+                    disabled={!!executingCommand}
+                    className="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {executingCommand === "approve" ? "Memproses..." : "Setujui Kasus →"}
+                  </button>
+                )}
+
+                {/* Tombol untuk memulai proses pembayaran - mark as under review (AUDIT-001-009 requirement) */}
+                {currentPerspective === "customer" && caseData?.status === "approved" && (
+                  <button
+                    onClick={() => executeCaseTransition("mark-under-review", { paymentAmount: 500000 })}
+                    disabled={!!executingCommand}
+                    className="rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {executingCommand === "mark-under-review" ? "Memproses Pembayaran..." : "Lanjutkan ke Pembayaran →"}
+                  </button>
+                )}
+
+                {/* Tombol untuk kasus yang sudah dalam proses pembayaran */}
+                {caseData?.status === "under_review" && (
+                  <div className="rounded-xl bg-amber-100 px-4 py-2.5 text-sm font-semibold text-amber-800">
+                    Menunggu Pembayaran & Review
+                  </div>
+                )}
+
                 {currentPerspective === "operator" && (
                   <a
                     href={`/admin/blocks?caseId=${caseId}`}

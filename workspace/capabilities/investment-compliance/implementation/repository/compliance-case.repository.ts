@@ -80,6 +80,23 @@ async function startDeadlineDetectionScanner(): Promise<void> {
   console.log("[ComplianceCaseRepository] Deadline detection scanner started");
 }
 
+// Generate random suffix untuk ComplianceCaseId (mengikuti pola requirement.repository.ts)
+const generateRandomSuffix = () => {
+  return Math.random().toString(36).substring(2, 8); // 6 karakter alfanumerik acak
+};
+
+// Factory function untuk create ComplianceCaseId baru (sesuai Rule of Two dengan requirement.repository)
+export const newComplianceCaseId = () => {
+  return ComplianceCaseId(`compliance-case-${generateRandomSuffix()}`);
+};
+
+// Default values untuk case baru (sesuai pola requirement.repository)
+export const defaultComplianceCaseStatus: ComplianceCaseStatus = "draft";
+export const defaultComplianceCasePriority: ComplianceCasePriority = "medium";
+
+// Export getter function untuk in-memory repository (sesuai pola get*Repository yang digunakan di commands)
+export const getComplianceCaseRepositoryInMemory = () => ComplianceCaseRepositoryInMemory;
+
 export const ComplianceCaseRepositoryInMemory: ComplianceCaseRepository = {
   kind: "repository",
   entityName: "ComplianceCase",
@@ -183,57 +200,61 @@ export const ComplianceCaseRepositoryInMemory: ComplianceCaseRepository = {
     return clone(raw);
   },
 
+  // Implementasi save method untuk persistensi perubahan case (sesuai interface di contracts)
+  // Mengikuti pola yang sama dengan requirement.repository.ts untuk reuse pattern
   async save(entity: ComplianceCaseAggregate, context?: { tenantId: string; workspaceId: string; actorId: string }) {
     const existing = STORE.get(entity.id);
-    const updated = { ...entity, updatedAt: new Date() };
     
-    // Enforce tenant isolation on save (mirrors legal-case pattern)
-    if (process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && context) {
-      if (existing) {
-        const caseTenantId = (existing as any).tenantId;
-        const caseWorkspaceId = (existing as any).workspaceId;
-        if (caseTenantId !== context.tenantId || caseWorkspaceId !== context.workspaceId) {
-          console.error(`[ComplianceCaseRepositoryInMemory] Cross-tenant save attempt blocked: case ${entity.id} belongs to tenant ${caseTenantId}, requested tenant ${context.tenantId}`);
+    // Enforce tenant isolation juga di save method untuk defense-in-depth
+    if (existing) {
+      const workRepository = getWorkRepositoryPostgres();
+      const coreWork = await workRepository.byWorkId(existing.workId);
+      
+      if (coreWork && process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) && context) {
+        if (coreWork.tenantId !== context.tenantId || coreWork.workspaceId !== context.workspaceId) {
+          console.error(`[ComplianceCaseRepositoryInMemory] Cross-tenant save blocked: case ${entity.id} belongs to tenant ${coreWork.tenantId}, requested tenant ${context.tenantId}`);
           recordRuntimeInvocation({
             capabilityId: "investment-compliance",
             operationId: "repository.save",
             sourceRef: "ComplianceCaseRepositoryInMemory.save",
             success: false,
-            input: { caseId: entity.id },
+            input: { caseId: entity.id, workId: existing.workId },
             result: { reason: "cross_tenant_isolation_violation" },
             tenant_id: context.tenantId,
-            inputRefs: [entity.id]
+            inputRefs: [entity.id, existing.workId]
           });
-          throw new Error(`Cross-tenant save violation for case ${entity.id}`);
+          throw new Error("Cross-tenant save blocked - authority boundary violation");
         }
-      } else {
-        // Enforce tenant assignment on creation
-        (updated as any).tenantId = context.tenantId;
-        (updated as any).workspaceId = context.workspaceId;
-        (updated as any).actorId = context.actorId;
       }
     }
-    
+
+    // Simpan entity yang diupdate ke store
+    const updated = { ...entity, updatedAt: new Date() };
     STORE.set(entity.id, updated);
     
-    // Trigger state transition listeners if state changed
-    if (existing && existing.status !== entity.status) {
-      const workspaceId = (updated as any).workspaceId;
-      if (workspaceId) {
-        console.log(`[ComplianceCaseRepository] State changed for case ${entity.id}, notified workspace ${workspaceId}`);
-      }
-    }
-    
+    // Catat runtime invocation untuk audit dan observability
     recordRuntimeInvocation({
       capabilityId: "investment-compliance",
       operationId: "repository.save",
       sourceRef: "ComplianceCaseRepositoryInMemory.save",
       success: true,
-      input: { caseId: entity.id },
+      input: { caseId: entity.id, workId: entity.workId, status: entity.status },
       result: { saved: true },
-      tenant_id: context?.tenantId || null,
-      inputRefs: [entity.id]
+      ...(context?.tenantId ? { tenant_id: context.tenantId } : {}),
+      ...(context?.actorId ? { actor_id: context.actorId } : {}),
+      inputRefs: [entity.id, entity.workId]
     });
+    
+    // Trigger state transition listeners jika case status berubah
+    if (existing && existing.status !== updated.status) {
+      for (const listener of stateTransitionListeners) {
+        try {
+          await listener(existing, updated);
+        } catch (err) {
+          console.error("[ComplianceCaseRepositoryInMemory] State transition listener failed during save:", err);
+        }
+      }
+    }
     
     return clone(updated);
   },

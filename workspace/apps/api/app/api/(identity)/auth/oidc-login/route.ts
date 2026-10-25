@@ -1,5 +1,26 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import {
+  decodeWorkspaceSession,
+  type WorkspaceSession,
+} from "@repo/core-kernel";
+import { validateBoundaryAccess } from "@repo/capabilities-work-core/contracts/work.contracts.js";
+
+// Lazy load capabilityRegistry sesuai pattern yang digunakan di semua route EOS (hindari module cycle)
+async function getCapabilityRegistry() {
+  const loaded = await import("@repo/core-kernel/registry/capability-command-registry.js");
+  return (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
+}
+
+// Lazy initialization tetap dipertahankan untuk kompatibilitas Edge Runtime
+let crypto: typeof import("node:crypto");
+
+async function initNodeRuntime() {
+  if (!crypto) {
+    const nodeCrypto = await import("node:crypto");
+    crypto = nodeCrypto;
+  }
+}
 
 const OIDCLoginRequestSchema = z.object({
   redirectUri: z.string().url().optional(),
@@ -12,6 +33,19 @@ const CLIENT_ID = process.env.OIDC_CLIENT_ID || "lawyershub-client";
 const REDIRECT_URI = process.env.OIDC_REDIRECT_URI || "http://127.0.0.1:3007/api/auth/callback";
 
 export async function POST(request: Request) {
+  // 1. Validasi boundary compliance TERLEBIH DAHULU (Tahap B mandate - api-gateway mengakses identity)
+  if (!validateBoundaryAccess("api-gateway", "identity")) {
+    console.error("[oidc-login-api] BOUNDARY ACCESS DENIED: api-gateway cannot access identity domain directly");
+    return NextResponse.json({ error: "Boundary access violation" }, { status: 403 });
+  }
+
+  // Inisialisasi Node.js modules terlebih dahulu
+  await initNodeRuntime();
+  
+  // 2. Canonical session handling menggunakan decodeWorkspaceSession (mematuhi "Workspace bukan authority")
+  const session = await decodeWorkspaceSession(request);
+  
+  // 3. Parse request body dengan validasi schema
   let payload: unknown;
   try {
     payload = await request.json();
@@ -25,27 +59,52 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: `Validation failed: ${messages}` }, { status: 422 });
   }
 
+  const { redirectUri } = parsed.data;
+
   try {
-    // Generate OAuth2 authorization URL with Hydra
-    const state = crypto.randomUUID();
-    const codeVerifier = crypto.randomUUID() + crypto.randomUUID();
-    // Simple code challenge generation (in production use S256)
-    const codeChallenge = Buffer.from(codeVerifier).toString('base64url');
+    // 4. Persiapkan productId terpisah dari actorContext (canonical pattern)
+    const productId = session?.productId || "lawyershub";
+
+    // 5. Dapatkan capability registry dan cek ketersediaannya sebelum invoke
+    const capabilityRegistry = await getCapabilityRegistry();
+    if (!capabilityRegistry?.invoke) {
+      console.error("[OIDC] Capability registry not available");
+      return NextResponse.json({ error: "System unavailable" }, { status: 503 });
+    }
+
+    // 6. Invoke canonical identity.oidcLoginFlow capability (pure adapter pattern)
+    const oidcResult = await capabilityRegistry.invoke<{
+      success: boolean;
+      authorizationUrl?: string;
+      state?: string;
+      codeVerifier?: string;
+      error?: string;
+    }>("identity.oidcLoginFlow", {
+      redirectUri: redirectUri || REDIRECT_URI,
+      requestOrigin: request.headers.get("origin"),
+      // actorContext canonical tanpa productId yang redundant
+      actorContext: {
+        actorId: session?.actorId || "system:anonymous",
+        actorLabel: session?.actorLabel || "Anonymous User",
+        tenantId: session?.tenantId || "system:default",
+        workspaceId: session?.workspaceId || "system:default"
+      },
+      productId: productId
+    });
+
+    if (!oidcResult.success || !oidcResult.authorizationUrl || !oidcResult.state || !oidcResult.codeVerifier) {
+      console.error("[OIDC FAIL] Login initiation failed:", oidcResult.error);
+      return NextResponse.json({ error: oidcResult.error || "Failed to initiate OIDC login flow" }, { status: 400 });
+    }
     
-    const authUrl = new URL(`${HYDRA_PUBLIC_URL}/oauth2/auth`);
-    authUrl.searchParams.set("client_id", CLIENT_ID);
-    authUrl.searchParams.set("redirect_uri", REDIRECT_URI);
-    authUrl.searchParams.set("response_type", "code");
-    authUrl.searchParams.set("scope", "openid email profile");
-    authUrl.searchParams.set("state", state);
-    authUrl.searchParams.set("code_challenge", codeChallenge);
-    authUrl.searchParams.set("code_challenge_method", "plain");
+    const { authorizationUrl, state, codeVerifier } = oidcResult;
+    console.log("[OIDC SUCCESS] Login flow initiated via canonical capability:", state);
 
     // Store code verifier and state in cookies for callback validation
     const response = NextResponse.json({
       ok: true,
-      authorizationUrl: authUrl.toString(),
-    });
+      authorizationUrl,
+    }, { status: 200 });
     
     // Set secure cookies for OAuth flow state
     response.cookies.set("oidc_state", state, {

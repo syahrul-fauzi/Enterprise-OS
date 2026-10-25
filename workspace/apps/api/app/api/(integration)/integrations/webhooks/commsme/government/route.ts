@@ -1,78 +1,45 @@
-import { NextResponse } from "next/server";
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
+import { NextRequest, NextResponse } from 'next/server';
+import { validateBoundaryAccess } from "@repo/capabilities/work-core/contracts/work.contracts";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
+import { decodeWorkspaceSession } from "@repo/core-kernel";
 
-// Minimal webhook endpoint to receive external system responses (OSS, Kemenkumham, DJP)
-// Follows existing Next.js API route pattern from governance/decisions/route.ts and service-requests/list/route.ts
-// No new capabilities - uses existing service-directory capability commands to update status
-export async function POST(request: Request) {
+// Pure adapter endpoint to receive external government system responses (OSS, Kemenkumham, DJP)
+// Follows EOS pure adapter pattern: NO business logic embedded, delegates all to canonical capabilities
+export async function POST(request: NextRequest) {
+  // 6-boundary compliance: Verify integrations domain can access commsme government domain
+  const boundaryValid = validateBoundaryAccess("integration", "commsme");
+  if (!boundaryValid) {
+    return NextResponse.json({ error: "Boundary access denied" }, { status: 403 });
+  }
+
   try {
-    const payload = await request.json();
-    const { system, serviceRequestId, status, responseData, externalReferenceId } = payload;
+    // Canonical session validation - use decodeWorkspaceSession for proper actor context
+    const session = await decodeWorkspaceSession(request);
+    const body = await request.clone().text();
+    const jsonBody = JSON.parse(body);
 
-    // Validate required fields for World Truth capture
-    if (!system || !serviceRequestId || !status) {
-      return NextResponse.json({ 
-        error: "Missing required fields: system, serviceRequestId, status are mandatory" 
-      }, { status: 400 });
-    }
-
-    // Validate supported external systems
-    const supportedSystems = ["oss", "kemenkumham", "djp"];
-    if (!supportedSystems.includes(system)) {
-      return NextResponse.json({ 
-        error: `Unsupported system. Supported systems: ${supportedSystems.join(", ")}` 
-      }, { status: 400 });
-    }
-
-    // Use existing service-directory capability to update service request with external response data
-    // Follows SHARED RAIL pattern: uses session from test identity context (matches execute/route.ts)
-    const COM_SESSION_ID = "session-test-001";
-    const { output } = await capabilityRegistry.invoke("service-directory", "updateExternalSystemStatus", {
-      id: serviceRequestId,
-      externalSystem: system,
-      externalStatus: status,
-      externalReferenceId,
-      responseData,
-      receivedAt: new Date().toISOString(),
-      sessionId: COM_SESSION_ID
+    // Delegate ALL processing to canonical commsme-webhook capability
+    const result = await capabilityRegistry.invokeAsync({
+      capability: "commsme-webhook",
+      command: "process-government-event",
+      context: {
+        tenantId: session?.tenantId || "",
+        workspaceId: session?.workspaceId || "",
+        actorId: session?.actorId || `system:gov-webhook:${jsonBody.system || "unknown"}`
+      },
+      payload: {
+        rawBody: body,
+        jsonBody: jsonBody,
+        headers: Object.fromEntries(request.headers.entries()),
+        ip: request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown"
+      }
     });
 
-    // C21: Extract idempotency key from request headers and acknowledge external response
-    // This links the external system's World Truth back to EOS's idempotency state machine
-    const idempotencyKey = request.headers.get("x-idempotency-key");
-    if (idempotencyKey) {
-      const success = status === "success" || status === "completed" || status === "confirmed";
-      capabilityRegistry.acknowledgeExternalResponse(idempotencyKey, success, externalReferenceId);
-      console.log(`[webhook] Acknowledged external response for idempotency key: ${idempotencyKey}, success: ${success}`);
-    } else {
-      console.warn(`[webhook] No X-Idempotency-Key header found - cannot update idempotency state for serviceRequestId: ${serviceRequestId}`);
-    }
-
-    // Write evidence to CommsMe evidence store for World Truth verification (follows handoff record pattern)
-    const fs = await import('fs/promises');
-    const path = await import('path');
-    await fs.writeFile(
-      path.join('/root/Enterprise-OS/workspace/products/commsme/evidence', `external-response-${serviceRequestId}-${system}.json`),
-      JSON.stringify({
-        serviceRequestId,
-        system,
-        status,
-        externalReferenceId,
-        receivedAt: new Date().toISOString(),
-        responseData,
-        idempotencyKey,
-        capabilityInvocationOutput: output
-      }, null, 2)
-    );
-
-    return NextResponse.json({ 
-      success: true, 
-      message: `${system} response received and stored for service request ${serviceRequestId}`,
-      output 
-    }, { status: 200 });
+    return result.success 
+      ? NextResponse.json(result.data) 
+      : NextResponse.json({ error: result.error }, { status: result.statusCode || 400 });
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    console.error("[webhook error]", message);
-    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+    console.error("[CommsMeGovWebhook] Failed to process government webhook event", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

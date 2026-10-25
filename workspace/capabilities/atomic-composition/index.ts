@@ -1,2 +1,2 @@
 export * from "./implementation/contracts";
-export { intentUnderstandingService, resolveSemanticIntentFallback, createUniversalExpression } from "./implementation/services/intent-understanding.service";
+export { intentUnderstandingService, getIntentUnderstandingService, resolveSemanticIntentFallback, createUniversalExpression } from "./implementation/services/intent-understanding.service";

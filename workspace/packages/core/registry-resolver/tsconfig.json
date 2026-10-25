@@ -7,13 +7,16 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "NodeNext",
-    "module": "NodeNext"
+    "module": "NodeNext",
+    "paths": {
+      "@repo/core-transformation-registry": ["../transformation-registry/src"],
+      "@repo/core-predicate-registry": ["../predicate-registry/src"]
+    }
   },
   "references": [
-    { "path": "../transformation-registry/tsconfig.json" },
+    { "path": "../eir/tsconfig.json" },
     { "path": "../predicate-registry/tsconfig.json" },
-    { "path": "../proof-ledger/tsconfig.json" },
-    { "path": "../eir/tsconfig.json" }
+    { "path": "../transformation-registry/tsconfig.json" }
   ],
   "include": ["src", "src/yaml.d.ts"],
   "exclude": ["dist", "build", "node_modules", "tests"]

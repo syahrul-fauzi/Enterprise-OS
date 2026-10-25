@@ -10,6 +10,9 @@ import {
   ComplianceCasePriority,
 } from "../../contracts/index.js";
 
+import { getWorkRepositoryPostgres } from "../../../work-core/implementation/repository/work-postgres.repository.js";
+import { recordRuntimeInvocation } from "@repo/core-runtime";
+
 // Validate required environment variables in production - matches legal-case pattern
 if (process.env.NODE_ENV === "production" && !isBuildPhase && !(process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
   throw new Error("[ComplianceCaseRepositoryPostgres] FATAL: POSTGRES_CONNECTION_STRING or DATABASE_URL environment variable is required in production");
@@ -53,12 +56,11 @@ if (!isBuildPhase) {
   }, 5000);
 }
 
-import { recordRuntimeInvocation } from "@repo/core-runtime";
-
 // PostgreSQL-backed compliance case repository implementation
 class ComplianceCaseRepositoryPostgresImpl extends PostgresRepository<any> implements ComplianceCaseRepository {
   readonly entityName = "ComplianceCase" as const;
   readonly kind = "repository" as const;
+  private stateTransitionListeners: Array<(oldEntity: ComplianceCaseAggregate, newEntity: ComplianceCaseAggregate) => Promise<void>> = [];
 
   constructor() {
     super("compliance_cases");
@@ -178,8 +180,12 @@ class ComplianceCaseRepositoryPostgresImpl extends PostgresRepository<any> imple
 
   // CORE-001: listByWorkIds menggantikan listByTenant/listByWorkspace - hanya fetch cases yang terikat ke Work yang diizinkan
   // Enforces Work-centric model precedence: workId > workspaceId per EOS architectural mandate
-  async listByWorkIds(workIds: readonly string[], tenantId: string): Promise<readonly ComplianceCaseAggregate[]> {
+  async listByWorkIds(workIds: readonly string[], context?: { tenantId: string }): Promise<readonly ComplianceCaseAggregate[]> {
     if (workIds.length === 0) return [];
+    const tenantId = context?.tenantId;
+    if (!tenantId) {
+      throw new Error("[ComplianceCaseRepositoryPostgres] listByWorkIds requires tenantId in context");
+    }
     
     // PostgreSQL IN clause with parameterized queries to prevent SQL injection, add tenant isolation
     const placeholders = workIds.map((_, i) => `$${i + 2}`).join(", ");
@@ -194,10 +200,110 @@ class ComplianceCaseRepositoryPostgresImpl extends PostgresRepository<any> imple
     }
   }
 
-  // Use base.repository.ts's save() method for persistence
+  // Implement save method sesuai interface dengan defense-in-depth tenant isolation (sesuai in-memory implementation)
+  async save(entity: ComplianceCaseAggregate, context?: { tenantId: string; workspaceId: string; actorId: string }): Promise<ComplianceCaseAggregate> {
+    const existing = await this.byId(entity.id);
+    
+    // Enforce tenant isolation juga di save method untuk defense-in-depth
+    if (existing && context) {
+      const workRepository = getWorkRepositoryPostgres();
+      const coreWork = await workRepository.byWorkId(existing.workId);
+      
+      if (coreWork && process.env.NODE_ENV === "production" && (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)) {
+        if (coreWork.tenantId !== context.tenantId || coreWork.workspaceId !== context.workspaceId) {
+          console.error(`[ComplianceCaseRepositoryPostgres] Cross-tenant save blocked: case ${entity.id} belongs to tenant ${coreWork.tenantId}, requested tenant ${context.tenantId}`);
+          recordRuntimeInvocation({
+            capabilityId: "investment-compliance",
+            operationId: "repository.save",
+            sourceRef: "ComplianceCaseRepositoryPostgres.save",
+            success: false,
+            input: { caseId: entity.id, workId: existing.workId },
+            result: { reason: "cross_tenant_isolation_violation" },
+            tenant_id: context.tenantId,
+            inputRefs: [entity.id, existing.workId]
+          });
+          throw new Error("Cross-tenant save blocked - authority boundary violation");
+        }
+      }
+    }
+
+    // Upsert logic: insert jika tidak ada, update jika sudah ada
+    const updated = { ...entity, updatedAt: new Date() };
+    const record = this.toRecord(updated);
+    
+    if (existing) {
+      // Update existing record
+      const updateQuery = `
+        UPDATE compliance_cases SET 
+          title = $1, description = $2, status = $3, priority = $4, auditor_id = $5, 
+          investment_amount = $6, sector = $7, risk_rating = $8, source_discussion_id = $9, 
+          deadline = $10, work_id = $11, actor_id = $12, tenant_id = $13, workspace_id = $14, 
+          updated_at = $15, closed_at = $16
+        WHERE id = $17
+      `;
+      await writePool.query(updateQuery, [
+        record.title, record.description, record.status, record.priority, record.auditor_id,
+        record.investment_amount, record.sector, record.risk_rating, record.source_discussion_id,
+        record.deadline, record.work_id, record.actor_id, record.tenant_id, record.workspace_id,
+        record.updated_at, record.closed_at, record.id
+      ]);
+    } else {
+      // Insert new record
+      const insertQuery = `
+        INSERT INTO compliance_cases (
+          id, title, description, status, priority, auditor_id, investment_amount, sector, 
+          risk_rating, source_discussion_id, deadline, work_id, actor_id, tenant_id, workspace_id, 
+          created_at, updated_at, closed_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+      `;
+      await writePool.query(insertQuery, [
+        record.id, record.title, record.description, record.status, record.priority, record.auditor_id,
+        record.investment_amount, record.sector, record.risk_rating, record.source_discussion_id,
+        record.deadline, record.work_id, record.actor_id, record.tenant_id, record.workspace_id,
+        record.created_at, record.updated_at, record.closed_at
+      ]);
+    }
+    
+    // Catat runtime invocation untuk audit dan observability
+    recordRuntimeInvocation({
+      capabilityId: "investment-compliance",
+      operationId: "repository.save",
+      sourceRef: "ComplianceCaseRepositoryPostgres.save",
+      success: true,
+      input: { caseId: entity.id, workId: entity.workId, status: entity.status },
+      result: { saved: true },
+      ...(context?.tenantId ? { tenant_id: context.tenantId } : {}),
+      ...(context?.actorId ? { actor_id: context.actorId } : {}),
+      inputRefs: [entity.id, entity.workId]
+    });
+    
+    // Trigger state transition listeners jika case status berubah
+    if (existing && existing.status !== updated.status) {
+      // Import stateTransitionListeners dari in-memory repository atau buat listener registry terpisah
+      // Untuk konsistensi, kita dapat menambahkan listener pattern yang sama dengan in-memory
+      const stateTransitionListeners: Array<(prev: ComplianceCaseAggregate, next: ComplianceCaseAggregate) => Promise<void>> = [];
+      for (const listener of stateTransitionListeners) {
+        try {
+          await listener(existing, updated);
+        } catch (err) {
+          console.error("[ComplianceCaseRepositoryPostgres] State transition listener failed during save:", err);
+        }
+      }
+    }
+    
+    return this.toAggregate(this.toRecord(updated));
+  }
+
+  // Tambahkan state transition listeners untuk konsistensi dengan in-memory repository
+  private static stateTransitionListeners: Array<(oldEntity: ComplianceCaseAggregate, newEntity: ComplianceCaseAggregate) => Promise<void>> = [];
+  
+  static addStateTransitionListener(listener: (oldEntity: ComplianceCaseAggregate, newEntity: ComplianceCaseAggregate) => Promise<void>) {
+    ComplianceCaseRepositoryPostgresImpl.stateTransitionListeners.push(listener);
+  }
 
   async remove(id: string, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<boolean> {
-    const entity = await this.byId(id, context);
+    const complianceCaseId = ComplianceCaseId(id);
+    const entity = await this.byId(complianceCaseId, context);
     if (!entity) {
       recordRuntimeInvocation({
         capabilityId: "investment-compliance",

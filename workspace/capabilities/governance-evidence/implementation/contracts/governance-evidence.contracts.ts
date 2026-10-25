@@ -83,4 +83,6 @@ export interface GovernanceEvidenceProvider {
   loadAllCapabilityMetadata(): CapabilityEvidenceRequirements[];
   calculateCapabilityConfidence(capability: CapabilityEvidenceRequirements): GovernanceConfidenceVerdict;
   getGovernanceDecisions(): GovernanceConfidenceVerdict[];
+  hasPermission(action: string, resource: string, actorPermissions: string[], actorRoles: string[]): boolean;
+  addEvidence(workId: string, entry: any): Promise<void>;
 }

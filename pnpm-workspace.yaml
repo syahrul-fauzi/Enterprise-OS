@@ -13,3 +13,5 @@ allowBuilds:
   '@parcel/watcher': false
   esbuild: false
   sharp: false
+minimumReleaseAgeExclude:
+  - mqtt@5.16.1

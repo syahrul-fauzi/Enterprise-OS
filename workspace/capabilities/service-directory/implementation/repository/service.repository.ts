@@ -1,16 +1,14 @@
-// Import canonical identity factory functions + types from SINGLE-SOURCE work-core (anti-drift - TENANT-ISOLATION-001)
-// Sesuai invariant Work Continuity: Semua capability harus mengimport dari @capabilities/work-core
-// Factory functions sekarang menggunakan prefix 'create' untuk menghindari duplicate identifier
+// Import canonical identity factory functions + types from SINGLE-SOURCE contracts-core (anti-drift - TENANT-ISOLATION-001)
+// Sesuai invariant Work Continuity: Semua capability harus mengimport dari @repo/contracts-core
+// Factory functions sekarang disesuaikan dengan implementasi aktual di contracts-core
 import { 
   createTenantId, 
   createWorkspaceId, 
-  createActorId
-} from "../../../work-core/contracts/work.contracts.ts";
-import type {
-  TenantId,
-  WorkspaceId,
-  ActorId
-} from "../../../work-core/contracts/work.contracts.ts";
+  createActorId,
+  type TenantId,
+  type WorkspaceId,
+  type ActorId
+} from "../../../../packages/contracts-core/src/identity.contracts.js";
 import type { 
   ServiceRequestAggregate, 
   ServiceProviderAggregate, 
@@ -21,8 +19,8 @@ import type {
   ServiceRequestRepository, 
   ServiceProviderRepository,
   CreateServiceRequestInput
-} from "../contracts/service.contracts.ts";
-import { ServiceRequestId as createServiceRequestId, ServiceProviderId as createServiceProviderId } from "../contracts/service.contracts.ts";
+} from "../contracts/service.contracts.js";
+import { ServiceRequestId as createServiceRequestId, ServiceProviderId as createServiceProviderId } from "../contracts/service.contracts.js";
 
 // Date helpers
 function d(daysAgo: number) {
@@ -38,16 +36,18 @@ function dFuture(daysFromNow: number) {
 }
 
 // Shared canonical CMBCD seed values (reused from legal-case patterns - Rule of Two compliance)
-const defaultTenantId = createTenantId("tenant-services-id-main");
-const defaultWorkspaceId = createWorkspaceId("workspace-services-id-cloud-team");
-const defaultAdminActorId = createActorId("actor-admin-services-id-001");
+const defaultTenantId: TenantId = createTenantId("tenant-services-id-main");
+const defaultWorkspaceId: WorkspaceId = createWorkspaceId("workspace-services-id-cloud-team");
+const defaultAdminActorId: ActorId = createActorId("actor-admin-services-id-001");
 
 // Base actor metadata (canonical CMBCD pattern, restored to fix ReferenceError)
 const baseActorMetadata = {
   actorId: defaultAdminActorId,
   displayName: "EOS Service Directory Admin",
   email: "admin@services-id.eos.co.id",
-  role: "service-admin" as const
+  role: "service-admin" as const,
+  trustLevel: "certified" as const,
+  actorType: "human" as const
 };
 
 const baseAllowedCapabilities = ["service-provider:read", "service-provider:update", "service-provider:verify"];
@@ -63,7 +63,9 @@ const baseContext = {
   jurisdiction: "ID-JAKARTA",
   requestCategory: "cloud-services",
   sensitivityLevel: "internal" as const,
-  relatedWorkIds: ["work-001-services-id-cloud-migration"]
+  relatedWorkIds: ["work-001-services-id-cloud-migration"],
+  relatedProductIds: [],
+  relatedRequirementIds: []
 };
 const baseRisk = {
   level: "low" as const,
@@ -149,7 +151,7 @@ const seedProviders = (): ServiceProviderAggregate[] => [
     createdAt: d(120),
     updatedAt: d(14),
     // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (non-entity-centric per user mandate)
-    actorMetadata: { ...baseActorMetadata, displayName: "EOS IT Support Admin" },
+    actorMetadata: { ...baseActorMetadata, displayName: "EOS IT Support Admin", trustLevel: "certified" as const },
     allowedCapabilities: [...baseAllowedCapabilities],
     authorization: { ...baseAuthorization },
     context: { ...baseContext, workspaceId: createWorkspaceId("workspace-services-id-support-team"), jurisdiction: "ID-SURABAYA" },
@@ -167,10 +169,10 @@ const seedProviders = (): ServiceProviderAggregate[] => [
     createdAt: d(360),
     updatedAt: d(3),
     // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (non-entity-centric per user mandate)
-    actorMetadata: { ...baseActorMetadata, actorType: "organization" as const, role: "network-deployment-provider" },
+    actorMetadata: { ...baseActorMetadata, actorType: "organization" as const, role: "network-deployment-provider", trustLevel: "certified" as const },
     allowedCapabilities: [...baseAllowedCapabilities],
     authorization: { ...baseAuthorization },
-    context: { ...baseContext, workspaceId: createWorkspaceId("workspace-services-id-infra-team") },
+    context: { ...baseContext, workspaceId: createWorkspaceId("workspace-services-id-infra-team"), relatedProductIds: [], relatedRequirementIds: [] },
     risk: { ...baseRisk }
   },
   {
@@ -185,10 +187,10 @@ const seedProviders = (): ServiceProviderAggregate[] => [
     createdAt: d(90),
     updatedAt: d(2),
     // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (non-entity-centric per user mandate)
-    actorMetadata: { ...baseActorMetadata, actorType: "organization" as const, role: "software-development-provider" },
+    actorMetadata: { ...baseActorMetadata, actorType: "organization" as const, role: "software-development-provider", trustLevel: "certified" as const },
     allowedCapabilities: [...baseAllowedCapabilities],
     authorization: { ...baseAuthorization },
-    context: { ...baseContext, workspaceId: createWorkspaceId("workspace-services-id-dev-team"), jurisdiction: "ID-YOGYAKARTA" },
+    context: { ...baseContext, workspaceId: createWorkspaceId("workspace-services-id-dev-team"), jurisdiction: "ID-YOGYAKARTA", relatedProductIds: [], relatedRequirementIds: [] },
     risk: { ...baseRisk }
   },
 ];
@@ -385,12 +387,42 @@ export const newServiceRequestId = (): ServiceRequestId => {
 export const defaultServiceRequestStatus: ServiceRequestStatus = "draft";
 
 // In-Memory Repository Implementations
-export const ServiceRequestRepositoryInMemory: ServiceRequestRepository = {
+export const ServiceRequestRepositoryInMemory = {
   entityName: "ServiceRequest",
   kind: "repository",
-  async byId(id: ServiceRequestId) {
+  // ACaaS-002: Update method pertama untuk memastikan terdeteksi
+  async update(id: ServiceRequestId, tenantId: string, workspaceId: string, updates: Partial<ServiceRequestAggregate>): Promise<ServiceRequestAggregate> {
     const record = REQUEST_STORE.get(id);
+    if (!record) {
+      throw new Error(`[ServiceRequestRepositoryInMemory] Service request ${id} not found`);
+    }
+    // Enforce tenant isolation: hanya tenant yang sama yang bisa update
+    if (record.context?.tenantId !== tenantId || record.context?.workspaceId !== workspaceId) {
+      throw new Error(`[ServiceRequestRepositoryInMemory] Tenant/workspace mismatch for update on request ${id}`);
+    }
+    const updated: ServiceRequestAggregate = { 
+      ...cloneRequest(record), 
+      ...updates, 
+      updatedAt: new Date() 
+    };
+    REQUEST_STORE.set(id, updated);
+    return cloneRequest(updated);
+  },
+  // ACaaS-COMMERCIAL-001: byExternalId method juga di awal
+  async byExternalId(externalId: string, tenantId: string, workspaceId: string): Promise<ServiceRequestAggregate | undefined> {
+    const record = Array.from(REQUEST_STORE.values()).find(r => 
+      r.externalId === externalId && 
+      r.context?.tenantId === tenantId && 
+      r.context?.workspaceId === workspaceId
+    );
     return record ? cloneRequest(record) : undefined;
+  },
+  async byId(id: ServiceRequestId, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<ServiceRequestAggregate | undefined> {
+    const record = REQUEST_STORE.get(id);
+    if (!record) return undefined;
+    if (context?.tenantId && record.context?.tenantId !== context.tenantId) return undefined;
+    if (context?.workspaceId && record.context?.workspaceId !== context.workspaceId) return undefined;
+    return cloneRequest(record);
   },
   async list() {
     return Array.from(REQUEST_STORE.values()).map(cloneRequest);
@@ -454,11 +486,16 @@ export const ServiceRequestRepositoryInMemory: ServiceRequestRepository = {
   },
   async remove(id: ServiceRequestId) {
     return REQUEST_STORE.delete(id);
-  },
-  async delete(id: ServiceRequestId) {
-    return this.remove(id);
-  },
-};
+  }
+} satisfies ServiceRequestRepository;
+
+// Debug log untuk memverifikasi semua method terdaftar saat ekspor
+if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'test') {
+  console.log('[SERVICE-REPOSITORY-EXPORT] ServiceRequestRepositoryInMemory keys:', Object.keys(ServiceRequestRepositoryInMemory));
+  console.log('[SERVICE-REPOSITORY-EXPORT] Has update method?', 'update' in ServiceRequestRepositoryInMemory);
+  console.log('[SERVICE-REPOSITORY-EXPORT] Has byExternalId method?', 'byExternalId' in ServiceRequestRepositoryInMemory);
+  console.log('[SERVICE-REPOSITORY-EXPORT] Has byId method?', 'byId' in ServiceRequestRepositoryInMemory);
+}
 
 export const ServiceProviderRepositoryInMemory: ServiceProviderRepository = {
   entityName: "ServiceProvider",

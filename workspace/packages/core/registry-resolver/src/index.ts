@@ -2,20 +2,21 @@ import { readFileSync } from "node:fs";
 import { resolve as pathResolve, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import YAML from "yaml";
+// Direct relative imports to avoid @repo path resolution issues (AUDIT-001-006 compliance)
 import {
   TRANSFORMATIONS,
   TRANSFORMATION_COUNT_SPRINT0_REQUIRED,
-  getTransformationById as regGetT,
   TRANSFORMATION_REGISTRY_DOCUMENT,
+  getTransformationById,
   type TransformationId,
-} from "@repo/core-transformation-registry";
+  type TransformationDeclaration,
+} from "../../transformation-registry/src/index.js";
 import {
   ALL_PREDICATES,
   PREDICATE_COUNT_T001_REQUIRED,
-  getPredicateById as regGetP,
-} from "@repo/core-predicate-registry";
-import type { TransformationDeclaration } from "@repo/core-transformation-registry";
-import type { PredicateDeclaration } from "@repo/core-predicate-registry";
+  getPredicateById,
+  type PredicateDeclaration,
+} from "../../predicate-registry/src/index.js";
 import {
   RESOLVER_CONTRACT_KIND,
   KBE_MIN_PREDICATE_COUNT,
@@ -119,14 +120,14 @@ const _buildPredicateList = (
   const orderedById = new Map<string, PredicateDeclaration>();
   const orderedCatalogIds = cat?.predicate_refs ?? [];
   for (const id of orderedCatalogIds) {
-    const p = ALL_PREDICATES.find((x) => x.predicate_id === id);
+    const p = ALL_PREDICATES.find((x: PredicateDeclaration) => x.predicate_id === id);
     if (p) orderedById.set(id, p);
   }
   for (const ref of t.predicate_refs) {
     const id =
       typeof ref === "string" ? ref : (ref as { predicate_id?: string }).predicate_id;
     if (id && !orderedById.has(id)) {
-      const p = regGetP(id);
+      const p = getPredicateById(id);
       if (p) orderedById.set(id, p);
     }
   }
@@ -211,7 +212,7 @@ const _buildDag = (
       cat?.blocked_until_t004_verified,
   );
   if (predecessor && blocker_cat_true) {
-    const predDecl = regGetT(predecessor);
+    const predDecl = getTransformationById(predecessor);
     if (!predDecl) {
       blocked = true;
       reason = `Predecessor ${predecessor} declaration not found`;
@@ -267,6 +268,9 @@ const _buildOne = (t: TransformationDeclaration): ResolverResolutionBundle => {
   const compatibility_matrix = _buildCompat(cat);
   const semver = _buildSemver(cat);
   return {
+    id: RESOLVER_ID,
+    version: RESOLVER_VERSION,
+    name: "RegistryResolverV1",
     transformation_id: t.transformation_id,
     name_long: t.name_long,
     lifecycle: t.lifecycle,
@@ -302,7 +306,7 @@ export const resolve = (id: TransformationId): ResolverResolutionBundle => {
   const found = _ALL_BUNDLES_CACHE.find((b) => b.transformation_id === id);
   if (!found) {
     throw new Error(
-      `[REGISTRY-RESOLVER FAIL] Unknown TransformationId = ${id}. Allowed = ${TRANSFORMATIONS.map((t) => t.transformation_id).join(", ")}`,
+      `[REGISTRY-RESOLVER FAIL] Unknown TransformationId = ${id}. Allowed = ${TRANSFORMATIONS.map((t: TransformationDeclaration) => t.transformation_id).join(" ")}`,
     );
   }
   return found;
@@ -314,10 +318,11 @@ export const resolveRootOfTrust = (): ResolverResolutionBundle =>
   resolve(ROOT_OF_TRUST_TRANSFORMATION_ID);
 
 export const isBlocked = (id: TransformationId): BlockedStatus => {
-  const b = resolve(id);
-  return b.dag.blocked
-    ? { blocked: true, reason: b.dag.blocked_reason_if_true ?? "blocked per catalog rule" }
-    : { blocked: false };
+  const found = resolve(id);
+  return {
+    blocked: found.dag.blocked,
+    reason: found.dag.blocked ? (found.dag.blocked_reason_if_true ?? "blocked per catalog rule") : undefined,
+  };
 };
 
 export const getRegistryResolverDocument = () => RESOLVER_REGISTRY_DOCUMENT;
@@ -325,4 +330,4 @@ export {
   TRANSFORMATION_COUNT_SPRINT0_REQUIRED,
   TRANSFORMATION_REGISTRY_DOCUMENT,
 };
-export type { PredicateRegistryDocument } from "@repo/core-predicate-registry";
+export type { PredicateRegistryDocument } from "../../predicate-registry/src/interfaces.js";

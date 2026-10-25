@@ -4,10 +4,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "next dev -p 3002",
     "build": "next build",
     "start": "next start",
-    "start:standalone": "next start -p 3001",
+    "start:standalone": "next start -p 3002",
     "lint": "eslint --max-warnings 0",
     "check-types": "tsc --noEmit"
   },

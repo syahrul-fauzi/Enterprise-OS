@@ -4,6 +4,17 @@ import { z } from "zod";
 import { URL } from "url";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import * as jose from "jose"; // Reuse jose library yang sudah terintegrasi di codebase
+// Import kontrak kanonis dari work-core untuk validasi boundary (canonical path)
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+
+// Lazy initialization untuk crypto kompatibel Edge Runtime (sesuai pattern canonical)
+let crypto: typeof import("node:crypto");
+async function initCrypto() {
+  if (!crypto) {
+    const nodeCrypto = await import("node:crypto");
+    crypto = nodeCrypto;
+  }
+}
 
 // OIDC configuration from environment variables (consistent with API routes)
 const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID || "lawyershub-client";
@@ -13,11 +24,22 @@ const HYDRA_PUBLIC_URL = process.env.HYDRA_PUBLIC_URL || "http://127.0.0.1:4444"
 const HYDRA_ADMIN_URL = process.env.HYDRA_ADMIN_URL || "http://127.0.0.1:4445";
 const OIDC_JWKS_URL = process.env.OIDC_JWKS_URL || `${HYDRA_PUBLIC_URL}/.well-known/jwks.json`;
 
+type ActorContext = {
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
+};
+
 // CAND-002 PREFLIGHT: Extend input schema to include authorization code for token exchange
 export const OidcLoginFlowInputSchema = z.object({
   redirectUri: z.string().url().optional(),
   code: z.string().optional(), // Add support for authorization code exchange
   state: z.string().optional(),
+  actorContext: z.object({
+    tenantId: z.string(),
+    workspaceId: z.string(),
+    actorId: z.string(),
+  }).optional(),
 });
 
 export type OidcLoginFlowInput = z.infer<typeof OidcLoginFlowInputSchema>;
@@ -76,10 +98,24 @@ async function verifyOidcToken(token: string): Promise<{ valid: boolean; payload
 export const oidcLoginFlowCommand: OidcLoginFlowCommand = {
   kind: "command",
   name: "identity.oidcLoginFlow",
-  version: "1.0.0",
+  version: "3.0.0",
 
   async execute(input: OidcLoginFlowInput): Promise<OidcLoginFlowOutput> {
+    // 1. Validasi 6-boundary compliance TERLEBIH DAHULU (Tahap B mandate)
+    if (!validateBoundaryAccess("identity", "identity")) {
+      console.error("[oidc-login-flow] BOUNDARY ACCESS DENIED: cannot access identity domain with invalid boundary");
+      throw new Error("Boundary access violation");
+    }
+
+    // 2. Inisialisasi crypto terlebih dahulu untuk kompatibilitas Edge Runtime
+    await initCrypto();
+
     const parsed = OidcLoginFlowInputSchema.parse(input);
+    
+    // Log audit untuk tracing actorContext jika disediakan
+    if (input.actorContext) {
+      console.log(`[oidc-login-flow] OIDC flow initiated by actor ${input.actorContext.actorId} in workspace ${input.actorContext.workspaceId}, tenant ${input.actorContext.tenantId}`);
+    }
     
     // Jika ada code, lakukan token exchange dan verifikasi (CAND-002 Verify step)
     if (parsed.code) {

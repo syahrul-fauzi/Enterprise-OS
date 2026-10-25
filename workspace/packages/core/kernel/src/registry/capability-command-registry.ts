@@ -2,9 +2,11 @@
 import type { CapabilityCommand } from "../types.js";
 import type { ExecutionFrame } from "../../../../work-core/contracts/work.contracts";
 import { randomUUID } from "crypto";
-// PR-001: Import reliability utilities from core-runtime (ARCH-04 compliant - kernel uses core-runtime exports)
-// Use workspace package import to align with package.json dependencies and tsconfig project references
-import { calculateExponentialBackoff, shouldOpenCircuitBreaker, shouldResetCircuitBreaker, executionContext } from "../../../runtime/dist/src/index.js";
+// Import core-runtime utilities dari path relatif yang benar (sesuai struktur build TSC)
+// File build ada di root dist/ (bukan dist/src/) karena konfigurasi rootDir tsconfig
+import { calculateExponentialBackoff, shouldOpenCircuitBreaker, shouldResetCircuitBreaker } from "../../../runtime/dist/runtime.js";
+import { executionContext } from "../../../runtime/dist/execution-context.js";
+import { ExecutionStatusRepository } from "../../../runtime/dist/execution-status.js";
 // Define RetryConfig type locally since it's not exported from ../types
 export interface RetryConfig {
   readonly max_attempts: number;
@@ -17,8 +19,6 @@ export interface RetryConfig {
   readonly circuit_breaker_threshold: number;
 }
 
-export let capabilityCommands: Record<string, CapabilityCommand> = {};
-
 // Capability prefix aliases sesuai yang diharapkan test (auth→identity, tenant→identity, ws→identity)
 const capabilityPrefixAliases: Readonly<Record<string, string>> = {
   "auth": "identity.",
@@ -28,45 +28,72 @@ const capabilityPrefixAliases: Readonly<Record<string, string>> = {
 };
 
 export const capabilityRegistry = {
+  // Semua command disimpan di dalam capabilityRegistry (bukan global) - mencegah instance duplication
+  capabilityCommands: {} as Record<string, CapabilityCommand>,
+  
   async invoke(capability: string, commandName: string, input: any): Promise<any> {
-    const commandKey = `${capability}.${commandName}`;
-    
-    let command = capabilityCommands[commandKey];
+    // AC-PILOT-001: Cek status kill switch sebelum menjalankan command apapun
+    const killSwitchState = await ExecutionStatusRepository.getKillSwitchState();
+    if (killSwitchState.kill_switch_triggered) {
+      const error = `[KILL-SWITCH-ACTIVE] Command ${capability}.${commandName} diblokir: kill switch telah dipicu. Alasan: ${killSwitchState.reason}. Dipicu oleh: ${killSwitchState.triggered_by_actor_id} pada ${killSwitchState.triggered_at_utc}`;
+      console.error(error);
+      throw new Error(error);
+    }
 
+    const { command } = await this.resolveByParts(capability, commandName);
     if (!command) {
-      await loadCapabilityCommands();
-      command = capabilityCommands[commandKey];
+      throw new Error(`Command ${capability}.${commandName} not found`);
     }
-
-    if (!command || typeof command.execute !== 'function') {
-      const errorMessage = `[capabilityRegistry] Command not found or is not executable: ${commandKey}`;
-      console.error(errorMessage);
-      throw new Error(errorMessage);
-    }
-
-    try {
-      const result = await command.execute(input);
-      return result;
-    } catch (error) {
-      console.error(`[capabilityRegistry] EXCEPTION during command execution: ${commandKey}`, { error });
-      throw error;
-    }
+    return typeof command.execute === 'function' ? command.execute(input) : command.handler(input);
   },
 
   register(command: CapabilityCommand): void {
-    const commandKey = command.capability 
-      ? `${command.capability}.${command.name}` 
-      : command.name;
-    if (capabilityCommands[commandKey]) {
-      console.warn(`[capabilityRegistry] Overwriting existing command: ${commandKey}`);
+    let commandKey: string;
+    // Jika command.name sudah mengandung prefix (misal "identity.getSessionById"), gunakan langsung sebagai commandKey
+    if (command.name.includes('.')) {
+      commandKey = command.name;
+    } 
+    // Jika command memiliki field capability dan name (misal capability: "identity", name: "getSessionById"), gabungkan
+    else if (command.capability) {
+      commandKey = `${command.capability}.${command.name}`;
+    } 
+    // Fallback jika tidak ada format yang sesuai
+    else {
+      commandKey = command.name;
     }
-    capabilityCommands[commandKey] = command;
+
+    // Cegah registrasi ganda (tambah log untuk debugging)
+    if (this.capabilityCommands[commandKey]) {
+      console.warn(`[capabilityRegistry] ⚠️ Command ${commandKey} sudah terdaftar, skip registrasi ulang`);
+      return;
+    }
+    
+    this.capabilityCommands[commandKey] = command;
+    console.log(`[capabilityRegistry] ✅ Mendaftarkan command: ${commandKey}`);
+    
+    // Juga simpan dengan format capability.name jika command.name belum mengandung prefix (untuk backward compatibility)
+    if (!command.name.includes('.') && command.capability) {
+      const alternativeKey = `${command.capability}.${command.name}`;
+      if (!this.capabilityCommands[alternativeKey]) {
+        this.capabilityCommands[alternativeKey] = command;
+        console.log(`[capabilityRegistry] Dual-registered command: ${alternativeKey}`);
+      }
+    }
+    
+    // Log semua command yang terdaftar setelah registrasi
+    console.log(`[capabilityRegistry] Total commands registered: ${Object.keys(this.capabilityCommands).length}`);
   },
 
-  // Implementasi minimal listCommandKeys() sesuai yang dibutuhkan universal route dan test
-  async listCommandKeys(): Promise<string[]> {
-    await loadCapabilityCommands();
-    return Object.keys(capabilityCommands);
+  // listCommandKeys() SINKRON dan TIDAK BERGANTUNG pada loadCapabilityCommands() apapun - VERSI TERBARU 2026-10-22
+  listCommandKeys(): string[] {
+    console.log(`[capabilityRegistry] 🚀 VERSI BARU listCommandKeys() dipanggil pada ${new Date().toISOString()}`);
+    console.log(`[capabilityRegistry] 📋 listCommandKeys() mengembalikan:`, Object.keys(this.capabilityCommands));
+    return Object.keys(this.capabilityCommands);
+  },
+
+  // Cek apakah kapabilitas terdaftar di registry (required untuk validasi sebelum eksekusi) - sinkron
+  hasCapability(capabilityId: string): boolean {
+    return Object.keys(this.capabilityCommands).some(key => key.startsWith(`${capabilityId}.`));
   },
 
   // Implementasi minimal resolveByParts() dengan alias support sesuai test expectations
@@ -75,13 +102,13 @@ export const capabilityRegistry = {
     command: CapabilityCommand | undefined;
     candidates: string[];
   }> {
-    await loadCapabilityCommands();
+    // Hapus panggilan loadCapabilityCommands() - semua command di-load secara eksplisit
     const attemptedKeys: string[] = [];
     const directKey = `${capability}.${commandName}`;
     attemptedKeys.push(directKey);
 
     // Coba langsung dulu
-    let command = capabilityCommands[directKey];
+    let command = this.capabilityCommands[directKey];
     if (command) {
       return { attemptedKeys, command, candidates: [] };
     }
@@ -90,14 +117,14 @@ export const capabilityRegistry = {
     if (capabilityPrefixAliases[capability]) {
       const aliasedKey = `${capabilityPrefixAliases[capability]}${commandName}`;
       attemptedKeys.push(aliasedKey);
-      command = capabilityCommands[aliasedKey];
+      command = this.capabilityCommands[aliasedKey];
       if (command) {
         return { attemptedKeys, command, candidates: [] };
       }
     }
 
     // Jika tidak ditemukan, return semua keys yang mirip sebagai candidates
-    const allKeys = Object.keys(capabilityCommands);
+    const allKeys = Object.keys(this.capabilityCommands);
     const candidates = allKeys.filter(k => 
       k.toLowerCase().includes(capability.toLowerCase()) || 
       k.toLowerCase().includes(commandName.toLowerCase())
@@ -108,12 +135,11 @@ export const capabilityRegistry = {
 };
 
 // REALITY PATH ONLY: Eliminate all bulk capability loading - only direct imports allowed in routes
-// HAPUS SEMUA dynamic import yang menyebabkan "Failed to load ...js" errors
+// Namun tetap kembalikan capabilityCommands yang sudah didaftarkan secara manual via register()
+// Fix Gate A: agar capabilityRegistry.listCommandKeys() dapat menampilkan command yang sudah didaftarkan
 async function loadCapabilityCommands(): Promise<Record<string, CapabilityCommand>> {
-  // Selalu return object kosong - tidak ada lagi dynamic import() yang mencoba load capability modules
-  // Semua command yang dibutuhkan (login, createCase) diimpor LANGSUNG di route.ts mereka masing-masing
-  // LOG: Tidak ada lagi "Failed to load ...js" errors karena semua dynamic import dihapus
-  return capabilityCommands;
+  // Kembalikan capabilityCommands yang sudah ada dari instance capabilityRegistry
+  return capabilityRegistry.capabilityCommands;
 }
 
 // Helper function yang DIPERBAIKI - tidak lagi mencoba import dari relatif path yang salah
@@ -349,7 +375,9 @@ export const LH_LGL_001_ConsultationWorkflow: WorkflowDefinition = {
       from: "user-decision",
       to: "consultation-closed"
     },
-    "legal-work-to-close": {
+
+
+"legal-work-to-close": {
       requiredRoles: ["legal-specialist"],
       from: "legal-work-created",
       to: "consultation-closed"
@@ -749,7 +777,15 @@ export async function executeWorkflowTransition(
   // Initialize execution state if not provided - idempotency baseline
   const currentExecutionState = context.executionState || "PREPARED";
   
-  // 1. Idempotency guard: Prevent re-execution of completed/acknowledged steps
+  // 1. Cek kill switch sebelum melanjutkan langkah workflow apapun
+  const killSwitchState = await ExecutionStatusRepository.getKillSwitchState();
+  if (killSwitchState.kill_switch_triggered) {
+    const error = `[KILL-SWITCH-ACTIVE] Workflow step ${currentStepId} diblokir: kill switch telah dipicu. Alasan: ${killSwitchState.reason}`;
+    console.error(error);
+    return { success: false, error, evidenceAdded: false, newExecutionState: "BLOCKED" };
+  }
+
+  // 2. Idempotency guard: Prevent re-execution of completed/acknowledged steps
   if (currentExecutionState === "COMPLETED" || currentExecutionState === "ACKNOWLEDGED") {
     return { 
       success: true, 
@@ -759,7 +795,7 @@ export async function executeWorkflowTransition(
     };
   }
 
-  // 2. Validate workflow definition first
+  // 3. Validate workflow definition first
   if (!isValidWorkflowDefinition(workflow)) {
     return { success: false, error: "Invalid workflow definition", evidenceAdded: false, newExecutionState: currentExecutionState };
   }

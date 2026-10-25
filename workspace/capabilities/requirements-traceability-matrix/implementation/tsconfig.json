@@ -5,8 +5,9 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "types": ["node"],
-    "module": "ESNext",
-    "moduleResolution": "Bundler"
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "moduleDetection": "force"
   },
   "references": [{"path": "../../requirement-management/tsconfig.json"}, {"path": "../../evidence-registry/tsconfig.json"}, {"path": "../../../packages/core/runtime/tsconfig.json"}],
   "include": ["**/*.ts"],

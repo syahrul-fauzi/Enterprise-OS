@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "ignoreDeprecations": "5.0",
+    "baseUrl": ".",
+    "rootDirs": ["./src", "../../capabilities"],
+    "paths": {
+      "*": ["./src/*"],
+      "@repo/*": ["../../packages/*"],
+      "@capabilities/*": ["../../capabilities/*"]
+    },
+    "skipLibCheck": true,
+    "allowJs": true,
+    "noEmit": true,
+    "composite": false,
+    "disableSourceOfProjectReferenceRedirect": true
+  },
+  "include": ["src/**/*.ts", "../../capabilities/work-core/src/**/*.ts", "../../capabilities/work-core/implementation/**/*.ts", "../../capabilities/work-core/contracts/**/*.ts", "../../capabilities/consultation/implementation/**/*.ts", "../../capabilities/atomic-composition/implementation/**/*.ts", "../../capabilities/communication/implementation/**/*.ts", "../../capabilities/communication/contracts/**/*.ts"],
+  "exclude": ["node_modules", "dist", "src-tauri", "**/*.test.ts", "**/*.proof.ts"]
+}

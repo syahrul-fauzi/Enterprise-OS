@@ -25,6 +25,7 @@ forbidden_dependencies:
   - trust-framework
 consumed_by:
   - ilc
+evidence_required: true
 stability: stable
 contracts:
   requires:

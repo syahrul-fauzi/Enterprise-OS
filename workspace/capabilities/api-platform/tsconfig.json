@@ -1,7 +1,7 @@
 {
   "extends": "../../config/typescript/base.json",
   "compilerOptions": {
-    "rootDir": "./",
+    "rootDir": "../",
     "outDir": "./dist",
     "strictNullChecks": true,
     "declaration": true,
@@ -15,22 +15,28 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "lib": ["es2022"],
-    "module": "ESNext",
+    "module": "NodeNext",
     "moduleDetection": "force",
-    "moduleResolution": "bundler",
+    "moduleResolution": "NodeNext",
     "allowImportingTsExtensions": true,
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "strict": true,
     "target": "ES2022",
-    "ignoreDeprecations": "5.0"
+    "ignoreDeprecations": "5.0",
+    "paths": {
+      "@capabilities/*": ["../../capabilities/*"],
+      "@repo/*": ["../../packages/*"]
+    }
   },
   "references": [
     {"path": "../../packages/core/kernel/tsconfig.json"},
     {"path": "../../packages/core/runtime/tsconfig.json"},
     {"path": "../governance-read-model/tsconfig.json"},
-    {"path": "../governance-evidence/tsconfig.json"}
+    {"path": "../governance-evidence/tsconfig.json"},
+    {"path": "../work-core/tsconfig.json"},
+    {"path": "../service-directory/tsconfig.json"}
   ],
-  "include": ["implementation/**/*.ts", "contracts/**/*.ts"],
+  "include": ["implementation/**/*.ts", "contracts/**/*.ts", "../work-core/implementation/utils/evidence.utils.ts", "../work-core/contracts/work.contracts.ts", "../work-core/implementation/commands/work.commands.ts"],
   "exclude": ["dist", "node_modules", "**/*.d.ts"]
 }

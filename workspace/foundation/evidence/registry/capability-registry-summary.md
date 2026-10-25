@@ -1,36 +1,36 @@
 # Capability Registry Summary
 
-- total capabilities: 16
-- with owner: 1
-- owner missing: 15
-- invalid capabilities: 3
-- duplicate candidates: 0
-- dependency constitution: PASS
-- missing dependencies: 0
+- total capabilities: 24
+- with owner: 21
+- owner missing: 3
+- invalid capabilities: 0
+- duplicate candidates: 2
+- dependency constitution: FAIL
+- missing dependencies: 3
 - api runtime violations: 0
-- consumer mismatches: 0
-- unsatisfied contract requirements: 0
-- dependency cycles: 0
-- boundary violations: 0
+- consumer mismatches: 4
+- unsatisfied contract requirements: 9
+- dependency cycles: 3
+- boundary violations: 2
 - dependency policy violations: 0
-- contract registry status: PASS
-- tracked contracts: 3
-- contract requirements: 3
-- unsatisfied registry requirements: 0
+- contract registry status: FAIL
+- tracked contracts: 11
+- contract requirements: 12
+- unsatisfied registry requirements: 9
 - multi-major contracts: 0
 - pinned consumer requirements: 3
 - unbounded consumer requirements: 0
 - ambiguous provider bindings: 0
 - stable contracts with multi-major: 0
-- capability certification status: PASS
+- capability certification status: FAIL
 - certified capabilities: 0
-- partial capabilities: 16
-- failed capabilities: 0
+- partial capabilities: 13
+- failed capabilities: 11
 - performance-evaluated capabilities: 0
-- governance debt budget status: PASS
-- owner missing budget: 15/15 PASS
-- invalid capabilities budget: 3/3 PASS
-- duplicate candidates budget: 0/0 PASS
+- governance debt budget status: FAIL
+- owner missing budget: 3/15 PASS
+- invalid capabilities budget: 0/3 PASS
+- duplicate candidates budget: 2/0 FAIL
 
 ## Evidence
 - workspace/foundation/evidence/registry/capability-registry-report.json

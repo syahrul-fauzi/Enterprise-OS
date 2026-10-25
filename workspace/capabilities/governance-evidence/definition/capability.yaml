@@ -19,9 +19,9 @@ exports:
   - GovernanceDecisionRecord
 depends_on:
   - trust-framework
-  - core-runtime
+  - work-core
 allowed_dependencies:
-  - core-runtime
+  - work-core
   - trust-framework
 forbidden_dependencies:
   - api-platform
@@ -46,6 +46,7 @@ capability:
     - multiple_consumers
     - cross_domain_adoption
 stability: stable
+evidence_required: true
 contracts:
   requires:
     - name: TrustFrameworkProvider

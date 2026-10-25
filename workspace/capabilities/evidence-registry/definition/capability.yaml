@@ -18,7 +18,7 @@ implementation:
   entry: implementation/service.ts
 depends_on:
   - governance-evidence
-  - core-runtime
+  - work-core
   - trust-framework
 capability:
   name: evidence-registry
@@ -37,4 +37,5 @@ capability:
     - production_usage
     - cross_product_uniformity
     - all_products_adopted
+evidence_required: true
 stability: stable

@@ -16,10 +16,10 @@ exports:
   - WorkflowInstance
   - ExecutionState
 depends_on:
-  - core-runtime
+  - work-core
   - governance-evidence
 allowed_dependencies:
-  - core-runtime
+  - work-core
   - governance-evidence
 forbidden_dependencies:
   - api-platform
@@ -41,6 +41,7 @@ capability:
     - scalability_validation
     - multiple_consumers
     - cross_domain_adoption
+evidence_required: true
 stability: stable
 contracts:
   requires:

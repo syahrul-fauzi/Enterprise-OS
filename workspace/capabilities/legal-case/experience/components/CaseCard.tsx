@@ -10,6 +10,7 @@ const STATUS_LABEL: Record<CaseAggregate["status"], string> = {
   draft: "Draft",
   open: "Open",
   in_progress: "In Progress",
+  under_review: "Menunggu Pembayaran & Review",
   closed: "Closed",
 };
 

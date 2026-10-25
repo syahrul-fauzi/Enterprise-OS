@@ -42,19 +42,9 @@ type DeepMutable<T> = T extends readonly (infer U)[] ? DeepMutable<U>[] :
                       T extends object ? { -readonly [P in keyof T]: DeepMutable<T[P]> } :
                       T;
 
-async function safeRecordEvidence(payload: unknown): Promise<{ readonly ok: boolean }> {
-  try {
-    const loaded = await import("@repo/core-kernel");
-    const reg = (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
-    if (typeof reg?.invoke === "function") {
-      await reg.invoke("evidence-registry", "evidence.record", payload as never);
-      return { ok: true };
-    }
-  } catch (_e) {
-    // fallthrough: evidence recording is observability-only
-  }
-  return { ok: true };
-}
+// Hapus duplikat safeRecordEvidence - gunakan canonical dari work-core (Gate A requirement: reuse primitive yang sudah ada)
+// Import canonical safeRecordEvidence yang menangani SHA-256, fallback storage, dan semua durability policy
+import { safeRecordEvidence } from "../../../work-core/implementation/utils/evidence.utils.js";
 
 async function invokeCapability<Output = unknown>(
   capability: string,
@@ -174,6 +164,29 @@ const createServiceRequestFromWork: CapabilityCommand<{
       graph_traversal_success: !!linkedProduct
     });
     
+    // ACaaS-COMMERCIAL-001: Jika ini adalah ACaaS compliance check, panggil command acaas.complianceCheck.create
+    if (input.domainSpecificData?.documentType && input.domainSpecificData?.documentData && input.domainSpecificData?.compliancePolicies) {
+      try {
+        await invokeCapability(
+          "api-platform",
+          "acaas.complianceCheck.create",
+          {
+            tenantId: input.coreWork.tenantId,
+            workspaceId: input.coreWork.execution?.workspaceId,
+            actorId: input.coreWork.actorId,
+            sessionId: input.coreWork.sessionId,
+            documentType: input.domainSpecificData.documentType,
+            documentData: input.domainSpecificData.documentData,
+            compliancePolicies: input.domainSpecificData.compliancePolicies
+          }
+        );
+        console.log(`[ACAAS-INIT] ✅ ACaaS compliance check initiated successfully for workId: ${input.workId}`);
+      } catch (acaasError) {
+        console.error(`[ACAAS-INIT] ❌ Failed to initiate ACaaS compliance check: ${acaasError}`);
+        // Jangan gagalkan seluruh proses jika ACaaS gagal - ini adalah downstream dependency
+      }
+    }
+
     // FACE PROJECTION: Server-derived graphMetadata (tidak state-owned) - compliance dengan "FACE adalah projection, bukan owner"
     return {
       id: result.id,
@@ -237,3 +250,73 @@ export const serviceRequestCommands: Readonly<Record<string, CapabilityCommand>>
   "service-request.createFromWork": createServiceRequestFromWork,
   "service-request.update": updateServiceRequest,
 } as const;
+
+export function registerServicesIdCapability() {
+  if (typeof process !== 'undefined' && (process.env.NODE_ENV === 'test' || process.env.STANDALONE === 'true')) {
+    import("@repo/core-kernel/registry/capability-command-registry").then(({ capabilityRegistry }) => {
+      if (capabilityRegistry) {
+        Object.values(serviceRequestCommands).forEach((command) => {
+          capabilityRegistry.register(command);
+        });
+        // Register customer-portal capability
+        capabilityRegistry.registerCapability({
+          id: "customer-portal",
+          name: "Customer Portal Interface",
+          description: "Enables customers to submit disputes, track progress, and view resolution status directly through self-service interface",
+          providerTypes: ["system", "human"],
+          domainRestrictions: ["services-id", "customer-support", "dispute-resolution"],
+          requiredAuthorizations: ["dispute:read", "dispute:submit"],
+          riskLevel: "low",
+          severity: "LOW",
+          isAvailable: async () => true
+        });
+        // Register resolution-center capability
+        capabilityRegistry.registerCapability({
+          id: "resolution-center",
+          name: "Dispute Resolution Center",
+          description: "Centralized dashboard and workflow engine for agents to manage, process, and resolve high-value customer disputes",
+          providerTypes: ["human", "ai", "system"],
+          domainRestrictions: ["services-id", "customer-support", "dispute-resolution"],
+          requiredAuthorizations: ["dispute:manage", "dispute:assign", "workspace-write"],
+          riskLevel: "medium",
+          severity: "MEDIUM",
+          isAvailable: async () => true
+        });
+      }
+    });
+    return;
+  }
+  import("@repo/core-kernel/registry/capability-command-registry").then(({ capabilityRegistry }) => {
+    if (capabilityRegistry) {
+      Object.values(serviceRequestCommands).forEach((command) => {
+        capabilityRegistry.register(command);
+      });
+      // Register customer-portal capability
+      capabilityRegistry.registerCapability({
+        id: "customer-portal",
+        name: "Customer Portal Interface",
+        description: "Enables customers to submit disputes, track progress, and view resolution status directly through self-service interface",
+        providerTypes: ["system", "human"],
+        domainRestrictions: ["services-id", "customer-support", "dispute-resolution"],
+        requiredAuthorizations: ["dispute:read", "dispute:submit"],
+        riskLevel: "low",
+        severity: "LOW",
+        isAvailable: async () => true
+      });
+      // Register resolution-center capability
+      capabilityRegistry.registerCapability({
+        id: "resolution-center",
+        name: "Dispute Resolution Center",
+        description: "Centralized dashboard and workflow engine for agents to manage, process, and resolve high-value customer disputes",
+        providerTypes: ["human", "ai", "system"],
+        domainRestrictions: ["services-id", "customer-support", "dispute-resolution"],
+        requiredAuthorizations: ["dispute:manage", "dispute:assign", "workspace-write"],
+        riskLevel: "medium",
+        severity: "MEDIUM",
+        isAvailable: async () => true
+      });
+    }
+  }).catch(err => {
+    console.error("[Services-ID] AUDIT-001-009: Failed to register services-id capability:", err);
+  });
+}

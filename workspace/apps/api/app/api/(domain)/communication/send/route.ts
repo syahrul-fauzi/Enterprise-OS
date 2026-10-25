@@ -1,32 +1,18 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
-
-const WORKSPACE_SESSION_COOKIE = "eos_workspace_session";
+import { readWorkspaceSessionFromRequest } from '@repo/core-kernel/src/session/workspace-session.js';
 
 export async function POST(request: Request) {
   try {
-    // 1. Get session cookie
-    const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);
-    
-    if (!sessionCookie) {
-      return NextResponse.json({ error: "No active session - please refresh and try again" }, { status: 401 });
+    // Canonical session validation - extract verified workspace/tenant/actor IDs
+    const session = readWorkspaceSessionFromRequest(request);
+    if (!session?.sessionId || !session?.tenantId || !session?.workspaceId || !session?.actorId) {
+      return NextResponse.json({ 
+        error: 'Unauthorized: Invalid or missing workspace session',
+        status: 'AUTH_INCONSISTENCY_RESOLVED'
+      }, { status: 401 });
     }
-
-    // 2. Parse session cookie (base64 encoded JSON)
-    let parsedSession;
-    try {
-      const decodedSession = Buffer.from(sessionCookie.value, 'base64').toString('utf-8');
-      parsedSession = JSON.parse(decodedSession);
-    } catch (e) {
-      return NextResponse.json({ error: "Invalid session format" }, { status: 400 });
-    }
-
-    const { sessionId, tenantId, workspaceId, actorId } = parsedSession;
-    if (!sessionId || !tenantId || !workspaceId || !actorId) {
-      return NextResponse.json({ error: "Incomplete session data" }, { status: 400 });
-    }
+    const { sessionId, tenantId, workspaceId, actorId } = session;
 
     // 3. Parse request body
     const body = await request.json();

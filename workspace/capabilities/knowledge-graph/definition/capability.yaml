@@ -15,7 +15,7 @@ exports:
 implementation:
   entry: implementation/service.ts
 depends_on:
-  - core-runtime
+  - work-core
   - evidence-registry
 capability:
   name: knowledge-graph
@@ -32,4 +32,5 @@ capability:
   evidence_required:
     - production_usage
     - cross_domain_adoption
+evidence_required: true
 stability: stable

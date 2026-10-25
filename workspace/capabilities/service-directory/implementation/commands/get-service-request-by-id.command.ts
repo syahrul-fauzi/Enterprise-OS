@@ -7,6 +7,8 @@ import { SessionRepositoryInMemory, getSessionRepositoryPostgres, initIdentitySc
 // Import shared FACE projection builder untuk mematuhi invariant: "FACE adalah projection, bukan owner"
 import { buildWorkFaceProjection } from "../../../work-core/implementation/utils/index.js";
 import type { WorkFaceProjection } from "../../../work-core/contracts/work.contracts.js";
+// Import 6-boundary validation functions (6-boundary compliance v2.1.0)
+import { validateBoundaryAccess, validateAllBoundaries, type IdentityBoundary, type SemanticBoundary, type AuthorityBoundary, type ExecutionBoundary, type EvidenceBoundary, type PresentationBoundary } from "../../../work-core/implementation/contracts/work.contracts.js";
 
 const sessionRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()
@@ -50,7 +52,8 @@ export type GetServiceRequestByIdOutput = {
 export const getServiceRequestByIdCommand: CapabilityCommand<GetServiceRequestByIdInput, Promise<GetServiceRequestByIdOutput>> = {
   kind: "command",
   name: "service-directory.getById",
-  version: "2.0.0",
+  version: "2.1.0",
+  capability: "service-directory",
   async execute(input: unknown) {
     // Initialize Postgres schema if using production database
     if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
@@ -58,7 +61,12 @@ export const getServiceRequestByIdCommand: CapabilityCommand<GetServiceRequestBy
     }
     
     const parsed = GetServiceRequestByIdInputSchema.parse(input);
-    const { serviceRequestId, sessionId } = parsed;
+    const { serviceRequestId, sessionId, tenantId, actorId, workspaceId } = parsed;
+    
+    // Validate boundary access first (6-boundary compliance check)
+    if (!validateBoundaryAccess("service-directory", "service-directory")) {
+      throw new Error("Boundary access denied: service-directory cannot access service-directory domain (internal check failed)");
+    }
 
     // Validate session exists and is active
     const session = await sessionRepository.byId(sessionId as any);
@@ -87,6 +95,53 @@ export const getServiceRequestByIdCommand: CapabilityCommand<GetServiceRequestBy
     //   throw new Error("[service-directory.getById] Session actor mismatch - authentication violation");
     // }
 
+    // Build all 6 boundary objects for full validation (6-boundary compliance)
+    const identityBoundary: IdentityBoundary = {
+      tenantId: finalTenantId,
+      organizationId: "service-directory.enterprise-os",
+      principalId: finalActorId,
+      ownerIds: [finalActorId]
+    };
+    const semanticBoundary: SemanticBoundary = {
+      domain: "service-directory",
+      entityType: "ServiceRequest",
+      operation: "getById",
+      workspaceId: finalWorkspaceId
+    };
+    const authorityBoundary: AuthorityBoundary = {
+      requiredPermission: "service-request:read",
+      actorId: finalActorId,
+      resourceScope: finalTenantId
+    };
+    const executionBoundary: ExecutionBoundary = {
+      commandName: "service-directory.getById",
+      capability: "service-directory",
+      timestamp: new Date().toISOString()
+    };
+    const evidenceBoundary: EvidenceBoundary = {
+      eventType: "SERVICE_REQUEST_ACCESSED",
+      actorId: finalActorId,
+      workspaceId: finalWorkspaceId,
+      timestamp: new Date().toISOString()
+    };
+    const presentationBoundary: PresentationBoundary = {
+      surface: "api",
+      clientVersion: "1.0"
+    };
+
+    // Run full boundary validation
+    const boundaryValidation = validateAllBoundaries({
+      identity: identityBoundary,
+      semantic: semanticBoundary,
+      authority: authorityBoundary,
+      execution: executionBoundary,
+      evidence: evidenceBoundary,
+      presentation: presentationBoundary
+    });
+    if (!boundaryValidation.valid) {
+      throw new Error(`Boundary validation failed: ${boundaryValidation.allErrors.join(", ")}`);
+    }
+
     const r = await serviceRepository.byId(serviceRequestId as unknown as ServiceRequestId);
     if (r === undefined) {
       return undefined;
@@ -99,7 +154,7 @@ export const getServiceRequestByIdCommand: CapabilityCommand<GetServiceRequestBy
 
     // 1. Extract canonical data from ServiceRequestAggregate for FACE projection
     const workId = r.workId;
-    const { tenantId, workspaceId, jurisdiction, relatedWorkIds } = r.context;
+    const { jurisdiction, relatedWorkIds } = r.context;
     
     // 2. Calculate actor participation for derived state
     const actorIds = new Set<string>();

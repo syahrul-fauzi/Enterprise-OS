@@ -2,10 +2,10 @@ import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert';
 import { executeWorkflowTransition } from '@repo/core-kernel';
 import { ILC_WORKFLOW } from '../runtime/workflow-definition.js';
-import { WorkInspectionAgent } from '@capabilities/work-inspection/implementation/services/inspection.agent.service';
+import { WorkInspectionAgent } from '@capabilities/work-inspection';
 import { getWorkRepositoryPostgres, type WorkRepositoryPostgres } from '@capabilities/work-core/implementation/repository/work-postgres.repository';
 import type { BaseWorkAggregateSchema, WorkId, ActorId } from '@capabilities/work-core/contracts/work.contracts';
-import { InspectionRecommendation } from '@capabilities/work-inspection/implementation/contracts/work-inspection.contracts';
+import { InspectionRecommendation } from '@capabilities/work-inspection';
 
 // Test actors with roles matching ILC workflow requirements
 const ACTORS = {

@@ -105,6 +105,7 @@ export function CaseWorkspace() {
     "draft",
     "open",
     "in_progress",
+    "under_review",
     "closed",
   ] as const;
   const priorityOptions: readonly PriorityFilter[] = [

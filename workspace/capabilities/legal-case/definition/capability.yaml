@@ -36,4 +36,5 @@ capability:
   evidence_required:
     - production_usage
     - user-adoption
+evidence_required: true
 stability: stable

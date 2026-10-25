@@ -1,7 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
 import { jwtVerify, createRemoteJWKSet } from "jose";
 // import { recordRuntimeInvocation } from "@repo/core-runtime"; // Commented out for governance-evidence standalone execution
 import type {
@@ -13,11 +12,9 @@ import type {
   TrustVerificationResult,
 } from "../contracts/index.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const WORKSPACE_ROOT = resolve(__dirname, "../../../../");
+// Path relatif langsung tanpa __filename/__dirname untuk kompatibilitas modul CommonJS/ESNext
 const TRUST_FRAMEWORK_PATH = resolve(
-  WORKSPACE_ROOT,
+  process.cwd(),
   "foundation/evidence/verification/trust-framework.json",
 );
 

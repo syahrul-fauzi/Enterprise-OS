@@ -1,9 +1,11 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { executionContext } from "@repo/core-runtime";
+import { recordRuntimeInvocation, executionContext } from "@repo/core-runtime";
 import { z } from "zod";
 import {
   type ApproveRequirementInput,
   type ApproveRequirementOutput,
+  type ArchiveRequirementInput,
+  type ArchiveRequirementOutput,
   type CreateRequirementInput,
   type CreateRequirementOutput,
   type MarkRequirementImplementedInput,
@@ -696,6 +698,100 @@ export const rejectRequirementReview: RejectRequirementReviewCommand = {
   },
 };
 
+const ArchiveRequirementWithContextSchema = z.object({
+  id: z.string().min(1),
+  // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
+  workId: z.string(),
+  sessionId: z.string().min(1),
+  archiverId: z.string().optional(),
+  tenantId: z.string().optional(),
+  workspaceId: z.string().optional(),
+});
+
+type ArchiveRequirementCommand = CapabilityCommand<
+  z.infer<typeof ArchiveRequirementWithContextSchema>,
+  Promise<ArchiveRequirementOutput>
+>;
+
+export const archiveRequirement: ArchiveRequirementCommand = {
+  kind: "command",
+  name: "requirement.archive",
+  version: "2.0.0",
+  async execute(input: z.infer<typeof ArchiveRequirementWithContextSchema>) {
+    await ensureIdentitySchema();
+    
+    const parsed = ArchiveRequirementWithContextSchema.parse(input);
+    const { id, sessionId: sessionIdValue, workId: workIdValue, tenantId, workspaceId, archiverId } = parsed;
+
+    // 1. Validate session exists and is active (enforce authentication)
+    const session = await sessionRepository.byId(sessionIdValue as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[requirement.archive] Invalid or revoked session - authentication violation");
+    }
+
+    const current = await RequirementRepositoryCurrent.byId(id as any, {
+      tenantId,
+      workspaceId
+    });
+    if (current === undefined) {
+      throw new Error(`[requirement.archive] Requirement not found: ${id}`);
+    }
+    // 2. Enforce workId consistency - cannot modify work association
+    if (current.workId !== workIdValue) {
+      throw new Error("[requirement.archive] Cannot modify work association - workId must remain consistent");
+    }
+    // 3. Prevent archiving if already archived (idempotent operation)
+    if (current.status === "archived") {
+      const invocationEvent = {
+        capabilityId: "requirement-management",
+        operationId: "requirement.archive",
+        sourceRef: "requirement-management/commands/archiveRequirement",
+        success: true,
+        input: input,
+        result: { id: current.id, status: "archived", archivedAt: current.archivedAt ?? new Date() },
+        productId: "requirement-management",
+        inputRefs: [`requirement:${input.id}`],
+        outputRefs: [`archived-requirement:${current.id}`],
+      };
+      recordRuntimeInvocation(invocationEvent);
+      return {
+        id: current.id,
+        status: "archived",
+        archivedAt: current.archivedAt ?? new Date(),
+      };
+    }
+
+    const archivedAt = new Date();
+    const next: RequirementAggregate = {
+      ...current,
+      status: "archived",
+      archivedAt,
+      workId: current.workId,
+    };
+    // Pass tenant/workspace/actor context to repository for isolation enforcement
+    await RequirementRepositoryCurrent.save(next, { 
+      tenantId, 
+      workspaceId, 
+      actorId: archiverId || session.actorId 
+    });
+
+    const invocationEvent = {
+      capabilityId: "requirement-management",
+      operationId: "requirement.archive",
+      sourceRef: "requirement-management/commands/archiveRequirement",
+      success: true,
+      input: input,
+      result: { id: next.id, status: "archived", archivedAt },
+      productId: "requirement-management",
+      inputRefs: [`requirement:${input.id}`],
+      outputRefs: [`archived-requirement:${next.id}`],
+    };
+    recordRuntimeInvocation(invocationEvent);
+    
+    return { id: next.id, status: "archived", archivedAt };
+  },
+};
+
 export const requirementCommands: Readonly<Record<string, CapabilityCommand>> = {
   "requirement.create": createRequirement,
   "requirement.update": updateRequirement,
@@ -706,6 +802,7 @@ export const requirementCommands: Readonly<Record<string, CapabilityCommand>> = 
   "requirement.requestReview": requestRequirementReview,
   "requirement.completeReview": completeRequirementReview,
   "requirement.rejectReview": rejectRequirementReview,
+  "requirement.archive": archiveRequirement,
   "requirement.getByOwner": getRequirementsByOwnerCommand,
   "requirement.getAll": getAllRequirementsCommand,
   "requirement.getById": getRequirementByIdCommand,

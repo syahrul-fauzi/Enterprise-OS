@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-10-22T15:43:35.799Z",
+  "totalErrors": 5,
+  "capabilityMismatchCount": 0,
+  "authInconsistencyCount": 5,
+  "pureAdapterViolationCount": 0,
+  "totalCommandsScanned": 27,
+  "totalRoutesScanned": 67
+}

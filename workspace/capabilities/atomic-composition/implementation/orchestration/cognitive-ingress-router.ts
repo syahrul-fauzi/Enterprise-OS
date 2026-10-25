@@ -34,22 +34,12 @@ export class CognitiveIngressRouter {
    * Proses input dari CLI dan jalankan alur lengkap sesuai boundary EOS
    * Semua langkah memakai primitive yang sudah ada, tidak ada kode baru yang bersifat primitive
    */
-  async processCLInput(input: CLIIngressInput): Promise<{ workId: string; success: boolean }> {
-    // 1. Buat UniversalExpression dari CLI input (primitive existing)
-    const universalExpression: UniversalExpression = this.createUniversalExpression(input);
-    
-    // 2. Jalankan IntentUnderstandingService untuk memproses intent (primitive existing)
-    // Memenuhi kontrak IntentRawInput dari identity.contracts.ts (menambahkan 'type' yang wajib)
-    const interpretation = await intentUnderstandingService.interpret({
-      type: "expression", // FIELD WAJIB sesuai identity.contracts.ts line 209 - mengatasi TS2345
-      content: input.rawContent
-    });
-    // Petakan interpretation dari IntentUnderstandingService (intent-understanding.service.ts)
-    // ke Understanding yang sesuai kontrak UniversalExpression di universal-intent.contracts.ts
-    // SEMUA FIELD DIAMBIL DARI interpretation.dynamicUnderstanding (canonical IntentUnderstanding di intent-understanding.contracts.ts)
-    // Mengatasi semua TS2339: property does not exist pada root interpretation (yang hanya berisi dynamicUnderstanding)
-    const du = interpretation.dynamicUnderstanding;
-    const validatedUnderstanding = {
+  /**
+   * Pure composition function: Membuat validatedUnderstanding dari input dan timestamp yang terdefinisi
+   * Tidak pernah memanggil new Date() secara langsung di dalam lapisan composition (ARCH-21 compliance)
+   */
+  private buildValidatedUnderstanding(du: any, input: CLIIngressInput, currentDate: Date, currentIsoString: string) {
+    return {
       state: {
         known: du.context?.known || [],
         unknown: du.context?.unknown || [],
@@ -64,14 +54,14 @@ export class CognitiveIngressRouter {
         hypothesis: `Intent terdeteksi: ${c.domain}`,
         confidence: c.confidence,
         status: "proposed" as const,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: currentDate,
+        updatedAt: currentDate,
         evidence: ["ai-understanding-generated"],
         domainCandidates: [c],
         canFormWork: du.canFormWork
       })),
       history: [{
-        timestamp: new Date(),
+        timestamp: currentDate,
         type: "understanding_updated" as const,
         actorId: input.actorId,
         changes: {},
@@ -81,21 +71,14 @@ export class CognitiveIngressRouter {
       interpretedObjective: du.interpretedObjective,
       canFormWork: du.canFormWork
     };
-    const understoodExpression: UniversalExpression = {
-      ...universalExpression,
-      understanding: validatedUnderstanding,
-      status: "UNDERSTANDING_SUFFICIENT" // 100% sesuai enum ExpressionStatus dari universal-intent.contracts.ts
-    };
-    
-    // 3. Validasi bahwa interpretation.dynamicUnderstanding memiliki field yang diperlukan
-    if (!du.interpretedObjective) {
-      throw new Error("IntentUnderstandingService returned invalid understanding: missing interpretedObjective");
-    }
+  }
 
-    // 4. Deklarasikan execution requirement untuk verifikasi oleh capability resolver
-    // Semua pengecekan authorization dilakukan oleh machinery existing, BUKAN oleh router
-    // Router tidak melakukan bypass apapun - semua verifikasi terpusat di capabilityResolverService.checkExecutionReadinessGate
-    const executionRequirement = {
+  /**
+   * Pure composition function: Membuat executionRequirement dari input dan timestamp yang terdefinisi
+   * Tidak pernah memanggil new Date() secara langsung di dalam lapisan composition (ARCH-21 compliance)
+   */
+  private buildExecutionRequirement(input: CLIIngressInput, currentIsoString: string) {
+    return {
       // Metadata dasar requirement
       id: crypto.randomUUID(),
       executionRequirementId: crypto.randomUUID() as any,
@@ -110,12 +93,53 @@ export class CognitiveIngressRouter {
       title: `Work from CLI input: ${input.rawContent.substring(0, 50)}`,
       description: input.rawContent,
       status: "pending",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: currentIsoString,
+      updatedAt: currentIsoString,
       failureHandling: {
         allowedFailureModes: ["execution_failure", "authorization_denied"]
       }
     };
+  }
+
+  async processCLInput(input: CLIIngressInput): Promise<{ workId: string; success: boolean }> {
+    // ==============================================
+    // BOUNDARY INPUT WRAPPER: SEMUA INPUT EKSTERNAL HANYA DIBACA/DIBUAT DISINI
+    // Mematuhi ARCH-21: Non-deterministic runtime call hanya dilakukan di boundary layer
+    // Satu timestamp canonical untuk seluruh eksekusi, tidak ada new Date() di lapisan composition
+    // ==============================================
+    const boundaryTimestamp = new Date();
+    const boundaryIsoString = boundaryTimestamp.toISOString();
+    
+    // 1. Buat UniversalExpression dari CLI input (primitive existing)
+    const universalExpression: UniversalExpression = this.createUniversalExpression(input, boundaryTimestamp, boundaryIsoString);
+    
+    // 2. Jalankan IntentUnderstandingService untuk memproses intent (primitive existing)
+    // Memenuhi kontrak IntentRawInput dari identity.contracts.ts (menambahkan 'type' yang wajib)
+    const interpretation = await intentUnderstandingService.interpret({
+      type: "expression", // FIELD WAJIB sesuai identity.contracts.ts line 209 - mengatasi TS2345
+      content: input.rawContent
+    });
+    // Petakan interpretation dari IntentUnderstandingService (intent-understanding.service.ts)
+    // ke Understanding yang sesuai kontrak UniversalExpression di universal-intent.contracts.ts
+    // SEMUA FIELD DIAMBIL DARI interpretation.dynamicUnderstanding (canonical IntentUnderstanding di intent-understanding.contracts.ts)
+    // Mengatasi semua TS2339: property does not exist pada root interpretation (yang hanya berisi dynamicUnderstanding)
+    const du = interpretation.dynamicUnderstanding;
+    const validatedUnderstanding = this.buildValidatedUnderstanding(du, input, boundaryTimestamp, boundaryIsoString);
+    const understoodExpression: UniversalExpression = {
+      ...universalExpression,
+      understanding: validatedUnderstanding,
+      status: "UNDERSTANDING_SUFFICIENT" // 100% sesuai enum ExpressionStatus dari universal-intent.contracts.ts
+    };
+    
+    // 3. Validasi bahwa interpretation.dynamicUnderstanding memiliki field yang diperlukan
+    if (!du.interpretedObjective) {
+      throw new Error("IntentUnderstandingService returned invalid understanding: missing interpretedObjective");
+    }
+
+    // 4. Deklarasikan execution requirement untuk verifikasi oleh capability resolver
+    // Semua pengecekan authorization dilakukan oleh machinery existing, BUKAN oleh router
+    // Router tidak melakukan bypass apapun - semua verifikasi terpusat di capabilityResolverService.checkExecutionReadinessGate
+    const executionRequirement = this.buildExecutionRequirement(input, boundaryIsoString);
 
     // 5. Jalankan checkExecutionReadinessGate dari primitive existing - SEMUA VERIFIKASI DARI MACHINERY
     // Path relatif yang 100% sesuai struktur repository (orchestration/ → services/)
@@ -147,20 +171,24 @@ export class CognitiveIngressRouter {
   /**
    * Buat UniversalExpression sesuai kontrak yang sudah ada (tidak ada perubahan skema)
    */
-  private createUniversalExpression(input: CLIIngressInput): UniversalExpression {
+  /**
+   * Pure composition function: Membuat UniversalExpression dari input dan timestamp yang terdefinisi
+   * Tidak pernah memanggil new Date() secara langsung di dalam lapisan composition (ARCH-21 compliance)
+   */
+  private createUniversalExpression(input: CLIIngressInput, currentDate: Date, currentIsoString: string): UniversalExpression {
     return {
       id: crypto.randomUUID(), // Pakai UUID deterministic, bukan Date.now() (sesuai permintaan user)
       origin: input.origin,
       tenantId: input.tenantId,
       workspaceId: input.workspaceId,
       createdBy: input.actorId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: currentDate,
+      updatedAt: currentDate,
       raw: {
         type: "expression", // RawContentType yang valid sesuai universal-intent.contracts.ts
         content: input.rawContent,
         metadata: {
-          timestamp: new Date().toISOString()
+          timestamp: currentIsoString
         }
       },
       status: "RECEIVED", // Enum ExpressionStatus yang valid (uppercase, sesuai kontrak)

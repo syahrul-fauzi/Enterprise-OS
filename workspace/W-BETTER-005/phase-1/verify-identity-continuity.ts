@@ -9,6 +9,9 @@
 // 6. node --import tsx/esm verify-identity-continuity.ts
 import * as fs from 'fs/promises';
 import * as path from 'path';
+// Hapus duplikat safeRecordEvidence - gunakan canonical dari work-core (Gate A requirement: reuse primitive yang sudah ada)
+// Import canonical safeRecordEvidence yang menangani SHA-256, fallback storage, dan semua durability policy
+import { safeRecordEvidence } from "../../capabilities/work-core/implementation/utils/evidence.utils.js";
 
 // File-based persistent work store (cross-process compatible, 100% kompatibel dengan interface PostgreSQL)
 const WORK_STORE_FILE = path.join(process.cwd(), 'work-store.json');
@@ -229,27 +232,19 @@ async function verifyIdentityContinuity() {
       results.notes.push("✅ Work tetap dapat diakses melalui repository tanpa dependency presentation");
     }
 
-    // Verifikasi evidence remains attributable (gunakan implementasi local untuk eksperimen tanpa PostgreSQL)
+    // Verifikasi evidence remains attributable (gunakan canonical safeRecordEvidence dari work-core)
     try {
-      // Implementasi safeRecordEvidence lokal yang kompatibel untuk eksperimen W-003
-      // Reuse pattern dari core work-postgres.repository.ts tanpa dependency database production
-      async function safeRecordEvidenceLocal(evidence: any): Promise<{ ok: boolean }> {
-        const evidenceFile = path.join(process.cwd(), 'after', 'verification-evidence.json');
-        const currentEvidence = JSON.parse(await fs.readFile(evidenceFile, 'utf8').catch(() => '[]'));
-        currentEvidence.push(evidence);
-        await fs.writeFile(evidenceFile, JSON.stringify(currentEvidence, null, 2));
-        return { ok: true };
-      }
-      
-      // Panggil fungsi lokal yang tidak membutuhkan dependency luar
-      const evidenceTest = await safeRecordEvidenceLocal({
+      // Panggil canonical safeRecordEvidence dari work-core untuk eksperimen W-005
+      const evidenceTest = await safeRecordEvidence({
         test: "identity_verification_executed",
+        capability: "eos.experiment.identity-continuity",
+        command: "work.identity.verification.executed",
+        work_id: "verification-process-W-BETTER-005",
+        tenant_id: "system",
+        actor_id: "eos-evidence-engine",
         timestamp: new Date().toISOString(),
-        entityRef: "verification-process",
-        entityType: "experiment",
-        action: "work.identity.verification.executed",
-        actorId: "eos-evidence-engine",
-        details: { experiment: "W-BETTER-003" }
+        sessionId: "experiment-W-BETTER-005-session-001",
+        details: { experiment: "W-BETTER-005" }
       });
       results.identity_continuity.evidence_remains_attributable = evidenceTest?.ok === true;
       if (results.identity_continuity.evidence_remains_attributable) {

@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  turbopack: {
-    root: '/root/Enterprise-OS/workspace'
-  },
+  // Hapus hardcoded turbopack root untuk development - hanya aktif di production/Docker
+  // turbopack: {
+  //   root: '/app'
+  // },
   async redirects() {
     return [
       {

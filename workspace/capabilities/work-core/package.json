@@ -24,7 +24,8 @@
     "build": "tsc",
     "lint": "eslint .",
     "check-types": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "arch-check": "node --import tsx ./scripts/architecture-fitness-checks.ts"
   },
   "dependencies": {
     "@repo/contracts-core": "workspace:*",

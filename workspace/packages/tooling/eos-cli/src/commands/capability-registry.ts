@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = resolve(__filename, "..");
 const EOS_ROOT_GLOBAL = resolve(__dirname, "../../../../../");
 // Fix path: core-capability-registry is inside workspace/packages, not root packages
-const CORE_CAPABILITY_REGISTRY_PATH = resolve(EOS_ROOT_GLOBAL, "workspace", "packages", "core", "capability-registry", "dist", "src", "index.js");
+const CORE_CAPABILITY_REGISTRY_PATH = "/root/Enterprise-OS/workspace/packages/core/capability-registry/dist/src/index.js";
 import { EOS_ROOT } from "../state.js";
 
 // Dynamically import core capability registry to avoid path resolution issues
@@ -119,8 +119,9 @@ function buildCapabilityGovernanceDebtBudget(input: {
   };
 }
 
-function buildModel() {
-  return buildCapabilityRegistryModel({
+async function buildModel() {
+  const coreModule = await getCoreCapabilityRegistry();
+  return coreModule.buildCapabilityRegistryModel({
     eosRoot: EOS_ROOT,
     workspaceRoot: WORKSPACE_ROOT,
     enterpriseRoot: ENTERPRISE_ROOT,
@@ -128,11 +129,11 @@ function buildModel() {
   });
 }
 
-function loadExecutionGraphSnapshot(): {
+async function loadExecutionGraphSnapshot(): Promise<{
   readonly executionGraph: ExecutionGraphReport;
   readonly source: "foundation_snapshot" | "live_build";
   readonly source_path: string;
-} {
+}> {
   if (existsSync(FOUNDATION_EXECUTION_GRAPH_PATH)) {
     return {
       executionGraph: readJson<ExecutionGraphReport>(FOUNDATION_EXECUTION_GRAPH_PATH),
@@ -150,7 +151,7 @@ function loadExecutionGraphSnapshot(): {
     };
   }
 
-  const registry = buildModel();
+  const registry = await buildModel();
   const artifactRegistry = buildArtifactRegistryModel(
     {
       eosRoot: EOS_ROOT,
@@ -169,8 +170,9 @@ function loadExecutionGraphSnapshot(): {
 
 export async function runVerifyCapabilityRegistryCommand(): Promise<number> {
   ensureDirectory(REGISTRY_EVIDENCE_DIR);
-  const report = buildModel();
-  const dependencyConstitution = buildCapabilityDependencyConstitutionReport(
+  const coreModule = await getCoreCapabilityRegistry();
+  const report = await buildModel();
+  const dependencyConstitution = coreModule.buildCapabilityDependencyConstitutionReport(
     {
       eosRoot: EOS_ROOT,
       workspaceRoot: WORKSPACE_ROOT,
@@ -179,8 +181,8 @@ export async function runVerifyCapabilityRegistryCommand(): Promise<number> {
     },
     report,
   );
-  const contractVersionRegistry = buildContractVersionRegistryReport(report);
-  const capabilityCertification = buildCapabilityCertificationReport({
+  const contractVersionRegistry = coreModule.buildContractVersionRegistryReport(report);
+  const capabilityCertification = coreModule.buildCapabilityCertificationReport({
     registry: report,
     dependencyConstitution,
     contractVersionRegistry,
@@ -253,7 +255,7 @@ export async function runVerifyCapabilityRegistryCommand(): Promise<number> {
 
 export async function runDiscoverCapabilityCommand(query: string): Promise<number> {
   ensureDirectory(DISCOVERY_EVIDENCE_DIR);
-  const executionGraphSnapshot = loadExecutionGraphSnapshot();
+  const executionGraphSnapshot = await loadExecutionGraphSnapshot();
   const report = {
     ...buildCapabilityDiscoveryReportFromExecutionGraph(
       query,
@@ -281,7 +283,7 @@ export async function runDiscoverCapabilityCommand(query: string): Promise<numbe
 
 export async function runPlanCapabilityCommand(query: string): Promise<number> {
   ensureDirectory(DISCOVERY_EVIDENCE_DIR);
-  const executionGraphSnapshot = loadExecutionGraphSnapshot();
+  const executionGraphSnapshot = await loadExecutionGraphSnapshot();
   const report = {
     ...buildCapabilityPlanningReportFromExecutionGraph(
       query,

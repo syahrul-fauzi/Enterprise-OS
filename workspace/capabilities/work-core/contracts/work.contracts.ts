@@ -1,14 +1,26 @@
 import { z } from "zod";
 // Import canonical identity types + factory functions dari @repo/contracts-core (single source of truth)
-// Himpun semua import dalam satu blok untuk menghindari duplikasi dan error export
+// Ini adalah satu-satunya sumber identity factories untuk menghindari duplikasi dan error symbol already declared
 import { 
   createWorkId,
   newWorkId,
+  createSessionId,
+  newSessionId,
+  createActorId,
+  newActorId,
+  createDeviceId,
+  newDeviceId,
+  createTenantId,
+  newTenantId,
+  createWorkspaceId,
+  newWorkspaceId,
   type WorkId,
   type TenantId, 
   type ActorId, 
   type WorkspaceId,
   type SessionId,
+  type DeviceId,
+  type DeviceHardwareAbstraction,
   type UserId,
   type UserAggregate,
   type MembershipRepository,
@@ -20,72 +32,31 @@ import {
 // Import randomUUID untuk internal use jika diperlukan (harus di-import sebelum digunakan)
 import { randomUUID } from "node:crypto";
 
-// Export canonical WorkId type and factories for downstream use
-// WorkId is exported as both type (for TypeScript) and value (runtime factory function from @repo/contracts-core)
+// Export SEMUA identity types dan factories yang diimport untuk dipakai oleh downstream capabilities
+// Semua factory function di-export agar websocket-adapter bisa mengimportnya dari @capabilities/work-core
 export { 
   createWorkId,
-  newWorkId
+  newWorkId,
+  createSessionId,
+  newSessionId,
+  createActorId,
+  newActorId,
+  createDeviceId,
+  newDeviceId,
+  createTenantId,
+  newTenantId,
+  createWorkspaceId,
+  newWorkspaceId
 };
-export type { WorkId, TenantId, ActorId, WorkspaceId, SessionId };
-
-// Implementasi brand function sederhana untuk identity types (berfungsi di runtime dan type-time)
-// Sama pattern dengan createWorkId dari @repo/contracts-core
-function createBrand<T>(brand: string) {
-  return (value: string) => value as unknown as T;
-}
-
-// Definisikan factory functions untuk semua identity types untuk konsistensi
-function createTenantId(value: string): TenantId {
-  return createBrand<TenantId>('TenantId')(value);
-}
-
-function createActorId(value: string): ActorId {
-  return createBrand<ActorId>('ActorId')(value);
-}
-
-function createWorkspaceId(value: string): WorkspaceId {
-  return createBrand<WorkspaceId>('WorkspaceId')(value);
-}
-
-function createSessionId(value: string): SessionId {
-  return createBrand<SessionId>('SessionId')(value);
-}
-
-function newTenantId(): TenantId {
-  return createTenantId(`tenant-${randomUUID()}`);
-}
-
-function newActorId(): ActorId {
-  return createActorId(`actor-${randomUUID()}`);
-}
-
-function newWorkspaceId(): WorkspaceId {
-  return createWorkspaceId(`workspace-${randomUUID()}`);
-}
-
-function newSessionId(): SessionId {
-  return createSessionId(`session-${randomUUID()}`);
-}
-
-// Export SEMUA factory functions dan type SETELAH implementasi (hanya SEKALI untuk menghindari duplikasi)
-export { 
-  createTenantId, 
-  createActorId, 
-  createWorkspaceId, 
-  createSessionId, 
-  newTenantId, 
-  newActorId, 
-  newWorkspaceId, 
-  newSessionId
-};
+export type { WorkId, TenantId, ActorId, WorkspaceId, SessionId, DeviceId, DeviceHardwareAbstraction };
 // export type { TenantId, WorkspaceId, ActorId, SessionId, WorkStatus, WorkAggregate, ContinuityObject, IdentityBoundary, SemanticBoundary, AuthorityBoundary }; // Baris ini diduplikasi di blok export baris 105-117 - dikomentari untuk menghindari TS2484
 // Export all types that were previously in the separate type export block to maintain all exports
 
 
 // Import work-specific repositories dan base utilities untuk di-export ulang
-import { getWorkRepositoryPostgres } from "../implementation/repository/work-postgres.repository.ts";
-import { initIdentitySchema, SessionRepositoryInMemory } from "../../../capabilities/identity/implementation/repositories/index.ts";
-import { PostgresRepository, getPool } from "../../../capabilities/identity/implementation/repositories/base.repository.ts";
+import { getWorkRepositoryPostgres } from "../implementation/repository/work-postgres.repository.js";
+import { initIdentitySchema, SessionRepositoryInMemory } from "../../../capabilities/identity/implementation/repositories/index.js";
+import { PostgresRepository, getPool } from "../../../capabilities/identity/implementation/repositories/base.repository.js";
 
 // Re-export SEMUA value/factory functions dan base classes
 export {
@@ -191,9 +162,25 @@ export interface ContinuityObject {
 }
 
 // ==============================================
-// 🎯 6 BOUNDARY CLASSES (EOS HIGH-VALUE WORK ARCHITECTURE)
-// Definisi formal dari 6 boundary classes yang memisahkan concerns tanpa memaksa workspace sebagai boundary universal
-// Identity → Semantic → Authority → Execution → Evidence → Presentation
+// 🎯 6 BOUNDARY CLASSES (EOS HIGH-VALUE WORK ARCHITECTURE) - CANONICAL BOUNDARY CONTRACT
+// SINGLE SOURCE OF TRUTH untuk semua domain authority dan boundary ownership
+// Sesuai Tahap B mandate: "Dokumentasikan siapa yang berwenang atas Work, Identity, Requirements, Capability, Execution, dan Evidence"
+// 
+// DOMAIN AUTHORITY OWNERSHIP (TERPUBATAT):
+// 1. Work Core (capabilities/work-core/) -> OTORITAS SEMANTIK SATU-SATUNYA untuk semua Work
+// 2. Identity (capabilities/identity/) -> OTORITAS IDENTITAS untuk actor, tenant, workspace, session
+// 3. Requirements-Traceability-Matrix (capabilities/requirements-traceability-matrix/) -> OTORITAS REQUIREMENTS untuk RTM
+// 4. Core-Kernel (@repo/core-kernel) -> OTORITAS CAPABILITY REGISTRY untuk eksekusi command/query
+// 5. Evidence-Governance (capabilities/evidence-governance/) -> OTORITAS EVIDENCE untuk pencatatan dan verifikasi bukti
+// 6. FACE (apps/web/, capabilities/face-shell/) -> OTORITAS PRESENTASI hanya untuk projection UI, BUKAN source of truth
+//
+// MANDATORY ENFORCEMENT:
+// - Workspace HANYA execution boundary: "Workspace bukan identitas, bukan authority"
+// - Semua capability harus menggunakan register[Name]Capability() canonical pattern
+// - Semua API route harus pure adapter (hanya invoke capabilityRegistry, tidak ada business logic)
+// - Larangan circular dependency antar domain core (work-core ↔ identity ↔ evidence-governance tidak boleh sirkular)
+// 
+// Urutan boundary yang tidak dapat diubah: Identity → Semantic → Authority → Execution → Evidence → Presentation
 // ==============================================
 /**
  * ① Identity Boundary: Siapa yang memiliki/berwenang terhadap Work?
@@ -372,8 +359,32 @@ export function validateAuthorityBoundary(boundary: AuthorityBoundary): { valid:
 }
 
 /**
+ * DETEKSI CIRCULAR DEPENDENCY (Tahap B mandate: larangan circular dependency)
+ * Memverifikasi bahwa tidak ada sirkularitas antar domain core yang dilarang
+ */
+export function validateNoCircularDependencies(dependencies: readonly string[]): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
+  const coreDomains = ['work-core', 'identity', 'evidence-governance', 'requirements-traceability-matrix', 'core-kernel'];
+  
+  // Cek apakah ada dependency yang menciptakan sirkularitas pada core domains
+  const presentCoreDeps = dependencies.filter(dep => coreDomains.some(core => dep.includes(core)));
+  
+  // Contoh sederhana: work-core tidak boleh depend pada capability yang depend kembali ke work-core
+  // Ini mencegah circular dependency antar domain core yang kritis
+  if (presentCoreDeps.length > new Set(presentCoreDeps).size) {
+    errors.push("Circular dependency detected among core domains - violates architecture boundary contract");
+  }
+  
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+}
+
+/**
  * Validasi semua 6 boundary classes secara bersamaan untuk satu Work
  * Mengembalikan semua error yang ditemukan di semua boundary classes
+ * Termasuk validasi circular dependency sesuai Tahap B mandate
  */
 export function validateAllBoundaries(params: {
   identity: IdentityBoundary;
@@ -382,6 +393,7 @@ export function validateAllBoundaries(params: {
   execution: ExecutionBoundary;
   evidence: EvidenceBoundary;
   presentation: PresentationBoundary;
+  dependencies?: readonly string[]; // Tambahan untuk validasi circular dependency
 }): { valid: boolean; allErrors: string[] } {
   const identityValidation = validateIdentityBoundary(params.identity);
   const authorityValidation = validateAuthorityBoundary(params.authority);
@@ -390,6 +402,12 @@ export function validateAllBoundaries(params: {
     ...identityValidation.errors,
     ...authorityValidation.errors
   ];
+  
+  // Jalankan circular dependency validation jika dependencies disediakan
+  if (params.dependencies) {
+    const circularValidation = validateNoCircularDependencies(params.dependencies);
+    allErrors.push(...circularValidation.errors);
+  }
   
   // Additional semantic boundary checks
   if (!params.semantic.domain) allErrors.push("SemanticBoundary missing required field: domain");
@@ -416,6 +434,57 @@ export function validateAllBoundaries(params: {
     allErrors
   };
 }
+
+// ==============================================
+// 📊 DOMAIN AUTHORITY OWNERSHIP (Tahap B: Dokumentasi batas domain dan ownership)
+// Pemilik resmi untuk setiap bounded context di EOS + dependensi yang diizinkan
+// Mencegah ambiguity ownership yang menyebabkan risiko arsitektur
+// Digunakan oleh architecture-fitness-checks.ts untuk validasi boundary compliance
+// ==============================================
+export const DOMAIN_AUTHORITY_OWNERSHIP: Record<string, string[]> = {
+  "work-core": ["semantic-contracts", "work-lifecycle", "evidence-chain"],
+  "identity": ["tenant-management", "user-management", "session-auth"],
+  "capability-dispatch": ["command-registry", "execution-engine"],
+  "evidence-gateway": ["audit-logging", "compliance-reporting"],
+  "acaas": ["billing", "quota", "metering"],
+  "requirement-management": ["rtm", "requirements-traceability", "requirement-lifecycle"]
+};
+
+// ==============================================
+// 6-BOUNDARY VALIDATION UTILITY (Tahap B Architecture Rule)
+// Fungsi untuk memvalidasi setiap command/route melewati batas yang diizinkan
+// Work Core TIDAK BOLEH mengakses domain lain (otoritas semantik terpusat)
+// ==============================================
+export function validateBoundaryAccess(domain: string, accessedDomain: string): boolean {
+  const allowedDependencies: Record<string, string[]> = {
+    "identity": ["work-core"],
+    "capability-dispatch": ["work-core", "identity"],
+    "evidence-gateway": ["work-core", "identity", "capability-dispatch"],
+    "acaas": ["work-core", "identity", "evidence-gateway"],
+    "requirement-management": ["work-core", "identity"],
+    "api-gateway": ["work-core", "identity", "capability-dispatch", "evidence-gateway", "acaas", "requirement-management"],
+    "work-core": [] // Work Core tidak boleh mengakses domain lain
+  };
+  return allowedDependencies[domain]?.includes(accessedDomain) ?? false;
+}
+
+// Autonomy Boundary Check Types - Canonical implementation for edge and other capabilities
+export interface AutonomyBoundaryCheck {
+  action: string;
+  allowed: string[];
+  prohibited: string[];
+}
+
+export interface AutonomyBoundaryResult {
+  ok: boolean;
+  violationFound: boolean;
+  log: DecisionLogEntry;
+  stage: any;
+  controlsApplied: string[];
+}
+
+// Canonical boundary check function exported from contracts
+export { checkAutonomyBoundary } from "../implementation/utils/boundary-checks.utils.js";
 
 // ==============================================
 // 📊 HIGH-VALUE WORK GRAPH (CORE ARCHITECTURE)
@@ -512,6 +581,9 @@ export interface WorkSemanticContract extends ContinuityObject {
   description?: string;           // Semantic context: Additional Work context
   platformMetadata?: Record<string, any>; // Context extension: Substrate-specific metadata (tidak mengubah makna)
   authorizedActors?: readonly { actorId: ActorId; role: string }[]; // Authorized actors for role-based authority checks (DEL-001)
+  authorizedDeviceIds?: string[]; // P0 FIX: Daftar device ID yang terotorisasi untuk mengakses Work ini (EDGE-DEVICE-001)
+  processedEventIds?: string[]; // P0 FIX: Daftar event ID yang sudah diproses untuk deduplikasi (EDGE-DEVICE-001)
+  offlineEventBuffer?: any[]; // P0 FIX: Buffer event offline untuk perangkat edge (EDGE-C-002)
   // Acceptance Contract - Signature requirements (FIN-001: Minimal extension)
   acceptanceContract?: {
     requiredSigners: ActorId[];
@@ -574,3 +646,126 @@ export interface WorkEvidenceContract {
 // Semua capability baru harus menggunakan interface terpisah untuk mempertahankan disiplin lapisan
 // ==============================================
 export interface WorkAggregate extends WorkSemanticContract, WorkControlContract, WorkEvidenceContract {}
+
+// ==============================================
+// 📊 ARCHITECTURE FITNESS CHECK TYPES (Tahap B requirement)
+// Type untuk menyimpan baseline fitness dan hasil run architecture fitness checks
+// Ditempatkan di akhir file untuk tidak mengganggu lapisan kontrak Work yang murni
+// ==============================================
+/**
+ * FitnessBaseline: Baseline metrik sebelum perubahan arsitektur (Tahap A)
+ * Digunakan untuk membandingkan produktivitas sebelum/setelah reorganisasi/refactoring
+ */
+export interface FitnessBaseline {
+  readonly timestamp: Date;
+  readonly totalErrors: number;
+  readonly capabilityMismatchCount: number;
+  readonly authInconsistencyCount: number;
+  readonly pureAdapterViolationCount: number;
+  readonly totalCommandsScanned: number;
+  readonly totalRoutesScanned: number;
+}
+
+/**
+ * FitnessCheckResult: Hasil eksekusi architecture fitness checks (Tahap B)
+ * Mengembalikan status kelulusan dan semua error yang ditemukan selama scan
+ */
+export interface FitnessCheckResult {
+  readonly passed: boolean;
+  readonly totalChecked: number;
+  readonly failed: number;
+  readonly errors: readonly string[];
+  readonly executionTimeMs: number;
+  readonly checkedAt: Date;
+}
+
+// ==============================================
+// 🧠 INTENT UNDERSTANDING CONTRACT (work-core canonical)
+// Menjawab: "Bagaimana raw input dipahami sebagai intent yang dapat dieksekusi?"
+// Menjaga single semantic authority di work-core, tidak bergantung pada atomic-composition
+// Menghindari dependensi total pada AI provider (RuleBasedProvider sebagai fallback)
+// ==============================================
+/**
+ * IntentRawInput: Input mentah dari actor (human/AI/machine) yang perlu dipahami
+ * Bisa berupa string langsung atau object structured dengan metadata
+ */
+export type IntentRawInput = {
+  type: "expression" | "request" | "signal" | "event";
+  content: string | object;
+  source?: {
+    type: "human" | "ai_agent" | "machine" | "external_system";
+    actorId?: string;
+    entryPoint?: string;
+  };
+};
+
+/**
+ * IntentContext: Konteks linguistik dan domain dari intent yang dipahami
+ */
+export type IntentContext = {
+  domain?: string;
+  locale?: string;
+  known?: string[];
+  unknown?: string[];
+  constraints?: string[];
+};
+
+/**
+ * DomainCandidate: Kandidat domain bisnis yang cocok dengan intent
+ */
+export type DomainCandidate = {
+  domain: string;
+  confidence: number;
+};
+
+/**
+ * ExtractedEntity: Entitas yang diekstrak dari raw input (nama perusahaan, nomor, dll.)
+ */
+export type ExtractedEntity = {
+  type: string;
+  value: string;
+  confidence: number;
+};
+
+/**
+ * UnderstandingEvidence: Bukti audit dari proses pemahaman intent
+ */
+export type UnderstandingEvidence = {
+  knownFacts: string[];
+  unknowns: string[];
+  hypotheses: string[];
+  evidenceCollected: string[];
+  confidence: number;
+  lastUpdated: string;
+};
+
+/**
+ * IntentUnderstanding: Hasil akhir pemahaman intent yang lengkap dan terverifikasi
+ * Dapat digunakan untuk membentuk Work atau menanyakan klarifikasi
+ */
+export type IntentUnderstanding = {
+  rawExpression: string;
+  interpretedObjective: string;
+  context: IntentContext;
+  domainCandidates: DomainCandidate[];
+  intentType: string;
+  entities: ExtractedEntity[];
+  unknowns: string[];
+  clarificationRequired: boolean;
+  informationResponse?: string;
+  canFormWork: boolean;
+  canProceedToWork: boolean;
+  understandingEvidence: UnderstandingEvidence;
+  failureIntelligence?: any;
+};
+
+/**
+ * IntentUnderstandingProvider: Antarmuka universal untuk semua engine pemahaman intent
+ * AI Provider (OpenAI/Anthropic) dan RuleBasedProvider (fallback) harus implementasi ini
+ * Mempertahankan interoperabilitas dan single semantic authority
+ */
+export interface IntentUnderstandingProvider {
+  understand(rawInput: string | IntentRawInput): Promise<IntentUnderstanding>;
+  isAvailable(): boolean;
+  getProviderType(): "ai" | "rulebased" | "manual";
+}

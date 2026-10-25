@@ -33,9 +33,21 @@ export async function GET(
       return NextResponse.json({ error: "Work item not found" }, { status: 404 });
     }
 
-    // Verify actor has access to this work (tenant/workspace match)
+    // Verify actor has access to this work (tenant/workspace match + participant verification)
     if (work.tenantId !== decodedSession.tenantId || work.workspaceId !== decodedSession.workspaceId) {
       return NextResponse.json({ error: "Unauthorized to access this work's evidence" }, { status: 403 });
+    }
+    
+    // Additional participant check to ensure only authorized actors can access evidence
+    const requesterActorId = decodedSession.actorId;
+    const isParticipant = work.participants?.some((p: any) => p.id === requesterActorId);
+    const isActor = work.actorId === requesterActorId;
+    const isCustomer = (work as any).customerId === requesterActorId;
+    const isAuthorized = isParticipant || isActor || isCustomer;
+    
+    if (!isAuthorized) {
+      console.error(`[API/WORK/[ID]/EVIDENCE] ❌ Unauthorized: actor ${requesterActorId} is not a participant of work ${workId}`);
+      return NextResponse.json({ error: "Unauthorized: You do not have access to this work's evidence" }, { status: 403 });
     }
 
     // Return evidence with full audit trail, as stored in canonical record

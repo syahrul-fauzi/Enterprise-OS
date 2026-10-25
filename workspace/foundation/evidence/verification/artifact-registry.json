@@ -1,9 +1,9 @@
 {
   "summary": {
-    "total_artifacts": 25,
+    "total_artifacts": 27,
     "products": 3,
-    "capabilities": 22,
-    "with_owner": 19,
+    "capabilities": 24,
+    "with_owner": 21,
     "owner_missing": 3
   },
   "artifacts": [
@@ -116,7 +116,7 @@
         "OrchestrationPlanRepository"
       ],
       "declared_dependencies": [
-        "core-runtime",
+        "work-core",
         "workflow-engine"
       ],
       "dependency_policy": {
@@ -842,6 +842,10 @@
         },
         {
           "relation": "depends_on",
+          "target": "capability:work-core"
+        },
+        {
+          "relation": "depends_on",
           "target": "capability:workflow-engine"
         }
       ]
@@ -1336,11 +1340,11 @@
       ],
       "declared_dependencies": [
         "connector-ecosystem",
-        "core-runtime",
         "evidence-registry",
         "governance-evidence",
         "identity",
-        "security-hardening"
+        "security-hardening",
+        "work-core"
       ],
       "dependency_policy": {
         "allowed_dependencies": [],
@@ -1365,11 +1369,11 @@
           "range": ">=0.1 <0.2"
         },
         {
-          "name": "CoreRuntimeProvider",
+          "name": "GovernanceEvidenceProvider",
           "range": ">=0.1 <0.2"
         },
         {
-          "name": "GovernanceEvidenceProvider",
+          "name": "WorkCoreProvider",
           "range": ">=0.1 <0.2"
         }
       ],
@@ -1501,6 +1505,10 @@
         {
           "relation": "depends_on",
           "target": "capability:security-hardening"
+        },
+        {
+          "relation": "depends_on",
+          "target": "capability:work-core"
         }
       ]
     },
@@ -1520,8 +1528,8 @@
       ],
       "declared_dependencies": [
         "api-platform",
-        "core-runtime",
-        "security-hardening"
+        "security-hardening",
+        "work-core"
       ],
       "dependency_policy": {
         "allowed_dependencies": [],
@@ -1537,7 +1545,9 @@
       "required_contract_ranges": [],
       "empirically_verified_products": [],
       "product_reach_ratio": 1,
-      "reachable_from_products": [],
+      "reachable_from_products": [
+        "web"
+      ],
       "reachability_status": "REACHABLE",
       "runtime_ref": "workspace/capabilities/connector-ecosystem/implementation/service.ts",
       "planner_ref": null,
@@ -1889,6 +1899,10 @@
         {
           "relation": "depends_on",
           "target": "capability:security-hardening"
+        },
+        {
+          "relation": "depends_on",
+          "target": "capability:work-core"
         }
       ]
     },
@@ -1909,9 +1923,9 @@
         "ConsultationService"
       ],
       "declared_dependencies": [
-        "core-runtime",
         "evidence-registry",
         "legal-case",
+        "work-core",
         "workflow-engine"
       ],
       "dependency_policy": {
@@ -2047,6 +2061,10 @@
         },
         {
           "relation": "depends_on",
+          "target": "capability:work-core"
+        },
+        {
+          "relation": "depends_on",
           "target": "capability:workflow-engine"
         }
       ]
@@ -2068,9 +2086,9 @@
         "EvidenceRepository"
       ],
       "declared_dependencies": [
-        "core-runtime",
         "governance-evidence",
-        "trust-framework"
+        "trust-framework",
+        "work-core"
       ],
       "dependency_policy": {
         "allowed_dependencies": [],
@@ -2727,6 +2745,10 @@
         {
           "relation": "depends_on",
           "target": "capability:trust-framework"
+        },
+        {
+          "relation": "depends_on",
+          "target": "capability:work-core"
         }
       ]
     },
@@ -2750,13 +2772,13 @@
         "GovernanceSession"
       ],
       "declared_dependencies": [
-        "core-runtime",
-        "trust-framework"
+        "trust-framework",
+        "work-core"
       ],
       "dependency_policy": {
         "allowed_dependencies": [
-          "core-runtime",
-          "trust-framework"
+          "trust-framework",
+          "work-core"
         ],
         "forbidden_dependencies": [
           "api-platform",
@@ -3894,6 +3916,10 @@
         {
           "relation": "depends_on",
           "target": "capability:trust-framework"
+        },
+        {
+          "relation": "depends_on",
+          "target": "capability:work-core"
         }
       ]
     },
@@ -3917,15 +3943,15 @@
         "GovernanceSummaryView"
       ],
       "declared_dependencies": [
-        "core-runtime",
         "evidence-registry",
-        "governance-evidence"
+        "governance-evidence",
+        "work-core"
       ],
       "dependency_policy": {
         "allowed_dependencies": [
-          "core-runtime",
           "evidence-registry",
-          "governance-evidence"
+          "governance-evidence",
+          "work-core"
         ],
         "forbidden_dependencies": [
           "api-platform",
@@ -4304,6 +4330,10 @@
         {
           "relation": "depends_on",
           "target": "capability:governance-evidence"
+        },
+        {
+          "relation": "depends_on",
+          "target": "capability:work-core"
         }
       ]
     },
@@ -4429,8 +4459,8 @@
         "KnowledgeGraphProvider"
       ],
       "declared_dependencies": [
-        "core-runtime",
-        "evidence-registry"
+        "evidence-registry",
+        "work-core"
       ],
       "dependency_policy": {
         "allowed_dependencies": [],
@@ -4455,7 +4485,7 @@
       "reachability_status": "REACHABLE",
       "runtime_ref": "workspace/capabilities/knowledge-graph/implementation/service.ts",
       "planner_ref": null,
-      "composer_ref": null,
+      "composer_ref": "workspace/capabilities/knowledge-graph/composition",
       "verification_ref": "workspace/capabilities/knowledge-graph/tests",
       "discovery_signature": [
         "all",
@@ -4856,6 +4886,10 @@
         {
           "relation": "depends_on",
           "target": "capability:evidence-registry"
+        },
+        {
+          "relation": "depends_on",
+          "target": "capability:work-core"
         }
       ]
     },
@@ -5060,9 +5094,9 @@
         "DocumentService"
       ],
       "declared_dependencies": [
-        "core-runtime",
         "knowledge-graph",
-        "security-hardening"
+        "security-hardening",
+        "work-core"
       ],
       "dependency_policy": {
         "allowed_dependencies": [],
@@ -5180,6 +5214,10 @@
         {
           "relation": "depends_on",
           "target": "capability:security-hardening"
+        },
+        {
+          "relation": "depends_on",
+          "target": "capability:work-core"
         }
       ]
     },
@@ -5198,9 +5236,9 @@
         "ObservabilityProvider"
       ],
       "declared_dependencies": [
-        "core-runtime",
         "evidence-registry",
-        "governance-evidence"
+        "governance-evidence",
+        "work-core"
       ],
       "dependency_policy": {
         "allowed_dependencies": [],
@@ -5692,6 +5730,136 @@
         {
           "relation": "depends_on",
           "target": "capability:governance-evidence"
+        },
+        {
+          "relation": "depends_on",
+          "target": "capability:work-core"
+        }
+      ]
+    },
+    {
+      "id": "capability:reasoning",
+      "artifact_type": "capability",
+      "label": "Reasoning Capability",
+      "manifest_ref": "workspace/capabilities/reasoning/definition/capability.yaml",
+      "governance_status": "VALID",
+      "owner": "ai-reasoning-domain",
+      "manifest_version": "1.0.0",
+      "stability": "experimental",
+      "lifecycle_stage": "core",
+      "owner_requirement_status": "REQUIRED_PRESENT",
+      "declared_exports": [
+        "ReasoningContractRepository",
+        "ReasoningProvider"
+      ],
+      "declared_dependencies": [
+        "policy-engine",
+        "work-core"
+      ],
+      "dependency_policy": {
+        "allowed_dependencies": [],
+        "forbidden_dependencies": []
+      },
+      "consumers": [
+        "agent-orchestration",
+        "requirement-management",
+        "workflow-engine"
+      ],
+      "declared_consumers": [],
+      "provided_contract_versions": [],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [],
+      "product_reach_ratio": 1,
+      "reachable_from_products": [],
+      "reachability_status": "REACHABLE",
+      "runtime_ref": "workspace/capabilities/reasoning/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": null,
+      "verification_ref": null,
+      "discovery_signature": [
+        "authority",
+        "eos",
+        "for",
+        "human",
+        "interchangeable",
+        "llm",
+        "maintaining",
+        "operation",
+        "planner",
+        "provide",
+        "reasoning",
+        "semantic",
+        "slm",
+        "while",
+        "work"
+      ],
+      "execution_evidence": {
+        "capability_id": "reasoning",
+        "capability_name": "Reasoning Capability",
+        "provided_capabilities": [
+          "work-classify",
+          "work-decompose",
+          "work-plan",
+          "work-route",
+          "work-summarize"
+        ],
+        "lifecycle_stage": "core",
+        "governance_status": "VALID",
+        "declared_products": [],
+        "mapped_products": [],
+        "runtime_products": [],
+        "empirically_verified_products": [],
+        "execution_reachability": {
+          "product": false,
+          "composition": false,
+          "runtime": false,
+          "observed": false,
+          "verified": false,
+          "reproducible": false,
+          "evidence": false,
+          "replay": false,
+          "status": "DECLARED"
+        },
+        "runtime_invocations": {
+          "total": 0,
+          "observed_products": [],
+          "claim_boundary": "Runtime invocation telemetry is captured from actual capability service execution during product verification tests. Coverage is limited to currently verified products and exercised operations."
+        },
+        "stewardship_gap": "Declared consumer exists without executable product verification evidence.",
+        "per_product": [],
+        "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
+      },
+      "provided_artifacts": [
+        "capability_contract:work-classify",
+        "capability_contract:work-decompose",
+        "capability_contract:work-plan",
+        "capability_contract:work-route",
+        "capability_contract:work-summarize"
+      ],
+      "declared_relations": [
+        {
+          "relation": "provides",
+          "target": "capability_contract:work-classify"
+        },
+        {
+          "relation": "provides",
+          "target": "capability_contract:work-decompose"
+        },
+        {
+          "relation": "provides",
+          "target": "capability_contract:work-plan"
+        },
+        {
+          "relation": "provides",
+          "target": "capability_contract:work-route"
+        },
+        {
+          "relation": "provides",
+          "target": "capability_contract:work-summarize"
+        },
+        {
+          "relation": "depends_on",
+          "target": "capability:work-core"
         }
       ]
     },
@@ -5714,14 +5882,14 @@
         "SearchRequirementsInput"
       ],
       "declared_dependencies": [
-        "core-runtime",
         "governance-evidence",
+        "work-core",
         "workflow-engine"
       ],
       "dependency_policy": {
         "allowed_dependencies": [
-          "core-runtime",
           "governance-evidence",
+          "work-core",
           "workflow-engine"
         ],
         "forbidden_dependencies": [
@@ -6429,6 +6597,10 @@
         {
           "relation": "depends_on",
           "target": "capability:governance-evidence"
+        },
+        {
+          "relation": "depends_on",
+          "target": "capability:work-core"
         },
         {
           "relation": "depends_on",
@@ -7575,9 +7747,9 @@
         "SecurityHardeningProvider"
       ],
       "declared_dependencies": [
-        "core-runtime",
         "identity",
-        "trust-framework"
+        "trust-framework",
+        "work-core"
       ],
       "dependency_policy": {
         "allowed_dependencies": [],
@@ -8418,6 +8590,10 @@
         {
           "relation": "depends_on",
           "target": "capability:trust-framework"
+        },
+        {
+          "relation": "depends_on",
+          "target": "capability:work-core"
         }
       ]
     },
@@ -8461,7 +8637,7 @@
       "runtime_ref": "workspace/capabilities/service-directory/implementation/commands/service.commands.ts",
       "planner_ref": null,
       "composer_ref": null,
-      "verification_ref": null,
+      "verification_ref": "workspace/capabilities/service-directory/tests",
       "discovery_signature": [
         "acros",
         "and",
@@ -8573,7 +8749,9 @@
       "required_contract_ranges": [],
       "empirically_verified_products": [],
       "product_reach_ratio": 0.6667,
-      "reachable_from_products": [],
+      "reachable_from_products": [
+        "web"
+      ],
       "reachability_status": "REACHABLE",
       "runtime_ref": "workspace/capabilities/services-id/implementation/service.ts",
       "planner_ref": null,
@@ -8674,11 +8852,11 @@
         "TrustVerificationProfile"
       ],
       "declared_dependencies": [
-        "core-runtime"
+        "work-core"
       ],
       "dependency_policy": {
         "allowed_dependencies": [
-          "core-runtime"
+          "work-core"
         ],
         "forbidden_dependencies": [
           "api-platform",
@@ -8894,6 +9072,142 @@
         {
           "relation": "provides",
           "target": "capability_contract:TrustFrameworkProvider@1.0.0"
+        },
+        {
+          "relation": "depends_on",
+          "target": "capability:work-core"
+        }
+      ]
+    },
+    {
+      "id": "capability:work-core",
+      "artifact_type": "capability",
+      "label": "Work Core",
+      "manifest_ref": "workspace/capabilities/work-core/definition/capability.yaml",
+      "governance_status": "VALID",
+      "owner": "work-domain",
+      "manifest_version": "1.0.0",
+      "stability": "experimental",
+      "lifecycle_stage": "core",
+      "owner_requirement_status": "REQUIRED_PRESENT",
+      "declared_exports": [
+        "WorkAggregate",
+        "WorkCommands",
+        "WorkRepository"
+      ],
+      "declared_dependencies": [
+        "core-runtime",
+        "persistence-layer",
+        "security-hardening"
+      ],
+      "dependency_policy": {
+        "allowed_dependencies": [],
+        "forbidden_dependencies": []
+      },
+      "consumers": [
+        "composition-core",
+        "legal-workspace",
+        "presentation-entities",
+        "proof-ledger"
+      ],
+      "declared_consumers": [],
+      "provided_contract_versions": [],
+      "required_contract_ranges": [],
+      "empirically_verified_products": [],
+      "product_reach_ratio": 1.3333,
+      "reachable_from_products": [
+        "api",
+        "web",
+        "workers"
+      ],
+      "reachability_status": "REACHABLE",
+      "runtime_ref": "workspace/capabilities/work-core/implementation/service.ts",
+      "planner_ref": null,
+      "composer_ref": null,
+      "verification_ref": null,
+      "discovery_signature": [
+        "authority",
+        "context",
+        "continuity",
+        "core",
+        "dan",
+        "dari",
+        "eos",
+        "evidence",
+        "identity",
+        "inti",
+        "menjaga",
+        "object",
+        "outcome",
+        "persistent",
+        "sebagai",
+        "semantic",
+        "state",
+        "thesi",
+        "work",
+        "yang"
+      ],
+      "execution_evidence": {
+        "capability_id": "work-core",
+        "capability_name": "Work Core",
+        "provided_capabilities": [
+          "work-continuity",
+          "work-evidence",
+          "work-identity",
+          "work-state"
+        ],
+        "lifecycle_stage": "core",
+        "governance_status": "VALID",
+        "declared_products": [],
+        "mapped_products": [],
+        "runtime_products": [],
+        "empirically_verified_products": [],
+        "execution_reachability": {
+          "product": false,
+          "composition": false,
+          "runtime": false,
+          "observed": false,
+          "verified": false,
+          "reproducible": false,
+          "evidence": false,
+          "replay": false,
+          "status": "DECLARED"
+        },
+        "runtime_invocations": {
+          "total": 0,
+          "observed_products": [],
+          "claim_boundary": "Runtime invocation telemetry is captured from actual capability service execution during product verification tests. Coverage is limited to currently verified products and exercised operations."
+        },
+        "stewardship_gap": "Declared consumer exists without executable product verification evidence.",
+        "per_product": [],
+        "claim_boundary": "Execution evidence now distinguishes declared, observed, verified, and reproducible capability states using direct runtime invocation telemetry from product verification plus verification/replay evidence already present in the foundation pipeline."
+      },
+      "provided_artifacts": [
+        "capability_contract:work-continuity",
+        "capability_contract:work-evidence",
+        "capability_contract:work-identity",
+        "capability_contract:work-state"
+      ],
+      "declared_relations": [
+        {
+          "relation": "provides",
+          "target": "capability_contract:work-continuity"
+        },
+        {
+          "relation": "provides",
+          "target": "capability_contract:work-evidence"
+        },
+        {
+          "relation": "provides",
+          "target": "capability_contract:work-identity"
+        },
+        {
+          "relation": "provides",
+          "target": "capability_contract:work-state"
+        },
+        {
+          "relation": "depends_on",
+          "target": "capability:security-hardening"
         }
       ]
     },
@@ -8982,13 +9296,13 @@
         "WorkflowInstance"
       ],
       "declared_dependencies": [
-        "core-runtime",
-        "governance-evidence"
+        "governance-evidence",
+        "work-core"
       ],
       "dependency_policy": {
         "allowed_dependencies": [
-          "core-runtime",
-          "governance-evidence"
+          "governance-evidence",
+          "work-core"
         ],
         "forbidden_dependencies": [
           "api-platform",
@@ -9872,6 +10186,10 @@
         {
           "relation": "depends_on",
           "target": "capability:governance-evidence"
+        },
+        {
+          "relation": "depends_on",
+          "target": "capability:work-core"
         }
       ]
     }

@@ -10,6 +10,9 @@ export interface CanonicalWorkRecord {
   domainType: string;
   specialization: string;
   status: string;
+  // SLICE-001-W06: Minimal fix - tambahkan status kasus dan pembayaran untuk stakeholder view
+  caseStatus?: string;
+  paymentStatus?: string;
   tenantId: string;
   workspaceId: string;
   actorId: string;
@@ -18,8 +21,11 @@ export interface CanonicalWorkRecord {
   priority?: "low" | "medium" | "high" | "critical";
   lawyerId?: string;
   providerId?: string;
+  createdBy?: string;
+  approvedBy?: string;
   platformSource?: string;
   platformMetadata?: Record<string, unknown>;
+  paymentStatus?: string; // SLICE-001-W05: Tambahkan paymentStatus untuk validasi closure
   hasBottleneck?: boolean;
   nextAction?: { label: string; actionId: string };
   evidence: Array<{ id?: string; type: string; title: string; content?: string; uploadedAt?: string; metadata?: Record<string, unknown> }>;
@@ -54,6 +60,17 @@ export async function buildWorkRealityModel(
 ): Promise<WorkRealityModel> {
   // Semantic interpretation and state derivation happens EXCLUSIVELY on server
   const getNextStatus = (status: string, workType: string): string => {
+    // ILC Article-specific statuses (for ILC legal articles workflow)
+    if (workType === 'ilc-article') {
+      switch (status) {
+        case "draft": return "Artikel dalam proses penulisan oleh penulis";
+        case "submitted": return "Artikel terkirim, menunggu peninjauan editor";
+        case "submitted_for_approval": return "Artikel siap disetujui, menunggu aksi editor";
+        case "approved": return "Artikel telah disetujui dan dipublikasikan";
+        case "archived": return "Artikel telah terarsip, dapat diakses kembali";
+        default: return "Lanjutkan proses artikel Anda";
+      }
+    }
     // ILC Community Discussion-specific statuses
     if (workType === 'community-discussion') {
       switch (status) {
@@ -89,6 +106,7 @@ export async function buildWorkRealityModel(
 
   const workId = work.id as string;
   const workType = work.domainType === 'community-discussion' ? 'community-discussion' :
+                   work.domainType === 'ilc-article' ? 'ilc-article' :
                    workId.startsWith('case-') ? 'case' :
                    workId.startsWith('requirement-') ? 'requirement' :
                    workId.startsWith('request-') ? 'service-request' : 'work';
@@ -176,12 +194,19 @@ export async function buildWorkRealityModel(
   };
 
   // Build and return canonical WorkRealityModel - single source of truth for presentation layer
+  // SLICE-001-W06: Inject case and payment status into reality model, only visible to authorized stakeholders
+  const hasStakeholderAccess = session.userCapabilities?.includes('work:stakeholder-view') ?? false;
   return {
     identity: {
       title: work.title || "Untitled Work",
       description: work.description || "",
       workId: work.workId || work.id,
       status: work.status || "in_progress",
+      // Hanya tampilkan status kasus dan pembayaran jika user punya capability yang sesuai
+      ...(hasStakeholderAccess && {
+        caseStatus: work.caseStatus || "Status tidak tersedia",
+        paymentStatus: work.paymentStatus || "Status pembayaran tidak tersedia"
+      }),
       linkedIntentId: work.linkedIntentId,
       specialization: work.specialization
     },

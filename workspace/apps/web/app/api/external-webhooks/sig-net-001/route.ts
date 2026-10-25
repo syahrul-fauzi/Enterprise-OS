@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { handleSignatureProviderWebhookUpdate } from "../../../../../capabilities/connector-ecosystem/implementation/services/connector-ecosystem.service.js";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
+import { getWork } from "@repo/capabilities-work-core/implementation/commands/work.commands";
 
 // SIG-NET-001: Provider-agnostic signature provider webhook endpoint
 // Memproses webhook dari DocuSign, Adobe Sign, atau provider lain dengan tetap mempertahankan boundary provider-neutral
@@ -34,6 +35,25 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
+    // DAPATKAN KONTEKS WORK SECARA CANONICAL (AUTH-003 compliance: tidak hardcode tenant/workspace)
+    // Dapatkan detail Work dari work-core untuk mendapatkan tenantId, workspaceId yang sebenarnya
+    let canonicalWork;
+    try {
+      canonicalWork = await getWork({
+        workId: workId,
+        actorId: `signature-provider:${providerName}`,
+        sessionId: "webhook-session", // Webhook memiliki session sistem terverifikasi
+        tenantId: "", // Akan diisi internal oleh work-core jika workId valid
+        workspaceId: ""
+      });
+    } catch (workError: any) {
+      if (workError.message.includes("work_not_found")) {
+        console.error(`[SIG-NET-001] ❌ Work not found: ${workId}`);
+        return NextResponse.json({ error: "Work not found" }, { status: 404 });
+      }
+      throw workError;
+    }
+
     // Panggil universal handler dari connector-ecosystem - reuse semua logic existing
     const result = await handleSignatureProviderWebhookUpdate({
       envelopeId,
@@ -58,10 +78,10 @@ export async function POST(request: Request) {
       const { output: updateResult } = await capabilityRegistry.invoke("work-core", "update", {
         workId: workId,
         actorId: `signature-provider:${providerName}`,
-        workspaceId: "default-workspace", // Akan diambil dari work yang ada oleh internal logic
-        sessionId: (global as any).currentSessionId || "default-session",
-        tenantId: "default-tenant",
-        version: 0, // Diganti dengan versi aktual oleh work.commands.ts
+        workspaceId: canonicalWork.workspaceId, // Gunakan workspaceId asli dari Work
+        sessionId: "webhook-session",
+        tenantId: canonicalWork.tenantId, // Gunakan tenantId asli dari Work
+        version: canonicalWork.version || 0,
         updates: {
           status: "SIGNATURE_COMPLETE"
         }

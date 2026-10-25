@@ -18,11 +18,11 @@ exports:
   - SearchRequirementsInput
   - ApproveRequirementInput
 depends_on:
-  - core-runtime
+  - work-core
   - workflow-engine
   - governance-evidence
 allowed_dependencies:
-  - core-runtime
+  - work-core
   - workflow-engine
   - governance-evidence
 forbidden_dependencies:
@@ -46,7 +46,9 @@ capability:
     - cross_product_uniformity
     - all_products_adopted
     - end_to_end_lifecycle
+evidence_required: true
 stability: stable
+deprecation: none
 contracts:
   requires:
     - name: WorkflowEngineProvider

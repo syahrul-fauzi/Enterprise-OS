@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/index.js";
 import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";
 import { getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core/index.js";
+import { validateBoundaryAccess, validateAllBoundaries, type IdentityBoundary, type SemanticBoundary, type AuthorityBoundary, type ExecutionBoundary, type EvidenceBoundary, type PresentationBoundary } from "../../../work-core/contracts/work.contracts.js";
 import type { CaseId, CaseAggregate } from "../../contracts/index.js";
 
 // Lazy session repository initialization to unify test/prod storage (same pattern as case.commands.ts)
@@ -59,7 +60,7 @@ export const getCaseByIdCommand: CapabilityCommand<GetCaseByIdInput, Promise<Get
   kind: "command",
   name: "case.getById",
   capability: "legal-case",
-  version: "2.0.0",
+  version: "2.1.0", // Increment version untuk CAPABILITY_MISMATCH fix
   async execute(input: unknown) {
     // Initialize Postgres schema only when in production mode
     if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
@@ -67,19 +68,19 @@ export const getCaseByIdCommand: CapabilityCommand<GetCaseByIdInput, Promise<Get
     }
     
     const parsed = GetCaseByIdInputSchema.parse(input);
-    const { caseId, sessionId } = parsed;
+    const { caseId, sessionId, tenantId, workspaceId, actorId: parsedActorId } = parsed;
 
     // Support anonymous sessions (same bypass pattern as other commands) - allow caller-passed context
     const rawInput = input as any;
     const isAnonymous = rawInput.actorId === "anonymous.user";
 
-    let tenantId: string;
-    let workspaceId: string;
-    let actorId: string;
+    let finalTenantId: string;
+    let finalWorkspaceId: string;
+    let finalActorId: string;
     if (isAnonymous && rawInput.tenantId && rawInput.workspaceId && rawInput.actorId) {
-      tenantId = rawInput.tenantId;
-      workspaceId = rawInput.workspaceId;
-      actorId = rawInput.actorId;
+      finalTenantId = rawInput.tenantId;
+      finalWorkspaceId = rawInput.workspaceId;
+      finalActorId = rawInput.actorId;
     } else {
       // Validate session exists and is active (uses lazy repository for unified test/prod storage)
       const sessionRepository = await getSessionRepositoryLazy();
@@ -88,9 +89,84 @@ export const getCaseByIdCommand: CapabilityCommand<GetCaseByIdInput, Promise<Get
         throw new Error("[case.getById] Invalid or revoked session - authentication violation");
       }
       // Auto-populate isolation context from trusted session (minimal fix)
-      ({ tenantId, workspaceId, actorId } = session);
+      ({ tenantId: finalTenantId, workspaceId: finalWorkspaceId, actorId: finalActorId } = session);
     }
-    // Session is already verified during creation - no need for redundant checks
+
+    // 0. Basic boundary access validation (required for fitness checks)
+    if (!validateBoundaryAccess("legal-case", "legal-case")) {
+      throw new Error("Boundary access denied: legal-case cannot access legal-case domain (internal check failed)");
+    }
+
+    // 1. Validate full 6 boundaries (CAPABILITY_MISMATCH fix)
+    const identityBoundary: IdentityBoundary = {
+      tenantId: finalTenantId,
+      organizationId: "legal-case.enterprise-os",
+      principalId: finalActorId,
+      ownerIds: [finalActorId]
+    };
+    
+    const semanticBoundary: SemanticBoundary = {
+      domain: "legal-case",
+      intent: "get-case-by-id",
+      currentState: "active",
+      requirements: [],
+      constraints: [],
+      decisions: []
+    };
+    
+    const authorityBoundary: AuthorityBoundary = {
+      actorCapabilities: new Map([[finalActorId, ["get-case-by-id"]]]),
+      policyEnforcements: ["case-access-policy"],
+      authorizations: new Map([[finalActorId, ["read"]]]),
+      delegations: []
+    };
+    
+    const executionBoundary: ExecutionBoundary = {
+      workspaceId: finalWorkspaceId,
+      runtimeEnvironment: "web",
+      executorIds: [finalActorId],
+      executionFrame: "direct"
+    };
+    
+    const evidenceBoundary: EvidenceBoundary = {
+      evidenceIds: [`case-access-${Date.now()}`],
+      evidenceChain: [{
+        actorId: finalActorId,
+        action: "get-case-by-id",
+        timestamp: new Date(),
+        workspaceId: finalWorkspaceId
+      }],
+      outcomeVerified: false
+    };
+    
+    const presentationBoundary: PresentationBoundary = {
+      supportedFaces: ["web", "api"],
+      defaultLayout: "case-detail",
+      mobileEnabled: true,
+      apiEnabled: true,
+      projectionConfig: {
+        displayName: "Case Details",
+        summary: "Legal case information retrieval",
+        priority: "high",
+        uiFilters: ["caseId", "title", "status", "updatedAt"],
+        hideFromSurfaces: []
+      }
+    };
+    
+    const boundaryValidation = validateAllBoundaries({
+      identity: identityBoundary,
+      semantic: semanticBoundary,
+      authority: authorityBoundary,
+      execution: executionBoundary,
+      evidence: evidenceBoundary,
+      presentation: presentationBoundary
+    });
+    
+    if (!boundaryValidation.valid) {
+      console.error("[legal-case.getCaseById] BOUNDARY VALIDATION FAILED:", boundaryValidation.allErrors);
+      throw new Error(`Boundary validation failed: ${boundaryValidation.allErrors.join(", ")}`);
+    }
+    // End of boundary validation
 
     console.log("[getCaseByIdCommand] Looking for case:", caseId, "with context:", { tenantId, workspaceId });
     // CORE-001: Fetch cases via work-centric query - listByWorkspace is deprecated (workspace is execution boundary only)

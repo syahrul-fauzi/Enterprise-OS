@@ -5,6 +5,11 @@ import {
   unregisterWorkspaceListener,
   notifyWorkspaceListeners 
 } from "../../../../../../../packages/core/realtime/src/workspace-notifier";
+import {
+  decodeWorkspaceSession,
+  type WorkspaceSession,
+} from "@repo/core-kernel";
+import { validateBoundaryAccess } from "@repo/capabilities-work-core/contracts/work.contracts.js";
 
 export const dynamic = 'force-dynamic';
 
@@ -30,14 +35,31 @@ export async function GET(
         // Send initial state with canonical MyRealityModel
         const initialWorks = getAllWorksForWorkspace(workspaceId);
         
-        // Build canonical model for initial connection
-        const session = {
-          workspaceId: workspaceId,
-          actorId: "default-actor",
-          tenantId: "default-tenant",
-          actorLabel: "Pengguna"
+        // 6-boundary compliance: Verifikasi work domain dapat mengakses continuity domain
+        if (!validateBoundaryAccess("work", "continuity")) {
+          console.error("[WorkUpdatesRoute] BOUNDARY ACCESS DENIED: work cannot access continuity domain directly");
+          return NextResponse.json({ error: "Boundary access violation" }, { status: 403 });
+        }
+
+        // Canonical session validation - wajib gunakan decodeWorkspaceSession (Tahap B compliance)
+        const session = await decodeWorkspaceSession(request);
+        
+        // actorContext untuk audit tracing - memisahkan identity dari workspace (invariant: Workspace bukan identitas/authority)
+        const actorContext = {
+          tenantId: session?.tenantId || "",
+          workspaceId: session?.workspaceId || workspaceId,
+          actorId: session?.actorId || "sse-client:anonymous",
+          actorLabel: session?.actorLabel || "Pengguna"
         };
-        const canonicalModel = await buildMyRealityModel(session as any);
+
+        // Build canonical model for initial connection
+        const canonicalSession = {
+          workspaceId: actorContext.workspaceId,
+          actorId: actorContext.actorId,
+          tenantId: actorContext.tenantId,
+          actorLabel: actorContext.actorLabel
+        };
+        const canonicalModel = await buildMyRealityModel(canonicalSession as any);
         
         // Send NEW model.updated event first - canonical single source of truth
         const initialModelEvent = {

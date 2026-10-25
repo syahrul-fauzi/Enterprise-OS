@@ -52,6 +52,36 @@ services:
       postgres:
         condition: service_healthy
 
+  api:
+    container_name: eos-staging-api
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile.prod
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      HOSTNAME: 0.0.0.0
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/eos_identity
+      POSTGRES_CONNECTION_STRING: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/eos_identity
+      REDIS_URL: redis://redis:6379
+      EOS_EVIDENCE_STORAGE_ROOT: /data/evidence
+      ALLOWED_INTERNAL_NETWORKS: "172.17.0.0/16,127.0.0.1/32"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    # TIDAK DI-EXPOSE KE PUBLIK! Hanya akses dari internal Docker network (prinsip EOS trust boundary)
+    volumes:
+      - api_state:/data
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3001/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
   web:
     container_name: eos-staging-web
     build:
@@ -68,18 +98,21 @@ services:
       EOS_EVIDENCE_STORAGE_ROOT: /data/evidence
       EOS_RUNTIME_INVOCATION_EVIDENCE_PATH: /app/portfolios/evidence/verification/enterprise/runtime-invocations-staging.jsonl
       REALITY_PATH_ONLY: "true"
+      NEXT_PUBLIC_API_URL: http://api:3001
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+      api:
+        condition: service_healthy
     restart: unless-stopped
     ports:
-      - "3001:3000"
+      - "3000:3000"
     volumes:
       - web_state:/data
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000/api/health"]
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000/"]
       interval: 15s
       timeout: 5s
       retries: 10
@@ -90,6 +123,8 @@ services:
     image: caddy:2.10.2-alpine
     depends_on:
       web:
+        condition: service_healthy
+      api:
         condition: service_healthy
     restart: unless-stopped
     ports:
@@ -117,5 +152,6 @@ volumes:
   postgres_backups:
   redis_data:
   web_state:
+  api_state:
   caddy_data:
   caddy_config:

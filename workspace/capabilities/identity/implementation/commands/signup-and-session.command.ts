@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
-import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "@repo/core-kernel";
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "../../../../packages/core/kernel/src/index.js";
 import { slugifyForTenant } from "../services/password.service.js";
 import {
   UserId,
@@ -38,22 +39,17 @@ if (process.env.NODE_ENV === "production" && !(process.env.POSTGRES_CONNECTION_S
   throw new Error("[IdentityService] PRODUCTION SAFETY VIOLATION: In-memory repositories cannot be used in production. POSTGRES_CONNECTION_STRING or DATABASE_URL must be set to activate PostgreSQL persistence with RLS tenant isolation.");
 }
 
-const hasDbConnection = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL;
-const userRepo = hasDbConnection
-  ? getUserRepositoryPostgres()
-  : UserRepositoryInMemory;
-const tenantRepo = hasDbConnection
-  ? getTenantRepositoryPostgres()
-  : TenantRepositoryInMemory;
-const workspaceRepo = hasDbConnection
-  ? getWorkspaceRepositoryPostgres()
-  : WorkspaceRepositoryInMemory;
-const membershipRepo = hasDbConnection
-  ? getMembershipRepositoryPostgres()
-  : MembershipRepositoryInMemory;
-const sessionRepo = hasDbConnection
-  ? getSessionRepositoryPostgres()
-  : SessionRepositoryInMemory;
+// P1-CAP-016: Lazy repository initialization untuk menghindari module cycle dan kompatibel Edge Runtime
+function getRepositories() {
+  const hasDbConnection = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL;
+  return {
+    userRepo: hasDbConnection ? getUserRepositoryPostgres() : UserRepositoryInMemory,
+    tenantRepo: hasDbConnection ? getTenantRepositoryPostgres() : TenantRepositoryInMemory,
+    workspaceRepo: hasDbConnection ? getWorkspaceRepositoryPostgres() : WorkspaceRepositoryInMemory,
+    membershipRepo: hasDbConnection ? getMembershipRepositoryPostgres() : MembershipRepositoryInMemory,
+    sessionRepo: hasDbConnection ? getSessionRepositoryPostgres() : SessionRepositoryInMemory,
+  };
+}
 
 export const SignupAndSessionInputSchema = z.object({
   email: z.string().email(),
@@ -96,12 +92,26 @@ export type SignupAndSessionCommand = {
   execute: (input: SignupAndSessionInput) => Promise<SignupAndSessionOutput>;
 };
 
+type ActorContext = {
+  readonly tenantId: string;
+  readonly workspaceId: string;
+  readonly actorId: string;
+  readonly productId?: string;
+};
+
 export const signupAndSessionCommand: SignupAndSessionCommand = {
   kind: "command",
   name: "identity.signupAndCreateSession",
-  version: "2.0.0",
+  version: "4.0.0",
 
-  async execute(input: SignupAndSessionInput) {
+  async execute(input: SignupAndSessionInput & { actorContext?: ActorContext }) {
+    // 1. Validasi 6-boundary compliance TERLEBIH DAHULU (Tahap B mandate)
+    if (!validateBoundaryAccess("identity", "identity")) {
+      console.error("[identity.signupAndCreateSession] BOUNDARY ACCESS DENIED: cannot access identity domain with invalid boundary");
+      throw new Error("Boundary access violation");
+    
+    }
+
     if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       await initIdentitySchema();
     }
@@ -109,6 +119,7 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
     const parsed = SignupAndSessionInputSchema.parse(input);
     const { email, password, displayName, productId = "lawyershub" } = parsed;
 
+    const { userRepo, tenantRepo, workspaceRepo, membershipRepo, sessionRepo } = getRepositories();
     const trimmedEmail = email.trim().toLowerCase();
     const existingUser = await userRepo.byEmail(trimmedEmail);
     if (existingUser !== undefined) {
@@ -190,6 +201,11 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
     };
     await sessionRepo.save(sessionEntity);
 
+    // Log audit untuk tracing actorContext jika disediakan
+    if (input.actorContext) {
+      console.log(`[identity.signupAndCreateSession] Signup flow initiated by actor ${input.actorContext.actorId} in workspace ${input.actorContext.workspaceId}, tenant ${input.actorContext.tenantId} for email: ${input.email}`);
+    }
+
     return {
       response: {
         ok: true,
@@ -212,6 +228,7 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
           { ok: true, commandKey: "identity.createWorkspace" },
           { ok: true, commandKey: "identity.createMembership" },
         ],
+        actorContext: input.actorContext,
       },
       cookies: [{
         name: WORKSPACE_SESSION_COOKIE,
@@ -226,8 +243,10 @@ export const signupAndSessionCommand: SignupAndSessionCommand = {
         } as WorkspaceSession),
         options: {
           httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
           sameSite: "lax",
           path: "/",
+          maxAge: DEFAULT_SESSION_TTL_SECONDS,
         }
       }]
     };

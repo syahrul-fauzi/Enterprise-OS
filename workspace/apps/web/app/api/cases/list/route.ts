@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
@@ -8,12 +7,14 @@ import {
 } from "@repo/core-kernel";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import {
-  commands,
-} from "../../../../../../capabilities/legal-case/implementation/commands/case.commands";
-import {
   getSessionRepositoryPostgres,
   initIdentitySchema,
 } from "../../../../../../capabilities/identity/implementation/repositories/index";
+import { getAllWorksForWorkspace, CanonicalWorkRecord } from "../../work/create/route";
+import { registerLegalCaseCapability } from "../../../../../../capabilities/legal-case/implementation/commands/case.commands";
+
+// Register capability once at startup (canonical pattern)
+registerLegalCaseCapability();
 
 // P0: MAKE EOS VISIBLE - API to list all cases for current session's workspace
 // Allows anonymous users to see the work they've created (Work Reality Surface)
@@ -58,16 +59,25 @@ export async function GET(request: Request) {
       }
     }
 
-    // Use capability registry to invoke the existing list-cases-for-tenant command
-    const { output: casesResult } = await capabilityRegistry.invoke("legal-case", "list-cases-for-tenant", {
+    // SLIC-003: Gunakan listByWorkIds yang sudah diupdate dengan context filtering (gantikan list-cases-for-tenant yang deprecated)
+    // Pertama, ambil semua Work yang terdaftar di workspace saat ini (sesuai model work-centric: workId > workspaceId > tenantId)
+    const canonicalWorks = getAllWorksForWorkspace(session.workspaceId);
+    const workIds = canonicalWorks.map((work: CanonicalWorkRecord) => work.workId);
+    console.log(`[GET /api/cases/list] Found ${workIds.length} works in workspace ${session.workspaceId}: ${workIds.join(", ")}`);
+    
+    // Gunakan canonical query registry untuk memanggil case.search (pure adapter pattern)
+    const searchResult = await capabilityRegistry.executeQuery("case.search", {
+      limit,
+      offset,
+      workspaceId: session.workspaceId,
       tenantId: session.tenantId,
+      workIds: workIds // Filter hanya work yang terdaftar di workspace ini
     });
 
-    const caseList = casesResult.items;
-    console.log(`[GET /api/cases/list] Returned ${caseList.length} cases for workspace ${session.workspaceId}`);
+    console.log(`[GET /api/cases/list] Returned ${searchResult.items.length} cases for workspace ${session.workspaceId} (after isolation filtering)`);
     return NextResponse.json({
-      cases: caseList,
-      total: casesResult.total,
+      cases: searchResult.items,
+      total: searchResult.total,
       limit,
       offset
     }, { status: 200 });

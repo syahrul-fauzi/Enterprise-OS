@@ -6,8 +6,7 @@ const {
   "create-case": createCase,
   "close-case": closeCase,
   "assign-lawyer-to-case": assignLawyerToCase,
-  "add-evidence-to-case": addEvidenceToCase,
-  "list-cases-for-tenant": listCasesForTenant
+  "add-evidence-to-case": addEvidenceToCase
 } = commands;
 // Canonical Work aliases - Case = Work specialization for legal domain
 // Menyelaraskan dengan EOS Face context: Intent → Work

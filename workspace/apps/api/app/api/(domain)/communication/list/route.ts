@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
-
-const WORKSPACE_SESSION_COOKIE = "eos_workspace_session";
+import { readWorkspaceSessionFromRequest } from '@repo/core-kernel';
+import { validateBoundaryAccess } from "@repo/capabilities/work-core/contracts/work.contracts";
 
 export async function GET(request: Request) {
   try {
@@ -14,43 +13,46 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Missing work_id parameter" }, { status: 400 });
     }
 
-    // 2. Get session cookie
-    const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);
-    
-    if (!sessionCookie) {
-      return NextResponse.json({ error: "No active session - please refresh and try again" }, { status: 401 });
+    // Canonical session validation - extract verified workspace/tenant/actor IDs
+    const session = readWorkspaceSessionFromRequest(request);
+    if (!session?.sessionId || !session?.tenantId || !session?.workspaceId || !session?.actorId) {
+      return NextResponse.json({ 
+        error: 'Unauthorized: Invalid or missing workspace session',
+        status: 'AUTH_INCONSISTENCY_RESOLVED'
+      }, { status: 401 });
     }
 
-    // 3. Parse session cookie (base64 encoded JSON)
-    let parsedSession;
-    try {
-      const decodedSession = Buffer.from(sessionCookie.value, 'base64').toString('utf-8');
-      parsedSession = JSON.parse(decodedSession);
-    } catch (e) {
-      return NextResponse.json({ error: "Invalid session format" }, { status: 400 });
+    // Create canonical actorContext (mematuhi invariant: Workspace bukan identitas/authority)
+    const actorContext = {
+      tenantId: session.tenantId,
+      actorId: session.actorId,
+      workspaceId: session.workspaceId,
+      sessionId: session.sessionId
+    };
+
+    // Enforce 6-boundary compliance: validate api-gateway can access communication domain
+    if (!validateBoundaryAccess('api-gateway', 'communication')) {
+      return NextResponse.json({ error: "Forbidden: Domain access not allowed" }, { status: 403 });
     }
 
-    const { sessionId, tenantId, workspaceId, actorId } = parsedSession;
-    if (!sessionId || !tenantId || !workspaceId || !actorId) {
-      return NextResponse.json({ error: "Incomplete session data" }, { status: 400 });
-    }
+    const { sessionId, tenantId, workspaceId, actorId } = actorContext;
 
     // 4. Invoke communication.listEvents query
     console.log(`[GET /api/communication/list] Listing communications for work ${work_id}`);
     
     const result = await capabilityRegistry.invoke("communication", "communication.listEvents", {
       work_id,
-      sessionId: sessionId,
-      tenantId: tenantId,
-      workspaceId: workspaceId,
-      actorId: actorId
+      sessionId,
+      tenantId,
+      workspaceId,
+      actorId
     });
 
     // 5. Return success response
     return NextResponse.json({
       success: true,
-      data: result.output
+      data: result.output,
+      context: actorContext
     });
 
   } catch (error) {

@@ -10,9 +10,9 @@ exports:
   - TrustSignatureProvider
   - TrustSignatureProviderSPI
 depends_on:
-  - core-runtime
+  - work-core
 allowed_dependencies:
-  - core-runtime
+  - work-core
 forbidden_dependencies:
   - api-platform
   - governance-evidence
@@ -20,6 +20,7 @@ forbidden_dependencies:
 consumed_by:
   - governance-evidence
 stability: stable
+evidence_required: true
 contracts:
   provides:
     - name: TrustFrameworkProvider

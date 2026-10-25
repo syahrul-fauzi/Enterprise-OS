@@ -268,6 +268,10 @@ const MIGRATIONS: DatabaseMigration[] = [
            IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'works') AND NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'boundaries_crossed') THEN 
              ALTER TABLE works ADD COLUMN boundaries_crossed JSONB NOT NULL DEFAULT '[]'::JSONB;
            END IF;
+           -- Add processed_event_ids column (EDGE-A-001: untuk durable deduplikasi event di edge device)
+           IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'works') AND NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'works' AND column_name = 'processed_event_ids') THEN 
+             ALTER TABLE works ADD COLUMN processed_event_ids JSONB NOT NULL DEFAULT '[]'::JSONB;
+           END IF;
          END $$;
     `,
     down: `

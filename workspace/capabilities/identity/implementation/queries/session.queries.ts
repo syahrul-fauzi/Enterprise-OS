@@ -2,10 +2,12 @@ import {
   SessionId,
   UserId,
   type SessionAggregate,
-} from "@repo/contracts-core";
-import { getSessionRepositoryPostgres } from "../repositories/index.js";
+} from "@repo/contracts-core/index.js";
+import { SessionRepositoryInMemory, getSessionRepositoryPostgres, } from "../repositories/index.js";
 
-const sessionRepository = getSessionRepositoryPostgres();
+const sessionRepository = (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL)
+    ? getSessionRepositoryPostgres()
+    : SessionRepositoryInMemory;
 
 export const sessionQueries = Object.freeze({
   async byId(id: string): Promise<SessionAggregate | undefined> {

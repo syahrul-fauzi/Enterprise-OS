@@ -6,18 +6,18 @@ export type {
   CapabilityRepository,
   CapabilityImplementation,
   WorkspaceAggregateBinding,
-} from "./types";
+} from "./types.js";
 
 
 
 export {
   CapabilityManifestSchema,
   CapabilityAggregateBindingSchema,
-} from "./schemas";
+} from "./schemas.js";
 export type {
   CapabilityManifest,
   CapabilityAggregateBindingManifest,
-} from "./schemas";
+} from "./schemas.js";
 
 // ============================================================================
 // SERVER-ONLY BOUNDARY - DigestEngine module excluded from shared barrel
@@ -37,13 +37,13 @@ export type {
   DigestComputation,
   DigestEngineContract,
   DigestHashAlgorithm,
-} from "./digest-engine";
+} from "./digest-engine.js";
 
 // Session exports (moved from apps/web/lib)
 export type {
   WorkspaceSession,
   WorkspaceRequestTrace,
-} from "./session/workspace-session";
+} from "./session/workspace-session.js";
 export {
   WORKSPACE_SESSION_COOKIE,
   WorkspaceSessionSchema,
@@ -56,7 +56,7 @@ export {
   readWorkspaceSessionFromRequest,
   createWorkspaceRequestTrace,
   createWorkspaceContextHeaders,
-} from "./session/workspace-session";
+} from "./session/workspace-session.js";
 
 // ============================================================================
 // SERVER-ONLY BOUNDARY - capabilityRegistry excluded from shared barrel
@@ -77,16 +77,30 @@ export type {
   CommandInvocationRecord,
 } from "./registry/capability-command-registry.js";
 
+// ============================================================================
+// SERVER-ONLY BOUNDARY - Health checks excluded from shared barrel
+// ============================================================================
+// runHealthChecks transitively imports database and Redis clients which are
+// strictly server-side primitives. Including them here causes client-bundle
+// resolution failures. Server-side consumers MUST import directly:
+//   import { runHealthChecks } from "@repo/core-kernel/health/health-checks";
+// ============================================================================
+export type {
+  SystemHealthReport,
+  RedisHealthReport,
+  DatabaseHealthReport,
+} from "./health/health-checks.js";
+
 // Golden Kernel Invariant Registry (Trust Boundary)
 export type {
   KernelInvariant,
-} from "./invariant.registry";
+} from "./invariant.registry.js";
 export {
   GOLDEN_KERNEL_INVARIANTS,
   validateInvariant,
   getInvariant,
   getAllInvariants,
-} from "./invariant.registry";
+} from "./invariant.registry.js";
 
 // Core runtime mediation layer (ARCH-04 compliant - capabilities access core-runtime ONLY via core-kernel)
 //

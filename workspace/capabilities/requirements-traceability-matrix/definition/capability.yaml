@@ -35,4 +35,5 @@ capability:
   evidence_required:
     - production_usage
     - full_traceability
+evidence_required: true
 stability: stable

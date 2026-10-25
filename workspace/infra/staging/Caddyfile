@@ -10,19 +10,30 @@
 
 # Konfigurasi asli yang pernah berjalan: Akses localhost HTTP, domain publik dengan TLS internal
 http://localhost {
-	reverse_proxy web:3000 {
-		# HAPUS SEMUA X-EOS-* headers dari client sebelum overwrites
-		header_down -X-EOS-Tenant-Subdomain
-		header_down -X-EOS-Is-White-Label
-		header_down -X-EOS-Tenant-ID
-		header_down -X-EOS-Tenant-Brand-Name
+	# Semua permintaan /api/* diarahkan ke container API (Core Fabric)
+	handle /api/* {
+		reverse_proxy api:3001 {
+			header_up Host {host}
+			# Bersihkan semua header yang bisa di-spoof
+			header_up -X-EOS-*
+		}
+	}
+	# Semua permintaan lainnya ke web (FACE)
+	handle {
+		reverse_proxy web:3000 {
+			# HAPUS SEMUA X-EOS-* headers dari client sebelum overwrites
+			header_down -X-EOS-Tenant-Subdomain
+			header_down -X-EOS-Is-White-Label
+			header_down -X-EOS-Tenant-ID
+			header_down -X-EOS-Tenant-Brand-Name
 
-		header_up Host {host}
-		# Bersihkan headers upstream juga
-		header_up -X-EOS-Tenant-Subdomain
-		header_up -X-EOS-Is-White-Label
-		header_up -X-EOS-Tenant-ID
-		header_up -X-EOS-Tenant-Brand-Name
+			header_up Host {host}
+			# Bersihkan headers upstream juga
+			header_up -X-EOS-Tenant-Subdomain
+			header_up -X-EOS-Is-White-Label
+			header_up -X-EOS-Tenant-ID
+			header_up -X-EOS-Tenant-Brand-Name
+		}
 	}
 }
 
@@ -30,16 +41,27 @@ http://localhost {
 # LawyersHub family (production ACME TLS)
 https://*.lawyershub.id, https://*.academic.lawyershub.id, https://*.commsme.lawyershub.id {
 	tls ops@lawyershub.id
-	reverse_proxy web:3000 {
-		# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
-		header_up -X-EOS-Tenant-Subdomain
-		header_up -X-EOS-Is-White-Label
-		header_up -X-EOS-Tenant-ID
-		header_up -X-EOS-Tenant-Brand-Name
+	# Semua permintaan /api/* diarahkan ke container API (Core Fabric)
+	handle /api/* {
+		reverse_proxy api:3001 {
+			header_up Host {host}
+			# Bersihkan semua header yang bisa di-spoof
+			header_up -X-EOS-*
+		}
+	}
+	# Semua permintaan lainnya ke web (FACE)
+	handle {
+		reverse_proxy web:3000 {
+			# HAPUS SEMUA X-EOS-* headers dari client (PREVENT SPOOFING)
+			header_up -X-EOS-Tenant-Subdomain
+			header_up -X-EOS-Is-White-Label
+			header_up -X-EOS-Tenant-ID
+			header_up -X-EOS-Tenant-Brand-Name
 
-		header_up Host {host}
-		# SET TRUSTED HEADER - hanya Caddy yang boleh set ini
-		header_up X-EOS-Tenant-Subdomain {labels.0}
+			header_up Host {host}
+			# SET TRUSTED HEADER - hanya Caddy yang boleh set ini
+			header_up X-EOS-Tenant-Subdomain {labels.0}
+		}
 	}
 }
 

@@ -1,9 +1,8 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import type { GovernanceReadModelCatalog, GovernanceReadModelLocation, GovernanceReadModelKind } from "../contracts/governance-read-model.contracts.js";
 
-const __filename = fileURLToPath(import.meta.url);
+const __filename = require.resolve('./governance-read-model.service.js');
 const __dirname = path.dirname(__filename);
 const WORKSPACE_ROOT = path.resolve(__dirname, '../../../../');
 
@@ -38,13 +37,14 @@ function ensureEvidenceDirExists(): void {
   }
 }
 // B7.18.1: Record runtime invocations for governance-read-model
-function recordRuntimeInvocation(invocation: {
+export function recordRuntimeInvocation(invocation: {
   capability_id: string;
   operation_id: string;
   sourceRef: string;
   success: boolean;
   input: Record<string, unknown>;
   result: Record<string, unknown>;
+  tenant_id?: string;
 }): void {
   ensureEvidenceDirExists();
   const line = JSON.stringify(invocation) + "\n";

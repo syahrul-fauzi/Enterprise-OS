@@ -1,11 +1,10 @@
 import { describe, it, beforeEach, expect } from 'vitest';
 import assert from 'node:assert';
 import { ACA_WORKFLOW } from '../runtime/workflow-definition.js';
-import { WorkInspectionAgent } from '@capabilities/work-inspection/implementation/services/inspection.agent.service';
+import { WorkInspectionAgent, InspectionRecommendation } from '@capabilities/work-inspection';
 import { getWorkRepositoryPostgres, type WorkRepositoryPostgres } from '@capabilities/work-core/implementation/repository/work-postgres.repository';
 import type { WorkAggregate } from '@capabilities/work-core/contracts/work.contracts';
 import { createWorkId, createTenantId, createWorkspaceId, createSessionId, createActorId, SessionId } from '@capabilities/work-core/contracts/work.contracts';
-import { InspectionRecommendation } from '@capabilities/work-inspection/implementation/contracts/work-inspection.contracts';
 // Server-only function - import dynamically inside tests to avoid client bundle issues
 let executeWorkflowTransition: typeof import('../../../packages/core/kernel/src/registry/capability-command-registry.js').executeWorkflowTransition;
 

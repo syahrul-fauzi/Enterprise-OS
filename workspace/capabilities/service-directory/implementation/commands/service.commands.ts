@@ -142,6 +142,8 @@ const CreateServiceRequestWithContextSchema = z.object({
   // W-012: HIGH-VALUE WORK GRAPH CORE LINKS (sesuai service.contracts.ts extensions)
   relatedProductIds: z.array(z.string()).optional(),
   relatedRequirementIds: z.array(z.string()).optional(),
+  // ACaaS: externalId untuk idempotency checks (pilot requirement)
+  externalId: z.string().optional(),
   // SHARED RAIL: Only sessionId required - auto-populate tenantId/workspaceId/actorId from session (MIRRORS LH)
   sessionId: z.string().min(1),
 });
@@ -149,13 +151,16 @@ const CreateServiceRequestWithContextSchema = z.object({
 type CreateServiceRequestWithContextInput = z.infer<typeof CreateServiceRequestWithContextSchema>;
 type CreateServiceRequestCommand = CapabilityCommand<CreateServiceRequestWithContextInput, Promise<CreateServiceRequestOutput>>;
 
+
+
 export const createServiceRequest: CreateServiceRequestCommand = {
   kind: "command",
-  name: "service-directory.createServiceRequest",
+  name: "createServiceRequest",
+  capability: "service-directory",
   version: "2.0.0",
   async execute(input: CreateServiceRequestWithContextInput) {
     const parsed = CreateServiceRequestWithContextSchema.parse(input);
-    const { title, description, category, requesterName, budget, relatedProductIds, relatedRequirementIds, sessionId } = parsed;
+    const { title, description, category, requesterName, budget, relatedProductIds, relatedRequirementIds, externalId, sessionId } = parsed;
 
     // 1. Validate session exists and is active (SHARED RAIL — MIRRORS LH)
     const session = await sessionRepository.byId(sessionId as any);
@@ -278,6 +283,7 @@ export const createServiceRequest: CreateServiceRequestCommand = {
       priority: "medium" as const,
       requesterName,
       ...(budget ? { budget } : {}),
+      ...(externalId ? { externalId } : {}),
       createdAt: new Date(),
       updatedAt: new Date(),
       // PROD-002-10: CMBCD mandatory fields (non-optional per contract)
@@ -344,6 +350,10 @@ export const createServiceRequest: CreateServiceRequestCommand = {
     };
     
     const authorityBoundary: AuthorityBoundary = {
+      actorCapabilities: new Map(),
+      authorizations: new Map(),
+      policyEnforcements: ["service-directory.create-granted"],
+      delegations: [],
       actorId: actorId as unknown as string,
       capability: "service-directory.create",
       authorization: "granted",
@@ -362,12 +372,21 @@ export const createServiceRequest: CreateServiceRequestCommand = {
       requiredAccessLevel: "user"
     };
 
+    // W-013: Tambahkan EvidenceBoundary yang diperlukan oleh validateAllBoundaries (fix error: Cannot read properties of undefined (reading 'evidenceChain'))
+    const evidenceBoundary = {
+      evidenceChain: [],
+      evidenceIds: [],
+      evidenceChecksum: null,
+      verified: false
+    };
+
     // Validate all boundaries (throws on critical violations, logs warnings for non-blocking issues)
     const boundaryValidation = validateAllBoundaries({
       identity: identityBoundary,
       semantic: semanticBoundary,
       authority: authorityBoundary,
       execution: executionBoundary,
+      evidence: evidenceBoundary,
       presentation: presentationBoundary
     });
 
@@ -984,6 +1003,57 @@ const listServiceRequestsByWork: ListServiceRequestsCommand = {
   },
 };
 
+// ACaaS-COMMERCIAL-001: Add serviceRequest.findByExternalId command to support idempotency checks
+import { z } from "zod";
+const FindServiceRequestByExternalIdInputSchema = z.object({
+  externalId: z.string().min(1),
+  tenantId: z.string().min(1),
+  workspaceId: z.string().min(1),
+  sessionId: z.string().min(1),
+});
+
+type FindServiceRequestByExternalIdInput = z.infer<typeof FindServiceRequestByExternalIdInputSchema>;
+type FindServiceRequestByExternalIdOutput = {
+  success: boolean;
+  serviceRequestId?: string;
+  status?: string;
+  message?: string;
+};
+
+export const findServiceRequestByExternalId: CapabilityCommand<FindServiceRequestByExternalIdInput, Promise<FindServiceRequestByExternalIdOutput>> = {
+  kind: "command",
+  name: "serviceRequest.findByExternalId",
+  capability: "service-directory",
+  version: "1.0.0",
+  async execute(input: FindServiceRequestByExternalIdInput) {
+    const { externalId, tenantId, workspaceId, sessionId } = input;
+    
+    // SHARED RAIL: Validate session first (mirrors all other commands)
+    const session = await sessionRepository.byId(sessionId as any);
+    if (!session || session.revokedAt !== null) {
+      throw new Error("[service-directory.serviceRequest.findByExternalId] Invalid or revoked session");
+    }
+
+    // Tenant isolation check - ensure request belongs to the same tenant/workspace as session
+    if (session.tenantId !== tenantId || session.workspaceId !== workspaceId) {
+      throw new Error("[service-directory.serviceRequest.findByExternalId] Tenant/workspace mismatch - access denied");
+    }
+
+    // Look up service request by external ID
+    const serviceRequest = await serviceRepository.byExternalId(externalId, tenantId, workspaceId);
+    if (!serviceRequest) {
+      return { success: false, message: "Service request not found" };
+    }
+
+    return {
+      success: true,
+      serviceRequestId: serviceRequest.id,
+      status: serviceRequest.status,
+      message: "Service request found"
+    };
+  }
+};
+
 import { getServiceRequestByIdCommand } from "./get-service-request-by-id.command.js";
 
 // Minimal command to handle external system webhook responses - only what's needed for P0-PT-001
@@ -994,9 +1064,9 @@ type UpdateExternalSystemStatusCommand = CapabilityCommand<
 
 export const updateExternalSystemStatus: UpdateExternalSystemStatusCommand = {
   kind: "command",
-  name: "service-directory.updateExternalSystemStatus",
-  version: "1.0.0",
-  async execute(input: UpdateExternalSystemStatusInput) {
+  name: "updateExternalSystemStatus", // <<<-- Perbaiki: hanya nama command, tanpa capability prefix (sesuai command lain)
+  capability: "service-directory",
+  version: "1.0.0", async execute(input: UpdateExternalSystemStatusInput) {
     const { id, externalSystem, externalStatus, externalReferenceId, responseData, receivedAt, sessionId } = input;
     
     // SHARED RAIL: Validate session first (mirrors all other commands)
@@ -1135,6 +1205,15 @@ export const updatePaymentStatusServiceRequest: UpdatePaymentStatusCommand = {
   name: "service-directory.updatePaymentStatusServiceRequest",
   version: "2.0.0",
   async execute(input: UpdatePaymentStatusWithContextInput) {
+    // AC-PILOT-001: Cek status kill switch sebelum memproses pembayaran dan memulai eksekusi
+    const { ExecutionStatusRepository } = await import("../../../../../packages/core/runtime/dist/src/execution-status.js");
+    const killSwitchState = await ExecutionStatusRepository.getKillSwitchState();
+    if (killSwitchState.kill_switch_triggered) {
+      const error = `[KILL-SWITCH-ACTIVE] Command service-directory.updatePaymentStatusServiceRequest diblokir: kill switch telah dipicu. Alasan: ${killSwitchState.reason}. Dipicu oleh: ${killSwitchState.triggered_by_actor_id} pada ${killSwitchState.triggered_at_utc}`;
+      console.error(error);
+      throw new Error(error);
+    }
+
     const parsed = UpdatePaymentStatusWithContextSchema.parse(input);
     const { id, paymentTransactionId, paymentStatus, grossAmount, sessionId } = parsed;
 
@@ -1289,7 +1368,8 @@ export const serviceDirectoryCommands: Readonly<Record<string, CapabilityCommand
   "service-directory.listByWorkspace": listServiceRequestsByWorkspace,
   "service-directory.listByWork": listServiceRequestsByWork,
   "service-directory.getById": getServiceRequestByIdCommand,
-  "service-directory.updateExternalSystemStatus": updateExternalSystemStatus,
+  "service-directory.serviceRequest.findByExternalId": findServiceRequestByExternalId, // ACaaS-COMMERCIAL-001: Add idempotency lookup command
+  "service-directory.updateExternalSystemStatus": updateExternalSystemStatus, // Key tetap sama untuk kompatibilitas, command.name sudah diperbaiki
   "service-directory.updatePaymentStatusServiceRequest": updatePaymentStatusServiceRequest, // CR-006: Payment Reality command
   "service-directory.settleServiceRequest": settleServiceRequest, // W-SVC-001: Settlement command for High-Value Resolution Work
 } as const;

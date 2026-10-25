@@ -26,21 +26,34 @@ import type {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const WORKSPACE_ROOT = path.resolve(__dirname, "../../../..");
+const CANONICAL_METRICS_PATH = path.join(WORKSPACE_ROOT, ".eos-state/metrics/ACaaS-001/processed_requests.jsonl");
 const EVIDENCE_PATH = path.join(WORKSPACE_ROOT, "capabilities/observability/evidence/verification/runtime-invocations.jsonl");
 
-// Ensure evidence directory exists
-function ensureEvidenceDirExists(): void {
-  const dir = path.dirname(EVIDENCE_PATH);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+// Ensure all canonical directories exist (metering + evidence)
+function ensureCanonicalDirsExist(): void {
+  const evidenceDir = path.dirname(EVIDENCE_PATH);
+  const metricsDir = path.dirname(CANONICAL_METRICS_PATH);
+  
+  if (!fs.existsSync(evidenceDir)) {
+    fs.mkdirSync(evidenceDir, { recursive: true });
+  }
+  if (!fs.existsSync(metricsDir)) {
+    fs.mkdirSync(metricsDir, { recursive: true });
   }
 }
 
+// ACaaS-001-PILOT-003: Canonical metering implementation - mencatat semua transaksi pilot ke jalur kanonis EOS
 // B7.18.2: Basic collector to capture invocations and save as evidence
 function recordRuntimeInvocation(invocation: RuntimeInvocation): void {
-  ensureEvidenceDirExists();
+  ensureCanonicalDirsExist();
   const line = JSON.stringify(invocation) + "\n";
+  // Simpan ke evidence umum
   fs.appendFileSync(EVIDENCE_PATH, line);
+  // Simpan ke canonical metrics path khusus ACaaS-001 untuk pilot - sesuai mandat "Aktifkan metering sejak awal"
+  if (invocation.capability_id === "api-platform" && invocation.operation_id.startsWith("acaas.")) {
+    fs.appendFileSync(CANONICAL_METRICS_PATH, line);
+    console.log(`[ACAAS-METERING] Canonical metering recorded: ${invocation.operation_id} untuk tenant: ${invocation.tenant_id} (PILOT-TENANT-001)`);
+  }
   console.log(`[Observability Collector] Recorded invocation: ${invocation.operation_id} for ${invocation.capability_id}`);
 }
 

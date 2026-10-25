@@ -22,13 +22,8 @@ async function invokeCapability<Output = unknown>(
   return res.output;
 }
 
-/**
- * Helper to record evidence following EOS evidence chain requirements
- */
-async function safeRecordEvidence(evidence: any): Promise<void> {
-  console.log(`[C-001 EVIDENCE] Recorded: ${evidence.action}`, evidence.details);
-  // In production, this would use the core evidence recording infrastructure
-}
+// Import canonical safeRecordEvidence from work-core (Gate A reuse requirement)
+import { safeRecordEvidence } from "../../../work-core/implementation/utils/evidence.utils.js";
 
 /**
  * Canonical work creation result returned by createCanonicalWorkFromIntent

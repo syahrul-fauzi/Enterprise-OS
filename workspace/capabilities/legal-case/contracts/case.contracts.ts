@@ -14,7 +14,7 @@ import type {
 // Import canonical branded types + factory functions dari @repo/contracts-core (source of truth)
 import { WorkId, createWorkId } from "../../../packages/contracts-core/dist/index.js";
 
-export type CaseStatus = "draft" | "open" | "in_progress" | "closed";
+export type CaseStatus = "draft" | "open" | "submitted" | "reviewed" | "approved" | "in_progress" | "under_review" | "closed";
 export type CasePriority = "low" | "medium" | "high" | "critical";
 export type RiskLevel = "low" | "medium" | "high" | "critical";
 export type CaseId = string & {
@@ -63,6 +63,8 @@ export interface CaseAggregate {
     readonly createdAt: Readonly<Date>;
     readonly updatedAt: Readonly<Date>;
     readonly closedAt?: Readonly<Date>;
+    readonly underReviewAt?: Readonly<Date>;
+    readonly paymentAmount?: number;
     
     // PROD-002-10: FULL CMBCD FRAMEWORK IMPLEMENTATION (actor-capability-authority-context-risk-evidence)
     readonly actorMetadata: ActorMetadata; // Current responsible actor metadata
@@ -146,11 +148,11 @@ export interface SearchCasesOutput {
 export type CaseRepository = {
     readonly entityName: "Case";
     readonly kind: "repository";
-    byId(id: CaseId): Promise<CaseAggregate | undefined>;
-    list(): Promise<readonly CaseAggregate[]>;
-    listByWorkIds(workIds: readonly string[]): Promise<readonly CaseAggregate[]>;
-    save(entity: CaseAggregate): Promise<CaseAggregate>;
-    remove(id: CaseId): Promise<boolean>;
+    byId(id: CaseId, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<CaseAggregate | undefined>;
+    list(context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<readonly CaseAggregate[]>;
+    listByWorkIds(workIds: readonly string[], context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<readonly CaseAggregate[]>;
+    save(entity: CaseAggregate, context?: { tenantId: string; workspaceId?: string; actorId?: string }): Promise<CaseAggregate>;
+    remove(id: CaseId, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<boolean>;
     clear?(): void; // Optional method for in-memory repository testing
     stopScanner?(): void; // Optional method for in-memory repository testing
     loadFromDisk?(filePath: string): Promise<void>; // Optional method for in-memory repository testing

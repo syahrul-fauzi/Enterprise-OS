@@ -10,6 +10,8 @@
     "strictNullChecks": true,
     "skipLibCheck": true,
     "baseUrl": ".",
+    "outDir": ".next",
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@/*": ["./*"],
       // Core-only paths (removed all presentation/UI packages for API standalone)
@@ -30,6 +32,8 @@
       "@capabilities/communication/*": ["../../capabilities/communication/implementation/*"],
       "@capabilities/legal-case/*": ["../../capabilities/legal-case/implementation/*"],
       "@capabilities/work-core/*": ["../../capabilities/work-core/*"],
+      "@capabilities/governance-evidence/*": ["../../capabilities/governance-evidence/*"],
+      "@capabilities/governance-authorization/*": ["../../capabilities/governance-authorization/implementation/*"],
       "@capabilities/atomic-composition/*": ["../../capabilities/atomic-composition/implementation/*"],
       "@capabilities/consultation/*": ["../../capabilities/consultation/implementation/*"]
     }
@@ -40,5 +44,5 @@
     "**/*.ts",
     "**/*.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", ".next"]
 }

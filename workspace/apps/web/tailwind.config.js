@@ -1,3 +1,4 @@
+var _a;
 import { lightColors, spacing, radius } from "@repo/presentation-foundation";
 function oklchToRgb(oklch) {
     return oklch;
@@ -18,7 +19,7 @@ const config = {
                 brand: {
                     primary: oklchToRgb(lightColors.brand.primary),
                     secondary: oklchToRgb(lightColors.brand.secondary),
-                    accent: oklchToRgb(lightColors.brand.accent ?? lightColors.brand.primary),
+                    accent: oklchToRgb((_a = lightColors.brand.accent) !== null && _a !== void 0 ? _a : lightColors.brand.primary),
                 },
                 surface: {
                     background: oklchToRgb(lightColors.surface.background),
@@ -57,12 +58,8 @@ const config = {
                     },
                 },
             },
-            spacing: {
-                ...Object.fromEntries(Object.entries(spacing).map(([k, v]) => [k, typeof v === "number" ? `${v}px` : v])),
-            },
-            borderRadius: {
-                ...Object.fromEntries(Object.entries(radius).map(([k, v]) => [k, typeof v === "number" ? `${v}px` : v])),
-            },
+            spacing: Object.assign({}, Object.fromEntries(Object.entries(spacing).map(([k, v]) => [k, typeof v === "number" ? `${v}px` : v]))),
+            borderRadius: Object.assign({}, Object.fromEntries(Object.entries(radius).map(([k, v]) => [k, typeof v === "number" ? `${v}px` : v]))),
             fontFamily: {
                 sans: ['ui-sans-serif', 'system-ui', '-apple-system', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif'],
                 mono: ['ui-monospace', 'SFMono-Regular', '"SF Mono"', 'Menlo', 'Consolas', '"Liberation Mono"', 'monospace'],

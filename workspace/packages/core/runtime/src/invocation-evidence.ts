@@ -1,8 +1,111 @@
-import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
-import { dirname } from "path";
-import { createHash, randomUUID } from "crypto";
+// Deklarasi tipe untuk EdgeRuntime (hanya untuk type checking)
+declare const EdgeRuntime: unknown;
+
+// Edge-compatible imports: Web Crypto API + in-memory storage fallback
 import { executionContext } from "./execution-context.js";
 import { recordWorkExecutionMetrics } from "./execution-observability.js";
+
+// Detect runtime environment
+const isEdgeRuntime = typeof EdgeRuntime !== 'undefined';
+// In-memory evidence log storage untuk Edge Runtime (fallback jika tidak ada file system)
+declare global {
+  var __EOS_INMEMORY_EVIDENCE_LOGS__: string[];
+}
+globalThis.__EOS_INMEMORY_EVIDENCE_LOGS__ = globalThis.__EOS_INMEMORY_EVIDENCE_LOGS__ || [];
+
+// Node.js fs polyfill: hanya load jika di Node.js environment
+let appendFileSync: (path: string, data: string, encoding: string) => void;
+let readFileSync: (path: string, encoding: string) => string;
+let mkdirSync: (path: string, options: { recursive: boolean }) => void;
+let dirname: (path: string) => string;
+let createHash: (algorithm: string) => {
+  update: (data: string) => void;
+  digest: (encoding: string) => string;
+};
+
+// Inisialisasi fungsi Node.js secara lazy (hanya saat dibutuhkan) untuk menghindari top-level require yang terdeteksi Next.js
+async function initNodeRuntime() {
+  if (!isEdgeRuntime && !appendFileSync) {
+    const fs = require("node:fs");
+    const path = require("node:path");
+    const crypto = require("node:crypto");
+    appendFileSync = fs.appendFileSync;
+    readFileSync = fs.readFileSync;
+    mkdirSync = fs.mkdirSync;
+    dirname = path.dirname;
+    createHash = crypto.createHash;
+  }
+}
+
+if (isEdgeRuntime) {
+  // Edge Runtime: implementasi in-memory
+  appendFileSync = (_path: string, data: string) => {
+    globalThis.__EOS_INMEMORY_EVIDENCE_LOGS__.push(data.trim());
+  };
+  readFileSync = (_path: string, encoding: string) => {
+    return globalThis.__EOS_INMEMORY_EVIDENCE_LOGS__.join("\n");
+  };
+  mkdirSync = () => {}; // No-op di Edge (tidak perlu buat direktori)
+  dirname = (p: string) => p; // Passthrough untuk Edge
+  createHash = () => {
+    // Polyfill sederhana untuk createHash di Edge (gunakan simple hash yang sama)
+    let data = "";
+    return {
+      update: (newData: string) => { data += newData; },
+      digest: () => {
+        let hash = 0;
+        for (let i = 0; i < data.length; i++) {
+          const char = data.charCodeAt(i);
+          hash = ((hash << 5) - hash) + char;
+          hash = hash & hash;
+        }
+        return Math.abs(hash).toString(16).padStart(64, '0');
+      }
+    };
+  };
+}
+
+// Web Crypto API implementation untuk SHA-256 (menggantikan node:crypto createHash)
+async function computeSha256(value: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(value);
+  const hashBuffer = await globalThis.crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Fallback sync version untuk use case yang butuh sync (karena Web Crypto adalah async)
+// Untuk kompatibilitas kode lama, kita tetap menyediakan sync digest yang menggunakan cache
+const digestCache = new Map<string, string>();
+function canonicalize(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map((entry) => canonicalize(entry));
+  }
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([key, entry]) => [key, canonicalize(entry)]),
+    );
+  }
+  return value;
+}
+
+function digest(value: unknown): string {
+  const canonicalized = canonicalize(value);
+  const str = JSON.stringify(canonicalized);
+  if (digestCache.has(str)) return digestCache.get(str)!;
+  
+  // Gunakan createHash yang sudah di-polyfill (akan bekerja di Node.js dan Edge)
+  const hash = createHash("sha256");
+  hash.update(str);
+  const result = hash.digest("hex");
+  digestCache.set(str, result);
+  return result;
+}
+
+// randomUUID dari Web Crypto API (universal)
+const randomUUID = () => globalThis.crypto.randomUUID();
 
 export type RuntimeInvocationEvent = {
   readonly timestamp_utc: string;
@@ -27,29 +130,12 @@ export type RuntimeInvocationEvent = {
   readonly parentInvocationIds?: readonly string[];
 };
 
-function canonicalize(value: unknown): unknown {
-  if (Array.isArray(value)) {
-    return value.map((entry) => canonicalize(entry));
-  }
-  if (value && typeof value === "object") {
-    return Object.fromEntries(
-      Object.entries(value as Record<string, unknown>)
-        .sort(([left], [right]) => left.localeCompare(right))
-        .map(([key, entry]) => [key, canonicalize(entry)]),
-    );
-  }
-  return value;
-}
-
-function digest(value: unknown): string {
-  return createHash("sha256")
-    .update(JSON.stringify(canonicalize(value)))
-    .digest("hex");
-}
-
 // Helper untuk validasi authorization: semua inputRefs harus berasal dari decision/tenant yang sama
-function validateArtifactAccess(inputRefs: readonly string[] | undefined, currentDecisionId: string | null | undefined, currentTenantId: string | null | undefined): { valid: boolean; invalidRefs: string[] } {
+async function validateArtifactAccess(inputRefs: readonly string[] | undefined, currentDecisionId: string | null | undefined, currentTenantId: string | null | undefined): Promise<{ valid: boolean; invalidRefs: string[] }> {
   if (!inputRefs || inputRefs.length === 0) return { valid: true, invalidRefs: [] };
+  
+  // Inisialisasi runtime jika di Node.js
+  await initNodeRuntime();
   
   // Baca semua evidence logs untuk memeriksa origin dari setiap inputRef
   const evidencePath = process.env.EOS_RUNTIME_INVOCATION_EVIDENCE_PATH?.trim();
@@ -88,13 +174,12 @@ export function startExecutionTimer(executionId: string): void {
   executionStartTimes.set(executionId, Date.now());
 }
 
+// computeDigest dipertahankan untuk backward compatibility, menggunakan digest baru
 export function computeDigest(value: unknown): string {
-  return createHash("sha256")
-    .update(JSON.stringify(canonicalize(value)))
-    .digest("hex");
+  return digest(value);
 }
 
-export function recordRuntimeInvocation(input: {
+export async function recordRuntimeInvocation(input: {
   readonly capabilityId: string;
   readonly operationId: string;
   readonly sourceRef: string;
@@ -110,12 +195,14 @@ export function recordRuntimeInvocation(input: {
   readonly parentInvocationIds?: readonly string[];
   readonly work_id?: string | null;
   readonly executionId?: string | null;
-}): void {
+}): Promise<void> {
   const evidencePath = process.env.EOS_RUNTIME_INVOCATION_EVIDENCE_PATH?.trim();
   if (!evidencePath) {
     return;
   }
-
+  
+  // Inisialisasi runtime jika di Node.js
+  await initNodeRuntime();
   mkdirSync(dirname(evidencePath), { recursive: true });
 
   const ambient = executionContext.get();
@@ -130,7 +217,7 @@ export function recordRuntimeInvocation(input: {
     (ambient?.last_invocation_digest ? [ambient.last_invocation_digest] : []);
 
   // Authorization check: enforce cross-decision/cross-tenant isolation
-  const authCheck = validateArtifactAccess(input.inputRefs, resolved_decision_id, resolved_tenant_id);
+  const authCheck = await validateArtifactAccess(input.inputRefs, resolved_decision_id, resolved_tenant_id);
   if (!authCheck.valid) {
     // Log unauthorized attempt sebelum throw error
     try {

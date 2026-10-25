@@ -1,4 +1,4 @@
-import { PostgresRepository } from "./base.repository.ts";
+import { PostgresRepository } from "./base.repository.js";
 import {
   TenantId,
   UserId,
@@ -10,7 +10,7 @@ import {
 } from "@repo/contracts-core";
 
 // PostgreSQL-backed tenant repository implementation
-class TenantRepositoryPostgresImpl extends PostgresRepository<any> implements TenantRepository {
+export class TenantRepositoryPostgresImpl extends PostgresRepository<any> implements TenantRepository {
   readonly entityName = "Tenant" as const;
   readonly kind = "repository" as const;
   declare pool: any;
@@ -29,6 +29,7 @@ class TenantRepositoryPostgresImpl extends PostgresRepository<any> implements Te
       ownerId: UserId(record.owner_id),
       workId: record.work_id ? createWorkId(record.work_id) : undefined,
       workspaceId: record.workspace_id ? WorkspaceId(record.workspace_id) : undefined,
+      metadata: record.metadata ? JSON.parse(record.metadata) : undefined,
       createdAt: new Date(record.created_at),
       updatedAt: new Date(record.updated_at),
     } as TenantAggregate;
@@ -44,6 +45,7 @@ class TenantRepositoryPostgresImpl extends PostgresRepository<any> implements Te
       owner_id: entity.ownerId,
       work_id: entity.workId,
       workspace_id: entity.workspaceId,
+      metadata: entity.metadata ? JSON.stringify(entity.metadata) : null,
       created_at: entity.createdAt.toISOString(),
       updated_at: entity.updatedAt.toISOString(),
     };

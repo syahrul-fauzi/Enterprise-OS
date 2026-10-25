@@ -1,0 +1,35 @@
+FROM node:22-alpine
+
+WORKDIR /app
+
+ENV CI=1
+ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN corepack enable
+
+# Install Python dan build tools untuk kompilasi dependency native
+RUN apk add --no-cache python3 py3-pip make gcc g++
+# Link python3 ke python untuk node-gyp
+RUN ln -sf /usr/bin/python3 /usr/bin/python
+
+# Build context HARUS dijalankan dari root workspace: docker build -f apps/api/Dockerfile.prod .
+COPY . .
+
+# Install dependencies
+RUN pnpm install --no-frozen-lockfile
+
+# COPY PRE-BUILT GOLDEN SPINE DIST FOLDERS (sama seperti web, reuse package yang sudah terbangun)
+COPY packages/core/kernel/dist ./packages/core/kernel/dist
+COPY packages/contracts-core/dist ./packages/contracts-core/dist
+COPY capabilities/work-core/dist ./capabilities/work-core/dist
+COPY capabilities/identity/dist ./capabilities/identity/dist
+COPY capabilities/governance/dist ./capabilities/governance/dist
+COPY packages/composition/dist ./packages/composition/dist
+
+# Build apps/api (Core Fabric) sebagai container terpisah
+WORKDIR /app/apps/api
+RUN pnpm next build
+
+EXPOSE 3001
+
+CMD ["pnpm", "start:standalone"]

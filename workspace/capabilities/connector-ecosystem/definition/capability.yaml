@@ -16,7 +16,7 @@ implementation:
   entry: implementation/service.ts
 depends_on:
   - api-platform
-  - core-runtime
+  - work-core
   - security-hardening
 capability:
   name: connector-ecosystem

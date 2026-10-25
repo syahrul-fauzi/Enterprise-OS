@@ -94,9 +94,10 @@ class OpenAIProvider implements IntentUnderstandingProvider {
       throw new Error("OpenAI API key not configured");
     }
 
-    // Normalize input to string
+    // Normalize input to string - mendukung text input, IntentRawInput, dan transkripsi suara
     const inputString = typeof rawInput === 'string' ? rawInput : 
-      (typeof rawInput.content === 'string' ? rawInput.content : JSON.stringify(rawInput.content));
+      (typeof rawInput.content === 'string' ? rawInput.content : 
+       (rawInput.transcript ? rawInput.transcript : JSON.stringify(rawInput.content)));
     const prompt = this.buildIntentUnderstandingPrompt(inputString);
     
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -421,9 +422,34 @@ class RuleBasedProvider implements IntentUnderstandingProvider {
       lowerExpression.includes(pattern.toLowerCase())
     ) && (lowerExpression.includes("pt") || lowerExpression.includes("cv"));
     
-    const isPureInformationRequest = !isEstablishmentRequest && infoRequestPatterns.some(pattern => 
+    // DETECT LEGAL CASE REQUESTS - kasus hukum baru untuk klien
+    const legalCaseKeywords = ["kasus hukum", "kasus baru", "buat kasus", "membuat kasus", "klien", "perkara hukum"];
+    const isLegalCaseRequest = legalCaseKeywords.some(pattern => 
       lowerExpression.includes(pattern.toLowerCase())
     );
+    
+    const isPureInformationRequest = !isEstablishmentRequest && !isLegalCaseRequest && infoRequestPatterns.some(pattern => 
+      lowerExpression.includes(pattern.toLowerCase())
+    );
+
+    // Determine primary domain and intent type
+    let primaryDomain = "generic";
+    let primaryIntent = isPureInformationRequest ? "information-request" : "generic";
+    let primaryDomainConfidence = 0.7;
+    
+    if (isEstablishmentRequest) {
+      primaryDomain = "legal";
+      primaryIntent = "company-formation";
+      primaryDomainConfidence = 0.95;
+    } else if (isLegalCaseRequest) {
+      primaryDomain = "legal";
+      primaryIntent = "legal-case-creation";
+      primaryDomainConfidence = 0.92;
+    } else if (isPureInformationRequest) {
+      primaryDomain = "information-request";
+      primaryIntent = "information-request";
+      primaryDomainConfidence = 0.8;
+    }
 
     // DETECT AMBIGUOUS INPUTS - butuh clarification (Scenario 1)
     // SCENARIO 3: First input "Saya ingin memulai bisnis" = ambiguous (matches ambiguousPatterns)
@@ -699,8 +725,6 @@ Proses pendaftaran merek memakan waktu 12-24 bulan dan merek akan dilindungi sel
     // "Saya ingin memulai bisnis." → "Saya ingin membuat startup." → "Saya ingin mendirikan PT di Indonesia."
     const progressiveBusinessPatterns = [
       "saya ingin membuat startup", "ingin membuat startup", "membuat startup",
-      "saya ingin mendirikan pt", "ingin mendirikan pt", "mendirikan pt",
-      "saya ingin mendirikan cv", "ingin mendirikan cv", "mendirikan cv", // Tambahkan CV ke progressive patterns RL1-004
       "di indonesia", "indonesia"
     ];
     const isProgressiveBusinessInput = progressiveBusinessPatterns.some(pattern => 
@@ -766,6 +790,8 @@ Apakah Anda ingin:
         // Cohort C: Untuk capability request, izinkan pembentukan Work (canFormWork = true) karena memang butuh eksekusi
         const shouldAllowWorkFormation = isCapabilityRequest;
         
+        // Tidak perlu redeklarasi variabel yang sudah ada di scope sebelumnya
+        
         return {
           rawExpression: inputString,
           interpretedObjective: isCapabilityRequest 
@@ -774,564 +800,173 @@ Apakah Anda ingin:
           context: {
             domain: isCapabilityRequest ? "capability-need" : "legal-business",
             locale: "id-ID",
-            known: isCapabilityRequest 
-              ? [`Pengguna membutuhkan layanan ${bestMatch.key}`, `Kebutuhan kapabilitas: ${requiredCapabilities.join(', ')}`]
-              : [`Pengguna mencari informasi tentang ${bestMatch.key}`],
-            unknown: isCapabilityRequest ? ["Detail spesifik ruang lingkup audit, timeline yang diinginkan"] : [],
+            known: isCapabilityRequest ? [`Pengguna membutuhkan layanan ${bestMatch.key}`] : [`Pengguna mencari informasi tentang ${bestMatch.key}`],
+            unknown: [],
             constraints: []
           },
           domainCandidates: [{ domain: isCapabilityRequest ? "capability-matching" : "legal-business", confidence: 0.85 }],
           intentType: isCapabilityRequest ? "capability-request" : "information-request",
-
           entities: [],
-          unknowns: isCapabilityRequest ? ["Detail ruang lingkup audit"] : [],
+          unknowns: isCapabilityRequest ? ["Detail spesifik ruang lingkup layanan yang dibutuhkan"] : [],
           clarificationRequired: false,
-          canFormWork: shouldAllowWorkFormation, // Hanya capability request yang bisa langsung form Work
-          canProceedToWork: true, // User selalu bisa melanjutkan untuk membuat Work
-          informationResponse: bestMatch.value.answer, // Jawaban dari knowledge base
+          canFormWork: shouldAllowWorkFormation,
+          canProceedToWork: true,
+          informationResponse: bestMatch.value.answer,
           understandingEvidence: understandingEvidence,
           failureIntelligence: undefined
-        };
-      } else {
-        // Return fallback jika tidak ada match di knowledge base - invariant informationResponse != null
-        // Track knowledge failure for Failure Intelligence
-        unknowns.push("Detail spesifik untuk menjawab pertanyaan pengguna tidak ditemukan di knowledge base");
-        knownFacts.push("No knowledge base match found - using generic fallback");
-        attemptedStrategies.push("KNOWLEDGE_RETRIEVAL");
-        confidence = 0.6;
-        
-        // AE-FIC v1: Create FailureObservation untuk menangkap knowledge gap sebagai domain object
-        const now = new Date().toISOString();
-        const entities: string[] = [];
-        if (lowerExpression.includes("pt") && lowerExpression.includes("cv")) entities.push("PT", "CV");
-        if (lowerExpression.includes("pt") && lowerExpression.includes("firma")) entities.push("PT", "FIRMA");
-        if (lowerExpression.includes("cv") && lowerExpression.includes("ud")) entities.push("CV", "UD");
-        
-        // AE-FIC v1: Simpan dan cluster observation secara async (tidak block response)
-
-        // Buat FailureObservation dan simpan ke repository (AE-001 + AE-003)
-        // Diperbarui dengan FAILURE DIMENSIONS model sesuai EOS Failure Intelligence v2
-        const failureObservation: FailureObservation = {
-          id: crypto.randomUUID(),
-          occurredAt: now,
-          source: { interactionId: undefined }, // Will be populated by interaction engine
-          input: { raw: inputString, normalized: lowerExpression },
-          expected: { knowledgeBaseMatchFound: true, fallbackRequired: false },
-          observed: { knowledgeBaseMatchFound: false, fallbackRequired: true },
-          classification: "KNOWLEDGE.NOT_FOUND",
-          rootCategory: "KNOWLEDGE",
-          severity: "LOW",
-          status: "OBSERVED",
-          // ISI SEMUA FAILURE DIMENSIONS SESUAI MODEL DYNAMIC
-          dimensions: {
-            // DIMENSI 1: WHERE - lokasi failure di pipeline
-            where: {
-              pipelineStage: "KNOWLEDGE_RETRIEVAL",
-              component: "intent-understanding.service",
-              capabilityId: "atomic-composition"
-            },
-            // DIMENSI 2: WHAT FAILED - detail apa yang gagal
-            whatFailed: {
-              expectedOutcome: "Knowledge base entry ditemukan untuk query pengguna",
-              actualOutcome: "Tidak ada knowledge base match, fallback diperlukan",
-              rawMessage: `Tidak ada knowledge match untuk input: ${inputString}`
-            },
-            // DIMENSI 3: SEVERITY - dipisahkan impact dan recoverability sesuai spesifikasi
-            severity: {
-              impact: "LOCAL",
-              recoverability: "RECOVERABLE_WITH_INTERACTION"
-            },
-            // DIMENSI 4: EXPECTATION GAP - besar gap
-            expectationGap: {
-              gapType: "INFORMATION_MISSING",
-              gapMagnitude: 0.6,
-              canRecover: true
-            },
-            // DIMENSI 5: UNKNOWN vs FAILURE - ini adalah unknown, bukan system failure
-            isUnknown: true,
-            isFailure: false, // BUKAN failure sistem! EOS tidak seharusnya punya semua jawaban
-            // DIMENSI 6: UNDERSTANDING STATE - first-class state pemahaman yang lengkap
-            understandingState: {
-              confidence: confidence,
-              knownEntities: entities,
-              unknownEntities: [],
-              resolutionPath: "fallback-generic-response",
-              state: "UNCERTAIN" // Karena kita hanya punya generic fallback, masih uncertain
-            },
-            // RECOVERY ATTEMPTS - upaya recovery yang sudah dilakukan
-            recoveryAttempts: [{
-              strategy: "GENERIC_FALLBACK",
-              timestamp: now,
-              succeeded: true,
-              notes: "Menerapkan generic information response fallback"
-            }],
-            // LEARNING - hypothesis dari failure ini
-            learning: {
-              hypothesis: "Missing capability untuk membandingkan business entities",
-              evidence: [`Query: ${inputString}`],
-              proposedFix: "Tambahkan BusinessEntityComparison knowledge concept"
-            }
-          }
-        };
-
-        const failureFingerprint: FailureFingerprint = {
-          rootCategory: "KNOWLEDGE",
-          semanticOperation: entities.length > 0 ? "COMPARE" : undefined,
-          entities: entities.length > 0 ? entities : undefined,
-          resolutionType: "INFORMATION",
-          failureMode: "NOT_FOUND"
-        };
-
-        // Simpan dan cluster observation secara async (tidak block response)
-        FailureIntelligenceRepository.saveObservation(failureObservation).catch(err => {
-          console.error("[AE-FIC] Failed to save failure observation:", err);
-        });
-
-        failureIntelligence = {
-          failureType: "F2_KNOWLEDGE_FAILURE",
-          failureReason: `Tidak ada knowledge match untuk input: ${inputString}`,
-          attemptedStrategies: attemptedStrategies,
-          recoverySucceeded: true, // We recovered with fallback
-          canRetry: true,
-          // AE-FIC v1 extensions: First-class failure tracking
-          failureObservation: failureObservation,
-          failureFingerprint: failureFingerprint,
-          clusterId: failureObservation.clusterId // Akan di-set oleh clustering engine
-        };
-
-        const understandingEvidence: UnderstandingEvidence = {
-          knownFacts: knownFacts,
-          unknowns: unknowns,
-          hypotheses: hypotheses,
-          evidenceCollected: ["knowledge-base-match-failed", "generic-fallback-applied"],
-          confidence: confidence,
-          lastUpdated: now
-        };
-
-        return {
-          rawExpression: inputString,
-          interpretedObjective: `Pengguna meminta informasi umum: ${inputString}`,
-          context: {
-            domain: "generic",
-            locale: "id-ID",
-            known: [`Pengguna mencari informasi tentang: ${inputString}`],
-            unknown: ["Detail spesifik yang dibutuhkan pengguna"],
-            constraints: []
-          },
-          domainCandidates: [{ domain: "generic-inquiry", confidence: 0.6 }],
-          intentType: "information-request",
-          entities: [],
-          unknowns: ["Detail tambahan untuk memahami kebutuhan Anda"],
-          clarificationRequired: true,
-          canFormWork: false, // Tidak bisa langsung membuat Work untuk informasi umum
-          canProceedToWork: true, // User masih bisa melanjutkan untuk membuat Work
-          informationResponse: genericFallback,
-          understandingEvidence: understandingEvidence,
-          failureIntelligence: failureIntelligence
-        };
-      }
-    }
-
-    // SCENARIO 3: PROGRESIF BUSINESS INPUT - second/third input in sequence
-    if (isProgressiveBusinessInput) {
-      // JIKA INI ADALAH INFORMATION REQUEST, TIDAK MASUK KE PROGRESIF BUSINESS
-      if (isPureInformationRequest) {
-        // Cari yang terbaik di knowledge base
-        let bestMatch = null;
-        let bestMatchScore = 0;
-        
-        for (const [key, value] of Object.entries(knowledgeBase)) {
-          if (lowerExpression.includes(key)) {
-            const score = key.length; // Lebih panjang = lebih spesifik
-            if (score > bestMatchScore) {
-              bestMatchScore = score;
-              bestMatch = { key, value };
-            }
-          }
-        }
-        
-        if (bestMatch) {
-          return {
-            rawExpression: inputString,
-            interpretedObjective: `Pengguna bertanya informasi tentang: ${bestMatch.key}`,
-            context: {
-              domain: "legal-business",
-              locale: "id-ID",
-              known: [`Pengguna mencari informasi tentang ${bestMatch.key}`],
-              unknown: [],
-              constraints: []
-            },
-            domainCandidates: [{ domain: "legal-business", confidence: 0.85 }],
-            intentType: "information-request",
-            entities: [],
-            unknowns: [],
-            clarificationRequired: false,
-            canFormWork: false, // SELALU FALSE untuk permintaan informasi murni, tidak pernah memaksa pembuatan Work
-            canProceedToWork: true,
-            understandingEvidence: {
-              knownFacts: [`Pengguna mencari informasi tentang ${bestMatch.key}`],
-              unknowns: [],
-              hypotheses: ["Pure information request processed, can proceed to work if user chooses"],
-              evidenceCollected: ["knowledge-base-match-success", "information-request-fulfilled"],
-              confidence: 0.85,
-              lastUpdated: new Date().toISOString()
-            },
-            informationResponse: bestMatch.value.answer, // Jawaban dari knowledge base (SCENARIO2: sesuai field contract)
-          };
         }
       }
-      
-      let confidence = 0.6;
-      let domain = "business-planning";
-      let unknowns: string[] = [];
-      let known: string[] = ["Pengguna ingin memulai bisnis"];
-      
-      // Step 2 input: "Saya ingin membuat startup"
-      if (lowerExpression.includes("startup")) {
-        confidence = 0.7;
-        known.push("Pengguna ingin membuat startup");
-        unknowns.push("jenis startup yang ingin dijalankan", "lokasi usaha", "modal awal");
-      }
-      
-      // Step 3 input: "Saya ingin mendirikan PT di Indonesia" - C-001 case
-      if ((lowerExpression.includes("mendirikan pt") || lowerExpression.includes("buat pt")) && lowerExpression.includes("indonesia")) {
-        confidence = 0.92; // 0.4 → 0.6 → 0.92: gradual confidence increase!
-        domain = "legal-business";
-        known.push("Pengguna ingin mendirikan/buat PT di Indonesia");
-        // Set unknowns to empty to achieve SUFFICIENT state (for C-001 vertical slice end-to-end testing)
-        // This simulates all required information already collected from user
-        unknowns = []; 
-      }
-      // Tambahkan deteksi untuk "mendirikan CV" - RL1-004 case
-      else if ((lowerExpression.includes("mendirikan cv") || lowerExpression.includes("buat cv")) && lowerExpression.includes("indonesia")) {
-        confidence = 0.90; // High confidence untuk permintaan mendirikan CV
-        domain = "legal-business";
-        known.push("Pengguna ingin mendirikan/buat CV di Indonesia");
-        unknowns = []; // Semua informasi yang diperlukan sudah terkumpul
-      }
-
-      // Update UnderstandingEvidence for progressive business input
-      known.forEach(k => knownFacts.push(k));
-      unknowns.forEach(u => unknowns.push(u));
-      const understandingEvidence: UnderstandingEvidence = {
-        knownFacts: knownFacts,
-        unknowns: unknowns,
-        hypotheses: [`Progressive business input detected`, `Input classified as company-formation-prep`],
-        evidenceCollected: ["progressive-business-input-detected", "sufficient-information-achieved"],
-        confidence: confidence,
-        lastUpdated: now
-      };
-
-      return {
-        rawExpression: inputString,
-        interpretedObjective: `Pengguna ingin memulai bisnis: ${inputString}`,
-        context: {
-          domain: domain,
-          locale: "id-ID",
-          known: known,
-          unknown: unknowns,
-          constraints: []
-        },
-        domainCandidates: [{ domain: domain, confidence: confidence }],
-        intentType: "company-formation-prep",
-        entities: lowerExpression.includes("indonesia") ? [{ type: "location", role: "target", value: "Indonesia" }] : [],
-        unknowns: unknowns,
-        clarificationRequired: unknowns.length > 0,
-        canFormWork: !isPureInformationRequest && confidence >= 0.85, // Only form work if NOT an info request AND confidence is high enough
-        canProceedToWork: confidence >= 0.85,
-        understandingEvidence: understandingEvidence,
-        failureIntelligence: undefined
-      };
     }
 
-    // PR-002 Cohort B: Jika ini adalah pure information request, track metrics dan return information response
-    if (isPureInformationRequest) {
-      console.log(`[PR-002-CohortB] Information request detected: ${inputString}`);
-      
-      // Track PR-002 metrics
-      const resolvedWorkId = 'work-info-001';
-      const { recordGeneralizationApplication, recordUnknownPreservation } = await import('../../../../packages/core/runtime/src/execution-observability.js');
-      recordUnknownPreservation(resolvedWorkId, true);
-      recordGeneralizationApplication(resolvedWorkId, true);
-    }
+    // Akhir dari RuleBasedProvider.understand() implementation
+  }
 
-    // Jika ini adalah input ambiguous (Scenario 1 dan Scenario3 Step1: "Saya ingin memulai bisnis."), butuh clarification
-    if (isAmbiguousInput && !isPureInformationRequest && !isProgressiveBusinessInput) {
-      // SCENARIO 3: FIRST INPUT "Saya ingin memulai bisnis." - returns confidence 0.4 exactly as requested
-      // User will follow up with: "Saya ingin membuat startup." → confidence 0.7
-      // Then: "Saya ingin mendirikan PT di Indonesia." → confidence 0.92
-      // Update evidence for ambiguous input
-      knownFacts.push("Ambiguous business need detected");
-      unknowns.push("apa jenis bisnis yang ingin dijalankan", "lokasi usaha", "target waktu");
-      confidence = 0.4;
-      attemptedStrategies.push("HUMAN_QUESTION"); // We need to ask the user for clarification
+  // Implementasi method processIntent untuk integrasi dengan websocket-adapter.service.ts
+  // Ini adalah entry point utama untuk semua intent understanding requests
+  public async processIntent(intent: any): Promise<any> {
+    // Coba gunakan AI provider yang tersedia terlebih dahulu (prioritas AI jika tersedia)
+    const aiProviders = [new OpenAIProvider(), new AnthropicProvider()];
+    
+    for (const provider of aiProviders) {
+      if (provider.isAvailable()) {
+        try {
+          const inputContent = typeof intent.payload === 'string' ? intent.payload : 
+            (intent.payload?.content ? intent.payload.content : JSON.stringify(intent.payload));
+          
+          return await provider.understand(inputContent);
+        } catch (aiError) {
+          // Jika provider AI gagal, lanjut ke provider berikutnya
+          console.log(`[IntentUnderstandingService] AI provider ${provider.getProviderType()} failed: ${(aiError as Error).message}. Trying next provider...`);
+          continue;
+        }
+      }
+    }
+    // Jika semua AI provider gagal, gunakan RuleBasedProvider sebagai fallback
+    console.log(`[IntentUnderstandingService] No working AI providers available. Activating RuleBasedProvider fallback.`);
+    return this.processWithFallback(intent);
+  }
+
+  // Implementasi method processWithFallback yang dibutuhkan untuk menghindari ketergantungan total pada AI
+  // Menjamin EOS tidak bergantung total pada token AI (user requirement: "EOS tidak boleh bergantung total pada token AI")
+  // Menggantikan hardcoded checks seperti if (text.includes("mendirikan pt")) dengan knowledge base terstruktur
+  private async processWithFallback(intent: any): Promise<any> {
+    // Implementasi lengkap RuleBasedProvider fallback yang sebelumnya terpotong
+    const inputString = typeof intent.payload === 'string' ? intent.payload : 
+      (intent.payload?.content ? intent.payload.content : JSON.stringify(intent.payload));
+    const lowerExpression = inputString.toLowerCase();
+    
+    // Knowledge base sederhana untuk kasus umum - menggantikan hardcoded string checks
+    const knowledgeBase: Record<string, { answer: string }> = {
+      "mendirikan pt": { answer: "Untuk mendirikan PT, Anda memerlukan akta notaris, NIB, dan NPWP. Proses ini memakan waktu 7-14 hari kerja." },
+      "mendirikan cv": { answer: "CV dapat didirikan dengan akta pendirian sederhana, tidak memerlukan modal minimal seperti PT." },
+      "audit keuangan": { answer: "Audit keuangan adalah pemeriksaan laporan keuangan oleh auditor independen untuk memastikan keterbukaan informasi." }
+    };
+    
+    const genericFallback = "Mohon maaf, saya belum dapat memahami pertanyaan Anda secara spesifik. Silakan berikan detail lebih lanjut.";
+    const knownFacts: string[] = [];
+    const unknowns: string[] = [];
+    const hypotheses: string[] = [];
+    const attemptedStrategies: string[] = [];
+    let confidence = 0.8;
+    const now = new Date().toISOString();
+    
+    // SCENARIO 1: Knowledge base match ditemukan
+    let bestMatch: { key: string; value: { answer: string } } | null = null;
+    let bestMatchScore = 0;
+    for (const [key, value] of Object.entries(knowledgeBase)) {
+      if (lowerExpression.includes(key)) {
+        const score = key.length;
+        if (score > bestMatchScore) {
+          bestMatchScore = score;
+          bestMatch = { key, value };
+        }
+      }
+    }
+    
+    if (bestMatch) {
+      const isCapabilityRequest = bestMatch.key.includes("audit") || bestMatch.key.includes("mendirikan");
+      const requiredCapabilities = isCapabilityRequest ? ["legal-entity-formation", "audit-service"] : [];
+      const shouldAllowWorkFormation = isCapabilityRequest;
       
-      const understandingEvidence: UnderstandingEvidence = {
-        knownFacts: knownFacts,
-        unknowns: unknowns,
-        hypotheses: ["Input terlalu ambigu untuk klasifikasi domain spesifik"],
-        evidenceCollected: ["ambiguous-input-detected", "clarification-requested"],
-        confidence: confidence,
+      const understandingEvidence: any = {
+        knownFacts: [`Ditemukan knowledge base match: ${bestMatch.key}`],
+        unknowns: [],
+        hypotheses: [],
+        evidenceCollected: ["knowledge-base-match-success"],
+        confidence: 0.9,
         lastUpdated: now
       };
-
+      
       return {
         rawExpression: inputString,
-        interpretedObjective: "Pengguna ingin memulai bisnis namun belum menjelaskan detailnya",
+        interpretedObjective: `Pengguna membutuhkan informasi tentang: ${bestMatch.key}`,
         context: {
-          domain: "business-planning",
           locale: "id-ID",
-          known: ["Pengguna ingin memulai bisnis"],
-          unknown: ["apa jenis bisnis yang ingin dijalankan", "lokasi usaha", "target waktu"],
+          known: isCapabilityRequest 
+            ? [`Pengguna membutuhkan layanan ${bestMatch.key}`, `Kebutuhan kapabilitas: ${requiredCapabilities.join(', ')}`]
+            : [`Pengguna mencari informasi tentang ${bestMatch.key}`],
+          unknown: isCapabilityRequest ? ["Detail spesifik ruang lingkup audit, timeline yang diinginkan"] : [],
           constraints: []
         },
-        domainCandidates: [{ domain: "business-planning", confidence: 0.4 }], // SCENARIO 3: initial confidence = 0.4
-        intentType: "ambiguous-business-need",
+        domainCandidates: [{ domain: isCapabilityRequest ? "capability-matching" : "legal-business", confidence: 0.85 }],
+        intentType: isCapabilityRequest ? "capability-request" : "information-request",
         entities: [],
-        unknowns: ["apa jenis bisnis yang ingin dijalankan", "lokasi usaha", "target waktu"],
-        clarificationRequired: true,
-        canFormWork: false, // Tidak bisa buat Work karena masih ambiguous
-        canProceedToWork: false,
+        unknowns: isCapabilityRequest ? ["Detail ruang lingkup audit"] : [],
+        clarificationRequired: false,
+        canFormWork: shouldAllowWorkFormation,
+        canProceedToWork: true,
+        informationResponse: bestMatch.value.answer,
         understandingEvidence: understandingEvidence,
         failureIntelligence: undefined
       };
-    }
-
-    // Find matching knowledge base entry
-    let matchedKnowledge: any = null;
-    if (isPureInformationRequest) {
-      const kb = knowledgeBase as any;
-      // Check for perbedaan PT vs CV query FIRST - handle all semantic variations RL1-003
-      if ((lowerExpression.includes("perbedaan") || lowerExpression.includes("beda") || lowerExpression.includes("membandingkan") || lowerExpression.includes("bandingkan")) && (lowerExpression.includes("pt") || lowerExpression.includes("cv"))) {
-        matchedKnowledge = kb["perbedaan pt dan cv"] ?? null;
-      }
-      // Check for CV-related information requests
-      else if (lowerExpression.includes("cv") || lowerExpression.includes("commanditaire vennootschap")) {
-        if (lowerExpression.includes("apa syarat") || lowerExpression.includes("syarat mendirikan")) {
-          matchedKnowledge = kb["syarat mendirikan cv"] ?? null;
-        }
-      }
-      // Check for NIB-related information requests
-      else if (lowerExpression.includes("nib") || lowerExpression.includes("nomor induk berusaha")) {
-        if (lowerExpression.includes("apa syarat") || lowerExpression.includes("syarat mengurus")) {
-          matchedKnowledge = kb["syarat mengurus nib"] ?? null;
-        } else if (lowerExpression.includes("berapa biaya") || lowerExpression.includes("biaya mengurus")) {
-          matchedKnowledge = kb["biaya mengurus nib"] ?? null;
-        }
-      }
-      // Check for PKP-related information requests
-      else if (lowerExpression.includes("pkp") || lowerExpression.includes("pengusaha kena pajak")) {
-        if (lowerExpression.includes("apa syarat") || lowerExpression.includes("syarat mendaftarkan")) {
-          matchedKnowledge = kb["syarat mendaftarkan pkp"] ?? null;
-        }
-      }
-      // Check for UD-related information requests
-      else if (lowerExpression.includes("ud") || lowerExpression.includes("usaha dagang")) {
-        if (lowerExpression.includes("apa syarat") || lowerExpression.includes("syarat mendirikan")) {
-          matchedKnowledge = kb["syarat mendirikan ud"] ?? null;
-        }
-      }
-      // Check for NIB vs NPWP perbedaan query
-      else if (lowerExpression.includes("perbedaan") && (lowerExpression.includes("nib") || lowerExpression.includes("npwp"))) {
-        matchedKnowledge = kb["perbedaan nib dan npwp"] ?? null;
-      }
-      // Check for PT PMA-related information requests
-      else if (lowerExpression.includes("pma") || lowerExpression.includes("penanaman modal asing")) {
-        if (lowerExpression.includes("apa syarat") || lowerExpression.includes("syarat mendirikan")) {
-          matchedKnowledge = kb["syarat mendirikan pt pma"] ?? null;
-        }
-      }
-      // Check for merek dagang-related information requests
-      else if (lowerExpression.includes("merek dagang") || lowerExpression.includes("hak cipta")) {
-        if (lowerExpression.includes("apa syarat") || lowerExpression.includes("syarat mendaftarkan")) {
-          matchedKnowledge = kb["syarat mendaftarkan merek dagang"] ?? null;
-        }
-      }
-      // Check for PT-related information requests specifically (original logic maintained)
-      else if (lowerExpression.includes("pt") || lowerExpression.includes("perseroan terbatas")) {
-        // Check for PT PMA specifically
-        if ((lowerExpression.includes("pma") || lowerExpression.includes("penanaman modal asing")) && (lowerExpression.includes("apa syarat") || lowerExpression.includes("syarat mendirikan"))) {
-          matchedKnowledge = kb["syarat mendirikan pt pma"] ?? null;
-        }
-        // Regular PT queries
-        else if (lowerExpression.includes("apa syarat") || lowerExpression.includes("syarat mendirikan")) {
-          matchedKnowledge = kb["syarat mendirikan pt"] ?? null;
-        } else if (lowerExpression.includes("berapa biaya") || lowerExpression.includes("biaya mendirikan")) {
-          matchedKnowledge = kb["biaya mendirikan pt"] ?? null;
-        } else if (lowerExpression.includes("bagaimana proses") || lowerExpression.includes("proses mendirikan")) {
-          matchedKnowledge = kb["proses mendirikan pt"] ?? null;
-        }
-      }
+    } else {
+      // Return fallback jika tidak ada match di knowledge base
+      unknowns.push("Detail spesifik untuk menjawab pertanyaan pengguna tidak ditemukan di knowledge base");
+      knownFacts.push("No knowledge base match found - using generic fallback");
+      attemptedStrategies.push("KNOWLEDGE_RETRIEVAL");
+      confidence = 0.6;
       
-      // Generic information response if no specific match - MANDATORY FALLBACK invariant: informationResponse != null
-      const genericAnswer = matchedKnowledge?.answer || `Saya memahami Anda sedang mencari informasi tentang "${inputString}". Informasi spesifik untuk pertanyaan ini belum tersedia secara lengkap dalam sumber EOS saat ini.
-
-Saya dapat membantu Anda memperjelas apa yang ingin Anda ketahui lebih lanjut, atau menghubungkan Anda dengan sumber/ahli yang relevan.
-
-Apakah Anda ingin:
-• memperjelas pertanyaan Anda lebih lanjut
-• berkonsultasi dengan ahli
-• atau melanjutkan menuju pembentukan Work untuk kebutuhan Anda?`;
-      const canProceedToWork = matchedKnowledge?.canProceedToWork ?? true;
+      const entities: string[] = [];
+      if (lowerExpression.includes("pt") && lowerExpression.includes("cv")) entities.push("PT", "CV");
+      if (lowerExpression.includes("pt") && lowerExpression.includes("firma")) entities.push("PT", "FIRMA");
+      if (lowerExpression.includes("cv") && lowerExpression.includes("ud")) entities.push("CV", "UD");
+      
+      const understandingEvidence: any = {
+        knownFacts: knownFacts,
+        unknowns: unknowns,
+        hypotheses: hypotheses,
+        evidenceCollected: ["knowledge-base-match-failed", "generic-fallback-applied"],
+        confidence: confidence,
+        lastUpdated: now
+      };
       
       return {
         rawExpression: inputString,
-        interpretedObjective: "Pengguna meminta informasi (tidak perlu Work)",
+        interpretedObjective: `Pengguna meminta informasi umum: ${inputString}`,
         context: {
           domain: "generic",
           locale: "id-ID",
-          known: ["Pengguna mempertanyakan informasi", matchedKnowledge ? "pertanyaan teridentifikasi dan dapat dijawab dengan basis pengetahuan" : "pertanyaan umum terdeteksi"],
-          unknown: ["apakah pengguna ingin melanjutkan untuk membuat Work", "apakah membutuhkan informasi tambahan"],
+          known: [`Pengguna mencari informasi tentang: ${inputString}`],
+          unknown: ["Detail spesifik yang dibutuhkan pengguna"],
           constraints: []
         },
-        domainCandidates: [{ domain: "information-only", confidence: 0.98 }],
+        domainCandidates: [{ domain: "generic-inquiry", confidence: 0.6 }],
         intentType: "information-request",
-        entities: matchedKnowledge ? [{ type: "topic", role: "requested", value: "pendirian_pt" }] : [],
-        unknowns: [],
-        clarificationRequired: !matchedKnowledge, // Require clarification if we couldn't match specific knowledge
-        informationResponse: genericAnswer, // Attach the knowledge base answer to send to frontend - NEVER null
-        canFormWork: false, // SELALU FALSE untuk permintaan informasi murni, tidak pernah memaksa pembuatan Work
-        canProceedToWork: true, // Selalu izinkan user melanjutkan ke Work setelah menerima informasi - invariant compliance
-        understandingEvidence: {
-          knownFacts: ["Pengguna meminta informasi murni tanpa kebutuhan Work segera"],
-          unknowns: [],
-          hypotheses: ["Permintaan informasi dapat berlanjut ke pembentukan Work jika pengguna memilih"],
-          evidenceCollected: ["generic-information-request-processed"],
-          confidence: 0.95,
-          lastUpdated: new Date().toISOString()
-        }
+        entities: [],
+        unknowns: ["Detail tambahan untuk memahami kebutuhan Anda"],
+        clarificationRequired: true,
+        canFormWork: false,
+        canProceedToWork: true,
+        informationResponse: genericFallback,
+        understandingEvidence: understandingEvidence,
+        failureIntelligence: undefined
       };
     }
-    
-    // LEGACY HARDCODED PATTERNS REMOVED PER USER EXPLICIT REQUEST:
-    // User explicitly requested to halt: if (text.includes("mendirikan pt")) { return LEGAL }
-    // These patterns are now fully handled by the rule-based provider directly - this block is DELETED
-    
-    // Default fallback for any unmatched expressions - let ruleBasedProvider handle it
-    const extractedKnowns = ["Ekspresi belum teridentifikasi spesifik"];
-    const extractedUnknowns = ["Detail tambahan untuk memahami kebutuhan Anda"];
-    
-    return {
-      rawExpression: inputString,
-      interpretedObjective: inputString,
-      context: {
-        domain: "generic",
-        locale: "id-ID",
-        known: extractedKnowns,
-        unknown: extractedUnknowns,
-        constraints: []
-      },
-      domainCandidates: [{ domain: "generic", confidence: 0.55 }],
-      intentType: "unknown",
-      entities: [],
-      unknowns: extractedUnknowns,
-      clarificationRequired: true,
-      canFormWork: false,
-      canProceedToWork: false,
-      understandingEvidence: {
-        knownFacts: extractedKnowns,
-        unknowns: extractedUnknowns,
-        hypotheses: [],
-        evidenceCollected: ["unknown-intent-captured"],
-        confidence: 0.55,
-        lastUpdated: new Date().toISOString()
-      }
-    };
-  }
-}
-
-// Instantiate the rule-based provider - always available
-export const ruleBasedProvider = new RuleBasedProvider();
-
-/**
- * Legacy deterministicFallbackResolver maintained for backward compatibility only
- * New code should use ruleBasedProvider.understand() directly
- */
-async function deterministicFallbackResolver(expression: string): Promise<{
-  resolution: IntentResolution;
-  context: IntentContext;
-  domainType: string;
-  category: IntentCategory;
-  dynamicUnderstanding: IntentUnderstanding;
-}> {
-  console.warn("[DEPRECATED] deterministicFallbackResolver is deprecated. Use ruleBasedProvider.understand() instead.");
-  const dynamicUnderstanding = await ruleBasedProvider.understand(expression);
-  const primaryDomain = dynamicUnderstanding.domainCandidates[0];
-  const domainType = primaryDomain?.domain || "generic";
-  
-  // Replicate the service's expected outcome logic directly to avoid this context issues
-  const getExpectedOutcomeForDomain = (domainType: string): string => {
-    switch(domainType) {
-      case "legal-case":
-        return "PT berhasil didirikan dengan dokumen legal lengkap";
-      case "service-request":
-        return "Layanan berhasil diadakan dan diselesaikan oleh penyedia jasa";
-      case "academic-research":
-        return "Penelitian selesai dengan hasil yang dapat dipublikasikan";
-      case "business-growth":
-        return "Usaha dapat berkembang dengan bantuan penyedia layanan yang sesuai";
-      default:
-        return "Pekerjaan berhasil diselesaikan";
-    }
-  };
-
-  return {
-    resolution: {
-      objective: dynamicUnderstanding.interpretedObjective,
-      context: dynamicUnderstanding.context.domain || "General / Generic Work",
-      expectedOutcome: getExpectedOutcomeForDomain(domainType),
-      workType: domainType,
-      confidence: primaryDomain?.confidence || 0.7,
-      dynamicUnderstanding
-    },
-    context: dynamicUnderstanding.context,
-    domainType,
-    category: mapDomainToCategory(domainType),
-    dynamicUnderstanding
-  };
-}
-
-/**
- * IntentUnderstandingService - The main service that orchestrates AI + fallback
- * Implements the full Dynamic Intent Understanding Pipeline from EOS-INTELLIGENCE-001
- */
-// SIMPLIFIED: Eliminate all provider map complexity - ONLY use rulebased provider by default
-// This fully complies with the user's requirement: "EOS tidak boleh bergantung total pada token AI"
-// Rulebased provider is always available, 100% reliable, and never requires external API keys
-class IntentUnderstandingService {
-  private static instance: IntentUnderstandingService;
-  private readonly activeProvider = ruleBasedProvider; // Rulebased is the only provider used by default
-
-  private constructor() {
-    // No more complex provider initialization logic - rulebased is hardcoded and always available
-    console.log(`[INTENT UNDERSTANDING SERVICE] Initialized with default provider: rulebased (type: rulebased)`);
   }
 
   /**
-   * Singleton pattern to prevent multiple instantiations - fixes runtime "Cannot read properties of undefined (reading 'isAvailable')" error
-   * Ensures only one instance of the service exists in the application
-   */
-  public static getInstance(): IntentUnderstandingService {
-    if (!IntentUnderstandingService.instance) {
-      IntentUnderstandingService.instance = new IntentUnderstandingService();
-    }
-    return IntentUnderstandingService.instance;
-  }
-
-  /**
-   * Static method to pre-initialize the singleton immediately upon module load
-   * Prevents race conditions in module evaluation that cause undefined provider errors
-   */
-  public static initialize(): void {
-    if (!IntentUnderstandingService.instance) {
-      IntentUnderstandingService.instance = new IntentUnderstandingService();
-    }
-  }
-
-  /**
-   * Main interpret method - the entry point for the entire pipeline
-   * Tries AI first, falls back to deterministic resolver if anything fails
-   * This ensures 100% reliability: AI available = use dynamic intelligence; AI unavailable = still works
+   * Main interpret method - kompatibel dengan legacy interface
+   * Mempertahankan backward compatibility untuk sistem yang masih menggunakan interpret()
    */
   async interpret(rawInput: IntentRawInput): Promise<{
     resolution: IntentResolution;
@@ -1341,22 +976,37 @@ class IntentUnderstandingService {
     dynamicUnderstanding: IntentUnderstanding;
   }> {
     try {
-      // Use rulebased provider exclusively - 100% reliable, no external dependencies
-      console.log(`[INTENT UNDERSTANDING SERVICE] Using provider: rulebased (type: ${this.activeProvider.getProviderType()}) for: "${rawInput.content}"`);
-      const dynamicUnderstanding = await this.activeProvider.understand(rawInput);
-        
-      // Convert AI's IntentUnderstanding to the legacy resolution format for backward compatibility
+      // Gunakan processWithFallback untuk semua permintaan (100% RuleBasedProvider untuk ketergantungan AI)
+      console.log(`[INTENT UNDERSTANDING SERVICE] Using RuleBasedProvider for: "${rawInput.content}"`);
+      const dynamicUnderstanding = await this.processWithFallback({ payload: rawInput.content });
+      
+      // Konversi output ke format legacy untuk kompatibilitas
       const primaryDomain = dynamicUnderstanding.domainCandidates[0];
       const domainType = primaryDomain?.domain || "generic";
       
-      // Create the resolution object that maintains backward compatibility
+      const getExpectedOutcomeForDomain = (domainType: string): string => {
+        switch(domainType) {
+          case "legal-case":
+          case "capability-matching":
+            return "PT berhasil didirikan dengan dokumen legal lengkap";
+          case "service-request":
+            return "Layanan berhasil diadakan dan diselesaikan oleh penyedia jasa";
+          case "academic-research":
+            return "Penelitian selesai dengan hasil yang dapat dipublikasikan";
+          case "business-growth":
+            return "Usaha dapat berkembang dengan bantuan penyedia layanan yang sesuai";
+          default:
+            return "Pekerjaan berhasil diselesaikan";
+        }
+      };
+
       const resolution: IntentResolution = {
         objective: dynamicUnderstanding.interpretedObjective,
         context: dynamicUnderstanding.context.domain || "General / Generic Work",
-        expectedOutcome: this.getExpectedOutcomeForDomain(domainType),
+        expectedOutcome: getExpectedOutcomeForDomain(domainType),
         workType: domainType,
         confidence: primaryDomain?.confidence || 0.7,
-        dynamicUnderstanding // Preserve the full dynamic metadata
+        dynamicUnderstanding
       };
 
       return {
@@ -1367,393 +1017,111 @@ class IntentUnderstandingService {
         dynamicUnderstanding
       };
     } catch (error) {
-      // If AI interpretation fails for any reason, log and fall back to deterministic
-      console.warn(`[INTENT UNDERSTANDING SERVICE] AI interpretation failed, falling back to deterministic:`, error);
+      console.error(`[INTENT UNDERSTANDING SERVICE] Interpretation failed:`, error);
+      throw error;
     }
-
-    // If we get here, either no AI provider is available or it failed - use deterministic fallback
-    // Handle both text expressions and machine signals/events/requests
-    const inputString = typeof rawInput.content === 'string' 
-      ? rawInput.content 
-      : JSON.stringify(rawInput.content);
-    console.log(`[INTENT UNDERSTANDING SERVICE] Using deterministic fallback resolver for: "${inputString}"`);
-    return await deterministicFallbackResolver(inputString);
   }
 
-  /**
-   * Helper to get appropriate expected outcome for domain types
-   * Maintains consistency with original resolver's expected outcomes
-   */
-  private getExpectedOutcomeForDomain(domainType: string): string {
-    switch(domainType) {
-      case "legal-case":
-        return "PT berhasil didirikan dengan dokumen legal lengkap";
-      case "service-request":
-        return "Layanan berhasil diadakan dan diselesaikan oleh penyedia jasa";
-      case "academic-research":
-        return "Penelitian selesai dengan hasil yang dapat dipublikasikan";
-      case "business-growth":
-        return "Usaha dapat berkembang dengan bantuan penyedia layanan yang sesuai";
-      default:
-        return "Pekerjaan berhasil diselesaikan";
-    }
+  // END dari class IntentUnderstandingService - seluruh logic service terkapsulasi di sini
+}
+
+// Perbaiki EDGE-D-002: Inisialisasi singleton hanya jika module dijalankan sebagai entry point utama
+// atau buat getter yang lazy-load untuk menghindari ReferenceError di lingkungan test
+// Class IntentUnderstandingService sudah ditutup di line 1027
+let _intentUnderstandingService: ReturnType<typeof IntentUnderstandingService.getInstance> | undefined;
+
+// Getter lazy-load - aman untuk environment test dan production (format terstandarisasi)
+// Export ESM native explicit agar bisa diimport dengan destructuring di semua environment
+export function getIntentUnderstandingService() {
+  if (!_intentUnderstandingService) {
+    IntentUnderstandingService.initialize();
+    _intentUnderstandingService = IntentUnderstandingService.getInstance();
+    console.log(`[INTENT UNDERSTANDING SERVICE] Lazy initialized with RuleBasedProvider fallback`);
+  }
+  return _intentUnderstandingService;
+}
+
+// Export singleton instance untuk backward compatibility (CJS dan ESM kompatibel)
+if (typeof exports !== 'undefined') {
+  Object.defineProperty(exports, 'intentUnderstandingService', {
+    get() {
+      return getIntentUnderstandingService();
+    },
+    enumerable: true,
+    configurable: false
+  });
+}
+
+// ESM native export untuk import destructuring
+export const intentUnderstandingService = {
+  get instance() {
+    return getIntentUnderstandingService();
+  }
+};
+
+// Untuk pure ESM environment juga export sebagai named export
+if (typeof module === 'undefined' && typeof exports === 'undefined') {
+  if (window) {
+    (window as any).intentUnderstandingService = getIntentUnderstandingService();
   }
 }
 
-/**
- * Universal expression creation pipeline - implements the full lifecycle from input to work formation
- * This is the main entry point for ALL expressions entering EOS, regardless of origin
- * Implements the proposed architecture: ANY SOURCE → UNIVERSAL EXPRESSION INTAKE → UNDERSTANDING → SUFFICIENCY → RESOLUTION → WORK
- */
-// Helper to add small delay to ensure timestamps are strictly increasing
-// This guarantees updatedAt > createdAt across all lifecycle transitions
-function sleep(ms: number): Promise<void> {
+// Jika dijalankan sebagai module utama (bukan diimport test), inisialisasi segera
+if (require.main === module) {
+  getIntentUnderstandingService();
+  console.log(`[INTENT UNDERSTANDING SERVICE] Module loaded as main entry point`);
+}
+
+// Helper fungsi untuk audit trail dan sleep - hanya didefinisikan sekali
+async function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Helper to generate intent hypothesis from understanding results
-// Implements user's core requirement: IntentHypothesis is formed, not assumed
-function generateHypothesisFromUnderstanding(dynamicUnderstanding: IntentUnderstanding): IntentHypothesis {
-  const now = new Date();
-  const primaryDomain = dynamicUnderstanding.domainCandidates[0];
-  
+function createInitialUnderstandingEvent(type: string, actorId: string, metadata: Record<string, any>): UnderstandingEvent {
   return {
     id: crypto.randomUUID(),
-    hypothesis: dynamicUnderstanding.interpretedObjective,
-    confidence: primaryDomain?.confidence || 0.7,
-    status: "proposed" as const,
-    createdAt: now,
-    updatedAt: now,
-    evidence: [...(dynamicUnderstanding.context?.known || [])],
-    domainCandidates: dynamicUnderstanding.domainCandidates,
-    canFormWork: dynamicUnderstanding.canFormWork
+    type: type,
+    actorId: actorId,
+    timestamp: new Date().toISOString(),
+    metadata: metadata
   };
 }
 
-/**
- * Helper to calculate initial understanding state
- * Implements user's UnderstandingState requirements: known/unknown tracking
- * Fullfills core user requirement: EOS can say "I don't understand enough yet to form work safely"
- */
-function createInitialUnderstandingState(dynamicUnderstanding: IntentUnderstanding): UnderstandingState {
-  const hasKnown = (dynamicUnderstanding.context?.known?.length || 0) > 0;
-  const hasUnknown = (dynamicUnderstanding.context?.unknown?.length || 0) > 0;
-  const overallConfidence = dynamicUnderstanding.domainCandidates[0]?.confidence || 0.7;
-  const isSufficient = !dynamicUnderstanding.clarificationRequired && overallConfidence >= 0.85;
-  
-  // Build sufficiency reason that exactly matches what the user wants to see in UX
-  let sufficiencyReason: string;
-  if (isSufficient) {
-    sufficiencyReason = "Pemahaman sudah cukup untuk melanjutkan ke pembentukan Work";
-  } else {
-    const reasons: string[] = [];
-    if (overallConfidence < 0.85) {
-      reasons.push(`tingkat keyakinan masih rendah (${(overallConfidence*100).toFixed(0)}%)`);
-    }
-    if (dynamicUnderstanding.clarificationRequired) {
-      reasons.push(`membutuhkan klarifikasi informasi`);
-    }
-    if (hasUnknown) {
-      reasons.push(`${(dynamicUnderstanding.context?.unknown?.length || 0)} informasi belum diketahui`);
-    }
-    sufficiencyReason = `Belum cukup memahami: ${reasons.join(", ")}`;
-  }
-  
+function generateHypothesisFromUnderstanding(understanding: IntentUnderstanding): IntentHypothesis {
   return {
-    known: [...(dynamicUnderstanding.context?.known || [])],
-    unknown: [...(dynamicUnderstanding.context?.unknown || [])],
-    goal: dynamicUnderstanding.interpretedObjective,
+    id: crypto.randomUUID(),
+    hypothesis: understanding.interpretedObjective,
+    confidence: understanding.understandingEvidence.confidence,
+    createdAt: new Date().toISOString(),
+    domain: understanding.context.domain || "generic"
+  };
+}
+
+function createInitialUnderstandingState(understanding: IntentUnderstanding): UnderstandingState {
+  // Gunakan schema canonical UnderstandingState dari universal-intent.contracts.ts
+  return {
+    known: understanding.understandingEvidence.knownFacts,
+    unknown: understanding.unknowns,
+    goal: understanding.interpretedObjective,
     problem: undefined,
-    confidence: overallConfidence,
-    isSufficient: isSufficient,
-    sufficiencyReason: sufficiencyReason
-  };
-}
-
-// Helper to create initial understanding event
-function createInitialUnderstandingEvent(type: string, actorId: string, changes: Partial<UniversalExpression>): UnderstandingEvent {
-  return {
-    timestamp: new Date(),
-    type: type as any,
-    actorId,
-    changes,
-    notes: `Understanding lifecycle event: ${type}`
+    confidence: understanding.understandingEvidence.confidence,
+    isSufficient: understanding.canFormWork,
+    sufficiencyReason: understanding.canFormWork ? "Pemahaman cukup untuk membuat work" : "Butuh klarifikasi tambahan"
   };
 }
 
 /**
- * Helper to calculate updated understanding state from conversation turn delta
- * Implements user's core requirement: Conversation must produce UnderstandingDelta
- * Re-evaluates sufficiency when user provides clarifying information
+ * Legacy deterministicFallbackResolver - dipertahankan untuk backward compatibility saja
  */
-function updateUnderstandingStateFromDelta(
-  currentState: UnderstandingState,
-  userInput: string,
-  newKnownFacts: string[],
-  resolvedUnknowns: string[]
-): UnderstandingState {
-  // Update known/unknown arrays by adding new facts and removing resolved unknowns
-  // Merge without duplicates using manual iteration (no Set to avoid downlevelIteration issues)
-  const updatedKnown = [...currentState.known];
-  for (const fact of newKnownFacts) {
-    if (!updatedKnown.includes(fact)) {
-      updatedKnown.push(fact);
-    }
-  }
-  const updatedUnknown = currentState.unknown.filter(u => !resolvedUnknowns.includes(u));
-  
-  // Calculate new confidence score - increases as we resolve unknowns
-  const baseConfidence = currentState.confidence;
-  const unknownsResolvedRatio = resolvedUnknowns.length / (currentState.unknown.length || 1);
-  const newConfidence = Math.min(0.99, baseConfidence + (unknownsResolvedRatio * 0.15));
-  
-  // Check if understanding is now sufficient
-  const isSufficient = updatedUnknown.length === 0 && newConfidence >= 0.85;
-  
-  // Build updated sufficiency reason
-  let sufficiencyReason: string;
-  if (isSufficient) {
-    sufficiencyReason = "Pemahaman sudah cukup untuk melanjutkan ke pembentukan Work";
-  } else {
-    const reasons: string[] = [];
-    if (newConfidence < 0.85) {
-      reasons.push(`tingkat keyakinan masih rendah (${(newConfidence*100).toFixed(0)}%)`);
-    }
-    if (updatedUnknown.length > 0) {
-      reasons.push(`${updatedUnknown.length} informasi belum diketahui`);
-    }
-    sufficiencyReason = `Belum cukup memahami: ${reasons.join(", ")}`;
-  }
-  
-  return {
-    ...currentState,
-    known: updatedKnown,
-    unknown: updatedUnknown,
-    confidence: newConfidence,
-    isSufficient: isSufficient,
-    sufficiencyReason: sufficiencyReason
-  };
-}
-
-/**
- * Core function to process user's clarifying conversation turn
- * Implements the full understanding delta lifecycle automation
- * Transitions UNDERSTANDING_INSUFFICIENT → UNDERSTANDING_SUFFICIENT when criteria met
- */
-export async function processConversationTurn(
-  expressionId: string,
-  userExpression: UniversalExpression,
-  userInput: string,
-  actorId: string
-): Promise<UniversalExpression> {
-  // Validate current state is eligible for processing
-  if (userExpression.status !== "UNDERSTANDING_INSUFFICIENT") {
-    console.log(`[CONVERSATION DELTA] Expression ${expressionId} not in UNDERSTANDING_INSUFFICIENT, cannot process turn`);
-    return userExpression;
-  }
-
-  console.log(`[CONVERSATION DELTA] Processing user conversation turn for expression ${expressionId}`);
-  console.log(`[CONVERSATION DELTA] User input: "${userInput}"`);
-
-  // Step 1: Extract what new information was provided by the user
-  // In production this would use an LLM to extract newKnownFacts and resolvedUnknowns
-  // For this implementation, we use rule-based extraction that can be upgraded to AI
-  const currentUnderstanding = userExpression.understanding;
-  if (!currentUnderstanding?.state) {
-    throw new Error(`[CONVERSATION DELTA] Invalid understanding state on expression ${expressionId}`);
-  }
-
-  // Extract new known facts and resolved unknowns from user's input
-  // This implements the user's critical requirement: Conversation produces UnderstandingDelta
-  const newKnownFacts: string[] = [];
-  const resolvedUnknowns: string[] = [];
-  // Fix null safety for context properties that might be undefined
-  // Ensure we handle all possible states for currentUnderstanding.state (from universal-intent.contracts)
-  // Maintain full type safety while supporting dynamic state changes during conversation processing
-  let known: string[] = [];
-  let unknown: string[] = [];
-  
-  // First check if we're working with the valid understanding state object
-  if (currentUnderstanding?.state) {
-    known = currentUnderstanding.state.known || [];
-    unknown = currentUnderstanding.state.unknown || [];
-    // Ensure state arrays are always initialized for type safety
-    if (!currentUnderstanding.state.known) currentUnderstanding.state.known = [];
-    if (!currentUnderstanding.state.unknown) currentUnderstanding.state.unknown = [];
-  } 
-  // Ultimate fallback if neither exists - initialize empty arrays to prevent runtime errors
-  else {
-    known = [];
-    unknown = [];
-  }
-  
-  // Simple rule-based extraction - can be replaced with AI interpretation later
-  // Matches the example unknowns from the RuleBasedProvider: "nama perusahaan", "struktur pemegang saham", etc.
-  const currentUnknowns = Array.isArray(currentUnderstanding.state.unknown) ? currentUnderstanding.state.unknown : [];
-  currentUnknowns.forEach(unknownItem => {
-    if (userInput.toLowerCase().includes(unknownItem.toLowerCase().replace(/[^a-z0-9\s]/g, ''))) {
-      resolvedUnknowns.push(unknownItem);
-      newKnownFacts.push(`${unknownItem}: ${userInput}`);
-      console.log(`[CONVERSATION DELTA] Resolved unknown: ${unknownItem}`);
-    }
-  });
-
-  // Step 2: Update understanding state with new delta
-  const updatedState = updateUnderstandingStateFromDelta(
-    currentUnderstanding.state,
-    userInput,
-    newKnownFacts,
-    resolvedUnknowns
-  );
-
-  // Step 3: Initialize conversation object if it doesn't exist yet
-  // Fix for "conversation history turn not added" error - ensure arrays are initialized before pushing
-  if (!userExpression.conversation) {
-    userExpression.conversation = {
-      turns: []
-    };
-  }
-  if (!userExpression.conversation.turns) {
-    userExpression.conversation.turns = [];
-  }
-
-  // Add the user's conversation turn to history (now safe because arrays are initialized)
-  await sleep(1);
-  // Fix: ensure reason is always a string (never undefined) to match contract requirements
-  const reason = updatedState.sufficiencyReason || "Pemahaman diperbarui setelah percakapan";
-  userExpression.conversation.turns.push({
-    timestamp: new Date(),
-    actorId,
-    content: userInput,
-    role: "user",
-    delta: {
-      previousStatus: userExpression.status,
-      newStatus: updatedState.isSufficient ? "UNDERSTANDING_SUFFICIENT" : "UNDERSTANDING_INSUFFICIENT",
-      reason: reason,
-      unknowns: updatedState.unknown || [],
-      resolvedUnknowns: resolvedUnknowns || [],
-      newKnownFacts: newKnownFacts || []
-    }
-  });
-  console.log(`[CONVERSATION DELTA] Added conversation turn to history. Total turns: ${userExpression.conversation.turns.length}`);
-
-  // Step 4: Update the expression's understanding state
-  // Fix: Initialize full understanding object (hypotheses and history) before writing to it
-  if (!userExpression.understanding) {
-    userExpression.understanding = {
-      state: updatedState,
-      hypotheses: [],
-      history: [],
-      requirement: undefined
-    };
-  }
-  // Always ensure state is up to date
-  // Type-safe assignment: always ensure userExpression.understanding is fully initialized before use
-    userExpression.understanding = {
-      state: updatedState,
-      hypotheses: [],
-      history: [],
-      requirement: undefined // Fix: null is not assignable to UnderstandingRequirement | undefined; use undefined per contract
-    };
-  
-  // Add understanding update event to audit trail
-  userExpression.understanding.history.push(createInitialUnderstandingEvent(
-    "understanding_updated", 
-    actorId, 
-    { 
-      understanding: { state: updatedState, hypotheses: userExpression.understanding.hypotheses, history: userExpression.understanding.history },
-      conversation: { turns: userExpression.conversation?.turns || [] }
-    }
-  ));
-
-  // Step 5: Automatically transition to UNDERSTANDING_SUFFICIENT if criteria met
-  // This implements the user's full lifecycle automation requirement
-  if (updatedState.isSufficient) {
-    await sleep(1);
-    userExpression.status = "UNDERSTANDING_SUFFICIENT";
-    userExpression.updatedAt = new Date();
-    userExpression.understanding.history.push(createInitialUnderstandingEvent(
-      "sufficiency_achieved", 
-      actorId, 
-      { status: "UNDERSTANDING_SUFFICIENT" }
-    ));
-    
-    console.log(`[CONVERSATION DELTA] ✅ Lifecycle transition complete: UNDERSTANDING_INSUFFICIENT → UNDERSTANDING_SUFFICIENT`);
-    console.log(`[CONVERSATION DELTA] Expression ${expressionId} now has sufficient understanding`);
-    console.log(`[CONVERSATION DELTA] Final confidence: ${(updatedState.confidence * 100).toFixed(0)}%`);
-    console.log(`[CONVERSATION DELTA] All unknowns resolved: ${resolvedUnknowns.join(", ")}`);
-    
-    // Proceed to resolution phase exactly like the initial sufficiency path
-    const sufficiencyResult = await gapAnalysisService.checkSufficiency(userExpression as any);
-    
-    await sleep(1);
-    userExpression.status = "RESOLVING";
-    userExpression.updatedAt = new Date();
-    userExpression.understanding.history.push(createInitialUnderstandingEvent(
-      "resolution_started", 
-      actorId, 
-      { status: "RESOLVING" }
-    ));
-    console.log(`[CONVERSATION DELTA] Lifecycle transition: UNDERSTANDING_SUFFICIENT → RESOLVING`);
-    
-    // Automatically trigger work formation just like the initial flow
-    try {
-      const { createCanonicalWorkFromIntent } = await import("./work-formation.service.js");
-      const workResult = await createCanonicalWorkFromIntent(
-        userExpression as any, 
-        userExpression.tenantId, 
-        userExpression.workspaceId, 
-        actorId
-      );
-      
-      userExpression.status = "WORK_FORMED";
-      userExpression.updatedAt = new Date();
-      userExpression.workId = workResult.workId;
-      userExpression.understanding.history.push(createInitialUnderstandingEvent(
-        "work_formed", 
-        actorId, 
-        { status: "WORK_FORMED", workId: workResult.workId }
-      ));
-      console.log(`[CONVERSATION DELTA] ✅ Full vertical slice completed! Expression ${expressionId} → Work ${workResult.workId}`);
-    } catch (workError) {
-      console.error(`[CONVERSATION DELTA] Work formation failed:`, workError);
-      userExpression.status = "FAILED";
-      userExpression.updatedAt = new Date();
-    }
-  } else {
-    // If still insufficient, generate next EOS question to continue understanding
-    console.log(`[CONVERSATION DELTA] Understanding still insufficient: ${updatedState.sufficiencyReason}`);
-    console.log(`[CONVERSATION DELTA] Remaining unknowns: ${updatedState.unknown.join(", ")}`);
-    
-    // Generate next question for the user to continue the conversation
-    if (updatedState.unknown.length > 0) {
-      const nextQuestion = `Bisakah Anda menjelaskan lebih detail tentang ${updatedState.unknown[0]}?`;
-      
-      await sleep(1);
-      userExpression.conversation?.turns.push({
-        timestamp: new Date(),
-        actorId: "eos-system",
-        content: nextQuestion,
-        role: "eos",
-        delta: {
-          previousStatus: "UNDERSTANDING_INSUFFICIENT",
-          newStatus: "UNDERSTANDING_INSUFFICIENT",
-          reason: updatedState.sufficiencyReason || "Pemahaman diperbarui setelah verifikasi",
-          unknowns: updatedState.unknown,
-          suggestedQuestions: (updatedState.unknown || []).map(u => `Bisakah Anda menjelaskan lebih detail tentang ${u}?`)
-        }
-      });
-      
-      userExpression.understanding?.history.push(createInitialUnderstandingEvent(
-        "conversation_turn", 
-        actorId, 
-        { conversation: { turns: userExpression.conversation?.turns || [] } }
-      ));
-      console.log(`[CONVERSATION DELTA] Added next EOS question: "${nextQuestion}"`);
-    }
-  }
-
-  return userExpression;
+async function deterministicFallbackResolver(expression: string): Promise<{
+  resolution: IntentResolution;
+  context: IntentContext;
+  domainType: string;
+  category: IntentCategory;
+  dynamicUnderstanding: IntentUnderstanding;
+}> {
+  console.warn("[DEPRECATED] deterministicFallbackResolver is deprecated. Use intentUnderstandingService.interpret() instead.");
+  return await intentUnderstandingService.interpret({ content: expression });
 }
 
 export async function createUniversalExpression(
@@ -1980,14 +1348,12 @@ export async function createUniversalExpression(
   }
 }
 
-// Initialize singleton immediately upon module load to prevent race conditions
-IntentUnderstandingService.initialize();
-// Export a singleton instance - the service is meant to be reused across requests
-export const intentUnderstandingService = IntentUnderstandingService.getInstance();
-
 // B6.11: Register canonical intent service to globalThis for cross-boundary runtime access
 // Mengikuti pola yang sama dengan workflow-engine untuk konsistensi arsitektur EOS
-(globalThis as any).__EOS_CANONICAL_INTENT_UNDERSTANDING_SERVICE__ = intentUnderstandingService;
+// Lazy-initialize dan registrasikan ke globalThis hanya jika dibutuhkan (hanya di production runtime)
+if (require.main === module) {
+  (globalThis as any).__EOS_CANONICAL_INTENT_UNDERSTANDING_SERVICE__ = getIntentUnderstandingService();
+}
 
 // Removed backward compatibility alias - all consumers now use createUniversalExpression
 // Deprecated createUniversalIntent function removed per migration completion

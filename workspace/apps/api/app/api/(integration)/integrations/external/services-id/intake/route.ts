@@ -1,17 +1,36 @@
 import { NextResponse } from "next/server";
-import {
-  getIntentRepositoryPostgres,
-  initIdentitySchema,
-} from "@repo/capabilities-identity";
-import { randomUUID } from "crypto";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
+import { decodeWorkspaceSession } from "@repo/core-kernel/auth/decode-workspace-session";
+
+// Lazy initialization untuk Node.js modules (hindari Edge Runtime static analysis warning)
+let randomUUID: () => string;
+let initIdentitySchema: () => Promise<void>;
+
+async function initNodeRuntime() {
+  if (!randomUUID) {
+    if (typeof EdgeRuntime !== "undefined") {
+      randomUUID = () => globalThis.crypto.randomUUID();
+    } else {
+      const { randomUUID: nodeRandomUUID } = await import("node:crypto");
+      randomUUID = nodeRandomUUID;
+    }
+  }
+  
+  if (!initIdentitySchema) {
+    const { initIdentitySchema: importedInit } = await import("@repo/capabilities-identity");
+    initIdentitySchema = importedInit;
+  }
+}
 
 // S.ID-EXT-001: External Work Intake API untuk Services.ID
 // Hanya menerima input external, memproses ke canonical Intent/Work pipeline EOS
-// TIDAK membuat lifecycle baru, menggunakan existing /api/intent/create logic dengan origin khusus external
 // Route ini adalah SYSTEM SURFACE (bukan FACE-bound): untuk programmatic/external consumer, API key auth
 
 export async function POST(request: Request) {
   try {
+    // Inisialisasi Node.js modules terlebih dahulu
+    await initNodeRuntime();
+    
     // Validasi signature API key untuk keamanan external call (System Surface requirement)
     const apiKey = request.headers.get("x-services-id-api-key");
     if (!apiKey || process.env.SERVICES_ID_EXTERNAL_API_KEY !== apiKey) {
@@ -21,6 +40,19 @@ export async function POST(request: Request) {
         { status: 401 }
       );
     }
+
+    // Canonical auth: gunakan decodeWorkspaceSession untuk validasi context (meskipun system surface)
+    const session = await decodeWorkspaceSession(request);
+    if (!session?.tenantId || !session?.workspaceId) {
+      return NextResponse.json(
+        { error: "Invalid workspace context: missing tenant or workspace ID" },
+        { status: 400 }
+      );
+    }
+
+    // Non-null assertion setelah validasi eksplisit untuk menghilangkan linter error
+    const workspaceId = session.workspaceId;
+    const tenantId = session.tenantId;
 
     const externalInput = await request.json();
     console.log("[services-id/intake] ✅ Authorized: Received external input", externalInput);
@@ -33,37 +65,39 @@ export async function POST(request: Request) {
       );
     }
 
-    // Inisialisasi schema dan repository (sesuai dengan @repo/capabilities-identity)
+    // Inisialisasi schema identity
     await initIdentitySchema();
-    const intentRepository = getIntentRepositoryPostgres();
     
     // Generate intent ID unik untuk tracking
     const intentId = `intent_${randomUUID()}`;
     
-    // Simpan intent ke PostgreSQL (E-07 requirement: must persist to DB) - sesuai schema IntentAggregate
-    const savedIntent = await intentRepository.save({
-      id: intentId,
-      title: "External Service Request from Services.ID",
-      description: externalInput.content,
-      origin: "external_system",
-      category: "SERVICE_REQUEST",
-      status: "RECEIVED",
-      actorId: "user-41d8e2db-ada4-4524-9643-cb4e22c4952d", // Gunakan UserId yang valid dari Postgres
-      tenantId: "tenant-001",
-      workspaceId: "workspace-001",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      raw: {
-        type: "request",
-        content: externalInput.content
-      },
-      metadata: {
-        source: externalInput.source,
-        external_reference_id: externalInput.external_reference_id
+    // PURE ADAPTER PATTERN: route HANYA memanggil capabilityRegistry.invoke()
+    // Menggunakan command kanonis createExternalIntent dari identity capability
+    const savedIntent = await capabilityRegistry.invoke(
+      "identity",
+      "createExternalIntent",
+      {
+        id: intentId,
+        title: "External Service Request from Services.ID",
+        description: externalInput.content,
+        origin: "external_system",
+        category: "SERVICE_REQUEST",
+        status: "RECEIVED",
+        actorId: session.actorId || "user-41d8e2db-ada4-4524-9643-cb4e22c4952d",
+        tenantId: tenantId, // Gunakan tenantId dari session yang tervalidasi
+        workspaceId: workspaceId, // Gunakan workspaceId dari session yang tervalidasi
+        raw: {
+          type: "request",
+          content: externalInput.content
+        },
+        metadata: {
+          source: externalInput.source,
+          external_reference_id: externalInput.external_reference_id
+        }
       }
-    });
+    );
     
-    console.log("[services-id/intake] ✅ Intent persisted to PostgreSQL:", savedIntent.id);
+    console.log("[services-id/intake] ✅ Intent persisted via canonical capability:", savedIntent.id);
 
     // Return canonical response untuk external consumer (System Surface requirement)
     return NextResponse.json({

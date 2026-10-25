@@ -1,23 +1,32 @@
 import { Pool } from "pg";
-import type { WorkAggregate, WorkId, ActorId, SessionId, ProductNode, RequirementNode, OutcomeNode, HighValueWorkGraphQuery } from "../../contracts/work.contracts";
+import type { WorkAggregate, WorkId, ActorId, SessionId, DeviceId, ProductNode, RequirementNode, OutcomeNode, HighValueWorkGraphQuery } from "@capabilities/work-core/contracts/work.contracts.js";
 import { randomUUID } from "crypto";
+// Import base repository dan getPool dari identity yang sudah memiliki implementasi canonical (reuse eksisting)
+// Menggunakan package identity yang terdaftar di monorepo sesuai standar EOS
+// Gunakan alias canonical @repo/capabilities-identity untuk import dari identity capability (sesuai Gate A requirements)
+import { getPool, PostgresRepository } from "../../../identity/implementation/repositories/index.js";
 // Lazy import factory functions to avoid top-level await
 let newWorkId: (input?: string) => WorkId;
 let createSessionId: (input?: string) => SessionId;
 let createActorId: (input?: string) => ActorId;
+let newDeviceId: (input?: string) => DeviceId;
 
 async function initializeWorkIdFactories() {
   if (!newWorkId) {
-    const factories = await import("../../contracts/work.contracts");
+    const factories = await import("../../contracts/work.contracts.js");
     newWorkId = factories.newWorkId;
     createSessionId = (input?: string) => factories.createSessionId(input!);
     createActorId = (input?: string) => factories.createActorId(input!);
+    // Hapus createDeviceId yang duplikat, hanya gunakan newDeviceId dari factories
+    newDeviceId = (input?: string) => factories.newDeviceId(input!);
   }
 }
 
 const generateId = () => randomUUID();
-// Use base.repository.ts's getPool() to ensure mock pool is used in test environment
-import { getPool, PostgresRepository } from "../../../identity/implementation/repositories/base.repository.ts";
+// Import canonical safeRecordEvidence dari work-core (hanya satu implementasi di utils/evidence.utils.ts)
+// Gate A requirement: hapus semua duplikat safeRecordEvidence, gunakan canonical dari work-core
+import { safeRecordEvidence } from "../utils/evidence.utils.js";
+// Import type capabilities menggunakan alias canonical @repo/core-kernel (sesuai Gate A requirements)
 import type { CapabilityRepository } from "@repo/core-kernel";
 
 // Lazy validate environment variables to resolve initialization order/circular import issues
@@ -41,6 +50,10 @@ async function validateEnvironment() {
 let writePool: ReturnType<typeof getPool> | undefined;
 let readPool: ReturnType<typeof getPool> | undefined;
 
+// Export getPool untuk digunakan capability lain (seperti evidence-registry) sesuai Gate A requirement
+// Semua capability import dari work-core, bukan langsung dari identity
+export { getPool };
+
 // Create a lazy initializer that's called only when the repository is used
 async function initializePools() {
   if (!writePool) {
@@ -53,20 +66,9 @@ async function initializePools() {
 // Semua method yang menggunakan writePool/readPool sudah memanggil initializePools() terlebih dahulu
 // dan menggunakan non-null assertion operator (!) untuk type safety
 
-// Reuse existing safeRecordEvidence pattern from consultation/communication capabilities
-export async function safeRecordEvidence(payload: unknown): Promise<{ readonly ok: boolean }> {
-  try {
-    const loaded = await import("@repo/core-kernel");
-    const reg = (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
-    if (typeof reg?.invoke === "function") {
-      await reg.invoke("evidence-registry", "evidence.record", payload as never);
-      return { ok: true };
-    }
-  } catch (_e) {
-    // fallthrough: evidence recording is observability-only (not state-machine critical path)
-  }
-  return { ok: true };
-}
+// Hapus duplikat safeRecordEvidence - gunakan canonical dari work-core (Gate A requirement: reuse primitive yang sudah ada)
+// Canonical safeRecordEvidence tersedia di ../utils/evidence.utils.ts dan diexport dari root work-core/index.ts
+// Semua pemanggilan safeRecordEvidence di dalam file ini akan menggunakan import dari utils/evidence.utils.ts
 
 // System agent constants for agentic notifications - reused from original-case-repo.ts (100% primitive reuse)
 const SYSTEM_AGENT_SESSION_ID = "session-agent-001";
@@ -203,7 +205,9 @@ export type WorkRepositoryPostgres = CapabilityRepository<WorkAggregate> & HighV
     executionId: SessionId,
     expectedVersion: number,
     expectedStatuses: string[],
-    allowReclaim?: boolean
+    eventId?: string,
+    allowReclaim?: boolean,
+    leaseDurationMs?: number
   ): Promise<WorkAggregate>;
   markStaleClaims(): Promise<number>;
   // High-Value Work Graph operations
@@ -301,7 +305,16 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
       [newProduct.id, newProduct.name, newProduct.description, newProduct.ownerId, newProduct.tenantId, newProduct.linkedRequirementIds, newProduct.linkedWorkIds]
     );
-    await safeRecordEvidence({ type: "product.created", productId: newProduct.id, timestamp: new Date() });
+    await safeRecordEvidence({ 
+      type: "product.created", 
+      productId: newProduct.id, 
+      timestamp: new Date().toISOString(),
+      capability: "work-core",
+      command: "createProduct",
+      work_id: null,
+      tenant_id: newProduct.tenantId,
+      actor_id: newProduct.ownerId
+    });
     return newProduct;
   }
 
@@ -322,7 +335,16 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
       [newRequirement.id, newRequirement.name, newRequirement.description, newRequirement.status, newRequirement.priority, newRequirement.ownerId, newRequirement.tenantId, dbProductId, newRequirement.linkedWorkIds]
     );
-    await safeRecordEvidence({ type: "requirement.created", requirementId: newRequirement.id, timestamp: new Date() });
+    await safeRecordEvidence({ 
+      type: "requirement.created", 
+      requirementId: newRequirement.id, 
+      timestamp: new Date().toISOString(),
+      capability: "work-core",
+      command: "createRequirement",
+      work_id: null,
+      tenant_id: newRequirement.tenantId,
+      actor_id: newRequirement.ownerId
+    });
     return newRequirement;
   }
 
@@ -340,7 +362,17 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
       [newOutcome.id, newOutcome.workId, newOutcome.type, newOutcome.description, newOutcome.evidenceIds, newOutcome.actorId, newOutcome.tenantId, new Date()]
     );
-    await safeRecordEvidence({ type: "outcome.created", outcomeId: newOutcome.id, workId: newOutcome.workId, timestamp: new Date() });
+    await safeRecordEvidence({ 
+      type: "outcome.created", 
+      outcomeId: newOutcome.id, 
+      workId: newOutcome.workId, 
+      timestamp: new Date().toISOString(),
+      capability: "work-core",
+      command: "createOutcome",
+      work_id: newOutcome.workId,
+      tenant_id: newOutcome.tenantId,
+      actor_id: newOutcome.actorId
+    });
     return newOutcome;
   }
 
@@ -518,12 +550,20 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
   async addEvidence(workId: string, entry: any): Promise<void> {
     await initializePools(); // Initialize pools before use
     try {
+      // Mapping entry dari safeRecordEvidence payload ke schema evidence table yang benar
+      // Handle payload dari safeRecordEvidence yang memiliki struktur berbeda
+      const actorId = entry.actor_id || entry.actorId;
+      const type = entry.command || entry.type || "work.evidence";
+      const content = JSON.stringify(entry);
+      const timestamp = entry.timestamp ? new Date(entry.timestamp) : new Date();
+      
       await writePool!.query(
         `INSERT INTO evidence (work_id, actor_id, type, content, created_at) VALUES ($1, $2, $3, $4, $5)`,
-        [workId, entry.actorId, entry.type, entry.content || null, entry.timestamp || new Date()]
+        [workId, actorId, type, content, timestamp]
       );
       // Update work version saat evidence ditambahkan (konsisten dengan inmemory repository)
       await writePool!.query(`UPDATE works SET version = version + 1, updated_at = NOW() WHERE id = $1`, [workId]);
+      console.log(`[WorkRepositoryPostgres] ✅ addEvidence success for workId ${workId}`);
     } catch (err) {
       console.error(`[WorkRepositoryPostgres] addEvidence error for workId ${workId}:`, err);
       throw err;
@@ -557,6 +597,8 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       lease_until: entity.leaseUntil,
       claim_status: entity.claimStatus,
       previous_execution_ids: JSON.stringify(entity.previousExecutionIds || []),
+      // EDGE-A-001: Durable deduplication - simpan processedEventIds sebagai JSONB
+      processed_event_ids: JSON.stringify(entity.processedEventIds || []),
       // W-002: HIGH-VALUE WORK BOUNDARY TRACKING
       boundaries_crossed: JSON.stringify(entity.boundariesCrossed || [])
     };
@@ -571,6 +613,10 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
           const boundariesCrossed = Array.isArray(record.boundaries_crossed) 
             ? record.boundaries_crossed 
             : JSON.parse(record.boundaries_crossed || '[]');
+          // EDGE-A-001: Parse processed_event_ids dari JSONB ke array untuk WorkAggregate
+          const processedEventIds = Array.isArray(record.processed_event_ids)
+            ? record.processed_event_ids
+            : JSON.parse(record.processed_event_ids || '[]');
     
     return {
       id: record.id,
@@ -590,6 +636,8 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       leaseUntil: record.lease_until,
       claimStatus: record.claim_status,
       previousExecutionIds,
+      // EDGE-A-001: Tambahkan processedEventIds ke WorkAggregate untuk konsistensi
+      processedEventIds,
       // W-002: HIGH-VALUE WORK BOUNDARY TRACKING
       boundariesCrossed
     } as WorkAggregate;
@@ -783,12 +831,14 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
   }
 
   // WORK CLAIM: Atomic exclusive claim implementation with PostgreSQL SELECT FOR UPDATE
+  // EDGE-A-001: Ditambahkan parameter eventId untuk durable deduplikasi (sesuai work-inmemory.repository.ts)
   async atomicClaim(
     workId: WorkId,
     actorId: ActorId,
     executionId: SessionId,
     expectedVersion: number,
     expectedStatuses: string[],
+    eventId?: string, // Parameter opsional untuk deduplikasi event
     allowReclaim: boolean = false,
     leaseDurationMs: number = 3600000 // Default 1 jam lease, dapat dioverride untuk long-running work
   ): Promise<WorkAggregate> {
@@ -797,7 +847,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
     try {
       await client.query('BEGIN');
       
-      // Lock Work row exclusively to prevent concurrent claims
+      // Lock Work row exclusively to prevent concurrent claims (POSTGRESQL ATOMICITY - SOLUSI P0 DEDUPLICATION)
       const workResult = await client.query(
         `SELECT * FROM works WHERE id = $1 FOR UPDATE`,
         [workId]
@@ -819,7 +869,17 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
         throw new Error(`forbidden: Work status ${workRecord.status} does not allow claim`);
       }
       
-      // 3. Check if there is an active claim that cannot be reclaimed
+      // 3. EDGE-A-001: Durable deduplication - cek apakah eventId sudah pernah diproses
+      if (eventId) {
+        const processedEventIds = workRecord.processed_event_ids 
+          ? JSON.parse(workRecord.processed_event_ids) 
+          : [];
+        if (processedEventIds.includes(eventId)) {
+          throw new Error(`duplicate_event: Event ${eventId} sudah pernah diproses untuk Work ${workId}`);
+        }
+      }
+      
+      // 4. Check if there is an active claim that cannot be reclaimed
       const hasActiveClaim = workRecord.claim_status === 'CLAIMED';
       const leaseUntil = workRecord.lease_until ? new Date(workRecord.lease_until) : null;
       const isStale = leaseUntil && leaseUntil < new Date();
@@ -829,7 +889,7 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
         throw new Error("conflict: Work is already claimed by another actor");
       }
       
-      // 4. Maintain execution lineage: add previous active execution to history
+      // 5. Maintain execution lineage: add previous active execution to history
       const previousExecutions = workRecord.previous_execution_ids 
         ? JSON.parse(workRecord.previous_execution_ids) 
         : [];
@@ -837,7 +897,15 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
         previousExecutions.push(workRecord.active_execution_id);
       }
       
-      // 5. Atomic state transition + ownership acquisition (core claim logic)
+      // 6. EDGE-A-001: Tambahkan eventId ke processed_event_ids jika ada
+      const processedEventIds = workRecord.processed_event_ids 
+        ? JSON.parse(workRecord.processed_event_ids) 
+        : [];
+      if (eventId && !processedEventIds.includes(eventId)) {
+        processedEventIds.push(eventId);
+      }
+      
+      // 7. Atomic state transition + ownership acquisition + DEDUPLICATION UPDATE (core claim logic)
       const updateResult = await client.query(
         `UPDATE works 
          SET version = version + 1,
@@ -847,11 +915,12 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
              claim_status = 'CLAIMED',
              lease_until = NOW() + $6 * INTERVAL '1 millisecond',
              previous_execution_ids = $3,
+             processed_event_ids = $4,
              status = 'executing',
              updated_at = NOW()
-         WHERE id = $4
+         WHERE id = $5
          RETURNING *`,
-        [actorId, executionId, JSON.stringify(previousExecutions), workId, null, leaseDurationMs]
+        [actorId, executionId, JSON.stringify(previousExecutions), JSON.stringify(processedEventIds), workId, leaseDurationMs]
       );
       
       await client.query('COMMIT');

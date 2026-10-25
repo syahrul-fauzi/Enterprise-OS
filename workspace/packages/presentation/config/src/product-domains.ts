@@ -97,14 +97,14 @@ export const PRODUCT_DOMAINS: Record<string, ProductDomainConfig> = {
     productId: "commsme",
     domain: process.env.COMMSME_DOMAIN || "commsme.enterprise-os.com",
     wwwDomain: `www.${process.env.COMMSME_DOMAIN || "commsme.enterprise-os.com"}`,
-    rootRoute: "/projects",
+    rootRoute: "/commsme",
     displayName: "CommsME",
     whiteLabelEnabled: true,
     subdomainPattern: "*.commsme.enterprise-os.com",
     tenantSubdomainSupported: true,
     // EOS Product Spine Navigation
     spineNavigation: [
-      { key: "work", labelKey: "navigation.work", href: "/projects" },
+      { key: "work", labelKey: "navigation.work", href: "/commsme" },
       { key: "communication", labelKey: "navigation.communication", href: "/communications" },
       { key: "profile", labelKey: "navigation.profile", href: "/profile" }
     ]

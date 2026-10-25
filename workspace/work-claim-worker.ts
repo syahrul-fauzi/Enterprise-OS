@@ -152,7 +152,9 @@ async function atomicClaimWorker(
   expectedVersion: number,
   expectedStatuses: string[],
   allowReclaim: boolean,
-  db: TestDatabase
+  db: TestDatabase,
+  eventId?: string,
+  leaseDurationMs?: number
 ): Promise<any> {
   // PostgreSQL-only: untuk SQLite tidak perlu BEGIN manual (transaksi sudah handle oleh better-sqlite3)
   let client: Client | null = null;
@@ -192,6 +194,25 @@ async function atomicClaimWorker(
     const isStale = leaseUntil && leaseUntil < new Date();
     const canReclaim = allowReclaim && (workRecord.claim_status === 'STALE' || isStale);
     
+    // EDGE-A-001: Cek duplikasi event sebelum melanjutkan
+    if (eventId) {
+      let processedEventIds: string[] = [];
+      if (workRecord.processed_event_ids) {
+        try {
+          if (typeof workRecord.processed_event_ids === 'string') {
+            processedEventIds = JSON.parse(workRecord.processed_event_ids);
+          } else if (Array.isArray(workRecord.processed_event_ids)) {
+            processedEventIds = [...workRecord.processed_event_ids];
+          }
+        } catch (e) {
+          processedEventIds = [];
+        }
+      }
+      if (processedEventIds.includes(eventId)) {
+        throw new Error(`duplicate_event: Event ${eventId} sudah pernah diproses untuk Work ${workId}`);
+      }
+    }
+    
     if (hasActiveClaim && !canReclaim) throw new Error("conflict: already claimed");
     
     // 4. Execution lineage
@@ -209,8 +230,26 @@ async function atomicClaimWorker(
     }
     if (workRecord.active_execution_id) previousExecutions.push(workRecord.active_execution_id);
     
-    // 5. Atomic update
+    // 5. EDGE-A-001: Update processed_event_ids jika ada eventId
+    let processedEventIds: string[] = [];
+    if (workRecord.processed_event_ids) {
+      try {
+        if (typeof workRecord.processed_event_ids === 'string') {
+          processedEventIds = JSON.parse(workRecord.processed_event_ids);
+        } else if (Array.isArray(workRecord.processed_event_ids)) {
+          processedEventIds = [...workRecord.processed_event_ids];
+        }
+      } catch (e) {
+        processedEventIds = [];
+      }
+    }
+    if (eventId && !processedEventIds.includes(eventId)) {
+      processedEventIds.push(eventId);
+    }
+    
+    // 6. Atomic update
     let updateResult;
+    const leaseMs = leaseDurationMs || 3600000; // Default 1 jam
     if (client) {
       // PostgreSQL: gunakan client.query dengan transaksi manual
       updateResult = await client.query(
@@ -220,18 +259,19 @@ async function atomicClaimWorker(
              session_id = $2,
              active_execution_id = $2,
              claim_status = 'CLAIMED',
-             lease_until = NOW() + INTERVAL '1 hour',
+             lease_until = NOW() + $6 * INTERVAL '1 millisecond',
              previous_execution_ids = $3,
+             processed_event_ids = $4,
              status = 'executing',
              updated_at = NOW()
-         WHERE id = $4
+         WHERE id = $5
          RETURNING *`,
-        [actorId, executionId, JSON.stringify(previousExecutions), workId]
+        [actorId, executionId, JSON.stringify(previousExecutions), JSON.stringify(processedEventIds), workId, leaseMs]
       );
       await client.query('COMMIT');
     } else {
       // SQLite: gunakan db.query (better-sqlite3 menangani transaksi secara otomatis untuk single query)
-      // FIX: parameter harus sesuai jumlah placeholder (actor_id, session_id, active_execution_id, previous_execution_ids, id)
+      const sqliteLeaseMs = leaseDurationMs || 3600000;
       updateResult = await db.query(
         `UPDATE works 
          SET version = version + 1,
@@ -239,12 +279,13 @@ async function atomicClaimWorker(
              session_id = ?,
              active_execution_id = ?,
              claim_status = 'CLAIMED',
-             lease_until = datetime('now', '+1 hour'),
+             lease_until = datetime('now', '+' || ? || ' milliseconds'),
              previous_execution_ids = ?,
+             processed_event_ids = ?,
              status = 'executing',
              updated_at = datetime('now')
          WHERE id = ?`,
-        [actorId, executionId, executionId, JSON.stringify(previousExecutions), workId]
+        [actorId, executionId, executionId, sqliteLeaseMs, JSON.stringify(previousExecutions), JSON.stringify(processedEventIds), workId]
       );
       // Ambil work record yang baru diupdate
       const updatedWork = await db.query(`SELECT * FROM works WHERE id = ?`, [workId]);
