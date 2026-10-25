@@ -55,14 +55,13 @@ export type { WorkId, TenantId, ActorId, WorkspaceId, SessionId, DeviceId, Devic
 
 // Import work-specific repositories dan base utilities untuk di-export ulang
 import { getWorkRepositoryPostgres } from "../implementation/repository/work-postgres.repository.js";
-import { initIdentitySchema, SessionRepositoryInMemory } from "../../../capabilities/identity/implementation/repositories/index.js";
-import { PostgresRepository, getPool } from "../../../capabilities/identity/implementation/repositories/base.repository.js";
+import { initIdentitySchema } from "../../identity/implementation/repositories/index.js";
+import { PostgresRepository, getPool } from "../../identity/implementation/repositories/base.repository.js";
 
 // Re-export SEMUA value/factory functions dan base classes
 export {
   getWorkRepositoryPostgres,
   initIdentitySchema,
-  SessionRepositoryInMemory,
   PostgresRepository,
   getPool
 };
@@ -73,8 +72,7 @@ export type {
   UserAggregate,
   MembershipRepository,
   SessionRepository,
-  IntentCategory,
-  IntentRawInput
+  IntentCategory
 };
 
 // Dihapus: duplicate export createWorkId/newWorkId - sudah di-export sebelumnya di baris 26-28

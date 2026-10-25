@@ -21,22 +21,9 @@ import {
   type WorkspaceId
 } from "@capabilities/work-core";
 import { getWorkRepositoryPostgres } from "../../../capabilities/work-core/implementation/repository/work-postgres.repository";
+import { EventPipelineState } from './types/event-pipeline.types';
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
-
-// EventPipelineState enum untuk tracking status event sesuai mandat user:
-// Jangan menandai event sebagai selesai hanya karena request sudah diterima
-// Bedakan event diterima, diproses, ditolak, menunggu rekonsiliasi, dan berhasil menghasilkan efek samping
-enum EventPipelineState {
-  EVENT_RECEIVED = "EVENT_RECEIVED",
-  VALIDATION_FAILED = "VALIDATION_FAILED",
-  AWAITING_RECONCILIATION = "AWAITING_RECONCILIATION", // event di-buffer offline
-  PROCESSING = "PROCESSING",
-  PROCESSING_FAILED = "PROCESSING_FAILED",
-  EVIDENCE_STORAGE_FAILED = "EVIDENCE_STORAGE_FAILED",
-  REJECTED = "REJECTED", // event duplikat/tidak terotorisasi
-  COMPLETED = "COMPLETED" // semua proses selesai, efek samping tercapai
-};
 
 // Lazy load capabilityRegistry sesuai kontrak core-kernel (hanya load saat dibutuhkan, hindari module cycle)
 import type { CapabilityCommand } from "../../../packages/core/kernel/src/types.js";
@@ -240,16 +227,14 @@ export class MockMQTTClient {
   private offlineEventBuffer: ExecutionEnvelope[] = []; // EDGE-DEVICE-003: FIFO buffer untuk offline condition
   private readonly MAX_BUFFER_SIZE: number = 100; // Batasi buffer 100 event (backpressure handling)
   private bufferUpdateCounter = 0; // Counter unik untuk mencegah eventId yang sama di saveOfflineBufferToStorage
-  private deviceId: ReturnType<typeof createDeviceId>;
-  private currentSessionId: SessionId | null = null; // Session ID terautentikasi, sesuai mandat user
+  private deviceId: string; // Device ID sebagai string primitive (opaque, tidak ada .id property), sesuai mandat user
+  private currentSessionId: string | null = null; // Session ID terautentikasi, sesuai mandat user (string primitive, tipe SessionId dari work-core adalah string)
 
-  constructor(deviceId?: ReturnType<typeof createDeviceId> | string) {
-    if (typeof deviceId === 'string') {
-      this.deviceId = createDeviceId(deviceId);
-    } else if (deviceId) {
+  constructor(deviceId?: string) {
+    if (typeof deviceId === 'string' && deviceId.length > 0) {
       this.deviceId = deviceId;
     } else {
-      this.deviceId = createDeviceId("edge-device-001-simulator");
+      this.deviceId = "edge-device-001-simulator";
     }
     console.log(`[MQTT Adapter] Initialized for device: ${this.deviceId}`);
   }
@@ -277,14 +262,13 @@ export class MockMQTTClient {
     return this.offlineEventBuffer.length;
   }
 
-  // Import schema canonical dari connector-ecosystem.contracts (EDGE-B-001: Gunakan schema yang sudah teruji, tidak buat baru)
-  // Memenuhi mandat "reuse existing primitive" - ExecutionEnvelopeSchema adalah kontrak universal untuk semua event edge
-  private readonly ExecutionEnvelopeSchema = (await import("@capabilities/connector-ecosystem/implementation/contracts/connector-ecosystem.contracts.js")).ExecutionEnvelopeSchema;
-
   // Validasi envelope menggunakan schema canonical, tambahkan pengecekan expiresAt tambahan (karena schema hanya validasi format, bukan nilai waktu)
-  public validateEnvelope(this: MockMQTTClient, envelope: unknown): { valid: boolean; error?: string; parsedEnvelope?: import("@capabilities/connector-ecosystem/implementation/contracts/connector-ecosystem.contracts").ExecutionEnvelope } {
+  public async validateEnvelope(this: MockMQTTClient, envelope: unknown): Promise<{ valid: boolean; error?: string; parsedEnvelope?: import("@capabilities/connector-ecosystem/implementation/contracts/connector-ecosystem.contracts").ExecutionEnvelope }> {
+    // Import schema canonical dari connector-ecosystem.contracts (EDGE-B-001: Gunakan schema yang sudah teruji, tidak buat baru)
+    // Memenuhi mandat "reuse existing primitive" - ExecutionEnvelopeSchema adalah kontrak universal untuk semua event edge
+    const { ExecutionEnvelopeSchema } = await import("@capabilities/connector-ecosystem/implementation/contracts/connector-ecosystem.contracts.js");
     // Pertama: validasi format sesuai schema canonical (schemaVersion, UUID, ISO 8601, dll.)
-    const schemaResult = this.ExecutionEnvelopeSchema.safeParse(envelope);
+    const schemaResult = ExecutionEnvelopeSchema.safeParse(envelope);
     if (!schemaResult.success) {
       const errors = schemaResult.error.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`).join('; ');
       console.error(`[MQTT Adapter] ❌ Envelope invalid (schema mismatch): ${errors}`);
@@ -337,9 +321,9 @@ export class MockMQTTClient {
             command: "handle-incoming-event",
             work_id: envelope.logicalWorkId,
             tenant_id: finalTenantId,
-            actor_id: this.deviceId.id, // Gunakan id dari DeviceId object yang sudah valid
+            actor_id: this.deviceId, // Gunakan deviceId sebagai string primitive (tidak ada .id access)
             timestamp: new Date(envelope.issuedAt as string).toISOString(),
-            sessionId: this.currentSessionId?.id || "unknown-session", // Gunakan this.currentSessionId.id sesuai tipe SessionId
+            sessionId: this.currentSessionId || "unknown-session", // Gunakan this.currentSessionId sesuai tipe SessionId (opaque string)
             actorType: "machine",
             metadata: {
               eventId: envelope.eventId,
@@ -361,7 +345,7 @@ export class MockMQTTClient {
     try {
       const workRepository = getWorkRepositoryPostgres();
       // Gunakan Work sebagai entity untuk menyimpan offline buffer (dibuat khusus untuk device ini)
-      const deviceWorkId = `work-edge-buffer-${this.deviceId.id}`;
+      const deviceWorkId = `work-edge-buffer-${this.deviceId}`;
       const bufferWork = await workRepository.byWorkId(deviceWorkId);
       
       if (bufferWork && Array.isArray((bufferWork as any).offlineEventBuffer)) {
@@ -381,22 +365,22 @@ export class MockMQTTClient {
   private async saveOfflineBufferToStorage(): Promise<void> {
     try {
       const workRepository = getWorkRepositoryPostgres();
-      const deviceWorkId = `work-edge-buffer-${this.deviceId.id}`;
+      const deviceWorkId = `work-edge-buffer-${this.deviceId}`;
       
       // Cari work buffer yang sudah ada
       let bufferWork = await workRepository.byWorkId(deviceWorkId);
       
       if (!bufferWork) {
-              // Jika belum ada, buat Work baru untuk buffer offline menggunakan createProduct (satu-satunya method create yang ada di work-postgres.repository.ts)
-              // logicalWorkId tidak dibuat tanpa kontrak - Work buffer ini adalah bagian dari edge device identity
-              // Gunakan factory function dari @capabilities/work-core untuk membuat WorkspaceId dan ActorId yang valid
+              // Jika belum ada, buat Work baru untuk buffer offline menggunakan method create() yang benar (bukan createProduct untuk Works)
+              // createProduct hanya untuk Product nodes, Work harus dibuat melalui method create() dari repository
               const edgeWorkspaceId = createWorkspaceId("edge-demo");
               
-              await workRepository.createProduct({
+              // FIX: Gunakan method save() yang benar untuk Work entities (sesuai kontrak work-postgres.repository.ts)
+              // Masalah sebelumnya: createProduct() menyimpan ke tabel 'products', tapi byWorkId() mencari di tabel 'works' → bufferWork selalu undefined
+              await workRepository.save({
                 id: deviceWorkId,
-                name: `Edge Device Offline Buffer - ${this.deviceId.id}`,
+                name: `Edge Device Offline Buffer - ${this.deviceId}`,
                 description: "Work untuk menyimpan offline buffer events perangkat edge",
-                productType: "edge.offline_buffer",
                 status: "active",
                 workspaceId: edgeWorkspaceId,
                 tenantId: "default",
@@ -406,14 +390,22 @@ export class MockMQTTClient {
                 claim_status: "UNCLAIMED",
                 lease_until: null,
                 processedEventIds: [],
+                relatedProductIds: [],
+                relatedOutcomeIds: [],
                 createdAt: new Date(),
                 updatedAt: new Date()
               } as any);
               
-              // Muat ulang work setelah dibuat
+              // Muat ulang work setelah dibuat - sekarang akan berhasil karena tersimpan di tabel 'works'
               bufferWork = await workRepository.byWorkId(deviceWorkId);
-              console.log(`[MQTT Adapter] Work buffer baru dibuat untuk device: ${this.deviceId.id}`);
+              console.log(`[MQTT Adapter] ✅ Work buffer baru dibuat dan berhasil dimuat untuk device: ${this.deviceId}, bufferWork=${bufferWork ? 'defined' : 'UNDEFINED (ERROR)'}`);
             }
+      // Guard clause tambahan untuk mencegah akses undefined
+      if (!bufferWork) {
+        const errorMsg = `Gagal membuat atau memuat bufferWork untuk device ${this.deviceId}, workId=${deviceWorkId}`;
+        console.error(`[MQTT Adapter] ❌ ${errorMsg}`);
+        throw new Error(errorMsg);
+      }
       // Selalu dapatkan bufferWorkAny dari nilai terbaru, bukan dari nilai awal
       const bufferWorkAny = bufferWork as any;
       try {
@@ -422,8 +414,8 @@ export class MockMQTTClient {
         // Lakukan atomicClaim untuk mendapatkan lock pada Work buffer (sesuai kontrak work-core)
         // Buat eventId unik dengan counter untuk mencegah duplikasi meskipun Date.now() sama
         this.bufferUpdateCounter++;
-        const bufferUpdateEventId = `buffer-update-${this.deviceId.id}-${Date.now()}-${this.bufferUpdateCounter}`;
-        const bufferSessionId = createSessionId(`edge-buffer-session-${this.deviceId.id}`);
+        const bufferUpdateEventId = `buffer-update-${this.deviceId}-${Date.now()}-${this.bufferUpdateCounter}`;
+        const bufferSessionId = createSessionId(`edge-buffer-session-${this.deviceId}`);
         
         // P0 FIX: atomicClaim sesuai kontrak KANONIK work-postgres.repository.ts (urutan parameter sudah 100% cocok)
         // Kontrak kanonik: atomicClaim(workId, actorId, executionId, expectedVersion, expectedStatuses, eventId, allowReclaim, leaseDurationMs)
@@ -443,14 +435,14 @@ export class MockMQTTClient {
         const evidenceResult = await safeRecordEvidence({
           eventId: bufferUpdateEventId,
           logicalWorkId: bufferWorkAny.id,
-          deviceId: this.deviceId.id,
+          deviceId: this.deviceId,
           timestamp: new Date().toISOString(),
           workspace_id: (bufferWorkAny as any).workspaceId,
           capability: "edge-device-001",
           command: "buffer.save",
           work_id: bufferWorkAny.id,
           tenant_id: (bufferWorkAny as any).tenantId,
-          actor_id: this.deviceId.id,
+          actor_id: this.deviceId,
           meta_eventId: bufferUpdateEventId,
           meta_status: "BUFFER_UPDATED",
           sessionId: bufferSessionId as unknown as string,
@@ -507,6 +499,30 @@ export class MockMQTTClient {
 
   // Tambahkan event ke offline buffer dengan overflow policy (P0: Offline buffer terimplementasi)
   private async addToOfflineBuffer(envelope: ExecutionEnvelope): Promise<boolean> {
+    // EDGE-B-001 COMPLIANCE: Validasi envelope SEBELUM menambahkan ke offline buffer (tidak ada efek samping untuk invalid envelope)
+    // Bahkan jika client offline, event invalid harus ditolak sebelum ditambahkan ke buffer
+    const validation = await this.validateEnvelope(envelope);
+    if (!validation.valid) {
+      console.error(`[MQTT Adapter] ❌ Invalid envelope ditolak dari offline buffer: ${validation.error}`);
+      // Catat evidence penolakan untuk audit
+      await safeRecordEvidence({
+        eventId: envelope.eventId,
+        logicalWorkId: envelope.logicalWorkId,
+        deviceId: this.deviceId,
+        status: "INVALID_ENVELOPE_REJECTED",
+        timestamp: new Date().toISOString(),
+        workspace_id: envelope.workspaceId,
+        capability: "edge-device-001",
+        command: "buffer.add",
+        work_id: envelope.logicalWorkId,
+        tenant_id: envelope.tenantId || "default",
+        actor_id: this.deviceId,
+        sessionId: this.currentSessionId || "unknown-session",
+        metadata: { error: validation.error, rejectedFromOfflineBuffer: true }
+      });
+      return false; // Tolak event, jangan tambahkan ke buffer (memenuhi mandat sebelum efek samping)
+    }
+
     if (this.offlineEventBuffer.length >= this.MAX_BUFFER_SIZE) {
       console.error(`[MQTT Adapter] Buffer penuh! Tidak dapat menambahkan event ${envelope.eventId}, buffer size: ${this.offlineEventBuffer.length}/${this.MAX_BUFFER_SIZE}`);
       
@@ -514,21 +530,21 @@ export class MockMQTTClient {
       console.log(`[MQTT Adapter] 📝 Mencoba menyimpan evidence BUFFER_OVERFLOW_REJECTED untuk event ${envelope.eventId}, workId=${envelope.logicalWorkId}`);
       
       // P0 FIX: Dapatkan validatedActorId dari sesi yang terverifikasi (tidak percaya envelope.deviceId langsung)
-      // Gunakan this.currentSessionId.id jika tersedia, jika tidak gunakan "unknown-session"
-      const sessionIdForValidation = this.currentSessionId?.id || "unknown-session";
+      // Gunakan this.currentSessionId jika tersedia, jika tidak gunakan "unknown-session"
+      const sessionIdForValidation = this.currentSessionId || "unknown-session";
       const sessionValidation = await validateDeviceSession(
         sessionIdForValidation,
-        this.deviceId.id,
+        this.deviceId,
         envelope.tenantId || "default-tenant",
         envelope.workspaceId || "default-workspace",
         envelope.logicalWorkId
       );
-      const validatedActorId = sessionValidation.validatedActorId ?? this.deviceId.id;
+      const validatedActorId = sessionValidation.validatedActorId ?? this.deviceId;
       
           const evidenceResult = await safeRecordEvidence({
             eventId: envelope.eventId,
             logicalWorkId: envelope.logicalWorkId,
-            deviceId: this.deviceId.id,
+            deviceId: this.deviceId,
             timestamp: new Date().toISOString(),
             workspace_id: envelope.workspaceId,
             capability: "edge-device-001",
@@ -561,7 +577,7 @@ export class MockMQTTClient {
             await workRepository.addEvidence(envelope.logicalWorkId, {
               eventId: envelope.eventId,
               logicalWorkId: envelope.logicalWorkId,
-              deviceId: this.deviceId.id,
+              deviceId: this.deviceId,
               status: "BUFFER_OVERFLOW_REJECTED",
               meta_eventId: envelope.eventId,
               meta_status: "BUFFER_OVERFLOW_REJECTED",
@@ -655,7 +671,7 @@ export class MockMQTTClient {
       }
       return { success: false, error: "Client offline, event buffered", pipelineState: EventPipelineState.AWAITING_RECONCILIATION };
     }
-    const validation = this.validateEnvelope(envelope);
+    const validation = await this.validateEnvelope(envelope);
     if (!validation.valid) {
       console.error(`[MQTT Adapter] Invalid envelope: ${validation.error}`);
       return { success: false, error: validation.error, pipelineState: EventPipelineState.REJECTED };
@@ -670,7 +686,7 @@ export class MockMQTTClient {
       await safeRecordEvidence({
         eventId: envelope.eventId,
         logicalWorkId: envelope.logicalWorkId,
-        deviceId: this.deviceId.id,
+        deviceId: this.deviceId,
         status: "NO_AUTHENTICATED_SESSION",
         timestamp: new Date().toISOString(),
         workspace_id: envelope.workspaceId,
@@ -678,7 +694,7 @@ export class MockMQTTClient {
         command: "session.validation",
         work_id: envelope.logicalWorkId,
         tenant_id: envelope.tenantId,
-        actor_id: this.deviceId.id,
+        actor_id: this.deviceId,
         sessionId: "unknown-session",
         metadata: { error: errorMsg }
       });
@@ -686,7 +702,7 @@ export class MockMQTTClient {
     }
 
     const sessionValidation = await validateDeviceSession(
-      this.currentSessionId.id, // Gunakan session terautentikasi dari adapter, bukan dari envelope
+      this.currentSessionId, // Gunakan session terautentikasi dari adapter, bukan dari envelope
       envelope.deviceId, // Validasi deviceId dari envelope terhadap session actorId (EDGE-B-002)
       envelope.tenantId!,
       envelope.workspaceId!,
@@ -695,11 +711,11 @@ export class MockMQTTClient {
     if (!sessionValidation.valid) {
       console.error(`[MQTT Adapter] Session validation failed: ${sessionValidation.errors.join(', ')}`);
       // P0 FIX: Meskipun sesi gagal, gunakan fallback deviceId lokal (tidak percaya envelope.deviceId)
-      const fallbackActorId = sessionValidation.validatedActorId ?? this.deviceId.id;
+      const fallbackActorId = sessionValidation.validatedActorId ?? this.deviceId;
       await safeRecordEvidence({
         eventId: envelope.eventId,
         logicalWorkId: envelope.logicalWorkId,
-        deviceId: this.deviceId.id,
+        deviceId: this.deviceId,
         status: "AUTHORIZATION_FAILED",
         timestamp: new Date().toISOString(),
         workspace_id: envelope.workspaceId,
@@ -708,21 +724,21 @@ export class MockMQTTClient {
         work_id: envelope.logicalWorkId,
         tenant_id: envelope.tenantId,
         actor_id: fallbackActorId,
-        sessionId: this.currentSessionId.id, // Gunakan sessionId terautentikasi, bukan dari envelope
+        sessionId: this.currentSessionId, // Gunakan sessionId terautentikasi, bukan dari envelope
         metadata: { errors: sessionValidation.errors, validatedActorId: fallbackActorId }
       });
       return { success: false, error: sessionValidation.errors.join(', '), pipelineState: EventPipelineState.REJECTED };
     }
     console.log("[MQTTAdapter] ✅ Session validation passed: device terautentikasi dan terotorisasi untuk Work ini");
     // Simpan validatedActorId dari sesi yang berhasil untuk digunakan sepanjang pipeline
-    const validatedActorId = sessionValidation.validatedActorId ?? this.deviceId.id;
+    const validatedActorId = sessionValidation.validatedActorId ?? this.deviceId;
 
     // 3. P0 FIX: Gunakan validateAndClaimEdgeWork untuk deduplikasi DURABLE & ATOMIC (bukan in-memory)
-    // Gunakan this.currentSessionId.id yang terautentikasi, bukan envelope.sessionId (tidak ada di schema canonical)
+    // Gunakan this.currentSessionId yang terautentikasi, bukan envelope.sessionId (tidak ada di schema canonical)
     const claimResult = await validateAndClaimEdgeWork(
       envelope.logicalWorkId as string,
       validatedActorId,
-      this.currentSessionId.id,
+      this.currentSessionId,
       envelope.eventId
     );
 
@@ -748,7 +764,7 @@ export class MockMQTTClient {
       await safeRecordEvidence({
         eventId: envelope.eventId,
         logicalWorkId: envelope.logicalWorkId,
-        deviceId: this.deviceId.id,
+        deviceId: this.deviceId,
         status: "EVIDENCE_STORAGE_FAILED",
         timestamp: new Date().toISOString(),
         workspace_id: envelope.workspaceId,
@@ -757,10 +773,10 @@ export class MockMQTTClient {
         work_id: envelope.logicalWorkId,
         tenant_id: envelope.tenantId,
         actor_id: validatedActorId,
-        sessionId: this.currentSessionId.id,
-        metadata: { error: recordEvidenceResult.error }
+        sessionId: this.currentSessionId,
+        metadata: { error: recordEvidenceResult?.error }
       });
-      return { success: false, error: "Evidence storage failed", pipelineState: EventPipelineState.EVIDENCE_STORAGE_FAILED };
+      return { success: false, error: "Evidence storage failed", pipelineState: EventPipelineState.FAILED };
     }
 
     console.log(`[MQTT Adapter] Processing valid event: ${envelope.eventId} for Work: ${envelope.logicalWorkId}`);
@@ -782,7 +798,7 @@ export class MockMQTTClient {
         await safeRecordEvidence({
           eventId: envelope.eventId,
           logicalWorkId: envelope.logicalWorkId,
-          deviceId: this.deviceId.id,
+          deviceId: this.deviceId,
           status: "CANONICAL_SYNC_FAILED",
           timestamp: new Date().toISOString(),
           workspace_id: envelope.workspaceId,
@@ -797,7 +813,7 @@ export class MockMQTTClient {
         return { 
           success: false, 
           error: syncResult.error,
-          pipelineState: EventPipelineState.PROCESSING_FAILED 
+          pipelineState: EventPipelineState.FAILED 
         };
       }
     } catch (error) {
@@ -805,7 +821,7 @@ export class MockMQTTClient {
       await safeRecordEvidence({
         eventId: envelope.eventId,
         logicalWorkId: envelope.logicalWorkId,
-        deviceId: this.deviceId.id,
+        deviceId: this.deviceId,
         status: "INTERNAL_PROCESSING_ERROR",
         timestamp: new Date().toISOString(),
         workspace_id: envelope.workspaceId,
@@ -820,37 +836,108 @@ export class MockMQTTClient {
       return { 
         success: false, 
         error: "Internal error processing event",
-        pipelineState: EventPipelineState.PROCESSING_FAILED
+        pipelineState: EventPipelineState.FAILED
       };
     }
   }
 
   // Sinkronisasi ke canonical state di apps/api (hanya boleh lewat ini, tidak direct DB access)
   private async syncToCanonicalAPI(envelope: ExecutionEnvelope): Promise<{success: boolean; error?: string}> {
-    // Implementasi sebenarnya akan memanggil REST/GraphQL endpoint di apps/api
+    // Implementasi sebenarnya memanggil REST endpoint di apps/api yang sudah diupdate untuk mendukung eventSync
     // Ini sesuai dengan kontrak edge: "Direct database access (semua state sync lewat apps/api)"
-    console.log(`[MQTT Adapter] Syncing event to apps/api sync endpoint: Work ${envelope.logicalWorkId}`);
+    console.log(`[MQTT Adapter] Syncing event to apps/api /work/device-capabilities endpoint: Work ${envelope.logicalWorkId}, Event ${envelope.eventId}`);
     
-    // Update evidence menjadi VERIFIED setelah sync berhasil
-    await safeRecordEvidence({
-      workspace_id: undefined,
-      capability: "device-event-ingress",
-      command: "sync-to-canonical",
-      work_id: envelope.logicalWorkId,
-      tenant_id: "default-tenant",
-      actor_id: this.deviceId as unknown as string,
-      timestamp: new Date().toISOString(),
-      sessionId: this.currentSessionId || envelope.sessionId || "unknown-session",
-      actorType: "machine",
-      metadata: {
-        eventId: envelope.eventId,
-        syncStatus: "completed"
-      },
-      outcome: "VERIFIED"
-    });
-    
-    // Mock success untuk prototipe
-    return { success: true };
+    try {
+      // Gunakan session terautentikasi dari adapter (this.currentSessionId) bukan dari envelope
+      // Memenuhi prinsip session-linked identity: session hanya berasal dari koneksi terautentikasi
+      const sessionIdToUse = this.currentSessionId || envelope.sessionId;
+      if (!sessionIdToUse) {
+        throw new Error("No authenticated session available for sync");
+      }
+
+      // Panggil endpoint /work/device-capabilities dengan flag eventSync=true
+      const apiUrl = process.env.EOS_API_URL || "http://localhost:3000";
+      const syncResponse = await fetch(`${apiUrl}/api/work/device-capabilities`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          eventSync: true, // Flag untuk menandai ini adalah request sinkronisasi event
+          deviceId: this.deviceId, // Gunakan deviceId terautentikasi dari adapter
+          sessionId: sessionIdToUse,
+          logicalWorkId: envelope.logicalWorkId,
+          eventId: envelope.eventId,
+          envelope: envelope // Kirim full envelope untuk diproses di API
+        })
+      });
+
+      if (!syncResponse.ok) {
+        const errorData = await syncResponse.json();
+        console.error(`[MQTT Adapter] API sync failed with status ${syncResponse.status}:`, errorData);
+        await safeRecordEvidence({
+          workspace_id: envelope.workspaceId,
+          capability: "edge-device-001",
+          command: "sync-to-canonical.failed",
+          work_id: envelope.logicalWorkId,
+          tenant_id: envelope.tenantId,
+          actor_id: this.deviceId,
+          timestamp: new Date().toISOString(),
+          sessionId: sessionIdToUse,
+          metadata: {
+            eventId: envelope.eventId,
+            syncStatus: "failed",
+            httpStatus: syncResponse.status,
+            apiError: errorData
+          },
+          outcome: "FAILED"
+        });
+        return { success: false, error: `API sync failed: ${errorData.error || syncResponse.statusText}` };
+      }
+
+      const syncResult = await syncResponse.json();
+      console.log(`[MQTT Adapter] ✅ Event successfully synced to canonical state:`, syncResult);
+      
+      // Update evidence menjadi VERIFIED setelah sync berhasil (sesuai prinsip EOS evidence)
+      await safeRecordEvidence({
+        workspace_id: envelope.workspaceId,
+        capability: "device-event-ingress",
+        command: "sync-to-canonical.completed",
+        work_id: envelope.logicalWorkId,
+        tenant_id: envelope.tenantId || "default-tenant",
+        actor_id: this.deviceId,
+        timestamp: new Date().toISOString(),
+        sessionId: sessionIdToUse,
+        actorType: "machine",
+        metadata: {
+          eventId: envelope.eventId,
+          syncStatus: "completed",
+          apiResponse: syncResult
+        },
+        outcome: "VERIFIED"
+      });
+
+      return { success: true };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`[MQTT Adapter] Exception during sync:`, message);
+      await safeRecordEvidence({
+        workspace_id: envelope.workspaceId,
+        capability: "edge-device-001",
+        command: "sync-to-canonical.exception",
+        work_id: envelope.logicalWorkId,
+        tenant_id: envelope.tenantId,
+        actor_id: this.deviceId,
+        timestamp: new Date().toISOString(),
+        sessionId: this.currentSessionId || envelope.sessionId || "unknown-session",
+        metadata: {
+          eventId: envelope.eventId,
+          error: message
+        },
+        outcome: "FAILED"
+      });
+      return { success: false, error: `Sync exception: ${message}` };
+    }
   }
 
   // Hapus disconnect() lama yang tidak mendukung buffering - sekarang diimplementasikan di public disconnect()
@@ -896,7 +983,7 @@ setTimeout(async () => {
   };
 
   console.log("[EDGE-B-001] 🚀 Memulai Gate B test: Mengirim event simulasi ke jalur event-to-Work");
-  console.log(`[EDGE-B-001] Detail event: eventId=${eventId}, logicalWorkId=${testWorkId}, deviceId=${deviceId}`);
+  console.log(`[EDGE-B-001] Detail event: eventId=${eventId}, logicalWorkId=${testWorkId}, deviceId=${deviceId.id}`);
   const result = await mqttClient.handleIncomingEvent(testEnvelope);
   console.log("[EDGE-B-001] ✅ Hasil pemrosesan event Gate B:", JSON.stringify(result, null, 2));
 }, 3000);
