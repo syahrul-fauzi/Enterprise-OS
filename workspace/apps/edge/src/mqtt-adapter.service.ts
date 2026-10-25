@@ -683,7 +683,7 @@ export class MockMQTTClient {
     if (!this.currentSessionId) {
       const errorMsg = "Tidak ada session terautentikasi untuk instance adapter ini, tidak bisa memproses event";
       console.error(`[MQTT Adapter] ❌ ${errorMsg}`);
-      await safeRecordEvidence({
+      const evidenceResult = await safeRecordEvidence({
         eventId: envelope.eventId,
         logicalWorkId: envelope.logicalWorkId,
         deviceId: this.deviceId,
@@ -698,6 +698,9 @@ export class MockMQTTClient {
         sessionId: "unknown-session",
         metadata: { error: errorMsg }
       });
+      if (!evidenceResult.ok) {
+        console.error(`[MQTT Adapter] CRITICAL: Failed to record evidence for rejected event: ${envelope.eventId}`);
+      }
       return { success: false, error: errorMsg, pipelineState: EventPipelineState.REJECTED };
     }
 
@@ -712,7 +715,7 @@ export class MockMQTTClient {
       console.error(`[MQTT Adapter] Session validation failed: ${sessionValidation.errors.join(', ')}`);
       // P0 FIX: Meskipun sesi gagal, gunakan fallback deviceId lokal (tidak percaya envelope.deviceId)
       const fallbackActorId = sessionValidation.validatedActorId ?? this.deviceId;
-      await safeRecordEvidence({
+      const evidenceResult = await safeRecordEvidence({
         eventId: envelope.eventId,
         logicalWorkId: envelope.logicalWorkId,
         deviceId: this.deviceId,
@@ -727,9 +730,38 @@ export class MockMQTTClient {
         sessionId: this.currentSessionId, // Gunakan sessionId terautentikasi, bukan dari envelope
         metadata: { errors: sessionValidation.errors, validatedActorId: fallbackActorId }
       });
+      if (!evidenceResult.ok) {
+        console.error(`[MQTT Adapter] CRITICAL: Failed to record evidence for authorization failure: ${envelope.eventId}`);
+      }
       return { success: false, error: sessionValidation.errors.join(', '), pipelineState: EventPipelineState.REJECTED };
     }
     console.log("[MQTTAdapter] ✅ Session validation passed: device terautentikasi dan terotorisasi untuk Work ini");
+
+    // EDGE-B-004: Rekam evidence sukses dan cek kegagalan pencatatan
+    const successEvidenceResult = await safeRecordEvidence({
+      eventId: envelope.eventId,
+      logicalWorkId: envelope.logicalWorkId,
+      deviceId: this.deviceId,
+      status: "VALIDATION_PASSED",
+      timestamp: new Date().toISOString(),
+      workspace_id: envelope.workspaceId,
+      capability: "edge-device-001",
+      command: "event.processing",
+      work_id: envelope.logicalWorkId,
+      tenant_id: envelope.tenantId,
+      actor_id: this.deviceId,
+      sessionId: this.currentSessionId,
+      metadata: { eventValidated: true, sessionValidated: true }
+    });
+    if (!successEvidenceResult.ok) {
+      // EDGE-B-004 MANDATORY: Kegagalan pencatatan evidence tidak dilaporkan sebagai sukses!
+      console.error(`[MQTT Adapter] CRITICAL: Failed to record success evidence for event: ${envelope.eventId}, cannot report as success`);
+      return { 
+        success: false, 
+        error: "Evidence recording failed: cannot process event without audit trail", 
+        pipelineState: EventPipelineState.REJECTED 
+      };
+    }
     // Simpan validatedActorId dari sesi yang berhasil untuk digunakan sepanjang pipeline
     const validatedActorId = sessionValidation.validatedActorId ?? this.deviceId;
 
