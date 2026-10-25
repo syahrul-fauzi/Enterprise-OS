@@ -4,7 +4,7 @@ import { randomUUID } from "crypto";
 // Import base repository dan getPool dari identity yang sudah memiliki implementasi canonical (reuse eksisting)
 // Menggunakan package identity yang terdaftar di monorepo sesuai standar EOS
 // Gunakan alias canonical @repo/capabilities-identity untuk import dari identity capability (sesuai Gate A requirements)
-import { getPool, PostgresRepository } from "../../../identity/implementation/repositories/index.js";
+import { getPool, PostgresRepository } from "../../../identity/implementation/repositories/base.repository.js";
 // Lazy import factory functions to avoid top-level await
 let newWorkId: (input?: string) => WorkId;
 let createSessionId: (input?: string) => SessionId;
@@ -289,8 +289,8 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
     await initializePools(); // Initialize pools before first use
     const productId = product.id || generateId();
     // Fix readonly array: buat mutable copy untuk database operation
-    const linkedRequirementIds = [...product.linkedRequirementIds];
-    const linkedWorkIds = [...product.linkedWorkIds];
+    const linkedRequirementIds = [...(product.linkedRequirementIds || [])];
+    const linkedWorkIds = [...(product.linkedWorkIds || [])];
     
     const newProduct: ProductNode & { tenantId: string } = {
       ...product,
@@ -923,11 +923,10 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
         [actorId, executionId, JSON.stringify(previousExecutions), JSON.stringify(processedEventIds), workId, leaseDurationMs]
       );
       
-      await client.query('COMMIT');
-      
-      // 6. Convert to aggregate and record evidence
+      // GATE D FIX: Insert evidence LANGSUNG dalam transaksi yang sama (client.query, bukan writePool!)
+      // Ini memastikan jika insert evidence gagal, seluruh transaksi rollback - memenuhi D-001 Transaction Integrity
       const updatedWork = this.toAggregate(updateResult.rows[0]);
-      await safeRecordEvidence({
+      const evidencePayload = {
         entityRef: updatedWork.id,
         entityType: "work",
         action: "work.claimed",
@@ -943,7 +942,28 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
         sessionId: updatedWork.sessionId,
         tenantId: updatedWork.tenantId,
         workspaceId: updatedWork.workspaceId,
-      });
+      };
+
+      // Insert evidence menggunakan client yang SAMA dengan transaksi atomicClaim - SHARED TRANSACTION
+      await client.query(
+        `INSERT INTO evidence (work_id, actor_id, type, content, created_at) VALUES ($1, $2, $3, $4, $5)`,
+        [
+          updatedWork.id,
+          evidencePayload.actorId,
+          evidencePayload.action,
+          JSON.stringify(evidencePayload),
+          new Date(evidencePayload.timestamp)
+        ]
+      );
+
+      // Update work version juga dalam transaksi yang sama - tidak ada koneksi terpisah
+      await client.query(`UPDATE works SET version = version + 1, updated_at = NOW() WHERE id = $1`, [updatedWork.id]);
+
+      // Tetap panggil safeRecordEvidence untuk compatibility dengan capabilityRegistry (fallback mechanism)
+      await safeRecordEvidence(evidencePayload);
+      
+      // Commit hanya setelah semua operasi (Work mutation + evidence insert) berhasil
+      await client.query('COMMIT');
       
       return updatedWork;
     } catch (error) {
