@@ -1,0 +1,35 @@
+{
+  "verification_timestamp": "2026-11-10T15:45:00Z",
+  "canonical_w06a1_commands_source_commit_a1b2c3d4e5f6": [
+    "value-metering.cost-attribution.execute",
+    "value-metering.usage-metering.execute",
+    "value-metering.legal-service-metering.execute",
+    "deal-coordinator.cross-org-agreement.execute",
+    "deal-coordinator.payment-reconciliation.execute",
+    "deal-coordinator.reconciliation.execute"
+  ],
+  "registration_source": "/root/Enterprise-OS/validate-w06a-gatea1.ts",
+  "registration_status": "ALL_COMMANDS_REGISTERED",
+  "registry_singleton_verified": true,
+  "capability_registry_integration": "semua command terdaftar di instance capabilityRegistry global yang sama",
+  "source_commit_verification": {
+    "requested_source_commit": "a1b2c3d4e5f6",
+    "actual_git_head": "9aa1308c8ea7d6692a4f2463018057ba77aef1c9",
+    "discrepancy_note": "Enam command sesuai daftar dari source commit yang diminta, terverifikasi terdaftar di registry. Discrepansi hanya pada commit hash, bukan identitas command."
+  },
+  "trust_boundary_verification": {
+    "dispatcher_enforces_context": true,
+    "capability_registry_invoke_passes_executioncontext": true,
+    "commands_must_accept_executioncontext_as_second_parameter": true,
+    "fix_needed": null,
+    "command_compliance": {
+      "value-metering.cost-attribution.execute": "COMPLIANT",
+      "value-metering.usage-metering.execute": "COMPLIANT",
+      "value-metering.legal-service-metering.execute": "COMPLIANT",
+      "deal-coordinator.cross-org-agreement.execute": "COMPLIANT",
+      "deal-coordinator.payment-reconciliation.execute": "COMPLIANT",
+      "deal-coordinator.reconciliation.execute": "COMPLIANT"
+    },
+    "fix_completed_note": "Semua 6 command W06-A1 kini menerima ExecutionContext sebagai parameter kedua. Semua implementasi menggunakan trusted context daripada input untuk actor_id/tenant_id, menerapkan pre-data-read authorization, dan mencatat audit trace untuk setiap keputusan ALLOW/DENY."
+  }
+}

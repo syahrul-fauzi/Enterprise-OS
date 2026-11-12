@@ -1,0 +1,1 @@
+bash: trivy: command not found
