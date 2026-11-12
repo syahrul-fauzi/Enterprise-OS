@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "../../../work-core/contracts/work.contracts.js";
 import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "../../../../packages/core/kernel/src/index.js";
 import { slugifyForTenant } from "../services/password.service.js";
 import {

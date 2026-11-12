@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     if (!sessionValue) {
       return NextResponse.json({ error: "Unauthorized: no session found" }, { status: 401 });
     }
-    const decodedSession = decodeWorkspaceSession(sessionValue);
+    const decodedSession = await decodeWorkspaceSession(sessionValue);
     if (!decodedSession?.sessionId || !decodedSession.actorId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 400 });
     }
@@ -30,7 +30,9 @@ export async function POST(request: Request) {
       "legal": "legal-case",
       "acaas": "service-request",
       "consultation": "consultation",
-      "retail": "retail-inventory"
+      "retail": "retail-inventory",
+      "smace": "sni-certification", // SMACE-004: Add mapping for SNI certification work
+      "wordpress-fix": "website-fix" // WordPress/Website Fix: Add mapping for domain type
     };
     const canonicalDomainType = domainTypeMap[body.domain] || "software-development";
 

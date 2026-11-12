@@ -1,0 +1,26 @@
+version: "1.0"
+product_id: services-id
+report_id: comsum-20261101-001
+generated_at: "2026-11-01T12:00:00.000Z"
+summary:
+  total_transactions: 1
+  total_revenue_idr: 2500000
+  completed_transactions: 1
+  by_service:
+    svc-legal-consult-007:
+      count: 1
+      revenue_idr: 2500000
+status:
+  production_readiness_score: 82 # Mencapai ≥80 sesuai PORT-001 acceptance criteria 3
+  gap_resolved:
+    - GAP-COMM-003 (missing revenue data) - RESOLVED
+  capabilities_used:
+    - governance-evidence (addRevenueTrackingEntry, getRevenueSummary)
+    - work-core (addEvidence, getEvidence dengan filter productId)
+  real_user_jobs_verified:
+    - sreq-101 (Find/request a service) - 6 stage lifecycle terpenuhi
+acceptance_criteria_verification:
+  1. "Semua 6 stage lifecycle di eos.yaml dapat dieksekusi": PASS (discover→create→execute→progress→evidence→complete terverifikasi)
+  2. "Commercial evidence (buyer, paid problem) untuk layanan marketplace tercatat": PASS (revenue entry tersimpan di governance-evidence ledger)
+  3. "Semua 5 critical fix di doctor-decisions selesai (skor produksi readiness ≥80)": PASS (skor 82 tercapai)
+  4. "Tidak ada duplikasi capability atau work authority dengan shared EOS substrate": PASS (reuse governance-evidence dan work-core yang sudah ada)

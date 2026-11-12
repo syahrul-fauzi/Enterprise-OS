@@ -21,7 +21,7 @@ export default defineConfig({
     projects: [
         {
             name: 'chromium',
-            use: Object.assign(Object.assign({}, devices['Desktop Chrome']), { headless: true }),
+            use: { ...devices['Desktop Chrome'], headless: true },
         },
     ],
     webServer: {

@@ -1,0 +1,39 @@
+id: runtime-comfyui
+name: ComfyUI Runtime Adapter
+version: 1.0.0
+manifest_version: 1.0.0
+kind: runtime-pack
+presentation:
+  component: ComfyUIRuntimeAdapter
+implementation:
+  entry: ./implementation/runtimes/comfyui/comfyui.adapter.ts
+provides:
+  - runtime.comfyui.execute
+  - runtime.comfyui.status
+requires:
+  - artifact.store
+  - evidence.record
+runtime_requirements:
+  - capability: runtime.gpu.accelerate
+    provider_selection: policy_resolved
+actor_access:
+  grants_required:
+    - runtime.comfyui.execute
+policies:
+  pre_execution:
+    - validate-workflow-input
+    - enforce-tenant-isolation
+  post_execution:
+    - verify-artefact-integrity
+    - record-execution-metrics
+  approval:
+    required_for: high-risk-workflows
+outputs:
+  - generated-artefacts
+  - execution-metrics
+  - workflow-result
+metering:
+  billable_unit: inference-minute
+publisher:
+  name: EOS Core Team
+  url: https://enterpriseos.io

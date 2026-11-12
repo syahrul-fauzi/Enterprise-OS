@@ -1,0 +1,229 @@
+version: "1.0"
+product_id: "digital-operations"
+display_name: "Managed Digital Business Operations"
+description: "Kami tidak hanya memperbaiki sistem digital. Kami memastikan sistem tersebut terus bekerja untuk bisnis Anda."
+service_domains:
+  - id: "finance-operations"
+    name: "Finance Operations"
+    description: "Mengelola rekonsiliasi transaksi, pencocokan invoice, dan penanganan exception keuangan"
+    scope:
+      - "Ingest transaksi dari bank gateway, e-wallet, dan marketplace"
+      - "Pencocokan invoice vs transaksi otomatis"
+      - "Penanganan exception keuangan (unmatched transactions) dengan eskalasi manusia jika diperlukan"
+      - "Laporan rekonsiliasi harian/mingguan dengan evidence teraudit"
+      - "Integrasi dengan akuntansi pelanggan (Xero, Jurnal, Odoo)"
+    pricing_hypothesis:
+      basic:
+        setup_fee_idr: 1500000
+        recurring_fee_monthly_idr: 750000
+        target_customer: "UMKM (transaksi <500/bulan)"
+      professional:
+        setup_fee_idr: 3000000
+        recurring_fee_monthly_idr: 1800000
+        target_customer: "Bisnis menengah (transaksi <5000/bulan)"
+      enterprise:
+        setup_fee_idr: 7500000
+        recurring_fee_monthly_idr: 4500000
+        target_customer: "Enterprise (unlimited transaksi)"
+    acceptance_criteria:
+      - "Rekonsiliasi selesai <24 jam setelah transaksi masuk"
+      - "95% transaction matched otomatis (human intervention <5%)"
+      - "Semua evidence tercatat di EOS governance-evidence"
+      - "Customer menandatangani acceptance form untuk hasil rekonsiliasi"
+      - "Tidak ada kesalahan laporan keuangan selama 30 hari pilot"
+    capability_reuse:
+      existing_capabilities: ["deal-coordinator.reconciliation.execute", "value-metering.usage-measurement.record", "connector-ecosystem.transaction.ingest"]
+      eos_core_capabilities: ["core.governance-evidence", "core.work-continuity", "core.connector-ecosystem"]
+      no_new_primitives: true # EOS Core FROZEN, tidak buat capability baru
+    capabilities: ["transaction-ingestion", "reconciliation", "exception-handling", "financial-reporting"]
+    shared_capabilities: ["value-metering.usage-tracking", "deal-coordinator.reconciliation", "connector-ecosystem.bank-payment-gateway"]
+    eos_capabilities: ["core.connector-ecosystem", "core.governance-evidence", "core.work-continuity"]
+    verified_capabilities: # Phase 1: Semua capability sudah terverifikasi dapat diinvoke
+      - "deal-coordinator.reconciliation.execute"
+      - "value-metering.usage-measurement.record"
+      - "connector-ecosystem.transaction.ingest"
+      - "work.exception.create"
+      - "work.exception.assign"
+      - "work.exception.resolve"
+  - id: "content-growth-operations"
+    name: "Content & Growth Operations"
+    description: "Mengelola siklus hidup konten, optimasi anggaran iklan, dan kualitas data CRM"
+    scope:
+      - "Pengelolaan lifecycle konten video/artikel dari ide sampai distribusi"
+      - "Otomatisasi repurposing konten (long-form → short-form)"
+      - "Manajemen provider kreatif dengan approval workflow"
+      - "Optimasi ad-spend ROI dengan dynamic budget adjustment (dengan batas approval manusia)"
+      - "Laporan performa konten dengan engagement metrics"
+    pricing_hypothesis:
+      standard:
+        setup_fee_idr: 2000000
+        recurring_fee_monthly_idr: 1200000
+        target_customer: "Kreator/UMKM konten"
+      professional:
+        setup_fee_idr: 4500000
+        recurring_fee_monthly_idr: 3000000
+        target_customer: "Bisnis media/agency"
+      enterprise:
+        setup_fee_idr: 10000000
+        recurring_fee_monthly_idr: 7000000
+        target_customer: "Enterprise content team"
+    acceptance_criteria:
+      - "Waktu produksi konten turun 40% dari baseline manual"
+      - "100% konten melewati editorial review sebelum publikasi"
+      - "Ad-spend ROI meningkat minimal 15% selama pilot"
+      - "Semua distribusi sesuai jadwal tanpa keterlambatan"
+      - "Customer memberikan renewal intent setelah 30 hari"
+    capability_reuse:
+      existing_capabilities: ["smace.content.process", "value-metering.ad-spend.attribute", "crm.data.enrich"]
+      eos_core_capabilities: ["core.work-continuity", "core.governance-evidence", "core.connector-ecosystem"]
+      no_new_primitives: true # EOS Core FROZEN, tidak buat capability baru
+    capabilities: ["content-lifecycle", "ad-spend-optimization", "crm-enrichment", "lead-intelligence", "editorial-qa"]
+    shared_capabilities: ["value-metering.content-metering", "deal-coordinator.agreement-tracking", "connector-ecosystem.social-media-ad-platform"]
+    eos_capabilities: ["core.connector-ecosystem", "core.atomic-composition", "core.execution-coordination"]
+    verified_capabilities: # Phase 1: Semua capability sudah terverifikasi dapat diinvoke
+      - "smace.content.process"
+      - "value-metering.ad-spend.attribute"
+      - "crm.data.enrich"
+      - "work.approval.request"
+      - "work.approval.fulfill"
+  - id: "customer-commerce-operations"
+    name: "Customer & Commerce Operations"
+    description: "Mengelola eskalasi dukungan pelanggan, intelijen harga pesaing, dan penanganan exception order"
+    scope:
+      - "Customer care escalation dengan jalur manusia yang jelas (sesuai kebijakan WhatsApp/Instagram)"
+      - "CRM data quality: deduplikasi, normalisasi, enrichment"
+      - "Competitor pricing intelligence (alert perubahan harga, bukan repricing otomatis)"
+      - "Lead intelligence dari sumber yang sah (tidak scraping ilegal)"
+      - "Penanganan refund dengan otorisasi yang teraudit"
+    pricing_hypothesis:
+      standard:
+        setup_fee_idr: 2500000
+        recurring_fee_monthly_idr: 1500000
+        target_customer: "Toko online/merchant"
+      professional:
+        setup_fee_idr: 5500000
+        recurring_fee_monthly_idr: 3500000
+        target_customer: "Bisnis retail multi-channel"
+      enterprise:
+        setup_fee_idr: 12000000
+        recurring_fee_monthly_idr: 8000000
+        target_customer: "Enterprise commerce"
+    acceptance_criteria:
+      - "Waktu resolusi customer care turun 50% dari baseline"
+      - "CRM data accuracy meningkat menjadi 98%"
+      - "100% eskalasi manusia sesuai SLA (dalam 24 jam kerja)"
+      - "Tidak ada pelanggaran kebijakan platform komunikasi"
+      - "Customer menyatakan satisfaction score >4/5"
+    capability_reuse:
+      existing_capabilities: ["deal-coordinator.case-escalation.execute", "value-metering.usage-measurement.record", "connector-ecosystem.crm-sync"]
+      eos_core_capabilities: ["core.policy-enforcement", "core.work-continuity", "core.governance-evidence"]
+      no_new_primitives: true # EOS Core FROZEN, tidak buat capability baru
+    capabilities: ["message-classification", "customer-lookup", "policy-entitlement-check", "pricing-intelligence", "order-exception-handling"]
+    shared_capabilities: ["value-metering.support-metering", "deal-coordinator.escalation-tracking", "connector-ecosystem.whatsapp-instagram-email"]
+    eos_capabilities: ["core.communication", "core.connector-ecosystem", "core.security-hardening"]
+    verified_capabilities: # Phase 1: Semua capability sudah terverifikasi dapat diinvoke
+      - "communication.message.classify"
+      - "customer.order.lookup"
+      - "policy.entitlement.verify"
+      - "work.escalation.create"
+      - "work.resolution.record"
+commercial_packages_reference:
+  - package_id: "finance-operations-basic"
+    service_domain: "finance-operations"
+    reference_file: "packages.yaml"
+  - package_id: "content-growth-operations-standard"
+    service_domain: "content-growth-operations"
+    reference_file: "packages.yaml"
+  - package_id: "customer-commerce-operations-enterprise"
+    service_domain: "customer-commerce-operations"
+    reference_file: "packages.yaml"
+  - package_id: "full-suite-managed-operations"
+    service_domain: "all-domains"
+    reference_file: "packages.yaml"
+one_time_services:
+  - id: "digital-operations-assessment"
+    name: "Digital Operations Assessment"
+    description: "Audit menyeluruh operasi digital pelanggan termasuk infrastructure, security, dan performance"
+    fee_id: "fee-assessment"
+    delivery_time: "5 hari kerja"
+  - id: "website-platform-recovery"
+    name: "Website & Platform Recovery"
+    description: "Pemulihan website dan platform setelah downtime, hack, atau data loss"
+    fee_id: "fee-recovery"
+    delivery_time: "on-demand"
+  - id: "integration-health-check"
+    name: "Integration Health Check"
+    description: "Audit integrasi sistem, konektivitas API, dan data synchronization"
+    fee_id: "fee-integration-check"
+    delivery_time: "3 hari kerja"
+  - id: "security-reliability-assessment"
+    name: "Security & Reliability Assessment"
+    description: "Penilaian keamanan infrastruktur, vulnerability scanning, dan disaster recovery plan"
+    fee_id: "fee-security-assessment"
+    delivery_time: "7 hari kerja"
+  - id: "automation-opportunity-assessment"
+    name: "Automation Opportunity Assessment"
+    description: "Identifikasi proses yang dapat diotomasi untuk efisiensi operasional"
+    fee_id: "fee-automation-assessment"
+    delivery_time: "4 hari kerja"
+fee_schedule:
+  - id: "fee-setup-finance-basic"
+    name: "Setup Fee Finance Operations Basic"
+    amount_idr: 1500000
+    description: "Biaya onboarding untuk paket Finance Operations Basic"
+    package_compatibility: ["finance-operations-basic"]
+  - id: "fee-recurring-finance-basic"
+    name: "Monthly Recurring Fee Finance Basic"
+    amount_idr: 1200000
+    description: "Biaya langganan bulanan Finance Operations Basic"
+    package_compatibility: ["finance-operations-basic"]
+  - id: "fee-setup-content-growth-standard"
+    name: "Setup Fee Content & Growth Operations Standard"
+    amount_idr: 3500000
+    description: "Biaya onboarding untuk paket Content & Growth Operations Standard"
+    package_compatibility: ["content-growth-operations-standard"]
+  - id: "fee-recurring-content-growth-standard"
+    name: "Monthly Recurring Fee Content & Growth Standard"
+    amount_idr: 2800000
+    description: "Biaya langganan bulanan Content & Growth Operations Standard"
+    package_compatibility: ["content-growth-operations-standard"]
+  - id: "fee-setup-customer-commerce-enterprise"
+    name: "Setup Fee Customer & Commerce Operations Enterprise"
+    amount_idr: 5000000
+    description: "Biaya onboarding untuk paket Customer & Commerce Operations Enterprise"
+    package_compatibility: ["customer-commerce-operations-enterprise"]
+  - id: "fee-recurring-customer-commerce-enterprise"
+    name: "Monthly Recurring Fee Customer & Commerce Enterprise"
+    amount_idr: 4500000
+    description: "Biaya langganan bulanan Customer & Commerce Operations Enterprise"
+    package_compatibility: ["customer-commerce-operations-enterprise"]
+  - id: "fee-setup-full-suite"
+    name: "Setup Fee Full Suite Managed Operations"
+    amount_idr: 10000000
+    description: "Biaya onboarding untuk paket Full Suite Managed Digital Operations"
+    package_compatibility: ["full-suite-managed-operations"]
+  - id: "fee-recurring-full-suite"
+    name: "Monthly Recurring Fee Full Suite"
+    amount_idr: 8500000
+    description: "Biaya langganan bulanan Full Suite Managed Digital Operations"
+    package_compatibility: ["full-suite-managed-operations"]
+  - id: "fee-assessment"
+    name: "Assessment Fee"
+    amount_idr: 5000000
+    description: "Biaya layanan satu kali Digital Operations Assessment"
+  - id: "fee-recovery"
+    name: "Recovery Fee"
+    amount_idr: "variable"
+    description: "Biaya pemulihan berdasarkan kompleksitas masalah"
+  - id: "fee-integration-check"
+    name: "Integration Check Fee"
+    amount_idr: 3000000
+    description: "Biaya layanan satu kali Integration Health Check"
+  - id: "fee-security-assessment"
+    name: "Security Assessment Fee"
+    amount_idr: 4500000
+    description: "Biaya layanan satu kali Security & Reliability Assessment"
+  - id: "fee-automation-assessment"
+    name: "Automation Assessment Fee"
+    amount_idr: 3500000
+    description: "Biaya layanan satu kali Automation Opportunity Assessment"

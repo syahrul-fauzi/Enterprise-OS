@@ -78,7 +78,7 @@ export async function GET(
             try {
               const sessionValue = sessionCookie.split('=')[1];
               if (sessionValue) {
-                const decodedSession = decodeWorkspaceSession(sessionValue);
+                const decodedSession = await decodeWorkspaceSession(sessionValue);
                 if (decodedSession?.sessionId) {
                   parsedSession = decodedSession;
                 }
@@ -129,7 +129,7 @@ export async function GET(
             try {
               const sessionValue = sessionCookie.split('=')[1];
               if (sessionValue) {
-                const decodedSession = decodeWorkspaceSession(sessionValue);
+                const decodedSession = await decodeWorkspaceSession(sessionValue);
                 if (decodedSession?.sessionId) {
                   parsedSession = {
                     sessionId: decodedSession.sessionId,

@@ -6,10 +6,9 @@ import type {
 } from "../implementation/contracts/atomic-composition.contracts.js";
 import {
   RequirementId,
-  ActorId,
   CompositionId
 } from "../implementation/contracts/atomic-composition.contracts.js";
-import { WorkId } from "@capabilities/work-core/contracts/work.contracts.js";
+import { createWorkId, createActorId, type WorkId, type ActorId } from "@capabilities/work-core/contracts/work.contracts.js";
 
 /**
  * E1 GOLDEN PROOF: Launch a Business - Multi-Provider Type Test
@@ -55,7 +54,7 @@ async function main() {
     // Step 2: Create the WORK (canonical work-core Work aggregate)
     // Only adds compositionId - NO teamId, per constitutional decision (Option C)
     // -------------------------------------------------------------------------
-    const businessLaunchWorkId = WorkId("work-online-business-launch-2026-001");
+    const businessLaunchWorkId = createWorkId("work-online-business-launch-2026-001");
     console.log("\n✅ Work created:", "Launch Online Business", `(id: ${businessLaunchWorkId})`);
     console.log("   compositionId will be the ONLY canonical link to composition");
 
@@ -157,7 +156,7 @@ async function main() {
       // ------------------------------
       {
         id: "actor-sarah",
-        actorId: ActorId("human-sarah-strategist-2026"),
+        actorId: createActorId("human-sarah-strategist-2026"),
         type: "human",
         displayName: "Sarah Chen (Business Strategist)",
         capabilities: [capabilities[0]], // business.strategy
@@ -170,7 +169,7 @@ async function main() {
       },
       {
         id: "actor-mike",
-        actorId: ActorId("human-mike-designer-2026"),
+        actorId: createActorId("human-mike-designer-2026"),
         type: "human",
         displayName: "Mike Wong (Brand Designer)",
         capabilities: [capabilities[1]], // brand design
@@ -183,7 +182,7 @@ async function main() {
       },
       {
         id: "actor-alex",
-        actorId: ActorId("human-alex-developer-2026"),
+        actorId: createActorId("human-alex-developer-2026"),
         type: "human",
         displayName: "Alex Rivera (Full Stack Developer)",
         capabilities: [capabilities[4]], // web development
@@ -196,7 +195,7 @@ async function main() {
       },
       {
         id: "actor-emma",
-        actorId: ActorId("human-emma-content-2026"),
+        actorId: createActorId("human-emma-content-2026"),
         type: "human",
         displayName: "Emma Lee (Content Writer)",
         capabilities: [capabilities[3]], // content creation
@@ -215,7 +214,7 @@ async function main() {
       // ------------------------------
       {
         id: "actor-gpt4-research",
-        actorId: ActorId("ai-gpt4-research-agent-2026"),
+        actorId: createActorId("ai-gpt4-research-agent-2026"),
         type: "ai-agent",
         displayName: "GPT-4 Market Research Agent",
         capabilities: [capabilities[2]], // market research
@@ -228,7 +227,7 @@ async function main() {
       },
       {
         id: "actor-claude-content",
-        actorId: ActorId("ai-claude-content-agent-2026"),
+        actorId: createActorId("ai-claude-content-agent-2026"),
         type: "ai-agent",
         displayName: "Claude Content Generation Agent",
         capabilities: [capabilities[3]], // content creation
@@ -247,7 +246,7 @@ async function main() {
       // ------------------------------
       {
         id: "actor-vercel",
-        actorId: ActorId("service-vercel-deployment-2026"),
+        actorId: createActorId("service-vercel-deployment-2026"),
         type: "external-service",
         displayName: "Vercel Cloud Deployment Service",
         capabilities: [capabilities[5]], // cloud deployment
@@ -261,7 +260,7 @@ async function main() {
       },
       {
         id: "actor-stripe",
-        actorId: ActorId("service-stripe-payments-2026"),
+        actorId: createActorId("service-stripe-payments-2026"),
         type: "external-service",
         displayName: "Stripe Payment Gateway Service",
         capabilities: [capabilities[6]], // payment setup

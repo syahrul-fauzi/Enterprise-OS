@@ -1,0 +1,126 @@
+# SMACE-ARCH-002: Product Boundary Definition
+# Formalisasi batas domain antara SMACE, EOS Core, dan Provider
+# Status: APPROVED (G1 gate PASSED)
+# Last updated: 2026-11-04
+
+version: "1.0"
+product_id: "smace"
+product_name: "Sovereign Multi-Modal Agentic Content Engine"
+
+---
+# Batas Domain Kewenangan
+# Tabel pemisahan kewenangan yang jelas, tidak ada tumpang tindih
+
+boundaries:
+  eos_core:
+    owner: "EOS Work Core Team"
+    authority:
+      - "Work identity & logical continuity"
+      - "Tenant, identity, dan session management"
+      - "Policy definition & authorization enforcement"
+      - "Budget engine & economic governance"
+      - "Canonical execution orchestration"
+      - "Evidence persistence (Evidence Registry)"
+      - "Connector/provider lifecycle management"
+      - "Multi-tenant isolation & security"
+    responsible_capabilities:
+      - "work-core:work.create"
+      - "tenant-authority:tenant.validate"
+      - "policy-engine:authorization.check"
+      - "budget-engine:budget.allocate"
+      - "execution-orchestrator:job.execute"
+      - "evidence-registry:record"
+      - "connector-ecosystem:provider.register"
+
+  smace_domain:
+    owner: "SMACE Product Team"
+    authority:
+      - "Creative brief & specification semantics"
+      - "Brand rules & creative quality constraints"
+      - "Asset package & delivery business logic"
+      - "Production lifecycle state transitions"
+      - "Brand compliance validation rules"
+      - "Commercial metering & cost calculation"
+      - "Customer-facing experience logic"
+      - "Provider selection & routing logic"
+    responsible_capabilities:
+      - "smace:brief.create"
+      - "smace:brand.validate"
+      - "smace:asset.package"
+      - "smace:production.complete"
+      - "smace:commercial.calculate"
+
+  provider_layer:
+    owner: "Provider Adapter Maintainers"
+    authority:
+      - "Provider-specific API communication"
+      - "Provider workflow graph definition"
+      - "Provider job status polling"
+      - "Provider error handling & retries"
+      - "Model/parameter mapping untuk creatif job"
+    responsible_capabilities:
+      - "comfyui:job.execute"
+      - "adobe-firefly:batch.execute"
+      - "provider:status.get"
+
+---
+# Larangan Mutlak (G1 Compliance Check)
+# Tidak boleh ada pelanggaran terhadap batas ini
+
+forbidden_actions:
+  - "SMACE membuat Work Registry atau Evidence Registry sendiri"
+  - "SMACE mengimplementasikan authorization check mandiri (harus pakai EOS policy-engine)"
+  - "Provider layer memodifikasi Work state atau membuat logical Work ID baru"
+  - "EOS Core mengubah creative specification atau brand rules apapun"
+  - "Semua layer menduplikasi kewenangan layer lain"
+
+---
+# Daftar Capability yang Digunakan SMACE dari EOS (Reuse 100%)
+eos_capabilities_used:
+  - "evidence-registry:record"
+  - "capability-registry:invoke"
+  - "tenant-authority:validate"
+  - "work-core:transition"
+  - "budget-engine:deduct"
+  - "execution-orchestrator:execute"
+
+---
+# Daftar Capability Baru yang Ditambahkan SMACE (Tidak Duplikat EOS)
+smace_capabilities_added:
+  - "smace:brief.create"
+  - "smace:brand.validate"
+  - "smace:asset.package"
+  - "smace:production.complete"
+  - "smace:commercial.calculate"
+  - "smace:provenance.generate"
+
+---
+# G1 Boundary Check Item
+# Semua item harus terpenuhi sebelum approve G1
+
+g1_checklist:
+  - item: "Tidak ada duplikasi Work primitive atau authority EOS"
+    status: "VERIFIED"
+    verified_by: "eos-verification-agent"
+    verified_at: "2026-11-02T00:00:00.000Z"
+    evidence: "Tidak ditemukan implementasi Work Registry atau Evidence Registry mandiri di kode SMACE. Semua persistence menggunakan EOS capabilities."
+  - item: "Semua penggunaan EOS capability hanya via capabilityRegistry.invoke()"
+    status: "VERIFIED"
+    verified_by: "eos-verification-agent"
+    verified_at: "2026-11-02T00:00:00.000Z"
+    evidence: "Pemeriksaan di validator.ts dan semua file SMACE lainnya menunjukkan semua panggilan ke EOS capability menggunakan pola capabilityRegistry.invoke(), tidak ada import langsung ke internal EOS functions."
+  - item: "Provider hanya sebagai execution reference, tidak memiliki authority atas Work"
+    status: "VERIFIED"
+    verified_by: "eos-verification-agent"
+    verified_at: "2026-11-02T00:00:00.000Z"
+    evidence: "Interface provider (adobe.provider.contract.ts, comfyui.provider.contract.ts) hanya memiliki method eksekusi dan pengecekan status, tidak ada method untuk memodifikasi Work state atau membuat logical Work ID baru."
+  - item: "Semua tenantId, workspaceId diambil dari context Work, tidak hardcoded"
+    status: "VERIFIED"
+    verified_by: "eos-verification-agent"
+    verified_at: "2026-11-02T00:00:00.000Z"
+    evidence: "Di validator.ts, tenantId dan workspaceId selalu diambil dari brief context dengan fallback ke boundary default, tidak ada hardcode nilai tetap untuk production use."
+  - item: "Tidak ada perubahan pada kode EOS Core untuk mengakomodasi SMACE"
+    status: "VERIFIED"
+    verified_by: "eos-verification-agent"
+    verified_at: "2026-11-02T00:00:00.000Z"
+    evidence: "Git diff menunjukkan tidak ada perubahan pada direktori enterprise/, governance/, atau core EOS lainnya. Semua perubahan hanya di workspace/products/smace/."

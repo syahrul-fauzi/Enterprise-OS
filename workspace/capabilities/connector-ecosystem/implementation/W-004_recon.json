@@ -1,0 +1,46 @@
+{
+  "work_id": "W-004",
+  "recon_completed_at": "2026-10-29T12:00:00.000Z",
+  "locked_boundaries_verified": {
+    "work-core": "UNMODIFIED",
+    "governance": "UNMODIFIED",
+    "enterprise": "UNMODIFIED"
+  },
+  "existing_capabilities_found": [
+    "communication capability with WhatsAppAdapter pattern (Rule of Three established)",
+    "communication.commands.ts base structure with session validation, ambient context, safeRecordEvidence",
+    "communication.contracts.ts with CommunicationAdapterTypes schema",
+    "connector-ecosystem.webhook pattern from WhatsApp/Slack implementations",
+    "work-core canonical primitives: createTenantId, createWorkspaceId, createSessionId"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "Adapter pattern (WhatsApp → Telegram) - 100% reusable structure",
+      "Session validation security pattern - identical reuse",
+      "Ambient context propagation - identical reuse",
+      "safeRecordEvidence canonical function - identical reuse",
+      "Tenant-isolated credentials pattern - identical reuse",
+      "Webhook IP whitelisting pattern from other channel implementations",
+      "Manifest-based capability contract structure from ACaaS"
+    ],
+    "required_new": [
+      "Telegram-specific Bot API v7.0 integration details",
+      "Telegram webhook signature verification logic",
+      "Telegram channel manifest (eos-capability.json) with Telegram-specific configs",
+      "Telegram route.ts POST/GET handlers specific to Telegram webhook format"
+    ],
+    "reuse_percentage": 87.5
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "REUSE: Full WhatsAppAdapter pattern - all core logic transferable",
+    "MINIMAL FIX: Only Telegram-specific API changes needed, no core architecture modifications",
+    "Complies with Rule of Three: WhatsApp/Email/MobilePush → Telegram as 4th adapter in consistent pattern",
+    "No locked boundaries modified, all changes isolated to connector-ecosystem and communication capabilities"
+  ],
+  "verdict": "REUSE"
+}

@@ -12,7 +12,7 @@ export default async function EnterPage() {
     redirect("/");
   }
 
-  const session = decodeWorkspaceSession(sessionCookie.value);
+  const session = await decodeWorkspaceSession(sessionCookie.value);
   if (!session || !session.tenantId || !session.workspaceId || !session.actorId) {
     redirect("/");
   }

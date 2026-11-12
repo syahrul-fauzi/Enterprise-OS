@@ -58,14 +58,37 @@ export class SecurityHardeningService {
     return undefined;
   }
 
-  authorize(request: Request, scope: EosScope): AuthorizationDecision {
+  authorize(request: Request, scope: EosScope, session?: { tenantId: string; actorId: string; sessionId: string; revokedAt?: Date | null }): AuthorizationDecision {
     const expected = this.getExpectedApiKey();
     const input = {
       scope,
       hasApiKey: request.headers.get("x-eos-api-key") !== null,
       hasBearer: request.headers.get("authorization") !== null,
       strictMode: this.getConfigSummary().strictMode,
+      session_tenant_id: session?.tenantId,
+      session_actor_id: session?.actorId,
+      session_id: session?.sessionId,
     };
+
+    // W06-A3-002: Pemeriksaan revoked session (acceptance criteria: revoked session test)
+    if (session?.revokedAt !== null && session?.revokedAt !== undefined) {
+      const result: AuthorizationDecision = {
+        allowed: false,
+        status: 401,
+        reason: "Session has been revoked.",
+        scope,
+      };
+      recordRuntimeInvocation({
+        capabilityId: "security-hardening",
+        operationId: "authorize",
+        sourceRef: "SecurityHardeningService.authorize",
+        success: false,
+        input,
+        result,
+      });
+      return result;
+    }
+
     if (!expected) {
       const result: AuthorizationDecision = {
         allowed: false,

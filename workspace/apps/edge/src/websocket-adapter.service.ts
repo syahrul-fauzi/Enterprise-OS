@@ -546,6 +546,7 @@ export class WebSocketAdapter {
             workId: bufferedEvent.envelope.logicalWorkId,
             deviceId: this.deviceId.id,
             timestamp: new Date(),
+            sessionId: this.currentSessionId ?? bufferedEvent.envelope.sessionId, // Fallback ke envelope.sessionId jika currentSessionId undefined
             actor_id: (async () => {
               // Ambil validatedActorId dari session yang sudah terverifikasi
               const sessionValidation = await validateDeviceSession(
@@ -1556,6 +1557,7 @@ export class WebSocketAdapter {
         work_id: validatedEnvelope.logicalWorkId,
         tenant_id: validatedEnvelope.tenantId,
         actor_id: validatedEnvelope.deviceId,
+        sessionId: this.currentSessionId ?? validatedEnvelope.sessionId, // Fallback ke envelope.sessionId jika currentSessionId undefined
         metadata: { 
           workTenantId: existingWork.tenantId,
           workWorkspaceId: existingWork.workspaceId,
@@ -1847,6 +1849,7 @@ export class WebSocketAdapter {
           work_id: envelope.logicalWorkId,
           tenant_id: "default-tenant",
           actor_id: this.deviceId.id,
+          sessionId: this.currentSessionId ?? envelope.sessionId, // Fallback ke envelope.sessionId jika currentSessionId undefined
           metadata: { 
             capabilityErrors: capabilitiesValidation.errors,
             deviceInfo: audioMetadata.deviceInfo
@@ -1940,6 +1943,7 @@ export class WebSocketAdapter {
         work_id: validatedEnvelope.logicalWorkId,
         tenant_id: validatedEnvelope.tenantId,
         actor_id: validatedEnvelope.deviceId,
+        sessionId: this.currentSessionId ?? validatedEnvelope.sessionId, // Fallback ke envelope.sessionId jika currentSessionId undefined
         metadata: { 
             fallbackProvider: usedFallbackProvider,
             originalError: originalError,

@@ -1,0 +1,19 @@
+{
+  "decision_id": "SMACE-004-MGA-001",
+  "subject": "Approval of SMACE-004 Commercial Transaction Validation",
+  "decision": "APPROVE DEPENDENCY GATE",
+  "scope": "Staging deployment untuk validasi end-to-end transaksi komersial",
+  "approved_at_utc": "2026-11-02T12:00:00.000Z",
+  "approver_role_ref": "role-commercial-approval-001",
+  "evidence_ref": "/root/Enterprise-OS/workspace/staging/smace-004/smace-004-standalone-validation.ts",
+  "validation_results_ref": "/root/Enterprise-OS/workspace/foundation/evidence/verification/SMACE-004-validation-results.json",
+  "compliance_checks": {
+    "frozen_core_compliant": true,
+    "no_new_work_primitives": true,
+    "tenant_isolation_preserved": true,
+    "cost_separation_maintained": true,
+    "auto_promotion_disabled": true,
+    "comfyui_not_semantic_authority": true,
+    "logical_work_id_preserved": true
+  }
+}

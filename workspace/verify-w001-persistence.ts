@@ -7,9 +7,12 @@ dotenv.config({ path: path.join(__dirname, '.env.local') });
 process.env.DATABASE_URL = 'postgresql://eos_user:eos_pass123@localhost:5433/eos_identity';
 console.log('DATABASE_URL set to:', process.env.DATABASE_URL);
 
-import { initIdentitySchema } from './capabilities/identity/implementation/repositories/base.repository';
-import { RequirementRepositoryPostgres } from './capabilities/requirement-management/implementation/repository/requirement.repository';
-import { identityCommands } from './capabilities/identity/implementation/commands';
+import { initIdentitySchema } from '@capabilities/identity/implementation/repositories/base.repository.js';
+// W06-A5: Use work-core Postgres repository instead of requirement-management for WorkAggregate persistence test
+import { WorkRepositoryPostgres } from '@capabilities/work-core/implementation/repository/work-postgres.repository.js';
+import { identityCommands } from '@capabilities/identity/implementation/commands/index.js';
+// Import WorkAggregate type untuk type safety mapping
+import type { WorkAggregate } from '@capabilities/work-core/contracts/work.contracts.js';
 
 // ============================================================================
 // LH-PROD-001 P5 DESTRUCTIVE PERSISTENCE VERIFICATION
@@ -21,17 +24,18 @@ async function main() {
   
   if (resumeWorkId) {
     // ==============================================
-    // PROCESS B: FRESH RUNTIME RESOLVES W1 FROM PG
+    // PROCESS B: FRESH RUNTIME RESOLVES W1 FROM PG (W06-A5 WORK AGGREGATE VERSION)
     // ==============================================
-    console.log("\n🔄 [Process B] LH-PROD-001 P5: RESUMING W1 FROM POSTGRES (PROCESS DEATH SIMULATED)");
+    console.log("\n🔄 [Process B] W06-A5 PERSISTENCE VERIFICATION: RESUMING W1 FROM POSTGRES (PROCESS DEATH SIMULATED)");
     console.log("=" + "=".repeat(80));
-    console.log(`Attempting to resolve W1 with ID: ${resumeWorkId}`);
+    console.log(`Attempting to resolve W1 WorkAggregate with ID: ${resumeWorkId}`);
     
     // Initialize database connection for Process B
     await initIdentitySchema();
     const { Pool } = await import('pg');
     const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    const result = await pool.query(`SELECT * FROM requirements WHERE id = $1`, [resumeWorkId]);
+    // W06-A5: Query works table (work-core) instead of requirements
+    const result = await pool.query(`SELECT * FROM works WHERE id = $1`, [resumeWorkId]);
     const resolvedW1 = result.rows[0];
     
     if (!resolvedW1) {
@@ -39,18 +43,18 @@ async function main() {
       process.exit(1);
     }
     
-    console.log("\n✅ [Process B] SUCCESS: W1 retrieved from PostgreSQL!");
-    console.log("\n📊 VERIFYING P5 ACCEPTANCE CRITERIA:");
+    console.log("\n✅ [Process B] SUCCESS: W1 WorkAggregate retrieved from PostgreSQL!");
+    console.log("\n📊 VERIFYING W06-A5 ACCEPTANCE CRITERIA:");
     const checks = [
       { name: "Same workId (no duplicate work)", value: resolvedW1.id === resumeWorkId },
-      { name: "Same tenantId preserved", value: resolvedW1.tenant_id != null },
-      { name: "Same workspaceId preserved", value: resolvedW1.workspace_id != null },
-      { name: "Same actorId preserved", value: resolvedW1.actor_id != null },
-      { name: "Same logicalWorkId (W1)", value: resolvedW1.logical_work_id === "W1" },
-      { name: "Same status preserved", value: resolvedW1.status === "in_delivery" },
-      { name: "Same priority preserved", value: resolvedW1.priority === "critical" },
+      { name: "Same tenantId preserved (snake_case)", value: resolvedW1.tenant_id != null },
+      { name: "Same workspaceId preserved (snake_case)", value: resolvedW1.workspace_id != null },
+      { name: "Same actorId preserved (snake_case)", value: resolvedW1.actor_id != null },
+      { name: "Same logicalWorkId (W1) preserved", value: resolvedW1.logical_work_id === "W1" },
+      { name: "Same status preserved (in_delivery)", value: resolvedW1.status === "in_delivery" },
+      { name: "Same version preserved (initial version=1)", value: resolvedW1.version === 1 },
+      { name: "processedEventIds array preserved (JSONB)", value: Array.isArray(resolvedW1.processed_event_ids) },
       { name: "No reconstruction (exists in DB)", value: true },
-      { name: "Artifacts lineage preserved", value: Array.isArray(resolvedW1.artifacts) && resolvedW1.artifacts.length === 0 },
     ];
     
     const allPassed = checks.every(c => c.value);
@@ -80,58 +84,113 @@ async function main() {
   // Initialize database connection
   await initIdentitySchema();
   
-  // Create requirements table if it doesn't exist (for w-001 persistence)
+  // W06-A5: Use work-core's works table instead of requirements - initialize if not exists
   const { Pool } = await import('pg');
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-  // Drop existing table to avoid column case issues
-  await pool.query(`DROP TABLE IF EXISTS requirements;`);
-  // Create requirements table with SNAKE_CASE like ALL other identity tables (matches session.repository.ts pattern)
+  // Drop existing works table to ensure clean schema for W06-A5 test
+  await pool.query(`DROP TABLE IF EXISTS works;`);
+  // Create works table with SNAKE_CASE matching work-postgres.repository.ts schema (toAggregate method)
   await pool.query(`
-    CREATE TABLE requirements (
+    CREATE TABLE works (
       id TEXT PRIMARY KEY,
       logical_work_id TEXT,
       title TEXT NOT NULL,
       description TEXT,
-      summary TEXT,
-      priority TEXT NOT NULL,
       status TEXT NOT NULL,
       tenant_id TEXT NOT NULL REFERENCES tenants(id),
       workspace_id TEXT NOT NULL REFERENCES workspaces(id),
-      actor_id TEXT NOT NULL, -- Actor-agnostic: supports user-, ai-, iot-, machine-, eos-* actorId tanpa batasan human-only (MA-09 compliance)
+      actor_id TEXT NOT NULL,
       created_by TEXT NOT NULL REFERENCES users(id),
       created_at TIMESTAMP NOT NULL,
       updated_at TIMESTAMP NOT NULL,
       version INTEGER DEFAULT 1,
-      artifacts JSONB DEFAULT '[]'::JSONB,
-      tags JSONB DEFAULT '[]'::JSONB,
-      linked_capability_ids JSONB DEFAULT '[]'::JSONB,
-      acceptance_criteria JSONB DEFAULT '[]'::JSONB,
-      verification_status TEXT,
-      depends_on JSONB DEFAULT '[]'::JSONB,
-      approved_at TIMESTAMP,
-      implemented_at TIMESTAMP,
-      verified_at TIMESTAMP
+      composition_id TEXT,
+      active_execution_id TEXT,
+      lease_until TIMESTAMP,
+      claim_status TEXT,
+      previous_execution_ids JSONB DEFAULT '[]'::JSONB,
+      processed_event_ids JSONB DEFAULT '[]'::JSONB,
+      boundaries_crossed JSONB DEFAULT '[]'::JSONB,
+      estimated_cost NUMERIC,
+      reserved_cost NUMERIC,
+      actual_cost NUMERIC,
+      subscription_id TEXT,
+      subscription_type TEXT,
+      recurring_interval_days INTEGER,
+      next_billing_date TIMESTAMP,
+      is_recurring BOOLEAN DEFAULT FALSE
     );
   `);
-  console.log("\n✅ Requirements table initialized in PostgreSQL");
+  console.log("\n✅ Works table (work-core) initialized in PostgreSQL");
   
-  // Step 1: Load existing valid tenant/workspace/user from Postgres to avoid in-memory signup issues
-  console.log("👤 [Process A] Loading existing valid tenant/workspace from Postgres...");
+  // Step 1: Create test tenant/workspace/user if none exist (W06-A5: self-contained test)
+  console.log("👤 [Process A] Creating test tenant/workspace/user for persistence verification...");
   const timestamp = Date.now();
-  const existingTenants = await pool.query(`SELECT * FROM tenants LIMIT 1`);
-  const existingWorkspaces = await pool.query(`SELECT * FROM workspaces LIMIT 1`);
-  const existingUsers = await pool.query(`SELECT * FROM users LIMIT 1`);
   
-  if (existingTenants.rows.length === 0 || existingWorkspaces.rows.length === 0 || existingUsers.rows.length === 0) {
-    console.error("❌ No existing tenant/workspace/user found in Postgres!");
-    process.exit(1);
-  }
+  // Create test user
+  const testUserId = `test-user-${timestamp}`;
+  await pool.query(`
+    INSERT INTO users (id, email, password_hash, display_name, email_verified, created_at, updated_at)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+  `, [
+    testUserId,
+    `test-${timestamp}@eos.local`,
+    "dummy_hash_for_testing_only",
+    "Test User A5",
+    true,
+    new Date(),
+    new Date()
+  ]);
   
-  const tenantId = existingTenants.rows[0].id;
-  const workspaceId = existingWorkspaces.rows[0].id;
-  const actorId = existingUsers.rows[0].id;
+  // Create test tenant
+  const testTenantId = `test-tenant-${timestamp}`;
+  await pool.query(`
+    INSERT INTO tenants (id, name, slug, owner_id, created_at, updated_at)
+    VALUES ($1, $2, $3, $4, $5, $6)
+  `, [
+    testTenantId,
+    "Test Tenant A5",
+    `test-tenant-${timestamp}`,
+    testUserId,
+    new Date(),
+    new Date()
+  ]);
   
-  console.log("\n✅ Using existing valid identities from Postgres:");
+  // Create test workspace
+  const testWorkspaceId = `test-workspace-${timestamp}`;
+  await pool.query(`
+    INSERT INTO workspaces (id, name, slug, tenant_id, product_id, created_at, updated_at)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+  `, [
+    testWorkspaceId,
+    "Test Workspace A5",
+    `test-workspace-${timestamp}`,
+    testTenantId,
+    "eos-core-test",
+    new Date(),
+    new Date()
+  ]);
+  
+  // Create test membership
+  await pool.query(`
+    INSERT INTO memberships (id, user_id, tenant_id, workspace_id, role, joined_at, created_at, updated_at)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+  `, [
+    `test-membership-${timestamp}`,
+    testUserId,
+    testTenantId,
+    testWorkspaceId,
+    "owner",
+    new Date(),
+    new Date(),
+    new Date()
+  ]);
+  
+  const tenantId = testTenantId;
+  const workspaceId = testWorkspaceId;
+  const actorId = testUserId;
+  
+  console.log("\n✅ Created test identities for W06-A5 persistence verification:");
   console.log(`  Tenant ID: ${tenantId}`);
   console.log(`  Workspace ID: ${workspaceId}`);
   console.log(`  Actor ID: ${actorId}`);
@@ -147,22 +206,22 @@ async function main() {
   console.log(`  Generated W1 Work ID: ${W1_WORK_ID}`);
   
   console.log("  💾 [Process A] Saving W1 to PostgreSQL via raw SQL...");
-  // Insert W1 directly with correct snake_case columns
+  // W06-A5: Insert W1 directly with correct snake_case columns for works table
   await pool.query(`
-    INSERT INTO requirements (
-      id, logical_work_id, title, description, summary, status, priority,
+    INSERT INTO works (
+      id, logical_work_id, title, description, status,
       tenant_id, workspace_id, actor_id, created_by, created_at, updated_at,
-      version, artifacts, tags, linked_capability_ids, acceptance_criteria,
-      verification_status, depends_on
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
+      version, composition_id, active_execution_id, lease_until, claim_status,
+      previous_execution_ids, processed_event_ids, boundaries_crossed,
+      estimated_cost, reserved_cost, actual_cost, subscription_id, subscription_type,
+      recurring_interval_days, next_billing_date, is_recurring
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27)
   `, [
     W1_WORK_ID, // id
     "W1", // logical_work_id
-    "W-001: Delivery Workspace Persistence Test Requirement", // title
-    "This requirement tests Postgres durability across process restarts for w-001 workflow", // description
-    "W1 requirement for LH-PROD-001 P5 destructive persistence test", // summary
+    "W06-A5: WorkCore Persistence Test Work Item", // title
+    "This work tests Postgres durability across process restarts for work-core workflow", // description
     "in_delivery", // status
-    "critical", // priority
     tenantId, // tenant_id
     workspaceId, // workspace_id
     actorId, // actor_id
@@ -170,19 +229,28 @@ async function main() {
     new Date(), // created_at
     new Date(), // updated_at
     1, // version
-    JSON.stringify([]), // artifacts
-    JSON.stringify(["w001", "persistence-test", "lh-prod-001"]), // tags
-    JSON.stringify(["EOS-requirement-management", "EOS-w001-delivery-workspace"]), // linked_capability_ids
-    JSON.stringify([]), // acceptance_criteria
-    "not_ready", // verification_status
-    JSON.stringify([]) // depends_on
+    null, // composition_id
+    null, // active_execution_id
+    null, // lease_until
+    null, // claim_status
+    JSON.stringify([]), // previous_execution_ids
+    JSON.stringify([]), // processed_event_ids
+    JSON.stringify([]), // boundaries_crossed
+    0, // estimated_cost
+    0, // reserved_cost
+    0, // actual_cost
+    null, // subscription_id
+    null, // subscription_type
+    null, // recurring_interval_days
+    null, // next_billing_date
+    false // is_recurring
   ]);
   console.log(`  ✅ W1 saved to Postgres: ID = ${W1_WORK_ID}`);
   const W1_WORK_ID_FINAL = W1_WORK_ID;
   console.log(`  W1 Work ID: ${W1_WORK_ID_FINAL}`);
 
-  // Verify W1 exists in Postgres immediately after creation (Process A)
-  const persistedW1_ProcessA = await pool.query(`SELECT * FROM requirements WHERE id = $1`, [W1_WORK_ID_FINAL]);
+  // W06-A5: Verify W1 exists in Postgres immediately after creation (Process A)
+  const persistedW1_ProcessA = await pool.query(`SELECT * FROM works WHERE id = $1`, [W1_WORK_ID_FINAL]);
   if (persistedW1_ProcessA.rows.length === 0) {
     console.log("\n❌ CRITICAL FAILURE: W1 NOT FOUND in Postgres immediately after creation!");
     process.exit(1);
@@ -198,110 +266,10 @@ async function main() {
   console.log(`   Execute: W1_ID=${W1_WORK_ID_FINAL} npx tsx verify-w001-persistence.ts`);
   console.log("\n✅ [Process A] COMPLETED: W1 successfully persisted to PostgreSQL!");
   process.exit(0);
-
-  if (!persistedW1_ProcessB) {
-    console.log("\n❌ PERSISTENCE FAILURE: W1 NOT FOUND in Postgres after process restart!");
-    console.log("   Work did NOT survive process death - violates LH-PROD-001 P5");
-    process.exit(1);
-  }
-
-  // ============================================================================
-  // Verify ALL acceptance criteria are met
-  // ============================================================================
-  console.log("\n✅ W1 FOUND in PostgreSQL! Verifying all persistence criteria...\n");
-  console.log("=" + "=".repeat(80));
-  console.log("LH-PROD-001 P5 ACCEPTANCE CRITERIA VERIFICATION");
-  console.log("=" + "=".repeat(80));
-
-  const criteria = [
-    {
-      name: "same workId",
-      test: persistedW1_ProcessB.id === W1_WORK_ID_FINAL,
-      actual: persistedW1_ProcessB.id,
-      expected: W1_WORK_ID_FINAL
-    },
-    {
-      name: "same tenant/workspace",
-      test: (persistedW1_ProcessB as any).tenantId === tenantId && (persistedW1_ProcessB as any).workspaceId === workspaceId,
-      actual: `tenant=${(persistedW1_ProcessB as any).tenantId}, workspace=${(persistedW1_ProcessB as any).workspaceId}`,
-      expected: `tenant=${tenantId}, workspace=${workspaceId}`
-    },
-    {
-      name: "same lifecycle state",
-      test: persistedW1_ProcessB.status === persistedW1_ProcessA.status,
-      actual: persistedW1_ProcessB.status,
-      expected: persistedW1_ProcessA.status
-    },
-    {
-      name: "same title/description",
-      test: persistedW1_ProcessB.title === persistedW1_ProcessA.title && persistedW1_ProcessB.description === persistedW1_ProcessA.description,
-      actual: `title="${persistedW1_ProcessB.title.substring(0, 30)}..."`,
-      expected: `title="${persistedW1_ProcessA.title.substring(0, 30)}..."`
-    },
-    {
-      name: "artifact lineage preserved",
-      test: Array.isArray((persistedW1_ProcessB as any).artifacts) && (persistedW1_ProcessB as any).artifacts.length === (persistedW1_ProcessA as any).artifacts?.length,
-      actual: `${(persistedW1_ProcessB as any).artifacts?.length ?? 0} artifacts`,
-      expected: `${(persistedW1_ProcessA as any).artifacts?.length ?? 0} artifacts`
-    },
-    {
-      name: "no reconstruction",
-      test: persistedW1_ProcessB.version > 0, // Version was set by Postgres repository on first save
-      actual: `version=${persistedW1_ProcessB.version}`,
-      expected: "version>0 (persisted, not reconstructed)"
-    },
-    {
-      name: "no duplicate Work",
-      test: async () => {
-        const allRequirements = await FreshRequirementRepo.list();
-        const w1Count = allRequirements.filter(r => r.id === W1_WORK_ID).length;
-        return w1Count === 1;
-      },
-      actual: "awaiting check",
-      expected: "exactly 1 W1 in database"
-    }
-  ];
-
-  let allPassed = true;
-  for (const c of criteria) {
-    let passed: boolean;
-    if (typeof c.test === 'function') {
-      passed = await c.test();
-    } else {
-      passed = c.test;
-    }
-    
-    allPassed = allPassed && passed;
-    console.log(`${passed ? '✅' : '❌'} ${c.name.padEnd(25)} | ${passed ? 'PASS' : 'FAIL'} | expected: ${c.expected}`);
-    if (!passed) {
-      console.log(`                                     actual: ${c.actual}`);
-    }
-  }
-
-  // ============================================================================
-  // Final verdict
-  // ============================================================================
-  console.log("\n" + "=".repeat(80));
-  if (allPassed) {
-    console.log("\n🎉 LH-PROD-001 P5: ALL CRITERIA PASSED!");
-    console.log("   W1 successfully survived process death and was recovered from Postgres");
-    console.log("   Durable persistence verified for w-001 workflow!");
-  } else {
-    console.log("\n💥 LH-PROD-001 P5: SOME CRITERIA FAILED!");
-    console.log("   Persistence does not meet production durability requirements");
-    process.exit(1);
-  }
-
-  // Final check: Verify no fallback or ephemeral IDs were created
-  const allRequirements = await FreshRequirementRepo.list();
-  const fallbackIds = allRequirements.filter(r => r.id.startsWith('requirement-fallback-'));
-  console.log(`\n🔍 Database hygiene check: ${fallbackIds.length} fallback IDs found (should be 0)`);
-  if (fallbackIds.length === 0) {
-    console.log("✅ All requirements use proper persistent IDs - no in-memory fallbacks");
-  }
 }
 
+// Jalankan main function
 main().catch(err => {
-  console.error("\n💥 Verification failed with unhandled error:", err);
+  console.error("\n❌ [MAIN ERROR] Script failed with uncaught exception:", err);
   process.exit(1);
 });

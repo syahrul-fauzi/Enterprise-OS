@@ -9,7 +9,7 @@ import {
   type ExecutionBoundary, 
   type EvidenceBoundary, 
   type PresentationBoundary 
-} from "@capabilities/work-core/contracts/work.contracts.js";
+} from "../../../work-core/contracts/work.contracts.js";
 
 // Lazy load repository untuk menghindari module cycle dan mematuhi 6-boundary compliance
 async function getTenantRepositoryLazy() {

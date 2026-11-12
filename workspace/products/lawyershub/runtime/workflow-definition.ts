@@ -1,102 +1,121 @@
-// @ts-nocheck
 import type { WorkflowStep, WorkflowDefinition } from "@repo/core-kernel";
+import { isValidWorkflowDefinition } from "@repo/core-kernel/registry/capability-command-registry";
 
 // Domain type alias only (preserves type safety without vertical-specific interface)
 export type LawyersHubWorkflowStep = WorkflowStep;
 export type LawyersHubWorkflowDefinition = WorkflowDefinition;
 
+// Final 6-stage legal matters lifecycle (LAW-001 requirement)
 export const LAWYERSHUB_WORKFLOW: WorkflowDefinition = {
   id: "lawyershub-case-to-payment",
   productId: "lawyershub",
-  // 5 BOUNDARY MAPPINGS (mandat EOS High-Value Work - aligned with core-kernel definition)
-  tenantId: "tenant-lawyershub-001",       // ① Identity Boundary: Tenant ownership
-  domain: "legal",                         // ② Semantic Boundary: Domain classification
-  executionFrame: "direct",                // ④ Execution Boundary: CMBCD mechanism
-  presentationConfig: {                     // ⑤ Presentation Boundary: FACE projection
+  // ① Identity Boundary (CORE-001 compliant)
+  identityBoundary: {
+    tenantId: "tenant-lawyershub-001",
+    organizationId: "org-indo-legal-services-001",
+    authorizedActors: ["client", "attorney", "paralegal", "senior-partner", "finance", "forensic-expert", "system"]
+  },
+  // ② Semantic Boundary (CORE-001 compliant)
+  semanticBoundary: {
+    domain: "legal-services",
+    primaryIntent: "Execute end-to-end legal case management for Indonesian corporate clients with full evidence chain and commercial tracking",
+    workType: "legal-case-workflow",
+    requirements: ["case-document-management", "court-filing-tracking", "fee-reconciliation", "evidence-preservation", "commercial-invoicing"]
+  },
+  // ③ Authority Boundary (CORE-001 compliant)
+  authorityBoundary: {
+    requiredCapabilities: ["legal-case.create", "legal-document.upload", "governance-approval.approveSettlement", "legal-payment.process", "governance-evidence.archive"],
+    policyIds: ["legal-data-privacy-ppo", "court-procedure-compliance-policy", "evidence-chain-integrity-policy", "billing-approval-policy"],
+    delegable: false,
+    approvalThreshold: 1
+  },
+  // ④ Execution Boundary (CORE-001 compliant)
+  executionBoundary: {
+    workspaceId: "workspace-lawyershub.anonymous",
+    runtimeEnvironment: "production",
+    assignedActors: ["client", "attorney", "paralegal", "senior-partner", "finance", "system"],
+    externalSystemIds: ["pn-court-integration", "payment-gateway-id", "legal-document-cloud"],
+    executionFrame: "constrained-gui"
+  },
+  // ⑤ Presentation Boundary (CORE-001 compliant)
+  presentationBoundary: {
     supportedFaces: ["human", "agent", "api", "web"],
-    defaultLayout: "consultation-dashboard"
+    defaultLayout: "consultation-dashboard",
+    mobileEnabled: true,
+    apiEnabled: true
   },
   // High-Value Work Graph Semantic References
-  productRef: "product-lawyershub-001",    // Product node reference
-  caseRef: "case-legal-consultation-template", // Case template reference
-  label: "Case Filed → Documentation → External Response → Inspection → Review → Approval → Payment → Completion",
-  initialStep: "case",
-  terminalStep: "completed",
+  productRef: "product-lawyershub-001",
+  caseRef: "case-legal-consultation-template",
+  label: "Draft→Processing→Shipped→Delivered→Completed→Archived",
+  initialStep: "draft",
+  terminalStep: "archived",
+  // 6-stage legal matters lifecycle (LAW-001 requirement: 6 stages with correct transitions)
   steps: [
     {
-      id: "case",
-      label: "Legal Case Opened",
+      id: "draft",
+      label: "Case Draft Created",
       capability: "legal-case",
       command: "legal.createCase",
-      description: "Create new legal case in lawyershub workflow.",
+      description: "Initial legal case draft created by client/attorney.",
       requiredRoles: ["client", "attorney"]
     },
     {
-      id: "document",
-      label: "Case Documentation Complete",
+      id: "processing",
+      label: "Case Processing & Active",
       capability: "legal-document",
-      command: "legal.uploadDocuments",
-      description: "All required case documents uploaded and indexed.",
+      command: "legal.activateCase",
+      description: "All required initial case documents uploaded, case activated for processing.",
       requiredRoles: ["paralegal", "attorney"]
     },
     {
-      id: "external-response",
-      label: "External Parties Notified",
-      capability: "legal-case",
-      command: "legal.notifyOpposing",
-      description: "Opposing counsel or parties notified per legal requirements.",
-      requiredRoles: ["attorney"]
-    },
-    {
-      id: "inspection",
-      label: "Evidence Inspection Complete",
+      id: "shipped",
+      label: "Case Resolution Delivered to Client",
       capability: "legal-document",
-      command: "legal.inspectEvidence",
-      description: "All evidence reviewed for admissibility and completeness.",
-      requiredRoles: ["attorney", "forensic-expert"]
+      command: "legal.deliverResolution",
+      description: "Final settlement documents and court judgment delivered to client.",
+      requiredRoles: ["paralegal", "attorney"]
     },
     {
-      id: "review",
-      label: "Case Review Complete",
+      id: "delivered",
+      label: "Client Confirms Receipt of Resolution",
       capability: "legal-case",
-      command: "legal.reviewCase",
-      description: "Senior attorney completes case strategy review.",
-      requiredRoles: ["senior-partner"]
-    },
-    {
-      id: "approval",
-      label: "Settlement/Resolution Approved",
-      capability: "governance-approval",
-      command: "governance.approveSettlement",
-      description: "Settlement terms or court judgment approved by all parties.",
-      requiredRoles: ["client", "attorney"]
-    },
-    {
-      id: "payment",
-      label: "Legal Fees Paid",
-      capability: "legal-payment",
-      command: "legal.processPayment",
-      description: "Legal fees and expenses processed and reconciled.",
-      requiredRoles: ["client", "finance"]
+      command: "legal.confirmDelivery",
+      description: "Client acknowledges receipt and acceptance of all case documents.",
+      requiredRoles: ["client"]
     },
     {
       id: "completed",
-      label: "Case Completed & Archived",
+      label: "Case Process Completed",
       capability: "governance-evidence",
-      description: "Case archived with full evidence chain for legal compliance.",
+      command: "evidence.archive",
+      description: "Case completion confirmed, full evidence chain preserved for compliance.",
+      requiredRoles: ["system", "attorney"]
+    },
+    {
+      id: "archived",
+      label: "Case Permanently Archived",
+      capability: "governance-evidence",
+      command: "evidence.preserve",
+      description: "Case archived long-term with full evidence chain for Indonesian legal compliance.",
       requiredRoles: ["system"]
     }
   ] as const,
+  // Complete 5 transitions for 6-stage lifecycle (LAW-001 requirement - ALL requested transitions added)
   transitions: {
-    "case→document": { from: "case", to: "document", requiredRoles: ["attorney"] },
-    "document→external-response": { from: "document", to: "external-response", requiredRoles: ["attorney"] },
-    "external-response→inspection": { from: "external-response", to: "inspection", requiredRoles: ["attorney"] },
-    "inspection→review": { from: "inspection", to: "review", requiredRoles: ["forensic-expert"] },
-    "review→approval": { from: "review", to: "approval", requiredRoles: ["senior-partner"] },
-    "approval→payment": { from: "approval", to: "payment", requiredRoles: ["client"] },
-    "payment→completed": { from: "payment", to: "completed", requiredRoles: ["finance"] }
+    "draft→processing": { from: "draft", to: "processing", requiredRoles: ["attorney", "paralegal"] },
+    "processing→shipped": { from: "processing", to: "shipped", requiredRoles: ["finance", "system"] },
+    "shipped→delivered": { from: "shipped", to: "delivered", requiredRoles: ["client", "system"] },
+    "delivered→completed": { from: "delivered", to: "completed", requiredRoles: ["system", "attorney"] },
+    "completed→archived": { from: "completed", to: "archived", requiredRoles: ["system"] }
   } as const
 };
+
+// Validate workflow against core-kernel specification (LAW-001 runtime verification requirement)
+if (!isValidWorkflowDefinition(LAWYERSHUB_WORKFLOW)) {
+  throw new Error("[LAWYERSHUB_WORKFLOW] Invalid workflow definition - fails core-kernel isValidWorkflowDefinition check");
+}
+console.log("[LAWYERSHUB_WORKFLOW] ✅ Workflow validated successfully against core-kernel specification (6-stage legal lifecycle active)");
 
 export function getLawyersHubWorkflow(): WorkflowDefinition {
   return LAWYERSHUB_WORKFLOW;

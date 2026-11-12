@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 import { PostgresRepository } from "../../../work-core/index.js";
-import { DatabaseMigrationManager } from "../../../shared/implementation/database/migrations/migration.manager.js";
+import { MigrationManager } from "../../../shared/implementation/database/migrations/migration.manager.js";
 import { isBuildPhase, updateConnectionPoolMetrics } from "../../../shared/implementation/database/health.check.js";
 import {
   ComplianceCaseId,
@@ -37,7 +37,7 @@ const readPool = new Pool({
 let migrationsInitialized = false;
 async function initializeDatabase() {
   if (migrationsInitialized) return;
-  const result = await DatabaseMigrationManager.runMigrations(writePool);
+  const result = await MigrationManager.runMigrations(writePool);
   if (result.errors.length > 0) {
     console.error("[ComplianceCaseRepositoryPostgres] Database initialization failed:", result.errors);
     throw new Error(`Database migration failed: ${result.errors.join(", ")}`);

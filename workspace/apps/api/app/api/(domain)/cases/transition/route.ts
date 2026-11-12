@@ -87,27 +87,27 @@ export async function POST(request: Request) {
       // AUDIT-001-009: Add legal-case.submit command support (draft→submitted)
       result = await capabilityRegistry.invoke("legal-case", "legal-case.submit", {
         caseId,
-        sessionId,
+        sessionId: session.sessionId,
         requiredSigners: body.requiredSigners || ["admin@lawyershub.id"]
       });
     } else if (transition === "review") {
       // AUDIT-001-009: Add legal-case.review command support (submitted→reviewed)
       result = await capabilityRegistry.invoke("legal-case", "legal-case.review", {
         caseId,
-        sessionId
+        sessionId: session.sessionId
       });
     } else if (transition === "approve") {
       // AUDIT-001-009: Add legal-case.approve command support (reviewed→approved)
       result = await capabilityRegistry.invoke("legal-case", "legal-case.approve", {
         caseId,
-        sessionId
+        sessionId: session.sessionId
       });
     } else if (transition === "mark-under-review") {
       // AUDIT-001-009: Add mark-under-review command to trigger payment process
       const paymentAmount = body.paymentAmount || 500000; // Default to IDR 500k jika tidak disediakan
       result = await capabilityRegistry.invoke("legal-case", "legal-case.mark-under-review", {
         caseId,
-        sessionId,
+        sessionId: session.sessionId,
         paymentAmount
       });
     } else {

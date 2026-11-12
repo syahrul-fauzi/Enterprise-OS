@@ -27,7 +27,11 @@
       "@repo/capabilities-work-core": ["../work-core/contracts/work.contracts.ts"],
       "@repo/capabilities-work-core/*": ["../work-core/*"],
       "@repo/capabilities-identity": ["../identity/implementation/index.ts"],
-      "@repo/capabilities-identity/*": ["../identity/*"]
+      "@repo/capabilities-identity/*": ["../identity/*"],
+      "@repo/capabilities-agent-orchestration": ["../agent-orchestration/implementation/services/agent-orchestration.service.ts"],
+      "@repo/capabilities-agent-orchestration/*": ["../agent-orchestration/*"],
+      "@repo/core-kernel": ["../../packages/core/kernel/implementation/index.ts"],
+      "@repo/core-kernel/*": ["../../packages/core/kernel/*"]
     }
   },
   "references": [
@@ -35,7 +39,8 @@
     { "path": "../../packages/core/runtime/tsconfig.json" },
     { "path": "../shared/tsconfig.json" },
     { "path": "../work-core/tsconfig.json" },
-    { "path": "../identity/tsconfig.json" }
+    { "path": "../identity/tsconfig.json" },
+    { "path": "../agent-orchestration/tsconfig.json" }
   ],
   "include": ["implementation/**/*.ts", "tests/**/*.ts"],
   "exclude": ["dist", "node_modules", "**/*.d.ts"]

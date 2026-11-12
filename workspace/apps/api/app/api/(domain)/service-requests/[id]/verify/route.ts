@@ -17,7 +17,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
       return NextResponse.json({ error: "No active session" }, { status: 401 });
     }
 
-    const session = decodeWorkspaceSession(sessionCookie.value);
+    const session = await decodeWorkspaceSession(sessionCookie.value);
     if (!session || !session.tenantId || !session.workspaceId || !session.actorId || !session.sessionId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }

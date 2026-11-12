@@ -140,6 +140,62 @@ export class EvidenceRegistryService {
     return result;
   }
 
+  async recordEvidence(input: {
+    workId: string;
+    actorId: string;
+    tenantId: string;
+    workspaceId?: string;
+    type: string;
+    payload: Record<string, unknown>;
+    timestamp: string;
+  }): Promise<{ id: string; createdAt: string }> {
+    const result = await evidenceRegistryQueries["evidence.record"].execute(input);
+    recordRuntimeInvocation({
+      capabilityId: "evidence-registry",
+      operationId: "record-evidence",
+      sourceRef: "EvidenceRegistryService.recordEvidence",
+      success: true,
+      input,
+      result,
+    });
+    return result;
+  }
+
+  async findOne(input: {
+    type: string;
+    [key: string]: string | number | boolean;
+  }): Promise<any | null> {
+    // SMACE-007: Implementasi findOne menggunakan searchEvidenceRegistry untuk kompatibilitas dengan kode yang sudah ada
+    const searchResult = this.searchEvidenceRegistry({
+      q: input.type,
+      kind: "record",
+      limit: 1,
+      offset: 0
+    });
+    
+    if (searchResult.items.length === 0) return null;
+    
+    // Filter untuk pencocokan properti nested (misal 'data.providerUsageReceiptId')
+    const item = searchResult.items[0];
+    let matched = true;
+    for (const key in input) {
+      if (key === 'type') continue;
+      
+      // Handle nested keys seperti 'data.providerUsageReceiptId'
+      const keys = key.split('.');
+      let value: any = item;
+      for (const k of keys) {
+        value = value?.[k];
+      }
+      if (value !== input[key]) {
+        matched = false;
+        break;
+      }
+    }
+    
+    return matched ? item : null;
+  }
+
   async calculateL1CohortMetrics(input: L1CohortMetricsInput): Promise<L1CohortMetricsOutput> {
     // Search for all works in this cohort using tag filter
     const cohortEvidence = evidenceRegistryQueries["evidence.search"].execute({

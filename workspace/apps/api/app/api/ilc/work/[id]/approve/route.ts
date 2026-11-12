@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { capabilityRegistry } from "@repo/core-kernel/src/registry/capability-command-registry";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts";
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession
-} from "@repo/core-kernel/session/workspace-session";
+} from "@repo/core-kernel";
 
 // Pure adapter pattern compliance - hanya route adapter, tidak ada business logic di route
 export async function POST(
@@ -30,7 +30,7 @@ export async function POST(
     return NextResponse.json({ error: "Invalid session cookie" }, { status: 401 });
   }
   
-  const session = decodeWorkspaceSession(sessionValue);
+  const session = await decodeWorkspaceSession(sessionValue);
   if (!session || !session.tenantId || !session.workspaceId || !session.actorId) {
     return NextResponse.json({ error: "Invalid session" }, { status: 401 });
   }

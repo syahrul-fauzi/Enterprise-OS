@@ -26,7 +26,7 @@ export {
   newWorkspaceId, 
   createWorkId, 
   newWorkId 
-} from "@capabilities/work-core/contracts/work.contracts";
+} from "../../contracts/work.contracts.js";
 
 // Export types for autonomy boundary checks
 export type { AutonomyBoundaryCheck, AutonomyBoundaryResult, DecisionLogEntry, ConsultationStageEvidence } from "./boundary-checks.types.js";
@@ -39,9 +39,9 @@ export { calculateExecutionFrame } from "./cmbdc.utils.js";
 export { safeRecordEvidence } from "./evidence.utils.js";
 export { safeNotifyWorkspaceListeners } from "./realtime.utils.js";
 export { buildWorkFaceProjection } from "./face-projection.utils.js";
-export { validateAllBoundaries, validateIdentityBoundary, validateAuthorityBoundary, validateNoCircularDependencies } from "@capabilities/work-core/contracts/work.contracts";
+export { validateAllBoundaries, validateIdentityBoundary, validateAuthorityBoundary, validateNoCircularDependencies, validateBoundaryAccess } from "../../contracts/work.contracts.js";
 export { runArchitectureFitnessChecks } from "./architecture-fitness-checks.js";
-export type { FitnessCheckResult } from "@capabilities/work-core/contracts/work.contracts";
+export type { FitnessCheckResult } from "../../contracts/work.contracts.js";
 
 // Export RuleBasedProvider dan IntentUnderstanding utilities untuk AI fallback
 // Gate A compliance: Reuse provider yang sudah ada, semua import dari work-core

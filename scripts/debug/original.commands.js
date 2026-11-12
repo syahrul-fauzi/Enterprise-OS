@@ -402,8 +402,11 @@ exports.listCasesByWorkspace = {
             // Filter by search query if provided
             if (parsed.query) {
                 const query = parsed.query.toLowerCase();
-                filteredCases = filteredCases.filter(c => { var _a; var _b; return c.title.toLowerCase().includes(query) ||
-                    ((_b = (_a = c.description) === null || _a === void 0 ? void 0 : _a.toLowerCase().includes(query)) !== null && _b !== void 0 ? _b : false); });
+                filteredCases = filteredCases.filter(c => {
+                    var _a, _b;
+                    return c.title.toLowerCase().includes(query) ||
+                        ((_b = (_a = c.description) === null || _a === void 0 ? void 0 : _a.toLowerCase().includes(query)) !== null && _b !== void 0 ? _b : false);
+                });
             }
             // Apply pagination
             const paginatedCases = filteredCases.slice(offset, offset + limit);

@@ -25,7 +25,7 @@ async function resolveSessionOrEnter() {
 
   let session;
   try {
-    session = decodeWorkspaceSession(sessionCookie.value);
+    session = await decodeWorkspaceSession(sessionCookie.value);
   } catch {
     // Invalid session, redirect to login
     redirect("/login");

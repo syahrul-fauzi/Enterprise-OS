@@ -148,8 +148,44 @@ export const searchEvidenceRegistry = {
   },
 } as const;
 
+export const recordEvidence = {
+  id: "evidence.record",
+  async execute(input: {
+    workId: string;
+    actorId: string;
+    tenantId: string;
+    workspaceId?: string;
+    type: string;
+    payload: Record<string, unknown>;
+    timestamp: string;
+    meta_checksum?: string;
+  }): Promise<{ id: string; createdAt: string; ok: boolean }> {
+    const evidenceContent = JSON.stringify(input.payload);
+    const result = await evidenceRepository.saveEvidence({
+      workId: input.workId,
+      actorId: input.actorId,
+      tenantId: input.tenantId,
+      workspaceId: input.workspaceId,
+      content: evidenceContent,
+      recordType: input.type,
+      metadata: input.payload,
+      version: 1,
+      name: `evidence-${input.type}-${Date.now()}`,
+      kind: "record",
+      scope: "operational",
+      path: `/evidence/${input.workId}/${input.type}-${Date.now()}.json`,
+      meta_checksum: input.meta_checksum
+    });
+    if (!result || !result.id) {
+      throw new Error(`[evidence-registry] saveEvidence failed: no result returned`);
+    }
+    return { id: result.id, createdAt: result.createdAt, ok: true };
+  },
+} as const;
+
 export const evidenceRegistryQueries = {
   [getEvidenceRecord.id]: getEvidenceRecord,
   [searchEvidenceRegistry.id]: searchEvidenceRegistry,
   [listEvidenceByWorkId.id]: listEvidenceByWorkId,
+  [recordEvidence.id]: recordEvidence,
 } as const;

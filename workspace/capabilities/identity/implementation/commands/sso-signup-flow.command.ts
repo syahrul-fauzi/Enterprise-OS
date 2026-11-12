@@ -30,7 +30,7 @@ import {
 } from "../repositories/index.js";
 import { oidcLoginFlowCommand } from "./oidc-login-flow.command.js";
 import * as jose from "jose";
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "../../../work-core/contracts/work.contracts.js";
 
 const DEFAULT_SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 

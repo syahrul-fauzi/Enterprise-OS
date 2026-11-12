@@ -24,10 +24,11 @@
     "strict": true,
     "target": "ES2022",
     "ignoreDeprecations": "5.0",
-    "emitDeclarationOnly": false
+    "emitDeclarationOnly": false,
+    "noEmit": false
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.d.ts"],
+  "exclude": ["node_modules", "dist", "build"],
   "references": [
     { "path": "../runtime/tsconfig.json" }
   ]

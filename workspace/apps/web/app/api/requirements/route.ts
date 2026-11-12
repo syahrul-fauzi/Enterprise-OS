@@ -23,7 +23,7 @@ export async function POST(request: Request) {
       sessionCookie = { name: WORKSPACE_SESSION_COOKIE, value: encodedSession };
     }
 
-    const session = decodeWorkspaceSession(sessionCookie.value);
+    const session = await decodeWorkspaceSession(sessionCookie.value);
     if (!session || !session.tenantId || !session.workspaceId || !session.actorId || !session.sessionId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }

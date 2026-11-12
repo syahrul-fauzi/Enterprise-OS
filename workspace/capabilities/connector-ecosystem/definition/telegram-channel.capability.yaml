@@ -1,0 +1,33 @@
+id: channel-telegram
+name: Telegram Channel Adapter
+version: 1.0.0
+manifest_version: 1.0.0
+kind: channel-pack
+presentation:
+  component: TelegramChannelAdapter
+implementation:
+  entry: ./implementation/channels/telegram/telegram.adapter.ts
+provides:
+  - channel.telegram.receive
+  - channel.telegram.send
+requires:
+  - identity.bind-external
+  - message.queue
+actor_access:
+  grants_required:
+    - channel.telegram.receive
+policies:
+  pre_execution:
+    - validate-webhook-signature
+    - enforce-identity-verification
+  post_execution:
+    - log-channel-interaction
+    - verify-message-delivery
+outputs:
+  - channel-message
+  - delivery-confirmation
+metering:
+  billable_unit: message-processed
+publisher:
+  name: EOS Core Team
+  url: https://enterpriseos.io

@@ -8,18 +8,32 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@repo/*": ["./packages/*"],
+      "@repo/core-kernel/*": ["./packages/core/kernel/src/*"],
+      "@repo/core-kernel": ["./packages/core/kernel/src/index.ts"],
       "@repo/contracts-core": ["./packages/contracts-core/dist/index.js"],
-      "@capabilities/*": ["./capabilities/*"]
+      "@capabilities/*": ["./capabilities/*"],
+      "@repo/capabilities/*": ["./capabilities/*"],
+      "@smace/*": ["./products/smace/*"],
+      "@smace/contracts": ["./products/smace/contracts/*"],
+      "@smace/runtime": ["./products/smace/runtime/*"],
+      "@smace/providers": ["./products/smace/providers/*"],
+      "@smace/quality": ["./products/smace/quality/*"],
+      "@smace/provenance": ["./products/smace/provenance/*"],
+      "@smace/commercial": ["./products/smace/commercial/*"],
+      "@smace/delivery": ["./products/smace/delivery/*"]
     },
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noUncheckedIndexedAccess": true,
     "declaration": true,
     "declarationMap": true,
-    "incremental": true
+    "incremental": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
   "exclude": ["node_modules", "dist", "out"]
 }

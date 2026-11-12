@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
-import { encodeWorkspaceSession, createAnonymousWorkspaceSession, WORKSPACE_SESSION_COOKIE, validateBoundaryAccess, decodeWorkspaceSession } from "@repo/capabilities-work-core/contracts/work.contracts.js";
+import { encodeWorkspaceSession, createAnonymousWorkspaceSession, WORKSPACE_SESSION_COOKIE, decodeWorkspaceSession } from "@repo/core-kernel";
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -10,7 +11,7 @@ export async function GET(request: Request) {
   }
 
   // Gunakan canonical session decoder untuk validasi request yang masuk
-  const sessionContext = await decodeWorkspaceSession(request);
+  const sessionContext = await decodeWorkspaceSession(request.headers.get("Cookie")?.split("; ").find(c => c.startsWith(`${WORKSPACE_SESSION_COOKIE}=`))?.split("=")[1] || "");
   
   // Hapus cookie lama
   cookies().delete(WORKSPACE_SESSION_COOKIE);

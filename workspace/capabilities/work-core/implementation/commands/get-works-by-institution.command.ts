@@ -32,10 +32,40 @@ async function getWorkRepositoryLazy() {
 export const getWorksByInstitutionCommand: CapabilityCommand = {
   kind: "command",
   name: "work.getWorksByInstitution",
+  capability: "work-core",
   version: "1.1.0", // Update version untuk canonical change
-  async execute(input: unknown) {
-    const parsed = GetWorksByInstitutionInputSchema.parse(input);
-    const { institutionId, tenantId, workspaceId, actorId } = parsed;
+  async execute(input: unknown, context: any) {
+    // W06-A2 Compliance: Extract trusted identity ONLY from ExecutionContext, never input!
+    const trustedActorId = context.actor_id;
+    const trustedTenantId = context.tenant_id;
+    const sessionId = context.session_id;
+    const workspaceId = context.workspace_id;
+
+    if (!trustedActorId || !trustedTenantId || !sessionId || !workspaceId) {
+      const safeRecordEvidence = (await import("@capabilities/work-core/utils/evidence.utils.js")).safeRecordEvidence;
+      await safeRecordEvidence({
+        workspace_id: workspaceId || "unknown",
+        capability: "work-core",
+        command: "work.getWorksByInstitution",
+        work_id: "unknown",
+        tenant_id: trustedTenantId || "unknown",
+        actor_id: trustedActorId || "unknown",
+        timestamp: new Date().toISOString(),
+        sessionId: sessionId || "unknown",
+        decision_id: "W06-A2-AUDIT-DENY-001"
+      });
+      throw new Error("unauthorized: Missing authenticated execution context");
+    }
+
+    // Override input context with trusted values to prevent spoofing
+    const parsed = GetWorksByInstitutionInputSchema.parse({
+      ...input,
+      tenantId: trustedTenantId,
+      actorId: trustedActorId,
+      sessionId,
+      workspaceId
+    });
+    const { institutionId } = parsed;
 
     // 0. Basic boundary access validation (required for fitness checks)
     if (!validateBoundaryAccess("work-core", "work-core")) {

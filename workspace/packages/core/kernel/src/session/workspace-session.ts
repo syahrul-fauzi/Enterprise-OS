@@ -1,17 +1,25 @@
 import { z } from "zod";
-import { randomUUID, randomUUID as cryptoRandomUUID } from "node:crypto";
+import { randomUUID, randomUUID as cryptoRandomUUID, createHmac, timingSafeEqual } from "node:crypto";
+// Lazy import sessionQueries untuk menghindari circular dependency di Core
+const getSessionQueries = async () => {
+  const { sessionQueries } = await import("../../../../capabilities/identity/implementation/queries/session.queries");
+  return sessionQueries;
+};
 const crypto = { randomUUID: cryptoRandomUUID };
 
 export const WORKSPACE_SESSION_COOKIE = "eos-workspace-session";
+const WORKSPACE_SESSION_SECRET = process.env.WORKSPACE_SESSION_SECRET!;
 
 export const WorkspaceSessionSchema = z.object({
-  sessionId: z.string().optional(),
+  sessionId: z.string().min(1, "Session ID is required"),
   actorId: z.string().min(1),
   actorLabel: z.string().min(1),
   tenantId: z.string().min(1),
   workspaceId: z.string().min(1),
   productId: z.string().min(1),
-  issuedAt: z.string().min(1),
+  issuedAt: z.string().datetime({ offset: true, message: "issuedAt must be valid ISO 8601 UTC timestamp" }),
+  expiresAt: z.string().datetime({ offset: true, message: "expiresAt must be valid ISO 8601 UTC timestamp" }),
+  revokedAt: z.string().datetime({ offset: true }).optional(),
   userCapabilities: z.array(z.string()).optional(),
 });
 
@@ -35,14 +43,17 @@ const ANONYMOUS_SESSION_TEMPLATE = Object.freeze({
 });
 
 export function createAnonymousWorkspaceSession(customProductId?: string, capabilities?: string[]): WorkspaceSession {
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 jam
   return {
     actorId: ANONYMOUS_SESSION_TEMPLATE.actorId,
     actorLabel: ANONYMOUS_SESSION_TEMPLATE.actorLabel,
     tenantId: ANONYMOUS_SESSION_TEMPLATE.tenantId,
     workspaceId: ANONYMOUS_SESSION_TEMPLATE.workspaceId,
     productId: customProductId || ANONYMOUS_SESSION_TEMPLATE.productId, // FACE-001: Allow dynamic productId override
-    sessionId: `session-${randomUUID()}`,
-    issuedAt: new Date().toISOString(),
+    sessionId: `session-${crypto.randomUUID()}`,
+    issuedAt: now.toISOString(),
+    expiresAt: expiresAt.toISOString(),
     userCapabilities: capabilities || [],
   };
 }
@@ -57,10 +68,13 @@ const DEV_SESSION_TEMPLATE = Object.freeze({
 });
 
 export function createDevAuthenticatedSession(capabilities?: string[]): WorkspaceSession {
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 jam
   return {
     ...DEV_SESSION_TEMPLATE,
-    sessionId: `session-${randomUUID()}`,
-    issuedAt: new Date().toISOString(),
+    sessionId: `session-${crypto.randomUUID()}`,
+    issuedAt: now.toISOString(),
+    expiresAt: expiresAt.toISOString(),
     userCapabilities: capabilities || ["work:read", "work:write", "work:manage", "user:profile"],
   };
 }
@@ -77,25 +91,62 @@ export function isAuthenticatedSession(session: WorkspaceSession | null | undefi
 }
 
 export function encodeWorkspaceSession(session: WorkspaceSession): string {
-  return Buffer.from(JSON.stringify(session), "utf8").toString("base64url");
+  const sessionString = JSON.stringify(session);
+  const hmac = createHmac("sha256", WORKSPACE_SESSION_SECRET);
+  const signature = hmac.update(sessionString).digest("base64url");
+  const encodedSession = Buffer.from(sessionString, "utf8").toString("base64url");
+  return `${encodedSession}.${signature}`;
 }
 
-export function decodeWorkspaceSession(raw: string | undefined): WorkspaceSession | null {
+export async function decodeWorkspaceSession(raw: string | undefined): Promise<WorkspaceSession | null> {
   if (!raw?.trim()) {
     return null;
   }
 
   try {
-    const decoded = Buffer.from(raw, "base64url").toString("utf8");
-    return WorkspaceSessionSchema.parse(JSON.parse(decoded));
-  } catch {
+    const [encodedSession, signature] = raw.split(".");
+    if (!encodedSession || !signature) return null;
+
+    // Verify signature with timingSafeEqual (reuse OIDC pattern)
+    const sessionString = Buffer.from(encodedSession, "base64url").toString("utf8");
+    const hmac = createHmac("sha256", WORKSPACE_SESSION_SECRET);
+    const expectedSignature = hmac.update(sessionString).digest("base64url");
+    
+    const signatureBuffer = Buffer.from(signature);
+    const expectedBuffer = Buffer.from(expectedSignature);
+    if (signatureBuffer.length !== expectedBuffer.length || !timingSafeEqual(signatureBuffer, expectedBuffer)) {
+      return null;
+    }
+
+    // Parse and validate session schema dengan datetime validation (ISO 8601 UTC)
+    const session = WorkspaceSessionSchema.parse(JSON.parse(sessionString));
+    
+    // 1. Validasi expiration dengan timestamp numeric untuk keamanan (tidak hanya string comparison)
+    const expiresAtDate = new Date(session.expiresAt);
+    if (isNaN(expiresAtDate.getTime()) || expiresAtDate.getTime() < Date.now()) {
+      console.log(`[SESSION] ❌ Session expired: ${session.sessionId}, expiresAt=${session.expiresAt}`);
+      return null;
+    }
+
+    // 2. Authoritative revocation check - panggil session store yang sebenarnya (G2 requirement)
+    const sessionQueries = await getSessionQueries();
+    const isSessionRevoked = await sessionQueries.isRevoked(session.sessionId);
+    if (isSessionRevoked) {
+      console.log(`[SESSION] ❌ Session revoked: ${session.sessionId} (dari authoritative store)`);
+      return null;
+    }
+
+    console.log(`[SESSION] ✅ Session valid: ${session.sessionId}, actor=${session.actorId}, tenant=${session.tenantId}`);
+    return session;
+  } catch (error) {
+    console.error(`[SESSION] ❌ Failed to decode session:`, error);
     return null;
   }
 }
 
-export function readWorkspaceSessionFromCookieHeader(
+export async function readWorkspaceSessionFromCookieHeader(
   cookieHeader: string | null,
-): WorkspaceSession | null {
+): Promise<WorkspaceSession | null> {
   if (!cookieHeader?.trim()) {
     return null;
   }
@@ -112,9 +163,9 @@ export function readWorkspaceSessionFromCookieHeader(
   return decodeWorkspaceSession(cookie.slice(`${WORKSPACE_SESSION_COOKIE}=`.length));
 }
 
-export function readWorkspaceSessionFromRequest(
+export async function readWorkspaceSessionFromRequest(
   request: Request,
-): WorkspaceSession | null {
+): Promise<WorkspaceSession | null> {
   return readWorkspaceSessionFromCookieHeader(request.headers.get("cookie"));
 }
 

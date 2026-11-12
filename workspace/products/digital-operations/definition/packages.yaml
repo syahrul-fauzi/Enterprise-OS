@@ -1,0 +1,90 @@
+version: "1.0"
+product_id: "digital-operations"
+commercial_packages:
+  - package_id: "finance-operations-basic"
+    canonical_name: "Finance Operations Basic"
+    display_name: "Finance Operations - Dasar Rekonsiliasi Otomatis"
+    description: "Paket dasar untuk mengelola rekonsiliasi transaksi, pencocokan invoice, dan penanganan exception keuangan untuk bisnis mikro"
+    scope:
+      included_services: ["transaction-ingestion", "basic-reconciliation", "exception-triage", "monthly-financial-report"]
+      excluded_services: ["multi-bank-integration", "real-time-reconciliation", "automatic-exception-resolution"]
+      service_domain: "finance-operations"
+      shared_capabilities: ["value-metering.usage-tracking", "deal-coordinator.reconciliation", "connector-ecosystem.bank-payment-gateway"]
+    eligibility:
+      min_business_size: "micro"
+      max_transaction_volume: 500
+      requires_technical_contact: true
+      requires_finance_contact: true
+    activation_process: ["order-submit", "payment-confirm", "onboarding-call", "connector-integration", "asset-verification", "service-activate"]
+    renewal_process: ["renewal-notice-30d", "usage-review", "payment-confirm", "service-extend"]
+  - package_id: "content-growth-operations-standard"
+    canonical_name: "Content & Growth Operations Standard"
+    display_name: "Content & Growth Operations - Manajemen Konten dan Iklan"
+    description: "Paket menengah untuk mengelola siklus hidup konten, optimasi anggaran iklan, dan kualitas data CRM untuk bisnis berkembang"
+    scope:
+      included_services: ["content-lifecycle-management", "ad-spend-roi-tracking", "crm-data-enrichment", "editorial-qa-support", "campaign-performance-report"]
+      excluded_services: ["full-automatic-content-creation", "real-time-budget-optimization", "multi-region-campaign-management"]
+      service_domain: "content-growth-operations"
+      shared_capabilities: ["value-metering.content-metering", "deal-coordinator.agreement-tracking", "connector-ecosystem.social-media-ad-platform"]
+    eligibility:
+      min_business_size: "small"
+      max_campaigns_per_month: 10
+      requires_technical_contact: true
+      requires_marketing_contact: true
+    activation_process: ["order-submit", "payment-confirm", "onboarding-workshop", "platform-integration", "asset-audit", "service-activate"]
+    renewal_process: ["renewal-notice-45d", "campaign-review", "plan-adjustment", "payment-confirm", "service-extend"]
+  - package_id: "customer-commerce-operations-enterprise"
+    canonical_name: "Customer & Commerce Operations Enterprise"
+    display_name: "Customer & Commerce Operations - Dukungan Pelanggan dan Operasi E-commerce End-to-End"
+    description: "Paket enterprise untuk mengelola eskalasi dukungan pelanggan, intelijen harga pesaing, dan penanganan exception order untuk bisnis skala menengah ke atas"
+    scope:
+      included_services: ["message-classification", "order-customer-lookup", "policy-entitlement-check", "pricing-intelligence-alerts", "order-exception-resolution", "24/7-support-access"]
+      excluded_services: ["automatic-refund-processing", "dynamic-pricing-execution", "unlimited-channel-integration"]
+      service_domain: "customer-commerce-operations"
+      shared_capabilities: ["value-metering.support-metering", "deal-coordinator.escalation-tracking", "connector-ecosystem.whatsapp-instagram-email"]
+    eligibility:
+      min_business_size: "medium"
+      max_tickets_per_month: "unlimited"
+      requires_technical_contact: true
+      requires_customer_success_contact: true
+      requires_operations_contact: true
+    activation_process: ["enterprise-consultation", "custom-proposal", "contract-sign", "payment-confirm", "dedicated-team-onboarding", "full-audit", "service-activate"]
+    renewal_process: ["renewal-notice-60d", "annual-business-review", "roadmap-planning", "contract-renew", "payment-confirm", "service-extend"]
+  - package_id: "full-suite-managed-operations"
+    canonical_name: "Full Suite Managed Digital Operations"
+    display_name: "Full Suite - Semua Layanan Operasi Digital Terkelola"
+    description: "Paket terintegrasi yang mencakup semua layanan Finance, Content & Growth, dan Customer & Commerce Operations dengan tanggung jawab penuh terhadap keberlangsungan operasi digital"
+    scope:
+      included_services: ["all-finance-operations-services", "all-content-growth-services", "all-customer-commerce-services", "cross-domain-orchestration", "continuous-improvement-program", "dedicated-account-manager"]
+      excluded_services: ["none - semua layanan termasuk"]
+      service_domain: "all-domains"
+      shared_capabilities: ["value-metering.*", "deal-coordinator.*", "connector-ecosystem.*"]
+    eligibility:
+      min_business_size: "enterprise"
+      max_transaction_volume: "unlimited"
+      requires_technical_contact: true
+      requires_finance_contact: true
+      requires_operations_contact: true
+    activation_process: ["enterprise-strategy-session", "full-custom-proposal", "enterprise-contract-sign", "payment-confirm", "central-onboarding", "end-to-end-audit", "full-service-activate"]
+    renewal_process: ["renewal-notice-90d", "comprehensive-business-review", "3year-roadmap-planning", "contract-renew", "payment-confirm", "service-extend"]
+one_time_services:
+  - service_id: "digital-operations-assessment"
+    package_compatibility: ["all"]
+    prerequisite: ["none"]
+    delivery_process: ["order-submit", "scope-confirm", "data-collection", "analysis", "report-presentation", "recommendation-submit"]
+  - service_id: "payment-gateway-integration-setup"
+    package_compatibility: ["finance-operations-basic", "full-suite-managed-operations"]
+    prerequisite: ["active-subscription"]
+    delivery_process: ["request-submit", "connector-audit", "integration-implementation", "testing", "go-live", "post-integration-report"]
+  - service_id: "social-media-platform-onboarding"
+    package_compatibility: ["content-growth-operations-standard", "full-suite-managed-operations"]
+    prerequisite: ["active-subscription"]
+    delivery_process: ["campaign-scope-confirm", "platform-connection", "team-training", "first-campaign-launch", "performance-check"]
+  - service_id: "customer-support-channel-integration"
+    package_compatibility: ["customer-commerce-operations-enterprise", "full-suite-managed-operations"]
+    prerequisite: ["active-subscription"]
+    delivery_process: ["channel-audit", "whatsapp-instagram-email-setup", "agent-training", "go-live", "support-process-review"]
+  - service_id: "operations-health-check"
+    package_compatibility: ["all"]
+    prerequisite: ["active-subscription"]
+    delivery_process: ["request-submit", "end-to-end-audit", "issue-identification", "remediation-plan", "progress-report-submit"]

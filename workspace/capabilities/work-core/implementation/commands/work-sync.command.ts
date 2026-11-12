@@ -3,8 +3,8 @@ import { z } from "zod";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import { validateBoundaryAccess, validateAllBoundaries, type IdentityBoundary, type SemanticBoundary, type AuthorityBoundary, type ExecutionBoundary, type EvidenceBoundary, type PresentationBoundary, type WorkAggregate, WorkId, TenantId, ActorId } from "@capabilities/work-core/contracts/work.contracts.js";
 import { getWorkRepositoryPostgres } from "../repository/work-postgres.repository.js";
-// Gunakan alias canonical untuk import dari core-runtime
-import { recordRuntimeInvocation } from "@repo/core-runtime/invocation-evidence";
+// Gunakan alias canonical untuk import dari core-runtime (sesuai package exports, NodeNext requires .js extension)
+import { recordRuntimeInvocation } from "@repo/core-runtime/invocation-evidence.js";
 
 // Schema untuk sync request - minimal sesuai kebutuhan edge-runtime
 export const SyncWorkRequestSchema = z.object({
@@ -21,14 +21,43 @@ export const SyncWorkRequestSchema = z.object({
 export type SyncWorkRequest = z.infer<typeof SyncWorkRequestSchema>;
 
 // Implementasi command work.sync
-async function syncCoreWork(input: SyncWorkRequest): Promise<{
+async function syncCoreWork(input: SyncWorkRequest, context: any): Promise<{
   success: boolean;
   workId: string;
   syncedAt: string;
   contextLossRate: number;
 }> {
+  // W06-A2 Compliance: Extract trusted identity ONLY from ExecutionContext, never input!
+  const trustedActorId = context.actor_id;
+  const trustedTenantId = context.tenant_id;
+  const sessionId = context.session_id;
+  const workspaceId = context.workspace_id;
+
+  if (!trustedActorId || !trustedTenantId || !sessionId || !workspaceId) {
+    const safeRecordEvidence = (await import("@capabilities/work-core/utils/evidence.utils.js")).safeRecordEvidence;
+    await safeRecordEvidence({
+      workspace_id: workspaceId || "unknown",
+      capability: "work-core",
+      command: "work.sync",
+      work_id: input.workId || "unknown",
+      tenant_id: trustedTenantId || "unknown",
+      actor_id: trustedActorId || "unknown",
+      timestamp: new Date().toISOString(),
+      sessionId: sessionId || "unknown",
+      decision_id: "W06-A2-AUDIT-DENY-002"
+    });
+    throw new Error("unauthorized: Missing authenticated execution context");
+  }
+
   const workRepository = getWorkRepositoryPostgres();
-  const { workId, sourceActorId, targetActorId, tenantId, sessionId, executionId } = input;
+  // Override input context with trusted values to prevent spoofing
+  const { workId, sourceActorId, targetActorId, executionId } = {
+    ...input,
+    tenantId: trustedTenantId,
+    sessionId,
+    workspaceId,
+    actorId: trustedActorId
+  };
   
   // 0. Basic boundary access validation (required for fitness checks)
   if (!validateBoundaryAccess("work-core", "work-core")) {
@@ -111,8 +140,8 @@ async function syncCoreWork(input: SyncWorkRequest): Promise<{
     throw new Error(`Boundary validation failed: ${boundaryValidation.allErrors.join(", ")}`);
   }
 
-  // 2. Dapatkan Work canonical dari repository
-  const work = await workRepository.byId(input.workId);
+  // 2. Dapatkan Work canonical dari repository (WITHIN TENANT - W06-A2 tenant isolation)
+  const work = await workRepository.byIdWithinTenant(input.workId, trustedTenantId);
   if (!work) {
     throw new Error(`[work.sync] Work ${input.workId} tidak ditemukan`);
   }
@@ -155,6 +184,7 @@ async function syncCoreWork(input: SyncWorkRequest): Promise<{
 export const syncWorkCommand = {
   kind: "command" as const,
   name: "sync" as const,
+  capability: "work-core" as const,
   version: "1.1.0" as const,
   execute: syncCoreWork,
   schema: SyncWorkRequestSchema,

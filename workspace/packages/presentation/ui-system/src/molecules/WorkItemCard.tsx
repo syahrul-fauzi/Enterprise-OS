@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Card } from '../atoms/card';
+import { Card } from "../atoms/card.js";
 
 export interface WorkItemCardProps {
   workId: string;

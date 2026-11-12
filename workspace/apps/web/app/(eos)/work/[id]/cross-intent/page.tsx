@@ -29,8 +29,8 @@ async function resolveSessionOrEnter() {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);
   if (!sessionCookie?.value) redirect("/enter");
-  const session = decodeWorkspaceSession(sessionCookie.value);
-  if (!session || !session.sessionId || !session.tenantId || !session.workspaceId || !session.actorId) {
+  const session = await decodeWorkspaceSession(sessionCookie.value);
+          if (!session || !session.sessionId || !session.tenantId || !session.workspaceId || !session.actorId) {
     redirect("/enter");
   }
   return session;
@@ -62,13 +62,13 @@ export default async function WorkCrossIntentRoute({ params }: WorkCrossIntentRo
 
     let session: WorkspaceSession;
     if (sessionCookie?.value) {
-      try {
-        const decoded = decodeWorkspaceSession(sessionCookie.value);
-        session = decoded || createAnonymousWorkspaceSession("lawyershub");
-      } catch {
-        session = createAnonymousWorkspaceSession("lawyershub");
-      }
-    } else {
+          try {
+            const decoded = await decodeWorkspaceSession(sessionCookie.value);
+            session = decoded || createAnonymousWorkspaceSession("lawyershub");
+          } catch {
+            session = createAnonymousWorkspaceSession("lawyershub");
+          }
+        } else {
       session = createAnonymousWorkspaceSession("lawyershub");
     }
 

@@ -1,0 +1,13 @@
+proof_ledger_version: "1.0"
+ledger_id: "eos-core-proof-ledger-001"
+generated_at: "2026-11-12T00:00:00Z"
+entries:
+  - requirement_ref: "REQ-0001"
+    evidence_ref: "REQ-0001.eir.json"
+    status: "verified"
+  - requirement_ref: "REQ-010"
+    evidence_ref: "REQ-010.eir.json"
+    status: "verified"
+  - requirement_ref: "REQ-011"
+    evidence_ref: "REQ-011.eir.json"
+    status: "verified"

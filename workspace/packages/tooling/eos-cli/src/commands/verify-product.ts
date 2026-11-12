@@ -68,7 +68,7 @@ const FOUNDATION_EXECUTION_GRAPH_PATH = resolveProjectionStorageLocation({
 });
 
 type ProductConfig = {
-  readonly productId: "lawyershub";
+  readonly productId: string;
   readonly appManifestPath: string;
   readonly plannerDescriptorPath: string;
   readonly appTsconfigPath: string;
@@ -92,6 +92,17 @@ const PRODUCT_CONFIG: Record<string, ProductConfig> = {
       "apps/web/tests/observability-api.test.ts",
       "apps/web/tests/connectors-api.test.ts",
       "apps/web/tests/graph-api.test.ts",
+    ],
+  },
+  "digital-operations": {
+    productId: "digital-operations",
+    appManifestPath: resolve(WORKSPACE_ROOT, "products/digital-operations/manifest.yaml"),
+    plannerDescriptorPath: resolve(WORKSPACE_ROOT, "products/digital-operations/composition.descriptor.ts"),
+    appTsconfigPath: resolve(WORKSPACE_ROOT, "products/digital-operations/tsconfig.json"),
+    compositionPackageDir: resolve(WORKSPACE_ROOT, "products/digital-operations"),
+    evidenceDir: resolve(WORKSPACE_ROOT, "products/digital-operations/evidence/verification"),
+    tests: [
+      // Minimal test suite untuk P0-P1 verification - akan di-expand di P4
     ],
   },
 };

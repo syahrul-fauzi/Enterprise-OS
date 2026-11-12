@@ -9,7 +9,7 @@ export interface NewWorkFormClientProps {
     title: string;
   } | null;
   intentId: string;
-  workType?: "general" | "bpjs-construction" | "healthcare-appointment" | "bpjs-kesehatan-claim" | "acaas-compliance-check"; // Support W-INDUSTRY-001/W-DOMAIN-002/ACaaS-COMMERCIAL-001 work forms
+  workType?: "general" | "bpjs-construction" | "healthcare-appointment" | "bpjs-kesehatan-claim" | "acaas-compliance-check" | "legal-case" | "sni-certification" | "website-fix" | "digital-care" | "digital-growth-ops" | "managed-digital-operations"; // Support W-INDUSTRY-001/W-DOMAIN-002/ACaaS-COMMERCIAL-001/AGENTIC-LAW-001/SMACE-004/WordPress-Fix/digital-operations work forms
   handleWorkCreation: (data: {
     title: string;
     objective: string;
@@ -34,5 +34,21 @@ export interface NewWorkFormClientProps {
     documentType?: string;
     documentData?: string;
     compliancePolicies?: string[];
+    // LawyersHub / Legal Case specific fields (AGENTIC-LAW-001)
+    client_name?: string;
+    case_number?: string;
+    case_type?: string;
+    court_jurisdiction?: string;
+    deadline_date?: string;
+    // SMACE / SNI Certification specific fields (SMACE-004)
+    product_model_number?: string;
+    sni_standard_type?: string;
+    factory_location?: string;
+    // WordPress/Website Fix specific fields (wordpress-fix)
+    website_url?: string;
+    cms_platform?: string;
+    error_details?: string;
+    error_logs?: string;
+    hosting_provider?: string;
   }) => Promise<{ workId: string } | undefined>;
 }

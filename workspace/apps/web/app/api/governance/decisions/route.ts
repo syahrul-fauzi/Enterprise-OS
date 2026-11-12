@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     if (!sessionCookie?.value) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const session = decodeWorkspaceSession(sessionCookie.value);
+    const session = await decodeWorkspaceSession(sessionCookie.value);
     if (!session) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }

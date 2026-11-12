@@ -1,0 +1,5 @@
+53426c1e475331dd8b7ec0179967ddf34b2f3aa6551692c9713ed560ef34ea3a  /root/Enterprise-OS/workspace/packages/core/kernel/src/registry/capability-command-registry.ts
+c450e0ddf7ef9f81437af05e9bfcf647d80fe93be815578af89eeea7dea9927e  /root/Enterprise-OS/workspace/apps/api/middleware.ts
+75557b20d5be8b7aca3d711f0623bd729aa7f81a4e0eb615fd70d5b269cca0d1  /root/Enterprise-OS/workspace/capabilities/work-core/implementation/utils/evidence.utils.ts
+008c62dbb6ee1ded12b04eb5101c51dbb97c8fb3dc8c6baecbcc4712609d2aea  /root/Enterprise-OS/workspace/capabilities/identity/implementation/repositories/index.ts
+b48af1c8e1db4ff6f1a0b852f5744987a8f625b92c8db7be69039bca72564c56  /root/Enterprise-OS/workspace/capabilities/work-core/implementation/commands/work.commands.ts

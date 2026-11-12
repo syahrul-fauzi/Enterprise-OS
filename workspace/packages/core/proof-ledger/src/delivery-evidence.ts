@@ -1,7 +1,9 @@
 import fs from "fs";
 import path from "path";
-import { WorkspaceSession } from "@repo/core-kernel";
-import { DigestEngine } from "@repo/core-kernel/digest-engine.js";
+import { type WorkspaceSession } from "../../kernel/src/session/workspace-session.js";
+import { createDigestEngine, type DigestEngineContract } from "../../kernel/src/digest-engine.js";
+
+const digestEngine: DigestEngineContract = createDigestEngine();
 
 interface ProductContext {
   readonly productDomain: string;
@@ -151,7 +153,7 @@ export function persistDeliveryEvidenceArtifact(
   };
 
   const envelopeString = JSON.stringify(envelope, null, 2);
-  const digest = DigestEngine.digestText(envelopeString);
+  const digest = digestEngine.digestText(envelopeString);
   
   // Ensure directory exists
   fs.mkdirSync(path.dirname(absolutePath), { recursive: true });

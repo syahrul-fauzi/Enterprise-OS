@@ -1,0 +1,30 @@
+g2_checklist:
+  - item: "Tidak ada breaking import atau contract setelah reorganisasi"
+    status: "VERIFIED"
+    verified_by: "eos-dependency-engine"
+    verified_at: "2026-11-02T00:00:00.000Z"
+    evidence: "TypeScript check pada file SMACE tidak menghasilkan error. Semua import resolve dengan benar, tidak ada path yang rusak setelah strukturisasi."
+
+  - item: "Struktur direktori sesuai modular product structure yang disetujui"
+    status: "VERIFIED"
+    verified_by: "eos-recon-agent"
+    verified_at: "2026-11-02T00:00:00.000Z"
+    evidence: "Direktori domain/, application/, contracts/, runtime/, providers/, quality/, provenance/, commercial/ sudah tercipta dengan konten yang sesuai tanggung jawab bisnis. Tidak ada folder kosong yang tidak perlu."
+
+  - item: "3-layer workflow separation terimplementasi dengan benar"
+    status: "VERIFIED"
+    verified_by: "eos-recon-agent"
+    verified_at: "2026-11-02T00:00:00.000Z"
+    evidence: "Business production lifecycle (domain/creative-brief/types.ts), Execution workflow (runtime/workflow-*), dan Provider workflow (providers/comfyui/) terpisah sempurna. Tidak ada campuran logika bisnis dengan logika provider."
+
+  - item: "Semua file SMACE sudah berada di direktori yang sesuai"
+    status: "VERIFIED"
+    verified_by: "eos-recon-agent"
+    verified_at: "2026-11-02T00:00:00.000Z"
+    evidence: "Inventory file SMACE menunjukan 100% file berada di path target. Tidak ada file yang tersisa di lokasi lama atau salah tempat."
+
+  - item: "Tidak ada duplikasi primitive EOS atau pelanggaran batas domain"
+    status: "VERIFIED"
+    verified_by: "eos-verification-agent"
+    verified_at: "2026-11-02T00:00:00.000Z"
+    evidence: "Semua persistence masih menggunakan capability EOS evidence-registry. Tidak ada implementasi Work Registry atau storage mandiri di SMACE. Batas domain antara EOS Core, SMACE Domain, dan Provider Layer tetap terjaga."

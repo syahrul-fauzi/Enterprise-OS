@@ -29,7 +29,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: "Invalid session cookie" }, { status: 401 });
     }
 
-    const session = decodeWorkspaceSession(sessionValue);
+    const session = await decodeWorkspaceSession(sessionValue);
     if (!session || !session.tenantId || !session.workspaceId || !session.actorId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }

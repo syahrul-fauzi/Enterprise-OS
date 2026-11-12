@@ -18,7 +18,7 @@ export default async function LoginPage() {
   // Ini menghindari semua kemungkinan redirect loop, karena server component tidak pernah melakukan redirect kecuali session 100% valid
   if (sessionCookie?.value) {
     try {
-      const session = decodeWorkspaceSession(sessionCookie.value);
+      const session = await decodeWorkspaceSession(sessionCookie.value);
       if (session && session.tenantId && session.workspaceId && session.actorId) {
         redirect("/my-reality");
       }

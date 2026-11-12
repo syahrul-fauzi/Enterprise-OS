@@ -224,6 +224,9 @@ export type WorkRepositoryPostgres = CapabilityRepository<WorkAggregate> & HighV
   // Evidence boundary methods (consistent with in-memory repository)
   getEvidence(workId: string): Promise<any[]>;
   addEvidence(workId: string, entry: any): Promise<void>;
+  countEvidenceForWork(workId: string): Promise<number>;
+  verifyNoDuplicateChecksums(workId: string): Promise<boolean>;
+  updateStatus(workId: string, newStatus: string, actorId: string, evidenceData?: Record<string, unknown>): Promise<{ ok: boolean; version: number }>;
 };
 
 class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements WorkRepositoryPostgres {
@@ -251,9 +254,94 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
     return this.byId(workId);
   }
 
+  // DIGISC-007: Implement getBySubscriptionId untuk HighValueWorkGraphQuery - query Work berdasarkan subscription ID
+  async getBySubscriptionId(subscriptionId: string): Promise<WorkAggregate | undefined> {
+    if (!this.readPool) { 
+      throw new Error("[WorkRepositoryPostgres] FATAL: readPool not initialized");
+    }
+    const result = await this.readPool.query(`SELECT * FROM works WHERE subscription_id = $1 LIMIT 1`, [subscriptionId]);
+    if (result.rows.length === 0) { 
+      return undefined;
+    }
+    return this.toAggregate(result.rows[0]);
+  }
+
   // Implementasi alias getById sesuai interface yang didefinisikan
   async getById(workId: string): Promise<WorkAggregate | undefined> {
     return this.byWorkId(workId);
+  }
+
+  // W06-A2: Implementasi byIdWithinTenant untuk tenant-isolated work retrieval (sesuai in-memory repository)
+  async byIdWithinTenant(workId: string, tenantId: string): Promise<WorkAggregate | undefined> {
+    if (!this.readPool) { 
+      throw new Error("[WorkRepositoryPostgres] FATAL: readPool not initialized");
+    }
+    const result = await this.readPool.query(`SELECT * FROM works WHERE work_id = $1 AND tenant_id = $2 LIMIT 1`, [workId, tenantId]);
+    if (result.rows.length === 0) { 
+      return undefined;
+    }
+    return this.toAggregate(result.rows[0]);
+  }
+
+  // W06-A2: Implementasi byIdWithinTenantWithLock untuk anti-TOCTOU protection menggunakan PostgreSQL advisory lock
+  async byIdWithinTenantWithLock(workId: string, tenantId: string): Promise<WorkAggregate | undefined> {
+    if (!this.writePool) { 
+      throw new Error("[WorkRepositoryPostgres] FATAL: writePool not initialized for locking");
+    }
+    
+    // Generate unique lock key dari workId (hashed untuk memastikan key tetap dalam integer range PostgreSQL)
+    const lockKey = this.generateLockKey(workId);
+    
+    // Ambil advisory lock (blocking sampai lock tercapai atau timeout)
+    await this.writePool.query(`SELECT pg_advisory_lock($1)`, [lockKey]);
+    
+    // Ambil work dengan tenant isolation setelah lock berhasil didapatkan
+    const work = await this.byIdWithinTenant(workId, tenantId);
+    
+    // Jika work tidak ditemukan, lepaskan lock segera dan return undefined
+    if (!work) {
+      await this.writePool.query(`SELECT pg_advisory_unlock($1)`, [lockKey]);
+      return undefined;
+    }
+    
+    // Update kolom locked_at dan lock_holder di database untuk audit trail
+    await this.writePool.query(
+      `UPDATE works SET locked_at = NOW(), lock_holder = 'eos-work-core' WHERE work_id = $1 AND tenant_id = $2`,
+      [workId, tenantId]
+    );
+    
+    // Return work dengan lock yang aktif
+    return this.toAggregate({...work, lockedAt: new Date().toISOString(), lockHolder: "eos-work-core"});
+  }
+
+  // W06-A2: Helper untuk generate lock key dari workId (hash string menjadi integer 64-bit)
+  private generateLockKey(workId: string): number {
+    let hash = 0;
+    for (let i = 0; i < workId.length; i++) {
+      const char = workId.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert ke 32-bit integer
+    }
+    // Pastikan key positif dan dalam range PostgreSQL advisory lock
+    return Math.abs(hash) % 2147483647;
+  }
+
+  // W06-A2: Implementasi releaseLock untuk melepaskan PostgreSQL advisory lock
+  async releaseLock(workId: string): Promise<void> {
+    if (!this.writePool) { 
+      throw new Error("[WorkRepositoryPostgres] FATAL: writePool not initialized for lock release");
+    }
+    
+    const lockKey = this.generateLockKey(workId);
+    
+    // Lepaskan advisory lock dari database
+    await this.writePool.query(`SELECT pg_advisory_unlock($1)`, [lockKey]);
+    
+    // Reset kolom locked_at dan lock_holder setelah lock dilepas
+    await this.writePool.query(
+      `UPDATE works SET locked_at = NULL, lock_holder = NULL WHERE work_id = $1`,
+      [workId]
+    );
   }
 
   // ==============================
@@ -282,6 +370,20 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
     return this.getProductById(firstProductId);
   }
 
+  // DIGISC-007: Implementasi getBySubscriptionId untuk High-Value Work Graph Query
+  // Mendukung recurring trigger subscription.generateMonthlyWork untuk managed services
+  async getBySubscriptionId(subscriptionId: string): Promise<WorkAggregate | undefined> {
+    await initializePools(); // Initialize pools before use
+    const result = await readPool!.query(
+      `SELECT * FROM works WHERE subscription_id = $1 ORDER BY created_at DESC LIMIT 1`,
+      [subscriptionId]
+    );
+    if (result.rows.length === 0) return undefined;
+    const row = result.rows[0];
+    // Konversi record database ke WorkAggregate sesuai toAggregate pattern
+    return this.toAggregate(row);
+  }
+
   // ==============================
   // GRAPH NODE CRUD OPERATIONS
   // ==============================
@@ -306,14 +408,15 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       [newProduct.id, newProduct.name, newProduct.description, newProduct.ownerId, newProduct.tenantId, newProduct.linkedRequirementIds, newProduct.linkedWorkIds]
     );
     await safeRecordEvidence({ 
-      type: "product.created", 
-      productId: newProduct.id, 
-      timestamp: new Date().toISOString(),
+      workspace_id: DEFAULT_WORKSPACE_ID,
       capability: "work-core",
       command: "createProduct",
-      work_id: null,
+      work_id: "product-" + newProduct.id,
       tenant_id: newProduct.tenantId,
-      actor_id: newProduct.ownerId
+      actor_id: newProduct.ownerId,
+      timestamp: new Date().toISOString(),
+      sessionId: SYSTEM_AGENT_SESSION_ID,
+      productId: newProduct.id
     });
     return newProduct;
   }
@@ -363,15 +466,15 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       [newOutcome.id, newOutcome.workId, newOutcome.type, newOutcome.description, newOutcome.evidenceIds, newOutcome.actorId, newOutcome.tenantId, new Date()]
     );
     await safeRecordEvidence({ 
-      type: "outcome.created", 
-      outcomeId: newOutcome.id, 
-      workId: newOutcome.workId, 
-      timestamp: new Date().toISOString(),
+      workspace_id: DEFAULT_WORKSPACE_ID,
       capability: "work-core",
       command: "createOutcome",
       work_id: newOutcome.workId,
       tenant_id: newOutcome.tenantId,
-      actor_id: newOutcome.actorId
+      actor_id: newOutcome.actorId,
+      timestamp: new Date().toISOString(),
+      sessionId: SYSTEM_AGENT_SESSION_ID,
+      outcomeId: newOutcome.id
     });
     return newOutcome;
   }
@@ -548,26 +651,88 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
 
   // Implementasi addEvidence() untuk Postgres repository (sesuai inmemory implementation)
   async addEvidence(workId: string, entry: any): Promise<void> {
-    await initializePools(); // Initialize pools before use
+    await initializePools();
+    const client = await writePool!.connect();
     try {
-      // Mapping entry dari safeRecordEvidence payload ke schema evidence table yang benar
-      // Handle payload dari safeRecordEvidence yang memiliki struktur berbeda
+      await client.query('BEGIN');
       const actorId = entry.actor_id || entry.actorId;
       const type = entry.command || entry.type || "work.evidence";
       const content = JSON.stringify(entry);
       const timestamp = entry.timestamp ? new Date(entry.timestamp) : new Date();
+      const checksum = entry.meta_checksum || null;
       
-      await writePool!.query(
-        `INSERT INTO evidence (work_id, actor_id, type, content, created_at) VALUES ($1, $2, $3, $4, $5)`,
-        [workId, actorId, type, content, timestamp]
+      const existingChecksum = await client.query(
+        `SELECT id FROM evidence WHERE work_id = $1 AND meta_checksum = $2 LIMIT 1`,
+        [workId, checksum]
       );
-      // Update work version saat evidence ditambahkan (konsisten dengan inmemory repository)
-      await writePool!.query(`UPDATE works SET version = version + 1, updated_at = NOW() WHERE id = $1`, [workId]);
-      console.log(`[WorkRepositoryPostgres] ✅ addEvidence success for workId ${workId}`);
+      if (existingChecksum.rows.length > 0) {
+        console.log(`[WorkRepositoryPostgres] ⚠️ Evidence already exists for checksum ${checksum}, skipping duplicate insert`);
+        await client.query('COMMIT');
+        return;
+      }
+      
+      await client.query(
+        `INSERT INTO evidence (work_id, actor_id, type, content, created_at, meta_checksum) VALUES ($1, $2, $3, $4, $5, $6)`,
+        [workId, actorId, type, content, timestamp, checksum]
+      );
+      await client.query(`UPDATE works SET version = version + 1, updated_at = NOW() WHERE id = $1`, [workId]);
+      await client.query('COMMIT');
+      console.log(`[WorkRepositoryPostgres] ✅ addEvidence success for workId ${workId} with checksum ${checksum}`);
     } catch (err) {
+      await client.query('ROLLBACK');
       console.error(`[WorkRepositoryPostgres] addEvidence error for workId ${workId}:`, err);
       throw err;
+    } finally {
+      client.release();
     }
+  }
+
+  async countEvidenceForWork(workId: string): Promise<number> {
+    await initializePools();
+    const result = await readPool!.query(`SELECT COUNT(*) FROM evidence WHERE work_id = $1`, [workId]);
+    return parseInt(result.rows[0].count, 10);
+  }
+
+  async verifyNoDuplicateChecksums(workId: string): Promise<boolean> {
+    await initializePools();
+    const result = await readPool!.query(
+      `SELECT content, meta_checksum, COUNT(*) as cnt FROM evidence WHERE work_id = $1 GROUP BY content, meta_checksum HAVING COUNT(*) > 1`,
+      [workId]
+    );
+    return result.rows.length === 0;
+  }
+
+  async updateStatus(workId: string, newStatus: string, actorId: string, evidenceData?: Record<string, unknown>): Promise<{ ok: boolean; version: number }> {
+    await initializePools();
+    // Gunakan writePool dengan FOR UPDATE untuk row locking (mencegah concurrent modification)
+    // Hanya satu concurrent query yang bisa memproses baris ini pada satu waktu
+    const currentWork = await writePool!.query(`SELECT version, status FROM works WHERE id = $1 FOR UPDATE`, [workId]);
+    if (currentWork.rows.length === 0) {
+      return { ok: false, version: 0 };
+    }
+    const currentVersion = currentWork.rows[0].version;
+    const currentStatus = currentWork.rows[0].status;
+    
+    // Idempotency check: jika status sudah sama, tidak update apapun
+    if (currentStatus === newStatus) {
+      return { ok: true, version: currentVersion };
+    }
+    
+    // Update work status dan version - urutan parameter sesuai urutan di query untuk parsing yang benar di MockPool
+    await writePool!.query(
+      `UPDATE works SET status = $1, version = $2, updated_at = NOW() WHERE id = $3`,
+      [newStatus, currentVersion + 1, workId]
+    );
+    
+    // Tambahkan evidence jika ada data
+    if (evidenceData) {
+      await writePool!.query(
+        `INSERT INTO evidence (work_id, actor_id, content, meta_checksum, created_at) VALUES ($1, $2, $3, $4, NOW())`,
+        [workId, actorId, JSON.stringify(evidenceData), evidenceData.meta_checksum as string]
+      );
+    }
+    
+    return { ok: true, version: currentVersion + 1 };
   }
 
   async listByInstitution(institutionId: string): Promise<readonly WorkAggregate[]> {
@@ -592,6 +757,12 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       workspace_id: entity.workspaceId,
       session_id: entity.sessionId,
       linked_expression_id: entity.linkedExpressionId,
+      // SUBSCRIPTION MANAGEMENT: Add subscription tracking columns for managed services
+      subscription_id: entity.subscriptionId,
+      subscription_type: entity.subscriptionType,
+      recurring_interval_days: entity.recurringIntervalDays,
+      next_billing_date: entity.nextBillingDate?.toISOString(),
+      is_recurring: entity.isRecurring || false,
       // WORK CLAIM database mapping
       active_execution_id: entity.activeExecutionId,
       lease_until: entity.leaseUntil,
@@ -600,7 +771,13 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       // EDGE-A-001: Durable deduplication - simpan processedEventIds sebagai JSONB
       processed_event_ids: JSON.stringify(entity.processedEventIds || []),
       // W-002: HIGH-VALUE WORK BOUNDARY TRACKING
-      boundaries_crossed: JSON.stringify(entity.boundariesCrossed || [])
+      boundaries_crossed: JSON.stringify(entity.boundariesCrossed || []),
+      // Economic Governance: Pemisahan biaya sesuai SMACE requirement (sinkron dengan inmemory)
+      estimated_cost: entity.estimatedCost,
+      reserved_cost: entity.reservedCost,
+      actual_cost: entity.actualCost,
+      // DIGISC-007: Subscription tracking untuk managed services recurring triggers
+      subscription_id: entity.subscriptionId
     };
   }
 
@@ -617,6 +794,12 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
           const processedEventIds = Array.isArray(record.processed_event_ids)
             ? record.processed_event_ids
             : JSON.parse(record.processed_event_ids || '[]');
+          // DIGISC-007: SUBSCRIPTION MANAGEMENT - map database subscription columns ke WorkAggregate domain fields
+          const subscriptionId = record.subscription_id || undefined;
+          const subscriptionType = record.subscription_type || undefined;
+          const recurringIntervalDays = record.recurring_interval_days || undefined;
+          const nextBillingDate = record.next_billing_date ? new Date(record.next_billing_date) : undefined;
+          const isRecurring = record.is_recurring || false;
     
     return {
       id: record.id,
@@ -639,7 +822,17 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
       // EDGE-A-001: Tambahkan processedEventIds ke WorkAggregate untuk konsistensi
       processedEventIds,
       // W-002: HIGH-VALUE WORK BOUNDARY TRACKING
-      boundariesCrossed
+      boundariesCrossed,
+      // Economic Governance: Pemisahan biaya sesuai SMACE requirement
+      estimatedCost: record.estimated_cost,
+      reservedCost: record.reserved_cost,
+      actualCost: record.actual_cost,
+      // DIGISC-007: SUBSCRIPTION MANAGEMENT - tambahkan tracking langganan ke WorkAggregate
+      subscriptionId,
+      subscriptionType,
+      recurringIntervalDays,
+      nextBillingDate,
+      isRecurring
     } as WorkAggregate;
   }
 
@@ -727,15 +920,15 @@ class WorkRepositoryPostgresImpl extends PostgresRepository<any> implements Work
     const finalSaved = await super.save(savedWork);
     // Record evidence immediately after successful persistence (P5-PROVE-001 requirement)
     await safeRecordEvidence({
-      entityRef: finalSaved.id,
-      entityType: "work",
-      action: existingWork ? "work.updated" : "work.created",
-      actorId: finalSaved.actorId,
-      details: { status: finalSaved.status, version: finalSaved.version },
+      workspace_id: finalSaved.workspaceId || DEFAULT_WORKSPACE_ID,
+      capability: "work-core",
+      command: existingWork ? "work.updated" : "work.created",
+      work_id: finalSaved.id,
+      tenant_id: finalSaved.tenantId,
+      actor_id: finalSaved.actorId,
       timestamp: new Date().toISOString(),
-      sessionId: finalSaved.sessionId,
-      tenantId: finalSaved.tenantId,
-      workspaceId: finalSaved.workspaceId,
+      sessionId: finalSaved.sessionId || SYSTEM_AGENT_SESSION_ID,
+      details: { status: finalSaved.status, version: finalSaved.version }
     });
     
     // Trigger agentic notification for employee-leave domain if status transition detected

@@ -73,7 +73,7 @@ export default async function NewWorkPage({
 
   let session;
   try {
-    session = decodeWorkspaceSession(sessionCookie.value);
+    session = await decodeWorkspaceSession(sessionCookie.value);
   } catch {
     cookieStore.delete(WORKSPACE_SESSION_COOKIE);
     redirect("/");
@@ -121,6 +121,16 @@ export default async function NewWorkPage({
     documentType?: string;
     documentData?: string;
     compliancePolicies?: string[];
+    // LawyersHub / Legal Case specific fields (AGENTIC-LAW-001)
+    client_name?: string;
+    case_number?: string;
+    case_type?: string;
+    court_jurisdiction?: string;
+    deadline_date?: string;
+    // SMACE / SNI Certification specific fields (SMACE-004)
+    product_model_number?: string;
+    sni_standard_type?: string;
+    factory_location?: string;
   }) => {
     "use server";
     try {
@@ -136,11 +146,13 @@ export default async function NewWorkPage({
         formData.objective || ""
       }\nDescription: ${formData.description || ""}${formData.project_number ? `\nProject Number: ${formData.project_number}` : ""}${formData.contractor_name ? `\nContractor: ${formData.contractor_name}` : ""}${formData.worker_estimate ? `\nWorker Estimate: ${formData.worker_estimate}` : ""}${formData.project_location ? `\nProject Location: ${formData.project_location}` : ""}${formData.patient_name ? `\nPatient Name: ${formData.patient_name}` : ""}${formData.patient_nik ? `\nPatient NIK: ${formData.patient_nik}` : ""}${formData.appointment_date ? `\nAppointment Date: ${formData.appointment_date}` : ""}${formData.appointment_time ? `\nAppointment Time: ${formData.appointment_time}` : ""}${formData.service_type ? `\nService Type: ${formData.service_type}` : ""}${formData.claim_number ? `\nClaim Number: ${formData.claim_number}` : ""}${formData.claim_date ? `\nClaim Date: ${formData.claim_date}` : ""}${formData.medical_facility_name ? `\nMedical Facility: ${formData.medical_facility_name}` : ""}${formData.diagnosis_code ? `\nDiagnosis Code: ${formData.diagnosis_code}` : ""}${formData.service_category ? `\nService Category: ${formData.service_category}` : ""}`;
 
-      // Determine work type from presence of domain-specific fields (SLICE-006: BPJS Construction, W-INDUSTRY-001-01: Healthcare, W-DOMAIN-002-01: BPJS Kesehatan Claim, ACaaS-COMMERCIAL-001: ACaaS Compliance Check)
+      // Determine work type from presence of domain-specific fields (SLICE-006: BPJS Construction, W-INDUSTRY-001-01: Healthcare, W-DOMAIN-002-01: BPJS Kesehatan Claim, ACaaS-COMMERCIAL-001: ACaaS Compliance Check, AGENTIC-LAW-001: LawyersHub Legal Case, SMACE-004: SNI Certification)
       const isBpjsConstruction = !!formData.project_number;
       const isHealthcareAppointment = !!formData.patient_name && !!formData.appointment_date;
       const isBpjsKesehatanClaim = !!formData.claim_number;
       const isAcaasComplianceCheck = !!formData.documentType && !!formData.documentData;
+      const isLegalCase = !!formData.client_name && !!formData.case_number; // AGENTIC-LAW-001: LawyersHub Legal Case detection
+      const isSniCertification = !!formData.product_model_number && !!formData.sni_standard_type && !!formData.factory_location; // SMACE-004: SNI Certification detection
       
       let workType = "general";
       let rawType = "work_request";
@@ -184,6 +196,24 @@ export default async function NewWorkPage({
           documentType: formData.documentType,
           documentData: formData.documentData,
           compliancePolicies: formData.compliancePolicies,
+        };
+      } else if (isLegalCase) {
+        workType = "legal-case";
+        rawType = "legal_case_work_request";
+        domainMetadata = {
+          client_name: formData.client_name,
+          case_number: formData.case_number,
+          case_type: formData.case_type,
+          court_jurisdiction: formData.court_jurisdiction,
+          deadline_date: formData.deadline_date,
+        };
+      } else if (isSniCertification) {
+        workType = "sni-certification";
+        rawType = "sni_certification_work_request";
+        domainMetadata = {
+          product_model_number: formData.product_model_number,
+          sni_standard_type: formData.sni_standard_type,
+          factory_location: formData.factory_location,
         };
       }
 
@@ -238,7 +268,9 @@ export default async function NewWorkPage({
                                   isHealthcareAppointment ? "healthcare" as const : 
                                   isBpjsKesehatanClaim ? "healthcare" as const : 
                                   isAcaasComplianceCheck ? "acaas" as const : 
-                                  "legal-case" as const;
+                                  isLegalCase ? "legal" as const : 
+                                  isSniCertification ? "smace" as const : 
+                                  "general" as const;
                 
                 // Build base metadata with common fields
                 let metadata: any = {};
@@ -276,6 +308,22 @@ export default async function NewWorkPage({
                     appointment_time: formData.appointment_time,
                     service_type: formData.service_type,
                     workType: "healthcare-appointment"
+                  };
+                } else if (isLegalCase) {
+                  metadata = {
+                    client_name: formData.client_name,
+                    case_number: formData.case_number,
+                    case_type: formData.case_type,
+                    court_jurisdiction: formData.court_jurisdiction,
+                    deadline_date: formData.deadline_date,
+                    workType: "legal-case"
+                  };
+                } else if (isSniCertification) {
+                  metadata = {
+                    product_model_number: formData.product_model_number,
+                    sni_standard_type: formData.sni_standard_type,
+                    factory_location: formData.factory_location,
+                    workType: "sni-certification"
                   };
                 }
 
@@ -315,8 +363,8 @@ export default async function NewWorkPage({
   ];
   const userCapabilities = session.userCapabilities || [];
 
-  // Determine workType to pass to client based on intent category or searchParams (W-INDUSTRY-001-01/W-DOMAIN-002-01)
-        let clientWorkType: "general" | "bpjs-construction" | "healthcare-appointment" | "bpjs-kesehatan-claim" | "acaas-compliance-check" = "general";
+  // Determine workType to pass to client based on intent category or searchParams (W-INDUSTRY-001-01/W-DOMAIN-002-01/AGENTIC-LAW-001/SMACE-004)
+        let clientWorkType: "general" | "bpjs-construction" | "healthcare-appointment" | "bpjs-kesehatan-claim" | "acaas-compliance-check" | "legal-case" | "sni-certification" | "website-fix" | "digital-care" | "digital-growth-ops" | "managed-digital-operations" = "general";
         if (intent?.category?.includes("construction") || searchParams.workType === "bpjs-construction") {
           clientWorkType = "bpjs-construction";
         } else if (
@@ -326,10 +374,16 @@ export default async function NewWorkPage({
           searchParams.workType === "bpjs-kesehatan-claim"
         ) {
           clientWorkType = "bpjs-kesehatan-claim";
+        } else if (intent?.category?.includes("sni-certification") || intent?.category?.includes("manufacturing") || searchParams.workType === "sni-certification") {
+          clientWorkType = "sni-certification";
         } else if (intent?.category?.includes("healthcare") || searchParams.workType === "healthcare-appointment") {
           clientWorkType = "healthcare-appointment";
         } else if (intent?.category?.includes("compliance") || intent?.category?.includes("acaas") || searchParams.workType === "acaas-compliance-check") {
           clientWorkType = "acaas-compliance-check";
+        } else if (intent?.category?.includes("legal") || intent?.category?.includes("lawyershub") || searchParams.workType === "legal-case") {
+          clientWorkType = "legal-case";
+        } else if (intent?.category?.includes("wordpress") || intent?.category?.includes("website-fix") || searchParams.workType === "website-fix" || searchParams.domain === "wordpress-fix" || searchParams.workType === "digital-care" || searchParams.workType === "digital-growth-ops") {
+          clientWorkType = searchParams.workType === "digital-care" || searchParams.workType === "digital-growth-ops" || searchParams.workType === "managed-digital-operations" ? searchParams.workType : "website-fix";
         }
 
   // Pass all server-resolved data to client boundary component

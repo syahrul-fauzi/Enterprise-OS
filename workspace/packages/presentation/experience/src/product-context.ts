@@ -1,6 +1,7 @@
 // @ts-nocheck: Skip TypeScript checks for product context imports to unblock Lawyers Hub production build
 // Import product-specific context dari Product Runtime di root workspace products/*
 import { provideLawyersHubContext } from "@products/lawyershub/runtime/index.js";
+import { provideSMACEContext } from "@products/smace/runtime/index.js";
 // import { provideServicesIDContext } from "@products/services-id/runtime/index.js";
 // import { provideILCContext } from "@products/ilc/runtime/index.js";
 // import { provideAcademicContext } from "@products/academic/runtime/index.js";
@@ -59,6 +60,9 @@ export function readProductContextFromRequest(request: Request): ProductContext 
     } else if (baseHost.includes("commsme")) {
       console.log("[product-context] Matched commsme, setting productId to commsme");
       productId = "commsme";
+    } else if (baseHost.includes("smace")) {
+      console.log("[product-context] Matched smace, setting productId to smace");
+      productId = "smace";
     } else {
       productId = DOMAIN_TO_PRODUCT[baseHost] || null;
       console.log("[product-context] Fallback DOMAIN_TO_PRODUCT lookup, productId:", productId);
@@ -75,6 +79,10 @@ export function readProductContextFromRequest(request: Request): ProductContext 
     const lhContext = provideLawyersHubContext();
     productSpecificContext = lhContext;
     productDomain = productDomain ?? lhContext.domain;
+  } else if (productId === "smace") {
+    const smaceContext = provideSMACEContext(request.headers);
+    productSpecificContext = smaceContext;
+    productDomain = productDomain ?? smaceContext.domain;
   } else if (productId === "services-id") {
     const sidContext = provideServicesIDContext();
     productSpecificContext = sidContext;

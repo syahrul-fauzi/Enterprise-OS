@@ -40,7 +40,7 @@ export async function GET(request: Request) {
     if (!sessionValue) {
       return NextResponse.json({ error: "Invalid session cookie" }, { status: 401 });
     }
-    const session = decodeWorkspaceSession(sessionValue);
+    const session = await decodeWorkspaceSession(sessionValue);
     console.log(`[GET /api/cases/list] Decoded session: ${JSON.stringify(session)}`);
     
     // Validate session has required context (both authenticated and anonymous sessions work)

@@ -1,6 +1,10 @@
 import { z } from "zod";
 import type { DeviceId, WorkId } from "../../../work-core/contracts/work.contracts.js";
-import { deviceIdSchema, workIdSchema } from "../../../work-core/contracts/work.contracts.js";
+
+// Buat schema Zod secara lokal karena tidak diexport dari work-core.contracts (sesuai freeze EOS Core)
+// Pattern: string() dengan validasi UUID/pola yang sesuai dengan DeviceId/WorkId yang dihasilkan newWorkId/newDeviceId
+export const workIdSchema = z.string().regex(/^work-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/, "workId harus mengikuti pola work-<UUID>");
+export const deviceIdSchema = z.string().regex(/^device-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/, "deviceId harus mengikuti pola device-<UUID>");
 
 export const ConnectorDefinitionSchema = z.object({
   id: z.string(),
@@ -31,6 +35,7 @@ export const ExecutionEnvelopeSchema = z.object({
   deviceId: deviceIdSchema,
   tenantId: z.string().optional(), // Ditambahkan untuk edge runtime sync
   workspaceId: z.string().optional(), // Ditambahkan untuk edge runtime context isolation
+  sessionId: z.string().min(1, "sessionId tidak boleh kosong, harus berupa string yang valid"), // Wajib: memenuhi schema evidence-registry.record
   intent: z.object({
     type: z.string().min(1, "intent.type tidak boleh kosong, harus dipetakan ke capability yang terdaftar"),
     payload: z.unknown(),

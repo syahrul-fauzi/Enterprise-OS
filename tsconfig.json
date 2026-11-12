@@ -23,11 +23,17 @@
       ],
       "@apps/*": ["./workspace/apps/*/src"],
       "@capabilities/*": [
+        "./workspace/capabilities/*",
         "./workspace/capabilities/*/src",
         "./workspace/capabilities/*/dist"
       ],
       "@products/*": ["./workspace/products/*/src"],
       "@config/*": ["./workspace/config/*/src"]
     }
-  }
+  },
+  "exclude": [
+    "workspace/capabilities/shared/implementation/database/migrations/**/*",
+    "workspace/capabilities/observability/implementation/services/observability.service.ts",
+    "workspace/packages/compositions/whatsapp-channel/workspace.ts"
+  ]
 }

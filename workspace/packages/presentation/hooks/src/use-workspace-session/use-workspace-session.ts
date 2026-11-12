@@ -42,20 +42,31 @@ export function useWorkspaceSession() {
   useEffect(() => {
     let cancelled = false;
 
-    // First, load cached session from cookie immediately (synchronous, no network wait)
-    const cookie = document.cookie;
-    const sessionCookie = cookie.split(";").find(c => c.trim().startsWith(`${WORKSPACE_SESSION_COOKIE}=`));
-    let cachedSession: WorkspaceSession | null = null;
-    if (sessionCookie) {
-      try {
-        const sessionValue = sessionCookie.split("=")[1];
-        cachedSession = decodeWorkspaceSession(sessionValue);
-      } catch(e) {
-        console.warn("[useWorkspaceSession] Failed to decode cached session cookie:", e);
-      }
-    }
-
     async function loadSession() {
+      let cachedSession: WorkspaceSession | null = null;
+      
+      // First, load cached session from cookie immediately (asynchronous decoding)
+      const cookie = document.cookie;
+      const sessionCookie = cookie.split(";").find(c => c.trim().startsWith(`${WORKSPACE_SESSION_COOKIE}=`));
+      if (sessionCookie) {
+        try {
+          const sessionValue = sessionCookie.split("=")[1];
+          cachedSession = await decodeWorkspaceSession(sessionValue);
+        } catch(e) {
+          console.warn("[useWorkspaceSession] Failed to decode cached session cookie:", e);
+        }
+      }
+
+      // Initialize state with cached session immediately to avoid flash of unauthenticated
+      if (!cancelled && cachedSession) {
+        setState(prev => ({
+          ...prev,
+          cachedSession,
+          session: prev.session || cachedSession,
+          authenticated: prev.authenticated || Boolean(cachedSession.actorId && cachedSession.actorId !== "anonymous.user")
+        }));
+      }
+
       try {
         const resp = await fetch("/api/session", { 
           method: "GET",
@@ -98,16 +109,6 @@ export function useWorkspaceSession() {
             cachedSession
           }));
       }
-    }
-
-    // Initialize state with cached session immediately to avoid flash of unauthenticated
-    if (cachedSession) {
-      setState(prev => ({
-        ...prev,
-        cachedSession,
-        session: prev.session || cachedSession,
-        authenticated: prev.authenticated || Boolean(cachedSession.actorId && cachedSession.actorId !== "anonymous.user")
-      }));
     }
 
     loadSession();

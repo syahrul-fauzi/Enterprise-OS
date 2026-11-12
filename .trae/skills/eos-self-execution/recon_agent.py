@@ -164,6 +164,11 @@ class ReconAgent:
         elif work_item["product"] == "ILC":
             if "legal-community" not in [c.lower() for c in self.existing_capabilities]:
                 reuse_analysis["required_new"].append("Content persistence primitive")
+                
+        # Handle EOS Core work items (not thin app products)
+        else:
+            # EOS Core work items always have access to all core capabilities
+            pass
 
         return reuse_analysis
 

@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
-import { DigestEngine } from "@repo/core-kernel/digest-engine.js";
+import { createDigestEngine, type DigestEngineContract } from "../../kernel/src/digest-engine.js";
+
+const digestEngine: DigestEngineContract = createDigestEngine();
 
 const PREDICATE_VERSION = "requirement-verification-predicate/0.2.0";
 
@@ -189,7 +191,7 @@ function checkDigestIntegrity(
       ) {
         hadDigest = true;
         digestChecks++;
-        const recomputed = DigestEngine.digest((runtimeEntry as any).input);
+        const recomputed = digestEngine.digest((runtimeEntry as any).input);
         if (recomputed !== (runtimeEntry as any).input_digest) {
           digestFailures.push(`input_digest mismatch`);
         }
@@ -200,7 +202,7 @@ function checkDigestIntegrity(
       ) {
         hadDigest = true;
         digestChecks++;
-        const recomputed = DigestEngine.digest((runtimeEntry as any).result);
+        const recomputed = digestEngine.digest((runtimeEntry as any).result);
         if (recomputed !== (runtimeEntry as any).result_digest) {
           digestFailures.push(`result_digest mismatch`);
         }
@@ -210,7 +212,7 @@ function checkDigestIntegrity(
         digestChecks++;
         const rec = { ...runtimeEntry };
         delete (rec as any).invocation_digest;
-        const recomputed = DigestEngine.digest(rec);
+        const recomputed = digestEngine.digest(rec);
         if (recomputed !== (runtimeEntry as any).invocation_digest) {
           decisionIntegrityFailures.push(
             `decision_digest tamper:${(runtimeEntry as any).decision_id}`,
@@ -224,7 +226,7 @@ function checkDigestIntegrity(
           digestChecks++;
           const rec = { ...(decision as Record<string, unknown>) };
           delete rec.decision_digest;
-          const recomputed = DigestEngine.digest(rec);
+          const recomputed = digestEngine.digest(rec);
           if (recomputed !== decision.decision_digest) {
             decisionIntegrityFailures.push(
               `decision_digest tamper:${(runtimeEntry as any).decision_id}`,
@@ -317,7 +319,7 @@ function buildEvidenceSet(requirementId: string): readonly DecisionEvidenceRecor
     })
     .items.map((record: EvidenceRegistryRecord) => {
       const absolutePath = resolveEvidenceAbsolutePath(record.path);
-      const contentHash = DigestEngine.digestText(fs.readFileSync(absolutePath, "utf8"));
+      const contentHash = digestEngine.digestText(fs.readFileSync(absolutePath, "utf8"));
       return {
         id: record.id,
         kind: record.kind,
@@ -399,9 +401,9 @@ export function computeVerificationDecision(requirementId: string): Verification
   };
 
   const lifecycleEligible = requirement.implementedAt !== undefined;
-  const requirementHash = DigestEngine.digest(requirementFacts);
-  const evidenceSetHash = DigestEngine.digest(evidenceSet);
-  const registryProjectionHash = DigestEngine.digest(registryProjection);
+  const requirementHash = digestEngine.digest(requirementFacts);
+  const evidenceSetHash = digestEngine.digest(evidenceSet);
+  const registryProjectionHash = digestEngine.digest(registryProjection);
 
   const decisionInput = {
     predicateVersion: PREDICATE_VERSION,
@@ -410,7 +412,7 @@ export function computeVerificationDecision(requirementId: string): Verification
     registryProjectionHash,
     lifecycleEligible,
   } as const;
-  const decisionInputHash = DigestEngine.digest(decisionInput);
+  const decisionInputHash = digestEngine.digest(decisionInput);
 
   const verdict: DecisionVerdict =
     lifecycleEligible &&
@@ -419,7 +421,7 @@ export function computeVerificationDecision(requirementId: string): Verification
       ? "passed"
       : "failed";
 
-  const decisionFingerprint = DigestEngine.digest({
+  const decisionFingerprint = digestEngine.digest({
     ...decisionInput,
     verdict,
   });

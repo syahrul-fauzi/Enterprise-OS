@@ -120,6 +120,96 @@ export class GovernanceEvidenceService implements GovernanceEvidenceProvider {
     }
   }
 
+  async addRevenueTrackingEntry(workId: string, entry: {
+    workId: string;
+    clientId: string;
+    paymentTransactionId: string;
+    grossAmount: number;
+    productId: string;
+    actorId: string;
+    tenantId: string;
+    workspaceId: string;
+    status?: "pending" | "completed" | "failed";
+    paymentMethod?: string;
+  }): Promise<void> {
+    const revenueEntry = {
+      type: "commercial-revenue",
+      workId,
+      ...entry,
+      recordedAt: new Date().toISOString(),
+      source: entry.productId === "services-id" ? "services-id-marketplace" : 
+              entry.productId === "ecommerce-ops" ? "ecommerce-ops-marketplace" :
+              entry.productId === "lawyershub" ? "lawyershub-legal-services" : "unknown-product"
+    };
+    await this.addEvidence(workId, revenueEntry);
+  }
+
+  async getRevenueSummary(productId: string): Promise<RevenueSummary> {
+    const { getWORK_REPO } = await import("@capabilities/work-core");
+    const workRepo = getWORK_REPO();
+    if (!workRepo?.getEvidence) {
+      throw new Error(`[GovernanceEvidenceService] workRepository.getEvidence not available, cannot generate revenue summary: ${productId}`);
+    }
+
+    const allEvidence = await workRepo.getEvidence({ productId });
+    const revenueEntries = allEvidence.filter((e: any) => e.type === "commercial-revenue");
+    const uniqueClients = new Set(revenueEntries.map((e: any) => e.clientId)).size;
+    
+    const totalRevenueIdr = revenueEntries.reduce((sum: number, e: any) => 
+      (e.status === "completed" || !e.status) ? sum + (e.grossAmount || e.amount || 0) : sum, 0);
+    const byProduct: Record<string, { count: number; revenue: number }> = {};
+    
+    revenueEntries.forEach((e: any) => {
+      const key = e.productId || e.serviceId || "unknown";
+      if (!byProduct[key]) {
+        byProduct[key] = { count: 0, revenue: 0 };
+      }
+      byProduct[key].count += 1;
+      if (e.status === "completed" || !e.status) {
+        byProduct[key].revenue += e.grossAmount || e.amount || 0;
+      }
+    });
+
+    // Explicitly calculate all values to ensure no undefined properties
+    const calculatedTotalTransactions = revenueEntries.length;
+    const calculatedTotalRevenue = totalRevenueIdr;
+    const calculatedTotalRevenueIdr = totalRevenueIdr;
+    const calculatedUniqueClients = uniqueClients;
+    const calculatedByService = { ...byProduct };
+    const calculatedByProduct = { ...byProduct };
+    const calculatedTotal_transactions = revenueEntries.length;
+    const calculatedTotal_revenue_idr = totalRevenueIdr;
+    const calculatedUnique_clients = uniqueClients;
+
+    // Debug log untuk memverifikasi SEMUA nilai sebelum return
+    console.log(`[GovernanceEvidenceService] getRevenueSummary FINAL values for ${productId}:`, {
+      totalTransactions: calculatedTotalTransactions,
+      totalRevenue: calculatedTotalRevenue,
+      totalRevenueIdr: calculatedTotalRevenueIdr,
+      uniqueClients: calculatedUniqueClients,
+      byService: calculatedByService,
+      byProduct: calculatedByProduct,
+      total_transactions: calculatedTotal_transactions,
+      total_revenue_idr: calculatedTotal_revenue_idr,
+      unique_clients: calculatedUnique_clients
+    });
+
+    return {
+      // Base interface properties (camelCase)
+      totalTransactions: calculatedTotalTransactions,
+      totalRevenue: calculatedTotalRevenue,
+      byService: calculatedByService,
+      // Extended IDR-specific properties (camelCase)
+      totalRevenueIdr: calculatedTotalRevenueIdr,
+      uniqueClients: calculatedUniqueClients,
+      byProduct: calculatedByProduct,
+      // Backward compatibility snake_case properties
+      total_transactions: calculatedTotal_transactions,
+      total_revenue_idr: calculatedTotal_revenue_idr,
+      unique_clients: calculatedUnique_clients
+    };
+  }
+
   getAuditReport(): JsonRecord {
     const location = this.catalog.resolve("report");
     const result = asJsonRecord(

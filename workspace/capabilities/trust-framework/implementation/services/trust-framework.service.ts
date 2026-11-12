@@ -28,7 +28,7 @@ function readCatalog(): TrustFrameworkCatalog {
   return JSON.parse(readFileSync(TRUST_FRAMEWORK_PATH, "utf8")) as TrustFrameworkCatalog;
 }
 
-function computeLocalSignatureReference(payloadDigest: string): string {
+export function computeLocalSignatureReference(payloadDigest: string): string {
   const signatureDigest = createHash("sha256")
     .update(
       JSON.stringify({

@@ -1,0 +1,86 @@
+version: "1.0"
+product_id: "digital-operations"
+canonical_name: "Digital Operations"
+display_name: "Managed Digital Business Operations"
+tagline: "From Digital Maintenance to Continuous Business Operations"
+description: "Kami tidak hanya memperbaiki sistem digital. Kami memastikan sistem tersebut terus bekerja untuk bisnis Anda."
+mission: "The operating partner that keeps your digital business running, connected, secure, and improving."
+
+# Product identity sesuai rekomendasi strategis
+product_identity:
+  id: "digital-operations"
+  foundation: "evolusi WordPress Fix"
+  initial_market: "SME dengan ketergantungan pada website, e-commerce, dan integrasi digital"
+  primary_revenue: "recurring managed service"
+  differentiator: "Managed Outcome Loop"
+  experience_model: "role-based customer and operator experience"
+  execution_model: "existing EOS capabilities dan replaceable providers"
+  core_architecture: "FROZEN" # Sesuai mandate: tidak mengubah EOS Core
+
+# Diferensiasi utama
+key_differentiators:
+  - "Managed Outcome Loop: SENSE → UNDERSTAND → DECIDE → ACT → VERIFY OUTCOME → LEARN/IMPROVE"
+  - "Bukan sekadar AI-powered, melainkan managed operations dengan kontinuitas"
+  - "Accountability penuh atas hasil operasional, bukan hanya tools"
+  - "Evidence-based reliability yang dapat diaudit"
+  - "Work Continuity: identitas Work tetap terjaga sepanjang masa layanan"
+
+# EOS Boundary alignment (tidak boleh dilanggar)
+eos_boundaries:
+  - "Digital Operations memiliki definisi produk dan service contract; BUKAN Work authority"
+  - "Work identity tetap berasal dari work-core; subscription dapat menghasilkan banyak Work"
+  - "Midtrans/payment provider tetap sumber kebenaran transaksi; status pembayaran tidak menyelesaikan Work"
+  - "AI agent hanya menjalankan tindakan sesuai authority, scope, approval, dan evidence"
+  - "Integrasi provider dapat diganti tanpa mengubah identitas Work"
+  - "Evidence harus menunjukkan tindakan dan hasil aktual, bukan hanya klaim agent"
+
+# Marketplace target (beachhead market)
+target_market:
+  segment: "Indonesian SME e-commerce & digital business"
+  criteria:
+    - "Bisnis bergantung pada website, e-commerce, dan integrasi digital"
+    - "Masalah operasional mudah dikenali dengan dampak bisnis jelas"
+    - "Memiliki potensi recurring revenue dari layanan berkelanjutan"
+    - "Dapat dilayani dengan existing EOS capabilities tanpa modifikasi Core"
+  initial_platforms: ["WordPress", "Shopify", "Tokopedia", "Shopee", "WooCommerce"]
+
+# Metric sukses sesuai permintaan (bukan jumlah agent/folder)
+success_metrics:
+  commercial:
+    - "Paid customers"
+    - "MRR (Monthly Recurring Revenue)"
+    - "Renewal rate"
+    - "Revenue per customer"
+  reliability:
+    - "Service availability"
+    - "Incident frequency"
+    - "Mean time to recovery (MTTR)"
+  delivery:
+    - "Time to resolution"
+    - "SLA attainment rate"
+    - "First-time resolution rate"
+  integration:
+    - "Successful synchronization rate"
+    - "Failed transactions rate"
+    - "Reconciliation accuracy"
+  automation:
+    - "Verified autonomous resolution rate"
+    - "Human escalation rate"
+  customer_outcome:
+    - "Reduced downtime percentage"
+    - "Recovered transaction value"
+    - "Operational cost reduction"
+  trust:
+    - "Evidence completeness rate"
+    - "Unauthorized action count"
+    - "Auditability score"
+
+# Phase 1 Priority (sesuai roadmap)
+phase1_priorities:
+  - "✅ Tetapkan Digital Operations sebagai canonical product identity"
+  - "✅ Rekonsiliasi WordPress Fix dan Digital Operations (SELESAI)"
+  - "Finalisasi service catalog, package, scope, exclusions, SLA, availability"
+  - "✅ Verifikasi semua capability terdaftar dapat digunakan (INVOKABLE) (SELESAI)"
+  - "✅ Customer journey end-to-end Digital Care berjalan (SELESAI)"
+  - "✅ Customer journey end-to-end Digital Growth Ops berjalan (SELESAI)"
+  - "✅ DIGIOP-103: Managed Outcome Loop terimplementasi dan aktif untuk semua paket"

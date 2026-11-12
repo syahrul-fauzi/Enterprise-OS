@@ -64,9 +64,26 @@ export class ServiceRequestRepositoryInMemory implements ServiceRequestRepositor
   readonly kind: "repository" = "repository";
   readonly entityName: "ServiceRequest" = "ServiceRequest";
 
+  // DIGISC-007: Implement bySubscriptionId untuk query berdasarkan ID langganan dengan tenant/workspace isolation
+  async bySubscriptionId(subscriptionId: string, context?: { tenantId: string; workspaceId?: string }): Promise<ServiceRequestAggregate | undefined> {
+    recordRuntimeInvocation({ capability: "services-id", command: "repository.bySubscriptionId", input: { subscriptionId, context } });
+    const items = Array.from(STORE.values());
+    const item = items.find(item => (item as any).subscriptionId === subscriptionId);
+    if (!item) return undefined;
+    // Validate tenant/workspace isolation first
+    if (context?.tenantId && item.tenantId !== context.tenantId) return undefined;
+    if (context?.workspaceId && item.workspaceId !== context.workspaceId) return undefined;
+    return clone(item);
+  }
+
   async save(input: CreateServiceRequestInput): Promise<CreateServiceRequestOutput> {
     recordRuntimeInvocation({ capability: "services-id", command: "repository.save", input });
     const id = newServiceRequestId() as any;
+    // Calculate next billing date if this is a recurring subscription
+    const nextBillingDate = input.isRecurring && input.recurringIntervalDays 
+      ? new Date(Date.now() + input.recurringIntervalDays * 24 * 60 * 60 * 1000) 
+      : undefined;
+
     const newRequest: ServiceRequestAggregate = {
       id,
       title: input.title,
@@ -82,6 +99,12 @@ export class ServiceRequestRepositoryInMemory implements ServiceRequestRepositor
       workspaceId: input.workspaceId,
       actorId: input.actorId,
       category: input.category,
+      // DIGISC-007: Subscription tracking untuk managed service recurring triggers
+      subscriptionId: input.subscriptionId,
+      subscriptionType: input.subscriptionType,
+      recurringIntervalDays: input.recurringIntervalDays,
+      isRecurring: input.isRecurring || false,
+      nextBillingDate
     };
     STORE.set(id, newRequest);
     // Record evidence for creation
@@ -126,16 +149,20 @@ export class ServiceRequestRepositoryInMemory implements ServiceRequestRepositor
     const { notifyWorkspaceListeners } = await import("@repo/core-realtime");
     await notifyWorkspaceListeners(input.workspaceId, input.actorId, (item as any).workId);
     
-    // Record settlement evidence
-    await import("@repo/core-evidence").then(m => m.recordEvidence?.({
+    // Import canonical evidence recorder dari work-core (single source of truth)
+    import { safeRecordEvidence } from "../../../work-core/implementation/utils/evidence.utils.js";
+    // Record settlement evidence menggunakan canonical safeRecordEvidence
+    await safeRecordEvidence({
       capability: "services-id",
       command: "settle",
       work_id: (item as any).workId,
       tenant_id: input.tenantId,
       workspace_id: input.workspaceId,
       actor_id: input.actorId,
+      sessionId: "system-session-" + Date.now(), // Sesi sistem untuk automated settlement
+      timestamp: new Date().toISOString(),
       settlement_proof: input.settlementProof,
-    }));
+    });
     
     return { id: input.id, status: "settled", settledAt: updated.settledAt! };
   }
@@ -185,6 +212,18 @@ export class ServiceRequestRepositoryInMemory implements ServiceRequestRepositor
     // Validate tenant/work isolation first, then workspace (CORE-001 compliance)
     if (context?.tenantId && item.tenantId !== context.tenantId) return undefined;
     if (context?.workId && item.workId !== context.workId) return undefined;
+    if (context?.workspaceId && item.workspaceId !== context.workspaceId) return undefined;
+    return clone(item);
+  }
+
+  // DIGISC-007: Tambahkan bySubscriptionId untuk query berdasarkan ID langganan
+  async bySubscriptionId(subscriptionId: string, context?: { tenantId: string; workspaceId?: string }): Promise<ServiceRequestAggregate | undefined> {
+    recordRuntimeInvocation({ capability: "services-id", command: "repository.bySubscriptionId", input: { subscriptionId, context } });
+    const items = Array.from(STORE.values());
+    const item = items.find(item => (item as any).subscriptionId === subscriptionId);
+    if (!item) return undefined;
+    // Validate tenant/workspace isolation first
+    if (context?.tenantId && item.tenantId !== context.tenantId) return undefined;
     if (context?.workspaceId && item.workspaceId !== context.workspaceId) return undefined;
     return clone(item);
   }

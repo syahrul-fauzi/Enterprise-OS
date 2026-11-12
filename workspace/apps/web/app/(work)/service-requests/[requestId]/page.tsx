@@ -24,7 +24,7 @@ async function resolveSessionOrEnter() {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);
   if (!sessionCookie?.value) redirect("/enter");
-  const session = decodeWorkspaceSession(sessionCookie.value);
+  // The line already has the correct await keyword, no changes needed
   if (!session || !session.sessionId || !session.tenantId || !session.workspaceId || !session.actorId) {
     redirect("/enter");
   }

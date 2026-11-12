@@ -5,7 +5,9 @@ import {
   decodeWorkspaceSession,
 } from "@repo/core-kernel";
 import { getSessionRepositoryPostgres, initIdentitySchema } from "@repo/capabilities-identity/repositories";
-import { SessionId } from "@repo/capabilities-identity/implementation/contracts/identity.contracts";
+// Canonical import SessionId dari @repo/contracts-core (sumber tunggal tipe identity - W06-A3-001)
+// Mengganti import non-canonical dari @repo/capabilities-identity/implementation/contracts untuk sinkronisasi tipe
+import { SessionId } from "@repo/contracts-core";
 
 // Initialize schema once at route load
 initIdentitySchema().catch(err => console.error("[session/revoke] Failed to init identity schema:", err));

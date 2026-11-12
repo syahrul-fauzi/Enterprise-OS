@@ -29,8 +29,8 @@ import { getRequirementsByOwnerCommand } from "./get-requirements-by-owner.comma
 import { getAllRequirementsCommand } from "./get-all-requirements.command.ts";
 import { getRequirementByIdCommand } from "./get-requirement-by-id.command.ts";
 // Import hanya type, inisialisasi dilakukan di dalam fungsi async untuk menghindari circular dependency
-import type { SessionRepository } from "../../../work-core/index.js";
-import { getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core/index.js";
+import type { SessionRepository, WorkId } from "@repo/contracts-core";
+import { getSessionRepositoryPostgres, initIdentitySchema } from "../../../identity/implementation/repositories/index.js";
 
 // Inisialisasi session repository hanya saat dibutuhkan (lazy init) untuk menghindari ReferenceError
 let sessionRepository: SessionRepository;
@@ -38,7 +38,7 @@ let schemaInitialized = false;
 
 async function getSessionRepository() {
   if (!sessionRepository) {
-    const { SessionRepositoryInMemory } = await import("../../../work-core/index.js");
+    const { SessionRepositoryInMemory } = await import("../../../identity/implementation/repositories/index.js");
     sessionRepository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
       ? getSessionRepositoryPostgres()
       : SessionRepositoryInMemory;
@@ -290,7 +290,7 @@ export const approveRequirement: ApproveRequirementCommand = {
       throw new Error(`[requirement.approve] Requirement not found: ${id}`);
     }
     // 2. Enforce workId consistency - cannot modify work association
-    if (current.workId !== workId) {
+    if (current.workId !== workIdValue) {
       throw new Error("[requirement.approve] Cannot modify work association - workId must remain consistent");
     }
     // C14 Precondition: Requirement must be in review_completed status to approve (post-review workflow)
@@ -311,7 +311,7 @@ export const approveRequirement: ApproveRequirementCommand = {
       verificationStatus: "not_ready",
       approvedBy: session.actorId,
       approvedAt,
-      workId,
+      workId: workIdValue,
     };
     await RequirementRepositoryCurrent.save(next);
     return { id: next.id, status: "approved", approvedAt };
@@ -339,7 +339,7 @@ export const startRequirementDelivery: StartRequirementDeliveryCommand = {
       throw new Error(`[requirement.startDelivery] Requirement not found: ${id}`);
     }
     // 2. Enforce workId consistency - cannot modify work association
-    if (current.workId !== workId) {
+    if (current.workId !== workIdValue) {
       throw new Error("[requirement.startDelivery] Cannot modify work association - workId must remain consistent");
     }
     if (current.status !== "approved") {
@@ -379,7 +379,7 @@ export const markRequirementImplemented: MarkRequirementImplementedCommand = {
       throw new Error(`[requirement.markImplemented] Requirement not found: ${id}`);
     }
     // 2. Enforce workId consistency - cannot modify work association
-    if (current.workId !== workId) {
+    if (current.workId !== workIdValue) {
       throw new Error("[requirement.markImplemented] Cannot modify work association - workId must remain consistent");
     }
     if (current.status !== "in_delivery") {
@@ -494,7 +494,7 @@ export const verifyRequirement: VerifyRequirementCommand = {
     }
 
     // CORE-001: Ambil semua boundary metadata dari core Work primitive (single source of truth)
-    const { getWorkRepositoryPostgres } = await import("../../../work-core/index.js");
+    const { getWorkRepositoryPostgres } = await import("../../../work-core/implementation/index.js");
     const workRepository = getWorkRepositoryPostgres();
     const coreWork = await workRepository.byWorkId(workIdValue as any);
     if (!coreWork) {
@@ -514,7 +514,7 @@ export const verifyRequirement: VerifyRequirementCommand = {
       throw new Error(`[requirement.verify] Requirement not found: ${id}`);
     }
     // 5. Enforce requirement belongs to the same Work (CORE-001 consistency check)
-    if (current.workId !== workId) {
+    if (current.workId !== workIdValue) {
       throw new Error("[requirement.verify] Requirement does not belong to the specified Work - workId mismatch");
     }
     if (current.status !== "implemented") {
@@ -581,7 +581,7 @@ export const completeRequirementReview: CompleteRequirementReviewCommand = {
       throw new Error(`[requirement.completeReview] Requirement not found: ${id}`);
     }
     // 2. Enforce workId consistency - cannot modify work association
-    if (current.workId !== workId) {
+    if (current.workId !== workIdValue) {
       throw new Error("[requirement.completeReview] Cannot modify work association - workId must remain consistent");
     }
 

@@ -38,12 +38,12 @@ async function runTestA() {
       workspaceId: "workspace-001",
       actorId: "recipient-actor-001"
     };
-    const encodedSession = encodeWorkspaceSession(validSession);
+    const encodedSession = await encodeWorkspaceSession(validSession);
     console.log("   ✅ Session encoding berhasil:", encodedSession.substring(0, 30) + "...");
 
     // 3. Test decode session (verifikasi fungsi kernel bekerja)
     console.log("3/13: Verifikasi session decode...");
-    const decodedSession = decodeWorkspaceSession(encodedSession);
+    const decodedSession = await decodeWorkspaceSession(encodedSession);
     if (decodedSession?.actorId === validSession.actorId) {
       console.log("   ✅ Session decode berhasil, actor_id cocok");
     }
@@ -187,7 +187,7 @@ async function runTestA() {
       workspaceId: "workspace-001",
       actorId: "hacker-actor-999" // Bukan participant
     };
-    const invalidEncoded = encodeWorkspaceSession(invalidSession);
+    const invalidEncoded = await encodeWorkspaceSession(invalidSession);
     
     const invalidMockRequest = new Request("http://localhost:3000/api/work/test-work-001", {
       method: "PUT",

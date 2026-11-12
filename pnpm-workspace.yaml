@@ -10,6 +10,7 @@ packages:
   - 'workspace/capabilities/*'
   - 'workspace/products/*'
 allowBuilds:
+  '@contentauth/c2pa-node': true
   '@parcel/watcher': false
   esbuild: false
   sharp: false

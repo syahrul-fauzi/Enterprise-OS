@@ -459,27 +459,23 @@ export function validateBoundaryAccess(domain: string, accessedDomain: string): 
     "capability-dispatch": ["work-core", "identity"],
     "evidence-gateway": ["work-core", "identity", "capability-dispatch"],
     "acaas": ["work-core", "identity", "evidence-gateway"],
+    "investment-compliance": ["work-core", "identity", "evidence-gateway"], // ILC-001: Tambahkan ACaaS capability sebagai domain yang diizinkan
     "requirement-management": ["work-core", "identity"],
-    "api-gateway": ["work-core", "identity", "capability-dispatch", "evidence-gateway", "acaas", "requirement-management"],
+    "api-gateway": ["work-core", "identity", "capability-dispatch", "evidence-gateway", "acaas", "requirement-management", "investment-compliance"],
+    "full-platform-integration": ["work-core", "identity", "connector-ecosystem"], // DIGIOP-104: Tambahkan full-platform-integration dengan dependency yang diizinkan
     "work-core": [] // Work Core tidak boleh mengakses domain lain
   };
   return allowedDependencies[domain]?.includes(accessedDomain) ?? false;
 }
 
-// Autonomy Boundary Check Types - Canonical implementation for edge and other capabilities
-export interface AutonomyBoundaryCheck {
-  action: string;
-  allowed: string[];
-  prohibited: string[];
-}
 
-export interface AutonomyBoundaryResult {
-  ok: boolean;
-  violationFound: boolean;
-  log: DecisionLogEntry;
-  stage: any;
-  controlsApplied: string[];
-}
+
+// ==============================================
+// 📌 CANONICAL BOUNDARY CHECK TYPES (dipindahkan dari utils untuk konsistensi)
+// Re-export boundary check types dari utils sebagai bagian dari kontrak canonical work-core
+// Mematuhi EOS-360-004: Core Sovereignty - semantic authority tetap pada EOS Core
+// ==============================================
+export type { AutonomyBoundaryCheck, AutonomyBoundaryResult, DecisionLogEntry } from "../implementation/utils/boundary-checks.types.js";
 
 // Canonical boundary check function exported from contracts
 export { checkAutonomyBoundary } from "../implementation/utils/boundary-checks.utils.js";
@@ -554,6 +550,10 @@ export interface HighValueWorkGraphQuery {
    * Dapatkan Product yang menjadi induk dari sebuah Work
    */
   getProductForWork: (workId: WorkId) => Promise<ProductNode | undefined>;
+  /**
+   * Dapatkan Work yang terkait dengan sebuah subscription ID (untuk managed service recurring triggers)
+   */
+  getBySubscriptionId: (subscriptionId: string) => Promise<WorkAggregate | undefined>;
 }
 
 // ==============================================
@@ -593,6 +593,12 @@ export interface WorkSemanticContract extends ContinuityObject {
   relatedProductIds: readonly string[]; // Semua product yang terhubung dengan Work ini
   relatedRequirementIds: readonly string[]; // Semua requirement yang harus dipenuhi Work ini
   relatedOutcomeIds: readonly string[]; // Semua outcome yang dihasilkan dari Work ini
+  // DIGISC-007: Subscription tracking untuk managed services recurring triggers
+  subscriptionId?: string; // ID langganan untuk managed service yang terkait dengan Work ini
+  subscriptionType?: string; // Tipe langganan (monthly, annual, custom)
+  recurringIntervalDays?: number; // Interval penagihan berulang dalam hari
+  nextBillingDate?: Readonly<Date>; // Tanggal penagihan berikutnya
+  isRecurring?: boolean; // Flag apakah Work ini merupakan bagian dari langganan berulang
   // W-002: HIGH-VALUE WORK BOUNDARY TRACKING (user mandate: maximize boundaries crossed per Work)
   boundariesCrossed?: readonly {
     boundaryType: "legal" | "service" | "compliance" | "finance" | "provider" | "domain" | "actor" | "workspace";
@@ -601,6 +607,10 @@ export interface WorkSemanticContract extends ContinuityObject {
     newContext: Record<string, string>; // Context setelah crossing
     evidenceId: string; // ID evidence yang mencatat crossing event
   }[]; // Daftar semua boundary yang telah dilewati Work ini (immutable append-only)
+  // Economic Governance: Pemisahan biaya sesuai SMACE requirement
+  estimatedCost?: number; // Perkiraan biaya sebelum eksekusi
+  reservedCost?: number;  // Anggaran yang dicadangkan untuk Work ini
+  actualCost?: number;    // Pengeluaran aktual yang dapat direkonsiliasi
 }
 
 // ==============================================
@@ -687,15 +697,9 @@ export interface FitnessCheckResult {
  * IntentRawInput: Input mentah dari actor (human/AI/machine) yang perlu dipahami
  * Bisa berupa string langsung atau object structured dengan metadata
  */
-export type IntentRawInput = {
-  type: "expression" | "request" | "signal" | "event";
-  content: string | object;
-  source?: {
-    type: "human" | "ai_agent" | "machine" | "external_system";
-    actorId?: string;
-    entryPoint?: string;
-  };
-};
+// IntentRawInput di-export dari @repo/contracts-core (single source of truth)
+// Tidak didefinisikan ulang untuk menghindari import conflict dan menjaga Core Sovereignty (EOS-360-004)
+export type { IntentRawInput } from "@repo/contracts-core";
 
 /**
  * IntentContext: Konteks linguistik dan domain dari intent yang dipahami

@@ -46,7 +46,22 @@ export function NewWorkFormClient({
     // ACaaS Compliance Check specific fields (ACaaS-COMMERCIAL-001) - only used when workType = "acaas-compliance-check"
     documentType: "",
     documentData: "",
-    compliancePolicies: []
+    compliancePolicies: ["ppn-invoice-validation"] as string[],
+    invoiceNumber: "",
+    taxPeriod: "",
+    amount: 0,
+    seller: "",
+    buyer: "",
+    // LawyersHub / Legal Case specific fields (AGENTIC-LAW-001) - only used when workType = "legal-case"
+    client_name: "",
+    case_number: "",
+    case_type: "",
+    court_jurisdiction: "",
+    deadline_date: "",
+    // SMACE / SNI Certification specific fields (SMACE-004) - only used when workType = "sni-certification"
+    product_model_number: "",
+    sni_standard_type: "",
+    factory_location: ""
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -115,6 +130,33 @@ export function NewWorkFormClient({
                 placeholder="Tambahkan informasi tambahan, dokumen yang tersedia, atau hal lain yang relevan..."
                 className="w-full resize-none"
               />
+
+              {/* Paket Layanan Digital Operations - workType selector untuk user */}
+              <div className="border-t border-border-subtle pt-6 mt-6 space-y-6">
+                <h3 className="text-lg font-semibold text-text-primary">Pilih Paket Layanan</h3>
+                <select
+                  id="workType"
+                  name="workType"
+                  value={workType}
+                  onChange={(e) => {
+                    // Redirect untuk set searchParams workType agar form fields sesuai
+                    window.location.href = `/work/new?workType=${e.target.value}`;
+                  }}
+                  className="w-full p-3 border border-border-subtle rounded-md bg-surface-background text-text-primary"
+                >
+                  <option value="general">Umum</option>
+                  <option value="website-fix">Website Fix (Single Issue)</option>
+                  <option value="digital-care">Digital Care (Basic Managed)</option>
+                  <option value="digital-growth-ops">Digital Growth Ops (Growth Managed)</option>
+                  <option value="managed-digital-operations">Managed Digital Business Operations (Enterprise)</option>
+                  <option value="bpjs-construction">Proyek Konstruksi BPJS</option>
+                  <option value="healthcare-appointment">Janji Temu Kesehatan</option>
+                  <option value="bpjs-kesehatan-claim">Klaim BPJS Kesehatan</option>
+                  <option value="acaas-compliance-check">Pemeriksaan Kepatuhan ACaaS</option>
+                  <option value="legal-case">Kasus Hukum</option>
+                  <option value="sni-certification">Sertifikasi SNI</option>
+                </select>
+              </div>
 
               {/* SLICE-006: BPJS Construction specific form fields - only rendered for construction work */}
               {workType === "bpjs-construction" && (
@@ -263,6 +305,141 @@ export function NewWorkFormClient({
                     name="documentType"
                     label="Tipe Dokumen"
                     required
+                    value={formData.documentType || ""}
+                    onChange={(e) => setFormData({...formData, documentType: e.target.value})}
+                    placeholder="Pilih tipe dokumen (ppn-invoice, pph21, bpjs, dll.)..."
+                    className="w-full"
+                  />
+
+                  <Input
+                    id="invoiceNumber"
+                    name="invoiceNumber"
+                    label="Nomor Faktur PPN"
+                    value={formData.invoiceNumber || ""}
+                    onChange={(e) => setFormData({...formData, invoiceNumber: e.target.value})}
+                    placeholder="Masukkan nomor faktur PPN (13 digit)..."
+                    className="w-full"
+                  />
+
+                  <Input
+                    id="taxPeriod"
+                    name="taxPeriod"
+                    label="Masa Pajak"
+                    type="month"
+                    value={formData.taxPeriod || ""}
+                    onChange={(e) => setFormData({...formData, taxPeriod: e.target.value})}
+                    className="w-full"
+                  />
+
+                  <Input
+                    id="amount"
+                    name="amount"
+                    label="Nilai Transaksi (Rp)"
+                    type="number"
+                    value={formData.amount || ""}
+                    onChange={(e) => setFormData({...formData, amount: Number(e.target.value)})}
+                    placeholder="Masukkan nilai transaksi..."
+                    className="w-full"
+                  />
+
+                  <Input
+                    id="seller"
+                    name="seller"
+                    label="Penjual (NPWP/Nama)"
+                    value={formData.seller || ""}
+                    onChange={(e) => setFormData({...formData, seller: e.target.value})}
+                    placeholder="Masukkan data penjual..."
+                    className="w-full"
+                  />
+
+                  <Input
+                    id="buyer"
+                    name="buyer"
+                    label="Pembeli (NPWP/Nama)"
+                    value={formData.buyer || ""}
+                    onChange={(e) => setFormData({...formData, buyer: e.target.value})}
+                    placeholder="Masukkan data pembeli..."
+                    className="w-full"
+                  />
+
+                  <Input
+                    id="compliancePolicies"
+                    name="compliancePolicies"
+                    label="Kebijakan Kepatuhan (pisahkan dengan koma)"
+                    required
+                    value={formData.compliancePolicies?.length ? formData.compliancePolicies.join(", ") : "ppn-invoice-validation"}
+                    onChange={(e) => setFormData({...formData, compliancePolicies: e.target.value.split(",").map(s => s.trim())})}
+                    placeholder="ppn-invoice-validation, dll."
+                    className="w-full"
+                  />
+                </div>
+              )}
+
+              {/* AGENTIC-LAW-001: LawyersHub / Legal Case specific form fields - only rendered for legal-case work */}
+              {workType === "legal-case" && (
+                <div className="border-t border-border-subtle pt-6 mt-6 space-y-6">
+                  <h3 className="text-lg font-semibold text-text-primary">Detail Kasus Hukum (LawyersHub)</h3>
+                  
+                  <Input
+                    id="client_name"
+                    name="client_name"
+                    label="Nama Klien"
+                    required
+                    value={formData.client_name}
+                    onChange={(e) => setFormData({...formData, client_name: e.target.value})}
+                    placeholder="Masukkan nama klien yang terdaftar..."
+                    className="w-full"
+                  />
+
+                  <Input
+                    id="case_number"
+                    name="case_number"
+                    label="Nomor Kasus"
+                    required
+                    value={formData.case_number}
+                    onChange={(e) => setFormData({...formData, case_number: e.target.value})}
+                    placeholder="Masukkan nomor kasus yang terdaftar di pengadilan..."
+                    className="w-full"
+                  />
+
+                  <Input
+                    id="case_type"
+                    name="case_type"
+                    label="Tipe Kasus"
+                    required
+                    value={formData.case_type}
+                    onChange={(e) => setFormData({...formData, case_type: e.target.value})}
+                    placeholder="Contoh: Perdata, Pidana, Dagang, dll."
+                    className="w-full"
+                  />
+
+                  <Input
+                    id="court_jurisdiction"
+                    name="court_jurisdiction"
+                    label="Yurisdiksi Pengadilan"
+                    required
+                    value={formData.court_jurisdiction}
+                    onChange={(e) => setFormData({...formData, court_jurisdiction: e.target.value})}
+                    placeholder="Contoh: PN Jakarta Pusat, PT DKI Jakarta, dll."
+                    className="w-full"
+                  />
+
+                  <Input
+                    id="deadline_date"
+                    name="deadline_date"
+                    label="Batas Waktu Penyelesaian"
+                    type="date"
+                    required
+                    value={formData.deadline_date}
+                    onChange={(e) => setFormData({...formData, deadline_date: e.target.value})}
+                    className="w-full"
+                  />
+                  
+                  <Input
+                    id="documentType"
+                    name="documentType"
+                    label="Tipe Dokumen"
+                    required
                     value={formData.documentType}
                     onChange={(e) => setFormData({...formData, documentType: e.target.value})}
                     placeholder="Pilih tipe dokumen (pph21, ppn, bpjs, dll.)..."
@@ -293,6 +470,113 @@ export function NewWorkFormClient({
                   />
                 </div>
               )}
+
+              {/* SMACE-004: SMACE / SNI Certification specific form fields - only rendered for sni-certification work */}
+              {workType === "sni-certification" && (
+                <div className="border-t border-border-subtle pt-6 mt-6 space-y-6">
+                  <h3 className="text-lg font-semibold text-text-primary">Detail Sertifikasi SNI (SMACE)</h3>
+                  
+                  <Input
+                    id="product_model_number"
+                    name="product_model_number"
+                    label="Nomor Model Produk"
+                    required
+                    value={formData.product_model_number}
+                    onChange={(e) => setFormData({...formData, product_model_number: e.target.value})}
+                    placeholder="Masukkan nomor model produk yang akan disertifikasi..."
+                    className="w-full"
+                  />
+
+                  <Input
+                    id="sni_standard_type"
+                    name="sni_standard_type"
+                    label="Jenis Standar SNI"
+                    required
+                    value={formData.sni_standard_type}
+                    onChange={(e) => setFormData({...formData, sni_standard_type: e.target.value})}
+                    placeholder="Contoh: SNI 0001:2023, SNI 0002:2024, dll."
+                    className="w-full"
+                  />
+
+                  <TextArea
+                    id="factory_location"
+                    name="factory_location"
+                    label="Lokasi Pabrik"
+                    rows={2}
+                    required
+                    value={formData.factory_location}
+                    onChange={(e) => setFormData({...formData, factory_location: e.target.value})}
+                    placeholder="Alamat lengkap lokasi pabrik produksi..."
+                    className="w-full resize-none"
+                  />
+                </div>
+              )}
+
+              {/* WordPress/Website Fix specific form fields - works for website-fix, digital-care, and digital-growth-ops packages (digiop-slice-006) */}
+              {(workType === "website-fix" || workType === "digital-care" || workType === "digital-growth-ops") && (
+                <div className="border-t border-border-subtle pt-6 mt-6 space-y-6">
+                  <h3 className="text-lg font-semibold text-text-primary">Detail Website/WordPress Issue</h3>
+                  
+                  <Input
+                    id="website_url"
+                    name="website_url"
+                    label="URL Website"
+                    required
+                    value={formData.website_url}
+                    onChange={(e) => setFormData({...formData, website_url: e.target.value})}
+                    placeholder="https://contohwebsite.com..."
+                    className="w-full"
+                  />
+
+                  <Input
+                    id="cms_platform"
+                    name="cms_platform"
+                    label="Platform CMS"
+                    required
+                    value={formData.cms_platform}
+                    onChange={(e) => setFormData({...formData, cms_platform: e.target.value})}
+                    placeholder="WordPress, Shopify, Static HTML, dll."
+                    className="w-full"
+                  />
+
+                  <Input
+                    id="hosting_provider"
+                    name="hosting_provider"
+                    label="Penyedia Hosting"
+                    value={formData.hosting_provider}
+                    onChange={(e) => setFormData({...formData, hosting_provider: e.target.value})}
+                    placeholder="CloudFirst, SiteGround, Hostinger, dll."
+                    className="w-full"
+                  />
+
+                  <TextArea
+                    id="error_details"
+                    name="error_details"
+                    label="Detail Error"
+                    rows={3}
+                    required
+                    value={formData.error_details}
+                    onChange={(e) => setFormData({...formData, error_details: e.target.value})}
+                    placeholder="Jelaskan detail masalah yang terjadi: white screen, error 500, plugin conflict, dll."
+                    className="w-full resize-none"
+                  />
+
+                  <TextArea
+                    id="error_logs"
+                    name="error_logs"
+                    label="Log Error (jika ada)"
+                    rows={3}
+                    value={formData.error_logs}
+                    onChange={(e) => setFormData({...formData, error_logs: e.target.value})}
+                    placeholder="Tempelkan log error dari server/debug jika tersedia..."
+                    className="w-full resize-none"
+                  />
+                </div>
+              )}
+                </div>
+              )}
+
+
 
               <div className="pt-4 border-t border-border-subtle flex flex-col sm:flex-row gap-4 justify-end">
                 <Link href="/work">

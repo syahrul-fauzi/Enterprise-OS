@@ -1,3 +1,3 @@
-export { GlobalNavigation } from "./GlobalNavigation";
-export type { GlobalNavigationProps } from "./GlobalNavigation";
-export type { BreadcrumbItem } from "../molecules/Breadcrumb";
+export { GlobalNavigation } from "./GlobalNavigation.js";
+export type { GlobalNavigationProps } from "./GlobalNavigation.js";
+export type { BreadcrumbItem } from "../molecules/Breadcrumb.js";

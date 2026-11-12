@@ -1,0 +1,36 @@
+id: full-platform-integration
+name: Full Platform Integration
+version: 0.1.0
+owner: integration-domain
+status: ACTIVE
+introduced: "2026-11-11"
+provides:
+  - enterprise-tenant-provisioning
+  - cross-platform-connector-management
+purpose: Provide end-to-end enterprise platform integration capabilities, including tenant provisioning, connector lifecycle management, and multi-platform interoperability.
+manifest_version: 1.0.0
+exports:
+  - EnterpriseTenantProvisioningProvider
+  - CrossPlatformConnectorManager
+implementation:
+  entry: implementation/service.ts
+depends_on:
+  - identity
+  - work-core
+  - connector-ecosystem
+capability:
+  name: full-platform-integration
+  owner: integration-domain
+  purpose: Reuse identity and connector capabilities to deliver enterprise-grade platform integration without duplicate implementation.
+  consumers:
+    - digitalops
+    - acaas
+  maturity:
+    level: experimental
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - identity-reuse-validation
+    - cross-product-compatibility
+stability: experimental

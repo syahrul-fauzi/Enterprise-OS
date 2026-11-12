@@ -1,0 +1,67 @@
+specification:
+  id: REQ-011
+  name: "Employee Salary Disbursement Tracking for Payroll Canary"
+  version: "1.0.0"
+  kind: ELS_LANGUAGE_SPECIFICATION
+  status: DRAFT
+  language_spec_version: "1.0"
+  golden_reference: false
+  root_of_trust_for: "T011 - Salary Tracking Transformation"
+  identity_note: THIS_DOCUMENT_HAS_STABLE_HASH.ANY_MODIFICATION_REQUIRES_NEW_VERSION.
+
+specification_metadata:
+  author: "eos-product-slice-agent (track-c-lead)"
+  created: 2026-10-31
+  governance_class: "user_feature_request"
+  change_policy: "iterative_update_allowed"
+  hash_algorithm: sha256
+  audit_note: Input hash of this document MUST be captured in acceptance.yaml before any transformation run.
+
+ontology:
+  root_aggregate: "PayrollTransaction"
+  domain: "Financial_Services / Payroll_Management"
+
+requirement_identity:
+  requirement_id: REQ-011
+  stable_external_id: REQ-011
+  id_policy: requirement_identity_is_stable_never_changes
+  derived_identity_chain:
+    - requirement_id → els_document_hash
+    - els_document_hash → eir_source_hash
+    - eir_source_hash → instruction_set_hash
+    - instruction_set_hash → capability_ref_hash
+
+business_statement:
+  title: "Tracking dan Audit Trail untuk Eksekusi Payroll Canary"
+  description: >
+    Memberikan kemampuan tracking end-to-end untuk setiap transaksi penggajian yang dieksekusi dalam canary environment,
+    termasuk audit trail lengkap siapa yang mengotorisasi, kapan eksekusi berjalan, status callback dari gateway,
+    dan rekonsiliasi akhir. Slice ini merupakan kelanjutan dari CR006 payroll canary yang sudah disiapkan,
+    tanpa memodifikasi core EOS sama sekali — hanya menambahkan tracking layer yang menggunakan capability yang sudah ada.
+  origin: "platform_improvement (melengkapi CR006 operational readiness)"
+  compliance:
+    - "TID-001: Tenant isolation tetap terjaga sesuai peraturan Bank Indonesia"
+    - "AUDIT-003: Semua transaksi tercatat dengan chain of custody yang jelas"
+    - "PAY-007: Tidak ada transaksi nyata sampai otorisasi penuh diberikan"
+
+capability_refs:
+  - capability_id: "CAP-PAYROLL-001"
+    capability_name: "payroll.canary.execute"
+    purpose: "Eksekusi transaksi payroll dalam mode canary (dry-run) yang sudah ada"
+  - capability_id: "CAP-GATEWAY-004"
+    capability_name: "gateway.callback.verify"
+    purpose: "Verifikasi callback dari payment gateway yang sudah terimplementasi"
+  - capability_id: "CAP-EVIDENCE-002"
+    capability_name: "evidence.store.append"
+    purpose: "Menambahkan log tracking ke dalam EOS evidence store yang sudah ada"
+  - capability_id: "CAP-RECON-001"
+    capability_name: "reconciliation.execute"
+    purpose: "Jalankan rekonsiliasi saldo tenant setelah eksekusi selesai"
+
+acceptanceCriteria:
+  - "Setiap transaksi payroll memiliki ID unik yang tercatat di seluruh sistem"
+  - "Audit trail lengkap tersimpan di evidence store dengan actor yang jelas"
+  - "Callback dari gateway terverifikasi dan terikat ke Work ID yang sesuai"
+  - "Rekonsiliasi otomatis berjalan setelah eksekusi selesai, tidak ada state yang berubah permanen"
+  - "Tenant isolation tetap terjaga, tenant lain tidak dapat melihat transaksi tenant-next-002"
+  - "Semua capability yang digunakan adalah yang sudah ada, tidak ada pembuatan core baru"

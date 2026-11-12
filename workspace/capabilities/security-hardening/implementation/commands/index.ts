@@ -18,13 +18,13 @@ const securityHardeningCommands: Readonly<Record<string, CapabilityCommand>> = {
   "security-hardening.authorize": {
     id: "security-hardening.authorize",
     name: "Authorize Request",
-    description: "Validate request authorization against security policies",
+    description: "Validate request authorization against security policies (W06-A3 enhanced)",
     capabilityId: "security-hardening",
     requiredRoles: ["system"],
-    execute: async (request: Request, scope: EosScope): Promise<AuthorizationDecision> => {
+    execute: async (request: Request, scope: EosScope, session?: { tenantId: string; actorId: string; sessionId: string; revokedAt?: Date | null }): Promise<AuthorizationDecision> => {
       const { SecurityHardeningService } = await import("../services/security-hardening.service.js");
       const service = new SecurityHardeningService();
-      return service.authorize(request, scope);
+      return service.authorize(request, scope, session);
     }
   }
 } as const;

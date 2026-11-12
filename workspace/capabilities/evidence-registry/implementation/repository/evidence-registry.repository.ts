@@ -9,14 +9,9 @@ import type {
 } from "../contracts/index.js";
 
 const SCAN_ROOTS = [
-  "enterprise/science/gate-c/execution",
-  "enterprise/science/gate-c/specification/fixtures/evidence",
-  "workspace/examples/vertical-slice/REQ-0001",
-  "workspace/examples/vertical-slice/REQ-011",
-  "workspace/examples/vertical-slice/REQ-010",
-  "examples/vertical-slice/REQ-0001",
-  "examples/vertical-slice/REQ-011",
-  "examples/vertical-slice/REQ-010",
+  "examples/vertical-slice",
+  "enterprise/science/gate-c",
+  "workspace/examples/vertical-slice",
   "workspace/.eos/evidence/",
   "products",
 ] as const;

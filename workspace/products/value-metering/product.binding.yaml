@@ -1,0 +1,20 @@
+version: "1.0"
+status: ACTIVE
+product:
+  id: value-metering
+  display_name: Operational Economics & Value Measurement
+experience:
+  surface: web
+  route: /products/value-metering/requirements
+capabilities:
+  - requirement-management
+  - workflow-engine
+  - governance-evidence
+  - intent-management
+  - work-formation
+  - observability
+  - data-processing
+  - usage-metering
+  - cost-attribution
+  - legal-service-metering
+claim_boundary: Value Metering sebagai shared capability untuk pengukuran konsumsi resource, atribusi biaya, dan manajemen entitlement. Evolusi dari dataops dengan mandat komersial yang jelas.

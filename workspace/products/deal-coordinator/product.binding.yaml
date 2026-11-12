@@ -1,0 +1,22 @@
+version: "1.0"
+status: ACTIVE
+product:
+  id: deal-coordinator
+  display_name: Commercial Agreement & Fulfillment Coordination
+experience:
+  surface: web
+  route: /products/deal-coordinator/requirements
+capabilities:
+  - requirement-management
+  - workflow-engine
+  - governance-evidence
+  - intent-management
+  - work-formation
+  - observability
+  - connector-ecosystem
+  - budget-management
+  - agreement-tracking
+  - reconciliation
+  - cross-org-agreement
+  - payment-reconciliation
+claim_boundary: Deal Coordinator sebagai shared capability untuk koordinasi kesepakatan bisnis, pemenuhan, dan rekonsiliasi. Evolusi dari admin-support dengan mandat komersial yang jelas.

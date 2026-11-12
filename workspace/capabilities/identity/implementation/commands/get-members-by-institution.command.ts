@@ -3,7 +3,7 @@ import type { CapabilityCommand } from "@repo/core-kernel";
 import { UserRepositoryPostgres } from "../repositories/index.js";
 import type { TenantId } from "@repo/contracts-core";
 // Import canonical boundary validation utilities from work-core (Rule of Two compliance)
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "../../../work-core/contracts/work.contracts.js";
 
 export const GetMembersByInstitutionInputSchema = z.object({
   institutionId: z.string().min(1),

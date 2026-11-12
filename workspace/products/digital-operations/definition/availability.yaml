@@ -1,0 +1,121 @@
+version: "1.0"
+product_id: "digital-operations"
+availability_schedules:
+  - id: "support-hours-finance-basic"
+    name: "Finance Operations Basic Support Hours"
+    package_id: "finance-operations-basic"
+    service_domain: "finance-operations"
+    timezone: "Asia/Jakarta"
+    working_hours:
+      monday: ["09:00", "17:00"]
+      tuesday: ["09:00", "17:00"]
+      wednesday: ["09:00", "17:00"]
+      thursday: ["09:00", "17:00"]
+      friday: ["09:00", "17:00"]
+      saturday: ["closed"]
+      sunday: ["closed"]
+    holiday_calendar: "id-national-holidays-2026"
+    emergency_support: false
+    response_times:
+      critical: "4 jam kerja"
+      standard: "24 jam kerja"
+  - id: "support-hours-content-growth-standard"
+    name: "Content & Growth Standard Support Hours"
+    package_id: "content-growth-operations-standard"
+    service_domain: "content-growth-operations"
+    timezone: "Asia/Jakarta"
+    working_hours:
+      monday: ["08:00", "20:00"]
+      tuesday: ["08:00", "20:00"]
+      wednesday: ["08:00", "20:00"]
+      thursday: ["08:00", "20:00"]
+      friday: ["08:00", "20:00"]
+      saturday: ["09:00", "15:00"]
+      sunday: ["closed"]
+    holiday_calendar: "id-national-holidays-2026"
+    emergency_support: true
+    emergency_contact: "+62-812-xxx-xxxx (dedicated content specialist)"
+    response_times:
+      critical: "2 jam kerja"
+      standard: "12 jam kerja"
+  - id: "support-hours-customer-commerce-enterprise"
+    name: "Customer & Commerce Enterprise Support Hours"
+    package_id: "customer-commerce-operations-enterprise"
+    service_domain: "customer-commerce-operations"
+    timezone: "Asia/Jakarta"
+    working_hours:
+      monday: ["07:00", "22:00"]
+      tuesday: ["07:00", "22:00"]
+      wednesday: ["07:00", "22:00"]
+      thursday: ["07:00", "22:00"]
+      friday: ["07:00", "22:00"]
+      saturday: ["08:00", "18:00"]
+      sunday: ["09:00", "17:00"]
+    holiday_calendar: "id-national-holidays-2026"
+    emergency_support: true
+    dedicated_support_agent: "+62-813-xxx-xxxx"
+    response_times:
+      critical: "1 jam kerja"
+      standard: "4 jam kerja"
+  - id: "support-hours-full-suite-enterprise"
+    name: "Full Suite 24/7 Enterprise Support"
+    package_id: "full-suite-managed-operations"
+    service_domain: "all-domains"
+    timezone: "Asia/Jakarta"
+    working_hours:
+      monday: ["24/7"]
+      tuesday: ["24/7"]
+      wednesday: ["24/7"]
+      thursday: ["24/7"]
+      friday: ["24/7"]
+      saturday: ["24/7"]
+      sunday: ["24/7"]
+    holiday_calendar: "none - 24/7/365"
+    emergency_support: true
+    dedicated_account_manager: "+62-814-xxx-xxxx"
+    dedicated_sre_team: true
+    response_times:
+      critical: "30 menit (24/7)"
+      standard: "2 jam kerja"
+service_availability:
+  - id: "service-availability-finance-operations-basic"
+    package_id: "finance-operations-basic"
+    service_domain: "finance-operations"
+    uptime_guarantee: "99.5%"
+    scheduled_maintenance_window: "Minggu 00:00-04:00 WIB"
+    maintenance_notice: "72 jam sebelumnya"
+  - id: "service-availability-content-growth-operations-standard"
+    package_id: "content-growth-operations-standard"
+    service_domain: "content-growth-operations"
+    uptime_guarantee: "99.8%"
+    scheduled_maintenance_window: "Jumat malam 23:00 - Sabtu 03:00 WIB"
+    maintenance_notice: "48 jam sebelumnya"
+  - id: "service-availability-customer-commerce-operations-enterprise"
+    package_id: "customer-commerce-operations-enterprise"
+    service_domain: "customer-commerce-operations"
+    uptime_guarantee: "99.9%"
+    scheduled_maintenance_window: "Sabtu malam 00:00 - 04:00 WIB"
+    maintenance_notice: "72 jam sebelumnya"
+  - id: "service-availability-full-suite-managed-operations"
+    package_id: "full-suite-managed-operations"
+    service_domain: "all-domains"
+    uptime_guarantee: "99.99%"
+    scheduled_maintenance_window: "Disesuaikan dengan pelanggan - zero-downtime deployment"
+    maintenance_notice: "custom - sesuai kesepakatan"
+sla_credit_policy:
+  - package_id: "finance-operations-basic"
+    uptime_below_guarantee: "10% credit bulanan berikutnya"
+    uptime_below_99: "25% credit bulanan berikutnya"
+    uptime_below_98: "50% credit bulanan berikutnya"
+  - package_id: "content-growth-operations-standard"
+    uptime_below_guarantee: "15% credit bulanan berikutnya"
+    uptime_below_99: "30% credit bulanan berikutnya"
+    uptime_below_98: "60% credit bulanan berikutnya"
+  - package_id: "customer-commerce-operations-enterprise"
+    uptime_below_guarantee: "18% credit bulanan berikutnya"
+    uptime_below_99.5: "40% credit bulanan berikutnya"
+    uptime_below_99: "100% credit bulanan berikutnya"
+  - package_id: "full-suite-managed-operations"
+    uptime_below_guarantee: "20% credit bulanan berikutnya"
+    uptime_below_99.5: "50% credit bulanan berikutnya"
+    uptime_below_99: "100% credit bulanan berikutnya + layanan gratis 1 bulan"

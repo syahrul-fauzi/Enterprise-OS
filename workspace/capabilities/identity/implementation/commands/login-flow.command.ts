@@ -9,7 +9,7 @@ import {
 } from "@repo/contracts-core";
 import { randomUUID } from "node:crypto";
 // Import 6-boundary validation function dari package kanonis
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "../../../work-core/contracts/work.contracts.js";
 
 // Lazy load repositories untuk menghindari module cycle dan mematuhi 6-boundary compliance
 async function getUserRepositoryLazy() {
@@ -175,17 +175,34 @@ export const loginFlowCommand: LoginFlowCommand = {
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week
     });
 
-    return {
-      authenticated: true,
-      userId: user.id,
-      actorId: user.id,
-      actorLabel: user.displayName || "User",
-      tenantId: tenant.id,
-      workspaceId: workspace.id,
-      productId: "services-id.default",
-      sessionId: session.id,
-      email: user.email,
-      actorContext: input.actorContext, // Pertahankan actorContext untuk chainability antar command
+    // W06-A2: Isi ExecutionContext terpercaya dan jalankan post-login context propagation
+    const { executionContext } = await import("../../../../packages/core/runtime/src/execution-context.js");
+    const trustedContext: ExecutionContext = {
+      actor_id: user.id,
+      tenant_id: tenant.id,
+      workspace_id: workspace.id,
+      session_id: session.id,
+      product_id: "services-id.default",
+      context_trace_id: crypto.randomUUID(),
+      is_reentry: false
     };
+
+    // W06-A2-R2: FIXED - Jalankan executionContext.run() dengan async function yang benar untuk mempertahankan stack context
+    // Perbaiki A2-F02: Tidak boleh wrap executionContext.run() di Promise yang dibuat sebelumnya - harus jalankan di dalam stack yang sama
+    return executionContext.run(trustedContext, () => {
+      // Konteks tetap terjaga di async stack untuk command selanjutnya yang dipanggil dalam execution ini
+      return {
+        authenticated: true,
+        userId: user.id,
+        actorId: user.id,
+        actorLabel: user.displayName || "User",
+        tenantId: tenant.id,
+        workspaceId: workspace.id,
+        productId: "services-id.default",
+        sessionId: session.id,
+        email: user.email,
+        actorContext: input.actorContext, // Pertahankan actorContext untuk chainability antar command
+      };
+    });
   },
 };

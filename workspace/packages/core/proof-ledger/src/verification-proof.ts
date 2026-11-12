@@ -1,5 +1,7 @@
-import { DigestEngine } from "@repo/core-kernel/digest-engine.js";
+import { createDigestEngine, type DigestEngineContract } from "@repo/core-kernel/digest-engine";
 import { computeVerificationDecision, type VerificationDecisionSnapshot } from "./verification-decision.js";
+
+const digestEngine: DigestEngineContract = createDigestEngine();
 
 const PROOF_SCHEMA_VERSION = "1.0.0";
 const PROOF_OBJECT_KIND = "verification-decision-proof";
@@ -49,7 +51,7 @@ function buildProofIdentityInput(decision: VerificationDecisionSnapshot) {
 export function computeVerificationProofObject(requirementId: string): VerificationProofObject {
   const decision = computeVerificationDecision(requirementId);
   const proofIdentityInput = buildProofIdentityInput(decision);
-  const proofDigest = DigestEngine.digest(proofIdentityInput);
+  const proofDigest = digestEngine.digest(proofIdentityInput);
 
   return {
     schemaVersion: PROOF_SCHEMA_VERSION,

@@ -1,4 +1,4 @@
-import { capabilityRegistry } from "@repo/core-kernel";
+const { capabilityRegistry } = await import("./packages/core/kernel/src/registry/capability-command-registry.js");
 
 async function debug() {
   // Wait for all commands to load

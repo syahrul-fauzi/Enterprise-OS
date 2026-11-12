@@ -1,0 +1,42 @@
+{
+  "id": "channel.telegram",
+  "version": "1.0.0",
+  "kind": "channel-pack",
+  "description": "Telegram Bot API channel adapter for EOS - enables actors to interact with EOS via Telegram messages",
+  "provides": ["telegram.webhook.receive", "telegram.message.send"],
+  "requires": ["work-core.persistence", "evidence.record", "capability-command-registry"],
+  "installation": {
+    "install_steps": ["discover", "verify", "install", "configure", "bind", "authorize", "verify-enable"],
+    "config_requirements": ["TELEGRAM_BOT_TOKEN", "TELEGRAM_WEBHOOK_SECRET", "TELEGRAM_APP_SECRET", "TELEGRAM_WEBHOOK_VERIFY_TOKEN"],
+    "env_variables": ["TELEGRAM_BOT_TOKEN", "TELEGRAM_WEBHOOK_SECRET", "TELEGRAM_APP_SECRET", "TELEGRAM_WEBHOOK_VERIFY_TOKEN"],
+    "health_check_url": "/api/webhooks/telegram/health",
+    "supported_versions": ">=7.0.0"
+  },
+  "actor_access": {
+    "grants_required": ["telegram.webhook.receive", "telegram.message.send"],
+    "default_roles": ["customer-support-operator", "admin"],
+    "risk_rating": "low"
+  },
+  "policies": {
+    "pre_execution": ["validate-telegram-signature", "enforce-telegram-ip-whitelist", "validate-telegram-payload"],
+    "post_execution": ["record-telegram-message-evidence", "update-work-context"],
+    "approval": {
+      "required_for": ["high-risk-actions"],
+      "risk_threshold": "medium"
+    }
+  },
+  "security": {
+    "ip_whitelist": ["149.154.160.0/21", "91.108.4.0/22"],
+    "signature_verification": true,
+    "secret_required": true,
+    "data_retention": "30d"
+  },
+  "metadata": {
+    "publisher": "EOS Core Team",
+    "license": "MIT",
+    "homepage": "https://core.enterpriseos.ai/docs/channels/telegram",
+    "repository": "https://github.com/enterprise-os/eos/tree/main/workspace/capabilities/connector-ecosystem/implementation/routes/telegram",
+    "tags": ["channel", "messaging", "telegram", "bot-api"],
+    "category": "communication-channel"
+  }
+}

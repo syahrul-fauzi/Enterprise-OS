@@ -356,6 +356,33 @@ export function RootLandingPage({
                 <p className="text-sm sm:text-base text-text-secondary leading-relaxed mt-6 max-w-lg mx-auto">
                   {copy.subtitle}
                 </p>
+
+                {/* Primary CTA - Always visible in hero section for all authenticated users (F001 resolution) */}
+                <div className="mt-8 max-w-md mx-auto space-y-4">
+                  {authenticated ? (
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      <Link
+                        href={`${currentProduct.rootRoute}/cases/new`}
+                        className="no-underline"
+                      >
+                        <Button
+                          intent="primary"
+                          variant="solid"
+                          size="xl"
+                          block
+                          className="py-6 text-xl"
+                          leftIcon={
+                            <svg className="w-6 h-6" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M10 4v12m-6-6h12" />
+                            </svg>
+                          }
+                        >
+                          {strings.cta}
+                        </Button>
+                      </Link>
+                    </div>
+                  ) : null}
+                </div>
               </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 mb-8">

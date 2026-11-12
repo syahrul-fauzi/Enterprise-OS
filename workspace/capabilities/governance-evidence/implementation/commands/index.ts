@@ -1,4 +1,5 @@
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
+import { governanceEvidenceService } from "../services/governance-evidence.service.js";
 
 // Define governance-evidence commands aligned with existing service capabilities
 const governanceEvidenceCommands: Readonly<Record<string, CapabilityCommand>> = {
@@ -16,8 +17,70 @@ const governanceEvidenceCommands: Readonly<Record<string, CapabilityCommand>> = 
     name: "Get Governance Audit Report",
     capability: "governance-evidence",
     execute: async () => {
-      const { governanceEvidenceService } = await import("../services/governance-evidence.service.js");
       return governanceEvidenceService.getAuditReport();
+    }
+  },
+  "governance-evidence.record": {
+    kind: "command",
+    name: "Record Governance Evidence Entry",
+    capability: "governance-evidence",
+    execute: async (input: {
+      workId: string;
+      entry: any;
+      tenantId: string;
+      workspaceId: string;
+      actorId: string;
+    }) => {
+      await governanceEvidenceService.addEvidence(input.workId, {
+        ...input.entry,
+        recordedAt: new Date().toISOString(),
+        tenantId: input.tenantId,
+        workspaceId: input.workspaceId,
+        actorId: input.actorId,
+        source: "governance-evidence.record"
+      });
+      return { success: true, workId: input.workId, recorded: true };
+    }
+  },
+  "governance-evidence.archive": {
+    kind: "command",
+    name: "Archive Governance Evidence",
+    capability: "governance-evidence",
+    execute: async (input: {
+      workId: string;
+      actorId: string;
+      tenantId: string;
+      workspaceId: string;
+      archiveReason?: string;
+    }) => {
+      await governanceEvidenceService.addEvidence(input.workId, {
+        type: "evidence-archived",
+        workId: input.workId,
+        actorId: input.actorId,
+        tenantId: input.tenantId,
+        workspaceId: input.workspaceId,
+        archiveReason: input.archiveReason || "work-completed",
+        archivedAt: new Date().toISOString(),
+        source: "governance-evidence.archive"
+      });
+      return { success: true, workId: input.workId, archived: true };
+    }
+  },
+  "governance-evidence.recordRevenue": {
+    kind: "command",
+    name: "Record Commercial Revenue Entry",
+    capability: "governance-evidence",
+    execute: async (input: Parameters<typeof governanceEvidenceService.addRevenueTrackingEntry>[1]) => {
+      await governanceEvidenceService.addRevenueTrackingEntry(input.workId, input);
+      return { success: true, workId: input.workId, revenueRecorded: true, amount: input.grossAmount };
+    }
+  },
+  "governance-evidence.getRevenueSummary": {
+    kind: "command",
+    name: "Get Product Revenue Summary",
+    capability: "governance-evidence",
+    execute: async (input: { productId: string }) => {
+      return governanceEvidenceService.getRevenueSummary(input.productId);
     }
   }
 } as const;

@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     }
 
     const sessionValue = sessionCookie.split("=")[1];
-    const session = decodeWorkspaceSession(sessionValue);
+    const session = await decodeWorkspaceSession(sessionValue);
 
     // PRIMARY: Check canonical work store first (created via /api/work/create)
     const canonicalWork = getWorkById(workId);
@@ -86,9 +86,17 @@ export async function GET(request: NextRequest) {
       return response;
     };
 
-    // Jika tidak ditemukan di canonical store, coba dari database - work repository kept for future use
-    // const workRepository = getWorkRepositoryPostgres();
-    // Work repository not active yet - skip database lookup and go directly to case proxy
+    // Jika tidak ditemukan di canonical store, coba dari database - work repository activated (RL2-001 resolved)
+    const workRepository = getWorkRepositoryPostgres();
+    // Work repository active - perform database lookup untuk production persistence
+    const dbWork = await workRepository.getById(workId);
+    if (dbWork) {
+      const responsePayload = {
+        ...dbWork,
+        _eos_source: "postgres-work-repository",
+      };
+      return NextResponse.json(responsePayload);
+    }
     // This block is kept for future implementation when PostgreSQL work repository is fully integrated
     
     // FALLBACK: Proxy to cases implementation

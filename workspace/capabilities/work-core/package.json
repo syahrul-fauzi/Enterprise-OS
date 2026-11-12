@@ -18,7 +18,9 @@
     "./implementation/*": "./implementation/*",
     "./contracts": "./contracts/work.contracts.ts",
     "./contracts/work.contracts": "./contracts/work.contracts.ts",
-    "./repository/*": "./implementation/repository/*"
+    "./contracts/work.contracts.js": "./contracts/work.contracts.ts",
+    "./repository/*": "./implementation/repository/*",
+    "./utils/*": "./implementation/utils/*"
   },
   "scripts": {
     "build": "tsc",

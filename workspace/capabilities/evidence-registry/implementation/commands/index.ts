@@ -1,13 +1,14 @@
 import type { CapabilityCommand } from "@repo/core-kernel";
-import { recordEvidence } from "./evidence-registry.commands.js";
+import { recordEvidence, listEvidenceByWorkId } from "./evidence-registry.commands.js";
 
 // SAMA DENGAN identity-core: definisikan evidenceCommands sebagai Readonly<Record<string, CapabilityCommand>>
-// Semua command menggunakan format capability.name yang sudah lengkap agar terdaftar dengan benar
+// Hanya gunakan nama command sederhana, capabilityRegistry.register() akan membuat key dari command.capability + command.name
 export const evidenceCommands: Readonly<Record<string, CapabilityCommand>> = {
-  "evidence-registry.record": recordEvidence, // WAJIB didaftarkan agar masuk ke evidenceCommands dengan format yang benar!
+  "record": recordEvidence, // command.name = "record", capability sudah ada di command object
+  "evidence.listbyworkid": listEvidenceByWorkId, // command.name = "evidence.listbyworkid", capability sudah ada di command object
 } as const;
 
-export { recordEvidence } from "./evidence-registry.commands.js";
+export { recordEvidence, listEvidenceByWorkId } from "./evidence-registry.commands.js";
 
 // Lazy import capability registry sesuai SERVER-ONLY BOUNDARY di core-kernel barrel (SAMA PERSIS dengan identity-core)
 async function getCapabilityRegistry() {
@@ -22,20 +23,28 @@ export async function registerEvidenceCoreCapability() {
   console.log("[Evidence-Core] recordEvidence command exists:", !!recordEvidence);
   
   const capabilityRegistry = await getCapabilityRegistry();
-  Object.values(evidenceCommands).forEach((command) => {
-    console.log("[Evidence-Core] Mendaftarkan command:", command.name);
-    capabilityRegistry.register(command);
-  });
-  
-  // listCommandKeys() membutuhkan await karena memuat capability commands secara async
   const registeredCommands = await capabilityRegistry.listCommandKeys();
-  console.log("[Evidence-Core] Command yang terdaftar setelah registrasi:", registeredCommands);
-  console.log("[Evidence-Core] Type of registeredCommands:", typeof registeredCommands, "Is array?", Array.isArray(registeredCommands));
+  console.log("[Evidence-Core] Sebelum registrasi, command yang sudah terdaftar:", registeredCommands);
+  
+  for (const [commandKey, command] of Object.entries(evidenceCommands)) {
+            // Buat full command key sesuai logika capabilityRegistry.register(): capability.name
+            const fullCommandKey = `${command.capability}.${command.name}`;
+            if (registeredCommands.includes(fullCommandKey)) {
+              console.log("[Evidence-Core] Command sudah terdaftar, lewati:", fullCommandKey);
+              continue;
+            }
+            console.log("[Evidence-Core] Mendaftarkan command:", fullCommandKey);
+            // Pakai logika bawaan capabilityRegistry.register yang otomatis membuat key dari command.capability + command.name
+            capabilityRegistry.register(command);
+          }
+  
+  // Cek ulang command yang terdaftar setelah registrasi
+  const updatedRegisteredCommands = await capabilityRegistry.listCommandKeys();
+  console.log("[Evidence-Core] Command yang terdaftar setelah registrasi:", updatedRegisteredCommands);
+  console.log("[Evidence-Core] Type of registeredCommands:", typeof updatedRegisteredCommands, "Is array?", Array.isArray(updatedRegisteredCommands));
   console.log("[Evidence-Core] AUDIT-001-005: Evidence-Core capability registered successfully");
 }
 
 // Panggil registrasi segera setelah modul diimpor (sesuai pola semua capability lain - SAMA PERSIS dengan identity-core)
-// Hanya panggil jika bukan di test environment (VITEST) untuk menghindari registrasi ganda
-if (typeof process.env.VITEST === 'undefined') {
-  registerEvidenceCoreCapability();
-}
+// Cegah registrasi ganda dengan pengecekan command yang sudah terdaftar
+registerEvidenceCoreCapability();

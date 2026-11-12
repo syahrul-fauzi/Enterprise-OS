@@ -23,16 +23,26 @@
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "strict": true,
-    "target": "ES2022"
+    "target": "ES2022",
+    "baseUrl": "./",
+    "paths": {
+      "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
+      "@repo/core-runtime": ["../../packages/core/runtime/src/index.ts"],
+      "@repo/contracts-core": ["../../packages/contracts-core/src/index.ts"],
+      "@repo/*": ["../../packages/*"],
+      "@capabilities/*": ["../../capabilities/*"]
+    }
   },
   "references": [
     { "path": "../../packages/core/kernel/tsconfig.json" },
     { "path": "../../packages/core/runtime/tsconfig.json" },
+    { "path": "../../packages/contracts-core/tsconfig.json" },
     { "path": "../work-core/tsconfig.json" },
     { "path": "../shared/tsconfig.json" },
     { "path": "../communication/tsconfig.json" },
     { "path": "../identity/tsconfig.json" },
-    { "path": "../agent-orchestration/tsconfig.json" }
+    { "path": "../agent-orchestration/tsconfig.json" },
+    { "path": "../atomic-composition/tsconfig.json" }
   ],
   "include": ["./index.ts", "./implementation/**/*.ts", "./contracts/**/*.ts"],
   "exclude": ["dist", "node_modules", "**/*.d.ts", "../*/**/*", "!../../packages/core/**/*", "!../work-core/**/*", "!../shared/**/*", "!../communication/**/*", "!../identity/**/*", "!../agent-orchestration/**/*"]

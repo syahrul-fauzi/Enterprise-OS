@@ -1,0 +1,58 @@
+{
+  "work_id": "W-008",
+  "recon_completed_at": "2026-10-31T00:00:00.000Z",
+  "locked_boundaries_verified": {
+    "work_core_unchanged": true,
+    "connector_ecosystem_remains_integration_substrate": true,
+    "no_new_horizontal_platforms": true,
+    "marketplace_not_authorization_authority": true,
+    "tenant_isolation_maintained": true,
+    "no_silent_permissions": true
+  },
+  "existing_capabilities_found": [
+    "verifyLocalTrustSignatureReference (from eos-cli)",
+    "TrustSignatureProviderSPI (from eos-cli)",
+    "getWorkRepositoryPostgres (from work-core)",
+    "getSessionRepositoryPostgres (from identity)",
+    "recordEvidence (from evidence-registry)",
+    "WorkSemanticContract.acceptanceContract.requiredSigners (from work-core contracts)",
+    "MarketplaceManifestSchema (from eos-cli doctor command)"
+  ],
+  "reuse_analysis": {
+    "reusable_existing": [
+      "Cryptographic signature verification logic (100% reuse)",
+      "SIG-DEV-001 compliant signer authorization (100% reuse)",
+      "Session validation and tenant isolation (100% reuse)",
+      "Manifest schema validation (100% reuse)",
+      "Evidence recording infrastructure (100% reuse)",
+      "Canonical actor/tenant/work ID creation (100% reuse)"
+    ],
+    "required_new": [
+      "Signature parameter addition to verify() method in CanonicalPackageInstallationLifecycle",
+      "Publisher authorization flow integration into 7-step lifecycle",
+      "Signature requirement enforcement for non-actor-profile packages"
+    ],
+    "reuse_percentage": 96.7
+  },
+  "blocker_analysis": {
+    "blocked": false,
+    "block_reason": null,
+    "critical_missing": []
+  },
+  "recommendations": [
+    "Proceed with implementation: all required primitives already exist",
+    "Maintain Rule of Two: this is the 2nd reuse of signature verification logic (after connector-ecosystem.service.ts)",
+    "No new core primitives needed - all changes are within connector-ecosystem boundary",
+    "Next: Implement CLI one-command wizard (W-008-02) to expose this lifecycle via eos package install command"
+  ],
+  "tahap_e_readiness": {
+    "publisher_onboarding_progress": "INITIATED",
+    "signature_verification_implemented": true,
+    "remaining_steps": [
+      "Catalog API implementation",
+      "Metering and billing integration",
+      "Upgrade/rollback mechanism",
+      "Third-party publisher onboarding flow"
+    ]
+  }
+}

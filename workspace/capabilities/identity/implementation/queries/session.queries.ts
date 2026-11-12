@@ -40,4 +40,10 @@ export const sessionQueries = Object.freeze({
   },
 });
 
+export async function resetSessionRepository(): Promise<void> {
+  if (typeof (sessionRepository as any).reset === 'function') {
+    await (sessionRepository as any).reset();
+  }
+}
+
 export type SessionQueries = typeof sessionQueries;

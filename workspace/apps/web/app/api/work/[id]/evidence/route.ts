@@ -4,7 +4,7 @@ import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
 } from "@repo/core-kernel";
-import { getWorkById, toWorkAggregate, toCanonicalWorkRecord } from "../../create/route";
+import { getWorkById, toWorkAggregate, toCanonicalWorkRecord, workRepository, canonicalWorkStore } from "../../create/route";
 import type { WorkAggregate } from "@capabilities/work-core/contracts/work.contracts";
 
 // GET: Retrieve all evidence for a specific work item
@@ -21,7 +21,7 @@ export async function GET(
     }
 
     // Validate session to ensure authorized access
-    const decodedSession = decodeWorkspaceSession(sessionCookie.value);
+    const decodedSession = await decodeWorkspaceSession(sessionCookie.value);
     if (!decodedSession) {
       return NextResponse.json({ error: "Invalid session" }, { status: 403 });
     }
@@ -83,7 +83,7 @@ export async function POST(
       return NextResponse.json({ error: "No active session" }, { status: 401 });
     }
 
-    const decodedSession = decodeWorkspaceSession(sessionCookie.value);
+    const decodedSession = await decodeWorkspaceSession(sessionCookie.value);
     if (!decodedSession) {
       return NextResponse.json({ error: "Invalid session" }, { status: 403 });
     }

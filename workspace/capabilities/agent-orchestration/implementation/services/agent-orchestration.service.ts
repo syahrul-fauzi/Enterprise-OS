@@ -24,6 +24,7 @@ function mergeInputs(
   };
 }
 
+// Singleton instance untuk kompatibilitas StaticRegistry (sesuai pola EOS canonical)
 export class AgentOrchestrationService {
   readonly repositories = {
     OrchestrationPlan: OrchestrationPlanRepositoryInMemory,
@@ -115,7 +116,8 @@ export class AgentOrchestrationService {
               : undefined,
           runId: typeof mergedInputs.runId === "string" ? mergedInputs.runId : undefined,
           limit: typeof mergedInputs.limit === "number" ? mergedInputs.limit : undefined,
-          inputs: { ...mergedInputs, workId }, // Ensure workId is always defined (never undefined)
+          ...mergedInputs,
+          workId // Ensure workId is always defined (never undefined)
         });
 
         return {
@@ -158,7 +160,9 @@ export class AgentOrchestrationService {
   }
 }
 
-export const agentOrchestrationService = new AgentOrchestrationService();
+// Singleton instance untuk kompatibilitas StaticRegistry (hanya diekspor sekali)
+let _instance: AgentOrchestrationService | null = null;
+export const agentOrchestrationService = _instance ??= new AgentOrchestrationService();
 
 export * from "../contracts/index.js";
 export * from "../repository/index.js";

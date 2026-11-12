@@ -4,10 +4,10 @@ import { z } from "zod";
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
-} from "@repo/core-kernel/session/workspace-session";
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
+} from "@repo/core-kernel/session/workspace-session.js";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
 import { recordRuntimeInvocation } from "@repo/core-runtime";
-import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts";
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
 
 // Schema untuk parameter GET - mengikuti pola kanonik yang sama
 const GetComplianceCheckSchema = z.object({
@@ -30,7 +30,7 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized: Missing session" }, { status: 401 });
     }
 
-    const session = decodeWorkspaceSession(sessionCookie.value);
+    const session = await decodeWorkspaceSession(sessionCookie.value);
     if (!session?.tenantId || !session?.workspaceId || !session?.actorId) {
       return NextResponse.json({ error: "Unauthorized: Invalid session" }, { status: 401 });
     }

@@ -8,6 +8,10 @@ experience:
   route: /products/lawyershub/requirements
 capabilities:
   - requirement-management
+  - evidence-registry
+  - knowledge-graph
+  - authentication
+  - atomic-composition
   - workflow-engine
   - governance-evidence
   - legal-case

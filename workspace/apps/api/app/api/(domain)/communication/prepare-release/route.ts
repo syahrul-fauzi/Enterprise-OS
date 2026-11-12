@@ -18,7 +18,8 @@ export async function POST(request: Request) {
     const actorContext = {
       tenantId: session.tenantId,
       actorId: session.actorId,
-      workspaceId: session.workspaceId
+      workspaceId: session.workspaceId,
+      sessionId: session.sessionId
     };
 
     // Enforce 6-boundary compliance: validate api-gateway can access communication domain

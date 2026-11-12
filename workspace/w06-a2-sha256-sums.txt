@@ -1,0 +1,4 @@
+53426c1e475331dd8b7ec0179967ddf34b2f3aa6551692c9713ed560ef34ea3a  packages/core/kernel/src/registry/capability-command-registry.ts
+a629751724ba33c0415ebd04fc248ad0d36a1c72870bf76c0c1f19d503648377  capabilities/work-core/implementation/commands/work.commands.ts
+c450e0ddf7ef9f81437af05e9bfcf647d80fe93be815578af89eeea7dea9927e  apps/api/middleware.ts
+8465a39e5a92fbfb57988527aea9408f766d1e71de2d42f003389f5f2b243152  capabilities/work-core/implementation/utils/evidence.utils.ts

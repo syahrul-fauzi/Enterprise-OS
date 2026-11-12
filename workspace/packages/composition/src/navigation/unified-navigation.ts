@@ -67,6 +67,48 @@ export const VERTICAL_NAV_ITEMS: Record<string, readonly NavigationItem[]> = {
       iconName: "server",
     },
   ],
+  // PIVOT-MAPPING-001: Old dataops → value-metering (shared capability)
+  "value-metering": [
+    {
+      id: "nav-value-metrics",
+      label: "Value Metrics",
+      kind: "link",
+      href: "/products/value-metering/metrics",
+      capabilityId: "value-metering:view",
+      order: 25,
+      iconName: "chart-line",
+    },
+    {
+      id: "nav-cost-attribution",
+      label: "Cost Attribution",
+      kind: "link",
+      href: "/products/value-metering/costs",
+      capabilityId: "value-metering:manage",
+      order: 30,
+      iconName: "calculator",
+    },
+  ],
+  // PIVOT-MAPPING-001: Old admin-support → deal-coordinator (shared capability)
+  "deal-coordinator": [
+    {
+      id: "nav-active-deals",
+      label: "Active Deals",
+      kind: "link",
+      href: "/products/deal-coordinator/deals",
+      capabilityId: "deal-coordinator:view",
+      order: 25,
+      iconName: "handshake",
+    },
+    {
+      id: "nav-reconciliation",
+      label: "Reconciliation",
+      kind: "link",
+      href: "/products/deal-coordinator/reconciliation",
+      capabilityId: "deal-coordinator:manage",
+      order: 30,
+      iconName: "check-double",
+    },
+  ],
 } as const;
 
 /**

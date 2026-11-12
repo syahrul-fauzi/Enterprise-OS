@@ -1,0 +1,24 @@
+{
+  "name": "@repo/smace",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint . --ext .ts,.tsx",
+    "check-types": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@repo/core-kernel": "link:../../packages/core/kernel",
+    "@repo/core-runtime": "link:../../packages/core/runtime",
+    "pg": "^8.23.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@repo/config-typescript": "link:../../config/typescript",
+    "@types/pg": "^8.21.0",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.9",
+    "vite-tsconfig-paths": "^5.1.4"
+  }
+}

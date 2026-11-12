@@ -1,0 +1,165 @@
+version: "1.0"
+workspace:
+  name: digital-operations
+  display_name: Managed Digital Business Operations
+  description: The operating partner that keeps your digital business running, connected, secure, and improving. Kami tidak hanya memperbaiki sistem digital. Kami memastikan sistem tersebut terus bekerja untuk bisnis Anda.
+lifecycle:
+  phase: D.2
+  status: ACTIVE
+  contract:
+    stages:
+      - name: onboard
+        description: Pelanggan mendaftar dan mengintegrasikan platform mereka ke EOS
+        terminal: false
+      - name: assess
+        description: Tim engineering melakukan audit infrastruktur dan operasional
+        terminal: false
+      - name: activate
+        description: Monitoring dan dukungan diaktifkan untuk pelanggan
+        terminal: false
+      - name: operate
+        description: Pekerjaan operasional berjalan berkelanjutan (maintain, fix, scale)
+        terminal: false
+      - name: report
+        description: Laporan bulanan disajikan kepada pelanggan
+        terminal: false
+      - name: renew
+        description: Langganan diperpanjang atau diakhiri dengan offboarding yang teratur
+        terminal: true
+  # Product Definition & Service Catalog REBUILT (sesuai permintaan: bangun ulang terlebih dahulu)
+  service_catalog:
+    domains:
+      - id: digital-foundation
+        name: Digital Foundation
+        description: Menjaga aset digital tetap tersedia, aman, cepat, dan dapat dipulihkan
+        services:
+          - website-cms-operations
+          - hosting-domain-ssl
+          - security-patching
+          - performance-uptime
+      - id: business-connectivity
+        name: Business Connectivity
+        description: Menghubungkan sistem bisnis agar data dan transaksi mengalir dengan benar
+        services:
+          - cross-platform-integration
+          - payment-gateway-sync
+          - crm-communication
+          - api-webhook-management
+      - id: business-process-operations
+        name: Business Process Operations
+        description: Mengoperasikan proses berulang, bukan hanya mengotomatisasi satu langkah
+        services:
+          - order-to-fulfillment
+          - payment-reconciliation
+          - customer-followup
+          - recurring-reporting
+      - id: trust-and-resilience
+        name: Trust & Resilience
+        description: Menjaga operasi aman, dapat diaudit, dan dapat dipulihkan
+        services:
+          - incident-response
+          - access-governance
+          - audit-trail-management
+          - backup-recovery-testing
+      - id: operational-intelligence
+        name: Operational Intelligence
+        description: Mengubah data operasi menjadi keputusan dan perbaikan yang terukur
+        services:
+          - operational-health-assessment
+          - bottleneck-anomaly-detection
+          - cost-performance-optimization
+          - ai-assisted-recommendations
+  commercial_packages:
+    - id: digital-care
+      name: Digital Care
+      description: Website, security, backup, uptime, maintenance
+      revenue_model: Setup + recurring
+      linked_domains: ["digital-foundation"]
+      price_tier_id: starter # <5M IDR/month
+    - id: digital-growth-ops
+      name: Digital Growth Ops
+      description: Care + e-commerce + integration + business process
+      revenue_model: Setup + recurring + scoped change
+      linked_domains: ["digital-foundation", "business-connectivity", "business-process-operations"]
+      price_tier_id: growth # 5M-15M IDR/month
+    - id: managed-digital-operations
+      name: Managed Digital Business Operations
+      description: End-to-end operations, incident response, reliability, continuous improvement
+      revenue_model: Retainer + usage/scoped work
+      linked_domains: ["digital-foundation", "business-connectivity", "business-process-operations", "trust-and-resilience", "operational-intelligence"]
+      price_tier_id: managed # >15M IDR/month
+  one_time_services:
+    - digital-operations-assessment
+    - website-platform-recovery
+    - integration-health-check
+    - security-reliability-assessment
+    - automation-opportunity-assessment
+  real_user_jobs:
+    - id: digiop-101
+      name: Purchase & onboard Digital Care package
+      description: Pelanggan membeli paket Digital Care dan mengonboarding aset WordPress/WooCommerce mereka
+      status: active
+      requirements:
+        - midtrans-payment-source-of-truth
+        - package-installation-automation
+        - eos-work-creation
+        - service-directory.schedule-onboarding
+      linked_packages: ["digital-care"]
+      supported_platforms: ["wordpress", "woocommerce"]
+      linked_domains: ["digital-foundation"]
+    - id: digiop-102
+      name: Purchase & onboard Digital Growth Ops package
+      description: Pelanggan membeli paket Digital Growth Ops dan mengonboarding toko Shopify/Tokopedia/Shopee
+      status: active
+      requirements:
+        - midtrans-payment-source-of-truth
+        - multi-platform-integration
+        - eos-work-creation
+        - connector-ecosystem.connect-platform
+        - service-directory.schedule-onboarding
+      linked_packages: ["digital-growth-ops"]
+      supported_platforms: ["wordpress", "shopify", "tokopedia", "shopee"]
+      linked_domains: ["digital-foundation", "business-connectivity", "business-process-operations"]
+    - id: digiop-103
+      name: Manage ongoing digital operations (Managed Outcome Loop)
+      description: Kelola operasional digital berkelanjutan dengan SENSE→UNDERSTAND→DECIDE→ACT→VERIFY→LEARN sesuai paket yang dibeli
+      status: active
+      requirements:
+        - managed-outcome-loop-execution
+        - evidence-recording
+        - customer-reporting
+        - observability.collect-signals
+        - evidence-registry.record-result
+        - agent-orchestration.dispatch-workflow
+      linked_packages: ["digital-care", "digital-growth-ops", "managed-digital-operations"]
+      supported_platforms: ["all"]
+      linked_domains: ["digital-foundation", "business-connectivity", "business-process-operations", "trust-and-resilience", "operational-intelligence"]
+    - id: digiop-104
+      name: Purchase & onboard Managed Digital Business Operations
+      description: Pelanggan membeli paket enterprise dan mengonboarding seluruh operasi bisnis digital mereka
+      status: active
+      requirements:
+        - midtrans-payment-source-of-truth
+        - full-platform-integration
+        - eos-work-creation
+        - service-directory.schedule-enterprise-onboarding
+        - dedicated-account-manager
+      linked_packages: ["managed-digital-operations"]
+      supported_platforms: ["all"]
+      linked_domains: ["digital-foundation", "business-connectivity", "business-process-operations", "trust-and-resilience", "operational-intelligence"]
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 80
+    runtime_invocation_required: true
+governance:
+  baseline_locked: true # EOS Core FROZEN, tidak ada modifikasi Core
+  needs_audit: false
+  evidence_path: ./evidence
+  # 6 EOS boundaries terpenuhi:
+  # 1. Digital Operations = product definition, bukan Work authority
+  # 2. Work identity dari work-core
+  # 3. Midtrans tetap sumber kebenaran pembayaran
+  # 4. AI agent hanya bertindak sesuai authority
+  # 5. Provider integrasi dapat diganti
+  # 6. Evidence mencatat hasil aktual

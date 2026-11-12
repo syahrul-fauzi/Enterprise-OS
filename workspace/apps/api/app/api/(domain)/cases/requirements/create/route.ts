@@ -11,7 +11,7 @@ import { validateBoundaryAccess } from "@repo/capabilities/work-core/contracts/w
 import {
   getSessionRepositoryPostgres,
   initIdentitySchema,
-} from "@repo/capabilities/identity";
+} from "@capabilities/identity/implementation/repositories/index.js";
 
 export async function POST(request: Request) {
   try {
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       sessionCookie = { name: WORKSPACE_SESSION_COOKIE, value: encodedSession };
     }
 
-    const session = decodeWorkspaceSession(sessionCookie.value);
+    const session = await decodeWorkspaceSession(sessionCookie.value);
     console.log(`[POST /api/requirements/create] Decoded session: ${JSON.stringify(session)}`);
     
     // Handle both authenticated AND anonymous sessions (P0: allow first-time visitors to create Work)
@@ -102,7 +102,7 @@ export async function GET(request: Request) {
       sessionCookie = { name: WORKSPACE_SESSION_COOKIE, value: encodedSession };
     }
 
-    const session = decodeWorkspaceSession(sessionCookie.value);
+    const session = await decodeWorkspaceSession(sessionCookie.value);
     if (!session || !session.tenantId || !session.workspaceId || !session.actorId || !session.sessionId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }

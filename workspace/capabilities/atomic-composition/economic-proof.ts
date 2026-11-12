@@ -4,7 +4,7 @@
  * outcome bisnis yang menghasilkan event ekonomi (invoice, revenue, dll.)
  */
 
-import { type WorkId, createWorkId } from '../../capabilities/work-core/contracts/work.contracts.ts';
+import { type WorkId, createWorkId, type WorkAggregate as Work } from '@repo/capabilities-work-core';
 // Gunakan alias canonical @repo/capabilities-atomic-composition untuk import dari internal contracts (sesuai Gate A requirements)
 import { 
   ActorId, 
@@ -13,15 +13,12 @@ import {
   CapabilityRequirement as Requirement,
   CapabilityResolutionRequest,
   CapabilityResolutionResult
-} from "@repo/capabilities-atomic-composition/implementation/contracts/atomic-composition.contracts.js";
-import { CompositionRepository } from './implementation/repository/composition.repository';
-import { AtomicCompositionService } from './implementation/services/composition.service';
-
-// Inisialisasi repository
-await CompositionRepository.initialize();
-const service = new AtomicCompositionService();
+} from "./implementation/contracts/atomic-composition.contracts.js";
+import { CompositionRepository } from './implementation/repository/composition.repository.js';
+import { AtomicCompositionService } from './implementation/services/composition.service.js';
 // E2 P5 REAL ECONOMIC TRANSACTION PROOF: Import real providers from service-directory
-import { ServiceProviderRepositoryInMemory } from "../../capabilities/service-directory/implementation/repository/service.repository";
+import { ServiceProviderRepositoryInMemory } from "./implementation/repository/service.repository.js";
+
 const categoryToCapabilityMap: Record<string, string[]> = {
   "Cloud Services": ["web-deployment", "payment-processing"],
   "Software Development": ["frontend-dev"],
@@ -30,14 +27,36 @@ const categoryToCapabilityMap: Record<string, string[]> = {
   "Infrastructure": ["web-deployment"],
   "Managed Services": ["business-strategy"],
   "Data & Analytics": ["market-research"],
+  "AI Services": ["content-creation", "seo"]
 };
 const verifiedToTrust = (verified: boolean): number => verified ? 0.99 : 0.90;
-async function getRealEconomicProviders(): Promise<any[]> {
-  const allProviders = await ServiceProviderRepositoryInMemory.list();
+interface ServiceProvider {
+  id: string | number;
+  category: string;
+  name: string;
+  verified: boolean;
+  createdAt: Date;
+}
+
+async function getRealEconomicProviders(): Promise<Array<{
+  id: string;
+  actorId: string;
+  type: string;
+  displayName: string;
+  capabilities: string[];
+  trust: number;
+  authority: { execute: boolean };
+  availability: boolean;
+  email: string;
+  createdAt: string;
+  rateCard: number;
+  providerType: string;
+}>> {
+  const allProviders = await ServiceProviderRepositoryInMemory.list() as ServiceProvider[];
   return allProviders.map((provider, index) => ({
     id: `actor-${provider.id}`,
     actorId: String(provider.id),
-    type: provider.category === "Cloud Services" || provider.category === "Software Development" ? "external-service" : "human",
+    type: provider.category === "Cloud Services" || provider.category === "Software Development" ? "external-service" : provider.category === "AI Services" ? "ai-agent" : "human",
     displayName: provider.name,
     capabilities: categoryToCapabilityMap[provider.category] || [],
     trust: verifiedToTrust(provider.verified),
@@ -45,10 +64,16 @@ async function getRealEconomicProviders(): Promise<any[]> {
     availability: true,
     email: `contact@${provider.name.toLowerCase().replace(/\s+/g, '')}.example.com`,
     createdAt: provider.createdAt.toISOString(),
-    rateCard: provider.category === "Software Development" ? 50000000 : provider.category === "Cloud Services" ? 25000000 : 35000000,
-    providerType: provider.category.includes("Service") ? "service" : "human"
+    rateCard: provider.category === "Software Development" ? 50000000 : provider.category === "Cloud Services" ? 25000000 : provider.category === "AI Services" ? 15000000 : 35000000,
+    providerType: provider.category === "AI Services" ? "ai-agent" : provider.category.includes("Service") ? "external-service" : "human"
   }));
 }
+
+// Wrapper untuk inisialisasi async (hindari top-level await)
+async function runEconomicProof() {
+  // Inisialisasi repository
+  await CompositionRepository.initialize();
+  const service = new AtomicCompositionService();
 
 console.log("==================================================");
 console.log("💰 P5 ECONOMIC PROOF - EOS ECONOMIC VALUE CHAIN");
@@ -341,6 +366,7 @@ if (finalComposition?.team?.status === "completed") {
       service: a.capabilities[0]
     }))
   };
+  };
   
   console.log("\n📊 Step 6: GOLDEN PROOF FINAL - Business Outcome & Economic Event Generated!");
   console.log("   ==================================================");
@@ -354,19 +380,25 @@ if (finalComposition?.team?.status === "completed") {
   console.log("   External Services:  Rp", providerBreakdown.service.toLocaleString(), `(${(providerBreakdown.service/totalCost*100).toFixed(1)}%)`);
   console.log("\n   Invoice issued:", economicEvent.eventType);
   console.log("   Invoice amount:", `Rp ${economicEvent.amount.toLocaleString()}`);
+
+  console.log("\n==================================================");
+  console.log("🎉 E2 P5 REAL ECONOMIC TRANSACTION - 100% COMPLETE!");
+  console.log("==================================================");
+  console.log("✅ EOS ECONOMIC WORK RUNTIME MENGKOMPOSISI REAL PROVIDERS DALAM SATU WORK:");
+  console.log("   ✅ Real Human Professional (dari Service Directory)");
+  console.log("   ✅ Real External Service Provider (dari Service Directory)");
+  console.log("   ✅ Real Payment Gateway integration (Midtrans API)");
+  console.log("\n✅ FULL REAL ECONOMIC VALUE CHAIN TERBUKTI:");
+  console.log("   REAL Need → REAL Work → REAL Requirements → REAL Providers");
+  console.log("   → Composition → Team (EPHEMERAL!) → Execution → Evidence");
+  console.log("   → Outcome → REAL Payment Gateway Transaction → REAL ECONOMIC VALUE!");
+  console.log("\n✅ Layer2 Compliant: CORE TIDAK PERLU DIUBAH SATU BARIS PUN! SEMUA REUSE!");
+  console.log("   Semua extension di atas existing capability, tidak ada core invariant yang diubah");
+  console.log("==================================================");
 }
 
-console.log("\n==================================================");
-console.log("🎉 E2 P5 REAL ECONOMIC TRANSACTION - 100% COMPLETE!");
-console.log("==================================================");
-console.log("✅ EOS ECONOMIC WORK RUNTIME MENGKOMPOSISI REAL PROVIDERS DALAM SATU WORK:");
-console.log("   ✅ Real Human Professional (dari Service Directory)");
-console.log("   ✅ Real External Service Provider (dari Service Directory)");
-console.log("   ✅ Real Payment Gateway integration (Midtrans API)");
-console.log("\n✅ FULL REAL ECONOMIC VALUE CHAIN TERBUKTI:");
-console.log("   REAL Need → REAL Work → REAL Requirements → REAL Providers");
-console.log("   → Composition → Team (EPHEMERAL!) → Execution → Evidence");
-console.log("   → Outcome → REAL Payment Gateway Transaction → REAL ECONOMIC VALUE!");
-console.log("\n✅ Layer2 Compliant: CORE TIDAK PERLU DIUBAH SATU BARIS PUN! SEMUA REUSE!");
-console.log("   Semua extension di atas existing capability, tidak ada core invariant yang diubah");
-console.log("==================================================");
+// Jalankan proof
+runEconomicProof().catch(err => {
+  console.error("❌ ECONOMIC PROOF FAILED:", err);
+  process.exit(1);
+});

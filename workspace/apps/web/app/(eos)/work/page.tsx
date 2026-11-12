@@ -18,7 +18,7 @@ export default async function WorkPage() {
     );
   }
 
-  const session = decodeWorkspaceSession(sessionCookie.value);
+  const session = await decodeWorkspaceSession(sessionCookie.value);
   if (!session || !session.tenantId || !session.workspaceId || !session.actorId) {
     return (
       <main className="p-6">

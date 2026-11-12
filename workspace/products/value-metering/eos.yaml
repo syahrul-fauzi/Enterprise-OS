@@ -1,0 +1,47 @@
+version: "1.0"
+workspace:
+  name: value-metering
+  display_name: Operational Economics & Value Measurement
+  description: Membuat konsumsi layanan, biaya operasional, dan kontribusi ekonomi dapat diukur serta dipertanggungjawabkan.
+lifecycle:
+  phase: D.1
+  status: ACTIVE
+  contract:
+    stages:
+      - name: discover
+        description: Identifikasi sumber usage dan biaya yang perlu diukur
+        terminal: false
+      - name: create
+        description: Setup metering plan dengan spesifikasi attribution
+        terminal: false
+      - name: validate
+        description: Validasi metrik, entitlement, dan sumber data
+        terminal: false
+      - name: execute
+        description: Jalankan collection dan processing usage data
+        terminal: false
+      - name: monitor
+        description: Pantau consumption, margin, dan biaya secara real-time
+        terminal: false
+      - name: evidence
+        description: Kumpulkan bukti usage untuk invoice dan audit
+        terminal: false
+      - name: complete
+        description: Laporan periodik selesai, data terarsipkan
+        terminal: true
+  real_user_jobs:
+    - id: vm-101
+      name: Track and report AI/API/cloud usage consumption
+      description: Full lifecycle pengukuran penggunaan resource dan atribusi biaya ke tenant/customer/Work
+      status: active
+      requirements:
+        - req-vm-001
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 85
+    runtime_invocation_required: true
+governance:
+  baseline_locked: false
+  needs_audit: false
+  evidence_path: ./evidence

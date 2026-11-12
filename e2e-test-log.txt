@@ -1,0 +1,458 @@
+[EXECUTION STATUS] Gagal terhubung ke Redis, fallback ke in-memory (hanya untuk development)
+[workflowRegistry] Registered workflow: lh-lgl-001-legal-consultation (product: lawyershub)
+[workflowRegistry] Registered workflow: ilc-ins-001-institutional-coordination (product: ilc)
+[workflowRegistry] Registered workflow: bpjs-kshtn-001-healthcare-claim (product: bpjs-kesehatan)
+[workflowRegistry] Registered workflow: svc-id-001-technical-service (product: services-id)
+[workflowRegistry] All workflows registered. Total: 4
+[base.repository.ts] getPool() called - connectionString found: false, forceMock: false, value: undefined...
+[PostgreSQL] Using in-memory mock pool (sandbox/test environment) - NO REAL DATABASE TRANSACTIONS
+[WorkRepositoryPostgres] Constructor initialized - pools will be initialized on first use
+[capabilityRegistry] 🚀 VERSI BARU listCommandKeys() dipanggil pada 2026-10-29T15:03:30.815Z
+[capabilityRegistry] 📋 listCommandKeys() mengembalikan: []
+[RUN-E2E-TESTS] Sebelum registerWorkCoreCapability, commands yang terdaftar: []
+[capabilityRegistry] ✅ Mendaftarkan command: create
+[capabilityRegistry] Total commands registered: 1
+[capabilityRegistry] ✅ Mendaftarkan command: close
+[capabilityRegistry] Total commands registered: 2
+[capabilityRegistry] ✅ Mendaftarkan command: link-existing
+[capabilityRegistry] Total commands registered: 3
+[capabilityRegistry] ✅ Mendaftarkan command: work.getWorksByInstitution
+[capabilityRegistry] Total commands registered: 4
+[capabilityRegistry] ✅ Mendaftarkan command: update
+[capabilityRegistry] Total commands registered: 5
+[capabilityRegistry] ✅ Mendaftarkan command: sync
+[capabilityRegistry] Total commands registered: 6
+[capabilityRegistry] ✅ Mendaftarkan command: claim
+[capabilityRegistry] Total commands registered: 7
+[capabilityRegistry] ✅ Mendaftarkan command: claim-authority
+[capabilityRegistry] Total commands registered: 8
+[capabilityRegistry] ✅ Mendaftarkan command: evidence.getByWorkId
+[capabilityRegistry] Total commands registered: 9
+[capabilityRegistry] ✅ Mendaftarkan command: get
+[capabilityRegistry] Total commands registered: 10
+[capabilityRegistry] ✅ Mendaftarkan command: work.addParticipant
+[capabilityRegistry] Total commands registered: 11
+[capabilityRegistry] ✅ Mendaftarkan command: work-core.process-payroll
+[capabilityRegistry] Total commands registered: 12
+[Work-Core] Capability registered successfully - all commands added to capability registry (including test environment)
+[capabilityRegistry] 🚀 VERSI BARU listCommandKeys() dipanggil pada 2026-10-29T15:03:30.816Z
+[capabilityRegistry] 📋 listCommandKeys() mengembalikan: [
+  'create',
+  'close',
+  'link-existing',
+  'work.getWorksByInstitution',
+  'update',
+  'sync',
+  'claim',
+  'claim-authority',
+  'evidence.getByWorkId',
+  'get',
+  'work.addParticipant',
+  'work-core.process-payroll'
+]
+[RUN-E2E-TESTS] Segera setelah registerWorkCoreCapability, commands yang terdaftar: [
+  'create',
+  'close',
+  'link-existing',
+  'work.getWorksByInstitution',
+  'update',
+  'sync',
+  'claim',
+  'claim-authority',
+  'evidence.getByWorkId',
+  'get',
+  'work.addParticipant',
+  'work-core.process-payroll'
+]
+[RUN-E2E-TESTS] capabilityRegistry instance reference check: {
+  capabilityCommands: {
+    create: {
+      kind: 'command',
+      name: 'create',
+      version: '1.0.0',
+      execute: [AsyncFunction: createCoreWork],
+      schema: [ZodObject]
+    },
+    close: {
+      kind: 'command',
+      name: 'close',
+      version: '1.0.0',
+      execute: [AsyncFunction: closeCoreWork],
+      schema: [ZodObject]
+    },
+    'link-existing': {
+      kind: 'command',
+      name: 'link-existing',
+      version: '1.0.0',
+      execute: [AsyncFunction: linkExistingWork],
+      schema: [ZodObject]
+    },
+    'work.getWorksByInstitution': {
+      kind: 'command',
+      name: 'work.getWorksByInstitution',
+      version: '1.1.0',
+      execute: [AsyncFunction: execute]
+    },
+    update: {
+      kind: 'command',
+      name: 'update',
+      version: '1.0.0',
+      execute: [AsyncFunction: updateWork],
+      schema: [ZodObject]
+    },
+    sync: {
+      kind: 'command',
+      name: 'sync',
+      version: '1.1.0',
+      execute: [AsyncFunction: syncCoreWork],
+      schema: [ZodObject]
+    },
+    claim: {
+      kind: 'command',
+      name: 'claim',
+      version: '1.0.0',
+      execute: [AsyncFunction: claimWork],
+      schema: [ZodObject]
+    },
+    'claim-authority': {
+      kind: 'command',
+      name: 'claim-authority',
+      version: '1.0.0',
+      execute: [AsyncFunction: claimWorkAuthority],
+      schema: [ZodObject]
+    },
+    'evidence.getByWorkId': {
+      kind: 'command',
+      name: 'evidence.getByWorkId',
+      version: '1.0.0',
+      execute: [AsyncFunction: getEvidenceByWorkId],
+      schema: [ZodObject]
+    },
+    get: {
+      kind: 'command',
+      name: 'get',
+      version: '1.0.0',
+      execute: [AsyncFunction: getWork],
+      schema: [ZodObject]
+    },
+    'work.addParticipant': {
+      kind: 'command',
+      name: 'work.addParticipant',
+      version: '1.0.0',
+      execute: [AsyncFunction: addParticipant],
+      schema: [ZodObject]
+    },
+    'work-core.process-payroll': {
+      kind: 'command',
+      name: 'process-payroll',
+      capability: 'work-core',
+      version: '1.0.0',
+      execute: [AsyncFunction: processPayroll],
+      schema: [ZodObject]
+    }
+  },
+  invoke: [AsyncFunction: invoke],
+  register: [Function: register],
+  listCommandKeys: [Function: listCommandKeys],
+  hasCapability: [Function: hasCapability],
+  resolveByParts: [AsyncFunction: resolveByParts]
+}
+[capabilityRegistry] 🚀 VERSI BARU listCommandKeys() dipanggil pada 2026-10-29T15:03:30.915Z
+[capabilityRegistry] 📋 listCommandKeys() mengembalikan: [
+  'create',
+  'close',
+  'link-existing',
+  'work.getWorksByInstitution',
+  'update',
+  'sync',
+  'claim',
+  'claim-authority',
+  'evidence.getByWorkId',
+  'get',
+  'work.addParticipant',
+  'work-core.process-payroll'
+]
+[RUN-E2E-TESTS] Setelah registerWorkCoreCapability + delay, commands yang terdaftar: [
+  'create',
+  'close',
+  'link-existing',
+  'work.getWorksByInstitution',
+  'update',
+  'sync',
+  'claim',
+  'claim-authority',
+  'evidence.getByWorkId',
+  'get',
+  'work.addParticipant',
+  'work-core.process-payroll'
+]
+[RUN-E2E-TESTS] SEMUA command sudah didaftarkan, mulai menjalankan test...
+[capabilityRegistry] 🚀 VERSI BARU listCommandKeys() dipanggil pada 2026-10-29T15:03:31.017Z
+[capabilityRegistry] 📋 listCommandKeys() mengembalikan: [
+  'create',
+  'close',
+  'link-existing',
+  'work.getWorksByInstitution',
+  'update',
+  'sync',
+  'claim',
+  'claim-authority',
+  'evidence.getByWorkId',
+  'get',
+  'work.addParticipant',
+  'work-core.process-payroll'
+]
+[RUN-E2E-TESTS] Command terdaftar akhir: [
+  'create',
+  'close',
+  'link-existing',
+  'work.getWorksByInstitution',
+  'update',
+  'sync',
+  'claim',
+  'claim-authority',
+  'evidence.getByWorkId',
+  'get',
+  'work.addParticipant',
+  'work-core.process-payroll'
+]
+
+=== MEMULAI E2E IDEM TESTS - PAYROLL-IDEMPOTENCY-001 ===
+🔧 Menyiapkan data test awal...
+[work-core] 🐘 Using POSTGRESQL work repository
+[byWorkId] Mencari work_id = test-work-payroll-001 di tabel works
+[byWorkId] Ditemukan 0 baris untuk work_id test-work-payroll-001
+[SETUP-TEST] Work belum ada di in-memory repo, membuat work baru...
+❌ Fatal error dalam pengujian: TypeError: writePool.connect is not a function
+    at WorkRepositoryPostgresImpl.createMany (/root/Enterprise-OS/workspace/capabilities/work-core/implementation/repository/work-postgres.repository.ts:783:37)
+    at async setupTestData (/root/Enterprise-OS/workspace/run-e2e-idem-tests.ts:99:5)
+    at async runAllTests (/root/Enterprise-OS/workspace/run-e2e-idem-tests.ts:132:3)
+[EXECUTION STATUS] Gagal terhubung ke Redis, fallback ke in-memory (hanya untuk development)
+[workflowRegistry] Registered workflow: lh-lgl-001-legal-consultation (product: lawyershub)
+[workflowRegistry] Registered workflow: ilc-ins-001-institutional-coordination (product: ilc)
+[workflowRegistry] Registered workflow: bpjs-kshtn-001-healthcare-claim (product: bpjs-kesehatan)
+[workflowRegistry] Registered workflow: svc-id-001-technical-service (product: services-id)
+[workflowRegistry] All workflows registered. Total: 4
+[base.repository.ts] getPool() called - connectionString found: false, forceMock: false, value: undefined...
+[PostgreSQL] Using in-memory mock pool (sandbox/test environment) - NO REAL DATABASE TRANSACTIONS
+[WorkRepositoryPostgres] Constructor initialized - pools will be initialized on first use
+[capabilityRegistry] 🚀 VERSI BARU listCommandKeys() dipanggil pada 2026-10-29T15:04:19.268Z
+[capabilityRegistry] 📋 listCommandKeys() mengembalikan: []
+[RUN-E2E-TESTS] Sebelum registerWorkCoreCapability, commands yang terdaftar: []
+[capabilityRegistry] ✅ Mendaftarkan command: create
+[capabilityRegistry] Total commands registered: 1
+[capabilityRegistry] ✅ Mendaftarkan command: close
+[capabilityRegistry] Total commands registered: 2
+[capabilityRegistry] ✅ Mendaftarkan command: link-existing
+[capabilityRegistry] Total commands registered: 3
+[capabilityRegistry] ✅ Mendaftarkan command: work.getWorksByInstitution
+[capabilityRegistry] Total commands registered: 4
+[capabilityRegistry] ✅ Mendaftarkan command: update
+[capabilityRegistry] Total commands registered: 5
+[capabilityRegistry] ✅ Mendaftarkan command: sync
+[capabilityRegistry] Total commands registered: 6
+[capabilityRegistry] ✅ Mendaftarkan command: claim
+[capabilityRegistry] Total commands registered: 7
+[capabilityRegistry] ✅ Mendaftarkan command: claim-authority
+[capabilityRegistry] Total commands registered: 8
+[capabilityRegistry] ✅ Mendaftarkan command: evidence.getByWorkId
+[capabilityRegistry] Total commands registered: 9
+[capabilityRegistry] ✅ Mendaftarkan command: get
+[capabilityRegistry] Total commands registered: 10
+[capabilityRegistry] ✅ Mendaftarkan command: work.addParticipant
+[capabilityRegistry] Total commands registered: 11
+[capabilityRegistry] ✅ Mendaftarkan command: work-core.process-payroll
+[capabilityRegistry] Total commands registered: 12
+[Work-Core] Capability registered successfully - all commands added to capability registry (including test environment)
+[capabilityRegistry] 🚀 VERSI BARU listCommandKeys() dipanggil pada 2026-10-29T15:04:19.269Z
+[capabilityRegistry] 📋 listCommandKeys() mengembalikan: [
+  'create',
+  'close',
+  'link-existing',
+  'work.getWorksByInstitution',
+  'update',
+  'sync',
+  'claim',
+  'claim-authority',
+  'evidence.getByWorkId',
+  'get',
+  'work.addParticipant',
+  'work-core.process-payroll'
+]
+[RUN-E2E-TESTS] Segera setelah registerWorkCoreCapability, commands yang terdaftar: [
+  'create',
+  'close',
+  'link-existing',
+  'work.getWorksByInstitution',
+  'update',
+  'sync',
+  'claim',
+  'claim-authority',
+  'evidence.getByWorkId',
+  'get',
+  'work.addParticipant',
+  'work-core.process-payroll'
+]
+[RUN-E2E-TESTS] capabilityRegistry instance reference check: {
+  capabilityCommands: {
+    create: {
+      kind: 'command',
+      name: 'create',
+      version: '1.0.0',
+      execute: [AsyncFunction: createCoreWork],
+      schema: [ZodObject]
+    },
+    close: {
+      kind: 'command',
+      name: 'close',
+      version: '1.0.0',
+      execute: [AsyncFunction: closeCoreWork],
+      schema: [ZodObject]
+    },
+    'link-existing': {
+      kind: 'command',
+      name: 'link-existing',
+      version: '1.0.0',
+      execute: [AsyncFunction: linkExistingWork],
+      schema: [ZodObject]
+    },
+    'work.getWorksByInstitution': {
+      kind: 'command',
+      name: 'work.getWorksByInstitution',
+      version: '1.1.0',
+      execute: [AsyncFunction: execute]
+    },
+    update: {
+      kind: 'command',
+      name: 'update',
+      version: '1.0.0',
+      execute: [AsyncFunction: updateWork],
+      schema: [ZodObject]
+    },
+    sync: {
+      kind: 'command',
+      name: 'sync',
+      version: '1.1.0',
+      execute: [AsyncFunction: syncCoreWork],
+      schema: [ZodObject]
+    },
+    claim: {
+      kind: 'command',
+      name: 'claim',
+      version: '1.0.0',
+      execute: [AsyncFunction: claimWork],
+      schema: [ZodObject]
+    },
+    'claim-authority': {
+      kind: 'command',
+      name: 'claim-authority',
+      version: '1.0.0',
+      execute: [AsyncFunction: claimWorkAuthority],
+      schema: [ZodObject]
+    },
+    'evidence.getByWorkId': {
+      kind: 'command',
+      name: 'evidence.getByWorkId',
+      version: '1.0.0',
+      execute: [AsyncFunction: getEvidenceByWorkId],
+      schema: [ZodObject]
+    },
+    get: {
+      kind: 'command',
+      name: 'get',
+      version: '1.0.0',
+      execute: [AsyncFunction: getWork],
+      schema: [ZodObject]
+    },
+    'work.addParticipant': {
+      kind: 'command',
+      name: 'work.addParticipant',
+      version: '1.0.0',
+      execute: [AsyncFunction: addParticipant],
+      schema: [ZodObject]
+    },
+    'work-core.process-payroll': {
+      kind: 'command',
+      name: 'process-payroll',
+      capability: 'work-core',
+      version: '1.0.0',
+      execute: [AsyncFunction: processPayroll],
+      schema: [ZodObject]
+    }
+  },
+  invoke: [AsyncFunction: invoke],
+  register: [Function: register],
+  listCommandKeys: [Function: listCommandKeys],
+  hasCapability: [Function: hasCapability],
+  resolveByParts: [AsyncFunction: resolveByParts]
+}
+[capabilityRegistry] 🚀 VERSI BARU listCommandKeys() dipanggil pada 2026-10-29T15:04:19.369Z
+[capabilityRegistry] 📋 listCommandKeys() mengembalikan: [
+  'create',
+  'close',
+  'link-existing',
+  'work.getWorksByInstitution',
+  'update',
+  'sync',
+  'claim',
+  'claim-authority',
+  'evidence.getByWorkId',
+  'get',
+  'work.addParticipant',
+  'work-core.process-payroll'
+]
+[RUN-E2E-TESTS] Setelah registerWorkCoreCapability + delay, commands yang terdaftar: [
+  'create',
+  'close',
+  'link-existing',
+  'work.getWorksByInstitution',
+  'update',
+  'sync',
+  'claim',
+  'claim-authority',
+  'evidence.getByWorkId',
+  'get',
+  'work.addParticipant',
+  'work-core.process-payroll'
+]
+[RUN-E2E-TESTS] SEMUA command sudah didaftarkan, mulai menjalankan test...
+[capabilityRegistry] 🚀 VERSI BARU listCommandKeys() dipanggil pada 2026-10-29T15:04:19.471Z
+[capabilityRegistry] 📋 listCommandKeys() mengembalikan: [
+  'create',
+  'close',
+  'link-existing',
+  'work.getWorksByInstitution',
+  'update',
+  'sync',
+  'claim',
+  'claim-authority',
+  'evidence.getByWorkId',
+  'get',
+  'work.addParticipant',
+  'work-core.process-payroll'
+]
+[RUN-E2E-TESTS] Command terdaftar akhir: [
+  'create',
+  'close',
+  'link-existing',
+  'work.getWorksByInstitution',
+  'update',
+  'sync',
+  'claim',
+  'claim-authority',
+  'evidence.getByWorkId',
+  'get',
+  'work.addParticipant',
+  'work-core.process-payroll'
+]
+
+=== MEMULAI E2E IDEM TESTS - PAYROLL-IDEMPOTENCY-001 ===
+🔧 Menyiapkan data test awal...
+[work-core] 🐘 Using POSTGRESQL work repository
+[byWorkId] Mencari work_id = test-work-payroll-001 di tabel works
+[byWorkId] Ditemukan 0 baris untuk work_id test-work-payroll-001
+[SETUP-TEST] Work belum ada di in-memory repo, membuat work baru...
+❌ Fatal error dalam pengujian: TypeError: writePool.connect is not a function
+    at WorkRepositoryPostgresImpl.createMany (/root/Enterprise-OS/workspace/capabilities/work-core/implementation/repository/work-postgres.repository.ts:783:37)
+    at async setupTestData (/root/Enterprise-OS/workspace/run-e2e-idem-tests.ts:99:5)
+    at async runAllTests (/root/Enterprise-OS/workspace/run-e2e-idem-tests.ts:132:3)

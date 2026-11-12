@@ -8,7 +8,7 @@ import {
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
-} from "@repo/core-kernel/session/workspace-session";
+} from "@repo/core-kernel";
 
 // Trigger canonical registry initialization on API server startup (semua capability sudah terdaftar saat initialization)
 const globalCanonicalRegistry = getGlobalCapabilityRegistry();

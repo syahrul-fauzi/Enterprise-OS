@@ -5,10 +5,10 @@ import { usePathname, useRouter } from "next/navigation";
 // Import directly from composition package's source to fix module resolution
 import { createWorkspaceNavigation } from "@repo/composition/navigation";
 import type { NavigationItem, NavigationDescriptor } from "@repo/composition/navigation";
-import type { BreadcrumbItem } from "../molecules/Breadcrumb";
-import { Breadcrumb } from "../molecules/Breadcrumb";
-import { Select } from "../atoms/input";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "../molecules/DropdownMenu";
+import type { BreadcrumbItem } from "../molecules/Breadcrumb.js";
+import { Breadcrumb } from "../molecules/Breadcrumb.js";
+import { Select } from "../atoms/input.js";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "../molecules/DropdownMenu.js";
 import { LogOut, User, Settings } from "lucide-react";
 
 // Complete icon set for ALL navigation items (matches createWorkspaceNavigation iconNames)
@@ -84,7 +84,7 @@ function CubeIcon() {
 
 
 // Import Breadcrumb types explicitly to avoid missing exports
-export type { BreadcrumbItem } from "../molecules/Breadcrumb";
+export type { BreadcrumbItem } from "../molecules/Breadcrumb.js";
 
 export interface GlobalNavigationProps {
   userCapabilities?: string[];

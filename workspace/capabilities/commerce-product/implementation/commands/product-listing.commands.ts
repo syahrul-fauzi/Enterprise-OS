@@ -479,6 +479,7 @@ const processTransactionFromWork: CapabilityCommand<
 // Export all commands for capability registry registration - follows substrate pattern
 export const productListingCommands: Readonly<Record<string, CapabilityCommand>> = {
   "product-listing.create": createProductListingFromWork,
+  "customer-intake.create": createProductListingFromWork,
   "product-listing.process-transaction": processTransactionFromWork,
 } as const;
 

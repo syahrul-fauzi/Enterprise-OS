@@ -30,7 +30,19 @@ export type {
   IntentUnderstanding,
   IntentRawInput
 } from "./implementation/utils/index.js";
+// Re-export session/workspace types yang dibutuhkan oleh identity routes
+export { createSessionId, newSessionId, createWorkspaceId, newWorkspaceId, createWorkId, newWorkId } from "./contracts/work.contracts.js";
+export type { SessionId, WorkspaceId, WorkId } from "./contracts/work.contracts.js";
 // Re-export work repositories yang diperlukan oleh capabilities untuk konsistensi import chain (hanya sekali)
-export { WorkRepositoryInMemory, getWorkRepositoryInMemory, resetWorkRepositoryInMemory } from "./implementation/repository/work-inmemory.repository.js";
-// Hapus duplikat atomic-composition dan identity import yang menyebabkan rootDir error (Gate A fix: move RuleBasedProvider to work-core/utils)
-// Hapus external import yang tidak tercakup oleh rootDir work-core, karena file external tidak bisa di-export dari work-core
+export { WorkRepositoryInMemory } from "./implementation/repository/work-inmemory.repository.js";
+// Re-export identity repositories yang diperlukan oleh capabilities untuk konsistensi import chain
+export { 
+  getSessionRepositoryPostgres, 
+  SessionRepositoryPostgres,
+  getTenantRepositoryPostgres,
+  getWorkspaceRepositoryPostgres,
+  initIdentitySchema,
+  getPool
+} from "../identity/implementation/repositories/index.js";
+// In-memory identity repositories untuk test environment
+export { SessionRepositoryInMemory, resetSessionRepository } from "../identity/implementation/repositories/session.inmemory.js";

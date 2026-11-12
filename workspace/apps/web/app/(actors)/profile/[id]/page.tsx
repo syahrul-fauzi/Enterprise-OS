@@ -26,12 +26,12 @@ async function resolveSessionOrEnter() {
   }
 
   let session;
-  try {
-    session = decodeWorkspaceSession(sessionCookie.value);
-  } catch {
-    cookieStore.delete(WORKSPACE_SESSION_COOKIE);
-    redirect("/");
-  }
+          try {
+            session = await decodeWorkspaceSession(sessionCookie.value);
+          } catch {
+            cookieStore.delete(WORKSPACE_SESSION_COOKIE);
+            redirect("/");
+          }
 
   if (!session) {
     cookieStore.delete(WORKSPACE_SESSION_COOKIE);

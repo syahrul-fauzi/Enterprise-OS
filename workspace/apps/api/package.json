@@ -5,9 +5,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3002",
+    "dev:headless": "next dev -p 3002 --no-web",
     "build": "next build",
     "start": "next start",
     "start:standalone": "next start -p 3002",
+    "start:headless": "next start -p 3002 --no-web",
     "lint": "eslint --max-warnings 0",
     "check-types": "tsc --noEmit"
   },
@@ -30,6 +32,7 @@
     "@types/node": "^22.15.30",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.1",
+    "vitest": "^3.0.9",
     "eslint": "^9.39.1",
     "typescript": "5.9.2"
   }

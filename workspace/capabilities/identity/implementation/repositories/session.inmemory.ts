@@ -95,15 +95,29 @@ const STORE: Store = (globalThis as any).__EOS_IDENTITY_SESSION_STORE__ ??= hydr
 export const SessionRepositoryInMemory: SessionRepository & { reset: () => Promise<void> } = {
   kind: "repository",
   entityName: "Session",
+  async save(session: SessionAggregate): Promise<SessionAggregate> {
+    const sessionIdStr = String(session.id);
+    STORE.set(sessionIdStr, session);
+    console.log(`[SESSION] ✅ Session disimpan: ${sessionIdStr} diperbarui di STORE`);
+    return clone(session);
+  },
   async byId(id: SessionId | string) {
     const sessionIdStr = typeof id === 'string' ? id : String(id);
+    console.log(`[SESSION] 🔍 DEBUG: byId dipanggil dengan id=${id}, typeof id=${typeof id}, sessionIdStr=${sessionIdStr}, panjang string=${sessionIdStr.length}`);
     let session: SessionAggregate | undefined;
+    // Debug: list semua key di STORE sebelum pencarian
+    console.log(`[SESSION] 🔍 DEBUG: Semua key di STORE (byId):`);
     for (const [key, value] of STORE.entries()) {
       const keyStr = String(key);
+      console.log(`[SESSION] 🔍 DEBUG:   key=${keyStr}, panjang key=${keyStr.length}, cocok dengan sessionIdStr? ${keyStr === sessionIdStr}`);
       if (keyStr === sessionIdStr) {
         session = value;
+        console.log(`[SESSION] 🔍 DEBUG: MATCH! session ditemukan di byId`);
         break;
       }
+    }
+    if (!session) {
+      console.log(`[SESSION] ⚠️ Session TIDAK DITEMUKAN di byId: ${sessionIdStr}`);
     }
     return session !== undefined ? clone(session) : undefined;
   },

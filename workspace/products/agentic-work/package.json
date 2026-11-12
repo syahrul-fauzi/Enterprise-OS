@@ -1,0 +1,22 @@
+{
+  "name": "@products/agentic-work",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint .",
+    "check-types": "tsc --noEmit",
+    "test:paperclip": "cd /root/Enterprise-OS && pnpm vitest run workspace/products/agentic-work/tests/paperclip-ai-execution.test.ts --reporter verbose"
+  },
+  "dependencies": {
+    "@repo/presentation-experience": "workspace:*",
+    "@capabilities/work-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@repo/config-typescript": "workspace:*",
+    "@repo/core-kernel": "workspace:*",
+    "typescript": "^5.9.2"
+  }
+}

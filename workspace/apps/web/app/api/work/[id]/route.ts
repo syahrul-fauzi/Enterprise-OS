@@ -46,7 +46,7 @@ export async function PUT(request: NextRequest) {
         const sessionValue = sessionCookie.split('=')[1];
         if (!sessionValue) throw new Error("Empty session value");
         // Gunakan decodeWorkspaceSession canonical, tidak perlu parse base64 manual
-        const existingSession = decodeWorkspaceSession(sessionValue);
+        const existingSession = await decodeWorkspaceSession(sessionValue);
         // Add null check and type validation to fix remaining type error (sessionId possibly undefined)
         if (existingSession && typeof existingSession.sessionId === 'string' && existingSession.sessionId.length > 0) {
           parsedSession = {
@@ -167,7 +167,7 @@ export async function GET(request: NextRequest) {
       try {
         const sessionValue = sessionCookie.split('=')[1];
         if (!sessionValue) throw new Error("Empty session value");
-        const existingSession = decodeWorkspaceSession(sessionValue);
+        const existingSession = await decodeWorkspaceSession(sessionValue);
         if (existingSession && typeof existingSession.sessionId === 'string' && existingSession.sessionId.length > 0) {
           parsedSession = {
             sessionId: existingSession.sessionId,
@@ -318,7 +318,7 @@ export async function POST(request: NextRequest) {
       if (!sessionCookie) throw new Error("Session cookie not found");
       const sessionValue = sessionCookie.split('=')[1];
       if (!sessionValue) throw new Error("Empty session value");
-      const decodedSession = decodeWorkspaceSession(sessionValue);
+      const decodedSession = await decodeWorkspaceSession(sessionValue);
       if (decodedSession?.sessionId) {
         parsedSession = {
           sessionId: decodedSession.sessionId,

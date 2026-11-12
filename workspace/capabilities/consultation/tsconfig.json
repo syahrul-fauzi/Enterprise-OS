@@ -25,6 +25,8 @@
     "strict": true,
     "target": "ES2022",
     "paths": {
+      "@repo/core-kernel": ["../../packages/core/kernel/src/index.ts"],
+      "@repo/core-kernel/*": ["../../packages/core/kernel/src/*"],
       "@repo/core-runtime": ["../../packages/core/runtime/src/index.ts"],
       "@repo/core-runtime/*": ["../../packages/core/runtime/src/*"],
       "@capabilities/work-core/*": ["../work-core/*"],

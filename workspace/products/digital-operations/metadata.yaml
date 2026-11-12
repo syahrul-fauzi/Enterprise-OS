@@ -1,0 +1,62 @@
+name: Digital Operations
+display_name: Managed Digital Business Operations
+version: 1.0.0
+owner: product-digital-operations@enterpriseos.com
+tagline: "Kami tidak hanya memperbaiki sistem digital. Kami memastikan sistem tersebut terus bekerja untuk bisnis Anda."
+description: "Digital Operations adalah layanan operasi digital terkelola yang mengambil tanggung jawab penuh untuk menjaga, mengamankan, dan meningkatkan operasi digital bisnis Anda. Dari website dan e-commerce hingga integrasi dan proses bisnis, kami memastikan sistem Anda selalu berjalan, aman, dan memberikan hasil bisnis yang terbukti."
+category: Managed Digital Operations
+keywords:
+  - "operasi digital"
+  - "managed service"
+  - "wordpress maintenance"
+  - "ecommerce operations"
+  - "business continuity"
+  - "SLA guarantee"
+  - "UKM digital"
+maintainer: EOS Product Team
+maintainer_email: product@eos.co.id
+website: https://eos.co.id/digital-operations
+documentation: https://docs.eos.co.id/digital-operations
+support_email: support@eos.co.id
+created_at: 2025-11-02
+updated_at: 2025-11-02
+initial_release_date: 2025-12-01
+target_market:
+  - "SME yang bergantung pada website"
+  - "UKM e-commerce Indonesia"
+  - "Bisnis digital dengan integrasi payment, CRM, marketplace"
+differentiators:
+  - "Managed Outcome Loop: SENSE→UNDERSTAND→DECIDE→ACT→VERIFY→LEARN"
+  - "Bukan maintenance biasa: kontinuitas bisnis sebagai hasil utama"
+  - "Role-based customer experience untuk setiap stakeholder"
+  - "EOS Core governance dan evidence-based accountability"
+  - "Scalable dari website dasar hingga end-to-end operasi digital"
+roadmap_phase:
+  - "Phase 1: Product Foundation (Current)"
+  - "Phase 2: Commercial Delivery (Q1 2026)"
+  - "Phase 3: Connected Operations (Q2 2026)"
+  - "Phase 4: Agentic Operations (Q3 2026)"
+  - "Phase 5: Managed Digital Business (Q4 2026)"
+success_metrics:
+  commercial:
+    - "Paid customers"
+    - "MRR (Monthly Recurring Revenue)"
+    - "Customer renewal rate"
+    - "Revenue per customer"
+  reliability:
+    - "Service availability"
+    - "Incident frequency"
+    - "Mean time to recover (MTTR)"
+  delivery:
+    - "SLA attainment rate"
+    - "First-time resolution rate"
+    - "Average time to resolution"
+  customer_outcome:
+    - "Reduced downtime"
+    - "Recovered transaction value"
+    - "Reduced operational costs"
+compliance:
+  - "Indonesian data privacy regulations (UU PDP)"
+  - "Audit trail and evidence preservation"
+  - "Tenant isolation and data security"
+  - "Financial transaction integrity"

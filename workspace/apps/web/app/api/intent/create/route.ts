@@ -44,14 +44,14 @@ export async function POST(request: Request) {
 
     const cookieStore = await cookies();
     const existingCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE)?.value;
-    let session = existingCookie ? decodeWorkspaceSession(existingCookie) : null;
+    let session = existingCookie ? await decodeWorkspaceSession(existingCookie) : null;
     let encodedSession: string | null = null;
     let createdNewAnonymousSession = false;
 
     // Jika session tidak valid (missing required fields), buat anonymous baru
     if (!session?.tenantId || !session?.workspaceId || !session.actorId) {
-      session = createAnonymousWorkspaceSession();
-      encodedSession = encodeWorkspaceSession(session);
+      session = await createAnonymousWorkspaceSession();
+      encodedSession = await encodeWorkspaceSession(session);
       createdNewAnonymousSession = true;
     }
 

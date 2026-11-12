@@ -8,26 +8,23 @@ lifecycle:
   status: ACTIVE
   contract:
     stages:
-      - name: order_received
-        description: Pesanan baru diterima dari marketplace dan disinkronkan ke canonical Work
+      - name: discover
+        description: Pesanan baru diterima dari marketplace (Shopee/Lazada/Tokopedia) dan sinkronkan ke canonical Work (EOS 6-stage lifecycle phase 1)
         terminal: false
-      - name: payment_verify
-        description: Pembayaran divalidasi, fraud check, rekonsiliasi transaksi
+      - name: create
+        description: Buat Work baru dengan detail order, customer, dan inventory (EOS 6-stage lifecycle phase 2)
         terminal: false
-      - name: inventory_check
-        description: Stock dicek, SKU dipesan untuk pemenuhan
+      - name: execute
+        description: Jalankan proses fulfillment: verifikasi pembayaran, cek stock, generate label shipping, serahkan ke logistik (EOS 6-stage lifecycle phase 3)
         terminal: false
-      - name: fulfill
-        description: Pesanan diproses, label shipping dibuat, serahkan ke logistik
+      - name: progress
+        description: Pantau pengiriman real-time, sinkronkan status balik ke marketplace (EOS 6-stage lifecycle phase 4)
         terminal: false
-      - name: track
-        description: Pengiriman dipantau real-time, status sinkron balik ke marketplace
-        terminal: false
-      - name: reconcile
-        description: Rekonsiliasi biaya logistik, inventory, fee marketplace
+      - name: evidence
+        description: Rekonsiliasi semua biaya (logistik, fee marketplace, inventory), catat revenue di governance-evidence (EOS 6-stage lifecycle phase 5)
         terminal: false
       - name: complete
-        description: Semua bukti diarsipkan dan pekerjaan ditandai selesai
+        description: Arsipkan semua bukti transaksi, tutup Work secara resmi (EOS 6-stage lifecycle phase 6)
         terminal: true
   real_user_jobs:
     - id: ecom-101

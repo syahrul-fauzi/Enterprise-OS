@@ -1,0 +1,88 @@
+{
+  "id": "acaas.compliance-check",
+  "version": "1.0.0",
+  "kind": "business-capability",
+  "name": "ACaaS Compliance Check",
+  "description": "Automated document compliance verification for Indonesian regulatory requirements (PPN, e-Faktur, legal document validation)",
+  "publisher": "EOS Core Team",
+  "license": "PROPRIETARY",
+  "min_eos_version": "0.8.0",
+
+  "provides": [
+    "acaas.complianceCheck.create",
+    "acaas.complianceCheck.getResult",
+    "acaas.complianceCheck.markProcessing",
+    "acaas.complianceCheck.markCompleted",
+    "acaas.complianceCheck.markFailed"
+  ],
+
+  "requires": [
+    "artifact.store",
+    "evidence.record",
+    "identity.tenant-isolation",
+    "capability.registry"
+  ],
+
+  "runtime_requirements": [
+    {
+      "capability": "llm.generation",
+      "provider_selection": "policy_resolved",
+      "description": "LLM provider untuk analisis dokumen otomatis"
+    }
+  ],
+
+  "actor_access": {
+    "supported_profiles": ["compliance-analyst", "merchant-operator", "legal-reviewer"],
+    "grants_required": {
+      "acaas.complianceCheck.create": ["compliance:create"],
+      "acaas.complianceCheck.getResult": ["compliance:read"],
+      "acaas.complianceCheck.markCompleted": ["compliance:approve"]
+    }
+  },
+
+  "policies": {
+    "pre_execution": [
+      "validate-tenant-boundary",
+      "enforce-workspace-isolation",
+      "verify-actor-grants"
+    ],
+    "post_execution": [
+      "record-execution-evidence",
+      "meter-usage-billing",
+      "validate-compliance-findings"
+    ],
+    "approval": {
+      "required_for": ["high-risk-document-types", "cross-tenant-access"]
+    }
+  },
+
+  "outputs": [
+    "compliance-report",
+    "compliance-findings",
+    "verification-proof",
+    "evidence-chain"
+  ],
+
+  "metering": {
+    "billable_unit": "compliance-check-completed",
+    "free_tier_allowance": 100,
+    "price_per_unit": 0.5
+  },
+
+  "installation": {
+    "install_steps": ["discover", "verify", "install", "configure", "bind", "authorize", "verify-enable"],
+    "secrets_required": ["acaas-api-key", "llm-provider-api-key"],
+    "config_schema": {
+      "default_policies": ["ppn-invoice-validation"],
+      "auto_approve_low_risk": false,
+      "retention_days": 365
+    },
+    "health_check_endpoint": "/api/v1/acaas/health",
+    "supported_faces": ["api", "shell", "studio"]
+  },
+
+  "testing": {
+    "test_command": "npm run test",
+    "e2e_test_file": "tests/acaas-compliance-check.spec.ts"
+  }
+}

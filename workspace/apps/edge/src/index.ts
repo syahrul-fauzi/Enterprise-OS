@@ -6,19 +6,33 @@
 import { capabilityRegistry } from "../../packages/core/kernel/src/registry/capability-command-registry";
 // Import evidence-registry commands secara synchronous di top-level (fix race condition di test)
 import { evidenceRegistryCommands } from '../../../capabilities/evidence-registry/implementation/commands/evidence-registry.commands';
+// Import shared commercial capabilities (value-metering & deal-coordinator) secara static sesuai W06-A A1 requirement
+import { registerValueMeteringCapability } from '../../../products/value-metering/implementation/commands/value-metering.commands';
+import { registerDealCoordinatorCapability } from '../../../products/deal-coordinator/implementation/commands/deal-coordinator.commands';
+// Import service-directory capability (service catalog & request management) sesuai static registration mandate
+import { registerServiceDirectoryCapability } from '../../../capabilities/service-directory/implementation/services/service-request.service';
 import { continue_work, type WorkHandoffEnvelope } from "../../packages/core/runtime/src/work-continuity";
 import { WebSocketAdapter } from "./websocket-adapter.service";
 
-// Register evidence-registry commands IMMEDIATELY untuk test environment (tidak menunggu initialize())
-if (typeof process !== 'undefined' && (process.env.NODE_ENV === 'test' || process.env.STANDALONE === 'true')) {
-  console.log("[EdgeRuntime] Test/standalone environment detected - registering evidence registry commands");
-  Object.values(evidenceRegistryCommands).forEach(command => {
-    capabilityRegistry.register(command as any);
-    console.log(`[EdgeRuntime] ✅ Registered command: ${command.capability}.${command.name}`);
-  });
-  console.log("[EdgeRuntime] ✅ All evidence registry commands registered successfully");
-  // Log semua command yang terdaftar untuk debug Gate A
-  console.log("[EdgeRuntime] 📋 All registered commands:", capabilityRegistry.listCommandKeys());
+// Register semua command secara static di startup aplikasi (W06-A A1 requirement: dynamic imports dinonaktifkan)
+if (typeof process !== 'undefined') {
+  // Register shared commercial capabilities untuk SEMUA environment (production, test, standalone)
+  console.log("[EdgeRuntime] Registering value-metering, deal-coordinator, & service-directory shared capabilities...");
+  registerValueMeteringCapability();
+  registerDealCoordinatorCapability();
+  registerServiceDirectoryCapability();
+  
+  // Register evidence-registry commands khusus untuk test/standalone
+  if (process.env.NODE_ENV === 'test' || process.env.STANDALONE === 'true') {
+    console.log("[EdgeRuntime] Test/standalone environment detected - registering evidence registry commands");
+    Object.values(evidenceRegistryCommands).forEach(command => {
+      capabilityRegistry.register(command as any);
+      console.log(`[EdgeRuntime] ✅ Registered command: ${command.capability}.${command.name}`);
+    });
+    console.log("[EdgeRuntime] ✅ All evidence registry commands registered successfully");
+    // Log SEMUA command yang terdaftar untuk verifikasi Gate A1
+    console.log("[EdgeRuntime] 📋 All registered commands:", capabilityRegistry.listCommandKeys());
+  }
 }
 
 // EdgeRuntime class - sederhana sesuai kebutuhan EDGE-002/REAL-001

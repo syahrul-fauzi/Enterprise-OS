@@ -13,7 +13,13 @@ export {
 
 // Re-export semua repository implementations
 export { getWorkRepositoryLazy as getWORK_REPO } from "./commands/work.commands.js";
-export { WorkRepositoryInMemory, getWorkRepositoryInMemory, resetWorkRepositoryInMemory } from "./repository/work-inmemory.repository.js";
+export { getWorkRepositoryLazy } from "./commands/work.commands.js";
+// Fix ReferenceError: Hanya ekspor fungsi getWorkRepositoryLazy, jangan panggil di top-level (karena async)
+// Bikin workCore sebagai alias async yang bisa dipanggil oleh caller, bukan inisialisasi top-level
+export async function workCore() {
+  return await getWorkRepositoryLazy();
+}
+export { WorkRepositoryInMemory } from "./repository/work-inmemory.repository.js";
 export { getWorkRepositoryPostgres } from "./repository/work-postgres.repository.js";
 
 // Re-export semua utility functions
@@ -26,4 +32,6 @@ export type { AutonomyBoundaryCheck, AutonomyBoundaryResult } from "./utils/boun
 export { PostgresRepository, initIdentitySchema, getPool } from "../../identity/implementation/repositories/base.repository.js";
 // Re-export identity repositories untuk kompatibilitas import dari work-core (hanya untuk primitif yang belum diekspor via kontrak)
 export { getSessionRepositoryPostgres, SessionRepositoryPostgres } from "../../identity/implementation/repositories/session.repository.js";
-export { SessionRepositoryInMemory } from "../../identity/implementation/index.js";
+export { SessionRepositoryInMemory } from "../../identity/implementation/repositories/index.js";
+
+// Main capability implementation export sudah ada di baris sebelumnya, tidak perlu duplikasi

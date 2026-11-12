@@ -31,7 +31,7 @@ test("evidence registry can filter requirement-linked evidence", () => {
   );
 });
 
-test("evidence registry retrieves record detail by id", () => {
+test("evidence registry retrieves record detail by id", async () => {
   const listing = evidenceRegistryService.searchEvidenceRegistry({
     q: "proof-ledger",
     limit: 1,
@@ -39,11 +39,14 @@ test("evidence registry retrieves record detail by id", () => {
 
   assert.equal(listing.items.length, 1);
 
-  const detail = evidenceRegistryService.getEvidenceRecord({
+  const detail = await evidenceRegistryService.getEvidenceRecord({
     id: listing.items[0].id,
   });
 
   assert.ok(detail);
+  if (!detail || "error" in detail) {
+    assert.fail(`Evidence record not found: ${detail?.error || "undefined"}`);
+  }
   assert.equal(detail.kind, "ledger");
   assert.ok(detail.preview.includes("ledger_id"));
   assert.ok(detail.lineCount > 0);

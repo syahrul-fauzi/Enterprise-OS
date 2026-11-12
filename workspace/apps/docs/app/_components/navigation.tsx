@@ -14,6 +14,7 @@ const NAV = [
   { href: "/state", label: "State" },
   { href: "/evidence", label: "Evidence" },
   { href: "/gates", label: "Gates" },
+  { href: "/execution", label: "Execution" },
 ] as const;
 
 export function KnowNavigation() {

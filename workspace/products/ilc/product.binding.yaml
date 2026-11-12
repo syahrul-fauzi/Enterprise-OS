@@ -8,8 +8,14 @@ experience:
   route: /products/ilc/requirements
 capabilities:
   - requirement-management
+  - evidence-registry
+  - knowledge-graph
+  - authentication
+  - atomic-composition
   - workflow-engine
   - governance-evidence
+  - legal-case
+  - legal-document
   - institutional-coordination
   - document-management
 claim_boundary: Product-ACTIVE binding for the ILC identity onto the canonical apps/web professional experience surface. Institutional coordination aggregates are connected to the product reality surface while maintaining full compliance with canonical Work lifecycle primitives.

@@ -11,6 +11,7 @@ export interface ExecutionContextMetadata {
     readonly last_invocation_digest?: string | null;
     readonly propagated_from: "cross-capability" | "direct-api";
 }
+export type SubscriptionType = "monthly-retainer" | "yearly-managed" | "one-time";
 export interface ServiceRequestAggregate {
     readonly id: ServiceRequestId;
     readonly workId: string; // Mandatory CORE-001: WorkAggregate sebagai single source of truth boundary metadata
@@ -28,6 +29,12 @@ export interface ServiceRequestAggregate {
     readonly executionContext?: ExecutionContextMetadata;
     readonly evidence?: readonly any[];
     readonly category?: string;
+    // DIGISC-007: Subscription tracking untuk managed service recurring triggers
+    readonly subscriptionId?: string; // ID langganan yang terkait dengan request ini
+    readonly subscriptionType?: SubscriptionType; // Jenis langganan untuk managed service
+    readonly recurringIntervalDays?: number; // Interval recurring trigger dalam hari (30, 365)
+    readonly nextBillingDate?: Readonly<Date>; // Tanggal tagihan berikutnya untuk langganan
+    readonly isRecurring?: boolean; // Flag apakah request ini adalah recurring/berulang
 }
 export interface CreateServiceRequestInput {
     readonly title: string;
@@ -38,6 +45,11 @@ export interface CreateServiceRequestInput {
     readonly workId: string; // Mandatory CORE-001: Semua boundary metadata hanya ada di core Work primitive
     readonly sessionId: string;
     readonly category?: string;
+    // DIGISC-007: Subscription tracking untuk managed service recurring triggers
+    readonly subscriptionId?: string;
+    readonly subscriptionType?: SubscriptionType;
+    readonly recurringIntervalDays?: number;
+    readonly isRecurring?: boolean;
 }
 export interface CreateServiceRequestOutput {
     readonly id: ServiceRequestId;
@@ -104,6 +116,8 @@ export type ServiceRequestRepository = {
     byId(id: ServiceRequestId, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<ServiceRequestAggregate | undefined>;
     list(context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<readonly ServiceRequestAggregate[]>;
     byWorkId(workId: string, context?: { tenantId: string; workspaceId?: string; workId?: string }): Promise<ServiceRequestAggregate | undefined>;
+    // DIGISC-007: Tambahkan bySubscriptionId untuk query berdasarkan ID langganan
+    bySubscriptionId(subscriptionId: string, context?: { tenantId: string; workspaceId?: string }): Promise<ServiceRequestAggregate | undefined>;
     save(input: CreateServiceRequestInput): Promise<CreateServiceRequestOutput>;
     settle(input: SettleServiceRequestInput): Promise<SettleServiceRequestOutput>;
 };

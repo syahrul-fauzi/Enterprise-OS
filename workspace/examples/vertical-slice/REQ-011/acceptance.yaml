@@ -1,0 +1,111 @@
+slice:
+  id: REQ-011
+  version: "2.0.0"
+  kind: VERTICAL_SLICE_CONTRACT
+  status: READY_TO_INITIATE
+  root_aggregate: "PayrollCanaryTrackingWork"
+  transformation_id: "VS-CR006-EXTENSION-001"
+  source_els_hash: "911ca511c1f835bf5dbf0b4d9e2a061cafcfd493c45c4544aba261a42d37fc9a"
+  slice_type: "OPERATIONAL_EXTENSION_SLICE"
+
+reality:
+  source: "CR006_TRACKC_MANDATE"
+  actor: "eos_cr006_technical_orchestrator"
+  actor_type: "human"
+  intent: "Extend CR006 payroll canary readiness dengan end-to-end tracking capability tanpa memodifikasi core EOS. Mempertahankan momentum pengembangan sambil menunggu otorisasi stakeholder, dengan memanfaatkan seluruh capability yang sudah ada."
+  request_context:
+    origin: "CR006 TRACK C — EOS Leverage Mandate"
+    governance_class: "operational_extension_slice"
+    change_policy: "iterative_update_allowed"
+    owner: "eos_cr006_implementation_team"
+
+expected:
+  work_created: true
+  work_type: "PAYROLL_CANARY_TRACKING"
+  work_id: "WORK-REQ-011"
+  initial_state: draft
+  actor_bound: true
+  capabilities_attached:
+    - "payroll.canary.execute"
+    - "gateway.callback.verify"
+    - "evidence.store.append"
+    - "reconciliation.execute"
+  compliance_rules_enforced:
+    - "0 new core primitive"
+    - "0 new platform layer"
+    - "0 duplicate primitive"
+    - "single_active_extension_slice_rule"
+  traceability_anchors_preserved:
+    - "Work identity CR006 tetap terjaga sebagai root identity"
+    - "Semua tracking log terikat ke work_id CR006 yang sudah ada"
+    - "Evidence chain terintegrasi dengan bukti eksekusi canary yang sudah disiapkan"
+    - "Tenant isolation tetap terjaga 100% untuk tenant-next-002"
+
+acceptance:
+  # Core EOS flow validation (WAJIB untuk SEMUA slice)
+  work_created: true
+  actor_bound: true
+  persisted: true
+  evidence_recorded: true
+  recoverable: true
+  outcome_achieved: false # Menunggu eksekusi canary untuk verifikasi penuh
+
+  # Traceability checks
+  identity_trace_complete: true
+  hash_chain_valid: true
+
+  # Compliance checks
+  all_blocker_rules_enforced: true
+  no_orphaned_capabilities: true
+
+  # Runtime checks
+  deterministic_execution: true
+  idempotent_transformation: true
+
+  # Acceptance criteria SPESIFIK REQ-011 (sesuai request.els.yaml)
+  # L1 - EOS proof (bisa dibuktikan di repository)
+  - "L1_EOS_PROOF_Setiap_transaksi_memiliki_ID_unik_tercatat"
+  - "L1_EOS_PROOF_Audit_trail_lengkap_tersimpan_dengan_actor_jelas"
+  - "L1_EOS_PROOF_Callback_gateway_terverifikasi_dan_terikat_WorkID"
+  - "L1_EOS_PROOF_Rekonsiliasi_otomatis_berjalan_tanpa_perubahan_state"
+  - "L1_EOS_PROOF_Tenant_isolation_terjaga_100%"
+  - "L1_EOS_PROOF_Semua_capability_digunakan_yang_sudah_ada"
+
+  # L2 - Integration proof (bisa dibuktikan di repository sebelum real execution)
+  - "L2_INTEGRATION_PROOF_Semua_tes_Playwright_layer_A_pass"
+  - "L2_INTEGRATION_PROOF_API_contract_verification_layer_B_pass"
+  - "L2_INTEGRATION_PROOF_Persistence_verification_layer_C_pass"
+  - "L2_INTEGRATION_PROOF_Actor_runtime_tests_layer_D_pass"
+  - "L2_INTEGRATION_PROOF_Compliance_rules_enforced_layer_E_pass"
+
+  # L3 - Operational proof (memerlukan real canary execution, belum terpenuhi)
+  - "L3_OPERATIONAL_PROOF_Tracking_berjalan_seluruh_siklus_eksekusi_canary"
+  - "L3_OPERATIONAL_PROOF_Evidence_chain_terintegrasi_dengan_CR006_evidence"
+  - "L3_OPERATIONAL_PROOF_Laporan_tracking_dapat_digenerate_dalam_format_PDF"
+  - "L3_OPERATIONAL_PROOF_Tidak_ada_transaksi_nyata_tercatat_dalam_database"
+
+surfaces:
+  - api: "/api/v1/payroll/canary/tracking"
+  - web: "/work/cr006/payroll-tracking"
+  - ledger: "/.eos-state/evidence/CR006-REQ011"
+
+failure_cases:
+  - "Nonce validation gagal saat menerima callback gateway"
+  - "Signature verification gagal untuk callback dari simulator"
+  - "Tenant isolation violation terdeteksi saat akses tracking data"
+  - "Evidence chain terputus karena gagal append ke store"
+  - "Rekonsiliasi gagal karena ada perubahan state yang tidak terduga"
+
+verification_harness:
+  supported_runners:
+    - "api_verifier"
+    - "persistence_verifier"
+    - "recovery_verifier"
+    - "actor_runtime_verifier"
+    - "tracking_verifier"
+  required_evidence:
+    - "vitest_test_results: Layer D actor runtime tests pass"
+    - "playwright_test_results: Layer A UI runtime verification pass"
+    - "primitive_reuse_report: 100% reuse verified (tidak ada capability baru)"
+    - "cr006_integration_confirmation: TRACK B deliverables terintegrasi penuh"
+    - "eos_core_differentiator_log: Evidence≠truth, Execution≠outcome, Outcome≠finality preserved"

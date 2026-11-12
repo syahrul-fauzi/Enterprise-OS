@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { WorkItemCard, type WorkItemCardProps } from './WorkItemCard';
+import { WorkItemCard, type WorkItemCardProps } from './WorkItemCard.js';
 
 export interface WorkListProps {
   workItems: WorkItemCardProps[];

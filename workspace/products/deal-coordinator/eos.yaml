@@ -1,0 +1,47 @@
+version: "1.0"
+workspace:
+  name: deal-coordinator
+  display_name: Commercial Agreement & Fulfillment Coordination
+  description: Menghubungkan permintaan, penawaran, kesepakatan, komitmen, pemenuhan, dan rekonsiliasi antarorganisasi.
+lifecycle:
+  phase: D.2
+  status: ACTIVE
+  contract:
+    stages:
+      - name: request_created
+        description: Service request atau vendor offer diimpor sebagai canonical Work
+        terminal: false
+      - name: triage
+        description: Klasifikasi scope, quotation setup, dan kelengkapan data
+        terminal: false
+      - name: approve
+        description: Internal dan eksternal approval terhadap penawaran
+        terminal: false
+      - name: commit
+        description: Budget commitment dan agreement signing
+        terminal: false
+      - name: fulfill
+        description: Tracking pelaksanaan dan pemenuhan kesepakatan
+        terminal: false
+      - name: reconcile
+        description: Rekonsiliasi invoice, payment, dan outcome
+        terminal: false
+      - name: complete
+        description: Deal selesai, semua bukti terarsipkan
+        terminal: true
+  real_user_jobs:
+    - id: dc-101
+      name: Manage commercial agreement from request to reconciliation
+      description: Full cycle koordinasi kesepakatan bisnis dari permintaan hingga penyelesaian pembayaran
+      status: active
+      requirements:
+        - req-dc-001
+quality:
+  targets:
+    evidence_required: true
+    test_coverage_min: 85
+    runtime_invocation_required: true
+governance:
+  baseline_locked: false
+  needs_audit: false
+  evidence_path: ./evidence

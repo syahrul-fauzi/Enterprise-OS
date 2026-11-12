@@ -1,7 +1,9 @@
 import fs from "fs";
 import path from "path";
-import { DigestEngine } from "@repo/core-kernel/digest-engine.js";
+import { createDigestEngine, type DigestEngineContract } from "@repo/core-kernel/digest-engine";
 import { ArtifactGraphPersistence } from "./artifact-persistence.js";
+
+const digestEngine: DigestEngineContract = createDigestEngine();
 
 type RequirementId = (id: string) => string;
 const RequirementId: RequirementId = (id) => id;

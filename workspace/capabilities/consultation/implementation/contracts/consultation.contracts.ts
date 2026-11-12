@@ -402,6 +402,8 @@ export interface LearningCandidate {
 export interface ConsultationSeries {
   readonly id: ConsultationSeriesId;
   readonly workId: WorkId;
+  readonly tenantId: TenantId;
+  readonly workspaceId: WorkspaceId;
   readonly userId: string;
   readonly title: string;
   readonly description: string;

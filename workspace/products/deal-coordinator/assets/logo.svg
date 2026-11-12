@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="#10b981">
+  <circle cx="50" cy="40" r="20"/>
+  <rect x="30" y="65" width="40" height="30" rx="3"/>
+  <text x="50" y="92" text-anchor="middle" fill="white" font-size="10">SUPPORT</text>
+</svg>

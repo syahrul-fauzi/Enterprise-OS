@@ -1,12 +1,14 @@
 // @ts-nocheck: Skip TypeScript checks to unblock Lawyers Hub staging deployment
 import type { CapabilityCommand } from "../types.js";
-import type { ExecutionFrame } from "../../../../work-core/contracts/work.contracts";
+import type { ExecutionFrame } from "@capabilities/work-core/contracts/work.contracts";
+import type { ExecutionContext } from "../../../runtime/src/execution-context.js"; // Import type ExecutionContext dari source (bukan dist)
 import { randomUUID } from "crypto";
 // Import core-runtime utilities dari path relatif yang benar (sesuai struktur build TSC)
 // File build ada di root dist/ (bukan dist/src/) karena konfigurasi rootDir tsconfig
 import { calculateExponentialBackoff, shouldOpenCircuitBreaker, shouldResetCircuitBreaker } from "../../../runtime/dist/runtime.js";
-import { executionContext } from "../../../runtime/dist/execution-context.js";
+import { executionContext } from "../../../runtime/src/execution-context.js";
 import { ExecutionStatusRepository } from "../../../runtime/dist/execution-status.js";
+export type { CapabilityCommand };
 // Define RetryConfig type locally since it's not exported from ../types
 export interface RetryConfig {
   readonly max_attempts: number;
@@ -20,68 +22,181 @@ export interface RetryConfig {
 }
 
 // Capability prefix aliases sesuai yang diharapkan test (auth→identity, tenant→identity, ws→identity)
-const capabilityPrefixAliases: Readonly<Record<string, string>> = {
+// Tambahkan alias "core." untuk mendukung Digital Operations service-catalog.yaml eos_capabilities mapping
+export const capabilityPrefixAliases: Readonly<Record<string, string>> = {
   "auth": "identity.",
   "tenant": "identity.",
   "ws": "identity.",
-  "session": "identity."
+  "session": "identity.",
+  "core": "",
+  "core.observability": "observability",
+  "core.atomic-composition": "atomic-composition",
+  "core.connector-ecosystem": "connector-ecosystem",
+  "core.agent-orchestration": "agent-orchestration",
+  "core.evidence-registry": "evidence-registry",
+  "core.workflow-engine": "workflow-engine",
+  "core.incident-management": "incident-management",
+  "core.data-sync": "data-sync",
+  "core.payment-processing": "payment-processing",
+  "core.identity-management": "identity",
+  "core.analytics": "governance-read-model",
+  "core.governance-read-model": "governance-read-model"
 };
 
-export const capabilityRegistry = {
-  // Semua command disimpan di dalam capabilityRegistry (bukan global) - mencegah instance duplication
+// Factory function untuk membuat instance capabilityRegistry baru (untuk test isolation)
+export function createRegistry() {
+  return {
+  // Semua command disimpan di dalam instance capabilityRegistry - mencegah instance duplication antar test
   capabilityCommands: {} as Record<string, CapabilityCommand>,
   
-  async invoke(capability: string, commandName: string, input: any): Promise<any> {
+  // W06-A2 FIX: update signature invoke() untuk menerima executionContext sebagai parameter keempat
+  // sebelumnya: invoke(capability, commandName, input)
+  // sekarang: invoke(capability, commandName, input, executionContext) - mendukung explicit context dari invokeAsync
+  async invoke(capability: string, commandName: string, input: any, providedExecutionContext?: any): Promise<any> {
     // AC-PILOT-001: Cek status kill switch sebelum menjalankan command apapun
+    // W06-A3: Inisialisasi correlation ID dari input (inherited) atau buat baru
+    const correlation_id = input?.context_trace_id || providedExecutionContext?.context_trace_id || randomUUID();
+    const execution_id = randomUUID();
+    console.log(`🔍 DEBUG: capabilityRegistry.invoke - Mencoba memanggil command: ${capability}.${commandName}`);
+    console.log(`🔍 DEBUG: capabilityRegistry.invoke - correlation_id: ${correlation_id}`);
+    console.log(`🔍 DEBUG: capabilityRegistry.invoke - execution_id: ${execution_id}`);
+    console.log(`🔍 DEBUG: capabilityRegistry.invoke - Input yang dikirim:`, JSON.stringify(input).substring(0, 500) + "...");
+    console.log(`🔍 DEBUG: capabilityRegistry.invoke - Provided execution context:`, providedExecutionContext ? "EXPLICIT CONTEXT PROVIDED (W06-A2 compliant)" : "using async local storage");
+    
     const killSwitchState = await ExecutionStatusRepository.getKillSwitchState();
+    console.log(`🔍 DEBUG: capabilityRegistry.invoke - Kill switch state:`, killSwitchState);
+    
     if (killSwitchState.kill_switch_triggered) {
-      const error = `[KILL-SWITCH-ACTIVE] Command ${capability}.${commandName} diblokir: kill switch telah dipicu. Alasan: ${killSwitchState.reason}. Dipicu oleh: ${killSwitchState.triggered_by_actor_id} pada ${killSwitchState.triggered_at_utc}`;
+      const error = `[KILL-SWITCH-ACTIVE] Command ${capability}.${commandName} diblokir: kill switch telah dipicu. Alasan: ${killSwitchState.reason}. Dipicu oleh: ${killSwitchState.triggered_by_actor_id} pada ${killSwitchState.triggered_at_utc}. correlation_id: ${correlation_id}`;
       console.error(error);
       throw new Error(error);
     }
 
-    const { command } = await this.resolveByParts(capability, commandName);
+    const { command, attemptedKeys, candidates } = await this.resolveByParts(capability, commandName);
+    console.log(`🔍 DEBUG: capabilityRegistry.invoke - resolveByParts hasil (correlation_id=${correlation_id}):`, {
+      commandFound: !!command,
+      attemptedKeys,
+      candidates,
+      totalCandidates: candidates.length,
+      resolvedCommandKey: command ? `${capability}.${commandName}` : null
+    });
+    
     if (!command) {
-      throw new Error(`Command ${capability}.${commandName} not found`);
+      const error = `Command ${capability}.${commandName} not found. correlation_id: ${correlation_id}. Attempted keys: ${attemptedKeys.join(', ')}. Candidates: ${candidates.join(', ')}`;
+      console.error(error);
+      throw new Error(error);
     }
-    return typeof command.execute === 'function' ? command.execute(input) : command.handler(input);
+    
+    console.log(`🔍 DEBUG: capabilityRegistry.invoke - Command ditemukan! Menjalankan execute/handler dengan correlation_id=${correlation_id}...`);
+    // W06-A3: Propagate correlation ID ke input handler untuk trace berkelanjutan
+    // W06-A2-R1: HARDENED TRUST BOUNDARY - NEVER allow untrusted context override
+          const ctxFromExecution = executionContext.get();
+          console.log(`[capabilityRegistry.invoke] 🔍 DEBUG: executionContext.get() returned:`, JSON.stringify(ctxFromExecution, null, 2));
+          console.log(`[capabilityRegistry.invoke] 🔍 DEBUG: providedExecutionContext:`, JSON.stringify(providedExecutionContext, null, 2));
+          
+          // Prioritaskan context dari executionContext terautentikasi, izinkan fallback ke providedExecutionContext HANYA untuk test (NODE_ENV=test)
+          const authenticatedContext = ctxFromExecution || (process.env.NODE_ENV === 'test' ? providedExecutionContext : null);
+          
+          // 🔒 Enforce authenticated context requirements - tidak bisa menjalankan command tanpa konteks terverifikasi
+          if (!authenticatedContext?.actor_id || 
+              !authenticatedContext?.tenant_id || 
+              !authenticatedContext?.session_id) {
+            const error = `unauthenticated_execution_context: Missing required authenticated identity fields (actor_id/tenant_id/session_id). correlation_id: ${correlation_id}`;
+            console.error(error);
+            throw new Error(error);
+          }
+          
+          // HANYA izinkan propagasi context_trace_id yang sah dari internal runtime, JANGAN izinkan override identity fields
+          const executionContextToPass: ExecutionContext = {
+            ...authenticatedContext, // AMBIL SEMUA IDENTITY DARI KONTEKS TERAUTENTIKASI SAJA
+            context_trace_id: correlation_id,
+            parent_context_trace_id: authenticatedContext.context_trace_id ?? null
+          };
+          
+          // Pass both input and ExecutionContext - pattern canonical EOS untuk trust boundary
+          const inputWithTrace = {
+            ...input,
+            context_trace_id: correlation_id,
+            parent_context_trace_id: input?.context_trace_id || providedExecutionContext?.context_trace_id || null
+          };
+          
+          // W06-A2: Panggil command dengan ExecutionContext sebagai parameter kedua (trust boundary compliance)
+          const result = typeof command.execute === 'function' 
+            ? await command.execute(inputWithTrace, executionContextToPass) 
+            : await command.handler(inputWithTrace, executionContextToPass);
+    console.log(`🔍 DEBUG: capabilityRegistry.invoke - Command berhasil dijalankan! correlation_id=${correlation_id}, Hasil:`, result);
+    return {
+      ...result,
+      _execution_trace: {
+        correlation_id,
+        execution_id,
+        command_key: `${capability}.${commandName}`,
+        invoked_at: new Date().toISOString()
+      }
+    };
+  },
+
+  // Alias backward compatibility: invokeAsync sama dengan invoke()
+  async invokeAsync(input: any): Promise<any> {
+    // Parse input yang digunakan di route.ts: { capability, command, context, payload }
+    const { capability, command: commandName, context, payload } = input;
+    console.log(`🔍 DEBUG: capabilityRegistry.invokeAsync - Meneruskan ke invoke(): ${capability}.${commandName}`);
+    // W06-A2 FIX: Pisahkan context dan payload dengan benar, JANGAN menggabungkan semua ke satu object
+    // invoke() memiliki signature invoke(capability, commandName, payload, executionContext)
+    return this.invoke(capability, commandName, payload, context);
   },
 
   register(command: CapabilityCommand): void {
+    console.log(`🔍 DEBUG: capabilityRegistry.register - Mulai mendaftarkan command:`);
+    console.log(`🔍 DEBUG: capabilityRegistry.register - command.name: ${command.name}`);
+    console.log(`🔍 DEBUG: capabilityRegistry.register - command.capability: ${command.capability}`);
+    console.log(`🔍 DEBUG: capabilityRegistry.register - command.execute/handler exists: ${!!command.execute || !!command.handler}`);
+    
     let commandKey: string;
-    // Jika command.name sudah mengandung prefix (misal "identity.getSessionById"), gunakan langsung sebagai commandKey
-    if (command.name.includes('.')) {
-      commandKey = command.name;
-    } 
-    // Jika command memiliki field capability dan name (misal capability: "identity", name: "getSessionById"), gabungkan
-    else if (command.capability) {
-      commandKey = `${command.capability}.${command.name}`;
-    } 
-    // Fallback jika tidak ada format yang sesuai
-    else {
-      commandKey = command.name;
-    }
+          // Selalu gabungkan capability dan name jika command memiliki field capability, terlepas dari apakah name mengandung dot
+          // Ini memastikan semua command terdaftar dengan prefix capability yang benar
+          if (command.capability) {
+            // Cek apakah name sudah mengandung prefix capability untuk menghindari duplikasi
+            if (command.name.startsWith(`${command.capability}.`)) {
+              commandKey = command.name;
+            } else {
+              commandKey = `${command.capability}.${command.name}`;
+            }
+            console.log(`🔍 DEBUG: capabilityRegistry.register - command.capability + command.name: ${commandKey}`);
+          } 
+          // Fallback jika tidak ada capability yang diset
+          else {
+            commandKey = command.name;
+            console.log(`🔍 DEBUG: capabilityRegistry.register - Pakai command.name sebagai fallback (tidak ada capability): ${commandKey}`);
+          }
 
     // Cegah registrasi ganda (tambah log untuk debugging)
     if (this.capabilityCommands[commandKey]) {
       console.warn(`[capabilityRegistry] ⚠️ Command ${commandKey} sudah terdaftar, skip registrasi ulang`);
+      console.log(`🔍 DEBUG: capabilityRegistry.register - Total commands tetap: ${Object.keys(this.capabilityCommands).length}`);
       return;
     }
     
     this.capabilityCommands[commandKey] = command;
     console.log(`[capabilityRegistry] ✅ Mendaftarkan command: ${commandKey}`);
+    console.log(`🔍 DEBUG: capabilityRegistry.register - Berhasil menyimpan command di key: ${commandKey}`);
     
     // Juga simpan dengan format capability.name jika command.name belum mengandung prefix (untuk backward compatibility)
     if (!command.name.includes('.') && command.capability) {
       const alternativeKey = `${command.capability}.${command.name}`;
+      console.log(`🔍 DEBUG: capabilityRegistry.register - Melakukan dual-registration untuk backward compatibility: ${alternativeKey}`);
       if (!this.capabilityCommands[alternativeKey]) {
         this.capabilityCommands[alternativeKey] = command;
         console.log(`[capabilityRegistry] Dual-registered command: ${alternativeKey}`);
+        console.log(`🔍 DEBUG: capabilityRegistry.register - Dual-registration berhasil: ${alternativeKey}`);
+      } else {
+        console.log(`🔍 DEBUG: capabilityRegistry.register - Dual-registration dilewati, key sudah ada: ${alternativeKey}`);
       }
     }
     
     // Log semua command yang terdaftar setelah registrasi
     console.log(`[capabilityRegistry] Total commands registered: ${Object.keys(this.capabilityCommands).length}`);
+    console.log(`🔍 DEBUG: capabilityRegistry.register - Semua key yang terdaftar sekarang:`, Object.keys(this.capabilityCommands));
   },
 
   // listCommandKeys() SINKRON dan TIDAK BERGANTUNG pada loadCapabilityCommands() apapun - VERSI TERBARU 2026-10-22
@@ -96,32 +211,69 @@ export const capabilityRegistry = {
     return Object.keys(this.capabilityCommands).some(key => key.startsWith(`${capabilityId}.`));
   },
 
+  /**
+   * TEST-ONLY UTILITY: Jangan gunakan di kode production - hanya untuk menyelesaikan race condition registrasi async di test environment
+   * Utility ini tidak mengubah state registry, hanya melakukan polling hingga capability terdaftar atau timeout
+   * @param capabilityId ID capability yang ditunggu
+   * @param maxRetries Jumlah maksimal retry (default: 10)
+   * @param retryIntervalMs Interval antar retry dalam milidetik (default: 100)
+   * @returns Promise<boolean> True jika capability terdaftar, false jika timeout
+   */
+  async waitForCapability(capabilityId: string, maxRetries: number = 10, retryIntervalMs: number = 100): Promise<boolean> {
+    // Utility ini 100% read-only, tidak mengubah apapun di production registry
+    // Hanya digunakan di environment test untuk menunggu async registrasi selesai
+    let retries = 0;
+    while (!this.hasCapability(capabilityId) && retries < maxRetries) {
+      await new Promise(resolve => setTimeout(resolve, retryIntervalMs));
+      retries++;
+    }
+    return this.hasCapability(capabilityId);
+  },
+
   // Implementasi minimal resolveByParts() dengan alias support sesuai test expectations
   async resolveByParts(capability: string, commandName: string): Promise<{
     attemptedKeys: string[];
     command: CapabilityCommand | undefined;
     candidates: string[];
   }> {
+    console.log(`🔍 DEBUG: capabilityRegistry.resolveByParts - Mencari command: ${capability}.${commandName}`);
+    console.log(`🔍 DEBUG: capabilityRegistry.resolveByParts - Semua key yang tersedia:`, Object.keys(this.capabilityCommands));
+    
     // Hapus panggilan loadCapabilityCommands() - semua command di-load secara eksplisit
     const attemptedKeys: string[] = [];
     const directKey = `${capability}.${commandName}`;
     attemptedKeys.push(directKey);
+    console.log(`🔍 DEBUG: capabilityRegistry.resolveByParts - Mencoba direct key: ${directKey}`);
 
     // Coba langsung dulu
     let command = this.capabilityCommands[directKey];
+    console.log(`🔍 DEBUG: capabilityRegistry.resolveByParts - command ditemukan di direct key? ${!!command}`);
+    
     if (command) {
+      console.log(`🔍 DEBUG: capabilityRegistry.resolveByParts - Berhasil menemukan command!`);
       return { attemptedKeys, command, candidates: [] };
     }
 
-    // Coba dengan alias jika ada
+    // Coba dengan alias jika ada - FIX: tambahkan opsi kedua jika commandName tidak perlu diprefix lagi
     if (capabilityPrefixAliases[capability]) {
-      const aliasedKey = `${capabilityPrefixAliases[capability]}${commandName}`;
-      attemptedKeys.push(aliasedKey);
-      command = this.capabilityCommands[aliasedKey];
-      if (command) {
-        return { attemptedKeys, command, candidates: [] };
-      }
-    }
+            const aliasedCap = capabilityPrefixAliases[capability];
+            // Coba dua kemungkinan: dengan alias + commandName, dan commandName saja (jika command.name sudah sesuai)
+            const aliasedKey = aliasedCap ? `${aliasedCap}.${commandName}` : commandName;
+            attemptedKeys.push(aliasedKey);
+            // Tambahkan fallback commandName langsung (untuk kasus command.name sudah tanpa prefix capability)
+            const directCommandName = commandName;
+            attemptedKeys.push(directCommandName);
+            
+            let command = this.capabilityCommands[aliasedKey];
+            if (command) {
+              return { attemptedKeys, command, candidates: [] };
+            }
+            // Coba commandName langsung jika aliasedKey tidak ditemukan
+            command = this.capabilityCommands[directCommandName];
+            if (command) {
+              return { attemptedKeys, command, candidates: [] };
+            }
+          }
 
     // Jika tidak ditemukan, return semua keys yang mirip sebagai candidates
     const allKeys = Object.keys(this.capabilityCommands);
@@ -132,7 +284,11 @@ export const capabilityRegistry = {
 
     return { attemptedKeys, command: undefined, candidates };
   }
-};
+  };
+}
+
+// Export singleton instance untuk runtime production (kembalikan ke pola lama untuk backward compatibility)
+export const capabilityRegistry = createRegistry();
 
 // REALITY PATH ONLY: Eliminate all bulk capability loading - only direct imports allowed in routes
 // Namun tetap kembalikan capabilityCommands yang sudah didaftarkan secara manual via register()
@@ -1152,12 +1308,129 @@ export const SVC_ID_001_TechnicalServiceWorkflow: WorkflowDefinition = {
   terminalStep: "request-closed"
 };
 
+// EOS-SKILL-COMPOSITION-001: Repository & Capability Audit Workflow
+// Enforces: RECON → DEPENDENCY ANALYSIS → VERIFICATION → EVIDENCE REGISTRATION → COMMAND CENTER UPDATE
+// Phase 2 - Skill Composition first workflow: mengkombinasikan engineering skill sequence
+// CORE-001: Menggunakan existing 5-boundary model dan existing capability commands
+export const EOS_SKILL_001_RepositoryAuditWorkflow: WorkflowDefinition = {
+  id: "eos-skill-001-repository-audit",
+  productId: "eos-skill-system",
+  label: "EOS Repository & Capability Audit Workflow",
+  // 5 EXPLICIT BOUNDARIES sesuai standar EOS
+  identityBoundary: {
+    tenantId: "tenant-eos-system-001",
+    organizationId: "org-eos-core-001",
+    authorizedActors: ["system", "automated", "engineering-lead", "audit-actor"]
+  },
+  semanticBoundary: {
+    domain: "engineering",
+    primaryIntent: "execute repository and capability audit using composed EOS skills",
+    workType: "audit",
+    requirements: ["codebase-scan", "dependency-mapping", "verification", "evidence-logging", "status-reporting"]
+  },
+  authorityBoundary: {
+    requiredCapabilities: ["recon.scan", "dependency.analyze", "verification.run", "evidence.record", "commandcenter.update"],
+    policyIds: ["policy-engineering-data-access", "policy-audit-trail-requirements", "policy-eos-core-integrity"],
+    delegable: true,
+    approvalThreshold: 1
+  },
+  executionBoundary: {
+    workspaceId: "eos-system-workspace.anonymous",
+    runtimeEnvironment: "production",
+    assignedActors: ["system", "automated", "engineering-lead"],
+    externalSystemIds: ["codebase-repository", "dependency-graph-store", "evidence-ledger"],
+    executionFrame: "direct"
+  },
+  presentationBoundary: {
+    supportedFaces: ["api", "agent", "system"],
+    defaultLayout: "audit-dashboard",
+    mobileEnabled: false,
+    apiEnabled: true
+  },
+  productRef: "product-eos-skill-system-001",
+  caseRef: "case-repository-audit-template",
+  steps: [
+    {
+      id: "audit-initiated",
+      label: "Audit Initiated",
+      capability: "eos-recon",
+      command: "recon.scan",
+      description: "Repository reconnaissance dimulai dengan scanning codebase untuk existing capabilities dan resources",
+      requiredRoles: ["system", "automated", "audit-actor"]
+    },
+    {
+      id: "recon-completed",
+      label: "Reconnaissance Complete",
+      capability: "eos-dependency-engine",
+      command: "dependency.analyze",
+      description: "Dependency dan ownership analysis dijalankan terhadap hasil scan recon",
+      requiredRoles: ["system", "automated"]
+    },
+    {
+      id: "dependency-analysis-completed",
+      label: "Dependency Analysis Complete",
+      capability: "eos-verification",
+      command: "verification.run",
+      description: "Validasi kondisi aktual dan acceptance criteria capability registry",
+      requiredRoles: ["system", "automated", "engineering-lead"]
+    },
+    {
+      id: "verification-completed",
+      label: "Verification Complete",
+      capability: "eos-evidence-engine",
+      command: "evidence.record",
+      description: "Semua hasil audit diregistrasikan dan direkonsiliasi di evidence ledger",
+      requiredRoles: ["system", "automated"]
+    },
+    {
+      id: "evidence-recorded",
+      label: "Evidence Recorded",
+      capability: "eos-command-center",
+      command: "commandcenter.update",
+      description: "Status Work diperbarui sesuai authority dan laporan audit disimpan",
+      requiredRoles: ["system", "engineering-lead"]
+    },
+    {
+      id: "audit-completed",
+      label: "Audit Completed",
+      capability: "eos-command-center",
+      command: "work.close",
+      description: "Workflow audit selesai dengan seluruh evidence terarsip",
+      requiredRoles: ["engineering-lead", "audit-actor"]
+    }
+  ],
+  transitions: {
+    "initiate-to-recon": { requiredRoles: ["system", "automated", "audit-actor"], from: "audit-initiated", to: "recon-completed" },
+    "recon-to-dependency": { requiredRoles: ["system", "automated"], from: "recon-completed", to: "dependency-analysis-completed" },
+    "recon-to-failed": { requiredRoles: ["system", "automated", "audit-actor"], from: "recon-completed", to: "audit-failed" },
+    "dependency-to-verification": { requiredRoles: ["system", "automated", "engineering-lead"], from: "dependency-analysis-completed", to: "verification-completed" },
+    "dependency-to-failed": { requiredRoles: ["system", "engineering-lead", "audit-actor"], from: "dependency-analysis-completed", to: "audit-failed" },
+    "verification-to-evidence": { requiredRoles: ["system", "automated"], from: "verification-completed", to: "evidence-recorded" },
+    "verification-to-failed": { requiredRoles: ["system", "automated", "engineering-lead", "audit-actor"], from: "verification-completed", to: "audit-failed" },
+    "evidence-to-commandcenter": { requiredRoles: ["system", "engineering-lead"], from: "evidence-recorded", to: "audit-completed" },
+    "evidence-to-failed": { requiredRoles: ["system", "engineering-lead", "audit-actor"], from: "evidence-recorded", to: "audit-failed" },
+    "recover-to-recon": { requiredRoles: ["system", "engineering-lead", "audit-actor"], from: "audit-failed", to: "audit-initiated" }
+  },
+  steps: [
+    { id: "audit-initiated", label: "Audit Initiated", capability: "eos-recon", command: "recon.scan", description: "Repository reconnaissance dimulai dengan scanning codebase untuk existing capabilities dan resources", requiredRoles: ["system", "automated", "audit-actor"] },
+    { id: "recon-completed", label: "Reconnaissance Complete", capability: "eos-dependency-engine", command: "dependency.analyze", description: "Dependency dan ownership analysis dijalankan terhadap hasil scan recon", requiredRoles: ["system", "automated"] },
+    { id: "dependency-analysis-completed", label: "Dependency Analysis Complete", capability: "eos-verification", command: "verification.run", description: "Validasi kondisi aktual dan acceptance criteria capability registry", requiredRoles: ["system", "automated", "engineering-lead"] },
+    { id: "verification-completed", label: "Verification Complete", capability: "eos-evidence-engine", command: "evidence.record", description: "Semua hasil audit diregistrasikan dan direkonsiliasi di evidence ledger", requiredRoles: ["system", "automated"] },
+    { id: "evidence-recorded", label: "Evidence Recorded", capability: "eos-command-center", command: "commandcenter.update", description: "Status Work diperbarui sesuai authority dan laporan audit disimpan", requiredRoles: ["system", "engineering-lead"] },
+    { id: "audit-completed", label: "Audit Completed", capability: "eos-command-center", command: "work.close", description: "Workflow audit selesai dengan seluruh evidence terarsip", requiredRoles: ["engineering-lead", "audit-actor"] },
+    { id: "audit-failed", label: "Audit Failed", capability: "eos-command-center", command: "work.block", description: "Workflow audit gagal, masalah memerlukan intervensi sebelum dapat dilanjutkan", requiredRoles: ["engineering-lead", "audit-actor"] }
+  ],
+  initialStep: "audit-initiated",
+  terminalStep: "audit-completed"
+};
+
 // Initialize all workflows in registry on module load
 // Register all workflows to make them available to FACE filtering
 workflowRegistry.register(LH_LGL_001_ConsultationWorkflow);
 workflowRegistry.register(ILC_INS_001_InstitutionalWorkflow);
 workflowRegistry.register(BPJS_KSHTN_001_ClaimWorkflow);
 workflowRegistry.register(SVC_ID_001_TechnicalServiceWorkflow);
+workflowRegistry.register(EOS_SKILL_001_RepositoryAuditWorkflow);
 
 console.log(`[workflowRegistry] All workflows registered. Total: ${workflowRegistry.listAll().length}`);
 
@@ -1185,10 +1458,9 @@ export async function executeAuthorizedTransition(
     
     // Log policy violation to evidence ledger (follows safeRecordEvidence pattern from all capabilities)
     try {
-      const loaded = await import("@repo/core-kernel");
-      const reg = (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
-      if (typeof reg?.invoke === "function") {
-        await reg.invoke("evidence-registry", "evidence.record", {
+      // capabilityRegistry is already in scope, no need to re-import
+      if (typeof capabilityRegistry?.invoke === "function") {
+        await capabilityRegistry.invoke("evidence-registry", "evidence.record", {
           capability: "workflow-registry",
           command: "transition.denied",
           work_id: workId,
@@ -1243,10 +1515,9 @@ export async function executeAuthorizedTransition(
   
   // 4. Log successful transition to evidence ledger
   try {
-    const loaded = await import("@repo/core-kernel");
-    const reg = (loaded as { capabilityRegistry?: { invoke?: (...args: unknown[]) => Promise<unknown> } }).capabilityRegistry;
-    if (typeof reg?.invoke === "function") {
-      await reg.invoke("evidence-registry", "evidence.record", {
+    // capabilityRegistry is already in scope, no need to re-import
+    if (typeof capabilityRegistry?.invoke === "function") {
+      await capabilityRegistry.invoke("evidence-registry", "evidence.record", {
         capability: "workflow-registry",
         command: "transition.executed",
         work_id: workId,

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession,
@@ -10,8 +10,8 @@ import {
 import {
   getSessionRepositoryPostgres,
   initIdentitySchema,
-} from "@repo/capabilities/identity";
-import { validateBoundaryAccess } from "@repo/capabilities/work-core/contracts/work.contracts.js";
+} from "@capabilities/identity/implementation/repositories/index.js";
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
 
 export async function POST(request: Request) {
   try {
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       sessionCookie = { name: WORKSPACE_SESSION_COOKIE, value: encodedSession };
     }
 
-    const session = decodeWorkspaceSession(sessionCookie.value);
+    const session = await decodeWorkspaceSession(sessionCookie.value);
     if (!session || !session.tenantId || !session.workspaceId || !session.actorId || !session.sessionId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }

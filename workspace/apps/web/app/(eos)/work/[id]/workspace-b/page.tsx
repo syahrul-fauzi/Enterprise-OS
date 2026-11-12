@@ -27,7 +27,7 @@ async function resolveSessionOrEnter() {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);
   if (!sessionCookie?.value) redirect("/enter");
-  const session = decodeWorkspaceSession(sessionCookie.value);
+  const session = await decodeWorkspaceSession(sessionCookie.value);
   if (!session || !session.sessionId || !session.tenantId || !session.workspaceId || !session.actorId) {
     redirect("/enter");
   }
@@ -60,7 +60,7 @@ export default async function WorkspaceBRoute({ params }: WorkspaceBRouteProps) 
     let session: WorkspaceSession & { userCapabilities?: string[], workspaceLabel?: string };
     if (sessionCookie?.value) {
       try {
-        const baseSession = decodeWorkspaceSession(sessionCookie.value);
+        const baseSession = await decodeWorkspaceSession(sessionCookie.value);
         if (!baseSession) {
           // Fallback jika decode gagal (baseSession null)
           const fallbackSession = createAnonymousWorkspaceSession("lawyershub");

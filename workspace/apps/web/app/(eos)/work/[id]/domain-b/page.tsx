@@ -27,7 +27,7 @@ async function resolveSessionOrEnter() {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);
   if (!sessionCookie?.value) redirect("/enter");
-  const session = decodeWorkspaceSession(sessionCookie.value);
+  const session = await decodeWorkspaceSession(sessionCookie.value);
   if (!session || !session.sessionId || !session.tenantId || !session.workspaceId || !session.actorId) {
     redirect("/enter");
   }
@@ -62,8 +62,9 @@ export default async function WorkDomainBRoute({ params }: WorkDomainBRouteProps
     let session: WorkspaceSession;
     if (sessionCookie?.value) {
       try {
-        const baseSession = decodeWorkspaceSession(sessionCookie.value);
+        const baseSession = await decodeWorkspaceSession(sessionCookie.value);
         // Override domain context untuk finance/invoicing projection - TIDAK merubah canonical Work state
+        if (!baseSession) throw new Error("Invalid session");
         session = {
           ...baseSession,
           workspaceId: "finance-workspace.001",

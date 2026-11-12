@@ -1,0 +1,94 @@
+version: "1.0"
+product_id: "digital-operations"
+service_levels:
+  - id: "sla-finance-operations-basic"
+    name: "SLA Finance Operations Basic"
+    package_id: "finance-operations-basic"
+    service_domain: "finance-operations"
+    uptime_guarantee: "99.5%"
+    response_time_critical: "4 jam kerja"
+    response_time_standard: "24 jam kerja"
+    recovery_time_objective: "8 jam kerja"
+    monthly_included_transactions: 500
+    evidence_requirements: ["reconciliation-report", "exception-log", "financial-audit-trail"]
+  - id: "sla-content-growth-operations-standard"
+    name: "SLA Content & Growth Operations Standard"
+    package_id: "content-growth-operations-standard"
+    service_domain: "content-growth-operations"
+    uptime_guarantee: "99.8%"
+    response_time_critical: "2 jam kerja"
+    response_time_standard: "12 jam kerja"
+    recovery_time_objective: "4 jam kerja"
+    monthly_included_campaigns: 10
+    evidence_requirements: ["campaign-performance-report", "content-approval-log", "roi-analysis-report"]
+  - id: "sla-customer-commerce-operations-enterprise"
+    name: "SLA Customer & Commerce Operations Enterprise"
+    package_id: "customer-commerce-operations-enterprise"
+    service_domain: "customer-commerce-operations"
+    uptime_guarantee: "99.9%"
+    response_time_critical: "1 jam kerja"
+    response_time_standard: "4 jam kerja"
+    recovery_time_objective: "2 jam kerja"
+    monthly_included_tickets: "unlimited"
+    evidence_requirements: ["customer-satisfaction-report", "escalation-resolution-log", "order-exception-audit"]
+  - id: "sla-full-suite-managed-operations"
+    name: "SLA Full Suite Managed Digital Operations"
+    package_id: "full-suite-managed-operations"
+    service_domain: "all-domains"
+    uptime_guarantee: "99.99%"
+    response_time_critical: "30 menit (24/7)"
+    response_time_standard: "2 jam kerja"
+    recovery_time_objective: "1 jam kerja"
+    unlimited_all_services: true
+    evidence_requirements: ["all-business-outcome-reports", "continuous-improvement-log", "quarterly-business-review"]
+availability_schedules_reference:
+  - package_id: "finance-operations-basic"
+    schedule_id: "support-hours-finance-basic"
+    reference_file: "availability.yaml"
+  - package_id: "content-growth-operations-standard"
+    schedule_id: "support-hours-content-growth-standard"
+    reference_file: "availability.yaml"
+  - package_id: "customer-commerce-operations-enterprise"
+    schedule_id: "support-hours-customer-commerce-enterprise"
+    reference_file: "availability.yaml"
+  - package_id: "full-suite-managed-operations"
+    schedule_id: "support-hours-full-suite-enterprise"
+    reference_file: "availability.yaml"
+reporting_requirements:
+  - id: "reporting-finance-basic"
+    name: "Monthly Finance Operations Report"
+    package_id: "finance-operations-basic"
+    reports: ["reconciliation-summary", "exception-resolution-rate", "financial-compliance-log"]
+    delivery_day: "setiap tanggal 5 bulanan"
+  - id: "reporting-content-growth-standard"
+    name: "Monthly Content & Growth Report"
+    package_id: "content-growth-operations-standard"
+    reports: ["campaign-roi-summary", "content-production-log", "growth-insights"]
+    delivery_day: "setiap tanggal 3 bulanan"
+  - id: "reporting-customer-commerce-enterprise"
+    name: "Monthly Customer & Commerce Report"
+    package_id: "customer-commerce-operations-enterprise"
+    reports: ["customer-satisfaction-score", "escalation-resolution-time", "order-exception-report"]
+    delivery_day: "setiap tanggal 2 bulanan"
+  - id: "reporting-full-suite-enterprise"
+    name: "Comprehensive Monthly Business Review"
+    package_id: "full-suite-managed-operations"
+    reports: ["all-domain-reports", "continuous-improvement-update", "roadmap-alignment-check"]
+    delivery_day: "setiap tanggal 1 bulanan + business review meeting"
+compliance_requirements:
+  - id: "compliance-finance-basic"
+    name: "Finance Operations Basic Compliance"
+    package_id: "finance-operations-basic"
+    requirements: ["payment-data-protection", "financial-audit-trail", "data-backup"]
+  - id: "compliance-content-growth-standard"
+    name: "Content & Growth Standard Compliance"
+    package_id: "content-growth-operations-standard"
+    requirements: ["customer-data-protection", "marketing-compliance", "campaign-audit-log"]
+  - id: "compliance-customer-commerce-enterprise"
+    name: "Customer & Commerce Enterprise Compliance"
+    package_id: "customer-commerce-operations-enterprise"
+    requirements: ["ppi-indonesia-compliance", "customer-communication-logging", "order-audit-trail"]
+  - id: "compliance-full-suite-enterprise"
+    name: "Full Suite Enterprise Compliance"
+    package_id: "full-suite-managed-operations"
+    requirements: ["all-compliance-requirements", "quarterly-security-assessment", "audit-ready-evidence-archive"]

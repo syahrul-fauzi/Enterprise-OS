@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized: no session found" }, { status: 401 });
     }
 
-    const decodedSession = decodeWorkspaceSession(sessionValue);
+    const decodedSession = await decodeWorkspaceSession(sessionValue);
     if (!decodedSession?.sessionId || !decodedSession.actorId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 400 });
     }

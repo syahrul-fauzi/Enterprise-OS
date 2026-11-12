@@ -85,4 +85,31 @@ export interface GovernanceEvidenceProvider {
   getGovernanceDecisions(): GovernanceConfidenceVerdict[];
   hasPermission(action: string, resource: string, actorPermissions: string[], actorRoles: string[]): boolean;
   addEvidence(workId: string, entry: any): Promise<void>;
+  addRevenueTrackingEntry(workId: string, entry: RevenueTrackingEntry): Promise<void>;
+  getRevenueSummary(productId: string): Promise<RevenueSummary>;
 }
+
+export type RevenueTrackingEntry = {
+  readonly buyerId: string;
+  readonly serviceId: string;
+  readonly amount: number;
+  readonly currency: string;
+  readonly transactionTimestamp: string;
+  readonly status: "pending" | "completed" | "failed";
+  readonly paymentMethod: string;
+};
+
+export type RevenueSummary = {
+  // Base interface properties (camelCase)
+  readonly totalTransactions: number;
+  readonly totalRevenue: number;
+  readonly byService: Record<string, { readonly count: number; readonly revenue: number }>;
+  // Extended IDR-specific properties (camelCase)
+  readonly totalRevenueIdr: number;
+  readonly uniqueClients: number;
+  readonly byProduct: Record<string, { readonly count: number; readonly revenue: number }>;
+  // Backward compatibility snake_case properties
+  readonly total_transactions: number;
+  readonly total_revenue_idr: number;
+  readonly unique_clients: number;
+};

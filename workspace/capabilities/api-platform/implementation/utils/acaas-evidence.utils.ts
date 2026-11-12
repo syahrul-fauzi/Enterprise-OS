@@ -4,7 +4,7 @@ import type { WorkspaceId, EvidenceBoundary } from "@capabilities/work-core/cont
 import { validateBoundaryAccess, safeRecordEvidence } from "@capabilities/work-core/implementation/utils/evidence.utils.js";
 
 export async function safeRecordEvidenceACaaS(payload: {
-  workspace_id?: WorkspaceId | undefined;
+  workspace_id: WorkspaceId; // Wajib sesuai EOS MASTER EVIDENCE REQUIREMENT
   capability: string;
   command: string;
   work_id: string;

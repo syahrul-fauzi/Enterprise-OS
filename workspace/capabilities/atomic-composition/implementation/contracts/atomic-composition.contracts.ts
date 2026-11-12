@@ -9,6 +9,9 @@ import type {
   CompositionId 
 } from "@capabilities/work-core";
 
+// Export canonical types yang dibutuhkan oleh economic-proof.ts dan dependent files
+export type { WorkId, ActorId, UserId, CompositionId };
+
 // ============================================================================
 // ATOMIC WORK COMPOSITION - PRIMITIVE DEFINITIONS
 // Canonical Integration Layer: References existing EOS Core primitives
@@ -132,9 +135,9 @@ export const CapabilityResolutionRequestSchema = z.object({
   availableActors: z.array(z.any()).default([]),
   availableCapabilities: z.array(z.string()).default([]),
   workspaceId: z.string().optional(),
-  tenantId: z.string().optional(), // Tambahkan tenantId untuk authentication guard
+  tenant_id: z.string().optional(), // Align dengan safeRecordEvidence snake_case parameter
   sessionId: z.string().optional(), // Tambahkan sessionId
-  actorId: z.string().optional(), // Tambahkan actorId
+  actor_id: z.string().optional(), // Align dengan safeRecordEvidence snake_case parameter
   compositionPackageId: z.string().optional(), // W-COMP-001: ID package composition untuk reuse template
 });
 

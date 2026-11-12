@@ -1,7 +1,7 @@
 import type { ServiceProviderCategory, CreateServiceRequestInputLegacy as CreateServiceRequestInput } from "../contracts/service.contracts.js";
 import type { TenantId, WorkspaceId } from "@capabilities/work-core";
 import { createTenantId, createWorkspaceId } from "../../../work-core/contracts/work.contracts.js";
-import { ServiceRequestRepositoryInMemory as ServiceRequestRepository } from "../repository/service.repository.js";
+import { ServiceRequestRepositoryInMemory } from "../repository/service.repository.js";
 import { validateBatchItems } from "../validation/batch-validator.js";
 import { getServiceRequestRepositoryPostgres } from "../repository/index.js";
 
@@ -27,8 +27,11 @@ export async function createServiceRequestBatch(input: BatchCreateInput): Promis
     throw new Error(`Batch validation failed: ${validationResult.errors.join(', ')}`);
   }
 
-  // 2. Initialize repository with tenant isolation (gunakan factory function yang terdaftar)
-  const repository = getServiceRequestRepositoryPostgres();
+  // 2. Initialize repository with tenant isolation - environment-based selection (W-SVC-001)
+  // Gunakan PostgreSQL jika ada string koneksi, jika tidak gunakan in-memory untuk test/development
+  const repository = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL 
+    ? getServiceRequestRepositoryPostgres() 
+    : ServiceRequestRepositoryInMemory;
 
   // 3. Map batch items to individual create inputs (tambahkan tenantId/workspaceId dari input context - W-SVC-001 tenant isolation)
   // Reuse createWorkspaceId/createTenantId factory functions to match branded type requirements

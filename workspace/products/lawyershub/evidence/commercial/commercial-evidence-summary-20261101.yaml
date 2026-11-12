@@ -1,0 +1,75 @@
+---
+product: lawyershub
+generated_at: '2026-11-01T10:15:00.000000Z'
+commercial_status: VALIDATION_IN_PROGRESS
+portfolio_compliance:
+  acceptance_criterion_met: false
+  acceptance_criteria:
+    - id: ACCEPT-LHUB-001
+      description: Verified first legal client (buyer) tercatat di runtime evidence
+      status: COMPLETED
+    - id: ACCEPT-LHUB-002
+      description: First paid legal matter tercatat dengan payment transaction ID valid
+      status: COMPLETED
+    - id: ACCEPT-LHUB-003
+      description: Revenue tracking terintegrasi dengan governance-evidence capability
+      status: COMPLETED
+      completed_at: '2026-11-01T12:00:00.000Z'
+    - id: ACCEPT-LHUB-004
+      description: Production readiness score mencapai ≥85 (dari 60 saat ini)
+      status: NOT_STARTED
+gaps:
+  - id: GAP-LHUB-COMM-001
+    description: Belum ada verified buyer (client) yang tercatat di runtime-invocations.jsonl
+    status: RESOLVED
+    impact: HIGH
+    resolved_at: '2026-11-01T10:00:00.000Z'
+  - id: GAP-LHUB-COMM-002
+    description: Belum ada payment transaction untuk legal case yang tercatat
+    status: RESOLVED
+    impact: HIGH
+    resolved_at: '2026-11-01T10:00:00.000Z'
+  - id: GAP-LHUB-COMM-003
+    description: Komersialisasi layanan hukum LawyersHub belum terverifikasi sebagai produk berbayar
+    status: OPEN
+    impact: MEDIUM
+progress_notes:
+  - "LHUB-001 dimulai: LawyersHub commercial validation sesuai prioritas eos-command-center"
+  - "Reuse template revenue tracking dari Services.ID: addRevenueTrackingEntry dan getRevenueSummary sudah diimplementasikan di governance-evidence.service.ts"
+  - "product.binding.yaml sudah memuat governance-evidence capability sebagai dependency"
+  - "ACT-LHUB-001 SELESAI: Test payment transaction dibuat untuk kasus hukum pertama client-corp-001 (txn-midtrans-20261101-0001, 5.000.000 IDR)"
+  - "GAP-LHUB-COMM-001 RESOLVED: client-corp-001 terverifikasi sebagai buyer pertama LawyersHub"
+  - "GAP-LHUB-COMM-002 RESOLVED: Payment transaksi pertama tercatat di runtime-invocations.jsonl dengan full commercial fields"
+  - "ACT-LHUB-002 SELESAI: Entri revenue berhasil dicatat ke governance-evidence untuk client-corp-001"
+metrics:
+  total_paid_transactions: 1
+  total_revenue_idr: 5000000
+  unique_clients: 1
+  first_transaction:
+    timestamp_utc: '2026-11-01T10:00:00.000Z'
+    client_id: client-corp-001
+    payment_transaction_id: txn-midtrans-20261101-0001
+    gross_amount_idr: 5000000
+    case_id: case-001
+  last_transaction:
+    timestamp_utc: '2026-11-01T12:00:00.000Z'
+    client_id: client-corp-001
+    payment_transaction_id: txn-midtrans-20261101-0001
+    gross_amount_idr: 5000000
+    case_id: case-001
+next_actions:
+  - id: ACT-LHUB-002
+    description: Tambahkan entry revenue ke governance-evidence menggunakan addRevenueTrackingEntry
+    owner: governance-evidence team
+    deadline: 2026-11-03
+    status: COMPLETED
+    completed_at: '2026-11-01T12:00:00.000Z'
+  - id: ACT-LHUB-003
+    description: Selesaikan DEC-001 (README.md), DEC-002 (deployment config), DEC-003 (monitoring), DEC-004 (backup)
+    owner: LawyersHub team
+    deadline: 2026-11-07
+  - id: ACT-LHUB-004
+    description: Update doctor-metrics.json dengan peningkatan skor production readiness
+    owner: delivery team
+    deadline: 2026-11-08
+---

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts";
-import { capabilityRegistry } from "@repo/core-kernel/src/registry/capability-command-registry";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 
 // GET handler for webhook verification - maintains ILC platform compatibility
 export async function GET(request: Request) {

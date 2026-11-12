@@ -1,0 +1,51 @@
+{
+  "work_id": "SMACE-007",
+  "verified_at": "2026-11-04T12:30:00.000Z",
+  "acceptance_criteria": {
+    "criterion_1_silent_failure": {
+      "passed": true,
+      "evidence": "reconciler.ts implements PENDING_RETRY status, throws explicit error on deduction failure, does not swallow errors",
+      "file_checked": "domain/commercial/reconciler.ts#L200-210"
+    },
+    "criterion_2_rollback_implementation": {
+      "passed": true,
+      "evidence": "rollbackBudget.execute() called on deduction failure; actual cost preserved as economic fact in reconciliation record (never deleted)",
+      "file_checked": "domain/commercial/reconciler.ts#L220-225"
+    },
+    "criterion_3_idempotency": {
+      "passed": true,
+      "evidence": "idempotencyKey implemented as `smace:deduct:{brief.canonicalWorkId}`, prevents double deduction; includes providerUsageReceiptId and runtimeJobId in metadata",
+      "file_checked": "domain/commercial/reconciler.ts#L150"
+    },
+    "criterion_4_canonical_work_validation": {
+      "passed": true,
+      "evidence": "non-null assertion removed; runtime check validates brief.canonicalWorkId exists before any transaction, throws error if missing",
+      "file_checked": "domain/commercial/reconciler.ts#L80-82"
+    },
+    "criterion_5_eos_state_separation": {
+      "passed": true,
+      "evidence": ".eos-state stores only engineering memory (ARCH reports, verification artifacts); operational evidence stored in canonical Evidence Registry via evidenceRegistryService.record()",
+      "file_checked": "domain/commercial/reconciler.ts#L310-315"
+    },
+    "criterion_6_tenant_isolation": {
+      "passed": true,
+      "evidence": "workspaceId added to CreativeBrief; session.workspaceId validated against brief.workspaceId to prevent cross-tenant access",
+      "file_checked": "contracts/creative-brief.contract.ts"
+    }
+  },
+  "all_passed": true,
+  "total_passed": 6,
+  "total_failed": 0,
+  "failed_criteria": [],
+  "passed_criteria": [
+    "criterion_1_silent_failure",
+    "criterion_2_rollback_implementation",
+    "criterion_3_idempotency",
+    "criterion_4_canonical_work_validation",
+    "criterion_5_eos_state_separation",
+    "criterion_6_tenant_isolation"
+  ],
+  "security_scan": {"passed": true, "vulnerabilities_found": 0},
+  "architecture_verification": {"passed": true, "locked_files_modified": []},
+  "smace_007_commercial_hardening_complete": true
+}

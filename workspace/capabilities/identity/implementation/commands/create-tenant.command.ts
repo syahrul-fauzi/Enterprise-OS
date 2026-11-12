@@ -10,7 +10,7 @@ import {
   type ExecutionBoundary, 
   type EvidenceBoundary, 
   type PresentationBoundary 
-} from "@capabilities/work-core/contracts/work.contracts.js";
+} from "../../../work-core/contracts/work.contracts.js";
 import {
   TenantId,
   type CreateTenantInput,

@@ -249,6 +249,18 @@ class CapabilityRegistry {
     // --- STAGE 5: CONSTRAINT CHECK (risk level aligned with authority + CMBCD execution frame validation) ---
     // Extract required data to calculate CMBCD execution frame from requirement context
         // Use properties from updated ExecutionRequirement interface with safe fallbacks
+        // Role mapping untuk peran terdaftar (termasuk account-manager untuk DIGIOP-104)
+        const roleDisplayNames: Record<string, string> = {
+          "account-manager": "Account Manager",
+          "finance-admin": "Finance Administrator",
+          "infrastructure-agent": "Infrastructure Agent",
+          "delivery-agent": "Delivery Agent",
+          "security-audit-provider": "Security Audit Provider",
+          "software-development-provider": "Software Development Provider",
+          "client-requester": "Client Requester",
+          "service-provider": "Service Provider"
+        };
+
         const actorMetadata = requirement.actorMetadata || {
           actorId: createActorId(requirement.authorizationId || "unknown-actor"),
           actorType: "human" as const,
@@ -256,6 +268,11 @@ class CapabilityRegistry {
           displayName: "Unknown Actor",
           trustLevel: "unverified" as const
         };
+
+        // Terapkan role mapping jika role terdaftar dan displayName belum diset
+        if (actorMetadata.role !== "unknown" && roleDisplayNames[actorMetadata.role] && actorMetadata.displayName === "Unknown Actor") {
+          actorMetadata.displayName = roleDisplayNames[actorMetadata.role];
+        }
         
         const authorization = requirement.authorizationScope || {
           allowedActions: [] as string[],
@@ -909,19 +926,19 @@ let isCoreChainInitialized = false;
 // ARCH-19 COMPLIANCE: Semua non-core capability di-relokasi ke domain masing-masing:
 // - legal-clarification-flow & ai-legal-consultant → legal-case/commands/case.commands.ts via registerLegalCaseCapability()
 // - human-consultant-matcher → consultation/commands/consultation.commands.ts via registerConsultationCapability()
-const registerNonCoreCapabilities = async () => {
-  // Panggil fungsi registrasi domain-specifik untuk menghindari hardcoded literals (ARCH-19 compliance)
-  const { registerLegalCaseCapability } = await import("../../../legal-case/implementation/commands/case.commands.js");
-  registerLegalCaseCapability();
-  
-  const { registerConsultationCapability } = await import("../../../consultation/implementation/commands/consultation.commands.js");
-  registerConsultationCapability();
+export const registerNonCoreCapabilities = async () => {
+          // Panggil fungsi registrasi domain-specifik untuk menghindari hardcoded literals (ARCH-19 compliance)
+          const { registerLegalCaseCapability } = await import("../../../legal-case/implementation/commands/case.commands.js");
+          registerLegalCaseCapability();
+          
+          const { registerConsultationCapability } = await import("../../../consultation/implementation/commands/consultation.commands.js");
+          registerConsultationCapability();
 
-  const { registerServicesIdCapability } = await import("../../../services-id/implementation/commands/service-request.commands.js");
-  registerServicesIdCapability();
+          const { registerServicesIdCapability } = await import("../../../services-id/implementation/commands/service-request.commands.js");
+          registerServicesIdCapability();
 
-  console.log("[CapabilityRegistry] ✅ All non-core capabilities and providers registered successfully (ARCH-19 compliant)");
-};
+          console.log("[CapabilityRegistry] ✅ All non-core capabilities and providers registered successfully (ARCH-19 compliant)");
+        };
 
 // AUDIT-001-006: REQUIRED DEPENDENCY CHAIN - Work-Core → Identity → Security → Governance → Legal-Case
 // CHAIN ENFORCEMENT: Fail-fast sequential registration to prevent partial startup
@@ -1005,7 +1022,22 @@ const registerCoreCapabilities = async () => {
     // 5. Register Legal-Case (HANYA setelah Governance-Evidence berhasil) - FINAL STEP IN CHAIN
     const { registerLegalCaseCapability } = await import("../../../legal-case/implementation/commands/case.commands.js");
     registerLegalCaseCapability();
-    console.log("[CapabilityRegistry] ✅ Legal-Case core capability registered successfully (AUDIT-001-006 CHAIN COMPLETE)");
+    const chainCompleteLog = "[CapabilityRegistry] ✅ Legal-Case core capability registered successfully (AUDIT-001-006 CHAIN COMPLETE)";
+    console.log(chainCompleteLog);
+    
+    // FIX-SERVER-STARTUP-001: Simpan CHAIN COMPLETE log ke file audit
+    try {
+      const fs = await import('fs/promises');
+      const logPath = ".eos-state/audit/server-startup-logs.txt";
+      // Pastikan direktori ada
+      await fs.mkdir(".eos-state/audit", { recursive: true });
+      // Tambahkan log ke file
+      await fs.appendFile(logPath, `\n${chainCompleteLog}\n`);
+      console.log("[FIX-SERVER-STARTUP-001] ✅ CHAIN COMPLETE log berhasil disimpan ke server-startup-logs.txt");
+    } catch (logError) {
+      console.error("[FIX-SERVER-STARTUP-001] ❌ Gagal menyimpan CHAIN COMPLETE log:", logError);
+    }
+
     await safeRecordEvidence({
       workspace_id: undefined,
       capability: "core.registry",
@@ -1458,27 +1490,29 @@ const registerDefaultCapabilities = () => {
             });
 
             // Register RuleBasedProvider for intent-understanding capability (EDGE-A-001: reuse existing provider)
-            const { getIntentUnderstandingService } = await import('./intent-understanding.service');
-            const intentService = getIntentUnderstandingService();
-            
-            globalRegistry.registerProvider({
-              id: "rule-based-intent-provider",
-              capabilityId: "generic-intent-resolution",
-              name: "Rule-Based Intent Understanding Provider",
-              description: "Deterministic rule-based engine untuk memproses intent yang jelas tanpa AI, fallback untuk edge device scenarios (EDGE-DEVICE-001)",
-              providerType: "system",
-              availabilityScore: 1.0,
-              authorizations: ["intent-processing", "workspace-read"],
-              authorityLevel: 3,
-              costPerExecution: 1.0,
-              severity: "LOW",
-              canHandle: async () => true,
-              isAvailable: async () => true,
-              execute: async (input: unknown) => {
-                const understanding = await intentService.understand(input as string);
-                return { success: true, data: understanding };
-              }
-            });
+            (async () => {
+              const { getIntentUnderstandingService } = await import('./intent-understanding.service');
+              const intentService = getIntentUnderstandingService();
+              
+              globalRegistry.registerProvider({
+                id: "rule-based-intent-provider",
+                capabilityId: "generic-intent-resolution",
+                name: "Rule-Based Intent Understanding Provider",
+                description: "Deterministic rule-based engine untuk memproses intent yang jelas tanpa AI, fallback untuk edge device scenarios (EDGE-DEVICE-001)",
+                providerType: "system",
+                availabilityScore: 1.0,
+                authorizations: ["intent-processing", "workspace-read"],
+                authorityLevel: 3,
+                costPerExecution: 1.0,
+                severity: "LOW",
+                canHandle: async () => true,
+                isAvailable: async () => true,
+                execute: async (input: unknown) => {
+                  const understanding = await intentService.understand(input as string);
+                  return { success: true, data: understanding };
+                }
+              });
+            })();
 
     // Services.ID Golden Slice: Website Maintenance & Repair capability
     globalRegistry.registerCapability({

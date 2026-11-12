@@ -11,6 +11,8 @@ import { WORKSPACE_SESSION_COOKIE } from "../../../../../../lib/constants";
 import { buildWorkRealityModel, CanonicalWorkRecord } from "./getWorkRealityModel";
 import { readProductBinding } from "@repo/presentation-experience/product-binding.js";
 import { provideLawyersHubContext } from "../../../../../../../../products/lawyershub/runtime/product-context-provider.js";
+// DIGIOP-003: Import monitoring dashboard untuk paket digital-care (reuse observability capability)
+import { WebsiteMonitoringDashboard } from "./components/WebsiteMonitoringDashboard";
 
 // Work detail route props (Next.js App Router pattern)
 interface WorkDetailRouteProps {
@@ -27,7 +29,7 @@ export default async function WorkDetailRoute({ params }: WorkDetailRouteProps) 
   let session;
   if (sessionCookie?.value) {
     try {
-      session = decodeWorkspaceSession(sessionCookie.value);
+      session = await decodeWorkspaceSession(sessionCookie.value);
     } catch {
       session = { 
         sessionId: "anonymous-session", 
@@ -101,7 +103,10 @@ export default async function WorkDetailRoute({ params }: WorkDetailRouteProps) 
   const binding = readProductBinding("lawyershub");
   const lawyersHubContext = provideLawyersHubContext(); // Pass request headers if white-labeling is needed
 
-  // 6. Render FACE with canonical model (client receives only precomputed reality model)
+  // 6. Cek apakah ini work untuk digital-care package (tampilkan monitoring dashboard)
+  const isDigitalCareWork = canonicalWork.metadata?.packageId === "digital-care" || canonicalWork.domainType === "digital-care";
+  
+  // 7. Render FACE with canonical model (client receives only precomputed reality model)
   return (
     <GlobalNavigation
       userCapabilities={session.userCapabilities || []}
@@ -114,6 +119,14 @@ export default async function WorkDetailRoute({ params }: WorkDetailRouteProps) 
         binding={binding}
         workRealityModel={workRealityModel}
         eSignEnabled={lawyersHubContext.features.eSignIntegration}
+        // DIGIOP-003: Render monitoring dashboard jika ini work digital-care
+        customBottomSection={isDigitalCareWork ? (
+          <WebsiteMonitoringDashboard 
+            workId={id} 
+            tenantId={session.tenantId}
+            packageType="digital-care"
+          />
+        ) : null}
         onExecuteAction={async (actionId: string, formData?: FormData) => {
           // SIG-NEXT-001-W8: Handle "Handoff to ILC" action (lawyershub→ilc cross-product handoff)
           if (actionId === "handoff-to-ilc") {

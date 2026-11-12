@@ -1,0 +1,51 @@
+id: whatsapp-channel
+version: 1.0.0
+kind: channel-pack
+extends:
+  - workspace-standard
+patterns:
+  - channel-integration-pattern
+  - external-identity-binding-pattern
+  - message-routing-pattern
+  - token-verification-pattern
+  - webhook-handler-pattern
+capabilities:
+  - identity
+  - work-core
+  - edge-buffer
+  - websocket-adapter
+  - identity.whatsappIdentityBinding
+surfaces:
+  - whatsapp-messaging
+  - channel-dashboard
+  - message-inbox
+  - identity-binding-panel
+  - channel-health-monitor
+schemas:
+  - WhatsAppChannelConfigSchema
+  - ExternalIdentityBindingSchema
+  - ChannelTokenVerificationSchema
+secrets:
+  required:
+    - WHATSAPP_VERIFICATION_TOKENS
+    - WHATSAPP_ACCESS_TOKEN
+configuration:
+  required:
+    - WHATSAPP_API_URL
+health_check:
+  endpoint: "/api/channel/whatsapp/health"
+  timeout_seconds: 30
+leverage_metrics:
+  potential_work_types: 100+
+  industries_supported: ["all"]
+  core_changes_required: 0
+  primitive_reuse_percentage: 100
+  supported_channels:
+    - WhatsApp Business API
+    - WhatsApp Cloud API
+  channel_features:
+    - Text messaging
+    - Media attachments
+    - Template messages
+    - External identity binding
+    - Offline message buffering

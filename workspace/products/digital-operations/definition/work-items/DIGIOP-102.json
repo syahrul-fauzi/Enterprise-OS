@@ -1,0 +1,16 @@
+{
+  "work_id": "DIGIOP-102",
+  "user_job": "Purchase & onboard Digital Growth Ops package",
+  "product": "digital-operations",
+  "acceptance_criteria": [
+    "User dapat mengisi formulir pendaftaran paket Digital Growth Ops",
+    "API menerima permintaan pendaftaran dengan validasi Midtrans",
+    "Capability connector-ecosystem mengaktifkan integrasi multi-platform",
+    "Persistence menyimpan data pelanggan dan platform yang diintegrasikan",
+    "State Work berubah dari 'draft' → 'payment-verified' → 'onboarded' → 'active'",
+    "Evidence mencatat semua tindakan integrasi dengan SHA-256 integrity",
+    "Sistem berhasil mengkoneksikan platform Shopify/Tokopedia/Shopee",
+    "Test menyelesaikan end-to-end flow tanpa mock",
+    "DIGIOP-103 (Managed Outcome Loop) otomatis diaktifkan setelah onboarding selesai"
+  ]
+}

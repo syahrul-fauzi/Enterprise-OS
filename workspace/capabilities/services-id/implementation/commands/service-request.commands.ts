@@ -69,6 +69,11 @@ const CreateServiceRequestSchema = z.object({
   category: z.string().optional(),
   sessionId: z.string(),
   linkedWorkItemId: z.string(),
+  // DIGISC-007: Subscription tracking untuk managed service recurring triggers
+  subscriptionId: z.string().optional(),
+  subscriptionType: z.enum(["monthly-retainer", "yearly-managed", "one-time"]).optional(),
+  recurringIntervalDays: z.number().optional(),
+  isRecurring: z.boolean().optional(),
 });
 
 const STORE = new Map<string, ServiceRequestAggregate>();
@@ -80,6 +85,7 @@ const createServiceRequest: CapabilityCommand<
   kind: "command",
   name: "service-request.create",
   version: "1.0.0",
+  capability: "services-id",
   async execute(input) {
     await ensureIdentitySchema();
     const validated = CreateServiceRequestSchema.parse(input);
@@ -90,7 +96,12 @@ const createServiceRequest: CapabilityCommand<
     if (!validated.linkedWorkItemId) {
       throw new Error("[services-id.create-service-request] Failed to link to core Work primitive - CORE-001 violation: workId cannot be empty");
     }
-    
+
+    // Calculate next billing date if this is a recurring subscription
+    const nextBillingDate = validated.isRecurring && validated.recurringIntervalDays 
+      ? new Date(Date.now() + validated.recurringIntervalDays * 24 * 60 * 60 * 1000) 
+      : undefined;
+
     const aggregate: ServiceRequestAggregate = {
       id,
       workId: validated.linkedWorkItemId, // WAJIB: Semua boundary metadata hanya ada di core Work primitive (CORE-001)
@@ -101,6 +112,12 @@ const createServiceRequest: CapabilityCommand<
       category: validated.category,
       createdAt: new Date(),
       updatedAt: new Date(),
+      // DIGISC-007: Subscription tracking untuk managed service recurring triggers
+      subscriptionId: validated.subscriptionId,
+      subscriptionType: validated.subscriptionType,
+      recurringIntervalDays: validated.recurringIntervalDays,
+      isRecurring: validated.isRecurring || false,
+      nextBillingDate
     };
     
     STORE.set(id, aggregate);
@@ -128,6 +145,7 @@ const createServiceRequestFromWork: CapabilityCommand<{
   kind: "command",
   name: "service-request.createFromWork",
   version: "1.0.0",
+  capability: "services-id",
   async execute(input) {
     await ensureIdentitySchema();
     
@@ -138,6 +156,14 @@ const createServiceRequestFromWork: CapabilityCommand<{
       : undefined;
     
     // Reuse existing service-request.create logic but pass through the core Work's context
+    // DIGISC-007: Ambil subscription data dari core Work jika ada, dan override dengan domainSpecificData jika ada
+    const subscriptionData = input.coreWork.subscriptionId ? {
+      subscriptionId: input.coreWork.subscriptionId,
+      subscriptionType: input.coreWork.subscriptionType,
+      recurringIntervalDays: input.coreWork.recurringIntervalDays,
+      isRecurring: input.coreWork.isRecurring,
+    } : {};
+
     const result = await createServiceRequest.execute({
       title: input.coreWork.title,
       description: input.coreWork.description || "",
@@ -146,6 +172,8 @@ const createServiceRequestFromWork: CapabilityCommand<{
       category: input.domainSpecificData?.category || "technical-support",
       sessionId: input.coreWork.sessionId,
       linkedWorkItemId: input.workId, // Bind service request to the core Work's ID (CRITICAL FOR R4 LINEAGE)
+      // Pass through subscription data dari core Work, lalu override dengan domainSpecificData jika ada
+      ...subscriptionData,
       // Pass through any domain-specific data from the original request
       ...(input.domainSpecificData || {}),
     });
@@ -209,11 +237,12 @@ const UpdateServiceRequestSchema = z.object({
 
 const updateServiceRequest: CapabilityCommand<
   z.infer<typeof UpdateServiceRequestSchema>,
-  Promise<{ id: string; status: ServiceRequestStatus }>
+  Promise<UpdateServiceRequestOutput>
 > = {
   kind: "command",
   name: "service-request.update",
   version: "1.0.0",
+  capability: "services-id",
   async execute(input) {
     await ensureIdentitySchema();
     const validated = UpdateServiceRequestSchema.parse(input);
@@ -251,72 +280,46 @@ export const serviceRequestCommands: Readonly<Record<string, CapabilityCommand>>
   "service-request.update": updateServiceRequest,
 } as const;
 
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
+
 export function registerServicesIdCapability() {
   if (typeof process !== 'undefined' && (process.env.NODE_ENV === 'test' || process.env.STANDALONE === 'true')) {
-    import("@repo/core-kernel/registry/capability-command-registry").then(({ capabilityRegistry }) => {
-      if (capabilityRegistry) {
-        Object.values(serviceRequestCommands).forEach((command) => {
-          capabilityRegistry.register(command);
-        });
-        // Register customer-portal capability
-        capabilityRegistry.registerCapability({
-          id: "customer-portal",
-          name: "Customer Portal Interface",
-          description: "Enables customers to submit disputes, track progress, and view resolution status directly through self-service interface",
-          providerTypes: ["system", "human"],
-          domainRestrictions: ["services-id", "customer-support", "dispute-resolution"],
-          requiredAuthorizations: ["dispute:read", "dispute:submit"],
-          riskLevel: "low",
-          severity: "LOW",
-          isAvailable: async () => true
-        });
-        // Register resolution-center capability
-        capabilityRegistry.registerCapability({
-          id: "resolution-center",
-          name: "Dispute Resolution Center",
-          description: "Centralized dashboard and workflow engine for agents to manage, process, and resolve high-value customer disputes",
-          providerTypes: ["human", "ai", "system"],
-          domainRestrictions: ["services-id", "customer-support", "dispute-resolution"],
-          requiredAuthorizations: ["dispute:manage", "dispute:assign", "workspace-write"],
-          riskLevel: "medium",
-          severity: "MEDIUM",
-          isAvailable: async () => true
-        });
-      }
-    });
+    console.log("[Services-ID] Test/standalone environment detected - skipping auto-registration");
     return;
   }
-  import("@repo/core-kernel/registry/capability-command-registry").then(({ capabilityRegistry }) => {
-    if (capabilityRegistry) {
-      Object.values(serviceRequestCommands).forEach((command) => {
-        capabilityRegistry.register(command);
-      });
-      // Register customer-portal capability
-      capabilityRegistry.registerCapability({
-        id: "customer-portal",
-        name: "Customer Portal Interface",
-        description: "Enables customers to submit disputes, track progress, and view resolution status directly through self-service interface",
-        providerTypes: ["system", "human"],
-        domainRestrictions: ["services-id", "customer-support", "dispute-resolution"],
-        requiredAuthorizations: ["dispute:read", "dispute:submit"],
-        riskLevel: "low",
-        severity: "LOW",
-        isAvailable: async () => true
-      });
-      // Register resolution-center capability
-      capabilityRegistry.registerCapability({
-        id: "resolution-center",
-        name: "Dispute Resolution Center",
-        description: "Centralized dashboard and workflow engine for agents to manage, process, and resolve high-value customer disputes",
-        providerTypes: ["human", "ai", "system"],
-        domainRestrictions: ["services-id", "customer-support", "dispute-resolution"],
-        requiredAuthorizations: ["dispute:manage", "dispute:assign", "workspace-write"],
-        riskLevel: "medium",
-        severity: "MEDIUM",
-        isAvailable: async () => true
-      });
-    }
-  }).catch(err => {
-    console.error("[Services-ID] AUDIT-001-009: Failed to register services-id capability:", err);
+
+  // Static registration compliance - W06-A1 mandate: no dynamic imports in production
+  Object.values(serviceRequestCommands).forEach((command) => {
+    capabilityRegistry.register(command);
   });
+  
+  // Register customer-portal capability
+  capabilityRegistry.register({
+    key: "services-id.customer-portal",
+    name: "Customer Portal Interface",
+    capability: "services-id",
+    description: "Enables customers to submit disputes, track progress, and view resolution status directly through self-service interface",
+    providerTypes: ["system", "human"],
+    domainRestrictions: ["services-id", "customer-support", "dispute-resolution"],
+    requiredAuthorizations: ["dispute:read", "dispute:submit"],
+    riskLevel: "low",
+    handler: async () => true,
+    isAvailable: async () => true
+  });
+  
+  // Register resolution-center capability
+  capabilityRegistry.register({
+    key: "services-id.resolution-center",
+    name: "Dispute Resolution Center",
+    capability: "services-id",
+    description: "Centralized dashboard and workflow engine for agents to manage, process, and resolve high-value customer disputes",
+    providerTypes: ["human", "ai", "system"],
+    domainRestrictions: ["services-id", "customer-support", "dispute-resolution"],
+    requiredAuthorizations: ["dispute:manage", "dispute:assign", "workspace-write"],
+    riskLevel: "medium",
+    handler: async () => true,
+    isAvailable: async () => true
+  });
+
+  console.log("[Services-ID] AUDIT-001-009: Services-ID capability registered successfully - all commands added to canonical capability registry (static registration compliant)");
 }

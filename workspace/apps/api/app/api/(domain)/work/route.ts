@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { readWorkspaceSessionFromRequest } from '@repo/core-kernel/src/session/workspace-session.js';
+import { readWorkspaceSessionFromRequest } from '@repo/core-kernel';
 import { getAllWorksForWorkspace } from './create/route'; // Re-using the server-side logic
 
 export async function GET(request: Request) {

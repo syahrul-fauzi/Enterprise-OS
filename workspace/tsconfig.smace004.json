@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist/smace004",
+    "rootDir": "./"
+  },
+  "include": [
+    "capabilities/evidence-registry/implementation/scripts/smace-004-commercial-validation.ts",
+    "capabilities/evidence-registry/implementation/types/commercial.types.ts",
+    "packages/core/runtime/src/execution-observability.ts",
+    "capabilities/work-core/implementation/utils/evidence.utils.ts"
+  ],
+  "exclude": [
+    "capabilities/shared/implementation/database/migrations/migration.manager.js",
+    "capabilities/work-core/implementation/repository/work-postgres.repository.ts"
+  ]
+}

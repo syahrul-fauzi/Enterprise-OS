@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "turbo run build",
+    "build:smace": "cd products/smace && tsc --project tsconfig.json",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
@@ -23,7 +24,8 @@
     "verify:genesis-baseline": "pnpm eos gate-c verify-genesis-baseline",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "test": "turbo run test",
-    "test:edge": "cd apps/edge && pnpm exec vitest run src/websocket-adapter.test.ts --reporter verbose"
+    "test:edge": "cd apps/edge && pnpm exec vitest run src/websocket-adapter.test.ts --reporter verbose",
+    "test:smace008": "pnpm exec vitest run products/smace/tests/ai-product-photography.test.ts --reporter verbose"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.10",
@@ -36,6 +38,7 @@
     "jose": "^6.2.12",
     "lucide-react": "^1.47.0",
     "pg": "^8.23.0",
+    "redis": "^6.3.1",
     "yaml": "^2.9.1",
     "zod": "^3.25.76"
   },
@@ -67,6 +70,7 @@
     "glob": "^13.0.6",
     "globals": "^16.5.0",
     "js-yaml": "^5.2.3",
+    "next": "14.2.8",
     "node-fetch": "^3.3.2",
     "playwright": "^1.62.1",
     "postcss": "^8.5.3",

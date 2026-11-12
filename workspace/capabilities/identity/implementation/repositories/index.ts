@@ -1,9 +1,10 @@
 export { getUserRepositoryPostgres, UserRepositoryPostgres } from "./user.repository.js";
 export { UserRepositoryInMemory, newUserId } from "./user.inmemory.js";
 export { SessionRepositoryInMemory, newSessionId, resetSessionRepository } from "./session.inmemory.js";
+export { SessionId, TenantId, WorkspaceId, ActorId, UserId } from "@repo/contracts-core";
 export { TenantRepositoryInMemory } from "./tenant.inmemory.js";
 export { WorkspaceRepositoryInMemory } from "./workspace.inmemory.js";
-export { MembershipRepositoryInMemory } from "./membership.inmemory.js";
+export { MembershipRepositoryInMemory, resetMembershipRepositoryInMemory } from "./membership.inmemory.js";
 export { IntentRepositoryInMemory, newIntentId } from "./intent.inmemory.js";
 export { getTenantRepositoryPostgres, TenantRepositoryPostgres } from "./tenant.repository.js";
 export { getWorkspaceRepositoryPostgres, WorkspaceRepositoryPostgres } from "./workspace.repository.js";

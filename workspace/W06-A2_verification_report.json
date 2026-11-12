@@ -1,0 +1,5 @@
+53426c1e475331dd8b7ec0179967ddf34b2f3aa6551692c9713ed560ef34ea3a  packages/core/kernel/src/registry/capability-command-registry.ts
+1963cf3fc1cf6aba1a71d8b88cfc9072e7182a16e23485fad6c1309c4be7d47c  capabilities/work-core/implementation/commands/work.commands.ts
+e17d9fa54319c8ad9097b9ffb3233a4daba64fe5b0eb68b031239b22c8aa5a44  capabilities/identity/implementation/commands/login-flow.command.ts
+8465a39e5a92fbfb57988527aea9408f766d1e71de2d42f003389f5f2b243152  capabilities/work-core/implementation/utils/evidence.utils.ts
+2026-11-11T05:25:45.000Z

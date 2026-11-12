@@ -1,0 +1,30 @@
+version: "1.0.0"
+kind: PRODUCT_POLICY_SMACE_CREATIVE_PRODUCTION
+fixture_id: POL-SMACE-001
+status: ACTIVE
+policy:
+  policy_id: creative-production-governance-policy
+  name: SMACE Creative Production Governance Policy
+  derives_authority_from_requirement_ref: SMACE-001
+  epoch: Sprint0
+  classification_rules:
+    default_classification: internal
+  retention:
+    default_retention_period_days: 3650
+    retention_trigger_events: [work_completed, campaign_archived]
+    archive_allowed: true
+    retrieve_allowed_after_archive: true
+  access_control:
+    roles_allowed_propose: ["customer", "creative-operator"]
+    roles_allowed_approve: ["customer", "qa-inspector"]
+    roles_allowed_execute: ["creative-operator", "provider-agent", "finance-agent"]
+    roles_allowed_archive: ["system", "creative-operator"]
+    roles_allowed_retrieve: ["customer", "creative-operator", "qa-inspector", "finance-agent", "system"]
+  approval_delegation_allowed: false
+  legal_hold_suspends_archive: true
+  budget_validation:
+    max_auto_approved_budget: 50000000
+    require_manual_approval_above: true
+  quality_requirements:
+    mandatory_qa_check: true
+    brand_compliance_threshold: 0.95

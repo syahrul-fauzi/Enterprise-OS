@@ -1,0 +1,38 @@
+id: budget-engine
+name: Budget Engine
+version: 0.1.0
+owner: commercial-domain
+status: ACTIVE
+introduced: "2026-11-03"
+provides:
+  - budget-reservation
+  - budget-deduction
+  - budget-rollback
+purpose: Central engine for managing tenant budget reservations, deductions, and rollbacks with atomic operations across single and multi-instance deployments.
+manifest_version: 1.0.0
+exports:
+  - BudgetEngineProvider
+implementation:
+  entry: implementation/service.ts
+depends_on:
+  - work-core
+  - execution-runtime
+  - tenant-authority
+capability:
+  name: budget-engine
+  owner: commercial-domain
+  purpose: Central engine for managing tenant budget reservations, deductions, and rollbacks.
+  consumers:
+    - smace
+    - retail-inventory
+    - marketplace
+  maturity:
+    level: core
+  lifecycle:
+    state: active
+  evidence_required:
+    - production_usage
+    - atomicity-guaranteed
+    - tenant-isolation-verified
+evidence_required: true
+stability: stable

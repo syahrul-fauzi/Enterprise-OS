@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       try {
         const sessionValue = sessionCookie.split('=')[1];
         if (!sessionValue) throw new Error("Empty session value");
-        const decodedSession = decodeWorkspaceSession(sessionValue);
+        const decodedSession = await decodeWorkspaceSession(sessionValue);
         if (decodedSession?.sessionId) {
           parsedSession = {
             sessionId: decodedSession.sessionId,

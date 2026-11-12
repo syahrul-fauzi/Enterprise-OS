@@ -21,7 +21,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid session cookie" }, { status: 401 });
     }
     console.log(`[POST /api/quotes/create] Session cookie value (truncated): ${sessionValue.substring(0, 100)}...`);
-    const session = decodeWorkspaceSession(sessionValue);
+    const session = await decodeWorkspaceSession(sessionValue);
     console.log(`[POST /api/quotes/create] Decoded session: ${JSON.stringify(session)}`);
     if (!session || !session.tenantId || !session.workspaceId || !session.actorId || !session.sessionId) {
       console.log(`[POST /api/quotes/create] ERROR: Invalid session - missing required fields`);

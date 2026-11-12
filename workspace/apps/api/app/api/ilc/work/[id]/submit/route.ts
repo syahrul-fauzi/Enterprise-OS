@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts";
-import { capabilityRegistry } from "@repo/core-kernel/src/registry/capability-command-registry";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import {
   WORKSPACE_SESSION_COOKIE,
   decodeWorkspaceSession
-} from "@repo/core-kernel/session/workspace-session";
+} from "@repo/core-kernel";
 
 export async function POST(
   request: NextRequest,
@@ -28,7 +28,7 @@ export async function POST(
   if (!sessionValue) {
     return NextResponse.json({ error: "Invalid session cookie" }, { status: 401 });
   }
-  const session = decodeWorkspaceSession(sessionValue);
+  const session = await decodeWorkspaceSession(sessionValue);
   if (!session || !session.tenantId || !session.workspaceId || !session.actorId) {
     return NextResponse.json({ error: "Invalid session" }, { status: 401 });
   }

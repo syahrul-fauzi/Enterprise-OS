@@ -1,0 +1,63 @@
+id: digital-operations
+extends: workspace-standard
+patterns:
+  - subscription-management-pattern
+  - service-delivery-pattern
+capabilities:
+  - work-formation
+  - observability
+  - incident-management
+  - agent-execution
+  - connector-ecosystem
+surfaces:
+  - business-health-dashboard
+  - operations-timeline
+  - business-review
+version: "1.0.0"
+name: "Managed Digital Business Operations"
+description: "Layanan operasi digital terkelola untuk UKM e-commerce Indonesia: monitoring, maintenance, scaling, dan dukungan 24/7 untuk platform WordPress, Shopify, dan Next.js."
+product_type: managed-service
+primary_market: SME e-commerce Indonesia
+canonical_workspace: true
+eos_version_constraint: ">=2.0.0"
+core_capabilities_required:
+  - core.identity
+  - core.work-core
+  - core.evidence-registry
+  - core.observability
+  - core.incident-management
+  - core.work-formation
+  - core.ai-agent-execution
+  - core.connector-ecosystem
+product_capabilities:
+  - digital-operations
+  - digital-foundation
+  - business-connectivity
+  - business-process-operations
+  - trust-and-resilience
+  - operational-intelligence
+service_catalog: ./definition/service-catalog.yaml
+service_levels: ./definition/service-levels.yaml
+workflow_definition: ./runtime/workflow-definition.ts
+composition_descriptor: ./composition.descriptor.ts
+revenue_models:
+  - setup + recurring
+  - setup + recurring + scoped change
+  - retainer + usage/scoped work
+commercial_packages:
+  - digital-care
+  - digital-growth-ops
+  - managed-digital-operations
+one_time_services:
+  - digital-operations-assessment
+  - website-platform-recovery
+  - integration-health-check
+  - security-reliability-assessment
+  - automation-opportunity-assessment
+supported_platforms:
+  - wordpress
+  - woocommerce
+  - shopify
+  - next.js
+  - static-html
+status: ACTIVE

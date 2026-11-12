@@ -1,0 +1,21 @@
+version: "1.0"
+status: ACTIVE
+product:
+  id: digital-operations
+  display_name: Managed Digital Operations
+experience:
+  surface: web
+  route: /products/digital-operations/dashboard
+capabilities:
+  - requirement-management
+  - workflow-engine
+  - governance-evidence
+  - intent-management
+  - work-formation
+  - observability
+  - incident-management
+  - ai-agent-execution
+  - connector-ecosystem
+  - subscription-management
+  - customer-success
+claim_boundary: Managed Digital Operations Work category binding onto canonical EOS Work Runtime. Mempertahankan semua agregat domain yang sudah ada dan mengintegrasikan dengan workflow langganan berkelanjutan tanpa membuat primitif baru.

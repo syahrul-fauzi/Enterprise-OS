@@ -34,7 +34,7 @@ export async function GET(request: Request) {
 
   let session;
   try {
-    session = decodeWorkspaceSession(sessionCookie.value);
+    session = await decodeWorkspaceSession(sessionCookie.value);
   } catch {
     cookieStore.delete(WORKSPACE_SESSION_COOKIE);
     return NextResponse.json(

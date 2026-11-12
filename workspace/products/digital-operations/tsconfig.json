@@ -1,0 +1,25 @@
+{
+  "extends": "../../config/typescript/react-library.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./",
+    "composite": true,
+    "paths": {
+      "@repo/*": ["../../packages/*", "../../packages/core/*"],
+      "@capabilities/*": ["../../capabilities/*"]
+    }
+  },
+  "references": [
+    { "path": "../../packages/core/kernel/tsconfig.json" },
+    { "path": "../../packages/core/runtime/tsconfig.json" },
+    { "path": "../../capabilities/atomic-composition/tsconfig.json" },
+    { "path": "../../capabilities/agent-orchestration/tsconfig.json" },
+    { "path": "../../capabilities/observability/tsconfig.json" },
+    { "path": "../../packages/core/capability-registry/tsconfig.json" },
+    { "path": "../../capabilities/evidence-registry/tsconfig.json" },
+    { "path": "../../capabilities/work-core/tsconfig.json" },
+    { "path": "../../capabilities/identity/tsconfig.json" }
+  ],
+  "include": ["*.ts", "*.tsx", "**/*.ts", "**/*.tsx"],
+  "exclude": ["dist", "build", "node_modules"]
+}

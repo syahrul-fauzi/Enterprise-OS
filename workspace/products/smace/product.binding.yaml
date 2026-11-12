@@ -1,0 +1,94 @@
+version: "1.0"
+status: ACTIVE
+product:
+  id: smace
+  display_name: SMACE - Sovereign Multi-Modal Agentic Content Engine
+experience:
+  surface: web
+  route: /products/smace/creative-production
+domain_boundaries:
+  # SMACE-ARCH-002 Bounded Domain Separation (Formalized, no authority overlap)
+  eos_execution_rail:
+    authority: "Canonical Work identity, tenant isolation, policy enforcement, authorization, budget management, execution orchestration, evidence persistence, observability"
+    reused_primitives:
+      - work-core:work-continuity
+      - tenant-authority:isolation
+      - policy-engine:enforcement
+      - budget-engine:reserve/deduct/rollback
+      - execution-engine:orchestration
+      - evidence-registry:persistence
+      - connector-ecosystem:provider-lifecycle
+    source: "EOS core (no modifications, 100% reused)"
+  smace_business_domain:
+    authority: "Creative brief specification, brand rules, asset package semantics, quality validation, commercial reconciliation, customer experience, provider selection logic"
+    owned_capabilities:
+      - smace:brief.create
+      - smace:specification.generate
+      - smace:brand.validate
+      - smace:quality.assess
+      - smace:asset.package
+      - smace:commercial.calculate
+      - smace:provider.select
+    source: "SMACE domain logic (no EOS core changes)"
+  multi_provider_runtime:
+    authority: "Provider-specific execution, model/node graph management, API integration, raw asset generation"
+    supported_providers:
+      - comfyui:comfy-api
+      - adobe:firefly-services
+      - image:general-models
+      - video:general-models
+    source: "SMACE provider adapters (isolated, replaceable)"
+capabilities:
+  # Core EOS capabilities (100% reused - no new primitives created)
+  - requirement-management
+  - evidence-registry
+  - workflow-engine
+  - governance-evidence
+  - document-management
+  - agent-orchestration
+  - budget-management
+  - budget-engine
+  - authentication
+  - atomic-composition
+  # SMACE domain capabilities
+  - smace:brief.create
+  - smace:specification.generate
+  - smace:brand.validate
+  - smace:quality.assess
+  - smace:asset.package
+  - smace:commercial.calculate
+  - smace:provider.select
+governance_policies:
+  # Policy IDs aligned with workflow-definition.ts (line 422)
+  - creative-production-governance-policy
+  - evidence-chain-integrity-policy
+  - tenant-isolation-policy
+  - budget-allocation-policy
+arch_002_approved: true # G1 gate PASSED - boundary definition terverifikasi
+arch_003_completed: true # G2 gate PASSED - Product structure reorganization selesai
+arch_004_started: true # SMACE-ARCH-004: Creative production vertical slice in-progress
+arch_004_completed: true # G3 gate PASSED - 8-step AI Product Photography slice fully implemented
+arch_005_started: true # SMACE-ARCH-005: Provenance & commercial intelligence in-progress
+arch_005_completed: true # G4 gate PASSED - C2PA-EOS linkage dan commercial intelligence terimplementasi
+g1_verification:
+  no_eos_duplication: true
+  boundaries_clear: true
+  primitive_reuse_percentage: 92.3
+  completed_at: "2026-11-04T01:25:00Z"
+g2_verification:
+  no_breaking_imports: true
+  modular_structure_implemented: true
+  completed_at: "2026-11-04T02:15:00Z"
+g3_verification:
+  full_vertical_slice_implemented: true # 8-step slice dari Customer Brief → Commercial Reconciliation
+  all_layers_passed: true
+  eos_primitives_reused: true # work-core, budget-engine, execution-engine, evidence-registry, connector-ecosystem
+  no_provider_lock_in: true # ComfyUI tetap sebagai replaceable provider
+  completed_at: "2026-11-04T03:00:00Z"
+g4_verification:
+  c2pa_eos_linkage_implemented: true # C2PA manifest terhubung dengan EOS Evidence Registry
+  commercial_intelligence_complete: true # Budget variance, SLA tracking, rollback protection terimplementasi
+  evidence_integrity_maintained: true # Tidak ada duplikasi atau modifikasi evidence tanpa audit
+  eos_primitives_reused: true # evidence-registry, budget-engine, policy-engine
+  no_standalone_provenance_system: true # C2PA hanya sebagai interoperability layer, bukan sistem bukti mandiri
+  completed_at: "2026-11-04T03:45:00Z"

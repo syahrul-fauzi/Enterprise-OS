@@ -1,0 +1,16 @@
+{
+  "work_id": "DIGIOP-101",
+  "user_job": "Purchase & onboard Digital Care package",
+  "product": "digital-operations",
+  "acceptance_criteria": [
+    "User dapat mengisi formulir pendaftaran paket Digital Care",
+    "API menerima permintaan pendaftaran dengan validasi Midtrans",
+    "Capability service-directory membuat service request untuk website care",
+    "Persistence menyimpan data pelanggan dan website yang diintegrasikan",
+    "State Work berubah dari \"draft\" → \"payment-verified\" → \"onboarded\" → \"active\"",
+    "Evidence mencatat semua tindakan onboarding dengan SHA-256 integrity",
+    "Sistem berhasil mengkoneksikan platform WordPress/Statis/Hosting umum",
+    "Test menyelesaikan end-to-end flow tanpa mock",
+    "DIGIOP-103 (Managed Outcome Loop) otomatis diaktifkan setelah onboarding selesai"
+  ]
+}

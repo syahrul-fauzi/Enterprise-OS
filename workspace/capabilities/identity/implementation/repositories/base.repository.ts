@@ -16,6 +16,10 @@ class MockPool implements Queryable {
   private activeQueries = 0;
   private maxConcurrentQueries = 150; // DEL-001: Increased to match target TPS of 150
   private queue: (() => void)[] = [];
+  // In-memory storage per table to persist data across queries
+  private tables: Map<string, Record<string, any>[]> = new Map();
+  // Row locks untuk simulasi FOR UPDATE clause (workaround concurrency di mock)
+  private rowLocks: Map<string, boolean> = new Map();
 
   private async acquire(): Promise<void> {
     if (this.activeQueries < this.maxConcurrentQueries) {
@@ -35,11 +39,200 @@ class MockPool implements Queryable {
     }
   }
 
-  async query(_query?: string, _values?: any[]): Promise<{ rows: Record<string, any>[] }> {
+  // Parse SQL query to handle basic INSERT/SELECT/UPDATE operations for testing
+  async query(query?: string, values?: any[]): Promise<{ rows: Record<string, any>[] }> {
     await this.acquire();
     try {
-      // Remove simulated latency for in-memory operations to maximize throughput
-      // In-memory operations should be <1ms, so no need for artificial delay
+      if (!query) return { rows: [] };
+      
+      const lowerQuery = query.toLowerCase();
+      
+      // Handle INSERT queries - cek sebelum SELECT karena ada overlap 'into'
+      if (lowerQuery.includes('insert into')) {
+        console.log(`[MockPool] Detected INSERT query: ${query.substring(0, 100)}...`);
+        // Extract table name from INSERT
+        const tableMatch = query.match(/insert into\s+(\w+)/i);
+        if (!tableMatch) {
+          console.log(`[MockPool] Failed to extract table name from INSERT`);
+          return { rows: [] };
+        }
+        const tableName = tableMatch[1];
+        console.log(`[MockPool] Extracted table name from INSERT: ${tableName}`);
+        
+        // Extract columns and values
+        const columnsMatch = query.match(/\(([^)]+)\)/);
+        if (!columnsMatch || !values) {
+          console.log(`[MockPool] Failed to extract columns/values from INSERT`);
+          return { rows: [] };
+        }
+        
+        const columns = columnsMatch[1].split(',').map(c => c.trim().replace(/"/g, ''));
+        const record: Record<string, any> = {};
+        columns.forEach((col, idx) => {
+          record[col] = values[idx];
+        });
+        
+        // Store in table
+        if (!this.tables.has(tableName)) {
+          this.tables.set(tableName, []);
+        }
+        this.tables.get(tableName)!.push(record);
+        console.log(`[MockPool] INSERT into ${tableName} success:`, JSON.stringify(record));
+        console.log(`[MockPool] Total rows in ${tableName} after INSERT: ${this.tables.get(tableName)!.length}`);
+        return { rows: [record] };
+      }
+      
+      // Handle SELECT queries
+      if (lowerQuery.includes('select') && lowerQuery.includes('from')) {
+        // Handle GROUP BY queries for duplicate checksum verification (e.g., SELECT meta_checksum, COUNT(*) FROM evidence WHERE work_id = $1 GROUP BY meta_checksum HAVING COUNT(*) >1)
+        if (lowerQuery.includes('group by') && lowerQuery.includes('having count(*) > 1')) {
+          const tableMatch = query.match(/from\s+(\w+)/i);
+          const workIdMatch = query.match(/where\s+work_id\s*=\s*\$1/i);
+          if (tableMatch && workIdMatch && values && values.length > 0) {
+            const tableName = tableMatch[1];
+            const targetWorkId = values[0];
+            const tableData = this.tables.get(tableName) || [];
+            const filtered = tableData.filter(row => row.work_id === targetWorkId);
+            // Hitung frekuensi setiap meta_checksum
+            const checksumCounts = new Map<string, number>();
+            filtered.forEach(row => {
+              if (row.meta_checksum) {
+                checksumCounts.set(row.meta_checksum, (checksumCounts.get(row.meta_checksum) || 0) + 1);
+              }
+            });
+            // Cek apakah ada checksum yang muncul >1x
+            const duplicates = Array.from(checksumCounts.entries()).filter(([_, cnt]) => cnt > 1);
+            console.log(`[MockPool] SELECT GROUP BY checksum on ${tableName} work_id='${targetWorkId}': ${duplicates.length} duplicate checksums found`);
+            return { rows: duplicates.map(([meta_checksum, cnt]) => ({ meta_checksum, cnt })) };
+          }
+          return { rows: [] };
+        }
+        // Handle COUNT(*) queries specifically (e.g., SELECT COUNT(*) FROM evidence WHERE work_id = $1)
+        if (lowerQuery.includes('count(*)')) {
+          // Extract table name and WHERE work_id = $1 condition
+          const tableMatch = query.match(/from\s+(\w+)/i);
+          const workIdMatch = query.match(/where\s+work_id\s*=\s*\$1/i);
+          if (tableMatch && workIdMatch && values && values.length > 0) {
+            const tableName = tableMatch[1];
+            const targetWorkId = values[0];
+            const tableData = this.tables.get(tableName) || [];
+            const filtered = tableData.filter(row => row.work_id === targetWorkId);
+            console.log(`[MockPool] SELECT COUNT(*) from ${tableName} WHERE work_id='${targetWorkId}': ${filtered.length} rows`);
+            return { rows: [{ count: filtered.length.toString() }] };
+          }
+          // Default count to 0 if we can't parse
+          return { rows: [{ count: '0' }] };
+        }
+        
+        // Extract table name from SELECT - handle template literals that become "works" instead of ${this.tableName}
+        const tableMatch = query.match(/from\s+(\w+|"[^"]+")/i);
+        if (!tableMatch) return { rows: [] };
+        let tableName = tableMatch[1].replace(/"/g, '');
+        
+        // Check for WHERE clause with id = $1 - handle any whitespace including newlines
+        const whereIdMatch = query.match(/where\s+id\s*=\s*\$1/is);
+        // Cek apakah query memiliki FOR UPDATE clause (row locking)
+        const hasForUpdate = lowerQuery.includes('for update');
+        if (whereIdMatch && values && values.length > 0) {
+          const targetId = values[0];
+          const lockKey = `${tableName}:${targetId}`;
+          
+          // Jika ada FOR UPDATE, tunggu sampai lock terlepas
+          if (hasForUpdate) {
+            console.log(`[MockPool] SELECT FOR UPDATE on ${tableName} id='${targetId}': acquiring lock...`);
+            // Tunggu sampai lock tersedia (sederhana: loop cek setiap 10ms)
+            while (this.rowLocks.get(lockKey)) {
+              await new Promise(resolve => setTimeout(resolve, 10));
+            }
+            // Ambil lock
+            this.rowLocks.set(lockKey, true);
+            console.log(`[MockPool] Lock acquired for ${lockKey}`);
+          }
+          
+          const tableData = this.tables.get(tableName) || [];
+          console.log(`[MockPool] SELECT ${hasForUpdate ? 'FOR UPDATE' : ''} from ${tableName} WHERE id='${targetId}': total rows in table: ${tableData.length}, found: ${tableData.filter(row => row.id === targetId).length}`);
+          console.log(`[MockPool] All rows in ${tableName}:`, JSON.stringify(tableData.map(r => ({id: r.id}))));
+          const found = tableData.filter(row => row.id === targetId);
+          
+          // Jika kita mengambil lock, pastikan lock dilepas setelah query selesai (async cleanup)
+          if (hasForUpdate) {
+            setTimeout(() => {
+              this.rowLocks.delete(lockKey);
+              console.log(`[MockPool] Lock released for ${lockKey}`);
+            }, 50);
+          }
+          
+          return { rows: found };
+        }
+        
+        // Simple SELECT * without WHERE
+        const tableData = this.tables.get(tableName) || [];
+        console.log(`[MockPool] SELECT * from ${tableName}: ${tableData.length} rows`);
+        return { rows: tableData };
+      }
+      
+      // Handle UPDATE queries
+      if (lowerQuery.includes('update') && lowerQuery.includes('set')) {
+        const tableMatch = query.match(/update\s+(\w+)/i);
+        if (!tableMatch) return { rows: [] };
+        const tableName = tableMatch[1];
+        
+        // Find row by id in WHERE clause - handle null query.match by adding null check
+        const whereIdMatch = query.match(/where\s+id\s*=\s*\$(\d+)/i);
+        if (!whereIdMatch || !values) {
+          console.log(`[MockPool] UPDATE: Failed to extract WHERE id clause from query: ${query.substring(0, 100)}`);
+          return { rows: [] };
+        }
+        
+        const paramIndex = parseInt(whereIdMatch[1], 10) - 1;
+        const targetId = values[paramIndex];
+        const tableData = this.tables.get(tableName) || [];
+        const rowIndex = tableData.findIndex(row => row.id === targetId);
+        
+        if (rowIndex === -1) return { rows: [] };
+        
+        // Extract SET clauses to update values
+        const setMatch = query.match(/set\s+([^where]+)/i);
+        if (setMatch) {
+          // Debug: log semua values dan set clause untuk memverifikasi parameter parsing
+          console.log(`[MockPool] UPDATE values array:`, JSON.stringify(values));
+          console.log(`[MockPool] UPDATE set clause raw: ${setMatch[1]}`);
+          
+          const setClauses = setMatch[1].split(',').map(c => c.trim());
+          setClauses.forEach(clause => {
+            const parts = clause.split('=').map(s => s.trim());
+            if (parts.length < 2) {
+              console.log(`[MockPool] UPDATE: Invalid set clause (missing =): ${clause}`);
+              return;
+            }
+            const [col, valRef] = parts;
+            console.log(`[MockPool] UPDATE processing: col=${col}, valRef=${valRef}`);
+            // Handle $n parameter references - add null check for valRef.match()
+            if (!valRef) return;
+            const paramMatch = valRef.match(/\$(\d+)/);
+            if (paramMatch) {
+              const valIndex = parseInt(paramMatch[1], 10) - 1;
+              console.log(`[MockPool] UPDATE param extracted: $${paramMatch[1]} → index ${valIndex}, value=${values[valIndex]}, type=${typeof values[valIndex]}`);
+              if (values[valIndex] !== undefined) {
+                // Khusus untuk version, pastikan selalu di-set sebagai number (hindari string/number mismatch)
+                if (col === 'version') {
+                  tableData[rowIndex][col] = Number(values[valIndex]);
+                } else {
+                  tableData[rowIndex][col] = values[valIndex];
+                }
+                console.log(`[MockPool] UPDATE set ${col}=${tableData[rowIndex][col]} (type: ${typeof tableData[rowIndex][col]}) successfully`);
+              }
+            }
+          });
+          console.log(`[MockPool] UPDATE ${tableName} WHERE id='${targetId}': updated`, tableData[rowIndex]);
+          return { rows: [tableData[rowIndex]] };
+        }
+        
+        return { rows: [tableData[rowIndex]] };
+      }
+      
+      // Default for other queries (like schema initialization)
+      console.log(`[MockPool] Executed query (no data change): ${query.substring(0, 100)}...`);
       return { rows: [] };
     } finally {
       this.release();

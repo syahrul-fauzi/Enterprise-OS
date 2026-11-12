@@ -5,7 +5,7 @@
  * Mengikuti pola yang sama dengan /work/sync/route.ts untuk sinkronisasi edge
  */
 import { NextResponse } from "next/server";
-import { decodeWorkspaceSession } from '@repo/core-kernel/src/session/workspace-session.js';
+import { decodeWorkspaceSession } from '@repo/core-kernel';
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import { safeRecordEvidence } from "../../../../../../../../workspace/capabilities/work-core/implementation/utils/evidence.utils";
 import { MockWebSocketClient } from "../../../../../../../../apps/edge/websocket-adapter.service";
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     } = body;
 
     // Canonical auth enforcement for edge devices: decode session to get verified workspace/tenant IDs
-    const session = decodeWorkspaceSession(sessionId);
+    const session = await decodeWorkspaceSession(sessionId);
     if (!session?.workspaceId || !session?.tenantId) {
       return NextResponse.json({ 
         error: 'Unauthorized: Invalid or missing workspace session',

@@ -61,13 +61,19 @@ type CreateIncidentCommand = CapabilityCommand<CreateIncidentWithContextInput, P
 
 export const createIncident: CreateIncidentCommand = {
   kind: "command",
-  name: "incident.create",
+  name: "observability.incident.create",
+  capability: "observability",
   version: "3.0.0", // CORE-001 compliant version - removed input-based boundary metadata
   async execute(input) {
     if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) await initIdentitySchema();
 
     const parsed = CreateIncidentWithContextSchema.parse(input);
     const { title, description, priority, category, workId: workIdValue, sessionId: sessionIdValue } = parsed;
+
+    // Default values untuk test environment (tanpa Postgres)
+    let sessionActorId = createActorId("test.actor.observability");
+    let sessionTenantId = "test.tenant.observability";
+    let sessionWorkspaceId = "test.workspace.observability";
 
     if (process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL) {
       const SessionRepo = getSessionRepository();
@@ -93,11 +99,9 @@ export const createIncident: CreateIncidentCommand = {
       }
       
       // Ambil verified boundary metadata dari core Work dan session
-      const { actorId, tenantId, workspaceId } = {
-        actorId: session.actorId,
-        tenantId: coreWork.tenantId,
-        workspaceId: coreWork.workspaceId
-      };
+      sessionActorId = session.actorId;
+      sessionTenantId = coreWork.tenantId;
+      sessionWorkspaceId = coreWork.workspaceId;
     }
 
     const entity: IncidentAggregate = {
@@ -110,9 +114,9 @@ export const createIncident: CreateIncidentCommand = {
       category: category || "Infrastructure",
       status: defaultIncidentStatus,
       priority: priority ?? defaultIncidentPriority,
-      tenantId: createTenantId(tenantId),
-      workspaceId: createWorkspaceId(workspaceId),
-      actorId: createActorId(actorId),
+      tenantId: createTenantId(sessionTenantId),
+      workspaceId: createWorkspaceId(sessionWorkspaceId),
+      actorId: createActorId(sessionActorId),
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -127,7 +131,8 @@ const AcknowledgeIncidentSchema = z.object({ incidentId: z.string(), sessionId: 
 type AcknowledgeIncidentCommand = CapabilityCommand<z.infer<typeof AcknowledgeIncidentSchema>, Promise<{id: string, status: string}>>;
 export const acknowledgeIncident: AcknowledgeIncidentCommand = {
   kind: "command",
-  name: "incident.acknowledge",
+  name: "observability.incident.acknowledge",
+  capability: "observability",
   version: "1.0.0",
   async execute(input) {
     const parsed = AcknowledgeIncidentSchema.parse(input);
@@ -144,7 +149,8 @@ const ResolveIncidentSchema = z.object({ incidentId: z.string(), sessionId: z.st
 type ResolveIncidentCommand = CapabilityCommand<z.infer<typeof ResolveIncidentSchema>, Promise<{id: string, status: string}>>;
 export const resolveIncident: ResolveIncidentCommand = {
   kind: "command",
-  name: "incident.resolve",
+  name: "observability.incident.resolve",
+  capability: "observability",
   version: "1.0.0",
   async execute(input) {
     const parsed = ResolveIncidentSchema.parse(input);
@@ -161,7 +167,8 @@ const CloseIncidentSchema = z.object({ incidentId: z.string(), sessionId: z.stri
 type CloseIncidentCommand = CapabilityCommand<z.infer<typeof CloseIncidentSchema>, Promise<{id: string, status: string}>>;
 export const closeIncident: CloseIncidentCommand = {
   kind: "command",
-  name: "incident.close",
+  name: "observability.incident.close",
+  capability: "observability",
   version: "1.0.0",
   async execute(input) {
     const parsed = CloseIncidentSchema.parse(input);
@@ -174,13 +181,65 @@ export const closeIncident: CloseIncidentCommand = {
   },
 };
 
+const CollectMetricsSchema = z.object({
+  sessionId: z.string().min(1),
+  tenantId: z.string().min(1),
+  workspaceId: z.string().min(1),
+});
+type CollectMetricsCommand = CapabilityCommand<z.infer<typeof CollectMetricsSchema>, Promise<{metrics: readonly any[]}>>;
+export const collectMetrics: CollectMetricsCommand = {
+  kind: "command",
+  name: "observability.metrics.collect",
+  capability: "observability",
+  version: "1.0.0",
+  async execute(input) {
+    const parsed = CollectMetricsSchema.parse(input);
+    // Import ObservabilityService secara lazy untuk menghindari module cycle
+    const { ObservabilityService } = await import("../services/observability.service.js");
+    const observabilityService = new ObservabilityService();
+    const metrics = observabilityService.getMetrics();
+    return { metrics };
+  },
+};
+
 export const observabilityCommands: Readonly<Record<string, CapabilityCommand>> = {
-  "incident.create": createIncident,
-  "incident.acknowledge": acknowledgeIncident,
-  "incident.resolve": resolveIncident,
-  "incident.close": closeIncident,
+  "observability.incident.create": createIncident,
+  "observability.incident.acknowledge": acknowledgeIncident,
+  "observability.incident.resolve": resolveIncident,
+  "observability.incident.close": closeIncident,
+  "observability.metrics.collect": collectMetrics,
 } as const;
 
 export function nextIncidentId(): string {
   return newIncidentId();
 }
+
+// Lazy import capability registry menggunakan path relatif yang konsisten
+// Semua import menggunakan path yang sama untuk memastikan instance capabilityRegistry yang SAMA
+async function getCapabilityRegistry() {
+  const { capabilityRegistry } = await import("../../../../packages/core/kernel/src/registry/capability-command-registry.js");
+  return capabilityRegistry;
+}
+
+// Register observability commands dengan capability registry (async untuk menghindari module cycle)
+export async function registerObservabilityCoreCapability() {
+  console.log("[Observability-Core] AUDIT-001-005: Observability-Core capability registration dimulai");
+  console.log("[Observability-Core] observabilityCommands keys saat registrasi:", Object.keys(observabilityCommands));
+  console.log("[Observability-Core] createIncident exists:", !!createIncident);
+  
+  const capabilityRegistry = await getCapabilityRegistry();
+  Object.values(observabilityCommands).forEach((command) => {
+    console.log("[Observability-Core] Mendaftarkan command:", command.name);
+    capabilityRegistry.register(command);
+  });
+  
+  const registeredCommands = capabilityRegistry.listCommandKeys();
+  console.log("[Observability-Core] Command yang terdaftar setelah registrasi:", registeredCommands);
+  console.log("[Observability-Core] Type of registeredCommands:", typeof registeredCommands, "Is array?", Array.isArray(registeredCommands));
+  console.log("[Observability-Core] AUDIT-001-005: Observability-Core capability registered successfully");
+}
+
+// Handle registrasi async dengan error catching untuk menghindari unhandled promise rejection
+void registerObservabilityCoreCapability().catch((err) => {
+  console.error("[Observability-Core] Gagal mendaftarkan capability:", err);
+});

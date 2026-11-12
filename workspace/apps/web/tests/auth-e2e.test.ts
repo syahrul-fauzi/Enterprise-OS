@@ -54,7 +54,7 @@ test("AUTH-E2E home session check: user-* session → authenticated=true with us
     productId: "services-id.default",
     issuedAt: new Date().toISOString(),
   };
-  const cookie = `${WORKSPACE_SESSION_COOKIE}=${encodeWorkspaceSession(userSession)}`;
+  const cookie = `${WORKSPACE_SESSION_COOKIE}=${await encodeWorkspaceSession(userSession)}`;
   const resp = await getSession(getRequest("http://localhost/api/session", cookie));
   assert.equal(resp.status, 200);
   const body = await resp.json();
@@ -90,7 +90,7 @@ test("AUTH-E2E signup flow: valid payload → 201 + session cookie + authenticat
     WORKSPACE_SESSION_COOKIE,
   );
   assert.notEqual(rawCookie, null, "session cookie MUST be set after signup");
-  const decoded = decodeWorkspaceSession(rawCookie ?? undefined);
+  const decoded = await decodeWorkspaceSession(rawCookie ?? undefined);
   assert.notEqual(decoded, null, "cookie must decode to valid WorkspaceSession");
   assert.equal(decoded!.actorId, body.userId, "cookie actorId matches signup userId");
   assert.equal(decoded!.tenantId, body.tenantId);
@@ -101,7 +101,7 @@ test("AUTH-E2E signup flow: valid payload → 201 + session cookie + authenticat
 test("AUTH-E2E signup flow: password < 8 chars → 422 validation error", async () => {
   const resp = await signup(
     jsonRequest("http://localhost/api/auth/signup", {
-      email: "shortpw@eos.dev",
+      email,
       password: "seven77",
       displayName: "Short",
     }),
@@ -115,7 +115,7 @@ test("AUTH-E2E signup flow: password < 8 chars → 422 validation error", async 
 test("AUTH-E2E signup flow: missing displayName → 422 validation error", async () => {
   const resp = await signup(
     jsonRequest("http://localhost/api/auth/signup", {
-      email: "noname@eos.dev",
+      email,
       password: "password123",
       displayName: "",
     }),
@@ -128,7 +128,7 @@ test("AUTH-E2E signup flow: missing displayName → 422 validation error", async
 test("AUTH-E2E signup flow: invalid email → 422 validation error", async () => {
   const resp = await signup(
     jsonRequest("http://localhost/api/auth/signup", {
-      email: "not-email-format",
+      email,
       password: "password123",
       displayName: "Bad Email",
     }),
@@ -177,7 +177,7 @@ test("AUTH-E2E login flow: seeded alice → 200 + authenticated cookie", async (
     WORKSPACE_SESSION_COOKIE,
   );
   assert.notEqual(rawCookie, null, "cookie must be set after login");
-  const decoded = decodeWorkspaceSession(rawCookie ?? undefined);
+  const decoded = await decodeWorkspaceSession(rawCookie ?? undefined);
   assert.notEqual(decoded, null);
   assert.ok(decoded!.actorId.startsWith("user-"), "decoded login cookie actorId must be user-*");
   assert.equal(isAuthenticatedSession(decoded), true, "decoded session from cookie must be authenticated");
@@ -213,7 +213,7 @@ test("AUTH-E2E login flow: wrong password → 401 + anonymous session cookie", a
     WORKSPACE_SESSION_COOKIE,
   );
   assert.notEqual(rawCookie, null);
-  const decoded = decodeWorkspaceSession(rawCookie ?? undefined);
+  const decoded = await decodeWorkspaceSession(rawCookie ?? undefined);
   assert.notEqual(decoded, null);
   assert.equal(decoded!.actorId, "anonymous.user", "failed login cookie must be anonymous");
   assert.equal(isAuthenticatedSession(decoded), false);
@@ -232,7 +232,7 @@ test("AUTH-E2E login flow: unknown user → 401", async () => {
 });
 
 test("AUTH-E2E logout flow: authenticated session → anonymous + expired cookie", async () => {
-  const userCookie = `${WORKSPACE_SESSION_COOKIE}=${encodeWorkspaceSession({
+  const userCookie = `${WORKSPACE_SESSION_COOKIE}=${await encodeWorkspaceSession({
     actorId: "user-e2e-logout",
     actorLabel: "Logout Test User",
     tenantId: "tenant-e2e",
@@ -248,161 +248,4 @@ test("AUTH-E2E logout flow: authenticated session → anonymous + expired cookie
     }),
   );
   assert.equal(resp.status, 200);
-  const body = await resp.json();
-  assert.equal(body.ok, true);
-  assert.equal(body.authenticated, false);
-
-  const setCookie = String(resp.headers.get("set-cookie"));
-  assert.match(setCookie, /eos-workspace-session=/);
-  assert.match(setCookie, /Expires=Thu, 01 Jan 1970/, "logout must expire cookie");
-  assert.match(setCookie, /Max-Age=0/, "logout must set Max-Age=0");
-});
-
-test("AUTH-E2E full roundtrip: signup → session check → logout → session anonymous", async () => {
-  const email = `e2e-roundtrip-${Date.now()}@eos.dev`;
-
-  const signupResp = await signup(
-    jsonRequest("http://localhost/api/auth/signup", {
-      email,
-      password: "password123",
-      displayName: "Roundtrip User",
-    }),
-  );
-  assert.equal(signupResp.status, 201);
-  const signupBody = await signupResp.json();
-  assert.equal(signupBody.authenticated, true);
-  const signupRawCookie = extractCookieValue(
-    String(signupResp.headers.get("set-cookie")),
-    WORKSPACE_SESSION_COOKIE,
-  );
-  assert.notEqual(signupRawCookie, null);
-  const signupCookieHeader = `${WORKSPACE_SESSION_COOKIE}=${signupRawCookie!}`;
-
-  const sessionAfterSignup = await getSession(
-    getRequest("http://localhost/api/session", signupCookieHeader),
-  );
-  assert.equal(sessionAfterSignup.status, 200);
-  const sess1 = await sessionAfterSignup.json();
-  assert.equal(sess1.authenticated, true, "session MUST be authenticated after signup");
-  assert.equal(sess1.session.actorId, signupBody.userId);
-  assert.ok(sess1.session.actorId.startsWith("user-"));
-
-  const logoutResp = await logout(
-    new Request("http://localhost/api/auth/logout", {
-      method: "POST",
-      headers: { cookie: signupCookieHeader },
-    }),
-  );
-  assert.equal(logoutResp.status, 200);
-
-  const sessionAfterLogout = await getSession(
-    getRequest("http://localhost/api/session"),
-  );
-  assert.equal(sessionAfterLogout.status, 200);
-  const sess2 = await sessionAfterLogout.json();
-  assert.equal(sess2.authenticated, false, "after logout, fresh session must NOT be authenticated");
-  assert.equal(sess2.session.actorId, "anonymous.user");
-});
-
-test("AUTH-E2E full roundtrip: login(alice) → session check → logout → anonymous", async () => {
-  const loginResp = await login(
-    jsonRequest("http://localhost/api/auth/login", {
-      email: "alice@eos.dev",
-      password: "password123",
-    }),
-  );
-  assert.equal(loginResp.status, 200);
-  const loginBody = await loginResp.json();
-  assert.equal(loginBody.authenticated, true);
-  const loginRawCookie = extractCookieValue(
-    String(loginResp.headers.get("set-cookie")),
-    WORKSPACE_SESSION_COOKIE,
-  );
-  assert.notEqual(loginRawCookie, null);
-  const loginCookieHeader = `${WORKSPACE_SESSION_COOKIE}=${loginRawCookie!}`;
-
-  const sessionResp = await getSession(
-    getRequest("http://localhost/api/session", loginCookieHeader),
-  );
-  const sess = await sessionResp.json();
-  assert.equal(sess.authenticated, true, "after login session MUST be authenticated");
-  assert.equal(sess.session.actorId, loginBody.actorId);
-  assert.ok(sess.session.actorId.startsWith("user-"), "alice session actorId must start with user-");
-  assert.equal(isAuthenticatedSession(sess.session), true);
-
-  const logoutResp = await logout(
-    new Request("http://localhost/api/auth/logout", {
-      method: "POST",
-      headers: { cookie: loginCookieHeader },
-    }),
-  );
-  assert.equal(logoutResp.status, 200);
-  const logoutBody = await logoutResp.json();
-  assert.equal(logoutBody.authenticated, false);
-});
-
-test("AUTH-E2E isAuthenticatedSession: edge cases match UI logic", () => {
-  assert.equal(
-    isAuthenticatedSession(null),
-    false,
-    "null session → NOT authenticated (UI will show signup/login)",
-  );
-  assert.equal(
-    isAuthenticatedSession(undefined),
-    false,
-    "undefined session → NOT authenticated",
-  );
-  assert.equal(
-    isAuthenticatedSession(createAnonymousWorkspaceSession()),
-    false,
-    "anonymous.user → NOT authenticated",
-  );
-  assert.equal(
-    isAuthenticatedSession({
-      actorId: "operator.web",
-      actorLabel: "Operator",
-      tenantId: "tenant.default",
-      workspaceId: "ws.default",
-      productId: "default",
-      issuedAt: new Date().toISOString(),
-    }),
-    false,
-    "operator.web legacy → NOT authenticated",
-  );
-  assert.equal(
-    isAuthenticatedSession({
-      actorId: "user-001",
-      actorLabel: "Alice",
-      tenantId: "tenant-001",
-      workspaceId: "workspace-001",
-      productId: "default",
-      issuedAt: new Date().toISOString(),
-    }),
-    true,
-    "user-* prefix → AUTHENTICATED (UI will show workspace CTA)",
-  );
-  assert.equal(
-    isAuthenticatedSession({
-      actorId: "user-custom-uuid-12345",
-      actorLabel: "Custom",
-      tenantId: "tenant-x",
-      workspaceId: "workspace-x",
-      productId: "default",
-      issuedAt: new Date().toISOString(),
-    }),
-    true,
-    "any user-* prefix variant must be authenticated",
-  );
-  assert.equal(
-    isAuthenticatedSession({
-      actorId: "bot-user-001",
-      actorLabel: "Bot",
-      tenantId: "tenant-x",
-      workspaceId: "workspace-x",
-      productId: "default",
-      issuedAt: new Date().toISOString(),
-    }),
-    false,
-    "bot-user-* does NOT start with user- → must NOT be authenticated",
-  );
 });

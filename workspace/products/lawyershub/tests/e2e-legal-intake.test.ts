@@ -10,8 +10,8 @@ const testTenantId = 'tenant-test-lawyershub-001';
 const testWorkspaceId = 'workspace-test-001';
 
 test('LawyersHub Golden Path: Real Value-Reality Flow (No Mocks) - BETTER EOS VERIFICATION', async () => {
-  // Set context untuk tenant dan workspace (RLS isolation)
-  knowledgeGraphService.setContext(testTenantId, testWorkspaceId);
+  // Set context untuk tenant dan workspace (RLS isolation) - FIXED: sesuai signature setContext()
+  knowledgeGraphService.setContext(testTenantId, { workspaceId: testWorkspaceId, workId: "work-CROSS-INDUSTRY-001" });
   
   console.log('[GOLDEN PATH] Context set, starting value-graph creation...');
   

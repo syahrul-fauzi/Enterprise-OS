@@ -1,0 +1,16 @@
+{
+  "work_id": "DIGIOP-104",
+  "user_job": "Purchase & onboard Managed Digital Operations package",
+  "product": "digital-operations",
+  "acceptance_criteria": [
+    "User dapat mengisi formulir pendaftaran paket Managed Digital Operations dengan detail aset bisnis end-to-end",
+    "API menerima permintaan pendaftaran dengan validasi Midtrans retainer transaction",
+    "Capability service-directory membuat service request untuk end-to-end business operations",
+    "Persistence menyimpan seluruh data aset bisnis, platform, dan contact person pelanggan",
+    "State Work berubah dari \"draft\" → \"payment-verified\" → \"onboarded\" → \"active\"",
+    "Evidence mencatat semua tindakan onboarding dengan SHA-256 integrity dan audit trail lengkap",
+    "Sistem berhasil mengkoneksikan semua platform bisnis (website, e-commerce, CRM, marketplace)",
+    "Test menyelesaikan end-to-end flow tanpa mock dengan verifikasi semua domain layanan",
+    "DIGIOP-103 (Managed Outcome Loop) otomatis diaktifkan untuk semua aset setelah onboarding selesai"
+  ]
+}

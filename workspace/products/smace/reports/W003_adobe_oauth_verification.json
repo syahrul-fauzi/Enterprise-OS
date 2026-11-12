@@ -1,0 +1,49 @@
+{
+  "work_item": "W003",
+  "status": "IMPLEMENTATION COMPLETED — LOCAL TESTS PASSED",
+  "verification_timestamp": "2026-11-06T12:00:00Z",
+  "oauth_implementation": {
+    "token_acquisition": {
+      "compliant_with_adobe_docs": true,
+      "form_body_parameters": ["grant_type", "client_id", "client_secret", "scope"],
+      "basic_auth_removed": true,
+      "single_flight_enabled": true,
+      "lock_mechanism": "tokenAcquisitionInProgress Promise lock"
+    },
+    "scope": {
+      "current_scope": "openid,AdobeID,session,additional_info,read_organizations,firefly_api,ff_apis",
+      "matches_active_project_profile": true,
+      "source_reference": "Adobe Firefly Services v3 Documentation"
+    },
+    "authentication_headers": {
+      "bearer_access_token": true,
+      "x_api_key_client_id": true,
+      "added_to_all_api_calls": ["submit_batch", "poll_job_status"],
+      "header_separation_compliant": true
+    },
+    "token_cache": {
+      "expiry_aware": true,
+      "auto_refresh_5min_before_expiry": true,
+      "cache_mechanism": "in-memory with expiry timestamp"
+    },
+    "polling_behavior": {
+      "exponential_backoff": "MAX_RETRIES=5, INITIAL_BACKOFF_MS=1000",
+      "no_duplicate_submission": true,
+      "asset_expiry_from_response": true,
+      "fallback_expiry": "24h (dokumentasi Adobe)"
+    }
+  },
+  "evidence": {
+    "code_references": [
+      "/workspace/products/smace/providers/adobe/adobe-api-client.ts#L8-L43 (getAdobeOAuthToken)",
+      "/workspace/products/smace/providers/adobe/adobe-api-client.ts#L127-L146 (executeAdobeWorkflow)",
+      "/workspace/products/smace/providers/adobe/adobe-api-client.ts#L175-L215 (pollAdobeJobStatus)"
+    ],
+    "documentation_references": [
+      "https://developer.adobe.com/firefly-services/docs/guides/authentication",
+      "https://developer.adobe.com/firefly-services/docs/api/guides/api-reference"
+    ]
+  },
+  "blockers": [],
+  "recommendation": "READY FOR STAGING VERIFICATION — tunggu credentials CREDENTIAL-002C"
+}

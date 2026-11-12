@@ -130,33 +130,63 @@ export function getEvidenceRepositoryPostgres(): EvidenceRepositoryPostgres {
         } as EvidenceRecord));
       },
 
-      async saveEvidence(evidence: Omit<EvidenceRecordWithPersistence, "id" | "createdAt">): Promise<EvidenceRecordDetail> {
-        const result = await pool.query(
-          `INSERT INTO evidence_records (
-            work_id, actor_id, tenant_id, workspace_id, content, type, metadata, version,
-            name, kind, scope, path
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-          RETURNING id, created_at`,
-          [
-            evidence.workId,
-            evidence.actorId,
-            evidence.tenantId,
-            evidence.workspaceId || null,
-            evidence.content,
-            evidence.recordType,
-            evidence.metadata ? JSON.stringify(evidence.metadata) : null,
-            evidence.version || 1,
-            evidence.name || `evidence-${Date.now()}`,
-            evidence.kind || "record",
-            evidence.scope || "requirement",
-            evidence.path || `/evidence/${evidence.workId}/${Date.now()}`
-          ]
-        );
-        return {
-          id: result.rows[0].id,
-          created_at: result.rows[0].created_at,
-          ...evidence
-        } as EvidenceRecordDetail;
+      async saveEvidence(evidence: Omit<EvidenceRecordWithPersistence, "id" | "createdAt"> & { meta_checksum?: string }): Promise<EvidenceRecordDetail> {
+        const client = await pool.connect();
+        try {
+          await client.query('BEGIN');
+          
+          if (evidence.meta_checksum) {
+            const existingChecksum = await client.query(
+              `SELECT id, created_at FROM evidence_records WHERE work_id = $1 AND meta_checksum = $2 LIMIT 1`,
+              [evidence.workId, evidence.meta_checksum]
+            );
+            if (existingChecksum.rows.length > 0) {
+              console.log(`[EvidenceRepositoryPostgres] ⚠️ Evidence already exists for checksum ${evidence.meta_checksum}, skipping duplicate insert`);
+              await client.query('COMMIT');
+              return {
+                id: existingChecksum.rows[0].id,
+                created_at: existingChecksum.rows[0].created_at,
+                ...evidence
+              } as EvidenceRecordDetail;
+            }
+          }
+          
+          const result = await client.query(
+            `INSERT INTO evidence_records (
+              work_id, actor_id, tenant_id, workspace_id, content, type, metadata, version,
+              name, kind, scope, path, meta_checksum
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+            RETURNING id, created_at`,
+            [
+              evidence.workId,
+              evidence.actorId,
+              evidence.tenantId,
+              evidence.workspaceId || null,
+              evidence.content,
+              evidence.recordType,
+              evidence.metadata ? JSON.stringify(evidence.metadata) : null,
+              evidence.version || 1,
+              evidence.name || `evidence-${Date.now()}`,
+              evidence.kind || "record",
+              evidence.scope || "requirement",
+              evidence.path || `/evidence/${evidence.workId}/${Date.now()}`,
+              evidence.meta_checksum || null
+            ]
+          );
+          await client.query('COMMIT');
+          console.log(`[EvidenceRepositoryPostgres] ✅ saveEvidence success for workId ${evidence.workId} with checksum ${evidence.meta_checksum}`);
+          return {
+            id: result.rows[0].id,
+            created_at: result.rows[0].created_at,
+            ...evidence
+          } as EvidenceRecordDetail;
+        } catch (err) {
+          await client.query('ROLLBACK');
+          console.error(`[EvidenceRepositoryPostgres] saveEvidence error for workId ${evidence.workId}:`, err);
+          throw err;
+        } finally {
+          client.release();
+        }
       }
     };
   }

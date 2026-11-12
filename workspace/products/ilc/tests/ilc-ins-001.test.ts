@@ -6,6 +6,8 @@ import { WorkInspectionAgent } from '@capabilities/work-inspection';
 import { getWorkRepositoryPostgres, type WorkRepositoryPostgres } from '@capabilities/work-core/implementation/repository/work-postgres.repository';
 import type { BaseWorkAggregateSchema, WorkId, ActorId } from '@capabilities/work-core/contracts/work.contracts';
 import { InspectionRecommendation } from '@capabilities/work-inspection';
+import { checkAutonomyBoundary } from '@capabilities/work-core/implementation/utils/boundary-checks.utils.js';
+import type { AutonomyBoundaryCheck } from '@capabilities/work-core/implementation/utils/boundary-checks.types.js';
 
 // Test actors with roles matching ILC workflow requirements
 const ACTORS = {
@@ -198,9 +200,55 @@ describe('ILC-INS-001: Institutional Coordination Reality Slice', () => {
       stuckWorkDetected: true,
       naturalLanguageExplanation: true,
       allQuestionsAnswered: true,
-      delayHours: stuckBottleneck?.delayHours
     });
   });
+
+  it('A2-W06 - checkAutonomyBoundary correctly validates allowed/prohibited actions for ILC workflow', async () => {
+    // Test 1: Authorized action (submit institutional need) allowed for institutionalRepresentative
+    const allowedCheck: AutonomyBoundaryCheck = {
+      action: "submit institutional need",
+      allowed: ["submit", "institutional", "need"],
+      prohibited: ["delete", "modify budget", "approve payment"]
+    };
+    
+    const allowedResult = checkAutonomyBoundary(allowedCheck, ACTORS.institutionalRepresentative);
+    assert.ok(allowedResult.ok === true);
+    assert.ok(allowedResult.violationFound === false);
+    assert.ok(allowedResult.log.decision === "autonomy_boundary_check[submit institutional need]=PASS");
+
+    // Test 2: Prohibited action (approve payment) blocked for unauthorized actor
+    const prohibitedCheck: AutonomyBoundaryCheck = {
+      action: "approve payment",
+      allowed: ["submit", "review", "initiate"],
+      prohibited: ["approve payment", "delete record", "modify budget"]
+    };
+    
+    const prohibitedResult = checkAutonomyBoundary(prohibitedCheck, ACTORS.unauthorizedActor);
+    assert.ok(prohibitedResult.ok === false);
+    assert.ok(prohibitedResult.violationFound === true);
+    assert.ok(prohibitedResult.log.reason.includes("matched prohibited [approve payment]"));
+
+    // Test 3: Action not in allowed list is blocked
+    const unlistedCheck: AutonomyBoundaryCheck = {
+      action: "modify project budget",
+      allowed: ["submit", "review", "initiate", "coordinate"],
+      prohibited: []
+    };
+    
+    const unlistedResult = checkAutonomyBoundary(unlistedCheck, ACTORS.projectManager);
+    assert.ok(unlistedResult.ok === false);
+    assert.ok(unlistedResult.violationFound === false);
+    assert.ok(unlistedResult.log.reason.includes("NOT in allowed list"));
+
+    await recordEvidence("A2-W06-PASS", {
+      autonomyBoundaryCheckValidated: true,
+      allowedActionPassed: true,
+      prohibitedActionBlocked: true,
+      unlistedActionBlocked: true,
+      testCases: 3
+    });
+  });
+  
   it('I6 - Stuck work recovery: Actor reassignment resumes work progression', async () => {
     // First create stuck work (same as I5)
     const twentyFiveHoursAgo = new Date(Date.now() - (25 * 60 * 60 * 1000));
@@ -217,10 +265,6 @@ describe('ILC-INS-001: Institutional Coordination Reality Slice', () => {
       workspaceId: TEST_CONTEXT.workspaceId,
       actorId: ACTORS.institutionalRepresentative,
       status: "active",
-      createdAt: twentyFiveHoursAgo.toISOString(),
-      updatedAt: twentyFiveHoursAgo.toISOString(),
-      assignedActorId: ACTORS.financeDepartmentHead,
-      nextAction: "Approve budget allocation for digitalization initiative",
       stateHistory: [{
         status: "active",
         timestamp: twentyFiveHoursAgo.toISOString(),

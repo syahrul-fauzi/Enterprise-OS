@@ -22,20 +22,20 @@ export function DropdownMenu({ children }: { children: React.ReactNode }) {
 
 export function DropdownMenuTrigger({ children, asChild }: { children: React.ReactNode, asChild?: boolean }) {
   const { setIsOpen } = useContext(DropdownContext);
-  const child = React.Children.only(children) as React.ReactElement;
+  const child = React.Children.only(children) as React.ReactElement<React.HTMLAttributes<HTMLElement>>;
 
   if (asChild) {
     return React.cloneElement(child, {
-      onClick: (e: React.MouseEvent) => {
+      onClick: (e: React.MouseEvent<HTMLElement>) => {
         // Call existing onClick if present
-        if (React.isValidElement(child) && child.props.onClick) {
+        if (child.props.onClick) {
           child.props.onClick(e);
         }
         setIsOpen(prev => !prev);
       },
       "aria-haspopup": "menu",
       "aria-expanded": "true",
-    } as React.HTMLAttributes<HTMLElement>);
+    } as Partial<unknown>);
   }
 
   return (

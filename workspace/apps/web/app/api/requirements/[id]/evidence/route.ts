@@ -23,12 +23,12 @@ export async function GET(
     
     // Handle anonymous session same as requirements transition route
     if (!sessionCookie) {
-      const anonymousSession = createAnonymousWorkspaceSession();
-      const encodedSession = encodeWorkspaceSession(anonymousSession);
+      const anonymousSession = await createAnonymousWorkspaceSession();
+      const encodedSession = await encodeWorkspaceSession(anonymousSession);
       sessionCookie = { name: WORKSPACE_SESSION_COOKIE, value: encodedSession };
     }
 
-    const session = decodeWorkspaceSession(sessionCookie.value);
+    const session = await decodeWorkspaceSession(sessionCookie.value);
     if (!session || !session.tenantId || !session.workspaceId || !session.actorId || !session.sessionId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }
@@ -116,12 +116,12 @@ export async function POST(
     let sessionCookie = cookieStore.get(WORKSPACE_SESSION_COOKIE);
     
     if (!sessionCookie) {
-      const anonymousSession = createAnonymousWorkspaceSession();
-      const encodedSession = encodeWorkspaceSession(anonymousSession);
+      const anonymousSession = await createAnonymousWorkspaceSession();
+      const encodedSession = await encodeWorkspaceSession(anonymousSession);
       sessionCookie = { name: WORKSPACE_SESSION_COOKIE, value: encodedSession };
     }
 
-    const session = decodeWorkspaceSession(sessionCookie.value);
+    const session = await decodeWorkspaceSession(sessionCookie.value);
     if (!session || !session.tenantId || !session.workspaceId || !session.actorId || !session.sessionId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }

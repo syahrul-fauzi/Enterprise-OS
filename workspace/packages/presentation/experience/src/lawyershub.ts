@@ -23,7 +23,7 @@ export const lawyershub: ProductExperience & { card?: any } = {
   navigation: {
     primaryCta: {
       label: "Buat Kasus Hukum Baru",
-      href: "/cases/new"
+      href: "/work/cases/new"
     },
     secondaryCta: {
       label: "Lihat Semua Kasus",

@@ -1,0 +1,48 @@
+id: whatsapp-channel
+name: WhatsApp Channel Pack
+description: Channel integration pack untuk WhatsApp yang memungkinkan interaksi EOS melalui platform pesan WhatsApp. Mendukung binding identitas eksternal, verifikasi token wajib, buffer offline, dan routing Work ke actor yang sesuai. Tidak menambah primitif baru ke Work Core, 100% menggunakan primitive yang sudah ada.
+version: "1.0.0"
+domain: channel-integration
+industry: cross-industry
+jurisdictions:
+  - ID-ID  # Indonesia (prioritas utama sesuai roadmap W-010)
+  - global
+tags:
+  - channel
+  - whatsapp
+  - messaging
+  - external-identity
+  - identity-binding
+  - indonesia
+  - cross-channel
+reuseCount: 0
+firstIntroduced: "2026-10-30"
+maintainers:
+  - eos-channel-team
+dependencies:
+  - workspace-standard@>=1.0.0
+  - identity@>=0.1.0
+  - work-core@>=1.0.0
+  - edge@>=0.1.0
+reuse_targets:
+  - W-010 (WhatsApp onboarding & ACaaS execution)
+  - semua Work yang memerlukan channel pesan instan
+compliance:
+  work_invariant_preserved: true
+  architecture_freeze_compliant: true
+  no_new_core_primitives: true # Sesuai mandat: tidak menambah primitif baru ke Work Core
+  rule_of_two_satisfied: false # Akan terpenuhi setelah digunakan oleh 2+ Work selain W-010
+  dependency_violations: 0
+  work_continuity_strengthened: true # Mempertahankan identitas Work yang sama saat berpindah channel
+  no_silent_permissions: true # Mematuhi mandat: tidak memberikan izin secara diam-diam, memerlukan eksplisit grant
+  channel_token_verification_required: true # Wajib verifikasi token sebelum mengakses identitas, sesuai mandat "jangan percaya payload channel"
+  secret_management_compliant: true
+  no_hardcoded_credentials: true
+implementation_status:
+  w010_01: completed # Instalasi channel via onboarding
+  w010_02: completed # Binding identitas eksternal WhatsApp
+  w010_03: completed # Manifest paket marketplace compliant
+  w010_04: completed # Konfigurasi secret dan environment variables
+  w010_05: completed # Review dan grant permissions selesai (eksplisit approval sesuai mandat)
+  w010_06: completed # Health check endpoint implemented dan semua environment variable validation selesai
+  w010_07: in_progress # Eksekusi ACaaS dari channel WhatsApp - WorkAggregate kanonis tercipta, ACaaS execution dimulai

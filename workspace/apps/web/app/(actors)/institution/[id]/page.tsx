@@ -27,7 +27,7 @@ async function resolveSessionOrEnter() {
 
   let session;
   try {
-    session = decodeWorkspaceSession(sessionCookie.value);
+    session = await decodeWorkspaceSession(sessionCookie.value);
   } catch {
     cookieStore.delete(WORKSPACE_SESSION_COOKIE);
     redirect("/");

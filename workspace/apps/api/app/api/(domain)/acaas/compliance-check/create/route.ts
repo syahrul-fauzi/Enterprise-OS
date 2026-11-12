@@ -11,8 +11,8 @@ import { z } from "zod";
 import {
   getSessionRepositoryPostgres,
   initIdentitySchema,
-} from "@repo/capabilities/identity";
-import { validateBoundaryAccess } from "@repo/capabilities/work-core/contracts/work.contracts.js";
+} from "@capabilities/identity/implementation/repositories/index.js";
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
 
 // ACaaS-COMMERCIAL-001: Create Compliance Check endpoint
 // Mengikuti EXACT canonical pattern yang sama dengan compliance-cases dan domain lain
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     
-    const session = decodeWorkspaceSession(sessionCookie.value);
+    const session = await decodeWorkspaceSession(sessionCookie.value);
     if (!session?.sessionId || !session?.tenantId || !session?.workspaceId || !session?.actorId) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }
@@ -72,8 +72,8 @@ export async function POST(request: Request) {
 
     // 3. Invoke ACaaS capability di api-platform (menggunakan actorContext untuk konsistensi)
     const { output } = await capabilityRegistry.invokeAsync(
-      "acaas",
-      "createComplianceCheck",
+      "api-platform",
+      "acaas.complianceCheck.create",
       {
         ...actorContext,
         documentType: validated.documentType,
@@ -91,7 +91,7 @@ export async function POST(request: Request) {
     const complianceCheckId = output?.complianceCheckId || null;
     
     recordRuntimeInvocation({
-      capabilityId: "acaas",
+      capabilityId: "api-platform",
       operationId: "acaas.complianceCheck.create",
       sourceRef: `acaas/${actorContext.tenantId}/${actorContext.workspaceId}`,
       success: true,
@@ -99,7 +99,8 @@ export async function POST(request: Request) {
       result: output,
       work_id: complianceCheckId,
       executionId: executionId,
-      actorContext: actorContext
+      tenant_id: actorContext.tenantId,
+      actor_id: actorContext.actorId
     });
 
     // 5. Return hasil sesuai canonical projection pattern (tambahkan actorContext untuk audit)
@@ -116,15 +117,14 @@ export async function POST(request: Request) {
     
     // Record failed invocation
     recordRuntimeInvocation({
-      capabilityId: "acaas",
+      capabilityId: "api-platform",
       operationId: "acaas.complianceCheck.create",
       sourceRef: "acaas/unknown",
       success: false,
       input: {},
       result: { error: error instanceof Error ? error.message : "Failed to create compliance check" },
       work_id: null,
-      executionId: failureExecutionId,
-      actorContext: null
+      executionId: failureExecutionId
     });
 
     if (error instanceof z.ZodError) {
