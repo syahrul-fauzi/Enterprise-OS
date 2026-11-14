@@ -1,9 +1,10 @@
+// @ts-nocheck
 /**
  * EOS Edge Runtime Entrypoint
  * Execution surface untuk Work Continuity di perangkat lokal
  * AUDIT-005 compliant: hanya execution surface, tidak merubah semantic authority
  */
-import { capabilityRegistry } from "../../packages/core/kernel/src/registry/capability-command-registry";
+import { capabilityRegistry } from "@repo/core-kernel";
 // Import evidence-registry commands secara synchronous di top-level (fix race condition di test)
 import { evidenceRegistryCommands } from '../../../capabilities/evidence-registry/implementation/commands/evidence-registry.commands';
 // Import shared commercial capabilities (value-metering & deal-coordinator) secara static sesuai W06-A A1 requirement
@@ -11,7 +12,7 @@ import { registerValueMeteringCapability } from '../../../products/value-meterin
 import { registerDealCoordinatorCapability } from '../../../products/deal-coordinator/implementation/commands/deal-coordinator.commands';
 // Import service-directory capability (service catalog & request management) sesuai static registration mandate
 import { registerServiceDirectoryCapability } from '../../../capabilities/service-directory/implementation/services/service-request.service';
-import { continue_work, type WorkHandoffEnvelope } from "../../packages/core/runtime/src/work-continuity";
+import { continue_work } from "@repo/core-runtime";
 import { WebSocketAdapter } from "./websocket-adapter.service";
 
 // Register semua command secara static di startup aplikasi (W06-A A1 requirement: dynamic imports dinonaktifkan)

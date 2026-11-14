@@ -557,7 +557,8 @@ export class ApiPlatformService {
 
 export const apiPlatformService = new ApiPlatformService();
 
-// Inisialisasi dan daftarkan semua command ACaaS ke capabilityRegistry saat service dimuat
-registerApiPlatformCapability();
+// Hapus pemanggilan langsung registerApiPlatformCapability() saat modul dimuat
+// Pendaftaran command akan dilakukan secara eksplisit oleh pemanggil (sesuai pola service-directory)
 
 export * from "../contracts/index.js";
+export { registerApiPlatformCapability } from "../commands/index.js";

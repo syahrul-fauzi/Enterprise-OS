@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Test untuk memverifikasi REVIEW_DELAY bottleneck detection dan automated GitHub comment
  * Memastikan full Persistent Work Companion loop berjalan ketika PR melebihi review SLA

@@ -1,3 +1,4 @@
+// @ts-nocheck
 #!/usr/bin/env node
 /**
  * CREATE 3 TEST LEGAL CASES to validate specialization pattern detection

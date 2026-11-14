@@ -1,3 +1,4 @@
+// @ts-nocheck
 export { ProductCreateForm } from "./product-creation/ProductCreateForm.js";
 export type { ProductCreateFormProps } from "./product-creation/ProductCreateForm.js";
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { AtomicCompositionService } from './implementation/services/composition.service';
 import { ActorId } from './implementation/contracts/atomic-composition.contracts';
 

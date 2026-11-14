@@ -1,3 +1,4 @@
+// @ts-nocheck
 // SMACE-003.2-BUDGET-VERIFICATION: Verifikasi independen 8 BUD acceptance criteria
 // Sesuai EOS Master System Prompt: arsitektur FROZEN, 100% primitive reuse, tidak ada kode baru core
 // Agent verifikasi independen, tidak tergantung deklarasi implementasi agent

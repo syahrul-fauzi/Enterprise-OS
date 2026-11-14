@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Test script to verify Projects.co.id Adapter runtime functionality - R5-C External Reality
 import { connectorEcosystemService } from "../implementation/services/connector-ecosystem.service.js";
 import { getWorkRepositoryPostgres } from "../../work-core/implementation/repository/work-postgres.repository.js";

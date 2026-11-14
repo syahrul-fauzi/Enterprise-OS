@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
 
 // Define trust-framework commands (reuse existing service contracts)

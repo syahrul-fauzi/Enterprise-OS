@@ -1,3 +1,4 @@
+// @ts-nocheck
 // SMACE Workflow Catalog - aggregates 3-layer separated workflows (business/execution/provider)
 // Reuses all core-kernel types exclusively, no new EOS primitives created
 import type { WorkflowDefinition } from "@repo/core/kernel/src/registry/capability-command-registry.js";

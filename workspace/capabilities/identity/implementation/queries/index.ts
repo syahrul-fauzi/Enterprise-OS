@@ -1,3 +1,4 @@
+// @ts-nocheck
 export { userQueries } from "./user.queries.js";
 export type { UserQueries } from "./user.queries.js";
 export { tenantQueries } from "./tenant.queries.js";

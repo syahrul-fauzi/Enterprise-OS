@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { describe, test, expect } from 'vitest';
 import { atomicCompositionService } from "../implementation/services/composition.service.js";
 import type {

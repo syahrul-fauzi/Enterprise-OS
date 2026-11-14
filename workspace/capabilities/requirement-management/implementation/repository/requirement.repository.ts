@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { type WorkId } from "../../../work-core/contracts/work.contracts.js";

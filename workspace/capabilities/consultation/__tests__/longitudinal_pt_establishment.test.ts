@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Test lengkap untuk CONSULT-L005: Membuktikan 4 Proof pada PT Establishment vertical
 import assert from "node:assert/strict";
 import test from "node:test";

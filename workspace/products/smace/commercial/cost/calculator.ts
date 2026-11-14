@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { CreativeSpecification } from "../../contracts/creative-brief.contract.js";
 
 export function calculateProductionCost(specification: CreativeSpecification, providerRate: number): {

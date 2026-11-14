@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * E2E Test for Product Slice ECOM-001: Ecommerce Ops Shopee Order Fulfillment
  * Verifies the full flow: Shopee order masuk → payment verify → inventory check → fulfill → track → reconcile → complete

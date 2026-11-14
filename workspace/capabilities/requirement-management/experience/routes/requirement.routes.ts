@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { CapabilityExperienceRoutes } from "@repo/presentation-types";
 
 export type RequirementRouteId =

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * PAYROLL-INTEGRATION-001 End-to-End Test
  * Alur: Approved Employee Leave → Payroll Eligibility Check → Create Payroll → Process Payroll → Payment Confirmation

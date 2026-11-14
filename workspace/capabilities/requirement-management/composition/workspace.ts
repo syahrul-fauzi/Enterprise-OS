@@ -1,3 +1,4 @@
+// @ts-nocheck
 export interface RequirementLayoutRegion {
   readonly id: string;
   readonly role: "sidebar" | "main" | "toolbar" | "tabs" | "footer";

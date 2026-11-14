@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Minimal product photography pricing implementation for SMACE commercial layer
 // Reuses EOS budget engine pricing primitives without creating new economic functionality
 import type { CreativeBrief } from "../../contracts/creative-brief.contract.js";

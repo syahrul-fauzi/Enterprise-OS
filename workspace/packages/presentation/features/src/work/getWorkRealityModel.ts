@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Canonical server-side WorkRealityModel builder - aligns with EOS Presentation Architecture
 // Runtime owns meaning: Only server may build WorkRealityModel from raw canonical work data
 // Eliminates client-side reality reconstruction - presentation layer receives only canonical model

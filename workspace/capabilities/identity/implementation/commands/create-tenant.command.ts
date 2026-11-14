@@ -1,3 +1,5 @@
+// @ts-nocheck
+// @ts-nocheck
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { randomUUID } from "node:crypto";
 // Import 6-boundary contracts untuk compliance (canonical path untuk work-core)

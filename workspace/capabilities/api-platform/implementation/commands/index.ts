@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Import capabilityRegistry sebagai global yang sama dengan yang digunakan di registerApiPlatformCapability
 import { capabilityRegistry, capabilityCommands } from "../../../../packages/core/kernel/src/registry/capability-command-registry.js";
 // ACaaS-001-PILOT-003: Import dari observability service yang sudah mendukung canonical metering

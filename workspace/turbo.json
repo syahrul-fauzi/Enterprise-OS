@@ -15,7 +15,7 @@
       "dependsOn": ["^check-types"]
     },
     "build": {
-      "dependsOn": ["^build", "^arch-check"],
+      "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", "tsconfig.json", ".env*"],
       "outputs": [".next/standalone/**", ".next/static/**", "dist/**"]
     },

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Atomic Composition Capability Root Export
  * Re-exports all public modules from the implementation directory

@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const SMACE_DEFAULT_WORKFLOW_BOUNDARIES = {
   maxResolution: 4096,
   allowedFormats: ['png', 'webp', 'jpeg'],

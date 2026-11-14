@@ -18,15 +18,15 @@ class ComplianceMatrixGenerator:
         self.skill_manifests: List[Dict[str, Any]] = []
         
     def find_all_skills(self) -> List[str]:
-        """Find all 10 existing EOS skills in .trae/skills directory"""
-        skills_dir = self.workspace_path / ".trae" / "skills"
+        """Find all 10 existing EOS skills in root skills directory"""
+        skills_dir = self.workspace_path / "skills"
         skill_dirs = [d for d in skills_dir.iterdir() if d.is_dir()]
-        print(f"[COMPLIANCE] Found {len(skill_dirs)} skills in .trae/skills")
+        print(f"[COMPLIANCE] Found {len(skill_dirs)} skills in root skills directory")
         return [d.name for d in skill_dirs]
     
     def load_skill_manifest(self, skill_name: str) -> dict:
         """Load manifest.json for a skill"""
-        manifest_path = self.workspace_path / ".trae" / "skills" / skill_name / "manifest.json"
+        manifest_path = self.workspace_path / "skills" / skill_name / "manifest.json"
         if not manifest_path.exists():
             print(f"[COMPLIANCE] ⚠️  No manifest found for {skill_name}")
             return None

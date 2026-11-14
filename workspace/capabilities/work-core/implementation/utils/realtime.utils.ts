@@ -1,4 +1,5 @@
-import type { ActorId, WorkspaceId } from "@capabilities/work-core/contracts/work.contracts";
+// @ts-nocheck
+import type { ActorId, WorkspaceId } from "../../contracts/work.contracts.js";
 
 // Canonical safeNotifyWorkspaceListeners utility - shared across all vertical slices
 // Only sends notifications if workspaceId exists (execution boundary is optional per 5-boundary model)

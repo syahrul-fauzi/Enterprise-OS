@@ -1,13 +1,11 @@
 // @ts-nocheck: Skip TypeScript checks to unblock Lawyers Hub staging deployment
 import type { CapabilityCommand } from "../types.js";
 import type { ExecutionFrame } from "@capabilities/work-core/contracts/work.contracts";
-import type { ExecutionContext } from "../../../runtime/src/execution-context.js"; // Import type ExecutionContext dari source (bukan dist)
 import { randomUUID } from "crypto";
-// Import core-runtime utilities dari path relatif yang benar (sesuai struktur build TSC)
-// File build ada di root dist/ (bukan dist/src/) karena konfigurasi rootDir tsconfig
-import { calculateExponentialBackoff, shouldOpenCircuitBreaker, shouldResetCircuitBreaker } from "../../../runtime/dist/runtime.js";
-import { executionContext } from "../../../runtime/src/execution-context.js";
-import { ExecutionStatusRepository } from "../../../runtime/dist/execution-status.js";
+// Import core-runtime utilities dari path paket @repo yang benar
+import { calculateExponentialBackoff, shouldOpenCircuitBreaker, shouldResetCircuitBreaker, executionContext } from "@repo/core-runtime";
+// Server-only import untuk ExecutionStatusRepository (tidak diekspor dari barrel utama)
+import { ExecutionStatusRepository } from "@repo/core-runtime/execution-status.js";
 export type { CapabilityCommand };
 // Define RetryConfig type locally since it's not exported from ../types
 export interface RetryConfig {

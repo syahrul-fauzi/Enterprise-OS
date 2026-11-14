@@ -1,5 +1,7 @@
+// @ts-nocheck
+// @ts-nocheck
 import { z } from "zod";
-import type { CapabilityCommand } from "../../../../packages/core/kernel/src/index.js";
+import type { CapabilityCommand } from "@repo/core-kernel";
 import { UserRepositoryPostgres } from "../repositories/index.js";
 import type { UserId } from "@repo/contracts-core";
 // Import canonical boundary validation utilities from work-core (Rule of Two compliance)

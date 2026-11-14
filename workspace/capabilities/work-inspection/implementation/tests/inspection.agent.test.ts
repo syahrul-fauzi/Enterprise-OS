@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * WorkInspectionAgent Test Suite
  * Verifies that the grounded agentic loop works as expected

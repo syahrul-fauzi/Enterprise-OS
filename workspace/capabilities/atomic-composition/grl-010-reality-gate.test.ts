@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FailureIntelligenceRepository } from './implementation/repository/failure-intelligence.repository';
 import type { FailureObservation, GeneralizationCandidate, ValidationRun } from './implementation/contracts/intent-understanding.contracts';

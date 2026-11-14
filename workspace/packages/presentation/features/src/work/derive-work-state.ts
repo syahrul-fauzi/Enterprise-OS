@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { WorkRealityModel, ActivityEntry, CommunicationEvent } from "@repo/presentation-entities";
 import type { WorkFaceProjection, WorkStatus } from "../../../../../capabilities/work-core/contracts/work.contracts";
 

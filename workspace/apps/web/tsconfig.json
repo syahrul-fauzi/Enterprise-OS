@@ -38,6 +38,7 @@
       "@repo/capabilities-shared/*": ["../../capabilities/shared/implementation/*"],
       "@repo/capabilities-communication/*": ["../../capabilities/communication/implementation/*"],
       "@repo/capabilities-legal-case/*": ["../../capabilities/legal-case/implementation/*"],
+      "@repo/capabilities-observability/*": ["../../capabilities/observability/implementation/*"],
       "@repo/capabilities-work-core": ["../../capabilities/work-core/contracts/work.contracts.ts"],
       "@repo/capabilities-work-core/*": ["../../capabilities/work-core/*"],
       "@repo/core-kernel": ["../../packages/core/kernel/dist"],

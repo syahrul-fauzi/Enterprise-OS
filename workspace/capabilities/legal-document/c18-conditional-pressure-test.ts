@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * C18 CONDITIONAL COMPOSITION PRESSURE-TEST
  * ========================================

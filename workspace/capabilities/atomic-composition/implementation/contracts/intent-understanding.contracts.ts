@@ -1,3 +1,4 @@
+// @ts-nocheck
 // IntentUnderstandingContract - EOS-INTELLIGENCE-001: Canonical dynamic semantic understanding contract
 // This is the shared, single-source-of-truth contract for all intent understanding operations
 // Preserved original location in atomic-composition (the capability that implements the pipeline)

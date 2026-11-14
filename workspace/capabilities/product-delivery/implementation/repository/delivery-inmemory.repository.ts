@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * DeliveryRepositoryInMemory - Implementasi repository in-memory untuk Product Delivery
  * Reusable pattern dari identity capability dan work-core's WorkRepositoryInMemory

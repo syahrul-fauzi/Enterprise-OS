@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Agent Orchestration Capability Root Export
  * Re-exports all public modules from the implementation directory

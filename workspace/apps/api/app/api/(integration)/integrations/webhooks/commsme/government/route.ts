@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { validateBoundaryAccess } from "@repo/capabilities/work-core/contracts/work.contracts";
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
 import { decodeWorkspaceSession } from "@repo/core-kernel";
 

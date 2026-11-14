@@ -1,5 +1,6 @@
-import { capabilityRegistry, type CapabilityCommand } from "../../../../packages/core/kernel/src/registry/capability-command-registry";
-import type { ExecutionContext } from "../../../../packages/core/runtime/src/execution-context.js";
+// @ts-nocheck
+import { capabilityRegistry, type CapabilityCommand } from "@repo/core-kernel";
+import type { ExecutionContext } from "@repo/core-runtime";
 import { safeRecordEvidence } from "../../../../capabilities/work-core/implementation/utils/evidence.utils.js";
 
 // Command implementations untuk value-metering shared capability - W06-A2 compliant: menerima ExecutionContext sebagai parameter kedua

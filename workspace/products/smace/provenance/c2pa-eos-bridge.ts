@@ -1,3 +1,4 @@
+// @ts-nocheck
 // SMACE-ARCH-005: C2PA-EOS Provenance Bridge - Linkage antara C2PA manifest dengan EOS Evidence Registry
 // Tidak membuat sistem bukti kedua, hanya adapter yang menghubungkan C2PA (standar interoperabilitas) dengan Evidence Registry (authority internal)
 

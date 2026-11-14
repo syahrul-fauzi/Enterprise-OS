@@ -1,58 +1,18 @@
 import Link from "next/link";
-import { EOS_KNOWLEDGE_MODEL, STATUS, type StatusValue, type StatusDimension } from "./_lib/eos-knowledge-model";
+import { getCapabilityRegistry, getCertificationSummary, getEvidenceReconAudit } from "./_lib/registry-client";
+import { EOS_KNOWLEDGE_MODEL, STATUS, type StatusValue } from "./_lib/eos-knowledge-model";
 import { StatusBadge } from "./_components/status-badge";
 import { Section, SectionCard, LabeledRow } from "./_components/section";
 import { PageHeader } from "./_components/navigation";
 
-const QS = EOS_KNOWLEDGE_MODEL.sevenQuestions;
-const ANSWER_FOR = [
-  {
-    q: QS[0]!.q,
-    a: EOS_KNOWLEDGE_MODEL.identity.whatIsEos,
-    jumpTo: "/architecture",
-    jumpLabel: "Lihat Architecture →",
-  },
-  {
-    q: QS[1]!.q,
-    a: EOS_KNOWLEDGE_MODEL.architecture.boundaryRule,
-    jumpTo: "/architecture",
-    jumpLabel: "Lihat Layered Model →",
-  },
-  {
-    q: QS[2]!.q,
-    a: `Yang terbukti berjalan: ${EOS_KNOWLEDGE_MODEL.capabilities.provenWork.map((c) => c.name).join(", ")}. Capability registry memiliki ${EOS_KNOWLEDGE_MODEL.capabilities.certificationSummary.totalCapabilities} item, status PARTIAL (performance evidence belum ada).`,
-    jumpTo: "/capabilities",
-    jumpLabel: "Lihat Capabilities →",
-  },
-  {
-    q: QS[3]!.q,
-    a: `Procedure aktif: ${EOS_KNOWLEDGE_MODEL.procedures.active.map((p) => `${p.name} (${p.status})`).join(", ")}. Ini procedure orkestrasi murni — zero domain logic, semua assess() delegasikan ke Capability.`,
-    jumpTo: "/procedures",
-    jumpLabel: "Lihat Contract Procedure →",
-  },
-  {
-    q: QS[4]!.q,
-    a: `Dua surface aktif: WORK (apps/web, ${STATUS.PROVEN}) untuk eksekusi pekerjaan, dan KNOW (apps/docs, ${STATUS.IMPLEMENTING}) untuk memahami keadaan sistem. Setiap surface memiliki routes yang terdaftar di halaman Surfaces.`,
-    jumpTo: "/surfaces",
-    jumpLabel: "Lihat Routes Surfaces →",
-  },
-  {
-    q: QS[5]!.q,
-    a: `${EOS_KNOWLEDGE_MODEL.evidence.provenRequirements.length} requirements (REQ-001 s/d REQ-008) untuk Academic Community vertical slice = 100% terverifikasi. Functional test: ${EOS_KNOWLEDGE_MODEL.evidence.academicVerification.functionalTests}. Capability reuse ratio = ${EOS_KNOWLEDGE_MODEL.evidence.academicVerification.capabilityReuseRatio}.`,
-    jumpTo: "/evidence",
-    jumpLabel: "Lihat Evidence Registry →",
-  },
-  {
-    q: QS[6]!.q,
-    a: `${EOS_KNOWLEDGE_MODEL.evidence.frontierPending.length} frontier belum terbukti: Execution Identity (shared state Workspace & Chat), Durable Evidence (procedure output auto-register ke registry), Continuation/Resume (restart procedure dari WAIT_FOR_AI_OR_HUMAN). Gate dependency di halaman Gates.`,
-    jumpTo: "/gates",
-    jumpLabel: "Lihat Gates Dependency →",
-  },
-] as const;
-
 export default function OverviewPage() {
+  const registry = getCapabilityRegistry();
+  const summary = getCertificationSummary(registry);
+  const reconAudit = getEvidenceReconAudit();
   const id = EOS_KNOWLEDGE_MODEL.identity;
   const st = EOS_KNOWLEDGE_MODEL.state;
+  const capabilities = registry.capabilities;
+  const provenCapabilities = capabilities.filter(c => c.status === 'PROVEN' || c.stability === 'stable').map(c => c.name);
 
   return (
     <div>
@@ -62,7 +22,6 @@ export default function OverviewPage() {
         subtitle={id.mission}
       />
 
-      {/* K1 — KNOW → WORK BRIDGE — FIRST THING AFTER HERO */}
       <Section
         eyebrow="Transition · Understand → Do"
         title="UNDERSTAND EOS → WORK WITH EOS"
@@ -117,7 +76,6 @@ export default function OverviewPage() {
         </div>
       </Section>
 
-      {/* K5 — TERMINOLOGY CLARITY — 6 Istilah Utama */}
       <Section eyebrow="Glossary" title="6 Istilah EOS — bahasa yang sama tanpa jargon internal">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
           {id.terminology.map((t: Record<string,string>) => (
@@ -129,7 +87,6 @@ export default function OverviewPage() {
         </div>
       </Section>
 
-      {/* IDENTITY RINGKAS */}
       <Section eyebrow="Identity" title="Siapa EOS ini, dalam 5 baris">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           <LabeledRow label="Nama" value={id.name} />
@@ -153,7 +110,6 @@ export default function OverviewPage() {
         </div>
       </Section>
 
-      {/* 7 CORE QUESTIONS — THE HEART OF KNOW */}
       <Section
         eyebrow="Pertanyaan Inti · The 7"
         title="Tanpa membaca source code, manusia bisa menjawab ini semua"
@@ -163,32 +119,92 @@ export default function OverviewPage() {
           Apabila satu pertanyaan tidak terjawab oleh surface ini, maka KNOW gagal.
         </p>
         <div className="grid md:grid-cols-2 gap-4">
-          {ANSWER_FOR.map((x, i) => {
-            const isLast = i === ANSWER_FOR.length - 1;
-            return (
-              <SectionCard
-                key={x.q}
-                className={`${isLast ? "md:col-span-2" : ""}`}
-              >
-                <p className="text-amber-300 font-semibold mb-2 text-sm sm:text-base">
-                  {x.q}
-                </p>
-                <p className="text-sm text-neutral-300 mb-3 leading-relaxed">
-                  {x.a}
-                </p>
-                <Link
-                  href={x.jumpTo}
-                  className="text-xs font-mono text-sky-400 hover:text-sky-300"
-                >
-                  {x.jumpLabel}
-                </Link>
-              </SectionCard>
-            );
-          })}
+          <SectionCard>
+            <p className="text-amber-300 font-semibold mb-2 text-sm sm:text-base">
+              Apa itu EOS?
+            </p>
+            <p className="text-sm text-neutral-300 mb-3 leading-relaxed">
+              {EOS_KNOWLEDGE_MODEL.identity.whatIsEos}
+            </p>
+            <Link href="/architecture" className="text-xs font-mono text-sky-400 hover:text-sky-300">
+              Lihat Architecture →
+            </Link>
+          </SectionCard>
+
+          <SectionCard>
+            <p className="text-amber-300 font-semibold mb-2 text-sm sm:text-base">
+              Apa aturan boundary arsitektur?
+            </p>
+            <p className="text-sm text-neutral-300 mb-3 leading-relaxed">
+              {EOS_KNOWLEDGE_MODEL.architecture.boundaryRule}
+            </p>
+            <Link href="/architecture" className="text-xs font-mono text-sky-400 hover:text-sky-300">
+              Lihat Layered Model →
+            </Link>
+          </SectionCard>
+
+          <SectionCard>
+            <p className="text-amber-300 font-semibold mb-2 text-sm sm:text-base">
+              Apa yang sudah terbukti berjalan?
+            </p>
+            <p className="text-sm text-neutral-300 mb-3 leading-relaxed">
+              Yang terbukti berjalan: {provenCapabilities.join(", ")}. Capability registry memiliki {summary.totalCapabilities} item, {summary.stableCapabilities} stable, {summary.experimentalCapabilities} experimental. Reuse percentage: {reconAudit.reuse_percentage}%.
+            </p>
+            <Link href="/capabilities" className="text-xs font-mono text-sky-400 hover:text-sky-300">
+              Lihat Capabilities →
+            </Link>
+          </SectionCard>
+
+          <SectionCard>
+            <p className="text-amber-300 font-semibold mb-2 text-sm sm:text-base">
+              Apa procedure yang aktif saat ini?
+            </p>
+            <p className="text-sm text-neutral-300 mb-3 leading-relaxed">
+              Procedure aktif: {EOS_KNOWLEDGE_MODEL.procedures.active.map((p) => `${p.name} (${p.status})`).join(", ")}. Ini procedure orkestrasi murni — zero domain logic, semua assess() delegasikan ke Capability.
+            </p>
+            <Link href="/procedures" className="text-xs font-mono text-sky-400 hover:text-sky-300">
+              Lihat Contract Procedure →
+            </Link>
+          </SectionCard>
+
+          <SectionCard>
+            <p className="text-amber-300 font-semibold mb-2 text-sm sm:text-base">
+              Surface apa yang tersedia?
+            </p>
+            <p className="text-sm text-neutral-300 mb-3 leading-relaxed">
+              Dua surface aktif: WORK (apps/web, {STATUS.PROVEN}) untuk eksekusi pekerjaan, dan KNOW (apps/docs, {STATUS.IMPLEMENTING}) untuk memahami keadaan sistem. Setiap surface memiliki routes yang terdaftar di halaman Surfaces.
+            </p>
+            <Link href="/surfaces" className="text-xs font-mono text-sky-400 hover:text-sky-300">
+              Lihat Routes Surfaces →
+            </Link>
+          </SectionCard>
+
+          <SectionCard>
+            <p className="text-amber-300 font-semibold mb-2 text-sm sm:text-base">
+              Apa status evidence saat ini?
+            </p>
+            <p className="text-sm text-neutral-300 mb-3 leading-relaxed">
+              Boundary compliance: {reconAudit.reuse_percentage}% terverifikasi. Semua core primitives reused dari golden spine dan existing capabilities.
+            </p>
+            <Link href="/evidence" className="text-xs font-mono text-sky-400 hover:text-sky-300">
+              Lihat Evidence Registry →
+            </Link>
+          </SectionCard>
+
+          <SectionCard className="md:col-span-2">
+            <p className="text-amber-300 font-semibold mb-2 text-sm sm:text-base">
+              Frontier apa yang belum terbukti?
+            </p>
+            <p className="text-sm text-neutral-300 mb-3 leading-relaxed">
+              Frontier belum terbukti: Execution Identity (shared state Workspace & Chat), Durable Evidence (procedure output auto-register ke registry), Continuation/Resume (restart procedure dari WAIT_FOR_AI_OR_HUMAN). Gate dependency di halaman Gates.
+            </p>
+            <Link href="/gates" className="text-xs font-mono text-sky-400 hover:text-sky-300">
+              Lihat Gates Dependency →
+            </Link>
+          </SectionCard>
         </div>
       </Section>
 
-      {/* QUICK STATUS CARDS */}
       <Section eyebrow="Snapshot" title="Sekarang, di detik ini">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <SectionCard className="border-emerald-900/50">
@@ -199,124 +215,39 @@ export default function OverviewPage() {
             <p className="text-[11px] text-neutral-500 mt-1">
               Internal: <span className="font-mono">{st.currentMode}</span>
             </p>
-            <p className="text-xs text-neutral-500 mt-1">scope: {st.scope}</p>
           </SectionCard>
+
           <SectionCard className="border-sky-900/50">
             <p className="text-xs font-mono text-neutral-500 mb-1">
-              Requirements Proven
+              Capabilities Total
             </p>
-            <p className="text-2xl font-bold text-sky-300">
-              {EOS_KNOWLEDGE_MODEL.evidence.provenRequirements.length}
+            <p className="text-sky-300 font-bold text-xl">{summary.totalCapabilities}</p>
+            <p className="text-[11px] text-neutral-500 mt-1">
+              {summary.stableCapabilities} stable · {summary.experimentalCapabilities} experimental
             </p>
-            <p className="text-xs text-neutral-500 mt-1">Academic Community</p>
           </SectionCard>
+
           <SectionCard className="border-amber-900/50">
             <p className="text-xs font-mono text-neutral-500 mb-1">
-              Registry Capabilities
+              Reuse Percentage
             </p>
-            <p className="text-2xl font-bold text-amber-300">
-              {EOS_KNOWLEDGE_MODEL.capabilities.certificationSummary.totalCapabilities}
-            </p>
-            <p className="text-xs text-neutral-500 mt-1">
-              100% PARTIAL — 0 FULLY CERTIFIED
+            <p className="text-amber-300 font-bold text-xl">{reconAudit.reuse_percentage}%</p>
+            <p className="text-[11px] text-neutral-500 mt-1">
+              Boundary compliance verified
             </p>
           </SectionCard>
-          <SectionCard className="border-red-900/50">
+
+          <SectionCard className="border-emerald-900/50">
             <p className="text-xs font-mono text-neutral-500 mb-1">
-              Frontier Not Proven
+              Active Gate
             </p>
-            <p className="text-2xl font-bold text-red-300">
-              {EOS_KNOWLEDGE_MODEL.evidence.frontierPending.length}
-            </p>
-            <p className="text-xs text-neutral-500 mt-1">
-              {EOS_KNOWLEDGE_MODEL.gates.gates.filter((g) => g.status === STATUS.LOCKED).length} gates terkunci
+            <StatusBadge status={st.activeGate as StatusValue} />
+            <p className="text-[11px] text-neutral-500 mt-1">
+              Next: {st.nextGate}
             </p>
           </SectionCard>
         </div>
       </Section>
-
-      {/* 8 ROUTES MAP — DASHBOARD KE ROUTE LAIN */}
-      <Section eyebrow="Know Routes" title="8 pintu masuk surface ini">
-        <p className="text-xs text-neutral-500 mb-4 italic">
-          Status badge: IMPLEMENTED = route ada dan return HTTP 200. PROVEN = seluruh KNOW sudah lulus human validation gate.
-        </p>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <LinkRouteCard href="/" label="Overview" status={STATUS.IMPLEMENTED} desc="7 pertanyaan inti, identity, snapshot" />
-          <LinkRouteCard href="/architecture" label="Architecture" status={STATUS.IMPLEMENTED} desc="WORK/KNOW boundary, layered model, principles" />
-          <LinkRouteCard href="/capabilities" label="Capabilities" status={STATUS.IMPLEMENTED} desc="16 registry item, proven work, locked areas" />
-          <LinkRouteCard href="/procedures" label="Procedures" status={STATUS.IMPLEMENTED} desc="prepare_release contract + delegation steps" />
-          <LinkRouteCard href="/surfaces" label="Surfaces" status={STATUS.IMPLEMENTED} desc="WORK routes + KNOW routes dengan actual paths" />
-          <LinkRouteCard href="/state" label="State" status={STATUS.IMPLEMENTED} desc="Procedure lifecycle machine + terminal states" />
-          <LinkRouteCard href="/evidence" label="Evidence" status={STATUS.IMPLEMENTED} desc="REQ-001..008 proven + frontier pending" />
-          <LinkRouteCard href="/gates" label="Gates" status={STATUS.IMPLEMENTED} desc="Dependency order — tidak bisa diskip" />
-        </div>
-      </Section>
-
-      {/* K3 — STATUS VOCABULARY CLARITY — 4 DIMENSIONS, NOT 9 FLAT BADGES */}
-      <Section eyebrow="Status Semantics" title="4 Dimensi Status — Pisahkan Epistemic State. Badge = claim tentang dimensi mana">
-        <p className="text-xs text-neutral-500 mb-5 italic">
-          ⚠️ PROVEN ≠ STABLE ≠ IMPLEMENTED ≠ UNVERIFIED. Mereka beda dimensi. Satu Capability bisa STABLE (maturity) + PARTIAL (validation) + UNVERIFIED (performance proof) SECARA BERSAMAAN.
-        </p>
-        <div className="space-y-5">
-          {(["Implementation", "Validation", "Maturity", "Proof"] as const).map((dim: StatusDimension) => {
-            const meta = EOS_KNOWLEDGE_MODEL.statusDimensionLabels[dim];
-            const items = EOS_KNOWLEDGE_MODEL.statusVocabulary.filter((s) => s.dimension === dim);
-            return (
-              <div key={dim} className="space-y-2">
-                <div className="pb-2 border-b border-neutral-800">
-                  <p className="text-xs font-mono uppercase tracking-wider text-sky-400 mb-1">
-                    {meta.label}
-                  </p>
-                  <p className="text-sm text-neutral-400">{meta.explanation}</p>
-                </div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {items.map((s) => (
-                    <SectionCard key={String(s.term)} className="border-neutral-800">
-                      <div className="mb-2"><StatusBadge status={s.term as StatusValue} /></div>
-                      <p className="text-sm font-medium text-neutral-200 mb-1">{s.meaning}</p>
-                      <p className="text-xs text-neutral-500">Contoh penggunaan: {s.typicalUse}</p>
-                    </SectionCard>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </Section>
-
-      <footer className="mt-16 pt-6 border-t border-neutral-800 text-center">
-        <p className="text-xs text-neutral-500">
-          EOS_KNOWLEDGE_MODEL is Object.freeze() · canonical state cannot be
-          mutated at runtime · evidence sources = registry files, not claims
-        </p>
-      </footer>
     </div>
-  );
-}
-
-function LinkRouteCard({
-  href,
-  label,
-  status,
-  desc,
-}: {
-  href: string;
-  label: string;
-  status: StatusValue;
-  desc: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="block p-4 rounded-lg border border-neutral-800 bg-neutral-900/40 hover:border-neutral-700 hover:bg-neutral-800/40 transition-colors group"
-    >
-      <div className="flex items-center justify-between mb-2">
-        <span className="font-semibold text-white group-hover:text-sky-300">
-          /{label.toLowerCase()}
-        </span>
-        <StatusBadge status={status} />
-      </div>
-      <p className="text-xs text-neutral-400">{desc}</p>
-    </Link>
   );
 }

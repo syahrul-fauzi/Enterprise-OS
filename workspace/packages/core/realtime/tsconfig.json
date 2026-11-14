@@ -1,1 +1,17 @@
-{"extends": "../../../config/typescript/base.json", "compilerOptions": {"outDir": "dist", "strictNullChecks": false, "declaration": true, "composite": true, "incremental": true, "skipLibCheck": true, "noEmit": false, "rootDir": "src", "module": "ESNext", "moduleResolution": "node", "ignoreDeprecations": "5.0"}, "references": [{"path": "../runtime/tsconfig.json"},{"path": "../kernel/tsconfig.json"},{"path": "../../../capabilities/work-core/tsconfig.json"},{"path": "../../presentation/features/tsconfig.json"}], "include": ["src/**/*.ts"], "exclude": ["node_modules", "**/*.d.ts", "dist"]}
+{
+  "extends": "../../../config/typescript/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "strictNullChecks": false,
+    "declaration": true,
+    "incremental": true,
+    "skipLibCheck": true,
+    "noEmit": false,
+    "rootDir": "src",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "ignoreDeprecations": "6.0"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "**/*.d.ts", "dist"]
+}

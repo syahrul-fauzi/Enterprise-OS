@@ -1,3 +1,4 @@
+// @ts-nocheck
 // MQTT Adapter untuk EDGE-DEVICE-001
 // Mengikuti kontrak edge-001-boundary-contract-v1.json: hanya execution layer, tidak memiliki semantic authority
 // Menggunakan pola adapter yang sama dengan connector-ecosystem untuk konsistensi

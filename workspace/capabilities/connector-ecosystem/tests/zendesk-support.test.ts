@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Test script to verify Zendesk Support Adapter runtime functionality - R6 Universal Adapter Contract
 import { connectorEcosystemService, handleZendeskWebhookUpdate, syncEOSToZendesk } from "../implementation/services/connector-ecosystem.service.js";
 

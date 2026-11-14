@@ -1,9 +1,9 @@
 // Readiness probe API endpoint - PR-01 EOS Online & Ready requirement
 // Minimal legacy repair: isolated non-core module errors, only critical database checks
 import { NextResponse } from "next/server";
-import { DatabaseHealthChecker } from "@capabilities/shared/implementation/database/health.check";
-import { getCommunicationRepositoryPostgres } from "@capabilities/communication/implementation/repository/communication.postgres.repository";
-import { getCaseRepositoryPostgres } from "@capabilities/legal-case/implementation/repository/case-postgres.repository";
+import { DatabaseHealthChecker } from "@repo/capabilities-shared/database/health.check";
+import { getCommunicationRepositoryPostgres } from "@repo/capabilities-communication/repository/communication.postgres.repository";
+import { getCaseRepositoryPostgres } from "@repo/capabilities-legal-case/repository/case-postgres.repository";
 
 export async function GET(request: Request) {
   // PR-01 requirement: correlation ID tracking for audit and observability

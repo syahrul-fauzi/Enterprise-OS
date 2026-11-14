@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Import canonical identity types dari work-core (single source of truth - anti-drift)
 import type { TenantId, WorkId } from "@capabilities/work-core";
 

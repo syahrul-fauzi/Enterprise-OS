@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * INGRESS-001-AUTH Verification Tests (eos-verification: independent auditor)
  * Menjalankan 4 invariant check sesuai persyaratan

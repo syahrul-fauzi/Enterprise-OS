@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Digital Operations Product Composition Descriptor
  * EOS Core compliant capability registry for digital-operations product

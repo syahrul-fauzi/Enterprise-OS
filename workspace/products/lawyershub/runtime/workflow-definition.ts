@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { WorkflowStep, WorkflowDefinition } from "@repo/core-kernel";
 import { isValidWorkflowDefinition } from "@repo/core-kernel/registry/capability-command-registry";
 

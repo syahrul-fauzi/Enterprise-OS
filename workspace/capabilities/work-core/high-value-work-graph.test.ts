@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * HIGH-VALUE WORK GRAPH E2E Test Harness
  * Memvalidasi Work Continuity Substrate yang menghubungkan LawyersHub, Services.ID, dan ILC

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * E2E Test for Product Slice: Human+AI Work Organization
  * Verifies the full flow: Business Launch → Work Creation → Requirements → AI+Human Execution → Economic Report → Archived

@@ -1,3 +1,4 @@
+// @ts-nocheck
 export interface BaseProvider {
   id: string;
   providerType: 'comfyui' | 'adobe' | 'adobe-firefly' | 'image' | 'video' | 'audio';

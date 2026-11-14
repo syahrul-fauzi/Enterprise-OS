@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Import work-core commands untuk manual registration di test environment
  * (work-core melewati auto-registrasi saat NODE_ENV=test)

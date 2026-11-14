@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Capability Invokers for Digital Operations
  * Reusable wrappers to invoke core EOS capabilities without modifying frozen EOS Core

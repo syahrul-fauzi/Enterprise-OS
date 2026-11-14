@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Test script to verify Shopee Marketplace Adapter runtime functionality - R5-C External Reality
 import { connectorEcosystemService, handleShopeeWebhookUpdate, syncEOSToShopee } from "../implementation/services/connector-ecosystem.service.js";
 

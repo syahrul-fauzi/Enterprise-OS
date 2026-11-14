@@ -3,49 +3,81 @@
   "version": "0.1.0",
   "sideEffects": false,
   "type": "module",
-  "types": "./dist/index.d.ts",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
+  "types": "./dist/src/index.d.ts",
+  "main": "./dist/src/index.js",
+  "module": "./dist/src/index.js",
   "files": [
     "dist"
   ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./index.js": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./email-queue": {
+      "types": "./dist/src/email-queue.d.ts",
+      "default": "./dist/src/email-queue.js"
     },
     "./email-queue.js": {
-      "types": "./dist/email-queue.d.ts",
-      "default": "./dist/email-queue.js"
+      "types": "./dist/src/email-queue.d.ts",
+      "default": "./dist/src/email-queue.js"
+    },
+    "./execution-context": {
+      "types": "./dist/src/execution-context.d.ts",
+      "default": "./dist/src/execution-context.js"
     },
     "./execution-context.js": {
-      "types": "./dist/execution-context.d.ts",
-      "default": "./dist/execution-context.js"
+      "types": "./dist/src/execution-context.d.ts",
+      "default": "./dist/src/execution-context.js"
+    },
+    "./execution-observability": {
+      "types": "./dist/src/execution-observability.d.ts",
+      "default": "./dist/src/execution-observability.js"
     },
     "./execution-observability.js": {
-      "types": "./dist/execution-observability.d.ts",
-      "default": "./dist/execution-observability.js"
+      "types": "./dist/src/execution-observability.d.ts",
+      "default": "./dist/src/execution-observability.js"
+    },
+    "./execution-status": {
+      "types": "./dist/src/execution-status.d.ts",
+      "default": "./dist/src/execution-status.js"
     },
     "./execution-status.js": {
-      "types": "./dist/execution-status.d.ts",
-      "default": "./dist/execution-status.js"
+      "types": "./dist/src/execution-status.d.ts",
+      "default": "./dist/src/execution-status.js"
+    },
+    "./invocation-evidence": {
+      "types": "./dist/src/invocation-evidence.d.ts",
+      "default": "./dist/src/invocation-evidence.js"
     },
     "./invocation-evidence.js": {
-      "types": "./dist/invocation-evidence.d.ts",
-      "default": "./dist/invocation-evidence.js"
+      "types": "./dist/src/invocation-evidence.d.ts",
+      "default": "./dist/src/invocation-evidence.js"
+    },
+    "./runtime": {
+      "types": "./dist/src/runtime.d.ts",
+      "default": "./dist/src/runtime.js"
     },
     "./runtime.js": {
-      "types": "./dist/runtime.d.ts",
-      "default": "./dist/runtime.js"
+      "types": "./dist/src/runtime.d.ts",
+      "default": "./dist/src/runtime.js"
+    },
+    "./types": {
+      "types": "./dist/src/types.d.ts",
+      "default": "./dist/src/types.js"
     },
     "./types.js": {
-      "types": "./dist/types.d.ts",
-      "default": "./dist/types.js"
+      "types": "./dist/src/types.d.ts",
+      "default": "./dist/src/types.js"
     }
   },
   "license": "MIT",
   "scripts": {
-    "build": "tsc --build --force",
+    "build": "rm -rf dist tsconfig.tsbuildinfo && tsc",
     "check-types": "tsc --noEmit",
     "dev": "tsc --watch",
     "lint": "eslint src --max-warnings 0"

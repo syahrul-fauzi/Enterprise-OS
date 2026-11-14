@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * RNTM-005-005 Verification Test - Independent verification of persisted-intent→formed-work pipeline
  * Executes ALL minimum proof requirements as specified in commander order

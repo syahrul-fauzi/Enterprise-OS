@@ -1,12 +1,9 @@
 {
-  "extends": "@repo/config-typescript/base.json",
   "compilerOptions": {
-    "outDir": "dist",
     "rootDir": "src",
-    "composite": true,
+    "outDir": "dist/src",
     "declaration": true,
     "declarationMap": true,
-    "incremental": true,
     "strictNullChecks": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -15,10 +12,6 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "moduleDetection": "force",
-    "paths": {
-      "@repo/*": ["../../packages/*"],
-      "@capabilities/*": ["../../capabilities/*"]
-    },
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "strict": true,
@@ -28,8 +21,5 @@
     "noEmit": false
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "build"],
-  "references": [
-    { "path": "../runtime/tsconfig.json" }
-  ]
+  "exclude": ["node_modules", "dist", "build"]
 }

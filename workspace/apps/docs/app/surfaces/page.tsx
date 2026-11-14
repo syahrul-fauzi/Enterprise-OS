@@ -1,10 +1,11 @@
-import { EOS_KNOWLEDGE_MODEL } from "../_lib/eos-knowledge-model";
+import { getSurfacesData } from "../_lib/registry-client";
 import { StatusBadge } from "../_components/status-badge";
 import { Section, SectionCard } from "../_components/section";
 import { PageHeader } from "../_components/navigation";
+import { DataSourceBadge } from "../_components/data-source-badge";
 
 export default function SurfacesPage() {
-  const sf = EOS_KNOWLEDGE_MODEL.surfaces;
+  const { data: sf, dataSource } = getSurfacesData();
 
   return (
     <div>
@@ -13,6 +14,8 @@ export default function SurfacesPage() {
         title="Experience Surfaces — WORK (Eksekusi) + KNOW (Deskripsi Diri)"
         subtitle="Dua sisi yang memanggil procedure SAMA. Surface = pure presentation renderer. Zero business logic."
       />
+
+      <DataSourceBadge dataSource={dataSource} />
 
       <Section eyebrow="Future Contract" title="Shared Execution Identity Plan (FUTURE GATE)">
         <SectionCard className="border-amber-900/50 bg-amber-950/10">

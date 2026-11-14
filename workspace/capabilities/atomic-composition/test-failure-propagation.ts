@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * AUDIT-001-006 G4: Dependency Failure Propagation Test
  * Verifies that chain failures cause process.exit(1) (fail-fast behavior)

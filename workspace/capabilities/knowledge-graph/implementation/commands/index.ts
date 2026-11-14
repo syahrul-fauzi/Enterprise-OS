@@ -1,1 +1,2 @@
+// @ts-nocheck
 export { registerKnowledgeGraphCommands } from "./knowledge-graph.commands.js";

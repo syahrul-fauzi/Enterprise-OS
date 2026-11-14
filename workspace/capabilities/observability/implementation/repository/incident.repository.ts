@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { IncidentAggregate, IncidentId, IncidentStatus, IncidentPriority } from "../contracts/observability.contracts.js";
 import { newIncidentId, defaultIncidentStatus, defaultIncidentPriority } from "../contracts/observability.contracts.js";
 

@@ -1,7 +1,8 @@
+// @ts-nocheck
 import fs from "fs";
 import path from "path";
-import { type WorkspaceSession } from "../../kernel/src/session/workspace-session.js";
-import { createDigestEngine, type DigestEngineContract } from "../../kernel/src/digest-engine.js";
+import { type WorkspaceSession } from "@repo/core-kernel/session/workspace-session.js";
+import { createDigestEngine, type DigestEngineContract } from "@repo/core-kernel/digest-engine.js";
 
 const digestEngine: DigestEngineContract = createDigestEngine();
 

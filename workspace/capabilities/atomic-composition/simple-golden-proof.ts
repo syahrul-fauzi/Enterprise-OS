@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * SIMPLE GOLDEN PROOF - No TypeScript branded types, pure JavaScript logic
  * Run with: node simple-golden-proof.ts

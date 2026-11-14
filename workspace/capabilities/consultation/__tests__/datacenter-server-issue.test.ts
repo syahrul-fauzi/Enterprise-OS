@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Test lengkap untuk CONSULT-L006 Technical Operations Vertical: Membuktikan cross-domain reuse
 import assert from "node:assert/strict";
 import test from "node:test";

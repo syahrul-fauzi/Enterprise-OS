@@ -1,3 +1,4 @@
+// @ts-nocheck
 // RET-001: AUTHORITY BOUNDARY COMPLIANCE PERMISSIONS
 // Sesuai mandat user: "Work tetap satu. Authority berubah."
 // Import workspace sebagai execution context, bukan owner

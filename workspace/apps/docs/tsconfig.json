@@ -2,6 +2,7 @@
   "extends": "@repo/config-typescript/nextjs.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@repo/presentation-ui-system": [
         "../../packages/presentation/ui-system/src/index.ts"

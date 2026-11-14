@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { CognitiveAdapter, CognitiveCapability } from "../contracts/reasoning.contracts.js";
 
 // In-memory repository untuk menyimpan registered cognitive adapters

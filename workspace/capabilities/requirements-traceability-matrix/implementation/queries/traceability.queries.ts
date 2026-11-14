@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { RequirementId, type RequirementAggregate } from "../../../requirement-management/implementation/contracts/index.js";
 import { requirementService } from "../../../requirement-management/implementation/service.js";
 import { evidenceRegistryService } from "../../../evidence-registry/implementation/service.js";

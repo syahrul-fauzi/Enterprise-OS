@@ -41,7 +41,7 @@ G8_ACCEPTANCE_CRITERIA = [
 
 def load_skill_manifest(skill_name: str) -> Dict[str, Any] | None:
     """Muat manifest skill dan validasi JSON"""
-    manifest_path = Path(f"/root/Enterprise-OS/.trae/skills/{skill_name}/manifest.json")
+    manifest_path = Path(f"/root/Enterprise-OS/skills/{skill_name}/manifest.json")
     if not manifest_path.exists():
         print(f"[REGRESSION_SECURITY] ❌ Manifest tidak ditemukan: {skill_name}")
         return None
@@ -124,7 +124,7 @@ def run_security_scan() -> Dict[str, Any]:
     # 1. Scan untuk hardcoded secrets (AWS, API keys, tokens, dll.)
     try:
         secret_scan = subprocess.run(
-            ["grep", "-r", "AKIAX|secret_key|api_key|token.*=.*[a-zA-Z0-9]{32}", "--include=\"*.py\"", "--include=\"*.js\"", "--include=\"*.ts\"", "/root/Enterprise-OS/.trae/skills/"],
+            ["grep", "-r", "AKIAX|secret_key|api_key|token.*=.*[a-zA-Z0-9]{32}", "--include=\"*.py\"", "--include=\"*.js\"", "--include=\"*.ts\"", "/root/Enterprise-OS/skills/"],
             capture_output=True,
             text=True,
             timeout=60

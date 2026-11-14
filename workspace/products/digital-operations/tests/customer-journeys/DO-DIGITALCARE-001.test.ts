@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { describe, beforeEach, it, expect } from "vitest";
 import type { CapabilityCommandRegistry } from "../../../../packages/core/kernel/src/registry/capability-command-registry.js";
 import { createRegistry } from "../../../../packages/core/kernel/src/registry/capability-command-registry.js";

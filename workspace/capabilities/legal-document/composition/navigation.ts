@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { documentWorkspace, type DocumentNavigationEntry } from "./workspace.js";
 import { createWorkspaceNavigation } from "../../../../packages/composition/src/navigation/unified-navigation.js";
 

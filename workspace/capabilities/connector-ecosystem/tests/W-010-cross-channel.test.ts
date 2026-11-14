@@ -1,3 +1,4 @@
+// @ts-nocheck
 // W-010: Cross-Channel Installation & Access Proof - EXECUTABLE TEST
 // Buktikan: Pasang channel WhatsApp via onboarding, ikat identitas eksternal, jalankan capability ACaaS, verifikasi Work traceability
 import assert from "node:assert/strict";

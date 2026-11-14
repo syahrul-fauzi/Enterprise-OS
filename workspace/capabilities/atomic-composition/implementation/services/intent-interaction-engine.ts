@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * IntentInteractionEngine - B2: Understanding Engine Implementation
  * Replaces legacy resolveSemanticIntent with modern pipeline:

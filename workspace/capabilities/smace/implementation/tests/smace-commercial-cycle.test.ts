@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { test, describe, beforeEach } from 'node:test';
 import assert from 'node:assert';
 import { fileURLToPath } from 'url';

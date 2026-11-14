@@ -1,15 +1,14 @@
 {
-  "extends": "../../../tsconfig.json",
+  "extends": "../../config/typescript/base.json",
   "compilerOptions": {
-    "rootDir": "./",
     "outDir": "./dist",
+    "rootDir": "./",
     "strictNullChecks": true,
     "declaration": true,
     "declarationMap": true,
-    "incremental": true,
+    "ignoreDeprecations": "5.0",
     "types": ["node"],
     "skipLibCheck": true,
-    "composite": true,
     "noEmit": false,
     "esModuleInterop": true,
     "isolatedModules": true,
@@ -24,13 +23,6 @@
     "strict": true,
     "target": "ES2022"
   },
-  "references": [
-    { "path": "../../packages/core/kernel/tsconfig.json" },
-    { "path": "../../packages/core/runtime/tsconfig.json" },
-    { "path": "../identity/tsconfig.json" },
-    { "path": "../shared/tsconfig.json" },
-    { "path": "../work-core/tsconfig.json" }
-  ],
-  "include": ["implementation/**/*.ts"],
+  "include": ["implementation/**/*.ts", "contracts/**/*.ts"],
   "exclude": ["dist", "node_modules", "**/*.d.ts"]
 }

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Grounding Converter - Core EOS mechanism that converts raw communication into grounded Work events
  * Implements the user's thesis: "Communication + Grounding = Work Continuity"

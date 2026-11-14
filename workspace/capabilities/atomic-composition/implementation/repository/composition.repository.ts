@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { readFile, writeFile, mkdir, readdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import type { Team, WorkBinding } from '../contracts/atomic-composition.contracts';

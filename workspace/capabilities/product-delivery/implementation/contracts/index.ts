@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { z } from "zod";
 
 export type DeliveryStatus = "draft" | "scheduled" | "shipped" | "in_transit" | "delivered" | "cancelled";

@@ -6,32 +6,42 @@
   "files": [
     "dist"
   ],
-  "types": "./dist/index.d.ts",
+  "types": "./dist/src/index.d.ts",
+  "main": "./dist/src/index.js",
+  "module": "./dist/src/index.js",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
     },
     "./digest-engine": {
-      "types": "./dist/digest-engine.d.ts",
-      "default": "./dist/digest-engine.js"
+      "types": "./dist/src/digest-engine.d.ts",
+      "default": "./dist/src/digest-engine.js"
     },
     "./digest-engine.js": {
-      "types": "./dist/digest-engine.d.ts",
-      "default": "./dist/digest-engine.js"
+      "types": "./dist/src/digest-engine.d.ts",
+      "default": "./dist/src/digest-engine.js"
     },
     "./session/workspace-session": {
-      "types": "./dist/session/workspace-session.d.ts",
-      "default": "./dist/session/workspace-session.js"
+      "types": "./dist/src/session/workspace-session.d.ts",
+      "default": "./dist/src/session/workspace-session.js"
+    },
+    "./session/workspace-session.js": {
+      "types": "./dist/src/session/workspace-session.d.ts",
+      "default": "./dist/src/session/workspace-session.js"
     },
     "./registry/capability-command-registry": {
-      "types": "./dist/registry/capability-command-registry.d.ts",
-      "default": "./dist/registry/capability-command-registry.js"
+      "types": "./dist/src/registry/capability-command-registry.d.ts",
+      "default": "./dist/src/registry/capability-command-registry.js"
+    },
+    "./registry/capability-command-registry.js": {
+      "types": "./dist/src/registry/capability-command-registry.d.ts",
+      "default": "./dist/src/registry/capability-command-registry.js"
     }
   },
   "license": "MIT",
   "scripts": {
-    "build": "tsc --build --force",
+    "build": "rm -rf dist tsconfig.tsbuildinfo && tsc",
     "check-types": "tsc --noEmit",
     "dev": "tsc --watch",
     "lint": "eslint src --max-warnings 0"

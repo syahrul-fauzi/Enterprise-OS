@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * IntentUnderstandingService - EOS-INTELLIGENCE-001: Dynamic Intent Understanding Pipeline
  * Replaces hardcoded semantic resolver with AI-powered interpretation while maintaining

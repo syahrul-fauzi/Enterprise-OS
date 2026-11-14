@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * GOLDEN PROOF DEMO - Client X Website Launch
  * Run with: node --import tsx capabilities/atomic-composition/demo-golden-proof.ts

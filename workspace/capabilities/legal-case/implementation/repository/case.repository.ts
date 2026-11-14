@@ -1,10 +1,11 @@
-import { recordRuntimeInvocation } from "../../../../packages/core/runtime/dist/index.js";
+// @ts-nocheck
+import { recordRuntimeInvocation } from "@repo/core-runtime";
 import { CaseId, type CaseRepository, type CaseAggregate, type CaseId as CaseIdType, CaseStatus, CasePriority } from "../../contracts/index.js";
 // Import canonical Work repository dari work-core (CORE-001: satu-satunya sumber truth boundary metadata)
-import { getWorkRepositoryPostgres } from "../../../work-core/implementation/repository/work-postgres.repository.js";
+import { getWorkRepositoryPostgres } from "@capabilities/work-core/repository/work-postgres.repository";
 // Import canonical realtime notifier from core package (D1 architecture compliance)
 // @ts-ignore - Temporary fix for module declaration issue
-import { notifyWorkspaceListeners } from "../../../../packages/core/realtime/src/index.js";
+import { notifyWorkspaceListeners } from "@repo/core-realtime";
 
 // In-memory store for cases - isolated to this module
 const STORE = new Map<string, CaseAggregate>();

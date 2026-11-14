@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Test script to verify ECO-004 ComfyUI Runtime Adapter functionality - sesuai pola Shopee/SGS
 process.env.NODE_ENV = 'test';
 (globalThis as any)._forceMockPool = true;

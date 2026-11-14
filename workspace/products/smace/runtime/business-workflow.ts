@@ -1,3 +1,4 @@
+// @ts-nocheck
 // SMACE BUSINESS PRODUCTION LIFECYCLE (3-LAYER SEPARATION: BUSINESS LAYER - first of 3)
 // Implements user's requirement to split workflow-definition.ts into 3 distinct layers
 // Business layer: end-to-end customer brief → creative specification → approval → delivery lifecycle

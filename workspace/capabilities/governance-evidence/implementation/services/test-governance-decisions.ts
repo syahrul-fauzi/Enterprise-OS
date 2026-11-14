@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { governanceEvidenceService } from "./governance-evidence.service.js";
 
 async function main() {

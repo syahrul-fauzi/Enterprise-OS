@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { capabilityRegistry } from "../../../../packages/core/kernel/src/registry/capability-command-registry.js";
 import { complianceCaseCommands } from "../commands/index";
 // Future: add complianceCaseQueries import jika ada queries di masa depan

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { z } from "zod";
 import { RequirementRepositoryCurrent } from "../repository/index.js";

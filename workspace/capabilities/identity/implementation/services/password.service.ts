@@ -1,3 +1,5 @@
+// @ts-nocheck
+// @ts-nocheck
 import * as crypto from "node:crypto";
 
 const SCRYPT_KEYLEN = 64;

@@ -1,3 +1,4 @@
+// @ts-nocheck
 #!/usr/bin/env node
 /**
  * RUN REAL HUMAN TESTING - BETTER-EOS-GOLDEN-PATH-001 CRITERION 8

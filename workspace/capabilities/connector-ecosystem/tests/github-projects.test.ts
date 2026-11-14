@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Test script to verify GitHub Projects Adapter runtime functionality - R5-C External Reality
 import { connectorEcosystemService, handleGitHubWebhookUpdate, syncEOSToGitHub } from "../implementation/services/connector-ecosystem.service.js";
 

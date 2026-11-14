@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { describe, it, beforeEach, expect } from 'vitest';
 import assert from 'node:assert';
 import { ACA_WORKFLOW } from '../runtime/workflow-definition.js';

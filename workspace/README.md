@@ -34,7 +34,7 @@ Sprint 0 is not a product expansion phase. Current work is limited to:
 ## Active Surfaces
 
 - `apps/web/` - canonical Professional Workspace experience surface
-- `apps/docs/` - documentation experience surface
+- `../../docs` - documentation experience surface (moved to root)
 
 ## Legacy Surfaces
 

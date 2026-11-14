@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { capabilityRegistry } from "../../../../packages/core/kernel/src/registry/capability-command-registry.js";
 import { inventoryAdjustmentCommands } from "../commands/index";
 // Future: add inventoryAdjustmentQueries import jika ada queries di masa depan

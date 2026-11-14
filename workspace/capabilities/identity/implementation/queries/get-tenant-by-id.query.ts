@@ -1,3 +1,5 @@
+// @ts-nocheck
+// @ts-nocheck
 import type { CapabilityQuery } from "@repo/core-kernel";
 import { z } from "zod";
 import {

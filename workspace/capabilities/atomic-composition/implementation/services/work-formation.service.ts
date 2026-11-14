@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { UniversalExpression } from "../contracts/universal-intent.contracts";
 import { atomicCompositionService } from "./composition.service";
 import { capabilityResolverService } from "./capability-resolver.service";

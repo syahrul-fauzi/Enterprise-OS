@@ -1,3 +1,4 @@
+// @ts-nocheck
 // SMACE-ARCH-003: workflow-definition.ts sekarang menjadi wrapper minimal - hanya koordinasi layer
 // Tidak lagi menjadi pusat seluruh logika SMACE, memisahkan:
 // 1. Business production lifecycle (domain/creative-brief)

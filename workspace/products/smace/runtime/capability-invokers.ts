@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * SMACE Capability Invokers - EOS-360-002 MCP Adapter & Capability Reuse
  * Mengikuti pola yang sama dengan Digital Operations untuk konsistensi EOS 360

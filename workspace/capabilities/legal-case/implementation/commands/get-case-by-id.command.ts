@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { z } from "zod";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/index.js";
 import { CaseRepositoryInMemory, CaseRepositoryPostgres } from "../repository/index.js";

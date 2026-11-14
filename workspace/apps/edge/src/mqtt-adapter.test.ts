@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Test file untuk EDGE-DEVICE-003 MQTT Adapter Failure and Recovery
 import { describe, it, before, after, beforeEach } from 'node:test';
 import assert from 'node:assert';

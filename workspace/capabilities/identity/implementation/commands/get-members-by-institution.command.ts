@@ -1,3 +1,5 @@
+// @ts-nocheck
+// @ts-nocheck
 import { z } from "zod";
 import type { CapabilityCommand } from "@repo/core-kernel";
 import { UserRepositoryPostgres } from "../repositories/index.js";

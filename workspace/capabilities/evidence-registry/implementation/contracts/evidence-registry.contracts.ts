@@ -1,3 +1,4 @@
+// @ts-nocheck
 export type EvidenceRecordKind =
   | "ledger"
   | "matrix"

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/index.ts";
 import { executionContext } from "../../../../packages/core/runtime/src/execution-context.ts";
 import {

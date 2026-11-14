@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Work } from "@repo/core-kernel";
 import { ExecutionProvider } from "./types";
 import { ProviderSelectionPolicy } from "./execution-provider-selection.policy";

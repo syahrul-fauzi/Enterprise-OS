@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * W2-A Pressure Test: Interrupted Work
  * Scenario: Actor A claims work → crashes → Actor B reclaims work

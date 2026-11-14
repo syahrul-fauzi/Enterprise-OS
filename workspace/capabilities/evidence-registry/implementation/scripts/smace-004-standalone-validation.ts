@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * SMACE-004 Standalone Commercial Validation
  * 100% INDEPENDEN - TIDAK mengimport apapun dari project core

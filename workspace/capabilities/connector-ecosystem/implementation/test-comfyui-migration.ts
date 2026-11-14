@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * End-to-End Test untuk ComfyUI Adapter Migration + W-008-03 Metering Integration
  * Memverifikasi 4 persyaratan kunci untuk Tahap D & E:

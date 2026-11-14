@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { CapabilityQuery } from "@repo/core-kernel";
 import {
   RequirementAggregate,

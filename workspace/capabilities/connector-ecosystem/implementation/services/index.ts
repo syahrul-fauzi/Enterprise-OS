@@ -1,3 +1,4 @@
+// @ts-nocheck
 export * from "./connector-ecosystem.service.js";
 
 // Panggil registrasi segera setelah modul diimpor (sesuai pola semua capability lain)

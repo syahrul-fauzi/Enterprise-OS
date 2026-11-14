@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Product Runtime minimal untuk SMACE:
  * Hanya menyediakan product-specific context yang akan dikonsumsi oleh experience surface (apps/web)

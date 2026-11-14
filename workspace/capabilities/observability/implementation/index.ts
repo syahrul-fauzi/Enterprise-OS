@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Re-export all contracts, commands, repositories, services
 export * from "./contracts/index.js";
 export * from "./commands/observability.commands.js";

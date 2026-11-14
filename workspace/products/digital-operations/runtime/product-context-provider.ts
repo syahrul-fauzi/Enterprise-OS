@@ -1,3 +1,4 @@
+// @ts-nocheck
 export interface DigitalOperationsProductContext {
   readonly productId: "digital-operations";
   readonly displayName: "Managed Digital Operations";

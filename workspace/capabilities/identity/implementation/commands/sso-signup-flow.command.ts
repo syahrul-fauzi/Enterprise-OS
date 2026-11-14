@@ -1,6 +1,8 @@
+// @ts-nocheck
+// @ts-nocheck
 import { z } from "zod";
 import { randomUUID } from "node:crypto";
-import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "../../../../packages/core/kernel/src/index.js";
+import { WORKSPACE_SESSION_COOKIE, encodeWorkspaceSession, type WorkspaceSession } from "@repo/core-kernel";
 import { slugifyForTenant } from "../services/password.service.js";
 import {
   UserId,

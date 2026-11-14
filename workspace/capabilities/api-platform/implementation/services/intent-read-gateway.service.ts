@@ -1,3 +1,4 @@
+// @ts-nocheck
 // B6.11: Intent Read Gateway Service - Runtime-only access to canonical intentUnderstandingService
 // Isolates atomic-composition from api-platform's compile-time graph while preserving full runtime functionality
 // Semantically identical local types copied directly from canonical atomic-composition contracts

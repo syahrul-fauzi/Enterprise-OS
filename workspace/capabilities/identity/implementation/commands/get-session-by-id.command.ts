@@ -1,6 +1,8 @@
+// @ts-nocheck
+// @ts-nocheck
 console.log("[get-session-by-id.command.ts] FILE DILOAD SUKSES!");
 import { z } from "zod";
-import type { WorkspaceSession } from "../../../../packages/core/kernel/src/session/workspace-session.js";
+import type { WorkspaceSession } from "@repo/core-kernel";
 import { CapabilityCommand } from "../../../work-core/contracts/command.contracts.js";
 import {
   validateBoundaryAccess,

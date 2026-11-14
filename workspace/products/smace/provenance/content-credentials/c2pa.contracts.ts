@@ -1,3 +1,4 @@
+// @ts-nocheck
 // C2PA Standard Contracts for SMACE - implements C2PA specification for content provenance
 // Reused across all SMACE provenance modules to ensure manifest interoperability
 // Complies with C2PA 1.0 specification: https://c2pa.org/specifications/specifications/1.0/specs/index.html

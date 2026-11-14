@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * RuleBasedProvider - Canonical implementation relocated from atomic-composition
  * Gate A requirement: Move to work-core to maintain single semantic authority

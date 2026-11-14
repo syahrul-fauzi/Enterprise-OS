@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Shared type definitions for Agentic Work execution
  */

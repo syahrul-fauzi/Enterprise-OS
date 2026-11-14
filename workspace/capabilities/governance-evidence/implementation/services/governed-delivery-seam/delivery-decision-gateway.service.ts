@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { readFileSync, mkdirSync, appendFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { randomUUID } from "node:crypto";

@@ -1,7 +1,6 @@
 import { describe, it, beforeEach, expect } from "vitest";
 import assert from "node:assert/strict";
-// Import executionContext dari path YANG SAMA dengan middleware (untuk instance yang IDENTIK, bukan polyfill lama)
-import { executionContext } from "../../packages/core/runtime/src/execution-context.ts";
+import { executionContext } from "@repo/core-runtime";
 import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import * as sessionModule from "@repo/core-kernel/session/workspace-session";

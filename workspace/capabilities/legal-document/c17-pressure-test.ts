@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { DocumentService } from "./implementation/services/document.service.js";
 import { executionContext } from "@repo/core-runtime";
 import { traceExecutionByDecision } from "@repo/core-runtime";

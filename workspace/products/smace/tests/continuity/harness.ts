@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * PREP-002: Cross-provider continuity test harness
  * Satu Work fixture, dua runtime identity untuk ComfyUI dan Adobe

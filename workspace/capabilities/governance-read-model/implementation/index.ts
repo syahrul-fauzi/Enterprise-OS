@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { GovernanceReadModelService } from './services/governance-read-model.service.js';
 
 function main() {

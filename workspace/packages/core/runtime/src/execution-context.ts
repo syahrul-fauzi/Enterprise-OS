@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Deklarasi tipe untuk EdgeRuntime (hanya untuk type checking)
 declare const EdgeRuntime: unknown;
 

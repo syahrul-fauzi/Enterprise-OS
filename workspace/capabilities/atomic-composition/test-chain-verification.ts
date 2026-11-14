@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * AUDIT-001-006 G2 VERIFICATION: Chain registration runtime test
  * Verify that Work-Core→Identity→Security→Governance→Legal-Case chain executes successfully

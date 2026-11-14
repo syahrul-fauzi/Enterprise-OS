@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { recordRuntimeInvocation } from "@repo/core-runtime";
-// Import executionContext DARI PATH YANG SAMA DENGAN TEST FILE untuk instance IDENTIK (tidak duplicate module di ESM)
-import { executionContext } from "../../packages/core/runtime/src/execution-context.ts";
-// Import Web Crypto API untuk generate context_trace_id jika tidak ada di header
-import crypto from "node:crypto";
+import { executionContext } from "@repo/core-runtime";
+// Import Web Crypto API untuk generate context_trace_id jika tidak ada di header (Edge Runtime compatible)
 // Canonical import SessionId dari @repo/contracts-core untuk sinkronisasi tipe W06-A3-001
 import { SessionId } from "@repo/contracts-core";
 
@@ -125,7 +123,7 @@ export async function middleware(request: NextRequest) {
   }
   console.log(`[MIDDLEWARE] 🔍 testSessionModule di globalThis? ${!!(globalThis as any).testSessionModule}`);
   console.log(`[MIDDLEWARE] 🔍 readWorkspaceSessionFromRequest adalah function? ${typeof readWorkspaceSessionFromRequest === 'function'} | isAuthenticatedSession adalah function? ${typeof isAuthenticatedSession === 'function'}`);
-  const session = readWorkspaceSessionFromRequest(request);
+  const session = await readWorkspaceSessionFromRequest(request);
   console.log(`[MIDDLEWARE] 🔍 Session yang dibaca dari request: ${JSON.stringify(session)}`);
   
   // Hanya proses request dengan session terautentikasi (anonim tidak lulus isAuthenticatedSession)
@@ -222,7 +220,7 @@ export async function middleware(request: NextRequest) {
       session_id: canonicalSessionId,
       product_id: session.productId,
       permissions: session.userCapabilities || [],
-      context_trace_id: request.headers.get('x-trace-id') || crypto.randomUUID(),
+      context_trace_id: request.headers.get('x-trace-id') || globalThis.crypto.randomUUID(),
       is_reentry: false
     };
 

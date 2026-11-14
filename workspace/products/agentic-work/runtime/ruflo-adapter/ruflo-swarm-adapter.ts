@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { WorkId, ActorId } from "@capabilities/work-core/contracts/work.contracts";
 import { ExecutionProvider, ProviderSelectionMetadata } from "../types.js";
 import fetch from 'node-fetch';

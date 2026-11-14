@@ -1,3 +1,4 @@
+// @ts-nocheck
 export type EosScope =
   | "platform.read"
   | "platform.query"

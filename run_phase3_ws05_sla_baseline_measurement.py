@@ -44,7 +44,7 @@ BASELINE_METRICS = [
 
 def load_skill_manifest(skill_name: str) -> Dict[str, Any] | None:
     """Muat manifest skill dan validasi JSON"""
-    manifest_path = Path(f"/root/Enterprise-OS/.trae/skills/{skill_name}/manifest.json")
+    manifest_path = Path(f"/root/Enterprise-OS/skills/{skill_name}/manifest.json")
     if not manifest_path.exists():
         print(f"[SLA_BASELINE] ❌ Manifest tidak ditemukan: {skill_name}")
         return None
@@ -62,10 +62,10 @@ def test_skill_invocation(skill_name: str) -> Tuple[bool, float]:
     success = False
     
     # Cek apakah skill terdaftar dan dapat dieksekusi dengan memuat manifest dan entry point utama
-    skill_path = Path(f"/root/Enterprise-OS/.trae/skills/{skill_name}/main.py")
+    skill_path = Path(f"/root/Enterprise-OS/skills/{skill_name}/main.py")
     if not skill_path.exists():
         # Fallback: cek apakah ada file main.py di dalam folder skill (alternatif path)
-        skill_path_alt = Path(f"/root/Enterprise-OS/.trae/skills/{skill_name}/__main__.py")
+        skill_path_alt = Path(f"/root/Enterprise-OS/skills/{skill_name}/__main__.py")
         if not skill_path_alt.exists():
             print(f"[INVOKE_TEST] ❌ {skill_name}: Entry point tidak ditemukan")
             latency = (time.time() - start_time) * 1000

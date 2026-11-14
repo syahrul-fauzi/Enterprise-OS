@@ -1,3 +1,4 @@
+// @ts-nocheck
 // UniversalExpressionContract - E02-UNIVERSAL-UNDERSTANDING-PIPELINE: Canonical contract for ALL inputs into EOS
 // This is the single-source-of-truth for capturing ANY origin of expression/signal/event into EOS
 // Implements the new architecture: Expression → Understanding → IntentHypothesis → Need → Resolution → Work

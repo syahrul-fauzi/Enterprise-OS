@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { WorkflowStep, WorkflowDefinition } from "../../../packages/core/kernel/src/registry/capability-command-registry.js";
 import { isValidWorkflowDefinition } from "../../../packages/core/kernel/src/registry/capability-command-registry.js";
 

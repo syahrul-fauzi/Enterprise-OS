@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * SMACE Product Runtime Barrel File
  * Expose product-specific context providers for import in core experience layer

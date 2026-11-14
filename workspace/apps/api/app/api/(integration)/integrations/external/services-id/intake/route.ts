@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry";
-import { decodeWorkspaceSession } from "@repo/core-kernel/auth/decode-workspace-session";
+import { decodeWorkspaceSession } from "@repo/core-kernel";
+import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
 
 // Lazy initialization untuk Node.js modules (hindari Edge Runtime static analysis warning)
 let randomUUID: () => string;

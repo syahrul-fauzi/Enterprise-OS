@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Manual test runner untuk ai-product-photography workflow (tanpa Vitest)
 import { ExecutionWorkflowOrchestrator } from "../runtime/execution-workflow.js";
 

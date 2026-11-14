@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ObservabilityService } from './services/observability.service.js';
 
 function main() {

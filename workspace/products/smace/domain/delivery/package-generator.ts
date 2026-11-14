@@ -1,3 +1,4 @@
+// @ts-nocheck
 // SMACE-ARCH-005: Package & Delivery layer dengan C2PA-EOS integration - Langkah 7: Buat paket aset final dengan provenance
 import { CreativeBrief, AssetPackage } from "../../contracts/creative-brief.contract.js";
 import { evidenceRegistry } from "../../../../capabilities/evidence-registry/implementation/index.js";

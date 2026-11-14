@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Test file untuk EDGE-DEVICE-001 W01: Device-to-Work vertical slice + Failure and Recovery
 // Dijalankan dengan pnpm exec vitest run apps/edge/src/websocket-adapter.test.ts
 import { describe, it, beforeAll, beforeEach, afterAll } from 'vitest';

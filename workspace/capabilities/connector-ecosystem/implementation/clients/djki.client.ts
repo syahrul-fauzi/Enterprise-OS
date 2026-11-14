@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { WorkAggregate } from "../../../work-core/contracts/work.contracts";
 
 /**

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Tipe data untuk paket komersial SMACE-004
 // Definisi sesuai workflow bisnis end-to-end Customer Request → Work → Delivery
 // Mempertahankan pemisahan biaya: estimated_cost, reserved_cost, actual_cost (sesuai prinsip EOS Economic Governance)

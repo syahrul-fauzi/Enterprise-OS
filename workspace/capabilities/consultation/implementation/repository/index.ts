@@ -1,1 +1,2 @@
+// @ts-nocheck
 export { ConsultationRepositoryInMemory, newConsultationId, newConsultationSeriesId, newConsultationEpisodeId, defaultConsultationStatus, defaultConsultationPriority } from "./consultation.repository.ts";

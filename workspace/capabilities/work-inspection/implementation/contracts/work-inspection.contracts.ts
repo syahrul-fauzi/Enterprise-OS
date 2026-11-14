@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Work Inspection Contracts - Grounded agentic loop implementation
  * All types are rooted in Work ID to maintain work-as-boundary principle

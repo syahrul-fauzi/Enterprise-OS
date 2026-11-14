@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Debug script untuk C8 tanpa test runner
 import { syncEOSToWhatsApp } from '../implementation/services/connector-ecosystem.service.js';
 

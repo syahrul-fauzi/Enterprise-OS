@@ -9,7 +9,6 @@
     "incremental": true,
     "types": ["node"],
     "skipLibCheck": true,
-    "composite": true,
     "noEmit": false,
     "emitDeclarationOnly": true,
     "esModuleInterop": true,
@@ -29,14 +28,6 @@
       "@repo/*": ["../../packages/*"]
     }
   },
-  "references": [
-    {"path": "../../packages/core/kernel/tsconfig.json"},
-    {"path": "../../packages/core/runtime/tsconfig.json"},
-    {"path": "../governance-read-model/tsconfig.json"},
-    {"path": "../governance-evidence/tsconfig.json"},
-    {"path": "../work-core/tsconfig.json"},
-    {"path": "../service-directory/tsconfig.json"}
-  ],
-  "include": ["implementation/**/*.ts", "contracts/**/*.ts", "../work-core/implementation/utils/evidence.utils.ts", "../work-core/contracts/work.contracts.ts", "../work-core/implementation/commands/work.commands.ts"],
+  "include": ["implementation/**/*.ts", "contracts/**/*.ts"],
   "exclude": ["dist", "node_modules", "**/*.d.ts"]
 }

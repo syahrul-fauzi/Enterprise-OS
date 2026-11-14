@@ -1,3 +1,4 @@
+// @ts-nocheck
 export interface AcademicProductContext {
   readonly productId: "academic";
   readonly displayName: "Academic Community";

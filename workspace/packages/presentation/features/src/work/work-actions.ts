@@ -60,7 +60,7 @@ export async function executeTransition(
   // Semua transisi state harus melalui API endpoint /api/work/[id] yang server-side, bukan dari client component
   
   // Client-side logic: hanya POST request ke API endpoint - NO DIRECT DB ACCESS!
-  const response = await fetch(`/api/work/${work.workId}`, {
+  const response = await fetch(`/api/work/${request.workId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

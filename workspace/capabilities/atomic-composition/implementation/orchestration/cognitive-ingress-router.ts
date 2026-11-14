@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * CognitiveIngressRouter - EOS-COGNITIVE-INGRESS-001: Composition/orchestration tipis
  * Hanya memanggil primitive existing atomic-composition, tidak menciptakan primitive baru

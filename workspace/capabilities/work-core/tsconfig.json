@@ -2,14 +2,12 @@
   "extends": "../../config/typescript/base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./",
+    "rootDir": ".",
     "strictNullChecks": true,
     "declaration": true,
     "declarationMap": true,
-    "incremental": true,
     "types": ["node"],
     "skipLibCheck": true,
-    "composite": true,
     "noEmit": false,
     "esModuleInterop": true,
     "isolatedModules": true,
@@ -24,19 +22,12 @@
     "target": "ES2022",
     "baseUrl": "../..",
     "paths": {
-      "@repo/*": ["../../packages/*"],
-      "@repo/capabilities-identity": ["../identity/index.ts"],
-      "@repo/capabilities-identity/*": ["../identity/*"],
-      "@capabilities/*": ["../*"],
-      "@repo/shared/*": ["../shared/*"]
+      "@repo/core-kernel": ["packages/core/kernel/dist/src/index.d.ts"],
+      "@repo/core-kernel/*": ["packages/core/kernel/dist/src/*"],
+      "@repo/core-runtime": ["packages/core/runtime/dist/src/index.d.ts"],
+      "@repo/core-runtime/*": ["packages/core/runtime/dist/src/*"]
     }
   },
-  "references": [
-    { "path": "../../packages/core/kernel/tsconfig.json" },
-    { "path": "../../packages/core/runtime/tsconfig.json" },
-    { "path": "../identity/tsconfig.json" },
-    { "path": "../shared/tsconfig.json" }
-  ],
-  "include": ["./index.ts", "./implementation/**/*.ts", "./contracts/**/*.ts"],
+  "include": ["./implementation/**/*.ts", "./contracts/**/*.ts"],
   "exclude": ["dist", "node_modules", "**/*.d.ts"]
 }

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Use global canonical instances to ensure cross-module service consistency (avoids ReferenceError)
 // RequirementService, TraceabilityService, and EvidenceRegistryService are registered to globalThis at initialization
 import {

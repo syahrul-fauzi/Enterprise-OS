@@ -16,7 +16,7 @@ import Database from 'better-sqlite3';
 import { fork } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import { DatabaseMigrationManager } from './capabilities/shared/implementation/database/migrations/migration.manager.js';
+import { MigrationManager } from './capabilities/shared/implementation/database/migrations/migration.manager.js';
 import type { WorkerInput, WorkerResult } from './work-claim-worker';
 // Interface sudah lengkap dari worker tidak perlu extend karena WorkerResult sudah punya semua field
 type ExtendedWorkerResult = WorkerResult;

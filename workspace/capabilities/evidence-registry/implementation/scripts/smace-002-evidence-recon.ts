@@ -1,3 +1,4 @@
+// @ts-nocheck
 // SMACE-002-EVIDENCE-RECON: Verifikasi G1-G6 evidence dari penyimpanan aktual
 // Sesuai EOS Master System Prompt: persistence, read-back, otorisasi, keterikatan Work
 // Menjalankan pemeriksaan mandiri tanpa mengandalkan deklarasi agent

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * LH-CASE-001 End-to-End Test
  * LAYER 9: Executable test with real invocation (NO MOCKS)

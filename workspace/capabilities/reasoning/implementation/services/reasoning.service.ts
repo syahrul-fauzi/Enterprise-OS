@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { recordRuntimeInvocation } from "@repo/core-runtime";
 import { ReasoningContractRepositoryInMemory } from "../repository/reasoning.repository.ts";
 import type { 

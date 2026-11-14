@@ -1,3 +1,4 @@
+// @ts-nocheck
 // ACaaS-COMMERCIAL-001: Wrapper untuk canonical safeRecordEvidence dari work-core (tidak lagi local copy)
 // Gate A requirement: hapus semua duplikat safeRecordEvidence, gunakan canonical dari work-core
 import type { WorkspaceId, EvidenceBoundary } from "@capabilities/work-core/contracts/work.contracts";

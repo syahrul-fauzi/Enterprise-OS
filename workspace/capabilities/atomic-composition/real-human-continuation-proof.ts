@@ -1,3 +1,4 @@
+// @ts-nocheck
 // E2 P6: REAL HUMAN CONTINUATION PROOF
 // Memverifikasi Single Work Reality tetap terjaga ketika multiple actors (human & service) melanjutkan work yang sama
 // SATUSATU Work ID, semua actor melihat state yang sama, tidak ada duplikasi work, tidak ada fork state.

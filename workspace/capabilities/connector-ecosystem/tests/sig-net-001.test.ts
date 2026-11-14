@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Test script to verify SIG-NET-001 Signature Provider Adapter runtime functionality
 // Validates provider-neutral integration with DocuSign/Adobe Sign while preserving EOS Work continuity
 process.env.NODE_ENV = 'test';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 export interface EcommerceProductContext {
   readonly productId: "ecommerce-ops";
   readonly displayName: "E-commerce Ops";

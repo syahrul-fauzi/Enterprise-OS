@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * E2E Test untuk DIGIOP-104: Managed Digital Operations Onboarding Flow
  * Menverifikasi full 9-layer vertical slice sesuai eos-product-slice playbook

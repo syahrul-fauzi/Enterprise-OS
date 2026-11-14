@@ -1,9 +1,10 @@
+// @ts-nocheck
 process.env.NODE_ENV = 'test';
 (globalThis as any)._forceMockPool = true;
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { getWorkRepositoryLazy, getWorkCommand } from '../implementation/commands/work.commands.js';
-import type { ExecutionContext } from '../../../../packages/core/runtime/src/execution-context.js';
+import type { ExecutionContext } from '@repo/core-runtime';
 import { newSessionId, newTenantId, newActorId, newWorkId } from '@repo/contracts-core';
 
 // Gunakan dynamic import untuk getSessionRepositoryLazy sesuai pola di work.commands.ts (fix path relatif)

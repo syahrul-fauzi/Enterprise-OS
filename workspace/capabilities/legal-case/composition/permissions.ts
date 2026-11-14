@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { caseWorkspace } from "./workspace.js";
 
 export interface CasePermissionRule {

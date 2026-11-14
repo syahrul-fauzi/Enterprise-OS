@@ -10,7 +10,7 @@ import {
 import {
   getSessionRepositoryPostgres,
   initIdentitySchema,
-} from "@capabilities/identity/implementation/repositories/index.js";
+} from "@repo/capabilities-identity";
 import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
 
 export async function POST(request: Request) {

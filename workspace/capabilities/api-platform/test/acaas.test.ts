@@ -1,3 +1,4 @@
+// @ts-nocheck
 // ACaaS-COMMERCIAL-001: Unit Test struktur command ACaaS (tidak memerlukan runtime penuh)
 import { describe, it, expect } from 'vitest';
 import { apiPlatformCommands, registerApiPlatformCapability } from '../implementation/commands/index';

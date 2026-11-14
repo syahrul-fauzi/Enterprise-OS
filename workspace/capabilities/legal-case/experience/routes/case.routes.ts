@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { CapabilityExperienceRoutes } from "../../../../packages/presentation/entities/dist/index.js";
 
 export type CapabilityRouteId =

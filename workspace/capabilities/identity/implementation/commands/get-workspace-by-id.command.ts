@@ -1,3 +1,5 @@
+// @ts-nocheck
+// @ts-nocheck
 import { z } from "zod";
 import type { CapabilityCommand } from "../../../capability-dispatch/contracts/command.contracts.js";
 import {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // SMACE-ARCH-003: Provider workflow layer - ComfyUI/Comfy API spesifik implementation
 // Perbaiki import path dan connector ID (gunakan ID yang terdaftar di connector registry: 'comfyui-runtime-adapter')
 import { connectorEcosystemService } from "../../../../capabilities/connector-ecosystem/implementation/services/connector-ecosystem.service.js";

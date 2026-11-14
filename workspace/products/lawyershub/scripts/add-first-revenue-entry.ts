@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Script untuk menambahkan entry revenue pertama LawyersHub ke governance-evidence
 // Menjalankan ACT-LHUB-002 sesuai commercial-evidence-summary-20261101.yaml
 

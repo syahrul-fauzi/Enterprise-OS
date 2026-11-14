@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * P4 CROSS-DOMAIN PROOF: Beauty Domain (Salon/Kecantikan)
  * Membuktikan atomic-composition engine bekerja di domain BERBEDA TANPA PERUBAHAN ENGINE

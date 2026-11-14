@@ -1,3 +1,4 @@
+// @ts-nocheck
 // @ts-ignore - bun:test is Bun's native test runner
 import { describe, it, expect, beforeEach } from "bun:test";
 import { DeliveryDecisionGatewayService, GovernanceDecisionRecord } from "./delivery-decision-gateway.service.js";

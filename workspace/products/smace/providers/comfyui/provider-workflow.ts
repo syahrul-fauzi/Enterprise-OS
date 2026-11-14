@@ -1,6 +1,6 @@
 // @ts-nocheck
 import type { CreativeSpecification, CreativeBrief } from "../../domain/creative-brief/types.js";
-import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/invocation-evidence.js";
+import { recordRuntimeInvocation } from "@repo/core-runtime";
 import { ComfyUIProvider } from "./comfyui-provider.js";
 
 // Provider Workflow: Logic spesifik ComfyUI (graph, model, node, parameter) (SMACE-ARCH-003)

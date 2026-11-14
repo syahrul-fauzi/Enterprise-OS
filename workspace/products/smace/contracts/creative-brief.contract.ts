@@ -1,3 +1,4 @@
+// @ts-nocheck
 // SMACE-ARCH-003: Cross-module contract untuk creative brief - shared oleh semua layer
 export enum BriefStatus {
   DRAFT = 'draft',

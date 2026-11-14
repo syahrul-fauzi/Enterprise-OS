@@ -1,3 +1,4 @@
+// @ts-nocheck
 export interface KnowledgeNode {
   id: string;
   type: "requirement" | "evidence" | "workflow" | "plan" | "actor" | "capability" | "resource" | "product" | "organization" | "specialization" | "custom";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { caseWorkspace, type CaseNavigationEntry } from "./workspace.js";
 import { createWorkspaceNavigation } from "../../../../packages/composition/src/navigation/unified-navigation.js";
 

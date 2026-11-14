@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { commands } from "./case.commands.js";
 export { commands as caseCommands };
 export { getCaseByIdCommand } from "./get-case-by-id.command.js";

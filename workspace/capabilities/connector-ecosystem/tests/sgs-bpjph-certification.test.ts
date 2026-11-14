@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Test script to verify SGS/BPJPH/Kemenkumham Certification Adapters runtime functionality - R5-C External Reality
 import { connectorEcosystemService } from "../implementation/services/connector-ecosystem.service.js";
 

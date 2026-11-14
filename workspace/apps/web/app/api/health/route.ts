@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { DatabaseHealthChecker } from "@capabilities/shared/implementation/database/health.check";
-import { getCommunicationRepositoryPostgres } from "@capabilities/communication/implementation/repository/communication.postgres.repository";
-import { getCaseRepositoryPostgres } from "@capabilities/legal-case/implementation/repository/case-postgres.repository";
+import { DatabaseHealthChecker } from "@repo/capabilities-shared/database/health.check";
+import { getCommunicationRepositoryPostgres } from "@repo/capabilities-communication/repository/communication.postgres.repository";
+import { getCaseRepositoryPostgres } from "@repo/capabilities-legal-case/repository/case-postgres.repository";
 
 export async function GET(request: Request) {
   const correlationId = request.headers.get("x-correlation-id") || `health-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;

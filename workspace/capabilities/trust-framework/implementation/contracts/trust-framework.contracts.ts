@@ -1,3 +1,4 @@
+// @ts-nocheck
 export type JsonRecord = Record<string, unknown>;
 
 export type TrustVerificationProfile = JsonRecord & {

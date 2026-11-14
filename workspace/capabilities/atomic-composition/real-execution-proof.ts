@@ -1,3 +1,4 @@
+// @ts-nocheck
 // E2 P3: REAL EXECUTION PROOF
 // Membuktikan: Actor → actual action → external consequence → verified completion
 // Layer2 compliant: hanya extension, tidak ada perubahan core

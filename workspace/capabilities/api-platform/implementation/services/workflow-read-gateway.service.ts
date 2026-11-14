@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Canonical workflow gateway - consumes workflow-engine service to avoid static import cycles
 // Mengikuti pola gateway lain (governance-read-gateway, governance-evidence-gateway)
 // B6.9: Local structural type definitions to avoid static workflow-engine source inclusion

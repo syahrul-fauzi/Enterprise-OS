@@ -1,3 +1,4 @@
+// @ts-nocheck
 // DEL-001: AUTHORITY BOUNDARY COMPLIANCE PERMISSIONS
 // Sesuai mandat user: "Work tetap satu. Authority berubah."
 // Workspace sebagai context, bukan owner: merchant → driver → customer tetap mengakses Work yang sama

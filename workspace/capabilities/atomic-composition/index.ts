@@ -1,2 +1,3 @@
+// @ts-nocheck
 export * from "./implementation/contracts";
 export { intentUnderstandingService, getIntentUnderstandingService, resolveSemanticIntentFallback, createUniversalExpression } from "./implementation/services/intent-understanding.service";

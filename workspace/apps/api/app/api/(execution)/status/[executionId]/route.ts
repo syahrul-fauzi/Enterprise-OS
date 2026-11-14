@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { ExecutionStatusRepository } from '@repo/core-runtime/execution-status.js';
 import { readWorkspaceSessionFromRequest } from '@repo/core-kernel';
-import { validateBoundaryAccess } from "@repo/capabilities/work-core/contracts/work.contracts";
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts";
 
 export async function GET(
   request: Request,

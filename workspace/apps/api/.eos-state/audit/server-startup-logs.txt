@@ -1,0 +1,2 @@
+
+[CapabilityRegistry] ✅ Legal-Case core capability registered successfully (AUDIT-001-006 CHAIN COMPLETE)

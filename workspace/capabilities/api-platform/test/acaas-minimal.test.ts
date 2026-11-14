@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { describe, it, expect, vi } from 'vitest';
 
 // Mock semua dependency global yang dibutuhkan oleh ACaaS commands

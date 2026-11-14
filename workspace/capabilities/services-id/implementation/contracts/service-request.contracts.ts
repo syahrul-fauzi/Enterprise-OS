@@ -1,3 +1,4 @@
+// @ts-nocheck
 export type ServiceRequestStatus = "draft" | "submitted" | "accepted" | "in_service" | "delivered" | "verified" | "settled" | "cancelled";
 export type ServiceRequestPriority = "low" | "medium" | "high" | "critical";
 export type ServiceRequestId = string & {

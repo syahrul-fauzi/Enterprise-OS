@@ -10,7 +10,7 @@ import json
 from datetime import datetime
 
 # Add eos-self-execution to path to import ReconAgent
-sys.path.insert(0, '/root/Enterprise-OS/.trae/skills/eos-self-execution')
+sys.path.insert(0, '/root/Enterprise-OS/skills/eos-self-execution')
 from recon_agent import ReconAgent
 
 def main():

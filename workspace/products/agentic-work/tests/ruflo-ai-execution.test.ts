@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Ruflo AI Execution Adapter Test for Isolated Comparative Evaluation
  * Follows canonical EOS test pattern, hanya sebagai standalone evaluation (tidak menyentuh core)

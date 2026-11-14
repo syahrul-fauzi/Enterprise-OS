@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
+import { readWorkspaceSessionFromRequest } from "@repo/core-kernel";
 import { capabilityRegistry } from "@repo/core-kernel/registry/capability-command-registry.js";
-import { readWorkspaceSessionFromRequest } from "@repo/core/kernel/session/workspace-session";
 
 export async function POST(request: Request) {
   try {

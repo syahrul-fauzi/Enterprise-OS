@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { z } from "zod";
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
 import {

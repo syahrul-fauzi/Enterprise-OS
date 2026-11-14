@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * MCP configuration service with tenant isolation (TENANT-ISOLATION-001: PostgreSQL RLS)
  * Implements tenant-isolated credentials for MCP channel using PostgreSQL Row Level Security

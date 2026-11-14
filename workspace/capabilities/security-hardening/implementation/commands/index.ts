@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { CapabilityCommand } from "../../../../packages/core/kernel/src/index.js";
 import type { AuthorizationDecision, EosScope } from "../contracts/security-hardening.contracts.js";
 

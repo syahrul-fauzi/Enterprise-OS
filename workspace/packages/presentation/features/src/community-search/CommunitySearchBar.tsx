@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 import { BaseSearchBar } from '@repo/presentation-ui-system';
 

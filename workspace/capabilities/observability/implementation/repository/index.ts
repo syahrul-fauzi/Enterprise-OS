@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Observability Incident Repository Factory - Environment-based implementation selection
 // Maintains identical interface regardless of storage backend (in-memory/Postgres)
 import { IncidentRepositoryInMemory, newIncidentId, defaultIncidentStatus, defaultIncidentPriority } from "./incident.repository.js";

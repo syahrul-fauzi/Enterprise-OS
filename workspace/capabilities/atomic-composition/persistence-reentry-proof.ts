@@ -1,3 +1,4 @@
+// @ts-nocheck
 #!/usr/bin/env node
 /**
  * P1.5 — Composition Persistence & Re-entry Proof

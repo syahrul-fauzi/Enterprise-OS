@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * AUDIT-001-006 G3 VERIFICATION: Test duplicate registration prevention
  * Verifikasi bahwa registrasi ganda capability ditolak dengan perilaku yang teruji

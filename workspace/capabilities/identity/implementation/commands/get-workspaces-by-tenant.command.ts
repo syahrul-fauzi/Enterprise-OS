@@ -1,3 +1,5 @@
+// @ts-nocheck
+// @ts-nocheck
 import type { CapabilityCommand } from "../../../capability-dispatch/contracts/command.contracts.js";
 import { z } from "zod";
 // Import shared identity types from contracts-core

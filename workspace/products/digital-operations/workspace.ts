@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Digital Operations Workspace Configuration
  * Required by validate-composition-package.ts

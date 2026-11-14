@@ -1,4 +1,5 @@
 packages:
+  - 'docs'
   - 'workspace/apps/*'
   - 'workspace/packages/*'
   - 'workspace/packages/core/*'

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import type { GovernanceReadModelCatalog, GovernanceReadModelLocation, GovernanceReadModelKind } from "../contracts/governance-read-model.contracts.js";

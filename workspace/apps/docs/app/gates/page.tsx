@@ -1,10 +1,48 @@
-import { EOS_KNOWLEDGE_MODEL, STATUS } from "../_lib/eos-knowledge-model";
+import { getGateStatus } from "../_lib/registry-client";
 import { StatusBadge } from "../_components/status-badge";
 import { Section, SectionCard } from "../_components/section";
 import { PageHeader } from "../_components/navigation";
 
 export default function GatesPage() {
-  const gt = EOS_KNOWLEDGE_MODEL.gates;
+  const gateStatus = getGateStatus();
+
+  const gates = [
+    {
+      order: 1,
+      name: "Gate 1 — KNOW Surface",
+      status: "SUCCESS",
+      dependency: "Tidak ada dependensi (baseline)",
+      lockedAreas: [],
+    },
+    {
+      order: 2,
+      name: "Gate 2 — Execution Identity",
+      status: "LOCKED",
+      dependency: "Harus Gate 1 selesai",
+      lockedAreas: ["Shared executionId persistence", "Execution attribution chain"],
+    },
+    {
+      order: 3,
+      name: "Gate 3 — Durable Evidence",
+      status: "LOCKED",
+      dependency: "Harus Gate 2 selesai",
+      lockedAreas: ["Evidence immutable store", "Evidence snapshot chain"],
+    },
+    {
+      order: 4,
+      name: "Gate 4 — Continuation",
+      status: "LOCKED",
+      dependency: "Harus Gate 3 selesai",
+      lockedAreas: ["Procedure resume from WAIT state", "State reconstruction"],
+    },
+    {
+      order: 5,
+      name: "Gate 5 — API/Worker/Agent",
+      status: "LOCKED",
+      dependency: "Harus Gate 4 selesai",
+      lockedAreas: ["External API exposure", "Worker runtime", "Agent loop integration"],
+    },
+  ];
 
   return (
     <div>
@@ -16,16 +54,91 @@ export default function GatesPage() {
 
       <Section eyebrow="Principle" title="Hukum Urutan Gate — Dependency Chain Adalah Konstitusi">
         <SectionCard className="border-emerald-900/50">
-          <p className="text-neutral-200 leading-relaxed">{gt.gatePrinciple}</p>
+          <p className="text-neutral-200 leading-relaxed">
+            Urutan gate tidak bisa diubah. Setiap gate bergantung pada bukti gate sebelumnya.
+            Melompati gate = architectural drift dan technical debt.
+          </p>
         </SectionCard>
       </Section>
 
-      <Section eyebrow="Sequence" title="5 Gates Berurutan — Status per 2026-08-06">
+      <Section eyebrow="Current Status" title={`Status Gate Aktif: ${gateStatus.phase.current}`}>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <SectionCard className="border-emerald-900/50 bg-emerald-950/10">
+            <p className="text-xs font-mono uppercase text-neutral-500 mb-1">Phase Saat Ini</p>
+            <p className="text-emerald-300 font-bold">{gateStatus.phase.current}</p>
+          </SectionCard>
+          <SectionCard className="border-sky-900/50 bg-sky-950/10">
+            <p className="text-xs font-mono uppercase text-neutral-500 mb-1">Framework Status</p>
+            <p className="text-sky-300 font-semibold text-sm">{gateStatus.phase.gate_c1_framework_status}</p>
+          </SectionCard>
+          <SectionCard className="border-purple-900/50 bg-purple-950/10">
+            <p className="text-xs font-mono uppercase text-neutral-500 mb-1">Science Kernel</p>
+            <p className="text-purple-300 font-semibold text-sm">{gateStatus.science_kernel.status}</p>
+          </SectionCard>
+          <SectionCard className="border-amber-900/50 bg-amber-950/10">
+            <p className="text-xs font-mono uppercase text-neutral-500 mb-1">Generated At</p>
+            <p className="text-amber-300 font-semibold text-sm">{new Date(gateStatus.generated_at_utc).toLocaleString()}</p>
+          </SectionCard>
+        </div>
+      </Section>
+
+      <Section eyebrow="Governance Platform" title="Status Komponen Governance">
+        <div className="grid sm:grid-cols-2 gap-3">
+          <SectionCard>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-semibold text-white">Constitution</p>
+              <StatusBadge status={gateStatus.governance_platform.constitution.status} />
+            </div>
+            <p className="text-xs text-neutral-400">Law profile: {gateStatus.governance_platform.constitution.law_profile}</p>
+          </SectionCard>
+          <SectionCard>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-semibold text-white">Dependency Graph</p>
+              <StatusBadge status={gateStatus.governance_platform.dependency_graph.status} />
+            </div>
+            <p className="text-xs text-neutral-400">
+              Cycles: {gateStatus.governance_platform.dependency_graph.dependency_cycles} | Violations: {gateStatus.governance_platform.dependency_graph.boundary_violations}
+            </p>
+          </SectionCard>
+          <SectionCard>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-semibold text-white">Contract Governance</p>
+              <StatusBadge status={gateStatus.governance_platform.contract_governance.status} />
+            </div>
+            <p className="text-xs text-neutral-400">Ready contracts: {gateStatus.governance_platform.contract_governance.ready_contracts}</p>
+          </SectionCard>
+          <SectionCard>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-semibold text-white">Trust Framework</p>
+              <StatusBadge status={gateStatus.governance_platform.trust_framework.status} />
+            </div>
+            <p className="text-xs text-neutral-400">Frameworks: {gateStatus.governance_platform.trust_framework.framework_count}</p>
+          </SectionCard>
+          <SectionCard>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-semibold text-white">Specification System</p>
+              <StatusBadge status={gateStatus.governance_platform.specification_system.status} />
+            </div>
+            <p className="text-xs text-neutral-400">Conformance: {gateStatus.governance_platform.specification_system.conformance_status}</p>
+          </SectionCard>
+          <SectionCard>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-semibold text-white">Capability Graph</p>
+              <StatusBadge status={gateStatus.governance_platform.capability_graph.status} />
+            </div>
+            <p className="text-xs text-neutral-400">
+              Edges: {gateStatus.governance_platform.capability_graph.dependency_edge_count} | Unstable: {gateStatus.governance_platform.capability_graph.unstable_dependency_count}
+            </p>
+          </SectionCard>
+        </div>
+      </Section>
+
+      <Section eyebrow="Sequence" title="5 Gates Berurutan — Dependency Order">
         <div className="space-y-4">
-          {gt.gates.map((g, idx) => {
-            const isActive = g.status === STATUS.IMPLEMENTING;
-            const isLocked = g.status === STATUS.LOCKED;
-            const prev = idx > 0 ? gt.gates[idx - 1] : null;
+          {gates.map((g, idx) => {
+            const isActive = g.status === "IMPLEMENTING";
+            const isLocked = g.status === "LOCKED";
+            const prev = idx > 0 ? gates[idx - 1] : null;
             return (
               <div key={g.name} className="relative">
                 {prev ? (

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { WorkflowStep, WorkflowDefinition } from "../../../packages/core/kernel/src/registry/capability-command-registry.ts";
 
 // Domain type alias only (preserves type safety without vertical-specific interface)

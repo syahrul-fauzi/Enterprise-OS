@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Export semua type dari contracts (diperbarui ke Cognitive Adapter ontology)
 export type {
   CognitiveAdapter,

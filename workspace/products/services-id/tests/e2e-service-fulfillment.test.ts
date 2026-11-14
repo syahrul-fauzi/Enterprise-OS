@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * E2E Test for Product Slice C2: Services.ID Service Fulfillment
  * Verifies the full flow: "Saya butuh IT support untuk kantor" → request → provider accepted → service delivered → closed

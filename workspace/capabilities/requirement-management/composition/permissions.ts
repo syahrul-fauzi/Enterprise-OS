@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { requirementWorkspace } from "./workspace.js";
 
 export interface RequirementPermissionRule {

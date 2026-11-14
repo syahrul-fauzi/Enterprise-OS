@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { executionContext } from "./execution-context.js";
 import { recordRuntimeInvocation } from "./invocation-evidence.js";
 import type { ExecutionContext } from "./execution-context.js";

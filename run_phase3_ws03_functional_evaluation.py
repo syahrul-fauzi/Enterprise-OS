@@ -80,7 +80,7 @@ class FunctionalEvaluationRunner:
     def verify_skill_invocation(self, skill_name: str) -> Dict[str, Any]:
         """Verify skill can be invoked via capability registry (G3: Invocation Reliability)"""
         print(f"\n[VERIFICATION] Verifying invocation for {skill_name}...")
-        manifest_path = self.workspace_path / ".trae" / "skills" / skill_name / "manifest.json"
+        manifest_path = self.workspace_path / "skills" / skill_name / "manifest.json"
         
         if not manifest_path.exists():
             print(f"[VERIFICATION] ❌ Manifest not found for {skill_name}")
@@ -102,7 +102,7 @@ class FunctionalEvaluationRunner:
                 return {"passed": False, "evidence": f"Missing fields: {', '.join(missing_fields)}"}
                 
             # Verify skill directory exists and has SKILL.md
-            skill_dir = self.workspace_path / ".trae" / "skills" / skill_name
+            skill_dir = self.workspace_path / "skills" / skill_name
             if not (skill_dir / "SKILL.md").exists():
                 print(f"[VERIFICATION] ❌ {skill_name} missing SKILL.md")
                 return {"passed": False, "evidence": "SKILL.md file missing"}
@@ -122,7 +122,7 @@ class FunctionalEvaluationRunner:
         print(f"\n[VERIFICATION] Verifying functional correctness for {skill_name}...")
         
         # Check for test files in skill directory
-        skill_dir = self.workspace_path / ".trae" / "skills" / skill_name
+        skill_dir = self.workspace_path / "skills" / skill_name
         test_files = list(skill_dir.glob("*test*.py")) + list(skill_dir.glob("*spec*.py"))
         
         if len(test_files) == 0:
@@ -216,7 +216,7 @@ class FunctionalEvaluationRunner:
         # Check for common secret patterns in all skill files
         secret_patterns = ["AWS_ACCESS_KEY", "SECRET_KEY", "PASSWORD", "TOKEN", "API_KEY"]
         for skill_name in self.SKILLS:
-            skill_dir = self.workspace_path / ".trae" / "skills" / skill_name
+            skill_dir = self.workspace_path / "skills" / skill_name
             # Convert generators to lists to support concatenation
             all_files = list(skill_dir.glob("*.json")) + list(skill_dir.glob("*.py")) + list(skill_dir.glob("*.md"))
             for file_path in all_files:

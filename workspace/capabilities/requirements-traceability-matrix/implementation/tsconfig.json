@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "composite": true,
     "strictNullChecks": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
@@ -9,7 +8,6 @@
     "moduleResolution": "NodeNext",
     "moduleDetection": "force"
   },
-  "references": [{"path": "../../requirement-management/tsconfig.json"}, {"path": "../../evidence-registry/tsconfig.json"}, {"path": "../../../packages/core/runtime/tsconfig.json"}],
   "include": ["**/*.ts"],
   "exclude": ["node_modules"]
 }

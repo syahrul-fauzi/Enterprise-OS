@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * WORK CLAIM Falsification Test Harness
  * Menjalankan semua tes yang diminta dalam Capability Autopsy #001

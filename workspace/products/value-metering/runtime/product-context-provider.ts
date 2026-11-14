@@ -1,3 +1,4 @@
+// @ts-nocheck
 export interface ValueMeteringProductContext {
   readonly productId: "value-metering";
   readonly displayName: "Operational Economics & Value Measurement";

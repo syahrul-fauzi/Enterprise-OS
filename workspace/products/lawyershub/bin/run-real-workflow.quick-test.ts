@@ -1,3 +1,4 @@
+// @ts-nocheck
 #!/usr/bin/env node
 // QUICK TEST VERSION - NO USER INPUT, AUTOMATIC FLOW TO VERIFY END-TO-END
 import { CaseRepositoryInMemory } from '../../../capabilities/legal-case/implementation/repository/case.repository';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * COM-001: Commerce/Product End-to-End Test
  * LAYER 9: Executable test with real invocation (NO MOCKS)

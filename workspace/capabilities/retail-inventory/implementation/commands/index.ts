@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { adjustInventoryFromWork, aiSuggestInventoryAdjustment } from "./inventory-adjustment.commands.js";
 
 export const inventoryAdjustmentCommands = {

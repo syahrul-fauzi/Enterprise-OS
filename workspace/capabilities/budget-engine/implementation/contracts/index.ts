@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Input untuk memreservasi budget (reserve) sebelum eksekusi
  */

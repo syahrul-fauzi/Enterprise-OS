@@ -1,3 +1,4 @@
+// @ts-nocheck
 // FIX-UI-001: Minimal email queue implementation using Redis
 // In-memory fallback for test environments (NO Redis required) - aligned with platform/src implementation
 import { ExecutionStatusRepository } from "./execution-status.js";

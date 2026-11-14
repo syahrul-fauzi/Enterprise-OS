@@ -1,0 +1,8 @@
+
+> docs@1.0.0 check-types
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully
+../../packages/presentation/ui-system/src/molecules/DropdownMenu.tsx(31,44): error TS18046: 'child.props' is of type 'unknown'.
+../../packages/presentation/ui-system/src/molecules/DropdownMenu.tsx(32,11): error TS18046: 'child.props' is of type 'unknown'.

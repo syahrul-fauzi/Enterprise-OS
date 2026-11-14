@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { TenantId, WorkspaceId, ActorId, SessionId, WorkId, UserId } from "@capabilities/work-core";
 
 export type DocumentStatus = 

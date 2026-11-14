@@ -1,14 +1,13 @@
 import Link from "next/link";
-import { EOS_KNOWLEDGE_MODEL, type StatusValue } from "../_lib/eos-knowledge-model";
+import { getProceduresData } from "../_lib/registry-client";
 import { StatusBadge } from "../_components/status-badge";
+import { DataSourceBadge } from "../_components/data-source-badge";
 import { Section, SectionCard, LabeledRow } from "../_components/section";
 import { PageHeader } from "../_components/navigation";
 
 export default function ProceduresPage() {
-  const proc = EOS_KNOWLEDGE_MODEL.procedures;
+  const { data: proc, dataSource } = getProceduresData();
   const prepare = proc.active[0]!;
-  const evCtx = EOS_KNOWLEDGE_MODEL.evidenceContext;
-  const ai = EOS_KNOWLEDGE_MODEL.aiStep;
 
   return (
     <div>
@@ -18,6 +17,8 @@ export default function ProceduresPage() {
         subtitle="Procedure = komposisi Capability calls. Setiap assess* delegasikan 100% ke Capability yang sesuai. AI hanya conditional branch."
       />
 
+      <DataSourceBadge dataSource={dataSource} />
+
       <Section eyebrow="Principle" title="Hukum Prosedur (tidak bisa dilanggar)">
         <SectionCard className="border-emerald-900/50">
           <p className="text-neutral-200 leading-relaxed">{proc.procedurePrinciple}</p>
@@ -26,47 +27,6 @@ export default function ProceduresPage() {
             memutuskan validitas requirement (bukan hanya orkestrasi), itu bug arsitektur.
           </p>
         </SectionCard>
-      </Section>
-
-      {/* K2 — EVIDENCE CONTEXT: Procedure consumes PROVEN capabilities from Academic slice */}
-      <Section
-        eyebrow="Evidence Context · Capability Reuse"
-        title="Mengapa procedure ini valid? Karena dia mengkomposisikan Capability YANG SUDAH TERBUKTI."
-      >
-        <SectionCard className="border-amber-900/40 bg-amber-950/5 mb-4">
-          <p className="text-neutral-200 text-sm leading-relaxed">
-            {evCtx.summary}
-          </p>
-        </SectionCard>
-        <div className="space-y-3">
-          {evCtx.chain.filter((_, i) => i <= 2).map((l: Record<string, string>) => (
-            <div
-              key={l.layer}
-              className="p-4 rounded-lg border border-neutral-800 bg-neutral-900/40"
-            >
-              <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
-                <div>
-                  <p className="text-sky-300 font-mono font-bold text-xs uppercase tracking-wider">
-                    {l.layer}
-                  </p>
-                  <p className="text-sm text-neutral-200 mt-1 leading-relaxed">{l.content}</p>
-                </div>
-                <StatusBadge status={l.status as StatusValue} />
-              </div>
-            </div>
-          ))}
-        </div>
-        <Link
-          href="/evidence"
-          className="inline-block mt-4 text-xs font-mono text-sky-400 hover:text-sky-300"
-        >
-          Lihat 4-layer Evidence Trace Chain lengkap →
-        </Link>
-        <p className="text-xs text-neutral-500 mt-2 italic">
-          ⚠️ Academic evidence (REQ-001..REQ-008) membuktikan bahwa capability primitive
-          (Requirement Management, RTM, Evidence) BENAR bekerja. Procedure ini LALU menggunakan
-          primitive yang SUDAH TERBUKTI — bukan berarti procedure ini tentang Academic Community.
-        </p>
       </Section>
 
       <Section eyebrow="Active" title={`Procedure Aktif: ${prepare.name}`}>
@@ -146,27 +106,6 @@ export default function ProceduresPage() {
                   Delegated to →{" "}
                   <code className="text-emerald-400">{s.delegatedTo}</code>
                 </p>
-                {isConditional ? (
-                  <div className="mt-4 p-3 rounded-md border border-amber-800/50 bg-amber-950/20">
-                    <p className="text-xs font-semibold text-amber-300 mb-2">
-                      🧩 Evidence granular — branch ini TIDAK SEMUA proven / TIDAK SEMUA not-proven
-                    </p>
-                    <ul className="space-y-1 text-xs text-neutral-300">
-                      {ai.claims.map((c) => (
-                        <li key={c.claim} className="flex items-start gap-2">
-                          <StatusBadge status={c.status} />
-                          <span className="pt-0.5">{c.claim}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Link
-                      href="/state#ai-branch-evidence"
-                      className="inline-block mt-3 text-xs font-mono text-amber-400 hover:text-amber-300"
-                    >
-                      Lihat penjelasan granular lengkap di State page →
-                    </Link>
-                  </div>
-                ) : null}
               </li>
             );
           })}

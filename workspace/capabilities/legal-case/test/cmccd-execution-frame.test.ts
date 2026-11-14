@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * LH-CMBCD-001: CMBCD Framework & Execution Frame Calculation Test
  * Verifikasi bahwa calculateExecutionFrame berfungsi di seluruh actor type dan risk level

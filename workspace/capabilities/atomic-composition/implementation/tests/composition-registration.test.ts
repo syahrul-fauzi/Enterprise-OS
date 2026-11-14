@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * COMP-001-Registration: Capability Registration Verification (eos-verification: independent auditor)
  * Memverifikasi bahwa semua command atomic-composition (termasuk billing.generate) terdaftar di capabilityRegistry

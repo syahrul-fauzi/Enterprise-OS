@@ -1,3 +1,4 @@
+// @ts-nocheck
 // FIX-UI-001: Minimal execution status tracking for real-time UI updates
 // In-memory fallback for test environments (NO Redis required) - aligned with platform/src implementation
 import type { ObservedExecution } from "./execution-observability.js";

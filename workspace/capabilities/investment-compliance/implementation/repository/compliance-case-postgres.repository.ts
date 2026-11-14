@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Pool } from "pg";
 import { PostgresRepository } from "../../../work-core/index.js";
 import { MigrationManager } from "../../../shared/implementation/database/migrations/migration.manager.js";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // GapAnalysisService - E01-UNIVERSAL-INTENT-PIPELINE: Sufficiency checking for universal intents
 // Analyzes intent understanding to determine if we can form work, or if we need resolution
 // Implements the core "CAN EOS FORM WORK NOW?" logic from the architecture proposal

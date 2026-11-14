@@ -1,8 +1,7 @@
 // @ts-nocheck
 import { z } from "zod";
-import { executeBudgetOperation, getIsMultiInstance, acquireTenantLock, acquireRedisTenantLock, releaseTenantLock, releaseRedisTenantLock } from "../../../../packages/core/runtime/src/execution-observability.ts";
-import type { CapabilityCommand } from "../../../../packages/core/kernel/src/registry/capability-command-registry.js";
-import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index.js";
+import { executeBudgetOperation, getIsMultiInstance, acquireTenantLock, acquireRedisTenantLock, releaseTenantLock, releaseRedisTenantLock, recordRuntimeInvocation } from "@repo/core-runtime";
+import type { CapabilityCommand } from "@repo/core-kernel";
 import { getSessionRepositoryPostgres, initIdentitySchema } from "../../../work-core/implementation/index.js";
 import type { BudgetOperationResult } from "../contracts/index.ts";
 
@@ -13,7 +12,7 @@ const LOCK_LEASE_TTL = 30000; // 30 detik lock lease sesuai execution-observabil
 
 // Lazy import capability registry untuk menghindari module cycle (SAMA PERSIS dengan evidence-registry)
 async function getCapabilityRegistry() {
-  const { capabilityRegistry } = await import("../../../../packages/core/kernel/src/registry/capability-command-registry.js");
+  const { capabilityRegistry } = await import("@repo/core-kernel");
   return capabilityRegistry;
 }
 

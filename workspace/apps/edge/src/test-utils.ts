@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Test utilities untuk EDGE-DEVICE-001
 // GATE A COMPLIANCE: Import dari path yang SAMA persis dengan yang digunakan di websocket-adapter.service.ts
 // Memastikan SessionRepositoryInMemory menggunakan INSTANCE STORE yang sama (global __EOS_IDENTITY_SESSION_STORE__)

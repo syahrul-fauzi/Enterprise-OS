@@ -1,11 +1,20 @@
 export * from "./types.js";
 export type * from "./interfaces.js";
 export * from "./schema.js";
-export * from "./verification-decision.js";
 export * from "./verification-proof.js";
-export * from "./artifact-graph.js";
 export * from "./artifact-persistence.js";
 export * from "./delivery-evidence.js";
+
+import { injectProofLedgerServices as injectFromVerificationDecision, computeVerificationDecision } from "./verification-decision.js";
+import { injectProofLedgerServices as injectFromArtifactGraph, computeArtifactGraphForRequirement } from "./artifact-graph.js";
+
+export function injectProofLedgerServices(services: any) {
+  injectFromVerificationDecision(services);
+  injectFromArtifactGraph(services);
+}
+
+// Ekspor fungsi secara eksplisit, jangan gunakan export * untuk menghindari konflik
+export { computeVerificationDecision, computeArtifactGraphForRequirement };
 export type {
   TransformationProofEntry,
   ExecutionProofEntry,

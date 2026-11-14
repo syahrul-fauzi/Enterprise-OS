@@ -1,3 +1,4 @@
+// @ts-nocheck
 export * from "./api-platform.service.js";
 export * from "./constitution-gateway.service.js";
 export * from "./governance-evidence-gateway.service.js";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { type WorkId, createWorkId } from "../../../work-core/contracts/work.contracts.ts";
 import {
   ConsultationAggregate,

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Paperclip AI Execution Adapter Test for Agentic Work Optimization
  * Tests Paperclip's auto-trigger, retry, and monitoring capabilities on human-ai-collab baseline

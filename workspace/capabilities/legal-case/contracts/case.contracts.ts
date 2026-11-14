@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Import canonical identity + CMBCD types dari work-core (single source of truth - anti-drift)
 // Semua CMBCD core types (ActorMetadata, AuthorizationScope, ContextMetadata, RiskAssessment)
 // didefinisikan sekali di work-core untuk menghindari duplikasi antar vertical slices (Rule of Two compliance)

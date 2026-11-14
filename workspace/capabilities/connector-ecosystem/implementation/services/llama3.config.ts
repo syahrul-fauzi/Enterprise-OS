@@ -1,3 +1,4 @@
+// @ts-nocheck
 // W-010-08: Llama3 Runtime Configuration Service - PostgreSQL-backed tenant-isolated config storage
 // 100% reuse from comfyui.config.ts / whatsapp.config.ts (PostgreSQL RLS pattern)
 // Maintains full backward API compatibility while adhering to EOS tenant isolation principles

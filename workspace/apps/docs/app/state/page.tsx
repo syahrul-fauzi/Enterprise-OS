@@ -1,10 +1,12 @@
-import { EOS_KNOWLEDGE_MODEL, STATUS } from "../_lib/eos-knowledge-model";
+import { getRuntimeState } from "../_lib/registry-client";
+import { STATUS } from "../_lib/eos-knowledge-model";
 import { StatusBadge } from "../_components/status-badge";
 import { Section, SectionCard, LabeledRow } from "../_components/section";
 import { PageHeader } from "../_components/navigation";
+import { DataSourceBadge } from "../_components/data-source-badge";
 
 export default function StatePage() {
-  const st = EOS_KNOWLEDGE_MODEL.state;
+  const { data: st, dataSource } = getRuntimeState();
   const lif = st.procedureLifecycle;
 
   const HUMAN_MODE_LABEL = "Validation Stage 1 · KNOW Surface Acceptance";
@@ -18,7 +20,8 @@ export default function StatePage() {
         subtitle="State procedure prepare_release + Controlled Engineering Mode saat ini."
       />
 
-      {/* K5 — RUNTIME TERMINOLOGY DUAL-LABELING (human + internal) */}
+      <DataSourceBadge dataSource={dataSource} />
+
       <Section eyebrow="Runtime Mode" title="Mode dan Scope Engineering Sekarang">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <SectionCard className="border-purple-900/50 bg-purple-950/10">
@@ -51,7 +54,7 @@ export default function StatePage() {
         </p>
       </Section>
 
-      <Section eyebrow="Lifecycle" title={`${lif.name} — 6 States + Transisi`}>
+      <Section eyebrow="Lifecycle" title={`${lif.name} — ${lif.states.length} States + Transisi`}>
         <div className="space-y-3">
           {lif.states.map((s, i) => {
             const isConditional = s.state === "trigger_ai_investigation";
@@ -106,79 +109,21 @@ export default function StatePage() {
         </div>
       </Section>
 
-      {/* K4 — AI STEP GRANULAR EVIDENCE BREAKDOWN (with id= anchor for deep link from procedures page) */}
-      <Section
-        id="ai-branch-evidence"
-        eyebrow="AI Branch Evidence · Granular"
-        title="trigger_ai_investigation — 4 Claims Terpisah (Tidak Semua Proven / Tidak Semua Not-Proven)"
-      >
-        <p className="text-xs text-neutral-500 mb-4 italic">
-          Prinsip Evidence granular: Jangan katakan seluruh step = NOT_PROVEN. Katakan BAGIAN MANA yang proven, BAGIAN MANA yang belum.
-          Data model men-support granularity ini; kita render sesuai bukti, bukan blanket claim.
-        </p>
-        <div className="space-y-3">
-          {EOS_KNOWLEDGE_MODEL.aiStep.claims.map((c) => (
-            <div
-              key={c.claim}
-              className="p-4 rounded-lg border border-neutral-800 bg-neutral-900/40"
-            >
-              <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
-                <p className="text-sm text-neutral-100 font-medium">{c.claim}</p>
-                <StatusBadge status={c.status} />
-              </div>
-              <p className="text-xs text-neutral-500 leading-relaxed">{c.evidenceNote}</p>
-            </div>
-          ))}
-        </div>
-        <p className="text-xs text-neutral-500 mt-4 italic">
-          Prinsip EOS: AI = conditional capability di dalam SOP. Bukan mesin utama.
-          Known → deterministic. Unknown → intelligence. Ambiguous → investigation. Risky → human. Verified → continue.
-        </p>
-      </Section>
-
-      <Section eyebrow="Terminal States" title="3 Kemungkinan Hasil Akhir Procedure">
+      <Section eyebrow="Terminal States" title={`${lif.name} — ${lif.terminalStates.length} Terminal States`}>
         <div className="grid md:grid-cols-3 gap-3">
-          {lif.terminalStates.map((t) => (
-            <SectionCard
-              key={t.name}
-              className={
-                t.name === "ready"
-                  ? "border-emerald-900/60"
-                  : t.name === "blocked"
-                    ? "border-red-900/60"
-                    : "border-amber-900/60"
-              }
-            >
-              <div className="flex items-center justify-between mb-2">
-                <StatusBadge
-                  status={
-                    t.name === "ready"
-                      ? STATUS.PROVEN
-                      : t.name === "blocked"
-                        ? STATUS.LOCKED
-                        : STATUS.NOT_PROVEN
-                  }
-                />
-                <code className="text-xs font-mono text-neutral-400">{t.name}</code>
-              </div>
-              <p className="text-sm text-neutral-300">{t.description}</p>
+          {lif.terminalStates.map((ts) => (
+            <SectionCard key={ts.name} className="border-neutral-800">
+              <p className="font-mono font-bold text-white mb-1">{ts.name}</p>
+              <p className="text-sm text-neutral-300">{ts.description}</p>
             </SectionCard>
           ))}
         </div>
       </Section>
 
-      <Section eyebrow="Continuation Model" title="Resume dari WAIT_FOR_AI_OR_HUMAN = FUTURE GATE">
-        <SectionCard className="border-red-900/50 bg-red-950/10">
-          <LabeledRow
-            label="Frontier 3"
-            value={<StatusBadge status={STATUS.LOCKED} />}
-          />
-          <p className="text-sm text-neutral-200 leading-relaxed mt-3">
+      <Section eyebrow="Continuation Model" title="Continuation Model">
+        <SectionCard className="border-sky-900/50 bg-sky-950/10">
+          <p className="text-sm text-neutral-200 leading-relaxed">
             {lif.continuationModel}
-          </p>
-          <p className="text-xs text-neutral-500 mt-3 italic">
-            Harus buka Gate 3 (Durable Evidence) dahulu untuk bisa menyimpan snapshot
-            state apa yang harus di-resume. Gate 3 sendiri butuh Gate 2 (Execution Identity).
           </p>
         </SectionCard>
       </Section>

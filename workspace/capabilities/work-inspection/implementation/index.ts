@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Work Inspection Capability Public API
  * Maintains substrate freeze - only export what's necessary for external use

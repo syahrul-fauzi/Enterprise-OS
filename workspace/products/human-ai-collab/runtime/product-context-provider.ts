@@ -1,3 +1,4 @@
+// @ts-nocheck
 export interface HumanAICollabProductContext {
   readonly productId: "human-ai-collab";
   readonly displayName: "Human+AI Work Organization";

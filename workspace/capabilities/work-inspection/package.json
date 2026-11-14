@@ -5,7 +5,7 @@
   "main": "./dist/implementation/index.js",
   "types": "./dist/implementation/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist tsconfig.tsbuildinfo && tsc",
     "lint": "eslint .",
     "check-types": "tsc --noEmit"
   },

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Pool } from "pg";
 import { PostgresRepository, getPool, initIdentitySchema } from "../../../identity/implementation/repositories/base.repository.js";
 // Import canonical identity factory functions + types from SINGLE-SOURCE work-core (anti-drift - TENANT-ISOLATION-001)

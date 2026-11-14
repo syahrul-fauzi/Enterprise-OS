@@ -3,7 +3,7 @@
 // Tests RLS policies and session context isolation
 
 import { Pool } from 'pg';
-import { DatabaseMigrationManager } from './capabilities/shared/implementation/database/migrations/migration.manager.js';
+import { MigrationManager } from './capabilities/shared/implementation/database/migrations/migration.manager.js';
 
 // Staging database connection (matches compose.yaml)
 const DATABASE_URL = 'postgresql://postgres:postgres@localhost:5433/eos_identity';
@@ -35,8 +35,8 @@ async function main() {
   }
   
   // Step 2: Run all migrations
-  console.log('\n🚀 STEP 2: Execute all migrations via DatabaseMigrationManager');
-  const result = await DatabaseMigrationManager.runMigrations(pool);
+  console.log('\n🚀 STEP 2: Execute all migrations via MigrationManager');
+  const result = await MigrationManager.runMigrations(pool);
   
   if (result.errors.length > 0) {
     console.error('   ❌ Migration execution FAILED:');

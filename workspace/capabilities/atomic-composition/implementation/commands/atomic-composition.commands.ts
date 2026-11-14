@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { z } from "zod";
 import { createTenantId, createWorkspaceId, createActorId } from "../../../../packages/contracts-core/dist/index.js";
 import { safeRecordEvidence } from "../../../work-core/implementation/utils/evidence.utils.js";

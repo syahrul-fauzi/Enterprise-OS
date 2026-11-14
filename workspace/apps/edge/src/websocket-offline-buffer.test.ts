@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Test independen untuk verifikasi EDGE-C-002: Offline buffer durability
 // Dijalankan secara terpisah dari implementasi agent, sesuai mandat eos-verification
 

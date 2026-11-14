@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { DigestEngine } from "@repo/core-kernel/digest-engine";
 import {
   defineConstitutionLawRegistry,

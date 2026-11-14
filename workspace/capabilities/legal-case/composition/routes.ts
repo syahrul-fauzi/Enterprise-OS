@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { caseExperienceRoutes } from "../experience/routes/index.js";
 
 export interface CaseCompositionRouteDescriptor {

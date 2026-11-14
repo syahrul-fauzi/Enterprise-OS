@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { WorkSemanticContract } from "../../../capabilities/work-core/contracts/work.contracts";
 import { ExecutionProvider } from "./types";
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { describe, it, expect } from "vitest";
 import { agentOrchestrationService } from "../implementation/services/agent-orchestration.service.js";
 

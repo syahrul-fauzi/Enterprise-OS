@@ -5,7 +5,7 @@ import {
   decodeWorkspaceSession,
   type WorkspaceSession,
 } from "@repo/core-kernel";
-import { validateBoundaryAccess } from "@repo/capabilities/work-core/contracts/work.contracts";
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts";
 // Gunakan lazy import Redis di dalam POST handler untuk berbagi instance yang sama dengan test-runner
 // Solusi masalah dual instance karena Next.js SSR/edge runtime memisahkan import top-level dengan test process
 // Ini penting untuk TEST-004 agar simulateUnavailable berfungsi dengan benar (satu instance Redis di globalThis)

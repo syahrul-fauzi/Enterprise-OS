@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * AUDIT-001-006 G5: Startup Regression Test - FIXED
  * Verifies that development server can start and required capabilities are available

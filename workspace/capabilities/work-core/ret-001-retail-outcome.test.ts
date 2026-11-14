@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * RET-001: Retail Outcome Cross-Boundary Work Continuity Test
  * Memvalidasi Work Continuity Substrate untuk eksperimen orthogonal in-store mobile/offline

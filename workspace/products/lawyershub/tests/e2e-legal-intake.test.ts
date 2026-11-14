@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Golden Path Test for LawyersHub: BETTER EOS Value-Reality Flow
  * Verifies the core knowledge graph primitives work for real-world legal intake

@@ -1,3 +1,4 @@
+// @ts-nocheck
 process.env.NODE_ENV = 'test';
 (globalThis as any)._forceMockPool = true;
 

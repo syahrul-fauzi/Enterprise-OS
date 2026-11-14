@@ -1,7 +1,7 @@
 // Script untuk menjalankan migration v007 secara spesifik di staging-dev
 // Mengaplikasikan perubahan work_id column dan RLS pada works table
 import { Pool } from 'pg';
-import { DatabaseMigrationManager } from './capabilities/shared/implementation/database/migrations/migration.manager.js';
+import { MigrationManager } from './capabilities/shared/implementation/database/migrations/migration.manager.js';
 
 // Staging database connection
 const DATABASE_URL = 'postgresql://eos_user:eos_pass123@localhost:5433/eos_identity';
@@ -19,8 +19,8 @@ async function main() {
   await initDB();
   
   // Jalankan semua migrasi (manager akan menjalankan yang belum dieksekusi)
-  console.log('\n🚀 Memulai eksekusi migrasi via DatabaseMigrationManager');
-  const result = await DatabaseMigrationManager.runMigrations(pool);
+  console.log('\n🚀 Memulai eksekusi migrasi via MigrationManager');
+  const result = await MigrationManager.runMigrations(pool);
   
   if (result.errors.length > 0) {
     console.error('   ❌ Eksekusi migrasi GAGAL:');

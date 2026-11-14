@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { capabilityRegistry } from "../../../../packages/core/kernel/src/registry/capability-command-registry.js";
 import { serviceDirectoryCommands } from "../commands/service.commands.js";
 

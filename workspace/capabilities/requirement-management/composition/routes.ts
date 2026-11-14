@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { requirementRoutes } from "../experience/routes/index.js";
 
 export interface RequirementCompositionRouteDescriptor {

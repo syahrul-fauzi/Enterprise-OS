@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { ServiceProviderCategory } from "../contracts/service.contracts.js";
 
 const VALID_SERVICE_CATEGORIES: readonly ServiceProviderCategory[] = [

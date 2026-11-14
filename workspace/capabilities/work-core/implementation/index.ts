@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Re-export SEMUA types dari contracts yang dibutuhkan websocket-adapter dan capabilities lain
 export type { 
   WorkId, WorkStatus, WorkAggregate, TenantId, ActorId, SessionId, CompositionId,
@@ -29,9 +30,9 @@ export { checkAutonomyBoundary } from "./utils/boundary-checks.utils.js";
 export type { AutonomyBoundaryCheck, AutonomyBoundaryResult } from "./utils/boundary-checks.types.js";
 
 // Re-export base repository classes dari identity
-export { PostgresRepository, initIdentitySchema, getPool } from "../../identity/implementation/repositories/base.repository.js";
+export { PostgresRepository, initIdentitySchema, getPool } from "@repo/capabilities-identity";
 // Re-export identity repositories untuk kompatibilitas import dari work-core (hanya untuk primitif yang belum diekspor via kontrak)
-export { getSessionRepositoryPostgres, SessionRepositoryPostgres } from "../../identity/implementation/repositories/session.repository.js";
-export { SessionRepositoryInMemory } from "../../identity/implementation/repositories/index.js";
+export { getSessionRepositoryPostgres } from "@repo/capabilities-identity";
+export { SessionRepositoryInMemory } from "@repo/capabilities-identity";
 
 // Main capability implementation export sudah ada di baris sebelumnya, tidak perlu duplikasi

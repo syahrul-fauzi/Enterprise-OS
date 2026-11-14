@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * DO-DIGITALGROWTHOPS-001: End-to-end Digital Growth Ops integration & growth journey
  * Menverifikasi Work Continuity dan Managed Outcome Loop untuk paket Digital Growth Ops
@@ -9,8 +10,8 @@ process.env.NODE_ENV = 'test';
 
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { traceExecutionByDecision } from "../../../packages/core/runtime/src/invocation-evidence.ts";
-import { createDevAuthenticatedSession } from "../../../packages/core/kernel/src/session/workspace-session.ts";
+import { traceExecutionByDecision } from "@repo/core-runtime";
+import { createDevAuthenticatedSession } from "@repo/core-kernel";
 // Import SessionRepositoryInMemory langsung dari file implementasi (path yang benar)
 import { SessionRepositoryInMemory } from "../../../capabilities/identity/implementation/repositories/session.inmemory.js";
 

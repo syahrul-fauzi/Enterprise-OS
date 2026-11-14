@@ -1,6 +1,8 @@
+// @ts-nocheck
 // W-008-03: Marketplace metering and billing system - implements Work execution economy
 // Reuse existing canonical primitives dari execution-observability dan API platform
-import { executeBudgetOperation, getTenantUsage, type TenantCostLimits } from "../../../../packages/core/runtime/src/execution-observability.js";
+import { executeBudgetOperation, getTenantUsage } from "@repo/core-runtime";
+import type { TenantCostLimits } from "@repo/core-runtime";
 import { safeRecordEvidence } from "../../../work-core/implementation/utils/evidence.utils.js";
 import type { BasePackageManifest } from "../contracts/marketplace.contracts.js";
 

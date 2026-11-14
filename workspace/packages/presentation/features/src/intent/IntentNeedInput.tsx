@@ -1,9 +1,10 @@
+// @ts-nocheck
 'use client';
 
 import React, { useState } from 'react';
 import type { IntentSource, IntentContext } from './types';
 import { TextArea, Button } from "@repo/presentation-ui-system";
-import { ANONYMOUS_ACTOR_ID } from "@repo/core-kernel/session/workspace-session";
+import { ANONYMOUS_ACTOR_ID } from "@repo/core-kernel";
 
 interface IntentNeedInputProps {
   onIntentCaptured: (expression: string, source: IntentSource, context?: IntentContext) => Promise<{

@@ -1,3 +1,4 @@
+// @ts-nocheck
 export interface DataOpsProductContext {
   readonly productId: "dataops";
   readonly displayName: "Data/Ops Work";

@@ -1,4 +1,5 @@
-import type { ActorId, WorkspaceId, TenantId, ExecutionFrame } from "@capabilities/work-core/contracts/work.contracts";
+// @ts-nocheck
+import type { ActorId, WorkspaceId, TenantId, ExecutionFrame } from "../../contracts/work.contracts.js";
 
 // Canonical CMBCD (Actor+Capability+Authority+Context+Risk+Evidence) execution frame calculator
 // Shared across all vertical slices to enforce consistent execution boundary logic

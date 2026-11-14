@@ -2,22 +2,10 @@
   "extends": "../../../config/typescript/base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "strictNullChecks": true,
-    "declaration": true,
-    "incremental": true,
-    "composite": true,
-    "noEmit": false,
+    "rootDir": ".",
     "module": "NodeNext",
-    "moduleDetection": "force",
     "moduleResolution": "NodeNext",
-    "rootDir": "src",
-    "types": ["node"],
-    "ignoreDeprecations": "5.0",
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "noUncheckedIndexedAccess": true,
-    "resolveJsonModule": true,
-    "target": "ES2022"
+    "paths": {}
   },
   "include": ["src"],
   "exclude": ["dist", "build", "node_modules", "../../../capabilities/"]

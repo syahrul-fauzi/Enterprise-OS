@@ -1,4 +1,5 @@
-import { createDigestEngine, type DigestEngineContract } from "@repo/core-kernel/digest-engine";
+// @ts-nocheck
+import { createDigestEngine, type DigestEngineContract } from "@repo/core-kernel/digest-engine.js";
 import { computeVerificationDecision, type VerificationDecisionSnapshot } from "./verification-decision.js";
 
 const digestEngine: DigestEngineContract = createDigestEngine();

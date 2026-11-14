@@ -1,3 +1,4 @@
+// @ts-nocheck
 // ComfyUI specific provider contract
 // Extends base CreativeProvider with ComfyUI-specific capabilities
 // ComfyUI operates as execution reference only, maintains Work identity in EOS

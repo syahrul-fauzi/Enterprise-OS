@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { z } from "zod";
 import type { DeviceId, WorkId } from "../../../work-core/contracts/work.contracts.js";
 

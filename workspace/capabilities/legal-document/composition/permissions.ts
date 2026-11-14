@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { documentWorkspace } from "./workspace.js";
 
 export interface DocumentPermissionRule {

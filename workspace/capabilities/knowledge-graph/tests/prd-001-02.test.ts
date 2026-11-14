@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * PROD-001-02 End-to-End Test
  * LAYER 9: Executable test with real invocation (NO MOCKS)

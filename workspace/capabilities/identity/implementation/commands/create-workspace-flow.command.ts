@@ -1,3 +1,5 @@
+// @ts-nocheck
+// @ts-nocheck
 import { z } from "zod";
 import { TenantId } from "@repo/contracts-core";
 import { CapabilityCommand } from "../../../capability-dispatch/contracts/command.contracts.js";

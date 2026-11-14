@@ -2,7 +2,7 @@
 // EOS Face priority first - only core user-facing workflows are enabled for production
 import { NextResponse } from "next/server";
 import { readWorkspaceSessionFromRequest } from '@repo/core-kernel';
-import { validateBoundaryAccess } from "@repo/capabilities/work-core/contracts/work.contracts";
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts";
 
 export async function POST(request: Request) {
   try {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { describe, it, expect, vi } from 'vitest';
 import { MockWebSocketClient } from './websocket-adapter.service';
 import { createDeviceId } from '@capabilities/work-core';

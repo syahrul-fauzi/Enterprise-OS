@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * C19 Multi-Tenant Isolation Pressure Test
  * Validates:

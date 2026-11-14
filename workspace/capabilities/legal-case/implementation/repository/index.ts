@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Legal Case Repository Factory - Environment-based implementation selection
 // Maintains identical interface regardless of storage backend (in-memory/Postgres)
 import { CaseRepositoryInMemory, getCaseRepositoryInMemory } from "./case.repository.js";

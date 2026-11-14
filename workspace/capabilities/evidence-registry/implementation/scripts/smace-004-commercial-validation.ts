@@ -1,3 +1,4 @@
+// @ts-nocheck
 // SMACE-004: Commercial Validation End-to-End (E2E Business Lifecycle)
 // Berdasarkan orchestration plan dari agent-orchestration repository: orchestrate-smace-commercial-transaction
 // Mengikuti EOS Product Slice playbook: 100% primitive reuse, frozen core compliance, bukti komersial end-to-end

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { z } from "zod";
 // Import canonical identity types dari work-core (sesuai dependency chain: identity→work-core→capabilities)
 // Anti-drift enforcement - semua capability harus import dari @capabilities/work-core

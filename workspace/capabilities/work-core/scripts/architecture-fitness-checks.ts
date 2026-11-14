@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { glob } from "glob";
 import { readFile } from "fs/promises";
 import { validateBoundaryAccess, validateNoCircularDependencies, DOMAIN_AUTHORITY_OWNERSHIP } from "../contracts/work.contracts.js";

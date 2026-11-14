@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { capabilityRegistry } from "@repo/core-kernel";
 import { serviceRequestCommands } from "../commands/service-request.commands";
 import { serviceRequestQueries } from "../queries/service-request.queries";

@@ -6,7 +6,7 @@ import {
   decodeWorkspaceSession,
   type WorkspaceSession,
 } from "@repo/core-kernel";
-import { validateBoundaryAccess } from "@repo/capabilities-work-core/contracts/work.contracts.js";
+import { validateBoundaryAccess } from "@capabilities/work-core/contracts/work.contracts.js";
 
 // Lazy load capability registry untuk menghindari module cycles dan mendukung Edge Runtime
 async function getCapabilityRegistry() {

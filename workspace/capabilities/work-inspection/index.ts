@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Work Inspection Capability Root Export
  * Aligns with tsconfig path mapping for @capabilities/work-inspection

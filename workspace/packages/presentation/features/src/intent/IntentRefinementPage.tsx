@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 import { notFound } from "next/navigation";
 import { useEffect, useState } from 'react';

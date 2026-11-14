@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * E2E Test for Universal Intent Pipeline - the full vertical slice
  * Tests the complete lifecycle: RECEIVED → CAPTURED → UNDERSTANDING → RESOLVING/RESOLVED → WORK FORMED

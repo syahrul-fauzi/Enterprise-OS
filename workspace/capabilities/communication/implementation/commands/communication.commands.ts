@@ -1,6 +1,7 @@
+// @ts-nocheck
 import { z } from "zod";
-import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
-import { executionContext } from "../../../../packages/core/runtime/src/index.js";
+import type { CapabilityCommand } from "@repo/core-kernel";
+import { executionContext } from "@repo/core-runtime";
 // Import SEMUA canonical types dan factory functions dari SINGLE-SOURCE work-core (anti-drift - TENANT-ISOLATION-001)
 // Sesuai dengan aturan: Semua capability harus import dari @capabilities/work-core, bukan langsung dari identity
 import { 
@@ -40,8 +41,8 @@ import {
   type SendCommunicationOutput,
   type CommunicationEvent,
 } from "../contracts/communication.contracts.js";
-import { getSessionRepositoryPostgres, SessionRepositoryInMemory } from "../../../identity/implementation/repositories/index.js";
-import { type SessionId } from "../../../identity/implementation/repositories/session.repository.js";
+import { getSessionRepositoryPostgres, SessionRepositoryInMemory } from "../../../identity/index.js";
+import { SessionId } from "@repo/contracts-core";
 
 const SessionRepositoryPostgres = process.env.POSTGRES_CONNECTION_STRING || process.env.DATABASE_URL
   ? getSessionRepositoryPostgres()

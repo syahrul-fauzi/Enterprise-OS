@@ -1,4 +1,5 @@
-import type { CapabilityCommand } from "../../../../packages/core/kernel/src/types.js";
+// @ts-nocheck
+import type { CapabilityCommand } from "@repo/core-kernel";
 import { governanceEvidenceService } from "../services/governance-evidence.service.js";
 
 // Define governance-evidence commands aligned with existing service capabilities

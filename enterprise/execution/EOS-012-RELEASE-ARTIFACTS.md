@@ -13,7 +13,7 @@ Capability scope:
 
 Runtime surfaces:
 - `workspace/apps/lawyershub`
-- `workspace/apps/docs`
+- `docs`
 
 API surfaces:
 - `GET /api/platform`

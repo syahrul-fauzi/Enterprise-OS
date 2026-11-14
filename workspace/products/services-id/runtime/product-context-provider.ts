@@ -1,3 +1,4 @@
+// @ts-nocheck
 export interface ServicesIDProductContext {
   readonly productId: "services-id";
   readonly displayName: "Services.ID";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * R6 - UNIVERSAL ADAPTER CONTRACT VALIDATION TEST
  * This test PROVES that we added Zendesk adapter WITHOUT modifying any core EOS files

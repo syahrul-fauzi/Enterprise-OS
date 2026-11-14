@@ -74,7 +74,7 @@ Status yang dipakai hanya empat:
 | Area | Status | Evidence Summary |
 | --- | --- | --- |
 | `eos-cli` | `ACTIVE` | reality check membuktikan surface operasional nyata, artefak governance/verification nyata, dan workflow aktif; lihat `EOS-CLI-REALITY-ASSESSMENT.md` |
-| UI | `ACTIVE` | `workspace/apps/lawyershub` dan `workspace/apps/docs` hadir sebagai app nyata; ada Next.js app, build outputs, dan test seperti `enterprise-ui.test.tsx`, `graph-api.test.ts`, `observability-api.test.ts` |
+| UI | `ACTIVE` | `workspace/apps/lawyershub` dan `docs` hadir sebagai app nyata; ada Next.js app, build outputs, dan test seperti `enterprise-ui.test.tsx`, `graph-api.test.ts`, `observability-api.test.ts` |
 | Agent | `ACTIVE` | capability `agent-orchestration` punya definition, service, repository, tests; `apps/lawyershub/app/api/orchestration/*` dan `agent-orchestration-api.test.ts` menunjukkan interface agent nyata |
 | MCP | `PARTIAL` | surface ini sudah diakui di `enterprise/specifications/SURFACE-TAXONOMY.yaml`, `EXPERIENCE-PLATFORM.spec.yaml`, ADR-0009, ADR-0011; tetapi quick scan repo belum menemukan implementation surface MCP yang setara dengan CLI/UI/Agent |
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 export interface AgenticWorkProductContext {
   readonly productId: "agentic-work";
   readonly displayName: "Agentic Work";

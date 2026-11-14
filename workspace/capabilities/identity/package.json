@@ -18,12 +18,13 @@
       "default": "./dist/*.js"
     },
     "./implementation": "./implementation/index.ts",
-            "./implementation/*": "./implementation/*",
-            "./repositories": "./implementation/repositories/index.ts"
+    "./implementation/*": "./implementation/*",
+    "./repositories": "./implementation/repositories/index.ts",
+    "./repositories/base": "./implementation/repositories/base.repository.ts"
   },
   "license": "MIT",
   "scripts": {
-    "build": "tsc --build --force",
+    "build": "rm -rf dist tsconfig.tsbuildinfo && tsc",
     "check-types": "tsc --noEmit",
     "dev": "tsc --watch",
     "lint": "eslint implementation --max-warnings 0"

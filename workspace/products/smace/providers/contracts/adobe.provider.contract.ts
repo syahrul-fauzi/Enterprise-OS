@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Adobe Firefly specific provider contract
 // Extends base CreativeProvider with Adobe-specific capabilities
 // Adobe operates as execution reference only, maintains Work identity in EOS

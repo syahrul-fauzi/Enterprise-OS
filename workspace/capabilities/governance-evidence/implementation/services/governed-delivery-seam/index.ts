@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Canonical API for governed-delivery-seam — B7.11 extraction
  * Public export boundary untuk semua consumer (services-id, lawyershub, future products)

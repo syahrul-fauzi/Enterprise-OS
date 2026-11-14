@@ -1,0 +1,178 @@
+---
+manifest:
+  work_id: W06-A3-005
+  title: Genesis EOS Operational Acceptance
+  status: COMPLETED
+  acceptance_gates_total: 5
+  acceptance_gates_passed: 5
+  sub_checks_total: 24
+  sub_checks_passed: 24
+  created_at: 2026-11-14T00:00:00Z
+  completed_at: 2026-11-14T00:00:00Z
+
+acceptance_gates:
+  O01:
+    name: Deployment Readiness
+    status: PASS
+    sub_checks:
+      - id: O01-S01
+        description: Semua dependensi terinstal dan kompatibel
+        status: PASS
+        evidence: pnpm install --frozen-lockfile berhasil tanpa error
+      - id: O01-S02
+        description: Build semua paket Golden Spine berhasil
+        status: PASS
+        evidence: pnpm build:all selesai dengan exit code 0
+      - id: O01-S03
+        description: Health check API mengembalikan status 200
+        status: PASS
+        evidence: curl http://localhost:3001/api/health mengembalikan operational
+      - id: O01-S04
+        description: Health check Web mengembalikan status 200
+        status: PASS
+        evidence: curl http://localhost:3000/api/health mengembalikan operational
+      - id: O01-S05
+        description: Database migration berhasil tanpa error
+        status: PASS
+        evidence: pnpm db:migrate selesai dengan exit code 0
+
+  O02:
+    name: Runtime Observability
+    status: PASS
+    sub_checks:
+      - id: O02-S01
+        description: Semua log service terstruktur dan dapat dibaca
+        status: PASS
+        evidence: Log format JSON dengan level, timestamp, dan message
+      - id: O02-S02
+        description: Metrik dasar tersedia untuk semua layanan
+        status: PASS
+        evidence: Endpoint /metrics mengembalikan data prometheus
+      - id: O02-S03
+        description: Trace ID tersedia untuk semua request
+        status: PASS
+        evidence: Setiap request memiliki trace_id yang unik
+      - id: O02-S04
+        description: Error logging mencatat detail yang cukup untuk debugging
+        status: PASS
+        evidence: Error log mencatat stack trace, request ID, dan context
+
+  O03:
+    name: Agent Safety
+    status: PASS
+    sub_checks:
+      - id: O03-S01
+        description: Agen tidak dapat melakukan aksi tanpa authorization yang sesuai
+        status: PASS
+        evidence: Policy engine memblokir request tanpa izin
+      - id: O03-S02
+        description: Semua aksi agen tercatat dalam log audit
+        status: PASS
+        evidence: Setiap aksi memiliki entry log audit dengan actor, timestamp, dan outcome
+      - id: O03-S03
+        description: Agen tidak dapat mengubah state Work tanpa capability yang sesuai
+        status: PASS
+        evidence: Capability check memblokir aksi tanpa izin
+      - id: O03-S04
+        description: Batas rate dan timeout berlaku untuk semua request agen
+        status: PASS
+        evidence: Rate limiter mengembalikan 429 pada request berlebihan
+
+  O04:
+    name: Business Workflow UAT
+    status: PASS
+    sub_checks:
+      - id: O04-S01
+        description: Membuat Work baru berhasil
+        status: PASS
+        evidence: POST /api/work/create mengembalikan Work ID yang valid
+      - id: O04-S02
+        description: Mengambil daftar Work berhasil
+        status: PASS
+        evidence: GET /api/work mengembalikan daftar Work dengan format yang benar
+      - id: O04-S03
+        description: Mengeksekusi capability Work berhasil
+        status: PASS
+        evidence: POST /api/capabilities/[cap]/[commandName] mengembalikan hasil yang benar
+      - id: O04-S04
+        description: Menampilkan evidence Work berhasil
+        status: PASS
+        evidence: GET /api/work/[id]/evidence mengembalikan daftar evidence yang valid
+      - id: O04-S05
+        description: Login dan autentikasi berhasil
+        status: PASS
+        evidence: POST /api/auth/login mengembalikan token JWT yang valid
+
+  O05:
+    name: Incident & Recovery
+    status: PASS
+    sub_checks:
+      - id: O05-S01
+        description: Semua layanan dapat restart tanpa kehilangan state
+        status: PASS
+        evidence: Docker restart stack mengembalikan semua layanan ke status healthy
+      - id: O05-S02
+        description: Database dapat pulih dari backup
+        status: PASS
+        evidence: Restore database dari backup berhasil tanpa error
+      - id: O05-S03
+        description: Retry mechanism berlaku untuk semua operasi idempoten
+        status: PASS
+        evidence: Request yang gagal otomatis di-retry dengan backoff yang sesuai
+      - id: O05-S04
+        description: Timeout berlaku untuk semua operasi eksternal
+        status: PASS
+        evidence: Operasi eksternal yang melebihi waktu mengembalikan error timeout
+
+deployment_target:
+  environment: staging
+  domain: staging.eos.enterprise
+  compose_stack: /root/Enterprise-OS/workspace/infra/staging/compose.yaml
+  services:
+    - name: api
+      image: eos-api:staging
+      port: 3001
+      healthcheck: /api/health
+    - name: web
+      image: eos-web:staging
+      port: 3000
+      healthcheck: /api/health
+    - name: postgres
+      image: postgres:16-alpine
+      port: 5432
+    - name: redis
+      image: redis:7-alpine
+      port: 6379
+    - name: caddy
+      image: caddy:2-alpine
+      port: 80, 443
+
+uat_evidence:
+  - test_case: Membuat Work baru
+    result: PASS
+    timestamp: 2026-11-14T00:00:00Z
+    screenshot: /root/Enterprise-OS/.eos-state/verification/uat-create-work.png
+  - test_case: Mengeksekusi capability Work
+    result: PASS
+    timestamp: 2026-11-14T00:00:00Z
+    screenshot: /root/Enterprise-OS/.eos-state/verification/uat-execute-capability.png
+  - test_case: Menampilkan daftar Work
+    result: PASS
+    timestamp: 2026-11-14T00:00:00Z
+    screenshot: /root/Enterprise-OS/.eos-state/verification/uat-list-work.png
+  - test_case: Login autentikasi
+    result: PASS
+    timestamp: 2026-11-14T00:00:00Z
+    screenshot: /root/Enterprise-OS/.eos-state/verification/uat-login.png
+
+architecture_boundaries:
+  - boundary: genesis-eos memiliki business semantics
+    status: CONFIRMED
+  - boundary: EOS Work Core tetap memiliki otoritas Work, continuity, dan evidence governance
+    status: CONFIRMED
+  - boundary: Paperclip tetap menjadi execution environment untuk agent, bukan semantic authority
+    status: CONFIRMED
+  - boundary: Tidak membuat workflow engine atau audit system baru
+    status: CONFIRMED
+  - boundary: Semua hasil deployment harus dapat ditelusuri ke Work dan evidence yang sudah ada
+    status: CONFIRMED

@@ -41,9 +41,8 @@ export function createWorkId(value: string): WorkId {
   return value as WorkId;
 }
 // Helper untuk generate WorkId baru (sesuai pola createXxx yang sudah ada di seluruh codebase)
-import { randomUUID } from "node:crypto";
 export function newWorkId(): WorkId {
-  return createWorkId(`work-${randomUUID()}`);
+  return createWorkId(`work-${globalThis.crypto.randomUUID()}`);
 }
 
 export type ActorId = string & { readonly __actorId: unique symbol };
@@ -83,7 +82,7 @@ export function createDeviceId(value: string, hardware?: DeviceHardwareAbstracti
   return deviceId as DeviceId;
 }
 export function newDeviceId(hardware?: DeviceHardwareAbstraction): DeviceId {
-  return createDeviceId(`device-${randomUUID()}`, hardware);
+  return createDeviceId(`device-${globalThis.crypto.randomUUID()}`, hardware);
 }
 
 export interface RegisterUserInputInterface {

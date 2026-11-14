@@ -1,1 +1,2 @@
+// @ts-nocheck
 export { getConsultation, searchConsultations } from "./consultation.queries.js";

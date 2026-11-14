@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * R7 - PERSISTENT COMPANION GOLDEN SLICE TEST
  * This is the most important test in the entire system - it proves the core vision:

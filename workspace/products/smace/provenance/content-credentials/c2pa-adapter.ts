@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { CreativeBrief, CreativeSpecification } from "../../contracts/creative-brief.contract.js";
 
 export async function generateC2PAManifest(

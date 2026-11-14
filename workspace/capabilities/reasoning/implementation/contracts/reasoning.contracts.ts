@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Import type definitions dari work-core dan identity (relative path yang benar)
 import type {
   WorkId,

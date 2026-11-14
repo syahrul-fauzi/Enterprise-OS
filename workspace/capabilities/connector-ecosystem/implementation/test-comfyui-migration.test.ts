@@ -1,3 +1,4 @@
+// @ts-nocheck
 // End-to-End Test ComfyUI Adapter + W-008-03 Metering Integration
 // Memverifikasi Tahap D (Runtime replaceability) dan Tahap E (Package distribution)
 import { comfyuiAdapter } from "./runtimes/comfyui/comfyui.adapter.js";

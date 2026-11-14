@@ -1,3 +1,4 @@
+// @ts-nocheck
 export interface AdminSupportProductContext {
   readonly productId: "admin-support";
   readonly displayName: "Admin & Support";

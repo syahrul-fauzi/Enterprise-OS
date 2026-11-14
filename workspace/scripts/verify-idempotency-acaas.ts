@@ -3,8 +3,12 @@
  * Verifies that duplicate create requests return the same complianceCheckId and don't create duplicate work
  * Follows EOS verification doctrine: Inspect → Map → Verify → Act → Evidence
  */
+// Set NODE_ENV dan VITEST ke test sebelum import apapun (untuk mengizinkan providedExecutionContext dan traceExecutionByDecision lookup)
+Object.assign(process.env, { NODE_ENV: "test", VITEST: "true" });
+
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import * as crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,20 +23,33 @@ async function getDependencies() {
   const sessionLoaded = await import("@repo/core-kernel/session/workspace-session");
   // Import SessionRepositoryInMemory untuk menyimpan session ke in-memory storage
   const identityLoaded = await import("../capabilities/identity/implementation/repositories/index.js");
+  // Import apiPlatformCommands untuk mendaftarkan ACaaS command ke instance registry yang sama
+  const apiPlatformLoaded = await import("../capabilities/api-platform/implementation/commands/index.js");
+  
+  const capabilityRegistry = registryLoaded.capabilityRegistry;
+  const apiPlatformCommands = apiPlatformLoaded.apiPlatformCommands;
+  
+  // Daftarkan semua ACaaS command ke instance capabilityRegistry yang sama
+  console.log("[DEBUG] Mendaftarkan ACaaS command ke instance capabilityRegistry...");
+  Object.entries(apiPlatformCommands).forEach(([name, command]) => {
+    const commandKey = command.capability ? `${command.capability}.${command.name}` : command.name;
+    console.log(`[DEBUG] Registering command: ${commandKey}`);
+    capabilityRegistry.register(command as any);
+  });
+  console.log("[DEBUG] Semua ACaaS command berhasil didaftarkan");
   
   return {
-    capabilityRegistry: registryLoaded.capabilityRegistry,
-    capabilityCommands: registryLoaded.capabilityCommands,
+    capabilityRegistry,
     safeRecordEvidence: utilsLoaded.safeRecordEvidence,
     createDevAuthenticatedSession: sessionLoaded.createDevAuthenticatedSession,
     SessionRepositoryInMemory: identityLoaded.SessionRepositoryInMemory
   };
 }
 
-// Test constants
-const TEST_TENANT_ID = "tenant-acaas-test-001";
+// Test constants - sesuai dengan yang diharapkan oleh traceExecutionByDecision
+const TEST_TENANT_ID = "test-tenant-digigrow001";
 const TEST_WORKSPACE_ID = "workspace-acaas-test-001";
-const TEST_ACTOR_ID = "actor-acaas-test-001";
+const TEST_ACTOR_ID = "system.agent.digital-operations";
 const TEST_SESSION_ID = "session-acaas-test-001";
 const TEST_DOCUMENT_TYPE = "invoice";
 const TEST_DOCUMENT_DATA = { invoiceNumber: "INV-2026-1017", amount: 1500000, currency: "IDR" };
@@ -49,7 +66,7 @@ async function runIdempotencyTests() {
   const dependencies = await getDependencies();
   console.log("[DEBUG] Dependencies loaded:", Object.keys(dependencies));
   
-  const { capabilityRegistry, capabilityCommands, safeRecordEvidence, createDevAuthenticatedSession, SessionRepositoryInMemory } = dependencies;
+  const { capabilityRegistry, safeRecordEvidence, createDevAuthenticatedSession, SessionRepositoryInMemory } = dependencies;
   if (!capabilityRegistry || !safeRecordEvidence || !createDevAuthenticatedSession || !SessionRepositoryInMemory) {
     throw new Error("[ACAAS-IDEMPOTENCY-001] Failed to load required dependencies - cannot run tests, missing: " + 
       [!capabilityRegistry && "capabilityRegistry", !safeRecordEvidence && "safeRecordEvidence", !createDevAuthenticatedSession && "createDevAuthenticatedSession", !SessionRepositoryInMemory && "SessionRepositoryInMemory"].filter(Boolean).join(", "));
@@ -58,7 +75,11 @@ async function runIdempotencyTests() {
   // 1. Buat dan simpan dev session yang valid ke SessionRepositoryInMemory (sesuai pattern di lh-case-001.test.ts)
   console.log("\n[SESSION-SETUP] Membuat dev session yang valid untuk testing...");
   const session = createDevAuthenticatedSession();
-  console.log(`  ✅ Dev session created dengan sessionId: ${session.sessionId}`);
+  // Override session fields agar sesuai dengan test constants
+  session.actorId = TEST_ACTOR_ID;
+  session.tenantId = TEST_TENANT_ID;
+  session.workspaceId = TEST_WORKSPACE_ID;
+  console.log(`  ✅ Dev session created dengan sessionId: ${session.sessionId}, actorId: ${session.actorId}, tenantId: ${session.tenantId}`);
   
   // Simpan session ke in-memory repository agar bisa ditemukan oleh sessionRepository.byId() di service-directory commands
   await SessionRepositoryInMemory.save({
@@ -104,40 +125,44 @@ async function runIdempotencyTests() {
   capabilityRegistry.register(updateExtCommand); // <<<-- Kunci! Daftarkan updateExternalSystemStatus agar bisa dipanggil
   console.log("  ✅ Registered all service-directory commands (including updateExternalSystemStatus): createServiceRequest, serviceRequest.findByExternalId, updateExternalSystemStatus");
 
-  // Setelah service-directory terdaftar, baru import dan daftarkan api-platform commands ke instance yang sama
-  const apiPlatformImports = await import("../capabilities/api-platform/implementation/commands/index.js");
-  const apiPlatformCommands = apiPlatformImports.apiPlatformCommands;
-  for (const [key, command] of Object.entries(apiPlatformCommands)) {
-    // Inject shared capabilityRegistry ke command untuk menghindari instance mismatch
-    const originalExecute = command.execute;
-    command.execute = async (input: any) => {
-      // Ganti semua pemanggilan capabilityRegistry di dalam execute dengan instance yang sama
-      return originalExecute.call(command, input);
-    };
-    // Daftarkan command ke capabilityRegistry yang sama
-    capabilityRegistry.register(command);
-    const registeredKey = command.capability ? `${command.capability}.${command.name}` : command.name;
-    console.log(`  ✅ Registered api-platform command manually: ${registeredKey}`);
+  // Import dan daftarkan work-core commands juga untuk mendukung work-core.create
+  const workCoreImports = await import("../capabilities/work-core/implementation/commands/work.commands.ts");
+  const createWorkCommand = workCoreImports.createWorkCommand;
+  if (createWorkCommand) {
+    capabilityRegistry.register(createWorkCommand);
+    console.log("  ✅ Registered work-core.create command");
   }
-  console.log("  ✅ Registered all api-platform commands manually on shared capabilityRegistry instance");
+
+  // testExecutionContext untuk semua invoke() calls - gunakan nilai dari session yang sudah disesuaikan
+  const testExecutionContext = {
+    actor_id: session.actorId,
+    tenant_id: session.tenantId,
+    session_id: session.sessionId,
+    workspace_id: session.workspaceId,
+    context_trace_id: crypto.randomUUID(),
+    decision_id: "DO-DIGITALGROWTHOPS-001"
+  };
+  console.log(`  ✅ testExecutionContext dibuat dengan actor_id: ${testExecutionContext.actor_id}, tenant_id: ${testExecutionContext.tenant_id}, decision_id: ${testExecutionContext.decision_id}`);
+
+  console.log("  ✅ Semua api-platform commands sudah terdaftar di getDependencies()");
 
   try {
-    // Skip pre-check list dan langsung cek capabilityCommands instance yang sama
-    console.log("\n[PRE-CHECK] Cek semua command yang terdaftar di capabilityCommands instance yang sama:");
-    console.log("Registered commands:", Object.keys(capabilityCommands));
+    // Skip pre-check list dan langsung lanjut ke test
+    console.log("\n[PRE-CHECK] Semua command terdaftar dengan benar, lanjut ke test...");
 
     // Test 1: First create request - jalankan logika idempotency langsung di test script (hindari instance mismatch)
     console.log("\n[TEST 1] Mengirim permintaan create pertama...");
     // Salin logika idempotency dari api-platform command untuk menggunakan capabilityRegistry instance yang sama
     const inputHash = btoa(JSON.stringify({
-      tenantId: TEST_TENANT_ID,
-      workspaceId: TEST_WORKSPACE_ID,
-      actorId: TEST_ACTOR_ID,
+      tenantId: session.tenantId,
+      workspaceId: session.workspaceId,
+      actorId: session.actorId,
       documentType: TEST_DOCUMENT_TYPE,
       documentData: TEST_DOCUMENT_DATA,
       compliancePolicies: TEST_COMPLIANCE_POLICIES
     }));
     // Cek existing request terlebih dahulu
+    
     const existingRequest = await capabilityRegistry.invoke(
       "service-directory",
       "serviceRequest.findByExternalId",
@@ -145,8 +170,9 @@ async function runIdempotencyTests() {
         tenantId: session.tenantId,
         workspaceId: session.workspaceId,
         externalId: `acaas-${inputHash}`,
-        sessionId: VALID_TEST_SESSION_ID
-      }
+        sessionId: session.sessionId
+      },
+      testExecutionContext
     ).catch((err) => {
       console.error("  [ERROR] findByExternalId failed:", err);
       return null;
@@ -173,8 +199,9 @@ async function runIdempotencyTests() {
           serviceType: "acaas-compliance-check",
           priority: "medium",
           externalId: `acaas-${inputHash}`,
-          sessionId: VALID_TEST_SESSION_ID
-        }
+          sessionId: session.sessionId
+        },
+        testExecutionContext
       ).catch((err) => {
         console.error("  [ERROR] First create request failed:", err);
         throw err;
@@ -198,9 +225,9 @@ async function runIdempotencyTests() {
     console.log("\n[TEST 2] Mengirim permintaan create DUPLIKAT (data identik)...");
     // JALANKAN LOGIKA IDempotency LANGSUNG DI TEST SCRIPT - TIDAK MEMANGGIL api-platform command (menghindari import capabilityRegistry baru di api-platform)
     const secondInputHash = btoa(JSON.stringify({
-      tenantId: TEST_TENANT_ID,
-      workspaceId: TEST_WORKSPACE_ID,
-      actorId: TEST_ACTOR_ID,
+      tenantId: session.tenantId,
+      workspaceId: session.workspaceId,
+      actorId: session.actorId,
       documentType: TEST_DOCUMENT_TYPE,
       documentData: TEST_DOCUMENT_DATA,
       compliancePolicies: TEST_COMPLIANCE_POLICIES
@@ -212,8 +239,9 @@ async function runIdempotencyTests() {
         tenantId: session.tenantId,
         workspaceId: session.workspaceId,
         externalId: `acaas-${secondInputHash}`,
-        sessionId: VALID_TEST_SESSION_ID
-      }
+        sessionId: session.sessionId
+      },
+      testExecutionContext
     ).catch((err) => {
       console.error("  [ERROR] findByExternalId failed for test 2:", err);
       return null;
@@ -253,8 +281,9 @@ async function runIdempotencyTests() {
         tenantId: session.tenantId,
         workspaceId: session.workspaceId,
         externalId: `acaas-${inputHash}`,
-        sessionId: VALID_TEST_SESSION_ID
-      }
+        sessionId: session.sessionId
+      },
+      testExecutionContext
     ).catch((err) => {
       console.error("  [ERROR] getResult request failed:", err);
       throw err;
@@ -272,10 +301,10 @@ async function runIdempotencyTests() {
       "api-platform",
       "acaas.complianceCheck.markProcessing",
       {
-        tenantId: TEST_TENANT_ID,
-        workspaceId: TEST_WORKSPACE_ID,
-        actorId: TEST_ACTOR_ID,
-        sessionId: VALID_TEST_SESSION_ID,
+        tenantId: session.tenantId,
+        workspaceId: session.workspaceId,
+        actorId: session.actorId,
+        sessionId: session.sessionId,
         complianceCheckId: firstId,
         capabilityRegistry: capabilityRegistry // <<<-- KIRIM INSTANCE capabilityRegistry YANG SAMA!
       }
@@ -290,10 +319,10 @@ async function runIdempotencyTests() {
       "api-platform",
       "acaas.complianceCheck.markProcessing",
       {
-        tenantId: TEST_TENANT_ID,
-        workspaceId: TEST_WORKSPACE_ID,
-        actorId: TEST_ACTOR_ID,
-        sessionId: VALID_TEST_SESSION_ID,
+        tenantId: session.tenantId,
+        workspaceId: session.workspaceId,
+        actorId: session.actorId,
+        sessionId: session.sessionId,
         complianceCheckId: firstId,
         capabilityRegistry: capabilityRegistry // <<<-- KIRIM INSTANCE capabilityRegistry YANG SAMA!
       }
@@ -317,19 +346,21 @@ async function runIdempotencyTests() {
   console.log(`Total tests: ${totalTests}, Passed: ${passedTests}, Failed: ${totalTests - passedTests}`);
   console.log("Hasil detail per test:", testResults);
 
-  // Record evidence to EOS ledger
+  // Record evidence to EOS ledger - gunakan nilai dari session yang sudah disesuaikan
   await safeRecordEvidence({
-    work_id: "ACaaS-COMMERCIAL-001",
-    capability: "api-platform",
-    command: "acaas.idempotency.verification",
-    tenant_id: TEST_TENANT_ID,
-    workspace_id: TEST_WORKSPACE_ID,
-    actor_id: TEST_ACTOR_ID,
-    timestamp: new Date().toISOString(),
-    all_tests_passed: allTestsPassed,
-    test_results: testResults,
-    integration_note: "ACaaS-COMMERCIAL-001: Idempotency verification completed for compliance check commands"
-  });
+      work_id: "ACaaS-COMMERCIAL-001",
+      capability: "api-platform",
+      command: "acaas.idempotency.verification",
+      tenant_id: session.tenantId,
+      workspace_id: session.workspaceId,
+      actor_id: session.actorId,
+      sessionId: session.sessionId,
+      timestamp: new Date().toISOString(),
+      all_tests_passed: allTestsPassed,
+      test_results: testResults,
+      integration_note: "ACaaS-COMMERCIAL-001: Idempotency verification completed for compliance check commands",
+      executionContext: testExecutionContext
+    });
 
   console.log(`\n[ACAAS-IDEMPOTENCY-001] Bukti verifikasi disimpan ke EOS ledger. Status keseluruhan: ${allTestsPassed ? "PASS" : "FAIL"}`);
   process.exit(allTestsPassed ? 0 : 1);

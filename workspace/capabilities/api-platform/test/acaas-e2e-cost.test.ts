@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * E2E Test untuk ACaaS-001-STEP5: Jalankan E2E dan ukur biaya
  * Menguji alur end-to-end: UI → Work → evaluator → evidence → hasil

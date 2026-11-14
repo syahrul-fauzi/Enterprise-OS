@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { randomUUID } from "node:crypto";
 import { recordRuntimeInvocation } from "../../../../packages/core/runtime/src/index.js";
 import type { CommunicationEvent, CommunicationEventId, CommunicationAdapterType, CommunicationEventStatus } from "../contracts/communication.contracts.js";

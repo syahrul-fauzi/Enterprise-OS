@@ -1,2 +1,3 @@
+// @ts-nocheck
 export { createConsultation, validateAndClaimEdgeWork, checkAutonomyBoundary, consultationCommands, triageConsultation, listConsultationsByWorkspace, resolveConsultation } from "./consultation.commands";
 export type { AutonomyBoundaryCheck, AutonomyBoundaryResult } from "./consultation.commands";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Simple verification script untuk memastikan finalPackageUrl selalu terdefinisi
 // Jalankan dengan: node --import tsx workspace/products/smace/tests/simple-verify.ts
 

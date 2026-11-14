@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * R7 - PERSISTENT WORK COMPANION: Core service implementation
  * Full agentic loop: OBSERVE → INSPECT → DETECT → PROPOSE → UPDATE

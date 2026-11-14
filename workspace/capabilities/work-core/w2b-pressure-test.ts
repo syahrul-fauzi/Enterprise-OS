@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * W2-B Pressure Test: Authority Substitution Under Failure
  * Scenario: Human A → AI → Human B authority transition, with unauthorized mutation rejection

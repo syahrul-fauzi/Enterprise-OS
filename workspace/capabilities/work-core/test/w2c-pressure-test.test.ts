@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * W2-C Pressure Test: FACE Loss / Reattachment
  * Skenario: FACE ATTACHED → WORK W → FACE DETACHED → CORE WORK CONTINUES → FACE REATTACHED → SAME WORK W
